@@ -1,52 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: wm5110: Add DAPM/routing hookup for the ANC
- block
-Date: Thu, 27 Aug 2015 17:11:32 +0100
-Message-ID: <20150827161132.GE5313@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: wm5110: Add DAPM/routing hookup
+ for the ANC block
+Date: Thu, 27 Aug 2015 17:04:45 +0100
+Message-ID: <20150827160445.GC19411@ck-lbox>
 References: <1440689466-7941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <1440689466-7941-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20150827161132.GE5313@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h56sxpGKRmy85csR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78400260592
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 18:24:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1440689466-7941-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+In-Reply-To: <20150827161132.GE5313@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Aug 27, 2015 at 05:11:32PM +0100, Mark Brown wrote:
+> On Thu, Aug 27, 2015 at 04:31:06PM +0100, Charles Keepax wrote:
+> 
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		val = 1 << w->shift;
+> > +		break;
+> > +	case SND_SOC_DAPM_PRE_PMD:
+> > +		val = 1 << (w->shift + 1);
+> > +	default:
+> 
+> It looks like there's a missing break here.
 
---h56sxpGKRmy85csR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ooops... sorry let me fix that up.
 
-On Thu, Aug 27, 2015 at 04:31:06PM +0100, Charles Keepax wrote:
-
-> +	switch (event) {
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		val = 1 << w->shift;
-> +		break;
-> +	case SND_SOC_DAPM_PRE_PMD:
-> +		val = 1 << (w->shift + 1);
-> +	default:
-
-It looks like there's a missing break here.
-
---h56sxpGKRmy85csR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV3za0AAoJECTWi3JdVIfQpA8H/2BmLGuKzzQztCGO7A1XfjA5
-e6QVxQQz5QLZw52eYL9JfFP7XEqX4Lg1TwNaP8ia0/8ETgkyWOQBrB4ArB3uJgcq
-XEzU7swwYNwMwTlfkuyfBVQ6lr5LD54vOj6Lo+aWHHzxr6J4NJUeVllwvU6TQvUg
-iurF9AIsFFG5QzbaeWA4iDcBndcJcrvD50C60bNiIhnerzYTdA791rP4rrcTF/ql
-xr7Mgd1e6DTKH6sOnrWO4rgdiXOC/Q/CpwsFbV1F1pSL6PN0va0xmSsr7Fn0QOoO
-v7IlnN+RDh2gGsFXTajWOhAiduJQ0IT97pIOHfDpNAhMRylcgItkiU+sA3grXOo=
-=3wax
------END PGP SIGNATURE-----
-
---h56sxpGKRmy85csR--
+Thanks,
+Charles
