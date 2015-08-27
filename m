@@ -1,294 +1,376 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: [PATCH 06/10] ALSA: axd: add basic files for sending/receiving
- axd cmds
-Date: Thu, 27 Aug 2015 16:40:09 +0100
-Message-ID: <55DF2F59.408@imgtec.com>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <1440419959-14315-7-git-send-email-qais.yousef@imgtec.com>
- <20150826191642.GG28760@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm5110: Add DAPM/routing hookup for
+	the ANC block
+Date: Thu, 27 Aug 2015 16:31:06 +0100
+Message-ID: <1440689466-7941-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1440689466-7941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150826191642.GG28760@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B0F3265AAC
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 17:51:34 +0200 (CEST)
+In-Reply-To: <1440689466-7941-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lee.jones@linaro.org, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/26/2015 08:16 PM, Mark Brown wrote:
-> On Mon, Aug 24, 2015 at 01:39:15PM +0100, Qais Yousef wrote:
->
->> +int axd_cmd_set_pc(struct axd_cmd *cmd, unsigned int thread, unsigned long pc)
->> +{
->> +	if (thread >= THREAD_COUNT)
->> +		return -1;
-> Return sensible error codes please.
+The wm5110 device contains a hardware ANC block, this patch connects up
+controls and routing for this.
 
-OK.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |  118 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |    7 ++
+ sound/soc/codecs/wm5110.c  |  136 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 261 insertions(+), 0 deletions(-)
 
->
->> +unsigned long  axd_cmd_get_datain_address(struct axd_cmd *cmd)
->> +{
->> +	struct axd_dev *axd = container_of(cmd, struct axd_dev, cmd);
->> +
->> +	return (unsigned long) axd->buf_base_m;
->> +}
-> What's going on with these casts?
-
-As with the other cases. buf_base_m is void * __iomem but we want to do 
-some arithmatic to help AXD start up and understand where it needs to 
-run. I agree they don't look nice and if I can avoid them I'd be happy 
-to do so.
-
->
->> +static inline void axd_set_flag(unsigned int *flag, unsigned int value)
->> +{
->> +	*flag = value;
->> +	smp_wmb();	/* guarantee smp ordering */
->> +}
->> +
->> +static inline unsigned int axd_get_flag(unsigned int *flag)
->> +{
->> +	smp_rmb();	/* guarantee smp ordering */
->> +	return *flag;
->> +}
-> Please use a normal locking construct rather than hand rolling
-> something, or alternatively introduce new generic operations.  The fact
-> that you're hand rolling these things that have no driver specific
-> content is really worrying in terms of their safety.
-
-I need to check atomic_ops.txt again but I think atomic_t is not always 
-smb safe. I definitely was running on a version of Meta archicture in 
-the past where atomic_t wasn't always smp safe.
-
-I'll check if the rules have changed or something new was introduced to 
-deal with this.
-
->
->> +/*
->> + * axd_pipe->enabled_flg for output pipes is overloaded to mean two things:
->> + *
->> + * - PIPE_STARTED: indicates that pipe was opened but no buffers were passed.
->> + *   When stopping the pipes, we know that we don't need to discard anything if
->> + *   the discard_flg is set in cmd struct. Which allows us to terminate easily
->> + *   and quickly.
->> + *
->> + * - PIPE_RUNNING: indicates that pipe has processed some buffers, so we should
->> + *   discard if user terminates early (and discard_flg is set in cmd struct).
->> + */
->> +#define PIPE_STARTED	1
->> +#define PIPE_RUNNING	2
-> Why is the case with in place buffers not a simple zero iteration loop?
-
-This is important when AXD is not consuming the data through I2S and 
-returning them to Linux. What we're trying to deal with here is the 
-firmware processed some data and expects Linux to consume whatever it 
-has sent back to it. We want to ensure that if the user suddenly stopped 
-consuming this data by closing the pipe to drop anything we receive back 
-from AXD otherwise the workqueue would block indefinitely waiting for 
-the user that disappeared to consume it causing a deadlock.
-
->
->> +#ifdef AXD_DEBUG_DIAG
->> +static unsigned int inSentCount[AXD_MAX_PIPES];
->> +static unsigned int inRecvCount[AXD_MAX_PIPES];
->> +static unsigned int outSentCount[AXD_MAX_PIPES];
->> +static unsigned int outRecvCount[AXD_MAX_PIPES];
->> +static unsigned int primeupCount[AXD_MAX_PIPES];
->> +static unsigned int read_size[AXD_MAX_PIPES];
->> +static unsigned int write_size[AXD_MAX_PIPES];
->> +static unsigned int recv_size[AXD_MAX_PIPES];
-> No static globals and please follow the kernel coding style.
-
-OK I'll fix.
-
->
->> +static inline void axd_datain_kick(struct axd_pipe *axd_pipe)
->> +{
->> +	unsigned long flags;
->> +	struct axd_memory_map __iomem *message = axd_pipe->cmd->message;
->> +	unsigned int pipe = axd_pipe->id;
->> +	unsigned int temp;
->> +
->> +#ifdef AXD_DEBUG_DIAG
->> +	inSentCount[pipe]++;
->> +#endif
-> Define accessor macros for these and then define them to noops when not
-> debugging rather than having #defines in the code.
-
-Yep sounds a better way to do it.
-
->> +static irqreturn_t axd_irq(int irq, void *data)
->> +{
->> +	struct axd_cmd *cmd = data;
->> +	unsigned int int_status;
->> +	unsigned long flags;
->> +	int i, ret;
->> +
->> +	/*
->> +	 * int_status is ioremapped() which means it could page fault. When axd
->> +	 * is running on the same core as the host, holding lock2 would disable
->> +	 * exception handling in that core which means a page fault would stuff
->> +	 * host thread executing the driver. We do a double read here to ensure
->> +	 * that we stall until the memory access is done before lock2 is
->> +	 * acquired, hence ensuring that any page fault is handled outside lock2
->> +	 * region.
->> +	*/
->> +	int_status = ioread32(&cmd->message->int_status);
->> +	int_status = ioread32(&cmd->message->int_status);
-> Eew.
-
-Luckily this is not a problem anymore. This must have slipped back in 
-while preparing the patches for submission. I'll audit the code again to 
-make sure this didn't happen somewhere else.
-
->
->> +
->> +	axd_platform_irq_ack();
-> When would this ever be called anywhere else?  Just inline it (and it's
-> better practice to only ack things we handle...).
-
-It wouldn't be called anywhere else but its implementation could be 
-platform specific that's why it's abstracted. At the moment it does 
-nothing now we're using MIPS but we shouldn't assume that this will 
-always be the case.
-The main purpose of this function is to deassert the interrupt line if 
-the way interrrupts are wired for that platform required so. In the past 
-we were running in hardware where interrupts are sent through special 
-slave port and the interrupt required to be acked or deasserted.
-
->
->> +	flags = axd_platform_lock();
->> +	int_status = ioread32(&cmd->message->int_status);
->> +	iowrite32(0, &cmd->message->int_status);
->> +
->> +	if (!int_status)
->> +		goto out;
-> This should cause us to return IRQ_NONE.
-
-I don't think it's necessary. It could happen that AXD sent a DATAIN 
-interrupt and shortly after sent DATAOUT interrupt but the handler was 
-running before the DATAOUT case is handled causing both interrupts to be 
-handled in one go but the handler could be called again to find out that 
-there's nothing to do.
-
->
->> +	if (int_status & AXD_INT_ERROR) {
->> +		struct axd_dev *axd = container_of(cmd, struct axd_dev, cmd);
->> +		int error = ioread32(&cmd->message->error);
->> +
->> +		pr_debug("<---- Received error interrupt\n");
->> +		switch (error) {
->> +		default:
->> +		case 0:
->> +			break;
-> We just ignore these?
-
-Case 0 doesn't indicate anything anymore. I can print a warning about 
-unexpected error code for the default case.
-
->
->> +		case 2:
->> +			dev_warn(axd->dev, "Failed to set last configuration command\n");
->> +			break;
-> Does the configuration command notice?
-
-Yes. When send a configuration command we expect a response back that it 
-was service (by setting resopnse_flg in AXD_INT_CTRL), we timeout if we 
-don't get one and report an error to the caller.
-
-This error code could mean other things as well so I might modify this 
-message to be more descriptive.
-
->
->> +	/*
->> +	 * if we could lock the semaphore, then we're guaranteed that the
->> +	 * current rd_idx is valid and ready to be used. So no need to verify
->> +	 * that the status of the descriptor at rd_idx is valid.
->> +	 */
->> +	spin_lock(&desc_ctrl->rd_lock);
-> It really feels like this locking is all complicated and fragile.  I'm
-> not entirely sure the optimisation is worth it - are we really sending
-> compressed audio at such a high rate that it's worth having concurrency
-> handling that's hard to think about?
-
-This is similar to how the bufferq implementation work. What is the 
-other alternative to this? We do want this to be as fast as possible.
-
-What is happening here is that the semaphore count is again controlling 
-how many descriptors are available, if nothing is available it will 
-cause the caller to block. If it succeeds and more than 1 descriptors is 
-available potentially more than one SMP user could reach the later point 
-so we hold the spinlock while modifying the shared buf_desc structure. 
-The variable we're explicitly protecting is rd_idx.
-
-Maybe my use of the semaphore count to keep track of how many 
-descriptors are available and cause the caller to block is the confusing 
-part? Would better comments help?
-
->
->> +void axd_cmd_free_irq(struct axd_cmd *cmd, unsigned int irqnum)
->> +{
->> +	flush_workqueue(cmd->in_workq);
-> _sync()
-
-OK.
-
->> +	destroy_workqueue(cmd->in_workq);
->> +	flush_workqueue(cmd->out_workq);
->> +	destroy_workqueue(cmd->out_workq);
->> +	free_irq(irqnum, cmd);
-> We're freeing the interrupts after we destroy the workqueue which means
-> we could try to schedule new work after destruction.
-
-Right! I'll move it up.
-
->
->> +	/*
->> +	 * Based on the defined axd_pipe->buf_size and number of input pipes
->> +	 * supported by the firmware, we calculate the number of descriptors we
->> +	 * need to use using this formula:
->> +	 *
->> +	 *	axd_pipe->buf_size * num_desc = total_size / num_inputs
->> +	 */
->> +	num_desc = total_size / (cmd->num_inputs * axd_pipe->buf_size);
-> I'm not sure that was an especially tricky line of code to follow...  am
-> I missing something here?
-
-The driver receive a pointer to a contiguous buffer area that it needs 
-to divide it into buffers based on its size, number of pipes in the 
-system, and the desired buffer size.
-
-We then calculate our buffer queue size or how many out of the available 
-descriptors we need.
-
-For example if the total buffer area reserved for inputs is 10KiB and we 
-have 1 input pipe and the desired buffer size is 1KiB, then we can use 
-all 10 Descriptors AXD provides. If we have 2 input pipes in the system, 
-then each 1 will take 5KiB and we need 5 descriptors for each pipe. It 
-is equivalent to saying 'the size of input X buffer queue is 5'.
-
->
-> I've stopped reviewing here mostly because it's the end of my day and
-> this patch is 72K which is enormous for something that's not just lots
-> of defines or whatever and actually needs reading in considerable detail
-> given all the tricky concurrency stuff you're doing.  Please split this
-> code up into multiple patches for ease of review.  For example all the
-> queue management and allocation seems rather separate to the interrupt
-> handling.
-
-Thanks a lot for your efforts so far. I'll try to split this into 
-smaller chunks though it feels really like it's all one entity but 2K of 
-code is quite a lot.
-
->
-> It also feels like there's room for pruning the code, perhaps sharing
-> more of it between input and output paths and removing some layers of
-> abstraction.
-
-I'll look into that. If there's some specific suggestions in mind I'd 
-appreciate hearing them.
-
-Many thanks,
-Qais
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 8a2221a..0ae5eca 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -672,6 +672,100 @@ const struct soc_enum arizona_in_dmic_osr[] = {
+ };
+ EXPORT_SYMBOL_GPL(arizona_in_dmic_osr);
+ 
++static const char * const arizona_anc_input_src_text[] = {
++	"None", "IN1", "IN2", "IN3", "IN4",
++};
++
++static const char * const arizona_anc_channel_src_text[] = {
++	"None", "Left", "Right", "Combine",
++};
++
++const struct soc_enum arizona_anc_input_src[] = {
++	SOC_ENUM_SINGLE(ARIZONA_ANC_SRC,
++			ARIZONA_IN_RXANCL_SEL_SHIFT,
++			ARRAY_SIZE(arizona_anc_input_src_text),
++			arizona_anc_input_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_FCL_ADC_REFORMATTER_CONTROL,
++			ARIZONA_FCL_MIC_MODE_SEL,
++			ARRAY_SIZE(arizona_anc_channel_src_text),
++			arizona_anc_channel_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_ANC_SRC,
++			ARIZONA_IN_RXANCR_SEL_SHIFT,
++			ARRAY_SIZE(arizona_anc_input_src_text),
++			arizona_anc_input_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_FCR_ADC_REFORMATTER_CONTROL,
++			ARIZONA_FCR_MIC_MODE_SEL,
++			ARRAY_SIZE(arizona_anc_channel_src_text),
++			arizona_anc_channel_src_text),
++};
++EXPORT_SYMBOL_GPL(arizona_anc_input_src);
++
++static const char * const arizona_anc_ng_texts[] = {
++	"None",
++	"Internal",
++	"External",
++};
++
++SOC_ENUM_SINGLE_DECL(arizona_anc_ng_enum, SND_SOC_NOPM, 0,
++		     arizona_anc_ng_texts);
++EXPORT_SYMBOL_GPL(arizona_anc_ng_enum);
++
++static const char * const arizona_output_anc_src_text[] = {
++	"None", "RXANCL", "RXANCR",
++};
++
++const struct soc_enum arizona_output_anc_src[] = {
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_1L,
++			ARIZONA_OUT1L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_1R,
++			ARIZONA_OUT1R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_2L,
++			ARIZONA_OUT2L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_2R,
++			ARIZONA_OUT2R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_3L,
++			ARIZONA_OUT3L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_DAC_VOLUME_LIMIT_3R,
++			ARIZONA_OUT3R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_4L,
++			ARIZONA_OUT4L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_4R,
++			ARIZONA_OUT4R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_5L,
++			ARIZONA_OUT5L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_5R,
++			ARIZONA_OUT5R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_6L,
++			ARIZONA_OUT6L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_6R,
++			ARIZONA_OUT6R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++};
++EXPORT_SYMBOL_GPL(arizona_output_anc_src);
++
+ static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
+ {
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+@@ -979,6 +1073,30 @@ void arizona_init_dvfs(struct arizona_priv *priv)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_dvfs);
+ 
++int arizona_anc_ev(struct snd_soc_dapm_widget *w,
++		   struct snd_kcontrol *kcontrol,
++		   int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	unsigned int mask = 0x3 << w->shift;
++	unsigned int val;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		val = 1 << w->shift;
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		val = 1 << (w->shift + 1);
++	default:
++		return 0;
++	}
++
++	snd_soc_update_bits(codec, ARIZONA_CLOCK_CONTROL, mask, val);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_anc_ev);
++
+ static unsigned int arizona_sysclk_48k_rates[] = {
+ 	6144000,
+ 	12288000,
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index ada0a41..1a4ba09 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -233,6 +233,10 @@ extern const struct soc_enum arizona_in_dmic_osr[];
+ 
+ extern const struct snd_kcontrol_new arizona_adsp2_rate_controls[];
+ 
++extern const struct soc_enum arizona_anc_input_src[];
++extern const struct soc_enum arizona_anc_ng_enum;
++extern const struct soc_enum arizona_output_anc_src[];
++
+ extern int arizona_in_ev(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 int event);
+@@ -242,6 +246,9 @@ extern int arizona_out_ev(struct snd_soc_dapm_widget *w,
+ extern int arizona_hp_ev(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 int event);
++extern int arizona_anc_ev(struct snd_soc_dapm_widget *w,
++			  struct snd_kcontrol *kcontrol,
++			  int event);
+ 
+ extern int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol);
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 9756578..5a90cc5 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -448,6 +448,33 @@ static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
+ 	SOC_SINGLE(name " NG SPKDAT2L Switch", base, 10, 1, 0), \
+ 	SOC_SINGLE(name " NG SPKDAT2R Switch", base, 11, 1, 0)
+ 
++#define WM5110_RXANC_INPUT_ROUTES(widget, name) \
++	{ widget, NULL, name " NG Mux" }, \
++	{ name " NG Internal", NULL, "RXANC NG Clock" }, \
++	{ name " NG Internal", NULL, name " Channel" }, \
++	{ name " NG External", NULL, "RXANC NG External Clock" }, \
++	{ name " NG External", NULL, name " Channel" }, \
++	{ name " NG Mux", "None", name " Channel" }, \
++	{ name " NG Mux", "Internal", name " NG Internal" }, \
++	{ name " NG Mux", "External", name " NG External" }, \
++	{ name " Channel", "Left", name " Left Input" }, \
++	{ name " Channel", "Combine", name " Left Input" }, \
++	{ name " Channel", "Right", name " Right Input" }, \
++	{ name " Channel", "Combine", name " Right Input" }, \
++	{ name " Left Input", "IN1", "IN1L PGA" }, \
++	{ name " Right Input", "IN1", "IN1R PGA" }, \
++	{ name " Left Input", "IN2", "IN2L PGA" }, \
++	{ name " Right Input", "IN2", "IN2R PGA" }, \
++	{ name " Left Input", "IN3", "IN3L PGA" }, \
++	{ name " Right Input", "IN3", "IN3R PGA" }, \
++	{ name " Left Input", "IN4", "IN4L PGA" }, \
++	{ name " Right Input", "IN4", "IN4R PGA" }
++
++#define WM5110_RXANC_OUTPUT_ROUTES(widget, name) \
++	{ widget, NULL, name " ANC Source" }, \
++	{ name " ANC Source", "RXANCL", "RXANCL" }, \
++	{ name " ANC Source", "RXANCR", "RXANCR" }
++
+ static const struct snd_kcontrol_new wm5110_snd_controls[] = {
+ SOC_ENUM("IN1 OSR", arizona_in_dmic_osr[0]),
+ SOC_ENUM("IN2 OSR", arizona_in_dmic_osr[1]),
+@@ -506,6 +533,15 @@ SOC_SINGLE_TLV("IN4R Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_4R,
+ SOC_ENUM("Input Ramp Up", arizona_in_vi_ramp),
+ SOC_ENUM("Input Ramp Down", arizona_in_vd_ramp),
+ 
++SND_SOC_BYTES("RXANC Coefficients", ARIZONA_ANC_COEFF_START,
++	      ARIZONA_ANC_COEFF_END - ARIZONA_ANC_COEFF_START + 1),
++SND_SOC_BYTES("RXANCL Config", ARIZONA_FCL_FILTER_CONTROL, 1),
++SND_SOC_BYTES("RXANCL Coefficients", ARIZONA_FCL_COEFF_START,
++	      ARIZONA_FCL_COEFF_END - ARIZONA_FCL_COEFF_START + 1),
++SND_SOC_BYTES("RXANCR Config", ARIZONA_FCR_FILTER_CONTROL, 1),
++SND_SOC_BYTES("RXANCR Coefficients", ARIZONA_FCR_COEFF_START,
++	      ARIZONA_FCR_COEFF_END - ARIZONA_FCR_COEFF_START + 1),
++
+ ARIZONA_MIXER_CONTROLS("EQ1", ARIZONA_EQ1MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
+@@ -862,6 +898,31 @@ static const struct soc_enum wm5110_aec_loopback =
+ static const struct snd_kcontrol_new wm5110_aec_loopback_mux =
+ 	SOC_DAPM_ENUM("AEC Loopback", wm5110_aec_loopback);
+ 
++static const struct snd_kcontrol_new wm5110_anc_input_mux[] = {
++	SOC_DAPM_ENUM("RXANCL Input", arizona_anc_input_src[0]),
++	SOC_DAPM_ENUM("RXANCL Channel", arizona_anc_input_src[1]),
++	SOC_DAPM_ENUM("RXANCR Input", arizona_anc_input_src[2]),
++	SOC_DAPM_ENUM("RXANCR Channel", arizona_anc_input_src[3]),
++};
++
++static const struct snd_kcontrol_new wm5110_anc_ng_mux =
++	SOC_DAPM_ENUM("RXANC NG Source", arizona_anc_ng_enum);
++
++static const struct snd_kcontrol_new wm5110_output_anc_src[] = {
++	SOC_DAPM_ENUM("HPOUT1L ANC Source", arizona_output_anc_src[0]),
++	SOC_DAPM_ENUM("HPOUT1R ANC Source", arizona_output_anc_src[1]),
++	SOC_DAPM_ENUM("HPOUT2L ANC Source", arizona_output_anc_src[2]),
++	SOC_DAPM_ENUM("HPOUT2R ANC Source", arizona_output_anc_src[3]),
++	SOC_DAPM_ENUM("HPOUT3L ANC Source", arizona_output_anc_src[4]),
++	SOC_DAPM_ENUM("HPOUT3R ANC Source", arizona_output_anc_src[5]),
++	SOC_DAPM_ENUM("SPKOUTL ANC Source", arizona_output_anc_src[6]),
++	SOC_DAPM_ENUM("SPKOUTR ANC Source", arizona_output_anc_src[7]),
++	SOC_DAPM_ENUM("SPKDAT1L ANC Source", arizona_output_anc_src[8]),
++	SOC_DAPM_ENUM("SPKDAT1R ANC Source", arizona_output_anc_src[9]),
++	SOC_DAPM_ENUM("SPKDAT2L ANC Source", arizona_output_anc_src[10]),
++	SOC_DAPM_ENUM("SPKDAT2R ANC Source", arizona_output_anc_src[11]),
++};
++
+ static const struct snd_soc_dapm_widget wm5110_dapm_widgets[] = {
+ SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
+ 		    0, wm5110_sysclk_ev, SND_SOC_DAPM_POST_PMU),
+@@ -1046,6 +1107,65 @@ SND_SOC_DAPM_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
+ 		       ARIZONA_AEC_LOOPBACK_ENA_SHIFT, 0,
+ 		       &wm5110_aec_loopback_mux),
+ 
++SND_SOC_DAPM_SUPPLY("RXANC NG External Clock", SND_SOC_NOPM,
++		   ARIZONA_EXT_NG_SEL_SET_SHIFT, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA("RXANCL NG External", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_PGA("RXANCR NG External", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++SND_SOC_DAPM_SUPPLY("RXANC NG Clock", SND_SOC_NOPM,
++		   ARIZONA_CLK_NG_ENA_SET_SHIFT, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA("RXANCL NG Internal", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_PGA("RXANCR NG Internal", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++SND_SOC_DAPM_MUX("RXANCL Left Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[0]),
++SND_SOC_DAPM_MUX("RXANCL Right Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[0]),
++SND_SOC_DAPM_MUX("RXANCL Channel", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[1]),
++SND_SOC_DAPM_MUX("RXANCL NG Mux", SND_SOC_NOPM, 0, 0, &wm5110_anc_ng_mux),
++SND_SOC_DAPM_MUX("RXANCR Left Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[2]),
++SND_SOC_DAPM_MUX("RXANCR Right Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[2]),
++SND_SOC_DAPM_MUX("RXANCR Channel", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[3]),
++SND_SOC_DAPM_MUX("RXANCR NG Mux", SND_SOC_NOPM, 0, 0, &wm5110_anc_ng_mux),
++
++SND_SOC_DAPM_PGA_E("RXANCL", SND_SOC_NOPM, ARIZONA_CLK_L_ENA_SET_SHIFT,
++		   0, NULL, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA_E("RXANCR", SND_SOC_NOPM, ARIZONA_CLK_R_ENA_SET_SHIFT,
++		   0, NULL, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++
++SND_SOC_DAPM_MUX("HPOUT1L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[0]),
++SND_SOC_DAPM_MUX("HPOUT1R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[1]),
++SND_SOC_DAPM_MUX("HPOUT2L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[2]),
++SND_SOC_DAPM_MUX("HPOUT2R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[3]),
++SND_SOC_DAPM_MUX("HPOUT3L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[4]),
++SND_SOC_DAPM_MUX("HPOUT3R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[5]),
++SND_SOC_DAPM_MUX("SPKOUTL ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[6]),
++SND_SOC_DAPM_MUX("SPKOUTR ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[7]),
++SND_SOC_DAPM_MUX("SPKDAT1L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[8]),
++SND_SOC_DAPM_MUX("SPKDAT1R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[9]),
++SND_SOC_DAPM_MUX("SPKDAT2L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[10]),
++SND_SOC_DAPM_MUX("SPKDAT2R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[11]),
++
+ SND_SOC_DAPM_AIF_OUT("AIF1TX1", NULL, 0,
+ 		     ARIZONA_AIF1_TX_ENABLES, ARIZONA_AIF1TX1_ENA_SHIFT, 0),
+ SND_SOC_DAPM_AIF_OUT("AIF1TX2", NULL, 0,
+@@ -1699,6 +1819,22 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "SPKDAT2L", NULL, "OUT6L" },
+ 	{ "SPKDAT2R", NULL, "OUT6R" },
+ 
++	WM5110_RXANC_INPUT_ROUTES("RXANCL", "RXANCL"),
++	WM5110_RXANC_INPUT_ROUTES("RXANCR", "RXANCR"),
++
++	WM5110_RXANC_OUTPUT_ROUTES("OUT1L", "HPOUT1L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT1R", "HPOUT1R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT2L", "HPOUT2L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT2R", "HPOUT2R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT3L", "HPOUT3L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT3R", "HPOUT3R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT4L", "SPKOUTL"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT4R", "SPKOUTR"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT5L", "SPKDAT1L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT5R", "SPKDAT1R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT6L", "SPKDAT2L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT6R", "SPKDAT2R"),
++
+ 	{ "MICSUPP", NULL, "SYSCLK" },
+ 
+ 	{ "DRC1 Signal Activity", NULL, "DRC1L" },
+-- 
+1.7.2.5
