@@ -1,73 +1,169 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] drm/i915: Add audio pin
-	sense / ELD callback
-Date: Thu, 27 Aug 2015 17:24:53 +0300
-Message-ID: <87si747qru.fsf@intel.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-2-git-send-email-david.henningsson@canonical.com>
- <20150826083353.GE20434@phenom.ffwll.local> <55DE07C4.2000503@canonical.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 1/2] OMAPDSS: hdmi: Reconfigure and restart
+ audio when display is enabled
+Date: Thu, 27 Aug 2015 17:30:53 +0300
+Message-ID: <55DF1F1D.3080203@ti.com>
+References: <cover.1440594174.git.jsarha@ti.com>
+ <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <55DE07C4.2000503@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: David Henningsson <david.henningsson@canonical.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, intel-gfx@lists.freedesktop.org, tiwai@suse.de, daniel.vetter@intel.com
+Content-Type: multipart/mixed; boundary="===============8277218285402594884=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E9DB265A1E
+ for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 16:30:58 +0200 (CEST)
+In-Reply-To: <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyNiBBdWcgMjAxNSwgRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29u
-QGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+IE9uIDIwMTUtMDgtMjYgMTA6MzMsIERhbmllbCBWZXR0
-ZXIgd3JvdGU6Cj4+IE9uIFdlZCwgQXVnIDE5LCAyMDE1IGF0IDEwOjQ4OjU1QU0gKzAyMDAsIERh
-dmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+Pj4gVGhpcyBjYWxsYmFjayB3aWxsIGJlIGNhbGxlZCBi
-eSB0aGUgaTkxNSBkcml2ZXIgdG8gbm90aWZ5IHRoZSBoZGEKPj4+IGRyaXZlciB0aGF0IGl0cyBI
-RE1JIGluZm9ybWF0aW9uIG5lZWRzIHRvIGJlIHJlZnJlc2hlZCwgaSBlLAo+Pj4gdGhhdCBhdWRp
-byBvdXRwdXQgaXMgbm93IGF2YWlsYWJsZSAob3IgdW5hdmFpbGFibGUpIC0gdXN1YWxseSBhcyBh
-Cj4+PiByZXN1bHQgb2YgYSBtb25pdG9yIGJlaW5nIHBsdWdnZWQgaW4gKG9yIHVucGx1Z2dlZCku
-Cj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdz
-c29uQGNhbm9uaWNhbC5jb20+Cj4+PiAtLS0KPj4+ICAgaW5jbHVkZS9kcm0vaTkxNV9jb21wb25l
-bnQuaCB8IDEyICsrKysrKysrKysrKwo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9u
-cygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIGIv
-aW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+Pj4gaW5kZXggYzlhOGI2NC4uYWI1YmRlMzcg
-MTAwNjQ0Cj4+PiAtLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4+PiArKysgYi9p
-bmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4+PiBAQCAtMzQsNiArMzQsMTggQEAgc3RydWN0
-IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKPj4+ICAgCQl2b2lkICgqY29kZWNfd2FrZV9vdmVycmlk
-ZSkoc3RydWN0IGRldmljZSAqLCBib29sIGVuYWJsZSk7Cj4+PiAgIAkJaW50ICgqZ2V0X2NkY2xr
-X2ZyZXEpKHN0cnVjdCBkZXZpY2UgKik7Cj4+PiAgIAl9ICpvcHM7Cj4+PiArCj4+PiArCWNvbnN0
-IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgewo+Pj4gKwkJdm9pZCAqYXVk
-aW9fcHRyOwo+Pj4gKwkJLyoqCj4+PiArCQkgKiBDYWxsIGZyb20gaTkxNSBkcml2ZXIsIG5vdGlm
-eWluZyB0aGUgSERBIGRyaXZlciB0aGF0Cj4+PiArCQkgKiBwaW4gc2Vuc2UgYW5kL29yIEVMRCBp
-bmZvcm1hdGlvbiBoYXMgY2hhbmdlZC4KPj4+ICsJCSAqIEBhdWRpb19wdHI6CQlIREEgZHJpdmVy
-IG9iamVjdAo+Pj4gKwkJICogQHBvcnQ6CQlXaGljaCBwb3J0IGhhcyBjaGFuZ2VkIChQT1JUQSAv
-IFBPUlRCIC8gUE9SVEMgZXRjKQo+Pj4gKwkJICogQHBvcnRfbXN0X2luZGV4OglJbmRleCB3aXRo
-aW4gdGhhdCBwb3J0LCBmb3IgRGlzcGxheVBvcnQgbXVsdGlzdHJlYW1pbmcKPj4+ICsJCSAqLwo+
-Pj4gKwkJdm9pZCAoKnBpbl9lbGRfbm90aWZ5KSh2b2lkICphdWRpb19wdHIsIGludCBwb3J0LCBp
-bnQgcG9ydF9tc3RfaW5kZXgpOwo+Pj4gKwl9ICphdWRpb19vcHM7Cj4+Cj4+IFRoaXMgd29uJ3Qg
-d29yayBhcyBwcm9wZXIga2VybmVsZG9jLCBidXQgeW91IGdldCBhd2F5IHdpdGggaXQgc2luY2Ug
-aXQncwo+PiBub3QgcHVsbGVkIGludG8gdGhlIGRybS50bXBsLiBTZWUgbXkgY29tbWVudHMgZm9y
-IHRoZSBuZXcgc2V0X2F1ZGlvX3JhdGUKPj4gY2FsbGJhY2suCj4KPiBTb3JyeSwgbXkgZ29vZ2xl
-IGZhaWxlZCBtZSwgc28gSSBjYW4ndCBmaW5kIHlvdXIgY29tbWVudHMgZm9yIHRoZSAKPiBzZXRf
-YXVkaW9fcmF0ZSBjYWxsYmFjay4KCkl0J3Mgb24gdGhlIHJlbGF0ZWQgdGhyZWFkIFsxXSwgc3Bl
-Y2lmaWNhbGx5IHRoZSBzdWJ0aHJlYWQgc3RhcnRpbmcgYXQKWzJdLiBJIGd1ZXNzIHRoZXJlJ3Mg
-bm8gZGlyZWN0IG92ZXJsYXAgYmV0d2VlbiB0aGUgdHdvIHNlcmllcywgYnV0IGl0CndvdWxkIGJl
-IGhlbHBmdWwgaWYgeW91IGNhbiBsb29rIGF0IGVhY2ggb3RoZXIncyB3b3JrIHNvIHRoZXJlJ3Mg
-bm8Kc3VycHJpc2VzLgoKQlIsCkphbmkuCgoKWzFdIGh0dHA6Ly9taWQuZ21hbmUub3JnLzE0Mzk4
-ODA3MTQtNDA5MzEtMS1naXQtc2VuZC1lbWFpbC1saWJpbi55YW5nQGludGVsLmNvbQpbMl0gaHR0
-cDovL21pZC5nbWFuZS5vcmcvMjAxNTA4MjYwODE3MzUuR1oyMDQzNEBwaGVub20uZmZ3bGwubG9j
-YWwKCj4KPiBBcGFydCBmcm9tIHRoZSBrZXJuZWxkb2MgaXNzdWUsIGFyZSB5b3Ugb2theSB3aXRo
-IGFja2luZyB0aGUgcGF0Y2gsIGF0IAo+IGxlYXN0IHRoZSBmaXJzdCB0d28gaTkxNSBvbmVzLCBh
-bmQgYWdyZWUgd2l0aCBUYWthc2hpIHdoaWNoIHRyZWUgdGhpcyAKPiBzaG91bGQgZ28gdGhyb3Vn
-aD8KPgo+IC0tIAo+IERhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgo+IGh0dHBzOi8v
-bGF1bmNocGFkLm5ldC9+ZGl3aWMKCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3VyY2Ug
-VGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
-bC1nZngK
+--===============8277218285402594884==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature";
+	boundary="3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL"
+
+--3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On 26/08/15 16:11, Jyri Sarha wrote:
+
+I few comments, for the parts I had time to review:
+
+> diff --git a/drivers/video/fbdev/omap2/dss/hdmi5.c b/drivers/video/fbde=
+v/omap2/dss/hdmi5.c
+> index 7f87578..f352c4b 100644
+> --- a/drivers/video/fbdev/omap2/dss/hdmi5.c
+> +++ b/drivers/video/fbdev/omap2/dss/hdmi5.c
+> @@ -352,6 +352,7 @@ static int read_edid(u8 *buf, int len)
+>  static int hdmi_display_enable(struct omap_dss_device *dssdev)
+>  {
+>  	struct omap_dss_device *out =3D &hdmi.output;
+> +	unsigned long flags;
+>  	int r =3D 0;
+> =20
+>  	DSSDBG("ENTER hdmi_display_enable\n");
+> @@ -370,7 +371,37 @@ static int hdmi_display_enable(struct omap_dss_dev=
+ice *dssdev)
+>  		goto err0;
+>  	}
+> =20
+
+I think you could refactor parts of the code below into small helper
+functions:
+
+> +	if (hdmi.audio_configured) {
+> +		spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
+> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, false);
+> +		hdmi_wp_audio_enable(&hdmi.wp, false);
+> +		if (hdmi.wp_idlemode > 0)
+> +			REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG,
+> +				    hdmi.wp_idlemode, 3, 2);
+> +		hdmi.wp_idlemode =3D -1;
+
+The above looks like it's disabling audio output, the same that's done
+in hdmi_audio_stop(). Adding a helper func for that makes the code more
+readable.
+
+For the wp_idlemode, I think hdmi.wp_idlemode could be initialized to a
+valid value, so that it can be set at any time without the if check above=
+=2E
+
+> +		spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
+> +
+> +		r =3D hdmi5_audio_config(&hdmi.core, &hdmi.wp, &hdmi.audio_config,
+> +				       hdmi.cfg.timings.pixelclock);
+> +		if (r) {
+> +			DSSERR("Error restoring audio configuration: %d", r);
+> +			hdmi.audio_abort_cb(&hdmi.pdev->dev);
+> +			hdmi.audio_configured =3D false;
+> +		}
+> +	}
+> +
+> +	spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
+> +	if (hdmi.audio_configured && hdmi.audio_playing) {
+> +		/* No-idle while playing audio, store the old value */
+> +		hdmi.wp_idlemode =3D
+> +			REG_GET(hdmi.wp.base, HDMI_WP_SYSCONFIG, 3, 2);
+> +		REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG, 1, 3, 2);
+> +
+> +		hdmi_wp_audio_enable(&hdmi.wp, true);
+> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, true);
+
+And here maybe a helper func to enable the audio output.
+
+> +	}
+
+>  	hdmi.display_enabled =3D true;
+> +	spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
+> =20
+>  	mutex_unlock(&hdmi.lock);
+>  	return 0;
+> @@ -382,17 +413,18 @@ err0:
+> =20
+>  static void hdmi_display_disable(struct omap_dss_device *dssdev)
+>  {
+> +	unsigned long flags;
+> +
+>  	DSSDBG("Enter hdmi_display_disable\n");
+> =20
+>  	mutex_lock(&hdmi.lock);
+> =20
+> -	if (hdmi.audio_pdev && hdmi.audio_abort_cb)
+> -		hdmi.audio_abort_cb(&hdmi.audio_pdev->dev);
+> +	spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
+> +	hdmi.display_enabled =3D false;
+> +	spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
+
+Shouldn't something be done here in hdmi_display_disable about audio?
+You probably want to keep the state flag enabled, so that we know the
+user is playing audio, but you could still disable the HDMI audio HW.
+I'm sure the audio output dies when the video is disabled, but being
+more explicit here makes the code logic easier to follow.
+
+ Tomi
+
+
+--3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJV3x8dAAoJEPo9qoy8lh71caIQAJZiEL0rOnoQ4KkUtt8gAn/4
+aR8DoJsKk+g9pdPnVqa4nUK4FE3O9mFz50TywENRn+sMb84NLglqvKAsegEub0cu
+UPrQw5cTv3VJE20UE3SC7RVqgY8HMqZ5blbyevDdIf3Ci+4xkmis9i4NhC09B19t
+UrzQ4CkuK+oZ+iTDoJp1/pfBk1E9p9Lb53nJ6ERwr/kcV2yuUDLmBpjTbtzp41ks
+aB2IMkPO/5nSUOCM/RJoNaQVn2s9VWp6LmCreJ1ZvMDvwt3we1xHtt9BuVOCOc8T
+4Y/ocX53COvSoNh9Vjn/XQ/JkBM2eQG9aJlR1qBDvCZ65ft9WJU4g9eY+7aGZ3iL
+98ZqL+mREgYTZLyf9TL8oLHlEMc2xiZqA97BmpV7btAMQFLdgeAPMSxY535dObsw
+Ih9AZKm33PyCTs1exJN4NBetSsPKA1Iwp7yWmcqr7R9qn1SwkUBZbpqkalOVVoC6
+0s9DHtJDpql1yS0GOufhCDWIrH9FRM0kJNToN1Uv49v72cj1oenGyLDLVwfBs1Nt
+rloH97RnpVrOqgLrJJh58CUSHSgcPMdk4PTtiujk0K5EYDIGYqwL6UCv0oKhkQ0v
+95YGKkwipk1FiTt6CdVjTsWSQ++dAvmiTHurmqGk1nD+ZKZv/emTd8fW3rxfvK1X
+ky0a1C5X0neJFb6EHmfh
+=2Ljn
+-----END PGP SIGNATURE-----
+
+--3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL--
+
+--===============8277218285402594884==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8277218285402594884==--
