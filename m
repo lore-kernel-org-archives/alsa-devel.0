@@ -1,112 +1,54 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/4] drm/i915: Call audio pin/ELD notify
-	function
-Date: Fri, 28 Aug 2015 15:15:30 +0200
-Message-ID: <55E05EF2.2040708@canonical.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-3-git-send-email-david.henningsson@canonical.com>
- <87si735zos.fsf@intel.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2] OMAPDSS: hdmi: Reconfigure and restart
+ audio when display is enabled
+Date: Fri, 28 Aug 2015 16:46:49 +0300
+Message-ID: <55E06649.5070701@ti.com>
+References: <1440764660-10417-1-git-send-email-jsarha@ti.com>
+ <55E05C60.2090400@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <87si735zos.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, vinod.koul@intel.com, daniel.vetter@intel.com, tiwai@suse.de, libin.yang@intel.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD3852605C1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 15:46:53 +0200 (CEST)
+In-Reply-To: <55E05C60.2090400@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTA4LTI4IDE1OjA3LCBKYW5pIE5pa3VsYSB3cm90ZToKPiBPbiBXZWQsIDE5IEF1
-ZyAyMDE1LCBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNv
-bT4gd3JvdGU6Cj4+IFdoZW4gdGhlIGF1ZGlvIGNvZGVjIGlzIGVuYWJsZWQgb3IgZGlzYWJsZWQs
-IG5vdGlmeSB0aGUgYXVkaW8gZHJpdmVyLgo+PiBUaGlzIHdpbGwgZW5hYmxlIHRoZSBhdWRpbyBk
-cml2ZXIgdG8gZ2V0IHRoZSBub3RpZmljYXRpb24gYXQgYWxsIHRpbWVzCj4+IChldmVuIHdoZW4g
-YXVkaW8gaXMgaW4gZGlmZmVyZW50IHBvd2Vyc2F2ZSBzdGF0ZXMpLgo+Pgo+PiBTaWduZWQtb2Zm
-LWJ5OiBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4K
-Pj4gLS0tCj4+ICAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCAgICB8ICAxICsKPj4g
-ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgMjMgKysrKysrKysrKysrKysr
-KysrKystLS0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDMgZGVsZXRp
-b25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5o
-IGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+PiBpbmRleCBmZDFkZTQ1Li4xZmMz
-MjdkIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPj4gQEAgLTE4MDksNiArMTgwOSw3
-IEBAIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlIHsKPj4gICAJc3RydWN0IGRybV9wcm9wZXJ0eSAq
-Zm9yY2VfYXVkaW9fcHJvcGVydHk7Cj4+Cj4+ICAgCS8qIGhkYS9pOTE1IGF1ZGlvIGNvbXBvbmVu
-dCAqLwo+PiArCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYXVkaW9fY29tcG9uZW50Owo+
-PiAgIAlib29sIGF1ZGlvX2NvbXBvbmVudF9yZWdpc3RlcmVkOwo+Pgo+PiAgIAl1aW50MzJfdCBo
-d19jb250ZXh0X3NpemU7Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
-bF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+PiBpbmRleCAz
-ZGE5Yjg0Li45Njk4MzVkIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
-bF9hdWRpby5jCj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPj4g
-QEAgLTM5OSw2ICszOTksOSBAQCB2b2lkIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3Qg
-aW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikKPj4gICAJc3RydWN0IGRybV9jb25uZWN0b3Ig
-KmNvbm5lY3RvcjsKPj4gICAJc3RydWN0IGRybV9kZXZpY2UgKmRldiA9IGVuY29kZXItPmRldjsK
-Pj4gICAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2LT5kZXZfcHJpdmF0
-ZTsKPj4gKwlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFjb21wID0gZGV2X3ByaXYtPmF1
-ZGlvX2NvbXBvbmVudDsKPj4gKwlzdHJ1Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICppbnRlbF9kaWdf
-cG9ydCA9IGVuY190b19kaWdfcG9ydChlbmNvZGVyKTsKPj4gKwllbnVtIHBvcnQgcG9ydCA9IGlu
-dGVsX2RpZ19wb3J0LT5wb3J0Owo+Pgo+PiAgIAljb25uZWN0b3IgPSBkcm1fc2VsZWN0X2VsZChl
-bmNvZGVyLCBtb2RlKTsKPj4gICAJaWYgKCFjb25uZWN0b3IpCj4+IEBAIC00MTksNiArNDIyLDkg
-QEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGludGVsX2VuY29kZXIgKmlu
-dGVsX2VuY29kZXIpCj4+Cj4+ICAgCWlmIChkZXZfcHJpdi0+ZGlzcGxheS5hdWRpb19jb2RlY19l
-bmFibGUpCj4+ICAgCQlkZXZfcHJpdi0+ZGlzcGxheS5hdWRpb19jb2RlY19lbmFibGUoY29ubmVj
-dG9yLCBpbnRlbF9lbmNvZGVyLCBtb2RlKTsKPj4gKwo+PiArCWlmIChhY29tcCAmJiBhY29tcC0+
-YXVkaW9fb3BzICYmIGFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KQo+PiArCQlhY29t
-cC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShhY29tcC0+YXVkaW9fb3BzLT5hdWRpb19wdHIs
-IChpbnQpIHBvcnQsIDApOwo+PiAgIH0KPj4KPj4gICAvKioKPj4gQEAgLTQyOCwxMyArNDM0LDIw
-IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBpbnRlbF9lbmNvZGVyICpp
-bnRlbF9lbmNvZGVyKQo+PiAgICAqIFRoZSBkaXNhYmxlIHNlcXVlbmNlcyBtdXN0IGJlIHBlcmZv
-cm1lZCBiZWZvcmUgZGlzYWJsaW5nIHRoZSB0cmFuc2NvZGVyIG9yCj4+ICAgICogcG9ydC4KPj4g
-ICAgKi8KPj4gLXZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZShzdHJ1Y3QgaW50ZWxfZW5j
-b2RlciAqZW5jb2RlcikKPj4gK3ZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZShzdHJ1Y3Qg
-aW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikKPj4gICB7Cj4+IC0Jc3RydWN0IGRybV9kZXZp
-Y2UgKmRldiA9IGVuY29kZXItPmJhc2UuZGV2Owo+PiArCXN0cnVjdCBkcm1fZW5jb2RlciAqZW5j
-b2RlciA9ICZpbnRlbF9lbmNvZGVyLT5iYXNlOwo+PiArCXN0cnVjdCBkcm1fZGV2aWNlICpkZXYg
-PSBlbmNvZGVyLT5kZXY7Cj4+ICAgCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9
-IGRldi0+ZGV2X3ByaXZhdGU7Cj4+ICsJc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50ICphY29t
-cCA9IGRldl9wcml2LT5hdWRpb19jb21wb25lbnQ7Cj4+ICsJc3RydWN0IGludGVsX2RpZ2l0YWxf
-cG9ydCAqaW50ZWxfZGlnX3BvcnQgPSBlbmNfdG9fZGlnX3BvcnQoZW5jb2Rlcik7Cj4+ICsJZW51
-bSBwb3J0IHBvcnQgPSBpbnRlbF9kaWdfcG9ydC0+cG9ydDsKPj4KPj4gICAJaWYgKGRldl9wcml2
-LT5kaXNwbGF5LmF1ZGlvX2NvZGVjX2Rpc2FibGUpCj4+IC0JCWRldl9wcml2LT5kaXNwbGF5LmF1
-ZGlvX2NvZGVjX2Rpc2FibGUoZW5jb2Rlcik7Cj4+ICsJCWRldl9wcml2LT5kaXNwbGF5LmF1ZGlv
-X2NvZGVjX2Rpc2FibGUoaW50ZWxfZW5jb2Rlcik7Cj4+ICsKPj4gKwlpZiAoYWNvbXAgJiYgYWNv
-bXAtPmF1ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeSkKPj4gKwkJ
-YWNvbXAtPmF1ZGlvX29wcy0+cGluX2VsZF9ub3RpZnkoYWNvbXAtPmF1ZGlvX29wcy0+YXVkaW9f
-cHRyLCAoaW50KSBwb3J0LCAwKTsKPgo+IEFGQUlDVCB0aGlzIGhhcyBhIHJhY2Ugd2l0aCBpOTE1
-X2F1ZGlvX2NvbXBvbmVudF91bmJpbmQsIGkuZS4gbW9kZXNldAo+IHdoaWxlIGhkYSBpcyBiZWlu
-ZyB1bmxvYWRlZCBtaWdodCBjcmFzaC4KPgo+IFdoYXQgZG8gb3RoZXJzIHRoaW5rLCBpcyBkcm1f
-bW9kZXNldF9sb2NrX2FsbCBpbiBjb21ib25lbnQgYmluZC91bmJpbmQKPiBvdmVya2lsbD8KClRo
-YW5rcyBmb3IgdGhlIHJldmlldyhzKS4gSSdtIGhhcHB5IHRvIGFkZCBhIApkcm1fbW9kZXNldF9s
-b2NrX2FsbC9kcm1fbW9kZXNldF91bmxvY2tfYWxsIC0gSSdtIG5vdCB0aGF0IGZhbWlsaWFyIHdp
-dGggCnRoZSBncmFwaGljcyBzaWRlLCByZWFsbHksIHNvLCBpcyB0aGVyZSBhbm90aGVyIG9wdGlv
-bi4uLj8KCj4KPiBXaXRoIHRoYXQgcmVzb2x2ZWQgb25lIHdheSBvciBhbm90aGVyIChJJ20gbm90
-IGRpc21pc3NpbmcgIndlIGRvbid0IG5lZWQKPiB0byBjYXJlIikgdGhpcyBpcwo+Cj4gUmV2aWV3
-ZWQtYnk6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+Cj4KPgo+PiAgIH0KPj4K
-Pj4gICAvKioKPj4gQEAgLTUyNSwxMiArNTM4LDE0IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19j
-b21wb25lbnRfYmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2RldiwKPj4gICAJCQkJICAgICBzdHJ1
-Y3QgZGV2aWNlICpoZGFfZGV2LCB2b2lkICpkYXRhKQo+PiAgIHsKPj4gICAJc3RydWN0IGk5MTVf
-YXVkaW9fY29tcG9uZW50ICphY29tcCA9IGRhdGE7Cj4+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZh
-dGUgKmRldl9wcml2ID0gZGV2X3RvX2k5MTUoaTkxNV9kZXYpOwo+Pgo+PiAgIAlpZiAoV0FSTl9P
-TihhY29tcC0+b3BzIHx8IGFjb21wLT5kZXYpKQo+PiAgIAkJcmV0dXJuIC1FRVhJU1Q7Cj4+Cj4+
-ICAgCWFjb21wLT5vcHMgPSAmaTkxNV9hdWRpb19jb21wb25lbnRfb3BzOwo+PiAgIAlhY29tcC0+
-ZGV2ID0gaTkxNV9kZXY7Cj4+ICsJZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudCA9IGFjb21wOwo+
-Pgo+PiAgIAlyZXR1cm4gMDsKPj4gICB9Cj4+IEBAIC01MzksOSArNTU0LDExIEBAIHN0YXRpYyB2
-b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50X3VuYmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2RldiwK
-Pj4gICAJCQkJCXN0cnVjdCBkZXZpY2UgKmhkYV9kZXYsIHZvaWQgKmRhdGEpCj4+ICAgewo+PiAg
-IAlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFjb21wID0gZGF0YTsKPj4gKwlzdHJ1Y3Qg
-ZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkxNShpOTE1X2Rldik7Cj4+Cj4+
-ICAgCWFjb21wLT5vcHMgPSBOVUxMOwo+PiAgIAlhY29tcC0+ZGV2ID0gTlVMTDsKPj4gKwlkZXZf
-cHJpdi0+YXVkaW9fY29tcG9uZW50ID0gTlVMTDsKPj4gICB9Cj4+Cj4+ICAgc3RhdGljIGNvbnN0
-IHN0cnVjdCBjb21wb25lbnRfb3BzIGk5MTVfYXVkaW9fY29tcG9uZW50X2JpbmRfb3BzID0gewo+
-PiAtLQo+PiAxLjkuMQo+Pgo+CgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQu
-Cmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+On 08/28/15 16:04, Tomi Valkeinen wrote:
+...
+> The question is (which was my point in the earlier mail), we already
+> have mutex, so why a new spinlock?
+>
+> I think the answer is that audio start/stop (anything else?) are called
+> in atomic context, so mutex cannot be used.
+>
+
+Yes, that is correct.
+
+> Also (not exactly related to this patch), if the audio callbacks must be
+> atomic, could we use a workqueue to run the audio start/stop work in
+> non-atomic context? Protecting the whole hdmi state with a single mutex
+> would be much nicer.
+
+The reason why the audio start and stop are done in atomic context is 
+for audio synchronization to other audio devices or video stream to be 
+more accurate.
+
+I guess in theory a work queue could be used to serialize the audio 
+commands, but that would ruin the whole point of why the start and stop 
+commands are atomic in the first place.
+
+Cheers,
+Jyri
