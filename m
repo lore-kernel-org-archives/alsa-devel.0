@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: au1x: Convert to
-	devm_snd_soc_register_platform" to the asoc tree
-Date: Fri, 28 Aug 2015 18:44:19 +0100
-Message-ID: <E1ZVNhL-00078r-9I@finisterre>
-References: <1440637769.18698.1.camel@ingics.com>
+Subject: Applied "ASoC: pxa2xx-i2s: Convert to
+	devm_snd_soc_register_component" to the asoc tree
+Date: Fri, 28 Aug 2015 18:45:22 +0100
+Message-ID: <E1ZVNiM-0007BK-Ix@finisterre>
+References: <1440730184.11149.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DA72C265FCB
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:37 +0200 (CEST)
-In-Reply-To: <1440637769.18698.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 46AAD265FED
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:38 +0200 (CEST)
+In-Reply-To: <1440730184.11149.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: au1x: Convert to devm_snd_soc_register_platform
+   ASoC: pxa2xx-i2s: Convert to devm_snd_soc_register_component
 
 has been applied to the asoc tree at
 
@@ -53,75 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From edd98a1a2d163cef6d91226bf42ca002ced6ff16 Mon Sep 17 00:00:00 2001
+>From 2cf32b7b338086e9b85bb9fdd8aa398e89d83e9e Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 27 Aug 2015 09:09:29 +0800
-Subject: [PATCH] ASoC: au1x: Convert to devm_snd_soc_register_platform
+Date: Fri, 28 Aug 2015 10:49:44 +0800
+Subject: [PATCH] ASoC: pxa2xx-i2s: Convert to devm_snd_soc_register_component
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/dbdma2.c | 11 ++---------
- sound/soc/au1x/dma.c    | 11 ++---------
- 2 files changed, 4 insertions(+), 18 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index dd94fea..5741c0a 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -344,14 +344,8 @@ static int au1xpsc_pcm_drvprobe(struct platform_device *pdev)
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index e68290c..6b4e400 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -367,19 +367,12 @@ static const struct snd_soc_component_driver pxa_i2s_component = {
  
- 	platform_set_drvdata(pdev, dmadata);
- 
--	return snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
+ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_component(&pdev->dev, &pxa_i2s_component,
+-					  &pxa_i2s_dai, 1);
 -}
 -
--static int au1xpsc_pcm_drvremove(struct platform_device *pdev)
+-static int pxa2xx_i2s_drv_remove(struct platform_device *pdev)
 -{
--	snd_soc_unregister_platform(&pdev->dev);
--
+-	snd_soc_unregister_component(&pdev->dev);
 -	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev,
-+					      &au1xpsc_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev, &pxa_i2s_component,
++					       &pxa_i2s_dai, 1);
  }
  
- static struct platform_driver au1xpsc_pcm_driver = {
-@@ -359,7 +353,6 @@ static struct platform_driver au1xpsc_pcm_driver = {
- 		.name	= "au1xpsc-pcm",
- 	},
- 	.probe		= au1xpsc_pcm_drvprobe,
--	.remove		= au1xpsc_pcm_drvremove,
- };
+ static struct platform_driver pxa2xx_i2s_driver = {
+ 	.probe = pxa2xx_i2s_drv_probe,
+-	.remove = pxa2xx_i2s_drv_remove,
  
- module_platform_driver(au1xpsc_pcm_driver);
-diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
-index 24cc7f4..fcf5a9a 100644
---- a/sound/soc/au1x/dma.c
-+++ b/sound/soc/au1x/dma.c
-@@ -312,14 +312,8 @@ static int alchemy_pcm_drvprobe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, ctx);
- 
--	return snd_soc_register_platform(&pdev->dev, &alchemy_pcm_soc_platform);
--}
--
--static int alchemy_pcm_drvremove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--
--	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev,
-+					      &alchemy_pcm_soc_platform);
- }
- 
- static struct platform_driver alchemy_pcmdma_driver = {
-@@ -327,7 +321,6 @@ static struct platform_driver alchemy_pcmdma_driver = {
- 		.name	= "alchemy-pcm-dma",
- 	},
- 	.probe		= alchemy_pcm_drvprobe,
--	.remove		= alchemy_pcm_drvremove,
- };
- 
- module_platform_driver(alchemy_pcmdma_driver);
+ 	.driver = {
+ 		.name = "pxa2xx-i2s",
 -- 
 2.5.0
