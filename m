@@ -1,105 +1,154 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH 2/4] drm/i915: Call audio pin/ELD notify
-	function
-Date: Fri, 28 Aug 2015 16:07:31 +0300
-Message-ID: <87si735zos.fsf@intel.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-3-git-send-email-david.henningsson@canonical.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2] OMAPDSS: hdmi: Reconfigure and restart
+ audio when display is enabled
+Date: Fri, 28 Aug 2015 16:04:32 +0300
+Message-ID: <55E05C60.2090400@ti.com>
+References: <1440764660-10417-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1439974138-3296-3-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, vinod.koul@intel.com, daniel.vetter@intel.com, tiwai@suse.de, libin.yang@intel.com
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============5289489441173830985=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id B05672605BD
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 15:04:36 +0200 (CEST)
+In-Reply-To: <1440764660-10417-1-git-send-email-jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxOSBBdWcgMjAxNSwgRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29u
-QGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+IFdoZW4gdGhlIGF1ZGlvIGNvZGVjIGlzIGVuYWJsZWQg
-b3IgZGlzYWJsZWQsIG5vdGlmeSB0aGUgYXVkaW8gZHJpdmVyLgo+IFRoaXMgd2lsbCBlbmFibGUg
-dGhlIGF1ZGlvIGRyaXZlciB0byBnZXQgdGhlIG5vdGlmaWNhdGlvbiBhdCBhbGwgdGltZXMKPiAo
-ZXZlbiB3aGVuIGF1ZGlvIGlzIGluIGRpZmZlcmVudCBwb3dlcnNhdmUgc3RhdGVzKS4KPgo+IFNp
-Z25lZC1vZmYtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBjYW5vbmlj
-YWwuY29tPgo+IC0tLQo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oICAgIHwgIDEg
-Kwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgMjMgKysrKysrKysrKysr
-KysrKysrKystLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCAzIGRlbGV0
-aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2Lmgg
-Yi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gaW5kZXggZmQxZGU0NS4uMWZjMzI3
-ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gKysrIGIv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+IEBAIC0xODA5LDYgKzE4MDksNyBAQCBz
-dHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSB7Cj4gIAlzdHJ1Y3QgZHJtX3Byb3BlcnR5ICpmb3JjZV9h
-dWRpb19wcm9wZXJ0eTsKPiAgCj4gIAkvKiBoZGEvaTkxNSBhdWRpbyBjb21wb25lbnQgKi8KPiAr
-CXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYXVkaW9fY29tcG9uZW50Owo+ICAJYm9vbCBh
-dWRpb19jb21wb25lbnRfcmVnaXN0ZXJlZDsKPiAgCj4gIAl1aW50MzJfdCBod19jb250ZXh0X3Np
-emU7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9k
-cml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gaW5kZXggM2RhOWI4NC4uOTY5ODM1
-ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gKysr
-IGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IEBAIC0zOTksNiArMzk5LDkg
-QEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGludGVsX2VuY29kZXIgKmlu
-dGVsX2VuY29kZXIpCj4gIAlzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yOwo+ICAJc3Ry
-dWN0IGRybV9kZXZpY2UgKmRldiA9IGVuY29kZXItPmRldjsKPiAgCXN0cnVjdCBkcm1faTkxNV9w
-cml2YXRlICpkZXZfcHJpdiA9IGRldi0+ZGV2X3ByaXZhdGU7Cj4gKwlzdHJ1Y3QgaTkxNV9hdWRp
-b19jb21wb25lbnQgKmFjb21wID0gZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudDsKPiArCXN0cnVj
-dCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0ID0gZW5jX3RvX2RpZ19wb3J0KGVu
-Y29kZXIpOwo+ICsJZW51bSBwb3J0IHBvcnQgPSBpbnRlbF9kaWdfcG9ydC0+cG9ydDsKPiAgCj4g
-IAljb25uZWN0b3IgPSBkcm1fc2VsZWN0X2VsZChlbmNvZGVyLCBtb2RlKTsKPiAgCWlmICghY29u
-bmVjdG9yKQo+IEBAIC00MTksNiArNDIyLDkgQEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFi
-bGUoc3RydWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXIpCj4gIAo+ICAJaWYgKGRldl9w
-cml2LT5kaXNwbGF5LmF1ZGlvX2NvZGVjX2VuYWJsZSkKPiAgCQlkZXZfcHJpdi0+ZGlzcGxheS5h
-dWRpb19jb2RlY19lbmFibGUoY29ubmVjdG9yLCBpbnRlbF9lbmNvZGVyLCBtb2RlKTsKPiArCj4g
-KwlpZiAoYWNvbXAgJiYgYWNvbXAtPmF1ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3BzLT5waW5f
-ZWxkX25vdGlmeSkKPiArCQlhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShhY29tcC0+
-YXVkaW9fb3BzLT5hdWRpb19wdHIsIChpbnQpIHBvcnQsIDApOwo+ICB9Cj4gIAo+ICAvKioKPiBA
-QCAtNDI4LDEzICs0MzQsMjAgQEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0
-IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXIpCj4gICAqIFRoZSBkaXNhYmxlIHNlcXVlbmNl
-cyBtdXN0IGJlIHBlcmZvcm1lZCBiZWZvcmUgZGlzYWJsaW5nIHRoZSB0cmFuc2NvZGVyIG9yCj4g
-ICAqIHBvcnQuCj4gICAqLwo+IC12b2lkIGludGVsX2F1ZGlvX2NvZGVjX2Rpc2FibGUoc3RydWN0
-IGludGVsX2VuY29kZXIgKmVuY29kZXIpCj4gK3ZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJs
-ZShzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikKPiAgewo+IC0Jc3RydWN0IGRy
-bV9kZXZpY2UgKmRldiA9IGVuY29kZXItPmJhc2UuZGV2Owo+ICsJc3RydWN0IGRybV9lbmNvZGVy
-ICplbmNvZGVyID0gJmludGVsX2VuY29kZXItPmJhc2U7Cj4gKwlzdHJ1Y3QgZHJtX2RldmljZSAq
-ZGV2ID0gZW5jb2Rlci0+ZGV2Owo+ICAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2
-ID0gZGV2LT5kZXZfcHJpdmF0ZTsKPiArCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNv
-bXAgPSBkZXZfcHJpdi0+YXVkaW9fY29tcG9uZW50Owo+ICsJc3RydWN0IGludGVsX2RpZ2l0YWxf
-cG9ydCAqaW50ZWxfZGlnX3BvcnQgPSBlbmNfdG9fZGlnX3BvcnQoZW5jb2Rlcik7Cj4gKwllbnVt
-IHBvcnQgcG9ydCA9IGludGVsX2RpZ19wb3J0LT5wb3J0Owo+ICAKPiAgCWlmIChkZXZfcHJpdi0+
-ZGlzcGxheS5hdWRpb19jb2RlY19kaXNhYmxlKQo+IC0JCWRldl9wcml2LT5kaXNwbGF5LmF1ZGlv
-X2NvZGVjX2Rpc2FibGUoZW5jb2Rlcik7Cj4gKwkJZGV2X3ByaXYtPmRpc3BsYXkuYXVkaW9fY29k
-ZWNfZGlzYWJsZShpbnRlbF9lbmNvZGVyKTsKPiArCj4gKwlpZiAoYWNvbXAgJiYgYWNvbXAtPmF1
-ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeSkKPiArCQlhY29tcC0+
-YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShhY29tcC0+YXVkaW9fb3BzLT5hdWRpb19wdHIsIChp
-bnQpIHBvcnQsIDApOwoKQUZBSUNUIHRoaXMgaGFzIGEgcmFjZSB3aXRoIGk5MTVfYXVkaW9fY29t
-cG9uZW50X3VuYmluZCwgaS5lLiBtb2Rlc2V0CndoaWxlIGhkYSBpcyBiZWluZyB1bmxvYWRlZCBt
-aWdodCBjcmFzaC4KCldoYXQgZG8gb3RoZXJzIHRoaW5rLCBpcyBkcm1fbW9kZXNldF9sb2NrX2Fs
-bCBpbiBjb21ib25lbnQgYmluZC91bmJpbmQKb3ZlcmtpbGw/CgpXaXRoIHRoYXQgcmVzb2x2ZWQg
-b25lIHdheSBvciBhbm90aGVyIChJJ20gbm90IGRpc21pc3NpbmcgIndlIGRvbid0IG5lZWQKdG8g
-Y2FyZSIpIHRoaXMgaXMKClJldmlld2VkLWJ5OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50
-ZWwuY29tPgoKCj4gIH0KPiAgCj4gIC8qKgo+IEBAIC01MjUsMTIgKzUzOCwxNCBAQCBzdGF0aWMg
-aW50IGk5MTVfYXVkaW9fY29tcG9uZW50X2JpbmQoc3RydWN0IGRldmljZSAqaTkxNV9kZXYsCj4g
-IAkJCQkgICAgIHN0cnVjdCBkZXZpY2UgKmhkYV9kZXYsIHZvaWQgKmRhdGEpCj4gIHsKPiAgCXN0
-cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkYXRhOwo+ICsJc3RydWN0IGRybV9p
-OTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2X3RvX2k5MTUoaTkxNV9kZXYpOwo+ICAKPiAgCWlm
-IChXQVJOX09OKGFjb21wLT5vcHMgfHwgYWNvbXAtPmRldikpCj4gIAkJcmV0dXJuIC1FRVhJU1Q7
-Cj4gIAo+ICAJYWNvbXAtPm9wcyA9ICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHM7Cj4gIAlhY29t
-cC0+ZGV2ID0gaTkxNV9kZXY7Cj4gKwlkZXZfcHJpdi0+YXVkaW9fY29tcG9uZW50ID0gYWNvbXA7
-Cj4gIAo+ICAJcmV0dXJuIDA7Cj4gIH0KPiBAQCAtNTM5LDkgKzU1NCwxMSBAQCBzdGF0aWMgdm9p
-ZCBpOTE1X2F1ZGlvX2NvbXBvbmVudF91bmJpbmQoc3RydWN0IGRldmljZSAqaTkxNV9kZXYsCj4g
-IAkJCQkJc3RydWN0IGRldmljZSAqaGRhX2Rldiwgdm9pZCAqZGF0YSkKPiAgewo+ICAJc3RydWN0
-IGk5MTVfYXVkaW9fY29tcG9uZW50ICphY29tcCA9IGRhdGE7Cj4gKwlzdHJ1Y3QgZHJtX2k5MTVf
-cHJpdmF0ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkxNShpOTE1X2Rldik7Cj4gIAo+ICAJYWNvbXAt
-Pm9wcyA9IE5VTEw7Cj4gIAlhY29tcC0+ZGV2ID0gTlVMTDsKPiArCWRldl9wcml2LT5hdWRpb19j
-b21wb25lbnQgPSBOVUxMOwo+ICB9Cj4gIAo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGNvbXBvbmVu
-dF9vcHMgaTkxNV9hdWRpb19jb21wb25lbnRfYmluZF9vcHMgPSB7Cj4gLS0gCj4gMS45LjEKPgoK
-LS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFp
-bGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZy
-ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+--===============5289489441173830985==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature";
+	boundary="uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q"
+
+--uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On 28/08/15 15:24, Jyri Sarha wrote:
+> Reconfigure and restart audio when display is enabled, if audio
+> playback was active before. The audio configuration is stored when is
+
+'is' -> 'it' above
+
+> is successfully applied and a boolean is set when playback has started
+> and unset when stopped. This data is used to reconfigure the audio
+> when display is re-enabled. Abort audio playback if reconfiguration
+> fails.
+
+It would be good to start the description by telling what the current
+problem is. And probably the subject could also be better... This fixes
+the audio playback when a video mode change happens (or such), right?
+
+> A new spin lock is introduced in order to protect state variables
+> related to audio playback status. This is needed for the transitions
+> from display enabled state (when audio start/stop commands can be
+> written to HW) to display disabled state (when audio start/stop
+> commands update only the hdmi.audio_playing variable) to always
+> serialize correctly with the start/stop audio commands.
+>=20
+> For example: when display is turned back on we take the spinlock and
+> we can be sure that the audio start/stop status won't change while we
+> update the HW according to hdmi.audio_playing state and set
+> hdmi.display_enabled to true. After releasing the lock
+> hdmi.display_enabled is true and all audio_start and audio_stop
+> commands write their stuff directly to HW.
+
+The question is (which was my point in the earlier mail), we already
+have mutex, so why a new spinlock?
+
+I think the answer is that audio start/stop (anything else?) are called
+in atomic context, so mutex cannot be used.
+
+Also (not exactly related to this patch), if the audio callbacks must be
+atomic, could we use a workqueue to run the audio start/stop work in
+non-atomic context? Protecting the whole hdmi state with a single mutex
+would be much nicer.
+
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+> I dropped the ASoC maintainers from the recipient list as this patch
+> hardly concerns them.
+>=20
+>  drivers/video/fbdev/omap2/dss/hdmi.h  |  9 +++-
+>  drivers/video/fbdev/omap2/dss/hdmi4.c | 69 +++++++++++++++++++++++++--=
+---
+>  drivers/video/fbdev/omap2/dss/hdmi5.c | 79 +++++++++++++++++++++++++++=
++-------
+>  3 files changed, 130 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev=
+/omap2/dss/hdmi.h
+> index e4a32fe..e48aefd 100644
+> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
+> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+> @@ -351,13 +351,20 @@ struct omap_hdmi {
+>  	struct regulator *vdda_reg;
+> =20
+>  	bool core_enabled;
+> -	bool display_enabled;
+> =20
+>  	struct omap_dss_device output;
+> =20
+>  	struct platform_device *audio_pdev;
+>  	void (*audio_abort_cb)(struct device *dev);
+>  	int wp_idlemode;
+> +
+> +	bool audio_configured;
+> +	struct omap_dss_audio audio_config;
+> +
+> +	/* This lock should be taken when booleas bellow is touched. */
+
+typo above.
+
+Otherwise, looks much cleaner than the previous one. I tested it and
+worked fine for me: I could play audio while turning on and off the
+video output, and the audio would resume, except when the video was off
+for long enough.
+
+ Tomi
+
+
+--uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJV4FxhAAoJEPo9qoy8lh711rIQAKwvsWUzHExdF7F3ERL2MjH6
+ytRDux1MCw6rWix4ZX1DODI6uWrAkreA56eS7ptoc1aw7fecdJwyYlr74RmNL7go
+u5uEBCZFDsuRn5kcz6QqyCmy8/XBaCTdRJ5nUucZFon0rbw+UBYZ4aEBPYR0hdoz
+4aRyNXpG/PRn4oo6+xSS9PJrHvp72lHKAYugxCyhFjYpr/VyckW+pgfbWNKIVCeQ
+sJQvw/VYJkktTOVX78qH7UQTZCIDu/dxyQCYuV3L3u6zfZxiybv4r/kF2SizOaZ7
+pv7X+ovSJbmicHlQfa+dIG8ZTkn4fYnZDwIXyE2CQqV19og3y4wforqKYJg187oG
+TY9cROiuRWsznhJaD6Htz0fCOJPDHCcmHEuQ8CwJII41CgW4Bp6lquD36uEk5/os
+aZGwU2auO06KKvLJ+mBHoRNk3R2us8qgMknCIwHrl6yCzdal0eiA0bXnuocAV1en
+8Wlz07XWo5TYkqwvfoZITe7PwzYllmdp8GMkaeWFlboy1p45A2y0dktLTR/ajyuu
+YWMSLkpzBlWCfR8wxmj2+dqW68gM3UZf1LiQvp9GiAArFva4WplqCem9rDCnbzL+
+FB5Gor5eUqFIo09XpdA70aGhlBwbm+xmWtOiG3uY2MuWuF5IZeZAZmiNCfxbHuy2
+VbqXrFXyu8jybiej1Moj
+=ThpX
+-----END PGP SIGNATURE-----
+
+--uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q--
+
+--===============5289489441173830985==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5289489441173830985==--
