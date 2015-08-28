@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: blackfin: Convert to
-	devm_snd_soc_register_platform" to the asoc tree
-Date: Fri, 28 Aug 2015 18:44:17 +0100
-Message-ID: <E1ZVNhJ-00078N-D1@finisterre>
-References: <1440637873.18698.3.camel@ingics.com>
+Subject: Applied "ASoC: pxa-ssp: Convert to
+	devm_snd_soc_register_component" to the asoc tree
+Date: Fri, 28 Aug 2015 18:45:32 +0100
+Message-ID: <E1ZVNiW-0007Bn-FF@finisterre>
+References: <1440730115.11149.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D3199266005
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:38 +0200 (CEST)
-In-Reply-To: <1440637873.18698.3.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 527C6265E17
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:47 +0200 (CEST)
+In-Reply-To: <1440730115.11149.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: blackfin: Convert to devm_snd_soc_register_platform
+   ASoC: pxa-ssp: Convert to devm_snd_soc_register_component
 
 has been applied to the asoc tree at
 
@@ -53,73 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From c4d2ab0d59f53a1534e6817b5dbd28719f667c39 Mon Sep 17 00:00:00 2001
+>From 637ce53a1b1c489ff0e92aa00b8376464f697dc5 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 27 Aug 2015 09:11:13 +0800
-Subject: [PATCH] ASoC: blackfin: Convert to devm_snd_soc_register_platform
+Date: Fri, 28 Aug 2015 10:48:35 +0800
+Subject: [PATCH] ASoC: pxa-ssp: Convert to devm_snd_soc_register_component
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/blackfin/bf5xx-ac97-pcm.c | 10 ++--------
- sound/soc/blackfin/bf5xx-i2s-pcm.c  | 10 ++--------
- 2 files changed, 4 insertions(+), 16 deletions(-)
+ sound/soc/pxa/pxa-ssp.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index 238913e..02ad260 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -450,13 +450,8 @@ static struct snd_soc_platform_driver bf5xx_ac97_soc_platform = {
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index fbe2e93..3da485e 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -813,14 +813,8 @@ static const struct of_device_id pxa_ssp_of_ids[] = {
  
- static int bf5xx_soc_platform_probe(struct platform_device *pdev)
+ static int asoc_ssp_probe(struct platform_device *pdev)
  {
--	return snd_soc_register_platform(&pdev->dev, &bf5xx_ac97_soc_platform);
+-	return snd_soc_register_component(&pdev->dev, &pxa_ssp_component,
+-					  &pxa_ssp_dai, 1);
 -}
 -
--static int bf5xx_soc_platform_remove(struct platform_device *pdev)
+-static int asoc_ssp_remove(struct platform_device *pdev)
 -{
--	snd_soc_unregister_platform(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
 -	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev,
-+					      &bf5xx_ac97_soc_platform);
++	return devm_snd_soc_register_component(&pdev->dev, &pxa_ssp_component,
++					       &pxa_ssp_dai, 1);
  }
  
- static struct platform_driver bf5xx_pcm_driver = {
-@@ -465,7 +460,6 @@ static struct platform_driver bf5xx_pcm_driver = {
+ static struct platform_driver asoc_ssp_driver = {
+@@ -830,7 +824,6 @@ static struct platform_driver asoc_ssp_driver = {
  	},
  
- 	.probe = bf5xx_soc_platform_probe,
--	.remove = bf5xx_soc_platform_remove,
+ 	.probe = asoc_ssp_probe,
+-	.remove = asoc_ssp_remove,
  };
  
- module_platform_driver(bf5xx_pcm_driver);
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index d95477a..6cba211d 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -342,13 +342,8 @@ static struct snd_soc_platform_driver bf5xx_i2s_soc_platform = {
- 
- static int bfin_i2s_soc_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &bf5xx_i2s_soc_platform);
--}
--
--static int bfin_i2s_soc_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev,
-+					      &bf5xx_i2s_soc_platform);
- }
- 
- static struct platform_driver bfin_i2s_pcm_driver = {
-@@ -357,7 +352,6 @@ static struct platform_driver bfin_i2s_pcm_driver = {
- 	},
- 
- 	.probe = bfin_i2s_soc_platform_probe,
--	.remove = bfin_i2s_soc_platform_remove,
- };
- 
- module_platform_driver(bfin_i2s_pcm_driver);
+ module_platform_driver(asoc_ssp_driver);
 -- 
 2.5.0
