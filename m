@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa2xx-i2s: Convert to
-	devm_snd_soc_register_component" to the asoc tree
-Date: Fri, 28 Aug 2015 18:45:22 +0100
-Message-ID: <E1ZVNiM-0007BK-Ix@finisterre>
-References: <1440730184.11149.1.camel@ingics.com>
+Subject: Applied "ASoC: blackfin: Convert to
+	devm_snd_soc_register_platform" to the asoc tree
+Date: Fri, 28 Aug 2015 18:44:17 +0100
+Message-ID: <E1ZVNhJ-00078N-D1@finisterre>
+References: <1440637873.18698.3.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 46AAD265FED
+ by alsa0.perex.cz (Postfix) with ESMTP id D3199266005
  for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:38 +0200 (CEST)
-In-Reply-To: <1440730184.11149.1.camel@ingics.com>
+In-Reply-To: <1440637873.18698.3.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa2xx-i2s: Convert to devm_snd_soc_register_component
+   ASoC: blackfin: Convert to devm_snd_soc_register_platform
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From 2cf32b7b338086e9b85bb9fdd8aa398e89d83e9e Mon Sep 17 00:00:00 2001
+>From c4d2ab0d59f53a1534e6817b5dbd28719f667c39 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 28 Aug 2015 10:49:44 +0800
-Subject: [PATCH] ASoC: pxa2xx-i2s: Convert to devm_snd_soc_register_component
+Date: Thu, 27 Aug 2015 09:11:13 +0800
+Subject: [PATCH] ASoC: blackfin: Convert to devm_snd_soc_register_platform
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa2xx-i2s.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ sound/soc/blackfin/bf5xx-ac97-pcm.c | 10 ++--------
+ sound/soc/blackfin/bf5xx-i2s-pcm.c  | 10 ++--------
+ 2 files changed, 4 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index e68290c..6b4e400 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -367,19 +367,12 @@ static const struct snd_soc_component_driver pxa_i2s_component = {
+diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
+index 238913e..02ad260 100644
+--- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
++++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
+@@ -450,13 +450,8 @@ static struct snd_soc_platform_driver bf5xx_ac97_soc_platform = {
  
- static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+ static int bf5xx_soc_platform_probe(struct platform_device *pdev)
  {
--	return snd_soc_register_component(&pdev->dev, &pxa_i2s_component,
--					  &pxa_i2s_dai, 1);
+-	return snd_soc_register_platform(&pdev->dev, &bf5xx_ac97_soc_platform);
 -}
 -
--static int pxa2xx_i2s_drv_remove(struct platform_device *pdev)
+-static int bf5xx_soc_platform_remove(struct platform_device *pdev)
 -{
--	snd_soc_unregister_component(&pdev->dev);
+-	snd_soc_unregister_platform(&pdev->dev);
 -	return 0;
-+	return devm_snd_soc_register_component(&pdev->dev, &pxa_i2s_component,
-+					       &pxa_i2s_dai, 1);
++	return devm_snd_soc_register_platform(&pdev->dev,
++					      &bf5xx_ac97_soc_platform);
  }
  
- static struct platform_driver pxa2xx_i2s_driver = {
- 	.probe = pxa2xx_i2s_drv_probe,
--	.remove = pxa2xx_i2s_drv_remove,
+ static struct platform_driver bf5xx_pcm_driver = {
+@@ -465,7 +460,6 @@ static struct platform_driver bf5xx_pcm_driver = {
+ 	},
  
- 	.driver = {
- 		.name = "pxa2xx-i2s",
+ 	.probe = bf5xx_soc_platform_probe,
+-	.remove = bf5xx_soc_platform_remove,
+ };
+ 
+ module_platform_driver(bf5xx_pcm_driver);
+diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+index d95477a..6cba211d 100644
+--- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
++++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+@@ -342,13 +342,8 @@ static struct snd_soc_platform_driver bf5xx_i2s_soc_platform = {
+ 
+ static int bfin_i2s_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_platform(&pdev->dev, &bf5xx_i2s_soc_platform);
+-}
+-
+-static int bfin_i2s_soc_platform_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_platform(&pdev->dev);
+-	return 0;
++	return devm_snd_soc_register_platform(&pdev->dev,
++					      &bf5xx_i2s_soc_platform);
+ }
+ 
+ static struct platform_driver bfin_i2s_pcm_driver = {
+@@ -357,7 +352,6 @@ static struct platform_driver bfin_i2s_pcm_driver = {
+ 	},
+ 
+ 	.probe = bfin_i2s_soc_platform_probe,
+-	.remove = bfin_i2s_soc_platform_remove,
+ };
+ 
+ module_platform_driver(bfin_i2s_pcm_driver);
 -- 
 2.5.0
