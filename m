@@ -1,135 +1,231 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 1/2] OMAPDSS: hdmi: Reconfigure and restart
- audio when display is enabled
-Date: Fri, 28 Aug 2015 13:37:48 +0300
-Message-ID: <55E039FC.8090707@ti.com>
-References: <cover.1440594174.git.jsarha@ti.com>
- <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Fri, 28 Aug 2015 11:38:35 +0100
+Message-ID: <55E03A2B.3070805@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com>
+ <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com>
+ <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com>
+ <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com>
+ <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com>
+ <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com>
+ <alpine.DEB.2.11.1508262101450.15006@nanos>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5457779316318902483=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C0A1260469
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 12:37:53 +0200 (CEST)
-In-Reply-To: <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.11.1508262101450.15006@nanos>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <marc.zyngier@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Mark Rutland <Mark.Rutland@arm.com>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============5457779316318902483==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature";
-	boundary="5w4dupJFCaf6moRaT6cCk9Q4Fvqd3Ch1g"
+On 08/26/2015 10:40 PM, Thomas Gleixner wrote:
+> On Wed, 26 Aug 2015, Qais Yousef wrote:
+>> On 08/26/2015 04:08 PM, Thomas Gleixner wrote:
+>>> IPI = Inter Processor Interrupt
+>>>
+>>> As the name says that's an interrupt which goes from one cpu to
+>>> another. So an IPI has a very clear target.
+>> OK understood. My interpretation of the processor here was the difference. I
+>> was viewing the whole linux cpus as one unit with regard to its coprocessors.
+> You can only view it this way if you talk about peripheral interrupts
+> which are not used as per cpu interrupts and can be routed to a single
+> cpu or a set of cpus via set_affinity.
+>
+>>> Whether the platform implements IPIs via general interrupts which are
+>>> made affine to a particular cpu or some other specialized mechanism is
+>>> completely irrelevant. An IPI is not subject to affinity settings,
+>>> period.
+>>>
+>>> So if you want to use an IPI then you need a target cpu for that IPI.
+>>>
+>>> If you want something which can be affined to any cpu, then you need a
+>>> general interrupt and not an IPI.
+>> We are using IPIs to exchange interrupts. Affinity is not important to me.
+> That's a bold statement. If you chose CPU x as the target for the
+> interrupts received from the coprocessor, then you have pinned the
+> processing for this stuff on to CPU x. So you limit the freedom of
+> moving stuff around on the linux cpus.
 
---5w4dupJFCaf6moRaT6cCk9Q4Fvqd3Ch1g
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+I said that because I thought you were telling me if I'm expecting my 
+IPIs to be movable then I must be using general interrupts. So what I 
+was saying is that we use IPIs and if it's against the rule for them to 
+have affinity we can live with that.
 
+>
+> And if your root irq controller supports sending normal device
+> interrupts in the same or a similar way as it sends IPIs you can spare
+> quite some extra handling on the linux side for receiving the
+> coprocessor interrupt, i.e. you can use just the bog standard
+> request_irq() mechanism and have the ability to set the affinity of
+> that interrupt from user space so you can move it to the core on which
+> your processing happens. Definitely simpler and more flexible, so I
+> would go there if the hardware allows.
 
-On 26/08/15 16:11, Jyri Sarha wrote:
+That's what I was trying to say but words failed me to explain it 
+clearly maybe :(
 
-> diff --git a/drivers/video/fbdev/omap2/dss/hdmi5.c b/drivers/video/fbde=
-v/omap2/dss/hdmi5.c
-> index 7f87578..f352c4b 100644
-> --- a/drivers/video/fbdev/omap2/dss/hdmi5.c
-> +++ b/drivers/video/fbdev/omap2/dss/hdmi5.c
-> @@ -352,6 +352,7 @@ static int read_edid(u8 *buf, int len)
->  static int hdmi_display_enable(struct omap_dss_device *dssdev)
->  {
->  	struct omap_dss_device *out =3D &hdmi.output;
-> +	unsigned long flags;
->  	int r =3D 0;
-> =20
->  	DSSDBG("ENTER hdmi_display_enable\n");
-> @@ -370,7 +371,37 @@ static int hdmi_display_enable(struct omap_dss_dev=
-ice *dssdev)
->  		goto err0;
->  	}
-> =20
-> +	if (hdmi.audio_configured) {
-> +		spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
-> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, false);
-> +		hdmi_wp_audio_enable(&hdmi.wp, false);
-> +		if (hdmi.wp_idlemode > 0)
-> +			REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG,
-> +				    hdmi.wp_idlemode, 3, 2);
-> +		hdmi.wp_idlemode =3D -1;
-> +		spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
+>
+> But back to the IPIs. We need infrastructure and DT support to:
+>
+> 1) reserve an IPI
+>
+> 2) send an IPI
+>
+> 3) request/free an IPI
+>
+> #1 We have no infrastructure for that, but we definitely need one.
+>
+>     We can look at the IPI as a single linux irq number which is
+>     replicated on all cpu cores. The replication can happen in hardware
+>     or by software, but that depends on the underlying root irq
+>     controller. How that is implemented does not matter for the
+>     reservation.
+>
+>     The most flexible and platform independent solution would be to
+>     describe the IPI space as a seperate irq domain. In most cases this
+>     would be a hierarchical domain stacked on the root irq domain:
+>
+>     [IPI-domain] --> [GIC-MIPS-domain]
+>
+>     on x86 this would be:
+>
+>     [IPI-domain] --> [vector-domain]
+>
+>     That needs some change how the IPIs which are used by the kernel
+>     (rescheduling, function call ..) are set up, but we get a proper
+>     management and collision avoidance that way. Depending on the
+>     platform we could actually remove the whole IPI compile time
+>     reservation and hand out IPIs at boot time on demand and
+>     dynamically.
+>
+>     So the reservation function would be something like:
+>
+>     unsigned int irq_reserve_ipi(const struct cpumask *dest, void *devid);
+>
+>     @dest contains the possible targets for the IPI. So for generic
+>     linux IPIs this would be cpu_possible_mask. For your coprocessor
+>     the target would be a cpumask with just the bit of the coprocessor
+>     core set. If you need to use an IPI for sending an interrupt from
+>     the coprocessor to a specific linux core then @dest will contain
+>     just that target cpu.
+>
+>     @devid is stored in the IPI domain for sanity checks during
+>     operation.
+>
+>     The function returns a linux irq number or 0 if allocation fails.
+>
+>     We need a complementary interface as well, so you can hand back the
+>     IPI to the core when the coprocessor is disabled:
+>
+>     void irq_destroy_ipi(unsigned int irq, void *devid);
+>
+>
+>     To configure your coprocessor proper, we need a translation
+>     mechanism from the linux interrupt number to the magic value which
+>     needs to be written into the trigger register when the coprocessor
+>     wants to send an interrupt or an IPI.
+>
+>     int irq_get_irq_hwcfg(unsigned int irq, struct irq_hwcfg *cfg);
+>
+>     struct irq_hwcfg needs to be defined, but it might look like this:
+>
+>       {
+> 	/* Generic fields */
+> 	x;
+> 	...
+> 	union {
+> 	      mips_gic;
+> 	      ...
+> 	};
+>       };
+>
+>     The actual hw specific value(s) need to be filled in from the irq
+>     domain specific code.
+>
+>
+> #2 We have no generic mechanism for that either.
+>
+>     Something like this is needed:
+>
+>     void irq_send_ipi(unsigned int irq, const struct cpumask *dest,
+>     		     void *devid);	
+>
+>     @dest is for generic linux IPIs and can be NULL so the IPI is sent to
+>      	 the core(s) which have been handed in at reservation time
+>
+>     @devid is used to sanity check the driver call.
+>
+>     So that finally will call down via a irq chip callback into the
+>     code which sends the IPI.
+>
+>
+> #3 Now you get lucky, because we actually have an interface for this
+>
+>     request_percpu_irq()
+>     free_percpu_irq()
+>     disable_percpu_irq()
+>     enable_percpu_irq()
+>
+>     Though there is a caveat. enable/disable_percpu_irq() must be
+>     called from the target cpu, but that should be a solvable problem.
+>
+>     And at the IPI-domain side we need sanity checks whether the cpu
+>     from which enable/disable is called is actually configured in the
+>     reservation mask.
+>     
+>     There are a few other nasty details, but that's not important for
+>     the big picture.
+>
+>     As I said above, I really would recommend to avoid that if possible
+>     because a bog standard device interrupt is way simpler to deal
+>     with.
 
-Here I think the audio HW is always disabled already. It has to be,
-because the whole HDMI IP has been off. So the above should not be needed=
-=2E
+Agreed. Something for us to think about and consider. But if not for AXD 
+this kind of mechanism is important for us for other reasons so we 
+probably want to see it through.
 
-> +
-> +		r =3D hdmi5_audio_config(&hdmi.core, &hdmi.wp, &hdmi.audio_config,
-> +				       hdmi.cfg.timings.pixelclock);
-> +		if (r) {
-> +			DSSERR("Error restoring audio configuration: %d", r);
-> +			hdmi.audio_abort_cb(&hdmi.pdev->dev);
-> +			hdmi.audio_configured =3D false;
-> +		}
-> +	}
-> +
-> +	spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
-> +	if (hdmi.audio_configured && hdmi.audio_playing) {
-> +		/* No-idle while playing audio, store the old value */
-> +		hdmi.wp_idlemode =3D
-> +			REG_GET(hdmi.wp.base, HDMI_WP_SYSCONFIG, 3, 2);
-> +		REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG, 1, 3, 2);
-> +
-> +		hdmi_wp_audio_enable(&hdmi.wp, true);
-> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, true);
-> +	}
->  	hdmi.display_enabled =3D true;
-> +	spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
+>
+> That's certainly not the quick and dirty solution you are looking for,
+> but exposing IPIs to drivers by anything else than a well thought out
+> infrastructure is not going to happen.
 
-Maybe you've looked at the locking carefully, but it's not obvious to
-me. So is hdmi_audio_start and hdmi_audio_stop the only functions that
-are called from atomic context? Every other function is protected with
-the mutex?
+Thanks a lot for the detailed explanation. I wasn't looking for a quick 
+and dirty solution but my view of the problem is much simpler than yours 
+so my idea of a solution would look quick and dirty. I have a better 
+appreciation of the problem now and a way to approach it :-)
 
- Tomi
+ From DT point of view are we OK with this form then
 
+     coprocessor {
+             interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+             interrupt-sink = <&intc INT_SPEC CPU_HWAFFINITY>;
+     }
 
---5w4dupJFCaf6moRaT6cCk9Q4Fvqd3Ch1g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+and if the root controller sends normal IPI as it sends normal device 
+interrupts then interrupt-sink can be a standard interrupts property 
+(like in my case)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+     coprocessor {
+             interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+             interrupts = <INT_SPEC>;
+     }
 
-iQIcBAEBCAAGBQJV4Dn8AAoJEPo9qoy8lh71nXYP/27J5UYkq3O+u2WSMS8W1gvx
-TlLeHNYTkBpGOgNhme7+XF/jq+v8Gg/ejBrjYsP8ftZRRQGZ18vgmlTGr9lNWbb8
-YshWeP5VSQ0r9VmgN6/jZloBJqsHjdRwQFm8c5E8ndnFwltoCnc6tPXSXS1iheQd
-OPiYKIFkr8t0YEIGvzOI9zqkdmEJ+w4TPyq9jAfidTBYFFKjPi/3hPGeOi9TtKJ4
-Xw12+h4A6GCLvnshHD/Prrsa/5oVrnsx4BpTK7pY7VLEcXEjKgDwMUFb7v3uAPPV
-J8X3jPZ2m3Zv77/u20XvNDkwRdNTebgDEoSRBvpj1qCneSBNrkP0KC0Dg09EnfE8
-lKgipg6YzbAoWfjFW/1eDLZreVfnZPNueaJa8vQFRGsfSt/LqdBHKgI59ba/iQKE
-0ny6V3ZGw/hplzLsuLJG0je7zAuAFWsLcvEnmpuASj9TvG39Jvcgn0FNDQ1yT0Tf
-LTTzFzOZJ97ttJv9XrVKSMckDbpYodYjp1xvQmGID7sj8KoWRsqAVhSFfhhURxGh
-pTnk/SHtQq3EnI5IIz2OqFftbv/u/o6toATqiZglw7ZEyOdyOIIzP1zb9t3jCgDv
-L4TOoJNrDvvKRCn5Ml4QjKv0KqIzyh3O6U9IY9RFAJYkxXcJV2ar1tOw50l4hNBf
-mIXgCkpfjrVGRB7ZozjE
-=mIy+
------END PGP SIGNATURE-----
+Does this look right to you? Is there something else that needs to be 
+covered still?
 
---5w4dupJFCaf6moRaT6cCk9Q4Fvqd3Ch1g--
+One more thing I can think of now is that the coprocessor will need the 
+raw irq numbers that are picked by linux so that it can use them to 
+trigger the IPI. Are we ok to add a function that returns this raw irq 
+number (as opposed to linux irq number) directly from DT? The way this 
+is communicated to the coprocessor will be platform specific.
 
---===============5457779316318902483==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+Qais
 
-
---===============5457779316318902483==--
+>
+> Thanks,
+>
+> 	tglx
