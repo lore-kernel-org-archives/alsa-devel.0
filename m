@@ -1,53 +1,53 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: ics43432: Fix module license
-Date: Fri, 28 Aug 2015 11:23:05 +0800
-Message-ID: <1440732185.24389.1.camel@ingics.com>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Fri, 28 Aug 2015 09:22:37 +0200
+Message-ID: <CAKor6TfExEsvG1O6PgNdCPOwE_PC77pu66=x5g2CtvvVN7MbZg@mail.gmail.com>
+References: <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
+	<20150820115845.GF30005@lahna.fi.intel.com>
+	<CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
+	<20150821074310.GM30005@lahna.fi.intel.com>
+	<CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+	<20150824085140.GA5647@ck-lbox>
+	<CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
+	<20150825062157.GB27431@sirena.org.uk>
+	<CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
+	<CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
+	<20150826091312.GA19411@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id B7DAF260469
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 05:23:10 +0200 (CEST)
-Received: by pabzx8 with SMTP id zx8so47047107pab.1
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 20:23:09 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Ricard Wanderlof <ricardw@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150826091312.GA19411@ck-lbox>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/ics43432.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Mika,
+hi,
 
-diff --git a/sound/soc/codecs/ics43432.c b/sound/soc/codecs/ics43432.c
-index 4f202c1..382a004 100644
---- a/sound/soc/codecs/ics43432.c
-+++ b/sound/soc/codecs/ics43432.c
-@@ -6,7 +6,7 @@
-  *
-  * Copyright (c) 2015 Axis Communications AB
-  *
-- * Licensed under GPL2.
-+ * Licensed under GPL v2.
-  */
- 
- #include <linux/module.h>
-@@ -74,4 +74,4 @@ module_platform_driver(ics43432_driver);
- 
- MODULE_DESCRIPTION("ASoC ICS43432 driver");
- MODULE_AUTHOR("Ricard Wanderlof <ricardw@axis.com>");
--MODULE_LICENSE("GPLv2");
-+MODULE_LICENSE("GPL v2");
--- 
-2.1.0
+
+2015-08-26 11:13 GMT+02:00 Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>:
+>  4) The chip select needs to be active.
+>
+> It seems very likely that 1) is already taken care of, so I
+> probalby won't spend too much time worrying about that. It looks
+> like we are getting a valid GPIO for the reset (2) and LDOENA (3),
+> so it feels like those are probably ok. I guess this leaves the
+> SPI config as the next place to investigate, are there other
+> devices on the SPI that you can talk to that might at least
+> verify the SPI is working? Also might be worth trying to look at
+> how the chip selects are done perhaps that is not happening for
+> some reason?
+
+ok, that seems logical .
+And no I cannot prove or check other devices, I just learned a lot in
+the past three month about
+this (driver, spi, gpio, acpi, dsdt etc. ) at all.
+
+cheers
+chris
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
