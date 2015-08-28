@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Convert to
-	devm_snd_soc_register_platform" to the asoc tree
-Date: Fri, 28 Aug 2015 18:44:13 +0100
-Message-ID: <E1ZVNhF-00077O-PS@finisterre>
-References: <1440638026.18698.6.camel@ingics.com>
+Subject: Applied "ASoC: qcom: Constify
+	asoc_qcom_lpass_cpu_dai_ops" to the asoc tree
+Date: Fri, 28 Aug 2015 18:44:20 +0100
+Message-ID: <E1ZVNhM-00079K-Vf@finisterre>
+References: <1440730411.11149.4.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3A3D2660C7
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:11 +0200 (CEST)
-In-Reply-To: <1440638026.18698.6.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ADCB2660EF
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:17 +0200 (CEST)
+In-Reply-To: <1440730411.11149.4.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Convert to devm_snd_soc_register_platform
+   ASoC: qcom: Constify asoc_qcom_lpass_cpu_dai_ops
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 637c4497bbf0c9a4e00d6be2731bd560bf609f6b Mon Sep 17 00:00:00 2001
+>From 618718dc56a49321a12f231b34f6c43f44c3c374 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 27 Aug 2015 09:13:46 +0800
-Subject: [PATCH] ASoC: pxa: Convert to devm_snd_soc_register_platform
+Date: Fri, 28 Aug 2015 10:53:31 +0800
+Subject: [PATCH] ASoC: qcom: Constify asoc_qcom_lpass_cpu_dai_ops
+
+asoc_qcom_lpass_cpu_dai_ops is exported and used by multiple drivers,
+make it const to prevent modifying it at run time.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-pcm.c    | 9 +--------
- sound/soc/pxa/pxa2xx-pcm.c | 9 +--------
- 2 files changed, 2 insertions(+), 16 deletions(-)
+ sound/soc/qcom/lpass-cpu.c | 2 +-
+ sound/soc/qcom/lpass.h     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 1eb45dc..51e790d 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -232,13 +232,7 @@ static int mmp_pcm_probe(struct platform_device *pdev)
- 		mmp_pcm_hardware[SNDRV_PCM_STREAM_CAPTURE].period_bytes_max =
- 						pdata->period_max_capture;
- 	}
--	return snd_soc_register_platform(&pdev->dev, &mmp_soc_platform);
--}
--
--static int mmp_pcm_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev, &mmp_soc_platform);
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 23f3d59..97bc202 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -235,7 +235,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
  }
  
- static struct platform_driver mmp_pcm_driver = {
-@@ -247,7 +241,6 @@ static struct platform_driver mmp_pcm_driver = {
- 	},
+-struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
++const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ 	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
+ 	.startup	= lpass_cpu_daiops_startup,
+ 	.shutdown	= lpass_cpu_daiops_shutdown,
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index d6e86c1..0b63e2e 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -93,6 +93,6 @@ int asoc_qcom_lpass_platform_register(struct platform_device *);
+ int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+-extern struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
++extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
  
- 	.probe = mmp_pcm_probe,
--	.remove = mmp_pcm_remove,
- };
- 
- module_platform_driver(mmp_pcm_driver);
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index a51c9da..831ee37 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -124,13 +124,7 @@ static struct snd_soc_platform_driver pxa2xx_soc_platform = {
- 
- static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &pxa2xx_soc_platform);
--}
--
--static int pxa2xx_soc_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
-+	return devm_snd_soc_register_platform(&pdev->dev, &pxa2xx_soc_platform);
- }
- 
- #ifdef CONFIG_OF
-@@ -147,7 +141,6 @@ static struct platform_driver pxa_pcm_driver = {
- 	},
- 
- 	.probe = pxa2xx_soc_platform_probe,
--	.remove = pxa2xx_soc_platform_remove,
- };
- 
- module_platform_driver(pxa_pcm_driver);
+ #endif /* __LPASS_H__ */
 -- 
 2.5.0
