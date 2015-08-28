@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: Constify
-	asoc_qcom_lpass_cpu_dai_ops" to the asoc tree
-Date: Fri, 28 Aug 2015 18:44:20 +0100
-Message-ID: <E1ZVNhM-00079K-Vf@finisterre>
-References: <1440730411.11149.4.camel@ingics.com>
+Subject: Applied "ASoC: nuc900: Convert to
+	devm_snd_soc_register_platform" to the asoc tree
+Date: Fri, 28 Aug 2015 18:44:15 +0100
+Message-ID: <E1ZVNhH-00077s-En@finisterre>
+References: <1440637937.18698.4.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ADCB2660EF
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:17 +0200 (CEST)
-In-Reply-To: <1440730411.11149.4.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 413472660F6
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:18 +0200 (CEST)
+In-Reply-To: <1440637937.18698.4.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: Constify asoc_qcom_lpass_cpu_dai_ops
+   ASoC: nuc900: Convert to devm_snd_soc_register_platform
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 618718dc56a49321a12f231b34f6c43f44c3c374 Mon Sep 17 00:00:00 2001
+>From d5f1117ff60d1e314b15e3a85b7705db3421d7d4 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 28 Aug 2015 10:53:31 +0800
-Subject: [PATCH] ASoC: qcom: Constify asoc_qcom_lpass_cpu_dai_ops
-
-asoc_qcom_lpass_cpu_dai_ops is exported and used by multiple drivers,
-make it const to prevent modifying it at run time.
+Date: Thu, 27 Aug 2015 09:12:17 +0800
+Subject: [PATCH] ASoC: nuc900: Convert to devm_snd_soc_register_platform
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 2 +-
- sound/soc/qcom/lpass.h     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/nuc900/nuc900-pcm.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 23f3d59..97bc202 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -235,7 +235,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 	return ret;
+diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
+index 5ae5ca1..e093261 100644
+--- a/sound/soc/nuc900/nuc900-pcm.c
++++ b/sound/soc/nuc900/nuc900-pcm.c
+@@ -308,13 +308,7 @@ static struct snd_soc_platform_driver nuc900_soc_platform = {
+ 
+ static int nuc900_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_platform(&pdev->dev, &nuc900_soc_platform);
+-}
+-
+-static int nuc900_soc_platform_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_platform(&pdev->dev);
+-	return 0;
++	return devm_snd_soc_register_platform(&pdev->dev, &nuc900_soc_platform);
  }
  
--struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
-+const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
- 	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
- 	.startup	= lpass_cpu_daiops_startup,
- 	.shutdown	= lpass_cpu_daiops_shutdown,
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index d6e86c1..0b63e2e 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -93,6 +93,6 @@ int asoc_qcom_lpass_platform_register(struct platform_device *);
- int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
--extern struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
-+extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+ static struct platform_driver nuc900_pcm_driver = {
+@@ -323,7 +317,6 @@ static struct platform_driver nuc900_pcm_driver = {
+ 	},
  
- #endif /* __LPASS_H__ */
+ 	.probe = nuc900_soc_platform_probe,
+-	.remove = nuc900_soc_platform_remove,
+ };
+ 
+ module_platform_driver(nuc900_pcm_driver);
 -- 
 2.5.0
