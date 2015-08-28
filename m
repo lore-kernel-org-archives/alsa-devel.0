@@ -1,70 +1,156 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Fri, 28 Aug 2015 10:16:09 +0100
-Message-ID: <20150828091609.GR5313@sirena.org.uk>
-References: <20150824085140.GA5647@ck-lbox>
- <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
- <20150825062157.GB27431@sirena.org.uk>
- <CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
- <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
- <20150826100155.GA1513@lahna.fi.intel.com>
- <CAKor6TeH32hd0QUCPowzrjp54iJjGKiJ8jVT994y2O29dfk=QA@mail.gmail.com>
- <20150827115914.GF28428@lahna.fi.intel.com>
- <20150827145614.GC5313@sirena.org.uk>
- <20150828090042.GI28428@lahna.fi.intel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 03/10] ALSA: add AXD Audio Processing IP alsa driver
+Date: Fri, 28 Aug 2015 10:22:57 +0100
+Message-ID: <55E02871.9050607@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-4-git-send-email-qais.yousef@imgtec.com>
+ <20150826183700.GD28760@sirena.org.uk> <55DEFF77.8070309@imgtec.com>
+ <20150827153233.GD5313@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="213E7WwkW+nU62+Y"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20150828090042.GI28428-3PARRvDOhMZrdx17CPfAsdBPR1lH4CV8@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150827153233.GD5313@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/27/2015 04:32 PM, Mark Brown wrote:
+> On Thu, Aug 27, 2015 at 01:15:51PM +0100, Qais Yousef wrote:
+>> On 08/26/2015 07:37 PM, Mark Brown wrote:
+>>> On Mon, Aug 24, 2015 at 01:39:12PM +0100, Qais Yousef wrote:
+>>>> +#define AXD_INPUT_DESCRIPTORS 10
+>>>> +struct axd_input {
+>>>> +	struct axd_buffer_desc descriptors[AXD_INPUT_DESCRIPTORS];
+>>>> +};
+>>> Where do these numbers come from?  Are they hardware limits or something
+>>> else?
+>> These numbers are what the firmware designed to work with. We had to set a
+>> limit and we sought 10 to be a good one for our purposes. We don't expect to
+>> need to change this number.
+> So we have hard coded numbers in the firmware that we need in the driver
+> but we can't read those numbers back from the firmware.  That's sad.
+>
+>>>> +#define AXD_BASE_VADDR		0xD0000000
+>>> This sounds like something that is going to be platform dependant,
+>>> should this be supplied from board configuration?
+>> I don't expect this to change. Can we add the configuration later if we hit
+>> the need to change it?
+> It should be trivial to make things configurable shouldn't it?
 
---213E7WwkW+nU62+Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes and I am all with configurability but I don't think it makes sense 
+here. AXD will always have its own MMU and will not share virtual 
+address space, so the possibility of us wanting to move this somewhere 
+else is really very thin. Also I don't think this is the kind of detail 
+we need to concern the user with. I'll see if I can make the binary 
+header parsing more flexible so we can add more info like this and the 
+one above in the future and be more future proof.
 
-On Fri, Aug 28, 2015 at 12:00:42PM +0300, Mika Westerberg wrote:
-> On Thu, Aug 27, 2015 at 03:56:14PM +0100, Mark Brown wrote:
-> > On Thu, Aug 27, 2015 at 02:59:14PM +0300, Mika Westerberg wrote:
+>>>> +	if (!*offp) {
+>>>> +		unsigned int flags = axd_platform_lock();
+>>>> +		unsigned int log_offset = ioread32(log_addr);
+>>>> +		unsigned int log_wrapped = ioread32(log_addr + 8);
+>>>> +		char __iomem *log_buff = (char __iomem *)(log_addr + 12);
+>>>> +
+>>>> +		/* new read from beginning, fill up our internal buffer */
+>>>> +		if (!log_wrapped) {
+>>>> +			memcpy_fromio(axd->log_rbuf, log_buff, log_offset);
+>>>> +			axd->log_rbuf_rem = log_offset;
+>>>> +		} else {
+>>>> +			char __iomem *pos = log_buff + log_offset;
+>>>> +			unsigned int rem = log_size - log_offset;
+>>>> +
+>>>> +			memcpy_fromio(axd->log_rbuf, pos, rem);
+>>>> +			memcpy_fromio(axd->log_rbuf + rem, log_buff, log_offset);
+>>>> +			axd->log_rbuf_rem = log_size;
+>>>> +		}
+>>>> +		axd_platform_unlock(flags);
+>>> I didn't see the lock being taken?
+>> The lock is the first line in the block (unsigned int flags =
+>> axd_platform_lock()). I'll tidy it up to make it more readable.
+> It's very bad practice to bury lock taking in with the variable
+> declaration.
 
-> > > > I have already CONFIG_GPIO_ARIZONA=y, but it does not be used at all.
-> > > > Is it save to ignore ?? Or should I use them as well ??
+Yes. I'll fix it.
 
-> > > If the SPI device interrupt is connected to arizona GPIO pin, then you
-> > > probably need that.
+>>>> +#ifdef CONFIG_CRYPTO_LZO
+>>>> +#include <linux/crypto.h>
+>>> This include should be with all the other includes, not down here.
+>> Was trying to reduce the ifdefery. Will fix.
+> You don't need any ifdefs for the include, you can just include the
+> header.
+>
+>>>> +{
+>>>> +	dev_err(axd->dev, "The firmware must be lzo decompressed first, compile driver again with CONFIG_CRYPTO_LZO enabled in kernel or do the decompression in user space.\n");
+>>> Please split this up into a few prints for wrapping, similarly in
+>>> several other places.
+>> OK. I thought the convention for strings to leave them as is to allow
+>> grepping. I'll fix it.
+> You should keep strings that are displayed as a single string together
+> but if you are splitting something in the output then that split won't
+> hurt grepping in the source.
+>
+>>>> +	 * We copy through the cache, fw will do the necessary cache
+>>>> +	 * flushes and syncing at startup.
+>>>> +	 * Copying from uncached makes it more difficult for the
+>>>> +	 * firmware to keep the caches coherent with memory when it sets
+>>>> +	 * tlbs and start running.
+>>>> +	 */
+>>>> +	memcpy_toio((void *)cached_fw_base, fw->data, fw->size);
+>>> Why the cast here?  I'm also not seeing where we handled the copying to
+>>> I/O in the decompression case?
+>> I couldn't avoid the cast. If cached_fw_base is 'void *' I'll get a warning
+>> when initialising cached_fw_base from CAC_ADDR().
+> Why do you get a warning from that?  Perhaps the warnings are trying to
+> tell us something...
 
-> > I can't see how that would work, the interrupt output isn't a GPIO.
+Because we try to assign an int to a pointer. So the error is 'makes 
+pointer from integer without a cast'. To convert an address from 
+uncached to cached we need to convert to an int as in MIPS it's a case 
+of adding or subtracting a value then convert this value back to it's 
+original form.
+I'll see if I can find a better way to fix the coherency issue when we 
+copy through uncached.
 
-> I mean that if the SPI device (codec) interrupt pin is connected to a GPIO
-> pin of arizona instead of GPIO pin of the SoC itself.
+>
+>> Good point. When decompressing crypto_comp_decompress() will write directly
+>> to the memory. It is safe but it doesn't go through the correct API. Not
+>> sure what I can do here.
+> Uncompress to a buffer then write that buffer to the final destination?
 
-I understand what you mean, I'm just saying that the GPIO driver for the
-chip seems unlikely to be useful.
+Yes but the binary could be multi MiB so we can't get a temp buffer that 
+large. If the crypto API allows decompressing in steps we can use a 
+small buffer to move the data iteratively. I'll have a look.
 
---213E7WwkW+nU62+Y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+>>>> +	dev_info(axd->dev, "Loading firmware at 0x%p ...\n", axd->fw_base_m);
+>>> This should be _dbg() at most, otherwise it's going to get noisy.
+>>>> +	t0_new_pc = (unsigned long) axd->fw_base_m + (t0_new_pc - AXD_BASE_VADDR);
+>>> Those casts look fishy...
+>> I am happy to try something else. axd->fw_base_m is of type void * __iomem
+>> but we want to do some arithmetic on it.
+>> Is there a better way to do it?
+> Pointer arithmetic or converting it to a number?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+We are just converting to a number.
 
-iQEcBAEBCAAGBQJV4CbZAAoJECTWi3JdVIfQU8UH/ie/jH3XLWt5qlqXwfGa/65Y
-eTvdULrinzN/2jlOrHaxL7fjc+XdtcZDtoAxkEOv8DFtPGg/R7pPzCwHsa3E1UkG
-6nagkMrRyryUILpHw/3ZA6CpPqiGoUmpU/qcB0Jqze4EQfY31NQg2SNmRHxTbXf3
-saeRV1GjynO3alILk34aIJ/XF5DG17F7xlqueh53UKPDhKj3TbXlkinw8vFsjoXh
-9D/7cLuQsWdFz6m/oYKFWy+8HxnLmeTsFe0cX0OWYzlwUawVZ6+bI0/gKsPXu5fr
-xizn5M0n0F0SD493+AXPJGIH7/VIdlHNCWn9qvl0WnYWEXwsqD4JywLPOBihqdE=
-=jZma
------END PGP SIGNATURE-----
+>
+>>>> +	/* wake up any task sleeping on command response */
+>>>> +	wake_up(&axd->cmd.wait);
+>>>> +	/* give chance to user land tasks to react to the crash */
+>>>> +	ssleep(2);
+>>> This looks horribly racy, I'd expect us to be trashing and/or killing
+>>> off any active work and resources here.
+>> OK. I was trying to play nicely by giving the chance to userland to repond
+>> to -ERESTART which would be sent from aborting any pending reads/writes.
+>> Are you suggesting to send SIGKILL using force_sig()?
+> No, I'm suggesting tearing down the kernel side of any work and kicking
+> errors back to userspace if it continues to interact with anything that
+> was ongoing.
 
---213E7WwkW+nU62+Y--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+OK. This is what we do (see my other email about abort). I'll have a 
+think for a way to get rid of the ssleep(). Any ideas are welcome.
+
+Thanks,
+Qais
