@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: ssi: Convert to
-	devm_snd_soc_register_component" to the asoc tree
-Date: Fri, 28 Aug 2015 18:45:10 +0100
-Message-ID: <E1ZVNiA-0007Aq-6r@finisterre>
-References: <1440730253.11149.2.camel@ingics.com>
+Subject: Applied "ASoC: au1x: Convert to
+	devm_snd_soc_register_platform" to the asoc tree
+Date: Fri, 28 Aug 2015 18:44:19 +0100
+Message-ID: <E1ZVNhL-00078r-9I@finisterre>
+References: <1440637769.18698.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D5016265FAE
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:34 +0200 (CEST)
-In-Reply-To: <1440730253.11149.2.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DA72C265FCB
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 19:45:37 +0200 (CEST)
+In-Reply-To: <1440637769.18698.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: ssi: Convert to devm_snd_soc_register_component
+   ASoC: au1x: Convert to devm_snd_soc_register_platform
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 92eca20bbeaa4ec1908bad8aeefcaa2d98e302ff Mon Sep 17 00:00:00 2001
+>From edd98a1a2d163cef6d91226bf42ca002ced6ff16 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 28 Aug 2015 10:50:53 +0800
-Subject: [PATCH] ASoC: sh: ssi: Convert to devm_snd_soc_register_component
+Date: Thu, 27 Aug 2015 09:09:29 +0800
+Subject: [PATCH] ASoC: au1x: Convert to devm_snd_soc_register_platform
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/ssi.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/au1x/dbdma2.c | 11 ++---------
+ sound/soc/au1x/dma.c    | 11 ++---------
+ 2 files changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
-index ab13146..89ed1b1 100644
---- a/sound/soc/sh/ssi.c
-+++ b/sound/soc/sh/ssi.c
-@@ -385,14 +385,9 @@ static const struct snd_soc_component_driver sh4_ssi_component = {
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index dd94fea..5741c0a 100644
+--- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -344,14 +344,8 @@ static int au1xpsc_pcm_drvprobe(struct platform_device *pdev)
  
- static int sh4_soc_dai_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_component(&pdev->dev, &sh4_ssi_component,
--					  sh4_ssi_dai, ARRAY_SIZE(sh4_ssi_dai));
+ 	platform_set_drvdata(pdev, dmadata);
+ 
+-	return snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
 -}
 -
--static int sh4_soc_dai_remove(struct platform_device *pdev)
+-static int au1xpsc_pcm_drvremove(struct platform_device *pdev)
 -{
--	snd_soc_unregister_component(&pdev->dev);
+-	snd_soc_unregister_platform(&pdev->dev);
+-
 -	return 0;
-+	return devm_snd_soc_register_component(&pdev->dev, &sh4_ssi_component,
-+					       sh4_ssi_dai,
-+					       ARRAY_SIZE(sh4_ssi_dai));
++	return devm_snd_soc_register_platform(&pdev->dev,
++					      &au1xpsc_soc_platform);
  }
  
- static struct platform_driver sh4_ssi_driver = {
-@@ -401,7 +396,6 @@ static struct platform_driver sh4_ssi_driver = {
+ static struct platform_driver au1xpsc_pcm_driver = {
+@@ -359,7 +353,6 @@ static struct platform_driver au1xpsc_pcm_driver = {
+ 		.name	= "au1xpsc-pcm",
  	},
- 
- 	.probe = sh4_soc_dai_probe,
--	.remove = sh4_soc_dai_remove,
+ 	.probe		= au1xpsc_pcm_drvprobe,
+-	.remove		= au1xpsc_pcm_drvremove,
  };
  
- module_platform_driver(sh4_ssi_driver);
+ module_platform_driver(au1xpsc_pcm_driver);
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index 24cc7f4..fcf5a9a 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -312,14 +312,8 @@ static int alchemy_pcm_drvprobe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, ctx);
+ 
+-	return snd_soc_register_platform(&pdev->dev, &alchemy_pcm_soc_platform);
+-}
+-
+-static int alchemy_pcm_drvremove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_platform(&pdev->dev);
+-
+-	return 0;
++	return devm_snd_soc_register_platform(&pdev->dev,
++					      &alchemy_pcm_soc_platform);
+ }
+ 
+ static struct platform_driver alchemy_pcmdma_driver = {
+@@ -327,7 +321,6 @@ static struct platform_driver alchemy_pcmdma_driver = {
+ 		.name	= "alchemy-pcm-dma",
+ 	},
+ 	.probe		= alchemy_pcm_drvprobe,
+-	.remove		= alchemy_pcm_drvremove,
+ };
+ 
+ module_platform_driver(alchemy_pcmdma_driver);
 -- 
 2.5.0
