@@ -1,62 +1,48 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH 1/4] drm/i915: Add audio pin sense / ELD
-	callback
-Date: Fri, 28 Aug 2015 15:55:04 +0300
-Message-ID: <87wpwf609j.fsf@intel.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-2-git-send-email-david.henningsson@canonical.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2] OMAPDSS: hdmi: Reconfigure and restart
+ audio when display is enabled
+Date: Fri, 28 Aug 2015 15:57:40 +0300
+Message-ID: <55E05AC4.1030206@ti.com>
+References: <1440764660-10417-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1439974138-3296-2-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, vinod.koul@intel.com, daniel.vetter@intel.com, tiwai@suse.de, libin.yang@intel.com
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0292526057B
+ for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 14:57:44 +0200 (CEST)
+In-Reply-To: <1440764660-10417-1-git-send-email-jsarha@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxOSBBdWcgMjAxNSwgRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29u
-QGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+IFRoaXMgY2FsbGJhY2sgd2lsbCBiZSBjYWxsZWQgYnkg
-dGhlIGk5MTUgZHJpdmVyIHRvIG5vdGlmeSB0aGUgaGRhCj4gZHJpdmVyIHRoYXQgaXRzIEhETUkg
-aW5mb3JtYXRpb24gbmVlZHMgdG8gYmUgcmVmcmVzaGVkLCBpIGUsCj4gdGhhdCBhdWRpbyBvdXRw
-dXQgaXMgbm93IGF2YWlsYWJsZSAob3IgdW5hdmFpbGFibGUpIC0gdXN1YWxseSBhcyBhCj4gcmVz
-dWx0IG9mIGEgbW9uaXRvciBiZWluZyBwbHVnZ2VkIGluIChvciB1bnBsdWdnZWQpLgo+Cj4gU2ln
-bmVkLW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNh
-bC5jb20+Cj4gLS0tCj4gIGluY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggfCAxMiArKysrKysr
-KysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQg
-YS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25l
-bnQuaAo+IGluZGV4IGM5YThiNjQuLmFiNWJkZTM3IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvZHJt
-L2k5MTVfY29tcG9uZW50LmgKPiArKysgYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4g
-QEAgLTM0LDYgKzM0LDE4IEBAIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCB7Cj4gIAkJdm9p
-ZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZpY2UgKiwgYm9vbCBlbmFibGUpOwo+
-ICAJCWludCAoKmdldF9jZGNsa19mcmVxKShzdHJ1Y3QgZGV2aWNlICopOwo+ICAJfSAqb3BzOwo+
-ICsKPiArCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgewo+ICsJ
-CXZvaWQgKmF1ZGlvX3B0cjsKPiArCQkvKioKPiArCQkgKiBDYWxsIGZyb20gaTkxNSBkcml2ZXIs
-IG5vdGlmeWluZyB0aGUgSERBIGRyaXZlciB0aGF0Cj4gKwkJICogcGluIHNlbnNlIGFuZC9vciBF
-TEQgaW5mb3JtYXRpb24gaGFzIGNoYW5nZWQuCj4gKwkJICogQGF1ZGlvX3B0cjoJCUhEQSBkcml2
-ZXIgb2JqZWN0Cj4gKwkJICogQHBvcnQ6CQlXaGljaCBwb3J0IGhhcyBjaGFuZ2VkIChQT1JUQSAv
-IFBPUlRCIC8gUE9SVEMgZXRjKQo+ICsJCSAqIEBwb3J0X21zdF9pbmRleDoJSW5kZXggd2l0aGlu
-IHRoYXQgcG9ydCwgZm9yIERpc3BsYXlQb3J0IG11bHRpc3RyZWFtaW5nCj4gKwkJICovCj4gKwkJ
-dm9pZCAoKnBpbl9lbGRfbm90aWZ5KSh2b2lkICphdWRpb19wdHIsIGludCBwb3J0LCBpbnQgcG9y
-dF9tc3RfaW5kZXgpOwoKSW4gdGhlIEhETUkgc2FtcGxlIHJhdGUgbm90aWZpY2F0aW9uIHNlcmll
-cyBbMV0gSSBleHBsaWNpdGx5IGFza2VkIExpYmluCnRvIGRyb3AgYSBzaW1pbGFyIHBvcnRfbXN0
-X2luZGV4IHBhcmFtZXRlciBzaW5jZSB3ZSBkb24ndCB1c2UgaXQgeWV0LAphbmQgd2UgYXJlIG5v
-dCBzdXJlIHdoYXQgdG8gc3RpY2sgdGhlcmUgeWV0LiBJbmRlZWQgbm90IGhhdmluZyBpdCBub3cK
-ZW5mb3JjZXMgdXMgdG8gY2hhbmdlIHRoZSBBUEkgYW5kIGNoZWNrIGZvciBlYWNoIGNhbGwgc2l0
-ZSB3aGVuIGVuYWJsaW5nCk1TVCBhdWRpby4KCk90aGVyIHRoYW4gdGhhdCwKClJldmlld2VkLWJ5
-OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50ZWwuY29tPgoKCgpbMV0gaHR0cDovL21pZC5n
-bWFuZS5vcmcvMTQzOTg4MDcxNC00MDkzMS0xLWdpdC1zZW5kLWVtYWlsLWxpYmluLnlhbmdAaW50
-ZWwuY29tCgo+ICsJfSAqYXVkaW9fb3BzOwo+ICB9Owo+ICAKPiAgI2VuZGlmIC8qIF9JOTE1X0NP
-TVBPTkVOVF9IXyAqLwo+IC0tIAo+IDEuOS4xCj4KCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3Bl
-biBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9pbnRlbC1nZngK
+On 08/28/15 15:24, Jyri Sarha wrote:
+> @@ -565,9 +594,14 @@ out:
+>   static int hdmi_audio_shutdown(struct device *dev)
+>   {
+>   	struct omap_hdmi *hd = dev_get_drvdata(dev);
+> +	unsigned long flags;
+>
+>   	mutex_lock(&hd->lock);
+>   	hd->audio_abort_cb = NULL;
+> +	hd->audio_configured = false;
+> +	spin_lock_irqsave(&hd->audio_playing_lock, flags);
+> +	hd->audio_playing = false;
+> +	spin_unlock_irqrestore(&hd->audio_playing_lock, flags);
+>
+
+BTW, This extra locking (and the corresponding change in hdmi5.c) should 
+not be needed. But it does not harm either. I'll fix that, but I'll wait 
+first if there is anything else fix.
+
+Best regards,
+Jyri
