@@ -1,40 +1,46 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/3] ASoC: pxa-ssp: Convert to
-	devm_snd_soc_register_component
-Date: Fri, 28 Aug 2015 10:42:57 +0200
-Message-ID: <87egin3isu.fsf@belgarion.home>
-References: <1440730115.11149.0.camel@ingics.com>
+From: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Fri, 28 Aug 2015 12:00:42 +0300
+Message-ID: <20150828090042.GI28428@lahna.fi.intel.com>
+References: <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+ <20150824085140.GA5647@ck-lbox>
+ <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
+ <20150825062157.GB27431@sirena.org.uk>
+ <CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
+ <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
+ <20150826100155.GA1513@lahna.fi.intel.com>
+ <CAKor6TeH32hd0QUCPowzrjp54iJjGKiJ8jVT994y2O29dfk=QA@mail.gmail.com>
+ <20150827115914.GF28428@lahna.fi.intel.com>
+ <20150827145614.GC5313@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp12.smtpout.orange.fr
- [80.12.242.134])
- by alsa0.perex.cz (Postfix) with ESMTP id ECECD260435
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 10:47:23 +0200 (CEST)
-In-Reply-To: <1440730115.11149.0.camel@ingics.com> (Axel Lin's message of
- "Fri, 28 Aug 2015 10:48:35 +0800")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150827145614.GC5313-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Axel Lin <axel.lin@ingics.com> writes:
+On Thu, Aug 27, 2015 at 03:56:14PM +0100, Mark Brown wrote:
+> On Thu, Aug 27, 2015 at 02:59:14PM +0300, Mika Westerberg wrote:
+> > On Thu, Aug 27, 2015 at 01:44:45PM +0200, Christian Hartmann wrote:
+> 
+> > > drivers/gpio/gpio-arizona.c
+> > > and drivers/extcon/extcon-arizona.c
+> 
+> > > I have already CONFIG_GPIO_ARIZONA=y, but it does not be used at all.
+> > > Is it save to ignore ?? Or should I use them as well ??
+> 
+> > If the SPI device interrupt is connected to arizona GPIO pin, then you
+> > probably need that.
+> 
+> I can't see how that would work, the interrupt output isn't a GPIO.
 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Both patches look fine by me, except that the commit messages are empty, which
-is a bit a pity for me. That would for example tell me if this was tested on any
-platform, even if the patch looks trivial.
-
-Cheers.
-
+I mean that if the SPI device (codec) interrupt pin is connected to a GPIO
+pin of arizona instead of GPIO pin of the SoC itself.
 --
-Robert
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
