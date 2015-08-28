@@ -1,55 +1,66 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
-	plug/unplug
-Date: Fri, 28 Aug 2015 20:14:48 +0300
-Message-ID: <87oahrmj1z.fsf@intel.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH]  sound: Clean up docbook warnings
+Date: Fri, 28 Aug 2015 18:13:24 +0100
+Message-ID: <20150828171324.GR12027@sirena.org.uk>
+References: <20150823035036.1c5614db@xps.lwn.net>
+ <s5hzj1is09b.wl-tiwai@suse.de>
+ <20150825062541.GC27431@sirena.org.uk>
+ <s5hegir51do.wl-tiwai@suse.de>
+ <20150825064739.GF27431@sirena.org.uk>
+ <20150825011448.20a74301@xps>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: tiwai@suse.de, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, libin.yang@intel.com, daniel.vetter@intel.com
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8S8xwCNhfXjuHwS7"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150825011448.20a74301@xps>
+Sender: linux-doc-owner@vger.kernel.org
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyOCBBdWcgMjAxNSwgRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29u
-QGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+IEhvcGVmdWxseSBsYXN0IHZlcnNpb24/IDotKQo+Cj4g
-ICogQWRkZWQgY29tbWl0IHRleHQgYWJvdXQgZHVwbGljYXRlIGV2ZW50cyAocGF0Y2ggNC80KQo+
-ICAqIEFkZGVkIGxvY2tzIGluIGJpbmQvdW5iaW5kIG9uIGk5MTUgc2lkZSAocGF0Y2ggMi80KQo+
-ICAqIEZpeGVkIGRvY2Jvb2sgY29tbWVudHMgaW4gaTkxNSBzdHJ1Y3QgKHBhdGNoIDEvNCkKPiAg
-KiBSZW1vdmVkIHBvcnRfbXN0X3N0cmVhbWluZyBwYXJhbWV0ZXIgKHBhdGNoIDEvNCkKPiAgKiBB
-ZGRlZCBSZXZpZXdlZC1ieSAtIDEgJiAyIGJ5IEphbmksIDMgJiA0IGJ5IFRha2FzaGkuCj4gICAg
-SG9wZWZ1bGx5IHRoaXMgd2FzIGNvcnJlY3QsIG90aGVyd2lzZSBmZWVsIGZyZWUgdG8gYWRqdXN0
-Cj4gICAgeW91cnNlbGYgYmVmb3JlIGNvbW1pdHRpbmcuCj4KPiBCb3RoIEphbmkgYW5kIFRha2Fz
-aGkgc2VlbSBva2F5IHdpdGggdGhpcyBnb2luZyBpbnRvIDQuMy4gCj4gTm9ib2R5IGhhcyBzYWlk
-IHdoaWNoIHRyZWUgeW91IHByZWZlciB0byB0YWtlIGl0IHRocm91Z2gsIHNvCj4gaG93IGFib3V0
-IFRha2FzaGkgbWVyZ2luZyBpdD8KCkkgdGhpbmsgdGhlcmUncyBhIHNsaWdodCBjb25mbGljdCB3
-aXRoIExpYmluJ3Mgc2VyaWVzIFsxXSwgc28gYm90aApzaG91bGQgcHJvYmFibHkgZ28gdGhyb3Vn
-aCB0aGUgc2FtZSB0cmVlLiBJJ20gZmluZSB3aXRoIGVpdGhlci4KCkJSLApKYW5pLgoKClsxXSBo
-dHRwOi8vbWlkLmdtYW5lLm9yZy8xNDM5ODgwNzE0LTQwOTMxLTEtZ2l0LXNlbmQtZW1haWwtbGli
-aW4ueWFuZ0BpbnRlbC5jb20KCgo+Cj4gRGF2aWQgSGVubmluZ3Nzb24gKDQpOgo+ICAgZHJtL2k5
-MTU6IEFkZCBhdWRpbyBwaW4gc2Vuc2UgLyBFTEQgY2FsbGJhY2sKPiAgIGRybS9pOTE1OiBDYWxs
-IGF1ZGlvIHBpbi9FTEQgbm90aWZ5IGZ1bmN0aW9uCj4gICBBTFNBOiBoZGEgLSBhbGxvdyBjb2Rl
-Y3MgdG8gYWNjZXNzIHRoZSBpOTE1IHBpbi9FTEQgY2FsbGJhY2sKPiAgIEFMU0E6IGhkYSAtIFdh
-a2UgdGhlIGNvZGVjIHVwIG9uIHBpbi9FTEQgbm90aWZ5IGV2ZW50cwo+Cj4gIGRyaXZlcnMvZ3B1
-L2RybS9pOTE1L2k5MTVfZHJ2LmggICAgfCAgMSArCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2lu
-dGVsX2F1ZGlvLmMgfCAyNyArKysrKysrKysrKysrKysrKysrKysrKystLS0KPiAgaW5jbHVkZS9k
-cm0vaTkxNV9jb21wb25lbnQuaCAgICAgICB8IDE2ICsrKysrKysrKysrKysrKysKPiAgaW5jbHVk
-ZS9zb3VuZC9oZGFfaTkxNS5oICAgICAgICAgICB8ICA3ICsrKysrKysKPiAgc291bmQvaGRhL2hk
-YWNfaTkxNS5jICAgICAgICAgICAgICB8IDEwICsrKysrKysrKysKPiAgc291bmQvcGNpL2hkYS9w
-YXRjaF9oZG1pLmMgICAgICAgICB8IDIyICsrKysrKysrKysrKysrKysrKysrKy0KPiAgNiBmaWxl
-cyBjaGFuZ2VkLCA3OSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gLS0gCj4gMS45
-LjEKPgoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRl
-cgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1n
-ZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xp
-c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+
+--8S8xwCNhfXjuHwS7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 25, 2015 at 01:14:48AM -0600, Jonathan Corbet wrote:
+> On Tue, 25 Aug 2015 07:47:39 +0100
+> Mark Brown <broonie@kernel.org> wrote:
+>=20
+> > Sure, but as a result of being at Plumbers last week I currently have
+> > about 100 patches actually in my inbox that need review and I don't need
+> > to go trawling for...
+>=20
+> Sorry, should have cc'd you on it from the beginning.  Here's a copy...
+>=20
+> Thanks,
+>=20
+> jon
+>=20
+> From c1efe503d05c1a9a1cb5e0c9c3e39b4e74f2ead2 Mon Sep 17 00:00:00 2001
+> From: Jonathan Corbet <corbet@lwn.net>
+> Date: Sun, 16 Aug 2015 16:56:21 -0600
+> Subject: [PATCH] sound: Clean up docbook warnings
+
+Applied, but please don't bury patches in the middle of a reply in a
+mail thread - it makes them difficult to apply.
+
+--8S8xwCNhfXjuHwS7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV4JazAAoJECTWi3JdVIfQupMH/i18RuaiasSHivUCXDgBszaP
+1fGSdDxA7VxZmzkZ4yynbDxH6I9WrDjVI1y11kdJT6VzvnNTTHhjl6HWe3CsCt05
+jNWe03pLaLDUyZczAIvsovWGWXWjREKHdmOMGzoyxh48rl/C98Qx/Lt0sWCz+JGB
+xYN9DDabcLHlHsAbP1urTgbmv7DvpWzWRn7hEUplmGH4RrPwELd2ZpswzA6I5F6d
+j4h7/J0taP2os4tiAb86ClH4JF35MSd91SvnZoRi/EAefv3bH5kK+s0d5gRhvrwu
+LcKF6q2MNQY0BCq6kFJsYH9Rb9YY1+wWQn/kVU+uEvSIEPe+ILJEJmrNBUTJnTg=
+=W0yG
+-----END PGP SIGNATURE-----
+
+--8S8xwCNhfXjuHwS7--
