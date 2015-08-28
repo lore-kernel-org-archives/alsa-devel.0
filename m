@@ -1,154 +1,114 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v2] OMAPDSS: hdmi: Reconfigure and restart
- audio when display is enabled
-Date: Fri, 28 Aug 2015 16:04:32 +0300
-Message-ID: <55E05C60.2090400@ti.com>
-References: <1440764660-10417-1-git-send-email-jsarha@ti.com>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
+	pin/ELD notify events
+Date: Fri, 28 Aug 2015 16:10:36 +0300
+Message-ID: <87pp275zjn.fsf@intel.com>
+References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
+ <1439974138-3296-5-git-send-email-david.henningsson@canonical.com>
+ <s5hbne271h7.wl-tiwai@suse.de> <55D5A0D6.1040403@canonical.com>
+ <s5h8u9670mv.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5289489441173830985=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id B05672605BD
- for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2015 15:04:36 +0200 (CEST)
-In-Reply-To: <1440764660-10417-1-git-send-email-jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h8u9670mv.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: vinod.koul@intel.com, daniel.vetter@intel.com, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
---===============5289489441173830985==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature";
-	boundary="uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q"
-
---uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On 28/08/15 15:24, Jyri Sarha wrote:
-> Reconfigure and restart audio when display is enabled, if audio
-> playback was active before. The audio configuration is stored when is
-
-'is' -> 'it' above
-
-> is successfully applied and a boolean is set when playback has started
-> and unset when stopped. This data is used to reconfigure the audio
-> when display is re-enabled. Abort audio playback if reconfiguration
-> fails.
-
-It would be good to start the description by telling what the current
-problem is. And probably the subject could also be better... This fixes
-the audio playback when a video mode change happens (or such), right?
-
-> A new spin lock is introduced in order to protect state variables
-> related to audio playback status. This is needed for the transitions
-> from display enabled state (when audio start/stop commands can be
-> written to HW) to display disabled state (when audio start/stop
-> commands update only the hdmi.audio_playing variable) to always
-> serialize correctly with the start/stop audio commands.
->=20
-> For example: when display is turned back on we take the spinlock and
-> we can be sure that the audio start/stop status won't change while we
-> update the HW according to hdmi.audio_playing state and set
-> hdmi.display_enabled to true. After releasing the lock
-> hdmi.display_enabled is true and all audio_start and audio_stop
-> commands write their stuff directly to HW.
-
-The question is (which was my point in the earlier mail), we already
-have mutex, so why a new spinlock?
-
-I think the answer is that audio start/stop (anything else?) are called
-in atomic context, so mutex cannot be used.
-
-Also (not exactly related to this patch), if the audio callbacks must be
-atomic, could we use a workqueue to run the audio start/stop work in
-non-atomic context? Protecting the whole hdmi state with a single mutex
-would be much nicer.
-
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
-> I dropped the ASoC maintainers from the recipient list as this patch
-> hardly concerns them.
->=20
->  drivers/video/fbdev/omap2/dss/hdmi.h  |  9 +++-
->  drivers/video/fbdev/omap2/dss/hdmi4.c | 69 +++++++++++++++++++++++++--=
----
->  drivers/video/fbdev/omap2/dss/hdmi5.c | 79 +++++++++++++++++++++++++++=
-+-------
->  3 files changed, 130 insertions(+), 27 deletions(-)
->=20
-> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev=
-/omap2/dss/hdmi.h
-> index e4a32fe..e48aefd 100644
-> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
-> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
-> @@ -351,13 +351,20 @@ struct omap_hdmi {
->  	struct regulator *vdda_reg;
-> =20
->  	bool core_enabled;
-> -	bool display_enabled;
-> =20
->  	struct omap_dss_device output;
-> =20
->  	struct platform_device *audio_pdev;
->  	void (*audio_abort_cb)(struct device *dev);
->  	int wp_idlemode;
-> +
-> +	bool audio_configured;
-> +	struct omap_dss_audio audio_config;
-> +
-> +	/* This lock should be taken when booleas bellow is touched. */
-
-typo above.
-
-Otherwise, looks much cleaner than the previous one. I tested it and
-worked fine for me: I could play audio while turning on and off the
-video output, and the audio would resume, except when the video was off
-for long enough.
-
- Tomi
-
-
---uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJV4FxhAAoJEPo9qoy8lh711rIQAKwvsWUzHExdF7F3ERL2MjH6
-ytRDux1MCw6rWix4ZX1DODI6uWrAkreA56eS7ptoc1aw7fecdJwyYlr74RmNL7go
-u5uEBCZFDsuRn5kcz6QqyCmy8/XBaCTdRJ5nUucZFon0rbw+UBYZ4aEBPYR0hdoz
-4aRyNXpG/PRn4oo6+xSS9PJrHvp72lHKAYugxCyhFjYpr/VyckW+pgfbWNKIVCeQ
-sJQvw/VYJkktTOVX78qH7UQTZCIDu/dxyQCYuV3L3u6zfZxiybv4r/kF2SizOaZ7
-pv7X+ovSJbmicHlQfa+dIG8ZTkn4fYnZDwIXyE2CQqV19og3y4wforqKYJg187oG
-TY9cROiuRWsznhJaD6Htz0fCOJPDHCcmHEuQ8CwJII41CgW4Bp6lquD36uEk5/os
-aZGwU2auO06KKvLJ+mBHoRNk3R2us8qgMknCIwHrl6yCzdal0eiA0bXnuocAV1en
-8Wlz07XWo5TYkqwvfoZITe7PwzYllmdp8GMkaeWFlboy1p45A2y0dktLTR/ajyuu
-YWMSLkpzBlWCfR8wxmj2+dqW68gM3UZf1LiQvp9GiAArFva4WplqCem9rDCnbzL+
-FB5Gor5eUqFIo09XpdA70aGhlBwbm+xmWtOiG3uY2MuWuF5IZeZAZmiNCfxbHuy2
-VbqXrFXyu8jybiej1Moj
-=ThpX
------END PGP SIGNATURE-----
-
---uNxNaqpBGd0I5KtthamrM5fxvUM0EjG4q--
-
---===============5289489441173830985==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5289489441173830985==--
+T24gVGh1LCAyMCBBdWcgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToK
+PiBPbiBUaHUsIDIwIEF1ZyAyMDE1IDExOjQxOjQyICswMjAwLAo+IERhdmlkIEhlbm5pbmdzc29u
+IHdyb3RlOgo+PiAKPj4gCj4+IAo+PiBPbiAyMDE1LTA4LTIwIDExOjI4LCBUYWthc2hpIEl3YWkg
+d3JvdGU6Cj4+ID4gT24gV2VkLCAxOSBBdWcgMjAxNSAxMDo0ODo1OCArMDIwMCwKPj4gPiBEYXZp
+ZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4gPj4KPj4gPj4gV2hlbmV2ZXIgdGhlcmUgaXMgYW4gZXZl
+bnQgZnJvbSB0aGUgaTkxNSBkcml2ZXIsIHdha2UgdGhlIGNvZGVjCj4+ID4+IGFuZCByZWNoZWNr
+IHBsdWcvdW5wbHVnICsgRUxEIHN0YXR1cy4KPj4gPj4KPj4gPj4gVGhpcyBmaXhlcyB0aGUgaXNz
+dWUgd2l0aCBsb3N0IHVuc29sIGV2ZW50cyBpbiBwb3dlciBzYXZlIG1vZGUsCj4+ID4+IHRoZSBj
+b2RlYyBhbmQgY29udHJvbGxlciBjYW4gbm93IHNsZWVwIGluIEQzIGFuZCBzdGlsbCBrbm93IHdo
+ZW4KPj4gPj4gdGhlIEhETUkgbW9uaXRvciBoYXMgYmVlbiBjb25uZWN0ZWQuCj4+ID4+Cj4+ID4+
+IFNpZ25lZC1vZmYtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBjYW5v
+bmljYWwuY29tPgo+PiA+Cj4+ID4gVGhpcyBhZGRpdGlvbiBsb29rcyBmaW5lLCBidXQgdGhlbiB3
+ZSdsbCBnZXQgZG91YmxlIG5vdGlmaWNhdGlvbiBmb3IKPj4gPiB0aGUgbm9ybWFsIGhvdHBsdWcv
+dW5wbHVnLCBvbmUgdmlhIGNvbXBvbmVudCBvcHMgYW5kIGFub3RoZXIgdmlhIHVuc29sCj4+ID4g
+ZXZlbnQ/Cj4+IAo+PiBSaWdodCwgaW4gY2FzZSB0aGUgdW5zb2wgZXZlbnQgYWN0dWFsbHkgd29y
+a3MuLi4KPj4gCj4+IEkgd291bGQgYXJndWUgdGhhdCB0aGUgbm9ybWFsIGNhc2Ugd291bGQgYmUg
+dGhhdCB0aGUgY29udHJvbGxlciBhbmQgCj4+IGNvZGVjIGlzIGluIEQzIHdoaWNoIG1lYW5zIHRo
+YXQgdGhlIHVuc29sIGV2ZW50IG5ldmVyIGdldHMgdGhyb3VnaCAtIGR1ZSAKPj4gdG8gaHcgbGlt
+aXRhdGlvbnMgLSB3aGljaCBpcyB3aGF0IHRyaWdnZXJlZCB0aGlzIHBhdGNoIHNldCBpbiB0aGUg
+Zmlyc3QgCj4+IHBsYWNlLgo+PiAKPj4gQnV0IHllcywgaW4gc29tZSBjYXNlIHdlIG1pZ2h0IGdl
+dCBkb3VibGUgbm90aWZpY2F0aW9uLCBidXQgdGhpcyBzaG91bGQgCj4+IG5vdCBjYXVzZSBhbnkg
+dHJvdWJsZSBpbiBwcmFjdGljZS4gVGhlIHVuc29sIGV2ZW50IGNvdWxkIGJlIHR1cm5lZCBvZmYs
+IAo+PiBidXQgd291bGQgaXQgYmUgb2theSB0byBzYXZlIHRoYXQgZm9yIGEgbGF0ZXIgcGF0Y2gg
+c2V0IChzbyBJIGRvbid0IG1pc3MgCj4+IHRoZSB1cGNvbWluZyBtZXJnZSB3aW5kb3cpPwo+Cj4g
+SW4gdGhhdCBjYXNlLCBpdCBzaG91bGQgYmUgbWVudGlvbmVkIGluIHRoZSBjaGFuZ2Vsb2cgYXQg
+bGVhc3QuCj4KPiBUaGlzIHNlcmllcyBjYW1lIGEgYml0IHRvbyBsYXRlIGZvciB0aGUgbWVyZ2Ug
+d2luZG93LCBzbyBJJ20gbm90IHN1cmUKPiB3aGV0aGVyIHRoaXMgY2FuIGdldCBpbi4gIEkgcGVy
+c29uYWxseSBmaW5kIGl0IE9LLCBzbyB0YWtlIG15IGFjayBmb3IKPiBBTFNBIHBhcnRzIChwYXRj
+aCAzLzQpLCBidXQgdGhlIHJlc3QgbmVlZCByZXZpZXcgYW5kIGFjayBmcm9tIGk5MTUKPiBndXlz
+LiAgQW5kIHdlIGRvbid0IGtub3cgd2hvIHRvIG1lcmdlIHRoaXMsIGlmIGFueS4gIFRoZSBjaGFu
+Z2VzIGFyZQo+IGFsbW9zdCBldmVuIHRvIGk5MTUgYW5kIGhkYS4gIEkgZG9uJ3QgbWluZCBlaXRo
+ZXIgd2F5LCB2aWEgZHJtIG9yCj4gc291bmQgdHJlZS4KClBlcnNvbmFsbHkgSSdtIGZpbmUgd2l0
+aCB0aGlzIHN0aWxsIGdvaW5nIGZvciB2NC4zIHNpbmNlIHRvIG1lIGl0IGxvb2tzCmxpa2UgYW55
+IHJlZ3Jlc3Npb25zIHRoaXMgbWlnaHQgY2F1c2Ugd2lsbCBiZSBvbiB5b3VyIHNpZGUuICpncmlu
+Ki4KCkJSLApKYW5pLgoKCj4KPiBJbiBhbnl3YXksCj4gICAgUmV2aWV3ZWQtYnk6IFRha2FzaGkg
+SXdhaSA8dGl3YWlAc3VzZS5kZT4KPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4+ID4KPj4g
+Pgo+PiA+IHRoYW5rcywKPj4gPgo+PiA+IFRha2FzaGkKPj4gPgo+PiA+PiAtLS0KPj4gPj4gICBz
+b3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8IDIyICsrKysrKysrKysrKysrKysrKysrKy0KPj4g
+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+PiA+
+Pgo+PiA+PiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX2hkbWkuYwo+PiA+PiBpbmRleCBhOTdkYjVmLi45MzIyOTJjIDEwMDY0NAo+
+PiA+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+PiA+PiArKysgYi9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX2hkbWkuYwo+PiA+PiBAQCAtMzcsNiArMzcsOCBAQAo+PiA+PiAgICNpbmNs
+dWRlIDxzb3VuZC9qYWNrLmg+Cj4+ID4+ICAgI2luY2x1ZGUgPHNvdW5kL2Fzb3VuZGVmLmg+Cj4+
+ID4+ICAgI2luY2x1ZGUgPHNvdW5kL3Rsdi5oPgo+PiA+PiArI2luY2x1ZGUgPHNvdW5kL2hkYXVk
+aW8uaD4KPj4gPj4gKyNpbmNsdWRlIDxzb3VuZC9oZGFfaTkxNS5oPgo+PiA+PiAgICNpbmNsdWRl
+ICJoZGFfY29kZWMuaCIKPj4gPj4gICAjaW5jbHVkZSAiaGRhX2xvY2FsLmgiCj4+ID4+ICAgI2lu
+Y2x1ZGUgImhkYV9qYWNrLmgiCj4+ID4+IEBAIC0xNDQsNiArMTQ2LDkgQEAgc3RydWN0IGhkbWlf
+c3BlYyB7Cj4+ID4+ICAgCSAqLwo+PiA+PiAgIAlzdHJ1Y3QgaGRhX211bHRpX291dCBtdWx0aW91
+dDsKPj4gPj4gICAJc3RydWN0IGhkYV9wY21fc3RyZWFtIHBjbV9wbGF5YmFjazsKPj4gPj4gKwo+
+PiA+PiArCS8qIGk5MTUvcG93ZXJ3ZWxsIChIYXN3ZWxsKy9WYWxsZXl2aWV3Kykgc3BlY2lmaWMg
+Ki8KPj4gPj4gKwlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzIGk5MTVfYXVk
+aW9fb3BzOwo+PiA+PiAgIH07Cj4+ID4+Cj4+ID4+Cj4+ID4+IEBAIC0yMTkxLDYgKzIxOTYsOSBA
+QCBzdGF0aWMgdm9pZCBnZW5lcmljX2hkbWlfZnJlZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykK
+Pj4gPj4gICAJc3RydWN0IGhkbWlfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOwo+PiA+PiAgIAlp
+bnQgcGluX2lkeDsKPj4gPj4KPj4gPj4gKwlpZiAoaXNfaGFzd2VsbF9wbHVzKGNvZGVjKSB8fCBp
+c192YWxsZXl2aWV3X3BsdXMoY29kZWMpKQo+PiA+PiArCQlzbmRfaGRhY19pOTE1X3JlZ2lzdGVy
+X25vdGlmaWVyKE5VTEwpOwo+PiA+PiArCj4+ID4+ICAgCWZvciAocGluX2lkeCA9IDA7IHBpbl9p
+ZHggPCBzcGVjLT5udW1fcGluczsgcGluX2lkeCsrKSB7Cj4+ID4+ICAgCQlzdHJ1Y3QgaGRtaV9z
+cGVjX3Blcl9waW4gKnBlcl9waW4gPSBnZXRfcGluKHNwZWMsIHBpbl9pZHgpOwo+PiA+Pgo+PiA+
+PiBAQCAtMjMxNiw2ICsyMzI0LDE0IEBAIHN0YXRpYyB2b2lkIGhhc3dlbGxfc2V0X3Bvd2VyX3N0
+YXRlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgZmcsCj4+ID4+ICAgCXNuZF9o
+ZGFfY29kZWNfc2V0X3Bvd2VyX3RvX2FsbChjb2RlYywgZmcsIHBvd2VyX3N0YXRlKTsKPj4gPj4g
+ICB9Cj4+ID4+Cj4+ID4+ICtzdGF0aWMgdm9pZCBpbnRlbF9waW5fZWxkX25vdGlmeSh2b2lkICph
+dWRpb19wdHIsIGludCBwb3J0LCBpbnQgcG9ydF9tc3RfaW5kZXgpCj4+ID4+ICt7Cj4+ID4+ICsJ
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBhdWRpb19wdHI7Cj4+ID4+ICsJaW50IHBpbl9uaWQg
+PSBwb3J0ICsgMHgwNDsKPj4gPj4gKwo+PiA+PiArCWNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQo
+Y29kZWMsIHBpbl9uaWQpOwo+PiA+PiArfQo+PiA+PiArCj4+ID4+ICAgc3RhdGljIGludCBwYXRj
+aF9nZW5lcmljX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCj4+ID4+ICAgewo+PiA+PiAg
+IAlzdHJ1Y3QgaGRtaV9zcGVjICpzcGVjOwo+PiA+PiBAQCAtMjM0Miw4ICsyMzU4LDEyIEBAIHN0
+YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQo+PiA+
+PiAgIAlpZiAoaXNfdmFsbGV5dmlld19wbHVzKGNvZGVjKSB8fCBpc19za3lsYWtlKGNvZGVjKSkK
+Pj4gPj4gICAJCWNvZGVjLT5jb3JlLmxpbmtfcG93ZXJfY29udHJvbCA9IDE7Cj4+ID4+Cj4+ID4+
+IC0JaWYgKGlzX2hhc3dlbGxfcGx1cyhjb2RlYykgfHwgaXNfdmFsbGV5dmlld19wbHVzKGNvZGVj
+KSkKPj4gPj4gKwlpZiAoaXNfaGFzd2VsbF9wbHVzKGNvZGVjKSB8fCBpc192YWxsZXl2aWV3X3Bs
+dXMoY29kZWMpKSB7Cj4+ID4+ICAgCQljb2RlYy0+ZGVwb3BfZGVsYXkgPSAwOwo+PiA+PiArCQlz
+cGVjLT5pOTE1X2F1ZGlvX29wcy5hdWRpb19wdHIgPSBjb2RlYzsKPj4gPj4gKwkJc3BlYy0+aTkx
+NV9hdWRpb19vcHMucGluX2VsZF9ub3RpZnkgPSBpbnRlbF9waW5fZWxkX25vdGlmeTsKPj4gPj4g
+KwkJc25kX2hkYWNfaTkxNV9yZWdpc3Rlcl9ub3RpZmllcigmc3BlYy0+aTkxNV9hdWRpb19vcHMp
+Owo+PiA+PiArCX0KPj4gPj4KPj4gPj4gICAJaWYgKGhkbWlfcGFyc2VfY29kZWMoY29kZWMpIDwg
+MCkgewo+PiA+PiAgIAkJY29kZWMtPnNwZWMgPSBOVUxMOwo+PiA+PiAtLQo+PiA+PiAxLjkuMQo+
+PiA+Pgo+PiA+Cj4+IAo+PiAtLSAKPj4gRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQu
+Cj4+IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKPj4gCgotLSAKSmFuaSBOaWt1bGEsIElu
+dGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
