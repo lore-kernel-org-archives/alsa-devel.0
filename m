@@ -1,18 +1,17 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: zx296702-i2s: Fix resource leak when
-	unload module
-Date: Sat, 29 Aug 2015 23:09:30 +0800
-Message-ID: <1440860970.28601.2.camel@ingics.com>
+From: Burton Samograd <burton.samograd@gmail.com>
+Subject: Tascam US-366 and Alsa Firmware
+Date: Sat, 29 Aug 2015 09:34:49 -0600
+Message-ID: <CAM8pOuO60SdbGXBjf645C5obb5uW0MJpH1DFCr8bmO+Y6hWrTg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 84DEC260671
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 17:09:35 +0200 (CEST)
-Received: by padhm10 with SMTP id hm10so36242178pad.3
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 08:09:34 -0700 (PDT)
+Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
+ [209.85.213.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05EB8260671
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 17:34:51 +0200 (CEST)
+Received: by igcse8 with SMTP id se8so40593405igc.1
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 08:34:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jun Nie <jun.nie@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use devm_* API to fix leaks in current code.
-1. Use devm_kzalloc to fix memory leak for zx_i2s when unload the module.
-2. Use devm_snd_soc_register_component to ensure component is unregistered
-   when unload the module.
+Hi,
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/zte/zx296702-i2s.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I recently bought the Tascam US-366 and forgot to check for Linux support,
+which it doesn't have (yet! :). Looking through the Alsa firmware sources,
+there seems to be a firmware loader called usx2yloader which supports a
+number of Tascam cards, but the US-366 is not listed.  It looks like really
+usx2yloader just needs the firmware and a `prepad` file. I`ve found the
+firmware for the card (I think) buried in the OSX firmware download
+package:
 
-diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx296702-i2s.c
-index 1930c42..1cad93d 100644
---- a/sound/soc/zte/zx296702-i2s.c
-+++ b/sound/soc/zte/zx296702-i2s.c
-@@ -380,7 +380,7 @@ static int zx_i2s_probe(struct platform_device *pdev)
- 	struct zx_i2s_info *zx_i2s;
- 	int ret;
- 
--	zx_i2s =  kzalloc(sizeof(*zx_i2s), GFP_KERNEL);
-+	zx_i2s = devm_kzalloc(&pdev->dev, sizeof(*zx_i2s), GFP_KERNEL);
- 	if (!zx_i2s)
- 		return -ENOMEM;
- 
-@@ -401,8 +401,8 @@ static int zx_i2s_probe(struct platform_device *pdev)
- 	writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
- 	platform_set_drvdata(pdev, zx_i2s);
- 
--	ret = snd_soc_register_component(&pdev->dev, &zx_i2s_component,
--					 &zx_i2s_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &zx_i2s_component,
-+					      &zx_i2s_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
- 		return ret;
--- 
-2.1.0
+
+http://tascam.com/content/downloads/products/789/us-322_us-366_fw_v103_mavericks-yosemite.zip
+
+Now I think I just need the prepad file, but there's little documentation
+regarding exactly what that is (I'm assuming a number of 0s just to pad the
+firmware image to alignment, but I'm not sure of what alignment).
+
+Any ideas if usx2yloader will work at all with the US-366?  Does anyone
+know what the pre-pad file should be/contain?  Has anyone tried to get the
+US-366 working yet and failed?
+
+Reference:
+
+     http://tascam.com/product/us-366/
+
+Thanks.
+
+Burton Samograd
