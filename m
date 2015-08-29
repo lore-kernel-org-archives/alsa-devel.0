@@ -1,254 +1,490 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 06/10] ALSA: axd: add basic files for
- sending/receiving axd cmds
-Date: Sat, 29 Aug 2015 11:18:14 +0100
-Message-ID: <20150829101814.GA12027@sirena.org.uk>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <1440419959-14315-7-git-send-email-qais.yousef@imgtec.com>
- <20150826191642.GG28760@sirena.org.uk> <55DF2F59.408@imgtec.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: sound is distorted when pulseaudio system
+ timer scheduling is used (tsched=1)
+Date: Sat, 29 Aug 2015 19:41:41 +0800
+Message-ID: <CAN8cciaC87FAf=tOhSFC=FOG9rc9CvuH_6+HNqC15+R7TzeUSg@mail.gmail.com>
+References: <55E026D8.5040905@mentor.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1395077111477944011=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 552EB26062A
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 12:18:30 +0200 (CEST)
-In-Reply-To: <55DF2F59.408@imgtec.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============1802371185=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <55E026D8.5040905@mentor.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1802371185==
+Content-Type: multipart/alternative; boundary=001a11c2f102248704051e71afcf
 
---===============1395077111477944011==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MlJ6mS4HGnm+jrmh"
-Content-Disposition: inline
+--001a11c2f102248704051e71afcf
+Content-Type: text/plain; charset=UTF-8
 
+>
+> I am having issue with pulseaudiosink,
+> I used following command to play a wav file
+> gst-launch filesrc location=<wav file path> ! wavparse ! pulseaudiosink
+>
+> if tsched is enabled, then play of wav file via pulseaudiosink gives me
+lots of Underrun, and the sound is distorted, following is the pulseaudio
+log when --log-level=3
+>
+> I: [pulseaudio] protocol-native.c: Got credentials: uid=0 gid=0 success=1
+> I: [pulseaudio] sink-input.c: Trying to change sample rate
+> I: [pulseaudio] alsa-sink.c: Updating rate for device hw:0, new rate is
+48000
+> I: [pulseaudio] source.c: Changed sampling rate successfully
+> I: [pulseaudio] sink.c: Changed sampling rate successfully
+> I: [pulseaudio] sink-input.c: Rate changed to 48000 Hz
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Trying resume...
+> I: [alsa-sink-HiFi wm8962-0] alsa-util.c: cannot disable ALSA period
+wakeups
+> I: [alsa-sink-HiFi wm8962-0] alsa-util.c: ALSA period wakeups were not
+disabled
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Time scheduling watermark is
+18.38ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Resumed successfully...
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Starting playback.
+> I: [pulseaudio] sink-input.c: Created input 0 "pulsesink probe" on
+alsa_output.platform-sound.analog-s
+> tereo with sample spec s16le 2ch 48000Hz and channel map
+front-left,front-right
+> I: [pulseaudio] sink-input.c:     media.name = "pulsesink probe"
+> I: [pulseaudio] sink-input.c:     application.name = "gst-launch-0.10"
+> I: [pulseaudio] sink-input.c:     native-protocol.peer = "UNIX socket
+client"
+> I: [pulseaudio] sink-input.c:     native-protocol.version = "29"
+> I: [pulseaudio] sink-input.c:     application.process.id = "985"
+> I: [pulseaudio] sink-input.c:     application.process.user = "root"
+> I: [pulseaudio] sink-input.c:     application.process.host = "mx6q"
+> I: [pulseaudio] sink-input.c:     application.process.binary =
+"gst-launch-0.10"
+> I: [pulseaudio] sink-input.c:     application.language = "C"
+> I: [pulseaudio] sink-input.c:     application.process.machine_id =
+"0aa7a9566c734f608cbd36f187de8645"
+> I: [pulseaudio] sink-input.c:     module-stream-restore.id =
+"sink-input-by-application-name:gst-launc
+> h-0.10"
+> I: [pulseaudio] protocol-native.c: Requested tlength=250.00 ms,
+minreq=20.00 ms
+> I: [pulseaudio] protocol-native.c: Final latency 250.00 ms = 105.00 ms +
+2*20.00 ms + 105.00 ms
+> I: [pulseaudio] sink-input.c: Freeing input 0 "pulsesink probe"
+> I: [pulseaudio] sink-input.c: Created input 1 "Playback Stream" on
+alsa_output.platform-sound.analog-s
+> tereo with sample spec s16le 2ch 48000Hz and channel map
+front-left,front-right
+> I: [pulseaudio] sink-input.c:     media.name = "Playback Stream"
+> I: [pulseaudio] sink-input.c:     application.name = "gst-launch-0.10"
+> I: [pulseaudio] sink-input.c:     native-protocol.peer = "UNIX socket
+client"
+> I: [pulseaudio] sink-input.c:     native-protocol.version = "29"
+> I: [pulseaudio] sink-input.c:     application.process.id = "985"
+> I: [pulseaudio] sink-input.c:     application.process.user = "root"
+> I: [pulseaudio] sink-input.c:     application.process.host = "mx6q"
+> I: [pulseaudio] sink-input.c:     application.process.binary =
+"gst-launch-0.10"
+> I: [pulseaudio] sink-input.c:     application.language = "C"
+> I: [pulseaudio] sink-input.c:     application.process.machine_id =
+"0aa7a9566c734f608cbd36f187de8645"
+> I: [pulseaudio] sink-input.c:     module-stream-restore.id =
+"sink-input-by-application-name:gst-launc
+> h-0.10"
+> I: [pulseaudio] protocol-native.c: Requested tlength=200.00 ms,
+minreq=10.00 ms
+> I: [pulseaudio] protocol-native.c: Final latency 200.00 ms = 90.00 ms +
+2*10.00 ms + 90.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+28.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+38.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+48.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+58.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+68.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+78.38 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+80.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+1.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+2.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+4.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+8.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+16.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+26.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+36.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+46.00 ms
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: ALSA woke us up to write new
+data to the device, but there w
+> as actually nothing to write!
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Most likely this is a bug in
+the ALSA driver '(null)'. Pleas
+> e report this issue to the ALSA developers.
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: We were woken up with POLLOUT
+set -- however a subsequent sn
+> d_pcm_avail() returned 0 or another value < min_avail.
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+56.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+66.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+76.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+86.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+96.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+86.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+106.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+96.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+116.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+106.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+126.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+116.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+136.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+126.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+146.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+136.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+156.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+146.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+166.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark to
+156.00 ms
+> I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency to
+176.00 ms
+> I: [pulseaudio] sink-input.c: Freeing input 1 "Playback Stream"
+> I: [pulseaudio] client.c: Freed 4 "gst-launch-0.10"
+> I: [pulseaudio] protocol-native.c: Connection died.
+>
+> from the log it seems like, when system timer based scheduling is used,
+then pulseaudio will try to keep minimum watermark/latency, only when
+Underrun occurs, it will increase watermark/latency.
+>
+> Is this the expected behaviour of pulseaudio 'glict free' feature?
 
---MlJ6mS4HGnm+jrmh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> And from the log there is some error message complain about ALSA driver
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: ALSA woke us up to write new
+data to the device, but there w
+> as actually nothing to write!
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Most likely this is a bug in
+the ALSA driver '(null)'. Pleas
+> e report this issue to the ALSA developers.
+> E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: We were woken up with POLLOUT
+set -- however a subsequent sn
+> d_pcm_avail() returned 0 or another value < min_avail.
+>
+> does this mean, there is some bug in ALSA driver, or it just indicates
+the ALSA driver doesn't support glitch free feature very well
 
-On Thu, Aug 27, 2015 at 04:40:09PM +0100, Qais Yousef wrote:
-> On 08/26/2015 08:16 PM, Mark Brown wrote:
-> >On Mon, Aug 24, 2015 at 01:39:15PM +0100, Qais Yousef wrote:
+The timer base scheduling require sound card driver provide accurate
+hw_ptr position at any time.
 
-> >>+unsigned long  axd_cmd_get_datain_address(struct axd_cmd *cmd)
-> >>+{
-> >>+	struct axd_dev *axd = container_of(cmd, struct axd_dev, cmd);
-> >>+
-> >>+	return (unsigned long) axd->buf_base_m;
-> >>+}
-> >What's going on with these casts?
+So far only two sound card drivers snd-hda-intel and snd-oxygen can provide
+accurate hw_ptr position from hardware register
 
-> As with the other cases. buf_base_m is void * __iomem but we want to do some
-> arithmatic to help AXD start up and understand where it needs to run. I
-> agree they don't look nice and if I can avoid them I'd be happy to do so.
+static snd_pcm_uframes_t dmaengine_pcm_pointer(
+struct snd_pcm_substream *substream)
+{
+struct snd_soc_pcm_runtime *rtd = substream->private_data;
+struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
 
-C supports poinnter arithmetic...
+if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
+return snd_dmaengine_pcm_pointer_no_residue(substream);
+else
+return snd_dmaengine_pcm_pointer(substream);
+}
 
-> >>+static inline void axd_set_flag(unsigned int *flag, unsigned int value)
-> >>+{
-> >>+	*flag = value;
-> >>+	smp_wmb();	/* guarantee smp ordering */
-> >>+}
+http://lxr.free-electrons.com/ident?i=dmaengine_tx_status
 
-> >>+static inline unsigned int axd_get_flag(unsigned int *flag)
-> >>+{
-> >>+	smp_rmb();	/* guarantee smp ordering */
-> >>+	return *flag;
-> >>+}
+Seem none of soc sound drivers can report position accurate than period
+size
 
-> >Please use a normal locking construct rather than hand rolling
-> >something, or alternatively introduce new generic operations.  The fact
-> >that you're hand rolling these things that have no driver specific
-> >content is really worrying in terms of their safety.
+Is there any reason to enable timer based scheduling by default ?
 
-> I need to check atomic_ops.txt again but I think atomic_t is not always smb
-> safe. I definitely was running on a version of Meta archicture in the past
-> where atomic_t wasn't always smp safe.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/081501.html
 
-> I'll check if the rules have changed or something new was introduced to deal
-> with this.
+You can try alexandra 's program to find out how accuate hw_ptr can your
+sound card driver can report ?
 
-It is true that when using atomic_t with multiprocessor you still need
-memory barriers but that doesn't mean atomics bring no benefit.  But
-that's not really the point here - the point is the more general one
-that the whole idea of open coding memory barrier concurrency constructs
-doesn't look great.  It makes the code much more complex and error prone
-compared to using normal locking and other concurrency constructs (which
-Linux has a rich set of).
+--001a11c2f102248704051e71afcf
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-If we really need performance then it can make sense but I'm not seeing
-anything here that appears to motivate this.  In general all the
-concurrency code looks much more complex than I would expect.
+<p><br>
+&gt;<br>
+&gt; I am having issue with pulseaudiosink,<br>
+&gt; I used following command to play a wav file<br>
+&gt; gst-launch filesrc location=3D&lt;wav file path&gt; ! wavparse ! pulse=
+audiosink<br>
+&gt;<br>
+&gt; if tsched is enabled, then play of wav file via pulseaudiosink gives m=
+e lots of Underrun, and the sound is distorted, following is the pulseaudio=
+ log when --log-level=3D3<br>
+&gt;<br>
+&gt; I: [pulseaudio] protocol-native.c: Got credentials: uid=3D0 gid=3D0 su=
+ccess=3D1<br>
+&gt; I: [pulseaudio] sink-input.c: Trying to change sample rate<br>
+&gt; I: [pulseaudio] alsa-sink.c: Updating rate for device hw:0, new rate i=
+s 48000<br>
+&gt; I: [pulseaudio] source.c: Changed sampling rate successfully<br>
+&gt; I: [pulseaudio] sink.c: Changed sampling rate successfully<br>
+&gt; I: [pulseaudio] sink-input.c: Rate changed to 48000 Hz<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Trying resume...<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-util.c: cannot disable ALSA period w=
+akeups<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-util.c: ALSA period wakeups were not=
+ disabled<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Time scheduling watermark is=
+ 18.38ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Resumed successfully...<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Starting playback.<br>
+&gt; I: [pulseaudio] sink-input.c: Created input 0 &quot;pulsesink probe&qu=
+ot; on alsa_output.platform-sound.analog-s<br>
+&gt; tereo with sample spec s16le 2ch 48000Hz and channel map front-left,fr=
+ont-right<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://med=
+ia.name">media.name</a> =3D &quot;pulsesink probe&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://app=
+lication.name">application.name</a> =3D &quot;gst-launch-0.10&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0native-protocol.peer =
+=3D &quot;UNIX socket client&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0native-protocol.versi=
+on =3D &quot;29&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://app=
+lication.process.id">application.process.id</a> =3D &quot;985&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.u=
+ser =3D &quot;root&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.h=
+ost =3D &quot;mx6q&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.b=
+inary =3D &quot;gst-launch-0.10&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.language =
+=3D &quot;C&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.m=
+achine_id =3D &quot;0aa7a9566c734f608cbd36f187de8645&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://mod=
+ule-stream-restore.id">module-stream-restore.id</a> =3D &quot;sink-input-by=
+-application-name:gst-launc<br>
+&gt; h-0.10&quot;<br>
+&gt; I: [pulseaudio] protocol-native.c: Requested tlength=3D250.00 ms, minr=
+eq=3D20.00 ms<br>
+&gt; I: [pulseaudio] protocol-native.c: Final latency 250.00 ms =3D 105.00 =
+ms + 2*20.00 ms + 105.00 ms<br>
+&gt; I: [pulseaudio] sink-input.c: Freeing input 0 &quot;pulsesink probe&qu=
+ot;<br>
+&gt; I: [pulseaudio] sink-input.c: Created input 1 &quot;Playback Stream&qu=
+ot; on alsa_output.platform-sound.analog-s<br>
+&gt; tereo with sample spec s16le 2ch 48000Hz and channel map front-left,fr=
+ont-right<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://med=
+ia.name">media.name</a> =3D &quot;Playback Stream&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://app=
+lication.name">application.name</a> =3D &quot;gst-launch-0.10&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0native-protocol.peer =
+=3D &quot;UNIX socket client&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0native-protocol.versi=
+on =3D &quot;29&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://app=
+lication.process.id">application.process.id</a> =3D &quot;985&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.u=
+ser =3D &quot;root&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.h=
+ost =3D &quot;mx6q&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.b=
+inary =3D &quot;gst-launch-0.10&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.language =
+=3D &quot;C&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0application.process.m=
+achine_id =3D &quot;0aa7a9566c734f608cbd36f187de8645&quot;<br>
+&gt; I: [pulseaudio] sink-input.c:=C2=A0 =C2=A0 =C2=A0<a href=3D"http://mod=
+ule-stream-restore.id">module-stream-restore.id</a> =3D &quot;sink-input-by=
+-application-name:gst-launc<br>
+&gt; h-0.10&quot;<br>
+&gt; I: [pulseaudio] protocol-native.c: Requested tlength=3D200.00 ms, minr=
+eq=3D10.00 ms<br>
+&gt; I: [pulseaudio] protocol-native.c: Final latency 200.00 ms =3D 90.00 m=
+s + 2*10.00 ms + 90.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 28.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 38.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 48.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 58.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 68.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 78.38 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 80.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 1.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 2.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 4.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 8.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 16.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 26.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 36.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 46.00 ms<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: ALSA woke us up to write new=
+ data to the device, but there w<br>
+&gt; as actually nothing to write!<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Most likely this is a bug in=
+ the ALSA driver &#39;(null)&#39;. Pleas<br>
+&gt; e report this issue to the ALSA developers.<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: We were woken up with POLLOU=
+T set -- however a subsequent sn<br>
+&gt; d_pcm_avail() returned 0 or another value &lt; min_avail.<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 56.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 66.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 76.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 86.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 96.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 86.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 106.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 96.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 116.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 106.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 126.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 116.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 136.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 126.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 146.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 136.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Underrun!<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 156.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 146.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 166.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing wakeup watermark =
+to 156.00 ms<br>
+&gt; I: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Increasing minimal latency t=
+o 176.00 ms<br>
+&gt; I: [pulseaudio] sink-input.c: Freeing input 1 &quot;Playback Stream&qu=
+ot;<br>
+&gt; I: [pulseaudio] client.c: Freed 4 &quot;gst-launch-0.10&quot;<br>
+&gt; I: [pulseaudio] protocol-native.c: Connection died.<br>
+&gt;<br>
+&gt; from the log it seems like, when system timer based scheduling is used=
+, then pulseaudio will try to keep minimum watermark/latency, only when Und=
+errun occurs, it will increase watermark/latency.<br>
+&gt;<br>
+&gt; Is this the expected behaviour of pulseaudio &#39;glict free&#39; feat=
+ure?</p>
+<p>&gt; And from the log there is some error message complain about ALSA dr=
+iver<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: ALSA woke us up to write new=
+ data to the device, but there w<br>
+&gt; as actually nothing to write!<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: Most likely this is a bug in=
+ the ALSA driver &#39;(null)&#39;. Pleas<br>
+&gt; e report this issue to the ALSA developers.<br>
+&gt; E: [alsa-sink-HiFi wm8962-0] alsa-sink.c: We were woken up with POLLOU=
+T set -- however a subsequent sn<br>
+&gt; d_pcm_avail() returned 0 or another value &lt; min_avail.<br>
+&gt;<br>
+&gt; does this mean, there is some bug in ALSA driver, or it just indicates=
+ the ALSA driver doesn&#39;t support glitch free feature very well<br><br><=
+/p>
+<p>The timer base scheduling require sound card driver provide accurate=C2=
+=A0 hw_ptr position at any time.</p>
+<p>So far only two sound card drivers snd-hda-intel and snd-oxygen can prov=
+ide accurate hw_ptr position from hardware register</p>
+<p>static snd_pcm_uframes_t dmaengine_pcm_pointer(<br>
+	struct snd_pcm_substream *substream)<br>
+{<br>
+	struct snd_soc_pcm_runtime *rtd =3D substream-&gt;private_data;<br>
+	struct dmaengine_pcm *pcm =3D soc_platform_to_pcm(rtd-&gt;platform);</p>
+<p>	if (pcm-&gt;flags &amp; SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)<br>
+		return snd_dmaengine_pcm_pointer_no_residue(substream);<br>
+	else<br>
+		return snd_dmaengine_pcm_pointer(substream);<br>
+}</p>
+<p><a href=3D"http://lxr.free-electrons.com/ident?i=3Ddmaengine_tx_status">=
+http://lxr.free-electrons.com/ident?i=3Ddmaengine_tx_status</a></p>
+<p>Seem none of soc sound drivers can report position accurate than period =
+size </p>
+<p>Is there any reason to enable timer based scheduling by default ?<br></p=
+>
+<p><a href=3D"http://mailman.alsa-project.org/pipermail/alsa-devel/2014-Sep=
+tember/081501.html">http://mailman.alsa-project.org/pipermail/alsa-devel/20=
+14-September/081501.html</a></p>
+<p>You can try alexandra &#39;s program to find out how accuate hw_ptr can =
+your sound card driver can report ?</p>
 
-> >>+#define PIPE_STARTED	1
-> >>+#define PIPE_RUNNING	2
+--001a11c2f102248704051e71afcf--
 
-> >Why is the case with in place buffers not a simple zero iteration loop?
-
-> This is important when AXD is not consuming the data through I2S and
-> returning them to Linux. What we're trying to deal with here is the firmware
-> processed some data and expects Linux to consume whatever it has sent back
-> to it. We want to ensure that if the user suddenly stopped consuming this
-> data by closing the pipe to drop anything we receive back from AXD otherwise
-> the workqueue would block indefinitely waiting for the user that disappeared
-> to consume it causing a deadlock.
-
-That doesn't seem to address the question...
-
-> >>+	axd_platform_irq_ack();
-
-> >When would this ever be called anywhere else?  Just inline it (and it's
-> >better practice to only ack things we handle...).
-
-> It wouldn't be called anywhere else but its implementation could be platform
-> specific that's why it's abstracted. At the moment it does nothing now we're
-> using MIPS but we shouldn't assume that this will always be the case.
-> The main purpose of this function is to deassert the interrupt line if the
-> way interrrupts are wired for that platform required so. In the past we were
-> running in hardware where interrupts are sent through special slave port and
-> the interrupt required to be acked or deasserted.
-
-This sounds like something that should be in the interrupt controller
-implementation not the leaf driver, just remove this unless you're
-actually abstracting something.
-
-> >>+	flags = axd_platform_lock();
-> >>+	int_status = ioread32(&cmd->message->int_status);
-> >>+	iowrite32(0, &cmd->message->int_status);
-> >>+
-> >>+	if (!int_status)
-> >>+		goto out;
-
-> >This should cause us to return IRQ_NONE.
-
-> I don't think it's necessary. It could happen that AXD sent a DATAIN
-> interrupt and shortly after sent DATAOUT interrupt but the handler was
-> running before the DATAOUT case is handled causing both interrupts to be
-> handled in one go but the handler could be called again to find out that
-> there's nothing to do.
-
-Please implement your interrupt handler properly so that the genirq
-error handling code can work and it is robust against things going
-wrong in future.  It's not like it's a huge amount of complex code.
-
-> >>+	if (int_status & AXD_INT_ERROR) {
-> >>+		struct axd_dev *axd = container_of(cmd, struct axd_dev, cmd);
-> >>+		int error = ioread32(&cmd->message->error);
-> >>+
-> >>+		pr_debug("<---- Received error interrupt\n");
-> >>+		switch (error) {
-> >>+		default:
-> >>+		case 0:
-> >>+			break;
-
-> >We just ignore these?
-
-> Case 0 doesn't indicate anything anymore. I can print a warning about
-> unexpected error code for the default case.
-
-That's more what I'd expect, yes.
-
-> >>+	/*
-> >>+	 * if we could lock the semaphore, then we're guaranteed that the
-> >>+	 * current rd_idx is valid and ready to be used. So no need to verify
-> >>+	 * that the status of the descriptor at rd_idx is valid.
-> >>+	 */
-> >>+	spin_lock(&desc_ctrl->rd_lock);
-
-> >It really feels like this locking is all complicated and fragile.  I'm
-> >not entirely sure the optimisation is worth it - are we really sending
-> >compressed audio at such a high rate that it's worth having concurrency
-> >handling that's hard to think about?
-
-> This is similar to how the bufferq implementation work. What is the other
-> alternative to this? We do want this to be as fast as possible.
-
-Why not just reuse the bufferq implementation if that's what you want to
-use?  More generally most audio ring buffers just keep track of the last
-place read or written and don't bother with semaphores (why do we even
-need to block?).  It's not just the semaphore you're using here but also
-some non-atomic variables accessed with memory barriers and mutexes all
-scattered over a very large block of code.  It is far too much effort to
-reason about what the locking scheme is supposed to be here to determine
-if it is safe, and that's not going to get any easier when reviewing
-future changes.
-
-Trying to make something overly optimised at the expense of
-comprehensibility and maintainability is not good, if there is a
-pressing performance reason then by all means but that needs to be
-something concrete not just a statement that we want things to run
-faster.
-
-> Maybe my use of the semaphore count to keep track of how many descriptors
-> are available and cause the caller to block is the confusing part? Would
-> better comments help?
-
-Documentation would help somewhat but I really think this is far too
-complicated for what it's trying to do.  As far as I can tell all this
-is doing is simple FIFO type tracking of where the last write and last
-read in the buffer were (which is what most audio drivers do with their
-data buffers).  That should be something that can be done with something
-more like just a single lock.
-
-Based on some of your other comments I think this may have been
-overengineered for some other APIs you were implementing but with the
-ALSA API it should be possible to dramatically simplify it.
-
-> >>+	/*
-> >>+	 * Based on the defined axd_pipe->buf_size and number of input pipes
-> >>+	 * supported by the firmware, we calculate the number of descriptors we
-> >>+	 * need to use using this formula:
-> >>+	 *
-> >>+	 *	axd_pipe->buf_size * num_desc = total_size / num_inputs
-> >>+	 */
-> >>+	num_desc = total_size / (cmd->num_inputs * axd_pipe->buf_size);
-
-> >I'm not sure that was an especially tricky line of code to follow...  am
-> >I missing something here?
-
-> The driver receive a pointer to a contiguous buffer area that it needs to
-> divide it into buffers based on its size, number of pipes in the system, and
-> the desired buffer size.
-
-That is what I think the code is doing but apparently it's sufficiently
-complex that it needs a five line comment including a rewritten version
-of the equation?
-
---MlJ6mS4HGnm+jrmh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV4YbiAAoJECTWi3JdVIfQL+8H/1NVYBGC4eXS6UZ1keGXxAxx
-xEwAgARFFdEMURWdi/VZa5MBu8LfYJ4jwGwF7CYm5OPSESiH5F2aR3wHF2noLT7z
-iMDCqw9H71rQOPpQXmPRONAGrXdsmnLskccpHoOLOX2WUIdwLdnzRx5V1qk4wapg
-sZPYkHVrLCEcf9uAgOGl1zm0AASBGGUoanxje27mAQwBD9nvCt5X6QZ5Je4rO5cS
-Xp9/6C9UTw65DXaEhmba5mxiIBYWrocAI3fWHuHsRq+RhpnfALPULO7eI4e5T8T8
-OoC01RaO6swozs5QGnnx4V8cU8sOe+ZmnxbDZeJpxYlxYHGys+b8ZPwMhUXEqLs=
-=hoe9
------END PGP SIGNATURE-----
-
---MlJ6mS4HGnm+jrmh--
-
---===============1395077111477944011==
-Content-Type: text/plain; charset="us-ascii"
+--===============1802371185==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
+by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxz
+ZWF1ZGlvLWRpc2N1c3MK
 
---===============1395077111477944011==--
+--===============1802371185==--
