@@ -1,20 +1,20 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 4/4] ASoC: mxs-sgtl5000: Convert to
- devm_snd_soc_register_card
-Date: Sun, 30 Aug 2015 17:20:01 +0800
-Message-ID: <1440926401.19424.6.camel@ingics.com>
-References: <1440926161.19424.1.camel@ingics.com>
+From: Jun Nie <jun.nie@linaro.org>
+Subject: Re: [PATCH] ASoC: zx296702-i2s: Fix resource leak when
+	unload module
+Date: Sun, 30 Aug 2015 21:35:09 +0800
+Message-ID: <CABymUCNCRanrutcy-FsbKSEyr5aoufuo9a6nYtmWmOdDtaWpcA@mail.gmail.com>
+References: <1440860970.28601.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 630FA260425
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 11:20:06 +0200 (CEST)
-Received: by pacdd16 with SMTP id dd16so106865985pac.2
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 02:20:05 -0700 (PDT)
-In-Reply-To: <1440926161.19424.1.camel@ingics.com>
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADA4D260468
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 15:35:10 +0200 (CEST)
+Received: by wicfv10 with SMTP id fv10so48569347wic.0
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 06:35:10 -0700 (PDT)
+In-Reply-To: <1440860970.28601.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/mxs/mxs-sgtl5000.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
 
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index 6e6fce6..2b23ffb 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -142,7 +142,7 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
--	ret = snd_soc_register_card(card);
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
- 			ret);
-@@ -154,12 +154,8 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
- 
- static int mxs_sgtl5000_remove(struct platform_device *pdev)
- {
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
- 	mxs_saif_put_mclk(0);
- 
--	snd_soc_unregister_card(card);
--
- 	return 0;
- }
- 
--- 
-2.1.0
+2015-08-29 23:09 GMT+08:00 Axel Lin <axel.lin@ingics.com>:
+> Use devm_* API to fix leaks in current code.
+> 1. Use devm_kzalloc to fix memory leak for zx_i2s when unload the module.
+> 2. Use devm_snd_soc_register_component to ensure component is unregistered
+>    when unload the module.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/zte/zx296702-i2s.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx296702-i2s.c
+> index 1930c42..1cad93d 100644
+> --- a/sound/soc/zte/zx296702-i2s.c
+> +++ b/sound/soc/zte/zx296702-i2s.c
+> @@ -380,7 +380,7 @@ static int zx_i2s_probe(struct platform_device *pdev)
+>         struct zx_i2s_info *zx_i2s;
+>         int ret;
+>
+> -       zx_i2s =  kzalloc(sizeof(*zx_i2s), GFP_KERNEL);
+> +       zx_i2s = devm_kzalloc(&pdev->dev, sizeof(*zx_i2s), GFP_KERNEL);
+>         if (!zx_i2s)
+>                 return -ENOMEM;
+>
+> @@ -401,8 +401,8 @@ static int zx_i2s_probe(struct platform_device *pdev)
+>         writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
+>         platform_set_drvdata(pdev, zx_i2s);
+>
+> -       ret = snd_soc_register_component(&pdev->dev, &zx_i2s_component,
+> -                                        &zx_i2s_dai, 1);
+> +       ret = devm_snd_soc_register_component(&pdev->dev, &zx_i2s_component,
+> +                                             &zx_i2s_dai, 1);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
+>                 return ret;
+> --
+> 2.1.0
+>
+>
+>
