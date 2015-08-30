@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: au1x: psc-i2s: Convert to use
-	devm_ioremap_resource" to the asoc tree
-Date: Sun, 30 Aug 2015 12:26:48 +0100
-Message-ID: <E1ZW0l6-0008EO-0n@finisterre>
-References: <1440904189.32046.3.camel@ingics.com>
+Subject: Applied "ASoC: spear_pcm: Use
+	devm_snd_dmaengine_pcm_register to fix resource leak" to the
+	asoc tree
+Date: Sun, 30 Aug 2015 12:26:50 +0100
+Message-ID: <E1ZW0l8-0008FK-IW@finisterre>
+References: <1440893295.19750.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 06371260499
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 16:17:34 +0200 (CEST)
-In-Reply-To: <1440904189.32046.3.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A2F62605F4
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 16:18:05 +0200 (CEST)
+In-Reply-To: <1440893295.19750.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Manuel Lauss <manuel.lauss@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: au1x: psc-i2s: Convert to use devm_ioremap_resource
+   ASoC: spear_pcm: Use devm_snd_dmaengine_pcm_register to fix resource leak
 
 has been applied to the asoc tree at
 
@@ -53,46 +54,34 @@ to this mail.
 Thanks,
 Mark
 
->From fd63542fc5492b86158dbd53ce5de764f171b1b6 Mon Sep 17 00:00:00 2001
+>From 2c3f4b97eea5ce405baf2591715445da6ed05851 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 30 Aug 2015 11:09:49 +0800
-Subject: [PATCH] ASoC: au1x: psc-i2s: Convert to use devm_ioremap_resource
+Date: Sun, 30 Aug 2015 08:08:15 +0800
+Subject: [PATCH] ASoC: spear_pcm: Use devm_snd_dmaengine_pcm_register to fix
+ resource leak
 
-Use devm_ioremap_resource() instead of open code.
+All the callers assume devm_spear_pcm_platform_register is a devm_ API, so
+use devm_snd_dmaengine_pcm_register in devm_spear_pcm_platform_register.
 
+Fixes: e1771bcf99b0 ("ASoC: SPEAr: remove custom DMA alloc compat function")
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/psc-i2s.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ sound/soc/spear/spear_pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index e742ef6..38e853a 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -305,19 +305,9 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
+index a7dc3c5..e8476da 100644
+--- a/sound/soc/spear/spear_pcm.c
++++ b/sound/soc/spear/spear_pcm.c
+@@ -44,7 +44,7 @@ int devm_spear_pcm_platform_register(struct device *dev,
+ 	*config = spear_dmaengine_pcm_config;
+ 	config->compat_filter_fn = filter;
  
- 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iores)
--		return -ENODEV;
--
--	ret = -EBUSY;
--	if (!devm_request_mem_region(&pdev->dev, iores->start,
--				     resource_size(iores),
--				     pdev->name))
--		return -EBUSY;
--
--	wd->mmio = devm_ioremap(&pdev->dev, iores->start,
--				resource_size(iores));
--	if (!wd->mmio)
--		return -EBUSY;
-+	wd->mmio = devm_ioremap_resource(&pdev->dev, iores);
-+	if (IS_ERR(wd->mmio))
-+		return PTR_ERR(wd->mmio);
- 
- 	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmares)
+-	return snd_dmaengine_pcm_register(dev, config,
++	return devm_snd_dmaengine_pcm_register(dev, config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
 -- 
 2.5.0
