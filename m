@@ -1,21 +1,18 @@
-From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: sh: ssi: Convert to
-	devm_snd_soc_register_component
-Date: Sun, 30 Aug 2015 08:24:34 +0200
-Message-ID: <CAOLZvyFw=sEACBxs_NHrKa9zhMEAwfa0nQVKz-tSnKnKpKf=Ng@mail.gmail.com>
-References: <1440730115.11149.0.camel@ingics.com>
- <1440730253.11149.2.camel@ingics.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/4] ASoC: au1x: Convert to
+	devm_snd_soc_register_card
+Date: Sun, 30 Aug 2015 17:16:01 +0800
+Message-ID: <1440926161.19424.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f50.google.com (mail-la0-f50.google.com
- [209.85.215.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 984BD2612AC
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 08:25:14 +0200 (CEST)
-Received: by lanb10 with SMTP id b10so18932376lan.2
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 23:25:14 -0700 (PDT)
-In-Reply-To: <1440730253.11149.2.camel@ingics.com>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5405D260418
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 11:16:08 +0200 (CEST)
+Received: by pabpg12 with SMTP id pg12so368058pab.3
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 02:16:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,14 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 28, 2015 at 4:50 AM, Axel Lin <axel.lin@ingics.com> wrote:
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  sound/soc/sh/ssi.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/au1x/db1000.c | 10 +---------
+ sound/soc/au1x/db1200.c | 10 +---------
+ 2 files changed, 2 insertions(+), 18 deletions(-)
 
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+diff --git a/sound/soc/au1x/db1000.c b/sound/soc/au1x/db1000.c
+index 452f404..e97c327 100644
+--- a/sound/soc/au1x/db1000.c
++++ b/sound/soc/au1x/db1000.c
+@@ -38,14 +38,7 @@ static int db1000_audio_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &db1000_ac97;
+ 	card->dev = &pdev->dev;
+-	return snd_soc_register_card(card);
+-}
+-
+-static int db1000_audio_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-	snd_soc_unregister_card(card);
+-	return 0;
++	return devm_snd_soc_register_card(&pdev->dev, card);
+ }
+ 
+ static struct platform_driver db1000_audio_driver = {
+@@ -54,7 +47,6 @@ static struct platform_driver db1000_audio_driver = {
+ 		.pm	= &snd_soc_pm_ops,
+ 	},
+ 	.probe		= db1000_audio_probe,
+-	.remove		= db1000_audio_remove,
+ };
+ 
+ module_platform_driver(db1000_audio_driver);
+diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
+index 58c3164..638ca0b 100644
+--- a/sound/soc/au1x/db1200.c
++++ b/sound/soc/au1x/db1200.c
+@@ -174,14 +174,7 @@ static int db1200_audio_probe(struct platform_device *pdev)
+ 
+ 	card = db1200_cards[pid->driver_data];
+ 	card->dev = &pdev->dev;
+-	return snd_soc_register_card(card);
+-}
+-
+-static int db1200_audio_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-	snd_soc_unregister_card(card);
+-	return 0;
++	return devm_snd_soc_register_card(&pdev->dev, card);
+ }
+ 
+ static struct platform_driver db1200_audio_driver = {
+@@ -191,7 +184,6 @@ static struct platform_driver db1200_audio_driver = {
+ 	},
+ 	.id_table	= db1200_pids,
+ 	.probe		= db1200_audio_probe,
+-	.remove		= db1200_audio_remove,
+ };
+ 
+ module_platform_driver(db1200_audio_driver);
+-- 
+2.1.0
