@@ -1,20 +1,20 @@
 From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [PATCH] ASoC: au1x: psc-i2s: Convert to use
-	devm_ioremap_resource
-Date: Sun, 30 Aug 2015 08:22:35 +0200
-Message-ID: <CAOLZvyGJpoDe0wM+4yyTjpsCF6S+nnSo0bO4WuNT-q+bWDr5TA@mail.gmail.com>
-References: <1440904189.32046.3.camel@ingics.com>
+Subject: Re: [PATCH 1/5] ASoC: au1x: Convert to
+	devm_snd_soc_register_platform
+Date: Sun, 30 Aug 2015 08:24:02 +0200
+Message-ID: <CAOLZvyGYEgxoNsgRhm+3BXmUFBp7C91Mb_CiPGJjf_8ew7cJCg@mail.gmail.com>
+References: <1440637769.18698.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 50C82260709
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 08:23:15 +0200 (CEST)
-Received: by lbcbn3 with SMTP id bn3so46497489lbc.2
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 23:23:14 -0700 (PDT)
-In-Reply-To: <1440904189.32046.3.camel@ingics.com>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id C952626074D
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 08:24:42 +0200 (CEST)
+Received: by laboe4 with SMTP id oe4so28011656lab.0
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 23:24:42 -0700 (PDT)
+In-Reply-To: <1440637769.18698.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,42 +28,11 @@ To: Axel Lin <axel.lin@ingics.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 30, 2015 at 5:09 AM, Axel Lin <axel.lin@ingics.com> wrote:
-> Use devm_ioremap_resource() instead of open code.
->
+On Thu, Aug 27, 2015 at 3:09 AM, Axel Lin <axel.lin@ingics.com> wrote:
 > Signed-off-by: Axel Lin <axel.lin@ingics.com>
 > ---
->  sound/soc/au1x/psc-i2s.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
->
-> diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-> index e742ef6..38e853a 100644
-> --- a/sound/soc/au1x/psc-i2s.c
-> +++ b/sound/soc/au1x/psc-i2s.c
-> @@ -305,19 +305,9 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
->                 return -ENOMEM;
->
->         iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -       if (!iores)
-> -               return -ENODEV;
-> -
-> -       ret = -EBUSY;
-> -       if (!devm_request_mem_region(&pdev->dev, iores->start,
-> -                                    resource_size(iores),
-> -                                    pdev->name))
-> -               return -EBUSY;
-> -
-> -       wd->mmio = devm_ioremap(&pdev->dev, iores->start,
-> -                               resource_size(iores));
-> -       if (!wd->mmio)
-> -               return -EBUSY;
-> +       wd->mmio = devm_ioremap_resource(&pdev->dev, iores);
-> +       if (IS_ERR(wd->mmio))
-> +               return PTR_ERR(wd->mmio);
->
->         dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
->         if (!dmares)
-> --
-
+>  sound/soc/au1x/dbdma2.c | 11 ++---------
+>  sound/soc/au1x/dma.c    | 11 ++---------
+>  2 files changed, 4 insertions(+), 18 deletions(-)
 
 Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
