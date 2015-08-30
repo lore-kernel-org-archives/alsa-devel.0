@@ -1,20 +1,20 @@
 From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [PATCH] ASoC: sh: dma-sh7760: Convert to
-	devm_snd_soc_register_platform
-Date: Sun, 30 Aug 2015 08:22:09 +0200
-Message-ID: <CAOLZvyE3_==Eo3JyLnMRjd=2QmqemaLRnNJ_JPSv3Rm071bX6A@mail.gmail.com>
-References: <1440904053.32046.1.camel@ingics.com>
+Subject: Re: [PATCH] ASoC: au1x: psc-i2s: Convert to use
+	devm_ioremap_resource
+Date: Sun, 30 Aug 2015 08:22:35 +0200
+Message-ID: <CAOLZvyGJpoDe0wM+4yyTjpsCF6S+nnSo0bO4WuNT-q+bWDr5TA@mail.gmail.com>
+References: <1440904189.32046.3.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
- [209.85.217.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D15260705
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 08:22:49 +0200 (CEST)
-Received: by lbvd4 with SMTP id d4so10500164lbv.3
- for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 23:22:49 -0700 (PDT)
-In-Reply-To: <1440904053.32046.1.camel@ingics.com>
+Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50C82260709
+ for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 08:23:15 +0200 (CEST)
+Received: by lbcbn3 with SMTP id bn3so46497489lbc.2
+ for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2015 23:23:14 -0700 (PDT)
+In-Reply-To: <1440904189.32046.3.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,42 +28,42 @@ To: Axel Lin <axel.lin@ingics.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 30, 2015 at 5:07 AM, Axel Lin <axel.lin@ingics.com> wrote:
+On Sun, Aug 30, 2015 at 5:09 AM, Axel Lin <axel.lin@ingics.com> wrote:
+> Use devm_ioremap_resource() instead of open code.
+>
 > Signed-off-by: Axel Lin <axel.lin@ingics.com>
 > ---
->  sound/soc/sh/dma-sh7760.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  sound/soc/au1x/psc-i2s.c | 16 +++-------------
+>  1 file changed, 3 insertions(+), 13 deletions(-)
 >
-> diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
-> index fd11404..8fad444 100644
-> --- a/sound/soc/sh/dma-sh7760.c
-> +++ b/sound/soc/sh/dma-sh7760.c
-> @@ -327,13 +327,7 @@ static struct snd_soc_platform_driver sh7760_soc_platform = {
+> diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+> index e742ef6..38e853a 100644
+> --- a/sound/soc/au1x/psc-i2s.c
+> +++ b/sound/soc/au1x/psc-i2s.c
+> @@ -305,19 +305,9 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+>                 return -ENOMEM;
 >
->  static int sh7760_soc_platform_probe(struct platform_device *pdev)
->  {
-> -       return snd_soc_register_platform(&pdev->dev, &sh7760_soc_platform);
-> -}
+>         iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       if (!iores)
+> -               return -ENODEV;
 > -
-> -static int sh7760_soc_platform_remove(struct platform_device *pdev)
-> -{
-> -       snd_soc_unregister_platform(&pdev->dev);
-> -       return 0;
-> +       return devm_snd_soc_register_platform(&pdev->dev, &sh7760_soc_platform);
->  }
+> -       ret = -EBUSY;
+> -       if (!devm_request_mem_region(&pdev->dev, iores->start,
+> -                                    resource_size(iores),
+> -                                    pdev->name))
+> -               return -EBUSY;
+> -
+> -       wd->mmio = devm_ioremap(&pdev->dev, iores->start,
+> -                               resource_size(iores));
+> -       if (!wd->mmio)
+> -               return -EBUSY;
+> +       wd->mmio = devm_ioremap_resource(&pdev->dev, iores);
+> +       if (IS_ERR(wd->mmio))
+> +               return PTR_ERR(wd->mmio);
 >
->  static struct platform_driver sh7760_pcm_driver = {
-> @@ -342,7 +336,6 @@ static struct platform_driver sh7760_pcm_driver = {
->         },
->
->         .probe = sh7760_soc_platform_probe,
-> -       .remove = sh7760_soc_platform_remove,
->  };
->
->  module_platform_driver(sh7760_pcm_driver);
+>         dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>         if (!dmares)
 > --
 
-
-Looking good,
 
 Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
