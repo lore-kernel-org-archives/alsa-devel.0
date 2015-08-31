@@ -1,46 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] reset: Add (devm_)reset_control_get stub functions
-Date: Mon, 31 Aug 2015 15:56:53 +0100
-Message-ID: <20150831145653.GR12027@sirena.org.uk>
-References: <1441012943.22251.1.camel@ingics.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH 1/2] ASoC: fsl-asoc-card: put ASRC OF node in
+ case of unknown device
+Date: Mon, 31 Aug 2015 17:07:12 +0200
+Message-ID: <55E46DA0.2080500@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xi/AxZ9U2VfEekdX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1441012943.22251.1.camel@ingics.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1141260469
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 17:07:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
+In case of unknown DT compatible device the ASRC OF node
+possibly acquired earlier by of_parse_phandle() has
+to be put before returning from probe method.
 
---xi/AxZ9U2VfEekdX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
+---
+ sound/soc/fsl/fsl-asoc-card.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-On Mon, Aug 31, 2015 at 05:22:23PM +0800, Axel Lin wrote:
-
-> So the drivers can be compiled with CONFIG_RESET_CONTROLLER disabled.
-
-The lack of this is breaking the build for the newly added ASoC STI
-driver in some COMPILE_TEST configurations, can we please get this in
-for v4.3-rc1?
-
---xi/AxZ9U2VfEekdX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV5Gs0AAoJECTWi3JdVIfQ5p4H/jcjd03J7W8PW/NUmczxnC39
-DY07GK0PDb0u7Ed2JE/YnVS8WNHtY/q8hGXBeYDaW9BZyuOQEkoohlmtN4fTYLkM
-PdcnFCfs2VMJL++Z/6eZ16VhxVfHYNBSnuxEuCPK+ITJuhXbCs3IcL0aNvBPb3CE
-LF9yYV3TNOBNjREVzLTk6mtqbxgZ5jihzKuLkhePCCVLNWU1oXDjQBy9RfcuTLjw
-ZzlQ58Dn0Lr9rQ2pA3m5en6SLYHYv7zJgjwUsEb1FefQ5kDJKyonLYlk4fXlVQu9
-CAFSMLLjMMKAw95/7n+KI44807RtGKAQoKR7Yrz3ODb1itFm2qmeAuKnOGxVJg4=
-=igxG
------END PGP SIGNATURE-----
-
---xi/AxZ9U2VfEekdX--
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 5aeb6ed..96f55ae 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -488,7 +488,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto asrc_fail;
+ 	}
+ 
+ 	/* Common settings for corresponding Freescale CPU DAI driver */
