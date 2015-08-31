@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
 Subject: Re: What is exact definition of "normal/inverted"
- FSYNC signal polarity?
-Date: Mon, 31 Aug 2015 19:02:50 +0100
-Message-ID: <20150831180250.GT12027@sirena.org.uk>
+	FSYNC signal polarity?
+Date: Mon, 31 Aug 2015 12:05:51 -0700
+Message-ID: <CAOMFOmVfE2qiXN=h7i1pJ38JJL3J94UgrN_q+ratYTu=nr372w@mail.gmail.com>
 References: <CAOMFOmXwfBydswh0BiSOB42KMa0T+0-W1mj0=d4AhisToFxkVg@mail.gmail.com>
+ <20150831180250.GT12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6760628635714737050=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E87A260527
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 20:02:59 +0200 (CEST)
-In-Reply-To: <CAOMFOmXwfBydswh0BiSOB42KMa0T+0-W1mj0=d4AhisToFxkVg@mail.gmail.com>
+Received: from mail-vk0-f52.google.com (mail-vk0-f52.google.com
+ [209.85.213.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2443526052B
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 21:05:53 +0200 (CEST)
+Received: by vkhf67 with SMTP id f67so43914404vkh.1
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 12:05:51 -0700 (PDT)
+In-Reply-To: <20150831180250.GT12027@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +25,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: =?utf-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, lengo@google.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Ben Zhang <benzh@google.com>, =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, lengo@google.com, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============6760628635714737050==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XpNX0AP0or0vBirh"
-Content-Disposition: inline
+Thanks.
 
+On Mon, Aug 31, 2015 at 11:02 AM, Mark Brown <broonie@kernel.org> wrote:
+> The simplest thing to do is look at the datasheets for Wolfson parts
+> like the wm8731, they have some very clear diagrams of all the data
+> modes we support.
 
---XpNX0AP0or0vBirh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I looked at http://www.rockbox.org/wiki/pub/Main/DataSheets/WM8731_8731L.pdf
+spec and it is what I see
 
-On Mon, Aug 31, 2015 at 09:40:04AM -0700, Anatol Pomozov wrote:
+"normal" bitclock means data sensing happens at rising edge of BCLK.
+It is the same as TegraX1 and rt5677 examples above.
 
-> I am trying to configure TegraX1 SoC and Realtek5677 codec. These two
-> drivers have different meaning of FSYNC polarity in TDM mode A format.
+As of FSYNC - the wm8731 driver uses Reg0x7[4] to set FSYNC polarity.
+If FSYNC is inverted then bit set to 1. According to the spec:
 
-The simplest thing to do is look at the datasheets for Wolfson parts
-like the wm8731, they have some very clear diagrams of all the data
-modes we support.
-
---XpNX0AP0or0vBirh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV5JbJAAoJECTWi3JdVIfQzE4H/2K4ENKpLj8chgCMurpXpkLT
-M5idlJjCl0oPmCIFXb7evEeIZavqyDveRfMefjqLG3h/Zl2cwb0cS92Is5J+Mswv
-+HkNqYjF30STWCgB+BjkZZUztB1Muq+jbA7mVFuGyDbkQ9MIAbHubwtjzBxrhPBa
-XGcDJr0JVWqlAZ4pB3UFgJC11CvOP0hX3OLVdKIknZmzCTXt4IHvvcVj4CqROyCw
-6F/4nLgvINvg5NMHaA6677OQ7BusCpxQ/mQSIp7L9uy4qWQKQJmcHdf1fTKWaeG8
-aiLZLz9w9W97mxBlt/izpAC7av6JPw4qgt6vK/EXm3woN1H84nm+hpMsixr6yHs=
-=AbRZ
------END PGP SIGNATURE-----
-
---XpNX0AP0or0vBirh--
-
---===============6760628635714737050==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+DACLRC phase control (in left, right or I2S modes)
+1 = Right Channel DAC data when DACLRC high
+0 = Right Channel DAC data when DACLRC low
+(opposite phasing in I2S mode)
+or
+DSP mode A/B select (in DSP mode only)
+1 = MSB is available on 2nd BCLK rising edge after DACLRC rising edge
+0 = MSB is available on 1st BCLK rising edge after DACLRC rising edge
 
 
---===============6760628635714737050==--
+Thus "normal" FSYNC for this driver means that the frame (L channel)
+starts at rising edge of FSYNC (wm8731 datasheet calls it DACLRC).
+"inverted" means frame starts at the falling edge. It differs both
+from TegraX1 and rt5677 above.
+
+For TDM mode A the chip seems always expect to see "normal" polarity
+FSYNC (frame starts at rising edge of FSYNC).
+
+
+
+
+It looks like each driver uses its own definition of FSYNC polarity.
+To avoid compatibility problems between different codecs/socs there
+should be a clean definition of what is FSYNC polarity is. I would
+propose something simple like:
+    ****  "normal" FSYNC means frame starts at rising edge of FSYNC,
+and "inverted" frame starts at falling FSYNC edge ****
+i.e. the same as for 8731.
