@@ -1,17 +1,18 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: Document snd-soc-dummy-dai purpose
-Date: Mon, 31 Aug 2015 08:24:23 -0700
-Message-ID: <1441034663-4372-1-git-send-email-anatol.pomozov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Document snd-soc-dummy-dai purpose" to
+	the asoc tree
+Date: Mon, 31 Aug 2015 16:41:53 +0100
+Message-ID: <E1ZWRDV-0003Oh-Ko@finisterre>
+References: <1441034663-4372-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E4A7260494
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 17:24:28 +0200 (CEST)
-Received: by pabpg12 with SMTP id pg12so9993750pab.3
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 08:24:27 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C43B92604F0
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 17:42:29 +0200 (CEST)
+In-Reply-To: <1441034663-4372-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,11 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
+
+   ASoC: Document snd-soc-dummy-dai purpose
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d76f41982f2fc88492efd96c7c3178044f32e125 Mon Sep 17 00:00:00 2001
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Date: Mon, 31 Aug 2015 08:24:23 -0700
+Subject: [PATCH] ASoC: Document snd-soc-dummy-dai purpose
+
 Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/soc-utils.c | 9 +++++++++
  1 file changed, 9 insertions(+)
@@ -51,4 +85,4 @@ index 362c69a..53dd085 100644
  	.name = "snd-soc-dummy-dai",
  	.playback = {
 -- 
-2.5.0.457.gab17608
+2.5.0
