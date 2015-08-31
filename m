@@ -1,17 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: ics43432: Fix build errors
-Date: Mon, 31 Aug 2015 09:14:02 +0200
-Message-ID: <alpine.DEB.2.02.1508310854020.16666@lnxricardw1.se.axis.com>
+Date: Mon, 31 Aug 2015 09:57:59 +0100
+Message-ID: <20150831085759.GG12027@sirena.org.uk>
 References: <alpine.DEB.2.02.1508281200060.16666@lnxricardw1.se.axis.com>
  <20150828162156.GP12027@sirena.org.uk>
+ <alpine.DEB.2.02.1508310854020.16666@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4318126300868131676=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EA5326063A
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 09:14:18 +0200 (CEST)
-In-Reply-To: <20150828162156.GP12027@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9B08260561
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 10:58:12 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1508310854020.16666@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,80 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Fri, 28 Aug 2015, Mark Brown wrote:
+--===============4318126300868131676==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="My20y6i86AR9cALP"
+Content-Disposition: inline
 
-> On Fri, Aug 28, 2015 at 12:11:48PM +0200, Ricard Wanderlof wrote:
-> > =
 
-> > Fix build errors
-> =
+--My20y6i86AR9cALP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I'll apply this since it fixes a build issue but please as I said in repl=
-y =
+On Mon, Aug 31, 2015 at 09:14:02AM +0200, Ricard Wanderlof wrote:
+> On Fri, 28 Aug 2015, Mark Brown wrote:
+> > On Fri, Aug 28, 2015 at 12:11:48PM +0200, Ricard Wanderlof wrote:
 
-> to your earlier off list query send one patch per issue (as covered in =
+> > I'll apply this since it fixes a build issue but please as I said in re=
+ply=20
+> > to your earlier off list query send one patch per issue (as covered in=
+=20
+> > SubmittingPatches) and try to provide useful changelogs describing the=
+=20
+> > issue being fixed.
 
-> SubmittingPatches) and try to provide useful changelogs describing the =
+> I purposely grouped both the mismatched variable name and license name=20
+> into a single patch, because both cause build failures when I tested in a=
+n=20
+> x86 build, the latter resulting in:
 
-> issue being fixed.
+That isn't important or helpful, they are still separate build failures
+and should be sent as separate commits.
 
-I purposely grouped both the mismatched variable name and license name =
+> I should have been more descriptive in the commit message though. I did=
+=20
+> feel though that given the diff it was fairly obvious what the problems=
+=20
+> were so I didn't think it needed further explanation and would only clog=
+=20
+> up the commit log.
 
-into a single patch, because both cause build failures when I tested in an =
+If the commit message is too bad I may not look at the patch.  Part of
+the review is making sure that the commit message describes what the
+changes are doing to help make sure that the commit does what the author
+thinks it does.
 
-x86 build, the latter resulting in:
+--My20y6i86AR9cALP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-.
-.
-.
-  Building modules, stage 2.
-  MODPOST 2426 modules
-FATAL: modpost: GPL-incompatible module snd-soc-ics43432.ko uses GPL-only =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-symbol '__platform_driver_register'
-make[1]: *** [__modpost] Error 1
+iQEcBAEBCAAGBQJV5BcWAAoJECTWi3JdVIfQ9lYH/2lO059mj/8F1f2wYEkNRxr7
+oyitotkPONnEfMxkXiouMHE1klzmdPSFh//saL7/cYy8IoDzuM91tv5hDUFJYRaV
+GHzVZvSolC8d3mNiZ5pwq1SQ8l408Doe16v72TkKNCcRH49a1UztA0dVxf2H94CJ
+bSId3ySlhujvyAUdQtn3RSKtGCrMAjQv37pmJu/8VND60bTIQ3PiQhR6tj9bE1ZO
+3suNU5Ve6iAwggYW02uMJdZuWlq0MrGdIykH+VTZxCGmGNQd8ucxzLtPA6d4wzQE
+XCSdL1G3HEQW/W9GPKY7L8JYZ8Ot9OmU+2EYNHw4eA3rlW9/0eKgzjrr2pT/CX8=
+=T52h
+-----END PGP SIGNATURE-----
 
-I should have been more descriptive in the commit message though. I did =
+--My20y6i86AR9cALP--
 
-feel though that given the diff it was fairly obvious what the problems =
+--===============4318126300868131676==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-were so I didn't think it needed further explanation and would only clog =
 
-up the commit log.
-
-> > Not sure how the incorrect name or the misspelled license string got =
-
-> > through my local build, perhaps because I've been developing this for =
-
-> > an ARM system? Have now set up a tree to build for x86 as well, where =
-
-> > the errors manifest themselves, to avoid this type of stuff happening =
-
-> > in the future.
-> =
-
-> You can't be using a modern ARM system there, modern ARM systems are DT =
-
-> based :(
-
-Well, I am and it is. :) I double checked that CONFIG_OF was set when =
-
-compiling the file, and also that the relevant lines of codes were in fact =
-
-compiled. I don't know if there's any other kernel configuration (either a =
-
-CONFIG_ option or some build option) which can influence the behavior =
-
-though.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--===============4318126300868131676==--
