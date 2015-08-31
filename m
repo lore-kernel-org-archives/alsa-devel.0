@@ -1,53 +1,53 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH] reset: Add (devm_)reset_control_get stub functions
-Date: Mon, 31 Aug 2015 18:01:26 +0200
-Message-ID: <1441036886.3234.50.camel@pengutronix.de>
-References: <1441012943.22251.1.camel@ingics.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: What is exact definition of "normal/inverted" FSYNC
+	signal polarity?
+Date: Mon, 31 Aug 2015 09:40:04 -0700
+Message-ID: <CAOMFOmXwfBydswh0BiSOB42KMa0T+0-W1mj0=d4AhisToFxkVg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1441012943.22251.1.camel@ingics.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vk0-f46.google.com (mail-vk0-f46.google.com
+ [209.85.213.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D241260496
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 18:40:05 +0200 (CEST)
+Received: by vkbf67 with SMTP id f67so35976811vkb.0
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 09:40:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, lengo@google.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Axel,
+Hi
 
-thank you for the patch.
+I am trying to configure TegraX1 SoC and Realtek5677 codec. These two
+drivers have different meaning of FSYNC polarity in TDM mode A format.
 
-Am Montag, den 31.08.2015, 17:22 +0800 schrieb Axel Lin:
-> So the drivers can be compiled with CONFIG_RESET_CONTROLLER disabled.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  include/linux/reset.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/include/linux/reset.h b/include/linux/reset.h
-> index da5602b..cd42c1b 100644
-> --- a/include/linux/reset.h
-> +++ b/include/linux/reset.h
-> @@ -74,6 +74,18 @@ static inline int device_reset_optional(struct device *dev)
->  	return -ENOSYS;
->  }
->  
-> +static inline struct reset_control *reset_control_get(
-> +					struct device *dev, const char *id)
-> +{
-> +	return ERR_PTR(-ENOSYS);
-> +}
-> +
-> +static inline struct reset_control *devm_reset_control_get(
-> +					struct device *dev, const char *id)
-> +{
-> +	return ERR_PTR(-ENOSYS);
-> +}
-> +
+* TegraX1 driver thinks that "normal" polarity is when a frame starts
+with FSYNC falling edge. TegraX1 applies it to all formats (I2S,
+PCM/TDM mode A). And inverted FSYNC means that frame starts with
+rising edge of FSYNC.
 
-Could you add a WARN_ON(1) to both, make them __must_check, and return
-something other than -ENOSYS. For example the gpio stubs return -EINVAL.
+* RT5677 thinks that "normal" for I2S is "frame starts with falling
+edge". And for TMD mode A "normal" means "frame starts with rising
+FSYNC edge".
 
-regards
-Philipp
+Thus normal/inverted FSYNC in TDM mode A are opposite at these 2
+chips. Which one is correct? What is exact definition of
+SND_SOC_DAIFMT_xB_yF constants in soc-dai.h?
+
+I tried to google if I2S spec [1] defines FSYNC polarity but no luck.
+
+It worth to clarify definition of BCLK polarity as well. I believe
+"normal" BCLK is "line sensing happens at rising edge", "inverted"
+BCLK - "line sensing happens at falling edge". Is it correct?
+
+[1] https://web.archive.org/web/20060821114007/http://www.semiconductors.philips.com/acrobat_download/various/I2SBUS.pdf
