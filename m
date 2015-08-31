@@ -1,28 +1,100 @@
-From: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] Revert part of "ASoC: tegra: Convert to managed resources"
-Date: Mon, 31 Aug 2015 14:27:14 +0900
-Message-ID: <CAAVeFuJ4Mt7R3TSKyytW=5UNsJMxT_c+4dqG_qzHq8i3JmhT1w@mail.gmail.com>
-References: <20150818115645.GA3345@localhost>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] ASoC: ics43432: Fix build errors
+Date: Mon, 31 Aug 2015 09:14:02 +0200
+Message-ID: <alpine.DEB.2.02.1508310854020.16666@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508281200060.16666@lnxricardw1.se.axis.com>
+ <20150828162156.GP12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150818115645.GA3345@localhost>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EA5326063A
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 09:14:18 +0200 (CEST)
+In-Reply-To: <20150828162156.GP12027@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 18, 2015 at 8:56 PM, Vaishali Thakkar
-<vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> Revert the problematic part of commit 470805eb9f31 ("ASoC: tegra:
-> Convert to managed resources"). Before this commit, PM cleanup was
-> performed after the component was unregistered. But returning
-> directly will skip PM cleanup. So, to be on safe side it is better
-> to use snd_soc_register_component instead of
-> devm_snd_soc_register_component.
->
-> Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-I'm probably late for the party, but FWIW:
+On Fri, 28 Aug 2015, Mark Brown wrote:
 
-Reviewed-by: Alexandre Courbot <acourbot-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> On Fri, Aug 28, 2015 at 12:11:48PM +0200, Ricard Wanderlof wrote:
+> > =
+
+> > Fix build errors
+> =
+
+> I'll apply this since it fixes a build issue but please as I said in repl=
+y =
+
+> to your earlier off list query send one patch per issue (as covered in =
+
+> SubmittingPatches) and try to provide useful changelogs describing the =
+
+> issue being fixed.
+
+I purposely grouped both the mismatched variable name and license name =
+
+into a single patch, because both cause build failures when I tested in an =
+
+x86 build, the latter resulting in:
+
+.
+.
+.
+  Building modules, stage 2.
+  MODPOST 2426 modules
+FATAL: modpost: GPL-incompatible module snd-soc-ics43432.ko uses GPL-only =
+
+symbol '__platform_driver_register'
+make[1]: *** [__modpost] Error 1
+
+I should have been more descriptive in the commit message though. I did =
+
+feel though that given the diff it was fairly obvious what the problems =
+
+were so I didn't think it needed further explanation and would only clog =
+
+up the commit log.
+
+> > Not sure how the incorrect name or the misspelled license string got =
+
+> > through my local build, perhaps because I've been developing this for =
+
+> > an ARM system? Have now set up a tree to build for x86 as well, where =
+
+> > the errors manifest themselves, to avoid this type of stuff happening =
+
+> > in the future.
+> =
+
+> You can't be using a modern ARM system there, modern ARM systems are DT =
+
+> based :(
+
+Well, I am and it is. :) I double checked that CONFIG_OF was set when =
+
+compiling the file, and also that the relevant lines of codes were in fact =
+
+compiled. I don't know if there's any other kernel configuration (either a =
+
+CONFIG_ option or some build option) which can influence the behavior =
+
+though.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
