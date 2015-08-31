@@ -1,45 +1,28 @@
-From: Alexandre Courbot <gnurou@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: Use devm_ioremap_resource
-	instead of open code
-Date: Mon, 31 Aug 2015 14:21:14 +0900
-Message-ID: <CAAVeFuKdQmewtfk+FL5a6VVOfbPLsrFvBUEiiD7zUDNBR-gL4w@mail.gmail.com>
-References: <1440343934.18793.1.camel@ingics.com>
+From: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] Revert part of "ASoC: tegra: Convert to managed resources"
+Date: Mon, 31 Aug 2015 14:27:14 +0900
+Message-ID: <CAAVeFuJ4Mt7R3TSKyytW=5UNsJMxT_c+4dqG_qzHq8i3JmhT1w@mail.gmail.com>
+References: <20150818115645.GA3345@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
- [209.85.218.54])
- by alsa0.perex.cz (Postfix) with ESMTP id B740B26055C
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 07:21:34 +0200 (CEST)
-Received: by oibi18 with SMTP id i18so53044352oib.3
- for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2015 22:21:33 -0700 (PDT)
-In-Reply-To: <1440343934.18793.1.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, Vaishali Thakkar <vthakkar1994@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150818115645.GA3345@localhost>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 24, 2015 at 12:32 AM, Axel Lin <axel.lin@ingics.com> wrote:
-> Use devm_ioremap_resource() to simplify the code.
+On Tue, Aug 18, 2015 at 8:56 PM, Vaishali Thakkar
+<vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> Revert the problematic part of commit 470805eb9f31 ("ASoC: tegra:
+> Convert to managed resources"). Before this commit, PM cleanup was
+> performed after the component was unregistered. But returning
+> directly will skip PM cleanup. So, to be on safe side it is better
+> to use snd_soc_register_component instead of
+> devm_snd_soc_register_component.
 >
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  sound/soc/tegra/tegra20_das.c   | 23 ++++------------------
->  sound/soc/tegra/tegra20_i2s.c   | 23 ++++------------------
->  sound/soc/tegra/tegra20_spdif.c | 22 ++++-----------------
->  sound/soc/tegra/tegra30_ahub.c  | 43 +++++++----------------------------------
->  sound/soc/tegra/tegra30_i2s.c   | 23 ++++------------------
->  5 files changed, 23 insertions(+), 111 deletions(-)
+> Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Nice negative line count!
+I'm probably late for the party, but FWIW:
 
-Acked-by: Alexandre Courbot <acourbot@nvidia.com>
+Reviewed-by: Alexandre Courbot <acourbot-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
