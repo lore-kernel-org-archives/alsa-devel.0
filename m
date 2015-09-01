@@ -1,78 +1,64 @@
-From: Albert Chen <albertchen@realtek.com>
-Subject: Re: [PATCH] ASoC: Document DAI signal polarity
-Date: Tue, 1 Sep 2015 01:27:26 +0000
-Message-ID: <9EE27E29D4384141AEEB23E69581718501431DDB@RTITMBSV05.realtek.com.tw>
-References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [alsa-devel] Linux 4.2 ALSA snd-usb-audio inconsistent lock state
+ warn in PCM nonatomic mode
+Date: Tue, 1 Sep 2015 11:40:47 -0600
+Message-ID: <55E5E31F.6040802@osg.samsung.com>
+References: <55E4D9BE.2040308@osg.samsung.com> <55E564ED.4050609@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 96F332616F3
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 03:27:35 +0200 (CEST)
-In-Reply-To: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, "broonie@kernel.org" <broonie@kernel.org>, "lars@metafoo.de" <lars@metafoo.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <55E564ED.4050609@ladisch.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Loop more
+On 09/01/2015 02:42 AM, Clemens Ladisch wrote:
+> Shuah Khan wrote:
+>> +++ b/sound/usb/stream.c
+>> pcm->private_data = as;
+>> pcm->private_free = snd_usb_audio_pcm_free;
+>> pcm->info_flags = 0;
+>> + pcm->nonatomic = true;
+> 
+> Why do you think you need nonatomic mode in the USB audio driver?
+> 
 
------Original Message-----
-From: Anatol Pomozov [mailto:anatol.pomozov@gmail.com] 
-Sent: Tuesday, September 01, 2015 4:51 AM
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org; lars@metafoo.de; Albert Chen; liam.r.girdwood@linux.intel.com; Anatol Pomozov
-Subject: [PATCH] ASoC: Document DAI signal polarity
+Short answer is that the need is not a generic one, but a device
+specific need to add a fewature. Now the longer version below.
 
-Per discussion at [1] currently there is no clear definition of what is FSYNC polarity.
-Different drivers use its own definition of what is "normal" and what is "inverted"
-fsync in different modes. This leads to compatibility problems between drivers.
+This is for a for AU0828 Hauppauge HVR950Q media device. snd-usb-audio
+driver provides Audio Capture support on this device with DVB and Video
+drivers driving the device for Digital and Video functions.
 
-Explicitly specify meaning of BCLK/FSYNC polarity.
+I have been working on adding Media Controller support for this chip
+as chip specific feature in ALSA. This will allow sharing resources
+such as the tuner across the drivers that control the device (DVB,
+Video, snd-usb-audio). Media Controller framework uses a mutex to
+protect access to resources, hence there is a need to hold this mutex
+from SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_STOP which could run
+in IRQ context.
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/097121.html
+The Media Controller mutex can't be converted to a spinlock as it would
+break I2C drivers. During review, the idea to run PCM in non-atomic mode
+came up as a way to solve the problem. The actual solution would
+run PCM in nonatomic context only for the AU0828 Hauppauge HVR950Q chip.
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- include/sound/soc-dai.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+The above change is a quick try to see if PCM nonatomic works with this
+device. I have to figure out another way to solve the problem as this
+isn't an option.
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h index 2df96b1..c8170c4 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -48,10 +48,15 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
- 
- /*
-- * DAI hardware signal inversions.
-+ * DAI hardware signal polarity.
-  *
-- * Specifies whether the DAI can also support inverted clocks for the specified
-- * format.
-+ * For BCLK:
-+ *  - "normal" polarity means signal sensing happens at rising edge of 
-+ BCLK
-+ *  - "inverted" polarity means signal sensing happens at falling edge 
-+ of BCLK
-+ *
-+ * For FSYNC:
-+ *  - "normal" polarity means frame starts at rising edge of FSYNC
-+ *  - "inverted" polarity means frame starts at falling edge of FSYNC
-  */
- #define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
- #define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
---
-2.5.0.457.gab17608
+Hope this helps answer your question. If you would like more information
+on the ALSA Media Controller work for this device, I can provide links
+to the previous patch series.
 
+thanks,
+-- Shuah
 
-------Please consider the environment before printing this e-mail.
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
