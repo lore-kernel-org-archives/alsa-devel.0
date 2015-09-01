@@ -1,19 +1,17 @@
 From: frederik@ofb.net
-Subject: Re: bug tracker down?
-Date: Mon, 31 Aug 2015 17:15:10 -0700
-Message-ID: <20150901001510.GA15028@ofb.net>
-References: <20150828214404.GA8994@ofb.net>
- <55E11914.2050603@sakamocchi.jp>
+Subject: feature request: "mute" indication in alsamixer is not
+	self-evident
+Date: Mon, 31 Aug 2015 17:19:20 -0700
+Message-ID: <20150901001920.GB15028@ofb.net>
 Reply-To: frederik@ofb.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ofb.net (ofb.net [64.13.131.34])
- by alsa0.perex.cz (Postfix) with ESMTP id 4047A260627
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 02:15:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DF3FA260627
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 02:19:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <55E11914.2050603@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mr. Sakamoto,
+When a user presses 'm' for 'mute' in alsamixer, then a string "MM"
+appears at the bottom of a volume control. This change makes it
+obvious to the user that "MM" stands for "Mute".
 
-Thanks for the reply.
+However, when a new user opens alsamixer after some software on his
+computer has (perhaps by mistake) automatically muted a volume
+control, the "MM" won't indicate anything obvious. Among other things,
+this makes it difficult for new users to debug issues with the
+auto-mute feature. The fact that the volume control can be at maximum,
+even when the control is muted, contributes to the potential for
+confusion. The problem would be solved if, for instance, the "Item: "
+string at the top of the alsamixer screen were changed to contain the
+word "(muted)" for muted controls. This way, users who don't have
+sound will see what the problem is when they open alsamixer.
 
-> > For some reason I can't connect to
-> > https://bugtrack.alsa-project.org/alsa-bug
-> 
-> As long as I know and refer to old posts, it's not on service.
-> https://bugzilla.kernel.org/ is used for this purpose.
-
-That's strange, because
-http://www.alsa-project.org/main/index.php/Main_Page points to
-https://bugtrack.alsa-project.org/alsa-bug in the "Bug Tracker" link -
-perhaps someone knows a person who could fix this.
-
-> Or you can also report your bug to this mailing list.
-
-That sounds much better, I think I'll do that. I'm worried the kernel
-people will complain at me for posting an alsamixer bug in their bug
-tracker...
-
-Frederick
+(from <https://bugs.freedesktop.org/show_bug.cgi?id=91781>, edited)
