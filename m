@@ -1,16 +1,19 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v4] OMAPDSS: hdmi: Reconfigure and restart
- audio when display is enabled
-Date: Tue, 1 Sep 2015 13:52:56 +0300
-Message-ID: <55E58388.7030301@ti.com>
-References: <1440771706-21388-1-git-send-email-jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: What is exact definition of "normal/inverted"
+ FSYNC signal polarity?
+Date: Tue, 1 Sep 2015 13:14:30 +0100
+Message-ID: <20150901121430.GU5313@sirena.org.uk>
+References: <CAOMFOmXwfBydswh0BiSOB42KMa0T+0-W1mj0=d4AhisToFxkVg@mail.gmail.com>
+ <20150831180250.GT12027@sirena.org.uk>
+ <CAOMFOmVfE2qiXN=h7i1pJ38JJL3J94UgrN_q+ratYTu=nr372w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7897385814995205668=="
+Content-Type: multipart/mixed; boundary="===============3260102110810513607=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 1264426508D
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 12:52:59 +0200 (CEST)
-In-Reply-To: <1440771706-21388-1-git-send-email-jsarha@ti.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2732265090
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 14:14:37 +0200 (CEST)
+In-Reply-To: <CAOMFOmVfE2qiXN=h7i1pJ38JJL3J94UgrN_q+ratYTu=nr372w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,97 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Ben Zhang <benzh@google.com>, =?utf-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, lengo@google.com, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============7897385814995205668==
+
+--===============3260102110810513607==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature";
-	boundary="TcStdiwjOqBa7v3dAkFxXSlf1NPBNp6Mj"
-
---TcStdiwjOqBa7v3dAkFxXSlf1NPBNp6Mj
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+	protocol="application/pgp-signature"; boundary="rHeCoQbvuHTnkkIZ"
+Content-Disposition: inline
 
 
+--rHeCoQbvuHTnkkIZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 28/08/15 17:21, Jyri Sarha wrote:
-> Reconfigure and restart audio when display is enabled, if audio
-> playback was active before. This is needed in a situation when an
-> audio+video stream application opens the audio stream before the
-> video. When video stream is opened the display mode may change and
-> that aborts audio playback, because the display is momentarily
-> turned off.
->=20
-> The audio configuration is stored when it is successfully applied and
-> a boolean is set when the audio playback is started and unset when
-> stopped. This data is used to reconfigure the audio when display is
-> re-enabled. The audio playback is aborted if the reconfiguration fails.=
+On Mon, Aug 31, 2015 at 12:05:51PM -0700, Anatol Pomozov wrote:
 
->=20
-> A new spin lock is introduced in order to protect state variables
-> related to audio playback status. This is needed for the transition
-> from display enabled state (when audio start/stop commands can be
-> written to HW) to display disabled state (when audio start/stop
-> commands update only the hdmi.audio_playing variable) to always
-> serialize correctly with the start/stop audio commands. The already
-> existing mutex can not be used, because the audio start and stop
-> commands are executed in atomic context.
->=20
-> For example: when display is turned back on we take the spinlock and
-> we can be sure that the audio start/stop status will not change while
-> we update the HW according to hdmi.audio_playing state and set
-> hdmi.display_enabled to true. After releasing the lock
-> hdmi.display_enabled is true and all audio_start and audio_stop
-> commands write their stuff directly to HW.
->=20
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
-> Fixed one bad sentece in the description.
->=20
->  drivers/video/fbdev/omap2/dss/hdmi.h  |  9 ++++-
->  drivers/video/fbdev/omap2/dss/hdmi4.c | 66 +++++++++++++++++++++++++--=
----
->  drivers/video/fbdev/omap2/dss/hdmi5.c | 76 +++++++++++++++++++++++++++=
-+-------
->  3 files changed, 124 insertions(+), 27 deletions(-)
+> Thus "normal" FSYNC for this driver means that the frame (L channel)
+> starts at rising edge of FSYNC (wm8731 datasheet calls it DACLRC).
+> "inverted" means frame starts at the falling edge. It differs both
+> from TegraX1 and rt5677 above.
 
-Thanks, I've queued this for 4.4.
+> It looks like each driver uses its own definition of FSYNC polarity.
+> To avoid compatibility problems between different codecs/socs there
+> should be a clean definition of what is FSYNC polarity is. I would
+> propose something simple like:
+>     ****  "normal" FSYNC means frame starts at rising edge of FSYNC,
+> and "inverted" frame starts at falling FSYNC edge ****
+> i.e. the same as for 8731.
 
- Tomi
+Right, the Tegra and Realtek drivers are buggy here - the wm8731
+definition is the one that essentially everything is using.
 
-
---TcStdiwjOqBa7v3dAkFxXSlf1NPBNp6Mj
+--rHeCoQbvuHTnkkIZ
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJV5YOIAAoJEPo9qoy8lh71DiwQAJGlo4ScwI6z+7waHZ8Z6KO1
-q604LRQbuTjNFpq64rugiTdN4OKd+dnr6m8AjGVpVS7YnFGrOS29HCZZeumpumrP
-eHv9LHy3CF/TcQ1WxZXNY1m3CSyyFNOOTy7eERqUHW6ZzhlYMlZlx9+ohU1pvCAM
-R4Q6loOUtT3LCpN8MTs5mpOSXqB1tfYCa/wcCgqlCge91nAvbp4eLG1pWucjSNCc
-XrPTyerA0jqaqmT222fwE1Ze73b95U/3abcNfl3YCzsgviCZcL10GWeN3Hs44Jb5
-VAN52c5Gqfk2gkBAR4gdm3nOHczo5ja97C4nSsasvwn9uNYixgK0x1aMJKn1b85n
-vXptQs4WybYcvfkmq3dMwRM6JwkPygJFEYZMPlZ+u8QEwmGaOW4SzPWE7r20JDVC
-P7jDp8p+RPpKkW7xNSBdxlcBxtAFaK/sf4+2NnZKC1xRDnPJBVJ7VYTG4Rt9E9QH
-tuau6BqIZNiM3rYmnKN6WMLTuzXcfqqQaGPQH/1IiD+e/N2mp2CkN7/Jw+LvYmg+
-ZMC6OHGag0xdRes+1lgw5c9xcNBrVrw64jlbNfJlgWqBWTKCJrnDcanPR6TmMCEX
-5p5w+T6B+mDN3e7JpDhdfo63IQtX93Gg7MKCPW0UR0jWNMbdlWTlkGWPg8JNNahf
-vaMDo6uxvuPm7idsD0wh
-=lMYi
+iQEcBAEBCAAGBQJV5ZalAAoJECTWi3JdVIfQQpkH/2Y8wcB9MEMu+v1Xhb8hhd3T
+0jcT8GvZtYedqg/vzQogBJCDsIAPvIHBs8xzPMlpBB3kRqrF4tzuBnxTL6Mn8chC
+zB0zyMcVuQ+kKy/oGxpHqcx83OUyUZSfgphvjwsKbzvQv+KTkqGAcN6tqHbEqMtV
+Kx8GupXni/+R0R9p486oLX52z1E3wzbssW4I3PNNGXAWV9Wi6pnApwEOHtPmb6Fs
+6hf8jX7G2fDO1aNXWSqncSzAEADT11qryVQeo6nC2od8NTCd01f2DsmZ8L7z6NBj
+B8BjfENgbaYZ7aA6Jeu3UtaWe+ij/dCwAPF0oHi0DpFzCrKnfkqwV2eTES5FcWQ=
+=XdYZ
 -----END PGP SIGNATURE-----
 
---TcStdiwjOqBa7v3dAkFxXSlf1NPBNp6Mj--
+--rHeCoQbvuHTnkkIZ--
 
---===============7897385814995205668==
+--===============3260102110810513607==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7897385814995205668==--
+--===============3260102110810513607==--
