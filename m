@@ -1,55 +1,52 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: wm0010: fix memory leak
-Date: Tue,  1 Sep 2015 11:14:05 +0530
-Message-ID: <1441086245-14732-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: au1x: psc-i2s: Fix unused variable 'ret'
+	warning
+Date: Tue, 01 Sep 2015 14:50:15 +0800
+Message-ID: <1441090215.22437.0.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
+ [209.85.220.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6578A261AA1
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 08:50:20 +0200 (CEST)
+Received: by pacgr6 with SMTP id gr6so15466284pac.3
+ for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 23:50:20 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We were aborting if the kzalloc of img_swap fails but without freeing the
-already allocated out. Similarly we were aborting if spi_sync fails
-without releasing out and img_swap.
+Fix below build warning:
+sound/soc/au1x/psc-i2s.c: In function 'au1xpsc_i2s_drvprobe':
+sound/soc/au1x/psc-i2s.c:299:6: warning: unused variable 'ret' [-Wunused-variable]
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/wm0010.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/au1x/psc-i2s.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index f2c6ad4..8434d45 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -672,8 +672,10 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 		}
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 38e853a..0bf9d62 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -296,7 +296,6 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ {
+ 	struct resource *iores, *dmares;
+ 	unsigned long sel;
+-	int ret;
+ 	struct au1xpsc_audio_data *wd;
  
- 		img_swap = kzalloc(len, GFP_KERNEL | GFP_DMA);
--		if (!img_swap)
-+		if (!img_swap) {
-+			kfree(out);
- 			goto abort;
-+		}
- 
- 		/* We need to re-order for 0010 */
- 		byte_swap_64((u64 *)&pll_rec, img_swap, len);
-@@ -690,6 +692,8 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 		ret = spi_sync(spi, &m);
- 		if (ret != 0) {
- 			dev_err(codec->dev, "First PLL write failed: %d\n", ret);
-+			kfree(img_swap);
-+			kfree(out);
- 			goto abort;
- 		}
- 
-@@ -697,6 +701,8 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 		ret = spi_sync(spi, &m);
- 		if (ret != 0) {
- 			dev_err(codec->dev, "Second PLL write failed: %d\n", ret);
-+			kfree(img_swap);
-+			kfree(out);
- 			goto abort;
- 		}
- 
+ 	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
 -- 
-1.9.1
+2.1.0
