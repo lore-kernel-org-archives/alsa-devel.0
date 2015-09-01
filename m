@@ -1,18 +1,17 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: au1x: psc-i2s: Fix unused variable 'ret'
-	warning
-Date: Tue, 01 Sep 2015 14:50:15 +0800
-Message-ID: <1441090215.22437.0.camel@ingics.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: SSM2518 Device Tree support ?
+Date: Tue, 1 Sep 2015 09:06:03 +0200
+Message-ID: <alpine.DEB.2.02.1508311753050.4816@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508131400010.27635@lnxricardw1.se.axis.com>
+ <55CC8BE0.4000406@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 6578A261AA1
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 08:50:20 +0200 (CEST)
-Received: by pacgr6 with SMTP id gr6so15466284pac.3
- for <alsa-devel@alsa-project.org>; Mon, 31 Aug 2015 23:50:20 -0700 (PDT)
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DC4B261AE4
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 09:06:16 +0200 (CEST)
+In-Reply-To: <55CC8BE0.4000406@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix below build warning:
-sound/soc/au1x/psc-i2s.c: In function 'au1xpsc_i2s_drvprobe':
-sound/soc/au1x/psc-i2s.c:299:6: warning: unused variable 'ret' [-Wunused-variable]
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/au1x/psc-i2s.c | 1 -
- 1 file changed, 1 deletion(-)
+Bringing up an old thread becuase i have a similar issue with the =
 
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index 38e853a..0bf9d62 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -296,7 +296,6 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- {
- 	struct resource *iores, *dmares;
- 	unsigned long sel;
--	int ret;
- 	struct au1xpsc_audio_data *wd;
- 
- 	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
--- 
-2.1.0
+adau1761-i2c.c driver which should be configurable in the same way - it =
+
+links into the I2C driver framework too. I know my ssm2518.c patch was =
+
+recently applied, but using this driver (prior to the patch) as an =
+
+example as Lars-Peter mentioned that it should be able to work this way.
+
+On Thu, 13 Aug 2015, Lars-Peter Clausen wrote:
+
+> [ ... device tree support in ssm2518.c ... ]
+> What's not in the driver is a explicit of match table. It will work witho=
+ut
+> since the I2C subsystem supports matching based on the I2C ID table.
+
+How does this actually work? I've tried to figure it out but haven't =
+
+gotten anywhere.
+
+From:
+
+http://wiki.analog.com/resources/tools-software/linux-drivers/sound/ssm2518=
+ :
+
+
+i2s: i2c@41600000 {
+	compatible =3D "...;
+	...
+
+	#size-cells =3D <0>;
+	#address-cells =3D <1>;
+            =
+
+	ssm2518: ssm2518@34 {
+		compatible =3D "adi,ssm2518";
+		reg =3D <0x34>;
+		gpios =3D <&gpio 5 0>;
+	};
+};
+
+
+In codecs/ssm2518.c:
+
+
+static const struct i2c_device_id ssm2518_i2c_ids[] =3D {
+        { "ssm2518", 0 },
+        { }
+};
+MODULE_DEVICE_TABLE(i2c, ssm2518_i2c_ids);
+
+static struct i2c_driver ssm2518_driver =3D {
+        .driver =3D {
+                .name =3D "ssm2518",
+                .owner =3D THIS_MODULE,
+        },
+        .probe =3D ssm2518_i2c_probe,
+        .remove =3D ssm2518_i2c_remove,
+        .id_table =3D ssm2518_i2c_ids,
+};
+module_i2c_driver(ssm2518_driver);
+
+
+So how does the i2c framework ultimately get the ssm2518 probe function to =
+
+be called? The only real ID here are the strings "ssm2518" but they don't =
+
+show up in the DT entry, except as part of the ssm2518 compatible string.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
