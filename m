@@ -1,85 +1,108 @@
-From: Shawn Lin <shawn.lin@rock-chips.com>
-Subject: [PATCH v3 8/9] spi: rockchip: modify DMA max burst to 1
-Date: Tue,  1 Sep 2015 17:58:44 +0800
-Message-ID: <1441101524-1700-1-git-send-email-shawn.lin@rock-chips.com>
-References: <1441101381-1329-1-git-send-email-shawn.lin@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1441101381-1329-1-git-send-email-shawn.lin@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>, Heiko Stuebner <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
-Cc: Doug Anderson <dianders@chromium.org>, Olof Johansson <olofj@google.com>, Sonny Rao <sonnyrao@chromium.org>, Addy Ke <addy.ke@rock-chips.com>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>, Olof Johansson <olof@lixom.net>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 05/10] ALSA: axd: add buffers manipulation
+	files
+Date: Tue, 1 Sep 2015 11:00:42 +0100
+Message-ID: <55E5774A.8070808@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-6-git-send-email-qais.yousef@imgtec.com>
+ <20150826184323.GE28760@sirena.org.uk> <55DF1CDD.6040109@imgtec.com>
+ <20150829094711.GZ12027@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BD07265068
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 12:00:44 +0200 (CEST)
+In-Reply-To: <20150829094711.GZ12027@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Addy Ke <addy.ke@rock-chips.com>
+On 08/29/2015 10:47 AM, Mark Brown wrote:
+> On Thu, Aug 27, 2015 at 03:21:17PM +0100, Qais Yousef wrote:
+>> On 08/26/2015 07:43 PM, Mark Brown wrote:
+>>> On Mon, Aug 24, 2015 at 01:39:14PM +0100, Qais Yousef wrote:
+>>>> +	/*
+>>>> +	 * must ensure we have one access at a time to the queue and rd_idx
+>>>> +	 * to be preemption and SMP safe
+>>>> +	 * Sempahores will ensure that we will only read after a complete write
+>>>> +	 * has finished, so we will never read and write from the same location.
+>>>> +	 */
+>>> In what way will sempahores ensure that we will only read after a
+>>> complete write?
+>> This comment needs fixing. What it is trying to say is that if we reached
+>> this point of the code then we're certainly allowed to modify the buffer
+>> queue and {rd, wr}_idx because the semaphore would have gone to sleep
+>> otherwise if the queue is full/empty.
+>> Should I just remove the reference to Semaphores from the comment or worth
+>> rephrasing it?
+> Any comments need to be comprehensible.
+>
+>> Would it be better to rename {rd, wr}_{idx, sem} to {take, put}_{idx, sem}?
+> I'm not sure that helps to be honest, the main issue is that the scheme
+> is fairly complex and unexplained.
+>
+>>>> +	buf = bufferq->queue[bufferq->rd_idx];
+>>> So buffers are always retired in the same order that they are acquired?
+>> I don't think I get you here. axd_bufferq_take() and axd_bufferq_put() could
+>> be called in any order.
+> Retiring buffers in the order they are acquired means that buffers are
+> always freed in the same order they are acquired, you can't free one
+> buffer before another that was acquired first.
+>> What this code is trying to do is make a contiguous memory area behave as a
+>> ring buffer. Then this ring buffer behave as a queue. We use semaphore
+>> counts to control how many are available to take/put. rd_idx and wr_idx
+>> should always point at the next location to take/put from/to.
+>> Does this help answering your question?
+> No.  Why are we doing this?  Essentially all ALSA buffers are ring
+> buffers handled in blocks, why does this one need this complex locking
+> scheme?
 
-Generic dma controller on Rockchips' platform cannot support
-DMAFLUSHP instruction which make dma to flush the req of non-aligned
-or non-multiple of what we need. That will cause an unrecoverable
-dma bus error. The saftest way is to set dma max burst to 1.
+There are 2 sides to this. The ALSA/driver iface and the driver/firmware 
+one. The ALSA/driver iface is called from ALSA ops but the 
+driver/firmware is handled by the interrupt and workqueues. The code is 
+trying to deal with this concurrency. Also once AXD consumed a buffer it 
+sends back an interrupt to the driver that it can reuse it, there's no 
+guarantee that this returned buffer is in the same order it was sent.
 
-Signed-off-by: Addy ke <addy.ke@rock-chips.com>
-Fixes: 64e36824b32b06 ("spi/rockchip: add driver for Rockchip...")
-Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-cc: Heiko Stuebner <heiko@sntech.de>
-cc: Olof Johansson <olof@lixom.net>
-cc: Doug Anderson <dianders@chromium.org>
-cc: Sonny Rao <sonnyrao@chromium.org>
----
+I hear you though. Let me see how I can simplify this :-)
 
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+>>>> +void axd_bufferq_abort_put(struct axd_bufferq *bufferq)
+>>>> +{
+>>>> +	if (axd_bufferq_is_full(bufferq)) {
+>>>> +		bufferq->abort_put = 1;
+>>>> +		up(&bufferq->wr_sem);
+>>>> +	}
+>>>> +}
+>>> These look *incredibly* racy.  Why are they here and why are they safe?
+>> If we want to restart the firmware we will need to abort any blocking reads
+>> or writes for the user space to react. I also needed that to implement
+> I'm not questioning what the functionns are doing, I'm questioning their
+> implementation - it doesn't look like they are safe or reliable.  They
+> just set a flag, relying on something else to notice that the flag has
+> been set and act appropriately before it goes on and corrupts data.
+> That just screams concurrency issues.
 
- drivers/spi/spi-rockchip.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+OK. I'll see how I can rework the code to address all of your comments.
 
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index 68e7efe..3748ca5 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -199,6 +199,8 @@ struct rockchip_spi {
- 	struct sg_table rx_sg;
- 	struct rockchip_spi_dma_data dma_rx;
- 	struct rockchip_spi_dma_data dma_tx;
-+	int quirk;
-+#define ROCKCHIP_SPI_BORKEN_BURST_LEN (1<<0) /* broken burst len*/
- };
- 
- static inline void spi_enable_chip(struct rockchip_spi *rs, int enable)
-@@ -449,7 +451,10 @@ static void rockchip_spi_prepare_dma(struct rockchip_spi *rs)
- 		rxconf.direction = rs->dma_rx.direction;
- 		rxconf.src_addr = rs->dma_rx.addr;
- 		rxconf.src_addr_width = rs->n_bytes;
--		rxconf.src_maxburst = rs->n_bytes;
-+		if (rs->quirk & ROCKCHIP_SPI_BORKEN_BURST_LEN)
-+			rxconf.src_maxburst = 1;
-+		else
-+			rxconf.src_maxburst = rs->n_bytes;
- 		dmaengine_slave_config(rs->dma_rx.ch, &rxconf);
- 
- 		rxdesc = dmaengine_prep_slave_sg(
-@@ -466,7 +471,10 @@ static void rockchip_spi_prepare_dma(struct rockchip_spi *rs)
- 		txconf.direction = rs->dma_tx.direction;
- 		txconf.dst_addr = rs->dma_tx.addr;
- 		txconf.dst_addr_width = rs->n_bytes;
--		txconf.dst_maxburst = rs->n_bytes;
-+		if (rs->quirk & ROCKCHIP_SPI_BORKEN_BURST_LEN)
-+			txconf.dst_maxburst = 1;
-+		else
-+			txconf.dst_maxburst = rs->n_bytes;
- 		dmaengine_slave_config(rs->dma_tx.ch, &txconf);
- 
- 		txdesc = dmaengine_prep_slave_sg(
-@@ -699,6 +707,10 @@ static int rockchip_spi_probe(struct platform_device *pdev)
- 		goto err_get_fifo_len;
- 	}
- 
-+	if (of_property_read_bool(pdev->dev.of_node,
-+				  "rockchip,spi-broken-burst-len"))
-+		rs->quirk |= ROCKCHIP_SPI_BORKEN_BURST_LEN;
-+
- 	spin_lock_init(&rs->lock);
- 
- 	pm_runtime_set_active(&pdev->dev);
--- 
-2.3.7
+Thanks,
+Qais
+
+>> nonblocking access in user space when this was a sysfs based driver. It was
+>> important then to implement omx IL component correctly.
+> Nobody cares about OMX ILs in mainline or sysfs based interfaces.
+>
+>> Do I need to support nonblock reads and writes in ALSA? If I use SIGKILL as
+>> you suggested in the other email when restarting and nonblock is not
+>> important then I can remove this.
+> It would be better to support non blocking access.
