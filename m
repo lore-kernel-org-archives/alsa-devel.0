@@ -1,16 +1,16 @@
 From: frederik@ofb.net
-Subject: feature request: "mute" indication in alsamixer is not
-	self-evident
-Date: Mon, 31 Aug 2015 17:19:20 -0700
-Message-ID: <20150901001920.GB15028@ofb.net>
+Subject: feature request: alsamixer should show alternatives to
+ function key bindings, at least F1/Help
+Date: Mon, 31 Aug 2015 17:21:30 -0700
+Message-ID: <20150901002130.GC15028@ofb.net>
 Reply-To: frederik@ofb.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ofb.net (ofb.net [64.13.131.34])
- by alsa0.perex.cz (Postfix) with ESMTP id DF3FA260627
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 02:19:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F291260627
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 02:21:30 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,19 +24,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When a user presses 'm' for 'mute' in alsamixer, then a string "MM"
-appears at the bottom of a volume control. This change makes it
-obvious to the user that "MM" stands for "Mute".
+In alsamixer, many options are bound to function keys. These are used
+by my window manager, so I cannot use them in my terminal. The
+alsamixer man page mentions that 'gnome-terminal' cannot use function
+keys either.
 
-However, when a new user opens alsamixer after some software on his
-computer has (perhaps by mistake) automatically muted a volume
-control, the "MM" won't indicate anything obvious. Among other things,
-this makes it difficult for new users to debug issues with the
-auto-mute feature. The fact that the volume control can be at maximum,
-even when the control is muted, contributes to the potential for
-confusion. The problem would be solved if, for instance, the "Item: "
-string at the top of the alsamixer screen were changed to contain the
-word "(muted)" for muted controls. This way, users who don't have
-sound will see what the problem is when they open alsamixer.
+I noticed from the "Help" screen that many function keys have
+non-function-key alternatives, for instance instead of F6 I can press
+"s". This is great, but there is one remaining problem: The legend (at
+the top of the alsamixer screen) labels commands with their
+function-key bindings. This includes "Help" which is labelled with
+"F1". Seeing this, users are likely to assume that "F1" is the only
+binding for "Help". But it turns out that one can also access "Help"
+with "?" and "H". This can be learned by reading the man page or
+pressing keys experimentally, but it would be nice if "Help" was just
+labeled with either "?" or "H", as that allows people who are unable
+to use function keys to easily access the help screen and then see
+that alternate (non-function-key) bindings exist for other commands as
+well.
 
-(from <https://bugs.freedesktop.org/show_bug.cgi?id=91781>, edited)
+As an aside, it seems odd to map "q" to "increase left volume"...
+
+(from https://bugs.freedesktop.org/show_bug.cgi?id=91782, edited)
