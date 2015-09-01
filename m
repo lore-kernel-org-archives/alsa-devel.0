@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Linux 4.2 ALSA snd-usb-audio inconsistent lock
-	state	warn in PCM nonatomic mode
-Date: Tue, 01 Sep 2015 19:53:41 +0200
-Message-ID: <55E5E625.5010403@ladisch.de>
-References: <55E4D9BE.2040308@osg.samsung.com> <55E564ED.4050609@ladisch.de>
- <55E5E31F.6040802@osg.samsung.com>
+From: Burton Samograd <burton.samograd@gmail.com>
+Subject: Fwd: Tascam US-366 and Alsa Firmware
+Date: Tue, 1 Sep 2015 12:04:07 -0600
+Message-ID: <CAM8pOuMQBWybctdhfZE-SGHJGx7wQ-FHB81KqbhLvndeyjkx6Q@mail.gmail.com>
+References: <CAM8pOuO60SdbGXBjf645C5obb5uW0MJpH1DFCr8bmO+Y6hWrTg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 40DEE261609
- for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 19:54:37 +0200 (CEST)
-In-Reply-To: <55E5E31F.6040802@osg.samsung.com>
+Received: from mail-vk0-f47.google.com (mail-vk0-f47.google.com
+ [209.85.213.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id A03DC2616F3
+ for <alsa-devel@alsa-project.org>; Tue,  1 Sep 2015 20:04:09 +0200 (CEST)
+Received: by vkbc123 with SMTP id c123so61320348vkb.3
+ for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2015 11:04:08 -0700 (PDT)
+In-Reply-To: <CAM8pOuO60SdbGXBjf645C5obb5uW0MJpH1DFCr8bmO+Y6hWrTg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Shuah Khan wrote:> On 09/01/2015 02:42 AM, Clemens Ladisch wrote:
->> Shuah Khan wrote:
->>> +++ b/sound/usb/stream.c
->>> pcm->private_data = as;
->>> pcm->private_free = snd_usb_audio_pcm_free;
->>> pcm->info_flags = 0;
->>> + pcm->nonatomic = true;
->>
->> Why do you think you need nonatomic mode in the USB audio driver?
->
-> I have been working on adding Media Controller support for this chip
-> as chip specific feature in ALSA. This will allow sharing resources
-> such as the tuner across the drivers that control the device (DVB,
-> Video, snd-usb-audio). Media Controller framework uses a mutex to
-> protect access to resources, hence there is a need to hold this mutex
-> from SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_STOP which could run
-> in IRQ context.
+Hi,
 
-Resources should be managed in the hw_params/hw_free callbacks.
+Resending due to no response the first time:
+
+I recently bought the Tascam US-366 and forgot to check for Linux support,
+which it doesn't have (yet! :). Looking through the Alsa firmware sources,
+there seems to be a firmware loader called usx2yloader which supports a
+number of Tascam cards, but the US-366 is not listed.  It looks like really
+usx2yloader just needs the firmware and a `prepad` file. I`ve found the
+firmware for the card (I think) buried in the OSX firmware download
+package:
 
 
-Regards,
-Clemens
+http://tascam.com/content/downloads/products/789/us-322_us-366_fw_v103_mavericks-yosemite.zip
+
+Now I think I just need the prepad file, but there's little documentation
+regarding exactly what that is (I'm assuming a number of 0s just to pad the
+firmware image to alignment, but I'm not sure of what alignment).
+
+Any ideas if usx2yloader will work at all with the US-366?  Does anyone
+know what the pre-pad file should be/contain?  Has anyone tried to get the
+US-366 working yet and failed?
+
+Reference:
+
+     http://tascam.com/product/us-366/
+
+Thanks.
+
+Burton Samograd
