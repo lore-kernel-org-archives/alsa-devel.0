@@ -1,74 +1,51 @@
-From: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
-Date: Wed, 02 Sep 2015 10:55:20 +0100
-Message-ID: <55E6C788.2000405@arm.com>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com> <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com> <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com> <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com> <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com> <alpine.DEB.2.11.1508262101450.15006@nanos> <55E03A2B.3070805@imgtec.com> <alpine.DEB.2.11.1508281619311.15006@nanos> <55E6C250.50100@imgtec.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix missing inline for dummy
+	snd_hdac_set_codec_wakeup()
+Date: Wed,  2 Sep 2015 12:28:32 +0200
+Message-ID: <1441189712-27827-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <55E6C250.50100@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Qais Yousef <qais.yousef@imgtec.com>, Mark Rutland <Mark.Rutland@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50AB12604DD
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2015 12:28:35 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F03D3ACFC
+ for <alsa-devel@alsa-project.org>; Wed,  2 Sep 2015 10:28:34 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/09/15 10:33, Qais Yousef wrote:
-> On 08/28/2015 03:22 PM, Thomas Gleixner wrote:
->> On Fri, 28 Aug 2015, Qais Yousef wrote:
->>> Thanks a lot for the detailed explanation. I wasn't looking for a quick and
->>> dirty solution but my view of the problem is much simpler than yours so my
->>> idea of a solution would look quick and dirty. I have a better appreciation of
->>> the problem now and a way to approach it :-)
->>>
->>>  From DT point of view are we OK with this form then
->>>
->>>      coprocessor {
->>>              interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
->>>              interrupt-sink = <&intc INT_SPEC CPU_HWAFFINITY>;
->>>      }
->>>
->>> and if the root controller sends normal IPI as it sends normal device
->>> interrupts then interrupt-sink can be a standard interrupts property (like in
->>> my case)
->>>
->>>      coprocessor {
->>>              interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
->>>              interrupts = <INT_SPEC>;
->>>      }
->>>
->>> Does this look right to you? Is there something else that needs to be covered
->>> still?
->> I'm not an DT wizard. I leave that to the DT experts.
->>   
-> 
-> Hi Marc Zyngier, Mark Rutland,
-> 
-> Any comments about the DT binding for the IPIs?
-> 
-> To recap, the proposal which is based on Marc Zyngier's is to use 
-> interrupt-source to represent an IPI from Linux CPU to a coprocessor and 
-> interrupt-sink to receive an IPI from coprocessor to Linux CPU. 
-> Hopefully the description above is self explanatory. Please let me know 
-> if you need more info. Thomas covered the routing, synthesising, and 
-> requesting parts in the core code. The remaining (high level) issue is 
-> how to describe the IPIs in DT.
+This seems overlooked.
 
-I'm definitely *not* a DT expert! ;-) My initial binding proposal was
-only for wired interrupts, not for IPIs. There is definitely some common
-aspects, except for one part:
+Fixes: 98d8fc6c5d36 ('ALSA: hda - Move hda_i915.c from sound/pci/hda to sound/hda')
+Cc: <stable@vger.kernel.org> # v4.2+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/hda_i915.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Who decides on the IPI number? So far, we've avoided encoding IPI
-numbers in the DT just like we don't encode MSIs, because they are
-programmable things. My feeling is that we shouldn't put the IPI number
-in the DT because the rest of the kernel uses them as well and could
-decide to use this particular IPI number for its own use: *clash*.
-
-The way I see it would be to have a pool of IPI numbers that the kernel
-requests for its own use first, leaving whatever remains to drivers.
-
-Mark (as *you* are the expert ;-), what do you think?
-
-	M.
+diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
+index a5b5cae03e87..930b41e5acf4 100644
+--- a/include/sound/hda_i915.h
++++ b/include/sound/hda_i915.h
+@@ -14,7 +14,7 @@ int snd_hdac_i915_init(struct hdac_bus *bus);
+ int snd_hdac_i915_exit(struct hdac_bus *bus);
+ int snd_hdac_i915_register_notifier(const struct i915_audio_component_audio_ops *);
+ #else
+-static int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
++static inline int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
+ {
+ 	return 0;
+ }
 -- 
-Jazz is not dead. It just smells funny...
+2.5.1
