@@ -1,88 +1,69 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
- pin/ELD notify events
-Date: Wed, 2 Sep 2015 10:32:34 +0200
-Message-ID: <20150902083234.GF1367@phenom.ffwll.local>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-5-git-send-email-david.henningsson@canonical.com>
- <s5hbne271h7.wl-tiwai@suse.de> <55D5A0D6.1040403@canonical.com>
- <s5h8u9670mv.wl-tiwai@suse.de> <87pp275zjn.fsf@intel.com>
- <20150902080044.GY1367@phenom.ffwll.local>
- <s5hegihxn6c.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+ of WM510205 codec via ACPI (resend)
+Date: Wed, 2 Sep 2015 09:13:34 +0100
+Message-ID: <20150902081334.GB15505@ck-lbox>
+References: <20150825062157.GB27431@sirena.org.uk>
+ <CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
+ <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
+ <20150826100155.GA1513@lahna.fi.intel.com>
+ <CAKor6TeH32hd0QUCPowzrjp54iJjGKiJ8jVT994y2O29dfk=QA@mail.gmail.com>
+ <20150827115914.GF28428@lahna.fi.intel.com>
+ <20150827145614.GC5313@sirena.org.uk>
+ <CAKor6Tf8kB0WPXLTBFmCzUJkMVEDu-xTEyw0-_NZvBdFSyQSFA@mail.gmail.com>
+ <CAKor6TfW4reRz3m-xkCr_ZUfHQkfqT3q+S7JCpO-9F+k1QW38g@mail.gmail.com>
+ <CAKor6Tf7_Hiyc1v_TGvdVAU+G84Gp+KgKeSGi8EQJRoq9rhMuw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <s5hegihxn6c.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
+In-Reply-To: <CAKor6Tf7_Hiyc1v_TGvdVAU+G84Gp+KgKeSGi8EQJRoq9rhMuw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBTZXAgMDIsIDIwMTUgYXQgMTA6MDM6NTVBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTA6MDA6NDQgKzAyMDAsCj4gRGFuaWVsIFZldHRl
-ciB3cm90ZToKPiA+IAo+ID4gT24gRnJpLCBBdWcgMjgsIDIwMTUgYXQgMDQ6MTA6MzZQTSArMDMw
-MCwgSmFuaSBOaWt1bGEgd3JvdGU6Cj4gPiA+IE9uIFRodSwgMjAgQXVnIDIwMTUsIFRha2FzaGkg
-SXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4gPiA+ID4gT24gVGh1LCAyMCBBdWcgMjAxNSAx
-MTo0MTo0MiArMDIwMCwKPiA+ID4gPiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+ID4gPj4g
-Cj4gPiA+ID4+IAo+ID4gPiA+PiAKPiA+ID4gPj4gT24gMjAxNS0wOC0yMCAxMToyOCwgVGFrYXNo
-aSBJd2FpIHdyb3RlOgo+ID4gPiA+PiA+IE9uIFdlZCwgMTkgQXVnIDIwMTUgMTA6NDg6NTggKzAy
-MDAsCj4gPiA+ID4+ID4gRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4gPiA+ID4+ID4+Cj4gPiA+
-ID4+ID4+IFdoZW5ldmVyIHRoZXJlIGlzIGFuIGV2ZW50IGZyb20gdGhlIGk5MTUgZHJpdmVyLCB3
-YWtlIHRoZSBjb2RlYwo+ID4gPiA+PiA+PiBhbmQgcmVjaGVjayBwbHVnL3VucGx1ZyArIEVMRCBz
-dGF0dXMuCj4gPiA+ID4+ID4+Cj4gPiA+ID4+ID4+IFRoaXMgZml4ZXMgdGhlIGlzc3VlIHdpdGgg
-bG9zdCB1bnNvbCBldmVudHMgaW4gcG93ZXIgc2F2ZSBtb2RlLAo+ID4gPiA+PiA+PiB0aGUgY29k
-ZWMgYW5kIGNvbnRyb2xsZXIgY2FuIG5vdyBzbGVlcCBpbiBEMyBhbmQgc3RpbGwga25vdyB3aGVu
-Cj4gPiA+ID4+ID4+IHRoZSBIRE1JIG1vbml0b3IgaGFzIGJlZW4gY29ubmVjdGVkLgo+ID4gPiA+
-PiA+Pgo+ID4gPiA+PiA+PiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQu
-aGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4KPiA+ID4gPj4gPgo+ID4gPiA+PiA+IFRoaXMgYWRk
-aXRpb24gbG9va3MgZmluZSwgYnV0IHRoZW4gd2UnbGwgZ2V0IGRvdWJsZSBub3RpZmljYXRpb24g
-Zm9yCj4gPiA+ID4+ID4gdGhlIG5vcm1hbCBob3RwbHVnL3VucGx1Zywgb25lIHZpYSBjb21wb25l
-bnQgb3BzIGFuZCBhbm90aGVyIHZpYSB1bnNvbAo+ID4gPiA+PiA+IGV2ZW50Pwo+ID4gPiA+PiAK
-PiA+ID4gPj4gUmlnaHQsIGluIGNhc2UgdGhlIHVuc29sIGV2ZW50IGFjdHVhbGx5IHdvcmtzLi4u
-Cj4gPiA+ID4+IAo+ID4gPiA+PiBJIHdvdWxkIGFyZ3VlIHRoYXQgdGhlIG5vcm1hbCBjYXNlIHdv
-dWxkIGJlIHRoYXQgdGhlIGNvbnRyb2xsZXIgYW5kIAo+ID4gPiA+PiBjb2RlYyBpcyBpbiBEMyB3
-aGljaCBtZWFucyB0aGF0IHRoZSB1bnNvbCBldmVudCBuZXZlciBnZXRzIHRocm91Z2ggLSBkdWUg
-Cj4gPiA+ID4+IHRvIGh3IGxpbWl0YXRpb25zIC0gd2hpY2ggaXMgd2hhdCB0cmlnZ2VyZWQgdGhp
-cyBwYXRjaCBzZXQgaW4gdGhlIGZpcnN0IAo+ID4gPiA+PiBwbGFjZS4KPiA+ID4gPj4gCj4gPiA+
-ID4+IEJ1dCB5ZXMsIGluIHNvbWUgY2FzZSB3ZSBtaWdodCBnZXQgZG91YmxlIG5vdGlmaWNhdGlv
-biwgYnV0IHRoaXMgc2hvdWxkIAo+ID4gPiA+PiBub3QgY2F1c2UgYW55IHRyb3VibGUgaW4gcHJh
-Y3RpY2UuIFRoZSB1bnNvbCBldmVudCBjb3VsZCBiZSB0dXJuZWQgb2ZmLCAKPiA+ID4gPj4gYnV0
-IHdvdWxkIGl0IGJlIG9rYXkgdG8gc2F2ZSB0aGF0IGZvciBhIGxhdGVyIHBhdGNoIHNldCAoc28g
-SSBkb24ndCBtaXNzIAo+ID4gPiA+PiB0aGUgdXBjb21pbmcgbWVyZ2Ugd2luZG93KT8KPiA+ID4g
-Pgo+ID4gPiA+IEluIHRoYXQgY2FzZSwgaXQgc2hvdWxkIGJlIG1lbnRpb25lZCBpbiB0aGUgY2hh
-bmdlbG9nIGF0IGxlYXN0Lgo+ID4gPiA+Cj4gPiA+ID4gVGhpcyBzZXJpZXMgY2FtZSBhIGJpdCB0
-b28gbGF0ZSBmb3IgdGhlIG1lcmdlIHdpbmRvdywgc28gSSdtIG5vdCBzdXJlCj4gPiA+ID4gd2hl
-dGhlciB0aGlzIGNhbiBnZXQgaW4uICBJIHBlcnNvbmFsbHkgZmluZCBpdCBPSywgc28gdGFrZSBt
-eSBhY2sgZm9yCj4gPiA+ID4gQUxTQSBwYXJ0cyAocGF0Y2ggMy80KSwgYnV0IHRoZSByZXN0IG5l
-ZWQgcmV2aWV3IGFuZCBhY2sgZnJvbSBpOTE1Cj4gPiA+ID4gZ3V5cy4gIEFuZCB3ZSBkb24ndCBr
-bm93IHdobyB0byBtZXJnZSB0aGlzLCBpZiBhbnkuICBUaGUgY2hhbmdlcyBhcmUKPiA+ID4gPiBh
-bG1vc3QgZXZlbiB0byBpOTE1IGFuZCBoZGEuICBJIGRvbid0IG1pbmQgZWl0aGVyIHdheSwgdmlh
-IGRybSBvcgo+ID4gPiA+IHNvdW5kIHRyZWUuCj4gPiA+IAo+ID4gPiBQZXJzb25hbGx5IEknbSBm
-aW5lIHdpdGggdGhpcyBzdGlsbCBnb2luZyBmb3IgdjQuMyBzaW5jZSB0byBtZSBpdCBsb29rcwo+
-ID4gPiBsaWtlIGFueSByZWdyZXNzaW9ucyB0aGlzIG1pZ2h0IGNhdXNlIHdpbGwgYmUgb24geW91
-ciBzaWRlLiAqZ3JpbiouCj4gPiAKPiA+IFRoZSBvbmx5IGJpdCBJIHdhbnQgaXMgc29tZSBkZWNl
-bnQga2VybmVsZG9jIGZvciB0aGUgYWQtaG9jIGdyb3dpbmcKPiA+IGk5MTUvaGRhLWludGVsIGlu
-dGVyZmFjZXMuIEJ1dCB0aGF0IGNhbiBiZSBkb25lIGluIGZvbGxvdy11cCBwYXRjaGVzIGFuZAo+
-ID4gbmVlZHMgdG8gYmUgY29vcmRpbmF0ZWQgd2l0aCB0aGUgYXVkaW8gcmF0ZSBoYW5kbGluZyBz
-ZXJpZXMgYW55d2F5LiBTbyBhY2sKPiA+IGZyb20gbXkgc2lkZSBmb3IgYWxsIGdldHRpbmcgbWVy
-Z2VkIHRocm91Z2ggYWxzYSB0cmVlcyB0b28uCj4gCj4gQXJlIHlvdSBnb2luZyB0byBtZXJnZSBM
-aWJpbidzIHBhdGNoc2V0PyAgSWYgeWVzLCBpdCdzIGJldHRlciB0byBhbGlnbgo+IGJvdGggcGF0
-Y2hzZXRzIHRocm91Z2ggYSBzaW5nbGUgdHJlZS4gIEl0J2xsIG1ha2UgbWVyZ2VzIGVhc2llciwg
-YXMKPiBib3RoIHRvdWNoIHRoZSBzaW1pbGFyIHBsYWNlLgoKT2ggdGhhdCB3YXMgYW4gYWNrIGZv
-ciBtZXJnaW5nIGl0IGFsbCB0aHJvdWdoIHlvdXIgdHJlZS4gSWYgeW91IHB1bnQgaXQgdG8KNC40
-IEkgbWlnaHQgYXNrIHlvdSBmb3IgYSBzdGFibGUgdHJlZSB0byBwdWxsIGluIGluIGNhc2UgSSBn
-ZXQgY29uZmxpY3RzLgotRGFuaWVsCi0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVy
-LCBJbnRlbCBDb3Jwb3JhdGlvbgpodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0Cklu
-dGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Tue, Sep 01, 2015 at 11:45:31AM +0200, Christian Hartmann wrote:
+> hi
+> 
+> 2015-08-28 11:50 GMT+02:00 Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>:
+> >
+> >  and thats what I got:
+> >
+> > [    6.182903] pxa2xx-spi 80860F0E:00: bus_num = -1
+> > [    6.182909] pxa2xx-spi 80860F0E:00: num_chipselect = 2
+> > [    6.182928] pxa2xx-spi 80860F0E:00: IRQ 194
+> > [    6.183049] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
+> > [    6.183111] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
+> > [    6.192761] spi spi-WM510205:00: 8333333 Hz actual, PIO
+> > .... the rest of the dmesg is currently the same....
+> >
+> >
+> > Q:  this thread is about the patch for the pxa2xx-spi where the
+> > num_chipselect was raised by one to so that the slave connects here at
+> > all. otherwise the cs1 >= max will be hit.
+> > Do you think the bus_number is ok ?
+> > And shouldn't it be set the cs1=0 and num_chipselect=1  ??
+> 
+> What is with the bus_num ? where can I find the correct one ?
+> I have no working example, is it possible to find the right settings
+> only via a windows installation??
+
+I am not sure the problem would be the bus number it is basically
+just a number allocated in the kernel, it should really matter as
+long as it represents the right device. Which as far as we can
+see here looks likely.
+
+The chip select being wrong could well be the issue, perhaps the
+Windows driver supports multiple chipselects where as the Linux
+one doesn't? Do you have access to any datasheets for the SPI on
+the AP? Alternatively you could try hacking it to use chip select
+0 and see if that makes the system work, seems like a long shot
+but perhaps worth a quick go.
+
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
