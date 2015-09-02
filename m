@@ -1,63 +1,59 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
- plug/unplug
-Date: Wed, 2 Sep 2015 14:14:59 +0200
-Message-ID: <20150902121459.GE1367@phenom.ffwll.local>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <87oahrmj1z.fsf@intel.com>
- <20150902114503.GV1367@phenom.ffwll.local>
- <s5hy4gpowv1.wl-tiwai@suse.de>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Wed, 2 Sep 2015 14:25:50 +0100
+Message-ID: <55E6F8DE.7040308@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com>
+ <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com>
+ <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com>
+ <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com>
+ <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com>
+ <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com>
+ <alpine.DEB.2.11.1508262101450.15006@nanos> <55E03A2B.3070805@imgtec.com>
+ <alpine.DEB.2.11.1508281619311.15006@nanos> <55E6C250.50100@imgtec.com>
+ <55E6C788.2000405@arm.com> <55E6D40C.5060708@imgtec.com>
+ <55E6E349.3020907@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hy4gpowv1.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <55E6E349.3020907@arm.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Marc Zyngier <marc.zyngier@arm.com>, Mark Rutland <Mark.Rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBTZXAgMDIsIDIwMTUgYXQgMDE6NTk6MzBQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTM6NDU6MDMgKzAyMDAsCj4gRGFuaWVsIFZldHRl
-ciB3cm90ZToKPiA+IAo+ID4gT24gRnJpLCBBdWcgMjgsIDIwMTUgYXQgMDg6MTQ6NDhQTSArMDMw
-MCwgSmFuaSBOaWt1bGEgd3JvdGU6Cj4gPiA+IE9uIEZyaSwgMjggQXVnIDIwMTUsIERhdmlkIEhl
-bm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBjYW5vbmljYWwuY29tPiB3cm90ZToKPiA+ID4g
-PiBIb3BlZnVsbHkgbGFzdCB2ZXJzaW9uPyA6LSkKPiA+ID4gPgo+ID4gPiA+ICAqIEFkZGVkIGNv
-bW1pdCB0ZXh0IGFib3V0IGR1cGxpY2F0ZSBldmVudHMgKHBhdGNoIDQvNCkKPiA+ID4gPiAgKiBB
-ZGRlZCBsb2NrcyBpbiBiaW5kL3VuYmluZCBvbiBpOTE1IHNpZGUgKHBhdGNoIDIvNCkKPiA+ID4g
-PiAgKiBGaXhlZCBkb2Nib29rIGNvbW1lbnRzIGluIGk5MTUgc3RydWN0IChwYXRjaCAxLzQpCj4g
-PiA+ID4gICogUmVtb3ZlZCBwb3J0X21zdF9zdHJlYW1pbmcgcGFyYW1ldGVyIChwYXRjaCAxLzQp
-Cj4gPiA+ID4gICogQWRkZWQgUmV2aWV3ZWQtYnkgLSAxICYgMiBieSBKYW5pLCAzICYgNCBieSBU
-YWthc2hpLgo+ID4gPiA+ICAgIEhvcGVmdWxseSB0aGlzIHdhcyBjb3JyZWN0LCBvdGhlcndpc2Ug
-ZmVlbCBmcmVlIHRvIGFkanVzdAo+ID4gPiA+ICAgIHlvdXJzZWxmIGJlZm9yZSBjb21taXR0aW5n
-Lgo+ID4gPiA+Cj4gPiA+ID4gQm90aCBKYW5pIGFuZCBUYWthc2hpIHNlZW0gb2theSB3aXRoIHRo
-aXMgZ29pbmcgaW50byA0LjMuIAo+ID4gPiA+IE5vYm9keSBoYXMgc2FpZCB3aGljaCB0cmVlIHlv
-dSBwcmVmZXIgdG8gdGFrZSBpdCB0aHJvdWdoLCBzbwo+ID4gPiA+IGhvdyBhYm91dCBUYWthc2hp
-IG1lcmdpbmcgaXQ/Cj4gPiA+IAo+ID4gPiBJIHRoaW5rIHRoZXJlJ3MgYSBzbGlnaHQgY29uZmxp
-Y3Qgd2l0aCBMaWJpbidzIHNlcmllcyBbMV0sIHNvIGJvdGgKPiA+ID4gc2hvdWxkIHByb2JhYmx5
-IGdvIHRocm91Z2ggdGhlIHNhbWUgdHJlZS4gSSdtIGZpbmUgd2l0aCBlaXRoZXIuCj4gPiAKPiA+
-IFllYWggbWFrZXMgc2Vuc2UuIFRha2FzaGkgY2FuIHlvdSBwbGVhc2UgcHVsbCBpbiB0aGlzIGVu
-dGlyZSBzZXJpZXMgaW50bwo+ID4geW91ciB0cmVlIHRvbz8KPiAKPiBEbyB5b3UgbWVhbiBMaWJp
-bidzIHNlcmllcyBvciBEYXZpZCdzPyAgSSBhbHJlYWR5IGFwcGxpZWQgRGF2aWQncwo+IHBhdGNo
-ZXMgKGluY2x1ZGluZyBkcm0vaTkxNSBjaGFuZ2VzKSB0byBmb3ItbmV4dCBvZiBzb3VuZCBnaXQg
-dHJlZQo+IG5vdy4gIFNoYWxsIEkgbWVyZ2UgTGliaW4ncyBwYXRjaGVzIHRvIG15IGJyYW5jaCwg
-dG9vPwoKSSB3YXMgYSBmZXcgZGF5cyBiZWhpbmQgb24gbWFpbHMgYW5kIG1hZGUgYSBiaXQgYSBt
-ZXNzIGJldHdlZW4gdGhlc2UgdHdvCnBhdGNoIHNlcmllcy4gSSB0aG91Z2h0IGJvdGggRGF2aWQn
-cyBhbmQgTGliaW4ncyBzZXJpZXMgaXMgcmVhZHksIGJ1dApsZXQncyBhc2sgSmFuaSB0byBjb25m
-aXJtIDstKQoKPiBUaGUgYnJhbmNoIGlzIHN1cHBvc2VkIHRvIGJlIHN0YWJsZSwgc28gZmVlbCBm
-cmVlIHRvIHB1bGwgaW50byB5b3VyCj4gdGVzdGluZyBicmFuY2guCgpPay4gSSdsbCBwaW5nIHlv
-dSBpZiBJIGRvIHB1bGwgc29tZXRoaW5nIHdoaWNoIGlzbid0IGluIHVwc3RyZWFtIGp1c3QgaW4u
-Ci1EYW5pZWwKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBv
-cmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vaW50ZWwtZ2Z4Cg==
+On 09/02/2015 12:53 PM, Marc Zyngier wrote:
+> On 02/09/15 11:48, Qais Yousef wrote:
+>> It's worth noting in the light of this that INT_SPEC should be optional
+>> since for hardware similar to mine there's not much to tell the
+>> controller if it's all dynamic except where we want the IPI to be routed
+>> to - the INT_SPEC is implicitly defined by the notion it's an IPI.
+> Well, I'd think that the INT_SPEC should say that it is an IPI, and I
+> don't believe we should omit it. On the ARM GIC side, our interrupts are
+> typed (type 0 is a normal wired interrupt, type 1 a per-cpu interrupt,
+> and we could allocate type 2 to identify an IPI).
+
+I didn't mean to omit it completely, but just being optional so it's 
+specified if the intc needs this info only. I'm assuming that INT_SPEC 
+is interrupt controller specific. If not, then ignore me :-)
+
+>
+> But we do need to identify it properly, as we should be able to cover
+> both IPIs and normal wired interrupts.
+
+I'm a bit confused here. What do you mean by normal wired interrupts? I 
+thought this DT binding is only to describe IPIs that needs reserving 
+and routing. What am I missing?
+
+Thanks,
+Qais
