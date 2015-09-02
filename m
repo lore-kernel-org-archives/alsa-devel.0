@@ -1,48 +1,99 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
- plug/unplug
-Date: Wed, 2 Sep 2015 13:45:03 +0200
-Message-ID: <20150902114503.GV1367@phenom.ffwll.local>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <87oahrmj1z.fsf@intel.com>
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Wed, 02 Sep 2015 12:53:45 +0100
+Message-ID: <55E6E349.3020907@arm.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com> <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com> <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com> <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com> <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com> <alpine.DEB.2.11.1508262101450.15006@nanos> <55E03A2B.3070805@imgtec.com> <alpine.DEB.2.11.1508281619311.15006@nanos> <55E6C250.50100@imgtec.com> <55E6C788.2000405@arm.com> <55E6D40C.5060708@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87oahrmj1z.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55E6D40C.5060708@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>, Mark Rutland <Mark.Rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMjgsIDIwMTUgYXQgMDg6MTQ6NDhQTSArMDMwMCwgSmFuaSBOaWt1bGEgd3Jv
-dGU6Cj4gT24gRnJpLCAyOCBBdWcgMjAxNSwgRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5p
-bmdzc29uQGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+ID4gSG9wZWZ1bGx5IGxhc3QgdmVyc2lvbj8g
-Oi0pCj4gPgo+ID4gICogQWRkZWQgY29tbWl0IHRleHQgYWJvdXQgZHVwbGljYXRlIGV2ZW50cyAo
-cGF0Y2ggNC80KQo+ID4gICogQWRkZWQgbG9ja3MgaW4gYmluZC91bmJpbmQgb24gaTkxNSBzaWRl
-IChwYXRjaCAyLzQpCj4gPiAgKiBGaXhlZCBkb2Nib29rIGNvbW1lbnRzIGluIGk5MTUgc3RydWN0
-IChwYXRjaCAxLzQpCj4gPiAgKiBSZW1vdmVkIHBvcnRfbXN0X3N0cmVhbWluZyBwYXJhbWV0ZXIg
-KHBhdGNoIDEvNCkKPiA+ICAqIEFkZGVkIFJldmlld2VkLWJ5IC0gMSAmIDIgYnkgSmFuaSwgMyAm
-IDQgYnkgVGFrYXNoaS4KPiA+ICAgIEhvcGVmdWxseSB0aGlzIHdhcyBjb3JyZWN0LCBvdGhlcndp
-c2UgZmVlbCBmcmVlIHRvIGFkanVzdAo+ID4gICAgeW91cnNlbGYgYmVmb3JlIGNvbW1pdHRpbmcu
-Cj4gPgo+ID4gQm90aCBKYW5pIGFuZCBUYWthc2hpIHNlZW0gb2theSB3aXRoIHRoaXMgZ29pbmcg
-aW50byA0LjMuIAo+ID4gTm9ib2R5IGhhcyBzYWlkIHdoaWNoIHRyZWUgeW91IHByZWZlciB0byB0
-YWtlIGl0IHRocm91Z2gsIHNvCj4gPiBob3cgYWJvdXQgVGFrYXNoaSBtZXJnaW5nIGl0Pwo+IAo+
-IEkgdGhpbmsgdGhlcmUncyBhIHNsaWdodCBjb25mbGljdCB3aXRoIExpYmluJ3Mgc2VyaWVzIFsx
-XSwgc28gYm90aAo+IHNob3VsZCBwcm9iYWJseSBnbyB0aHJvdWdoIHRoZSBzYW1lIHRyZWUuIEkn
-bSBmaW5lIHdpdGggZWl0aGVyLgoKWWVhaCBtYWtlcyBzZW5zZS4gVGFrYXNoaSBjYW4geW91IHBs
-ZWFzZSBwdWxsIGluIHRoaXMgZW50aXJlIHNlcmllcyBpbnRvCnlvdXIgdHJlZSB0b28/CgpUaGFu
-a3MsIERhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29y
-cG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+On 02/09/15 11:48, Qais Yousef wrote:
+> On 09/02/2015 10:55 AM, Marc Zyngier wrote:
+>> On 02/09/15 10:33, Qais Yousef wrote:
+>>> On 08/28/2015 03:22 PM, Thomas Gleixner wrote:
+>>>> On Fri, 28 Aug 2015, Qais Yousef wrote:
+>>>>> Thanks a lot for the detailed explanation. I wasn't looking for a quick and
+>>>>> dirty solution but my view of the problem is much simpler than yours so my
+>>>>> idea of a solution would look quick and dirty. I have a better appreciation of
+>>>>> the problem now and a way to approach it :-)
+>>>>>
+>>>>>   From DT point of view are we OK with this form then
+>>>>>
+>>>>>       coprocessor {
+>>>>>               interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+>>>>>               interrupt-sink = <&intc INT_SPEC CPU_HWAFFINITY>;
+>>>>>       }
+>>>>>
+>>>>> and if the root controller sends normal IPI as it sends normal device
+>>>>> interrupts then interrupt-sink can be a standard interrupts property (like in
+>>>>> my case)
+>>>>>
+>>>>>       coprocessor {
+>>>>>               interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+>>>>>               interrupts = <INT_SPEC>;
+>>>>>       }
+>>>>>
+>>>>> Does this look right to you? Is there something else that needs to be covered
+>>>>> still?
+>>>> I'm not an DT wizard. I leave that to the DT experts.
+>>>>    
+>>> Hi Marc Zyngier, Mark Rutland,
+>>>
+>>> Any comments about the DT binding for the IPIs?
+>>>
+>>> To recap, the proposal which is based on Marc Zyngier's is to use
+>>> interrupt-source to represent an IPI from Linux CPU to a coprocessor and
+>>> interrupt-sink to receive an IPI from coprocessor to Linux CPU.
+>>> Hopefully the description above is self explanatory. Please let me know
+>>> if you need more info. Thomas covered the routing, synthesising, and
+>>> requesting parts in the core code. The remaining (high level) issue is
+>>> how to describe the IPIs in DT.
+>> I'm definitely *not* a DT expert! ;-) My initial binding proposal was
+>> only for wired interrupts, not for IPIs. There is definitely some common
+>> aspects, except for one part:
+>>
+>> Who decides on the IPI number? So far, we've avoided encoding IPI
+>> numbers in the DT just like we don't encode MSIs, because they are
+>> programmable things. My feeling is that we shouldn't put the IPI number
+>> in the DT because the rest of the kernel uses them as well and could
+>> decide to use this particular IPI number for its own use: *clash*.
+> 
+> I think this is covered in Thomas proposal to reserve IPIs. His thoughts 
+> is to use a separate irq-domain for IPIs and use irq_reserve_ipi() and 
+> irq_destroy_ipi() to get and release IPIs.
+> 
+>>
+>> The way I see it would be to have a pool of IPI numbers that the kernel
+>> requests for its own use first, leaving whatever remains to drivers.
+> 
+> That's what Thomas thinks too and he covered this by using 
+> irq_reserve_ipi() and irq_destroy_ipi().
+> 
+>      https://lkml.org/lkml/2015/8/26/713
+
+Ah, I missed that, sorry for the noise. This looks very sensible.
+
+> It's worth noting in the light of this that INT_SPEC should be optional 
+> since for hardware similar to mine there's not much to tell the 
+> controller if it's all dynamic except where we want the IPI to be routed 
+> to - the INT_SPEC is implicitly defined by the notion it's an IPI.
+
+Well, I'd think that the INT_SPEC should say that it is an IPI, and I
+don't believe we should omit it. On the ARM GIC side, our interrupts are
+typed (type 0 is a normal wired interrupt, type 1 a per-cpu interrupt,
+and we could allocate type 2 to identify an IPI).
+
+But we do need to identify it properly, as we should be able to cover
+both IPIs and normal wired interrupts.
+
+Thanks,
+
+	M.
+-- 
+Jazz is not dead. It just smells funny...
