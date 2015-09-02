@@ -1,53 +1,65 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [alsa-devel] Linux 4.2 ALSA snd-usb-audio inconsistent lock state
- warn in PCM nonatomic mode
-Date: Wed, 2 Sep 2015 08:54:15 -0600
-Message-ID: <55E70D97.1010206@osg.samsung.com>
-References: <55E4D9BE.2040308@osg.samsung.com> <55E564ED.4050609@ladisch.de>
- <55E5E31F.6040802@osg.samsung.com> <55E5E625.5010403@ladisch.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v6 4/4] drm/i915: set proper N/CTS in modeset
+Date: Wed, 2 Sep 2015 17:22:01 +0200
+Message-ID: <20150902152201.GM1367@phenom.ffwll.local>
+References: <1441174301-144177-1-git-send-email-libin.yang@intel.com>
+ <1441174301-144177-4-git-send-email-libin.yang@intel.com>
+ <8737yx44hh.fsf@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196F88C1@SHSMSX103.ccr.corp.intel.com>
+ <87twrd2nyl.fsf@intel.com> <s5h7fo9osh0.wl-tiwai@suse.de>
+ <871teh2awt.fsf@intel.com> <s5h613torwf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <55E5E625.5010403@ladisch.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5h613torwf.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/01/2015 11:53 AM, Clemens Ladisch wrote:
-> Shuah Khan wrote:> On 09/01/2015 02:42 AM, Clemens Ladisch wrote:
->>> Shuah Khan wrote:
->>>> +++ b/sound/usb/stream.c
->>>> pcm->private_data = as;
->>>> pcm->private_free = snd_usb_audio_pcm_free;
->>>> pcm->info_flags = 0;
->>>> + pcm->nonatomic = true;
->>>
->>> Why do you think you need nonatomic mode in the USB audio driver?
->>
->> I have been working on adding Media Controller support for this chip
->> as chip specific feature in ALSA. This will allow sharing resources
->> such as the tuner across the drivers that control the device (DVB,
->> Video, snd-usb-audio). Media Controller framework uses a mutex to
->> protect access to resources, hence there is a need to hold this mutex
->> from SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_STOP which could run
->> in IRQ context.
-> 
-> Resources should be managed in the hw_params/hw_free callbacks.
-> 
-
-snd_usb_hw_params() and snd_usb_hw_free() are the two places
-I could add resource access logic and try if that works for
-what I am trying to do. Thanks for the tip.
-
-thanks,
--- Shuah
-
-
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+T24gV2VkLCBTZXAgMDIsIDIwMTUgYXQgMDM6NDY6NDBQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTU6NDQ6MzQgKzAyMDAsCj4gSmFuaSBOaWt1bGEg
+d3JvdGU6Cj4gPiAKPiA+IE9uIFdlZCwgMDIgU2VwIDIwMTUsIFRha2FzaGkgSXdhaSA8dGl3YWlA
+c3VzZS5kZT4gd3JvdGU6Cj4gPiA+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTE6MDI6NDIgKzAyMDAs
+Cj4gPiA+IEphbmkgTmlrdWxhIHdyb3RlOgo+ID4gPj4gCj4gPiA+PiA+PiBOaXRwaWNrLiBJJ2Qg
+cHJlZmVyIHNvbWUgc2hhcmluZyB3aXRoIHRoZSBzaW1pbGFyIGJsb2NrcyBmcm9tIHRoZQo+ID4g
+Pj4gPj4gZWFybGllciBwYXRjaC4gQWxzbyBhIGRlYnVnIG1lc3NhZ2Ugb24gbiA9PSAwIHdvdWxk
+IGJlIG5pY2U7IHlvdQo+ID4gPj4gPj4gcHJvYmFibHkgZGlkbid0IG5vdGljZSB5b3VyIGF1ZGlv
+X2NvbmZpZ19nZXRfcmF0ZSgpIHdhc24ndCB3b3JraW5nCj4gPiA+PiA+PiByaWdodAo+ID4gPj4g
+Pj4gYmVjYXVzZSB0aGlzIHNpbGVudGx5IGZlbGwgYmFjayB0byB0aGUgYXV0b21hdGljIG1vZGUg
+aGVyZS4KPiA+ID4+ID4KPiA+ID4+ID4gT0ssIEkgd2lsbCBhZGQgdGhlIG1zZy4gQXMgeW91IGFu
+ZCBWaWxsZSBhcmUgaW5zaXN0aW5nIG9uCj4gPiA+PiA+IHNoYXJpbmcgY29kZSwgSSB3aWxsIGRv
+IGl0IGluIG5leHQgdmVyc2lvbi4KPiA+ID4+IAo+ID4gPj4gV2VsbCwgcmVhbGx5LCBJJ20gZmlu
+ZSB3aXRoIGhhdmluZyB0aGF0IHBhcnQgZHVwbGljYXRlZCBhcy1pcyBmb3Igbm93LAo+ID4gPj4g
+d2UgY2FuIGZpeCBpdCBsYXRlci4gTW9yZSBpbXBvcnRhbnQgdG8gZm9jdXMgb24gZ2V0dGluZwo+
+ID4gPj4gYXVkaW9fY29uZmlnX2dldF9yYXRlKCkgcmlnaHQuCj4gPiA+PiAKPiA+ID4+IEkgZG9u
+J3Qga25vdyBpZiB5b3UncmUgc3RpbGwgdGFyZ2V0aW5nIHY0LjMgd2l0aCB0aGlzICh1cCB0byBU
+YWthc2hpIEkKPiA+ID4+IGd1ZXNzKSB3ZSdsbCByZWFsbHkgbmVlZCB0byB3cmFwIHRoaXMgdXAg
+c29vbi4KPiA+ID4KPiA+ID4gSSdtIGluIGZhdm9yIG9mIG1lcmdpbmcgdGhpcyBpbnRvIDQuMywg
+c28gaXQnZCBiZSBhcHByZWNpYXRlZCBpZiBMaWJpbgo+ID4gPiBjYW4gcHJlcGFyZSB0aGUgZml4
+ZWQgdmVyc2lvbiBzb29uaXNoLCBpbmRlZWQuCj4gPiAKPiA+IElJVUMgcGF0Y2hlcyAxLTMgd291
+bGQgYmUgdXNlZnVsIG9uIHRoZWlyIG93biBhbHJlYWR5LCBhbmQgYSBmaXhlZAo+ID4gdmVyc2lv
+biBvZiBwYXRjaCA0IGNvdWxkIGZvbGxvdy4gSnVzdCBhIHRob3VnaHQuCj4gCj4gVGhhdCdzIGdv
+b2QsIHRoZW4gSSBjYW4gdGFrZSB0aGUgZmlyc3QgdGhyZWUgcGF0Y2hlcy4KPiAKPiBEYW5pZWws
+IHdvdWxkIHlvdSBsaWtlIHRvIHJldmlldyB0aGVzZSB0aHJlZSBiZWZvcmUgSSBtZXJnZSB0aGVt
+Pwo+IEkgYXNzdW1lZCB5b3VyIHByZXZpb3VzIG1haWwgYXMgYSBraW5kIG9mIGFjayB0byB0aGlz
+IHNlcmllcywgdG9vLgoKZndpdyBhY2sgb24gdGhhdCBwbGFuLCBidXQgZ2l2ZW4gaG93IG11Y2gg
+SSBtYWRlIGEgbWVzcyBvdXQgb2YgdGhlc2UgdHdvCnNlcmllcyBhbmQgbWl4ZWQgdGhlbSB1cCBJ
+IHdvdWxkbid0IHRydXN0IG1lIGFueXdheSA7LSkKCk9uY2UgdGhlIGNvZGUgc2V0dGxlcyBJJ2xs
+IHJlYmFzZS9iYWNrbWVyZ2Ugc28gdGhhdCBJIGNhbiBhcHBseSB0aGUKZm9sbG93LXVwIGRvY3Vt
+ZW50YXRpb24va2VybmVsZG9jIHdvcmsgdGhhdCdzIHN0aWxsIGdldHRpbmcgZG9uZS4KCkNoZWVy
+cywgRGFuaWVsCi0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRlbCBDb3Jw
+b3JhdGlvbgpodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0
+cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2ludGVsLWdmeAo=
