@@ -1,53 +1,53 @@
-From: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
-Date: Wed, 02 Sep 2015 15:14:59 +0100
-Message-ID: <55E70463.10304@arm.com>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com> <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com> <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com> <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com> <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com> <alpine.DEB.2.11.1508262101450.15006@nanos> <55E03A2B.3070805@imgtec.com> <alpine.DEB.2.11.1508281619311.15006@nanos> <55E6C250.50100@imgtec.com> <55E6C788.2000405@arm.com> <55E6D40C.5060708@imgtec.com> <55E6E349.3020907@arm.com> <55E6F8DE.7040308@imgtec.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [alsa-devel] Linux 4.2 ALSA snd-usb-audio inconsistent lock state
+ warn in PCM nonatomic mode
+Date: Wed, 2 Sep 2015 08:54:15 -0600
+Message-ID: <55E70D97.1010206@osg.samsung.com>
+References: <55E4D9BE.2040308@osg.samsung.com> <55E564ED.4050609@ladisch.de>
+ <55E5E31F.6040802@osg.samsung.com> <55E5E625.5010403@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <55E6F8DE.7040308@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Qais Yousef <qais.yousef@imgtec.com>, Mark Rutland <Mark.Rutland@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <55E5E625.5010403@ladisch.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/09/15 14:25, Qais Yousef wrote:
-> On 09/02/2015 12:53 PM, Marc Zyngier wrote:
->> On 02/09/15 11:48, Qais Yousef wrote:
->>> It's worth noting in the light of this that INT_SPEC should be optional
->>> since for hardware similar to mine there's not much to tell the
->>> controller if it's all dynamic except where we want the IPI to be routed
->>> to - the INT_SPEC is implicitly defined by the notion it's an IPI.
->> Well, I'd think that the INT_SPEC should say that it is an IPI, and I
->> don't believe we should omit it. On the ARM GIC side, our interrupts are
->> typed (type 0 is a normal wired interrupt, type 1 a per-cpu interrupt,
->> and we could allocate type 2 to identify an IPI).
-> 
-> I didn't mean to omit it completely, but just being optional so it's 
-> specified if the intc needs this info only. I'm assuming that INT_SPEC 
-> is interrupt controller specific. If not, then ignore me :-)
-
-It is, but I don't think it can really be made optional.
-
+On 09/01/2015 11:53 AM, Clemens Ladisch wrote:
+> Shuah Khan wrote:> On 09/01/2015 02:42 AM, Clemens Ladisch wrote:
+>>> Shuah Khan wrote:
+>>>> +++ b/sound/usb/stream.c
+>>>> pcm->private_data = as;
+>>>> pcm->private_free = snd_usb_audio_pcm_free;
+>>>> pcm->info_flags = 0;
+>>>> + pcm->nonatomic = true;
+>>>
+>>> Why do you think you need nonatomic mode in the USB audio driver?
 >>
->> But we do need to identify it properly, as we should be able to cover
->> both IPIs and normal wired interrupts.
+>> I have been working on adding Media Controller support for this chip
+>> as chip specific feature in ALSA. This will allow sharing resources
+>> such as the tuner across the drivers that control the device (DVB,
+>> Video, snd-usb-audio). Media Controller framework uses a mutex to
+>> protect access to resources, hence there is a need to hold this mutex
+>> from SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_STOP which could run
+>> in IRQ context.
 > 
-> I'm a bit confused here. What do you mean by normal wired interrupts? I 
-> thought this DT binding is only to describe IPIs that needs reserving 
-> and routing. What am I missing?
+> Resources should be managed in the hw_params/hw_free callbacks.
+> 
 
-Look at my initial proposal, and the way I was describing a device
-having an interrupt source, and two possible interrupt sinks, one being
-a CPU and the other being another device.
+snd_usb_hw_params() and snd_usb_hw_free() are the two places
+I could add resource access logic and try if that works for
+what I am trying to do. Thanks for the tip.
 
-I'm looking at solving that case as well, possibly with the same
-infrastructure (the routing bit should be the same).
+thanks,
+-- Shuah
 
-Thanks,
 
-	M.
 -- 
-Jazz is not dead. It just smells funny...
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
