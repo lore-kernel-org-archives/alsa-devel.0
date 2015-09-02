@@ -1,41 +1,66 @@
-From: Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH] ASoC: bcm2835-i2s: Fix module autoload for OF platform
- drivers
-Date: Wed, 2 Sep 2015 10:21:14 +0100
-Message-ID: <20150902092114.GV4796@x1>
-References: <20150827150401.GA32653@goodgumbo.baconseed.org>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Wed, 2 Sep 2015 10:33:04 +0100
+Message-ID: <55E6C250.50100@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com>
+ <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com>
+ <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com>
+ <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com>
+ <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com>
+ <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com>
+ <alpine.DEB.2.11.1508261701430.15006@nanos> <55DDDE3C.8030609@imgtec.com>
+ <alpine.DEB.2.11.1508262101450.15006@nanos> <55E03A2B.3070805@imgtec.com>
+ <alpine.DEB.2.11.1508281619311.15006@nanos>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150827150401.GA32653@goodgumbo.baconseed.org>
+In-Reply-To: <alpine.DEB.2.11.1508281619311.15006@nanos>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Luis de Bethencourt <luis@debethencourt.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Wolfram Sang <wsa@the-dreams.de>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org
+To: Marc Zyngier <marc.zyngier@arm.com>, Mark Rutland <Mark.Rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>, Lisa Parratt <Lisa.Parratt@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 27 Aug 2015, Luis de Bethencourt wrote:
+On 08/28/2015 03:22 PM, Thomas Gleixner wrote:
+> On Fri, 28 Aug 2015, Qais Yousef wrote:
+>> Thanks a lot for the detailed explanation. I wasn't looking for a quick and
+>> dirty solution but my view of the problem is much simpler than yours so my
+>> idea of a solution would look quick and dirty. I have a better appreciation of
+>> the problem now and a way to approach it :-)
+>>
+>>  From DT point of view are we OK with this form then
+>>
+>>      coprocessor {
+>>              interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+>>              interrupt-sink = <&intc INT_SPEC CPU_HWAFFINITY>;
+>>      }
+>>
+>> and if the root controller sends normal IPI as it sends normal device
+>> interrupts then interrupt-sink can be a standard interrupts property (like in
+>> my case)
+>>
+>>      coprocessor {
+>>              interrupt-source = <&intc INT_SPEC COP_HWAFFINITY>;
+>>              interrupts = <INT_SPEC>;
+>>      }
+>>
+>> Does this look right to you? Is there something else that needs to be covered
+>> still?
+> I'm not an DT wizard. I leave that to the DT experts.
+>   
 
-> These platform drivers have a OF device ID table but the OF module
-> alias information is not created so module autoloading won't work.
-> 
-> Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
-> ---
->  sound/soc/bcm/bcm2835-i2s.c | 2 ++
->  1 file changed, 2 insertions(+)
+Hi Marc Zyngier, Mark Rutland,
 
-Acked-by: Lee Jones <lee@kernel.org>
+Any comments about the DT binding for the IPIs?
 
-> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-> index 03fa1cb..8c435be 100644
-> --- a/sound/soc/bcm/bcm2835-i2s.c
-> +++ b/sound/soc/bcm/bcm2835-i2s.c
-> @@ -862,6 +862,8 @@ static const struct of_device_id bcm2835_i2s_of_match[] = {
->  	{},
->  };
->  
-> +MODULE_DEVICE_TABLE(of, bcm2835_i2s_of_match);
-> +
->  static struct platform_driver bcm2835_i2s_driver = {
->  	.probe		= bcm2835_i2s_probe,
->  	.driver		= {
+To recap, the proposal which is based on Marc Zyngier's is to use 
+interrupt-source to represent an IPI from Linux CPU to a coprocessor and 
+interrupt-sink to receive an IPI from coprocessor to Linux CPU. 
+Hopefully the description above is self explanatory. Please let me know 
+if you need more info. Thomas covered the routing, synthesising, and 
+requesting parts in the core code. The remaining (high level) issue is 
+how to describe the IPIs in DT.
+
+Thanks,
+Qais
