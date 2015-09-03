@@ -1,49 +1,73 @@
-From: Luis de Bethencourt <luis@debethencourt.com>
-Subject: [PATCH] ALSA: sparc: amd7930: Fix module autoload for OF platform
- driver
-Date: Thu, 3 Sep 2015 13:03:04 +0200
-Message-ID: <20150903110304.GA17142@goodgumbo.baconseed.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] drm/i915: Improve kernel-doc for
+	i915_audio_component struct
+Date: Thu,  3 Sep 2015 13:24:45 +0200
+Message-ID: <1441279485-328-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Wolfram Sang <wsa@the-dreams.de>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, Javier Martinez Canillas <javier@osg.samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de, daniel@ffwll.ch, libin.yang@intel.com, jani.nikula@linux.intel.com
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This platform driver has a OF device ID table but the OF module
-alias information is not created so module autoloading won't work.
-
-Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
----
-
-Hello,
-
-This patch adds the missing MODULE_DEVICE_TABLE() for OF to eport
-that information so modules have the correct aliases built-in and
-autoloading works correctly.
-
-A longer explanation by Javier Canillas can be found here:
-https://lkml.org/lkml/2015/7/30/519
-
-Thanks,
-Luis
-
- sound/sparc/amd7930.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
-index 784ceb8..35c1f6a 100644
---- a/sound/sparc/amd7930.c
-+++ b/sound/sparc/amd7930.c
-@@ -1064,6 +1064,7 @@ static const struct of_device_id amd7930_match[] = {
- 	},
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, amd7930_match);
- 
- static struct platform_driver amd7930_sbus_driver = {
- 	.driver = {
--- 
-2.4.6
+VG8gbWFrZSBrZXJuZWwtZG9jIGhhcHB5LCB0aGUgaTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9f
+b3BzIHN0cnVjdApjYW5ub3QgYmUgbmVzdGVkLgoKU2lnbmVkLW9mZi1ieTogRGF2aWQgSGVubmlu
+Z3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+Ci0tLQoKTm90ZSB0aGF0IEkg
+ZGlkbid0IGRvIHRoZSBzYW1lIHVuLW5lc3RpbmcgZm9yIGk5MTVfYXVkaW9fY29tcG9uZW50X29w
+cy4KVGhpcyBpcyB0byBtYWtlIGl0IGVhc2llciB0byBtZXJnZSB0aGUgcGVuZGluZyBzeW5jX2F1
+ZGlvX3JhdGUgcGF0Y2ggc2V0LgoKSXQgYXBwbGllcyBvbiB0b3Agb2YgbXkganVzdCBzZW50IHBh
+dGNoZXMgc28gc2hvdWxkIHByb2JhYmx5IGJlIHRha2VuCnRocm91Z2ggVGFrYXNoaSdzIHRyZWUu
+CgogRG9jdW1lbnRhdGlvbi9Eb2NCb29rL2RybS50bXBsIHwgIDEgKwogaW5jbHVkZS9kcm0vaTkx
+NV9jb21wb25lbnQuaCAgIHwgMzMgKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCiAy
+IGZpbGVzIGNoYW5nZWQsIDI0IGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL0RvY3VtZW50YXRpb24vRG9jQm9vay9kcm0udG1wbCBiL0RvY3VtZW50YXRpb24vRG9j
+Qm9vay9kcm0udG1wbAppbmRleCAyZmI5YTU0Li43NTU0Njc5IDEwMDY0NAotLS0gYS9Eb2N1bWVu
+dGF0aW9uL0RvY0Jvb2svZHJtLnRtcGwKKysrIGIvRG9jdW1lbnRhdGlvbi9Eb2NCb29rL2RybS50
+bXBsCkBAIC00MDQ4LDYgKzQwNDgsNyBAQCBpbnQgbnVtX2lvY3Rsczs8L3N5bm9wc2lzPgogCTx0
+aXRsZT5IaWdoIERlZmluaXRpb24gQXVkaW88L3RpdGxlPgogIVBkcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pbnRlbF9hdWRpby5jIEhpZ2ggRGVmaW5pdGlvbiBBdWRpbyBvdmVyIEhETUkgYW5kIERpc3Bs
+YXkgUG9ydAogIUlkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCishSWluY2x1ZGUv
+ZHJtL2k5MTVfY29tcG9uZW50LmgKICAgICAgIDwvc2VjdDI+CiAgICAgICA8c2VjdDI+CiAJPHRp
+dGxlPlBhbmVsIFNlbGYgUmVmcmVzaCBQU1IgKFBTUi9TUkQpPC90aXRsZT4KZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVu
+dC5oCmluZGV4IGIyZDU2ZGQuLjg5ZDYzNjIgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZHJtL2k5MTVf
+Y29tcG9uZW50LmgKKysrIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaApAQCAtMjQsNiAr
+MjQsMjggQEAKICNpZm5kZWYgX0k5MTVfQ09NUE9ORU5UX0hfCiAjZGVmaW5lIF9JOTE1X0NPTVBP
+TkVOVF9IXwogCisvKioKKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMg
+LSBpOTE1IGRpcmVjdGx5IGNhbGxpbmcgaGRhIGRyaXZlcgorICoKKyAqIEBhdWRpb19wdHI6IFBv
+aW50ZXIgdG8gcGFzcyB3aGVuIGNhbGxpbmcgcGluX2VsZF9ub3RpZnkuCisgKiBAcGluX2VsZF9u
+b3RpZnk6IENhbGxlZCBmcm9tIGk5MTUgZHJpdmVyLCBub3RpZnlpbmcgdGhlIEhEQSBkcml2ZXIg
+dGhhdAorICogcGluIHNlbnNlIGFuZC9vciBFTEQgaW5mb3JtYXRpb24gaGFzIGNoYW5nZWQuCisg
+KgorICogVGhlc2UgZnVuY3Rpb25zIGFyZSBpbXBsZW1lbnRlZCBieSBoZGEgZHJpdmVyIGFuZCBj
+YWxsZWQgYnkgdGhlIGk5MTUKKyAqIGRyaXZlci4KKyAqLworc3RydWN0IGk5MTVfYXVkaW9fY29t
+cG9uZW50X2F1ZGlvX29wcyB7CisJdm9pZCAqYXVkaW9fcHRyOworCXZvaWQgKCpwaW5fZWxkX25v
+dGlmeSkodm9pZCAqYXVkaW9fcHRyLCBpbnQgcG9ydCk7Cit9OworCisvKioKKyAqIHN0cnVjdCBp
+OTE1X2F1ZGlvX2NvbXBvbmVudCAtIFVzZWQgZm9yIGRpcmVjdCBjb21tdW5pY2F0aW9uIGJldHdl
+ZW4gaTkxNSBhbmQgaGRhIGRyaXZlcnMKKyAqCisgKiBAZGV2OiBpOTE1IGRldmljZSwgdXNlZCBh
+cyBwYXJhbWV0ZXIgZm9yIG9wcworICogQG9wczogT3BzIGltcGxlbWVudGVkIGJ5IGk5MTUgZHJp
+dmVyLCBjYWxsZWQgYnkgaGRhIGRyaXZlcgorICogQGF1ZGlvX29wczogT3BzIGltcGxlbWVudGVk
+IGJ5IGhkYSBkcml2ZXIsIGNhbGxlZCBieSBpOTE1IGRyaXZlcgorICovCiBzdHJ1Y3QgaTkxNV9h
+dWRpb19jb21wb25lbnQgewogCXN0cnVjdCBkZXZpY2UgKmRldjsKIApAQCAtMzUsMTYgKzU3LDcg
+QEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKIAkJaW50ICgqZ2V0X2NkY2xrX2ZyZXEp
+KHN0cnVjdCBkZXZpY2UgKik7CiAJfSAqb3BzOwogCi0JY29uc3Qgc3RydWN0IGk5MTVfYXVkaW9f
+Y29tcG9uZW50X2F1ZGlvX29wcyB7Ci0JCXZvaWQgKmF1ZGlvX3B0cjsKLQkJLyoqCi0JCSAqIENh
+bGwgZnJvbSBpOTE1IGRyaXZlciwgbm90aWZ5aW5nIHRoZSBIREEgZHJpdmVyIHRoYXQKLQkJICog
+cGluIHNlbnNlIGFuZC9vciBFTEQgaW5mb3JtYXRpb24gaGFzIGNoYW5nZWQuCi0JCSAqIEBhdWRp
+b19wdHI6CQlIREEgZHJpdmVyIG9iamVjdAotCQkgKiBAcG9ydDoJCVdoaWNoIHBvcnQgaGFzIGNo
+YW5nZWQgKFBPUlRBIC8gUE9SVEIgLyBQT1JUQyBldGMpCi0JCSAqLwotCQl2b2lkICgqcGluX2Vs
+ZF9ub3RpZnkpKHZvaWQgKmF1ZGlvX3B0ciwgaW50IHBvcnQpOwotCX0gKmF1ZGlvX29wczsKKwlj
+b25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzICphdWRpb19vcHM7CiB9
+OwogCiAjZW5kaWYgLyogX0k5MTVfQ09NUE9ORU5UX0hfICovCi0tIAoxLjkuMQoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcg
+bGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
