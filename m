@@ -1,162 +1,71 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
-	Nuvoton 8825
-Date: Thu, 3 Sep 2015 10:10:05 -0700
-Message-ID: <CAOMFOmUR0DQD82AU9-8XrA0vscRkC0UxaV5ZvOOa6TG4RZDs1Q@mail.gmail.com>
-References: <1440805070-39150-1-git-send-email-anatol.pomozov@gmail.com>
- <20150830144717.GD12027@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 8/9] spi: rockchip: modify DMA max burst to 1
+Date: Thu, 3 Sep 2015 18:45:02 +0100
+Message-ID: <20150903174502.GI5313@sirena.org.uk>
+References: <1441101381-1329-1-git-send-email-shawn.lin@rock-chips.com>
+ <1441101524-1700-1-git-send-email-shawn.lin@rock-chips.com>
+ <20150903125429.GA12027@sirena.org.uk>
+ <55E84E17.2090409@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f44.google.com (mail-vk0-f44.google.com
- [209.85.213.44])
- by alsa0.perex.cz (Postfix) with ESMTP id B9F9D2606BC
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2015 19:10:06 +0200 (CEST)
-Received: by vkhf67 with SMTP id f67so28361266vkh.1
- for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2015 10:10:06 -0700 (PDT)
-In-Reply-To: <20150830144717.GD12027@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ben Zhang <benzh@google.com>, Dylan Reid <dgreid@google.com>, mfelton1@nuvoton.com, Chih-Chiang Chang <ccchang12@nuvoton.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mQQrPwpUFXnyQ/Ik"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <55E84E17.2090409-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-On Sun, Aug 30, 2015 at 7:47 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Aug 28, 2015 at 04:37:50PM -0700, Anatol Pomozov wrote:
->
->> +     SOC_SINGLE_TLV("Frontend PGA Gain", NAU8825_REG_POWER_UP_CONTROL,
->> +             8, 37, 0, fepga_gain_tlv),
->
-> All volume controls need to end in Volume as per ControlNames.txt.
+--mQQrPwpUFXnyQ/Ik
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Done.
+On Thu, Sep 03, 2015 at 09:41:43PM +0800, Shawn Lin wrote:
+> On 2015/9/3 20:54, Mark Brown wrote:
 
->
->> +     default:
->> +             return -EINVAL;
->> +     }
->> +     regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
->
-> Blank line here.
+> >If this is a quirk of the DMA controller why is it being fixed with a
+> >property specific to the SPI controller?  Can't the DMA controller just
+> >override the burst size?
 
-Done.
+> Cool...that's a good question. Actually DMA controller can't do that since
+> block peripheral controller(e.g sd/emmc, they always access data by
+> block-512Bytes.) can't meet the case. So It's hard for dma controller know
+> who is the caller, and what should be done.
 
->> +     /* Bias and clock are needed for button detection */
->> +     regmap_update_bits(nau8825->regmap, NAU8825_REG_BIAS_ADJ,
->> +             NAU8825_BIAS_VMID, NAU8825_BIAS_VMID);
->> +     regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
->> +             NAU8825_GLOBAL_BIAS_EN, NAU8825_GLOBAL_BIAS_EN);
->
-> These sound like DAPM widgets which should be being eneabled when jack
-> detection is enabled.
+You could take a guess based on request size, but that's going to be a
+bit error prone I imagine.
 
-The bias/vmid need to be enabled before clock/interruptions. Moving it
-to set_bias or to a widget makes interrupts non-functional. bias/vmid
-is also needed for capture and playback. So I think it is ok to enable
-it here. Later Nuvoton engineers will look at power management closer
-and might find better place for bias setup.
+> The only thing dma controller can do is avoid to execute DMAFLUSHP on its
+> own. But how about peripheral controller trigger non-multiple access? So
+> that's what I mentioned on covery letter that we should do "broken things"
+> for both dma controller and some peripherals.
 
->> +     /* Ground HP Outputs[1:0], needed for headset auto detection
->> +      * Enable Automatic Mic/Gnd switching reading on insert interrupt[6] */
->> +     regmap_update_bits(regmap, NAU8825_REG_HSD_CTRL,
->> +             NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
->> +             NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
->
-> I'm still not happy to see the unconditional enabling of detection and
-> switching.
+The other thing it could do is provide the information out via some
+internal Linux API which the drivers could query instead of directly
+having a DT property in each client driver.  That way at least the DT
+only needs the quirk in one place even if the clients need to handle it
+individually.
 
-Moved to enable_jack_detection(). Note that it looses "auto mic type
-detection" functionality if jack_detection is disabled. Such auto mic
-detection might be useful even in case if there is no physical jack
-and input/output routes are soldered statically.
+--mQQrPwpUFXnyQ/Ik
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->
->> +             if (!nau8825->mclk_freq)
->> +                     clk_prepare_enable(nau8825->mclk);
->
-> You should be checking the return value here.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Done.
+iQEcBAEBCAAGBQJV6IcdAAoJECTWi3JdVIfQpHMH/3uUXqmELNJ+DjZAtIuTAML4
+F3Ma1D3F1hxiZzEmlGNB9mI/VBZP4EhQ+NzHrc8Wn/pqIvuBumGqdrYj0MdnKhYn
+FJ3olHfbAZtJ3a1vBtriGvPhRAbWUEqAYUuCoue4ZUfJ6vF81KttN6yjzO929209
+iuUkQiqGZnLySLL1yqHbZb61ruABOSmOrgJR3qFU/72dJB7xDY61JIrzZxwGEsaB
+fMrU4I4KsJPG3dl02upMA8G0X1LWnGe5AcKVdOxCGFj6swP1WyTtQyLLLqx1Ks31
+8J6MlWZLHg7/b13dgfh+jsg+j2wYIODjmTlu8UhyZru0EBVTAbffjX8CPCR2/Xk=
+=w/6n
+-----END PGP SIGNATURE-----
 
->
->> +             if (nau8825->mclk_freq != freq) {
->> +                     nau8825->mclk_freq = freq;
->> +
->> +                     freq = clk_round_rate(nau8825->mclk, freq);
->> +                     clk_set_rate(nau8825->mclk, freq);
->
-> Likewise here and in other cases where you're setting clocks.
->
->> +     nau8825->jkdet_enable = device_property_read_bool(dev,
->> +             "nuvoton,jkdet-enable");
->
-> This DT parsing stuff should really be moved out into a separate
-> function
-
-Thanks. Moved.
-
-> which is only called (or only does anything) if there is
-> actually DT data (if there is an of_node set).
-
-device_property_read_* handles both DTS and ACPI that covers most
-(all?) modern systems.
-
-Or are you talking about case when a platform driver passes
-pre-initialized data from using dev_get_platdata() (like what rt5677
-does)? I assume this is a deprecated style that predates DTS/ACPI
-style configuration.
-
->
->> +     if (nau8825->irq) {
->> +             int ret = devm_request_threaded_irq(dev, nau8825->irq, NULL,
->> +                     nau8825_interrupt, IRQF_TRIGGER_LOW | IRQF_ONESHOT,
->> +                     "nau8825", nau8825);
->> +
->> +             if (ret) {
->> +                     dev_err(dev, "Cannot request irq %d (%d)\n",
->> +                             nau8825->irq, ret);
->> +                     return ret;
->> +             }
->> +     }
->
-> So we actually handle systems with no interrupt wired up?
-
-I think it worth adding such configuration. Without the IRQ line this
-chip looses large part of its functionality (jack detection, mic auto
-detect, buttons, cross-talk configuration) but at least playback
-should work.
-
-> That seems to
-> make all the non-optional enabling of the jack detection interrupts a
-> bit odd.
-
-Moved jack irq enabling to enable_jack_detection()
-
->
->> +static struct i2c_driver nau8825_driver = {
->> +     .driver = {
->> +             .name = "nau8825",
->> +             .owner = THIS_MODULE,
->> +     },
->> +     .probe = nau8825_i2c_probe,
->> +     .remove = nau8825_i2c_remove,
->> +     .id_table = nau8825_i2c_ids,
->> +};
->
-> This has a DT binding but no OF IDs defined.  It is true that Linux will
-> currently try to guess a suitable driver based on the I2C ID table but
-> it is bad practice to rely on this behaviour, we do see ID collisions
-> sometimes (for example both WonderMedia and Wolfson using WM for their
-> parts).
-
-Done. Thanks for the pointer.
+--mQQrPwpUFXnyQ/Ik--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
