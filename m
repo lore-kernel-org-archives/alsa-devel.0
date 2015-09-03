@@ -1,8 +1,8 @@
 From: Luis de Bethencourt <luis@debethencourt.com>
-Subject: [PATCH 07/12] ASoC: fsl_sai: Fix module autoload for OF platform
+Subject: [PATCH 08/12] ASoC: jz4740: Fix module autoload for OF platform
  driver
-Date: Thu, 3 Sep 2015 12:58:23 +0200
-Message-ID: <20150903105823.GA16890@goodgumbo.baconseed.org>
+Date: Thu, 3 Sep 2015 12:58:57 +0200
+Message-ID: <20150903105857.GA16943@goodgumbo.baconseed.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -17,20 +17,20 @@ alias information is not created so module autoloading won't work.
 
 Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
 ---
- sound/soc/fsl/fsl_sai.c | 1 +
+ sound/soc/jz4740/jz4740-i2s.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 5c73bea..ec14427 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -801,6 +801,7 @@ static const struct of_device_id fsl_sai_ids[] = {
- 	{ .compatible = "fsl,imx6sx-sai", },
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index b05fb1c..794a349 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -485,6 +485,7 @@ static const struct of_device_id jz4740_of_matches[] = {
+ 	{ .compatible = "ingenic,jz4780-i2s", .data = (void *)JZ_I2S_JZ4780 },
  	{ /* sentinel */ }
  };
-+MODULE_DEVICE_TABLE(of, fsl_sai_ids);
++MODULE_DEVICE_TABLE(of, jz4740_of_matches);
+ #endif
  
- static struct platform_driver fsl_sai_driver = {
- 	.probe = fsl_sai_probe,
+ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
 -- 
 2.4.6
