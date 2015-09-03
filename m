@@ -1,66 +1,52 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] drm/i915: Add locks around audio component
-	bind/unbind
-Date: Thu,  3 Sep 2015 11:51:35 +0200
-Message-ID: <1441273895-31153-3-git-send-email-david.henningsson@canonical.com>
-References: <1441273895-31153-1-git-send-email-david.henningsson@canonical.com>
+Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
+	plug/unplug
+Date: Thu, 3 Sep 2015 11:53:38 +0200
+Message-ID: <55E818A2.3080708@canonical.com>
+References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
+ <55E7FC20.6010702@canonical.com> <s5h8u8noqeo.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BB45265721
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2015 11:51:36 +0200 (CEST)
-In-Reply-To: <1441273895-31153-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h8u8noqeo.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: daniel.vetter@intel.com, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-This will make sure that audio callbacks do not race with
-component bind/unbind.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- drivers/gpu/drm/i915/intel_audio.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
-index 2d52d96..678a34f 100644
---- a/drivers/gpu/drm/i915/intel_audio.c
-+++ b/drivers/gpu/drm/i915/intel_audio.c
-@@ -543,9 +543,11 @@ static int i915_audio_component_bind(struct device *i915_dev,
- 	if (WARN_ON(acomp->ops || acomp->dev))
- 		return -EEXIST;
- 
-+	drm_modeset_lock_all(dev_priv->dev);
- 	acomp->ops = &i915_audio_component_ops;
- 	acomp->dev = i915_dev;
- 	dev_priv->audio_component = acomp;
-+	drm_modeset_unlock_all(dev_priv->dev);
- 
- 	return 0;
- }
-@@ -556,9 +558,11 @@ static void i915_audio_component_unbind(struct device *i915_dev,
- 	struct i915_audio_component *acomp = data;
- 	struct drm_i915_private *dev_priv = dev_to_i915(i915_dev);
- 
-+	drm_modeset_lock_all(dev_priv->dev);
- 	acomp->ops = NULL;
- 	acomp->dev = NULL;
- 	dev_priv->audio_component = NULL;
-+	drm_modeset_unlock_all(dev_priv->dev);
- }
- 
- static const struct component_ops i915_audio_component_bind_ops = {
--- 
-1.9.1
+CgpPbiAyMDE1LTA5LTAzIDEwOjMxLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAwMyBT
+ZXAgMjAxNSAwOTo1MjowMCArMDIwMCwKPiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4KPj4K
+Pj4KPj4gT24gMjAxNS0wOC0yOCAxOTowMiwgRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4+PiBI
+b3BlZnVsbHkgbGFzdCB2ZXJzaW9uPyA6LSkKPj4+Cj4+PiAgICAqIEFkZGVkIGNvbW1pdCB0ZXh0
+IGFib3V0IGR1cGxpY2F0ZSBldmVudHMgKHBhdGNoIDQvNCkKPj4+ICAgICogQWRkZWQgbG9ja3Mg
+aW4gYmluZC91bmJpbmQgb24gaTkxNSBzaWRlIChwYXRjaCAyLzQpCj4+PiAgICAqIEZpeGVkIGRv
+Y2Jvb2sgY29tbWVudHMgaW4gaTkxNSBzdHJ1Y3QgKHBhdGNoIDEvNCkKPj4+ICAgICogUmVtb3Zl
+ZCBwb3J0X21zdF9zdHJlYW1pbmcgcGFyYW1ldGVyIChwYXRjaCAxLzQpCj4+PiAgICAqIEFkZGVk
+IFJldmlld2VkLWJ5IC0gMSAmIDIgYnkgSmFuaSwgMyAmIDQgYnkgVGFrYXNoaS4KPj4+ICAgICAg
+SG9wZWZ1bGx5IHRoaXMgd2FzIGNvcnJlY3QsIG90aGVyd2lzZSBmZWVsIGZyZWUgdG8gYWRqdXN0
+Cj4+PiAgICAgIHlvdXJzZWxmIGJlZm9yZSBjb21taXR0aW5nLgo+Pgo+PiBIaSBUYWthc2hpLAo+
+Pgo+PiBUaGFua3MgZm9yIGZpbmFsbHkgbWVyZ2luZyBpdC4gSnVzdCB3YW50IHRvIG1ha2UgeW91
+IGF3YXJlIHRoYXQgaXQgc2VlbXMKPj4gbGlrZSB5b3UgbWVyZ2VkIHY0IGluc3RlYWQgb2YgdjUs
+IHNvIHRoZSBjaGFuZ2VzIG1lbnRpb25lZCBhYm92ZSBkaWQgbm90Cj4+IG1ha2UgaXQgaW4uIEFu
+eXRoaW5nIGVpdGhlciB5b3Ugb3IgSSBzaG91bGQgZG8gYWJvdXQgdGhhdD8KPgo+IEFyZ2gsIHRo
+YXQncyBiYWQuICBDb3VsZCB5b3UgcG9zdCBpbmNyZW1lbnRhbCBwYXRjaGVzIHRvIGNvcnJlY3Qg
+dG8KPiB2NT8KClBvc3RlZCBub3cuIFRvIGF2b2lkIHNwYW1taW5nIGl0IHdhcyB0byB5b3UgYW5k
+IHRoZSBhbHNhLWRldmVsIE1MIG9ubHkuCgpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTUtU2VwdGVtYmVyLzA5NzIxNi5odG1sCgo+Cj4gQXQg
+dGhlIG5leHQgdGltZSBwbGVhc2UgcHV0IHJldmlzaW9uIG51bWJlciBpbiB0aGUgcGF0Y2ggaXRz
+ZWxmLCBub3QKPiBvbmx5IGluIGNvdmVyIGxldHRlci4gIFlvdSBjYW4gZG8gaXQgd2l0aCAtLXN1
+YmplY3QtcHJlZml4IG9wdGlvbiBvZgo+IGdpdC1mb3JtYXQtcGF0Y2guCgpPaywgd2lsbCB0cnkg
+dG8gcmVtZW1iZXIgOi0pCgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgpo
+dHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
+dGluZm8vaW50ZWwtZ2Z4Cg==
