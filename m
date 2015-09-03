@@ -1,8 +1,8 @@
 From: Luis de Bethencourt <luis@debethencourt.com>
-Subject: [PATCH 03/12] ASoC: wm8510: Fix module autoload for OF platform
+Subject: [PATCH 04/12] ASoC: wm8580: Fix module autoload for OF platform
  driver
-Date: Thu, 3 Sep 2015 12:56:29 +0200
-Message-ID: <20150903105629.GA16812@goodgumbo.baconseed.org>
+Date: Thu, 3 Sep 2015 12:56:48 +0200
+Message-ID: <20150903105648.GA16821@goodgumbo.baconseed.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -17,20 +17,20 @@ alias information is not created so module autoloading won't work.
 
 Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
 ---
- sound/soc/codecs/wm8510.c | 1 +
+ sound/soc/codecs/wm8580.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index dac5beb..0617415 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -598,6 +598,7 @@ static const struct of_device_id wm8510_of_match[] = {
- 	{ .compatible = "wlf,wm8510" },
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 759a792..a9f3900 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -916,6 +916,7 @@ static const struct of_device_id wm8580_of_match[] = {
+ 	{ .compatible = "wlf,wm8580" },
  	{ },
  };
-+MODULE_DEVICE_TABLE(of, wm8510_of_match);
++MODULE_DEVICE_TABLE(of, wm8580_of_match);
  
- static const struct regmap_config wm8510_regmap = {
+ static const struct regmap_config wm8580_regmap = {
  	.reg_bits = 7,
 -- 
 2.4.6
