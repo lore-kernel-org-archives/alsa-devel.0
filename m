@@ -1,102 +1,36 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 1/2] drm/i915: Drop port_mst_index
- parameter from pin/eld callback
-Date: Thu, 3 Sep 2015 12:14:54 +0200
-Message-ID: <55E81D9E.3090301@canonical.com>
-References: <1441273895-31153-1-git-send-email-david.henningsson@canonical.com>
- <1441273895-31153-2-git-send-email-david.henningsson@canonical.com>
- <s5hpp1zn7d4.wl-tiwai@suse.de>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
+	plug/unplug
+Date: Thu, 03 Sep 2015 13:29:04 +0300
+Message-ID: <87d1xz23v3.fsf@intel.com>
+References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
+ <55E7FC20.6010702@canonical.com> <s5h8u8noqeo.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 57BEA260688
- for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2015 12:14:51 +0200 (CEST)
-In-Reply-To: <s5hpp1zn7d4.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h8u8noqeo.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: daniel.vetter@intel.com, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 2015-09-03 12:07, Takashi Iwai wrote:
-> On Thu, 03 Sep 2015 11:51:34 +0200,
-> David Henningsson wrote:
->>
->> The port_mst_index parameter was reserved for future use, but
->> maintainers prefer to add it later when it is actually used.
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->
-> Applied, but also with the corresponding change in patch_hdmi.c
-> (otherwise it breaks the build).
-
-Of course. Thanks for fixing that up.
-
->
->
-> thanks,
->
-> Takashi
->
->> ---
->>   drivers/gpu/drm/i915/intel_audio.c | 4 ++--
->>   include/drm/i915_component.h       | 3 +--
->>   2 files changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
->> index 969835d..2d52d96 100644
->> --- a/drivers/gpu/drm/i915/intel_audio.c
->> +++ b/drivers/gpu/drm/i915/intel_audio.c
->> @@ -424,7 +424,7 @@ void intel_audio_codec_enable(struct intel_encoder *intel_encoder)
->>   		dev_priv->display.audio_codec_enable(connector, intel_encoder, mode);
->>
->>   	if (acomp && acomp->audio_ops && acomp->audio_ops->pin_eld_notify)
->> -		acomp->audio_ops->pin_eld_notify(acomp->audio_ops->audio_ptr, (int) port, 0);
->> +		acomp->audio_ops->pin_eld_notify(acomp->audio_ops->audio_ptr, (int) port);
->>   }
->>
->>   /**
->> @@ -447,7 +447,7 @@ void intel_audio_codec_disable(struct intel_encoder *intel_encoder)
->>   		dev_priv->display.audio_codec_disable(intel_encoder);
->>
->>   	if (acomp && acomp->audio_ops && acomp->audio_ops->pin_eld_notify)
->> -		acomp->audio_ops->pin_eld_notify(acomp->audio_ops->audio_ptr, (int) port, 0);
->> +		acomp->audio_ops->pin_eld_notify(acomp->audio_ops->audio_ptr, (int) port);
->>   }
->>
->>   /**
->> diff --git a/include/drm/i915_component.h b/include/drm/i915_component.h
->> index ab5bde37..b2d56dd 100644
->> --- a/include/drm/i915_component.h
->> +++ b/include/drm/i915_component.h
->> @@ -42,9 +42,8 @@ struct i915_audio_component {
->>   		 * pin sense and/or ELD information has changed.
->>   		 * @audio_ptr:		HDA driver object
->>   		 * @port:		Which port has changed (PORTA / PORTB / PORTC etc)
->> -		 * @port_mst_index:	Index within that port, for DisplayPort multistreaming
->>   		 */
->> -		void (*pin_eld_notify)(void *audio_ptr, int port, int port_mst_index);
->> +		void (*pin_eld_notify)(void *audio_ptr, int port);
->>   	} *audio_ops;
->>   };
->>
->> --
->> 1.9.1
->>
->
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+T24gVGh1LCAwMyBTZXAgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToK
+PiBBcmdoLCB0aGF0J3MgYmFkLiAgQ291bGQgeW91IHBvc3QgaW5jcmVtZW50YWwgcGF0Y2hlcyB0
+byBjb3JyZWN0IHRvCj4gdjU/Cj4KPiBBdCB0aGUgbmV4dCB0aW1lIHBsZWFzZSBwdXQgcmV2aXNp
+b24gbnVtYmVyIGluIHRoZSBwYXRjaCBpdHNlbGYsIG5vdAo+IG9ubHkgaW4gY292ZXIgbGV0dGVy
+LiAgWW91IGNhbiBkbyBpdCB3aXRoIC0tc3ViamVjdC1wcmVmaXggb3B0aW9uIG9mCj4gZ2l0LWZv
+cm1hdC1wYXRjaC4KCkZXSVcgeW91IGNhbiBhbHNvIHVzZSAtdk4gKGkuZS4gLXY1IGluIHRoaXMg
+Y2FzZSkgcGFyYW1ldGVyLgoKQlIsCkphbmkuCgoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVu
+IFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5m
+cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2ludGVsLWdmeAo=
