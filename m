@@ -1,36 +1,56 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
-	plug/unplug
-Date: Thu, 03 Sep 2015 13:29:04 +0300
-Message-ID: <87d1xz23v3.fsf@intel.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <55E7FC20.6010702@canonical.com> <s5h8u8noqeo.wl-tiwai@suse.de>
+From: Luis de Bethencourt <luis@debethencourt.com>
+Subject: [PATCH 00/12] ASoC: Fix module autoload for OF platform drivers
+Date: Thu, 3 Sep 2015 12:54:27 +0200
+Message-ID: <20150903105427.GA16658@goodgumbo.baconseed.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h8u8noqeo.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: daniel.vetter@intel.com, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Javier Martinez Canillas <javier@osg.samsung.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAwMyBTZXAgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToK
-PiBBcmdoLCB0aGF0J3MgYmFkLiAgQ291bGQgeW91IHBvc3QgaW5jcmVtZW50YWwgcGF0Y2hlcyB0
-byBjb3JyZWN0IHRvCj4gdjU/Cj4KPiBBdCB0aGUgbmV4dCB0aW1lIHBsZWFzZSBwdXQgcmV2aXNp
-b24gbnVtYmVyIGluIHRoZSBwYXRjaCBpdHNlbGYsIG5vdAo+IG9ubHkgaW4gY292ZXIgbGV0dGVy
-LiAgWW91IGNhbiBkbyBpdCB3aXRoIC0tc3ViamVjdC1wcmVmaXggb3B0aW9uIG9mCj4gZ2l0LWZv
-cm1hdC1wYXRjaC4KCkZXSVcgeW91IGNhbiBhbHNvIHVzZSAtdk4gKGkuZS4gLXY1IGluIHRoaXMg
-Y2FzZSkgcGFyYW1ldGVyLgoKQlIsCkphbmkuCgoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVu
-IFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2ludGVsLWdmeAo=
+Hello,
+
+This series adds the missing MODULE_DEVICE_TABLE() for OF to eport
+that information so modules have the correct aliases built-in and
+autoloading works correctly.
+
+A longer explanation by Javier Canillas can be found here:
+https://lkml.org/lkml/2015/7/30/519
+
+Thanks,
+Luis
+
+Luis de Bethencourt (12):
+  ASoC: atmel_wm8904: Fix module autoload for OF platform driver
+  ASoC: da9055: Fix module autoload for OF platform driver
+  ASoC: wm8510: Fix module autoload for OF platform driver
+  ASoC: wm8580: Fix module autoload for OF platform driver
+  ASoC: wm8523: Fix module autoload for OF platform driver
+  ASoC: fsl-asoc-card: Fix module autoload for OF platform driver
+  ASoC: fsl_sai: Fix module autoload for OF platform driver
+  ASoC: jz4740: Fix module autoload for OF platform driver
+  ASoC: kirkwood: Fix module autoload for OF platform driver
+  ASoC: pxa: Fix module autoload for OF platform drivers
+  ASoC: mop500: Fix module autoload for OF platform driver
+  ASoC: ux500: Fix module autoload for OF platform driver
+
+ sound/soc/atmel/atmel_wm8904.c     | 1 +
+ sound/soc/codecs/da9055.c          | 1 +
+ sound/soc/codecs/wm8510.c          | 1 +
+ sound/soc/codecs/wm8523.c          | 1 +
+ sound/soc/codecs/wm8580.c          | 1 +
+ sound/soc/fsl/fsl-asoc-card.c      | 1 +
+ sound/soc/fsl/fsl_sai.c            | 1 +
+ sound/soc/jz4740/jz4740-i2s.c      | 1 +
+ sound/soc/kirkwood/armada-370-db.c | 1 +
+ sound/soc/pxa/pxa-ssp.c            | 1 +
+ sound/soc/pxa/pxa2xx-pcm.c         | 1 +
+ sound/soc/ux500/mop500.c           | 1 +
+ sound/soc/ux500/ux500_msp_dai.c    | 1 +
+ 13 files changed, 13 insertions(+)
+
+-- 
+2.4.6
