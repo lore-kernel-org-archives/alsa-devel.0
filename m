@@ -1,40 +1,84 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 0/4 v5] i915 to call hda driver on HDMI
-	plug/unplug
-Date: Thu, 3 Sep 2015 09:52:00 +0200
-Message-ID: <55E7FC20.6010702@canonical.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 0/9] Add DSP topology management for SKL
+Date: Thu, 3 Sep 2015 13:44:54 +0530
+Message-ID: <20150903081454.GU13546@localhost>
+References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: tiwai@suse.de, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com, libin.yang@intel.com, daniel.vetter@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58AA0260603
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2015 10:12:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTA4LTI4IDE5OjAyLCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPiBIb3BlZnVs
-bHkgbGFzdCB2ZXJzaW9uPyA6LSkKPgo+ICAgKiBBZGRlZCBjb21taXQgdGV4dCBhYm91dCBkdXBs
-aWNhdGUgZXZlbnRzIChwYXRjaCA0LzQpCj4gICAqIEFkZGVkIGxvY2tzIGluIGJpbmQvdW5iaW5k
-IG9uIGk5MTUgc2lkZSAocGF0Y2ggMi80KQo+ICAgKiBGaXhlZCBkb2Nib29rIGNvbW1lbnRzIGlu
-IGk5MTUgc3RydWN0IChwYXRjaCAxLzQpCj4gICAqIFJlbW92ZWQgcG9ydF9tc3Rfc3RyZWFtaW5n
-IHBhcmFtZXRlciAocGF0Y2ggMS80KQo+ICAgKiBBZGRlZCBSZXZpZXdlZC1ieSAtIDEgJiAyIGJ5
-IEphbmksIDMgJiA0IGJ5IFRha2FzaGkuCj4gICAgIEhvcGVmdWxseSB0aGlzIHdhcyBjb3JyZWN0
-LCBvdGhlcndpc2UgZmVlbCBmcmVlIHRvIGFkanVzdAo+ICAgICB5b3Vyc2VsZiBiZWZvcmUgY29t
-bWl0dGluZy4KCkhpIFRha2FzaGksCgpUaGFua3MgZm9yIGZpbmFsbHkgbWVyZ2luZyBpdC4gSnVz
-dCB3YW50IHRvIG1ha2UgeW91IGF3YXJlIHRoYXQgaXQgc2VlbXMgCmxpa2UgeW91IG1lcmdlZCB2
-NCBpbnN0ZWFkIG9mIHY1LCBzbyB0aGUgY2hhbmdlcyBtZW50aW9uZWQgYWJvdmUgZGlkIG5vdCAK
-bWFrZSBpdCBpbi4gQW55dGhpbmcgZWl0aGVyIHlvdSBvciBJIHNob3VsZCBkbyBhYm91dCB0aGF0
-PwoKCi0tIApEYXZpZCBIZW5uaW5nc3NvbiwgQ2Fub25pY2FsIEx0ZC4KaHR0cHM6Ly9sYXVuY2hw
-YWQubmV0L35kaXdpYwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdm
-eAo=
+On Mon, Aug 17, 2015 at 10:56:35PM +0530, Vinod Koul wrote:
+> The SKL driver does not code DSP topology in driver. With this series
+> the ASoC topology framework is used to parse the topology information
+> to create widgets, controls and route map for the FW topology.
+> 
+> It adds routines for SKL DSP module configuration, compute resources
+> for modules, initialize and bind the pipe modules. It uses the SKL IPC
+> library added earlier to send IPC for initialize the module, bind/unbind
+> modules.
+> Last patch in this series removes the unused dais.
+
+Hi Mark,
+
+I was wondering if you have any feedback on this series ?
+
+Thanks
+
+-- 
+~Vinod
+
+> 
+> changes in v2:
+> - add more explanation in changelog and code
+> - add explanation of MCPS
+> - fix whitespace issues
+> - remove skl widget check on event handler as it is redundant
+> - add switch for depth
+> - add else for direction based code
+> - remove cast for NHLT blob query
+> - make debug prints to error
+> - remove dump info
+> - clean some debug prints
+> 
+> Jeeja KP (9):
+>   ASoC: Intel: Skylake: Add pipe and modules handlers
+>   ASoC: Intel: Skylake: Add module configuration helpers
+>   ASoC: Intel: Skylake: add DSP platform widget event handlers
+>   ASoC: Intel: Skylake: Add FE and BE hw_params handling
+>   ASoC: Intel: Skylake: Add topology core init and handlers
+>   ASoC: Intel: Skylake: Initialize and load DSP controls
+>   ASoC: Intel: Skylake: Add DSP support and enable it
+>   ASoC: Intel: Skylake: Initialize NHLT table
+>   ASoC: Intel: Skylake: Remove unused CPU dai's
+> 
+>  sound/soc/intel/skylake/Makefile             |    3 +-
+>  sound/soc/intel/skylake/skl-pcm.c            |  171 ++--
+>  sound/soc/intel/skylake/skl-topology.c       | 1262 ++++++++++++++++++++++++++
+>  sound/soc/intel/skylake/skl-topology.h       |   21 +
+>  sound/soc/intel/skylake/skl-tplg-interface.h |   78 ++
+>  sound/soc/intel/skylake/skl.c                |   29 +-
+>  sound/soc/intel/skylake/skl.h                |   11 +
+>  7 files changed, 1507 insertions(+), 68 deletions(-)
+>  create mode 100644 sound/soc/intel/skylake/skl-topology.c
+> 
+> -- 
+> 1.9.1
+> 
