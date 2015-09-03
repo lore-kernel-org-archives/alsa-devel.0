@@ -1,47 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/12] ASoC: Fix module autoload for OF platform drivers
-Date: Thu, 3 Sep 2015 13:56:45 +0100
-Message-ID: <20150903125645.GB12027@sirena.org.uk>
-References: <20150903105427.GA16658@goodgumbo.baconseed.org>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH 02/12] ASoC: da9055: Fix module autoload
+ for OF platform driver
+Date: Thu, 3 Sep 2015 13:21:51 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337AB56E137@SW-EX-MBX01.diasemi.com>
+References: <20150903105554.GA16761@goodgumbo.baconseed.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aBfuQK/t93Uihhfq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150903105427.GA16658@goodgumbo.baconseed.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luis de Bethencourt <luis@debethencourt.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Javier Martinez Canillas <javier@osg.samsung.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
+ [193.109.254.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 990A4260699
+ for <alsa-devel@alsa-project.org>; Thu,  3 Sep 2015 15:22:21 +0200 (CEST)
+In-Reply-To: <20150903105554.GA16761@goodgumbo.baconseed.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Luis de Bethencourt <luis@debethencourt.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On September 03, 2015 11:56, Luis de Bethencourt wrote:
 
---aBfuQK/t93Uihhfq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> This platform driver has a OF device ID table but the OF module
+> alias information is not created so module autoloading won't work.
+> 
+> Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
+> ---
 
-On Thu, Sep 03, 2015 at 12:54:27PM +0200, Luis de Bethencourt wrote:
-
-> This series adds the missing MODULE_DEVICE_TABLE() for OF to eport
-> that information so modules have the correct aliases built-in and
-> autoloading works correctly.
-
-Please thread patch serieses together when submitting them (git
-send-email can do this for you).  This makes things easier to follow.
-
---aBfuQK/t93Uihhfq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV6EOMAAoJECTWi3JdVIfQfUwH/AzmYW9IfpmhFRz4tFk97R+H
-KJBisae8nwcGgcwhq/pkZm+fdfTgojomLK4cyUMEVvLh75h4Yibzd/BDIBItN+DM
-qm8NR6qfGHsJX0Kj3NDL2vt8oRCPask5YXQMjHcnuN4YtHVKC+Kq6UCMyqNeNcVq
-2+gXZvNoE89e528j4NfpN641Mzao7kERvq/aPilcR02miTTsosAsA0j8Y3f/2oVA
-n+G93f3QjONRPhvs1G+AN+jXp81d8hhRm98v5bmdXaLxD8CpYBVPFTYVlfBMSdot
-hY1vx4sh+a2l6jq/aD8KkN163nsHIlzH4Z6N0ZZSd2VDJWwtmk6Tj4wSGHuWUsk=
-=eCNC
------END PGP SIGNATURE-----
-
---aBfuQK/t93Uihhfq--
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
