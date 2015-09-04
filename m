@@ -1,68 +1,68 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: qcom: change PTR_ERR argument
-Date: Thu, 3 Sep 2015 14:36:24 -0700
-Message-ID: <20150903213623.GA11313@kwestfie-linux.qualcomm.com>
-References: <1440957911-7687-1-git-send-email-Julia.Lawall@lip6.fr>
- <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr>
- <55E35169.3000703@bfs.de>
- <alpine.DEB.2.02.1508302152300.2062@localhost6.localdomain6>
+From: Shawn Lin <shawn.lin@rock-chips.com>
+Subject: Re: [PATCH v3 8/9] spi: rockchip: modify DMA max burst
+	to 1
+Date: Fri, 4 Sep 2015 08:03:26 +0800
+Message-ID: <55E8DFCE.5040504@rock-chips.com>
+References: <1441101381-1329-1-git-send-email-shawn.lin@rock-chips.com>
+ <1441101524-1700-1-git-send-email-shawn.lin@rock-chips.com>
+ <20150903125429.GA12027@sirena.org.uk> <55E84E17.2090409@rock-chips.com>
+ <20150903174502.GI5313@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1508302152300.2062@localhost6.localdomain6>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: walter harms <wharms@bfs.de>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id C22232659B2
+ for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2015 02:03:33 +0200 (CEST)
+In-Reply-To: <20150903174502.GI5313@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Addy Ke <addy.ke@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Sonny Rao <sonnyrao@chromium.org>, shawn.lin@rock-chips.com, Olof Johansson <olof@lixom.net>, linux-spi@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, Olof Johansson <olofj@google.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 30, 2015 at 12:54:15PM -0700, Julia Lawall wrote:
-> On Sun, 30 Aug 2015, walter harms wrote:
-> > Am 30.08.2015 20:05, schrieb Julia Lawall:
-> > >  		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
-> > >  			dev_err(&pdev->dev,
-> > >  				"%s() error getting mi2s-bit-clk: %ld\n",
-> > > -				__func__,
-> PTR_ERR(drvdata->mi2s_bit_clk[i]));
-> > > +				__func__,
-> > > +				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
-> > >  			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
-> > >  		}
-> > >  	}
-> > > 
-> > 
-> > just a note:
-> > using a shorter name instead of drvdata->mi2s_bit_clk[dai_id] whould
-> help to make the code
-> > more readable (yes, the other code is alike). something like:
-> > 
-> > struct clk *tmp =  devm_clk_get(&pdev->dev,clk_name);
-> 
-> Where do you suggest to put this?
-> 
-> Maybe it would be reasonable to declare a variable struct clk *clk; at the
-> 
-> top of the function, and then use that as a temporary variable for all 
-> three calls.
-> 
-> However, now I see that the first call, unlike the other two doesn't cause
-> 
-> a return from the function.
-> 
->                 if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
->                         dev_warn(&pdev->dev,
->                                 "%s() error getting mi2s-osr-clk: %ld\n",
-> 				__func__,
-> 		                PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
->                 }
-> 
-> Is that intentional?
+On 2015/9/4 1:45, Mark Brown wrote:
+> On Thu, Sep 03, 2015 at 09:41:43PM +0800, Shawn Lin wrote:
+>> On 2015/9/3 20:54, Mark Brown wrote:
+>
+>>> If this is a quirk of the DMA controller why is it being fixed with a
+>>> property specific to the SPI controller?  Can't the DMA controller just
+>>> override the burst size?
+>
+>> Cool...that's a good question. Actually DMA controller can't do that since
+>> block peripheral controller(e.g sd/emmc, they always access data by
+>> block-512Bytes.) can't meet the case. So It's hard for dma controller know
+>> who is the caller, and what should be done.
+>
+> You could take a guess based on request size, but that's going to be a
+> bit error prone I imagine.
+>
 
-Yes, that was intentional as the presense of the OSR clock in the DT
-node is optional.
+yes, not always cover all cases.
+
+>> The only thing dma controller can do is avoid to execute DMAFLUSHP on its
+>> own. But how about peripheral controller trigger non-multiple access? So
+>> that's what I mentioned on covery letter that we should do "broken things"
+>> for both dma controller and some peripherals.
+>
+> The other thing it could do is provide the information out via some
+> internal Linux API which the drivers could query instead of directly
+> having a DT property in each client driver.  That way at least the DT
+> only needs the quirk in one place even if the clients need to handle it
+> individually.
+
+Good idea. Thanks, Mark.
+
+>
+
 
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+Best Regards
+Shawn Lin
