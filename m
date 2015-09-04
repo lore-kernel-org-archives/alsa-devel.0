@@ -1,79 +1,80 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v6 4/4] drm/i915: set proper N/CTS in modeset
-Date: Fri, 4 Sep 2015 01:56:26 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196F8F3A@SHSMSX103.ccr.corp.intel.com>
-References: <1441174301-144177-1-git-send-email-libin.yang@intel.com>
- <1441174301-144177-4-git-send-email-libin.yang@intel.com>
- <8737yx44hh.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196F88C1@SHSMSX103.ccr.corp.intel.com>
- <87twrd2nyl.fsf@intel.com>	<s5h7fo9osh0.wl-tiwai@suse.de>
- <871teh2awt.fsf@intel.com>	<s5h613torwf.wl-tiwai@suse.de>
- <20150902152201.GM1367@phenom.ffwll.local> <s5hoahkomtx.wl-tiwai@suse.de>
+From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC PATCH (alsa-lib)] pcm: Modify check condition
+ in snd_pcm_sw_params_set_avail_min
+Date: Fri, 4 Sep 2015 10:39:54 +0800
+Message-ID: <1441334394.32609.24.camel@mtksdaap41>
+References: <1441250454-38271-1-git-send-email-koro.chen@mediatek.com>
+ <s5hfv2wvv35.wl-tiwai@suse.de> <1441266346.32609.18.camel@mtksdaap41>
+ <55E8014B.8030800@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hoahkomtx.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>
-Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <55E8014B.8030800-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0
-bzp0aXdhaUBzdXNlLmRlXQo+IFNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDAyLCAyMDE1IDEx
-OjM2IFBNCj4gVG86IERhbmllbCBWZXR0ZXIKPiBDYzogSmFuaSBOaWt1bGE7IFlhbmcsIExpYmlu
-OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGludGVsLQo+IGdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g7Cj4gdmlsbGUuc3lyamFsYUBsaW51eC5p
-bnRlbC5jb20KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9w
-ZXIgTi9DVFMgaW4gbW9kZXNldAo+IAo+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTc6MjI6MDEgKzAy
-MDAsCj4gRGFuaWVsIFZldHRlciB3cm90ZToKPiA+Cj4gPiBPbiBXZWQsIFNlcCAwMiwgMjAxNSBh
-dCAwMzo0Njo0MFBNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+IE9uIFdlZCwgMDIg
-U2VwIDIwMTUgMTU6NDQ6MzQgKzAyMDAsCj4gPiA+IEphbmkgTmlrdWxhIHdyb3RlOgo+ID4gPiA+
-Cj4gPiA+ID4gT24gV2VkLCAwMiBTZXAgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
-PiB3cm90ZToKPiA+ID4gPiA+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTE6MDI6NDIgKzAyMDAsCj4g
-PiA+ID4gPiBKYW5pIE5pa3VsYSB3cm90ZToKPiA+ID4gPiA+Pgo+ID4gPiA+ID4+ID4+IE5pdHBp
-Y2suIEknZCBwcmVmZXIgc29tZSBzaGFyaW5nIHdpdGggdGhlIHNpbWlsYXIgYmxvY2tzIGZyb20K
-PiB0aGUKPiA+ID4gPiA+PiA+PiBlYXJsaWVyIHBhdGNoLiBBbHNvIGEgZGVidWcgbWVzc2FnZSBv
-biBuID09IDAgd291bGQgYmUKPiBuaWNlOyB5b3UKPiA+ID4gPiA+PiA+PiBwcm9iYWJseSBkaWRu
-J3Qgbm90aWNlIHlvdXIgYXVkaW9fY29uZmlnX2dldF9yYXRlKCkgd2Fzbid0Cj4gd29ya2luZwo+
-ID4gPiA+ID4+ID4+IHJpZ2h0Cj4gPiA+ID4gPj4gPj4gYmVjYXVzZSB0aGlzIHNpbGVudGx5IGZl
-bGwgYmFjayB0byB0aGUgYXV0b21hdGljIG1vZGUgaGVyZS4KPiA+ID4gPiA+PiA+Cj4gPiA+ID4g
-Pj4gPiBPSywgSSB3aWxsIGFkZCB0aGUgbXNnLiBBcyB5b3UgYW5kIFZpbGxlIGFyZSBpbnNpc3Rp
-bmcgb24KPiA+ID4gPiA+PiA+IHNoYXJpbmcgY29kZSwgSSB3aWxsIGRvIGl0IGluIG5leHQgdmVy
-c2lvbi4KPiA+ID4gPiA+Pgo+ID4gPiA+ID4+IFdlbGwsIHJlYWxseSwgSSdtIGZpbmUgd2l0aCBo
-YXZpbmcgdGhhdCBwYXJ0IGR1cGxpY2F0ZWQgYXMtaXMgZm9yCj4gbm93LAo+ID4gPiA+ID4+IHdl
-IGNhbiBmaXggaXQgbGF0ZXIuIE1vcmUgaW1wb3J0YW50IHRvIGZvY3VzIG9uIGdldHRpbmcKPiA+
-ID4gPiA+PiBhdWRpb19jb25maWdfZ2V0X3JhdGUoKSByaWdodC4KPiA+ID4gPiA+Pgo+ID4gPiA+
-ID4+IEkgZG9uJ3Qga25vdyBpZiB5b3UncmUgc3RpbGwgdGFyZ2V0aW5nIHY0LjMgd2l0aCB0aGlz
-ICh1cCB0bwo+IFRha2FzaGkgSQo+ID4gPiA+ID4+IGd1ZXNzKSB3ZSdsbCByZWFsbHkgbmVlZCB0
-byB3cmFwIHRoaXMgdXAgc29vbi4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBJJ20gaW4gZmF2b3Igb2Yg
-bWVyZ2luZyB0aGlzIGludG8gNC4zLCBzbyBpdCdkIGJlIGFwcHJlY2lhdGVkIGlmCj4gTGliaW4K
-PiA+ID4gPiA+IGNhbiBwcmVwYXJlIHRoZSBmaXhlZCB2ZXJzaW9uIHNvb25pc2gsIGluZGVlZC4K
-PiA+ID4gPgo+ID4gPiA+IElJVUMgcGF0Y2hlcyAxLTMgd291bGQgYmUgdXNlZnVsIG9uIHRoZWly
-IG93biBhbHJlYWR5LCBhbmQgYQo+IGZpeGVkCj4gPiA+ID4gdmVyc2lvbiBvZiBwYXRjaCA0IGNv
-dWxkIGZvbGxvdy4gSnVzdCBhIHRob3VnaHQuCj4gPiA+Cj4gPiA+IFRoYXQncyBnb29kLCB0aGVu
-IEkgY2FuIHRha2UgdGhlIGZpcnN0IHRocmVlIHBhdGNoZXMuCj4gPiA+Cj4gPiA+IERhbmllbCwg
-d291bGQgeW91IGxpa2UgdG8gcmV2aWV3IHRoZXNlIHRocmVlIGJlZm9yZSBJIG1lcmdlIHRoZW0/
-Cj4gPiA+IEkgYXNzdW1lZCB5b3VyIHByZXZpb3VzIG1haWwgYXMgYSBraW5kIG9mIGFjayB0byB0
-aGlzIHNlcmllcywgdG9vLgo+ID4KPiA+IGZ3aXcgYWNrIG9uIHRoYXQgcGxhbiwgYnV0IGdpdmVu
-IGhvdyBtdWNoIEkgbWFkZSBhIG1lc3Mgb3V0IG9mCj4gdGhlc2UgdHdvCj4gPiBzZXJpZXMgYW5k
-IG1peGVkIHRoZW0gdXAgSSB3b3VsZG4ndCB0cnVzdCBtZSBhbnl3YXkgOy0pCj4gPgo+ID4gT25j
-ZSB0aGUgY29kZSBzZXR0bGVzIEknbGwgcmViYXNlL2JhY2ttZXJnZSBzbyB0aGF0IEkgY2FuIGFw
-cGx5IHRoZQo+ID4gZm9sbG93LXVwIGRvY3VtZW50YXRpb24va2VybmVsZG9jIHdvcmsgdGhhdCdz
-IHN0aWxsIGdldHRpbmcgZG9uZS4KPiAKPiBGWUksIEkndmUgcHVzaGVkIGEgYnJhbmNoIGluY2x1
-ZGluZyBMaWJpbidzIHBhdGNoc2V0IChidXQgb25seSBwYXRjaGVzCj4gMS0zKSBqdXN0IGZvciBj
-aGVja2luZy4gIExldCBtZSBrbm93IGlmIHRoaXMgbG9va3MgT0suCgpUaGFua3MsIFRha2FzaGks
-IERhbmllbCwgSmFuaSBhbmQgVmlsbGUuCgpTbyBJIG5lZWQgc3VibWl0IHRoZSA0dGggcGF0Y2gg
-b25seSBuZXh0IHRpbWUsIHJpZ2h0PwoKPiAKPiAKPiBUYWthc2hpCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50
-ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-L21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Thu, 2015-09-03 at 10:14 +0200, Clemens Ladisch wrote:
+> Koro Chen wrote:
+> > On Thu, 2015-09-03 at 09:08 +0200, Takashi Iwai wrote:
+> >> On Thu, 03 Sep 2015 05:20:54 +0200,
+> >> Koro Chen wrote:
+> >>> When we use a ping-ping buffer in capture, and if hw_ptr reported
+> >>> at IRQ is a little smaller than period_size:
+> >>>
+> >>> |xxxxxxxxxxxxxxxxxxxxxxxxxxxx--|-----------------------------|
+> >>>                             hw_ptr < period_size
+> >>
+> >> How this happens?  The period size is the size where irq (or wakeup)
+> >> wakes up for read/write.  Why the driver wakes up even if there is no
+> >> enough data?
+> >
+> > Yes it is odd to what we would normally expect. Due to our HW design,
+> > when irq comes, audio HW actually has collected a full period of data,
+> > but there is a buffer between the audio HW and memory, so at that moment
+> > some samples are still in the buffer, not on the memory.
+> 
+> Please note that ALSA (both the kernel and the userspace API) requires
+> that after a period interrupt, the _complete_ period has been read from/
+> written to the memory buffer.  This is needed because the interrupt is
+> the mechanism that synchronizes software and the DMA controller.
+> (Except when using the NO_PERIOD_WAKUP flag, but you cannot rely on the
+> software using it.)
+> 
+> 
+> Typically, any buffering is done inside the DMA controller, which also
+> issues interrupts, so this problem should not happen with correctly
+> working hardware.
+> 
+> (On PCI systems, writes to system memory can be buffered, but if the
+> interrupt handler does a read from a device register, the PCI memory
+> ordering rules ensure that all DMA accesses started before the interrupt
+> are finished before the read.)
+> 
+> 
+> How does your hardware work?  I guess that whatever component does the
+> buffering is independent of the component that generates interrupts, and
+> it does not enforce any memory ordering either?  And there isn't
+> a mechanism to flush the buffer?
+> 
+Yes, your guess is correct...our IRQ hardware is just a separated timer
+which is not related to any memory control. I am not sure if there is
+any way to manipulate the buffer and I will check it. Thanks for your
+advice! 
+> 
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
