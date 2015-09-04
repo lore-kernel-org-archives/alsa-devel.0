@@ -1,68 +1,79 @@
-From: Shawn Lin <shawn.lin@rock-chips.com>
-Subject: Re: [PATCH v3 8/9] spi: rockchip: modify DMA max burst
-	to 1
-Date: Fri, 4 Sep 2015 08:03:26 +0800
-Message-ID: <55E8DFCE.5040504@rock-chips.com>
-References: <1441101381-1329-1-git-send-email-shawn.lin@rock-chips.com>
- <1441101524-1700-1-git-send-email-shawn.lin@rock-chips.com>
- <20150903125429.GA12027@sirena.org.uk> <55E84E17.2090409@rock-chips.com>
- <20150903174502.GI5313@sirena.org.uk>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v6 4/4] drm/i915: set proper N/CTS in modeset
+Date: Fri, 4 Sep 2015 01:56:26 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196F8F3A@SHSMSX103.ccr.corp.intel.com>
+References: <1441174301-144177-1-git-send-email-libin.yang@intel.com>
+ <1441174301-144177-4-git-send-email-libin.yang@intel.com>
+ <8737yx44hh.fsf@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196F88C1@SHSMSX103.ccr.corp.intel.com>
+ <87twrd2nyl.fsf@intel.com>	<s5h7fo9osh0.wl-tiwai@suse.de>
+ <871teh2awt.fsf@intel.com>	<s5h613torwf.wl-tiwai@suse.de>
+ <20150902152201.GM1367@phenom.ffwll.local> <s5hoahkomtx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.130])
- by alsa0.perex.cz (Postfix) with ESMTP id C22232659B2
- for <alsa-devel@alsa-project.org>; Fri,  4 Sep 2015 02:03:33 +0200 (CEST)
-In-Reply-To: <20150903174502.GI5313@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Addy Ke <addy.ke@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Sonny Rao <sonnyrao@chromium.org>, shawn.lin@rock-chips.com, Olof Johansson <olof@lixom.net>, linux-spi@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, Olof Johansson <olofj@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hoahkomtx.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>
+Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2015/9/4 1:45, Mark Brown wrote:
-> On Thu, Sep 03, 2015 at 09:41:43PM +0800, Shawn Lin wrote:
->> On 2015/9/3 20:54, Mark Brown wrote:
->
->>> If this is a quirk of the DMA controller why is it being fixed with a
->>> property specific to the SPI controller?  Can't the DMA controller just
->>> override the burst size?
->
->> Cool...that's a good question. Actually DMA controller can't do that since
->> block peripheral controller(e.g sd/emmc, they always access data by
->> block-512Bytes.) can't meet the case. So It's hard for dma controller know
->> who is the caller, and what should be done.
->
-> You could take a guess based on request size, but that's going to be a
-> bit error prone I imagine.
->
-
-yes, not always cover all cases.
-
->> The only thing dma controller can do is avoid to execute DMAFLUSHP on its
->> own. But how about peripheral controller trigger non-multiple access? So
->> that's what I mentioned on covery letter that we should do "broken things"
->> for both dma controller and some peripherals.
->
-> The other thing it could do is provide the information out via some
-> internal Linux API which the drivers could query instead of directly
-> having a DT property in each client driver.  That way at least the DT
-> only needs the quirk in one place even if the clients need to handle it
-> individually.
-
-Good idea. Thanks, Mark.
-
->
-
-
--- 
-Best Regards
-Shawn Lin
+Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0
+bzp0aXdhaUBzdXNlLmRlXQo+IFNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDAyLCAyMDE1IDEx
+OjM2IFBNCj4gVG86IERhbmllbCBWZXR0ZXIKPiBDYzogSmFuaSBOaWt1bGE7IFlhbmcsIExpYmlu
+OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGludGVsLQo+IGdmeEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g7Cj4gdmlsbGUuc3lyamFsYUBsaW51eC5p
+bnRlbC5jb20KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9w
+ZXIgTi9DVFMgaW4gbW9kZXNldAo+IAo+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTc6MjI6MDEgKzAy
+MDAsCj4gRGFuaWVsIFZldHRlciB3cm90ZToKPiA+Cj4gPiBPbiBXZWQsIFNlcCAwMiwgMjAxNSBh
+dCAwMzo0Njo0MFBNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+IE9uIFdlZCwgMDIg
+U2VwIDIwMTUgMTU6NDQ6MzQgKzAyMDAsCj4gPiA+IEphbmkgTmlrdWxhIHdyb3RlOgo+ID4gPiA+
+Cj4gPiA+ID4gT24gV2VkLCAwMiBTZXAgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
+PiB3cm90ZToKPiA+ID4gPiA+IE9uIFdlZCwgMDIgU2VwIDIwMTUgMTE6MDI6NDIgKzAyMDAsCj4g
+PiA+ID4gPiBKYW5pIE5pa3VsYSB3cm90ZToKPiA+ID4gPiA+Pgo+ID4gPiA+ID4+ID4+IE5pdHBp
+Y2suIEknZCBwcmVmZXIgc29tZSBzaGFyaW5nIHdpdGggdGhlIHNpbWlsYXIgYmxvY2tzIGZyb20K
+PiB0aGUKPiA+ID4gPiA+PiA+PiBlYXJsaWVyIHBhdGNoLiBBbHNvIGEgZGVidWcgbWVzc2FnZSBv
+biBuID09IDAgd291bGQgYmUKPiBuaWNlOyB5b3UKPiA+ID4gPiA+PiA+PiBwcm9iYWJseSBkaWRu
+J3Qgbm90aWNlIHlvdXIgYXVkaW9fY29uZmlnX2dldF9yYXRlKCkgd2Fzbid0Cj4gd29ya2luZwo+
+ID4gPiA+ID4+ID4+IHJpZ2h0Cj4gPiA+ID4gPj4gPj4gYmVjYXVzZSB0aGlzIHNpbGVudGx5IGZl
+bGwgYmFjayB0byB0aGUgYXV0b21hdGljIG1vZGUgaGVyZS4KPiA+ID4gPiA+PiA+Cj4gPiA+ID4g
+Pj4gPiBPSywgSSB3aWxsIGFkZCB0aGUgbXNnLiBBcyB5b3UgYW5kIFZpbGxlIGFyZSBpbnNpc3Rp
+bmcgb24KPiA+ID4gPiA+PiA+IHNoYXJpbmcgY29kZSwgSSB3aWxsIGRvIGl0IGluIG5leHQgdmVy
+c2lvbi4KPiA+ID4gPiA+Pgo+ID4gPiA+ID4+IFdlbGwsIHJlYWxseSwgSSdtIGZpbmUgd2l0aCBo
+YXZpbmcgdGhhdCBwYXJ0IGR1cGxpY2F0ZWQgYXMtaXMgZm9yCj4gbm93LAo+ID4gPiA+ID4+IHdl
+IGNhbiBmaXggaXQgbGF0ZXIuIE1vcmUgaW1wb3J0YW50IHRvIGZvY3VzIG9uIGdldHRpbmcKPiA+
+ID4gPiA+PiBhdWRpb19jb25maWdfZ2V0X3JhdGUoKSByaWdodC4KPiA+ID4gPiA+Pgo+ID4gPiA+
+ID4+IEkgZG9uJ3Qga25vdyBpZiB5b3UncmUgc3RpbGwgdGFyZ2V0aW5nIHY0LjMgd2l0aCB0aGlz
+ICh1cCB0bwo+IFRha2FzaGkgSQo+ID4gPiA+ID4+IGd1ZXNzKSB3ZSdsbCByZWFsbHkgbmVlZCB0
+byB3cmFwIHRoaXMgdXAgc29vbi4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBJJ20gaW4gZmF2b3Igb2Yg
+bWVyZ2luZyB0aGlzIGludG8gNC4zLCBzbyBpdCdkIGJlIGFwcHJlY2lhdGVkIGlmCj4gTGliaW4K
+PiA+ID4gPiA+IGNhbiBwcmVwYXJlIHRoZSBmaXhlZCB2ZXJzaW9uIHNvb25pc2gsIGluZGVlZC4K
+PiA+ID4gPgo+ID4gPiA+IElJVUMgcGF0Y2hlcyAxLTMgd291bGQgYmUgdXNlZnVsIG9uIHRoZWly
+IG93biBhbHJlYWR5LCBhbmQgYQo+IGZpeGVkCj4gPiA+ID4gdmVyc2lvbiBvZiBwYXRjaCA0IGNv
+dWxkIGZvbGxvdy4gSnVzdCBhIHRob3VnaHQuCj4gPiA+Cj4gPiA+IFRoYXQncyBnb29kLCB0aGVu
+IEkgY2FuIHRha2UgdGhlIGZpcnN0IHRocmVlIHBhdGNoZXMuCj4gPiA+Cj4gPiA+IERhbmllbCwg
+d291bGQgeW91IGxpa2UgdG8gcmV2aWV3IHRoZXNlIHRocmVlIGJlZm9yZSBJIG1lcmdlIHRoZW0/
+Cj4gPiA+IEkgYXNzdW1lZCB5b3VyIHByZXZpb3VzIG1haWwgYXMgYSBraW5kIG9mIGFjayB0byB0
+aGlzIHNlcmllcywgdG9vLgo+ID4KPiA+IGZ3aXcgYWNrIG9uIHRoYXQgcGxhbiwgYnV0IGdpdmVu
+IGhvdyBtdWNoIEkgbWFkZSBhIG1lc3Mgb3V0IG9mCj4gdGhlc2UgdHdvCj4gPiBzZXJpZXMgYW5k
+IG1peGVkIHRoZW0gdXAgSSB3b3VsZG4ndCB0cnVzdCBtZSBhbnl3YXkgOy0pCj4gPgo+ID4gT25j
+ZSB0aGUgY29kZSBzZXR0bGVzIEknbGwgcmViYXNlL2JhY2ttZXJnZSBzbyB0aGF0IEkgY2FuIGFw
+cGx5IHRoZQo+ID4gZm9sbG93LXVwIGRvY3VtZW50YXRpb24va2VybmVsZG9jIHdvcmsgdGhhdCdz
+IHN0aWxsIGdldHRpbmcgZG9uZS4KPiAKPiBGWUksIEkndmUgcHVzaGVkIGEgYnJhbmNoIGluY2x1
+ZGluZyBMaWJpbidzIHBhdGNoc2V0IChidXQgb25seSBwYXRjaGVzCj4gMS0zKSBqdXN0IGZvciBj
+aGVja2luZy4gIExldCBtZSBrbm93IGlmIHRoaXMgbG9va3MgT0suCgpUaGFua3MsIFRha2FzaGks
+IERhbmllbCwgSmFuaSBhbmQgVmlsbGUuCgpTbyBJIG5lZWQgc3VibWl0IHRoZSA0dGggcGF0Y2gg
+b25seSBuZXh0IHRpbWUsIHJpZ2h0PwoKPiAKPiAKPiBUYWthc2hpCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50
+ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+L21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
