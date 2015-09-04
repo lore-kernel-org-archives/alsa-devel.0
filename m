@@ -1,33 +1,64 @@
 From: Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH 5/9] drm: bridge/dw_hdmi: avoid being recursive in N calculation
-Date: Fri, 4 Sep 2015 10:50:19 -0700
-Message-ID: <CAD=FV=WJAm=EpugwnnBjPKJV1OOybyE6hkdhU2RrN0AR2qae6w@mail.gmail.com>
+Subject: Re: [PATCH 6/9] drm: bridge/dw_hdmi: adjust pixel clock values in N
+ calculation
+Date: Fri, 4 Sep 2015 11:21:45 -0700
+Message-ID: <CAD=FV=WXjcp-wyH_SKexHJDo8R9Xug4yMAOHFPWPYBgiTyM=PQ@mail.gmail.com>
 References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
-	<E1ZO6hX-0003NK-0H@rmk-PC.arm.linux.org.uk>
+ <E1ZO6hc-0003NW-55@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <E1ZO6hX-0003NK-0H@rmk-PC.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <E1ZO6hc-0003NW-55@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, alsa-devel@alsa-project.org, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Russell,
-
-On Sat, Aug 8, 2015 at 9:10 AM, Russell King
-<rmk+kernel@arm.linux.org.uk> wrote:
-> There's no need to be recursive when computing the N value for the ACR
-> packet - we can instead calculate the multiplier prior to our switch()
-> based lookup, and multiply the N value appropriately afterwards.
->
-> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> ---
->  drivers/gpu/drm/bridge/dw_hdmi.c | 25 +++++++++----------------
->  1 file changed, 9 insertions(+), 16 deletions(-)
-
-For what it's worth, I backported this change into my local 3.14-based
-tree and it worked for me.  It also looks good to me.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Tested-by: Douglas Anderson <dianders@chromium.org>
+UnVzc2VsbCwKCk9uIFNhdCwgQXVnIDgsIDIwMTUgYXQgOToxMCBBTSwgUnVzc2VsbCBLaW5nCjxy
+bWsra2VybmVsQGFybS5saW51eC5vcmcudWs+IHdyb3RlOgo+IEFkanVzdCB0aGUgcGl4ZWwgY2xv
+Y2sgdmFsdWVzIGluIHRoZSBOIGNhbGN1bGF0aW9uIHRvIG1hdGNoIHRoZSBtb3JlCj4gYWNjdXJh
+dGUgY2xvY2sgdmFsdWVzIHdlJ3JlIGdpdmVuIGJ5IHRoZSBEUk0gc3Vic3lzdGVtLCB3aGljaCBh
+cmUgdGhlCj4ga0h6IHBpeGVsIHJhdGUsIHdpdGggYW55IGZyYWN0aW9uYWwga0h6IHJvdW5kZWQg
+ZG93biBpbiB0aGUgY2FzZSBvZgo+IHRoZSBub24tMjQwLCBub24tNDgwIGxpbmUgbW9kZXMsIG9y
+IHJvdW5kZWQgdXAgZm9yIHRoZSBvdGhlcnMuICBTbywKPgo+ICAgICAgICAgIDI1LjIwIC8gMS4w
+MDEgPT4gIDI1MTc1Cj4gICAgICAgICAgMjcuMDAgKiAxLjAwMSA9PiAgMjcwMjcKPiAgICAgICAg
+ICA3NC4yNSAvIDEuMDAxID0+ICA3NDE3Ngo+ICAgICAgICAgMTQ4LjUwIC8gMS4wMDEgPT4gMTQ4
+MzUyCj4KPiBTaWduZWQtb2ZmLWJ5OiBSdXNzZWxsIEtpbmcgPHJtaytrZXJuZWxAYXJtLmxpbnV4
+Lm9yZy51az4KPiAtLS0KPiAgZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmMgfCAyMCAr
+KysrKysrKysrLS0tLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwg
+MTAgZGVsZXRpb25zKC0pCgpGb3Igd2hhdCBpdCdzIHdvcnRoLCBJIGJhY2twb3J0ZWQgdGhpcyBj
+aGFuZ2UgaW50byBteSBsb2NhbCAzLjE0LWJhc2VkCnRyZWUgYW5kIGl0IGRvZXNuJ3QgY2F1c2Ug
+YW55IHByb2JsZW1zLCB0aG91Z2ggaXQgbG9va3MgbGlrZSB0aGUgY29kZQppc24ndCBiZWluZyBy
+dW4gaW4gbXkgY2FzZS4uLgoKSSBjYW4gY29uZmlybSB0aGF0IHRoZSByYXRlcyB5b3UgbGlzdCBt
+YXRjaCB0aGUgcmF0ZXMgSSBhY3R1YWxseSBzZWUKcmVxdWVzdGVkIGJ5IERSTSwgYnV0IGluIG15
+IGN1cnJlbnQgdHJlZSBJJ3ZlIGFjdHVhbGx5IGdvdCBzb21ldGhpbmcKdGhhdCBhbGxvd3MgYSBs
+aXR0bGUgYml0IG9mICJzbG9wIiBpbiBIRE1JIHJhdGVzIGJlY2F1c2UgbXkgc3lzdGVtCmNhbid0
+IGFjdHVhbGx5IGFsd2F5cyBtYWtlIGV4YWN0bHkgdGhlIG1vZGVzIHJlcXVlc3RlZCwgYnV0IGl0
+IGFwcGVhcnMKdGhhdCBnZXR0aW5nICJjbG9zZSBlbm91Z2giIHdvcmtzLCBlc3BlY2lhbGx5IGlm
+IHlvdXIgY2xvY2sgaml0dGVyIGlzCmxvdyBlbm91Z2ggKGJlY2F1c2UgdGhlIHNpbmsgbmVlZHMg
+dG8gaGF2ZSBhIGxpdHRsZSBiaXQgb2Ygd2lnZ2xlIHJvb20KZm9yIGppdHRlciBhbnl3YXkpLiAg
+Rm9yIGluc3RhbmNlLCB3aGVuIDI1LjE3NSBpcyByZXF1ZXN0ZWQgd2UKYWN0dWFsbHkgZW5kIHVw
+IG1ha2luZyAyNS4xNzA3MzIuCgpJbiBteSB0cmVlIHRoaXMgYWRqdXN0bWVudCBoYXBwZW5zIGlu
+IG1vZGVfZml4dXAgYnkgY2hhbmdpbmcgdGhlCmFkal9tb2RlLiAgSW4gb25lIHBhcnRpY3VsYXIg
+Y2FzZSwgc29tZSBkZWJ1ZyBwcmludHMgc2hvdzoKICA2NDB4NDgwLCBtb2RlPTI1MjAwMDAwLCBh
+ZGo9MjUxNzEwMDAsIGFjdHVhbD0yNTE3MDczMgogIGZyZXE9NDgwMDAsIHBpeGVsX2Nsaz0yNTE3
+MTAwMCwgbj02MTQ0CgpJJ20gbm90IGVub3VnaCBvZiBhbiBIRE1JIGV4cGVydCB0byBzYXkgd2hl
+dGhlciBpdCdzIGJldHRlciB0byBiZQp1c2luZyBuPTYxNDQgb3Igbj02ODY0IGluIHRoaXMgY2Fz
+ZSwgYnV0IGF1ZGlvIGRvZXMgcGxheSB3aXRoIGVpdGhlcgpvbiB0aGUgVFYgSSB0ZXN0ZWQuCgpJ
+biBhbnkgY2FzZSwgSSdkIHNheSB0aGF0IHlvdXIgY2hhbmdlIGF0IGxlYXN0IG1ha2VzIHRoaW5n
+cyBiZXR0ZXIKdGhhbiB0aGV5IHdlcmUsIHNvIEknZCBiZSBpbiBmYXZvciBvZiB0YWtpbmcgaXQu
+ICBJZiBzb21lb25lIGxhdGVyCmRlY2lkZXMgdGhhdCB3ZSBzaG91bGQgYWRkIGEgbGl0dGxlIG1h
+cmdpbiB0byB0aGVzZSBudW1iZXJzLCB0aGVuIGEKcGF0Y2ggdG8gYWRkIHRoYXQgY291bGQgZ28g
+YXRvcCB5b3Vycy4KClJldmlld2VkLWJ5OiBEb3VnbGFzIEFuZGVyc29uIDxkaWFuZGVyc0BjaHJv
+bWl1bS5vcmc+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
+dHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
