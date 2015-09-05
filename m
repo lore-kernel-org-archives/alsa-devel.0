@@ -1,75 +1,63 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 6/9] drm: bridge/dw_hdmi: adjust pixel clock values in N
- calculation
-Date: Sat, 5 Sep 2015 15:01:36 +0100
-Message-ID: <20150905140136.GM21084@n2100.arm.linux.org.uk>
-References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <E1ZO6hc-0003NW-55@rmk-PC.arm.linux.org.uk>
- <CAD=FV=WXjcp-wyH_SKexHJDo8R9Xug4yMAOHFPWPYBgiTyM=PQ@mail.gmail.com>
- <CAD=FV=WnVLiCNYgZ8idpknD==Rw7UaLCY1gky4G0TvwUR-VATw@mail.gmail.com>
- <20150904212401.GI21084@n2100.arm.linux.org.uk>
- <CAD=FV=U7h6b1eR+cva6VywcLP8RL2p5sAMSWc_vzUCg6WfWCYQ@mail.gmail.com>
- <20150905002733.GJ21084@n2100.arm.linux.org.uk>
- <CAD=FV=WR4iJ57FLh1d46-s9Gu-4wW6NdoROx-kNbbA0zFpUo0w@mail.gmail.com>
- <20150905083107.GK21084@n2100.arm.linux.org.uk>
- <CAD=FV=XzPRHE6n-svm=0_9jXUORY5NPzfmgS0Ncp7PXXbqivOw@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Enable headphone jack detect
+	on old Fujitsu laptops
+Date: Sat,  5 Sep 2015 18:18:50 +0200
+Message-ID: <1441469931-25417-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=XzPRHE6n-svm=0_9jXUORY5NPzfmgS0Ncp7PXXbqivOw@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E67F4260534
+ for <alsa-devel@alsa-project.org>; Sat,  5 Sep 2015 18:18:53 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 74571AC04
+ for <alsa-devel@alsa-project.org>; Sat,  5 Sep 2015 16:18:53 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBTZXAgMDUsIDIwMTUgYXQgMDY6NDY6MDRBTSAtMDcwMCwgRG91ZyBBbmRlcnNvbiB3
-cm90ZToKPiBSdXNzZWxsLAo+IAo+IE9uIFNhdCwgU2VwIDUsIDIwMTUgYXQgMTozMSBBTSwgUnVz
-c2VsbCBLaW5nIC0gQVJNIExpbnV4Cj4gPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgo+
-ID4gT24gRnJpLCBTZXAgMDQsIDIwMTUgYXQgMDc6MDM6MTFQTSAtMDcwMCwgRG91ZyBBbmRlcnNv
-biB3cm90ZToKPiA+PiBBS0E6IGp1c3QgcmVwbGFjZSB5b3VyIGVudGlyZSAiY29tcHV0ZV9uIiBm
-dW5jdGlvbiB3aXRoOgo+ID4+Cj4gPj4gcmV0dXJuICgxMjggKiBmcmVxKSAvIDEwMDA7Cj4gPj4K
-PiA+PiAuLi5hbmQgaXQncyAxMDAlIHNpbXBsZXIgX2FuZF8gZ2V0cyB5b3UgYSAobWFyZ2luYWxs
-eSkgYmV0dGVyIHJhdGUKPiA+PiAoYXNzdW1pbmcgeW91IHJlYWxseSBoYXZlIDIyLjE3NTAwMCku
-ICBJZiBpdCB3YXMganVzdCBhYm91dCBhCj4gPj4gMzIwMDAuMjIyIHZzIDMyMDAwIEknZCBub3Qg
-YmUgc2F5aW5nIGFueXRoaW5nIHJpZ2h0IG5vdy4gIEl0J3MgYWJvdXQKPiA+PiBhZGRpbmcgY29t
-cGxleGl0eS4KPiA+Cj4gPiBOby4gIEl0IGRvZXNuJ3Qgd29yayBmb3IgYWxsIGNhc2VzLiAgRG8g
-dGhlIGNhbGN1bGF0aW9ucyBmb3IgZXZlcnkKPiA+IHNhbXBsZSByYXRlIGluIHRob3NlIHRhYmxl
-cyBpbiB0aGUgSERNSSBzcGVjLCBhbmQgeW91J2xsIGZpbmQgb3V0Cj4gPiB3aHkuCj4gCj4gSWYg
-eW91IGtub3cgdGhlIGFuc3dlciwganVzdCB0ZWxsIG1lLiAgSWYgeW91J3JlIHRhbGtpbmcgYWJv
-dXQgNzQuMjUKPiB2cy4gMzIga0h6IGl0IGlzIGZ1cnRoZXIgZXZpZGVuY2Ugb2Ygd2hhdCBJJ20g
-c2F5aW5nLiAgTm90ZSB0aGF0Cj4gcGlja2luZyBvbmx5IG9uZSBvZiB0aGUgdHdvIGxpc3RlZCBD
-VFMgdmFsdWVzIGFnYWluIHB1dHMgeW91IGluIGEKPiB3b3JzZSBwb3NpdGlvbiBmb3IgcmVnZW5l
-cmF0aW5nIHRoZSBwcm9wZXIgYXVkaW8gY2xvY2sgdGhlbiBqdXN0IHVzaW5nCj4gdGhlIGRlZmF1
-bHQgTj00MDk2LgoKTm8gaXQgZG9lc24ndC4KCjc0LjI1TUh6LzEuMDAxICogNDA5NiAvICgxMjgg
-KiAzMjAwMCkgPSA3NDE3NSAocm91bmRlZCBkb3duKQoKTm93IGRvIHRoZSBjYWxjdWF0aW9uLgoK
-KDc0LjI1TUh6LzEuMDAxKSAvIDc0MTc1ICogNDA5NiA9IDQwOTYwNDUuNTExID0+IDMyMDAwLjM1
-NTU2SHoKCT0+IGVycm9yIG9mIDAuMDAxMTExJQoKTm93IGZvciB0aGUgY2FsY3VhdGlvbiB1c2lu
-ZyB0aGUgcHJvc2NyaWJlZCBmaWd1cmVzLgoKKDc0LjI1TUh6LzEuMDAxKSAvIDIxMDkzNyAqIDEx
-NjQ4ID0gNDA5NjAwOS43MDkgPT4gMzIwMDAuMDc1ODVIegoJPT4gZXJyb3Igb2YgMC4wMDAyMzcl
-CgpUaGF0J3Mgc2lnbmlmaWNhbnRseSBsZXNzIGVycm9yIHVzaW5nIHRoYXQgdGhhbiB5b3VyICJi
-ZXR0ZXIiIGlkZWEuCk5vdywgaWYgd2UgdGFrZSB0aGUgcGl4ZWwgY2xvY2sgcmF0ZSBhcyA3NC4x
-NzVNSHosIHdoaWNoIGlzIGp1c3QgYQpyZXByZXNlbnRhdGlvbiBvZiA3NC4yNU1Iei8xLjAwMToK
-Cjc0LjE3NU1IeiAvIDIxMDkzNyAqIDExNjQ4ID0gNDA5NTk2NC4xOTggPT4gMzE5OTkuNzIwMjlI
-egoJPT4gZXJyb3Igb2YgMC4wMDA4NzQxJQoKVGhhdCdzIHN0aWxsIGxvd2VyIHRoYW4geW91ciAi
-YmV0dGVyIiBpZGVhLgoKQW5kIGFzIEkndmUgYWxyZWFkeSBzYWlkLCB0aGUgcGl4ZWwgY2xvY2sg
-cmF0ZSBnaXZlbiB0byB1cyBoZXJlIHdpbGwKYmUgdGhlIF9zcGVjaWZpZWRfIGNsb2NrIHJhdGUg
-b2YgNzQuMTc1TUh6LCAqbm90KiBzb21lIGNvY2tlZCB1cApwbGF0Zm9ybSBzY3Jld2VkIGNyYXAg
-dGhhdCB5b3UgdGhpbmsgd2Ugd2lsbC4gIEl0IF93aWxsXyBiZSA3NDE3NQpub3QgNzQxNzAgb3Ig
-c29tZSBvdGhlciBzaGl0ZSBsaWtlIHRoYXQuCgpSaWdodCwgSSd2ZSBoYWQgZW5vdWdoLiAgSSdt
-IGdvaW5nIHRvIGJlIGlnbm9yaW5nIHRoaXMgdGhyZWFkIGZyb20gbm93Cm9uLCB0aGlzIGlzIGEg
-d2FzdGUgb2YgbXkgdGltZSAtIHlvdSBjbGVhcmx5IGhhdmUgbm8gdW5kZXJzdGFuZGluZyBvZgp3
-aGF0J3MgZ29pbmcgb24gaGVyZS4KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5l
-OiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVk
-dGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
-dHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+According to the bug report, FSC Amilo laptops with ALC880 can detect
+the headphone jack but currently the driver disables it.  It's partly
+intentionally, as non-working jack detect was reported in the past.
+Let's enable now.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=102501
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 764dd5bba9ee..9b43cb95c047 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1135,7 +1135,7 @@ static const struct hda_fixup alc880_fixups[] = {
+ 		/* override all pins as BIOS on old Amilo is broken */
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+-			{ 0x14, 0x0121411f }, /* HP */
++			{ 0x14, 0x0121401f }, /* HP */
+ 			{ 0x15, 0x99030120 }, /* speaker */
+ 			{ 0x16, 0x99030130 }, /* bass speaker */
+ 			{ 0x17, 0x411111f0 }, /* N/A */
+@@ -1155,7 +1155,7 @@ static const struct hda_fixup alc880_fixups[] = {
+ 		/* almost compatible with FUJITSU, but no bass and SPDIF */
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+-			{ 0x14, 0x0121411f }, /* HP */
++			{ 0x14, 0x0121401f }, /* HP */
+ 			{ 0x15, 0x99030120 }, /* speaker */
+ 			{ 0x16, 0x411111f0 }, /* N/A */
+ 			{ 0x17, 0x411111f0 }, /* N/A */
+-- 
+2.5.1
