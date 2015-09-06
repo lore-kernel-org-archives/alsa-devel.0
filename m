@@ -1,10 +1,11 @@
-From: johan@oljud.se
-Subject: [PATCH 1/1] ALSA: usb-audio: Change internal PCM order
-Date: Sun,  6 Sep 2015 18:16:13 +0200
-Message-ID: <55ec6713.231d980a.60089.ffff8a20@mx.google.com>
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: ASoC: please revert "ASoC: db1200: Use static DAI
+	format setup"
+Date: Sun, 6 Sep 2015 19:32:02 +0200
+Message-ID: <CAOLZvyG_tgPoXFJMBkqSeDULBUzgdqnNjQF7eVuzLzU2VtDArg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -15,32 +16,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogSm9oYW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpOZXcgUENNcyB3aWxsIG5vdyBi
-ZSBhZGRlZCB0byB0aGUgZW5kIG9mIHRoZSBjaGlwJ3MgUENNIGxpc3QgaW5zdGVhZCBvZiB0byB0
-aGUKZnJvbnQuIFRoaXMgY2hhbmdlcyB0aGUgd2F5IHN0cmVhbXMgYXJlIGNvbWJpbmVkIHNvIHRo
-YXQgdGhlIGZpcnN0IGNhcHR1cmUKc3RyZWFtIHdpbGwgbm93IGJlIG1lcmdlZCB3aXRoIHRoZSBm
-aXJzdCBwbGF5YmFjayBzdHJlYW0gaW5zdGVhZCBvZiB0aGUgbGFzdC4KClRoaXMgZml4ZXMgYSBw
-cm9ibGVtIHdpdGggQVNVUyBVNy4gQ2FyZHMgd2l0aCBvbmUgcGxheWJhY2sgc3RyZWFtIGFuZCBj
-YXJkcwp3aXRob3V0IGNhcHR1cmUgc3RyZWFtcyBzaG91bGQgYmUgdW5hZmZlY3RlZCBieSB0aGlz
-IGNoYW5nZS4KCkV4Y2VwdGlvbiBhZGRlZCBmb3IgTS1BdWRpbyBBdWRpb3BoaWxlIFVTQiAodG0p
-IHNpbmNlIGl0IHNlZW1zIHRvIGhhdmUgYSBmaXggdG8Kc3dhcCBjYXB0dXJlIHN0cmVhbSBudW1i
-ZXJpbmcgaW4gYWxzYS1saWIgY29uZi9jYXJkcy9VU0ItYXVkaW8uY29uZgoKU2lnbmVkLW9mZi1i
-eTogSm9oYW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpkaWZmIC0tZ2l0IGEvc291bmQvdXNi
-L3N0cmVhbS5jIGIvc291bmQvdXNiL3N0cmVhbS5jCmluZGV4IDMxMGEzODIuLjAxZjVhODYgMTAw
-NjQ0Ci0tLSBhL3NvdW5kL3VzYi9zdHJlYW0uYworKysgYi9zb3VuZC91c2Ivc3RyZWFtLmMKQEAg
-LTM3Nyw4ICszNzcsMTUgQEAgaW50IHNuZF91c2JfYWRkX2F1ZGlvX3N0cmVhbShzdHJ1Y3Qgc25k
-X3VzYl9hdWRpbyAqY2hpcCwKCiAJc25kX3VzYl9pbml0X3N1YnN0cmVhbShhcywgc3RyZWFtLCBm
-cCk7CgotCWxpc3RfYWRkKCZhcy0+bGlzdCwgJmNoaXAtPnBjbV9saXN0KTsKKwkvKgorCSAqIEtl
-ZXAgdXNpbmcgaGVhZCBpbnNlcnRpb24gZm9yIE0tQXVkaW8gQXVkaW9waGlsZSBVU0IgKHRtKSB3
-aGljaCBoYXMgYQorCSAqIGZpeCB0byBzd2FwIGNhcHR1cmUgc3RyZWFtIG9yZGVyIGluIGNvbmYv
-Y2FyZHMvVVNCLWF1ZGlvLmNvbmYKKwkgKi8KKwlpZiAoY2hpcC0+dXNiX2lkID09IFVTQl9JRCgw
-eDA3NjMsIDB4MjAwMykpCisJCWxpc3RfYWRkKCZhcy0+bGlzdCwgJmNoaXAtPnBjbV9saXN0KTsK
-KwllbHNlCisJCWxpc3RfYWRkX3RhaWwoJmFzLT5saXN0LCAmY2hpcC0+cGNtX2xpc3QpOworCiAJ
-Y2hpcC0+cGNtX2RldnMrKzsKCiAJc25kX3VzYl9wcm9jX3BjbV9mb3JtYXRfYWRkKGFzKTsKLS0K
-Mi4xLjQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Lars,
+
+commit b4508d0f95fa4aaed889549e31391641d675d4bb
+("ASoC: db1200: Use static DAI format setup") breaks I2S in that the
+set_dai_fmt() callbacks of neither the codec (wm8731) nor the I2S block
+(psc-i2s) are called.
+
+Please revert this change or fix it up so that the set_dai_fmt() callbacks
+are at least called once. (This was broken since 4.0, but I just now got
+around to test linux on the hardware again).
+
+Thanks!
+       Manuel
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
