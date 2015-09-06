@@ -1,62 +1,57 @@
-From: Shawn Lin <shawn.lin@rock-chips.com>
-Subject: [PATCH v4 09/10] snd: dmaengine-pcm: add snd_dmaengine_pcm_get_quirks interface
-Date: Sun,  6 Sep 2015 09:13:16 +0800
-Message-ID: <1441501996-14075-1-git-send-email-shawn.lin@rock-chips.com>
-References: <1441501881-13700-1-git-send-email-shawn.lin@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1441501881-13700-1-git-send-email-shawn.lin@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>, Heiko Stuebner <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
-Cc: Doug Anderson <dianders@chromium.org>, Olof Johansson <olofj@google.com>, Sonny Rao <sonnyrao@chromium.org>, Addy Ke <addy.ke@rock-chips.com>, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: Re: [PATCH] ASoC: au1x: psc-i2s: Fix unused variable
+	'ret' warning
+Date: Sun, 6 Sep 2015 11:37:37 +0200
+Message-ID: <CAOLZvyH9m1AwJvz6g3WKMnCcdf55BhAHic3AFeAHcRH-_h9sHg@mail.gmail.com>
+References: <1441090215.22437.0.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D3B92606E2
+ for <alsa-devel@alsa-project.org>; Sun,  6 Sep 2015 11:38:17 +0200 (CEST)
+Received: by lanb10 with SMTP id b10so36194721lan.3
+ for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2015 02:38:17 -0700 (PDT)
+In-Reply-To: <1441090215.22437.0.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add snd_dmaengine_pcm_get_quirks for I2S devices to query
-dma controller's quirks if they need it to make special workaround
-due to broken dma controller design
+On Tue, Sep 1, 2015 at 8:50 AM, Axel Lin <axel.lin@ingics.com> wrote:
+> Fix below build warning:
+> sound/soc/au1x/psc-i2s.c: In function 'au1xpsc_i2s_drvprobe':
+> sound/soc/au1x/psc-i2s.c:299:6: warning: unused variable 'ret' [-Wunused-variable]
+>
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/au1x/psc-i2s.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+> index 38e853a..0bf9d62 100644
+> --- a/sound/soc/au1x/psc-i2s.c
+> +++ b/sound/soc/au1x/psc-i2s.c
+> @@ -296,7 +296,6 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+>  {
+>         struct resource *iores, *dmares;
+>         unsigned long sel;
+> -       int ret;
+>         struct au1xpsc_audio_data *wd;
+>
+>         wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
+> --
 
-Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
----
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- sound/soc/soc-generic-dmaengine-pcm.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 6fd1906..42136005 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -466,4 +466,28 @@ void snd_dmaengine_pcm_unregister(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_unregister);
- 
-+
-+/**
-+ * snd_dmaengine_pcm_get_quirks - Get dmaengine quirks based PCM device
-+ * @dev: Parent device the PCM was register with
-+ */
-+int snd_dmaengine_pcm_get_quirks(struct device *dev)
-+{
-+	struct snd_soc_platform *platform;
-+	struct dmaengine_pcm *pcm;
-+	int ret = -ENODEV;
-+
-+	platform = snd_soc_lookup_platform(dev);
-+	if (!platform)
-+		return ret;
-+
-+	pcm = soc_platform_to_pcm(platform);
-+
-+	if (pcm->chan)
-+		ret = dmaengine_get_quirks(pcm->chan[0]);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_get_quirks);
-+
- MODULE_LICENSE("GPL");
--- 
-2.3.7
+Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
