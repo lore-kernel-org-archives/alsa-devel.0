@@ -1,21 +1,11 @@
-From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
-Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
- terminal properties
-Date: Sun, 6 Sep 2015 17:34:23 +0200
-Message-ID: <CAMFLXsB8FAt4S9i2Lb2g60KJ9G-u=DnzTYwrqq6OE0yeFMSFig@mail.gmail.com>
-References: <1439410499-28630-1-git-send-email-julian@jusst.de>
- <s5hr3n6t3wt.wl-tiwai@suse.de>
+From: johan@oljud.se
+Subject: [PATCH 1/1] ALSA: usb-audio: Change internal PCM order
+Date: Sun,  6 Sep 2015 18:16:13 +0200
+Message-ID: <55ec6713.231d980a.60089.ffff8a20@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 98E40261569
- for <alsa-devel@alsa-project.org>; Sun,  6 Sep 2015 17:34:23 +0200 (CEST)
-Received: by wiclk2 with SMTP id lk2so60546806wic.1
- for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2015 08:34:23 -0700 (PDT)
-In-Reply-To: <s5hr3n6t3wt.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +15,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
 List-Id: alsa-devel@alsa-project.org
 
-On 14 August 2015 at 15:06, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 12 Aug 2015 22:14:59 +0200,
-> Julian Scheel wrote:
->>
->> When the descriptor parser recurses into the clock source descriptor, the
->> terminals properties, like name and type, are set to the values of the clock
->> selector as check_input_term overwrites term->name and others in the recursive
->> call. As we want to only fill missing values using the descriptors higher in
->> the recursion tree the properties taken from the actual descriptor must be
->> applied after recursing.
->>
->> Signed-off-by: Julian Scheel <julian@jusst.de>
->
-> Thanks for the patch.  I vaguely remember of a similar patch, maybe
-> you who already sent.  One thing I find uncertain is whether this
-> breaks the current logic completely, namely:
->
-
-Maybe that vague memory relates to me asking about this code a while
-ago. I never sent any patch though because I couldn't figure out what
-the correct behaviour should be. Hats off to Julian for fixing it,
-this is a step on the way to get the Asus U7 fully working.
-
->> @@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
->>                               term->name = d->iTerminal;
->>                       } else { /* UAC_VERSION_2 */
->>                               struct uac2_input_terminal_descriptor *d = p1;
->> -                             term->type = le16_to_cpu(d->wTerminalType);
->> -                             term->channels = d->bNrChannels;
->> -                             term->chconfig = le32_to_cpu(d->bmChannelConfig);
->> -                             term->name = d->iTerminal;
->>
->>                               /* call recursively to get the clock selectors */
->>                               err = check_input_term(state, d->bCSourceID, term);
->>                               if (err < 0)
->>                                       return err;
->> +
->> +                             term->type = le16_to_cpu(d->wTerminalType);
->> +                             term->channels = d->bNrChannels;
->> +                             term->chconfig = le32_to_cpu(d->bmChannelConfig);
->> +                             term->name = d->iTerminal;
->
-> ... by this override, essentially all fields except for id are
-> restored.  Then what's the point to call check_input_term() for the
-> clock source?
->
-> Maybe Daniel can answer better how the original code is supposed to
-> work.  Daniel?
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+RnJvbTogSm9oYW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpOZXcgUENNcyB3aWxsIG5vdyBi
+ZSBhZGRlZCB0byB0aGUgZW5kIG9mIHRoZSBjaGlwJ3MgUENNIGxpc3QgaW5zdGVhZCBvZiB0byB0
+aGUKZnJvbnQuIFRoaXMgY2hhbmdlcyB0aGUgd2F5IHN0cmVhbXMgYXJlIGNvbWJpbmVkIHNvIHRo
+YXQgdGhlIGZpcnN0IGNhcHR1cmUKc3RyZWFtIHdpbGwgbm93IGJlIG1lcmdlZCB3aXRoIHRoZSBm
+aXJzdCBwbGF5YmFjayBzdHJlYW0gaW5zdGVhZCBvZiB0aGUgbGFzdC4KClRoaXMgZml4ZXMgYSBw
+cm9ibGVtIHdpdGggQVNVUyBVNy4gQ2FyZHMgd2l0aCBvbmUgcGxheWJhY2sgc3RyZWFtIGFuZCBj
+YXJkcwp3aXRob3V0IGNhcHR1cmUgc3RyZWFtcyBzaG91bGQgYmUgdW5hZmZlY3RlZCBieSB0aGlz
+IGNoYW5nZS4KCkV4Y2VwdGlvbiBhZGRlZCBmb3IgTS1BdWRpbyBBdWRpb3BoaWxlIFVTQiAodG0p
+IHNpbmNlIGl0IHNlZW1zIHRvIGhhdmUgYSBmaXggdG8Kc3dhcCBjYXB0dXJlIHN0cmVhbSBudW1i
+ZXJpbmcgaW4gYWxzYS1saWIgY29uZi9jYXJkcy9VU0ItYXVkaW8uY29uZgoKU2lnbmVkLW9mZi1i
+eTogSm9oYW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpkaWZmIC0tZ2l0IGEvc291bmQvdXNi
+L3N0cmVhbS5jIGIvc291bmQvdXNiL3N0cmVhbS5jCmluZGV4IDMxMGEzODIuLjAxZjVhODYgMTAw
+NjQ0Ci0tLSBhL3NvdW5kL3VzYi9zdHJlYW0uYworKysgYi9zb3VuZC91c2Ivc3RyZWFtLmMKQEAg
+LTM3Nyw4ICszNzcsMTUgQEAgaW50IHNuZF91c2JfYWRkX2F1ZGlvX3N0cmVhbShzdHJ1Y3Qgc25k
+X3VzYl9hdWRpbyAqY2hpcCwKCiAJc25kX3VzYl9pbml0X3N1YnN0cmVhbShhcywgc3RyZWFtLCBm
+cCk7CgotCWxpc3RfYWRkKCZhcy0+bGlzdCwgJmNoaXAtPnBjbV9saXN0KTsKKwkvKgorCSAqIEtl
+ZXAgdXNpbmcgaGVhZCBpbnNlcnRpb24gZm9yIE0tQXVkaW8gQXVkaW9waGlsZSBVU0IgKHRtKSB3
+aGljaCBoYXMgYQorCSAqIGZpeCB0byBzd2FwIGNhcHR1cmUgc3RyZWFtIG9yZGVyIGluIGNvbmYv
+Y2FyZHMvVVNCLWF1ZGlvLmNvbmYKKwkgKi8KKwlpZiAoY2hpcC0+dXNiX2lkID09IFVTQl9JRCgw
+eDA3NjMsIDB4MjAwMykpCisJCWxpc3RfYWRkKCZhcy0+bGlzdCwgJmNoaXAtPnBjbV9saXN0KTsK
+KwllbHNlCisJCWxpc3RfYWRkX3RhaWwoJmFzLT5saXN0LCAmY2hpcC0+cGNtX2xpc3QpOworCiAJ
+Y2hpcC0+cGNtX2RldnMrKzsKCiAJc25kX3VzYl9wcm9jX3BjbV9mb3JtYXRfYWRkKGFzKTsKLS0K
+Mi4xLjQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
