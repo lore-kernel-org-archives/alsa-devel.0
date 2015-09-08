@@ -1,17 +1,17 @@
-From: Markus Seeber <markus.seeber@spectralbird.de>
-Subject: Re: Getting notification of sound card load
-Date: Tue, 8 Sep 2015 19:28:35 +0200
-Message-ID: <55EF1AC3.20000@spectralbird.de>
-References: <CAHS8izNFuofTe1Ud7Oa=L0RTtdT-KqnTdoO81ffMjDwH9RiyEQ@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH lib 1/5] topology: builder: Fix possibly
+	uninitialized variable in write_elem_block()
+Date: Tue,  8 Sep 2015 22:21:37 +0200
+Message-ID: <1441743701-28165-2-git-send-email-tiwai@suse.de>
+References: <1441743701-28165-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wp388.webpack.hosteurope.de (wp388.webpack.hosteurope.de
- [80.237.133.157])
- by alsa0.perex.cz (Postfix) with ESMTP id 24D8A2650F2
- for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2015 19:33:33 +0200 (CEST)
-In-Reply-To: <CAHS8izNFuofTe1Ud7Oa=L0RTtdT-KqnTdoO81ffMjDwH9RiyEQ@mail.gmail.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9CBD26513B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2015 22:21:44 +0200 (CEST)
+In-Reply-To: <1441743701-28165-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,18 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/08/2015 07:09 PM, Mina Almasry wrote:
-> Hi,
-> 
-> I'd like to get a notification when a new sound card becomes available in
-> my system.
-
-You may have a look at udev, especially the monitoring interface of libudev.
-
-I don't know if this is outdated, but maybe have a look here:
-http://www.signal11.us/oss/udev/
-
-Best Regards,
-  Markus
+V2hlbiBhbiBlbXB0eSBsaXN0IGlzIHBhc3NlZCB0byB3cml0ZV9lbGVtX2Jsb2NrKCksIGl0IG1h
+eSBsZWF2ZQp2ZW5kb3JfdHlwZSB1bmluaXRpYWxpemVkLgogIGJ1aWxkZXIuYzogSW4gZnVuY3Rp
+b24g4oCYd3JpdGVfZWxlbV9ibG9ja+KAmToKICBidWlsZGVyLmM6MTI3Ojg6IHdhcm5pbmc6IOKA
+mHZlbmRvcl90eXBl4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlv
+biBbLVdtYXliZS11bmluaXRpYWxpemVkXQogICAgcmV0ID0gd3JpdGVfYmxvY2tfaGVhZGVyKHRw
+bGcsIHRwbGdfdHlwZSwgdmVuZG9yX3R5cGUsCiAgICAgICAgICBeCiAgYnVpbGRlci5jOjExNDoz
+Mzogbm90ZTog4oCYdmVuZG9yX3R5cGXigJkgd2FzIGRlY2xhcmVkIGhlcmUKICAgIGludCByZXQs
+IHdzaXplID0gMCwgY291bnQgPSAwLCB2ZW5kb3JfdHlwZTsKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBeCgpBZGQgYW4gaW1tZWRpYXRlIHJldHVybiBmb3IgY291bnQgPSAwIGZv
+ciBhdm9pZGluZyBpdCwgYW5kIHNpbXBsaWZ5CnRoZSBjb2RlIGluaXRpYWxpemluZyB2ZW5kb3Jf
+dHlwZSB3aXRob3V0IHVzaW5nIGEgb25lLXNob3QgbG9vcC4KClNpZ25lZC1vZmYtYnk6IFRha2Fz
+aGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCiBzcmMvdG9wb2xvZ3kvYnVpbGRlci5jIHwgOSAr
+KysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0p
+CgpkaWZmIC0tZ2l0IGEvc3JjL3RvcG9sb2d5L2J1aWxkZXIuYyBiL3NyYy90b3BvbG9neS9idWls
+ZGVyLmMKaW5kZXggM2JjY2Q0NDgyN2NjLi45MTQxMmFhZGQwOTggMTAwNjQ0Ci0tLSBhL3NyYy90
+b3BvbG9neS9idWlsZGVyLmMKKysrIGIvc3JjL3RvcG9sb2d5L2J1aWxkZXIuYwpAQCAtMTE2LDEz
+ICsxMTYsMTIgQEAgc3RhdGljIGludCB3cml0ZV9lbGVtX2Jsb2NrKHNuZF90cGxnX3QgKnRwbGcs
+CiAJLyogY291bnQgbnVtYmVyIG9mIGVsZW1lbnRzICovCiAJbGlzdF9mb3JfZWFjaChwb3MsIGJh
+c2UpCiAJCWNvdW50Kys7CisJaWYgKCFjb3VudCkKKwkJcmV0dXJuIDA7CiAKIAkvKiB3cml0ZSB0
+aGUgaGVhZGVyIGZvciB0aGlzIGJsb2NrICovCi0JbGlzdF9mb3JfZWFjaChwb3MsIGJhc2UpIHsK
+LQkJZWxlbSA9IGxpc3RfZW50cnkocG9zLCBzdHJ1Y3QgdHBsZ19lbGVtLCBsaXN0KTsKLQkJdmVu
+ZG9yX3R5cGUgPSBlbGVtLT52ZW5kb3JfdHlwZTsKLQkJYnJlYWs7Ci0JfQorCWVsZW0gPSBsaXN0
+X2VudHJ5KGJhc2UtPm5leHQsIHN0cnVjdCB0cGxnX2VsZW0sIGxpc3QpOworCXZlbmRvcl90eXBl
+ID0gZWxlbS0+dmVuZG9yX3R5cGU7CiAKIAlyZXQgPSB3cml0ZV9ibG9ja19oZWFkZXIodHBsZywg
+dHBsZ190eXBlLCB2ZW5kb3JfdHlwZSwKIAkJU05EX1NPQ19UUExHX0FCSV9WRVJTSU9OLCAwLCBz
+aXplLCBjb3VudCk7Ci0tIAoyLjUuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
