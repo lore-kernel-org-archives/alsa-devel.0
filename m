@@ -1,48 +1,97 @@
 From: "Wu, Songjun" <songjun.wu@atmel.com>
-Subject: Re: [PATCH 2/2] ASoC: atmel-classd: DT binding for Class D audio
- amplifier driver
-Date: Tue, 8 Sep 2015 17:36:13 +0800
-Message-ID: <55EEAC0D.7010003@atmel.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel-classd: add the Audio
+ Class D Amplifier code
+Date: Tue, 8 Sep 2015 17:36:01 +0800
+Message-ID: <55EEAC01.3080409@atmel.com>
 References: <1441086101-15303-1-git-send-email-songjun.wu@atmel.com>
- <1441086101-15303-3-git-send-email-songjun.wu@atmel.com>
- <20150903114316.GV12027@sirena.org.uk> <55EC0AFE.3080809@atmel.com>
- <20150907162548.GW5313@sirena.org.uk>
+ <1441086101-15303-2-git-send-email-songjun.wu@atmel.com>
+ <20150903113716.GU12027@sirena.org.uk> <55EC0AF5.8060403@atmel.com>
+ <20150907162350.GV5313@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150907162548.GW5313@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87700260666
+ for <alsa-devel@alsa-project.org>; Tue,  8 Sep 2015 11:36:12 +0200 (CEST)
+In-Reply-To: <20150907162350.GV5313@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: nicolas.ferre@atmel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, lgirdwood@gmail.com, ijc+devicetree@hellion.org.uk, nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 9/8/2015 00:25, Mark Brown wrote:
-> On Sun, Sep 06, 2015 at 05:44:30PM +0800, Wu, Songjun wrote:
->> On 9/3/2015 19:43, Mark Brown wrote:
->
->>> Why is this a separate DT node?  It seems that this IP is entirely self
->>> contained so I'm not clear why we need a separate node for the card, the
->>> card is usually a separate node because it ties together multiple
->>> different devices in the system but that's not the case here.
->
->> The classD can finish the audio function without other devices.
->> But I want to reuse the code in ASoC, leave many things(like creating PCM,
->> DMA operations) to ASoC, then the driver can only focus on how to configure
->> classD.
->> The classD IP is divided to tree parts logically, platform, CPU dai,
->> and codec, and these parts are registered to ASoC.
->
->> This separate DT node is needed in ASoC, ties these tree parts in ClassD.
->
-> Sure, there's no problem at all having that structure in software but it
-> should be possible to do this without having to represent this structure
-> in DT.  It should be possible to register the card at the same time as
-> the rest of the components rather than needing the separate device in
-> the DT.
->
-Do you mean using a single entry in the DT for the whole classD system 
-and instantiate ASoC components from it.
-For now, there are two entry, they could be combined to one entry.
+CgpPbiA5LzgvMjAxNSAwMDoyMywgTWFyayBCcm93biB3cm90ZToKPiBPbiBTdW4sIFNlcCAwNiwg
+MjAxNSBhdCAwNTo0NDoyMVBNICswODAwLCBXdSwgU29uZ2p1biB3cm90ZToKPj4gT24gOS8zLzIw
+MTUgMTk6MzcsIE1hcmsgQnJvd24gd3JvdGU6Cj4+PiBPbiBUdWUsIFNlcCAwMSwgMjAxNSBhdCAw
+MTo0MTo0MFBNICswODAwLCBTb25nanVuIFd1IHdyb3RlOgo+Cj4+Pj4gK3N0YXRpYyBjb25zdCBj
+aGFyICogY29uc3QgZXFjZmdfYmFzc190ZXh0W10gPSB7Cj4+Pj4gKwkiLTEyIGRCIiwgIi02IGRC
+IiwgIjAgZEIiLCAiKzYgZEIiLCAiKzEyIGRCIgo+Pj4+ICt9Owo+Pj4KPj4+PiArc3RhdGljIGNv
+bnN0IHVuc2lnbmVkIGludCBlcWNmZ19iYXNzX3ZhbHVlW10gPSB7Cj4+Pj4gKwlDTEFTU0RfSU5U
+UE1SX0VRQ0ZHX0JfQ1VUXzEyLAo+Pj4+ICsJQ0xBU1NEX0lOVFBNUl9FUUNGR19CX0NVVF82LCBD
+TEFTU0RfSU5UUE1SX0VRQ0ZHX0ZMQVQsCj4+Pj4gKwlDTEFTU0RfSU5UUE1SX0VRQ0ZHX0JfQk9P
+U1RfNiwgQ0xBU1NEX0lOVFBNUl9FUUNGR19CX0JPT1NUXzEyCj4+Pj4gK307Cj4KPj4+IFRoaXMg
+c2hvdWxkIGJlIGEgVm9sdW1lIGNvbnRyb2wgd2l0aCBUTFYgaW5mb3JtYXRpb24sIGFzIHNob3Vs
+ZCB0aGUKPj4+IGZvbGxvd2luZyBmZXcgY29udHJvbHMuCj4KPj4gVGhlIFZvbHVtZSBjb250cm9s
+IHdpdGggVExWIGluZm9ybWF0aW9uIGlzIG5vdCBzdWl0YWJsZSBmb3IgdGhpcyBjYXNlLgo+PiBC
+YXNzLCBNZWRpdW0sIGFuZCB0cmVibGUgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZS4KPj4gU28gSSB0
+aGluayB0aGUgU09DX0VOVU0gY29udHJvbCBpcyBzdWl0YWJsZSBmb3IgdGhpcyBjYXNlLgo+PiBU
+aGUgcmVnaXN0ZXIgbGF5b3V0IGlzIG5vdCB2ZXJ5IGdvb2QsCj4+IFRoZSByZWdpc3RlciBpcyBk
+ZWZpbmVkIGFzIGJlbG93Lgo+PiDigKIgIEVRQ0ZHOiBFcXVhbGl6YXRpb24gU2VsZWN0aW9uCj4+
+IFZhbHVlIE5hbWUgICAgICAgRGVzY3JpcHRpb24KPj4gMCAgICAgRkxBVCAgICAgICBGbGF0IFJl
+c3BvbnNlCj4+IDEgICAgIEJCT09TVDEyICAgQmFzcyBib29zdCArMTIgZEIKPj4gMiAgICAgQkJP
+T1NUNiAgICBCYXNzIGJvb3N0ICs2IGRCCj4+IDMgICAgIEJDVVQxMiAgICAgQmFzcyBjdXQgLTEy
+IGRCCj4+IDQgICAgIEJDVVQ2ICAgICAgQmFzcyBjdXQgLTYgZEIKPj4gNSAgICAgTUJPT1NUMyAg
+ICBNZWRpdW0gYm9vc3QgKzMgZEIKPj4gNiAgICAgTUJPT1NUOCAgICBNZWRpdW0gYm9vc3QgKzgg
+ZEIKPj4gNyAgICAgTUNVVDMgICAgICBNZWRpdW0gY3V0IC0zIGRCCj4+IDggICAgIE1DVVQ4ICAg
+ICAgTWVkaXVtIGN1dCAtOCBkQgo+PiA5ICAgICBUQk9PU1QxMiAgIFRyZWJsZSBib29zdCArMTIg
+ZEIKPj4gMTAgICAgVEJPT1NUNiAgICBUcmVibGUgYm9vc3QgKzYgZEIKPj4gMTEgICAgVENVVDEy
+ICAgICBUcmVibGUgY3V0IC0xMiBkQgo+PiAxMiAgICBUQ1VUNiAgICAgIFRyZWJsZSBjdXQgLTYg
+ZEIKPgo+IE9LLCBzbyB0aGF0J3Mgbm90IGFjdHVhbGx5IHdoYXQgdGhlIGNvZGUgd2FzIGRvaW5n
+IC0gaXQgaGFkIHNlcGFyYXRlCj4gZW51bXMgZm9yIGJhc3MsIG1pZCBhbmQgdHJlYmxlLiAgSWYg
+eW91IG1ha2UgdGhpcyBhIHNpbmdsZSBlbnVtIHdpdGggYWxsCj4gdGhlIGFib3ZlIG9wdGlvbnMg
+aW4gaXQgdGhhdCBzZWVtcyBsaWtlIHRoZSBiZXN0IHdheSBvZiBoYW5kbGluZyB0aGluZ3MuCj4K
+QSBzaW5nbGUgZW51bSBzZWVtcyBub3QgdmVyeSBmcmllbmRseSB0byB1c2VyLCB0aGVyZSBhcmUg
+dHJlZSBFUXMsIGJhc3MsIAptZWRpdW0gYW5kIHRyZWJsZS4KU28gSSBjcmVhdGUgdHJlZSBlbnVt
+IGNvbnRyb2xzIHRvIGNvbnRyb2wgdGhyZWUgRVFzLgpUaGUgJ2dldCcgZnVuY3Rpb24gaXMgcmVw
+bGFjZWQgYnkgJ2NsYXNzZF9nZXRfZXFfZW51bScsIGlmIHVzZXIgb3BlcmF0ZXMgCm9uZSBvZiB0
+aGUgdHJlZSBFUSBjb250cm9scywgdGhlIG90aGVyIHR3byBFUXMgd2lsbCBzaG93IDAgZEIuCgo+
+Pj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgYXRtZWxfY2xhc3NkX3Nu
+ZF9jb250cm9sc1tdID0gewo+Pj4+ICtTT0NfU0lOR0xFX1RMVigiTGVmdCBWb2x1bWUiLCBDTEFT
+U0RfSU5UUE1SLAo+Pj4+ICsJCUNMQVNTRF9JTlRQTVJfQVRUTF9TSElGVCwgNzgsIDEsIGNsYXNz
+ZF9kaWdpdGFsX3RsdiksCj4+Pj4gKwo+Pj4+ICtTT0NfU0lOR0xFX1RMVigiUmlnaHQgVm9sdW1l
+IiwgQ0xBU1NEX0lOVFBNUiwKPj4+PiArCQlDTEFTU0RfSU5UUE1SX0FUVFJfU0hJRlQsIDc4LCAx
+LCBjbGFzc2RfZGlnaXRhbF90bHYpLAo+Pj4KPj4+IFRoaXMgc2hvdWxkIGJlIGEgc2luZ2xlIHN0
+ZXJlbyBjb250cm9sIHJhdGhlciB0aGFuIHNlcGFyYXRlIGxlZnQgYW5kCj4+PiByaWdodCBjb250
+cm9scy4KPgo+PiBTaW5jZSB0aGUgY2xhc3NEIElQIGRlZmluZXMgdHdvIHJlZ2lzdGVyIGZpZWxk
+cyB0byBjb250cm9sIGxlZnQgdm9sdW1lIGFuZAo+PiByaWdodCB2b2x1bWUgcmVzcGVjdGl2ZWx5
+LCBJIHRoaW5rIGl0J3MgYmV0dGVyIHRvIHByb3ZpZGUgdHdvIGNvbnRyb2xzIHRvCj4+IHVzZXIu
+Cj4KPiBObywgdGhpcyBpcyByZWFsbHkgY29tbW9uLCB3ZSBjb21iaW5lIHRoZW0gaW4gTGludXgg
+dG8gcHJlc2VudCBhCj4gY29uc2lzdGVudCBpbnRlcmZhY2UgdG8gdXNlcnNwYWNlLgo+CkkgdGhp
+bmsgY2FyZWZ1bGx5LCB5b3VyIHN1Z2dlc3Rpb24gaXMgcmVhc29uYWJsZS4KVGhlIGNvZGUgd2ls
+bCBiZSBtb2RpZmllZCwgY29tYmluZSB0aGUgbGVmdCBhbmQgcmlnaHQgdG8gYSBzaW5nbGUgc3Rl
+cmVvIApjb250cm9sLgpUaGFuayB5b3UuCgo+Pj4+ICsJZGV2X2luZm8oZGV2LAo+Pj4+ICsJCSJB
+dG1lbCBDbGFzcyBEIEFtcGxpZmllciAoQ0xBU1NEKSBkZXZpY2UgYXQgMHglcCAoaXJxICVkKVxu
+IiwKPj4+PiArCQlpb19iYXNlLCBkZC0+aXJxKTsKPgo+Pj4gVGhpcyBpcyBhIGJpdCBub2lzeSBh
+bmQgbm90IHJlYWxseSBiYXNlZCBvbiBpbnRlcmFjdGlvbiB3aXRoIHRoZQo+Pj4gaGFyZHdhcmUu
+Li4gIGRldl9kYmcoKSBzZWVtcyBiZXR0ZXIuCj4KPj4gVGhpcyBpbmZvcm1hdGlvbiB3aWxsIG9j
+Y3VyIG9ubHkgb25jZSB3aGVuIGxpbnV4IGtlcm5lbCBzdGFydHMuCj4+IEl0IHNob3dzIHRoZSBj
+bGFzc0QgaXMgbG9hZGVkIHRvIGxpbnV4IGtlcm5lbC4KPj4gSSB0aGluayBpdCdzIGJldHRlciB0
+byBwcm92aWRlIG1vcmUgaW5mb3JtYXRpb24gdG8gdXNlci4KPgo+IFRoaXMgc3R1ZmYgYWxsIGFk
+ZHMgdXAgYW5kIHNpbmNlIGl0J2xsIGdvIG91dCBvbiB0aGUgY29uc29sZSBieSBkZWZhdWx0Cj4g
+aXQgYm90aCBtYWtlcyB0aGluZ3MgbW9yZSBub2lzeSBhbmQgc2xvd3MgZG93biBib290IC0gcHJp
+bnRpbmcgb24gdGhlCj4gc2VyaWFsIHBvcnQgaXNuJ3QgZnJlZS4gIElmIHdlIHdhbnQgdG8gaGF2
+ZSB0aGlzIHNvcnQgb2YgaW5mb3JtYXRpb24gd2UKPiBwcmludGVkIHdlIHNob3VsZCByZWFsbHkg
+ZG8gaXQgaW4gdGhlIGRyaXZlciBjb3JlIHNvIGl0IGFwcGVhcnMKPiBjb25zaXN0ZW50bHkgZm9y
+IGFsbCBkZXZpY2VzIHJhdGhlciB0aGFuIGhhdmluZyBpbmRpdmlkdWFsIGNvZGUgaW4gZWFjaAo+
+IGRyaXZlci4KPgpBY2NlcHQsIHRoZSBjb2RlIHdpbGwgYmUgbW9kaWZpZWQgdG8gZGV2X2RiZygp
+LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
