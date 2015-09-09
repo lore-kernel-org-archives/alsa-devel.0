@@ -1,19 +1,15 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [RFC] How to perform audio offloading in none
- tunneled mode
-Date: Wed, 9 Sep 2015 10:36:20 +0200
-Message-ID: <55EFEF84.9090102@st.com>
-References: <E1ZNiBu-0005i8-Ks@finisterre> <55EF06FC.90400@st.com>
- <55EF10CE.3040803@linux.intel.com> <20150908173245.GF9751@sirena.org.uk>
+From: John Lin <john.lin@realtek.com>
+Subject: [PATCH] ASoC: rt5645: Add struct dmi_system_id "Google
+	Ultima" for chrome platform
+Date: Wed, 9 Sep 2015 16:47:48 +0800
+Message-ID: <1441788468-16501-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id ACD612602AD
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2015 10:36:25 +0200 (CEST)
-In-Reply-To: <20150908173245.GF9751@sirena.org.uk>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id B38862602AD
+ for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2015 10:48:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>, Keith.Tzeng@quantatw.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: John Lin <john.lin@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-
-On 09/08/2015 07:32 PM, Mark Brown wrote:
-> On Tue, Sep 08, 2015 at 11:46:06AM -0500, Pierre-Louis Bossart wrote:
->
->> What you are describing is feasible but has issues related to:
->> - delay control
->> - DSP scheduling (no real means to process data faster than real-time as you
->> would want in a data-driven co-processor)
->> There are also divergent views on the benefits of offloading intermediate
->> operations to a resource-constrained co-processor, you might be better off
->> doing everything on the host in terms of power consumption.
->
-> Indeed - there's also a big system complexity hit.  It does depend how
-> loaded things are if it's worth considering.  Part of the reason there's
-> no standard way to do it is that the benefits are sufficiently unclear
-> to be concerning.
->
-Full agree with you in standard use cases. But with the increased number 
-of channels and frequency we start to observe some use cases that 
-consume more than 1000 MIPS. In this case systems can take advantage in 
-partitioning, particularly for open systems like android.
-
-Then tunneled and non-tunneled mode is a matter of compromise between 
-flexibility and efficiency.
-
-I have my answer, not standard API for no tunneled mode.
-Thanks
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 4972bf3..8e51242 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3205,6 +3205,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Celes"),
+ 		},
+ 	},
++	{
++		.ident = "Google Ultima",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+1.8.1.1.439.g50a6b54
