@@ -1,125 +1,51 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Multiple codecs on one sound card for multi-channel
-	sound card
-Date: Tue, 8 Sep 2015 18:02:27 -0700
-Message-ID: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
+From: "Wu, Songjun" <songjun.wu-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: atmel-classd: add the Audio Class D Amplifier
+ code
+Date: Wed, 9 Sep 2015 11:16:08 +0800
+Message-ID: <55EFA478.1000109@atmel.com>
+References: <1441086101-15303-1-git-send-email-songjun.wu@atmel.com>
+ <1441086101-15303-2-git-send-email-songjun.wu@atmel.com>
+ <20150903113716.GU12027@sirena.org.uk> <55EC0AF5.8060403@atmel.com>
+ <20150907162350.GV5313@sirena.org.uk> <55EEAC01.3080409@atmel.com>
+ <20150908122322.GB9751@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f182.google.com (mail-io0-f182.google.com
- [209.85.223.182])
- by alsa0.perex.cz (Postfix) with ESMTP id D559D2650F7
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2015 03:02:47 +0200 (CEST)
-Received: by iofb144 with SMTP id b144so4922706iof.1
- for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2015 18:02:46 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150908122322.GB9751-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-   What's the current best practices to specify multiple codecs on one
-sound card, with all codecs sharing a single TDM bus?
-
-I have a card with up to 32 TLV320AIC33 codecs on it.  For the moment, we
-can limit the discussion to only 16 codecs, so we don't have to get extra
-serializers involved...
-
-I currently have something like this in my am335x-boneblack.dts file:
-
-(i.e. attempting to set tdm slot width and num in the i2c codec)
-
-but it doesn't seem to be pickin up the fact that I want all the codecs
-linked together as one.
-
-(FYI, the first codec, i.e. tlv32aic3x_a should be the master, and all
-others including the CPU will be slaves).
-
-Thanks for any help!
-
-BTW, I'm happy to use whatever kernel will support me with the minimal
-amount of effort!
-
-Sincerely,
-  -Caleb
 
 
-&i2c1 {
-clock-frequency = <100000>;
-status = "okay";
-pinctrl-names = "default";
-pinctrl-0 = <&i2c1_pins_default>;
-status="okay";
-
-tlv320aic3x_a: tlv320aic3x@18 {
-       #sound-dai-cells = <0>;
-compatible = "ti,tlv320aic3x";
-reg = <0x18>;
-status = "okay";
-dai-tdm-slot-width = <16>;
-dai-tdm-slot-num   = <0>;
-};
-tlv320aic3x_b: tlv320aic3x@19 {
-       #sound-dai-cells = <0>;
-compatible = "ti,tlv320aic3x";
-reg = <0x19>;
-status = "okay";
-dai-tdm-slot-width = <16>;
-dai-tdm-slot-num   = <2>;
-};
-tlv320aic3x_c: tlv320aic3x@1a {
-compatible = "ti,tlv320aic3x";
-reg = <0x1a>;
-status = "okay";
-dai-tdm-slot-width = <16>;
-dai-tdm-slot-num   = <4>;
-};
-tlv320aic3x_d: tlv320aic3x@1b {
-compatible = "ti,tlv320aic3x";
-reg = <0x1b>;
-status = "okay";
-dai-tdm-slot-width = <16>;
-dai-tdm-slot-num   = <6>;
-};
-};
-
-sound {
-     compatible = "simple-audio-card";
-     simple-audio-card,name = "puck audio";
-     // simple-audio-card,widgets=
-     // simple-audio-card,routing=
-     simple-audio-card,mclk-fs = <256>;
-     status="okay";
-     simple-audio-card,bitclock-master = <&tlv320aic3x_a>;
-     simple-audio-card,frame-master    = <&tlv320aic3x_a>;
-     simple-audio-card,dai-link@0 {
-          format = "left_j";
-  cpu {
-    sound-dai = <&mcasp0 0>;
-  };
-
-// *** Here's where I'm really confused -- this part doesn't seem to be
-supported to
-// have all the codecs on a single DAI.
-// The examples given  seem to be for different codec DAIs
-// sharing a single CPU DAI, but not used at the same time.
-
-  codec {
-    #sound-dai-cells = <0>;
-    sound-dai          = <
-    &tlv320aic3x_a
-    &tlv320aic3x_b
-    &tlv320aic3x_c
-      &tlv320aic3x_d
-    >;
-  };
-     };
-};
+On 9/8/2015 20:23, Mark Brown wrote:
+> On Tue, Sep 08, 2015 at 05:36:01PM +0800, Wu, Songjun wrote:
+>> On 9/8/2015 00:23, Mark Brown wrote:
+>
+>>> OK, so that's not actually what the code was doing - it had separate
+>>> enums for bass, mid and treble.  If you make this a single enum with all
+>>> the above options in it that seems like the best way of handling things.
+>
+>> A single enum seems not very friendly to user, there are tree EQs, bass,
+>> medium and treble.
+>> So I create tree enum controls to control three EQs.
+>> The 'get' function is replaced by 'classd_get_eq_enum', if user operates one
+>> of the tree EQ controls, the other two EQs will show 0 dB.
+>
+> If you want to have three controls you need to write code so that the
+> user can only change one of them from 0dB at once, returning an error
+> otherwise.  That was why it looked like they were three separate
+> controls.
+>
+If user operates two or tree controls at the same time, for my 
+understanding, these operations are serial actually in kernel, not 
+parallel, and the last operation will be effective. I only write the 
+function 'classd_get_eq_enum' to get the enumeration value, if user 
+changes one of controls, the other controls will get 0dB. Is my 
+understanding correct?
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
