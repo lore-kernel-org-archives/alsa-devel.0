@@ -1,15 +1,16 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: intel: Fix SSP port configuration after
-	RTD3 resume.
-Date: Wed,  9 Sep 2015 12:10:31 +0100
-Message-ID: <1441797031-4857-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH 1/2] ASoC: wm8960: correct the min gain value
+	of some PGA
+Date: Wed, 9 Sep 2015 19:29:10 +0800
+Message-ID: <22ae1784eb84bf45b23bb7095b7dea8a116c0c2c.1441798038.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E87526048D
- for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2015 13:10:47 +0200 (CEST)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bbn0103.outbound.protection.outlook.com [157.56.111.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59F092604AA
+ for <alsa-devel@alsa-project.org>; Wed,  9 Sep 2015 13:27:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,64 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the SSP port settings are being clobbered as part of the DSP
-RTD3 restore logic. make sure we save the correct params and restore them
-at resume. The FW sadly does not save SSP settings as part of the PM
-context.
+The min gain is the corresponding gain value when the register value is 0
+instead of 1, just correct it.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8960.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index f6efa9d..b27f25f 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -302,6 +302,10 @@ struct sst_hsw {
- 	struct sst_hsw_ipc_dx_reply dx;
- 	void *dx_context;
- 	dma_addr_t dx_context_paddr;
-+	enum sst_hsw_device_id dx_dev;
-+	enum sst_hsw_device_mclk dx_mclk;
-+	enum sst_hsw_device_mode dx_mode;
-+	u32 dx_clock_divider;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index e3b7d0c..6163474 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -211,11 +211,11 @@ static int wm8960_put_deemph(struct snd_kcontrol *kcontrol,
+ 	return wm8960_set_deemph(codec);
+ }
  
- 	/* boot */
- 	wait_queue_head_t boot_wait;
-@@ -1400,10 +1404,10 @@ int sst_hsw_device_set_config(struct sst_hsw *hsw,
+-static const DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 50, 0);
+-static const DECLARE_TLV_DB_SCALE(dac_tlv, -12700, 50, 1);
++static const DECLARE_TLV_DB_SCALE(adc_tlv, -9750, 50, 1);
++static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
+ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -2100, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
+-static const DECLARE_TLV_DB_SCALE(boost_tlv, -1200, 300, 1);
++static const DECLARE_TLV_DB_SCALE(boost_tlv, -1500, 300, 1);
  
- 	trace_ipc_request("set device config", dev);
- 
--	config.ssp_interface = dev;
--	config.clock_frequency = mclk;
--	config.mode = mode;
--	config.clock_divider = clock_divider;
-+	hsw->dx_dev = config.ssp_interface = dev;
-+	hsw->dx_mclk = config.clock_frequency = mclk;
-+	hsw->dx_mode = config.mode = mode;
-+	hsw->dx_clock_divider = config.clock_divider = clock_divider;
- 	if (mode == SST_HSW_DEVICE_TDM_CLOCK_MASTER)
- 		config.channels = 4;
- 	else
-@@ -1704,10 +1708,10 @@ int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw)
- 		return -EIO;
- 	}
- 
--	/* Set ADSP SSP port settings */
--	ret = sst_hsw_device_set_config(hsw, SST_HSW_DEVICE_SSP_0,
--					SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
--					SST_HSW_DEVICE_CLOCK_MASTER, 9);
-+	/* Set ADSP SSP port settings - sadly the FW does not store SSP port
-+	   settings as part of the PM context. */
-+	ret = sst_hsw_device_set_config(hsw, hsw->dx_dev, hsw->dx_mclk,
-+					hsw->dx_mode, hsw->dx_clock_divider);
- 	if (ret < 0)
- 		dev_err(dev, "error: SSP re-initialization failed\n");
- 
+ static const struct snd_kcontrol_new wm8960_snd_controls[] = {
+ SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
 -- 
-2.1.4
+1.9.1
