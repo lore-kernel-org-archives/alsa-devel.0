@@ -1,18 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: check return of of_property_read"
-	to the asoc tree
-Date: Thu, 10 Sep 2015 11:49:52 +0100
-Message-ID: <E1ZZzQO-00010a-Mv@finisterre>
-References: <1441871155-18240-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: Re: Missing return check of of_property_read_*()
+Date: Thu, 10 Sep 2015 11:54:50 +0100
+Message-ID: <20150910105450.GF20922@sirena.org.uk>
+References: <alpine.DEB.2.10.1509090954430.3157@heelroid>
+ <s5hfv2nd45t.wl-tiwai@suse.de>
+ <20150909155737.GB20922@sirena.org.uk>
+ <s5hvbbjbmzx.wl-tiwai@suse.de>
+ <20150909161919.GC20922@sirena.org.uk>
+ <s5hr3m7bls5.wl-tiwai@suse.de>
+ <20150910031022.GA28677@wfg-t540p.sh.intel.com>
+ <20150910032344.GA29391@wfg-t540p.sh.intel.com>
+ <s5h37ymet63.wl-tiwai@suse.de>
+ <20150910062432.GA3326@wfg-t540p.sh.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2262513318624144730=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CA4A2614D3
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:50:05 +0200 (CEST)
-In-Reply-To: <1441871155-18240-1-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E2E52614C4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:55:00 +0200 (CEST)
+In-Reply-To: <20150910062432.GA3326@wfg-t540p.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,102 +29,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sti: check return of of_property_read
+--===============2262513318624144730==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sDKAb4OeUBrWWL6P"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--sDKAb4OeUBrWWL6P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Sep 10, 2015 at 02:24:32PM +0800, Fengguang Wu wrote:
+> On Thu, Sep 10, 2015 at 07:32:04AM +0200, Takashi Iwai wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > So this made me wonder whether we have a way to take a glance through
+> > gathered compile warnings at once.  Are they archived and reachable?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Yes. Here are the active "may be used uninitialized" warnings under sound/:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> sound/core/pcm_lib.c:244: warning: 'curr_tstamp.tv_nsec' may be used uninitialized in this function
 
-Thanks,
-Mark
+Is there any way we can view the current status on line?
 
->From 3a0e27d84bb9abac5e39dc71706768a88c72cb71 Mon Sep 17 00:00:00 2001
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Thu, 10 Sep 2015 09:45:55 +0200
-Subject: [PATCH] ASoC: sti: check return of of_property_read
+--sDKAb4OeUBrWWL6P
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Add check on of_property_read to return error when
-DT required property is not defined.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sti/uniperif_player.c | 14 ++++++++++----
- sound/soc/sti/uniperif_reader.c |  6 +++++-
- 2 files changed, 15 insertions(+), 5 deletions(-)
+iQEcBAEBCAAGBQJV8WF2AAoJECTWi3JdVIfQSecH/i/3p3e84ucjh68kIS0XK3aU
+WcoKjfofhrrJ6oX9QZQuPWXq87wiWDCY3GFY1GCgvBYV6FyxIq7Ue8m4yChAajus
+kfXoqNDm+92OF162tkE3aZgfGnTCuOx9x7SGdMD4jqnu8lzu92trJKFPhiNpbTBc
+IFWVq1+B0VI1wdHHFXK2BuDfUv2JQV/jxHJf/kpn2QIQj1tJUgCR5Aq7Ie2xb5As
+KD5VNMZCLZ0cumfhd6GR96kHkKAkCy/FpZyKwDohOq0ULt2a8Q46if3mihZ+DG50
+8oMDMy0aiLIS8PlQSIBVzFDX2evdKa5GZfZcCjnG5g5A+rUZT4dSM4k3FMxoa/o=
+=mZuT
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index f6eefe1..843f037 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -989,8 +989,8 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	of_property_read_u32(pnode, "version", &player->ver);
--	if (player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
-+	if (of_property_read_u32(pnode, "version", &player->ver) ||
-+	    player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
- 		dev_err(dev, "Unknown uniperipheral version ");
- 		return -EINVAL;
- 	}
-@@ -998,10 +998,16 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
- 		info->underflow_enabled = 1;
- 
--	of_property_read_u32(pnode, "uniperiph-id", &info->id);
-+	if (of_property_read_u32(pnode, "uniperiph-id", &info->id)) {
-+		dev_err(dev, "uniperipheral id not defined");
-+		return -EINVAL;
-+	}
- 
- 	/* Read the device mode property */
--	of_property_read_string(pnode, "mode", &mode);
-+	if (of_property_read_string(pnode, "mode", &mode)) {
-+		dev_err(dev, "uniperipheral mode not defined");
-+		return -EINVAL;
-+	}
- 
- 	if (strcasecmp(mode, "hdmi") == 0)
- 		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index c502626..f791239 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -316,7 +316,11 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	of_property_read_u32(node, "version", &reader->ver);
-+	if (of_property_read_u32(node, "version", &reader->ver) ||
-+	    reader->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
-+		dev_err(&pdev->dev, "Unknown uniperipheral version ");
-+		return -EINVAL;
-+	}
- 
- 	/* Save the info structure */
- 	reader->info = info;
--- 
-2.5.0
+--sDKAb4OeUBrWWL6P--
+
+--===============2262513318624144730==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2262513318624144730==--
