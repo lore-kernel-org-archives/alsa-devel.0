@@ -1,26 +1,23 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: Missing return check of of_property_read_*()
-Date: Thu, 10 Sep 2015 19:17:55 +0800
-Message-ID: <20150910111755.GA15572@wfg-t540p.sh.intel.com>
-References: <s5hfv2nd45t.wl-tiwai@suse.de>
- <20150909155737.GB20922@sirena.org.uk>
- <s5hvbbjbmzx.wl-tiwai@suse.de>
- <20150909161919.GC20922@sirena.org.uk>
- <s5hr3m7bls5.wl-tiwai@suse.de>
- <20150910031022.GA28677@wfg-t540p.sh.intel.com>
- <20150910032344.GA29391@wfg-t540p.sh.intel.com>
- <s5h37ymet63.wl-tiwai@suse.de>
- <20150910062432.GA3326@wfg-t540p.sh.intel.com>
- <20150910105450.GF20922@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: wm8960: correct the min gain
+ value of some PGA
+Date: Thu, 10 Sep 2015 12:35:50 +0100
+Message-ID: <20150910113549.GA29426@ck-lbox>
+References: <22ae1784eb84bf45b23bb7095b7dea8a116c0c2c.1441798038.git.zidan.wang@freescale.com>
+ <20150909114954.GA30013@edi-sw-dsktp001.ad.cirrus.com>
+ <20150910011529.GA13451@shlinux2>
+ <20150910082420.GC3483@edi-sw-dsktp001.ad.cirrus.com>
+ <20150910105821.GG20922@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FC372614D6
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 13:17:59 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 087FA2614D6
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 13:58:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150910105450.GF20922@sirena.org.uk>
+In-Reply-To: <20150910105821.GG20922@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,24 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 10, 2015 at 11:54:50AM +0100, Mark Brown wrote:
-> On Thu, Sep 10, 2015 at 02:24:32PM +0800, Fengguang Wu wrote:
-> > On Thu, Sep 10, 2015 at 07:32:04AM +0200, Takashi Iwai wrote:
+On Thu, Sep 10, 2015 at 11:58:21AM +0100, Mark Brown wrote:
+> On Thu, Sep 10, 2015 at 09:24:20AM +0100, Charles Keepax wrote:
+> > On Thu, Sep 10, 2015 at 09:15:32AM +0800, Zidan Wang wrote:
 > 
-> > > So this made me wonder whether we have a way to take a glance through
-> > > gathered compile warnings at once.  Are they archived and reachable?
+> > > > > +static const DECLARE_TLV_DB_SCALE(adc_tlv, -9750, 50, 1);
+> > > > > +static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
 > 
-> > Yes. Here are the active "may be used uninitialized" warnings under sound/:
+> > > I think the min register value will corresponding to the min gain.
+> > > So value 0 will also have a gain value, although it's for digital mute.
 > 
-> > sound/core/pcm_lib.c:244: warning: 'curr_tstamp.tv_nsec' may be used uninitialized in this function
+> > > Refer to wm8962 codec driver, beep gain range is -90db~-6db, step in 6db,
+> > > but it define the beep gain like below:
+> > > static const DECLARE_TLV_DB_SCALE(beep_tlv, -9600, 600, 1);
 > 
-> Is there any way we can view the current status on line?
+> > I might have to defer to Mark on this one then, if it is normal
+> > to just use an additional gain value for mute in this type of
+> > situation then it is ok with me. But it doesn't seem like that
+> > would be a sensible thing, as you are asking for -97.5dB but
+> > that is not what you are getting which doesn't seem like the
+> > nicest interface.
+> 
+> The last value in the scale macro is a flag saying if the minimum value
+> is mute - if it's set to 1 userspace should know this is what's going
+> on.
 
-We don't have interactive web interfaces to query/browse things.
-Sorry!
+Ah sorry my bad, thanks.
 
-Regards,
-Fengguang
+In that case:
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
