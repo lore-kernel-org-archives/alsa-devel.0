@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Missing return check of of_property_read_*()
-Date: Thu, 10 Sep 2015 19:19:41 +0100
-Message-ID: <20150910181941.GJ20922@sirena.org.uk>
-References: <s5hlhcfd5az.wl-tiwai@suse.de>
- <20150909145158.GK9751@sirena.org.uk>
- <alpine.DEB.2.10.1509090954430.3157@heelroid>
- <s5hfv2nd45t.wl-tiwai@suse.de>
- <20150909155737.GB20922@sirena.org.uk>
- <s5hvbbjbmzx.wl-tiwai@suse.de>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: Multiple codecs on one sound card for
+	multi-channel sound card
+Date: Thu, 10 Sep 2015 11:26:17 -0700
+Message-ID: <CAG5mAdz4wygvK+OXpc3XPHyi=no+RAfyBrqzEwcfX_J=+sNV2A@mail.gmail.com>
+References: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2504250518492344729=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C61BD260672
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 20:19:52 +0200 (CEST)
-In-Reply-To: <s5hvbbjbmzx.wl-tiwai@suse.de>
+Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6528826067A
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 20:26:38 +0200 (CEST)
+Received: by ioiz6 with SMTP id z6so71012292ioi.2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 11:26:37 -0700 (PDT)
+In-Reply-To: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,57 +24,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Brian Austin <brian.austin@cirrus.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark Brown,
+    Looking back on my email notes, you helped me with this back in 2011
+with an old kernel version.  I wonder if mutlti-codec-on-single-DAI
+configuration is still unsupported by the ASOC core.  I don't see anything
+obvious.
 
---===============2504250518492344729==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zYo4Elh1vtcYNvbq"
-Content-Disposition: inline
+If I were to implement it 'properly', what's the right DTS format to go
+with?  Something like what I suggest below (i.e. in the simple-audio-card
+section, use multiple codecs in a single sound-dai?  If so, where should
+the tdm-slot & clocking information go?  In the codec DTS section itself,
+or in the sound-dai section?
 
-
---zYo4Elh1vtcYNvbq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Sep 09, 2015 at 06:01:22PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > It'll be because nobody is checking !OF ASoC configurations and paying
-> > attention to warnings - with !OF the functions are inline in the header
-> > and the compiler can tell nothing happens.
-
-> Yes, but non-OF ASoC gets more popular on x86 nowadays, so this should
-> be covered regularly, too.
-
-We should start getting some coverage for this from kernelci.org soon
-(and x86 allmodconfig with OF disabled).
-
---zYo4Elh1vtcYNvbq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV8cm8AAoJECTWi3JdVIfQRdUH/04WZ2VofJ6Lgqybo+jbSvze
-wqFY2ssKQlSKltsWfutplFgz5AWTvBOI5X7GN088ePGKzdYfkOoX9dqIbpo+SRCl
-jtBicKGwLwjMJ7dzRwpA+ax9uTjUT9hD24Km7uZZLlI8LN9XuUSsg23O578Alq58
-uAWkJAbiCva0lLXeCYStTeDmgiwzNzS9sxRh9HMJAxG2WneiHkAx+NLbMa3QjfZp
-IhREFGJ8lxqxhfOkRiISiQ5pARdNwqBHQF0Nf3qWiVGOz1KbZblEZ1fjt7z4Mfg/
-KhGqubTWUvb8/i4fCrIQzwq47+ndBpZILUQzMos7/5IuRIhCVAZpAesgxI/PNMY=
-=8ahD
------END PGP SIGNATURE-----
-
---zYo4Elh1vtcYNvbq--
-
---===============2504250518492344729==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks again,
+ -Caleb
 
 
---===============2504250518492344729==--
+
+On Tue, Sep 8, 2015 at 6:02 PM, Caleb Crome <caleb@crome.org> wrote:
+
+> Hi all,
+>    What's the current best practices to specify multiple codecs on one
+> sound card, with all codecs sharing a single TDM bus?
+>
+> I have a card with up to 32 TLV320AIC33 codecs on it.  For the moment, we
+> can limit the discussion to only 16 codecs, so we don't have to get extra
+> serializers involved...
+>
+> I currently have something like this in my am335x-boneblack.dts file:
+>
+> (i.e. attempting to set tdm slot width and num in the i2c codec)
+>
+> but it doesn't seem to be pickin up the fact that I want all the codecs
+> linked together as one.
+>
+> (FYI, the first codec, i.e. tlv32aic3x_a should be the master, and all
+> others including the CPU will be slaves).
+>
+> Thanks for any help!
+>
+> BTW, I'm happy to use whatever kernel will support me with the minimal
+> amount of effort!
+>
+> Sincerely,
+>   -Caleb
+>
+>
+> &i2c1 {
+> clock-frequency = <100000>;
+> status = "okay";
+> pinctrl-names = "default";
+> pinctrl-0 = <&i2c1_pins_default>;
+> status="okay";
+>
+> tlv320aic3x_a: tlv320aic3x@18 {
+>        #sound-dai-cells = <0>;
+> compatible = "ti,tlv320aic3x";
+> reg = <0x18>;
+> status = "okay";
+> dai-tdm-slot-width = <16>;
+> dai-tdm-slot-num   = <0>;
+> };
+> tlv320aic3x_b: tlv320aic3x@19 {
+>        #sound-dai-cells = <0>;
+> compatible = "ti,tlv320aic3x";
+> reg = <0x19>;
+> status = "okay";
+> dai-tdm-slot-width = <16>;
+> dai-tdm-slot-num   = <2>;
+> };
+> tlv320aic3x_c: tlv320aic3x@1a {
+> compatible = "ti,tlv320aic3x";
+> reg = <0x1a>;
+> status = "okay";
+> dai-tdm-slot-width = <16>;
+> dai-tdm-slot-num   = <4>;
+> };
+> tlv320aic3x_d: tlv320aic3x@1b {
+> compatible = "ti,tlv320aic3x";
+> reg = <0x1b>;
+> status = "okay";
+> dai-tdm-slot-width = <16>;
+> dai-tdm-slot-num   = <6>;
+> };
+> };
+>
+> sound {
+>      compatible = "simple-audio-card";
+>      simple-audio-card,name = "puck audio";
+>      // simple-audio-card,widgets=
+>      // simple-audio-card,routing=
+>      simple-audio-card,mclk-fs = <256>;
+>      status="okay";
+>      simple-audio-card,bitclock-master = <&tlv320aic3x_a>;
+>      simple-audio-card,frame-master    = <&tlv320aic3x_a>;
+>      simple-audio-card,dai-link@0 {
+>           format = "left_j";
+>   cpu {
+>     sound-dai = <&mcasp0 0>;
+>   };
+>
+> // *** Here's where I'm really confused -- this part doesn't seem to be
+> supported to
+> // have all the codecs on a single DAI.
+> // The examples given  seem to be for different codec DAIs
+> // sharing a single CPU DAI, but not used at the same time.
+>
+>   codec {
+>     #sound-dai-cells = <0>;
+>     sound-dai          = <
+>     &tlv320aic3x_a
+>     &tlv320aic3x_b
+>     &tlv320aic3x_c
+>       &tlv320aic3x_d
+>     >;
+>   };
+>      };
+> };
+>
+>
