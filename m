@@ -1,17 +1,21 @@
-From: "Piotr G." <pejotr@wp.pl>
-Subject: Re: [PATCH 1/1] sound/usb: Add Asus Xonar U7 Mixer -
- input	support
-Date: Thu, 10 Sep 2015 16:49:43 +0200
-Message-ID: <55F19887.6000000@wp.pl>
-References: <55B4929D.5030401@wp.pl>	<55B4938C.6080808@wp.pl>
- <s5hpp3dx0lb.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Missing return check of of_property_read_*()
+Date: Thu, 10 Sep 2015 19:19:41 +0100
+Message-ID: <20150910181941.GJ20922@sirena.org.uk>
+References: <s5hlhcfd5az.wl-tiwai@suse.de>
+ <20150909145158.GK9751@sirena.org.uk>
+ <alpine.DEB.2.10.1509090954430.3157@heelroid>
+ <s5hfv2nd45t.wl-tiwai@suse.de>
+ <20150909155737.GB20922@sirena.org.uk>
+ <s5hvbbjbmzx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090803040904000001070607"
+Content-Type: multipart/mixed; boundary="===============2504250518492344729=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 99D182612AD
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 16:49:48 +0200 (CEST)
-In-Reply-To: <s5hpp3dx0lb.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C61BD260672
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 20:19:52 +0200 (CEST)
+In-Reply-To: <s5hvbbjbmzx.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,270 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, =?windows-1252?Q?Johan_Rast=E9n?= <johan@oljud.se>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090803040904000001070607
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello Takashi,Johan
-My patches are unessesary since following last patch was applied to the 
-git:
-ALSA: usb-audio: Change internal PCM order
-
-Capture working but there are no volume sliders for Line-In Capture or
-Mic-In Capture (I can only toggle on off). Probably the RANGES are
-broken?. From ASUS Windows driver I can see following ranges:
-
-Master Volume: (Phisycal Knob on Asus)
-from 100 to 1 correspond 0dB to -70dB, 0 is -127dB
-Range from 1 to 100 -> 0dB to -70dB (logarythmic)
-
-Mic-In:
-from 100 to 1 correspond 30dB to -10dB, 0 is -192dB
-Range from 1 to 10 -> -10dB to 10dB (linear?)
-Range from 11 to 100 -> 10dB to 30dB (logarythmic)
-
-Line-In:
-from 100 to 1 correspond 0dB to -40dB, 0 is -192dB
-Range from 11 to 100 -> 10dB to 30dB (logarythmic)
-
-Actual Situation:
-Input Gain Pad Control - 3 steps [0 - 50 - 100]
-Double Slider. In Capture and Playback Categories, both of them are
-controlled in the same time.
-Controls Playback Volume only, Capture not.
-
-"Mic" and "Line" Switches [on/off]
-PCM Cature Source [Line/Mic]
-Electret Mic doesn't work. With all possible configurations - Silent.
-When I pluged Line level signal, I can record the signal without problems.
-PCM Capture Source [Line] - Line [on] Mic [off] - Sound
-PCM Capture Source [Line] - Line [on] Mic [on] - Sound
-PCM Capture Source [Line] - Line [off] Mic [off] - No Sound
-PCM Capture Source [Line] - Line [off] Mic [on] - No Sound
-The same with selected [Mic]. There is no Capture Volume control.
-
-PCM 1 [mute/on]
-I think this is SPDIF switch. It doesn't work. When I switch it on ->
-Blue Led on Xonar doesn't light up.
-
-I attached screen of alsamixer, usbmix from proc and my mixer_map from
-my old patch.
-I think there are is still bugs in parsing. Please point me how I can
-add manually Volume control for Capture?
-
-Piotr Gaska
-
-W dniu 2015-07-27 o 14:10, Takashi Iwai pisze:
-> On Sun, 26 Jul 2015 10:00:12 +0200,
-> Piotr G. wrote:
->> Hello,
->> This is my first patch to alsa-devel, and I'm not very skilled
->> programmer. From lsusb -vvv, I've draw Xonar U7 map with all IT OT FU CS
->> in mixer_map.c I don't know why the driver by default doesn't parse all
->> info correctly. With this patch you can see Line Switch and Mic Switch
->> in alsamixer. I can record my voice in Audacity with all supported bit
->> and sampling rates in Mono or Stereo
->> This is temporary solution. Please correct me if the patch is not
->> properly made.
->>
->>     What doesn't work:
->>     - Cannot change Capture Volume for Line/Mic. No mixer control in
->> alsamixer
->>     - Switching between Line/Mic doesn't work (Mute doesn't work)
->>     - SPDIF not tested
->>     As what I wrote at beginning I'm not skilled programmer so any help is
->>     aprreciated
->>
->>
->> proc-usbmixer -> cat /proc/asound/*/usbmix
->> usb.debug -> lsusb -vv (only Asus Xonar U7)
-> The changes in mixer_maps.c look good, but what's the reason for
-> uac2_audio_feature_info[]?  It seems adding "Control" suffix to each
-> entry, which doesn't look correct.
->
->
-> thanks,
->
-> Takashi
->
->
->> ---
->>     sound/usb/mixer.c      | 23 +++++++++++++++++++++--
->>     sound/usb/mixer_maps.c | 48
->> ++++++++++++++++++++++++++++++++++++++++++++++++
->>     2 files changed, 69 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
->> index 6b3acba..027d160 100644
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -818,6 +818,25 @@ static struct usb_feature_control_info
->> audio_feature_info[] = {
->>     	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN },
->>     };
->>
->> +static struct usb_feature_control_info uac2_audio_feature_info[] = {
->> +	/* UAC2 specific */
->> +	{ "Mute Control",		USB_MIXER_INV_BOOLEAN },
->> +	{ "Volume Control",		USB_MIXER_S16 },
->> +	{ "Bass Control",		USB_MIXER_S8 },
->> +	{ "Mid Control",		USB_MIXER_S8 },
->> +	{ "Treble Control",		USB_MIXER_S8 },
->> +	{ "Graphic Equalizer Control",	USB_MIXER_S8 },
->> +	{ "Automatic Gain Control",	USB_MIXER_BOOLEAN },
->> +	{ "Delay Control",		USB_MIXER_S16 }, /* FIXME: U32 in UAC2 */
->> +	{ "Bass Boost Control",		USB_MIXER_BOOLEAN },
->> +	{ "Loudness Control",		USB_MIXER_BOOLEAN },
->> +	{ "Input Gain Control",		USB_MIXER_S16 },
->> +	{ "Input Gain Pad Control",	USB_MIXER_S16 },
->> +	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN },
->> +	{ "Underflow Control",		USB_MIXER_BOOLEAN },
->> +	{ "Overflow Control",		USB_MIXER_BOOLEAN },
->> +};
->> +
->>     /* private_free callback */
->>     void snd_usb_mixer_elem_free(struct snd_kcontrol *kctl)
->>     {
->> @@ -1240,7 +1259,7 @@ static void build_feature_ctl(struct mixer_build
->> *state, void *raw_desc,
->>     	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, unitid);
->>     	cval->control = control;
->>     	cval->cmask = ctl_mask;
->> -	cval->val_type = audio_feature_info[control-1].type;
->> +	cval->val_type = uac2_audio_feature_info[control-1].type;
->>     	if (ctl_mask == 0) {
->>     		cval->channels = 1;	/* master channel */
->>     		cval->master_readonly = readonly_mask;
->> @@ -1318,7 +1337,7 @@ static void build_feature_ctl(struct mixer_build
->> *state, void *raw_desc,
->>     		break;
->>     	default:
->>     		if (!len)
->> -			strlcpy(kctl->id.name, audio_feature_info[control-1].name,
->> +			strlcpy(kctl->id.name, uac2_audio_feature_info[control-1].name,
->>     				sizeof(kctl->id.name));
->>     		break;
->>     	}
->> diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
->> index e5000da..07f510e 100644
->> --- a/sound/usb/mixer_maps.c
->> +++ b/sound/usb/mixer_maps.c
->> @@ -341,6 +341,48 @@ static const struct usbmix_name_map
->> scms_usb3318_map[] = {
->>     	{ 0 }
->>     };
->>
->> +/* ASUS Xonar U7 - USB CM6632A (ADC CS5361 // DAC Dolby CS4362A // DAC
->> Stereo CS4398 */
->> +/* Topology:
->> +
->> +USB_IN[1]------->FU[13]-----------CS[18]--->Spk_OUT[7]
->> +
->> +Dig_IN[2]------->FU[14]-----------CS[19]--->Dig_OUT[8]
->> +
->> +Mic_IN[4]------->FU[16]---+
->> +                          SU[20]--CS[22]--->USB_OUT[11]
->> +Line_IN[5]------>FU[17]---+
->> +
->> +*/
->> +
->> +static const struct usbmix_name_map xonar_u7_map[] = {
->> +	/* 1: IT PCM  Analog (USB Streaming) */
->> +	/* 2: IT PCM2 Digital (USB Streaming) */
->> +	/* 4: IT Microphone */
->> +	/* 5: IT Line IN */
->> +	/* 7: OT Speaker */
->> +	/* 8: OT SPDIF */
->> +	/* 11 OT Capture Playback (USB Streaming) */
->> +	{ 13, "Speaker Playback" },	/* 13 FU Speaker Out Mute/Volume */
->> +	{ 14, "IEC958 Playback" },	/* 14 FU SPDIF Out Mute/Volume */
->> +	{ 16, "Mic Capture" }, 		/* 16 FU Capture Mic-in Mute/Volume */
->> +	{ 17, "Line Capture" }, 	/* 17 FU Capture Line-in Mute/Volume */
->> +	/* 18 CS for 1 PCM (USB Streaming) Clock Source */
->> +	/* 19 CS for 2 SPDIF (USB Streaming) Clock Source */
->> +	{ 20, "Capture Source" }, 	/* 20 SU Capture Source Selector */
->> +	/* 22 CS Line-in and Mic-in Clock Source */
->> +	{ 0 }
->> +};
->> +
->> +static struct usbmix_selector_map xonar_u7_selectors[] = {
->> +{
->> +                .id = 20,
->> +                .count = 2,
->> +                .names = (const char*[]) {"Mic", "Line"}
->> +        },
->> +        { 0 } /* terminator */
->> +
->> +};
->> +
->>     /*
->>      * Control map entries
->>      */
->> @@ -451,6 +493,12 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
->>     		.id = USB_ID(0x25c4, 0x0003),
->>     		.map = scms_usb3318_map,
->>     	},
->> +	{
->> +		/* Asus Xonar U7 */
->> +		.id = USB_ID(0x1043, 0x857c),
->> +		.map = xonar_u7_map,
->> +		.selector_map = xonar_u7_selectors,
->> +	},
->>     	{ 0 } /* terminator */
->>     };
->>
->> -- 
->> 2.3.6
->>
+--===============2504250518492344729==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zYo4Elh1vtcYNvbq"
+Content-Disposition: inline
 
 
---------------090803040904000001070607
-Content-Type: text/plain; charset=windows-1250;
- name="usbmixer"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="usbmixer"
+--zYo4Elh1vtcYNvbq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-USB Mixer: usb_id=0x1043857c, ctrlif=0, ctlerr=0
-Card: ASUS Xonar U7 at usb-0000:00:13.2-5, high speed
-  Unit: 13
-    Control: name="Input Gain Pad Control", index=0
-    Info: id=13, control=12, cmask=0x3, channels=2, type="S16"
-    Volume: min=-3072, max=0, dBmin=-1200, dBmax=0
-  Unit: 13
-    Control: name="PCM Playback Volume", index=0
-    Info: id=13, control=2, cmask=0xff, channels=8, type="S16"
-    Volume: min=-32512, max=0, dBmin=-12700, dBmax=0
-  Unit: 13
-    Control: name="PCM Playback Switch", index=0
-    Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 14
-    Control: name="PCM Playback Switch", index=1
-    Info: id=14, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 16
-    Control: name="Mic Capture Switch", index=0
-    Info: id=16, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 17
-    Control: name="Line Capture Switch", index=0
-    Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 20
-    Control: name="PCM Capture Source", index=0
-    Info: id=20, control=1, cmask=0x0, channels=1, type="U8"
-    Volume: min=1, max=2, dBmin=0, dBmax=0
+On Wed, Sep 09, 2015 at 06:01:22PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
---------------090803040904000001070607
+> > It'll be because nobody is checking !OF ASoC configurations and paying
+> > attention to warnings - with !OF the functions are inline in the header
+> > and the compiler can tell nothing happens.
+
+> Yes, but non-OF ASoC gets more popular on x86 nowadays, so this should
+> be covered regularly, too.
+
+We should start getting some coverage for this from kernelci.org soon
+(and x86 allmodconfig with OF disabled).
+
+--zYo4Elh1vtcYNvbq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV8cm8AAoJECTWi3JdVIfQRdUH/04WZ2VofJ6Lgqybo+jbSvze
+wqFY2ssKQlSKltsWfutplFgz5AWTvBOI5X7GN088ePGKzdYfkOoX9dqIbpo+SRCl
+jtBicKGwLwjMJ7dzRwpA+ax9uTjUT9hD24Km7uZZLlI8LN9XuUSsg23O578Alq58
+uAWkJAbiCva0lLXeCYStTeDmgiwzNzS9sxRh9HMJAxG2WneiHkAx+NLbMa3QjfZp
+IhREFGJ8lxqxhfOkRiISiQ5pARdNwqBHQF0Nf3qWiVGOz1KbZblEZ1fjt7z4Mfg/
+KhGqubTWUvb8/i4fCrIQzwq47+ndBpZILUQzMos7/5IuRIhCVAZpAesgxI/PNMY=
+=8ahD
+-----END PGP SIGNATURE-----
+
+--zYo4Elh1vtcYNvbq--
+
+--===============2504250518492344729==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------090803040904000001070607--
+--===============2504250518492344729==--
