@@ -1,52 +1,85 @@
-From: Nikesh <noswal@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: add kcontrol to switch regulator to
- regulated/bypass state
-Date: Thu, 10 Sep 2015 11:13:42 +0100
-Message-ID: <55F157D6.5000307@opensource.wolfsonmicro.com>
-References: <1441707249-11259-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20150908132247.GD9751@sirena.org.uk>
-Reply-To: <nikesh@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: make dapm cache search depth
+	configurable
+Date: Thu, 10 Sep 2015 11:31:35 +0100
+Message-ID: <20150910103134.GE20922@sirena.org.uk>
+References: <1441707097-11200-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+ <20150908104241.GA9751@sirena.org.uk>
+ <55F1509A.4040303@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150908132247.GD9751@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Nikesh.Oswal@cirrus.com
+Content-Type: multipart/mixed; boundary="===============6719290087616407864=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B97F2614A1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:31:50 +0200 (CEST)
+In-Reply-To: <55F1509A.4040303@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nikesh <noswal@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, Nikesh.Oswal@cirrus.com, linux-kernel@vger.kernel.org, Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Thanks for your response. The problem we had is the dapm is holding an 
-instance of the regulator and we wanted to control that instance based 
-on use-case. But I understand your point that we should not be exposing 
-regulators to userspace but manage it in the driver itself..will have a 
-re-think
+--===============6719290087616407864==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
+Content-Disposition: inline
 
-Thanks,
-Nikesh
 
-On 08/09/15 14:22, Mark Brown wrote:
-> On Tue, Sep 08, 2015 at 11:14:09AM +0100, Nikesh Oswal wrote:
->> When regulator is defined with SND_SOC_DAPM_REGULATOR_CONTROL_BYPASS
->> flag, then a kcontrol will be created which can be used to switch
->> regulator to regulated/bypass state. This will help to control the
->> behaviour of the regulator based on a usecase. For example voice call
->> may need a regulated voltage to acheive higher quality whereas voice
->> trigger may need bypass voltage so as to save on power.
-> This is really not a good idea, moving a regulator from regulated to
-> bypass without coordination with the driver is a recipie for bugs at
-> best and physical damage at worst.  It's something that should be being
-> done by the device driver based on the current state of the device, the
-> general model is that we always drive to the lowest power state possible
-> based on what the device is currently doing.  If the device is set up to
-> do something that can use an unregulated supply then it should put the
-> supply into bypass mode without any help from userspace.
->
-> As I think we went through the last time you submitted code to the core
-> it is very important that we have coherent and safe abstractions that
-> result in code which does what it says.  The code in the core has to
-> work coherently for everyone, just randomly punching holes through
-> abstractions for system specific hacks from userspace is not going to do
-> that.
+--ILuaRSyQpoVaJ1HG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 10, 2015 at 10:42:50AM +0100, Nikesh wrote:
+> Hi Mark,
+
+As I'm fairly sure I've had to tell you before don't top post.  This
+means that when someone sees something like this:
+
+> The reason I though this will be usefull is as below:
+
+while reading they know what the "this" you are talking about is.
+
+> the widgets in wm5110_dapm_widgets[]) as defined in this macro. But if you
+> notice the way DSP widgets are created they use a WM_ADSP2 macro which
+> creates a preloader widget for every DSP widget and we want to skip past
+> this preloader widget when doing a cache search so increasing the cache
+> search depth helps here.
+
+Why is the solution to this problem to add device specific tuning?  Is
+this extremely expensive so no other device would want it?
+
+--ILuaRSyQpoVaJ1HG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV8Vv9AAoJECTWi3JdVIfQmYYH/25xD6KbbF8opYgRUDKwyRPI
+wyZhpIRB+ktEMBno8y+LxEMYWOblwyj0cjM+aAG4gRRa7C/ObxlKySM0eflr05Li
+xuoWEBps9EpTKLq3o0t7m1LTHkMfL/Uvi7tTQcn2wTmQSB+YA+mHU8rXmNpMIHQY
+0Gj8GXwxVUyWJ9QojoAnNBPnHBwiRkTOSx0JBudufZZl8j1iXM797UYtSJnNIBpN
+Iz9WYFgtHHqYIvZSk+B10bao1B95+Ss6hzDbIzAGmFmnEEThe5ipX91f9oaHQvo9
+fhl2pYOALp4+Sr0QznKprdD/h8gqdUSUq2+nTuAdQZUJ/qtEyng9feFS3g3l7p0=
+=ssx5
+-----END PGP SIGNATURE-----
+
+--ILuaRSyQpoVaJ1HG--
+
+--===============6719290087616407864==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6719290087616407864==--
