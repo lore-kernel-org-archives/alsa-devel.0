@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: make dapm cache search depth
-	configurable
-Date: Thu, 10 Sep 2015 11:31:35 +0100
-Message-ID: <20150910103134.GE20922@sirena.org.uk>
-References: <1441707097-11200-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20150908104241.GA9751@sirena.org.uk>
- <55F1509A.4040303@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: intel: Fix SSP port configuration after
+	RTD3 resume." to the asoc tree
+Date: Thu, 10 Sep 2015 11:49:54 +0100
+Message-ID: <E1ZZzQQ-000115-EN@finisterre>
+References: <1441797031-4857-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6719290087616407864=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B97F2614A1
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:31:50 +0200 (CEST)
-In-Reply-To: <55F1509A.4040303@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 540262614C4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:50:03 +0200 (CEST)
+In-Reply-To: <1441797031-4857-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nikesh <noswal@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, Nikesh.Oswal@cirrus.com, linux-kernel@vger.kernel.org, Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6719290087616407864==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
-Content-Disposition: inline
+   ASoC: intel: Fix SSP port configuration after RTD3 resume.
 
+has been applied to the asoc tree at
 
---ILuaRSyQpoVaJ1HG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Sep 10, 2015 at 10:42:50AM +0100, Nikesh wrote:
-> Hi Mark,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-As I'm fairly sure I've had to tell you before don't top post.  This
-means that when someone sees something like this:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The reason I though this will be usefull is as below:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-while reading they know what the "this" you are talking about is.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> the widgets in wm5110_dapm_widgets[]) as defined in this macro. But if you
-> notice the way DSP widgets are created they use a WM_ADSP2 macro which
-> creates a preloader widget for every DSP widget and we want to skip past
-> this preloader widget when doing a cache search so increasing the cache
-> search depth helps here.
+Thanks,
+Mark
 
-Why is the solution to this problem to add device specific tuning?  Is
-this extremely expensive so no other device would want it?
+>From f1ec5ec7a94ba8138f9cbdc1e9e3b03aee29c4df Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Wed, 9 Sep 2015 12:10:31 +0100
+Subject: [PATCH] ASoC: intel: Fix SSP port configuration after RTD3 resume.
 
---ILuaRSyQpoVaJ1HG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Currently the SSP port settings are being clobbered as part of the DSP
+RTD3 restore logic. make sure we save the correct params and restore them
+at resume. The FW sadly does not save SSP settings as part of the PM
+context.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-iQEcBAEBCAAGBQJV8Vv9AAoJECTWi3JdVIfQmYYH/25xD6KbbF8opYgRUDKwyRPI
-wyZhpIRB+ktEMBno8y+LxEMYWOblwyj0cjM+aAG4gRRa7C/ObxlKySM0eflr05Li
-xuoWEBps9EpTKLq3o0t7m1LTHkMfL/Uvi7tTQcn2wTmQSB+YA+mHU8rXmNpMIHQY
-0Gj8GXwxVUyWJ9QojoAnNBPnHBwiRkTOSx0JBudufZZl8j1iXM797UYtSJnNIBpN
-Iz9WYFgtHHqYIvZSk+B10bao1B95+Ss6hzDbIzAGmFmnEEThe5ipX91f9oaHQvo9
-fhl2pYOALp4+Sr0QznKprdD/h8gqdUSUq2+nTuAdQZUJ/qtEyng9feFS3g3l7p0=
-=ssx5
------END PGP SIGNATURE-----
-
---ILuaRSyQpoVaJ1HG--
-
---===============6719290087616407864==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6719290087616407864==--
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index f95f271..5bc9855 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -302,6 +302,10 @@ struct sst_hsw {
+ 	struct sst_hsw_ipc_dx_reply dx;
+ 	void *dx_context;
+ 	dma_addr_t dx_context_paddr;
++	enum sst_hsw_device_id dx_dev;
++	enum sst_hsw_device_mclk dx_mclk;
++	enum sst_hsw_device_mode dx_mode;
++	u32 dx_clock_divider;
+ 
+ 	/* boot */
+ 	wait_queue_head_t boot_wait;
+@@ -1400,10 +1404,10 @@ int sst_hsw_device_set_config(struct sst_hsw *hsw,
+ 
+ 	trace_ipc_request("set device config", dev);
+ 
+-	config.ssp_interface = dev;
+-	config.clock_frequency = mclk;
+-	config.mode = mode;
+-	config.clock_divider = clock_divider;
++	hsw->dx_dev = config.ssp_interface = dev;
++	hsw->dx_mclk = config.clock_frequency = mclk;
++	hsw->dx_mode = config.mode = mode;
++	hsw->dx_clock_divider = config.clock_divider = clock_divider;
+ 	if (mode == SST_HSW_DEVICE_TDM_CLOCK_MASTER)
+ 		config.channels = 4;
+ 	else
+@@ -1704,10 +1708,10 @@ int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw)
+ 		return -EIO;
+ 	}
+ 
+-	/* Set ADSP SSP port settings */
+-	ret = sst_hsw_device_set_config(hsw, SST_HSW_DEVICE_SSP_0,
+-					SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
+-					SST_HSW_DEVICE_CLOCK_MASTER, 9);
++	/* Set ADSP SSP port settings - sadly the FW does not store SSP port
++	   settings as part of the PM context. */
++	ret = sst_hsw_device_set_config(hsw, hsw->dx_dev, hsw->dx_mclk,
++					hsw->dx_mode, hsw->dx_clock_divider);
+ 	if (ret < 0)
+ 		dev_err(dev, "error: SSP re-initialization failed\n");
+ 
+-- 
+2.5.0
