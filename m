@@ -1,21 +1,24 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: wm8960: correct gain value for
- input PGA and add microphone PGA
-Date: Thu, 10 Sep 2015 09:20:26 +0800
-Message-ID: <20150910012025.GB13451@shlinux2>
-References: <22ae1784eb84bf45b23bb7095b7dea8a116c0c2c.1441798038.git.zidan.wang@freescale.com>
- <4aff33dcdc441f7c7a2612fef80c099aafec1e1d.1441798038.git.zidan.wang@freescale.com>
- <20150909120206.GB30013@edi-sw-dsktp001.ad.cirrus.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: Missing return check of of_property_read_*()
+Date: Thu, 10 Sep 2015 11:10:22 +0800
+Message-ID: <20150910031022.GA28677@wfg-t540p.sh.intel.com>
+References: <s5hlhcfd5az.wl-tiwai@suse.de>
+ <20150909145158.GK9751@sirena.org.uk>
+ <alpine.DEB.2.10.1509090954430.3157@heelroid>
+ <s5hfv2nd45t.wl-tiwai@suse.de>
+ <20150909155737.GB20922@sirena.org.uk>
+ <s5hvbbjbmzx.wl-tiwai@suse.de>
+ <20150909161919.GC20922@sirena.org.uk>
+ <s5hr3m7bls5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0118.outbound.protection.outlook.com [157.56.110.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 73C28260A5B
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 04:32:44 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5911B260A5B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 05:10:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150909120206.GB30013@edi-sw-dsktp001.ad.cirrus.com>
+In-Reply-To: <s5hr3m7bls5.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,89 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 09, 2015 at 01:02:06PM +0100, Charles Keepax wrote:
-> On Wed, Sep 09, 2015 at 07:29:11PM +0800, Zidan Wang wrote:
-> > The input PGAs have a gain range from -17.25dB to +30dB in 0.75dB steps.
-> > 
-> > The boost stage can provide additional gain. For line inputs, -12dB to
-> > +6dB gain is available on the boost mixer. For micphone inputs, it can
-> > provide up to +29dB additional gain from the microphone PGA.
-> > 
-> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > ---
-> >  sound/soc/codecs/wm8960.c | 22 ++++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-> > index 6163474..6975390 100644
-> > --- a/sound/soc/codecs/wm8960.c
-> > +++ b/sound/soc/codecs/wm8960.c
-> > @@ -212,27 +212,37 @@ static int wm8960_put_deemph(struct snd_kcontrol *kcontrol,
-> >  }
-> >  
-> >  static const DECLARE_TLV_DB_SCALE(adc_tlv, -9750, 50, 1);
-> > +static const DECLARE_TLV_DB_SCALE(inpga_tlv, -1725, 75, 0);
-> >  static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
-> >  static const DECLARE_TLV_DB_SCALE(bypass_tlv, -2100, 300, 0);
-> >  static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
-> > -static const DECLARE_TLV_DB_SCALE(boost_tlv, -1500, 300, 1);
-> > +static const DECLARE_TLV_DB_SCALE(lineinboost_tlv, -1500, 300, 1);
-> > +static const unsigned int micboost_tlv[] = {
-> > +	TLV_DB_RANGE_HEAD(2),
-> > +	0, 1, TLV_DB_SCALE_ITEM(0, 1300, 0),
-> > +	2, 3, TLV_DB_SCALE_ITEM(2000, 900, 0),
-> > +};
-> >  
-> >  static const struct snd_kcontrol_new wm8960_snd_controls[] = {
-> >  SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
-> > -		 0, 63, 0, adc_tlv),
-> > +		 0, 63, 0, inpga_tlv),
-> 
-> This would make adc_tlv unused so you should probably remove it.
-> 
-> Although looking at this, it does looks a bit to me like the
-> registers are just specified wrong here and this was intended to
-> be the ADC volumes rather than the PGA volumes. In which case the
-> current TLV would be correct, the registers should be correct and
-> a new control should be added if you need to use the PGA volume.
-> 
-> Thanks,
-> Charles
-> 
-
-adc_tlv is used for "ADC PCM Capture Volume", so i can't remove it.
-SOC_DOUBLE_R_TLV("ADC PCM Capture Volume", WM8960_LADC, WM8960_RADC,
-        0, 255, 0, adc_tlv),
-
-Best Regards,
-Zidan Wang
-> >  SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
-> >  	6, 1, 0),
-> >  SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
-> >  	7, 1, 0),
-> >  
-> >  SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
-> > -	       WM8960_INBMIX1, 4, 7, 0, boost_tlv),
-> > +	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
-> >  SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
-> > -	       WM8960_INBMIX1, 1, 7, 0, boost_tlv),
-> > +	       WM8960_INBMIX1, 1, 7, 0, lineinboost_tlv),
-> >  SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
-> > -	       WM8960_INBMIX2, 4, 7, 0, boost_tlv),
-> > +	       WM8960_INBMIX2, 4, 7, 0, lineinboost_tlv),
-> >  SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
-> > -	       WM8960_INBMIX2, 1, 7, 0, boost_tlv),
-> > +	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
-> > +SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
-> > +		WM8960_RINPATH, 4, 4, 0, micboost_tlv),
-> > +SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT1 Volume",
-> > +		WM8960_LINPATH, 4, 4, 0, micboost_tlv),
-> >  
-> >  SOC_DOUBLE_R_TLV("Playback Volume", WM8960_LDAC, WM8960_RDAC,
-> >  		 0, 255, 0, dac_tlv),
-> > -- 
-> > 1.9.1
+SGkgVGFrYXNoaSwKCj4gRmVuZ2d1YW5nLCB3ZSd2ZSBiZWVuIGRpc2N1c3NpbmcgYWJvdXQgdGhl
+IGNvbXBpbGUgd2FybmluZ3MgdGhhdAo+IHdlcmVuJ3QgY2F1Z2h0IGJ5IDBkYXlzLiAgSXQgc2Vl
+bXMgdGhhdCBpdCdzIHRyaWdnZXJlZCBieSAhQ09ORklHX09GCj4gYnV0IHdpdGggQ09ORklHX0NP
+TVBJTEVfVEVTVD15LiAgVGhlbiBJIGdvdCB3YXJuaW5ncyBsaWtlOgo+IAo+IHNvdW5kL3NvYy9j
+b2RlY3MvY3MzNWwzMi5jOiBJbiBmdW5jdGlvbiDigJhjczM1bDMyX2kyY19wcm9iZeKAmToKPiBz
+b3VuZC9zb2MvY29kZWNzL2NzMzVsMzIuYzoyNzg6Mjogd2FybmluZzog4oCYdmFs4oCZIG1heSBi
+ZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdtYXliZS11bmluaXRpYWxp
+emVkXQo+ICAgc3dpdGNoICh2YWwpIHsKPiAgIF4KPiBzb3VuZC9zb2MvY29kZWNzL2NzMzVsMzIu
+YzoyNzI6MTU6IG5vdGU6IOKAmHZhbOKAmSB3YXMgZGVjbGFyZWQgaGVyZQo+ICAgdW5zaWduZWQg
+aW50IHZhbDsKPiAgICAgICAgICAgICAgICBeCj4gCj4gVGhlIGFib3ZlIHdhcyB3aXRoIGdjYy01
+LjEuMSwgYnV0IExhcnMgdG9sZCB0aGF0IGhlIHNhdyBzdWNoIGEgd2FybmluZwo+IHdpdGggZ2Nj
+LTQuOSwgdG9vLgo+IAo+IENvdWxkIHlvdSBhZGQgdGhpcyBraW5kIG9mIGtjb25maWcgaW4geW91
+ciB0ZXN0PwoKSXQncyBjb3ZlcmVkIHRocm91Z2ggdGhlIGxvdHMgb2YgcmFuZGNvbmZpZyB0ZXN0
+cy4gSG93ZXZlciB0aGUgcHJvYmxlbQppcywgdGhleSBhcmUgcHJldHR5IG9sZCB3YXJuaW5ncyBh
+bmQgMGRheSBpZ25vcmVzIG9sZCB3YXJuaW5ncyBiZWNhdXNlCm9sZCB3YXJuaW5ncyBtYXkgd2Vs
+bCBiZSBpbnRlbnNpb25hbGx5IGlnbm9yZWQgYnkgcGVvcGxlLiBPbiB0aGUKY29udHJhc3QsIGJ1
+aWxkIGVycm9ycyBjYW4gYmUgcmUtcmVwb3J0ZWQgaWYgcmVtYWluIHVuZml4ZWQgZm9yIGxvbmcg
+dGltZS4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
