@@ -1,121 +1,88 @@
-From: libin.yang@intel.com
-Subject: [PATCH] drm/i915: set proper N/CTS in modeset
-Date: Thu, 10 Sep 2015 15:29:45 +0800
-Message-ID: <1441870185-128395-1-git-send-email-libin.yang@intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH V2 1/1] ASoC: sti: check return of
+	of_property_read
+Date: Thu, 10 Sep 2015 09:45:55 +0200
+Message-ID: <1441871155-18240-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, jani.nikula@linux.intel.com, ville.syrjala@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97858260502
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 09:52:48 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpXaGVuIG1vZGVzZXQgb2Nj
-dXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKc3BlaWNhbCB2YWx1ZXMs
-IHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBpZiBhdWRpbwppcyBwbGF5aW5nLgoK
-U2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Ci0tLQogZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDU2ICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tCiBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oICAgICAgIHwg
-MTEgKysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgNTggaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwppbmRleCBlM2MzMmNlLi5hMTJiZjU3
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCisrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKQEAgLTEyOCw2ICsxMjgsMjAgQEAgc3Rh
-dGljIGludCBhdWRpb19jb25maWdfZ2V0X24oY29uc3Qgc3RydWN0IGRybV9kaXNwbGF5X21vZGUg
-Km1vZGUsIGludCByYXRlKQogCXJldHVybiAwOwogfQogCitzdGF0aWMgdWludDMyX3QgYXVkaW9f
-Y29uZmlnX3NldHVwX25fcmVnKGludCBuLCB1aW50MzJfdCB2YWwpCit7CisJaW50IG5fbG93LCBu
-X3VwOworCXVpbnQzMl90IHRtcCA9IHZhbDsKKworCW5fbG93ID0gbiAmIDB4ZmZmOworCW5fdXAg
-PSAobiA+PiAxMikgJiAweGZmOworCXRtcCAmPSB+KEFVRF9DT05GSUdfVVBQRVJfTl9NQVNLIHwg
-QVVEX0NPTkZJR19MT1dFUl9OX01BU0spOworCXRtcCB8PSAoKG5fdXAgPDwgQVVEX0NPTkZJR19V
-UFBFUl9OX1NISUZUKSB8CisJCQkobl9sb3cgPDwgQVVEX0NPTkZJR19MT1dFUl9OX1NISUZUKSB8
-CisJCQlBVURfQ09ORklHX05fUFJPR19FTkFCTEUpOworCXJldHVybiB0bXA7Cit9CisKIC8qIGNo
-ZWNrIHdoZXRoZXIgTi9DVFMvTSBuZWVkIGJlIHNldCBtYW51YWxseSAqLwogc3RhdGljIGJvb2wg
-YXVkaW9fcmF0ZV9uZWVkX3Byb2coc3RydWN0IGludGVsX2NydGMgKmNydGMsCiAJCQkJCXN0cnVj
-dCBkcm1fZGlzcGxheV9tb2RlICptb2RlKQpAQCAtMjYyLDkgKzI3NiwxNCBAQCBzdGF0aWMgdm9p
-ZCBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3Is
-CiAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gY29ubmVjdG9yLT5kZXYtPmRl
-dl9wcml2YXRlOwogCXN0cnVjdCBpbnRlbF9jcnRjICppbnRlbF9jcnRjID0gdG9faW50ZWxfY3J0
-YyhlbmNvZGVyLT5iYXNlLmNydGMpOwogCWVudW0gcGlwZSBwaXBlID0gaW50ZWxfY3J0Yy0+cGlw
-ZTsKKwlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFjb21wID0gZGV2X3ByaXYtPmF1ZGlv
-X2NvbXBvbmVudDsKIAljb25zdCB1aW50OF90ICplbGQgPSBjb25uZWN0b3ItPmVsZDsKKwlzdHJ1
-Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICppbnRlbF9kaWdfcG9ydCA9CisJCWVuY190b19kaWdfcG9y
-dCgmZW5jb2Rlci0+YmFzZSk7CisJZW51bSBwb3J0IHBvcnQgPSBpbnRlbF9kaWdfcG9ydC0+cG9y
-dDsKIAl1aW50MzJfdCB0bXA7CiAJaW50IGxlbiwgaTsKKwlpbnQgbiwgcmF0ZTsKIAogCURSTV9E
-RUJVR19LTVMoIkVuYWJsZSBhdWRpbyBjb2RlYyBvbiBwaXBlICVjLCAldSBieXRlcyBFTERcbiIs
-CiAJCSAgICAgIHBpcGVfbmFtZShwaXBlKSwgZHJtX2VsZF9zaXplKGVsZCkpOwpAQCAtMzAyLDEy
-ICszMjEsMjkgQEAgc3RhdGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJt
-X2Nvbm5lY3RvciAqY29ubmVjdG9yLAogCS8qIEVuYWJsZSB0aW1lc3RhbXBzICovCiAJdG1wID0g
-STkxNV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKIAl0bXAgJj0gfkFVRF9DT05GSUdfTl9WQUxV
-RV9JTkRFWDsKLQl0bXAgJj0gfkFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKIAl0bXAgJj0gfkFV
-RF9DT05GSUdfUElYRUxfQ0xPQ0tfSERNSV9NQVNLOwogCWlmIChpbnRlbF9waXBlX2hhc190eXBl
-KGludGVsX2NydGMsIElOVEVMX09VVFBVVF9ESVNQTEFZUE9SVCkpCiAJCXRtcCB8PSBBVURfQ09O
-RklHX05fVkFMVUVfSU5ERVg7CiAJZWxzZQogCQl0bXAgfD0gYXVkaW9fY29uZmlnX2hkbWlfcGl4
-ZWxfY2xvY2sobW9kZSk7CisKKwl0bXAgJj0gfkFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKKwlp
-ZiAoYXVkaW9fcmF0ZV9uZWVkX3Byb2coaW50ZWxfY3J0YywgbW9kZSkpIHsKKwkJaWYgKCFhY29t
-cCkKKwkJCXJhdGUgPSAwOworCQllbHNlIGlmIChwb3J0ID49IFBPUlRfQSAmJiBwb3J0IDw9IFBP
-UlRfRSkKKwkJCXJhdGUgPSBhY29tcC0+YXVkX3NhbXBsZV9yYXRlW3BvcnRdOworCQllbHNlIHsK
-KwkJCURSTV9FUlJPUigiaW52YWxpZCBwb3J0OiAlZFxuIiwgcG9ydCk7CisJCQlyYXRlID0gMDsK
-KwkJfQorCQluID0gYXVkaW9fY29uZmlnX2dldF9uKG1vZGUsIHJhdGUpOworCQlpZiAobiAhPSAw
-KQorCQkJdG1wID0gYXVkaW9fY29uZmlnX3NldHVwX25fcmVnKG4sIHRtcCk7CisJCWVsc2UKKwkJ
-CURSTV9ERUJVR19LTVMoIm5vIHN1aXRhYmxlIE4gdmFsdWUgaXMgZm91bmRcbiIpOworCX0KKwog
-CUk5MTVfV1JJVEUoSFNXX0FVRF9DRkcocGlwZSksIHRtcCk7CiAKIAltdXRleF91bmxvY2soJmRl
-dl9wcml2LT5hdl9tdXRleCk7CkBAIC01OTQsOSArNjMwLDEwIEBAIHN0YXRpYyBpbnQgaTkxNV9h
-dWRpb19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVjdCBkZXZpY2UgKmRldiwKIAlzdHJ1
-Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICppbnRlbF9kaWdfcG9ydDsKIAlzdHJ1Y3QgaW50ZWxfY3J0
-YyAqY3J0YzsKIAlzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAqbW9kZTsKKwlzdHJ1Y3QgaTkxNV9h
-dWRpb19jb21wb25lbnQgKmFjb21wID0gZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudDsKIAllbnVt
-IHBpcGUgcGlwZSA9IC0xOwogCXUzMiB0bXA7Ci0JaW50IG5fbG93LCBuX3VwLCBuOworCWludCBu
-OwogCiAJLyogSFNXLCBCRFcgU0tMIG5lZWQgdGhpcyBmaXggKi8KIAlpZiAoIUlTX1NLWUxBS0Uo
-ZGV2X3ByaXYpICYmCkBAIC02MzAsNiArNjY3LDkgQEAgc3RhdGljIGludCBpOTE1X2F1ZGlvX2Nv
-bXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmljZSAqZGV2LAogCQkJCSAgcGlwZV9u
-YW1lKHBpcGUpLCBwb3J0X25hbWUocG9ydCkpOwogCW1vZGUgPSAmY3J0Yy0+Y29uZmlnLT5iYXNl
-LmFkanVzdGVkX21vZGU7CiAKKwkvKiBwb3J0IG11c3QgYmUgdmFsaWQgbm93LCBvdGhlcndpc2Ug
-dGhlIHBpcGUgd2lsbCBiZSBpbnZhbGlkICovCisJYWNvbXAtPmF1ZF9zYW1wbGVfcmF0ZVtwb3J0
-XSA9IHJhdGU7CisKIAkvKiAyLiBjaGVjayB3aGV0aGVyIHRvIHNldCB0aGUgTi9DVFMvTSBtYW51
-YWxseSBvciBub3QgKi8KIAlpZiAoIWF1ZGlvX3JhdGVfbmVlZF9wcm9nKGNydGMsIG1vZGUpKSB7
-CiAJCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX0NGRyhwaXBlKSk7CkBAIC02NDksMTUgKzY4OSwx
-MCBAQCBzdGF0aWMgaW50IGk5MTVfYXVkaW9fY29tcG9uZW50X3N5bmNfYXVkaW9fcmF0ZShzdHJ1
-Y3QgZGV2aWNlICpkZXYsCiAJCW11dGV4X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4KTsKIAkJ
-cmV0dXJuIDA7CiAJfQotCW5fbG93ID0gbiAmIDB4ZmZmOwotCW5fdXAgPSAobiA+PiAxMikgJiAw
-eGZmOwogCi0JLyogNC4gc2V0IHRoZSBOL0NUUy9NICovCisJLyogMy4gc2V0IHRoZSBOL0NUUy9N
-ICovCiAJdG1wID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKLQl0bXAgJj0gfihBVURf
-Q09ORklHX1VQUEVSX05fTUFTSyB8IEFVRF9DT05GSUdfTE9XRVJfTl9NQVNLKTsKLQl0bXAgfD0g
-KChuX3VwIDw8IEFVRF9DT05GSUdfVVBQRVJfTl9TSElGVCkgfAotCQkJKG5fbG93IDw8IEFVRF9D
-T05GSUdfTE9XRVJfTl9TSElGVCkgfAotCQkJQVVEX0NPTkZJR19OX1BST0dfRU5BQkxFKTsKKwl0
-bXAgPSBhdWRpb19jb25maWdfc2V0dXBfbl9yZWcobiwgdG1wKTsKIAlJOTE1X1dSSVRFKEhTV19B
-VURfQ0ZHKHBpcGUpLCB0bXApOwogCiAJbXV0ZXhfdW5sb2NrKCZkZXZfcHJpdi0+YXZfbXV0ZXgp
-OwpAQCAtNjc4LDYgKzcxMyw3IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfYmlu
-ZChzdHJ1Y3QgZGV2aWNlICppOTE1X2RldiwKIHsKIAlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25l
-bnQgKmFjb21wID0gZGF0YTsKIAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBk
-ZXZfdG9faTkxNShpOTE1X2Rldik7CisJaW50IGk7CiAKIAlpZiAoV0FSTl9PTihhY29tcC0+b3Bz
-IHx8IGFjb21wLT5kZXYpKQogCQlyZXR1cm4gLUVFWElTVDsKQEAgLTY4NSw2ICs3MjEsOCBAQCBz
-dGF0aWMgaW50IGk5MTVfYXVkaW9fY29tcG9uZW50X2JpbmQoc3RydWN0IGRldmljZSAqaTkxNV9k
-ZXYsCiAJZHJtX21vZGVzZXRfbG9ja19hbGwoZGV2X3ByaXYtPmRldik7CiAJYWNvbXAtPm9wcyA9
-ICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHM7CiAJYWNvbXAtPmRldiA9IGk5MTVfZGV2OworCWZv
-ciAoaSA9IDA7IGkgPCBJOTE1X01BWF9QT1JUUzsgaSsrKQorCQlhY29tcC0+YXVkX3NhbXBsZV9y
-YXRlW2ldID0gMDsKIAlkZXZfcHJpdi0+YXVkaW9fY29tcG9uZW50ID0gYWNvbXA7CiAJZHJtX21v
-ZGVzZXRfdW5sb2NrX2FsbChkZXZfcHJpdi0+ZGV2KTsKIApkaWZmIC0tZ2l0IGEvaW5jbHVkZS9k
-cm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKaW5kZXgg
-ZTZkMzVkNy4uMTE5OTllYiAxMDA2NDQKLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQu
-aAorKysgYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCkBAIC0yNCw4ICsyNCwxOSBAQAog
-I2lmbmRlZiBfSTkxNV9DT01QT05FTlRfSF8KICNkZWZpbmUgX0k5MTVfQ09NUE9ORU5UX0hfCiAK
-Ky8qIE1BWF9QT1JUIGlzIHRoZSBudW1iZXIgb2YgcG9ydAorICogSXQgbXVzdCBiZSBzeW5jIHdp
-dGggSTkxNV9NQVhfUE9SVFMgZGVmaW5lZCBpOTE1X2Rydi5oCisgKiA1IHNob3VsZCBiZSBlbm91
-Z2ggYXMgb25seSBIU1csIEJEVywgU0tMIG5lZWQgc3VjaCBmaXguCisgKiBUaGUgNEsgcmVzb2x1
-dGlvbiBhdWRpbyBpc3N1ZSBzaG91bGQgYmUgZml4ZWQgb24gQ05MCisgKi8KKyNkZWZpbmUgTUFY
-X1BPUlRTIDUKKwogc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKIAlzdHJ1Y3QgZGV2aWNl
-ICpkZXY7CisJLyoqCisJICogQGF1ZF9zYW1wbGVfcmF0ZTogdGhlIGFycmF5IG9mIGF1ZGlvIHNh
-bXBsZSByYXRlIHBlciBwb3J0CisJICovCisJaW50IGF1ZF9zYW1wbGVfcmF0ZVtNQVhfUE9SVFNd
-OwogCiAJY29uc3Qgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyB7CiAJCXN0cnVjdCBt
-b2R1bGUgKm93bmVyOwotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZy
-ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vaW50ZWwtZ2Z4Cg==
+Add check on of_property_read to return error when
+DT required property is not defined.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/soc/sti/uniperif_player.c | 14 ++++++++++----
+ sound/soc/sti/uniperif_reader.c |  6 +++++-
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index f6eefe1..843f037 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -989,8 +989,8 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	of_property_read_u32(pnode, "version", &player->ver);
+-	if (player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
++	if (of_property_read_u32(pnode, "version", &player->ver) ||
++	    player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
+ 		dev_err(dev, "Unknown uniperipheral version ");
+ 		return -EINVAL;
+ 	}
+@@ -998,10 +998,16 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ 	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+ 		info->underflow_enabled = 1;
+ 
+-	of_property_read_u32(pnode, "uniperiph-id", &info->id);
++	if (of_property_read_u32(pnode, "uniperiph-id", &info->id)) {
++		dev_err(dev, "uniperipheral id not defined");
++		return -EINVAL;
++	}
+ 
+ 	/* Read the device mode property */
+-	of_property_read_string(pnode, "mode", &mode);
++	if (of_property_read_string(pnode, "mode", &mode)) {
++		dev_err(dev, "uniperipheral mode not defined");
++		return -EINVAL;
++	}
+ 
+ 	if (strcasecmp(mode, "hdmi") == 0)
+ 		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index c502626..f791239 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -316,7 +316,11 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	of_property_read_u32(node, "version", &reader->ver);
++	if (of_property_read_u32(node, "version", &reader->ver) ||
++	    reader->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
++		dev_err(&pdev->dev, "Unknown uniperipheral version ");
++		return -EINVAL;
++	}
+ 
+ 	/* Save the info structure */
+ 	reader->info = info;
+-- 
+1.9.1
