@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Add struct dmi_system_id
-	"Google Ultima" for chrome platform" to the asoc tree
-Date: Thu, 10 Sep 2015 11:49:55 +0100
-Message-ID: <E1ZZzQR-00011Y-Lk@finisterre>
-References: <1441788468-16501-1-git-send-email-john.lin@realtek.com>
+Subject: Applied "ASoC: sti: check return of of_property_read"
+	to the asoc tree
+Date: Thu, 10 Sep 2015 11:49:52 +0100
+Message-ID: <E1ZZzQO-00010a-Mv@finisterre>
+References: <1441871155-18240-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D67092614CA
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:50:03 +0200 (CEST)
-In-Reply-To: <1441788468-16501-1-git-send-email-john.lin@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CA4A2614D3
+ for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 12:50:05 +0200 (CEST)
+In-Reply-To: <1441871155-18240-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Add struct dmi_system_id "Google Ultima" for chrome platform
+   ASoC: sti: check return of of_property_read
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 721b51fcf91898299d96f4b72cb9434cda29dce6 Mon Sep 17 00:00:00 2001
-From: John Lin <john.lin@realtek.com>
-Date: Wed, 9 Sep 2015 16:47:48 +0800
-Subject: [PATCH] ASoC: rt5645: Add struct dmi_system_id "Google Ultima" for
- chrome platform
+>From 3a0e27d84bb9abac5e39dc71706768a88c72cb71 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Thu, 10 Sep 2015 09:45:55 +0200
+Subject: [PATCH] ASoC: sti: check return of of_property_read
 
-Signed-off-by: John Lin <john.lin@realtek.com>
+Add check on of_property_read to return error when
+DT required property is not defined.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/sti/uniperif_player.c | 14 ++++++++++----
+ sound/soc/sti/uniperif_reader.c |  6 +++++-
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 610eacd..e620da1 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3236,6 +3236,13 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Celes"),
- 		},
- 	},
-+	{
-+		.ident = "Google Ultima",
-+		.callback = strago_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index f6eefe1..843f037 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -989,8 +989,8 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
  
+-	of_property_read_u32(pnode, "version", &player->ver);
+-	if (player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
++	if (of_property_read_u32(pnode, "version", &player->ver) ||
++	    player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
+ 		dev_err(dev, "Unknown uniperipheral version ");
+ 		return -EINVAL;
+ 	}
+@@ -998,10 +998,16 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ 	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+ 		info->underflow_enabled = 1;
+ 
+-	of_property_read_u32(pnode, "uniperiph-id", &info->id);
++	if (of_property_read_u32(pnode, "uniperiph-id", &info->id)) {
++		dev_err(dev, "uniperipheral id not defined");
++		return -EINVAL;
++	}
+ 
+ 	/* Read the device mode property */
+-	of_property_read_string(pnode, "mode", &mode);
++	if (of_property_read_string(pnode, "mode", &mode)) {
++		dev_err(dev, "uniperipheral mode not defined");
++		return -EINVAL;
++	}
+ 
+ 	if (strcasecmp(mode, "hdmi") == 0)
+ 		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index c502626..f791239 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -316,7 +316,11 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	of_property_read_u32(node, "version", &reader->ver);
++	if (of_property_read_u32(node, "version", &reader->ver) ||
++	    reader->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
++		dev_err(&pdev->dev, "Unknown uniperipheral version ");
++		return -EINVAL;
++	}
+ 
+ 	/* Save the info structure */
+ 	reader->info = info;
 -- 
 2.5.0
