@@ -1,17 +1,23 @@
-From: Ran Shalit <ranshalit@gmail.com>
-Subject: 'control ... is already present' message
-Date: Fri, 11 Sep 2015 09:48:37 +0300
-Message-ID: <CAJ2oMhJF9=jaJLhPAqGPg=yzh0WQoD6ire1-p-zeKRHKp---bA@mail.gmail.com>
+From: Christian Gruber <christian.gruber@voiceinterconnect.de>
+Subject: Missing snd_pcm_link() for the rate plugin
+Date: Fri, 11 Sep 2015 09:42:24 +0200
+Message-ID: <55F285E0.7030100@voiceinterconnect.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f180.google.com (mail-ig0-f180.google.com
- [209.85.213.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 15FB2261555
- for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 08:48:39 +0200 (CEST)
-Received: by igbkq10 with SMTP id kq10so34622220igb.0
- for <alsa-devel@alsa-project.org>; Thu, 10 Sep 2015 23:48:38 -0700 (PDT)
+Received: from dd27002.kasserver.com (dd27002.kasserver.com [85.13.145.216])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14641261555
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 09:19:22 +0200 (CEST)
+Received: from Mail-Gateway (ip923450f2.dynamic.kabel-deutschland.de
+ [146.52.80.242])
+ by dd27002.kasserver.com (Postfix) with ESMTPSA id 4A4C11120355
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 09:19:21 +0200 (CEST)
+Received: from kepler.vic.site ([192.168.13.149])
+ by Mail-Gateway with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <christian.gruber@voiceinterconnect.de>)
+ id 1ZaIcA-0002Ea-HC
+ for alsa-devel@alsa-project.org; Fri, 11 Sep 2015 09:19:20 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,67 +30,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Dear ALSA community,
 
-I'm using 2 codecs (tlv320aic3x-codec)  each which both are registered
-into same sound card, each as a single device.
-After boot I have the following devices:
+does anybody know, why the rate plugin does not support the snd_pcm_link() function?
 
-root@dm814x:~# cat /proc/asound/devices
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 25: [ 0- 1]: digital audio capture
+As I can see from the ALSA-Lib source code, snd_pcm_link() calls the fast_op "link", which 
+is a function pointer, whose destination depends on the type of pcm device/plugin to be 
+linked.
 
-But I get the following error messeges during boot:
-usbcore: registered new interface driver snd-usb-audio
-Registered tvp5158 audio codec
-PM: Adding info for platform:soc-audio.0
-PM: Adding info for No Bus:TLV320AIC3X_2
-asoc: tlv320aic3x-hifi <-> davinci-mcasp.2 mapping ok
-snd_soc_instantiate_card 7
-tlv320aic3x-codec 2-0019: tlv320aic3x-codec.2-0019: Failed to add PCM
-Playback Volume: -16
-asoc: failed to add dapm kcontrol Right HPCOM Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Left HPCOM Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Right HP Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Left HP Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Mono Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Right Line Mixer Line2L Bypass Switch: -16
-asoc: failed to add dapm kcontrol Left Line Mixer Line2L Bypass Switch: -16
-asoc: failed to add kcontrol Right Line2R Mux
-asoc: failed to add kcontrol Right Line1R Mux
-asoc: failed to add kcontrol Right Line1L Mux
-asoc: failed to add dapm kcontrol Right PGA Mixer Line1R Switch: -16
-asoc: failed to add kcontrol Left Line2L Mux
-asoc: failed to add kcontrol Left Line1R Mux
-asoc: failed to add kcontrol Left Line1L Mux
-asoc: failed to add dapm kcontrol Left PGA Mixer Line1L Switch: -16
-asoc: failed to add kcontrol Right HPCOM Mux
-asoc: failed to add kcontrol Right DAC Mux
-asoc: failed to add kcontrol Left HPCOM Mux
-asoc: failed to add kcontrol Left DAC Mux
-PM: Adding info for No Bus:TLV320AIC3X_3
-asoc: tlv320aic3x-hifi <-> davinci-mcasp.3 mapping ok
-PM: Adding info for No Bus:card0
-PM: Adding info for No Bus:pcmC0D1p
-PM: Adding info for No Bus:pcmC0D1c
-PM: Adding info for No Bus:pcmC0D0p
-PM: Adding info for No Bus:pcmC0D0c
-PM: Adding info for No Bus:controlC0
-ALSA device list:
-  #0: TI81XX SOUND0
+If the device is a HW-device for instance, the function snd_pcm_hw_link() is called. 
+Several other plugins (e.g. mmap_emul, linear, lfloat, mulaw, alaw, route) use the generic 
+function snd_pcm_generic_link(), which forwards the function call to their slave 
+devices/plugins.
 
-What is the reason for the "asoc: failed to add dapm kcontrol" and the
-" 'control ... already present" messeges ?
-Is it becuase both codec are registered on same card (single card) ?
+The rate plugin instead does not support snd_pcm_link(), since the function pointer "link" 
+is not assigned in the definition of snd_pcm_rate_fast_ops.
 
-1. If I move each to be registered to its own card,  will it resolve
-this issue ?
+Is their any reason to not use the generic function snd_pcm_generic_link() within the rate 
+plugin?
 
-2. Should the following patch resolve this issue:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033593.html
+Thanks in advance for answering this question,
 
-Regards,
-Ran
+Christian
