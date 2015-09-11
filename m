@@ -1,84 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Bsw: Read sst DSP DMA pointer
- after period elapse occurs
-Date: Fri, 11 Sep 2015 12:49:10 +0100
-Message-ID: <20150911114910.GL12027@sirena.org.uk>
-References: <1439791945-106012-1-git-send-email-yang.a.fang@intel.com>
- <20150817195555.GY10748@sirena.org.uk>
- <0485FB02182A4744A8B06D69AB7BF8E718D71126@ORSMSX113.amr.corp.intel.com>
- <20150819003529.GO10748@sirena.org.uk>
- <0485FB02182A4744A8B06D69AB7BF8E718D72C4F@ORSMSX113.amr.corp.intel.com>
- <0485FB02182A4744A8B06D69AB7BF8E718D72C72@ORSMSX113.amr.corp.intel.com>
- <0485FB02182A4744A8B06D69AB7BF8E718D98098@ORSMSX113.amr.corp.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 10/10] ASoC: rockchip_i2s: modify DMA max burst to 1
+Date: Fri, 11 Sep 2015 12:53:31 +0100
+Message-ID: <20150911115331.GM12027@sirena.org.uk>
+References: <1441501881-13700-1-git-send-email-shawn.lin@rock-chips.com>
+ <1441502008-14116-1-git-send-email-shawn.lin@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5960160260404190163=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D3DE261687
- for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 13:49:20 +0200 (CEST)
-In-Reply-To: <0485FB02182A4744A8B06D69AB7BF8E718D98098@ORSMSX113.amr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Fang, Yang A" <yang.a.fang@intel.com>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "Mirche,
- Dinesh" <dinesh.mirche@intel.com>, "'lgirdwood@gmail.com'" <lgirdwood@gmail.com>, "Iriawan,
- Denny" <denny.iriawan@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>, "'kevin.strasser@linux.intel.com'" <kevin.strasser@linux.intel.com>, "'dgreid@chromium.org'" <dgreid@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lWL8cm7oyu1su5Oz"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1441502008-14116-1-git-send-email-shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Yiwei Cai <cain.cai-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5960160260404190163==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i48WUZoYXCDzOdXY"
-Content-Disposition: inline
-
-
---i48WUZoYXCDzOdXY
+--lWL8cm7oyu1su5Oz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 09, 2015 at 06:50:24PM +0000, Fang, Yang A wrote:
+On Sun, Sep 06, 2015 at 09:13:28AM +0800, Shawn Lin wrote:
 
-> Could you please let me know your further comment?=20
+> @@ -460,7 +463,6 @@ static int rockchip_i2s_probe(struct platform_device =
+*pdev)
+>  	i2s->playback_dma_data.addr =3D res->start + I2S_TXDR;
+>  	i2s->playback_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
+>  	i2s->playback_dma_data.maxburst =3D 4;
+> -
+>  	i2s->capture_dma_data.addr =3D res->start + I2S_RXDR;
+>  	i2s->capture_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
+>  	i2s->capture_dma_data.maxburst =3D 4;
 
-At the very least this needs a better, more comprehensible patch which
-makes it clear that this is just a workaround rather than actually
-fixing anything.  Of course I'd be much happier with a patch which was a
-clear fix.
+This random whitespace change shouldn't be in here.
 
---i48WUZoYXCDzOdXY
+> @@ -489,6 +491,18 @@ static int rockchip_i2s_probe(struct platform_device=
+ *pdev)
+>  		goto err_pcm_register;
+>  	}
+> =20
+> +	dma_quirk =3D snd_dmaengine_pcm_get_quirks(&pdev->dev);
+> +	if (dma_quirk =3D=3D ROCKCHIP_I2S_BROKEN_BURST_LEN) {
+> +		/*
+
+I'd expect this to be a switch statement given the way this is written.
+
+--lWL8cm7oyu1su5Oz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV8r+2AAoJECTWi3JdVIfQcSsH/0dqminve63r4n4GsLG0tmDd
-HpFDOV8lpfxzBy6KNc0C/Q2kCPaEpFaHhlIwQtO27vTAxupQAcr7c4g2O/ERUGXC
-gMVjlbotmk1in88+SjgO/B2Te6xu9e6w11gBWUZkntfmhk0ohemmGw9g/8Y9eRnz
-qTCxSJH4p2Xpblve1NMXiOm97oHg86PfUXTkR7fS5iPFQAVW4xc7HVOGgSI9Amer
-T5vnPYOgKG68WXP/orqRlfEmrAx31B5Ex+Tok7CpB0eHm1Sx7vtam43HPH5eWZCX
-lZbhwYTfQh0l0Nj/ZtEOcg9oD/6lHcq4boZUDVIMh7KprQEgOebraBhDG7wZkQk=
-=rP5S
+iQEcBAEBCAAGBQJV8sC6AAoJECTWi3JdVIfQglEH/03kNmkMXsPDpolkU+klcBdk
+DKxDaID7PPOEinEcsEiZ86/sOp5HfOpQcvOUppTW1ewcKDD5iAobv5J0VKvToeQo
+2XKnWf9IpwC5707ov/RbwAZE7P957YWm4eHoYBQ8146A1lHNY1sfusBaJzdpHge1
+4GNI33jyLeBFnXfnUlq7E/PP6y1DNe75a1SnXCTnG9yKnv+Q/Ar8B7XZzuPm8J+S
+e7pqmVKlDCN3D9B+y+cXTyuVzgtKpLgrOJNQOzUST76DCo/Pek5P86+8Ww6VVMno
+NUzWtxGnhS+XkxXroA5Q20gY7BySpfKet3LxwBsYH3plKii5KQsyDrjxwjl9pts=
+=jYIa
 -----END PGP SIGNATURE-----
 
---i48WUZoYXCDzOdXY--
-
---===============5960160260404190163==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5960160260404190163==--
+--lWL8cm7oyu1su5Oz--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
