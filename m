@@ -1,54 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 08/10] spi: rockchip: modify DMA max burst to 1
-Date: Fri, 11 Sep 2015 12:28:07 +0100
-Message-ID: <20150911112807.GH12027@sirena.org.uk>
-References: <1441501881-13700-1-git-send-email-shawn.lin@rock-chips.com>
- <1441501986-14034-1-git-send-email-shawn.lin@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/9] Add DSP topology management for SKL
+Date: Fri, 11 Sep 2015 12:45:00 +0100
+Message-ID: <20150911114500.GK12027@sirena.org.uk>
+References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
+ <20150903081454.GU13546@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fgOXmB9TvEybD/N/"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1441501986-14034-1-git-send-email-shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5409639072977546002=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E32B9261687
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 13:45:11 +0200 (CEST)
+In-Reply-To: <20150903081454.GU13546@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---fgOXmB9TvEybD/N/
+--===============5409639072977546002==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9FJo8lVsKgNaCbTM"
+Content-Disposition: inline
+
+
+--9FJo8lVsKgNaCbTM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 06, 2015 at 09:13:06AM +0800, Shawn Lin wrote:
-> From: Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
->=20
-> Generic dma controller on Rockchips' platform cannot support
-> DMAFLUSHP instruction which make dma to flush the req of non-aligned
-> or non-multiple of what we need. That will cause an unrecoverable
-> dma bus error. The saftest way is to set dma max burst to 1.
+On Thu, Sep 03, 2015 at 01:44:54PM +0530, Vinod Koul wrote:
 
-Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> I was wondering if you have any feedback on this series ?
 
---fgOXmB9TvEybD/N/
+Please don't send content free pings (as I'm sure I've mentioned
+before).  I've not looked at this yet because it's another large,
+invasive patch series which you sent at the very end of the development
+cycle.
+
+--9FJo8lVsKgNaCbTM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV8rrGAAoJECTWi3JdVIfQcNsH+wbzxE+Bh7KVYNw+UC54OdVj
-ytn/OyUAf3T4DcZQqe0J9m3eMIMLpxh01v2filrIJNGnv0q5R2uYgcpu7MDWChmw
-3YA3iTMzFsp+HLtc473bqVgbh/BXN07Rh1XvbI5s8O7OjVIkTz9N5sTabuGV+TDh
-qQWxAdxXpNFCV0FxZ3mbwR5lcoSK8xAAewEbJCuQ+Y8+5EcSFqao8es/fAgjuR+U
-NA0UUVBVTxj2OYl+pt11lxnKM8IafH3XPN8Rlw/4jY7qIz/pUJePpU3VBPlt/UY7
-uB0bYNJJg/26Q96Eb2x32IM+OjTsHyGissV1v7hHkG/MxP7ycpI25d0hQ7cmUsE=
-=sgF9
+iQEcBAEBCAAGBQJV8r67AAoJECTWi3JdVIfQ41oH/1Kb6zUw8Z/TNI0qZOri01B8
+zA65ir+ylvoQqa+IS9/DeOwEd+d3kVfJX0/D84u8flI/VWJzqLmEceQxYV6PzWB/
+vTGxdJW/wgMj0pDcq5n+F18SEOQEHpAUO3z+Gve/mpENE88I8ZFUofHtPDg1q477
+cNA/l64qsWAtC551bZkPS0wOa+Iu0C2Gh11bgAyWz11Vckq7fWR0VdLGAnLTTPEz
+2A3RHs9iI4rNIec+nauMMFLHBR4Z0s4CBcFE1u+7ZFcga76P3IaUjP5UsrZjtglH
+RZwJR//kNAeL3SIlETplBqU8O6yx4gRnFOPwLISHQVJoqIgcKIDOF0O9gX5zziQ=
+=9pxC
 -----END PGP SIGNATURE-----
 
---fgOXmB9TvEybD/N/--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--9FJo8lVsKgNaCbTM--
+
+--===============5409639072977546002==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5409639072977546002==--
