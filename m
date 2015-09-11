@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Mixer control appears twice in alsamixer
-Date: Fri, 11 Sep 2015 10:39:36 +0200
-Message-ID: <55F29348.8020608@ladisch.de>
-References: <20150911074948.GC10084@us.netrek.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH RFC 1/5] ASoC: davinci-mcasp: Set
+ .symmetric_rates = 1 in snd_soc_dai_driver
+Date: Fri, 11 Sep 2015 11:48:00 +0300
+Message-ID: <55F29540.40002@ti.com>
+References: <cover.1441806963.git.jsarha@ti.com>
+ <2ada475a3e0243b093a958e8bb5c465e8fb08abf.1441806963.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4F1FC261555
- for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 10:39:37 +0200 (CEST)
-In-Reply-To: <20150911074948.GC10084@us.netrek.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAFB8261555
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 10:48:05 +0200 (CEST)
+In-Reply-To: <2ada475a3e0243b093a958e8bb5c465e8fb08abf.1441806963.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: liam.r.girdwood@linux.intel.com, Li.Xiubo@freescale.com, misael.lopez@ti.com, broonie@kernel.org, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-James Cameron wrote:
-> I've a mixer control for "Analog Mic Boost" which appears twice in
-> alsamixer --view all, and once in amixer.
+On 09/09/2015 09:27 PM, Jyri Sarha wrote:
+> The TX and RX direction share the same bit clock and frame sync, so
+> the samplerate must be the same to both directions.
 
-This control's name specifies that it applies to both directions:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/sound/alsa/ControlNames.txt
-(Apparently, most SoC drivers do not care about alsamixer.)
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-However, it should not appear twice.  This appears to be a bug in alsamixer.
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  sound/soc/davinci/davinci-mcasp.c | 1 +
+>  1 file changed, 1 insertion(+)
+> =
 
-> How do I cause it to appear only once in alsamixer?
+> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinc=
+i-mcasp.c
+> index fa0511b..bbd1987 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -1304,6 +1304,7 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[=
+] =3D {
+>  		.ops 		=3D &davinci_mcasp_dai_ops,
+>  =
 
-Append " Capture Volume".
+>  		.symmetric_samplebits	=3D 1,
+> +		.symmetric_rates	=3D 1,
+>  	},
+>  	{
+>  		.name		=3D "davinci-mcasp.1",
+> =
 
 
-Regards,
-Clemens
+
+-- =
+
+P=E9ter
