@@ -1,71 +1,270 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: atmel-classd: add the Audio Class D Amplifier
- code
-Date: Fri, 11 Sep 2015 11:34:17 +0100
-Message-ID: <20150911103417.GF12027@sirena.org.uk>
-References: <1441086101-15303-1-git-send-email-songjun.wu@atmel.com>
- <1441086101-15303-2-git-send-email-songjun.wu@atmel.com>
- <20150903113716.GU12027@sirena.org.uk>
- <55EC0AF5.8060403@atmel.com>
- <20150907162350.GV5313@sirena.org.uk>
- <55EEAC01.3080409@atmel.com>
- <20150908122322.GB9751@sirena.org.uk>
- <55EFA478.1000109@atmel.com>
- <20150909095245.GG9751@sirena.org.uk>
- <55F0EB68.9070800@atmel.com>
+From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
+Subject: Re: [PATCH 1/1] sound/usb: Add Asus Xonar U7 Mixer -
+ input support
+Date: Fri, 11 Sep 2015 12:43:12 +0200
+Message-ID: <CAMFLXsCm+8NiUQCiTU7=P+Ywo=xX5khKDz6eFqhSbo6zOeMMxQ@mail.gmail.com>
+References: <55B4929D.5030401@wp.pl> <55B4938C.6080808@wp.pl>
+ <s5hpp3dx0lb.wl-tiwai@suse.de> <55F197E8.2020301@wp.pl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="esct/jjn4zW1hKjT"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <55F0EB68.9070800-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Wu, Songjun" <songjun.wu-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Cc: nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
+ [209.85.212.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8077A261563
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 12:43:12 +0200 (CEST)
+Received: by wiclk2 with SMTP id lk2so53424743wic.1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2015 03:43:12 -0700 (PDT)
+In-Reply-To: <55F197E8.2020301@wp.pl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Piotr SQ9FK <sq9fk@wp.pl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Piotr, great to see someone else also working on getting the U7
+working! Unfortunately I don't have the answer you're looking for as I
+don't know that much about ALSA actually. Most of what I've done was
+just comparing the UAC2 specification with what the driver does, and
+some light USB protocol sniffing.
 
---esct/jjn4zW1hKjT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm not actively working on the driver since I bought a new sound card
+for my PC and am using the U7 with my Windows laptop, but send me a
+message on Google Hangouts if you think I can help with something.
 
-On Thu, Sep 10, 2015 at 10:31:04AM +0800, Wu, Songjun wrote:
-> On 9/9/2015 17:52, Mark Brown wrote:
+When I connect the U7 it starts with "mic" as input, but I have to
+switch it to line and back to mic before it works. Does this happen to
+you too?
 
-> >Yes, that's what's going to end up happening but it's not how controls
-> >are expected to behave - applications will expect changing one control
-> >to leave others unaffected so it's better to return an error rather than
-> >change the other control.
+//Johan
 
-> If application change non EQ controls, the others will be unaffected. But
-> the classD IP can only supports one EQ control at once, these three EQ
-> controls point to the same register field, if application set a different EQ
-> control, the error occurs, there will be many errors, it's not very
-> reasonable to application. The best way I think is if application set one EQ
-> control, the other EQ controls will change to 0dB, it's also consistent with
-> fact.
-
-There's no really good solutions here - this is why my initial
-suggestion was to have a single enumerated control.
-
---esct/jjn4zW1hKjT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV8q4oAAoJECTWi3JdVIfQQDwH/2uuZ5rkS3Y69aRAt302VzcK
-RiyKAkYVseOp2fobDtZZx7GsPOoJXmEFVsDMKwp7wfZOoZr8fw4LpviPlCd+kek4
-4LGgBfpRhmCFuptCNZrJcrtUO4weR29h+u23YIgNgLg9tpD1H1krMYEDlIQSOspk
-tpYKaP2fWB6uRSiXLVZwTO+JkYd6+2y91slaFV7A0hDmeKdFdvikPvGVG6/Kvwf3
-v0vGAecdn8L2OaY/8dViTD6456eR4E4NbFFphnoVTrpFOqyMOFYp3nmhM9FlC2Kh
-0pbl7wYSoNXCSwDKjNVTkGmO9lpZCpGZnGxIyArjuSXTskJP+UR4/hygJnOn6Po=
-=Y5Ym
------END PGP SIGNATURE-----
-
---esct/jjn4zW1hKjT--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On 10 September 2015 at 16:47, Piotr SQ9FK <sq9fk@wp.pl> wrote:
+> Hello Takashi,Johan
+> My patches are unessesary since following last patch was applied to the git:
+> ALSA: usb-audio: Change internal PCM order
+>
+> Capture working but there are no volume sliders for Line-In Capture or
+> Mic-In Capture (I can only toggle on off). Probably the RANGES are
+> broken?. From ASUS Windows driver I can see following ranges:
+>
+> Master Volume: (Phisycal Knob on Asus)
+> from 100 to 1 correspond 0dB to -70dB, 0 is -127dB
+> Range from 1 to 100 -> 0dB to -70dB (logarythmic)
+>
+> Mic-In:
+> from 100 to 1 correspond 30dB to -10dB, 0 is -192dB
+> Range from 1 to 10 -> -10dB to 10dB (linear?)
+> Range from 11 to 100 -> 10dB to 30dB (logarythmic)
+>
+> Line-In:
+> from 100 to 1 correspond 0dB to -40dB, 0 is -192dB
+> Range from 11 to 100 -> 10dB to 30dB (logarythmic)
+>
+> Actual Situation:
+> Input Gain Pad Control - 3 steps [0 - 50 - 100]
+> Double Slider. In Capture and Playback Categories, both of them are
+> controlled in the same time.
+> Controls Playback Volume only, Capture not.
+>
+> "Mic" and "Line" Switches [on/off]
+> PCM Cature Source [Line/Mic]
+> Electret Mic doesn't work. With all possible configurations - Silent.
+> When I pluged Line level signal, I can record the signal without problems.
+> PCM Capture Source [Line] - Line [on] Mic [off] - Sound
+> PCM Capture Source [Line] - Line [on] Mic [on] - Sound
+> PCM Capture Source [Line] - Line [off] Mic [off] - No Sound
+> PCM Capture Source [Line] - Line [off] Mic [on] - No Sound
+> The same with selected [Mic]. There is no Capture Volume control.
+>
+> PCM 1 [mute/on]
+> I think this is SPDIF switch. It doesn't work. When I switch it on ->
+> Blue Led on Xonar doesn't light up.
+>
+> I attached screen of alsamixer, usbmix from proc and my mixer_map from
+> my old patch.
+> I think there are is still bugs in parsing. Please point me how I can
+> add manually Volume control for Capture?
+>
+> Piotr Gaska
+>
+> W dniu 2015-07-27 o 14:10, Takashi Iwai pisze:
+>
+>> On Sun, 26 Jul 2015 10:00:12 +0200,
+>> Piotr G. wrote:
+>>>
+>>> Hello,
+>>> This is my first patch to alsa-devel, and I'm not very skilled
+>>> programmer. From lsusb -vvv, I've draw Xonar U7 map with all IT OT FU CS
+>>> in mixer_map.c I don't know why the driver by default doesn't parse all
+>>> info correctly. With this patch you can see Line Switch and Mic Switch
+>>> in alsamixer. I can record my voice in Audacity with all supported bit
+>>> and sampling rates in Mono or Stereo
+>>> This is temporary solution. Please correct me if the patch is not
+>>> properly made.
+>>>
+>>>     What doesn't work:
+>>>     - Cannot change Capture Volume for Line/Mic. No mixer control in
+>>> alsamixer
+>>>     - Switching between Line/Mic doesn't work (Mute doesn't work)
+>>>     - SPDIF not tested
+>>>     As what I wrote at beginning I'm not skilled programmer so any help
+>>> is
+>>>     aprreciated
+>>>
+>>>
+>>> proc-usbmixer -> cat /proc/asound/*/usbmix
+>>> usb.debug -> lsusb -vv (only Asus Xonar U7)
+>>
+>> The changes in mixer_maps.c look good, but what's the reason for
+>> uac2_audio_feature_info[]?  It seems adding "Control" suffix to each
+>> entry, which doesn't look correct.
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>>
+>>
+>>> ---
+>>>     sound/usb/mixer.c      | 23 +++++++++++++++++++++--
+>>>     sound/usb/mixer_maps.c | 48
+>>> ++++++++++++++++++++++++++++++++++++++++++++++++
+>>>     2 files changed, 69 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+>>> index 6b3acba..027d160 100644
+>>> --- a/sound/usb/mixer.c
+>>> +++ b/sound/usb/mixer.c
+>>> @@ -818,6 +818,25 @@ static struct usb_feature_control_info
+>>> audio_feature_info[] = {
+>>>         { "Phase Inverter Control",     USB_MIXER_BOOLEAN },
+>>>     };
+>>>
+>>> +static struct usb_feature_control_info uac2_audio_feature_info[] = {
+>>> +       /* UAC2 specific */
+>>> +       { "Mute Control",               USB_MIXER_INV_BOOLEAN },
+>>> +       { "Volume Control",             USB_MIXER_S16 },
+>>> +       { "Bass Control",               USB_MIXER_S8 },
+>>> +       { "Mid Control",                USB_MIXER_S8 },
+>>> +       { "Treble Control",             USB_MIXER_S8 },
+>>> +       { "Graphic Equalizer Control",  USB_MIXER_S8 },
+>>> +       { "Automatic Gain Control",     USB_MIXER_BOOLEAN },
+>>> +       { "Delay Control",              USB_MIXER_S16 }, /* FIXME: U32 in
+>>> UAC2 */
+>>> +       { "Bass Boost Control",         USB_MIXER_BOOLEAN },
+>>> +       { "Loudness Control",           USB_MIXER_BOOLEAN },
+>>> +       { "Input Gain Control",         USB_MIXER_S16 },
+>>> +       { "Input Gain Pad Control",     USB_MIXER_S16 },
+>>> +       { "Phase Inverter Control",     USB_MIXER_BOOLEAN },
+>>> +       { "Underflow Control",          USB_MIXER_BOOLEAN },
+>>> +       { "Overflow Control",           USB_MIXER_BOOLEAN },
+>>> +};
+>>> +
+>>>     /* private_free callback */
+>>>     void snd_usb_mixer_elem_free(struct snd_kcontrol *kctl)
+>>>     {
+>>> @@ -1240,7 +1259,7 @@ static void build_feature_ctl(struct mixer_build
+>>> *state, void *raw_desc,
+>>>         snd_usb_mixer_elem_init_std(&cval->head, state->mixer, unitid);
+>>>         cval->control = control;
+>>>         cval->cmask = ctl_mask;
+>>> -       cval->val_type = audio_feature_info[control-1].type;
+>>> +       cval->val_type = uac2_audio_feature_info[control-1].type;
+>>>         if (ctl_mask == 0) {
+>>>                 cval->channels = 1;     /* master channel */
+>>>                 cval->master_readonly = readonly_mask;
+>>> @@ -1318,7 +1337,7 @@ static void build_feature_ctl(struct mixer_build
+>>> *state, void *raw_desc,
+>>>                 break;
+>>>         default:
+>>>                 if (!len)
+>>> -                       strlcpy(kctl->id.name,
+>>> audio_feature_info[control-1].name,
+>>> +                       strlcpy(kctl->id.name,
+>>> uac2_audio_feature_info[control-1].name,
+>>>                                 sizeof(kctl->id.name));
+>>>                 break;
+>>>         }
+>>> diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+>>> index e5000da..07f510e 100644
+>>> --- a/sound/usb/mixer_maps.c
+>>> +++ b/sound/usb/mixer_maps.c
+>>> @@ -341,6 +341,48 @@ static const struct usbmix_name_map
+>>> scms_usb3318_map[] = {
+>>>         { 0 }
+>>>     };
+>>>
+>>> +/* ASUS Xonar U7 - USB CM6632A (ADC CS5361 // DAC Dolby CS4362A // DAC
+>>> Stereo CS4398 */
+>>> +/* Topology:
+>>> +
+>>> +USB_IN[1]------->FU[13]-----------CS[18]--->Spk_OUT[7]
+>>> +
+>>> +Dig_IN[2]------->FU[14]-----------CS[19]--->Dig_OUT[8]
+>>> +
+>>> +Mic_IN[4]------->FU[16]---+
+>>> +                          SU[20]--CS[22]--->USB_OUT[11]
+>>> +Line_IN[5]------>FU[17]---+
+>>> +
+>>> +*/
+>>> +
+>>> +static const struct usbmix_name_map xonar_u7_map[] = {
+>>> +       /* 1: IT PCM  Analog (USB Streaming) */
+>>> +       /* 2: IT PCM2 Digital (USB Streaming) */
+>>> +       /* 4: IT Microphone */
+>>> +       /* 5: IT Line IN */
+>>> +       /* 7: OT Speaker */
+>>> +       /* 8: OT SPDIF */
+>>> +       /* 11 OT Capture Playback (USB Streaming) */
+>>> +       { 13, "Speaker Playback" },     /* 13 FU Speaker Out Mute/Volume
+>>> */
+>>> +       { 14, "IEC958 Playback" },      /* 14 FU SPDIF Out Mute/Volume */
+>>> +       { 16, "Mic Capture" },          /* 16 FU Capture Mic-in
+>>> Mute/Volume */
+>>> +       { 17, "Line Capture" },         /* 17 FU Capture Line-in
+>>> Mute/Volume */
+>>> +       /* 18 CS for 1 PCM (USB Streaming) Clock Source */
+>>> +       /* 19 CS for 2 SPDIF (USB Streaming) Clock Source */
+>>> +       { 20, "Capture Source" },       /* 20 SU Capture Source Selector
+>>> */
+>>> +       /* 22 CS Line-in and Mic-in Clock Source */
+>>> +       { 0 }
+>>> +};
+>>> +
+>>> +static struct usbmix_selector_map xonar_u7_selectors[] = {
+>>> +{
+>>> +                .id = 20,
+>>> +                .count = 2,
+>>> +                .names = (const char*[]) {"Mic", "Line"}
+>>> +        },
+>>> +        { 0 } /* terminator */
+>>> +
+>>> +};
+>>> +
+>>>     /*
+>>>      * Control map entries
+>>>      */
+>>> @@ -451,6 +493,12 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+>>>                 .id = USB_ID(0x25c4, 0x0003),
+>>>                 .map = scms_usb3318_map,
+>>>         },
+>>> +       {
+>>> +               /* Asus Xonar U7 */
+>>> +               .id = USB_ID(0x1043, 0x857c),
+>>> +               .map = xonar_u7_map,
+>>> +               .selector_map = xonar_u7_selectors,
+>>> +       },
+>>>         { 0 } /* terminator */
+>>>     };
+>>>
+>>> --
+>>> 2.3.6
+>>>
+>
