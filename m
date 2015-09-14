@@ -1,95 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Remove incorrect settings" to
-	the asoc tree
-Date: Mon, 14 Sep 2015 19:54:03 +0100
-Message-ID: <E1ZbYt9-0002De-9w@finisterre>
-References: <1441863617-15145-1-git-send-email-oder_chiou@realtek.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: System with multiple arizona (wm5102) codecs
+Date: Mon, 14 Sep 2015 22:11:21 +0200
+Message-ID: <20150914201120.GA21210@amd>
+References: <20150914115439.GA29646@amd>
+ <20150914115255.GE11200@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 394F82605FF
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 20:54:11 +0200 (CEST)
-In-Reply-To: <1441863617-15145-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150914115255.GE11200@ck-lbox>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi!
 
-   ASoC: rt5645: Remove incorrect settings
+> > I've got an embedded system with two arizona / wm5102 codecs.
+> > 
+> > Unfortunately, kernel does not seem to be ready for that
+> > configuration.
+> > 
+> > In particular, drivers/regulator/arizona-ldo1.c and
+> > drivers/regulator/arizona-micsupp.c register system-wide "MICVDD" and
+> > "LDO1" regulators, but with two codecs in the system, we really have
+> > wm5102-codec.1.MICVDD, wm5102-codec.2.MICVDD, wm5102-codec.1.LDO1 and
+> > wm5102-codec.2.LDO1.
+> > 
+> > That got me second codec working in two-codec configuration, but first
+> > one still stops working as soon as two codecs are enabled.
+> > 
+> > If you have idea what else needs fixing, let me know.
+> > 
+> > Best regards,
+> 
+> I must confess I haven't ever tested a system with two Arizona
+> CODECs connected. Yes it seems you would get clashes on the
+> regulator names, I guess that would need to be fixed up. If you
+> were doing so wm831x-ldo.c would probably make a reasonable
+> example.
+> 
+> I guess you would need to be careful with the machine driver as
+> well, you will need to use a snd_soc_codec_conf structure for at
+> least one (although I would do both) of the CODECs to give  a
+> prefix for all the widget/control names, otherwise those will
+> clash and everything will probably behave very strangely. See
+> sound/soc/samsung/bells.c for an example doing this for wm9081.
 
-has been applied to the asoc tree at
+Thanks a lot for pointers. I did split wm5102_dapm_widgets into two
+structures, and modified them by hand (but probably did not get all
+the right fields)... and thought that there must be better way.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> Those are the only two things that spring to mind at the moment
+> but keep me informed on how you are getting on and I will let you
+> know if I can come up with any other traps.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I guess I'll have to undo my horrible hacks, first.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f17b329b73a0393dc9d5fc5b4457189f92e5bbef Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Thu, 10 Sep 2015 13:40:16 +0800
-Subject: [PATCH] ASoC: rt5645: Remove incorrect settings
-
-The patch removes the incorrect settings to avoid the pop sound in the
-first playback with headphone after boot.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 4972bf3..595ace9 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2829,10 +2829,6 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 			snd_soc_dapm_sync(dapm);
- 			rt5645->jack_type = SND_JACK_HEADPHONE;
- 		}
--
--		snd_soc_update_bits(codec, RT5645_CHARGE_PUMP, 0x0300, 0x0200);
--		snd_soc_write(codec, RT5645_DEPOP_M1, 0x001d);
--		snd_soc_write(codec, RT5645_DEPOP_M1, 0x0001);
- 	} else { /* jack out */
- 		rt5645->jack_type = 0;
- 
-@@ -2880,8 +2876,6 @@ int rt5645_set_jack_detect(struct snd_soc_codec *codec,
- 		rt5645->en_button_func = true;
- 		regmap_update_bits(rt5645->regmap, RT5645_GPIO_CTRL1,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
--		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
--				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
- 	}
+Best regards,
+									Pavel
 -- 
-2.5.0
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
