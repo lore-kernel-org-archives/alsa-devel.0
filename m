@@ -1,75 +1,43 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: System with multiple arizona (wm5102) codecs
-Date: Mon, 14 Sep 2015 14:31:29 +0100
-Message-ID: <20150914133129.GF11200@ck-lbox>
-References: <20150914115439.GA29646@amd>
- <20150914115255.GE11200@ck-lbox>
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCH V2] debugfs: don't assume sizeof(bool) to be 4 bytes
+Date: Mon, 14 Sep 2015 17:39:06 +0200
+Message-ID: <1708603.aKpYchk1pa@wuerfel>
+References: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 36D19260533
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 15:54:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150914115255.GE11200@ck-lbox>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Avri Altman <avri.altman-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Stanislaw Gruszka <sgruszka-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jiri Slaby <jirislaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "open list:DOCUMENTATION" <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Sebastian Andrzej Siewior <bigeasy-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, "open list:MEMORY MANAGEMENT" <linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org>, Kalle Valo <kvalo-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, Emmanuel Grumbach <emmanuel.grumbach-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Luciano Coelho <luciano.coelho-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "open list:CISCO SCSI HBA DRIVER" <linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Joerg Roedel <joro-sbq1PF/6f4d8uUxBSJOaYoYkZiVZrdSR2LY78lusg7I@public.gmane.org>, Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Ingo Molnar <mingo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hariprasad S <hariprasad-ut6Up61K2wZBDgjK7y7TUQ@public.gmane.org>, Thomas Gleixner <tglx@linutro>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 14, 2015 at 12:52:55PM +0100, Charles Keepax wrote:
-> On Mon, Sep 14, 2015 at 01:54:39PM +0200, Pavel Machek wrote:
-> > Hi!
-> > 
-> > I've got an embedded system with two arizona / wm5102 codecs.
-> > 
-> > Unfortunately, kernel does not seem to be ready for that
-> > configuration.
-> > 
-> > In particular, drivers/regulator/arizona-ldo1.c and
-> > drivers/regulator/arizona-micsupp.c register system-wide "MICVDD" and
-> > "LDO1" regulators, but with two codecs in the system, we really have
-> > wm5102-codec.1.MICVDD, wm5102-codec.2.MICVDD, wm5102-codec.1.LDO1 and
-> > wm5102-codec.2.LDO1.
-> > 
-> > That got me second codec working in two-codec configuration, but first
-> > one still stops working as soon as two codecs are enabled.
-> > 
-> > If you have idea what else needs fixing, let me know.
-> > 
-> > Best regards,
-> > 								Pavel
-> 
-> I must confess I haven't ever tested a system with two Arizona
-> CODECs connected. Yes it seems you would get clashes on the
-> regulator names, I guess that would need to be fixed up. If you
-> were doing so wm831x-ldo.c would probably make a reasonable
-> example.
-> 
-> I guess you would need to be careful with the machine driver as
-> well, you will need to use a snd_soc_codec_conf structure for at
-> least one (although I would do both) of the CODECs to give  a
-> prefix for all the widget/control names, otherwise those will
-> clash and everything will probably behave very strangely. See
-> sound/soc/samsung/bells.c for an example doing this for wm9081.
-> 
-> Those are the only two things that spring to mind at the moment
-> but keep me informed on how you are getting on and I will let you
-> know if I can come up with any other traps.
+On Monday 14 September 2015 09:21:54 Viresh Kumar wrote:
+> diff --git a/drivers/acpi/ec_sys.c b/drivers/acpi/ec_sys.c
+> index b4c216bab22b..bea8e425a8de 100644
+> --- a/drivers/acpi/ec_sys.c
+> +++ b/drivers/acpi/ec_sys.c
+> @@ -128,7 +128,7 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
+>  	if (!debugfs_create_x32("gpe", 0444, dev_dir, (u32 *)&first_ec->gpe))
+>  		goto error;
+>  	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir,
+> -				 (u32 *)&first_ec->global_lock))
+> +				 &first_ec->global_lock))
+>  		goto error;
+>  
+>  	if (write_support)
 
-Oh and one more all the calls to mfd_add_devices in
-arizona-core.c use PLATFORM_DEVID_NONE at the moment, which I
-suspect will also cause problems at some point.
+This one might need a separate patch that can be backported to stable, as
+the original code is already broken on big-endian 64-bit machines:
+global_lock is 'unsigned long'.
 
-Thanks,
-Charles
+	Arnd
