@@ -1,108 +1,47 @@
-From: Alison Wang <b18965@freescale.com>
-Subject: [PATCH v2] audio: sai: Add Power Management support
-Date: Mon, 14 Sep 2015 17:03:24 +0800
-Message-ID: <1442221404-35240-1-git-send-email-b18965@freescale.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 05/10] ALSA: axd: add buffers manipulation files
+Date: Mon, 14 Sep 2015 10:11:58 +0100
+Message-ID: <55F68F5E.3050609@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-6-git-send-email-qais.yousef@imgtec.com>
+ <20150826184323.GE28760@sirena.org.uk> <55DF1CDD.6040109@imgtec.com>
+ <20150829094711.GZ12027@sirena.org.uk> <55E5774A.8070808@imgtec.com>
+ <20150903123232.GX12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 6532E260430
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 11:09:19 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@freescale.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Alison Wang <alison.wang@freescale.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150903123232.GX12027@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds Power Management support for SAI.
-Activate regmap cache with REGCACHE_FLAT, and use
-regmap cache code to save and restore registers in
-suspend and resume. The Transmit Control Register
-(TCSR) and Receive Control Register(RCSR) should
-be volatile registers.
+On 09/03/2015 01:32 PM, Mark Brown wrote:
+> On Tue, Sep 01, 2015 at 11:00:42AM +0100, Qais Yousef wrote:
+>> On 08/29/2015 10:47 AM, Mark Brown wrote:
+> Please delete unneeded context from replies, it makes it easier to find
+> the new content you have added.  Please also leave blank lines between
+> paragraphs, it makes it much easier to read messages.
 
-Signed-off-by: Alison Wang <alison.wang@freescale.com>
----
-Changes since v1:
-- Use REGCACHE_FLAT instead of REGCACHE_RBTREE.
-- Use SIMPLE_DEV_PM_OPS to simplify the code. 
 
- sound/soc/fsl/fsl_sai.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+Sorry about that and for the delayed response. I added one more blank line now, hopefully this looks better.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index a18fd92..030f71e 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -637,9 +637,11 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-+	case FSL_SAI_TCSR:
- 	case FSL_SAI_TFR:
--	case FSL_SAI_RFR:
- 	case FSL_SAI_TDR:
-+	case FSL_SAI_RCSR:
-+	case FSL_SAI_RFR:
- 	case FSL_SAI_RDR:
- 		return true;
- 	default:
-@@ -681,6 +683,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
- 	.readable_reg = fsl_sai_readable_reg,
- 	.volatile_reg = fsl_sai_volatile_reg,
- 	.writeable_reg = fsl_sai_writeable_reg,
-+	.cache_type = REGCACHE_FLAT,
- };
- 
- static int fsl_sai_probe(struct platform_device *pdev)
-@@ -796,6 +799,31 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int fsl_sai_suspend(struct device *dev)
-+{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(sai->regmap, true);
-+	regcache_mark_dirty(sai->regmap);
-+
-+	return 0;
-+}
-+
-+static int fsl_sai_resume(struct device *dev)
-+{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
-+
-+	/* Restore all registers */
-+	regcache_cache_only(sai->regmap, false);
-+	regcache_sync(sai->regmap);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static SIMPLE_DEV_PM_OPS(fsl_sai_pm, fsl_sai_suspend, fsl_sai_resume);
-+
- static const struct of_device_id fsl_sai_ids[] = {
- 	{ .compatible = "fsl,vf610-sai", },
- 	{ .compatible = "fsl,imx6sx-sai", },
-@@ -807,6 +835,7 @@ static struct platform_driver fsl_sai_driver = {
- 	.driver = {
- 		.name = "fsl-sai",
- 		.of_match_table = fsl_sai_ids,
-+		.pm = &fsl_sai_pm,
- 	},
- };
- module_platform_driver(fsl_sai_driver);
--- 
-2.1.0.27.g96db324
+  
+
+>> to the driver that it can reuse it, there's no guarantee that this returned
+>> buffer is in the same order it was sent.
+> If that's the case I'm not sure the code is correct - it seemed to have
+> assumptions that the buffers were going to be retired in the order.
+
+
+What this code is trying to do is the same as what vring do. I'll move 
+this driver to be rproc based which hopefully should make things simpler 
+and trim all of this out and address your other review comments as well.
+
+I didn't write an rproc driver before, if there's anything that you 
+think I need to be aware of when writing an rproc based *ALSA* driver 
+I'd appreciate pointing it out.
+
+Thanks,
+Qais
