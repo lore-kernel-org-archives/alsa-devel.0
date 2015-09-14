@@ -1,67 +1,83 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Date: Mon, 14 Sep 2015 18:11:09 +0100
-Message-ID: <20150914171109.GW12027@sirena.org.uk>
-References: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
+	Nuvoton 8825
+Date: Mon, 14 Sep 2015 18:54:11 +0100
+Message-ID: <20150914175411.GY12027@sirena.org.uk>
+References: <1440805070-39150-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150830144717.GD12027@sirena.org.uk>
+ <CAOMFOmUR0DQD82AU9-8XrA0vscRkC0UxaV5ZvOOa6TG4RZDs1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4492793628393361331=="
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Avri Altman <avri.altman-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Stanislaw Gruszka <sgruszka-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jiri Slaby <jirislaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "open list:DOCUMENTATION" <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Catalin Marinas <catalin.marinas-5wv7dgnIgG8@public.gmane.org>, Sebastian Andrzej Siewior <bigeasy-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, "open list:MEMORY MANAGEMENT" <linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org>, Kalle Valo <kvalo-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, Emmanuel Grumbach <emmanuel.grumbach-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Luciano Coelho <luciano.coelho-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Wang Long <long.wanglong-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>, Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Ingo Molnar <mingo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Johan Hedberg <johan.hedberg@g>
+Content-Type: multipart/mixed; boundary="===============7787975188824754585=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CF1F2605FF
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 19:54:17 +0200 (CEST)
+In-Reply-To: <CAOMFOmUR0DQD82AU9-8XrA0vscRkC0UxaV5ZvOOa6TG4RZDs1Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ben Zhang <benzh@google.com>, Dylan Reid <dgreid@google.com>, mfelton1@nuvoton.com, Chih-Chiang Chang <ccchang12@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4492793628393361331==
+--===============7787975188824754585==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gABkrxlT8b359YXV"
+	protocol="application/pgp-signature"; boundary="7iH89WndFPCVpQsx"
 Content-Disposition: inline
 
 
---gABkrxlT8b359YXV
+--7iH89WndFPCVpQsx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 14, 2015 at 09:21:54AM +0530, Viresh Kumar wrote:
-> Long back 'bool' type used to be a typecast to 'int', but that changed
-> in v2.6.19. And that is a typecast to _Bool now, which (mostly) takes
-> just a byte. Anyway, the bool type is implementation defined, and better
-> we don't assume its size to be 4 bytes or 1.
+On Thu, Sep 03, 2015 at 10:10:05AM -0700, Anatol Pomozov wrote:
+> On Sun, Aug 30, 2015 at 7:47 AM, Mark Brown <broonie@kernel.org> wrote:
 
-Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> > which is only called (or only does anything) if there is
+> > actually DT data (if there is an of_node set).
 
---gABkrxlT8b359YXV
+> device_property_read_* handles both DTS and ACPI that covers most
+> (all?) modern systems.
+
+> Or are you talking about case when a platform driver passes
+> pre-initialized data from using dev_get_platdata() (like what rt5677
+> does)? I assume this is a deprecated style that predates DTS/ACPI
+> style configuration.
+
+Not all architectures use DT or ACPI, the driver should really support
+them.
+
+--7iH89WndFPCVpQsx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV9v+sAAoJECTWi3JdVIfQjVwH/jgfnm1aCRP2kYvsvOpD6Rhn
-kzv9ftGGPrLduAP9ROoaVhjxQkuM2GeRIumTyi3MqALAowWUGrIZq4NsNEJCrS7i
-hMEXqTeR55u5D1BPXElYtftTImYZDDvfrEjs/3cGvAN/FObbWA6q1a95DTEYw7Qw
-w1G2AXM+1fenUoqF/9sNbAfjUkjV5Mm3cF1SWuYc+q656/Iuzzhj6foZECAVqf9o
-VVqePsqpfnD/LFsU5GKYS42AcaFyn3deAhRB+IbLWKOOwuiCWrgLisYWH2VnsyiI
-BATL4sO2gk7mvpJOQXpQiCNDw+h08FiWoLscnN+UbvDhs7TJrdUAjYWLioFZJhw=
-=s8m4
+iQEcBAEBCAAGBQJV9wnCAAoJECTWi3JdVIfQNlUIAIUso5Z4QR9rNtbEq+2NEPjY
+Pby8yKVLbIzGbT/kRPzzU90LL3A+61KKj9Wmi4jhJ2kcj75cf1A6/DMv4Bt++zbr
+CT/K2Efsq+Xm1rBy+vBgFkY5jYIVs8JmHDPb9mKFzi6k9KFNfSvjhvrnAbBd3bKt
+FdjyURooFnnRDSoDp0pWFv5+WRQFitA/YPnYxKV9J35sL5njfKSHppoCRAGWFKEI
+KDvg9xHHZ5S0DF3HeF8G9kerhYo7w+W4+Ex9nSyjFkZbm52SezAMCCdDVGfwBshU
+LLZ7JBdpZflrl9slx21Uf5tTRgCzxNBfS1H/Bn5CEE7NB0IEtgmP0eIKtyl+XNM=
+=iAyy
 -----END PGP SIGNATURE-----
 
---gABkrxlT8b359YXV--
+--7iH89WndFPCVpQsx--
 
---===============4492793628393361331==
+--===============7787975188824754585==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4492793628393361331==--
+--===============7787975188824754585==--
