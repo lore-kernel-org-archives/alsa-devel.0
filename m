@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
- Dublin
-Date: Mon, 14 Sep 2015 19:02:56 +0100
-Message-ID: <20150914180256.GA12027@sirena.org.uk>
-References: <20150714150352.GW11162@sirena.org.uk>
- <20150718170716.GA23525@localhost>
- <CAL-7xP8fakWDUoQEwHwkpGmxbFEY_xyK6ZxAAWbi+B2OREFXNw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: qcom: change PTR_ERR argument
+Date: Mon, 14 Sep 2015 19:04:25 +0100
+Message-ID: <20150914180425.GB12027@sirena.org.uk>
+References: <1440957911-7687-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5142588448269720248=="
+Content-Type: multipart/mixed; boundary="===============9130511510968503994=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B90FA2605FF
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 20:03:14 +0200 (CEST)
-In-Reply-To: <CAL-7xP8fakWDUoQEwHwkpGmxbFEY_xyK6ZxAAWbi+B2OREFXNw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E5A7E2605FF
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 20:04:38 +0200 (CEST)
+In-Reply-To: <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Laurent <elaurent@google.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tanu.kaskinen@linux.intel.com, arun@accosted.net, "Lai, Patrick" <plai@quicinc.com>, Vinod Koul <vinod.koul@intel.com>, timcussins@eml.cc, Liam Girdwood <lgirdwood@gmail.com>, paul.handrigan@cirrus.com, jean-michel.hautbois@vodalys.com, Takashi Iwai <tiwai@suse.de>, nstoughton@aether.com, patrakov@gmail.com, pmeerw@pmeerw.net, daniel@zonque.org, nariman.poushin@cirrus.com, dgreid@chromium.org, David Henningsson <david.henningsson@canonical.com>, charles.keepax@cirrus.com
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5142588448269720248==
+--===============9130511510968503994==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/6/NiKJuzyDL1e1D"
+	protocol="application/pgp-signature"; boundary="N5b0NsBGdE2hIyw+"
 Content-Disposition: inline
 
 
---/6/NiKJuzyDL1e1D
+--N5b0NsBGdE2hIyw+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 10, 2015 at 02:35:07PM -0700, Eric Laurent wrote:
+On Sun, Aug 30, 2015 at 08:05:10PM +0200, Julia Lawall wrote:
+> Apply PTR_ERR to the value that was recently assigned.
+>=20
+> The semantic match that finds this problem is as follows:
+> (http://coccinelle.lip6.fr/)
 
-> Is registration to ELCE mandatory to attend the audio mini summit this year
-> or not?
+I have no idea what's going on with this stuff without spending more
+time than it looks like should need, there's a moderately big thread and
+some patches posted in the middle of it.  Can you repost whatever the
+current state is please?
 
-I believe so, yes - let me know if this is going to be an issue and I'll
-see what we can do.
-
---/6/NiKJuzyDL1e1D
+--N5b0NsBGdE2hIyw+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV9wvPAAoJECTWi3JdVIfQjTgIAIHwRYZTHwfYbwDOMtNZ/1YX
-h5OasLB9MDCOmQHk42Y2laXBL7zXZFsm4/qVKXB4umT9c6Sx2wUZ2MrrbXT0CUqG
-2zhB3qkHUehOWHkWWFPa1BtNctn+mnmYm/LzY4O073eVsK4WLBN+zeEvK6HclvqI
-KDg+kjppn6zEi4+mbbZEWO1GCVuHThlROvygkaQsnN0/ZTo2fAZCx7LBV8/SP8bY
-QiQUlD1olB5TXveL6vO/PE5DEVTqDgooxn+I8xjGkZvMeEtLHFzL4UwlZpuQGzJA
-jYGYJqrNNhzth6FWt4YMEygf5O4eGAQcD1s2LTpshfdlvPV4IWWBpa+isgMJp/c=
-=Wmto
+iQEcBAEBCAAGBQJV9wwoAAoJECTWi3JdVIfQmj0H/3lruYh3O9vUoAvbLXz6pz64
+BC05jzlUO0BqyTEMtUIf8fysl0AJMpQwUW+z1BzrERsdYuJnA/LhsVdK65AkRbmj
+5xuZM+QXBjbCwH9k0rUJLOE36XtUY4PT9l2NG06NGc/esmuzfEUFAq9VWSrh0Vv/
+otwUkz4Tlb4kLjGTlzQW8u6RzKRBQfLaYxyTVcI7a+4q4lYnlcOm5JObkuEy7WKl
+/4yUYDg4sL5xjDHgHOlxYeTwwFsQN1kTcVgu+jjZ3K6OKWbt2NY6f39BPBwSL/FP
+1h6uqeEjS5yKv9YqVN3UpmM2GUY3YgR4xOncSl5QydX53kMmMDrdQBbLJt9gkK8=
+=qkwL
 -----END PGP SIGNATURE-----
 
---/6/NiKJuzyDL1e1D--
+--N5b0NsBGdE2hIyw+--
 
---===============5142588448269720248==
+--===============9130511510968503994==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5142588448269720248==--
+--===============9130511510968503994==--
