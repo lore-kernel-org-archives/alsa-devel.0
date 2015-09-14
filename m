@@ -1,59 +1,108 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: Increase periods_min in capture
-Date: Mon, 14 Sep 2015 14:51:17 +0800
-Message-ID: <1442213477-63721-1-git-send-email-koro.chen@mediatek.com>
+From: Alison Wang <b18965@freescale.com>
+Subject: [PATCH v2] audio: sai: Add Power Management support
+Date: Mon, 14 Sep 2015 17:03:24 +0800
+Message-ID: <1442221404-35240-1-git-send-email-b18965@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6532E260430
+ for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 11:09:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@freescale.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Alison Wang <alison.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-In capture, there is chance that hw_ptr reported at IRQ is
-a little smaller than period_size due to internal AFE buffer.
-In the case of ping-pong buffer:
+This patch adds Power Management support for SAI.
+Activate regmap cache with REGCACHE_FLAT, and use
+regmap cache code to save and restore registers in
+suspend and resume. The Transmit Control Register
+(TCSR) and Receive Control Register(RCSR) should
+be volatile registers.
 
-|xxxxxxxxxxxxxxxxxxxxxxxxxxxx--|-----------------------------|
-                            hw_ptr < period_size
-
-This available buffer will not be read since its size is smaller than
-avail_min (which is period_size by default), and read thread continues
-to sleep. If the next hw_ptr is just a little larger than buffer_size,
-overrun occurs. One more period can hold the possible unread buffer.
-
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: Alison Wang <alison.wang@freescale.com>
 ---
- sound/soc/mediatek/mtk-afe-pcm.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Changes since v1:
+- Use REGCACHE_FLAT instead of REGCACHE_RBTREE.
+- Use SIMPLE_DEV_PM_OPS to simplify the code. 
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index d190fe0..f5baf3c 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -549,6 +549,23 @@ static int mtk_afe_dais_startup(struct snd_pcm_substream *substream,
- 	memif->substream = substream;
+ sound/soc/fsl/fsl_sai.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index a18fd92..030f71e 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -637,9 +637,11 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case FSL_SAI_TCSR:
+ 	case FSL_SAI_TFR:
+-	case FSL_SAI_RFR:
+ 	case FSL_SAI_TDR:
++	case FSL_SAI_RCSR:
++	case FSL_SAI_RFR:
+ 	case FSL_SAI_RDR:
+ 		return true;
+ 	default:
+@@ -681,6 +683,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
+ 	.readable_reg = fsl_sai_readable_reg,
+ 	.volatile_reg = fsl_sai_volatile_reg,
+ 	.writeable_reg = fsl_sai_writeable_reg,
++	.cache_type = REGCACHE_FLAT,
+ };
  
- 	snd_soc_set_runtime_hwparams(substream, &mtk_afe_hardware);
+ static int fsl_sai_probe(struct platform_device *pdev)
+@@ -796,6 +799,31 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int fsl_sai_suspend(struct device *dev)
++{
++	struct fsl_sai *sai = dev_get_drvdata(dev);
 +
-+	/*
-+	 * Capture cannot use ping-pong buffer since hw_ptr at IRQ may be
-+	 * smaller than period_size due to AFE's internal buffer.
-+	 * This easily leads to overrun when avail_min is period_size.
-+	 * One more period can hold the possible unread buffer.
-+	 */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		ret = snd_pcm_hw_constraint_minmax(runtime,
-+						   SNDRV_PCM_HW_PARAM_PERIODS,
-+						   3,
-+						   mtk_afe_hardware.periods_max);
-+		if (ret < 0) {
-+			dev_err(afe->dev, "hw_constraint_minmax failed\n");
-+			return ret;
-+		}
-+	}
- 	ret = snd_pcm_hw_constraint_integer(runtime,
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (ret < 0)
++	regcache_cache_only(sai->regmap, true);
++	regcache_mark_dirty(sai->regmap);
++
++	return 0;
++}
++
++static int fsl_sai_resume(struct device *dev)
++{
++	struct fsl_sai *sai = dev_get_drvdata(dev);
++
++	/* Restore all registers */
++	regcache_cache_only(sai->regmap, false);
++	regcache_sync(sai->regmap);
++
++	return 0;
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static SIMPLE_DEV_PM_OPS(fsl_sai_pm, fsl_sai_suspend, fsl_sai_resume);
++
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", },
+ 	{ .compatible = "fsl,imx6sx-sai", },
+@@ -807,6 +835,7 @@ static struct platform_driver fsl_sai_driver = {
+ 	.driver = {
+ 		.name = "fsl-sai",
+ 		.of_match_table = fsl_sai_ids,
++		.pm = &fsl_sai_pm,
+ 	},
+ };
+ module_platform_driver(fsl_sai_driver);
 -- 
-1.7.9.5
+2.1.0.27.g96db324
