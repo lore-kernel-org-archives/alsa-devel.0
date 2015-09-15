@@ -1,90 +1,53 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: System with multiple arizona (wm5102) codecs
-Date: Tue, 15 Sep 2015 06:56:39 -0700
-Message-ID: <CAG5mAdybV2U5Z9FRPy4zVF10Ws63rybSHCMCEpKQ1ArTBLnXpw@mail.gmail.com>
-References: <20150914115439.GA29646@amd> <20150914115255.GE11200@ck-lbox>
- <20150915061832.GA25442@amd> <20150915080648.GG11200@ck-lbox>
- <20150915083552.GA14780@amd>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
+Date: Tue, 15 Sep 2015 19:34:36 +0530
+Message-ID: <20150915140436.GJ6350@linux>
+References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
+ <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
+ <1442313464.1914.21.camel@sipsolutions.net>
+ <20150915110447.GI6350@linux>
+ <20150915094509.46cca84d@gandalf.local.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f180.google.com (mail-yk0-f180.google.com
- [209.85.160.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D1A62612D6
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 15:57:00 +0200 (CEST)
-Received: by ykdu9 with SMTP id u9so186657945ykd.2
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 06:56:59 -0700 (PDT)
-In-Reply-To: <20150915083552.GA14780@amd>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <owner-linux-mm@kvack.org>
+Content-Disposition: inline
+In-Reply-To: <20150915094509.46cca84d@gandalf.local.home>
+Sender: owner-linux-mm@kvack.org
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Johannes Berg <johannes@sipsolutions.net>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Rafael Wysocki <rjw@rjwysocki.net>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, "arnd@arndb.de" <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>, Alexander Duyck <alexander.h.duyck@redhat.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Arik Nemtsov <arik@wizery.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, "Altman, Avri" <avri.altman@intel.com>open list
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pavel,
-   I'd love to see the patches :-)  I've been trying to figure out the
-*right* way to add multiple codecs to a single card (and single CPU
-DAI) for some days now.  Any help would be greatly appreciated.
+On 15-09-15, 09:45, Steven Rostedt wrote:
+> Then break up the patch.
 
-Thanks,
- -Caleb
+That will cause build warnings between the patches due to prototype
+mismatch. Maybe I should ignore get_maintainers for this patch and
+just cc the lists :)
 
+> Your Cc list is far too large, I would nack
+> this patch just for that alone.
 
-On Tue, Sep 15, 2015 at 1:35 AM, Pavel Machek <pavel@ucw.cz> wrote:
-> Hi!
->
->> > > I must confess I haven't ever tested a system with two Arizona
->> > > CODECs connected. Yes it seems you would get clashes on the
->> > > regulator names, I guess that would need to be fixed up. If you
->> > > were doing so wm831x-ldo.c would probably make a reasonable
->> > > example.
->> > >
->> > > I guess you would need to be careful with the machine driver as
->> > > well, you will need to use a snd_soc_codec_conf structure for at
->> > > least one (although I would do both) of the CODECs to give  a
->> > > prefix for all the widget/control names, otherwise those will
->> > > clash and everything will probably behave very strangely. See
->> > > sound/soc/samsung/bells.c for an example doing this for wm9081.
->> > >
->> > > Those are the only two things that spring to mind at the moment
->> > > but keep me informed on how you are getting on and I will let you
->> > > know if I can come up with any other traps.
->> >
->> > It seems that davinci-evm takes data from device tree, but then uses
->> > statically-allocated evm_soc_card, which would lead to problems in
->> > dual-codec config....?
->>
->> That somewhat depends on how you plan on doing things. I had
->> assumed you would be having a single machine driver with both
->> CODECs connected to it, in which case the statically allocated
->> snd_soc_card wouldn't be a problem. However, if you wanted to
->> have two seperate machine drivers with a single CODEC connected
->> to each then you would have an issue.
->>
->> I guess either approach is reasonable and probably just depends
->> on what your end goal is.
->
-> The way dts is set up in my case, I ended up with two
-> snd_soc_cards. It seems to work for me now (on old kernel and with
-> some rather extreme hacks).
->
-> I'll most likely clean it up and get into mainline-ready form, but it
-> will take some time. If you want to see the ugly patches, let me know.
->
-> Thanks and best regards,
->                                                                         Pavel
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+:(
+
+> Sad part is, you didn't even Cc Linus (which I added). I believe he was
+> against having bool's in structures before.
+
+Sorry about that, I had no clue that I should explicitly include Linus
+to this thread.
+
+> Linus, This patch changes a lot of u32s into bools in structures.
+> What's your take on that?
+> 
+> I added the patch again to the bottom of this email so that Linus may
+> see it (it was cut from the email I'm replying to).
+
+Thanks Steven.
+
+-- 
+viresh
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
