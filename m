@@ -1,78 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: System with multiple arizona (wm5102) codecs
-Date: Tue, 15 Sep 2015 15:09:19 +0100
-Message-ID: <20150915140919.GE11268@sirena.org.uk>
-References: <20150914115439.GA29646@amd> <20150914115255.GE11200@ck-lbox>
- <20150915061832.GA25442@amd> <20150915080648.GG11200@ck-lbox>
- <20150915083552.GA14780@amd>
- <CAG5mAdybV2U5Z9FRPy4zVF10Ws63rybSHCMCEpKQ1ArTBLnXpw@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
+Date: Tue, 15 Sep 2015 19:42:08 +0530
+Message-ID: <20150915141208.GK6350@linux>
+References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
+ <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
+ <20150915100454.70dcc04d@gandalf.local.home>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0187558178614719988=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EE1D26041D
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 16:09:32 +0200 (CEST)
-In-Reply-To: <CAG5mAdybV2U5Z9FRPy4zVF10Ws63rybSHCMCEpKQ1ArTBLnXpw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Pavel Machek <pavel@ucw.cz>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <owner-linux-mm@kvack.org>
+Content-Disposition: inline
+In-Reply-To: <20150915100454.70dcc04d@gandalf.local.home>
+Sender: owner-linux-mm@kvack.org
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: gregkh@linuxfoundation.org, linaro-kernel@lists.linaro.org, Rafael Wysocki <rjw@rjwysocki.net>, sboyd@codeaurora.org, arnd@arndb.de, Mark Brown <broonie@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>, Alexander Duyck <alexander.h.duyck@redhat.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Arik Nemtsov <arik@wizery.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, Avri Altman <avri.altman@intel.com>, "open list:B43 WIRELESS DRIVER" <b43-dev@lists.infradead.org>, Borislav Petkov <bp@alien8.de>, Brian Silverman <bsilver16384@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Charles Keepax <ckeepax@opensourc>
 List-Id: alsa-devel@alsa-project.org
 
+On 15-09-15, 10:04, Steven Rostedt wrote:
+> On Tue, 15 Sep 2015 14:04:59 +0530
+> Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> 
+> > diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+> > index 2614a839c60d..f11e17ad7834 100644
+> > --- a/drivers/acpi/ec.c
+> > +++ b/drivers/acpi/ec.c
+> > @@ -1237,7 +1237,7 @@ ec_parse_device(acpi_handle handle, u32 Level, void *context, void **retval)
+> >  	/* Use the global lock for all EC transactions? */
+> >  	tmp = 0;
+> >  	acpi_evaluate_integer(handle, "_GLK", NULL, &tmp);
+> > -	ec->global_lock = tmp;
+> > +	ec->global_lock = !!tmp;
+> 
+> BTW, the above is equivalent if global_lock is of type bool.
 
---===============0187558178614719988==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HeFlAV5LIbMFYYuh"
-Content-Disposition: inline
+Ah, yes. Thanks for letting me know (I just testedit as well).
 
+But will it look sane enough to set a boolean to anything apart from
+true/false or 1/0? Yes, it will always be set to 0/1 only, but still..
 
---HeFlAV5LIbMFYYuh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- 
+viresh
 
-On Tue, Sep 15, 2015 at 06:56:39AM -0700, Caleb Crome wrote:
-
->    I'd love to see the patches :-)  I've been trying to figure out the
-> *right* way to add multiple codecs to a single card (and single CPU
-> DAI) for some days now.  Any help would be greatly appreciated.
-
-Like Charles said earlier the Bells machine in mainline has multiple
-CODECs hooked up.  Speyside too.  To hook up multiple CODECs to a single
-DAI link see 88bd870f02dff5c94 (ASoC: core: Add initial support for DAI
-multicodec), sadly I don't think Benoit ever got round to submitting a
-machine.
-
---HeFlAV5LIbMFYYuh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV+CaOAAoJECTWi3JdVIfQqzwH/iYpaDhhm+EwVV6YV75rT5oO
-HsOYwc7CT7xG8V6BUmkDi7LJ6DUd69js7LoKdtN/PO4+EuetbASGmA0UD11Yn1tB
-6zXBEx2ajUTAerMTr/UlYwCp62xz0/HRDps2YR4f1QAjr+Set2fKYiTafKkAQkjg
-CxOZtdV8m1RpaJR761okHxm9jo9o0keCobYvFqKgsV7xrsvi+47TPmrx8rCYG041
-pJJqNvLz/6UX7IwF+aTRURC3yQJLu4PMv3FC10g/Ynx4teSviDmvu2KD7/WxFRSi
-17lxoqVbPiJ8ZYHXYVLwfLRMxUgkaiURzjOABqxSxeyv4ZSmBFlzfIwdOwkX2zk=
-=J9Rg
------END PGP SIGNATURE-----
-
---HeFlAV5LIbMFYYuh--
-
---===============0187558178614719988==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0187558178614719988==--
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
