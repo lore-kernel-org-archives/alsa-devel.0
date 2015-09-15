@@ -1,15 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH BAT V1 1/7] BAT: Add initial functions
-Date: Tue, 15 Sep 2015 15:00:17 +0800
-Message-ID: <96e7ea5cdc60036c1d72ae0f45621ba96ba16ecc.1442298607.git.han.lu@intel.com>
+Subject: [PATCH BAT V1 2/7] BAT: Add common definitions and
+	functions
+Date: Tue, 15 Sep 2015 15:00:18 +0800
+Message-ID: <05e2d97159be0a85a5265427ec02ba752c739638.1442298607.git.han.lu@intel.com>
 References: <cover.1442298607.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EC53B26062E
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 09:01:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A22B26067A
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 09:01:44 +0200 (CEST)
 In-Reply-To: <cover.1442298607.git.han.lu@intel.com>
 In-Reply-To: <cover.1442298607.git.han.lu@intel.com>
 References: <cover.1442298607.git.han.lu@intel.com>
@@ -28,19 +29,19 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add main entrance, command line parsing, parameter initiating and
-thread initiating functions for BAT.
+Add common definitions of macros and data structures; Add functions
+that used by multiple components, such as wav file reading and writing.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@intel.com>
 Signed-off-by: Bernard Gautier <bernard.gautier@intel.com>
 
-diff --git a/bat/bat.c b/bat/bat.c
+diff --git a/bat/common.c b/bat/common.c
 new file mode 100644
-index 0000000..24c74e8
+index 0000000..798b00b
 --- /dev/null
-+++ b/bat/bat.c
-@@ -0,0 +1,608 @@
++++ b/bat/common.c
+@@ -0,0 +1,198 @@
 +/*
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
@@ -56,598 +57,363 @@ index 0000000..24c74e8
 + *
 + */
 +
-+#include <unistd.h>
 +#include <stdio.h>
++#include <stddef.h>
 +#include <stdlib.h>
 +#include <stdbool.h>
-+#include <string.h>
 +#include <errno.h>
-+#include <pthread.h>
-+#include <getopt.h>
-+#include <math.h>
-+#include <limits.h>
 +
 +#include "aconfig.h"
 +#include "gettext.h"
-+#include "version.h"
 +
 +#include "common.h"
-+
 +#include "alsa.h"
-+#include "convert.h"
-+#include "analyze.h"
 +
-+static int get_duration(struct bat *bat)
++int retval_play;
++int retval_record;
++
++/* update chunk_fmt data to bat */
++static int update_fmt_to_bat(struct bat *bat, struct chunk_fmt *fmt)
 +{
-+	float duration_f;
-+	long duration_i;
-+	char *ptrf, *ptri;
-+
-+	duration_f = strtof(bat->narg, &ptrf);
-+	if (duration_f == HUGE_VALF || duration_f == -HUGE_VALF) {
-+		fprintf(bat->err, _("duration float overflow: %f %d\n"),
-+				duration_f, -errno);
-+		return -errno;
-+	} else if (duration_f == 0.0 && errno != 0) {
-+		fprintf(bat->err, _("duration float underflow: %f %d\n"),
-+				duration_f, -errno);
-+		return -errno;
-+	}
-+
-+	duration_i = strtol(bat->narg, &ptri, 10);
-+	if (duration_i == LONG_MAX) {
-+		fprintf(bat->err, _("duration long overflow: %ld %d\n"),
-+				duration_i, -errno);
-+		return -errno;
-+	} else if (duration_i == LONG_MIN) {
-+		fprintf(bat->err, _("duration long underflow: %ld %d\n"),
-+				duration_i, -errno);
-+		return -errno;
-+	}
-+
-+	if (*ptrf == 's') {
-+		bat->frames = duration_f * bat->rate;
-+	} else if (*ptri == 0) {
-+		bat->frames = duration_i;
-+	} else {
-+		fprintf(bat->err, _("invalid duration: %s\n"), bat->narg);
++	bat->channels = fmt->channels;
++	bat->rate = fmt->sample_rate;
++	bat->sample_size = fmt->sample_length / 8;
++	if (bat->sample_size > 4) {
++		fprintf(bat->err, _("Invalid format: sample size=%d\n"),
++				bat->sample_size);
 +		return -EINVAL;
 +	}
-+
-+	if (bat->frames <= 0 || bat->frames > MAX_FRAMES) {
-+		fprintf(bat->err, _("duration out of range: (0, %d(%ds))\n"),
-+				MAX_FRAMES, (bat->frames / bat->rate));
-+		return -EINVAL;
-+	}
++	bat->frame_size = fmt->blocks_align;
 +
 +	return 0;
 +}
 +
-+static void get_sine_frequencies(struct bat *bat, char *freq)
++/* calculate frames and update to bat */
++static int update_frames_to_bat(struct bat *bat,
++		struct wav_chunk_header *header, FILE *fp)
 +{
-+	char *tmp1;
++	/* The number of analyzed captured frames is arbitrarily set to half of
++	   the number of frames of the wav file or the number of frames of the
++	   wav file when doing direct analysis (--local) */
++	bat->frames = header->length / bat->frame_size;
++	if (!bat->local)
++		bat->frames /= 2;
 +
-+	tmp1 = strchr(freq, ',');
-+	if (tmp1 == NULL) {
-+		bat->target_freq[1] = bat->target_freq[0] = atof(optarg);
-+	} else {
-+		*tmp1 = '\0';
-+		bat->target_freq[0] = atof(optarg);
-+		bat->target_freq[1] = atof(tmp1 + 1);
-+	}
++	return 0;
 +}
 +
-+static void get_format(struct bat *bat, char *optarg)
++static int read_chunk_fmt(struct bat *bat, char *file, FILE *fp, bool skip,
++		struct wav_chunk_header *header)
 +{
-+	if (strcasecmp(optarg, "cd") == 0) {
-+		bat->format = SND_PCM_FORMAT_S16_LE;
-+		bat->rate = 44100;
-+		bat->channels = 2;
-+	} else if (strcasecmp(optarg, "dat") == 0) {
-+		bat->format = SND_PCM_FORMAT_S16_LE;
-+		bat->rate = 48000;
-+		bat->channels = 2;
-+	} else {
-+		bat->format = snd_pcm_format_value(optarg);
-+		if (bat->format == SND_PCM_FORMAT_UNKNOWN) {
-+			fprintf(bat->err, _("wrong extended format '%s'\n"),
-+					optarg);
-+			exit(EXIT_FAILURE);
-+		}
++	size_t err;
++	int header_skip;
++	struct chunk_fmt chunk_fmt;
++
++	err = fread(&chunk_fmt, sizeof(chunk_fmt), 1, fp);
++	if (err != 1) {
++		fprintf(bat->err, _("Read chunk fmt error: %s:%zd\n"),
++				file, err);
++		return -EIO;
 +	}
-+
-+	switch (bat->format) {
-+	case SND_PCM_FORMAT_U8:
-+		bat->sample_size = 1;
-+		break;
-+	case SND_PCM_FORMAT_S16_LE:
-+		bat->sample_size = 2;
-+		break;
-+	case SND_PCM_FORMAT_S24_3LE:
-+		bat->sample_size = 3;
-+		break;
-+	case SND_PCM_FORMAT_S32_LE:
-+		bat->sample_size = 4;
-+		break;
-+	default:
-+		fprintf(bat->err, _("unsupported format: %d\n"), bat->format);
-+		exit(EXIT_FAILURE);
-+	}
-+}
-+
-+static inline int thread_wait_completion(struct bat *bat,
-+		pthread_t id, int **val)
-+{
-+	int err;
-+
-+	err = pthread_join(id, (void **) val);
-+	if (err)
-+		pthread_cancel(id);
-+
-+	return err;
-+}
-+
-+/* loopback test where we play sine wave and capture the same sine wave */
-+static void test_loopback(struct bat *bat)
-+{
-+	pthread_t capture_id, playback_id;
-+	int err;
-+	int *thread_result_capture, *thread_result_playback;
-+
-+	/* start playback */
-+	err = pthread_create(&playback_id, NULL,
-+			(void *) bat->playback.fct, bat);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot create playback thread: %d\n"),
-+				err);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* TODO: use a pipe to signal stream start etc - i.e. to sync threads */
-+	/* Let some time for playing something before capturing */
-+	usleep(CAPTURE_DELAY * 1000);
-+
-+	/* start capture */
-+	err = pthread_create(&capture_id, NULL, (void *) bat->capture.fct, bat);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot create capture thread: %d\n"), err);
-+		pthread_cancel(playback_id);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* wait for playback to complete */
-+	err = thread_wait_completion(bat, playback_id, &thread_result_playback);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot join playback thread: %d\n"), err);
-+		free(thread_result_playback);
-+		pthread_cancel(capture_id);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* check playback status */
-+	if (*thread_result_playback != 0) {
-+		fprintf(bat->err, _("Exit playback thread fail: %d\n"),
-+				*thread_result_playback);
-+		pthread_cancel(capture_id);
-+		exit(EXIT_FAILURE);
-+	} else {
-+		fprintf(bat->log, _("Playback completed.\n"));
-+	}
-+
-+	/* now stop and wait for capture to finish */
-+	pthread_cancel(capture_id);
-+	err = thread_wait_completion(bat, capture_id, &thread_result_capture);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot join capture thread: %d\n"), err);
-+		free(thread_result_capture);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* check capture status */
-+	if (*thread_result_capture != 0) {
-+		fprintf(bat->err, _("Exit capture thread fail: %d\n"),
-+				*thread_result_capture);
-+		exit(EXIT_FAILURE);
-+	} else {
-+		fprintf(bat->log, _("Capture completed.\n"));
-+	}
-+}
-+
-+/* single ended playback only test */
-+static void test_playback(struct bat *bat)
-+{
-+	pthread_t playback_id;
-+	int err;
-+	int *thread_result;
-+
-+	/* start playback */
-+	err = pthread_create(&playback_id, NULL,
-+			(void *) bat->playback.fct, bat);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot create playback thread: %d\n"),
-+				err);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* wait for playback to complete */
-+	err = thread_wait_completion(bat, playback_id, &thread_result);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot join playback thread: %d\n"), err);
-+		free(thread_result);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* check playback status */
-+	if (*thread_result != 0) {
-+		fprintf(bat->err, _("Exit playback thread fail: %d\n"),
-+				*thread_result);
-+		exit(EXIT_FAILURE);
-+	} else {
-+		fprintf(bat->log, _("Playback completed.\n"));
-+	}
-+}
-+
-+/* single ended capture only test */
-+static void test_capture(struct bat *bat)
-+{
-+	pthread_t capture_id;
-+	int err;
-+	int *thread_result;
-+
-+	/* start capture */
-+	err = pthread_create(&capture_id, NULL, (void *) bat->capture.fct, bat);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot create capture thread: %d\n"), err);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* TODO: stop capture */
-+
-+	/* wait for capture to complete */
-+	err = thread_wait_completion(bat, capture_id, &thread_result);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot join capture thread: %d\n"), err);
-+		free(thread_result);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* check playback status */
-+	if (*thread_result != 0) {
-+		fprintf(bat->err, _("Exit capture thread fail: %d\n"),
-+				*thread_result);
-+		exit(EXIT_FAILURE);
-+	} else {
-+		fprintf(bat->log, _("Capture completed.\n"));
-+	}
-+}
-+
-+static void usage(struct bat *bat, char *argv[])
-+{
-+	fprintf(bat->log,
-+_("Usage:%s [Option]...\n"
-+"\n"
-+"-h, --help             help\n"
-+"-D                     sound card\n"
-+"-P                     playback pcm\n"
-+"-C                     capture pcm\n"
-+"-f                     sample size\n"
-+"-c                     number of channels\n"
-+"-r                     sampling rate\n"
-+"-n                     frames to capture\n"
-+"-k                     sigma k\n"
-+"-F                     target frequency\n"
-+"-p                     total number of periods to play/capture\n"
-+"    --log=#            path of log file. if not set, logs be put to stdout,\n"
-+"                       and errors be put to stderr.\n"
-+"    --file=#           input file\n"
-+"    --saveplay=#       save playback content to target file, for debug\n"
-+"    --local            internal loop, bypass hardware\n"
-+), argv[0]);
-+	fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
-+			snd_pcm_format_name(SND_PCM_FORMAT_U8),
-+			snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
-+			snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
-+			snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
-+	fprintf(bat->log, _("The available format shotcuts are:\n"));
-+	fprintf(bat->log, _("-f cd (16 bit little endian, 44100, stereo)\n"));
-+	fprintf(bat->log, _("-f dat (16 bit little endian, 48000, stereo)\n"));
-+}
-+
-+static void set_defaults(struct bat *bat)
-+{
-+	memset(bat, 0, sizeof(struct bat));
-+
-+	/* Set default values */
-+	bat->rate = 44100;
-+	bat->channels = 1;
-+	bat->frame_size = 2;
-+	bat->sample_size = 2;
-+	bat->format = SND_PCM_FORMAT_S16_LE;
-+	bat->convert_float_to_sample = convert_float_to_int16;
-+	bat->convert_sample_to_double = convert_int16_to_double;
-+	bat->sinf_func = sinf_sign;
-+	bat->frames = bat->rate * 2;
-+	bat->target_freq[0] = 997.0;
-+	bat->target_freq[1] = 997.0;
-+	bat->sigma_k = 3.0;
-+	bat->playback.device = NULL;
-+	bat->capture.device = NULL;
-+	bat->buf = NULL;
-+	bat->local = false;
-+	bat->playback.fct = &playback_alsa;
-+	bat->capture.fct = &record_alsa;
-+	bat->playback.mode = MODE_LOOPBACK;
-+	bat->capture.mode = MODE_LOOPBACK;
-+	bat->period_is_limited = false;
-+	bat->log = stdout;
-+	bat->err = stderr;
-+}
-+
-+static void parse_arguments(struct bat *bat, int argc, char *argv[])
-+{
-+	int c, option_index;
-+	static const char short_options[] = "D:P:C:f:n:F:c:r:s:k:p:lth";
-+	static const struct option long_options[] = {
-+		{"help",     0, 0, 'h'},
-+		{"log",      1, 0, OPT_LOG},
-+		{"file",     1, 0, OPT_READFILE},
-+		{"saveplay", 1, 0, OPT_SAVEPLAY},
-+		{"local",    0, 0, OPT_LOCAL},
-+		{0, 0, 0, 0}
-+	};
-+
-+	while ((c = getopt_long(argc, argv, short_options, long_options,
-+					&option_index)) != -1) {
-+		switch (c) {
-+		case OPT_LOG:
-+			bat->logarg = optarg;
-+			break;
-+		case OPT_READFILE:
-+			bat->playback.file = optarg;
-+			break;
-+		case OPT_SAVEPLAY:
-+			bat->debugplay = optarg;
-+			break;
-+		case OPT_LOCAL:
-+			bat->local = true;
-+			break;
-+		case 'D':
-+			if (bat->playback.device == NULL)
-+				bat->playback.device = optarg;
-+			if (bat->capture.device == NULL)
-+				bat->capture.device = optarg;
-+			break;
-+		case 'P':
-+			if (bat->capture.mode == MODE_SINGLE)
-+				bat->capture.mode = MODE_LOOPBACK;
-+			else
-+				bat->playback.mode = MODE_SINGLE;
-+			bat->playback.device = optarg;
-+			break;
-+		case 'C':
-+			if (bat->playback.mode == MODE_SINGLE)
-+				bat->playback.mode = MODE_LOOPBACK;
-+			else
-+				bat->capture.mode = MODE_SINGLE;
-+			bat->capture.device = optarg;
-+			break;
-+		case 'n':
-+			bat->narg = optarg;
-+			break;
-+		case 'F':
-+			get_sine_frequencies(bat, optarg);
-+			break;
-+		case 'c':
-+			bat->channels = atoi(optarg);
-+			break;
-+		case 'r':
-+			bat->rate = atoi(optarg);
-+			break;
-+		case 'f':
-+			get_format(bat, optarg);
-+			break;
-+		case 'k':
-+			bat->sigma_k = atof(optarg);
-+			break;
-+		case 'p':
-+			bat->periods_total = atoi(optarg);
-+			bat->period_is_limited = true;
-+			break;
-+		case 'h':
-+		default:
-+			usage(bat, argv);
-+			exit(EXIT_SUCCESS);
-+		}
-+	}
-+}
-+
-+static int validate_options(struct bat *bat)
-+{
-+	int c;
-+	float freq_low, freq_high;
-+
-+	/* check we have an input file for local mode */
-+	if ((bat->local == true) && (bat->capture.file == NULL)) {
-+		fprintf(bat->err, _("no input file for local testing\n"));
-+		return -EINVAL;
-+	}
-+
-+	/* check supported channels */
-+	if (bat->channels > MAX_CHANNELS || bat->channels < MIN_CHANNELS) {
-+		fprintf(bat->err, _("%d channels not supported\n"),
-+				bat->channels);
-+		return -EINVAL;
-+	}
-+
-+	/* check single ended is in either playback or capture - not both */
-+	if ((bat->playback.mode == MODE_SINGLE)
-+			&& (bat->capture.mode == MODE_SINGLE)) {
-+		fprintf(bat->err, _("single ended mode is simplex\n"));
-+		return -EINVAL;
-+	}
-+
-+	/* check sine wave frequency range */
-+	freq_low = DC_THRESHOLD;
-+	freq_high = bat->rate * RATE_FACTOR;
-+	for (c = 0; c < bat->channels; c++) {
-+		if (bat->target_freq[c] < freq_low
-+				|| bat->target_freq[c] > freq_high) {
-+			fprintf(bat->err, _("sine wave frequency out of"));
-+			fprintf(bat->err, _(" range: (%.1f, %.1f)\n"),
-+				freq_low, freq_high);
++	/* If the format header is larger, skip the rest */
++	header_skip = header->length - sizeof(chunk_fmt);
++	if (header_skip > 0) {
++		err = fseek(fp, header_skip, SEEK_CUR);
++		if (err == -1) {
++			fprintf(bat->err, _("Seek fmt header error: %s:%zd\n"),
++					file, err);
 +			return -EINVAL;
 +		}
 +	}
-+
-+	return 0;
-+}
-+
-+static int bat_init(struct bat *bat)
-+{
-+	int err = 0;
-+
-+	/* Determine logging to a file or stdout and stderr */
-+	if (bat->logarg) {
-+		bat->log = NULL;
-+		bat->log = fopen(bat->logarg, "wb");
-+		if (bat->log == NULL) {
-+			fprintf(bat->err, _("Cannot open file for capture:"));
-+			fprintf(bat->err, _(" %s %d\n"),
-+					bat->logarg, -errno);
-+			return -errno;
-+		}
-+		bat->err = bat->log;
-+	}
-+
-+	/* Determine duration of playback and/or capture */
-+	if (bat->narg) {
-+		err = get_duration(bat);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	/* Determine capture file */
-+	if (bat->local)
-+		bat->capture.file = bat->playback.file;
-+	else
-+		bat->capture.file = TEMP_RECORD_FILE_NAME;
-+
-+	/* Initial for playback */
-+	if (bat->playback.file == NULL) {
-+		/* No input file so we will generate our own sine wave */
-+		if (bat->frames) {
-+			if (bat->playback.mode == MODE_SINGLE) {
-+				/* Play nb of frames given by -n argument */
-+				bat->sinus_duration = bat->frames;
-+			} else {
-+				/* Play CAPTURE_DELAY msec +
-+				 * 150% of the nb of frames to be analyzed */
-+				bat->sinus_duration = bat->rate *
-+						CAPTURE_DELAY / 1000;
-+				bat->sinus_duration +=
-+						(bat->frames + bat->frames / 2);
-+			}
-+		} else {
-+			/* Special case where we want to generate a sine wave
-+			 * endlessly without capturing */
-+			bat->sinus_duration = 0;
-+			bat->playback.mode = MODE_SINGLE;
-+		}
-+	} else {
-+		bat->fp = fopen(bat->playback.file, "rb");
-+		if (bat->fp == NULL) {
-+			fprintf(bat->err, _("Cannot open file for playback:"));
-+			fprintf(bat->err, _(" %s %d\n"),
-+					bat->playback.file, -errno);
-+			return -errno;
-+		}
-+		err = read_wav_header(bat, bat->playback.file, bat->fp, false);
-+		fclose(bat->fp);
++	/* If the file is opened for playback, update BAT data;
++	   If the file is opened for analysis, no update */
++	if (skip == false) {
++		err = update_fmt_to_bat(bat, &chunk_fmt);
 +		if (err != 0)
 +			return err;
 +	}
 +
-+	bat->frame_size = bat->sample_size * bat->channels;
++	return 0;
++}
 +
-+	/* Set conversion functions */
-+	switch (bat->sample_size) {
-+	case 1:
-+		bat->convert_float_to_sample = convert_float_to_uint8;
-+		bat->convert_sample_to_double = convert_uint8_to_double;
-+		bat->sinf_func = sinf_unsign;
-+		break;
-+	case 2:
-+		bat->convert_float_to_sample = convert_float_to_int16;
-+		bat->convert_sample_to_double = convert_int16_to_double;
-+		bat->sinf_func = sinf_sign;
-+		break;
-+	case 3:
-+		bat->convert_float_to_sample = convert_float_to_int24;
-+		bat->convert_sample_to_double = convert_int24_to_double;
-+		bat->sinf_func = sinf_sign;
-+		break;
-+	case 4:
-+		bat->convert_float_to_sample = convert_float_to_int32;
-+		bat->convert_sample_to_double = convert_int32_to_double;
-+		bat->sinf_func = sinf_sign;
-+		break;
-+	default:
-+		fprintf(bat->err, _("Invalid PCM format: size=%d\n"),
-+				bat->sample_size);
++int read_wav_header(struct bat *bat, char *file, FILE *fp, bool skip)
++{
++	struct wav_header riff_wave_header;
++	struct wav_chunk_header chunk_header;
++	int more_chunks = 1;
++	size_t err;
++
++	/* Read header of RIFF wav file */
++	err = fread(&riff_wave_header, sizeof(riff_wave_header), 1, fp);
++	if (err != 1) {
++		fprintf(bat->err, _("Read header error: %s:%zd\n"), file, err);
++		return -EIO;
++	}
++	if ((riff_wave_header.magic != WAV_RIFF)
++			|| (riff_wave_header.type != WAV_WAVE)) {
++		fprintf(bat->err, _("%s is not a riff/wave file\n"), file);
 +		return -EINVAL;
 +	}
 +
-+	return err;
++	/* Read chunks in RIFF wav file */
++	do {
++		err = fread(&chunk_header, sizeof(chunk_header), 1, fp);
++		if (err != 1) {
++			fprintf(bat->err, _("Read chunk header error: "));
++			fprintf(bat->err, _("%s:%zd\n"), file, err);
++			return -EIO;
++		}
++
++		switch (chunk_header.type) {
++		case WAV_FMT:
++			/* WAV_FMT chunk, read and analyze */
++			err = read_chunk_fmt(bat, file, fp, skip,
++					&chunk_header);
++			if (err != 0)
++				return err;
++			break;
++		case WAV_DATA:
++			/* WAV_DATA chunk, break looping */
++			/* If the file is opened for playback, update BAT data;
++			   If the file is opened for analysis, no update */
++			if (skip == false) {
++				err = update_frames_to_bat(bat, &chunk_header,
++						fp);
++				if (err != 0)
++					return err;
++			}
++			/* Stop looking for chunks */
++			more_chunks = 0;
++			break;
++		default:
++			/* Unknown chunk, skip bytes */
++			err = fseek(fp, chunk_header.length, SEEK_CUR);
++			if (err == -1) {
++				fprintf(bat->err, _("Fail to skip unknown"));
++				fprintf(bat->err, _(" chunk of %s:%zd\n"),
++						file, err);
++				return -EINVAL;
++			}
++		}
++	} while (more_chunks);
++
++	return 0;
 +}
 +
-+int main(int argc, char *argv[])
++void prepare_wav_info(struct wav_container *wav, struct bat *bat)
 +{
-+	struct bat bat;
++	wav->header.magic = WAV_RIFF;
++	wav->header.type = WAV_WAVE;
++	wav->format.magic = WAV_FMT;
++	wav->format.fmt_size = 16;
++	wav->format.format = WAV_FORMAT_PCM;
++	wav->format.channels = bat->channels;
++	wav->format.sample_rate = bat->rate;
++	wav->format.sample_length = bat->sample_size * 8;
++	wav->format.blocks_align = bat->channels * bat->sample_size;
++	wav->format.bytes_p_second = wav->format.blocks_align * bat->rate;
++	wav->chunk.length = bat->frames * bat->frame_size;
++	wav->chunk.type = WAV_DATA;
++	wav->header.length = (wav->chunk.length) + sizeof(wav->chunk)
++			+ sizeof(wav->format) + sizeof(wav->header) - 8;
++}
++
++int write_wav_header(FILE *fp, struct wav_container *wav, struct bat *bat)
++{
 +	int err = 0;
 +
-+	set_defaults(&bat);
-+
-+#ifdef ENABLE_NLS
-+	setlocale(LC_ALL, "");
-+	textdomain(PACKAGE);
-+#endif
-+
-+	fprintf(bat.log, _("%s version %s\n\n"), PACKAGE_NAME, PACKAGE_VERSION);
-+
-+	parse_arguments(&bat, argc, argv);
-+
-+	err = bat_init(&bat);
-+	if (err < 0)
-+		goto out;
-+
-+	err = validate_options(&bat);
-+	if (err < 0)
-+		goto out;
-+
-+	/* single line playback thread: playback only, no capture */
-+	if (bat.playback.mode == MODE_SINGLE) {
-+		test_playback(&bat);
-+		goto out;
++	err = fwrite(&wav->header, 1, sizeof(wav->header), fp);
++	if (err != sizeof(wav->header)) {
++		fprintf(bat->err, _("Write file error: header %d\n"), err);
++		return -EIO;
++	}
++	err = fwrite(&wav->format, 1, sizeof(wav->format), fp);
++	if (err != sizeof(wav->format)) {
++		fprintf(bat->err, _("Write file error: format %d\n"), err);
++		return -EIO;
++	}
++	err = fwrite(&wav->chunk, 1, sizeof(wav->chunk), fp);
++	if (err != sizeof(wav->chunk)) {
++		fprintf(bat->err, _("Write file error: chunk %d\n"), err);
++		return -EIO;
 +	}
 +
-+	/* single line capture thread: capture only, no playback */
-+	if (bat.capture.mode == MODE_SINGLE) {
-+		test_capture(&bat);
-+		goto analyze;
-+	}
-+
-+	/* loopback thread: playback and capture in a loop */
-+	if (bat.local == false)
-+		test_loopback(&bat);
-+
-+analyze:
-+	err = analyze_capture(&bat);
-+out:
-+	fprintf(bat.log, _("\nReturn value is %d\n"), err);
-+	if (bat.logarg)
-+		fclose(bat.log);
-+
-+	return err;
++	return 0;
 +}
+diff --git a/bat/common.h b/bat/common.h
+new file mode 100644
+index 0000000..4e773cc
+--- /dev/null
++++ b/bat/common.h
+@@ -0,0 +1,169 @@
++/*
++ * Copyright (C) 2013-2015 Intel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <alsa/asoundlib.h>
++
++#define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav"
++
++#define OPT_BASE			300
++#define OPT_LOG				(OPT_BASE + 1)
++#define OPT_READFILE			(OPT_BASE + 2)
++#define OPT_SAVEPLAY			(OPT_BASE + 3)
++#define OPT_LOCAL			(OPT_BASE + 4)
++
++#define COMPOSE(a, b, c, d)		((a) | ((b)<<8) | ((c)<<16) | ((d)<<24))
++#define WAV_RIFF			COMPOSE('R', 'I', 'F', 'F')
++#define WAV_WAVE			COMPOSE('W', 'A', 'V', 'E')
++#define WAV_FMT				COMPOSE('f', 'm', 't', ' ')
++#define WAV_DATA			COMPOSE('d', 'a', 't', 'a')
++#define WAV_FORMAT_PCM			1	/* PCM WAVE file encoding */
++
++#define MAX_CHANNELS			2
++#define MIN_CHANNELS			1
++#define MAX_PEAKS			10
++#define MAX_FRAMES			(10 * 1024 * 1024)
++/* Given in ms */
++#define CAPTURE_DELAY			500
++/* signal frequency should be less than samplerate * RATE_FACTOR */
++#define RATE_FACTOR			0.4
++/* valid range of samplerate: (1 - RATE_RANGE, 1 + RATE_RANGE) * samplerate */
++#define RATE_RANGE			0.05
++/* Given in us */
++#define MAX_BUFFERTIME			500000
++/* devide factor, was 4, changed to 8 to remove reduce capture overrun */
++#define DIV_BUFFERTIME			8
++/* margin to avoid sign inversion when generate sine wav */
++#define RANGE_FACTOR			0.95
++
++#define EBATBASE			1000
++#define ENOPEAK				(EBATBASE + 1)
++#define EONLYDC				(EBATBASE + 2)
++#define EBADPEAK			(EBATBASE + 3)
++
++#define DC_THRESHOLD			7.01
++
++/* tolerance of detected peak = max (DELTA_HZ, DELTA_RATE * target_freq).
++ * If DELTA_RATE is too high, BAT may not be able to recognize negative result;
++ * if too low, BAT may be too sensitive and results in uncecessary failure. */
++#define DELTA_RATE			0.005
++#define DELTA_HZ			1
++
++#define FOUND_DC			(1<<1)
++#define FOUND_WRONG_PEAK		(1<<0)
++
++struct wav_header {
++	unsigned int magic; /* 'RIFF' */
++	unsigned int length; /* file len */
++	unsigned int type; /* 'WAVE' */
++};
++
++struct wav_chunk_header {
++	unsigned int type; /* 'data' */
++	unsigned int length; /* sample count */
++};
++
++struct wav_fmt {
++	unsigned int magic; /* 'FMT '*/
++	unsigned int fmt_size; /* 16 or 18 */
++	unsigned short format; /* see WAV_FMT_* */
++	unsigned short channels;
++	unsigned int sample_rate; /* Frequency of sample */
++	unsigned int bytes_p_second;
++	unsigned short blocks_align; /* sample size; 1 or 2 bytes */
++	unsigned short sample_length; /* 8, 12 or 16 bit */
++};
++
++struct chunk_fmt {
++	unsigned short format; /* see WAV_FMT_* */
++	unsigned short channels;
++	unsigned int sample_rate; /* Frequency of sample */
++	unsigned int bytes_p_second;
++	unsigned short blocks_align; /* sample size; 1 or 2 bytes */
++	unsigned short sample_length; /* 8, 12 or 16 bit */
++};
++
++struct wav_container {
++	struct wav_header header;
++	struct wav_fmt format;
++	struct wav_chunk_header chunk;
++};
++
++struct bat;
++
++enum _bat_op_mode {
++	MODE_UNKNOWN = -1,
++	MODE_SINGLE = 0,
++	MODE_LOOPBACK,
++	MODE_LAST
++};
++
++struct pcm {
++	char *device;
++	char *file;
++	enum _bat_op_mode mode;
++	void *(*fct)(struct bat *);
++};
++
++struct bat {
++	unsigned int rate;		/* sampling rate */
++	int channels;			/* nb of channels */
++	int frames;			/* nb of frames */
++	int frame_size;			/* size of frame */
++	int sample_size;		/* size of sample */
++	snd_pcm_format_t format;	/* PCM format */
++
++	float sigma_k;			/* threshold for peak detection */
++	float target_freq[MAX_CHANNELS];
++
++	int sinus_duration;		/* number of frames for playback */
++	char *narg;			/* argument string of duration */
++	char *logarg;			/* path name of log file */
++	char *debugplay;		/* path name to store playback signal */
++
++	struct pcm playback;
++	struct pcm capture;
++
++	unsigned int periods_played;
++	unsigned int periods_total;
++	bool period_is_limited;
++
++	FILE *fp;
++
++	FILE *log;
++	FILE *err;
++
++	void (*convert_sample_to_double)(void *, double *, int);
++	void (*convert_float_to_sample)(float *, void *, int, int);
++	void (*sinf_func)(struct bat *, float *, int, int, int *, float *);
++
++	void *buf;			/* PCM Buffer */
++
++	bool local;			/* true for internal test */
++};
++
++struct analyze {
++	void *buf;
++	double *in;
++	double *out;
++	double *mag;
++};
++
++void prepare_wav_info(struct wav_container *, struct bat *);
++int read_wav_header(struct bat *, char *, FILE *, bool);
++int write_wav_header(FILE *, struct wav_container *, struct bat *);
++
++void sinf_sign(struct bat *, float *, int, int, int *, float *);
++void sinf_unsign(struct bat *, float *, int, int, int *, float *);
++int generate_sine_wave(struct bat *, int, void *, int);
 -- 
 1.9.1
