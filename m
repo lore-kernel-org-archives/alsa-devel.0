@@ -1,114 +1,106 @@
-From: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Date: Tue, 15 Sep 2015 16:34:47 +0530
-Message-ID: <20150915110447.GI6350@linux>
-References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
-	<27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
-	<1442313464.1914.21.camel@sipsolutions.net>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH utils] aplay: fix VU meter for S24_LE etc
+	formats
+Date: Tue, 15 Sep 2015 13:10:00 +0200
+Message-ID: <alpine.DEB.2.02.1509151152430.24891@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1442313464.1914.21.camel-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Altman, Avri" <avri.altman-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Stanislaw Gruszka <sgruszka-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jiri Slaby <jirislaby-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "open list:DOCUMENTATION" <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Catalin Marinas <catalin.marinas-5wv7dgnIgG8@public.gmane.org>, Sebastian Andrzej Siewior <bigeasy-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, "open list:MEMORY MANAGEMENT" <linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org>, Kalle Valo <kvalo-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, "Grumbach,
-	Emmanuel" <emmanuel.grumbach-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Coelho,
-	Luciano" <luciano.coelho-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Wang Long <long.wanglong-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>, Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Ingo Molnar <mingo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, open list <linux-kerne>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84A15260824
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 31CD12E44A
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:01 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id BwvCCGlHyDP1 for <alsa-devel@alsa-project.org>;
+ Tue, 15 Sep 2015 13:10:00 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 6F4F52E3B6
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:00 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 4FBAB14E8
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:00 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id 443D314E5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:00 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by seth.se.axis.com (Postfix) with ESMTP id 422BB3E049
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 13:10:00 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Johannes,
 
-On 15-09-15, 12:37, Johannes Berg wrote:
-> This email has far too many people Cc'ed on it - I don't think vger is
-> even accepting it for that reason. You should probably restrict it to
-> just a few lists when you resubmit.
+When recording or playing back audio in a format where the number of =
 
-Hmm, I know the list is too long and yes its blocked for Admin's
-approval on most of the lists. But that's what was generated by
-get_maintainers and I didn't wanted to miss cc'ing anybody who might
-be able to catch a bug in there.
+significant bits is less than the physical width (e.g. S24_LE), the VU =
 
-> > The problem with current code is that it reads/writes 4 bytes for a
-> > boolean, which will read/update 3 excess bytes following the boolean
-> > variable (when sizeof(bool) is 1 byte). And that can lead to hard to 
-> > fix bugs. It was a nightmare cracking this one.
-> 
-> Unless you're ignoring (or worse, casting away) type warnings, there's
-> no problem/bug at all, you just have to define all the variables used
-> with debugfs_create_bool() as actual u32 variables.
-> 
-> It sounds like you are/were doing something like the following:
-> 
-> bool a, b, c;
-> ...
-> debugfs_create_bool("a", 0600, dir, (u32 *)&a);
-> 
-> which is quite clearly invalid.
-> 
-> Had you properly defined them as u32, as everyone (except for the ACPI
-> case) does, there wouldn't have been any problem:
-> 
-> u32 a, b, c;
-> ...
-> debugfs_create_bool("a", 0600, dir, &a);
-> 
-> 
-> As far as I can tell, there's no bug in the API. It might be a bit
-> strange to have a set of functions called debugfs_create_<type> and
-> then one of them doesn't actually use the type from the name, but
-> that's only a problem if you blindly add casts or ignore the compiler
-> warnings you'd get without casts.
-> 
-> In other words, I think your commit log is extremely misleading. The
-> API perhaps has some inconsistent naming, but all this talk about the
-> sizeof(bool) etc. is simply completely irrelevant since "bool" is not
-> the type used here at all. There's nothing to fix in any of the code
-> you're changing (again, apart from ACPI.)
-> 
-> That said, I don't actually object to this change itself, being able to
-> actually use bool variables with debugfs_create_bool would be nice.
-> However, that shouldn't be documented as a bugfix or anything like
-> that, merely as a cleanup to make the API naming more consistent and to
-> be able to use the (smaller and often more convenient) bool type.
-> 
-> Clearly, it would also lead to less confusion, as we see in ACPI and
-> hear from your OPP code. Note that ACPI is even more confused though
-> since it uses "unsigned long", so it's entirely possible that somebody
-> actually thought about that case and decided not to worry about 64-bit
-> big-endian platforms.
-> 
-> Of course this also means that only the ACPI patch is a candidate for s
-> table.
+meter code needs to consider the number of significant bits in the samples =
 
-Yeah, that's right. Its just a trivial cleanup rather. What about this
-simple changelog instead?
+rather than the physical sample width (e.g. 24 vs 32 bits). Otherwise the =
 
---
-viresh
+resulting VU meter display will be far too low and it will just indicate =
 
--------------------------8<-------------------------
+0% all the time.
 
-Subject: [PATCH] debugfs: Pass bool pointer to debugfs_create_bool()
+Tested with a device supporting the S24_LE format.
 
-Its a bit odd that debugfs_create_bool() takes 'u32 *' as an argument,
-when all it needs is a boolean pointer.
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
+ alsa-utils/aplay/aplay.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-It would be better to update this API to make it accept 'bool *'
-instead, as that will make it more consistent and often more convenient.
-Over that bool takes just a byte.
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index e58e1bc..19b6a92 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -124,7 +124,7 @@ static int fatal_errors =3D 0;
+ static int verbose =3D 0;
+ static int vumeter =3D VUMETER_NONE;
+ static int buffer_pos =3D 0;
+-static size_t bits_per_sample, bits_per_frame;
++static size_t significant_bits_per_sample, bits_per_sample, bits_per_frame;
+ static size_t chunk_bytes;
+ static int test_position =3D 0;
+ static int test_coef =3D 8;
+@@ -1344,6 +1344,7 @@ static void set_params(void)
+ 		snd_pcm_dump(handle, log);
+ =
 
-That required updates to all user sites as well in a single commit.
-regmap core was also using debugfs_{read|write}_file_bool(), directly
-and variable types were updated for that to be bool as well.
+ 	bits_per_sample =3D snd_pcm_format_physical_width(hwparams.format);
++	significant_bits_per_sample =3D snd_pcm_format_width(hwparams.format);
+ 	bits_per_frame =3D bits_per_sample * hwparams.channels;
+ 	chunk_bytes =3D chunk_size * bits_per_frame / 8;
+ 	audiobuf =3D realloc(audiobuf, chunk_bytes);
+@@ -1745,7 +1746,7 @@ static void compute_max_peak(u_char *data, size_t cou=
+nt)
+ 		}
+ 		return;
+ 	}
+-	max =3D 1 << (bits_per_sample-1);
++	max =3D 1 << (significant_bits_per_sample-1);
+ 	if (max <=3D 0)
+ 		max =3D 0x7fffffff;
+ =
 
-Signed-off-by: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+-- =
+
+1.7.10.4
+
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
