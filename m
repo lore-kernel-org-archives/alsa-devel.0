@@ -1,45 +1,86 @@
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Date: Tue, 15 Sep 2015 13:47:32 -0400
-Message-ID: <20150915134732.7ff50d03@gandalf.local.home>
-References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
-	<27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
-	<1442313464.1914.21.camel@sipsolutions.net>
-	<20150915110447.GI6350@linux>
-	<20150915094509.46cca84d@gandalf.local.home>
-	<CA+55aFxVQ9jD=jUqPZt76EMe_Tb-_SA8v=rOHeR9Ljdsc6=xGQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <CA+55aFxVQ9jD=jUqPZt76EMe_Tb-_SA8v=rOHeR9Ljdsc6=xGQ@mail.gmail.com>
-Sender: owner-linux-mm@kvack.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>, Johannes Berg <johannes@sipsolutions.net>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Rafael Wysocki <rjw@rjwysocki.net>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, "arnd@arndb.de" <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>, Alexander Duyck <alexander.h.duyck@redhat.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Arik Nemtsov <arik@wizery.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS
- DRIVER" <ath9k-devel@lists.ath9k.org>, "Altman, Avri" <avri.altman@intel.com>, open list:B43 WIRELE
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH] ASoC: fix broken pxa SoC support
+Date: Tue, 15 Sep 2015 20:51:31 +0200
+Message-ID: <1442343091-2295-1-git-send-email-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 15 Sep 2015 10:38:32 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+The previous fix of pxa library support, which was introduced to fix the
+library dependency, broke the previous SoC behavior, where a machine
+code binding pxa2xx-ac97 with a coded relied on :
+ - sound/soc/pxa/pxa2xx-ac97.c
+ - sound/soc/codecs/XXX.c
 
+For example, the mioa701_wm9713.c machine code is currently broken. The
+"select ARM" statement wrongly selects the soc/arm/pxa2xx-ac97 for
+compilation, as per an unfortunate fate SND_PXA2XX_AC97 is both declared
+in sound/arm/Kconfig and sound/soc/pxa/Kconfig.
 
-> But that user interface issue doesn't seem to be the case here, an I
-> can't say that I mind the patch. It looks fairly sane.
+Fix this by ensuring that SND_PXA2XX_SOC correctly triggers the correct
+pxa2xx-ac97 compilation.
 
-If Linus is fine with it, I'm fine with it too.
+Fixes: 846172dfe33c ("ASoC: fix SND_PXA2XX_LIB Kconfig warning")
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ sound/arm/Kconfig     | 15 ++++++++-------
+ sound/soc/pxa/Kconfig |  2 --
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-But please, next time, go easy on the Cc list. Maybe just use bcc for
-those not on the list, stating that you BCC'd a lot of people to make
-sure this is sane, but didn't want to spam everyone with every reply.
-
-What do others think when there's a change that goes across the board
-this much? BCC OK with you, as just an FYI, I'm doing this? Or should
-just the lists be enough and if you don't see it, too bad?
-
--- Steve
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index 885683a3b0bd..e0406211716b 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -9,6 +9,14 @@ menuconfig SND_ARM
+ 	  Drivers that are implemented on ASoC can be found in
+ 	  "ALSA for SoC audio support" section.
+ 
++config SND_PXA2XX_LIB
++	tristate
++	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
++	select SND_DMAENGINE_PCM
++
++config SND_PXA2XX_LIB_AC97
++	bool
++
+ if SND_ARM
+ 
+ config SND_ARMAACI
+@@ -21,13 +29,6 @@ config SND_PXA2XX_PCM
+ 	tristate
+ 	select SND_PCM
+ 
+-config SND_PXA2XX_LIB
+-	tristate
+-	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
+-
+-config SND_PXA2XX_LIB_AC97
+-	bool
+-
+ config SND_PXA2XX_AC97
+ 	tristate "AC97 driver for the Intel PXA2xx chip"
+ 	depends on ARCH_PXA
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 39cea80846c3..f2bf8661dd21 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -1,7 +1,6 @@
+ config SND_PXA2XX_SOC
+ 	tristate "SoC Audio for the Intel PXA2xx chip"
+ 	depends on ARCH_PXA
+-	select SND_ARM
+ 	select SND_PXA2XX_LIB
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+@@ -25,7 +24,6 @@ config SND_PXA2XX_AC97
+ config SND_PXA2XX_SOC_AC97
+ 	tristate
+ 	select AC97_BUS
+-	select SND_ARM
+ 	select SND_PXA2XX_LIB_AC97
+ 	select SND_SOC_AC97_BUS
+ 
+-- 
+2.1.4
