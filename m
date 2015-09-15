@@ -1,27 +1,15 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
- item for soc-compress
-Date: Tue, 15 Sep 2015 06:53:18 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9193BF6C4@SHSMSX101.ccr.corp.intel.com>
-References: <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
- <s5h4mm9gi8h.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
- <20150615150556.GQ18309@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
- <20150616105429.GI18309@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554B0BF@SHSMSX101.ccr.corp.intel.com>
- <20150616160607.GT18309@sirena.org.uk>	<s5hlhfj8wb3.wl-tiwai@suse.de>
- <s5hioan8w6v.wl-tiwai@suse.de>	<20150616162507.GA28601@localhost>
- <s5h7fr38vax.wl-tiwai@suse.de>
+From: han.lu@intel.com
+Subject: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester command
+	line tool
+Date: Tue, 15 Sep 2015 15:00:16 +0800
+Message-ID: <cover.1442298607.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B156C2605EF
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 08:53:25 +0200 (CEST)
-In-Reply-To: <s5h7fr38vax.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A0532605EF
+ for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 09:01:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,97 +19,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "Zhang, Vivian" <vivian.zhang@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
+To: tiwai@suse.com, liam.r.girdwood@intel.com, bernard.gautier@intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, June 17, 2015 12:36 AM
-> To: Koul, Vinod
-> Cc: Mark Brown; Jie, Yang; alsa-devel@alsa-project.org; Girdwood, Liam R;
-> ramesh.babu@linux.intel.com; Zhang, Vivian
-> Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config item for soc-
-> compress
-> 
-> At Tue, 16 Jun 2015 21:55:07 +0530,
-> Vinod Koul wrote:
-> >
-> > On Tue, Jun 16, 2015 at 06:17:12PM +0200, Takashi Iwai wrote:
-> > > At Tue, 16 Jun 2015 18:14:40 +0200,
-> > > Takashi Iwai wrote:
-> > > >
-> > > > At Tue, 16 Jun 2015 17:06:07 +0100, Mark Brown wrote:
-> > > > >
-> > > > > On Tue, Jun 16, 2015 at 12:36:16PM +0000, Jie, Yang wrote:
-> > > > >
-> > > > > > > OK, that should have been in the commit message.
-> > > > >
-> > > > > > OK, so let me add it to the commit message and resend?
-> > > > >
-> > > > > Well, there's still the stubs to consider.  Should we really be
-> > > > > returning an error or should we silently ignore the error and
-> > > > > hide the DAI if the user deconfigured compressed audio?  Or
-> > > > > rearrange things so we don't need stubs?  Given that the machine
-> > > > > driver has to select compressed support it's not something that
-> > > > > should ever really hit the stubs, it's not truly a runtime thing...
-> > > >
-> > > > Yes, I guess that leaving without dummy function will give
-> > > > unresolved symbol errors at module link time, so the user can
-> > > > catch before actually running it.  Of course, this should be checked
-> actually.
-> > >
-> > > Oh, scratch this.  It won't work well in the current code.
-> > > Possibly with weak linking, but...
-> > Right as the soc_new_compress() is called from soc-core for compressed
-> > dai links. Since ASoC drivers don't use any of compress APIs directly,
-> > it would be difficult to add a compile time failure so we are stuck
-> > with silent runtime failures :(
-> 
-> One feasible option would be to make the driver's dai creation a function
-> pointer to the generic constructor.  That is,
-> soc_probe_link_dais() will run like:
-> 
-> 	if (cpu_dai->driver->create)
-> 		ret = cpu_dai->driver->create(rtd, num);
-> 
-> and each driver passes soc_new_compress (or whatever) there.  This is
-> flexible and can be extended if any new stuff has to be handled.
-> Even PCM creation or dai widget links can be passed in that form, too.
- 
-How time flies! About 3 months passed away when I have chance to resume back
-to this thread.
+From: "Lu, Han" <han.lu@intel.com>
 
-Takashi, so as your suggestion, I will add a member to struct snd_soc_dai_driver:
+BAT (Basic Audio Tester) is a simple command line utility intended
+to automate audio driver and sound server QA testing with no human
+interaction.
 
-struct snd_soc_dai_driver {
-...
-+	int (*create)(struct snd_soc_dai *dai);
--	bool compress_dai;
-...
-}
+BAT works by playing an audio stream and capturing the same stream
+in either a digital or analog loopback. It then compares the captured
+stream to the original to determine if the testcase passes or fails.
 
-And then change sst_platform_dai[] in sst-mfld-platform-pcm.c such as:
+The main idea of frequency detecting is:
+The analysis function reads data from wav file, run fft against the data
+to get magnitude of frequency vectors, and then calculates the average
+value and standard deviation of frequency vectors. After that, we define
+a threshold:
+    threshold = 3 * standard_deviation + average_value
+Frequencies with amplitude larger than threshold will be recognized as
+a peak, and the frequency with largest peak value will be recognized as
+a detected frequency.
+BAT then compares the detected frequency to target frequency, to decide
+if the detecting passes or fails.
 
-{
-        .name = "compress-cpu-dai",
--        .compress_dai = 1,
-+     .create = soc_new_compress,
-        .ops = &sst_compr_dai_ops,
-        .playback = {
-                .stream_name = "Compress Playback",
-                .channels_min = SST_STEREO,
-                .channels_max = SST_STEREO,
-                .rates = SNDRV_PCM_RATE_48000,
-                .formats = SNDRV_PCM_FMTBIT_S16_LE,
-        },
-},
+BAT supports 4 working modes:
+  1. single line playback;
+  2. single line capture and analysis;
+  3. playback and capture in loop, and analyze captured data;
+  4. local analyze without actual playback or capture.
+BAT will check devices input by user to decide which mode to use.
+BAT will create threads for playback and record, and will run spectrum
+analysis for mode 2, 3 or 4.
 
-And then, we can remove the dummy soc_new_compress() inline definition,
-is that right?
+Lu, Han (7):
+  BAT: Add initial functions
+  BAT: Add common definitions and functions
+  BAT: Add playback and record functions
+  BAT: Add signal generator
+  BAT: Add converting functions
+  BAT: Add spectrum analysis functions
+  BAT: Add Makefile and configures
 
-~Keyon
+ Makefile.am     |   3 +
+ bat/Makefile.am |  14 ++
+ bat/alsa.c      | 618 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bat/alsa.h      |  20 ++
+ bat/analyze.c   | 314 ++++++++++++++++++++++++++++
+ bat/analyze.h   |  16 ++
+ bat/bat.c       | 608 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bat/common.c    | 198 ++++++++++++++++++
+ bat/common.h    | 169 ++++++++++++++++
+ bat/convert.c   | 113 +++++++++++
+ bat/convert.h   |  23 +++
+ bat/signal.c    |  88 ++++++++
+ configure.ac    |  19 +-
+ 13 files changed, 2202 insertions(+), 1 deletion(-)
+ create mode 100644 bat/Makefile.am
+ create mode 100644 bat/alsa.c
+ create mode 100644 bat/alsa.h
+ create mode 100644 bat/analyze.c
+ create mode 100644 bat/analyze.h
+ create mode 100644 bat/bat.c
+ create mode 100644 bat/common.c
+ create mode 100644 bat/common.h
+ create mode 100644 bat/convert.c
+ create mode 100644 bat/convert.h
+ create mode 100644 bat/signal.c
 
-> 
-> 
-> Takashi
+-- 
+1.9.1
