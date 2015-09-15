@@ -1,62 +1,115 @@
-From: James Cameron <quozl@laptop.org>
-Subject: Occasional channel swapping, rt5631 vs mmp2 sspa
-Date: Tue, 15 Sep 2015 14:36:21 +1000
-Message-ID: <20150915043621.GG27294@us.netrek.org>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: System with multiple arizona (wm5102) codecs
+Date: Tue, 15 Sep 2015 08:18:32 +0200
+Message-ID: <20150915061832.GA25442@amd>
+References: <20150914115439.GA29646@amd>
+ <20150914115255.GE11200@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zimbra.real-time.com (zimbra.real-time.com [63.170.91.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E79826064C
- for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2015 06:36:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by zimbra.real-time.com (Postfix) with ESMTP id E859A583DDA
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 23:36:41 -0500 (CDT)
-Received: from zimbra.real-time.com ([127.0.0.1])
- by localhost (zimbra.real-time.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id HjPLiXi3q1sB for <alsa-devel@alsa-project.org>;
- Mon, 14 Sep 2015 23:36:41 -0500 (CDT)
-Received: from esk.lan (pa114-73-191-25.pa.nsw.optusnet.com.au [114.73.191.25])
- by zimbra.real-time.com (Postfix) with ESMTPSA id BFFA6583D8B
- for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2015 23:36:40 -0500 (CDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20150914115255.GE11200@ck-lbox>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-G'day,
+Hi!
 
-The rt5631 has a single serial data port shared by playback and
-capture at the same time, using I2S.
+> > I've got an embedded system with two arizona / wm5102 codecs.
+> > 
+> > Unfortunately, kernel does not seem to be ready for that
+> > configuration.
+> > 
+> > In particular, drivers/regulator/arizona-ldo1.c and
+> > drivers/regulator/arizona-micsupp.c register system-wide "MICVDD" and
+> > "LDO1" regulators, but with two codecs in the system, we really have
+> > wm5102-codec.1.MICVDD, wm5102-codec.2.MICVDD, wm5102-codec.1.LDO1 and
+> > wm5102-codec.2.LDO1.
+> > 
+> > That got me second codec working in two-codec configuration, but first
+> > one still stops working as soon as two codecs are enabled.
+> > 
+> > If you have idea what else needs fixing, let me know.
+> > 
+> > Best regards,
+> > 								Pavel
+> 
+> I must confess I haven't ever tested a system with two Arizona
+> CODECs connected. Yes it seems you would get clashes on the
+> regulator names, I guess that would need to be fixed up. If you
+> were doing so wm831x-ldo.c would probably make a reasonable
+> example.
+> 
+> I guess you would need to be careful with the machine driver as
+> well, you will need to use a snd_soc_codec_conf structure for at
+> least one (although I would do both) of the CODECs to give  a
+> prefix for all the widget/control names, otherwise those will
+> clash and everything will probably behave very strangely. See
+> sound/soc/samsung/bells.c for an example doing this for wm9081.
+> 
+> Those are the only two things that spring to mind at the moment
+> but keep me informed on how you are getting on and I will let you
+> know if I can come up with any other traps.
 
-Sometimes on playback or capture the channels are swapped left for
-right.  The swap starts as a stream starts.  The swap continues until
-the stream stops.
+It seems that davinci-evm takes data from device tree, but then uses
+statically-allocated evm_soc_card, which would lead to problems in
+dual-codec config....?
 
-The SoC is an Armada 610 with an SSPA peripheral.
+Thanks,
+								Pavel
 
-A workaround is to remove a clock domain reset when a stream is
-started.  This is a reset bit in a register of the SSPA.
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 
-My theory is that the clock domain reset in the SSPA while I2S is
-clocking interferes with LRCK (aka fsync) edge detection.
+commit 977baecbcdb362bdc92096e7c454c379af319f8a
+Author: Pavel <pavel@ucw.cz>
+Date:   Tue Sep 15 08:16:02 2015 +0200
 
-I'm wondering how this kind of problem should be solved properly;
-avoiding the clock domain reset while I2S is clocking seems right, but
-which codec and SoC driver ops should start I2S and/or reset the host
-port?
+    Split card allocation in davinci-evm.c
 
-My post is probably incomplete and inadequate; please ask any
-questions.  ;-)
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 3296116..de277ca 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -885,8 +899,12 @@ static int davinci_evm_probe(struct platform_device *pdev)
+ 	struct snd_soc_card_drvdata_davinci *drvdata = NULL;
+ 	struct clk *mclk;
+ 	int ret = 0;
++	struct snd_soc_card *card = devm_kzalloc(&pdev->dev, sizeof(struct snd_soc_card), GFP_KERNEL);
++
++	*card = evm_soc_card;
+ 
+-	evm_soc_card.dai_link = dai;
++	printk("bluebox / davinci_evm_probe: probing!\n");
++	card->dai_link = dai;
+ 
+ 	dai->codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
+ 	if (!dai->codec_of_node)
+@@ -900,8 +918,9 @@ static int davinci_evm_probe(struct platform_device *pdev)
+ 	if (!dai->platform_name)
+ 		dai->platform_of_node = dai->cpu_of_node;
+ 
+-	evm_soc_card.dev = &pdev->dev;
+-	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
++	card->codec_conf = rx51_codec_conf_2;
++	card->dev = &pdev->dev;
++	ret = snd_soc_of_parse_card_name(card, "ti,model");
+ 	if (ret)
+ 		return ret;
+ 
+@@ -938,8 +957,8 @@ static int davinci_evm_probe(struct platform_device *pdev)
+ 				 requestd_rate, drvdata->sysclk);
+ 	}
+ 
+-	snd_soc_card_set_drvdata(&evm_soc_card, drvdata);
+-	ret = snd_soc_register_card(&evm_soc_card);
++	snd_soc_card_set_drvdata(card, drvdata);
++	ret = snd_soc_register_card(card);
+ 
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+
 
 -- 
-James Cameron
-http://quozl.linux.org.au/
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
