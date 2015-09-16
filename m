@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add default cases for event
-	switches" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:41 +0100
-Message-ID: <E1ZcIth-0007q2-70@finisterre>
-References: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: sunxi: Add the Allwinner A10 codec
+	bindings" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:47 +0100
+Message-ID: <E1ZcItn-0007sr-49@finisterre>
+References: <1442064384-23379-2-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07567261AAB
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:51 +0200 (CEST)
-In-Reply-To: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07E33264F28
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:54 +0200 (CEST)
+In-Reply-To: <1442064384-23379-2-git-send-email-maxime.ripard@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add default cases for event switches
+   ASoC: sunxi: Add the Allwinner A10 codec bindings
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From bee261b8964d7751fdd63d7f636c42741294a30c Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 16 Sep 2015 13:59:40 +0100
-Subject: [PATCH] ASoC: arizona: Add default cases for event switches
+>From 4ec73d3c81be5a401546afc6628aaf8add253ff1 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Sat, 12 Sep 2015 15:26:23 +0200
+Subject: [PATCH] ASoC: sunxi: Add the Allwinner A10 codec bindings
 
-Since the addition of the WILL_PMU / WILL_PMD several of the switches in
-arizona.c no longer cover all cases or have a default case. Whilst this
-isn't causing any problems in the interests of robustness add default
-cases.
+The Allwinner SoCs have an in-SoC audio controller taking the role of a DAI
+and a codec.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Add the binding documentation for that controller on the A10.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../devicetree/bindings/sound/sun4i-codec.txt      | 33 ++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sun4i-codec.txt
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 8a2221a..1bc19f1 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -147,6 +147,8 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
- 						   0x4f5, 0x0da);
- 		}
- 		break;
-+	default:
-+		break;
- 	}
- 
- 	return 0;
-@@ -725,6 +727,9 @@ int arizona_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
- 		reg = snd_soc_read(codec, ARIZONA_INPUT_ENABLES);
- 		if (reg == 0)
- 			arizona_in_set_vu(codec, 0);
-+		break;
-+	default:
-+		break;
- 	}
- 
- 	return 0;
-@@ -806,6 +811,8 @@ int arizona_out_ev(struct snd_soc_dapm_widget *w,
- 			break;
- 		}
- 		break;
-+	default:
-+		break;
- 	}
- 
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+new file mode 100644
+index 0000000..680144b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+@@ -0,0 +1,33 @@
++* Allwinner A10 Codec
++
++Required properties:
++- compatible: must be either "allwinner,sun4i-a10-codec" or
++  "allwinner,sun7i-a20-codec"
++- reg: must contain the registers location and length
++- interrupts: must contain the codec interrupt
++- dmas: DMA channels for tx and rx dma. See the DMA client binding,
++	Documentation/devicetree/bindings/dma/dma.txt
++- dma-names: should include "tx" and "rx".
++- clocks: a list of phandle + clock-specifer pairs, one for each entry
++  in clock-names.
++- clock-names: should contain followings:
++   - "apb": the parent APB clock for this controller
++   - "codec": the parent module clock
++- routing : A list of the connections between audio components.  Each
++  entry is a pair of strings, the first being the connection's sink,
++  the second being the connection's source.
++
++
++Example:
++codec: codec@01c22c00 {
++	#sound-dai-cells = <0>;
++	compatible = "allwinner,sun7i-a20-codec";
++	reg = <0x01c22c00 0x40>;
++	interrupts = <0 30 4>;
++	clocks = <&apb0_gates 0>, <&codec_clk>;
++	clock-names = "apb", "codec";
++	dmas = <&dma 0 19>, <&dma 0 19>;
++	dma-names = "rx", "tx";
++	routing = "Headphone Jack", "HP Right",
++		  "Headphone Jack", "HP Left";
++};
 -- 
 2.5.0
