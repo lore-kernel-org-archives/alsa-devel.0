@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4642: exchange macro name to avoid
-	redefinition" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:44 +0100
-Message-ID: <E1ZcItk-0007rR-AG@finisterre>
-References: <87613c4day.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: SND_SOC_RCAR depends on
+	COMMON_CLK" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:45 +0100
+Message-ID: <E1ZcItl-0007rv-9j@finisterre>
+References: <877fns4ddo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DF9B264F22
+ by alsa0.perex.cz (Postfix) with ESMTP id 49FC5261AD0
  for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:51 +0200 (CEST)
-In-Reply-To: <87613c4day.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877fns4ddo.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4642: exchange macro name to avoid redefinition
+   ASoC: rsnd: SND_SOC_RCAR depends on COMMON_CLK
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 544637bf3f4ddc1971740026e1cf58d8516b53fa Mon Sep 17 00:00:00 2001
+>From e2f8445176c9e6e6b152b792d08abca8308bb8ff Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 15 Sep 2015 02:42:42 +0000
-Subject: [PATCH] ASoC: ak4642: exchange macro name to avoid redefinition
+Date: Tue, 15 Sep 2015 02:41:05 +0000
+Subject: [PATCH] ASoC: rsnd: SND_SOC_RCAR depends on COMMON_CLK
 
-71a0138ab("ASoC: ak4642: enable to use MCKO as fixed rate output
-pin on DT") added new FS() macro, but x86 already has it in
-arch/x86/include/uapi/asm/ptrace-abi.h
-This patch exchange FS() to FSs() to avoid redefinition warning
+2a46db4a3("ASoC: rsnd: add AUDIO_CLKOUT support") uses
+of_clk_add_provider() which is requesting struct clk_onecell_data.
+But it is COMMON_CLK feature. SND_SOC_RCAR depends on COMMON_CLK
+
+This patch also solved compile error of 7486d80f7("ASoC: rsnd: remove
+unneeded sh_clk header")
 
 Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4642.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/sh/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index b5c4981..cda27c2 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -130,8 +130,8 @@
- #define I2S		(3 << 0)
- 
- /* MD_CTL2 */
--#define FS(val)		(((val & 0x7) << 0) | ((val & 0x8) << 2))
--#define PS(val)		((val & 0x3) << 6)
-+#define FSs(val)	(((val & 0x7) << 0) | ((val & 0x8) << 2))
-+#define PSs(val)	((val & 0x3) << 6)
- 
- /* MD_CTL3 */
- #define BST1		(1 << 3)
-@@ -458,7 +458,8 @@ static int ak4642_set_mcko(struct snd_soc_codec *codec,
- 	for (ps = 0; ps < ARRAY_SIZE(ps_list); ps++) {
- 		for (fs = 0; fs < ARRAY_SIZE(fs_list); fs++) {
- 			if (frequency == ps_list[ps] * fs_list[fs]) {
--				snd_soc_write(codec, MD_CTL2, PS(ps) | FS(fs));
-+				snd_soc_write(codec, MD_CTL2,
-+					      PSs(ps) | FSs(fs));
- 				return 0;
- 			}
- 		}
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 07114b0..6ca90aa 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -37,6 +37,7 @@ config SND_SOC_SH4_SIU
+ config SND_SOC_RCAR
+ 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+ 	depends on DMA_OF
++	depends on COMMON_CLK
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
+ 	help
 -- 
 2.5.0
