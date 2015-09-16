@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: remove unused function" to the
-	asoc tree
-Date: Wed, 16 Sep 2015 21:01:48 +0100
-Message-ID: <E1ZcIto-0007tK-AT@finisterre>
-References: <1441888305-19957-2-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
+ command line tool
+Date: Wed, 16 Sep 2015 21:34:53 +0100
+Message-ID: <20150916203453.GZ12027@sirena.org.uk>
+References: <cover.1442298607.git.han.lu@intel.com>
+ <20150916163758.GJ12027@sirena.org.uk>
+ <1442422620.10528.133.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1447471413003175847=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D4B22650E1
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:03 +0200 (CEST)
-In-Reply-To: <1441888305-19957-2-git-send-email-sudipm.mukherjee@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B0F9A2616EF
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:35:02 +0200 (CEST)
+In-Reply-To: <1442422620.10528.133.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: han.lu@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com, bernard.gautier@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: remove unused function
+--===============1447471413003175847==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IekLpJqQZjUH9JS1"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--IekLpJqQZjUH9JS1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Sep 16, 2015 at 05:57:00PM +0100, Liam Girdwood wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> I didn't think of bounds testing the controls :) Especially useful for
+> DSPs where we could overflow or crash FW if certain combinations of
+> enumerated controls are used.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I'll try to get onto it again in my copious free time.  :/
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> We were looking at testing the gains too, to make sure that a 6dB
+> control gain really does mean a 6dB gain in signal. It's in the TODO
+> list. Most of the code is already there to do this, but we were looking
+> to upstream first and then incrementally add features. I think Han plans
+> to upstream the tinyalsa support after the initial code is upstream
+> though.
 
-Thanks,
-Mark
+Yeah, definitely not something needed for initial release.
 
->From 2fc171e69e0dc0f5cce805ec40923c4e7ff78e94 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Thu, 10 Sep 2015 18:01:45 +0530
-Subject: [PATCH] ASoC: Intel: remove unused function
+--IekLpJqQZjUH9JS1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-The function get_current_pipe_id() was not being used.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+iQEcBAEBCAAGBQJV+dJsAAoJECTWi3JdVIfQLl0H/j1KWUJL+pMq/0aFCXO70p8b
+CF9ca84QuLQLqptfYKwYaM+mlEy2D7YcFLxDRf2IjI8upf8AmatpSaVThlhxfwLA
+Mkjklpz4ygrFsGDUoiN17pzJoyGFFmakK1xvUxkUTjaXH833//CUX5/k2O1jsDkf
+gC9L7ydaUDn7pDOV1e7jTsUDXSiygxO7jM6gWG+iE5SVeoeh1hc23RxWCIQtKWe0
+iV5GCM9hHWlR7gvQmCQI5beaK4SXtLuwS9kiGwS+Mo1rtTiBiYY1rBowh9kZtWzQ
+kL2A9DFN9uMc6aPHJy3Gog75YG4hGJNOdibsdz4NmJ0q7EsKIqJufCSwb7Zh58A=
+=tTh/
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 683e501..5e9c316c 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -368,23 +368,6 @@ static void sst_media_close(struct snd_pcm_substream *substream,
- 	kfree(stream);
- }
- 
--static inline unsigned int get_current_pipe_id(struct snd_soc_dai *dai,
--					       struct snd_pcm_substream *substream)
--{
--	struct sst_data *sst = snd_soc_dai_get_drvdata(dai);
--	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
--	struct sst_runtime_stream *stream =
--			substream->runtime->private_data;
--	u32 str_id = stream->stream_info.str_id;
--	unsigned int pipe_id;
--
--	pipe_id = map[str_id].device_id;
--
--	dev_dbg(dai->dev, "got pipe_id = %#x for str_id = %d\n",
--			pipe_id, str_id);
--	return pipe_id;
--}
--
- static int sst_media_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--- 
-2.5.0
+--IekLpJqQZjUH9JS1--
+
+--===============1447471413003175847==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1447471413003175847==--
