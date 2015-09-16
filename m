@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: wm5110: Add additional analogue
- input enable for early revs
-Date: Wed, 16 Sep 2015 21:02:00 +0100
-Message-ID: <20150916200159.GV12027@sirena.org.uk>
-References: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1442408383-31682-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: remove unused function" to the
+	asoc tree
+Date: Wed, 16 Sep 2015 21:01:48 +0100
+Message-ID: <E1ZcIto-0007tK-AT@finisterre>
+References: <1441888305-19957-2-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0147518640470145999=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 229E22616EF
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:05 +0200 (CEST)
-In-Reply-To: <1442408383-31682-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D4B22650E1
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:03 +0200 (CEST)
+In-Reply-To: <1441888305-19957-2-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0147518640470145999==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HFuJZczTr8zDHu18"
-Content-Disposition: inline
+   ASoC: Intel: remove unused function
 
+has been applied to the asoc tree at
 
---HFuJZczTr8zDHu18
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Sep 16, 2015 at 01:59:43PM +0100, Charles Keepax wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static int wm5110_in_pga_get(struct snd_kcontrol *kcontrol,
-> +			     struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-> +	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-> +	struct snd_soc_card *card = dapm->card;
-> +	int ret;
-> +
-> +	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-> +
-> +	ret = snd_soc_get_volsw_range(kcontrol, ucontrol);
-> +
-> +	mutex_unlock(&card->dapm_mutex);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Can we please have a comment explaining why we need the lock (I see why
-but someone reading the code in the future might not)?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---HFuJZczTr8zDHu18
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJV+cq3AAoJECTWi3JdVIfQqDIIAIKFpI9afMI5q64PMvReg1HV
-N6i6KbjMBPh98zc83j+UempLkEiVuAikQSyZh3aaFjJurC/aGVQK0Dz3UbVzC+SY
-ix10/oyZ8L789U0V61rHKjq3ncAy/hY7YQwO/5zZ666C3gIVfb4XE+D8OmhCjdyJ
-vJ2z3AEvHlZu46rf/2MJuB2uCkoXnS4vmmsHwwPFPptkct1jzEFcFvfpFSvfmkgN
-YThkhGwXaScng+ofyN9zQSyV6F3F/DWzJpTNvI8e2n63JsLPiAn7KnPPEWvmHSQe
-FAMcZ6jnnnhk3FgGmzof9FtEXHE+Jmnljau8hYme1l28+l0XMRR1bS9lTOycAAA=
-=vWsu
------END PGP SIGNATURE-----
+>From 2fc171e69e0dc0f5cce805ec40923c4e7ff78e94 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Thu, 10 Sep 2015 18:01:45 +0530
+Subject: [PATCH] ASoC: Intel: remove unused function
 
---HFuJZczTr8zDHu18--
+The function get_current_pipe_id() was not being used.
 
---===============0147518640470145999==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-
---===============0147518640470145999==--
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 683e501..5e9c316c 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -368,23 +368,6 @@ static void sst_media_close(struct snd_pcm_substream *substream,
+ 	kfree(stream);
+ }
+ 
+-static inline unsigned int get_current_pipe_id(struct snd_soc_dai *dai,
+-					       struct snd_pcm_substream *substream)
+-{
+-	struct sst_data *sst = snd_soc_dai_get_drvdata(dai);
+-	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
+-	struct sst_runtime_stream *stream =
+-			substream->runtime->private_data;
+-	u32 str_id = stream->stream_info.str_id;
+-	unsigned int pipe_id;
+-
+-	pipe_id = map[str_id].device_id;
+-
+-	dev_dbg(dai->dev, "got pipe_id = %#x for str_id = %d\n",
+-			pipe_id, str_id);
+-	return pipe_id;
+-}
+-
+ static int sst_media_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-- 
+2.5.0
