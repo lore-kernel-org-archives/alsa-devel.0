@@ -1,18 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
- command line tool
-Date: Wed, 16 Sep 2015 12:40:26 +0100
-Message-ID: <1442403626.10528.50.camel@loki>
-References: <cover.1442298607.git.han.lu@intel.com>
- <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
+From: Uli Franke <uli.franke@weiss.ch>
+Subject: Test device for automated testing
+Date: Wed, 16 Sep 2015 14:32:58 +0200
+Message-ID: <55F9617A.6040301@weiss.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF0526145B
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 13:40:37 +0200 (CEST)
-In-Reply-To: <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
+Received: from server11.hostfactory.ch (server11.hostfactory.ch
+ [62.146.13.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 971682614D6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 14:32:59 +0200 (CEST)
+Received: from [192.168.1.112] (165.90.0.85.dynamic.wline.res.cust.swisscom.ch
+ [85.0.90.165])
+ by server11.hostfactory.ch (Postfix) with ESMTPA id 40FD460036620
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 14:32:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,160 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Takashi Iwai <tiwai@suse.de>, han.lu@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, bernard.gautier@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-+ Mark and fix Takashi's email address
+Hi everybody,
 
-On Tue, 2015-09-15 at 20:23 -0700, Caleb Crome wrote:
-> Hi Han,
->   This is great.  Audio testing is something near and dear to my heart
-> :-)  Well, if not heart, at least my profession.  One test that we've
-> been using a long time (that I got from the Audio Anecdotes books) is
-> to do a ramp test.   In fact, we strongly suggest our customers
-> (almost require them) to complete the test successfully before trying
-> to integrate our software (high end mic array and acoustic echo
-> cancellation software).
-> 
-> So, the test is pretty simple:  Set up a hardware  (digital) loopback
-> between output and input.  Then send out a 'ramp', i.e. just keep a
-> counter that increments each frame, and send out the counter value out
-> to the audio port and watch the values that come back.  In our work
-> it's quite important that every sample come back bit-perfect with no
-> samples added or dropped.
-> 
-> Once this test is up and running, you then bang on the system to
-> ensure the audio stream doesn't break even under heavy load.
-> 
-> After the test has been up and running for some days without a bit
-> lost, then you can be pretty sure it's safe to integrate the AEC
-> software.
-> 
-> The benefit of the ramp test is that it's a 100% bit-perfect test.  No
-> analysis required, simple pass or fail The drawback is that it doesn't
-> work with analog loopback, which your test will.
-> 
+we're currently writing a lot of ALSA user space applications. In order
+to test this code with our unit testing and other test environments we'd
+like to know if there's a dummy PCM device which provides the
+fundamental operations like reading/writing and setting the common
+hardware parameters. It doesn't even have to supply some useful
+functionality like loop back or similar.
 
-But this would be a good test to add into BAT too :) There are many DSPs
-and codecs that can do digital loopback so we should look at adding this
-to BAT too.
+Neither the docs nor the goo led us to something useful.
 
-> For analog testing there may be other tests that could be useful too,
-> like an audio PLL plus comparator to test in the time domain or a
-> million other possibilities, but it depends on what failure modes
-> actually happen.
-> 
-
-We also have some plans for testing gain changes and channel mappings.
-Fwiw, during our testing it did pick up some driver bugs with incorrect
-BIAS setting (signal went to DC after 10 hours of testing) and filter
-settings (test failed at certain sine wave frequencies). We have also
-used BAT for stress testing audio over D0 -> D3 -> D0 transitions.
-
-> What kind of failure modes do we see in linux?    Do all failures end
-> up with underrun or overrun, or are there more subtle errors, like
-> frames lost or gained without the software knowing about it?  Or
-> perhaps whole blocks that get duplicated or deleted?
-> 
-> i.e. is the user level always notified of an error?
-> 
-
-No, not for every error. Userspace usually does not know about FIFO
-underruns/overrruns. It does know about DMA overrruns/underruns though.
-Userspace mainly has some difficulty with errors caused in the analog
-domain.
-
-
-> From one of our customers that runs on Windows, it seems that there
-> are million ways Windows messes with audio and can wreck the audio
-> without telling you, but I haven't seen too many (or any) like that
-> with Linux?
-> 
-
-I'm sure there are ways for us to do this in Linux too ;)
-
-Liam
-
-> 
-> 
-> 
-> 
-> On Tue, Sep 15, 2015 at 12:00 AM,  <han.lu@intel.com> wrote:
-> > From: "Lu, Han" <han.lu@intel.com>
-> >
-> > BAT (Basic Audio Tester) is a simple command line utility intended
-> > to automate audio driver and sound server QA testing with no human
-> > interaction.
-> >
-> > BAT works by playing an audio stream and capturing the same stream
-> > in either a digital or analog loopback. It then compares the captured
-> > stream to the original to determine if the testcase passes or fails.
-> >
-> > The main idea of frequency detecting is:
-> > The analysis function reads data from wav file, run fft against the data
-> > to get magnitude of frequency vectors, and then calculates the average
-> > value and standard deviation of frequency vectors. After that, we define
-> > a threshold:
-> >     threshold = 3 * standard_deviation + average_value
-> > Frequencies with amplitude larger than threshold will be recognized as
-> > a peak, and the frequency with largest peak value will be recognized as
-> > a detected frequency.
-> > BAT then compares the detected frequency to target frequency, to decide
-> > if the detecting passes or fails.
-> >
-> > BAT supports 4 working modes:
-> >   1. single line playback;
-> >   2. single line capture and analysis;
-> >   3. playback and capture in loop, and analyze captured data;
-> >   4. local analyze without actual playback or capture.
-> > BAT will check devices input by user to decide which mode to use.
-> > BAT will create threads for playback and record, and will run spectrum
-> > analysis for mode 2, 3 or 4.
-> >
-> > Lu, Han (7):
-> >   BAT: Add initial functions
-> >   BAT: Add common definitions and functions
-> >   BAT: Add playback and record functions
-> >   BAT: Add signal generator
-> >   BAT: Add converting functions
-> >   BAT: Add spectrum analysis functions
-> >   BAT: Add Makefile and configures
-> >
-> >  Makefile.am     |   3 +
-> >  bat/Makefile.am |  14 ++
-> >  bat/alsa.c      | 618 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  bat/alsa.h      |  20 ++
-> >  bat/analyze.c   | 314 ++++++++++++++++++++++++++++
-> >  bat/analyze.h   |  16 ++
-> >  bat/bat.c       | 608 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  bat/common.c    | 198 ++++++++++++++++++
-> >  bat/common.h    | 169 ++++++++++++++++
-> >  bat/convert.c   | 113 +++++++++++
-> >  bat/convert.h   |  23 +++
-> >  bat/signal.c    |  88 ++++++++
-> >  configure.ac    |  19 +-
-> >  13 files changed, 2202 insertions(+), 1 deletion(-)
-> >  create mode 100644 bat/Makefile.am
-> >  create mode 100644 bat/alsa.c
-> >  create mode 100644 bat/alsa.h
-> >  create mode 100644 bat/analyze.c
-> >  create mode 100644 bat/analyze.h
-> >  create mode 100644 bat/bat.c
-> >  create mode 100644 bat/common.c
-> >  create mode 100644 bat/common.h
-> >  create mode 100644 bat/convert.c
-> >  create mode 100644 bat/convert.h
-> >  create mode 100644 bat/signal.c
-> >
-> > --
-> > 1.9.1
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thanks and regards
+Uli
