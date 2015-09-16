@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add utility function to check
-	if an input is analog" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:39 +0100
-Message-ID: <E1ZcItf-0007pZ-WC@finisterre>
-References: <1442408383-31682-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: ak4642: exchange macro name to avoid
+	redefinition" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:44 +0100
+Message-ID: <E1ZcItk-0007rR-AG@finisterre>
+References: <87613c4day.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E43261A8C
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:49 +0200 (CEST)
-In-Reply-To: <1442408383-31682-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DF9B264F22
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:51 +0200 (CEST)
+In-Reply-To: <87613c4day.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: kbuild test robot <fengguang.wu@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add utility function to check if an input is analog
+   ASoC: ak4642: exchange macro name to avoid redefinition
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 002b083b8da96fd6c546fab2608803e7ce47627d Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 16 Sep 2015 13:59:41 +0100
-Subject: [PATCH] ASoC: arizona: Add utility function to check if an input is
- analog
+>From 544637bf3f4ddc1971740026e1cf58d8516b53fa Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 15 Sep 2015 02:42:42 +0000
+Subject: [PATCH] ASoC: ak4642: exchange macro name to avoid redefinition
 
-We will occasionally require to take different action based on if an
-input is analog or digital so add a helper function to return if an
-input is analog.
+71a0138ab("ASoC: ak4642: enable to use MCKO as fixed rate output
+pin on DT") added new FS() macro, but x86 already has it in
+arch/x86/include/uapi/asm/ptrace-abi.h
+This patch exchange FS() to FSs() to avoid redefinition warning
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 9 +++++++++
- sound/soc/codecs/arizona.h | 2 ++
- 2 files changed, 11 insertions(+)
+ sound/soc/codecs/ak4642.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 1bc19f1..ac21b85 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -691,6 +691,15 @@ static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
- 				    ARIZONA_IN_VU, val);
- }
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index b5c4981..cda27c2 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -130,8 +130,8 @@
+ #define I2S		(3 << 0)
  
-+bool arizona_input_analog(struct snd_soc_codec *codec, int shift)
-+{
-+	unsigned int reg = ARIZONA_IN1L_CONTROL + ((shift / 2) * 8);
-+	unsigned int val = snd_soc_read(codec, reg);
-+
-+	return !(val & ARIZONA_IN1_MODE_MASK);
-+}
-+EXPORT_SYMBOL_GPL(arizona_input_analog);
-+
- int arizona_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
- 		  int event)
- {
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index ada0a41..7b68d05 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -294,4 +294,6 @@ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
- int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
- 			    bool diff);
+ /* MD_CTL2 */
+-#define FS(val)		(((val & 0x7) << 0) | ((val & 0x8) << 2))
+-#define PS(val)		((val & 0x3) << 6)
++#define FSs(val)	(((val & 0x7) << 0) | ((val & 0x8) << 2))
++#define PSs(val)	((val & 0x3) << 6)
  
-+extern bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
-+
- #endif
+ /* MD_CTL3 */
+ #define BST1		(1 << 3)
+@@ -458,7 +458,8 @@ static int ak4642_set_mcko(struct snd_soc_codec *codec,
+ 	for (ps = 0; ps < ARRAY_SIZE(ps_list); ps++) {
+ 		for (fs = 0; fs < ARRAY_SIZE(fs_list); fs++) {
+ 			if (frequency == ps_list[ps] * fs_list[fs]) {
+-				snd_soc_write(codec, MD_CTL2, PS(ps) | FS(fs));
++				snd_soc_write(codec, MD_CTL2,
++					      PSs(ps) | FSs(fs));
+ 				return 0;
+ 			}
+ 		}
 -- 
 2.5.0
