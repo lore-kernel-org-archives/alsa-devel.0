@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix broken pxa SoC support" to the asoc
-	tree
-Date: Wed, 16 Sep 2015 21:01:42 +0100
-Message-ID: <E1ZcIti-0007qV-AC@finisterre>
-References: <1442343091-2295-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Applied "ASoC: arizona: Add utility function to check
+	if an input is analog" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:39 +0100
+Message-ID: <E1ZcItf-0007pZ-WC@finisterre>
+References: <1442408383-31682-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 39BCB261A5A
+ by alsa0.perex.cz (Postfix) with ESMTP id 71E43261A8C
  for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:49 +0200 (CEST)
-In-Reply-To: <1442343091-2295-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1442408383-31682-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fix broken pxa SoC support
+   ASoC: arizona: Add utility function to check if an input is analog
 
 has been applied to the asoc tree at
 
@@ -53,85 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From 3c8f7710c1c44fb650bc29b6ef78ed8b60cfaa28 Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 15 Sep 2015 20:51:31 +0200
-Subject: [PATCH] ASoC: fix broken pxa SoC support
+>From 002b083b8da96fd6c546fab2608803e7ce47627d Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 16 Sep 2015 13:59:41 +0100
+Subject: [PATCH] ASoC: arizona: Add utility function to check if an input is
+ analog
 
-The previous fix of pxa library support, which was introduced to fix the
-library dependency, broke the previous SoC behavior, where a machine
-code binding pxa2xx-ac97 with a coded relied on :
- - sound/soc/pxa/pxa2xx-ac97.c
- - sound/soc/codecs/XXX.c
+We will occasionally require to take different action based on if an
+input is analog or digital so add a helper function to return if an
+input is analog.
 
-For example, the mioa701_wm9713.c machine code is currently broken. The
-"select ARM" statement wrongly selects the soc/arm/pxa2xx-ac97 for
-compilation, as per an unfortunate fate SND_PXA2XX_AC97 is both declared
-in sound/arm/Kconfig and sound/soc/pxa/Kconfig.
-
-Fix this by ensuring that SND_PXA2XX_SOC correctly triggers the correct
-pxa2xx-ac97 compilation.
-
-Fixes: 846172dfe33c ("ASoC: fix SND_PXA2XX_LIB Kconfig warning")
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/arm/Kconfig     | 15 ++++++++-------
- sound/soc/pxa/Kconfig |  2 --
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/codecs/arizona.c | 9 +++++++++
+ sound/soc/codecs/arizona.h | 2 ++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index 885683a..e040621 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -9,6 +9,14 @@ menuconfig SND_ARM
- 	  Drivers that are implemented on ASoC can be found in
- 	  "ALSA for SoC audio support" section.
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 1bc19f1..ac21b85 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -691,6 +691,15 @@ static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
+ 				    ARIZONA_IN_VU, val);
+ }
  
-+config SND_PXA2XX_LIB
-+	tristate
-+	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
-+	select SND_DMAENGINE_PCM
++bool arizona_input_analog(struct snd_soc_codec *codec, int shift)
++{
++	unsigned int reg = ARIZONA_IN1L_CONTROL + ((shift / 2) * 8);
++	unsigned int val = snd_soc_read(codec, reg);
 +
-+config SND_PXA2XX_LIB_AC97
-+	bool
++	return !(val & ARIZONA_IN1_MODE_MASK);
++}
++EXPORT_SYMBOL_GPL(arizona_input_analog);
 +
- if SND_ARM
+ int arizona_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
+ 		  int event)
+ {
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index ada0a41..7b68d05 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -294,4 +294,6 @@ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
+ int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
+ 			    bool diff);
  
- config SND_ARMAACI
-@@ -21,13 +29,6 @@ config SND_PXA2XX_PCM
- 	tristate
- 	select SND_PCM
- 
--config SND_PXA2XX_LIB
--	tristate
--	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
--
--config SND_PXA2XX_LIB_AC97
--	bool
--
- config SND_PXA2XX_AC97
- 	tristate "AC97 driver for the Intel PXA2xx chip"
- 	depends on ARCH_PXA
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 39cea80..f2bf866 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -1,7 +1,6 @@
- config SND_PXA2XX_SOC
- 	tristate "SoC Audio for the Intel PXA2xx chip"
- 	depends on ARCH_PXA
--	select SND_ARM
- 	select SND_PXA2XX_LIB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
-@@ -25,7 +24,6 @@ config SND_PXA2XX_AC97
- config SND_PXA2XX_SOC_AC97
- 	tristate
- 	select AC97_BUS
--	select SND_ARM
- 	select SND_PXA2XX_LIB_AC97
- 	select SND_SOC_AC97_BUS
- 
++extern bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
++
+ #endif
 -- 
 2.5.0
