@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: Add tdm slot mask support
-	to simple-card" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:49 +0100
-Message-ID: <E1ZcItp-0007tn-Db@finisterre>
-References: <667e3576d8ec96a556ad3aa5b29a45745f766642.1441806963.git.jsarha@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Add set_tdm_slots()
+	support" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:50 +0100
+Message-ID: <E1ZcItq-0007uG-Cv@finisterre>
+References: <e2e8453b718877f6ba9b8f04807aa0c838414744.1441806963.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0693265090
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:00 +0200 (CEST)
-In-Reply-To: <667e3576d8ec96a556ad3aa5b29a45745f766642.1441806963.git.jsarha@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 961AC26509E
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:01 +0200 (CEST)
+In-Reply-To: <e2e8453b718877f6ba9b8f04807aa0c838414744.1441806963.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: Add tdm slot mask support to simple-card
+   ASoC: davinci-mcasp: Add set_tdm_slots() support
 
 has been applied to the asoc tree at
 
@@ -53,149 +53,386 @@ to this mail.
 Thanks,
 Mark
 
->From 6131084a0bc966107021d8c89489f9cd1663b902 Mon Sep 17 00:00:00 2001
+>From dd55ff8346a972cca1ad056c8258ee96d090633e Mon Sep 17 00:00:00 2001
 From: Jyri Sarha <jsarha@ti.com>
-Date: Wed, 9 Sep 2015 21:27:43 +0300
-Subject: [PATCH] ASoC: simple-card: Add tdm slot mask support to simple-card
+Date: Wed, 9 Sep 2015 21:27:44 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Add set_tdm_slots() support
 
-Adds DT binding for explicitly choosing a tdm mask for DAI and uses it
-in simple-card. The API for snd_soc_of_parse_tdm_slot() has also been
-changed.
+Implements set_tdm_slot() callback for mcasp. Channel constraints are
+updated according to the configured tdm mask and slots each time
+set_tdm_slot() is called. The special case when slot width is set to
+zero is allowed and it means that slot width is the same as the sample
+width.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/tdm-slot.txt         | 11 +++++++++-
- include/sound/simple_card.h                        |  2 ++
- include/sound/soc.h                                |  2 ++
- sound/soc/generic/simple-card.c                    |  8 +++++--
- sound/soc/soc-core.c                               | 25 ++++++++++++++++++++++
- 5 files changed, 45 insertions(+), 3 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 255 ++++++++++++++++++++++++++------------
+ 1 file changed, 174 insertions(+), 81 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tdm-slot.txt b/Documentation/devicetree/bindings/sound/tdm-slot.txt
-index 6a2c842..34cf70e 100644
---- a/Documentation/devicetree/bindings/sound/tdm-slot.txt
-+++ b/Documentation/devicetree/bindings/sound/tdm-slot.txt
-@@ -4,11 +4,15 @@ This specifies audio DAI's TDM slot.
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index add6bb9..fa47a39 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -80,6 +80,8 @@ struct davinci_mcasp {
  
- TDM slot properties:
- dai-tdm-slot-num : Number of slots in use.
--dai-tdm-slot-width :  Width in bits for each slot.
-+dai-tdm-slot-width : Width in bits for each slot.
-+dai-tdm-slot-tx-mask : Transmit direction slot mask, optional
-+dai-tdm-slot-rx-mask : Receive direction slot mask, optional
- 
- For instance:
- 	dai-tdm-slot-num = <2>;
- 	dai-tdm-slot-width = <8>;
-+	dai-tdm-slot-tx-mask = <0 1>;
-+	dai-tdm-slot-rx-mask = <1 0>;
- 
- And for each spcified driver, there could be one .of_xlate_tdm_slot_mask()
- to specify a explicit mapping of the channels and the slots. If it's absent
-@@ -18,3 +22,8 @@ tx and rx masks.
- For snd_soc_of_xlate_tdm_slot_mask(), the tx and rx masks will use a 1 bit
- for an active slot as default, and the default active bits are at the LSB of
- the masks.
-+
-+The explicit masks are given as array of integers, where the first
-+number presents bit-0 (LSB), second presents bit-1, etc. Any non zero
-+number is considered 1 and 0 is 0. snd_soc_of_xlate_tdm_slot_mask()
-+does not do anything, if either mask is set non zero value.
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index b9b4f28..0399352 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -19,6 +19,8 @@ struct asoc_simple_dai {
- 	unsigned int sysclk;
- 	int slots;
- 	int slot_width;
-+	unsigned int tx_slot_mask;
-+	unsigned int rx_slot_mask;
- 	struct clk *clk;
- };
- 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 884e728..a76622d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1601,6 +1601,8 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
- 					  const char *propname);
- int snd_soc_of_parse_tdm_slot(struct device_node *np,
-+			      unsigned int *tx_mask,
-+			      unsigned int *rx_mask,
- 			      unsigned int *slots,
- 			      unsigned int *slot_width);
- void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 3ff76d4..54c3320 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -151,7 +151,9 @@ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
- 	}
- 
- 	if (set->slots) {
--		ret = snd_soc_dai_set_tdm_slot(dai, 0, 0,
-+		ret = snd_soc_dai_set_tdm_slot(dai,
-+					       set->tx_slot_mask,
-+					       set->rx_slot_mask,
- 						set->slots,
- 						set->slot_width);
- 		if (ret && ret != -ENOTSUPP) {
-@@ -243,7 +245,9 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 		return ret;
- 
- 	/* Parse TDM slot */
--	ret = snd_soc_of_parse_tdm_slot(np, &dai->slots, &dai->slot_width);
-+	ret = snd_soc_of_parse_tdm_slot(np, &dai->tx_slot_mask,
-+					&dai->rx_slot_mask,
-+					&dai->slots, &dai->slot_width);
- 	if (ret)
- 		return ret;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6173d15..c5e21ca 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3291,13 +3291,38 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
+ 	/* McASP specific data */
+ 	int	tdm_slots;
++	u32	tdm_mask[2];
++	int	slot_width;
+ 	u8	op_mode;
+ 	u8	num_serializer;
+ 	u8	*serial_dir;
+@@ -596,6 +598,84 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_simple_widgets);
  
-+static int snd_soc_of_get_slot_mask(struct device_node *np,
-+				    const char *prop_name,
-+				    unsigned int *mask)
++/* All serializers must have equal number of channels */
++static int davinci_mcasp_ch_constraint(struct davinci_mcasp *mcasp, int stream,
++				       int serializers)
 +{
-+	u32 val;
-+	const u32 *of_slot_mask = of_get_property(np, prop_name, &val);
-+	int i;
++	struct snd_pcm_hw_constraint_list *cl = &mcasp->chconstr[stream];
++	unsigned int *list = (unsigned int *) cl->list;
++	int slots = mcasp->tdm_slots;
++	int i, count = 0;
 +
-+	if (!of_slot_mask)
-+		return 0;
-+	val /= sizeof(u32);
-+	for (i = 0; i < val; i++)
-+		if (be32_to_cpup(&of_slot_mask[i]))
-+			*mask |= (1 << i);
++	if (mcasp->tdm_mask[stream])
++		slots = hweight32(mcasp->tdm_mask[stream]);
 +
-+	return val;
++	for (i = 2; i <= slots; i++)
++		list[count++] = i;
++
++	for (i = 2; i <= serializers; i++)
++		list[count++] = i*slots;
++
++	cl->count = count;
++
++	return 0;
 +}
 +
- int snd_soc_of_parse_tdm_slot(struct device_node *np,
-+			      unsigned int *tx_mask,
-+			      unsigned int *rx_mask,
- 			      unsigned int *slots,
- 			      unsigned int *slot_width)
- {
- 	u32 val;
- 	int ret;
- 
-+	if (tx_mask)
-+		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-tx-mask", tx_mask);
-+	if (rx_mask)
-+		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-rx-mask", rx_mask);
++static int davinci_mcasp_set_ch_constraints(struct davinci_mcasp *mcasp)
++{
++	int rx_serializers = 0, tx_serializers = 0, ret, i;
 +
- 	if (of_property_read_bool(np, "dai-tdm-slot-num")) {
- 		ret = of_property_read_u32(np, "dai-tdm-slot-num", &val);
- 		if (ret)
++	for (i = 0; i < mcasp->num_serializer; i++)
++		if (mcasp->serial_dir[i] == TX_MODE)
++			tx_serializers++;
++		else if (mcasp->serial_dir[i] == RX_MODE)
++			rx_serializers++;
++
++	ret = davinci_mcasp_ch_constraint(mcasp, SNDRV_PCM_STREAM_PLAYBACK,
++					  tx_serializers);
++	if (ret)
++		return ret;
++
++	ret = davinci_mcasp_ch_constraint(mcasp, SNDRV_PCM_STREAM_CAPTURE,
++					  rx_serializers);
++
++	return ret;
++}
++
++
++static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
++				      unsigned int tx_mask,
++				      unsigned int rx_mask,
++				      int slots, int slot_width)
++{
++	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
++
++	dev_dbg(mcasp->dev,
++		 "%s() tx_mask 0x%08x rx_mask 0x%08x slots %d width %d\n",
++		 __func__, tx_mask, rx_mask, slots, slot_width);
++
++	if (tx_mask >= (1<<slots) || rx_mask >= (1<<slots)) {
++		dev_err(mcasp->dev,
++			"Bad tdm mask tx: 0x%08x rx: 0x%08x slots %d\n",
++			tx_mask, rx_mask, slots);
++		return -EINVAL;
++	}
++
++	if (slot_width &&
++	    (slot_width < 8 || slot_width > 32 || slot_width % 4 != 0)) {
++		dev_err(mcasp->dev, "%s: Unsupported slot_width %d\n",
++			__func__, slot_width);
++		return -EINVAL;
++	}
++
++	mcasp->tdm_slots = slots;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
++	mcasp->slot_width = slot_width;
++
++	return davinci_mcasp_set_ch_constraints(mcasp);
++}
++
+ static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
+ 				       int word_length)
+ {
+@@ -632,6 +712,9 @@ static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
+ 		 */
+ 		rx_rotate = (slot_length - word_length) / 4;
+ 		word_length = slot_length;
++	} else if (mcasp->slot_width) {
++		rx_rotate = (mcasp->slot_width - word_length) / 4;
++		word_length = mcasp->slot_width;
+ 	}
+ 
+ 	/* mapping of the XSSZ bit-field as described in the datasheet */
+@@ -777,33 +860,50 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 
+ 	/*
+ 	 * If more than one serializer is needed, then use them with
+-	 * their specified tdm_slots count. Otherwise, one serializer
+-	 * can cope with the transaction using as many slots as channels
+-	 * in the stream, requires channels symmetry
++	 * all the specified tdm_slots. Otherwise, one serializer can
++	 * cope with the transaction using just as many slots as there
++	 * are channels in the stream.
+ 	 */
+-	active_serializers = (channels + total_slots - 1) / total_slots;
+-	if (active_serializers == 1)
+-		active_slots = channels;
+-	else
+-		active_slots = total_slots;
+-
+-	for (i = 0; i < active_slots; i++)
+-		mask |= (1 << i);
++	if (mcasp->tdm_mask[stream]) {
++		active_slots = hweight32(mcasp->tdm_mask[stream]);
++		active_serializers = (channels + active_slots - 1) /
++			active_slots;
++		if (active_serializers == 1) {
++			active_slots = channels;
++			for (i = 0; i < total_slots; i++) {
++				if ((1 << i) & mcasp->tdm_mask[stream]) {
++					mask |= (1 << i);
++					if (--active_slots <= 0)
++						break;
++				}
++			}
++		}
++	} else {
++		active_serializers = (channels + total_slots - 1) / total_slots;
++		if (active_serializers == 1)
++			active_slots = channels;
++		else
++			active_slots = total_slots;
+ 
++		for (i = 0; i < active_slots; i++)
++			mask |= (1 << i);
++	}
+ 	mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, TX_ASYNC);
+ 
+ 	if (!mcasp->dat_port)
+ 		busel = TXSEL;
+ 
+-	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXTDM_REG, mask);
+-	mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMT_REG, busel | TXORD);
+-	mcasp_mod_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG,
+-		       FSXMOD(total_slots), FSXMOD(0x1FF));
+-
+-	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXTDM_REG, mask);
+-	mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, busel | RXORD);
+-	mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG,
+-		       FSRMOD(total_slots), FSRMOD(0x1FF));
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		mcasp_set_reg(mcasp, DAVINCI_MCASP_TXTDM_REG, mask);
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMT_REG, busel | TXORD);
++		mcasp_mod_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG,
++			       FSXMOD(total_slots), FSXMOD(0x1FF));
++	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
++		mcasp_set_reg(mcasp, DAVINCI_MCASP_RXTDM_REG, mask);
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, busel | RXORD);
++		mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG,
++			       FSRMOD(total_slots), FSRMOD(0x1FF));
++	}
+ 
+ 	return 0;
+ }
+@@ -923,6 +1023,9 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 		int sbits = params_width(params);
+ 		int ppm, div;
+ 
++		if (mcasp->slot_width)
++			sbits = mcasp->slot_width;
++
+ 		div = davinci_mcasp_calc_clk_div(mcasp, rate*sbits*slots,
+ 						 &ppm);
+ 		if (ppm)
+@@ -1028,6 +1131,9 @@ static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	struct snd_interval range;
+ 	int i;
+ 
++	if (rd->mcasp->slot_width)
++		sbits = rd->mcasp->slot_width;
++
+ 	snd_interval_any(&range);
+ 	range.empty = 1;
+ 
+@@ -1070,10 +1176,14 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
+ 
+ 	for (i = 0; i < SNDRV_PCM_FORMAT_LAST; i++) {
+ 		if (snd_mask_test(fmt, i)) {
+-			uint bclk_freq = snd_pcm_format_width(i)*slots*rate;
++			uint sbits = snd_pcm_format_width(i);
+ 			int ppm;
+ 
+-			davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
++			if (rd->mcasp->slot_width)
++				sbits = rd->mcasp->slot_width;
++
++			davinci_mcasp_calc_clk_div(rd->mcasp, sbits*slots*rate,
++						   &ppm);
+ 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
+ 				snd_mask_set(&nfmt, i);
+ 				count++;
+@@ -1095,6 +1205,10 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 					&mcasp->ruledata[substream->stream];
+ 	u32 max_channels = 0;
+ 	int i, dir;
++	int tdm_slots = mcasp->tdm_slots;
++
++	if (mcasp->tdm_mask[substream->stream])
++		tdm_slots = hweight32(mcasp->tdm_mask[substream->stream]);
+ 
+ 	mcasp->substreams[substream->stream] = substream;
+ 
+@@ -1115,7 +1229,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 			max_channels++;
+ 	}
+ 	ruledata->serializers = max_channels;
+-	max_channels *= mcasp->tdm_slots;
++	max_channels *= tdm_slots;
+ 	/*
+ 	 * If the already active stream has less channels than the calculated
+ 	 * limnit based on the seirializers * tdm_slots, we need to use that as
+@@ -1125,15 +1239,25 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 	 */
+ 	if (mcasp->channels && mcasp->channels < max_channels)
+ 		max_channels = mcasp->channels;
++	/*
++	 * But we can always allow channels upto the amount of
++	 * the available tdm_slots.
++	 */
++	if (max_channels < tdm_slots)
++		max_channels = tdm_slots;
+ 
+ 	snd_pcm_hw_constraint_minmax(substream->runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				     2, max_channels);
+ 
+-	if (mcasp->chconstr[substream->stream].count)
+-		snd_pcm_hw_constraint_list(substream->runtime,
+-					   0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-					   &mcasp->chconstr[substream->stream]);
++	snd_pcm_hw_constraint_list(substream->runtime,
++				   0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &mcasp->chconstr[substream->stream]);
++
++	if (mcasp->slot_width)
++		snd_pcm_hw_constraint_minmax(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
++					     8, mcasp->slot_width);
+ 
+ 	/*
+ 	 * If we rely on implicit BCLK divider setting we should
+@@ -1185,6 +1309,7 @@ static const struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+ 	.set_fmt	= davinci_mcasp_set_dai_fmt,
+ 	.set_clkdiv	= davinci_mcasp_set_clkdiv,
+ 	.set_sysclk	= davinci_mcasp_set_sysclk,
++	.set_tdm_slot	= davinci_mcasp_set_tdm_slot,
+ };
+ 
+ static int davinci_mcasp_dai_probe(struct snd_soc_dai *dai)
+@@ -1514,59 +1639,6 @@ nodata:
+ 	return  pdata;
+ }
+ 
+-/* All serializers must have equal number of channels */
+-static int davinci_mcasp_ch_constraint(struct davinci_mcasp *mcasp,
+-				       struct snd_pcm_hw_constraint_list *cl,
+-				       int serializers)
+-{
+-	unsigned int *list;
+-	int i, count = 0;
+-
+-	if (serializers <= 1)
+-		return 0;
+-
+-	list = devm_kzalloc(mcasp->dev, sizeof(unsigned int) *
+-			    (mcasp->tdm_slots + serializers - 2),
+-			    GFP_KERNEL);
+-	if (!list)
+-		return -ENOMEM;
+-
+-	for (i = 2; i <= mcasp->tdm_slots; i++)
+-		list[count++] = i;
+-
+-	for (i = 2; i <= serializers; i++)
+-		list[count++] = i*mcasp->tdm_slots;
+-
+-	cl->count = count;
+-	cl->list = list;
+-
+-	return 0;
+-}
+-
+-
+-static int davinci_mcasp_init_ch_constraints(struct davinci_mcasp *mcasp)
+-{
+-	int rx_serializers = 0, tx_serializers = 0, ret, i;
+-
+-	for (i = 0; i < mcasp->num_serializer; i++)
+-		if (mcasp->serial_dir[i] == TX_MODE)
+-			tx_serializers++;
+-		else if (mcasp->serial_dir[i] == RX_MODE)
+-			rx_serializers++;
+-
+-	ret = davinci_mcasp_ch_constraint(mcasp, &mcasp->chconstr[
+-						  SNDRV_PCM_STREAM_PLAYBACK],
+-					  tx_serializers);
+-	if (ret)
+-		return ret;
+-
+-	ret = davinci_mcasp_ch_constraint(mcasp, &mcasp->chconstr[
+-						  SNDRV_PCM_STREAM_CAPTURE],
+-					  rx_serializers);
+-
+-	return ret;
+-}
+-
+ enum {
+ 	PCM_EDMA,
+ 	PCM_SDMA,
+@@ -1783,7 +1855,28 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		mcasp->fifo_base = DAVINCI_MCASP_V3_AFIFO_BASE;
+ 	}
+ 
+-	ret = davinci_mcasp_init_ch_constraints(mcasp);
++	/* Allocate memory for long enough list for all possible
++	 * scenarios. Maximum number tdm slots is 32 and there cannot
++	 * be more serializers than given in the configuration.  The
++	 * serializer directions could be taken into account, but it
++	 * would make code much more complex and save only couple of
++	 * bytes.
++	 */
++	mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list =
++		devm_kzalloc(mcasp->dev, sizeof(unsigned int) *
++			     (32 + mcasp->num_serializer - 2),
++			     GFP_KERNEL);
++
++	mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list =
++		devm_kzalloc(mcasp->dev, sizeof(unsigned int) *
++			     (32 + mcasp->num_serializer - 2),
++			     GFP_KERNEL);
++
++	if (!mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list ||
++	    !mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list)
++		return -ENOMEM;
++
++	ret = davinci_mcasp_set_ch_constraints(mcasp);
+ 	if (ret)
+ 		goto err;
+ 
 -- 
 2.5.0
