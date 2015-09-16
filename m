@@ -1,27 +1,18 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: Multiple codecs on one sound card for
- multi-channel sound card
-Date: Wed, 16 Sep 2015 11:57:10 +0200
-Message-ID: <55F93CF6.50208@invoxia.com>
-References: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
- <CAG5mAdzyQgOmTcAmHrjWRQzuv-ih9p-qXQsYxdTD_Qmr-Fep3A@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
+ command line tool
+Date: Wed, 16 Sep 2015 12:40:26 +0100
+Message-ID: <1442403626.10528.50.camel@loki>
+References: <cover.1442298607.git.han.lu@intel.com>
+ <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
- [209.85.212.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AB6D2606C9
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 11:57:12 +0200 (CEST)
-Received: by wicgb1 with SMTP id gb1so65863391wic.1
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 02:57:12 -0700 (PDT)
-Received: from [192.168.65.109] (AAnnecy-653-1-86-216.w90-41.abo.wanadoo.fr.
- [90.41.33.216])
- by smtp.googlemail.com with ESMTPSA id t7sm3609459wia.9.2015.09.16.02.57.10
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 16 Sep 2015 02:57:11 -0700 (PDT)
-In-Reply-To: <CAG5mAdzyQgOmTcAmHrjWRQzuv-ih9p-qXQsYxdTD_Qmr-Fep3A@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CF0526145B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 13:40:37 +0200 (CEST)
+In-Reply-To: <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,231 +22,159 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Takashi Iwai <tiwai@suse.de>, han.lu@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, bernard.gautier@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Caleb,
++ Mark and fix Takashi's email address
 
-Multi-codec support is now working fine the current linux releases.
-for previous releases, check if commit
-     [PATCH] ASoC: dapm: Don't add prefix to widget stream name
-is included. I remember this is the last required patch.
+On Tue, 2015-09-15 at 20:23 -0700, Caleb Crome wrote:
+> Hi Han,
+>   This is great.  Audio testing is something near and dear to my heart
+> :-)  Well, if not heart, at least my profession.  One test that we've
+> been using a long time (that I got from the Audio Anecdotes books) is
+> to do a ramp test.   In fact, we strongly suggest our customers
+> (almost require them) to complete the test successfully before trying
+> to integrate our software (high end mic array and acoustic echo
+> cancellation software).
+> 
+> So, the test is pretty simple:  Set up a hardware  (digital) loopback
+> between output and input.  Then send out a 'ramp', i.e. just keep a
+> counter that increments each frame, and send out the counter value out
+> to the audio port and watch the values that come back.  In our work
+> it's quite important that every sample come back bit-perfect with no
+> samples added or dropped.
+> 
+> Once this test is up and running, you then bang on the system to
+> ensure the audio stream doesn't break even under heavy load.
+> 
+> After the test has been up and running for some days without a bit
+> lost, then you can be pretty sure it's safe to integrate the AEC
+> software.
+> 
+> The benefit of the ramp test is that it's a 100% bit-perfect test.  No
+> analysis required, simple pass or fail The drawback is that it doesn't
+> work with analog loopback, which your test will.
+> 
 
-After that, I don't know if the "simple-card" can be configured for =
+But this would be a good test to add into BAT too :) There are many DSPs
+and codecs that can do digital loopback so we should look at adding this
+to BAT too.
 
-multi codec support as you wish.
+> For analog testing there may be other tests that could be useful too,
+> like an audio PLL plus comparator to test in the time domain or a
+> million other possibilities, but it depends on what failure modes
+> actually happen.
+> 
 
-On my side, I cooked a particular sound card for the purpose.
-here is some tips:
+We also have some plans for testing gain changes and channel mappings.
+Fwiw, during our testing it did pick up some driver bugs with incorrect
+BIAS setting (signal went to DC after 10 hours of testing) and filter
+settings (test failed at certain sine wave frequencies). We have also
+used BAT for stress testing audio over D0 -> D3 -> D0 transitions.
 
+> What kind of failure modes do we see in linux?    Do all failures end
+> up with underrun or overrun, or are there more subtle errors, like
+> frames lost or gained without the software knowing about it?  Or
+> perhaps whole blocks that get duplicated or deleted?
+> 
+> i.e. is the user level always notified of an error?
+> 
 
-     struct snd_soc_dai_link_component codecs[2];
-     struct snd_soc_codec_conf codecs_conf[2];
-[...]
-     for (num_codecs=3D0; num_codecs<2; num_codecs++) {
-         struct device_node *of_node;
-         of_node =3D of_parse_phandle(pdev->dev.of_node, "audio-codec", =
-
-num_codecs);
-         if (!of_node) break;
-         data->codecs[num_codecs].of_node =3D of_node;
-         data->codecs[num_codecs].dai_name =3D "tlv320aic3x-foo";
-
-         /* add a "C2" name prefix for every control of the 2nd codec */
-         data->codecs_conf[num_codecs].of_node =3D of_node;
-         if (num_codecs =3D=3D 1) {
-             data->codecs_conf[num_codecs].name_prefix =3D "C2";
-         }
-     }
-[...]
-     data->dai.codecs =3D data->codecs;
-     data->dai.num_codecs =3D num_codecs;
-     data->card.dai_link =3D &data->dai;
-     data->card.codec_conf =3D data->codecs_conf;
-     data->card.num_configs =3D num_codecs;
-[...]
-
-
-On DTS side, I have something like
-
-     sound@0 {
-         compatible =3D "fsl,imx-audio-foo";
-         model =3D "foo-audio";
-         ssi-controller =3D <&ssi1>;
-
-         /*
-          * list phandles for the 2 codecs used in the same TDM network
-          */
-         audio-codec =3D <&codec1>, <&codec2>;
-
-         [...]
-
-     };
-
-
-You also need to have a particular hw_params() method to dispatch the =
-
-TDM and sysclk configuration to your codecs, making the difference =
-
-between your first codec (your bus master) and the others.
+No, not for every error. Userspace usually does not know about FIFO
+underruns/overrruns. It does know about DMA overrruns/underruns though.
+Userspace mainly has some difficulty with errors caused in the analog
+domain.
 
 
-Arnaud
+> From one of our customers that runs on Windows, it seems that there
+> are million ways Windows messes with audio and can wreck the audio
+> without telling you, but I haven't seen too many (or any) like that
+> with Linux?
+> 
 
-Le 15/09/2015 03:07, Caleb Crome a =E9crit :
-> (re-sending hope it's not a duplicate -- I think I must have had HTML
-> in my previous email and it was ignored)
->
->   Hi all,
->      What are the current best practices to specify multiple codecs on
-> one sound card, with all codecs sharing a single TDM bus?
->
->   I have a card with up to 32 TLV320AIC33 codecs on it.  For the
-> moment, we can limit the discussion to only 16 codecs, so we don't
-> have to get extra serializers involved...
->
->   I currently have something like this in my am335x-boneblack.dts file:
->
->   (i.e. attempting to set tdm slot width and num in the i2c codec)
->
->   but it doesn't seem to be picking up the fact that I want all the
-> codecs linked together as one.
->
->   (FYI, the first codec, i.e. tlv32aic3x_a should be the master, and
-> all others including the CPU will be slaves).
->
->   Thanks for any help!
->
->   BTW, I'm happy to use whatever kernel will support me with the
-> minimal amount of effort, currently using 4.1
->
->
->
-> Thank you!
->     -Caleb
->
-> &i2c1 {
->   ...
-> tlv320aic3x_a: tlv320aic3x@18 {
-> #sound-dai-cells =3D <1>;
-> compatible =3D "ti,tlv320aic3x";
-> reg =3D <0x18>;
-> tdm-offset =3D <0>;
-> status =3D "okay";
-> };
-> tlv320aic3x_b: tlv320aic3x@19 {
-> #sound-dai-cells =3D <1>;
-> compatible =3D "ti,tlv320aic3x";
-> reg =3D <0x19>;
-> tdm-offset =3D <32>;
-> status =3D "okay";
-> };
-> tlv320aic3x_c: tlv320aic3x@1a {
-> #sound-dai-cells =3D <1>;
-> compatible =3D "ti,tlv320aic3x";
-> reg =3D <0x1a>;
-> tdm-offset =3D <64>;
-> status =3D "okay";
-> };
-> tlv320aic3x_d: tlv320aic3x@1b {
-> #sound-dai-cells =3D <1>;
-> compatible =3D "ti,tlv320aic3x";
-> reg =3D <0x1b>;
-> tdm-offset =3D <96>;
-> status =3D "okay";
-> };
-> };
->
-> &mcasp0 {
-> #sound-dai-cells =3D <0>;
-> pinctrl-names =3D "default";
-> pinctrl-0 =3D <&mcasp_0_pins_default>;
-> status =3D "okay";
->
-> op-mode =3D <0>;          /* MCASP_IIS_MODE */
-> tdm-slots =3D <16>;
-> num-serializer =3D <16>;
-> serial-dir =3D <  /* 0: INACTIVE, 1: TX, 2: RX */
-> 0 0 1 2
-> 0 0 0 0
-> 0 0 0 0
-> 0 0 0 0
->> ;
-> tx-num-evt =3D <1>;
-> rx-num-evt =3D <1>;
-> };
->
-> / {
-> sound {
-> compatible =3D "simple-audio-card";
-> simple-audio-card,name =3D "puppy-audio";
-> simple-audio-card,mclk-fs =3D <256>;
-> system-clock-frequency =3D <12288000>;
-> status =3D "okay";
-> simple-audio-card,bitclock-master =3D <&tlv320aic3x_a>;
->        simple-audio-card,frame-master    =3D <&tlv320aic3x_a>;
-> simple-audio-card,widgets =3D
-> "Line", "Line Out",
-> "Line", "Line In";
-> simple-audio-card,routing =3D
-> "Line Out",       "HPLOUT",
-> "Line Out",       "HPROUT",
-> "Line In",        "LINE1L",
-> "Line In",        "LINE1R";
->
-> simple-audio-card,dai-link@0 {
-> format =3D "left_j";
-> cpu {
-> sound-dai =3D <&mcasp0>;
-> };
-> codec {
-> sound-dai =3D <&tlv320aic3x_a 0>;
-> dai-tdm-slot-num =3D <0>;
-> dai-tdm-slot-width =3D <16>;
-> };
-> };
-> /**** The stuff below doesn't work -- I can't figure out how to get
-> the name_prefixes set
->   on each codec... .How do I set up so that each codec gets its own name =
-prfix
-> and so that the soc core thinks all codecs are on the same DAI?
-> **** */
->
-> // simple-audio-card,dai-link@1 {
-> // format =3D "left_j";
-> // cpu {
-> // sound-dai =3D <&mcasp0>;
-> // };
-> // codec {
-> // sound-dai =3D <&tlv320aic3x_b 0>;
-> // dai-tdm-slot-num =3D <2>;
-> // dai-tdm-slot-width =3D <16>;
-> // };
-> // };
-> // simple-audio-card,dai-link@2 {
-> // format =3D "left_j";
-> // cpu {
-> // sound-dai =3D <&mcasp0>;
-> // };
-> // codec {
-> // sound-dai =3D <&tlv320aic3x_c>;
-> // dai-tdm-slot-num =3D <4>;
-> // dai-tdm-slot-width =3D <16>;
-> // };
-> // };
-> // simple-audio-card,dai-link@3 {
-> // format =3D "left_j";
-> // cpu {
-> // sound-dai =3D <&mcasp0>;
-> // };
-> // codec {
-> // sound-dai =3D <&tlv320aic3x_d>;
-> // dai-tdm-slot-num =3D <6>;
-> // dai-tdm-slot-width =3D <16>;
-> // };
-> // };
-> };
-> };
+I'm sure there are ways for us to do this in Linux too ;)
+
+Liam
+
+> 
+> 
+> 
+> 
+> On Tue, Sep 15, 2015 at 12:00 AM,  <han.lu@intel.com> wrote:
+> > From: "Lu, Han" <han.lu@intel.com>
+> >
+> > BAT (Basic Audio Tester) is a simple command line utility intended
+> > to automate audio driver and sound server QA testing with no human
+> > interaction.
+> >
+> > BAT works by playing an audio stream and capturing the same stream
+> > in either a digital or analog loopback. It then compares the captured
+> > stream to the original to determine if the testcase passes or fails.
+> >
+> > The main idea of frequency detecting is:
+> > The analysis function reads data from wav file, run fft against the data
+> > to get magnitude of frequency vectors, and then calculates the average
+> > value and standard deviation of frequency vectors. After that, we define
+> > a threshold:
+> >     threshold = 3 * standard_deviation + average_value
+> > Frequencies with amplitude larger than threshold will be recognized as
+> > a peak, and the frequency with largest peak value will be recognized as
+> > a detected frequency.
+> > BAT then compares the detected frequency to target frequency, to decide
+> > if the detecting passes or fails.
+> >
+> > BAT supports 4 working modes:
+> >   1. single line playback;
+> >   2. single line capture and analysis;
+> >   3. playback and capture in loop, and analyze captured data;
+> >   4. local analyze without actual playback or capture.
+> > BAT will check devices input by user to decide which mode to use.
+> > BAT will create threads for playback and record, and will run spectrum
+> > analysis for mode 2, 3 or 4.
+> >
+> > Lu, Han (7):
+> >   BAT: Add initial functions
+> >   BAT: Add common definitions and functions
+> >   BAT: Add playback and record functions
+> >   BAT: Add signal generator
+> >   BAT: Add converting functions
+> >   BAT: Add spectrum analysis functions
+> >   BAT: Add Makefile and configures
+> >
+> >  Makefile.am     |   3 +
+> >  bat/Makefile.am |  14 ++
+> >  bat/alsa.c      | 618 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  bat/alsa.h      |  20 ++
+> >  bat/analyze.c   | 314 ++++++++++++++++++++++++++++
+> >  bat/analyze.h   |  16 ++
+> >  bat/bat.c       | 608 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  bat/common.c    | 198 ++++++++++++++++++
+> >  bat/common.h    | 169 ++++++++++++++++
+> >  bat/convert.c   | 113 +++++++++++
+> >  bat/convert.h   |  23 +++
+> >  bat/signal.c    |  88 ++++++++
+> >  configure.ac    |  19 +-
+> >  13 files changed, 2202 insertions(+), 1 deletion(-)
+> >  create mode 100644 bat/Makefile.am
+> >  create mode 100644 bat/alsa.c
+> >  create mode 100644 bat/alsa.h
+> >  create mode 100644 bat/analyze.c
+> >  create mode 100644 bat/analyze.h
+> >  create mode 100644 bat/bat.c
+> >  create mode 100644 bat/common.c
+> >  create mode 100644 bat/common.h
+> >  create mode 100644 bat/convert.c
+> >  create mode 100644 bat/convert.h
+> >  create mode 100644 bat/signal.c
+> >
+> > --
+> > 1.9.1
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
