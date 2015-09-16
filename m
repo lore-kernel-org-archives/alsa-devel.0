@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SND_SOC_RCAR depends on
-	COMMON_CLK" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:45 +0100
-Message-ID: <E1ZcItl-0007rv-9j@finisterre>
-References: <877fns4ddo.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Add SOC_SINGLE_RANGE_EXT_TLV macro" to
+	the asoc tree
+Date: Wed, 16 Sep 2015 21:01:38 +0100
+Message-ID: <E1ZcIte-0007p6-SJ@finisterre>
+References: <1442408383-31682-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49FC5261AD0
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:51 +0200 (CEST)
-In-Reply-To: <877fns4ddo.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB442261AA0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:50 +0200 (CEST)
+In-Reply-To: <1442408383-31682-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SND_SOC_RCAR depends on COMMON_CLK
+   ASoC: Add SOC_SINGLE_RANGE_EXT_TLV macro
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From e2f8445176c9e6e6b152b792d08abca8308bb8ff Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 15 Sep 2015 02:41:05 +0000
-Subject: [PATCH] ASoC: rsnd: SND_SOC_RCAR depends on COMMON_CLK
+>From a54e22f40480eb63533d3f0520e9c84b102dd09f Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 16 Sep 2015 13:59:42 +0100
+Subject: [PATCH] ASoC: Add SOC_SINGLE_RANGE_EXT_TLV macro
 
-2a46db4a3("ASoC: rsnd: add AUDIO_CLKOUT support") uses
-of_clk_add_provider() which is requesting struct clk_onecell_data.
-But it is COMMON_CLK feature. SND_SOC_RCAR depends on COMMON_CLK
+Add a version of the SOC_SINGLE_RANGE_TLV macro that allows a custom get
+and put to be specified.
 
-This patch also solved compile error of 7486d80f7("ASoC: rsnd: remove
-unneeded sh_clk header")
-
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/soc.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 07114b0..6ca90aa 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -37,6 +37,7 @@ config SND_SOC_SH4_SIU
- config SND_SOC_RCAR
- 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
- 	depends on DMA_OF
-+	depends on COMMON_CLK
- 	select SND_SIMPLE_CARD
- 	select REGMAP_MMIO
- 	help
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 884e728..9ffa285 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -226,6 +226,18 @@
+ 	.info = snd_soc_info_volsw, \
+ 	.get = xhandler_get, .put = xhandler_put, \
+ 	.private_value = SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert, 0) }
++#define SOC_SINGLE_RANGE_EXT_TLV(xname, xreg, xshift, xmin, xmax, xinvert, \
++				 xhandler_get, xhandler_put, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
++		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw_range, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = xreg, .rreg = xreg, .shift = xshift, \
++		 .rshift = xshift, .min = xmin, .max = xmax, \
++		 .platform_max = xmax, .invert = xinvert} }
+ #define SOC_DOUBLE_EXT_TLV(xname, xreg, shift_left, shift_right, xmax, xinvert,\
+ 	 xhandler_get, xhandler_put, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 -- 
 2.5.0
