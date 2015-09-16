@@ -1,41 +1,112 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Date: Wed, 16 Sep 2015 10:02:18 +0200
-Message-ID: <20150916080218.GA8155@gmail.com>
-References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
- <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
- <1442313464.1914.21.camel@sipsolutions.net>
- <20150915110447.GI6350@linux>
- <20150915094509.46cca84d@gandalf.local.home>
- <CA+55aFxVQ9jD=jUqPZt76EMe_Tb-_SA8v=rOHeR9Ljdsc6=xGQ@mail.gmail.com>
- <20150915134732.7ff50d03@gandalf.local.home>
+From: mengdong.lin@intel.com
+Subject: [PATCH] topology: Add API to set a vendor specific
+	version number
+Date: Wed, 16 Sep 2015 17:07:13 +0800
+Message-ID: <1442394433-31417-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <owner-linux-mm@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <20150915134732.7ff50d03@gandalf.local.home>
-Sender: owner-linux-mm@kvack.org
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Viresh Kumar <viresh.kumar@linaro.org>, Johannes Berg <johannes@sipsolutions.net>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Rafael Wysocki <rjw@rjwysocki.net>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, "arnd@arndb.de" <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>, Alexander Duyck <alexander.h.duyck@redhat.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Andrew Morton <akpm@linux-foundation.org>, Andy Lutomirski <luto@amacapital.net>, Arik Nemtsov <arik@wizery.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, Altman, A
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CAB5260603
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 10:53:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mengdong.lin@linux.intel.com, tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-* Steven Rostedt <rostedt@goodmis.org> wrote:
+This vendor-specific version number is optional. It will be written to
+the 'version' field of each block header of the binary toplogy data file.
+The vendor driver can check this number for further processing in kernel.
 
-> But please, next time, go easy on the Cc list. Maybe just use bcc for those not 
-> on the list, stating that you BCC'd a lot of people to make sure this is sane, 
-> but didn't want to spam everyone with every reply.
+The topology ABI version number is still stored in the 'abi' field of
+block headers.
 
-Not just that, such a long Cc: list is a semi-guarantee that various list engines 
-(vger included I think) would drop the mail as spam and nobody else would get the 
-mail...
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ include/topology.h     | 8 ++++++++
+ src/topology/builder.c | 6 +++---
+ src/topology/parser.c  | 7 +++++++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
-Thanks,
-
-	Ingo
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+diff --git a/include/topology.h b/include/topology.h
+index 6ff8c5f..9b84bd9 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -690,6 +690,14 @@ int snd_tplg_build(snd_tplg_t *tplg, const char *outfile);
+  */
+ int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len);
+ 
++/**
++ * \brief Set an optional vendor specific version number.
++ * \param tplg Topology instance.
++ * \param version Vendor specific version number.
++ * \return Zero on success, otherwise a negative error code
++ */
++int snd_tplg_set_version(snd_tplg_t *tplg, unsigned int version);
++
+ /* \} */
+ 
+ #ifdef __cplusplus
+diff --git a/src/topology/builder.c b/src/topology/builder.c
+index 3bccd44..2f01137 100644
+--- a/src/topology/builder.c
++++ b/src/topology/builder.c
+@@ -89,7 +89,7 @@ static int write_data_block(snd_tplg_t *tplg, int size, int tplg_type,
+ 
+ 	/* write the header for this block */
+ 	ret = write_block_header(tplg, tplg_type, 0,
+-		SND_SOC_TPLG_ABI_VERSION, 0, size, 1);
++		tplg->version, 0, size, 1);
+ 	if (ret < 0) {
+ 		SNDERR("error: failed to write %s block %d\n", obj_name, ret);
+ 		return ret;
+@@ -125,7 +125,7 @@ static int write_elem_block(snd_tplg_t *tplg,
+ 	}
+ 
+ 	ret = write_block_header(tplg, tplg_type, vendor_type,
+-		SND_SOC_TPLG_ABI_VERSION, 0, size, count);
++		tplg->version, 0, size, count);
+ 	if (ret < 0) {
+ 		SNDERR("error: failed to write %s block %d\n",
+ 			obj_name, ret);
+@@ -243,7 +243,7 @@ static int write_manifest_data(snd_tplg_t *tplg)
+ 
+ 	/* write the header for this block */
+ 	ret = write_block_header(tplg, SND_SOC_TPLG_TYPE_MANIFEST, 0,
+-		SND_SOC_TPLG_ABI_VERSION, 0,
++		tplg->version, 0,
+ 		sizeof(tplg->manifest) + tplg->manifest.priv.size, 1);
+ 	if (ret < 0) {
+ 		SNDERR("error: failed to write manifest block %d\n", ret);
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 7ca244c..c0ab5e4 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -362,6 +362,13 @@ int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len)
+ 	return 0;
+ }
+ 
++int snd_tplg_set_version(snd_tplg_t *tplg, unsigned int version)
++{
++	tplg->version = version;
++
++	return 0;
++}
++
+ void snd_tplg_verbose(snd_tplg_t *tplg, int verbose)
+ {
+ 	tplg->verbose = verbose;
+-- 
+1.9.1
