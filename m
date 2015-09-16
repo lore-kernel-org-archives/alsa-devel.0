@@ -1,17 +1,17 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] Documentation: bindings: Add the
- Allwinner A10 codec bindings
-Date: Wed, 16 Sep 2015 18:33:08 +0100
-Message-ID: <20150916173308.GL12027@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: sunxi: add support for the
+ on-chip codec on early Allwinner SoCs
+Date: Wed, 16 Sep 2015 20:16:12 +0100
+Message-ID: <20150916191612.GM12027@sirena.org.uk>
 References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442064384-23379-2-git-send-email-maxime.ripard@free-electrons.com>
+ <1442064384-23379-3-git-send-email-maxime.ripard@free-electrons.com>
 Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GPy9sxSfmnk0etkM"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBB2GP42XQKGQEXSVSTAI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="ZX6GBQVrN/hXPFkR"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBDUA46XQKGQE5L37WUI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1442064384-23379-2-git-send-email-maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <1442064384-23379-3-git-send-email-maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <http://groups.google.com/group/linux-sunxi
@@ -23,14 +23,50 @@ To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.o
 Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---GPy9sxSfmnk0etkM
+--ZX6GBQVrN/hXPFkR
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 
-On Sat, Sep 12, 2015 at 03:26:23PM +0200, Maxime Ripard wrote:
-> The Allwinner SoCs have an in-SoC audio controller taking the role of a DAI
-> and a codec.
+On Sat, Sep 12, 2015 at 03:26:24PM +0200, Maxime Ripard wrote:
 
-Please use subject lines matching the style for the relevant subsystem,
-this makes it much easier to spot relevant patches.
---GPy9sxSfmnk0etkM--
+This looks pretty good, there's a few minor things below but I'll apply
+anyway - please send followup patches fixing these.
+
+> +	if (clk_set_rate(scodec->clk_module, clk_freq))
+> +		return -EINVAL;
+
+Better to pass back the error code here rather than silently discard it
+(it might have more information).
+
+> +static struct snd_soc_dai_driver sun4i_codec_dai = {
+> +	.name	= "Codec",
+> +	.ops	= &sun4i_codec_dai_ops,
+> +	.playback = {
+> +		.stream_name	= "Codec Playback",
+> +		.channels_min	= 1,
+> +		.channels_max	= 2,
+> +		.rate_min	= 8000,
+> +		.rate_max	= 192000,
+> +		.rates		= SNDRV_PCM_RATE_8000_48000 |
+> +				  SNDRV_PCM_RATE_96000 |
+> +				  SNDRV_PCM_RATE_192000 |
+> +				  SNDRV_PCM_RATE_KNOT,
+
+No need to specify both explicit rates and _KNOT, _KNOT covers
+everything.
+
+> +		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+> +				  SNDRV_PCM_FMTBIT_S32_LE,
+> +		.sig_bits	= 24,
+
+So presumably also S24_LE (ie, 24 bits packed into a 32 bit word)?
+
+> +	/* Enable the bus clock */
+> +	if (clk_prepare_enable(scodec->clk_apb)) {
+> +		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
+> +		return -EINVAL;
+> +	}
+
+Ideally we'd have runtime power management to disable the clocks when
+idle.
+--ZX6GBQVrN/hXPFkR--
