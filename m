@@ -1,112 +1,51 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] topology: Add API to set a vendor specific
-	version number
-Date: Wed, 16 Sep 2015 17:07:13 +0800
-Message-ID: <1442394433-31417-1-git-send-email-mengdong.lin@intel.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [RESEND PATCH 1/1] ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
+Date: Wed, 16 Sep 2015 10:13:19 +0100
+Message-ID: <409ab77432bd0553502b75ab98089bb7ecdb5018.1442394728.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CAB5260603
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 10:53:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: mengdong.lin@linux.intel.com, tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, support.opensource@diasemi.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Current code incorrectly treats dai format for AC97 as bit mask
+whereas it's actually an integer value. This causes DAI formats
+other than AC97 (e.g. DSP_B) to trigger AC97 related code,
+which is incorrect and breaks functionality. This patch fixes
+the code to correctly compare values to determine AC97 or not.
 
-This vendor-specific version number is optional. It will be written to
-the 'version' field of each block header of the binary toplogy data file.
-The vendor driver can check this number for further processing in kernel.
-
-The topology ABI version number is still stored in the 'abi' field of
-block headers.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- include/topology.h     | 8 ++++++++
- src/topology/builder.c | 6 +++---
- src/topology/parser.c  | 7 +++++++
- 3 files changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/include/topology.h b/include/topology.h
-index 6ff8c5f..9b84bd9 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -690,6 +690,14 @@ int snd_tplg_build(snd_tplg_t *tplg, const char *outfile);
-  */
- int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len);
+Patch based on v4.3-rc1.
+
+ sound/soc/fsl/fsl_ssi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 8ec6fb2..37c5cd4 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -249,7 +249,8 @@ MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
  
-+/**
-+ * \brief Set an optional vendor specific version number.
-+ * \param tplg Topology instance.
-+ * \param version Vendor specific version number.
-+ * \return Zero on success, otherwise a negative error code
-+ */
-+int snd_tplg_set_version(snd_tplg_t *tplg, unsigned int version);
-+
- /* \} */
- 
- #ifdef __cplusplus
-diff --git a/src/topology/builder.c b/src/topology/builder.c
-index 3bccd44..2f01137 100644
---- a/src/topology/builder.c
-+++ b/src/topology/builder.c
-@@ -89,7 +89,7 @@ static int write_data_block(snd_tplg_t *tplg, int size, int tplg_type,
- 
- 	/* write the header for this block */
- 	ret = write_block_header(tplg, tplg_type, 0,
--		SND_SOC_TPLG_ABI_VERSION, 0, size, 1);
-+		tplg->version, 0, size, 1);
- 	if (ret < 0) {
- 		SNDERR("error: failed to write %s block %d\n", obj_name, ret);
- 		return ret;
-@@ -125,7 +125,7 @@ static int write_elem_block(snd_tplg_t *tplg,
- 	}
- 
- 	ret = write_block_header(tplg, tplg_type, vendor_type,
--		SND_SOC_TPLG_ABI_VERSION, 0, size, count);
-+		tplg->version, 0, size, count);
- 	if (ret < 0) {
- 		SNDERR("error: failed to write %s block %d\n",
- 			obj_name, ret);
-@@ -243,7 +243,7 @@ static int write_manifest_data(snd_tplg_t *tplg)
- 
- 	/* write the header for this block */
- 	ret = write_block_header(tplg, SND_SOC_TPLG_TYPE_MANIFEST, 0,
--		SND_SOC_TPLG_ABI_VERSION, 0,
-+		tplg->version, 0,
- 		sizeof(tplg->manifest) + tplg->manifest.priv.size, 1);
- 	if (ret < 0) {
- 		SNDERR("error: failed to write manifest block %d\n", ret);
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 7ca244c..c0ab5e4 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -362,6 +362,13 @@ int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len)
- 	return 0;
+ static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
+ {
+-	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
++	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
++		SND_SOC_DAIFMT_AC97;
  }
  
-+int snd_tplg_set_version(snd_tplg_t *tplg, unsigned int version)
-+{
-+	tplg->version = version;
-+
-+	return 0;
-+}
-+
- void snd_tplg_verbose(snd_tplg_t *tplg, int verbose)
- {
- 	tplg->verbose = verbose;
+ static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
+@@ -947,7 +948,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 				CCSR_SSI_SCR_TCH_EN);
+ 	}
+ 
+-	if (fmt & SND_SOC_DAIFMT_AC97)
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi_private);
+ 
+ 	return 0;
 -- 
-1.9.1
+1.9.3
