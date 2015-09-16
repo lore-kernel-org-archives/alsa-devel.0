@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: add support for the on-chip
-	codec on early Allwinner SoCs" to the asoc tree
-Date: Wed, 16 Sep 2015 21:01:46 +0100
-Message-ID: <E1ZcItm-0007sO-4M@finisterre>
+Subject: Applied "ASoC: simple-card: Add tdm slot mask support
+	to simple-card" to the asoc tree
+Date: Wed, 16 Sep 2015 21:01:49 +0100
+Message-ID: <E1ZcItp-0007tn-Db@finisterre>
+References: <667e3576d8ec96a556ad3aa5b29a45745f766642.1441806963.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8089664306435615490=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3683E264F53
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:01:57 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id F0693265090
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:00 +0200 (CEST)
+In-Reply-To: <667e3576d8ec96a556ad3aa5b29a45745f766642.1441806963.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============8089664306435615490==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: sunxi: add support for the on-chip codec on early Allwinner SoCs
+   ASoC: simple-card: Add tdm slot mask support to simple-card
 
 has been applied to the asoc tree at
 
@@ -54,822 +53,149 @@ to this mail.
 Thanks,
 Mark
 
->From 45fb6b6f2aa3f6b22b81078db0dba4b26c9d0bdb Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>
-Date: Sat, 12 Sep 2015 15:26:24 +0200
-Subject: [PATCH] ASoC: sunxi: add support for the on-chip codec on early
- Allwinner SoCs
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 6131084a0bc966107021d8c89489f9cd1663b902 Mon Sep 17 00:00:00 2001
+From: Jyri Sarha <jsarha@ti.com>
+Date: Wed, 9 Sep 2015 21:27:43 +0300
+Subject: [PATCH] ASoC: simple-card: Add tdm slot mask support to simple-card
 
-The sun4i, sun5i and sun7i SoC families have a built-in codec, capable
-of both audio capture and playback.
+Adds DT binding for explicitly choosing a tdm mask for DAI and uses it
+in simple-card. The API for snd_soc_of_parse_tdm_slot() has also been
+changed.
 
-While this is called a codec by Allwinner, it really is an in-SoC
-combination of a codec and a DAI, with its own DAC/ADC and amplifiers
-in a single memory-mapped controller.
-
-The capture part has been left out for now, and will be added eventually.
-
-Signed-off-by: Emilio López <emilio@elopez.com.ar>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/Kconfig             |   1 +
- sound/soc/Makefile            |   1 +
- sound/soc/sunxi/Kconfig       |  11 +
- sound/soc/sunxi/Makefile      |   2 +
- sound/soc/sunxi/sun4i-codec.c | 720 ++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 735 insertions(+)
- create mode 100644 sound/soc/sunxi/Kconfig
- create mode 100644 sound/soc/sunxi/Makefile
- create mode 100644 sound/soc/sunxi/sun4i-codec.c
+ .../devicetree/bindings/sound/tdm-slot.txt         | 11 +++++++++-
+ include/sound/simple_card.h                        |  2 ++
+ include/sound/soc.h                                |  2 ++
+ sound/soc/generic/simple-card.c                    |  8 +++++--
+ sound/soc/soc-core.c                               | 25 ++++++++++++++++++++++
+ 5 files changed, 45 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 225bfda..7de792b 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -58,6 +58,7 @@ source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
- source "sound/soc/sti/Kconfig"
-+source "sound/soc/sunxi/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 134aca1..af0a571 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -40,6 +40,7 @@ obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= sti/
-+obj-$(CONFIG_SND_SOC)	+= sunxi/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-new file mode 100644
-index 0000000..84c72ec
---- /dev/null
-+++ b/sound/soc/sunxi/Kconfig
-@@ -0,0 +1,11 @@
-+menu "Allwinner SoC Audio support"
+diff --git a/Documentation/devicetree/bindings/sound/tdm-slot.txt b/Documentation/devicetree/bindings/sound/tdm-slot.txt
+index 6a2c842..34cf70e 100644
+--- a/Documentation/devicetree/bindings/sound/tdm-slot.txt
++++ b/Documentation/devicetree/bindings/sound/tdm-slot.txt
+@@ -4,11 +4,15 @@ This specifies audio DAI's TDM slot.
+ 
+ TDM slot properties:
+ dai-tdm-slot-num : Number of slots in use.
+-dai-tdm-slot-width :  Width in bits for each slot.
++dai-tdm-slot-width : Width in bits for each slot.
++dai-tdm-slot-tx-mask : Transmit direction slot mask, optional
++dai-tdm-slot-rx-mask : Receive direction slot mask, optional
+ 
+ For instance:
+ 	dai-tdm-slot-num = <2>;
+ 	dai-tdm-slot-width = <8>;
++	dai-tdm-slot-tx-mask = <0 1>;
++	dai-tdm-slot-rx-mask = <1 0>;
+ 
+ And for each spcified driver, there could be one .of_xlate_tdm_slot_mask()
+ to specify a explicit mapping of the channels and the slots. If it's absent
+@@ -18,3 +22,8 @@ tx and rx masks.
+ For snd_soc_of_xlate_tdm_slot_mask(), the tx and rx masks will use a 1 bit
+ for an active slot as default, and the default active bits are at the LSB of
+ the masks.
 +
-+config SND_SUN4I_CODEC
-+	tristate "Allwinner A10 Codec Support"
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select REGMAP_MMIO
-+	help
-+	  Select Y or M to add support for the Codec embedded in the Allwinner
-+	  A10 and affiliated SoCs.
-+
-+endmenu
-diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-new file mode 100644
-index 0000000..ea8a08c
---- /dev/null
-+++ b/sound/soc/sunxi/Makefile
-@@ -0,0 +1,2 @@
-+obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
-+
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-new file mode 100644
-index 0000000..6e83e62
---- /dev/null
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -0,0 +1,720 @@
-+/*
-+ * Copyright 2014 Emilio López <emilio@elopez.com.ar>
-+ * Copyright 2014 Jon Smirl <jonsmirl@gmail.com>
-+ * Copyright 2015 Maxime Ripard <maxime.ripard@free-electrons.com>
-+ *
-+ * Based on the Allwinner SDK driver, released under the GPL.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/of_address.h>
-+#include <linux/clk.h>
-+#include <linux/regmap.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include <sound/initval.h>
-+#include <sound/dmaengine_pcm.h>
-+
-+/* Codec DAC register offsets and bit fields */
-+#define SUN4I_CODEC_DAC_DPC			(0x00)
-+#define SUN4I_CODEC_DAC_DPC_EN_DA			(31)
-+#define SUN4I_CODEC_DAC_DPC_DVOL			(12)
-+#define SUN4I_CODEC_DAC_FIFOC			(0x04)
-+#define SUN4I_CODEC_DAC_FIFOC_DAC_FS			(29)
-+#define SUN4I_CODEC_DAC_FIFOC_FIR_VERSION		(28)
-+#define SUN4I_CODEC_DAC_FIFOC_SEND_LASAT		(26)
-+#define SUN4I_CODEC_DAC_FIFOC_TX_FIFO_MODE		(24)
-+#define SUN4I_CODEC_DAC_FIFOC_DRQ_CLR_CNT		(21)
-+#define SUN4I_CODEC_DAC_FIFOC_TX_TRIG_LEVEL		(8)
-+#define SUN4I_CODEC_DAC_FIFOC_MONO_EN			(6)
-+#define SUN4I_CODEC_DAC_FIFOC_TX_SAMPLE_BITS		(5)
-+#define SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN		(4)
-+#define SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH		(0)
-+#define SUN4I_CODEC_DAC_FIFOS			(0x08)
-+#define SUN4I_CODEC_DAC_TXDATA			(0x0c)
-+#define SUN4I_CODEC_DAC_ACTL			(0x10)
-+#define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
-+#define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
-+#define SUN4I_CODEC_DAC_ACTL_MIXEN			(29)
-+#define SUN4I_CODEC_DAC_ACTL_LDACLMIXS			(15)
-+#define SUN4I_CODEC_DAC_ACTL_RDACRMIXS			(14)
-+#define SUN4I_CODEC_DAC_ACTL_LDACRMIXS			(13)
-+#define SUN4I_CODEC_DAC_ACTL_DACPAS			(8)
-+#define SUN4I_CODEC_DAC_ACTL_MIXPAS			(7)
-+#define SUN4I_CODEC_DAC_ACTL_PA_MUTE			(6)
-+#define SUN4I_CODEC_DAC_ACTL_PA_VOL			(0)
-+#define SUN4I_CODEC_DAC_TUNE			(0x14)
-+#define SUN4I_CODEC_DAC_DEBUG			(0x18)
-+
-+/* Codec ADC register offsets and bit fields */
-+#define SUN4I_CODEC_ADC_FIFOC			(0x1c)
-+#define SUN4I_CODEC_ADC_FIFOC_EN_AD			(28)
-+#define SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE		(24)
-+#define SUN4I_CODEC_ADC_FIFOC_RX_TRIG_LEVEL		(8)
-+#define SUN4I_CODEC_ADC_FIFOC_MONO_EN			(7)
-+#define SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS		(6)
-+#define SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN		(4)
-+#define SUN4I_CODEC_ADC_FIFOC_FIFO_FLUSH		(0)
-+#define SUN4I_CODEC_ADC_FIFOS			(0x20)
-+#define SUN4I_CODEC_ADC_RXDATA			(0x24)
-+#define SUN4I_CODEC_ADC_ACTL			(0x28)
-+#define SUN4I_CODEC_ADC_ACTL_ADC_R_EN			(31)
-+#define SUN4I_CODEC_ADC_ACTL_ADC_L_EN			(30)
-+#define SUN4I_CODEC_ADC_ACTL_PREG1EN			(29)
-+#define SUN4I_CODEC_ADC_ACTL_PREG2EN			(28)
-+#define SUN4I_CODEC_ADC_ACTL_VMICEN			(27)
-+#define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
-+#define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
-+#define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
-+#define SUN4I_CODEC_ADC_ACTL_DDE			(3)
-+#define SUN4I_CODEC_ADC_DEBUG			(0x2c)
-+
-+/* Other various ADC registers */
-+#define SUN4I_CODEC_DAC_TXCNT			(0x30)
-+#define SUN4I_CODEC_ADC_RXCNT			(0x34)
-+#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
-+#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-+
-+struct sun4i_codec {
-+	struct device	*dev;
-+	struct regmap	*regmap;
-+	struct clk	*clk_apb;
-+	struct clk	*clk_module;
-+
-+	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-+};
-+
-+static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
++The explicit masks are given as array of integers, where the first
++number presents bit-0 (LSB), second presents bit-1, etc. Any non zero
++number is considered 1 and 0 is 0. snd_soc_of_xlate_tdm_slot_mask()
++does not do anything, if either mask is set non zero value.
+diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
+index b9b4f28..0399352 100644
+--- a/include/sound/simple_card.h
++++ b/include/sound/simple_card.h
+@@ -19,6 +19,8 @@ struct asoc_simple_dai {
+ 	unsigned int sysclk;
+ 	int slots;
+ 	int slot_width;
++	unsigned int tx_slot_mask;
++	unsigned int rx_slot_mask;
+ 	struct clk *clk;
+ };
+ 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 884e728..a76622d 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1601,6 +1601,8 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
+ 					  const char *propname);
+ int snd_soc_of_parse_tdm_slot(struct device_node *np,
++			      unsigned int *tx_mask,
++			      unsigned int *rx_mask,
+ 			      unsigned int *slots,
+ 			      unsigned int *slot_width);
+ void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 3ff76d4..54c3320 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -151,7 +151,9 @@ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+ 	}
+ 
+ 	if (set->slots) {
+-		ret = snd_soc_dai_set_tdm_slot(dai, 0, 0,
++		ret = snd_soc_dai_set_tdm_slot(dai,
++					       set->tx_slot_mask,
++					       set->rx_slot_mask,
+ 						set->slots,
+ 						set->slot_width);
+ 		if (ret && ret != -ENOTSUPP) {
+@@ -243,7 +245,9 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 		return ret;
+ 
+ 	/* Parse TDM slot */
+-	ret = snd_soc_of_parse_tdm_slot(np, &dai->slots, &dai->slot_width);
++	ret = snd_soc_of_parse_tdm_slot(np, &dai->tx_slot_mask,
++					&dai->rx_slot_mask,
++					&dai->slots, &dai->slot_width);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6173d15..c5e21ca 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3291,13 +3291,38 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_simple_widgets);
+ 
++static int snd_soc_of_get_slot_mask(struct device_node *np,
++				    const char *prop_name,
++				    unsigned int *mask)
 +{
-+	/*
-+	 * FIXME: according to the BSP, we might need to drive a PA
-+	 *        GPIO high here on some boards
-+	 */
-+
-+	/* Flush TX FIFO */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH));
-+
-+	/* Enable DAC DRQ */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN));
-+}
-+
-+static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
-+{
-+	/*
-+	 * FIXME: according to the BSP, we might need to drive a PA
-+	 *        GPIO low here on some boards
-+	 */
-+
-+	/* Disable DAC DRQ */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
-+			   0);
-+}
-+
-+static int sun4i_codec_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
-+
-+	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENOTSUPP;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		sun4i_codec_start_playback(scodec);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		sun4i_codec_stop_playback(scodec);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sun4i_codec_prepare(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
 +	u32 val;
++	const u32 *of_slot_mask = of_get_property(np, prop_name, &val);
++	int i;
 +
-+	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENOTSUPP;
-+
-+	/* Flush the TX FIFO */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH));
-+
-+	/* Set TX FIFO Empty Trigger Level */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   0x3f << SUN4I_CODEC_DAC_FIFOC_TX_TRIG_LEVEL,
-+			   0xf << SUN4I_CODEC_DAC_FIFOC_TX_TRIG_LEVEL);
-+
-+	if (substream->runtime->rate > 32000)
-+		/* Use 64 bits FIR filter */
-+		val = 0;
-+	else
-+		/* Use 32 bits FIR filter */
-+		val = BIT(SUN4I_CODEC_DAC_FIFOC_FIR_VERSION);
-+
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_FIR_VERSION),
-+			   val);
-+
-+	/* Send zeros when we have an underrun */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_SEND_LASAT),
-+			   0);
-+
-+	return 0;
-+}
-+
-+static unsigned long sun4i_codec_get_mod_freq(struct snd_pcm_hw_params *params)
-+{
-+	unsigned int rate = params_rate(params);
-+
-+	switch (rate) {
-+	case 176400:
-+	case 88200:
-+	case 44100:
-+	case 33075:
-+	case 22050:
-+	case 14700:
-+	case 11025:
-+	case 7350:
-+		return 22579200;
-+
-+	case 192000:
-+	case 96000:
-+	case 48000:
-+	case 32000:
-+	case 24000:
-+	case 16000:
-+	case 12000:
-+	case 8000:
-+		return 24576000;
-+
-+	default:
++	if (!of_slot_mask)
 +		return 0;
-+	}
++	val /= sizeof(u32);
++	for (i = 0; i < val; i++)
++		if (be32_to_cpup(&of_slot_mask[i]))
++			*mask |= (1 << i);
++
++	return val;
 +}
 +
-+static int sun4i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
-+{
-+	unsigned int rate = params_rate(params);
-+
-+	switch (rate) {
-+	case 192000:
-+	case 176400:
-+		return 6;
-+
-+	case 96000:
-+	case 88200:
-+		return 7;
-+
-+	case 48000:
-+	case 44100:
-+		return 0;
-+
-+	case 32000:
-+	case 33075:
-+		return 1;
-+
-+	case 24000:
-+	case 22050:
-+		return 2;
-+
-+	case 16000:
-+	case 14700:
-+		return 3;
-+
-+	case 12000:
-+	case 11025:
-+		return 4;
-+
-+	case 8000:
-+	case 7350:
-+		return 5;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
-+	unsigned long clk_freq;
-+	int hwrate;
-+	u32 val;
-+
-+	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENOTSUPP;
-+
-+	clk_freq = sun4i_codec_get_mod_freq(params);
-+	if (!clk_freq)
-+		return -EINVAL;
-+
-+	if (clk_set_rate(scodec->clk_module, clk_freq))
-+		return -EINVAL;
-+
-+	hwrate = sun4i_codec_get_hw_rate(params);
-+	if (hwrate < 0)
-+		return hwrate;
-+
-+	/* Set DAC sample rate */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   7 << SUN4I_CODEC_DAC_FIFOC_DAC_FS,
-+			   hwrate << SUN4I_CODEC_DAC_FIFOC_DAC_FS);
-+
-+	/* Set the number of channels we want to use */
-+	if (params_channels(params) == 1)
-+		val = BIT(SUN4I_CODEC_DAC_FIFOC_MONO_EN);
-+	else
-+		val = 0;
-+
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   BIT(SUN4I_CODEC_DAC_FIFOC_MONO_EN),
-+			   val);
-+
-+	/* Set the number of sample bits to either 16 or 24 bits */
-+	if (hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS)->min == 32) {
-+		regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_SAMPLE_BITS),
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_SAMPLE_BITS));
-+
-+		/* Set TX FIFO mode to padding the LSBs with 0 */
-+		regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_FIFO_MODE),
-+				   0);
-+
-+		scodec->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	} else {
-+		regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_SAMPLE_BITS),
-+				   0);
-+
-+		/* Set TX FIFO mode to repeat the MSB */
-+		regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_FIFO_MODE),
-+				   BIT(SUN4I_CODEC_DAC_FIFOC_TX_FIFO_MODE));
-+
-+		scodec->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sun4i_codec_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
-+
-+	/*
-+	 * Stop issuing DRQ when we have room for less than 16 samples
-+	 * in our TX FIFO
-+	 */
-+	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-+			   3 << SUN4I_CODEC_DAC_FIFOC_DRQ_CLR_CNT,
-+			   3 << SUN4I_CODEC_DAC_FIFOC_DRQ_CLR_CNT);
-+
-+	return clk_prepare_enable(scodec->clk_module);
-+}
-+
-+static void sun4i_codec_shutdown(struct snd_pcm_substream *substream,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
-+
-+	clk_disable_unprepare(scodec->clk_module);
-+}
-+
-+static const struct snd_soc_dai_ops sun4i_codec_dai_ops = {
-+	.startup	= sun4i_codec_startup,
-+	.shutdown	= sun4i_codec_shutdown,
-+	.trigger	= sun4i_codec_trigger,
-+	.hw_params	= sun4i_codec_hw_params,
-+	.prepare	= sun4i_codec_prepare,
-+};
-+
-+static struct snd_soc_dai_driver sun4i_codec_dai = {
-+	.name	= "Codec",
-+	.ops	= &sun4i_codec_dai_ops,
-+	.playback = {
-+		.stream_name	= "Codec Playback",
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+		.rate_min	= 8000,
-+		.rate_max	= 192000,
-+		.rates		= SNDRV_PCM_RATE_8000_48000 |
-+				  SNDRV_PCM_RATE_96000 |
-+				  SNDRV_PCM_RATE_192000 |
-+				  SNDRV_PCM_RATE_KNOT,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FMTBIT_S32_LE,
-+		.sig_bits	= 24,
-+	},
-+};
-+
-+/*** Codec ***/
-+static const struct snd_kcontrol_new sun4i_codec_pa_mute =
-+	SOC_DAPM_SINGLE("Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
-+
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-+
-+static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
-+	SOC_SINGLE_TLV("PA Volume", SUN4I_CODEC_DAC_ACTL,
-+		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
-+		       sun4i_codec_pa_volume_scale),
-+};
-+
-+static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Right DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
-+	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new sun4i_codec_pa_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_DACPAS, 1, 0),
-+	SOC_DAPM_SINGLE("Mixer Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_MIXPAS, 1, 0),
-+};
-+
-+static const struct snd_soc_dapm_widget sun4i_codec_dapm_widgets[] = {
-+	/* Digital parts of the DACs */
-+	SND_SOC_DAPM_SUPPLY("DAC", SUN4I_CODEC_DAC_DPC,
-+			    SUN4I_CODEC_DAC_DPC_EN_DA, 0,
-+			    NULL, 0),
-+
-+	/* Analog parts of the DACs */
-+	SND_SOC_DAPM_DAC("Left DAC", "Codec Playback", SUN4I_CODEC_DAC_ACTL,
-+			 SUN4I_CODEC_DAC_ACTL_DACAENL, 0),
-+	SND_SOC_DAPM_DAC("Right DAC", "Codec Playback", SUN4I_CODEC_DAC_ACTL,
-+			 SUN4I_CODEC_DAC_ACTL_DACAENR, 0),
-+
-+	/* Mixers */
-+	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
-+			   sun4i_codec_left_mixer_controls,
-+			   ARRAY_SIZE(sun4i_codec_left_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
-+			   sun4i_codec_right_mixer_controls,
-+			   ARRAY_SIZE(sun4i_codec_right_mixer_controls)),
-+
-+	/* Global Mixer Enable */
-+	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
-+			    SUN4I_CODEC_DAC_ACTL_MIXEN, 0, NULL, 0),
-+
-+	/* Pre-Amplifier */
-+	SND_SOC_DAPM_MIXER("Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
-+			   SUN4I_CODEC_ADC_ACTL_PA_EN, 0,
-+			   sun4i_codec_pa_mixer_controls,
-+			   ARRAY_SIZE(sun4i_codec_pa_mixer_controls)),
-+	SND_SOC_DAPM_SWITCH("Pre-Amplifier Mute", SND_SOC_NOPM, 0, 0,
-+			    &sun4i_codec_pa_mute),
-+
-+	SND_SOC_DAPM_OUTPUT("HP Right"),
-+	SND_SOC_DAPM_OUTPUT("HP Left"),
-+};
-+
-+static const struct snd_soc_dapm_route sun4i_codec_dapm_routes[] = {
-+	/* Left DAC Routes */
-+	{ "Left DAC", NULL, "DAC" },
-+
-+	/* Right DAC Routes */
-+	{ "Right DAC", NULL, "DAC" },
-+
-+	/* Right Mixer Routes */
-+	{ "Right Mixer", NULL, "Mixer Enable" },
-+	{ "Right Mixer", "Left DAC Playback Switch", "Left DAC" },
-+	{ "Right Mixer", "Right DAC Playback Switch", "Right DAC" },
-+
-+	/* Left Mixer Routes */
-+	{ "Left Mixer", NULL, "Mixer Enable" },
-+	{ "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
-+
-+	/* Pre-Amplifier Mixer Routes */
-+	{ "Pre-Amplifier", "Mixer Playback Switch", "Left Mixer" },
-+	{ "Pre-Amplifier", "Mixer Playback Switch", "Right Mixer" },
-+	{ "Pre-Amplifier", "DAC Playback Switch", "Left DAC" },
-+	{ "Pre-Amplifier", "DAC Playback Switch", "Right DAC" },
-+
-+	/* PA -> HP path */
-+	{ "Pre-Amplifier Mute", "Switch", "Pre-Amplifier" },
-+	{ "HP Right", NULL, "Pre-Amplifier Mute" },
-+	{ "HP Left", NULL, "Pre-Amplifier Mute" },
-+};
-+
-+static struct snd_soc_codec_driver sun4i_codec_codec = {
-+	.controls		= sun4i_codec_widgets,
-+	.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
-+	.dapm_widgets		= sun4i_codec_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_dapm_widgets),
-+	.dapm_routes		= sun4i_codec_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_dapm_routes),
-+};
-+
-+static const struct snd_soc_component_driver sun4i_codec_component = {
-+	.name = "sun4i-codec",
-+};
-+
-+#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_8000_192000
-+#define SUN4I_CODEC_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+				 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static int sun4i_codec_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_dai_init_dma_data(dai, &scodec->playback_dma_data,
-+				  NULL);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver dummy_cpu_dai = {
-+	.name	= "sun4i-codec-cpu-dai",
-+	.probe	= sun4i_codec_dai_probe,
-+	.playback = {
-+		.stream_name	= "Playback",
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+		.rates		= SUN4I_CODEC_RATES,
-+		.formats	= SUN4I_CODEC_FORMATS,
-+		.sig_bits	= 24,
-+	},
-+};
-+
-+static const struct regmap_config sun4i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
-+};
-+
-+static const struct of_device_id sun4i_codec_of_match[] = {
-+	{ .compatible = "allwinner,sun4i-a10-codec" },
-+	{ .compatible = "allwinner,sun7i-a20-codec" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-+
-+static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
-+							int *num_links)
-+{
-+	struct snd_soc_dai_link *link = devm_kzalloc(dev, sizeof(*link),
-+						     GFP_KERNEL);
-+	if (!link)
-+		return NULL;
-+
-+	link->name		= "cdc";
-+	link->stream_name	= "CDC PCM";
-+	link->codec_dai_name	= "Codec";
-+	link->cpu_dai_name	= dev_name(dev);
-+	link->codec_name	= dev_name(dev);
-+	link->platform_name	= dev_name(dev);
-+	link->dai_fmt		= SND_SOC_DAIFMT_I2S;
-+
-+	*num_links = 1;
-+
-+	return link;
-+};
-+
-+static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return NULL;
-+
-+	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
-+	if (!card->dai_link)
-+		return NULL;
-+
-+	card->dev		= dev;
-+	card->name		= "sun4i-codec";
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "routing");
-+	if (ret) {
-+		dev_err(dev, "Failed to create our audio routing\n");
-+		return NULL;
-+	}
-+
-+	return card;
-+};
-+
-+static int sun4i_codec_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card;
-+	struct sun4i_codec *scodec;
-+	struct resource *res;
-+	void __iomem *base;
-+	int ret;
-+
-+	scodec = devm_kzalloc(&pdev->dev, sizeof(*scodec), GFP_KERNEL);
-+	if (!scodec)
-+		return -ENOMEM;
-+
-+	scodec->dev = &pdev->dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base)) {
-+		dev_err(&pdev->dev, "Failed to map the registers\n");
-+		return PTR_ERR(base);
-+	}
-+
-+	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+					     &sun4i_codec_regmap_config);
-+	if (IS_ERR(scodec->regmap)) {
-+		dev_err(&pdev->dev, "Failed to create our regmap\n");
-+		return PTR_ERR(scodec->regmap);
-+	}
-+
-+	/* Get the clocks from the DT */
-+	scodec->clk_apb = devm_clk_get(&pdev->dev, "apb");
-+	if (IS_ERR(scodec->clk_apb)) {
-+		dev_err(&pdev->dev, "Failed to get the APB clock\n");
-+		return PTR_ERR(scodec->clk_apb);
-+	}
-+
-+	scodec->clk_module = devm_clk_get(&pdev->dev, "codec");
-+	if (IS_ERR(scodec->clk_module)) {
-+		dev_err(&pdev->dev, "Failed to get the module clock\n");
-+		return PTR_ERR(scodec->clk_module);
-+	}
-+
-+	/* Enable the bus clock */
-+	if (clk_prepare_enable(scodec->clk_apb)) {
-+		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
-+		return -EINVAL;
-+	}
-+
-+	/* DMA configuration for TX FIFO */
-+	scodec->playback_dma_data.addr = res->start + SUN4I_CODEC_DAC_TXDATA;
-+	scodec->playback_dma_data.maxburst = 4;
-+	scodec->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &sun4i_codec_codec,
-+				     &sun4i_codec_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register our codec\n");
-+		goto err_clk_disable;
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &sun4i_codec_component,
-+					      &dummy_cpu_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register our DAI\n");
-+		goto err_unregister_codec;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register against DMAEngine\n");
-+		goto err_unregister_codec;
-+	}
-+
-+	card = sun4i_codec_create_card(&pdev->dev);
-+	if (!card) {
-+		dev_err(&pdev->dev, "Failed to create our card\n");
-+		goto err_unregister_codec;
-+	}
-+
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, scodec);
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register our card\n");
-+		goto err_unregister_codec;
-+	}
-+
-+	return 0;
-+
-+err_unregister_codec:
-+	snd_soc_unregister_codec(&pdev->dev);
-+err_clk_disable:
-+	clk_disable_unprepare(scodec->clk_apb);
-+	return ret;
-+}
-+
-+static int sun4i_codec_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_unregister_card(card);
-+	snd_soc_unregister_codec(&pdev->dev);
-+	clk_disable_unprepare(scodec->clk_apb);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver sun4i_codec_driver = {
-+	.driver = {
-+		.name = "sun4i-codec",
-+		.owner = THIS_MODULE,
-+		.of_match_table = sun4i_codec_of_match,
-+	},
-+	.probe = sun4i_codec_probe,
-+	.remove = sun4i_codec_remove,
-+};
-+module_platform_driver(sun4i_codec_driver);
-+
-+MODULE_DESCRIPTION("Allwinner A10 codec driver");
-+MODULE_AUTHOR("Emilio López <emilio@elopez.com.ar>");
-+MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
-+MODULE_AUTHOR("Maxime Ripard <maxime.ripard@free-electrons.com>");
-+MODULE_LICENSE("GPL");
+ int snd_soc_of_parse_tdm_slot(struct device_node *np,
++			      unsigned int *tx_mask,
++			      unsigned int *rx_mask,
+ 			      unsigned int *slots,
+ 			      unsigned int *slot_width)
+ {
+ 	u32 val;
+ 	int ret;
+ 
++	if (tx_mask)
++		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-tx-mask", tx_mask);
++	if (rx_mask)
++		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-rx-mask", rx_mask);
++
+ 	if (of_property_read_bool(np, "dai-tdm-slot-num")) {
+ 		ret = of_property_read_u32(np, "dai-tdm-slot-num", &val);
+ 		if (ret)
 -- 
 2.5.0
-
-
---===============8089664306435615490==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8089664306435615490==--
