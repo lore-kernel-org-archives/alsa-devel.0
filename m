@@ -1,17 +1,18 @@
-From: Uli Franke <uli.franke@weiss.ch>
-Subject: Re: Test device for automated testing
-Date: Wed, 16 Sep 2015 15:15:06 +0200
-Message-ID: <55F96B5A.6000900@weiss.ch>
-References: <55F9617A.6040301@weiss.ch> <55F96798.70106@ladisch.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: arizona: Add utility function to
+	check if an input is analog
+Date: Wed, 16 Sep 2015 13:59:41 +0100
+Message-ID: <1442408383-31682-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server11.hostfactory.ch (server11.hostfactory.ch
- [62.146.13.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 1359A2614F6
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 15:15:08 +0200 (CEST)
-In-Reply-To: <55F96798.70106@ladisch.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05512261501
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 15:23:19 +0200 (CEST)
+In-Reply-To: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 16.09.2015 14:59, Clemens Ladisch wrote:
-> Uli Franke wrote:
->> we're currently writing a lot of ALSA user space applications. In order
->> to test this code with our unit testing and other test environments we'd
->> like to know if there's a dummy PCM device which provides the
->> fundamental operations like reading/writing and setting the common
->> hardware parameters.
-> 
-> That would be the snd-dummy module.
+We will occasionally require to take different action based on if an
+input is analog or digital so add a helper function to return if an
+input is analog.
 
-Great - that's what we're looking for. I'll check it out.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    9 +++++++++
+ sound/soc/codecs/arizona.h |    2 ++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
 
-> If you cannot load kernel drivers, you could try the virtual "null"
-> device, but that one does not have realistic timing.
-
-I tried the "null" but this fails when setting hw parameters with an
-assertion.
-
-
-Regards
-Uli
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 1bc19f1..ac21b85 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -691,6 +691,15 @@ static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
+ 				    ARIZONA_IN_VU, val);
+ }
+ 
++bool arizona_input_analog(struct snd_soc_codec *codec, int shift)
++{
++	unsigned int reg = ARIZONA_IN1L_CONTROL + ((shift / 2) * 8);
++	unsigned int val = snd_soc_read(codec, reg);
++
++	return !(val & ARIZONA_IN1_MODE_MASK);
++}
++EXPORT_SYMBOL_GPL(arizona_input_analog);
++
+ int arizona_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
+ 		  int event)
+ {
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index ada0a41..7b68d05 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -294,4 +294,6 @@ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
+ int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
+ 			    bool diff);
+ 
++extern bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
++
+ #endif
+-- 
+1.7.2.5
