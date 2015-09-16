@@ -1,72 +1,77 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: sunxi: add support for the
- on-chip codec on early Allwinner SoCs
-Date: Wed, 16 Sep 2015 20:16:12 +0100
-Message-ID: <20150916191612.GM12027@sirena.org.uk>
-References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442064384-23379-3-git-send-email-maxime.ripard@free-electrons.com>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Subject: Re: [PATCH v5 10/10] ASoC: rockchip_i2s: modify DMA max burst to 1
+Date: Wed, 16 Sep 2015 20:22:09 +0100
+Message-ID: <20150916192209.GN12027@sirena.org.uk>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
+ <1442188182-6181-1-git-send-email-shawn.lin@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZX6GBQVrN/hXPFkR"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBDUA46XQKGQE5L37WUI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1442064384-23379-3-git-send-email-maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============2237829752277140351=="
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1442188182-6181-1-git-send-email-shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Yiwei Cai <cain.cai-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Olof Johansson <olofj-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---ZX6GBQVrN/hXPFkR
-Content-Type: text/plain; charset=UTF-8
+
+--===============2237829752277140351==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aj68N5rnBpm/Ladk"
 Content-Disposition: inline
 
-On Sat, Sep 12, 2015 at 03:26:24PM +0200, Maxime Ripard wrote:
 
-This looks pretty good, there's a few minor things below but I'll apply
-anyway - please send followup patches fixing these.
+--aj68N5rnBpm/Ladk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +	if (clk_set_rate(scodec->clk_module, clk_freq))
-> +		return -EINVAL;
+On Mon, Sep 14, 2015 at 07:49:42AM +0800, Shawn Lin wrote:
 
-Better to pass back the error code here rather than silently discard it
-(it might have more information).
-
-> +static struct snd_soc_dai_driver sun4i_codec_dai = {
-> +	.name	= "Codec",
-> +	.ops	= &sun4i_codec_dai_ops,
-> +	.playback = {
-> +		.stream_name	= "Codec Playback",
-> +		.channels_min	= 1,
-> +		.channels_max	= 2,
-> +		.rate_min	= 8000,
-> +		.rate_max	= 192000,
-> +		.rates		= SNDRV_PCM_RATE_8000_48000 |
-> +				  SNDRV_PCM_RATE_96000 |
-> +				  SNDRV_PCM_RATE_192000 |
-> +				  SNDRV_PCM_RATE_KNOT,
-
-No need to specify both explicit rates and _KNOT, _KNOT covers
-everything.
-
-> +		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
-> +				  SNDRV_PCM_FMTBIT_S32_LE,
-> +		.sig_bits	= 24,
-
-So presumably also S24_LE (ie, 24 bits packed into a 32 bit word)?
-
-> +	/* Enable the bus clock */
-> +	if (clk_prepare_enable(scodec->clk_apb)) {
-> +		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
-> +		return -EINVAL;
+> +	default:
+> +		dev_info(&pdev->dev, "Default no dma_quirk!\n");
+> +		break;
 > +	}
 
-Ideally we'd have runtime power management to disable the clocks when
-idle.
---ZX6GBQVrN/hXPFkR--
+Probably printing a message when not using the quirk is a bit noisy
+(hopefully future devices will fix this!).  Otherwise
+
+Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+
+--aj68N5rnBpm/Ladk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV+cFgAAoJECTWi3JdVIfQC9AH/3JFxsm2/XrJ9OsHMR3e2gRz
+JsTWeO3MgbMTPXE6SzP76GpnT4ecoiEhliYFk/Hga5u4PaYfz91V2aCMzShIwSY5
+bRa9oGCGl4WhIYWyawDDgLKnMj+Q6pOokqQU/dAf3Rw9p4A+8Znemmbb4SxOAIXD
+rk5UtGlAtmapn9JIyWaLTExTe5LczKTU6wAHiekZVhF7q8Wahd+8u1wRZF/QDAdW
+ohzs1gm8qNQhie3tYy/CMgM4QhaMIhjFA9B+3sxtRopnHjyryYnnoBqJPmdeepRs
+CTjqxko9KRv2ov83PrTblWESlreMTpYuuZS2YPEafhgPv/ZCnj1BRZAtvB5kiYo=
+=Dbng
+-----END PGP SIGNATURE-----
+
+--aj68N5rnBpm/Ladk--
+
+
+--===============2237829752277140351==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-rockchip mailing list
+Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-rockchip
+
+--===============2237829752277140351==--
