@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Improve tdm support" to
+Subject: Applied "ASoC: fsl-asoc-card: add AC'97 support" to
 	the asoc tree
-Date: Wed, 16 Sep 2015 21:01:51 +0100
-Message-ID: <E1ZcItr-0007uj-HQ@finisterre>
-References: <fd757436a42258131e9b671149893f8578dafd8b.1441806963.git.jsarha@ti.com>
+Date: Wed, 16 Sep 2015 21:01:53 +0100
+Message-ID: <E1ZcItt-0007vf-Ba@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E4A1F2650C0
- for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:01 +0200 (CEST)
-In-Reply-To: <fd757436a42258131e9b671149893f8578dafd8b.1441806963.git.jsarha@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 944E8261A5A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2015 22:02:06 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+To: Maciej Szmigiero <mail@maciej.szmigiero.name>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Improve tdm support
+   ASoC: fsl-asoc-card: add AC'97 support
 
 has been applied to the asoc tree at
 
@@ -53,92 +52,334 @@ to this mail.
 Thanks,
 Mark
 
->From 3e8f5263bd83fd0fe7dacba2de347b17ac99fc91 Mon Sep 17 00:00:00 2001
-From: Jyri Sarha <jsarha@ti.com>
-Date: Wed, 9 Sep 2015 21:27:46 +0300
-Subject: [PATCH] ASoC: tlv320aic3x: Improve tdm support
+>From e06b508481e1916b25038289b945104009d774c9 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 31 Aug 2015 17:11:35 +0200
+Subject: [PATCH] ASoC: fsl-asoc-card: add AC'97 support
 
-Before this patch the set_tdm_slots() callback did not store the value
-of slot width anywhere. The tdm support only worked if selected slot
-width was equal to the sample width. With this patch all sample widths
-that fit into the slot width are supported. There unused bits are
-filled unnecessarily in the capture direction, but the other end of
-the i2s bus should be able to ignore them.
+Add AC'97 support to fsl-asoc-card using generic
+ASoC AC'97 CODEC.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
+The SSI controller will silently enable any TX
+AC'97 slots that have their bits set in SLOTREQ
+received from CODEC and then will redirect some
+of playback samples there.
+
+That's why it is important to make sure that
+any of CODEC playback slots that can pull samples
+are set to slots 3/4 (standard PCM playback slots).
+Currently, this applies to S/PDIF slots as they
+were seen to pull samples sometimes even with
+S/PDIF output being disabled.
+
+Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/sound/fsl-asoc-card.txt    |  10 +-
+ sound/soc/fsl/fsl-asoc-card.c                      | 145 ++++++++++++++++-----
+ 2 files changed, 120 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 1a82b19..f1c9fff 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -80,6 +80,7 @@ struct aic3x_priv {
- 	unsigned int sysclk;
- 	unsigned int dai_fmt;
- 	unsigned int tdm_delay;
-+	unsigned int slot_width;
- 	struct list_head list;
- 	int master;
- 	int gpio_reset;
-@@ -1025,10 +1026,14 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	u8 data, j, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
- 	u16 d, pll_d = 1;
- 	int clk;
-+	int width = aic3x->slot_width;
-+
-+	if (!width)
-+		width = params_width(params);
+diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+index a96774c..ce55c0a 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+@@ -13,13 +13,15 @@ So having this generic sound card allows all Freescale SoC users to benefit
+ from the simplification of a new card support and the capability of the wide
+ sample rates support through ASRC.
  
- 	/* select data word length */
- 	data = snd_soc_read(codec, AIC3X_ASD_INTF_CTRLB) & (~(0x3 << 4));
--	switch (params_width(params)) {
-+	switch (width) {
- 	case 16:
+-Note: The card is initially designed for those sound cards who use I2S and
+-      PCM DAI formats. However, it'll be also possible to support those non
+-      I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as long
+-      as the driver has been properly upgraded.
++Note: The card is initially designed for those sound cards who use AC'97, I2S
++      and PCM DAI formats. However, it'll be also possible to support those non
++      AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
++      long as the driver has been properly upgraded.
+ 
+ 
+ The compatible list for this generic sound card currently:
++ "fsl,imx-audio-ac97"
++
+  "fsl,imx-audio-cs42888"
+ 
+  "fsl,imx-audio-wm8962"
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 5aeb6ed..86aa498 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -14,6 +14,9 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#if IS_ENABLED(CONFIG_SND_AC97_CODEC)
++#include <sound/ac97_codec.h>
++#endif
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+@@ -115,6 +118,11 @@ static const struct snd_soc_dapm_widget fsl_asoc_card_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+ };
+ 
++static bool fsl_asoc_card_is_ac97(struct fsl_asoc_card_priv *priv)
++{
++	return priv->dai_fmt == SND_SOC_DAIFMT_AC97;
++}
++
+ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params)
+ {
+@@ -133,7 +141,9 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	 * set_bias_level(), bypass the remaining settings in hw_params().
+ 	 * Note: (dai_fmt & CBM_CFM) includes CBM_CFM and CBM_CFS.
+ 	 */
+-	if (priv->card.set_bias_level && priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM)
++	if ((priv->card.set_bias_level &&
++	     priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM) ||
++	    fsl_asoc_card_is_ac97(priv))
+ 		return 0;
+ 
+ 	/* Specific configurations of DAIs starts from here */
+@@ -300,7 +310,7 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 	ext_port--;
+ 
+ 	/*
+-	 * Use asynchronous mode (6 wires) for all cases.
++	 * Use asynchronous mode (6 wires) for all cases except AC97.
+ 	 * If only 4 wires are needed, just set SSI into
+ 	 * synchronous mode and enable 4 PADs in IOMUX.
+ 	 */
+@@ -346,15 +356,30 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
  		break;
- 	case 20:
-@@ -1170,12 +1175,16 @@ static int aic3x_prepare(struct snd_pcm_substream *substream,
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
- 	int delay = 0;
-+	int width = aic3x->slot_width;
+ 	default:
+-		return -EINVAL;
++		if (!fsl_asoc_card_is_ac97(priv))
++			return -EINVAL;
++	}
 +
-+	if (!width)
-+		width = substream->runtime->sample_bits;
++	if (fsl_asoc_card_is_ac97(priv)) {
++		int_ptcr = IMX_AUDMUX_V2_PTCR_SYN |
++			   IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
++			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
++		ext_ptcr = IMX_AUDMUX_V2_PTCR_SYN |
++			   IMX_AUDMUX_V2_PTCR_TFSEL(int_port) |
++			   IMX_AUDMUX_V2_PTCR_TFSDIR;
+ 	}
  
- 	/* TDM slot selection only valid in DSP_A/_B mode */
- 	if (aic3x->dai_fmt == SND_SOC_DAIFMT_DSP_A)
--		delay += (aic3x->tdm_delay + 1);
-+		delay += (aic3x->tdm_delay*width + 1);
- 	else if (aic3x->dai_fmt == SND_SOC_DAIFMT_DSP_B)
--		delay += aic3x->tdm_delay;
-+		delay += aic3x->tdm_delay*width;
+ 	/* Asynchronous mode can not be set along with RCLKDIR */
+-	ret = imx_audmux_v2_configure_port(int_port, 0,
+-					   IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
+-	if (ret) {
+-		dev_err(dev, "audmux internal port setup failed\n");
+-		return ret;
++	if (!fsl_asoc_card_is_ac97(priv)) {
++		unsigned int pdcr =
++				IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port);
++
++		ret = imx_audmux_v2_configure_port(int_port, 0,
++						   pdcr);
++		if (ret) {
++			dev_err(dev, "audmux internal port setup failed\n");
++			return ret;
++		}
+ 	}
  
- 	/* Configure data delay */
- 	snd_soc_write(codec, AIC3X_ASD_INTF_CTRLC, delay);
-@@ -1296,7 +1305,20 @@ static int aic3x_set_dai_tdm_slot(struct snd_soc_dai *codec_dai,
+ 	ret = imx_audmux_v2_configure_port(int_port, int_ptcr,
+@@ -364,11 +389,16 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 		return ret;
+ 	}
+ 
+-	ret = imx_audmux_v2_configure_port(ext_port, 0,
+-					   IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
+-	if (ret) {
+-		dev_err(dev, "audmux external port setup failed\n");
+-		return ret;
++	if (!fsl_asoc_card_is_ac97(priv)) {
++		unsigned int pdcr =
++				IMX_AUDMUX_V2_PDCR_RXDSEL(int_port);
++
++		ret = imx_audmux_v2_configure_port(ext_port, 0,
++						   pdcr);
++		if (ret) {
++			dev_err(dev, "audmux external port setup failed\n");
++			return ret;
++		}
+ 	}
+ 
+ 	ret = imx_audmux_v2_configure_port(ext_port, ext_ptcr,
+@@ -389,6 +419,23 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
+ 	struct device *dev = card->dev;
+ 	int ret;
+ 
++	if (fsl_asoc_card_is_ac97(priv)) {
++#if IS_ENABLED(CONFIG_SND_AC97_CODEC)
++		struct snd_soc_codec *codec = card->rtd[0].codec;
++		struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
++
++		/*
++		 * Use slots 3/4 for S/PDIF so SSI won't try to enable
++		 * other slots and send some samples there
++		 * due to SLOTREQ bits for S/PDIF received from codec
++		 */
++		snd_ac97_update_bits(ac97, AC97_EXTENDED_STATUS,
++				     AC97_EA_SPSA_SLOT_MASK, AC97_EA_SPSA_3_4);
++#endif
++
++		return 0;
++	}
++
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+ 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
+ 	if (ret) {
+@@ -404,10 +451,9 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	struct device_node *cpu_np, *codec_np, *asrc_np;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct platform_device *asrc_pdev = NULL;
+-	struct platform_device *cpu_pdev;
++	struct platform_device *cpu_pdev, *codec_pdev;
+ 	struct fsl_asoc_card_priv *priv;
+-	struct i2c_client *codec_dev;
+-	struct clk *codec_clk;
++	struct i2c_client *codec_i2c_dev;
+ 	const char *codec_dai_name;
+ 	u32 width;
+ 	int ret;
+@@ -420,9 +466,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	/* Give a chance to old DT binding */
+ 	if (!cpu_np)
+ 		cpu_np = of_parse_phandle(np, "ssi-controller", 0);
+-	codec_np = of_parse_phandle(np, "audio-codec", 0);
+-	if (!cpu_np || !codec_np) {
+-		dev_err(&pdev->dev, "phandle missing or invalid\n");
++	if (!cpu_np) {
++		dev_err(&pdev->dev, "CPU phandle missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto fail;
+ 	}
+@@ -434,11 +479,13 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
+-	codec_dev = of_find_i2c_device_by_node(codec_np);
+-	if (!codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec platform device\n");
+-		ret = -EINVAL;
+-		goto fail;
++	codec_np = of_parse_phandle(np, "audio-codec", 0);
++	if (codec_np) {
++		codec_pdev = of_find_device_by_node(codec_np);
++		codec_i2c_dev = of_find_i2c_device_by_node(codec_np);
++	} else {
++		codec_pdev = NULL;
++		codec_i2c_dev = NULL;
+ 	}
+ 
+ 	asrc_np = of_parse_phandle(np, "audio-asrc", 0);
+@@ -446,10 +493,13 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		asrc_pdev = of_find_device_by_node(asrc_np);
+ 
+ 	/* Get the MCLK rate only, and leave it controlled by CODEC drivers */
+-	codec_clk = clk_get(&codec_dev->dev, NULL);
+-	if (!IS_ERR(codec_clk)) {
+-		priv->codec_priv.mclk_freq = clk_get_rate(codec_clk);
+-		clk_put(codec_clk);
++	if (codec_pdev) {
++		struct clk *codec_clk = clk_get(&codec_pdev->dev, NULL);
++
++		if (!IS_ERR(codec_clk)) {
++			priv->codec_priv.mclk_freq = clk_get_rate(codec_clk);
++			clk_put(codec_clk);
++		}
+ 	}
+ 
+ 	/* Default sample rate and format, will be updated in hw_params() */
+@@ -486,11 +536,21 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
+ 		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
++	} else if (of_device_is_compatible(np, "fsl,imx-audio-ac97")) {
++		codec_dai_name = "ac97-hifi";
++		priv->card.set_bias_level = NULL;
++		priv->dai_fmt = SND_SOC_DAIFMT_AC97;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
  		return -EINVAL;
  	}
  
--	aic3x->tdm_delay = lsb * slot_width;
-+	switch (slot_width) {
-+	case 16:
-+	case 20:
-+	case 24:
-+	case 32:
-+		break;
-+	default:
-+		dev_err(codec->dev, "Unsupported slot width %d\n", slot_width);
-+		return -EINVAL;
++	if (!fsl_asoc_card_is_ac97(priv) && !codec_pdev) {
++		dev_err(&pdev->dev, "failed to find codec platform device\n");
++		ret = -EINVAL;
++		goto asrc_fail;
 +	}
 +
-+
-+	aic3x->tdm_delay = lsb;
-+	aic3x->slot_width = slot_width;
+ 	/* Common settings for corresponding Freescale CPU DAI driver */
+ 	if (strstr(cpu_np->name, "ssi")) {
+ 		/* Only SSI needs to configure AUDMUX */
+@@ -507,7 +567,9 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
+ 	}
  
- 	/* DOUT in high-impedance on inactive bit clocks */
- 	snd_soc_update_bits(codec, AIC3X_ASD_INTF_CTRLA,
+-	sprintf(priv->name, "%s-audio", codec_dev->name);
++	snprintf(priv->name, sizeof(priv->name), "%s-audio",
++		 fsl_asoc_card_is_ac97(priv) ? "ac97" :
++		 codec_i2c_dev ? codec_i2c_dev->name : codec_pdev->name);
+ 
+ 	/* Initialize sound card */
+ 	priv->pdev = pdev;
+@@ -531,8 +593,26 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ 	/* Normal DAI Link */
+ 	priv->dai_link[0].cpu_of_node = cpu_np;
+-	priv->dai_link[0].codec_of_node = codec_np;
+ 	priv->dai_link[0].codec_dai_name = codec_dai_name;
++
++	if (!fsl_asoc_card_is_ac97(priv))
++		priv->dai_link[0].codec_of_node = codec_np;
++	else {
++		u32 idx;
++
++		ret = of_property_read_u32(cpu_np, "cell-index", &idx);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"cannot get CPU index property\n");
++			goto asrc_fail;
++		}
++
++		priv->dai_link[0].codec_name =
++				devm_kasprintf(&pdev->dev, GFP_KERNEL,
++					       "ac97-codec.%u",
++					       (unsigned int)idx);
++	}
++
+ 	priv->dai_link[0].platform_of_node = cpu_np;
+ 	priv->dai_link[0].dai_fmt = priv->dai_fmt;
+ 	priv->card.num_links = 1;
+@@ -543,6 +623,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->dai_link[1].platform_of_node = asrc_np;
+ 		priv->dai_link[2].codec_dai_name = codec_dai_name;
+ 		priv->dai_link[2].codec_of_node = codec_np;
++		priv->dai_link[2].codec_name =
++				priv->dai_link[0].codec_name;
+ 		priv->dai_link[2].cpu_of_node = cpu_np;
+ 		priv->dai_link[2].dai_fmt = priv->dai_fmt;
+ 		priv->card.num_links = 3;
+@@ -578,14 +660,15 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ asrc_fail:
+ 	of_node_put(asrc_np);
+-fail:
+ 	of_node_put(codec_np);
++fail:
+ 	of_node_put(cpu_np);
+ 
+ 	return ret;
+ }
+ 
+ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-ac97", },
+ 	{ .compatible = "fsl,imx-audio-cs42888", },
+ 	{ .compatible = "fsl,imx-audio-sgtl5000", },
+ 	{ .compatible = "fsl,imx-audio-wm8962", },
 -- 
 2.5.0
