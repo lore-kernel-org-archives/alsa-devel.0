@@ -1,65 +1,55 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH] mfd: arizona: Call the runtime PM function if the
- state is runtime resumed
-Date: Thu, 17 Sep 2015 17:28:47 +0900
-Message-ID: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, Inha Song <ideal.song@samsung.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: wm5110: Add additional analogue
+ input enable for early revs
+Date: Thu, 17 Sep 2015 09:10:07 +0100
+Message-ID: <20150917081007.GA7694@ck-lbox>
+References: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1442408383-31682-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20150916200159.GV12027@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3AAA265161
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:33:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150916200159.GV12027@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch call runtiem PM function manually if the state is runtime resumed
-before enter suspend.
+On Wed, Sep 16, 2015 at 09:02:00PM +0100, Mark Brown wrote:
+> On Wed, Sep 16, 2015 at 01:59:43PM +0100, Charles Keepax wrote:
+> 
+> > +static int wm5110_in_pga_get(struct snd_kcontrol *kcontrol,
+> > +			     struct snd_ctl_elem_value *ucontrol)
+> > +{
+> > +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+> > +	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+> > +	struct snd_soc_card *card = dapm->card;
+> > +	int ret;
+> > +
+> > +	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+> > +
+> > +	ret = snd_soc_get_volsw_range(kcontrol, ucontrol);
+> > +
+> > +	mutex_unlock(&card->dapm_mutex);
+> 
+> Can we please have a comment explaining why we need the lock (I see why
+> but someone reading the code in the future might not)?
 
-This case has occurred when wake-up by the resume after entering to
-suspend during the playback.
-$ aplay -> runtime_resume() -> suspend() -> resume()
+Yes no problem will fire a new version out today.
 
-In this case, Can occurred an error when enter suspend.
---
-[   82.559234] PM: suspend of devices complete after 57.252 msecs
-[   82.567978] arizona spi1.0: Failed to read IRQ status: -108
-[   82.567989] arizona spi1.0: Failed to read main IRQ status: -108
-[   82.568027] arizona spi1.0: Failed to read IRQ status: -108
-[   82.568036] arizona spi1.0: Failed to read main IRQ status: -108
-....
-So, we should call runtime_suspend() manually when enter suspend
-if the state is runtime resume.
-
-Also should call runtime_resume() when wake-up by resume if the state
-was runtime resume before entering suspend.
-
-Signed-off-by: Inha Song <ideal.song@samsung.com>
----
- drivers/mfd/arizona-core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 908c69b..de55706 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -683,6 +683,10 @@ static int arizona_suspend(struct device *dev)
- 	struct arizona *arizona = dev_get_drvdata(dev);
- 
- 	dev_dbg(arizona->dev, "Suspend, disabling IRQ\n");
-+
-+	if (!pm_runtime_status_suspended(dev))
-+		arizona_runtime_suspend(dev);
-+
- 	disable_irq(arizona->irq);
- 
- 	return 0;
-@@ -713,6 +717,10 @@ static int arizona_resume(struct device *dev)
- 	struct arizona *arizona = dev_get_drvdata(dev);
- 
- 	dev_dbg(arizona->dev, "Late resume, reenabling IRQ\n");
-+
-+	if (!pm_runtime_status_suspended(dev))
-+		arizona_runtime_resume(dev);
-+
- 	enable_irq(arizona->irq);
- 
- 	return 0;
--- 
-2.0.0.390.gcb682f8
+Thanks,
+Charles
