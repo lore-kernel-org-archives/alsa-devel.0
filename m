@@ -1,56 +1,52 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 1/2] ASoC: qcom: change PTR_ERR argument
-Date: Thu, 17 Sep 2015 10:47:33 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1509171047040.2399@hadrien>
-References: <1440957911-7687-1-git-send-email-Julia.Lawall@lip6.fr> <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr> <20150914180425.GB12027@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] mfd: arizona: Call the runtime PM
+ function if the state is runtime resumed
+Date: Thu, 17 Sep 2015 09:25:42 +0100
+Message-ID: <20150917082542.GB7694@ck-lbox>
+References: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150914180425.GB12027@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Julia Lawall <Julia.Lawall@lip6.fr>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: lee.jones@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Apply PTR_ERR to the value that was recently assigned.
+On Thu, Sep 17, 2015 at 05:28:47PM +0900, Inha Song wrote:
+> This patch call runtiem PM function manually if the state is runtime resumed
+> before enter suspend.
+> 
+> This case has occurred when wake-up by the resume after entering to
+> suspend during the playback.
+> $ aplay -> runtime_resume() -> suspend() -> resume()
+> 
+> In this case, Can occurred an error when enter suspend.
+> --
+> [   82.559234] PM: suspend of devices complete after 57.252 msecs
+> [   82.567978] arizona spi1.0: Failed to read IRQ status: -108
+> [   82.567989] arizona spi1.0: Failed to read main IRQ status: -108
+> [   82.568027] arizona spi1.0: Failed to read IRQ status: -108
+> [   82.568036] arizona spi1.0: Failed to read main IRQ status: -108
 
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+Would it be possible to get some more detail on what is happening
+here? A full log would be nice with DEBUG enabled in
+arizona-core.c, also perhaps put some printk's in the SPI driver
+suspend/resume as well.
 
-// <smpl>
-@@
-expression x,y;
-@@
+It looks like what is happening is that the system is attempting
+to handle an IRQ before the SPI has been resumed. But that is
+exactly what the irq enables/disables in the system PM ops in
+Arizona are trying to avoid.
 
-if (IS_ERR(x) || ...) {
-  ... when any
-      when != IS_ERR(...)
-(
-   PTR_ERR(x)
-|
-*  PTR_ERR(y)
-)
-  ... when any
-}
-// </smpl>
+> ....
+> So, we should call runtime_suspend() manually when enter suspend
+> if the state is runtime resume.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+There are many use-cases where we want to leave the CODEC enabled
+whilst the system is suspended so we really don't want to be
+doing a runtime suspend with every system suspend.
 
----
- sound/soc/qcom/lpass-cpu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 23f3d59..94beb99 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -438,7 +438,8 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
- 			dev_err(&pdev->dev,
- 				"%s() error getting mi2s-bit-clk: %ld\n",
--				__func__, PTR_ERR(drvdata->mi2s_bit_clk[i]));
-+				__func__,
-+				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
- 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
- 		}
- 	}
+Thanks,
+Charles
