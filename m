@@ -1,58 +1,113 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: Re: [PATCH 2/2] ASoC: sunxi: add support for the
- on-chip codec on early Allwinner SoCs
-Date: Thu, 17 Sep 2015 18:37:56 +0100
-Message-ID: <20150917173756.GE12027@sirena.org.uk>
-References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442064384-23379-3-git-send-email-maxime.ripard@free-electrons.com>
- <20150916191612.GM12027@sirena.org.uk>
- <20150917133135.GE4684@lukather>
- <CAGb2v67D30+_itOAyWqGzychxeM_d7rF6TTu1_WBYuFPfFEk1g@mail.gmail.com>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "spi: atmel: Remove needless bits_per_word and
+	speed_hz tests" to the asoc tree
+Date: Thu, 17 Sep 2015 18:36:39 +0100
+Message-ID: <E1Zcd6t-0006J1-P7@finisterre>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rRLHt+g8zo1nijuo"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBCHV5OXQKGQEVNENKNQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAGb2v67D30+_itOAyWqGzychxeM_d7rF6TTu1_WBYuFPfFEk1g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 094A2262618
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:36:55 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---rRLHt+g8zo1nijuo
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+The patch
 
-On Thu, Sep 17, 2015 at 11:10:41PM +0800, Chen-Yu Tsai wrote:
-> On Thu, Sep 17, 2015 at 9:31 PM, Maxime Ripard
+   spi: atmel: Remove needless bits_per_word and speed_hz tests
 
-> >> > +           .formats        = SNDRV_PCM_FMTBIT_S16_LE |
-> >> > +                             SNDRV_PCM_FMTBIT_S32_LE,
-> >> > +           .sig_bits       = 24,
+has been applied to the asoc tree at
 
-> >> So presumably also S24_LE (ie, 24 bits packed into a 32 bit word)?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> > Hmm, probably yes, I'll test that.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> IIRC when Emilio first wrote the driver, we tried 24 bit and no sound
-> came out. Turns out it's an alignment issue. The codec's FIFO register
-> is 32 bits wide, and takes the higher 24 bits as input when set to 24
-> bit mode. The internal FIFO is only 24 bits wide. A20 user manual P174
-> describes how the bits are copied.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> So for 24 bit audio, you would actually send it 32 bit audio samples,
-> and let it truncate or drop the least significant 8 bits. This is why
-> we have SNDRV_PCM_FMTBIT_S32_LE with .sig_bits = 24.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> I don't know if this is just a workaround, but a few other drivers do
-> this as well, for example twl3040 and omap-mcpdm.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-That's very common - it's essentially what S24_LE mode is.
---rRLHt+g8zo1nijuo--
+Thanks,
+Mark
+
+>From 3f8958cf9aaaac8a2bfc7417cb87db757eeb4465 Mon Sep 17 00:00:00 2001
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Date: Tue, 15 Sep 2015 16:26:22 +0300
+Subject: [PATCH] spi: atmel: Remove needless bits_per_word and speed_hz tests
+
+SPI core validates both bits_per_word and speed_hz transfer parameters and
+defaults to spi->bits_per_word and spi->max_speed_hz in case these per
+transfer parameters are not set. This makes possible to remove two if
+statements and remove one code block that is never executed.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/spi/spi-atmel.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
+index bf9ed38..1cc1f1e 100644
+--- a/drivers/spi/spi-atmel.c
++++ b/drivers/spi/spi-atmel.c
+@@ -871,14 +871,7 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
+ 	 * Calculate the lowest divider that satisfies the
+ 	 * constraint, assuming div32/fdiv/mbz == 0.
+ 	 */
+-	if (xfer->speed_hz)
+-		scbr = DIV_ROUND_UP(bus_hz, xfer->speed_hz);
+-	else
+-		/*
+-		 * This can happend if max_speed is null.
+-		 * In this case, we set the lowest possible speed
+-		 */
+-		scbr = 0xff;
++	scbr = DIV_ROUND_UP(bus_hz, xfer->speed_hz);
+ 
+ 	/*
+ 	 * If the resulting divider doesn't fit into the
+@@ -1300,14 +1293,12 @@ static int atmel_spi_one_transfer(struct spi_master *master,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (xfer->bits_per_word) {
+-		asd = spi->controller_state;
+-		bits = (asd->csr >> 4) & 0xf;
+-		if (bits != xfer->bits_per_word - 8) {
+-			dev_dbg(&spi->dev,
++	asd = spi->controller_state;
++	bits = (asd->csr >> 4) & 0xf;
++	if (bits != xfer->bits_per_word - 8) {
++		dev_dbg(&spi->dev,
+ 			"you can't yet change bits_per_word in transfers\n");
+-			return -ENOPROTOOPT;
+-		}
++		return -ENOPROTOOPT;
+ 	}
+ 
+ 	/*
+-- 
+2.5.0
