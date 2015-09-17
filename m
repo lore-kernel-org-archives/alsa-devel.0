@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: qcom: change PTR_ERR argument
-Date: Thu, 17 Sep 2015 10:21:04 +0100
-Message-ID: <20150917092104.GN11268@sirena.org.uk>
-References: <1440957911-7687-1-git-send-email-Julia.Lawall@lip6.fr>
- <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr>
- <20150914180425.GB12027@sirena.org.uk>
- <alpine.DEB.2.10.1509171045100.2399@hadrien>
+Subject: Re: [PATCH] ASoC: soc-core: Fix sparse warning in
+	be32_to_cpup() call
+Date: Thu, 17 Sep 2015 10:22:29 +0100
+Message-ID: <20150917092229.GO11268@sirena.org.uk>
+References: <1442476977-4284-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4101044300810481111=="
+Content-Type: multipart/mixed; boundary="===============3361085661062179566=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EE4B92651D3
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:21:16 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.10.1509171045100.2399@hadrien>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C1F32651D3
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:22:34 +0200 (CEST)
+In-Reply-To: <1442476977-4284-1-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4101044300810481111==
+--===============3361085661062179566==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dzI2QqkSBOAresgT"
+	protocol="application/pgp-signature"; boundary="Vxa5joy26gVGOrvU"
 Content-Disposition: inline
 
 
---dzI2QqkSBOAresgT
+--Vxa5joy26gVGOrvU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 17, 2015 at 10:46:16AM +0200, Julia Lawall wrote:
+On Thu, Sep 17, 2015 at 11:02:57AM +0300, Jyri Sarha wrote:
 
-> The discussion was about introducing a temporary variable to simplify the
-> code.  But that makes a lot of changes, so I think it would be better to
-> just apply the original bug fixing patch as is, and then the cleanup could
-> be applied on top of that.  I will submit the original patch again.
+>  	val /=3D sizeof(u32);
+>  	for (i =3D 0; i < val; i++)
+> -		if (be32_to_cpup(&of_slot_mask[i]))
+> +		if (be32_to_cpup((__be32 *)&of_slot_mask[i]))
+>  			*mask |=3D (1 << i);
+> =20
 
-OK, makes sense - thanks.
+There was no changelog and this is setting off alarm bells since the
+cast just smashes warnings - are you sure we're not missing some other
+annotations and that a cast is the best thing here?
 
---dzI2QqkSBOAresgT
+--Vxa5joy26gVGOrvU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV+oX/AAoJECTWi3JdVIfQhKcH/i1oCiqlLjSxUbMidoS3ULfg
-xoXUoPqZhuPjBkyywy0s88b3E4koAZIpo0ZIVrWy/x/PwrrgzHq3vuq5sWKfBnfb
-1lPhl3r0KKs77hjLieq8i4F2+WMBhW81h24ryQGCeMvrfyGIJXySZNNbVOw4oP87
-ecp+GfkE5KbLDq8rqKLv46yFoa296Nr4gT46sMdVX8YSG40n+jliVEf+2ThqWQMQ
-FyZtwmedG7dY4DD1KHKOUvL8mrpjN4nib4NTaKJkqs0RFoDQ0daP08BdDDszdGKy
-2k+rTiRk80ktiCY6P0Mu+0ytXoSx3PxXdWRlt3eKz6tfs6aYW7dyX6eIE6HlGwA=
-=0Ty7
+iQEcBAEBCAAGBQJV+oZUAAoJECTWi3JdVIfQeV0H/3ws61qPG0hlrb0vdaqniexC
+H2Q0iIBfA31S3R3d7lcNPbbiZeXvTxsH0dguTPmZTzdW3++qys4ZMqHu2o7KC65F
+YiGd0nXpsx9gaYxGHeLWNdSgrfjBgA63JXHNGKr5341xFfteJRgI3W1fd1nfBp1Z
+HAUI0BBiXV58bUwMGOt3Ro2MYIgR7GN8L1zlOg75uOHwji2h8VtAfcpqmNBuGC7G
+doNiNA6bpo3CltamikipTse0x+zdM+0oVV53mwW1zAppcAtA8J+ELahacpA+ePrX
+29BjV6E2C3qP5EriTKGoF/XGM8I1asOToMiZXtkGCJKRLaQgCP3QmDaK25VroDU=
+=Qc0R
 -----END PGP SIGNATURE-----
 
---dzI2QqkSBOAresgT--
+--Vxa5joy26gVGOrvU--
 
---===============4101044300810481111==
+--===============3361085661062179566==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4101044300810481111==--
+--===============3361085661062179566==--
