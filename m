@@ -1,28 +1,22 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Multiple codecs on one sound card for
- multi-channel sound card
-Date: Thu, 17 Sep 2015 10:39:29 -0700
-Message-ID: <CAG5mAdyzzHE5wq=AkyVbuA2VjC-H=oO=NfeVX01S=xWxYXxt7A@mail.gmail.com>
-References: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
- <CAG5mAdzyQgOmTcAmHrjWRQzuv-ih9p-qXQsYxdTD_Qmr-Fep3A@mail.gmail.com>
- <55F93CF6.50208@invoxia.com>
- <CAG5mAdyeOruLj+Tndda9Efvi3mrFDZK3XkkgWkU067yQH2rs=Q@mail.gmail.com>
- <55FA7F05.4020001@invoxia.com>
- <CAG5mAdzOhq2_P7fyHrr3JoLoTEjrn2zTmGDti_cdChiXAt6p7w@mail.gmail.com>
- <55FACF39.4010506@invoxia.com>
- <CAG5mAdzKXZWOzY-7E5iZ=bAcUKysj_78gx=JUd8JXivcK63A-A@mail.gmail.com>
- <55FAE5A9.80707@invoxia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
+ command line tool
+Date: Thu, 17 Sep 2015 18:42:42 +0100
+Message-ID: <20150917174242.GF12027@sirena.org.uk>
+References: <cover.1442298607.git.han.lu@intel.com>
+ <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
+ <1442403626.10528.50.camel@loki>
+ <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
+ <1442486431.2520.34.camel@loki>
+ <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0336398660012794924=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f174.google.com (mail-ig0-f174.google.com
- [209.85.213.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B41E265A03
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:39:50 +0200 (CEST)
-Received: by igbkq10 with SMTP id kq10so553533igb.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:39:49 -0700 (PDT)
-In-Reply-To: <55FAE5A9.80707@invoxia.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB2BB265872
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:42:53 +0200 (CEST)
+In-Reply-To: <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,72 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Caleb Crome <caleb@crome.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, bernard.gautier@intel.com, han.lu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-R290IGl0LiAgVGhhbmtzIEFybmF1ZC4KCi1DYWxlYgoKCk9uIFRodSwgU2VwIDE3LCAyMDE1IGF0
-IDk6MDkgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tCjxhcm5hdWQubW91aWNoZUBpbnZv
-eGlhLmNvbT4gd3JvdGU6Cj4KPgo+IExlIDE3LzA5LzIwMTUgMTc6MzQsIENhbGViIENyb21lIGEg
-w6ljcml0IDoKPj4KPj4gT24gVGh1LCBTZXAgMTcsIDIwMTUgYXQgNzozMyBBTSwgYXJuYXVkLm1v
-dWljaGVAaW52b3hpYS5jb20KPj4gPGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tPiB3cm90ZToK
-Pj4+Cj4+PiBoZWxsbywKPj4+Cj4+PiBMZSAxNy8wOS8yMDE1IDE1OjM4LCBDYWxlYiBDcm9tZSBh
-IMOpY3JpdCA6Cj4+Pj4KPj4+PiBPbiBUaHUsIFNlcCAxNywgMjAxNSBhdCAxOjUxIEFNLCBhcm5h
-dWQubW91aWNoZUBpbnZveGlhLmNvbQo+Pj4+IDxhcm5hdWQubW91aWNoZUBpbnZveGlhLmNvbT4g
-d3JvdGU6Cj4+Pj4+Cj4+Pj4+IEhlbGxvIENhbGViLAo+Pj4+Pgo+Pj4+PiBmcmVlc2NhbGUgU1NJ
-IGlzIGZpbmUgd2l0aCBtb3JlIHRoYW4gMiBjaGFubmVscy4KPj4+Pj4gSSBoYXZlIHBsYW5lZCB0
-byBwdWJsaXNoIGEgc2V0IG9mIHBhdGNoIGluIHRoaXMgZGlyZWN0aW9uIGJ1dCB3ZSBzdGlsbAo+
-Pj4+PiBoYXZlCj4+Pj4+IHNvbWUgY29ybmVyIGNhc2VzIHRvIGZpeCBmaXJzdCAocmFyZSBpc3N1
-ZXMgd2l0aCBjaGFubmVscyBhbGlnbm1lbnQpCj4+Pj4+Cj4+Pj4gSSdkIGxvdmUgdG8gc2VlIGFu
-eXRoaW5nIHlvdSdyZSB3aWxsaW5nIHRvIHNob3cgOi0pCj4+Pj4KPj4+Pj4gWWV0LCB0aGlzIGZv
-bGxvd2luZyBpcyBmYXIgZW5vdWdoIHRvIGhhdmUgaXQgd29ya2luZy4KPj4+Pj4gQW5kIHNpbmNl
-IHRoZSBtYXgvbWluIHJhdGUgaXMgYXQgdGhlIGVuZCB0aGUgaW50ZXJzZWN0aW9uIG9mIHdoYXQg
-dGhlCj4+Pj4+IFNTSSwKPj4+Pj4gdGhlIGNvZGVjIGFuZCB0aGUgY2FyZCBhcmUgZGVjbGFyaW5n
-LCBpdCB3aWxsIG5vdCBjaGFuZ2UgYW55dGhpbmcgdW50aWwKPj4+Pj4geW91Cj4+Pj4+IGNvbm5l
-Y3QgdGhlIFNTSSB0byBhIGNvZGVjIHdpdGggbW9yZSB0aGFuIDIgY2hhbm5lbHMsIG9yIGEgbXVs
-dGktY29kZWMKPj4+Pj4gc29sdXRpb24uCj4+Pj4KPj4+PiBXaGF0IGlmIEkgY2hhbmdlIGNoYW5u
-ZWxzX21heCB0byAxNiBmb3IgY2FwdHVyZSBhbmQgcGxheWJhY2s/ICBMYXN0Cj4+Pj4gdGltZSBJ
-IHRyaWVkLCBpdCB3b3VsZCBub3Qga2VlcCB0aGUgY2hhbm5lbHMgc3luY2hyb25pemVkIG9uIHRo
-ZSBURE0KPj4+PiBidXMuICBJIHRyaWVkIHBsYXlpbmcgd2l0aCB0aGUgRklGTyBzZXR0aW5ncywg
-d2hpY2ggaGVscGVkLCBidXQgaXQKPj4+PiBzdGlsbCB3b3VsZCBub3Qgc3RhcnQgZWFjaCBjaGFu
-bmVsIGluIHRoZSByaWdodCBzbG90IHJlbGlhYmx5Lgo+Pj4+IFBlcmhhcHMgSSB3YXMgdXNpbmcg
-YW4gb2xkZXIga2VybmVsLgo+Pj4KPj4+IHlvdSBwdXQgdGhlIGZpbmdlciBvbiB3aGF0J3MgaHVy
-dGluZyAhICA7KQo+Pj4KPj4+IEluIGZhY3QsIHdlIG1hZGUgOCBjaGFubmVscyB3b3JraW5nIGlu
-IHJlbGlhYmxlIHdheSBvbiBpbXg1MCwgd2l0aAo+Pj4gcHJlZGljdGl2ZSBsYXRlbmN5ICAuLi4g
-d2l0aCBhbiBvbGQga2VybmVsICgzLjE3KSAuLi4gYmFzZWQgb24gZnJlZXNjYWxlCj4+PiBCU1Au
-Li4gb24gc291bmQvc29jL2lteC9pbXgtc3NpLmMgKHNvbWV0aGluZyB0aGF0IGRvZXNuJ3QgZXhp
-c3Qgb3V0c2lkZQo+Pj4gZnJlZXNjYWxlIEJTUCkKPj4+Cj4+PiBXZWxsLCBqdXN0IHRvIHNheSBp
-dCBpcyBkb2FibGUgb24gYW55IHJlY2VudCBpbXggc2luY2UgdGhlIGhhcmR3YXJlIGlzCj4+PiBu
-b3QKPj4+IHRoZSBpc3N1ZS4gQnV0IHRoZSBqb2Igd2FzIGEgc2V0IG9mIGF3ZnVsIGhhY2tzLgo+
-Pgo+PiBTb3JyeSwgSSBkb24ndCBxdWl0ZSB1bmRlcnN0YW5kLiAgQXJlIHlvdSBzYXlpbmcgdGhh
-dCBvbiBhIHJlY2VudAo+PiBrZXJuZWwgKHNheSA0LjEgb3IgNC4yKSwgeW91IHRoaW5rIGl0IHdp
-bGwganVzdCB3b3JrLiAgT3IgYXJlIHlvCj4+IHNheWluZyB0aGF0IGV2ZW4gb24gYSBtb2Rlcm4g
-a2VybmVsIGl0J3MgYSBzZXQgb2YgYXdmdWwgaGFja3M/ICBBbmQKPj4gc2hvdWxkIEkgdXNlIGZz
-bF9zc2kuYyBvciBpbXgtc3NpLmMgKGRldmljZSB0cmVlL25vbiBkZXZpY2UgdHJlZSkKPj4gdmVy
-c2lvbj8KPgo+IC0gSSdtIHNheWluZyBpdCBpcyB3b3JraW5nIG9uIHJlY2VudCB1cHN0cmVhbSBr
-ZXJuZWwsIHVzaW5nCj4gc291bmQvc29jL2ZzbC9mc2xfc3NpLmMsIGJ1dCB3aXRoCj4gc29tZSBj
-aGFubmVsIHN5bmMgaXNzdWVzIGluIHJhcmUgY29uZGl0aW9ucyAoYXQgbGVhc3QgNCBjaGFubmVs
-cyBjYXNlLAo+IG9wZW5pbmcgbXVsdGlwbGUgU1NJIGF0IHRoZSBzYW1lIHRpbWUpLgo+IFNvLCB5
-b3Ugc2hvdWxkIHRlc3Qgb24geW91ciBzaWRlIHdpdGggeW91IHNldHVwLCBhbmQgc2ltcGx5IGJl
-IHByZXBhcmVkIHRvCj4gbm90IHNlZSBpdCB3b3JraW5nIGFzIGEgY2hhcm0uCj4KPiAtIHdlIG1h
-ZGUgaXQgd29yayBwZXJmZWN0bHksIGJ1dCBvbiBhbiBvbGQgZnJlZXNjYWxlIEJTUCwgd2hlcmUg
-ZnJlZXNjYWxlCj4gcmV3cml0ZXMgYSBTU0kgZHJpdmVyIGRpZmZlcmVudCBmcm9tIHRoZSBhbHJl
-YWR5IDIgZHJpdmVycyAoZGV2aWNlIHRyZWUvbm9uCj4gZGV2aWNlIHRyZWUpIGF2YWlsYWJsZSB0
-b2RheSBpbiB1cHN0cmVhbSArIGxvdCBvZiBhd2Z1bCBoYWNrcyA9PiBzbywgdGhpcyBpcwo+IG5v
-dCBhIGhhcmR3YXJlIGlzc3VlLgo+Cj4gLSB3aGVuIEkgd2lsbCBoYXZlIHRpbWUsIEkgd2lsbCBz
-dGFydCBmcm9tIHRoZSB1cHN0cmVhbSBkcml2ZXIsIGFuZCBtYWtlIGl0Cj4gd29yayBjb3JyZWN0
-bHkgd2l0aCA4IGNoYW5uZWxzIChvciBtb3JlKQo+Cj4gYXJuYXVkCj4KPj4KPj4gSW4gc2hvcnQs
-IHdoYXQncyB5b3VyIGJlc3QgY3VycmVudCByZWNvbW1lbmRhdGlvbiB0byBnZXQgaXQgd29ya2lu
-ZyB0b2RheT8KPj4KPj4+IE15IHBsYW4gd2FzIHRvIHJlLWRvIGFsbCB0aGlzIGpvYiBvbiBhbiB1
-cHN0cmVhbSBrZXJuZWwsIGluIGEgd2F5IGl0IGNhbgo+Pj4gYmUKPj4+IGFjY2VwdGVkLgo+Pj4g
-VW5mb3J0dW5hdGVseSB5b3Ugd2lsbCBoYXZlIHRvIHdhaXQsIEknbSB1bmRlciBwcmVzc3VyZSBm
-b3Igb3RoZXIgc3R1ZmYKPj4+IHJpZ2h0IG5vdy4KPj4KPj4gSGVoLCB1bmRlcnN0b29kLiAgSWYg
-dGhlcmUncyBhbnl0aGluZyBJIGNhbiBkbyB0byBoZWxwLCBsZXQgbWUga25vdy4KPj4KPj4gVGhh
-bmtzLAo+PiAtQ2FsZWIKPj4KPj4+IFJlZ2FyZHMsCj4+PiBhcm5hdWQKPj4+Cj4+Pgo+Pj4+IEkn
-bGwgZ2l2ZSBpdCBhIHRyeSBhZ2Fpbi4gIExpa2UgSSBzYWlkLCB3ZSdkIGxvdmUgdG8gZ2V0IG91
-cgo+Pj4+IDE2LWNoYW5uZWwgYm9hcmQgdXAgYW5kIHJ1bm5pbmcgb24gdGhlIE1YNiwgc28gSSdt
-IGRlZmluaXRlbHkKPj4+PiBtb3RpdmF0ZWQgdG8gcHV0IHNvbWUgd29yayBpbiB0byBnZXQgaXQg
-cmVsaWFibGUuCj4+Pj4KPj4+PiBUaGFua3MsCj4+Pj4gICAgLUNhbGViCj4+Pj4KPgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============0336398660012794924==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ywSK4AnVQWpBmKmF"
+Content-Disposition: inline
+
+
+--ywSK4AnVQWpBmKmF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 17, 2015 at 06:29:58AM -0700, Caleb Crome wrote:
+
+> > Yes, PM suspend and resume of device. We have some scripts (to be
+> > upstreamed later) that would play audio, suspend the device, resume the
+> > device and then retest the audio.
+
+> That seems particularly likely to result in multiple codecs getting
+> out of phase alignment.  i.e. when restarting, you want to be sure to
+> follow the same startup procedure as the first time to make sure all
+> codecs are aligned.
+
+Why should resume be any different from initial system power up?
+
+--ywSK4AnVQWpBmKmF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV+vuSAAoJECTWi3JdVIfQy1gH/1iOA7ez/hqPML+gknk2HZWp
+/0mkBfO3mcwjnhzgdP+ypMoMuls6SFs8bIq88HSkf6luVjACNQiw1RzF8duR1v6w
+4BhoEJSbloBzG/mA5ag5dxdqJlSIPGetuah858OKUgV+VehHWut9wHrRz/O6bYQr
+PLwFicl2nk5RAneUCp6rtp/AyZIyNUdBMpPoKeMCp/m/TEtRoJz8tHX4DL9pfb7K
+2GDy06DIKpeuc08Mbj1iZRkqF/mb5LuoaK9nEJLuM7CSIKQsmSYvB2kI+qEJdYN+
+824v+IRXrfrxEqtBVo+Wv8ok/AS5OrH5Ol8e48Dv9Ty9qiKjXM2FE3Uqg6zWwxk=
+=/hUM
+-----END PGP SIGNATURE-----
+
+--ywSK4AnVQWpBmKmF--
+
+--===============0336398660012794924==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0336398660012794924==--
