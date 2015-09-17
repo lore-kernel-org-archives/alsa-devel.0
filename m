@@ -1,22 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
- command line tool
-Date: Thu, 17 Sep 2015 18:42:42 +0100
-Message-ID: <20150917174242.GF12027@sirena.org.uk>
-References: <cover.1442298607.git.han.lu@intel.com>
- <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
- <1442403626.10528.50.camel@loki>
- <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
- <1442486431.2520.34.camel@loki>
- <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V1 2/3] ASoC: fsl_spdif: spba clk is needed
+ by spdif device
+Date: Thu, 17 Sep 2015 10:54:08 -0700
+Message-ID: <20150917175407.GA2544@Asurada-CZ80>
+References: <cover.1442469788.git.shengjiu.wang@freescale.com>
+ <5fd6e6c463c2e8d141cf4b485f585f007a71442e.1442469788.git.shengjiu.wang@freescale.com>
+ <20150917110154.GC12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0336398660012794924=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DB2BB265872
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:42:53 +0200 (CEST)
-In-Reply-To: <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CB99261A80
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:54:14 +0200 (CEST)
+Received: by padhy16 with SMTP id hy16so25691235pad.1
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:54:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20150917110154.GC12027@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,57 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, bernard.gautier@intel.com, han.lu@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, Shengjiu Wang <shengjiu.wang@freescale.com>, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Xiubo.Lee@gmail.com, timur@tabi.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, galak@codeaurora.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 17, 2015 at 12:01:54PM +0100, Mark Brown wrote:
+> On Thu, Sep 17, 2015 at 02:09:24PM +0800, Shengjiu Wang wrote:
+> 
+> > +	"dma"		  The spba clock is needed when sdma share peripheral
+> > +			  script is used.
 
---===============0336398660012794924==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ywSK4AnVQWpBmKmF"
-Content-Disposition: inline
+> It sounds like this clock is used by the DMA controller - shouldn't the
+> DMA controller driver be responsible for enabling it?
 
+I agree but it doesn't seems to be easy to enable and disable it
+dynamically along with ASoC open() and close() functions as the
+current clocks of SDMA get enabled when its channels are allocated
+during the system boot-up via generic DMA bindings.
 
---ywSK4AnVQWpBmKmF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Sep 17, 2015 at 06:29:58AM -0700, Caleb Crome wrote:
-
-> > Yes, PM suspend and resume of device. We have some scripts (to be
-> > upstreamed later) that would play audio, suspend the device, resume the
-> > device and then retest the audio.
-
-> That seems particularly likely to result in multiple codecs getting
-> out of phase alignment.  i.e. when restarting, you want to be sure to
-> follow the same startup procedure as the first time to make sure all
-> codecs are aligned.
-
-Why should resume be any different from initial system power up?
-
---ywSK4AnVQWpBmKmF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV+vuSAAoJECTWi3JdVIfQy1gH/1iOA7ez/hqPML+gknk2HZWp
-/0mkBfO3mcwjnhzgdP+ypMoMuls6SFs8bIq88HSkf6luVjACNQiw1RzF8duR1v6w
-4BhoEJSbloBzG/mA5ag5dxdqJlSIPGetuah858OKUgV+VehHWut9wHrRz/O6bYQr
-PLwFicl2nk5RAneUCp6rtp/AyZIyNUdBMpPoKeMCp/m/TEtRoJz8tHX4DL9pfb7K
-2GDy06DIKpeuc08Mbj1iZRkqF/mb5LuoaK9nEJLuM7CSIKQsmSYvB2kI+qEJdYN+
-824v+IRXrfrxEqtBVo+Wv8ok/AS5OrH5Ol8e48Dv9Ty9qiKjXM2FE3Uqg6zWwxk=
-=/hUM
------END PGP SIGNATURE-----
-
---ywSK4AnVQWpBmKmF--
-
---===============0336398660012794924==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0336398660012794924==--
+Maybe we can put in the issue_pending() and terminate_all() which
+are regularly called along with ASoC trigger(), or just open it
+permanently if the penalty of power efficiency is ignorable.
