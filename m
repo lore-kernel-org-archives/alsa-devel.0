@@ -1,23 +1,21 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V1 2/3] ASoC: fsl_spdif: spba clk is needed
- by spdif device
-Date: Thu, 17 Sep 2015 10:54:08 -0700
-Message-ID: <20150917175407.GA2544@Asurada-CZ80>
-References: <cover.1442469788.git.shengjiu.wang@freescale.com>
- <5fd6e6c463c2e8d141cf4b485f585f007a71442e.1442469788.git.shengjiu.wang@freescale.com>
- <20150917110154.GC12027@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal
+	inversions
+Date: Thu, 17 Sep 2015 10:59:27 -0700
+Message-ID: <20150917175927.GB2544@Asurada-CZ80>
+References: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CB99261A80
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:54:14 +0200 (CEST)
-Received: by padhy16 with SMTP id hy16so25691235pad.1
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:54:13 -0700 (PDT)
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id B96C3261A80
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:59:30 +0200 (CEST)
+Received: by padhy16 with SMTP id hy16so25793202pad.1
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:59:30 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20150917110154.GC12027@sirena.org.uk>
+In-Reply-To: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,24 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, Shengjiu Wang <shengjiu.wang@freescale.com>, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Xiubo.Lee@gmail.com, timur@tabi.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, robh+dt@kernel.org, galak@codeaurora.org, tiwai@suse.com
+To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit@wsystem.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 12:01:54PM +0100, Mark Brown wrote:
-> On Thu, Sep 17, 2015 at 02:09:24PM +0800, Shengjiu Wang wrote:
-> 
-> > +	"dma"		  The spba clock is needed when sdma share peripheral
-> > +			  script is used.
+On Thu, Sep 17, 2015 at 05:46:54PM +0200, Beno=EEt Th=E9baudeau wrote:
+> SND_SOC_DAIFMT_{IB|NB}_{IF|NF} are defined as inverting or not BCLK or
+> FRM relatively to what is standard for the specified DAI hardware audio
+> format. Consequently, the absolute polarities of these signals cannot be
+> derived only from these settings as this driver did. The format has to
+> be taken into account too.
+> =
 
-> It sounds like this clock is used by the DMA controller - shouldn't the
-> DMA controller driver be responsible for enabling it?
+> This fixes inverted left/right channels in I=B2S mode.
+> =
 
-I agree but it doesn't seems to be easy to enable and disable it
-dynamically along with ASoC open() and close() functions as the
-current clocks of SDMA get enabled when its channels are allocated
-during the system boot-up via generic DMA bindings.
+> Signed-off-by: Beno=EEt Th=E9baudeau <benoit@wsystem.com>
 
-Maybe we can put in the issue_pending() and terminate_all() which
-are regularly called along with ASoC trigger(), or just open it
-permanently if the penalty of power efficiency is ignorable.
+Looks like the same configurations of fsl_ssi, so it should be fine:
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+> ---
+>  sound/soc/fsl/imx-ssi.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
+> =
+
+> diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+> index 48b2d24..b95132e 100644
+> --- a/sound/soc/fsl/imx-ssi.c
+> +++ b/sound/soc/fsl/imx-ssi.c
+> @@ -95,7 +95,8 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_=
+dai, unsigned int fmt)
+>  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+>  	case SND_SOC_DAIFMT_I2S:
+>  		/* data on rising edge of bclk, frame low 1clk before data */
+> -		strcr |=3D SSI_STCR_TFSI | SSI_STCR_TEFS | SSI_STCR_TXBIT0;
+> +		strcr |=3D SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSI |
+> +			SSI_STCR_TEFS;
+>  		scr |=3D SSI_SCR_NET;
+>  		if (ssi->flags & IMX_SSI_USE_I2S_SLAVE) {
+>  			scr &=3D ~SSI_I2S_MODE_MASK;
+> @@ -104,33 +105,31 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *=
+cpu_dai, unsigned int fmt)
+>  		break;
+>  	case SND_SOC_DAIFMT_LEFT_J:
+>  		/* data on rising edge of bclk, frame high with data */
+> -		strcr |=3D SSI_STCR_TXBIT0;
+> +		strcr |=3D SSI_STCR_TXBIT0 | SSI_STCR_TSCKP;
+>  		break;
+>  	case SND_SOC_DAIFMT_DSP_B:
+>  		/* data on rising edge of bclk, frame high with data */
+> -		strcr |=3D SSI_STCR_TFSL | SSI_STCR_TXBIT0;
+> +		strcr |=3D SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSL;
+>  		break;
+>  	case SND_SOC_DAIFMT_DSP_A:
+>  		/* data on rising edge of bclk, frame high 1clk before data */
+> -		strcr |=3D SSI_STCR_TFSL | SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
+> +		strcr |=3D SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSL |
+> +			SSI_STCR_TEFS;
+>  		break;
+>  	}
+>  =
+
+>  	/* DAI clock inversion */
+>  	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+>  	case SND_SOC_DAIFMT_IB_IF:
+> -		strcr |=3D SSI_STCR_TFSI;
+> -		strcr &=3D ~SSI_STCR_TSCKP;
+> +		strcr ^=3D SSI_STCR_TSCKP | SSI_STCR_TFSI;
+>  		break;
+>  	case SND_SOC_DAIFMT_IB_NF:
+> -		strcr &=3D ~(SSI_STCR_TSCKP | SSI_STCR_TFSI);
+> +		strcr ^=3D SSI_STCR_TSCKP;
+>  		break;
+>  	case SND_SOC_DAIFMT_NB_IF:
+> -		strcr |=3D SSI_STCR_TFSI | SSI_STCR_TSCKP;
+> +		strcr ^=3D SSI_STCR_TFSI;
+>  		break;
+>  	case SND_SOC_DAIFMT_NB_NF:
+> -		strcr &=3D ~SSI_STCR_TFSI;
+> -		strcr |=3D SSI_STCR_TSCKP;
+>  		break;
+>  	}
+>  =
+
+> -- =
+
+> 2.1.4
+> =
