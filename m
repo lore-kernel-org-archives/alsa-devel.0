@@ -1,27 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: add wm8960 support
-Date: Thu, 17 Sep 2015 01:03:40 -0700
-Message-ID: <20150917080339.GA9365@Asurada-CZ80>
-References: <20150812034257.GA2980@Asurada-CZ80>
- <20150812044505.GA21786@shlinux2>
- <20150812064053.GA2807@Asurada-CZ80>
- <20150812073859.GB21786@shlinux2>
- <20150812222735.GA57015@Asurada-CZ80>
- <20150814022116.GA11145@shlinux2> <20150814035805.GA2180@Asurada>
- <20150814073758.GB11145@shlinux2>
- <20150814092252.GA4164@Asurada-CZ80> <20150906113344.GN30746@tiger>
+From: Uli Franke <uli.franke@weiss.ch>
+Subject: Re: Test device for automated testing
+Date: Thu, 17 Sep 2015 10:09:32 +0200
+Message-ID: <55FA753C.5050002@weiss.ch>
+References: <55F9617A.6040301@weiss.ch> <55F96798.70106@ladisch.de>
+ <55F96B5A.6000900@weiss.ch> <55F97CFD.9080608@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id EE6072651CB
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:03:47 +0200 (CEST)
-Received: by pacex6 with SMTP id ex6so13908854pac.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 01:03:47 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150906113344.GN30746@tiger>
+Received: from server11.hostfactory.ch (server11.hostfactory.ch
+ [62.146.13.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id F05ED26513B
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:09:33 +0200 (CEST)
+In-Reply-To: <55F97CFD.9080608@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,61 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawnguo@kernel.org>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, tiwai@suse.com, timur@tabi.org, broonie@kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shawn,
-
-   Sorry for my late reply.
-
-On Sun, Sep 06, 2015 at 07:33:44PM +0800, Shawn Guo wrote:
-> On Fri, Aug 14, 2015 at 02:22:53AM -0700, Nicolin Chen wrote:
-> > I have to add Shawn for help :)
-> > 
-> > On Fri, Aug 14, 2015 at 03:38:16PM +0800, Zidan Wang wrote:
-> > 
-> > > ccm ----->1------------------>2<------------>3
-> > > 	  |                   |
-> > >     	  |                   |		
-> > > 	  4 SAIx MCLK1        5 SAIx MCLK2
-> > > 
-> > > If this bit is set, the clock route is ccm->1->2->3, 2 to 5 is disconnect.
-> > > If this bit is clear, the clock route is 3->2->5, 1 to 2 is disconnect.
-> > 
-> > @Shawn
-> > 
-> > Suppose 1 and 2 are clock MUXs that we can't specifically touch
-> > via registers. And 3 is an IO PAD that can either output a clock
-> > from CCM or input a clock from an external source outside SoC.
-> > Both 4 and 5 are two clock sources for one single SAI, SAI2 for
-> > example.
-> > 
-> > There is a bit in the GPR register to control above routes. And
-> > my question is where should be the best place to put this bit.
+On 16.09.2015 16:30, Clemens Ladisch wrote:
+> Uli Franke wrote:
+>> I tried the "null" but this fails when setting hw parameters with an
+>> assertion.
 > 
-> If this route selection is a decision of board design, it should fit
-> device tree quite well.  As the platform maintainer, I surely hope we
-> can handle this in audio driver.  But if there is really no place better
-> than platform code to handle it, I can accept it.
+> In theory, the null device does not have any restrictions.  But an
+> assertion indicates a programming error (somewhere).  What is the
+> message, and what are the hw parameters?
 
-I understand your concern. This route decides the source of mclk2,
+The assertion fails with
 
-955                         sai1: sai@021d4000 {
-956                                 compatible = "fsl,imx6sx-sai";
-957                                 reg = <0x021d4000 0x4000>;
-958                                 interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-959                                 clocks = <&clks IMX6SX_CLK_SAI1_IPG>,
-960                                          <&clks IMX6SX_CLK_SAI1>,
-961                                          <&clks 0>, <&clks 0>;
-962                                 clock-names = "bus", "mclk1", "mclk2", "mclk3";
+pcm_params.c:2360: _snd_pcm_hw_params_internal: Assertion `err >= 0' failed.
 
-So it doesn't make sense to me if putting it in the audio driver as
-it then would be out of the clock tree.
+There's only a single result on google [1] which discusses this
+assertion but the thread doesn't result in any meaningful conclusion.
 
-I'm not familiar with the current platform code. Is that possible we
-put it in the clock tree? Would you please give me and Zidan another
-hint for the implementation?
+I assembled a small test program which causes this very assertion to fail.
 
-Thanks a lot
-Nicolin
+#include <alsa/asoundlib.h>
+
+int main ()
+{
+	snd_pcm_hw_params_t *params;
+	snd_pcm_t *pcm;
+
+	snd_pcm_open(&pcm, "null", SND_PCM_STREAM_PLAYBACK, 0);
+	snd_pcm_hw_params_malloc(&params);
+	snd_pcm_hw_params_any(pcm, params);
+	snd_pcm_hw_params(pcm, params);
+
+	return 0;
+}
+
+I appended some system specs [2] (in case you should need more, just let
+me know).
+
+Regards
+Uli
+
+____
+[1] http://sourceforge.net/p/cmus/mailman/message/32707782/
+[2] System specs:
+
+uli@ankerklause:~/.../dlna/wdmr$ uname -a
+Linux ankerklause 3.16.0-46-generic #62~14.04.1-Ubuntu SMP Tue Aug 11
+16:28:19 UTC 2015 i686 i686 i686 GNU/Linux
+
+uli@ankerklause:~/.../dlna/wdmr$ aptitude show libasound2
+Package: libasound2
+State: installed
+Automatically installed: yes
+Multi-Arch: same
+Version: 1.0.27.2-3ubuntu7
+Priority: optional
+Section: libs
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: i386
+Uncompressed Size: 1'208 k
+Depends: libc6 (>= 2.16), libasound2-data (>= 1.0.27.2-3ubuntu7)
+PreDepends: multiarch-support
+Suggests: libasound2-plugins (>= 1.0.24)
+Breaks: bluez-alsa (<= 4.94-2), libasound2-plugin-equal (<= 0.6-1),
+libasound2-plugins (< 1.0.24)
+Provided by: liboss4-salsa-asound2
+Description: shared library for ALSA applications
+This package contains the ALSA library and its standard plugins, as well
+as the required configuration files.
+
+ALSA is the Advanced Linux Sound Architecture.
+Homepage: http://www.alsa-project.org/
