@@ -1,26 +1,19 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
- command line tool
-Date: Thu, 17 Sep 2015 11:50:43 -0700
-Message-ID: <CAG5mAdziq11SJ3eAqDFcTEBuHJ-Rj6xwgu3kmqXC5HYOnDvYaA@mail.gmail.com>
-References: <cover.1442298607.git.han.lu@intel.com>
- <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
- <1442403626.10528.50.camel@loki>
- <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
- <1442486431.2520.34.camel@loki>
- <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
- <20150917174242.GF12027@sirena.org.uk>
+From: Luka Karinja <lk@bazdara.com>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Thu, 17 Sep 2015 22:54:30 +0200
+Message-ID: <55FB2886.4070304@bazdara.com>
+References: <20150824132904.GA665@acervm.homenet.telecomitalia.it>
+ <20150824142625.GM13546@localhost> <20150824181731.GA471@asus>
+ <55DB7055.2020104@linux.intel.com>
+ <20150825080619.GA25981@acervm.homenet.telecomitalia.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f169.google.com (mail-io0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 76FD6261B32
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 20:51:04 +0200 (CEST)
-Received: by ioii196 with SMTP id i196so32384982ioi.3
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:51:03 -0700 (PDT)
-In-Reply-To: <20150917174242.GF12027@sirena.org.uk>
+Received: from server.bazdara.com (server.bazdara.com [84.255.206.229])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97F3B261B36
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 22:54:31 +0200 (CEST)
+In-Reply-To: <20150825080619.GA25981@acervm.homenet.telecomitalia.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,39 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, bernard.gautier@intel.com, han.lu@intel.com
+To: Michele Curti <michele.curti@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, ao2@ao2.it, jarkko.nikula@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 10:42 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Sep 17, 2015 at 06:29:58AM -0700, Caleb Crome wrote:
+Hello Michele,
+
 >
->> > Yes, PM suspend and resume of device. We have some scripts (to be
->> > upstreamed later) that would play audio, suspend the device, resume the
->> > device and then retest the audio.
+> Oh, so no need of a SSP1 driver, thank you!
 >
->> That seems particularly likely to result in multiple codecs getting
->> out of phase alignment.  i.e. when restarting, you want to be sure to
->> follow the same startup procedure as the first time to make sure all
->> codecs are aligned.
+> I'll try the SSP0 one :)
 >
-> Why should resume be any different from initial system power up?
-
-Heh, perhaps only because I don't understand how it all works :-)
-
-The example I was thinking of is if the card gets partially powered
-down.  For example, start recording on 8 channels (4 codecs, called 0,
-1, 2, 3 in this example).  At this point, all's well, and all 4 codecs
-are in perfect phase sync.
-
-Then switch to playing 2 channel mode with codec 0 only.  Since codecs
-1, 2, 3 are no longer needed, then they could get powered down.
-
-Then, switch back to 8 channel mode -- codec 0 is up and running, and
-now you want to turn on codecs 1, 2, 3.  At this point it's literally
-impossible to resync them with codec 0 without powering down codec 0
-and starting from scratch.  This is true of the TLV320AIC seris of
-codecs.  The CS53L30 has a dedicated sync pin on the other hand, so
-could perhaps recover gracefully in this situation.
-
--Caleb
+Any luck to get the sound working on your device?
