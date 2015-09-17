@@ -1,18 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] sst: replace custom implementation
- of readq / writeq
-Date: Thu, 17 Sep 2015 10:24:04 +0100
-Message-ID: <1442481844.2520.19.camel@loki>
-References: <1440677358-6681-1-git-send-email-andriy.shevchenko@linux.intel.com>
- <1442480279.8361.73.camel@linux.intel.com>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: Asus N751JK - push/merge patches on mailinglist
+Date: Thu, 17 Sep 2015 11:29:04 +0200
+Message-ID: <CALUcmU=6mdyxzWtk=-XN3QchJS-23dm9fV-C6DumJUwXwrDvCQ@mail.gmail.com>
+References: <CALUcmU=PksErKgSpf5Rn-ZkbfSPS5Y_jW+E=phy4VUsKicWG7Q@mail.gmail.com>
+ <s5hfv2izqi5.wl-tiwai@suse.de>
+ <CAN8cciZbNnBFnWrOhALJ4W6h9pb4i-2voj7Rj1K-_M-w+XR31g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 449D9265284
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:24:16 +0200 (CEST)
-In-Reply-To: <1442480279.8361.73.camel@linux.intel.com>
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AB7B265289
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:29:24 +0200 (CEST)
+Received: by oixx17 with SMTP id x17so6462464oix.0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 02:29:23 -0700 (PDT)
+In-Reply-To: <CAN8cciZbNnBFnWrOhALJ4W6h9pb4i-2voj7Rj1K-_M-w+XR31g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,107 +25,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-09-17 at 11:57 +0300, Andy Shevchenko wrote:
-> On Thu, 2015-08-27 at 15:09 +0300, Andy Shevchenko wrote:
-> > The readq() and writeq() helpers are available in the
-> > asm-generic/io-64-nonatomic-hi-lo.h and asm-generic/io-64-nonatomic
-> > -lo-hi.h
-> > headers. Replace custom implementation by the generic helpers.
-> > 
-> 
-> Liam, any comments on this?
+I do have the hardware including the headset (combo jack), headphones
+(single jack), microphone (single jack).
+Can you specify accurately what and how I need to test?
 
-Looks good from me, but it's one of Vinod's drivers (now added to CC).
+On 17 September 2015 at 11:24, Raymond Yau <superquad.vortex2@gmail.com>
+wrote:
 
-Liam
+>
+>
+> 2015-09-13 16:13 GMT+08:00 Takashi Iwai <tiwai@suse.de>:
+>
+>> On Sat, 12 Sep 2015 23:09:43 +0200,
+>> Arthur Borsboom wrote:
+>> >
+>> > Hi Takashi,
+>> >
+>> > Previous month Raymond Yau has done great work to get the audio working
+>> for
+>> > the Asus N751JK laptop.
+>> > He developed 7 patches, which I have tested and confirmed working on
+>> this
+>> > laptop.
+>> >
+>> > Raymond is not responding for about two weeks (maybe on holiday?).
+>> > Would you mind to post these patches on the mailinglist (the correct
+>> way)
+>> > and/or merge them in a way the get into the mainline kernel a.s.a.p?
+>>
+>> Sorry, it can't be done like that.  The patches aren't yet in
+>> acceptable forms, and it needs more changes to be merged to mainline.
+>> It must be done by someone who did it originally or who has the
+>> hardware and test.
+>>
+>
+> I don't have the hardware, the alternate approach is to create headset
+> jack (SND_JACK_HEADSET) and skip the creation of headset mic phanton jack
+> instead of headphone jack and headset mic jack since implement sense_nid
+> and slave_nid is not easy to debug
+>
+> What you need is adding "Jack Headset" to pulseaudio
+> analog-input-headset-mic.conf since "Headset Jack" kctl already in
+> analog-out-headphones.conf
+>
+>  static int get_input_jack_type(struct hda_codec *codec, hda_nid_t nid)
+>  {
+> +    struct hda_gen_spec *spec = codec->spec;
+> +    struct auto_pin_cfg *cfg = &spec->autocfg;
+>      unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+>      switch (get_defcfg_device(def_conf)) {
+>      case AC_JACK_LINE_OUT:
+>      case AC_JACK_SPEAKER:
+>          return SND_JACK_LINEOUT;
+>      case AC_JACK_HP_OUT:
+> +        if (spec->hs_mic_use_hp_sense &&
+> +            (nid == auto_cfg_hp_pins(cfg)[0]))
+> +            return SND_JACK_HEADSET;
+>          return SND_JACK_HEADPHONE;
+>      case AC_JACK_SPDIF_OUT:
+>      case AC_JACK_DIG_OTHER_OUT:
+>
+>
+>
+>                const struct auto_pin_cfg *cfg)
+>  {
+>      const hda_nid_t *p;
+> +    struct hda_gen_spec *spec = codec->spec;
+>      int i, err;
+>
+>      for (i = 0; i < cfg->num_inputs; i++) {
+> @@ -482,6 +499,12 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>                  err = add_jack_kctl(codec, cfg->inputs[i].pin,
+>                              cfg, "Headphone Mic");
+>          } else
+> +        if (cfg->inputs[i].is_headset_mic &&
+> +            spec->hs_mic_use_hp_sense &&
+> +            !is_jack_detectable(codec, cfg->inputs[i].pin)) {
+> +            err = 0;
+> +
+> +        } else
+>              err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg,
+>                          NULL);
+>          if (err < 0)
+> @@ -489,14 +512,21 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>      }
+>
+>      for (i = 0, p = cfg->line_out_pins; i < cfg->line_outs; i++, p++) {
+> -        err = add_jack_kctl(codec, *p, cfg, NULL);
+> +        if (is_subwoofer(codec, *p, i, cfg->line_outs) &&
+> +            is_external_pin(codec, *p))
+> +            err = add_jack_kctl(codec, *p, cfg, "Ext Subwoofer");
+> +        else
+> +            err = add_jack_kctl(codec, *p, cfg, NULL);
+>          if (err < 0)
+>              return err;
+>      }
+>      for (i = 0, p = cfg->hp_pins; i < cfg->hp_outs; i++, p++) {
+>          if (*p == *cfg->line_out_pins) /* might be duplicated */
+>              break;
+> -        err = add_jack_kctl(codec, *p, cfg, NULL);
+> +        if (i == 0 && spec->hs_mic_use_hp_sense)
+> +            err = add_jack_kctl(codec, *p, cfg, "Headset");
+> +        else
+> +            err = add_jack_kctl(codec, *p, cfg, NULL);
+>          if (err < 0)
+>              return err;
+>      }
+>
+>
+> change the pin to hp pin when mic pin is headset mic
+>
+> +bool is_headset_mic(struct hda_codec *codec, hda_nid_t nid)
+> +{
+> +    struct hda_gen_spec *spec = codec->spec;
+> +    struct auto_pin_cfg *cfg = &spec->autocfg;
+> +    int i;
+> +
+> +    for (i = 0; i < cfg->num_inputs; i++)
+> +        if (nid == cfg->inputs[i].pin)
+> +            return cfg->inputs[i].is_headset_mic;
+> +    return false;
+> +}
+> +
+>
+>
+> @@ -4384,6 +4399,8 @@ void snd_hda_gen_mic_autoswitch(struct hda_codec
+> *codec,
+>          /* don't detect pins retasked as outputs */
+>          if (snd_hda_codec_get_pin_target(codec, pin) & AC_PINCTL_OUT_EN)
+>              continue;
+> +        if (is_headset_mic(codec, pin) && spec->hs_mic_use_hp_sense)
+> +            pin = auto_cfg_hp_pins(cfg)[0];
+>          if (snd_hda_jack_detect_state(codec, pin) == HDA_JACK_PRESENT) {
+>              mux_select(codec, 0, spec->am_entry[i].idx);
+>              return;
+>
+>
+>
 
-> 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  sound/soc/intel/atom/sst/sst_pvt.c | 16 ++++++----------
-> >  sound/soc/intel/common/sst-dsp.c   |  9 ++++-----
-> >  2 files changed, 10 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/sound/soc/intel/atom/sst/sst_pvt.c 
-> > b/sound/soc/intel/atom/sst/sst_pvt.c
-> > index adb32fe..6cc222d 100644
-> > --- a/sound/soc/intel/atom/sst/sst_pvt.c
-> > +++ b/sound/soc/intel/atom/sst/sst_pvt.c
-> > @@ -31,7 +31,10 @@
-> >  #include <sound/pcm.h>
-> >  #include <sound/soc.h>
-> >  #include <sound/compress_driver.h>
-> > +
-> > +#include <asm-generic/io-64-nonatomic-lo-hi.h>
-> >  #include <asm/platform_sst_audio.h>
-> > +
-> >  #include "../sst-mfld-platform.h"
-> >  #include "sst.h"
-> >  #include "../../common/sst-dsp.h"
-> > @@ -49,25 +52,18 @@ u32 sst_shim_read(void __iomem *addr, int offset)
-> >  
-> >  u64 sst_reg_read64(void __iomem *addr, int offset)
-> >  {
-> > -	u64 val = 0;
-> > -
-> > -	memcpy_fromio(&val, addr + offset, sizeof(val));
-> > -
-> > -	return val;
-> > +	return readq(addr + offset);
-> >  }
-> >  
-> >  int sst_shim_write64(void __iomem *addr, int offset, u64 value)
-> >  {
-> > -	memcpy_toio(addr + offset, &value, sizeof(value));
-> > +	writeq(value, addr + offset);
-> >  	return 0;
-> >  }
-> >  
-> >  u64 sst_shim_read64(void __iomem *addr, int offset)
-> >  {
-> > -	u64 val = 0;
-> > -
-> > -	memcpy_fromio(&val, addr + offset, sizeof(val));
-> > -	return val;
-> > +	return readq(addr + offset);
-> >  }
-> >  
-> >  void sst_set_fw_state_locked(
-> > diff --git a/sound/soc/intel/common/sst-dsp.c 
-> > b/sound/soc/intel/common/sst-dsp.c
-> > index a627236..5274482 100644
-> > --- a/sound/soc/intel/common/sst-dsp.c
-> > +++ b/sound/soc/intel/common/sst-dsp.c
-> > @@ -22,6 +22,8 @@
-> >  #include <linux/io.h>
-> >  #include <linux/delay.h>
-> >  
-> > +#include <asm-generic/io-64-nonatomic-lo-hi.h>
-> > +
-> >  #include "sst-dsp.h"
-> >  #include "sst-dsp-priv.h"
-> >  
-> > @@ -43,16 +45,13 @@ EXPORT_SYMBOL_GPL(sst_shim32_read);
-> >  
-> >  void sst_shim32_write64(void __iomem *addr, u32 offset, u64 value)
-> >  {
-> > -	memcpy_toio(addr + offset, &value, sizeof(value));
-> > +	writeq(value, addr + offset);
-> >  }
-> >  EXPORT_SYMBOL_GPL(sst_shim32_write64);
-> >  
-> >  u64 sst_shim32_read64(void __iomem *addr, u32 offset)
-> >  {
-> > -	u64 val;
-> > -
-> > -	memcpy_fromio(&val, addr + offset, sizeof(val));
-> > -	return val;
-> > +	return readq(addr + offset);
-> >  }
-> >  EXPORT_SYMBOL_GPL(sst_shim32_read64);
-> >  
-> 
+
+-- 
+Arthur Borsboom
+Lieven de Keystraat 77
+3067 KG, Rotterdam
+The Netherlands
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
+
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
