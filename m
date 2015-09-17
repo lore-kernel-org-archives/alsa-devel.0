@@ -1,15 +1,19 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v2] ASoC: soc-core: Fix sparse warning in
-	be32_to_cpup() call
-Date: Thu, 17 Sep 2015 12:48:10 +0300
-Message-ID: <1442483290-30470-1-git-send-email-jsarha@ti.com>
+From: Huan Wang <alison.wang@freescale.com>
+Subject: Re: [PATCH v2] audio: sai: Add Power Management support
+Date: Thu, 17 Sep 2015 09:53:57 +0000
+Message-ID: <BN3PR0301MB0867DCDF1F7F6391A94121B2FE5A0@BN3PR0301MB0867.namprd03.prod.outlook.com>
+References: <1442221404-35240-1-git-send-email-b18965@freescale.com>
+ <20150917065732.GB54360@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C74E265528
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:48:16 +0200 (CEST)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0112.outbound.protection.outlook.com [65.55.169.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 841D3265317
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:53:59 +0200 (CEST)
+In-Reply-To: <20150917065732.GB54360@Asurada-CZ80>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Fabio Estevam <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1929f0e..af4999c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3294,7 +3294,7 @@ static int snd_soc_of_get_slot_mask(struct device_node *np,
- 				    unsigned int *mask)
- {
- 	u32 val;
--	const u32 *of_slot_mask = of_get_property(np, prop_name, &val);
-+	const __be32 *of_slot_mask = of_get_property(np, prop_name, &val);
- 	int i;
- 
- 	if (!of_slot_mask)
--- 
-1.9.1
+> On Mon, Sep 14, 2015 at 05:03:24PM +0800, Alison Wang wrote:
+> > This patch adds Power Management support for SAI.
+> > Activate regmap cache with REGCACHE_FLAT, and use regmap cache code
+> to
+> > save and restore registers in suspend and resume. The Transmit
+> Control
+> > Register
+> > (TCSR) and Receive Control Register(RCSR) should be volatile
+> > registers.
+> >
+> > Signed-off-by: Alison Wang <alison.wang@freescale.com>
+> 
+> Just to remind that there was a similar patch in review that I just
+> acked. Please send your improvements as an incremental patch after that
+> one gets applied.
+[Alison Wang] Ok, I missed that patch.
+> 
+> Please also pay attention to the patch subject which should follow the
+> pattern of previous patches of the driver: ASoC: fsl_sai: xxxx
+[Alison Wang] Ok, thanks.
+
+
+Best Regards,
+Alison Wang
