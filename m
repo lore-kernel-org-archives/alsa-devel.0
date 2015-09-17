@@ -1,21 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] mfd: arizona: Call the runtime PM function
- if the state is runtime resumed
-Date: Thu, 17 Sep 2015 10:16:32 +0100
-Message-ID: <20150917091632.GC7694@ck-lbox>
-References: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
- <20150917082542.GB7694@ck-lbox>
- <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH v2 3/9] ASoC: Intel: Skylake: add DSP
+ platform widget event handlers
+Date: Thu, 17 Sep 2015 10:47:58 +0100
+Message-ID: <1442483278.2520.24.camel@loki>
+References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
+ <1439832404-12424-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A5652651D3
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:40:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24CA1265373
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:48:01 +0200 (CEST)
+In-Reply-To: <1439832404-12424-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,59 +22,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, broonie@kernel.org, lee.jones@linaro.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 06:05:30PM +0900, Inha Song wrote:
-> Hi,
+On Mon, 2015-08-17 at 22:56 +0530, Vinod Koul wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
 > 
+> The Skylake driver topology model tries to model the firmware
+> rule for pipeline and module creation.
+> The creation rule is:
+>  - Create Pipe
+>  - Add modules to Pipe
+>  - Connect the modules (bind)
+>  - Start the pipes
 > 
-> It is a log:
+> Similarly destroy rule is:
+>  - Stop the pipe
+>  - Disconnect it (unbind)
+>  - Delete the pipe
 > 
-> # aplay
-> [   79.590767] s3c64xx_spi_runtime_resume
-> [   79.592288] arizona spi1.0: ASRC underclocked
-> [   79.592331] s3c64xx_spi_runtime_suspend
+> In driver we use Mixer, as there will always be ONE mixer in a
+> pipeline to model a pipe. The modules in pipe are modelled as PGA
+> widgets.  The DAPM sequencing rules (mixer and then PGA) are used
+> to create the sequence DSP expects as depicted above, and then
+> widget handlers for PMU and PMD events help in that.
+> 
+> This patch adds widget event handlers for PRE/POST PMU and
+> PRE/POST PMD event for mixer and pga modules.  These event
+> handlers invoke pipeline creation, destroy, module creation,
+> module bind, unbind and pipeline bind unbind
+> 
+> Event handler sequencing is implement to target the DSP FW
+> sequence expectations to enable path from source to sink pipe for
+> Playback/Capture.
+> 
+> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+> Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 > ---
-> -> suspend ()
+>  sound/soc/intel/skylake/skl-topology.c | 416 +++++++++++++++++++++++++++++++++
+>  1 file changed, 416 insertions(+)
 > 
-> [   83.348754] s3c64xx_spi_runtime_resume
-> [   83.367711] s3c64xx_spi_suspend
-> [   83.368420] PM: suspend of devices complete after 59.666 msecs
-> [   83.375584] arizona spi1.0: Failed to read IRQ status: -108
-> [   83.375595] arizona spi1.0: Failed to read main IRQ status: -108
-> [   83.375672] arizona spi1.0: Failed to read IRQ status: -108
-> [   83.375679] arizona spi1.0: Failed to read main IRQ status: -108
-> [   83.375749] arizona spi1.0: Failed to read IRQ status: -108
-> .....
-> [   83.580360] Call trace:
-> [   83.580369] [<ffffffc000089f8c>] dump_backtrace+0x0/0x12c
-> [   83.580373] [<ffffffc00008a0c8>] show_stack+0x10/0x1c
-> [   83.580380] [<ffffffc0009f10e4>] dump_stack+0x78/0xc8
-> [   83.580386] [<ffffffc00009ade8>] warn_slowpath_common+0x98/0xd0
-> [   83.580390] [<ffffffc00009ae6c>] warn_slowpath_fmt+0x4c/0x58
-> [   83.580394] [<ffffffc0000e7f1c>] __enable_irq+0x40/0x8c
-> [   83.580399] [<ffffffc0000e7f9c>] enable_irq+0x34/0x74
-> [   83.580404] [<ffffffc0004d00d0>] arizona_resume+0x10/0x20
-> [   83.580410] [<ffffffc0004b6bac>] dpm_run_callback+0x50/0x1a0
-> [   83.580414] [<ffffffc0004b728c>] device_resume+0x90/0x268
-> [   83.580418] [<ffffffc0004b88cc>] dpm_resume+0x120/0x350
-> [   83.580422] [<ffffffc0004b8f1c>] dpm_resume_end+0x10/0x28
-> [   83.580426] [<ffffffc0000e1bec>] suspend_devices_and_enter+0x138/0x7f4
-> [   83.580430] [<ffffffc0000e25bc>] pm_suspend+0x314/0x5bc
-> [   83.580435] [<ffffffc0000e0bc8>] state_store+0x7c/0xf0
-> [   83.580441] [<ffffffc00035ee58>] kobj_attr_store+0x10/0x24
-> [   83.580448] [<ffffffc00020e1e0>] sysfs_kf_write+0x40/0x4c
-> [   83.580452] [<ffffffc00020d664>] kernfs_fop_write+0xb8/0x180
-> [   83.580458] [<ffffffc0001a2ef4>] __vfs_write+0x2c/0x11c
-> [   83.580463] [<ffffffc0001a38f0>] vfs_write+0x90/0x170
-> [   83.580467] [<ffffffc0001a422c>] SyS_write+0x40/0xa0
 
-OK so this is definitely that the SPI driver hasn't resumed
-yet. Could we also get DEBUG turned on in arizona-core here. I am
-interested to check where in the process the arizona
-suspend/resume ops are being called.
+snip...
 
-Thanks,
-Charles
+> +
+> +/*
+> + * in the Pre-PMD event of mixer we need to do following:
+> + *   - Stop the pipe
+> + *   - find the source connections and remove that from dapm_path_list
+> + *   - unbind with source pipelines if still connected
+> + */
+> +static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
+> +								struct skl *skl)
+> +{
+> +	struct snd_soc_dapm_widget *source, *sink;
+> +	struct skl_module_cfg *src_mconfig, *sink_mconfig;
+> +	int ret = 0, path_found = 0;
+> +	struct skl_dapm_path_list *path_list, *tmp_list;
+> +	struct skl_sst *ctx = skl->skl_sst;
+> +
+> +	dev_dbg(ctx->dev, "%s: widget = %s\n", __func__, w->name);
+> +
+> +	sink = w;
+> +	sink_mconfig = sink->priv;
+> +
+> +	/* Stop the pipe */
+> +	ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
+> +	if (ret)
+> +		return ret;
+> +
+> +	list_for_each_entry_safe(path_list, tmp_list, &skl->dapm_path_list, node) {
+> +		if (path_list->dapm_path->sink == sink) {
+> +			dev_dbg(ctx->dev, "Path found = %s\n", path_list->dapm_path->name);
+> +			source = path_list->dapm_path->source;
+> +			src_mconfig = source->priv;
+> +			path_found = 1;
+> +
+> +			list_del(&path_list->node);
+> +			kfree(path_list);
+> +			break;
+> +		}
+> +	}
+> +
+
+There is a lot of list walking and manipulation in this series and it's
+not clear where any locks are being held to prevent list corruption.
+I'm assuming list items are being added and removed as part of
+loading/unloading the topology data but it looks like we are also
+manipulating component lists during DAPM events ?
+
+Liam
