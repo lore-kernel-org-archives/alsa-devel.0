@@ -1,43 +1,43 @@
-From: "Wu, Songjun" <songjun.wu-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: atmel-classd: DT binding for Class D audio
- amplifier driver
-Date: Thu, 17 Sep 2015 11:07:20 +0800
-Message-ID: <55FA2E68.5010104@atmel.com>
-References: <1441086101-15303-1-git-send-email-songjun.wu@atmel.com>
- <1441086101-15303-3-git-send-email-songjun.wu@atmel.com>
- <20150903114316.GV12027@sirena.org.uk> <55EC0AFE.3080809@atmel.com>
- <20150907162548.GW5313@sirena.org.uk> <55EEAC0D.7010003@atmel.com>
- <20150908122340.GC9751@sirena.org.uk> <55F78C79.30102@atmel.com>
- <20150916194234.GR12027@sirena.org.uk>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V1 0/3] fsl esai/spdif/asrc need spba clock
+Date: Thu, 17 Sep 2015 14:09:22 +0800
+Message-ID: <cover.1442469788.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150916194234.GR12027-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2on0120.outbound.protection.outlook.com [207.46.100.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF53A2619D7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 08:09:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+fsl esai/spdif/asrc need spba clock
 
+Shengjiu Wang (3):
+  ASoC: fsl_esai: spba clock is needed by esai device
+  ASoC: fsl_spdif: spba clk is needed by spdif device
+  ASoC: fsl_asrc: spba clock is needed by asrc device
 
-On 9/17/2015 03:42, Mark Brown wrote:
-> On Tue, Sep 15, 2015 at 11:11:53AM +0800, Wu, Songjun wrote:
->
->> I try to use one entry, but there is a problem.
->> It's about 'driver_data' in struct device.
->> In function snd_soc_register_card, the parameter 'card' will be set to
->> 'driver_data' by the code 'dev_set_drvdata(card->dev, card)'.
->> Then some resources(eg. regmap, clock) also need be recorded by
->> 'driver_data'. One entry could only has one 'driver_data'. I think the best
->> way is to create two entries, like the current dts.
->> What's your opinion?
->
-> Look at the recently applied sunxi driver for an example of how to do
-> this - it's a similar piece of hardware (entirely in the SoC and so on).
->
-Thank you, It really helps me. I will make a second version soon.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ Documentation/devicetree/bindings/sound/fsl,asrc.txt  |  2 ++
+ Documentation/devicetree/bindings/sound/fsl,esai.txt  |  2 ++
+ Documentation/devicetree/bindings/sound/fsl,spdif.txt |  2 ++
+ sound/soc/fsl/fsl_asrc.c                              | 12 ++++++++++++
+ sound/soc/fsl/fsl_asrc.h                              |  1 +
+ sound/soc/fsl/fsl_esai.c                              | 13 +++++++++++++
+ sound/soc/fsl/fsl_spdif.c                             | 15 +++++++++++++++
+ 7 files changed, 47 insertions(+)
+
+-- 
+1.9.1
