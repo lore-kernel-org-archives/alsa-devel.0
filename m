@@ -1,102 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: fix platform_no_drv_owner.cocci
-	warnings" to the asoc tree
-Date: Thu, 17 Sep 2015 18:36:41 +0100
-Message-ID: <E1Zcd6v-0006Jy-V5@finisterre>
-References: <20150916205555.GA207987@athens>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Re: [PATCH 2/2] ASoC: sunxi: add support for the
+ on-chip codec on early Allwinner SoCs
+Date: Thu, 17 Sep 2015 18:37:56 +0100
+Message-ID: <20150917173756.GE12027@sirena.org.uk>
+References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1442064384-23379-3-git-send-email-maxime.ripard@free-electrons.com>
+ <20150916191612.GM12027@sirena.org.uk>
+ <20150917133135.GE4684@lukather>
+ <CAGb2v67D30+_itOAyWqGzychxeM_d7rF6TTu1_WBYuFPfFEk1g@mail.gmail.com>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2709720965271892640=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F275261B32
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:36:53 +0200 (CEST)
-In-Reply-To: <20150916205555.GA207987@athens>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rRLHt+g8zo1nijuo"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBCHV5OXQKGQEVNENKNQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAGb2v67D30+_itOAyWqGzychxeM_d7rF6TTu1_WBYuFPfFEk1g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2709720965271892640==
-Content-Type: text/plain
-
-The patch
-
-   ASoC: sunxi: fix platform_no_drv_owner.cocci warnings
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 31f4f0c640bd2d144ab16666c76d45f173f952f5 Mon Sep 17 00:00:00 2001
-From: kbuild test robot <fengguang.wu@intel.com>
-Date: Thu, 17 Sep 2015 04:55:55 +0800
-Subject: [PATCH] ASoC: sunxi: fix platform_no_drv_owner.cocci warnings
-MIME-Version: 1.0
+--rRLHt+g8zo1nijuo
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-sound/soc/sunxi/sun4i-codec.c:708:3-8: No need to set .owner here. The core will do it.
-
- Remove .owner field if calls are used which set it automatically
-
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
-
-CC: Emilio López <emilio@elopez.com.ar>
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun4i-codec.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 6e83e62..8d59d83 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -705,7 +705,6 @@ static int sun4i_codec_remove(struct platform_device *pdev)
- static struct platform_driver sun4i_codec_driver = {
- 	.driver = {
- 		.name = "sun4i-codec",
--		.owner = THIS_MODULE,
- 		.of_match_table = sun4i_codec_of_match,
- 	},
- 	.probe = sun4i_codec_probe,
--- 
-2.5.0
-
-
---===============2709720965271892640==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+On Thu, Sep 17, 2015 at 11:10:41PM +0800, Chen-Yu Tsai wrote:
+> On Thu, Sep 17, 2015 at 9:31 PM, Maxime Ripard
 
---===============2709720965271892640==--
+> >> > +           .formats        = SNDRV_PCM_FMTBIT_S16_LE |
+> >> > +                             SNDRV_PCM_FMTBIT_S32_LE,
+> >> > +           .sig_bits       = 24,
+
+> >> So presumably also S24_LE (ie, 24 bits packed into a 32 bit word)?
+
+> > Hmm, probably yes, I'll test that.
+
+> IIRC when Emilio first wrote the driver, we tried 24 bit and no sound
+> came out. Turns out it's an alignment issue. The codec's FIFO register
+> is 32 bits wide, and takes the higher 24 bits as input when set to 24
+> bit mode. The internal FIFO is only 24 bits wide. A20 user manual P174
+> describes how the bits are copied.
+
+> So for 24 bit audio, you would actually send it 32 bit audio samples,
+> and let it truncate or drop the least significant 8 bits. This is why
+> we have SNDRV_PCM_FMTBIT_S32_LE with .sig_bits = 24.
+
+> I don't know if this is just a workaround, but a few other drivers do
+> this as well, for example twl3040 and omap-mcpdm.
+
+That's very common - it's essentially what S24_LE mode is.
+--rRLHt+g8zo1nijuo--
