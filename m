@@ -1,97 +1,65 @@
-From: Uli Franke <uli.franke@weiss.ch>
-Subject: Re: Test device for automated testing
-Date: Thu, 17 Sep 2015 10:09:32 +0200
-Message-ID: <55FA753C.5050002@weiss.ch>
-References: <55F9617A.6040301@weiss.ch> <55F96798.70106@ladisch.de>
- <55F96B5A.6000900@weiss.ch> <55F97CFD.9080608@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server11.hostfactory.ch (server11.hostfactory.ch
- [62.146.13.133])
- by alsa0.perex.cz (Postfix) with ESMTP id F05ED26513B
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:09:33 +0200 (CEST)
-In-Reply-To: <55F97CFD.9080608@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [alsa-devel] [PATCH] mfd: arizona: Call the runtime PM function if the
+ state is runtime resumed
+Date: Thu, 17 Sep 2015 17:28:47 +0900
+Message-ID: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lee.jones@linaro.org, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 16.09.2015 16:30, Clemens Ladisch wrote:
-> Uli Franke wrote:
->> I tried the "null" but this fails when setting hw parameters with an
->> assertion.
-> 
-> In theory, the null device does not have any restrictions.  But an
-> assertion indicates a programming error (somewhere).  What is the
-> message, and what are the hw parameters?
+This patch call runtiem PM function manually if the state is runtime resumed
+before enter suspend.
 
-The assertion fails with
+This case has occurred when wake-up by the resume after entering to
+suspend during the playback.
+$ aplay -> runtime_resume() -> suspend() -> resume()
 
-pcm_params.c:2360: _snd_pcm_hw_params_internal: Assertion `err >= 0' failed.
+In this case, Can occurred an error when enter suspend.
+--
+[   82.559234] PM: suspend of devices complete after 57.252 msecs
+[   82.567978] arizona spi1.0: Failed to read IRQ status: -108
+[   82.567989] arizona spi1.0: Failed to read main IRQ status: -108
+[   82.568027] arizona spi1.0: Failed to read IRQ status: -108
+[   82.568036] arizona spi1.0: Failed to read main IRQ status: -108
+....
+So, we should call runtime_suspend() manually when enter suspend
+if the state is runtime resume.
 
-There's only a single result on google [1] which discusses this
-assertion but the thread doesn't result in any meaningful conclusion.
+Also should call runtime_resume() when wake-up by resume if the state
+was runtime resume before entering suspend.
 
-I assembled a small test program which causes this very assertion to fail.
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ drivers/mfd/arizona-core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-#include <alsa/asoundlib.h>
-
-int main ()
-{
-	snd_pcm_hw_params_t *params;
-	snd_pcm_t *pcm;
-
-	snd_pcm_open(&pcm, "null", SND_PCM_STREAM_PLAYBACK, 0);
-	snd_pcm_hw_params_malloc(&params);
-	snd_pcm_hw_params_any(pcm, params);
-	snd_pcm_hw_params(pcm, params);
-
-	return 0;
-}
-
-I appended some system specs [2] (in case you should need more, just let
-me know).
-
-Regards
-Uli
-
-____
-[1] http://sourceforge.net/p/cmus/mailman/message/32707782/
-[2] System specs:
-
-uli@ankerklause:~/.../dlna/wdmr$ uname -a
-Linux ankerklause 3.16.0-46-generic #62~14.04.1-Ubuntu SMP Tue Aug 11
-16:28:19 UTC 2015 i686 i686 i686 GNU/Linux
-
-uli@ankerklause:~/.../dlna/wdmr$ aptitude show libasound2
-Package: libasound2
-State: installed
-Automatically installed: yes
-Multi-Arch: same
-Version: 1.0.27.2-3ubuntu7
-Priority: optional
-Section: libs
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Architecture: i386
-Uncompressed Size: 1'208 k
-Depends: libc6 (>= 2.16), libasound2-data (>= 1.0.27.2-3ubuntu7)
-PreDepends: multiarch-support
-Suggests: libasound2-plugins (>= 1.0.24)
-Breaks: bluez-alsa (<= 4.94-2), libasound2-plugin-equal (<= 0.6-1),
-libasound2-plugins (< 1.0.24)
-Provided by: liboss4-salsa-asound2
-Description: shared library for ALSA applications
-This package contains the ALSA library and its standard plugins, as well
-as the required configuration files.
-
-ALSA is the Advanced Linux Sound Architecture.
-Homepage: http://www.alsa-project.org/
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 908c69b..de55706 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -683,6 +683,10 @@ static int arizona_suspend(struct device *dev)
+ 	struct arizona *arizona = dev_get_drvdata(dev);
+ 
+ 	dev_dbg(arizona->dev, "Suspend, disabling IRQ\n");
++
++	if (!pm_runtime_status_suspended(dev))
++		arizona_runtime_suspend(dev);
++
+ 	disable_irq(arizona->irq);
+ 
+ 	return 0;
+@@ -713,6 +717,10 @@ static int arizona_resume(struct device *dev)
+ 	struct arizona *arizona = dev_get_drvdata(dev);
+ 
+ 	dev_dbg(arizona->dev, "Late resume, reenabling IRQ\n");
++
++	if (!pm_runtime_status_suspended(dev))
++		arizona_runtime_resume(dev);
++
+ 	enable_irq(arizona->irq);
+ 
+ 	return 0;
+-- 
+2.0.0.390.gcb682f8
