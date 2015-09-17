@@ -1,27 +1,17 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: Multiple codecs on one sound card for
- multi-channel sound card
-Date: Thu, 17 Sep 2015 18:09:13 +0200
-Message-ID: <55FAE5A9.80707@invoxia.com>
-References: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
- <CAG5mAdzyQgOmTcAmHrjWRQzuv-ih9p-qXQsYxdTD_Qmr-Fep3A@mail.gmail.com>
- <55F93CF6.50208@invoxia.com>
- <CAG5mAdyeOruLj+Tndda9Efvi3mrFDZK3XkkgWkU067yQH2rs=Q@mail.gmail.com>
- <55FA7F05.4020001@invoxia.com>
- <CAG5mAdzOhq2_P7fyHrr3JoLoTEjrn2zTmGDti_cdChiXAt6p7w@mail.gmail.com>
- <55FACF39.4010506@invoxia.com>
- <CAG5mAdzKXZWOzY-7E5iZ=bAcUKysj_78gx=JUd8JXivcK63A-A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: add ak4613 support" to the asoc tree
+Date: Thu, 17 Sep 2015 18:36:40 +0100
+Message-ID: <E1Zcd6u-0006JV-Ud@finisterre>
+References: <8737yg3xdr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A359D261B19
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 18:09:19 +0200 (CEST)
-Received: by wicge5 with SMTP id ge5so125534605wic.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 09:09:17 -0700 (PDT)
-In-Reply-To: <CAG5mAdzKXZWOzY-7E5iZ=bAcUKysj_78gx=JUd8JXivcK63A-A@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E44F261A80
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:36:50 +0200 (CEST)
+In-Reply-To: <8737yg3xdr.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,67 +21,593 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpMZSAxNy8wOS8yMDE1IDE3OjM0LCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4gT24gVGh1LCBT
-ZXAgMTcsIDIwMTUgYXQgNzozMyBBTSwgYXJuYXVkLm1vdWljaGVAaW52b3hpYS5jb20KPiA8YXJu
-YXVkLm1vdWljaGVAaW52b3hpYS5jb20+IHdyb3RlOgo+PiBoZWxsbywKPj4KPj4gTGUgMTcvMDkv
-MjAxNSAxNTozOCwgQ2FsZWIgQ3JvbWUgYSDDqWNyaXQgOgo+Pj4gT24gVGh1LCBTZXAgMTcsIDIw
-MTUgYXQgMTo1MSBBTSwgYXJuYXVkLm1vdWljaGVAaW52b3hpYS5jb20KPj4+IDxhcm5hdWQubW91
-aWNoZUBpbnZveGlhLmNvbT4gd3JvdGU6Cj4+Pj4gSGVsbG8gQ2FsZWIsCj4+Pj4KPj4+PiBmcmVl
-c2NhbGUgU1NJIGlzIGZpbmUgd2l0aCBtb3JlIHRoYW4gMiBjaGFubmVscy4KPj4+PiBJIGhhdmUg
-cGxhbmVkIHRvIHB1Ymxpc2ggYSBzZXQgb2YgcGF0Y2ggaW4gdGhpcyBkaXJlY3Rpb24gYnV0IHdl
-IHN0aWxsCj4+Pj4gaGF2ZQo+Pj4+IHNvbWUgY29ybmVyIGNhc2VzIHRvIGZpeCBmaXJzdCAocmFy
-ZSBpc3N1ZXMgd2l0aCBjaGFubmVscyBhbGlnbm1lbnQpCj4+Pj4KPj4+IEknZCBsb3ZlIHRvIHNl
-ZSBhbnl0aGluZyB5b3UncmUgd2lsbGluZyB0byBzaG93IDotKQo+Pj4KPj4+PiBZZXQsIHRoaXMg
-Zm9sbG93aW5nIGlzIGZhciBlbm91Z2ggdG8gaGF2ZSBpdCB3b3JraW5nLgo+Pj4+IEFuZCBzaW5j
-ZSB0aGUgbWF4L21pbiByYXRlIGlzIGF0IHRoZSBlbmQgdGhlIGludGVyc2VjdGlvbiBvZiB3aGF0
-IHRoZQo+Pj4+IFNTSSwKPj4+PiB0aGUgY29kZWMgYW5kIHRoZSBjYXJkIGFyZSBkZWNsYXJpbmcs
-IGl0IHdpbGwgbm90IGNoYW5nZSBhbnl0aGluZyB1bnRpbAo+Pj4+IHlvdQo+Pj4+IGNvbm5lY3Qg
-dGhlIFNTSSB0byBhIGNvZGVjIHdpdGggbW9yZSB0aGFuIDIgY2hhbm5lbHMsIG9yIGEgbXVsdGkt
-Y29kZWMKPj4+PiBzb2x1dGlvbi4KPj4+IFdoYXQgaWYgSSBjaGFuZ2UgY2hhbm5lbHNfbWF4IHRv
-IDE2IGZvciBjYXB0dXJlIGFuZCBwbGF5YmFjaz8gIExhc3QKPj4+IHRpbWUgSSB0cmllZCwgaXQg
-d291bGQgbm90IGtlZXAgdGhlIGNoYW5uZWxzIHN5bmNocm9uaXplZCBvbiB0aGUgVERNCj4+PiBi
-dXMuICBJIHRyaWVkIHBsYXlpbmcgd2l0aCB0aGUgRklGTyBzZXR0aW5ncywgd2hpY2ggaGVscGVk
-LCBidXQgaXQKPj4+IHN0aWxsIHdvdWxkIG5vdCBzdGFydCBlYWNoIGNoYW5uZWwgaW4gdGhlIHJp
-Z2h0IHNsb3QgcmVsaWFibHkuCj4+PiBQZXJoYXBzIEkgd2FzIHVzaW5nIGFuIG9sZGVyIGtlcm5l
-bC4KPj4geW91IHB1dCB0aGUgZmluZ2VyIG9uIHdoYXQncyBodXJ0aW5nICEgIDspCj4+Cj4+IElu
-IGZhY3QsIHdlIG1hZGUgOCBjaGFubmVscyB3b3JraW5nIGluIHJlbGlhYmxlIHdheSBvbiBpbXg1
-MCwgd2l0aAo+PiBwcmVkaWN0aXZlIGxhdGVuY3kgIC4uLiB3aXRoIGFuIG9sZCBrZXJuZWwgKDMu
-MTcpIC4uLiBiYXNlZCBvbiBmcmVlc2NhbGUKPj4gQlNQLi4uIG9uIHNvdW5kL3NvYy9pbXgvaW14
-LXNzaS5jIChzb21ldGhpbmcgdGhhdCBkb2Vzbid0IGV4aXN0IG91dHNpZGUKPj4gZnJlZXNjYWxl
-IEJTUCkKPj4KPj4gV2VsbCwganVzdCB0byBzYXkgaXQgaXMgZG9hYmxlIG9uIGFueSByZWNlbnQg
-aW14IHNpbmNlIHRoZSBoYXJkd2FyZSBpcyBub3QKPj4gdGhlIGlzc3VlLiBCdXQgdGhlIGpvYiB3
-YXMgYSBzZXQgb2YgYXdmdWwgaGFja3MuCj4gU29ycnksIEkgZG9uJ3QgcXVpdGUgdW5kZXJzdGFu
-ZC4gIEFyZSB5b3Ugc2F5aW5nIHRoYXQgb24gYSByZWNlbnQKPiBrZXJuZWwgKHNheSA0LjEgb3Ig
-NC4yKSwgeW91IHRoaW5rIGl0IHdpbGwganVzdCB3b3JrLiAgT3IgYXJlIHlvCj4gc2F5aW5nIHRo
-YXQgZXZlbiBvbiBhIG1vZGVybiBrZXJuZWwgaXQncyBhIHNldCBvZiBhd2Z1bCBoYWNrcz8gIEFu
-ZAo+IHNob3VsZCBJIHVzZSBmc2xfc3NpLmMgb3IgaW14LXNzaS5jIChkZXZpY2UgdHJlZS9ub24g
-ZGV2aWNlIHRyZWUpCj4gdmVyc2lvbj8KLSBJJ20gc2F5aW5nIGl0IGlzIHdvcmtpbmcgb24gcmVj
-ZW50IHVwc3RyZWFtIGtlcm5lbCwgdXNpbmcgCnNvdW5kL3NvYy9mc2wvZnNsX3NzaS5jLCBidXQg
-d2l0aApzb21lIGNoYW5uZWwgc3luYyBpc3N1ZXMgaW4gcmFyZSBjb25kaXRpb25zIChhdCBsZWFz
-dCA0IGNoYW5uZWxzIGNhc2UsIApvcGVuaW5nIG11bHRpcGxlIFNTSSBhdCB0aGUgc2FtZSB0aW1l
-KS4KU28sIHlvdSBzaG91bGQgdGVzdCBvbiB5b3VyIHNpZGUgd2l0aCB5b3Ugc2V0dXAsIGFuZCBz
-aW1wbHkgYmUgcHJlcGFyZWQgCnRvIG5vdCBzZWUgaXQgd29ya2luZyBhcyBhIGNoYXJtLgoKLSB3
-ZSBtYWRlIGl0IHdvcmsgcGVyZmVjdGx5LCBidXQgb24gYW4gb2xkIGZyZWVzY2FsZSBCU1AsIHdo
-ZXJlIApmcmVlc2NhbGUgcmV3cml0ZXMgYSBTU0kgZHJpdmVyIGRpZmZlcmVudCBmcm9tIHRoZSBh
-bHJlYWR5IDIgZHJpdmVycyAKKGRldmljZSB0cmVlL25vbiBkZXZpY2UgdHJlZSkgYXZhaWxhYmxl
-IHRvZGF5IGluIHVwc3RyZWFtICsgbG90IG9mIGF3ZnVsIApoYWNrcyA9PiBzbywgdGhpcyBpcyBu
-b3QgYSBoYXJkd2FyZSBpc3N1ZS4KCi0gd2hlbiBJIHdpbGwgaGF2ZSB0aW1lLCBJIHdpbGwgc3Rh
-cnQgZnJvbSB0aGUgdXBzdHJlYW0gZHJpdmVyLCBhbmQgbWFrZSAKaXQgd29yayBjb3JyZWN0bHkg
-d2l0aCA4IGNoYW5uZWxzIChvciBtb3JlKQoKYXJuYXVkCj4KPiBJbiBzaG9ydCwgd2hhdCdzIHlv
-dXIgYmVzdCBjdXJyZW50IHJlY29tbWVuZGF0aW9uIHRvIGdldCBpdCB3b3JraW5nIHRvZGF5Pwo+
-Cj4+IE15IHBsYW4gd2FzIHRvIHJlLWRvIGFsbCB0aGlzIGpvYiBvbiBhbiB1cHN0cmVhbSBrZXJu
-ZWwsIGluIGEgd2F5IGl0IGNhbiBiZQo+PiBhY2NlcHRlZC4KPj4gVW5mb3J0dW5hdGVseSB5b3Ug
-d2lsbCBoYXZlIHRvIHdhaXQsIEknbSB1bmRlciBwcmVzc3VyZSBmb3Igb3RoZXIgc3R1ZmYKPj4g
-cmlnaHQgbm93Lgo+IEhlaCwgdW5kZXJzdG9vZC4gIElmIHRoZXJlJ3MgYW55dGhpbmcgSSBjYW4g
-ZG8gdG8gaGVscCwgbGV0IG1lIGtub3cuCj4KPiBUaGFua3MsCj4gLUNhbGViCj4KPj4gUmVnYXJk
-cywKPj4gYXJuYXVkCj4+Cj4+Cj4+PiBJJ2xsIGdpdmUgaXQgYSB0cnkgYWdhaW4uICBMaWtlIEkg
-c2FpZCwgd2UnZCBsb3ZlIHRvIGdldCBvdXIKPj4+IDE2LWNoYW5uZWwgYm9hcmQgdXAgYW5kIHJ1
-bm5pbmcgb24gdGhlIE1YNiwgc28gSSdtIGRlZmluaXRlbHkKPj4+IG1vdGl2YXRlZCB0byBwdXQg
-c29tZSB3b3JrIGluIHRvIGdldCBpdCByZWxpYWJsZS4KPj4+Cj4+PiBUaGFua3MsCj4+PiAgICAt
-Q2FsZWIKPj4+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: add ak4613 support
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b07570628471777aabb5695284e1af4533e502da Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 15 Sep 2015 08:26:36 +0000
+Subject: [PATCH] ASoC: add ak4613 support
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/ak4613.txt |  17 +
+ sound/soc/codecs/Kconfig                           |   5 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/ak4613.c                          | 469 +++++++++++++++++++++
+ 4 files changed, 493 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ak4613.txt
+ create mode 100644 sound/soc/codecs/ak4613.c
+
+diff --git a/Documentation/devicetree/bindings/sound/ak4613.txt b/Documentation/devicetree/bindings/sound/ak4613.txt
+new file mode 100644
+index 0000000..15a9195
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ak4613.txt
+@@ -0,0 +1,17 @@
++AK4613 I2C transmitter
++
++This device supports I2C mode only.
++
++Required properties:
++
++- compatible : "asahi-kasei,ak4613"
++- reg : The chip select number on the I2C bus
++
++Example:
++
++&i2c {
++	ak4613: ak4613@0x10 {
++		compatible = "asahi-kasei,ak4613";
++		reg = <0x10>;
++	};
++};
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 0c9733e..a92e4d4 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -36,6 +36,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_AK4554
++	select SND_SOC_AK4613 if I2C
+ 	select SND_SOC_AK4641 if I2C
+ 	select SND_SOC_AK4642 if I2C
+ 	select SND_SOC_AK4671 if I2C
+@@ -319,6 +320,10 @@ config SND_SOC_AK4535
+ config SND_SOC_AK4554
+ 	tristate "AKM AK4554 CODEC"
+ 
++config SND_SOC_AK4613
++	tristate "AKM AK4613 CODEC"
++	depends on I2C
++
+ config SND_SOC_AK4641
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 4a32077..5b6c8af 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -26,6 +26,7 @@ snd-soc-ads117x-objs := ads117x.o
+ snd-soc-ak4104-objs := ak4104.o
+ snd-soc-ak4535-objs := ak4535.o
+ snd-soc-ak4554-objs := ak4554.o
++snd-soc-ak4613-objs := ak4613.o
+ snd-soc-ak4641-objs := ak4641.o
+ snd-soc-ak4642-objs := ak4642.o
+ snd-soc-ak4671-objs := ak4671.o
+@@ -216,6 +217,7 @@ obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
+ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_AK4554)	+= snd-soc-ak4554.o
++obj-$(CONFIG_SND_SOC_AK4613)	+= snd-soc-ak4613.o
+ obj-$(CONFIG_SND_SOC_AK4641)	+= snd-soc-ak4641.o
+ obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
+ obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+new file mode 100644
+index 0000000..fd96a8f
+--- /dev/null
++++ b/sound/soc/codecs/ak4613.c
+@@ -0,0 +1,469 @@
++/*
++ * ak4613.c  --  Asahi Kasei ALSA Soc Audio driver
++ *
++ * Copyright (C) 2015 Renesas Electronics Corporation
++ * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++ *
++ * Based on ak4642.c by Kuninori Morimoto
++ * Based on wm8731.c by Richard Purdie
++ * Based on ak4535.c by Richard Purdie
++ * Based on wm8753.c by Liam Girdwood
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/i2c.h>
++#include <linux/slab.h>
++#include <linux/of_device.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
++#define PW_MGMT1	0x00 /* Power Management 1 */
++#define PW_MGMT2	0x01 /* Power Management 2 */
++#define PW_MGMT3	0x02 /* Power Management 3 */
++#define CTRL1		0x03 /* Control 1 */
++#define CTRL2		0x04 /* Control 2 */
++#define DEMP1		0x05 /* De-emphasis1 */
++#define DEMP2		0x06 /* De-emphasis2 */
++#define OFD		0x07 /* Overflow Detect */
++#define ZRD		0x08 /* Zero Detect */
++#define ICTRL		0x09 /* Input Control */
++#define OCTRL		0x0a /* Output Control */
++#define LOUT1		0x0b /* LOUT1 Volume Control */
++#define ROUT1		0x0c /* ROUT1 Volume Control */
++#define LOUT2		0x0d /* LOUT2 Volume Control */
++#define ROUT2		0x0e /* ROUT2 Volume Control */
++#define LOUT3		0x0f /* LOUT3 Volume Control */
++#define ROUT3		0x10 /* ROUT3 Volume Control */
++#define LOUT4		0x11 /* LOUT4 Volume Control */
++#define ROUT4		0x12 /* ROUT4 Volume Control */
++#define LOUT5		0x13 /* LOUT5 Volume Control */
++#define ROUT5		0x14 /* ROUT5 Volume Control */
++#define LOUT6		0x15 /* LOUT6 Volume Control */
++#define ROUT6		0x16 /* ROUT6 Volume Control */
++
++/* PW_MGMT1 */
++#define RSTN		BIT(0)
++#define PMDAC		BIT(1)
++#define PMADC		BIT(2)
++#define PMVR		BIT(3)
++
++/* PW_MGMT2 */
++#define PMAD_ALL	0x7
++
++/* PW_MGMT3 */
++#define PMDA_ALL	0x3f
++
++/* CTRL1 */
++#define DIF0		BIT(3)
++#define DIF1		BIT(4)
++#define DIF2		BIT(5)
++#define TDM0		BIT(6)
++#define TDM1		BIT(7)
++#define NO_FMT		(0xff)
++#define FMT_MASK	(0xf8)
++
++/* CTRL2 */
++#define DFS_NORMAL_SPEED	(0 << 2)
++#define DFS_DOUBLE_SPEED	(1 << 2)
++#define DFS_QUAD_SPEED		(2 << 2)
++
++struct ak4613_priv {
++	struct mutex lock;
++
++	unsigned int fmt;
++	u8 fmt_ctrl;
++	int cnt;
++};
++
++struct ak4613_formats {
++	unsigned int width;
++	unsigned int fmt;
++};
++
++struct ak4613_interface {
++	struct ak4613_formats capture;
++	struct ak4613_formats playback;
++};
++
++static const struct reg_default ak4613_reg[] = {
++	{ 0x0,  0x0f }, { 0x1,  0x07 }, { 0x2,  0x3f }, { 0x3,  0x20 },
++	{ 0x4,  0x20 }, { 0x5,  0x55 }, { 0x6,  0x05 }, { 0x7,  0x07 },
++	{ 0x8,  0x0f }, { 0x9,  0x07 }, { 0xa,  0x3f }, { 0xb,  0x00 },
++	{ 0xc,  0x00 }, { 0xd,  0x00 }, { 0xe,  0x00 }, { 0xf,  0x00 },
++	{ 0x10, 0x00 }, { 0x11, 0x00 }, { 0x12, 0x00 }, { 0x13, 0x00 },
++	{ 0x14, 0x00 }, { 0x15, 0x00 }, { 0x16, 0x00 },
++};
++
++#define AUDIO_IFACE_IDX_TO_VAL(i) (i << 3)
++#define AUDIO_IFACE(b, fmt) { b, SND_SOC_DAIFMT_##fmt }
++static const struct ak4613_interface ak4613_iface[] = {
++	/* capture */				/* playback */
++	[0] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(16, RIGHT_J) },
++	[1] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(20, RIGHT_J) },
++	[2] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(24, RIGHT_J) },
++	[3] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(24, LEFT_J) },
++	[4] = {	AUDIO_IFACE(24, I2S),		AUDIO_IFACE(24, I2S) },
++};
++
++static const struct regmap_config ak4613_regmap_cfg = {
++	.reg_bits		= 8,
++	.val_bits		= 8,
++	.max_register		= 0x16,
++	.reg_defaults		= ak4613_reg,
++	.num_reg_defaults	= ARRAY_SIZE(ak4613_reg),
++};
++
++static const struct of_device_id ak4613_of_match[] = {
++	{ .compatible = "asahi-kasei,ak4613",	.data = &ak4613_regmap_cfg },
++	{},
++};
++MODULE_DEVICE_TABLE(of, ak4613_of_match);
++
++static const struct i2c_device_id ak4613_i2c_id[] = {
++	{ "ak4613", (kernel_ulong_t)&ak4613_regmap_cfg },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, ak4613_i2c_id);
++
++static const struct snd_soc_dapm_widget ak4613_dapm_widgets[] = {
++
++	/* Outputs */
++	SND_SOC_DAPM_OUTPUT("LOUT1"),
++	SND_SOC_DAPM_OUTPUT("LOUT2"),
++	SND_SOC_DAPM_OUTPUT("LOUT3"),
++	SND_SOC_DAPM_OUTPUT("LOUT4"),
++	SND_SOC_DAPM_OUTPUT("LOUT5"),
++	SND_SOC_DAPM_OUTPUT("LOUT6"),
++
++	SND_SOC_DAPM_OUTPUT("ROUT1"),
++	SND_SOC_DAPM_OUTPUT("ROUT2"),
++	SND_SOC_DAPM_OUTPUT("ROUT3"),
++	SND_SOC_DAPM_OUTPUT("ROUT4"),
++	SND_SOC_DAPM_OUTPUT("ROUT5"),
++	SND_SOC_DAPM_OUTPUT("ROUT6"),
++
++	/* Inputs */
++	SND_SOC_DAPM_INPUT("LIN1"),
++	SND_SOC_DAPM_INPUT("LIN2"),
++
++	SND_SOC_DAPM_INPUT("RIN1"),
++	SND_SOC_DAPM_INPUT("RIN2"),
++
++	/* DAC */
++	SND_SOC_DAPM_DAC("DAC1", NULL, PW_MGMT3, 0, 0),
++	SND_SOC_DAPM_DAC("DAC2", NULL, PW_MGMT3, 1, 0),
++	SND_SOC_DAPM_DAC("DAC3", NULL, PW_MGMT3, 2, 0),
++	SND_SOC_DAPM_DAC("DAC4", NULL, PW_MGMT3, 3, 0),
++	SND_SOC_DAPM_DAC("DAC5", NULL, PW_MGMT3, 4, 0),
++	SND_SOC_DAPM_DAC("DAC6", NULL, PW_MGMT3, 5, 0),
++
++	/* ADC */
++	SND_SOC_DAPM_ADC("ADC1", NULL, PW_MGMT2, 0, 0),
++	SND_SOC_DAPM_ADC("ADC2", NULL, PW_MGMT2, 1, 0),
++};
++
++static const struct snd_soc_dapm_route ak4613_intercon[] = {
++	{"LOUT1", NULL, "DAC1"},
++	{"LOUT2", NULL, "DAC2"},
++	{"LOUT3", NULL, "DAC3"},
++	{"LOUT4", NULL, "DAC4"},
++	{"LOUT5", NULL, "DAC5"},
++	{"LOUT6", NULL, "DAC6"},
++
++	{"ROUT1", NULL, "DAC1"},
++	{"ROUT2", NULL, "DAC2"},
++	{"ROUT3", NULL, "DAC3"},
++	{"ROUT4", NULL, "DAC4"},
++	{"ROUT5", NULL, "DAC5"},
++	{"ROUT6", NULL, "DAC6"},
++
++	{"DAC1", NULL, "Playback"},
++	{"DAC2", NULL, "Playback"},
++	{"DAC3", NULL, "Playback"},
++	{"DAC4", NULL, "Playback"},
++	{"DAC5", NULL, "Playback"},
++	{"DAC6", NULL, "Playback"},
++
++	{"Capture", NULL, "ADC1"},
++	{"Capture", NULL, "ADC2"},
++
++	{"ADC1", NULL, "LIN1"},
++	{"ADC2", NULL, "LIN2"},
++
++	{"ADC1", NULL, "RIN1"},
++	{"ADC2", NULL, "RIN2"},
++};
++
++static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct device *dev = codec->dev;
++
++	mutex_lock(&priv->lock);
++	priv->cnt--;
++	if (priv->cnt < 0) {
++		dev_err(dev, "unexpected counter error\n");
++		priv->cnt = 0;
++	}
++	if (!priv->cnt)
++		priv->fmt_ctrl = NO_FMT;
++	mutex_unlock(&priv->lock);
++}
++
++static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	fmt &= SND_SOC_DAIFMT_FORMAT_MASK;
++
++	switch (fmt) {
++	case SND_SOC_DAIFMT_RIGHT_J:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_I2S:
++		priv->fmt = fmt;
++
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
++	const struct ak4613_formats *fmts;
++	struct device *dev = codec->dev;
++	unsigned int width = params_width(params);
++	unsigned int fmt = priv->fmt;
++	unsigned int rate;
++	int is_play = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	int i, ret;
++	u8 fmt_ctrl, ctrl2;
++
++	rate = params_rate(params);
++	switch (rate) {
++	case 32000:
++	case 44100:
++	case 48000:
++		ctrl2 = DFS_NORMAL_SPEED;
++		break;
++	case 88200:
++	case 96000:
++		ctrl2 = DFS_DOUBLE_SPEED;
++		break;
++	case 176400:
++	case 192000:
++		ctrl2 = DFS_QUAD_SPEED;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/*
++	 * FIXME
++	 *
++	 * It doesn't support TDM at this point
++	 */
++	fmt_ctrl = NO_FMT;
++	for (i = 0; i < ARRAY_SIZE(ak4613_iface); i++) {
++		fmts = (is_play) ?	&ak4613_iface[i].playback :
++					&ak4613_iface[i].capture;
++
++		if (fmts->fmt != fmt)
++			continue;
++
++		if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
++			if (fmts->width != width)
++				continue;
++		} else {
++			if (fmts->width < width)
++				continue;
++		}
++
++		fmt_ctrl = AUDIO_IFACE_IDX_TO_VAL(i);
++		break;
++	}
++
++	ret = -EINVAL;
++	if (fmt_ctrl == NO_FMT)
++		goto hw_params_end;
++
++	mutex_lock(&priv->lock);
++	if ((priv->fmt_ctrl == NO_FMT) ||
++	    (priv->fmt_ctrl == fmt_ctrl)) {
++		priv->fmt_ctrl = fmt_ctrl;
++		priv->cnt++;
++		ret = 0;
++	}
++	mutex_unlock(&priv->lock);
++
++	if (ret < 0)
++		goto hw_params_end;
++
++	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
++	snd_soc_write(codec, CTRL2, ctrl2);
++
++hw_params_end:
++	if (ret < 0)
++		dev_warn(dev, "unsupported data width/format combination\n");
++
++	return ret;
++}
++
++static int ak4613_set_bias_level(struct snd_soc_codec *codec,
++				 enum snd_soc_bias_level level)
++{
++	u8 mgmt1 = 0;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		mgmt1 |= RSTN;
++		/* fall through */
++	case SND_SOC_BIAS_PREPARE:
++		mgmt1 |= PMADC | PMDAC;
++		/* fall through */
++	case SND_SOC_BIAS_STANDBY:
++		mgmt1 |= PMVR;
++		/* fall through */
++	case SND_SOC_BIAS_OFF:
++	default:
++		break;
++	}
++
++	snd_soc_write(codec, PW_MGMT1, mgmt1);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops ak4613_dai_ops = {
++	.shutdown	= ak4613_dai_shutdown,
++	.set_fmt	= ak4613_dai_set_fmt,
++	.hw_params	= ak4613_dai_hw_params,
++};
++
++#define AK4613_PCM_RATE		(SNDRV_PCM_RATE_32000  |\
++				 SNDRV_PCM_RATE_44100  |\
++				 SNDRV_PCM_RATE_48000  |\
++				 SNDRV_PCM_RATE_64000  |\
++				 SNDRV_PCM_RATE_88200  |\
++				 SNDRV_PCM_RATE_96000  |\
++				 SNDRV_PCM_RATE_176400 |\
++				 SNDRV_PCM_RATE_192000)
++#define AK4613_PCM_FMTBIT	(SNDRV_PCM_FMTBIT_S16_LE |\
++				 SNDRV_PCM_FMTBIT_S24_LE)
++
++static struct snd_soc_dai_driver ak4613_dai = {
++	.name = "ak4613-hifi",
++	.playback = {
++		.stream_name	= "Playback",
++		.channels_min	= 2,
++		.channels_max	= 2,
++		.rates		= AK4613_PCM_RATE,
++		.formats	= AK4613_PCM_FMTBIT,
++	},
++	.capture = {
++		.stream_name	= "Capture",
++		.channels_min	= 2,
++		.channels_max	= 2,
++		.rates		= AK4613_PCM_RATE,
++		.formats	= AK4613_PCM_FMTBIT,
++	},
++	.ops = &ak4613_dai_ops,
++	.symmetric_rates = 1,
++};
++
++static int ak4613_resume(struct snd_soc_codec *codec)
++{
++	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
++
++	regcache_mark_dirty(regmap);
++	return regcache_sync(regmap);
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
++	.resume			= ak4613_resume,
++	.set_bias_level		= ak4613_set_bias_level,
++	.dapm_widgets		= ak4613_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
++	.dapm_routes		= ak4613_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
++};
++
++static int ak4613_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
++	struct device *dev = &i2c->dev;
++	struct device_node *np = dev->of_node;
++	const struct regmap_config *regmap_cfg;
++	struct regmap *regmap;
++	struct ak4613_priv *priv;
++
++	regmap_cfg = NULL;
++	if (np) {
++		const struct of_device_id *of_id;
++
++		of_id = of_match_device(ak4613_of_match, dev);
++		if (of_id)
++			regmap_cfg = of_id->data;
++	} else {
++		regmap_cfg = (const struct regmap_config *)id->driver_data;
++	}
++
++	if (!regmap_cfg)
++		return -EINVAL;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->fmt_ctrl		= NO_FMT;
++	priv->cnt		= 0;
++
++	mutex_init(&priv->lock);
++
++	i2c_set_clientdata(i2c, priv);
++
++	regmap = devm_regmap_init_i2c(i2c, regmap_cfg);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
++
++	return snd_soc_register_codec(dev, &soc_codec_dev_ak4613,
++				      &ak4613_dai, 1);
++}
++
++static int ak4613_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
++}
++
++static struct i2c_driver ak4613_i2c_driver = {
++	.driver = {
++		.name = "ak4613-codec",
++		.owner = THIS_MODULE,
++		.of_match_table = ak4613_of_match,
++	},
++	.probe		= ak4613_i2c_probe,
++	.remove		= ak4613_i2c_remove,
++	.id_table	= ak4613_i2c_id,
++};
++
++module_i2c_driver(ak4613_i2c_driver);
++
++MODULE_DESCRIPTION("Soc AK4613 driver");
++MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.5.0
