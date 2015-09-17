@@ -1,54 +1,52 @@
-From: Huan Wang <alison.wang@freescale.com>
-Subject: Re: [PATCH v2] audio: sai: Add Power Management support
-Date: Thu, 17 Sep 2015 09:53:57 +0000
-Message-ID: <BN3PR0301MB0867DCDF1F7F6391A94121B2FE5A0@BN3PR0301MB0867.namprd03.prod.outlook.com>
-References: <1442221404-35240-1-git-send-email-b18965@freescale.com>
- <20150917065732.GB54360@Asurada-CZ80>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0112.outbound.protection.outlook.com [65.55.169.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 841D3265317
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:53:59 +0200 (CEST)
-In-Reply-To: <20150917065732.GB54360@Asurada-CZ80>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 0/3] ALSA: hda - Avoid potential deadlock
+Date: Thu, 17 Sep 2015 12:00:03 +0200
+Message-ID: <1442484006-9614-1-git-send-email-thierry.reding@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Tyler Baker <tyler.baker-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Kevin Hilman <khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jon Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-> On Mon, Sep 14, 2015 at 05:03:24PM +0800, Alison Wang wrote:
-> > This patch adds Power Management support for SAI.
-> > Activate regmap cache with REGCACHE_FLAT, and use regmap cache code
-> to
-> > save and restore registers in suspend and resume. The Transmit
-> Control
-> > Register
-> > (TCSR) and Receive Control Register(RCSR) should be volatile
-> > registers.
-> >
-> > Signed-off-by: Alison Wang <alison.wang@freescale.com>
-> 
-> Just to remind that there was a similar patch in review that I just
-> acked. Please send your improvements as an incremental patch after that
-> one gets applied.
-[Alison Wang] Ok, I missed that patch.
-> 
-> Please also pay attention to the patch subject which should follow the
-> pattern of previous patches of the driver: ASoC: fsl_sai: xxxx
-[Alison Wang] Ok, thanks.
+The Tegra HDA controller driver committed in v3.16 causes deadlocks when
+loaded as a module. The reason is that the driver core will lock the HDA
+controller device upon calling its probe callback and the probe callback
+then goes on to create child devices for detected codecs and loads their
+modules via a request_module() call. This is problematic because the new
+driver will immediately be bound to the device, which will in turn cause
+the parent of the codec device (the HDA controller device) to be locked
+again, causing a deadlock.
 
+This problem seems to have been present since the modularization of the
+HD-audio driver in commit 1289e9e8b42f ("ALSA: hda - Modularize HD-audio
+driver"). On Intel platforms this has been worked around by splitting up
+the probe sequence into a synchronous and an asynchronous part where the
+request_module() calls are asynchronous and hence avoid the deadlock.
 
-Best Regards,
-Alison Wang
+An alternative proposal is provided in this series of patches. Rather
+than relying on explicit request_module() calls to load kernel modules
+for HDA codec drivers, this implements a uevent callback for the HDA bus
+to advertises the MODALIAS information to the userspace helper.
+
+Effectively this results in the same modules being loaded, but it uses
+the more canonical infrastructure to perform this. Deferring the module
+loading to userspace removes the need for the explicit request_module()
+calls and works around the recursive locking issue because both drivers
+will be bound from separate contexts.
+
+Thierry
+
+Thierry Reding (3):
+  ALSA: hda/hdmi - Add missing MODALIAS information
+  ALSA: hda - Advertise MODALIAS in uevent
+  ALSA: hda: Do not rely on explicit module loading
+
+ sound/hda/hda_bus_type.c   | 12 +++++++
+ sound/pci/hda/hda_bind.c   | 80 ----------------------------------------------
+ sound/pci/hda/patch_hdmi.c |  3 ++
+ 3 files changed, 15 insertions(+), 80 deletions(-)
+
+-- 
+2.5.0
