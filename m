@@ -1,20 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 3/9] ASoC: Intel: Skylake: add DSP
- platform widget event handlers
-Date: Thu, 17 Sep 2015 17:08:56 +0530
-Message-ID: <20150917113856.GA19522@localhost>
-References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <1439832404-12424-4-git-send-email-vinod.koul@intel.com>
- <1442483278.2520.24.camel@loki>
+Subject: Re: [PATCH v1 1/1] sst: replace custom implementation
+ of readq / writeq
+Date: Thu, 17 Sep 2015 17:11:40 +0530
+Message-ID: <20150917114140.GB19522@localhost>
+References: <1440677358-6681-1-git-send-email-andriy.shevchenko@linux.intel.com>
+ <1442480279.8361.73.camel@linux.intel.com>
+ <1442481844.2520.19.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D35B1261A8C
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 13:36:20 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 661E2261A8C
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 13:39:04 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1442483278.2520.24.camel@loki>
+In-Reply-To: <1442481844.2520.19.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,110 +25,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 10:47:58AM +0100, Liam Girdwood wrote:
-
-Hi Liam,
-
-> On Mon, 2015-08-17 at 22:56 +0530, Vinod Koul wrote:
-> > From: Jeeja KP <jeeja.kp@intel.com>
+On Thu, Sep 17, 2015 at 10:24:04AM +0100, Liam Girdwood wrote:
+> On Thu, 2015-09-17 at 11:57 +0300, Andy Shevchenko wrote:
+> > On Thu, 2015-08-27 at 15:09 +0300, Andy Shevchenko wrote:
+> > > The readq() and writeq() helpers are available in the
+> > > asm-generic/io-64-nonatomic-hi-lo.h and asm-generic/io-64-nonatomic
+> > > -lo-hi.h
+> > > headers. Replace custom implementation by the generic helpers.
+> > > 
 > > 
-> > The Skylake driver topology model tries to model the firmware
-> > rule for pipeline and module creation.
-> > The creation rule is:
-> >  - Create Pipe
-> >  - Add modules to Pipe
-> >  - Connect the modules (bind)
-> >  - Start the pipes
-> > 
-> > Similarly destroy rule is:
-> >  - Stop the pipe
-> >  - Disconnect it (unbind)
-> >  - Delete the pipe
-> > 
-> > In driver we use Mixer, as there will always be ONE mixer in a
-> > pipeline to model a pipe. The modules in pipe are modelled as PGA
-> > widgets.  The DAPM sequencing rules (mixer and then PGA) are used
-> > to create the sequence DSP expects as depicted above, and then
-> > widget handlers for PMU and PMD events help in that.
-> > 
-> > This patch adds widget event handlers for PRE/POST PMU and
-> > PRE/POST PMD event for mixer and pga modules.  These event
-> > handlers invoke pipeline creation, destroy, module creation,
-> > module bind, unbind and pipeline bind unbind
-> > 
-> > Event handler sequencing is implement to target the DSP FW
-> > sequence expectations to enable path from source to sink pipe for
-> > Playback/Capture.
-> > 
-> > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-> > Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-> > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  sound/soc/intel/skylake/skl-topology.c | 416 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 416 insertions(+)
-> > 
+> > Liam, any comments on this?
 > 
-> snip...
-> 
-> > +
-> > +/*
-> > + * in the Pre-PMD event of mixer we need to do following:
-> > + *   - Stop the pipe
-> > + *   - find the source connections and remove that from dapm_path_list
-> > + *   - unbind with source pipelines if still connected
-> > + */
-> > +static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
-> > +								struct skl *skl)
-> > +{
-> > +	struct snd_soc_dapm_widget *source, *sink;
-> > +	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-> > +	int ret = 0, path_found = 0;
-> > +	struct skl_dapm_path_list *path_list, *tmp_list;
-> > +	struct skl_sst *ctx = skl->skl_sst;
-> > +
-> > +	dev_dbg(ctx->dev, "%s: widget = %s\n", __func__, w->name);
-> > +
-> > +	sink = w;
-> > +	sink_mconfig = sink->priv;
-> > +
-> > +	/* Stop the pipe */
-> > +	ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	list_for_each_entry_safe(path_list, tmp_list, &skl->dapm_path_list, node) {
-> > +		if (path_list->dapm_path->sink == sink) {
-> > +			dev_dbg(ctx->dev, "Path found = %s\n", path_list->dapm_path->name);
-> > +			source = path_list->dapm_path->source;
-> > +			src_mconfig = source->priv;
-> > +			path_found = 1;
-> > +
-> > +			list_del(&path_list->node);
-> > +			kfree(path_list);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> 
-> There is a lot of list walking and manipulation in this series and it's
-> not clear where any locks are being held to prevent list corruption.
-> I'm assuming list items are being added and removed as part of
-> loading/unloading the topology data but it looks like we are also
-> manipulating component lists during DAPM events ?
+> Looks good from me, but it's one of Vinod's drivers (now added to CC).
 
-We have a driver list dapm_path_list where we store the widgets powered up.
-This gives us a very quick reference of the paths which are powered up in
-the graph and helps fast traversal to check if we should power up a path as
-path is connected to something else which is powered up already (mixng two
-paths) and similarly while disconnecting.
+Please do test this on BYT/BSW as well, otherwise looks good
 
-Please note all these are handled only in event handlers for widgets, so
-they will be invoked by dapm with mutex, dapm_mutex held, so we didn't think
-we would need another lock here
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
 -- 
 ~Vinod
+
+> 
+> Liam
+> 
+> > 
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > >  sound/soc/intel/atom/sst/sst_pvt.c | 16 ++++++----------
+> > >  sound/soc/intel/common/sst-dsp.c   |  9 ++++-----
+> > >  2 files changed, 10 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/sound/soc/intel/atom/sst/sst_pvt.c 
+> > > b/sound/soc/intel/atom/sst/sst_pvt.c
+> > > index adb32fe..6cc222d 100644
+> > > --- a/sound/soc/intel/atom/sst/sst_pvt.c
+> > > +++ b/sound/soc/intel/atom/sst/sst_pvt.c
+> > > @@ -31,7 +31,10 @@
+> > >  #include <sound/pcm.h>
+> > >  #include <sound/soc.h>
+> > >  #include <sound/compress_driver.h>
+> > > +
+> > > +#include <asm-generic/io-64-nonatomic-lo-hi.h>
+> > >  #include <asm/platform_sst_audio.h>
+> > > +
+> > >  #include "../sst-mfld-platform.h"
+> > >  #include "sst.h"
+> > >  #include "../../common/sst-dsp.h"
+> > > @@ -49,25 +52,18 @@ u32 sst_shim_read(void __iomem *addr, int offset)
+> > >  
+> > >  u64 sst_reg_read64(void __iomem *addr, int offset)
+> > >  {
+> > > -	u64 val = 0;
+> > > -
+> > > -	memcpy_fromio(&val, addr + offset, sizeof(val));
+> > > -
+> > > -	return val;
+> > > +	return readq(addr + offset);
+> > >  }
+> > >  
+> > >  int sst_shim_write64(void __iomem *addr, int offset, u64 value)
+> > >  {
+> > > -	memcpy_toio(addr + offset, &value, sizeof(value));
+> > > +	writeq(value, addr + offset);
+> > >  	return 0;
+> > >  }
+> > >  
+> > >  u64 sst_shim_read64(void __iomem *addr, int offset)
+> > >  {
+> > > -	u64 val = 0;
+> > > -
+> > > -	memcpy_fromio(&val, addr + offset, sizeof(val));
+> > > -	return val;
+> > > +	return readq(addr + offset);
+> > >  }
+> > >  
+> > >  void sst_set_fw_state_locked(
+> > > diff --git a/sound/soc/intel/common/sst-dsp.c 
+> > > b/sound/soc/intel/common/sst-dsp.c
+> > > index a627236..5274482 100644
+> > > --- a/sound/soc/intel/common/sst-dsp.c
+> > > +++ b/sound/soc/intel/common/sst-dsp.c
+> > > @@ -22,6 +22,8 @@
+> > >  #include <linux/io.h>
+> > >  #include <linux/delay.h>
+> > >  
+> > > +#include <asm-generic/io-64-nonatomic-lo-hi.h>
+> > > +
+> > >  #include "sst-dsp.h"
+> > >  #include "sst-dsp-priv.h"
+> > >  
+> > > @@ -43,16 +45,13 @@ EXPORT_SYMBOL_GPL(sst_shim32_read);
+> > >  
+> > >  void sst_shim32_write64(void __iomem *addr, u32 offset, u64 value)
+> > >  {
+> > > -	memcpy_toio(addr + offset, &value, sizeof(value));
+> > > +	writeq(value, addr + offset);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(sst_shim32_write64);
+> > >  
+> > >  u64 sst_shim32_read64(void __iomem *addr, u32 offset)
+> > >  {
+> > > -	u64 val;
+> > > -
+> > > -	memcpy_fromio(&val, addr + offset, sizeof(val));
+> > > -	return val;
+> > > +	return readq(addr + offset);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(sst_shim32_read64);
+> > >  
+> > 
+> 
