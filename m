@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: atmel: Remove needless bits_per_word and
-	speed_hz tests" to the asoc tree
-Date: Thu, 17 Sep 2015 18:36:39 +0100
-Message-ID: <E1Zcd6t-0006J1-P7@finisterre>
+Subject: Applied "ASoC: davinci-mcasp: Get rid of
+	bclk_lrclk_ratio in private data" to the asoc tree
+Date: Thu, 17 Sep 2015 18:36:43 +0100
+Message-ID: <E1Zcd6x-0006KR-0p@finisterre>
+References: <1442475545-9162-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 094A2262618
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:36:55 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id AA105262606
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 19:36:54 +0200 (CEST)
+In-Reply-To: <1442475545-9162-1-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   spi: atmel: Remove needless bits_per_word and speed_hz tests
+   ASoC: davinci-mcasp: Get rid of bclk_lrclk_ratio in private data
 
 has been applied to the asoc tree at
 
@@ -52,62 +53,117 @@ to this mail.
 Thanks,
 Mark
 
->From 3f8958cf9aaaac8a2bfc7417cb87db757eeb4465 Mon Sep 17 00:00:00 2001
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Date: Tue, 15 Sep 2015 16:26:22 +0300
-Subject: [PATCH] spi: atmel: Remove needless bits_per_word and speed_hz tests
+>From 14a998be08e5286741021d3c81cc81e8d6d8a270 Mon Sep 17 00:00:00 2001
+From: Jyri Sarha <jsarha@ti.com>
+Date: Thu, 17 Sep 2015 10:39:05 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Get rid of bclk_lrclk_ratio in private
+ data
 
-SPI core validates both bits_per_word and speed_hz transfer parameters and
-defaults to spi->bits_per_word and spi->max_speed_hz in case these per
-transfer parameters are not set. This makes possible to remove two if
-statements and remove one code block that is never executed.
+The slot_width is for essentially same thing. Instead of storing
+bclk_lrclk_ratio, just store the slot_width. Comments has been updated
+accordingly and some variable names changed to more descriptive.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-atmel.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 56 ++++++++++++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
-index bf9ed38..1cc1f1e 100644
---- a/drivers/spi/spi-atmel.c
-+++ b/drivers/spi/spi-atmel.c
-@@ -871,14 +871,7 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
- 	 * Calculate the lowest divider that satisfies the
- 	 * constraint, assuming div32/fdiv/mbz == 0.
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index fa47a39..452f2a3 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -87,7 +87,6 @@ struct davinci_mcasp {
+ 	u8	*serial_dir;
+ 	u8	version;
+ 	u8	bclk_div;
+-	u16	bclk_lrclk_ratio;
+ 	int	streams;
+ 	u32	irq_request[2];
+ 	int	dma_request[2];
+@@ -558,8 +557,21 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 			mcasp->bclk_div = div;
+ 		break;
+ 
+-	case 2:		/* BCLK/LRCLK ratio */
+-		mcasp->bclk_lrclk_ratio = div;
++	case 2:	/*
++		 * BCLK/LRCLK ratio descries how many bit-clock cycles
++		 * fit into one frame. The clock ratio is given for a
++		 * full period of data (for I2S format both left and
++		 * right channels), so it has to be divided by number
++		 * of tdm-slots (for I2S - divided by 2).
++		 * Instead of storing this ratio, we calculate a new
++		 * tdm_slot width by dividing the the ratio by the
++		 * number of configured tdm slots.
++		 */
++		mcasp->slot_width = div / mcasp->tdm_slots;
++		if (div % mcasp->tdm_slots)
++			dev_warn(mcasp->dev,
++				 "%s(): BCLK/LRCLK %d is not divisible by %d tdm slots",
++				 __func__, div, mcasp->tdm_slots);
+ 		break;
+ 
+ 	default:
+@@ -677,11 +689,13 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
+ }
+ 
+ static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
+-				       int word_length)
++				       int sample_width)
+ {
+ 	u32 fmt;
+-	u32 tx_rotate = (word_length / 4) & 0x7;
+-	u32 mask = (1ULL << word_length) - 1;
++	u32 tx_rotate = (sample_width / 4) & 0x7;
++	u32 mask = (1ULL << sample_width) - 1;
++	u32 slot_width = sample_width;
++
+ 	/*
+ 	 * For captured data we should not rotate, inversion and masking is
+ 	 * enoguh to get the data to the right position:
+@@ -694,31 +708,23 @@ static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
+ 	u32 rx_rotate = 0;
+ 
+ 	/*
+-	 * if s BCLK-to-LRCLK ratio has been configured via the set_clkdiv()
+-	 * callback, take it into account here. That allows us to for example
+-	 * send 32 bits per channel to the codec, while only 16 of them carry
+-	 * audio payload.
+-	 * The clock ratio is given for a full period of data (for I2S format
+-	 * both left and right channels), so it has to be divided by number of
+-	 * tdm-slots (for I2S - divided by 2).
++	 * Setting the tdm slot width either with set_clkdiv() or
++	 * set_tdm_slot() allows us to for example send 32 bits per
++	 * channel to the codec, while only 16 of them carry audio
++	 * payload.
  	 */
--	if (xfer->speed_hz)
--		scbr = DIV_ROUND_UP(bus_hz, xfer->speed_hz);
--	else
--		/*
--		 * This can happend if max_speed is null.
--		 * In this case, we set the lowest possible speed
--		 */
--		scbr = 0xff;
-+	scbr = DIV_ROUND_UP(bus_hz, xfer->speed_hz);
- 
- 	/*
- 	 * If the resulting divider doesn't fit into the
-@@ -1300,14 +1293,12 @@ static int atmel_spi_one_transfer(struct spi_master *master,
- 		return -EINVAL;
+-	if (mcasp->bclk_lrclk_ratio) {
+-		u32 slot_length = mcasp->bclk_lrclk_ratio / mcasp->tdm_slots;
+-
++	if (mcasp->slot_width) {
+ 		/*
+-		 * When we have more bclk then it is needed for the data, we
+-		 * need to use the rotation to move the received samples to have
+-		 * correct alignment.
++		 * When we have more bclk then it is needed for the
++		 * data, we need to use the rotation to move the
++		 * received samples to have correct alignment.
+ 		 */
+-		rx_rotate = (slot_length - word_length) / 4;
+-		word_length = slot_length;
+-	} else if (mcasp->slot_width) {
+-		rx_rotate = (mcasp->slot_width - word_length) / 4;
+-		word_length = mcasp->slot_width;
++		slot_width = mcasp->slot_width;
++		rx_rotate = (slot_width - sample_width) / 4;
  	}
  
--	if (xfer->bits_per_word) {
--		asd = spi->controller_state;
--		bits = (asd->csr >> 4) & 0xf;
--		if (bits != xfer->bits_per_word - 8) {
--			dev_dbg(&spi->dev,
-+	asd = spi->controller_state;
-+	bits = (asd->csr >> 4) & 0xf;
-+	if (bits != xfer->bits_per_word - 8) {
-+		dev_dbg(&spi->dev,
- 			"you can't yet change bits_per_word in transfers\n");
--			return -ENOPROTOOPT;
--		}
-+		return -ENOPROTOOPT;
- 	}
+ 	/* mapping of the XSSZ bit-field as described in the datasheet */
+-	fmt = (word_length >> 1) - 1;
++	fmt = (slot_width >> 1) - 1;
  
- 	/*
+ 	if (mcasp->op_mode != DAVINCI_MCASP_DIT_MODE) {
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, RXSSZ(fmt),
 -- 
 2.5.0
