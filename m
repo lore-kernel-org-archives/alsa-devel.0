@@ -1,19 +1,26 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: Applied "ASoC: fsl-asoc-card: add AC'97 support"
- to the asoc tree
-Date: Thu, 17 Sep 2015 20:48:24 +0200
-Message-ID: <55FB0AF8.3020207@maciej.szmigiero.name>
-References: <E1ZcItt-0007vf-Ba@finisterre>
- <20150917074148.GA62898@Asurada-CZ80> <20150917103709.GA12027@sirena.org.uk>
- <20150917180231.GC2544@Asurada-CZ80>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
+ command line tool
+Date: Thu, 17 Sep 2015 11:50:43 -0700
+Message-ID: <CAG5mAdziq11SJ3eAqDFcTEBuHJ-Rj6xwgu3kmqXC5HYOnDvYaA@mail.gmail.com>
+References: <cover.1442298607.git.han.lu@intel.com>
+ <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
+ <1442403626.10528.50.camel@loki>
+ <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
+ <1442486431.2520.34.camel@loki>
+ <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
+ <20150917174242.GF12027@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FCB9261B19
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 20:48:34 +0200 (CEST)
-In-Reply-To: <20150917180231.GC2544@Asurada-CZ80>
+Received: from mail-io0-f169.google.com (mail-io0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76FD6261B32
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 20:51:04 +0200 (CEST)
+Received: by ioii196 with SMTP id i196so32384982ioi.3
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 11:51:03 -0700 (PDT)
+In-Reply-To: <20150917174242.GF12027@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +30,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, bernard.gautier@intel.com, han.lu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
+On Thu, Sep 17, 2015 at 10:42 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Sep 17, 2015 at 06:29:58AM -0700, Caleb Crome wrote:
+>
+>> > Yes, PM suspend and resume of device. We have some scripts (to be
+>> > upstreamed later) that would play audio, suspend the device, resume the
+>> > device and then retest the audio.
+>
+>> That seems particularly likely to result in multiple codecs getting
+>> out of phase alignment.  i.e. when restarting, you want to be sure to
+>> follow the same startup procedure as the first time to make sure all
+>> codecs are aligned.
+>
+> Why should resume be any different from initial system power up?
 
-On 17.09.2015 20:02, Nicolin Chen wrote:
-> On Thu, Sep 17, 2015 at 11:37:09AM +0100, Mark Brown wrote:
->> On Thu, Sep 17, 2015 at 12:41:49AM -0700, Nicolin Chen wrote:
->>
->>> This patch breaks my previous function:
->>> [    2.020415] wm8962 3-001a: customer id 0 revision D
->>> [    2.076388] fsl-asoc-card sound: failed to find codec platform device
->>> [    2.086166] fsl-asoc-card: probe of sound failed with error -22
->>
->>> It's actually weird that I didn't see the patch in my mailbox at all
->>> (I searched for it in my Gmail just now) as I found that Maciej put
->>> me in the CC list: http://www.spinics.net/lists/kernel/msg2066060.html
->>
->>> Is it possible for you to revert it provisionally?
->>
->> OK, done.
-> 
-> Thank you
-> 
-> @Maciej
-> 
-> Is it possible for you to fix the issue and send a v2? The problem
-> should be related to the codec_pdev and codec_i2c_dev in your patch
-> as the driver use codec_i2c_dev to fetch the device not codec_pdev.
+Heh, perhaps only because I don't understand how it all works :-)
 
-Thanks for catching it.
+The example I was thinking of is if the card gets partially powered
+down.  For example, start recording on 8 channels (4 codecs, called 0,
+1, 2, 3 in this example).  At this point, all's well, and all 4 codecs
+are in perfect phase sync.
 
-Yes, I will send updated patch tomorrow.
+Then switch to playing 2 channel mode with codec 0 only.  Since codecs
+1, 2, 3 are no longer needed, then they could get powered down.
 
-Best regards,
-Maciej Szmigiero
+Then, switch back to 8 channel mode -- codec 0 is up and running, and
+now you want to turn on codecs 1, 2, 3.  At this point it's literally
+impossible to resync them with codec 0 without powering down codec 0
+and starting from scratch.  This is true of the TLV320AIC seris of
+codecs.  The CS53L30 has a dedicated sync pin on the other hand, so
+could perhaps recover gracefully in this situation.
+
+-Caleb
