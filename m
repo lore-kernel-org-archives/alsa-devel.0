@@ -1,71 +1,115 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: Multiple codecs on one sound card for
- multi-channel sound card
-Date: Thu, 17 Sep 2015 16:33:29 +0200
-Message-ID: <55FACF39.4010506@invoxia.com>
-References: <CAG5mAdyL-xH2ZNTtDMhCWW-nAX_GVtRxFS5b5FANFnK64kE65g@mail.gmail.com>
- <CAG5mAdzyQgOmTcAmHrjWRQzuv-ih9p-qXQsYxdTD_Qmr-Fep3A@mail.gmail.com>
- <55F93CF6.50208@invoxia.com>
- <CAG5mAdyeOruLj+Tndda9Efvi3mrFDZK3XkkgWkU067yQH2rs=Q@mail.gmail.com>
- <55FA7F05.4020001@invoxia.com>
- <CAG5mAdzOhq2_P7fyHrr3JoLoTEjrn2zTmGDti_cdChiXAt6p7w@mail.gmail.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: Re: [PATCH 2/2] ASoC: sunxi: add support for the
+ on-chip codec on early Allwinner SoCs
+Date: Thu, 17 Sep 2015 23:10:41 +0800
+Message-ID: <CAGb2v67D30+_itOAyWqGzychxeM_d7rF6TTu1_WBYuFPfFEk1g@mail.gmail.com>
+References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1442064384-23379-3-git-send-email-maxime.ripard@free-electrons.com>
+ <20150916191612.GM12027@sirena.org.uk> <20150917133135.GE4684@lukather>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
- [209.85.212.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 88A01265707
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 16:33:32 +0200 (CEST)
-Received: by wicfx3 with SMTP id fx3so26664695wic.1
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 07:33:32 -0700 (PDT)
-In-Reply-To: <CAG5mAdzOhq2_P7fyHrr3JoLoTEjrn2zTmGDti_cdChiXAt6p7w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBCNQ5OXQKGQED7HM2GY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <20150917133135.GE4684@lukather>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-aGVsbG8sCgpMZSAxNy8wOS8yMDE1IDE1OjM4LCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4gT24g
-VGh1LCBTZXAgMTcsIDIwMTUgYXQgMTo1MSBBTSwgYXJuYXVkLm1vdWljaGVAaW52b3hpYS5jb20K
-PiA8YXJuYXVkLm1vdWljaGVAaW52b3hpYS5jb20+IHdyb3RlOgo+PiBIZWxsbyBDYWxlYiwKPj4K
-Pj4gZnJlZXNjYWxlIFNTSSBpcyBmaW5lIHdpdGggbW9yZSB0aGFuIDIgY2hhbm5lbHMuCj4+IEkg
-aGF2ZSBwbGFuZWQgdG8gcHVibGlzaCBhIHNldCBvZiBwYXRjaCBpbiB0aGlzIGRpcmVjdGlvbiBi
-dXQgd2Ugc3RpbGwgaGF2ZQo+PiBzb21lIGNvcm5lciBjYXNlcyB0byBmaXggZmlyc3QgKHJhcmUg
-aXNzdWVzIHdpdGggY2hhbm5lbHMgYWxpZ25tZW50KQo+Pgo+IEknZCBsb3ZlIHRvIHNlZSBhbnl0
-aGluZyB5b3UncmUgd2lsbGluZyB0byBzaG93IDotKQo+Cj4+IFlldCwgdGhpcyBmb2xsb3dpbmcg
-aXMgZmFyIGVub3VnaCB0byBoYXZlIGl0IHdvcmtpbmcuCj4+IEFuZCBzaW5jZSB0aGUgbWF4L21p
-biByYXRlIGlzIGF0IHRoZSBlbmQgdGhlIGludGVyc2VjdGlvbiBvZiB3aGF0IHRoZSBTU0ksCj4+
-IHRoZSBjb2RlYyBhbmQgdGhlIGNhcmQgYXJlIGRlY2xhcmluZywgaXQgd2lsbCBub3QgY2hhbmdl
-IGFueXRoaW5nIHVudGlsIHlvdQo+PiBjb25uZWN0IHRoZSBTU0kgdG8gYSBjb2RlYyB3aXRoIG1v
-cmUgdGhhbiAyIGNoYW5uZWxzLCBvciBhIG11bHRpLWNvZGVjCj4+IHNvbHV0aW9uLgo+IFdoYXQg
-aWYgSSBjaGFuZ2UgY2hhbm5lbHNfbWF4IHRvIDE2IGZvciBjYXB0dXJlIGFuZCBwbGF5YmFjaz8g
-IExhc3QKPiB0aW1lIEkgdHJpZWQsIGl0IHdvdWxkIG5vdCBrZWVwIHRoZSBjaGFubmVscyBzeW5j
-aHJvbml6ZWQgb24gdGhlIFRETQo+IGJ1cy4gIEkgdHJpZWQgcGxheWluZyB3aXRoIHRoZSBGSUZP
-IHNldHRpbmdzLCB3aGljaCBoZWxwZWQsIGJ1dCBpdAo+IHN0aWxsIHdvdWxkIG5vdCBzdGFydCBl
-YWNoIGNoYW5uZWwgaW4gdGhlIHJpZ2h0IHNsb3QgcmVsaWFibHkuCj4gUGVyaGFwcyBJIHdhcyB1
-c2luZyBhbiBvbGRlciBrZXJuZWwuCnlvdSBwdXQgdGhlIGZpbmdlciBvbiB3aGF0J3MgaHVydGlu
-ZyAhICA7KQoKSW4gZmFjdCwgd2UgbWFkZSA4IGNoYW5uZWxzIHdvcmtpbmcgaW4gcmVsaWFibGUg
-d2F5IG9uIGlteDUwLCB3aXRoIApwcmVkaWN0aXZlIGxhdGVuY3kgIC4uLiB3aXRoIGFuIG9sZCBr
-ZXJuZWwgKDMuMTcpIC4uLiBiYXNlZCBvbiBmcmVlc2NhbGUgCkJTUC4uLiBvbiBzb3VuZC9zb2Mv
-aW14L2lteC1zc2kuYyAoc29tZXRoaW5nIHRoYXQgZG9lc24ndCBleGlzdCBvdXRzaWRlIApmcmVl
-c2NhbGUgQlNQKQoKV2VsbCwganVzdCB0byBzYXkgaXQgaXMgZG9hYmxlIG9uIGFueSByZWNlbnQg
-aW14IHNpbmNlIHRoZSBoYXJkd2FyZSBpcyAKbm90IHRoZSBpc3N1ZS4gQnV0IHRoZSBqb2Igd2Fz
-IGEgc2V0IG9mIGF3ZnVsIGhhY2tzLgoKTXkgcGxhbiB3YXMgdG8gcmUtZG8gYWxsIHRoaXMgam9i
-IG9uIGFuIHVwc3RyZWFtIGtlcm5lbCwgaW4gYSB3YXkgaXQgY2FuIApiZSBhY2NlcHRlZC4KVW5m
-b3J0dW5hdGVseSB5b3Ugd2lsbCBoYXZlIHRvIHdhaXQsIEknbSB1bmRlciBwcmVzc3VyZSBmb3Ig
-b3RoZXIgc3R1ZmYgCnJpZ2h0IG5vdy4KClJlZ2FyZHMsCmFybmF1ZAoKPgo+IEknbGwgZ2l2ZSBp
-dCBhIHRyeSBhZ2Fpbi4gIExpa2UgSSBzYWlkLCB3ZSdkIGxvdmUgdG8gZ2V0IG91cgo+IDE2LWNo
-YW5uZWwgYm9hcmQgdXAgYW5kIHJ1bm5pbmcgb24gdGhlIE1YNiwgc28gSSdtIGRlZmluaXRlbHkK
-PiBtb3RpdmF0ZWQgdG8gcHV0IHNvbWUgd29yayBpbiB0byBnZXQgaXQgcmVsaWFibGUuCj4KPiBU
-aGFua3MsCj4gICAtQ2FsZWIKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+On Thu, Sep 17, 2015 at 9:31 PM, Maxime Ripard
+<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> Hi Mark,
+>
+> On Wed, Sep 16, 2015 at 08:16:12PM +0100, Mark Brown wrote:
+>> On Sat, Sep 12, 2015 at 03:26:24PM +0200, Maxime Ripard wrote:
+>>
+>> This looks pretty good, there's a few minor things below but I'll apply
+>> anyway - please send followup patches fixing these.
+>
+> Sure, I will. Thanks!
+>
+>>
+>> > +   if (clk_set_rate(scodec->clk_module, clk_freq))
+>> > +           return -EINVAL;
+>>
+>> Better to pass back the error code here rather than silently discard it
+>> (it might have more information).
+>
+> Yep.
+>
+>>
+>> > +static struct snd_soc_dai_driver sun4i_codec_dai = {
+>> > +   .name   = "Codec",
+>> > +   .ops    = &sun4i_codec_dai_ops,
+>> > +   .playback = {
+>> > +           .stream_name    = "Codec Playback",
+>> > +           .channels_min   = 1,
+>> > +           .channels_max   = 2,
+>> > +           .rate_min       = 8000,
+>> > +           .rate_max       = 192000,
+>> > +           .rates          = SNDRV_PCM_RATE_8000_48000 |
+>> > +                             SNDRV_PCM_RATE_96000 |
+>> > +                             SNDRV_PCM_RATE_192000 |
+>> > +                             SNDRV_PCM_RATE_KNOT,
+>>
+>> No need to specify both explicit rates and _KNOT, _KNOT covers
+>> everything.
+>
+> Ack.
+>
+>> > +           .formats        = SNDRV_PCM_FMTBIT_S16_LE |
+>> > +                             SNDRV_PCM_FMTBIT_S32_LE,
+>> > +           .sig_bits       = 24,
+>>
+>> So presumably also S24_LE (ie, 24 bits packed into a 32 bit word)?
+>
+> Hmm, probably yes, I'll test that.
+
+IIRC when Emilio first wrote the driver, we tried 24 bit and no sound
+came out. Turns out it's an alignment issue. The codec's FIFO register
+is 32 bits wide, and takes the higher 24 bits as input when set to 24
+bit mode. The internal FIFO is only 24 bits wide. A20 user manual P174
+describes how the bits are copied.
+
+So for 24 bit audio, you would actually send it 32 bit audio samples,
+and let it truncate or drop the least significant 8 bits. This is why
+we have SNDRV_PCM_FMTBIT_S32_LE with .sig_bits = 24.
+
+I don't know if this is just a workaround, but a few other drivers do
+this as well, for example twl3040 and omap-mcpdm.
+
+
+Regards
+ChenYu
+
+>> > +   /* Enable the bus clock */
+>> > +   if (clk_prepare_enable(scodec->clk_apb)) {
+>> > +           dev_err(&pdev->dev, "Failed to enable the APB clock\n");
+>> > +           return -EINVAL;
+>> > +   }
+>>
+>> Ideally we'd have runtime power management to disable the clocks when
+>> idle.
+>
+> We don't really have any kind of power management support currently,
+> but adding runtime pm everywhere is definitely on the todo list. It
+> might not happen before a while though.
+>
+> Thanks!
+> Maxime
+>
+> --
+> Maxime Ripard, Free Electrons
+> Embedded Linux, Kernel and Android engineering
+> http://free-electrons.com
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+> For more options, visit https://groups.google.com/d/optout.
