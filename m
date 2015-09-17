@@ -1,21 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: wm5110: Add additional analogue
- input enable for early revs
-Date: Thu, 17 Sep 2015 09:10:07 +0100
-Message-ID: <20150917081007.GA7694@ck-lbox>
-References: <1442408383-31682-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1442408383-31682-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20150916200159.GV12027@sirena.org.uk>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 1/2] ASoC: qcom: change PTR_ERR argument
+Date: Thu, 17 Sep 2015 10:46:16 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1509171045100.2399@hadrien>
+References: <1440957911-7687-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1440957911-7687-2-git-send-email-Julia.Lawall@lip6.fr>
+ <20150914180425.GB12027@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id D3AAA265161
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:33:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150916200159.GV12027@sirena.org.uk>
+Received: from mail3-relais-sop.national.inria.fr
+ (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 727D6265196
+ for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 10:46:18 +0200 (CEST)
+In-Reply-To: <20150914180425.GB12027@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 16, 2015 at 09:02:00PM +0100, Mark Brown wrote:
-> On Wed, Sep 16, 2015 at 01:59:43PM +0100, Charles Keepax wrote:
-> 
-> > +static int wm5110_in_pga_get(struct snd_kcontrol *kcontrol,
-> > +			     struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-> > +	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-> > +	struct snd_soc_card *card = dapm->card;
-> > +	int ret;
-> > +
-> > +	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-> > +
-> > +	ret = snd_soc_get_volsw_range(kcontrol, ucontrol);
-> > +
-> > +	mutex_unlock(&card->dapm_mutex);
-> 
-> Can we please have a comment explaining why we need the lock (I see why
-> but someone reading the code in the future might not)?
 
-Yes no problem will fire a new version out today.
 
-Thanks,
-Charles
+On Mon, 14 Sep 2015, Mark Brown wrote:
+
+> On Sun, Aug 30, 2015 at 08:05:10PM +0200, Julia Lawall wrote:
+> > Apply PTR_ERR to the value that was recently assigned.
+> >
+> > The semantic match that finds this problem is as follows:
+> > (http://coccinelle.lip6.fr/)
+>
+> I have no idea what's going on with this stuff without spending more
+> time than it looks like should need, there's a moderately big thread and
+> some patches posted in the middle of it.  Can you repost whatever the
+> current state is please?
+
+The discussion was about introducing a temporary variable to simplify the
+code.  But that makes a lot of changes, so I think it would be better to
+just apply the original bug fixing patch as is, and then the cleanup could
+be applied on top of that.  I will submit the original patch again.
+
+julia
