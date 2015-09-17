@@ -1,71 +1,43 @@
-From: =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit@wsystem.com>
-Subject: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal
-	inversions
-Date: Thu, 17 Sep 2015 17:46:54 +0200
-Message-ID: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 0/3] ASoC: Add support for DA7219 audio codec
+Date: Thu, 17 Sep 2015 17:01:08 +0100
+Message-ID: <cover.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from authsmtp.register.it (authsmtp77.register.it [195.110.122.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 31D59262618
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 17:47:27 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Timur Tabi <timur@tabi.org>, =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit@wsystem.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Jason Coughlan <jason.coughlan@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-U05EX1NPQ19EQUlGTVRfe0lCfE5CfV97SUZ8TkZ9IGFyZSBkZWZpbmVkIGFzIGludmVydGluZyBv
-ciBub3QgQkNMSyBvcgpGUk0gcmVsYXRpdmVseSB0byB3aGF0IGlzIHN0YW5kYXJkIGZvciB0aGUg
-c3BlY2lmaWVkIERBSSBoYXJkd2FyZSBhdWRpbwpmb3JtYXQuIENvbnNlcXVlbnRseSwgdGhlIGFi
-c29sdXRlIHBvbGFyaXRpZXMgb2YgdGhlc2Ugc2lnbmFscyBjYW5ub3QgYmUKZGVyaXZlZCBvbmx5
-IGZyb20gdGhlc2Ugc2V0dGluZ3MgYXMgdGhpcyBkcml2ZXIgZGlkLiBUaGUgZm9ybWF0IGhhcyB0
-bwpiZSB0YWtlbiBpbnRvIGFjY291bnQgdG9vLgoKVGhpcyBmaXhlcyBpbnZlcnRlZCBsZWZ0L3Jp
-Z2h0IGNoYW5uZWxzIGluIEnCslMgbW9kZS4KClNpZ25lZC1vZmYtYnk6IEJlbm/DrnQgVGjDqWJh
-dWRlYXUgPGJlbm9pdEB3c3lzdGVtLmNvbT4KLS0tCiBzb3VuZC9zb2MvZnNsL2lteC1zc2kuYyB8
-IDE5ICsrKysrKysrKy0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyks
-IDEwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jIGIv
-c291bmQvc29jL2ZzbC9pbXgtc3NpLmMKaW5kZXggNDhiMmQyNC4uYjk1MTMyZSAxMDA2NDQKLS0t
-IGEvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMKKysrIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMK
-QEAgLTk1LDcgKzk1LDggQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBz
-bmRfc29jX2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIAlzd2l0Y2ggKGZtdCAmIFNO
-RF9TT0NfREFJRk1UX0ZPUk1BVF9NQVNLKSB7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9JMlM6CiAJ
-CS8qIGRhdGEgb24gcmlzaW5nIGVkZ2Ugb2YgYmNsaywgZnJhbWUgbG93IDFjbGsgYmVmb3JlIGRh
-dGEgKi8KLQkJc3RyY3IgfD0gU1NJX1NUQ1JfVEZTSSB8IFNTSV9TVENSX1RFRlMgfCBTU0lfU1RD
-Ul9UWEJJVDA7CisJCXN0cmNyIHw9IFNTSV9TVENSX1RYQklUMCB8IFNTSV9TVENSX1RTQ0tQIHwg
-U1NJX1NUQ1JfVEZTSSB8CisJCQlTU0lfU1RDUl9URUZTOwogCQlzY3IgfD0gU1NJX1NDUl9ORVQ7
-CiAJCWlmIChzc2ktPmZsYWdzICYgSU1YX1NTSV9VU0VfSTJTX1NMQVZFKSB7CiAJCQlzY3IgJj0g
-flNTSV9JMlNfTU9ERV9NQVNLOwpAQCAtMTA0LDMzICsxMDUsMzEgQEAgc3RhdGljIGludCBpbXhf
-c3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50
-IGZtdCkKIAkJYnJlYWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9MRUZUX0o6CiAJCS8qIGRhdGEg
-b24gcmlzaW5nIGVkZ2Ugb2YgYmNsaywgZnJhbWUgaGlnaCB3aXRoIGRhdGEgKi8KLQkJc3RyY3Ig
-fD0gU1NJX1NUQ1JfVFhCSVQwOworCQlzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAgfCBTU0lfU1RD
-Ul9UU0NLUDsKIAkJYnJlYWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9EU1BfQjoKIAkJLyogZGF0
-YSBvbiByaXNpbmcgZWRnZSBvZiBiY2xrLCBmcmFtZSBoaWdoIHdpdGggZGF0YSAqLwotCQlzdHJj
-ciB8PSBTU0lfU1RDUl9URlNMIHwgU1NJX1NUQ1JfVFhCSVQwOworCQlzdHJjciB8PSBTU0lfU1RD
-Ul9UWEJJVDAgfCBTU0lfU1RDUl9UU0NLUCB8IFNTSV9TVENSX1RGU0w7CiAJCWJyZWFrOwogCWNh
-c2UgU05EX1NPQ19EQUlGTVRfRFNQX0E6CiAJCS8qIGRhdGEgb24gcmlzaW5nIGVkZ2Ugb2YgYmNs
-aywgZnJhbWUgaGlnaCAxY2xrIGJlZm9yZSBkYXRhICovCi0JCXN0cmNyIHw9IFNTSV9TVENSX1RG
-U0wgfCBTU0lfU1RDUl9UWEJJVDAgfCBTU0lfU1RDUl9URUZTOworCQlzdHJjciB8PSBTU0lfU1RD
-Ul9UWEJJVDAgfCBTU0lfU1RDUl9UU0NLUCB8IFNTSV9TVENSX1RGU0wgfAorCQkJU1NJX1NUQ1Jf
-VEVGUzsKIAkJYnJlYWs7CiAJfQogCiAJLyogREFJIGNsb2NrIGludmVyc2lvbiAqLwogCXN3aXRj
-aCAoZm10ICYgU05EX1NPQ19EQUlGTVRfSU5WX01BU0spIHsKIAljYXNlIFNORF9TT0NfREFJRk1U
-X0lCX0lGOgotCQlzdHJjciB8PSBTU0lfU1RDUl9URlNJOwotCQlzdHJjciAmPSB+U1NJX1NUQ1Jf
-VFNDS1A7CisJCXN0cmNyIF49IFNTSV9TVENSX1RTQ0tQIHwgU1NJX1NUQ1JfVEZTSTsKIAkJYnJl
-YWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9JQl9ORjoKLQkJc3RyY3IgJj0gfihTU0lfU1RDUl9U
-U0NLUCB8IFNTSV9TVENSX1RGU0kpOworCQlzdHJjciBePSBTU0lfU1RDUl9UU0NLUDsKIAkJYnJl
-YWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9OQl9JRjoKLQkJc3RyY3IgfD0gU1NJX1NUQ1JfVEZT
-SSB8IFNTSV9TVENSX1RTQ0tQOworCQlzdHJjciBePSBTU0lfU1RDUl9URlNJOwogCQlicmVhazsK
-IAljYXNlIFNORF9TT0NfREFJRk1UX05CX05GOgotCQlzdHJjciAmPSB+U1NJX1NUQ1JfVEZTSTsK
-LQkJc3RyY3IgfD0gU1NJX1NUQ1JfVFNDS1A7CiAJCWJyZWFrOwogCX0KIAotLSAKMi4xLjQKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch set adds support for the DA7219 audio codec with built-in
+advanced accessory detection functionality. Patch set includes codec driver,
+associated DT bindings documentation and MAINTAINERS file updates to cover new
+bindings.
+
+Adam Thomson (3):
+  ASoC: codecs: Add da7219 codec driver
+  ASoC: da7219: Add bindings documentation for DA7219 audio codec
+  MAINTAINERS: da7219: Add entry to cover DA7219 bindings document
+
+ Documentation/devicetree/bindings/sound/da7219.txt |  106 ++
+ MAINTAINERS                                        |    1 +
+ include/sound/da7219-aad.h                         |   99 ++
+ include/sound/da7219.h                             |   76 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/da7219-aad.c                      |  800 +++++++++
+ sound/soc/codecs/da7219-aad.h                      |  209 +++
+ sound/soc/codecs/da7219.c                          | 1877 ++++++++++++++++++++
+ sound/soc/codecs/da7219.h                          |  807 +++++++++
+ 10 files changed, 3981 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/da7219.txt
+ create mode 100644 include/sound/da7219-aad.h
+ create mode 100644 include/sound/da7219.h
+ create mode 100644 sound/soc/codecs/da7219-aad.c
+ create mode 100644 sound/soc/codecs/da7219-aad.h
+ create mode 100644 sound/soc/codecs/da7219.c
+ create mode 100644 sound/soc/codecs/da7219.h
+
+--
+1.9.3
