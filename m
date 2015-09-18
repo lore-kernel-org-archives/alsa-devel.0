@@ -1,22 +1,16 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
- command line tool
-Date: Fri, 18 Sep 2015 10:09:07 +0100
-Message-ID: <1442567347.7634.12.camel@loki>
-References: <cover.1442298607.git.han.lu@intel.com>
- <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
- <1442403626.10528.50.camel@loki>
- <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
- <1442486431.2520.34.camel@loki>
- <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH 1/4] ASoC: imx-spdif: add snd_soc_pm_ops for
+	spdif machine driver
+Date: Fri, 18 Sep 2015 17:18:48 +0800
+Message-ID: <4c1fe5d2fa0ae6cf85e9be8b3b8a52feaae7d75b.1442566367.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 388B32604D3
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 11:09:14 +0200 (CEST)
-In-Reply-To: <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0114.outbound.protection.outlook.com [65.55.169.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2565D2604D3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 11:17:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,28 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Takashi Iwai <tiwai@suse.de>, han.lu@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, bernard.gautier@intel.com
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-09-17 at 06:29 -0700, Caleb Crome wrote:
-> >> > We have also used BAT for stress testing audio over D0 -> D3 -> D0 transitions.
-> >>
-> >> Sorry, I'm not familiar with that terminology.  Are those the
-> >> different power states?
-> >
-> > Yes, PM suspend and resume of device. We have some scripts (to be
-> > upstreamed later) that would play audio, suspend the device, resume the
-> > device and then retest the audio.
-> 
-> That seems particularly likely to result in multiple codecs getting
-> out of phase alignment.  i.e. when restarting, you want to be sure to
-> follow the same startup procedure as the first time to make sure all
-> codecs are aligned.
-> 
+Add snd_soc_pm_ops in machine driver to make the trigger suspend/resume
+be called in suspend/resume.
 
-This was more for testing our DSP and codec context was properly
-saved/restored and also our codec was properly powered down/up during PM
-state changes.
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/imx-spdif.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Liam
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index 33da26a..a407e83 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -89,6 +89,7 @@ MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
+ static struct platform_driver imx_spdif_driver = {
+ 	.driver = {
+ 		.name = "imx-spdif",
++		.pm = &snd_soc_pm_ops,
+ 		.of_match_table = imx_spdif_dt_ids,
+ 	},
+ 	.probe = imx_spdif_audio_probe,
+-- 
+1.9.1
