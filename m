@@ -1,25 +1,23 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: Re: Asus N751JK - push/merge patches on mailinglist
-Date: Fri, 18 Sep 2015 10:26:33 +0200
-Message-ID: <CALUcmUkGi=SN8mx0mgnZXdbEdJzz5=paO785Fkp6ErNVw8URnA@mail.gmail.com>
-References: <CALUcmU=PksErKgSpf5Rn-ZkbfSPS5Y_jW+E=phy4VUsKicWG7Q@mail.gmail.com>
- <s5hfv2izqi5.wl-tiwai@suse.de>
- <CAN8cciZbNnBFnWrOhALJ4W6h9pb4i-2voj7Rj1K-_M-w+XR31g@mail.gmail.com>
- <CALUcmU=6mdyxzWtk=-XN3QchJS-23dm9fV-C6DumJUwXwrDvCQ@mail.gmail.com>
- <CAN8cciYxtYRgi+Pau+i6z4YuhVs1y17S-dWNkFNbCnWbCj0u3A@mail.gmail.com>
- <CALUcmU=6rjsKxXE3ohpFtkPX7v5SH5NcMAobM_y370FQS-HkiA@mail.gmail.com>
- <CAN8cciYsOrDukw3nGHcX1bfFhENX7Un-tMshO9=FQfWys4PSqQ@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] mfd: arizona: Call the runtime PM function
+ if the state is runtime resumed
+Date: Fri, 18 Sep 2015 09:24:46 +0100
+Message-ID: <20150918082446.GD7694@ck-lbox>
+References: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
+ <20150917082542.GB7694@ck-lbox>
+ <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
+ <20150917091632.GC7694@ck-lbox>
+ <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id AA0912604D3
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 10:26:53 +0200 (CEST)
-Received: by oiev17 with SMTP id v17so22993199oie.1
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 01:26:53 -0700 (PDT)
-In-Reply-To: <CAN8cciYsOrDukw3nGHcX1bfFhENX7Un-tMshO9=FQfWys4PSqQ@mail.gmail.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583F02604D3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 10:48:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,55 +27,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Inha Song <ideal.song@samsung.com>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, broonie@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Alright, I understand why it didn't work. However I will never use
-early-patching to set hints.
-Let's go back to testing without hints.
+On Fri, Sep 18, 2015 at 03:49:03PM +0900, Inha Song wrote:
+> Hi,
+> 
+> I just change dev_err() to dev_info() in arizona-core.
+> 
+> 
+> root@localhost:~# aplay test.wav
+> [   42.731358] arizona spi1.0: Leaving AoD mode
+> ....
+> [   42.823514] s3c64xx_spi_runtime_resume
+> [   42.828270] arizona spi1.0: ASRC underclocked
+> [   42.828281] s3c64xx_spi_runtime_suspend
+> ....
+> -> suspend ()
+> [   72.398152] arizona spi1.0: Suspend, disabling IRQ
+> [   72.410471] s3c64xx_spi_runtime_resume
+> [   72.429045] s3c64xx_spi_suspend
+> -> spi suspended
+> [   72.429905] PM: suspend of devices complete after 67.309 msecs
+> [   72.440084] arizona spi1.0: Late suspend, reenabling IRQ
+> -> try to access spi irq after spi suspend()
+> [   72.440165] arizona spi1.0: Failed to read IRQ status: -108
+> [   72.440174] arizona spi1.0: Failed to read main IRQ status: -108
+> [   72.440242] arizona spi1.0: Failed to read IRQ status: -108
+> [   72.440249] arizona spi1.0: Failed to read main IRQ status: -108
+> [   72.440275] arizona spi1.0: Failed to read IRQ status: -108
+> [   72.440282] arizona spi1.0: Failed to read main IRQ status: -108
+> [   72.440304] arizona spi1.0: Failed to read IRQ status: -108
 
-Without hints, the base speaker is working, the headset is working, the
-headphones are working and the automatic forward and backward switching is
-working. The only thing not working is the usage of a dedicated microphone,
-which is to me not relevant. For the rest it seems to be working nicely.
+Ok so looking at the system PM code I think the problem here is
+there is currently a small window between when we enable this IRQ
+and when the suspend proceedure disables IRQs and this IRQ is
+sneaking in at that point.
 
-Is this good enough to push the patches on the mailinglist?
+Can you try the following diff and let me know what happens:
 
-On 18 September 2015 at 10:18, Raymond Yau <superquad.vortex2@gmail.com>
-wrote:
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -727,7 +727,7 @@ const struct dev_pm_ops arizona_pm_ops = {
+                           NULL)
+        SET_SYSTEM_SLEEP_PM_OPS(arizona_suspend, arizona_resume)
+ #ifdef CONFIG_PM_SLEEP
+-       .suspend_late = arizona_suspend_late,
++       .suspend_noirq = arizona_suspend_late,
+        .resume_noirq = arizona_resume_noirq,
+ #endif
 
-> >
-> > As you suspected the internal speaker silences whenever I plug in any
-> jack.
-> >
-> > I have specified the alt_config option to test different possibilities,
-> however it does not get accepted the way I specify it, which is in
-> /etc/modprobe/alsa-base.conf
-> >
-> > options snd_hda_intel alt_config=3
-> > options snd_hda_codec_realtek alt_config=3
->
-> alt_config is hint not any module parameter
->
-> module paramter is related to hda controller
->
-> You have to use early patching
->
->
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio.txt
->
-
-
-
--- 
-Arthur Borsboom
-Lieven de Keystraat 77
-3067 KG, Rotterdam
-The Netherlands
-Mob: +31629089953
-Email: arthurborsboom@gmail.com
-Skype: Arthur Borsboom, The Hague, The Netherlands
-
-[image: View Arthur's LinkedIn profile]
-<http://uk.linkedin.com/in/arthurborsboom>
+Thanks,
+Charles
