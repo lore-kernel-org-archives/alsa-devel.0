@@ -1,7 +1,7 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH RFC 5/7] ASoC: tlv320aic26: hw_params was unintentionally clearing AIC26 master mode
-Date: Fri, 18 Sep 2015 16:11:14 -0400
-Message-ID: <1442607076-26681-6-git-send-email-jcormier@criticallink.com>
+Subject: [PATCH RFC 6/7] ASoC: tlv320aic26: Add support for DSP_B data format
+Date: Fri, 18 Sep 2015 16:11:15 -0400
+Message-ID: <1442607076-26681-7-git-send-email-jcormier@criticallink.com>
 References: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
@@ -10,54 +10,22 @@ To: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Gluszek <greg.gluszek@criticallink.com>, "Cormier, Jonathan" <jcormier@criticallink.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit: 5b0959d472c2 "ASoC: tlv320aic26: Use snd_soc_update_bits()" broke setting AIC26_REG_AUDIO_CTRL3
-in master mode when fsref happens to be 48000. The master mode bit was getting cleared.
-
-Also fix setting AIC26_REG_DAC_GAIN and AIC26_REG_AUDIO_CTRL2 which was broke by same commit.
-
-Fixes: 5b0959d472c2 "ASoC: tlv320aic26: Use snd_soc_update_bits()"
 Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
 ---
- sound/soc/codecs/tlv320aic26.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/tlv320aic26.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 70af361a116c..c3b0a698ea66 100644
+index c3b0a698ea66..5c5641cd28de 100644
 --- a/sound/soc/codecs/tlv320aic26.c
 +++ b/sound/soc/codecs/tlv320aic26.c
-@@ -138,11 +138,12 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_write(codec, AIC26_REG_PLL_PROG2, reg);
- 
- 	/* Audio Control 3 (master mode, fsref rate) */
-+	reg = 0;
- 	if (aic26->master)
--		reg = 0x0800;
-+		reg |= 0x0800;
- 	if (fsref == 48000)
--		reg = 0x2000;
--	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL3, 0xf800, reg);
-+		reg |= 0x2000;
-+	snd_soc_update_bits(codec, AIC26_REG_AUDIO_CTRL3, 0x2800, reg);
- 
- 	/* Audio Control 1 (FSref divisor) */
- 	reg = wlen | aic26->datfm | (divisor << 3) | divisor;
-@@ -167,7 +168,7 @@ static int aic26_mute(struct snd_soc_dai *dai, int mute)
- 		reg = 0x8080;
- 	else
- 		reg = 0;
--	snd_soc_update_bits(codec, AIC26_REG_DAC_GAIN, 0x8000, reg);
-+	snd_soc_update_bits(codec, AIC26_REG_DAC_GAIN, 0x8080, reg);
- 
- 	return 0;
- }
-@@ -302,7 +303,7 @@ static ssize_t aic26_keyclick_set(struct device *dev,
- 	struct aic26 *aic26 = dev_get_drvdata(dev);
- 
- 	snd_soc_update_bits(aic26->codec, AIC26_REG_AUDIO_CTRL2,
--			    0x8000, 0x800);
-+			    0x8000, 0x8000);
- 
- 	return count;
- }
+@@ -211,6 +211,7 @@ static int aic26_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:     aic26->datfm = AIC26_DATFM_I2S; break;
+ 	case SND_SOC_DAIFMT_DSP_A:   aic26->datfm = AIC26_DATFM_DSP; break;
++	case SND_SOC_DAIFMT_DSP_B:   aic26->datfm = AIC26_DATFM_DSP; break;
+ 	case SND_SOC_DAIFMT_RIGHT_J: aic26->datfm = AIC26_DATFM_RIGHTJ; break;
+ 	case SND_SOC_DAIFMT_LEFT_J:  aic26->datfm = AIC26_DATFM_LEFTJ; break;
+ 	default:
 -- 
 1.9.1
