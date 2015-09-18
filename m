@@ -1,29 +1,34 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
- command line tool
-Date: Thu, 17 Sep 2015 16:30:30 -0700
-Message-ID: <CAG5mAdwNjV19-5XYX-s6_3y0c9EHyo91UbKgLQ8=nxGh8o=PHA@mail.gmail.com>
-References: <cover.1442298607.git.han.lu@intel.com>
- <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
- <1442403626.10528.50.camel@loki>
- <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
- <1442486431.2520.34.camel@loki>
- <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
- <20150917174242.GF12027@sirena.org.uk>
- <CAG5mAdziq11SJ3eAqDFcTEBuHJ-Rj6xwgu3kmqXC5HYOnDvYaA@mail.gmail.com>
- <CAG5mAdx+KSMfOjK2y+KKzkVjHb6HHE_W=Y_AuXE9kuom=_2Cww@mail.gmail.com>
- <20150917230025.GB16504@us.netrek.org>
+From: LemonZou <qlwy_15@163.com>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Fri, 18 Sep 2015 00:41:18 +0000 (UTC)
+Message-ID: <loom.20150918T022524-444@post.gmane.org>
+References: <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
+ <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+ <552D1EE3.6090707@linux.intel.com> <20150624101613.GK19530@localhost>
+ <20150625055046.GT19530@localhost>
+ <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
+ <20150625164717.GU19530@localhost>
+ <20150626150528.f9fdee3942f7e975d23dd701@ao2.it>
+ <20150627144745.GX19530@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
- [209.85.213.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F3882654B8
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 01:30:51 +0200 (CEST)
-Received: by igcpb10 with SMTP id pb10so24290953igc.1
- for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2015 16:30:49 -0700 (PDT)
-In-Reply-To: <20150917230025.GB16504@us.netrek.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4B0C26588F
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 02:50:06 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1ZcjsK-0005Z6-Od
+ for alsa-devel@alsa-project.org; Fri, 18 Sep 2015 02:50:05 +0200
+Received: from 58.20.96.77 ([58.20.96.77])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 02:50:04 +0200
+Received: from qlwy_15 by 58.20.96.77 with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 02:50:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,66 +38,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: James Cameron <quozl@laptop.org>
-Cc: bernard.gautier@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, han.lu@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 4:00 PM, James Cameron <quozl@laptop.org> wrote:
-> On Thu, Sep 17, 2015 at 03:40:33PM -0700, Caleb Crome wrote:
->> The more I think of this channel synchronization issue, the
->> thorinier it gets.
->>
->> Basically, with the TLV320AIC series of codecs, whenever any of the
->> DAC or ADC channels are powered up on any codec, the MCLK needs to be
->> stopped, all DACs/ADCs turned off, then configuration can happen, then
->> all DACs/ADCs can be turned back on, then MCLK starts again.  That's
->> the only way to ensure phase/delay accuracy among several codecs.
->>
->> So, going from play-only to play+record requires MCLK be stopped, then
->> restarted.
->
-> Aye.  Lots of clocks in lots of domains.  Also pay penalty of any
-> delays needed to stabilise ADCs.
->
-> Same general issue with many single codecs though, if capture vs
-> playback synchronisation required.
->
->> Maybe it's not too terrible.  Any thoughts?
->
-> In this scenario my preference would be to always configure the codecs
-> and DMA for playback and capture, and do any gating higher in the
-> stack; e.g. send zero samples if there is no playback stream, and
-> discard samples if there is no capture stream.
 
-Yes, this makes sense to me.  This is for this sort of special case
-that I have where we have many synchronized codecs on the same bus.
-It's really just 1 clock that needs to be gated -- the MCLK.
+Yes, with ssp0 firmware, my board sound work too, but the mic don't work,
+when using arecord -f dat -t wav -d 5 foobar.wav, the record data is 0.
 
-Is there any way for the machine driver to handle this?  Currently,
-the AIC3x driver uses a dapm control to turn the ADCs and DACs on and
-off.  Can the machine driver currently get some sort of pre and post
-callback whenever particular controls are enabled?
+hexdump foobar.wav 
+0000000 4952 4646 a624 000e 4157 4556 6d66 2074
+0000010 0010 0000 0001 0002 bb80 0000 ee00 0002
+0000020 0004 0010 6164 6174 a600 000e 0000 0000
+0000030 0000 0000 0000 0000 0000 0000 0000 0000
+*
+00ea62c
 
-I think to get through the day, I need to remove the
-SND_SOC_DAPM_ADC("Left ADC", ...)
-SND_SOC_DAPM_ADC("Right ADC", ...)
-SND_SOC_DAPM_DAC("Left ...")
-SND_SOC_DAPM_DAC("Right"
-lines in tlv320aic3x, and just hard-wire them somewhere so they are
-all always turned on.  Then I can make sure to turn on the clocks only
-after all the codecs have been powered up and alsa thinks they are
-configured.  I guess in the machine driver's trigger callback?
-
--Caleb
-
-
-
-
-
-
-
-
->
-> --
-> James Cameron
-> http://quozl.linux.org.au/
+my analog microphone is connected to the IN2+ and MIC_BIAS1 codec pins
+I set alsa as :
+Stereo ADC MIXL ADC1 on
+Stereo ADC1 Mux ==> ADCL
+RECMIXL INL on
+RECMIXL BST2 on
+pcm1_out mix 0 codec_in1 on
