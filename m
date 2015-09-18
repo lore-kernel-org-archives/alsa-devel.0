@@ -1,23 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] mfd: arizona: Call the runtime PM function
- if the state is runtime resumed
-Date: Fri, 18 Sep 2015 09:24:46 +0100
-Message-ID: <20150918082446.GD7694@ck-lbox>
-References: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
- <20150917082542.GB7694@ck-lbox>
- <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
- <20150917091632.GC7694@ck-lbox>
- <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH BAT V1 0/7] BAT: Add Basic Audio Tester
+ command line tool
+Date: Fri, 18 Sep 2015 10:09:07 +0100
+Message-ID: <1442567347.7634.12.camel@loki>
+References: <cover.1442298607.git.han.lu@intel.com>
+ <CAG5mAdwkSn4975waeUrpp6Bm5yBk2217Oa6+gQH-=toLu7OMxQ@mail.gmail.com>
+ <1442403626.10528.50.camel@loki>
+ <CAG5mAdzt-zYX7mp5Nhnmdr_874KhtoRdBMXSmG1JkMvTTB54rA@mail.gmail.com>
+ <1442486431.2520.34.camel@loki>
+ <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 583F02604D3
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 10:48:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 388B32604D3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 11:09:14 +0200 (CEST)
+In-Reply-To: <CAG5mAdw1jjVGeTi2k0QLCTVv+Qr-Hy3UMZLuT1M=f2uHje32kw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,56 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, broonie@kernel.org, lee.jones@linaro.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Takashi Iwai <tiwai@suse.de>, han.lu@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, bernard.gautier@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 18, 2015 at 03:49:03PM +0900, Inha Song wrote:
-> Hi,
+On Thu, 2015-09-17 at 06:29 -0700, Caleb Crome wrote:
+> >> > We have also used BAT for stress testing audio over D0 -> D3 -> D0 transitions.
+> >>
+> >> Sorry, I'm not familiar with that terminology.  Are those the
+> >> different power states?
+> >
+> > Yes, PM suspend and resume of device. We have some scripts (to be
+> > upstreamed later) that would play audio, suspend the device, resume the
+> > device and then retest the audio.
 > 
-> I just change dev_err() to dev_info() in arizona-core.
+> That seems particularly likely to result in multiple codecs getting
+> out of phase alignment.  i.e. when restarting, you want to be sure to
+> follow the same startup procedure as the first time to make sure all
+> codecs are aligned.
 > 
-> 
-> root@localhost:~# aplay test.wav
-> [   42.731358] arizona spi1.0: Leaving AoD mode
-> ....
-> [   42.823514] s3c64xx_spi_runtime_resume
-> [   42.828270] arizona spi1.0: ASRC underclocked
-> [   42.828281] s3c64xx_spi_runtime_suspend
-> ....
-> -> suspend ()
-> [   72.398152] arizona spi1.0: Suspend, disabling IRQ
-> [   72.410471] s3c64xx_spi_runtime_resume
-> [   72.429045] s3c64xx_spi_suspend
-> -> spi suspended
-> [   72.429905] PM: suspend of devices complete after 67.309 msecs
-> [   72.440084] arizona spi1.0: Late suspend, reenabling IRQ
-> -> try to access spi irq after spi suspend()
-> [   72.440165] arizona spi1.0: Failed to read IRQ status: -108
-> [   72.440174] arizona spi1.0: Failed to read main IRQ status: -108
-> [   72.440242] arizona spi1.0: Failed to read IRQ status: -108
-> [   72.440249] arizona spi1.0: Failed to read main IRQ status: -108
-> [   72.440275] arizona spi1.0: Failed to read IRQ status: -108
-> [   72.440282] arizona spi1.0: Failed to read main IRQ status: -108
-> [   72.440304] arizona spi1.0: Failed to read IRQ status: -108
 
-Ok so looking at the system PM code I think the problem here is
-there is currently a small window between when we enable this IRQ
-and when the suspend proceedure disables IRQs and this IRQ is
-sneaking in at that point.
+This was more for testing our DSP and codec context was properly
+saved/restored and also our codec was properly powered down/up during PM
+state changes.
 
-Can you try the following diff and let me know what happens:
-
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -727,7 +727,7 @@ const struct dev_pm_ops arizona_pm_ops = {
-                           NULL)
-        SET_SYSTEM_SLEEP_PM_OPS(arizona_suspend, arizona_resume)
- #ifdef CONFIG_PM_SLEEP
--       .suspend_late = arizona_suspend_late,
-+       .suspend_noirq = arizona_suspend_late,
-        .resume_noirq = arizona_resume_noirq,
- #endif
-
-Thanks,
-Charles
+Liam
