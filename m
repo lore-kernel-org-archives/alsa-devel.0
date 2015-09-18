@@ -1,7 +1,7 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH RFC 4/7] ASoC: tlv320aic26: Fix regmap by setting reg_defaults and reg_stride
-Date: Fri, 18 Sep 2015 16:11:13 -0400
-Message-ID: <1442607076-26681-5-git-send-email-jcormier@criticallink.com>
+Subject: [PATCH RFC 1/7] ASoC: tlv320aic26: Add device tree binding
+Date: Fri, 18 Sep 2015 16:11:10 -0400
+Message-ID: <1442607076-26681-2-git-send-email-jcormier@criticallink.com>
 References: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
@@ -10,59 +10,108 @@ To: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Gluszek <greg.gluszek@criticallink.com>, "Cormier, Jonathan" <jcormier@criticallink.com>
 List-Id: alsa-devel@alsa-project.org
 
-tlv320aic26 codec wasn't being setup correctly on bootup due to misconfigured regmap cache.
-
-Fixes: b7e9f3973279 "ASoC: tlv320aic26: Convert to direct regmap API usage"
 Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
 ---
- sound/soc/codecs/tlv320aic26.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ .../devicetree/bindings/sound/tlv320aic26.txt      | 65 ++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic26.c                     | 10 ++++
+ 2 files changed, 75 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
 
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 91347727cfae..70af361a116c 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -41,6 +41,27 @@ struct aic26 {
- 	int keyclick_len;
- };
- 
-+static const struct reg_default aic26_reg[] = {
-+	/* Page 0 */
-+	{ 0x00A0, 0x0000 }, { 0x00C0, 0x0000 }, { 0x00E0, 0x0000 },
-+	{ 0x0120, 0x0000 }, { 0x0140, 0x0000 },
-+	/* Page 1 */
-+	{ 0x0800, 0x0000 }, { 0x0820, 0x8000 }, { 0x0860, 0x0002 },
-+	{ 0x0880, 0xFFFF },
-+	/* Page 2 */
-+	{ 0x1000, 0x0000 }, { 0x1020, 0x8000 }, { 0x1040, 0xFFFF },
-+	{ 0x1060, 0xC580 }, { 0x1080, 0x4410 }, { 0x10A0, 0xAFC0 },
-+	{ 0x10C0, 0x0000 }, { 0x10E0,  27619 }, { 0x1100, -27034 },
-+	{ 0x1120,  26461 }, { 0x1140,  27619 }, { 0x1160, -27034 },
-+	{ 0x1180,  26461 }, { 0x11A0,  32131 }, { 0x11C0, -31506 },
-+	{ 0x11E0,  32131 }, { 0x1200, -31506 }, { 0x1220,  27619 },
-+	{ 0x1240, -27034 }, { 0x1260,  26461 }, { 0x1280,  27619 },
-+	{ 0x12A0, -27034 }, { 0x12C0,  26461 }, { 0x12E0,  32131 },
-+	{ 0x1300, -31506 }, { 0x1320,  32131 }, { 0x1340, -31506 },
-+	{ 0x1360, 0x1004 }, { 0x1380, 0x0000 }, { 0x13A0, 0x0000 },
-+	{ 0x13C0, 0xFE00 },
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic26.txt b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+new file mode 100644
+index 000000000000..93aa0f76ec0d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+@@ -0,0 +1,65 @@
++Texas Instruments - tlv320aic26 Codec module
++
++The tlv320aic26 serial control bus communicates through I2C protocols
++
++Required properties:
++
++- compatible - "string" - One of:
++    "ti,tlv320aic26" - TLV320AIC26
++- reg - <int> -  SPI chip select
++
++CODEC input pins:
++  * MICIN
++  * AUX
++
++CODEC output pins:
++  * HPL
++  * HPR
++
++The pins can be used in referring sound node's audio-routing property.
++
++Example:
++
++tlv320aic26: tlv320aic26@0 {
++	compatible = "ti,tlv320aic26";
++	reg = <0>;
 +};
 +
- static const struct snd_soc_dapm_widget tlv320aic26_dapm_widgets[] = {
- SND_SOC_DAPM_INPUT("MICIN"),
- SND_SOC_DAPM_INPUT("AUX"),
-@@ -332,6 +353,13 @@ static struct snd_soc_codec_driver aic26_soc_codec_dev = {
- static const struct regmap_config aic26_regmap = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
-+	/* AIC26_PAGE_ADDR(0, 0x01) */
-+	.reg_stride = 0x20,
++&spi0 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi0_pins>;
++	pinctrl-1 = <&spi0_sleep_pins>;
 +
-+	.max_register = AIC26_REG_AUDIO_CTRL5,
-+	.reg_defaults = aic26_reg,
-+	.num_reg_defaults = ARRAY_SIZE(aic26_reg),
-+	.cache_type = REGCACHE_RBTREE,
- };
++	status = "okay";
++	ti,pindir-d0-out-d1-in = <1>;
++
++	tlv320aic26: tlv320aic26@1 {
++		compatible = "ti,tlv320aic26";
++		reg = <0x1>;
++		status = "okay";
++
++		spi-max-frequency = <2000000>;
++		spi-cpha;
++	};
++};
++
++sound {
++	compatible = "simple-audio-card";
++	simple-audio-card,name = "AM335x_SND";
++	simple-audio-card,format = "dsp_b";
++	/* SND_SOC_DAIFMT_CBM_CFM */
++	simple-audio-card,bitclock-master = <&tlv320aic26_codec>;
++	simple-audio-card,frame-master = <&tlv320aic26_codec>;
++	/* SND_SOC_DAIFMT_IB_NF */
++	simple-audio-card,bitclock-inversion;
++
++	simple-audio-card,cpu {
++		sound-dai = <&mcasp1>;
++		system-clock-frequency = <24576000>;
++	};
++
++	tlv320aic26_codec: simple-audio-card,codec {
++		sound-dai = <&tlv320aic26>;
++		system-clock-frequency = <24576000>;
++	};
++};
+diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
+index 620ab9ea1ef0..91fdd96648bd 100644
+--- a/sound/soc/codecs/tlv320aic26.c
++++ b/sound/soc/codecs/tlv320aic26.c
+@@ -370,10 +370,20 @@ static int aic26_spi_remove(struct spi_device *spi)
+ 	return 0;
+ }
  
- /* ---------------------------------------------------------------------
++#if defined(CONFIG_OF)
++static const struct of_device_id tlv320aic26_of_match[] = {
++	{ .compatible = "ti,tlv320aic26", },
++	{},
++};
++#endif
++
+ static struct spi_driver aic26_spi = {
+ 	.driver = {
+ 		.name = "tlv320aic26-codec",
+ 		.owner = THIS_MODULE,
++#if defined(CONFIG_OF)
++		.of_match_table = of_match_ptr(tlv320aic26_of_match),
++#endif
+ 	},
+ 	.probe = aic26_spi_probe,
+ 	.remove = aic26_spi_remove,
 -- 
 1.9.1
