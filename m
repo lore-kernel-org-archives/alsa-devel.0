@@ -1,50 +1,41 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: wm0010: disable regulator on error
-Date: Fri, 18 Sep 2015 13:38:39 +0100
-Message-ID: <20150918123839.GI7694@ck-lbox>
-References: <1442572341-28201-1-git-send-email-sudipm.mukherjee@gmail.com>
- <20150918113412.GF7694@ck-lbox>
- <20150918124205.GA28272@sudip-pc>
+Subject: Re: [PATCH 2/4] ASoC: wm8962: remove 64k sample rate
+ support
+Date: Fri, 18 Sep 2015 13:50:12 +0100
+Message-ID: <20150918125012.GJ7694@ck-lbox>
+References: <4c1fe5d2fa0ae6cf85e9be8b3b8a52feaae7d75b.1442566367.git.zidan.wang@freescale.com>
+ <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A90E2260435
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 15:13:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150918124205.GA28272@sudip-pc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+In-Reply-To: <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 18, 2015 at 06:12:05PM +0530, Sudip Mukherjee wrote:
-> On Fri, Sep 18, 2015 at 12:34:12PM +0100, Charles Keepax wrote:
-> > On Fri, Sep 18, 2015 at 04:02:19PM +0530, Sudip Mukherjee wrote:
-> > > We have done regulator_bulk_enable() while booting the DSP but on the
-> > > error exit path we have not disbled it.
-> > > 
-> > > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-> > > ---
-> > >  sound/soc/codecs/wm0010.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > > 
-> > > diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-> > > index 8434d45..79a7cd3 100644
-> > > --- a/sound/soc/codecs/wm0010.c
-> > > +++ b/sound/soc/codecs/wm0010.c
-> > > @@ -739,8 +739,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
-> > >  abort:
-> > >  	/* Put the chip back into reset */
-> > >  	wm0010_halt(codec);
-> > > -	mutex_unlock(&wm0010->lock);
-> > > -	return ret;
-> > 
-> > Does wm0010_halt not disable the regulators?
-> oops, yes, it does. Sorry I should have seen it before posting.
-> patch 2/3 and 3/3 will still apply even if this 1/3 is not applied.
-> Should I send a v2 leaving out this patch or is it ok to discard this
-> patch while applying?
+On Fri, Sep 18, 2015 at 05:19:25PM +0800, Zidan Wang wrote:
+> wm8962 can't support 64k sample rate. When playing a 64KHz wave file,
+> 'Unsupported rate 64000Hz' will be prompted.
+> 
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> ---
 
-As long as they apply cleanly I would think its fine to just
-leave them as is.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 Thanks,
 Charles
