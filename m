@@ -1,94 +1,52 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 6/9] ASoC: Intel: Skylake: Initialize
- and load DSP controls
-Date: Fri, 18 Sep 2015 10:58:54 +0100
-Message-ID: <1442570334.7634.39.camel@loki>
-References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <1439832404-12424-7-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4755E265A12
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 11:59:00 +0200 (CEST)
-In-Reply-To: <1439832404-12424-7-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 2/3] ASoC: wm0010: fix memory leak
+Date: Fri, 18 Sep 2015 16:02:20 +0530
+Message-ID: <1442572341-28201-2-git-send-email-sudipm.mukherjee@gmail.com>
+References: <1442572341-28201-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1442572341-28201-1-git-send-email-sudipm.mukherjee@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-08-17 at 22:56 +0530, Vinod Koul wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
-> 
-> Initialize and creates DSP controls if processing pipe capability
-> is supported by HW. Updates the dma_id, hw_params to module param
-> to be used when DSP module has to be configured.
-> 
-> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> ---
->  sound/soc/intel/skylake/skl-pcm.c | 138 ++++++++++++++++++++++++++++++--------
->  1 file changed, 111 insertions(+), 27 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-> index 7d617bf493bc..3e491149bf0c 100644
-> --- a/sound/soc/intel/skylake/skl-pcm.c
-> +++ b/sound/soc/intel/skylake/skl-pcm.c
-> @@ -24,6 +24,7 @@
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  #include "skl.h"
-> +#include "skl-topology.h"
->  
->  #define HDA_MONO 1
->  #define HDA_STEREO 2
-> @@ -214,6 +215,7 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
->  	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
->  	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
->  	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	struct skl_pipe_params p_params = {0};
->  	int ret, dma_id;
->  
->  	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-> @@ -228,6 +230,13 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
->  	dma_id = hdac_stream(stream)->stream_tag - 1;
->  	dev_dbg(dai->dev, "dma_id=%d\n", dma_id);
->  
-> +	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-> +	p_params.ch = params_channels(params);
-> +	p_params.s_freq = params_rate(params);
-> +	p_params.host_dma_id = dma_id;
-> +	p_params.stream = substream->stream;
-> +	skl_tplg_fe_update_params(dai, &p_params);
-> +
->  	return 0;
->  }
->  
-> @@ -268,6 +277,46 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
->  	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
->  }
->  
-> +static int skl_be_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct skl_pipe_params p_params = {0};
-> +
-> +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-> +
+We have requested for the firmware but we have missed releasing it both
+on success and on error path.
+While checking the code it turned out that the requested firmware is not
+even used. More over the same firmware is being loaded by
+wm0010_stage2_load().
 
-Seeing a lot of dev_dbg(__func__) in this series that really are just
-tracing. Probably best to trace the calls properly or remove if it's
-just development debugging.
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ sound/soc/codecs/wm0010.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Liam
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 79a7cd3..4947be5 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -577,7 +577,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 	struct wm0010_priv *wm0010 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned long flags;
+ 	int ret;
+-	const struct firmware *fw;
+ 	struct spi_message m;
+ 	struct spi_transfer t;
+ 	struct dfw_pllrec pll_rec;
+@@ -623,14 +622,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 	wm0010->state = WM0010_OUT_OF_RESET;
+ 	spin_unlock_irqrestore(&wm0010->irq_lock, flags);
+ 
+-	/* First the bootloader */
+-	ret = request_firmware(&fw, "wm0010_stage2.bin", codec->dev);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request stage2 loader: %d\n",
+-			ret);
+-		goto abort;
+-	}
+-
+ 	if (!wait_for_completion_timeout(&wm0010->boot_completion,
+ 					 msecs_to_jiffies(20)))
+ 		dev_err(codec->dev, "Failed to get interrupt from DSP\n");
+-- 
+1.9.1
