@@ -1,17 +1,17 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH 3/4] ASoC: fsl_ssi: Add driver suspend and
+Subject: [PATCH 4/4] ASoC: fsl_esai: Add driver suspend and
 	resume to support MEGA Fast
-Date: Fri, 18 Sep 2015 11:09:12 +0800
-Message-ID: <53734e9a21d4128ae5a99619c45f540a97dbe3cc.1442543331.git.zidan.wang@freescale.com>
+Date: Fri, 18 Sep 2015 11:09:13 +0800
+Message-ID: <e1e25fbd65c799bb6a6e3cdd4d17d80956f13116.1442543331.git.zidan.wang@freescale.com>
 References: <612136e8272099d9bb5058f0293bb14d1c86e53e.1442543331.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0136.outbound.protection.outlook.com [207.46.100.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D6312658CD
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 05:07:50 +0200 (CEST)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0133.outbound.protection.outlook.com [65.55.169.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CAB526596E
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 05:07:53 +0200 (CEST)
 In-Reply-To: <612136e8272099d9bb5058f0293bb14d1c86e53e.1442543331.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,156 +26,142 @@ To: nicoleotsuka@gmail.com
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
-source of modules during system suspend and resume procedure. Thus,
-SSI needs to save all the values of registers before the system
-suspend and restore them after the system resume.
-
-The register SFCSR is volatile, but some bits in it need to be
-recovered after suspend/resume.
+For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
+modules during system suspend and resume procedure. Thus, ESAI needs to save
+all the values of registers before the system suspend and restore them after
+the system resume.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 102 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
+ sound/soc/fsl/fsl_esai.c | 88 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 8ec6fb2..7c495d3 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -111,12 +111,75 @@ struct fsl_ssi_rxtx_reg_val {
- 	struct fsl_ssi_reg_val rx;
- 	struct fsl_ssi_reg_val tx;
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 837979e..aab675a 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -652,6 +652,24 @@ static const struct snd_soc_component_driver fsl_esai_component = {
+ 	.name		= "fsl-esai",
  };
-+
-+static const struct reg_default fsl_ssi_reg_defaults[] = {
+ 
++static const struct reg_default fsl_esai_reg_defaults[] = {
++	{0x8,  0x00000000},
 +	{0x10, 0x00000000},
-+	{0x18, 0x00003003},
-+	{0x1c, 0x00000200},
-+	{0x20, 0x00000200},
-+	{0x24, 0x00040000},
-+	{0x28, 0x00040000},
-+	{0x38, 0x00000000},
-+	{0x48, 0x00000000},
-+	{0x4c, 0x00000000},
-+	{0x54, 0x00000000},
-+	{0x58, 0x00000000},
++	{0x18, 0x00000000},
++	{0x98, 0x00000000},
++	{0xd0, 0x00000000},
++	{0xd4, 0x00000000},
++	{0xd8, 0x00000000},
++	{0xdc, 0x00000000},
++	{0xe0, 0x00000000},
++	{0xe4, 0x0000ffff},
++	{0xe8, 0x0000ffff},
++	{0xec, 0x0000ffff},
++	{0xf0, 0x0000ffff},
++	{0xf8, 0x00000000},
++	{0xfc, 0x00000000},
 +};
 +
-+static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
+ static bool fsl_esai_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -684,6 +702,31 @@ static bool fsl_esai_readable_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
++static bool fsl_esai_volatile_reg(struct device *dev, unsigned int reg)
 +{
 +	switch (reg) {
-+	case CCSR_SSI_SACCEN:
-+	case CCSR_SSI_SACCDIS:
-+		return false;
-+	default:
++	case REG_ESAI_ETDR:
++	case REG_ESAI_ERDR:
++	case REG_ESAI_ESR:
++	case REG_ESAI_TFSR:
++	case REG_ESAI_RFSR:
++	case REG_ESAI_TX0:
++	case REG_ESAI_TX1:
++	case REG_ESAI_TX2:
++	case REG_ESAI_TX3:
++	case REG_ESAI_TX4:
++	case REG_ESAI_TX5:
++	case REG_ESAI_RX0:
++	case REG_ESAI_RX1:
++	case REG_ESAI_RX2:
++	case REG_ESAI_RX3:
++	case REG_ESAI_SAISR:
 +		return true;
++	default:
++		return false;
 +	}
 +}
 +
-+static bool fsl_ssi_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CCSR_SSI_STX0:
-+	case CCSR_SSI_STX1:
-+	case CCSR_SSI_SRX0:
-+	case CCSR_SSI_SRX1:
-+	case CCSR_SSI_SISR:
-+	case CCSR_SSI_SFCSR:
-+	case CCSR_SSI_SACADD:
-+	case CCSR_SSI_SACDAT:
-+	case CCSR_SSI_SATAG:
-+	case CCSR_SSI_SACCST:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool fsl_ssi_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CCSR_SSI_SRX0:
-+	case CCSR_SSI_SRX1:
-+	case CCSR_SSI_SACCST:
-+		return false;
-+	default:
-+		return true;
-+	}
-+}
-+
- static const struct regmap_config fsl_ssi_regconfig = {
- 	.max_register = CCSR_SSI_SACCDIS,
- 	.reg_bits = 32,
+ static bool fsl_esai_writeable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -721,8 +764,12 @@ static const struct regmap_config fsl_esai_regmap_config = {
  	.val_bits = 32,
- 	.reg_stride = 4,
- 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
-+	.reg_defaults = fsl_ssi_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
-+	.readable_reg = fsl_ssi_readable_reg,
-+	.volatile_reg = fsl_ssi_volatile_reg,
-+	.writeable_reg = fsl_ssi_writeable_reg,
+ 
+ 	.max_register = REG_ESAI_PCRC,
++	.reg_defaults = fsl_esai_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(fsl_esai_reg_defaults),
+ 	.readable_reg = fsl_esai_readable_reg,
++	.volatile_reg = fsl_esai_volatile_reg,
+ 	.writeable_reg = fsl_esai_writeable_reg,
 +	.cache_type = REGCACHE_RBTREE,
  };
  
- struct fsl_ssi_soc_data {
-@@ -176,6 +239,9 @@ struct fsl_ssi_private {
- 	unsigned int baudclk_streams;
- 	unsigned int bitclk_freq;
+ static int fsl_esai_probe(struct platform_device *pdev)
+@@ -853,10 +900,51 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
  
-+	/*regcache for SFCSR*/
-+	u32 regcache_sfcsr;
-+
- 	/* DMA params */
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -1513,10 +1579,46 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int fsl_ssi_suspend(struct device *dev)
++#if CONFIG_PM_SLEEP
++static int fsl_esai_suspend(struct device *dev)
 +{
-+	struct fsl_ssi_private *ssi_private = dev_get_drvdata(dev);
-+	struct regmap *regs = ssi_private->regs;
++	struct fsl_esai *esai = dev_get_drvdata(dev);
 +
-+	regmap_read(regs, CCSR_SSI_SFCSR,
-+			&ssi_private->regcache_sfcsr);
-+
-+	regcache_cache_only(regs, true);
-+	regcache_mark_dirty(regs);
++	regcache_cache_only(esai->regmap, true);
++	regcache_mark_dirty(esai->regmap);
 +
 +	return 0;
 +}
 +
-+static int fsl_ssi_resume(struct device *dev)
++static int fsl_esai_resume(struct device *dev)
 +{
-+	struct fsl_ssi_private *ssi_private = dev_get_drvdata(dev);
-+	struct regmap *regs = ssi_private->regs;
++	struct fsl_esai *esai = dev_get_drvdata(dev);
++	int ret;
 +
-+	regcache_cache_only(regs, false);
++	regcache_cache_only(esai->regmap, false);
 +
-+	regmap_update_bits(regs, CCSR_SSI_SFCSR,
-+			CCSR_SSI_SFCSR_RFWM1_MASK | CCSR_SSI_SFCSR_TFWM1_MASK |
-+			CCSR_SSI_SFCSR_RFWM0_MASK | CCSR_SSI_SFCSR_TFWM0_MASK,
-+			ssi_private->regcache_sfcsr);
++	/* FIFO reset for safety */
++	regmap_update_bits(esai->regmap, REG_ESAI_TFCR,
++			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
++	regmap_update_bits(esai->regmap, REG_ESAI_RFCR,
++			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
 +
-+	return regcache_sync(regs);
++	ret = regcache_sync(esai->regmap);
++	if (ret)
++		return ret;
++
++	/* FIFO reset done */
++	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
++	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
++
++	return 0;
 +}
 +#endif /* CONFIG_PM_SLEEP */
 +
-+static const struct dev_pm_ops fsl_ssi_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_ssi_suspend, fsl_ssi_resume)
++static const struct dev_pm_ops fsl_esai_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
 +};
 +
- static struct platform_driver fsl_ssi_driver = {
+ static struct platform_driver fsl_esai_driver = {
+ 	.probe = fsl_esai_probe,
  	.driver = {
- 		.name = "fsl-ssi-dai",
- 		.of_match_table = fsl_ssi_ids,
-+		.pm = &fsl_ssi_pm,
+ 		.name = "fsl-esai-dai",
++		.pm = &fsl_esai_pm_ops,
+ 		.of_match_table = fsl_esai_dt_ids,
  	},
- 	.probe = fsl_ssi_probe,
- 	.remove = fsl_ssi_remove,
+ };
 -- 
 1.9.1
