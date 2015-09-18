@@ -1,18 +1,21 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH 4/4] ASoC: fsl_esai: Add driver suspend and
-	resume to support MEGA Fast
-Date: Fri, 18 Sep 2015 11:09:13 +0800
-Message-ID: <e1e25fbd65c799bb6a6e3cdd4d17d80956f13116.1442543331.git.zidan.wang@freescale.com>
-References: <612136e8272099d9bb5058f0293bb14d1c86e53e.1442543331.git.zidan.wang@freescale.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 3/9] ASoC: Intel: Skylake: add DSP
+ platform widget event handlers
+Date: Fri, 18 Sep 2015 09:52:14 +0530
+Message-ID: <20150918042214.GT19522@localhost>
+References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
+ <1439832404-12424-4-git-send-email-vinod.koul@intel.com>
+ <1442483278.2520.24.camel@loki> <20150917113856.GA19522@localhost>
+ <1442492707.2520.36.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0133.outbound.protection.outlook.com [65.55.169.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CAB526596E
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 05:07:53 +0200 (CEST)
-In-Reply-To: <612136e8272099d9bb5058f0293bb14d1c86e53e.1442543331.git.zidan.wang@freescale.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7697E2659B0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 06:19:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1442492707.2520.36.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,146 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: nicoleotsuka@gmail.com
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
-modules during system suspend and resume procedure. Thus, ESAI needs to save
-all the values of registers before the system suspend and restore them after
-the system resume.
+On Thu, Sep 17, 2015 at 01:25:07PM +0100, Liam Girdwood wrote:
+ 
+> > > There is a lot of list walking and manipulation in this series and it's
+> > > not clear where any locks are being held to prevent list corruption.
+> > > I'm assuming list items are being added and removed as part of
+> > > loading/unloading the topology data but it looks like we are also
+> > > manipulating component lists during DAPM events ?
+> > 
+> > We have a driver list dapm_path_list where we store the widgets powered up.
+> > This gives us a very quick reference of the paths which are powered up in
+> > the graph and helps fast traversal to check if we should power up a path as
+> > path is connected to something else which is powered up already (mixng two
+> > paths) and similarly while disconnecting.
+> > 
+> > Please note all these are handled only in event handlers for widgets, so
+> > they will be invoked by dapm with mutex, dapm_mutex held, so we didn't think
+> > we would need another lock here
+> > 
+> 
+> Ok, I was thinking that may be the case. It may be worth while stating
+> this in comments where this applies.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_esai.c | 88 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+It's actually specfied that we add all connected paths to drivers list.
+I am okay to add more, will do so here if there any anymore comments from
+Mark, otherwise will add as an update in patches after this series
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 837979e..aab675a 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -652,6 +652,24 @@ static const struct snd_soc_component_driver fsl_esai_component = {
- 	.name		= "fsl-esai",
- };
- 
-+static const struct reg_default fsl_esai_reg_defaults[] = {
-+	{0x8,  0x00000000},
-+	{0x10, 0x00000000},
-+	{0x18, 0x00000000},
-+	{0x98, 0x00000000},
-+	{0xd0, 0x00000000},
-+	{0xd4, 0x00000000},
-+	{0xd8, 0x00000000},
-+	{0xdc, 0x00000000},
-+	{0xe0, 0x00000000},
-+	{0xe4, 0x0000ffff},
-+	{0xe8, 0x0000ffff},
-+	{0xec, 0x0000ffff},
-+	{0xf0, 0x0000ffff},
-+	{0xf8, 0x00000000},
-+	{0xfc, 0x00000000},
-+};
-+
- static bool fsl_esai_readable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -684,6 +702,31 @@ static bool fsl_esai_readable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+static bool fsl_esai_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case REG_ESAI_ETDR:
-+	case REG_ESAI_ERDR:
-+	case REG_ESAI_ESR:
-+	case REG_ESAI_TFSR:
-+	case REG_ESAI_RFSR:
-+	case REG_ESAI_TX0:
-+	case REG_ESAI_TX1:
-+	case REG_ESAI_TX2:
-+	case REG_ESAI_TX3:
-+	case REG_ESAI_TX4:
-+	case REG_ESAI_TX5:
-+	case REG_ESAI_RX0:
-+	case REG_ESAI_RX1:
-+	case REG_ESAI_RX2:
-+	case REG_ESAI_RX3:
-+	case REG_ESAI_SAISR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static bool fsl_esai_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -721,8 +764,12 @@ static const struct regmap_config fsl_esai_regmap_config = {
- 	.val_bits = 32,
- 
- 	.max_register = REG_ESAI_PCRC,
-+	.reg_defaults = fsl_esai_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_esai_reg_defaults),
- 	.readable_reg = fsl_esai_readable_reg,
-+	.volatile_reg = fsl_esai_volatile_reg,
- 	.writeable_reg = fsl_esai_writeable_reg,
-+	.cache_type = REGCACHE_RBTREE,
- };
- 
- static int fsl_esai_probe(struct platform_device *pdev)
-@@ -853,10 +900,51 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
- 
-+#if CONFIG_PM_SLEEP
-+static int fsl_esai_suspend(struct device *dev)
-+{
-+	struct fsl_esai *esai = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(esai->regmap, true);
-+	regcache_mark_dirty(esai->regmap);
-+
-+	return 0;
-+}
-+
-+static int fsl_esai_resume(struct device *dev)
-+{
-+	struct fsl_esai *esai = dev_get_drvdata(dev);
-+	int ret;
-+
-+	regcache_cache_only(esai->regmap, false);
-+
-+	/* FIFO reset for safety */
-+	regmap_update_bits(esai->regmap, REG_ESAI_TFCR,
-+			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
-+	regmap_update_bits(esai->regmap, REG_ESAI_RFCR,
-+			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
-+
-+	ret = regcache_sync(esai->regmap);
-+	if (ret)
-+		return ret;
-+
-+	/* FIFO reset done */
-+	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
-+	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops fsl_esai_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
-+};
-+
- static struct platform_driver fsl_esai_driver = {
- 	.probe = fsl_esai_probe,
- 	.driver = {
- 		.name = "fsl-esai-dai",
-+		.pm = &fsl_esai_pm_ops,
- 		.of_match_table = fsl_esai_dt_ids,
- 	},
- };
+Thanks
 -- 
-1.9.1
+~Vinod
