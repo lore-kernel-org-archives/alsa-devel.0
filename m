@@ -1,56 +1,45 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] sst: replace custom implementation
- of readq / writeq
-Date: Fri, 18 Sep 2015 15:07:25 +0300
-Message-ID: <1442578045.8361.93.camel@linux.intel.com>
-References: <1440677358-6681-1-git-send-email-andriy.shevchenko@linux.intel.com>
- <1442480279.8361.73.camel@linux.intel.com> <1442481844.2520.19.camel@loki>
- <20150917114140.GB19522@localhost>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: wm0010: disable regulator on error
+Date: Fri, 18 Sep 2015 18:12:05 +0530
+Message-ID: <20150918124205.GA28272@sudip-pc>
+References: <1442572341-28201-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <20150918113412.GF7694@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D1248260415
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 14:07:30 +0200 (CEST)
-In-Reply-To: <20150917114140.GB19522@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150918113412.GF7694@ck-lbox>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-09-17 at 17:11 +0530, Vinod Koul wrote:
-> On Thu, Sep 17, 2015 at 10:24:04AM +0100, Liam Girdwood wrote:
-> > On Thu, 2015-09-17 at 11:57 +0300, Andy Shevchenko wrote:
-> > > On Thu, 2015-08-27 at 15:09 +0300, Andy Shevchenko wrote:
-> > > > The readq() and writeq() helpers are available in the
-> > > > asm-generic/io-64-nonatomic-hi-lo.h and asm-generic/io-64
-> > > > -nonatomic
-> > > > -lo-hi.h
-> > > > headers. Replace custom implementation by the generic helpers.
-> > > > 
-> > > 
-> > > Liam, any comments on this?
+On Fri, Sep 18, 2015 at 12:34:12PM +0100, Charles Keepax wrote:
+> On Fri, Sep 18, 2015 at 04:02:19PM +0530, Sudip Mukherjee wrote:
+> > We have done regulator_bulk_enable() while booting the DSP but on the
+> > error exit path we have not disbled it.
 > > 
-> > Looks good from me, but it's one of Vinod's drivers (now added to 
-> > CC).
+> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > ---
+> >  sound/soc/codecs/wm0010.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+> > index 8434d45..79a7cd3 100644
+> > --- a/sound/soc/codecs/wm0010.c
+> > +++ b/sound/soc/codecs/wm0010.c
+> > @@ -739,8 +739,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+> >  abort:
+> >  	/* Put the chip back into reset */
+> >  	wm0010_halt(codec);
+> > -	mutex_unlock(&wm0010->lock);
+> > -	return ret;
 > 
-> Please do test this on BYT/BSW as well, otherwise looks good
+> Does wm0010_halt not disable the regulators?
+oops, yes, it does. Sorry I should have seen it before posting.
+patch 2/3 and 3/3 will still apply even if this 1/3 is not applied.
+Should I send a v2 leaving out this patch or is it ok to discard this
+patch while applying?
 
-Tested both patches (another one just recently sent) on ASuS T100TA.
-
-> 
-> Acked-by: Vinod Koul <vinod.koul@intel.com>
-> 
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+regards
+sudip
