@@ -1,67 +1,33 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Fix devm_kasprintf format
-	string
-Date: Fri, 18 Sep 2015 15:02:50 +0300
-Message-ID: <1442577770-30650-1-git-send-email-peter.ujfalusi@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: wm0010: fix memory leak
+Date: Fri, 18 Sep 2015 12:39:41 +0100
+Message-ID: <20150918113941.GG7694@ck-lbox>
+References: <1442572341-28201-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1442572341-28201-2-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 86198260412
- for <alsa-devel@alsa-project.org>; Fri, 18 Sep 2015 14:02:57 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com, daniel@zonque.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1442572341-28201-2-git-send-email-sudipm.mukherjee@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The '\n' at the end of the format string is not needed. It adds an extra
-line break when doing
-cat /proc/interrupts
+On Fri, Sep 18, 2015 at 04:02:20PM +0530, Sudip Mukherjee wrote:
+> We have requested for the firmware but we have missed releasing it both
+> on success and on error path.
+> While checking the code it turned out that the requested firmware is not
+> even used. More over the same firmware is being loaded by
+> wm0010_stage2_load().
+> 
+> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> ---
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+hmm... odd guess this must have been missed when
+wm0010_stage2_load was created.
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 1260b315a96c..e631f96f9cf7 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1684,7 +1684,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq_byname(pdev, "common");
- 	if (irq >= 0) {
--		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common\n",
-+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common",
- 					  dev_name(&pdev->dev));
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_common_irq_handler,
-@@ -1701,7 +1701,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq_byname(pdev, "rx");
- 	if (irq >= 0) {
--		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx\n",
-+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx",
- 					  dev_name(&pdev->dev));
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_rx_irq_handler,
-@@ -1716,7 +1716,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq_byname(pdev, "tx");
- 	if (irq >= 0) {
--		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx\n",
-+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx",
- 					  dev_name(&pdev->dev));
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						davinci_mcasp_tx_irq_handler,
--- 
-2.5.2
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
