@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/9] Add DSP topology management for SKL
-Date: Sat, 19 Sep 2015 09:56:12 -0700
-Message-ID: <20150919165612.GA32072@sirena.org.uk>
+Subject: Re: [PATCH v2 4/9] ASoC: Intel: Skylake: Add FE and BE
+ hw_params handling
+Date: Sat, 19 Sep 2015 09:22:10 -0700
+Message-ID: <20150919162210.GE30445@sirena.org.uk>
 References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <20150903081454.GU13546@localhost>
- <20150911114500.GK12027@sirena.org.uk>
+ <1439832404-12424-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0637115942384453766=="
+Content-Type: multipart/mixed; boundary="===============1124728457069682512=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04CAA2605D6
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:31:52 +0200 (CEST)
-In-Reply-To: <20150911114500.GK12027@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C1192605D8
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:31:55 +0200 (CEST)
+In-Reply-To: <1439832404-12424-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,78 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0637115942384453766==
+--===============1124728457069682512==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+	protocol="application/pgp-signature"; boundary="9crTWz/Z+Zyzu20v"
 Content-Disposition: inline
 
 
---k+w/mQv8wyuph6w0
+--9crTWz/Z+Zyzu20v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 11, 2015 at 12:45:00PM +0100, Mark Brown wrote:
-> On Thu, Sep 03, 2015 at 01:44:54PM +0530, Vinod Koul wrote:
+On Mon, Aug 17, 2015 at 10:56:39PM +0530, Vinod Koul wrote:
 
-> > I was wondering if you have any feedback on this series ?
+> +/* Run/Stop the FE pipeline */
+> +int skl_tplg_set_fe_pipeline_state(struct snd_soc_dai *dai, bool start,
+> +								int stream)
+> +{
+> +	struct skl *skl =3D get_skl_ctx(dai->dev);
+> +	struct skl_sst *ctx =3D skl->skl_sst;
+> +	struct skl_module_cfg *mconfig =3D NULL;
+> +
+> +	dev_dbg(dai->dev, "%s: enter, dai-name=3D%s dir=3D%d\n", __func__, dai-=
+>name, stream);
+> +
+> +	mconfig =3D skl_tplg_fe_get_cpr_module(dai, stream);
+> +	if (mconfig !=3D NULL) {
+> +		if (start)
+> +			return skl_run_pipe(ctx, mconfig->pipe);
+> +		else
+> +			return skl_stop_pipe(ctx, mconfig->pipe);
+> +	}
+> +
+> +	return 0;
+> +}
 
-> Please don't send content free pings (as I'm sure I've mentioned
-> before).  I've not looked at this yet because it's another large,
-> invasive patch series which you sent at the very end of the development
-> cycle.
+Another one of these wrappers with basically no shared code :( =20
 
-So, I've now looked at these, though not fully.  To expand on the above
-a bit: these are big bits of very device specific code that's really
-hard to read and understand and when I do read it I'm seeing similar
-issues again and again both in terms of big picture stuff and the
-trivial details (including the inconsistencies in things like commenting
-style that I'm not specifically pulling up).  I'm really worried that
-I'm often seeing fragments of things that may or may not work well
-together.
-
-These Intel devices not only have a lot more code than most devices do,
-they also get a lot more exposure than most devices do to end users so I
-actually have to try to make some effort to understand what's going on
-and can't skimp on review even though I feel like I am.  I'm really
-concerned about where we're heading here and how robustly the results
-are going to work.
-
-This all really slows down review, both directly in requiring detailed
-checks of hard to follow the code and as a result of making almost all
-other code review seem much more productive.
-
-As well as the low level code quality issues it would really help if
-rather than continually sending large blocks of functionality we were
-starting from something that was a minimally viable but functional
-system and then extending that.  That should be a lot easier to follow.
-
---k+w/mQv8wyuph6w0
+--9crTWz/Z+Zyzu20v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV/ZOrAAoJECTWi3JdVIfQjrEH/1mJH2yKMXLmNprbCk9/87QT
-TNCfUFBrQRPerLP34lOZPpFfhmPiBPKju4ob7RorQTTBWZoX4YM8hYBzBkHwVZWF
-yut6baFVOkErghN51MQlaH7ACNTl4xvLx78qA5t9Mkw+FSjLjBjTKhLOHQ+ldL8E
-9XGodrUo45TPi6xtSrqAZ7/RH2E6yJuiZbRf/PyIh5lRYs+ltIAGaLeN4xxnufWD
-pK5a2Z4Axfje9fYJi5GPnvPrwvF+xMj3KGSX4cEGZ7O4HW6q6GDPe4NJDNka8asO
-1EwipUP0IhNGp3xlQ1sxLcaOatxiei7LneKKOKK+5up83uO8Ke28tgjdZ4RbhP0=
-=u3sw
+iQEcBAEBCAAGBQJV/YuxAAoJECTWi3JdVIfQS5cH/AxDd3PrQQCPN2zWRI9grVFG
+JhlP/Q6R3IrYhcS6f7+mfL44fJSvFeDTgQBEr89wmHp+gyMjFLt1kuyjC8mlXJUB
+9dEEpSv2a0Y7pxCXvrFzPa02SG7AMdcCRAZZY2lOwWQZl5G4HzWuaZjTgFBlFmi/
+HIhJj0L9RFVaB+if8HWeNb0YLugc9pYQWKVsfeivdTjYN9sPaD0gnneojWnLfahc
+jBKWo25pS/4xLJXSUpUR/m6vhuvvg+90I81P2iAce25Vi0TCk+MrWg+to664/PRO
+hxra89CuXf6iYaaiWVMk2vJsJtGXblaSPwApah5NSyaKMJtIjDjl1PjbfAY1tJc=
+=xkwb
 -----END PGP SIGNATURE-----
 
---k+w/mQv8wyuph6w0--
+--9crTWz/Z+Zyzu20v--
 
---===============0637115942384453766==
+--===============1124728457069682512==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0637115942384453766==--
+--===============1124728457069682512==--
