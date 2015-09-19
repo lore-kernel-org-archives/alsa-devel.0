@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 6/9] ASoC: Intel: Skylake: Initialize
- and load DSP controls
-Date: Sat, 19 Sep 2015 09:26:20 -0700
-Message-ID: <20150919162620.GF30445@sirena.org.uk>
-References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <1439832404-12424-7-git-send-email-vinod.koul@intel.com>
- <1442570334.7634.39.camel@loki>
+Subject: Re: [PATCH v2 1/9] ASoC: Intel: Skylake: Add pipe and
+ modules handlers
+Date: Sat, 19 Sep 2015 09:00:23 -0700
+Message-ID: <20150919160023.GC30445@sirena.org.uk>
+References: <1439832404-12424-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2584471279109546431=="
+Content-Type: multipart/mixed; boundary="===============4289908835730157205=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BE3FA265FCF
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:32:49 +0200 (CEST)
-In-Reply-To: <1442570334.7634.39.camel@loki>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2194B266015
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:32:53 +0200 (CEST)
+In-Reply-To: <1439832404-12424-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +21,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2584471279109546431==
+--===============4289908835730157205==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hUH5gZbnpyIv7Mn4"
+	protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
 Content-Disposition: inline
 
 
---hUH5gZbnpyIv7Mn4
+--vOmOzSkFvhd7u8Ms
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 18, 2015 at 10:58:54AM +0100, Liam Girdwood wrote:
-> On Mon, 2015-08-17 at 22:56 +0530, Vinod Koul wrote:
+On Mon, Aug 17, 2015 at 10:56:36PM +0530, Vinod Koul wrote:
 
-> > +				struct snd_soc_dai *dai)
-> > +{
-> > +	struct skl_pipe_params p_params = {0};
-> > +
-> > +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+> +static int skl_tplg_bind_unbind_pipes(struct skl_module_cfg *src_module,
+> +	struct skl_module_cfg *sink_module, struct skl_sst *ctx, bool bind)
+> +{
+> +	int ret;
+> +
+> +	if (!bind) {
+> +		ret =3D skl_stop_pipe(ctx, src_module->pipe);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret =3D skl_unbind_modules(ctx, src_module, sink_module);
+> +	} else {
+> +		ret =3D skl_bind_modules(ctx, src_module, sink_module);
+> +	}
+> +
+> +	return ret;
+> +}
 
-> Seeing a lot of dev_dbg(__func__) in this series that really are just
-> tracing. Probably best to trace the calls properly or remove if it's
-> just development debugging.
+Can we *please* stop having these functions which optionally do several
+different things with nothing at all shared between the different paths?
+It just adds a layer of indentation in the function and makes everything
+harder to read (including at the call site - how does the reader know if
+a given call will bind or unbind?).
 
-It's all through the whole Intel DSP codebase.  :(
+I'm sure I've raised this before.
 
---hUH5gZbnpyIv7Mn4
+> +static bool skl_tplg_is_pipe_mem_available(struct skl *skl,
+> +                               struct skl_module_cfg *mconfig)
+
+I'm not seeing any users of this function (unlike the mcps checker).
+
+> +	if (skl->resource.mem + mconfig->pipe->memory_pages > skl->resource.max=
+_mem) {
+> +		dev_err(ctx->dev, "exceeds ppl memory available=3D%d > mem=3D%d\n",
+> +				skl->resource.max_mem, skl->resource.mem);
+> +		return false;
+> +	}
+
+I'm not sure how the user is going to be able to tell what exceeded the
+maximum memory here. =20
+
+> +static bool skl_tplg_is_pipe_mcps_available(struct skl *skl,
+> +				struct skl_module_cfg *mconfig)
+
+This looks an awful lot like the memory check.  Can we make a struct or
+ideally array for the constraints and then have a single function which
+checks them all?
+
+> +	list_for_each_entry(p, &w->sinks, list_source) {
+> +		if ((p->sink->priv =3D=3D NULL)
+> +			&& (!is_skl_dsp_widget_type(w)))
+> +			continue;
+> +
+> +		if ((p->sink->priv !=3D NULL) && (p->connect)
+> +			&& (is_skl_dsp_widget_type(p->sink))) {
+
+This is harder to read with the extra brackets.
+
+--vOmOzSkFvhd7u8Ms
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV/YyrAAoJECTWi3JdVIfQLfoH/25Lsaxw1ooZCYz9zhrBxqX8
-iYpqcRUvNxHQuqWUf48QMy9OJUpoqFARHdAT3/ZUsYsW+MF18LfMC7jE2hWEcXTp
-jx7FhlxvvHpgxaYZdwVvkDZXozFsRZBQz+oeScBdFo4hJ15OS7lrKjJdDAKO77rU
-6xX9mmQYDJgB9O49otGyfsuxiAnSjJr91WUewNSxJabMbxOAI7ngroHNY+7SGA9v
-himwDLi7NYXiNEFwlTZPZpQXixCApOsl01USvJyDspCtmzdy8HWo41DVzX+dX4cd
-j56zI/Xv9YOlaSANdIcNJ1wPDTQf3h4UUq3NxHxVPsqjmd3rqyxpYyEbdTPuWp4=
-=UArw
+iQEcBAEBCAAGBQJV/YaTAAoJECTWi3JdVIfQ58wH+wZsDdTw/ZucWHMSY2sp8xKE
+Ku2WvIWYkZZNaKdLPihajRpkiVmYXhhZlNNlkQq2Gyj3+4PWhcr3PMAq9PeFf3iZ
+nDSfIi5Ao+TrIaaSWS6ASPkz6DuS9rsEVXzBZfEDJQBXMsoh6J907DSMv0rlSSsl
+zc/5eXFOslh3x3RhxAPAk169LffDkMl34ooCf6V+kjXCwHSb60Zwjrb+LxWeuR2L
+chxndKsYYNRVLnkfuM8YemTKDudb3ZEr/OydJ0YU3DWn+utWvVyKCNiXLG4z+TPI
+QRkrQV/sFWDA8+r+mKOfAMO5vvQP1MV64Kfx519+Lins14QQqj9z8/aG1Q7vJ9s=
+=0hIw
 -----END PGP SIGNATURE-----
 
---hUH5gZbnpyIv7Mn4--
+--vOmOzSkFvhd7u8Ms--
 
---===============2584471279109546431==
+--===============4289908835730157205==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2584471279109546431==--
+--===============4289908835730157205==--
