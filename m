@@ -1,26 +1,32 @@
-From: undefined@vger.kernel.org
-Subject: Re: [RESEND PATCH 1/1] ASoC: fsl_ssi: Fix checking of dai format for
- AC97 mode
-Date: Fri, 18 Sep 2015 19:37:35 -0500
-Message-ID: <55FCAE4F.9040904@tabi.org>
-References: <409ab77432bd0553502b75ab98089bb7ecdb5018.1442394728.git.Adam.Thomson.Opensource@diasemi.com>
+From: undefined@alsa-project.org
+Subject: Re: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal
+	inversions
+Date: Fri, 18 Sep 2015 19:51:16 -0500
+Message-ID: <55FCB184.2030702@tabi.org>
+References: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
+ <20150917175927.GB2544@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <409ab77432bd0553502b75ab98089bb7ecdb5018.1442394728.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, support.opensource@diasemi.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75EAE26049B
+ for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2015 02:51:18 +0200 (CEST)
+In-Reply-To: <20150917175927.GB2544@Asurada-CZ80>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, =?UTF-8?Q?Beno=c3=aet_Th=c3=a9baudeau?= <benoit@wsystem.com>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adam Thomson wrote:
-> Current code incorrectly treats dai format for AC97 as bit mask
-> whereas it's actually an integer value. This causes DAI formats
-> other than AC97 (e.g. DSP_B) to trigger AC97 related code,
-> which is incorrect and breaks functionality. This patch fixes
-> the code to correctly compare values to determine AC97 or not.
->
-> Signed-off-by: Adam Thomson<Adam.Thomson.Opensource@diasemi.com>
+Nicolin Chen wrote:
+> Looks like the same configurations of fsl_ssi, so it should be fine:
 
-Acked-by: Timur Tabi <timur@tabi.org>
+I'm so glad I ignored the IMX driver when I wrote fsl_ssi.c. :-)
