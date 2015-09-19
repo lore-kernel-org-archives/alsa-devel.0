@@ -1,123 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: add Digital Playback Volume
-	support" to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:05 -0700
-Message-ID: <E1ZdSFd-000437-KF@finisterre>
-References: <87wpvo1rj8.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH RFC] ASoC: simple-card: Update clocks binding for
+ simple-card DAI subnodes
+Date: Sat, 19 Sep 2015 11:42:25 -0700
+Message-ID: <20150919184225.GR30445@sirena.org.uk>
+References: <1441977482-29215-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B52B22605E1
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:35 +0200 (CEST)
-In-Reply-To: <87wpvo1rj8.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rE45P3aZNSuYx5ND"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1441977482-29215-1-git-send-email-jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: ak4613: add Digital Playback Volume support
+--rE45P3aZNSuYx5ND
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Fri, Sep 11, 2015 at 04:18:02PM +0300, Jyri Sarha wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> The updated binding provides a way to set clock-ID and direction
+> parameters for DAI drivers set_sysclk() call back.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> I proposed something similar about a year ago, but Mark rejected that
+> at the time. This RFC is to start that discussion again. This time
+> before I do any code changes.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+What's the use case again?  Can we address this by converting the
+relevant drivers to the clock API (or improving their clock API
+support)?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--rE45P3aZNSuYx5ND
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJV/ayQAAoJECTWi3JdVIfQoPMH/REGqzKm/zlH1tR3M/nS+tpH
+IT5NsRbtBx6g8pOfNM6HiYrEqxdpX+/FFm/+3WJ8HjT5OMlClWbCxMSakMVFwM9R
+1Qk7jgx7bx+8b85EuGjCL7PqbDam3VKhJhCuS1JEMtYG6pXOSBKUEivGm/u6veAs
+HXFSxc6N9Z77IbwLle7NqnOLjrElbVBfz2Aj9WafDD1v4ZpakKr4X6tqaqHxeeIc
+iz75Tyg6m6onIkEUsQKdeTK4k9TU0bwVTVFJXscaHJiOxuF7cAb037KEdFWZuN3h
+w4mCLkzoyRTt9we7gIAh1fbgEe6OhDeGFm3aEb9c/XgMWQtpsA9poUuwl3F4GGM=
+=MyE+
+-----END PGP SIGNATURE-----
 
->From e3a4d958d78e4f1709f3d4611849617ac9222a0c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 18 Sep 2015 00:52:44 +0000
-Subject: [PATCH] ASoC: ak4613: add Digital Playback Volume support
-
-For L/ROUT1 to L/ROUT6
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/ak4613.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index fd96a8f..07a2664 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -22,6 +22,7 @@
- #include <linux/regmap.h>
- #include <sound/soc.h>
- #include <sound/pcm_params.h>
-+#include <sound/tlv.h>
- 
- #define PW_MGMT1	0x00 /* Power Management 1 */
- #define PW_MGMT2	0x01 /* Power Management 2 */
-@@ -91,6 +92,31 @@ struct ak4613_interface {
- 	struct ak4613_formats playback;
- };
- 
-+/*
-+ * Playback Volume
-+ *
-+ * max : 0x00 : 0 dB
-+ *       ( 0.5 dB step )
-+ * min : 0xFE : -127.0 dB
-+ * mute: 0xFF
-+ */
-+static const DECLARE_TLV_DB_SCALE(out_tlv, -12750, 50, 1);
-+
-+static const struct snd_kcontrol_new ak4613_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume1", LOUT1, ROUT1,
-+			 0, 0xFF, 1, out_tlv),
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume2", LOUT2, ROUT2,
-+			 0, 0xFF, 1, out_tlv),
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume3", LOUT3, ROUT3,
-+			 0, 0xFF, 1, out_tlv),
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume4", LOUT4, ROUT4,
-+			 0, 0xFF, 1, out_tlv),
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume5", LOUT5, ROUT5,
-+			 0, 0xFF, 1, out_tlv),
-+	SOC_DOUBLE_R_TLV("Digital Playback Volume6", LOUT6, ROUT6,
-+			 0, 0xFF, 1, out_tlv),
-+};
-+
- static const struct reg_default ak4613_reg[] = {
- 	{ 0x0,  0x0f }, { 0x1,  0x07 }, { 0x2,  0x3f }, { 0x3,  0x20 },
- 	{ 0x4,  0x20 }, { 0x5,  0x55 }, { 0x6,  0x05 }, { 0x7,  0x07 },
-@@ -397,6 +423,8 @@ static int ak4613_resume(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
- 	.resume			= ak4613_resume,
- 	.set_bias_level		= ak4613_set_bias_level,
-+	.controls		= ak4613_snd_controls,
-+	.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
- 	.dapm_widgets		= ak4613_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
- 	.dapm_routes		= ak4613_intercon,
--- 
-2.5.0
+--rE45P3aZNSuYx5ND--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
