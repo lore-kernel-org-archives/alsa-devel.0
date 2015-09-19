@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/15] ALSA: firewire-lib: rename macros with
-	AM824 prefix
-Date: Sat, 19 Sep 2015 11:22:01 +0900
-Message-ID: <1442629322-15457-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/15] ALSA: firewire-lib: add data block
+	processing layer for AM824 format
+Date: Sat, 19 Sep 2015 11:21:55 +0900
+Message-ID: <1442629322-15457-9-git-send-email-o-takashi@sakamocchi.jp>
 References: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C155260526
+ by alsa0.perex.cz (Postfix) with ESMTP id 13ED02604F8
  for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2015 04:22:14 +0200 (CEST)
 In-Reply-To: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,221 +25,259 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit renames some macros just related to AM824 format. In later
-commit, they're moved to AM824 layer.
+This commit adds data block processing layer for AM824 format. The new
+layer initializes streaming layer with its value for fmt field.
+
+Currently, most implementation of data block processing still remains
+streaming layer. In later commits, these codes will be moved to the layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c            |  4 ++--
- sound/firewire/amdtp-stream.h            | 14 +++++++-------
- sound/firewire/bebob/bebob_pcm.c         |  4 ++--
- sound/firewire/bebob/bebob_stream.c      |  6 +++---
- sound/firewire/dice/dice-pcm.c           |  4 ++--
- sound/firewire/fireworks/fireworks.c     | 12 ++++++------
- sound/firewire/fireworks/fireworks_pcm.c |  4 ++--
- sound/firewire/oxfw/oxfw-pcm.c           |  4 ++--
- sound/firewire/oxfw/oxfw-stream.c        |  4 ++--
- 9 files changed, 28 insertions(+), 28 deletions(-)
+ sound/firewire/Makefile                     |  2 +-
+ sound/firewire/amdtp-am824.c                | 26 ++++++++++++++++++++++++++
+ sound/firewire/amdtp-am824.h                |  8 ++++++++
+ sound/firewire/amdtp-stream.c               |  7 ++++---
+ sound/firewire/amdtp-stream.h               |  3 ++-
+ sound/firewire/bebob/bebob.h                |  2 +-
+ sound/firewire/bebob/bebob_stream.c         |  8 ++++----
+ sound/firewire/dice/dice-stream.c           |  2 +-
+ sound/firewire/dice/dice.h                  |  2 +-
+ sound/firewire/fireworks/fireworks.h        |  2 +-
+ sound/firewire/fireworks/fireworks_stream.c |  2 +-
+ sound/firewire/oxfw/oxfw-stream.c           |  2 +-
+ sound/firewire/oxfw/oxfw.h                  |  2 +-
+ 13 files changed, 52 insertions(+), 16 deletions(-)
+ create mode 100644 sound/firewire/amdtp-am824.c
+ create mode 100644 sound/firewire/amdtp-am824.h
 
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 102e342..6a8a713 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,5 +1,5 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+-			 fcp.o cmp.o amdtp-stream.o
++			 fcp.o cmp.o amdtp-stream.o amdtp-am824.o
+ snd-oxfw-objs := oxfw.o
+ snd-isight-objs := isight.o
+ snd-scs1x-objs := scs1x.o
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+new file mode 100644
+index 0000000..da4b643
+--- /dev/null
++++ b/sound/firewire/amdtp-am824.c
+@@ -0,0 +1,26 @@
++/*
++ * AM824 format in Audio and Music Data Transmission Protocol (IEC 61883-6)
++ *
++ * Copyright (c) 2015 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "amdtp-am824.h"
++
++#define CIP_FMT_AM		0x10
++
++/**
++ * amdtp_am824_init - initialize an AMDTP stream structure to handle AM824
++ *		      data block
++ * @s: the AMDTP stream to initialize
++ * @unit: the target of the stream
++ * @dir: the direction of stream
++ * @flags: the packet transmission method to use
++ */
++int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
++		     enum amdtp_stream_direction dir, enum cip_flags flags)
++{
++	return amdtp_stream_init(s, unit, dir, flags, CIP_FMT_AM);
++}
++EXPORT_SYMBOL_GPL(amdtp_am824_init);
+diff --git a/sound/firewire/amdtp-am824.h b/sound/firewire/amdtp-am824.h
+new file mode 100644
+index 0000000..ed96ac5
+--- /dev/null
++++ b/sound/firewire/amdtp-am824.h
+@@ -0,0 +1,8 @@
++#ifndef SOUND_FIREWIRE_AMDTP_AM824_H_INCLUDED
++#define SOUND_FIREWIRE_AMDTP_AM824_H_INCLUDED
++
++#include "amdtp-stream.h"
++
++int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
++		     enum amdtp_stream_direction dir, enum cip_flags flags);
++#endif
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index cc640cd..e677b05 100644
+index f1418b7..62f98e1 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -202,8 +202,8 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s,
- 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
+@@ -11,7 +11,6 @@
+ #include <linux/firewire.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+-#include <linux/sched.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+@@ -78,9 +77,11 @@ static void pcm_period_tasklet(unsigned long data);
+  * @unit: the target of the stream
+  * @dir: the direction of stream
+  * @flags: the packet transmission method to use
++ * @fmt: the value of fmt field in CIP header
+  */
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+-		      enum amdtp_stream_direction dir, enum cip_flags flags)
++		      enum amdtp_stream_direction dir, enum cip_flags flags,
++		      unsigned int fmt)
+ {
+ 	s->unit = unit;
+ 	s->direction = dir;
+@@ -94,7 +95,7 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 	s->callbacked = false;
+ 	s->sync_slave = NULL;
  
- 	if (WARN_ON(amdtp_stream_running(s)) |
--	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
--	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
-+	    WARN_ON(pcm_channels > AM824_MAX_CHANNELS_FOR_PCM) |
-+	    WARN_ON(midi_channels > AM824_MAX_CHANNELS_FOR_MIDI))
- 		return -EINVAL;
+-	s->fmt = CIP_FMT_AM;
++	s->fmt = fmt;
  
- 	for (sfc = 0; sfc < ARRAY_SIZE(amdtp_rate_table); ++sfc) {
+ 	return 0;
+ }
 diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 3fb82c7..71f4f75 100644
+index 883bb1a..5f96aff 100644
 --- a/sound/firewire/amdtp-stream.h
 +++ b/sound/firewire/amdtp-stream.h
-@@ -81,9 +81,9 @@ enum cip_sfc {
- 	CIP_SFC_COUNT
- };
+@@ -4,6 +4,7 @@
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+ #include <linux/mutex.h>
++#include <linux/sched.h>
+ #include <sound/asound.h>
+ #include "packets-buffer.h"
  
--#define AMDTP_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
-+#define AM824_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
+@@ -174,7 +175,7 @@ struct amdtp_stream {
  
--#define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
-+#define AM824_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
- 					 SNDRV_PCM_FMTBIT_S32)
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		      enum amdtp_stream_direction dir,
+-		      enum cip_flags flags);
++		      enum cip_flags flags, unsigned int fmt);
+ void amdtp_stream_destroy(struct amdtp_stream *s);
  
+ int amdtp_stream_set_parameters(struct amdtp_stream *s,
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 72a1c5e..d3c9d8d 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -31,7 +31,7 @@
+ #include "../fcp.h"
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp-stream.h"
++#include "../amdtp-am824.h"
+ #include "../cmp.h"
  
-@@ -91,7 +91,7 @@ enum cip_sfc {
-  * This module supports maximum 64 PCM channels for one PCM stream
-  * This is for our convenience.
-  */
--#define AMDTP_MAX_CHANNELS_FOR_PCM	64
-+#define AM824_MAX_CHANNELS_FOR_PCM	64
- 
- /*
-  * AMDTP packet can include channels for MIDI conformant data.
-@@ -101,7 +101,7 @@ enum cip_sfc {
-  * This module supports maximum 1 MIDI conformant data channels.
-  * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
-  */
--#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
-+#define AM824_MAX_CHANNELS_FOR_MIDI	1
- 
- struct fw_unit;
- struct fw_iso_context;
-@@ -157,13 +157,13 @@ struct amdtp_stream {
- 	struct amdtp_stream *sync_slave;
- 
- 	/* For AM824 processing. */
--	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	struct snd_rawmidi_substream *midi[AM824_MAX_CHANNELS_FOR_MIDI * 8];
- 	int midi_fifo_limit;
--	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	int midi_fifo_used[AM824_MAX_CHANNELS_FOR_MIDI * 8];
- 	unsigned int pcm_channels;
- 	unsigned int midi_ports;
- 
--	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
-+	u8 pcm_positions[AM824_MAX_CHANNELS_FOR_PCM];
- 	u8 midi_position;
- 
- 	void (*transfer_samples)(struct amdtp_stream *s,
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index 8d8de4c..2fdc1f1 100644
---- a/sound/firewire/bebob/bebob_pcm.c
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -122,11 +122,11 @@ pcm_init_hw_params(struct snd_bebob *bebob,
- 			   SNDRV_PCM_INFO_MMAP_VALID;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
- 		s = &bebob->tx_stream;
- 		formations = bebob->tx_stream_formations;
- 	} else {
--		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
- 		s = &bebob->rx_stream;
- 		formations = bebob->rx_stream_formations;
- 	}
+ /* basic register addresses on DM1000/DM1100/DM1500 */
 diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index cf6402d..a2baa47 100644
+index 920a3b8..34bc3a4 100644
 --- a/sound/firewire/bebob/bebob_stream.c
 +++ b/sound/firewire/bebob/bebob_stream.c
-@@ -354,7 +354,7 @@ map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
- 			case 0x09:	/* Digital */
- 			default:
- 				location = pcm + sec_loc;
--				if (location >= AMDTP_MAX_CHANNELS_FOR_PCM) {
-+				if (location >= AM824_MAX_CHANNELS_FOR_PCM) {
- 					err = -ENOSYS;
- 					goto end;
- 				}
-@@ -872,8 +872,8 @@ parse_stream_formation(u8 *buf, unsigned int len,
- 		}
- 	}
- 
--	if (formation[i].pcm  > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    formation[i].midi > AMDTP_MAX_CHANNELS_FOR_MIDI)
-+	if (formation[i].pcm  > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    formation[i].midi > AM824_MAX_CHANNELS_FOR_MIDI)
- 		return -ENOSYS;
- 
- 	return 0;
-diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index 8cbcd5d..9b34319 100644
---- a/sound/firewire/dice/dice-pcm.c
-+++ b/sound/firewire/dice/dice-pcm.c
-@@ -133,11 +133,11 @@ static int init_hw_info(struct snd_dice *dice,
- 		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		hw->formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		hw->formats = AM824_IN_PCM_FORMAT_BITS;
- 		stream = &dice->tx_stream;
- 		pcm_channels = dice->tx_channels;
- 	} else {
--		hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		hw->formats = AM824_OUT_PCM_FORMAT_BITS;
- 		stream = &dice->rx_stream;
- 		pcm_channels = dice->rx_channels;
- 	}
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index c94a432..d5b19bc 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -138,12 +138,12 @@ get_hardware_info(struct snd_efw *efw)
- 	efw->midi_out_ports = hwinfo->midi_out_ports;
- 	efw->midi_in_ports = hwinfo->midi_in_ports;
- 
--	if (hwinfo->amdtp_tx_pcm_channels    > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    hwinfo->amdtp_tx_pcm_channels_2x > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    hwinfo->amdtp_tx_pcm_channels_4x > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    hwinfo->amdtp_rx_pcm_channels    > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    hwinfo->amdtp_rx_pcm_channels_2x > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    hwinfo->amdtp_rx_pcm_channels_4x > AMDTP_MAX_CHANNELS_FOR_PCM) {
-+	if (hwinfo->amdtp_tx_pcm_channels    > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    hwinfo->amdtp_tx_pcm_channels_2x > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    hwinfo->amdtp_tx_pcm_channels_4x > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    hwinfo->amdtp_rx_pcm_channels    > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    hwinfo->amdtp_rx_pcm_channels_2x > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    hwinfo->amdtp_rx_pcm_channels_4x > AM824_MAX_CHANNELS_FOR_PCM) {
- 		err = -ENOSYS;
+@@ -537,8 +537,8 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 	if (err < 0)
  		goto end;
- 	}
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 109fb1b..d27135b 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -159,11 +159,11 @@ pcm_init_hw_params(struct snd_efw *efw,
- 			   SNDRV_PCM_INFO_MMAP_VALID;
  
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
- 		s = &efw->tx_stream;
- 		pcm_channels = efw->pcm_capture_channels;
- 	} else {
--		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
- 		s = &efw->rx_stream;
- 		pcm_channels = efw->pcm_playback_channels;
- 	}
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index 217fe37..8d23341 100644
---- a/sound/firewire/oxfw/oxfw-pcm.c
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -134,11 +134,11 @@ static int init_hw_params(struct snd_oxfw *oxfw,
- 			   SNDRV_PCM_INFO_MMAP_VALID;
+-	err = amdtp_stream_init(&bebob->tx_stream, bebob->unit,
+-				AMDTP_IN_STREAM, CIP_BLOCKING);
++	err = amdtp_am824_init(&bebob->tx_stream, bebob->unit,
++			       AMDTP_IN_STREAM, CIP_BLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(&bebob->tx_stream);
+ 		destroy_both_connections(bebob);
+@@ -566,8 +566,8 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 	if (bebob->maudio_special_quirk)
+ 		bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC;
  
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
- 		stream = &oxfw->tx_stream;
- 		formats = oxfw->tx_stream_formats;
- 	} else {
--		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
- 		stream = &oxfw->rx_stream;
- 		formats = oxfw->rx_stream_formats;
- 	}
+-	err = amdtp_stream_init(&bebob->rx_stream, bebob->unit,
+-				AMDTP_OUT_STREAM, CIP_BLOCKING);
++	err = amdtp_am824_init(&bebob->rx_stream, bebob->unit,
++			       AMDTP_OUT_STREAM, CIP_BLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(&bebob->tx_stream);
+ 		amdtp_stream_destroy(&bebob->rx_stream);
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index e4c6c20..917860e 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -305,7 +305,7 @@ static int init_stream(struct snd_dice *dice, struct amdtp_stream *stream)
+ 		goto end;
+ 	resources->channels_mask = 0x00000000ffffffffuLL;
+ 
+-	err = amdtp_stream_init(stream, dice->unit, dir, CIP_BLOCKING);
++	err = amdtp_am824_init(stream, dice->unit, dir, CIP_BLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(stream);
+ 		fw_iso_resources_destroy(resources);
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index 29578c1..101550ac 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -34,7 +34,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+ 
+-#include "../amdtp-stream.h"
++#include "../amdtp-am824.h"
+ #include "../iso-resources.h"
+ #include "../lib.h"
+ #include "dice-interface.h"
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index d54f171..c7cb7de 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -29,7 +29,7 @@
+ 
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp-stream.h"
++#include "../amdtp-am824.h"
+ #include "../cmp.h"
+ #include "../lib.h"
+ 
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 85a72e6..8cac5b9 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -31,7 +31,7 @@ init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_init(stream, efw->unit, s_dir, CIP_BLOCKING);
++	err = amdtp_am824_init(stream, efw->unit, s_dir, CIP_BLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(stream);
+ 		cmp_connection_destroy(conn);
 diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 4982bef..0c40c00 100644
+index 318f78e..8368341 100644
 --- a/sound/firewire/oxfw/oxfw-stream.c
 +++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -483,8 +483,8 @@ int snd_oxfw_stream_parse_format(u8 *format,
- 		}
- 	}
+@@ -228,7 +228,7 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
+ 	if (err < 0)
+ 		goto end;
  
--	if (formation->pcm  > AMDTP_MAX_CHANNELS_FOR_PCM ||
--	    formation->midi > AMDTP_MAX_CHANNELS_FOR_MIDI)
-+	if (formation->pcm  > AM824_MAX_CHANNELS_FOR_PCM ||
-+	    formation->midi > AM824_MAX_CHANNELS_FOR_MIDI)
- 		return -ENOSYS;
+-	err = amdtp_stream_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
++	err = amdtp_am824_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(stream);
+ 		cmp_connection_destroy(conn);
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index 2c3d20b..2441459 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -28,7 +28,7 @@
+ #include "../fcp.h"
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp-stream.h"
++#include "../amdtp-am824.h"
+ #include "../cmp.h"
  
- 	return 0;
+ struct device_info {
 -- 
 2.1.4
