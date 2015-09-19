@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/15] ALSA: firewire-lib: add support
-	arbitrary value for fmt/fdf fields in CIP header
-Date: Sat, 19 Sep 2015 11:21:53 +0900
-Message-ID: <1442629322-15457-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/15] ALSA: firewire-lib: move PCM substream
+	constraint to AM824 layer
+Date: Sat, 19 Sep 2015 11:21:57 +0900
+Message-ID: <1442629322-15457-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F5A02604D6
+ by alsa0.perex.cz (Postfix) with ESMTP id 148612604FA
  for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2015 04:22:14 +0200 (CEST)
 In-Reply-To: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,119 +25,145 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some vendor specific protocol uses its own value for fmt/fdf fields in
-CIP header.
+In IEC 61883-6, PCM frames are transferred in Multi Bit Linear Audio data
+channel. The data channel transfers 16/20/24 bit PCM samples. Thus, PCM
+substream has a constrain about it.
 
-This commit support to set arbitrary values for the fields.
-
-In IEC 61883-6, NO-DATA code is defined for FDF field. A packet with this
-code includes no data even if it includes some data blocks. This commit
-still leaves a condition to handle this special packet.
+This commit moves codes related to the constraint from packet streaming
+layer to AM824 data block processing layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 31 +++++++++++++++++++++++--------
- sound/firewire/amdtp.h |  2 ++
- 2 files changed, 25 insertions(+), 8 deletions(-)
+ sound/firewire/amdtp-am824.c             | 20 ++++++++++++++++++++
+ sound/firewire/amdtp-am824.h             |  5 +++++
+ sound/firewire/amdtp-stream.c            |  5 -----
+ sound/firewire/bebob/bebob_pcm.c         |  2 +-
+ sound/firewire/dice/dice-pcm.c           |  2 +-
+ sound/firewire/fireworks/fireworks_pcm.c |  2 +-
+ sound/firewire/oxfw/oxfw-pcm.c           |  2 +-
+ 7 files changed, 29 insertions(+), 9 deletions(-)
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 5a3a452..b251f4b 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -59,8 +59,8 @@
-  * Audio and Music transfer protocol specific parameters
-  * only "Clock-based rate control mode" is supported
-  */
--#define CIP_FMT_AM		(0x10 << CIP_FMT_SHIFT)
--#define AMDTP_FDF_AM824		(0 << (CIP_FDF_SHIFT + 3))
-+#define CIP_FMT_AM		0x10
-+#define AMDTP_FDF_AM824		0x00
- #define AMDTP_FDF_NO_DATA	0xff
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+index f5edcbf..7adaba3 100644
+--- a/sound/firewire/amdtp-am824.c
++++ b/sound/firewire/amdtp-am824.c
+@@ -53,6 +53,26 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ EXPORT_SYMBOL_GPL(amdtp_am824_set_parameters);
  
- /* TODO: make these configurable */
-@@ -94,6 +94,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->callbacked = false;
- 	s->sync_slave = NULL;
- 
-+	s->fmt = CIP_FMT_AM;
+ /**
++ * amdtp_am824_add_pcm_hw_constraints - add hw constraints for PCM substream
++ * @s:		the AMDTP stream for AM824 data block, must be initialized.
++ * @runtime:	the PCM substream runtime
++ *
++ */
++int amdtp_am824_add_pcm_hw_constraints(struct amdtp_stream *s,
++				       struct snd_pcm_runtime *runtime)
++{
++	int err;
 +
- 	return 0;
- }
- EXPORT_SYMBOL(amdtp_stream_init);
-@@ -225,6 +227,8 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s,
- 	s->data_block_quadlets = s->pcm_channels + midi_channels;
- 	s->midi_ports = midi_ports;
- 
-+	s->fdf = AMDTP_FDF_AM824 | s->sfc;
++	err = amdtp_stream_add_pcm_hw_constraints(s, runtime);
++	if (err < 0)
++		return err;
 +
- 	/*
- 	 * In IEC 61883-6, one data block represents one event. In ALSA, one
- 	 * event equals to one PCM frame. But Dice has a quirk at higher
-@@ -691,8 +695,10 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << CIP_DBS_SHIFT) |
- 				s->data_block_counter);
--	buffer[1] = cpu_to_be32(CIP_EOH | CIP_FMT_AM | AMDTP_FDF_AM824 |
--				(s->sfc << CIP_FDF_SHIFT) | syt);
-+	buffer[1] = cpu_to_be32(CIP_EOH |
-+				((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
-+				((s->fdf << CIP_FDF_SHIFT) & CIP_FDF_MASK) |
-+				(syt & CIP_SYT_MASK));
++	/* AM824 in IEC 61883-6 can deliver 24bit data. */
++	return snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++}
++EXPORT_SYMBOL_GPL(amdtp_am824_add_pcm_hw_constraints);
++
++/**
+  * amdtp_am824_init - initialize an AMDTP stream structure to handle AM824
+  *		      data block
+  * @s: the AMDTP stream to initialize
+diff --git a/sound/firewire/amdtp-am824.h b/sound/firewire/amdtp-am824.h
+index cfc0d61..4aaed90 100644
+--- a/sound/firewire/amdtp-am824.h
++++ b/sound/firewire/amdtp-am824.h
+@@ -1,6 +1,8 @@
+ #ifndef SOUND_FIREWIRE_AMDTP_AM824_H_INCLUDED
+ #define SOUND_FIREWIRE_AMDTP_AM824_H_INCLUDED
  
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++#include <sound/pcm.h>
++
+ #include "amdtp-stream.h"
  
-@@ -732,6 +738,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 			    unsigned int *data_blocks, unsigned int syt)
+ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+@@ -8,6 +10,9 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 			       unsigned int midi_ports,
+ 			       bool double_pcm_frames);
+ 
++int amdtp_am824_add_pcm_hw_constraints(struct amdtp_stream *s,
++				       struct snd_pcm_runtime *runtime);
++
+ int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		     enum amdtp_stream_direction dir, enum cip_flags flags);
+ #endif
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 39ad8e8..06fbf23 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -140,11 +140,6 @@ int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
  {
- 	u32 cip_header[2];
-+	unsigned int fmt, fdf;
- 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
- 	struct snd_pcm_substream *pcm;
- 	unsigned int pcm_frames;
-@@ -745,8 +752,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	 * For convenience, also check FMT field is AM824 or not.
- 	 */
- 	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
--	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
--	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
-+	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH)) {
- 		dev_info_ratelimited(&s->unit->device,
- 				"Invalid CIP header for AMDTP: %08X:%08X\n",
- 				cip_header[0], cip_header[1]);
-@@ -755,10 +761,19 @@ static int handle_in_packet(struct amdtp_stream *s,
- 		goto end;
- 	}
+ 	int err;
  
-+	/* Check valid protocol or not. */
-+	fmt = (cip_header[1] & CIP_FMT_MASK) >> CIP_FMT_SHIFT;
-+	if (fmt != s->fmt) {
-+		dev_err(&s->unit->device,
-+			"Detect unexpected protocol: %08x %08x\n",
-+			cip_header[0], cip_header[1]);
-+		return -EIO;
-+	}
-+
- 	/* Calculate data blocks */
-+	fdf = (cip_header[1] & CIP_FDF_MASK) >> CIP_FDF_SHIFT;
- 	if (payload_quadlets < 3 ||
--	    ((cip_header[1] & CIP_FDF_MASK) ==
--				(AMDTP_FDF_NO_DATA << CIP_FDF_SHIFT))) {
-+	    (fmt == CIP_FMT_AM && fdf == AMDTP_FDF_NO_DATA)) {
- 		*data_blocks = 0;
- 	} else {
- 		data_block_quadlets =
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 6522925..883bb1a 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -128,6 +128,8 @@ struct amdtp_stream {
- 	unsigned int source_node_id_field;
- 	unsigned int data_block_quadlets;
- 	unsigned int data_block_counter;
-+	unsigned int fmt;
-+	unsigned int fdf;
- 	/* quirk: fixed interval of dbc between previos/current packets. */
- 	unsigned int tx_dbc_interval;
- 	/* quirk: indicate the value of dbc field in a first packet. */
+-	/* AM824 in IEC 61883-6 can deliver 24bit data */
+-	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
+-	if (err < 0)
+-		goto end;
+-
+ 	/*
+ 	 * Currently firewire-lib processes 16 packets in one software
+ 	 * interrupt callback. This equals to 2msec but actually the
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index c0f018a..50610ca 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -146,7 +146,7 @@ pcm_init_hw_params(struct snd_bebob *bebob,
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(s, runtime);
++	err = amdtp_am824_add_pcm_hw_constraints(s, runtime);
+ end:
+ 	return err;
+ }
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index 4e67b1d..f5f3007 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -156,7 +156,7 @@ static int init_hw_info(struct snd_dice *dice,
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
++	err = amdtp_am824_add_pcm_hw_constraints(stream, runtime);
+ end:
+ 	return err;
+ }
+diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
+index c30b2ff..f186ab7 100644
+--- a/sound/firewire/fireworks/fireworks_pcm.c
++++ b/sound/firewire/fireworks/fireworks_pcm.c
+@@ -187,7 +187,7 @@ pcm_init_hw_params(struct snd_efw *efw,
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(s, runtime);
++	err = amdtp_am824_add_pcm_hw_constraints(s, runtime);
+ end:
+ 	return err;
+ }
+diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+index 9c73930..bddd287 100644
+--- a/sound/firewire/oxfw/oxfw-pcm.c
++++ b/sound/firewire/oxfw/oxfw-pcm.c
+@@ -158,7 +158,7 @@ static int init_hw_params(struct snd_oxfw *oxfw,
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
++	err = amdtp_am824_add_pcm_hw_constraints(stream, runtime);
+ end:
+ 	return err;
+ }
 -- 
 2.1.4
