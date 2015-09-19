@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 13/15] ALSA: firewire-lib: rename PCM format
-	helper function
-Date: Sat, 19 Sep 2015 11:22:00 +0900
-Message-ID: <1442629322-15457-14-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/15] ALSA: firewire-lib: rename macros with
+	AM824 prefix
+Date: Sat, 19 Sep 2015 11:22:01 +0900
+Message-ID: <1442629322-15457-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 18C9E260509
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C155260526
  for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2015 04:22:14 +0200 (CEST)
 In-Reply-To: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,166 +25,221 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Setting the format of PCM substream to AMDTP stream structure is important
-to set a handler to copy actual PCM samples between buffers. The
-processing should be in data block processing layer because essentially
-it has no relationship to packet streaming.
-
-This commit renames PCM format setting function to prepare for integrating
-AM824 layer.
+This commit renames some macros just related to AM824 format. In later
+commit, they're moved to AM824 layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c            | 7 +++----
- sound/firewire/amdtp-stream.h            | 4 ++--
- sound/firewire/bebob/bebob_pcm.c         | 8 ++++----
- sound/firewire/dice/dice-pcm.c           | 6 ++----
- sound/firewire/fireworks/fireworks_pcm.c | 6 ++++--
- sound/firewire/oxfw/oxfw-pcm.c           | 4 ++--
- 6 files changed, 17 insertions(+), 18 deletions(-)
+ sound/firewire/amdtp-stream.c            |  4 ++--
+ sound/firewire/amdtp-stream.h            | 14 +++++++-------
+ sound/firewire/bebob/bebob_pcm.c         |  4 ++--
+ sound/firewire/bebob/bebob_stream.c      |  6 +++---
+ sound/firewire/dice/dice-pcm.c           |  4 ++--
+ sound/firewire/fireworks/fireworks.c     | 12 ++++++------
+ sound/firewire/fireworks/fireworks_pcm.c |  4 ++--
+ sound/firewire/oxfw/oxfw-pcm.c           |  4 ++--
+ sound/firewire/oxfw/oxfw-stream.c        |  4 ++--
+ 9 files changed, 28 insertions(+), 28 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 06fbf23..cc640cd 100644
+index cc640cd..e677b05 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -272,7 +272,7 @@ static void read_pcm_s32(struct amdtp_stream *s,
- 			 __be32 *buffer, unsigned int frames);
+@@ -202,8 +202,8 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s,
+ 	midi_channels = DIV_ROUND_UP(midi_ports, 8);
  
- /**
-- * amdtp_stream_set_pcm_format - set the PCM format
-+ * amdtp_am824_set_pcm_format - set the PCM format
-  * @s: the AMDTP stream to configure
-  * @format: the format of the ALSA PCM device
-  *
-@@ -280,8 +280,7 @@ static void read_pcm_s32(struct amdtp_stream *s,
-  * MIDI) and before the stream is started, and must not be changed while the
-  * stream is running.
-  */
--void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
--				 snd_pcm_format_t format)
-+void amdtp_am824_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
- {
- 	if (WARN_ON(amdtp_stream_pcm_running(s)))
- 		return;
-@@ -305,7 +304,7 @@ void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
- 		break;
- 	}
- }
--EXPORT_SYMBOL(amdtp_stream_set_pcm_format);
-+EXPORT_SYMBOL_GPL(amdtp_am824_set_pcm_format);
+ 	if (WARN_ON(amdtp_stream_running(s)) |
+-	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
+-	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
++	    WARN_ON(pcm_channels > AM824_MAX_CHANNELS_FOR_PCM) |
++	    WARN_ON(midi_channels > AM824_MAX_CHANNELS_FOR_MIDI))
+ 		return -EINVAL;
  
- /**
-  * amdtp_stream_pcm_prepare - prepare PCM device for running
+ 	for (sfc = 0; sfc < ARRAY_SIZE(amdtp_rate_table); ++sfc) {
 diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 984f02a..3fb82c7 100644
+index 3fb82c7..71f4f75 100644
 --- a/sound/firewire/amdtp-stream.h
 +++ b/sound/firewire/amdtp-stream.h
-@@ -190,8 +190,8 @@ void amdtp_stream_stop(struct amdtp_stream *s);
+@@ -81,9 +81,9 @@ enum cip_sfc {
+ 	CIP_SFC_COUNT
+ };
  
- int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
- 					struct snd_pcm_runtime *runtime);
--void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
--				 snd_pcm_format_t format);
-+void amdtp_am824_set_pcm_format(struct amdtp_stream *s,
-+				snd_pcm_format_t format);
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
- unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
- void amdtp_stream_pcm_abort(struct amdtp_stream *s);
+-#define AMDTP_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
++#define AM824_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
+ 
+-#define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
++#define AM824_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
+ 					 SNDRV_PCM_FMTBIT_S32)
+ 
+ 
+@@ -91,7 +91,7 @@ enum cip_sfc {
+  * This module supports maximum 64 PCM channels for one PCM stream
+  * This is for our convenience.
+  */
+-#define AMDTP_MAX_CHANNELS_FOR_PCM	64
++#define AM824_MAX_CHANNELS_FOR_PCM	64
+ 
+ /*
+  * AMDTP packet can include channels for MIDI conformant data.
+@@ -101,7 +101,7 @@ enum cip_sfc {
+  * This module supports maximum 1 MIDI conformant data channels.
+  * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
+  */
+-#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
++#define AM824_MAX_CHANNELS_FOR_MIDI	1
+ 
+ struct fw_unit;
+ struct fw_iso_context;
+@@ -157,13 +157,13 @@ struct amdtp_stream {
+ 	struct amdtp_stream *sync_slave;
+ 
+ 	/* For AM824 processing. */
+-	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
++	struct snd_rawmidi_substream *midi[AM824_MAX_CHANNELS_FOR_MIDI * 8];
+ 	int midi_fifo_limit;
+-	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
++	int midi_fifo_used[AM824_MAX_CHANNELS_FOR_MIDI * 8];
+ 	unsigned int pcm_channels;
+ 	unsigned int midi_ports;
+ 
+-	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
++	u8 pcm_positions[AM824_MAX_CHANNELS_FOR_PCM];
+ 	u8 midi_position;
+ 
+ 	void (*transfer_samples)(struct amdtp_stream *s,
 diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index 50610ca..8d8de4c 100644
+index 8d8de4c..2fdc1f1 100644
 --- a/sound/firewire/bebob/bebob_pcm.c
 +++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -220,8 +220,8 @@ pcm_capture_hw_params(struct snd_pcm_substream *substream,
+@@ -122,11 +122,11 @@ pcm_init_hw_params(struct snd_bebob *bebob,
+ 			   SNDRV_PCM_INFO_MMAP_VALID;
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		atomic_inc(&bebob->substreams_counter);
--	amdtp_stream_set_pcm_format(&bebob->tx_stream,
--				    params_format(hw_params));
-+
-+	amdtp_am824_set_pcm_format(&bebob->tx_stream, params_format(hw_params));
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
+ 		s = &bebob->tx_stream;
+ 		formations = bebob->tx_stream_formations;
+ 	} else {
+-		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		s = &bebob->rx_stream;
+ 		formations = bebob->rx_stream_formations;
+ 	}
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index cf6402d..a2baa47 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -354,7 +354,7 @@ map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
+ 			case 0x09:	/* Digital */
+ 			default:
+ 				location = pcm + sec_loc;
+-				if (location >= AMDTP_MAX_CHANNELS_FOR_PCM) {
++				if (location >= AM824_MAX_CHANNELS_FOR_PCM) {
+ 					err = -ENOSYS;
+ 					goto end;
+ 				}
+@@ -872,8 +872,8 @@ parse_stream_formation(u8 *buf, unsigned int len,
+ 		}
+ 	}
+ 
+-	if (formation[i].pcm  > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    formation[i].midi > AMDTP_MAX_CHANNELS_FOR_MIDI)
++	if (formation[i].pcm  > AM824_MAX_CHANNELS_FOR_PCM ||
++	    formation[i].midi > AM824_MAX_CHANNELS_FOR_MIDI)
+ 		return -ENOSYS;
  
  	return 0;
- }
-@@ -239,8 +239,8 @@ pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		atomic_inc(&bebob->substreams_counter);
--	amdtp_stream_set_pcm_format(&bebob->rx_stream,
--				    params_format(hw_params));
-+
-+	amdtp_am824_set_pcm_format(&bebob->rx_stream, params_format(hw_params));
- 
- 	return 0;
- }
 diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index f5f3007..8cbcd5d 100644
+index 8cbcd5d..9b34319 100644
 --- a/sound/firewire/dice/dice-pcm.c
 +++ b/sound/firewire/dice/dice-pcm.c
-@@ -243,8 +243,7 @@ static int capture_hw_params(struct snd_pcm_substream *substream,
- 		mutex_unlock(&dice->mutex);
+@@ -133,11 +133,11 @@ static int init_hw_info(struct snd_dice *dice,
+ 		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		hw->formats = AMDTP_IN_PCM_FORMAT_BITS;
++		hw->formats = AM824_IN_PCM_FORMAT_BITS;
+ 		stream = &dice->tx_stream;
+ 		pcm_channels = dice->tx_channels;
+ 	} else {
+-		hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		hw->formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		stream = &dice->rx_stream;
+ 		pcm_channels = dice->rx_channels;
  	}
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index c94a432..d5b19bc 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -138,12 +138,12 @@ get_hardware_info(struct snd_efw *efw)
+ 	efw->midi_out_ports = hwinfo->midi_out_ports;
+ 	efw->midi_in_ports = hwinfo->midi_in_ports;
  
--	amdtp_stream_set_pcm_format(&dice->tx_stream,
--				    params_format(hw_params));
-+	amdtp_am824_set_pcm_format(&dice->tx_stream, params_format(hw_params));
- 
- 	return 0;
- }
-@@ -265,8 +264,7 @@ static int playback_hw_params(struct snd_pcm_substream *substream,
- 		mutex_unlock(&dice->mutex);
+-	if (hwinfo->amdtp_tx_pcm_channels    > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    hwinfo->amdtp_tx_pcm_channels_2x > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    hwinfo->amdtp_tx_pcm_channels_4x > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    hwinfo->amdtp_rx_pcm_channels    > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    hwinfo->amdtp_rx_pcm_channels_2x > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    hwinfo->amdtp_rx_pcm_channels_4x > AMDTP_MAX_CHANNELS_FOR_PCM) {
++	if (hwinfo->amdtp_tx_pcm_channels    > AM824_MAX_CHANNELS_FOR_PCM ||
++	    hwinfo->amdtp_tx_pcm_channels_2x > AM824_MAX_CHANNELS_FOR_PCM ||
++	    hwinfo->amdtp_tx_pcm_channels_4x > AM824_MAX_CHANNELS_FOR_PCM ||
++	    hwinfo->amdtp_rx_pcm_channels    > AM824_MAX_CHANNELS_FOR_PCM ||
++	    hwinfo->amdtp_rx_pcm_channels_2x > AM824_MAX_CHANNELS_FOR_PCM ||
++	    hwinfo->amdtp_rx_pcm_channels_4x > AM824_MAX_CHANNELS_FOR_PCM) {
+ 		err = -ENOSYS;
+ 		goto end;
  	}
- 
--	amdtp_stream_set_pcm_format(&dice->rx_stream,
--				    params_format(hw_params));
-+	amdtp_am824_set_pcm_format(&dice->rx_stream, params_format(hw_params));
- 
- 	return 0;
- }
 diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index f186ab7..109fb1b 100644
+index 109fb1b..d27135b 100644
 --- a/sound/firewire/fireworks/fireworks_pcm.c
 +++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -253,7 +253,8 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+@@ -159,11 +159,11 @@ pcm_init_hw_params(struct snd_efw *efw,
+ 			   SNDRV_PCM_INFO_MMAP_VALID;
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		atomic_inc(&efw->capture_substreams);
--	amdtp_stream_set_pcm_format(&efw->tx_stream, params_format(hw_params));
-+
-+	amdtp_am824_set_pcm_format(&efw->tx_stream, params_format(hw_params));
- 
- 	return 0;
- }
-@@ -270,7 +271,8 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		atomic_inc(&efw->playback_substreams);
--	amdtp_stream_set_pcm_format(&efw->rx_stream, params_format(hw_params));
-+
-+	amdtp_am824_set_pcm_format(&efw->rx_stream, params_format(hw_params));
- 
- 	return 0;
- }
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
+ 		s = &efw->tx_stream;
+ 		pcm_channels = efw->pcm_capture_channels;
+ 	} else {
+-		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		s = &efw->rx_stream;
+ 		pcm_channels = efw->pcm_playback_channels;
+ 	}
 diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index bddd287..217fe37 100644
+index 217fe37..8d23341 100644
 --- a/sound/firewire/oxfw/oxfw-pcm.c
 +++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -244,7 +244,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
- 		mutex_unlock(&oxfw->mutex);
+@@ -134,11 +134,11 @@ static int init_hw_params(struct snd_oxfw *oxfw,
+ 			   SNDRV_PCM_INFO_MMAP_VALID;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+-		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_IN_PCM_FORMAT_BITS;
+ 		stream = &oxfw->tx_stream;
+ 		formats = oxfw->tx_stream_formats;
+ 	} else {
+-		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		runtime->hw.formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		stream = &oxfw->rx_stream;
+ 		formats = oxfw->rx_stream_formats;
+ 	}
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 4982bef..0c40c00 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -483,8 +483,8 @@ int snd_oxfw_stream_parse_format(u8 *format,
+ 		}
  	}
  
--	amdtp_stream_set_pcm_format(&oxfw->tx_stream, params_format(hw_params));
-+	amdtp_am824_set_pcm_format(&oxfw->tx_stream, params_format(hw_params));
+-	if (formation->pcm  > AMDTP_MAX_CHANNELS_FOR_PCM ||
+-	    formation->midi > AMDTP_MAX_CHANNELS_FOR_MIDI)
++	if (formation->pcm  > AM824_MAX_CHANNELS_FOR_PCM ||
++	    formation->midi > AM824_MAX_CHANNELS_FOR_MIDI)
+ 		return -ENOSYS;
  
  	return 0;
- }
-@@ -265,7 +265,7 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 		mutex_unlock(&oxfw->mutex);
- 	}
- 
--	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
-+	amdtp_am824_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
- 
- 	return 0;
- }
 -- 
 2.1.4
