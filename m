@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm0010: fix error path" to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:03 -0700
-Message-ID: <E1ZdSFb-0003zq-4V@finisterre>
-References: <1442572341-28201-3-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: Applied "ASoC: hdmi: Remove obsolete dummy HDMI codec"
+	to the asoc tree
+Date: Sat, 19 Sep 2015 17:13:02 -0700
+Message-ID: <E1ZdSFa-0003ys-Dz@finisterre>
+References: <1432666751-24794-3-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F20D260631
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:30 +0200 (CEST)
-In-Reply-To: <1442572341-28201-3-git-send-email-sudipm.mukherjee@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2273B26063F
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:34 +0200 (CEST)
+In-Reply-To: <1432666751-24794-3-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudip@vectorindia.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm0010: fix error path
+   ASoC: hdmi: Remove obsolete dummy HDMI codec
 
 has been applied to the asoc tree at
 
@@ -52,73 +53,179 @@ to this mail.
 Thanks,
 Mark
 
->From f072f91aa7517386344476813ca0799e08fd0c35 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Fri, 18 Sep 2015 16:02:21 +0530
-Subject: [PATCH] ASoC: wm0010: fix error path
+>From 9529138276c852297967b5d3cc2f6dda3ddb9526 Mon Sep 17 00:00:00 2001
+From: Jyri Sarha <jsarha@ti.com>
+Date: Fri, 18 Sep 2015 14:06:38 +0300
+Subject: [PATCH] ASoC: hdmi: Remove obsolete dummy HDMI codec
 
-Fix the error path so that we can free the allocated memory on the error
-path instead of releasing them individually on each error.
+The hdmi stub codec has not been used since refactoring of OMAP HDMI
+audio support.
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm0010.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ sound/soc/codecs/Kconfig  |   4 --
+ sound/soc/codecs/Makefile |   2 -
+ sound/soc/codecs/hdmi.c   | 109 ----------------------------------------------
+ 3 files changed, 115 deletions(-)
+ delete mode 100644 sound/soc/codecs/hdmi.c
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index 7a1bc40..76b2f88 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -663,10 +663,8 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 		}
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 0c9733e..0142396 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -79,7 +79,6 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_MC13783 if MFD_MC13XXX
+ 	select SND_SOC_ML26124 if I2C
+-	select SND_SOC_HDMI_CODEC
+ 	select SND_SOC_PCM1681 if I2C
+ 	select SND_SOC_PCM1792A if SPI_MASTER
+ 	select SND_SOC_PCM3008
+@@ -442,9 +441,6 @@ config SND_SOC_BT_SCO
+ config SND_SOC_DMIC
+ 	tristate
  
- 		img_swap = kzalloc(len, GFP_KERNEL | GFP_DMA);
--		if (!img_swap) {
--			kfree(out);
--			goto abort;
--		}
-+		if (!img_swap)
-+			goto abort_out;
+-config SND_SOC_HDMI_CODEC
+-       tristate "HDMI stub CODEC"
+-
+ config SND_SOC_ES8328
+ 	tristate "Everest Semi ES8328 CODEC"
  
- 		/* We need to re-order for 0010 */
- 		byte_swap_64((u64 *)&pll_rec, img_swap, len);
-@@ -681,20 +679,16 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 		spi_message_add_tail(&t, &m);
- 
- 		ret = spi_sync(spi, &m);
--		if (ret != 0) {
-+		if (ret) {
- 			dev_err(codec->dev, "First PLL write failed: %d\n", ret);
--			kfree(img_swap);
--			kfree(out);
--			goto abort;
-+			goto abort_swap;
- 		}
- 
- 		/* Use a second send of the message to get the return status */
- 		ret = spi_sync(spi, &m);
--		if (ret != 0) {
-+		if (ret) {
- 			dev_err(codec->dev, "Second PLL write failed: %d\n", ret);
--			kfree(img_swap);
--			kfree(out);
--			goto abort;
-+			goto abort_swap;
- 		}
- 
- 		p = (u32 *)out;
-@@ -727,6 +721,10 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 
- 	return 0;
- 
-+abort_swap:
-+	kfree(img_swap);
-+abort_out:
-+	kfree(out);
- abort:
- 	/* Put the chip back into reset */
- 	wm0010_halt(codec);
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 4a32077..7d7cc1b 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -72,7 +72,6 @@ snd-soc-max98925-objs := max98925.o
+ snd-soc-max9850-objs := max9850.o
+ snd-soc-mc13783-objs := mc13783.o
+ snd-soc-ml26124-objs := ml26124.o
+-snd-soc-hdmi-codec-objs := hdmi.o
+ snd-soc-pcm1681-objs := pcm1681.o
+ snd-soc-pcm1792a-codec-objs := pcm1792a.o
+ snd-soc-pcm3008-objs := pcm3008.o
+@@ -264,7 +263,6 @@ obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
+ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+ obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
+-obj-$(CONFIG_SND_SOC_HDMI_CODEC) += snd-soc-hdmi-codec.o
+ obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+ obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+diff --git a/sound/soc/codecs/hdmi.c b/sound/soc/codecs/hdmi.c
+deleted file mode 100644
+index bd42ad3..0000000
+--- a/sound/soc/codecs/hdmi.c
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/*
+- * ALSA SoC codec driver for HDMI audio codecs.
+- * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+- * Author: Ricardo Neri <ricardo.neri@ti.com>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * version 2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+- * 02110-1301 USA
+- *
+- */
+-#include <linux/module.h>
+-#include <sound/soc.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
+-
+-#define DRV_NAME "hdmi-audio-codec"
+-
+-static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+-	SND_SOC_DAPM_INPUT("RX"),
+-	SND_SOC_DAPM_OUTPUT("TX"),
+-};
+-
+-static const struct snd_soc_dapm_route hdmi_routes[] = {
+-	{ "Capture", NULL, "RX" },
+-	{ "TX", NULL, "Playback" },
+-};
+-
+-static struct snd_soc_dai_driver hdmi_codec_dai = {
+-	.name = "hdmi-hifi",
+-	.playback = {
+-		.stream_name = "Playback",
+-		.channels_min = 2,
+-		.channels_max = 8,
+-		.rates = SNDRV_PCM_RATE_32000 |
+-			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+-			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+-			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
+-		.sig_bits = 24,
+-	},
+-	.capture = {
+-		.stream_name = "Capture",
+-		.channels_min = 2,
+-		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_32000 |
+-			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+-			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+-			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-			SNDRV_PCM_FMTBIT_S24_LE,
+-	},
+-
+-};
+-
+-#ifdef CONFIG_OF
+-static const struct of_device_id hdmi_audio_codec_ids[] = {
+-	{ .compatible = "linux,hdmi-audio", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, hdmi_audio_codec_ids);
+-#endif
+-
+-static struct snd_soc_codec_driver hdmi_codec = {
+-	.dapm_widgets = hdmi_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+-	.dapm_routes = hdmi_routes,
+-	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
+-	.ignore_pmdown_time = true,
+-};
+-
+-static int hdmi_codec_probe(struct platform_device *pdev)
+-{
+-	return snd_soc_register_codec(&pdev->dev, &hdmi_codec,
+-			&hdmi_codec_dai, 1);
+-}
+-
+-static int hdmi_codec_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_codec(&pdev->dev);
+-	return 0;
+-}
+-
+-static struct platform_driver hdmi_codec_driver = {
+-	.driver		= {
+-		.name	= DRV_NAME,
+-		.of_match_table = of_match_ptr(hdmi_audio_codec_ids),
+-	},
+-
+-	.probe		= hdmi_codec_probe,
+-	.remove		= hdmi_codec_remove,
+-};
+-
+-module_platform_driver(hdmi_codec_driver);
+-
+-MODULE_AUTHOR("Ricardo Neri <ricardo.neri@ti.com>");
+-MODULE_DESCRIPTION("ASoC generic HDMI codec driver");
+-MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:" DRV_NAME);
 -- 
 2.5.0
