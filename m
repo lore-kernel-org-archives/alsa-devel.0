@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Fix missing CLKDEV_LOOKUP
-	dependency" to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:04 -0700
-Message-ID: <E1ZdSFc-00041i-HG@finisterre>
-References: <1442561132.11434.0.camel@ingics.com>
+Subject: Applied "ASoC: davinci-mcasp: Fix devm_kasprintf
+	format string" to the asoc tree
+Date: Sat, 19 Sep 2015 17:13:05 -0700
+Message-ID: <E1ZdSFd-00043a-Vw@finisterre>
+References: <1442577770-30650-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 15AE526065C
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:38 +0200 (CEST)
-In-Reply-To: <1442561132.11434.0.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFD0F26065F
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:39 +0200 (CEST)
+In-Reply-To: <1442577770-30650-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Fix missing CLKDEV_LOOKUP dependency
+   ASoC: davinci-mcasp: Fix devm_kasprintf format string
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 9d70594760a94523c550d2cc0f47b3c0af63c8e9 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 18 Sep 2015 15:25:32 +0800
-Subject: [PATCH] ASoC: rockchip: Fix missing CLKDEV_LOOKUP dependency
+>From ab1fffe3a73c694d698645451ba61255ec4ba5e6 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 18 Sep 2015 15:02:50 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Fix devm_kasprintf format string
 
-Make SND_SOC_ROCKCHIP_MAX98090 and SND_SOC_ROCKCHIP_RT5645 depend on
-CLKDEV_LOOKUP to fix below build warning:
+The '\n' at the end of the format string is not needed. It adds an extra
+line break when doing
+cat /proc/interrupts
 
-warning: (SND_SOC_ROCKCHIP_MAX98090 && SND_SOC_ROCKCHIP_RT5645) selects
-SND_SOC_ROCKCHIP_I2S which has unmet direct dependencies (SOUND && !M68K &&
-!UML && SND && SND_SOC && CLKDEV_LOOKUP && SND_SOC_ROCKCHIP)
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index 58bae8e..5709057 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -17,7 +17,7 @@ config SND_SOC_ROCKCHIP_I2S
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 2c5a2c5..7d45d98 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1685,7 +1685,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
- config SND_SOC_ROCKCHIP_MAX98090
- 	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
--	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB
-+	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
- 	select SND_SOC_ROCKCHIP_I2S
- 	select SND_SOC_MAX98090
- 	select SND_SOC_TS3A227E
-@@ -27,7 +27,7 @@ config SND_SOC_ROCKCHIP_MAX98090
+ 	irq = platform_get_irq_byname(pdev, "common");
+ 	if (irq >= 0) {
+-		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common\n",
++		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common",
+ 					  dev_name(&pdev->dev));
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_common_irq_handler,
+@@ -1702,7 +1702,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
- config SND_SOC_ROCKCHIP_RT5645
- 	tristate "ASoC support for Rockchip boards using a RT5645/RT5650 codec"
--	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB
-+	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
- 	select SND_SOC_ROCKCHIP_I2S
- 	select SND_SOC_RT5645
- 	help
+ 	irq = platform_get_irq_byname(pdev, "rx");
+ 	if (irq >= 0) {
+-		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx\n",
++		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx",
+ 					  dev_name(&pdev->dev));
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_rx_irq_handler,
+@@ -1717,7 +1717,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq_byname(pdev, "tx");
+ 	if (irq >= 0) {
+-		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx\n",
++		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx",
+ 					  dev_name(&pdev->dev));
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						davinci_mcasp_tx_irq_handler,
 -- 
 2.5.0
