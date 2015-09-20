@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Fix checking of dai format for
-	AC97 mode" to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:01 -0700
-Message-ID: <E1ZdSFZ-0003xy-MI@finisterre>
-References: <1433511794-29284-1-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: Applied "ASoC: rt5645: Add jd_invert for Broadwell" to
+	the asoc tree
+Date: Sat, 19 Sep 2015 17:13:04 -0700
+Message-ID: <E1ZdSFc-00042B-TR@finisterre>
+References: <1442543948-10486-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3E1A2605D9
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:18 +0200 (CEST)
-In-Reply-To: <1433511794-29284-1-git-send-email-arnaud.mouiche@invoxia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 981B12605DC
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:21 +0200 (CEST)
+In-Reply-To: <1442543948-10486-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>
+To: John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
+   ASoC: rt5645: Add jd_invert for Broadwell
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From 5b64c173cdea21105eb4794487b3d593f0a2e6c3 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Wed, 16 Sep 2015 10:13:19 +0100
-Subject: [PATCH] ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
+>From 7d35e32cc50ad1f39a638436211730809a38b191 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Fri, 18 Sep 2015 10:55:59 +0800
+Subject: [PATCH] ASoC: rt5645: Add jd_invert for Broadwell
 
-Current code incorrectly treats dai format for AC97 as bit mask
-whereas it's actually an integer value. This causes DAI formats
-other than AC97 (e.g. DSP_B) to trigger AC97 related code,
-which is incorrect and breaks functionality. This patch fixes
-the code to correctly compare values to determine AC97 or not.
+Broadwell can not triger the IRQ falling and rising simultaneously,
+so it can not detect jack-in and jack-out simultaneously.
+We add a flag "jd_invert" to platform data. If this flag is set,
+codec IRQ will be set to invert that forces IRQ as pulse when jack-in
+and jack-out.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Acked-by: Timur Tabi <timur@tabi.org>
+Signed-off-by: John Lin <john.lin@realtek.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/sound/rt5645.h    | 2 ++
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ sound/soc/codecs/rt5645.h | 4 ++++
+ 3 files changed, 13 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 8ec6fb2..37c5cd4 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -249,7 +249,8 @@ MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index 22734bc..a5cf615 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -21,6 +21,8 @@ struct rt5645_platform_data {
+ 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
  
- static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
- {
--	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
-+	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
-+		SND_SOC_DAIFMT_AC97;
- }
+ 	unsigned int jd_mode;
++	/* Invert JD when jack insert */
++	bool jd_invert;
+ };
  
- static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
-@@ -947,7 +948,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 				CCSR_SSI_SCR_TCH_EN);
+ #endif
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 006dd02..7fc67d6 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2829,6 +2829,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_sync(dapm);
+ 			rt5645->jack_type = SND_JACK_HEADPHONE;
+ 		}
++		if (rt5645->pdata.jd_invert)
++			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
++				RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+ 	} else { /* jack out */
+ 		rt5645->jack_type = 0;
+ 
+@@ -2844,6 +2847,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_disable_pin(dapm, "LDO2");
+ 		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 		snd_soc_dapm_sync(dapm);
++		if (rt5645->pdata.jd_invert)
++			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
++				RT5645_JD_1_1_MASK, RT5645_JD_1_1_NOR);
  	}
  
--	if (fmt & SND_SOC_DAIFMT_AC97)
-+	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
- 		fsl_ssi_setup_ac97(ssi_private);
+ 	return rt5645->jack_type;
+@@ -3213,6 +3219,7 @@ static struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
++	.jd_invert = true,
+ };
  
- 	return 0;
+ static int buddy_quirk_cb(const struct dmi_system_id *id)
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 0e4cfc6..90325d9 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -1626,6 +1626,10 @@
+ #define RT5645_OT_P_NOR				(0x0 << 10)
+ #define RT5645_OT_P_INV				(0x1 << 10)
+ #define RT5645_IRQ_JD_1_1_EN			(0x1 << 9)
++#define RT5645_JD_1_1_MASK			(0x1 << 7)
++#define RT5645_JD_1_1_SFT			7
++#define RT5645_JD_1_1_NOR			(0x0 << 7)
++#define RT5645_JD_1_1_INV			(0x1 << 7)
+ 
+ /* IRQ Control 2 (0xbe) */
+ #define RT5645_IRQ_MB1_OC_MASK			(0x1 << 15)
 -- 
 2.5.0
