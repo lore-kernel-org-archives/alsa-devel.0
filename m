@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm0010: fix memory leak" to the asoc
-	tree
+Subject: Applied "ASoC: wm0010: fix error path" to the asoc tree
 Date: Sat, 19 Sep 2015 17:13:03 -0700
-Message-ID: <E1ZdSFb-00040J-FW@finisterre>
-References: <1442572341-28201-2-git-send-email-sudipm.mukherjee@gmail.com>
+Message-ID: <E1ZdSFb-0003zq-4V@finisterre>
+References: <1442572341-28201-3-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CBE42605D9
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:28 +0200 (CEST)
-In-Reply-To: <1442572341-28201-2-git-send-email-sudipm.mukherjee@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F20D260631
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:30 +0200 (CEST)
+In-Reply-To: <1442572341-28201-3-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm0010: fix memory leak
+   ASoC: wm0010: fix error path
 
 has been applied to the asoc tree at
 
@@ -53,50 +52,73 @@ to this mail.
 Thanks,
 Mark
 
->From 2ace47be5a315def8f493ca77aa59c077ade30a1 Mon Sep 17 00:00:00 2001
+>From f072f91aa7517386344476813ca0799e08fd0c35 Mon Sep 17 00:00:00 2001
 From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Fri, 18 Sep 2015 16:02:20 +0530
-Subject: [PATCH] ASoC: wm0010: fix memory leak
+Date: Fri, 18 Sep 2015 16:02:21 +0530
+Subject: [PATCH] ASoC: wm0010: fix error path
 
-We have requested for the firmware but we have missed releasing it both
-on success and on error path.
-While checking the code it turned out that the requested firmware is not
-even used. More over the same firmware is being loaded by
-wm0010_stage2_load().
+Fix the error path so that we can free the allocated memory on the error
+path instead of releasing them individually on each error.
 
 Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm0010.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/codecs/wm0010.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index 9d370a4..7a1bc40 100644
+index 7a1bc40..76b2f88 100644
 --- a/sound/soc/codecs/wm0010.c
 +++ b/sound/soc/codecs/wm0010.c
-@@ -577,7 +577,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 	struct wm0010_priv *wm0010 = snd_soc_codec_get_drvdata(codec);
- 	unsigned long flags;
- 	int ret;
--	const struct firmware *fw;
- 	struct spi_message m;
- 	struct spi_transfer t;
- 	struct dfw_pllrec pll_rec;
-@@ -623,14 +622,6 @@ static int wm0010_boot(struct snd_soc_codec *codec)
- 	wm0010->state = WM0010_OUT_OF_RESET;
- 	spin_unlock_irqrestore(&wm0010->irq_lock, flags);
+@@ -663,10 +663,8 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 		}
  
--	/* First the bootloader */
--	ret = request_firmware(&fw, "wm0010_stage2.bin", codec->dev);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to request stage2 loader: %d\n",
--			ret);
--		goto abort;
--	}
--
- 	if (!wait_for_completion_timeout(&wm0010->boot_completion,
- 					 msecs_to_jiffies(20)))
- 		dev_err(codec->dev, "Failed to get interrupt from DSP\n");
+ 		img_swap = kzalloc(len, GFP_KERNEL | GFP_DMA);
+-		if (!img_swap) {
+-			kfree(out);
+-			goto abort;
+-		}
++		if (!img_swap)
++			goto abort_out;
+ 
+ 		/* We need to re-order for 0010 */
+ 		byte_swap_64((u64 *)&pll_rec, img_swap, len);
+@@ -681,20 +679,16 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 		spi_message_add_tail(&t, &m);
+ 
+ 		ret = spi_sync(spi, &m);
+-		if (ret != 0) {
++		if (ret) {
+ 			dev_err(codec->dev, "First PLL write failed: %d\n", ret);
+-			kfree(img_swap);
+-			kfree(out);
+-			goto abort;
++			goto abort_swap;
+ 		}
+ 
+ 		/* Use a second send of the message to get the return status */
+ 		ret = spi_sync(spi, &m);
+-		if (ret != 0) {
++		if (ret) {
+ 			dev_err(codec->dev, "Second PLL write failed: %d\n", ret);
+-			kfree(img_swap);
+-			kfree(out);
+-			goto abort;
++			goto abort_swap;
+ 		}
+ 
+ 		p = (u32 *)out;
+@@ -727,6 +721,10 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 
+ 	return 0;
+ 
++abort_swap:
++	kfree(img_swap);
++abort_out:
++	kfree(out);
+ abort:
+ 	/* Put the chip back into reset */
+ 	wm0010_halt(codec);
 -- 
 2.5.0
