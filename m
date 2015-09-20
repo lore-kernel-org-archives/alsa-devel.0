@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: remove 64k sample rate support"
-	to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:04 -0700
-Message-ID: <E1ZdSFc-00041F-5d@finisterre>
-References: <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: fsl_ssi: Fix checking of dai format for
+	AC97 mode" to the asoc tree
+Date: Sat, 19 Sep 2015 17:13:01 -0700
+Message-ID: <E1ZdSFZ-0003xy-MI@finisterre>
+References: <1433511794-29284-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A06EB2605D8
+ by alsa0.perex.cz (Postfix) with ESMTP id A3E1A2605D9
  for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:18 +0200 (CEST)
-In-Reply-To: <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
+In-Reply-To: <1433511794-29284-1-git-send-email-arnaud.mouiche@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: remove 64k sample rate support
+   ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From ee92cfb030c16ddb01f6543968f13bcb61ed9da5 Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 18 Sep 2015 17:19:25 +0800
-Subject: [PATCH] ASoC: wm8962: remove 64k sample rate support
+>From 5b64c173cdea21105eb4794487b3d593f0a2e6c3 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Wed, 16 Sep 2015 10:13:19 +0100
+Subject: [PATCH] ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
 
-wm8962 can't support 64k sample rate. When playing a 64KHz wave file,
-'Unsupported rate 64000Hz' will be prompted.
+Current code incorrectly treats dai format for AC97 as bit mask
+whereas it's actually an integer value. This causes DAI formats
+other than AC97 (e.g. DSP_B) to trigger AC97 related code,
+which is incorrect and breaks functionality. This patch fixes
+the code to correctly compare values to determine AC97 or not.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Timur Tabi <timur@tabi.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b4eb975..293e47a 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2944,7 +2944,8 @@ static int wm8962_mute(struct snd_soc_dai *dai, int mute)
- 				   WM8962_DAC_MUTE, val);
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 8ec6fb2..37c5cd4 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -249,7 +249,8 @@ MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
+ 
+ static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
+ {
+-	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
++	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
++		SND_SOC_DAIFMT_AC97;
  }
  
--#define WM8962_RATES SNDRV_PCM_RATE_8000_96000
-+#define WM8962_RATES (SNDRV_PCM_RATE_8000_48000 |\
-+		SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+ static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
+@@ -947,7 +948,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 				CCSR_SSI_SCR_TCH_EN);
+ 	}
  
- #define WM8962_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+-	if (fmt & SND_SOC_DAIFMT_AC97)
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi_private);
+ 
+ 	return 0;
 -- 
 2.5.0
