@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove unused CPU dais"
-	to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:02 -0700
-Message-ID: <E1ZdSFa-0003zN-Pg@finisterre>
-References: <1438971749-874-14-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: wm8960: correct the max register value
+	of mic boost pga" to the asoc tree
+Date: Sat, 19 Sep 2015 17:13:03 -0700
+Message-ID: <E1ZdSFb-00040m-Qk@finisterre>
+References: <119b66684faaf7ff237dfccc864ec8e0561aefd3.1442566367.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CC6B2605D6
- for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:16 +0200 (CEST)
-In-Reply-To: <1438971749-874-14-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 90D672605D7
+ for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:18 +0200 (CEST)
+In-Reply-To: <119b66684faaf7ff237dfccc864ec8e0561aefd3.1442566367.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove unused CPU dais
+   ASoC: wm8960: correct the max register value of mic boost pga
 
 has been applied to the asoc tree at
 
@@ -53,73 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 5b97c0f18a1781f50db96baa020f913886d1972a Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 17 Aug 2015 22:56:44 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove unused CPU dais
+>From 8524bb0c7ac688a3cd6ba12dae6104c54d0566b9 Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Fri, 18 Sep 2015 17:19:43 +0800
+Subject: [PATCH] ASoC: wm8960: correct the max register value of mic boost pga
 
-We need to create CPU DAI for each endpoint instance. For this we
-should have one DMIC DAI, one HDA DAI and SSP DAI.  Thus, DMIC23,
-HDA-SPK/AMIC was not required so this patch removes them
+the max register value of mic boost pga should be 3.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 33 ---------------------------------
- 1 file changed, 33 deletions(-)
+ sound/soc/codecs/wm8960.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 7d617bf..bea2673 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -510,17 +510,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
--	.name = "DMIC23 Pin",
--	.ops = &skl_dmic_dai_ops,
--	.capture = {
--		.stream_name = "DMIC23 Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
--	},
--},
--{
- 	.name = "HD-Codec Pin",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
-@@ -538,28 +527,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
--{
--	.name = "HD-Codec-SPK Pin",
--	.ops = &skl_link_dai_ops,
--	.playback = {
--		.stream_name = "HD-Codec-SPK Tx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
--{
--	.name = "HD-Codec-AMIC Pin",
--	.ops = &skl_link_dai_ops,
--	.capture = {
--		.stream_name = "HD-Codec-AMIC Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
- };
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 70816f0..d9b43b0 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -234,9 +234,9 @@ SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
+ SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
+ 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
+ SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
+-		WM8960_RINPATH, 4, 4, 0, micboost_tlv),
++		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
+ SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT1 Volume",
+-		WM8960_LINPATH, 4, 4, 0, micboost_tlv),
++		WM8960_LINPATH, 4, 3, 0, micboost_tlv),
  
- static int skl_platform_open(struct snd_pcm_substream *substream)
+ SOC_DOUBLE_R_TLV("Playback Volume", WM8960_LDAC, WM8960_RDAC,
+ 		 0, 255, 0, dac_tlv),
 -- 
 2.5.0
