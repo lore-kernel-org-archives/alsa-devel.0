@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: correct the max register value
-	of mic boost pga" to the asoc tree
-Date: Sat, 19 Sep 2015 17:13:03 -0700
-Message-ID: <E1ZdSFb-00040m-Qk@finisterre>
-References: <119b66684faaf7ff237dfccc864ec8e0561aefd3.1442566367.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: wm8962: remove 64k sample rate support"
+	to the asoc tree
+Date: Sat, 19 Sep 2015 17:13:04 -0700
+Message-ID: <E1ZdSFc-00041F-5d@finisterre>
+References: <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 90D672605D7
+ by alsa0.perex.cz (Postfix) with ESMTP id A06EB2605D8
  for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2015 02:13:18 +0200 (CEST)
-In-Reply-To: <119b66684faaf7ff237dfccc864ec8e0561aefd3.1442566367.git.zidan.wang@freescale.com>
+In-Reply-To: <2e8075642e5d428b1136b3b7b18be5b7d30c358a.1442566367.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: correct the max register value of mic boost pga
+   ASoC: wm8962: remove 64k sample rate support
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 8524bb0c7ac688a3cd6ba12dae6104c54d0566b9 Mon Sep 17 00:00:00 2001
+>From ee92cfb030c16ddb01f6543968f13bcb61ed9da5 Mon Sep 17 00:00:00 2001
 From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 18 Sep 2015 17:19:43 +0800
-Subject: [PATCH] ASoC: wm8960: correct the max register value of mic boost pga
+Date: Fri, 18 Sep 2015 17:19:25 +0800
+Subject: [PATCH] ASoC: wm8962: remove 64k sample rate support
 
-the max register value of mic boost pga should be 3.
+wm8962 can't support 64k sample rate. When playing a 64KHz wave file,
+'Unsupported rate 64000Hz' will be prompted.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8962.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 70816f0..d9b43b0 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -234,9 +234,9 @@ SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
- SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
- 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
- SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
--		WM8960_RINPATH, 4, 4, 0, micboost_tlv),
-+		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
- SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT1 Volume",
--		WM8960_LINPATH, 4, 4, 0, micboost_tlv),
-+		WM8960_LINPATH, 4, 3, 0, micboost_tlv),
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index b4eb975..293e47a 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2944,7 +2944,8 @@ static int wm8962_mute(struct snd_soc_dai *dai, int mute)
+ 				   WM8962_DAC_MUTE, val);
+ }
  
- SOC_DOUBLE_R_TLV("Playback Volume", WM8960_LDAC, WM8960_RDAC,
- 		 0, 255, 0, dac_tlv),
+-#define WM8962_RATES SNDRV_PCM_RATE_8000_96000
++#define WM8962_RATES (SNDRV_PCM_RATE_8000_48000 |\
++		SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+ 
+ #define WM8962_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 -- 
 2.5.0
