@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: da7219: Add bindings
- documentation for DA7219 audio codec
-Date: Mon, 21 Sep 2015 09:40:05 -0700
-Message-ID: <20150921164005.GW30445@sirena.org.uk>
-References: <cover.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
- <381b367e0a4c6c9e00db74f1b0e91d383156ba86.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
- <20150919171017.GI30445@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460170E@SW-EX-MBX01.diasemi.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 0/9] Add DSP topology management for SKL
+Date: Mon, 21 Sep 2015 22:17:45 +0530
+Message-ID: <20150921164745.GO2381@localhost>
+References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
+ <20150903081454.GU13546@localhost>
+ <20150911114500.GK12027@sirena.org.uk>
+ <20150919165612.GA32072@sirena.org.uk>
+ <20150921035739.GH2381@localhost>
+ <20150921163353.GU30445@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7690976924592698577=="
+Content-Type: multipart/mixed; boundary="===============8812306274806517835=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E8198261519
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 18:40:59 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460170E@SW-EX-MBX01.diasemi.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15306261519
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 18:52:38 +0200 (CEST)
+In-Reply-To: <20150921163353.GU30445@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,90 +24,846 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jason Coughlan <jason.coughlan@diasemi.com>, Kumar Gala <galak@codeaurora.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7690976924592698577==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4nn+A2p41ba1mxGd"
+--===============8812306274806517835==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5vjQsMS/9MbKYGLq"
 Content-Disposition: inline
 
 
---4nn+A2p41ba1mxGd
+--5vjQsMS/9MbKYGLq
+Content-Type: multipart/mixed; boundary="3xoW37o/FfUZJwQG"
+Content-Disposition: inline
+
+
+--3xoW37o/FfUZJwQG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 21, 2015 at 10:36:04AM +0000, Opensource [Adam Thomson] wrote:
-> On September 19, 2015 18:10, Mark Brown wrote:
-
-> > > +- dlg,cp-mchange : Charge pump voltage tracking mode
-> > > +	["largest_vol", "dac_vol", "sig_mag"]
-> > > +- dlg,cp-vol-thresh : Charge pump volume threshold value (6-bit valu=
-e)
-> > > +	[ 0 - 0x3F ]
-
-> > Why are these in the device tree rather than runtime parameters?
-
-> From previous internal discussions, these seemed to be fire and forget
-> parameters, hence their inclusion in the DT binding, rather than as contr=
-ols.
-> Personally didn't see either needing runtime updates.
-
-Make them runtime configurable.  People can do an at boot runtime
-configuration if they like.
-
+On Mon, Sep 21, 2015 at 09:33:53AM -0700, Mark Brown wrote:
+> On Mon, Sep 21, 2015 at 09:27:39AM +0530, Vinod Koul wrote:
+> > We did decide to use DPCM, DAPM and topology here to solve manging the =
+DSP
+> > using these frameworks. yes hard coding a simple mixer and two pipes co=
+uld
+> > have made code look easy to follow but then we would be redoing those b=
+its
+> > as we scale these to defferent designs.
 >=20
-> > > +Required properties:
-> > > +- interrupt-parent : Specifies the phandle of the interrupt controll=
-er to which
-> > > +  the IRQs from DA7219 AAD block are delivered to.
-> > > +- interrupts : IRQ line info for DA7219 AAD block.
-> > > +  (See Documentation/devicetree/bindings/interrupt-controller/interr=
-upts.txt for
-> > > +   further information relating to interrupt properties)
+> Sure, and my point here is that that this process of redoing things
+> would most likely be a lot faster since it'd be a lot easier to follow
+> which would make the review a lot easier.
+>=20
+> > And to provide what we are trying here I have attached the SKL Topology=
+ conf
+> > file to give a picture of topology we are trying to build as a referenc=
+e.
+>=20
+> I think you missed the attachment here...
 
-> > Why is this not specified at the device level (the device does not
-> > appear to support other interrupts)?
+Oops sorry about that, here you go
 
-> Given the way that the driver code was structured, and that the IRQ is on=
-ly used
-> for accessory detection, I added it to the child node. The other option w=
-ould
-> be to flatten out bindings, and remove the child node. Felt like keeping =
-the
-> accessory detect items separate though was a sensible approach. What is y=
-our
-> feeling on this?
+--=20
+~Vinod
 
-The child node is fine for collecting the parameters but the chip
-interrupt line should be at the chip level.
+--3xoW37o/FfUZJwQG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="skl_i2s.conf"
+Content-Transfer-Encoding: quoted-printable
 
---4nn+A2p41ba1mxGd
+SectionControlMixer."media0_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."media1_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."media2_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."media3_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."speech_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."tone_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."dmic01_hifi_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."dmic23_hifi_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."dmic01_voice_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."dmic23_voice_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."codec0_in_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionControlMixer."codec1_in_mixin" {
+	index "1"
+=09
+	max "1"
+	invert "false"
+	no_pm "true"
+
+	channel."fl" {
+		reg "-1"
+		shift "0"
+	}
+
+	channel."fr" {
+		reg "-1"
+		shift "0"
+	}
+
+	ops."ctl" {
+		info "64"
+		get "64"
+		put "64"
+	}
+}
+
+SectionWidget."codec0_out" {
+
+	index "1"
+	type "aif_out"
+	no_pm "true"
+}
+
+SectionWidget."codec1_out" {
+
+	index "1"
+	type "aif_out"
+	no_pm "true"
+}
+
+SectionWidget."iDisp_out" {
+
+	index "1"
+	type "aif_out"
+	no_pm "true"
+}
+
+SectionWidget."dmic01_hifi" {
+
+	index "1"
+	type "aif_in"
+	no_pm "true"
+}
+
+SectionWidget."dmic23_hifi" {
+
+	index "1"
+	type "aif_in"
+	no_pm "true"
+}
+
+SectionWidget."codec0_in" {
+
+	index "1"
+	type "aif_in"
+	no_pm "true"
+}
+
+SectionWidget."codec1_in" {
+
+	index "1"
+	type "aif_in"
+	no_pm "true"
+}
+
+SectionWidget."media2_in cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "media2_in cpr vmix 0"
+}
+
+SectionWidget."media3_in cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "media3_in cpr vmix 0"
+}
+
+SectionWidget."media01_out cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "media01_out cpr vmix 0"
+}
+
+SectionWidget."codec0_in cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "codec0_in cpr vmix 0"
+}
+
+SectionWidget."codec1_in cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "codec1_in cpr vmix 0"
+}
+
+SectionWidget."dmic01_hifi cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "dmic01_hifi cpr vmix 0"
+}
+
+SectionWidget."dmic23_hifi cpr vmix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "3"
+	event_flags "15"
+	subseq "0"
+
+	data "dmic23_hifi cpr vmix 0"
+}
+
+SectionWidget."codec1_out cpr 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "4"
+	subseq "0"
+
+	data "codec1_out cpr 0"
+}
+
+SectionWidget."codec0_out cpr 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "4"
+	subseq "0"
+
+	data "codec0_out cpr 0"
+}
+
+SectionWidget."iDisp_out cpr 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "4"
+	subseq "0"
+
+	data "iDisp_out cpr 0"
+}
+
+SectionWidget."media0_out cpr 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	subseq "0"
+
+	data "media0_out cpr 0"
+}
+
+SectionWidget."media2_out cpr 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	subseq "0"
+
+	data "media2_out cpr 0"
+}
+
+SectionWidget."codec1_out_mixout mix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "1"
+	event_flags "15"
+	subseq "10"
+=09
+	data "codec1_out_mixout mix 0"
+
+	mixer [
+		"media0_mixin"
+		"media1_mixin"
+		"media2_mixin"
+		"media3_mixin"
+		"speech_mixin"
+		"tone_mixin"
+		"dmic01_hifi_mixin"
+		"dmic23_hifi_mixin"
+		"dmic01_voice_mixin"
+		"dmic23_voice_mixin"
+		"codec0_in_mixin"
+		"codec1_in_mixin"
+	]
+}
+
+SectionWidget."media0_mixout mix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "1"
+	event_flags "15"
+	subseq "10"
+=09
+	data "media0_mixout mix 0"
+
+	mixer [
+		"media0_mixin"
+		"media1_mixin"
+		"media2_mixin"
+		"media3_mixin"
+		"speech_mixin"
+		"tone_mixin"
+		"dmic01_hifi_mixin"
+		"dmic23_hifi_mixin"
+		"dmic01_voice_mixin"
+		"dmic23_voice_mixin"
+		"codec0_in_mixin"
+		"codec1_in_mixin"
+	]
+}
+
+SectionWidget."media2_mixout mix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "1"
+	event_flags "15"
+	subseq "10"
+=09
+	data "media2_mixout mix 0"
+
+	mixer [
+		"media0_mixin"
+		"media1_mixin"
+		"media2_mixin"
+		"media3_mixin"
+		"speech_mixin"
+		"tone_mixin"
+		"dmic01_hifi_mixin"
+		"dmic23_hifi_mixin"
+		"dmic01_voice_mixin"
+		"dmic23_voice_mixin"
+		"codec0_in_mixin"
+		"codec1_in_mixin"
+	]
+}
+
+SectionWidget."codec0_out_mixout mix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "1"
+	event_flags "15"
+	subseq "10"
+=09
+	data "codec0_out_mixout mix 0"
+
+	mixer [
+		"media0_mixin"
+		"media1_mixin"
+		"media2_mixin"
+		"media3_mixin"
+		"speech_mixin"
+		"tone_mixin"
+		"dmic01_hifi_mixin"
+		"dmic23_hifi_mixin"
+		"dmic01_voice_mixin"
+		"dmic23_voice_mixin"
+		"codec0_in_mixin"
+		"codec1_in_mixin"
+	]
+}
+
+SectionWidget."iDisp_out_mixout mix 0" {
+	index "1"
+	type "mixer"
+	no_pm "true"
+	event_type "1"
+	event_flags "15"
+	subseq "10"
+=09
+	data "iDisp_out_mixout mix 0"
+
+	mixer [
+		"media0_mixin"
+		"media1_mixin"
+		"media2_mixin"
+		"media3_mixin"
+		"speech_mixin"
+		"tone_mixin"
+		"dmic01_hifi_mixin"
+		"dmic23_hifi_mixin"
+		"dmic01_voice_mixin"
+		"dmic23_voice_mixin"
+		"codec0_in_mixin"
+		"codec1_in_mixin"
+	]
+}
+
+SectionWidget."media2_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "media2_mixin"
+}
+
+SectionWidget."dmic01_hifi_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "dmic01_hifi_mixin"
+}
+
+SectionWidget."dmic23_hifi_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "dmic23_hifi_mixin"
+}
+
+SectionWidget."media3_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "media3_mixin"
+}
+
+SectionWidget."codec0_in_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "codec0_in_mixin"
+}
+
+SectionWidget."codec1_in_mixin" {
+	index "1"
+	type "pga"
+	no_pm "true"
+	event_type "4"
+	event_flags "15"
+	subseq "10"
+
+	data "codec1_in_mixin"
+}
+
+SectionPCMCapabilities."System Playback" {
+
+	formats "S24_LE,S16_LE"
+	rate_min "48000"
+	rate_max "48000"
+	channels_min "2"
+	channels_max "2"
+}
+
+SectionGraph."Pipeline 1 Graph" {
+
+	index "1"
+
+	lines [
+		"media2_in cpr vmix 0, , System Playback"
+		"media2_mixin, , media2_in cpr vmix 0"
+		"media3_in cpr vmix 0, , Deepbuffer Playback"
+		"media3_mixin, , media3_in cpr vmix 0"
+		"codec1_out_mixout mix 0, media0_mixin, media0_mixin"
+		"codec1_out_mixout mix 0, media1_mixin, media1_mixin"
+		"codec1_out_mixout mix 0, media2_mixin, media2_mixin"
+		"codec1_out_mixout mix 0, media3_mixin, media3_mixin"
+		"codec1_out_mixout mix 0, speech_mixin, speech_mixin"
+		"codec1_out_mixout mix 0, tone_mixin, tone_mixin"
+		"codec1_out_mixout mix 0, dmic01_hifi_mixin, dmic01_hifi_mixin"
+		"codec1_out_mixout mix 0, dmic23_hifi_mixin, dmic23_hifi_mixin"
+		"codec1_out_mixout mix 0, dmic01_voice_mixin, dmic01_voice_mixin"
+		"codec1_out_mixout mix 0, dmic23_voice_mixin, dmic23_voice_mixin"
+		"codec1_out_mixout mix 0, codec0_in_mixin, codec0_in_mixin"
+		"codec1_out_mixout mix 0, codec1_in_mixin, codec1_in_mixin"
+		"codec1_out cpr 0, , codec1_out_mixout mix 0"
+		"codec1_out, , codec1_out cpr 0"
+		"codec0_out_mixout mix 0, media0_mixin, media0_mixin"
+		"codec0_out_mixout mix 0, media1_mixin, media1_mixin"
+		"codec0_out_mixout mix 0, media2_mixin, media2_mixin"
+		"codec0_out_mixout mix 0, media3_mixin, media3_mixin"
+		"codec0_out_mixout mix 0, speech_mixin, speech_mixin"
+		"codec0_out_mixout mix 0, tone_mixin, tone_mixin"
+		"codec0_out_mixout mix 0, dmic01_hifi_mixin, dmic01_hifi_mixin"
+		"codec0_out_mixout mix 0, dmic23_hifi_mixin, dmic23_hifi_mixin"
+		"codec0_out_mixout mix 0, dmic01_voice_mixin, dmic01_voice_mixin"
+		"codec0_out_mixout mix 0, dmic23_voice_mixin, dmic23_voice_mixin"
+		"codec0_out_mixout mix 0, codec0_in_mixin, codec0_in_mixin"
+		"codec0_out_mixout mix 0, codec1_in_mixin, codec1_in_mixin"
+		"codec0_out cpr 0, , codec0_out_mixout mix 0"
+		"codec0_out, , codec0_out cpr 0"
+		"iDisp_out_mixout mix 0, media0_mixin, media0_mixin"
+		"iDisp_out_mixout mix 0, media1_mixin, media1_mixin"
+		"iDisp_out_mixout mix 0, media2_mixin, media2_mixin"
+		"iDisp_out_mixout mix 0, media3_mixin, media3_mixin"
+		"iDisp_out_mixout mix 0, speech_mixin, speech_mixin"
+		"iDisp_out_mixout mix 0, tone_mixin, tone_mixin"
+		"iDisp_out_mixout mix 0, dmic01_hifi_mixin, dmic01_hifi_mixin"
+		"iDisp_out_mixout mix 0, dmic23_hifi_mixin, dmic23_hifi_mixin"
+		"iDisp_out_mixout mix 0, dmic01_voice_mixin, dmic01_voice_mixin"
+		"iDisp_out_mixout mix 0, dmic23_voice_mixin, dmic23_voice_mixin"
+		"iDisp_out_mixout mix 0, codec0_in_mixin, codec0_in_mixin"
+		"iDisp_out_mixout mix 0, codec1_in_mixin, codec1_in_mixin"
+		"iDisp_out cpr 0, , iDisp_out_mixout mix 0"
+		"iDisp_out, , iDisp_out cpr 0"
+		"System Capture, , media0_out cpr 0"
+		"media0_out cpr 0, , media0_mixout mix 0"
+		"media0_mixout mix 0, media0_mixin, media0_mixin"
+		"media0_mixout mix 0, media1_mixin, media1_mixin"
+		"media0_mixout mix 0, media2_mixin, media2_mixin"
+		"media0_mixout mix 0, media3_mixin, media3_mixin"
+		"media0_mixout mix 0, speech_mixin, speech_mixin"
+		"media0_mixout mix 0, tone_mixin, tone_mixin"
+		"media0_mixout mix 0, dmic01_hifi_mixin, dmic01_hifi_mixin"
+		"media0_mixout mix 0, dmic23_hifi_mixin, dmic23_hifi_mixin"
+		"media0_mixout mix 0, dmic01_voice_mixin, dmic01_voice_mixin"
+		"media0_mixout mix 0, dmic23_voice_mixin, dmic23_voice_mixin"
+		"media0_mixout mix 0, codec0_in_mixin, codec0_in_mixin"
+		"media0_mixout mix 0, codec1_in_mixin, codec1_in_mixin"
+		"Reference Capture, , media2_out cpr 0"
+		"media2_out cpr 0, , media2_mixout mix 0"
+		"media2_mixout mix 0, media0_mixin, media0_mixin"
+		"media2_mixout mix 0, media1_mixin, media1_mixin"
+		"media2_mixout mix 0, media2_mixin, media2_mixin"
+		"media2_mixout mix 0, media3_mixin, media3_mixin"
+		"media2_mixout mix 0, speech_mixin, speech_mixin"
+		"media2_mixout mix 0, tone_mixin, tone_mixin"
+		"media2_mixout mix 0, dmic01_hifi_mixin, dmic01_hifi_mixin"
+		"media2_mixout mix 0, dmic23_hifi_mixin, dmic23_hifi_mixin"
+		"media2_mixout mix 0, dmic01_voice_mixin, dmic01_voice_mixin"
+		"media2_mixout mix 0, dmic23_voice_mixin, dmic23_voice_mixin"
+		"media2_mixout mix 0, codec0_in_mixin, codec0_in_mixin"
+		"media2_mixout mix 0, codec1_in_mixin, codec1_in_mixin"
+		"codec0_in_mixin, , codec0_in cpr vmix 0"
+		"codec0_in cpr vmix 0, , codec0_in"
+		"codec1_in_mixin, , codec1_in cpr vmix 0"
+		"codec1_in cpr vmix 0, , codec1_in"
+		"dmic01_hifi_mixin, , dmic01_hifi cpr vmix 0"
+		"dmic01_hifi cpr vmix 0, , dmic01_hifi"
+		"dmic23_hifi_mixin, , dmic23_hifi cpr vmix 0"
+		"dmic23_hifi cpr vmix 0, , dmic23_hifi"
+	]
+}
+
+--3xoW37o/FfUZJwQG--
+
+--5vjQsMS/9MbKYGLq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWADLkAAoJECTWi3JdVIfQakwIAIX+ElL/aZogyl8doXykVw6s
-dBBUIeBR489gE6VyrPYpjMRGE36eRFiKCeGncc5miJCYZ3JgcHJ3EiT/j8CO0hZj
-Md1I6n344jYorNwwVKZMPqLIMVGx9fACsiI5SrTDKN/YjbEtW9s62C2Q00QNCi0o
-xCFoCXhcmCsxvGKOs1GOD62KhJL9EC5ygNZPj59uTfIzQck1u42YH0/7YYhP0Wz8
-XRXJrVgpza7+He0vwS/uroBEBxmd3M+saiT0+37+UxMQ+Q4ig3wuFH9oQHO5buzq
-5m8ifRbaRzSZVOVAMlZiVhSCTOww2kP9mMr63zm9ruae6uRilqobI9+/pFgzLz8=
-=wuX8
+iQIcBAEBAgAGBQJWADSxAAoJEHwUBw8lI4NHCtAP/0Py+byP+VfySvSpTubmmSiu
+TtgcgXBdlkp4Pen7IP5rOSYrujYDwmoFjKhNfjeH7toMus5FToAUn9KkKer1RX4L
+wCuJAADLAuchWGGcRgYLB1cEtO9jKhM0MFSMB2O4VnXflJlBP5UYy94od/YQ5h9i
+HT1BnYfgcQ+9s3tJnMvcspKnEjx3fUg8O7IJdvl1loDcXk0vcvdNTg/Qc1M5szeZ
+/FeNnFV4l5hIJBMoMVXf/+cgNDZqrTjom2CocZMEkrWNlD/TErL3sKAxikCXQP5p
+6EclDMu/nVXyXTKI3nAR1En2LT3zvuhWN9yVG22z1m/pHVDcfaB/FcEbbI5Mm6zG
+UzhX82zSsZh8S41zae8VNLjeaZBZIDCM5hzQAHbsPy75TAySxWS59UUnFfZIaajK
+AQs+kR7uAe7wA/Gh7xLksLMfsc5eMXVRdbLKjEfHjBZ1UECHCA+278xnYWaPdCH1
+zsN7zdwupNoUFAdbhb6mS6GX2w49u6aTWV7MQJpGNsldpBInc2TlrEjiBB1QjDAa
+9BiT6vW7n+H9bIv1IlxdxL5wwlUysQPtJdjbE1y5QPpcBpbHPCHTucYO48SxpMVH
+MIQotF7g69t7y+AMU9R1c0gLwG1hEGejJMFYStQpwQtfJqYZ12rGUA+TikvHBWed
+lD5IfXEv3YLljuqjnFNY
+=B7FM
 -----END PGP SIGNATURE-----
 
---4nn+A2p41ba1mxGd--
+--5vjQsMS/9MbKYGLq--
 
---===============7690976924592698577==
+--===============8812306274806517835==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7690976924592698577==--
+--===============8812306274806517835==--
