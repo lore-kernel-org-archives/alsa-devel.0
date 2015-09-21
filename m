@@ -1,34 +1,24 @@
-From: Yaowei Bai <bywxiaobai@163.com>
-Subject: [PATCH 1/4] sound/onyx: remove redundant case entry
-Date: Mon, 21 Sep 2015 21:57:11 +0800
-Message-ID: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH 4/4] sound/core/seq: make prioq_match return bool
+Date: Mon, 21 Sep 2015 16:11:00 +0200
+Message-ID: <1442844660.1876.2.camel@sipsolutions.net>
+References: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
+	 <1442843834-4648-4-git-send-email-bywxiaobai@163.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1442843834-4648-4-git-send-email-bywxiaobai@163.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, johannes@sipsolutions.net, k.kozlowski@samsung.com, elfring@users.sourceforge.net, fabf@skynet.be, lars@metafoo.de
+To: Yaowei Bai <bywxiaobai@163.com>, perex@perex.cz, tiwai@suse.com, k.kozlowski@samsung.com, elfring@users.sourceforge.net, fabf@skynet.be, lars@metafoo.de
 Cc: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Case ti->tag == 0 can be included in the last return,
-remove it.
 
-No functional change.
+> -static inline int prioq_match(struct snd_seq_event_cell *cell,
+> +static inline bool prioq_match(struct snd_seq_event_cell *cell,
+>  			      int client, int timestamp)
 
-Signed-off-by: Yaowei Bai <bywxiaobai@163.com>
----
- sound/aoa/codecs/onyx.c | 1 -
- 1 file changed, 1 deletion(-)
+I think you should fix up the indentation now.
 
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index a04edff..a407e1f 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -683,7 +683,6 @@ static int onyx_usable(struct codec_info_item *cii,
- 	mutex_unlock(&onyx->mutex);
- 
- 	switch (ti->tag) {
--	case 0: return 1;
- 	case 1:	return analog_enabled;
- 	case 2: return spdif_enabled;
- 	}
--- 
-1.9.1
+johannes
