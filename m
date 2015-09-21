@@ -1,67 +1,43 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v4 3/8] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 21 Sep 2015 16:41:20 +0300
-Message-ID: <56000900.3070404@ti.com>
-References: <cover.1442572860.git.jsarha@ti.com>
- <6fe9ab5dff972e6f228259d6818f3f481a11577d.1442572860.git.jsarha@ti.com>
- <20150919175450.GL30445@sirena.org.uk>
- <20150921093107.GF21098@n2100.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150921093107.GF21098@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, linux-omap@vger.kernel.org
+From: Yaowei Bai <bywxiaobai@163.com>
+Subject: [PATCH 3/4] sound/fabrics/layout: make aoa_fabric_layout_init return directly
+Date: Mon, 21 Sep 2015 21:57:13 +0800
+Message-ID: <1442843834-4648-3-git-send-email-bywxiaobai@163.com>
+References: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, johannes@sipsolutions.net, k.kozlowski@samsung.com, elfring@users.sourceforge.net, fabf@skynet.be, lars@metafoo.de
+Cc: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMjEvMTUgMTI6MzEsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToKPiBPbiBT
-YXQsIFNlcCAxOSwgMjAxNSBhdCAxMDo1NDo1MUFNIC0wNzAwLCBNYXJrIEJyb3duIHdyb3RlOgo+
-PiBPbiBGcmksIFNlcCAxOCwgMjAxNSBhdCAwMjowNjo0MFBNICswMzAwLCBKeXJpIFNhcmhhIHdy
-b3RlOgo+Pj4gKyNkZWZpbmUgU1BESUZfRk9STUFUUwkoU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUg
-fCBTTkRSVl9QQ01fRk1UQklUX1MxNl9CRSB8XAo+Pj4gKwkJCSBTTkRSVl9QQ01fRk1UQklUX1My
-MF8zTEUgfCBTTkRSVl9QQ01fRk1UQklUX1MyMF8zQkUgfFwKPj4+ICsJCQkgU05EUlZfUENNX0ZN
-VEJJVF9TMjRfM0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjRfM0JFIHxcCj4+PiArCQkJIFNORFJW
-X1BDTV9GTVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjRfQkUpCj4+PiArCj4+PiAr
-I2RlZmluZSBJMlNfRk9STUFUUwkoU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUgfCBTTkRSVl9QQ01f
-Rk1UQklUX1MxNl9CRSB8XAo+Pj4gKwkJCSBTTkRSVl9QQ01fRk1UQklUX1MxOF8zTEUgfCBTTkRS
-Vl9QQ01fRk1UQklUX1MxOF8zQkUgfFwKPj4+ICsJCQkgU05EUlZfUENNX0ZNVEJJVF9TMjBfM0xF
-IHwgU05EUlZfUENNX0ZNVEJJVF9TMjBfM0JFIHxcCj4+PiArCQkJIFNORFJWX1BDTV9GTVRCSVRf
-UzI0XzNMRSB8IFNORFJWX1BDTV9GTVRCSVRfUzI0XzNCRSB8XAo+Pj4gKwkJCSBTTkRSVl9QQ01f
-Rk1UQklUX1MyNF9MRSB8IFNORFJWX1BDTV9GTVRCSVRfUzI0X0JFIHxcCj4+PiArCQkJIFNORFJW
-X1BDTV9GTVRCSVRfUzMyX0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMzJfQkUpCj4+Cj4+IEknbSBu
-b3Qgc3VyZSBob3cgYWJzdHJhY3RlZCB0aGlzIEkyUyBhbmQgUy9QRElGIERBSSBidXNpbmVzcyBp
-cyAtIGl0Cj4+IGRvZXNuJ3QgZmVlbCBsaWtlIHNvbWV0aGluZyB0aGF0J3MgZ29pbmcgdG8gYmUg
-YSBwcm9wZXJ0eSBvZiBhbGwgSERNSQo+PiBkZXZpY2VzLCBhbmQgdGhlIHNwZWNpZmljIHNldHMg
-b2YgZm9ybWF0cyBhYm92ZSBjYXVzZSBtZSB0byByYWlzZSBhIGJpdAo+PiBvZiBhbiBleWVicm93
-LiAgU2hvdWxkIHRoaXMgYmUgYW4gaW50ZXJmYWNlIHdoZXJlIHRoZSBIRE1JIGNoaXAKPj4gcmVn
-aXN0ZXJzIG11bHRpcGxlIGludGVyZmFjZXMgaWYgaXQgaGFzIHRoZW0gaW5zdGVhZCBvZiBhdXRv
-bWF0aWNhbGx5Cj4+IGdldHRpbmcgdGhpcyBzcGxpdCBhcyBpcz8KPgo+IFRoZSBpbmNsdXNpb24g
-b2YgdGhlIDMyLWJpdCBmb3JtYXRzIGRvZXMgcmFpc2UgYW4gZXllYnJvdyBoZXJlIHRvby4KPiBB
-dWRpbyB0cmFuc21pc3Npb24gYWNyb3NzIHRoZSBIRE1JIGxpbmsgaXMgUy9QRElGLCBzdXBwb3J0
-aW5nIHVwIHRvCj4gMjQtYml0IHVuY29tcHJlc3NlZCBhdWRpbyAoYWthIEwtUENNKS4KPgo+IFRo
-ZSBkZXZpY2UgbWF5IGFjY2VwdCAzMiBiaXQgSTJTLCBidXQgaXQgd291bGQgaGF2ZSB0byBiZSB0
-cnVuY2F0ZWQgdG8KPiAyNCBiaXQgYmVmb3JlIHRyYW5zbWl0dGluZyBpdCB0byB0aGUgc2luay4g
-IFRoaXMgc2hvdWxkIGJlIG1lbnRpb25lZAo+IHNvbWV3aGVyZS4KPgoKVGhlcmUgaXMgIi5zaWdf
-Yml0cyA9IDI0IiBpbiBoZG1pX2kyc19kYWksIGJ1dCBJIGNhbiBhZGQgYW4gZXhwbGljaXQgCmNv
-bW1lbnQgYWJvdXQgaXQuCgpXZSBuZWVkZWQgMzJiaXQgZm9ybWF0IGluIHByYWN0aWNlIHVudGls
-IFBldGVyIGdvdCAyNF9MRSBwcm9wZXJseSAKd29ya2luZyB3aXRoIE1jQVNQLiBJIGp1c3QgdGhv
-dWdodCB0aGUgbWF5IHN0aWxsIGJlIHNvbWUgcGxhdGZvcm1zIG91dCAKdGhlcmUgdGhhdCBjYW4g
-bm90IHByb2R1Y2UgMjRiaXQgaTJzIHNhbXBsZXMgZm9yIHNvbWUgcmVhc29uLCBidXQgd29yayAK
-anVzdCBmaW5lIHdpdGggMzJiaXQgc2FtcGxlcy4gVGhvc2UgcGxhdGZvcm1zIHdvdWxkIGJlIGxp
-bWl0ZWQgdG8gbGVzcyAKdGhhbiAyNGJpdCBwcmVjaXNpb24gd2l0aG91dCAzMmJpdCBmb3JtYXRz
-LiBCdXQgYXMgc2FpZCwgaXQgaXMgbm90IApjcml0aWNhbCB0byB1cyBhbnkgbW9yZSBhbmQgSSBj
-YW4gZHJvcCB0aGUgMzJiaXQgZm9ybWF0cyBhcyB3ZWxsLgoKQlIsCkp5cmkKCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcg
-bGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVz
-a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+Catching the return value of soundbus_register_driver in
+aoa_fabric_layout_init is not necessary, let's return it
+directly.
+
+No functional change.
+
+Signed-off-by: Yaowei Bai <bywxiaobai@163.com>
+---
+ sound/aoa/fabrics/layout.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
+index 8f71f7e..b6ba091 100644
+--- a/sound/aoa/fabrics/layout.c
++++ b/sound/aoa/fabrics/layout.c
+@@ -1161,12 +1161,7 @@ static struct soundbus_driver aoa_soundbus_driver = {
+ 
+ static int __init aoa_fabric_layout_init(void)
+ {
+-	int err;
+-
+-	err = soundbus_register_driver(&aoa_soundbus_driver);
+-	if (err)
+-		return err;
+-	return 0;
++	return soundbus_register_driver(&aoa_soundbus_driver);
+ }
+ 
+ static void __exit aoa_fabric_layout_exit(void)
+-- 
+1.9.1
