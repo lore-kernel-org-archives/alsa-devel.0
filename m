@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/9] Add DSP topology management for SKL
-Date: Mon, 21 Sep 2015 09:33:53 -0700
-Message-ID: <20150921163353.GU30445@sirena.org.uk>
-References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <20150903081454.GU13546@localhost>
- <20150911114500.GK12027@sirena.org.uk>
- <20150919165612.GA32072@sirena.org.uk>
- <20150921035739.GH2381@localhost>
+Subject: Re: [PATCH v2 1/9] ASoC: Intel: Skylake: Add pipe and
+ modules handlers
+Date: Mon, 21 Sep 2015 09:36:05 -0700
+Message-ID: <20150921163605.GV30445@sirena.org.uk>
+References: <1439832404-12424-2-git-send-email-vinod.koul@intel.com>
+ <20150919160023.GC30445@sirena.org.uk>
+ <20150921033713.GF2381@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3225473529726706022=="
+Content-Type: multipart/mixed; boundary="===============7109290840101031845=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E74EB261519
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 18:34:29 +0200 (CEST)
-In-Reply-To: <20150921035739.GH2381@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id C54DA261519
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 18:36:36 +0200 (CEST)
+In-Reply-To: <20150921033713.GF2381@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,76 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3225473529726706022==
+--===============7109290840101031845==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7mIJwGTFTwAlEXlA"
+	protocol="application/pgp-signature"; boundary="nKvJs6ze6az+4fwY"
 Content-Disposition: inline
 
 
---7mIJwGTFTwAlEXlA
+--nKvJs6ze6az+4fwY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 21, 2015 at 09:27:39AM +0530, Vinod Koul wrote:
+On Mon, Sep 21, 2015 at 09:07:13AM +0530, Vinod Koul wrote:
+> On Sat, Sep 19, 2015 at 09:00:23AM -0700, Mark Brown wrote:
+> > On Mon, Aug 17, 2015 at 10:56:36PM +0530, Vinod Koul wrote:
 
-> I wouldn't have pinged but had been more than few weeks so was wondering if
-> this got missed. I did realise you were travelling and merge window came
-> up, but still thought Mark's typical turnaound is 1-2 weeks so was expecting
-> something. I do understand this take time but no harm in checking if it is
-> beyond usual window one expects.
+> > > +	if (skl->resource.mem + mconfig->pipe->memory_pages > skl->resource=
+=2Emax_mem) {
+> > > +		dev_err(ctx->dev, "exceeds ppl memory available=3D%d > mem=3D%d\n",
+> > > +				skl->resource.max_mem, skl->resource.mem);
+> > > +		return false;
+> > > +	}
 
-I'm also not going to merge large patches which have wide impact close
-to the merge window and I don't tend to review things without a view to
-merging them, especially not things that are more work to review.
+> > I'm not sure how the user is going to be able to tell what exceeded the
+> > maximum memory here. =20
 
-> We did decide to use DPCM, DAPM and topology here to solve manging the DSP
-> using these frameworks. yes hard coding a simple mixer and two pipes could
-> have made code look easy to follow but then we would be redoing those bits
-> as we scale these to defferent designs.
+> Module Id and Instance Id are printed before this but yes that is debug, =
+so
+> merging the two to error alone makes sense, will do that here
 
-Sure, and my point here is that that this process of redoing things
-would most likely be a lot faster since it'd be a lot easier to follow
-which would make the review a lot easier.
+They're printed at debug level so might not appear but this is an error
+message.
 
-> And to provide what we are trying here I have attached the SKL Topology conf
-> file to give a picture of topology we are trying to build as a reference.
-
-I think you missed the attachment here...
-
-> Also where you feel something is missing please do ask. Sometimes things are
-> perceived intuitive for us as we are doing this for quire some time but
-> may not be so for fresh eyes :)
-
-I have been doing this mostly but it's easy to miss things without the
-picture of where we're heading.
-
---7mIJwGTFTwAlEXlA
+--nKvJs6ze6az+4fwY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWADFwAAoJECTWi3JdVIfQ6nsH/2sr1zX7foebByxIWyfOS+pr
-ulJ1WzSkfY/FfIBbFXewvekijdfD8vIaLuU71ojWlOToljAO5C19M7iY4pvHfkWw
-lgbEMq/6NwngTOJ3In841+mod07QKClzWKx5dzmQKBYf7Ik663TdL3NkTpeUqKDc
-X7s9txYhlU3v29wfhi2kkm5bnhF9EfjyYEjMsE2fWBYI0MKjZea9l3ArB6n5K/i9
-xChwKXmxYprScVGYAWGuzyKBtr/dlV+9cSvisotuLv2V4zuzyf8DiUlXaWihafTl
-zrt9fGA/M3anxts8OWVzuOKPctpWJJvPzrhg69me2J4j1yi/vob24hoprT6Z3Dk=
-=0AVr
+iQEcBAEBCAAGBQJWADH0AAoJECTWi3JdVIfQcJ8H/0g16n/l5Glgri5kmOuOPu6F
+r1IDcMfQY69Sbr4C0CuIqdOEu3Uecd9Cqe1dYSr+xWnXrmnRp+n/qWv4YjWO87pE
+u6vMhm1DuVj4ntSM9dLwP685pX7pCQZur00da3QanQElAxCXsTMUZO0XXLcPorvf
+8OE2PfAG+kgZdwUeQNFiQHUoO1yzBPMR59lUpYbdrkY5TnexapIDfn+VP9p/LBIe
+lRSCb7MJqArzFL1ixR0sv0IEh/CBHEfDB18ag/M7auV4Yp80oIuEX448nyKd2oTJ
++SKzXiMMsbAYm/v29qk9WP28/flaEsHYdqSEOc3HwjtSA6bh1DjXxlh2S+MWvvU=
+=7Xt1
 -----END PGP SIGNATURE-----
 
---7mIJwGTFTwAlEXlA--
+--nKvJs6ze6az+4fwY--
 
---===============3225473529726706022==
+--===============7109290840101031845==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3225473529726706022==--
+--===============7109290840101031845==--
