@@ -1,17 +1,16 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v4 3/8] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 21 Sep 2015 10:31:08 +0100
-Message-ID: <20150921093107.GF21098@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH RFC v4 2/8] ALSA: pcm: add IEC958 channel status helper
+ for hw_params
+Date: Mon, 21 Sep 2015 10:37:48 +0100
+Message-ID: <20150921093748.GG21098@n2100.arm.linux.org.uk>
 References: <cover.1442572860.git.jsarha@ti.com>
- <6fe9ab5dff972e6f228259d6818f3f481a11577d.1442572860.git.jsarha@ti.com>
- <20150919175450.GL30445@sirena.org.uk>
+ <a7b69fb075b0ae993846cfb65abb20ecab5c9805.1442572860.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <20150919175450.GL30445@sirena.org.uk>
+In-Reply-To: <a7b69fb075b0ae993846cfb65abb20ecab5c9805.1442572860.git.jsarha@ti.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -21,38 +20,24 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBTZXAgMTksIDIwMTUgYXQgMTA6NTQ6NTFBTSAtMDcwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBGcmksIFNlcCAxOCwgMjAxNSBhdCAwMjowNjo0MFBNICswMzAwLCBKeXJpIFNhcmhh
-IHdyb3RlOgo+ID4gKyNkZWZpbmUgU1BESUZfRk9STUFUUwkoU05EUlZfUENNX0ZNVEJJVF9TMTZf
-TEUgfCBTTkRSVl9QQ01fRk1UQklUX1MxNl9CRSB8XAo+ID4gKwkJCSBTTkRSVl9QQ01fRk1UQklU
-X1MyMF8zTEUgfCBTTkRSVl9QQ01fRk1UQklUX1MyMF8zQkUgfFwKPiA+ICsJCQkgU05EUlZfUENN
-X0ZNVEJJVF9TMjRfM0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjRfM0JFIHxcCj4gPiArCQkJIFNO
-RFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjRfQkUpCj4gPiArCj4g
-PiArI2RlZmluZSBJMlNfRk9STUFUUwkoU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUgfCBTTkRSVl9Q
-Q01fRk1UQklUX1MxNl9CRSB8XAo+ID4gKwkJCSBTTkRSVl9QQ01fRk1UQklUX1MxOF8zTEUgfCBT
-TkRSVl9QQ01fRk1UQklUX1MxOF8zQkUgfFwKPiA+ICsJCQkgU05EUlZfUENNX0ZNVEJJVF9TMjBf
-M0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMjBfM0JFIHxcCj4gPiArCQkJIFNORFJWX1BDTV9GTVRC
-SVRfUzI0XzNMRSB8IFNORFJWX1BDTV9GTVRCSVRfUzI0XzNCRSB8XAo+ID4gKwkJCSBTTkRSVl9Q
-Q01fRk1UQklUX1MyNF9MRSB8IFNORFJWX1BDTV9GTVRCSVRfUzI0X0JFIHxcCj4gPiArCQkJIFNO
-RFJWX1BDTV9GTVRCSVRfUzMyX0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMzJfQkUpCj4gCj4gSSdt
-IG5vdCBzdXJlIGhvdyBhYnN0cmFjdGVkIHRoaXMgSTJTIGFuZCBTL1BESUYgREFJIGJ1c2luZXNz
-IGlzIC0gaXQKPiBkb2Vzbid0IGZlZWwgbGlrZSBzb21ldGhpbmcgdGhhdCdzIGdvaW5nIHRvIGJl
-IGEgcHJvcGVydHkgb2YgYWxsIEhETUkKPiBkZXZpY2VzLCBhbmQgdGhlIHNwZWNpZmljIHNldHMg
-b2YgZm9ybWF0cyBhYm92ZSBjYXVzZSBtZSB0byByYWlzZSBhIGJpdAo+IG9mIGFuIGV5ZWJyb3cu
-ICBTaG91bGQgdGhpcyBiZSBhbiBpbnRlcmZhY2Ugd2hlcmUgdGhlIEhETUkgY2hpcAo+IHJlZ2lz
-dGVycyBtdWx0aXBsZSBpbnRlcmZhY2VzIGlmIGl0IGhhcyB0aGVtIGluc3RlYWQgb2YgYXV0b21h
-dGljYWxseQo+IGdldHRpbmcgdGhpcyBzcGxpdCBhcyBpcz8KClRoZSBpbmNsdXNpb24gb2YgdGhl
-IDMyLWJpdCBmb3JtYXRzIGRvZXMgcmFpc2UgYW4gZXllYnJvdyBoZXJlIHRvby4KQXVkaW8gdHJh
-bnNtaXNzaW9uIGFjcm9zcyB0aGUgSERNSSBsaW5rIGlzIFMvUERJRiwgc3VwcG9ydGluZyB1cCB0
-bwoyNC1iaXQgdW5jb21wcmVzc2VkIGF1ZGlvIChha2EgTC1QQ00pLgoKVGhlIGRldmljZSBtYXkg
-YWNjZXB0IDMyIGJpdCBJMlMsIGJ1dCBpdCB3b3VsZCBoYXZlIHRvIGJlIHRydW5jYXRlZCB0bwoy
-NCBiaXQgYmVmb3JlIHRyYW5zbWl0dGluZyBpdCB0byB0aGUgc2luay4gIFRoaXMgc2hvdWxkIGJl
-IG1lbnRpb25lZApzb21ld2hlcmUuCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAuOG1pbGUgbGlu
-ZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVl
-ZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcK
-aHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+T24gRnJpLCBTZXAgMTgsIDIwMTUgYXQgMDI6MDY6MzlQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
+ZToKPiBBZGQgSUVDOTU4IGNoYW5uZWwgc3RhdHVzIGhlbHBlciB0aGF0IGdldHMgdGhlIGF1ZGlv
+IHByb3BlcnRpZXMgZnJvbQo+IHNuZF9wY21faHdfcGFyYW1zIGluc3RlYWQgb2Ygc25kX3BjbV9y
+dW50aW1lLiBUaGlzIGlzIG5lZWRlZCB0bwo+IHByb2R1Y2UgdGhlIGNoYW5uZWwgc3RhdHVzIGJp
+dHMgYWxyZWFkeSBpbiBhdWRpbyBzdHJlYW0gY29uZmlndXJhdGlvbgo+IHBoYXNlLgoKV2hhdCBp
+cyB0aGUgcmVhc29uIGZvciBkb2luZyB0aGlzIGVhcmx5PwoKQUxTQSBkb2N1bWVudGF0aW9uICh3
+aGljaCBtYXkgYmUgb3V0IG9mIGRhdGUpIHNheXMgdGhhdCB0aGUgaHdfcGFyYW1zCmNhbGxiYWNr
+IGNhbiBiZSBjYWxsZWQgbXVsdGlwbGUgdGltZXMgZHVyaW5nIHN0cmVhbSBzZXR1cC4gIERvIHdl
+IHdhbnQKdG8gYmUgcmVwZWF0ZWRseSBwcm9ncmFtbWluZyB0aGUgSERNSSBpbmZvZnJhbWUgd2l0
+aCBkaWZmZXJlbnQgc2V0dGluZ3MsCnBvdGVudGlhbGx5IGNvbmZ1c2luZyB0aGUgYXR0YWNoZWQg
+ZGV2aWNlLCBvciB3b3VsZCBpdCBiZSBiZXR0ZXIgdG8gZG8KaXQgc2xpZ2h0bHkgbGF0ZXIgKGlu
+IHRoZSBwcmVwYXJlIGNhbGxiYWNrKSBhZnRlciB0aGUgcGFyYW1ldGVycyBoYXZlCmJlZW4gZnVs
+bHkgbmVnb3RpYXRlZD8KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJy
+ZW50bHkgYXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5u
+ZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
