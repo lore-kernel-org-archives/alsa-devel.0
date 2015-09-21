@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC v4 3/8] ASoC: hdmi-codec: Add
- hdmi-codec for external HDMI-encoders
-Date: Mon, 21 Sep 2015 10:18:23 -0700
-Message-ID: <20150921171823.GY30445@sirena.org.uk>
-References: <20150921093107.GF21098@n2100.arm.linux.org.uk>
- <56000900.3070404@ti.com>
+From: sypwex <sypwex@gmail.com>
+Subject: Re: [Alsa-user] snd-usb-caiaq (NI Maschine Mikro)
+ device not recognised by alsa
+Date: Mon, 21 Sep 2015 23:10:12 +0300
+Message-ID: <CAGPstWuWNbYpveL56Tznr3TMVGVqprrfAT-F7bGbc5e3nJkCSg@mail.gmail.com>
+References: <CAGPstWvoprjRHN2+xZe5w+=pPkOqcqQdR4t7bYY_MgXwKbPD4A@mail.gmail.com>
+ <55EC7191.8020107@googlemail.com>
+ <CAGPstWtnvg=mE54JGaU8y0gTU8BwxkzMqnOFXW-VSVmtQtkJmQ@mail.gmail.com>
+ <560039B6.2000204@zonque.org>
+Reply-To: sypwex@gmail.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9012289225446264356=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EC3926154B
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 21:22:59 +0200 (CEST)
-In-Reply-To: <56000900.3070404@ti.com>
+Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
+ [209.85.213.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 714CC26167D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 22:10:13 +0200 (CEST)
+Received: by igcrk20 with SMTP id rk20so68502546igc.1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 13:10:12 -0700 (PDT)
+In-Reply-To: <560039B6.2000204@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +28,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, peter.ujfalusi@ti.com, moinejf@free.fr, airlied@linux.ie, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Clemens Ladisch <cladisch@googlemail.com>, daniel@caiaq.de, sypwex@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the reply!
 
---===============9012289225446264356==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+9WMDU/RdULAIC7Q"
-Content-Disposition: inline
+>What does 'lsusb -v' show when you plug in the device?
+the exactly `lsusb -v` out is here http://pastebin.com/raw.php?i=trmwPjGF
+
+information only about 17cc:1110 (`sudo lsusb -D /dev/bus/usb/001/010`):
+
+Device: ID 17cc:1110 Native Instruments
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  idVendor           0x17cc Native Instruments
+  idProduct          0x1110
+  bcdDevice            0.37
+  iManufacturer           1 Native Instruments
+  iProduct                2 Maschine Mikro
+  iSerial                 6 677AC139
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           57
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              450mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass         3 Human Interface Device
+      bInterfaceSubClass      0 No Subclass
+      bInterfaceProtocol      0 None
+      iInterface              4 Maschine Mikro HID
+        HID Device Descriptor:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.10
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 Report
+          wDescriptorLength     367
+         Report Descriptors:
+           ** UNAVAILABLE **
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               4
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       254 Application Specific Interface
+      bInterfaceSubClass      1 Device Firmware Update
+      bInterfaceProtocol      1
+      iInterface              5 Maschine Mikro DFU
+      Device Firmware Upgrade Interface Descriptor:
+        bLength                             7
+        bDescriptorType                    33
+        bmAttributes                        7
+          Will Not Detach
+          Manifestation Tolerant
+          Upload Supported
+          Download Supported
+        wDetachTimeout                    250 milliseconds
+        wTransferSize                      64 bytes
+Device Qualifier (for other device speed):
+  bLength                10
+  bDescriptorType         6
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  bNumConfigurations      1
+Device Status:     0x0000
+  (Bus Powered)
 
 
---+9WMDU/RdULAIC7Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Sep 21, 2015 at 04:41:20PM +0300, Jyri Sarha wrote:
-> On 09/21/15 12:31, Russell King - ARM Linux wrote:
-
-> >The device may accept 32 bit I2S, but it would have to be truncated to
-> >24 bit before transmitting it to the sink.  This should be mentioned
-> >somewhere.
-
-> There is ".sig_bits = 24" in hdmi_i2s_dai, but I can add an explicit comment
-> about it.
-
-> We needed 32bit format in practice until Peter got 24_LE properly working
-> with McASP. I just thought the may still be some platforms out there that
-> can not produce 24bit i2s samples for some reason, but work just fine with
-> 32bit samples. Those platforms would be limited to less than 24bit precision
-> without 32bit formats. But as said, it is not critical to us any more and I
-> can drop the 32bit formats as well.
-
-Yes, this is currently a bit messy - we should really be able to allow
-S24_LE and S32 to interoperate better without drivers having to know
-about it since physically they are essentially compatible in memory.
-I'm pretty much OK with it for now since even with that framework
-support it should be harmless.
-
---+9WMDU/RdULAIC7Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWADveAAoJECTWi3JdVIfQQmsH/0zk2wceghIe8zLAV97hlifQ
-DVL6jXaV3pUZHsJcS5vX/aVJ8ZIrPaedTguxfIrMeHMCgZpkJRyGaNRwKd50Kgn4
-pNRIt9Td6fbb07TF4Rn95u/sga30qRZrsCjs7s1as+Zzr/aPjvvMAn3lj83Zxq8x
-suQVfjwx+V2sPbE4XRW8SOh0GgX5mRt737gsAAQMSYVRCz+diTajsYCoM8FRxt5v
-ruUZA2L01fF5rwUppwW4A+CGkdSll63+c0XwBe+xzhmY6fOA7DTI4dvNYAEJvB44
-nNKLyqK+Kt5wSXMghuXQeV92SB0d2MK3S2MXHZn/K8q414gwX2O33CaV/47Ux9I=
-=h6py
------END PGP SIGNATURE-----
-
---+9WMDU/RdULAIC7Q--
-
---===============9012289225446264356==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9012289225446264356==--
+-- 
+Regards!
