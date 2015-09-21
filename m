@@ -1,270 +1,217 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH RFC v4 4/8] drm/i2c: tda998x: Add support of a DT graph of
- ports
-Date: Mon, 21 Sep 2015 10:19:18 -0500
-Message-ID: <56001FF6.5070504@kernel.org>
-References: <cover.1442572860.git.jsarha@ti.com>
- <e9ebb04f781fef7cff99190d301fb64805b97d39.1442572860.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: codecs: Add da7219 codec driver
+Date: Mon, 21 Sep 2015 10:11:00 -0700
+Message-ID: <20150921171100.GX30445@sirena.org.uk>
+References: <cover.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
+ <d709bef63c2dbef6b3d654435b50e183d1e7a1e7.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
+ <20150919174414.GJ30445@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D46037AA@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <e9ebb04f781fef7cff99190d301fb64805b97d39.1442572860.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yBbBYFH0ZHvzMoI/"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D46037AA@SW-EX-MBX01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Jason Coughlan <jason.coughlan@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2015 06:06 AM, Jyri Sarha wrote:
-> From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> 
-> Two kinds of ports may be declared in a DT graph of ports: video and audio.
-> This patch accepts the port value from a video port as an alternative
-> to the video-ports property.
-> It also accepts audio ports in the case the transmitter is not used as
-> a slave encoder.
-> The new file include/sound/tda998x.h prepares to the definition of
-> a tda998x CODEC.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-> ---
->  .../devicetree/bindings/drm/i2c/tda998x.txt        | 51 ++++++++++++
->  drivers/gpu/drm/i2c/tda998x_drv.c                  | 90 +++++++++++++++++++---
->  include/sound/tda998x.h                            |  8 ++
->  3 files changed, 140 insertions(+), 9 deletions(-)
->  create mode 100644 include/sound/tda998x.h
-> 
-> diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> index e9e4bce..35f6a80 100644
-> --- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> +++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> @@ -16,6 +16,35 @@ Optional properties:
->  
->    - video-ports: 24 bits value which defines how the video controller
->  	output is wired to the TDA998x input - default: <0x230145>
-> +	This property is not used when ports are defined.
-> +
-> +Optional nodes:
-> +
-> +  - port: up to three ports.
-> +	The ports are defined according to [1].
-> +
-> +    Video port.
-> +	There may be only one video port.
-> +	This one must contain the following property:
-> +
-> +	- port-type: must be "rgb"
 
-Why do you need this if there is no other choice? The port number should
-define which one is video.
+--yBbBYFH0ZHvzMoI/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +
-> +	and may contain the optional property:
-> +
-> +	- reg: 24 bits value which defines how the video controller
-> +		output is wired to the TDA998x input (video pins)
-> +		When absent, the default value is <0x230145>.
+On Mon, Sep 21, 2015 at 03:08:03PM +0000, Opensource [Adam Thomson] wrote:
+> On September 19, 2015 18:44, Mark Brown wrote:
 
-I'm failing to decode how this value works. In any case, I would keep
-this as a vendor specific property rather than abusing reg.
+> > This is obviously a massive reconfiguration of the device.  I'm not
+> > seeing anything here which prevents userspace coming in and change the
+> > configuration while we're in this function, that would obviously have
+> > serious issues.
 
-> +
-> +    Audio ports.
-> +	There may be one or two audio ports.
-> +	These ones must contain the following properties:
-> +
-> +	- port-type: must be "i2s" or "spdif"
-> +
-> +	- reg: 8 bits value which defines how the audio controller
-> +		output is wired to the TDA998x input (audio pins)
+> In a system scenario the likelihood of that happening is small as you
+> cannot use the mic or headphones until they've been inserted. The system is
+> only likely to act after the jack insertion events have occurred. However, it
 
-reg is 32-bits.
+This really isn't an OK approach here, you're making a whole bunch of
+assumptions about how the system is implemented that aren't robust and
+will lead to loss of audio if things go wrong which is a pretty serious
+consequence.  Are you *sure* there's going to be a quick enough response
+to cover all jack inserts and remove (especially under load), or that
+userspace even bothers paying attention given that there's no other
+input and output devices?
 
-> +
-> +[1] Documentation/devicetree/bindings/graph.txt
->  
->  Example:
->  
-> @@ -26,4 +55,26 @@ Example:
->  		interrupts = <27 2>;		/* falling edge */
->  		pinctrl-0 = <&pmx_camera>;
->  		pinctrl-names = "default";
-> +
-> +		port@230145 {
-> +			port-type = "rgb";
-> +			reg = <0x230145>;
-> +			hdmi_0: endpoint {
-> +				remote-endpoint = <&lcd0_0>;
-> +			};
-> +		};
-> +		port@3 {			/* AP1 = I2S */
+> would be better to prevent any chance of concurrent access. The problem is how
+> best to lock the Kcontrols whilst the test procedure in progress. At the moment
+> the only way I can see is to add explicit control set() functions which would
+> use a lock that can also be controlled by the HP test code. Does this make sense
+> to you or do you know of a simpler method? Obviously dapm has function to lock
+> as required.
 
-Is 3 significant? What happened to 0-2?
+Yes, you're going to have to do something like that if you want to do
+this - you'll also need to lock the reads since otherwise userspace will
+see the intermediate control states.
 
-> +			port-type = "i2s";
-> +			reg = <0x03>;
-> +			tda998x_i2s: endpoint {
-> +				remote-endpoint = <&audio1_i2s>;
-> +			};
-> +		};
-> +		port@4 {			 /* AP2 = S/PDIF */
-> +			port-type = "spdif";
-> +			reg = <0x04>;
-> +			tda998x_spdif: endpoint {
-> +				remote-endpoint = <&audio1_spdif1>;
-> +			};
-> +		};
->  	};
-> diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-> index 424228b..0952eac 100644
-> --- a/drivers/gpu/drm/i2c/tda998x_drv.c
-> +++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-> @@ -27,6 +27,7 @@
->  #include <drm/drm_edid.h>
->  #include <drm/drm_of.h>
->  #include <drm/i2c/tda998x.h>
-> +#include <sound/tda998x.h>
->  
->  #define DBG(fmt, ...) DRM_DEBUG(fmt"\n", ##__VA_ARGS__)
->  
-> @@ -47,6 +48,8 @@ struct tda998x_priv {
->  	wait_queue_head_t wq_edid;
->  	volatile int wq_edid_wait;
->  	struct drm_encoder *encoder;
-> +
-> +	struct tda998x_audio audio;
->  };
->  
->  #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
-> @@ -774,6 +777,8 @@ static void tda998x_encoder_set_config(struct tda998x_priv *priv,
->  			    (p->mirr_f ? VIP_CNTRL_2_MIRR_F : 0);
->  
->  	priv->params = *p;
-> +	priv->audio.port_types[0] = p->audio_format;
-> +	priv->audio.ports[0] = p->audio_cfg;
->  }
->  
->  static void tda998x_encoder_dpms(struct tda998x_priv *priv, int mode)
-> @@ -1230,9 +1235,57 @@ static struct drm_encoder_slave_funcs tda998x_encoder_slave_funcs = {
->  
->  /* I2C driver functions */
->  
-> +static int tda998x_parse_ports(struct tda998x_priv *priv,
-> +				struct device_node *np)
-> +{
-> +	struct device_node *of_port;
-> +	const char *port_type;
-> +	int ret, audio_index, reg, afmt;
-> +
-> +	audio_index = 0;
-> +	for_each_child_of_node(np, of_port) {
-> +		if (!of_port->name
-> +		 || of_node_cmp(of_port->name, "port") != 0)
-> +			continue;
-> +		ret = of_property_read_string(of_port, "port-type",
-> +					&port_type);
-> +		if (ret < 0)
-> +			continue;
-> +		ret = of_property_read_u32(of_port, "reg", &reg);
-> +		if (strcmp(port_type, "rgb") == 0) {
-> +			if (!ret) {		/* video reg is optional */
-> +				priv->vip_cntrl_0 = reg >> 16;
-> +				priv->vip_cntrl_1 = reg >> 8;
-> +				priv->vip_cntrl_2 = reg;
-> +			}
-> +			continue;
-> +		}
-> +		if (strcmp(port_type, "i2s") == 0)
-> +			afmt = AFMT_I2S;
-> +		else if (strcmp(port_type, "spdif") == 0)
-> +			afmt = AFMT_SPDIF;
-> +		else
-> +			continue;
-> +		if (ret < 0) {
-> +			dev_err(&priv->hdmi->dev, "missing reg for %s\n",
-> +				port_type);
-> +			return ret;
-> +		}
-> +		if (audio_index >= ARRAY_SIZE(priv->audio.ports)) {
-> +			dev_err(&priv->hdmi->dev, "too many audio ports\n");
-> +			break;
-> +		}
-> +		priv->audio.ports[audio_index] = reg;
-> +		priv->audio.port_types[audio_index] = afmt;
-> +		audio_index++;
-> +	}
-> +	return 0;
-> +}
-> +
->  static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->  {
->  	struct device_node *np = client->dev.of_node;
-> +	struct device_node *of_port;
->  	u32 video;
->  	int rev_lo, rev_hi, ret;
->  	unsigned short cec_addr;
-> @@ -1337,15 +1390,34 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->  	/* enable EDID read irq: */
->  	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
->  
-> -	if (!np)
-> -		return 0;		/* non-DT */
-> -
-> -	/* get the optional video properties */
-> -	ret = of_property_read_u32(np, "video-ports", &video);
-> -	if (ret == 0) {
-> -		priv->vip_cntrl_0 = video >> 16;
-> -		priv->vip_cntrl_1 = video >> 8;
-> -		priv->vip_cntrl_2 = video;
-> +	/* get the device tree parameters */
-> +	if (np) {
-> +		of_port = of_get_child_by_name(np, "port");
-> +		if (of_port) {				/* graph of ports */
-> +			of_node_put(of_port);
-> +			ret = tda998x_parse_ports(priv, np);
-> +			if (ret < 0)
-> +				goto fail;
-> +
-> +			/* initialize the default audio configuration */
-> +			if (priv->audio.ports[0]) {
-> +				priv->params.audio_cfg = priv->audio.ports[0];
-> +				priv->params.audio_format =
-> +						priv->audio.port_types[0];
-> +				priv->params.audio_clk_cfg =
-> +					priv->params.audio_format ==
-> +							AFMT_SPDIF ? 0 : 1;
-> +			}
-> +		} else {
-> +
-> +			/* optional video properties */
-> +			ret = of_property_read_u32(np, "video-ports", &video);
-> +			if (ret == 0) {
-> +				priv->vip_cntrl_0 = video >> 16;
-> +				priv->vip_cntrl_1 = video >> 8;
-> +				priv->vip_cntrl_2 = video;
-> +			}
-> +		}
->  	}
->  
->  	return 0;
-> diff --git a/include/sound/tda998x.h b/include/sound/tda998x.h
-> new file mode 100644
-> index 0000000..bef1da7
-> --- /dev/null
-> +++ b/include/sound/tda998x.h
-> @@ -0,0 +1,8 @@
-> +#ifndef SND_TDA998X_H
-> +#define SND_TDA998X_H
-> +
-> +struct tda998x_audio {
-> +	u8 ports[2];			/* AP value */
-> +	u8 port_types[2];		/* AFMT_xxx */
-> +};
-> +#endif
-> 
+> For the cache resync idea, in terms of code, it will look cleaner, but you are
+> talking about 4 to 5 times the number of I2C accesses to the device, to restore
+> configuration. Does that not seem like a bit too much overhead?
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+There's regcache_sync_region().
+
+> > Why are we scheduling work - we're already in thread context?
+
+> hptest will take some time to complete (over 100ms), and in that time it's
+> plausible that a user could remove the jack. If we deal with this in the IRQ
+> thread, we won't be aware of jack removal during the process, and will send a
+> report regardless, which will almost definitely be incorrect, and unnecessary.
+> By spawning off work, it allows the removal to be dealt with if the hptest work
+> procedure is currently in process, and then we can avoid sending incorrect jack
+> reports at the end.
+
+OK, please document this then.
+
+> > > +			/* Un-drive headphones/lineout */
+> > > +			snd_soc_update_bits(codec, DA7219_HP_R_CTRL,
+> > > +					    DA7219_HP_R_AMP_OE_MASK, 0);
+> > > +			snd_soc_update_bits(codec, DA7219_HP_L_CTRL,
+> > > +					    DA7219_HP_L_AMP_OE_MASK, 0);
+
+> > This looks like DAPM?
+
+> The control of driving the headphones or making them high impedance is handled
+> in the AAD code because we cannot have the headphones driven before a jack is
+> inserted as it will affect the pole detection. Adding it to DAPM seemed like it
+> would cause more problems in terms of controlling when it would and wouldn't be
+> enabled.
+
+IIRC you had some DAPM updates in adjacent code?
+
+> > > +	default:
+> > > +		return DA7219_AAD_JACK_INS_DEB_20MS;
+
+> > This isn't an error?
+
+> Opted for HW default in case of invalid values provided. Maybe a dev_warn()
+> would be useful though to indicate this is the case?
+
+Yes - the user has explicitly tried to set something and the driver is
+ignoring it.
+
+> > > +	ret = regmap_bulk_read(da7219->regmap, reg, &val, sizeof(val));
+> > > +	if (ret)
+> > > +		return ret;
+
+> > > +	ucontrol->value.integer.value[0] = le16_to_cpu(val);
+
+> > This is *weird*.  We do a bulk read for a single register using an API
+> > that returns CPU endian data then make it CPU endian (without any
+> > annotations on variables...).  Why not use regmap_read()?  Why swap?
+> > Why not use raw I/O?
+
+> The device is 8-bit register access only, and the value spans two registers,
+> hence why this is done here. The register defined for the Kcontrol is the first
+> in the sequence of two registers (first lower byte, second upper byte). Thought
+> this was cleaner than having two separate controls to configure upper and
+> lower bytes.
+
+Again some documentation would help, and also using raw reads rather
+than bulk reads (which imply that all endianness issues will be taken
+care of).  If you're doing a bulk read and handling endianness that's
+worrying.  You should also have an endianness annotation for val.
+
+> > This looks like a standard enumeration with a simple mapping to the
+> > register map?
+
+> The bit values aren't sequential as per a normal enumeration, which is why I
+> added this approach to setting the correct bits. However, I've just spotted the
+> SOC_VALUE_ENUM_SINGLE macro which looks like it will do the job, so I'll use
+> that instead. Thanks.
+
+Yes, you want a VALUE_ENUM.
+
+> > > +	/* ADCs */
+> > > +	SOC_SINGLE_TLV("ADC Volume", DA7219_ADC_L_GAIN,
+> > > +		       DA7219_ADC_L_DIGITAL_GAIN_SHIFT,
+> > > +		       DA7219_ADC_L_DIGITAL_GAIN_MAX, DA7219_NO_INVERT,
+> > > +		       da7219_adc_dig_gain_tlv),
+> > > +	SOC_SINGLE("ADC Switch", DA7219_ADC_L_CTRL,
+> > > +		   DA7219_ADC_L_MUTE_EN_SHIFT, DA7219_SWITCH_EN_MAX,
+> > > +		   DA7219_INVERT),
+> > > +	SOC_SINGLE("ADC Gain Ramp Switch", DA7219_ADC_L_CTRL,
+> > > +		   DA7219_ADC_L_RAMP_EN_SHIFT, DA7219_SWITCH_EN_MAX,
+> > > +		   DA7219_NO_INVERT),
+
+> > Capture Digital rather than ADC.
+
+> Ok, fine. Is this now the common naming to be used for all future codecs?
+
+It's always been the naming in ControlNames.txt - we don't generally
+worry about it on devices with more flexible routing which mean that the
+associated meaning won't always be really true but for this device it
+seems that the options are sufficiently limited to allow userspace to
+use the standard name.
+
+> > > +			/* Internal LDO */
+> > > +			if (da7219->use_int_ldo)
+> > > +				snd_soc_update_bits(codec, DA7219_LDO_CTRL,
+> > > +						    DA7219_LDO_EN_MASK,
+> > > +						    DA7219_LDO_EN_MASK);
+
+> > If there is an option to use an external supply I would expect to see
+> > the regulator API used to discover the external LDO (and ideally also to
+> > configure the integrated LDO).  If the driver works outside the
+> > frameworks then it is likely this will lead to integration issues later
+> > on.
+
+> Given the simplistic nature of the internal LDO, I didn't think it would be
+> necessary to use the framework as it seemed overkill. I assume you mean
+> following something like what is done in the sgtl5000 codec?
+
+That should work I think.  The point here isn't really the control of
+the LDO itself, it's making sure that the integration with external
+supplies works well - the key bit is that how we figure out that we
+don't have an external supply connected should be joined up with how we
+normally integrate external supplies.
+
+> > > +	/*
+> > > +	 * There are multiple control bits for the input mixer.
+> > > +	 * The following can be enabled now as it's not power related.
+> > > +	 */
+> > > +	snd_soc_update_bits(codec, DA7219_MIXIN_L_CTRL,
+> > > +			    DA7219_MIXIN_L_MIX_EN_MASK,
+> > > +			    DA7219_MIXIN_L_MIX_EN_MASK);
+
+> > So the chip designers just put these in for randomness?  Fun.  It'd be
+> > more idiomatic to do something like making these supply widgets so
+> > they're controlled via DAPM even if they don't matter much.
+
+> Figured we'd be saving on additional I2C accesses if it's just done the once.
+> Do you really think it needs to be a widget as it seems a little unnecessary
+> enabling and disabling every time that path is powered up and down?
+
+It seems likely to be more robust against someone realising that the
+register bits actually do something useful and need toggling and it
+raises less eyebrows code wise.
+
+If you're worried about the register writes you should also be able to
+arrange to map these in as mixer widgets which would mean that the the
+core will combine the writes with the main power controls.
+
+--yBbBYFH0ZHvzMoI/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWADojAAoJECTWi3JdVIfQIP0H/3JhYZCh++UApw1tRVjDOmxJ
+eTY+VNHaBpE4YBFeXOk1nAe4+JuFbRV6BIVcQjx6/CIN9L9lJlaZ0Ac4Q61aCTLF
+oxPyk2KMYLtMMK/GmOXLdDztrH/Gc5vdypJ7J2B6kAZ0TWqhRNqPx/oBX2f7o+cO
+6OISpm2/1m/LU7TLx3gpVaahecwc9Jz10fwXf8tyS1f5TPIn3Ni4WLDfn6oK1t0P
+fpIT0AdEgqOeoua0i5hTCdXHvI17lU7iBSNPH0tnnsW/wU0qmPTD2ghbxH/ZOy71
+rmt7oDjW5tBROdVGE2dxZnIOp7tyP6AmpO/ZywxTl0vAUoGFEA1fA8mu8xBHTM0=
+=BhSd
+-----END PGP SIGNATURE-----
+
+--yBbBYFH0ZHvzMoI/--
