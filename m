@@ -1,51 +1,49 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH 2/3] ASoC: da7219: Add bindings documentation for DA7219
- audio codec
-Date: Mon, 21 Sep 2015 10:36:04 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460170E@SW-EX-MBX01.diasemi.com>
-References: <cover.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
- <381b367e0a4c6c9e00db74f1b0e91d383156ba86.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
- <20150919171017.GI30445@sirena.org.uk>
+From: John Lin <john.lin@realtek.com>
+Subject: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for chrome
+Date: Mon, 21 Sep 2015 18:38:19 +0800
+Message-ID: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150919171017.GI30445@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Jason Coughlan <jason.coughlan@diasemi.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0650D26072A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 12:38:27 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>, Keith.Tzeng@quantatw.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2VwdGVtYmVyIDE5LCAyMDE1IDE4OjEwLCBNYXJrIEJyb3duIHdyb3RlOg0KDQo+ID4gKy0g
-ZGxnLGlvLWx2bCA6IEV4cGVjdGVkIHZvbHRhZ2UgbGV2ZWwgcmFuZ2UgZm9yIGRpZ2l0YWwgSU8N
-Cj4gPiArCVsiMi41Vl8zLjZWIiwgIjEuMlZfMi44ViJdDQo+IA0KPiBJZiB0aGUgZHJpdmVyIG5l
-ZWRzIHRvIHJlYWQgb3Igc2V0IHRoZSB2b2x0YWdlIGEgc3VwcGx5IGlzIGF0IGl0IHNob3VsZA0K
-PiBkbyB0aGF0IHZpYSB0aGUgcmVndWxhdG9yIEFQSS4NCg0KVGhpcyB3b3VsZCBqdXN0IGJlIGEg
-cmVhZCBmb3IgdGhlIGRyaXZlci4gSG93ZXZlciBpdCdzIGEgZmFpciBwb2ludCwgc28gSSdsbA0K
-bG9vayB0byBhZGQgcGFzc2luZyBvZiB0aGUgcmVndWxhdG9yIGluZm9ybWF0aW9uIGZvciBWRERJ
-Tywgc28gaSBjYW4gc2V0IHRoaXMNCmJhc2VkIG9uIHJlYWQgdm9sdGFnZS4NCg0KPiANCj4gPiAr
-LSBkbGcsY3AtbWNoYW5nZSA6IENoYXJnZSBwdW1wIHZvbHRhZ2UgdHJhY2tpbmcgbW9kZQ0KPiA+
-ICsJWyJsYXJnZXN0X3ZvbCIsICJkYWNfdm9sIiwgInNpZ19tYWciXQ0KPiA+ICstIGRsZyxjcC12
-b2wtdGhyZXNoIDogQ2hhcmdlIHB1bXAgdm9sdW1lIHRocmVzaG9sZCB2YWx1ZSAoNi1iaXQgdmFs
-dWUpDQo+ID4gKwlbIDAgLSAweDNGIF0NCj4gDQo+IFdoeSBhcmUgdGhlc2UgaW4gdGhlIGRldmlj
-ZSB0cmVlIHJhdGhlciB0aGFuIHJ1bnRpbWUgcGFyYW1ldGVycz8NCj4gDQoNCkZyb20gcHJldmlv
-dXMgaW50ZXJuYWwgZGlzY3Vzc2lvbnMsIHRoZXNlIHNlZW1lZCB0byBiZSBmaXJlIGFuZCBmb3Jn
-ZXQNCnBhcmFtZXRlcnMsIGhlbmNlIHRoZWlyIGluY2x1c2lvbiBpbiB0aGUgRFQgYmluZGluZywg
-cmF0aGVyIHRoYW4gYXMgY29udHJvbHMuDQpQZXJzb25hbGx5IGRpZG4ndCBzZWUgZWl0aGVyIG5l
-ZWRpbmcgcnVudGltZSB1cGRhdGVzLg0KDQo+ID4gK0NoaWxkIG5vZGUgLSAnZGE3MjE5X2FhZCc6
-DQo+ID4gKw0KPiA+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ICstIGludGVycnVwdC1wYXJl
-bnQgOiBTcGVjaWZpZXMgdGhlIHBoYW5kbGUgb2YgdGhlIGludGVycnVwdCBjb250cm9sbGVyIHRv
-IHdoaWNoDQo+ID4gKyAgdGhlIElSUXMgZnJvbSBEQTcyMTkgQUFEIGJsb2NrIGFyZSBkZWxpdmVy
-ZWQgdG8uDQo+ID4gKy0gaW50ZXJydXB0cyA6IElSUSBsaW5lIGluZm8gZm9yIERBNzIxOSBBQUQg
-YmxvY2suDQo+ID4gKyAgKFNlZSBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaW50
-ZXJydXB0LWNvbnRyb2xsZXIvaW50ZXJydXB0cy50eHQgZm9yDQo+ID4gKyAgIGZ1cnRoZXIgaW5m
-b3JtYXRpb24gcmVsYXRpbmcgdG8gaW50ZXJydXB0IHByb3BlcnRpZXMpDQo+IA0KPiBXaHkgaXMg
-dGhpcyBub3Qgc3BlY2lmaWVkIGF0IHRoZSBkZXZpY2UgbGV2ZWwgKHRoZSBkZXZpY2UgZG9lcyBu
-b3QNCj4gYXBwZWFyIHRvIHN1cHBvcnQgb3RoZXIgaW50ZXJydXB0cyk/DQoNCkdpdmVuIHRoZSB3
-YXkgdGhhdCB0aGUgZHJpdmVyIGNvZGUgd2FzIHN0cnVjdHVyZWQsIGFuZCB0aGF0IHRoZSBJUlEg
-aXMgb25seSB1c2VkDQpmb3IgYWNjZXNzb3J5IGRldGVjdGlvbiwgSSBhZGRlZCBpdCB0byB0aGUg
-Y2hpbGQgbm9kZS4gVGhlIG90aGVyIG9wdGlvbiB3b3VsZA0KYmUgdG8gZmxhdHRlbiBvdXQgYmlu
-ZGluZ3MsIGFuZCByZW1vdmUgdGhlIGNoaWxkIG5vZGUuIEZlbHQgbGlrZSBrZWVwaW5nIHRoZQ0K
-YWNjZXNzb3J5IGRldGVjdCBpdGVtcyBzZXBhcmF0ZSB0aG91Z2ggd2FzIGEgc2Vuc2libGUgYXBw
-cm9hY2guIFdoYXQgaXMgeW91cg0KZmVlbGluZyBvbiB0aGlzPw0K
+Signed-off-by: John Lin <john.lin@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index b0d96b6..84c5261 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3212,6 +3212,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
+ 		},
+ 	},
++	{
++		.ident = "Google Reks",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Reks"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+1.8.1.1.439.g50a6b54
