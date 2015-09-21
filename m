@@ -1,37 +1,62 @@
-From: Yaowei Bai <bywxiaobai@163.com>
-Subject: [PATCH 2/4] sound/i2sbus/core: make format more appropriate
-Date: Mon, 21 Sep 2015 21:57:12 +0800
-Message-ID: <1442843834-4648-2-git-send-email-bywxiaobai@163.com>
-References: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1442843834-4648-1-git-send-email-bywxiaobai@163.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, johannes@sipsolutions.net, k.kozlowski@samsung.com, elfring@users.sourceforge.net, fabf@skynet.be, lars@metafoo.de
-Cc: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC v4 2/8] ALSA: pcm: add IEC958 channel
+ status helper for hw_params
+Date: Mon, 21 Sep 2015 17:39:58 +0300
+Message-ID: <560016BE.6010801@ti.com>
+References: <cover.1442572860.git.jsarha@ti.com>
+ <a7b69fb075b0ae993846cfb65abb20ecab5c9805.1442572860.git.jsarha@ti.com>
+ <20150921093748.GG21098@n2100.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 205B02614A1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 16:40:05 +0200 (CEST)
+In-Reply-To: <20150921093748.GG21098@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, moinejf@free.fr, airlied@linux.ie, tomi.valkeinen@ti.com, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Make 'return' stay in a singe line.
+On 09/21/15 12:37, Russell King - ARM Linux wrote:
+> On Fri, Sep 18, 2015 at 02:06:39PM +0300, Jyri Sarha wrote:
+>> Add IEC958 channel status helper that gets the audio properties from
+>> snd_pcm_hw_params instead of snd_pcm_runtime. This is needed to
+>> produce the channel status bits already in audio stream configuration
+>> phase.
+>
+> What is the reason for doing this early?
+>
 
-No functional change.
+After some thinking, there is no good reason. It makes the codec bit 
+more complicated, but that is not a good reason. I'll change that and 
+use the prepare callback.
 
-Signed-off-by: Yaowei Bai <bywxiaobai@163.com>
----
- sound/aoa/soundbus/i2sbus/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch can be dropped.
 
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 1cbf210..6f216c0 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -62,7 +62,8 @@ static int alloc_dbdma_descriptor_ring(struct i2sbus_dev *i2sdev,
- static void free_dbdma_descriptor_ring(struct i2sbus_dev *i2sdev,
- 				       struct dbdma_command_mem *r)
- {
--	if (!r->space) return;
-+	if (!r->space)
-+		return;
- 
- 	dma_free_coherent(&macio_get_pci_dev(i2sdev->macio)->dev,
- 			    r->size, r->space, r->bus_addr);
--- 
-1.9.1
+> ALSA documentation (which may be out of date) says that the hw_params
+> callback can be called multiple times during stream setup.  Do we want
+> to be repeatedly programming the HDMI infoframe with different settings,
+> potentially confusing the attached device, or would it be better to do
+> it slightly later (in the prepare callback) after the parameters have
+> been fully negotiated?
+>
+
+If it is possible that hw_params() can be called multiple times, at 
+least it does not happen very often. I wonder if it would ever happen 
+again after a successful hw_params() call. But there is no downside in 
+using prepare callback. I was just too much following the way ASoC 
+codecs usually do the thing by writing everything to iron as the 
+callbacks come in.
+
+Best regards,
+Jyri
