@@ -1,16 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 3/5] ASoC: codec:  hdmi drm codec driver
-Date: Mon, 21 Sep 2015 15:19:54 +0200
-Message-ID: <1442841596-1323-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC 4/5] drm: sti: connect audio driver
+Date: Mon, 21 Sep 2015 15:19:55 +0200
+Message-ID: <1442841596-1323-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1442841596-1323-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 03C192612D1
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 15:21:17 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3A6F1261497
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 15:21:22 +0200 (CEST)
 In-Reply-To: <1442841596-1323-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,212 +24,295 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 Cc: moinejf@free.fr, linux@arm.linux.org.uk, Takashi Iwai <tiwai@suse.de>, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, airlied@linux.ie, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-Add a generic codec to interface audio with DRM drivers
+Add management of the audio bridge
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/hdmi_drm.h    |  16 ++++++
- sound/soc/codecs/Kconfig    |   4 ++
- sound/soc/codecs/Makefile   |   2 +
- sound/soc/codecs/hdmi_drm.c | 125 ++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 147 insertions(+)
- create mode 100644 include/sound/hdmi_drm.h
- create mode 100644 sound/soc/codecs/hdmi_drm.c
+ drivers/gpu/drm/sti/sti_hdmi.c | 146 +++++++++++++++++++++++++++++++++++++----
+ drivers/gpu/drm/sti/sti_hdmi.h |   3 +
+ 2 files changed, 137 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/hdmi_drm.h b/include/sound/hdmi_drm.h
-new file mode 100644
-index 0000000..0146b88
---- /dev/null
-+++ b/include/sound/hdmi_drm.h
-@@ -0,0 +1,16 @@
-+/*
-+ * Interface for HDMI DRM  codec
-+ *
-+ * Author: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#ifndef __HDMI_DRM__H__
-+#define __HDMI_DRM__H__
-+
-+int hdmi_drm_codec_register(struct device *dev);
-+void hdmi_drm_codec_unregister(struct device *dev);
-+
-+#endif
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0c9733e..922af30 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -80,6 +80,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MC13783 if MFD_MC13XXX
- 	select SND_SOC_ML26124 if I2C
- 	select SND_SOC_HDMI_CODEC
-+	select SND_SOC_HDMI_DRM_CODEC
- 	select SND_SOC_PCM1681 if I2C
- 	select SND_SOC_PCM1792A if SPI_MASTER
- 	select SND_SOC_PCM3008
-@@ -445,6 +446,9 @@ config SND_SOC_DMIC
- config SND_SOC_HDMI_CODEC
-        tristate "HDMI stub CODEC"
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
+index 06595e9..d324e0a 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.c
++++ b/drivers/gpu/drm/sti/sti_hdmi.c
+@@ -17,6 +17,8 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
  
-+config SND_SOC_HDMI_DRM_CODEC
-+       tristate "HDMI DRM CODEC"
++#include <sound/hdmi_drm.h>
 +
- config SND_SOC_ES8328
- 	tristate "Everest Semi ES8328 CODEC"
+ #include "sti_hdmi.h"
+ #include "sti_hdmi_tx3g4c28phy.h"
+ #include "sti_hdmi_tx3g0c55phy.h"
+@@ -34,6 +36,8 @@
+ #define HDMI_DFLT_CHL0_DAT              0x0110
+ #define HDMI_DFLT_CHL1_DAT              0x0114
+ #define HDMI_DFLT_CHL2_DAT              0x0118
++#define HDMI_AUDIO_CFG                  0x0200
++#define HDMI_SPDIF_FIFO_STATUS          0x0204
+ #define HDMI_SW_DI_1_HEAD_WORD          0x0210
+ #define HDMI_SW_DI_1_PKT_WORD0          0x0214
+ #define HDMI_SW_DI_1_PKT_WORD1          0x0218
+@@ -43,6 +47,9 @@
+ #define HDMI_SW_DI_1_PKT_WORD5          0x0228
+ #define HDMI_SW_DI_1_PKT_WORD6          0x022C
+ #define HDMI_SW_DI_CFG                  0x0230
++#define HDMI_SAMPLE_FLAT_MASK           0x0244
++#define HDMI_AUDN                       0x0400
++#define HDMI_AUD_CTS                    0x0404
+ #define HDMI_SW_DI_2_HEAD_WORD          0x0600
+ #define HDMI_SW_DI_2_PKT_WORD0          0x0604
+ #define HDMI_SW_DI_2_PKT_WORD1          0x0608
+@@ -52,6 +59,7 @@
+ #define HDMI_SW_DI_2_PKT_WORD5          0x0618
+ #define HDMI_SW_DI_2_PKT_WORD6          0x061C
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 4a32077..c92aaf7 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -73,6 +73,7 @@ snd-soc-max9850-objs := max9850.o
- snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
- snd-soc-hdmi-codec-objs := hdmi.o
-+snd-soc-hdmi-drm-codec-objs := hdmi_drm.o
- snd-soc-pcm1681-objs := pcm1681.o
- snd-soc-pcm1792a-codec-objs := pcm1792a.o
- snd-soc-pcm3008-objs := pcm3008.o
-@@ -265,6 +266,7 @@ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
- obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
- obj-$(CONFIG_SND_SOC_HDMI_CODEC) += snd-soc-hdmi-codec.o
-+obj-$(CONFIG_SND_SOC_HDMI_DRM_CODEC) += snd-soc-hdmi-drm-codec.o
- obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
- obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
-diff --git a/sound/soc/codecs/hdmi_drm.c b/sound/soc/codecs/hdmi_drm.c
-new file mode 100644
-index 0000000..2df9a8f
---- /dev/null
-+++ b/sound/soc/codecs/hdmi_drm.c
-@@ -0,0 +1,125 @@
-+/*
-+ * ALSA SoC codec driver for DRM HDMI device.
-+ * Copyright (C) STMicroelectronics SA 2015
-+ * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-+ *          for STMicroelectronics.
-+ * License terms:  GNU General Public License (GPL), version 2
++
+ #define HDMI_IFRAME_SLOT_AVI            1
+ #define HDMI_IFRAME_SLOT_AUDIO          2
+ 
+@@ -109,6 +117,27 @@
+ 
+ #define HDMI_STA_SW_RST                 BIT(1)
+ 
++#define HDMI_AUD_CFG_8CH        BIT(0)
++#define HDMI_AUD_CFG_SPDIF_DIV_2  BIT(1)
++#define HDMI_AUD_CFG_SPDIF_DIV_3  BIT(2)
++#define HDMI_AUD_CFG_SPDIF_CLK_DIV_4 (BIT(1) | BIT(1))
++#define HDMI_AUD_CFG_CTS_CLK_128FS  BIT(17)
++#define HDMI_AUD_CFG_CH12_VALID BIT(28)
++#define HDMI_AUD_CFG_CH34_VALID BIT(29)
++#define HDMI_AUD_CFG_CH56_VALID BIT(30)
++#define HDMI_AUD_CFG_CH78_VALID BIT(31)
++
++/* sample flat mask */
++#define HDMI_SAMPLE_FLAT_NO	 0
++#define HDMI_SAMPLE_FLAT_SP0 BIT(0)
++#define HDMI_SAMPLE_FLAT_SP1 BIT(1)
++#define HDMI_SAMPLE_FLAT_SP2 BIT(2)
++#define HDMI_SAMPLE_FLAT_SP3 BIT(3)
++#define HDMI_SAMPLE_FLAT_ALL (HDMI_SAMPLE_FLAT_SP0 \
++				  | HDMI_SAMPLE_FLAT_SP1 \
++				  | HDMI_SAMPLE_FLAT_SP2 \
++				  | HDMI_SAMPLE_FLAT_SP3)
++
+ #define HDMI_INFOFRAME_HEADER_TYPE(x)    (((x) & 0xff) <<  0)
+ #define HDMI_INFOFRAME_HEADER_VERSION(x) (((x) & 0xff) <<  8)
+ #define HDMI_INFOFRAME_HEADER_LEN(x)     (((x) & 0x0f) << 16)
+@@ -380,19 +409,13 @@ static int hdmi_avi_infoframe_config(struct sti_hdmi *hdmi)
+  */
+ static int hdmi_audio_infoframe_config(struct sti_hdmi *hdmi)
+ {
+-	struct hdmi_audio_infoframe infofame;
++	struct hdmi_audio_infoframe *infoframe;
+ 	u8 buffer[HDMI_INFOFRAME_SIZE(AUDIO)];
+ 	int ret;
+ 
+-	ret = hdmi_audio_infoframe_init(&infofame);
+-	if (ret < 0) {
+-		DRM_ERROR("failed to setup audio infoframe: %d\n", ret);
+-		return ret;
+-	}
+-
+-	infofame.channels = 2;
++	infoframe = &hdmi->audio.infoframe;
+ 
+-	ret = hdmi_audio_infoframe_pack(&infofame, buffer, sizeof(buffer));
++	ret = hdmi_audio_infoframe_pack(infoframe, buffer, sizeof(buffer));
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed to pack audio infoframe: %d\n", ret);
+ 		return ret;
+@@ -404,6 +427,56 @@ static int hdmi_audio_infoframe_config(struct sti_hdmi *hdmi)
+ }
+ 
+ /**
++ * set audio frame rate
++ *
++ * @hdmi: pointer on the hdmi internal structure
++ *
 + */
-+
-+#include <linux/module.h>
-+#include <sound/soc.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+
-+#include <drm/drm_crtc_helper.h>
-+
-+struct hdmi_drm_dai_data {
-+	struct drm_bridge *bridge;
-+};
-+
-+static const struct snd_soc_dapm_widget hdmi_drm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("TX"),
-+};
-+
-+static const struct snd_soc_dapm_route hdmi_drm_routes[] = {
-+	{ "TX", NULL, "Playback" },
-+};
-+
-+int hdmi_drm_dai_prepare(struct snd_pcm_substream *substream,
-+			 struct snd_soc_dai *dai)
++static int hdmi_audio_set_infoframe(struct sti_hdmi *hdmi,
++				    struct hdmi_audio_infoframe *info)
 +{
-+	struct hdmi_drm_dai_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct hdmi_audio_n_cts n_cts;
++	int ret, audio_cfg;
 +
-+	dev_err(dai->dev, "%s: enter for bridge %p\n", __func__, priv->bridge);
-+	drm_audio_bridge_pre_enable(priv->bridge);
-+	return 0;
-+}
++	hdmi->audio.infoframe = *info;
 +
-+int hdmi_drm_dai_trigger(struct snd_pcm_substream *substream, int cmd,
-+			 struct snd_soc_dai *dai)
-+{
-+	struct hdmi_drm_dai_data *priv = snd_soc_dai_get_drvdata(dai);
++	if (!hdmi->enabled)
++		return 0;
 +
-+	dev_err(dai->dev, "%s: enter\n", __func__);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		drm_audio_bridge_enable(priv->bridge);
++	/* update HDMI registers according to configuration */
++	audio_cfg = HDMI_AUD_CFG_SPDIF_DIV_3 | HDMI_AUD_CFG_CTS_CLK_128FS;
++
++	switch (info->channels) {
++	case 8:
++		audio_cfg |= HDMI_AUD_CFG_CH78_VALID;
++	case 6:
++		audio_cfg |= HDMI_AUD_CFG_CH56_VALID;
++	case 4:
++		audio_cfg |= HDMI_AUD_CFG_CH34_VALID | HDMI_AUD_CFG_8CH;
++	case 2:
++		audio_cfg = HDMI_AUD_CFG_CH12_VALID;
 +		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		drm_audio_bridge_disable(priv->bridge);
-+		break;
++	default:
++		DRM_ERROR("ERROR: Unsupported number of channels (%d)!\n",
++			  info->channels);
++		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
++	hdmi_write(hdmi, audio_cfg, HDMI_AUDIO_CFG);
 +
-+static int st_hdmi_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct hdmi_drm_dai_data *priv;
++	/* update N parameter */
++	ret = hdmi_audio_compute_n_cts(info->sample_frequency,
++				       hdmi->mode.clock * 1000, &n_cts);
 +
-+	dev_err(dai->dev, "%s: enter\n", __func__);
-+	priv = devm_kzalloc(dai->dev, sizeof(*priv), GFP_KERNEL);
++	DRM_DEBUG_DRIVER("n= %d, cts = %d\n", n_cts.n, n_cts.cts);
 +
-+	priv->bridge = of_drm_find_bridge(dai->dev->of_node);
-+
-+	dev_err(dai->dev, "%s: bridge %p\n", __func__, priv->bridge);
-+
-+	snd_soc_dai_set_drvdata(dai, priv);
++	/* clear interrupt status */
++	hdmi_write(hdmi, n_cts.n, HDMI_AUDN);
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops hdmi_drm_codec_ops = {
-+		.prepare =  hdmi_drm_dai_prepare,
-+		.trigger = hdmi_drm_dai_trigger,
-+};
-+
-+static struct snd_soc_dai_driver hdmi_drm_codec_dai = {
-+	.name = "hdmi-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+		.sig_bits = 24,
-+	},
-+	.probe = st_hdmi_dai_probe,
-+	.ops = &hdmi_drm_codec_ops,
-+};
-+
-+static struct snd_soc_codec_driver hdmi_drm_codec = {
-+	.dapm_widgets = hdmi_drm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(hdmi_drm_widgets),
-+	.dapm_routes = hdmi_drm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(hdmi_drm_routes),
-+	.ignore_pmdown_time = true,
-+};
-+
-+int hdmi_drm_codec_register(struct device *dev)
++/**
+  * Software reset of the hdmi subsystem
+  *
+  * @hdmi: pointer on the hdmi internal structure
+@@ -462,7 +535,6 @@ static void sti_hdmi_disable(struct drm_bridge *bridge)
+ 	/* Disable HDMI */
+ 	val &= ~HDMI_CFG_DEVICE_EN;
+ 	hdmi_write(hdmi, val, HDMI_CFG);
+-
+ 	hdmi_write(hdmi, 0xffffffff, HDMI_INT_CLR);
+ 
+ 	/* Stop the phy */
+@@ -520,8 +592,9 @@ static void sti_hdmi_pre_enable(struct drm_bridge *bridge)
+ 		DRM_ERROR("Unable to configure AVI infoframe\n");
+ 
+ 	/* Program AUDIO infoframe */
+-	if (hdmi_audio_infoframe_config(hdmi))
+-		DRM_ERROR("Unable to configure AUDIO infoframe\n");
++	if (hdmi->audio.enabled)
++		if (hdmi_audio_infoframe_config(hdmi))
++			DRM_ERROR("Unable to configure AUDIO infoframe\n");
+ 
+ 	/* Sw reset */
+ 	hdmi_swreset(hdmi);
+@@ -567,6 +640,43 @@ static const struct drm_bridge_funcs sti_hdmi_bridge_funcs = {
+ 	.mode_set = sti_hdmi_set_mode,
+ };
+ 
++void sti_hdmi_audio_disable(struct drm_bridge *bridge)
 +{
-+	dev_err(dev, "%s: enter", __func__);
-+	return snd_soc_register_codec(dev, &hdmi_drm_codec,
-+				      &hdmi_drm_codec_dai, 1);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_drm_codec_register);
++	struct sti_hdmi *hdmi = bridge->driver_private;
 +
-+void hdmi_drm_codec_unregister(struct device *dev)
++	DRM_ERROR("enter %s\n", __func__);
++	/* mute */
++	hdmi_write(hdmi, HDMI_SAMPLE_FLAT_ALL, HDMI_SAMPLE_FLAT_MASK);
++}
++
++int sti_hdmi_audio_set_mode(struct drm_bridge *bridge,
++			       struct hdmi_audio_mode *mode)
 +{
-+	dev_err(dev, "%s: enter", __func__);
-+	snd_soc_unregister_codec(dev);
++	DRM_ERROR("enter %s\n", __func__);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(hdmi_drm_codec_unregister);
 +
-+MODULE_AUTHOR("Arnaud.pouliquen@st.com");
-+MODULE_DESCRIPTION("ASoC HDMI codec driver");
-+MODULE_LICENSE("GPL");
++void sti_hdmi_audio_pre_enable(struct drm_bridge *bridge)
++{
++	DRM_ERROR("enter %s\n", __func__);
++}
++
++void sti_hdmi_audio_bridge_enable(struct drm_bridge *bridge)
++{
++	struct sti_hdmi *hdmi = bridge->driver_private;
++
++	DRM_ERROR("enter %s\n", __func__);
++	/* unmute */
++	hdmi_write(hdmi, HDMI_SAMPLE_FLAT_NO, HDMI_SAMPLE_FLAT_MASK);
++}
++
++static const struct drm_audio_bridge_funcs sti_hdmi_audio_bridge_funcs = {
++	.pre_enable = sti_hdmi_audio_pre_enable,
++	.enable = sti_hdmi_audio_bridge_enable,
++	.disable = sti_hdmi_audio_disable,
++	.mode_set = sti_hdmi_audio_set_mode,
++};
++
+ static int sti_hdmi_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct sti_hdmi_connector *hdmi_connector
+@@ -658,6 +768,7 @@ static void sti_hdmi_connector_destroy(struct drm_connector *connector)
+ 	struct sti_hdmi_connector *hdmi_connector
+ 		= to_sti_hdmi_connector(connector);
+ 
++	drm_bridge_remove(connector->encoder->bridge);
+ 	drm_connector_unregister(connector);
+ 	drm_connector_cleanup(connector);
+ 	kfree(hdmi_connector);
+@@ -715,8 +826,14 @@ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 
+ 	bridge->driver_private = hdmi;
+ 	bridge->funcs = &sti_hdmi_bridge_funcs;
++	bridge->audio_funcs = &sti_hdmi_audio_bridge_funcs;
+ 	drm_bridge_attach(drm_dev, bridge);
+ 
++	bridge->of_node = dev->of_node;
++	err = drm_bridge_add(bridge);
++	if (err)
++		goto err_adapt;
++
+ 	encoder->bridge = bridge;
+ 	connector->encoder = encoder;
+ 
+@@ -748,6 +865,7 @@ err_sysfs:
+ 	drm_connector_unregister(drm_connector);
+ err_connector:
+ 	drm_connector_cleanup(drm_connector);
++	drm_bridge_remove(bridge);
+ err_adapt:
+ 	put_device(&hdmi->ddc_adapt->dev);
+ 	return -EINVAL;
+@@ -877,6 +995,10 @@ static int sti_hdmi_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, hdmi);
+ 
++	/* Register audio driver */
++	if (hdmi_drm_codec_register(dev))
++		DRM_INFO("Failed to register HDMI audio driver\n");
++
+ 	return component_add(&pdev->dev, &sti_hdmi_ops);
+ }
+ 
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.h b/drivers/gpu/drm/sti/sti_hdmi.h
+index 3d22390..3b93a63 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.h
++++ b/drivers/gpu/drm/sti/sti_hdmi.h
+@@ -24,6 +24,7 @@ struct hdmi_phy_ops {
+ 	void (*stop)(struct sti_hdmi *hdmi);
+ };
+ 
++
+ /**
+  * STI hdmi structure
+  *
+@@ -36,6 +37,7 @@ struct hdmi_phy_ops {
+  * @clk_tmds: hdmi tmds clock
+  * @clk_phy: hdmi phy clock
+  * @clk_audio: hdmi audio clock
++ * @audio: hdmi audio state
+  * @irq: hdmi interrupt number
+  * @irq_status: interrupt status register
+  * @phy_ops: phy start/stop operations
+@@ -55,6 +57,7 @@ struct sti_hdmi {
+ 	struct clk *clk_tmds;
+ 	struct clk *clk_phy;
+ 	struct clk *clk_audio;
++	struct hdmi_audio_mode audio;
+ 	int irq;
+ 	u32 irq_status;
+ 	struct hdmi_phy_ops *phy_ops;
 -- 
 1.9.1
