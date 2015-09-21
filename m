@@ -1,15 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 1/5] video: hdmi: add help function for N and CTS
-Date: Mon, 21 Sep 2015 15:19:52 +0200
-Message-ID: <1442841596-1323-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC 5/5] DT: sti: add audio HDMI dai link in audio
+	card
+Date: Mon, 21 Sep 2015 15:19:56 +0200
+Message-ID: <1442841596-1323-6-git-send-email-arnaud.pouliquen@st.com>
 References: <1442841596-1323-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 8F3CE2612BD
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 15:21:16 +0200 (CEST)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6EDC126147A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 15:21:20 +0200 (CEST)
 In-Reply-To: <1442841596-1323-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,187 +25,95 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 Cc: moinejf@free.fr, linux@arm.linux.org.uk, Takashi Iwai <tiwai@suse.de>, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, airlied@linux.ie, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-Add helper function to compute CTS and N parameters base on 
-table described in HDMI specification 1.4b
+Add the HDMI dai link to support audio for HDMi output
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/video/hdmi.c | 148 +++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/hdmi.h |   8 +++
- 2 files changed, 156 insertions(+)
+ arch/arm/boot/dts/stih410.dtsi       |  4 ++--
+ arch/arm/boot/dts/stihxxx-b2120.dtsi | 21 +++++++++++++++++++++
+ arch/arm/configs/multi_v7_defconfig  |  1 +
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index 1626892..9c487fb 100644
---- a/drivers/video/hdmi.c
-+++ b/drivers/video/hdmi.c
-@@ -1242,3 +1242,151 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer)
- 	return ret;
- }
- EXPORT_SYMBOL(hdmi_infoframe_unpack);
-+
-+/*
-+ * audio clock regeneration (acr) parameters
-+ * N and CTS computation are based on HDMI specification 1.4b
-+ */
-+
-+enum audio_rate {
-+	HDMI_AUDIO_N_CTS_32KHZ,
-+	HDMI_AUDIO_N_CTS_44_1KHZ,
-+	HDMI_AUDIO_N_CTS_48KHZ,
-+};
-+
-+struct hdmi_audio_acr {
-+	unsigned long pixel_clk;
-+	struct hdmi_audio_n_cts n_cts;
-+};
-+
-+static const struct hdmi_audio_acr hdmi_audio_standard_acr[3][12] = {
-+	{ /*32 kHz*/
-+		{  25175, {  4576,  28125 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  4096,  25200 } }, /* 25.20        MHz */
-+		{  27000, {  4096,  27000 } }, /* 27.00        MHz */
-+		{  27027, {  4096,  27027 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  4096,  54000 } }, /* 54.00        MHz */
-+		{  54054, {  4096,  54054 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 11648, 310938 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  4096,  74250 } }, /* 74.25        MHz */
-+		{ 148352, { 11648, 421875 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  4096, 148500 } }, /* 148.50       MHz */
-+		{ 296703, {  5824, 421875 } }, /* 297/1.001    MHz */
-+		{ 297000, {  3072, 222750 } }, /* 297          MHz */
-+	},
-+	{ /*44.1 kHz, 88.2 kHz  176.4 kHz*/
-+		{  25175, {  7007,  31250 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  6272,  28000 } }, /* 25.20        MHz */
-+		{  27000, {  6272,  30000 } }, /* 27.00        MHz */
-+		{  27027, {  6272,  30030 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  6272,  60000 } }, /* 54.00        MHz */
-+		{  54054, {  6272,  60060 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 17836, 234375 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  6272,  82500 } }, /* 74.25        MHz */
-+		{ 148352, {  8918, 234375 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  6272, 165000 } }, /* 148.50       MHz */
-+		{ 296703, {  4459, 234375 } }, /* 297/1.001    MHz */
-+		{ 297000, {  4704, 247500 } }, /* 297          MHz */
-+	},
-+	{ /*48 kHz, 96 kHz  192 kHz*/
-+		{  25175, {  6864,  28125 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  6144,  25200 } }, /* 25.20        MHz */
-+		{  27000, {  6144,  27000 } }, /* 27.00        MHz */
-+		{  27027, {  6144,  27027 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  6144,  54000 } }, /* 54.00        MHz */
-+		{  54054, {  6144,  54054 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 11648, 140625 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  6144,  74250 } }, /* 74.25        MHz */
-+		{ 148352, {  5824, 140625 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  6144, 148500 } }, /* 148.50       MHz */
-+		{ 296703, {  5824, 281250 } }, /* 297/1.001    MHz */
-+		{ 297000, {  5120, 247500 } }, /* 297          MHz */
-+	}
-+};
-+
-+/**
-+ * hdmi_compute_n_cts() - compute N and CTS parameters
-+ * @audio_clk: audio frame clock frequency in KHz
-+ * @pixel_clk: pixel cloack frequency in kHz
-+ * @n_cts: N and CTS parameter returned to user
-+ *
-+ * Values computed are based on table described in HDMI specification 1.4b
-+ *
-+ * Returns 0 on success or a negative error code on failure.
-+ */
-+
-+int hdmi_audio_compute_n_cts(unsigned int audio_fs, unsigned long pixel_clk,
-+			     struct hdmi_audio_n_cts *n_cts)
-+{
-+	int audio_freq_id, i;
-+	int ratio = 1;
-+	const struct hdmi_audio_acr  *acr_table;
-+	const struct hdmi_audio_n_cts *predef_n_cts = NULL;
-+
-+	switch (audio_fs) {
-+	case 32000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_32KHZ;
-+		n_cts->n = 4096;
-+		break;
-+
-+	case 44100:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		n_cts->n = 6272;
-+		break;
-+
-+	case 48000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		n_cts->n = 6144;
-+		break;
-+
-+	case 88200:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		ratio = 2;
-+		n_cts->n = 6272 * 2;
-+		break;
-+
-+	case 96000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		ratio = 2;
-+		n_cts->n = 6144 * 2;
-+		break;
-+
-+	case 176400:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		ratio = 2;
-+		n_cts->n = 6272 * 4;
-+		break;
-+
-+	case 192000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		ratio = 4;
-+		n_cts->n = 6144 * 4;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	acr_table = hdmi_audio_standard_acr[audio_freq_id];
-+	for (i = 0; i < ARRAY_SIZE(hdmi_audio_standard_acr[0]); i++) {
-+		if (pixel_clk == acr_table[i].pixel_clk) {
-+			predef_n_cts = &acr_table[i].n_cts;
-+			break;
-+		}
-+	}
-+
-+	if (!predef_n_cts) {
-+		/*
-+		 * predifined frequency not found compute CTS using formula:
-+		 * CTS = (Ftdms_clk * N) / (128* audio_fs)
-+		 */
-+		n_cts->cts =  pixel_clk * n_cts->n / (128 * audio_fs);
-+	} else {
-+		n_cts->n = predef_n_cts->n * ratio;
-+		n_cts->cts = predef_n_cts->cts;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(hdmi_audio_compute_n_cts);
-+
-diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index e974420..32107a0 100644
---- a/include/linux/hdmi.h
-+++ b/include/linux/hdmi.h
-@@ -333,4 +333,12 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer);
- void hdmi_infoframe_log(const char *level, struct device *dev,
- 			union hdmi_infoframe *frame);
+diff --git a/arch/arm/boot/dts/stih410.dtsi b/arch/arm/boot/dts/stih410.dtsi
+index 7ee7dc0..3881016 100644
+--- a/arch/arm/boot/dts/stih410.dtsi
++++ b/arch/arm/boot/dts/stih410.dtsi
+@@ -186,8 +186,9 @@
+ 							 <&clk_s_d2_quadfs 0>;
+ 			};
  
-+struct hdmi_audio_n_cts {
-+	unsigned int n;
-+	unsigned int cts;
-+};
+-				sti-hdmi@8d04000 {
++				sti_hdmi: sti-hdmi@8d04000 {
+ 					compatible = "st,stih407-hdmi";
++					#sound-dai-cells = <0>;
+ 					reg = <0x8d04000 0x1000>;
+ 					reg-names = "hdmi-reg";
+ 					interrupts = <GIC_SPI 106 IRQ_TYPE_NONE>;
+@@ -210,7 +211,6 @@
+ 					reset-names = "hdmi";
+ 					resets = <&softreset STIH407_HDMI_TX_PHY_SOFTRESET>;
+ 					ddc = <&hdmiddc>;
+-
+ 				};
+ 
+ 				sti-hda@8d02000 {
+diff --git a/arch/arm/boot/dts/stihxxx-b2120.dtsi b/arch/arm/boot/dts/stihxxx-b2120.dtsi
+index 3ad9c82..80fed19 100644
+--- a/arch/arm/boot/dts/stihxxx-b2120.dtsi
++++ b/arch/arm/boot/dts/stihxxx-b2120.dtsi
+@@ -81,6 +81,9 @@
+ 		audio_controller: sti-asoc-platform {
+ 			status = "okay";
+ 		};
++		sti_uni_player0: sti-uni-player@0 {
++			status = "okay";
++		};
+ 		sti_uni_player2: sti-uni-player@2 {
+ 			status = "okay";
+ 		};
+@@ -93,6 +96,12 @@
+ 		sti_uni_reader1: sti-uni-reader@1 {
+ 			status = "okay";
+ 		};
 +
-+int hdmi_audio_compute_n_cts(unsigned int audio_fs, unsigned long pixel_clk,
-+			     struct hdmi_audio_n_cts *n_cts);
++		sti-display-subsystem {
++			sti_hdmi: sti-hdmi@8d04000 {
++				status = "okay";
++			};
++		};
+ 	};
+ 
+ 	sound {
+@@ -125,6 +134,18 @@
+ 				sound-dai = <&sti_sasg_codec 0>;
+ 			};
+ 		};
++		simple-audio-card,dai-link@2 {
++			/* HDMI */
++			format = "i2s";
++			mclk-fs = <128>;
++			cpu {
++				sound-dai = <&sti_uni_player0>;
++			};
 +
- #endif /* _DRM_HDMI_H */
++			codec {
++				sound-dai = <&sti_hdmi>;
++			};
++		};
+ 	};
+ 
+ };
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 2a44694..6f43666 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -461,6 +461,7 @@ CONFIG_SND_ATMEL_SOC=m
+ CONFIG_SND_ATMEL_SOC_WM8904=m
+ CONFIG_SND_SOC_SH4_FSI=m
+ CONFIG_SND_SOC_RCAR=m
++CONFIG_SND_SOC_HDMI_DRM_CODEC=y
+ CONFIG_SND_SOC_STI=y
+ CONFIG_SND_SOC_STI_SAS=y
+ CONFIG_SND_SOC_TEGRA=m
 -- 
 1.9.1
