@@ -1,18 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 3/9] ASoC: Intel: Skylake: add DSP
- platform widget event handlers
-Date: Mon, 21 Sep 2015 08:54:10 +0530
-Message-ID: <20150921032410.GD2381@localhost>
+Subject: Re: [PATCH v2 6/9] ASoC: Intel: Skylake: Initialize
+ and load DSP controls
+Date: Mon, 21 Sep 2015 08:56:10 +0530
+Message-ID: <20150921032610.GE2381@localhost>
 References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
- <1439832404-12424-4-git-send-email-vinod.koul@intel.com>
- <20150919161122.GD30445@sirena.org.uk>
+ <1439832404-12424-7-git-send-email-vinod.koul@intel.com>
+ <1442570334.7634.39.camel@loki>
+ <20150919162620.GF30445@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8181099009145939393=="
+Content-Type: multipart/mixed; boundary="===============4417618178096821147=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2232D260537
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 05:21:32 +0200 (CEST)
-In-Reply-To: <20150919161122.GD30445@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id E6D00260537
+ for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 05:23:46 +0200 (CEST)
+In-Reply-To: <20150919162620.GF30445@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,88 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, patches.audio@intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8181099009145939393==
+--===============4417618178096821147==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
+	protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
 Content-Disposition: inline
 
 
---tjCHc7DPkfUGtrlw
+--lCAWRPmW1mITcIfM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Sep 19, 2015 at 09:11:22AM -0700, Mark Brown wrote:
-> On Mon, Aug 17, 2015 at 10:56:38PM +0530, Vinod Koul wrote:
+On Sat, Sep 19, 2015 at 09:26:20AM -0700, Mark Brown wrote:
+> On Fri, Sep 18, 2015 at 10:58:54AM +0100, Liam Girdwood wrote:
+> > On Mon, 2015-08-17 at 22:56 +0530, Vinod Koul wrote:
 >=20
-> > +	if (list_empty(&s_pipe->w_list)) {
-> > +		ret =3D skl_tplg_get_pipe_widget(ctx->dev, w, s_pipe);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
+> > > +				struct snd_soc_dai *dai)
+> > > +{
+> > > +	struct skl_pipe_params p_params =3D {0};
+> > > +
+> > > +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
 >=20
-> I'm not entirely clear what this is supposed to do or if it does it
-> correctly - I suspect it's trying to always create the pipe widget which
-> might be a bit clearer if it just created the pipe widget.  The fact
-> that it's checking if a list is empty is a bit worrying, what if some
-> but not all of the entries needed on that list are there?  Is just
-> getting a widget really sufficient initialisation?
+> > Seeing a lot of dev_dbg(__func__) in this series that really are just
+> > tracing. Probably best to trace the calls properly or remove if it's
+> > just development debugging.
+>=20
+> It's all through the whole Intel DSP codebase.  :(
 
-For quick reference, on first run of a pipe, we create a w_list of all
-widgets in that pipe. This list is not freed on PMD event as widgets within
-a pipe are static. This saves us cycles to get widgets in pipe every time.
-
-So if we already initialized all the widgets of a pipeline we don't need
-that anymore. I will add comment for this as well
-
->=20
-> > +	return skl_tplg_bind_unbind_pipe_modules(ctx, s_pipe, true);
-> > +}
-> > +/*
-> > + * A PGA represents a module in a pipeline. So in the Pre-PMU event of=
- PGA
->=20
-> Blank line between functions and the next thing.  I am getting fed up of
-> seeing this.
-Will fix these
+Yes the code is getting features added so we thought of keeping this for a
+while, but I agree this doesn't help much, we are adding tracing anyway so
+lets add that. Will remove most of these...
 
 Thanks
 --=20
 ~Vinod
 
---tjCHc7DPkfUGtrlw
+--lCAWRPmW1mITcIfM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJV/3haAAoJEHwUBw8lI4NHIOsQALtKcYmRCfKqNMjZhZFiLfmc
-35ZwLr3rXLirjEuiLI6Lkxu7OmIAvZOD1I93vm/m4XC5BFY7H5uTjRvNjFpFuJEz
-nJHa/ZeIkh2ppiOXHGbvcuQIB8/Syk5Qw5VFk6vVvql8yGou90KVsrM37a/9Htgp
-ZjHbp/yXObgILLyUlSWOCtEpWcoNfxzoNEBVssTzyTPAdqsjQonI3sRPS9cbY4Lp
-B/i+xP5/EhNAKg/i8y3evKmQ5D0p090RKCU/fVDg5GJKQiUrjhdE374hqSrsCOcs
-T1QaDX8lHhiV7AI8gRpvUBRlZP16TbvRuzS60n2YHpxzCyCt2WA/Mwhn75PoI8s2
-dYh17qXJt6IZwyJsQKJ4cm9+JCmeKFIGSOSeay9J+mPMNlQTWZVchXszdxnU+1S/
-DxxlW3Ndcf9nDJnAwGzU4crto58v2UjFWNe0DpFjmL8vMXrumqgsK4K5VSb6DqGe
-lzfTmkAAXcuaygXIk0w8YRymWK4Kh9g1UfMbHPcSVN38chQQzefKfWxnv9JAsEuc
-MAoEnYCkzJOp25Z1G7A5XPCxNC8sI87F0moYIeZKSg+eiPcp6A0A/segjo+8zCi2
-S0ppdumk0YxxANGwm1U1IKmqi0RqGTe6WgF82D4Qwmy+5ls2BT/AXnrk/mnoWlEb
-Xk/mLwMjsQ1cZwTDpLjG
-=r+Z0
+iQIcBAEBAgAGBQJV/3jSAAoJEHwUBw8lI4NHoLwQANVAw8BjbL9CK8V9lGFhPTRJ
+pgbEBG00wac989kG3Y076pLrCjWW2wlma/UWbDXdhr4t7Dte2MvIZk5tdEE9Z2V5
+mi+xwsoBy7Fqs3MYYYtmhX1GWwfPebXLGLNCQ6QlH8lyo6DF5hRyrzkjiV1FhzsA
+oHDW0pzREmsTxmzcTuWwVR/a0jBnJFn454xwe0RlmkE0XZo2+PJMy5zkhj69ibxL
+s0U71gUe34QyyuQNOHnN9+Mt+9GrNrtrj9Mcwcdj6Rpsw4//Bg0kyFfoE86mNmfc
+TEdmvBVjPhVZlh0VvmkihJIiiFcT7MhjwT8H49vC+mEKueH1wpGGE1mgqt3rlYO+
+S7fiQ5Pg0y2Esx5qDnJ/xKjg0qAIESaGGmd9XvNd1XhcmbJEMTnziJVel3jD1ZBR
+s4wJEZzajL3//C1DKqsP0abzdWgDkvN6FSze38mPx0xcUy2WHVx9Im628vYlnlOw
+QALMP9t/kJmlVqihVVc++Brx5U8BdPi583sshP8Lez0mKg2LP6zXh73wd4yHSbJ4
+f2GXqd4gMe9aWWrJslXssKzNclGU8z9dwIDx1O/GlodZqwR/NbFSSAgZXreZRTC3
+Fo/V15H++0Ty604zPtNa7jW+7/bRe6klEelASUl3XAIgh4AwwVL6aZWPBMU7n7hM
+lbI8d3YZPMQv1TSrdVWL
+=bh5B
 -----END PGP SIGNATURE-----
 
---tjCHc7DPkfUGtrlw--
+--lCAWRPmW1mITcIfM--
 
---===============8181099009145939393==
+--===============4417618178096821147==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8181099009145939393==--
+--===============4417618178096821147==--
