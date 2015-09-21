@@ -1,49 +1,32 @@
-From: John Lin <john.lin@realtek.com>
-Subject: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for chrome
-Date: Mon, 21 Sep 2015 18:38:19 +0800
-Message-ID: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [alsa-devel] System with multiple arizona (wm5102) codecs
+Date: Mon, 21 Sep 2015 14:36:55 +0200
+Message-ID: <20150921123655.GD16589@amd>
+References: <20150914115439.GA29646@amd>
+ <20150914115255.GE11200@ck-lbox>
+ <20150915061832.GA25442@amd>
+ <20150915080648.GG11200@ck-lbox>
+ <20150915083552.GA14780@amd>
+ <CAG5mAdybV2U5Z9FRPy4zVF10Ws63rybSHCMCEpKQ1ArTBLnXpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 0650D26072A
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 12:38:27 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>, Keith.Tzeng@quantatw.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAG5mAdybV2U5Z9FRPy4zVF10Ws63rybSHCMCEpKQ1ArTBLnXpw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: John Lin <john.lin@realtek.com>
----
- sound/soc/codecs/rt5645.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Hi!
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index b0d96b6..84c5261 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3212,6 +3212,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
- 		},
- 	},
-+	{
-+		.ident = "Google Reks",
-+		.callback = strago_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Reks"),
-+		},
-+	},
- 	{ }
- };
- 
+>    I'd love to see the patches :-)  I've been trying to figure out the
+> *right* way to add multiple codecs to a single card (and single CPU
+> DAI) for some days now.  Any help would be greatly appreciated.
+
+I eventually got it to work, but I'm really sure that what I've done
+can't be considered "right" :-).
+								Pavel
 -- 
-1.8.1.1.439.g50a6b54
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
