@@ -1,50 +1,57 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Mon, 21 Sep 2015 09:14:29 +0200
-Message-ID: <20150921071429.GA5698@acervm>
-References: <20150824132904.GA665@acervm.homenet.telecomitalia.it>
- <20150824142625.GM13546@localhost> <20150824181731.GA471@asus>
- <55DB7055.2020104@linux.intel.com>
- <20150825080619.GA25981@acervm.homenet.telecomitalia.it>
- <55FB2886.4070304@bazdara.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [alsa-devel] [PATCH RFC 1/7] ASoC: tlv320aic26: Add device tree
+ binding
+Date: Mon, 21 Sep 2015 11:38:28 +0300
+Message-ID: <55FFC204.9000903@ti.com>
+References: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
+ <1442607076-26681-2-git-send-email-jcormier@criticallink.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id F13802604FC
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 09:14:32 +0200 (CEST)
-Received: by wiclk2 with SMTP id lk2so132359994wic.0
- for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2015 00:14:32 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <55FB2886.4070304@bazdara.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Luka Karinja <lk@bazdara.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, ao2@ao2.it, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jarkko.nikula@linux.intel.com, alessandro.zucca01@gmail.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1442607076-26681-2-git-send-email-jcormier@criticallink.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Cormier, Jonathan" <jcormier@criticallink.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Bob Duke <bduke@criticallink.com>, Mark Brown <broonie@linaro.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2015 at 10:54:30PM +0200, Luka Karinja wrote:
-> Hello Michele,
-> 
-> >
-> >Oh, so no need of a SSP1 driver, thank you!
-> >
-> >I'll try the SSP0 one :)
-> >
-> Any luck to get the sound working on your device?
+On 09/18/2015 11:11 PM, Cormier, Jonathan wrote:
 
-Hi Luka,
-I did a try but without success..  I think it's beyond my 
-capabilities eheh
+> diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320=
+aic26.c
+> index 620ab9ea1ef0..91fdd96648bd 100644
+> --- a/sound/soc/codecs/tlv320aic26.c
+> +++ b/sound/soc/codecs/tlv320aic26.c
+> @@ -370,10 +370,20 @@ static int aic26_spi_remove(struct spi_device *=
+spi)
+>  	return 0;
+>  }
+> =20
+> +#if defined(CONFIG_OF)
 
-Regards,
-Michele
+You don't need the #ifdef here
+
+> +static const struct of_device_id tlv320aic26_of_match[] =3D {
+> +	{ .compatible =3D "ti,tlv320aic26", },
+> +	{},
+> +};
+> +#endif
+> +
+>  static struct spi_driver aic26_spi =3D {
+>  	.driver =3D {
+>  		.name =3D "tlv320aic26-codec",
+>  		.owner =3D THIS_MODULE,
+> +#if defined(CONFIG_OF)
+
+neither here.
+
+> +		.of_match_table =3D of_match_ptr(tlv320aic26_of_match),
+> +#endif
+>  	},
+>  	.probe =3D aic26_spi_probe,
+>  	.remove =3D aic26_spi_remove,
+>=20
+
+
+--=20
+P=E9ter
