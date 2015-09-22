@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 16/21] media: au0828 video change to use v4l_enable_media_tuner()
-Date: Tue, 22 Sep 2015 11:19:35 -0600
-Message-ID: <436ac597ac9a29169e9d5ce0f1bc5206cd5edc39.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 03/21] media: Add ALSA Media Controller devnodes
+Date: Tue, 22 Sep 2015 11:19:22 -0600
+Message-ID: <78cb5dd3bb7d5e531c66384c48ee35aa89903b75.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,52 +12,35 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828 is changed to use v4l_enable_media_tuner() to check for
-tuner availability from vidioc_g_tuner(), and au0828_v4l2_close(),
-before changing tuner settings. If tuner isn't free, return busy
-condition from vidioc_g_tuner() and in au0828_v4l2_close() tuner
-is left untouched without powering down to save energy.
+Add ALSA Media Controller capture, playback, and mixer
+devnode defines.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-video.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ include/uapi/linux/media.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index b63ae78..6680aeb 100644
---- a/drivers/media/usb/au0828/au0828-video.c
-+++ b/drivers/media/usb/au0828/au0828-video.c
-@@ -1005,8 +1005,12 @@ static int au0828_v4l2_close(struct file *filp)
- 		goto end;
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 4e816be..4a30ea3 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -49,12 +49,17 @@ struct media_device_info {
+ #define MEDIA_ENT_T_DEVNODE		(1 << MEDIA_ENT_TYPE_SHIFT)
+ #define MEDIA_ENT_T_DEVNODE_V4L		(MEDIA_ENT_T_DEVNODE + 1)
+ #define MEDIA_ENT_T_DEVNODE_FB		(MEDIA_ENT_T_DEVNODE + 2)
++/* Legacy ALSA symbol. Keep it to avoid userspace compilation breakages */
+ #define MEDIA_ENT_T_DEVNODE_ALSA	(MEDIA_ENT_T_DEVNODE + 3)
+ #define MEDIA_ENT_T_DEVNODE_DVB_FE	(MEDIA_ENT_T_DEVNODE + 4)
+ #define MEDIA_ENT_T_DEVNODE_DVB_DEMUX	(MEDIA_ENT_T_DEVNODE + 5)
+ #define MEDIA_ENT_T_DEVNODE_DVB_DVR	(MEDIA_ENT_T_DEVNODE + 6)
+ #define MEDIA_ENT_T_DEVNODE_DVB_CA	(MEDIA_ENT_T_DEVNODE + 7)
+ #define MEDIA_ENT_T_DEVNODE_DVB_NET	(MEDIA_ENT_T_DEVNODE + 8)
++/* ALSA devnodes */
++#define MEDIA_ENT_T_DEVNODE_ALSA_CAPTURE	(MEDIA_ENT_T_DEVNODE + 9)
++#define MEDIA_ENT_T_DEVNODE_ALSA_PLAYBACK	(MEDIA_ENT_T_DEVNODE + 10)
++#define MEDIA_ENT_T_DEVNODE_ALSA_MIXER		(MEDIA_ENT_T_DEVNODE + 11)
  
- 	if (dev->users == 1) {
--		/* Save some power by putting tuner to sleep */
--		v4l2_device_call_all(&dev->v4l2_dev, 0, core, s_power, 0);
-+		/* Save some power by putting tuner to sleep, if it is free */
-+		/* What happens when radio is using tuner?? */
-+		ret = v4l_enable_media_tuner(vdev);
-+		if (ret == 0)
-+			v4l2_device_call_all(&dev->v4l2_dev, 0, core,
-+					     s_power, 0);
- 		dev->std_set_in_tuner_core = 0;
- 
- 		/* When close the device, set the usb intf0 into alt0 to free
-@@ -1407,10 +1411,16 @@ static int vidioc_s_audio(struct file *file, void *priv, const struct v4l2_audio
- static int vidioc_g_tuner(struct file *file, void *priv, struct v4l2_tuner *t)
- {
- 	struct au0828_dev *dev = video_drvdata(file);
-+	struct video_device *vfd = video_devdata(file);
-+	int ret;
- 
- 	if (t->index != 0)
- 		return -EINVAL;
- 
-+	ret = v4l_enable_media_tuner(vfd);
-+	if (ret)
-+		return ret;
-+
- 	dprintk(1, "%s called std_set %d dev_state %d\n", __func__,
- 		dev->std_set_in_tuner_core, dev->dev_state);
- 
+ /* Legacy symbol. Use it to avoid userspace compilation breakages */
+ #define MEDIA_ENT_T_DEVNODE_DVB		MEDIA_ENT_T_DEVNODE_DVB_FE
 -- 
 2.1.4
