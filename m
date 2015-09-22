@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 03/21] media: Add ALSA Media Controller devnodes
-Date: Tue, 22 Sep 2015 11:19:22 -0600
-Message-ID: <78cb5dd3bb7d5e531c66384c48ee35aa89903b75.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 12/21] media: au0828 fix au0828_create_media_graph() entity checks
+Date: Tue, 22 Sep 2015 11:19:31 -0600
+Message-ID: <9a717e8f411fc1a1bac2c984f154ada401a9186c.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,35 +12,34 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add ALSA Media Controller capture, playback, and mixer
-devnode defines.
+au0828_create_media_graph() checks if entity.links is null
+or not to determine, if vbi_dev and vdev entities have been
+registered. Checking entity.parent field is right way, as
+parent field gets initialized when entity is registered. Fix
+it to check entity.parent field.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- include/uapi/linux/media.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/media/usb/au0828/au0828-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
-index 4e816be..4a30ea3 100644
---- a/include/uapi/linux/media.h
-+++ b/include/uapi/linux/media.h
-@@ -49,12 +49,17 @@ struct media_device_info {
- #define MEDIA_ENT_T_DEVNODE		(1 << MEDIA_ENT_TYPE_SHIFT)
- #define MEDIA_ENT_T_DEVNODE_V4L		(MEDIA_ENT_T_DEVNODE + 1)
- #define MEDIA_ENT_T_DEVNODE_FB		(MEDIA_ENT_T_DEVNODE + 2)
-+/* Legacy ALSA symbol. Keep it to avoid userspace compilation breakages */
- #define MEDIA_ENT_T_DEVNODE_ALSA	(MEDIA_ENT_T_DEVNODE + 3)
- #define MEDIA_ENT_T_DEVNODE_DVB_FE	(MEDIA_ENT_T_DEVNODE + 4)
- #define MEDIA_ENT_T_DEVNODE_DVB_DEMUX	(MEDIA_ENT_T_DEVNODE + 5)
- #define MEDIA_ENT_T_DEVNODE_DVB_DVR	(MEDIA_ENT_T_DEVNODE + 6)
- #define MEDIA_ENT_T_DEVNODE_DVB_CA	(MEDIA_ENT_T_DEVNODE + 7)
- #define MEDIA_ENT_T_DEVNODE_DVB_NET	(MEDIA_ENT_T_DEVNODE + 8)
-+/* ALSA devnodes */
-+#define MEDIA_ENT_T_DEVNODE_ALSA_CAPTURE	(MEDIA_ENT_T_DEVNODE + 9)
-+#define MEDIA_ENT_T_DEVNODE_ALSA_PLAYBACK	(MEDIA_ENT_T_DEVNODE + 10)
-+#define MEDIA_ENT_T_DEVNODE_ALSA_MIXER		(MEDIA_ENT_T_DEVNODE + 11)
- 
- /* Legacy symbol. Use it to avoid userspace compilation breakages */
- #define MEDIA_ENT_T_DEVNODE_DVB		MEDIA_ENT_T_DEVNODE_DVB_FE
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 276598b..0b8dc49 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -263,11 +263,11 @@ static void au0828_create_media_graph(struct au0828_dev *dev)
+ 	if (tuner)
+ 		media_entity_create_link(tuner, 0, decoder, 0,
+ 					 MEDIA_LNK_FL_ENABLED);
+-	if (dev->vdev.entity.links)
++	if (dev->vdev.entity.parent)
+ 		media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
+ 					 &dev->vdev.entity, 0,
+ 					 MEDIA_LNK_FL_ENABLED);
+-	if (dev->vbi_dev.entity.links)
++	if (dev->vbi_dev.entity.parent)
+ 		media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
+ 					 &dev->vbi_dev.entity, 0,
+ 					 MEDIA_LNK_FL_ENABLED);
 -- 
 2.1.4
