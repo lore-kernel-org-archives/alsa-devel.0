@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 10/21] media: au8522 change to create MC pad for ALSA Audio Out
-Date: Tue, 22 Sep 2015 11:19:29 -0600
-Message-ID: <350974dc0fdc9832ab0f22c88f82eabc703092d3.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 04/21] media: Media Controller enable/disable source handler API
+Date: Tue, 22 Sep 2015 11:19:23 -0600
+Message-ID: <2cf8f0b5ea1c63c3897a82d430a993e2af646220.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,37 +12,54 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add new pad for ALSA Audio Out to au8522_media_pads.
+Add new fields to struct media_device to add enable_source, and
+disable_source handlers, and source_priv to stash driver private
+data that is need to run these handlers. The enable_source handler
+finds source entity for the passed in entity and check if it is
+available, and activate the link using __media_entity_setup_link()
+interface. Bridge driver is expected to implement and set these
+handlers and private data when media_device is registered or when
+bridge driver finds the media_device during probe. This is to enable
+the use-case to find tuner entity connected to the decoder entity and
+check if it is available, and activate it and start pipeline between
+the source and the entity. The disable_source handler deactivates the
+link and stops the pipeline. This handler can be invoked from the
+media core (v4l-core, dvb-core) as well as other drivers such as ALSA
+that control the media device.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/dvb-frontends/au8522.h         | 1 +
- drivers/media/dvb-frontends/au8522_decoder.c | 1 +
- 2 files changed, 2 insertions(+)
+ include/media/media-device.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
-index 3c72f40..d7a997f 100644
---- a/drivers/media/dvb-frontends/au8522.h
-+++ b/drivers/media/dvb-frontends/au8522.h
-@@ -94,6 +94,7 @@ enum au8522_media_pads {
- 	AU8522_PAD_INPUT,
- 	AU8522_PAD_VID_OUT,
- 	AU8522_PAD_VBI_OUT,
-+	AU8522_PAD_AUDIO_OUT,
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index a3854f6..117c169 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -84,6 +84,24 @@ struct media_device {
+ 	/* Serializes graph operations. */
+ 	struct mutex graph_mutex;
  
- 	AU8522_NUM_PADS
++	/* Handlers to find source entity for the sink entity and
++	 * check if it is available, and activate the link using
++	 * media_entity_setup_link() interface and start pipeline
++	 * from the source to the entity.
++	 * Bridge driver is expected to implement and set the
++	 * handler when media_device is registered or when
++	 * bridge driver finds the media_device during probe.
++	 * Bridge driver sets source_priv with information
++	 * necessary to run enable/disable source handlers.
++	 *
++	 * Use-case: find tuner entity connected to the decoder
++	 * entity and check if it is available, and activate the
++	 * using media_entity_setup_link() if it is available.
++	*/
++	void *source_priv;
++	int (*enable_source)(struct media_entity *entity,
++			     struct media_pipeline *pipe);
++	void (*disable_source)(struct media_entity *entity);
+ 	int (*link_notify)(struct media_link *link, u32 flags,
+ 			   unsigned int notification);
  };
-diff --git a/drivers/media/dvb-frontends/au8522_decoder.c b/drivers/media/dvb-frontends/au8522_decoder.c
-index 24990db..5fc9a39 100644
---- a/drivers/media/dvb-frontends/au8522_decoder.c
-+++ b/drivers/media/dvb-frontends/au8522_decoder.c
-@@ -775,6 +775,7 @@ static int au8522_probe(struct i2c_client *client,
- 	state->pads[AU8522_PAD_INPUT].flags = MEDIA_PAD_FL_SINK;
- 	state->pads[AU8522_PAD_VID_OUT].flags = MEDIA_PAD_FL_SOURCE;
- 	state->pads[AU8522_PAD_VBI_OUT].flags = MEDIA_PAD_FL_SOURCE;
-+	state->pads[AU8522_PAD_AUDIO_OUT].flags = MEDIA_PAD_FL_SOURCE;
- 	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV_DECODER;
- 
- 	ret = media_entity_init(&sd->entity, ARRAY_SIZE(state->pads),
 -- 
 2.1.4
