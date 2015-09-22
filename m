@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 15/21] media: au0828 video remove au0828_enable_analog_tuner()
-Date: Tue, 22 Sep 2015 11:19:34 -0600
-Message-ID: <e7c7243008cf3479b08dfa5d8c5f429d1020a4fc.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 13/21] media: Change v4l-core to check for tuner availability
+Date: Tue, 22 Sep 2015 11:19:32 -0600
+Message-ID: <2fd0fa2d594d7b67023e6484b08ef645925d77b8.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,96 +12,132 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828_enable_analog_tuner() is no longer needed with
-v4l2-core and au0828-video invoking enable_source and
-disable_source handlers. In addition, it is unnecessary
-to check for tuner availability in queue_setup() as
-v4l2-core handles the tuner availability checks.
+Change s_input, s_fmt, s_tuner, s_frequency, querystd,
+s_hw_freq_seek, and vb2_internal_streamon interfaces that
+alter the tuner configuration to check for tuner availability
+by calling v4l_enable_media_tuner(). If tuner isn't free,
+return -EBUSY. v4l_disable_media_tuner() is called from
+v4l2_fh_exit() to release the tuner.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-video.c | 62 ---------------------------------
- 1 file changed, 62 deletions(-)
+ drivers/media/v4l2-core/v4l2-fh.c        |  1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c     | 29 +++++++++++++++++++++++++++++
+ drivers/media/v4l2-core/videobuf2-core.c |  3 +++
+ 3 files changed, 33 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index 939b2ad..b63ae78 100644
---- a/drivers/media/usb/au0828/au0828-video.c
-+++ b/drivers/media/usb/au0828/au0828-video.c
-@@ -637,66 +637,6 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
- 	return rc;
+diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
+index c97067a..538db62 100644
+--- a/drivers/media/v4l2-core/v4l2-fh.c
++++ b/drivers/media/v4l2-core/v4l2-fh.c
+@@ -92,6 +92,7 @@ void v4l2_fh_exit(struct v4l2_fh *fh)
+ {
+ 	if (fh->vdev == NULL)
+ 		return;
++	v4l_disable_media_tuner(fh->vdev);
+ 	v4l2_event_unsubscribe_all(fh);
+ 	fh->vdev = NULL;
+ }
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 85de455..deffc1b 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1035,6 +1035,12 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
+ static int v4l_s_input(const struct v4l2_ioctl_ops *ops,
+ 				struct file *file, void *fh, void *arg)
+ {
++	struct video_device *vfd = video_devdata(file);
++	int ret;
++
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	return ops->vidioc_s_input(file, fh, *(unsigned int *)arg);
  }
  
--static int au0828_enable_analog_tuner(struct au0828_dev *dev)
--{
--#ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device *mdev = dev->media_dev;
--	struct media_entity  *entity, *source;
--	struct media_link *link, *found_link = NULL;
--	int i, ret, active_links = 0;
--
--	if (!mdev || !dev->decoder)
--		return 0;
--
--	/*
--	 * This will find the tuner that is connected into the decoder.
--	 * Technically, this is not 100% correct, as the device may be
--	 * using an analog input instead of the tuner. However, as we can't
--	 * do DVB streaming while the DMA engine is being used for V4L2,
--	 * this should be enough for the actual needs.
--	 */
--	for (i = 0; i < dev->decoder->num_links; i++) {
--		link = &dev->decoder->links[i];
--		if (link->sink->entity == dev->decoder) {
--			found_link = link;
--			if (link->flags & MEDIA_LNK_FL_ENABLED)
--				active_links++;
--			break;
--		}
--	}
--
--	if (active_links == 1 || !found_link)
--		return 0;
--
--	source = found_link->source->entity;
--	for (i = 0; i < source->num_links; i++) {
--		struct media_entity *sink;
--		int flags = 0;
--
--		link = &source->links[i];
--		sink = link->sink->entity;
--
--		if (sink == entity)
--			flags = MEDIA_LNK_FL_ENABLED;
--
--		ret = media_entity_setup_link(link, flags);
--		if (ret) {
--			pr_err(
--				"Couldn't change link %s->%s to %s. Error %d\n",
--				source->name, sink->name,
--				flags ? "enabled" : "disabled",
--				ret);
--			return ret;
--		} else
--			au0828_isocdbg(
--				"link %s->%s was %s\n",
--				source->name, sink->name,
--				flags ? "ENABLED" : "disabled");
--	}
--#endif
--	return 0;
--}
--
- static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
- 		       unsigned int *nbuffers, unsigned int *nplanes,
- 		       unsigned int sizes[], void *alloc_ctxs[])
-@@ -712,8 +652,6 @@ static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
- 	*nplanes = 1;
- 	sizes[0] = size;
+@@ -1433,6 +1439,9 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
+ 	int ret;
  
--	au0828_enable_analog_tuner(dev);
--
- 	return 0;
- }
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	v4l_sanitize_format(p);
  
+ 	switch (p->type) {
+@@ -1612,7 +1621,11 @@ static int v4l_s_tuner(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	struct v4l2_tuner *p = arg;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+ 			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
+ 	return ops->vidioc_s_tuner(file, fh, p);
+@@ -1650,7 +1663,11 @@ static int v4l_s_frequency(const struct v4l2_ioctl_ops *ops,
+ 	struct video_device *vfd = video_devdata(file);
+ 	const struct v4l2_frequency *p = arg;
+ 	enum v4l2_tuner_type type;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	if (vfd->vfl_type == VFL_TYPE_SDR) {
+ 		if (p->type != V4L2_TUNER_ADC && p->type != V4L2_TUNER_RF)
+ 			return -EINVAL;
+@@ -1705,7 +1722,11 @@ static int v4l_s_std(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	v4l2_std_id id = *(v4l2_std_id *)arg, norm;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	norm = id & vfd->tvnorms;
+ 	if (vfd->tvnorms && !norm)	/* Check if std is supported */
+ 		return -EINVAL;
+@@ -1719,7 +1740,11 @@ static int v4l_querystd(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	v4l2_std_id *p = arg;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	/*
+ 	 * If no signal is detected, then the driver should return
+ 	 * V4L2_STD_UNKNOWN. Otherwise it should return tvnorms with
+@@ -1738,7 +1763,11 @@ static int v4l_s_hw_freq_seek(const struct v4l2_ioctl_ops *ops,
+ 	struct video_device *vfd = video_devdata(file);
+ 	struct v4l2_hw_freq_seek *p = arg;
+ 	enum v4l2_tuner_type type;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	/* s_hw_freq_seek is not supported for SDR for now */
+ 	if (vfd->vfl_type == VFL_TYPE_SDR)
+ 		return -EINVAL;
+diff --git a/drivers/media/v4l2-core/videobuf2-core.c b/drivers/media/v4l2-core/videobuf2-core.c
+index d835814..f7304d8 100644
+--- a/drivers/media/v4l2-core/videobuf2-core.c
++++ b/drivers/media/v4l2-core/videobuf2-core.c
+@@ -2251,6 +2251,9 @@ static int vb2_internal_streamon(struct vb2_queue *q, enum v4l2_buf_type type)
+ 	 * are available.
+ 	 */
+ 	if (q->queued_count >= q->min_buffers_needed) {
++		ret = v4l_enable_media_tuner(q->owner->vdev);
++		if (ret)
++			return ret;
+ 		ret = vb2_start_streaming(q);
+ 		if (ret) {
+ 			__vb2_queue_cancel(q);
 -- 
 2.1.4
