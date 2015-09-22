@@ -1,21 +1,18 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH] sound: oss: ad1848: Fix returned errno
- code in ad1848_init()
-Date: Tue, 22 Sep 2015 22:16:42 +0530
-Message-ID: <20150922164642.GA14353@sudip-pc>
-References: <1442936257-8988-1-git-send-email-luisbg@osg.samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5645: Add jd_invert for Broadwell" to
+	the asoc tree
+Date: Tue, 22 Sep 2015 09:46:57 -0700
+Message-ID: <E1ZeQiX-00010s-45@finisterre>
+References: <1442543948-10486-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E336264ED4
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 18:46:53 +0200 (CEST)
-Received: by pacex6 with SMTP id ex6so13930560pac.0
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 09:46:52 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1442936257-8988-1-git-send-email-luisbg@osg.samsung.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C34D2650F5
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 18:47:34 +0200 (CEST)
+In-Reply-To: <1442543948-10486-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +22,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Luis de Bethencourt <luisbg@osg.samsung.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+To: John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 22, 2015 at 04:37:37PM +0100, Luis de Bethencourt wrote:
-> The driver is using -1 instead of the -ENOMEM defined macro to specify
-> that a buffer allocation failed. Since the error number is propagated,
-> the caller will get a -EPERM which is the wrong error condition.
-> 
-> Smatch tool warning:
-> ad1848_init() warn: returning -1 instead of -ENOMEM is sloppy
-> 
-> Signed-off-by: Luis de Bethencourt <luisbg@osg.samsung.com>
-> ---
->  sound/oss/ad1848.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
-> index 10c8de1..6b35656 100644
-> --- a/sound/oss/ad1848.c
-> +++ b/sound/oss/ad1848.c
-> @@ -1992,7 +1992,7 @@ int ad1848_init (char *name, struct resource *ports, int irq, int dma_playback,
->  	portc = kmalloc(sizeof(ad1848_port_info), GFP_KERNEL);
->  	if(portc==NULL) {
->  		release_region(devc->base, 4);
-> -		return -1;
-> +		return -ENOMEM;
- The return value of ad1848_init is stored in hw_config->slots[0].
-And in sound/oss/pss.c hw_config->slots[0] is checked like: 
-if (hw_config->slots[0] != -1)
+The patch
 
-So, you just changed the functionality of the driver.
+   ASoC: rt5645: Add jd_invert for Broadwell
 
-regards
-sudip
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 917536aeb88d34e06c1353b0dd144f0987bb66bd Mon Sep 17 00:00:00 2001
+From: John Lin <john.lin@realtek.com>
+Date: Mon, 21 Sep 2015 14:12:01 +0800
+Subject: [PATCH] ASoC: rt5645: Add jd_invert for Broadwell
+
+Broadwell can not triger the IRQ falling and rising simultaneously,
+so it can not detect jack-in and jack-out simultaneously.
+We add a flag "jd_invert" to platform data. If this flag is set,
+codec IRQ will be set to invert that forces IRQ as pulse when jack-in
+and jack-out.
+
+Signed-off-by: John Lin <john.lin@realtek.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/rt5645.h    | 2 ++
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ sound/soc/codecs/rt5645.h | 4 ++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index 22734bc..a5cf615 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -21,6 +21,8 @@ struct rt5645_platform_data {
+ 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+ 
+ 	unsigned int jd_mode;
++	/* Invert JD when jack insert */
++	bool jd_invert;
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index e830688..b0d96b6 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2829,6 +2829,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_sync(dapm);
+ 			rt5645->jack_type = SND_JACK_HEADPHONE;
+ 		}
++		if (rt5645->pdata.jd_invert)
++			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
++				RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+ 	} else { /* jack out */
+ 		rt5645->jack_type = 0;
+ 
+@@ -2844,6 +2847,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_disable_pin(dapm, "LDO2");
+ 		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 		snd_soc_dapm_sync(dapm);
++		if (rt5645->pdata.jd_invert)
++			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
++				RT5645_JD_1_1_MASK, RT5645_JD_1_1_NOR);
+ 	}
+ 
+ 	return rt5645->jack_type;
+@@ -3213,6 +3219,7 @@ static struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
++	.jd_invert = true,
+ };
+ 
+ static int buddy_quirk_cb(const struct dmi_system_id *id)
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 0e4cfc6..90325d9 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -1626,6 +1626,10 @@
+ #define RT5645_OT_P_NOR				(0x0 << 10)
+ #define RT5645_OT_P_INV				(0x1 << 10)
+ #define RT5645_IRQ_JD_1_1_EN			(0x1 << 9)
++#define RT5645_JD_1_1_MASK			(0x1 << 7)
++#define RT5645_JD_1_1_SFT			7
++#define RT5645_JD_1_1_NOR			(0x0 << 7)
++#define RT5645_JD_1_1_INV			(0x1 << 7)
+ 
+ /* IRQ Control 2 (0xbe) */
+ #define RT5645_IRQ_MB1_OC_MASK			(0x1 << 15)
+-- 
+2.5.0
