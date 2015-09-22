@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 12/21] media: au0828 fix au0828_create_media_graph() entity checks
-Date: Tue, 22 Sep 2015 11:19:31 -0600
-Message-ID: <9a717e8f411fc1a1bac2c984f154ada401a9186c.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 10/21] media: au8522 change to create MC pad for ALSA Audio Out
+Date: Tue, 22 Sep 2015 11:19:29 -0600
+Message-ID: <350974dc0fdc9832ab0f22c88f82eabc703092d3.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,34 +12,37 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828_create_media_graph() checks if entity.links is null
-or not to determine, if vbi_dev and vdev entities have been
-registered. Checking entity.parent field is right way, as
-parent field gets initialized when entity is registered. Fix
-it to check entity.parent field.
+Add new pad for ALSA Audio Out to au8522_media_pads.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/dvb-frontends/au8522.h         | 1 +
+ drivers/media/dvb-frontends/au8522_decoder.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 276598b..0b8dc49 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -263,11 +263,11 @@ static void au0828_create_media_graph(struct au0828_dev *dev)
- 	if (tuner)
- 		media_entity_create_link(tuner, 0, decoder, 0,
- 					 MEDIA_LNK_FL_ENABLED);
--	if (dev->vdev.entity.links)
-+	if (dev->vdev.entity.parent)
- 		media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
- 					 &dev->vdev.entity, 0,
- 					 MEDIA_LNK_FL_ENABLED);
--	if (dev->vbi_dev.entity.links)
-+	if (dev->vbi_dev.entity.parent)
- 		media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
- 					 &dev->vbi_dev.entity, 0,
- 					 MEDIA_LNK_FL_ENABLED);
+diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
+index 3c72f40..d7a997f 100644
+--- a/drivers/media/dvb-frontends/au8522.h
++++ b/drivers/media/dvb-frontends/au8522.h
+@@ -94,6 +94,7 @@ enum au8522_media_pads {
+ 	AU8522_PAD_INPUT,
+ 	AU8522_PAD_VID_OUT,
+ 	AU8522_PAD_VBI_OUT,
++	AU8522_PAD_AUDIO_OUT,
+ 
+ 	AU8522_NUM_PADS
+ };
+diff --git a/drivers/media/dvb-frontends/au8522_decoder.c b/drivers/media/dvb-frontends/au8522_decoder.c
+index 24990db..5fc9a39 100644
+--- a/drivers/media/dvb-frontends/au8522_decoder.c
++++ b/drivers/media/dvb-frontends/au8522_decoder.c
+@@ -775,6 +775,7 @@ static int au8522_probe(struct i2c_client *client,
+ 	state->pads[AU8522_PAD_INPUT].flags = MEDIA_PAD_FL_SINK;
+ 	state->pads[AU8522_PAD_VID_OUT].flags = MEDIA_PAD_FL_SOURCE;
+ 	state->pads[AU8522_PAD_VBI_OUT].flags = MEDIA_PAD_FL_SOURCE;
++	state->pads[AU8522_PAD_AUDIO_OUT].flags = MEDIA_PAD_FL_SOURCE;
+ 	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV_DECODER;
+ 
+ 	ret = media_entity_init(&sd->entity, ARRAY_SIZE(state->pads),
 -- 
 2.1.4
