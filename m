@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 01/21] Revert "[media] media: media controller entity framework enhancements for ALSA"
-Date: Tue, 22 Sep 2015 11:19:20 -0600
-Message-ID: <49da931303fc040178a22dc46c161eeaf0d7a350.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 07/21] media: Media Controller non-locking __media_entity_pipeline_start/stop()
+Date: Tue, 22 Sep 2015 11:19:26 -0600
+Message-ID: <60b4a5067c665d2bc60bf10bb26aafefa7db4255.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,69 +12,145 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit ed64cf1e182fb30fe67652386c0880fcf3302f97.
-This patch is no longer necessary as the entity register
-callback is implemented at media_device level.
+Add non-locking __media_entity_pipeline_start/stop() interfaces
+to be called from code paths that hold the graph_mutex. For this
+change, the media_entity_pipeline_start() routine is renamed to
+__media_entity_pipeline_start() minus the graph_mutex lock and
+unlock. media_entity_pipeline_start() now calls the non-locking
+__media_entity_pipeline_start() holding the graph_lock. The stop
+interface, media_entity_pipeline_stop() routine is renamed to
+__media_entity_pipeline_stop() minus the graph_mutex lock and
+unlock. media_entity_pipeline_stop() now calls the non-locking
+__media_entity_pipeline_stop() holding the graph_lock.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/media-device.c | 7 -------
- include/media/media-entity.h | 4 ----
- 2 files changed, 11 deletions(-)
+ drivers/media/media-entity.c | 45 ++++++++++++++++++++++++++++++--------------
+ include/media/media-entity.h |  3 +++
+ 2 files changed, 34 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 76590ba..c55ab50 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -428,8 +428,6 @@ EXPORT_SYMBOL_GPL(media_device_unregister);
- int __must_check media_device_register_entity(struct media_device *mdev,
- 					      struct media_entity *entity)
- {
--	struct media_entity *eptr;
--
- 	/* Warn if we apparently re-register an entity */
- 	WARN_ON(entity->parent != NULL);
- 	entity->parent = mdev;
-@@ -442,11 +440,6 @@ int __must_check media_device_register_entity(struct media_device *mdev,
- 	list_add_tail(&entity->list, &mdev->entities);
- 	spin_unlock(&mdev->lock);
- 
--	media_device_for_each_entity(eptr, mdev) {
--		if (eptr != entity)
--			media_entity_call(eptr, register_notify);
--	}
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(media_device_register_entity);
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 0bc4c2f..0c003d8 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -46,7 +46,6 @@ struct media_pad {
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 03b3836..b87e773 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -210,6 +210,7 @@ EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
  
  /**
-  * struct media_entity_operations - Media entity operations
-- * @register_notify	Notify entity of newly registered entity
-  * @link_setup:		Notify the entity of link changes. The operation can
-  *			return an error, in which case link setup will be
-  *			cancelled. Optional.
-@@ -55,7 +54,6 @@ struct media_pad {
-  *			validates all links by calling this operation. Optional.
+  * media_entity_pipeline_start - Mark a pipeline as streaming
++ * __media_entity_pipeline_start - Mark a pipeline as streaming
+  * @entity: Starting entity
+  * @pipe: Media pipeline to be assigned to all entities in the pipeline.
+  *
+@@ -220,18 +221,17 @@ EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
+  * Calls to this function can be nested, in which case the same number of
+  * media_entity_pipeline_stop() calls will be required to stop streaming. The
+  * pipeline pointer must be identical for all nested calls to
+- * media_entity_pipeline_start().
++ * __media_entity_pipeline_start().
++ * User is expected to hold the graph_mutex. If not user can call
++ * media_entity_pipeline_start()
   */
- struct media_entity_operations {
--	int (*register_notify)(struct media_entity *entity);
- 	int (*link_setup)(struct media_entity *entity,
- 			  const struct media_pad *local,
- 			  const struct media_pad *remote, u32 flags);
-@@ -103,8 +101,6 @@ struct media_entity {
- 		/* Sub-device specifications */
- 		/* Nothing needed yet */
- 	} info;
--
--	void *private;			/* private data for the entity */
- };
+-__must_check int media_entity_pipeline_start(struct media_entity *entity,
+-					     struct media_pipeline *pipe)
++__must_check int __media_entity_pipeline_start(struct media_entity *entity,
++					       struct media_pipeline *pipe)
+ {
+-	struct media_device *mdev = entity->parent;
+ 	struct media_entity_graph graph;
+ 	struct media_entity *entity_err = entity;
+ 	int ret;
  
- static inline u32 media_entity_type(struct media_entity *entity)
+-	mutex_lock(&mdev->graph_mutex);
+-
+ 	media_entity_graph_walk_start(&graph, entity);
+ 
+ 	while ((entity = media_entity_graph_walk_next(&graph))) {
+@@ -303,8 +303,6 @@ __must_check int media_entity_pipeline_start(struct media_entity *entity,
+ 		}
+ 	}
+ 
+-	mutex_unlock(&mdev->graph_mutex);
+-
+ 	return 0;
+ 
+ error:
+@@ -330,14 +328,25 @@ error:
+ 			break;
+ 	}
+ 
+-	mutex_unlock(&mdev->graph_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(__media_entity_pipeline_start);
+ 
++__must_check int media_entity_pipeline_start(struct media_entity *entity,
++					     struct media_pipeline *pipe)
++{
++	struct media_device *mdev = entity->parent;
++	int ret;
++
++	mutex_lock(&mdev->graph_mutex);
++	ret = __media_entity_pipeline_start(entity, pipe);
++	mutex_unlock(&mdev->graph_mutex);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(media_entity_pipeline_start);
+ 
+ /**
+- * media_entity_pipeline_stop - Mark a pipeline as not streaming
++ * __media_entity_pipeline_stop - Mark a pipeline as not streaming
+  * @entity: Starting entity
+  *
+  * Mark all entities connected to a given entity through enabled links, either
+@@ -347,14 +356,13 @@ EXPORT_SYMBOL_GPL(media_entity_pipeline_start);
+  * If multiple calls to media_entity_pipeline_start() have been made, the same
+  * number of calls to this function are required to mark the pipeline as not
+  * streaming.
++ * User is expected to hold the graph_mutex. If not user can call
++ * media_entity_pipeline_stop()
+  */
+-void media_entity_pipeline_stop(struct media_entity *entity)
++void __media_entity_pipeline_stop(struct media_entity *entity)
+ {
+-	struct media_device *mdev = entity->parent;
+ 	struct media_entity_graph graph;
+ 
+-	mutex_lock(&mdev->graph_mutex);
+-
+ 	media_entity_graph_walk_start(&graph, entity);
+ 
+ 	while ((entity = media_entity_graph_walk_next(&graph))) {
+@@ -366,6 +374,15 @@ void media_entity_pipeline_stop(struct media_entity *entity)
+ 		}
+ 	}
+ 
++}
++EXPORT_SYMBOL_GPL(__media_entity_pipeline_stop);
++
++void media_entity_pipeline_stop(struct media_entity *entity)
++{
++	struct media_device *mdev = entity->parent;
++
++	mutex_lock(&mdev->graph_mutex);
++	__media_entity_pipeline_stop(entity);
+ 	mutex_unlock(&mdev->graph_mutex);
+ }
+ EXPORT_SYMBOL_GPL(media_entity_pipeline_stop);
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 0c003d8..cc0bbd0 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -148,8 +148,11 @@ void media_entity_graph_walk_start(struct media_entity_graph *graph,
+ 		struct media_entity *entity);
+ struct media_entity *
+ media_entity_graph_walk_next(struct media_entity_graph *graph);
++__must_check int __media_entity_pipeline_start(struct media_entity *entity,
++					       struct media_pipeline *pipe);
+ __must_check int media_entity_pipeline_start(struct media_entity *entity,
+ 					     struct media_pipeline *pipe);
++void __media_entity_pipeline_stop(struct media_entity *entity);
+ void media_entity_pipeline_stop(struct media_entity *entity);
+ 
+ #define media_entity_call(entity, operation, args...)			\
 -- 
 2.1.4
