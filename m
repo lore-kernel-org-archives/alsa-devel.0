@@ -1,22 +1,21 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
-	Dublin
-Date: Tue, 22 Sep 2015 14:19:36 +0530
-Message-ID: <CACuU-+ig60xn85_fKKoZRESDcupwZRekShQ-Jj3Bpj4pZu5EeA@mail.gmail.com>
-References: <20150714150352.GW11162@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70108CC68@RTITMBSV03.realtek.com.tw>
- <55B6B92B.5010305@linux.intel.com> <20150803031552.GN29916@localhost>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [Alsa-user] snd-usb-caiaq (NI Maschine Mikro)
+ device not recognised by alsa
+Date: Tue, 22 Sep 2015 13:17:54 +0200
+Message-ID: <560138E2.3020300@zonque.org>
+References: <CAGPstWvoprjRHN2+xZe5w+=pPkOqcqQdR4t7bYY_MgXwKbPD4A@mail.gmail.com>
+ <55EC7191.8020107@googlemail.com>
+ <CAGPstWtnvg=mE54JGaU8y0gTU8BwxkzMqnOFXW-VSVmtQtkJmQ@mail.gmail.com>
+ <560039B6.2000204@zonque.org>
+ <CAGPstWuWNbYpveL56Tznr3TMVGVqprrfAT-F7bGbc5e3nJkCSg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f172.google.com (mail-yk0-f172.google.com
- [209.85.160.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C556261A8C
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 10:49:57 +0200 (CEST)
-Received: by ykft14 with SMTP id t14so2585316ykf.0
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 01:49:56 -0700 (PDT)
-In-Reply-To: <20150803031552.GN29916@localhost>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2FBA261AE4
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 13:17:55 +0200 (CEST)
+In-Reply-To: <CAGPstWuWNbYpveL56Tznr3TMVGVqprrfAT-F7bGbc5e3nJkCSg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: sypwex@gmail.com
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Clemens Ladisch <cladisch@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 3 August 2015 at 08:45, Vinod Koul <vinod.koul@intel.com> wrote:
-> On Mon, Jul 27, 2015 at 06:05:15PM -0500, Pierre-Louis Bossart wrote:
->> On 7/21/15 6:29 AM, Bard Liao wrote:
->> >>-----Original Message-----
->> >>From: Mark Brown [mailto:broonie@kernel.org]
->> >>Sent: Tuesday, July 14, 2015 11:04 PM
->> >>To: Takashi Iwai; Liam Girdwood; Jaroslav Kysela
->> >>Cc: alsa-devel@alsa-project.org
->> >>Subject: [REANNOUNCE] Audio Mini Summit 2015, 8th October, Dublin
->> >>
->> >>Like previous years, we're going to hold a meeting to discuss lowlevel
->> >>audio on Linux.  This will be held the day after ELC Europe on 8th
->> >>October at CCD (The Convention Centre) in Dublin.
->> >>
->> >>If you're interested please sign up in the attendee list:
->> >>
->> >>https://docs.google.com/spreadsheets/d/1bi-8GHsqlzt41FR20WiMuWILe_
->> >>cZowFireVMBd-QM8Q/edit?usp=sharing
->> >>
->> >>and please follow up to this mail with any topics you'd like to see raised so
->> >>we can start collecting them (probably another Google doc will be
->> >>forthcoming for them).
->> >>
->> >>Previously suggested topics include:
->> >>
->> >>  - Reducing kernel size for IoT applications
->> >>  - ACPI simple-card
->>
->> I think we should also share findings on DeviceTree vs. ACPI support
->> for machine drivers and subnodes.
->
-> I am planning to discuss two things in this space:
-> - One the NHLT table in BIOS
-> - Second my ongoing work on ACPI properties for machines, hopefully should be
->   able to send patches before conference
+On 09/21/2015 10:10 PM, sypwex wrote:
+> Thanks for the reply!
+> 
+>> What does 'lsusb -v' show when you plug in the device?
+> the exactly `lsusb -v` out is here http://pastebin.com/raw.php?i=trmwPjGF
+> 
+> information only about 17cc:1110 (`sudo lsusb -D /dev/bus/usb/001/010`):
+> 
+> Device: ID 17cc:1110 Native Instruments
+> Device Descriptor:
+>   bLength                18
+>   bDescriptorType         1
+>   bcdUSB               2.00
+>   bDeviceClass            0 (Defined at Interface level)
+>   bDeviceSubClass         0
+>   bDeviceProtocol         0
+>   bMaxPacketSize0        64
+>   idVendor           0x17cc Native Instruments
+>   idProduct          0x1110
+>   bcdDevice            0.37
+>   iManufacturer           1 Native Instruments
+>   iProduct                2 Maschine Mikro
+>   iSerial                 6 677AC139
+>   bNumConfigurations      1
+>   Configuration Descriptor:
+>     bLength                 9
+>     bDescriptorType         2
+>     wTotalLength           57
+>     bNumInterfaces          2
+>     bConfigurationValue     1
+>     iConfiguration          0
+>     bmAttributes         0x80
+>       (Bus Powered)
+>     MaxPower              450mA
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        0
+>       bAlternateSetting       0
+>       bNumEndpoints           2
+>       bInterfaceClass         3 Human Interface Device
+>       bInterfaceSubClass      0 No Subclass
+>       bInterfaceProtocol      0 None
+>       iInterface              4 Maschine Mikro HID
 
-I have a a couple of things to add:
+Yes, this device only offers HID and DFU (for firmware updates), so
+you'll have to parse the HID data it produces. Use the hidraw interface
+to get to the uncached information. Whether you can use an existing tool
+to do that depends on what you want to achieve with this device.
 
-1. The BATCH flag, granularity, etc. again (this is really biting us
-with USB devices since we're respecting it)
+In either case, there is no hardware MIDI port on this device, so the
+firmware doesn't offer that as class compliant interface. NI's own
+software stack might offer that, but that's a pure virtual MIDI device then.
 
-2. Some work I've been doing on configuration (not the consolidation
-we were looking for at the end of last meeting, but something I should
-be able to send a link to here in a week or two)
 
-Cheers,
-Arun
+HTH,
+Daniel
