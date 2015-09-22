@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 17/21] media: au0828 change to use Managed Media Controller API
-Date: Tue, 22 Sep 2015 11:19:36 -0600
-Message-ID: <09c9eecd550423ca02024c4901e88886e776b3d7.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 15/21] media: au0828 video remove au0828_enable_analog_tuner()
+Date: Tue, 22 Sep 2015 11:19:34 -0600
+Message-ID: <e7c7243008cf3479b08dfa5d8c5f429d1020a4fc.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,84 +12,96 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828 to use Managed Media Controller API to coordinate
-creating/deleting media device on parent usb device it shares
-with the snd-usb-audio driver. With this change, au0828 uses
-media_device_get_devres() to allocate a new media device devres
-or return an existing one, if it finds one.
+au0828_enable_analog_tuner() is no longer needed with
+v4l2-core and au0828-video invoking enable_source and
+disable_source handlers. In addition, it is unnecessary
+to check for tuner availability in queue_setup() as
+v4l2-core handles the tuner availability checks.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 45 +++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ drivers/media/usb/au0828/au0828-video.c | 62 ---------------------------------
+ 1 file changed, 62 deletions(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 0b8dc49..63e31e2 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -132,9 +132,9 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- {
- 
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (dev->media_dev) {
-+	if (dev->media_dev &&
-+	    media_devnode_is_registered(&dev->media_dev->devnode)) {
- 		media_device_unregister(dev->media_dev);
--		kfree(dev->media_dev);
- 		dev->media_dev = NULL;
- 	}
- #endif
-@@ -204,31 +204,30 @@ static void au0828_media_device_register(struct au0828_dev *dev,
- 	struct media_device *mdev;
- 	int ret;
- 
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
-+	mdev = media_device_get_devres(&udev->dev);
- 	if (!mdev)
- 		return;
- 
--	mdev->dev = &udev->dev;
--
--	if (!dev->board.name)
--		strlcpy(mdev->model, "unknown au0828", sizeof(mdev->model));
--	else
--		strlcpy(mdev->model, dev->board.name, sizeof(mdev->model));
--	if (udev->serial)
--		strlcpy(mdev->serial, udev->serial, sizeof(mdev->serial));
--	strcpy(mdev->bus_info, udev->devpath);
--	mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--	mdev->driver_version = LINUX_VERSION_CODE;
--
--	ret = media_device_register(mdev);
--	if (ret) {
--		pr_err(
--			"Couldn't create a media device. Error: %d\n",
--			ret);
--		kfree(mdev);
--		return;
-+	if (!media_devnode_is_registered(&mdev->devnode)) {
-+		/* register media device */
-+		mdev->dev = &udev->dev;
-+
-+		if (udev->product)
-+			strlcpy(mdev->model, udev->product,
-+				sizeof(mdev->model));
-+		if (udev->serial)
-+			strlcpy(mdev->serial, udev->serial,
-+				sizeof(mdev->serial));
-+		strcpy(mdev->bus_info, udev->devpath);
-+		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
-+		ret = media_device_register(mdev);
-+		if (ret) {
-+			dev_err(&udev->dev,
-+				"Couldn't create a media device. Error: %d\n",
-+				ret);
-+			return;
-+		}
- 	}
--
- 	dev->media_dev = mdev;
- #endif
+diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
+index 939b2ad..b63ae78 100644
+--- a/drivers/media/usb/au0828/au0828-video.c
++++ b/drivers/media/usb/au0828/au0828-video.c
+@@ -637,66 +637,6 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
+ 	return rc;
  }
+ 
+-static int au0828_enable_analog_tuner(struct au0828_dev *dev)
+-{
+-#ifdef CONFIG_MEDIA_CONTROLLER
+-	struct media_device *mdev = dev->media_dev;
+-	struct media_entity  *entity, *source;
+-	struct media_link *link, *found_link = NULL;
+-	int i, ret, active_links = 0;
+-
+-	if (!mdev || !dev->decoder)
+-		return 0;
+-
+-	/*
+-	 * This will find the tuner that is connected into the decoder.
+-	 * Technically, this is not 100% correct, as the device may be
+-	 * using an analog input instead of the tuner. However, as we can't
+-	 * do DVB streaming while the DMA engine is being used for V4L2,
+-	 * this should be enough for the actual needs.
+-	 */
+-	for (i = 0; i < dev->decoder->num_links; i++) {
+-		link = &dev->decoder->links[i];
+-		if (link->sink->entity == dev->decoder) {
+-			found_link = link;
+-			if (link->flags & MEDIA_LNK_FL_ENABLED)
+-				active_links++;
+-			break;
+-		}
+-	}
+-
+-	if (active_links == 1 || !found_link)
+-		return 0;
+-
+-	source = found_link->source->entity;
+-	for (i = 0; i < source->num_links; i++) {
+-		struct media_entity *sink;
+-		int flags = 0;
+-
+-		link = &source->links[i];
+-		sink = link->sink->entity;
+-
+-		if (sink == entity)
+-			flags = MEDIA_LNK_FL_ENABLED;
+-
+-		ret = media_entity_setup_link(link, flags);
+-		if (ret) {
+-			pr_err(
+-				"Couldn't change link %s->%s to %s. Error %d\n",
+-				source->name, sink->name,
+-				flags ? "enabled" : "disabled",
+-				ret);
+-			return ret;
+-		} else
+-			au0828_isocdbg(
+-				"link %s->%s was %s\n",
+-				source->name, sink->name,
+-				flags ? "ENABLED" : "disabled");
+-	}
+-#endif
+-	return 0;
+-}
+-
+ static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
+ 		       unsigned int *nbuffers, unsigned int *nplanes,
+ 		       unsigned int sizes[], void *alloc_ctxs[])
+@@ -712,8 +652,6 @@ static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
+ 	*nplanes = 1;
+ 	sizes[0] = size;
+ 
+-	au0828_enable_analog_tuner(dev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.1.4
