@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 18/21] media: au0828 change to register/unregister entity_notify hook
-Date: Tue, 22 Sep 2015 11:19:37 -0600
-Message-ID: <97aae533bbc9eaca337b3e326611151cae49c33c.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 19/21] media: au0828 implement enable_source and disable_source handlers
+Date: Tue, 22 Sep 2015 11:19:38 -0600
+Message-ID: <3853ee1a38b4b2989386fff0c745a75cd56ef103.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,190 +12,222 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828 registers entity_notify hook to create media graph for
-the device. This handler runs whenvere a new entity gets added
-to the media device. It creates necessary links from video, vbi,
-and ALSA entities to decoder and links tuner and decoder entities.
-As this handler runs as entities get added, it has to maintain
-state on the links it already created. New fields are added to
-au0828_dev to keep this state information. entity_notify gets
-unregistered before media_device unregister.
+Implements enable_source and disable_source handlers for other
+drivers (v4l2-core, dvb-core, and ALSA) to use to check for
+tuner connected to the decoder and activate the link if tuner
+is free, and deactivate and free the tuner when it is no longer
+needed.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 118 +++++++++++++++++++++------------
- drivers/media/usb/au0828/au0828.h      |   6 ++
- 2 files changed, 81 insertions(+), 43 deletions(-)
+ drivers/media/usb/au0828/au0828-core.c | 169 +++++++++++++++++++++++++++++++++
+ drivers/media/usb/au0828/au0828.h      |   2 +
+ 2 files changed, 171 insertions(+)
 
 diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 63e31e2..fcff2e2 100644
+index fcff2e2..ce9d5d4 100644
 --- a/drivers/media/usb/au0828/au0828-core.c
 +++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -134,6 +134,8 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	if (dev->media_dev &&
- 	    media_devnode_is_registered(&dev->media_dev->devnode)) {
-+		media_device_unregister_entity_notify(dev->media_dev,
-+						      &dev->entity_notify);
- 		media_device_unregister(dev->media_dev);
- 		dev->media_dev = NULL;
- 	}
-@@ -197,6 +199,75 @@ static void au0828_usb_disconnect(struct usb_interface *interface)
- 	au0828_usb_release(dev);
+@@ -268,6 +268,164 @@ static void au0828_create_media_graph(struct media_entity *new,
+ #endif
  }
  
-+static void au0828_create_media_graph(struct media_entity *new,
-+				      void *notify_data)
++static int au0828_enable_source(struct media_entity *entity,
++				struct media_pipeline *pipe)
 +{
 +#ifdef CONFIG_MEDIA_CONTROLLER
-+	struct au0828_dev *dev = (struct au0828_dev *) notify_data;
-+	struct media_device *mdev = dev->media_dev;
-+	struct media_entity *entity, *tuner = NULL, *decoder = NULL;
-+	struct media_entity *alsa_capture = NULL;
-+	int ret;
++	struct media_entity  *source;
++	struct media_entity *sink;
++	struct media_link *link, *found_link = NULL;
++	int i, ret = 0;
++	struct media_device *mdev = entity->parent;
++	struct au0828_dev *dev;
 +
 +	if (!mdev)
-+		return;
++		return -ENODEV;
 +
-+	if (dev->tuner_linked && dev->vdev_linked && dev->vbi_linked &&
-+	    dev->alsa_capture_linked)
-+		return;
++	/* for ALSA and Video entities, source is the decoder */
++	mutex_lock(&mdev->graph_mutex);
 +
-+	media_device_for_each_entity(entity, mdev) {
-+		switch (entity->type) {
-+		case MEDIA_ENT_T_V4L2_SUBDEV_TUNER:
-+			tuner = entity;
-+			break;
-+		case MEDIA_ENT_T_V4L2_SUBDEV_DECODER:
-+			decoder = entity;
-+			break;
-+		case MEDIA_ENT_T_DEVNODE_ALSA_CAPTURE:
-+			alsa_capture = entity;
++	dev = mdev->source_priv;
++	if (!dev->tuner || !dev->decoder) {
++		ret = -ENODEV;
++		goto end;
++	}
++
++	/*
++	 * For ALSA and V4L2 entity, find the link to which decoder
++	 * is the sink. Look for an active link between decoder and
++	 * tuner, if one exists, nothing to do. If not, look for any
++	 * active links between tuner and any other entity. If one
++	 * exists, tuner is busy. If tuner is free, setup link and
++	 * start pipeline from source (tuner).
++	 * For DVB FE entity, the source for the link is the tuner.
++	 * Check if tuner is available and setup link and start
++	 * pipeline.
++	*/
++	if (entity->type != MEDIA_ENT_T_DEVNODE_DVB_FE)
++		sink = dev->decoder;
++	else
++		sink = entity;
++
++	/* Is an active link between sink and tuner */
++	if (dev->active_link) {
++		if (dev->active_link->sink->entity == sink &&
++		    dev->active_link->source->entity == dev->tuner) {
++			ret = 0;
++			goto end;
++		} else {
++			ret = -EBUSY;
++			goto end;
++		}
++	}
++
++	for (i = 0; i < sink->num_links; i++) {
++		link = &sink->links[i];
++		/* Used to check just the sink, check source too - works?? */
++		if (link->sink->entity == sink &&
++		    link->source->entity == dev->tuner) {
++			found_link = link;
 +			break;
 +		}
 +	}
 +
-+	if (!decoder)
++	if (!found_link) {
++		ret = -ENODEV;
++		goto end;
++	}
++
++	source = found_link->source->entity;
++	for (i = 0; i < source->num_links; i++) {
++		struct media_entity *find_sink;
++		int flags = 0;
++
++		link = &source->links[i];
++		find_sink = link->sink->entity;
++
++		if (find_sink == sink)
++			flags = MEDIA_LNK_FL_ENABLED;
++
++		ret = __media_entity_setup_link(link, flags);
++		if (ret) {
++			pr_err(
++				"Change tuner link %s->%s to %s. Error %d\n",
++				source->name, find_sink->name,
++				flags ? "enabled" : "disabled",
++				ret);
++			goto end;
++		}
++		/* start pipeline */
++		if (find_sink == sink) {
++			dev->active_link = link;
++			ret = __media_entity_pipeline_start(entity, pipe);
++			if (ret) {
++				pr_err("Start Pipeline: %s->%s Error %d\n",
++					source->name, entity->name, ret);
++				goto end;
++			}
++			/* save link owner to avoid audio deactivating
++			   video owned link from disable_source and
++			   vice versa */
++			dev->active_link_owner = entity;
++			pr_info("Started Pipeline: %s->%s ret %d\n",
++				source->name, entity->name, ret);
++		}
++	}
++end:
++	mutex_unlock(&mdev->graph_mutex);
++	return ret;
++#endif
++	return 0;
++}
++
++static void au0828_disable_source(struct media_entity *entity)
++{
++#ifdef CONFIG_MEDIA_CONTROLLER
++	struct media_entity *sink;
++	int ret = 0;
++	struct media_device *mdev = entity->parent;
++	struct au0828_dev *dev;
++
++	if (!mdev)
 +		return;
 +
-+	/* save tuner for using in enable_source disable_source handlers
-+	 * avoid graph walk in those handlers. Note that decoder is
-+	 * saved during v4l2_dev registration */
++	mutex_lock(&mdev->graph_mutex);
 +
-+	if (tuner && !dev->tuner_linked) {
-+		dev->tuner = tuner;
-+		ret = media_entity_create_link(tuner, 0, decoder, 0,
-+					       MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->tuner_linked = 1;
++	dev = mdev->source_priv;
++	if (!dev->tuner || !dev->decoder || !dev->active_link) {
++		ret = -ENODEV;
++		goto end;
 +	}
-+	if (dev->vdev.entity.parent && !dev->vdev_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
-+					       &dev->vdev.entity, 0,
-+					       MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->vdev_linked = 1;
++
++	if (entity->type != MEDIA_ENT_T_DEVNODE_DVB_FE)
++		sink = dev->decoder;
++	else
++		sink = entity;
++
++	/* link is active - stop pipeline from source (tuner) */
++	if (dev->active_link && dev->active_link->sink->entity == sink &&
++	    dev->active_link->source->entity == dev->tuner) {
++		/* prevent video from deactivating link when audio
++		   has active pipeline */
++		if (dev->active_link_owner != entity)
++			goto end;
++		__media_entity_pipeline_stop(entity);
++		pr_info("Stopped Pipeline: %s->%s entity %s\n",
++			dev->active_link->source->entity->name,
++			dev->active_link->sink->entity->name,
++			entity->name);
++		ret = __media_entity_setup_link(dev->active_link, 0);
++		if (ret)
++			pr_err("Deactive link Error %d\n", ret);
++		dev->active_link = NULL;
++		dev->active_link_owner = NULL;
 +	}
-+	if (dev->vbi_dev.entity.parent && !dev->vbi_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
-+					       &dev->vbi_dev.entity, 0,
-+					       MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->vbi_linked = 1;
-+	}
-+	if (alsa_capture && !dev->alsa_capture_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_AUDIO_OUT,
-+					       alsa_capture, 0,
-+					       MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->alsa_capture_linked = 1;
-+	}
++
++end:
++	mutex_unlock(&mdev->graph_mutex);
 +#endif
 +}
 +
  static void au0828_media_device_register(struct au0828_dev *dev,
  					  struct usb_device *udev)
  {
-@@ -227,52 +298,15 @@ static void au0828_media_device_register(struct au0828_dev *dev,
- 				ret);
- 			return;
- 		}
-+		/* register entity_notify callback */
-+		dev->entity_notify.notify_data = (void *) dev;
-+		dev->entity_notify.notify = au0828_create_media_graph;
-+		media_device_register_entity_notify(mdev, &dev->entity_notify);
+@@ -291,6 +449,10 @@ static void au0828_media_device_register(struct au0828_dev *dev,
+ 				sizeof(mdev->serial));
+ 		strcpy(mdev->bus_info, udev->devpath);
+ 		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
++		/* Set enable_source and disable_source handlers and data */
++		mdev->source_priv = (void *) dev;
++		mdev->enable_source = au0828_enable_source;
++		mdev->disable_source = au0828_disable_source;
+ 		ret = media_device_register(mdev);
+ 		if (ret) {
+ 			dev_err(&udev->dev,
+@@ -303,6 +465,13 @@ static void au0828_media_device_register(struct au0828_dev *dev,
+ 		dev->entity_notify.notify = au0828_create_media_graph;
+ 		media_device_register_entity_notify(mdev, &dev->entity_notify);
  	}
++	/* If ALSA registered the media device - set enable_source */
++	if (!mdev->enable_source) {
++		/* Set enable_source and disable_source handlers and data */
++		mdev->source_priv = (void *) dev;
++		mdev->enable_source = au0828_enable_source;
++		mdev->disable_source = au0828_disable_source;
++	}
  	dev->media_dev = mdev;
  #endif
  }
- 
--
--static void au0828_create_media_graph(struct au0828_dev *dev)
--{
--#ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device *mdev = dev->media_dev;
--	struct media_entity *entity;
--	struct media_entity *tuner = NULL, *decoder = NULL;
--
--	if (!mdev)
--		return;
--
--	media_device_for_each_entity(entity, mdev) {
--		switch (entity->type) {
--		case MEDIA_ENT_T_V4L2_SUBDEV_TUNER:
--			tuner = entity;
--			break;
--		case MEDIA_ENT_T_V4L2_SUBDEV_DECODER:
--			decoder = entity;
--			break;
--		}
--	}
--
--	/* Analog setup, using tuner as a link */
--
--	if (!decoder)
--		return;
--
--	if (tuner)
--		media_entity_create_link(tuner, 0, decoder, 0,
--					 MEDIA_LNK_FL_ENABLED);
--	if (dev->vdev.entity.parent)
--		media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
--					 &dev->vdev.entity, 0,
--					 MEDIA_LNK_FL_ENABLED);
--	if (dev->vbi_dev.entity.parent)
--		media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
--					 &dev->vbi_dev.entity, 0,
--					 MEDIA_LNK_FL_ENABLED);
--#endif
--}
--
- static int au0828_usb_probe(struct usb_interface *interface,
- 	const struct usb_device_id *id)
- {
-@@ -385,8 +419,6 @@ static int au0828_usb_probe(struct usb_interface *interface,
- 
- 	mutex_unlock(&dev->lock);
- 
--	au0828_create_media_graph(dev);
--
- 	return retval;
- }
- 
 diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index d3644b3..08cc7b8 100644
+index 08cc7b8..f64dbbb 100644
 --- a/drivers/media/usb/au0828/au0828.h
 +++ b/drivers/media/usb/au0828/au0828.h
-@@ -281,6 +281,12 @@ struct au0828_dev {
- 	struct media_device *media_dev;
- 	struct media_pad video_pad, vbi_pad;
- 	struct media_entity *decoder;
-+	struct media_entity *tuner;
-+	struct media_entity_notify entity_notify;
-+	bool tuner_linked;
-+	bool vdev_linked;
-+	bool vbi_linked;
-+	bool alsa_capture_linked;
+@@ -287,6 +287,8 @@ struct au0828_dev {
+ 	bool vdev_linked;
+ 	bool vbi_linked;
+ 	bool alsa_capture_linked;
++	struct media_link *active_link;
++	struct media_entity *active_link_owner;
  #endif
  };
  
