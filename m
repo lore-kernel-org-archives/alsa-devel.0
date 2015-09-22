@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 11/21] media: au0828 Use au8522_media_pads enum for pad defines
-Date: Tue, 22 Sep 2015 11:19:30 -0600
-Message-ID: <754f57fb0f42cc11d00ee3bbbc3df6c01d909463.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 06/21] media: Media Controller export non locking __media_entity_setup_link()
+Date: Tue, 22 Sep 2015 11:19:25 -0600
+Message-ID: <7ea82a18e3af85728282b2379dcc8d02ca4edc29.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,44 +12,25 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828-core to use au8522_media_pads enum defines
-instead of hard-coding the pad values when it creates
-media graph linking decode pads to other entities.
+Export __media_entity_setup_link() to be used from code paths that hold
+the graph_mutex.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/media/media-entity.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 0378a2c..276598b 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -20,6 +20,7 @@
-  */
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 68d5ec2..03b3836 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -612,6 +612,7 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
  
- #include "au0828.h"
-+#include "au8522.h"
- 
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -263,11 +264,13 @@ static void au0828_create_media_graph(struct au0828_dev *dev)
- 		media_entity_create_link(tuner, 0, decoder, 0,
- 					 MEDIA_LNK_FL_ENABLED);
- 	if (dev->vdev.entity.links)
--		media_entity_create_link(decoder, 1, &dev->vdev.entity, 0,
--				 MEDIA_LNK_FL_ENABLED);
-+		media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
-+					 &dev->vdev.entity, 0,
-+					 MEDIA_LNK_FL_ENABLED);
- 	if (dev->vbi_dev.entity.links)
--		media_entity_create_link(decoder, 2, &dev->vbi_dev.entity, 0,
--				 MEDIA_LNK_FL_ENABLED);
-+		media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
-+					 &dev->vbi_dev.entity, 0,
-+					 MEDIA_LNK_FL_ENABLED);
- #endif
+ 	return ret;
  }
++EXPORT_SYMBOL_GPL(__media_entity_setup_link);
  
+ int media_entity_setup_link(struct media_link *link, u32 flags)
+ {
 -- 
 2.1.4
