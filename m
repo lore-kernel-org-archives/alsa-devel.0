@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 04/21] media: Media Controller enable/disable source handler API
-Date: Tue, 22 Sep 2015 11:19:23 -0600
-Message-ID: <2cf8f0b5ea1c63c3897a82d430a993e2af646220.1442937669.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 05/21] media: Media Controller fix to not let stream_count go negative
+Date: Tue, 22 Sep 2015 11:19:24 -0600
+Message-ID: <c7adbc6c1e404841de70b35362136a340f60e660.1442937669.git.shuahkh@osg.samsung.com>
 References: <cover.1442937669.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1442937669.git.shuahkh@osg.samsung.com>
@@ -12,54 +12,52 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add new fields to struct media_device to add enable_source, and
-disable_source handlers, and source_priv to stash driver private
-data that is need to run these handlers. The enable_source handler
-finds source entity for the passed in entity and check if it is
-available, and activate the link using __media_entity_setup_link()
-interface. Bridge driver is expected to implement and set these
-handlers and private data when media_device is registered or when
-bridge driver finds the media_device during probe. This is to enable
-the use-case to find tuner entity connected to the decoder entity and
-check if it is available, and activate it and start pipeline between
-the source and the entity. The disable_source handler deactivates the
-link and stops the pipeline. This handler can be invoked from the
-media core (v4l-core, dvb-core) as well as other drivers such as ALSA
-that control the media device.
+Add a range check to not let the stream_count become negative.
+Wthout this check, calls to stop pipeline when there is no active
+pipeline will result in stream_count < 0 condition and lock and
+preventing link state (activate/deactivate) changes. This will
+happen from error leg in start pipeline interface.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- include/media/media-device.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/media/media-entity.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index a3854f6..117c169 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -84,6 +84,24 @@ struct media_device {
- 	/* Serializes graph operations. */
- 	struct mutex graph_mutex;
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 4d8e01c..68d5ec2 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -315,9 +315,12 @@ error:
+ 	media_entity_graph_walk_start(&graph, entity_err);
  
-+	/* Handlers to find source entity for the sink entity and
-+	 * check if it is available, and activate the link using
-+	 * media_entity_setup_link() interface and start pipeline
-+	 * from the source to the entity.
-+	 * Bridge driver is expected to implement and set the
-+	 * handler when media_device is registered or when
-+	 * bridge driver finds the media_device during probe.
-+	 * Bridge driver sets source_priv with information
-+	 * necessary to run enable/disable source handlers.
-+	 *
-+	 * Use-case: find tuner entity connected to the decoder
-+	 * entity and check if it is available, and activate the
-+	 * using media_entity_setup_link() if it is available.
-+	*/
-+	void *source_priv;
-+	int (*enable_source)(struct media_entity *entity,
-+			     struct media_pipeline *pipe);
-+	void (*disable_source)(struct media_entity *entity);
- 	int (*link_notify)(struct media_link *link, u32 flags,
- 			   unsigned int notification);
- };
+ 	while ((entity_err = media_entity_graph_walk_next(&graph))) {
+-		entity_err->stream_count--;
+-		if (entity_err->stream_count == 0)
+-			entity_err->pipe = NULL;
++		/* don't let the stream_count go negative */
++		if (entity->stream_count > 0) {
++			entity_err->stream_count--;
++			if (entity_err->stream_count == 0)
++				entity_err->pipe = NULL;
++		}
+ 
+ 		/*
+ 		 * We haven't increased stream_count further than this
+@@ -355,9 +358,12 @@ void media_entity_pipeline_stop(struct media_entity *entity)
+ 	media_entity_graph_walk_start(&graph, entity);
+ 
+ 	while ((entity = media_entity_graph_walk_next(&graph))) {
+-		entity->stream_count--;
+-		if (entity->stream_count == 0)
+-			entity->pipe = NULL;
++		/* don't let the stream_count go negative */
++		if (entity->stream_count > 0) {
++			entity->stream_count--;
++			if (entity->stream_count == 0)
++				entity->pipe = NULL;
++		}
+ 	}
+ 
+ 	mutex_unlock(&mdev->graph_mutex);
 -- 
 2.1.4
