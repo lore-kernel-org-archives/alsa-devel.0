@@ -1,83 +1,100 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH RFC v4 4/8] drm/i2c: tda998x: Add support of a DT graph of
- ports
-Date: Thu, 24 Sep 2015 11:29:21 -0500
-Message-ID: <CAL_JsqJztmoNZdL06CnAh6REpRsSjVN-9zyo5g08YuezW58vrQ@mail.gmail.com>
-References: <cover.1442572860.git.jsarha@ti.com>
- <e9ebb04f781fef7cff99190d301fb64805b97d39.1442572860.git.jsarha@ti.com>
- <56001FF6.5070504@kernel.org> <20150924123616.5d47f363@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: RT5640 jack detection
+Date: Wed, 23 Sep 2015 09:37:46 -0700
+Message-ID: <20150923163746.GR30445@sirena.org.uk>
+References: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
+ <1443025358.6977.71.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150924123616.5d47f363@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, dri-devel <dri-devel@lists.freedesktop.org>, liam.r.girdwood@linux.intel.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Benoit Cousson <bcousson@baylibre.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap <linux-omap@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5002274322091787560=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6759626057B
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 19:12:45 +0200 (CEST)
+Received: from [70.35.39.2] (helo=finisterre)
+ by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
+ id 1ZfA4Z-0005jC-Nv
+ for alsa-devel@alsa-project.org; Thu, 24 Sep 2015 17:12:43 +0000
+In-Reply-To: <1443025358.6977.71.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>, =?iso-8859-1?Q?Jo=E3o?= Paulo Rechi Vita <jprvita@endlessm.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBTZXAgMjQsIDIwMTUgYXQgNTozNiBBTSwgSmVhbi1GcmFuY29pcyBNb2luZSA8bW9p
-bmVqZkBmcmVlLmZyPiB3cm90ZToKPiBPbiBNb24sIDIxIFNlcCAyMDE1IDEwOjE5OjE4IC0wNTAw
-Cj4gUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gT24gMDkvMTgvMjAx
-NSAwNjowNiBBTSwgSnlyaSBTYXJoYSB3cm90ZToKPj4gPiBGcm9tOiBKZWFuLUZyYW5jb2lzIE1v
-aW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4+ID4KPj4gPiBUd28ga2luZHMgb2YgcG9ydHMgbWF5IGJl
-IGRlY2xhcmVkIGluIGEgRFQgZ3JhcGggb2YgcG9ydHM6IHZpZGVvIGFuZCBhdWRpby4KPj4gPiBU
-aGlzIHBhdGNoIGFjY2VwdHMgdGhlIHBvcnQgdmFsdWUgZnJvbSBhIHZpZGVvIHBvcnQgYXMgYW4g
-YWx0ZXJuYXRpdmUKPj4gPiB0byB0aGUgdmlkZW8tcG9ydHMgcHJvcGVydHkuCj4+ID4gSXQgYWxz
-byBhY2NlcHRzIGF1ZGlvIHBvcnRzIGluIHRoZSBjYXNlIHRoZSB0cmFuc21pdHRlciBpcyBub3Qg
-dXNlZCBhcwo+PiA+IGEgc2xhdmUgZW5jb2Rlci4KPj4gPiBUaGUgbmV3IGZpbGUgaW5jbHVkZS9z
-b3VuZC90ZGE5OTh4LmggcHJlcGFyZXMgdG8gdGhlIGRlZmluaXRpb24gb2YKPj4gPiBhIHRkYTk5
-OHggQ09ERUMuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxt
-b2luZWpmQGZyZWUuZnI+Cj4+ID4gU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8anNhcmhhQHRp
-LmNvbT4KPj4gPiAtLS0KPiAgICAgICAgIFtzbmlwXQo+PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZHJtL2kyYy90ZGE5OTh4LnR4dCBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4+ID4gaW5kZXgg
-ZTllNGJjZS4uMzVmNmE4MCAxMDA2NDQKPj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvZHJtL2kyYy90ZGE5OTh4LnR4dAo+PiA+ICsrKyBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4+ID4gQEAgLTE2LDYgKzE2
-LDM1IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4+ID4KPj4gPiAgICAtIHZpZGVvLXBvcnRzOiAy
-NCBiaXRzIHZhbHVlIHdoaWNoIGRlZmluZXMgaG93IHRoZSB2aWRlbyBjb250cm9sbGVyCj4+ID4g
-ICAgIG91dHB1dCBpcyB3aXJlZCB0byB0aGUgVERBOTk4eCBpbnB1dCAtIGRlZmF1bHQ6IDwweDIz
-MDE0NT4KPj4gPiArICAgVGhpcyBwcm9wZXJ0eSBpcyBub3QgdXNlZCB3aGVuIHBvcnRzIGFyZSBk
-ZWZpbmVkLgo+PiA+ICsKPj4gPiArT3B0aW9uYWwgbm9kZXM6Cj4+ID4gKwo+PiA+ICsgIC0gcG9y
-dDogdXAgdG8gdGhyZWUgcG9ydHMuCj4+ID4gKyAgIFRoZSBwb3J0cyBhcmUgZGVmaW5lZCBhY2Nv
-cmRpbmcgdG8gWzFdLgo+PiA+ICsKPj4gPiArICAgIFZpZGVvIHBvcnQuCj4+ID4gKyAgIFRoZXJl
-IG1heSBiZSBvbmx5IG9uZSB2aWRlbyBwb3J0Lgo+PiA+ICsgICBUaGlzIG9uZSBtdXN0IGNvbnRh
-aW4gdGhlIGZvbGxvd2luZyBwcm9wZXJ0eToKPj4gPiArCj4+ID4gKyAgIC0gcG9ydC10eXBlOiBt
-dXN0IGJlICJyZ2IiCj4+Cj4+IFdoeSBkbyB5b3UgbmVlZCB0aGlzIGlmIHRoZXJlIGlzIG5vIG90
-aGVyIGNob2ljZT8gVGhlIHBvcnQgbnVtYmVyIHNob3VsZAo+PiBkZWZpbmUgd2hpY2ggb25lIGlz
-IHZpZGVvLgo+Cj4gVGhlcmUgaXMgbm8gc3BlY2lmaWMgcG9ydCBudW1iZXIuCj4gT25lIG9mIHRo
-ZSBwb3J0cyBpcyB2aWRlbyBhbmQgdHdvIG90aGVyIG9uZXMgYXJlIGF1ZGlvLgoKSSBzYXlpbmcg
-eW91IHNob3VsZCBkZWZpbmUgdGhlIHBvcnQgbnVtYmVyaW5nIGluIHRoZSBiaW5kaW5nLiBQb3J0
-IDAKaXMgdmlkZW8sIFBvcnQgMSBpcyBpMnMsIGV0Yy4KCj4KPj4gPiArCj4+ID4gKyAgIGFuZCBt
-YXkgY29udGFpbiB0aGUgb3B0aW9uYWwgcHJvcGVydHk6Cj4+ID4gKwo+PiA+ICsgICAtIHJlZzog
-MjQgYml0cyB2YWx1ZSB3aGljaCBkZWZpbmVzIGhvdyB0aGUgdmlkZW8gY29udHJvbGxlcgo+PiA+
-ICsgICAgICAgICAgIG91dHB1dCBpcyB3aXJlZCB0byB0aGUgVERBOTk4eCBpbnB1dCAodmlkZW8g
-cGlucykKPj4gPiArICAgICAgICAgICBXaGVuIGFic2VudCwgdGhlIGRlZmF1bHQgdmFsdWUgaXMg
-PDB4MjMwMTQ1Pi4KPj4KPj4gSSdtIGZhaWxpbmcgdG8gZGVjb2RlIGhvdyB0aGlzIHZhbHVlIHdv
-cmtzLiBJbiBhbnkgY2FzZSwgSSB3b3VsZCBrZWVwCj4+IHRoaXMgYXMgYSB2ZW5kb3Igc3BlY2lm
-aWMgcHJvcGVydHkgcmF0aGVyIHRoYW4gYWJ1c2luZyByZWcuCj4KPiBUaGlzIGhhcyBiZWVuIGV4
-cGxhaW5lZCBpbgo+IGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE0LzEvMjAvODYKCk9rYXksIHNv
-IHRoYXQgZXhwbGFpbnMgaG93IGl0IHdvcmtzLCBidXQgc3RpbGwgaXQgc2hvdWxkIG5vdCBiZSBp
-biByZWcuCgo+Cj4+ID4gKwo+PiA+ICsgICAgQXVkaW8gcG9ydHMuCj4+ID4gKyAgIFRoZXJlIG1h
-eSBiZSBvbmUgb3IgdHdvIGF1ZGlvIHBvcnRzLgo+PiA+ICsgICBUaGVzZSBvbmVzIG11c3QgY29u
-dGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXM6Cj4+ID4gKwo+PiA+ICsgICAtIHBvcnQtdHlw
-ZTogbXVzdCBiZSAiaTJzIiBvciAic3BkaWYiCj4+ID4gKwo+PiA+ICsgICAtIHJlZzogOCBiaXRz
-IHZhbHVlIHdoaWNoIGRlZmluZXMgaG93IHRoZSBhdWRpbyBjb250cm9sbGVyCj4+ID4gKyAgICAg
-ICAgICAgb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5OTh4IGlucHV0IChhdWRpbyBwaW5zKQo+
-Pgo+PiByZWcgaXMgMzItYml0cy4KPgo+IFRoaXMgcG9ydCBoYXMgb25seSA4IHNpZ25pZmljYW50
-IGJpdHMgYXMgZXhwbGFpbmVkIGluCj4gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTUvMS83LzM2
-MgoKTWF5YmUgb25seSA4LWJpdHMgYXJlIHVzZWQsIGJ1dCB0aGUgc2l6ZSBvZiB0aGUgZGF0YSBp
-biB0aGUgRFRCIGlzCjMyLWJpdHMgdW5sZXNzIHlvdSBhZGQgOC1iaXQgYW5ub3RhdGlvbi4gQWdh
-aW4sIHJlZyBpcyBub3QgYXBwcm9wcmlhdGUKdG8gdXNlIGhlcmUuCgpSb2IKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlz
-dApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============5002274322091787560==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y08JZfPv7c5uulCx"
+Content-Disposition: inline
+
+
+--y08JZfPv7c5uulCx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 23, 2015 at 05:22:38PM +0100, Liam Girdwood wrote:
+> + Realtek
+
+And me.
+
+> On Tue, 2015-09-22 at 11:18 +0200, Carlo Caione wrote:
+
+> > The problem is that the jack sensing only works when the codec is
+> > actively playing something, that is when the bias set for the codec is
+> > not SND_SOC_BIAS_OFF. When the codec is suspended and it is powered
+> > off I'm not able to detect anymore the presence of the jack. Because
+> > of this issue actively switching the audio from HDMI to HP when the
+> > jack is inserted is not working.
+
+> > How this is usually supposed to be working?
+
+> In situations like this it may be best to report jack status as removed
+> when no BIAS is available for jack detection (since no one is using the
+> codec anyway). The jack status could always be re-detected when BIAS is
+> re-enabled.
+
+That can upset userspaces - it means you get things like trying to play
+a notification tone, starting, realising that a headphone is there and
+trying to switch on the headphone in the middle of the notification
+being played back which doesn't tend to work out so well.
+
+What I'd expect the driver to be doing here is enabling whatever it
+needs to do detection enabled while detection is enabled.  There's quite
+a few examples of this in mainline - look for jack code that has DAPM
+calls in it.
+
+--y08JZfPv7c5uulCx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWAtVaAAoJECTWi3JdVIfQVtwH/2EkzI25irW/EQkhAqrasq80
+84lYgRt9vFSfmdUeOpbYhw3RoK5btSf6qBoy4a5ogVB9ZtMGSF/vYMw/iLbTx/94
+9gbOlFAlJWzwkTjj/EaFEvigprYmmDqPX0jyjF344A9O1FnG7u2fX30B5tCOZSLl
+AoCO2/AHmSGlaZFmmTPjGbLvdQf8/CodBKeqr0bJ3gP32PXUk4QYHzm0Tg+t0s6c
+JNXbXVawEO/6V6RiSsp4gwsaeVZdUw1QyVQsUYkKtPzDQb8d9fvUpGCjvic81Qg8
+/l47EeLdmLMy9bnrLWW43pl6asNtLKf81DN3F0POjDktK5RJJWwU356c1GwcnJk=
+=XlPj
+-----END PGP SIGNATURE-----
+
+--y08JZfPv7c5uulCx--
+
+--===============5002274322091787560==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5002274322091787560==--
