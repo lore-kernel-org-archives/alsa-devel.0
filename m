@@ -1,21 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH - 1/2] HDA - Add SND_JACK_HEADSET and
-	Headset jack kctl
-Date: Thu, 24 Sep 2015 00:03:21 +0800
-Message-ID: <CAN8cciZkDFF=r13UEWUp6vGTYObYVffQqCArX4pU-HukvO8RZg@mail.gmail.com>
-References: <CAN8cciaSv0Tu_okSE-oXYd0ULrFxazfyZEcfMzTcPyyRCOfqog@mail.gmail.com>
- <s5h1tdp8e3v.wl-tiwai@suse.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] topology: Add API to set a vendor
+	specific	version number
+Date: Wed, 23 Sep 2015 16:13:26 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8496790BE@SHSMSX101.ccr.corp.intel.com>
+References: <1442394433-31417-1-git-send-email-mengdong.lin@intel.com>
+ <s5hio718qt2.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id CE594260423
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:03:23 +0200 (CEST)
-Received: by obbda8 with SMTP id da8so37048978obb.1
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:03:21 -0700 (PDT)
-In-Reply-To: <s5h1tdp8e3v.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14F1B260423
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:13:40 +0200 (CEST)
+In-Reply-To: <s5hio718qt2.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,37 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, arthurborsboom@gmail.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
+> Sent: Wednesday, September 23, 2015 4:48 PM
+> To: Lin, Mengdong
+> Cc: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
+> broonie@kernel.org; Prusty, Subhransu S; Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH] topology: Add API to set a vendor specific
+> version number
+> 
+> On Wed, 16 Sep 2015 11:07:13 +0200,
+> mengdong.lin@intel.com wrote:
 > >
-> > >From b3ed187912eccf922000aee09c04f9546b068925 Mon Sep 17 00:00:00 2001
->
-> Please avoid unnecessary From line.  You should try using
-> git-sendemail directly.
->
-> > From: Raymond Yau <superquad.vortex2@gmail.com>
-> > Date: Sun, 20 Sep 2015 22:10:18 +0800
-> > Subject: [PATCH -  1/2] HDA - Add SND_JACK_HEADSET and Headset jack kctl
+> > From: Mengdong Lin <mengdong.lin@intel.com>
 > >
-> > add headset jack kctl for alsa jack type SND_JACK_HEADSET
+> > This vendor-specific version number is optional. It will be written to
+> > the 'version' field of each block header of the binary toplogy data file.
+> > The vendor driver can check this number for further processing in kernel.
 > >
-> > skip creation of Headset Mic Phantom Jack
+> > The topology ABI version number is still stored in the 'abi' field of
+> > block headers.
 > >
-> > use Headset Playback Volume and Headset Playback Switch
-> >
-> > allow auto mic selection by using HP pin for jack sense
->
-> The most important piece of information is missing: *why* this change
-> is needed.  I can guess, but it has to be clarified to all readers.
-> At best, give the background information why the current code doesn't
-> work for some cases and how your change will help.
->
-> Some more comments below:
+> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> > Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> 
+> Thanks, applied now.  But I have concern about topology ABI/API: have we
+> stabilized it enough?  That is, are there any missing patches in the current
+> kernel and alsa-lib/utils git trees that may lead to any API/ABI
+> incompatibilities?
 
-Please ignore this patch as pulseaudio pa_alsa_jack contain only one
-pa_alsa_path which mean pulseaudio does not support SND_JACK_HEADSET which
-has input and output path
+Thank you, Takashi.
 
-Although the implementation is much simpler than v2 , but pulseaudio does
-not support a single headset jack which represent headphone and microphone
+We'll upstream some topology ABI/API change soon (in 1 or 2 weeks), for DAI & DAI links.
+There will be changes in the kernel and alsa-lib.
+
+Regards
+Mengdong
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
