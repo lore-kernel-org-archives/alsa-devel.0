@@ -1,18 +1,18 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH v2- ALSA 2/3] HDA - create headset mic jack
- which use headphone pin sense
-Date: Wed, 23 Sep 2015 10:40:48 +0800
-Message-ID: <CAN8cciZkD4gyNa6-r2f1JJEF8UhD0hbmxMDPVav9vVF-OU++tw@mail.gmail.com>
+Subject: [PATCH v2- ALSA 3/3] HDA - add headset-sonicmaster and
+ headset-multi-sonicmaster models
+Date: Wed, 23 Sep 2015 10:40:51 +0800
+Message-ID: <CAN8ccibk0Hy4okjCN2yY6evfEDyZiYgqK=SL44vFghBO67gRhQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
- [209.85.218.53])
- by alsa0.perex.cz (Postfix) with ESMTP id C0AD3265142
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 04:40:49 +0200 (CEST)
-Received: by oixx17 with SMTP id x17so16628105oix.0
- for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 19:40:48 -0700 (PDT)
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46333265152
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 04:40:52 +0200 (CEST)
+Received: by obbzf10 with SMTP id zf10so23209313obb.2
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 19:40:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,84 +25,148 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, tiwai@suse.de, arthurborsboom@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-- use __snd_hda_jack_add_kctl to create headset mic jack which use
-headphone pin sense
+add headset only model for ALC668 with Sonic Master Subwoofer
 
-- set headset mic jack as slave of headphone jack
+add 625ms delay after headset is plugged for correct detection of headset
+type for ALC668
 
-- allow non detectable headset mic pin and hs_mic_use_hp_sense pass check
-auto mic availability
+add headset multi model with Sonice Master Subwoofer
+
+update HD-Audio-Models.txt
 
 Signed-off-by: Raymond Yau <superquad.vortex2@gmail.com>
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 24f9111..e8e4e34 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -4662,7 +4662,9 @@ static int check_auto_mic_availability(struct
-hda_codec *codec)
-             if (!spec->line_in_auto_switch &&
-                 cfg->inputs[i].type != AUTO_PIN_MIC)
-                 return 0; /* only mic is allowed */
--            if (!is_jack_detectable(codec, nid))
-+            if (!is_jack_detectable(codec, nid) &&
-+                !(spec->hs_mic_use_hp_sense &&
-+                cfg->inputs[i].is_headset_mic))
-                 return 0; /* no unsol support */
-             break;
-         }
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 56e4139..96f8214 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -236,6 +236,7 @@ struct hda_gen_spec {
-     unsigned int indep_hp_enabled:1; /* independent HP enabled */
-     unsigned int have_aamix_ctl:1;
-     unsigned int hp_mic_jack_modes:1;
-+    unsigned int hs_mic_use_hp_sense:1;
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt
+b/Documentation/sound/alsa/HD-Audio-Models.txt
+index ec099d4..8baddac 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -55,7 +55,12 @@ ALC66x/67x/892
+   asus-mode7        ASUS
+   asus-mode8        ASUS
+   inv-dmic        Inverted internal mic workaround
++
++ALC668
++======
+   dell-headset-multi    Headset jack, which can also be used as mic-in
++  headset-sonicmaster   Headset jack and SonicMaster Subwoofer
++  headset-multi-sonicmaster    Headset, HP or Mic and SonicMaster Subwoofer
 
-     /* additional mute flags (only effective with auto_mute_via_amp=1) */
-     u64 mute_bits;
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index d81d65f..c29f05e 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -480,6 +480,10 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
-                const struct auto_pin_cfg *cfg)
- {
-     const hda_nid_t *p;
-+    struct hda_jack_tbl *jack;
-+    struct hda_gen_spec *spec = codec->spec;
-+    hda_nid_t hp_pin = auto_cfg_hp_pins(cfg)[0];
-+    hda_nid_t hs_mic_pin = 0;
-     int i, err;
-
-     for (i = 0; i < cfg->num_inputs; i++) {
-@@ -493,6 +497,13 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
-                 err = add_jack_kctl(codec, cfg->inputs[i].pin,
-                             cfg, "Headphone Mic");
-         } else
-+        if (cfg->inputs[i].is_headset_mic &&
-+            !is_jack_detectable(codec, cfg->inputs[i].pin) &&
-+             spec->hs_mic_use_hp_sense) {
-+            hs_mic_pin = cfg->inputs[i].pin;
-+            err = __snd_hda_jack_add_kctl(codec, cfg->inputs[i].pin,
-+                    "Headset Mic", false, hp_pin);
-+        } else
-             err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg,
-                         NULL);
-         if (err < 0)
-@@ -510,6 +521,11 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
-         err = add_jack_kctl(codec, *p, cfg, NULL);
-         if (err < 0)
-             return err;
-+        if (*p == hp_pin && spec->hs_mic_use_hp_sense && hs_mic_pin) {
-+            jack = snd_hda_jack_tbl_get(codec, *p);
-+            if (jack)
-+                jack->slave_nid = hs_mic_pin;
-+        }
+ ALC680
+ ======
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a75b561..91de00c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4029,7 +4029,13 @@ static void alc_update_headset_mode(struct hda_codec
+*codec)
+                           PIN_VREFHIZ);
      }
-     for (i = 0, p = cfg->speaker_pins; i < cfg->speaker_outs; i++, p++) {
-         if (*p == *cfg->line_out_pins) /* might be duplicated */
+     spec->current_headset_mode = new_headset_mode;
+-
++    if (codec->core.vendor_id == 0x10ec0668) {
++        if (spec->gen.hs_mic_use_hp_sense && spec->gen.auto_mic) {
++            if (new_headset_mode == ALC_HEADSET_MODE_HEADPHONE)
++                msleep(625);
++            snd_hda_gen_mic_autoswitch(codec, NULL);
++        };
++    }
+     snd_hda_gen_update_outputs(codec);
+ }
+
+@@ -6071,6 +6077,42 @@ static void alc662_fixup_led_gpio1(struct hda_codec
+*codec,
+     }
+ }
+
++static void alc668_fixup_asus_headset_only(struct hda_codec *codec,
++                    const struct hda_fixup *fix, int action)
++{
++    const struct hda_pintbl hs_mic_pin[] = {
++        { 0x1b, 0x03a1113c }, /* headset mic */
++        { }
++    };
++    struct alc_spec *spec = codec->spec;
++
++    switch (action) {
++    case HDA_FIXUP_ACT_PRE_PROBE:
++        snd_hda_apply_pincfgs(codec, hs_mic_pin);
++        spec->gen.hs_mic_use_hp_sense = 1;
++        alc_fixup_disable_aamix(codec, fix, action);
++        break;
++    }
++}
++
++static void alc668_fixup_sonicmaster(struct hda_codec *codec,
++                    const struct hda_fixup *fix, int action)
++{
++    const struct hda_pintbl bass_pin[] = {
++        { 0x1a, 0x04110011 }, /* external subwoofer */
++        { }
++    };
++
++    switch (action) {
++    case HDA_FIXUP_ACT_PRE_PROBE:
++        snd_hda_apply_pincfgs(codec, bass_pin);
++        break;
++    case HDA_FIXUP_ACT_BUILD:
++        alc_fixup_bass_chmap(codec, fix, action);
++        break;
++    }
++}
++
+ static struct coef_fw alc668_coefs[] = {
+     WRITE_COEF(0x01, 0xbebe), WRITE_COEF(0x02, 0xaaaa),
+WRITE_COEF(0x03,    0x0),
+     WRITE_COEF(0x04, 0x0180), WRITE_COEF(0x06,    0x0), WRITE_COEF(0x07,
+0x0f80),
+@@ -6130,6 +6172,9 @@ enum {
+     ALC668_FIXUP_AUTO_MUTE,
+     ALC668_FIXUP_DELL_DISABLE_AAMIX,
+     ALC668_FIXUP_DELL_XPS13,
++    ALC668_FIXUP_HEADSET_ONLY,
++    ALC668_FIXUP_HEADSET_SONICMASTER,
++    ALC668_FIXUP_HEADSET_MULTI_SONICMASTER,
+ };
+
+ static const struct hda_fixup alc662_fixups[] = {
+@@ -6370,6 +6415,24 @@ static const struct hda_fixup alc662_fixups[] = {
+         .type = HDA_FIXUP_FUNC,
+         .v.func = alc_fixup_bass_chmap,
+     },
++    [ALC668_FIXUP_HEADSET_ONLY] = {
++        .type = HDA_FIXUP_FUNC,
++        .v.func = alc668_fixup_asus_headset_only,
++        .chained = true,
++        .chain_id = ALC668_FIXUP_HEADSET_MODE,
++    },
++    [ALC668_FIXUP_HEADSET_SONICMASTER] = {
++        .type = HDA_FIXUP_FUNC,
++        .v.func = alc668_fixup_sonicmaster,
++        .chained = true,
++        .chain_id = ALC668_FIXUP_HEADSET_ONLY,
++    },
++    [ALC668_FIXUP_HEADSET_MULTI_SONICMASTER] = {
++        .type = HDA_FIXUP_FUNC,
++        .v.func = alc668_fixup_sonicmaster,
++        .chained = true,
++        .chain_id = ALC668_FIXUP_DELL_DISABLE_AAMIX,
++    },
+ };
+
+ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+@@ -6476,6 +6539,9 @@ static const struct hda_model_fixup
+alc662_fixup_models[] = {
+     {.id = ALC662_FIXUP_ASUS_MODE8, .name = "asus-mode8"},
+     {.id = ALC662_FIXUP_INV_DMIC, .name = "inv-dmic"},
+     {.id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE, .name =
+"dell-headset-multi"},
++    {.id = ALC668_FIXUP_HEADSET_SONICMASTER, .name =
+"headset-sonicmaster"},
++    {.id = ALC668_FIXUP_HEADSET_MULTI_SONICMASTER,
++        .name = "headset-multi-sonicmaster"},
+     {}
+ };
+
 -- 
 2.5.0
