@@ -1,14 +1,11 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [alsa-devel][PATCH 1/3] dt-bindings: add sunxi SPDIF
- transceiver bindings
-Date: Wed, 23 Sep 2015 20:04:52 +0200
-Message-ID: <1443031494-32469-2-git-send-email-codekipper@gmail.com>
-References: <1443031494-32469-1-git-send-email-codekipper@gmail.com>
+Subject: [alsa-devel][PATCH 0/3]Add SPDIF support for Allwinner SoCs
+Date: Wed, 23 Sep 2015 20:04:51 +0200
+Message-ID: <1443031494-32469-1-git-send-email-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBSWTROYAKGQERYCCBKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1443031494-32469-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBVGTROYAKGQE5EKSEHQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <http://groups.google.com/group/linux-sunxi
@@ -22,69 +19,37 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Add devicetree bindings for the SPDIF transceiver found on
-found on Allwinners A10, A20 and A31 SoCs.
+This patch set adds support for the Allwinner SPDIF transceiver as present
+on the A10, A20 and A31 SoC boards.
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- .../devicetree/bindings/sound/sunxi,spdif.txt      | 49 ++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+For now just the SPDIF transmitter has been tested on a Mele A2000.
+
+In order for this patch set to be functional we require audio clock patches
+which will be delivered separately. For those that are interested I've pushed
+the patches here with all the required changes to get SPDIF audio out of the
+device.
+
+https://github.com/codekipper/linux-sunxi/commits/spdif_delivery
+
+Thanks in advance,
+CK
+
+Marcus Cooper (3):
+  dt-bindings: add sunxi SPDIF transceiver bindings
+  dt-binding: Add sunxi SPDIF machine driver
+  ASOC: sunxi: Add support for the spdif block
+
+ .../devicetree/bindings/sound/sunxi,spdif.txt      |  49 ++
+ .../bindings/sound/sunxi-audio-spdif.txt           |  36 +
+ sound/soc/sunxi/Kconfig                            |  10 +
+ sound/soc/sunxi/Makefile                           |   4 +
+ sound/soc/sunxi/sunxi-machine-spdif.c              | 110 +++
+ sound/soc/sunxi/sunxi-spdif.c                      | 801 +++++++++++++++++++++
+ 6 files changed, 1010 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/sunxi,spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt
+ create mode 100644 sound/soc/sunxi/sunxi-machine-spdif.c
+ create mode 100644 sound/soc/sunxi/sunxi-spdif.c
 
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,spdif.txt
-new file mode 100644
-index 0000000..1868722
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sunxi,spdif.txt
-@@ -0,0 +1,49 @@
-+Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
-+
-+The Allwinner S/PDIF audio block is a transceiver that allows the
-+processor to receive and transmit digital audio via an coaxial cable or
-+a fibre cable.
-+
-+Required properties:
-+
-+  - compatible		: should be one of the following:
-+    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-+    - "allwinner,sun7i-a20-spdif": for the Allwinner A20 SoC
-+    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
-+
-+  - reg			: Offset and length of the register set for the device.
-+
-+  - interrupts		: Contains the spdif interrupt.
-+
-+  - dmas		: Generic dma devicetree binding as described in
-+			  Documentation/devicetree/bindings/dma/dma.txt.
-+
-+  - dma-names		: Two dmas have to be defined, "tx" and "rx".
-+
-+  - clocks		: Contains an entry for each entry in clock-names.
-+
-+  - clock-names		: Includes the following entries:
-+	"apb"		  clock for the spdif bus.
-+	"audio"		  clock from the audio pll.
-+	"spdif"		  clock for spdif controller.
-+
-+Optional:
-+
-+  - spdif-in		: Enable block for capturing an SPDIF signal.
-+
-+  - spdif-out		: Enable block for transmitting an SPDIF signal.
-+
-+Example:
-+
-+spdif: spdif@01c21000 {
-+	compatible = "allwinner,sun4i-a10-spdif";
-+	reg = <0x01c21000 0x40>;
-+	interrupts = <13>;
-+	clocks = <&apb0_gates 1>, <&pll2 0>, <&spdif_clk>;
-+	clock-names = "apb", "audio", "spdif";
-+	dmas = <&dma 0 2>, <&dma 0 2>;
-+	dma-names = "rx", "tx";
-+	spdif-in = "disabled";
-+	spdif-out = "okay";
-+	status = "okay";
-+};
 -- 
 2.5.3
