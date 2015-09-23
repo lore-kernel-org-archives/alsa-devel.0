@@ -1,99 +1,80 @@
-From: =?UTF-8?Q?Christian_K=c3=b6nig?= <deathsimple@vodafone.de>
-Subject: Re: [PATCH 0/5] Add ASoC support for AMD APUs [v3]
-Date: Wed, 23 Sep 2015 21:03:56 +0200
-Message-ID: <5602F79C.8060901@vodafone.de>
-References: <1443027783-2591-1-git-send-email-alexander.deucher@amd.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASOC: fsl_spdif: fix bit order for spdif
+ RX channel status
+Date: Wed, 23 Sep 2015 16:07:12 -0700
+Message-ID: <20150923230710.GA4026@Asurada-CZ80>
+References: <1443016847-29857-1-git-send-email-kgroeneveld@lenbrook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1443027783-2591-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>, broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
-Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CD5226149D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 01:07:20 +0200 (CEST)
+Received: by pacgz1 with SMTP id gz1so3473429pac.3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 16:07:18 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1443016847-29857-1-git-send-email-kgroeneveld@lenbrook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kevin Groeneveld <kgroeneveld@lenbrook.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, timur@tabi.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T25seSBicmllZmx5IHNraW1tZWQgb3ZlciB0aGUgcGF0Y2hlcywgYnV0IHRoZSBhcHByb2FjaCBz
-b3VuZHMgc2FuZSB0byBtZS4KClNvIHRoZSBzZXQgaXMgQWNrZWQtYnk6IENocmlzdGlhbiBLw7Zu
-aWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4KClJlZ2FyZHMsCkNocmlzdGlhbi4KCk9uIDIz
-LjA5LjIwMTUgMTk6MDIsIEFsZXggRGV1Y2hlciB3cm90ZToKPiBUaGlzIHBhdGNoIHNldCBpbXBs
-ZW1lbnRzIHN1cHBvcnQgZm9yIGkycyBhdWRpbyBhbmQgbmV3IEFNRCBHUFVzLgo+IFRoZSBpMnMg
-Y29kZWMgaXMgZmVkIGJ5IGEgRE1BIGVuZ2luZSBvbiB0aGUgR1BVLiAgVG8gaGFuZGxlIHRoaXMK
-PiB3ZSBjcmVhdGUgbWZkIGNlbGxzIHdoaWNoIHdlIGhhbmcgdGhlIGkycyBjb2RlYyBhbmQgRE1B
-IGVuZ2luZSBvbi4KPiBCZWNhdXNlIG9mIHRoaXMsIHRoaXMgcGF0Y2ggc2V0IGNvdmVycyB0d28g
-c3Vic3lzdGVtczogZHJtIGFuZCBhbHNhLgo+IFRoZSBkcm0gcGF0Y2hlcyBhZGQgc3VwcG9ydCBm
-b3IgdGhlIEFDUCBodyBibG9jayB3aGljaCBwcm92aWRlcyB0aGUKPiBETUEgZW5naW5lIGZvciB0
-aGUgaTJzIGNvZGVjLiAgVGhlIGFsc2EgcGF0Y2hlcyBhZGQgdGhlIEFTb0MgZHJpdmVyCj4gZm9y
-IHRoZSBpMnMgY29kZWMuICBTaW5jZSB0aGUgYWxzYSBjaGFuZ2VzIGRlcGVuZCBvbiB0aGUgZHJt
-IGNoYW5nZXMKPiBpbiB0aGlzIHBhdGNoIHNldCBhcyB3ZWxsIGFzIHNvbWUgb3RoZXIgZHJtIGNo
-YW5nZXMgcXVldWVkIGZvciA0LjMsCj4gSSdkIGxpa2UgdG8gdGFrZSB0aGUgYWxzYSBwYXRjaGVz
-IGluIHZpYSB0aGUgZHJtIHRyZWUuCj4KPiBWMiBjaGFuZ2VzOgo+IC0gVXNlIHRoZSBNRkQgc3Vi
-c3lzdGVtIHJhdGhlciB0aGFuIGFkZGluZyBvdXIgb3duIGJ1cwo+IC0gU3F1YXNoIGFsbCBzdWIt
-ZmVhdHVyZSBwYXRjaGVzIHRvZ2V0aGVyCj4gLSBmaXggY29tbWVudHMgbWVudGlvbmVkIGluIHBy
-ZXZpb3VzIHJldmlldwo+Cj4gVjMgY2hhbmdlczoKPiAtIFVwZGF0ZSB0aGUgZGVzaWdud2FyZSBk
-cml2ZXIgdG8gaGFuZGxlIHNsYXZlIG1vZGUsIGFtZCBzcGVjaWZpYwo+ICAgIGZlYXR1cmVzCj4g
-LSBVc2UgdGhlIGRlc2lnbndhcmUgZHJpdmVyIGRpcmVjdGx5IGZvciBpMnMKPiAtIE1vdmUgdGhl
-IERNQSBoYW5kbGluZyBmcm9tIHRoZSBHUFUgZHJpdmVyIGludG8gdGhlIEFNRCBBU29DCj4gICAg
-ZHJpdmVyCj4gLSBDaGFuZ2UgdGhlIGxpY2Vuc2Ugb24gdGhlIEFTb0MgZHJpdmVyIHRvIEdQTAo+
-Cj4gUGF0Y2ggNCBhZGRzIHRoZSByZWdpc3RlciBoZWFkZXJzIGZvciB0aGUgQUNQIGJsb2NrIHdo
-aWNoIGlzIGEKPiBwcmV0dHkgYmlnIHBhdGNoIHNvIEkndmUgZXhjbHVkZWQgaXQgZnJvbSBlbWFp
-bC4gIFRoZSBlbnRpcmUgcGF0Y2gKPiBzZXQgY2FuIGJlIHZpZXdlZCBoZXJlOgo+IGh0dHA6Ly9j
-Z2l0LmZyZWVkZXNrdG9wLm9yZy9+YWdkNWYvbGludXgvbG9nLz9oPWFjcC11cHN0cmVhbTMKPgo+
-IFRoYW5rcywKPgo+IEFsZXgKPgo+IE1hcnV0aGkgQmF5eWF2YXJhcHUgKDEpOgo+ICAgIGRybS9h
-bWQ6IGFkZCBBQ1AgZHJpdmVyIHN1cHBvcnQKPgo+IE1hcnV0aGkgU3Jpbml2YXMgQmF5eWF2YXJh
-cHUgKDQpOgo+ICAgIEFTb0MgOiBkd2MgOiBzdXBwb3J0IGR3IGkycyBpbiBzbGF2ZSBtb2RlCj4g
-ICAgQVNvQyA6IGR3YyA6IHN1cHBvcnQgZHcgaTJzIGluIEFNRCBwbGF0Zm9ybQo+ICAgIEFTb0Mg
-OiBBTUQgOiBhZGQgQUNQIDIuMiByZWdpc3RlciBoZWFkZXJzCj4gICAgQVNvQzogQU1EOiBhZGQg
-QU1EIEFTb0MgQUNQLUkyUyBkcml2ZXIKPgo+ICAgZHJpdmVycy9ncHUvZHJtL0tjb25maWcgICAg
-ICAgICAgICAgICAgICAgICAgfCAgICAyICsKPiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL0tj
-b25maWcgICAgICAgICAgICAgIHwgICAxMCArCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9N
-YWtlZmlsZSAgICAgICAgICAgICB8ICAgIDkgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3Av
-YWNwX2h3LmMgICAgICAgICAgICAgfCAgMTI3ICsrCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Fj
-cC9pbmNsdWRlL2FjcF9nZnhfaWYuaCB8ICAgNDkgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9h
-bWRncHUvTWFrZWZpbGUgICAgICAgICAgfCAgIDEzICstCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1k
-L2FtZGdwdS9hbWRncHUuaCAgICAgICAgICB8ICAgMTIgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2Ft
-ZC9hbWRncHUvYW1kZ3B1X2FjcC5jICAgICAgfCAgMjY5ICsrKwo+ICAgZHJpdmVycy9ncHUvZHJt
-L2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5oICAgICAgfCAgIDQxICsKPiAgIGRyaXZlcnMvZ3B1L2Ry
-bS9hbWQvYW1kZ3B1L3ZpLmMgICAgICAgICAgICAgIHwgICAxMiArCj4gICBkcml2ZXJzL2dwdS9k
-cm0vYW1kL2luY2x1ZGUvYW1kX3NoYXJlZC5oICAgICB8ICAgIDEgKwo+ICAgaW5jbHVkZS9saW51
-eC9tZmQvYW1kX2FjcC5oICAgICAgICAgICAgICAgICAgfCAgIDQzICsKPiAgIGluY2x1ZGUvc291
-bmQvZGVzaWdud2FyZV9pMnMuaCAgICAgICAgICAgICAgIHwgICAgNCArCj4gICBzb3VuZC9zb2Mv
-S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKwo+ICAgc291bmQvc29j
-L01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsKPiAgIHNvdW5kL3Nv
-Yy9hbWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNCArCj4gICBzb3VuZC9z
-b2MvYW1kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgKwo+ICAgc291bmQv
-c29jL2FtZC9hY3AtcGNtLWRtYS5jICAgICAgICAgICAgICAgICAgfCAgNTE4ICsrKysrKwo+ICAg
-c291bmQvc29jL2FtZC9hY3AuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNzM2ICsrKysr
-KysrKwo+ICAgc291bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-MTQ3ICsrCj4gICBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNwXzJfMl9kLmggICAgICAgICAgICB8
-ICA2MDkgKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8yXzJfZW51bS5oICAg
-ICAgICAgfCAxMDY4ICsrKysrKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8y
-XzJfc2hfbWFzay5oICAgICAgfCAyMjkyICsrKysrKysrKysrKysrKysrKysrKysrKysrCj4gICBz
-b3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJzLmMgICAgICAgICAgICAgICB8ICAyNzAgKy0tCj4g
-ICAyNCBmaWxlcyBjaGFuZ2VkLCA2MTQxIGluc2VydGlvbnMoKyksIDEwMCBkZWxldGlvbnMoLSkK
-PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9LY29uZmlnCj4g
-ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvTWFrZWZpbGUKPiAg
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9hY3BfaHcuYwo+ICAg
-Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL2luY2x1ZGUvYWNwX2dm
-eF9pZi5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUv
-YW1kZ3B1X2FjcC5jCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9h
-bWRncHUvYW1kZ3B1X2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9t
-ZmQvYW1kX2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9LY29uZmln
-Cj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9NYWtlZmlsZQo+ICAgY3JlYXRl
-IG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwo+ICAgY3JlYXRlIG1vZGUg
-MTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLmMKPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9z
-b2MvYW1kL2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNsdWRl
-L2FjcF8yXzJfZC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNsdWRl
-L2FjcF8yXzJfZW51bS5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNs
-dWRlL2FjcF8yXzJfc2hfbWFzay5oCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
-ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vZHJpLWRldmVsCg==
+On Wed, Sep 23, 2015 at 10:00:47AM -0400, Kevin Groeneveld wrote:
+> The bits within each byte of the hardware registers for the channel status
+> bits are reversed. Therefore when the channel status is read from the
+> hardware we need to reverse the bits.
+> 
+> The code which writes the channel status bits for the TX already correctly
+> reverses the bits. This patch implements similar functionality for the RX.
+> 
+> I have tested this patch running on imx6 using several different SPDIF
+> source devices.
+> 
+> Signed-off-by: Kevin Groeneveld <kgroeneveld@lenbrook.com>
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thank you
+
+> ---
+>  sound/soc/fsl/fsl_spdif.c |   12 ++++++------
+>  1 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index ab729f2..e84e839 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -676,14 +676,14 @@ static int fsl_spdif_capture_get(struct snd_kcontrol *kcontrol,
+>  		return -EAGAIN;
+>  
+>  	regmap_read(regmap, REG_SPDIF_SRCSH, &cstatus);
+> -	ucontrol->value.iec958.status[0] = (cstatus >> 16) & 0xFF;
+> -	ucontrol->value.iec958.status[1] = (cstatus >> 8) & 0xFF;
+> -	ucontrol->value.iec958.status[2] = cstatus & 0xFF;
+> +	ucontrol->value.iec958.status[0] = bitrev8((cstatus >> 16) & 0xFF);
+> +	ucontrol->value.iec958.status[1] = bitrev8((cstatus >> 8) & 0xFF);
+> +	ucontrol->value.iec958.status[2] = bitrev8(cstatus & 0xFF);
+>  
+>  	regmap_read(regmap, REG_SPDIF_SRCSL, &cstatus);
+> -	ucontrol->value.iec958.status[3] = (cstatus >> 16) & 0xFF;
+> -	ucontrol->value.iec958.status[4] = (cstatus >> 8) & 0xFF;
+> -	ucontrol->value.iec958.status[5] = cstatus & 0xFF;
+> +	ucontrol->value.iec958.status[3] = bitrev8((cstatus >> 16) & 0xFF);
+> +	ucontrol->value.iec958.status[4] = bitrev8((cstatus >> 8) & 0xFF);
+> +	ucontrol->value.iec958.status[5] = bitrev8(cstatus & 0xFF);
+>  
+>  	/* Clear intr */
+>  	regmap_write(regmap, REG_SPDIF_SIC, INT_CNEW);
+> -- 
+> 1.7.4.1
+> 
