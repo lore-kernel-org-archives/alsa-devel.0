@@ -1,21 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
- use another nid for pin sense
-Date: Thu, 24 Sep 2015 00:34:34 +0800
-Message-ID: <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
-References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
- <s5hvbb16yup.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] topology: Add API to set a vendor specific
+ version number
+Date: Wed, 23 Sep 2015 09:39:05 -0700
+Message-ID: <20150923163905.GS30445@sirena.org.uk>
+References: <1442394433-31417-1-git-send-email-mengdong.lin@intel.com>
+ <s5hio718qt2.wl-tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F8496790BE@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6314545196810352491=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id E26A1260423
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:34:35 +0200 (CEST)
-Received: by obbbh8 with SMTP id bh8so37720011obb.0
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:34:35 -0700 (PDT)
-In-Reply-To: <s5hvbb16yup.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC1B260430
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:39:50 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F8496790BE@SHSMSX101.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, arthurborsboom@gmail.com
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > - add sense_nid to __snd_hda_jack_add_kctl for pin sense
-> >
-> > - update slave pin sense when master pin sense change
-> >
-> > - enable unsolicited event when widcap support UNSOL
->
-> Again, please describe at first the reason you need this change.  Then
-> start explaining about the implementation details.  For example,
-> what's the difference from the existing gated_jack.
->
->
 
-I don't understand how gated jack work, but those headset mic in alc668
-dell-headset-multi does not  use its own pin sense and won't need to enable
-unsol event of the headset mic node.
+--===============6314545196810352491==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="iJe1uyGc1/1h0P8m"
+Content-Disposition: inline
 
-As pulseaudio don't expect jack kctl can be repesent the state of headphone
-and mic
 
-This force the driver to create a headset mic kctl which is just a copy of
-the headphone jack kctl
+--iJe1uyGc1/1h0P8m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 23, 2015 at 04:13:26PM +0000, Lin, Mengdong wrote:
+
+> We'll upstream some topology ABI/API change soon (in 1 or 2 weeks), for DAI & DAI links.
+> There will be changes in the kernel and alsa-lib.
+
+Please bear in mind that we're on -rc2 now and the later it gets the
+more risk there is with getting things merged.
+
+--iJe1uyGc1/1h0P8m
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWAtWoAAoJECTWi3JdVIfQe4sH/2NyJ7jz7RlHfbtzK+FfHVW0
+xGGS7sPzeq4r7v4rnzx+GRa2DCiHhE4UU2qPk2xRzhoTi+pFK+Gv9GEkDq0EVVjr
+O/on9RA0XRJiEdXdFs/a62QmpPKuEXFdAADOlhgzaR62VGwXNsIFA2IBv/Rtloq9
+g0sY9QateLK1jVGK8cHbqW3qZGGwow7fNfk/LXB5ytkoxFOu7zezrjH9pTrAJr8L
+9DBtmXOx0kSSv12qgJ8NiX57BfnUo1AvVd65qV5T4qrXxx81o+awVT1DXhq2TOP0
+vqmAvtuboehoYNFmZp1NLeH1htVl1mrhE9s89ZaTMqAIyjo5gtAOdfhxxEhsOvQ=
+=WFzZ
+-----END PGP SIGNATURE-----
+
+--iJe1uyGc1/1h0P8m--
+
+--===============6314545196810352491==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6314545196810352491==--
