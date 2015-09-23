@@ -1,15 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V2 3/7] BAT: Add playback and record functions
-Date: Wed, 23 Sep 2015 15:48:51 +0800
-Message-ID: <00cc4402f76a0e6af0fa384422054cafc810a5e3.1442993440.git.han.lu@intel.com>
+Subject: [PATCH V2 4/7] BAT: Add signal generator
+Date: Wed, 23 Sep 2015 15:48:52 +0800
+Message-ID: <a42aa5e4102a653d655275077971f94058b85e12.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 910B42651CF
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 126172604F8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:18 +0200 (CEST)
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
@@ -28,20 +28,22 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add functions as main loop of playback thread and record thread.
-The functions access pcm hardware through ALSA APIs.
+Add function that generates sine waveform through math lib.
+The waveform can be used as source for playback or analysis.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@intel.com>
 Signed-off-by: Bernard Gautier <bernard.gautier@intel.com>
+Signed-off-by: Caleb Crome <caleb@crome.org>
 
-diff --git a/bat/alsa.c b/bat/alsa.c
+diff --git a/bat/signal.c b/bat/signal.c
 new file mode 100644
-index 0000000..582c604
+index 0000000..595f76b
 --- /dev/null
-+++ b/bat/alsa.c
-@@ -0,0 +1,594 @@
++++ b/bat/signal.c
+@@ -0,0 +1,182 @@
 +/*
++ * Copyright (C) 2015 Caleb Crome
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify
@@ -54,594 +56,182 @@ index 0000000..582c604
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
++ */
++
++/*
++ * This is a general purpose sine wave generator that will stay stable
++ * for a long time, and with a little renormalization, could stay stay
++ * stable indefinitely
 + */
 +
 +#include <stdio.h>
-+#include <string.h>
-+#include <stdbool.h>
++#include <stddef.h>
++#include <stdlib.h>
 +#include <math.h>
 +#include <stdint.h>
-+#include <pthread.h>
++#include <stdbool.h>
 +
-+#include <alsa/asoundlib.h>
-+
-+#include "aconfig.h"
 +#include "gettext.h"
-+
 +#include "common.h"
-+#include "alsa.h"
 +#include "signal.h"
 +
-+struct pcm_container {
-+	snd_pcm_t *handle;
-+	snd_pcm_uframes_t period_size;
-+	snd_pcm_uframes_t buffer_size;
-+	snd_pcm_format_t format;
-+	unsigned short channels;
-+	size_t period_bytes;
-+	size_t sample_bits;
-+	size_t frame_bits;
-+	char *buffer;
-+};
-+
-+static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
++/*
++ * Initialize the sine wave generator.
++ * sin_generator:  gets initialized by this call.
++ * frequency:      the frequency for the sine wave.  must be < 0.5*sample_rate
++ * sample_rate:    the sample rate...
++ * returns 0 on success, -1 on error.
++ */
++int sin_generator_init(struct sin_generator *sg, float magnitude,
++		float frequency, float sample_rate)
 +{
-+	snd_pcm_hw_params_t *params;
-+	unsigned int buffer_time = 0;
-+	unsigned int period_time = 0;
-+	unsigned int rate;
-+	int err;
-+	const char *device_name = snd_pcm_name(sndpcm->handle);
++	/* angular frequency:  cycles/sec / (samp/sec) * rad/cycle = rad/samp */
++	float w = frequency / sample_rate * 2 * M_PI;
++	if (frequency >= sample_rate / 2)
++		return -1;
++	sg->phasor_real = cos(w);
++	sg->phasor_imag = sin(w);
++	sg->magnitude   = magnitude;
++	sg->state_real  = 0.0;
++	sg->state_imag  = magnitude;
++	sg->frequency = frequency;
++	sg->sample_rate = sample_rate;
++	return 0;
++}
 +
-+	/* Allocate a hardware parameters object. */
-+	snd_pcm_hw_params_alloca(&params);
++/*
++ * Generates the next sample in the sine wave.
++ * should be much faster than calling a sin function
++ * if it's inlined and optimized.
++ *
++ * returns the next value.  no possibility of error.
++ */
++float sin_generator_next_sample(struct sin_generator *sg)
++{
++	/* get shorthand to pointers */
++	const double pr = sg->phasor_real;
++	const double pi = sg->phasor_imag;
++	const double sr = sg->state_real;
++	const double si = sg->state_imag;
++	/* step the phasor -- complex multiply */
++	sg->state_real = sr * pr - si * pi;
++	sg->state_imag = sr * pi + pr * si;
++	/* return the input value so sine wave starts at exactly 0.0 */
++	return sr;
++}
 +
-+	/* Fill it in with default values. */
-+	err = snd_pcm_hw_params_any(sndpcm->handle, params);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("default params: %s: %s(%d)\n"),
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
++/* fills a vector with a sine wave */
++void sin_generator_vfill(struct sin_generator *sg, float *buf, int n)
++{
++	int i;
++	for (i = 0; i < n; i++)
++		*buf++ = sin_generator_next_sample(sg);
++}
 +
-+	/* Set access mode */
-+	err = snd_pcm_hw_params_set_access(sndpcm->handle, params,
-+			SND_PCM_ACCESS_RW_INTERLEAVED);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("access type: %s: %s(%d)\n"),
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
++static int reorder(struct bat *bat, float *val, int frames)
++{
++	float *new_buf = NULL;
++	int i, c, bytes;
 +
-+	/* Set format */
-+	err = snd_pcm_hw_params_set_format(sndpcm->handle, params, bat->format);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("PCM format: %d %s: %s(%d)\n"),
-+				bat->format,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
++	bytes = frames * bat->channels * sizeof(float);
 +
-+	/* Set channels */
-+	err = snd_pcm_hw_params_set_channels(sndpcm->handle,
-+			params, bat->channels);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("channel number: %d %s: %s(%d)\n"),
-+				bat->channels,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+
-+	/* Set sampling rate */
-+	rate = bat->rate;
-+	err = snd_pcm_hw_params_set_rate_near(sndpcm->handle,
-+			params, &bat->rate,
-+			0);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("sample rate: %d %s: %s(%d)\n"),
-+				bat->rate,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+	if ((float) rate * (1 + RATE_RANGE) < bat->rate
-+			|| (float) rate * (1 - RATE_RANGE) > bat->rate) {
-+		fprintf(bat->err, _("Invalid parameters: sample rate: "));
-+		fprintf(bat->err, _("requested %dHz, got %dHz\n"),
-+				rate, bat->rate);
-+		return -EINVAL;
-+	}
-+
-+	if (snd_pcm_hw_params_get_buffer_time_max(params,
-+			&buffer_time, 0) < 0) {
-+		fprintf(bat->err, _("Get parameter from device error: "));
-+		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-+				buffer_time,
-+				device_name, snd_strerror(err), err);
-+		return -EINVAL;
-+	}
-+
-+	if (buffer_time > MAX_BUFFERTIME)
-+		buffer_time = MAX_BUFFERTIME;
-+
-+	period_time = buffer_time / DIV_BUFFERTIME;
-+
-+	/* Set buffer time and period time */
-+	err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle, params,
-+			&buffer_time, 0);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-+				buffer_time,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+
-+	err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle, params,
-+			&period_time, 0);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
-+				period_time,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+
-+	/* Write the parameters to the driver */
-+	if (snd_pcm_hw_params(sndpcm->handle, params) < 0) {
-+		fprintf(bat->err, _("Set parameter to device error: "));
-+		fprintf(bat->err, _("hw params: %s: %s(%d)\n"),
-+				device_name, snd_strerror(err), err);
-+		return -EINVAL;
-+	}
-+
-+	err = snd_pcm_hw_params_get_period_size(params,
-+			&sndpcm->period_size, 0);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Get parameter from device error: "));
-+		fprintf(bat->err, _("period size: %zd %s: %s(%d)\n"),
-+				sndpcm->period_size,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+
-+	err = snd_pcm_hw_params_get_buffer_size(params, &sndpcm->buffer_size);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Get parameter from device error: "));
-+		fprintf(bat->err, _("buffer size: %zd %s: %s(%d)\n"),
-+				sndpcm->buffer_size,
-+				device_name, snd_strerror(err), err);
-+		return err;
-+	}
-+
-+	if (sndpcm->period_size == sndpcm->buffer_size) {
-+		fprintf(bat->err, _("Invalid parameters: can't use period "));
-+		fprintf(bat->err, _("equal to buffer size (%zd)\n"),
-+				sndpcm->period_size);
-+		return -EINVAL;
-+	}
-+
-+	err = snd_pcm_format_physical_width(bat->format);
-+	if (err < 0) {
-+		fprintf(bat->err, _("Invalid parameters: "));
-+		fprintf(bat->err, _("snd_pcm_format_physical_width: %d\n"),
-+				err);
-+		return err;
-+	}
-+	sndpcm->sample_bits = err;
-+
-+	sndpcm->frame_bits = sndpcm->sample_bits * bat->channels;
-+
-+	/* Calculate the period bytes */
-+	sndpcm->period_bytes = sndpcm->period_size * sndpcm->frame_bits / 8;
-+	sndpcm->buffer = (char *) malloc(sndpcm->period_bytes);
-+	if (sndpcm->buffer == NULL) {
-+		fprintf(bat->err, _("Not enough memory: size=%zd\n"),
-+				sndpcm->period_bytes);
++	new_buf = (float *) malloc(bytes);
++	if (new_buf == NULL) {
++		fprintf(bat->err, _("Not enough memory.\n"));
 +		return -ENOMEM;
 +	}
 +
++	memcpy(new_buf, val, bytes);
++	for (i = 0; i < frames; i++)
++		for (c = 0; c < bat->channels; c++)
++			val[i * bat->channels + c] =
++				new_buf[c * frames + i];
++	free(new_buf);
++
 +	return 0;
 +}
 +
-+/*
-+ * Generate buffer to be played either from input file or from generated data
-+ * Return value
-+ * <0 error
-+ * 0 ok
-+ * >0 break
-+ */
-+static int generate_input_data(struct pcm_container *sndpcm, int bytes,
-+		struct bat *bat)
++static int adjust_waveform(struct bat *bat, float *val, int frames)
 +{
-+	int err;
-+	static int load;
-+	int frames = bytes * 8 / sndpcm->frame_bits;
++	int i, nsamples, max;
++	float factor, offset = 0.0;
 +
-+	if (bat->playback.file != NULL) {
-+		/* From input file */
-+		load = 0;
-+
-+		while (1) {
-+			err = fread(sndpcm->buffer + load, 1,
-+					bytes - load, bat->fp);
-+			if (0 == err) {
-+				if (feof(bat->fp)) {
-+					fprintf(bat->log,
-+							_("End of playing.\n"));
-+					return 1;
-+				}
-+			} else if (err < bytes - load) {
-+				if (ferror(bat->fp)) {
-+					fprintf(bat->err, _("Read file error"));
-+					fprintf(bat->err, _(": %d\n"), err);
-+					return -EIO;
-+				}
-+				load += err;
-+			} else {
-+				break;
-+			}
-+		}
-+	} else {
-+		/* Generate sine wave */
-+		if ((bat->sinus_duration) && (load > bat->sinus_duration))
-+			return 1;
-+
-+		err = generate_sine_wave(bat, frames, (void *)sndpcm->buffer);
-+		if (err != 0)
-+			return err;
-+
-+		load += frames;
++	switch (bat->format) {
++	case SND_PCM_FORMAT_U8:
++		max = INT8_MAX;
++		offset = max;	/* shift for unsigned format */
++		break;
++	case SND_PCM_FORMAT_S16_LE:
++		max  = INT16_MAX;
++		break;
++	case SND_PCM_FORMAT_S24_3LE:
++		max = (1 << 23) - 1;
++		break;
++	case SND_PCM_FORMAT_S32_LE:
++		max = INT32_MAX;
++		break;
++	default:
++		fprintf(bat->err, _("Invalid PCM format: %s\n"),
++				snd_pcm_format_name(bat->format));
++		return -EINVAL;
 +	}
++
++	factor = max * RANGE_FACTOR;
++	nsamples = bat->channels * frames;
++
++	for (i = 0; i < nsamples; i++)
++		val[i] = val[i] * factor + offset;
 +
 +	return 0;
 +}
 +
-+static int write_to_pcm(const struct pcm_container *sndpcm,
-+		int frames, struct bat *bat)
-+{
-+	int err;
-+	int offset = 0;
-+	int remain = frames;
-+
-+	while (remain > 0) {
-+		err = snd_pcm_writei(sndpcm->handle, sndpcm->buffer + offset,
-+				remain);
-+		if (err == -EAGAIN || (err >= 0 && err < frames)) {
-+			snd_pcm_wait(sndpcm->handle, 500);
-+		} else if (err == -EPIPE) {
-+			fprintf(bat->err, _("Underrun: %s(%d)\n"),
-+					snd_strerror(err), err);
-+			snd_pcm_prepare(sndpcm->handle);
-+		} else if (err < 0) {
-+			fprintf(bat->err, _("Write PCM device error: %s(%d)\n"),
-+					snd_strerror(err), err);
-+			return err;
-+		}
-+
-+		if (err > 0) {
-+			remain -= err;
-+			offset += err * sndpcm->frame_bits / 8;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
-+{
-+	int err;
-+	int bytes = sndpcm->period_bytes; /* playback buffer size */
-+	int frames = bytes * 8 / sndpcm->frame_bits; /* frame count */
-+	FILE *fp = NULL;
-+	struct wav_container wav;
-+	int bytes_total = 0;
-+
-+	if (bat->debugplay) {
-+		fp = fopen(bat->debugplay, "wb");
-+		if (fp == NULL) {
-+			fprintf(bat->err, _("Cannot open file for capture: "));
-+			fprintf(bat->err, _("%s %d\n"), bat->debugplay, -errno);
-+			return -errno;
-+		}
-+		/* leave space for wav header */
-+		err = fseek(fp, sizeof(wav), SEEK_SET);
-+		if (err != 0) {
-+			fprintf(bat->err, _("Seek file error: %d %d\n"),
-+					err, -errno);
-+			return -errno;
-+		}
-+	}
-+
-+	while (1) {
-+		err = generate_input_data(sndpcm, bytes, bat);
-+		if (err < 0)
-+			return err;
-+		else if (err > 0)
-+			break;
-+
-+		if (bat->debugplay) {
-+			err = fwrite(sndpcm->buffer, 1, bytes, fp);
-+			if (err != bytes) {
-+				fprintf(bat->err, _("Write file error: "));
-+				fprintf(bat->err, _("%s(%d)\n"),
-+						snd_strerror(err), err);
-+				return -EIO;
-+			}
-+			bytes_total += bytes;
-+		}
-+
-+		bat->periods_played++;
-+		if (bat->period_is_limited
-+				&& bat->periods_played >= bat->periods_total)
-+			break;
-+
-+		err = write_to_pcm(sndpcm, frames, bat);
-+		if (err != 0)
-+			return err;
-+	}
-+
-+	if (bat->debugplay) {
-+		/* update wav header */
-+		prepare_wav_info(&wav, bat);
-+		wav.chunk.length = bytes_total;
-+		wav.header.length = (wav.chunk.length) + sizeof(wav.chunk)
-+			+ sizeof(wav.format) + sizeof(wav.header) - 8;
-+
-+		rewind(fp);
-+		err = write_wav_header(fp, &wav, bat);
-+		if (err != 0) {
-+			fprintf(bat->err, _("Write file error: %s %s(%d)\n"),
-+					bat->debugplay, snd_strerror(err), err);
-+			return err;
-+		}
-+		fclose(fp);
-+	}
-+
-+	snd_pcm_drain(sndpcm->handle);
-+
-+	return 0;
-+}
-+
-+/**
-+ * Play
-+ */
-+void *playback_alsa(struct bat *bat)
++int generate_sine_wave(struct bat *bat, int frames, void *buf)
 +{
 +	int err = 0;
-+	struct pcm_container sndpcm;
++	int c, nsamples;
++	float *sinus_f = NULL;
++	static struct sin_generator sg[MAX_CHANNELS];
 +
-+	fprintf(bat->log, _("Entering playback thread (ALSA).\n"));
-+
-+	retval_play = 0;
-+	memset(&sndpcm, 0, sizeof(sndpcm));
-+
-+	if (bat->playback.device == NULL) {
-+		fprintf(bat->err, _("No PCM device for playback: exit\n"));
-+		retval_play = 1;
-+		goto exit1;
++	nsamples = bat->channels * frames;
++	sinus_f = (float *) malloc(nsamples * sizeof(float));
++	if (sinus_f == NULL) {
++		fprintf(bat->err, _("Not enough memory.\n"));
++		return -ENOMEM;
 +	}
 +
-+	err = snd_pcm_open(&sndpcm.handle, bat->playback.device,
-+			SND_PCM_STREAM_PLAYBACK, 0);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot open PCM playback device: "));
-+		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
-+		retval_play = 1;
-+		goto exit1;
++	for (c = 0; c < bat->channels; c++) {
++		/* initialize static struct at the first time */
++		if (sg[c].frequency != bat->target_freq[c])
++			sin_generator_init(&sg[c], 1.0, bat->target_freq[c],
++					bat->rate);
++		/* fill buffer for each channel */
++		sin_generator_vfill(&sg[c], sinus_f + c * frames, frames);
 +	}
 +
-+	err = set_snd_pcm_params(bat, &sndpcm);
-+	if (err != 0) {
-+		retval_play = 1;
-+		goto exit2;
-+	}
++	/* reorder samples to interleaved mode */
++	err = reorder(bat, sinus_f, frames);
++	if (err != 0)
++		return err;
 +
-+	if (bat->playback.file == NULL) {
-+		fprintf(bat->log, _("Playing generated audio sine wave"));
-+		bat->sinus_duration == 0 ?
-+			fprintf(bat->log, _(" endlessly\n")) :
-+			fprintf(bat->log, _("\n"));
-+	} else {
-+		fprintf(bat->log, _("Playing input audio file: %s\n"),
-+				bat->playback.file);
-+		bat->fp = fopen(bat->playback.file, "rb");
-+		if (bat->fp == NULL) {
-+			fprintf(bat->err, _("Cannot open file for capture: "));
-+			fprintf(bat->err, _("%s %d\n"),
-+					bat->playback.file, -errno);
-+			retval_play = 1;
-+			goto exit3;
-+		}
-+		/* Skip header */
-+		err = read_wav_header(bat, bat->playback.file, bat->fp, true);
-+		if (err != 0) {
-+			retval_play = 1;
-+			goto exit4;
-+		}
-+	}
++	/* adjust amplitude and offset of waveform */
++	err = adjust_waveform(bat, sinus_f, frames);
++	if (err != 0)
++		return err;
 +
-+	err = write_to_pcm_loop(&sndpcm, bat);
-+	if (err != 0) {
-+		retval_play = 1;
-+		goto exit4;
-+	}
++	bat->convert_float_to_sample(sinus_f, buf, frames, bat->channels);
 +
-+exit4:
-+	if (bat->playback.file)
-+		fclose(bat->fp);
-+exit3:
-+	free(sndpcm.buffer);
-+exit2:
-+	snd_pcm_close(sndpcm.handle);
-+exit1:
-+	pthread_exit(&retval_play);
-+}
-+
-+static int read_from_pcm(struct pcm_container *sndpcm,
-+		int frames, struct bat *bat)
-+{
-+	int err = 0;
-+	int offset = 0;
-+	int remain = frames;
-+
-+	while (remain > 0) {
-+		err = snd_pcm_readi(sndpcm->handle,
-+				sndpcm->buffer + offset, remain);
-+		if (err == -EAGAIN || (err >= 0 && err < remain)) {
-+			snd_pcm_wait(sndpcm->handle, 500);
-+		} else if (err == -EPIPE) {
-+			snd_pcm_prepare(sndpcm->handle);
-+			fprintf(bat->err, _("Overrun: %s(%d)\n"),
-+					snd_strerror(err), err);
-+		} else if (err < 0) {
-+			fprintf(bat->err, _("Read PCM device error: %s(%d)\n"),
-+					snd_strerror(err), err);
-+			return err;
-+		}
-+
-+		if (err > 0) {
-+			remain -= err;
-+			offset += err * sndpcm->frame_bits / 8;
-+		}
-+	}
++	free(sinus_f);
 +
 +	return 0;
 +}
-+
-+static int read_from_pcm_loop(FILE *fp, int count,
-+		struct pcm_container *sndpcm, struct bat *bat)
-+{
-+	int err = 0;
-+	int size, frames;
-+	int remain = count;
-+
-+	while (remain > 0) {
-+		size = (remain <= sndpcm->period_bytes) ?
-+			remain : sndpcm->period_bytes;
-+		frames = size * 8 / sndpcm->frame_bits;
-+
-+		/* read a chunk from pcm device */
-+		err = read_from_pcm(sndpcm, frames, bat);
-+		if (err != 0)
-+			return err;
-+
-+		/* write the chunk to file */
-+		err = fwrite(sndpcm->buffer, 1, size, fp);
-+		if (err != size) {
-+			fprintf(bat->err, _("Write file error: %s(%d)\n"),
-+					snd_strerror(err), err);
-+			return -EIO;
-+		}
-+		remain -= size;
-+		bat->periods_played++;
-+
-+		if (bat->period_is_limited
-+				&& bat->periods_played >= bat->periods_total)
-+			break;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * Record
-+ */
-+void *record_alsa(struct bat *bat)
-+{
-+	int err = 0;
-+	FILE *fp = NULL;
-+	struct pcm_container sndpcm;
-+	struct wav_container wav;
-+	int count;
-+
-+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-+
-+	fprintf(bat->log, _("Entering capture thread (ALSA).\n"));
-+
-+	retval_record = 0;
-+	memset(&sndpcm, 0, sizeof(sndpcm));
-+
-+	if (bat->capture.device == NULL) {
-+		fprintf(bat->err, _("No PCM device for capture: exit\n"));
-+		retval_record = 1;
-+		goto exit1;
-+	}
-+
-+	err = snd_pcm_open(&sndpcm.handle, bat->capture.device,
-+			SND_PCM_STREAM_CAPTURE, 0);
-+	if (err != 0) {
-+		fprintf(bat->err, _("Cannot open PCM capture device: "));
-+		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
-+		retval_record = 1;
-+		goto exit1;
-+	}
-+
-+	err = set_snd_pcm_params(bat, &sndpcm);
-+	if (err != 0) {
-+		retval_record = 1;
-+		goto exit2;
-+	}
-+
-+	remove(bat->capture.file);
-+	fp = fopen(bat->capture.file, "w+");
-+	if (fp == NULL) {
-+		fprintf(bat->err, _("Cannot open file for capture: %s %d\n"),
-+				bat->capture.file, -errno);
-+		retval_record = 1;
-+		goto exit3;
-+	}
-+
-+	prepare_wav_info(&wav, bat);
-+
-+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-+	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
-+	pthread_cleanup_push(snd_pcm_close, sndpcm.handle);
-+	pthread_cleanup_push(free, sndpcm.buffer);
-+	pthread_cleanup_push(fclose, fp);
-+
-+	err = write_wav_header(fp, &wav, bat);
-+	if (err != 0) {
-+		retval_record = 1;
-+		goto exit4;
-+	}
-+
-+	count = wav.chunk.length;
-+	fprintf(bat->log, _("Recording ...\n"));
-+	err = read_from_pcm_loop(fp, count, &sndpcm, bat);
-+	if (err != 0) {
-+		retval_record = 1;
-+		goto exit4;
-+	}
-+
-+	/* Normally we will never reach this part of code (before fail_exit) as
-+	   this thread will be cancelled by end of play thread. */
-+	pthread_cleanup_pop(0);
-+	pthread_cleanup_pop(0);
-+	pthread_cleanup_pop(0);
-+
-+	snd_pcm_drain(sndpcm.handle);
-+
-+exit4:
-+	fclose(fp);
-+exit3:
-+	free(sndpcm.buffer);
-+exit2:
-+	snd_pcm_close(sndpcm.handle);
-+exit1:
-+	pthread_exit(&retval_record);
-+}
-diff --git a/bat/alsa.h b/bat/alsa.h
+diff --git a/bat/signal.h b/bat/signal.h
 new file mode 100644
-index 0000000..d5c9972
+index 0000000..a295517
 --- /dev/null
-+++ b/bat/alsa.h
-@@ -0,0 +1,20 @@
++++ b/bat/signal.h
+@@ -0,0 +1,30 @@
 +/*
++ * Copyright (C) 2015 Caleb Crome
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify
@@ -656,10 +246,19 @@ index 0000000..d5c9972
 + *
 + */
 +
-+extern int retval_play;
-+extern int retval_record;
++/*
++ * Here's a generic sine wave generator that will work indefinitely
++ * for any frequency.
++ *
++ * Note:  the state & phasor are stored as doubles (and updated as
++ * doubles) because after a million samples the magnitude drifts a
++ * bit.  If we really need floats, it can be done with periodic
++ * renormalization of the state_real+state_imag magnitudes.
++ */
 +
-+void *playback_alsa(struct bat *);
-+void *record_alsa(struct bat *);
++int sin_generator_init(struct sin_generator *, float, float, float);
++float sin_generator_next_sample(struct sin_generator *);
++void sin_generator_vfill(struct sin_generator *, float *, int);
++int generate_sine_wave(struct bat *, int, void *);
 -- 
 1.9.1
