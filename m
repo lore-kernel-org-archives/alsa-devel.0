@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] Documentation: DT bindings:
- rockchip-i2s: add capture and lrck-mode
-Date: Wed, 23 Sep 2015 09:20:26 -0700
-Message-ID: <20150923162026.GP30445@sirena.org.uk>
-References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
- <1442979683-9441-3-git-send-email-sugar.zhang@rock-chips.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: RT5640 jack detection
+Date: Wed, 23 Sep 2015 17:22:38 +0100
+Message-ID: <1443025358.6977.71.camel@loki>
+References: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8114742217671758921=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DF85260423
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:21:24 +0200 (CEST)
-In-Reply-To: <1442979683-9441-3-git-send-email-sugar.zhang@rock-chips.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BAF8260423
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:22:46 +0200 (CEST)
+In-Reply-To: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, =?ISO-8859-1?Q?Jo=E3o?= Paulo Rechi Vita <jprvita@endlessm.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
++ Realtek
 
---===============8114742217671758921==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jZ6LB7VX2Q2qroxd"
-Content-Disposition: inline
+On Tue, 2015-09-22 at 11:18 +0200, Carlo Caione wrote:
+> Hi,
+> I'm working with the ALC5640-VB audio codec based on the Realtek
+> RT5640. On my setup the codec is only used for audio output through an
+> headphone jack, otherwise the audio should be routed via HDMI.
+> 
+> The problem is that the jack sensing only works when the codec is
+> actively playing something, that is when the bias set for the codec is
+> not SND_SOC_BIAS_OFF. When the codec is suspended and it is powered
+> off I'm not able to detect anymore the presence of the jack. Because
+> of this issue actively switching the audio from HDMI to HP when the
+> jack is inserted is not working.
+> 
+> The driver I'm using for the RT5640 in the .set_bias_level hook
+> function among other things is gating the I2S input clock and this
+> seems to prevent the generation of the IRQ signal I'm using to detect
+> the presence/absence of the jack (the culprit here is MX-FA[0] bit for
+> those interested).
+> 
+> I can easily modify the codec driver to avoid gating the I2S clock
+> when the bias is off but this seems in contrast with the whole DAPM
+> principle.
+> 
+> How this is usually supposed to be working?
+> 
 
+In situations like this it may be best to report jack status as removed
+when no BIAS is available for jack detection (since no one is using the
+codec anyway). The jack status could always be re-detected when BIAS is
+re-enabled.
 
---jZ6LB7VX2Q2qroxd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Sep 23, 2015 at 11:41:23AM +0800, Sugar Zhang wrote:
-
-> rockchip,lrck-mode: 0: rxtx separate, 1: tx share, 2: rx share.
-> default use 'rxtx separate' mode.
-
-I'm slightly confused about this property - is this covering differences
-in the IP deployed on different SoCs or is it covering how the SoC is
-wired into the board?  If it's for how the SoC is wired into the board
-(ie, Rx and Tx wired together) then this should already be covered by
-either the machine driver or the device at the other end of the link.
-
---jZ6LB7VX2Q2qroxd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWAtFKAAoJECTWi3JdVIfQDQ8H/R2lx+HhPy7PD62lJRDGDLRS
-XIM8iOiAieazMDQCkLRhYOHMpVLsEfSSSRCmGdGG1q5HWhFn5p8KjQWDG13hYCmx
-9YwRTfk52+2i/EnzpKHdssGz7pzisk3SB+WOuUKPPo5Z6672T8jwtssDeC960AI7
-JepwtX63AXbGLKm8goE+Ilx3l0FivrdfXPF53hSXduBSoGEr0Yvzdh4iN1QHh2t5
-K4XxU9OrvUf1WOvpOv8V1+7Oq19x5bQA+n2mo+Vr0kwdoOwLsg7jlnpJwUwk3ApW
-OEcQ0IIvp03bwccCLf6YtwrILZ11Zjoq5EWahzy94wqLPWYJTEHso/jk+KM9eqY=
-=JdgA
------END PGP SIGNATURE-----
-
---jZ6LB7VX2Q2qroxd--
-
---===============8114742217671758921==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8114742217671758921==--
+Liam 
