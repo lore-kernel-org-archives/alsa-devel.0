@@ -1,63 +1,64 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: Increase periods_min in capture
-Date: Wed, 23 Sep 2015 18:03:19 +0800
-Message-ID: <1443002599.22786.2.camel@mtksdaap41>
-References: <1442213477-63721-1-git-send-email-koro.chen@mediatek.com>
+From: Uli Franke <uli.franke@weiss.ch>
+Subject: Dummy module and sample rates
+Date: Wed, 23 Sep 2015 13:43:37 +0200
+Message-ID: <56029069.60700@weiss.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1442213477-63721-1-git-send-email-koro.chen@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, broonie@kernel.org
-Cc: matthias.bgg@gmail.com, perex@perex.cz, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server11.hostfactory.ch (server11.hostfactory.ch
+ [62.146.13.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DA342652F8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 13:43:39 +0200 (CEST)
+Received: from [192.168.1.112] (165.90.0.85.dynamic.wline.res.cust.swisscom.ch
+ [85.0.90.165])
+ by server11.hostfactory.ch (Postfix) with ESMTPA id 210AB600C8CCF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 13:43:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Any suggestion for this patch?
+Hi Clemens,
 
-On Mon, 2015-09-14 at 14:51 +0800, Koro Chen wrote:
-> In capture, there is chance that hw_ptr reported at IRQ is
-> a little smaller than period_size due to internal AFE buffer.
-> In the case of ping-pong buffer:
-> 
-> |xxxxxxxxxxxxxxxxxxxxxxxxxxxx--|-----------------------------|
->                             hw_ptr < period_size
-> 
-> This available buffer will not be read since its size is smaller than
-> avail_min (which is period_size by default), and read thread continues
-> to sleep. If the next hw_ptr is just a little larger than buffer_size,
-> overrun occurs. One more period can hold the possible unread buffer.
-> 
-> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-> ---
->  sound/soc/mediatek/mtk-afe-pcm.c |   17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-> index d190fe0..f5baf3c 100644
-> --- a/sound/soc/mediatek/mtk-afe-pcm.c
-> +++ b/sound/soc/mediatek/mtk-afe-pcm.c
-> @@ -549,6 +549,23 @@ static int mtk_afe_dais_startup(struct snd_pcm_substream *substream,
->  	memif->substream = substream;
->  
->  	snd_soc_set_runtime_hwparams(substream, &mtk_afe_hardware);
-> +
-> +	/*
-> +	 * Capture cannot use ping-pong buffer since hw_ptr at IRQ may be
-> +	 * smaller than period_size due to AFE's internal buffer.
-> +	 * This easily leads to overrun when avail_min is period_size.
-> +	 * One more period can hold the possible unread buffer.
-> +	 */
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		ret = snd_pcm_hw_constraint_minmax(runtime,
-> +						   SNDRV_PCM_HW_PARAM_PERIODS,
-> +						   3,
-> +						   mtk_afe_hardware.periods_max);
-> +		if (ret < 0) {
-> +			dev_err(afe->dev, "hw_constraint_minmax failed\n");
-> +			return ret;
-> +		}
-> +	}
->  	ret = snd_pcm_hw_constraint_integer(runtime,
->  					    SNDRV_PCM_HW_PARAM_PERIODS);
->  	if (ret < 0)
+I fiddled around with the Dummy module and it seems to be the thing
+we're looking for. I observed a rather strange behavior though:
+
+I set the hw params sample rate to 44k1 without error, but a subsequent
+call of snd_pcm_start returns EPIPE. When setting hw params sample rate
+to 4k this does not happen. Did I miss anything?
+
+Regards
+Uli
+
+____
+uli@ankerklause:~/.../dlna/wdmr$ modinfo snd-dummy
+filename:
+/lib/modules/3.16.0-46-generic/kernel/sound/drivers/snd-dummy.ko
+license:        GPL
+description:    Dummy soundcard (/dev/null)
+author:         Jaroslav Kysela <perex@perex.cz>
+srcversion:     BB2C5716F580F3D7D0F53D1
+depends:        snd-pcm,snd
+intree:         Y
+vermagic:       3.16.0-46-generic SMP mod_unload modversions 686
+signer:         Magrathea: Glacier signing key
+sig_key:        6C:3B:5C:5E:34:A0:6D:7D:5F:7D:A3:D0:50:98:75:D9:6C:6D:E6:C4
+sig_hashalgo:   sha512
+parm:           index:Index value for dummy soundcard. (array of int)
+parm:           id:ID string for dummy soundcard. (array of charp)
+parm:           enable:Enable this dummy soundcard. (array of bool)
+parm:           model:Soundcard model. (array of charp)
+parm:           pcm_devs:PCM devices # (0-4) for dummy driver. (array of
+int)
+parm:           pcm_substreams:PCM substreams # (1-128) for dummy
+driver. (array of int)
+parm:           fake_buffer:Fake buffer allocations. (bool)
+parm:           hrtimer:Use hrtimer as the timer source. (bool)
