@@ -1,83 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Prevent the pop sound in case
-	of playback and the jack is plugging" to the asoc tree
-Date: Wed, 23 Sep 2015 11:00:41 -0700
-Message-ID: <E1ZeoLR-0005RB-W5@finisterre>
-References: <1442990130-15801-4-git-send-email-oder_chiou@realtek.com>
+From: Kevin Hilman <khilman@kernel.org>
+Subject: Re: [PATCH 0/3] ALSA: hda - Avoid potential deadlock
+Date: Wed, 23 Sep 2015 11:01:34 -0700
+Message-ID: <7ha8sddngh.fsf@deeprootsystems.com>
+References: <1442484006-9614-1-git-send-email-thierry.reding@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AF8A260468
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 20:01:20 +0200 (CEST)
-In-Reply-To: <1442990130-15801-4-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1442484006-9614-1-git-send-email-thierry.reding@gmail.com>
+	(Thierry Reding's message of "Thu, 17 Sep 2015 12:00:03 +0200")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Tyler Baker <tyler.baker@linaro.org>, Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Thierry Reding <thierry.reding@gmail.com> writes:
 
-   ASoC: rt5645: Prevent the pop sound in case of playback and the jack is plugging
+> From: Thierry Reding <treding@nvidia.com>
+>
+> The Tegra HDA controller driver committed in v3.16 causes deadlocks when
+> loaded as a module. The reason is that the driver core will lock the HDA
+> controller device upon calling its probe callback and the probe callback
+> then goes on to create child devices for detected codecs and loads their
+> modules via a request_module() call. This is problematic because the new
+> driver will immediately be bound to the device, which will in turn cause
+> the parent of the codec device (the HDA controller device) to be locked
+> again, causing a deadlock.
+>
+> This problem seems to have been present since the modularization of the
+> HD-audio driver in commit 1289e9e8b42f ("ALSA: hda - Modularize HD-audio
+> driver"). On Intel platforms this has been worked around by splitting up
+> the probe sequence into a synchronous and an asynchronous part where the
+> request_module() calls are asynchronous and hence avoid the deadlock.
+>
+> An alternative proposal is provided in this series of patches. Rather
+> than relying on explicit request_module() calls to load kernel modules
+> for HDA codec drivers, this implements a uevent callback for the HDA bus
+> to advertises the MODALIAS information to the userspace helper.
+>
+> Effectively this results in the same modules being loaded, but it uses
+> the more canonical infrastructure to perform this. Deferring the module
+> loading to userspace removes the need for the explicit request_module()
+> calls and works around the recursive locking issue because both drivers
+> will be bound from separate contexts.
 
-has been applied to the asoc tree at
+Tested-by: Kevin Hilman <khilman@linaro.org>
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+FWIW, I tested this on top of next-20150923, and it solves the boot
+problem I'm seeing on tegra124-jetson-tk1 with module loading.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fce97b4d70ad632dd9c6058622492501377bbaaa Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 23 Sep 2015 14:35:30 +0800
-Subject: [PATCH] ASoC: rt5645: Prevent the pop sound in case of playback and
- the jack is plugging
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 61384ee9..268a28b 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2832,6 +2832,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 	} else { /* jack out */
- 		rt5645->jack_type = 0;
- 
-+		regmap_update_bits(rt5645->regmap, RT5645_HP_VOL,
-+			RT5645_L_MUTE | RT5645_R_MUTE,
-+			RT5645_L_MUTE | RT5645_R_MUTE);
- 		regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL2,
- 			RT5645_CBJ_MN_JD, RT5645_CBJ_MN_JD);
- 		regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL1,
--- 
-2.5.0
+Kevin
