@@ -1,17 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 5/8] ASoC: Intel: Skylake: Add topology core
-	init and handlers
-Date: Wed, 23 Sep 2015 20:33:21 +0530
-Message-ID: <1443020604-22282-6-git-send-email-vinod.koul@intel.com>
-References: <1443020604-22282-1-git-send-email-vinod.koul@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH - 1/2] HDA - Add SND_JACK_HEADSET and
+	Headset jack kctl
+Date: Thu, 24 Sep 2015 00:03:21 +0800
+Message-ID: <CAN8cciZkDFF=r13UEWUp6vGTYObYVffQqCArX4pU-HukvO8RZg@mail.gmail.com>
+References: <CAN8cciaSv0Tu_okSE-oXYd0ULrFxazfyZEcfMzTcPyyRCOfqog@mail.gmail.com>
+ <s5h1tdp8e3v.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F835264F53
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 17:01:30 +0200 (CEST)
-In-Reply-To: <1443020604-22282-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE594260423
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:03:23 +0200 (CEST)
+Received: by obbda8 with SMTP id da8so37048978obb.1
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:03:21 -0700 (PDT)
+In-Reply-To: <s5h1tdp8e3v.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,373 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, arthurborsboom@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The SKL driver does not code DSP topology in driver. It uses the
-newly added ASoC topology core to parse the topology information
-(controls, widgets and map) from topology binary.
-Each topology element passed private data which contains
-information that driver used to identify the module instance
-within firmware and send IPCs for that module to DSP firmware
-along with parameters.
-This patch adds init routine to invoke topology load and callback
-for topology creation.
+> >
+> > >From b3ed187912eccf922000aee09c04f9546b068925 Mon Sep 17 00:00:00 2001
+>
+> Please avoid unnecessary From line.  You should try using
+> git-sendemail directly.
+>
+> > From: Raymond Yau <superquad.vortex2@gmail.com>
+> > Date: Sun, 20 Sep 2015 22:10:18 +0800
+> > Subject: [PATCH -  1/2] HDA - Add SND_JACK_HEADSET and Headset jack kctl
+> >
+> > add headset jack kctl for alsa jack type SND_JACK_HEADSET
+> >
+> > skip creation of Headset Mic Phantom Jack
+> >
+> > use Headset Playback Volume and Headset Playback Switch
+> >
+> > allow auto mic selection by using HP pin for jack sense
+>
+> The most important piece of information is missing: *why* this change
+> is needed.  I can guess, but it has to be clarified to all readers.
+> At best, give the background information why the current code doesn't
+> work for some cases and how your change will help.
+>
+> Some more comments below:
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Kconfig                      |   1 +
- sound/soc/intel/skylake/skl-topology.c       | 218 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h       |   1 -
- sound/soc/intel/skylake/skl-tplg-interface.h |  80 ++++++++++
- 4 files changed, 299 insertions(+), 1 deletion(-)
+Please ignore this patch as pulseaudio pa_alsa_jack contain only one
+pa_alsa_path which mean pulseaudio does not support SND_JACK_HEADSET which
+has input and output path
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 05fde5e6e257..664df1f44530 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -138,4 +138,5 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- config SND_SOC_INTEL_SKYLAKE
- 	tristate
- 	select SND_HDA_EXT_CORE
-+	select SND_SOC_TOPOLOGY
- 	select SND_SOC_INTEL_SST
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ba287035fca3..6ad19622dc3e 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -965,3 +965,221 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
- 
- 	return 0;
- }
-+
-+static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
-+	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
-+	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
-+	{SKL_PGA_EVENT, skl_tplg_pga_event},
-+};
-+
-+/*
-+ * The topology binary passes the pin info for a module so initialize the pin
-+ * info passed into module instance
-+ */
-+static void skl_fill_module_pin_info(struct device *dev,
-+			struct skl_module_pin *m_pin,
-+			int max_pin)
-+{
-+	int i;
-+
-+	for (i = 0; i < max_pin; i++) {
-+		m_pin[i].id.module_id = 0;
-+		m_pin[i].id.instance_id = 0;
-+		m_pin[i].in_use = false;
-+		m_pin[i].is_dynamic = true;
-+		m_pin[i].pin_index = i;
-+	}
-+}
-+
-+/*
-+ * Add pipeline from topology binary into driver pipeline list
-+ *
-+ * If already added we return that instance
-+ * Otherwise we create a new instance and add into driver list
-+ */
-+static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
-+			struct skl *skl, struct skl_dfw_pipe *dfw_pipe)
-+{
-+	struct skl_pipeline *ppl;
-+	struct skl_pipe *pipe;
-+	struct skl_pipe_params *params;
-+
-+	list_for_each_entry(ppl, &skl->ppl_list, node) {
-+		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id)
-+			return ppl->pipe;
-+	}
-+
-+	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
-+	if (!ppl)
-+		return NULL;
-+
-+	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
-+	if (!pipe)
-+		return NULL;
-+
-+	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return NULL;
-+
-+	pipe->ppl_id = dfw_pipe->pipe_id;
-+	pipe->memory_pages = dfw_pipe->memory_pages;
-+	pipe->pipe_priority = dfw_pipe->pipe_priority;
-+	pipe->conn_type = dfw_pipe->conn_type;
-+	pipe->state = SKL_PIPE_INVALID;
-+	pipe->p_params = params;
-+	INIT_LIST_HEAD(&pipe->w_list);
-+
-+	ppl->pipe = pipe;
-+	list_add(&ppl->node, &skl->ppl_list);
-+
-+	return ppl->pipe;
-+}
-+
-+/*
-+ * Topology core widget load callback
-+ *
-+ * This is used to save the private data for each widget which gives
-+ * information to the driver about module and pipeline parameters which DSP
-+ * FW expects like ids, resource values, formats etc
-+ */
-+static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
-+					struct snd_soc_dapm_widget *w,
-+					struct snd_soc_tplg_dapm_widget *tplg_w)
-+{
-+	int ret;
-+	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-+	struct skl *skl = ebus_to_skl(ebus);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl_module_cfg *mconfig;
-+	struct skl_pipe *pipe;
-+	struct skl_dfw_module *dfw_config = (struct skl_dfw_module *)tplg_w->priv.data;
-+
-+	if (!tplg_w->priv.size)
-+		goto bind_event;
-+
-+	mconfig = devm_kzalloc(bus->dev, sizeof(*mconfig), GFP_KERNEL);
-+
-+	if (!mconfig)
-+		return -ENOMEM;
-+
-+	w->priv = mconfig;
-+	mconfig->id.module_id = dfw_config->module_id;
-+	mconfig->id.instance_id = dfw_config->instance_id;
-+	mconfig->mcps = dfw_config->max_mcps;
-+	mconfig->ibs = dfw_config->ibs;
-+	mconfig->obs = dfw_config->obs;
-+	mconfig->core_id = dfw_config->core_id;
-+	mconfig->max_in_queue = dfw_config->max_in_queue;
-+	mconfig->max_out_queue = dfw_config->max_out_queue;
-+	mconfig->is_loadable = dfw_config->is_loadable;
-+	mconfig->in_fmt.channels = dfw_config->in_fmt.channels;
-+	mconfig->in_fmt.s_freq = dfw_config->in_fmt.freq;
-+	mconfig->in_fmt.bit_depth = dfw_config->in_fmt.bit_depth;
-+	mconfig->in_fmt.valid_bit_depth = dfw_config->in_fmt.valid_bit_depth;
-+	mconfig->in_fmt.ch_cfg = dfw_config->in_fmt.ch_cfg;
-+	mconfig->out_fmt.channels = dfw_config->out_fmt.channels;
-+	mconfig->out_fmt.s_freq = dfw_config->out_fmt.freq;
-+	mconfig->out_fmt.bit_depth = dfw_config->out_fmt.bit_depth;
-+	mconfig->out_fmt.valid_bit_depth = dfw_config->out_fmt.valid_bit_depth;
-+	mconfig->out_fmt.ch_cfg = dfw_config->out_fmt.ch_cfg;
-+	mconfig->params_fixup = dfw_config->params_fixup;
-+	mconfig->converter = dfw_config->converter;
-+	mconfig->m_type = dfw_config->module_type;
-+	mconfig->vbus_id = dfw_config->vbus_id;
-+
-+	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
-+	if (pipe)
-+		mconfig->pipe = pipe;
-+
-+	mconfig->dev_type = dfw_config->dev_type;
-+	mconfig->hw_conn_type = dfw_config->hw_conn_type;
-+	mconfig->time_slot = dfw_config->time_slot;
-+	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
-+
-+	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_in_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_in_pin)
-+		return -ENOMEM;
-+
-+	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_out_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_out_pin)
-+		return -ENOMEM;
-+
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_in_pin,
-+				mconfig->max_in_queue);
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_out_pin,
-+				mconfig->max_out_queue);
-+
-+	if (mconfig->formats_config.caps_size == 0)
-+		goto bind_event;
-+
-+	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
-+				mconfig->formats_config.caps_size, GFP_KERNEL);
-+
-+	if (mconfig->formats_config.caps == NULL)
-+		return -ENOMEM;
-+
-+	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
-+						 dfw_config->caps.caps_size);
-+
-+bind_event:
-+	if (tplg_w->event_type == 0) {
-+		dev_info(bus->dev, "ASoC: No event handler required\n");
-+		return 0;
-+	}
-+
-+	ret = snd_soc_tplg_widget_bind_event(w, skl_tplg_widget_ops,
-+			ARRAY_SIZE(skl_tplg_widget_ops), tplg_w->event_type);
-+
-+	if (ret) {
-+		dev_err(bus->dev, "%s: No matching event handlers found for %d\n",
-+					__func__, tplg_w->event_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_tplg_ops skl_tplg_ops  = {
-+	.widget_load = skl_tplg_widget_load,
-+};
-+
-+/* This will be read from topology manifest, currently defined here */
-+#define SKL_MAX_MCPS 30000000
-+#define SKL_FW_MAX_MEM 1000000
-+
-+/*
-+ * SKL topology init routine
-+ */
-+int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
-+{
-+	int ret;
-+	const struct firmware *fw;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
-+
-+	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "config firmware %s request failed with %d\n",
-+				"dfw_sst.bin", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * The complete tplg for SKL is loaded as index 0, we don't use
-+	 * any other index
-+	 */
-+	ret = snd_soc_tplg_component_load(&platform->component, &skl_tplg_ops, fw, 0);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "tplg component load failed%d\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	skl->resource.max_mcps = SKL_MAX_MCPS;
-+	skl->resource.max_mem = SKL_FW_MAX_MEM;
-+
-+	return 0;
-+}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 12db94d238f2..0c83dc3ea3e2 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -291,7 +291,6 @@ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
- int skl_tplg_update_pipe_params(struct device *dev,
- 		struct skl_module_cfg *mconfig, struct skl_pipe_params *params);
- 
--
- int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
- 
- int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index a50689825bca..d14f7fe64aa8 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -19,6 +19,29 @@
- #ifndef __HDA_TPLG_INTERFACE_H__
- #define __HDA_TPLG_INTERFACE_H__
- 
-+/*
-+ * Default types range from 0~12. type can range from 0 to 0xff
-+ * SST types start at higher to avoid any overlapping in future
-+ */
-+#define SOC_CONTROL_TYPE_HDA_SST_ALGO_PARAMS	0x100
-+#define SOC_CONTROL_TYPE_HDA_SST_MUX		0x101
-+#define SOC_CONTROL_TYPE_HDA_SST_MIX		0x101
-+#define SOC_CONTROL_TYPE_HDA_SST_BYTE		0x103
-+
-+#define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
-+#define MAX_IN_QUEUE 8
-+#define MAX_OUT_QUEUE 8
-+
-+/* Event types goes here */
-+/* Reserve event type 0 for no event handlers */
-+enum skl_event_types {
-+	SKL_EVENT_NONE = 0,
-+	SKL_MIXER_EVENT,
-+	SKL_MUX_EVENT,
-+	SKL_VMIXER_EVENT,
-+	SKL_PGA_EVENT
-+};
-+
- /**
-  * enum skl_ch_cfg - channel configuration
-  *
-@@ -85,4 +108,61 @@ enum skl_dev_type {
- 	SKL_DEVICE_HDALINK = 0x4,
- 	SKL_DEVICE_NONE
- };
-+
-+struct skl_dfw_module_pin {
-+	u16 module_id;
-+	u16 instance_id;
-+	u8 pin_id;
-+	bool is_dynamic;
-+} __packed;
-+
-+struct skl_dfw_module_fmt {
-+	u32 channels;
-+	u32 freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+} __packed;
-+
-+struct skl_dfw_module_caps {
-+	u32 caps_size;
-+	u32 caps[HDA_SST_CFG_MAX];
-+};
-+
-+struct skl_dfw_pipe {
-+	u8 pipe_id;
-+	u8 pipe_priority;
-+	u16 conn_type;
-+	u32 memory_pages;
-+} __packed;
-+
-+struct skl_dfw_module {
-+	u16 module_id;
-+	u16 instance_id;
-+	u32 max_mcps;
-+	u8 core_id;
-+	u8 max_in_queue;
-+	u8 max_out_queue;
-+	u8 is_loadable;
-+	u8 conn_type;
-+	u8 dev_type;
-+	u8 hw_conn_type;
-+	u8 time_slot;
-+	u32 obs;
-+	u32 ibs;
-+	u32 params_fixup;
-+	u32 converter;
-+	u32 module_type;
-+	u32 vbus_id;
-+	struct skl_dfw_pipe pipe;
-+	struct skl_dfw_module_fmt in_fmt;
-+	struct skl_dfw_module_fmt out_fmt;
-+	struct skl_dfw_module_caps caps;
-+} __packed;
-+
-+struct skl_dfw_algo_data {
-+	u32 max;
-+	char *params;
-+} __packed;
-+
- #endif
--- 
-1.9.1
+Although the implementation is much simpler than v2 , but pulseaudio does
+not support a single headset jack which represent headphone and microphone
