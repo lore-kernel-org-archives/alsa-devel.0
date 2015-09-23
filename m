@@ -1,68 +1,99 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel][PATCH 0/3]Add SPDIF support for
- Allwinner SoCs
-Date: Wed, 23 Sep 2015 20:41:15 +0200
-Message-ID: <CAEKpxB=9nX6W7xpuQN5naqkkyEG-tkttfmFfs1JNgvpz=_UpEw@mail.gmail.com>
-References: <1443031494-32469-1-git-send-email-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <deathsimple@vodafone.de>
+Subject: Re: [PATCH 0/5] Add ASoC support for AMD APUs [v3]
+Date: Wed, 23 Sep 2015 21:03:56 +0200
+Message-ID: <5602F79C.8060901@vodafone.de>
+References: <1443027783-2591-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBS7EROYAKGQEQWZJSZI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1443031494-32469-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1443027783-2591-1-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>, broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
+Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-I'm getting a "fatal: 'send-email'" response with the last patch(even
-though the dry run of the patch series worked) and I've not been able
-to work around it. I'll post it as soon as I can work out what the
-issue is,
-BR,
-CK
-
-On 23 September 2015 at 20:04,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->
-> This patch set adds support for the Allwinner SPDIF transceiver as present
-> on the A10, A20 and A31 SoC boards.
->
-> For now just the SPDIF transmitter has been tested on a Mele A2000.
->
-> In order for this patch set to be functional we require audio clock patches
-> which will be delivered separately. For those that are interested I've pushed
-> the patches here with all the required changes to get SPDIF audio out of the
-> device.
->
-> https://github.com/codekipper/linux-sunxi/commits/spdif_delivery
->
-> Thanks in advance,
-> CK
->
-> Marcus Cooper (3):
->   dt-bindings: add sunxi SPDIF transceiver bindings
->   dt-binding: Add sunxi SPDIF machine driver
->   ASOC: sunxi: Add support for the spdif block
->
->  .../devicetree/bindings/sound/sunxi,spdif.txt      |  49 ++
->  .../bindings/sound/sunxi-audio-spdif.txt           |  36 +
->  sound/soc/sunxi/Kconfig                            |  10 +
->  sound/soc/sunxi/Makefile                           |   4 +
->  sound/soc/sunxi/sunxi-machine-spdif.c              | 110 +++
->  sound/soc/sunxi/sunxi-spdif.c                      | 801 +++++++++++++++++++++
->  6 files changed, 1010 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sunxi,spdif.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt
->  create mode 100644 sound/soc/sunxi/sunxi-machine-spdif.c
->  create mode 100644 sound/soc/sunxi/sunxi-spdif.c
->
-> --
-> 2.5.3
->
+T25seSBicmllZmx5IHNraW1tZWQgb3ZlciB0aGUgcGF0Y2hlcywgYnV0IHRoZSBhcHByb2FjaCBz
+b3VuZHMgc2FuZSB0byBtZS4KClNvIHRoZSBzZXQgaXMgQWNrZWQtYnk6IENocmlzdGlhbiBLw7Zu
+aWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4KClJlZ2FyZHMsCkNocmlzdGlhbi4KCk9uIDIz
+LjA5LjIwMTUgMTk6MDIsIEFsZXggRGV1Y2hlciB3cm90ZToKPiBUaGlzIHBhdGNoIHNldCBpbXBs
+ZW1lbnRzIHN1cHBvcnQgZm9yIGkycyBhdWRpbyBhbmQgbmV3IEFNRCBHUFVzLgo+IFRoZSBpMnMg
+Y29kZWMgaXMgZmVkIGJ5IGEgRE1BIGVuZ2luZSBvbiB0aGUgR1BVLiAgVG8gaGFuZGxlIHRoaXMK
+PiB3ZSBjcmVhdGUgbWZkIGNlbGxzIHdoaWNoIHdlIGhhbmcgdGhlIGkycyBjb2RlYyBhbmQgRE1B
+IGVuZ2luZSBvbi4KPiBCZWNhdXNlIG9mIHRoaXMsIHRoaXMgcGF0Y2ggc2V0IGNvdmVycyB0d28g
+c3Vic3lzdGVtczogZHJtIGFuZCBhbHNhLgo+IFRoZSBkcm0gcGF0Y2hlcyBhZGQgc3VwcG9ydCBm
+b3IgdGhlIEFDUCBodyBibG9jayB3aGljaCBwcm92aWRlcyB0aGUKPiBETUEgZW5naW5lIGZvciB0
+aGUgaTJzIGNvZGVjLiAgVGhlIGFsc2EgcGF0Y2hlcyBhZGQgdGhlIEFTb0MgZHJpdmVyCj4gZm9y
+IHRoZSBpMnMgY29kZWMuICBTaW5jZSB0aGUgYWxzYSBjaGFuZ2VzIGRlcGVuZCBvbiB0aGUgZHJt
+IGNoYW5nZXMKPiBpbiB0aGlzIHBhdGNoIHNldCBhcyB3ZWxsIGFzIHNvbWUgb3RoZXIgZHJtIGNo
+YW5nZXMgcXVldWVkIGZvciA0LjMsCj4gSSdkIGxpa2UgdG8gdGFrZSB0aGUgYWxzYSBwYXRjaGVz
+IGluIHZpYSB0aGUgZHJtIHRyZWUuCj4KPiBWMiBjaGFuZ2VzOgo+IC0gVXNlIHRoZSBNRkQgc3Vi
+c3lzdGVtIHJhdGhlciB0aGFuIGFkZGluZyBvdXIgb3duIGJ1cwo+IC0gU3F1YXNoIGFsbCBzdWIt
+ZmVhdHVyZSBwYXRjaGVzIHRvZ2V0aGVyCj4gLSBmaXggY29tbWVudHMgbWVudGlvbmVkIGluIHBy
+ZXZpb3VzIHJldmlldwo+Cj4gVjMgY2hhbmdlczoKPiAtIFVwZGF0ZSB0aGUgZGVzaWdud2FyZSBk
+cml2ZXIgdG8gaGFuZGxlIHNsYXZlIG1vZGUsIGFtZCBzcGVjaWZpYwo+ICAgIGZlYXR1cmVzCj4g
+LSBVc2UgdGhlIGRlc2lnbndhcmUgZHJpdmVyIGRpcmVjdGx5IGZvciBpMnMKPiAtIE1vdmUgdGhl
+IERNQSBoYW5kbGluZyBmcm9tIHRoZSBHUFUgZHJpdmVyIGludG8gdGhlIEFNRCBBU29DCj4gICAg
+ZHJpdmVyCj4gLSBDaGFuZ2UgdGhlIGxpY2Vuc2Ugb24gdGhlIEFTb0MgZHJpdmVyIHRvIEdQTAo+
+Cj4gUGF0Y2ggNCBhZGRzIHRoZSByZWdpc3RlciBoZWFkZXJzIGZvciB0aGUgQUNQIGJsb2NrIHdo
+aWNoIGlzIGEKPiBwcmV0dHkgYmlnIHBhdGNoIHNvIEkndmUgZXhjbHVkZWQgaXQgZnJvbSBlbWFp
+bC4gIFRoZSBlbnRpcmUgcGF0Y2gKPiBzZXQgY2FuIGJlIHZpZXdlZCBoZXJlOgo+IGh0dHA6Ly9j
+Z2l0LmZyZWVkZXNrdG9wLm9yZy9+YWdkNWYvbGludXgvbG9nLz9oPWFjcC11cHN0cmVhbTMKPgo+
+IFRoYW5rcywKPgo+IEFsZXgKPgo+IE1hcnV0aGkgQmF5eWF2YXJhcHUgKDEpOgo+ICAgIGRybS9h
+bWQ6IGFkZCBBQ1AgZHJpdmVyIHN1cHBvcnQKPgo+IE1hcnV0aGkgU3Jpbml2YXMgQmF5eWF2YXJh
+cHUgKDQpOgo+ICAgIEFTb0MgOiBkd2MgOiBzdXBwb3J0IGR3IGkycyBpbiBzbGF2ZSBtb2RlCj4g
+ICAgQVNvQyA6IGR3YyA6IHN1cHBvcnQgZHcgaTJzIGluIEFNRCBwbGF0Zm9ybQo+ICAgIEFTb0Mg
+OiBBTUQgOiBhZGQgQUNQIDIuMiByZWdpc3RlciBoZWFkZXJzCj4gICAgQVNvQzogQU1EOiBhZGQg
+QU1EIEFTb0MgQUNQLUkyUyBkcml2ZXIKPgo+ICAgZHJpdmVycy9ncHUvZHJtL0tjb25maWcgICAg
+ICAgICAgICAgICAgICAgICAgfCAgICAyICsKPiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL0tj
+b25maWcgICAgICAgICAgICAgIHwgICAxMCArCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9N
+YWtlZmlsZSAgICAgICAgICAgICB8ICAgIDkgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3Av
+YWNwX2h3LmMgICAgICAgICAgICAgfCAgMTI3ICsrCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Fj
+cC9pbmNsdWRlL2FjcF9nZnhfaWYuaCB8ICAgNDkgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9h
+bWRncHUvTWFrZWZpbGUgICAgICAgICAgfCAgIDEzICstCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1k
+L2FtZGdwdS9hbWRncHUuaCAgICAgICAgICB8ICAgMTIgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2Ft
+ZC9hbWRncHUvYW1kZ3B1X2FjcC5jICAgICAgfCAgMjY5ICsrKwo+ICAgZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5oICAgICAgfCAgIDQxICsKPiAgIGRyaXZlcnMvZ3B1L2Ry
+bS9hbWQvYW1kZ3B1L3ZpLmMgICAgICAgICAgICAgIHwgICAxMiArCj4gICBkcml2ZXJzL2dwdS9k
+cm0vYW1kL2luY2x1ZGUvYW1kX3NoYXJlZC5oICAgICB8ICAgIDEgKwo+ICAgaW5jbHVkZS9saW51
+eC9tZmQvYW1kX2FjcC5oICAgICAgICAgICAgICAgICAgfCAgIDQzICsKPiAgIGluY2x1ZGUvc291
+bmQvZGVzaWdud2FyZV9pMnMuaCAgICAgICAgICAgICAgIHwgICAgNCArCj4gICBzb3VuZC9zb2Mv
+S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKwo+ICAgc291bmQvc29j
+L01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsKPiAgIHNvdW5kL3Nv
+Yy9hbWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNCArCj4gICBzb3VuZC9z
+b2MvYW1kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgKwo+ICAgc291bmQv
+c29jL2FtZC9hY3AtcGNtLWRtYS5jICAgICAgICAgICAgICAgICAgfCAgNTE4ICsrKysrKwo+ICAg
+c291bmQvc29jL2FtZC9hY3AuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNzM2ICsrKysr
+KysrKwo+ICAgc291bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MTQ3ICsrCj4gICBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNwXzJfMl9kLmggICAgICAgICAgICB8
+ICA2MDkgKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8yXzJfZW51bS5oICAg
+ICAgICAgfCAxMDY4ICsrKysrKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8y
+XzJfc2hfbWFzay5oICAgICAgfCAyMjkyICsrKysrKysrKysrKysrKysrKysrKysrKysrCj4gICBz
+b3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJzLmMgICAgICAgICAgICAgICB8ICAyNzAgKy0tCj4g
+ICAyNCBmaWxlcyBjaGFuZ2VkLCA2MTQxIGluc2VydGlvbnMoKyksIDEwMCBkZWxldGlvbnMoLSkK
+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9LY29uZmlnCj4g
+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvTWFrZWZpbGUKPiAg
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9hY3BfaHcuYwo+ICAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL2luY2x1ZGUvYWNwX2dm
+eF9pZi5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUv
+YW1kZ3B1X2FjcC5jCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9h
+bWRncHUvYW1kZ3B1X2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9t
+ZmQvYW1kX2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9LY29uZmln
+Cj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9NYWtlZmlsZQo+ICAgY3JlYXRl
+IG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwo+ICAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLmMKPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9z
+b2MvYW1kL2FjcC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNsdWRl
+L2FjcF8yXzJfZC5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNsdWRl
+L2FjcF8yXzJfZW51bS5oCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9pbmNs
+dWRlL2FjcF8yXzJfc2hfbWFzay5oCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vZHJpLWRldmVsCg==
