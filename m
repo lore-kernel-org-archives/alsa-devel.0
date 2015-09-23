@@ -1,13 +1,13 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [alsa-devel][PATCH 2/3] dt-binding: Add sunxi SPDIF
- machine driver
-Date: Wed, 23 Sep 2015 20:04:53 +0200
-Message-ID: <1443031494-32469-3-git-send-email-codekipper@gmail.com>
+Subject: [alsa-devel][PATCH 1/3] dt-bindings: add sunxi SPDIF
+ transceiver bindings
+Date: Wed, 23 Sep 2015 20:04:52 +0200
+Message-ID: <1443031494-32469-2-git-send-email-codekipper@gmail.com>
 References: <1443031494-32469-1-git-send-email-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBS6TROYAKGQESCX34AI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBSWTROYAKGQERYCCBKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 In-Reply-To: <1443031494-32469-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -22,56 +22,69 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Add device tree bindings for the SPDIF machine driver for Allwinner SoC
-devices.
+Add devicetree bindings for the SPDIF transceiver found on
+found on Allwinners A10, A20 and A31 SoCs.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- .../bindings/sound/sunxi-audio-spdif.txt           | 36 ++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt
+ .../devicetree/bindings/sound/sunxi,spdif.txt      | 49 ++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi,spdif.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,spdif.txt
 new file mode 100644
-index 0000000..b9e8152
+index 0000000..1868722
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sunxi-audio-spdif.txt
-@@ -0,0 +1,36 @@
-+Allwinner audio complex with S/PDIF transceiver
++++ b/Documentation/devicetree/bindings/sound/sunxi,spdif.txt
+@@ -0,0 +1,49 @@
++Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
++
++The Allwinner S/PDIF audio block is a transceiver that allows the
++processor to receive and transmit digital audio via an coaxial cable or
++a fibre cable.
 +
 +Required properties:
 +
-+  - compatible		: "Allwinner,sunxi-audio-spdif"
++  - compatible		: should be one of the following:
++    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
++    - "allwinner,sun7i-a20-spdif": for the Allwinner A20 SoC
++    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
 +
-+  - model		: The user-visible name of this sound complex
++  - reg			: Offset and length of the register set for the device.
 +
-+  - spdif-controller	: The phandle of the Allwinner S/PDIF controller
++  - interrupts		: Contains the spdif interrupt.
 +
++  - dmas		: Generic dma devicetree binding as described in
++			  Documentation/devicetree/bindings/dma/dma.txt.
 +
-+Optional properties:
++  - dma-names		: Two dmas have to be defined, "tx" and "rx".
 +
-+  - spdif-out		: This is a boolean property. If present, the
-+			  transmitting function of S/PDIF will be enabled,
-+			  indicating there's a physical S/PDIF out connector
-+			  or jack on the board or it's connecting to some
-+			  other IP block, such as an HDMI encoder or
-+			  display-controller.
++  - clocks		: Contains an entry for each entry in clock-names.
 +
-+  - spdif-in		: This is a boolean property. If present, the receiving
-+			  function of S/PDIF will be enabled, indicating there
-+			  is a physical S/PDIF in connector/jack on the board.
++  - clock-names		: Includes the following entries:
++	"apb"		  clock for the spdif bus.
++	"audio"		  clock from the audio pll.
++	"spdif"		  clock for spdif controller.
 +
-+* Note: At least one of these two properties should be set in the DT binding.
++Optional:
 +
++  - spdif-in		: Enable block for capturing an SPDIF signal.
++
++  - spdif-out		: Enable block for transmitting an SPDIF signal.
 +
 +Example:
 +
-+sound-spdif {
-+	compatible = "allwinner,sunxi-audio-spdif";
-+	model = "sunxi-spdif";
-+	spdif-controller = <&spdif>;
-+	spdif-out;
-+	spdif-in;
++spdif: spdif@01c21000 {
++	compatible = "allwinner,sun4i-a10-spdif";
++	reg = <0x01c21000 0x40>;
++	interrupts = <13>;
++	clocks = <&apb0_gates 1>, <&pll2 0>, <&spdif_clk>;
++	clock-names = "apb", "audio", "spdif";
++	dmas = <&dma 0 2>, <&dma 0 2>;
++	dma-names = "rx", "tx";
++	spdif-in = "disabled";
++	spdif-out = "okay";
++	status = "okay";
 +};
 -- 
 2.5.3
