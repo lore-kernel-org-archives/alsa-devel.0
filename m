@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 6/8] ASoC: Intel: Skylake: Initialize and
-	load DSP controls
-Date: Wed, 23 Sep 2015 20:33:22 +0530
-Message-ID: <1443020604-22282-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 5/8] ASoC: Intel: Skylake: Add topology core
+	init and handlers
+Date: Wed, 23 Sep 2015 20:33:21 +0530
+Message-ID: <1443020604-22282-6-git-send-email-vinod.koul@intel.com>
 References: <1443020604-22282-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FB9D264FF6
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 17:01:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F835264F53
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 17:01:30 +0200 (CEST)
 In-Reply-To: <1443020604-22282-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,296 +22,372 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
-
-Initialize and creates DSP controls if processing pipe capability
-is supported by HW. Updates the dma_id, hw_params to module param
-to be used when DSP module has to be configured.
+The SKL driver does not code DSP topology in driver. It uses the
+newly added ASoC topology core to parse the topology information
+(controls, widgets and map) from topology binary.
+Each topology element passed private data which contains
+information that driver used to identify the module instance
+within firmware and send IPCs for that module to DSP firmware
+along with parameters.
+This patch adds init routine to invoke topology load and callback
+for topology creation.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 143 ++++++++++++++++++++++++++++++--------
- 1 file changed, 114 insertions(+), 29 deletions(-)
+ sound/soc/intel/Kconfig                      |   1 +
+ sound/soc/intel/skylake/skl-topology.c       | 218 +++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h       |   1 -
+ sound/soc/intel/skylake/skl-tplg-interface.h |  80 ++++++++++
+ 4 files changed, 299 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index bea26730873c..7f352cc2eb9d 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -24,6 +24,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include "skl.h"
-+#include "skl-topology.h"
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 05fde5e6e257..664df1f44530 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -138,4 +138,5 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ config SND_SOC_INTEL_SKYLAKE
+ 	tristate
+ 	select SND_HDA_EXT_CORE
++	select SND_SOC_TOPOLOGY
+ 	select SND_SOC_INTEL_SST
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index ba287035fca3..6ad19622dc3e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -965,3 +965,221 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
  
- #define HDA_MONO 1
- #define HDA_STEREO 2
-@@ -214,6 +215,8 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct skl_pipe_params p_params = {0};
-+	struct skl_module_cfg *m_cfg;
- 	int ret, dma_id;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-@@ -228,6 +231,16 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	dma_id = hdac_stream(stream)->stream_tag - 1;
- 	dev_dbg(dai->dev, "dma_id=%d\n", dma_id);
- 
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.host_dma_id = dma_id;
-+	p_params.stream = substream->stream;
-+
-+	m_cfg = skl_tplg_fe_get_cpr_module(dai, p_params.stream);
-+	if (m_cfg)
-+		skl_tplg_update_pipe_params(dai->dev, m_cfg, &p_params);
-+
  	return 0;
  }
- 
-@@ -268,6 +281,46 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
- 	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
- }
- 
-+static int skl_be_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
++
++static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
++	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
++	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
++	{SKL_PGA_EVENT, skl_tplg_pga_event},
++};
++
++/*
++ * The topology binary passes the pin info for a module so initialize the pin
++ * info passed into module instance
++ */
++static void skl_fill_module_pin_info(struct device *dev,
++			struct skl_module_pin *m_pin,
++			int max_pin)
 +{
-+	struct skl_pipe_params p_params = {0};
++	int i;
 +
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	skl_tplg_be_update_params(dai, &p_params);
-+
-+	return 0;
-+}
-+
-+static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
-+		struct snd_soc_dai *dai)
-+{
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_cfg *mconfig;
-+
-+	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
-+	if (!mconfig)
-+		return -EIO;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		return skl_run_pipe(ctx, mconfig->pipe);
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		return skl_stop_pipe(ctx, mconfig->pipe);
-+
-+	default:
-+		return 0;
++	for (i = 0; i < max_pin; i++) {
++		m_pin[i].id.module_id = 0;
++		m_pin[i].id.instance_id = 0;
++		m_pin[i].in_use = false;
++		m_pin[i].is_dynamic = true;
++		m_pin[i].pin_index = i;
 +	}
 +}
 +
- static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -277,9 +330,8 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct skl_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int dma_id;
-+	struct skl_pipe_params p_params = {0};
- 
--	pr_debug("%s\n", __func__);
- 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
- 					HDAC_EXT_STREAM_TYPE_LINK);
- 	if (!link_dev)
-@@ -293,7 +345,14 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	if (dma_params)
- 		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
- 	snd_soc_dai_set_dma_data(codec_dai, substream, (void *)dma_params);
--	dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+
-+	skl_tplg_be_update_params(dai, &p_params);
- 
- 	return 0;
- }
-@@ -308,27 +367,12 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	unsigned int format_val = 0;
- 	struct skl_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_pcm_hw_params *params;
--	struct snd_interval *channels, *rate;
- 	struct hdac_ext_link *link;
- 
--	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 	if (link_dev->link_prepared) {
--		dev_dbg(dai->dev, "already stream is prepared - returning\n");
-+		dev_info(dai->dev, "already stream is prepared - returning\n");
- 		return 0;
- 	}
--	params  = devm_kzalloc(dai->dev, sizeof(*params), GFP_KERNEL);
--	if (params == NULL)
--		return -ENOMEM;
--
--	channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	channels->min = channels->max = substream->runtime->channels;
--	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	rate->min = rate->max = substream->runtime->rate;
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--					SNDRV_PCM_HW_PARAM_FIRST_MASK],
--					substream->runtime->format);
--
- 
- 	dma_params  = (struct skl_dma_params *)
- 			snd_soc_dai_get_dma_data(codec_dai, substream);
-@@ -399,13 +443,13 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_hda_be_startup(struct snd_pcm_substream *substream,
-+static int skl_be_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	return pm_runtime_get_sync(dai->dev);
- }
- 
--static void skl_hda_be_shutdown(struct snd_pcm_substream *substream,
-+static void skl_be_shutdown(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	pm_runtime_mark_last_busy(dai->dev);
-@@ -418,20 +462,28 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.prepare = skl_pcm_prepare,
- 	.hw_params = skl_pcm_hw_params,
- 	.hw_free = skl_pcm_hw_free,
-+	.trigger = skl_pcm_trigger,
- };
- 
- static struct snd_soc_dai_ops skl_dmic_dai_ops = {
--	.startup = skl_hda_be_startup,
--	.shutdown = skl_hda_be_shutdown,
-+	.startup = skl_be_startup,
-+	.hw_params = skl_be_hw_params,
-+	.shutdown = skl_be_shutdown,
-+};
-+
-+static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
-+	.startup = skl_be_startup,
-+	.hw_params = skl_be_hw_params,
-+	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
--	.startup = skl_hda_be_startup,
-+	.startup = skl_be_startup,
- 	.prepare = skl_link_pcm_prepare,
- 	.hw_params = skl_link_hw_params,
- 	.hw_free = skl_link_hw_free,
- 	.trigger = skl_link_pcm_trigger,
--	.shutdown = skl_hda_be_shutdown,
-+	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_driver skl_platform_dai[] = {
-@@ -488,6 +540,24 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- },
- /* BE CPU  Dais */
- {
-+	.name = "SSP0 Pin",
-+	.ops = &skl_be_ssp_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp0 Tx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp0 Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
++/*
++ * Add pipeline from topology binary into driver pipeline list
++ *
++ * If already added we return that instance
++ * Otherwise we create a new instance and add into driver list
++ */
++static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
++			struct skl *skl, struct skl_dfw_pipe *dfw_pipe)
 +{
- 	.name = "iDisp Pin",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
-@@ -544,7 +614,7 @@ static int skl_platform_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int skl_pcm_trigger(struct snd_pcm_substream *substream,
-+static int skl_coupled_trigger(struct snd_pcm_substream *substream,
- 					int cmd)
- {
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-@@ -618,7 +688,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_dsp_trigger(struct snd_pcm_substream *substream,
-+static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
- 		int cmd)
- {
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-@@ -675,9 +745,9 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
- 
- 	if (ebus->ppcap)
--		return skl_dsp_trigger(substream, cmd);
-+		return skl_decoupled_trigger(substream, cmd);
- 	else
--		return skl_pcm_trigger(substream, cmd);
-+		return skl_coupled_trigger(substream, cmd);
- }
- 
- /* calculate runtime delay from LPIB */
-@@ -844,7 +914,17 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
- 
-+static int skl_platform_soc_probe(struct snd_soc_platform *platform)
-+{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(platform->dev);
++	struct skl_pipeline *ppl;
++	struct skl_pipe *pipe;
++	struct skl_pipe_params *params;
 +
-+	if (ebus->ppcap)
-+		return skl_tplg_init(platform, ebus);
++	list_for_each_entry(ppl, &skl->ppl_list, node) {
++		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id)
++			return ppl->pipe;
++	}
++
++	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
++	if (!ppl)
++		return NULL;
++
++	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
++	if (!pipe)
++		return NULL;
++
++	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
++	if (!params)
++		return NULL;
++
++	pipe->ppl_id = dfw_pipe->pipe_id;
++	pipe->memory_pages = dfw_pipe->memory_pages;
++	pipe->pipe_priority = dfw_pipe->pipe_priority;
++	pipe->conn_type = dfw_pipe->conn_type;
++	pipe->state = SKL_PIPE_INVALID;
++	pipe->p_params = params;
++	INIT_LIST_HEAD(&pipe->w_list);
++
++	ppl->pipe = pipe;
++	list_add(&ppl->node, &skl->ppl_list);
++
++	return ppl->pipe;
++}
++
++/*
++ * Topology core widget load callback
++ *
++ * This is used to save the private data for each widget which gives
++ * information to the driver about module and pipeline parameters which DSP
++ * FW expects like ids, resource values, formats etc
++ */
++static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
++					struct snd_soc_dapm_widget *w,
++					struct snd_soc_tplg_dapm_widget *tplg_w)
++{
++	int ret;
++	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
++	struct skl *skl = ebus_to_skl(ebus);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl_module_cfg *mconfig;
++	struct skl_pipe *pipe;
++	struct skl_dfw_module *dfw_config = (struct skl_dfw_module *)tplg_w->priv.data;
++
++	if (!tplg_w->priv.size)
++		goto bind_event;
++
++	mconfig = devm_kzalloc(bus->dev, sizeof(*mconfig), GFP_KERNEL);
++
++	if (!mconfig)
++		return -ENOMEM;
++
++	w->priv = mconfig;
++	mconfig->id.module_id = dfw_config->module_id;
++	mconfig->id.instance_id = dfw_config->instance_id;
++	mconfig->mcps = dfw_config->max_mcps;
++	mconfig->ibs = dfw_config->ibs;
++	mconfig->obs = dfw_config->obs;
++	mconfig->core_id = dfw_config->core_id;
++	mconfig->max_in_queue = dfw_config->max_in_queue;
++	mconfig->max_out_queue = dfw_config->max_out_queue;
++	mconfig->is_loadable = dfw_config->is_loadable;
++	mconfig->in_fmt.channels = dfw_config->in_fmt.channels;
++	mconfig->in_fmt.s_freq = dfw_config->in_fmt.freq;
++	mconfig->in_fmt.bit_depth = dfw_config->in_fmt.bit_depth;
++	mconfig->in_fmt.valid_bit_depth = dfw_config->in_fmt.valid_bit_depth;
++	mconfig->in_fmt.ch_cfg = dfw_config->in_fmt.ch_cfg;
++	mconfig->out_fmt.channels = dfw_config->out_fmt.channels;
++	mconfig->out_fmt.s_freq = dfw_config->out_fmt.freq;
++	mconfig->out_fmt.bit_depth = dfw_config->out_fmt.bit_depth;
++	mconfig->out_fmt.valid_bit_depth = dfw_config->out_fmt.valid_bit_depth;
++	mconfig->out_fmt.ch_cfg = dfw_config->out_fmt.ch_cfg;
++	mconfig->params_fixup = dfw_config->params_fixup;
++	mconfig->converter = dfw_config->converter;
++	mconfig->m_type = dfw_config->module_type;
++	mconfig->vbus_id = dfw_config->vbus_id;
++
++	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
++	if (pipe)
++		mconfig->pipe = pipe;
++
++	mconfig->dev_type = dfw_config->dev_type;
++	mconfig->hw_conn_type = dfw_config->hw_conn_type;
++	mconfig->time_slot = dfw_config->time_slot;
++	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
++
++	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
++						sizeof(*mconfig->m_in_pin),
++						GFP_KERNEL);
++	if (!mconfig->m_in_pin)
++		return -ENOMEM;
++
++	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
++						sizeof(*mconfig->m_out_pin),
++						GFP_KERNEL);
++	if (!mconfig->m_out_pin)
++		return -ENOMEM;
++
++	skl_fill_module_pin_info(bus->dev, mconfig->m_in_pin,
++				mconfig->max_in_queue);
++	skl_fill_module_pin_info(bus->dev, mconfig->m_out_pin,
++				mconfig->max_out_queue);
++
++	if (mconfig->formats_config.caps_size == 0)
++		goto bind_event;
++
++	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
++				mconfig->formats_config.caps_size, GFP_KERNEL);
++
++	if (mconfig->formats_config.caps == NULL)
++		return -ENOMEM;
++
++	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
++						 dfw_config->caps.caps_size);
++
++bind_event:
++	if (tplg_w->event_type == 0) {
++		dev_info(bus->dev, "ASoC: No event handler required\n");
++		return 0;
++	}
++
++	ret = snd_soc_tplg_widget_bind_event(w, skl_tplg_widget_ops,
++			ARRAY_SIZE(skl_tplg_widget_ops), tplg_w->event_type);
++
++	if (ret) {
++		dev_err(bus->dev, "%s: No matching event handlers found for %d\n",
++					__func__, tplg_w->event_type);
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
- static struct snd_soc_platform_driver skl_platform_drv  = {
-+	.probe		= skl_platform_soc_probe,
- 	.ops		= &skl_platform_ops,
- 	.pcm_new	= skl_pcm_new,
- 	.pcm_free	= skl_pcm_free,
-@@ -857,6 +937,11 @@ static const struct snd_soc_component_driver skl_component = {
- int skl_platform_register(struct device *dev)
- {
- 	int ret;
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++
++static struct snd_soc_tplg_ops skl_tplg_ops  = {
++	.widget_load = skl_tplg_widget_load,
++};
++
++/* This will be read from topology manifest, currently defined here */
++#define SKL_MAX_MCPS 30000000
++#define SKL_FW_MAX_MEM 1000000
++
++/*
++ * SKL topology init routine
++ */
++int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
++{
++	int ret;
++	const struct firmware *fw;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
 +	struct skl *skl = ebus_to_skl(ebus);
 +
-+	INIT_LIST_HEAD(&skl->ppl_list);
-+	INIT_LIST_HEAD(&skl->dapm_path_list);
++	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
++	if (ret < 0) {
++		dev_err(bus->dev, "config firmware %s request failed with %d\n",
++				"dfw_sst.bin", ret);
++		return ret;
++	}
++
++	/*
++	 * The complete tplg for SKL is loaded as index 0, we don't use
++	 * any other index
++	 */
++	ret = snd_soc_tplg_component_load(&platform->component, &skl_tplg_ops, fw, 0);
++	if (ret < 0) {
++		dev_err(bus->dev, "tplg component load failed%d\n", ret);
++		return -EINVAL;
++	}
++
++	skl->resource.max_mcps = SKL_MAX_MCPS;
++	skl->resource.max_mem = SKL_FW_MAX_MEM;
++
++	return 0;
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 12db94d238f2..0c83dc3ea3e2 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -291,7 +291,6 @@ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
+ int skl_tplg_update_pipe_params(struct device *dev,
+ 		struct skl_module_cfg *mconfig, struct skl_pipe_params *params);
  
- 	ret = snd_soc_register_platform(dev, &skl_platform_drv);
- 	if (ret) {
+-
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index a50689825bca..d14f7fe64aa8 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -19,6 +19,29 @@
+ #ifndef __HDA_TPLG_INTERFACE_H__
+ #define __HDA_TPLG_INTERFACE_H__
+ 
++/*
++ * Default types range from 0~12. type can range from 0 to 0xff
++ * SST types start at higher to avoid any overlapping in future
++ */
++#define SOC_CONTROL_TYPE_HDA_SST_ALGO_PARAMS	0x100
++#define SOC_CONTROL_TYPE_HDA_SST_MUX		0x101
++#define SOC_CONTROL_TYPE_HDA_SST_MIX		0x101
++#define SOC_CONTROL_TYPE_HDA_SST_BYTE		0x103
++
++#define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
++#define MAX_IN_QUEUE 8
++#define MAX_OUT_QUEUE 8
++
++/* Event types goes here */
++/* Reserve event type 0 for no event handlers */
++enum skl_event_types {
++	SKL_EVENT_NONE = 0,
++	SKL_MIXER_EVENT,
++	SKL_MUX_EVENT,
++	SKL_VMIXER_EVENT,
++	SKL_PGA_EVENT
++};
++
+ /**
+  * enum skl_ch_cfg - channel configuration
+  *
+@@ -85,4 +108,61 @@ enum skl_dev_type {
+ 	SKL_DEVICE_HDALINK = 0x4,
+ 	SKL_DEVICE_NONE
+ };
++
++struct skl_dfw_module_pin {
++	u16 module_id;
++	u16 instance_id;
++	u8 pin_id;
++	bool is_dynamic;
++} __packed;
++
++struct skl_dfw_module_fmt {
++	u32 channels;
++	u32 freq;
++	u32 bit_depth;
++	u32 valid_bit_depth;
++	u32 ch_cfg;
++} __packed;
++
++struct skl_dfw_module_caps {
++	u32 caps_size;
++	u32 caps[HDA_SST_CFG_MAX];
++};
++
++struct skl_dfw_pipe {
++	u8 pipe_id;
++	u8 pipe_priority;
++	u16 conn_type;
++	u32 memory_pages;
++} __packed;
++
++struct skl_dfw_module {
++	u16 module_id;
++	u16 instance_id;
++	u32 max_mcps;
++	u8 core_id;
++	u8 max_in_queue;
++	u8 max_out_queue;
++	u8 is_loadable;
++	u8 conn_type;
++	u8 dev_type;
++	u8 hw_conn_type;
++	u8 time_slot;
++	u32 obs;
++	u32 ibs;
++	u32 params_fixup;
++	u32 converter;
++	u32 module_type;
++	u32 vbus_id;
++	struct skl_dfw_pipe pipe;
++	struct skl_dfw_module_fmt in_fmt;
++	struct skl_dfw_module_fmt out_fmt;
++	struct skl_dfw_module_caps caps;
++} __packed;
++
++struct skl_dfw_algo_data {
++	u32 max;
++	char *params;
++} __packed;
++
+ #endif
 -- 
 1.9.1
