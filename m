@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Remove the repeated
-	definitions" to the asoc tree
+Subject: Applied "ASoC: rt5645: Increase the delay time to
+	remove the pop sound" to the asoc tree
 Date: Wed, 23 Sep 2015 11:00:53 -0700
-Message-ID: <E1ZeoLd-0005Sr-OS@finisterre>
-References: <1442990130-15801-1-git-send-email-oder_chiou@realtek.com>
+Message-ID: <E1ZeoLd-0005Rx-3K@finisterre>
+References: <1442990130-15801-3-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A086D26047C
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 20:01:23 +0200 (CEST)
-In-Reply-To: <1442990130-15801-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 68AC6265158
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 20:01:33 +0200 (CEST)
+In-Reply-To: <1442990130-15801-3-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Remove the repeated definitions
+   ASoC: rt5645: Increase the delay time to remove the pop sound
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,29 @@ to this mail.
 Thanks,
 Mark
 
->From de3f8fdf7393e4259b68ae8cea806c39d602769e Mon Sep 17 00:00:00 2001
+>From 4f4794124e0421b080a0f1f5f1207636ba55eb85 Mon Sep 17 00:00:00 2001
 From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 23 Sep 2015 14:35:27 +0800
-Subject: [PATCH] ASoC: rt5645: Remove the repeated definitions
+Date: Wed, 23 Sep 2015 14:35:29 +0800
+Subject: [PATCH] ASoC: rt5645: Increase the delay time to remove the pop sound
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.h | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 90325d9..f45861c 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -777,8 +777,6 @@
- #define RT5645_PWR_CLS_D_R_BIT			9
- #define RT5645_PWR_CLS_D_L			(0x1 << 8)
- #define RT5645_PWR_CLS_D_L_BIT			8
--#define RT5645_PWR_ADC_R			(0x1 << 1)
--#define RT5645_PWR_ADC_R_BIT			1
- #define RT5645_PWR_DAC_L2			(0x1 << 7)
- #define RT5645_PWR_DAC_L2_BIT			7
- #define RT5645_PWR_DAC_R2			(0x1 << 6)
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 25c34fb..61384ee9 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1381,7 +1381,7 @@ static void hp_amp_power(struct snd_soc_codec *codec, int on)
+ 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
+ 					RT5645_MAMP_INT_REG2, 0xfc00);
+ 				snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
+-				mdelay(5);
++				msleep(40);
+ 				rt5645->hp_on = true;
+ 			} else {
+ 				/* depop parameters */
 -- 
 2.5.0
