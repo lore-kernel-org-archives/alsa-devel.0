@@ -1,16 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V2 2/7] BAT: Add common definitions and
-	functions
-Date: Wed, 23 Sep 2015 15:48:50 +0800
-Message-ID: <45f232d5170199a9ee31b39e47f173100927422b.1442993440.git.han.lu@intel.com>
+Subject: [PATCH V2 3/7] BAT: Add playback and record functions
+Date: Wed, 23 Sep 2015 15:48:51 +0800
+Message-ID: <00cc4402f76a0e6af0fa384422054cafc810a5e3.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A510426518B
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 910B42651CF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:16 +0200 (CEST)
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
@@ -29,19 +28,19 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add common definitions of macros and data structures; Add functions
-that used by multiple components, such as wav file reading and writing.
+Add functions as main loop of playback thread and record thread.
+The functions access pcm hardware through ALSA APIs.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@intel.com>
 Signed-off-by: Bernard Gautier <bernard.gautier@intel.com>
 
-diff --git a/bat/common.c b/bat/common.c
+diff --git a/bat/alsa.c b/bat/alsa.c
 new file mode 100644
-index 0000000..798b00b
+index 0000000..582c604
 --- /dev/null
-+++ b/bat/common.c
-@@ -0,0 +1,198 @@
++++ b/bat/alsa.c
+@@ -0,0 +1,594 @@
 +/*
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
@@ -58,194 +57,590 @@ index 0000000..798b00b
 + */
 +
 +#include <stdio.h>
-+#include <stddef.h>
-+#include <stdlib.h>
++#include <string.h>
 +#include <stdbool.h>
-+#include <errno.h>
++#include <math.h>
++#include <stdint.h>
++#include <pthread.h>
++
++#include <alsa/asoundlib.h>
 +
 +#include "aconfig.h"
 +#include "gettext.h"
 +
 +#include "common.h"
 +#include "alsa.h"
++#include "signal.h"
 +
-+int retval_play;
-+int retval_record;
++struct pcm_container {
++	snd_pcm_t *handle;
++	snd_pcm_uframes_t period_size;
++	snd_pcm_uframes_t buffer_size;
++	snd_pcm_format_t format;
++	unsigned short channels;
++	size_t period_bytes;
++	size_t sample_bits;
++	size_t frame_bits;
++	char *buffer;
++};
 +
-+/* update chunk_fmt data to bat */
-+static int update_fmt_to_bat(struct bat *bat, struct chunk_fmt *fmt)
++static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
 +{
-+	bat->channels = fmt->channels;
-+	bat->rate = fmt->sample_rate;
-+	bat->sample_size = fmt->sample_length / 8;
-+	if (bat->sample_size > 4) {
-+		fprintf(bat->err, _("Invalid format: sample size=%d\n"),
-+				bat->sample_size);
++	snd_pcm_hw_params_t *params;
++	unsigned int buffer_time = 0;
++	unsigned int period_time = 0;
++	unsigned int rate;
++	int err;
++	const char *device_name = snd_pcm_name(sndpcm->handle);
++
++	/* Allocate a hardware parameters object. */
++	snd_pcm_hw_params_alloca(&params);
++
++	/* Fill it in with default values. */
++	err = snd_pcm_hw_params_any(sndpcm->handle, params);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("default params: %s: %s(%d)\n"),
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	/* Set access mode */
++	err = snd_pcm_hw_params_set_access(sndpcm->handle, params,
++			SND_PCM_ACCESS_RW_INTERLEAVED);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("access type: %s: %s(%d)\n"),
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	/* Set format */
++	err = snd_pcm_hw_params_set_format(sndpcm->handle, params, bat->format);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("PCM format: %d %s: %s(%d)\n"),
++				bat->format,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	/* Set channels */
++	err = snd_pcm_hw_params_set_channels(sndpcm->handle,
++			params, bat->channels);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("channel number: %d %s: %s(%d)\n"),
++				bat->channels,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	/* Set sampling rate */
++	rate = bat->rate;
++	err = snd_pcm_hw_params_set_rate_near(sndpcm->handle,
++			params, &bat->rate,
++			0);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("sample rate: %d %s: %s(%d)\n"),
++				bat->rate,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++	if ((float) rate * (1 + RATE_RANGE) < bat->rate
++			|| (float) rate * (1 - RATE_RANGE) > bat->rate) {
++		fprintf(bat->err, _("Invalid parameters: sample rate: "));
++		fprintf(bat->err, _("requested %dHz, got %dHz\n"),
++				rate, bat->rate);
 +		return -EINVAL;
 +	}
-+	bat->frame_size = fmt->blocks_align;
 +
-+	return 0;
-+}
-+
-+/* calculate frames and update to bat */
-+static int update_frames_to_bat(struct bat *bat,
-+		struct wav_chunk_header *header, FILE *fp)
-+{
-+	/* The number of analyzed captured frames is arbitrarily set to half of
-+	   the number of frames of the wav file or the number of frames of the
-+	   wav file when doing direct analysis (--local) */
-+	bat->frames = header->length / bat->frame_size;
-+	if (!bat->local)
-+		bat->frames /= 2;
-+
-+	return 0;
-+}
-+
-+static int read_chunk_fmt(struct bat *bat, char *file, FILE *fp, bool skip,
-+		struct wav_chunk_header *header)
-+{
-+	size_t err;
-+	int header_skip;
-+	struct chunk_fmt chunk_fmt;
-+
-+	err = fread(&chunk_fmt, sizeof(chunk_fmt), 1, fp);
-+	if (err != 1) {
-+		fprintf(bat->err, _("Read chunk fmt error: %s:%zd\n"),
-+				file, err);
-+		return -EIO;
++	if (snd_pcm_hw_params_get_buffer_time_max(params,
++			&buffer_time, 0) < 0) {
++		fprintf(bat->err, _("Get parameter from device error: "));
++		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
++				buffer_time,
++				device_name, snd_strerror(err), err);
++		return -EINVAL;
 +	}
-+	/* If the format header is larger, skip the rest */
-+	header_skip = header->length - sizeof(chunk_fmt);
-+	if (header_skip > 0) {
-+		err = fseek(fp, header_skip, SEEK_CUR);
-+		if (err == -1) {
-+			fprintf(bat->err, _("Seek fmt header error: %s:%zd\n"),
-+					file, err);
-+			return -EINVAL;
++
++	if (buffer_time > MAX_BUFFERTIME)
++		buffer_time = MAX_BUFFERTIME;
++
++	period_time = buffer_time / DIV_BUFFERTIME;
++
++	/* Set buffer time and period time */
++	err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle, params,
++			&buffer_time, 0);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
++				buffer_time,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle, params,
++			&period_time, 0);
++	if (err < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
++				period_time,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	/* Write the parameters to the driver */
++	if (snd_pcm_hw_params(sndpcm->handle, params) < 0) {
++		fprintf(bat->err, _("Set parameter to device error: "));
++		fprintf(bat->err, _("hw params: %s: %s(%d)\n"),
++				device_name, snd_strerror(err), err);
++		return -EINVAL;
++	}
++
++	err = snd_pcm_hw_params_get_period_size(params,
++			&sndpcm->period_size, 0);
++	if (err < 0) {
++		fprintf(bat->err, _("Get parameter from device error: "));
++		fprintf(bat->err, _("period size: %zd %s: %s(%d)\n"),
++				sndpcm->period_size,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	err = snd_pcm_hw_params_get_buffer_size(params, &sndpcm->buffer_size);
++	if (err < 0) {
++		fprintf(bat->err, _("Get parameter from device error: "));
++		fprintf(bat->err, _("buffer size: %zd %s: %s(%d)\n"),
++				sndpcm->buffer_size,
++				device_name, snd_strerror(err), err);
++		return err;
++	}
++
++	if (sndpcm->period_size == sndpcm->buffer_size) {
++		fprintf(bat->err, _("Invalid parameters: can't use period "));
++		fprintf(bat->err, _("equal to buffer size (%zd)\n"),
++				sndpcm->period_size);
++		return -EINVAL;
++	}
++
++	err = snd_pcm_format_physical_width(bat->format);
++	if (err < 0) {
++		fprintf(bat->err, _("Invalid parameters: "));
++		fprintf(bat->err, _("snd_pcm_format_physical_width: %d\n"),
++				err);
++		return err;
++	}
++	sndpcm->sample_bits = err;
++
++	sndpcm->frame_bits = sndpcm->sample_bits * bat->channels;
++
++	/* Calculate the period bytes */
++	sndpcm->period_bytes = sndpcm->period_size * sndpcm->frame_bits / 8;
++	sndpcm->buffer = (char *) malloc(sndpcm->period_bytes);
++	if (sndpcm->buffer == NULL) {
++		fprintf(bat->err, _("Not enough memory: size=%zd\n"),
++				sndpcm->period_bytes);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++/*
++ * Generate buffer to be played either from input file or from generated data
++ * Return value
++ * <0 error
++ * 0 ok
++ * >0 break
++ */
++static int generate_input_data(struct pcm_container *sndpcm, int bytes,
++		struct bat *bat)
++{
++	int err;
++	static int load;
++	int frames = bytes * 8 / sndpcm->frame_bits;
++
++	if (bat->playback.file != NULL) {
++		/* From input file */
++		load = 0;
++
++		while (1) {
++			err = fread(sndpcm->buffer + load, 1,
++					bytes - load, bat->fp);
++			if (0 == err) {
++				if (feof(bat->fp)) {
++					fprintf(bat->log,
++							_("End of playing.\n"));
++					return 1;
++				}
++			} else if (err < bytes - load) {
++				if (ferror(bat->fp)) {
++					fprintf(bat->err, _("Read file error"));
++					fprintf(bat->err, _(": %d\n"), err);
++					return -EIO;
++				}
++				load += err;
++			} else {
++				break;
++			}
++		}
++	} else {
++		/* Generate sine wave */
++		if ((bat->sinus_duration) && (load > bat->sinus_duration))
++			return 1;
++
++		err = generate_sine_wave(bat, frames, (void *)sndpcm->buffer);
++		if (err != 0)
++			return err;
++
++		load += frames;
++	}
++
++	return 0;
++}
++
++static int write_to_pcm(const struct pcm_container *sndpcm,
++		int frames, struct bat *bat)
++{
++	int err;
++	int offset = 0;
++	int remain = frames;
++
++	while (remain > 0) {
++		err = snd_pcm_writei(sndpcm->handle, sndpcm->buffer + offset,
++				remain);
++		if (err == -EAGAIN || (err >= 0 && err < frames)) {
++			snd_pcm_wait(sndpcm->handle, 500);
++		} else if (err == -EPIPE) {
++			fprintf(bat->err, _("Underrun: %s(%d)\n"),
++					snd_strerror(err), err);
++			snd_pcm_prepare(sndpcm->handle);
++		} else if (err < 0) {
++			fprintf(bat->err, _("Write PCM device error: %s(%d)\n"),
++					snd_strerror(err), err);
++			return err;
++		}
++
++		if (err > 0) {
++			remain -= err;
++			offset += err * sndpcm->frame_bits / 8;
 +		}
 +	}
-+	/* If the file is opened for playback, update BAT data;
-+	   If the file is opened for analysis, no update */
-+	if (skip == false) {
-+		err = update_fmt_to_bat(bat, &chunk_fmt);
++
++	return 0;
++}
++
++static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
++{
++	int err;
++	int bytes = sndpcm->period_bytes; /* playback buffer size */
++	int frames = bytes * 8 / sndpcm->frame_bits; /* frame count */
++	FILE *fp = NULL;
++	struct wav_container wav;
++	int bytes_total = 0;
++
++	if (bat->debugplay) {
++		fp = fopen(bat->debugplay, "wb");
++		if (fp == NULL) {
++			fprintf(bat->err, _("Cannot open file for capture: "));
++			fprintf(bat->err, _("%s %d\n"), bat->debugplay, -errno);
++			return -errno;
++		}
++		/* leave space for wav header */
++		err = fseek(fp, sizeof(wav), SEEK_SET);
++		if (err != 0) {
++			fprintf(bat->err, _("Seek file error: %d %d\n"),
++					err, -errno);
++			return -errno;
++		}
++	}
++
++	while (1) {
++		err = generate_input_data(sndpcm, bytes, bat);
++		if (err < 0)
++			return err;
++		else if (err > 0)
++			break;
++
++		if (bat->debugplay) {
++			err = fwrite(sndpcm->buffer, 1, bytes, fp);
++			if (err != bytes) {
++				fprintf(bat->err, _("Write file error: "));
++				fprintf(bat->err, _("%s(%d)\n"),
++						snd_strerror(err), err);
++				return -EIO;
++			}
++			bytes_total += bytes;
++		}
++
++		bat->periods_played++;
++		if (bat->period_is_limited
++				&& bat->periods_played >= bat->periods_total)
++			break;
++
++		err = write_to_pcm(sndpcm, frames, bat);
 +		if (err != 0)
 +			return err;
 +	}
 +
-+	return 0;
-+}
++	if (bat->debugplay) {
++		/* update wav header */
++		prepare_wav_info(&wav, bat);
++		wav.chunk.length = bytes_total;
++		wav.header.length = (wav.chunk.length) + sizeof(wav.chunk)
++			+ sizeof(wav.format) + sizeof(wav.header) - 8;
 +
-+int read_wav_header(struct bat *bat, char *file, FILE *fp, bool skip)
-+{
-+	struct wav_header riff_wave_header;
-+	struct wav_chunk_header chunk_header;
-+	int more_chunks = 1;
-+	size_t err;
-+
-+	/* Read header of RIFF wav file */
-+	err = fread(&riff_wave_header, sizeof(riff_wave_header), 1, fp);
-+	if (err != 1) {
-+		fprintf(bat->err, _("Read header error: %s:%zd\n"), file, err);
-+		return -EIO;
-+	}
-+	if ((riff_wave_header.magic != WAV_RIFF)
-+			|| (riff_wave_header.type != WAV_WAVE)) {
-+		fprintf(bat->err, _("%s is not a riff/wave file\n"), file);
-+		return -EINVAL;
++		rewind(fp);
++		err = write_wav_header(fp, &wav, bat);
++		if (err != 0) {
++			fprintf(bat->err, _("Write file error: %s %s(%d)\n"),
++					bat->debugplay, snd_strerror(err), err);
++			return err;
++		}
++		fclose(fp);
 +	}
 +
-+	/* Read chunks in RIFF wav file */
-+	do {
-+		err = fread(&chunk_header, sizeof(chunk_header), 1, fp);
-+		if (err != 1) {
-+			fprintf(bat->err, _("Read chunk header error: "));
-+			fprintf(bat->err, _("%s:%zd\n"), file, err);
-+			return -EIO;
-+		}
-+
-+		switch (chunk_header.type) {
-+		case WAV_FMT:
-+			/* WAV_FMT chunk, read and analyze */
-+			err = read_chunk_fmt(bat, file, fp, skip,
-+					&chunk_header);
-+			if (err != 0)
-+				return err;
-+			break;
-+		case WAV_DATA:
-+			/* WAV_DATA chunk, break looping */
-+			/* If the file is opened for playback, update BAT data;
-+			   If the file is opened for analysis, no update */
-+			if (skip == false) {
-+				err = update_frames_to_bat(bat, &chunk_header,
-+						fp);
-+				if (err != 0)
-+					return err;
-+			}
-+			/* Stop looking for chunks */
-+			more_chunks = 0;
-+			break;
-+		default:
-+			/* Unknown chunk, skip bytes */
-+			err = fseek(fp, chunk_header.length, SEEK_CUR);
-+			if (err == -1) {
-+				fprintf(bat->err, _("Fail to skip unknown"));
-+				fprintf(bat->err, _(" chunk of %s:%zd\n"),
-+						file, err);
-+				return -EINVAL;
-+			}
-+		}
-+	} while (more_chunks);
++	snd_pcm_drain(sndpcm->handle);
 +
 +	return 0;
 +}
 +
-+void prepare_wav_info(struct wav_container *wav, struct bat *bat)
-+{
-+	wav->header.magic = WAV_RIFF;
-+	wav->header.type = WAV_WAVE;
-+	wav->format.magic = WAV_FMT;
-+	wav->format.fmt_size = 16;
-+	wav->format.format = WAV_FORMAT_PCM;
-+	wav->format.channels = bat->channels;
-+	wav->format.sample_rate = bat->rate;
-+	wav->format.sample_length = bat->sample_size * 8;
-+	wav->format.blocks_align = bat->channels * bat->sample_size;
-+	wav->format.bytes_p_second = wav->format.blocks_align * bat->rate;
-+	wav->chunk.length = bat->frames * bat->frame_size;
-+	wav->chunk.type = WAV_DATA;
-+	wav->header.length = (wav->chunk.length) + sizeof(wav->chunk)
-+			+ sizeof(wav->format) + sizeof(wav->header) - 8;
-+}
-+
-+int write_wav_header(FILE *fp, struct wav_container *wav, struct bat *bat)
++/**
++ * Play
++ */
++void *playback_alsa(struct bat *bat)
 +{
 +	int err = 0;
++	struct pcm_container sndpcm;
 +
-+	err = fwrite(&wav->header, 1, sizeof(wav->header), fp);
-+	if (err != sizeof(wav->header)) {
-+		fprintf(bat->err, _("Write file error: header %d\n"), err);
-+		return -EIO;
++	fprintf(bat->log, _("Entering playback thread (ALSA).\n"));
++
++	retval_play = 0;
++	memset(&sndpcm, 0, sizeof(sndpcm));
++
++	if (bat->playback.device == NULL) {
++		fprintf(bat->err, _("No PCM device for playback: exit\n"));
++		retval_play = 1;
++		goto exit1;
 +	}
-+	err = fwrite(&wav->format, 1, sizeof(wav->format), fp);
-+	if (err != sizeof(wav->format)) {
-+		fprintf(bat->err, _("Write file error: format %d\n"), err);
-+		return -EIO;
++
++	err = snd_pcm_open(&sndpcm.handle, bat->playback.device,
++			SND_PCM_STREAM_PLAYBACK, 0);
++	if (err != 0) {
++		fprintf(bat->err, _("Cannot open PCM playback device: "));
++		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
++		retval_play = 1;
++		goto exit1;
 +	}
-+	err = fwrite(&wav->chunk, 1, sizeof(wav->chunk), fp);
-+	if (err != sizeof(wav->chunk)) {
-+		fprintf(bat->err, _("Write file error: chunk %d\n"), err);
-+		return -EIO;
++
++	err = set_snd_pcm_params(bat, &sndpcm);
++	if (err != 0) {
++		retval_play = 1;
++		goto exit2;
++	}
++
++	if (bat->playback.file == NULL) {
++		fprintf(bat->log, _("Playing generated audio sine wave"));
++		bat->sinus_duration == 0 ?
++			fprintf(bat->log, _(" endlessly\n")) :
++			fprintf(bat->log, _("\n"));
++	} else {
++		fprintf(bat->log, _("Playing input audio file: %s\n"),
++				bat->playback.file);
++		bat->fp = fopen(bat->playback.file, "rb");
++		if (bat->fp == NULL) {
++			fprintf(bat->err, _("Cannot open file for capture: "));
++			fprintf(bat->err, _("%s %d\n"),
++					bat->playback.file, -errno);
++			retval_play = 1;
++			goto exit3;
++		}
++		/* Skip header */
++		err = read_wav_header(bat, bat->playback.file, bat->fp, true);
++		if (err != 0) {
++			retval_play = 1;
++			goto exit4;
++		}
++	}
++
++	err = write_to_pcm_loop(&sndpcm, bat);
++	if (err != 0) {
++		retval_play = 1;
++		goto exit4;
++	}
++
++exit4:
++	if (bat->playback.file)
++		fclose(bat->fp);
++exit3:
++	free(sndpcm.buffer);
++exit2:
++	snd_pcm_close(sndpcm.handle);
++exit1:
++	pthread_exit(&retval_play);
++}
++
++static int read_from_pcm(struct pcm_container *sndpcm,
++		int frames, struct bat *bat)
++{
++	int err = 0;
++	int offset = 0;
++	int remain = frames;
++
++	while (remain > 0) {
++		err = snd_pcm_readi(sndpcm->handle,
++				sndpcm->buffer + offset, remain);
++		if (err == -EAGAIN || (err >= 0 && err < remain)) {
++			snd_pcm_wait(sndpcm->handle, 500);
++		} else if (err == -EPIPE) {
++			snd_pcm_prepare(sndpcm->handle);
++			fprintf(bat->err, _("Overrun: %s(%d)\n"),
++					snd_strerror(err), err);
++		} else if (err < 0) {
++			fprintf(bat->err, _("Read PCM device error: %s(%d)\n"),
++					snd_strerror(err), err);
++			return err;
++		}
++
++		if (err > 0) {
++			remain -= err;
++			offset += err * sndpcm->frame_bits / 8;
++		}
 +	}
 +
 +	return 0;
 +}
-diff --git a/bat/common.h b/bat/common.h
++
++static int read_from_pcm_loop(FILE *fp, int count,
++		struct pcm_container *sndpcm, struct bat *bat)
++{
++	int err = 0;
++	int size, frames;
++	int remain = count;
++
++	while (remain > 0) {
++		size = (remain <= sndpcm->period_bytes) ?
++			remain : sndpcm->period_bytes;
++		frames = size * 8 / sndpcm->frame_bits;
++
++		/* read a chunk from pcm device */
++		err = read_from_pcm(sndpcm, frames, bat);
++		if (err != 0)
++			return err;
++
++		/* write the chunk to file */
++		err = fwrite(sndpcm->buffer, 1, size, fp);
++		if (err != size) {
++			fprintf(bat->err, _("Write file error: %s(%d)\n"),
++					snd_strerror(err), err);
++			return -EIO;
++		}
++		remain -= size;
++		bat->periods_played++;
++
++		if (bat->period_is_limited
++				&& bat->periods_played >= bat->periods_total)
++			break;
++	}
++
++	return 0;
++}
++
++/**
++ * Record
++ */
++void *record_alsa(struct bat *bat)
++{
++	int err = 0;
++	FILE *fp = NULL;
++	struct pcm_container sndpcm;
++	struct wav_container wav;
++	int count;
++
++	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
++
++	fprintf(bat->log, _("Entering capture thread (ALSA).\n"));
++
++	retval_record = 0;
++	memset(&sndpcm, 0, sizeof(sndpcm));
++
++	if (bat->capture.device == NULL) {
++		fprintf(bat->err, _("No PCM device for capture: exit\n"));
++		retval_record = 1;
++		goto exit1;
++	}
++
++	err = snd_pcm_open(&sndpcm.handle, bat->capture.device,
++			SND_PCM_STREAM_CAPTURE, 0);
++	if (err != 0) {
++		fprintf(bat->err, _("Cannot open PCM capture device: "));
++		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
++		retval_record = 1;
++		goto exit1;
++	}
++
++	err = set_snd_pcm_params(bat, &sndpcm);
++	if (err != 0) {
++		retval_record = 1;
++		goto exit2;
++	}
++
++	remove(bat->capture.file);
++	fp = fopen(bat->capture.file, "w+");
++	if (fp == NULL) {
++		fprintf(bat->err, _("Cannot open file for capture: %s %d\n"),
++				bat->capture.file, -errno);
++		retval_record = 1;
++		goto exit3;
++	}
++
++	prepare_wav_info(&wav, bat);
++
++	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
++	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
++	pthread_cleanup_push(snd_pcm_close, sndpcm.handle);
++	pthread_cleanup_push(free, sndpcm.buffer);
++	pthread_cleanup_push(fclose, fp);
++
++	err = write_wav_header(fp, &wav, bat);
++	if (err != 0) {
++		retval_record = 1;
++		goto exit4;
++	}
++
++	count = wav.chunk.length;
++	fprintf(bat->log, _("Recording ...\n"));
++	err = read_from_pcm_loop(fp, count, &sndpcm, bat);
++	if (err != 0) {
++		retval_record = 1;
++		goto exit4;
++	}
++
++	/* Normally we will never reach this part of code (before fail_exit) as
++	   this thread will be cancelled by end of play thread. */
++	pthread_cleanup_pop(0);
++	pthread_cleanup_pop(0);
++	pthread_cleanup_pop(0);
++
++	snd_pcm_drain(sndpcm.handle);
++
++exit4:
++	fclose(fp);
++exit3:
++	free(sndpcm.buffer);
++exit2:
++	snd_pcm_close(sndpcm.handle);
++exit1:
++	pthread_exit(&retval_record);
++}
+diff --git a/bat/alsa.h b/bat/alsa.h
 new file mode 100644
-index 0000000..e6ff7f1
+index 0000000..d5c9972
 --- /dev/null
-+++ b/bat/common.h
-@@ -0,0 +1,176 @@
++++ b/bat/alsa.h
+@@ -0,0 +1,20 @@
 +/*
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
@@ -261,166 +656,10 @@ index 0000000..e6ff7f1
 + *
 + */
 +
-+#include <alsa/asoundlib.h>
++extern int retval_play;
++extern int retval_record;
 +
-+#define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav"
-+
-+#define OPT_BASE			300
-+#define OPT_LOG				(OPT_BASE + 1)
-+#define OPT_READFILE			(OPT_BASE + 2)
-+#define OPT_SAVEPLAY			(OPT_BASE + 3)
-+#define OPT_LOCAL			(OPT_BASE + 4)
-+
-+#define COMPOSE(a, b, c, d)		((a) | ((b)<<8) | ((c)<<16) | ((d)<<24))
-+#define WAV_RIFF			COMPOSE('R', 'I', 'F', 'F')
-+#define WAV_WAVE			COMPOSE('W', 'A', 'V', 'E')
-+#define WAV_FMT				COMPOSE('f', 'm', 't', ' ')
-+#define WAV_DATA			COMPOSE('d', 'a', 't', 'a')
-+#define WAV_FORMAT_PCM			1	/* PCM WAVE file encoding */
-+
-+#define MAX_CHANNELS			2
-+#define MIN_CHANNELS			1
-+#define MAX_PEAKS			10
-+#define MAX_FRAMES			(10 * 1024 * 1024)
-+/* Given in ms */
-+#define CAPTURE_DELAY			500
-+/* signal frequency should be less than samplerate * RATE_FACTOR */
-+#define RATE_FACTOR			0.4
-+/* valid range of samplerate: (1 - RATE_RANGE, 1 + RATE_RANGE) * samplerate */
-+#define RATE_RANGE			0.05
-+/* Given in us */
-+#define MAX_BUFFERTIME			500000
-+/* devide factor, was 4, changed to 8 to remove reduce capture overrun */
-+#define DIV_BUFFERTIME			8
-+/* margin to avoid sign inversion when generate sine wav */
-+#define RANGE_FACTOR			0.95
-+
-+#define EBATBASE			1000
-+#define ENOPEAK				(EBATBASE + 1)
-+#define EONLYDC				(EBATBASE + 2)
-+#define EBADPEAK			(EBATBASE + 3)
-+
-+#define DC_THRESHOLD			7.01
-+
-+/* tolerance of detected peak = max (DELTA_HZ, DELTA_RATE * target_freq).
-+ * If DELTA_RATE is too high, BAT may not be able to recognize negative result;
-+ * if too low, BAT may be too sensitive and results in uncecessary failure. */
-+#define DELTA_RATE			0.005
-+#define DELTA_HZ			1
-+
-+#define FOUND_DC			(1<<1)
-+#define FOUND_WRONG_PEAK		(1<<0)
-+
-+struct wav_header {
-+	unsigned int magic; /* 'RIFF' */
-+	unsigned int length; /* file len */
-+	unsigned int type; /* 'WAVE' */
-+};
-+
-+struct wav_chunk_header {
-+	unsigned int type; /* 'data' */
-+	unsigned int length; /* sample count */
-+};
-+
-+struct wav_fmt {
-+	unsigned int magic; /* 'FMT '*/
-+	unsigned int fmt_size; /* 16 or 18 */
-+	unsigned short format; /* see WAV_FMT_* */
-+	unsigned short channels;
-+	unsigned int sample_rate; /* Frequency of sample */
-+	unsigned int bytes_p_second;
-+	unsigned short blocks_align; /* sample size; 1 or 2 bytes */
-+	unsigned short sample_length; /* 8, 12 or 16 bit */
-+};
-+
-+struct chunk_fmt {
-+	unsigned short format; /* see WAV_FMT_* */
-+	unsigned short channels;
-+	unsigned int sample_rate; /* Frequency of sample */
-+	unsigned int bytes_p_second;
-+	unsigned short blocks_align; /* sample size; 1 or 2 bytes */
-+	unsigned short sample_length; /* 8, 12 or 16 bit */
-+};
-+
-+struct wav_container {
-+	struct wav_header header;
-+	struct wav_fmt format;
-+	struct wav_chunk_header chunk;
-+};
-+
-+struct bat;
-+
-+enum _bat_op_mode {
-+	MODE_UNKNOWN = -1,
-+	MODE_SINGLE = 0,
-+	MODE_LOOPBACK,
-+	MODE_LAST
-+};
-+
-+struct pcm {
-+	char *device;
-+	char *file;
-+	enum _bat_op_mode mode;
-+	void *(*fct)(struct bat *);
-+};
-+
-+struct sin_generator;
-+
-+struct sin_generator {
-+	double state_real;
-+	double state_imag;
-+	double phasor_real;
-+	double phasor_imag;
-+	float frequency;
-+	float sample_rate;
-+	float magnitude;
-+};
-+
-+struct bat {
-+	unsigned int rate;		/* sampling rate */
-+	int channels;			/* nb of channels */
-+	int frames;			/* nb of frames */
-+	int frame_size;			/* size of frame */
-+	int sample_size;		/* size of sample */
-+	snd_pcm_format_t format;	/* PCM format */
-+
-+	float sigma_k;			/* threshold for peak detection */
-+	float target_freq[MAX_CHANNELS];
-+
-+	int sinus_duration;		/* number of frames for playback */
-+	char *narg;			/* argument string of duration */
-+	char *logarg;			/* path name of log file */
-+	char *debugplay;		/* path name to store playback signal */
-+
-+	struct pcm playback;
-+	struct pcm capture;
-+
-+	unsigned int periods_played;
-+	unsigned int periods_total;
-+	bool period_is_limited;
-+
-+	FILE *fp;
-+
-+	FILE *log;
-+	FILE *err;
-+
-+	void (*convert_sample_to_double)(void *, double *, int);
-+	void (*convert_float_to_sample)(float *, void *, int, int);
-+
-+	void *buf;			/* PCM Buffer */
-+
-+	bool local;			/* true for internal test */
-+};
-+
-+struct analyze {
-+	void *buf;
-+	double *in;
-+	double *out;
-+	double *mag;
-+};
-+
-+void prepare_wav_info(struct wav_container *, struct bat *);
-+int read_wav_header(struct bat *, char *, FILE *, bool);
-+int write_wav_header(FILE *, struct wav_container *, struct bat *);
++void *playback_alsa(struct bat *);
++void *record_alsa(struct bat *);
 -- 
 1.9.1
