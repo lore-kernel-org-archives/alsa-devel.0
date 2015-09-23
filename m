@@ -1,47 +1,56 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH] sound: oss: ad1848: Fix returned errno code in
- ad1848_init()
-Date: Wed, 23 Sep 2015 11:56:58 +0530
-Message-ID: <20150923062658.GE4010@sudip-pc>
-References: <1442936257-8988-1-git-send-email-luisbg@osg.samsung.com>
- <20150922164642.GA14353@sudip-pc>
- <5601A7D1.3010008@osg.samsung.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 2/4] ASoC: rt5645: Use the type
+	SOC_DAPM_SINGLE_AUTODISABLE to prevent the weird sound in
+	runtime of power up
+Date: Wed, 23 Sep 2015 14:35:28 +0800
+Message-ID: <1442990130-15801-2-git-send-email-oder_chiou@realtek.com>
+References: <1442990130-15801-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5601A7D1.3010008@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luis de Bethencourt <luisbg@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4727B2604A3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 08:35:41 +0200 (CEST)
+In-Reply-To: <1442990130-15801-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: sy0704.lee@samsung.com, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 22, 2015 at 08:11:13PM +0100, Luis de Bethencourt wrote:
-> On 22/09/15 17:46, Sudip Mukherjee wrote:
-> > On Tue, Sep 22, 2015 at 04:37:37PM +0100, Luis de Bethencourt wrote:
-> 
-<snip>
-> Hi Sudip,
-> 
-> True! I missed that.
-> 
-> This change will mean the block for 'if (hw_config->slots[0] != -1)' will
-> run and it shouldn't.
-> 
-> In ad1848.c:1998 sound_install_audiodrv() can return -ENOMEM as well, but this
-> is turned into -1 also. All errno codes are ignored in sound/oss/pss.c, not
-> worth it.
-> 
-> I'm withdrawing my patch. Sorry for this.
-> 
-> Is there any other way to silence the smatch warning?
-Yes, ad1848_init() is only called from 3 places and everytime the return
-is stored in hw_config->slots[0]. So change in all these 3 places and
-then slots[0] is being checked in sound_unload_audiodev() and also in
-sound/oss/pss.c, so you need to modify those checks also.
-But these are all just from a quick grep, if you really want to change
-then you need to see the driver carefully for other places that i might
-have missed.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-regards
-sudip
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index b0d96b6..0249abc 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -732,14 +732,14 @@ static const struct snd_kcontrol_new rt5645_mono_adc_r_mix[] = {
+ static const struct snd_kcontrol_new rt5645_dac_l_mix[] = {
+ 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5645_AD_DA_MIXER,
+ 			RT5645_M_ADCMIX_L_SFT, 1, 1),
+-	SOC_DAPM_SINGLE("DAC1 Switch", RT5645_AD_DA_MIXER,
++	SOC_DAPM_SINGLE_AUTODISABLE("DAC1 Switch", RT5645_AD_DA_MIXER,
+ 			RT5645_M_DAC1_L_SFT, 1, 1),
+ };
+ 
+ static const struct snd_kcontrol_new rt5645_dac_r_mix[] = {
+ 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5645_AD_DA_MIXER,
+ 			RT5645_M_ADCMIX_R_SFT, 1, 1),
+-	SOC_DAPM_SINGLE("DAC1 Switch", RT5645_AD_DA_MIXER,
++	SOC_DAPM_SINGLE_AUTODISABLE("DAC1 Switch", RT5645_AD_DA_MIXER,
+ 			RT5645_M_DAC1_R_SFT, 1, 1),
+ };
+ 
+-- 
+1.8.1.1.439.g50a6b54
