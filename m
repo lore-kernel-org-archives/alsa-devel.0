@@ -1,74 +1,78 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] topology: Add API to set a vendor
-	specific	version number
-Date: Wed, 23 Sep 2015 16:13:26 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8496790BE@SHSMSX101.ccr.corp.intel.com>
-References: <1442394433-31417-1-git-send-email-mengdong.lin@intel.com>
- <s5hio718qt2.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mediatek: Increase periods_min in capture
+Date: Wed, 23 Sep 2015 09:12:53 -0700
+Message-ID: <20150923161253.GN30445@sirena.org.uk>
+References: <1442213477-63721-1-git-send-email-koro.chen@mediatek.com>
+ <1443002599.22786.2.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 14F1B260423
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:13:40 +0200 (CEST)
-In-Reply-To: <s5hio718qt2.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "Prusty,
- Subhransu S" <subhransu.s.prusty@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: multipart/mixed; boundary="===============0014409613296469143=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1443002599.22786.2.camel@mtksdaap41>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> Sent: Wednesday, September 23, 2015 4:48 PM
-> To: Lin, Mengdong
-> Cc: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
-> broonie@kernel.org; Prusty, Subhransu S; Girdwood, Liam R
-> Subject: Re: [alsa-devel] [PATCH] topology: Add API to set a vendor specific
-> version number
-> 
-> On Wed, 16 Sep 2015 11:07:13 +0200,
-> mengdong.lin@intel.com wrote:
-> >
-> > From: Mengdong Lin <mengdong.lin@intel.com>
-> >
-> > This vendor-specific version number is optional. It will be written to
-> > the 'version' field of each block header of the binary toplogy data file.
-> > The vendor driver can check this number for further processing in kernel.
-> >
-> > The topology ABI version number is still stored in the 'abi' field of
-> > block headers.
-> >
-> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> > Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> Thanks, applied now.  But I have concern about topology ABI/API: have we
-> stabilized it enough?  That is, are there any missing patches in the current
-> kernel and alsa-lib/utils git trees that may lead to any API/ABI
-> incompatibilities?
 
-Thank you, Takashi.
+--===============0014409613296469143==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Mqntr8YLmpnm4ZyH"
+Content-Disposition: inline
 
-We'll upstream some topology ABI/API change soon (in 1 or 2 weeks), for DAI & DAI links.
-There will be changes in the kernel and alsa-lib.
 
-Regards
-Mengdong
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--Mqntr8YLmpnm4ZyH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 23, 2015 at 06:03:19PM +0800, Koro Chen wrote:
+> Any suggestion for this patch?
+>=20
+> On Mon, 2015-09-14 at 14:51 +0800, Koro Chen wrote:
+> > In capture, there is chance that hw_ptr reported at IRQ is
+> > a little smaller than period_size due to internal AFE buffer.
+> > In the case of ping-pong buffer:
+
+Please don't top post or send content free pings.  I'm not entirely sure
+what you're asking for here - the patch has been applied, what further
+suggestions were you looking for?
+
+--Mqntr8YLmpnm4ZyH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWAs+EAAoJECTWi3JdVIfQr2sH/2DcvAQXsNg0/6FjockBC4Pf
+rWi+D4koFVTphUJcJeSmBEpureHRAlm77rV0CojzZkej4bjzvZ9VJ5X9erpLybhC
+AdCX5g5Je5okkDtv05QYSYWGLfE57rxuF4d88yUAsmq/XG6viJHkgkX2JOxCFX5l
+OZI3hgSdV6GU2jsituqXoFRpaAukdprl6Wd04FADL2bwpsWAlKUrz1hS8RJzeANQ
+0nESlXNVrka/+QLyz028yothLAy5/bXPYYdHFK2YJM/IRH8N457Y5qOdFhXgx5v2
+7VqFWOBDjEqI/19YKnDQAXLt/kslrvJ+ZsaIG0HgrdxsFkiCvwGye2fOM/7C6Jw=
+=hatT
+-----END PGP SIGNATURE-----
+
+--Mqntr8YLmpnm4ZyH--
+
+
+--===============0014409613296469143==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--===============0014409613296469143==--
