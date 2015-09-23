@@ -1,145 +1,136 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH] mfd: arizona: Call the runtime PM function if
- the state is runtime resumed
-Date: Wed, 23 Sep 2015 11:04:04 +0900
-Message-ID: <20150923110404.1b484284@songinha-Samsung-DeskTop-System>
-References: <1442478527-29304-1-git-send-email-ideal.song@samsung.com>
- <20150917082542.GB7694@ck-lbox>
- <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
- <20150917091632.GC7694@ck-lbox>
- <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
- <20150918082446.GD7694@ck-lbox>
- <20150921111642.112dc0c2@songinha-Samsung-DeskTop-System>
- <20150922074618.GA11647@ck-lbox>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to use
+ another nid for pin sense
+Date: Wed, 23 Sep 2015 10:40:45 +0800
+Message-ID: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20150922074618.GA11647@ck-lbox>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, cw00.choi@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36CE7265132
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 04:40:47 +0200 (CEST)
+Received: by obbbh8 with SMTP id bh8so23274051obb.0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2015 19:40:46 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, tiwai@suse.de, arthurborsboom@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
- Hi, Charles,
+- add sense_nid to __snd_hda_jack_add_kctl for pin sense
 
-I saw the log with LOG_DEVICE in regmap. But, I'm not sure the reason that suspend noirq failed is IRQ occuring.
+- update slave pin sense when master pin sense change
 
-Here is my log:
---
-root@localhost:~# aplay test.wav 
-[   40.831047] arizona spi1.0: Leaving AoD mode
-[   40.834448] s3c64xx_spi_runtime_resume
-[   40.834876] arizona spi1.0: d23 => 1
-[   40.835029] s3c64xx_spi_runtime_suspend
-[   40.846040] s3c64xx_spi_runtime_resume
-[   40.846423] arizona spi1.0: d23 => 100
-[   40.846557] s3c64xx_spi_runtime_suspend
-[   40.846771] arizona spi1.0: d04 <= 100
-[   40.846956] s3c64xx_spi_runtime_resume
-[   40.852145] s3c64xx_spi_runtime_suspend
-[   40.852386] s3c64xx_spi_runtime_resume
-[   40.852894] s3c64xx_spi_runtime_suspend
-[   40.854307] s3c64xx_spi_runtime_resume
-[   40.858375] arizona spi1.0: d40 => 3
-[   40.858410] s3c64xx_spi_runtime_suspend
-[   40.865429] s3c64xx_spi_runtime_resume
-[   40.869637] arizona spi1.0: d02 <= 2040
-[   40.869671] s3c64xx_spi_runtime_suspend
-[   40.876836] s3c64xx_spi_runtime_resume
-[   40.880749] arizona spi1.0: Spurious HPDET IRQ
-[   40.880773] arizona spi1.0: FLL1: Fref=24000000 Fout=135475200
-[   40.880787] arizona spi1.0: FLL1: Fvco=90316800Hz
-[   40.880793] s3c64xx_spi_runtime_suspend
-[   40.880803] arizona spi1.0: FLL1: GCD=19200
-[   40.880817] arizona spi1.0: FLL1: N=7 THETA=149 LAMBDA=271
-[   40.880831] arizona spi1.0: FLL1: FRATIO=0(0) OUTDIV=2 REFCLK_DIV=1
-[   40.880842] arizona spi1.0: FLL1: GAIN=4
-[   40.880886] arizona spi1.0: 171 <= 1
-[   40.880944] s3c64xx_spi_runtime_resume
-[   40.881218] s3c64xx_spi_runtime_suspend
-[   40.930152] s3c64xx_spi_runtime_resume
-[   40.934071] arizona spi1.0: d26 => 1
-[   40.934140] s3c64xx_spi_runtime_suspend
-[   40.941237] arizona spi1.0: Mixer dropped sample
-[   40.945901] s3c64xx_spi_runtime_resume
-[   40.950067] arizona spi1.0: d40 => 3
-[   40.950091] s3c64xx_spi_runtime_suspend
-[   40.957025] s3c64xx_spi_runtime_resume
-[   40.960971] arizona spi1.0: d04 <= 1
-[   40.961006] s3c64xx_spi_runtime_suspend
-[   40.968106] s3c64xx_spi_runtime_resume
-[   40.971956] arizona spi1.0: FLL1: clock OK
-[   40.971987] s3c64xx_spi_runtime_suspend
-[   40.979751] arizona spi1.0: SYSCLK set to 135475200Hz
-[   40.984742] wm5110-codec wm5110-codec: AIF1: BCLK 1411200Hz LRCLK 44100Hz
-[   40.992144] arizona spi1.0: SYSCLK set to 135475200Hz
-[   40.996646] arizona spi1.0: 101 <= 8644
-[   41.000360] s3c64xx_spi_runtime_resume
-[   41.004300] arizona spi1.0: 51a <= 1
-[   41.004357] s3c64xx_spi_runtime_suspend
-[   41.011499] s3c64xx_spi_runtime_resume
-[   41.015689] arizona spi1.0: 400 <= 8
-[   41.015692] s3c64xx_spi_runtime_suspend
-[   41.022581] s3c64xx_spi_runtime_resume
-[   41.026735] arizona spi1.0: d40 => 3
-[   41.026737] s3c64xx_spi_runtime_suspend
-[   41.033687] s3c64xx_spi_runtime_resume
-[   41.037765] arizona spi1.0: d02 <= 40
-[   41.037800] s3c64xx_spi_runtime_suspend
-[   41.044883] s3c64xx_spi_runtime_resume
-[   41.049054] arizona spi1.0: d26 => 8
-[   41.049072] s3c64xx_spi_runtime_suspend
-[   41.056043] arizona spi1.0: ASRC underclocked
-....
-[   72.308238] arizona spi1.0: Suspend, disabling IRQ
-[   72.320286] arizona spi1.0: 400 <= 0
-[   72.320310] s3c64xx_spi_runtime_resume
-[   72.336047] arizona spi1.0: 51a <= 0
-[   72.336217] arizona spi1.0: 101 <= 8604
-[   72.336401] arizona spi1.0: 171 <= 3
-[   72.336425] arizona spi1.0: 171 <= 2
-[   72.336731] arizona spi1.0: 171 <= 0
-[   72.336751] arizona spi1.0: SYSCLK cleared
-[   72.338584] arizona spi1.0: SYSCLK cleared
-[   72.339123] s3c64xx_spi_suspend
-[   72.355866] arizona spi1.0: Late suspend, reenabling IRQ
-[   72.355893] >>> noirq failed because of spi1
-[   72.355948] arizona spi1.0: Early resume, disabling IRQ
-[   72.416798] PM: noirq suspend of devices failed
-......
+- enable unsolicited event when widcap support UNSOL
 
-Best Regards,
-Inha Song.
+Signed-off-by: Raymond Yau <superquad.vortex2@gmail.com>
 
-On Tue, 22 Sep 2015 08:46:18 +0100
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index 366efbf..d81d65f 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -19,6 +19,7 @@
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
++#include "hda_generic.h"
 
-> On Mon, Sep 21, 2015 at 11:16:42AM +0900, Inha Song wrote:
-> > Hi, Charles,
-> > 
-> > I've already tried to change.
-> > If I change to that, we can't enter the suspen during the playback.
-> > 
-> > -
-> > [   72.538263] arizona spi1.0: Suspend, disabling IRQ
-> > ...
-> > [   72.585823] arizona spi1.0: Late suspend, reengabling IRQ
-> > [   72.585904] arizona spi1.0: Early resume, disabling IRQ
-> > ...
-> > [   72.646770] PM: noirq suspend of devices failed
-> > 		<- because of "spi1.0" pm_wakeup_pending() in suspend_noirq()
-> 
-> Ok this looks more reasonable, suspend should fail because we do
-> have an IRQ waiting to be handled, so we shouldn't suspend. But
-> you are saying this happens every time the CODEC goes to suspend,
-> thus blocking the suspend from suspending?
-> 
-> First step then would be to identify what IRQ is occurring, could
-> you set LOG_DEVICE at the top of drivers/base/regmap/regmap.c to
-> "spi1.0" and provide a log, so we can see what IRQ is being
-> asserted from the CODEC.
-> 
-> Thanks,
-> Charles
-> 
+ /**
+  * is_jack_detectable - Check whether the given pin is jack-detectable
+@@ -157,7 +158,14 @@ static void jack_detect_update(struct hda_codec *codec,
+     if (jack->phantom_jack)
+         jack->pin_sense = AC_PINSENSE_PRESENCE;
+     else
+-        jack->pin_sense = read_pin_sense(codec, jack->nid);
++        jack->pin_sense = read_pin_sense(codec,
++            jack->sense_nid ? jack->sense_nid : jack->nid);
++
++    if (jack->slave_nid) {
++        struct hda_jack_tbl *slave = snd_hda_jack_tbl_get(codec,
++                jack->slave_nid);
++        slave->pin_sense = jack->pin_sense;
++    }
+
+     /* A gating jack indicates the jack is invalid if gating is unplugged
+*/
+     if (jack->gating_jack && !snd_hda_jack_detect(codec,
+jack->gating_jack))
+@@ -269,11 +277,13 @@ snd_hda_jack_detect_enable_callback(struct hda_codec
+*codec, hda_nid_t nid,
+     jack->jack_detect = 1;
+     if (codec->jackpoll_interval > 0)
+         return callback; /* No unsol if we're polling instead */
+-    err = snd_hda_codec_write_cache(codec, nid, 0,
++    if (is_jack_detectable(codec, nid)) {
++        err = snd_hda_codec_write_cache(codec, nid, 0,
+                      AC_VERB_SET_UNSOLICITED_ENABLE,
+                      AC_USRSP_EN | jack->tag);
+-    if (err < 0)
+-        return ERR_PTR(err);
++        if (err < 0)
++            return ERR_PTR(err);
++    }
+     return callback;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_enable_callback);
+@@ -384,7 +394,7 @@ static void hda_free_jack_priv(struct snd_jack *jack)
+  * will have the given name and index.
+  */
+ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-              const char *name, bool phantom_jack)
++          const char *name, bool phantom_jack, hda_nid_t sense_nid)
+ {
+     struct hda_jack_tbl *jack;
+     int err, state, type;
+@@ -403,6 +413,7 @@ static int __snd_hda_jack_add_kctl(struct hda_codec
+*codec, hda_nid_t nid,
+
+     jack->phantom_jack = !!phantom_jack;
+     jack->type = type;
++    jack->sense_nid = sense_nid;
+     jack->jack->private_data = jack;
+     jack->jack->private_free = hda_free_jack_priv;
+     state = snd_hda_jack_detect(codec, nid);
+@@ -422,7 +433,7 @@ static int __snd_hda_jack_add_kctl(struct hda_codec
+*codec, hda_nid_t nid,
+ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+               const char *name)
+ {
+-    return __snd_hda_jack_add_kctl(codec, nid, name, false);
++    return __snd_hda_jack_add_kctl(codec, nid, name, false, nid);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_add_kctl);
+
+@@ -451,7 +462,7 @@ static int add_jack_kctl(struct hda_codec *codec,
+hda_nid_t nid,
+     if (phantom_jack)
+         /* Example final name: "Internal Mic Phantom Jack" */
+         strncat(name, " Phantom", sizeof(name) - strlen(name) - 1);
+-    err = __snd_hda_jack_add_kctl(codec, nid, name, phantom_jack);
++    err = __snd_hda_jack_add_kctl(codec, nid, name, phantom_jack, nid);
+     if (err < 0)
+         return err;
+
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index 387d309..ef3d162 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -41,6 +41,8 @@ struct hda_jack_tbl {
+     hda_nid_t gated_jack;        /* gated is dependent on this jack */
+     int type;
+     struct snd_jack *jack;
++    hda_nid_t sense_nid;
++    hda_nid_t slave_nid;
+ };
+
+ struct hda_jack_tbl *
+-- 
+2.5.0
