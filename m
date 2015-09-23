@@ -1,63 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels capture and
- lrck-mode support
-Date: Wed, 23 Sep 2015 09:24:33 -0700
-Message-ID: <20150923162433.GQ30445@sirena.org.uk>
-References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
- <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Thu, 24 Sep 2015 00:34:34 +0800
+Message-ID: <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ub0O6GltjzY0fXqz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
+ [209.85.214.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id E26A1260423
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 18:34:35 +0200 (CEST)
+Received: by obbbh8 with SMTP id bh8so37720011obb.0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:34:35 -0700 (PDT)
+In-Reply-To: <s5hvbb16yup.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, arthurborsboom@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+> >
+> > - add sense_nid to __snd_hda_jack_add_kctl for pin sense
+> >
+> > - update slave pin sense when master pin sense change
+> >
+> > - enable unsolicited event when widcap support UNSOL
+>
+> Again, please describe at first the reason you need this change.  Then
+> start explaining about the implementation details.  For example,
+> what's the difference from the existing gated_jack.
+>
+>
 
---Ub0O6GltjzY0fXqz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I don't understand how gated jack work, but those headset mic in alc668
+dell-headset-multi does not  use its own pin sense and won't need to enable
+unsol event of the headset mic node.
 
-On Wed, Sep 23, 2015 at 11:41:22AM +0800, Sugar Zhang wrote:
+As pulseaudio don't expect jack kctl can be repesent the state of headphone
+and mic
 
-> +	/* configure tx/rx lrck use mode */
-> +	if (!of_property_read_u32(node, "rockchip,lrck-mode", &val)) {
-> +		if (val >= LRCK_TXRX && val <= LRCK_RX_SHARE)
-> +			regmap_update_bits(i2s->regmap, I2S_CKR,
-> +					   I2S_CKR_TRCM_MASK,
-> +					   I2S_CKR_TRCM(val));
-> +	}
-
-This looks like it's for a board configuration thing so I'd not really
-expect this to be handled in a device specific property - it's fairly
-common to have this situation and we already have the symmetric_rates
-flag for the DAI to handle it (and if we do end up adding this property
-we'd need the driver to set that flag so that the core can handle things
-properly and make sure that userspace doesn't try to set different rates
-in different directions).
-
-My initial thought here is that the machine driver should be responsible
-for setting this and then the DAI driver should check to see if
-symmetric_rates are in use and configure itself appropriately.  Is there
-a reason why this won't work here?
-
---Ub0O6GltjzY0fXqz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWAtJBAAoJECTWi3JdVIfQXs8H/2m7foDsKJ4w/RoLzde3r0aV
-7Zfw15ZQTb+fPjOMLhe5KuPGhr+w8rvuk9FwKEBPezKnv9MrKjlnBEBh23AXSDkI
-ubqra5jKIBdokTpQ6C914r283qYYpLw7gc+TzbTix4NPhP6C2agD1r08ShQp6v1d
-mv7q9M6Ld80BXd52GW9SDF+0QFInt2vUUQ+7D80mZottMWWHOedB9+m8vkbxvm/f
-T0nNz/aaCz4ZF0TrWHxdIYd8s9GMfBMWFFmXGHqDx+6Mdgkg2D1jr6Jmgw478ika
-ekv18rSWXFF/LT/mV/VB8xUy4eL2V9u+Je/MfooKPLo/0X14awHd+IJztUuW0Ys=
-=vdTG
------END PGP SIGNATURE-----
-
---Ub0O6GltjzY0fXqz--
+This force the driver to create a headset mic kctl which is just a copy of
+the headphone jack kctl
