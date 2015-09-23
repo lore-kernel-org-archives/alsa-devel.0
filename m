@@ -1,15 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V2 4/7] BAT: Add signal generator
-Date: Wed, 23 Sep 2015 15:48:52 +0800
-Message-ID: <a42aa5e4102a653d655275077971f94058b85e12.1442993440.git.han.lu@intel.com>
+Subject: [PATCH V2 5/7] BAT: Add converting functions
+Date: Wed, 23 Sep 2015 15:48:53 +0800
+Message-ID: <36ab097fe0507cefcfe4e98ea352964bc26c6afd.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 126172604F8
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CC972651A8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 09:51:21 +0200 (CEST)
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 In-Reply-To: <cover.1442993440.git.han.lu@intel.com>
 References: <cover.1442993440.git.han.lu@intel.com>
@@ -28,22 +28,20 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add function that generates sine waveform through math lib.
-The waveform can be used as source for playback or analysis.
+Add functions that converting audio samples to double data for analysis,
+and functions that converting float data to audio samples for playback.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@intel.com>
 Signed-off-by: Bernard Gautier <bernard.gautier@intel.com>
-Signed-off-by: Caleb Crome <caleb@crome.org>
 
-diff --git a/bat/signal.c b/bat/signal.c
+diff --git a/bat/convert.c b/bat/convert.c
 new file mode 100644
-index 0000000..595f76b
+index 0000000..dcbe912
 --- /dev/null
-+++ b/bat/signal.c
-@@ -0,0 +1,182 @@
++++ b/bat/convert.c
+@@ -0,0 +1,113 @@
 +/*
-+ * Copyright (C) 2015 Caleb Crome
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify
@@ -56,182 +54,113 @@ index 0000000..595f76b
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ */
-+
-+/*
-+ * This is a general purpose sine wave generator that will stay stable
-+ * for a long time, and with a little renormalization, could stay stay
-+ * stable indefinitely
 + */
 +
 +#include <stdio.h>
 +#include <stddef.h>
 +#include <stdlib.h>
-+#include <math.h>
 +#include <stdint.h>
-+#include <stdbool.h>
 +
-+#include "gettext.h"
-+#include "common.h"
-+#include "signal.h"
-+
-+/*
-+ * Initialize the sine wave generator.
-+ * sin_generator:  gets initialized by this call.
-+ * frequency:      the frequency for the sine wave.  must be < 0.5*sample_rate
-+ * sample_rate:    the sample rate...
-+ * returns 0 on success, -1 on error.
-+ */
-+int sin_generator_init(struct sin_generator *sg, float magnitude,
-+		float frequency, float sample_rate)
-+{
-+	/* angular frequency:  cycles/sec / (samp/sec) * rad/cycle = rad/samp */
-+	float w = frequency / sample_rate * 2 * M_PI;
-+	if (frequency >= sample_rate / 2)
-+		return -1;
-+	sg->phasor_real = cos(w);
-+	sg->phasor_imag = sin(w);
-+	sg->magnitude   = magnitude;
-+	sg->state_real  = 0.0;
-+	sg->state_imag  = magnitude;
-+	sg->frequency = frequency;
-+	sg->sample_rate = sample_rate;
-+	return 0;
-+}
-+
-+/*
-+ * Generates the next sample in the sine wave.
-+ * should be much faster than calling a sin function
-+ * if it's inlined and optimized.
-+ *
-+ * returns the next value.  no possibility of error.
-+ */
-+float sin_generator_next_sample(struct sin_generator *sg)
-+{
-+	/* get shorthand to pointers */
-+	const double pr = sg->phasor_real;
-+	const double pi = sg->phasor_imag;
-+	const double sr = sg->state_real;
-+	const double si = sg->state_imag;
-+	/* step the phasor -- complex multiply */
-+	sg->state_real = sr * pr - si * pi;
-+	sg->state_imag = sr * pi + pr * si;
-+	/* return the input value so sine wave starts at exactly 0.0 */
-+	return sr;
-+}
-+
-+/* fills a vector with a sine wave */
-+void sin_generator_vfill(struct sin_generator *sg, float *buf, int n)
++void convert_uint8_to_double(void *buf, double *val, int samples)
 +{
 +	int i;
-+	for (i = 0; i < n; i++)
-+		*buf++ = sin_generator_next_sample(sg);
++
++	for (i = 0; i < samples; i++)
++		val[i] = ((uint8_t *) buf)[i];
 +}
 +
-+static int reorder(struct bat *bat, float *val, int frames)
++void convert_int16_to_double(void *buf, double *val, int samples)
 +{
-+	float *new_buf = NULL;
-+	int i, c, bytes;
++	int i;
 +
-+	bytes = frames * bat->channels * sizeof(float);
-+
-+	new_buf = (float *) malloc(bytes);
-+	if (new_buf == NULL) {
-+		fprintf(bat->err, _("Not enough memory.\n"));
-+		return -ENOMEM;
-+	}
-+
-+	memcpy(new_buf, val, bytes);
-+	for (i = 0; i < frames; i++)
-+		for (c = 0; c < bat->channels; c++)
-+			val[i * bat->channels + c] =
-+				new_buf[c * frames + i];
-+	free(new_buf);
-+
-+	return 0;
++	for (i = 0; i < samples; i++)
++		val[i] = ((int16_t *) buf)[i];
 +}
 +
-+static int adjust_waveform(struct bat *bat, float *val, int frames)
++void convert_int24_to_double(void *buf, double *val, int samples)
 +{
-+	int i, nsamples, max;
-+	float factor, offset = 0.0;
++	int i;
++	int32_t tmp;
 +
-+	switch (bat->format) {
-+	case SND_PCM_FORMAT_U8:
-+		max = INT8_MAX;
-+		offset = max;	/* shift for unsigned format */
-+		break;
-+	case SND_PCM_FORMAT_S16_LE:
-+		max  = INT16_MAX;
-+		break;
-+	case SND_PCM_FORMAT_S24_3LE:
-+		max = (1 << 23) - 1;
-+		break;
-+	case SND_PCM_FORMAT_S32_LE:
-+		max = INT32_MAX;
-+		break;
-+	default:
-+		fprintf(bat->err, _("Invalid PCM format: %s\n"),
-+				snd_pcm_format_name(bat->format));
-+		return -EINVAL;
++	for (i = 0; i < samples; i++) {
++		tmp = ((uint8_t *) buf)[i * 3 + 2] << 24;
++		tmp |= ((uint8_t *) buf)[i * 3 + 1] << 16;
++		tmp |= ((uint8_t *) buf)[i * 3] << 8;
++		tmp >>= 8;
++		val[i] = tmp;
 +	}
-+
-+	factor = max * RANGE_FACTOR;
-+	nsamples = bat->channels * frames;
-+
-+	for (i = 0; i < nsamples; i++)
-+		val[i] = val[i] * factor + offset;
-+
-+	return 0;
 +}
 +
-+int generate_sine_wave(struct bat *bat, int frames, void *buf)
++void convert_int32_to_double(void *buf, double *val, int samples)
 +{
-+	int err = 0;
-+	int c, nsamples;
-+	float *sinus_f = NULL;
-+	static struct sin_generator sg[MAX_CHANNELS];
++	int i;
 +
-+	nsamples = bat->channels * frames;
-+	sinus_f = (float *) malloc(nsamples * sizeof(float));
-+	if (sinus_f == NULL) {
-+		fprintf(bat->err, _("Not enough memory.\n"));
-+		return -ENOMEM;
-+	}
-+
-+	for (c = 0; c < bat->channels; c++) {
-+		/* initialize static struct at the first time */
-+		if (sg[c].frequency != bat->target_freq[c])
-+			sin_generator_init(&sg[c], 1.0, bat->target_freq[c],
-+					bat->rate);
-+		/* fill buffer for each channel */
-+		sin_generator_vfill(&sg[c], sinus_f + c * frames, frames);
-+	}
-+
-+	/* reorder samples to interleaved mode */
-+	err = reorder(bat, sinus_f, frames);
-+	if (err != 0)
-+		return err;
-+
-+	/* adjust amplitude and offset of waveform */
-+	err = adjust_waveform(bat, sinus_f, frames);
-+	if (err != 0)
-+		return err;
-+
-+	bat->convert_float_to_sample(sinus_f, buf, frames, bat->channels);
-+
-+	free(sinus_f);
-+
-+	return 0;
++	for (i = 0; i < samples; i++)
++		val[i] = ((int32_t *) buf)[i];
 +}
-diff --git a/bat/signal.h b/bat/signal.h
++
++void convert_float_to_uint8(float *val, void *buf, int samples, int channels)
++{
++	int i, c, idx;
++
++	for (i = 0; i < samples; i++) {
++		for (c = 0; c < channels; c++) {
++			idx = i * channels + c;
++			((uint8_t *) buf)[idx] = (uint8_t) val[idx];
++		}
++	}
++}
++
++void convert_float_to_int16(float *val, void *buf, int samples, int channels)
++{
++	int i, c, idx;
++
++	for (i = 0; i < samples; i++) {
++		for (c = 0; c < channels; c++) {
++			idx = i * channels + c;
++			((int16_t *) buf)[idx] = (int16_t) val[idx];
++		}
++	}
++}
++
++void convert_float_to_int24(float *val, void *buf, int samples, int channels)
++{
++	int i, c, idx_f, idx_i;
++	int32_t val_f_i;
++
++	for (i = 0; i < samples; i++) {
++		for (c = 0; c < channels; c++) {
++			idx_f = i * channels + c;
++			idx_i = 3 * idx_f;
++			val_f_i = (int32_t) val[idx_f];
++			((int8_t *) buf)[idx_i + 0] =
++				(int8_t) (val_f_i & 0xff);
++			((int8_t *) buf)[idx_i + 1] =
++				(int8_t) ((val_f_i >> 8) & 0xff);
++			((int8_t *) buf)[idx_i + 2] =
++				(int8_t) ((val_f_i >> 16) & 0xff);
++		}
++	}
++}
++
++void convert_float_to_int32(float *val, void *buf, int samples, int channels)
++{
++	int i, c, idx;
++
++	for (i = 0; i < samples; i++) {
++		for (c = 0; c < channels; c++) {
++			idx = i * channels + c;
++			((int32_t *) buf)[idx] = (int32_t) val[idx];
++		}
++	}
++}
+diff --git a/bat/convert.h b/bat/convert.h
 new file mode 100644
-index 0000000..a295517
+index 0000000..28828ba
 --- /dev/null
-+++ b/bat/signal.h
-@@ -0,0 +1,30 @@
++++ b/bat/convert.h
+@@ -0,0 +1,23 @@
 +/*
-+ * Copyright (C) 2015 Caleb Crome
 + * Copyright (C) 2013-2015 Intel Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify
@@ -246,19 +175,13 @@ index 0000000..a295517
 + *
 + */
 +
-+/*
-+ * Here's a generic sine wave generator that will work indefinitely
-+ * for any frequency.
-+ *
-+ * Note:  the state & phasor are stored as doubles (and updated as
-+ * doubles) because after a million samples the magnitude drifts a
-+ * bit.  If we really need floats, it can be done with periodic
-+ * renormalization of the state_real+state_imag magnitudes.
-+ */
-+
-+int sin_generator_init(struct sin_generator *, float, float, float);
-+float sin_generator_next_sample(struct sin_generator *);
-+void sin_generator_vfill(struct sin_generator *, float *, int);
-+int generate_sine_wave(struct bat *, int, void *);
++void convert_uint8_to_double(void *, double *, int);
++void convert_int16_to_double(void *, double *, int);
++void convert_int24_to_double(void *, double *, int);
++void convert_int32_to_double(void *, double *, int);
++void convert_float_to_uint8(float *, void *, int, int);
++void convert_float_to_int16(float *, void *, int, int);
++void convert_float_to_int24(float *, void *, int, int);
++void convert_float_to_int32(float *, void *, int, int);
 -- 
 1.9.1
