@@ -1,7 +1,8 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 1/4] ASoC: Add SOC_DOUBLE_R_EXT
-Date: Thu, 24 Sep 2015 18:19:49 +0100
-Message-ID: <73e9957cca4f29bd1b9881c4518132e47b2f00b4.1443113192.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2 4/4] MAINTAINERS: da7219: Add entry to cover DA7219 bindings
+ document
+Date: Thu, 24 Sep 2015 18:19:56 +0100
+Message-ID: <e9d38f861751ad892ce295362982a94491c545be.1443113192.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1443113192.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,30 +13,25 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarosl
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Jason Coughlan <jason.coughlan@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-_EXT version of SOC_DOUBLE_R required to allow for custom handlers.
+This adds an entry to indicate the DA7219 bindings document (and
+other Dialog codecs bindings documents) are supported.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- include/sound/soc.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 884e728..2d79cb5 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -217,6 +217,13 @@
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = \
- 		SOC_DOUBLE_VALUE(reg, shift_left, shift_right, max, invert, 0) }
-+#define SOC_DOUBLE_R_EXT(xname, reg_left, reg_right, xshift, xmax, xinvert,\
-+	 xhandler_get, xhandler_put) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-+	.info = snd_soc_info_volsw, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
-+					    xmax, xinvert) }
- #define SOC_SINGLE_EXT_TLV(xname, xreg, xshift, xmax, xinvert,\
- 	 xhandler_get, xhandler_put, tlv_array) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 274f854..fba06a5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3361,6 +3361,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ W:	http://www.dialog-semiconductor.com/products
+ S:	Supported
+ F:	Documentation/hwmon/da90??
++F:	Documentation/devicetree/bindings/sound/da[79]*.txt
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
 --
 1.9.3
