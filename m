@@ -1,106 +1,98 @@
-From: Luis de Bethencourt <luisbg@osg.samsung.com>
-Subject: Re: [PATCH v2] sound: oss: ad1848: Fix returned errno code in ad1848_init()
-Date: Thu, 24 Sep 2015 20:08:39 +0100
-Message-ID: <56044A37.6060909@osg.samsung.com>
-References: <1443117510-26906-1-git-send-email-luisbg@osg.samsung.com> <s5h8u7vr6if.wl-tiwai@suse.de>
+From: Mike Bjorge <mbjorge@google.com>
+Subject: Re: ALSA: pcm_direct.c SND_PCM_DIRECT_MAGIC
+Date: Thu, 24 Sep 2015 13:33:15 -0700
+Message-ID: <CADHGi45iiottpYELu5V0mpS5w9rji4j7uVrpboENhKonnc9m7Q@mail.gmail.com>
+References: <CADHGi47VfmrnxMsm=8B6D0YeZg4d6Xw_XRUWRftGYc-CEKYUBQ@mail.gmail.com>
+ <s5h37y58ema.wl-tiwai@suse.de>
+ <CADHGi46JnWkJBDP3ENtAvbXfC5rPb6DfRBRCkcVnD-RCn=tAGA@mail.gmail.com>
+ <s5hmvwc5f1n.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h8u7vr6if.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43A8C2605AF
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 22:33:48 +0200 (CEST)
+Received: by wicgb1 with SMTP id gb1so266269717wic.1
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 13:33:46 -0700 (PDT)
+In-Reply-To: <s5hmvwc5f1n.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, sudipm.mukherjee@gmail.com, joe@perches.com, perex@perex.cz, elfring@users.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 24/09/15 19:56, Takashi Iwai wrote:
-> On Thu, 24 Sep 2015 19:58:30 +0200,
-> Luis de Bethencourt wrote:
->>
->> The driver is using -1 instead of the -ENOMEM defined macro to specify
->> that a buffer allocation failed. Since the error number is propagated,
->> the caller will get a -EPERM which is the wrong error condition.
-> 
-> Where is the propagated error number referred?  In other words, do we
-> have a clear merit of changing this old stuff with rather a risk of
-> regression?
-> 
-> 
-> thanks,
-> 
+The dmix->shmptr->magic is set to 0 at the time that the check is failing.
+
+It also only seems to fail when I actually try to have 2 different
+processes trying to create/connect to the shared memory.
+
+I'm thinking there's probably a race condition somewhere, something isn't
+being cleaned up / initialized correctly, or perhaps the underlying driver
+is not behaving correctly.
+
+I'll keep looking into.
+
+On Thu, Sep 24, 2015 at 2:42 AM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Wed, 23 Sep 2015 18:07:46 +0200,
+> Mike Bjorge wrote:
+> >
+> > I see, interesting.
+> >
+> > I am running into an issue where pcm_dmix.c is occasionally failing with
+> an
+> > "unable to create IPC shm instance" (pcm_dmix.c@1004) because in
+> > pcm_direct.c@134, (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC) when
+> > buf.shm_nattch == 2.
+> >
+> > Do you know if there are any likely causes that would result in
+> > dmix->shmptr->magic not being set correctly?
+>
+> What value is read there?  If the value is completely different, it
+> means that some other programs use the same shmem for other purpose.
+> It'd be just a conflict of shmem key.
+>
+>
 > Takashi
-
-Hi Takashi,
-
-The propagated error number is not referred. The only merit here is to
-use the appropriate error number and silence the smatch tool.
-
-Thanks for the review,
-Luis
-
-> 
->> Changed the checks of the return of ad1848_init() to be for >= 0,
->> instead of != -1.
->>
->> Smatch tool warning:
->> ad1848_init() warn: returning -1 instead of -ENOMEM is sloppy
->>
->> Signed-off-by: Luis de Bethencourt <luisbg@osg.samsung.com>
->> ---
->>  sound/oss/ad1848.c    | 4 ++--
->>  sound/oss/dev_table.c | 2 +-
->>  sound/oss/pss.c       | 2 +-
->>  3 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
->> index 10c8de1..58c6d31 100644
->> --- a/sound/oss/ad1848.c
->> +++ b/sound/oss/ad1848.c
->> @@ -1992,7 +1992,7 @@ int ad1848_init (char *name, struct resource *ports, int irq, int dma_playback,
->>  	portc = kmalloc(sizeof(ad1848_port_info), GFP_KERNEL);
->>  	if(portc==NULL) {
->>  		release_region(devc->base, 4);
->> -		return -1;
->> +		return -ENOMEM;
->>  	}
->>  
->>  	if ((my_dev = sound_install_audiodrv(AUDIO_DRIVER_VERSION,
->> @@ -2007,7 +2007,7 @@ int ad1848_init (char *name, struct resource *ports, int irq, int dma_playback,
->>  	{
->>  		release_region(devc->base, 4);
->>  		kfree(portc);
->> -		return -1;
->> +		return my_dev;
->>  	}
->>  	
->>  	audio_devs[my_dev]->portc = portc;
->> diff --git a/sound/oss/dev_table.c b/sound/oss/dev_table.c
->> index 6dad515..abb3db4 100644
->> --- a/sound/oss/dev_table.c
->> +++ b/sound/oss/dev_table.c
->> @@ -148,7 +148,7 @@ EXPORT_SYMBOL(sound_install_mixer);
->>  
->>  void sound_unload_audiodev(int dev)
->>  {
->> -	if (dev != -1) {
->> +	if (dev >= 0) {
->>  		DMAbuf_deinit(dev);
->>  		audio_devs[dev] = NULL;
->>  		unregister_sound_dsp((dev<<4)+3);
->> diff --git a/sound/oss/pss.c b/sound/oss/pss.c
->> index 81314f9..e84aafe 100644
->> --- a/sound/oss/pss.c
->> +++ b/sound/oss/pss.c
->> @@ -1091,7 +1091,7 @@ static int __init probe_pss_mss(struct address_info *hw_config)
->>  	pss_mixer_reset(devc);
->>  	attach_ms_sound(hw_config, ports, THIS_MODULE);	/* Slot 0 */
->>  
->> -	if (hw_config->slots[0] != -1)
->> +	if (hw_config->slots[0] >= 0)
->>  	{
->>  		/* The MSS driver installed itself */
->>  		audio_devs[hw_config->slots[0]]->coproc = &pss_coproc_operations;
->> -- 
->> 2.5.1
->>
->>
+>
+> >
+> > Thanks for your help,
+> > Mike
+> >
+> >
+> >
+> > On Wed, Sep 23, 2015 at 6:11 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Sat, 19 Sep 2015 01:13:42 +0200,
+> > > Mike Bjorge wrote:
+> > > >
+> > > > Hi Takashi,
+> > > >
+> > > > I know this is a bit out of the blue, but I was wondering if you
+> could
+> > > > explain the point of SND_PCM_DIRECT_MAGIC and dmix->shmptr->magic?
+> > > >
+> > > > Specifically, what it's doing in pcm_direct.c from this commit?
+> > > >
+> > >
+> http://git.alsa-project.org/?p=alsa-lib.git;a=blobdiff;f=src/pcm/pcm_direct.c;h=4e2f36cd275bfda1bc3453e569cf7fb44c317ef3;hp=46664a13d0a3368527b103ff13a08f3bcfe1ddbb;hb=eafb7ae5d8fa5ee52757ee0ee9137442d2c39326;hpb=194ff97ea68d66dac8e38671cbf73d52b42f3363
+> > >
+> > > It's to check the consistency of shared data via shmem.
+> > > If we change the data structure in an incompatible way, we'd change
+> > > the magic key so that each instance can detect it.
+> > >
+> > >
+> > > Takashi
+> > >
+> > [2  <text/html; UTF-8 (quoted-printable)>]
+> >
+>
