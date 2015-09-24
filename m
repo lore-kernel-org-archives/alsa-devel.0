@@ -1,21 +1,21 @@
-From: Andreas Hartmann <mail@andreashartmann.eu>
-Subject: Re: Bug: LADSPA implementation - no up/downmix handling
-Date: Thu, 24 Sep 2015 12:44:53 +0200
-Message-ID: <1544609.lNj7aapdUP@deep-thought>
-References: <2541800.vBPmoIL6Xo@deep-thought> <s5hpp196wjx.wl-tiwai@suse.de>
+From: Uli Franke <uli.franke@weiss.ch>
+Subject: Re: Dummy module and sample rates
+Date: Thu, 24 Sep 2015 12:49:22 +0200
+Message-ID: <5603D532.9080201@weiss.ch>
+References: <56029069.60700@weiss.ch> <56039FF3.3030203@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5101198280636404512=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from stcim.de (stcim.de [78.46.73.102])
- by alsa0.perex.cz (Postfix) with ESMTP id 19F69260505
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 12:44:57 +0200 (CEST)
-Received: from ipbcc2fc9d.dynamic.kabel-deutschland.de ([188.194.252.157]
- helo=deep-thought.localnet)
- by stcim.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:256)
- (Exim 4.84) (envelope-from <mail@andreashartmann.eu>)
- id 1Zf41I-0002ki-E8
- for alsa-devel@alsa-project.org; Thu, 24 Sep 2015 12:44:56 +0200
-In-Reply-To: <s5hpp196wjx.wl-tiwai@suse.de>
+Received: from server11.hostfactory.ch (server11.hostfactory.ch
+ [62.146.13.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C86C260526
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 12:49:23 +0200 (CEST)
+Received: from [192.168.1.112] (165.90.0.85.dynamic.wline.res.cust.swisscom.ch
+ [85.0.90.165])
+ by server11.hostfactory.ch (Postfix) with ESMTPA id DAC8F60438339
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 12:49:22 +0200 (CEST)
+In-Reply-To: <56039FF3.3030203@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,88 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5101198280636404512==
-Content-Type: multipart/signed; boundary="nextPart1622476.1qOaJv33oD"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-
-
---nextPart1622476.1qOaJv33oD
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-Am Mittwoch, 23. September 2015, 16:26:58 schrieb Takashi Iwai:
-> On Sat, 12 Sep 2015 22:10:40 +0200,
+>> I fiddled around with the Dummy module and it seems to be the thing
+>> we're looking for. I observed a rather strange behavior though:
+>>
+>> I set the hw params sample rate to 44k1 without error, but a subsequent
+>> call of snd_pcm_start returns EPIPE. When setting hw params sample rate
+>> to 4k this does not happen.
 > 
-> Andreas Hartmann wrote:
-> > Hi,
-> > 
-> > Using the surround_encoder of the swh-plugins I noticed, that the alsa
-> > implementation only assumes an equal number of in- and output channels for
-> > ladspa plugins. This occurs from Line 752 onwards in pcm_ladspa.c and
-> > leads to a Segfault shortly after.
-> > There needs to be a check and correct handling for up/downmix scenarios.
+> In theory, this error code is returned if you didn't write any samples
+> into the buffer before starting.
 > 
-> Could you give the back trace?  Or at best submit a fix patch?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> An underrun is possible too, but should be reported later AFAIK.
+> Could you check if a larger buffer size helps?
 
-Sure here you go
+I checked if this is actually an XRun, as this is the official error
+code. But even recover didn't have any effect.
 
-#0  0x00007ffff78623ef in snd_pcm_ladspa_allocate_memory (pcm=0x626fa0, 
-pcm=0x626fa0, pcm=0x626fa0, ladspa=0x621ad0) at pcm_ladspa.c:753
-#1  snd_pcm_ladspa_init (pcm=0x626fa0) at pcm_ladspa.c:834
-#2  0x00007ffff7842946 in snd_pcm_plugin_prepare (pcm=0x626fa0) at 
-pcm_plugin.c:171
-#3  0x00007ffff784290f in snd_pcm_plugin_prepare (pcm=0x62c760) at 
-pcm_plugin.c:162
-#4  0x000000000040256a in ?? ()
-#5  0x00007ffff7222ec5 in __libc_start_main (main=0x401d80, argc=4, 
-argv=0x7fffffffde28, init=<optimized out>, fini=<optimized out>, 
-rtld_fini=<optimized out>,
-    stack_end=0x7fffffffde18) at libc-start.c:287
-#6  0x0000000000402fdd in ?? ()
+When I write samples before starting the stream, snd_pcm_start returns
 
---nextPart1622476.1qOaJv33oD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+   File descriptor in bad state (-77)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+which is obvious as the state of the stream changes from PREPARED to
+RUNNING.
 
-iQIcBAABAgAGBQJWA9QnAAoJEFdgwA+zsF1UwHoP+gM8boPq53kRz/X2j+aHCIxl
-VDaxg9sHiy1NmaDKbOUo/qD9SRbSdjL2hWu1wpl1K3Gh5Blhn/WIgVjNF+YdWRh3
-Cu8sU6M5ju+NG/GTjxT0UELXk33sry5I6+w4Z8NVWn2IVmYbWrtdDwFlU6CVK3LO
-i2iUaszK40AIQvyOvRr6EPtOYTI5LXGtGN0BrekO1/M72jmZW6V9dviGSm/HI6re
-CHnlnOHyWN+1s9XJGj47G5ube/ZXdKPD1lty3jr5PIj3FpqkmIuA8JhY2cGxPu4U
-rIhVJa5zk5jEklNmMSeH/sDZNLnKbitzOro3RWfai1F40q9/Ri7nH0aBvtQIgfkf
-6/1hIpsjT1HAVreCcft/+7voIGTIGOOdRhLGlQBb7Uh+MZo9vV2eVnOrw4O3nS7n
-zuI3aHz+xBHexF4ZkGsbkjW6JpoXL1YDeuD/n/KG4v4lDVD9/+Q+DzJM4CAZp7ck
-Hh1Mcq9CX/30yM9XRxYwCz+YMaaY+oSZxThq+It2532Zt7gvMaZzm9SnXq9Lj93s
-VyCICGLTTizaemQmYsjXqr0E2I2u2FOMZj3H22wektJrcX3sB0Ytbyftm1Jw0zs/
-B2RoavKFU40Vj3u397QSfXrRPPmczFMKmLZNsMF3N7mEdcxagK/wWsWx4R3lf/1i
-o2/YhqLaeFEYa5Hm1lmd
-=8pAR
------END PGP SIGNATURE-----
+I tried to increase the buffer but with no effect.
 
---nextPart1622476.1qOaJv33oD--
+No error occurs when I just write samples and omit the snd_pcm_start. I
+just read some examples and got the impression that this seems to be
+common practice anyhow. But up to now all my ALSA interfacing programs
+actively started the stream and I never had any similar effect.
 
+You can find a small test program here:
 
---===============5101198280636404512==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://460c9235de50fe3b.paste.se/
 
-
---===============5101198280636404512==--
+Regards,
+Uli
