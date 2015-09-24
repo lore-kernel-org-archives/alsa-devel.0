@@ -1,22 +1,21 @@
-From: Mike Bjorge <mbjorge@google.com>
-Subject: Re: ALSA: pcm_direct.c SND_PCM_DIRECT_MAGIC
-Date: Thu, 24 Sep 2015 13:33:15 -0700
-Message-ID: <CADHGi45iiottpYELu5V0mpS5w9rji4j7uVrpboENhKonnc9m7Q@mail.gmail.com>
-References: <CADHGi47VfmrnxMsm=8B6D0YeZg4d6Xw_XRUWRftGYc-CEKYUBQ@mail.gmail.com>
- <s5h37y58ema.wl-tiwai@suse.de>
- <CADHGi46JnWkJBDP3ENtAvbXfC5rPb6DfRBRCkcVnD-RCn=tAGA@mail.gmail.com>
- <s5hmvwc5f1n.wl-tiwai@suse.de>
+From: Carlo Caione <carlo@endlessm.com>
+Subject: Re: RT5640 jack detection
+Date: Thu, 24 Sep 2015 22:34:14 +0200
+Message-ID: <CAL9uMOG2CgBU2yiKCq4iyt7L-Ms1e=vVqrAFV76G1Zvj3d3PXA@mail.gmail.com>
+References: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
+ <1443025358.6977.71.camel@loki>
+ <20150923163746.GR30445@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 43A8C2605AF
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 22:33:48 +0200 (CEST)
-Received: by wicgb1 with SMTP id gb1so266269717wic.1
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 13:33:46 -0700 (PDT)
-In-Reply-To: <s5hmvwc5f1n.wl-tiwai@suse.de>
+Received: from mail-ig0-f173.google.com (mail-ig0-f173.google.com
+ [209.85.213.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id B72A6265821
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 22:34:15 +0200 (CEST)
+Received: by igcpb10 with SMTP id pb10so24199479igc.1
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 13:34:14 -0700 (PDT)
+In-Reply-To: <20150923163746.GR30445@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@endlessm.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The dmix->shmptr->magic is set to 0 at the time that the check is failing.
+On Wed, Sep 23, 2015 at 6:37 PM, Mark Brown <broonie@kernel.org> wrote:
 
-It also only seems to fail when I actually try to have 2 different
-processes trying to create/connect to the shared memory.
+> That can upset userspaces - it means you get things like trying to play
+> a notification tone, starting, realising that a headphone is there and
+> trying to switch on the headphone in the middle of the notification
+> being played back which doesn't tend to work out so well.
+>
+> What I'd expect the driver to be doing here is enabling whatever it
+> needs to do detection enabled while detection is enabled.
 
-I'm thinking there's probably a race condition somewhere, something isn't
-being cleaned up / initialized correctly, or perhaps the underlying driver
-is not behaving correctly.
+What I don't get here is what do you mean with "detection". Can we
+simply consider PA listening for jack change events a "detection"?
 
-I'll keep looking into.
+> There's quite
+> a few examples of this in mainline - look for jack code that has DAPM
+> calls in it.
 
-On Thu, Sep 24, 2015 at 2:42 AM, Takashi Iwai <tiwai@suse.de> wrote:
+Do you thing the rt5670.c could be a good example for that?
 
-> On Wed, 23 Sep 2015 18:07:46 +0200,
-> Mike Bjorge wrote:
-> >
-> > I see, interesting.
-> >
-> > I am running into an issue where pcm_dmix.c is occasionally failing with
-> an
-> > "unable to create IPC shm instance" (pcm_dmix.c@1004) because in
-> > pcm_direct.c@134, (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC) when
-> > buf.shm_nattch == 2.
-> >
-> > Do you know if there are any likely causes that would result in
-> > dmix->shmptr->magic not being set correctly?
->
-> What value is read there?  If the value is completely different, it
-> means that some other programs use the same shmem for other purpose.
-> It'd be just a conflict of shmem key.
->
->
-> Takashi
->
-> >
-> > Thanks for your help,
-> > Mike
-> >
-> >
-> >
-> > On Wed, Sep 23, 2015 at 6:11 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > On Sat, 19 Sep 2015 01:13:42 +0200,
-> > > Mike Bjorge wrote:
-> > > >
-> > > > Hi Takashi,
-> > > >
-> > > > I know this is a bit out of the blue, but I was wondering if you
-> could
-> > > > explain the point of SND_PCM_DIRECT_MAGIC and dmix->shmptr->magic?
-> > > >
-> > > > Specifically, what it's doing in pcm_direct.c from this commit?
-> > > >
-> > >
-> http://git.alsa-project.org/?p=alsa-lib.git;a=blobdiff;f=src/pcm/pcm_direct.c;h=4e2f36cd275bfda1bc3453e569cf7fb44c317ef3;hp=46664a13d0a3368527b103ff13a08f3bcfe1ddbb;hb=eafb7ae5d8fa5ee52757ee0ee9137442d2c39326;hpb=194ff97ea68d66dac8e38671cbf73d52b42f3363
-> > >
-> > > It's to check the consistency of shared data via shmem.
-> > > If we change the data structure in an incompatible way, we'd change
-> > > the magic key so that each instance can detect it.
-> > >
-> > >
-> > > Takashi
-> > >
-> > [2  <text/html; UTF-8 (quoted-printable)>]
-> >
->
+In that case a GPIO is used to trigger the jack type detection. The
+jack change interrupt is notified also when the codec is off/inactive
+and in the codec the status of the jack (jack_inserted) is detected
+directly reading from some codec registers. The DAPM calls are used in
+the code path to determine the type of the jack.
+
+In my case the setup is different though. The GPIO is driven by the
+codec itself and it doesn't work when the codec BIAS is off. So the
+problem is that I cannot use the DAPM code since before that I need to
+find a way to detect the change in the GPIO status when I'm not
+actively using the codec.
+
+I see two possible solutions for this problem: 1) as said before I can
+just avoid to turn the BIAS totally off, leaving the I2S clock active
+that allows the codec to drive the GPIO or 2) keep polling on the
+status of the GPIO enabling and then disabling the BIAS (or using the
+DAPM code) just for the time needed to read the GPIO status
+
+Thanks,
+
+-- 
+Carlo Caione  |  +39.340.80.30.096  |  Endless
