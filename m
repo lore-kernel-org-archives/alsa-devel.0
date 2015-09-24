@@ -1,24 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Use the type
-	SOC_DAPM_SINGLE_AUTODISABLE to prevent the weird sound in
-	runtime of power up" to the asoc tree
-Date: Wed, 23 Sep 2015 11:00:53 -0700
-Message-ID: <E1ZeoLd-0005SP-DN@finisterre>
-References: <1442990130-15801-2-git-send-email-oder_chiou@realtek.com>
+Subject: Re: RT5640 jack detection
+Date: Thu, 24 Sep 2015 14:29:38 -0700
+Message-ID: <20150924212938.GG30445@sirena.org.uk>
+References: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
+ <1443025358.6977.71.camel@loki>
+ <20150923163746.GR30445@sirena.org.uk>
+ <CAL9uMOG2CgBU2yiKCq4iyt7L-Ms1e=vVqrAFV76G1Zvj3d3PXA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5388338114936220751=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A2A25265DA5
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 23:19:49 +0200 (CEST)
-Received: from [70.35.39.2] (helo=finisterre)
- by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
- id 1ZfDvf-0006bK-TO
- for alsa-devel@alsa-project.org; Thu, 24 Sep 2015 21:19:48 +0000
-In-Reply-To: <1442990130-15801-2-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B3EBF265ADB
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 23:30:18 +0200 (CEST)
+In-Reply-To: <CAL9uMOG2CgBU2yiKCq4iyt7L-Ms1e=vVqrAFV76G1Zvj3d3PXA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +23,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Carlo Caione <carlo@endlessm.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, =?iso-8859-1?Q?Jo=E3o?= Paulo Rechi Vita <jprvita@endlessm.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5645: Use the type SOC_DAPM_SINGLE_AUTODISABLE to prevent the weird sound in runtime of power up
+--===============5388338114936220751==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yqX3wpb4QnjwKg06"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--yqX3wpb4QnjwKg06
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Sep 24, 2015 at 10:34:14PM +0200, Carlo Caione wrote:
+> On Wed, Sep 23, 2015 at 6:37 PM, Mark Brown <broonie@kernel.org> wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > That can upset userspaces - it means you get things like trying to play
+> > a notification tone, starting, realising that a headphone is there and
+> > trying to switch on the headphone in the middle of the notification
+> > being played back which doesn't tend to work out so well.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > What I'd expect the driver to be doing here is enabling whatever it
+> > needs to do detection enabled while detection is enabled.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> What I don't get here is what do you mean with "detection". Can we
+> simply consider PA listening for jack change events a "detection"?
 
-Thanks,
-Mark
+Detection is the act of detecting if a jack is physically present in the
+socket.  This will normally happen all the time the system is running,
+some userspaces rely on uevents to get notifications so the kernel can't
+tell if anything is listening.
 
->From 21cb13e72b02dbbb5a02477d4dd46bc2bc1cfd08 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 23 Sep 2015 14:35:28 +0800
-Subject: [PATCH] ASoC: rt5645: Use the type SOC_DAPM_SINGLE_AUTODISABLE to
- prevent the weird sound in runtime of power up
+> > There's quite
+> > a few examples of this in mainline - look for jack code that has DAPM
+> > calls in it.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Do you thing the rt5670.c could be a good example for that?
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index dbc1d76..25c34fb 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -732,14 +732,14 @@ static const struct snd_kcontrol_new rt5645_mono_adc_r_mix[] = {
- static const struct snd_kcontrol_new rt5645_dac_l_mix[] = {
- 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5645_AD_DA_MIXER,
- 			RT5645_M_ADCMIX_L_SFT, 1, 1),
--	SOC_DAPM_SINGLE("DAC1 Switch", RT5645_AD_DA_MIXER,
-+	SOC_DAPM_SINGLE_AUTODISABLE("DAC1 Switch", RT5645_AD_DA_MIXER,
- 			RT5645_M_DAC1_L_SFT, 1, 1),
- };
- 
- static const struct snd_kcontrol_new rt5645_dac_r_mix[] = {
- 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5645_AD_DA_MIXER,
- 			RT5645_M_ADCMIX_R_SFT, 1, 1),
--	SOC_DAPM_SINGLE("DAC1 Switch", RT5645_AD_DA_MIXER,
-+	SOC_DAPM_SINGLE_AUTODISABLE("DAC1 Switch", RT5645_AD_DA_MIXER,
- 			RT5645_M_DAC1_R_SFT, 1, 1),
- };
- 
--- 
-2.5.0
+No, that doesn't appear to have any interlock with DAPM and is just
+basic GPIO stuff.
+
+> In my case the setup is different though. The GPIO is driven by the
+> codec itself and it doesn't work when the codec BIAS is off. So the
+> problem is that I cannot use the DAPM code since before that I need to
+> find a way to detect the change in the GPIO status when I'm not
+> actively using the codec.
+
+To repeat:
+
+| What I'd expect the driver to be doing here is enabling whatever it
+| needs to do detection enabled while detection is enabled.  There's quite
+| a few examples of this in mainline - look for jack code that has DAPM
+| calls in it.
+
+If you need to force things on during detection you should add code to
+do that, for example enabling relevant DAPM widgets with _force_enable().
+
+> I see two possible solutions for this problem: 1) as said before I can
+> just avoid to turn the BIAS totally off, leaving the I2S clock active
+> that allows the codec to drive the GPIO or 2) keep polling on the
+> status of the GPIO enabling and then disabling the BIAS (or using the
+> DAPM code) just for the time needed to read the GPIO status
+
+Enabling things only when needed is of course optimal but you need
+detection to work whenever detection is enabled.  It sounds like this is
+not the case for your system.
+
+--yqX3wpb4QnjwKg06
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWBGs8AAoJECTWi3JdVIfQA2UH/RDeXsop7qRfmDZnldTccx7w
+vXvCmLCe4T+550TrIcyBE7/UbMsAd8fUaYQpH2dEZfEzzaYc5mInGYeFY61zFmC3
+IYHD1555XlAiQLw2sJUOUBzSj/Xjv12s5oH6Q+xg/P73in/v+JLq9PC7PMWFPpSL
+H/nsmvunCvpCwYAHGlc5gKsAePfKV31pEzz1Knbll5mWeFInQo8sl5vG6H5agPzk
+2O+rNCGXkRX4EytvxQVPSzkNMEY7MDQN0FSVnNA7Bg9/dRqzjqdajhNc/806Ucie
+/SOYmkaywoN+35+dcngDheyuSe77GQ+gEEYxLzRCE1yyni1bNrkIIfHCGHWt0Qk=
+=GCGl
+-----END PGP SIGNATURE-----
+
+--yqX3wpb4QnjwKg06--
+
+--===============5388338114936220751==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5388338114936220751==--
