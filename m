@@ -1,49 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mediatek: Increase periods_min in capture
-Date: Thu, 24 Sep 2015 10:11:53 -0700
-Message-ID: <20150924171153.GW30445@sirena.org.uk>
-References: <1442213477-63721-1-git-send-email-koro.chen@mediatek.com>
- <1443002599.22786.2.camel@mtksdaap41>
- <20150923161253.GN30445@sirena.org.uk>
- <1443058789.22786.11.camel@mtksdaap41>
+Subject: Re: Applied "spi: atmel: Remove needless bits_per_word
+ and speed_hz tests" to the asoc tree
+Date: Thu, 24 Sep 2015 10:18:39 -0700
+Message-ID: <20150924171839.GZ30445@sirena.org.uk>
+References: <E1Zcd6t-0006J1-P7@finisterre> <5603E774.6020702@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BxNWZcw0TMazIwHZ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1443058789.22786.11.camel@mtksdaap41>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: tiwai@suse.de, matthias.bgg@gmail.com, perex@perex.cz, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3024178278413615862=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E415426057B
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 19:19:36 +0200 (CEST)
+In-Reply-To: <5603E774.6020702@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-spi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---BxNWZcw0TMazIwHZ
+--===============3024178278413615862==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kpwIYr1TmOiRZuUu"
+Content-Disposition: inline
+
+
+--kpwIYr1TmOiRZuUu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 24, 2015 at 09:39:49AM +0800, Koro Chen wrote:
+On Thu, Sep 24, 2015 at 03:07:16PM +0300, Jarkko Nikula wrote:
 
-> OK thank you, now I see the patch is already in the tree, but I am sure
-> I didn't get the mail titled "Applied xxx to the asoc tree", so I didn't
-> know the patch status. Maybe something was wrong with the mail system?
+> Did this one get lost? I don't find commit id above either from spi.git or
+> sound.git (I guess sound.git was accidental). Other patches from the patch
+> set are in spi.git and I can resend this if needed.
 
-Possibly your mail system flagged it as spam?
+Please resend any patches you think are missing in my tree.
 
---BxNWZcw0TMazIwHZ
+--kpwIYr1TmOiRZuUu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWBC7WAAoJECTWi3JdVIfQ2rsH/iEhDwnc6qiRLDQy2jfW+ow0
-NZRngzdgzKchqZXHSqQaph/Sm2JLkthv85XwVvOMspF+iyGFlWmmL+m5dCYxlHXw
-14qdGhBIISPvSw+esBj+OsUdaUejjDVc2BIrW+RDlPI8uvmu7LmmQVV8uAoDXchd
-bqivQ+1WQA+ZlO/BexNzc73bQUgfQCcAc1kHoe/cscbZHHl+lFLs+NeUYaZUV7J8
-3rrLbuTXBe90CQVpqgHCPDDVLVU8g+uIhacfF/mkPb5bUmZTT6hESoITOe+X501h
-N/HgVHCOrWTpKdOJczwbWpJ5hiHKrLesrXtfDnDwdjJNXDz+eDVJq3Q/5zreO98=
-=BPww
+iQEcBAEBCAAGBQJWBDBuAAoJECTWi3JdVIfQZLkH/3k3xxWeP49lxjtxkkBRDzhn
+FO48oYWHcVsukK6C6vNgY7rUJV79fey0BfH6k5ACWdpeO2bgh7RYITQmGoErjWKv
+VRBqsj3AUfRczQgakFIow/ifvR2YB5WWHSTcFot76mQ6q+1gdRca5kq/cq4wUFUH
+jQVskONDQee2VJO5Zr4lXXCDMHG3PBr32vHOc74qQFb8zn5oEqP/v7O4I2IvqcDx
+Thph+cU+eEBMwhsI7/g5UWH4L2vmzGNqnkFFQ984lq/bADt5ypoWntf5UzQovEa6
+6WuyI5DdjX43cYZ1wlovj6wRuczCGqLRn/OG6CnYO2hUO/azxKy4PTIoD0aeAjo=
+=99N5
 -----END PGP SIGNATURE-----
 
---BxNWZcw0TMazIwHZ--
+--kpwIYr1TmOiRZuUu--
+
+--===============3024178278413615862==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3024178278413615862==--
