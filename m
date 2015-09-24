@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Dummy module and sample rates
-Date: Thu, 24 Sep 2015 20:40:00 +0200
-Message-ID: <56044380.4030109@ladisch.de>
-References: <56029069.60700@weiss.ch> <56039FF3.3030203@ladisch.de>
- <5603D532.9080201@weiss.ch>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v4.3
+Date: Thu, 24 Sep 2015 11:42:40 -0700
+Message-ID: <20150924184240.GD30445@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1481371102597854992=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 986D126058F
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 20:40:29 +0200 (CEST)
-In-Reply-To: <5603D532.9080201@weiss.ch>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4741826058F
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 20:43:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +18,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Uli Franke <uli.franke@weiss.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Uli Franke wrote:
->>> I set the hw params sample rate to 44k1 without error, but a subsequent
->>> call of snd_pcm_start returns EPIPE.
->>
->> In theory, this error code is returned if you didn't write any samples
->> into the buffer before starting.
 
-> T(snd_pcm_start(pcm));
->
-> n = snd_pcm_writei(pcm,
-> 	             buffer,
-> 	             ARRAY_SIZE(buffer) / channels);
-
-And indeed this code tries to start the device without any samples in
-the buffer.
-
->>> When setting hw params sample rate to 4k this does not happen.
-
-This appears to be an artifact of the resampler.
-
-> When I write samples before starting the stream, snd_pcm_start returns
->
->    File descriptor in bad state (-77)
->
-> which is obvious as the state of the stream changes from PREPARED to
-> RUNNING.
-
-To prevent the device from starting automatically, change the
-start_threshold.
+--===============1481371102597854992==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vUOrpVjU9N5sOsWB"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--vUOrpVjU9N5sOsWB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 1f93e4a96c9109378204c147b3eec0d0e8100fde:
+
+  Linux 4.3-rc2 (2015-09-20 14:32:34 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.3-rc2
+
+for you to fetch changes up to ed14ee0eea8b6808025356cecc87a8007885263f:
+
+  Merge remote-tracking branches 'asoc/fix/wm8960' and 'asoc/fix/wm8962' into asoc-linus (2015-09-23 11:01:12 -0700)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.3
+
+A disappointingly large set of fixes, though none of them very big and
+very widely spread over many different drivers.  Nothing especially
+stands out, it's mostly all device specific and relatively minor.
+
+----------------------------------------------------------------
+Adam Thomson (1):
+      ASoC: fsl_ssi: Fix checking of dai format for AC97 mode
+
+Anatol Pomozov (1):
+      ASoC: Document snd-soc-dummy-dai purpose
+
+Arnaud Pouliquen (1):
+      ASoC: sti: check return of of_property_read
+
+Axel Lin (2):
+      ASoC: SPEAr: Make SND_SPEAR_SOC select SND_SOC_GENERIC_DMAENGINE_PCM
+      ASoC: au1x: psc-i2s: Fix unused variable 'ret' warning
+
+John Lin (1):
+      ASoC: rt5645: Add struct dmi_system_id "Google Ultima" for chrome platform
+
+Jyri Sarha (1):
+      ASoC: davinci-mcasp: Set .symmetric_rates = 1 in snd_soc_dai_driver
+
+Koro Chen (1):
+      ASoC: mediatek: Increase periods_min in capture
+
+Liam Girdwood (1):
+      ASoC: intel: Fix SSP port configuration after RTD3 resume.
+
+Maciej S. Szmigiero (1):
+      ASoC: fsl-asoc-card: put ASRC OF node in case of unknown device
+
+Mark Brown (6):
+      Merge branch 'fix/rt5645' of git://git.kernel.org/.../broonie/sound into asoc-fix-rt5645
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/davinci', 'asoc/fix/doc', 'asoc/fix/fsl-card', 'asoc/fix/fsl-ssi', 'asoc/fix/intel' and 'asoc/fix/maintainers' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/mtk', 'asoc/fix/psc', 'asoc/fix/pxa', 'asoc/fix/spear', 'asoc/fix/sti' and 'asoc/fix/wm0010' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/wm8960' and 'asoc/fix/wm8962' into asoc-linus
+
+Oder Chiou (4):
+      ASoC: rt5645: Remove incorrect settings
+      ASoC: rt5645: Use the type SOC_DAPM_SINGLE_AUTODISABLE to prevent the weird sound in runtime of power up
+      ASoC: rt5645: Increase the delay time to remove the pop sound
+      ASoC: rt5645: Prevent the pop sound in case of playback and the jack is plugging
+
+Peter Ujfalusi (2):
+      ASoC: davinci-mcasp: Revise the FIFO threshold calculation
+      ASoC: davinci-mcasp: Fix devm_kasprintf format string
+
+Richard Fitzgerald (1):
+      MAINTAINERS: Update website and git repo for Wolfson Microelectronics
+
+Robert Jarzmik (2):
+      ASoC: fix broken pxa SoC support
+      ASoC: pxa: pxa2xx-ac97: fix dma requestor lines
+
+Sudip Mukherjee (4):
+      ASoC: wm0010: fix memory leak
+      ASoC: dapm: fix memory leak
+      ASoC: wm0010: fix memory leak
+      ASoC: wm0010: fix error path
+
+Zidan Wang (4):
+      ASoC: wm8960: correct the min gain value of some PGA
+      ASoC: wm8960: correct gain value for input PGA and add microphone PGA
+      ASoC: wm8962: remove 64k sample rate support
+      ASoC: wm8960: correct the max register value of mic boost pga
+
+ MAINTAINERS                               |  9 +++------
+ sound/arm/Kconfig                         | 15 ++++++++-------
+ sound/soc/au1x/psc-i2s.c                  |  1 -
+ sound/soc/codecs/rt5645.c                 | 22 +++++++++++++---------
+ sound/soc/codecs/wm0010.c                 | 23 +++++++++--------------
+ sound/soc/codecs/wm8960.c                 | 26 ++++++++++++++++++--------
+ sound/soc/codecs/wm8962.c                 |  3 ++-
+ sound/soc/davinci/davinci-mcasp.c         | 14 +++++++-------
+ sound/soc/fsl/fsl-asoc-card.c             |  3 ++-
+ sound/soc/fsl/fsl_ssi.c                   |  5 +++--
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 20 ++++++++++++--------
+ sound/soc/mediatek/mtk-afe-pcm.c          | 17 +++++++++++++++++
+ sound/soc/pxa/Kconfig                     |  2 --
+ sound/soc/pxa/pxa2xx-ac97.c               |  4 ++--
+ sound/soc/soc-dapm.c                      |  2 +-
+ sound/soc/soc-utils.c                     |  9 +++++++++
+ sound/soc/spear/Kconfig                   |  2 +-
+ sound/soc/sti/uniperif_player.c           | 14 ++++++++++----
+ sound/soc/sti/uniperif_reader.c           |  6 +++++-
+ 19 files changed, 122 insertions(+), 75 deletions(-)
+
+--vUOrpVjU9N5sOsWB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWBEQfAAoJECTWi3JdVIfQGYwH/imFv65T3P5I0U2XthiUmg7c
+O5U5A3270zl81GClM2PD4esCZiuCUwtiOooZjvxK2YJjVH/Hhi//8gnTn6xP1mAj
+z6JmsXMIUO+C1jEnkyH710iDR5k3cetEwAoqtAcVQEfxgkcusjnL5Ki4Nyid0XuQ
+5qGpbRWnfy+OrHqxbk9KwuVPm1wyRijxVP1PoooMmw45OaNiB9W0KvnUoefQ9t07
+YCXiQY7Vv1gNZwlP40FjKYdRhXIHdE17OSCfIA7cmwbbf5fwVoDc/F+55Do+c5zE
+IilXaJOyCq1vmoSbFEQnAAH0A6cbbdGXyyNEuvaKRDqRYni63It1JKp6gHgkW4c=
+=wF5l
+-----END PGP SIGNATURE-----
+
+--vUOrpVjU9N5sOsWB--
+
+--===============1481371102597854992==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1481371102597854992==--
