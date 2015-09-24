@@ -1,104 +1,83 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Disable power_save_node for
-	Thinkpads
-Date: Thu, 24 Sep 2015 17:40:39 +0200
-Message-ID: <1443109239-27822-1-git-send-email-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH RFC v4 4/8] drm/i2c: tda998x: Add support of a DT graph of
+ ports
+Date: Thu, 24 Sep 2015 11:29:21 -0500
+Message-ID: <CAL_JsqJztmoNZdL06CnAh6REpRsSjVN-9zyo5g08YuezW58vrQ@mail.gmail.com>
+References: <cover.1442572860.git.jsarha@ti.com>
+ <e9ebb04f781fef7cff99190d301fb64805b97d39.1442572860.git.jsarha@ti.com>
+ <56001FF6.5070504@kernel.org> <20150924123616.5d47f363@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C41F265AFC
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 17:40:41 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6D5EAABA2
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 15:40:40 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150924123616.5d47f363@armhf>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, dri-devel <dri-devel@lists.freedesktop.org>, liam.r.girdwood@linux.intel.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Benoit Cousson <bcousson@baylibre.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-omap <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lenovo Thinkpads with recent Realtek codecs seem suffering from click
-noises at power transition since the introduction of widget power
-saving in 4.1 kernel.  Although this might be solved by some delays in
-appropriate points, as a quick workaround, just disable the
-power_save_node feature for now.  The gain it gives is relatively
-small, and this makes the situation back to pre 4.1 time.
-
-This patch ended up with a bit more code changes than usual because
-the existing fixup for Thinkpads is highly chained.  Instead of adding
-yet another chain, combine a few of them into a single fixup entry, as
-a gratis cleanup.
-
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=943982
-Cc: <stable@vger.kernel.org> # v4.1+
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a75b5611d1e4..afec6dc9f91f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4188,6 +4188,24 @@ static void alc_fixup_disable_aamix(struct hda_codec *codec,
- 	}
- }
- 
-+/* fixup for Thinkpad docks: add dock pins, avoid HP parser fixup */
-+static void alc_fixup_tpt440_dock(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+	static const struct hda_pintbl pincfgs[] = {
-+		{ 0x16, 0x21211010 }, /* dock headphone */
-+		{ 0x19, 0x21a11010 }, /* dock mic */
-+		{ }
-+	};
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
-+		codec->power_save_node = 0; /* avoid click noises */
-+		snd_hda_apply_pincfgs(codec, pincfgs);
-+	}
-+}
-+
- static void alc_shutup_dell_xps13(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-@@ -4562,7 +4580,6 @@ enum {
- 	ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC,
- 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC292_FIXUP_TPT440_DOCK,
--	ALC292_FIXUP_TPT440_DOCK2,
- 	ALC283_FIXUP_BXBT2807_MIC,
- 	ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED,
- 	ALC282_FIXUP_ASPIRE_V5_PINS,
-@@ -5029,17 +5046,7 @@ static const struct hda_fixup alc269_fixups[] = {
- 	},
- 	[ALC292_FIXUP_TPT440_DOCK] = {
- 		.type = HDA_FIXUP_FUNC,
--		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
--		.chained = true,
--		.chain_id = ALC292_FIXUP_TPT440_DOCK2
--	},
--	[ALC292_FIXUP_TPT440_DOCK2] = {
--		.type = HDA_FIXUP_PINS,
--		.v.pins = (const struct hda_pintbl[]) {
--			{ 0x16, 0x21211010 }, /* dock headphone */
--			{ 0x19, 0x21a11010 }, /* dock mic */
--			{ }
--		},
-+		.v.func = alc_fixup_tpt440_dock,
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
- 	},
--- 
-2.5.3
+T24gVGh1LCBTZXAgMjQsIDIwMTUgYXQgNTozNiBBTSwgSmVhbi1GcmFuY29pcyBNb2luZSA8bW9p
+bmVqZkBmcmVlLmZyPiB3cm90ZToKPiBPbiBNb24sIDIxIFNlcCAyMDE1IDEwOjE5OjE4IC0wNTAw
+Cj4gUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gT24gMDkvMTgvMjAx
+NSAwNjowNiBBTSwgSnlyaSBTYXJoYSB3cm90ZToKPj4gPiBGcm9tOiBKZWFuLUZyYW5jb2lzIE1v
+aW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4+ID4KPj4gPiBUd28ga2luZHMgb2YgcG9ydHMgbWF5IGJl
+IGRlY2xhcmVkIGluIGEgRFQgZ3JhcGggb2YgcG9ydHM6IHZpZGVvIGFuZCBhdWRpby4KPj4gPiBU
+aGlzIHBhdGNoIGFjY2VwdHMgdGhlIHBvcnQgdmFsdWUgZnJvbSBhIHZpZGVvIHBvcnQgYXMgYW4g
+YWx0ZXJuYXRpdmUKPj4gPiB0byB0aGUgdmlkZW8tcG9ydHMgcHJvcGVydHkuCj4+ID4gSXQgYWxz
+byBhY2NlcHRzIGF1ZGlvIHBvcnRzIGluIHRoZSBjYXNlIHRoZSB0cmFuc21pdHRlciBpcyBub3Qg
+dXNlZCBhcwo+PiA+IGEgc2xhdmUgZW5jb2Rlci4KPj4gPiBUaGUgbmV3IGZpbGUgaW5jbHVkZS9z
+b3VuZC90ZGE5OTh4LmggcHJlcGFyZXMgdG8gdGhlIGRlZmluaXRpb24gb2YKPj4gPiBhIHRkYTk5
+OHggQ09ERUMuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxt
+b2luZWpmQGZyZWUuZnI+Cj4+ID4gU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8anNhcmhhQHRp
+LmNvbT4KPj4gPiAtLS0KPiAgICAgICAgIFtzbmlwXQo+PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZHJtL2kyYy90ZGE5OTh4LnR4dCBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4+ID4gaW5kZXgg
+ZTllNGJjZS4uMzVmNmE4MCAxMDA2NDQKPj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvZHJtL2kyYy90ZGE5OTh4LnR4dAo+PiA+ICsrKyBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4+ID4gQEAgLTE2LDYgKzE2
+LDM1IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4+ID4KPj4gPiAgICAtIHZpZGVvLXBvcnRzOiAy
+NCBiaXRzIHZhbHVlIHdoaWNoIGRlZmluZXMgaG93IHRoZSB2aWRlbyBjb250cm9sbGVyCj4+ID4g
+ICAgIG91dHB1dCBpcyB3aXJlZCB0byB0aGUgVERBOTk4eCBpbnB1dCAtIGRlZmF1bHQ6IDwweDIz
+MDE0NT4KPj4gPiArICAgVGhpcyBwcm9wZXJ0eSBpcyBub3QgdXNlZCB3aGVuIHBvcnRzIGFyZSBk
+ZWZpbmVkLgo+PiA+ICsKPj4gPiArT3B0aW9uYWwgbm9kZXM6Cj4+ID4gKwo+PiA+ICsgIC0gcG9y
+dDogdXAgdG8gdGhyZWUgcG9ydHMuCj4+ID4gKyAgIFRoZSBwb3J0cyBhcmUgZGVmaW5lZCBhY2Nv
+cmRpbmcgdG8gWzFdLgo+PiA+ICsKPj4gPiArICAgIFZpZGVvIHBvcnQuCj4+ID4gKyAgIFRoZXJl
+IG1heSBiZSBvbmx5IG9uZSB2aWRlbyBwb3J0Lgo+PiA+ICsgICBUaGlzIG9uZSBtdXN0IGNvbnRh
+aW4gdGhlIGZvbGxvd2luZyBwcm9wZXJ0eToKPj4gPiArCj4+ID4gKyAgIC0gcG9ydC10eXBlOiBt
+dXN0IGJlICJyZ2IiCj4+Cj4+IFdoeSBkbyB5b3UgbmVlZCB0aGlzIGlmIHRoZXJlIGlzIG5vIG90
+aGVyIGNob2ljZT8gVGhlIHBvcnQgbnVtYmVyIHNob3VsZAo+PiBkZWZpbmUgd2hpY2ggb25lIGlz
+IHZpZGVvLgo+Cj4gVGhlcmUgaXMgbm8gc3BlY2lmaWMgcG9ydCBudW1iZXIuCj4gT25lIG9mIHRo
+ZSBwb3J0cyBpcyB2aWRlbyBhbmQgdHdvIG90aGVyIG9uZXMgYXJlIGF1ZGlvLgoKSSBzYXlpbmcg
+eW91IHNob3VsZCBkZWZpbmUgdGhlIHBvcnQgbnVtYmVyaW5nIGluIHRoZSBiaW5kaW5nLiBQb3J0
+IDAKaXMgdmlkZW8sIFBvcnQgMSBpcyBpMnMsIGV0Yy4KCj4KPj4gPiArCj4+ID4gKyAgIGFuZCBt
+YXkgY29udGFpbiB0aGUgb3B0aW9uYWwgcHJvcGVydHk6Cj4+ID4gKwo+PiA+ICsgICAtIHJlZzog
+MjQgYml0cyB2YWx1ZSB3aGljaCBkZWZpbmVzIGhvdyB0aGUgdmlkZW8gY29udHJvbGxlcgo+PiA+
+ICsgICAgICAgICAgIG91dHB1dCBpcyB3aXJlZCB0byB0aGUgVERBOTk4eCBpbnB1dCAodmlkZW8g
+cGlucykKPj4gPiArICAgICAgICAgICBXaGVuIGFic2VudCwgdGhlIGRlZmF1bHQgdmFsdWUgaXMg
+PDB4MjMwMTQ1Pi4KPj4KPj4gSSdtIGZhaWxpbmcgdG8gZGVjb2RlIGhvdyB0aGlzIHZhbHVlIHdv
+cmtzLiBJbiBhbnkgY2FzZSwgSSB3b3VsZCBrZWVwCj4+IHRoaXMgYXMgYSB2ZW5kb3Igc3BlY2lm
+aWMgcHJvcGVydHkgcmF0aGVyIHRoYW4gYWJ1c2luZyByZWcuCj4KPiBUaGlzIGhhcyBiZWVuIGV4
+cGxhaW5lZCBpbgo+IGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE0LzEvMjAvODYKCk9rYXksIHNv
+IHRoYXQgZXhwbGFpbnMgaG93IGl0IHdvcmtzLCBidXQgc3RpbGwgaXQgc2hvdWxkIG5vdCBiZSBp
+biByZWcuCgo+Cj4+ID4gKwo+PiA+ICsgICAgQXVkaW8gcG9ydHMuCj4+ID4gKyAgIFRoZXJlIG1h
+eSBiZSBvbmUgb3IgdHdvIGF1ZGlvIHBvcnRzLgo+PiA+ICsgICBUaGVzZSBvbmVzIG11c3QgY29u
+dGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXM6Cj4+ID4gKwo+PiA+ICsgICAtIHBvcnQtdHlw
+ZTogbXVzdCBiZSAiaTJzIiBvciAic3BkaWYiCj4+ID4gKwo+PiA+ICsgICAtIHJlZzogOCBiaXRz
+IHZhbHVlIHdoaWNoIGRlZmluZXMgaG93IHRoZSBhdWRpbyBjb250cm9sbGVyCj4+ID4gKyAgICAg
+ICAgICAgb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5OTh4IGlucHV0IChhdWRpbyBwaW5zKQo+
+Pgo+PiByZWcgaXMgMzItYml0cy4KPgo+IFRoaXMgcG9ydCBoYXMgb25seSA4IHNpZ25pZmljYW50
+IGJpdHMgYXMgZXhwbGFpbmVkIGluCj4gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTUvMS83LzM2
+MgoKTWF5YmUgb25seSA4LWJpdHMgYXJlIHVzZWQsIGJ1dCB0aGUgc2l6ZSBvZiB0aGUgZGF0YSBp
+biB0aGUgRFRCIGlzCjMyLWJpdHMgdW5sZXNzIHlvdSBhZGQgOC1iaXQgYW5ub3RhdGlvbi4gQWdh
+aW4sIHJlZyBpcyBub3QgYXBwcm9wcmlhdGUKdG8gdXNlIGhlcmUuCgpSb2IKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlz
+dApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
