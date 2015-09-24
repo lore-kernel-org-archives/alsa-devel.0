@@ -1,87 +1,112 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH RFC v4 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Thu, 24 Sep 2015 12:36:16 +0200
-Message-ID: <20150924123616.5d47f363@armhf>
-References: <cover.1442572860.git.jsarha@ti.com>
- <e9ebb04f781fef7cff99190d301fb64805b97d39.1442572860.git.jsarha@ti.com>
- <56001FF6.5070504@kernel.org>
+From: Andreas Hartmann <mail@andreashartmann.eu>
+Subject: Re: Bug: LADSPA implementation - no up/downmix handling
+Date: Thu, 24 Sep 2015 12:44:53 +0200
+Message-ID: <1544609.lNj7aapdUP@deep-thought>
+References: <2541800.vBPmoIL6Xo@deep-thought> <s5hpp196wjx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <56001FF6.5070504@kernel.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5101198280636404512=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from stcim.de (stcim.de [78.46.73.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19F69260505
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 12:44:57 +0200 (CEST)
+Received: from ipbcc2fc9d.dynamic.kabel-deutschland.de ([188.194.252.157]
+ helo=deep-thought.localnet)
+ by stcim.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:256)
+ (Exim 4.84) (envelope-from <mail@andreashartmann.eu>)
+ id 1Zf41I-0002ki-E8
+ for alsa-devel@alsa-project.org; Thu, 24 Sep 2015 12:44:56 +0200
+In-Reply-To: <s5hpp196wjx.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMSBTZXAgMjAxNSAxMDoxOToxOCAtMDUwMApSb2IgSGVycmluZyA8cm9iaEBrZXJu
-ZWwub3JnPiB3cm90ZToKCj4gT24gMDkvMTgvMjAxNSAwNjowNiBBTSwgSnlyaSBTYXJoYSB3cm90
-ZToKPiA+IEZyb206IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KPiA+IAo+
-ID4gVHdvIGtpbmRzIG9mIHBvcnRzIG1heSBiZSBkZWNsYXJlZCBpbiBhIERUIGdyYXBoIG9mIHBv
-cnRzOiB2aWRlbyBhbmQgYXVkaW8uCj4gPiBUaGlzIHBhdGNoIGFjY2VwdHMgdGhlIHBvcnQgdmFs
-dWUgZnJvbSBhIHZpZGVvIHBvcnQgYXMgYW4gYWx0ZXJuYXRpdmUKPiA+IHRvIHRoZSB2aWRlby1w
-b3J0cyBwcm9wZXJ0eS4KPiA+IEl0IGFsc28gYWNjZXB0cyBhdWRpbyBwb3J0cyBpbiB0aGUgY2Fz
-ZSB0aGUgdHJhbnNtaXR0ZXIgaXMgbm90IHVzZWQgYXMKPiA+IGEgc2xhdmUgZW5jb2Rlci4KPiA+
-IFRoZSBuZXcgZmlsZSBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaCBwcmVwYXJlcyB0byB0aGUgZGVm
-aW5pdGlvbiBvZgo+ID4gYSB0ZGE5OTh4IENPREVDLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBK
-ZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBK
-eXJpIFNhcmhhIDxqc2FyaGFAdGkuY29tPgo+ID4gLS0tCglbc25pcF0KPiA+IGRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZHJtL2kyYy90ZGE5OTh4LnR4dCBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4g
-PiBpbmRleCBlOWU0YmNlLi4zNWY2YTgwIDEwMDY0NAo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2RybS9pMmMvdGRhOTk4eC50eHQKPiA+ICsrKyBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0Cj4gPiBAQCAtMTYs
-NiArMTYsMzUgQEAgT3B0aW9uYWwgcHJvcGVydGllczoKPiA+ICAKPiA+ICAgIC0gdmlkZW8tcG9y
-dHM6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIK
-PiA+ICAJb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5OTh4IGlucHV0IC0gZGVmYXVsdDogPDB4
-MjMwMTQ1Pgo+ID4gKwlUaGlzIHByb3BlcnR5IGlzIG5vdCB1c2VkIHdoZW4gcG9ydHMgYXJlIGRl
-ZmluZWQuCj4gPiArCj4gPiArT3B0aW9uYWwgbm9kZXM6Cj4gPiArCj4gPiArICAtIHBvcnQ6IHVw
-IHRvIHRocmVlIHBvcnRzLgo+ID4gKwlUaGUgcG9ydHMgYXJlIGRlZmluZWQgYWNjb3JkaW5nIHRv
-IFsxXS4KPiA+ICsKPiA+ICsgICAgVmlkZW8gcG9ydC4KPiA+ICsJVGhlcmUgbWF5IGJlIG9ubHkg
-b25lIHZpZGVvIHBvcnQuCj4gPiArCVRoaXMgb25lIG11c3QgY29udGFpbiB0aGUgZm9sbG93aW5n
-IHByb3BlcnR5Ogo+ID4gKwo+ID4gKwktIHBvcnQtdHlwZTogbXVzdCBiZSAicmdiIiAgCj4gCj4g
-V2h5IGRvIHlvdSBuZWVkIHRoaXMgaWYgdGhlcmUgaXMgbm8gb3RoZXIgY2hvaWNlPyBUaGUgcG9y
-dCBudW1iZXIgc2hvdWxkCj4gZGVmaW5lIHdoaWNoIG9uZSBpcyB2aWRlby4KClRoZXJlIGlzIG5v
-IHNwZWNpZmljIHBvcnQgbnVtYmVyLgpPbmUgb2YgdGhlIHBvcnRzIGlzIHZpZGVvIGFuZCB0d28g
-b3RoZXIgb25lcyBhcmUgYXVkaW8uCgo+ID4gKwo+ID4gKwlhbmQgbWF5IGNvbnRhaW4gdGhlIG9w
-dGlvbmFsIHByb3BlcnR5Ogo+ID4gKwo+ID4gKwktIHJlZzogMjQgYml0cyB2YWx1ZSB3aGljaCBk
-ZWZpbmVzIGhvdyB0aGUgdmlkZW8gY29udHJvbGxlcgo+ID4gKwkJb3V0cHV0IGlzIHdpcmVkIHRv
-IHRoZSBUREE5OTh4IGlucHV0ICh2aWRlbyBwaW5zKQo+ID4gKwkJV2hlbiBhYnNlbnQsIHRoZSBk
-ZWZhdWx0IHZhbHVlIGlzIDwweDIzMDE0NT4uICAKPiAKPiBJJ20gZmFpbGluZyB0byBkZWNvZGUg
-aG93IHRoaXMgdmFsdWUgd29ya3MuIEluIGFueSBjYXNlLCBJIHdvdWxkIGtlZXAKPiB0aGlzIGFz
-IGEgdmVuZG9yIHNwZWNpZmljIHByb3BlcnR5IHJhdGhlciB0aGFuIGFidXNpbmcgcmVnLgoKVGhp
-cyBoYXMgYmVlbiBleHBsYWluZWQgaW4KaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTQvMS8yMC84
-NgoKPiA+ICsKPiA+ICsgICAgQXVkaW8gcG9ydHMuCj4gPiArCVRoZXJlIG1heSBiZSBvbmUgb3Ig
-dHdvIGF1ZGlvIHBvcnRzLgo+ID4gKwlUaGVzZSBvbmVzIG11c3QgY29udGFpbiB0aGUgZm9sbG93
-aW5nIHByb3BlcnRpZXM6Cj4gPiArCj4gPiArCS0gcG9ydC10eXBlOiBtdXN0IGJlICJpMnMiIG9y
-ICJzcGRpZiIKPiA+ICsKPiA+ICsJLSByZWc6IDggYml0cyB2YWx1ZSB3aGljaCBkZWZpbmVzIGhv
-dyB0aGUgYXVkaW8gY29udHJvbGxlcgo+ID4gKwkJb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5
-OTh4IGlucHV0IChhdWRpbyBwaW5zKSAgCj4gCj4gcmVnIGlzIDMyLWJpdHMuCgpUaGlzIHBvcnQg
-aGFzIG9ubHkgOCBzaWduaWZpY2FudCBiaXRzIGFzIGV4cGxhaW5lZCBpbgpodHRwczovL2xrbWwu
-b3JnL2xrbWwvMjAxNS8xLzcvMzYyCgo+ID4gKwo+ID4gK1sxXSBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvZ3JhcGgudHh0Cj4gPiAgCj4gPiAgRXhhbXBsZToKPiA+ICAKPiA+IEBA
-IC0yNiw0ICs1NSwyNiBAQCBFeGFtcGxlOgo+ID4gIAkJaW50ZXJydXB0cyA9IDwyNyAyPjsJCS8q
-IGZhbGxpbmcgZWRnZSAqLwo+ID4gIAkJcGluY3RybC0wID0gPCZwbXhfY2FtZXJhPjsKPiA+ICAJ
-CXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7Cj4gPiArCj4gPiArCQlwb3J0QDIzMDE0NSB7Cj4g
-PiArCQkJcG9ydC10eXBlID0gInJnYiI7Cj4gPiArCQkJcmVnID0gPDB4MjMwMTQ1PjsKPiA+ICsJ
-CQloZG1pXzA6IGVuZHBvaW50IHsKPiA+ICsJCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZsY2QwXzA+
-Owo+ID4gKwkJCX07Cj4gPiArCQl9Owo+ID4gKwkJcG9ydEAzIHsJCQkvKiBBUDEgPSBJMlMgKi8g
-IAo+IAo+IElzIDMgc2lnbmlmaWNhbnQ/IFdoYXQgaGFwcGVuZWQgdG8gMC0yPwoKVGhlIHZhbHVl
-IGFmdGVyIEAgaXMgdGhlICdyZWcnIHZhbHVlICg9IHZhbHVlIG9mIHRoZSBwb3J0IHJlZ2lzdGVy
-KS4KCj4gPiArCQkJcG9ydC10eXBlID0gImkycyI7Cj4gPiArCQkJcmVnID0gPDB4MDM+Owo+ID4g
-KwkJCXRkYTk5OHhfaTJzOiBlbmRwb2ludCB7Cj4gPiArCQkJCXJlbW90ZS1lbmRwb2ludCA9IDwm
-YXVkaW8xX2kycz47Cj4gPiArCQkJfTsKPiA+ICsJCX07CgotLSAKS2VuIGFyIGMnaGVudGHDsQl8
-CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpm
-LmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
-dHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============5101198280636404512==
+Content-Type: multipart/signed; boundary="nextPart1622476.1qOaJv33oD"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+
+
+--nextPart1622476.1qOaJv33oD
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Am Mittwoch, 23. September 2015, 16:26:58 schrieb Takashi Iwai:
+> On Sat, 12 Sep 2015 22:10:40 +0200,
+> 
+> Andreas Hartmann wrote:
+> > Hi,
+> > 
+> > Using the surround_encoder of the swh-plugins I noticed, that the alsa
+> > implementation only assumes an equal number of in- and output channels for
+> > ladspa plugins. This occurs from Line 752 onwards in pcm_ladspa.c and
+> > leads to a Segfault shortly after.
+> > There needs to be a check and correct handling for up/downmix scenarios.
+> 
+> Could you give the back trace?  Or at best submit a fix patch?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Sure here you go
+
+#0  0x00007ffff78623ef in snd_pcm_ladspa_allocate_memory (pcm=0x626fa0, 
+pcm=0x626fa0, pcm=0x626fa0, ladspa=0x621ad0) at pcm_ladspa.c:753
+#1  snd_pcm_ladspa_init (pcm=0x626fa0) at pcm_ladspa.c:834
+#2  0x00007ffff7842946 in snd_pcm_plugin_prepare (pcm=0x626fa0) at 
+pcm_plugin.c:171
+#3  0x00007ffff784290f in snd_pcm_plugin_prepare (pcm=0x62c760) at 
+pcm_plugin.c:162
+#4  0x000000000040256a in ?? ()
+#5  0x00007ffff7222ec5 in __libc_start_main (main=0x401d80, argc=4, 
+argv=0x7fffffffde28, init=<optimized out>, fini=<optimized out>, 
+rtld_fini=<optimized out>,
+    stack_end=0x7fffffffde18) at libc-start.c:287
+#6  0x0000000000402fdd in ?? ()
+
+--nextPart1622476.1qOaJv33oD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAABAgAGBQJWA9QnAAoJEFdgwA+zsF1UwHoP+gM8boPq53kRz/X2j+aHCIxl
+VDaxg9sHiy1NmaDKbOUo/qD9SRbSdjL2hWu1wpl1K3Gh5Blhn/WIgVjNF+YdWRh3
+Cu8sU6M5ju+NG/GTjxT0UELXk33sry5I6+w4Z8NVWn2IVmYbWrtdDwFlU6CVK3LO
+i2iUaszK40AIQvyOvRr6EPtOYTI5LXGtGN0BrekO1/M72jmZW6V9dviGSm/HI6re
+CHnlnOHyWN+1s9XJGj47G5ube/ZXdKPD1lty3jr5PIj3FpqkmIuA8JhY2cGxPu4U
+rIhVJa5zk5jEklNmMSeH/sDZNLnKbitzOro3RWfai1F40q9/Ri7nH0aBvtQIgfkf
+6/1hIpsjT1HAVreCcft/+7voIGTIGOOdRhLGlQBb7Uh+MZo9vV2eVnOrw4O3nS7n
+zuI3aHz+xBHexF4ZkGsbkjW6JpoXL1YDeuD/n/KG4v4lDVD9/+Q+DzJM4CAZp7ck
+Hh1Mcq9CX/30yM9XRxYwCz+YMaaY+oSZxThq+It2532Zt7gvMaZzm9SnXq9Lj93s
+VyCICGLTTizaemQmYsjXqr0E2I2u2FOMZj3H22wektJrcX3sB0Ytbyftm1Jw0zs/
+B2RoavKFU40Vj3u397QSfXrRPPmczFMKmLZNsMF3N7mEdcxagK/wWsWx4R3lf/1i
+o2/YhqLaeFEYa5Hm1lmd
+=8pAR
+-----END PGP SIGNATURE-----
+
+--nextPart1622476.1qOaJv33oD--
+
+
+--===============5101198280636404512==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5101198280636404512==--
