@@ -1,20 +1,20 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: Re: No stream timing info with alsa pulse plugin?
-Date: Thu, 24 Sep 2015 11:25:34 +0530
-Message-ID: <CACuU-+gUJjMK2dchk=n_z0ZAy7exhZ7+WEia-gmp1KmpNV4J4w@mail.gmail.com>
-References: <CAM104AVeYoNhWB8A24rwy1XnkkG+nyRYNiMV3AmJCHze4TbjjQ@mail.gmail.com>
- <CAN8cciaQ4_vSj4MMo6sxw9zejXW7ydGqnkD5hFig5EZyg+z4cg@mail.gmail.com>
+From: Francesco Lavra <francescolavra.fl@gmail.com>
+Subject: Re: MIDI port using UART interface
+Date: Thu, 24 Sep 2015 08:58:07 +0200
+Message-ID: <CAOau3s_Y9KnBsQj9BRKQ9hfnd91PXs63Ur0_zycmdk6d-X10=A@mail.gmail.com>
+References: <55FD6494.8030208@gmail.com>
+	<5602EBFE.5000203@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f176.google.com (mail-yk0-f176.google.com
- [209.85.160.176])
- by alsa0.perex.cz (Postfix) with ESMTP id DB4002604E3
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 07:55:54 +0200 (CEST)
-Received: by ykdt18 with SMTP id t18so64573558ykd.3
- for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 22:55:54 -0700 (PDT)
-In-Reply-To: <CAN8cciaQ4_vSj4MMo6sxw9zejXW7ydGqnkD5hFig5EZyg+z4cg@mail.gmail.com>
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id C92972612D1
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 08:58:08 +0200 (CEST)
+Received: by obbmp4 with SMTP id mp4so51525541obb.3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2015 23:58:07 -0700 (PDT)
+In-Reply-To: <5602EBFE.5000203@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, sqweek <sqweek@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMyBGZWJydWFyeSAyMDE1IGF0IDA3OjEwLCBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRl
-eDJAZ21haWwuY29tPiB3cm90ZToKPiAyMDE1LTEtMjcg5LiK5Y2IMzozMyDmlrwgInNxd2VlayIg
-PHNxd2Vla0BnbWFpbC5jb20+IOWvq+mBk++8mgo+Pgo+PiBIaSBndXlzLAo+Pgo+PiBJIGRpc2Nv
-dmVyZWQgb24gbXkgbWFjaGluZSB0aGF0IGFsc2Ffc25kX3BjbV9zdGF0dXNfZ2V0X3RzdGFtcCAo
-YW5kCj4+IGFsc28gZ2V0X2h0c3RhbXApIHN0b3Agd29ya2luZyB3aGVuIG15IGFzb3VuZHJjIGlu
-dm9rZXMgdGhlIHB1bHNlCj4+IHBsdWdpbi4KPj4KPj4gVGhhdCBpcywgbm9ybWFsbHkgdGhleSB3
-b3JrIGZpbmUgYnV0IG9uY2UgdGhlIHNvdW5kIGlzIGdvaW5nIHZpYSBwdWxzZQo+PiB0aGUgcmV0
-dXJuZWQgdGltZSBzdGFtcCBpcyBhbHdheXMgemVyby4gSSdtIHRyeWluZyB0byB1bmRlcnN0YW5k
-IHdoeQo+PiB0aGF0IGlzLgo+Pgo+PiBJIGNvdWxkbid0IHJlYWxseSBmaW5kIGFueSBkaXNjdXNz
-aW9uIG9mIHRoZSBwdWxzZSBwbHVnaW4gb24gdGhlCj4+IGFyY2hpdmVzIHNvIEknbSBub3QgZW50
-aXJlbHkgc3VyZSBJJ3ZlIGZvdW5kIHRoZSByaWdodCBsaXN0OyBJIHdhcwo+PiBkaXJlY3RlZCBo
-ZXJlIHZpYSB0aGUgcHVsc2VhdWRpbyBidWd6aWxsYVsxXS4KPj4KPj4gWzFdIGh0dHBzOi8vYnVn
-cy5mcmVlZGVza3RvcC5vcmcvc2hvd19idWcuY2dpP2lkPTg4NTAzCj4+Cj4KPiBodHRwOi8vZ2l0
-LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS1saWIuZ2l0O2E9Y29tbWl0ZGlmZjtoPTY1ZmY2ZmRh
-ZmI3MDViNWUyZTZkNGI5YTk0YTgwZTVkZTg5ZjVkZTE7aHA9OWI3MTYwNzVkZTRmMmY3ZjE1ZTQy
-OGVlN2VmYWE4OTYwZWY0NWI5YyNwYXRjaDE0Cj4gNDQ4LDcgKzQ0OCw3IEBAIHN0YXRpYyBpbnQg
-c25kX3BjbV9pb3BsdWdfc3RhcnQoc25kX3BjbV90ICpwY20pCj4gICAgICAgICBpZiAoZXJyIDwg
-MCkKPiAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsKPgo+IC0gICAgICAgZ2V0dGltZXN0YW1w
-KCZpby0+dHJpZ2dlcl90c3RhbXAsIHBjbS0+bW9ub3RvbmljKTsKPiArICAgICAgIGdldHRpbWVz
-dGFtcCgmaW8tPnRyaWdnZXJfdHN0YW1wLCBwY20tPnRzdGFtcF90eXBlKTsKPiAgICAgICAgIGlv
-LT5kYXRhLT5zdGF0ZSA9IFNORF9QQ01fU1RBVEVfUlVOTklORzsKPgo+ICAgICAgICAgcmV0dXJu
-IDA7Cj4gQEAgLTQ2Myw3ICs0NjMsNyBAQCBzdGF0aWMgaW50IHNuZF9wY21faW9wbHVnX2Ryb3Ao
-c25kX3BjbV90ICpwY20pCj4KPiAgICAgICAgIGlvLT5kYXRhLT5jYWxsYmFjay0+c3RvcChpby0+
-ZGF0YSk7Cj4KPiAtICAgICAgIGdldHRpbWVzdGFtcCgmaW8tPnRyaWdnZXJfdHN0YW1wLCBwY20t
-Pm1vbm90b25pYyk7Cj4gKyAgICAgICBnZXR0aW1lc3RhbXAoJmlvLT50cmlnZ2VyX3RzdGFtcCwg
-cGNtLT50c3RhbXBfdHlwZSk7Cj4gICAgICAgICBpby0+ZGF0YS0+c3RhdGUgPSBTTkRfUENNX1NU
-QVRFX1NFVFVQOwo+Cj4gICAgICAgICByZXR1cm4gMDsKPiBAQCAtMTA2OSw3ICsxMDY5LDEwIEBA
-IGludCBzbmRfcGNtX2lvcGx1Z19yZWluaXRfc3RhdHVzKHNuZF9wY21faW9wbHVnX3QKPiAqaW9w
-bHVnKQo+IHsKPiAgICAgICAgIGlvcGx1Zy0+cGNtLT5wb2xsX2ZkID0gaW9wbHVnLT5wb2xsX2Zk
-Owo+ICAgICAgICAgaW9wbHVnLT5wY20tPnBvbGxfZXZlbnRzID0gaW9wbHVnLT5wb2xsX2V2ZW50
-czsKPiAtICAgICAgIGlvcGx1Zy0+cGNtLT5tb25vdG9uaWMgPSAoaW9wbHVnLT5mbGFncyAmCj4g
-U05EX1BDTV9JT1BMVUdfRkxBR19NT05PVE9OSUMpICE9IDA7Cj4gKyAgICAgICBpZiAoaW9wbHVn
-LT5mbGFncyAmIFNORF9QQ01fSU9QTFVHX0ZMQUdfTU9OT1RPTklDKQo+ICsgICAgICAgICAgICAg
-ICBpb3BsdWctPnBjbS0+dHN0YW1wX3R5cGUgPSBTTkRfUENNX1RTVEFNUF9UWVBFX01PTk9UT05J
-QzsKPiArICAgICAgIGVsc2UKPiArICAgICAgICAgICAgICAgaW9wbHVnLT5wY20tPnRzdGFtcF90
-eXBlID0gU05EX1BDTV9UU1RBTVBfVFlQRV9HRVRUSU1FT0ZEQVk7Cj4gICAgICAgICBpb3BsdWct
-PnBjbS0+bW1hcF9ydyA9IGlvcGx1Zy0+bW1hcF9ydzsKPiAgICAgICAgIHJldHVybiAwOwo+IH0K
-Pgo+IEFsdGhvdWdoIHRpbWUgc3RhbXAgd2FzIGVuYWJsZWQgaW4gcGNtX2lvcGx1Zy5jICwgaXQg
-ZG9lcyBub3QgaW1wbGllcyBhbGwKPiB0aG9zZSBpbyBwbHVnaW4gcmVhbGx5IHN1cHBvcnQgdGlt
-ZSBzdGFtcAo+Cj4gSXMgdGhpcyBhIGJ1ZyA/CgpTZWVtcyB0byBiZS4gVGFrYXNoaSwgb3RoZXJz
-IC0tIGRvIGhhdmUgc3VnZ2VzdGlvbnMgb24gaG93IHRvIGhhbmRsZSB0aGlzPwoKUmVnYXJkcywK
-QXJ1bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Sep 23, 2015 at 8:14 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Francesco Lavra wrote:
+>> So how would you approach the task of writing a MIDI driver that uses
+>> UART behind the scenes? Am I correct in assuming that I have to use
+>> the RawMIDI interface (as the UART 16550 driver does) to make my MIDI
+>> port available to ALSA applications? Or is there a better alternative?
+>
+> The kernel-internal serial port interfaces are designed to be able to
+> run a console.
+>
+> The easiest way would be a userspace daemon that bridges between some
+> /dev/tty* and the ALSA sequencer.
+> See <http://www.alsa-project.org/~clemens/usbmidid/usbmidid.c> for an
+> example that uses some other device.
+
+There already is an userspace daemon that bridges a tty with the ALSA
+sequencer: ttymidi (http://www.varal.org/ttymidi/). Unfortunately it
+doesn't support non-standard baud rates such as 31.25 kbps, and using
+the termios API it's not possible to set non-standard baud rates.
+Messing with the serial port settings via setserial could do the trick
+(not sure if it works on my system, though), otherwise another
+solution could be to use the (non-POSIX) termios2 API...
+
+Regards,
+Francesco
