@@ -1,120 +1,121 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: RT5640 jack detection
-Date: Thu, 24 Sep 2015 14:29:38 -0700
-Message-ID: <20150924212938.GG30445@sirena.org.uk>
-References: <CAL9uMOHM3tbdKT7s4panz8zyYxu35F38GLUtu9DSmgrQr=Ciqg@mail.gmail.com>
- <1443025358.6977.71.camel@loki>
- <20150923163746.GR30445@sirena.org.uk>
- <CAL9uMOG2CgBU2yiKCq4iyt7L-Ms1e=vVqrAFV76G1Zvj3d3PXA@mail.gmail.com>
+From: libin.yang@intel.com
+Subject: [PATCH v2] drm/i915: set proper N/CTS in modeset
+Date: Fri, 25 Sep 2015 09:36:12 +0800
+Message-ID: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5388338114936220751=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3EBF265ADB
- for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 23:30:18 +0200 (CEST)
-In-Reply-To: <CAL9uMOG2CgBU2yiKCq4iyt7L-Ms1e=vVqrAFV76G1Zvj3d3PXA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Carlo Caione <carlo@endlessm.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, =?iso-8859-1?Q?Jo=E3o?= Paulo Rechi Vita <jprvita@endlessm.com>, Daniel Drake <drake@endlessm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, jani.nikula@linux.intel.com, ville.syrjala@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5388338114936220751==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yqX3wpb4QnjwKg06"
-Content-Disposition: inline
-
-
---yqX3wpb4QnjwKg06
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Sep 24, 2015 at 10:34:14PM +0200, Carlo Caione wrote:
-> On Wed, Sep 23, 2015 at 6:37 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > That can upset userspaces - it means you get things like trying to play
-> > a notification tone, starting, realising that a headphone is there and
-> > trying to switch on the headphone in the middle of the notification
-> > being played back which doesn't tend to work out so well.
-
-> > What I'd expect the driver to be doing here is enabling whatever it
-> > needs to do detection enabled while detection is enabled.
-
-> What I don't get here is what do you mean with "detection". Can we
-> simply consider PA listening for jack change events a "detection"?
-
-Detection is the act of detecting if a jack is physically present in the
-socket.  This will normally happen all the time the system is running,
-some userspaces rely on uevents to get notifications so the kernel can't
-tell if anything is listening.
-
-> > There's quite
-> > a few examples of this in mainline - look for jack code that has DAPM
-> > calls in it.
-
-> Do you thing the rt5670.c could be a good example for that?
-
-No, that doesn't appear to have any interlock with DAPM and is just
-basic GPIO stuff.
-
-> In my case the setup is different though. The GPIO is driven by the
-> codec itself and it doesn't work when the codec BIAS is off. So the
-> problem is that I cannot use the DAPM code since before that I need to
-> find a way to detect the change in the GPIO status when I'm not
-> actively using the codec.
-
-To repeat:
-
-| What I'd expect the driver to be doing here is enabling whatever it
-| needs to do detection enabled while detection is enabled.  There's quite
-| a few examples of this in mainline - look for jack code that has DAPM
-| calls in it.
-
-If you need to force things on during detection you should add code to
-do that, for example enabling relevant DAPM widgets with _force_enable().
-
-> I see two possible solutions for this problem: 1) as said before I can
-> just avoid to turn the BIAS totally off, leaving the I2S clock active
-> that allows the codec to drive the GPIO or 2) keep polling on the
-> status of the GPIO enabling and then disabling the BIAS (or using the
-> DAPM code) just for the time needed to read the GPIO status
-
-Enabling things only when needed is of course optimal but you need
-detection to work whenever detection is enabled.  It sounds like this is
-not the case for your system.
-
---yqX3wpb4QnjwKg06
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWBGs8AAoJECTWi3JdVIfQA2UH/RDeXsop7qRfmDZnldTccx7w
-vXvCmLCe4T+550TrIcyBE7/UbMsAd8fUaYQpH2dEZfEzzaYc5mInGYeFY61zFmC3
-IYHD1555XlAiQLw2sJUOUBzSj/Xjv12s5oH6Q+xg/P73in/v+JLq9PC7PMWFPpSL
-H/nsmvunCvpCwYAHGlc5gKsAePfKV31pEzz1Knbll5mWeFInQo8sl5vG6H5agPzk
-2O+rNCGXkRX4EytvxQVPSzkNMEY7MDQN0FSVnNA7Bg9/dRqzjqdajhNc/806Ucie
-/SOYmkaywoN+35+dcngDheyuSe77GQ+gEEYxLzRCE1yyni1bNrkIIfHCGHWt0Qk=
-=GCGl
------END PGP SIGNATURE-----
-
---yqX3wpb4QnjwKg06--
-
---===============5388338114936220751==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5388338114936220751==--
+RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpXaGVuIG1vZGVzZXQgb2Nj
+dXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKc3BlaWNhbCB2YWx1ZXMs
+IHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBpZiBhdWRpbwppcyBwbGF5aW5nLgoK
+U2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Ci0tLQogZHJp
+dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDU3ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tCiBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oICAgICAgIHwg
+MTAgKysrKysrKwogMiBmaWxlcyBjaGFuZ2VkLCA1OCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9u
+cygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9k
+cml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCmluZGV4IGUzYzMyY2UuLjY0MmRmYmQg
+MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKKysrIGIvZHJp
+dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwpAQCAtMTI4LDYgKzEyOCwyMCBAQCBzdGF0
+aWMgaW50IGF1ZGlvX2NvbmZpZ19nZXRfbihjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAq
+bW9kZSwgaW50IHJhdGUpCiAJcmV0dXJuIDA7CiB9CiAKK3N0YXRpYyB1aW50MzJfdCBhdWRpb19j
+b25maWdfc2V0dXBfbl9yZWcoaW50IG4sIHVpbnQzMl90IHZhbCkKK3sKKwlpbnQgbl9sb3csIG5f
+dXA7CisJdWludDMyX3QgdG1wID0gdmFsOworCisJbl9sb3cgPSBuICYgMHhmZmY7CisJbl91cCA9
+IChuID4+IDEyKSAmIDB4ZmY7CisJdG1wICY9IH4oQVVEX0NPTkZJR19VUFBFUl9OX01BU0sgfCBB
+VURfQ09ORklHX0xPV0VSX05fTUFTSyk7CisJdG1wIHw9ICgobl91cCA8PCBBVURfQ09ORklHX1VQ
+UEVSX05fU0hJRlQpIHwKKwkJCShuX2xvdyA8PCBBVURfQ09ORklHX0xPV0VSX05fU0hJRlQpIHwK
+KwkJCUFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRSk7CisJcmV0dXJuIHRtcDsKK30KKwogLyogY2hl
+Y2sgd2hldGhlciBOL0NUUy9NIG5lZWQgYmUgc2V0IG1hbnVhbGx5ICovCiBzdGF0aWMgYm9vbCBh
+dWRpb19yYXRlX25lZWRfcHJvZyhzdHJ1Y3QgaW50ZWxfY3J0YyAqY3J0YywKIAkJCQkJc3RydWN0
+IGRybV9kaXNwbGF5X21vZGUgKm1vZGUpCkBAIC0yNjIsOSArMjc2LDE0IEBAIHN0YXRpYyB2b2lk
+IGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwK
+IAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBjb25uZWN0b3ItPmRldi0+ZGV2
+X3ByaXZhdGU7CiAJc3RydWN0IGludGVsX2NydGMgKmludGVsX2NydGMgPSB0b19pbnRlbF9jcnRj
+KGVuY29kZXItPmJhc2UuY3J0Yyk7CiAJZW51bSBwaXBlIHBpcGUgPSBpbnRlbF9jcnRjLT5waXBl
+OworCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9f
+Y29tcG9uZW50OwogCWNvbnN0IHVpbnQ4X3QgKmVsZCA9IGNvbm5lY3Rvci0+ZWxkOworCXN0cnVj
+dCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0ID0KKwkJZW5jX3RvX2RpZ19wb3J0
+KCZlbmNvZGVyLT5iYXNlKTsKKwllbnVtIHBvcnQgcG9ydCA9IGludGVsX2RpZ19wb3J0LT5wb3J0
+OwogCXVpbnQzMl90IHRtcDsKIAlpbnQgbGVuLCBpOworCWludCBuLCByYXRlOwogCiAJRFJNX0RF
+QlVHX0tNUygiRW5hYmxlIGF1ZGlvIGNvZGVjIG9uIHBpcGUgJWMsICV1IGJ5dGVzIEVMRFxuIiwK
+IAkJICAgICAgcGlwZV9uYW1lKHBpcGUpLCBkcm1fZWxkX3NpemUoZWxkKSk7CkBAIC0zMDIsMTIg
+KzMyMSwyOSBAQCBzdGF0aWMgdm9pZCBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBkcm1f
+Y29ubmVjdG9yICpjb25uZWN0b3IsCiAJLyogRW5hYmxlIHRpbWVzdGFtcHMgKi8KIAl0bXAgPSBJ
+OTE1X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwogCXRtcCAmPSB+QVVEX0NPTkZJR19OX1ZBTFVF
+X0lOREVYOwotCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOwogCXRtcCAmPSB+QVVE
+X0NPTkZJR19QSVhFTF9DTE9DS19IRE1JX01BU0s7CiAJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUo
+aW50ZWxfY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKIAkJdG1wIHw9IEFVRF9DT05G
+SUdfTl9WQUxVRV9JTkRFWDsKIAllbHNlCiAJCXRtcCB8PSBhdWRpb19jb25maWdfaGRtaV9waXhl
+bF9jbG9jayhtb2RlKTsKKworCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOworCWlm
+IChhdWRpb19yYXRlX25lZWRfcHJvZyhpbnRlbF9jcnRjLCBtb2RlKSkgeworCQlpZiAoIWFjb21w
+KQorCQkJcmF0ZSA9IDA7CisJCWVsc2UgaWYgKHBvcnQgPj0gUE9SVF9BICYmIHBvcnQgPD0gUE9S
+VF9FKQorCQkJcmF0ZSA9IGFjb21wLT5hdWRfc2FtcGxlX3JhdGVbcG9ydF07CisJCWVsc2Ugewor
+CQkJRFJNX0VSUk9SKCJpbnZhbGlkIHBvcnQ6ICVkXG4iLCBwb3J0KTsKKwkJCXJhdGUgPSAwOwor
+CQl9CisJCW4gPSBhdWRpb19jb25maWdfZ2V0X24obW9kZSwgcmF0ZSk7CisJCWlmIChuICE9IDAp
+CisJCQl0bXAgPSBhdWRpb19jb25maWdfc2V0dXBfbl9yZWcobiwgdG1wKTsKKwkJZWxzZQorCQkJ
+RFJNX0RFQlVHX0tNUygibm8gc3VpdGFibGUgTiB2YWx1ZSBpcyBmb3VuZFxuIik7CisJfQorCiAJ
+STkxNV9XUklURShIU1dfQVVEX0NGRyhwaXBlKSwgdG1wKTsKIAogCW11dGV4X3VubG9jaygmZGV2
+X3ByaXYtPmF2X211dGV4KTsKQEAgLTU5NCw5ICs2MzAsMTAgQEAgc3RhdGljIGludCBpOTE1X2F1
+ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmljZSAqZGV2LAogCXN0cnVj
+dCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0OwogCXN0cnVjdCBpbnRlbF9jcnRj
+ICpjcnRjOwogCXN0cnVjdCBkcm1fZGlzcGxheV9tb2RlICptb2RlOworCXN0cnVjdCBpOTE1X2F1
+ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9fY29tcG9uZW50OwogCWVudW0g
+cGlwZSBwaXBlID0gLTE7CiAJdTMyIHRtcDsKLQlpbnQgbl9sb3csIG5fdXAsIG47CisJaW50IG47
+CiAKIAkvKiBIU1csIEJEVyBTS0wgbmVlZCB0aGlzIGZpeCAqLwogCWlmICghSVNfU0tZTEFLRShk
+ZXZfcHJpdikgJiYKQEAgLTYzMCw2ICs2NjcsOSBAQCBzdGF0aWMgaW50IGk5MTVfYXVkaW9fY29t
+cG9uZW50X3N5bmNfYXVkaW9fcmF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsCiAJCQkJICBwaXBlX25h
+bWUocGlwZSksIHBvcnRfbmFtZShwb3J0KSk7CiAJbW9kZSA9ICZjcnRjLT5jb25maWctPmJhc2Uu
+YWRqdXN0ZWRfbW9kZTsKIAorCS8qIHBvcnQgbXVzdCBiZSB2YWxpZCBub3csIG90aGVyd2lzZSB0
+aGUgcGlwZSB3aWxsIGJlIGludmFsaWQgKi8KKwlhY29tcC0+YXVkX3NhbXBsZV9yYXRlW3BvcnRd
+ID0gcmF0ZTsKKwogCS8qIDIuIGNoZWNrIHdoZXRoZXIgdG8gc2V0IHRoZSBOL0NUUy9NIG1hbnVh
+bGx5IG9yIG5vdCAqLwogCWlmICghYXVkaW9fcmF0ZV9uZWVkX3Byb2coY3J0YywgbW9kZSkpIHsK
+IAkJdG1wID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKQEAgLTY0OSwxNSArNjg5LDEw
+IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVj
+dCBkZXZpY2UgKmRldiwKIAkJbXV0ZXhfdW5sb2NrKCZkZXZfcHJpdi0+YXZfbXV0ZXgpOwogCQly
+ZXR1cm4gMDsKIAl9Ci0Jbl9sb3cgPSBuICYgMHhmZmY7Ci0Jbl91cCA9IChuID4+IDEyKSAmIDB4
+ZmY7CiAKLQkvKiA0LiBzZXQgdGhlIE4vQ1RTL00gKi8KKwkvKiAzLiBzZXQgdGhlIE4vQ1RTL00g
+Ki8KIAl0bXAgPSBJOTE1X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwotCXRtcCAmPSB+KEFVRF9D
+T05GSUdfVVBQRVJfTl9NQVNLIHwgQVVEX0NPTkZJR19MT1dFUl9OX01BU0spOwotCXRtcCB8PSAo
+KG5fdXAgPDwgQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKSB8Ci0JCQkobl9sb3cgPDwgQVVEX0NP
+TkZJR19MT1dFUl9OX1NISUZUKSB8Ci0JCQlBVURfQ09ORklHX05fUFJPR19FTkFCTEUpOworCXRt
+cCA9IGF1ZGlvX2NvbmZpZ19zZXR1cF9uX3JlZyhuLCB0bXApOwogCUk5MTVfV1JJVEUoSFNXX0FV
+RF9DRkcocGlwZSksIHRtcCk7CiAKIAltdXRleF91bmxvY2soJmRldl9wcml2LT5hdl9tdXRleCk7
+CkBAIC02NzgsNiArNzEzLDcgQEAgc3RhdGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9iaW5k
+KHN0cnVjdCBkZXZpY2UgKmk5MTVfZGV2LAogewogCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVu
+dCAqYWNvbXAgPSBkYXRhOwogCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9IGRl
+dl90b19pOTE1KGk5MTVfZGV2KTsKKwlpbnQgaTsKIAogCWlmIChXQVJOX09OKGFjb21wLT5vcHMg
+fHwgYWNvbXAtPmRldikpCiAJCXJldHVybiAtRUVYSVNUOwpAQCAtNjg1LDYgKzcyMSw5IEBAIHN0
+YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfYmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2Rl
+diwKIAlkcm1fbW9kZXNldF9sb2NrX2FsbChkZXZfcHJpdi0+ZGV2KTsKIAlhY29tcC0+b3BzID0g
+Jmk5MTVfYXVkaW9fY29tcG9uZW50X29wczsKIAlhY29tcC0+ZGV2ID0gaTkxNV9kZXY7CisJQlVJ
+TERfQlVHX09OKE1BWF9QT1JUUyAhPSBJOTE1X01BWF9QT1JUUyk7CisJZm9yIChpID0gMDsgaSA8
+IEFSUkFZX1NJWkUoYWNvbXAtPmF1ZF9zYW1wbGVfcmF0ZSk7IGkrKykKKwkJYWNvbXAtPmF1ZF9z
+YW1wbGVfcmF0ZVtpXSA9IDA7CiAJZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudCA9IGFjb21wOwog
+CWRybV9tb2Rlc2V0X3VubG9ja19hbGwoZGV2X3ByaXYtPmRldik7CiAKZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5o
+CmluZGV4IGU2ZDM1ZDcuLjg5ZGM3ZDYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29t
+cG9uZW50LmgKKysrIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaApAQCAtMjQsOCArMjQs
+MTggQEAKICNpZm5kZWYgX0k5MTVfQ09NUE9ORU5UX0hfCiAjZGVmaW5lIF9JOTE1X0NPTVBPTkVO
+VF9IXwogCisvKiBNQVhfUE9SVCBpcyB0aGUgbnVtYmVyIG9mIHBvcnQKKyAqIEl0IG11c3QgYmUg
+c3luYyB3aXRoIEk5MTVfTUFYX1BPUlRTIGRlZmluZWQgaTkxNV9kcnYuaAorICogNSBzaG91bGQg
+YmUgZW5vdWdoIGFzIG9ubHkgSFNXLCBCRFcsIFNLTCBuZWVkIHN1Y2ggZml4LgorICovCisjZGVm
+aW5lIE1BWF9QT1JUUyA1CisKIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCB7CiAJc3RydWN0
+IGRldmljZSAqZGV2OworCS8qKgorCSAqIEBhdWRfc2FtcGxlX3JhdGU6IHRoZSBhcnJheSBvZiBh
+dWRpbyBzYW1wbGUgcmF0ZSBwZXIgcG9ydAorCSAqLworCWludCBhdWRfc2FtcGxlX3JhdGVbTUFY
+X1BPUlRTXTsKIAogCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgewogCQlz
+dHJ1Y3QgbW9kdWxlICpvd25lcjsKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2ludGVsLWdmeAo=
