@@ -1,161 +1,131 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH] mfd: arizona: Call the runtime PM function if
- the state is runtime resumed
-Date: Fri, 25 Sep 2015 16:51:28 +0900
-Message-ID: <20150925165128.391d2aaf@songinha-Samsung-DeskTop-System>
-References: <20150917082542.GB7694@ck-lbox>
- <20150917180530.346232ce@songinha-Samsung-DeskTop-System>
- <20150917091632.GC7694@ck-lbox>
- <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
- <20150918082446.GD7694@ck-lbox>
- <20150921111642.112dc0c2@songinha-Samsung-DeskTop-System>
- <20150922074618.GA11647@ck-lbox>
- <20150923110404.1b484284@songinha-Samsung-DeskTop-System>
- <20150923144312.GA5432@ck-lbox>
- <20150924103809.7be235d1@songinha-Samsung-DeskTop-System>
- <20150924074107.GC5432@ck-lbox>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v2] drm/i915: set proper N/CTS in modeset
+Date: Fri, 25 Sep 2015 11:01:48 +0300
+Message-ID: <877fnfnd03.fsf@intel.com>
+References: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20150924074107.GC5432@ck-lbox>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, cw00.choi@samsung.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, ville.syrjala@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Charles,
-
-On Thu, 24 Sep 2015 08:41:07 +0100
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-
-> On Thu, Sep 24, 2015 at 10:38:09AM +0900, Inha Song wrote:
-> > Hi, Charles,
-> > 
-> > On Wed, 23 Sep 2015 15:43:12 +0100
-> > Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > 
-> > > On Wed, Sep 23, 2015 at 11:04:04AM +0900, Inha Song wrote:
-> > > >  Hi, Charles,
-> > > > 
-> > > > I saw the log with LOG_DEVICE in regmap. But, I'm not sure the reason that suspend noirq failed is IRQ occuring.
-> > > > 
-> > > > Here is my log:
-> > > > --
-> > > > root@localhost:~# aplay test.wav 
-> > > > [   41.049072] s3c64xx_spi_runtime_suspend
-> > > > [   41.056043] arizona spi1.0: ASRC underclocked
-> > > > ....
-> > > > [   72.308238] arizona spi1.0: Suspend, disabling IRQ
-> > > > [   72.320286] arizona spi1.0: 400 <= 0
-> > > > [   72.320310] s3c64xx_spi_runtime_resume
-> > > > [   72.336047] arizona spi1.0: 51a <= 0
-> > > > [   72.336217] arizona spi1.0: 101 <= 8604
-> > > > [   72.336401] arizona spi1.0: 171 <= 3
-> > > > [   72.336425] arizona spi1.0: 171 <= 2
-> > > > [   72.336731] arizona spi1.0: 171 <= 0
-> > > > [   72.336751] arizona spi1.0: SYSCLK cleared
-> > > > [   72.338584] arizona spi1.0: SYSCLK cleared
-> > > 
-> > > This bit looks likely related to your problem, it looks like the
-> > > FLL is being turned off. My guess here would be that you haven't
-> > > called snd_soc_dapm_ignore_suspend from your machine driver, you
-> > > need to call this for all end points that may want to stay
-> > > powered up during system suspend and also set the ignore_suspend
-> > > flag on any DAI links you want to remain active during system
-> > > suspend.
-> > 
-> > But, We should call the trigger callback with SNDRV_PCM_TRIGGER_SUSPEND and *_RESUME command
-> > for support senarios what suspend during the playback and resume.
-> > So, I can't set the "ignore_suspend" in playback DAI.
-> > 
-> > For this reason, I would have called the runtime_suspend manually in arizona-core when suspend.
-> > 
-> > Best Reagrds,
-> > Inha Song.
-> > 
-> 
-> Ah ok so you want the audio to stop during suspend?
-
-Yes, I want to stop when suspend and continuous play when resume.
-
-> 
-> Ok in that case can we get a bit more of log, your log finished
-> up here:
-> 
-> [   72.308238] arizona spi1.0: Suspend, disabling IRQ
-> [   72.320286] arizona spi1.0: 400 <= 0
-> [   72.320310] s3c64xx_spi_runtime_resume
-> [   72.336047] arizona spi1.0: 51a <= 0
-> [   72.336217] arizona spi1.0: 101 <= 8604
-> [   72.336401] arizona spi1.0: 171 <= 3
-> [   72.336425] arizona spi1.0: 171 <= 2
-> [   72.336731] arizona spi1.0: 171 <= 0
-> [   72.336751] arizona spi1.0: SYSCLK cleared
-> [   72.338584] arizona spi1.0: SYSCLK cleared
-> [   72.339123] s3c64xx_spi_suspend
-> [   72.355866] arizona spi1.0: Late suspend, reenabling IRQ
-> [   72.355893] >>> noirq failed because of spi1
-> [   72.355948] arizona spi1.0: Early resume, disabling IRQ
-> [   72.416798] PM: noirq suspend of devices failed
-> 
-> Which finished too early as we can't see which IRQ it was that
-> triggered the wakeup.
-
-But, I can't find any spi regmap log that for IRQ.
---
-[  114.282681] arizona spi1.0: Late suspend, reenabling IRQ
-[  114.282708] >>> noirq failed because of spi1
-[  114.282760] arizona spi1.0: Early resume, disabling IRQ
-[  114.316510] PM: noirq suspend of devices failed
-[  114.333590] s3c64xx_spi_resume
-
-     -> set the FLL in machine for playback when resume.
-[  114.334756] arizona spi1.0: FLL1: Fref=24000000 Fout=135475200
-[  114.334762] arizona spi1.0: FLL1: Fvco=90316800Hz
-[  114.334792] arizona spi1.0: FLL1: GCD=19200
-[  114.334798] arizona spi1.0: FLL1: N=7 THETA=149 LAMBDA=271
-[  114.334803] arizona spi1.0: FLL1: FRATIO=0(0) OUTDIV=2 REFCLK_DIV=1
-[  114.334807] arizona spi1.0: FLL1: GAIN=4
-[  114.334827] arizona spi1.0: 171 <= 1
-[  114.520724] arizona spi1.0: Late resume, reenabling IRQ
-[  114.521152] arizona spi1.0: d40 => 3
-[  114.521387] arizona spi1.0: d04 <= 1
-[  114.521500] arizona spi1.0: FLL1: clock OK
-[  114.521773] arizona spi1.0: SYSCLK set to 135475200Hz
-[  114.522651] arizona spi1.0: SYSCLK set to 135475200Hz
-[  114.522752] arizona spi1.0: 101 <= 8644
-[  114.522940] arizona spi1.0: 51a <= 1
-[  114.523057] arizona spi1.0: 400 <= 8
-[  114.909270] s3c64xx_spi_runtime_suspend
-[  114.909721] done.
-Suspended. Trying resume. Failed. Restarting stream. Done.
-
-    -> retry to enter suspend Immediately.
-[  115.478349] arizona spi1.0: Suspend, disabling IRQ
-[  115.489783] arizona spi1.0: 400 <= 0
-[  115.489804] s3c64xx_spi_runtime_resume
-[  115.506127] arizona spi1.0: 51a <= 0
-[  115.506298] arizona spi1.0: 101 <= 8604
-[  115.506493] arizona spi1.0: 171 <= 3
-[  115.506515] arizona spi1.0: 171 <= 2
-[  115.506777] arizona spi1.0: 171 <= 0
-[  115.506793] arizona spi1.0: SYSCLK cleared
-[  115.507842] arizona spi1.0: SYSCLK cleared
-[  115.508373] s3c64xx_spi_suspend                                                                                                     
-
-[  115.523095] arizona spi1.0: Late suspend, reenabling IRQ                                                                            
-[  115.523121] >>> noirq failed because of spi1                                                                                        
-[  115.523171] arizona spi1.0: Early resume, disabling IRQ
-[  115.556507] PM: noirq suspend of devices failed 
-     -> Repeats:
-
-Do you have any idea to check which IRQ was occur? 
-
-Best Regards,
-Inha Song.
-
-
-> 
-> Thanks,
-> Charles
+T24gRnJpLCAyNSBTZXAgMjAxNSwgbGliaW4ueWFuZ0BpbnRlbC5jb20gd3JvdGU6Cj4gRnJvbTog
+TGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4KPiBXaGVuIG1vZGVzZXQgb2NjdXJz
+IGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKPiBzcGVpY2FsIHZhbHVlcywg
+dGhlIE4vQ1RTIG5lZWQgdG8gYmUgc2V0IG1hbnVhbGx5IGlmIGF1ZGlvCj4gaXMgcGxheWluZy4K
+Pgo+IFNpZ25lZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAaW50ZWwuY29tPgoKUmV2
+aWV3ZWQtYnk6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+CgoKPiAtLS0KPiAg
+ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDU3ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tCj4gIGluY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggICAg
+ICAgfCAxMCArKysrKysrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNTggaW5zZXJ0aW9ucygrKSwgOSBk
+ZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9h
+dWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IGluZGV4IGUzYzMy
+Y2UuLjY0MmRmYmQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVk
+aW8uYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiBAQCAtMTI4
+LDYgKzEyOCwyMCBAQCBzdGF0aWMgaW50IGF1ZGlvX2NvbmZpZ19nZXRfbihjb25zdCBzdHJ1Y3Qg
+ZHJtX2Rpc3BsYXlfbW9kZSAqbW9kZSwgaW50IHJhdGUpCj4gIAlyZXR1cm4gMDsKPiAgfQo+ICAK
+PiArc3RhdGljIHVpbnQzMl90IGF1ZGlvX2NvbmZpZ19zZXR1cF9uX3JlZyhpbnQgbiwgdWludDMy
+X3QgdmFsKQo+ICt7Cj4gKwlpbnQgbl9sb3csIG5fdXA7Cj4gKwl1aW50MzJfdCB0bXAgPSB2YWw7
+Cj4gKwo+ICsJbl9sb3cgPSBuICYgMHhmZmY7Cj4gKwluX3VwID0gKG4gPj4gMTIpICYgMHhmZjsK
+PiArCXRtcCAmPSB+KEFVRF9DT05GSUdfVVBQRVJfTl9NQVNLIHwgQVVEX0NPTkZJR19MT1dFUl9O
+X01BU0spOwo+ICsJdG1wIHw9ICgobl91cCA8PCBBVURfQ09ORklHX1VQUEVSX05fU0hJRlQpIHwK
+PiArCQkJKG5fbG93IDw8IEFVRF9DT05GSUdfTE9XRVJfTl9TSElGVCkgfAo+ICsJCQlBVURfQ09O
+RklHX05fUFJPR19FTkFCTEUpOwo+ICsJcmV0dXJuIHRtcDsKPiArfQo+ICsKPiAgLyogY2hlY2sg
+d2hldGhlciBOL0NUUy9NIG5lZWQgYmUgc2V0IG1hbnVhbGx5ICovCj4gIHN0YXRpYyBib29sIGF1
+ZGlvX3JhdGVfbmVlZF9wcm9nKHN0cnVjdCBpbnRlbF9jcnRjICpjcnRjLAo+ICAJCQkJCXN0cnVj
+dCBkcm1fZGlzcGxheV9tb2RlICptb2RlKQo+IEBAIC0yNjIsOSArMjc2LDE0IEBAIHN0YXRpYyB2
+b2lkIGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3Rv
+ciwKPiAgCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9IGNvbm5lY3Rvci0+ZGV2
+LT5kZXZfcHJpdmF0ZTsKPiAgCXN0cnVjdCBpbnRlbF9jcnRjICppbnRlbF9jcnRjID0gdG9faW50
+ZWxfY3J0YyhlbmNvZGVyLT5iYXNlLmNydGMpOwo+ICAJZW51bSBwaXBlIHBpcGUgPSBpbnRlbF9j
+cnRjLT5waXBlOwo+ICsJc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50ICphY29tcCA9IGRldl9w
+cml2LT5hdWRpb19jb21wb25lbnQ7Cj4gIAljb25zdCB1aW50OF90ICplbGQgPSBjb25uZWN0b3It
+PmVsZDsKPiArCXN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0ID0KPiAr
+CQllbmNfdG9fZGlnX3BvcnQoJmVuY29kZXItPmJhc2UpOwo+ICsJZW51bSBwb3J0IHBvcnQgPSBp
+bnRlbF9kaWdfcG9ydC0+cG9ydDsKPiAgCXVpbnQzMl90IHRtcDsKPiAgCWludCBsZW4sIGk7Cj4g
+KwlpbnQgbiwgcmF0ZTsKPiAgCj4gIAlEUk1fREVCVUdfS01TKCJFbmFibGUgYXVkaW8gY29kZWMg
+b24gcGlwZSAlYywgJXUgYnl0ZXMgRUxEXG4iLAo+ICAJCSAgICAgIHBpcGVfbmFtZShwaXBlKSwg
+ZHJtX2VsZF9zaXplKGVsZCkpOwo+IEBAIC0zMDIsMTIgKzMyMSwyOSBAQCBzdGF0aWMgdm9pZCBo
+c3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4g
+IAkvKiBFbmFibGUgdGltZXN0YW1wcyAqLwo+ICAJdG1wID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZH
+KHBpcGUpKTsKPiAgCXRtcCAmPSB+QVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+IC0JdG1wICY9
+IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gIAl0bXAgJj0gfkFVRF9DT05GSUdfUElYRUxf
+Q0xPQ0tfSERNSV9NQVNLOwo+ICAJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0Yywg
+SU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKPiAgCQl0bXAgfD0gQVVEX0NPTkZJR19OX1ZBTFVF
+X0lOREVYOwo+ICAJZWxzZQo+ICAJCXRtcCB8PSBhdWRpb19jb25maWdfaGRtaV9waXhlbF9jbG9j
+ayhtb2RlKTsKPiArCj4gKwl0bXAgJj0gfkFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKPiArCWlm
+IChhdWRpb19yYXRlX25lZWRfcHJvZyhpbnRlbF9jcnRjLCBtb2RlKSkgewo+ICsJCWlmICghYWNv
+bXApCj4gKwkJCXJhdGUgPSAwOwo+ICsJCWVsc2UgaWYgKHBvcnQgPj0gUE9SVF9BICYmIHBvcnQg
+PD0gUE9SVF9FKQo+ICsJCQlyYXRlID0gYWNvbXAtPmF1ZF9zYW1wbGVfcmF0ZVtwb3J0XTsKPiAr
+CQllbHNlIHsKPiArCQkJRFJNX0VSUk9SKCJpbnZhbGlkIHBvcnQ6ICVkXG4iLCBwb3J0KTsKPiAr
+CQkJcmF0ZSA9IDA7Cj4gKwkJfQo+ICsJCW4gPSBhdWRpb19jb25maWdfZ2V0X24obW9kZSwgcmF0
+ZSk7Cj4gKwkJaWYgKG4gIT0gMCkKPiArCQkJdG1wID0gYXVkaW9fY29uZmlnX3NldHVwX25fcmVn
+KG4sIHRtcCk7Cj4gKwkJZWxzZQo+ICsJCQlEUk1fREVCVUdfS01TKCJubyBzdWl0YWJsZSBOIHZh
+bHVlIGlzIGZvdW5kXG4iKTsKPiArCX0KPiArCj4gIAlJOTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBp
+cGUpLCB0bXApOwo+ICAKPiAgCW11dGV4X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4KTsKPiBA
+QCAtNTk0LDkgKzYzMCwxMCBAQCBzdGF0aWMgaW50IGk5MTVfYXVkaW9fY29tcG9uZW50X3N5bmNf
+YXVkaW9fcmF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIAlzdHJ1Y3QgaW50ZWxfZGlnaXRhbF9w
+b3J0ICppbnRlbF9kaWdfcG9ydDsKPiAgCXN0cnVjdCBpbnRlbF9jcnRjICpjcnRjOwo+ICAJc3Ry
+dWN0IGRybV9kaXNwbGF5X21vZGUgKm1vZGU7Cj4gKwlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25l
+bnQgKmFjb21wID0gZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudDsKPiAgCWVudW0gcGlwZSBwaXBl
+ID0gLTE7Cj4gIAl1MzIgdG1wOwo+IC0JaW50IG5fbG93LCBuX3VwLCBuOwo+ICsJaW50IG47Cj4g
+IAo+ICAJLyogSFNXLCBCRFcgU0tMIG5lZWQgdGhpcyBmaXggKi8KPiAgCWlmICghSVNfU0tZTEFL
+RShkZXZfcHJpdikgJiYKPiBAQCAtNjMwLDYgKzY2Nyw5IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRp
+b19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgCQkJCSAg
+cGlwZV9uYW1lKHBpcGUpLCBwb3J0X25hbWUocG9ydCkpOwo+ICAJbW9kZSA9ICZjcnRjLT5jb25m
+aWctPmJhc2UuYWRqdXN0ZWRfbW9kZTsKPiAgCj4gKwkvKiBwb3J0IG11c3QgYmUgdmFsaWQgbm93
+LCBvdGhlcndpc2UgdGhlIHBpcGUgd2lsbCBiZSBpbnZhbGlkICovCj4gKwlhY29tcC0+YXVkX3Nh
+bXBsZV9yYXRlW3BvcnRdID0gcmF0ZTsKPiArCj4gIAkvKiAyLiBjaGVjayB3aGV0aGVyIHRvIHNl
+dCB0aGUgTi9DVFMvTSBtYW51YWxseSBvciBub3QgKi8KPiAgCWlmICghYXVkaW9fcmF0ZV9uZWVk
+X3Byb2coY3J0YywgbW9kZSkpIHsKPiAgCQl0bXAgPSBJOTE1X1JFQUQoSFNXX0FVRF9DRkcocGlw
+ZSkpOwo+IEBAIC02NDksMTUgKzY4OSwxMCBAQCBzdGF0aWMgaW50IGk5MTVfYXVkaW9fY29tcG9u
+ZW50X3N5bmNfYXVkaW9fcmF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIAkJbXV0ZXhfdW5sb2Nr
+KCZkZXZfcHJpdi0+YXZfbXV0ZXgpOwo+ICAJCXJldHVybiAwOwo+ICAJfQo+IC0Jbl9sb3cgPSBu
+ICYgMHhmZmY7Cj4gLQluX3VwID0gKG4gPj4gMTIpICYgMHhmZjsKPiAgCj4gLQkvKiA0LiBzZXQg
+dGhlIE4vQ1RTL00gKi8KPiArCS8qIDMuIHNldCB0aGUgTi9DVFMvTSAqLwo+ICAJdG1wID0gSTkx
+NV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKPiAtCXRtcCAmPSB+KEFVRF9DT05GSUdfVVBQRVJf
+Tl9NQVNLIHwgQVVEX0NPTkZJR19MT1dFUl9OX01BU0spOwo+IC0JdG1wIHw9ICgobl91cCA8PCBB
+VURfQ09ORklHX1VQUEVSX05fU0hJRlQpIHwKPiAtCQkJKG5fbG93IDw8IEFVRF9DT05GSUdfTE9X
+RVJfTl9TSElGVCkgfAo+IC0JCQlBVURfQ09ORklHX05fUFJPR19FTkFCTEUpOwo+ICsJdG1wID0g
+YXVkaW9fY29uZmlnX3NldHVwX25fcmVnKG4sIHRtcCk7Cj4gIAlJOTE1X1dSSVRFKEhTV19BVURf
+Q0ZHKHBpcGUpLCB0bXApOwo+ICAKPiAgCW11dGV4X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4
+KTsKPiBAQCAtNjc4LDYgKzcxMyw3IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRf
+YmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2RldiwKPiAgewo+ICAJc3RydWN0IGk5MTVfYXVkaW9f
+Y29tcG9uZW50ICphY29tcCA9IGRhdGE7Cj4gIAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2
+X3ByaXYgPSBkZXZfdG9faTkxNShpOTE1X2Rldik7Cj4gKwlpbnQgaTsKPiAgCj4gIAlpZiAoV0FS
+Tl9PTihhY29tcC0+b3BzIHx8IGFjb21wLT5kZXYpKQo+ICAJCXJldHVybiAtRUVYSVNUOwo+IEBA
+IC02ODUsNiArNzIxLDkgQEAgc3RhdGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9iaW5kKHN0
+cnVjdCBkZXZpY2UgKmk5MTVfZGV2LAo+ICAJZHJtX21vZGVzZXRfbG9ja19hbGwoZGV2X3ByaXYt
+PmRldik7Cj4gIAlhY29tcC0+b3BzID0gJmk5MTVfYXVkaW9fY29tcG9uZW50X29wczsKPiAgCWFj
+b21wLT5kZXYgPSBpOTE1X2RldjsKPiArCUJVSUxEX0JVR19PTihNQVhfUE9SVFMgIT0gSTkxNV9N
+QVhfUE9SVFMpOwo+ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoYWNvbXAtPmF1ZF9zYW1w
+bGVfcmF0ZSk7IGkrKykKPiArCQlhY29tcC0+YXVkX3NhbXBsZV9yYXRlW2ldID0gMDsKPiAgCWRl
+dl9wcml2LT5hdWRpb19jb21wb25lbnQgPSBhY29tcDsKPiAgCWRybV9tb2Rlc2V0X3VubG9ja19h
+bGwoZGV2X3ByaXYtPmRldik7Cj4gIAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2Nv
+bXBvbmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+IGluZGV4IGU2ZDM1ZDcu
+Ljg5ZGM3ZDYgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ICsr
+KyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiBAQCAtMjQsOCArMjQsMTggQEAKPiAg
+I2lmbmRlZiBfSTkxNV9DT01QT05FTlRfSF8KPiAgI2RlZmluZSBfSTkxNV9DT01QT05FTlRfSF8K
+PiAgCj4gKy8qIE1BWF9QT1JUIGlzIHRoZSBudW1iZXIgb2YgcG9ydAo+ICsgKiBJdCBtdXN0IGJl
+IHN5bmMgd2l0aCBJOTE1X01BWF9QT1JUUyBkZWZpbmVkIGk5MTVfZHJ2LmgKPiArICogNSBzaG91
+bGQgYmUgZW5vdWdoIGFzIG9ubHkgSFNXLCBCRFcsIFNLTCBuZWVkIHN1Y2ggZml4Lgo+ICsgKi8K
+PiArI2RlZmluZSBNQVhfUE9SVFMgNQo+ICsKPiAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50
+IHsKPiAgCXN0cnVjdCBkZXZpY2UgKmRldjsKPiArCS8qKgo+ICsJICogQGF1ZF9zYW1wbGVfcmF0
+ZTogdGhlIGFycmF5IG9mIGF1ZGlvIHNhbXBsZSByYXRlIHBlciBwb3J0Cj4gKwkgKi8KPiArCWlu
+dCBhdWRfc2FtcGxlX3JhdGVbTUFYX1BPUlRTXTsKPiAgCj4gIAljb25zdCBzdHJ1Y3QgaTkxNV9h
+dWRpb19jb21wb25lbnRfb3BzIHsKPiAgCQlzdHJ1Y3QgbW9kdWxlICpvd25lcjsKPiAtLSAKPiAx
+LjkuMQo+CgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2Vu
+dGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVs
+LWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
