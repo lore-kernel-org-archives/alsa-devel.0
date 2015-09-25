@@ -1,121 +1,128 @@
-From: libin.yang@intel.com
-Subject: [PATCH v2] drm/i915: set proper N/CTS in modeset
-Date: Fri, 25 Sep 2015 09:36:12 +0800
-Message-ID: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Fri, 25 Sep 2015 12:06:20 +0800
+Message-ID: <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
+ <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+ <s5h4mik6xwi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, jani.nikula@linux.intel.com, ville.syrjala@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2451260656
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 06:06:21 +0200 (CEST)
+Received: by obbzf10 with SMTP id zf10so73815970obb.2
+ for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2015 21:06:20 -0700 (PDT)
+In-Reply-To: <s5h4mik6xwi.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, arthurborsboom@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpXaGVuIG1vZGVzZXQgb2Nj
-dXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKc3BlaWNhbCB2YWx1ZXMs
-IHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBpZiBhdWRpbwppcyBwbGF5aW5nLgoK
-U2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Ci0tLQogZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDU3ICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tCiBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oICAgICAgIHwg
-MTAgKysrKysrKwogMiBmaWxlcyBjaGFuZ2VkLCA1OCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9u
-cygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9k
-cml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCmluZGV4IGUzYzMyY2UuLjY0MmRmYmQg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKKysrIGIvZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwpAQCAtMTI4LDYgKzEyOCwyMCBAQCBzdGF0
-aWMgaW50IGF1ZGlvX2NvbmZpZ19nZXRfbihjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAq
-bW9kZSwgaW50IHJhdGUpCiAJcmV0dXJuIDA7CiB9CiAKK3N0YXRpYyB1aW50MzJfdCBhdWRpb19j
-b25maWdfc2V0dXBfbl9yZWcoaW50IG4sIHVpbnQzMl90IHZhbCkKK3sKKwlpbnQgbl9sb3csIG5f
-dXA7CisJdWludDMyX3QgdG1wID0gdmFsOworCisJbl9sb3cgPSBuICYgMHhmZmY7CisJbl91cCA9
-IChuID4+IDEyKSAmIDB4ZmY7CisJdG1wICY9IH4oQVVEX0NPTkZJR19VUFBFUl9OX01BU0sgfCBB
-VURfQ09ORklHX0xPV0VSX05fTUFTSyk7CisJdG1wIHw9ICgobl91cCA8PCBBVURfQ09ORklHX1VQ
-UEVSX05fU0hJRlQpIHwKKwkJCShuX2xvdyA8PCBBVURfQ09ORklHX0xPV0VSX05fU0hJRlQpIHwK
-KwkJCUFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRSk7CisJcmV0dXJuIHRtcDsKK30KKwogLyogY2hl
-Y2sgd2hldGhlciBOL0NUUy9NIG5lZWQgYmUgc2V0IG1hbnVhbGx5ICovCiBzdGF0aWMgYm9vbCBh
-dWRpb19yYXRlX25lZWRfcHJvZyhzdHJ1Y3QgaW50ZWxfY3J0YyAqY3J0YywKIAkJCQkJc3RydWN0
-IGRybV9kaXNwbGF5X21vZGUgKm1vZGUpCkBAIC0yNjIsOSArMjc2LDE0IEBAIHN0YXRpYyB2b2lk
-IGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwK
-IAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBjb25uZWN0b3ItPmRldi0+ZGV2
-X3ByaXZhdGU7CiAJc3RydWN0IGludGVsX2NydGMgKmludGVsX2NydGMgPSB0b19pbnRlbF9jcnRj
-KGVuY29kZXItPmJhc2UuY3J0Yyk7CiAJZW51bSBwaXBlIHBpcGUgPSBpbnRlbF9jcnRjLT5waXBl
-OworCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9f
-Y29tcG9uZW50OwogCWNvbnN0IHVpbnQ4X3QgKmVsZCA9IGNvbm5lY3Rvci0+ZWxkOworCXN0cnVj
-dCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0ID0KKwkJZW5jX3RvX2RpZ19wb3J0
-KCZlbmNvZGVyLT5iYXNlKTsKKwllbnVtIHBvcnQgcG9ydCA9IGludGVsX2RpZ19wb3J0LT5wb3J0
-OwogCXVpbnQzMl90IHRtcDsKIAlpbnQgbGVuLCBpOworCWludCBuLCByYXRlOwogCiAJRFJNX0RF
-QlVHX0tNUygiRW5hYmxlIGF1ZGlvIGNvZGVjIG9uIHBpcGUgJWMsICV1IGJ5dGVzIEVMRFxuIiwK
-IAkJICAgICAgcGlwZV9uYW1lKHBpcGUpLCBkcm1fZWxkX3NpemUoZWxkKSk7CkBAIC0zMDIsMTIg
-KzMyMSwyOSBAQCBzdGF0aWMgdm9pZCBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBkcm1f
-Y29ubmVjdG9yICpjb25uZWN0b3IsCiAJLyogRW5hYmxlIHRpbWVzdGFtcHMgKi8KIAl0bXAgPSBJ
-OTE1X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwogCXRtcCAmPSB+QVVEX0NPTkZJR19OX1ZBTFVF
-X0lOREVYOwotCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOwogCXRtcCAmPSB+QVVE
-X0NPTkZJR19QSVhFTF9DTE9DS19IRE1JX01BU0s7CiAJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUo
-aW50ZWxfY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKIAkJdG1wIHw9IEFVRF9DT05G
-SUdfTl9WQUxVRV9JTkRFWDsKIAllbHNlCiAJCXRtcCB8PSBhdWRpb19jb25maWdfaGRtaV9waXhl
-bF9jbG9jayhtb2RlKTsKKworCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOworCWlm
-IChhdWRpb19yYXRlX25lZWRfcHJvZyhpbnRlbF9jcnRjLCBtb2RlKSkgeworCQlpZiAoIWFjb21w
-KQorCQkJcmF0ZSA9IDA7CisJCWVsc2UgaWYgKHBvcnQgPj0gUE9SVF9BICYmIHBvcnQgPD0gUE9S
-VF9FKQorCQkJcmF0ZSA9IGFjb21wLT5hdWRfc2FtcGxlX3JhdGVbcG9ydF07CisJCWVsc2Ugewor
-CQkJRFJNX0VSUk9SKCJpbnZhbGlkIHBvcnQ6ICVkXG4iLCBwb3J0KTsKKwkJCXJhdGUgPSAwOwor
-CQl9CisJCW4gPSBhdWRpb19jb25maWdfZ2V0X24obW9kZSwgcmF0ZSk7CisJCWlmIChuICE9IDAp
-CisJCQl0bXAgPSBhdWRpb19jb25maWdfc2V0dXBfbl9yZWcobiwgdG1wKTsKKwkJZWxzZQorCQkJ
-RFJNX0RFQlVHX0tNUygibm8gc3VpdGFibGUgTiB2YWx1ZSBpcyBmb3VuZFxuIik7CisJfQorCiAJ
-STkxNV9XUklURShIU1dfQVVEX0NGRyhwaXBlKSwgdG1wKTsKIAogCW11dGV4X3VubG9jaygmZGV2
-X3ByaXYtPmF2X211dGV4KTsKQEAgLTU5NCw5ICs2MzAsMTAgQEAgc3RhdGljIGludCBpOTE1X2F1
-ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmljZSAqZGV2LAogCXN0cnVj
-dCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0OwogCXN0cnVjdCBpbnRlbF9jcnRj
-ICpjcnRjOwogCXN0cnVjdCBkcm1fZGlzcGxheV9tb2RlICptb2RlOworCXN0cnVjdCBpOTE1X2F1
-ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9fY29tcG9uZW50OwogCWVudW0g
-cGlwZSBwaXBlID0gLTE7CiAJdTMyIHRtcDsKLQlpbnQgbl9sb3csIG5fdXAsIG47CisJaW50IG47
-CiAKIAkvKiBIU1csIEJEVyBTS0wgbmVlZCB0aGlzIGZpeCAqLwogCWlmICghSVNfU0tZTEFLRShk
-ZXZfcHJpdikgJiYKQEAgLTYzMCw2ICs2NjcsOSBAQCBzdGF0aWMgaW50IGk5MTVfYXVkaW9fY29t
-cG9uZW50X3N5bmNfYXVkaW9fcmF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsCiAJCQkJICBwaXBlX25h
-bWUocGlwZSksIHBvcnRfbmFtZShwb3J0KSk7CiAJbW9kZSA9ICZjcnRjLT5jb25maWctPmJhc2Uu
-YWRqdXN0ZWRfbW9kZTsKIAorCS8qIHBvcnQgbXVzdCBiZSB2YWxpZCBub3csIG90aGVyd2lzZSB0
-aGUgcGlwZSB3aWxsIGJlIGludmFsaWQgKi8KKwlhY29tcC0+YXVkX3NhbXBsZV9yYXRlW3BvcnRd
-ID0gcmF0ZTsKKwogCS8qIDIuIGNoZWNrIHdoZXRoZXIgdG8gc2V0IHRoZSBOL0NUUy9NIG1hbnVh
-bGx5IG9yIG5vdCAqLwogCWlmICghYXVkaW9fcmF0ZV9uZWVkX3Byb2coY3J0YywgbW9kZSkpIHsK
-IAkJdG1wID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKQEAgLTY0OSwxNSArNjg5LDEw
-IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVj
-dCBkZXZpY2UgKmRldiwKIAkJbXV0ZXhfdW5sb2NrKCZkZXZfcHJpdi0+YXZfbXV0ZXgpOwogCQly
-ZXR1cm4gMDsKIAl9Ci0Jbl9sb3cgPSBuICYgMHhmZmY7Ci0Jbl91cCA9IChuID4+IDEyKSAmIDB4
-ZmY7CiAKLQkvKiA0LiBzZXQgdGhlIE4vQ1RTL00gKi8KKwkvKiAzLiBzZXQgdGhlIE4vQ1RTL00g
-Ki8KIAl0bXAgPSBJOTE1X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwotCXRtcCAmPSB+KEFVRF9D
-T05GSUdfVVBQRVJfTl9NQVNLIHwgQVVEX0NPTkZJR19MT1dFUl9OX01BU0spOwotCXRtcCB8PSAo
-KG5fdXAgPDwgQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKSB8Ci0JCQkobl9sb3cgPDwgQVVEX0NP
-TkZJR19MT1dFUl9OX1NISUZUKSB8Ci0JCQlBVURfQ09ORklHX05fUFJPR19FTkFCTEUpOworCXRt
-cCA9IGF1ZGlvX2NvbmZpZ19zZXR1cF9uX3JlZyhuLCB0bXApOwogCUk5MTVfV1JJVEUoSFNXX0FV
-RF9DRkcocGlwZSksIHRtcCk7CiAKIAltdXRleF91bmxvY2soJmRldl9wcml2LT5hdl9tdXRleCk7
-CkBAIC02NzgsNiArNzEzLDcgQEAgc3RhdGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9iaW5k
-KHN0cnVjdCBkZXZpY2UgKmk5MTVfZGV2LAogewogCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVu
-dCAqYWNvbXAgPSBkYXRhOwogCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9IGRl
-dl90b19pOTE1KGk5MTVfZGV2KTsKKwlpbnQgaTsKIAogCWlmIChXQVJOX09OKGFjb21wLT5vcHMg
-fHwgYWNvbXAtPmRldikpCiAJCXJldHVybiAtRUVYSVNUOwpAQCAtNjg1LDYgKzcyMSw5IEBAIHN0
-YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfYmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2Rl
-diwKIAlkcm1fbW9kZXNldF9sb2NrX2FsbChkZXZfcHJpdi0+ZGV2KTsKIAlhY29tcC0+b3BzID0g
-Jmk5MTVfYXVkaW9fY29tcG9uZW50X29wczsKIAlhY29tcC0+ZGV2ID0gaTkxNV9kZXY7CisJQlVJ
-TERfQlVHX09OKE1BWF9QT1JUUyAhPSBJOTE1X01BWF9QT1JUUyk7CisJZm9yIChpID0gMDsgaSA8
-IEFSUkFZX1NJWkUoYWNvbXAtPmF1ZF9zYW1wbGVfcmF0ZSk7IGkrKykKKwkJYWNvbXAtPmF1ZF9z
-YW1wbGVfcmF0ZVtpXSA9IDA7CiAJZGV2X3ByaXYtPmF1ZGlvX2NvbXBvbmVudCA9IGFjb21wOwog
-CWRybV9tb2Rlc2V0X3VubG9ja19hbGwoZGV2X3ByaXYtPmRldik7CiAKZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5o
-CmluZGV4IGU2ZDM1ZDcuLjg5ZGM3ZDYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29t
-cG9uZW50LmgKKysrIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaApAQCAtMjQsOCArMjQs
-MTggQEAKICNpZm5kZWYgX0k5MTVfQ09NUE9ORU5UX0hfCiAjZGVmaW5lIF9JOTE1X0NPTVBPTkVO
-VF9IXwogCisvKiBNQVhfUE9SVCBpcyB0aGUgbnVtYmVyIG9mIHBvcnQKKyAqIEl0IG11c3QgYmUg
-c3luYyB3aXRoIEk5MTVfTUFYX1BPUlRTIGRlZmluZWQgaTkxNV9kcnYuaAorICogNSBzaG91bGQg
-YmUgZW5vdWdoIGFzIG9ubHkgSFNXLCBCRFcsIFNLTCBuZWVkIHN1Y2ggZml4LgorICovCisjZGVm
-aW5lIE1BWF9QT1JUUyA1CisKIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCB7CiAJc3RydWN0
-IGRldmljZSAqZGV2OworCS8qKgorCSAqIEBhdWRfc2FtcGxlX3JhdGU6IHRoZSBhcnJheSBvZiBh
-dWRpbyBzYW1wbGUgcmF0ZSBwZXIgcG9ydAorCSAqLworCWludCBhdWRfc2FtcGxlX3JhdGVbTUFY
-X1BPUlRTXTsKIAogCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgewogCQlz
-dHJ1Y3QgbW9kdWxlICpvd25lcjsKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2ludGVsLWdmeAo=
+> >
+> > > >
+> > > > - add sense_nid to __snd_hda_jack_add_kctl for pin sense
+> > > >
+> > > > - update slave pin sense when master pin sense change
+> > > >
+> > > > - enable unsolicited event when widcap support UNSOL
+> > >
+> > > Again, please describe at first the reason you need this change.  Then
+> > > start explaining about the implementation details.  For example,
+> > > what's the difference from the existing gated_jack.
+> > >
+> > >
+> >
+> > I don't understand how gated jack work, but those headset mic in alc668
+> > dell-headset-multi does not  use its own pin sense and won't need to
+enable
+> > unsol event of the headset mic node.
+> >
+> > As pulseaudio don't expect jack kctl can be repesent the state of
+headphone
+> > and mic
+> >
+> > This force the driver to create a headset mic kctl which is just a copy
+of
+> > the headphone jack kctl
+>
+> See what you wrote now in the above?  It's a nice introduction of the
+> things you're trying to solve.  This kind of information is exactly
+> what I asked for.  Please rephrase and put it in the changelog at the
+> next time.
+>
+> About gated_jack: this was introduced for Chromebook for a headset.
+> This should work similarly like your case.  The behavior of gated /
+> gating jacks are:
+>
+> - When a jack A has gating_jack = B: the presence of jack A depends on
+>   gating_jack B.  Namely, if gating_jack B is unplugged, jack A is
+>   treated as unplugged.
+>
+> - When a jack B has gated_jack = A: jack B doesn't give an unsol event
+>   by itself, but it's triggered together with gated_jack A when jack A
+>   is plugged/unplugged.  The plug status of jack B can be read from B
+>   itself.
+>
+> For Chromebook, A (gated) is mic pin and B (gating) is HP pin.
+> That is, a headset mic is detected only when the HP pin is detected.
+>
+>
+
+The other possible usage of __snd_hda_jack_add_kctl() with different
+sense_nid may be those asus N series notebook with ALC663 codec which seem
+to use the hidden pin sense of node 0x1e of Digital Out pin for the
+external Sonic Master Subwoofer
+
+it just add subwoofer jack kctl at subwoofer node but use the hidden jack
+sense of node 0x1e,  while driver still create SPDIF phantom jack
+
+What is missing is the timer queue to check the jack state similar to vt1708
+
+https://bugs.freedesktop.org/show_bug.cgi?id=91568#c11
+
+WITHOUT subwoofer:
+sudo ./hdajacksensetest -a
+Pin 0x11 (Not connected): present = No
+Pin 0x12 (Not connected): present = No
+Pin 0x13 (Not connected): present = No
+Pin 0x14 (Internal Speaker, ATAPI): present = No
+Pin 0x15 (Not connected): present = No
+Pin 0x16 (Internal Speaker, ATAPI): present = No
+Pin 0x17 (Not connected): present = No
+Pin 0x18 (Pink Mic, Rear side): present = No
+Pin 0x19 (Internal Mic, ATAPI): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out, Right side): present = No
+Pin 0x21 (Green Headphone, Rear side): present = No
+
+WITH subwoofer:
+sudo ./hdajacksensetest -a
+Pin 0x11 (Not connected): present = No
+Pin 0x12 (Not connected): present = No
+Pin 0x13 (Not connected): present = No
+Pin 0x14 (Internal Speaker, ATAPI): present = No
+Pin 0x15 (Not connected): present = No
+Pin 0x16 (Internal Speaker, ATAPI): present = No
+Pin 0x17 (Not connected): present = No
+Pin 0x18 (Pink Mic, Rear side): present = No
+Pin 0x19 (Internal Mic, ATAPI): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out, Right side): present = Yes
+Pin 0x21 (Green Headphone, Rear side): present = No
