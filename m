@@ -1,72 +1,64 @@
-From: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
-	'global_lock'
-Date: Fri, 25 Sep 2015 09:41:37 -0700
-Message-ID: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix bad register MIC_BIAS_VOLTAGE setup
+ on probe
+Date: Fri, 25 Sep 2015 09:50:28 -0700
+Message-ID: <20150925165028.GJ30445@sirena.org.uk>
+References: <1443190887-18080-1-git-send-email-gianlucarenzi@eurekelettronica.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, QCA ath9k Development <ath9k-devel-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Intel Linux Wireless <ilw-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-edac-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rbKG8BlqS9xyY7Uh"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1443190887-18080-1-git-send-email-gianlucarenzi@eurekelettronica.it>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-global_lock is defined as an unsigned long and accessing only its lower
-32 bits from sysfs is incorrect, as we need to consider other 32 bits
-for big endian 64 bit systems. There are no such platforms yet, but the
-code needs to be robust for such a case.
 
-Fix that by passing a local variable to debugfs_create_bool() and
-assigning its value to global_lock later.
+--rbKG8BlqS9xyY7Uh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
----
-V3->V4:
-- Create a local variable instead of changing type of global_lock
-  (Rafael)
-- Drop the stable tag
-- BCC'd a lot of people (rather than cc'ing them) to make sure
-  - the series reaches them
-  - mailing lists do not block the patchset due to long cc list
-  - and we don't spam the BCC'd people for every reply
----
- drivers/acpi/ec_sys.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On Fri, Sep 25, 2015 at 04:21:27PM +0200, Gianluca Renzi wrote:
 
-diff --git a/drivers/acpi/ec_sys.c b/drivers/acpi/ec_sys.c
-index b4c216bab22b..b44b91331a56 100644
---- a/drivers/acpi/ec_sys.c
-+++ b/drivers/acpi/ec_sys.c
-@@ -110,6 +110,7 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
- 	struct dentry *dev_dir;
- 	char name[64];
- 	umode_t mode = 0400;
-+	u32 val;
- 
- 	if (ec_device_count == 0) {
- 		acpi_ec_debugfs_dir = debugfs_create_dir("ec", NULL);
-@@ -127,10 +128,11 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
- 
- 	if (!debugfs_create_x32("gpe", 0444, dev_dir, (u32 *)&first_ec->gpe))
- 		goto error;
--	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir,
--				 (u32 *)&first_ec->global_lock))
-+	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir, &val))
- 		goto error;
- 
-+	first_ec->global_lock = val;
-+
- 	if (write_support)
- 		mode = 0600;
- 	if (!debugfs_create_file("io", mode, dev_dir, ec, &acpi_ec_io_ops))
--- 
-2.4.0
+>  	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+>  			SGTL5000_BIAS_R_MASK,
+> -			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
+> +			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+
+That doesn't look right...  I would expect _BIAS_R_SHIFT to shift a
+value into the register masked off by _BIAS_R_MASK and therefore that
+the above is saying that the definition of one of those two macros is
+wrong.  I would not expect something called _BIAS_VOLT_SHIFT here.
+
+What's going on here?
+
+> @@ -1549,7 +1549,7 @@ static int sgtl5000_i2c_probe(struct i2c
+>  			else {
+>  				sgtl5000->micbias_voltage = 0;
+>  				dev_err(&client->dev,
+> -					"Unsuitable MicBias resistor\n");
+> +					"Unsuitable MicBias voltage\n");
+>  			}
+
+This looks like a reasonable but unrelated fix and should be in a
+separate patch.
+
+--rbKG8BlqS9xyY7Uh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWBXtTAAoJECTWi3JdVIfQ5CEH/3EvIqO6H7noDDN5uZePTvWm
+JaLPsxzZb0mn055l31qMzPrQE+BSbfdIeTXWa9bzSWksye4kIycLPSl8U7mXL9ht
+k3XI7i38oKEP/vE1v0VXFHuC60Kgi3rqvjXnGgUsc6DZFHq9h+AmenkjsNneyRKX
+GwGQFcN6SdgchCeIbh51gXZ1w09sWlJMmYP5vPbBfqGlrnNJbikbRqkms3r8iyRQ
+ggmADQjYXBEv3b05nL7aV3315MKQoOVETBrjI5wAnEy9lSdHfSOBeC20j69A6AwW
+1/ZSxN6mQsdRyhVK6n6nbgPHYCLcUAoKuZcbAxW8JejfTA80ZJwWwrYNYrCgh60=
+=7HFM
+-----END PGP SIGNATURE-----
+
+--rbKG8BlqS9xyY7Uh--
