@@ -1,52 +1,39 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: fix bad register
- MIC_BIAS_VOLTAGE setup on probe
-Date: Fri, 25 Sep 2015 14:03:53 -0300
-Message-ID: <CAOMZO5DzNzyeP2C10Wr-atonsUBzMO-esokAkcQnj6hUDMf_cA@mail.gmail.com>
-References: <1443190887-18080-1-git-send-email-gianlucarenzi@eurekelettronica.it>
-	<20150925165028.GJ30445@sirena.org.uk>
+From: Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
+Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
+	'global_lock'
+Date: Fri, 25 Sep 2015 19:42:25 +0200
+Message-ID: <1443202945.2161.8.camel@sipsolutions.net>
+References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
+	(sfid-20150925_184230_610012_AD3DF607)
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150925165028.GJ30445@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+	(sfid-20150925_184230_610012_AD3DF607)
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, QCA ath9k Development <ath9k-devel-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, Intel Linux Wireless <ilw-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-edac-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 25, 2015 at 1:50 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Sep 25, 2015 at 04:21:27PM +0200, Gianluca Renzi wrote:
->
->>       snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
->>                       SGTL5000_BIAS_R_MASK,
->> -                     sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
->> +                     sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
->
-> That doesn't look right...  I would expect _BIAS_R_SHIFT to shift a
-> value into the register masked off by _BIAS_R_MASK and therefore that
-> the above is saying that the definition of one of those two macros is
-> wrong.  I would not expect something called _BIAS_VOLT_SHIFT here.
+On Fri, 2015-09-25 at 09:41 -0700, Viresh Kumar wrote:
 
-Yes, the correct fix should be:
+> Signed-off-by: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> ---
+> V3->V4:
+> - Create a local variable instead of changing type of global_lock
+>   (Rafael)
 
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1376,8 +1376,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
-                        sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+Err, surely that wasn't what Rafael meant, since it's clearly
+impossible to use a pointer to the stack, assign to it once, and the
+expect anything to wkr at all ...
 
-        snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
--                       SGTL5000_BIAS_R_MASK,
--                       sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
-+                       SGTL5000_BIAS_VOLT_MASK,
-+                       sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
-        /*
-         * disable DAP
-         * TODO:
-
-Gianluca,
-
-Care to send a v2 of the patch?
-
-Regards,
-
-Fabio Estevam
+johannes
