@@ -1,75 +1,114 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH V1 2/6] ASoC: tlv320aic26: Fix module autoload
-Date: Fri, 25 Sep 2015 14:30:05 -0400
-Message-ID: <1443205809-27549-3-git-send-email-jcormier@criticallink.com>
+Subject: [PATCH  V1 1/6] ASoC: tlv320aic26: Add device tree binding
+Date: Fri, 25 Sep 2015 14:30:04 -0400
+Message-ID: <1443205809-27549-2-git-send-email-jcormier@criticallink.com>
 References: <1442607076-26681-1-git-send-email-jcormier@criticallink.com>
  <1443205809-27549-1-git-send-email-jcormier@criticallink.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
- [209.85.192.44])
- by alsa0.perex.cz (Postfix) with ESMTP id EF97526641C
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 20:30:38 +0200 (CEST)
-Received: by qgev79 with SMTP id v79so76186608qge.0
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 11:30:38 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1443205809-27549-1-git-send-email-jcormier@criticallink.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: "Cormier, Jonathan" <jcormier@criticallink.com>, alsa-devel@alsa-project.org, Bob Duke <bduke@criticallink.com>, Mark Brown <broonie@linaro.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Cormier, Jonathan" <jcormier@criticallink.com>
 List-Id: alsa-devel@alsa-project.org
-
-Add the missing MODULE_DEVICE_TABLE() for OF and SPI to export
-the information so modules have the correct aliases built-in and
-autoloading works correctly.
-
-A longer explanation by Javier Canillas can be found here:
-https://lkml.org/lkml/2015/7/30/519
-https://lkml.org/lkml/2014/9/11/458
 
 Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
 ---
- sound/soc/codecs/tlv320aic26.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../devicetree/bindings/sound/tlv320aic26.txt      | 65 ++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic26.c                     |  6 ++
+ 2 files changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic26.txt b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+new file mode 100644
+index 000000000000..93aa0f76ec0d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+@@ -0,0 +1,65 @@
++Texas Instruments - tlv320aic26 Codec module
++
++The tlv320aic26 serial control bus communicates through I2C protocols
++
++Required properties:
++
++- compatible - "string" - One of:
++    "ti,tlv320aic26" - TLV320AIC26
++- reg - <int> -  SPI chip select
++
++CODEC input pins:
++  * MICIN
++  * AUX
++
++CODEC output pins:
++  * HPL
++  * HPR
++
++The pins can be used in referring sound node's audio-routing property.
++
++Example:
++
++tlv320aic26: tlv320aic26@0 {
++	compatible = "ti,tlv320aic26";
++	reg = <0>;
++};
++
++&spi0 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi0_pins>;
++	pinctrl-1 = <&spi0_sleep_pins>;
++
++	status = "okay";
++	ti,pindir-d0-out-d1-in = <1>;
++
++	tlv320aic26: tlv320aic26@1 {
++		compatible = "ti,tlv320aic26";
++		reg = <0x1>;
++		status = "okay";
++
++		spi-max-frequency = <2000000>;
++		spi-cpha;
++	};
++};
++
++sound {
++	compatible = "simple-audio-card";
++	simple-audio-card,name = "AM335x_SND";
++	simple-audio-card,format = "dsp_b";
++	/* SND_SOC_DAIFMT_CBM_CFM */
++	simple-audio-card,bitclock-master = <&tlv320aic26_codec>;
++	simple-audio-card,frame-master = <&tlv320aic26_codec>;
++	/* SND_SOC_DAIFMT_IB_NF */
++	simple-audio-card,bitclock-inversion;
++
++	simple-audio-card,cpu {
++		sound-dai = <&mcasp1>;
++		system-clock-frequency = <24576000>;
++	};
++
++	tlv320aic26_codec: simple-audio-card,codec {
++		sound-dai = <&tlv320aic26>;
++		system-clock-frequency = <24576000>;
++	};
++};
 diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 65c2bfb02e76..bf3a9ec40e1e 100644
+index 620ab9ea1ef0..65c2bfb02e76 100644
 --- a/sound/soc/codecs/tlv320aic26.c
 +++ b/sound/soc/codecs/tlv320aic26.c
-@@ -370,10 +370,17 @@ static int aic26_spi_remove(struct spi_device *spi)
+@@ -370,10 +370,16 @@ static int aic26_spi_remove(struct spi_device *spi)
  	return 0;
  }
  
-+static const struct spi_device_id tlv320aic26_id_table[] = {
-+	{ "tlv320aic26" },
++static const struct of_device_id tlv320aic26_of_match[] = {
++	{ .compatible = "ti,tlv320aic26", },
 +	{},
 +};
-+MODULE_DEVICE_TABLE(spi, tlv320aic26_id_table);
 +
- static const struct of_device_id tlv320aic26_of_match[] = {
- 	{ .compatible = "ti,tlv320aic26", },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, tlv320aic26_of_match);
- 
  static struct spi_driver aic26_spi = {
  	.driver = {
-@@ -383,6 +390,7 @@ static struct spi_driver aic26_spi = {
+ 		.name = "tlv320aic26-codec",
+ 		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(tlv320aic26_of_match),
  	},
  	.probe = aic26_spi_probe,
  	.remove = aic26_spi_remove,
-+	.id_table = tlv320aic26_id_table,
- };
- 
- module_spi_driver(aic26_spi);
 -- 
 1.9.1
