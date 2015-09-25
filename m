@@ -1,35 +1,92 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
- 'global_lock'
-Date: Fri, 25 Sep 2015 14:44:38 -0700
-Message-ID: <20150925214438.GH5951@linux>
-References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
- <4357538.Wlf88yQie6@vostro.rjw.lan>
- <CAKohpok2Z2m7GZt1GzZzofeHEioF=XJEq8YVgtY=VtS9tmpb_Q@mail.gmail.com>
- <2524822.pQu4UKMrlb@vostro.rjw.lan>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH 0/5] Add ASoC support for AMD APUs [v4]
+Date: Fri, 25 Sep 2015 17:48:21 -0400
+Message-ID: <1443217704-28814-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2524822.pQu4UKMrlb@vostro.rjw.lan>
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linaro Kernel Mailman List <linaro-kernel@lists.linaro.org>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Intel Linux Wireless <ilw@linux.intel.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux ACPI <linux-acpi@vger.kernel.org>, "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>, "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>, "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
+Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 25-09-15, 22:58, Rafael J. Wysocki wrote:
-> Say you have three adjacent fields in a structure, x, y, z, each one byte long.
-> Initially, all of them are equal to 0.
-> 
-> CPU A writes 1 to x and CPU B writes 2 to y at the same time.
-> 
-> What's the result?
-
-But then two CPUs can update the same variable as well, and we must
-have proper locking in place to fix that.
-
-Anyway, that problem isn't here for sure as its between two
-unsigned-longs. So, should I just move it to bool and resend ?
-
--- 
-viresh
+VGhpcyBwYXRjaCBzZXQgaW1wbGVtZW50cyBzdXBwb3J0IGZvciBpMnMgYXVkaW8gYW5kIG5ldyBB
+TUQgR1BVcy4KVGhlIGkycyBjb2RlYyBpcyBmZWQgYnkgYSBETUEgZW5naW5lIG9uIHRoZSBHUFUu
+ICBUbyBoYW5kbGUgdGhpcwp3ZSBjcmVhdGUgbWZkIGNlbGxzIHdoaWNoIHdlIGhhbmcgdGhlIGky
+cyBjb2RlYyBhbmQgRE1BIGVuZ2luZSBvbi4KQmVjYXVzZSBvZiB0aGlzLCB0aGlzIHBhdGNoIHNl
+dCBjb3ZlcnMgdHdvIHN1YnN5c3RlbXM6IGRybSBhbmQgYWxzYS4KVGhlIGRybSBwYXRjaGVzIGFk
+ZCBzdXBwb3J0IGZvciB0aGUgQUNQIGh3IGJsb2NrIHdoaWNoIHByb3ZpZGVzIHRoZQpETUEgZW5n
+aW5lIGZvciB0aGUgaTJzIGNvZGVjLiAgVGhlIGFsc2EgcGF0Y2hlcyBhZGQgdGhlIEFTb0MgZHJp
+dmVyCmZvciB0aGUgaTJzIGNvZGVjLiAgU2luY2UgdGhlIGFsc2EgY2hhbmdlcyBkZXBlbmQgb24g
+dGhlIGRybSBjaGFuZ2VzCmluIHRoaXMgcGF0Y2ggc2V0IGFzIHdlbGwgYXMgc29tZSBvdGhlciBk
+cm0gY2hhbmdlcyBxdWV1ZWQgZm9yIDQuMywKSSdkIGxpa2UgdG8gdGFrZSB0aGUgYWxzYSBwYXRj
+aGVzIGluIHZpYSB0aGUgZHJtIHRyZWUuCgpWMiBjaGFuZ2VzOgotIFVzZSB0aGUgTUZEIHN1YnN5
+c3RlbSByYXRoZXIgdGhhbiBhZGRpbmcgb3VyIG93biBidXMKLSBTcXVhc2ggYWxsIHN1Yi1mZWF0
+dXJlIHBhdGNoZXMgdG9nZXRoZXIKLSBmaXggY29tbWVudHMgbWVudGlvbmVkIGluIHByZXZpb3Vz
+IHJldmlldwoKVjMgY2hhbmdlczoKLSBVcGRhdGUgdGhlIGRlc2lnbndhcmUgZHJpdmVyIHRvIGhh
+bmRsZSBzbGF2ZSBtb2RlLCBhbWQgc3BlY2lmaWMKICBmZWF0dXJlcwotIFVzZSB0aGUgZGVzaWdu
+d2FyZSBkcml2ZXIgZGlyZWN0bHkgZm9yIGkycwotIE1vdmUgdGhlIERNQSBoYW5kbGluZyBmcm9t
+IHRoZSBHUFUgZHJpdmVyIGludG8gdGhlIEFNRCBBU29DCiAgZHJpdmVyCi0gQ2hhbmdlIHRoZSBs
+aWNlbnNlIG9uIHRoZSBBU29DIGRyaXZlciB0byBHUEwKClY0IGNoYW5nZXM6Ci0gZ2V0IHRoZSBt
+YXN0ZXIgdnMgc2xhdmUgbW9kZSBmb3IgdGhlIGRlc2lnbndhcmUgY29kZWMgZnJvbSByZWdpc3Rl
+cnMKLSBjb3B5IGRlc2lnbndhcmUgcXVpcmtzIGZyb20gcGxhdGZvcm0gZGF0YSBpbiBsb2NhbCBz
+dHJ1Y3QKClBhdGNoIDQgYWRkcyB0aGUgcmVnaXN0ZXIgaGVhZGVycyBmb3IgdGhlIEFDUCBibG9j
+ayB3aGljaCBpcyBhCnByZXR0eSBiaWcgcGF0Y2ggc28gSSd2ZSBleGNsdWRlZCBpdCBmcm9tIGVt
+YWlsLiAgVGhlIGVudGlyZSBwYXRjaApzZXQgY2FuIGJlIHZpZXdlZCBoZXJlOgpodHRwOi8vY2dp
+dC5mcmVlZGVza3RvcC5vcmcvfmFnZDVmL2xpbnV4L2xvZy8/aD1hY3AtdXBzdHJlYW00CgpUaGFu
+a3MsCgpBbGV4CgpNYXJ1dGhpIEJheXlhdmFyYXB1ICgxKToKICBkcm0vYW1kOiBhZGQgQUNQIGRy
+aXZlciBzdXBwb3J0CgpNYXJ1dGhpIFNyaW5pdmFzIEJheXlhdmFyYXB1ICg0KToKICBBU29DIDog
+ZHdjIDogc3VwcG9ydCBkdyBpMnMgaW4gc2xhdmUgbW9kZQogIEFTb0MgOiBkd2MgOiBzdXBwb3J0
+IGR3IGkycyBpbiBBTUQgcGxhdGZvcm0KICBBU29DIDogQU1EIDogYWRkIEFDUCAyLjIgcmVnaXN0
+ZXIgaGVhZGVycwogIEFTb0M6IEFNRDogYWRkIEFNRCBBU29DIEFDUC1JMlMgZHJpdmVyCgogZHJp
+dmVycy9ncHUvZHJtL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgfCAgICAyICsKIGRyaXZl
+cnMvZ3B1L2RybS9hbWQvYWNwL0tjb25maWcgICAgICAgICAgICAgIHwgICAxMCArCiBkcml2ZXJz
+L2dwdS9kcm0vYW1kL2FjcC9NYWtlZmlsZSAgICAgICAgICAgICB8ICAgIDkgKwogZHJpdmVycy9n
+cHUvZHJtL2FtZC9hY3AvYWNwX2h3LmMgICAgICAgICAgICAgfCAgMTI3ICsrCiBkcml2ZXJzL2dw
+dS9kcm0vYW1kL2FjcC9pbmNsdWRlL2FjcF9nZnhfaWYuaCB8ICAgNDkgKwogZHJpdmVycy9ncHUv
+ZHJtL2FtZC9hbWRncHUvTWFrZWZpbGUgICAgICAgICAgfCAgIDEzICstCiBkcml2ZXJzL2dwdS9k
+cm0vYW1kL2FtZGdwdS9hbWRncHUuaCAgICAgICAgICB8ICAgMTIgKwogZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jICAgICAgfCAgMjY5ICsrKwogZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5oICAgICAgfCAgIDQxICsKIGRyaXZlcnMvZ3B1L2RybS9h
+bWQvYW1kZ3B1L3ZpLmMgICAgICAgICAgICAgIHwgICAxMiArCiBkcml2ZXJzL2dwdS9kcm0vYW1k
+L2luY2x1ZGUvYW1kX3NoYXJlZC5oICAgICB8ICAgIDEgKwogaW5jbHVkZS9saW51eC9tZmQvYW1k
+X2FjcC5oICAgICAgICAgICAgICAgICAgfCAgIDQzICsKIGluY2x1ZGUvc291bmQvZGVzaWdud2Fy
+ZV9pMnMuaCAgICAgICAgICAgICAgIHwgICAgNSArCiBzb3VuZC9zb2MvS2NvbmZpZyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKwogc291bmQvc29jL01ha2VmaWxlICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgICAxICsKIHNvdW5kL3NvYy9hbWQvS2NvbmZpZyAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICAgNCArCiBzb3VuZC9zb2MvYW1kL01ha2VmaWxlICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgIDMgKwogc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jICAgICAg
+ICAgICAgICAgICAgfCAgNTE4ICsrKysrKwogc291bmQvc29jL2FtZC9hY3AuYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgNzM2ICsrKysrKysrKwogc291bmQvc29jL2FtZC9hY3AuaCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgMTQ3ICsrCiBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNw
+XzJfMl9kLmggICAgICAgICAgICB8ICA2MDkgKysrKysrKwogc291bmQvc29jL2FtZC9pbmNsdWRl
+L2FjcF8yXzJfZW51bS5oICAgICAgICAgfCAxMDY4ICsrKysrKysrKysrKwogc291bmQvc29jL2Ft
+ZC9pbmNsdWRlL2FjcF8yXzJfc2hfbWFzay5oICAgICAgfCAyMjkyICsrKysrKysrKysrKysrKysr
+KysrKysrKysrCiBzb3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJzLmMgICAgICAgICAgICAgICB8
+ICAyNzYgKystLQogMjQgZmlsZXMgY2hhbmdlZCwgNjE0NiBpbnNlcnRpb25zKCspLCAxMDIgZGVs
+ZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvS2Nv
+bmZpZwogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL01ha2VmaWxl
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvYWNwX2h3LmMKIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9pbmNsdWRlL2FjcF9nZnhf
+aWYuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdw
+dV9hY3AuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2Ft
+ZGdwdV9hY3AuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL2FtZF9hY3Au
+aAogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvS2NvbmZpZwogY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3NvYy9hbWQvTWFrZWZpbGUKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9z
+b2MvYW1kL2FjcC1wY20tZG1hLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvYW1kL2Fj
+cC5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3AuaAogY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX2QuaAogY3JlYXRlIG1vZGUgMTAw
+NjQ0IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX2VudW0uaAogY3JlYXRlIG1vZGUgMTAw
+NjQ0IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX3NoX21hc2suaAoKLS0gCjEuOC4zLjEK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
+bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
