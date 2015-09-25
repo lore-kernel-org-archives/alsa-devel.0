@@ -1,49 +1,79 @@
-From: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
-Subject: [PATCH 2/2] ASoC: sgtl5000: fix error message output
-	for MicBias voltage
-Date: Fri, 25 Sep 2015 21:33:42 +0200
-Message-ID: <1443209622-7716-2-git-send-email-gianlucarenzi@eurekelettronica.it>
-References: <y>
- <1443209622-7716-1-git-send-email-gianlucarenzi@eurekelettronica.it>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of 'global_lock'
+Date: Fri, 25 Sep 2015 22:18:13 +0200
+Message-ID: <1460975.zriLPuubXp@vostro.rjw.lan>
+References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gianlinux (unknown [77.89.4.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F9DA26644C
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 21:40:16 +0200 (CEST)
-In-Reply-To: <1443209622-7716-1-git-send-email-gianlucarenzi@eurekelettronica.it>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
+Sender: owner-linux-mm@kvack.org
+To: Viresh Kumar <viresh.kumar@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linaro-kernel@lists.linaro.org, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Intel Linux Wireless <ilw@linux.intel.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, linux-bluetooth@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
----
- sound/soc/codecs/sgtl5000.c |    2 +-
- 1 file changed, 1 insertions(+), 1 deletions(-)
+On Friday, September 25, 2015 09:41:37 AM Viresh Kumar wrote:
+> global_lock is defined as an unsigned long and accessing only its lower
+> 32 bits from sysfs is incorrect, as we need to consider other 32 bits
+> for big endian 64 bit systems. There are no such platforms yet, but the
+> code needs to be robust for such a case.
+> 
+> Fix that by passing a local variable to debugfs_create_bool() and
+> assigning its value to global_lock later.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
---- a/sound/soc/codecs/sgtl5000.c	2015-09-25 15:24:10.597051191 +0200
-+++ b/sound/soc/codecs/sgtl5000.c	2015-09-25 21:28:00.318016274 +0200
-@@ -1549,7 +1549,7 @@ static int sgtl5000_i2c_probe(struct i2c
- 			else {
- 				sgtl5000->micbias_voltage = 0;
- 				dev_err(&client->dev,
--					"Unsuitable MicBias resistor\n");
-+					"Unsuitable MicBias voltage\n");
- 			}
- 		} else {
- 			sgtl5000->micbias_voltage = 0;
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Greg, please take this one if the [2/2] looks good to you.
+
+> ---
+> V3->V4:
+> - Create a local variable instead of changing type of global_lock
+>   (Rafael)
+> - Drop the stable tag
+> - BCC'd a lot of people (rather than cc'ing them) to make sure
+>   - the series reaches them
+>   - mailing lists do not block the patchset due to long cc list
+>   - and we don't spam the BCC'd people for every reply
+> ---
+>  drivers/acpi/ec_sys.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/ec_sys.c b/drivers/acpi/ec_sys.c
+> index b4c216bab22b..b44b91331a56 100644
+> --- a/drivers/acpi/ec_sys.c
+> +++ b/drivers/acpi/ec_sys.c
+> @@ -110,6 +110,7 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
+>  	struct dentry *dev_dir;
+>  	char name[64];
+>  	umode_t mode = 0400;
+> +	u32 val;
+>  
+>  	if (ec_device_count == 0) {
+>  		acpi_ec_debugfs_dir = debugfs_create_dir("ec", NULL);
+> @@ -127,10 +128,11 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
+>  
+>  	if (!debugfs_create_x32("gpe", 0444, dev_dir, (u32 *)&first_ec->gpe))
+>  		goto error;
+> -	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir,
+> -				 (u32 *)&first_ec->global_lock))
+> +	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir, &val))
+>  		goto error;
+>  
+> +	first_ec->global_lock = val;
+> +
+>  	if (write_support)
+>  		mode = 0600;
+>  	if (!debugfs_create_file("io", mode, dev_dir, ec, &acpi_ec_io_ops))
+> 
+
+Thanks,
+Rafael
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
