@@ -1,39 +1,46 @@
-From: Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
-	'global_lock'
-Date: Fri, 25 Sep 2015 19:42:25 +0200
-Message-ID: <1443202945.2161.8.camel@sipsolutions.net>
-References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
-	(sfid-20150925_184230_610012_AD3DF607)
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/2] ASoC: atmel-classd: add driver for Atmel CLASSD
+Date: Fri, 25 Sep 2015 11:07:28 -0700
+Message-ID: <20150925180728.GP30445@sirena.org.uk>
+References: <1443073287-17849-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-	(sfid-20150925_184230_610012_AD3DF607)
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, QCA ath9k Development <ath9k-devel-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, Intel Linux Wireless <ilw-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-edac-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fW6jlebSFjIjuLDN"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1443073287-17849-1-git-send-email-songjun.wu@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Songjun Wu <songjun.wu@atmel.com>
+Cc: linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-09-25 at 09:41 -0700, Viresh Kumar wrote:
 
-> Signed-off-by: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> ---
-> V3->V4:
-> - Create a local variable instead of changing type of global_lock
->   (Rafael)
+--fW6jlebSFjIjuLDN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Err, surely that wasn't what Rafael meant, since it's clearly
-impossible to use a pointer to the stack, assign to it once, and the
-expect anything to wkr at all ...
+On Thu, Sep 24, 2015 at 01:41:25PM +0800, Songjun Wu wrote:
 
-johannes
+> Songjun Wu (2):
+>   ASoC: atmel-classd: add the Audio Class D Amplifier
+>   ASoC: atmel-classd: DT binding for Class D audio amplifier driver
+
+I don't seem to have the second patch with the binding documentation.
+
+--fW6jlebSFjIjuLDN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWBY1gAAoJECTWi3JdVIfQKVkH/3PaVzfnwZD2YGvngkGtMME1
+tt1jaMuPmGY2Wf5NCB2DpldD6Oj0BQOfFSnXrg1/bwlIXy3wBpMzT4H3oQixMi/W
+uFQ0yWNnvinV5ywG8MvN+9V0ibQMYMwELb+6wGqGm+vrA2KGmMJchWSzs05wMk19
+/Idf6bLewy8evyjdMbGCt9qSQseSpSc//xOoLGlHFtC7O7WC4DMqzY9L0z3VpCAR
+HXvPAJGZt23kci5784V5X2EwNKstxu+eSWv/ggL35GIZdDRbamOZFya0quQzPjtm
+binAznaIe47a3GWN4eIHqM/ApfNLD0LVZ0z8WPozieMouqLMH5rSf9Fmfo76nhA=
+=VHH7
+-----END PGP SIGNATURE-----
+
+--fW6jlebSFjIjuLDN--
