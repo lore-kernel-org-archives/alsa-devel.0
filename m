@@ -1,85 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: db1200: Fix DAI link format for db1300 and db1550" to the asoc tree
-Date: Fri, 25 Sep 2015 09:55:24 -0700
-Message-ID: <E1ZfWHM-0001QA-MH@finisterre>
-References: <55ED7AF2.1050800@metafoo.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <55ED7AF2.1050800@metafoo.de>
-Sender: stable-owner@vger.kernel.org
-To: Manuel Lauss <manuel.lauss@gmail.com>Manuel Lauss <manuel.lauss@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: fix bad register
+ MIC_BIAS_VOLTAGE setup on probe
+Date: Fri, 25 Sep 2015 14:03:53 -0300
+Message-ID: <CAOMZO5DzNzyeP2C10Wr-atonsUBzMO-esokAkcQnj6hUDMf_cA@mail.gmail.com>
+References: <1443190887-18080-1-git-send-email-gianlucarenzi@eurekelettronica.it>
+	<20150925165028.GJ30445@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150925165028.GJ30445@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Sep 25, 2015 at 1:50 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Sep 25, 2015 at 04:21:27PM +0200, Gianluca Renzi wrote:
+>
+>>       snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+>>                       SGTL5000_BIAS_R_MASK,
+>> -                     sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
+>> +                     sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+>
+> That doesn't look right...  I would expect _BIAS_R_SHIFT to shift a
+> value into the register masked off by _BIAS_R_MASK and therefore that
+> the above is saying that the definition of one of those two macros is
+> wrong.  I would not expect something called _BIAS_VOLT_SHIFT here.
 
-   ASoC: db1200: Fix DAI link format for db1300 and db1550
+Yes, the correct fix should be:
 
-has been applied to the asoc tree at
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1376,8 +1376,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+                        sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+        snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+-                       SGTL5000_BIAS_R_MASK,
+-                       sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
++                       SGTL5000_BIAS_VOLT_MASK,
++                       sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+        /*
+         * disable DAP
+         * TODO:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Gianluca,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Care to send a v2 of the patch?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Regards,
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From e74679b38c9417c1c524081121cdcdb36f82264d Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Fri, 25 Sep 2015 11:07:04 +0200
-Subject: [PATCH] ASoC: db1200: Fix DAI link format for db1300 and db1550
-
-Commit b4508d0f95fa ("ASoC: db1200: Use static DAI format setup") switched
-the db1200 driver over to using static DAI format setup instead of a
-callback function. But the commit only added the dai_fmt field to one of
-the three DAI links in the driver. This breaks audio on db1300 and db1550.
-
-Add the two missing dai_fmt settings to fix the issue.
-
-Fixes: b4508d0f95fa ("ASoC: db1200: Use static DAI format setup")
-Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
-Tested-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/au1x/db1200.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
-index 58c3164..8c907eb 100644
---- a/sound/soc/au1x/db1200.c
-+++ b/sound/soc/au1x/db1200.c
-@@ -129,6 +129,8 @@ static struct snd_soc_dai_link db1300_i2s_dai = {
- 	.cpu_dai_name	= "au1xpsc_i2s.2",
- 	.platform_name	= "au1xpsc-pcm.2",
- 	.codec_name	= "wm8731.0-001b",
-+	.dai_fmt	= SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF |
-+			  SND_SOC_DAIFMT_CBM_CFM,
- 	.ops		= &db1200_i2s_wm8731_ops,
- };
- 
-@@ -146,6 +148,8 @@ static struct snd_soc_dai_link db1550_i2s_dai = {
- 	.cpu_dai_name	= "au1xpsc_i2s.3",
- 	.platform_name	= "au1xpsc-pcm.3",
- 	.codec_name	= "wm8731.0-001b",
-+	.dai_fmt	= SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF |
-+			  SND_SOC_DAIFMT_CBM_CFM,
- 	.ops		= &db1200_i2s_wm8731_ops,
- };
- 
--- 
-2.5.0
+Fabio Estevam
