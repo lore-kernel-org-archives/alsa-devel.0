@@ -1,65 +1,130 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: db1200: Fix DAI link format for db1300
-	and db1550
-Date: Fri, 25 Sep 2015 11:07:04 +0200
-Message-ID: <1443172024-19906-1-git-send-email-lars@metafoo.de>
+From: Luis de Bethencourt <luisbg@osg.samsung.com>
+Subject: Re: [PATCH v2] sound: oss: ad1848: Fix returned errno code in ad1848_init()
+Date: Fri, 25 Sep 2015 10:34:44 +0100
+Message-ID: <56051534.2040006@osg.samsung.com>
+References: <1443117510-26906-1-git-send-email-luisbg@osg.samsung.com> <s5h8u7vr6if.wl-tiwai@suse.de> <56044A37.6060909@osg.samsung.com> <s5h612zqaaj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-240.synserver.de (smtp-out-125.synserver.de
- [212.40.185.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 59FC9265AA7
- for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 11:07:12 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h612zqaaj.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, sudipm.mukherjee@gmail.com, joe@perches.com, perex@perex.cz, elfring@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Commit b4508d0f95fa ("ASoC: db1200: Use static DAI format setup") switched
-the db1200 driver over to using static DAI format setup instead of a
-callback function. But the commit only added the dai_fmt field to one of
-the three DAI links in the driver. This breaks audio on db1300 and db1550.
+On 25/09/15 07:32, Takashi Iwai wrote:
+> On Thu, 24 Sep 2015 21:08:39 +0200,
+> Luis de Bethencourt wrote:
+>>
+>> On 24/09/15 19:56, Takashi Iwai wrote:
+>>> On Thu, 24 Sep 2015 19:58:30 +0200,
+>>> Luis de Bethencourt wrote:
+>>>>
+>>>> The driver is using -1 instead of the -ENOMEM defined macro to specify
+>>>> that a buffer allocation failed. Since the error number is propagated,
+>>>> the caller will get a -EPERM which is the wrong error condition.
+>>>
+>>> Where is the propagated error number referred?  In other words, do we
+>>> have a clear merit of changing this old stuff with rather a risk of
+>>> regression?
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>
+>> Hi Takashi,
+>>
+>> The propagated error number is not referred. The only merit here is to
+>> use the appropriate error number and silence the smatch tool.
+> 
+> In that case, I prefer leaving as is, sorry.  The code is using -1 for
+> its purpose, and the error number isn't important there in anyway
+> since the driver doesn't abort at all.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-Add the two missing dai_fmt settings to fix the issue.
+Hi Takashi,
 
-Fixes: b4508d0f95fa ("ASoC: db1200: Use static DAI format setup")
-Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
-Tested-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/au1x/db1200.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I understand. I was on the fence myself about it being worth it or not,
+as I mentioned in the review of the first version of the patch.
 
-diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
-index 638ca0b..5c73061 100644
---- a/sound/soc/au1x/db1200.c
-+++ b/sound/soc/au1x/db1200.c
-@@ -129,6 +129,8 @@ static struct snd_soc_dai_link db1300_i2s_dai = {
- 	.cpu_dai_name	= "au1xpsc_i2s.2",
- 	.platform_name	= "au1xpsc-pcm.2",
- 	.codec_name	= "wm8731.0-001b",
-+	.dai_fmt	= SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF |
-+			  SND_SOC_DAIFMT_CBM_CFM,
- 	.ops		= &db1200_i2s_wm8731_ops,
- };
- 
-@@ -146,6 +148,8 @@ static struct snd_soc_dai_link db1550_i2s_dai = {
- 	.cpu_dai_name	= "au1xpsc_i2s.3",
- 	.platform_name	= "au1xpsc-pcm.3",
- 	.codec_name	= "wm8731.0-001b",
-+	.dai_fmt	= SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF |
-+			  SND_SOC_DAIFMT_CBM_CFM,
- 	.ops		= &db1200_i2s_wm8731_ops,
- };
- 
--- 
-2.1.4
+Thank you for the review,
+Luis
+
+> 
+>>
+>> Thanks for the review,
+>> Luis
+>>
+>>>
+>>>> Changed the checks of the return of ad1848_init() to be for >= 0,
+>>>> instead of != -1.
+>>>>
+>>>> Smatch tool warning:
+>>>> ad1848_init() warn: returning -1 instead of -ENOMEM is sloppy
+>>>>
+>>>> Signed-off-by: Luis de Bethencourt <luisbg@osg.samsung.com>
+>>>> ---
+>>>>  sound/oss/ad1848.c    | 4 ++--
+>>>>  sound/oss/dev_table.c | 2 +-
+>>>>  sound/oss/pss.c       | 2 +-
+>>>>  3 files changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
+>>>> index 10c8de1..58c6d31 100644
+>>>> --- a/sound/oss/ad1848.c
+>>>> +++ b/sound/oss/ad1848.c
+>>>> @@ -1992,7 +1992,7 @@ int ad1848_init (char *name, struct resource *ports, int irq, int dma_playback,
+>>>>  	portc = kmalloc(sizeof(ad1848_port_info), GFP_KERNEL);
+>>>>  	if(portc==NULL) {
+>>>>  		release_region(devc->base, 4);
+>>>> -		return -1;
+>>>> +		return -ENOMEM;
+>>>>  	}
+>>>>  
+>>>>  	if ((my_dev = sound_install_audiodrv(AUDIO_DRIVER_VERSION,
+>>>> @@ -2007,7 +2007,7 @@ int ad1848_init (char *name, struct resource *ports, int irq, int dma_playback,
+>>>>  	{
+>>>>  		release_region(devc->base, 4);
+>>>>  		kfree(portc);
+>>>> -		return -1;
+>>>> +		return my_dev;
+>>>>  	}
+>>>>  	
+>>>>  	audio_devs[my_dev]->portc = portc;
+>>>> diff --git a/sound/oss/dev_table.c b/sound/oss/dev_table.c
+>>>> index 6dad515..abb3db4 100644
+>>>> --- a/sound/oss/dev_table.c
+>>>> +++ b/sound/oss/dev_table.c
+>>>> @@ -148,7 +148,7 @@ EXPORT_SYMBOL(sound_install_mixer);
+>>>>  
+>>>>  void sound_unload_audiodev(int dev)
+>>>>  {
+>>>> -	if (dev != -1) {
+>>>> +	if (dev >= 0) {
+>>>>  		DMAbuf_deinit(dev);
+>>>>  		audio_devs[dev] = NULL;
+>>>>  		unregister_sound_dsp((dev<<4)+3);
+>>>> diff --git a/sound/oss/pss.c b/sound/oss/pss.c
+>>>> index 81314f9..e84aafe 100644
+>>>> --- a/sound/oss/pss.c
+>>>> +++ b/sound/oss/pss.c
+>>>> @@ -1091,7 +1091,7 @@ static int __init probe_pss_mss(struct address_info *hw_config)
+>>>>  	pss_mixer_reset(devc);
+>>>>  	attach_ms_sound(hw_config, ports, THIS_MODULE);	/* Slot 0 */
+>>>>  
+>>>> -	if (hw_config->slots[0] != -1)
+>>>> +	if (hw_config->slots[0] >= 0)
+>>>>  	{
+>>>>  		/* The MSS driver installed itself */
+>>>>  		audio_devs[hw_config->slots[0]]->coproc = &pss_coproc_operations;
+>>>> -- 
+>>>> 2.5.1
+>>>>
+>>>>
+>>
