@@ -1,40 +1,50 @@
-From: Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
-	'global_lock'
-Date: Fri, 25 Sep 2015 11:52:56 -0700
-Message-ID: <20150925185256.GG5951@linux>
-References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
-	<1443202945.2161.8.camel@sipsolutions.net>
-	<20150925184741.GF5951@linux>
-	<1443206945.2161.9.camel@sipsolutions.net>
+From: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+Subject: [PATCH 1/2] ASoC: sgtl5000: fix wrong register
+	MIC_BIAS_VOLTAGE setup on probe
+Date: Fri, 25 Sep 2015 21:33:41 +0200
+Message-ID: <1443209622-7716-1-git-send-email-gianlucarenzi@eurekelettronica.it>
+References: <y>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1443206945.2161.9.camel-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, QCA ath9k Development <ath9k-devel-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Intel Linux Wireless <ilw-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-edac-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gianlinux (unknown [77.89.4.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A0F22663E5
+ for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2015 21:34:58 +0200 (CEST)
+In-Reply-To: <y>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25-09-15, 20:49, Johannes Berg wrote:
-> Ok, then, but that means Rafael is completely wrong ...
-> debugfs_create_bool() takes a *pointer* and it needs to be long-lived,
-> it can't be on the stack. You also don't get a call when it changes.
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+---
+ sound/soc/codecs/sgtl5000.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ahh, ofcourse. My bad as well...
-
-I think we can change structure definition but will wait for Rafael's
-comment before that.
-
--- 
-viresh
+--- a/sound/soc/codecs/sgtl5000.c	2015-09-25 15:24:10.597051191 +0200
++++ b/sound/soc/codecs/sgtl5000.c	2015-09-25 21:26:07.102020194 +0200
+@@ -1376,8 +1376,8 @@ static int sgtl5000_probe(struct snd_soc
+ 			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+ 
+ 	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+-			SGTL5000_BIAS_R_MASK,
+-			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
++			SGTL5000_BIAS_VOLT_MASK,
++			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+ 	/*
+ 	 * disable DAP
+ 	 * TODO:
