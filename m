@@ -1,17 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/1] ASoC: ad193x: add support to ad1934
-Date: Tue, 29 Sep 2015 10:42:31 +0200
-Message-ID: <560A4EF7.9030506@metafoo.de>
-References: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
+From: Michael Leun <lkml20150926@newton.leun.net>
+Subject: Baytrail based HDMI Stick Orbsmart AW-01: No sound
+Date: Sat, 26 Sep 2015 22:09:23 +0200
+Message-ID: <20150926220923.2bb02248@xenia.leun.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-050.synserver.de (smtp-out-080.synserver.de
- [212.40.185.80])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D82B26062B
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 10:43:34 +0200 (CEST)
-In-Reply-To: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
+Received: from stator.leun.net (stator.leun.net [85.214.203.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id 855B72606E9
+ for <alsa-devel@alsa-project.org>; Sat, 26 Sep 2015 22:11:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +18,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, yang.jie@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/29/2015 10:36 AM, Cyrille Pitchen wrote:
-> The AD1934 codec has no DAC feature. Hence it register mapping is slightly
-> different from the register mapping of other members of the AD193x family.
-> 
-> Some ASoC controls and widgets are related to the DAC feature so are not
-> relevant in the case of an AD1934 codec.
+Hi,
 
-Looks mostly good, thanks.
+I've an baytrail / Z3735F based HDMI Stick "Orbsmart AW-01", but sound
+does not work.
 
-> diff --git a/sound/soc/codecs/ad193x-i2c.c b/sound/soc/codecs/ad193x-i2c.c
-> index df3a1a415825..8aa50d35662f 100644
-> --- a/sound/soc/codecs/ad193x-i2c.c
-> +++ b/sound/soc/codecs/ad193x-i2c.c
-> @@ -15,8 +15,8 @@
->  #include "ad193x.h"
->  
->  static const struct i2c_device_id ad193x_id[] = {
-> -	{ "ad1936", 0 },
-> -	{ "ad1937", 0 },
-> +	{ "ad1936", AD193x },
-> +	{ "ad1937", AD193x },
+I'm a little lost finding out what is missing / required to make it
+work.
 
-Should be a upper case X.
+I compiled an 4.3-rc2 vanilla kernel with hopefully each and everything
+turned on relating soc/sound.
 
->  	{ }
->  };
+In dmesg I get:
+
 [...]
+[    4.252522] sst-acpi 80860F28:00: No matching ASoC machine driver found
+[    5.863177] intel_sst_acpi 80860F28:00: No matching machine driver found
 [...]
-> @@ -91,18 +97,33 @@ static const struct snd_soc_dapm_route audio_paths[] = {
->  	{ "DAC", NULL, "SYSCLK" },
->  	{ "DAC Output", NULL, "DAC" },
->  	{ "DAC Output", NULL, "VMID" },
-> -	{ "ADC", NULL, "SYSCLK" },
-> -	{ "DAC", NULL, "ADC_PWR" },
-> -	{ "ADC", NULL, "ADC_PWR" },
->  	{ "DAC1OUT", NULL, "DAC Output" },
->  	{ "DAC2OUT", NULL, "DAC Output" },
->  	{ "DAC3OUT", NULL, "DAC Output" },
->  	{ "DAC4OUT", NULL, "DAC Output" },
-> +	{ "SYSCLK", NULL, "PLL_PWR" },
-> +};
-> +
-> +static const struct snd_soc_dapm_route adc_audio_paths[] = {
 
-this should have the ad193x_ prefix as well.
+It looks like there is rt5640 based sound recognized:
 
-> +	{ "ADC", NULL, "SYSCLK" },
-> +	{ "ADC", NULL, "ADC_PWR" },
->  	{ "ADC", NULL, "ADC1IN" },
->  	{ "ADC", NULL, "ADC2IN" },
-> -	{ "SYSCLK", NULL, "PLL_PWR" },
->  };
+[ml@orb ~]$ find /sys -name '*5640*' -print
+/sys/bus/i2c/drivers/rt5640
+/sys/bus/acpi/devices/10EC5640:00
+/sys/bus/acpi/devices/10EC5640:01
+/sys/devices/LNXSYSTM:00/LNXSYBUS:00/80860F41:01/10EC5640:00
+/sys/devices/LNXSYSTM:00/LNXSYBUS:00/80860F41:01/10EC5640:01
+find: "/sys/kernel/debug": Keine Berechtigung
+/sys/module/i2c_core/holders/snd_soc_rt5640
+/sys/module/snd_soc_rl6231/holders/snd_soc_rt5640
+/sys/module/snd_soc_rt5640
+/sys/module/snd_soc_rt5640/drivers/i2c:rt5640
+/sys/module/snd_soc_core/holders/snd_soc_rt5640
+/sys/module/regmap_i2c/holders/snd_soc_rt5640
+/sys/module/snd_pcm/holders/snd_soc_rt5640
+[ml@orb ~]$
+
+This are the sound related modules loaded:
+
+[ml@orb ~]$ lsmod|grep snd
+snd_intel_sst_acpi     16384  0
+snd_intel_sst_core     65536  1 snd_intel_sst_acpi
+snd_soc_rt5640        106496  0
+snd_soc_sst_mfld_platform    73728  1 snd_intel_sst_core
+snd_soc_rl6231         16384  1 snd_soc_rt5640
+snd_soc_core          155648  2 snd_soc_rt5640,snd_soc_sst_mfld_platform
+snd_compress           20480  1 snd_soc_core
+regmap_i2c             16384  1 snd_soc_rt5640
+snd_pcm_dmaengine      16384  1 snd_soc_core
+ac97_bus               16384  1 snd_soc_core
+snd_pcm                86016  4 snd_soc_rt5640,snd_soc_core,snd_soc_sst_mfld_platform,snd_pcm_dmaengine
+snd_timer              28672  1 snd_pcm
+snd                    65536  5 snd_soc_core,snd_timer,snd_pcm,snd_soc_sst_mfld_platform,snd_compress
+soundcore              16384  1 snd
+i2c_core               49152  7 drm,i915,snd_soc_rt5640,i2c_designware_platform,regmap_i2c,drm_kms_helper,i2c_algo_bit
+snd_soc_sst_acpi       16384  0
+[ml@orb ~]$ 
+
+-- 
+Best Regards,
+
+Michael Leun
