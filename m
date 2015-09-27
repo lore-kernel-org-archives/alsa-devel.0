@@ -1,28 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] mfd: arizona: Call the runtime PM function
- if the state is runtime resumed
-Date: Sun, 27 Sep 2015 17:06:44 +0100
-Message-ID: <20150927160644.GE5432@ck-lbox>
-References: <20150917091632.GC7694@ck-lbox>
- <20150918154903.549cf6d0@songinha-Samsung-DeskTop-System>
- <20150918082446.GD7694@ck-lbox>
- <20150921111642.112dc0c2@songinha-Samsung-DeskTop-System>
- <20150922074618.GA11647@ck-lbox>
- <20150923110404.1b484284@songinha-Samsung-DeskTop-System>
- <20150923144312.GA5432@ck-lbox>
- <20150924103809.7be235d1@songinha-Samsung-DeskTop-System>
- <20150924074107.GC5432@ck-lbox>
- <20150925165128.391d2aaf@songinha-Samsung-DeskTop-System>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: Kernel Device Tree entries for simple-audio-card
+Date: Sun, 27 Sep 2015 14:52:36 -0700
+Message-ID: <CAG5mAdxc5-UuTnz24zByA64ZsrB4qnfMKF57GBVeFfWvY44xsw@mail.gmail.com>
+References: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 2245A2612D2
- for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2015 18:30:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150925165128.391d2aaf@songinha-Samsung-DeskTop-System>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 709482614A6
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2015 23:52:56 +0200 (CEST)
+Received: by wicfx3 with SMTP id fx3so77760435wic.0
+ for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2015 14:52:56 -0700 (PDT)
+In-Reply-To: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,102 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, lee.jones@linaro.org
+To: Rick Mann <rmann@latencyzero.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 25, 2015 at 04:51:28PM +0900, Inha Song wrote:
-> Hi, Charles,
-> 
-> On Thu, 24 Sep 2015 08:41:07 +0100
-> Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-> 
-> > On Thu, Sep 24, 2015 at 10:38:09AM +0900, Inha Song wrote:
-> > > Hi, Charles,
-> > > 
-> > > On Wed, 23 Sep 2015 15:43:12 +0100
-> > > Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > > 
-> > > > On Wed, Sep 23, 2015 at 11:04:04AM +0900, Inha Song wrote:
-> > > > >  Hi, Charles,
-> > > > > 
-> > > > > I saw the log with LOG_DEVICE in regmap. But, I'm not sure the reason that suspend noirq failed is IRQ occuring.
-> > > > > 
-> > > > > Here is my log:
-> > > > > --
-> > > > > root@localhost:~# aplay test.wav 
-> > > > > [   41.049072] s3c64xx_spi_runtime_suspend
-> But, I can't find any spi regmap log that for IRQ.
+I found that too.  Check out the documentation here:
+http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/sound/simple-card.txt
+
+You need to put in the #sound-dai-cells cell.   Your value will likely
+be 0 for the codec, and maybe 1 for the SOC dai, but I"m not sure.
+
+Unfortunately, I don't really understand how it works.
+
+-Caleb
+
+
+On Fri, Sep 25, 2015 at 10:57 PM, Rick Mann <rmann@latencyzero.com> wrote:
+> Hi. I've built a Beaglebone Black Cape that has, among other things, a TI Audio CODEC on it (TLV320AIC3104). This is the same CODEC as the BBB Audio Cape (http://elinux.org/CircuitCo:Audio_Cape_RevB), and it's connected in almost the exact same way.
+>
+> The last few days I've been figuring out the Device Tree overlay needed to get Linux (4.1.4) to recognize it. It's finding the device and instantiating the low-level driver (tlv320aic3x-codec), although I'm not sure at this point if it's actually talking to it (I have verified that low-level i2c commands do work).
+>
+> But when it comes to the sound card setup, I'm having trouble getting the Device Tree right. I'm hoping someone on this list can offer some insight. The DT is here:
+>
+>         https://github.com/JetForMe/podtique/blob/master/bbb/cape/Podtique1/BB-ENABLE-PRU.dts
+>
+> And this is dmesg when I try to load that (note the name of my overlay is BB-ENABLE-PRU, which is an artifact of the experimentation I've been doing; it'll change to something more appropriate):
+>
+> [   65.859275] bone_capemgr bone_capemgr: part_number 'BB-ENABLE-PRU', version 'N/A'
+> [   65.859318] bone_capemgr bone_capemgr: slot #4: override
+> [   65.859336] bone_capemgr bone_capemgr: Using override eeprom data at slot 4
+> [   65.859355] bone_capemgr bone_capemgr: slot #4: 'Override Board Name,00A0,Override Manuf,BB-ENABLE-PRU'
+> [   65.859488] bone_capemgr: bone_capemgr bone_capemgr: slot #4: Requesting part number/version based 'BB-ENABLE-PRU-00A0.dtbo
+> [   65.859506] bone_capemgr: bone_capemgr bone_capemgr: slot #4: Requesting firmware 'BB-ENABLE-PRU-00A0.dtbo' for board-name 'Override Board Name', version '00A0'
+> [   65.861105] bone_capemgr: bone_capemgr bone_capemgr: slot #4: dtbo 'BB-ENABLE-PRU-00A0.dtbo' loaded; converting to live tree
+> [   65.875618] gpio-of-helper ocp:gpio_helper: ready
+> [   65.876327] gpiolib_of: of_get_named_gpiod_flags: parsed 'gpio' property of node '//fixedregulator@1[0]' - status (0)
+> [   65.876619] core: lz-codec-reg: no parameters
+> [   65.876713] fixed: reg-fixed-voltage fixedregulator@1: lz-codec-reg supplying 0uV
+> [   65.883284] pruss_uio 4a300000.pruss: pins are not configured from the driver
+> [   65.900080] bone_capemgr bone_capemgr: slot #4: dtbo 'BB-ENABLE-PRU-00A0.dtbo' loaded; overlay id #0
+> [   65.946254] gpiolib_of: of_get_named_gpiod_flags: parsed 'gpio-reset' property of node '/ocp/i2c@4819c000/tlv320aic3104@0[0]' - status (0)
+> [   65.946317] core: tlv320aic3x-codec 2-0018: Looking up IOVDD-supply from device tree
+> [   65.946405] core: tlv320aic3x-codec 2-0018: Looking up DVDD-supply from device tree
+> [   65.946468] core: tlv320aic3x-codec 2-0018: Looking up AVDD-supply from device tree
+> [   65.946544] core: tlv320aic3x-codec 2-0018: Looking up DRVDD-supply from device tree
+> [   65.946606] snd_soc_core: tlv320aic3x-codec 2-0018: codec register 2-0018
+> [   65.946640] snd_soc_core: tlv320aic3x-codec 2-0018: ASoC: dai register 2-0018 #1
+> [   65.946655] snd_soc_core: tlv320aic3x-codec 2-0018: ASoC: Registered DAI 'tlv320aic3x-hifi'
+> [   65.946671] snd_soc_core: tlv320aic3x-codec 2-0018: ASoC: Registered codec 'tlv320aic3x-codec.2-0018'
+> [   65.956491] //sound/simple-audio-card,cpu: could not get #sound-dai-cells for /ocp/mcasp@48038000
+> [   65.978759] snd_soc_core: davinci-mcasp 48038000.mcasp: ASoC: dai register 48038000.mcasp #1
+> [   65.978795] snd_soc_core: davinci-mcasp 48038000.mcasp: ASoC: Registered DAI '48038000.mcasp'
+> [   65.978954] snd_soc_core: davinci-mcasp 48038000.mcasp: ASoC: Registered platform '48038000.mcasp'
+> [   66.012427] asoc-simple-card sound: parse error -22
+> [   66.042609] asoc-simple-card: probe of sound failed with error -22
+>
+> Note the bit about "#sound-dai-cells". I'm not sure what's wrong here, and it seems like it might be something in the distro-provided DTB, not my own.
+>
+> aplay lists nothing (I think in part because I have yet to put in a proper asound.conf file):
+>
+> # aplay -l
+> aplay: device_list:268: no soundcards found...
+>
+> Can someone suggest some diagnostics I can do to see what the state of things is? I'm just not sure what to look for. Thanks!
+>
 > --
-> [  114.282681] arizona spi1.0: Late suspend, reenabling IRQ
-> [  114.282708] >>> noirq failed because of spi1
-> [  114.282760] arizona spi1.0: Early resume, disabling IRQ
-> [  114.316510] PM: noirq suspend of devices failed
-> [  114.333590] s3c64xx_spi_resume
-> 
->      -> set the FLL in machine for playback when resume.
-> [  114.334756] arizona spi1.0: FLL1: Fref=24000000 Fout=135475200
-> [  114.334762] arizona spi1.0: FLL1: Fvco=90316800Hz
-> [  114.334792] arizona spi1.0: FLL1: GCD=19200
-> [  114.334798] arizona spi1.0: FLL1: N=7 THETA=149 LAMBDA=271
-> [  114.334803] arizona spi1.0: FLL1: FRATIO=0(0) OUTDIV=2 REFCLK_DIV=1
-> [  114.334807] arizona spi1.0: FLL1: GAIN=4
-> [  114.334827] arizona spi1.0: 171 <= 1
-> [  114.520724] arizona spi1.0: Late resume, reenabling IRQ
-> [  114.521152] arizona spi1.0: d40 => 3
-> [  114.521387] arizona spi1.0: d04 <= 1
-> [  114.521500] arizona spi1.0: FLL1: clock OK
-> [  114.521773] arizona spi1.0: SYSCLK set to 135475200Hz
-> [  114.522651] arizona spi1.0: SYSCLK set to 135475200Hz
-> [  114.522752] arizona spi1.0: 101 <= 8644
-> [  114.522940] arizona spi1.0: 51a <= 1
-> [  114.523057] arizona spi1.0: 400 <= 8
-> [  114.909270] s3c64xx_spi_runtime_suspend
-> [  114.909721] done.
-> Suspended. Trying resume. Failed. Restarting stream. Done.
-> 
->     -> retry to enter suspend Immediately.
-> [  115.478349] arizona spi1.0: Suspend, disabling IRQ
-> [  115.489783] arizona spi1.0: 400 <= 0
-> [  115.489804] s3c64xx_spi_runtime_resume
-> [  115.506127] arizona spi1.0: 51a <= 0
-> [  115.506298] arizona spi1.0: 101 <= 8604
-> [  115.506493] arizona spi1.0: 171 <= 3
-> [  115.506515] arizona spi1.0: 171 <= 2
-> [  115.506777] arizona spi1.0: 171 <= 0
-> [  115.506793] arizona spi1.0: SYSCLK cleared
-> [  115.507842] arizona spi1.0: SYSCLK cleared
-> [  115.508373] s3c64xx_spi_suspend                                                                                                     
-> 
-> [  115.523095] arizona spi1.0: Late suspend, reenabling IRQ                                                                            
-> [  115.523121] >>> noirq failed because of spi1                                                                                        
-> [  115.523171] arizona spi1.0: Early resume, disabling IRQ
-> [  115.556507] PM: noirq suspend of devices failed 
->      -> Repeats:
-> 
-> Do you have any idea to check which IRQ was occur? 
-
-Hmm... yes that is odd whatever the IRQ was it appears to have
-disappeared by the time we try to handle it.
-
-Two things I would check next, is it perhaps electrical, is the
-IRQ line getting pulled low for some reason other than an IRQ
-being generated. For example are all the supplies being removed
-from the CODEC and any pull-ups on that IRQ line? Perhaps then
-when the system resumes the supplies are re-instated and the
-false IRQ disappears. However this is probably unlikely as I
-would expect to see an IRQ for boot done in this case.
-
-Secondly, could you try taking the extcon driver out of the build
-(CONFIG_EXTCON_ARIZONA), that should keep all the jack detect
-disabled, which is probably the second most likely source of a
-random IRQ from the chip.
-
-I am attempting to reproduce your problem here, but alas
-suspend/resume support on the Arndale board (our main dev system
-at the moment) is pretty bad. If you know anyone your end who
-might have any ideas why the SPI is totally unresponsive after
-resume I would be happy to hear from them :-)
-
-Thanks,
-Charles
+> Rick Mann
+> rmann@latencyzero.com
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
