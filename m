@@ -1,57 +1,108 @@
-From: "yitian" <yitian.bu@tangramtek.com>
-Subject: [PATCH 1/1] ASoC: dwc: fix dma stop transferring issue
-Date: Mon, 28 Sep 2015 14:36:16 +0800
-Message-ID: <035401d0f9b7$faa800b0$eff80210$@tangramtek.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 0/2] ASoC: Add support for the Allwinner A10 codec
+Date: Mon, 28 Sep 2015 09:42:48 +0200
+Message-ID: <20150928074248.GI7104@lukather>
+References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1442928417.6509.12.camel@plaes.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: zh-cn
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, Andrew.Jackson@arm.com, wsa@the-dreams.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ed/6oDxOLijJh8b0"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRB6W6UOYAKGQECYURQGQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1442928417.6509.12.camel-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Priit Laes <plaes-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Designware I2S uses tx empty and rx available signals as the DMA
-handshaking signals. during music playing, if XRUN occurs,
-i2s_stop() function will be executed and both tx and rx irq are
-masked, when music contintes to be played, i2s_start() is executed
-but both tx and rx irq are not unmasked which cause I2S stop
-sending DMA handshaking signal to DMA controller, and it finally
-cause music playing will be stopped once XRUN occurs for the first
-time.
+--ed/6oDxOLijJh8b0
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Signed-off-by: Yitian Bu <yitian.bu@tangramtek.com>
----
- sound/soc/dwc/designware_i2s.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+Hi Priit,
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index a3e97b4..4d3e1d3 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -144,10 +144,19 @@ static void i2s_start(struct dw_i2s_dev *dev,
- 
- 	i2s_write_reg(dev->i2s_base, IER, 1);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x30);
-+		}
- 		i2s_write_reg(dev->i2s_base, ITER, 1);
--	else
-+	} else {
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x03);
-+		}
- 		i2s_write_reg(dev->i2s_base, IRER, 1);
-+	}
- 
- 	i2s_write_reg(dev->i2s_base, CER, 1);
- }
+On Tue, Sep 22, 2015 at 04:26:57PM +0300, Priit Laes wrote:
+> On Sat, 2015-09-12 at 15:26 +0200, Maxime Ripard wrote:
+> > Hi everyone,
+> > 
+> > This patch set adds the support for what Allwinner calls the codec on
+> > their SoCs.
+> > 
+> > This codec is actually a combination of a codec and DAI, tied
+> > together
+> > in a single memory-mapped IP. It is completely standalone, and
+> > outputs
+> > directly the analog signal.
+> > 
+> > While it supports both playback and capture, the capture is not
+> > implemented in this patch, and will be posted eventually as a
+> > separate
+> > one.
+> > 
+> > This set, in order to be functional, has a dependency on the audio
+> > clocks patch set posted separately. However, it doesn't needs this to
+> > compile properly, so I guess it can be merged without really caring
+> > for the merging status of the clock patches.
+> 
+> It works on Gemei G9 tablet which has also extra chip that
+> automatically switches output over from internal speakers to headphones
+> when connector is inserted.
+> 
+> Now I noticed some weird things:
+> 
+> When I have all the switches as ON in alsamixer, and I start disabling
+> them, I get following weird results.
+> 
+> Left Mixer Left - LML
+> Right Mixer Left - LMR
+> Right Mixer Right - RMR
+> 
+> Very faint output:
+> LML - ON
+> RML - Mute
+> RMR - ON
+> 
+> Output works fully:
+> LML - Mute
+> RML - Mute
+> RMR - Mute
+> 
+> When I Mute Pre-Amplifier and fiddle any of LML, RML or RMR, the output
+> stays mute even after setting Pre-Amplifier Mute back on:
+> 
+> 1. All switches on
+> 2. Mute pre-amplifier
+> 3. Mute RMR
+> 4. Pre-Amilifier Mute Off
+> .. Music stays off
+> 5. Toggle Pre-Amplifier twice - output turns on
+
+Unfortunately, I don't have access to that SoC or that setup.
+
+Do you have another A10 board with a simpler audio setup, like a
+cubieboard?
+
+> And also following in dmesg:
+> sun4i-codec 1c22c00.codec: Codec <-> 1c22c00.codec mapping ok
+> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
+> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+
+That one is weird, I'll look into this.
+
+Thanks!
+Maxime
+
 -- 
-1.7.12.4
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--ed/6oDxOLijJh8b0--
