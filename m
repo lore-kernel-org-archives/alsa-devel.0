@@ -1,87 +1,48 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v4 3/8] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 28 Sep 2015 12:26:28 +0100
-Message-ID: <20150928112628.GC21626@n2100.arm.linux.org.uk>
-References: <mailman.310.1442574427.844.alsa-devel@alsa-project.org>
- <56057A9E.9080602@st.com> <560901EE.60407@st.com>
+From: Peter Korsgaard <peter@korsgaard.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel-classd: fix odd_ptr_err.cocci warnings
+Date: Mon, 28 Sep 2015 13:26:46 +0200
+Message-ID: <874miekcnd.fsf@dell.be.48ers.dk>
+References: <201509281735.7lYs3Huz%fengguang.wu@intel.com>
+	<20150928091029.GA23312@roam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <560901EE.60407@st.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150928091029.GA23312@roam> (kbuild test robot's message of
+	"Mon, 28 Sep 2015 17:10:29 +0800")
+Sender: linux-kernel-owner@vger.kernel.org
+To: kbuild test robot <lkp@intel.com>
+Cc: Songjun Wu <songjun.wu@atmel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, kbuild-all@01.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBTZXAgMjgsIDIwMTUgYXQgMTE6MDE6MzRBTSArMDIwMCwgQXJuYXVkIFBvdWxpcXVl
-biB3cm90ZToKPiBmZXcgcXVlc3Rpb25zL3JlbWFya3MKPiBCUiwKPiBBcm5hdWQKPiAKPiA+K3N0
-YXRpYyB2b2lkIGhkbWlfY29kZWNfYWJvcnQoc3RydWN0IGRldmljZSAqZGV2KQo+ID4rewo+ID4r
-ICAgIHN0cnVjdCBoZG1pX2NvZGVjX3ByaXYgKmhjcCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+
-ID4rCj4gPisgICAgZGV2X2RiZyhkZXYsICIlcygpXG4iLCBfX2Z1bmNfXyk7Cj4gPisKPiA+KyAg
-ICBtdXRleF9sb2NrKCZoY3AtPmN1cnJlbnRfc3RyZWFtX2xvY2spOwo+ID4rICAgIGlmIChoY3At
-PmN1cnJlbnRfc3RyZWFtICYmIGhjcC0+Y3VycmVudF9zdHJlYW0tPnJ1bnRpbWUgJiYKPiA+KyAg
-ICAgICAgc25kX3BjbV9ydW5uaW5nKGhjcC0+Y3VycmVudF9zdHJlYW0pKSB7Cj4gPisgICAgICAg
-IGRldl9pbmZvKGRldiwgIkhETUkgYXVkaW8gcGxheWJhY2sgYWJvcnRlZFxuIik7Cj4gPisgICAg
-ICAgIHNuZF9wY21fc3RyZWFtX2xvY2tfaXJxKGhjcC0+Y3VycmVudF9zdHJlYW0pOwo+ID4rICAg
-ICAgICBzbmRfcGNtX3N0b3AoaGNwLT5jdXJyZW50X3N0cmVhbSwgU05EUlZfUENNX1NUQVRFX0RJ
-U0NPTk5FQ1RFRCk7Cj4gPisgICAgICAgIHNuZF9wY21fc3RyZWFtX3VubG9ja19pcnEoaGNwLT5j
-dXJyZW50X3N0cmVhbSk7Cj4gPisgICAgfQo+ID4rICAgIG11dGV4X3VubG9jaygmaGNwLT5jdXJy
-ZW50X3N0cmVhbV9sb2NrKTsKPiA+K30KPiBEb2VzIGRyaXZlciBzaG91bGQgc3RvcCB0aGUgc3Ry
-ZWFtIGluIGNhc2Ugb2YgdW5wbHVnPwo+IFRoaXMgY291bGQgZ2VuZXJhdGUgdW5leHBlY3RlZCBi
-ZWhhdmlvciBhdCBhcHBsaWNhdGlvbiBsZXZlbC4KPiBQZXJoYXBzIHNob3VsZCBiZSBiZXR0ZXIg
-aWYgdGhpcyBwYXJ0IGlzIG1hbmFnZWQgaW4gRFJNIGRyaXZlci4gaWYgSERNSQo+IG1hc3Rlciwg
-STJTIGJ1cyBzaG91bGQgYmUgbWFpbnRhaW5lZCBPTiB0byBjb25zdW1lIHRoZSBhdWRpbyBzdHJl
-YW0gdW50aWwKPiBhcHBsaWNhdGlvbiBhY3Rpb24uCgpJZiBpdCBkb2VzLCB0aGF0J3MgcmVhbGx5
-IGhvcnJpZC4KCkZpcnN0bHksIGRvIHlvdSBleHBlY3QgeW91ciB2aWRlbyBwbGF5YmFjayB0byBz
-dG9wIGp1c3QgYmVjYXVzZSB5b3UndmUKdW5wbHVnZ2VkIHRoZSBUVj8gIE1heWJlIHlvdSd2ZSBn
-b3QgYSBkdW1iIEhETUkgc3dpdGNoLCBhbmQgeW91J3ZlCnN3aXRjaGVkIGZyb20gb25lIGlucHV0
-IHRvIGFub3RoZXIgdG8gbW9tZW50YXJpbHkgY2hlY2sgc29tZXRoaW5nIG9uCmFub3RoZXIgaW5w
-dXQgLSBzaG91bGQgdGhlIHZpZGVvIHBsYXliYWNrIHN1ZGRlbmx5IGVuZCB1cCB3aXRoIGl0cwph
-dWRpbyBwYXRoIGJlaW5nIGR1bXBlZCBvbiB0aGUgZmxvb3IgYmVjYXVzZSBvZiB0aGF0PwoKQWxz
-bywgYXMgSSd2ZSBzYWlkIGJlZm9yZSwgdGhlcmUncyBoYXJkd2FyZSBvdXQgdGhlcmUgd2hlcmUg
-dGhlIFNQRElGCmF1ZGlvIG91dHB1dCBpcyByb3V0ZWQgdG8gbW9yZSB0aGFuIGp1c3QgdGhlIEhE
-TUkgaW50ZXJmYWNlLCBhbmQgdGhlCmNhcGFiaWxpdGllcyBvZiBIRE1JIHJlYWxseSBkb24ndCBh
-cHBseSBpbiB0aGF0IHNpdHVhdGlvbiAtIHlvdSBtYXkKaGF2ZSBhbiBBViByZWNlaXZlciBjb25u
-ZWN0ZWQgdG8gdGhlIFNQRElGIG91dHB1dCB3aGljaCBpcyBhYmxlIHRvCmFjY2VwdCBtdWNoIG1v
-cmUgdGhhbiB0aGUgYmFzaWMgYXVkaW8gdGhhdCBtb3N0IFRWcyBhY2NlcHQuICBIYXZpbmcKc3R1
-ZmYgcmVzdHJpY3RlZCB0byB0aGUgdW5pb24gb2YgdGhlIGFiaWxpdGllcyBpcyBmYXIgdG9vIHJl
-c3RyaWN0aXZlLgpTdG9wcGluZyB0aGUgYXVkaW8gb3V0cHV0IGJlY2F1c2UgdGhlIFRWIHdlbnQg
-YXdheSBpbiB0aGlzIGNhc2UgaXMgYWxzbwpwbGFpbiBpZGlvdGljLgoKU1BESUYgaXMgc29tZXRo
-aW5nIHRoYXQgY2FuIGJlIHJvdXRlZCB0byBtdWx0aXBsZSBkZXZpY2VzIHNpbXVsdGFuZW91c2x5
-LAphbmQgdGhlcmUncyBubyBjYXBhYmlsaXR5IG9yIGNvbm5lY3Rpb24gcmVwb3J0aW5nIGludm9s
-dmVkIGluIGl0LgpJbXBvc2luZyB0aGUgc3RhdHVzIG9mIG9uZSAiU1BESUYgbGlzdGVuZXIiIG9u
-IHRoZSBlbnRpcmUgYXVkaW8gc3lzdGVtIGlzCnVucmVhc29uYWJsZS4KCj4gPisKPiA+K3N0YXRp
-YyBpbnQgaGRtaV9jb2RlY19od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sCj4gPisgICAgICAgICAgICAgICAgc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJh
-bXMsCj4gPisgICAgICAgICAgICAgICAgc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCj4gPit7Cj4g
-PisgICAgc3RydWN0IGhkbWlfY29kZWNfcHJpdiAqaGNwID0gc25kX3NvY19kYWlfZ2V0X2RydmRh
-dGEoZGFpKTsKPiA+KyAgICBzdHJ1Y3QgaGRtaV9jb2RlY19wYXJhbXMgaHAgPSB7Cj4gPisgICAg
-ICAgIC5pZWMgPSB7Cj4gPisgICAgICAgICAgICAuc3RhdHVzID0geyAwIH0sCj4gPisgICAgICAg
-ICAgICAuc3ViY29kZSA9IHsgMCB9LAo+ID4rICAgICAgICAgICAgLnBhZCA9IDAsCj4gPisgICAg
-ICAgICAgICAuZGlnX3N1YmZyYW1lID0geyAwIH0sCj4gPisgICAgICAgIH0KPiA+KyAgICB9Owo+
-ID4rICAgIGludCByZXQ7Cj4gPisKPiA+KyAgICBkZXZfZGJnKGRhaS0+ZGV2LCAiJXMoKSB3aWR0
-aCAlZCByYXRlICVkIGNoYW5uZWxzICVkXG4iLCBfX2Z1bmNfXywKPiA+KyAgICAgICAgcGFyYW1z
-X3dpZHRoKHBhcmFtcyksIHBhcmFtc19yYXRlKHBhcmFtcyksCj4gPisgICAgICAgIHBhcmFtc19j
-aGFubmVscyhwYXJhbXMpKTsKPiA+Kwo+ID4rICAgIHJldCA9IHNuZF9wY21fY3JlYXRlX2llYzk1
-OF9jb25zdW1lcl9od19wYXJhbXMocGFyYW1zLCBocC5pZWMuc3RhdHVzLAo+ID4rICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihocC5pZWMuc3RhdHVzKSk7Cj4gVGVsbCBtZSBp
-ZiBpIGFtIHdyb25nLCBidXQgaW4gY2FzZSBvZiBTUERJRiBmb3JtYXQsIElFQyBzdGF0dXMgaXMg
-bWFuYWdlZCBieQo+IGNwdV9kYWkgbm90IGJ5IHRoZSBjb2RlYy4KCkNvcnJlY3QuICBJMlMgbmVl
-ZHMgdGhlIElFQzk1OCBzdGF0dXMgcHJvZ3JhbW1lZCBpbnRvIHRoZSBIRE1JIGludGVyZmFjZQp0
-aG91Z2gsIGJlY2F1c2UgSERNSSBpcyBiYXNpY2FsbHkgU1BESUYuCgotLSAKRlRUQyBicm9hZGJh
-bmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVw
-CmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2RyaS1kZXZlbAo=
+>>>>> "kbuild" == kbuild test robot <lkp@intel.com> writes:
+
+ > sound/soc/atmel/atmel-classd.c:578:5-11: inconsistent IS_ERR and PTR_ERR, PTR_ERR on line 579
+ >  PTR_ERR should access the value just tested by IS_ERR
+
+ > Semantic patch information:
+ >  There can be false positives in the patch case, where it is the call
+ >  IS_ERR that is wrong.
+
+ > Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
+
+ > CC: Songjun Wu <songjun.wu@atmel.com>
+ > Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+ > ---
+
+ >  atmel-classd.c |    2 +-
+ >  1 file changed, 1 insertion(+), 1 deletion(-)
+
+ > --- a/sound/soc/atmel/atmel-classd.c
+ > +++ b/sound/soc/atmel/atmel-classd.c
+ > @@ -576,7 +576,7 @@ static int atmel_classd_probe(struct pla
+ 
+ dd-> gclk = devm_clk_get(dev, "gclk");
+ >  	if (IS_ERR(dd->aclk)) {
+ > -		ret = PTR_ERR(dd->gclk);
+ > +		ret = PTR_ERR(dd->aclk);
+
+It looks like it is the other way around. It should test
+IS_ERR(dd->gclk) instead.
+
+-- 
+Bye, Peter Korsgaard
