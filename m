@@ -1,21 +1,17 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Subject: Re: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal
-	inversions
-Date: Mon, 28 Sep 2015 21:36:49 +0200
-Message-ID: <CA+sos78+6yEo5j0qqP24_N-OOsLFTLoRkB-dbJw1H5vzvBGUYw@mail.gmail.com>
-References: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
- <20150917175927.GB2544@Asurada-CZ80>
+From: Ben Zhang <benzh@chromium.org>
+Subject: [PATCH] ASoC: rt5645: Allow 4 channel recording on AIF1
+Date: Mon, 28 Sep 2015 13:32:37 -0700
+Message-ID: <1443472357-12150-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
- [209.85.218.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 56ED82604C5
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 21:37:11 +0200 (CEST)
-Received: by oixx17 with SMTP id x17so96173259oix.0
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 12:37:08 -0700 (PDT)
-In-Reply-To: <20150917175927.GB2544@Asurada-CZ80>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 150812604E5
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 22:33:03 +0200 (CEST)
+Received: by pacex6 with SMTP id ex6so183652193pac.0
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 13:33:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit@wsystem.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Ben Zhang <benzh@chromium.org>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLAoKT24gVGh1LCBTZXAgMTcsIDIwMTUgYXQgNzo1OSBQTSwgTmljb2xpbiBDaGVuIDxu
-aWNvbGVvdHN1a2FAZ21haWwuY29tPiB3cm90ZToKPiBPbiBUaHUsIFNlcCAxNywgMjAxNSBhdCAw
-NTo0Njo1NFBNICswMjAwLCBCZW5vw650IFRow6liYXVkZWF1IHdyb3RlOgo+PiBTTkRfU09DX0RB
-SUZNVF97SUJ8TkJ9X3tJRnxORn0gYXJlIGRlZmluZWQgYXMgaW52ZXJ0aW5nIG9yIG5vdCBCQ0xL
-IG9yCj4+IEZSTSByZWxhdGl2ZWx5IHRvIHdoYXQgaXMgc3RhbmRhcmQgZm9yIHRoZSBzcGVjaWZp
-ZWQgREFJIGhhcmR3YXJlIGF1ZGlvCj4+IGZvcm1hdC4gQ29uc2VxdWVudGx5LCB0aGUgYWJzb2x1
-dGUgcG9sYXJpdGllcyBvZiB0aGVzZSBzaWduYWxzIGNhbm5vdCBiZQo+PiBkZXJpdmVkIG9ubHkg
-ZnJvbSB0aGVzZSBzZXR0aW5ncyBhcyB0aGlzIGRyaXZlciBkaWQuIFRoZSBmb3JtYXQgaGFzIHRv
-Cj4+IGJlIHRha2VuIGludG8gYWNjb3VudCB0b28uCj4+Cj4+IFRoaXMgZml4ZXMgaW52ZXJ0ZWQg
-bGVmdC9yaWdodCBjaGFubmVscyBpbiBJwrJTIG1vZGUuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEJl
-bm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9pdEB3c3lzdGVtLmNvbT4KPgo+IExvb2tzIGxpa2UgdGhl
-IHNhbWUgY29uZmlndXJhdGlvbnMgb2YgZnNsX3NzaSwgc28gaXQgc2hvdWxkIGJlIGZpbmU6Cj4K
-PiBBY2tlZC1ieTogTmljb2xpbiBDaGVuIDxuaWNvbGVvdHN1a2FAZ21haWwuY29tPgo+Cj4+IC0t
-LQo+PiAgc291bmQvc29jL2ZzbC9pbXgtc3NpLmMgfCAxOSArKysrKysrKystLS0tLS0tLS0tCj4+
-ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKPj4KPj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jIGIvc291bmQvc29jL2ZzbC9pbXgt
-c3NpLmMKPj4gaW5kZXggNDhiMmQyNC4uYjk1MTMyZSAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29j
-L2ZzbC9pbXgtc3NpLmMKPj4gKysrIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMKPj4gQEAgLTk1
-LDcgKzk1LDggQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29j
-X2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKPj4gICAgICAgc3dpdGNoIChmbXQgJiBT
-TkRfU09DX0RBSUZNVF9GT1JNQVRfTUFTSykgewo+PiAgICAgICBjYXNlIFNORF9TT0NfREFJRk1U
-X0kyUzoKPj4gICAgICAgICAgICAgICAvKiBkYXRhIG9uIHJpc2luZyBlZGdlIG9mIGJjbGssIGZy
-YW1lIGxvdyAxY2xrIGJlZm9yZSBkYXRhICovCj4+IC0gICAgICAgICAgICAgc3RyY3IgfD0gU1NJ
-X1NUQ1JfVEZTSSB8IFNTSV9TVENSX1RFRlMgfCBTU0lfU1RDUl9UWEJJVDA7Cj4+ICsgICAgICAg
-ICAgICAgc3RyY3IgfD0gU1NJX1NUQ1JfVFhCSVQwIHwgU1NJX1NUQ1JfVFNDS1AgfCBTU0lfU1RD
-Ul9URlNJIHwKPj4gKyAgICAgICAgICAgICAgICAgICAgIFNTSV9TVENSX1RFRlM7Cj4+ICAgICAg
-ICAgICAgICAgc2NyIHw9IFNTSV9TQ1JfTkVUOwo+PiAgICAgICAgICAgICAgIGlmIChzc2ktPmZs
-YWdzICYgSU1YX1NTSV9VU0VfSTJTX1NMQVZFKSB7Cj4+ICAgICAgICAgICAgICAgICAgICAgICBz
-Y3IgJj0gflNTSV9JMlNfTU9ERV9NQVNLOwo+PiBAQCAtMTA0LDMzICsxMDUsMzEgQEAgc3RhdGlj
-IGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSwgdW5z
-aWduZWQgaW50IGZtdCkKPj4gICAgICAgICAgICAgICBicmVhazsKPj4gICAgICAgY2FzZSBTTkRf
-U09DX0RBSUZNVF9MRUZUX0o6Cj4+ICAgICAgICAgICAgICAgLyogZGF0YSBvbiByaXNpbmcgZWRn
-ZSBvZiBiY2xrLCBmcmFtZSBoaWdoIHdpdGggZGF0YSAqLwo+PiAtICAgICAgICAgICAgIHN0cmNy
-IHw9IFNTSV9TVENSX1RYQklUMDsKPj4gKyAgICAgICAgICAgICBzdHJjciB8PSBTU0lfU1RDUl9U
-WEJJVDAgfCBTU0lfU1RDUl9UU0NLUDsKPj4gICAgICAgICAgICAgICBicmVhazsKPj4gICAgICAg
-Y2FzZSBTTkRfU09DX0RBSUZNVF9EU1BfQjoKPj4gICAgICAgICAgICAgICAvKiBkYXRhIG9uIHJp
-c2luZyBlZGdlIG9mIGJjbGssIGZyYW1lIGhpZ2ggd2l0aCBkYXRhICovCj4+IC0gICAgICAgICAg
-ICAgc3RyY3IgfD0gU1NJX1NUQ1JfVEZTTCB8IFNTSV9TVENSX1RYQklUMDsKPj4gKyAgICAgICAg
-ICAgICBzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAgfCBTU0lfU1RDUl9UU0NLUCB8IFNTSV9TVENS
-X1RGU0w7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4+ICAgICAgIGNhc2UgU05EX1NPQ19EQUlG
-TVRfRFNQX0E6Cj4+ICAgICAgICAgICAgICAgLyogZGF0YSBvbiByaXNpbmcgZWRnZSBvZiBiY2xr
-LCBmcmFtZSBoaWdoIDFjbGsgYmVmb3JlIGRhdGEgKi8KPj4gLSAgICAgICAgICAgICBzdHJjciB8
-PSBTU0lfU1RDUl9URlNMIHwgU1NJX1NUQ1JfVFhCSVQwIHwgU1NJX1NUQ1JfVEVGUzsKPj4gKyAg
-ICAgICAgICAgICBzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAgfCBTU0lfU1RDUl9UU0NLUCB8IFNT
-SV9TVENSX1RGU0wgfAo+PiArICAgICAgICAgICAgICAgICAgICAgU1NJX1NUQ1JfVEVGUzsKPj4g
-ICAgICAgICAgICAgICBicmVhazsKPj4gICAgICAgfQo+Pgo+PiAgICAgICAvKiBEQUkgY2xvY2sg
-aW52ZXJzaW9uICovCj4+ICAgICAgIHN3aXRjaCAoZm10ICYgU05EX1NPQ19EQUlGTVRfSU5WX01B
-U0spIHsKPj4gICAgICAgY2FzZSBTTkRfU09DX0RBSUZNVF9JQl9JRjoKPj4gLSAgICAgICAgICAg
-ICBzdHJjciB8PSBTU0lfU1RDUl9URlNJOwo+PiAtICAgICAgICAgICAgIHN0cmNyICY9IH5TU0lf
-U1RDUl9UU0NLUDsKPj4gKyAgICAgICAgICAgICBzdHJjciBePSBTU0lfU1RDUl9UU0NLUCB8IFNT
-SV9TVENSX1RGU0k7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4+ICAgICAgIGNhc2UgU05EX1NP
-Q19EQUlGTVRfSUJfTkY6Cj4+IC0gICAgICAgICAgICAgc3RyY3IgJj0gfihTU0lfU1RDUl9UU0NL
-UCB8IFNTSV9TVENSX1RGU0kpOwo+PiArICAgICAgICAgICAgIHN0cmNyIF49IFNTSV9TVENSX1RT
-Q0tQOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+PiAgICAgICBjYXNlIFNORF9TT0NfREFJRk1U
-X05CX0lGOgo+PiAtICAgICAgICAgICAgIHN0cmNyIHw9IFNTSV9TVENSX1RGU0kgfCBTU0lfU1RD
-Ul9UU0NLUDsKPj4gKyAgICAgICAgICAgICBzdHJjciBePSBTU0lfU1RDUl9URlNJOwo+PiAgICAg
-ICAgICAgICAgIGJyZWFrOwo+PiAgICAgICBjYXNlIFNORF9TT0NfREFJRk1UX05CX05GOgo+PiAt
-ICAgICAgICAgICAgIHN0cmNyICY9IH5TU0lfU1RDUl9URlNJOwo+PiAtICAgICAgICAgICAgIHN0
-cmNyIHw9IFNTSV9TVENSX1RTQ0tQOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+PiAgICAgICB9
-Cj4+Cj4+IC0tCj4+IDIuMS40Cj4+CgpBZGRpbmcgdGhlIEFTb0MgbWFpbnRhaW5lcnMgdG8gdGhl
-IENjIGxpc3QuCgpCZXN0IHJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The codec supports 4 channel recording with TDM on AIF1.
+This patch modifies the DAI capability to allow it.
+
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+---
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index b0d96b6..0d092bf 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3101,7 +3101,7 @@ static struct snd_soc_dai_driver rt5645_dai[] = {
+ 		.capture = {
+ 			.stream_name = "AIF1 Capture",
+ 			.channels_min = 1,
+-			.channels_max = 2,
++			.channels_max = 4,
+ 			.rates = RT5645_STEREO_RATES,
+ 			.formats = RT5645_FORMATS,
+ 		},
+-- 
+2.6.0.rc2.230.g3dd15c0
