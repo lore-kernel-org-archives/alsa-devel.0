@@ -1,65 +1,66 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Mon, 28 Sep 2015 10:08:52 +0100
-Message-ID: <20150928090852.GF5432@ck-lbox>
-References: <CAKor6TeH32hd0QUCPowzrjp54iJjGKiJ8jVT994y2O29dfk=QA@mail.gmail.com>
- <20150827115914.GF28428@lahna.fi.intel.com>
- <20150827145614.GC5313@sirena.org.uk>
- <CAKor6Tf8kB0WPXLTBFmCzUJkMVEDu-xTEyw0-_NZvBdFSyQSFA@mail.gmail.com>
- <CAKor6TfW4reRz3m-xkCr_ZUfHQkfqT3q+S7JCpO-9F+k1QW38g@mail.gmail.com>
- <CAKor6Tf7_Hiyc1v_TGvdVAU+G84Gp+KgKeSGi8EQJRoq9rhMuw@mail.gmail.com>
- <20150902081334.GB15505@ck-lbox>
- <CAKor6TdaRqi0+a0ZHkdJngE2LPKHk0PUFrdQQ2-x59cxUa8cXA@mail.gmail.com>
- <20150904143434.GA1514@edi-sw-dsktp001.ad.cirrus.com>
- <CAKor6TfhaHfqkmz-dogJ6dEUe06QFv-ee7uPOLiEGSTh3ibkhQ@mail.gmail.com>
+From: "yitian" <yitian.bu@tangramtek.com>
+Subject: [PATCH v2 1/1] ASoC: dwc: fix dma stop transferring issue
+Date: Mon, 28 Sep 2015 17:48:14 +0800
+Message-ID: <037a01d0f9d2$cec8aa10$6c59fe30$@tangramtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKor6TfhaHfqkmz-dogJ6dEUe06QFv-ee7uPOLiEGSTh3ibkhQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: zh-cn
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, Andrew.Jackson@arm.com, wsa@the-dreams.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 07, 2015 at 09:58:22AM +0200, Christian Hartmann wrote:
-> Hello,
-> 
-> 2015-09-04 16:34 GMT+02:00 Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>:
-> > Not entirely unexpected I guess, but certainly my gut feel here
-> > is that this is a problem with the chip selects. I guess really
-> > trying to find any available documentation on the AP/SPI and
-> what do you mean with AP ?
-> 
-> I have googled and found some technical datasheets and
-> developer documentation about the marvell pxa27 under this link/webpage
-> http://www.marvell.com/application-processors/pxa-family/
-> 
-> I also asked lenovo about datasheets (not the short brief productsheet) to get
-> facts about it. But again,  I do not think that lenovo will ever
-> support me in this case.
-> if I got some datasheets and if its not against laws etc I will report it here.
-> 
-> > tearing apart the SPI driver are the next steps from here. But
-> > afraid I don't really have any great ideas for diving much
-> > deeper. I will try to chase the Windows guys here again and see
-> That would be nice, hope they got some glues.
-> 
-> > if I can gain any clues from them but I don't really know at what
-> > level these things are abstracted in Windows and thus if they can
-> > really help us much.
+Designware I2S uses tx empty and rx available signals as the DMA
+handshaking signals. during music playing, if XRUN occurs,
+i2s_stop() function will be executed and both tx and rx irq are
+masked, when music contintes to be played, i2s_start() is executed
+but both tx and rx irq are not unmasked which cause I2S stop
+sending DMA handshaking signal to DMA controller, and it finally
+cause music playing will be stopped once XRUN occurs for the first
+time.
 
-Ok no major hints from them, they do have a 10 inch version of
-the same tablet lying around though so I will get them to post
-that up and have a look see if I can figure anything out.
+Signed-off-by: Yitian Bu <yitian.bu@tangramtek.com>
+---
+changes in V2:
+ - add definition for i and irq
+---
+ sound/soc/dwc/designware_i2s.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-If you had anywhere I can pull in what you have done already that
-would be handy.
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index a3e97b4..76b2e19 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -141,13 +141,22 @@ static inline void i2s_clear_irqs(struct dw_i2s_dev
+*dev, u32 stream)
+ static void i2s_start(struct dw_i2s_dev *dev,
+ 		      struct snd_pcm_substream *substream)
+ {
+-
++	u32 i, irq;
+ 	i2s_write_reg(dev->i2s_base, IER, 1);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x30);
++		}
+ 		i2s_write_reg(dev->i2s_base, ITER, 1);
+-	else
++	} else {
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x03);
++		}
+ 		i2s_write_reg(dev->i2s_base, IRER, 1);
++	}
+ 
+ 	i2s_write_reg(dev->i2s_base, CER, 1);
+ }
+-- 
 
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.7.12.4
