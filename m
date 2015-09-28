@@ -1,62 +1,58 @@
-From: sugar <sugar.zhang@rock-chips.com>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels
- capture and lrck-mode support
-Date: Mon, 28 Sep 2015 16:16:12 +0800
-Message-ID: <5608F74C.3000104@rock-chips.com>
-References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
- <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
- <20150923162433.GQ30445@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of 'global_lock'
+Date: Mon, 28 Sep 2015 10:24:58 +0200
+Message-ID: <2003030.YkVHTCZahK@wuerfel>
+References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org> <1540878.9slRi6Q7xb@wuerfel> <1578470.DLzaBp4j3T@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 957132604D3
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 10:16:21 +0200 (CEST)
-In-Reply-To: <20150923162433.GQ30445@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1578470.DLzaBp4j3T@vostro.rjw.lan>
+Sender: owner-linux-mm@kvack.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, linaro-kernel@lists.linaro.org, "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Intel Linux Wireless <ilw@linux.intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>, "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>, "open list:ULTRA-WIDEB
+ AND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>, Linux Memory Management List <linux-mm@kvack.or>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyayBCcm93biwKCuWcqCA5LzI0LzIwMTUgMDA6MjQsIE1hcmsgQnJvd24g5YaZ6YGTOgo+
-IE9uIFdlZCwgU2VwIDIzLCAyMDE1IGF0IDExOjQxOjIyQU0gKzA4MDAsIFN1Z2FyIFpoYW5nIHdy
-b3RlOgo+Cj4+ICsJLyogY29uZmlndXJlIHR4L3J4IGxyY2sgdXNlIG1vZGUgKi8KPj4gKwlpZiAo
-IW9mX3Byb3BlcnR5X3JlYWRfdTMyKG5vZGUsICJyb2NrY2hpcCxscmNrLW1vZGUiLCAmdmFsKSkg
-ewo+PiArCQlpZiAodmFsID49IExSQ0tfVFhSWCAmJiB2YWwgPD0gTFJDS19SWF9TSEFSRSkKPj4g
-KwkJCXJlZ21hcF91cGRhdGVfYml0cyhpMnMtPnJlZ21hcCwgSTJTX0NLUiwKPj4gKwkJCQkJICAg
-STJTX0NLUl9UUkNNX01BU0ssCj4+ICsJCQkJCSAgIEkyU19DS1JfVFJDTSh2YWwpKTsKPj4gKwl9
-Cj4KPiBUaGlzIGxvb2tzIGxpa2UgaXQncyBmb3IgYSBib2FyZCBjb25maWd1cmF0aW9uIHRoaW5n
-IHNvIEknZCBub3QgcmVhbGx5Cj4gZXhwZWN0IHRoaXMgdG8gYmUgaGFuZGxlZCBpbiBhIGRldmlj
-ZSBzcGVjaWZpYyBwcm9wZXJ0eSAtIGl0J3MgZmFpcmx5Cj4gY29tbW9uIHRvIGhhdmUgdGhpcyBz
-aXR1YXRpb24gYW5kIHdlIGFscmVhZHkgaGF2ZSB0aGUgc3ltbWV0cmljX3JhdGVzCj4gZmxhZyBm
-b3IgdGhlIERBSSB0byBoYW5kbGUgaXQgKGFuZCBpZiB3ZSBkbyBlbmQgdXAgYWRkaW5nIHRoaXMg
-cHJvcGVydHkKPiB3ZSdkIG5lZWQgdGhlIGRyaXZlciB0byBzZXQgdGhhdCBmbGFnIHNvIHRoYXQg
-dGhlIGNvcmUgY2FuIGhhbmRsZSB0aGluZ3MKPiBwcm9wZXJseSBhbmQgbWFrZSBzdXJlIHRoYXQg
-dXNlcnNwYWNlIGRvZXNuJ3QgdHJ5IHRvIHNldCBkaWZmZXJlbnQgcmF0ZXMKPiBpbiBkaWZmZXJl
-bnQgZGlyZWN0aW9ucykuCj4KPiBNeSBpbml0aWFsIHRob3VnaHQgaGVyZSBpcyB0aGF0IHRoZSBt
-YWNoaW5lIGRyaXZlciBzaG91bGQgYmUgcmVzcG9uc2libGUKPiBmb3Igc2V0dGluZyB0aGlzIGFu
-ZCB0aGVuIHRoZSBEQUkgZHJpdmVyIHNob3VsZCBjaGVjayB0byBzZWUgaWYKPiBzeW1tZXRyaWNf
-cmF0ZXMgYXJlIGluIHVzZSBhbmQgY29uZmlndXJlIGl0c2VsZiBhcHByb3ByaWF0ZWx5LiAgSXMg
-dGhlcmUKPiBhIHJlYXNvbiB3aHkgdGhpcyB3b24ndCB3b3JrIGhlcmU/Cj4KCkl0J3MgZm9yIGky
-cyBpcCBjb25maWd1cmF0aW9uLCBpbiB0aGUgbW9zdCBzaXR1YXRpb24sIHRoZXJlIGlzIG5vIG5l
-ZWQKdG8gdXNlIHRoaXMgcHJvcGVydHksIGV4Y2VwdCBvbmUgY2FzZToKCkluIG9yZGVyIHRvIHNh
-dmUgZ3BpbyBwaW5zIGZvciBvdGhlciBmdW5jdGlvbiB1c2UsIHdlIG1heSB1c2Ugc2luZ2xlCmxy
-Y2sodHggb3IgcngpIHBpbi4gb2YgY291cnNlLCBpdCBkZXBlbmRzIG9uIHByb2R1Y3QgZGVzaWdu
-LiB3aGVuIGluIGkycwpzbGF2ZSBtb2RlLCB3ZSBuZWVkIHRvIGNvbmZpZ3VyZSB0aGlzIHRvIHNo
-YXJlIGxyY2sgd2l0aCB0eC9yeCBpbnNpZGUgCmkycyBsb2dpYy4KCnN5bW1ldHJpY19yYXRlcyBm
-bGFnIHdvcmtzIGZpbmUgb24gcm9ja2NoaXAgcGxhdGZvcm0sIGJ1dCBpdCBjYW4ndCBjb3ZlciAK
-dGhlIGFib3ZlIGNhc2UuCgpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbiBhYm91dCB0aGlzIG9y
-IG1heWJlIHRoZXJlIGlzIG5vIG5lZWQgdG8gCnVwc3RyZWFtIHRoaXMgc3BlY2lhbCBwYXJ0PwoK
-QmVzdCBSZWdhcmRzClN1Z2FyCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Sunday 27 September 2015 16:10:48 Rafael J. Wysocki wrote:
+> On Saturday, September 26, 2015 09:33:56 PM Arnd Bergmann wrote:
+> > On Saturday 26 September 2015 11:40:00 Viresh Kumar wrote:
+> > > On 25 September 2015 at 15:19, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > So if you allow something like debugfs to update your structure, how
+> > > > do you make sure there is the proper locking?
+> > > 
+> > > Not really sure at all.. Isn't there some debugfs locking that will
+> > > jump in, to avoid updation of fields to the same device?
+> > 
+> > No, if you need any locking to access variable, you cannot use the
+> > simple debugfs helpers but have to provide your own functions.
+> > 
+> > > >> Anyway, that problem isn't here for sure as its between two
+> > > >> unsigned-longs. So, should I just move it to bool and resend ?
+> > > >
+> > > > I guess it might be more convenient to fold this into the other patch,
+> > > > because we seem to be splitting hairs here.
+> > > 
+> > > I can and that's what I did. But then Arnd asked me to separate it
+> > > out. I can fold it back if that's what you want.
+> > 
+> > It still makes sense to keep it separate I think, the patch is clearly
+> > different from the other parts.
+> 
+> I just don't see much point in going from unsigned long to u32 and then
+> from 32 to bool if we can go directly to bool in one go.
+
+It's only important to keep the 34-file multi-subsystem trivial cleanup
+that doesn't change any functionality separate from the bugfix. If you
+like to avoid patching one of the files twice, the alternative would
+be to first change the API for all other instances from u32 to bool
+and leave ACPI alone, and then do the second patch that changes ACPI
+from long to bool.
+
+	Arnd
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
