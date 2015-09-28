@@ -1,46 +1,35 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/3] Add support for Wolfson Micro WM8998 codec
-Date: Mon, 28 Sep 2015 13:26:35 +0100
-Message-ID: <1443443198-29710-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] regulator: arizona: add support for WM8998 and WM1814
+Date: Mon, 28 Sep 2015 13:26:36 +0100
+Message-ID: <1443443198-29710-2-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1443443198-29710-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 07630264F03
- for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 14:26:41 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1443443198-29710-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches is based on broonie/regulator.git/for-next and
-broonie/sound.git/for-next branches.
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/regulator/arizona-ldo1.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Richard Fitzgerald (3):
-  regulator: arizona: add support for WM8998 and WM1814
-  ASoC: arizona: add defines for single-input gain control
-  ASoC: wm8998: Initial WM8998 codec driver
-
- drivers/regulator/arizona-ldo1.c |    2 +
- sound/soc/codecs/Kconfig         |    6 +
- sound/soc/codecs/Makefile        |    2 +
- sound/soc/codecs/arizona.c       |   33 +
- sound/soc/codecs/arizona.h       |   12 +-
- sound/soc/codecs/wm8998.c        | 1429 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8998.h        |   23 +
- 7 files changed, 1506 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/codecs/wm8998.c
- create mode 100644 sound/soc/codecs/wm8998.h
-
+diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
+index 5e947a8..e3c5982 100644
+--- a/drivers/regulator/arizona-ldo1.c
++++ b/drivers/regulator/arizona-ldo1.c
+@@ -245,6 +245,8 @@ static int arizona_ldo1_probe(struct platform_device *pdev)
+ 	switch (arizona->type) {
+ 	case WM5102:
+ 	case WM8997:
++	case WM8998:
++	case WM1814:
+ 		desc = &arizona_ldo1_hc;
+ 		ldo1->init_data = arizona_ldo1_dvfs;
+ 		break;
 -- 
 1.9.1
