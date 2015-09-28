@@ -1,7 +1,7 @@
 From: "yitian" <yitian.bu@tangramtek.com>
-Subject: [PATCH 1/1] ASoc: dwc: correct irq clear method
-Date: Mon, 28 Sep 2015 14:20:22 +0800
-Message-ID: <035301d0f9b5$c22cff30$4686fd90$@tangramtek.com>
+Subject: [PATCH 1/1] ASoC: dwc: fix dma stop transferring issue
+Date: Mon, 28 Sep 2015 14:36:16 +0800
+Message-ID: <035401d0f9b7$faa800b0$eff80210$@tangramtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
@@ -13,31 +13,45 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, And
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-from Designware I2S datasheet, irq is cleared by reading from
-TOR/ROR registers, rather than by writing into them.
+Designware I2S uses tx empty and rx available signals as the DMA
+handshaking signals. during music playing, if XRUN occurs,
+i2s_stop() function will be executed and both tx and rx irq are
+masked, when music contintes to be played, i2s_start() is executed
+but both tx and rx irq are not unmasked which cause I2S stop
+sending DMA handshaking signal to DMA controller, and it finally
+cause music playing will be stopped once XRUN occurs for the first
+time.
 
 Signed-off-by: Yitian Bu <yitian.bu@tangramtek.com>
 ---
- sound/soc/dwc/designware_i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/dwc/designware_i2s.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index a3e97b4..0d28e3b 100644
+index a3e97b4..4d3e1d3 100644
 --- a/sound/soc/dwc/designware_i2s.c
 +++ b/sound/soc/dwc/designware_i2s.c
-@@ -131,10 +131,10 @@ static inline void i2s_clear_irqs(struct dw_i2s_dev
-*dev, u32 stream)
+@@ -144,10 +144,19 @@ static void i2s_start(struct dw_i2s_dev *dev,
  
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		for (i = 0; i < 4; i++)
--			i2s_write_reg(dev->i2s_base, TOR(i), 0);
-+			i2s_read_reg(dev->i2s_base, TOR(i));
- 	} else {
- 		for (i = 0; i < 4; i++)
--			i2s_write_reg(dev->i2s_base, ROR(i), 0);
-+			i2s_read_reg(dev->i2s_base, ROR(i));
- 	}
+ 	i2s_write_reg(dev->i2s_base, IER, 1);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x30);
++		}
+ 		i2s_write_reg(dev->i2s_base, ITER, 1);
+-	else
++	} else {
++		for (i = 0; i < 4; i++) {
++			irq = i2s_read_reg(dev->i2s_base, IMR(i));
++			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x03);
++		}
+ 		i2s_write_reg(dev->i2s_base, IRER, 1);
++	}
+ 
+ 	i2s_write_reg(dev->i2s_base, CER, 1);
  }
- 
 -- 
 1.7.12.4
