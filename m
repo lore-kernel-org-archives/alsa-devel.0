@@ -1,56 +1,104 @@
-From: David Laight <David.Laight-ZS65k/vG3HxXrIkS9f7CXA@public.gmane.org>
-Subject: RE: [PATCH V4 1/2] ACPI / EC: Fix broken 64bit big-endian users of
-	'global_lock'
-Date: Mon, 28 Sep 2015 08:58:17 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D1CBA3BF7@AcuExch.aculab.com>
-References: <e28c4b4deaf766910c366ab87b64325da59c8ad6.1443198783.git.viresh.kumar@linaro.org>
-	<2524822.pQu4UKMrlb@vostro.rjw.lan>
-	<1443297128.2181.11.camel@HansenPartnership.com>
-	<3461169.v5xKdGLGjP@vostro.rjw.lan>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH RFC v4 3/8] ASoC: hdmi-codec: Add
+ hdmi-codec for external HDMI-encoders
+Date: Mon, 28 Sep 2015 11:01:34 +0200
+Message-ID: <560901EE.60407@st.com>
+References: <mailman.310.1442574427.844.alsa-devel@alsa-project.org>
+ <56057A9E.9080602@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <3461169.v5xKdGLGjP-sKB8Sp2ER+y1GS7QM15AGw@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: "'Rafael J. Wysocki'" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, James Bottomley <James.Bottomley-JuX6DAaQMKPCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO
-	POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linaro Kernel Mailman List <linaro-kernel-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>, "open list:TARGET SUBSYSTEM" <linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Viresh Kumar <viresh.kumar-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, QCA ath9k Development <ath9k-devel-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Intel Linux Wireless <ilw-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Linux ACPI <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "open list:AMD IOMMU (AMD-VI)" <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, "open list:BLUETOOTH DRIVERS" <linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Memory Management List <linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org>, Greg Kroah-Hartman <gregkh@li>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 8616A260688
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 11:01:54 +0200 (CEST)
+In-Reply-To: <56057A9E.9080602@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, moinejf@free.fr, tony@atomide.com, broonie@kernel.orgJyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Rafael J. Wysocki
-> Sent: 27 September 2015 15:09
-...
-> > > Say you have three adjacent fields in a structure, x, y, z, each one byte long.
-> > > Initially, all of them are equal to 0.
-> > >
-> > > CPU A writes 1 to x and CPU B writes 2 to y at the same time.
-> > >
-> > > What's the result?
-> >
-> > I think every CPU's  cache architecure guarantees adjacent store
-> > integrity, even in the face of SMP, so it's x==1 and y==2.  If you're
-> > thinking of old alpha SMP system where the lowest store width is 32 bits
-> > and thus you have to do RMW to update a byte, this was usually fixed by
-> > padding (assuming the structure is not packed).  However, it was such a
-> > problem that even the later alpha chips had byte extensions.
+few questions/remarks
+BR,
+Arnaud
 
-Does linux still support those old Alphas?
+> +static void hdmi_codec_abort(struct device *dev)
+> +{
+> +    struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
+> +
+> +    dev_dbg(dev, "%s()\n", __func__);
+> +
+> +    mutex_lock(&hcp->current_stream_lock);
+> +    if (hcp->current_stream && hcp->current_stream->runtime &&
+> +        snd_pcm_running(hcp->current_stream)) {
+> +        dev_info(dev, "HDMI audio playback aborted\n");
+> +        snd_pcm_stream_lock_irq(hcp->current_stream);
+> +        snd_pcm_stop(hcp->current_stream, SNDRV_PCM_STATE_DISCONNECTED);
+> +        snd_pcm_stream_unlock_irq(hcp->current_stream);
+> +    }
+> +    mutex_unlock(&hcp->current_stream_lock);
+> +}
+Does driver should stop the stream in case of unplug?
+This could generate unexpected behavior at application level.
+Perhaps should be better if this part is managed in DRM driver. if HDMI 
+master, I2S bus should be maintained ON to consume the audio stream 
+until application action.
 
-The x86 cpus will also do 32bit wide rmw cycles for the 'bit' operations.
+> +
+> +static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+> +                struct snd_pcm_hw_params *params,
+> +                struct snd_soc_dai *dai)
+> +{
+> +    struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+> +    struct hdmi_codec_params hp = {
+> +        .iec = {
+> +            .status = { 0 },
+> +            .subcode = { 0 },
+> +            .pad = 0,
+> +            .dig_subframe = { 0 },
+> +        }
+> +    };
+> +    int ret;
+> +
+> +    dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
+> +        params_width(params), params_rate(params),
+> +        params_channels(params));
+> +
+> +    ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
+> +                               sizeof(hp.iec.status));
+Tell me if i am wrong, but in case of SPDIF format, IEC status is 
+managed by cpu_dai not by the codec.
+To manage IEC61937 a control should be needed to update IEC status bits...
 
-> OK, thanks!
-
-You still have to ensure the compiler doesn't do wider rmw cycles.
-I believe the recent versions of gcc won't do wider accesses for volatile data.
-
-	David
+> +    if (ret < 0) {
+> +        dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
+> +            ret);
+> +        return ret;
+> +    }
+> +
+> +    ret = hdmi_codec_new_stream(substream, dai);
+> +    if (ret)
+> +        return ret;
+> +
+> +    hdmi_audio_infoframe_init(&hp.cea);
+> +    hp.cea.channels = params_channels(params);
+> +    hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
+> +    hp.cea.sample_size = HDMI_AUDIO_SAMPLE_SIZE_STREAM;
+> +    hp.cea.sample_frequency = HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM;
+> +
+> +    hp.sample_width = params_width(params);
+> +    hp.sample_rate = params_rate(params);
+> +    hp.channels = params_channels(params);
+> +
+> +    return hcp->hcd.ops->hw_params(dai->dev->parent,
+> &hcp->daifmt[dai->id],
+> +                       &hp);
+> +}
+> +
