@@ -1,108 +1,62 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 0/2] ASoC: Add support for the Allwinner A10 codec
-Date: Mon, 28 Sep 2015 09:42:48 +0200
-Message-ID: <20150928074248.GI7104@lukather>
-References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442928417.6509.12.camel@plaes.org>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: sugar <sugar.zhang@rock-chips.com>
+Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels
+ capture and lrck-mode support
+Date: Mon, 28 Sep 2015 16:16:12 +0800
+Message-ID: <5608F74C.3000104@rock-chips.com>
+References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
+ <20150923162433.GQ30445@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ed/6oDxOLijJh8b0"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRB6W6UOYAKGQECYURQGQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1442928417.6509.12.camel-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Priit Laes <plaes-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 957132604D3
+ for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2015 10:16:21 +0200 (CEST)
+In-Reply-To: <20150923162433.GQ30445@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
---ed/6oDxOLijJh8b0
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-
-Hi Priit,
-
-On Tue, Sep 22, 2015 at 04:26:57PM +0300, Priit Laes wrote:
-> On Sat, 2015-09-12 at 15:26 +0200, Maxime Ripard wrote:
-> > Hi everyone,
-> > 
-> > This patch set adds the support for what Allwinner calls the codec on
-> > their SoCs.
-> > 
-> > This codec is actually a combination of a codec and DAI, tied
-> > together
-> > in a single memory-mapped IP. It is completely standalone, and
-> > outputs
-> > directly the analog signal.
-> > 
-> > While it supports both playback and capture, the capture is not
-> > implemented in this patch, and will be posted eventually as a
-> > separate
-> > one.
-> > 
-> > This set, in order to be functional, has a dependency on the audio
-> > clocks patch set posted separately. However, it doesn't needs this to
-> > compile properly, so I guess it can be merged without really caring
-> > for the merging status of the clock patches.
-> 
-> It works on Gemei G9 tablet which has also extra chip that
-> automatically switches output over from internal speakers to headphones
-> when connector is inserted.
-> 
-> Now I noticed some weird things:
-> 
-> When I have all the switches as ON in alsamixer, and I start disabling
-> them, I get following weird results.
-> 
-> Left Mixer Left - LML
-> Right Mixer Left - LMR
-> Right Mixer Right - RMR
-> 
-> Very faint output:
-> LML - ON
-> RML - Mute
-> RMR - ON
-> 
-> Output works fully:
-> LML - Mute
-> RML - Mute
-> RMR - Mute
-> 
-> When I Mute Pre-Amplifier and fiddle any of LML, RML or RMR, the output
-> stays mute even after setting Pre-Amplifier Mute back on:
-> 
-> 1. All switches on
-> 2. Mute pre-amplifier
-> 3. Mute RMR
-> 4. Pre-Amilifier Mute Off
-> .. Music stays off
-> 5. Toggle Pre-Amplifier twice - output turns on
-
-Unfortunately, I don't have access to that SoC or that setup.
-
-Do you have another A10 board with a simpler audio setup, like a
-cubieboard?
-
-> And also following in dmesg:
-> sun4i-codec 1c22c00.codec: Codec <-> 1c22c00.codec mapping ok
-> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
-> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
-
-That one is weird, I'll look into this.
-
-Thanks!
-Maxime
-
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---ed/6oDxOLijJh8b0--
+SGkgTWFyayBCcm93biwKCuWcqCA5LzI0LzIwMTUgMDA6MjQsIE1hcmsgQnJvd24g5YaZ6YGTOgo+
+IE9uIFdlZCwgU2VwIDIzLCAyMDE1IGF0IDExOjQxOjIyQU0gKzA4MDAsIFN1Z2FyIFpoYW5nIHdy
+b3RlOgo+Cj4+ICsJLyogY29uZmlndXJlIHR4L3J4IGxyY2sgdXNlIG1vZGUgKi8KPj4gKwlpZiAo
+IW9mX3Byb3BlcnR5X3JlYWRfdTMyKG5vZGUsICJyb2NrY2hpcCxscmNrLW1vZGUiLCAmdmFsKSkg
+ewo+PiArCQlpZiAodmFsID49IExSQ0tfVFhSWCAmJiB2YWwgPD0gTFJDS19SWF9TSEFSRSkKPj4g
+KwkJCXJlZ21hcF91cGRhdGVfYml0cyhpMnMtPnJlZ21hcCwgSTJTX0NLUiwKPj4gKwkJCQkJICAg
+STJTX0NLUl9UUkNNX01BU0ssCj4+ICsJCQkJCSAgIEkyU19DS1JfVFJDTSh2YWwpKTsKPj4gKwl9
+Cj4KPiBUaGlzIGxvb2tzIGxpa2UgaXQncyBmb3IgYSBib2FyZCBjb25maWd1cmF0aW9uIHRoaW5n
+IHNvIEknZCBub3QgcmVhbGx5Cj4gZXhwZWN0IHRoaXMgdG8gYmUgaGFuZGxlZCBpbiBhIGRldmlj
+ZSBzcGVjaWZpYyBwcm9wZXJ0eSAtIGl0J3MgZmFpcmx5Cj4gY29tbW9uIHRvIGhhdmUgdGhpcyBz
+aXR1YXRpb24gYW5kIHdlIGFscmVhZHkgaGF2ZSB0aGUgc3ltbWV0cmljX3JhdGVzCj4gZmxhZyBm
+b3IgdGhlIERBSSB0byBoYW5kbGUgaXQgKGFuZCBpZiB3ZSBkbyBlbmQgdXAgYWRkaW5nIHRoaXMg
+cHJvcGVydHkKPiB3ZSdkIG5lZWQgdGhlIGRyaXZlciB0byBzZXQgdGhhdCBmbGFnIHNvIHRoYXQg
+dGhlIGNvcmUgY2FuIGhhbmRsZSB0aGluZ3MKPiBwcm9wZXJseSBhbmQgbWFrZSBzdXJlIHRoYXQg
+dXNlcnNwYWNlIGRvZXNuJ3QgdHJ5IHRvIHNldCBkaWZmZXJlbnQgcmF0ZXMKPiBpbiBkaWZmZXJl
+bnQgZGlyZWN0aW9ucykuCj4KPiBNeSBpbml0aWFsIHRob3VnaHQgaGVyZSBpcyB0aGF0IHRoZSBt
+YWNoaW5lIGRyaXZlciBzaG91bGQgYmUgcmVzcG9uc2libGUKPiBmb3Igc2V0dGluZyB0aGlzIGFu
+ZCB0aGVuIHRoZSBEQUkgZHJpdmVyIHNob3VsZCBjaGVjayB0byBzZWUgaWYKPiBzeW1tZXRyaWNf
+cmF0ZXMgYXJlIGluIHVzZSBhbmQgY29uZmlndXJlIGl0c2VsZiBhcHByb3ByaWF0ZWx5LiAgSXMg
+dGhlcmUKPiBhIHJlYXNvbiB3aHkgdGhpcyB3b24ndCB3b3JrIGhlcmU/Cj4KCkl0J3MgZm9yIGky
+cyBpcCBjb25maWd1cmF0aW9uLCBpbiB0aGUgbW9zdCBzaXR1YXRpb24sIHRoZXJlIGlzIG5vIG5l
+ZWQKdG8gdXNlIHRoaXMgcHJvcGVydHksIGV4Y2VwdCBvbmUgY2FzZToKCkluIG9yZGVyIHRvIHNh
+dmUgZ3BpbyBwaW5zIGZvciBvdGhlciBmdW5jdGlvbiB1c2UsIHdlIG1heSB1c2Ugc2luZ2xlCmxy
+Y2sodHggb3IgcngpIHBpbi4gb2YgY291cnNlLCBpdCBkZXBlbmRzIG9uIHByb2R1Y3QgZGVzaWdu
+LiB3aGVuIGluIGkycwpzbGF2ZSBtb2RlLCB3ZSBuZWVkIHRvIGNvbmZpZ3VyZSB0aGlzIHRvIHNo
+YXJlIGxyY2sgd2l0aCB0eC9yeCBpbnNpZGUgCmkycyBsb2dpYy4KCnN5bW1ldHJpY19yYXRlcyBm
+bGFnIHdvcmtzIGZpbmUgb24gcm9ja2NoaXAgcGxhdGZvcm0sIGJ1dCBpdCBjYW4ndCBjb3ZlciAK
+dGhlIGFib3ZlIGNhc2UuCgpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbiBhYm91dCB0aGlzIG9y
+IG1heWJlIHRoZXJlIGlzIG5vIG5lZWQgdG8gCnVwc3RyZWFtIHRoaXMgc3BlY2lhbCBwYXJ0PwoK
+QmVzdCBSZWdhcmRzClN1Z2FyCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
