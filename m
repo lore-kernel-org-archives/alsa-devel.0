@@ -1,312 +1,369 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Kernel Device Tree entries for simple-audio-card
-Date: Tue, 29 Sep 2015 01:28:41 -0700
-Message-ID: <74203CDA-1965-48ED-AA9A-95DC9A8D83E6@latencyzero.com>
-References: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
- <CAG5mAdxc5-UuTnz24zByA64ZsrB4qnfMKF57GBVeFfWvY44xsw@mail.gmail.com>
- <4D1E67E6-437D-490D-A577-35EB7E474A3A@latencyzero.com>
- <CAG5mAdxnjZUBiOFU6+MBn0znUCBaGpeVQ-RaYhXch=-4n7J4uw@mail.gmail.com>
- <F3A7E580-2E91-45D0-9C27-2FD190110686@latencyzero.com>
- <CAG5mAdxgTzGjnvwno0D_Jo9_53stmGfsc9OQS05f3thrSFKpkw@mail.gmail.com>
- <BE1F1488-2A4D-4EE6-A538-931DD0B34CD8@latencyzero.com>
- <CAG5mAdzg2BSGKiaBJVSgZvL=9wxffxv_3LMiruS2-kcuTKO+xQ@mail.gmail.com>
- <D8BC8B49-E32C-43EE-B181-60510C7B3E8E@latencyzero.com>
- <CAG5mAdxaAapawiaaR_zasVhQKL33MHEHP1yyUCSLv0wswZ9Law@mail.gmail.com>
- <7CCA3F5A-844A-43FF-9A4E-C0A9FB65D926@latencyzero.com>
- <CAG5mAdyOSDt7F5czW_9EBvo3uBCW9834-1VZsXG0mvYiB1LM8g@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 5199526517E
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 10:28:43 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id E324F20812
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 04:28:42 -0400 (EDT)
-In-Reply-To: <CAG5mAdyOSDt7F5czW_9EBvo3uBCW9834-1VZsXG0mvYiB1LM8g@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH 1/1] ASoC: ad193x: add support to ad1934
+Date: Tue, 29 Sep 2015 10:36:51 +0200
+Message-ID: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, so I switched to da830-evm-audio, and things are much better. But still not perfect. Here's the DTS:
+The AD1934 codec has no DAC feature. Hence it register mapping is slightly
+different from the register mapping of other members of the AD193x family.
 
-	https://github.com/JetForMe/podtique/blob/master/bbb/cape/Podtique1/BB-ENABLE-PRU.dts
+Some ASoC controls and widgets are related to the DAC feature so are not
+relevant in the case of an AD1934 codec.
 
-Now I have a working MCLK, and I see clocking on BCLK and WCLK, but the rates are questionable. MCLK is 24 MHz (even though in the DTS it's set to 12 MHz); that might be okay. For the following call:
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
 
-	# speaker-test -r 22050 -c 2 -f 1000 -F S16_LE -t sine -s 1 -D hw:0,0
+Hi all,
 
-WCLK is 11.88 kHz, and it is pulses (DSP mode), rather than high for left, low for right for each channel's word. BCLK is 379.5 kHz.
+This patch adds support to the AD1934 codec, which is DAC only.
 
-I'm looking at the i2c commands being sent to see if I can determine what the CODEC thinks it's trying to do.
+Best Regards,
 
-> On Sep 28, 2015, at 23:42 , Caleb Crome <caleb@crome.org> wrote:
-> 
->> 
->> Could you send me your DTS?
-> 
-> Yes, but I have modified a bit of stuff in the davinci-evm.c to make
-> my multi-codec setup work right.
-> 
-> I turned off HDMI with this:
-> 
-> commit 7f20ffd56de6921bc5f8e2fee8da75d743d57847
-> Author: Caleb Crome <caleb@signalessence.com>
-> Date:   Wed Sep 9 13:33:36 2015 -0700
-> 
->    turn off hdmi from boneblack
-> 
-> diff --git a/arch/arm/boot/dts/am335x-boneblack.dts
-> b/arch/arm/boot/dts/am335x-boneblack.dts
-> index 5c42d25..6335072 100644
-> --- a/arch/arm/boot/dts/am335x-boneblack.dts
-> +++ b/arch/arm/boot/dts/am335x-boneblack.dts
-> @@ -34,51 +34,9 @@
-> };
-> 
-> &am33xx_pinmux {
-> - nxp_hdmi_bonelt_pins: nxp_hdmi_bonelt_pins {
-> - pinctrl-single,pins = <
-> - 0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
-> - 0xa0 0x08       /* lcd_data0.lcd_data0, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xa4 0x08       /* lcd_data1.lcd_data1, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xa8 0x08       /* lcd_data2.lcd_data2, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xac 0x08       /* lcd_data3.lcd_data3, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xb0 0x08       /* lcd_data4.lcd_data4, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xb4 0x08       /* lcd_data5.lcd_data5, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xb8 0x08       /* lcd_data6.lcd_data6, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xbc 0x08       /* lcd_data7.lcd_data7, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xc0 0x08       /* lcd_data8.lcd_data8, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xc4 0x08       /* lcd_data9.lcd_data9, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xc8 0x08       /* lcd_data10.lcd_data10, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xcc 0x08       /* lcd_data11.lcd_data11, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xd0 0x08       /* lcd_data12.lcd_data12, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xd4 0x08       /* lcd_data13.lcd_data13, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xd8 0x08       /* lcd_data14.lcd_data14, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xdc 0x08       /* lcd_data15.lcd_data15, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> - 0xe0 0x00       /* lcd_vsync.lcd_vsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
-> - 0xe4 0x00       /* lcd_hsync.lcd_hsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
-> - 0xe8 0x00       /* lcd_pclk.lcd_pclk, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
-> - 0xec 0x00       /* lcd_ac_bias_en.lcd_ac_bias_en, OMAP_MUX_MODE0 |
-> AM33XX_PIN_OUTPUT */
-> - >;
-> - };
-> - nxp_hdmi_bonelt_off_pins: nxp_hdmi_bonelt_off_pins {
-> - pinctrl-single,pins = <
-> - 0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
-> - >;
-> - };
-> -};
-> -
-> -&lcdc {
-> - status = "okay";
-> };
-> 
-> / {
-> - hdmi {
-> - compatible = "ti,tilcdc,slave";
-> - i2c = <&i2c0>;
-> - pinctrl-names = "default", "off";
-> - pinctrl-0 = <&nxp_hdmi_bonelt_pins>;
-> - pinctrl-1 = <&nxp_hdmi_bonelt_off_pins>;
-> - status = "okay";
-> - };
-> };
-> 
-> &rtc {
-> 
-> 
-> 
-> And here's the added bit:
-> 
-> Index: KERNEL/arch/arm/boot/dts/am335x-boneblack.dts
-> ===================================================================
-> --- KERNEL.orig/arch/arm/boot/dts/am335x-boneblack.dts 2015-09-21
-> 17:23:14.961343604 -0700
-> +++ KERNEL/arch/arm/boot/dts/am335x-boneblack.dts 2015-09-22
-> 09:35:49.308278239 -0700
-> @@ -5,11 +5,25 @@
->  * it under the terms of the GNU General Public License version 2 as
->  * published by the Free Software Foundation.
->  */
-> +
-> +
-> +
-> +/*
-> +   * MCASP pin mapping
-> +   *                          ball   BBB
-> +   * MCASP0_ACLKX             A13    P9.31
-> +   * MCASP0_AFSX              B13    P9.29
-> +   * MCASP0_AXR2  (mcasp OUT) C12    P9.28
-> +   * MCASP0_AXR3  (mcasp IN)  A14    P9.25
-> +*/
-> +
-> /dts-v1/;
-> 
-> #include "am33xx.dtsi"
-> #include "am335x-bone-common.dtsi"
-> 
-> +
-> +
-> / {
->  model = "TI AM335x BeagleBone Black";
->  compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
-> @@ -34,9 +48,119 @@
-> };
-> 
-> &am33xx_pinmux {
-> + i2c2_pins_default: i2c2_pins_default {
-> +        pinctrl-single,pins = <
-> +                0x17c ( PIN_INPUT_PULLUP | MUX_MODE3 ) /* (D17)
-> uart1_rtsn.I2C2_SCL */
-> +                0x178 ( PIN_INPUT_PULLUP | MUX_MODE3 ) /* (D18)
-> uart1_ctsn.I2C2_SDA */
-> +        >;
-> + };
-> +
-> +
-> + i2c1_pins_default: pinmux_i2c1_pins {
-> +                       pinctrl-single,pins = <
-> +                               0x158 0x72      /*
-> uart1_ctsn.i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
-> +                               0x15c 0x72      /*
-> uart1_rtsn.i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
-> +                       >;
-> +        };
-> +
-> + mcasp_0_pins_default: mcasp_0_pins_default {
-> + pinctrl-single,pins = <
-> + 0x190 ( PIN_INPUT | MUX_MODE0 ) /* (A13) mcasp0_aclkx.mcasp0_aclkx */
-> + 0x194 ( PIN_INPUT | MUX_MODE0 ) /* (B13) mcasp0_fsx.mcasp0_fsx */
-> + 0x19c ( PIN_OUTPUT | MUX_MODE2 ) /* (C12) mcasp0_ahclkr.mcasp0_axr2 */
-> + 0x1ac ( PIN_INPUT | MUX_MODE2 ) /* (A14) mcasp0_ahclkx.mcasp0_axr3 */
-> + >;
-> + };
-> +};
-> +
-> +
-> +&i2c1 {
-> + clock-frequency = <100000>;
-> + status = "okay";
-> + pinctrl-names = "default";
-> + pinctrl-0 = <&i2c1_pins_default>;
-> + status="okay";
-> +
-> + tlv320aic3x_a: tlv320aic3x@18 {
-> + compatible = "ti,tlv320aic3x";
-> + reg = <0x18>;
-> + tdm-offset = <0>;
-> + status = "okay";
-> + };
-> +
-> + tlv320aic3x_b: tlv320aic3x@19 {
-> + compatible = "ti,tlv320aic3x";
-> + reg = <0x19>;
-> + tdm-offset = <32>;
-> + status = "okay";
-> + };
-> +
-> + tlv320aic3x_c: tlv320aic3x@1a {
-> + compatible = "ti,tlv320aic3x";
-> + reg = <0x1a>;
-> + tdm-offset = <64>;
-> + status = "okay";
-> + };
-> +
-> + tlv320aic3x_d: tlv320aic3x@1b {
-> + compatible = "ti,tlv320aic3x";
-> + reg = <0x1b>;
-> + tdm-offset = <96>;
-> + status = "okay";
-> + };
-> +
-> };
-> 
-> +&mcasp0 {
-> + pinctrl-names = "default";
-> + pinctrl-0 = <&mcasp_0_pins_default>;
-> + status = "okay";
-> +
-> + op-mode = <0>;          /* MCASP_IIS_MODE */
-> + tdm-slots = <16>;
-> + num-serializer = <16>;
-> + serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-> + 0 0 1 2
-> + 0 0 0 0
-> + 0 0 0 0
-> + 0 0 0 0
-> + >;
-> + tx-num-evt = <1>;
-> + rx-num-evt = <1>;
-> +};
-> +
-> +
-> / {
-> + sound {
-> + compatible = "ti,da830-evm-audio";
-> + ti,model = "PUPPY-AUDIO";
-> + ti,audio-codec = <
-> +       &tlv320aic3x_a
-> +       &tlv320aic3x_b
-> +       &tlv320aic3x_c
-> +       &tlv320aic3x_d
-> +       >;
-> + ti,mcasp-controller = <&mcasp0>;
-> + ti,codec-clock-rate = <12288000>;
-> + ti,audio-routing =
-> + "Headphone Jack",       "a HPLOUT",
-> + "Headphone Jack",       "a HPROUT",
-> + "Headphone Jack",       "b HPLOUT",
-> + "Headphone Jack",       "b HPROUT",
-> + "Headphone Jack",       "c HPLOUT",
-> + "Headphone Jack",       "c HPROUT",
-> + "Headphone Jack",       "d HPLOUT",
-> + "Headphone Jack",       "d HPROUT",
-> + "a LINE1L",               "Line In",
-> + "a LINE1R",               "Line In",
-> + "b LINE1L",               "Line In",
-> + "b LINE1R",               "Line In",
-> + "c LINE1L",               "Line In",
-> + "c LINE1R",               "Line In",
-> + "d LINE1L",               "Line In",
-> + "d LINE1R",               "Line In";
-> + status="okay";
-> + };
-> };
-> 
-> &rtc {
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Cyrille
 
+---
+ sound/soc/codecs/ad193x-i2c.c |   8 +--
+ sound/soc/codecs/ad193x-spi.c |  16 +++++-
+ sound/soc/codecs/ad193x.c     | 121 ++++++++++++++++++++++++++++++++----------
+ sound/soc/codecs/ad193x.h     |   9 +++-
+ 4 files changed, 120 insertions(+), 34 deletions(-)
 
+diff --git a/sound/soc/codecs/ad193x-i2c.c b/sound/soc/codecs/ad193x-i2c.c
+index df3a1a415825..8aa50d35662f 100644
+--- a/sound/soc/codecs/ad193x-i2c.c
++++ b/sound/soc/codecs/ad193x-i2c.c
+@@ -15,8 +15,8 @@
+ #include "ad193x.h"
+ 
+ static const struct i2c_device_id ad193x_id[] = {
+-	{ "ad1936", 0 },
+-	{ "ad1937", 0 },
++	{ "ad1936", AD193x },
++	{ "ad1937", AD193x },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, ad193x_id);
+@@ -30,7 +30,9 @@ static int ad193x_i2c_probe(struct i2c_client *client,
+ 	config.val_bits = 8;
+ 	config.reg_bits = 8;
+ 
+-	return ad193x_probe(&client->dev, devm_regmap_init_i2c(client, &config));
++	return ad193x_probe(&client->dev,
++			    devm_regmap_init_i2c(client, &config),
++			    (enum ad193x_type)id->driver_data);
+ }
+ 
+ static int ad193x_i2c_remove(struct i2c_client *client)
+diff --git a/sound/soc/codecs/ad193x-spi.c b/sound/soc/codecs/ad193x-spi.c
+index 390cef9b9dc2..364e82112e8c 100644
+--- a/sound/soc/codecs/ad193x-spi.c
++++ b/sound/soc/codecs/ad193x-spi.c
+@@ -16,6 +16,7 @@
+ 
+ static int ad193x_spi_probe(struct spi_device *spi)
+ {
++	const struct spi_device_id *id = spi_get_device_id(spi);
+ 	struct regmap_config config;
+ 
+ 	config = ad193x_regmap_config;
+@@ -24,7 +25,8 @@ static int ad193x_spi_probe(struct spi_device *spi)
+ 	config.read_flag_mask = 0x09;
+ 	config.write_flag_mask = 0x08;
+ 
+-	return ad193x_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
++	return ad193x_probe(&spi->dev, devm_regmap_init_spi(spi, &config),
++			    (enum ad193x_type)id->driver_data);
+ }
+ 
+ static int ad193x_spi_remove(struct spi_device *spi)
+@@ -33,6 +35,17 @@ static int ad193x_spi_remove(struct spi_device *spi)
+ 	return 0;
+ }
+ 
++static const struct spi_device_id ad193x_spi_id[] = {
++	{ "ad193x", AD193X },
++	{ "ad1933", AD1933 },
++	{ "ad1934", AD1934 },
++	{ "ad1936", AD193X },
++	{ "ad1937", AD193X },
++	{ "ad1938", AD193X },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, ad193x_spi_id);
++
+ static struct spi_driver ad193x_spi_driver = {
+ 	.driver = {
+ 		.name	= "ad193x",
+@@ -40,6 +53,7 @@ static struct spi_driver ad193x_spi_driver = {
+ 	},
+ 	.probe		= ad193x_spi_probe,
+ 	.remove		= ad193x_spi_remove,
++	.id_table	= ad193x_spi_id,
+ };
+ module_spi_driver(ad193x_spi_driver);
+ 
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 17c953595660..80ffecf98673 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -23,6 +23,7 @@
+ /* codec private data */
+ struct ad193x_priv {
+ 	struct regmap *regmap;
++	enum ad193x_type type;
+ 	int sysclk;
+ };
+ 
+@@ -47,12 +48,6 @@ static const struct snd_kcontrol_new ad193x_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("DAC4 Volume", AD193X_DAC_L4_VOL,
+ 			AD193X_DAC_R4_VOL, 0, 0xFF, 1, adau193x_tlv),
+ 
+-	/* ADC switch control */
+-	SOC_DOUBLE("ADC1 Switch", AD193X_ADC_CTRL0, AD193X_ADCL1_MUTE,
+-		AD193X_ADCR1_MUTE, 1, 1),
+-	SOC_DOUBLE("ADC2 Switch", AD193X_ADC_CTRL0, AD193X_ADCL2_MUTE,
+-		AD193X_ADCR2_MUTE, 1, 1),
+-
+ 	/* DAC switch control */
+ 	SOC_DOUBLE("DAC1 Switch", AD193X_DAC_CHNL_MUTE, AD193X_DACL1_MUTE,
+ 		AD193X_DACR1_MUTE, 1, 1),
+@@ -63,26 +58,37 @@ static const struct snd_kcontrol_new ad193x_snd_controls[] = {
+ 	SOC_DOUBLE("DAC4 Switch", AD193X_DAC_CHNL_MUTE, AD193X_DACL4_MUTE,
+ 		AD193X_DACR4_MUTE, 1, 1),
+ 
++	/* DAC de-emphasis */
++	SOC_ENUM("Playback Deemphasis", ad193x_deemp_enum),
++};
++
++static const struct snd_kcontrol_new ad193x_adc_snd_controls[] = {
++	/* ADC switch control */
++	SOC_DOUBLE("ADC1 Switch", AD193X_ADC_CTRL0, AD193X_ADCL1_MUTE,
++		AD193X_ADCR1_MUTE, 1, 1),
++	SOC_DOUBLE("ADC2 Switch", AD193X_ADC_CTRL0, AD193X_ADCL2_MUTE,
++		AD193X_ADCR2_MUTE, 1, 1),
++
+ 	/* ADC high-pass filter */
+ 	SOC_SINGLE("ADC High Pass Filter Switch", AD193X_ADC_CTRL0,
+ 			AD193X_ADC_HIGHPASS_FILTER, 1, 0),
+-
+-	/* DAC de-emphasis */
+-	SOC_ENUM("Playback Deemphasis", ad193x_deemp_enum),
+ };
+ 
+ static const struct snd_soc_dapm_widget ad193x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_PGA("DAC Output", AD193X_DAC_CTRL0, 0, 1, NULL, 0),
+-	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_SUPPLY("PLL_PWR", AD193X_PLL_CLK_CTRL0, 0, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD193X_ADC_CTRL0, 0, 1, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("SYSCLK", AD193X_PLL_CLK_CTRL0, 7, 0, NULL, 0),
+ 	SND_SOC_DAPM_VMID("VMID"),
+ 	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
+ 	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
+ 	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
+ 	SND_SOC_DAPM_OUTPUT("DAC4OUT"),
++};
++
++static const struct snd_soc_dapm_widget ad193x_adc_widgets[] = {
++	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD193X_ADC_CTRL0, 0, 1, NULL, 0),
+ 	SND_SOC_DAPM_INPUT("ADC1IN"),
+ 	SND_SOC_DAPM_INPUT("ADC2IN"),
+ };
+@@ -91,18 +97,33 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "DAC", NULL, "SYSCLK" },
+ 	{ "DAC Output", NULL, "DAC" },
+ 	{ "DAC Output", NULL, "VMID" },
+-	{ "ADC", NULL, "SYSCLK" },
+-	{ "DAC", NULL, "ADC_PWR" },
+-	{ "ADC", NULL, "ADC_PWR" },
+ 	{ "DAC1OUT", NULL, "DAC Output" },
+ 	{ "DAC2OUT", NULL, "DAC Output" },
+ 	{ "DAC3OUT", NULL, "DAC Output" },
+ 	{ "DAC4OUT", NULL, "DAC Output" },
++	{ "SYSCLK", NULL, "PLL_PWR" },
++};
++
++static const struct snd_soc_dapm_route adc_audio_paths[] = {
++	{ "ADC", NULL, "SYSCLK" },
++	{ "ADC", NULL, "ADC_PWR" },
+ 	{ "ADC", NULL, "ADC1IN" },
+ 	{ "ADC", NULL, "ADC2IN" },
+-	{ "SYSCLK", NULL, "PLL_PWR" },
+ };
+ 
++static inline bool ad193x_has_adc(const struct ad193x_priv *ad193x)
++{
++	switch (ad193x->type) {
++	case AD1933:
++	case AD1934:
++		return false;
++	default:
++		break;
++	}
++
++	return true;
++}
++
+ /*
+  * DAI ops entries
+  */
+@@ -147,8 +168,10 @@ static int ad193x_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 
+ 	regmap_update_bits(ad193x->regmap, AD193X_DAC_CTRL1,
+ 		AD193X_DAC_CHAN_MASK, channels << AD193X_DAC_CHAN_SHFT);
+-	regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL2,
+-		AD193X_ADC_CHAN_MASK, channels << AD193X_ADC_CHAN_SHFT);
++	if (ad193x_has_adc(ad193x))
++		regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL2,
++				   AD193X_ADC_CHAN_MASK,
++				   channels << AD193X_ADC_CHAN_SHFT);
+ 
+ 	return 0;
+ }
+@@ -172,7 +195,9 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		adc_serfmt |= AD193X_ADC_SERFMT_AUX;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		if (ad193x_has_adc(ad193x))
++			return -EINVAL;
++		break;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+@@ -217,10 +242,12 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL1,
+-		AD193X_ADC_SERFMT_MASK, adc_serfmt);
+-	regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL2,
+-		AD193X_ADC_FMT_MASK, adc_fmt);
++	if (ad193x_has_adc(ad193x)) {
++		regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL1,
++				   AD193X_ADC_SERFMT_MASK, adc_serfmt);
++		regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL2,
++				   AD193X_ADC_FMT_MASK, adc_fmt);
++	}
+ 	regmap_update_bits(ad193x->regmap, AD193X_DAC_CTRL1,
+ 		AD193X_DAC_FMT_MASK, dac_fmt);
+ 
+@@ -287,8 +314,9 @@ static int ad193x_hw_params(struct snd_pcm_substream *substream,
+ 			    AD193X_DAC_WORD_LEN_MASK,
+ 			    word_len << AD193X_DAC_WORD_LEN_SHFT);
+ 
+-	regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL1,
+-			    AD193X_ADC_WORD_LEN_MASK, word_len);
++	if (ad193x_has_adc(ad193x))
++		regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL1,
++				   AD193X_ADC_WORD_LEN_MASK, word_len);
+ 
+ 	return 0;
+ }
+@@ -326,6 +354,7 @@ static struct snd_soc_dai_driver ad193x_dai = {
+ static int ad193x_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct ad193x_priv *ad193x = snd_soc_codec_get_drvdata(codec);
++	int num, ret;
+ 
+ 	/* default setting for ad193x */
+ 
+@@ -335,14 +364,46 @@ static int ad193x_codec_probe(struct snd_soc_codec *codec)
+ 	regmap_write(ad193x->regmap, AD193X_DAC_CTRL2, 0x1A);
+ 	/* dac in tdm mode */
+ 	regmap_write(ad193x->regmap, AD193X_DAC_CTRL0, 0x40);
+-	/* high-pass filter enable */
+-	regmap_write(ad193x->regmap, AD193X_ADC_CTRL0, 0x3);
+-	/* sata delay=1, adc aux mode */
+-	regmap_write(ad193x->regmap, AD193X_ADC_CTRL1, 0x43);
++
++	/* adc only */
++	if (ad193x_has_adc(ad193x)) {
++		/* high-pass filter enable */
++		regmap_write(ad193x->regmap, AD193X_ADC_CTRL0, 0x3);
++		/* sata delay=1, adc aux mode */
++		regmap_write(ad193x->regmap, AD193X_ADC_CTRL1, 0x43);
++	}
++
+ 	/* pll input: mclki/xi */
+ 	regmap_write(ad193x->regmap, AD193X_PLL_CLK_CTRL0, 0x99); /* mclk=24.576Mhz: 0x9D; mclk=12.288Mhz: 0x99 */
+ 	regmap_write(ad193x->regmap, AD193X_PLL_CLK_CTRL1, 0x04);
+ 
++	/* adc only */
++	if (ad193x_has_adc(ad193x)) {
++		/* add adc controls */
++		num = ARRAY_SIZE(ad193x_adc_snd_controls);
++		ret = snd_soc_add_codec_controls(codec,
++						 ad193x_adc_snd_controls,
++						 num);
++		if (ret)
++			return ret;
++
++		/* add adc widgets */
++		num = ARRAY_SIZE(ad193x_adc_widgets);
++		ret = snd_soc_dapm_new_controls(&codec->dapm,
++						ad193x_adc_widgets,
++						num);
++		if (ret)
++			return ret;
++
++		/* add adc routes */
++		num = ARRAY_SIZE(adc_audio_paths);
++		ret = snd_soc_dapm_add_routes(&codec->dapm,
++					      adc_audio_paths,
++					      num);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -367,7 +428,8 @@ const struct regmap_config ad193x_regmap_config = {
+ };
+ EXPORT_SYMBOL_GPL(ad193x_regmap_config);
+ 
+-int ad193x_probe(struct device *dev, struct regmap *regmap)
++int ad193x_probe(struct device *dev, struct regmap *regmap,
++		 enum ad193x_type type)
+ {
+ 	struct ad193x_priv *ad193x;
+ 
+@@ -379,6 +441,7 @@ int ad193x_probe(struct device *dev, struct regmap *regmap)
+ 		return -ENOMEM;
+ 
+ 	ad193x->regmap = regmap;
++	ad193x->type = type;
+ 
+ 	dev_set_drvdata(dev, ad193x);
+ 
+diff --git a/sound/soc/codecs/ad193x.h b/sound/soc/codecs/ad193x.h
+index ab9a998f15be..8b1e65f928d2 100644
+--- a/sound/soc/codecs/ad193x.h
++++ b/sound/soc/codecs/ad193x.h
+@@ -13,8 +13,15 @@
+ 
+ struct device;
+ 
++enum ad193x_type {
++	AD193X,
++	AD1933,
++	AD1934,
++};
++
+ extern const struct regmap_config ad193x_regmap_config;
+-int ad193x_probe(struct device *dev, struct regmap *regmap);
++int ad193x_probe(struct device *dev, struct regmap *regmap,
++		 enum ad193x_type type);
+ 
+ #define AD193X_PLL_CLK_CTRL0    0x00
+ #define AD193X_PLL_POWERDOWN           0x01
 -- 
-Rick Mann
-rmann@latencyzero.com
+1.8.2.2
