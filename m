@@ -1,17 +1,18 @@
-From: =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit@wsystem.com>
-Subject: [PATCH][RESEND] ASoC: imx-ssi: Fix DAI hardware signal
-	inversions
-Date: Tue, 29 Sep 2015 17:59:14 +0200
-Message-ID: <1443542354-14746-1-git-send-email-benoit@wsystem.com>
-References: <20150929153512.GX30445@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH alsa-utils] alsactl: Manage both save and
+	restore in a single unit
+Date: Tue, 29 Sep 2015 18:03:57 +0200
+Message-ID: <1443542637-3946-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from authsmtp.register.it (authsmtp93.register.it [195.110.122.178])
- by alsa0.perex.cz (Postfix) with ESMTP id F19EF265821
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 17:59:46 +0200 (CEST)
-In-Reply-To: <20150929153512.GX30445@sirena.org.uk>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9908265821
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 18:03:59 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A9B88AAC8
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 16:03:58 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +23,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit@wsystem.com>
 List-Id: alsa-devel@alsa-project.org
 
-U05EX1NPQ19EQUlGTVRfe0lCfE5CfV97SUZ8TkZ9IGFyZSBkZWZpbmVkIGFzIGludmVydGluZyBv
-ciBub3QgQkNMSyBvcgpGUk0gcmVsYXRpdmVseSB0byB3aGF0IGlzIHN0YW5kYXJkIGZvciB0aGUg
-c3BlY2lmaWVkIERBSSBoYXJkd2FyZSBhdWRpbwpmb3JtYXQuIENvbnNlcXVlbnRseSwgdGhlIGFi
-c29sdXRlIHBvbGFyaXRpZXMgb2YgdGhlc2Ugc2lnbmFscyBjYW5ub3QgYmUKZGVyaXZlZCBvbmx5
-IGZyb20gdGhlc2Ugc2V0dGluZ3MgYXMgdGhpcyBkcml2ZXIgZGlkLiBUaGUgZm9ybWF0IGhhcyB0
-bwpiZSB0YWtlbiBpbnRvIGFjY291bnQgdG9vLgoKVGhpcyBmaXhlcyBpbnZlcnRlZCBsZWZ0L3Jp
-Z2h0IGNoYW5uZWxzIGluIEnCslMgbW9kZS4KClNpZ25lZC1vZmYtYnk6IEJlbm/DrnQgVGjDqWJh
-dWRlYXUgPGJlbm9pdEB3c3lzdGVtLmNvbT4KQWNrZWQtYnk6IE5pY29saW4gQ2hlbiA8bmljb2xl
-b3RzdWthQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9zb2MvZnNsL2lteC1zc2kuYyB8IDE5ICsrKysr
-KysrKy0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEwIGRlbGV0
-aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9mc2wvaW14LXNzaS5jIGIvc291bmQvc29j
-L2ZzbC9pbXgtc3NpLmMKaW5kZXggNDhiMmQyNC4uYjk1MTMyZSAxMDA2NDQKLS0tIGEvc291bmQv
-c29jL2ZzbC9pbXgtc3NpLmMKKysrIGIvc291bmQvc29jL2ZzbC9pbXgtc3NpLmMKQEAgLTk1LDcg
-Kzk1LDggQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2Rh
-aSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIAlzd2l0Y2ggKGZtdCAmIFNORF9TT0NfREFJ
-Rk1UX0ZPUk1BVF9NQVNLKSB7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9JMlM6CiAJCS8qIGRhdGEg
-b24gcmlzaW5nIGVkZ2Ugb2YgYmNsaywgZnJhbWUgbG93IDFjbGsgYmVmb3JlIGRhdGEgKi8KLQkJ
-c3RyY3IgfD0gU1NJX1NUQ1JfVEZTSSB8IFNTSV9TVENSX1RFRlMgfCBTU0lfU1RDUl9UWEJJVDA7
-CisJCXN0cmNyIHw9IFNTSV9TVENSX1RYQklUMCB8IFNTSV9TVENSX1RTQ0tQIHwgU1NJX1NUQ1Jf
-VEZTSSB8CisJCQlTU0lfU1RDUl9URUZTOwogCQlzY3IgfD0gU1NJX1NDUl9ORVQ7CiAJCWlmIChz
-c2ktPmZsYWdzICYgSU1YX1NTSV9VU0VfSTJTX1NMQVZFKSB7CiAJCQlzY3IgJj0gflNTSV9JMlNf
-TU9ERV9NQVNLOwpAQCAtMTA0LDMzICsxMDUsMzEgQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9k
-YWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIAkJ
-YnJlYWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9MRUZUX0o6CiAJCS8qIGRhdGEgb24gcmlzaW5n
-IGVkZ2Ugb2YgYmNsaywgZnJhbWUgaGlnaCB3aXRoIGRhdGEgKi8KLQkJc3RyY3IgfD0gU1NJX1NU
-Q1JfVFhCSVQwOworCQlzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAgfCBTU0lfU1RDUl9UU0NLUDsK
-IAkJYnJlYWs7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9EU1BfQjoKIAkJLyogZGF0YSBvbiByaXNp
-bmcgZWRnZSBvZiBiY2xrLCBmcmFtZSBoaWdoIHdpdGggZGF0YSAqLwotCQlzdHJjciB8PSBTU0lf
-U1RDUl9URlNMIHwgU1NJX1NUQ1JfVFhCSVQwOworCQlzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAg
-fCBTU0lfU1RDUl9UU0NLUCB8IFNTSV9TVENSX1RGU0w7CiAJCWJyZWFrOwogCWNhc2UgU05EX1NP
-Q19EQUlGTVRfRFNQX0E6CiAJCS8qIGRhdGEgb24gcmlzaW5nIGVkZ2Ugb2YgYmNsaywgZnJhbWUg
-aGlnaCAxY2xrIGJlZm9yZSBkYXRhICovCi0JCXN0cmNyIHw9IFNTSV9TVENSX1RGU0wgfCBTU0lf
-U1RDUl9UWEJJVDAgfCBTU0lfU1RDUl9URUZTOworCQlzdHJjciB8PSBTU0lfU1RDUl9UWEJJVDAg
-fCBTU0lfU1RDUl9UU0NLUCB8IFNTSV9TVENSX1RGU0wgfAorCQkJU1NJX1NUQ1JfVEVGUzsKIAkJ
-YnJlYWs7CiAJfQogCiAJLyogREFJIGNsb2NrIGludmVyc2lvbiAqLwogCXN3aXRjaCAoZm10ICYg
-U05EX1NPQ19EQUlGTVRfSU5WX01BU0spIHsKIAljYXNlIFNORF9TT0NfREFJRk1UX0lCX0lGOgot
-CQlzdHJjciB8PSBTU0lfU1RDUl9URlNJOwotCQlzdHJjciAmPSB+U1NJX1NUQ1JfVFNDS1A7CisJ
-CXN0cmNyIF49IFNTSV9TVENSX1RTQ0tQIHwgU1NJX1NUQ1JfVEZTSTsKIAkJYnJlYWs7CiAJY2Fz
-ZSBTTkRfU09DX0RBSUZNVF9JQl9ORjoKLQkJc3RyY3IgJj0gfihTU0lfU1RDUl9UU0NLUCB8IFNT
-SV9TVENSX1RGU0kpOworCQlzdHJjciBePSBTU0lfU1RDUl9UU0NLUDsKIAkJYnJlYWs7CiAJY2Fz
-ZSBTTkRfU09DX0RBSUZNVF9OQl9JRjoKLQkJc3RyY3IgfD0gU1NJX1NUQ1JfVEZTSSB8IFNTSV9T
-VENSX1RTQ0tQOworCQlzdHJjciBePSBTU0lfU1RDUl9URlNJOwogCQlicmVhazsKIAljYXNlIFNO
-RF9TT0NfREFJRk1UX05CX05GOgotCQlzdHJjciAmPSB+U1NJX1NUQ1JfVEZTSTsKLQkJc3RyY3Ig
-fD0gU1NJX1NUQ1JfVFNDS1A7CiAJCWJyZWFrOwogCX0KIAotLSAKMi4xLjQKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+With RemainAfterExit=true, we can manage both save and restore of the
+card state in a single unit file.  This will fix also the case where
+systemd reloads the service; with two individual units, it will
+restore the previous state before saving, and may lead to inconsistent
+state suddenly.
+
+Also fix alsa-state.service as well to make both start and stop
+working in a simpler way.
+
+Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=929619
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ alsactl/Makefile.am             | 14 ++------------
+ alsactl/alsa-restore.service.in |  7 +++----
+ alsactl/alsa-state.service.in   |  3 ---
+ alsactl/alsa-store.service.in   | 16 ----------------
+ 4 files changed, 5 insertions(+), 35 deletions(-)
+ delete mode 100644 alsactl/alsa-store.service.in
+
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index 47f06e906ced..cac8094687de 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -25,20 +25,15 @@ if HAVE_SYSTEMD
+ 
+ systemdsystemunit_DATA = \
+ 	alsa-state.service \
+-	alsa-restore.service \
+-	alsa-store.service
++	alsa-restore.service
+ 
+ install-data-hook:
+ 	$(MKDIR_P) -m 0755 \
+-		$(DESTDIR)$(systemdsystemunitdir)/basic.target.wants \
+-		$(DESTDIR)$(systemdsystemunitdir)/shutdown.target.wants
++		$(DESTDIR)$(systemdsystemunitdir)/basic.target.wants
+ 	( cd $(DESTDIR)$(systemdsystemunitdir)/basic.target.wants && \
+ 		rm -f alsa-state.service alsa-restore.service && \
+ 		$(LN_S) ../alsa-state.service alsa-state.service && \
+ 		$(LN_S) ../alsa-restore.service alsa-restore.service)
+-	( cd $(DESTDIR)$(systemdsystemunitdir)/shutdown.target.wants && \
+-	        rm -f alsa-store.service && \
+-		$(LN_S) ../alsa-store.service alsa-store.service )
+ 
+ endif
+ 
+@@ -54,22 +49,17 @@ alsa-state.service: alsa-state.service.in
+ alsa-restore.service: alsa-restore.service.in
+ 	$(edit)
+ 
+-alsa-store.service: alsa-store.service.in
+-	$(edit)
+-
+ 90-alsa-restore.rules: 90-alsa-restore.rules.in
+ 	$(edit)
+ 
+ EXTRA_DIST += \
+ 	alsa-state.service.in \
+ 	alsa-restore.service.in \
+-	alsa-store.service.in \
+ 	90-alsa-restore.rules.in
+ 
+ CLEANFILES = \
+ 	alsa-state.service \
+ 	alsa-restore.service \
+-	alsa-store.service \
+ 	90-alsa-restore.rules
+ 
+ %.7: %.xml
+diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service.in
+index d1a74d637457..2884098c26f0 100644
+--- a/alsactl/alsa-restore.service.in
++++ b/alsactl/alsa-restore.service.in
+@@ -4,15 +4,14 @@
+ #
+ 
+ [Unit]
+-Description=Restore Sound Card State
++Description=Save/Restore Sound Card State
+ ConditionPathExists=!@daemonswitch@
+ ConditionPathExistsGlob=/dev/snd/control*
+-DefaultDependencies=no
+ After=alsa-state.service
+-Before=shutdown.target
+-Conflicts=shutdown.target
+ 
+ [Service]
+ Type=oneshot
++RemainAfterExit=true
+ ExecStart=-@sbindir@/alsactl restore
++ExecStop=-@sbindir@/alsactl store
+ StandardOutput=syslog
+diff --git a/alsactl/alsa-state.service.in b/alsactl/alsa-state.service.in
+index 56c12c104565..f1321d63a0ca 100644
+--- a/alsactl/alsa-state.service.in
++++ b/alsactl/alsa-state.service.in
+@@ -6,10 +6,7 @@
+ [Unit]
+ Description=Manage Sound Card State (restore and store)
+ ConditionPathExists=@daemonswitch@
+-DefaultDependencies=no
+ After=sysinit.target
+-Before=shutdown.target
+-Conflicts=shutdown.target
+ 
+ [Service]
+ Type=simple
+diff --git a/alsactl/alsa-store.service.in b/alsactl/alsa-store.service.in
+deleted file mode 100644
+index c89cfff04f35..000000000000
+--- a/alsactl/alsa-store.service.in
++++ /dev/null
+@@ -1,16 +0,0 @@
+-#
+-# Note that two different ALSA card state management schemes exist and they
+-# can be switched using a file exist check - /etc/alsa/state-daemon.conf .
+-#
+-
+-[Unit]
+-Description=Store Sound Card State
+-ConditionPathExists=!@daemonswitch@
+-ConditionPathExistsGlob=/dev/snd/control*
+-DefaultDependencies=no
+-Before=shutdown.target
+-
+-[Service]
+-Type=oneshot
+-ExecStart=@sbindir@/alsactl store
+-StandardOutput=syslog
+-- 
+2.5.3
