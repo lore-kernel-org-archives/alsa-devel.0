@@ -1,14 +1,22 @@
-From: Michael Leun <lkml20150926@newton.leun.net>
-Subject: Baytrail based HDMI Stick Orbsmart AW-01: No sound
-Date: Sat, 26 Sep 2015 22:09:23 +0200
-Message-ID: <20150926220923.2bb02248@xenia.leun.net>
-Mime-Version: 1.0
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Found bugs in tlv320aic3x.c driver,
+	how do I report them?
+Date: Tue, 29 Sep 2015 03:38:02 -0700
+Message-ID: <B9E728AE-223C-4BA7-961A-ED107AF03407@latencyzero.com>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from stator.leun.net (stator.leun.net [85.214.203.199])
- by alsa0.perex.cz (Postfix) with ESMTP id 855B72606E9
- for <alsa-devel@alsa-project.org>; Sat, 26 Sep 2015 22:11:08 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id AB812260449
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 12:38:04 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id E4306205A8
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 06:38:03 -0400 (EDT)
+Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
+ [50.168.55.93])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 6A893C00022
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 06:38:03 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, yang.jie@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi. I came across some bugs in sound/soc/codecs/tlv320aic3x.c, wherein it writes non-zero values to reserved registers on the tlv320aic3104 (I found it in 4.1.4, but it's still in 4.3-rc3). I have an untested proposed patch. But I don't know anything about how to report it or offer it.
 
-I've an baytrail / Z3735F based HDMI Stick "Orbsmart AW-01", but sound
-does not work.
+What should I do? Thanks.
 
-I'm a little lost finding out what is missing / required to make it
-work.
+For reference:
 
-I compiled an 4.3-rc2 vanilla kernel with hopefully each and everything
-turned on relating soc/sound.
+$ git diff -- sound/soc/codecs/tlv320aic3x.c
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 51c4713..79c0ca0 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1509,14 +1509,24 @@ static int aic3x_init(struct snd_soc_codec *codec)
+        snd_soc_write(codec, PGAL_2_LLOPM_VOL, DEFAULT_VOL);
+        snd_soc_write(codec, PGAR_2_RLOPM_VOL, DEFAULT_VOL);
+ 
+-       /* Line2 to HP Bypass default volume, disconnect from Output Mixer */
+-       snd_soc_write(codec, LINE2L_2_HPLOUT_VOL, DEFAULT_VOL);
+-       snd_soc_write(codec, LINE2R_2_HPROUT_VOL, DEFAULT_VOL);
+-       snd_soc_write(codec, LINE2L_2_HPLCOM_VOL, DEFAULT_VOL);
+-       snd_soc_write(codec, LINE2R_2_HPRCOM_VOL, DEFAULT_VOL);
+-       /* Line2 Line Out default volume, disconnect from Output Mixer */
+-       snd_soc_write(codec, LINE2L_2_LLOPM_VOL, DEFAULT_VOL);
+-       snd_soc_write(codec, LINE2R_2_RLOPM_VOL, DEFAULT_VOL);
++       if (aic3x->model == AIC3X_MODEL_3104) {
++               /* On tlv320aic3014, these registers are reserved and must be written 0 */
++               snd_soc_write(codec, LINE2L_2_HPLOUT_VOL, 0);
++               snd_soc_write(codec, LINE2R_2_HPROUT_VOL, 0);
++               snd_soc_write(codec, LINE2L_2_HPLCOM_VOL, 0);
++               snd_soc_write(codec, LINE2R_2_HPRCOM_VOL, 0);
++               snd_soc_write(codec, LINE2L_2_LLOPM_VOL, 0);
++               snd_soc_write(codec, LINE2R_2_RLOPM_VOL, 0);
++       } else {
++               /* Line2 to HP Bypass default volume, disconnect from Output Mixer */
++               snd_soc_write(codec, LINE2L_2_HPLOUT_VOL, DEFAULT_VOL);
++               snd_soc_write(codec, LINE2R_2_HPROUT_VOL, DEFAULT_VOL);
++               snd_soc_write(codec, LINE2L_2_HPLCOM_VOL, DEFAULT_VOL);
++               snd_soc_write(codec, LINE2R_2_HPRCOM_VOL, DEFAULT_VOL);
++               /* Line2 Line Out default volume, disconnect from Output Mixer */
++               snd_soc_write(codec, LINE2L_2_LLOPM_VOL, DEFAULT_VOL);
++               snd_soc_write(codec, LINE2R_2_RLOPM_VOL, DEFAULT_VOL);
++       }
+ 
+        switch (aic3x->model) {
+        case AIC3X_MODEL_3X:
 
-In dmesg I get:
-
-[...]
-[    4.252522] sst-acpi 80860F28:00: No matching ASoC machine driver found
-[    5.863177] intel_sst_acpi 80860F28:00: No matching machine driver found
-[...]
-
-It looks like there is rt5640 based sound recognized:
-
-[ml@orb ~]$ find /sys -name '*5640*' -print
-/sys/bus/i2c/drivers/rt5640
-/sys/bus/acpi/devices/10EC5640:00
-/sys/bus/acpi/devices/10EC5640:01
-/sys/devices/LNXSYSTM:00/LNXSYBUS:00/80860F41:01/10EC5640:00
-/sys/devices/LNXSYSTM:00/LNXSYBUS:00/80860F41:01/10EC5640:01
-find: "/sys/kernel/debug": Keine Berechtigung
-/sys/module/i2c_core/holders/snd_soc_rt5640
-/sys/module/snd_soc_rl6231/holders/snd_soc_rt5640
-/sys/module/snd_soc_rt5640
-/sys/module/snd_soc_rt5640/drivers/i2c:rt5640
-/sys/module/snd_soc_core/holders/snd_soc_rt5640
-/sys/module/regmap_i2c/holders/snd_soc_rt5640
-/sys/module/snd_pcm/holders/snd_soc_rt5640
-[ml@orb ~]$
-
-This are the sound related modules loaded:
-
-[ml@orb ~]$ lsmod|grep snd
-snd_intel_sst_acpi     16384  0
-snd_intel_sst_core     65536  1 snd_intel_sst_acpi
-snd_soc_rt5640        106496  0
-snd_soc_sst_mfld_platform    73728  1 snd_intel_sst_core
-snd_soc_rl6231         16384  1 snd_soc_rt5640
-snd_soc_core          155648  2 snd_soc_rt5640,snd_soc_sst_mfld_platform
-snd_compress           20480  1 snd_soc_core
-regmap_i2c             16384  1 snd_soc_rt5640
-snd_pcm_dmaengine      16384  1 snd_soc_core
-ac97_bus               16384  1 snd_soc_core
-snd_pcm                86016  4 snd_soc_rt5640,snd_soc_core,snd_soc_sst_mfld_platform,snd_pcm_dmaengine
-snd_timer              28672  1 snd_pcm
-snd                    65536  5 snd_soc_core,snd_timer,snd_pcm,snd_soc_sst_mfld_platform,snd_compress
-soundcore              16384  1 snd
-i2c_core               49152  7 drm,i915,snd_soc_rt5640,i2c_designware_platform,regmap_i2c,drm_kms_helper,i2c_algo_bit
-snd_soc_sst_acpi       16384  0
-[ml@orb ~]$ 
 
 -- 
-Best Regards,
-
-Michael Leun
+Rick Mann
+rmann@latencyzero.com
