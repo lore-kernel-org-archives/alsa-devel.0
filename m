@@ -1,106 +1,79 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH 0/2] ASoC: Add support for the Allwinner A10 codec
-Date: Tue, 29 Sep 2015 16:37:48 +0800
-Message-ID: <CAGb2v66MBLu7Xzk7zNwz6o7rB6+2EdgoN=jNVqpMcvfDq9EM2g@mail.gmail.com>
-References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442928417.6509.12.camel@plaes.org> <20150928074248.GI7104@lukather>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/1] ASoC: ad193x: add support to ad1934
+Date: Tue, 29 Sep 2015 10:42:31 +0200
+Message-ID: <560A4EF7.9030506@metafoo.de>
+References: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB443VGYAKGQE3ND642Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20150928074248.GI7104@lukather>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Priit Laes <plaes-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-050.synserver.de (smtp-out-080.synserver.de
+ [212.40.185.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D82B26062B
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 10:43:34 +0200 (CEST)
+In-Reply-To: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 28, 2015 at 3:42 PM, Maxime Ripard
-<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> Hi Priit,
->
-> On Tue, Sep 22, 2015 at 04:26:57PM +0300, Priit Laes wrote:
->> On Sat, 2015-09-12 at 15:26 +0200, Maxime Ripard wrote:
->> > Hi everyone,
->> >
->> > This patch set adds the support for what Allwinner calls the codec on
->> > their SoCs.
->> >
->> > This codec is actually a combination of a codec and DAI, tied
->> > together
->> > in a single memory-mapped IP. It is completely standalone, and
->> > outputs
->> > directly the analog signal.
->> >
->> > While it supports both playback and capture, the capture is not
->> > implemented in this patch, and will be posted eventually as a
->> > separate
->> > one.
->> >
->> > This set, in order to be functional, has a dependency on the audio
->> > clocks patch set posted separately. However, it doesn't needs this to
->> > compile properly, so I guess it can be merged without really caring
->> > for the merging status of the clock patches.
->>
->> It works on Gemei G9 tablet which has also extra chip that
->> automatically switches output over from internal speakers to headphones
->> when connector is inserted.
->>
->> Now I noticed some weird things:
->>
->> When I have all the switches as ON in alsamixer, and I start disabling
->> them, I get following weird results.
->>
->> Left Mixer Left - LML
->> Right Mixer Left - LMR
->> Right Mixer Right - RMR
->>
->> Very faint output:
->> LML - ON
->> RML - Mute
->> RMR - ON
->>
->> Output works fully:
->> LML - Mute
->> RML - Mute
->> RMR - Mute
->>
->> When I Mute Pre-Amplifier and fiddle any of LML, RML or RMR, the output
->> stays mute even after setting Pre-Amplifier Mute back on:
->>
->> 1. All switches on
->> 2. Mute pre-amplifier
->> 3. Mute RMR
->> 4. Pre-Amilifier Mute Off
->> .. Music stays off
->> 5. Toggle Pre-Amplifier twice - output turns on
->
-> Unfortunately, I don't have access to that SoC or that setup.
->
-> Do you have another A10 board with a simpler audio setup, like a
-> cubieboard?
->
->> And also following in dmesg:
->> sun4i-codec 1c22c00.codec: Codec <-> 1c22c00.codec mapping ok
->> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
->> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
->> sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
->> sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
->
-> That one is weird, I'll look into this.
+On 09/29/2015 10:36 AM, Cyrille Pitchen wrote:
+> The AD1934 codec has no DAC feature. Hence it register mapping is slightly
+> different from the register mapping of other members of the AD193x family.
+> 
+> Some ASoC controls and widgets are related to the DAC feature so are not
+> relevant in the case of an AD1934 codec.
 
-This also appears on my Cubietruck, when using the dts patch from
-Hans' sunxi-wip
-branch, which is the same patch, albeit for a different dts file, as Priit.
+Looks mostly good, thanks.
 
-The immediate culprit seems to be the routing property, though I'm not sure what
-it should be set to, or what extra drivers might be needed.
+> diff --git a/sound/soc/codecs/ad193x-i2c.c b/sound/soc/codecs/ad193x-i2c.c
+> index df3a1a415825..8aa50d35662f 100644
+> --- a/sound/soc/codecs/ad193x-i2c.c
+> +++ b/sound/soc/codecs/ad193x-i2c.c
+> @@ -15,8 +15,8 @@
+>  #include "ad193x.h"
+>  
+>  static const struct i2c_device_id ad193x_id[] = {
+> -	{ "ad1936", 0 },
+> -	{ "ad1937", 0 },
+> +	{ "ad1936", AD193x },
+> +	{ "ad1937", AD193x },
 
+Should be a upper case X.
 
-Regards
-ChenYu
+>  	{ }
+>  };
+[...]
+[...]
+> @@ -91,18 +97,33 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+>  	{ "DAC", NULL, "SYSCLK" },
+>  	{ "DAC Output", NULL, "DAC" },
+>  	{ "DAC Output", NULL, "VMID" },
+> -	{ "ADC", NULL, "SYSCLK" },
+> -	{ "DAC", NULL, "ADC_PWR" },
+> -	{ "ADC", NULL, "ADC_PWR" },
+>  	{ "DAC1OUT", NULL, "DAC Output" },
+>  	{ "DAC2OUT", NULL, "DAC Output" },
+>  	{ "DAC3OUT", NULL, "DAC Output" },
+>  	{ "DAC4OUT", NULL, "DAC Output" },
+> +	{ "SYSCLK", NULL, "PLL_PWR" },
+> +};
+> +
+> +static const struct snd_soc_dapm_route adc_audio_paths[] = {
+
+this should have the ad193x_ prefix as well.
+
+> +	{ "ADC", NULL, "SYSCLK" },
+> +	{ "ADC", NULL, "ADC_PWR" },
+>  	{ "ADC", NULL, "ADC1IN" },
+>  	{ "ADC", NULL, "ADC2IN" },
+> -	{ "SYSCLK", NULL, "PLL_PWR" },
+>  };
