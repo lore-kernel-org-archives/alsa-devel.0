@@ -1,81 +1,68 @@
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 1/1] ASoC: ad193x: add support to ad1934
-Date: Tue, 29 Sep 2015 14:00:52 +0200
-Message-ID: <560A7D74.2090901@atmel.com>
-References: <273ce440257bbe7c450132bd8dffb25cbaac117e.1443515024.git.cyrille.pitchen@atmel.com>
- <560A4EF7.9030506@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 00/15 v3] ALSA: firewire-lib: separate to
+ packet streaming layer and data block processing layer
+Date: Tue, 29 Sep 2015 21:45:00 +0900
+Message-ID: <560A87CC.20203@sakamocchi.jp>
+References: <1442629322-15457-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5htwqqxsoy.wl-tiwai@suse.de> <s5hfv1xze8s.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <560A4EF7.9030506@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDB9B260505
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 14:45:13 +0200 (CEST)
+In-Reply-To: <s5hfv1xze8s.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-
-I'll fix it in v2. Thanks for your review!
-
-Cyrille
-
-Le 29/09/2015 10:42, Lars-Peter Clausen a =E9crit :
-> On 09/29/2015 10:36 AM, Cyrille Pitchen wrote:
->> The AD1934 codec has no DAC feature. Hence it register mapping is sl=
-ightly
->> different from the register mapping of other members of the AD193x f=
-amily.
+On Sep 29 2015 19:55, Takashi Iwai wrote:
+> On Sat, 19 Sep 2015 18:46:53 +0200,
+> Takashi Iwai wrote:
 >>
->> Some ASoC controls and widgets are related to the DAC feature so are=
- not
->> relevant in the case of an AD1934 codec.
->=20
-> Looks mostly good, thanks.
->=20
->> diff --git a/sound/soc/codecs/ad193x-i2c.c b/sound/soc/codecs/ad193x=
--i2c.c
->> index df3a1a415825..8aa50d35662f 100644
->> --- a/sound/soc/codecs/ad193x-i2c.c
->> +++ b/sound/soc/codecs/ad193x-i2c.c
->> @@ -15,8 +15,8 @@
->>  #include "ad193x.h"
->> =20
->>  static const struct i2c_device_id ad193x_id[] =3D {
->> -	{ "ad1936", 0 },
->> -	{ "ad1937", 0 },
->> +	{ "ad1936", AD193x },
->> +	{ "ad1937", AD193x },
->=20
-> Should be a upper case X.
->=20
->>  	{ }
->>  };
-> [...]
-> [...]
->> @@ -91,18 +97,33 @@ static const struct snd_soc_dapm_route audio_pat=
-hs[] =3D {
->>  	{ "DAC", NULL, "SYSCLK" },
->>  	{ "DAC Output", NULL, "DAC" },
->>  	{ "DAC Output", NULL, "VMID" },
->> -	{ "ADC", NULL, "SYSCLK" },
->> -	{ "DAC", NULL, "ADC_PWR" },
->> -	{ "ADC", NULL, "ADC_PWR" },
->>  	{ "DAC1OUT", NULL, "DAC Output" },
->>  	{ "DAC2OUT", NULL, "DAC Output" },
->>  	{ "DAC3OUT", NULL, "DAC Output" },
->>  	{ "DAC4OUT", NULL, "DAC Output" },
->> +	{ "SYSCLK", NULL, "PLL_PWR" },
->> +};
->> +
->> +static const struct snd_soc_dapm_route adc_audio_paths[] =3D {
->=20
-> this should have the ad193x_ prefix as well.
->=20
->> +	{ "ADC", NULL, "SYSCLK" },
->> +	{ "ADC", NULL, "ADC_PWR" },
->>  	{ "ADC", NULL, "ADC1IN" },
->>  	{ "ADC", NULL, "ADC2IN" },
->> -	{ "SYSCLK", NULL, "PLL_PWR" },
->>  };
->=20
+>> On Sat, 19 Sep 2015 04:21:47 +0200,
+>> Takashi Sakamoto wrote:
+>>>
+>>> This patchset updates a part of my previous post (patch 01 and 02):
+>>>
+>>> [alsa-devel] [PATCH 00/25 v2] ALSA: support AMDTP variants
+>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/096739.html
+>>>
+>>> The aim of this patchset is to allow current amdtp implementation
+>>> to handle several data block processing backends. For this aim, this
+>>> patchset separates the implementation to packet streaming layer and AM824
+>>> data block processing layer.
+>>>
+>>> The communication between these two layers is done by callback function.
+>>> This patchset adds an overhead to call the functions as the same
+>>> frequently as 8,000 times per second.
+>>
+>> Since I'm traveling now, I can't review in details and will take a
+>> closer look in the next week.  Hopefully other people will give review
+>> comments before that.
+> 
+> There were a few obvious typos (using bit OR instead of logical OR),
+> but otherwise they look good through a quick review, so I merged them
+> with some manual fixes now.  The patches are found in
+> topic/firewire-update branch and merged into for-next branch, too.
+
+Oops. Patch 15 includes such typos... Thanks for your reviewing and
+fixing ;-)
+
+I have more patches and I'll post them as a small parts in this
+developing period. I'd be glad if the patches are also reviewd.
+
+
+Thanks
+
+Takashi Sakamoto
