@@ -1,32 +1,20 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Kernel Device Tree entries for simple-audio-card
-Date: Tue, 29 Sep 2015 11:41:14 -0700
-Message-ID: <869D210F-8882-4067-8593-18B2BE3197E8@latencyzero.com>
-References: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
- <CAG5mAdxc5-UuTnz24zByA64ZsrB4qnfMKF57GBVeFfWvY44xsw@mail.gmail.com>
- <4D1E67E6-437D-490D-A577-35EB7E474A3A@latencyzero.com>
- <CAG5mAdxnjZUBiOFU6+MBn0znUCBaGpeVQ-RaYhXch=-4n7J4uw@mail.gmail.com>
- <F3A7E580-2E91-45D0-9C27-2FD190110686@latencyzero.com>
- <CAG5mAdxgTzGjnvwno0D_Jo9_53stmGfsc9OQS05f3thrSFKpkw@mail.gmail.com>
- <BE1F1488-2A4D-4EE6-A538-931DD0B34CD8@latencyzero.com>
- <CAG5mAdzg2BSGKiaBJVSgZvL=9wxffxv_3LMiruS2-kcuTKO+xQ@mail.gmail.com>
- <D8BC8B49-E32C-43EE-B181-60510C7B3E8E@latencyzero.com>
- <CAG5mAdxaAapawiaaR_zasVhQKL33MHEHP1yyUCSLv0wswZ9Law@mail.gmail.com>
- <7CCA3F5A-844A-43FF-9A4E-C0A9FB65D926@latencyzero.com>
- <CAG5mAdyOSDt7F5czW_9EBvo3uBCW9834-1VZsXG0mvYiB1LM8g@mail.gmail.com>
- <74203CDA-1965-48ED-AA9A-95DC9A8D83E6@latencyzero.com>
- <532A774B-EA9D-4633-B7B4-4236746B92FE@crome.org>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Subject: Re: Found bugs in tlv320aic3x.c driver,
+	how do I report them?
+Date: Tue, 29 Sep 2015 20:47:14 +0200
+Message-ID: <CA+sos79twXY1fC8kqrORJvDbXv9Lvu6SjY05N7VFcRcOEKx7LA@mail.gmail.com>
+References: <B9E728AE-223C-4BA7-961A-ED107AF03407@latencyzero.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B04D02605B2
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 20:41:17 +0200 (CEST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id DE60E2079C
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 14:41:16 -0400 (EDT)
-In-Reply-To: <532A774B-EA9D-4633-B7B4-4236746B92FE@crome.org>
+Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
+ [209.85.218.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2080F2605B2
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 20:47:35 +0200 (CEST)
+Received: by oixx17 with SMTP id x17so9358336oix.0
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 11:47:34 -0700 (PDT)
+In-Reply-To: <B9E728AE-223C-4BA7-961A-ED107AF03407@latencyzero.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,297 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Rick Mann <rmann@latencyzero.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ugh, sorry. Here you go:
-
-https://github.com/JetForMe/podtique/blob/v1/bbb/cape/Podtique1/BB-ENABLE-PRU.dts
-
-Sent from my iPhone
-
-> On Sep 29, 2015, at 07:08, Caleb Crome <caleb@crome.org> wrote:
-> 
-> You need to fix the mclk rate first I think, then the pll settings should fall in line.  The DTS you sent still has the simple-audio-card and not the da830 stuff in it.
-> 
-> Caleb
-> 
-> Sent from my iPhone
-> 
->> On Sep 29, 2015, at 1:28 AM, Rick Mann <rmann@latencyzero.com> wrote:
->> 
->> Okay, so I switched to da830-evm-audio, and things are much better. But still not perfect. Here's the DTS:
->> 
->>   https://github.com/JetForMe/podtique/blob/master/bbb/cape/Podtique1/BB-ENABLE-PRU.dts
->> 
->> Now I have a working MCLK, and I see clocking on BCLK and WCLK, but the rates are questionable. MCLK is 24 MHz (even though in the DTS it's set to 12 MHz); that might be okay. For the following call:
->> 
->>   # speaker-test -r 22050 -c 2 -f 1000 -F S16_LE -t sine -s 1 -D hw:0,0
->> 
->> WCLK is 11.88 kHz, and it is pulses (DSP mode), rather than high for left, low for right for each channel's word. BCLK is 379.5 kHz.
->> 
->> I'm looking at the i2c commands being sent to see if I can determine what the CODEC thinks it's trying to do.
->> 
->>>> On Sep 28, 2015, at 23:42 , Caleb Crome <caleb@crome.org> wrote:
->>>> 
->>>> 
->>>> Could you send me your DTS?
->>> 
->>> Yes, but I have modified a bit of stuff in the davinci-evm.c to make
->>> my multi-codec setup work right.
->>> 
->>> I turned off HDMI with this:
->>> 
->>> commit 7f20ffd56de6921bc5f8e2fee8da75d743d57847
->>> Author: Caleb Crome <caleb@signalessence.com>
->>> Date:   Wed Sep 9 13:33:36 2015 -0700
->>> 
->>>  turn off hdmi from boneblack
->>> 
->>> diff --git a/arch/arm/boot/dts/am335x-boneblack.dts
->>> b/arch/arm/boot/dts/am335x-boneblack.dts
->>> index 5c42d25..6335072 100644
->>> --- a/arch/arm/boot/dts/am335x-boneblack.dts
->>> +++ b/arch/arm/boot/dts/am335x-boneblack.dts
->>> @@ -34,51 +34,9 @@
->>> };
->>> 
->>> &am33xx_pinmux {
->>> - nxp_hdmi_bonelt_pins: nxp_hdmi_bonelt_pins {
->>> - pinctrl-single,pins = <
->>> - 0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
->>> - 0xa0 0x08       /* lcd_data0.lcd_data0, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xa4 0x08       /* lcd_data1.lcd_data1, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xa8 0x08       /* lcd_data2.lcd_data2, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xac 0x08       /* lcd_data3.lcd_data3, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xb0 0x08       /* lcd_data4.lcd_data4, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xb4 0x08       /* lcd_data5.lcd_data5, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xb8 0x08       /* lcd_data6.lcd_data6, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xbc 0x08       /* lcd_data7.lcd_data7, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xc0 0x08       /* lcd_data8.lcd_data8, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xc4 0x08       /* lcd_data9.lcd_data9, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xc8 0x08       /* lcd_data10.lcd_data10, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xcc 0x08       /* lcd_data11.lcd_data11, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xd0 0x08       /* lcd_data12.lcd_data12, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xd4 0x08       /* lcd_data13.lcd_data13, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xd8 0x08       /* lcd_data14.lcd_data14, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xdc 0x08       /* lcd_data15.lcd_data15, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
->>> - 0xe0 0x00       /* lcd_vsync.lcd_vsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
->>> - 0xe4 0x00       /* lcd_hsync.lcd_hsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
->>> - 0xe8 0x00       /* lcd_pclk.lcd_pclk, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
->>> - 0xec 0x00       /* lcd_ac_bias_en.lcd_ac_bias_en, OMAP_MUX_MODE0 |
->>> AM33XX_PIN_OUTPUT */
->>> - >;
->>> - };
->>> - nxp_hdmi_bonelt_off_pins: nxp_hdmi_bonelt_off_pins {
->>> - pinctrl-single,pins = <
->>> - 0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
->>> - >;
->>> - };
->>> -};
->>> -
->>> -&lcdc {
->>> - status = "okay";
->>> };
->>> 
->>> / {
->>> - hdmi {
->>> - compatible = "ti,tilcdc,slave";
->>> - i2c = <&i2c0>;
->>> - pinctrl-names = "default", "off";
->>> - pinctrl-0 = <&nxp_hdmi_bonelt_pins>;
->>> - pinctrl-1 = <&nxp_hdmi_bonelt_off_pins>;
->>> - status = "okay";
->>> - };
->>> };
->>> 
->>> &rtc {
->>> 
->>> 
->>> 
->>> And here's the added bit:
->>> 
->>> Index: KERNEL/arch/arm/boot/dts/am335x-boneblack.dts
->>> ===================================================================
->>> --- KERNEL.orig/arch/arm/boot/dts/am335x-boneblack.dts 2015-09-21
->>> 17:23:14.961343604 -0700
->>> +++ KERNEL/arch/arm/boot/dts/am335x-boneblack.dts 2015-09-22
->>> 09:35:49.308278239 -0700
->>> @@ -5,11 +5,25 @@
->>> * it under the terms of the GNU General Public License version 2 as
->>> * published by the Free Software Foundation.
->>> */
->>> +
->>> +
->>> +
->>> +/*
->>> +   * MCASP pin mapping
->>> +   *                          ball   BBB
->>> +   * MCASP0_ACLKX             A13    P9.31
->>> +   * MCASP0_AFSX              B13    P9.29
->>> +   * MCASP0_AXR2  (mcasp OUT) C12    P9.28
->>> +   * MCASP0_AXR3  (mcasp IN)  A14    P9.25
->>> +*/
->>> +
->>> /dts-v1/;
->>> 
->>> #include "am33xx.dtsi"
->>> #include "am335x-bone-common.dtsi"
->>> 
->>> +
->>> +
->>> / {
->>> model = "TI AM335x BeagleBone Black";
->>> compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
->>> @@ -34,9 +48,119 @@
->>> };
->>> 
->>> &am33xx_pinmux {
->>> + i2c2_pins_default: i2c2_pins_default {
->>> +        pinctrl-single,pins = <
->>> +                0x17c ( PIN_INPUT_PULLUP | MUX_MODE3 ) /* (D17)
->>> uart1_rtsn.I2C2_SCL */
->>> +                0x178 ( PIN_INPUT_PULLUP | MUX_MODE3 ) /* (D18)
->>> uart1_ctsn.I2C2_SDA */
->>> +        >;
->>> + };
->>> +
->>> +
->>> + i2c1_pins_default: pinmux_i2c1_pins {
->>> +                       pinctrl-single,pins = <
->>> +                               0x158 0x72      /*
->>> uart1_ctsn.i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
->>> +                               0x15c 0x72      /*
->>> uart1_rtsn.i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
->>> +                       >;
->>> +        };
->>> +
->>> + mcasp_0_pins_default: mcasp_0_pins_default {
->>> + pinctrl-single,pins = <
->>> + 0x190 ( PIN_INPUT | MUX_MODE0 ) /* (A13) mcasp0_aclkx.mcasp0_aclkx */
->>> + 0x194 ( PIN_INPUT | MUX_MODE0 ) /* (B13) mcasp0_fsx.mcasp0_fsx */
->>> + 0x19c ( PIN_OUTPUT | MUX_MODE2 ) /* (C12) mcasp0_ahclkr.mcasp0_axr2 */
->>> + 0x1ac ( PIN_INPUT | MUX_MODE2 ) /* (A14) mcasp0_ahclkx.mcasp0_axr3 */
->>> + >;
->>> + };
->>> +};
->>> +
->>> +
->>> +&i2c1 {
->>> + clock-frequency = <100000>;
->>> + status = "okay";
->>> + pinctrl-names = "default";
->>> + pinctrl-0 = <&i2c1_pins_default>;
->>> + status="okay";
->>> +
->>> + tlv320aic3x_a: tlv320aic3x@18 {
->>> + compatible = "ti,tlv320aic3x";
->>> + reg = <0x18>;
->>> + tdm-offset = <0>;
->>> + status = "okay";
->>> + };
->>> +
->>> + tlv320aic3x_b: tlv320aic3x@19 {
->>> + compatible = "ti,tlv320aic3x";
->>> + reg = <0x19>;
->>> + tdm-offset = <32>;
->>> + status = "okay";
->>> + };
->>> +
->>> + tlv320aic3x_c: tlv320aic3x@1a {
->>> + compatible = "ti,tlv320aic3x";
->>> + reg = <0x1a>;
->>> + tdm-offset = <64>;
->>> + status = "okay";
->>> + };
->>> +
->>> + tlv320aic3x_d: tlv320aic3x@1b {
->>> + compatible = "ti,tlv320aic3x";
->>> + reg = <0x1b>;
->>> + tdm-offset = <96>;
->>> + status = "okay";
->>> + };
->>> +
->>> };
->>> 
->>> +&mcasp0 {
->>> + pinctrl-names = "default";
->>> + pinctrl-0 = <&mcasp_0_pins_default>;
->>> + status = "okay";
->>> +
->>> + op-mode = <0>;          /* MCASP_IIS_MODE */
->>> + tdm-slots = <16>;
->>> + num-serializer = <16>;
->>> + serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
->>> + 0 0 1 2
->>> + 0 0 0 0
->>> + 0 0 0 0
->>> + 0 0 0 0
->>> + >;
->>> + tx-num-evt = <1>;
->>> + rx-num-evt = <1>;
->>> +};
->>> +
->>> +
->>> / {
->>> + sound {
->>> + compatible = "ti,da830-evm-audio";
->>> + ti,model = "PUPPY-AUDIO";
->>> + ti,audio-codec = <
->>> +       &tlv320aic3x_a
->>> +       &tlv320aic3x_b
->>> +       &tlv320aic3x_c
->>> +       &tlv320aic3x_d
->>> +       >;
->>> + ti,mcasp-controller = <&mcasp0>;
->>> + ti,codec-clock-rate = <12288000>;
->>> + ti,audio-routing =
->>> + "Headphone Jack",       "a HPLOUT",
->>> + "Headphone Jack",       "a HPROUT",
->>> + "Headphone Jack",       "b HPLOUT",
->>> + "Headphone Jack",       "b HPROUT",
->>> + "Headphone Jack",       "c HPLOUT",
->>> + "Headphone Jack",       "c HPROUT",
->>> + "Headphone Jack",       "d HPLOUT",
->>> + "Headphone Jack",       "d HPROUT",
->>> + "a LINE1L",               "Line In",
->>> + "a LINE1R",               "Line In",
->>> + "b LINE1L",               "Line In",
->>> + "b LINE1R",               "Line In",
->>> + "c LINE1L",               "Line In",
->>> + "c LINE1R",               "Line In",
->>> + "d LINE1L",               "Line In",
->>> + "d LINE1R",               "Line In";
->>> + status="okay";
->>> + };
->>> };
->>> 
->>> &rtc {
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> 
->> 
->> -- 
->> Rick Mann
->> rmann@latencyzero.com
->> 
->> 
+RGVhciBSaWNrIE1hbm4sCgpPbiBUdWUsIFNlcCAyOSwgMjAxNSBhdCAxMjozOCBQTSwgUmljayBN
+YW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+IEhpLiBJIGNhbWUgYWNyb3NzIHNv
+bWUgYnVncyBpbiBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMsIHdoZXJlaW4gaXQgd3Jp
+dGVzIG5vbi16ZXJvIHZhbHVlcyB0byByZXNlcnZlZCByZWdpc3RlcnMgb24gdGhlIHRsdjMyMGFp
+YzMxMDQgKEkgZm91bmQgaXQgaW4gNC4xLjQsIGJ1dCBpdCdzIHN0aWxsIGluIDQuMy1yYzMpLiBJ
+IGhhdmUgYW4gdW50ZXN0ZWQgcHJvcG9zZWQgcGF0Y2guIEJ1dCBJIGRvbid0IGtub3cgYW55dGhp
+bmcgYWJvdXQgaG93IHRvIHJlcG9ydCBpdCBvciBvZmZlciBpdC4KPgo+IFdoYXQgc2hvdWxkIEkg
+ZG8/IFRoYW5rcy4KCkZvbGxvdyB0aGlzOgpodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGlu
+dXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9Eb2N1bWVudGF0aW9uL1N1Ym1p
+dHRpbmdQYXRjaGVzP2lkPXJlZnMvdGFncy92NC4zLXJjMwoKPiBGb3IgcmVmZXJlbmNlOgo+Cj4g
+JCBnaXQgZGlmZiAtLSBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKPiBkaWZmIC0tZ2l0
+IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jIGIvc291bmQvc29jL2NvZGVjcy90bHYz
+MjBhaWMzeC5jCj4gaW5kZXggNTFjNDcxMy4uNzljMGNhMCAxMDA2NDQKPiAtLS0gYS9zb3VuZC9z
+b2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFp
+YzN4LmMKPiBAQCAtMTUwOSwxNCArMTUwOSwyNCBAQCBzdGF0aWMgaW50IGFpYzN4X2luaXQoc3Ry
+dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQo+ICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywg
+UEdBTF8yX0xMT1BNX1ZPTCwgREVGQVVMVF9WT0wpOwo+ICAgICAgICAgc25kX3NvY193cml0ZShj
+b2RlYywgUEdBUl8yX1JMT1BNX1ZPTCwgREVGQVVMVF9WT0wpOwo+Cj4gLSAgICAgICAvKiBMaW5l
+MiB0byBIUCBCeXBhc3MgZGVmYXVsdCB2b2x1bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4
+ZXIgKi8KPiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0hQTE9VVF9WT0ws
+IERFRkFVTFRfVk9MKTsKPiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX0hQ
+Uk9VVF9WT0wsIERFRkFVTFRfVk9MKTsKPiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJ
+TkUyTF8yX0hQTENPTV9WT0wsIERFRkFVTFRfVk9MKTsKPiAtICAgICAgIHNuZF9zb2Nfd3JpdGUo
+Y29kZWMsIExJTkUyUl8yX0hQUkNPTV9WT0wsIERFRkFVTFRfVk9MKTsKPiAtICAgICAgIC8qIExp
+bmUyIExpbmUgT3V0IGRlZmF1bHQgdm9sdW1lLCBkaXNjb25uZWN0IGZyb20gT3V0cHV0IE1peGVy
+ICovCj4gLSAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9MTE9QTV9WT0wsIERF
+RkFVTFRfVk9MKTsKPiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX1JMT1BN
+X1ZPTCwgREVGQVVMVF9WT0wpOwo+ICsgICAgICAgaWYgKGFpYzN4LT5tb2RlbCA9PSBBSUMzWF9N
+T0RFTF8zMTA0KSB7Cj4gKyAgICAgICAgICAgICAgIC8qIE9uIHRsdjMyMGFpYzMwMTQsIHRoZXNl
+IHJlZ2lzdGVycyBhcmUgcmVzZXJ2ZWQgYW5kIG11c3QgYmUgd3JpdHRlbiAwICovCj4gKyAgICAg
+ICAgICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0hQTE9VVF9WT0wsIDApOwo+
+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9IUFJPVVRfVk9M
+LCAwKTsKPiArICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJMXzJfSFBM
+Q09NX1ZPTCwgMCk7Cj4gKyAgICAgICAgICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUy
+Ul8yX0hQUkNPTV9WT0wsIDApOwo+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVj
+LCBMSU5FMkxfMl9MTE9QTV9WT0wsIDApOwo+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRl
+KGNvZGVjLCBMSU5FMlJfMl9STE9QTV9WT0wsIDApOwoKTm90aGluZyBzaG91bGQgYmUgZG9uZSBm
+b3IgdGhlc2UgcmVnaXN0ZXJzIG9uIDMxMDQsIG5vdCBldmVuIHNldHRpbmcKdGhlbSB0byAwLiBU
+aGUgZGF0YXNoZWV0IHNheXMgIkRvIG5vdCB3cml0ZSB0byB0aGlzIHJlZ2lzdGVyLiIuCgo+ICsg
+ICAgICAgfSBlbHNlIHsKPiArICAgICAgICAgICAgICAgLyogTGluZTIgdG8gSFAgQnlwYXNzIGRl
+ZmF1bHQgdm9sdW1lLCBkaXNjb25uZWN0IGZyb20gT3V0cHV0IE1peGVyICovCj4gKyAgICAgICAg
+ICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0hQTE9VVF9WT0wsIERFRkFVTFRf
+Vk9MKTsKPiArICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfSFBS
+T1VUX1ZPTCwgREVGQVVMVF9WT0wpOwo+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNv
+ZGVjLCBMSU5FMkxfMl9IUExDT01fVk9MLCBERUZBVUxUX1ZPTCk7Cj4gKyAgICAgICAgICAgICAg
+IHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX0hQUkNPTV9WT0wsIERFRkFVTFRfVk9MKTsK
+PiArICAgICAgICAgICAgICAgLyogTGluZTIgTGluZSBPdXQgZGVmYXVsdCB2b2x1bWUsIGRpc2Nv
+bm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPiArICAgICAgICAgICAgICAgc25kX3NvY193cml0
+ZShjb2RlYywgTElORTJMXzJfTExPUE1fVk9MLCBERUZBVUxUX1ZPTCk7Cj4gKyAgICAgICAgICAg
+ICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX1JMT1BNX1ZPTCwgREVGQVVMVF9WT0wp
+Owo+ICsgICAgICAgfQoKQ29ycmVjdC4KCj4KPiAgICAgICAgIHN3aXRjaCAoYWljM3gtPm1vZGVs
+KSB7Cj4gICAgICAgICBjYXNlIEFJQzNYX01PREVMXzNYOgo+Cj4KCkJlc3QgcmVnYXJkcywKQmVu
+b8OudApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
