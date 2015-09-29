@@ -1,80 +1,87 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal
- inversions
-Date: Tue, 29 Sep 2015 16:35:12 +0100
-Message-ID: <20150929153512.GX30445@sirena.org.uk>
-References: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
- <20150917175927.GB2544@Asurada-CZ80>
- <CA+sos78+6yEo5j0qqP24_N-OOsLFTLoRkB-dbJw1H5vzvBGUYw@mail.gmail.com>
+From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH v3 0/4] ASoC: Add support for DA7219 audio codec
+Date: Tue, 29 Sep 2015 16:43:51 +0100
+Message-ID: <cover.1443538420.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2676912427089061088=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F91E2657B8
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 17:35:20 +0200 (CEST)
-In-Reply-To: <CA+sos78+6yEo5j0qqP24_N-OOsLFTLoRkB-dbJw1H5vzvBGUYw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit@wsystem.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, Jason Coughlan <jason.coughlan-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch set adds support for the DA7219 audio codec with built-in
+advanced accessory detection functionality. Patch set includes codec driver,
+associated DT bindings documentation and MAINTAINERS file updates to cover new
+bindings.
 
---===============2676912427089061088==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Zq1NejLgb6rxdd6z"
-Content-Disposition: inline
+This patch set is baselined against the v4.3-rc3 kernel version.
 
+Changes in v3:
+ - Actually set clk_src in dai_sysclk() function of codec, so future calls can
+   correctly identify if work is to be done or not.
 
---Zq1NejLgb6rxdd6z
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v2:
+ - Add SOC_DOUBLE_R_EXT support to ASoC core.
+ - Use of upper-case naming for controls, where missing.
+ - Use of Playback/Capture Digital naming for certain ADC/DAC controls.
+ - CP mchange and vol_thresh DT bindings removed, now Kcontrols
+ - Kcontrols and DAPM now locked as part of hptest work, and specific controls
+   affected have had locking introduced.
+ - Timeout for btn_det work when checking micbias status.
+ - Added comments to describe reasoning for work use with hptest, btn_det.
+ - Added comments to tonegen_freq_put/get to clarify endian conversion, and
+   code now uses regmap_raw_read/write calls instead of bulk.
+ - DT parsing code now prints dev_warn() for invalid settings.
+ - SOC_VALUE_ENUM_SINGLE now used for hpf_mode handling, instead of customer
+   get/put handlers.
+ - DTMF key control now a SOC_ENUM to correctly describe supported keys,
+   including non-numeric.
+ - MIXIN_L_MIX_EN bit set as part of DAPM now (SUPPLY), rather than in probe.
+ - Fix dai_sysclk() function to correctly check for no change, using clk_id as
+   well as freq.
+ - Error checking added for clk_set_rate() call.
+ - Improved error checking for devm_clk_get() call.
+ - Removed explicit use of device_may_wakeup() and enable/disable_irq_wake().
+   Now taken care of by I2C core so DT bindings updated accordingly to
+   document this.
+ - hptest work now uses cache to keep state, instead of reading registers
+   individually. Cache is bypassed, then when test executed and complete,
+   regcache_sync_region() used to restore settings to pre-test values.
+ - Regulator consumer framework usage added, in particular to determine VDDIO
+   level in use so device can be configured accordingly. DT documents updated
+   to reflect this.
 
-On Mon, Sep 28, 2015 at 09:36:49PM +0200, Beno=EEt Th=E9baudeau wrote:
+Adam Thomson (4):
+  ASoC: Add SOC_DOUBLE_R_EXT
+  ASoC: codecs: Add da7219 codec driver
+  ASoC: da7219: Add bindings documentation for DA7219 audio codec
+  MAINTAINERS: da7219: Add entry to cover DA7219 bindings document
 
-> >>       case SND_SOC_DAIFMT_NB_NF:
-> >> -             strcr &=3D ~SSI_STCR_TFSI;
-> >> -             strcr |=3D SSI_STCR_TSCKP;
-> >>               break;
-> >>       }
+ Documentation/devicetree/bindings/sound/da7219.txt |  106 ++
+ MAINTAINERS                                        |    1 +
+ include/sound/da7219-aad.h                         |   99 +
+ include/sound/da7219.h                             |   55 +
+ include/sound/soc.h                                |    7 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/da7219-aad.c                      |  823 +++++++++
+ sound/soc/codecs/da7219-aad.h                      |  212 +++
+ sound/soc/codecs/da7219.c                          | 1940 ++++++++++++++++++++
+ sound/soc/codecs/da7219.h                          |  820 +++++++++
+ 11 files changed, 4069 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/da7219.txt
+ create mode 100644 include/sound/da7219-aad.h
+ create mode 100644 include/sound/da7219.h
+ create mode 100644 sound/soc/codecs/da7219-aad.c
+ create mode 100644 sound/soc/codecs/da7219-aad.h
+ create mode 100644 sound/soc/codecs/da7219.c
+ create mode 100644 sound/soc/codecs/da7219.h
 
-> Adding the ASoC maintainers to the Cc list.
+--
+1.9.3
 
-Please send patches directly to maintainers as covered in SubmittingPatches,
-I can't do anything with a quoted reply to an e-mail.
-
---Zq1NejLgb6rxdd6z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWCq+wAAoJECTWi3JdVIfQag4H+wU9vL//tS4ZdVVYG4wZf+yR
-ruhdtmyvN3WVy3EUrgwYcnPBxst/wD/EQBARP08AWctXnkLwWtgmudk8q8zmUM5x
-ObS9RkBEJbtiwGEl6ppZ7FLrP/o73CK/wIaMByKFRgMkk9JslsKWn2YeZeAeOB7W
-LW6IEf1pZLRFLL2GGNbBXXk1Pj3WrzryVP9iwZvUT59cyCMCIl2TfdVwCkLWazG9
-xeuMTGml54X5fZz5fbYcYYZYfipY4UXoug3EqUwTkR5feCUskFT4+scoIjVYxomM
-ZPQJ/Q3UyrjxKCwX7CCXFpAtjqxjVk2yXr1l70faHoCqiLqtmw6IEdHzQMFCIEs=
-=XHtL
------END PGP SIGNATURE-----
-
---Zq1NejLgb6rxdd6z--
-
---===============2676912427089061088==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2676912427089061088==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
