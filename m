@@ -1,100 +1,89 @@
-From: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 0/2] ASoC: Add support for the Allwinner A10 codec
-Date: Tue, 29 Sep 2015 23:13:56 +0200
-Message-ID: <560AFF14.80400@redhat.com>
-References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
- <1442928417.6509.12.camel@plaes.org> <20150928074248.GI7104@lukather>
-Reply-To: hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Tue, 29 Sep 2015 14:34:33 -0700
+Message-ID: <CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>
+References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150918135427.GI12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Return-path: <linux-sunxi+bncBDRZXY4CYYORBG76VOYAKGQETJULV4Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20150928074248.GI7104@lukather>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, Priit Laes <plaes-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
+ [209.85.213.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C301F265854
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 23:34:34 +0200 (CEST)
+Received: by vkfp126 with SMTP id p126so13661500vkf.3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 14:34:33 -0700 (PDT)
+In-Reply-To: <20150918135427.GI12027@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi
 
-On 09/28/2015 09:42 AM, Maxime Ripard wrote:
-> Hi Priit,
+On Fri, Sep 18, 2015 at 6:54 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Aug 31, 2015 at 01:50:58PM -0700, Anatol Pomozov wrote:
 >
-> On Tue, Sep 22, 2015 at 04:26:57PM +0300, Priit Laes wrote:
->> On Sat, 2015-09-12 at 15:26 +0200, Maxime Ripard wrote:
->>> Hi everyone,
->>>
->>> This patch set adds the support for what Allwinner calls the codec on
->>> their SoCs.
->>>
->>> This codec is actually a combination of a codec and DAI, tied
->>> together
->>> in a single memory-mapped IP. It is completely standalone, and
->>> outputs
->>> directly the analog signal.
->>>
->>> While it supports both playback and capture, the capture is not
->>> implemented in this patch, and will be posted eventually as a
->>> separate
->>> one.
->>>
->>> This set, in order to be functional, has a dependency on the audio
->>> clocks patch set posted separately. However, it doesn't needs this to
->>> compile properly, so I guess it can be merged without really caring
->>> for the merging status of the clock patches.
->>
->> It works on Gemei G9 tablet which has also extra chip that
->> automatically switches output over from internal speakers to headphones
->> when connector is inserted.
->>
->> Now I noticed some weird things:
->>
->> When I have all the switches as ON in alsamixer, and I start disabling
->> them, I get following weird results.
->>
->> Left Mixer Left - LML
->> Right Mixer Left - LMR
->> Right Mixer Right - RMR
->>
->> Very faint output:
->> LML - ON
->> RML - Mute
->> RMR - ON
->>
->> Output works fully:
->> LML - Mute
->> RML - Mute
->> RMR - Mute
->>
->> When I Mute Pre-Amplifier and fiddle any of LML, RML or RMR, the output
->> stays mute even after setting Pre-Amplifier Mute back on:
->>
->> 1. All switches on
->> 2. Mute pre-amplifier
->> 3. Mute RMR
->> 4. Pre-Amilifier Mute Off
->> .. Music stays off
->> 5. Toggle Pre-Amplifier twice - output turns on
+>> Per discussion at [1] currently there is no clear definition of what is FSYNC polarity.
+>> Different drivers use its own definition of what is "normal" and what is "inverted"
+>> fsync in different modes. This leads to compatibility problems between drivers.
 >
-> Unfortunately, I don't have access to that SoC or that setup.
+> Please keep changelogs wrapped at under 80 columns as is covered in
+> SubmittingPatches and please write free standing changelogs that don't
+> require reference to external discussions unless there is a strong
+> reason to do so.  This makes both the e-mails and the git changelogs
+> easier to read, ensuring that people don't need to go online to read
+> things and links don't go bad.
 
-I'm seeing similar stuff on a cubieboard, both A10 and A20
-based cubieboards, I have to fiddle a bit with the switches
-to get things to work. At boot all switches are disabled.
+I see that external links quite actively used by developers:
+$ git log --grep Link
 
-On both A10 and A20 I need to enable to following for things to work:
+but no problem, I can inline info into the commit description.
 
-unmute Pre-Amplifier DAC
-unmute Pre-Amplifier Mute
+>
+>> + * For BCLK:
+>> + *  - "normal" polarity means signal sensing happens at rising edge of BCLK
+>> + *  - "inverted" polarity means signal sensing happens at falling edge of BCLK
+>
+> This is OK, though it's more normal to say that data "is available" or
+> "is sampled" - the term "signal sensing" is a bit unusual.
 
-I guess this is just a question if adding some mixer defaults to
-the alsa userspace somewhere ?
+Done.
 
-Regards,
+>
+>> + * For FSYNC:
+>> + *  - "normal" polarity means frame starts at rising edge of FSYNC
+>> + *  - "inverted" polarity means frame starts at falling edge of FSYNC
+>
+> This isn't true (or at least isn't clear) for I2S based modes, normally
+> the left channel is thought of as the first channel sent and the left
+> channel starts on the falling edge of LRCLK, not the rising edge (which
+> signals the start of the right frame).
 
-Hans
+In the I2S docs/specs I found I2S format has frames like you described
+- starts at falling edge, left channel first. Per description above
+this will have "negative" FSYNC polarity.
+
+The I2S docs do not define frame polarity. Polarity is purely Linux
+driver thing and we can choose definition we want.
+
+>  It is true for DSP based modes.
+>
+> It's probably going to be more sensible to define the modes and then
+> define inversion relative to the definition of the modes (which is
+> basically what the existing documentation is doing).  I think what we
+> really need here is an explicit definition of the DSP modes.
+
+The beauty of rule "positive polarity is when frame starts at rising
+FSYNC edge" that it easily applicable to all formats (I2S and DSP-*).
+
+Or you keep another definition of polarity in mind?
