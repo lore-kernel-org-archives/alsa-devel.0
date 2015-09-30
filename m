@@ -1,17 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/7] ALSA: firewire-digi00x: add PCM
-	functionality
-Date: Wed, 30 Sep 2015 09:39:20 +0900
-Message-ID: <1443573562-24088-6-git-send-email-o-takashi@sakamocchi.jp>
-References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Found bugs in tlv320aic3x.c driver,
+	how do I report them?
+Date: Tue, 29 Sep 2015 18:27:33 -0700
+Message-ID: <911A23B2-8E99-464C-B688-D1A6D3E629DD@latencyzero.com>
+References: <B9E728AE-223C-4BA7-961A-ED107AF03407@latencyzero.com>
+ <CA+sos79twXY1fC8kqrORJvDbXv9Lvu6SjY05N7VFcRcOEKx7LA@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 664E3265A0C
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:33 +0200 (CEST)
-In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 636252659DD
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 03:27:35 +0200 (CEST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id 8AE7A206F3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 21:27:34 -0400 (EDT)
+In-Reply-To: <CA+sos79twXY1fC8kqrORJvDbXv9Lvu6SjY05N7VFcRcOEKx7LA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,429 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds PCM functionality to transmit/receive PCM samples.
-
-Any PCM substreams are jointed because incoming/outgoing AMDTP streams
-are bound. When one of PCM substream is running or external clock source
-is selected, current sampling rate is used. Else, the sampling rate is
-changed as an userspace application requests.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/digi00x/Makefile      |   2 +-
- sound/firewire/digi00x/digi00x-pcm.c | 362 +++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c     |   4 +
- sound/firewire/digi00x/digi00x.h     |   3 +
- 4 files changed, 370 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
-
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 3e0f028..3c0ff6f 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,3 +1,3 @@
- snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
--			     digi00x.o
-+			     digi00x-pcm.o digi00x.o
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-new file mode 100644
-index 0000000..87c9aa2
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -0,0 +1,362 @@
-+/*
-+ * digi00x-pcm.c - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "digi00x.h"
-+
-+static int hw_rule_rate(struct snd_pcm_hw_params *params,
-+			struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(c,
-+				       snd_dg00x_stream_pcm_channels[i]))
-+			continue;
-+
-+		t.min = min(t.min, snd_dg00x_stream_rates[i]);
-+		t.max = max(t.max, snd_dg00x_stream_rates[i]);
-+	}
-+
-+	return snd_interval_refine(r, &t);
-+}
-+
-+static int hw_rule_channels(struct snd_pcm_hw_params *params,
-+			    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(r, snd_dg00x_stream_rates[i]))
-+			continue;
-+
-+		t.min = min(t.min, snd_dg00x_stream_pcm_channels[i]);
-+		t.max = max(t.max, snd_dg00x_stream_pcm_channels[i]);
-+	}
-+
-+	return snd_interval_refine(c, &t);
-+}
-+
-+static int pcm_init_hw_params(struct snd_dg00x *dg00x,
-+			      struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID,
-+		.rates = SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 |
-+			 SNDRV_PCM_RATE_96000,
-+		.rate_min = 44100,
-+		.rate_max = 96000,
-+		.channels_min = 10,
-+		.channels_max = 18,
-+		.period_bytes_min = 4 * 18,
-+		.period_bytes_max = 4 * 18 * 2048,
-+		.buffer_bytes_max = 4 * 18 * 2048 * 2,
-+		.periods_min = 2,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct amdtp_stream *s;
-+	int err;
-+
-+	substream->runtime->hw = hardware;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
-+		s = &dg00x->tx_stream;
-+	} else {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S16 |
-+						 SNDRV_PCM_FMTBIT_S32;
-+		s = &dg00x->rx_stream;
-+	}
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  hw_rule_channels, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_RATE,
-+				  hw_rule_rate, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+
-+	return amdtp_dot_add_pcm_hw_constraints(s, substream->runtime);
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	enum snd_dg00x_clock clock;
-+	bool detect;
-+	unsigned int rate;
-+	int err;
-+
-+	err = pcm_init_hw_params(dg00x, substream);
-+	if (err < 0)
-+		return err;
-+
-+	/* Check current clock source. */
-+	err = snd_dg00x_stream_get_clock(dg00x, &clock);
-+	if (err < 0)
-+		return err;
-+	if (clock != SND_DG00X_CLOCK_INTERNAL) {
-+		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
-+		if (err < 0)
-+			return err;
-+		if (!detect) {
-+			err = -EBUSY;
-+			return err;
-+		}
-+	}
-+
-+	if ((clock != SND_DG00X_CLOCK_INTERNAL) ||
-+	    amdtp_stream_pcm_running(&dg00x->rx_stream) ||
-+	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
-+		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
-+		if (err < 0)
-+			return err;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
-+	}
-+
-+	snd_pcm_set_sync(substream);
-+
-+	return err;
-+}
-+
-+static int pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	int err;
-+
-+	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+					       params_buffer_bytes(hw_params));
-+	if (err < 0)
-+		return err;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->substreams_counter++;
-+		mutex_unlock(&dg00x->mutex);
-+	}
-+
-+	amdtp_dot_set_pcm_format(&dg00x->tx_stream, params_format(hw_params));
-+
-+	return 0;
-+}
-+
-+static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	int err;
-+
-+	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+					       params_buffer_bytes(hw_params));
-+	if (err < 0)
-+		return err;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->substreams_counter++;
-+		mutex_unlock(&dg00x->mutex);
-+	}
-+
-+	amdtp_dot_set_pcm_format(&dg00x->rx_stream, params_format(hw_params));
-+
-+	return 0;
-+}
-+
-+static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->substreams_counter--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->substreams_counter--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&dg00x->tx_stream);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0) {
-+		amdtp_stream_pcm_prepare(&dg00x->rx_stream);
-+		amdtp_dot_reset(&dg00x->rx_stream);
-+	}
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
-+}
-+
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_capture_hw_params,
-+	.hw_free	= pcm_capture_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_playback_hw_params,
-+	.hw_free	= pcm_playback_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(dg00x->card, dg00x->card->driver, 0, 1, 1, &pcm);
-+	if (err < 0)
-+		return err;
-+
-+	pcm->private_data = dg00x;
-+	snprintf(pcm->name, sizeof(pcm->name),
-+		 "%s PCM", dg00x->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 2c61eef..15af645 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -85,6 +85,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 
- 	snd_dg00x_proc_init(dg00x);
- 
-+	err = snd_dg00x_create_pcm_devices(dg00x);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 9ee259f..1990645 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -119,4 +119,7 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- 
- void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
-+
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
-+
- #endif
--- 
-2.1.4
+QWdhaW5zdCB3aGF0IHJlcG8vYnJhbmNoIHNob3VsZCBJIHN1Ym1pdCB0aGlzIHBhdGNoPyBicm9v
+bmllL3NvdW5kL2Fzb2MtdjQuMy1yYzI/Cgo+IE9uIFNlcCAyOSwgMjAxNSwgYXQgMTE6NDcgLCBC
+ZW5vw650IFRow6liYXVkZWF1IDxiZW5vaXQudGhlYmF1ZGVhdS5kZXZAZ21haWwuY29tPiB3cm90
+ZToKPiAKPiBEZWFyIFJpY2sgTWFubiwKPiAKPiBPbiBUdWUsIFNlcCAyOSwgMjAxNSBhdCAxMjoz
+OCBQTSwgUmljayBNYW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+PiBIaS4gSSBj
+YW1lIGFjcm9zcyBzb21lIGJ1Z3MgaW4gc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jLCB3
+aGVyZWluIGl0IHdyaXRlcyBub24temVybyB2YWx1ZXMgdG8gcmVzZXJ2ZWQgcmVnaXN0ZXJzIG9u
+IHRoZSB0bHYzMjBhaWMzMTA0IChJIGZvdW5kIGl0IGluIDQuMS40LCBidXQgaXQncyBzdGlsbCBp
+biA0LjMtcmMzKS4gSSBoYXZlIGFuIHVudGVzdGVkIHByb3Bvc2VkIHBhdGNoLiBCdXQgSSBkb24n
+dCBrbm93IGFueXRoaW5nIGFib3V0IGhvdyB0byByZXBvcnQgaXQgb3Igb2ZmZXIgaXQuCj4+IAo+
+PiBXaGF0IHNob3VsZCBJIGRvPyBUaGFua3MuCj4gCj4gRm9sbG93IHRoaXM6Cj4gaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3Ry
+ZWUvRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcz9pZD1yZWZzL3RhZ3MvdjQuMy1yYzMK
+PiAKPj4gRm9yIHJlZmVyZW5jZToKPj4gCj4+ICQgZ2l0IGRpZmYgLS0gc291bmQvc29jL2NvZGVj
+cy90bHYzMjBhaWMzeC5jCj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFp
+YzN4LmMgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKPj4gaW5kZXggNTFjNDcxMy4u
+NzljMGNhMCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jCj4+
+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYwo+PiBAQCAtMTUwOSwxNCArMTUw
+OSwyNCBAQCBzdGF0aWMgaW50IGFpYzN4X2luaXQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
+KQo+PiAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgUEdBTF8yX0xMT1BNX1ZPTCwgREVGQVVM
+VF9WT0wpOwo+PiAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgUEdBUl8yX1JMT1BNX1ZPTCwg
+REVGQVVMVF9WT0wpOwo+PiAKPj4gLSAgICAgICAvKiBMaW5lMiB0byBIUCBCeXBhc3MgZGVmYXVs
+dCB2b2x1bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gLSAgICAgICBzbmRf
+c29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9IUExPVVRfVk9MLCBERUZBVUxUX1ZPTCk7Cj4+IC0g
+ICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfSFBST1VUX1ZPTCwgREVGQVVMVF9W
+T0wpOwo+PiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0hQTENPTV9WT0ws
+IERFRkFVTFRfVk9MKTsKPj4gLSAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9I
+UFJDT01fVk9MLCBERUZBVUxUX1ZPTCk7Cj4+IC0gICAgICAgLyogTGluZTIgTGluZSBPdXQgZGVm
+YXVsdCB2b2x1bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gLSAgICAgICBz
+bmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9MTE9QTV9WT0wsIERFRkFVTFRfVk9MKTsKPj4g
+LSAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9STE9QTV9WT0wsIERFRkFVTFRf
+Vk9MKTsKPj4gKyAgICAgICBpZiAoYWljM3gtPm1vZGVsID09IEFJQzNYX01PREVMXzMxMDQpIHsK
+Pj4gKyAgICAgICAgICAgICAgIC8qIE9uIHRsdjMyMGFpYzMwMTQsIHRoZXNlIHJlZ2lzdGVycyBh
+cmUgcmVzZXJ2ZWQgYW5kIG11c3QgYmUgd3JpdHRlbiAwICovCj4+ICsgICAgICAgICAgICAgICBz
+bmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9IUExPVVRfVk9MLCAwKTsKPj4gKyAgICAgICAg
+ICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX0hQUk9VVF9WT0wsIDApOwo+PiAr
+ICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJMXzJfSFBMQ09NX1ZPTCwg
+MCk7Cj4+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9IUFJD
+T01fVk9MLCAwKTsKPj4gKyAgICAgICAgICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUy
+TF8yX0xMT1BNX1ZPTCwgMCk7Cj4+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVj
+LCBMSU5FMlJfMl9STE9QTV9WT0wsIDApOwo+IAo+IE5vdGhpbmcgc2hvdWxkIGJlIGRvbmUgZm9y
+IHRoZXNlIHJlZ2lzdGVycyBvbiAzMTA0LCBub3QgZXZlbiBzZXR0aW5nCj4gdGhlbSB0byAwLiBU
+aGUgZGF0YXNoZWV0IHNheXMgIkRvIG5vdCB3cml0ZSB0byB0aGlzIHJlZ2lzdGVyLiIuCj4gCj4+
+ICsgICAgICAgfSBlbHNlIHsKPj4gKyAgICAgICAgICAgICAgIC8qIExpbmUyIHRvIEhQIEJ5cGFz
+cyBkZWZhdWx0IHZvbHVtZSwgZGlzY29ubmVjdCBmcm9tIE91dHB1dCBNaXhlciAqLwo+PiArICAg
+ICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJMXzJfSFBMT1VUX1ZPTCwgREVG
+QVVMVF9WT0wpOwo+PiArICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJS
+XzJfSFBST1VUX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiArICAgICAgICAgICAgICAgc25kX3NvY193
+cml0ZShjb2RlYywgTElORTJMXzJfSFBMQ09NX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiArICAgICAg
+ICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfSFBSQ09NX1ZPTCwgREVGQVVM
+VF9WT0wpOwo+PiArICAgICAgICAgICAgICAgLyogTGluZTIgTGluZSBPdXQgZGVmYXVsdCB2b2x1
+bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gKyAgICAgICAgICAgICAgIHNu
+ZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0xMT1BNX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiAr
+ICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfUkxPUE1fVk9MLCBE
+RUZBVUxUX1ZPTCk7Cj4+ICsgICAgICAgfQo+IAo+IENvcnJlY3QuCj4gCj4+IAo+PiAgICAgICAg
+c3dpdGNoIChhaWMzeC0+bW9kZWwpIHsKPj4gICAgICAgIGNhc2UgQUlDM1hfTU9ERUxfM1g6Cj4+
+IAo+PiAKPiAKPiBCZXN0IHJlZ2FyZHMsCj4gQmVub8OudAo+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKCi0tIApSaWNrIE1hbm4Kcm1hbm5AbGF0
+ZW5jeXplcm8uY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
