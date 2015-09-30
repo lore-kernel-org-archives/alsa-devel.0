@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH 6/8] ASoC: topology: ABI - Add the type for BE
-	DAI link
-Date: Wed, 30 Sep 2015 17:12:57 +0800
-Message-ID: <68a98c1c67380b058865fa8e8cb05e2377b30f14.1443602494.git.mengdong.lin@intel.com>
+Subject: [PATCH 7/8] ASoC: topology: ABI - Add configuration
+	for BE & Codec-Codec DAI Links
+Date: Wed, 30 Sep 2015 17:13:43 +0800
+Message-ID: <5a1fe81777b8416e5acc3a854aa88d8c09ab6ce3.1443602494.git.mengdong.lin@intel.com>
 References: <cover.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F603265A86
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:58:26 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 258C62659DD
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:59:12 +0200 (CEST)
 In-Reply-To: <cover.1443602494.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,24 +27,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vedang Patel <vedang.patel@intel.com>
 
-Define the topology type for BE DAI link: SND_SOC_TPLG_TYPE_BACKEND_LINK.
+struct snd_soc_tplg_link_config is defined to configure BE & CC links.
 
 Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index eeb74a9c..f75fd29 100644
+index f75fd29..538ea13 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -103,7 +103,8 @@
- #define SND_SOC_TPLG_TYPE_PCM		7
- #define SND_SOC_TPLG_TYPE_MANIFEST	8
- #define SND_SOC_TPLG_TYPE_CODEC_LINK	9
--#define SND_SOC_TPLG_TYPE_PDATA		10
-+#define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
-+#define SND_SOC_TPLG_TYPE_PDATA		11
- #define SND_SOC_TPLG_TYPE_MAX	SND_SOC_TPLG_TYPE_PDATA
+@@ -395,4 +395,21 @@ struct snd_soc_tplg_pcm {
+ 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
+ } __attribute__((packed));
  
- /* vendor block IDs - please add new vendor types to end */
++
++/*
++ * Describes the BE or CC link runtime supported configs or params
++ *
++ * File block representation for BE/CC link config :-
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_hdr           |  1  |
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_link_config   |  N  |
++ * +-----------------------------------+-----+
++ */
++struct snd_soc_tplg_link_config {
++	__le32 size;            /* in bytes of this structure */
++	__le32 id;              /* unique ID - used to match */
++	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
++	__le32 num_streams;     /* number of streams */
++} __attribute__((packed));
+ #endif
 -- 
 1.9.1
