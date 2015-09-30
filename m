@@ -1,21 +1,14 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Found bugs in tlv320aic3x.c driver,
-	how do I report them?
-Date: Tue, 29 Sep 2015 18:27:33 -0700
-Message-ID: <911A23B2-8E99-464C-B688-D1A6D3E629DD@latencyzero.com>
-References: <B9E728AE-223C-4BA7-961A-ED107AF03407@latencyzero.com>
- <CA+sos79twXY1fC8kqrORJvDbXv9Lvu6SjY05N7VFcRcOEKx7LA@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH] ASoC: Codec: wm8962: balance pm_runtime_enable
+Date: Wed, 30 Sep 2015 13:54:13 +0900
+Message-ID: <1443588853-8778-1-git-send-email-jiada_wang@mentor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 636252659DD
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 03:27:35 +0200 (CEST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 8AE7A206F3
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 21:27:34 -0400 (EDT)
-In-Reply-To: <CA+sos79twXY1fC8kqrORJvDbXv9Lvu6SjY05N7VFcRcOEKx7LA@mail.gmail.com>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4ACC260666
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 06:54:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-QWdhaW5zdCB3aGF0IHJlcG8vYnJhbmNoIHNob3VsZCBJIHN1Ym1pdCB0aGlzIHBhdGNoPyBicm9v
-bmllL3NvdW5kL2Fzb2MtdjQuMy1yYzI/Cgo+IE9uIFNlcCAyOSwgMjAxNSwgYXQgMTE6NDcgLCBC
-ZW5vw650IFRow6liYXVkZWF1IDxiZW5vaXQudGhlYmF1ZGVhdS5kZXZAZ21haWwuY29tPiB3cm90
-ZToKPiAKPiBEZWFyIFJpY2sgTWFubiwKPiAKPiBPbiBUdWUsIFNlcCAyOSwgMjAxNSBhdCAxMjoz
-OCBQTSwgUmljayBNYW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+PiBIaS4gSSBj
-YW1lIGFjcm9zcyBzb21lIGJ1Z3MgaW4gc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jLCB3
-aGVyZWluIGl0IHdyaXRlcyBub24temVybyB2YWx1ZXMgdG8gcmVzZXJ2ZWQgcmVnaXN0ZXJzIG9u
-IHRoZSB0bHYzMjBhaWMzMTA0IChJIGZvdW5kIGl0IGluIDQuMS40LCBidXQgaXQncyBzdGlsbCBp
-biA0LjMtcmMzKS4gSSBoYXZlIGFuIHVudGVzdGVkIHByb3Bvc2VkIHBhdGNoLiBCdXQgSSBkb24n
-dCBrbm93IGFueXRoaW5nIGFib3V0IGhvdyB0byByZXBvcnQgaXQgb3Igb2ZmZXIgaXQuCj4+IAo+
-PiBXaGF0IHNob3VsZCBJIGRvPyBUaGFua3MuCj4gCj4gRm9sbG93IHRoaXM6Cj4gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3Ry
-ZWUvRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcz9pZD1yZWZzL3RhZ3MvdjQuMy1yYzMK
-PiAKPj4gRm9yIHJlZmVyZW5jZToKPj4gCj4+ICQgZ2l0IGRpZmYgLS0gc291bmQvc29jL2NvZGVj
-cy90bHYzMjBhaWMzeC5jCj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFp
-YzN4LmMgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKPj4gaW5kZXggNTFjNDcxMy4u
-NzljMGNhMCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jCj4+
-ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYwo+PiBAQCAtMTUwOSwxNCArMTUw
-OSwyNCBAQCBzdGF0aWMgaW50IGFpYzN4X2luaXQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
-KQo+PiAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgUEdBTF8yX0xMT1BNX1ZPTCwgREVGQVVM
-VF9WT0wpOwo+PiAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgUEdBUl8yX1JMT1BNX1ZPTCwg
-REVGQVVMVF9WT0wpOwo+PiAKPj4gLSAgICAgICAvKiBMaW5lMiB0byBIUCBCeXBhc3MgZGVmYXVs
-dCB2b2x1bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gLSAgICAgICBzbmRf
-c29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9IUExPVVRfVk9MLCBERUZBVUxUX1ZPTCk7Cj4+IC0g
-ICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfSFBST1VUX1ZPTCwgREVGQVVMVF9W
-T0wpOwo+PiAtICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0hQTENPTV9WT0ws
-IERFRkFVTFRfVk9MKTsKPj4gLSAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9I
-UFJDT01fVk9MLCBERUZBVUxUX1ZPTCk7Cj4+IC0gICAgICAgLyogTGluZTIgTGluZSBPdXQgZGVm
-YXVsdCB2b2x1bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gLSAgICAgICBz
-bmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9MTE9QTV9WT0wsIERFRkFVTFRfVk9MKTsKPj4g
-LSAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9STE9QTV9WT0wsIERFRkFVTFRf
-Vk9MKTsKPj4gKyAgICAgICBpZiAoYWljM3gtPm1vZGVsID09IEFJQzNYX01PREVMXzMxMDQpIHsK
-Pj4gKyAgICAgICAgICAgICAgIC8qIE9uIHRsdjMyMGFpYzMwMTQsIHRoZXNlIHJlZ2lzdGVycyBh
-cmUgcmVzZXJ2ZWQgYW5kIG11c3QgYmUgd3JpdHRlbiAwICovCj4+ICsgICAgICAgICAgICAgICBz
-bmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMkxfMl9IUExPVVRfVk9MLCAwKTsKPj4gKyAgICAgICAg
-ICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyUl8yX0hQUk9VVF9WT0wsIDApOwo+PiAr
-ICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJMXzJfSFBMQ09NX1ZPTCwg
-MCk7Cj4+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCBMSU5FMlJfMl9IUFJD
-T01fVk9MLCAwKTsKPj4gKyAgICAgICAgICAgICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUy
-TF8yX0xMT1BNX1ZPTCwgMCk7Cj4+ICsgICAgICAgICAgICAgICBzbmRfc29jX3dyaXRlKGNvZGVj
-LCBMSU5FMlJfMl9STE9QTV9WT0wsIDApOwo+IAo+IE5vdGhpbmcgc2hvdWxkIGJlIGRvbmUgZm9y
-IHRoZXNlIHJlZ2lzdGVycyBvbiAzMTA0LCBub3QgZXZlbiBzZXR0aW5nCj4gdGhlbSB0byAwLiBU
-aGUgZGF0YXNoZWV0IHNheXMgIkRvIG5vdCB3cml0ZSB0byB0aGlzIHJlZ2lzdGVyLiIuCj4gCj4+
-ICsgICAgICAgfSBlbHNlIHsKPj4gKyAgICAgICAgICAgICAgIC8qIExpbmUyIHRvIEhQIEJ5cGFz
-cyBkZWZhdWx0IHZvbHVtZSwgZGlzY29ubmVjdCBmcm9tIE91dHB1dCBNaXhlciAqLwo+PiArICAg
-ICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJMXzJfSFBMT1VUX1ZPTCwgREVG
-QVVMVF9WT0wpOwo+PiArICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJS
-XzJfSFBST1VUX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiArICAgICAgICAgICAgICAgc25kX3NvY193
-cml0ZShjb2RlYywgTElORTJMXzJfSFBMQ09NX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiArICAgICAg
-ICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfSFBSQ09NX1ZPTCwgREVGQVVM
-VF9WT0wpOwo+PiArICAgICAgICAgICAgICAgLyogTGluZTIgTGluZSBPdXQgZGVmYXVsdCB2b2x1
-bWUsIGRpc2Nvbm5lY3QgZnJvbSBPdXRwdXQgTWl4ZXIgKi8KPj4gKyAgICAgICAgICAgICAgIHNu
-ZF9zb2Nfd3JpdGUoY29kZWMsIExJTkUyTF8yX0xMT1BNX1ZPTCwgREVGQVVMVF9WT0wpOwo+PiAr
-ICAgICAgICAgICAgICAgc25kX3NvY193cml0ZShjb2RlYywgTElORTJSXzJfUkxPUE1fVk9MLCBE
-RUZBVUxUX1ZPTCk7Cj4+ICsgICAgICAgfQo+IAo+IENvcnJlY3QuCj4gCj4+IAo+PiAgICAgICAg
-c3dpdGNoIChhaWMzeC0+bW9kZWwpIHsKPj4gICAgICAgIGNhc2UgQUlDM1hfTU9ERUxfM1g6Cj4+
-IAo+PiAKPiAKPiBCZXN0IHJlZ2FyZHMsCj4gQmVub8OudAo+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKCi0tIApSaWNrIE1hbm4Kcm1hbm5AbGF0
-ZW5jeXplcm8uY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+pm_runtime_enable is called in probe to enable runtime PM
+for wm8962 codec, but pm_runtime_disable isn't called in remove
+callback, nor is called in error path if probe fails after runtime
+PM is enabled, this causes unbalanced pm_runtime_enable.
+
+This patch Adds pm_runtime_disable in remove callback and error path,
+to balance pm_runtime_enable.
+
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/soc/codecs/wm8962.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 293e47a..2fbc6ef 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3760,7 +3760,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
+ 	if (ret < 0)
+-		goto err_enable;
++		goto err_pm_runtime;
+ 
+ 	regcache_cache_only(wm8962->regmap, true);
+ 
+@@ -3769,6 +3769,8 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 
+ 	return 0;
+ 
++err_pm_runtime:
++	pm_runtime_disable(&i2c->dev);
+ err_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
+ err:
+@@ -3778,6 +3780,7 @@ err:
+ static int wm8962_i2c_remove(struct i2c_client *client)
+ {
+ 	snd_soc_unregister_codec(&client->dev);
++	pm_runtime_disable(&client->dev);
+ 	return 0;
+ }
+ 
+-- 
+2.4.5
