@@ -1,62 +1,43 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 08/10] ASoC: img: Add driver for SPDIF
- input controller
-Date: Wed, 30 Sep 2015 23:53:30 +0800
-Message-ID: <201509302313.wAQ6yuJF%fengguang.wu@intel.com>
-References: <1443625696-29296-9-git-send-email-Damien.Horsley@imgtec.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 0/2] ASoC: Add support for the Allwinner A10 codec
+Date: Wed, 30 Sep 2015 18:33:34 +0100
+Message-ID: <20150930173334.GH15635@sirena.org.uk>
+References: <1442064384-23379-1-git-send-email-maxime.ripard@free-electrons.com>
+ <1442928417.6509.12.camel@plaes.org>
+ <20150928074248.GI7104@lukather>
+ <560AFF14.80400@redhat.com>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EBED26608A
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 17:54:47 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bO4vSxwwZtUjUWHo"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBBF2WCYAKGQEMEHF45Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1443625696-29296-9-git-send-email-Damien.Horsley@imgtec.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>
+In-Reply-To: <560AFF14.80400-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Cc: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, Priit Laes <plaes-q/aMd4JkU83YtjvyW6yDsg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Emilio Lopez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Damien.Horsley,
+--bO4vSxwwZtUjUWHo
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-[auto build test results on v4.3-rc3 -- if it's inappropriate base, please ignore]
+On Tue, Sep 29, 2015 at 11:13:56PM +0200, Hans de Goede wrote:
 
-reproduce:
-  # apt-get install sparse
-  make ARCH=x86_64 allmodconfig
-  make C=1 CF=-D__CHECK_ENDIAN__
+> On both A10 and A20 I need to enable to following for things to work:
 
+> unmute Pre-Amplifier DAC
+> unmute Pre-Amplifier Mute
 
-sparse warnings: (new ones prefixed by >>)
+> I guess this is just a question if adding some mixer defaults to
+> the alsa userspace somewhere ?
 
->> sound/soc/img/img-spdif-in.c:650:16: sparse: incorrect type in assignment (different base types)
-   sound/soc/img/img-spdif-in.c:650:16:    expected unsigned int [unsigned] format
-   sound/soc/img/img-spdif-in.c:650:16:    got restricted snd_pcm_format_t
->> sound/soc/img/img-spdif-in.c:652:23: sparse: restricted snd_pcm_format_t degrades to integer
-
-vim +650 sound/soc/img/img-spdif-in.c
-
-   644	{
-   645		struct img_spdif_in *spdif = snd_soc_dai_get_drvdata(dai);
-   646		unsigned int rate, channels, format;
-   647	
-   648		rate = params_rate(params);
-   649		channels = params_channels(params);
- > 650		format = params_format(params);
-   651	
- > 652		if (format != SNDRV_PCM_FORMAT_S32_LE)
-   653			return -EINVAL;
-   654	
-   655		if (channels != 2)
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Yes, you're looking for something in /usr/share/alsa/cards here (shipped
+in alsa-lib).
+--bO4vSxwwZtUjUWHo--
