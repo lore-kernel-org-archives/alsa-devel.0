@@ -1,17 +1,19 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Zoom R16/24 playback slient
-Date: Wed, 30 Sep 2015 10:05:44 +0200
-Message-ID: <alpine.DEB.2.02.1509300955510.12892@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
- <560B8481.1080304@laiskiainen.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Codec: wm8962: balance
+	pm_runtime_enable
+Date: Wed, 30 Sep 2015 08:48:25 +0100
+Message-ID: <20150930074825.GJ5432@ck-lbox>
+References: <1443588853-8778-1-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id EF83E26069D
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:05:46 +0200 (CEST)
-In-Reply-To: <560B8481.1080304@laiskiainen.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 912182606B5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:10:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1443588853-8778-1-git-send-email-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Panu Matilainen <pmatilai@laiskiainen.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIFdlZCwgMzAgU2VwIDIwMTUsIFBhbnUgTWF0aWxhaW5lbiB3cm90ZToKCj4gPiBXaGVyZSBk
-b2VzIHRoZSBhYm92ZSBvdXRwdXQgY29tZSBmcm9tLCBhbmQgd2hlcmUgY291bGQgSSBmaW5kIGlu
-Zm9ybWF0aW9uCj4gPiBvbiB3aGF0IHR5cGUgb2YgZGF0YSBpcyBleHBlY3RlZD8gSSBhc3N1bWUg
-d2hhdCdzIGV4cGVjdGVkIGlzIHNvbWV0aGluZwo+ID4gb25lIHdvdWxkIGdldCBmcm9tIGFuIFVT
-QiBtaXhlciBkZXZpY2U/Cj4gCj4gVGhlIG91dHB1dCBpcyBzaW1wbHkgJ2xzdXNiIC12JyBwbHVz
-IG1hbnVhbGx5IGFkZGVkIGd1ZXNzZXMgYXMgdG8gd2hhdCAKPiB0aGVzZSB1bnJlY29nbml6ZWQg
-Yml0cyBhcmUuIAoKQWgsIEkgc2hvdWxkIGhhdmUgZ3Vlc3NlZCBhcyBtdWNoLi4uIChJIHdhcyBs
-b29raW5nIGluIHRoZSBrZXJuZWwgZm9yIHNvbWUgClVTQiBkZWJ1ZyB0aGluZyB2aWEgL3N5cyBv
-ciBzaW1pbGFyKS4KCj4gQXMgZm9yIHRoZSBtaXhlciwgSSBjb25jbHVkZWQgdGhlIFpvb20gZG9l
-cyBub3QgcmVhbGx5IGhhdmUgb25lLiBUaGUgCj4gaW50ZXJmYWNlIDAgaXMgYSBjb250cm9sIGlu
-dGVyZmFjZSB3aGVyZSBhIG1peGVyIHdvdWxkIHJlc2lkZSwgYnV0IAo+IHRoZXJlJ3Mgbm8gYWN0
-dWFsIG1peGVyIHVuaXQgaW4gdGhlcmUuCgpJIHdvbmRlciBpZiBhbnkgaW5mb3JtYXRpb24gY291
-bGQgYmUgZ2xlYW5lZCBmcm9tIHJ1bm5pbmcgdGhlIFdpbmRvd3MgCmRyaXZlciBhbmQgc29tZWhv
-dyBzbm9vcGluZyB0aGUgVVNCIGJ1cy4KClRoZXJlIG11c3QgYmUgc29tZSB3YXkgb2YgZW5hYmxp
-bmcgdGhlIHBsYXliYWNrIHN0cmVhbS4KCj4gTXkgbWVtb3J5IGlzIGEgYml0IGhhenkgb24gdGhl
-IGRldGFpbHMsIGJ1dCB0aGUgYXV0b21hdGljYWxseSBkZXRlY3RlZCAKPiBTTkRSVl9QQ01fRk1U
-QklUX1MzMiAod2hpY2ggaWlyYyBtZWFucyB0aGUgYWN0dWFsIDI0Yml0IHZhbHVlcyBhcmUgCj4g
-Y2FycmllZCBpbiAzMmJpdCBjaHVua3MpIHNlZW1zIHRvIGJlIHRoZSByaWdodCB0aGluZyBmb3Ig
-dGhlIGRldmljZSwgCj4gZm9yY2luZyBpdCB0byBzb21ldGhpbmcgZWxzZSBqdXN0IG1ha2VzIHRo
-aW5ncyB3b3JzZS4gSUlSQy4gCgpJIHRoaW5rIHRoYXQgbWFueSBkZXZpY2VzIHB1dCAyNCBiaXRz
-IGluIHRoZSBtb3N0IHNpZ25pZmljYW50IGJpdHMgb2YgYSAzMiAKYml0IHdvcmQsIGhlbmNlIFNO
-RFJWX1BDTV9GTVRCSVRfUzMyIHdvcmtzIGZpbmUsIGFuZCB0aGUgZGV2aWNlIHNpbXBseSAKZGlz
-cmVnYXJkcyB0aGUgbG93ZXN0IDggYml0cy4gSSBkb24ndCBrbm93IGFib3V0IFVTQiwgYnV0IEkn
-dmUgY29tZSBhY3Jvc3MgClNvQyBkZXZpY2VzIHdoZXJlIGl0IGlzIHRoZSBsb3dlciAyNCBiaXRz
-IHRoYXQgY2FycnkgdGhlIGRhdGEsIGluIHdoaWNoIApjYXNlIFNORFJWX1BDTV9GTVRCSVRfUzI0
-TEUgaXMgbmVlZGVkLCBhbmQgdGhlbiB0aGVyZSBhcmUgZGV2aWNlcyB3aGljaCAKcmVhbGx5IGhh
-bmRsZSB0aGUgZGF0YSBpbiAyNCBiaXQgY2h1bmtzLCB1c2luZyBTTkRSVl9QQ01fRk1UQklUX1My
-NF8zTEUuCgpBdCBhbnkgcmF0ZSB0aGlzIGlzc3VlIHNlZW1zIHRvIGJlIGNsZWFyZWQgdXAuCgo+
-IEFub3RoZXIgZmluZGluZyBmcm9tIG15IGxhc3Qgcm91bmQgaW4gdGhlIHNwcmluZyBJIGRvIHJl
-bWVtYmVyIGNsZWFybHksIAo+IGlzIHRoYXQgZW5hYmxpbmcgYm90aCB0aGUgaW5wdXQgYW5kIG91
-dHB1dCBpbnRlcmZhY2VzIG1ha2VzIHRoaW5ncyBoYW5nIAo+IHVwICh0aW1lb3V0cyBhbmQgbm90
-aGluZyByZWFsbHkgd29ya3MpLiBCdXQgaWYgeW91IGRpc2FibGUgdGhlIGlucHV0IAo+IGludGVy
-ZmFjZSBhbmQgZW5hYmxlIHRoZSBvdXRwdXQgaW50ZXJmYWNlLCB5b3UgZ2V0IGFuIGFwcGFyZW50
-bHkgd29ya2luZyAKPiBwbGF5YmFjayBzdHJlYW0uIE9ubHkgbm8gc291bmQgY29tZXMgb3V0LiBJ
-ZiB5b3UgZGlzYWJsZSB0aGUgb3V0cHV0IGFuZCAKPiBlbmFibGUgaW5wdXQsIGNhcHR1cmUgaXRz
-ZWxmIHdvcmtzIGZpbmUuCgpPaywgdGhhbmtzIGZvciB0aGF0IHRpZGJpdCwgSSdkIHJlYWQgYWJv
-dXQgcHJvYmxlbXMgd2l0aCBzaW11bGF0ZW5vdXMgCmNhcHR1cmUgYW5kIHBsYXliYWNrIGluIHBy
-ZXZpb3VzIHRocmVhZHM7IEkgdGhvdWdodCBwZXJoYXBzIChob3BlZnVsbHkuLi4pIAp0aGUgb25s
-eSByZW1haW5pbmcgaXNzdWUgd2FzIHRoZSBzaWxlbnQgcGxheWJhY2suCgo+IFNvIHBlcmhhcHMg
-aXQgbmVlZHMgYW5vdGhlciBxdWlyayBzaW1pbGFyIGluIHNwaXJpdCB0byB0aGUgRS1NdToKPiAK
-PiAgICAgICAgICAvKiBXaGVuIGNhcHR1cmUgaXMgYWN0aXZlCj4gICAgICAgICAgICogc2FtcGxl
-IHJhdGUgc2hvdWxkbid0IGJlIGNoYW5nZWQKPiAgICAgICAgICAgKiBieSBwbGF5YmFjayBzdWJz
-dHJlYW0KPiAgICAgICAgICAgKi8KPiAgICAgICAgICBpZiAoc3Vicy0+ZGlyZWN0aW9uID09IFNO
-RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKPiAgICAgICAgICAgICAgICAgIGlmIAo+IChzdWJz
-LT5zdHJlYW0tPnN1YnN0cmVhbVtTTkRSVl9QQ01fU1RSRUFNX0NBUFRVUkVdLmludGVyZmFjZSAh
-PSAtMSkKPiAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwoKU28geW91ciB0aGVvcnkg
-aXMgdGhhdCByZWNvbmZpZ3VyaW5nIHRoZSBkZXZpY2Ugb25jZSBvcGVuZWQgZm9yIG9uZSAKZGly
-ZWN0aW9uIGlzIHdoYXQgY2F1c2VzIGl0IHRvIGhhbmc/Cgo+IE9yIHNvbWV0aGluZy4gSSBkbyBp
-bnRlbmQgdG8gY29udGludWUgcG9raW5nIGF0IGl0IHNvb25lciBvciBsYXRlciBidXQgCj4gY2Fu
-J3QgbWFrZSBhbnkgcHJvbWlzZXMuCgpJIHVuZGVyc3RhbmQuIFNpbmNlIEkgaGF2ZSBhIHNldHVw
-IGF0IGhvbWUgdGhhdCB3b3JrcyBub3cgSSB0aG91Z2h0IEknZCAKdGFrZSBhIGxvb2sgYXQgaXQg
-YW5kIHNlZSBob3cgZmFyIEkgZ2V0LgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2
-ZiAgICAgICAgICAgICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21t
-dW5pY2F0aW9ucyBBQiwgTHVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25l
-ICs0NiA0NiAyNzIgMjAxNiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMg
-NjEgMzAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Sep 30, 2015 at 01:54:13PM +0900, Jiada Wang wrote:
+> pm_runtime_enable is called in probe to enable runtime PM
+> for wm8962 codec, but pm_runtime_disable isn't called in remove
+> callback, nor is called in error path if probe fails after runtime
+> PM is enabled, this causes unbalanced pm_runtime_enable.
+> 
+> This patch Adds pm_runtime_disable in remove callback and error path,
+> to balance pm_runtime_enable.
+> 
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
