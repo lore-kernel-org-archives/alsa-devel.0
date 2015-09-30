@@ -1,15 +1,15 @@
 From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH 07/10] ASoC: img: Add binding document for
-	SPDIF input controller
-Date: Wed, 30 Sep 2015 16:08:13 +0100
-Message-ID: <1443625696-29296-8-git-send-email-Damien.Horsley@imgtec.com>
+Subject: [PATCH 03/10] ASoC: img: Add binding document for I2S
+	output controller
+Date: Wed, 30 Sep 2015 16:08:09 +0100
+Message-ID: <1443625696-29296-4-git-send-email-Damien.Horsley@imgtec.com>
 References: <1443625696-29296-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 816A12660F8
+ by alsa0.perex.cz (Postfix) with ESMTP id 839B5266162
  for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 17:10:03 +0200 (CEST)
 In-Reply-To: <1443625696-29296-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,60 +27,68 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add binding document for Imagination Technologies SPDIF
-input controller
+Add binding document for Imagination Technologies I2S output
+controller
 
 Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 ---
- .../devicetree/bindings/sound/img,spdif-in.txt     | 41 ++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
+ .../devicetree/bindings/sound/img,i2s-out.txt      | 49 ++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/img,i2s-out.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
+diff --git a/Documentation/devicetree/bindings/sound/img,i2s-out.txt b/Documentation/devicetree/bindings/sound/img,i2s-out.txt
 new file mode 100644
-index 0000000..aab9a81
+index 0000000..dc110ce
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-@@ -0,0 +1,41 @@
-+Imagination Technologies SPDIF Input Controller
++++ b/Documentation/devicetree/bindings/sound/img,i2s-out.txt
+@@ -0,0 +1,49 @@
++Imagination Technologies I2S Output Controller
 +
 +Required Properties:
 +
-+  - compatible : Compatible list, must contain "img,spdif-in"
++  - compatible : Compatible list, must contain "img,i2s-out"
 +
 +  - #sound-dai-cells : Must be equal to 0
 +
 +  - reg : Offset and length of the register set for the device
 +
++  - clocks : Contains an entry for each entry in clock-names
++
++  - clock-names : Must include the following entries:
++	"sys"	The system clock
++	"ref"	The reference clock
++
 +  - dmas: Contains an entry for each entry in dma-names.
 +
 +  - dma-names: Must include the following entry:
-+	"rx"
++	"tx"	Single DMA channel used by all active I2S channels
 +
-+  - clocks : Contains an entry for each entry in clock-names
++  - img,i2s-channels : Number of I2S channels instantiated in the I2S out block
 +
-+  - clock-names : Includes the following entries:
-+	"sys"	The system clock
++  - resets: Contains a phandle to the I2S out reset signal
++
++  - reset-names: Contains the reset signal name "rst"
 +
 +Optional Properties:
 +
-+  - resets: Should contain a phandle to the spdif in reset signal, if any
-+
-+  - reset-names: Should contain the reset signal name "rst", if a
-+	reset phandle is given
-+
-+  - interrupts : Contains the spdif in interrupt, if present
++  - interrupts : Contains the I2S out interrupts. Depending on
++	the configuration, there may be no interrupts, one interrupt,
++	or an interrupt per I2S channel
 +
 +Example:
 +
-+spdif_in: spdif-in@18100E00 {
-+	compatible = "img,spdif-in";
-+	reg = <0x18100E00 0x100>;
-+	interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
-+	dmas = <&mdc 15 0xffffffff 0>;
-+	dma-names = "rx";
-+	clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
-+	clock-names = "sys";
++i2s_out: i2s-out@18100A00 {
++	compatible = "img,i2s-out";
++	reg = <0x18100A00 0x200>;
++	interrupts = <GIC_SHARED 13 IRQ_TYPE_LEVEL_HIGH>;
++	dmas = <&mdc 23 0xffffffff 0>;
++	dma-names = "tx";
++	clocks = <&cr_periph SYS_CLK_I2S_OUT>,
++		 <&clk_core CLK_I2S>;
++	clock-names = "sys", "ref";
++	img,i2s-channels = <6>;
++	resets = <&pistachio_reset PISTACHIO_RESET_I2S_OUT>;
++	reset-names = "rst";
 +	#sound-dai-cells = <0>;
 +};
 -- 
