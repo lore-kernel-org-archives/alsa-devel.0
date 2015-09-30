@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Allow 4 channel recording on
-	AIF1
-Date: Wed, 30 Sep 2015 20:03:08 +0100
-Message-ID: <20150930190308.GY15635@sirena.org.uk>
-References: <1443472357-12150-1-git-send-email-benzh@chromium.org>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Wed, 30 Sep 2015 12:08:20 -0700
+Message-ID: <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
+References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150918135427.GI12027@sirena.org.uk>
+ <CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>
+ <20150930181004.GN15635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5025388219265735236=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7990F266415
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:03:15 +0200 (CEST)
-In-Reply-To: <1443472357-12150-1-git-send-email-benzh@chromium.org>
+Received: from mail-vk0-f52.google.com (mail-vk0-f52.google.com
+ [209.85.213.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DDCE266415
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:08:23 +0200 (CEST)
+Received: by vkgd64 with SMTP id d64so28128708vkg.0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 12:08:20 -0700 (PDT)
+In-Reply-To: <20150930181004.GN15635@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============5025388219265735236==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MTFjS3R2zZZVGaSB"
-Content-Disposition: inline
+On Wed, Sep 30, 2015 at 11:10 AM, Mark Brown <broonie@kernel.org> wrote:
+> I don't think that's true, the expectation is that a left/right sample
+> pair is time aligned so the left channel is definitely the start of
+> frame for all meaningful purposes.  It's certainly what I'd expect most
+> people to understand - choosing a counterintuitive definition to make
+> this one statement convenient is going to lead to constant confusion for
+> the mode which is clearest.
 
+To clarify, you propose following definition of normal FSYNC polarity:
+ - for I2S/left/right justified - frame starts with falling FSYNC edge
+ - for DSP A/B - frame starts with rising edge of FSYNC edge (plus offset)
+ - for AC97 my guess it is the same as DSP - frame starts with rising
+FSYNC edge.
 
---MTFjS3R2zZZVGaSB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Sep 28, 2015 at 01:32:37PM -0700, Ben Zhang wrote:
-> The codec supports 4 channel recording with TDM on AIF1.
-> This patch modifies the DAI capability to allow it.
-
-Is there no code change needed to configure for the number of channels
-being used?  I can't see any current handling of that, nor anything that
-looks like non-stereo handling in the DAPM graph.
-
---MTFjS3R2zZZVGaSB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWDDHrAAoJECTWi3JdVIfQJzkH/0q0Y+qtNG9pk+TKzrGyumkj
-yYM0DZlFjJpXKXnkeTOKIXeVqrzpkVY1zXj4Qh6XvdLbPpTPS6nMgLd6BKL59SpB
-PtnY88AMEdBNVxEjLXzD59BqAgGSUuE2PiENMVMnxZ13BUQzTHdJ1FkOBshRL6uG
-hToo7mYRu+e5YRtftx8xUfe0nAAbLgKjGyjyy2x5lNUrRP2Qjhxaxpn4kxu36UMQ
-UIOigd7sr5RH47DlYRNqyGK18gqpmEdyNEZPRkUoWBmJUPzR+TFl21Ph3AO1GQY3
-TKN7SkE3Y7xAdNXBfhzpX/ESEvR/gZejsFWSNGv7+ippJP4RIVOcgeqKDAlqSG4=
-=4eaa
------END PGP SIGNATURE-----
-
---MTFjS3R2zZZVGaSB--
-
---===============5025388219265735236==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5025388219265735236==--
+Is it correct?
