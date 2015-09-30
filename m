@@ -1,20 +1,17 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: Document DAI signal polarity
-Date: Tue, 29 Sep 2015 14:34:33 -0700
-Message-ID: <CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>
-References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
- <20150918135427.GI12027@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/7] ALSA: firewire-digi00x: add proc node to
+	show clock status
+Date: Wed, 30 Sep 2015 09:39:19 +0900
+Message-ID: <1443573562-24088-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
- [209.85.213.43])
- by alsa0.perex.cz (Postfix) with ESMTP id C301F265854
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 23:34:34 +0200 (CEST)
-Received: by vkfp126 with SMTP id p126so13661500vkf.3
- for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2015 14:34:33 -0700 (PDT)
-In-Reply-To: <20150918135427.GI12027@sirena.org.uk>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92B242659F0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:31 +0200 (CEST)
+In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +21,189 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+This commit adds proc node to show current clock status for debugging.
 
-On Fri, Sep 18, 2015 at 6:54 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Aug 31, 2015 at 01:50:58PM -0700, Anatol Pomozov wrote:
->
->> Per discussion at [1] currently there is no clear definition of what is FSYNC polarity.
->> Different drivers use its own definition of what is "normal" and what is "inverted"
->> fsync in different modes. This leads to compatibility problems between drivers.
->
-> Please keep changelogs wrapped at under 80 columns as is covered in
-> SubmittingPatches and please write free standing changelogs that don't
-> require reference to external discussions unless there is a strong
-> reason to do so.  This makes both the e-mails and the git changelogs
-> easier to read, ensuring that people don't need to go online to read
-> things and links don't go bad.
+As long as testing Digi 002 rack, registers can show local clock rate,
+local clock source. When external clock input such as S/PDIF is
+connected, the registers show the detection and external clock rate.
 
-I see that external links quite actively used by developers:
-$ git log --grep Link
+Additionally, the registers show the mode of optical digital input
+interface. Although, a tester with Digi 003 rack reports this makes no
+sense. Further investigation is required for Digi 003 series.
 
-but no problem, I can inline info into the commit description.
+Besides, in Digi 002 rack, the S/PDIF format must be IEC 60958-4,
+so-called professional.
 
->
->> + * For BCLK:
->> + *  - "normal" polarity means signal sensing happens at rising edge of BCLK
->> + *  - "inverted" polarity means signal sensing happens at falling edge of BCLK
->
-> This is OK, though it's more normal to say that data "is available" or
-> "is sampled" - the term "signal sensing" is a bit unusual.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/digi00x/Makefile       |  3 +-
+ sound/firewire/digi00x/digi00x-proc.c | 99 +++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c      |  2 +
+ sound/firewire/digi00x/digi00x.h      |  8 +++
+ 4 files changed, 111 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-proc.c
 
-Done.
-
->
->> + * For FSYNC:
->> + *  - "normal" polarity means frame starts at rising edge of FSYNC
->> + *  - "inverted" polarity means frame starts at falling edge of FSYNC
->
-> This isn't true (or at least isn't clear) for I2S based modes, normally
-> the left channel is thought of as the first channel sent and the left
-> channel starts on the falling edge of LRCLK, not the rising edge (which
-> signals the start of the right frame).
-
-In the I2S docs/specs I found I2S format has frames like you described
-- starts at falling edge, left channel first. Per description above
-this will have "negative" FSYNC polarity.
-
-The I2S docs do not define frame polarity. Polarity is purely Linux
-driver thing and we can choose definition we want.
-
->  It is true for DSP based modes.
->
-> It's probably going to be more sensible to define the modes and then
-> define inversion relative to the definition of the modes (which is
-> basically what the existing documentation is doing).  I think what we
-> really need here is an explicit definition of the DSP modes.
-
-The beauty of rule "positive polarity is when frame starts at rising
-FSYNC edge" that it easily applicable to all formats (I2S and DSP-*).
-
-Or you keep another definition of polarity in mind?
+diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
+index 32d8ebe..3e0f028 100644
+--- a/sound/firewire/digi00x/Makefile
++++ b/sound/firewire/digi00x/Makefile
+@@ -1,2 +1,3 @@
+-snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x.o
++snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
++			     digi00x.o
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
+diff --git a/sound/firewire/digi00x/digi00x-proc.c b/sound/firewire/digi00x/digi00x-proc.c
+new file mode 100644
+index 0000000..280d621
+--- /dev/null
++++ b/sound/firewire/digi00x/digi00x-proc.c
+@@ -0,0 +1,99 @@
++/*
++ * digi00x-proc.c - a part of driver for Digidesign Digi 002/003 family
++ *
++ * Copyright (c) 2014-2015 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./digi00x.h"
++
++static int get_optical_iface_mode(struct snd_dg00x *dg00x,
++				  enum snd_dg00x_optical_mode *mode)
++{
++	__be32 data;
++	int err;
++
++	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
++				 DG00X_ADDR_BASE + DG00X_OFFSET_OPT_IFACE_MODE,
++				 &data, sizeof(data), 0);
++	if (err >= 0)
++		*mode = be32_to_cpu(data) & 0x01;
++
++	return err;
++}
++
++static void proc_read_clock(struct snd_info_entry *entry,
++			    struct snd_info_buffer *buf)
++{
++	static const char *const source_name[] = {
++		[SND_DG00X_CLOCK_INTERNAL] = "internal",
++		[SND_DG00X_CLOCK_SPDIF] = "s/pdif",
++		[SND_DG00X_CLOCK_ADAT] = "adat",
++		[SND_DG00X_CLOCK_WORD] = "word clock",
++	};
++	static const char *const optical_name[] = {
++		[SND_DG00X_OPT_IFACE_MODE_ADAT] = "adat",
++		[SND_DG00X_OPT_IFACE_MODE_SPDIF] = "s/pdif",
++	};
++	struct snd_dg00x *dg00x = entry->private_data;
++	enum snd_dg00x_optical_mode mode;
++	unsigned int rate;
++	enum snd_dg00x_clock clock;
++	bool detect;
++
++	if (get_optical_iface_mode(dg00x, &mode) < 0)
++		return;
++	if (snd_dg00x_stream_get_local_rate(dg00x, &rate) < 0)
++		return;
++	if (snd_dg00x_stream_get_clock(dg00x, &clock) < 0)
++		return;
++
++	snd_iprintf(buf, "Optical mode: %s\n", optical_name[mode]);
++	snd_iprintf(buf, "Sampling Rate: %d\n", rate);
++	snd_iprintf(buf, "Clock Source: %s\n", source_name[clock]);
++
++	if (clock == SND_DG00X_CLOCK_INTERNAL)
++		return;
++
++	if (snd_dg00x_stream_check_external_clock(dg00x, &detect) < 0)
++		return;
++	snd_iprintf(buf, "External source: %s\n", detect ? "detected" : "not");
++	if (!detect)
++		return;
++
++	if (snd_dg00x_stream_get_external_rate(dg00x, &rate) >= 0)
++		snd_iprintf(buf, "External sampling rate: %d\n", rate);
++}
++
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x)
++{
++	struct snd_info_entry *root, *entry;
++
++	/*
++	 * All nodes are automatically removed at snd_card_disconnect(),
++	 * by following to link list.
++	 */
++	root = snd_info_create_card_entry(dg00x->card, "firewire",
++					  dg00x->card->proc_root);
++	if (root == NULL)
++		return;
++
++	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(root) < 0) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	entry = snd_info_create_card_entry(dg00x->card, "clock", root);
++	if (entry == NULL) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	snd_info_set_text_ops(entry, dg00x, proc_read_clock);
++	if (snd_info_register(entry) < 0) {
++		snd_info_free_entry(entry);
++		snd_info_free_entry(root);
++	}
++}
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index 11de41b..2c61eef 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -83,6 +83,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	snd_dg00x_proc_init(dg00x);
++
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+index 685d5f0..9ee259f 100644
+--- a/sound/firewire/digi00x/digi00x.h
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -19,6 +19,7 @@
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/info.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ 
+@@ -84,6 +85,12 @@ enum snd_dg00x_clock {
+ 	SND_DG00X_CLOCK_COUNT,
+ };
+ 
++enum snd_dg00x_optical_mode {
++	SND_DG00X_OPT_IFACE_MODE_ADAT = 0,
++	SND_DG00X_OPT_IFACE_MODE_SPDIF,
++	SND_DG00X_OPT_IFACE_MODE_COUNT,
++};
++
+ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		   enum amdtp_stream_direction dir);
+ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
+@@ -111,4 +118,5 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
+ 
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
+ #endif
+-- 
+2.1.4
