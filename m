@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on probe" to the asoc tree
-Date: Wed, 30 Sep 2015 20:32:14 +0100
-Message-ID: <E1ZhN6s-00061D-Je@finisterre>
-References: <557B0528.2060404@eurekelettronica.it>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <557B0528.2060404@eurekelettronica.it>
-Sender: stable-owner@vger.kernel.org
-To: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: sun4i-codec: Remove redundant
+	SND_PCM_RATE_KNOT" to the asoc tree
+Date: Wed, 30 Sep 2015 20:32:15 +0100
+Message-ID: <E1ZhN6t-00061o-Qe@finisterre>
+References: <1443555798-16001-2-git-send-email-maxime.ripard@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FCFB266374
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:32:23 +0200 (CEST)
+In-Reply-To: <1443555798-16001-2-git-send-email-maxime.ripard@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on probe
+   ASoC: sun4i-codec: Remove redundant SND_PCM_RATE_KNOT
 
 has been applied to the asoc tree at
 
@@ -37,33 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From e256da84a04ea31c3c215997c847609af224e8f4 Mon Sep 17 00:00:00 2001
-From: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
-Date: Fri, 25 Sep 2015 21:33:41 +0200
-Subject: [PATCH] ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on
- probe
+>From debb97248741597fa9f38f563f2b9a17250ee4c5 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Tue, 29 Sep 2015 21:43:18 +0200
+Subject: [PATCH] ASoC: sun4i-codec: Remove redundant SND_PCM_RATE_KNOT
 
-Signed-off-by: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+The SND_PCM_RATE_KNOT covers all the rate settings, even though some that
+we don't support, while we also list all the rate we support. Simply remove
+it.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/sgtl5000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 6e7843e..f540f82 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1376,8 +1376,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
- 
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
--			SGTL5000_BIAS_R_MASK,
--			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
-+			SGTL5000_BIAS_VOLT_MASK,
-+			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
- 	/*
- 	 * disable DAP
- 	 * TODO:
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 77408af..4778055 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -389,8 +389,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
+ 		.rate_max	= 192000,
+ 		.rates		= SNDRV_PCM_RATE_8000_48000 |
+ 				  SNDRV_PCM_RATE_96000 |
+-				  SNDRV_PCM_RATE_192000 |
+-				  SNDRV_PCM_RATE_KNOT,
++				  SNDRV_PCM_RATE_192000,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 		.sig_bits	= 24,
 -- 
 2.5.0
