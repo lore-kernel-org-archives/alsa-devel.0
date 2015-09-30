@@ -1,16 +1,28 @@
-From: kbuild test robot <lkp-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 06/10] ASoC: img: Add driver for parallel
- output controller
-Date: Wed, 30 Sep 2015 23:48:00 +0800
-Message-ID: <201509302334.zqf2LD5F%fengguang.wu@intel.com>
-References: <1443625696-29296-7-git-send-email-Damien.Horsley@imgtec.com>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 08/10] ASoC: img: Add driver for SPDIF
+ input controller
+Date: Wed, 30 Sep 2015 23:53:30 +0800
+Message-ID: <201509302313.wAQ6yuJF%fengguang.wu@intel.com>
+References: <1443625696-29296-9-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EBED26608A
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 17:54:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1443625696-29296-7-git-send-email-Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: kbuild-all-JC7UmRfGjtg@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "Damien.Horsley" <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+In-Reply-To: <1443625696-29296-9-git-send-email-Damien.Horsley@imgtec.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Damien.Horsley,
@@ -25,42 +37,26 @@ reproduce:
 
 sparse warnings: (new ones prefixed by >>)
 
->> sound/soc/img/img-parallel-out.c:198:16: sparse: incorrect type in assignment (different base types)
-   sound/soc/img/img-parallel-out.c:198:16:    expected unsigned int [unsigned] format
-   sound/soc/img/img-parallel-out.c:198:16:    got restricted snd_pcm_format_t
+>> sound/soc/img/img-spdif-in.c:650:16: sparse: incorrect type in assignment (different base types)
+   sound/soc/img/img-spdif-in.c:650:16:    expected unsigned int [unsigned] format
+   sound/soc/img/img-spdif-in.c:650:16:    got restricted snd_pcm_format_t
+>> sound/soc/img/img-spdif-in.c:652:23: sparse: restricted snd_pcm_format_t degrades to integer
 
-vim +198 sound/soc/img/img-parallel-out.c
+vim +650 sound/soc/img/img-spdif-in.c
 
-   182		}
-   183	
-   184		spin_unlock_irqrestore(&prl->lock, flags);
-   185	
-   186		return ret;
-   187	}
-   188	
-   189	static int img_prl_out_hw_params(struct snd_pcm_substream *substream,
-   190		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-   191	{
-   192		struct img_prl_out *prl = snd_soc_dai_get_drvdata(dai);
-   193		unsigned int rate, format, channels;
-   194		u32 reg, reg_set = 0;
-   195		unsigned long flags;
-   196	
-   197		rate = params_rate(params);
- > 198		format = params_format(params);
-   199		channels = params_channels(params);
-   200	
-   201		switch (params_format(params)) {
-   202		case SNDRV_PCM_FORMAT_S32_LE:
-   203			reg_set |= IMG_PRL_OUT_CTL_PACKH_MASK;
-   204			break;
-   205		case SNDRV_PCM_FORMAT_S24_LE:
-   206			break;
+   644	{
+   645		struct img_spdif_in *spdif = snd_soc_dai_get_drvdata(dai);
+   646		unsigned int rate, channels, format;
+   647	
+   648		rate = params_rate(params);
+   649		channels = params_channels(params);
+ > 650		format = params_format(params);
+   651	
+ > 652		if (format != SNDRV_PCM_FORMAT_S32_LE)
+   653			return -EINVAL;
+   654	
+   655		if (channels != 2)
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
