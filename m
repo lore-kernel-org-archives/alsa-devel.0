@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v2 5/8] ASoC: topology: ABI - Change stream
-	formats to a bitwise flag
-Date: Wed, 30 Sep 2015 17:31:44 +0800
-Message-ID: <eea48b17c22cc093bc808a141593a46f993065ae.1443605139.git.mengdong.lin@intel.com>
+Subject: [PATCH v2 6/8] ASoC: topology: ABI - Add the type for
+	BE DAI link
+Date: Wed, 30 Sep 2015 17:32:04 +0800
+Message-ID: <68a98c1c67380b058865fa8e8cb05e2377b30f14.1443605139.git.mengdong.lin@intel.com>
 References: <cover.1443605139.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EE85B265B6C
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 11:17:14 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99159265AF0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 11:17:39 +0200 (CEST)
 In-Reply-To: <cover.1443605139.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,27 +25,26 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+From: Vedang Patel <vedang.patel@intel.com>
 
-The toplogy user space tool will generate this bitwise flag by using
-SNDRV_PCM_FORMAT_* exposed by asound.h, and the topology core will copy
-this flag when generating DAI streams.
+Define the topology type for BE DAI link: SND_SOC_TPLG_TYPE_BACKEND_LINK.
 
+Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 2181480..eeb74a9c 100644
+index eeb74a9c..f75fd29 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -198,7 +198,7 @@ struct snd_soc_tplg_ctl_hdr {
- struct snd_soc_tplg_stream_caps {
- 	__le32 size;		/* in bytes of this structure */
- 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	__le64 formats[SND_SOC_TPLG_MAX_FORMATS];	/* supported formats SNDRV_PCM_FMTBIT_* */
-+	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
- 	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
- 	__le32 rate_min;	/* min rate */
- 	__le32 rate_max;	/* max rate */
+@@ -103,7 +103,8 @@
+ #define SND_SOC_TPLG_TYPE_PCM		7
+ #define SND_SOC_TPLG_TYPE_MANIFEST	8
+ #define SND_SOC_TPLG_TYPE_CODEC_LINK	9
+-#define SND_SOC_TPLG_TYPE_PDATA		10
++#define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
++#define SND_SOC_TPLG_TYPE_PDATA		11
+ #define SND_SOC_TPLG_TYPE_MAX	SND_SOC_TPLG_TYPE_PDATA
+ 
+ /* vendor block IDs - please add new vendor types to end */
 -- 
 1.9.1
