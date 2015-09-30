@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-ssi: Fix DAI hardware signal
-	inversions" to the asoc tree
-Date: Wed, 30 Sep 2015 20:32:19 +0100
-Message-ID: <E1ZhN6x-00064K-V6@finisterre>
-References: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Wed, 30 Sep 2015 21:34:46 +0200
+Message-ID: <560C3956.9000302@metafoo.de>
+References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>	<20150918135427.GI12027@sirena.org.uk>	<CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>	<20150930181004.GN15635@sirena.org.uk>
+ <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4098641303012429753=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04D2926648B
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:32:28 +0200 (CEST)
-In-Reply-To: <1442504814-16965-1-git-send-email-benoit@wsystem.com>
+Received: from smtp-out-050.synserver.de (smtp-out-107.synserver.de
+ [212.40.185.107])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1199C2665EE
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:34:49 +0200 (CEST)
+In-Reply-To: <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,127 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============4098641303012429753==
-Content-Type: text/plain
+On 09/30/2015 09:08 PM, Anatol Pomozov wrote:
+>  - for I2S/left/right justified - frame starts with falling FSYNC edge
 
-The patch
+This is what most drivers implement:
 
-   ASoC: imx-ssi: Fix DAI hardware signal inversions
+I2S: Left channel starts with the falling edge, right channel starts with
+the rising edge (data is delayed by one clock cycle)
 
-has been applied to the asoc tree at
+Right/Left justified: Left channel starts with the rising edge, right
+channel starts with the falling edge
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+DSP A/B: Frame starts with the rising edge. Channels are spaced by the
+configured slot width (e.g. first channel at offset 0, second channel at
+offset 16, third channel at offset 32, ...). If the slot with has not been
+configured explicitly using the set_tdm_slots() API the slot with is the
+number of bits in one single-channel sample (Return value of params_width()).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b7b01d345b83602a42b6ff02cacb9d9ada5ecd0a Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit@wsystem.com>
-Date: Tue, 29 Sep 2015 17:59:14 +0200
-Subject: [PATCH] ASoC: imx-ssi: Fix DAI hardware signal inversions
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-SND_SOC_DAIFMT_{IB|NB}_{IF|NF} are defined as inverting or not BCLK or
-FRM relatively to what is standard for the specified DAI hardware audio
-format. Consequently, the absolute polarities of these signals cannot be
-derived only from these settings as this driver did. The format has to
-be taken into account too.
-
-This fixes inverted left/right channels in I²S mode.
-
-Signed-off-by: Benoît Thébaudeau <benoit@wsystem.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/imx-ssi.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 48b2d24..b95132e 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -95,7 +95,8 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		/* data on rising edge of bclk, frame low 1clk before data */
--		strcr |= SSI_STCR_TFSI | SSI_STCR_TEFS | SSI_STCR_TXBIT0;
-+		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSI |
-+			SSI_STCR_TEFS;
- 		scr |= SSI_SCR_NET;
- 		if (ssi->flags & IMX_SSI_USE_I2S_SLAVE) {
- 			scr &= ~SSI_I2S_MODE_MASK;
-@@ -104,33 +105,31 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		/* data on rising edge of bclk, frame high with data */
--		strcr |= SSI_STCR_TXBIT0;
-+		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_B:
- 		/* data on rising edge of bclk, frame high with data */
--		strcr |= SSI_STCR_TFSL | SSI_STCR_TXBIT0;
-+		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSL;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 		/* data on rising edge of bclk, frame high 1clk before data */
--		strcr |= SSI_STCR_TFSL | SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
-+		strcr |= SSI_STCR_TXBIT0 | SSI_STCR_TSCKP | SSI_STCR_TFSL |
-+			SSI_STCR_TEFS;
- 		break;
- 	}
- 
- 	/* DAI clock inversion */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_IB_IF:
--		strcr |= SSI_STCR_TFSI;
--		strcr &= ~SSI_STCR_TSCKP;
-+		strcr ^= SSI_STCR_TSCKP | SSI_STCR_TFSI;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
--		strcr &= ~(SSI_STCR_TSCKP | SSI_STCR_TFSI);
-+		strcr ^= SSI_STCR_TSCKP;
- 		break;
- 	case SND_SOC_DAIFMT_NB_IF:
--		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP;
-+		strcr ^= SSI_STCR_TFSI;
- 		break;
- 	case SND_SOC_DAIFMT_NB_NF:
--		strcr &= ~SSI_STCR_TFSI;
--		strcr |= SSI_STCR_TSCKP;
- 		break;
- 	}
- 
--- 
-2.5.0
-
-
---===============4098641303012429753==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4098641303012429753==--
+When using I2S or left/right justified in TDM mode channels are also spaced
+by the configured slot width and the second edge should be ignored.
