@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: balance pm_runtime_enable" to
-	the asoc tree
-Date: Wed, 30 Sep 2015 20:32:18 +0100
-Message-ID: <E1ZhN6w-00063j-UJ@finisterre>
-References: <1443588853-8778-1-git-send-email-jiada_wang@mentor.com>
+Subject: Applied "ASoC: Add SOC_DOUBLE_R_EXT" to the asoc tree
+Date: Wed, 30 Sep 2015 20:32:17 +0100
+Message-ID: <E1ZhN6v-000638-UZ@finisterre>
+References: <73e9957cca4f29bd1b9881c4518132e47b2f00b4.1443113192.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EDBF326646A
+ by alsa0.perex.cz (Postfix) with ESMTP id 0135826644E
  for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:32:26 +0200 (CEST)
-In-Reply-To: <1443588853-8778-1-git-send-email-jiada_wang@mentor.com>
+In-Reply-To: <73e9957cca4f29bd1b9881c4518132e47b2f00b4.1443113192.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: balance pm_runtime_enable
+   ASoC: Add SOC_DOUBLE_R_EXT
 
 has been applied to the asoc tree at
 
@@ -53,55 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 57622aef86d21d459e937c72f578050ff4a91af5 Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Wed, 30 Sep 2015 13:54:13 +0900
-Subject: [PATCH] ASoC: wm8962: balance pm_runtime_enable
+>From c25c79b468a61ad8a54f764553056e2e2a427ea8 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 29 Sep 2015 16:43:56 +0100
+Subject: [PATCH] ASoC: Add SOC_DOUBLE_R_EXT
 
-pm_runtime_enable is called in probe to enable runtime PM
-for wm8962 codec, but pm_runtime_disable isn't called in remove
-callback, nor is called in error path if probe fails after runtime
-PM is enabled, this causes unbalanced pm_runtime_enable.
+_EXT version of SOC_DOUBLE_R required to allow for custom handlers.
 
-This patch Adds pm_runtime_disable in remove callback and error path,
-to balance pm_runtime_enable.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/sound/soc.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b4eb975..85a2c54 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3759,7 +3759,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
- 	if (ret < 0)
--		goto err_enable;
-+		goto err_pm_runtime;
- 
- 	regcache_cache_only(wm8962->regmap, true);
- 
-@@ -3768,6 +3768,8 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 
- 	return 0;
- 
-+err_pm_runtime:
-+	pm_runtime_disable(&i2c->dev);
- err_enable:
- 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
- err:
-@@ -3777,6 +3779,7 @@ err:
- static int wm8962_i2c_remove(struct i2c_client *client)
- {
- 	snd_soc_unregister_codec(&client->dev);
-+	pm_runtime_disable(&client->dev);
- 	return 0;
- }
- 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 884e728..2d79cb5 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -217,6 +217,13 @@
+ 	.get = xhandler_get, .put = xhandler_put, \
+ 	.private_value = \
+ 		SOC_DOUBLE_VALUE(reg, shift_left, shift_right, max, invert, 0) }
++#define SOC_DOUBLE_R_EXT(xname, reg_left, reg_right, xshift, xmax, xinvert,\
++	 xhandler_get, xhandler_put) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
++	.info = snd_soc_info_volsw, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
++					    xmax, xinvert) }
+ #define SOC_SINGLE_EXT_TLV(xname, xreg, xshift, xmax, xinvert,\
+ 	 xhandler_get, xhandler_put, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 -- 
 2.5.0
