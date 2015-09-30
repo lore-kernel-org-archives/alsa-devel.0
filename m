@@ -1,17 +1,17 @@
-From: Alexandre Schnegg <aschnegg@digger.ch>
-Subject: Re: speaker-test error using sgtl5000 and imx27
-Date: Wed, 30 Sep 2015 08:28:49 +0200
-Message-ID: <560B8121.1070302@digger.ch>
-References: <039601d0ef9b$d40a0460$7c1e0d20$@digger.ch>
- <560A9F92.4070605@digger.ch> <560AD6F3.9020307@eurek.it>
+From: Panu Matilainen <pmatilai@laiskiainen.org>
+Subject: Re: Zoom R16/24 playback slient
+Date: Wed, 30 Sep 2015 09:43:13 +0300
+Message-ID: <560B8481.1080304@laiskiainen.org>
+References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-sh2.infomaniak.ch (smtp-sh2.infomaniak.ch [128.65.195.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 03A8B2606B2
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 08:28:52 +0200 (CEST)
-In-Reply-To: <560AD6F3.9020307@eurek.it>
+Received: from homiemail-a82.g.dreamhost.com (sub5.mail.dreamhost.com
+ [208.113.200.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17C6F26069D
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 08:43:19 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,148 +21,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: gianluca <gianlucarenzi@eurek.it>, alsa-devel@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-TGUgMjkuMDkuMjAxNSAyMDoyMiwgZ2lhbmx1Y2EgYSDDqWNyaXQgOgo+IE9uIDA5LzI5LzIwMTUg
-MDQ6MjYgUE0sIEFsZXhhbmRyZSBTY2huZWdnIHdyb3RlOgo+PiBIZWxsbywKPj4KPj4gQWZ0ZXIg
-YSBmZXcgcmVzZWFyY2hlcywgaXQgc2VlbXMgdG8gbWUgdGhhdCB0aGUgcHJvYmxlbSBjb21lIGZy
-b20gdGhlCj4+IERNQS4gVGhlIFNTSSBpcyBzZXQgdXAgY29ycmVjdGx5IGFuZCB3YWl0cyBmb3Ig
-ZGF0YSBmcm9tIHRoZSBETUEsIGJ1dAo+PiB0aGUgRE1BIGRvZXNuJ3Qgbm90IHNlZW0gdG8gdG8g
-ZG8gaGlzIGpvYi4KPj4KPj4gRG9lcyBhbnlvbmUgY2FuIGNvbmZpcm0gbWUgdGhhdCB0aGUgbW9k
-dWxlIGlteF9wY21fZG1hIGlzIHdvcmtpbmcKPj4gcHJvcGVybHkgd2l0aCBGcmVlc2NhbGUgaW14
-MjcgYW5kIG1haW5saW5lIGtlcm5lbD8KPj4KPj4gQW55b25lIGhhcyBnb3QgYW4gYXVkaW8gY29k
-ZWMgd29ya2luZyB3aXRoIHRoZSBGcmVlc2NhbGUgIGlteDI3IGFuZAo+PiBtYWlubGluZSBrZXJu
-ZWw/Cj4+Cj4+IFRoYW5rIHlvdSBpbiBhZHZhbmNlIGZvciB5b3VyIGhlbHAuCj4+Cj4+IEJlc3Qg
-cmVnYXJkcwo+PiBBbGV4YW5kcmUgU2NobmVnZwo+Pgo+PiBMZSAxNS4wOS4yMDE1IDExOjQ5LCBB
-bGV4YW5kcmUgU2NobmVnZyBhIMOpY3JpdCA6Cj4+PiBIZWxsbywKPj4+Cj4+Pgo+Pj4gSSB3b3Vs
-ZCBsaWtlIHRvIHVzZSB0aGUgRnJlZXNjYWxlIFNHVGw1MDAwIGF1ZGlvIGNvZGVjIHdpdGggdGhl
-IAo+Pj4gRnJlZXNjYWxlCj4+PiBpbXgyNyBwcm9jZXNzb3IuCj4+Pgo+Pj4KPgo+IEkgZmFjZWQg
-YSBwcm9ibGVtIGxpa2UgdGhhdCBidXQgaW4gdGhlIG9wcG9zaXRlIHdheTogSSB3YXMgdW5hYmxl
-IHRvIAo+IHJlY29yZCBhbnl0aGluZyBmcm9tIG1pYyBvciBsaW5lLWluLgo+IEkgc2F3IGFsbCBs
-b2dpYyBsZXZlbHMgcnVubmluZywgYnV0IG5vIGludGVycnVwdCBuZXZlciBjYXRjaGVkIGJ5IHRo
-ZSAKPiBkcml2ZXIuIEJlY2F1c2Ugb2YgdGhlIENMS01VWF9TRUwgd2FzIG5vdCBzZXQuIFN0cmFu
-Z2VseSBpdCB3b3JrZWQgaW4gCj4gcGxheWJhY2sgbW9kZS4gQnV0IG5vdCBmb3IgcmVjb3JkLiA6
-LS8KPgo+IEhhdmUgeW91IHJlYWQgdGhpcz8KPgo+IGh0dHBzOi8vY29tbXVuaXR5LmZyZWVzY2Fs
-ZS5jb20vbWVzc2FnZS81NDA4ODUjNTQwODg1Cj4KPj4gSSBoYWQgZmluYWxseSBnb3QgYSBzb2x1
-dGlvbiB0byB0aGlzIGlzc3VlOiB0aGUgCj4+IEhXX0RJR0NUTF9DVFJMX1NBSUZfQ0xLTVVYX1NF
-TCB3YXMgbm90IHNldC4KPj4KPgo+IE9uIHRoZSBwbGF0Zm9ybSBpbml0IGNvZGUgeW91IGhhdmUg
-dG8gY2FsbDoKPgo+PiBteHNfc2FpZl9jbGttdXhfc2VsZWN0KE1YU19ESUdDVExfU0FJRl9DTEtN
-VVhfRVhUTVNUUjApOwo+Cj4KPiBPYnZpb3VzbHkgdGhlIGNvcnJlY3QgZnVuY3Rpb24gZm9yIGlN
-WDI3IHdpbGwgYmUgdG8gZmluZCBpbjoKPgo+PiBkcml2ZXJzL2Nsay9pbXgvY2xrLWlteDI3LmMK
-SSBjYW5ub3QgZmluZCBhbiBlcXVpdmFsZW50IGZ1bmN0aW9uIGluIHRoaXMgZmlsZS4KClRoZSBp
-bXgyNyBkb2Vzbid0IGhhdmUgYSBTQUlGIHVuaXQuIEl0IGhhcyBhIFNTSSB1bml0LgoKVGhhbmsg
-eW91IGZvciB5b3VyIHJlcGx5Lgo+Cj4gR29vZCBsdWNrLgo+Cj4+PiBVbmZvcnR1bmF0ZWx5LCBJ
-IGdldCB0aGlzIGVycm9yIHdoZW4gSSB0cnkgdG8gcnVuIDwgc3BlYWtlci10ZXN0ID46Cj4+Pgo+
-Pj4KPj4+ICMgc3BlYWtlci10ZXN0Cj4+Pgo+Pj4KPj4+IHNwZWFrZXItdGVzdCAxLjAuMjgKPj4+
-Cj4+Pgo+Pj4gUGxheWJhY2sgZGV2aWNlIGlzIGRlZmF1bHQKPj4+Cj4+PiBTdHJlYW0gcGFyYW1l
-dGVycyBhcmUgNDgwMDBIeiwgUzE2X0xFLCAxIGNoYW5uZWxzCj4+Pgo+Pj4gVXNpbmcgMTYgb2N0
-YXZlcyBvZiBwaW5rIG5vaXNlCj4+Pgo+Pj4gUmF0ZSBzZXQgdG8gNDgwMDBIeiAocmVxdWVzdGVk
-IDQ4MDAwSHopCj4+Pgo+Pj4gQnVmZmVyIHNpemUgcmFuZ2UgZnJvbSAxMjggdG8gMzI3NjgKPj4+
-Cj4+PiBQZXJpb2Qgc2l6ZSByYW5nZSBmcm9tIDY0IHRvIDE2Mzg0Cj4+Pgo+Pj4gVXNpbmcgbWF4
-IGJ1ZmZlciBzaXplIDMyNzY4Cj4+Pgo+Pj4gUGVyaW9kcyA9IDQKPj4+Cj4+PiB3YXMgc2V0IHBl
-cmlvZF9zaXplID0gODE5Mgo+Pj4KPj4+IHdhcyBzZXQgYnVmZmVyX3NpemUgPSAzMjc2OAo+Pj4K
-Pj4+IDAgLSBGcm9udCBMZWZ0Cj4+Pgo+Pj4gV3JpdGUgZXJyb3I6IC01LElucHV0L291dHB1dCBl
-cnJvcgo+Pj4KPj4+IHhydW5fcmVjb3ZlcnkgZmFpbGVkOiAtNSxJbnB1dC9vdXRwdXQgZXJyb3IK
-Pj4+Cj4+PiBUcmFuc2ZlciBmYWlsZWQ6IElucHV0L291dHB1dCBlcnJvcgo+Pj4KPj4+Cj4+PiBU
-aGUgY29kZWMgaXMgY29ubmVjdGVkIHRvIFNTSTIgcGlucyBhbmQgSSB3b3VsZCBsaWtlIHRvIHVz
-ZSB0aGUgU1NJMAo+Pj4gaW50ZXJuYWwgcG9ydCBpbiBhc3luY2hyb25vdXMgbW9kZSAoNCB3aXJl
-cykuIFRoZSBjb21tYW5kIGludGVyZmFjZSBpcwo+Pj4gSTJDMS4KPj4+IFRoZSBjb2RlYyBzZWVt
-cyB0byB3b3JrIGJlY2F1c2UgaXQgZ2VuZXJhdGVzIGJvdGggYml0IGFuZCBmcmFtZSBjbG9ja3MK
-Pj4+ICh0aGUKPj4+IGNvZGVjIGlzIHRoZSBtYXN0ZXIpIGJ1dCBubyBkYXRhIGFyZSBjb21pbmcg
-ZnJvbSB0aGUgcHJvY2Vzc29yLiBJJ20gCj4+PiB1c2luZwo+Pj4ga2VybmVsIDQuMS43IGJ1dCBJ
-IGhhdmUgZ290IHRoZSBzYW1lIGVycm9yIHdpdGggdmVyc2lvbnMgMy4xOS44LCA0LjAuNQo+Pj4g
-YW5kCj4+PiA0LjAuOS4gSSBoYXZlIGFsc28gdHJpZWQgdGhlIDwgaW14LXNndGw1MDAwID4gZHJp
-dmVyIGFuZCBJIGdldCB0aGUgc2FtZQo+Pj4gZXJyb3IuIEkgY2FuIHVzZSA8IGFsc2FtaXhlciA+
-IHdpdGggbm8gaXNzdWUuCj4+Pgo+Pj4KPj4+IEhlcmUgYXJlIG15IGRldmljZSB0cmVlIGJpbmRp
-bmdzOgo+Pj4KPj4+Cj4+PiAgICAgICAgICAgICAgICAgIHNvdW5kIHsKPj4+Cj4+PiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAic2ltcGxlLWF1ZGlvLWNhcmQi
-Owo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNh
-cmQsbmFtZSA9Cj4+PiAic2d0bDUwMDAtYXVkaW8iOwo+Pj4KPj4+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0ID0gImkycyI7Cj4+Pgo+Pj4g
-c2ltcGxlLWF1ZGlvLWNhcmQsYml0Y2xvY2stbWFzdGVyID0KPj4+IDwmZGFpbGluazBfbWFzdGVy
-PjsKPj4+Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1j
-YXJkLGZyYW1lLW1hc3RlciA9Cj4+PiA8JmRhaWxpbmswX21hc3Rlcj47Cj4+Pgo+Pj4KPj4+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsd2lkZ2V0cyA9
-Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Ik1pY3JvcGhvbmUiLCAiTWljIAo+Pj4gSmFjayIsCj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIkhlYWRwaG9uZSIsICJIZWFkcGhvbmUKPj4+
-IEphY2siOwo+Pj4KPj4+Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpbXBs
-ZS1hdWRpby1jYXJkLHJvdXRpbmcgPQo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICJNSUNfSU4iLCAiTWljIEphY2siLAo+Pj4KPj4+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJNaWMgSmFjayIsICJN
-aWMgQmlhcyIsCj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIkhlYWRwaG9uZSBKYWNrIiwKPj4+ICJIUF9PVVQiOwo+Pj4KPj4+Cj4+PiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGNwdSB7Cj4+Pgo+
-Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc291bmQt
-ZGFpID0gPCZzc2kxIDA+Owo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fTsKPj4+Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYWlsaW5rMF9t
-YXN0ZXI6Cj4+PiBzaW1wbGUtYXVkaW8tY2FyZCxjb2RlYyB7Cj4+Pgo+Pj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc291bmQtZGFpID0gCj4+PiA8JnNn
-dGw1MDAwPjsKPj4+Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBjbG9ja3MgPSA8Jm1jbGs+Owo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfTsKPj4+Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICB9Owo+Pj4KPj4+Cj4+PiAg
-ICAgICAgICAgICAgICAgIG1jbGs6IGFzdm1wYyB7Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAjY2xvY2stY2VsbHMgPSA8MD47Cj4+Pgo+Pj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsKPj4+Cj4+PiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb2NrLWZyZXF1ZW5jeSA9IDwxMjI4ODAwMD47
-Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICB9Owo+Pj4KPj4+Cj4+PiAmc3NpMSB7Cj4+Pgo+Pj4g
-ICAgICAgICAgICAgICAgICAjc291bmQtZGFpLWNlbGxzID0gPDE+Owo+Pj4KPj4+ICAgICAgICAg
-ICAgICAgICAgc3RhdHVzID0gIm9rYXkiOwo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgZnNsLGF1
-ZG11eC1wb3J0ID0gPE1YMjdfQVVETVVYX1BQQ1IyX1NTSV9QSU5TXzI+Owo+Pj4KPj4+ICAgICAg
-ICAgICAgICAgICAgZnNsLHBvcnQtY29uZmlnID0gPAo+Pj4KPj4+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgKElNWF9BVURNVVhfVjFfUENSX1NZTiB8Cj4+Pgo+Pj4gSU1YX0FVRE1V
-WF9WMV9QQ1JfUlhEU0VMKE1YMjdfQVVETVVYX0hQQ1IxX1NTSTApKQo+Pj4KPj4+ICAgICAgICAg
-ICAgICAgICAgPjsKPj4+Cj4+PiB9Owo+Pj4KPj4+Cj4+PiAmYXVkbXV4IHsKPj4+Cj4+PiAgICAg
-ICAgICAgICAgICAgIHBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7Cj4+Pgo+Pj4gICAgICAgICAg
-ICAgICAgICBwaW5jdHJsLTAgPSA8JnBpbmN0cmxfc3NpMj47Cj4+Pgo+Pj4gICAgICAgICAgICAg
-ICAgICBzdGF0dXMgPSAib2theSI7Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICBmc2wsYXVkbXV4
-LXBvcnQgPSA8TVgyN19BVURNVVhfSFBDUjFfU1NJMD47Cj4+Pgo+Pj4gICAgICAgICAgICAgICAg
-ICBmc2wscG9ydC1jb25maWcgPSA8Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAoSU1YX0FVRE1VWF9WMV9QQ1JfU1lOIHwKPj4+Cj4+PiBJTVhfQVVETVVYX1YxX1BDUl9U
-RkNTRUwoTVgyN19BVURNVVhfUFBDUjJfU1NJX1BJTlNfMikgfAo+Pj4KPj4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgSU1YX0FVRE1VWF9WMV9QQ1JfVEZTRElSIHwKPj4+Cj4+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIElNWF9BVURNVVhfVjFfUENSX1RDTEtESVIg
-fAo+Pj4KPj4+IElNWF9BVURNVVhfVjFfUENSX1JYRFNFTChNWDI3X0FVRE1VWF9QUENSMl9TU0lf
-UElOU18yKSkKPj4+Cj4+PiAgICAgICAgICAgICAgICAgID47Cj4+Pgo+Pj4gfTsKPj4+Cj4+Pgo+
-Pj4gJmkyYzEgewo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgY2xvY2stZnJlcXVlbmN5ID0gPDEw
-MDAwMD47Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQi
-Owo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgcGluY3RybC0wID0gPCZwaW5jdHJsX2kyYzE+Owo+
-Pj4KPj4+ICAgICAgICAgICAgICAgICAgc3RhdHVzID0gIm9rYXkiOwo+Pj4KPj4+Cj4+PiAgICAg
-ICAgICAgICAgICAgIHNndGw1MDAwOiBzZ3RsNTAwMEAwYSB7Cj4+Pgo+Pj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAjc291bmQtZGFpLWNlbGxzID0gPDA+Owo+Pj4KPj4+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmc2wsc2d0bDUwMDAiOwo+
-Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDB4MGE+Owo+Pj4K
-Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvY2tzID0gPCZtY2xrPjsKPj4+
-Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1pY2JpYXMtcmVzaXN0b3Itay1v
-aG1zID0gPDI+Owo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWljYmlh
-cy12b2x0YWdlLW0tdm9sdHMgPSA8MjI1MD47Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBWRERBLXN1cHBseSA9IDwmcmVnXzJwOHY+Owo+Pj4KPj4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIFZERElPLXN1cHBseSA9IDwmcmVnXzJwOHY+Owo+Pj4KPj4+
-ICAgICAgICAgICAgICAgICAgfTsKPj4+Cj4+PiB9Owo+Pj4KPj4+Cj4+PiBwaW5jdHJsX3NzaTI6
-IHNzaTJncnAgewo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZnNsLHBp
-bnMgPSA8Cj4+Pgo+Pj4KPj4+IE1YMjdfUEFEX1NTSTJfRlNfX1NTSTJfRlMgMHgwCj4+Pgo+Pj4g
-TVgyN19QQURfU1NJMl9SWERBVF9fU1NJMl9SWERBVCAweDAKPj4+Cj4+PiBNWDI3X1BBRF9TU0ky
-X1RYREFUX19TU0kyX1RYREFUIDB4MAo+Pj4KPj4+Cj4+PiBNWDI3X1BBRF9TU0kyX0NMS19fU1NJ
-Ml9DTEsKPj4+IDB4MAo+Pj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgID47Cj4+Pgo+Pj4gICAgICAgICAgICAgICAgICB9Owo+Pj4KPj4+Cj4+PiBB
-bmQgdGhlIG1vZHVsZXMgSSBoYXZlIGxvYWRlZCBiZWZvcmUgcnVubmluZyA8IHNwZWFrZXIgdGVz
-dCA+IDoKPj4+Cj4+Pgo+Pj4gIyBtb2Rwcm9iZSBzbmQtc29jLXNndGw1MDAwCj4+Pgo+Pj4gWyAg
-IDIzLjI3NDM1MV0gc2d0bDUwMDAgMC0wMDBhOiBzZ3RsNTAwMCByZXZpc2lvbiAweDExCj4+Pgo+
-Pj4gIyBtb2Rwcm9iZSBzbmQtc29jLXNpbXBsZS1jYXJkCj4+Pgo+Pj4gIyBtb2Rwcm9iZSBzbmQt
-c29jLWZzbC1zc2kKPj4+Cj4+PiBbICAgNzkuNzUyMjg4XSBzZ3RsNTAwMCAwLTAwMGE6IFVzaW5n
-IGludGVybmFsIExETyBpbnN0ZWFkIG9mIFZEREQKPj4+Cj4+PiAjIFsgICA3OS44NTM3MTFdIGFz
-b2Mtc2ltcGxlLWNhcmQgc291bmQ6IHNndGw1MDAwIDwtPiAxMDAxMDAwMC5zc2kKPj4+IG1hcHBp
-bmcKPj4+IG9rCj4+Pgo+Pj4gIyBtb2Rwcm9iZSBzbmQtc29jLWlteC1hdWRtdXgKPj4+Cj4+Pgo+
-Pj4gRG9lcyBhbnlib2R5IGtub3cgd2hhdCBpcyB0aGUgbWlzdGFrZT8KPj4+Cj4+Pgo+Pj4gVGhh
-bmsgeW91IGZvciB5b3VyIGhlbHAuCj4+Pgo+Pj4KPj4+IEJlc3QgcmVnYXJkcy4KPj4+Cj4+PiBB
-bGV4YW5kcmUgU2NobmVnZwo+Pj4KPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+IEFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4KPj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4g
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+Cj4+Cj4+Cj4KPgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 09/29/2015 11:19 PM, Ricard Wanderlof wrote:
+>
+> Bringing up an old thread from 2014 since I've gotten access to a Zoom R16
+> and am keen on getting it to work in full duplex under Linux. Apparently
+> (not yet verified here yet, rebuilding a kernel with the patch applied at
+> the moment), 8 channel capture works with the quirk, but playback doesn't
+> (well, it appears to work, but no sound comes out) and neither does the
+> mixer.
+>
+>> At Sun, 30 Nov 2014 12:08:38 +0200,
+>> Panu Matilainen wrote:
+>>>
+>>> On 11/29/2014 09:39 PM, Takashi Iwai wrote:
+>>>> At Sat, 29 Nov 2014 21:35:04 +0200,
+>>>> Panu Matilainen wrote:
+>>>>>
+>>>>> This makes the midi interface and capture work out of the box with
+>>>>> R16 (and presumably R24 too but untested). Playback stream would also
+>>>>> seem to function fine except for one caveat: no sound is produced,
+>>>>> so it is disabled for now.
+>>>
+>>> [ ... ]
+>>>
+>>> In the meanwhile I started looking at the mixer - this is just guessing
+>>> but maybe its starting with outputs muted which could explain the
+>>> playback stream running but without sound.
+>>>
+>>> The descriptors for interface 0 are garbage but what is there would seem
+>>> to map to logical elements by subtype and terminaltype, after those the> > data doesn't seem to add up (eg number of input/output channels
+>>> missing/wrongly placed etc):
+>>>
+>>> ** UNRECOGNIZED:  0b 24 01 00 01 35 00 03 01 02 03
+>>>      -> Header?
+>>> ** UNRECOGNIZED:  0c 24 02 05 01 01 00 02 03 00 00 00
+>>>      -> USB streaming input terminal?
+>>> ** UNRECOGNIZED:  09 24 03 08 01 03 00 05 00
+>>>      -> Speaker output terminal?
+>>> ** UNRECOGNIZED:  0c 24 02 09 01 02 00 08 00 00 00 00
+>>>      -> Microphone input terminal?
+>>> ** UNRECOGNIZED:  09 24 03 0c 01 01 00 09 00
+>>>      -> USB streaming output terminal?
+>>>
+>>> Anything there that might ring a bell, or other ideas where to start
+>>> poking at this thing?
+>>
+>> Yeah, most of these look almost sane, so any off-by-one firmware
+>> issue?
+>
+> Searching the archives, I could find no further posts on the subject of
+> the R16. Panu, did you do any more work on this?
+
+I did, but haven't gotten the playback to work (otherwise I would've 
+sent a patch, obviously). Last five months have been a series of health 
+issues for me so haven't had any energy left for poking at a stubbornly 
+silent white box :)
+
+> Where does the above output come from, and where could I find information
+> on what type of data is expected? I assume what's expected is something
+> one would get from an USB mixer device?
+
+The output is simply 'lsusb -v' plus manually added guesses as to what 
+these unrecognized bits are. The information is "out there", official 
+USB documentation is valuable 
+(http://www.usb.org/developers/docs/devclass_docs/) and looking at lsusb 
+output of other similar products helps figure what might be there.
+
+As for the mixer, I concluded the Zoom does not really have one. The 
+interface 0 is a control interface where a mixer would reside, but 
+there's no actual mixer unit in there.
+
+> In an earlier incarnation of a patch for the R16 (on the 10th of March
+> 2014), there's a discussion between Jason Mancine and Takashi regarding
+> the .format field in the quirks table
+> (http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074117.html)
+> which didn't seem to reach a conclusion; the problem then seemed to be
+> that even when setting the .format to SNDRV_PCM_FMTBIT_S24_3LE, ALSA still
+> setup up a 32 bit transfer. However, Panu's patch also added a small delay
+> in snd_usb_ctl_msg_quirk(), so that perhaps was the real solution to the
+> alleged format problem? (The final patch is much smaller than in this
+> particular thread, possibly due to the use of QUIRK_ANY_INTERFACE since
+> kernel version >3.11 ?)
+
+My memory is a bit hazy on the details, but the automatically detected 
+SNDRV_PCM_FMTBIT_S32 (which iirc means the actual 24bit values are 
+carried in 32bit chunks) seems to be the right thing for the device, 
+forcing it to something else just makes things worse. IIRC. The delay 
+was a key part, but not enough.
+
+Another finding from my last round in the spring I do remember clearly, 
+is that enabling both the input and output interfaces makes things hang 
+up (timeouts and nothing really works). But if you disable the input 
+interface and enable the output interface, you get an apparently working 
+playback stream. Only no sound comes out. If you disable the output and 
+enable input, capture itself works fine.
+
+So perhaps it needs another quirk similar in spirit to the E-Mu:
+
+         /* When capture is active
+          * sample rate shouldn't be changed
+          * by playback substream
+          */
+         if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+                 if 
+(subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].interface != -1)
+                         return;
+
+Or something. I do intend to continue poking at it sooner or later but 
+can't make any promises.
+
+
+	- Panu -
+
+>
+> /Ricard
+>
