@@ -1,18 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: pxa-pcm-lib: switch over to
-	snd-soc-dmaengine-pcm" to the asoc tree
-Date: Wed, 30 Sep 2015 23:22:14 +0100
-Message-ID: <E1ZhPlO-0003tm-Jo@finisterre>
-References: <1443646312-20099-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Wed, 30 Sep 2015 23:33:30 +0100
+Message-ID: <20150930223330.GE15635@sirena.org.uk>
+References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150918135427.GI12027@sirena.org.uk>
+ <CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>
+ <20150930181004.GN15635@sirena.org.uk>
+ <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
+ <CA+sos78W2Ni2b3naiunBm5Z83XiDp=rd+D1jvVPoLcousCinFg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6179172114266505954=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C27426644E
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 00:22:26 +0200 (CEST)
-In-Reply-To: <1443646312-20099-1-git-send-email-robert.jarzmik@free.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7522A26644E
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 00:33:40 +0200 (CEST)
+In-Reply-To: <CA+sos78W2Ni2b3naiunBm5Z83XiDp=rd+D1jvVPoLcousCinFg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,666 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Cc: liam.r.girdwood@linux.intel.com, =?utf-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: pxa: pxa-pcm-lib: switch over to snd-soc-dmaengine-pcm
+--===============6179172114266505954==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Q4+B1pX2h4duw/kc"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--Q4+B1pX2h4duw/kc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Sep 30, 2015 at 09:22:18PM +0200, Beno=EEt Th=E9baudeau wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Most CODEC datasheets describe the regular left/right justified
+> formats as having the left channel starting on the rising edge of
+> FSYNC, like for DSP A/B and AC'97. I=B2S is the only exception here.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Interesting, yes - I just did a quick survey of ones I have and that
+does seem to be the case for the random selection I picked.  I have to
+say I've never paid very much attention to those modes since they are so
+rarely used (a quick survey of machine drivers suggests zero actual
+users in mainline unless there's some DT selecting them).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--Q4+B1pX2h4duw/kc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From 58ceb57ec1be928bec2faeca11fe0752f930669d Mon Sep 17 00:00:00 2001
-From: Daniel Mack <zonque@gmail.com>
-Date: Wed, 30 Sep 2015 22:51:52 +0200
-Subject: [PATCH] ASoC: pxa: pxa-pcm-lib: switch over to snd-soc-dmaengine-pcm
+iQEcBAEBCAAGBQJWDGM5AAoJECTWi3JdVIfQvpUH/0fX+dkcejWjV7wyDsz4fQww
+X7VmjhOk3i1Xih+leEKdxOocKDqcMc75LgueRxbYW3kyt6xRJ9/kZxA17qCs+rfO
+94GlNhnfLTBu2s1kHUwo/G9DTSDoywJmWWwYnKmbeEMNdlfyJ7ooNpCgNvUGHAAO
+Jis6y1ZyyVIoX0c4xIOcW64g+StJVgPLOsSRMXZ0nEnbpT2kwK1LxsysqQ2P7IAN
+nv4h2Yx9fLtyx9YSnz6FTet4uBnS/pl7v1lVlhtTnUVtHDSaNjwMJj5ziUpWcyRT
+woYlaUSeg12t/vO8zXSnqBBmDfyQFvgbZyzVGxVxpBzRCfXMxfvOkQ8K95jA2Ok=
+=WaOk
+-----END PGP SIGNATURE-----
 
-This patch removes the old PXA DMA API usage and switches over to
-generic functions provided by snd-soc-dmaengine-pcm.
+--Q4+B1pX2h4duw/kc--
 
-More cleanups may be done on top of this, and some function stubs can
-now be removed completetly. However, the intention here was to keep
-the transition as small as possible.
+--===============6179172114266505954==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-This was tested on the mioa701 pxa27x board.
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-[trivial change from mmp-dma to pxa-dma]
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/pxa2xx-lib.h  |   1 -
- sound/arm/pxa2xx-ac97.c     |  13 ++-
- sound/arm/pxa2xx-pcm-lib.c  | 201 ++++++++------------------------------------
- sound/arm/pxa2xx-pcm.c      |  12 +--
- sound/arm/pxa2xx-pcm.h      |   2 -
- sound/soc/pxa/pxa2xx-ac97.c |  49 +++++++----
- sound/soc/pxa/pxa2xx-i2s.c  |   3 +
- sound/soc/pxa/pxa2xx-pcm.c  |  32 -------
- 8 files changed, 85 insertions(+), 228 deletions(-)
-
-diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
-index 56e818e..6ef629b 100644
---- a/include/sound/pxa2xx-lib.h
-+++ b/include/sound/pxa2xx-lib.h
-@@ -12,7 +12,6 @@ extern int __pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
- extern snd_pcm_uframes_t pxa2xx_pcm_pointer(struct snd_pcm_substream *substream);
- extern int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream);
--extern void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id);
- extern int __pxa2xx_pcm_open(struct snd_pcm_substream *substream);
- extern int __pxa2xx_pcm_close(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 38590b3..fbd5dad 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma/pxa-dma.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -43,7 +44,11 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_reset,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_out_req = 12;
-+static struct pxad_param pxa2xx_ac97_pcm_out_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 12,
-+};
-+
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-@@ -51,7 +56,11 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
- 	.filter_data	= &pxa2xx_ac97_pcm_out_req,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_in_req = 11;
-+static struct pxad_param pxa2xx_ac97_pcm_in_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 11,
-+};
-+
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index 01f8fdc..e9b98af 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma/pxa-dma.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -15,8 +16,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include <mach/dma.h>
--
- #include "pxa2xx-pcm.h"
- 
- static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
-@@ -31,7 +30,7 @@ static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
- 	.period_bytes_min	= 32,
- 	.period_bytes_max	= 8192 - 32,
- 	.periods_min		= 1,
--	.periods_max		= PAGE_SIZE/sizeof(pxa_dma_desc),
-+	.periods_max		= 256,
- 	.buffer_bytes_max	= 128 * 1024,
- 	.fifo_size		= 32,
- };
-@@ -39,65 +38,29 @@ static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
- int __pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *rtd = runtime->private_data;
--	size_t totsize = params_buffer_bytes(params);
--	size_t period = params_period_bytes(params);
--	pxa_dma_desc *dma_desc;
--	dma_addr_t dma_buff_phys, next_desc_phys;
--	u32 dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
-+	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_dmaengine_dai_dma_data *dma_params;
-+	struct dma_slave_config config;
-+	int ret;
- 
--	/* temporary transition hack */
--	switch (rtd->params->addr_width) {
--	case DMA_SLAVE_BUSWIDTH_1_BYTE:
--		dcmd |= DCMD_WIDTH1;
--		break;
--	case DMA_SLAVE_BUSWIDTH_2_BYTES:
--		dcmd |= DCMD_WIDTH2;
--		break;
--	case DMA_SLAVE_BUSWIDTH_4_BYTES:
--		dcmd |= DCMD_WIDTH4;
--		break;
--	default:
--		/* can't happen */
--		break;
--	}
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	if (!dma_params)
-+		return 0;
- 
--	switch (rtd->params->maxburst) {
--	case 8:
--		dcmd |= DCMD_BURST8;
--		break;
--	case 16:
--		dcmd |= DCMD_BURST16;
--		break;
--	case 32:
--		dcmd |= DCMD_BURST32;
--		break;
--	}
-+	ret = snd_hwparams_to_dma_slave_config(substream, params, &config);
-+	if (ret)
-+		return ret;
- 
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--	runtime->dma_bytes = totsize;
-+	snd_dmaengine_pcm_set_config_from_dai_data(substream,
-+			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream),
-+			&config);
- 
--	dma_desc = rtd->dma_desc_array;
--	next_desc_phys = rtd->dma_desc_array_phys;
--	dma_buff_phys = runtime->dma_addr;
--	do {
--		next_desc_phys += sizeof(pxa_dma_desc);
--		dma_desc->ddadr = next_desc_phys;
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			dma_desc->dsadr = dma_buff_phys;
--			dma_desc->dtadr = rtd->params->addr;
--		} else {
--			dma_desc->dsadr = rtd->params->addr;
--			dma_desc->dtadr = dma_buff_phys;
--		}
--		if (period > totsize)
--			period = totsize;
--		dma_desc->dcmd = dcmd | period | DCMD_ENDIRQEN;
--		dma_desc++;
--		dma_buff_phys += period;
--	} while (totsize -= period);
--	dma_desc[-1].ddadr = rtd->dma_desc_array_phys;
-+	ret = dmaengine_slave_config(chan, &config);
-+	if (ret)
-+		return ret;
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 
- 	return 0;
- }
-@@ -105,13 +68,6 @@ EXPORT_SYMBOL(__pxa2xx_pcm_hw_params);
- 
- int __pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
- {
--	struct pxa2xx_runtime_data *rtd = substream->runtime->private_data;
--
--	if (rtd && rtd->params && rtd->params->filter_data) {
--		unsigned long req = *(unsigned long *) rtd->params->filter_data;
--		DRCMR(req) = 0;
--	}
--
- 	snd_pcm_set_runtime_buffer(substream, NULL);
- 	return 0;
- }
-@@ -119,100 +75,36 @@ EXPORT_SYMBOL(__pxa2xx_pcm_hw_free);
- 
- int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
--	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
--		DCSR(prtd->dma_ch) = DCSR_RUN;
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		DCSR(prtd->dma_ch) &= ~DCSR_RUN;
--		break;
--
--	case SNDRV_PCM_TRIGGER_RESUME:
--		DCSR(prtd->dma_ch) |= DCSR_RUN;
--		break;
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		DDADR(prtd->dma_ch) = prtd->dma_desc_array_phys;
--		DCSR(prtd->dma_ch) |= DCSR_RUN;
--		break;
--
--	default:
--		ret = -EINVAL;
--	}
--
--	return ret;
-+	return snd_dmaengine_pcm_trigger(substream, cmd);
- }
- EXPORT_SYMBOL(pxa2xx_pcm_trigger);
- 
- snd_pcm_uframes_t
- pxa2xx_pcm_pointer(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *prtd = runtime->private_data;
--
--	dma_addr_t ptr = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
--			 DSADR(prtd->dma_ch) : DTADR(prtd->dma_ch);
--	snd_pcm_uframes_t x = bytes_to_frames(runtime, ptr - runtime->dma_addr);
--
--	if (x == runtime->buffer_size)
--		x = 0;
--	return x;
-+	return snd_dmaengine_pcm_pointer(substream);
- }
- EXPORT_SYMBOL(pxa2xx_pcm_pointer);
- 
- int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
- {
--	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
--	unsigned long req;
--
--	if (!prtd || !prtd->params)
--		return 0;
--
--	if (prtd->dma_ch == -1)
--		return -EINVAL;
--
--	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
--	DCSR(prtd->dma_ch) = 0;
--	DCMD(prtd->dma_ch) = 0;
--	req = *(unsigned long *) prtd->params->filter_data;
--	DRCMR(req) = prtd->dma_ch | DRCMR_MAPVLD;
--
- 	return 0;
- }
- EXPORT_SYMBOL(__pxa2xx_pcm_prepare);
- 
--void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id)
--{
--	struct snd_pcm_substream *substream = dev_id;
--	int dcsr;
--
--	dcsr = DCSR(dma_ch);
--	DCSR(dma_ch) = dcsr & ~DCSR_STOPIRQEN;
--
--	if (dcsr & DCSR_ENDINTR) {
--		snd_pcm_period_elapsed(substream);
--	} else {
--		printk(KERN_ERR "DMA error on channel %d (DCSR=%#x)\n",
--			dma_ch, dcsr);
--		snd_pcm_stop_xrun(substream);
--	}
--}
--EXPORT_SYMBOL(pxa2xx_pcm_dma_irq);
--
- int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *rtd;
-+	struct snd_dmaengine_dai_dma_data *dma_params;
- 	int ret;
- 
- 	runtime->hw = pxa2xx_pcm_hardware;
- 
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	if (!dma_params)
-+		return 0;
-+
- 	/*
- 	 * For mysterious reasons (and despite what the manual says)
- 	 * playback samples are lost if the DMA count is not a multiple
-@@ -221,48 +113,27 @@ int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- 	ret = snd_pcm_hw_constraint_step(runtime, 0,
- 		SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = snd_pcm_hw_constraint_step(runtime, 0,
- 		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = snd_pcm_hw_constraint_integer(runtime,
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (ret < 0)
--		goto out;
--
--	ret = -ENOMEM;
--	rtd = kzalloc(sizeof(*rtd), GFP_KERNEL);
--	if (!rtd)
--		goto out;
--	rtd->dma_desc_array =
--		dma_alloc_writecombine(substream->pcm->card->dev, PAGE_SIZE,
--				       &rtd->dma_desc_array_phys, GFP_KERNEL);
--	if (!rtd->dma_desc_array)
--		goto err1;
-+		return ret;
- 
--	rtd->dma_ch = -1;
--	runtime->private_data = rtd;
--	return 0;
--
-- err1:
--	kfree(rtd);
-- out:
--	return ret;
-+	return snd_dmaengine_pcm_open_request_chan(substream,
-+					pxad_filter_fn,
-+					dma_params->filter_data);
- }
- EXPORT_SYMBOL(__pxa2xx_pcm_open);
- 
- int __pxa2xx_pcm_close(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *rtd = runtime->private_data;
--
--	dma_free_writecombine(substream->pcm->card->dev, PAGE_SIZE,
--			      rtd->dma_desc_array, rtd->dma_desc_array_phys);
--	kfree(rtd);
--	return 0;
-+	return snd_dmaengine_pcm_close_release_chan(substream);
- }
- EXPORT_SYMBOL(__pxa2xx_pcm_close);
- 
-diff --git a/sound/arm/pxa2xx-pcm.c b/sound/arm/pxa2xx-pcm.c
-index 83be8e3..83fcfac 100644
---- a/sound/arm/pxa2xx-pcm.c
-+++ b/sound/arm/pxa2xx-pcm.c
-@@ -46,17 +46,13 @@ static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- 
- 	rtd->params = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
- 		      client->playback_params : client->capture_params;
--	ret = pxa_request_dma("dma", DMA_PRIO_LOW,
--			      pxa2xx_pcm_dma_irq, substream);
--	if (ret < 0)
--		goto err2;
--	rtd->dma_ch = ret;
- 
- 	ret = client->startup(substream);
- 	if (!ret)
--		goto out;
-+		goto err2;
-+
-+	return 0;
- 
--	pxa_free_dma(rtd->dma_ch);
-  err2:
- 	__pxa2xx_pcm_close(substream);
-  out:
-@@ -66,9 +62,7 @@ static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- static int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
- {
- 	struct pxa2xx_pcm_client *client = substream->private_data;
--	struct pxa2xx_runtime_data *rtd = substream->runtime->private_data;
- 
--	pxa_free_dma(rtd->dma_ch);
- 	client->shutdown(substream);
- 
- 	return __pxa2xx_pcm_close(substream);
-diff --git a/sound/arm/pxa2xx-pcm.h b/sound/arm/pxa2xx-pcm.h
-index 0033098..8fa2b7c 100644
---- a/sound/arm/pxa2xx-pcm.h
-+++ b/sound/arm/pxa2xx-pcm.h
-@@ -13,8 +13,6 @@
- struct pxa2xx_runtime_data {
- 	int dma_ch;
- 	struct snd_dmaengine_dai_dma_data *params;
--	struct pxa_dma_desc *dma_desc_array;
--	dma_addr_t dma_desc_array_phys;
- };
- 
- struct pxa2xx_pcm_client {
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 9e4b04e..f3de615 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma/pxa-dma.h>
- 
- #include <sound/core.h>
- #include <sound/ac97_codec.h>
-@@ -49,7 +50,11 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_cold_reset,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_stereo_in_req = 11;
-+static struct pxad_param pxa2xx_ac97_pcm_stereo_in_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 11,
-+};
-+
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-@@ -57,7 +62,11 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
- 	.filter_data	= &pxa2xx_ac97_pcm_stereo_in_req,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_stereo_out_req = 12;
-+static struct pxad_param pxa2xx_ac97_pcm_stereo_out_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 12,
-+};
-+
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-@@ -65,7 +74,10 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
- 	.filter_data	= &pxa2xx_ac97_pcm_stereo_out_req,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_aux_mono_out_req = 10;
-+static struct pxad_param pxa2xx_ac97_pcm_aux_mono_out_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 10,
-+};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-@@ -73,7 +85,10 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
- 	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_out_req,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_aux_mono_in_req = 9;
-+static struct pxad_param pxa2xx_ac97_pcm_aux_mono_in_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 9,
-+};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-@@ -81,7 +96,10 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
- 	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_in_req,
- };
- 
--static unsigned long pxa2xx_ac97_pcm_aux_mic_mono_req = 8;
-+static struct pxad_param pxa2xx_ac97_pcm_aux_mic_mono_req = {
-+	.prio = PXAD_PRIO_LOWEST,
-+	.drcmr = 8,
-+};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
- 	.addr		= __PREG(MCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-@@ -89,9 +107,8 @@ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
- 	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
- };
- 
--static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *cpu_dai)
-+static int pxa2xx_ac97_hifi_startup(struct snd_pcm_substream *substream,
-+				    struct snd_soc_dai *cpu_dai)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
- 
-@@ -105,9 +122,8 @@ static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params,
--				     struct snd_soc_dai *cpu_dai)
-+static int pxa2xx_ac97_aux_startup(struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *cpu_dai)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
- 
-@@ -121,9 +137,8 @@ static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params,
--				     struct snd_soc_dai *cpu_dai)
-+static int pxa2xx_ac97_mic_startup(struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *cpu_dai)
- {
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		return -ENODEV;
-@@ -139,15 +154,15 @@ static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
- 		SNDRV_PCM_RATE_48000)
- 
- static const struct snd_soc_dai_ops pxa_ac97_hifi_dai_ops = {
--	.hw_params	= pxa2xx_ac97_hw_params,
-+	.startup	= pxa2xx_ac97_hifi_startup,
- };
- 
- static const struct snd_soc_dai_ops pxa_ac97_aux_dai_ops = {
--	.hw_params	= pxa2xx_ac97_hw_aux_params,
-+	.startup	= pxa2xx_ac97_aux_startup,
- };
- 
- static const struct snd_soc_dai_ops pxa_ac97_mic_dai_ops = {
--	.hw_params	= pxa2xx_ac97_hw_mic_params,
-+	.startup	= pxa2xx_ac97_mic_startup,
- };
- 
- /*
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 6b4e400..0389cf7 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -319,6 +319,9 @@ static int pxa2xx_i2s_probe(struct snd_soc_dai *dai)
- 	/* Along with FIFO servicing */
- 	SAIMR &= ~(SAIMR_RFS | SAIMR_TFS);
- 
-+	snd_soc_dai_init_dma_data(dai, &pxa2xx_i2s_pcm_stereo_out,
-+		&pxa2xx_i2s_pcm_stereo_in);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 29a3fdb..9f39039 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -15,8 +15,6 @@
- #include <linux/dmaengine.h>
- #include <linux/of.h>
- 
--#include <mach/dma.h>
--
- #include <sound/core.h>
- #include <sound/soc.h>
- #include <sound/pxa2xx-lib.h>
-@@ -27,11 +25,8 @@
- static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *prtd = runtime->private_data;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_dmaengine_dai_dma_data *dma;
--	int ret;
- 
- 	dma = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
-@@ -40,40 +35,13 @@ static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (!dma)
- 		return 0;
- 
--	/* this may get called several times by oss emulation
--	 * with different params */
--	if (prtd->params == NULL) {
--		prtd->params = dma;
--		ret = pxa_request_dma("name", DMA_PRIO_LOW,
--			      pxa2xx_pcm_dma_irq, substream);
--		if (ret < 0)
--			return ret;
--		prtd->dma_ch = ret;
--	} else if (prtd->params != dma) {
--		pxa_free_dma(prtd->dma_ch);
--		prtd->params = dma;
--		ret = pxa_request_dma("name", DMA_PRIO_LOW,
--			      pxa2xx_pcm_dma_irq, substream);
--		if (ret < 0)
--			return ret;
--		prtd->dma_ch = ret;
--	}
--
- 	return __pxa2xx_pcm_hw_params(substream, params);
- }
- 
- static int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
- {
--	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
--
- 	__pxa2xx_pcm_hw_free(substream);
- 
--	if (prtd->dma_ch >= 0) {
--		pxa_free_dma(prtd->dma_ch);
--		prtd->dma_ch = -1;
--		prtd->params = NULL;
--	}
--
- 	return 0;
- }
- 
--- 
-2.5.0
+--===============6179172114266505954==--
