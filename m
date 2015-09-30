@@ -1,51 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] regulator: arizona: add support for WM8998 and
- WM1814
-Date: Wed, 30 Sep 2015 19:16:01 +0100
-Message-ID: <20150930181601.GS15635@sirena.org.uk>
-References: <1443445269-11746-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1443445269-11746-2-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear method
+Date: Wed, 30 Sep 2015 19:17:51 +0100
+Message-ID: <20150930181751.GT15635@sirena.org.uk>
+References: <006301d0fac4$94eb5890$bec209b0$@tangramtek.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FWibJpkbnkY6rrXF"
+	protocol="application/pgp-signature"; boundary="tqSMaTz1cCSspCQ4"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1443445269-11746-2-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <006301d0fac4$94eb5890$bec209b0$@tangramtek.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: yitian <yitian.bu@tangramtek.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, Andrew.Jackson@arm.com, wsa@the-dreams.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FWibJpkbnkY6rrXF
+--tqSMaTz1cCSspCQ4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 28, 2015 at 02:01:07PM +0100, Richard Fitzgerald wrote:
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> Acked-by: Mark Brown <broonie@kernel.org>
+On Tue, Sep 29, 2015 at 10:39:00PM +0800, yitian wrote:
+> from Designware I2S datasheet, irq is cleared by reading from
+> TOR/ROR registers, rather than by writing into them.
 
-So if I've acked this rather than applying it presumably there are MFD
-dependencies somewhere we're waiting for?  If there aren't why did this
-not go in with the MFD?
+This doesn't apply against current code, please check and resend.
 
-Please don't resend me my own ack on code that it looks like I'm
-expected to apply, it's confusing :(
-
---FWibJpkbnkY6rrXF
+--tqSMaTz1cCSspCQ4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWDCbhAAoJECTWi3JdVIfQd2wH/3HG1Umrkrf73H+YWfE61rZ0
-oqWHuVuanNAoXDSs5Rujuc5aK+533Cxfb+F/6SCq1QBDOVryMNnwfo0Nxl7d+MDh
-ZkIZmkz6NTAg6F9aZ8GW74ETP3AOQhKHuITSey/8p0MiWlz61FxTPjtvDi7Nr1/0
-2ysezSnHUALOHd93TNeeOLpx6WScOpdWzUQ1v+QT8N0I4RuDTPj72SSRpowu/ux7
-R3ZHePoTSB/LdzrjYywPs7zAvaRoZ61F9K9ZcnTwj+1yB8GHPrvcWAaqSkecGBEF
-qG1woBUjRhkArY5XhSn3ih0SvrkKFZqqIF71HXs99qfiY2bTrBmSuygJTPTmO9M=
-=aTAE
+iQEcBAEBCAAGBQJWDCdPAAoJECTWi3JdVIfQ4wMH/jz7vNLAfNUKtxAY/+Q7bGs9
+UzvF94rELa564f9NJZydfAKox0DEx4RSPBtOtZRVGmn+cDteSdczTly2nx86EqHH
+LZi9w4UbaJYIFERo9RENrb8zOELxL7QRgJwTGbUdtXAaaVl6ciI4vxXJ9SbFos9v
+Q0JcYB8c669Q0rPbyTCStuduEtk2LuHNuhDHZavVze1g+zhRvJYQc+L4pzIoAd9P
+Kvpy8nWimQbGagpr17k+JqyABtui3SdYtYr/fnyAV8xdgRpsC5e96RAB+yStlpUI
+L1c8zMyQcG4NYuKm2bDAqlyd9QybSOl4Bz0v8TnsUbppivZ34G3IfdrMUAHwTnU=
+=SVY6
 -----END PGP SIGNATURE-----
 
---FWibJpkbnkY6rrXF--
+--tqSMaTz1cCSspCQ4--
