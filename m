@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/7] ALSA: firewire-digi00x: add proc node to
-	show clock status
-Date: Wed, 30 Sep 2015 09:39:19 +0900
-Message-ID: <1443573562-24088-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/7] ALSA: firewire-digi00x: add skeleton for
+	Digi 002/003 family
+Date: Wed, 30 Sep 2015 09:39:16 +0900
+Message-ID: <1443573562-24088-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 92B242659F0
+ by alsa0.perex.cz (Postfix) with ESMTP id 91A4B2659E5
  for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:31 +0200 (CEST)
 In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,185 +25,251 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc node to show current clock status for debugging.
+This commit adds a new driver for Digidesign 002/003 family. This commit
+just creates/removes card instance according to bus event. More functions
+will be added in following commits.
 
-As long as testing Digi 002 rack, registers can show local clock rate,
-local clock source. When external clock input such as S/PDIF is
-connected, the registers show the detection and external clock rate.
-
-Additionally, the registers show the mode of optical digital input
-interface. Although, a tester with Digi 003 rack reports this makes no
-sense. Further investigation is required for Digi 003 series.
-
-Besides, in Digi 002 rack, the S/PDIF format must be IEC 60958-4,
-so-called professional.
+Digidesign 002/003 family consists of:
+ * Agere FW802B for IEEE 1394 PHY layer
+ * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
+ * ALTERA ACEX EP1K50 for IEC 61883 layer and DSP controller
+ * ADSP-21065L for signal processing
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/Makefile       |  3 +-
- sound/firewire/digi00x/digi00x-proc.c | 99 +++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c      |  2 +
- sound/firewire/digi00x/digi00x.h      |  8 +++
- 4 files changed, 111 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-proc.c
+ sound/firewire/Kconfig           |  14 ++++
+ sound/firewire/Makefile          |   1 +
+ sound/firewire/digi00x/Makefile  |   2 +
+ sound/firewire/digi00x/digi00x.c | 140 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.h |  32 +++++++++
+ 5 files changed, 189 insertions(+)
+ create mode 100644 sound/firewire/digi00x/Makefile
+ create mode 100644 sound/firewire/digi00x/digi00x.c
+ create mode 100644 sound/firewire/digi00x/digi00x.h
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 8850b7d..74f17a8 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -120,4 +120,18 @@ config SND_BEBOB
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
+ 
++config SND_FIREWIRE_DIGI00X
++	tristate "Digidesign Digi 002/003 family support"
++	select SND_FIREWIRE_LIB
++	help
++	 Say Y here to include support for Digidesign Digi 002/003 family.
++	  * Digi 002 Console
++	  * Digi 002 Rack
++	  * Digi 003 Console
++	  * Digi 003 Rack
++	  * Digi 003 Rack+
++
++	 To compile this driver as a module, choose M here: the module
++	 will be called snd-firewire-digi00x.
++
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 6a8a713..5325d15 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+ obj-$(CONFIG_SND_BEBOB) += bebob/
++obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 32d8ebe..3e0f028 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,2 +1,3 @@
--snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x.o
-+snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
-+			     digi00x.o
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-proc.c b/sound/firewire/digi00x/digi00x-proc.c
 new file mode 100644
-index 0000000..280d621
+index 0000000..13fec5b
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-proc.c
-@@ -0,0 +1,99 @@
++++ b/sound/firewire/digi00x/Makefile
+@@ -0,0 +1,2 @@
++snd-firewire-digi00x-objs := digi00x.o
++obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+new file mode 100644
+index 0000000..ba82717
+--- /dev/null
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -0,0 +1,140 @@
 +/*
-+ * digi00x-proc.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./digi00x.h"
++#include "digi00x.h"
 +
-+static int get_optical_iface_mode(struct snd_dg00x *dg00x,
-+				  enum snd_dg00x_optical_mode *mode)
++MODULE_DESCRIPTION("Digidesign Digi 002/003 family Driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++#define VENDOR_DIGIDESIGN	0x00a07e
++#define MODEL_DIGI00X		0x000002
++
++static int name_card(struct snd_dg00x *dg00x)
 +{
-+	__be32 data;
++	struct fw_device *fw_dev = fw_parent_device(dg00x->unit);
++	char name[32] = {0};
++	char *model;
 +	int err;
 +
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_OPT_IFACE_MODE,
-+				 &data, sizeof(data), 0);
-+	if (err >= 0)
-+		*mode = be32_to_cpu(data) & 0x01;
++	err = fw_csr_string(dg00x->unit->directory, CSR_MODEL, name,
++			    sizeof(name));
++	if (err < 0)
++		return err;
 +
++	model = name;
++	if (model[0] == ' ')
++		model = strchr(model, ' ') + 1;
++
++	strcpy(dg00x->card->driver, "Digi00x");
++	strcpy(dg00x->card->shortname, model);
++	strcpy(dg00x->card->mixername, model);
++	snprintf(dg00x->card->longname, sizeof(dg00x->card->longname),
++		 "Digidesign %s, GUID %08x%08x at %s, S%d", model,
++		 cpu_to_be32(fw_dev->config_rom[3]),
++		 cpu_to_be32(fw_dev->config_rom[4]),
++		 dev_name(&dg00x->unit->device), 100 << fw_dev->max_speed);
++
++	return 0;
++}
++
++static void dg00x_card_free(struct snd_card *card)
++{
++	struct snd_dg00x *dg00x = card->private_data;
++
++	fw_unit_put(dg00x->unit);
++
++	mutex_destroy(&dg00x->mutex);
++}
++
++static int snd_dg00x_probe(struct fw_unit *unit,
++			   const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_dg00x *dg00x;
++	int err;
++
++	/* create card */
++	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
++			   sizeof(struct snd_dg00x), &card);
++	if (err < 0)
++		return err;
++	card->private_free = dg00x_card_free;
++
++	/* initialize myself */
++	dg00x = card->private_data;
++	dg00x->card = card;
++	dg00x->unit = fw_unit_get(unit);
++
++	mutex_init(&dg00x->mutex);
++
++	err = name_card(dg00x);
++	if (err < 0)
++		goto error;
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto error;
++
++	dev_set_drvdata(&unit->device, dg00x);
++
++	return err;
++error:
++	snd_card_free(card);
 +	return err;
 +}
 +
-+static void proc_read_clock(struct snd_info_entry *entry,
-+			    struct snd_info_buffer *buf)
++static void snd_dg00x_update(struct fw_unit *unit)
 +{
-+	static const char *const source_name[] = {
-+		[SND_DG00X_CLOCK_INTERNAL] = "internal",
-+		[SND_DG00X_CLOCK_SPDIF] = "s/pdif",
-+		[SND_DG00X_CLOCK_ADAT] = "adat",
-+		[SND_DG00X_CLOCK_WORD] = "word clock",
-+	};
-+	static const char *const optical_name[] = {
-+		[SND_DG00X_OPT_IFACE_MODE_ADAT] = "adat",
-+		[SND_DG00X_OPT_IFACE_MODE_SPDIF] = "s/pdif",
-+	};
-+	struct snd_dg00x *dg00x = entry->private_data;
-+	enum snd_dg00x_optical_mode mode;
-+	unsigned int rate;
-+	enum snd_dg00x_clock clock;
-+	bool detect;
-+
-+	if (get_optical_iface_mode(dg00x, &mode) < 0)
-+		return;
-+	if (snd_dg00x_stream_get_local_rate(dg00x, &rate) < 0)
-+		return;
-+	if (snd_dg00x_stream_get_clock(dg00x, &clock) < 0)
-+		return;
-+
-+	snd_iprintf(buf, "Optical mode: %s\n", optical_name[mode]);
-+	snd_iprintf(buf, "Sampling Rate: %d\n", rate);
-+	snd_iprintf(buf, "Clock Source: %s\n", source_name[clock]);
-+
-+	if (clock == SND_DG00X_CLOCK_INTERNAL)
-+		return;
-+
-+	if (snd_dg00x_stream_check_external_clock(dg00x, &detect) < 0)
-+		return;
-+	snd_iprintf(buf, "External source: %s\n", detect ? "detected" : "not");
-+	if (!detect)
-+		return;
-+
-+	if (snd_dg00x_stream_get_external_rate(dg00x, &rate) >= 0)
-+		snd_iprintf(buf, "External sampling rate: %d\n", rate);
++	return;
 +}
 +
-+void snd_dg00x_proc_init(struct snd_dg00x *dg00x)
++static void snd_dg00x_remove(struct fw_unit *unit)
 +{
-+	struct snd_info_entry *root, *entry;
++	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
 +
-+	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
-+	 */
-+	root = snd_info_create_card_entry(dg00x->card, "firewire",
-+					  dg00x->card->proc_root);
-+	if (root == NULL)
-+		return;
-+
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
-+	}
-+
-+	entry = snd_info_create_card_entry(dg00x->card, "clock", root);
-+	if (entry == NULL) {
-+		snd_info_free_entry(root);
-+		return;
-+	}
-+
-+	snd_info_set_text_ops(entry, dg00x, proc_read_clock);
-+	if (snd_info_register(entry) < 0) {
-+		snd_info_free_entry(entry);
-+		snd_info_free_entry(root);
-+	}
++	/* No need to wait for releasing card object in this context. */
++	snd_card_free_when_closed(dg00x->card);
 +}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 11de41b..2c61eef 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -83,6 +83,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	snd_dg00x_proc_init(dg00x);
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 685d5f0..9ee259f 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -19,6 +19,7 @@
- 
- #include <sound/core.h>
- #include <sound/initval.h>
-+#include <sound/info.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- 
-@@ -84,6 +85,12 @@ enum snd_dg00x_clock {
- 	SND_DG00X_CLOCK_COUNT,
- };
- 
-+enum snd_dg00x_optical_mode {
-+	SND_DG00X_OPT_IFACE_MODE_ADAT = 0,
-+	SND_DG00X_OPT_IFACE_MODE_SPDIF,
-+	SND_DG00X_OPT_IFACE_MODE_COUNT,
++static const struct ieee1394_device_id snd_dg00x_id_table[] = {
++	/* Both of 002/003 use the same ID. */
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_MODEL_ID,
++		.vendor_id = VENDOR_DIGIDESIGN,
++		.model_id = MODEL_DIGI00X,
++	},
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, snd_dg00x_id_table);
++
++static struct fw_driver dg00x_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "snd-firewire-digi00x",
++		.bus = &fw_bus_type,
++	},
++	.probe    = snd_dg00x_probe,
++	.update   = snd_dg00x_update,
++	.remove   = snd_dg00x_remove,
++	.id_table = snd_dg00x_id_table,
 +};
 +
- int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		   enum amdtp_stream_direction dir);
- int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
-@@ -111,4 +118,5 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- 
-+void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
- #endif
++static int __init snd_dg00x_init(void)
++{
++	return driver_register(&dg00x_driver.driver);
++}
++
++static void __exit snd_dg00x_exit(void)
++{
++	driver_unregister(&dg00x_driver.driver);
++}
++
++module_init(snd_dg00x_init);
++module_exit(snd_dg00x_exit);
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+new file mode 100644
+index 0000000..0bb2ca3
+--- /dev/null
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -0,0 +1,32 @@
++/*
++ * digi00x.h - a part of driver for Digidesign Digi 002/003 family
++ *
++ * Copyright (c) 2014-2015 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#ifndef SOUND_DIGI00X_H_INCLUDED
++#define SOUND_DIGI00X_H_INCLUDED
++
++#include <linux/compat.h>
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++
++#include <sound/core.h>
++#include <sound/initval.h>
++
++#include "../lib.h"
++
++struct snd_dg00x {
++	struct snd_card *card;
++	struct fw_unit *unit;
++
++	struct mutex mutex;
++};
++
++#endif
 -- 
 2.1.4
