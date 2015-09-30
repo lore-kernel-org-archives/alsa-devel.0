@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/7] ALSA: firewire-digi00x: add stream
-	functionality
-Date: Wed, 30 Sep 2015 09:39:18 +0900
-Message-ID: <1443573562-24088-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 6/7] ALSA: firewire-digi00x: add hwdep interface
+Date: Wed, 30 Sep 2015 09:39:21 +0900
+Message-ID: <1443573562-24088-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id C5C24265A01
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 66CDD265A10
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:33 +0200 (CEST)
 In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,542 +24,455 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to manage streaming.
+This commit adds hwdep interface so as the other sound drivers for units
+on IEEE 1394 bus have.
 
-The streaming is not controlled by CMP in IEC 61883-6. It's controlled by
-IEEE 1394 write transaction to certain addresses.
-
-Several clock sources are available, while there're no differences about
-packet transmission. The value of SYT field in transmitted packets is
-always zero. Thus, streams in both direction don't build synchronization.
-
-And the device always requires received packets to transmit packets. This
-driver keeps to transfer outgoing stream even if they're not required.
+This interface is designed for mixer/control applications. By using this
+interface, an application can get information about firewire node, can
+lock/unlock kernel streaming and can get notification at starting/stopping
+kernel streaming.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
+ include/uapi/sound/asound.h             |   3 +-
+ include/uapi/sound/firewire.h           |   1 +
+ sound/firewire/Kconfig                  |   1 +
  sound/firewire/digi00x/Makefile         |   2 +-
- sound/firewire/digi00x/digi00x-stream.c | 381 ++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c        |  12 +-
- sound/firewire/digi00x/digi00x.h        |  68 ++++++
- 4 files changed, 461 insertions(+), 2 deletions(-)
- create mode 100644 sound/firewire/digi00x/digi00x-stream.c
+ sound/firewire/digi00x/digi00x-hwdep.c  | 192 ++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x-pcm.c    |  23 +++-
+ sound/firewire/digi00x/digi00x-stream.c |  39 +++++++
+ sound/firewire/digi00x/digi00x.c        |   6 +
+ sound/firewire/digi00x/digi00x.h        |  14 +++
+ 9 files changed, 273 insertions(+), 8 deletions(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-hwdep.c
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index a45be6b..aa32913 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -100,9 +100,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
+ 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
++	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DIGI00X
+ };
+ 
+ struct snd_hwdep_info {
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index 49122df..f67d228 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -56,6 +56,7 @@ union snd_firewire_event {
+ #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
+ #define SNDRV_FIREWIRE_TYPE_BEBOB	3
+ #define SNDRV_FIREWIRE_TYPE_OXFW	4
++#define SNDRV_FIREWIRE_TYPE_DIGI00X	5
+ /* RME, MOTU, ... */
+ 
+ struct snd_firewire_get_info {
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 74f17a8..e61445e 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -123,6 +123,7 @@ config SND_BEBOB
+ config SND_FIREWIRE_DIGI00X
+ 	tristate "Digidesign Digi 002/003 family support"
+ 	select SND_FIREWIRE_LIB
++	select SND_HWDEP
+ 	help
+ 	 Say Y here to include support for Digidesign Digi 002/003 family.
+ 	  * Digi 002 Console
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 87c4cfd..32d8ebe 100644
+index 3c0ff6f..5bc3c77 100644
 --- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
-@@ -1,2 +1,2 @@
--snd-firewire-digi00x-objs := amdtp-dot.o digi00x.o
-+snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x.o
+@@ -1,3 +1,3 @@
+ snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
+-			     digi00x-pcm.o digi00x.o
++			     digi00x-pcm.o digi00x-hwdep.o digi00x.o
  obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
+diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
 new file mode 100644
-index 0000000..3278c3e
+index 0000000..d629e41
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -0,0 +1,381 @@
++++ b/sound/firewire/digi00x/digi00x-hwdep.c
+@@ -0,0 +1,192 @@
 +/*
-+ * digi00x-stream.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x-hwdep.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
++/*
++ * This codes give three functionality.
++ *
++ * 1.get firewire node information
++ * 2.get notification about starting/stopping stream
++ * 3.lock/unlock stream
++ */
++
 +#include "digi00x.h"
 +
-+#define CALLBACK_TIMEOUT 500
-+
-+const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT] = {
-+	[SND_DG00X_RATE_44100] = 44100,
-+	[SND_DG00X_RATE_48000] = 48000,
-+	[SND_DG00X_RATE_88200] = 88200,
-+	[SND_DG00X_RATE_96000] = 96000,
-+};
-+
-+/* Multi Bit Linear Audio data channels for each sampling transfer frequency. */
-+const unsigned int
-+snd_dg00x_stream_pcm_channels[SND_DG00X_RATE_COUNT] = {
-+	/* Analog/ADAT/SPDIF */
-+	[SND_DG00X_RATE_44100] = (8 + 8 + 2),
-+	[SND_DG00X_RATE_48000] = (8 + 8 + 2),
-+	/* Analog/SPDIF */
-+	[SND_DG00X_RATE_88200] = (8 + 2),
-+	[SND_DG00X_RATE_96000] = (8 + 2),
-+};
-+
-+int snd_dg00x_stream_get_local_rate(struct snd_dg00x *dg00x, unsigned int *rate)
++static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
++		       loff_t *offset)
 +{
-+	u32 data;
-+	__be32 reg;
-+	int err;
++	struct snd_dg00x *dg00x = hwdep->private_data;
++	DEFINE_WAIT(wait);
++	union snd_firewire_event event;
 +
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_LOCAL_RATE,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	spin_lock_irq(&dg00x->lock);
 +
-+	data = be32_to_cpu(reg) & 0x0f;
-+	if (data < ARRAY_SIZE(snd_dg00x_stream_rates))
-+		*rate = snd_dg00x_stream_rates[data];
-+	else
-+		err = -EIO;
-+
-+	return err;
-+}
-+
-+int snd_dg00x_stream_set_local_rate(struct snd_dg00x *dg00x, unsigned int rate)
-+{
-+	__be32 reg;
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_dg00x_stream_rates); i++) {
-+		if (rate == snd_dg00x_stream_rates[i])
-+			break;
++	while (!dg00x->dev_lock_changed) {
++		prepare_to_wait(&dg00x->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
++		spin_unlock_irq(&dg00x->lock);
++		schedule();
++		finish_wait(&dg00x->hwdep_wait, &wait);
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++		spin_lock_irq(&dg00x->lock);
 +	}
-+	if (i == ARRAY_SIZE(snd_dg00x_stream_rates))
-+		return -EINVAL;
 +
-+	reg = cpu_to_be32(i);
-+	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  DG00X_ADDR_BASE + DG00X_OFFSET_LOCAL_RATE,
-+				  &reg, sizeof(reg), 0);
++	memset(&event, 0, sizeof(event));
++	if (dg00x->dev_lock_changed) {
++		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
++		event.lock_status.status = (dg00x->dev_lock_count > 0);
++		dg00x->dev_lock_changed = false;
++
++		count = min_t(long, count, sizeof(event.lock_status));
++	}
++
++	spin_unlock_irq(&dg00x->lock);
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
 +}
 +
-+int snd_dg00x_stream_get_clock(struct snd_dg00x *dg00x,
-+			       enum snd_dg00x_clock *clock)
++static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
++			       poll_table *wait)
 +{
-+	__be32 reg;
-+	int err;
++	struct snd_dg00x *dg00x = hwdep->private_data;
++	unsigned int events;
 +
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_CLOCK_SOURCE,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	poll_wait(file, &dg00x->hwdep_wait, wait);
 +
-+	*clock = be32_to_cpu(reg) & 0x0f;
-+	if (*clock >= SND_DG00X_CLOCK_COUNT)
-+		err = -EIO;
-+
-+	return err;
-+}
-+
-+int snd_dg00x_stream_check_external_clock(struct snd_dg00x *dg00x, bool *detect)
-+{
-+	__be32 reg;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_DETECT_EXTERNAL,
-+				 &reg, sizeof(reg), 0);
-+	if (err >= 0)
-+		*detect = be32_to_cpu(reg) > 0;
-+
-+	return err;
-+}
-+
-+int snd_dg00x_stream_get_external_rate(struct snd_dg00x *dg00x,
-+				       unsigned int *rate)
-+{
-+	u32 data;
-+	__be32 reg;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_EXTERNAL_RATE,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	data = be32_to_cpu(reg) & 0x0f;
-+	if (data < ARRAY_SIZE(snd_dg00x_stream_rates))
-+		*rate = snd_dg00x_stream_rates[data];
-+	/* This means desync. */
++	spin_lock_irq(&dg00x->lock);
++	if (dg00x->dev_lock_changed)
++		events = POLLIN | POLLRDNORM;
 +	else
++		events = 0;
++	spin_unlock_irq(&dg00x->lock);
++
++	return events;
++}
++
++static int hwdep_get_info(struct snd_dg00x *dg00x, void __user *arg)
++{
++	struct fw_device *dev = fw_parent_device(dg00x->unit);
++	struct snd_firewire_get_info info;
++
++	memset(&info, 0, sizeof(info));
++	info.type = SNDRV_FIREWIRE_TYPE_DIGI00X;
++	info.card = dev->card->index;
++	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
++	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
++	strlcpy(info.device_name, dev_name(&dev->device),
++		sizeof(info.device_name));
++
++	if (copy_to_user(arg, &info, sizeof(info)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int hwdep_lock(struct snd_dg00x *dg00x)
++{
++	int err;
++
++	spin_lock_irq(&dg00x->lock);
++
++	if (dg00x->dev_lock_count == 0) {
++		dg00x->dev_lock_count = -1;
++		err = 0;
++	} else {
 +		err = -EBUSY;
-+
-+	return err;
-+}
-+
-+static void finish_session(struct snd_dg00x *dg00x)
-+{
-+	__be32 data = cpu_to_be32(0x00000003);
-+
-+	snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   DG00X_ADDR_BASE + DG00X_OFFSET_STREAMING_SET,
-+			   &data, sizeof(data), 0);
-+}
-+
-+static int begin_session(struct snd_dg00x *dg00x)
-+{
-+	__be32 data;
-+	u32 curr;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_STREAMING_STATE,
-+				 &data, sizeof(data), 0);
-+	if (err < 0)
-+		goto error;
-+	curr = be32_to_cpu(data);
-+
-+	if (curr == 0)
-+		curr = 2;
-+
-+	curr--;
-+	while (curr > 0) {
-+		data = cpu_to_be32(curr);
-+		err = snd_fw_transaction(dg00x->unit,
-+					 TCODE_WRITE_QUADLET_REQUEST,
-+					 DG00X_ADDR_BASE +
-+					 DG00X_OFFSET_STREAMING_SET,
-+					 &data, sizeof(data), 0);
-+		if (err < 0)
-+			goto error;
-+
-+		msleep(20);
-+		curr--;
 +	}
 +
-+	return 0;
-+error:
-+	finish_session(dg00x);
++	spin_unlock_irq(&dg00x->lock);
++
 +	return err;
 +}
 +
-+static void release_resources(struct snd_dg00x *dg00x)
++static int hwdep_unlock(struct snd_dg00x *dg00x)
 +{
-+	__be32 data = 0;
-+
-+	/* Unregister isochronous channels for both direction. */
-+	snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   DG00X_ADDR_BASE + DG00X_OFFSET_ISOC_CHANNELS,
-+			   &data, sizeof(data), 0);
-+
-+	/* Release isochronous resources. */
-+	fw_iso_resources_free(&dg00x->tx_resources);
-+	fw_iso_resources_free(&dg00x->rx_resources);
-+}
-+
-+static int keep_resources(struct snd_dg00x *dg00x, unsigned int rate)
-+{
-+	unsigned int i;
-+	__be32 data;
 +	int err;
 +
-+	/* Check sampling rate. */
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (snd_dg00x_stream_rates[i] == rate)
-+			break;
++	spin_lock_irq(&dg00x->lock);
++
++	if (dg00x->dev_lock_count == -1) {
++		dg00x->dev_lock_count = 0;
++		err = 0;
++	} else {
++		err = -EBADFD;
 +	}
-+	if (i == SND_DG00X_RATE_COUNT)
-+		return -EINVAL;
 +
-+	/* Keep resources for out-stream. */
-+	err = amdtp_dot_set_parameters(&dg00x->rx_stream, rate,
-+				       snd_dg00x_stream_pcm_channels[i], 0);
-+	if (err < 0)
-+		return err;
-+	err = fw_iso_resources_allocate(&dg00x->rx_resources,
-+				amdtp_stream_get_max_payload(&dg00x->rx_stream),
-+				fw_parent_device(dg00x->unit)->max_speed);
-+	if (err < 0)
-+		return err;
++	spin_unlock_irq(&dg00x->lock);
 +
-+	/* Keep resources for in-stream. */
-+	err = amdtp_dot_set_parameters(&dg00x->tx_stream, rate,
-+				       snd_dg00x_stream_pcm_channels[i], 0);
-+	if (err < 0)
-+		return err;
-+	err = fw_iso_resources_allocate(&dg00x->tx_resources,
-+				amdtp_stream_get_max_payload(&dg00x->tx_stream),
-+				fw_parent_device(dg00x->unit)->max_speed);
-+	if (err < 0)
-+		goto error;
-+
-+	/* Register isochronous channels for both direction. */
-+	data = cpu_to_be32((dg00x->tx_resources.channel << 16) |
-+			   dg00x->rx_resources.channel);
-+	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_ISOC_CHANNELS,
-+				 &data, sizeof(data), 0);
-+	if (err < 0)
-+		goto error;
-+
-+	return 0;
-+error:
-+	release_resources(dg00x);
 +	return err;
 +}
 +
-+int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x)
++static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
 +{
++	struct snd_dg00x *dg00x = hwdep->private_data;
++
++	spin_lock_irq(&dg00x->lock);
++	if (dg00x->dev_lock_count == -1)
++		dg00x->dev_lock_count = 0;
++	spin_unlock_irq(&dg00x->lock);
++
++	return 0;
++}
++
++static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
++	    unsigned int cmd, unsigned long arg)
++{
++	struct snd_dg00x *dg00x = hwdep->private_data;
++
++	switch (cmd) {
++	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
++		return hwdep_get_info(dg00x, (void __user *)arg);
++	case SNDRV_FIREWIRE_IOCTL_LOCK:
++		return hwdep_lock(dg00x);
++	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
++		return hwdep_unlock(dg00x);
++	default:
++		return -ENOIOCTLCMD;
++	}
++}
++
++#ifdef CONFIG_COMPAT
++static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
++			      unsigned int cmd, unsigned long arg)
++{
++	return hwdep_ioctl(hwdep, file, cmd,
++			   (unsigned long)compat_ptr(arg));
++}
++#else
++#define hwdep_compat_ioctl NULL
++#endif
++
++static const struct snd_hwdep_ops hwdep_ops = {
++	.read		= hwdep_read,
++	.release	= hwdep_release,
++	.poll		= hwdep_poll,
++	.ioctl		= hwdep_ioctl,
++	.ioctl_compat	= hwdep_compat_ioctl,
++};
++
++int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
++{
++	struct snd_hwdep *hwdep;
 +	int err;
 +
-+	/* For out-stream. */
-+	err = fw_iso_resources_init(&dg00x->rx_resources, dg00x->unit);
++	err = snd_hwdep_new(dg00x->card, "Digi00x", 0, &hwdep);
 +	if (err < 0)
-+		goto error;
-+	err = amdtp_dot_init(&dg00x->rx_stream, dg00x->unit, AMDTP_OUT_STREAM);
-+	if (err < 0)
-+		goto error;
++		return err;
 +
-+	/* For in-stream. */
-+	err = fw_iso_resources_init(&dg00x->tx_resources, dg00x->unit);
-+	if (err < 0)
-+		goto error;
-+	err = amdtp_dot_init(&dg00x->tx_stream, dg00x->unit, AMDTP_IN_STREAM);
-+	if (err < 0)
-+		goto error;
++	strcpy(hwdep->name, "Digi00x");
++	hwdep->iface = SNDRV_HWDEP_IFACE_FW_DIGI00X;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = dg00x;
++	hwdep->exclusive = true;
 +
-+	return 0;
-+error:
-+	snd_dg00x_stream_destroy_duplex(dg00x);
 +	return err;
 +}
-+
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
-+void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x)
-+{
-+	amdtp_stream_destroy(&dg00x->rx_stream);
-+	fw_iso_resources_destroy(&dg00x->rx_resources);
-+
-+	amdtp_stream_destroy(&dg00x->tx_stream);
-+	fw_iso_resources_destroy(&dg00x->tx_resources);
-+}
-+
-+int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x, unsigned int rate)
-+{
-+	unsigned int curr_rate;
-+	int err = 0;
-+
-+	if (dg00x->substreams_counter == 0)
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+index 87c9aa2..cac28f7 100644
+--- a/sound/firewire/digi00x/digi00x-pcm.c
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -118,21 +118,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	unsigned int rate;
+ 	int err;
+ 
++	err = snd_dg00x_stream_lock_try(dg00x);
++	if (err < 0)
 +		goto end;
 +
-+	/* Check current sampling rate. */
-+	err = snd_dg00x_stream_get_local_rate(dg00x, &curr_rate);
-+	if (err < 0)
-+		goto error;
-+	if (curr_rate != rate ||
-+	    amdtp_streaming_error(&dg00x->tx_stream) ||
-+	    amdtp_streaming_error(&dg00x->rx_stream)) {
-+		finish_session(dg00x);
-+
-+		amdtp_stream_stop(&dg00x->tx_stream);
-+		amdtp_stream_stop(&dg00x->rx_stream);
-+		release_resources(dg00x);
-+	}
-+
-+	/*
-+	 * No packets are transmitted without receiving packets, reagardless of
-+	 * which source of clock is used.
-+	 */
-+	if (!amdtp_stream_running(&dg00x->rx_stream)) {
-+		err = snd_dg00x_stream_set_local_rate(dg00x, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = keep_resources(dg00x, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = begin_session(dg00x);
-+		if (err < 0)
-+			goto error;
-+
-+		err = amdtp_stream_start(&dg00x->rx_stream,
-+				dg00x->rx_resources.channel,
-+				fw_parent_device(dg00x->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&dg00x->rx_stream,
-+					      CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
-+
-+	/*
-+	 * The value of SYT field in transmitted packets is always 0x0000. Thus,
-+	 * duplex streams with timestamp synchronization cannot be built.
-+	 */
-+	if (!amdtp_stream_running(&dg00x->tx_stream)) {
-+		err = amdtp_stream_start(&dg00x->tx_stream,
-+				dg00x->tx_resources.channel,
-+				fw_parent_device(dg00x->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&dg00x->tx_stream,
-+					      CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
+ 	err = pcm_init_hw_params(dg00x, substream);
+ 	if (err < 0)
+-		return err;
++		goto err_locked;
+ 
+ 	/* Check current clock source. */
+ 	err = snd_dg00x_stream_get_clock(dg00x, &clock);
+ 	if (err < 0)
+-		return err;
++		goto err_locked;
+ 	if (clock != SND_DG00X_CLOCK_INTERNAL) {
+ 		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
+ 		if (err < 0)
+-			return err;
++			goto err_locked;
+ 		if (!detect) {
+ 			err = -EBUSY;
+-			return err;
++			goto err_locked;
+ 		}
+ 	}
+ 
+@@ -141,18 +145,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
+ 		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
+ 		if (err < 0)
+-			return err;
++			goto err_locked;
+ 		substream->runtime->hw.rate_min = rate;
+ 		substream->runtime->hw.rate_max = rate;
+ 	}
+ 
+ 	snd_pcm_set_sync(substream);
+-
 +end:
 +	return err;
-+error:
-+	finish_session(dg00x);
++err_locked:
++	snd_dg00x_stream_lock_release(dg00x);
+ 	return err;
+ }
+ 
+ static int pcm_close(struct snd_pcm_substream *substream)
+ {
++	struct snd_dg00x *dg00x = substream->private_data;
 +
-+	amdtp_stream_stop(&dg00x->tx_stream);
-+	amdtp_stream_stop(&dg00x->rx_stream);
-+	release_resources(dg00x);
++	snd_dg00x_stream_lock_release(dg00x);
 +
+ 	return 0;
+ }
+ 
+diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
+index 3278c3e..8aac31b 100644
+--- a/sound/firewire/digi00x/digi00x-stream.c
++++ b/sound/firewire/digi00x/digi00x-stream.c
+@@ -379,3 +379,42 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x)
+ 	amdtp_stream_update(&dg00x->tx_stream);
+ 	amdtp_stream_update(&dg00x->rx_stream);
+ }
++
++void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x)
++{
++	dg00x->dev_lock_changed = true;
++	wake_up(&dg00x->hwdep_wait);
++}
++
++int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x)
++{
++	int err;
++
++	spin_lock_irq(&dg00x->lock);
++
++	/* user land lock this */
++	if (dg00x->dev_lock_count < 0) {
++		err = -EBUSY;
++		goto end;
++	}
++
++	/* this is the first time */
++	if (dg00x->dev_lock_count++ == 0)
++		snd_dg00x_stream_lock_changed(dg00x);
++	err = 0;
++end:
++	spin_unlock_irq(&dg00x->lock);
 +	return err;
 +}
 +
-+void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x)
++void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x)
 +{
-+	if (dg00x->substreams_counter > 0)
-+		return;
++	spin_lock_irq(&dg00x->lock);
 +
-+	amdtp_stream_stop(&dg00x->tx_stream);
-+	amdtp_stream_stop(&dg00x->rx_stream);
-+	finish_session(dg00x);
-+	release_resources(dg00x);
-+
-+	/*
-+	 * Just after finishing the session, the device may lost transmitting
-+	 * functionality for a short time.
-+	 */
-+	msleep(50);
-+}
-+
-+void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x)
-+{
-+	fw_iso_resources_update(&dg00x->tx_resources);
-+	fw_iso_resources_update(&dg00x->rx_resources);
-+
-+	amdtp_stream_update(&dg00x->tx_stream);
-+	amdtp_stream_update(&dg00x->rx_stream);
++	if (WARN_ON(dg00x->dev_lock_count <= 0))
++		goto end;
++	if (--dg00x->dev_lock_count == 0)
++		snd_dg00x_stream_lock_changed(dg00x);
++end:
++	spin_unlock_irq(&dg00x->lock);
 +}
 diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index ba82717..11de41b 100644
+index 15af645..542b2c0 100644
 --- a/sound/firewire/digi00x/digi00x.c
 +++ b/sound/firewire/digi00x/digi00x.c
-@@ -47,6 +47,8 @@ static void dg00x_card_free(struct snd_card *card)
- {
- 	struct snd_dg00x *dg00x = card->private_data;
+@@ -74,6 +74,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	dg00x->unit = fw_unit_get(unit);
  
-+	snd_dg00x_stream_destroy_duplex(dg00x);
-+
- 	fw_unit_put(dg00x->unit);
+ 	mutex_init(&dg00x->mutex);
++	spin_lock_init(&dg00x->lock);
++	init_waitqueue_head(&dg00x->hwdep_wait);
  
- 	mutex_destroy(&dg00x->mutex);
-@@ -77,6 +79,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	err = name_card(dg00x);
+ 	if (err < 0)
+@@ -89,6 +91,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	err = snd_dg00x_stream_init_duplex(dg00x);
++	err = snd_dg00x_create_hwdep_device(dg00x);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-@@ -91,7 +97,11 @@ error:
- 
- static void snd_dg00x_update(struct fw_unit *unit)
- {
--	return;
-+	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
-+
-+	mutex_lock(&dg00x->mutex);
-+	snd_dg00x_stream_update_duplex(dg00x);
-+	mutex_unlock(&dg00x->mutex);
- }
- 
- static void snd_dg00x_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index fe21d77..685d5f0 100644
+index 1990645..5ba5318 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -31,6 +31,57 @@ struct snd_dg00x {
+@@ -22,6 +22,8 @@
+ #include <sound/info.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/firewire.h>
++#include <sound/hwdep.h>
+ 
+ #include "../lib.h"
+ #include "../iso-resources.h"
+@@ -32,6 +34,7 @@ struct snd_dg00x {
  	struct fw_unit *unit;
  
  	struct mutex mutex;
++	spinlock_t lock;
+ 
+ 	struct amdtp_stream tx_stream;
+ 	struct fw_iso_resources tx_resources;
+@@ -40,6 +43,12 @@ struct snd_dg00x {
+ 	struct fw_iso_resources rx_resources;
+ 
+ 	unsigned int substreams_counter;
 +
-+	struct amdtp_stream tx_stream;
-+	struct fw_iso_resources tx_resources;
++	/* for uapi */
++	int dev_lock_count;
++	bool dev_lock_changed;
++	wait_queue_head_t hwdep_wait;
 +
-+	struct amdtp_stream rx_stream;
-+	struct fw_iso_resources rx_resources;
-+
-+	unsigned int substreams_counter;
-+};
-+
-+#define DG00X_ADDR_BASE		0xffffe0000000ull
-+
-+#define DG00X_OFFSET_STREAMING_STATE	0x0000
-+#define DG00X_OFFSET_STREAMING_SET	0x0004
-+#define DG00X_OFFSET_MIDI_CTL_ADDR	0x0008
-+/* For LSB of the address		0x000c */
-+/* unknown				0x0010 */
-+#define DG00X_OFFSET_MESSAGE_ADDR	0x0014
-+/* For LSB of the address		0x0018 */
-+/* unknown				0x001c */
-+/* unknown				0x0020 */
-+/* not used			0x0024--0x00ff */
-+#define DG00X_OFFSET_ISOC_CHANNELS	0x0100
-+/* unknown				0x0104 */
-+/* unknown				0x0108 */
-+/* unknown				0x010c */
-+#define DG00X_OFFSET_LOCAL_RATE		0x0110
-+#define DG00X_OFFSET_EXTERNAL_RATE	0x0114
-+#define DG00X_OFFSET_CLOCK_SOURCE	0x0118
-+#define DG00X_OFFSET_OPT_IFACE_MODE	0x011c
-+/* unknown				0x0120 */
-+/* Mixer control on/off			0x0124 */
-+/* unknown				0x0128 */
-+#define DG00X_OFFSET_DETECT_EXTERNAL	0x012c
-+/* unknown				0x0138 */
-+#define DG00X_OFFSET_MMC		0x0400
-+
-+enum snd_dg00x_rate {
-+	SND_DG00X_RATE_44100 = 0,
-+	SND_DG00X_RATE_48000,
-+	SND_DG00X_RATE_88200,
-+	SND_DG00X_RATE_96000,
-+	SND_DG00X_RATE_COUNT,
-+};
-+
-+enum snd_dg00x_clock {
-+	SND_DG00X_CLOCK_INTERNAL = 0,
-+	SND_DG00X_CLOCK_SPDIF,
-+	SND_DG00X_CLOCK_ADAT,
-+	SND_DG00X_CLOCK_WORD,
-+	SND_DG00X_CLOCK_COUNT,
  };
  
- int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
-@@ -43,4 +94,21 @@ int amdtp_dot_add_pcm_hw_constraints(struct amdtp_stream *s,
- 				     struct snd_pcm_runtime *runtime);
- void amdtp_dot_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
+ #define DG00X_ADDR_BASE		0xffffe0000000ull
+@@ -118,8 +127,13 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
  
-+extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
-+extern const unsigned int snd_dg00x_stream_pcm_channels[SND_DG00X_RATE_COUNT];
-+int snd_dg00x_stream_get_external_rate(struct snd_dg00x *dg00x,
-+				       unsigned int *rate);
-+int snd_dg00x_stream_get_local_rate(struct snd_dg00x *dg00x,
-+				    unsigned int *rate);
-+int snd_dg00x_stream_set_local_rate(struct snd_dg00x *dg00x, unsigned int rate);
-+int snd_dg00x_stream_get_clock(struct snd_dg00x *dg00x,
-+			       enum snd_dg00x_clock *clock);
-+int snd_dg00x_stream_check_external_clock(struct snd_dg00x *dg00x,
-+					  bool *detect);
-+int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x);
-+int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x, unsigned int rate);
-+void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
++void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x);
++int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x);
++void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x);
 +
+ void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
+ 
+ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
+ 
++int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x);
  #endif
 -- 
 2.1.4
