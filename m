@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 6/7] ALSA: firewire-digi00x: add hwdep interface
-Date: Wed, 30 Sep 2015 09:39:21 +0900
-Message-ID: <1443573562-24088-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/7] ALSA: firewire-digi00x: add PCM
+	functionality
+Date: Wed, 30 Sep 2015 09:39:20 +0900
+Message-ID: <1443573562-24088-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 66CDD265A10
+ by alsa0.perex.cz (Postfix) with ESMTP id 664E3265A0C
  for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:33 +0200 (CEST)
 In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,402 +25,408 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other sound drivers for units
-on IEEE 1394 bus have.
+This commit adds PCM functionality to transmit/receive PCM samples.
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+Any PCM substreams are jointed because incoming/outgoing AMDTP streams
+are bound. When one of PCM substream is running or external clock source
+is selected, current sampling rate is used. Else, the sampling rate is
+changed as an userspace application requests.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h             |   3 +-
- include/uapi/sound/firewire.h           |   1 +
- sound/firewire/Kconfig                  |   1 +
- sound/firewire/digi00x/Makefile         |   2 +-
- sound/firewire/digi00x/digi00x-hwdep.c  | 192 ++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-pcm.c    |  23 +++-
- sound/firewire/digi00x/digi00x-stream.c |  39 +++++++
- sound/firewire/digi00x/digi00x.c        |   6 +
- sound/firewire/digi00x/digi00x.h        |  14 +++
- 9 files changed, 273 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/digi00x/digi00x-hwdep.c
+ sound/firewire/digi00x/Makefile      |   2 +-
+ sound/firewire/digi00x/digi00x-pcm.c | 362 +++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c     |   4 +
+ sound/firewire/digi00x/digi00x.h     |   3 +
+ 4 files changed, 370 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index a45be6b..aa32913 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -100,9 +100,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
- 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
-+	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DIGI00X
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 49122df..f67d228 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -56,6 +56,7 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
- #define SNDRV_FIREWIRE_TYPE_BEBOB	3
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
-+#define SNDRV_FIREWIRE_TYPE_DIGI00X	5
- /* RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 74f17a8..e61445e 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -123,6 +123,7 @@ config SND_BEBOB
- config SND_FIREWIRE_DIGI00X
- 	tristate "Digidesign Digi 002/003 family support"
- 	select SND_FIREWIRE_LIB
-+	select SND_HWDEP
- 	help
- 	 Say Y here to include support for Digidesign Digi 002/003 family.
- 	  * Digi 002 Console
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 3c0ff6f..5bc3c77 100644
+index 3e0f028..3c0ff6f 100644
 --- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
 @@ -1,3 +1,3 @@
  snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
--			     digi00x-pcm.o digi00x.o
-+			     digi00x-pcm.o digi00x-hwdep.o digi00x.o
+-			     digi00x.o
++			     digi00x-pcm.o digi00x.o
  obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
 new file mode 100644
-index 0000000..d629e41
+index 0000000..87c9aa2
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-hwdep.c
-@@ -0,0 +1,192 @@
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -0,0 +1,362 @@
 +/*
-+ * digi00x-hwdep.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x-pcm.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node information
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ */
-+
 +#include "digi00x.h"
 +
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+		       loff_t *offset)
++static int hw_rule_rate(struct snd_pcm_hw_params *params,
++			struct snd_pcm_hw_rule *rule)
 +{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1,
++	};
++	unsigned int i;
 +
-+	spin_lock_irq(&dg00x->lock);
++	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
++		if (!snd_interval_test(c,
++				       snd_dg00x_stream_pcm_channels[i]))
++			continue;
 +
-+	while (!dg00x->dev_lock_changed) {
-+		prepare_to_wait(&dg00x->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&dg00x->lock);
-+		schedule();
-+		finish_wait(&dg00x->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&dg00x->lock);
++		t.min = min(t.min, snd_dg00x_stream_rates[i]);
++		t.max = max(t.max, snd_dg00x_stream_rates[i]);
 +	}
 +
-+	memset(&event, 0, sizeof(event));
-+	if (dg00x->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (dg00x->dev_lock_count > 0);
-+		dg00x->dev_lock_changed = false;
++	return snd_interval_refine(r, &t);
++}
 +
-+		count = min_t(long, count, sizeof(event.lock_status));
++static int hw_rule_channels(struct snd_pcm_hw_params *params,
++			    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1,
++	};
++	unsigned int i;
++
++	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
++		if (!snd_interval_test(r, snd_dg00x_stream_rates[i]))
++			continue;
++
++		t.min = min(t.min, snd_dg00x_stream_pcm_channels[i]);
++		t.max = max(t.max, snd_dg00x_stream_pcm_channels[i]);
 +	}
 +
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
++	return snd_interval_refine(c, &t);
 +}
 +
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
++static int pcm_init_hw_params(struct snd_dg00x *dg00x,
++			      struct snd_pcm_substream *substream)
 +{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &dg00x->hwdep_wait, wait);
-+
-+	spin_lock_irq(&dg00x->lock);
-+	if (dg00x->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return events;
-+}
-+
-+static int hwdep_get_info(struct snd_dg00x *dg00x, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(dg00x->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_DIGI00X;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_dg00x *dg00x)
-+{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 |
++			 SNDRV_PCM_RATE_96000,
++		.rate_min = 44100,
++		.rate_max = 96000,
++		.channels_min = 10,
++		.channels_max = 18,
++		.period_bytes_min = 4 * 18,
++		.period_bytes_max = 4 * 18 * 2048,
++		.buffer_bytes_max = 4 * 18 * 2048 * 2,
++		.periods_min = 2,
++		.periods_max = UINT_MAX,
++	};
++	struct amdtp_stream *s;
 +	int err;
 +
-+	spin_lock_irq(&dg00x->lock);
++	substream->runtime->hw = hardware;
 +
-+	if (dg00x->dev_lock_count == 0) {
-+		dg00x->dev_lock_count = -1;
-+		err = 0;
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		s = &dg00x->tx_stream;
 +	} else {
-+		err = -EBUSY;
++		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S16 |
++						 SNDRV_PCM_FMTBIT_S32;
++		s = &dg00x->rx_stream;
 +	}
 +
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_unlock(struct snd_dg00x *dg00x)
-+{
-+	int err;
-+
-+	spin_lock_irq(&dg00x->lock);
-+
-+	if (dg00x->dev_lock_count == -1) {
-+		dg00x->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
-+
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+
-+	spin_lock_irq(&dg00x->lock);
-+	if (dg00x->dev_lock_count == -1)
-+		dg00x->dev_lock_count = 0;
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(dg00x, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(dg00x);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(dg00x);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
-+};
-+
-+int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(dg00x->card, "Digi00x", 0, &hwdep);
++	err = snd_pcm_hw_rule_add(substream->runtime, 0,
++				  SNDRV_PCM_HW_PARAM_CHANNELS,
++				  hw_rule_channels, NULL,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
 +	if (err < 0)
 +		return err;
 +
-+	strcpy(hwdep->name, "Digi00x");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_DIGI00X;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = dg00x;
-+	hwdep->exclusive = true;
-+
-+	return err;
-+}
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-index 87c9aa2..cac28f7 100644
---- a/sound/firewire/digi00x/digi00x-pcm.c
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -118,21 +118,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_dg00x_stream_lock_try(dg00x);
++	err = snd_pcm_hw_rule_add(substream->runtime, 0,
++				  SNDRV_PCM_HW_PARAM_RATE,
++				  hw_rule_rate, NULL,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
 +	if (err < 0)
-+		goto end;
++		return err;
 +
- 	err = pcm_init_hw_params(dg00x, substream);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	/* Check current clock source. */
- 	err = snd_dg00x_stream_get_clock(dg00x, &clock);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 	if (clock != SND_DG00X_CLOCK_INTERNAL) {
- 		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		if (!detect) {
- 			err = -EBUSY;
--			return err;
-+			goto err_locked;
- 		}
- 	}
- 
-@@ -141,18 +145,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
- 		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--
-+end:
-+	return err;
-+err_locked:
-+	snd_dg00x_stream_lock_release(dg00x);
- 	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	snd_dg00x_stream_lock_release(dg00x);
-+
- 	return 0;
- }
- 
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 3278c3e..8aac31b 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -379,3 +379,42 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x)
- 	amdtp_stream_update(&dg00x->tx_stream);
- 	amdtp_stream_update(&dg00x->rx_stream);
- }
-+
-+void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x)
-+{
-+	dg00x->dev_lock_changed = true;
-+	wake_up(&dg00x->hwdep_wait);
++	return amdtp_dot_add_pcm_hw_constraints(s, substream->runtime);
 +}
 +
-+int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x)
++static int pcm_open(struct snd_pcm_substream *substream)
 +{
++	struct snd_dg00x *dg00x = substream->private_data;
++	enum snd_dg00x_clock clock;
++	bool detect;
++	unsigned int rate;
 +	int err;
 +
-+	spin_lock_irq(&dg00x->lock);
++	err = pcm_init_hw_params(dg00x, substream);
++	if (err < 0)
++		return err;
 +
-+	/* user land lock this */
-+	if (dg00x->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
++	/* Check current clock source. */
++	err = snd_dg00x_stream_get_clock(dg00x, &clock);
++	if (err < 0)
++		return err;
++	if (clock != SND_DG00X_CLOCK_INTERNAL) {
++		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
++		if (err < 0)
++			return err;
++		if (!detect) {
++			err = -EBUSY;
++			return err;
++		}
 +	}
 +
-+	/* this is the first time */
-+	if (dg00x->dev_lock_count++ == 0)
-+		snd_dg00x_stream_lock_changed(dg00x);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&dg00x->lock);
++	if ((clock != SND_DG00X_CLOCK_INTERNAL) ||
++	    amdtp_stream_pcm_running(&dg00x->rx_stream) ||
++	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
++		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
++		if (err < 0)
++			return err;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
++
 +	return err;
 +}
 +
-+void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	spin_lock_irq(&dg00x->lock);
++	return 0;
++}
 +
-+	if (WARN_ON(dg00x->dev_lock_count <= 0))
-+		goto end;
-+	if (--dg00x->dev_lock_count == 0)
-+		snd_dg00x_stream_lock_changed(dg00x);
-+end:
-+	spin_unlock_irq(&dg00x->lock);
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	int err;
++
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dg00x->mutex);
++		dg00x->substreams_counter++;
++		mutex_unlock(&dg00x->mutex);
++	}
++
++	amdtp_dot_set_pcm_format(&dg00x->tx_stream, params_format(hw_params));
++
++	return 0;
++}
++
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	int err;
++
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dg00x->mutex);
++		dg00x->substreams_counter++;
++		mutex_unlock(&dg00x->mutex);
++	}
++
++	amdtp_dot_set_pcm_format(&dg00x->rx_stream, params_format(hw_params));
++
++	return 0;
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	mutex_lock(&dg00x->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dg00x->substreams_counter--;
++
++	snd_dg00x_stream_stop_duplex(dg00x);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	mutex_lock(&dg00x->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dg00x->substreams_counter--;
++
++	snd_dg00x_stream_stop_duplex(dg00x);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&dg00x->mutex);
++
++	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&dg00x->tx_stream);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return err;
++}
++
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&dg00x->mutex);
++
++	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
++	if (err >= 0) {
++		amdtp_stream_pcm_prepare(&dg00x->rx_stream);
++		amdtp_dot_reset(&dg00x->rx_stream);
++	}
++
++	mutex_unlock(&dg00x->mutex);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&dg00x->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&dg00x->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&dg00x->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&dg00x->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_dg00x *dg00x = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
++}
++
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_dg00x *dg00x = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(dg00x->card, dg00x->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	pcm->private_data = dg00x;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", dg00x->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++
++	return 0;
 +}
 diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 15af645..542b2c0 100644
+index 2c61eef..15af645 100644
 --- a/sound/firewire/digi00x/digi00x.c
 +++ b/sound/firewire/digi00x/digi00x.c
-@@ -74,6 +74,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	dg00x->unit = fw_unit_get(unit);
+@@ -85,6 +85,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
  
- 	mutex_init(&dg00x->mutex);
-+	spin_lock_init(&dg00x->lock);
-+	init_waitqueue_head(&dg00x->hwdep_wait);
+ 	snd_dg00x_proc_init(dg00x);
  
- 	err = name_card(dg00x);
- 	if (err < 0)
-@@ -89,6 +91,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_dg00x_create_hwdep_device(dg00x);
++	err = snd_dg00x_create_pcm_devices(dg00x);
 +	if (err < 0)
 +		goto error;
 +
@@ -427,52 +434,16 @@ index 15af645..542b2c0 100644
  	if (err < 0)
  		goto error;
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 1990645..5ba5318 100644
+index 9ee259f..1990645 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -22,6 +22,8 @@
- #include <sound/info.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../lib.h"
- #include "../iso-resources.h"
-@@ -32,6 +34,7 @@ struct snd_dg00x {
- 	struct fw_unit *unit;
- 
- 	struct mutex mutex;
-+	spinlock_t lock;
- 
- 	struct amdtp_stream tx_stream;
- 	struct fw_iso_resources tx_resources;
-@@ -40,6 +43,12 @@ struct snd_dg00x {
- 	struct fw_iso_resources rx_resources;
- 
- 	unsigned int substreams_counter;
-+
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
-+
- };
- 
- #define DG00X_ADDR_BASE		0xffffe0000000ull
-@@ -118,8 +127,13 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+@@ -119,4 +119,7 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
  void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
  
-+void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x);
-+int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x);
-+
  void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
- 
- int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
- 
-+int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x);
++
++int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
++
  #endif
 -- 
 2.1.4
