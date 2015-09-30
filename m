@@ -1,19 +1,15 @@
-From: Panu Matilainen <pmatilai@laiskiainen.org>
-Subject: Re: Zoom R16/24 playback slient
-Date: Wed, 30 Sep 2015 11:34:49 +0300
-Message-ID: <560B9EA9.2090304@laiskiainen.org>
-References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
- <560B8481.1080304@laiskiainen.org>
- <alpine.DEB.2.02.1509300955510.12892@lnxricardw1.se.axis.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH 0/8] ASoC: topology: ABI - Add support for PCM,
+	BE & CC link
+Date: Wed, 30 Sep 2015 17:02:29 +0800
+Message-ID: <cover.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a57.g.dreamhost.com (sub5.mail.dreamhost.com
- [208.113.200.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B0A32659FF
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:34:55 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1509300955510.12892@lnxricardw1.se.axis.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 757662659DD
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:47:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,97 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdwood@intel.com, vedang.patel@intel.com, subhransu.s.prusty@intel.com, vinod.koul@intel.com, jeeja.kp@intel.com
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/30/2015 11:05 AM, Ricard Wanderlof wrote:
->
-> On Wed, 30 Sep 2015, Panu Matilainen wrote:
->
->>> Where does the above output come from, and where could I find information
->>> on what type of data is expected? I assume what's expected is something
->>> one would get from an USB mixer device?
->>
->> The output is simply 'lsusb -v' plus manually added guesses as to what
->> these unrecognized bits are.
->
-> Ah, I should have guessed as much... (I was looking in the kernel for some
-> USB debug thing via /sys or similar).
->
->> As for the mixer, I concluded the Zoom does not really have one. The
->> interface 0 is a control interface where a mixer would reside, but
->> there's no actual mixer unit in there.
->
-> I wonder if any information could be gleaned from running the Windows
-> driver and somehow snooping the USB bus.
->
-> There must be some way of enabling the playback stream.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-I do have an usb dump of Windows initializing the thing and can/will 
-share and/or generate new ones if you/others want to have a look. It 
-hasn't helped me so far, problem being I dont really know what to look 
-for in the first place.
+This series includes topology ABI update to support PCM (FE DAI/DAI links),
+BE and CC DAI links. Bump the ABI version to 4.
 
->> My memory is a bit hazy on the details, but the automatically detected
->> SNDRV_PCM_FMTBIT_S32 (which iirc means the actual 24bit values are
->> carried in 32bit chunks) seems to be the right thing for the device,
->> forcing it to something else just makes things worse. IIRC.
->
-> I think that many devices put 24 bits in the most significant bits of a 32
-> bit word, hence SNDRV_PCM_FMTBIT_S32 works fine, and the device simply
-> disregards the lowest 8 bits. I don't know about USB, but I've come across
-> SoC devices where it is the lower 24 bits that carry the data, in which
-> case SNDRV_PCM_FMTBIT_S24LE is needed, and then there are devices which
-> really handle the data in 24 bit chunks, using SNDRV_PCM_FMTBIT_S24_3LE.
->
-> At any rate this issue seems to be cleared up.
->
->> Another finding from my last round in the spring I do remember clearly,
->> is that enabling both the input and output interfaces makes things hang
->> up (timeouts and nothing really works). But if you disable the input
->> interface and enable the output interface, you get an apparently working
->> playback stream. Only no sound comes out. If you disable the output and
->> enable input, capture itself works fine.
->
-> Ok, thanks for that tidbit, I'd read about problems with simulatenous
-> capture and playback in previous threads; I thought perhaps (hopefully...)
-> the only remaining issue was the silent playback.
->
->> So perhaps it needs another quirk similar in spirit to the E-Mu:
->>
->>           /* When capture is active
->>            * sample rate shouldn't be changed
->>            * by playback substream
->>            */
->>           if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
->>                   if
->> (subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].interface != -1)
->>                           return;
->
-> So your theory is that reconfiguring the device once opened for one
-> direction is what causes it to hang?
+Mengdong Lin (2):
+  ASoC: topology: ABI - Change stream formats to a bitwise flag
+  ASoC: topology: ABI - Remove tdm_slot & dai_fmt from
+    snd_soc_tplg_stream
 
-IIRC you start getting hangs accompanied with "cannot get/set freq XXX 
-to ep Y" (or similar) messages when you try to open both. For a single 
-interface at a time, those messages went away by adding the small delay, 
-but adding more delay doesn't help with the case where both are active.
+Vedang Patel (6):
+  ASoC: topology: ABI - Add PCM Support and bump ABI version to 4
+  ASoC: topology: ABI - Remove unused struct snd_soc_tplg_stream_config
+  ASoC: topology: ABI - Use __le32 instead of __u32 in
+    snd_soc_tplg_dapm_widget
+  ASoC: topology: ABI - Add name element to snd_soc_tplg_stream
+  ASoC: topology: ABI - Add the type for BE DAI link
+  ASoC: topology: ABI - Add configuration for BE & Codec-Codec DAI Links
 
-So to me the evidence seems to suggest it only supports a global 
-frequency for the device, instead of per interface. Which, considering 
-what the device is, seems quite reasonable.
+ include/uapi/sound/asoc.h | 76 +++++++++++++++++++++++++----------------------
+ sound/soc/soc-topology.c  |  4 +--
+ 2 files changed, 43 insertions(+), 37 deletions(-)
 
->
->> Or something. I do intend to continue poking at it sooner or later but
->> can't make any promises.
->
-> I understand. Since I have a setup at home that works now I thought I'd
-> take a look at it and see how far I get.
-
-Cool.
-
-	- Panu -
-
->
-> /Ricard
->
+-- 
+1.9.1
