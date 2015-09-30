@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v2 2/8] ASoC: topology: ABI - Remove unused
-	struct snd_soc_tplg_stream_config
-Date: Wed, 30 Sep 2015 17:29:47 +0800
-Message-ID: <483a16f54f7ec31bce216f07973431938d1a0dc2.1443605139.git.mengdong.lin@intel.com>
+Subject: [PATCH v2 3/8] ASoC: topology: ABI - Use __le32
+	instead of __u32 in snd_soc_tplg_dapm_widget
+Date: Wed, 30 Sep 2015 17:30:05 +0800
+Message-ID: <1adb358d870891f0553feb8469a36632557e68a8.1443605139.git.mengdong.lin@intel.com>
 References: <cover.1443605139.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id CBDF3265E0E
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 11:15:17 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF509265DAA
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 11:15:35 +0200 (CEST)
 In-Reply-To: <cover.1443605139.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,32 +27,32 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vedang Patel <vedang.patel@intel.com>
 
-The struct snd_soc_tplg_stream_config is no longer used in the ABI.
-We are using snd_soc_tplg_stream instead.
+This fixes the endianness of the ABI parameters in the struct.
+The field 'num_kcontrols' is also extended from 16 bits to 32 bits.
 
 Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 2aa081c..4bef63f 100644
+index 4bef63f..88210a8 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -227,16 +227,6 @@ struct snd_soc_tplg_stream {
- } __attribute__((packed));
- 
- /*
-- * Duplex stream configuration supported by SW/FW.
-- */
--struct snd_soc_tplg_stream_config {
--	__le32 size;		/* in bytes of this structure */
--	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	struct snd_soc_tplg_stream playback;
--	struct snd_soc_tplg_stream capture;
--} __attribute__((packed));
--
--/*
-  * Manifest. List totals for each payload type. Not used in parsing, but will
-  * be passed to the component driver before any other objects in order for any
-  * global component resource allocations.
+@@ -356,11 +356,11 @@ struct snd_soc_tplg_dapm_widget {
+ 	__le32 shift;		/* bits to shift */
+ 	__le32 mask;		/* non-shifted mask */
+ 	__le32 subseq;		/* sort within widget type */
+-	__u32 invert;		/* invert the power bit */
+-	__u32 ignore_suspend;	/* kept enabled over suspend */
+-	__u16 event_flags;
+-	__u16 event_type;
+-	__u16 num_kcontrols;
++	__le32 invert;		/* invert the power bit */
++	__le32 ignore_suspend;	/* kept enabled over suspend */
++	__le16 event_flags;
++	__le16 event_type;
++	__le32 num_kcontrols;
+ 	struct snd_soc_tplg_private priv;
+ 	/*
+ 	 * kcontrols that relate to this widget
 -- 
 1.9.1
