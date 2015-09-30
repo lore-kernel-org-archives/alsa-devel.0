@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH 7/8] ASoC: topology: ABI - Add configuration
-	for BE & Codec-Codec DAI Links
-Date: Wed, 30 Sep 2015 17:13:43 +0800
-Message-ID: <5a1fe81777b8416e5acc3a854aa88d8c09ab6ce3.1443602494.git.mengdong.lin@intel.com>
+Subject: [PATCH 8/8] ASoC: topology: ABI - Remove tdm_slot &
+	dai_fmt from snd_soc_tplg_stream
+Date: Wed, 30 Sep 2015 17:13:55 +0800
+Message-ID: <30ca5b75b0eb2dc29ab9cbbb8c83d180799a91cd.1443602494.git.mengdong.lin@intel.com>
 References: <cover.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 258C62659DD
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:59:12 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9499D265CBA
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 10:59:27 +0200 (CEST)
 In-Reply-To: <cover.1443602494.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,25 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, liam.r.girdw
 Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vedang Patel <vedang.patel@intel.com>
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-struct snd_soc_tplg_link_config is defined to configure BE & CC links.
+These two fields are line parameters for BE/CC links and
+should not be from toplogy but from ACPI.
 
-Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index f75fd29..538ea13 100644
+index 538ea13..26539a7 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -395,4 +395,21 @@ struct snd_soc_tplg_pcm {
- 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
+@@ -224,8 +224,6 @@ struct snd_soc_tplg_stream {
+ 	__le32 period_bytes;	/* size of period in bytes */
+ 	__le32 buffer_bytes;	/* size of buffer in bytes */
+ 	__le32 channels;	/* channels */
+-	__le32 tdm_slot;	/* optional BE bitmask of supported TDM slots */
+-	__le32 dai_fmt;		/* SND_SOC_DAIFMT_  */
  } __attribute__((packed));
  
-+
-+/*
-+ * Describes the BE or CC link runtime supported configs or params
-+ *
-+ * File block representation for BE/CC link config :-
-+ * +-----------------------------------+-----+
-+ * | struct snd_soc_tplg_hdr           |  1  |
-+ * +-----------------------------------+-----+
-+ * | struct snd_soc_tplg_link_config   |  N  |
-+ * +-----------------------------------+-----+
-+ */
-+struct snd_soc_tplg_link_config {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;              /* unique ID - used to match */
-+	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
-+	__le32 num_streams;     /* number of streams */
-+} __attribute__((packed));
- #endif
+ /*
 -- 
 1.9.1
