@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/7] ALSA: firewire-digi00x: add support for
-	asynchronous messaging
-Date: Wed, 30 Sep 2015 09:39:22 +0900
-Message-ID: <1443573562-24088-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/7] ALSA: firewire-digi00x: add data block
+	processing layer
+Date: Wed, 30 Sep 2015 09:39:17 +0900
+Message-ID: <1443573562-24088-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 64367265A06
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:33 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 908EC2659DD
+ for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 02:39:31 +0200 (CEST)
 In-Reply-To: <1443573562-24088-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,273 +25,415 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi 002/003 family uses asynchronous transaction for messaging.
-The address to transmit this message is stored on a certain register.
+Digi 002/003 family uses its own format for data blocks. The format is
+quite similar to AM824 in IEC 61883-6, while there're some differences:
 
-This commit allocates a range of address on OHCI 1394 host controller
-to handle the messaging. As long as I know, the purpose of this message
-seems to notify lost of synchronization. While, the meaning of content
-of the message is not clear.
+ * The Valid Bit Length (VBL) code is always 0x40 in Multi-bit Linear Audio
+   (MBLA) data channel.
+ * The first data channel includes MIDI messages, against IEC 61883-6
+   recommendation.
+ * The Counter field is always zero in MIDI conformant data channel.
+ * Sequence multiplexing in IEC 61883-6 is not applied to the MIDI
+   conformant data channel.
+ * PCM samples are scrambled in received AMDTP packets. We call the way
+   as Double-Oh-Three (DOT). The algorithm was discovered by
+   Robin Gareus and Damien Zammit in 2012.
 
-Actual examples of this messaging:
- * When clock source is set as internal:
- - 0x00007051
- - 0x00007052
- - 0x00007054
- - 0x00007057
- - 0x00007058
- * When clock source is set as somewhat external:
- - 0x00009000
- - 0x00009010
- - 0x00009020
- - 0x00009021
- - 0x00009022
+This commit adds data processing layer to satisfy these differences.
 
-The lost often occurs when using internal clock source. In this case,
-users hear sounds with quite short gap every several minutes. In fact,
-the lost is recovered temporarily.
+There's a quirk about transmission mode for received packets. When this
+driver applies non-blocking mode to outgoing packets with isochronous
+channel 2 or more, after 15 to 20 seconds since playbacking, any PCM
+samples causes noisy sound on the device. With isochronous channel 0 or 1,
+this doesn't occur. As long as I investigated, this quirk is not observed
+when applying blocking mode to the received packets.
 
-When using with external clock source, the lost seems not to occur. The
-mechanism is not clear yet.
+This driver applies blocking mode to outgoing packets, while non-blocking
+mode to incoming packgets.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/firewire.h                |  7 +++
- sound/firewire/digi00x/Makefile              |  3 +-
- sound/firewire/digi00x/digi00x-hwdep.c       | 12 ++++-
- sound/firewire/digi00x/digi00x-transaction.c | 81 ++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c             |  7 +++
- sound/firewire/digi00x/digi00x.h             |  7 +++
- 6 files changed, 114 insertions(+), 3 deletions(-)
- create mode 100644 sound/firewire/digi00x/digi00x-transaction.c
+ sound/firewire/digi00x/Makefile    |   2 +-
+ sound/firewire/digi00x/amdtp-dot.c | 330 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.h   |  14 ++
+ 3 files changed, 345 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/amdtp-dot.c
 
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index f67d228..deb041c 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -9,6 +9,7 @@
- #define SNDRV_FIREWIRE_EVENT_LOCK_STATUS	0x000010cc
- #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
- #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
-+#define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
- 
- struct snd_firewire_event_common {
- 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
-@@ -40,11 +41,17 @@ struct snd_firewire_event_efw_response {
- 	__be32 response[0];	/* some responses */
- };
- 
-+struct snd_firewire_event_digi00x_message {
-+	unsigned int type;
-+	__u32 message;	/* Digi00x-specific message */
-+};
-+
- union snd_firewire_event {
- 	struct snd_firewire_event_common            common;
- 	struct snd_firewire_event_lock_status       lock_status;
- 	struct snd_firewire_event_dice_notification dice_notification;
- 	struct snd_firewire_event_efw_response      efw_response;
-+	struct snd_firewire_event_digi00x_message   digi00x_message;
- };
- 
- 
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 5bc3c77..28e3d13 100644
+index 13fec5b..87c4cfd 100644
 --- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
-@@ -1,3 +1,4 @@
- snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
--			     digi00x-pcm.o digi00x-hwdep.o digi00x.o
-+			     digi00x-pcm.o digi00x-hwdep.o \
-+			     digi00x-transaction.o digi00x.o
+@@ -1,2 +1,2 @@
+-snd-firewire-digi00x-objs := digi00x.o
++snd-firewire-digi00x-objs := amdtp-dot.o digi00x.o
  obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
-index d629e41..f188e47 100644
---- a/sound/firewire/digi00x/digi00x-hwdep.c
-+++ b/sound/firewire/digi00x/digi00x-hwdep.c
-@@ -12,6 +12,7 @@
-  * 1.get firewire node information
-  * 2.get notification about starting/stopping stream
-  * 3.lock/unlock stream
-+ * 4.get asynchronous messaging
-  */
- 
- #include "digi00x.h"
-@@ -25,7 +26,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
- 
- 	spin_lock_irq(&dg00x->lock);
- 
--	while (!dg00x->dev_lock_changed) {
-+	while (!dg00x->dev_lock_changed && dg00x->msg == 0) {
- 		prepare_to_wait(&dg00x->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
- 		spin_unlock_irq(&dg00x->lock);
- 		schedule();
-@@ -42,6 +43,13 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
- 		dg00x->dev_lock_changed = false;
- 
- 		count = min_t(long, count, sizeof(event.lock_status));
-+	} else {
-+		event.digi00x_message.type =
-+					SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE;
-+		event.digi00x_message.message = dg00x->msg;
-+		dg00x->msg = 0;
-+
-+		count = min_t(long, count, sizeof(event.digi00x_message));
- 	}
- 
- 	spin_unlock_irq(&dg00x->lock);
-@@ -61,7 +69,7 @@ static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
- 	poll_wait(file, &dg00x->hwdep_wait, wait);
- 
- 	spin_lock_irq(&dg00x->lock);
--	if (dg00x->dev_lock_changed)
-+	if (dg00x->dev_lock_changed || dg00x->msg)
- 		events = POLLIN | POLLRDNORM;
- 	else
- 		events = 0;
-diff --git a/sound/firewire/digi00x/digi00x-transaction.c b/sound/firewire/digi00x/digi00x-transaction.c
+diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
 new file mode 100644
-index 0000000..4937290
+index 0000000..e6731d3
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-transaction.c
-@@ -0,0 +1,81 @@
++++ b/sound/firewire/digi00x/amdtp-dot.c
+@@ -0,0 +1,330 @@
 +/*
-+ * digi00x-transaction.c - a part of driver for Digidesign Digi 002/003 family
++ * amdtp-dot.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
++ * Copyright (C) 2012 Robin Gareus <robin@gareus.org>
++ * Copyright (C) 2012 Damien Zammit <damien@zamaudio.com>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include <sound/asound.h>
++#include <sound/pcm.h>
 +#include "digi00x.h"
 +
-+static void handle_unknown_message(struct snd_dg00x *dg00x,
-+				   unsigned long long offset, __be32 *buf)
++#define CIP_FMT_AM		0x10
++
++/* 'Clock-based rate control mode' is just supported. */
++#define AMDTP_FDF_AM824		0x00
++
++/*
++ * The double-oh-three algorithm was discovered by Robin Gareus and Damien
++ * Zammit in 2012, with reverse-engineering for Digi 003 Rack.
++ */
++struct dot_state {
++	__u8 carry;
++	__u8 idx;
++	unsigned int off;
++};
++
++struct amdtp_dot {
++	unsigned int pcm_channels;
++	struct dot_state state;
++
++	unsigned int midi_ports;
++
++	void (*transfer_samples)(struct amdtp_stream *s,
++				 struct snd_pcm_substream *pcm,
++				 __be32 *buffer, unsigned int frames);
++};
++
++/*
++ * double-oh-three look up table
++ *
++ * @param idx index byte (audio-sample data) 0x00..0xff
++ * @param off channel offset shift
++ * @return salt to XOR with given data
++ */
++#define BYTE_PER_SAMPLE (4)
++#define MAGIC_DOT_BYTE (2)
++#define MAGIC_BYTE_OFF(x) (((x) * BYTE_PER_SAMPLE) + MAGIC_DOT_BYTE)
++static const __u8 dot_scrt(const __u8 idx, const unsigned int off)
 +{
-+	unsigned long flags;
++	/*
++	 * the length of the added pattern only depends on the lower nibble
++	 * of the last non-zero data
++	 */
++	static const __u8 len[16] = {0, 1, 3, 5, 7, 9, 11, 13, 14,
++				     12, 10, 8, 6, 4, 2, 0};
 +
-+	spin_lock_irqsave(&dg00x->lock, flags);
-+	dg00x->msg = be32_to_cpu(*buf);
-+	spin_unlock_irqrestore(&dg00x->lock, flags);
++	/*
++	 * the lower nibble of the salt. Interleaved sequence.
++	 * this is walked backwards according to len[]
++	 */
++	static const __u8 nib[15] = {0x8, 0x7, 0x9, 0x6, 0xa, 0x5, 0xb, 0x4,
++				     0xc, 0x3, 0xd, 0x2, 0xe, 0x1, 0xf};
 +
-+	wake_up(&dg00x->hwdep_wait);
++	/* circular list for the salt's hi nibble. */
++	static const __u8 hir[15] = {0x0, 0x6, 0xf, 0x8, 0x7, 0x5, 0x3, 0x4,
++				     0xc, 0xd, 0xe, 0x1, 0x2, 0xb, 0xa};
++
++	/*
++	 * start offset for upper nibble mapping.
++	 * note: 9 is /special/. In the case where the high nibble == 0x9,
++	 * hir[] is not used and - coincidentally - the salt's hi nibble is
++	 * 0x09 regardless of the offset.
++	 */
++	static const __u8 hio[16] = {0, 11, 12, 6, 7, 5, 1, 4,
++				     3, 0x00, 14, 13, 8, 9, 10, 2};
++
++	const __u8 ln = idx & 0xf;
++	const __u8 hn = (idx >> 4) & 0xf;
++	const __u8 hr = (hn == 0x9) ? 0x9 : hir[(hio[hn] + off) % 15];
++
++	if (len[ln] < off)
++		return 0x00;
++
++	return ((nib[14 + off - len[ln]]) | (hr << 4));
 +}
 +
-+static void handle_message(struct fw_card *card, struct fw_request *request,
-+			   int tcode, int destination, int source,
-+			   int generation, unsigned long long offset,
-+			   void *data, size_t length, void *callback_data)
++static void dot_encode_step(struct dot_state *state, __be32 *const buffer)
 +{
-+	struct snd_dg00x *dg00x = callback_data;
-+	__be32 *buf = (__be32 *)data;
++	__u8 * const data = (__u8 *) buffer;
 +
-+	if (offset == dg00x->async_handler.offset)
-+		handle_unknown_message(dg00x, offset, buf);
-+
-+	fw_send_response(card, request, RCODE_COMPLETE);
++	if (data[MAGIC_DOT_BYTE] != 0x00) {
++		state->off = 0;
++		state->idx = data[MAGIC_DOT_BYTE] ^ state->carry;
++	}
++	data[MAGIC_DOT_BYTE] ^= state->carry;
++	state->carry = dot_scrt(state->idx, ++(state->off));
 +}
 +
-+int snd_dg00x_transaction_reregister(struct snd_dg00x *dg00x)
++int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			     unsigned int pcm_channels, unsigned int midi_ports)
 +{
-+	struct fw_device *device = fw_parent_device(dg00x->unit);
-+	__be32 data[2];
-+
-+	/* Unknown. 4bytes. */
-+	data[0] = cpu_to_be32((device->card->node_id << 16) |
-+			      (dg00x->async_handler.offset >> 32));
-+	data[1] = cpu_to_be32(dg00x->async_handler.offset);
-+	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				   DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
-+				   &data, sizeof(data), 0);
-+}
-+
-+int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
-+{
-+	static const struct fw_address_region resp_register_region = {
-+		.start	= 0xffffe0000000ull,
-+		.end	= 0xffffe000ffffull,
-+	};
++	struct amdtp_dot *p = s->protocol;
 +	int err;
 +
-+	dg00x->async_handler.length = 4;
-+	dg00x->async_handler.address_callback = handle_message;
-+	dg00x->async_handler.callback_data = dg00x;
++	if (amdtp_stream_running(s))
++		return -EBUSY;
 +
-+	err = fw_core_add_address_handler(&dg00x->async_handler,
-+					  &resp_register_region);
++	/*
++	 * A first data channel is for MIDI conformant data channel, the rest is
++	 * Multi Bit Linear Audio data channel.
++	 */
++	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1);
 +	if (err < 0)
 +		return err;
 +
-+	err = snd_dg00x_transaction_reregister(dg00x);
-+	if (err < 0) {
-+		fw_core_remove_address_handler(&dg00x->async_handler);
-+		dg00x->async_handler.address_callback = NULL;
++	s->fdf = AMDTP_FDF_AM824 | s->sfc;
++
++	p->pcm_channels = pcm_channels;
++	p->midi_ports = midi_ports;
++
++	return 0;
++}
++
++static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_dot *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	buffer++;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32((*src >> 8) | 0x40000000);
++			dot_encode_step(&p->state, &buffer[c]);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_s16(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_dot *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u16 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	buffer++;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32((*src << 8) | 0x40000000);
++			dot_encode_step(&p->state, &buffer[c]);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void read_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
++			 __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_dot *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	buffer++;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c]) << 8;
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s, __be32 *buffer,
++			      unsigned int data_blocks)
++{
++	struct amdtp_dot *p = s->protocol;
++	unsigned int channels, i, c;
++
++	channels = p->pcm_channels;
++
++	buffer++;
++	for (i = 0; i < data_blocks; ++i) {
++		for (c = 0; c < channels; ++c)
++			buffer[c] = cpu_to_be32(0x40000000);
++		buffer += s->data_block_quadlets;
++	}
++}
++
++int amdtp_dot_add_pcm_hw_constraints(struct amdtp_stream *s,
++				     struct snd_pcm_runtime *runtime)
++{
++	int err;
++
++	/* This protocol delivers 24 bit data in 32bit data channel. */
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		return err;
++
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
++
++void amdtp_dot_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
++{
++	struct amdtp_dot *p = s->protocol;
++
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
++		return;
++
++	switch (format) {
++	default:
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S16:
++		if (s->direction == AMDTP_OUT_STREAM) {
++			p->transfer_samples = write_pcm_s16;
++			break;
++		}
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S32:
++		if (s->direction == AMDTP_OUT_STREAM)
++			p->transfer_samples = write_pcm_s32;
++		else
++			p->transfer_samples = read_pcm_s32;
++		break;
++	}
++}
++
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_dot *p = (struct amdtp_dot *)s->protocol;
++	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm) {
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		pcm_frames = 0;
 +	}
 +
-+	return err;
++	/* A place holder for MIDI processing. */
++
++	return pcm_frames;
 +}
 +
-+void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x)
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
 +{
-+	fw_core_remove_address_handler(&dg00x->async_handler);
++	struct amdtp_dot *p = (struct amdtp_dot *)s->protocol;
++	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm) {
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		write_pcm_silence(s, buffer, data_blocks);
++		pcm_frames = 0;
++	}
++
++	/* A place holder for MIDI processing. */
++
++	return pcm_frames;
 +}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 542b2c0..d750d15 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -48,6 +48,7 @@ static void dg00x_card_free(struct snd_card *card)
- 	struct snd_dg00x *dg00x = card->private_data;
- 
- 	snd_dg00x_stream_destroy_duplex(dg00x);
-+	snd_dg00x_transaction_unregister(dg00x);
- 
- 	fw_unit_put(dg00x->unit);
- 
-@@ -95,6 +96,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_dg00x_transaction_register(dg00x);
-+	if (err < 0)
-+		goto error;
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-@@ -111,6 +116,8 @@ static void snd_dg00x_update(struct fw_unit *unit)
- {
- 	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
- 
-+	snd_dg00x_transaction_reregister(dg00x);
++int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
++		 enum amdtp_stream_direction dir)
++{
++	amdtp_stream_process_data_blocks_t process_data_blocks;
++	enum cip_flags flags;
 +
- 	mutex_lock(&dg00x->mutex);
- 	snd_dg00x_stream_update_duplex(dg00x);
- 	mutex_unlock(&dg00x->mutex);
++	/* Use different mode between incoming/outgoing. */
++	if (dir == AMDTP_IN_STREAM) {
++		flags = CIP_NONBLOCKING | CIP_SKIP_INIT_DBC_CHECK;
++		process_data_blocks = process_tx_data_blocks;
++	} else {
++		flags = CIP_BLOCKING;
++		process_data_blocks = process_rx_data_blocks;
++	}
++
++	return amdtp_stream_init(s, unit, dir, flags, CIP_FMT_AM,
++				 process_data_blocks, sizeof(struct amdtp_dot));
++}
++
++void amdtp_dot_reset(struct amdtp_stream *s)
++{
++	struct amdtp_dot *p = s->protocol;
++
++	p->state.carry = 0x00;
++	p->state.idx = 0x00;
++	p->state.off = 0;
++}
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 5ba5318..b960c86 100644
+index 0bb2ca3..fe21d77 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -49,6 +49,9 @@ struct snd_dg00x {
- 	bool dev_lock_changed;
- 	wait_queue_head_t hwdep_wait;
+@@ -19,8 +19,12 @@
  
-+	/* For asynchronous messages. */
-+	struct fw_address_handler async_handler;
-+	u32 msg;
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ 
+ #include "../lib.h"
++#include "../iso-resources.h"
++#include "../amdtp-stream.h"
+ 
+ struct snd_dg00x {
+ 	struct snd_card *card;
+@@ -29,4 +33,14 @@ struct snd_dg00x {
+ 	struct mutex mutex;
  };
  
- #define DG00X_ADDR_BASE		0xffffe0000000ull
-@@ -110,6 +113,10 @@ int amdtp_dot_add_pcm_hw_constraints(struct amdtp_stream *s,
- 				     struct snd_pcm_runtime *runtime);
- void amdtp_dot_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
- 
-+int snd_dg00x_transaction_register(struct snd_dg00x *dg00x);
-+int snd_dg00x_transaction_reregister(struct snd_dg00x *dg00x);
-+void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x);
++int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
++		   enum amdtp_stream_direction dir);
++int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			     unsigned int pcm_channels,
++			     unsigned int midi_ports);
++void amdtp_dot_reset(struct amdtp_stream *s);
++int amdtp_dot_add_pcm_hw_constraints(struct amdtp_stream *s,
++				     struct snd_pcm_runtime *runtime);
++void amdtp_dot_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
 +
- extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
- extern const unsigned int snd_dg00x_stream_pcm_channels[SND_DG00X_RATE_COUNT];
- int snd_dg00x_stream_get_external_rate(struct snd_dg00x *dg00x,
+ #endif
 -- 
 2.1.4
