@@ -1,81 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Document DAI signal polarity
-Date: Wed, 30 Sep 2015 20:28:25 +0100
-Message-ID: <20150930192825.GB15635@sirena.org.uk>
-References: <1441054258-33200-1-git-send-email-anatol.pomozov@gmail.com>
- <20150918135427.GI12027@sirena.org.uk>
- <CAOMFOmW3RCcrGn6o0xsQWREz5gqVT_ucjO5uDAf=zexZrxWEdA@mail.gmail.com>
- <20150930181004.GN15635@sirena.org.uk>
- <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7703576230477321292=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A675266415
- for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2015 21:28:33 +0200 (CEST)
-In-Reply-To: <CAOMFOmXX67Uktd4cVJ==1w-nfHzFF_HaKwVb+sqLMp4WPt0Knw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: liam.r.girdwood@linux.intel.com, =?utf-8?B?6Zmz56uL5bOw?= <albertchen@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+Subject: Applied "ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on probe" to the asoc tree
+Date: Wed, 30 Sep 2015 20:32:14 +0100
+Message-ID: <E1ZhN6s-00061D-Je@finisterre>
+References: <557B0528.2060404@eurekelettronica.it>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <557B0528.2060404@eurekelettronica.it>
+Sender: stable-owner@vger.kernel.org
+To: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7703576230477321292==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bgVZo3zXaTQrZhjg"
-Content-Disposition: inline
+   ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on probe
 
+has been applied to the asoc tree at
 
---bgVZo3zXaTQrZhjg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Sep 30, 2015 at 12:08:20PM -0700, Anatol Pomozov wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> To clarify, you propose following definition of normal FSYNC polarity:
->  - for I2S/left/right justified - frame starts with falling FSYNC edge
->  - for DSP A/B - frame starts with rising edge of FSYNC edge (plus offset)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Yes.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->  - for AC97 my guess it is the same as DSP - frame starts with rising
-> FSYNC edge.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-For AC'97 we don't support any kind of non-standard framing and would
-push back strongly against anyone who wants it but I guess yes.
+Thanks,
+Mark
 
---bgVZo3zXaTQrZhjg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>From e256da84a04ea31c3c215997c847609af224e8f4 Mon Sep 17 00:00:00 2001
+From: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+Date: Fri, 25 Sep 2015 21:33:41 +0200
+Subject: [PATCH] ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on
+ probe
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Gianluca Renzi <gianlucarenzi@eurekelettronica.it>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/sgtl5000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-iQEcBAEBCAAGBQJWDDfYAAoJECTWi3JdVIfQbUAH/2LnGO7NpZStEUFqWTMjtX44
-5Z5DwSGJX1m2nkMDPDGOu30EuWbiyE7JfWB+PAmmTcDTps12e5o/Dnx183L1Ep4z
-yJ6NcbVNaT48V7/QwkB4XYkl8WYKSKixgjeViCPG04dRapf21Zr8V7/bYaTVi+cZ
-5L0sUTDJAQ67rsWUG4PMh70ejhauwdL2EFR2KHGPdrmCgxpEI7jePQebkJEEMoyK
-y5fx05r1mPBcPE6h/0zQdGEENdSwyuuM44lzTM8D5B38Tn9ufr3oBR9edgSM0sBQ
-I1wG9OMf3QElYJMUZIntq4ySFUsHg2R7vSudunEjEdTooBiX3RHKKQ9D2H9/DaM=
-=onEU
------END PGP SIGNATURE-----
-
---bgVZo3zXaTQrZhjg--
-
---===============7703576230477321292==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7703576230477321292==--
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 6e7843e..f540f82 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1376,8 +1376,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+ 
+ 	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+-			SGTL5000_BIAS_R_MASK,
+-			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
++			SGTL5000_BIAS_VOLT_MASK,
++			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+ 	/*
+ 	 * disable DAP
+ 	 * TODO:
+-- 
+2.5.0
