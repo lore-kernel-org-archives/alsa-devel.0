@@ -1,43 +1,74 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] dmaengine: OF DMAEngine API based on
- CONFIG_DMA_OF instead of CONFIG_OF
-Date: Thu, 1 Oct 2015 07:40:48 +0530
-Message-ID: <20151001021048.GD11757@localhost>
-References: <87wpwpurzk.wl%kuninori.morimoto.gx@renesas.com>
- <20150821082636.GK13546@localhost>
- <87d1yglvcy.wl%kuninori.morimoto.gx@renesas.com>
- <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
- <20150824091838.GH13546@localhost>
- <87si786xc6.wl%kuninori.morimoto.gx@renesas.com>
- <87zj0ulm4z.wl%kuninori.morimoto.gx@renesas.com>
+From: "yitian" <yitian.bu@tangramtek.com>
+Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop
+	transferring issue
+Date: Thu, 1 Oct 2015 10:24:42 +0800
+Message-ID: <00f401d0fbf0$65f32220$31d96660$@tangramtek.com>
+References: <006401d0fac5$2e4bb840$8ae328c0$@tangramtek.com>
+ <20150930182219.GU15635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87zj0ulm4z.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpproxy19.qq.com (smtpproxy19.qq.com [184.105.206.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D3A1266560
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 04:25:20 +0200 (CEST)
+In-Reply-To: <20150930182219.GU15635@sirena.org.uk>
+Content-Language: zh-cn
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, wsa@the-dreams.de, linux-kernel@vger.kernel.org, Andrew.Jackson@arm.com, lgirdwood@gmail.com, tiwai@suse.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 10, 2015 at 08:26:11AM +0000, Kuninori Morimoto wrote:
-> Hi Vinod
+> From: linux-arm-kernel
+> [mailto:linux-arm-kernel-bounces@lists.infradead.org] On Behalf Of Mark
+> Brown
+> Sent: Thursday, October 1, 2015 2:22 AM
+> To: yitian <yitian.bu@tangramtek.com>
+> Cc: alsa-devel@alsa-project.org; wsa@the-dreams.de;
+> linux-kernel@vger.kernel.org; Andrew.Jackson@arm.com; tiwai@suse.com;
+> lgirdwood@gmail.com; perex@perex.cz;
+> linux-arm-kernel@lists.infradead.org
+> Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop transferring
+> issue
 > 
-> > > > 5fa422c ("dmaengine: move drivers/of/dma.c -> drivers/dma/of-dma.c")
-> > > > moved OF base DMAEngine code to of-dma.c, then it based on CONFIG_DMA_OF.
-> > > > But, OF base DMAEngine API on of_dma.h still based on CONFIG_OF now.
-> > > > So, current kernel can't find OF base DMAEngine API if .config has CONFIG_OF,
-> > > > but not have CONFIG_DMA_OF. This patch tidyup it.
-> > > 
-> > > I did a quick build with arm config, but didn't see any failures. But still
-> > > am worried about random config and other builds may find.
-> > > 
-> > > So I think it would be safer to merge this patch after merge window so that
-> > > we have ample time to fix any issue
+> On Tue, Sep 29, 2015 at 10:43:17PM +0800, yitian wrote:
+> > Designware I2S uses tx empty and rx available signals as the DMA
+> > handshaking signals. during music playing, if XRUN occurs,
+> > i2s_stop() function will be executed and both tx and rx irq are
+> > masked, when music continues to be played, i2s_start() is executed
+> > but both tx and rx irq are not unmasked which cause I2S stop
+> > sending DMA handshaking signal to DMA controller, and it finally
+> > causes music playing will be stopped once XRUN occurs for the first
+> > time.
 > 
-> Which branch can I find this patch ?
+> I'm a bit concerned about how this code ever worked given the above
+> description - is there some race condition which allows things to work
+> if we're lucky?
 
-Sorry I missed to do this after merge window. Applied now
+Hi Mark:
 
--- 
-~Vinod
+Thanks for your comments.
+I think maybe two reasons:
+1. designware I2S IP in my chipset(new design) is using tx empty and rx
+available signal as the DMA handshaking signal, but it may be not true
+for all chipsets. If I2S has separate signal as DMA handshaking signal, mask
+irq should not impact DMA transfer. But Synopsys's engineer recommend us to
+use
+tx and rx irq signal as the DMA handshaking signal, meanwhile we cannot find
+separate DMA handshaking signal from designware's IP spec, that's why tx/rx
+irq
+will impact DMA transfer.
+
+2. I am using a FPGA for test, the cpu frequency of it is only 26MHz, that
+means
+XRUN is very easy to happen on my board. But I guess most of the developers
+are using real chipset which can have at least 600MHz frequency so XRUN is
+not easy to be reproduced. As my test, No XUN, no this bug...
