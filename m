@@ -1,18 +1,17 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH RFC V2 5/5] DT: sti: add audio HDMI dai link in
-	audio card
-Date: Thu, 1 Oct 2015 18:50:21 +0200
-Message-ID: <1443718221-5120-6-git-send-email-arnaud.pouliquen@st.com>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: Document DAI signal polarity
+Date: Thu,  1 Oct 2015 11:09:19 -0700
+Message-ID: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id C26EA2667EC
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 18:51:06 +0200 (CEST)
-In-Reply-To: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
+ [209.85.220.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAE532667EE
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 20:09:43 +0200 (CEST)
+Received: by padhy16 with SMTP id hy16so81362207pad.1
+ for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2015 11:09:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: moinejf@free.fr, linux@arm.linux.org.uk, bcousson@baylibre.com, David Airlie <airlied@linux.ie>, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, Takashi Iwai <tiwai@suse.de>, tony@atomide.com, broonie@kernel.org, Benjamin Gaignard <benjamin.gaignard@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: albertchen@realtek.com, broonie@kernel.org, Anatol Pomozov <anatol.pomozov@gmail.com>, lars@metafoo.de, benoit.thebaudeau.dev@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the HDMI dai link to support audio for HDMi output
+Currently there is no clear definition of what is FSYNC polarity.
+Different drivers use its own definition of what is "normal" and what is
+"inverted" fsync. This leads to compatibility problems between drivers.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+For example TegraX1 driver assumes that DSP-A format with frames
+starting at rising FSYNC edge has "negative" polarity,
+while RT5677 assumes it is "positive" polarity.
+
+Explicitly specify meaning of BCLK/FSYNC polarity to avoid future
+compatibility problems.
+
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 ---
- arch/arm/boot/dts/stih410.dtsi       |  6 +++++-
- arch/arm/boot/dts/stihxxx-b2120.dtsi | 21 +++++++++++++++++++++
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ include/sound/soc-dai.h | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stih410.dtsi b/arch/arm/boot/dts/stih410.dtsi
-index 7ee7dc0..dfc61a9 100644
---- a/arch/arm/boot/dts/stih410.dtsi
-+++ b/arch/arm/boot/dts/stih410.dtsi
-@@ -186,8 +186,9 @@
- 							 <&clk_s_d2_quadfs 0>;
- 			};
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 2df96b1..45198db 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -48,10 +48,22 @@ struct snd_compr_stream;
+ #define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
  
--				sti-hdmi@8d04000 {
-+				sti_hdmi: sti-hdmi@8d04000 {
- 					compatible = "st,stih407-hdmi";
-+					#sound-dai-cells = <0>;
- 					reg = <0x8d04000 0x1000>;
- 					reg-names = "hdmi-reg";
- 					interrupts = <GIC_SPI 106 IRQ_TYPE_NONE>;
-@@ -211,6 +212,9 @@
- 					resets = <&softreset STIH407_HDMI_TX_PHY_SOFTRESET>;
- 					ddc = <&hdmiddc>;
- 
-+					sound-dai {
-+						format = "spdif";
-+					};
- 				};
- 
- 				sti-hda@8d02000 {
-diff --git a/arch/arm/boot/dts/stihxxx-b2120.dtsi b/arch/arm/boot/dts/stihxxx-b2120.dtsi
-index 3ad9c82..80fed19 100644
---- a/arch/arm/boot/dts/stihxxx-b2120.dtsi
-+++ b/arch/arm/boot/dts/stihxxx-b2120.dtsi
-@@ -81,6 +81,9 @@
- 		audio_controller: sti-asoc-platform {
- 			status = "okay";
- 		};
-+		sti_uni_player0: sti-uni-player@0 {
-+			status = "okay";
-+		};
- 		sti_uni_player2: sti-uni-player@2 {
- 			status = "okay";
- 		};
-@@ -93,6 +96,12 @@
- 		sti_uni_reader1: sti-uni-reader@1 {
- 			status = "okay";
- 		};
-+
-+		sti-display-subsystem {
-+			sti_hdmi: sti-hdmi@8d04000 {
-+				status = "okay";
-+			};
-+		};
- 	};
- 
- 	sound {
-@@ -125,6 +134,18 @@
- 				sound-dai = <&sti_sasg_codec 0>;
- 			};
- 		};
-+		simple-audio-card,dai-link@2 {
-+			/* HDMI */
-+			format = "i2s";
-+			mclk-fs = <128>;
-+			cpu {
-+				sound-dai = <&sti_uni_player0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&sti_hdmi>;
-+			};
-+		};
- 	};
- 
- };
+ /*
+- * DAI hardware signal inversions.
++ * DAI hardware signal polarity.
+  *
+- * Specifies whether the DAI can also support inverted clocks for the specified
+- * format.
++ * BCLK:
++ * - "normal" polarity means signal is available at rising edge of BCLK
++ * - "inverted" polarity means signal is available at falling edge of BCLK
++ *
++ * FSYNC "normal" polarity depends on the frame format:
++ * - I2S: frame consists of left then right channel data. Left channel starts
++ *      with falling FSYNC edge, right channel starts with rising FSYNC edge.
++ * - I2S right/left justified: frame consists of left then right channel data.
++ *      Left channel starts with rising FSYNC edge, right channel starts with
++ *      falling FSYNC edge.
++ * - DSP A/B: Frame starts with rising FSYNC edge.
++ * - AC97: Frame starts with rising FSYNC edge.
++ *
++ * "Negative" FSYNC polarity is the one opposite of "normal" polarity.
+  */
+ #define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
+ #define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
 -- 
-1.9.1
+2.6.0.rc2.230.g3dd15c0
