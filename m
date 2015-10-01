@@ -1,18 +1,18 @@
 From: "yitian" <yitian.bu@tangramtek.com>
-Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop
-	transferring issue
-Date: Thu, 1 Oct 2015 10:24:42 +0800
-Message-ID: <00f401d0fbf0$65f32220$31d96660$@tangramtek.com>
-References: <006401d0fac5$2e4bb840$8ae328c0$@tangramtek.com>
- <20150930182219.GU15635@sirena.org.uk>
+Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear
+	method
+Date: Thu, 1 Oct 2015 10:39:09 +0800
+Message-ID: <00fe01d0fbf2$5a73cba0$0f5b62e0$@tangramtek.com>
+References: <006301d0fac4$94eb5890$bec209b0$@tangramtek.com>
+ <20150930181751.GT15635@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpproxy19.qq.com (smtpproxy19.qq.com [184.105.206.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D3A1266560
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 04:25:20 +0200 (CEST)
-In-Reply-To: <20150930182219.GU15635@sirena.org.uk>
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFA8C266571
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 04:39:21 +0200 (CEST)
+In-Reply-To: <20150930181751.GT15635@sirena.org.uk>
 Content-Language: zh-cn
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,45 +30,36 @@ List-Id: alsa-devel@alsa-project.org
 > From: linux-arm-kernel
 > [mailto:linux-arm-kernel-bounces@lists.infradead.org] On Behalf Of Mark
 > Brown
-> Sent: Thursday, October 1, 2015 2:22 AM
+> Sent: Thursday, October 1, 2015 2:18 AM
 > To: yitian <yitian.bu@tangramtek.com>
 > Cc: alsa-devel@alsa-project.org; wsa@the-dreams.de;
 > linux-kernel@vger.kernel.org; Andrew.Jackson@arm.com; tiwai@suse.com;
 > lgirdwood@gmail.com; perex@perex.cz;
 > linux-arm-kernel@lists.infradead.org
-> Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop transferring
-> issue
+> Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear method
 > 
-> On Tue, Sep 29, 2015 at 10:43:17PM +0800, yitian wrote:
-> > Designware I2S uses tx empty and rx available signals as the DMA
-> > handshaking signals. during music playing, if XRUN occurs,
-> > i2s_stop() function will be executed and both tx and rx irq are
-> > masked, when music continues to be played, i2s_start() is executed
-> > but both tx and rx irq are not unmasked which cause I2S stop
-> > sending DMA handshaking signal to DMA controller, and it finally
-> > causes music playing will be stopped once XRUN occurs for the first
-> > time.
+> On Tue, Sep 29, 2015 at 10:39:00PM +0800, yitian wrote:
+> > from Designware I2S datasheet, irq is cleared by reading from
+> > TOR/ROR registers, rather than by writing into them.
 > 
-> I'm a bit concerned about how this code ever worked given the above
-> description - is there some race condition which allows things to work
-> if we're lucky?
-
+> This doesn't apply against current code, please check and resend.
 Hi Mark:
 
 Thanks for your comments.
-I think maybe two reasons:
-1. designware I2S IP in my chipset(new design) is using tx empty and rx
-available signal as the DMA handshaking signal, but it may be not true
-for all chipsets. If I2S has separate signal as DMA handshaking signal, mask
-irq should not impact DMA transfer. But Synopsys's engineer recommend us to
-use
-tx and rx irq signal as the DMA handshaking signal, meanwhile we cannot find
-separate DMA handshaking signal from designware's IP spec, that's why tx/rx
-irq
-will impact DMA transfer.
+Maybe I misunderstand your meaning. Please correct me.
 
-2. I am using a FPGA for test, the cpu frequency of it is only 26MHz, that
-means
-XRUN is very easy to happen on my board. But I guess most of the developers
-are using real chipset which can have at least 600MHz frequency so XRUN is
-not easy to be reproduced. As my test, No XUN, no this bug...
+I synced up to latest kernel branch, the code is the same as what this patch
+was
+generated.
+
+I checked designware I2S spec "version 1.08a June 2014", it specified that
+the TOR
+and ROR registers are read only and reading the last bit will clear tx/rx
+overrun irq.
+
+Also I have checked this register by writing its last bit, the overrun irq
+is not cleared.
+But if I read the last bit, the overrun irq is cleared. That means the spec
+is correct.
+
+Can you please let me know what else I should double check? Thanks.
