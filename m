@@ -1,92 +1,55 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Subject: Re: Additional bugs in tlv320aic3x.c driver (register
-	defaults)
-Date: Thu, 1 Oct 2015 22:37:00 +0200
-Message-ID: <CA+sos78qdMt=6GTNH2aMrf1MwQj1mZVcQvk4irKrmzA-8D_z9Q@mail.gmail.com>
-References: <02F2390E-A4E9-489D-B699-8B766B510D7E@latencyzero.com>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
+ I2C slaves
+Date: Thu, 1 Oct 2015 22:37:44 +0200
+Message-ID: <20151001203744.GA7514@katana>
+References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 64DE12606E2
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 22:37:21 +0200 (CEST)
-Received: by oiww128 with SMTP id w128so47637639oiw.2
- for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2015 13:37:20 -0700 (PDT)
-In-Reply-To: <02F2390E-A4E9-489D-B699-8B766B510D7E@latencyzero.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rick Mann <rmann@latencyzero.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Return-path: <linux-i2c-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
+Sender: linux-i2c-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, lm-sensors@lm-sensors.org, Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jean Delvare <jdelvare@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Dustin Byford <dustin@cumulusnetworks.com>, linux@roeck-us.net
 List-Id: alsa-devel@alsa-project.org
 
-UmljaywKCk9uIFRodSwgT2N0IDEsIDIwMTUgYXQgMjoxMiBBTSwgUmljayBNYW5uIDxybWFubkBs
-YXRlbmN5emVyby5jb20+IHdyb3RlOgo+IEJlbm/DrnQsCj4KPiBJJ3ZlIGRpc2NvdmVyZWQgc29t
-ZSBhZGRpdGlvbmFsIG1pbm9yIGJ1Z3MgaW4gdGhlIHRsdjMyMGFpYzMxMDQgc3VwcG9ydCBpbiB0
-aGUgdGx2MzIwYWljM3ggZHJpdmVyLiBJbiB0aGlzIGluc3RhbmNlLCB0aGUgcmVnX2RlZmF1bHQg
-dmFsdWVzIGFyZW4ndCBxdWl0ZSByaWdodC4KPgo+IEkndmUgd3JpdHRlbiBhIGNvcnJlY3RlZCBs
-aXN0LCBidXQgdGhlIHNldCBzcGVjaWZpZWQgaW5jbHVkZXMgdGhlIHJlc2VydmVkIHJlZ2lzdGVy
-cy4gSSBkb24ndCBrbm93IGlmIGRldm1fcmVnbWFwX2luaXRfaTJjKCkgYXR0ZW1wdHMgdG8gd3Jp
-dGUgdGhlIGRlZmF1bHQgdmFsdWVzLCBvciB1c2VzIHRoZW0gYXMgdGhlIGluaXRpYWwgdmFsdWVz
-IGluIGEgY2FjaGUgKGFuZCBhdHRlbXB0cyB0byBhdm9pZCB3cml0ZXMgdW5sZXNzIHNwZWNpZmlj
-IHJlZ2lzdGVycyBjaGFuZ2UpLiBJbiBteSBkZWJ1Z2dpbmcsIGl0IGRvZXMgbm90IGFwcGVhciB0
-byB3cml0ZSB0aGUgZW50aXJlIHJlZ2lzdGVyIG1hcCBhdCBhbnkgcG9pbnQgdG8gdGhlIElDLCBz
-byBJIHRoaW5rIGl0J3MgdGhlIGxhdHRlci4KClllcywgaXQncyB0aGUgbGF0dGVyLiBUaGUgZGVm
-YXVsdHMgYXJlIHN1cHBvc2VkIHRvIGJlIHRoZSByZXNldAp2YWx1ZXMuIFRoaXMgYXZvaWRzIGR1
-bXBpbmcgYWxsIHJlZ2lzdGVycyBvbiBwb3dlciB1cCBvciByZXNldCB0bwppbml0aWFsaXplIHRo
-ZSBjYWNoZS4gcmVnY2FjaGVfc3luYygpIHRoZW4gc3luY2hyb25pemVzIGFsbCBjYWNoZWQKbm9u
-LWRlZmF1bHQgdmFsdWVzLiBTZWUgdGhlIGNvbW1lbnRzIGluIHJlZ21hcC5jL2ggYW5kIHJlZ2Nh
-Y2hlLmMvaAphbmQgaG93IHRoZXNlIGZ1bmN0aW9ucyBhcmUgdXNlZCBieSB0aGUgZHJpdmVyIG9m
-IHRoaXMgQ09ERUMuCgpUaGlzIG1lYW5zIHRoYXQgaWYgc29tZSBkZWZhdWx0IHZhbHVlcyBhcmUg
-d3JvbmcsIHRoZW4gc29tZSByZWdpc3RlcnMKdGhhdCBzaG91bGQgaGF2ZSBiZWVuIHdyaXR0ZW4g
-d291bGQgbm90IGJlIGluIHNvbWUgY2FzZXMsIGJ1dCB0aGlzIGlzCnZlcnkgdW5saWtlbHkgaGVy
-ZS4gRml4aW5nIHRoaXMgd291bGQgYmUgYmV0dGVyIHRob3VnaC4KCj4gSSBhbHNvIGRvbid0IGtu
-b3cgaG93IHRoZSByZWdtYXAgaXMgaW50ZW5kZWQgdG8gYmUgdXNlZC4gSXQgaXMgcGFzc2VkIHRv
-IGRldm1fcmVnbWFwX2luaXRfaTJjKCkgYXMgLnJlZ19kZWZhdWx0cywgaW1wbHlpbmcgdGhlIGFy
-cmF5IHByb3ZpZGVzIHN0YXJ0aW5nIHZhbHVlcywgYnV0IG90aGVyIHBhcnRzIG9mIHRoZSBjb2Rl
-IHJlZmVyIHRvIHRoZSBhcnJheSBhcyBpZiB0aGUgdmFsdWVzIGFyZSBjaGFuZ2VkIGluIHRoYXQg
-YXJyYXkgYXMgdGhleSdyZSByZWFkIGFuZCB3cml0dGVuLgoKV2hpY2ggcGFydHM/ICpyZWdfZGVm
-YXVsdHMgaXMgY29uc3QtcXVhbGlmaWVkLCBzbyBuby4gT25seSB0aGUgY2FjaGVkCnZhbHVlcyBh
-c3NvY2lhdGVkIHRvIHRoZXNlIGRlZmF1bHQgdmFsdWVzIGNoYW5nZSB0aHJvdWdoIHRoZQpzbmRf
-c29jX3JlYWQoKS9zbmRfc29jX3dyaXRlKCkgY2FsbHMuIGRldm1fcmVnbWFwX2luaXRfaTJjKCkg
-b25seSB0aWVzCnRoZSByZWdtYXAgdG8gdGhlIEnCskMgZGV2aWNlIHNvIHRoYXQgdGhlIGZvbGxv
-d2luZyBJwrJDIHJlZ2lzdGVyCmFjY2Vzc2VzIGdvIHRocm91Z2ggdGhlIGNhY2hlLgoKPiBEb2N1
-bWVudGF0aW9uIGZvciByZWdtYXAgc3VnZ2VzdHMgcmVnbWFwcyBjYW4gYmUgInNwYXJzZSwiIHdo
-aWNoIEkgcHJlc3VtZSB3b3VsZCBiZSBkb25lIGJ5IG9taXR0aW5nIHRoZSByZXNlcnZlZCByZWdp
-c3RlcnMgZnJvbSB0aGUgZGVmYXVsdHMgYXJyYXkuCgpDb3JyZWN0LiBUaGF0J3Mgd2h5IHRoZSBp
-bmRpdmlkdWFsIHJlZ2lzdGVyIGFkZHJlc3NlcyBhcmUgZ2l2ZW4gaW4Kc3RydWN0IHJlZ19kZWZh
-dWx0IGFuZCBub3QganVzdCBhIHJlZ2lzdGVyIGFkZHJlc3MgcmFuZ2UuCgo+IEluIGFueSBjYXNl
-LCB0aGUgZml4IGlzIG5vdCB0cml2aWFsLCBhbmQgSSBkb24ndCB3YW50IHRvIGdvIGRvd24gdGhh
-dCByb2FkIG5vdCBrbm93aW5nIGlmIGl0J3MgdGhlIHJpZ2h0IGFwcHJvYWNoLiBEb2VzIHRoaXMg
-bWFrZSBzZW5zZT8KCklmIGl0J3MganVzdCB0byBleGNsdWRlIHRoZSByZXNlcnZlZCByZWdpc3Rl
-cnMsIHRoaXMgaXMgdXNlbGVzcwpiZWNhdXNlIHRoZSBkcml2ZXIgaXMgbm90IHN1cHBvc2VkIHRv
-IGFjY2VzcyB0aGVtIGFueXdheS4gSG93ZXZlciwgaWYKaXQncyB0byBmaXggc29tZSB3cm9uZyBk
-ZWZhdWx0IHZhbHVlcyAoZGV0ZWN0YWJsZSBieSBkdW1waW5nIGFsbApyZWdpc3RlcnMgZm9sbG93
-aW5nIGEgcmVzZXQgd2l0aG91dCBMaW51eCBhY2Nlc3NpbmcgdGhlIGRldmljZSwgYW5kCmV4Y2x1
-ZGluZyB0aGUgcmVzZXJ2ZWQgb25lcyBmcm9tIHRoZSBkaWZmIGFnYWluc3QgYWljM3hfcmVnW10p
-IG9mCm5vbi1yZXNlcnZlZCByZWdpc3RlcnMsIHRoZW4gaXQgbWFrZXMgc2Vuc2UgdG8gZGVmaW5l
-IHBhcnQtc3BlY2lmaWMKYWx0ZXJuYXRpdmUgc3RydWN0IHJlZ19kZWZhdWx0IHZhbHVlcywgYW5k
-IGluIHRoYXQgY2FzZSB0aGUgcmVzZXJ2ZWQKcmVnaXN0ZXJzIGNhbiBiZSBkcm9wcGVkLgoKPiBG
-b3IgcmVmZXJlbmNlLCB0aGUgcmVnaXN0ZXJzIHdpdGggZGlmZmVyZW50IGRlZmF1bHQgdmFsdWVz
-ICh0aGFuIHRoZSBvbmVzIHNwZWNpZmllZCBpbiB0aGF0IGZpbGUpIGFyZSAzMiwgMzMsIDUxLCA1
-OCwgNjUsIDcyLCA5My4KCjMyIGFuZCAzMyBhcmUgcmVhZC1vbmx5IGFuZCBub3QgZXZlbiB1c2Vk
-IGJ5IHRoaXMgZHJpdmVyLCBzbyB0aGV5CmNvdWxkIGp1c3QgYmUgZHJvcHBlZC4gWW91IGNvdWxk
-IGNoZWNrIHRoZSBkYXRhc2hlZXRzIG9mIGFsbCB0aGUKc3VwcG9ydGVkIHBhcnRzIG90aGVyIHRo
-YW4gMzEwNCwgYnV0IGl0J3MgdGhlIHNhbWUgb24gYWljMzMsIHNvIEkKZG91YnQgdGhhdCAweDE4
-IGlzIGEgdmFsaWQgdmFsdWUgZm9yIGFueSBvZiB0aGVzZSBDT0RFQ3MsIHdoaWNoIHdvdWxkCm1l
-YW4gdGhhdCB0aGlzIHRhYmxlIGlzIGp1c3QgYSByZWdpc3RlciBkdW1wIGluY2x1ZGluZyB2YWx1
-ZXMgb2YKdm9sYXRpbGUgcmVhZC1vbmx5IHJlZ2lzdGVycywgd2hpY2ggaXMgd3JvbmcuCgo1MSwg
-NTgsIDY1LCA3MiBhbmQgOTM6IFlvdSBhcmUgcHJvYmFibHkgcmVmZXJyaW5nIHRvIHRoZSByZWFk
-LW9ubHkgYml0CkQxLiBJZiBzbywgaXQgZG9lcyBub3QgbWF0dGVyIHNpbmNlIHRoaXMgYml0IGlz
-IG5vdCB1c2VkIGJ5IHRoZQpkcml2ZXIuCgpCZXN0IHJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+> This is for discussion so I didn't cc stable@vger.kernel.org yet. I was
+> thinking would it work if we'd keep the stable name but have an another
+> symlink in /sys/bus/i2c/devices/ that uses "x-00yz" name. However this
+> feels ill-use of devices directory and probably causes more troubles
+> elsewhere.
+
+Do you foresee troubles already? I am still in favour of a symlink.
+
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWDZmYAAoJEBQN5MwUoCm25hkP/3+U2dMOIHZGya4yUggP8AYZ
+YF4qLzQtFL5l6FU6v+JJKBtS0eTKO7zTa32xF+ZoehMzBxZqLJY8bszneh3v1+ig
+NowxWNTgRHe4phdd0OWYEk25iL3AMfRFO5LMn9JkbsdIv7FGGwIzx7vqPJQS2n7j
+L7YW2uAs1RwjrGKBnhjID/+40fBT8c2U2GjXiQUt6YxndUIMD7O9IchfVgcN4AuM
+i3eDxnPtJSGb8icBTLJLKTHKftM+NtgO6VOuZz7TTQTyQPknjXK9srlCDjt57nGo
+9nY9FIjAnSVwwioWJvOrxNOu+nocidwyTf8wwqvFZmmKzzByklpq9AI18Y7sa1GX
+zWM7QK0dC9H+xjc1fuxfFNEp+/1q87ML3bbfiNSQWcrlU59RrsMouL47dnT3qS/t
+70Tb3o+GfmoCIy7Vb/t400mFPWBNjYwkQ8iNqjTqclMghMFkZgXInH6tvzeZB2sU
+IvfEy3gZL8qQ7YsZcyShkbzwL/JdTuob7B4AK+6nXUcrezCOvarJ/IS4iIojdwnh
+4huTEGy2MlQjxhKThnaxodHzhU6DIvGcQTmivMZm7KEHg3FA8I3v347Ym59jUydp
+9pzX7eA3j/vKgaloHbGmratapQwcQd7aTXeTBtZGllEDFZv68k/HV9EC4+10pp6v
+ZsK8vK0wvQCcTyG7SSpE
+=rE/C
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
