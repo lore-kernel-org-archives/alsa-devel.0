@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/7] ALSA: firewire-tascam: add skeleton for
-	TASCAM FireWire series
-Date: Thu,  1 Oct 2015 22:02:11 +0900
-Message-ID: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/7] ALSA: firewire-tascam: add hwdep interface
+Date: Thu,  1 Oct 2015 22:02:17 +0900
+Message-ID: <1443704537-3345-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 854CF266730
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A9422667BB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:24 +0200 (CEST)
 In-Reply-To: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,281 +24,448 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for TASCAM FireWire series. In this commit,
-this driver just creates/removes card instance according to bus event.
-More functionalities will be added in following commits.
+This commit adds hwdep interface so as the other IEEE 1394 sound devices
+has.
 
-TASCAM FireWire series consists of:
- * PDI 1394P23 for IEEE 1394 PHY layer
- * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
- * XILINX XC9536XL
- * XILINX Spartan-II XC2S100
- * ATMEL AT91M42800A
-
-Ilya Zimnovich had investigated TASCAM FireWire series in 2011, and
-discover some features of his FW-1804. You can see a part of his research
-in FFADO project.
-http://subversion.ffado.org/wiki/Tascam
-
-A part of my work are based on Ilya's investigation, while this series
-doesn't support the FW-1804, because of a lack of config ROM
-information and its protocol detail, especially for PCM channels.
-
-I observed that FW-1884 and FW-1082 don't work properly with 1394 OHCI
-controller based on VT6315. The controller can actually communicate packets
-to these models, while these models generate no sounds. It may be due to
-the PHY/LINK layer issues. Using 1394 OHCI controller produced by the other
-vendors such as Texas Instruments may work. Or adding another node on the
-bus.
+This interface is designed for mixer/control applications. By using this
+interface, an application can get information about firewire node, can
+lock/unlock kernel streaming and can get notification at starting/stopping
+kernel streaming.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig         |  11 +++
- sound/firewire/Makefile        |   1 +
- sound/firewire/tascam/Makefile |   2 +
- sound/firewire/tascam/tascam.c | 155 +++++++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.h |  33 +++++++++
- 5 files changed, 202 insertions(+)
- create mode 100644 sound/firewire/tascam/Makefile
- create mode 100644 sound/firewire/tascam/tascam.c
- create mode 100644 sound/firewire/tascam/tascam.h
+ include/uapi/sound/asound.h           |   3 +-
+ include/uapi/sound/firewire.h         |   1 +
+ sound/firewire/Kconfig                |   1 +
+ sound/firewire/tascam/Makefile        |   2 +-
+ sound/firewire/tascam/tascam-hwdep.c  | 201 ++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam-pcm.c    |  17 ++-
+ sound/firewire/tascam/tascam-stream.c |  39 +++++++
+ sound/firewire/tascam/tascam.c        |   6 +
+ sound/firewire/tascam/tascam.h        |  13 +++
+ 9 files changed, 278 insertions(+), 5 deletions(-)
+ create mode 100644 sound/firewire/tascam/tascam-hwdep.c
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index aa32913..a82108e 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -101,9 +101,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
+ 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
++	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DIGI00X
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
+ };
+ 
+ struct snd_hwdep_info {
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index deb041c..db79a12 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -64,6 +64,7 @@ union snd_firewire_event {
+ #define SNDRV_FIREWIRE_TYPE_BEBOB	3
+ #define SNDRV_FIREWIRE_TYPE_OXFW	4
+ #define SNDRV_FIREWIRE_TYPE_DIGI00X	5
++#define SNDRV_FIREWIRE_TYPE_TASCAM	6
+ /* RME, MOTU, ... */
+ 
+ struct snd_firewire_get_info {
 diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index e61445e..bb3f261 100644
+index bb3f261..bee0e5f 100644
 --- a/sound/firewire/Kconfig
 +++ b/sound/firewire/Kconfig
-@@ -135,4 +135,15 @@ config SND_FIREWIRE_DIGI00X
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-digi00x.
- 
-+config SND_FIREWIRE_TASCAM
-+	tristate "TASCAM FireWire series support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	 Say Y here to include support for TASCAM.
-+	  * FW-1884
-+	  * FW-1082
-+
-+	 To compile this driver as a module, choose M here: the module
-+	 will be called snd-firewire-tascam.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5325d15..6ae50f5 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
-+obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
+@@ -138,6 +138,7 @@ config SND_FIREWIRE_DIGI00X
+ config SND_FIREWIRE_TASCAM
+ 	tristate "TASCAM FireWire series support"
+ 	select SND_FIREWIRE_LIB
++	select SND_HWDEP
+ 	help
+ 	 Say Y here to include support for TASCAM.
+ 	  * FW-1884
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-new file mode 100644
-index 0000000..627129b
---- /dev/null
+index f075b9b..6beefc2 100644
+--- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -0,0 +1,2 @@
-+snd-firewire-tascam-objs := tascam.o
-+obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+@@ -1,3 +1,3 @@
+ snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
+-			    tascam-pcm.o tascam.o
++			    tascam-pcm.o tascam-hwdep.o tascam.o
+ obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
+diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
 new file mode 100644
-index 0000000..9f2d2a3
+index 0000000..131267c
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam.c
-@@ -0,0 +1,155 @@
++++ b/sound/firewire/tascam/tascam-hwdep.c
+@@ -0,0 +1,201 @@
 +/*
-+ * tascam.c - a part of driver for TASCAM FireWire series
++ * tascam-hwdep.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++/*
++ * This codes give three functionality.
++ *
++ * 1.get firewire node information
++ * 2.get notification about starting/stopping stream
++ * 3.lock/unlock stream
 + */
 +
 +#include "tascam.h"
 +
-+MODULE_DESCRIPTION("TASCAM FireWire series Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static int check_name(struct snd_tscm *tscm)
++static long hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
++			      long count)
 +{
-+	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
-+	char vendor[8];
-+	char model[8];
-+	__u32 data;
++	union snd_firewire_event event;
 +
-+	/* Retrieve model name. */
-+	data = be32_to_cpu(fw_dev->config_rom[28]);
-+	memcpy(model, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[29]);
-+	memcpy(model + 4, &data, 4);
-+	model[7] = '\0';
++	memset(&event, 0, sizeof(event));
 +
-+	/* Retrieve vendor name. */
-+	data = be32_to_cpu(fw_dev->config_rom[23]);
-+	memcpy(vendor, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[24]);
-+	memcpy(vendor + 4, &data, 4);
-+	vendor[7] = '\0';
++	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
++	event.lock_status.status = (tscm->dev_lock_count > 0);
++	tscm->dev_lock_changed = false;
 +
-+	strcpy(tscm->card->driver, "FW-TASCAM");
-+	strcpy(tscm->card->shortname, model);
-+	strcpy(tscm->card->mixername, model);
-+	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
-+		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
-+		 cpu_to_be32(fw_dev->config_rom[3]),
-+		 cpu_to_be32(fw_dev->config_rom[4]),
-+		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
++	count = min_t(long, count, sizeof(event.lock_status));
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
++}
++
++static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
++		       loff_t *offset)
++{
++	struct snd_tscm *tscm = hwdep->private_data;
++	DEFINE_WAIT(wait);
++	union snd_firewire_event event;
++
++	spin_lock_irq(&tscm->lock);
++
++	while (!tscm->dev_lock_changed) {
++		prepare_to_wait(&tscm->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
++		spin_unlock_irq(&tscm->lock);
++		schedule();
++		finish_wait(&tscm->hwdep_wait, &wait);
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++		spin_lock_irq(&tscm->lock);
++	}
++
++	memset(&event, 0, sizeof(event));
++	count = hwdep_read_locked(tscm, buf, count);
++	spin_unlock_irq(&tscm->lock);
++
++	return count;
++}
++
++static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
++			       poll_table *wait)
++{
++	struct snd_tscm *tscm = hwdep->private_data;
++	unsigned int events;
++
++	poll_wait(file, &tscm->hwdep_wait, wait);
++
++	spin_lock_irq(&tscm->lock);
++	if (tscm->dev_lock_changed)
++		events = POLLIN | POLLRDNORM;
++	else
++		events = 0;
++	spin_unlock_irq(&tscm->lock);
++
++	return events;
++}
++
++static int hwdep_get_info(struct snd_tscm *tscm, void __user *arg)
++{
++	struct fw_device *dev = fw_parent_device(tscm->unit);
++	struct snd_firewire_get_info info;
++
++	memset(&info, 0, sizeof(info));
++	info.type = SNDRV_FIREWIRE_TYPE_TASCAM;
++	info.card = dev->card->index;
++	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
++	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
++	strlcpy(info.device_name, dev_name(&dev->device),
++		sizeof(info.device_name));
++
++	if (copy_to_user(arg, &info, sizeof(info)))
++		return -EFAULT;
 +
 +	return 0;
 +}
 +
-+static void tscm_card_free(struct snd_card *card)
++static int hwdep_lock(struct snd_tscm *tscm)
 +{
-+	struct snd_tscm *tscm = card->private_data;
-+
-+	fw_unit_put(tscm->unit);
-+
-+	mutex_destroy(&tscm->mutex);
-+}
-+
-+static int snd_tscm_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_tscm *tscm;
 +	int err;
 +
-+	/* create card */
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_tscm), &card);
++	spin_lock_irq(&tscm->lock);
++
++	if (tscm->dev_lock_count == 0) {
++		tscm->dev_lock_count = -1;
++		err = 0;
++	} else {
++		err = -EBUSY;
++	}
++
++	spin_unlock_irq(&tscm->lock);
++
++	return err;
++}
++
++static int hwdep_unlock(struct snd_tscm *tscm)
++{
++	int err;
++
++	spin_lock_irq(&tscm->lock);
++
++	if (tscm->dev_lock_count == -1) {
++		tscm->dev_lock_count = 0;
++		err = 0;
++	} else {
++		err = -EBADFD;
++	}
++
++	spin_unlock_irq(&tscm->lock);
++
++	return err;
++}
++
++static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
++{
++	struct snd_tscm *tscm = hwdep->private_data;
++
++	spin_lock_irq(&tscm->lock);
++	if (tscm->dev_lock_count == -1)
++		tscm->dev_lock_count = 0;
++	spin_unlock_irq(&tscm->lock);
++
++	return 0;
++}
++
++static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
++	    unsigned int cmd, unsigned long arg)
++{
++	struct snd_tscm *tscm = hwdep->private_data;
++
++	switch (cmd) {
++	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
++		return hwdep_get_info(tscm, (void __user *)arg);
++	case SNDRV_FIREWIRE_IOCTL_LOCK:
++		return hwdep_lock(tscm);
++	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
++		return hwdep_unlock(tscm);
++	default:
++		return -ENOIOCTLCMD;
++	}
++}
++
++#ifdef CONFIG_COMPAT
++static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
++			      unsigned int cmd, unsigned long arg)
++{
++	return hwdep_ioctl(hwdep, file, cmd,
++			   (unsigned long)compat_ptr(arg));
++}
++#else
++#define hwdep_compat_ioctl NULL
++#endif
++
++static const struct snd_hwdep_ops hwdep_ops = {
++	.read		= hwdep_read,
++	.release	= hwdep_release,
++	.poll		= hwdep_poll,
++	.ioctl		= hwdep_ioctl,
++	.ioctl_compat	= hwdep_compat_ioctl,
++};
++
++int snd_tscm_create_hwdep_device(struct snd_tscm *tscm)
++{
++	struct snd_hwdep *hwdep;
++	int err;
++
++	err = snd_hwdep_new(tscm->card, "Tascam", 0, &hwdep);
 +	if (err < 0)
 +		return err;
-+	card->private_free = tscm_card_free;
 +
-+	/* initialize myself */
-+	tscm = card->private_data;
-+	tscm->card = card;
-+	tscm->unit = fw_unit_get(unit);
++	strcpy(hwdep->name, "Tascam");
++	hwdep->iface = SNDRV_HWDEP_IFACE_FW_TASCAM;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = tscm;
++	hwdep->exclusive = true;
 +
-+	mutex_init(&tscm->mutex);
++	return err;
++}
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
+index 696b371..380d3db 100644
+--- a/sound/firewire/tascam/tascam-pcm.c
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -72,9 +72,13 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	unsigned int rate;
+ 	int err;
+ 
++	err = snd_tscm_stream_lock_try(tscm);
++	if (err < 0)
++		goto end;
 +
-+	err = check_name(tscm);
+ 	err = pcm_init_hw_params(tscm, substream);
+ 	if (err < 0)
+-		return err;
++		goto err_locked;
+ 
+ 	err = snd_tscm_stream_get_clock(tscm, &clock);
+ 	if (clock != SND_TSCM_CLOCK_INTERNAL ||
+@@ -82,18 +86,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
+ 		err = snd_tscm_stream_get_rate(tscm, &rate);
+ 		if (err < 0)
+-			return err;
++			goto err_locked;
+ 		substream->runtime->hw.rate_min = rate;
+ 		substream->runtime->hw.rate_max = rate;
+ 	}
+ 
+ 	snd_pcm_set_sync(substream);
+-
++end:
++	return err;
++err_locked:
++	snd_tscm_stream_lock_release(tscm);
+ 	return err;
+ }
+ 
+ static int pcm_close(struct snd_pcm_substream *substream)
+ {
++	struct snd_tscm *tscm = substream->private_data;
++
++	snd_tscm_stream_lock_release(tscm);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index 0732f7f..0e6dd5c6 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -455,3 +455,42 @@ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
+ 	finish_session(tscm);
+ 	release_resources(tscm);
+ }
++
++void snd_tscm_stream_lock_changed(struct snd_tscm *tscm)
++{
++	tscm->dev_lock_changed = true;
++	wake_up(&tscm->hwdep_wait);
++}
++
++int snd_tscm_stream_lock_try(struct snd_tscm *tscm)
++{
++	int err;
++
++	spin_lock_irq(&tscm->lock);
++
++	/* user land lock this */
++	if (tscm->dev_lock_count < 0) {
++		err = -EBUSY;
++		goto end;
++	}
++
++	/* this is the first time */
++	if (tscm->dev_lock_count++ == 0)
++		snd_tscm_stream_lock_changed(tscm);
++	err = 0;
++end:
++	spin_unlock_irq(&tscm->lock);
++	return err;
++}
++
++void snd_tscm_stream_lock_release(struct snd_tscm *tscm)
++{
++	spin_lock_irq(&tscm->lock);
++
++	if (WARN_ON(tscm->dev_lock_count <= 0))
++		goto end;
++	if (--tscm->dev_lock_count == 0)
++		snd_tscm_stream_lock_changed(tscm);
++end:
++	spin_unlock_irq(&tscm->lock);
++}
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index bb4f706..ee2f498 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -110,6 +110,8 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	tscm->spec = (const struct snd_tscm_spec *)entry->driver_data;
+ 
+ 	mutex_init(&tscm->mutex);
++	spin_lock_init(&tscm->lock);
++	init_waitqueue_head(&tscm->hwdep_wait);
+ 
+ 	err = check_name(tscm);
+ 	if (err < 0)
+@@ -125,6 +127,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_tscm_create_hwdep_device(tscm);
 +	if (err < 0)
 +		goto error;
 +
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&unit->device, tscm);
-+
-+	return err;
-+error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void snd_tscm_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+static void snd_tscm_remove(struct fw_unit *unit)
-+{
-+	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
-+
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(tscm->card);
-+}
-+
-+static const struct ieee1394_device_id snd_tscm_id_table[] = {
-+	/* FW-1082 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800003,
-+	},
-+	/* FW-1884 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800000,
-+	},
-+	/* FW-1804 mey be supported if IDs are clear. */
-+	/* FE-08 requires reverse-engineering because it just has faders. */
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_tscm_id_table);
-+
-+static struct fw_driver tscm_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-firewire-tascam",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = snd_tscm_probe,
-+	.update   = snd_tscm_update,
-+	.remove   = snd_tscm_remove,
-+	.id_table = snd_tscm_id_table,
-+};
-+
-+static int __init snd_tscm_init(void)
-+{
-+	return driver_register(&tscm_driver.driver);
-+}
-+
-+static void __exit snd_tscm_exit(void)
-+{
-+	driver_unregister(&tscm_driver.driver);
-+}
-+
-+module_init(snd_tscm_init);
-+module_exit(snd_tscm_exit);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-new file mode 100644
-index 0000000..d2f4f67
---- /dev/null
+index 28c875f..75a3b9a 100644
+--- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -0,0 +1,33 @@
-+/*
-+ * tascam.h - a part of driver for TASCAM FireWire series
-+ *
-+ * Copyright (c) 2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -23,6 +23,8 @@
+ #include <sound/info.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/firewire.h>
++#include <sound/hwdep.h>
+ 
+ #include "../lib.h"
+ #include "../amdtp-stream.h"
+@@ -44,6 +46,7 @@ struct snd_tscm {
+ 	struct fw_unit *unit;
+ 
+ 	struct mutex mutex;
++	spinlock_t lock;
+ 
+ 	const struct snd_tscm_spec *spec;
+ 
+@@ -52,6 +55,10 @@ struct snd_tscm {
+ 	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
+ 	unsigned int substreams_counter;
 +
-+#ifndef SOUND_TASCAM_H_INCLUDED
-+#define SOUND_TASCAM_H_INCLUDED
++	int dev_lock_count;
++	bool dev_lock_changed;
++	wait_queue_head_t hwdep_wait;
+ };
+ 
+ #define TSCM_ADDR_BASE			0xffff00000000ull
+@@ -97,8 +104,14 @@ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
+ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
+ 
++void snd_tscm_stream_lock_changed(struct snd_tscm *tscm);
++int snd_tscm_stream_lock_try(struct snd_tscm *tscm);
++void snd_tscm_stream_lock_release(struct snd_tscm *tscm);
 +
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/compat.h>
+ void snd_tscm_proc_init(struct snd_tscm *tscm);
+ 
+ int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
+ 
++int snd_tscm_create_hwdep_device(struct snd_tscm *tscm);
 +
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+#include "../lib.h"
-+
-+struct snd_tscm {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+
-+	struct mutex mutex;
-+};
-+
-+#endif
+ #endif
 -- 
 2.1.4
