@@ -1,76 +1,70 @@
-From: Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
-Subject: Re: [alsa-devel] [RFC] MIDI over Bluetooth Low Energy
-Date: Thu, 1 Oct 2015 13:04:07 +0100
-Message-ID: <CAGrhNMxUsUXBmYFLo4Bq=Mx1qdUZC1Zv7c4pXb+F8D8adYTvcg@mail.gmail.com>
-References: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ@mail.gmail.com>
-	<560D1893.6040509@ladisch.de>
-	<CAGrhNMxmtt-5kZO-6me2sPQYeQ5wcpvonKqzbx7CEB5=RJ724Q@mail.gmail.com>
-	<s5hfv1uvmjq.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/7 v3] firewire-tascam: new driver for TASCAM
+	FireWire series
+Date: Thu,  1 Oct 2015 22:02:10 +0900
+Message-ID: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hfv1uvmjq.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8422C2666F2
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi,
 
-On Thu, Oct 1, 2015 at 12:46 PM, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
-> On Thu, 01 Oct 2015 13:35:48 +0200,
-> Felipe Tonello wrote:
->>
->> Hi Clemens,
->>
->> On Thu, Oct 1, 2015 at 12:27 PM, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org> wrote:
->> > Felipe Tonello wrote:
->> >> I am planning to start the support of MIDI BLE profile[1].
->> >>
->> >> I suggest two main goals:
->> >>  * To be transparent to applications, i.e., use rawmidi and sequencer
->> >> ALSA interfaces to interact.
->> >>  * To support peripheral and central BLE roles.
->> >>
->> >> My question is: what is the best way possible of doing it?
->> >
->> > Just write a (user-space) sequencer client.
->>
->> But this will limit to seq interface only. It will not be available
->> via rawmidi interface, right? Unless I load snd-virtmidi, correct?
->
-> Right.
->
->> That was what I was suggesting at first, but I don't really like the
->> idea of loading snd-virtmidi for that.
->
-> Well, many audio/music apps may talk directly sequencer API, too, so
-> it's not too bad.  Whether loading snd-virmidi is a system setup
-> question, and it'd be more or less static configuration like snd-seq
-> core module.
->
->> >> [...]
->> >> They all have the problem of context switching between bluez plugin
->> >> and alsa midi driver.
->> >
->> > Why would context switches be a problem?
->>
->> It is just too much travelling around. GATT messages are parsed in
->> userspace by BlueZ, so it sounds unnecessary to copy buffers to the
->> kernel and copy back to user space to the application (ALSA).
->
-> Of course it'd be optimal if we can avoid context switching, but
-> usually its latency isn't too critical for MIDI, even on a much slower
-> machine in 20 years ago.
->
-> So, IMO, we should go for a simpler implementation at first.
+This patchset updates a part of my former post:
 
-Fair enough.
+[alsa-devel] [PATCH 00/25 v2] ALSA: support AMDTP variants
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/096739.html
 
-So, initially the best way to go would be to write a seq back-end
-using D-Bus GATT API from BlueZ.
+This patchset adds support for a part of TASCAM FireWire series. This
+patchset supports their streaming and PCM functionalities, while their
+MIDI functionalities are not supported yet. In future work, the
+functionalities will be supported.
 
-An important thing to notice is that this implementation doesn't
-support BLE peripheral role.
+Takashi Sakamoto (7):
+  ALSA: firewire-tascam: add skeleton for TASCAM FireWire series
+  ALSA: firewire-tascam: add a structure for model-dependent parameters.
+  ALSA: firewire-tascam: add proc node to show firmware information
+  ALSA: firewire-tascam: add data block processing layer
+  ALSA: firewire-tascam: add streaming functionality
+  ALSA: firewire-tascam: add PCM functionality
+  ALSA: firewire-tascam: add hwdep interface
 
-Felipe
+ include/uapi/sound/asound.h           |   3 +-
+ include/uapi/sound/firewire.h         |   1 +
+ sound/firewire/Kconfig                |  12 +
+ sound/firewire/Makefile               |   1 +
+ sound/firewire/tascam/Makefile        |   3 +
+ sound/firewire/tascam/amdtp-tascam.c  | 243 +++++++++++++++++
+ sound/firewire/tascam/tascam-hwdep.c  | 201 ++++++++++++++
+ sound/firewire/tascam/tascam-pcm.c    | 312 +++++++++++++++++++++
+ sound/firewire/tascam/tascam-proc.c   |  88 ++++++
+ sound/firewire/tascam/tascam-stream.c | 496 ++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c        | 213 +++++++++++++++
+ sound/firewire/tascam/tascam.h        | 117 ++++++++
+ 12 files changed, 1689 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/Makefile
+ create mode 100644 sound/firewire/tascam/amdtp-tascam.c
+ create mode 100644 sound/firewire/tascam/tascam-hwdep.c
+ create mode 100644 sound/firewire/tascam/tascam-pcm.c
+ create mode 100644 sound/firewire/tascam/tascam-proc.c
+ create mode 100644 sound/firewire/tascam/tascam-stream.c
+ create mode 100644 sound/firewire/tascam/tascam.c
+ create mode 100644 sound/firewire/tascam/tascam.h
+
+-- 
+2.1.4
