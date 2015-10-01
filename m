@@ -1,71 +1,76 @@
-From: Felipe Tonello <eu@felipetonello.com>
-Subject: Re: [RFC] MIDI over Bluetooth Low Energy
-Date: Thu, 1 Oct 2015 12:59:14 +0100
-Message-ID: <CAGrhNMwtPVTD6+dNO0GALtzO6pZz=j+dLo7q0uF=b6_m3tBcJg@mail.gmail.com>
+From: Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC] MIDI over Bluetooth Low Energy
+Date: Thu, 1 Oct 2015 13:04:07 +0100
+Message-ID: <CAGrhNMxUsUXBmYFLo4Bq=Mx1qdUZC1Zv7c4pXb+F8D8adYTvcg@mail.gmail.com>
 References: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ@mail.gmail.com>
- <560D1893.6040509@ladisch.de>
- <CAGrhNMxmtt-5kZO-6me2sPQYeQ5wcpvonKqzbx7CEB5=RJ724Q@mail.gmail.com>
- <560D1EC2.8010603@ladisch.de>
+	<560D1893.6040509@ladisch.de>
+	<CAGrhNMxmtt-5kZO-6me2sPQYeQ5wcpvonKqzbx7CEB5=RJ724Q@mail.gmail.com>
+	<s5hfv1uvmjq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF34266682
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 13:59:15 +0200 (CEST)
-Received: by lahh2 with SMTP id h2so73159378lah.0
- for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2015 04:59:14 -0700 (PDT)
-In-Reply-To: <560D1EC2.8010603@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hfv1uvmjq.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Hi Takashi,
 
-On Thu, Oct 1, 2015 at 12:53 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+On Thu, Oct 1, 2015 at 12:46 PM, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
+> On Thu, 01 Oct 2015 13:35:48 +0200,
 > Felipe Tonello wrote:
->> On Thu, Oct 1, 2015 at 12:27 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->>> Felipe Tonello wrote:
->>>> I am planning to start the support of MIDI BLE profile[1].
->>>>
->>>> I suggest two main goals:
->>>>  * To be transparent to applications, i.e., use rawmidi and sequencer
->>>> ALSA interfaces to interact.
->>>>  * To support peripheral and central BLE roles.
->>>>
->>>> My question is: what is the best way possible of doing it?
->>>
->>> Just write a (user-space) sequencer client.
+>>
+>> Hi Clemens,
+>>
+>> On Thu, Oct 1, 2015 at 12:27 PM, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org> wrote:
+>> > Felipe Tonello wrote:
+>> >> I am planning to start the support of MIDI BLE profile[1].
+>> >>
+>> >> I suggest two main goals:
+>> >>  * To be transparent to applications, i.e., use rawmidi and sequencer
+>> >> ALSA interfaces to interact.
+>> >>  * To support peripheral and central BLE roles.
+>> >>
+>> >> My question is: what is the best way possible of doing it?
+>> >
+>> > Just write a (user-space) sequencer client.
 >>
 >> But this will limit to seq interface only. It will not be available
->> via rawmidi interface, right?
+>> via rawmidi interface, right? Unless I load snd-virtmidi, correct?
 >
-> Yes.  And why would this be a problem?
-
-None besides the obvious fact that rawmidi interface will be out.
-
+> Right.
 >
->>>> They all have the problem of context switching between bluez plugin
->>>> and alsa midi driver.
->>>
->>> Why would context switches be a problem?
+>> That was what I was suggesting at first, but I don't really like the
+>> idea of loading snd-virtmidi for that.
+>
+> Well, many audio/music apps may talk directly sequencer API, too, so
+> it's not too bad.  Whether loading snd-virmidi is a system setup
+> question, and it'd be more or less static configuration like snd-seq
+> core module.
+>
+>> >> [...]
+>> >> They all have the problem of context switching between bluez plugin
+>> >> and alsa midi driver.
+>> >
+>> > Why would context switches be a problem?
 >>
->> It is just too much travelling around.
+>> It is just too much travelling around. GATT messages are parsed in
+>> userspace by BlueZ, so it sounds unnecessary to copy buffers to the
+>> kernel and copy back to user space to the application (ALSA).
 >
-> It hasn't been a problem with any other MIDI application.
+> Of course it'd be optimal if we can avoid context switching, but
+> usually its latency isn't too critical for MIDI, even on a much slower
+> machine in 20 years ago.
+>
+> So, IMO, we should go for a simpler implementation at first.
 
-It can be for MIDI Multidimensional Polyphonic Expression (MPE)[1] .
+Fair enough.
 
-[1] https://docs.google.com/document/d/1-26r0pVtVBrZHM6VGA05hpF-ij5xT6aaXY9BfDzyTx8/edit
+So, initially the best way to go would be to write a seq back-end
+using D-Bus GATT API from BlueZ.
+
+An important thing to notice is that this implementation doesn't
+support BLE peripheral role.
 
 Felipe
