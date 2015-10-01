@@ -1,52 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear method
-Date: Thu, 1 Oct 2015 11:03:30 +0100
-Message-ID: <20151001100330.GA12635@sirena.org.uk>
-References: <006301d0fac4$94eb5890$bec209b0$@tangramtek.com>
- <20150930181751.GT15635@sirena.org.uk>
- <00fe01d0fbf2$5a73cba0$0f5b62e0$@tangramtek.com>
+Subject: Re: [PATCH] Prevent writing reserved registers on tlv320aic3104
+ CODECs
+Date: Thu, 1 Oct 2015 11:15:36 +0100
+Message-ID: <20151001101536.GB12635@sirena.org.uk>
+References: <1443655493-5554-1-git-send-email-rmann@latencyzero.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+	protocol="application/pgp-signature"; boundary="l76fUT7nc3MelDdI"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <00fe01d0fbf2$5a73cba0$0f5b62e0$@tangramtek.com>
+In-Reply-To: <1443655493-5554-1-git-send-email-rmann@latencyzero.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: yitian <yitian.bu@tangramtek.com>
-Cc: alsa-devel@alsa-project.org, wsa@the-dreams.de, linux-kernel@vger.kernel.org, Andrew.Jackson@arm.com, tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
+To: Rick Mann <rmann@latencyzero.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Q68bSM7Ycu6FN28Q
+--l76fUT7nc3MelDdI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 01, 2015 at 10:39:09AM +0800, yitian wrote:
+On Wed, Sep 30, 2015 at 04:24:53PM -0700, Rick Mann wrote:
+> The current code writes a set of registers that are reserved on the tlc320aic3104. The change skips those registers for that IC.
 
-> > This doesn't apply against current code, please check and resend.
+I'll apply this but please keep your commit logs wrapped at
+considerably less than 80 columns and use subject lines reflecting the
+style for the subsystem - see SubmittingPatches for details.
 
-> I synced up to latest kernel branch, the code is the same as what this patch
-> was
-> generated.
-
-The "latest kernel branch" was neither v4.3-rc1 nor my for-next
-branch, at least as far as git am was concerned, so I couldn't apply the
-patch.
-
---Q68bSM7Ycu6FN28Q
+--l76fUT7nc3MelDdI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWDQTyAAoJECTWi3JdVIfQNsAH+weQgGpmrbApzpzx62qjjWbX
-AJd15IQ8DeSAiuGDeMRFdb8J+Oi2LwNqWGFEpBqRSyN0TLnnrOphYI3RHpCE+p6Z
-Kf+shBuC8Y+6QEu/4bSFc7EcJif1nDIkxsrziiLB//f7248d8cJNDrTpC6fZyugM
-kxoK1TtttpMDGoK7SlOcZqFTY5z06sozhnb1HZ3xJMypzDpwf98bfwXEmxsigZxp
-8rXDznJGBQ3rDNDGAvabqM1xSXYILKrSB9I/Kx0WnqGwawJfUB/LuRK3aA7PvqR3
-fdD43GynBjnPfGV2fztmTc1PCY3QQcqgYFFWdRhN6GM8F0aLc4yPQYneEpv4gHc=
-=2Whv
+iQEcBAEBCAAGBQJWDQfHAAoJECTWi3JdVIfQsHwH/Rh/lO4TZabs/YfBLFbEcxGN
+tYECWtlbyNmRlTlEaQ0HH9h5OKhNo5DV4pNcz3QrKVzGasJvjkKg+PzraDg+KyrN
+CjI1/e2UWi0IQguTFJLJvbR8JPvVRuml5ke27FSNPwlNHFpw6zRRLm7oDcrHjxRK
+kCxlrHB1LLnudJDB2Li7ZPt/62lWHUbgC7HCTK2unbgb7nzDe/LubRVmCS542tYL
+daa2826/TnLQv/C+Q6h1WYM4PZsU4He6ZHDlg/UaSvJMZAgGwntDf0py5C7pcUtz
+SDev3xrUKMzxwgTZ3eutuQsABbIhQ85TSIymaYlKlJlkKUQwbK8NpO7YPqNV7O4=
+=qRw0
 -----END PGP SIGNATURE-----
 
---Q68bSM7Ycu6FN28Q--
+--l76fUT7nc3MelDdI--
