@@ -1,46 +1,129 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Enabling kernel debugging in sound before devices are
-	loaded
-Date: Thu, 1 Oct 2015 03:41:04 -0700
-Message-ID: <F8E42AC6-44D9-4171-972F-AD39765728AE@latencyzero.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6A93326666D
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 12:41:06 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id C29FE204C5
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 06:41:05 -0400 (EDT)
-Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
- [50.168.55.93])
- by mail.messagingengine.com (Postfix) with ESMTPA id 6F4C7C00014
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 06:41:05 -0400 (EDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Luiz Augusto von Dentz <luiz.dentz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [RFC] MIDI over Bluetooth Low Energy
+Date: Thu, 1 Oct 2015 14:05:22 +0300
+Message-ID: <CABBYNZ+D5KbW7b2_F0fw9C=YvMNyVdaN=sLuNj5v0O-Zs6XSVg@mail.gmail.com>
+References: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ@mail.gmail.com>
+	<CABBYNZ+iR-LXvMDkGiOkh8+X_=PWjrbGs3kveYFMo1UdhHVaNA@mail.gmail.com>
+	<CAGrhNMwpx9Q4Usb75jWofWpLpUxJOd6FsckRT=O4Uj8KBtqayA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAGrhNMwpx9Q4Usb75jWofWpLpUxJOd6FsckRT=O4Uj8KBtqayA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to enable kernel debug logging like this:
+Hi Felipe,
 
-	# echo "file sound* +pflm" > /sys/kernel/debug/dynamic_debug/control
+On Thu, Oct 1, 2015 at 1:17 PM, Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
+> Hi Luiz,
+>
+> On Thu, Oct 1, 2015 at 10:34 AM, Luiz Augusto von Dentz
+> <luiz.dentz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>> Hi Felipe,
+>>
+>> On Thu, Oct 1, 2015 at 11:41 AM, Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
+>>> Hi guys,
+>>>
+>>> I am planning to start the support of MIDI BLE profile[1]. This
+>>> profile is not officially supported yet, but it will most likely be
+>>> very similar, so development efforts are still valid.
+>>>
+>>> I suggest two main goals:
+>>>  * To be transparent to applications, i.e., use rawmidi and sequencer
+>>> ALSA interfaces to interact.
+>>>  * To support peripheral and central BLE roles.
+>>>
+>>> My question is: what is the best way possible of doing it?
+>>>
+>>> My initial though is to write a GATT BlueZ profile plugin that will
+>>> load snd-virtmidi module with id and midi_devs parameters, then read
+>>> and write seq events from/to it. I am not sure if this is really
+>>> possible.
+>>
+>> If that doesn't involve creating new threads that would be the
+>> direction I would suggest.
+>
+> I don't think it will be necessary. Does bluetoothd run plugins as threads?
 
-But it has no effect until after I load the Device Tree Overlay that creates my codec and sound card nodes. Unfortunately at this point, it's too late for the debugging to do any good.
+Nope, and most of the code in the daemon is no thread safe.
 
-This is with kernel 4.1.9 on a Beaglebone Black Debian Jessie distro.
+>>
+>>> Another way of implementing is as a rawmidi and a seq plugin using the
+>>> BlueZ GATT D-Bus interface. IMO this is not ideal because it requires
+>>> a lot more work (rawmidi and seq plugins, maybe even a library to
+>>> avoid code duplication) and has an overhead of using dbus.
+>>
+>> D-Bus is not meant for data, in fact GATT is not meant for byte stream
+>> either since the channel is shared with all other profiles it can
+>> cause delay.
+>
+> GATT can handle MIDI throughput very easily. Usually messages are 1 to
+> 10 Hz, 3 or 4 bytes each. Even SysEx messages tend to be 250 bytes at
+> maximum.
 
-I don't really know how the kernel dyndebug system works; I am able to enable other debugging locations, but none in sound/*
+But the transport is shared between all services, you may have several
+command in the queue and those can block the queue for up to 30
+seconds before they timeout.
+>
+>>
+>>> It is also possible to write a kernel module to handle ALSA
+>>> card/device setup and reads and writes from the bluez plugin (perhaps
+>>> this simplifies things because it has less dependencies).
+>>
+>> Well if it uses the profile uses ATT/GATT then this is not possible
+>> since that is implemented in userspace, I guess creating virtual cards
+>> would be better (we do that for HoG using uhid), but I guess that is
+>> not currently possible otherwise we would have done that for A2DP/HFP
+>> already.
+>
+> The kernel module would act as a virtual card as well. The reads and
+> writes would come from user-space (because as you said, ATT/GATT is
+> implemented there). The good point is that it would be dedicated for
+> midi. It is like loading a usb midi gadget.
 
-Appreciate any guidance. Thank you.
+Well if you are proposing some module that would accept registering
+virtual cards from userspace that probably would probably make sense,
+this make it much simpler to be detected by the system as a regular
+ALSA device so application can use.
+
+>>
+>>> They all have the problem of context switching between bluez plugin
+>>> and alsa midi driver. I would prefer to use a shared ring buffer
+>>> between ALSA e BlueZ.
+>>
+>> You can use anything you want but don't expose bluetoothd to attacks,
+>> so probably no shmem, actually if your concern is latency then as I
+>> said you shouldn't be using ATT/GATT, instead L2CAP CoC should be used
+>> but I don't think Apple has implemented it yet.
+>
+> What is L2CAP CoC? I am not aware of it.
+
+Connection oriented channel, I think it was introduced in Bluetooth
+4.1, with that you can have a dedicated channel for your profile. This
+is implemented in the kernel as a regular L2CAP socket btw.
+
+>>
+>>> Any ideas and comments?
+>>>
+>>> [1] https://developer.apple.com/bluetooth/Apple-Bluetooth-Low-Energy-MIDI-Specification.pdf
+>>
+>> It seems the specs is pretty old, from 2012, that probably explain why
+>> L2CAP CoC was not used.
+>
+> I think that might be first draft, because it was released end of
+> 2014. Also there are only two or three products out there implementing
+> this protocol as it is new. I think will be a great thing if these and
+> many other products runs as first class citizen in Linux too.
+>
+> BTW, is peripheral role fully supported on BlueZ? I did look into this
+> beginning of 2014 and it was incomplete.
+
+We do have advertising, GATT server and L2CAP CoC implemented, there
+maybe a few details left though since some APIs are still
+experimental.
+
 
 -- 
-Rick Mann
-rmann@latencyzero.com
+Luiz Augusto von Dentz
