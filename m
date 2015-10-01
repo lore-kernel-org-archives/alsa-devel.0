@@ -1,17 +1,19 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: Document DAI signal polarity
-Date: Thu,  1 Oct 2015 11:09:19 -0700
-Message-ID: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Thu, 1 Oct 2015 21:18:35 +0200
+Message-ID: <CA+sos79oT68x4-PMpHSrfqNiO_43fDQ50hjxxBkr7=M=mjv=LQ@mail.gmail.com>
+References: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id AAE532667EE
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 20:09:43 +0200 (CEST)
-Received: by padhy16 with SMTP id hy16so81362207pad.1
- for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2015 11:09:42 -0700 (PDT)
+Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
+ [209.85.218.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B14C2667EE
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 21:18:56 +0200 (CEST)
+Received: by oiev17 with SMTP id v17so46450431oie.1
+ for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2015 12:18:55 -0700 (PDT)
+In-Reply-To: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: albertchen@realtek.com, broonie@kernel.org, Anatol Pomozov <anatol.pomozov@gmail.com>, lars@metafoo.de, benoit.thebaudeau.dev@gmail.com
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: albertchen@realtek.com, Alsa-devel <alsa-devel@alsa-project.org>, broonie@kernel.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Currently there is no clear definition of what is FSYNC polarity.
-Different drivers use its own definition of what is "normal" and what is
-"inverted" fsync. This leads to compatibility problems between drivers.
-
-For example TegraX1 driver assumes that DSP-A format with frames
-starting at rising FSYNC edge has "negative" polarity,
-while RT5677 assumes it is "positive" polarity.
-
-Explicitly specify meaning of BCLK/FSYNC polarity to avoid future
-compatibility problems.
-
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- include/sound/soc-dai.h | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 2df96b1..45198db 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -48,10 +48,22 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
- 
- /*
-- * DAI hardware signal inversions.
-+ * DAI hardware signal polarity.
-  *
-- * Specifies whether the DAI can also support inverted clocks for the specified
-- * format.
-+ * BCLK:
-+ * - "normal" polarity means signal is available at rising edge of BCLK
-+ * - "inverted" polarity means signal is available at falling edge of BCLK
-+ *
-+ * FSYNC "normal" polarity depends on the frame format:
-+ * - I2S: frame consists of left then right channel data. Left channel starts
-+ *      with falling FSYNC edge, right channel starts with rising FSYNC edge.
-+ * - I2S right/left justified: frame consists of left then right channel data.
-+ *      Left channel starts with rising FSYNC edge, right channel starts with
-+ *      falling FSYNC edge.
-+ * - DSP A/B: Frame starts with rising FSYNC edge.
-+ * - AC97: Frame starts with rising FSYNC edge.
-+ *
-+ * "Negative" FSYNC polarity is the one opposite of "normal" polarity.
-  */
- #define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
- #define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
--- 
-2.6.0.rc2.230.g3dd15c0
+RGVhciBBbmF0b2wgUG9tb3pvdiwKCk9uIFRodSwgT2N0IDEsIDIwMTUgYXQgODowOSBQTSwgQW5h
+dG9sIFBvbW96b3YgPGFuYXRvbC5wb21vem92QGdtYWlsLmNvbT4gd3JvdGU6Cj4gQ3VycmVudGx5
+IHRoZXJlIGlzIG5vIGNsZWFyIGRlZmluaXRpb24gb2Ygd2hhdCBpcyBGU1lOQyBwb2xhcml0eS4K
+PiBEaWZmZXJlbnQgZHJpdmVycyB1c2UgaXRzIG93biBkZWZpbml0aW9uIG9mIHdoYXQgaXMgIm5v
+cm1hbCIgYW5kIHdoYXQgaXMKPiAiaW52ZXJ0ZWQiIGZzeW5jLiBUaGlzIGxlYWRzIHRvIGNvbXBh
+dGliaWxpdHkgcHJvYmxlbXMgYmV0d2VlbiBkcml2ZXJzLgo+Cj4gRm9yIGV4YW1wbGUgVGVncmFY
+MSBkcml2ZXIgYXNzdW1lcyB0aGF0IERTUC1BIGZvcm1hdCB3aXRoIGZyYW1lcwo+IHN0YXJ0aW5n
+IGF0IHJpc2luZyBGU1lOQyBlZGdlIGhhcyAibmVnYXRpdmUiIHBvbGFyaXR5LAo+IHdoaWxlIFJU
+NTY3NyBhc3N1bWVzIGl0IGlzICJwb3NpdGl2ZSIgcG9sYXJpdHkuCgpUaGlzIHdvcmRpbmcgaXMg
+Y29uZnVzaW5nLiAiTm9ybWFsIi8iaW52ZXJ0ZWQiIGFyZSBtb3JlIGFwcHJvcHJpYXRlCnRoYW4g
+InBvc2l0aXZlIi8ibmVnYXRpdmUiIGhlcmUsIGJlY2F1c2UgdGhlIGxhdHRlciB3b3VsZCByZWZl
+ciB0byB0aGUKZmFsbGluZy9yaXNpbmcgZWRnZXMsIG5vdCB0byB0aGUgcmVndWxhciBwb2xhcml0
+eSBhcyB0aGUgZm9ybWVyLgoKPiBFeHBsaWNpdGx5IHNwZWNpZnkgbWVhbmluZyBvZiBCQ0xLL0ZT
+WU5DIHBvbGFyaXR5IHRvIGF2b2lkIGZ1dHVyZQo+IGNvbXBhdGliaWxpdHkgcHJvYmxlbXMuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBBbmF0b2wgUG9tb3pvdiA8YW5hdG9sLnBvbW96b3ZAZ21haWwuY29t
+Pgo+IC0tLQo+ICBpbmNsdWRlL3NvdW5kL3NvYy1kYWkuaCB8IDE4ICsrKysrKysrKysrKysrKy0t
+LQo+ICAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgo+
+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvYy1kYWkuaCBiL2luY2x1ZGUvc291bmQvc29j
+LWRhaS5oCj4gaW5kZXggMmRmOTZiMS4uNDUxOThkYiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL3Nv
+dW5kL3NvYy1kYWkuaAo+ICsrKyBiL2luY2x1ZGUvc291bmQvc29jLWRhaS5oCj4gQEAgLTQ4LDEw
+ICs0OCwyMiBAQCBzdHJ1Y3Qgc25kX2NvbXByX3N0cmVhbTsKPiAgI2RlZmluZSBTTkRfU09DX0RB
+SUZNVF9HQVRFRCAgICAgICAgICAgKDAgPDwgNCkgLyogY2xvY2sgaXMgZ2F0ZWQgKi8KPgo+ICAv
+Kgo+IC0gKiBEQUkgaGFyZHdhcmUgc2lnbmFsIGludmVyc2lvbnMuCj4gKyAqIERBSSBoYXJkd2Fy
+ZSBzaWduYWwgcG9sYXJpdHkuCj4gICAqCj4gLSAqIFNwZWNpZmllcyB3aGV0aGVyIHRoZSBEQUkg
+Y2FuIGFsc28gc3VwcG9ydCBpbnZlcnRlZCBjbG9ja3MgZm9yIHRoZSBzcGVjaWZpZWQKPiAtICog
+Zm9ybWF0LgoKUGxlYXNlIGtlZXAgdGhpcyBzZW50ZW5jZSBvciByZXBocmFzZSBpdCwgYnV0IGRv
+IG5vdCByZW1vdmUgaXQ6IGl0CmNsYXJpZmllcyAibm9ybWFsIiBhcyBtZWFuaW5nIHRoZSBkZWZh
+dWx0IGZvciB0aGUgc3BlY2lmaWVkIGZvcm1hdAooScKyUywgTC9SLWp1c3RpZmllZCwgRFNQIEEv
+QiwgQUMnOTcsIFBETSkuCgo+ICsgKiBCQ0xLOgo+ICsgKiAtICJub3JtYWwiIHBvbGFyaXR5IG1l
+YW5zIHNpZ25hbCBpcyBhdmFpbGFibGUgYXQgcmlzaW5nIGVkZ2Ugb2YgQkNMSwo+ICsgKiAtICJp
+bnZlcnRlZCIgcG9sYXJpdHkgbWVhbnMgc2lnbmFsIGlzIGF2YWlsYWJsZSBhdCBmYWxsaW5nIGVk
+Z2Ugb2YgQkNMSwo+ICsgKgo+ICsgKiBGU1lOQyAibm9ybWFsIiBwb2xhcml0eSBkZXBlbmRzIG9u
+IHRoZSBmcmFtZSBmb3JtYXQ6Cj4gKyAqIC0gSTJTOiBmcmFtZSBjb25zaXN0cyBvZiBsZWZ0IHRo
+ZW4gcmlnaHQgY2hhbm5lbCBkYXRhLiBMZWZ0IGNoYW5uZWwgc3RhcnRzCj4gKyAqICAgICAgd2l0
+aCBmYWxsaW5nIEZTWU5DIGVkZ2UsIHJpZ2h0IGNoYW5uZWwgc3RhcnRzIHdpdGggcmlzaW5nIEZT
+WU5DIGVkZ2UuCj4gKyAqIC0gSTJTIHJpZ2h0L2xlZnQganVzdGlmaWVkOiBmcmFtZSBjb25zaXN0
+cyBvZiBsZWZ0IHRoZW4gcmlnaHQgY2hhbm5lbCBkYXRhLgoKVGhlIEwvUi1qdXN0aWZpZWQgZm9y
+bWF0cyBhcmUgaW5kZXBlbmRlbnQgb2YgScKyUywgc28gIkkyUyIgc2hvdWxkIGJlCnJlbW92ZWQg
+ZnJvbSB0aGlzIGxpbmUuCgo+ICsgKiAgICAgIExlZnQgY2hhbm5lbCBzdGFydHMgd2l0aCByaXNp
+bmcgRlNZTkMgZWRnZSwgcmlnaHQgY2hhbm5lbCBzdGFydHMgd2l0aAo+ICsgKiAgICAgIGZhbGxp
+bmcgRlNZTkMgZWRnZS4KPiArICogLSBEU1AgQS9COiBGcmFtZSBzdGFydHMgd2l0aCByaXNpbmcg
+RlNZTkMgZWRnZS4KPiArICogLSBBQzk3OiBGcmFtZSBzdGFydHMgd2l0aCByaXNpbmcgRlNZTkMg
+ZWRnZS4KPiArICoKPiArICogIk5lZ2F0aXZlIiBGU1lOQyBwb2xhcml0eSBpcyB0aGUgb25lIG9w
+cG9zaXRlIG9mICJub3JtYWwiIHBvbGFyaXR5Lgo+ICAgKi8KPiAgI2RlZmluZSBTTkRfU09DX0RB
+SUZNVF9OQl9ORiAgICAgICAgICAgKDAgPDwgOCkgLyogbm9ybWFsIGJpdCBjbG9jayArIGZyYW1l
+ICovCj4gICNkZWZpbmUgU05EX1NPQ19EQUlGTVRfTkJfSUYgICAgICAgICAgICgyIDw8IDgpIC8q
+IG5vcm1hbCBCQ0xLICsgaW52IEZSTSAqLwo+IC0tCj4gMi42LjAucmMyLjIzMC5nM2RkMTVjMAo+
+CgpCZXN0IHJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
