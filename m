@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/7] ALSA: firewire-tascam: add hwdep interface
-Date: Thu,  1 Oct 2015 22:02:17 +0900
-Message-ID: <1443704537-3345-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/7] ALSA: firewire-tascam: add streaming
+	functionality
+Date: Thu,  1 Oct 2015 22:02:15 +0900
+Message-ID: <1443704537-3345-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A9422667BB
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C2932667AF
  for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:24 +0200 (CEST)
 In-Reply-To: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,448 +25,599 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other IEEE 1394 sound devices
-has.
+This commit adds streaming functionality for both direction. To utilize
+the sequence of the number of data blocks in packets, full duplex with
+synchronization is applied.
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+Besides, TASCAM FireWire series allows drivers to decide which PCM data
+channels are enabled. For convenience, this driver always enable whole the
+data channels.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h           |   3 +-
- include/uapi/sound/firewire.h         |   1 +
- sound/firewire/Kconfig                |   1 +
- sound/firewire/tascam/Makefile        |   2 +-
- sound/firewire/tascam/tascam-hwdep.c  | 201 ++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam-pcm.c    |  17 ++-
- sound/firewire/tascam/tascam-stream.c |  39 +++++++
- sound/firewire/tascam/tascam.c        |   6 +
- sound/firewire/tascam/tascam.h        |  13 +++
- 9 files changed, 278 insertions(+), 5 deletions(-)
- create mode 100644 sound/firewire/tascam/tascam-hwdep.c
+ sound/firewire/tascam/Makefile        |   3 +-
+ sound/firewire/tascam/tascam-stream.c | 457 ++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c        |  12 +-
+ sound/firewire/tascam/tascam.h        |  36 +++
+ 4 files changed, 506 insertions(+), 2 deletions(-)
+ create mode 100644 sound/firewire/tascam/tascam-stream.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index aa32913..a82108e 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -101,9 +101,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
- 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
- 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
-+	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DIGI00X
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index deb041c..db79a12 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -64,6 +64,7 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_BEBOB	3
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
- #define SNDRV_FIREWIRE_TYPE_DIGI00X	5
-+#define SNDRV_FIREWIRE_TYPE_TASCAM	6
- /* RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index bb3f261..bee0e5f 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -138,6 +138,7 @@ config SND_FIREWIRE_DIGI00X
- config SND_FIREWIRE_TASCAM
- 	tristate "TASCAM FireWire series support"
- 	select SND_FIREWIRE_LIB
-+	select SND_HWDEP
- 	help
- 	 Say Y here to include support for TASCAM.
- 	  * FW-1884
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index f075b9b..6beefc2 100644
+index d06c737..0a1c387 100644
 --- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -1,3 +1,3 @@
- snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
--			    tascam-pcm.o tascam.o
-+			    tascam-pcm.o tascam-hwdep.o tascam.o
+@@ -1,2 +1,3 @@
+-snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
++snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
++			    tascam.o
  obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
 new file mode 100644
-index 0000000..131267c
+index 0000000..0732f7f
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -0,0 +1,201 @@
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -0,0 +1,457 @@
 +/*
-+ * tascam-hwdep.c - a part of driver for TASCAM FireWire series
++ * tascam-stream.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node information
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ */
-+
++#include <linux/delay.h>
 +#include "tascam.h"
 +
-+static long hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
-+			      long count)
++#define CALLBACK_TIMEOUT 500
++
++static int get_clock(struct snd_tscm *tscm, u32 *data)
 +{
-+	union snd_firewire_event event;
-+
-+	memset(&event, 0, sizeof(event));
-+
-+	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+	event.lock_status.status = (tscm->dev_lock_count > 0);
-+	tscm->dev_lock_changed = false;
-+
-+	count = min_t(long, count, sizeof(event.lock_status));
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-+		       loff_t *offset)
-+{
-+	struct snd_tscm *tscm = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&tscm->lock);
-+
-+	while (!tscm->dev_lock_changed) {
-+		prepare_to_wait(&tscm->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&tscm->lock);
-+		schedule();
-+		finish_wait(&tscm->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&tscm->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	count = hwdep_read_locked(tscm, buf, count);
-+	spin_unlock_irq(&tscm->lock);
-+
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_tscm *tscm = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &tscm->hwdep_wait, wait);
-+
-+	spin_lock_irq(&tscm->lock);
-+	if (tscm->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&tscm->lock);
-+
-+	return events;
-+}
-+
-+static int hwdep_get_info(struct snd_tscm *tscm, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(tscm->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_TASCAM;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_tscm *tscm)
-+{
++	__be32 reg;
 +	int err;
 +
-+	spin_lock_irq(&tscm->lock);
-+
-+	if (tscm->dev_lock_count == 0) {
-+		tscm->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
-+	}
-+
-+	spin_unlock_irq(&tscm->lock);
++	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_CLOCK_STATUS,
++				 &reg, sizeof(reg), 0);
++	if (err >= 0)
++		*data = be32_to_cpu(reg);
 +
 +	return err;
 +}
 +
-+static int hwdep_unlock(struct snd_tscm *tscm)
++static int set_clock(struct snd_tscm *tscm, unsigned int rate,
++		     enum snd_tscm_clock clock)
 +{
++	u32 data;
++	__be32 reg;
 +	int err;
 +
-+	spin_lock_irq(&tscm->lock);
++	err = get_clock(tscm, &data);
++	if (err < 0)
++		return err;
++	data &= 0x0000ffff;
 +
-+	if (tscm->dev_lock_count == -1) {
-+		tscm->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
++	if (rate > 0) {
++		data &= 0x000000ff;
++		/* Base rate. */
++		if ((rate % 44100) == 0) {
++			data |= 0x00000100;
++			/* Multiplier. */
++			if (rate / 44100 == 2)
++				data |= 0x00008000;
++		} else if ((rate % 48000) == 0) {
++			data |= 0x00000200;
++			/* Multiplier. */
++			if (rate / 48000 == 2)
++				data |= 0x00008000;
++		} else {
++			return -EAGAIN;
++		}
 +	}
 +
-+	spin_unlock_irq(&tscm->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_tscm *tscm = hwdep->private_data;
-+
-+	spin_lock_irq(&tscm->lock);
-+	if (tscm->dev_lock_count == -1)
-+		tscm->dev_lock_count = 0;
-+	spin_unlock_irq(&tscm->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_tscm *tscm = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(tscm, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(tscm);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(tscm);
-+	default:
-+		return -ENOIOCTLCMD;
++	if (clock != INT_MAX) {
++		data &= 0x0000ff00;
++		data |= clock + 1;
 +	}
-+}
 +
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
++	reg = cpu_to_be32(data);
 +
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
-+};
-+
-+int snd_tscm_create_hwdep_device(struct snd_tscm *tscm)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(tscm->card, "Tascam", 0, &hwdep);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_CLOCK_STATUS,
++				 &reg, sizeof(reg), 0);
 +	if (err < 0)
 +		return err;
 +
-+	strcpy(hwdep->name, "Tascam");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_TASCAM;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = tscm;
-+	hwdep->exclusive = true;
++	if (data & 0x00008000)
++		reg = cpu_to_be32(0x0000001a);
++	else
++		reg = cpu_to_be32(0x0000000d);
 +
-+	return err;
-+}
-diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
-index 696b371..380d3db 100644
---- a/sound/firewire/tascam/tascam-pcm.c
-+++ b/sound/firewire/tascam/tascam-pcm.c
-@@ -72,9 +72,13 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_tscm_stream_lock_try(tscm);
-+	if (err < 0)
-+		goto end;
-+
- 	err = pcm_init_hw_params(tscm, substream);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	err = snd_tscm_stream_get_clock(tscm, &clock);
- 	if (clock != SND_TSCM_CLOCK_INTERNAL ||
-@@ -82,18 +86,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
- 		err = snd_tscm_stream_get_rate(tscm, &rate);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--
-+end:
-+	return err;
-+err_locked:
-+	snd_tscm_stream_lock_release(tscm);
- 	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	snd_tscm_stream_lock_release(tscm);
-+
- 	return 0;
- }
- 
-diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
-index 0732f7f..0e6dd5c6 100644
---- a/sound/firewire/tascam/tascam-stream.c
-+++ b/sound/firewire/tascam/tascam-stream.c
-@@ -455,3 +455,42 @@ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
- 	finish_session(tscm);
- 	release_resources(tscm);
- }
-+
-+void snd_tscm_stream_lock_changed(struct snd_tscm *tscm)
-+{
-+	tscm->dev_lock_changed = true;
-+	wake_up(&tscm->hwdep_wait);
++	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				  TSCM_ADDR_BASE + TSCM_OFFSET_MULTIPLEX_MODE,
++				  &reg, sizeof(reg), 0);
 +}
 +
-+int snd_tscm_stream_lock_try(struct snd_tscm *tscm)
++int snd_tscm_stream_get_rate(struct snd_tscm *tscm, unsigned int *rate)
 +{
++	u32 data = 0x0;
++	unsigned int trials = 0;
 +	int err;
 +
-+	spin_lock_irq(&tscm->lock);
++	while (data == 0x0 || trials++ < 5) {
++		err = get_clock(tscm, &data);
++		if (err < 0)
++			return err;
 +
-+	/* user land lock this */
-+	if (tscm->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
++		data = (data & 0xff000000) >> 24;
 +	}
 +
-+	/* this is the first time */
-+	if (tscm->dev_lock_count++ == 0)
-+		snd_tscm_stream_lock_changed(tscm);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&tscm->lock);
++	/* Check base rate. */
++	if ((data & 0x0f) == 0x01)
++		*rate = 44100;
++	else if ((data & 0x0f) == 0x02)
++		*rate = 48000;
++	else
++		return -EAGAIN;
++
++	/* Check multiplier. */
++	if ((data & 0xf0) == 0x80)
++		*rate *= 2;
++	else if ((data & 0xf0) != 0x00)
++		return -EAGAIN;
++
 +	return err;
 +}
 +
-+void snd_tscm_stream_lock_release(struct snd_tscm *tscm)
++int snd_tscm_stream_get_clock(struct snd_tscm *tscm, enum snd_tscm_clock *clock)
 +{
-+	spin_lock_irq(&tscm->lock);
++	u32 data;
++	int err;
 +
-+	if (WARN_ON(tscm->dev_lock_count <= 0))
-+		goto end;
-+	if (--tscm->dev_lock_count == 0)
-+		snd_tscm_stream_lock_changed(tscm);
-+end:
-+	spin_unlock_irq(&tscm->lock);
++	err = get_clock(tscm, &data);
++	if (err < 0)
++		return err;
++
++	*clock = ((data & 0x00ff0000) >> 16) - 1;
++	if (*clock < 0 || *clock > SND_TSCM_CLOCK_ADAT)
++		return -EIO;
++
++	return 0;
++}
++
++static int enable_data_channels(struct snd_tscm *tscm)
++{
++	__be32 reg;
++	u32 data;
++	unsigned int i;
++	int err;
++
++	data = 0;
++	for (i = 0; i < tscm->spec->pcm_capture_analog_channels; ++i)
++		data |= BIT(i);
++	if (tscm->spec->has_adat)
++		data |= 0x0000ff00;
++	if (tscm->spec->has_spdif)
++		data |= 0x00030000;
++
++	reg = cpu_to_be32(data);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_TX_PCM_CHANNELS,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	data = 0;
++	for (i = 0; i < tscm->spec->pcm_playback_analog_channels; ++i)
++		data |= BIT(i);
++	if (tscm->spec->has_adat)
++		data |= 0x0000ff00;
++	if (tscm->spec->has_spdif)
++		data |= 0x00030000;
++
++	reg = cpu_to_be32(data);
++	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				  TSCM_ADDR_BASE + TSCM_OFFSET_RX_PCM_CHANNELS,
++				  &reg, sizeof(reg), 0);
++}
++
++static int set_stream_formats(struct snd_tscm *tscm, unsigned int rate)
++{
++	__be32 reg;
++	int err;
++
++	/* Set an option for unknown purpose. */
++	reg = cpu_to_be32(0x00200000);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	err = enable_data_channels(tscm);
++	if (err < 0)
++		return err;
++
++	return set_clock(tscm, rate, INT_MAX);
++}
++
++static void finish_session(struct snd_tscm *tscm)
++{
++	__be32 reg;
++
++	reg = 0;
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
++			   &reg, sizeof(reg), 0);
++
++	reg = 0;
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
++			   &reg, sizeof(reg), 0);
++
++}
++
++static int begin_session(struct snd_tscm *tscm)
++{
++	__be32 reg;
++	int err;
++
++	reg = cpu_to_be32(0x00000001);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	reg = cpu_to_be32(0x00000001);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	/* Set an option for unknown purpose. */
++	reg = cpu_to_be32(0x00002000);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	/* Start multiplexing PCM samples on packets. */
++	reg = cpu_to_be32(0x00000001);
++	return snd_fw_transaction(tscm->unit,
++				  TCODE_WRITE_QUADLET_REQUEST,
++				  TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_ON,
++				  &reg, sizeof(reg), 0);
++}
++
++static void release_resources(struct snd_tscm *tscm)
++{
++	__be32 reg;
++
++	/* Unregister channels. */
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
++			   &reg, sizeof(reg), 0);
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
++			   &reg, sizeof(reg), 0);
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
++			   &reg, sizeof(reg), 0);
++
++	/* Release isochronous resources. */
++	fw_iso_resources_free(&tscm->tx_resources);
++	fw_iso_resources_free(&tscm->rx_resources);
++}
++
++static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
++{
++	__be32 reg;
++	int err;
++
++	/* Keep resources for in-stream. */
++	err = amdtp_tscm_set_parameters(&tscm->tx_stream, rate);
++	if (err < 0)
++		return err;
++	err = fw_iso_resources_allocate(&tscm->tx_resources,
++			amdtp_stream_get_max_payload(&tscm->tx_stream),
++			fw_parent_device(tscm->unit)->max_speed);
++	if (err < 0)
++		goto error;
++
++	/* Keep resources for out-stream. */
++	err = amdtp_tscm_set_parameters(&tscm->rx_stream, rate);
++	if (err < 0)
++		return err;
++	err = fw_iso_resources_allocate(&tscm->rx_resources,
++			amdtp_stream_get_max_payload(&tscm->rx_stream),
++			fw_parent_device(tscm->unit)->max_speed);
++	if (err < 0)
++		return err;
++
++	/* Register the isochronous channel for transmitting stream. */
++	reg = cpu_to_be32(tscm->tx_resources.channel);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		goto error;
++
++	/* Unknown */
++	reg = cpu_to_be32(0x00000002);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		goto error;
++
++	/* Register the isochronous channel for receiving stream. */
++	reg = cpu_to_be32(tscm->rx_resources.channel);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		goto error;
++
++	return 0;
++error:
++	release_resources(tscm);
++	return err;
++}
++
++int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
++{
++	unsigned int pcm_channels;
++	int err;
++
++	/* For out-stream. */
++	err = fw_iso_resources_init(&tscm->rx_resources, tscm->unit);
++	if (err < 0)
++		return err;
++	pcm_channels = tscm->spec->pcm_playback_analog_channels;
++	if (tscm->spec->has_adat)
++		pcm_channels += 8;
++	if (tscm->spec->has_spdif)
++		pcm_channels += 2;
++	err = amdtp_tscm_init(&tscm->rx_stream, tscm->unit, AMDTP_OUT_STREAM,
++			      pcm_channels);
++	if (err < 0)
++		return err;
++
++	/* For in-stream. */
++	err = fw_iso_resources_init(&tscm->tx_resources, tscm->unit);
++	if (err < 0)
++		return err;
++	pcm_channels = tscm->spec->pcm_capture_analog_channels;
++	if (tscm->spec->has_adat)
++		pcm_channels += 8;
++	if (tscm->spec->has_spdif)
++		pcm_channels += 2;
++	err = amdtp_tscm_init(&tscm->tx_stream, tscm->unit, AMDTP_IN_STREAM,
++			      pcm_channels);
++	if (err < 0)
++		amdtp_stream_destroy(&tscm->rx_stream);
++
++	return 0;
++}
++
++/* At bus reset, streaming is stopped and some registers are clear. */
++void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
++{
++	amdtp_stream_pcm_abort(&tscm->tx_stream);
++	amdtp_stream_stop(&tscm->tx_stream);
++
++	amdtp_stream_pcm_abort(&tscm->rx_stream);
++	amdtp_stream_stop(&tscm->rx_stream);
++}
++
++/*
++ * This function should be called before starting streams or after stopping
++ * streams.
++ */
++void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm)
++{
++	amdtp_stream_destroy(&tscm->rx_stream);
++	amdtp_stream_destroy(&tscm->tx_stream);
++
++	fw_iso_resources_destroy(&tscm->rx_resources);
++	fw_iso_resources_destroy(&tscm->tx_resources);
++}
++
++int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
++{
++	unsigned int curr_rate;
++	int err;
++
++	if (tscm->substreams_counter == 0)
++		return 0;
++
++	err = snd_tscm_stream_get_rate(tscm, &curr_rate);
++	if (err < 0)
++		return err;
++	if (curr_rate != rate ||
++	    amdtp_streaming_error(&tscm->tx_stream) ||
++	    amdtp_streaming_error(&tscm->rx_stream)) {
++		finish_session(tscm);
++
++		amdtp_stream_stop(&tscm->tx_stream);
++		amdtp_stream_stop(&tscm->rx_stream);
++
++		release_resources(tscm);
++	}
++
++	if (!amdtp_stream_running(&tscm->tx_stream)) {
++		amdtp_stream_set_sync(CIP_SYNC_TO_DEVICE,
++				      &tscm->tx_stream, &tscm->rx_stream);
++		err = keep_resources(tscm, rate);
++		if (err < 0)
++			goto error;
++
++		err = set_stream_formats(tscm, rate);
++		if (err < 0)
++			goto error;
++
++		err = begin_session(tscm);
++		if (err < 0)
++			goto error;
++
++		err = amdtp_stream_start(&tscm->tx_stream,
++				tscm->tx_resources.channel,
++				fw_parent_device(tscm->unit)->max_speed);
++		if (err < 0)
++			goto error;
++
++		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
++						CALLBACK_TIMEOUT)) {
++			err = -ETIMEDOUT;
++			goto error;
++		}
++	}
++
++	if (!amdtp_stream_running(&tscm->rx_stream)) {
++		err = amdtp_stream_start(&tscm->rx_stream,
++				tscm->rx_resources.channel,
++				fw_parent_device(tscm->unit)->max_speed);
++		if (err < 0)
++			goto error;
++
++		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
++						CALLBACK_TIMEOUT)) {
++			err = -ETIMEDOUT;
++			goto error;
++		}
++	}
++
++	return 0;
++error:
++	amdtp_stream_stop(&tscm->tx_stream);
++	amdtp_stream_stop(&tscm->rx_stream);
++
++	finish_session(tscm);
++	release_resources(tscm);
++
++	return err;
++}
++
++void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
++{
++	if (tscm->substreams_counter > 0)
++		return;
++
++	amdtp_stream_stop(&tscm->tx_stream);
++	amdtp_stream_stop(&tscm->rx_stream);
++
++	finish_session(tscm);
++	release_resources(tscm);
 +}
 diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index bb4f706..ee2f498 100644
+index d7418c0..c256360 100644
 --- a/sound/firewire/tascam/tascam.c
 +++ b/sound/firewire/tascam/tascam.c
-@@ -110,6 +110,8 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 	tscm->spec = (const struct snd_tscm_spec *)entry->driver_data;
+@@ -82,6 +82,8 @@ static void tscm_card_free(struct snd_card *card)
+ {
+ 	struct snd_tscm *tscm = card->private_data;
  
- 	mutex_init(&tscm->mutex);
-+	spin_lock_init(&tscm->lock);
-+	init_waitqueue_head(&tscm->hwdep_wait);
++	snd_tscm_stream_destroy_duplex(tscm);
++
+ 	fw_unit_put(tscm->unit);
  
- 	err = check_name(tscm);
- 	if (err < 0)
-@@ -125,6 +127,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ 	mutex_destroy(&tscm->mutex);
+@@ -115,6 +117,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
  
-+	err = snd_tscm_create_hwdep_device(tscm);
+ 	snd_tscm_proc_init(tscm);
+ 
++	err = snd_tscm_stream_init_duplex(tscm);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
+@@ -129,7 +135,11 @@ error:
+ 
+ static void snd_tscm_update(struct fw_unit *unit)
+ {
+-	return;
++	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
++
++	mutex_lock(&tscm->mutex);
++	snd_tscm_stream_update_duplex(tscm);
++	mutex_unlock(&tscm->mutex);
+ }
+ 
+ static void snd_tscm_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 28c875f..75a3b9a 100644
+index 195be0b..41fe3a9 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -23,6 +23,8 @@
- #include <sound/info.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+@@ -26,6 +26,7 @@
  
  #include "../lib.h"
  #include "../amdtp-stream.h"
-@@ -44,6 +46,7 @@ struct snd_tscm {
- 	struct fw_unit *unit;
++#include "../iso-resources.h"
  
+ struct snd_tscm_spec {
+ 	const char *const name;
+@@ -45,6 +46,12 @@ struct snd_tscm {
  	struct mutex mutex;
-+	spinlock_t lock;
  
  	const struct snd_tscm_spec *spec;
- 
-@@ -52,6 +55,10 @@ struct snd_tscm {
- 	struct amdtp_stream tx_stream;
- 	struct amdtp_stream rx_stream;
- 	unsigned int substreams_counter;
 +
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
++	struct fw_iso_resources tx_resources;
++	struct fw_iso_resources rx_resources;
++	struct amdtp_stream tx_stream;
++	struct amdtp_stream rx_stream;
++	unsigned int substreams_counter;
  };
  
  #define TSCM_ADDR_BASE			0xffff00000000ull
-@@ -97,8 +104,14 @@ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
- int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
- void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
+@@ -54,6 +61,26 @@ struct snd_tscm {
+ #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
+ #define TSCM_OFFSET_FIRMWARE_HW		0x000c
  
-+void snd_tscm_stream_lock_changed(struct snd_tscm *tscm);
-+int snd_tscm_stream_lock_try(struct snd_tscm *tscm);
-+void snd_tscm_stream_lock_release(struct snd_tscm *tscm);
++#define TSCM_OFFSET_ISOC_TX_CH		0x0200
++#define TSCM_OFFSET_UNKNOWN		0x0204
++#define TSCM_OFFSET_START_STREAMING	0x0208
++#define TSCM_OFFSET_ISOC_RX_CH		0x020c
++#define TSCM_OFFSET_ISOC_RX_ON		0x0210	/* Little conviction. */
++#define TSCM_OFFSET_TX_PCM_CHANNELS	0x0214
++#define TSCM_OFFSET_RX_PCM_CHANNELS	0x0218
++#define TSCM_OFFSET_MULTIPLEX_MODE	0x021c
++#define TSCM_OFFSET_ISOC_TX_ON		0x0220
++/* Unknown				0x0224 */
++#define TSCM_OFFSET_CLOCK_STATUS	0x0228
++#define TSCM_OFFSET_SET_OPTION		0x022c
++
++enum snd_tscm_clock {
++	SND_TSCM_CLOCK_INTERNAL = 0,
++	SND_TSCM_CLOCK_WORD	= 1,
++	SND_TSCM_CLOCK_SPDIF	= 2,
++	SND_TSCM_CLOCK_ADAT	= 3,
++};
++
+ int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
+ int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
+@@ -61,6 +88,15 @@ int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
+ 				      struct snd_pcm_runtime *runtime);
+ void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
+ 
++int snd_tscm_stream_get_rate(struct snd_tscm *tscm, unsigned int *rate);
++int snd_tscm_stream_get_clock(struct snd_tscm *tscm,
++			      enum snd_tscm_clock *clock);
++int snd_tscm_stream_init_duplex(struct snd_tscm *tscm);
++void snd_tscm_stream_update_duplex(struct snd_tscm *tscm);
++void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
++int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
++void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
 +
  void snd_tscm_proc_init(struct snd_tscm *tscm);
  
- int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
- 
-+int snd_tscm_create_hwdep_device(struct snd_tscm *tscm);
-+
  #endif
 -- 
 2.1.4
