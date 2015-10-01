@@ -1,61 +1,85 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Driver for audio power amplifier ICs?
-Date: Thu, 1 Oct 2015 02:08:04 -0700
-Message-ID: <62E06779-EF34-4CEE-A415-7777EF888B22@latencyzero.com>
-References: <999B71E1-5FDB-4EFD-8E69-975C8A09A0C7@latencyzero.com>
- <560CF702.4000106@metafoo.de>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 5DE7B26042B
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 11:08:06 +0200 (CEST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id BE9AD202A5
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 05:08:05 -0400 (EDT)
-In-Reply-To: <560CF702.4000106@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org
+From: Luiz Augusto von Dentz <luiz.dentz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [RFC] MIDI over Bluetooth Low Energy
+Date: Thu, 1 Oct 2015 12:34:10 +0300
+Message-ID: <CABBYNZ+iR-LXvMDkGiOkh8+X_=PWjrbGs3kveYFMo1UdhHVaNA@mail.gmail.com>
+References: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Felipe,
+
+On Thu, Oct 1, 2015 at 11:41 AM, Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
+> Hi guys,
+>
+> I am planning to start the support of MIDI BLE profile[1]. This
+> profile is not officially supported yet, but it will most likely be
+> very similar, so development efforts are still valid.
+>
+> I suggest two main goals:
+>  * To be transparent to applications, i.e., use rawmidi and sequencer
+> ALSA interfaces to interact.
+>  * To support peripheral and central BLE roles.
+>
+> My question is: what is the best way possible of doing it?
+>
+> My initial though is to write a GATT BlueZ profile plugin that will
+> load snd-virtmidi module with id and midi_devs parameters, then read
+> and write seq events from/to it. I am not sure if this is really
+> possible.
+
+If that doesn't involve creating new threads that would be the
+direction I would suggest.
+
+> Another way of implementing is as a rawmidi and a seq plugin using the
+> BlueZ GATT D-Bus interface. IMO this is not ideal because it requires
+> a lot more work (rawmidi and seq plugins, maybe even a library to
+> avoid code duplication) and has an overhead of using dbus.
+
+D-Bus is not meant for data, in fact GATT is not meant for byte stream
+either since the channel is shared with all other profiles it can
+cause delay.
+
+> It is also possible to write a kernel module to handle ALSA
+> card/device setup and reads and writes from the bluez plugin (perhaps
+> this simplifies things because it has less dependencies).
+
+Well if it uses the profile uses ATT/GATT then this is not possible
+since that is implemented in userspace, I guess creating virtual cards
+would be better (we do that for HoG using uhid), but I guess that is
+not currently possible otherwise we would have done that for A2DP/HFP
+already.
+
+> They all have the problem of context switching between bluez plugin
+> and alsa midi driver. I would prefer to use a shared ring buffer
+> between ALSA e BlueZ.
+
+You can use anything you want but don't expose bluetoothd to attacks,
+so probably no shmem, actually if your concern is latency then as I
+said you shouldn't be using ATT/GATT, instead L2CAP CoC should be used
+but I don't think Apple has implemented it yet.
+
+> Any ideas and comments?
+>
+> [1] https://developer.apple.com/bluetooth/Apple-Bluetooth-Low-Energy-MIDI-Specification.pdf
+
+It seems the specs is pretty old, from 2012, that probably explain why
+L2CAP CoC was not used.
+
+> PS: I am at #bluez and #alsa as ftonello.
+>
+> Felipe Tonello
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-bluetooth" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
-> On Oct 1, 2015, at 02:04 , Lars-Peter Clausen <lars@metafoo.de> wrote:
-> 
-> On 10/01/2015 10:49 AM, Rick Mann wrote:
->> I've been working on this Beaglebone Black custom audio cape. It has a tlv320aic3104 codec (that I'm still trying to get working properly), and connected to its line outs is a tpa3140d2 analog 2x10W power amplifier. This chip has very little in the way of CPU interface, but it does have /shutdown and /fault lines.
->> 
->> I'm wondering how ALSA becomes aware of that chip, in order to enable it when it enables certain routes in the tlv320aic3104, and to inform application software if the /fault line asserts.
->> 
->> I don't mind writing a driver, if necessary, I just don't know where such a thing would fit. I also wonder what the device tree entries for the amp might look like.
-> 
-> Hi,
-> 
-> There are a couple of existing amplifier driver like e.g. max9877 or lm4857.
-> While those two examples have I2C control interface it is no problem to
-> implement a driver with just a GPIO control interface. Generally the input
-> and output pins of the amplifier should be modeled as DAPM widgets with a
-> widget for the amplifier function in between. You can use a callback
-> function for the amplifier widget to get notified when the amplifier needs
-> to be enabled and when not and can use this to control the GPIO.
-
-Thanks, Lars, great! I'll take a look at those.
-
-> The connections between the CODEC and the amplifier need to be specified in
-> the board driver.
-
-In this case I think that can all be done in the Device Tree, no?
 
 -- 
-Rick Mann
-rmann@latencyzero.com
+Luiz Augusto von Dentz
