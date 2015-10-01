@@ -1,38 +1,67 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/3] regulator: arizona: add support for WM8998 and
- WM1814
-Date: Thu, 1 Oct 2015 08:51:02 +0100
-Message-ID: <20151001075102.GL5432@ck-lbox>
-References: <1443445269-11746-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1443445269-11746-2-git-send-email-rf@opensource.wolfsonmicro.com>
- <20150930181601.GS15635@sirena.org.uk>
+From: John Lin <john.lin@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for
+	chrome
+Date: Thu, 1 Oct 2015 08:23:33 +0000
+Message-ID: <14AE6189BDA733429BF8455FEEF63298010F69C3@RTITMBSV02.realtek.com.tw>
+References: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150930181601.GS15635@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65D7C26042B
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 10:23:45 +0200 (CEST)
+In-Reply-To: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Flove <flove@realtek.com>, "Keith.Tzeng@quantatw.com" <Keith.Tzeng@quantatw.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 30, 2015 at 07:16:01PM +0100, Mark Brown wrote:
-> On Mon, Sep 28, 2015 at 02:01:07PM +0100, Richard Fitzgerald wrote:
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > Acked-by: Mark Brown <broonie@kernel.org>
+> -----Original Message-----
+> From: John Lin
+> Sent: Monday, September 21, 2015 6:38 PM
+> To: broonie@kernel.org; lgirdwood@gmail.com
+> Cc: alsa-devel@alsa-project.org; Bard Liao; Flove; Oder Chiou;
+> Keith.Tzeng@quantatw.com; John Lin
+> Subject: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for chrome
 > 
-> So if I've acked this rather than applying it presumably there are MFD
-> dependencies somewhere we're waiting for?  If there aren't why did this
-> not go in with the MFD?
+> Signed-off-by: John Lin <john.lin@realtek.com>
+> ---
+>  sound/soc/codecs/rt5645.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Please don't resend me my own ack on code that it looks like I'm
-> expected to apply, it's confusing :(
+> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+> index b0d96b6..84c5261 100644
+> --- a/sound/soc/codecs/rt5645.c
+> +++ b/sound/soc/codecs/rt5645.c
+> @@ -3212,6 +3212,13 @@ static const struct dmi_system_id
+> dmi_platform_intel_braswell[] = {
+>  			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
+>  		},
+>  	},
+> +	{
+> +		.ident = "Google Reks",
+> +		.callback = strago_quirk_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "Reks"),
+> +		},
+> +	},
+>  	{ }
+>  };
+> 
+> --
+> 1.8.1.1.439.g50a6b54
 
-Afraid Richard is on holiday at the moment, apologies for any
-confusion. The MFD changes went in ages ago, but the other
-changes in the series weren't applied, I am can't remember
-exactly why. So all the supporting MFD stuff is already in
-your trees and you can safely apply these ones.
-
-Thanks,
-Charles
+Hi Mark,
+Could you help to review this patch?
+Is there any problem on this patch?
+If yes, please kindly tell us. We will modify it according to your opinion, thanks.
