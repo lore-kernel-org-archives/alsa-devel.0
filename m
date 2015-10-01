@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/7] ALSA: firewire-tascam: add proc node to
-	show firmware information
-Date: Thu,  1 Oct 2015 22:02:13 +0900
-Message-ID: <1443704537-3345-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/7] ALSA: firewire-tascam: add data block
+	processing layer
+Date: Thu,  1 Oct 2015 22:02:14 +0900
+Message-ID: <1443704537-3345-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A7D4266739
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 828ED2666EE
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:22 +0200 (CEST)
 In-Reply-To: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,159 +25,317 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series has certain registers for firmware information.
+TASCAM FireWire series uses non-blocking transmission for AMDTP packet
+streaming, while the format of data blocks is unique.
 
-This commit adds proc node to show the information.
+The CIP headers includes specific value in FMT field and no SYT
+information.
+
+In transmitted packets, the first data channel represents event counter,
+and the last data channel has status and control information. The rest
+has 24bit PCM samples with right padding.
+
+In received packets, all of data channels include 16, 24, 32bit PCM
+samples. There's no other kind of information.
+
+This commit adds support for this protocol. For convenience, the size of
+PCM samples in outgoing packet is limited by 16 and 24bit. The status and
+control information will be supported in future commits.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile      |  2 +-
- sound/firewire/tascam/tascam-proc.c | 88 +++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.c      |  2 +
- sound/firewire/tascam/tascam.h      | 10 +++++
- 4 files changed, 101 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/tascam-proc.c
+ sound/firewire/tascam/Makefile       |   2 +-
+ sound/firewire/tascam/amdtp-tascam.c | 243 +++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.h       |  10 ++
+ 3 files changed, 254 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/amdtp-tascam.c
 
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 627129b..1555206 100644
+index 1555206..d06c737 100644
 --- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
 @@ -1,2 +1,2 @@
--snd-firewire-tascam-objs := tascam.o
-+snd-firewire-tascam-objs := tascam-proc.o tascam.o
+-snd-firewire-tascam-objs := tascam-proc.o tascam.o
++snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
  obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-proc.c b/sound/firewire/tascam/tascam-proc.c
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
 new file mode 100644
-index 0000000..bfd4a4c
+index 0000000..9dd0fcc
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam-proc.c
-@@ -0,0 +1,88 @@
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -0,0 +1,243 @@
 +/*
-+ * tascam-proc.h - a part of driver for TASCAM FireWire series
++ * amdtp-tascam.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./tascam.h"
++#include <sound/pcm.h>
++#include "tascam.h"
 +
-+static void proc_read_firmware(struct snd_info_entry *entry,
-+			       struct snd_info_buffer *buffer)
++#define AMDTP_FMT_TSCM_TX	0x1e
++#define AMDTP_FMT_TSCM_RX	0x3e
++
++struct amdtp_tscm {
++	unsigned int pcm_channels;
++
++	void (*transfer_samples)(struct amdtp_stream *s,
++				 struct snd_pcm_substream *pcm,
++				 __be32 *buffer, unsigned int frames);
++};
++
++int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
 +{
-+	struct snd_tscm *tscm = entry->private_data;
-+	__be32 data;
-+	unsigned int reg, fpga, arm, hw;
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int data_channels;
++
++	if (amdtp_stream_running(s))
++		return -EBUSY;
++
++	data_channels = p->pcm_channels;
++
++	/* Packets in in-stream have extra 2 data channels. */
++	if (s->direction == AMDTP_IN_STREAM)
++		data_channels += 2;
++
++	return amdtp_stream_set_parameters(s, rate, data_channels);
++}
++
++static void write_pcm_s32(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32(*src);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_s16(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u16 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32(*src << 16);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void read_pcm_s32(struct amdtp_stream *s,
++			 struct snd_pcm_substream *pcm,
++			 __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	/* The first data channel is for event counter. */
++	buffer += 1;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c]);
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s, __be32 *buffer,
++			      unsigned int data_blocks)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int channels, i, c;
++
++	channels = p->pcm_channels;
++
++	for (i = 0; i < data_blocks; ++i) {
++		for (c = 0; c < channels; ++c)
++			buffer[c] = 0x00000000;
++		buffer += s->data_block_quadlets;
++	}
++}
++
++int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
++				      struct snd_pcm_runtime *runtime)
++{
 +	int err;
 +
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_REGISTER,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	reg = be32_to_cpu(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_FPGA,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	fpga = be32_to_cpu(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_ARM,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	arm = be32_to_cpu(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_HW,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	hw = be32_to_cpu(data);
-+
-+	snd_iprintf(buffer, "Register: %d (0x%08x)\n", reg & 0xffff, reg);
-+	snd_iprintf(buffer, "FPGA:     %d (0x%08x)\n", fpga & 0xffff, fpga);
-+	snd_iprintf(buffer, "ARM:      %d (0x%08x)\n", arm & 0xffff, arm);
-+	snd_iprintf(buffer, "Hardware: %d (0x%08x)\n", hw >> 16, hw);
-+}
-+
-+static void add_node(struct snd_tscm *tscm, struct snd_info_entry *root,
-+		     const char *name,
-+		     void (*op)(struct snd_info_entry *e,
-+				struct snd_info_buffer *b))
-+{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_card_entry(tscm->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, tscm, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_tscm_proc_init(struct snd_tscm *tscm)
-+{
-+	struct snd_info_entry *root;
-+
 +	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
++	 * Our implementation allows this protocol to deliver 24 bit sample in
++	 * 32bit data channel.
 +	 */
-+	root = snd_info_create_card_entry(tscm->card, "firewire",
-+					  tscm->card->proc_root);
-+	if (root == NULL)
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		return err;
++
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
++
++void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
++{
++	struct amdtp_tscm *p = s->protocol;
++
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
 +		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
++
++	switch (format) {
++	default:
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S16:
++		if (s->direction == AMDTP_OUT_STREAM) {
++			p->transfer_samples = write_pcm_s16;
++			break;
++		}
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S32:
++		if (s->direction == AMDTP_OUT_STREAM)
++			p->transfer_samples = write_pcm_s32;
++		else
++			p->transfer_samples = read_pcm_s32;
++		break;
++	}
++}
++
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
++	struct snd_pcm_substream *pcm;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (data_blocks > 0 && pcm)
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++
++	/* A place holder for control messages. */
++
++	return data_blocks;
++}
++
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
++	struct snd_pcm_substream *pcm;
++
++	/* This field is not used. */
++	*syt = 0x0000;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm)
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++	else
++		write_pcm_silence(s, buffer, data_blocks);
++
++	return data_blocks;
++}
++
++int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
++		    enum amdtp_stream_direction dir, unsigned int pcm_channels)
++{
++	amdtp_stream_process_data_blocks_t process_data_blocks;
++	struct amdtp_tscm *p;
++	unsigned int fmt;
++	int err;
++
++	if (dir == AMDTP_IN_STREAM) {
++		fmt = AMDTP_FMT_TSCM_TX;
++		process_data_blocks = process_tx_data_blocks;
++	} else {
++		fmt = AMDTP_FMT_TSCM_RX;
++		process_data_blocks = process_rx_data_blocks;
 +	}
 +
-+	add_node(tscm, root, "firmware", proc_read_firmware);
-+}
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 9ac09cb..d7418c0 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -113,6 +113,8 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	snd_tscm_proc_init(tscm);
++	err = amdtp_stream_init(s, unit, dir,
++				CIP_NONBLOCKING | CIP_SKIP_DBC_ZERO_CHECK, fmt,
++				process_data_blocks, sizeof(struct amdtp_tscm));
++	if (err < 0)
++		return 0;
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
++	/* Use fixed value for FDF field. */
++	s->fdf = 0x00;
++
++	/* This protocol uses fixed number of data channels for PCM samples. */
++	p = s->protocol;
++	p->pcm_channels = pcm_channels;
++
++	return 0;
++}
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index e12f8b5..9ecc550 100644
+index 9ecc550..195be0b 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -20,6 +20,7 @@
- 
+@@ -21,8 +21,11 @@
  #include <sound/core.h>
  #include <sound/initval.h>
-+#include <sound/info.h>
+ #include <sound/info.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
  
  #include "../lib.h"
++#include "../amdtp-stream.h"
  
-@@ -43,4 +44,13 @@ struct snd_tscm {
- 	const struct snd_tscm_spec *spec;
- };
+ struct snd_tscm_spec {
+ 	const char *const name;
+@@ -51,6 +54,13 @@ struct snd_tscm {
+ #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
+ #define TSCM_OFFSET_FIRMWARE_HW		0x000c
  
-+#define TSCM_ADDR_BASE			0xffff00000000ull
++int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
++int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
++int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
++				      struct snd_pcm_runtime *runtime);
++void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
 +
-+#define TSCM_OFFSET_FIRMWARE_REGISTER	0x0000
-+#define TSCM_OFFSET_FIRMWARE_FPGA	0x0004
-+#define TSCM_OFFSET_FIRMWARE_ARM	0x0008
-+#define TSCM_OFFSET_FIRMWARE_HW		0x000c
-+
-+void snd_tscm_proc_init(struct snd_tscm *tscm);
-+
+ void snd_tscm_proc_init(struct snd_tscm *tscm);
+ 
  #endif
 -- 
 2.1.4
