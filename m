@@ -1,19 +1,15 @@
-From: "yitian" <yitian.bu@tangramtek.com>
-Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear
-	method
-Date: Thu, 1 Oct 2015 10:39:09 +0800
-Message-ID: <00fe01d0fbf2$5a73cba0$0f5b62e0$@tangramtek.com>
-References: <006301d0fac4$94eb5890$bec209b0$@tangramtek.com>
- <20150930181751.GT15635@sirena.org.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5645: Correct the naming and
+	setting of ADC Boost Volume Control
+Date: Thu, 1 Oct 2015 14:47:09 +0800
+Message-ID: <1443682030-18258-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
- by alsa0.perex.cz (Postfix) with ESMTP id CFA8C266571
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 04:39:21 +0200 (CEST)
-In-Reply-To: <20150930181751.GT15635@sirena.org.uk>
-Content-Language: zh-cn
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B41526066D
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 08:47:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, wsa@the-dreams.de, linux-kernel@vger.kernel.org, Andrew.Jackson@arm.com, lgirdwood@gmail.com, tiwai@suse.com, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> From: linux-arm-kernel
-> [mailto:linux-arm-kernel-bounces@lists.infradead.org] On Behalf Of Mark
-> Brown
-> Sent: Thursday, October 1, 2015 2:18 AM
-> To: yitian <yitian.bu@tangramtek.com>
-> Cc: alsa-devel@alsa-project.org; wsa@the-dreams.de;
-> linux-kernel@vger.kernel.org; Andrew.Jackson@arm.com; tiwai@suse.com;
-> lgirdwood@gmail.com; perex@perex.cz;
-> linux-arm-kernel@lists.infradead.org
-> Subject: Re: [RESEND PATCH 1/1] ASoC: dwc: correct irq clear method
-> 
-> On Tue, Sep 29, 2015 at 10:39:00PM +0800, yitian wrote:
-> > from Designware I2S datasheet, irq is cleared by reading from
-> > TOR/ROR registers, rather than by writing into them.
-> 
-> This doesn't apply against current code, please check and resend.
-Hi Mark:
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c |  6 +++---
+ sound/soc/codecs/rt5645.h | 16 +++++++++-------
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-Thanks for your comments.
-Maybe I misunderstand your meaning. Please correct me.
-
-I synced up to latest kernel branch, the code is the same as what this patch
-was
-generated.
-
-I checked designware I2S spec "version 1.08a June 2014", it specified that
-the TOR
-and ROR registers are read only and reading the last bit will clear tx/rx
-overrun irq.
-
-Also I have checked this register by writing its last bit, the overrun irq
-is not cleared.
-But if I read the last bit, the overrun irq is cleared. That means the spec
-is correct.
-
-Can you please let me know what else I should double check? Thanks.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3eb184c..080cc1c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -519,11 +519,11 @@ static const struct snd_kcontrol_new rt5645_snd_controls[] = {
+ 		RT5645_L_VOL_SFT + 1, RT5645_R_VOL_SFT + 1, 63, 0, adc_vol_tlv),
+ 
+ 	/* ADC Boost Volume Control */
+-	SOC_DOUBLE_TLV("STO1 ADC Boost Gain", RT5645_ADC_BST_VOL1,
++	SOC_DOUBLE_TLV("ADC Boost Capture Volume", RT5645_ADC_BST_VOL1,
+ 		RT5645_STO1_ADC_L_BST_SFT, RT5645_STO1_ADC_R_BST_SFT, 3, 0,
+ 		adc_bst_tlv),
+-	SOC_DOUBLE_TLV("STO2 ADC Boost Gain", RT5645_ADC_BST_VOL1,
+-		RT5645_STO2_ADC_L_BST_SFT, RT5645_STO2_ADC_R_BST_SFT, 3, 0,
++	SOC_DOUBLE_TLV("Mono ADC Boost Capture Volume", RT5645_ADC_BST_VOL2,
++		RT5645_MONO_ADC_L_BST_SFT, RT5645_MONO_ADC_R_BST_SFT, 3, 0,
+ 		adc_bst_tlv),
+ 
+ 	/* I2S2 function select */
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index f45861c..61bc8ab 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -39,8 +39,8 @@
+ #define RT5645_STO1_ADC_DIG_VOL			0x1c
+ #define RT5645_MONO_ADC_DIG_VOL			0x1d
+ #define RT5645_ADC_BST_VOL1			0x1e
+-/* Mixer - D-D */
+ #define RT5645_ADC_BST_VOL2			0x20
++/* Mixer - D-D */
+ #define RT5645_STO1_ADC_MIXER			0x27
+ #define RT5645_MONO_ADC_MIXER			0x28
+ #define RT5645_AD_DA_MIXER			0x29
+@@ -315,12 +315,14 @@
+ #define RT5645_STO1_ADC_R_BST_SFT		12
+ #define RT5645_STO1_ADC_COMP_MASK		(0x3 << 10)
+ #define RT5645_STO1_ADC_COMP_SFT		10
+-#define RT5645_STO2_ADC_L_BST_MASK		(0x3 << 8)
+-#define RT5645_STO2_ADC_L_BST_SFT		8
+-#define RT5645_STO2_ADC_R_BST_MASK		(0x3 << 6)
+-#define RT5645_STO2_ADC_R_BST_SFT		6
+-#define RT5645_STO2_ADC_COMP_MASK		(0x3 << 4)
+-#define RT5645_STO2_ADC_COMP_SFT		4
++
++/* ADC Boost Volume Control (0x20) */
++#define RT5645_MONO_ADC_L_BST_MASK		(0x3 << 14)
++#define RT5645_MONO_ADC_L_BST_SFT		14
++#define RT5645_MONO_ADC_R_BST_MASK		(0x3 << 12)
++#define RT5645_MONO_ADC_R_BST_SFT		12
++#define RT5645_MONO_ADC_COMP_MASK		(0x3 << 10)
++#define RT5645_MONO_ADC_COMP_SFT		10
+ 
+ /* Stereo2 ADC Mixer Control (0x26) */
+ #define RT5645_STO2_ADC_SRC_MASK		(0x1 << 15)
+-- 
+1.8.1.1.439.g50a6b54
