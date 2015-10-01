@@ -1,67 +1,49 @@
-From: John Lin <john.lin@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for
-	chrome
-Date: Thu, 1 Oct 2015 08:23:33 +0000
-Message-ID: <14AE6189BDA733429BF8455FEEF63298010F69C3@RTITMBSV02.realtek.com.tw>
-References: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
+From: Felipe Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Subject: [RFC] MIDI over Bluetooth Low Energy
+Date: Thu, 1 Oct 2015 09:41:46 +0100
+Message-ID: <CAGrhNMyY7rJVZ35p5P5FnGvJPYZuKndau1vNY5k+GCHHYzZtzQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 65D7C26042B
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 10:23:45 +0200 (CEST)
-In-Reply-To: <1442831899-15339-1-git-send-email-john.lin@realtek.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Flove <flove@realtek.com>, "Keith.Tzeng@quantatw.com" <Keith.Tzeng@quantatw.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: John Lin
-> Sent: Monday, September 21, 2015 6:38 PM
-> To: broonie@kernel.org; lgirdwood@gmail.com
-> Cc: alsa-devel@alsa-project.org; Bard Liao; Flove; Oder Chiou;
-> Keith.Tzeng@quantatw.com; John Lin
-> Subject: [PATCH] ASoC: rt5645: Add dmi "Google Reks" for chrome
-> 
-> Signed-off-by: John Lin <john.lin@realtek.com>
-> ---
->  sound/soc/codecs/rt5645.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-> index b0d96b6..84c5261 100644
-> --- a/sound/soc/codecs/rt5645.c
-> +++ b/sound/soc/codecs/rt5645.c
-> @@ -3212,6 +3212,13 @@ static const struct dmi_system_id
-> dmi_platform_intel_braswell[] = {
->  			DMI_MATCH(DMI_PRODUCT_NAME, "Ultima"),
->  		},
->  	},
-> +	{
-> +		.ident = "Google Reks",
-> +		.callback = strago_quirk_cb,
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Reks"),
-> +		},
-> +	},
->  	{ }
->  };
-> 
-> --
-> 1.8.1.1.439.g50a6b54
+Hi guys,
 
-Hi Mark,
-Could you help to review this patch?
-Is there any problem on this patch?
-If yes, please kindly tell us. We will modify it according to your opinion, thanks.
+I am planning to start the support of MIDI BLE profile[1]. This
+profile is not officially supported yet, but it will most likely be
+very similar, so development efforts are still valid.
+
+I suggest two main goals:
+ * To be transparent to applications, i.e., use rawmidi and sequencer
+ALSA interfaces to interact.
+ * To support peripheral and central BLE roles.
+
+My question is: what is the best way possible of doing it?
+
+My initial though is to write a GATT BlueZ profile plugin that will
+load snd-virtmidi module with id and midi_devs parameters, then read
+and write seq events from/to it. I am not sure if this is really
+possible.
+
+Another way of implementing is as a rawmidi and a seq plugin using the
+BlueZ GATT D-Bus interface. IMO this is not ideal because it requires
+a lot more work (rawmidi and seq plugins, maybe even a library to
+avoid code duplication) and has an overhead of using dbus.
+
+It is also possible to write a kernel module to handle ALSA
+card/device setup and reads and writes from the bluez plugin (perhaps
+this simplifies things because it has less dependencies).
+
+They all have the problem of context switching between bluez plugin
+and alsa midi driver. I would prefer to use a shared ring buffer
+between ALSA e BlueZ.
+
+Any ideas and comments?
+
+[1] https://developer.apple.com/bluetooth/Apple-Bluetooth-Low-Energy-MIDI-Specification.pdf
+
+PS: I am at #bluez and #alsa as ftonello.
+
+Felipe Tonello
