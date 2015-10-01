@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/7] ALSA: firewire-tascam: add streaming
-	functionality
-Date: Thu,  1 Oct 2015 22:02:15 +0900
-Message-ID: <1443704537-3345-6-git-send-email-o-takashi@sakamocchi.jp>
-References: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/7] ALSA: firewire-tascam: add skeleton
+ for TASCAM FireWire series
+Date: Thu, 1 Oct 2015 21:54:54 +0800
+Message-ID: <201510012147.nfdOjouA%fengguang.wu@intel.com>
+References: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C2932667AF
- for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:02:24 +0200 (CEST)
-In-Reply-To: <1443704537-3345-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62FC5266689
+ for <alsa-devel@alsa-project.org>; Thu,  1 Oct 2015 15:56:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,603 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, kbuild-all@01.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds streaming functionality for both direction. To utilize
-the sequence of the number of data blocks in packets, full duplex with
-synchronization is applied.
+Hi Takashi,
 
-Besides, TASCAM FireWire series allows drivers to decide which PCM data
-channels are enabled. For convenience, this driver always enable whole the
-data channels.
+[auto build test results on next-20151001 -- if it's inappropriate base, please ignore]
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:25:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:30:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+   sound/firewire/tascam/tascam.c:32:16: sparse: cast to restricted __be32
+
+vim +23 sound/firewire/tascam/tascam.c
+
+     7	 */
+     8	
+     9	#include "tascam.h"
+    10	
+    11	MODULE_DESCRIPTION("TASCAM FireWire series Driver");
+    12	MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+    13	MODULE_LICENSE("GPL v2");
+    14	
+    15	static int check_name(struct snd_tscm *tscm)
+    16	{
+    17		struct fw_device *fw_dev = fw_parent_device(tscm->unit);
+    18		char vendor[8];
+    19		char model[8];
+    20		__u32 data;
+    21	
+    22		/* Retrieve model name. */
+  > 23		data = be32_to_cpu(fw_dev->config_rom[28]);
+    24		memcpy(model, &data, 4);
+    25		data = be32_to_cpu(fw_dev->config_rom[29]);
+    26		memcpy(model + 4, &data, 4);
+    27		model[7] = '\0';
+    28	
+    29		/* Retrieve vendor name. */
+    30		data = be32_to_cpu(fw_dev->config_rom[23]);
+    31		memcpy(vendor, &data, 4);
+
 ---
- sound/firewire/tascam/Makefile        |   3 +-
- sound/firewire/tascam/tascam-stream.c | 457 ++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.c        |  12 +-
- sound/firewire/tascam/tascam.h        |  36 +++
- 4 files changed, 506 insertions(+), 2 deletions(-)
- create mode 100644 sound/firewire/tascam/tascam-stream.c
-
-diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index d06c737..0a1c387 100644
---- a/sound/firewire/tascam/Makefile
-+++ b/sound/firewire/tascam/Makefile
-@@ -1,2 +1,3 @@
--snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
-+snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
-+			    tascam.o
- obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
-new file mode 100644
-index 0000000..0732f7f
---- /dev/null
-+++ b/sound/firewire/tascam/tascam-stream.c
-@@ -0,0 +1,457 @@
-+/*
-+ * tascam-stream.c - a part of driver for TASCAM FireWire series
-+ *
-+ * Copyright (c) 2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include <linux/delay.h>
-+#include "tascam.h"
-+
-+#define CALLBACK_TIMEOUT 500
-+
-+static int get_clock(struct snd_tscm *tscm, u32 *data)
-+{
-+	__be32 reg;
-+	int err;
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_CLOCK_STATUS,
-+				 &reg, sizeof(reg), 0);
-+	if (err >= 0)
-+		*data = be32_to_cpu(reg);
-+
-+	return err;
-+}
-+
-+static int set_clock(struct snd_tscm *tscm, unsigned int rate,
-+		     enum snd_tscm_clock clock)
-+{
-+	u32 data;
-+	__be32 reg;
-+	int err;
-+
-+	err = get_clock(tscm, &data);
-+	if (err < 0)
-+		return err;
-+	data &= 0x0000ffff;
-+
-+	if (rate > 0) {
-+		data &= 0x000000ff;
-+		/* Base rate. */
-+		if ((rate % 44100) == 0) {
-+			data |= 0x00000100;
-+			/* Multiplier. */
-+			if (rate / 44100 == 2)
-+				data |= 0x00008000;
-+		} else if ((rate % 48000) == 0) {
-+			data |= 0x00000200;
-+			/* Multiplier. */
-+			if (rate / 48000 == 2)
-+				data |= 0x00008000;
-+		} else {
-+			return -EAGAIN;
-+		}
-+	}
-+
-+	if (clock != INT_MAX) {
-+		data &= 0x0000ff00;
-+		data |= clock + 1;
-+	}
-+
-+	reg = cpu_to_be32(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_CLOCK_STATUS,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	if (data & 0x00008000)
-+		reg = cpu_to_be32(0x0000001a);
-+	else
-+		reg = cpu_to_be32(0x0000000d);
-+
-+	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  TSCM_ADDR_BASE + TSCM_OFFSET_MULTIPLEX_MODE,
-+				  &reg, sizeof(reg), 0);
-+}
-+
-+int snd_tscm_stream_get_rate(struct snd_tscm *tscm, unsigned int *rate)
-+{
-+	u32 data = 0x0;
-+	unsigned int trials = 0;
-+	int err;
-+
-+	while (data == 0x0 || trials++ < 5) {
-+		err = get_clock(tscm, &data);
-+		if (err < 0)
-+			return err;
-+
-+		data = (data & 0xff000000) >> 24;
-+	}
-+
-+	/* Check base rate. */
-+	if ((data & 0x0f) == 0x01)
-+		*rate = 44100;
-+	else if ((data & 0x0f) == 0x02)
-+		*rate = 48000;
-+	else
-+		return -EAGAIN;
-+
-+	/* Check multiplier. */
-+	if ((data & 0xf0) == 0x80)
-+		*rate *= 2;
-+	else if ((data & 0xf0) != 0x00)
-+		return -EAGAIN;
-+
-+	return err;
-+}
-+
-+int snd_tscm_stream_get_clock(struct snd_tscm *tscm, enum snd_tscm_clock *clock)
-+{
-+	u32 data;
-+	int err;
-+
-+	err = get_clock(tscm, &data);
-+	if (err < 0)
-+		return err;
-+
-+	*clock = ((data & 0x00ff0000) >> 16) - 1;
-+	if (*clock < 0 || *clock > SND_TSCM_CLOCK_ADAT)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int enable_data_channels(struct snd_tscm *tscm)
-+{
-+	__be32 reg;
-+	u32 data;
-+	unsigned int i;
-+	int err;
-+
-+	data = 0;
-+	for (i = 0; i < tscm->spec->pcm_capture_analog_channels; ++i)
-+		data |= BIT(i);
-+	if (tscm->spec->has_adat)
-+		data |= 0x0000ff00;
-+	if (tscm->spec->has_spdif)
-+		data |= 0x00030000;
-+
-+	reg = cpu_to_be32(data);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_TX_PCM_CHANNELS,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	data = 0;
-+	for (i = 0; i < tscm->spec->pcm_playback_analog_channels; ++i)
-+		data |= BIT(i);
-+	if (tscm->spec->has_adat)
-+		data |= 0x0000ff00;
-+	if (tscm->spec->has_spdif)
-+		data |= 0x00030000;
-+
-+	reg = cpu_to_be32(data);
-+	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  TSCM_ADDR_BASE + TSCM_OFFSET_RX_PCM_CHANNELS,
-+				  &reg, sizeof(reg), 0);
-+}
-+
-+static int set_stream_formats(struct snd_tscm *tscm, unsigned int rate)
-+{
-+	__be32 reg;
-+	int err;
-+
-+	/* Set an option for unknown purpose. */
-+	reg = cpu_to_be32(0x00200000);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	err = enable_data_channels(tscm);
-+	if (err < 0)
-+		return err;
-+
-+	return set_clock(tscm, rate, INT_MAX);
-+}
-+
-+static void finish_session(struct snd_tscm *tscm)
-+{
-+	__be32 reg;
-+
-+	reg = 0;
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
-+			   &reg, sizeof(reg), 0);
-+
-+	reg = 0;
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
-+			   &reg, sizeof(reg), 0);
-+
-+}
-+
-+static int begin_session(struct snd_tscm *tscm)
-+{
-+	__be32 reg;
-+	int err;
-+
-+	reg = cpu_to_be32(0x00000001);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	reg = cpu_to_be32(0x00000001);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	/* Set an option for unknown purpose. */
-+	reg = cpu_to_be32(0x00002000);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	/* Start multiplexing PCM samples on packets. */
-+	reg = cpu_to_be32(0x00000001);
-+	return snd_fw_transaction(tscm->unit,
-+				  TCODE_WRITE_QUADLET_REQUEST,
-+				  TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_ON,
-+				  &reg, sizeof(reg), 0);
-+}
-+
-+static void release_resources(struct snd_tscm *tscm)
-+{
-+	__be32 reg;
-+
-+	/* Unregister channels. */
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
-+			   &reg, sizeof(reg), 0);
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
-+			   &reg, sizeof(reg), 0);
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
-+			   &reg, sizeof(reg), 0);
-+
-+	/* Release isochronous resources. */
-+	fw_iso_resources_free(&tscm->tx_resources);
-+	fw_iso_resources_free(&tscm->rx_resources);
-+}
-+
-+static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
-+{
-+	__be32 reg;
-+	int err;
-+
-+	/* Keep resources for in-stream. */
-+	err = amdtp_tscm_set_parameters(&tscm->tx_stream, rate);
-+	if (err < 0)
-+		return err;
-+	err = fw_iso_resources_allocate(&tscm->tx_resources,
-+			amdtp_stream_get_max_payload(&tscm->tx_stream),
-+			fw_parent_device(tscm->unit)->max_speed);
-+	if (err < 0)
-+		goto error;
-+
-+	/* Keep resources for out-stream. */
-+	err = amdtp_tscm_set_parameters(&tscm->rx_stream, rate);
-+	if (err < 0)
-+		return err;
-+	err = fw_iso_resources_allocate(&tscm->rx_resources,
-+			amdtp_stream_get_max_payload(&tscm->rx_stream),
-+			fw_parent_device(tscm->unit)->max_speed);
-+	if (err < 0)
-+		return err;
-+
-+	/* Register the isochronous channel for transmitting stream. */
-+	reg = cpu_to_be32(tscm->tx_resources.channel);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		goto error;
-+
-+	/* Unknown */
-+	reg = cpu_to_be32(0x00000002);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		goto error;
-+
-+	/* Register the isochronous channel for receiving stream. */
-+	reg = cpu_to_be32(tscm->rx_resources.channel);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		goto error;
-+
-+	return 0;
-+error:
-+	release_resources(tscm);
-+	return err;
-+}
-+
-+int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
-+{
-+	unsigned int pcm_channels;
-+	int err;
-+
-+	/* For out-stream. */
-+	err = fw_iso_resources_init(&tscm->rx_resources, tscm->unit);
-+	if (err < 0)
-+		return err;
-+	pcm_channels = tscm->spec->pcm_playback_analog_channels;
-+	if (tscm->spec->has_adat)
-+		pcm_channels += 8;
-+	if (tscm->spec->has_spdif)
-+		pcm_channels += 2;
-+	err = amdtp_tscm_init(&tscm->rx_stream, tscm->unit, AMDTP_OUT_STREAM,
-+			      pcm_channels);
-+	if (err < 0)
-+		return err;
-+
-+	/* For in-stream. */
-+	err = fw_iso_resources_init(&tscm->tx_resources, tscm->unit);
-+	if (err < 0)
-+		return err;
-+	pcm_channels = tscm->spec->pcm_capture_analog_channels;
-+	if (tscm->spec->has_adat)
-+		pcm_channels += 8;
-+	if (tscm->spec->has_spdif)
-+		pcm_channels += 2;
-+	err = amdtp_tscm_init(&tscm->tx_stream, tscm->unit, AMDTP_IN_STREAM,
-+			      pcm_channels);
-+	if (err < 0)
-+		amdtp_stream_destroy(&tscm->rx_stream);
-+
-+	return 0;
-+}
-+
-+/* At bus reset, streaming is stopped and some registers are clear. */
-+void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
-+{
-+	amdtp_stream_pcm_abort(&tscm->tx_stream);
-+	amdtp_stream_stop(&tscm->tx_stream);
-+
-+	amdtp_stream_pcm_abort(&tscm->rx_stream);
-+	amdtp_stream_stop(&tscm->rx_stream);
-+}
-+
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
-+void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm)
-+{
-+	amdtp_stream_destroy(&tscm->rx_stream);
-+	amdtp_stream_destroy(&tscm->tx_stream);
-+
-+	fw_iso_resources_destroy(&tscm->rx_resources);
-+	fw_iso_resources_destroy(&tscm->tx_resources);
-+}
-+
-+int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
-+{
-+	unsigned int curr_rate;
-+	int err;
-+
-+	if (tscm->substreams_counter == 0)
-+		return 0;
-+
-+	err = snd_tscm_stream_get_rate(tscm, &curr_rate);
-+	if (err < 0)
-+		return err;
-+	if (curr_rate != rate ||
-+	    amdtp_streaming_error(&tscm->tx_stream) ||
-+	    amdtp_streaming_error(&tscm->rx_stream)) {
-+		finish_session(tscm);
-+
-+		amdtp_stream_stop(&tscm->tx_stream);
-+		amdtp_stream_stop(&tscm->rx_stream);
-+
-+		release_resources(tscm);
-+	}
-+
-+	if (!amdtp_stream_running(&tscm->tx_stream)) {
-+		amdtp_stream_set_sync(CIP_SYNC_TO_DEVICE,
-+				      &tscm->tx_stream, &tscm->rx_stream);
-+		err = keep_resources(tscm, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = set_stream_formats(tscm, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = begin_session(tscm);
-+		if (err < 0)
-+			goto error;
-+
-+		err = amdtp_stream_start(&tscm->tx_stream,
-+				tscm->tx_resources.channel,
-+				fw_parent_device(tscm->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
-+						CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
-+
-+	if (!amdtp_stream_running(&tscm->rx_stream)) {
-+		err = amdtp_stream_start(&tscm->rx_stream,
-+				tscm->rx_resources.channel,
-+				fw_parent_device(tscm->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
-+						CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
-+
-+	return 0;
-+error:
-+	amdtp_stream_stop(&tscm->tx_stream);
-+	amdtp_stream_stop(&tscm->rx_stream);
-+
-+	finish_session(tscm);
-+	release_resources(tscm);
-+
-+	return err;
-+}
-+
-+void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
-+{
-+	if (tscm->substreams_counter > 0)
-+		return;
-+
-+	amdtp_stream_stop(&tscm->tx_stream);
-+	amdtp_stream_stop(&tscm->rx_stream);
-+
-+	finish_session(tscm);
-+	release_resources(tscm);
-+}
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index d7418c0..c256360 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -82,6 +82,8 @@ static void tscm_card_free(struct snd_card *card)
- {
- 	struct snd_tscm *tscm = card->private_data;
- 
-+	snd_tscm_stream_destroy_duplex(tscm);
-+
- 	fw_unit_put(tscm->unit);
- 
- 	mutex_destroy(&tscm->mutex);
-@@ -115,6 +117,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 
- 	snd_tscm_proc_init(tscm);
- 
-+	err = snd_tscm_stream_init_duplex(tscm);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-@@ -129,7 +135,11 @@ error:
- 
- static void snd_tscm_update(struct fw_unit *unit)
- {
--	return;
-+	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
-+
-+	mutex_lock(&tscm->mutex);
-+	snd_tscm_stream_update_duplex(tscm);
-+	mutex_unlock(&tscm->mutex);
- }
- 
- static void snd_tscm_remove(struct fw_unit *unit)
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 195be0b..41fe3a9 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -26,6 +26,7 @@
- 
- #include "../lib.h"
- #include "../amdtp-stream.h"
-+#include "../iso-resources.h"
- 
- struct snd_tscm_spec {
- 	const char *const name;
-@@ -45,6 +46,12 @@ struct snd_tscm {
- 	struct mutex mutex;
- 
- 	const struct snd_tscm_spec *spec;
-+
-+	struct fw_iso_resources tx_resources;
-+	struct fw_iso_resources rx_resources;
-+	struct amdtp_stream tx_stream;
-+	struct amdtp_stream rx_stream;
-+	unsigned int substreams_counter;
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
-@@ -54,6 +61,26 @@ struct snd_tscm {
- #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
- #define TSCM_OFFSET_FIRMWARE_HW		0x000c
- 
-+#define TSCM_OFFSET_ISOC_TX_CH		0x0200
-+#define TSCM_OFFSET_UNKNOWN		0x0204
-+#define TSCM_OFFSET_START_STREAMING	0x0208
-+#define TSCM_OFFSET_ISOC_RX_CH		0x020c
-+#define TSCM_OFFSET_ISOC_RX_ON		0x0210	/* Little conviction. */
-+#define TSCM_OFFSET_TX_PCM_CHANNELS	0x0214
-+#define TSCM_OFFSET_RX_PCM_CHANNELS	0x0218
-+#define TSCM_OFFSET_MULTIPLEX_MODE	0x021c
-+#define TSCM_OFFSET_ISOC_TX_ON		0x0220
-+/* Unknown				0x0224 */
-+#define TSCM_OFFSET_CLOCK_STATUS	0x0228
-+#define TSCM_OFFSET_SET_OPTION		0x022c
-+
-+enum snd_tscm_clock {
-+	SND_TSCM_CLOCK_INTERNAL = 0,
-+	SND_TSCM_CLOCK_WORD	= 1,
-+	SND_TSCM_CLOCK_SPDIF	= 2,
-+	SND_TSCM_CLOCK_ADAT	= 3,
-+};
-+
- int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
- int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
-@@ -61,6 +88,15 @@ int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
- 				      struct snd_pcm_runtime *runtime);
- void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
- 
-+int snd_tscm_stream_get_rate(struct snd_tscm *tscm, unsigned int *rate);
-+int snd_tscm_stream_get_clock(struct snd_tscm *tscm,
-+			      enum snd_tscm_clock *clock);
-+int snd_tscm_stream_init_duplex(struct snd_tscm *tscm);
-+void snd_tscm_stream_update_duplex(struct snd_tscm *tscm);
-+void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
-+int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
-+void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
-+
- void snd_tscm_proc_init(struct snd_tscm *tscm);
- 
- #endif
--- 
-2.1.4
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
