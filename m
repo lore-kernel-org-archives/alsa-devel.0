@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Add entry to cover DA7219
-	bindings document" to the asoc tree
-Date: Fri, 02 Oct 2015 18:13:43 +0100
-Message-ID: <E1Zi3tv-00080i-3Z@finisterre>
-References: <49c7fb102b445037d0814ebb57773d819c8d3477.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: rt5645: Allow 4 channel recording on
+	AIF1" to the asoc tree
+Date: Fri, 02 Oct 2015 18:13:42 +0100
+Message-ID: <E1Zi3tu-000807-47@finisterre>
+References: <1443472357-12150-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F0CC260668
+ by alsa0.perex.cz (Postfix) with ESMTP id C442A260686
  for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:51 +0200 (CEST)
-In-Reply-To: <49c7fb102b445037d0814ebb57773d819c8d3477.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <1443472357-12150-1-git-send-email-benzh@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+To: Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Add entry to cover DA7219 bindings document
+   ASoC: rt5645: Allow 4 channel recording on AIF1
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 7c93377244329552a72912c63fd7503a4e88d6a1 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 29 Sep 2015 16:44:12 +0100
-Subject: [PATCH] ASoC: da7219: Add entry to cover DA7219 bindings document
+>From fbe039bb0815e6113f82021aa8c0e36a1941f511 Mon Sep 17 00:00:00 2001
+From: Ben Zhang <benzh@chromium.org>
+Date: Mon, 28 Sep 2015 13:32:37 -0700
+Subject: [PATCH] ASoC: rt5645: Allow 4 channel recording on AIF1
 
-This adds an entry to indicate the DA7219 bindings document (and
-other Dialog codecs bindings documents) are supported.
+The codec supports 4 channel recording with TDM on AIF1.
+This patch modifies the DAI capability to allow it.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Ben Zhang <benzh@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7ba7ab7..a235822 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3361,6 +3361,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
- W:	http://www.dialog-semiconductor.com/products
- S:	Supported
- F:	Documentation/hwmon/da90??
-+F:	Documentation/devicetree/bindings/sound/da[79]*.txt
- F:	drivers/gpio/gpio-da90??.c
- F:	drivers/hwmon/da90??-hwmon.c
- F:	drivers/iio/adc/da91??-*.c
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 1f7045bc..66b7332e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3113,7 +3113,7 @@ static struct snd_soc_dai_driver rt5645_dai[] = {
+ 		.capture = {
+ 			.stream_name = "AIF1 Capture",
+ 			.channels_min = 1,
+-			.channels_max = 2,
++			.channels_max = 4,
+ 			.rates = RT5645_STEREO_RATES,
+ 			.formats = RT5645_FORMATS,
+ 		},
 -- 
 2.5.0
