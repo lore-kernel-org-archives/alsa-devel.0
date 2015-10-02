@@ -1,41 +1,51 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
- Nuvoton 8825
-Date: Sat, 3 Oct 2015 03:37:59 +0800
-Message-ID: <201510030325.7iMIFZm3%fengguang.wu@intel.com>
-References: <1443804554-36592-1-git-send-email-anatol.pomozov@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 99DA02614A9
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 21:38:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1443804554-36592-1-git-send-email-anatol.pomozov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: mfelton1@nuvoton.com, Anatol Pomozov <anatol.pomozov@gmail.com>, alsa-devel@alsa-project.org, benzh@google.com, broonie@kernel.org, kbuild-all@01.org, ccchang12@nuvoton.com
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 02/20] media: Add ALSA Media Controller function entities
+Date: Fri,  2 Oct 2015 16:07:14 -0600
+Message-ID: <5817c3708ab4147f4092f2f5b268cd4331bec622.1443822799.git.shuahkh@osg.samsung.com>
+References: <cover.1443822799.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
+References: <cover.1443822799.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, tiwai@suse.de, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, dan.carpenter@oracle.com, tskd08@gmail.com, arnd@arndb.de, ruchandani.tina@gmail.com, corbet@lwn.net, k.kozlowski@samsung.com, chehabrafael@gmail.com, prabhakar.csengg@gmail.com, elfring@users.sourceforge.net, Julia.Lawall@lip6.fr, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, chris.j.arges@canonical.com, pierre-louis.bossart@linux.intel.com, johan@oljud.se, wsa@the-dreams.de, jcragg@gmail.com, clemens@ladisch.de, daniel@zonque.org, gtmkramer@xs4all.nl, misterpib@gmail.com, takamichiho@gmail.com, pmatilai@laiskiainen.org, vladcatoi@gmail.com, damien@zamaudio.com, normalperson@yhbt.net, joe@oampo.co.uk, jussi@sonarnerd.netca
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Anatol,
+Add ALSA Media Controller capture, playback, and mixer
+function entity defines.
 
-[auto build test results on next-20151002 -- if it's inappropriate base, please ignore]
-
-
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/nau8825.c:1096:3-8: No need to set .owner here. The core will do it.
-
-Please review and possibly fold the followup patch.
-
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ include/uapi/linux/media.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 90e90a6..46b1e169 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -78,6 +78,13 @@ struct media_device_info {
+ #define MEDIA_ENT_F_CONN_TEST		(MEDIA_ENT_F_BASE + 24)
+ 
+ /*
++ * ALSA entities MEDIA_ENT_F_AUDIO_IO is for Capture and Playback
++*/
++#define MEDIA_ENT_F_AUDIO_CAPTURE	(MEDIA_ENT_F_BASE + 200)
++#define MEDIA_ENT_F_AUDIO_PLAYBACK	(MEDIA_ENT_F_BASE + 201)
++#define MEDIA_ENT_F_AUDIO_MIXER		(MEDIA_ENT_F_BASE + 202)
++
++/*
+  * Don't touch on those. The ranges MEDIA_ENT_F_OLD_BASE and
+  * MEDIA_ENT_F_OLD_SUBDEV_BASE are kept to keep backward compatibility
+  * with the legacy v1 API.The number range is out of range by purpose:
+@@ -115,7 +122,7 @@ struct media_device_info {
+ #define MEDIA_ENT_T_DEVNODE		MEDIA_ENT_F_OLD_BASE
+ #define MEDIA_ENT_T_DEVNODE_V4L		MEDIA_ENT_F_IO
+ #define MEDIA_ENT_T_DEVNODE_FB		(MEDIA_ENT_T_DEVNODE + 2)
+-#define MEDIA_ENT_T_DEVNODE_ALSA	(MEDIA_ENT_T_DEVNODE + 3)
++#define MEDIA_ENT_T_DEVNODE_ALSA	MEDIA_ENT_F_AUDIO_IO
+ #define MEDIA_ENT_T_DEVNODE_DVB		(MEDIA_ENT_T_DEVNODE + 4)
+ 
+ #define MEDIA_ENT_T_UNKNOWN		MEDIA_ENT_F_UNKNOWN
+-- 
+2.1.4
