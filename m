@@ -1,48 +1,73 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Question about patch ASoC: Prevent components from
- being bound to multiple cards
-Date: Fri, 2 Oct 2015 18:34:24 +0800
-Message-ID: <1443782064.10151.28.camel@mtksdaap41>
-References: <s5hlhcfd5az.wl-tiwai@suse.de>
- <20150909145158.GK9751@sirena.org.uk> <s5hh9n3d4bk.wl-tiwai@suse.de>
- <55F04AA1.3030607@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id EAAEB260A5D
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 12:34:46 +0200 (CEST)
-In-Reply-To: <55F04AA1.3030607@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dwc: correct irq clear method" to the asoc tree
+Date: Fri, 02 Oct 2015 11:45:06 +0100
+Message-ID: <E1Zhxpq-0003AQ-S5@finisterre>
+References: <035301d0f9b5$c22cff30$4686fd90$@tangramtek.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <035301d0f9b5$c22cff30$4686fd90$@tangramtek.com>
+Sender: stable-owner@vger.kernel.org
+To: Yitian Bu <yitian.bu@tangramtek.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars 
+The patch
 
-I have two cards originally but the second one failed because of the
-patch ASoC: Prevent components from being bound to multiple cards.
+   ASoC: dwc: correct irq clear method
 
-My configuration is like this:
-card0: use platform's DAI component A
-card1: use the same platform's DAI component B
+has been applied to the asoc tree at
 
-The two cards use different DAI components, so it should be OK but still
-gets failed. I looked into this and found it is because
-snd_soc_register_platform() itself will also add a component, and this
-component was bound to the first card so the second probe failed.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-It seems like I might need to separate the platform into two platform
-drivers, but it is strange since I have only one audio hardware. I
-wonder if it is reasonable to prevent a single ASoC platform driver from
-being used by multiple cards? Do you have any suggestion how to fix
-this?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 4873867e5f2bd90faad861dd94865099fc3140f3 Mon Sep 17 00:00:00 2001
+From: Yitian Bu <buyitian@gmail.com>
+Date: Fri, 2 Oct 2015 15:18:41 +0800
+Subject: [PATCH] ASoC: dwc: correct irq clear method
+
+from Designware I2S datasheet, tx/rx XRUN irq is cleared by
+reading register TOR/ROR, rather than by writing into them.
+
+Signed-off-by: Yitian Bu <yitian.bu@tangramtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/dwc/designware_i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index a3e97b4..0d28e3b 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -131,10 +131,10 @@ static inline void i2s_clear_irqs(struct dw_i2s_dev *dev, u32 stream)
+ 
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		for (i = 0; i < 4; i++)
+-			i2s_write_reg(dev->i2s_base, TOR(i), 0);
++			i2s_read_reg(dev->i2s_base, TOR(i));
+ 	} else {
+ 		for (i = 0; i < 4; i++)
+-			i2s_write_reg(dev->i2s_base, ROR(i), 0);
++			i2s_read_reg(dev->i2s_base, ROR(i));
+ 	}
+ }
+ 
+-- 
+2.5.0
