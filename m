@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 16/20] media: au0828 change to use Managed Media Controller API
-Date: Fri,  2 Oct 2015 16:07:28 -0600
-Message-ID: <d172317cfda2af728b64f24e6553e33f696aa76c.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 15/20] media: au0828 video change to use v4l_enable_media_tuner()
+Date: Fri,  2 Oct 2015 16:07:27 -0600
+Message-ID: <2c8b4a96ea5e03f4f9166da23ebc78dbef0813b5.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,84 +12,52 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828 to use Managed Media Controller API to coordinate
-creating/deleting media device on parent usb device it shares
-with the snd-usb-audio driver. With this change, au0828 uses
-media_device_get_devres() to allocate a new media device devres
-or return an existing one, if it finds one.
+au0828 is changed to use v4l_enable_media_tuner() to check for
+tuner availability from vidioc_g_tuner(), and au0828_v4l2_close(),
+before changing tuner settings. If tuner isn't free, return busy
+condition from vidioc_g_tuner() and in au0828_v4l2_close() tuner
+is left untouched without powering down to save energy.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 45 +++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ drivers/media/usb/au0828/au0828-video.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 4fd7db8..544d304 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -135,9 +135,9 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
+index 062730d..6581f79 100644
+--- a/drivers/media/usb/au0828/au0828-video.c
++++ b/drivers/media/usb/au0828/au0828-video.c
+@@ -1004,8 +1004,12 @@ static int au0828_v4l2_close(struct file *filp)
+ 		goto end;
+ 
+ 	if (dev->users == 1) {
+-		/* Save some power by putting tuner to sleep */
+-		v4l2_device_call_all(&dev->v4l2_dev, 0, core, s_power, 0);
++		/* Save some power by putting tuner to sleep, if it is free */
++		/* What happens when radio is using tuner?? */
++		ret = v4l_enable_media_tuner(vdev);
++		if (ret == 0)
++			v4l2_device_call_all(&dev->v4l2_dev, 0, core,
++					     s_power, 0);
+ 		dev->std_set_in_tuner_core = 0;
+ 
+ 		/* When close the device, set the usb intf0 into alt0 to free
+@@ -1406,10 +1410,16 @@ static int vidioc_s_audio(struct file *file, void *priv, const struct v4l2_audio
+ static int vidioc_g_tuner(struct file *file, void *priv, struct v4l2_tuner *t)
  {
+ 	struct au0828_dev *dev = video_drvdata(file);
++	struct video_device *vfd = video_devdata(file);
++	int ret;
  
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (dev->media_dev) {
-+	if (dev->media_dev &&
-+	    media_devnode_is_registered(&dev->media_dev->devnode)) {
- 		media_device_unregister(dev->media_dev);
--		kfree(dev->media_dev);
- 		dev->media_dev = NULL;
- 	}
- #endif
-@@ -222,31 +222,30 @@ static void au0828_media_device_register(struct au0828_dev *dev,
- 	struct media_device *mdev;
- 	int ret;
+ 	if (t->index != 0)
+ 		return -EINVAL;
  
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
-+	mdev = media_device_get_devres(&udev->dev);
- 	if (!mdev)
- 		return;
- 
--	mdev->dev = &udev->dev;
--
--	if (!dev->board.name)
--		strlcpy(mdev->model, "unknown au0828", sizeof(mdev->model));
--	else
--		strlcpy(mdev->model, dev->board.name, sizeof(mdev->model));
--	if (udev->serial)
--		strlcpy(mdev->serial, udev->serial, sizeof(mdev->serial));
--	strcpy(mdev->bus_info, udev->devpath);
--	mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--	mdev->driver_version = LINUX_VERSION_CODE;
--
--	ret = media_device_register(mdev);
--	if (ret) {
--		pr_err(
--			"Couldn't create a media device. Error: %d\n",
--			ret);
--		kfree(mdev);
--		return;
-+	if (!media_devnode_is_registered(&mdev->devnode)) {
-+		/* register media device */
-+		mdev->dev = &udev->dev;
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
 +
-+		if (udev->product)
-+			strlcpy(mdev->model, udev->product,
-+				sizeof(mdev->model));
-+		if (udev->serial)
-+			strlcpy(mdev->serial, udev->serial,
-+				sizeof(mdev->serial));
-+		strcpy(mdev->bus_info, udev->devpath);
-+		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
-+		ret = media_device_register(mdev);
-+		if (ret) {
-+			dev_err(&udev->dev,
-+				"Couldn't create a media device. Error: %d\n",
-+				ret);
-+			return;
-+		}
- 	}
--
- 	dev->media_dev = mdev;
- #endif
- }
+ 	dprintk(1, "%s called std_set %d dev_state %d\n", __func__,
+ 		dev->std_set_in_tuner_core, dev->dev_state);
+ 
 -- 
 2.1.4
