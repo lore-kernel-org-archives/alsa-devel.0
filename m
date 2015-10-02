@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: fix dma stop transferring issue"
-	to the asoc tree
-Date: Fri, 02 Oct 2015 18:13:46 +0100
-Message-ID: <E1Zi3ty-00082V-0n@finisterre>
+Subject: Applied "ASoC: topology: ABI - Remove tdm_slot &
+	dai_fmt from snd_soc_tplg_stream" to the asoc tree
+Date: Fri, 02 Oct 2015 18:13:47 +0100
+Message-ID: <E1Zi3tz-000836-1K@finisterre>
+References: <30ca5b75b0eb2dc29ab9cbbb8c83d180799a91cd.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0315260713
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:52 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AD6F260789
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:53 +0200 (CEST)
+In-Reply-To: <30ca5b75b0eb2dc29ab9cbbb8c83d180799a91cd.1443602494.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yitian Bu <yitian.bu@tangramtek.com>, Mark Brown <broonie@kernel.org>
+To: Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: fix dma stop transferring issue
+   ASoC: topology: ABI - Remove tdm_slot & dai_fmt from snd_soc_tplg_stream
 
 has been applied to the asoc tree at
 
@@ -52,58 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 924eb475126fd6bc23c475ac742a69fc466c0b75 Mon Sep 17 00:00:00 2001
-From: yitian <yitian.bu@tangramtek.com>
-Date: Tue, 29 Sep 2015 22:43:17 +0800
-Subject: [PATCH] ASoC: dwc: fix dma stop transferring issue
+>From 76a822a6ae9c0c67309318bb60a4117329252fc4 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@intel.com>
+Date: Wed, 30 Sep 2015 17:32:40 +0800
+Subject: [PATCH] ASoC: topology: ABI - Remove tdm_slot & dai_fmt from
+ snd_soc_tplg_stream
 
-Designware I2S uses tx empty and rx available signals as the DMA
-handshaking signals. during music playing, if XRUN occurs,
-i2s_stop() function will be executed and both tx and rx irq are
-masked, when music continues to be played, i2s_start() is executed
-but both tx and rx irq are not unmasked which cause I2S stop
-sending DMA handshaking signal to DMA controller, and it finally
-causes music playing will be stopped once XRUN occurs for the first
-time.
+These two fields are line parameters for BE/CC links and
+should not be from toplogy but from ACPI.
 
-[On list discussion suggests this may be partly a race condition on slow
-systems -- broonie]
-
-Signed-off-by: Yitian Bu <yitian.bu@tangramtek.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/designware_i2s.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ include/uapi/sound/asoc.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 0d28e3b..ba34252 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -141,13 +141,22 @@ static inline void i2s_clear_irqs(struct dw_i2s_dev *dev, u32 stream)
- static void i2s_start(struct dw_i2s_dev *dev,
- 		      struct snd_pcm_substream *substream)
- {
--
-+	u32 i, irq;
- 	i2s_write_reg(dev->i2s_base, IER, 1);
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 538ea13..26539a7 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -224,8 +224,6 @@ struct snd_soc_tplg_stream {
+ 	__le32 period_bytes;	/* size of period in bytes */
+ 	__le32 buffer_bytes;	/* size of buffer in bytes */
+ 	__le32 channels;	/* channels */
+-	__le32 tdm_slot;	/* optional BE bitmask of supported TDM slots */
+-	__le32 dai_fmt;		/* SND_SOC_DAIFMT_  */
+ } __attribute__((packed));
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x30);
-+		}
- 		i2s_write_reg(dev->i2s_base, ITER, 1);
--	else
-+	} else {
-+		for (i = 0; i < 4; i++) {
-+			irq = i2s_read_reg(dev->i2s_base, IMR(i));
-+			i2s_write_reg(dev->i2s_base, IMR(i), irq & ~0x03);
-+		}
- 		i2s_write_reg(dev->i2s_base, IRER, 1);
-+	}
- 
- 	i2s_write_reg(dev->i2s_base, CER, 1);
- }
+ /*
 -- 
 2.5.0
