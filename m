@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
- element to snd_soc_tplg_stream
-Date: Fri, 2 Oct 2015 17:59:07 +0100
-Message-ID: <20151002165907.GU12635@sirena.org.uk>
-References: <cover.1443605139.git.mengdong.lin@intel.com>
- <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Fri, 2 Oct 2015 19:01:42 +0200
+Message-ID: <CA+sos7-Q8OddVOYzoSVykTz5-W_DXFyNG_m2NRnx1SAHyOPuHg@mail.gmail.com>
+References: <1443799984-26679-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3285554964063925095=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3D7D260668
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 18:59:15 +0200 (CEST)
-In-Reply-To: <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA672260668
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:02:03 +0200 (CEST)
+Received: by oixx17 with SMTP id x17so61066831oix.0
+ for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2015 10:02:02 -0700 (PDT)
+In-Reply-To: <1443799984-26679-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, vinod.koul@intel.com, liam.r.girdwood@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, vedang.patel@intel.com
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: albertchen@realtek.com, Alsa-devel <alsa-devel@alsa-project.org>, broonie@kernel.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3285554964063925095==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pzbqGaOtRNiVr7w4"
-Content-Disposition: inline
-
-
---pzbqGaOtRNiVr7w4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 30, 2015 at 05:31:34PM +0800, mengdong.lin@intel.com wrote:
-> From: Vedang Patel <vedang.patel@intel.com>
->=20
-> For codec-codec links, this struct will be mapped to the DAI links's
-> params, which is struct snd_soc_pcm_stream and it needs a stream name.
-
-OK, so this means that every DAI link name is going to become an ABI
-too if there's a topology in there.  Not a problem but we'll need to
-watch out for that on review...  I wonder if I can make some automated
-checker thing.
-
---pzbqGaOtRNiVr7w4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWDrfaAAoJECTWi3JdVIfQVvMH/ilXoO00NcAVgVHI8G3M8Rjz
-HlMcr6oEJ3s/KkC8s9O4IMnr3SGRoPtFJFReaNBgnTRuf9q8d9SUBAvepI6nJKNo
-iTulOzBZwG7p2e6IoN4k58NDDas8XVrR9LNpVB0mtwKdM1MdgneLEQV9BotsXIne
-btb9vGK1GeQuU/dob2fD+MJF1em2COPC5E7qQTmrPO3+m+DM6OBQ2Tb8WaUMm2Rm
-54HnUlkRwTmPpEmLwkmS4vBuYJFJ1LCp7eSVX05OkS88YY2DtawUdC2zz+xtSq9L
-yTmBC/m/Hv2EKcY4Qqj2zx7B4KgZazd+wlGMdGhD0NVvtGiLIfSj0EBJHAQqPnc=
-=r/w8
------END PGP SIGNATURE-----
-
---pzbqGaOtRNiVr7w4--
-
---===============3285554964063925095==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3285554964063925095==--
+RGVhciBBbmF0b2wgUG9tb3pvdiwKCk9uIEZyaSwgT2N0IDIsIDIwMTUgYXQgNTozMyBQTSwgQW5h
+dG9sIFBvbW96b3YgPGFuYXRvbC5wb21vem92QGdtYWlsLmNvbT4gd3JvdGU6Cj4gQ3VycmVudGx5
+IHRoZXJlIGlzIG5vIGNsZWFyIGRlZmluaXRpb24gb2Ygd2hhdCBGU1lOQyBwb2xhcml0eSBpcy4K
+PiBEaWZmZXJlbnQgZHJpdmVycyB1c2UgaXRzIG93biBkZWZpbml0aW9uIG9mIHdoYXQgaXMgIm5v
+cm1hbCIgYW5kIHdoYXQgaXMKPiAiaW52ZXJ0ZWQiIGZzeW5jLiBUaGlzIGxlYWRzIHRvIGNvbXBh
+dGliaWxpdHkgcHJvYmxlbXMgYmV0d2VlbiBkcml2ZXJzLgo+Cj4gRm9yIGV4YW1wbGUgVGVncmFY
+MSBkcml2ZXIgYXNzdW1lcyB0aGF0IERTUC1BIGZvcm1hdCB3aXRoIGZyYW1lcwo+IHN0YXJ0aW5n
+IGF0IHJpc2luZyBGU1lOQyBlZGdlIGhhcyAiaW52ZXJ0ZWQiIHBvbGFyaXR5LAo+IHdoaWxlIFJU
+NTY3NyBhc3N1bWVzIGl0IGlzICJub3JtYWwiIHBvbGFyaXR5Lgo+Cj4gRXhwbGljaXRseSBzcGVj
+aWZ5IG1lYW5pbmcgb2YgQkNMSy9GU1lOQyBwb2xhcml0eSB0byBhdm9pZCBmdXR1cmUKPiBjb21w
+YXRpYmlsaXR5IHByb2JsZW1zLgo+Cj4gU2lnbmVkLW9mZi1ieTogQW5hdG9sIFBvbW96b3YgPGFu
+YXRvbC5wb21vem92QGdtYWlsLmNvbT4KPiAtLS0KPiAgaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgg
+fCAxNyArKysrKysrKysrKysrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvc29jLWRhaS5o
+IGIvaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgKPiBpbmRleCAyZGY5NmIxLi45MWUyZTYxIDEwMDY0
+NAo+IC0tLSBhL2luY2x1ZGUvc291bmQvc29jLWRhaS5oCj4gKysrIGIvaW5jbHVkZS9zb3VuZC9z
+b2MtZGFpLmgKPiBAQCAtNDgsMTAgKzQ4LDI1IEBAIHN0cnVjdCBzbmRfY29tcHJfc3RyZWFtOwo+
+ICAjZGVmaW5lIFNORF9TT0NfREFJRk1UX0dBVEVEICAgICAgICAgICAoMCA8PCA0KSAvKiBjbG9j
+ayBpcyBnYXRlZCAqLwo+Cj4gIC8qCj4gLSAqIERBSSBoYXJkd2FyZSBzaWduYWwgaW52ZXJzaW9u
+cy4KPiArICogREFJIGhhcmR3YXJlIHNpZ25hbCBwb2xhcml0eS4KPiAgICoKPiAgICogU3BlY2lm
+aWVzIHdoZXRoZXIgdGhlIERBSSBjYW4gYWxzbyBzdXBwb3J0IGludmVydGVkIGNsb2NrcyBmb3Ig
+dGhlIHNwZWNpZmllZAo+ICAgKiBmb3JtYXQuCj4gKyAqCj4gKyAqIEJDTEs6Cj4gKyAqIC0gIm5v
+cm1hbCIgcG9sYXJpdHkgbWVhbnMgc2lnbmFsIGlzIGF2YWlsYWJsZSBhdCByaXNpbmcgZWRnZSBv
+ZiBCQ0xLCj4gKyAqIC0gImludmVydGVkIiBwb2xhcml0eSBtZWFucyBzaWduYWwgaXMgYXZhaWxh
+YmxlIGF0IGZhbGxpbmcgZWRnZSBvZiBCQ0xLCj4gKyAqCj4gKyAqIEZTWU5DICJub3JtYWwiIHBv
+bGFyaXR5IGRlcGVuZHMgb24gdGhlIGZyYW1lIGZvcm1hdDoKPiArICogLSBJMlM6IGZyYW1lIGNv
+bnNpc3RzIG9mIGxlZnQgdGhlbiByaWdodCBjaGFubmVsIGRhdGEuIExlZnQgY2hhbm5lbCBzdGFy
+dHMKPiArICogICAgICB3aXRoIGZhbGxpbmcgRlNZTkMgZWRnZSwgcmlnaHQgY2hhbm5lbCBzdGFy
+dHMgd2l0aCByaXNpbmcgRlNZTkMgZWRnZS4KPiArICogLSBMZWZ0L1JpZ2h0IEp1c3RpZmllZDog
+ZnJhbWUgY29uc2lzdHMgb2YgbGVmdCB0aGVuIHJpZ2h0IGNoYW5uZWwgZGF0YS4KPiArICogICAg
+ICBMZWZ0IGNoYW5uZWwgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UsIHJpZ2h0IGNoYW5u
+ZWwgc3RhcnRzIHdpdGgKPiArICogICAgICBmYWxsaW5nIEZTWU5DIGVkZ2UuCj4gKyAqIC0gRFNQ
+IEEvQjogRnJhbWUgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UuCj4gKyAqIC0gQUM5Nzog
+RnJhbWUgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UuCj4gKyAqCj4gKyAqICJOZWdhdGl2
+ZSIgRlNZTkMgcG9sYXJpdHkgaXMgdGhlIG9uZSBvcHBvc2l0ZSBvZiAibm9ybWFsIiBwb2xhcml0
+eS4KPiAgICovCj4gICNkZWZpbmUgU05EX1NPQ19EQUlGTVRfTkJfTkYgICAgICAgICAgICgwIDw8
+IDgpIC8qIG5vcm1hbCBiaXQgY2xvY2sgKyBmcmFtZSAqLwo+ICAjZGVmaW5lIFNORF9TT0NfREFJ
+Rk1UX05CX0lGICAgICAgICAgICAoMiA8PCA4KSAvKiBub3JtYWwgQkNMSyArIGludiBGUk0gKi8K
+PiAtLQo+IDIuNi4wLnJjMi4yMzAuZzNkZDE1YzAKPgoKUmV2aWV3ZWQtYnk6IEJlbm/DrnQgVGjD
+qWJhdWRlYXUgPGJlbm9pdC50aGViYXVkZWF1LmRldkBnbWFpbC5jb20+CgpCZXN0IHJlZ2FyZHMs
+CkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
