@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 10/20] media: au0828 Use au8522_media_pads enum for pad defines
-Date: Fri,  2 Oct 2015 16:07:22 -0600
-Message-ID: <d319d6a1975a21f070b3e4524554c52b60bed0ca.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 04/20] media: Media Controller fix to not let stream_count go negative
+Date: Fri,  2 Oct 2015 16:07:16 -0600
+Message-ID: <28bf43b07b9ffbd90e6fae27b6a95ca07288b81b.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,42 +12,52 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828-core to use au8522_media_pads enum defines
-instead of hard-coding the pad values when it creates
-media graph linking decode pads to other entities.
+Add a range check to not let the stream_count become negative.
+Wthout this check, calls to stop pipeline when there is no active
+pipeline will result in stream_count < 0 condition and lock and
+preventing link state (activate/deactivate) changes. This will
+happen from error leg in start pipeline interface.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/media-entity.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 1c12285..b04c2a5 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -20,6 +20,7 @@
-  */
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index eaeda25..797b7b3 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -502,9 +502,12 @@ error:
+ 	media_entity_graph_walk_start(&graph, entity_err);
  
- #include "au0828.h"
-+#include "au8522.h"
+ 	while ((entity_err = media_entity_graph_walk_next(&graph))) {
+-		entity_err->stream_count--;
+-		if (entity_err->stream_count == 0)
+-			entity_err->pipe = NULL;
++		/* don't let the stream_count go negative */
++		if (entity->stream_count > 0) {
++			entity_err->stream_count--;
++			if (entity_err->stream_count == 0)
++				entity_err->pipe = NULL;
++		}
  
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -286,11 +287,13 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
- 		if (ret)
- 			return ret;
+ 		/*
+ 		 * We haven't increased stream_count further than this
+@@ -542,9 +545,12 @@ void media_entity_pipeline_stop(struct media_entity *entity)
+ 	media_entity_graph_walk_start(&graph, entity);
+ 
+ 	while ((entity = media_entity_graph_walk_next(&graph))) {
+-		entity->stream_count--;
+-		if (entity->stream_count == 0)
+-			entity->pipe = NULL;
++		/* don't let the stream_count go negative */
++		if (entity->stream_count > 0) {
++			entity->stream_count--;
++			if (entity->stream_count == 0)
++				entity->pipe = NULL;
++		}
  	}
--	ret = media_create_pad_link(decoder, 1, &dev->vdev.entity, 0,
-+	ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
-+				    &dev->vdev.entity, 0,
- 			 	    MEDIA_LNK_FL_ENABLED);
- 	if (ret)
- 		return ret;
--	ret = media_create_pad_link(decoder, 2, &dev->vbi_dev.entity, 0,
-+	ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
-+				    &dev->vbi_dev.entity, 0,
- 				    MEDIA_LNK_FL_ENABLED);
- 	if (ret)
- 		return ret;
+ 
+ 	mutex_unlock(&mdev->graph_mutex);
 -- 
 2.1.4
