@@ -1,35 +1,17 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Kernel Device Tree entries for simple-audio-card
-Date: Fri, 2 Oct 2015 08:25:05 -0700
-Message-ID: <88789DC1-3647-46F0-A0EC-2E238A43DD57@crome.org>
-References: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
- <CAG5mAdxc5-UuTnz24zByA64ZsrB4qnfMKF57GBVeFfWvY44xsw@mail.gmail.com>
- <4D1E67E6-437D-490D-A577-35EB7E474A3A@latencyzero.com>
- <CAG5mAdxnjZUBiOFU6+MBn0znUCBaGpeVQ-RaYhXch=-4n7J4uw@mail.gmail.com>
- <F3A7E580-2E91-45D0-9C27-2FD190110686@latencyzero.com>
- <CAG5mAdxgTzGjnvwno0D_Jo9_53stmGfsc9OQS05f3thrSFKpkw@mail.gmail.com>
- <BE1F1488-2A4D-4EE6-A538-931DD0B34CD8@latencyzero.com>
- <CAG5mAdzg2BSGKiaBJVSgZvL=9wxffxv_3LMiruS2-kcuTKO+xQ@mail.gmail.com>
- <D8BC8B49-E32C-43EE-B181-60510C7B3E8E@latencyzero.com>
- <CAG5mAdxaAapawiaaR_zasVhQKL33MHEHP1yyUCSLv0wswZ9Law@mail.gmail.com>
- <7CCA3F5A-844A-43FF-9A4E-C0A9FB65D926@latencyzero.com>
- <CAG5mAdyOSDt7F5czW_9EBvo3uBCW9834-1VZsXG0mvYiB1LM8g@mail.gmail.com>
- <74203CDA-1965-48ED-AA9A-95DC9A8D83E6@latencyzero.com>
- <532A774B-EA9D-4633-B7B4-4236746B92FE@crome.org>
- <869D210F-8882-4067-8593-18B2BE3197E8@latencyzero.com>
- <CAG5mAdzmH-eOMo2_prVcMFzsQxXxs667GbVSyNDx9YCiijBYEQ@mail.gmail.com>
- <8E76EDAB-814B-46B9-A6C6-03D3184C6BA9@latencyzero.com>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: Document DAI signal polarity
+Date: Fri,  2 Oct 2015 08:33:04 -0700
+Message-ID: <1443799984-26679-1-git-send-email-anatol.pomozov@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 43CE92612AF
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 17:25:10 +0200 (CEST)
-Received: by padhy16 with SMTP id hy16so109282015pad.1
- for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2015 08:25:09 -0700 (PDT)
-In-Reply-To: <8E76EDAB-814B-46B9-A6C6-03D3184C6BA9@latencyzero.com>
+Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
+ [209.85.220.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE4E92612AF
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 17:33:10 +0200 (CEST)
+Received: by pacex6 with SMTP id ex6so109588175pac.0
+ for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2015 08:33:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,148 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rick Mann <rmann@latencyzero.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: albertchen@realtek.com, broonie@kernel.org, Anatol Pomozov <anatol.pomozov@gmail.com>, lars@metafoo.de, benoit.thebaudeau.dev@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpTZW50IGZyb20gbXkgaVBob25lCgo+IE9uIE9jdCAyLCAyMDE1LCBhdCAyOjU1IEFNLCBSaWNr
-IE1hbm4gPHJtYW5uQGxhdGVuY3l6ZXJvLmNvbT4gd3JvdGU6Cj4gCj4gCj4+IE9uIE9jdCAxLCAy
-MDE1LCBhdCAwODozOCAsIENhbGViIENyb21lIDxjYWxlYkBjcm9tZS5vcmc+IHdyb3RlOgo+PiAK
-Pj4gT24gVHVlLCBTZXAgMjksIDIwMTUgYXQgMTE6NDEgQU0sIFJpY2sgTWFubiA8cm1hbm5AbGF0
-ZW5jeXplcm8uY29tPiB3cm90ZToKPj4+IFVnaCwgc29ycnkuIEhlcmUgeW91IGdvOgo+Pj4gCj4+
-PiBodHRwczovL2dpdGh1Yi5jb20vSmV0Rm9yTWUvcG9kdGlxdWUvYmxvYi92MS9iYmIvY2FwZS9Q
-b2R0aXF1ZTEvQkItRU5BQkxFLVBSVS5kdHMKPj4+IAo+Pj4gU2VudCBmcm9tIG15IGlQaG9uZQo+
-Pj4gCj4+PiBPbiBTZXAgMjksIDIwMTUsIGF0IDA3OjA4LCBDYWxlYiBDcm9tZSA8Y2FsZWJAY3Jv
-bWUub3JnPiB3cm90ZToKPj4+IAo+Pj4gTm93IEkgaGF2ZSBhIHdvcmtpbmcgTUNMSywgYW5kIEkg
-c2VlIGNsb2NraW5nIG9uIEJDTEsgYW5kIFdDTEssIGJ1dCB0aGUKPj4+IHJhdGVzIGFyZSBxdWVz
-dGlvbmFibGUuIE1DTEsgaXMgMjQgTUh6IChldmVuIHRob3VnaCBpbiB0aGUgRFRTIGl0J3Mgc2V0
-IHRvCj4+PiAxMiBNSHopOyB0aGF0IG1pZ2h0IGJlIG9rYXkuCj4+IAo+PiBJdCdzIGRlZmluaXRl
-bHkgbm90IG9idmlvdXMgd2h5IHlvdSdkIGJlIGdldHRpbmcgMjRNSHogaW5zdGVhZCBvZiAxMi4K
-Pj4gV2FpdC4gIEFyZSB5b3UgZ2V0dGluZyBleGFjdGx5IDI0IE1Ieiwgb3IgYWJvdXQgMjQgTUh6
-PyAgaW4KPj4gZGF2aW5jaS1ldm0uYyB0aGVyZSBhcmUgc29tZSAuc3lzY2xrIHNldHRpbmdzIHNl
-dCB0byAyNDU3NjAwMCBhcyBpbgo+PiB0aGUgZGE4MzBfc25kX3NvY19jYXJkX2NydmRhdGEuCj4g
-Cj4gSXQncyBwcmV0dHkgZXhhY3RseSAyNC4wMCBNSHosIMKxMC4wMiBNSHouCj4gCgpPaCwgaXQn
-cyBjb21pbmcgYmFjayB0byBtZS4gIFBlcmhhcHMgMjQgTUh6IGlzIGFsbCB0aGUgcGluIGNhbiBw
-dXQgb3V0LiAgU28gaWYgeW91IHNldCB5b3VyIHN5c2NsayB0byAyNCBNSHosIHRoZW4gdGhlIFBM
-TCB3aWxsIGdldCBzZXQgdG8gdGhlIHJpZ2h0IHRoaW5nLCBhbmQgZ2l2ZSB5b3UgdGhlIHJpZ2h0
-IGNsb2Nrcy4gIAoKTXkgYm9hcmQgaGFzIGl0cyBvd24gY2xvY2ssIHNvIEkgZG9uJ3QgYWN0dWFs
-bHkgdXNlIHRoZSBtY2xrIGZyb20gdGhlIGJiYi4gIAoKCkFsc28sIHlvdSBjYW4gdXNlIERTUCBt
-b2RlIGZvciBzdGVyZW8ganVzdCBmaW5lLiAgSSBkb24ndCB0aGluayB5b3UgbmVlZCB0byB3b3Jy
-eSBhYm91dCB0aGF0IGF0IGFsbCBhcyBsb25nIGFzIGJvdGggc2lkZXMgcmVjb2duaXplIHRoZSBm
-b3JtYXQuCgoKCgo+IEkgbm90aWNlZCBJIGdldCB0aGVzZSBlcnJvcnMgKHRoaXMgaXMgNC4xLjQt
-dGktcjkgZnJvbSB0aGUgQmVhZ2xlYm9uZSBCbGFjayBEZWJpYW4gImNvbnNvbGUiIGRpc3Ryby4g
-Rm9yIHJlZmVyZW5jZSwgaGVyZSdzIG15IG92ZXJsYXk6IGh0dHBzOi8vZ2l0aHViLmNvbS9KZXRG
-b3JNZS9wb2R0aXF1ZS9ibG9iL3YxL2JiYi9jYXBlL1BvZHRpcXVlMS9CQi1FTkFCTEUtUFJVLmR0
-cykuIFNpbmNlIEkgc2V0IHRoZSBjbG9jayByYXRlIGluIHRoZSBzb3VuZCBub2RlLCBhbmQgc25k
-X3NvY19yZWdpc3Rlcl9jYXJkKCkgaXMgZmFpbGluZyAoLTUxNyBpcyBFUFJPQkVfREVGRVIsICJE
-cml2ZXIgcmVxdWVzdHMgcHJvYmUgcmV0cnkiKSwgSSB3b25kZXIgaWYgdGhlIERUUy1zcGVpZmll
-ZCBjbG9jayByYXRlIGlzbid0IGdldHRpbmcgcGFzc2VkIHRocm91Z2ggdG8gdGhlIHRsdjMyMGFp
-Yy4KCgpJZiAgbm90IG1pc3Rha2VuICwgdGhhdCBoYXBwZW5zIGJlY2F1c2UgdGhlIHBpbiBtb2R1
-bGUgaXNuJ3QgbG9hZGVkIHlldC4gIEkgdGhpbmsgeW91IGNhbiBpZ25vcmUgdGhpcy4KCgo+IAo+
-IC4uLgo+IFsgIDEzMy41MTY1OTNdIGRhdmluY2lfZXZtIHNvdW5kOiBBU29DOiBDUFUgREFJIChu
-dWxsKSBub3QgcmVnaXN0ZXJlZAo+IFsgIDEzMy41MjI4MTVdIGRhdmluY2lfZXZtIHNvdW5kOiBz
-bmRfc29jX3JlZ2lzdGVyX2NhcmQgZmFpbGVkICgtNTE3KQo+IC4uLgo+IFsgIDEzMy42MDc4MDVd
-IGRhdmluY2lfZXZtIHNvdW5kOiBBU29DOiBEQVBNIHVua25vd24gcGluIE1PTk9fTE9VVAo+IAo+
-IE5vdywgSSBkb24ndCBzcGVjaWZ5IE1PTk9fTE9VVCBhbnl3aGVyZSBpbiBteSBEVFMsIGJ1dCBp
-dCBpcyBpbiB0bHYzMjBhaWMzeC5jIGFuZCBkYXZpbmNpLWV2bS5jLgo+IAo+IEhlcmUncyB0aGUg
-Y29tcGxldGUgZG1lc2cgdXBvbiBsb2FkaW5nIHRoZSBkZXZpY2UgdHJlZToKPiAKPiBbICAxMzMu
-NDI0OTI4XSBib25lX2NhcGVtZ3IgYm9uZV9jYXBlbWdyOiBwYXJ0X251bWJlciAnQkItRU5BQkxF
-LVBSVScsIHZlcnNpb24gJ04vQScKPiBbICAxMzMuNDI0OTc1XSBib25lX2NhcGVtZ3IgYm9uZV9j
-YXBlbWdyOiBzbG90ICM0OiBvdmVycmlkZQo+IFsgIDEzMy40MjQ5OTNdIGJvbmVfY2FwZW1nciBi
-b25lX2NhcGVtZ3I6IFVzaW5nIG92ZXJyaWRlIGVlcHJvbSBkYXRhIGF0IHNsb3QgNAo+IFsgIDEz
-My40MjUwMTFdIGJvbmVfY2FwZW1nciBib25lX2NhcGVtZ3I6IHNsb3QgIzQ6ICdPdmVycmlkZSBC
-b2FyZCBOYW1lLDAwQTAsT3ZlcnJpZGUgTWFudWYsQkItRU5BQkxFLVBSVScKPiBbICAxMzMuNDI1
-MTQzXSBib25lX2NhcGVtZ3I6Y2FwZW1ncl9sb2FkX3Nsb3Q6MTE0ODogYm9uZV9jYXBlbWdyIGJv
-bmVfY2FwZW1ncjogc2xvdCAjNDogUmVxdWVzdGluZyBwYXJ0IG51bWJlci92ZXJzaW9uIGJhc2Vk
-ICdCQi1FTkFCTEUtUFJVLTAwQTAuZHRibwo+IFsgIDEzMy40MjUxNjRdIGJvbmVfY2FwZW1ncjpj
-YXBlbWdyX2xvYWRfc2xvdDoxMTYyOiBib25lX2NhcGVtZ3IgYm9uZV9jYXBlbWdyOiBzbG90ICM0
-OiBSZXF1ZXN0aW5nIGZpcm13YXJlICdCQi1FTkFCTEUtUFJVLTAwQTAuZHRibycgZm9yIGJvYXJk
-LW5hbWUgJ092ZXJyaWRlIEJvYXJkIE5hbWUnLCB2ZXJzaW9uICcwMEEwJwo+IFsgIDEzMy40MjY3
-NDFdIGJvbmVfY2FwZW1ncjpjYXBlbWdyX2xvYWRfc2xvdDoxMTcxOiBib25lX2NhcGVtZ3IgYm9u
-ZV9jYXBlbWdyOiBzbG90ICM0OiBkdGJvICdCQi1FTkFCTEUtUFJVLTAwQTAuZHRibycgbG9hZGVk
-OyBjb252ZXJ0aW5nIHRvIGxpdmUgdHJlZQo+IFsgIDEzMy40NDA4MjBdIGdwaW8tb2YtaGVscGVy
-IG9jcDpncGlvX2hlbHBlcjogcmVhZHkKPiBbICAxMzMuNDQ4Mzg1XSBwcnVzc191aW8gNGEzMDAw
-MDAucHJ1c3M6IHBpbnMgYXJlIG5vdCBjb25maWd1cmVkIGZyb20gdGhlIGRyaXZlcgo+IFsgIDEz
-My40NjA5NTldIGJvbmVfY2FwZW1nciBib25lX2NhcGVtZ3I6IHNsb3QgIzQ6IGR0Ym8gJ0JCLUVO
-QUJMRS1QUlUtMDBBMC5kdGJvJyBsb2FkZWQ7IG92ZXJsYXkgaWQgIzAKPiBbICAxMzMuNTE2NTU4
-XSBzbmRfc29jX2NvcmU6c29jX2JpbmRfZGFpX2xpbms6OTM4OiBkYXZpbmNpX2V2bSBzb3VuZDog
-QVNvQzogYmluZGluZyBUTFYzMjBBSUMzWCBhdCBpZHggMAo+IFsgIDEzMy41MTY1OTNdIGRhdmlu
-Y2lfZXZtIHNvdW5kOiBBU29DOiBDUFUgREFJIChudWxsKSBub3QgcmVnaXN0ZXJlZAo+IFsgIDEz
-My41MjI4MTVdIGRhdmluY2lfZXZtIHNvdW5kOiBzbmRfc29jX3JlZ2lzdGVyX2NhcmQgZmFpbGVk
-ICgtNTE3KQo+IFsgIDEzMy41MzMzNTZdIHNuZF9zb2NfY29yZTpzbmRfc29jX3JlZ2lzdGVyX2Nv
-ZGVjOjMwNjQ6IHRsdjMyMGFpYzN4LWNvZGVjIDItMDAxODogY29kZWMgcmVnaXN0ZXIgMi0wMDE4
-Cj4gWyAgMTMzLjUzMzQwNl0gc25kX3NvY19jb3JlOnNuZF9zb2NfcmVnaXN0ZXJfZGFpczoyNTkw
-OiB0bHYzMjBhaWMzeC1jb2RlYyAyLTAwMTg6IEFTb0M6IGRhaSByZWdpc3RlciAyLTAwMTggIzEK
-PiBbICAxMzMuNTMzNDI0XSBzbmRfc29jX2NvcmU6c25kX3NvY19yZWdpc3Rlcl9kYWlzOjI2MzQ6
-IHRsdjMyMGFpYzN4LWNvZGVjIDItMDAxODogQVNvQzogUmVnaXN0ZXJlZCBEQUkgJ3RsdjMyMGFp
-YzN4LWhpZmknCj4gWyAgMTMzLjUzMzQ0Ml0gc25kX3NvY19jb3JlOnNuZF9zb2NfcmVnaXN0ZXJf
-Y29kZWM6MzEzODogdGx2MzIwYWljM3gtY29kZWMgMi0wMDE4OiBBU29DOiBSZWdpc3RlcmVkIGNv
-ZGVjICd0bHYzMjBhaWMzeC1jb2RlYy4yLTAwMTgnCj4gWyAgMTMzLjU0NjYyMl0gYmFzZTpvZl9w
-cm9wZXJ0eV9tYXRjaF9zdHJpbmc6MTM5ODogY29tcGFyaW5nIHR4IHdpdGggdHgKPiBbICAxMzMu
-NTQ2Njc1XSBiYXNlOm9mX3Byb3BlcnR5X21hdGNoX3N0cmluZzoxMzk4OiBjb21wYXJpbmcgcngg
-d2l0aCB0eAo+IFsgIDEzMy41NDY2ODZdIGJhc2U6b2ZfcHJvcGVydHlfbWF0Y2hfc3RyaW5nOjEz
-OTg6IGNvbXBhcmluZyByeCB3aXRoIHJ4Cj4gWyAgMTMzLjU0NjczOV0gYmFzZTpvZl9wcm9wZXJ0
-eV9tYXRjaF9zdHJpbmc6MTM5ODogY29tcGFyaW5nIGNvbW1vbiB3aXRoIHR4Cj4gWyAgMTMzLjU0
-Njc1MV0gYmFzZTpvZl9wcm9wZXJ0eV9tYXRjaF9zdHJpbmc6MTM5ODogY29tcGFyaW5nIGNvbW1v
-biB3aXRoIHJ4Cj4gWyAgMTMzLjU0Njc2M10gYmFzZTpvZl9wcm9wZXJ0eV9tYXRjaF9zdHJpbmc6
-MTM5ODogY29tcGFyaW5nIHJ4IHdpdGggdHgKPiBbICAxMzMuNTQ2NzczXSBiYXNlOm9mX3Byb3Bl
-cnR5X21hdGNoX3N0cmluZzoxMzk4OiBjb21wYXJpbmcgcnggd2l0aCByeAo+IFsgIDEzMy41NTA1
-MzddIGJhc2U6b2ZfcHJvcGVydHlfbWF0Y2hfc3RyaW5nOjEzOTg6IGNvbXBhcmluZyB0eCB3aXRo
-IHR4Cj4gWyAgMTMzLjU1NjYzOF0gc25kX3NvY19jb3JlOnNuZF9zb2NfcmVnaXN0ZXJfZGFpczoy
-NTkwOiBkYXZpbmNpLW1jYXNwIDQ4MDM4MDAwLm1jYXNwOiBBU29DOiBkYWkgcmVnaXN0ZXIgNDgw
-MzgwMDAubWNhc3AgIzEKPiBbICAxMzMuNTU2NjcxXSBzbmRfc29jX2NvcmU6c25kX3NvY19yZWdp
-c3Rlcl9kYWlzOjI2MzQ6IGRhdmluY2ktbWNhc3AgNDgwMzgwMDAubWNhc3A6IEFTb0M6IFJlZ2lz
-dGVyZWQgREFJICc0ODAzODAwMC5tY2FzcCcKPiBbICAxMzMuNTU2ODMwXSBzbmRfc29jX2NvcmU6
-c25kX3NvY19hZGRfcGxhdGZvcm06Mjg5MjogZGF2aW5jaS1tY2FzcCA0ODAzODAwMC5tY2FzcDog
-QVNvQzogUmVnaXN0ZXJlZCBwbGF0Zm9ybSAnNDgwMzgwMDAubWNhc3AnCj4gWyAgMTMzLjYwNjc4
-NF0gc25kX3NvY19jb3JlOnNvY19iaW5kX2RhaV9saW5rOjkzODogZGF2aW5jaV9ldm0gc291bmQ6
-IEFTb0M6IGJpbmRpbmcgVExWMzIwQUlDM1ggYXQgaWR4IDAKPiBbICAxMzMuNjA3MTE4XSBzbmRf
-c29jX2NvcmU6c25kX3NvY19kYXBtX25ld19kYWlfd2lkZ2V0czozNDk0OiB0bHYzMjBhaWMzeC1j
-b2RlYyAyLTAwMTg6IEFTb0M6IGFkZGluZyBQbGF5YmFjayB3aWRnZXQKPiBbICAxMzMuNjA3MTM5
-XSBzbmRfc29jX2NvcmU6c25kX3NvY19kYXBtX25ld19kYWlfd2lkZ2V0czozNTEzOiB0bHYzMjBh
-aWMzeC1jb2RlYyAyLTAwMTg6IEFTb0M6IGFkZGluZyBDYXB0dXJlIHdpZGdldAo+IFsgIDEzMy42
-MDc3MDRdIHNuZF9zb2NfY29yZTpzb2NfcHJvYmVfbGlua19kYWlzOjEzMzQ6IGRhdmluY2lfZXZt
-IHNvdW5kOiBBU29DOiBwcm9iZSBQb2R0aXF1ZSBEYVZpbmNpIEVWTSBkYWkgbGluayAwIGxhdGUg
-LTIKPiBbICAxMzMuNjA3NzI0XSBzbmRfc29jX2NvcmU6c29jX3Byb2JlX2xpbmtfZGFpczoxMzM0
-OiBkYXZpbmNpX2V2bSBzb3VuZDogQVNvQzogcHJvYmUgUG9kdGlxdWUgRGFWaW5jaSBFVk0gZGFp
-IGxpbmsgMCBsYXRlIC0xCj4gWyAgMTMzLjYwNzczOF0gc25kX3NvY19jb3JlOnNvY19wcm9iZV9s
-aW5rX2RhaXM6MTMzNDogZGF2aW5jaV9ldm0gc291bmQ6IEFTb0M6IHByb2JlIFBvZHRpcXVlIERh
-VmluY2kgRVZNIGRhaSBsaW5rIDAgbGF0ZSAwCj4gWyAgMTMzLjYwNzc1Ml0gc25kX3NvY19jb3Jl
-OnNvY19wcm9iZV9saW5rX2RhaXM6MTMzNDogZGF2aW5jaV9ldm0gc291bmQ6IEFTb0M6IHByb2Jl
-IFBvZHRpcXVlIERhVmluY2kgRVZNIGRhaSBsaW5rIDAgbGF0ZSAxCj4gWyAgMTMzLjYwNzc2Nl0g
-c25kX3NvY19jb3JlOnNvY19wcm9iZV9saW5rX2RhaXM6MTMzNDogZGF2aW5jaV9ldm0gc291bmQ6
-IEFTb0M6IHByb2JlIFBvZHRpcXVlIERhVmluY2kgRVZNIGRhaSBsaW5rIDAgbGF0ZSAyCj4gWyAg
-MTMzLjYwNzgwNV0gZGF2aW5jaV9ldm0gc291bmQ6IEFTb0M6IERBUE0gdW5rbm93biBwaW4gTU9O
-T19MT1VUCj4gWyAgMTMzLjYyNzg4MF0gc25kX3NvY19jb3JlOnNvY19uZXdfcGNtOjI1MTA6IGRh
-dmluY2lfZXZtIHNvdW5kOiBBU29DOiByZWdpc3RlcmVkIHBjbSAjMCBBSUMzWCB0bHYzMjBhaWMz
-eC1oaWZpLTAKPiBbICAxMzMuNjMxMjAxXSBkYXZpbmNpX2V2bSBzb3VuZDogdGx2MzIwYWljM3gt
-aGlmaSA8LT4gNDgwMzgwMDAubWNhc3AgbWFwcGluZyBvawo+IFsgIDEzMy42MzEyNTJdIHNuZF9z
-b2NfY29yZTpzbmRfc29jX2RhcG1fbGlua19kYWlfd2lkZ2V0czozNTcwOiB0bHYzMjBhaWMzeC1j
-b2RlYyAyLTAwMTg6IFJpZ2h0IEFEQyAtPiBDYXB0dXJlCj4gWyAgMTMzLjYzMTI3M10gc25kX3Nv
-Y19jb3JlOnNuZF9zb2NfZGFwbV9saW5rX2RhaV93aWRnZXRzOjM1NzA6IHRsdjMyMGFpYzN4LWNv
-ZGVjIDItMDAxODogTGVmdCBBREMgLT4gQ2FwdHVyZQo+IFsgIDEzMy42MzEyOTRdIHNuZF9zb2Nf
-Y29yZTpzbmRfc29jX2RhcG1fbGlua19kYWlfd2lkZ2V0czozNTcwOiB0bHYzMjBhaWMzeC1jb2Rl
-YyAyLTAwMTg6IFBsYXliYWNrIC0+IFJpZ2h0IERBQwo+IFsgIDEzMy42MzEzMDhdIHNuZF9zb2Nf
-Y29yZTpzbmRfc29jX2RhcG1fbGlua19kYWlfd2lkZ2V0czozNTcwOiB0bHYzMjBhaWMzeC1jb2Rl
-YyAyLTAwMTg6IFBsYXliYWNrIC0+IExlZnQgREFDCj4gCj4gCj4gCj4+IAo+Pj4gCj4+PiAKPj4+
-ICMgc3BlYWtlci10ZXN0IC1yIDIyMDUwIC1jIDIgLWYgMTAwMCAtRiBTMTZfTEUgLXQgc2luZSAt
-cyAxIC1EIGh3OjAsMAo+Pj4gCj4+PiAKPj4+IFdDTEsgaXMgMTEuODgga0h6LCBhbmQgaXQgaXMg
-cHVsc2VzIChEU1AgbW9kZSksIHJhdGhlciB0aGFuIGhpZ2ggZm9yIGxlZnQsCj4+PiBsb3cgZm9y
-IHJpZ2h0IGZvciBlYWNoIGNoYW5uZWwncyB3b3JkLiBCQ0xLIGlzIDM3OS41IGtIei4KPj4gCj4+
-IFNvdW5kcyBsaWtlIHlvdSdyZSBub3QgaW4gSTJTIG1vZGUsIHlvdSBtdXN0IGJlIGluIERTUCBv
-cgo+PiBsZWZ0LWp1c3RpZmllZCBtb2RlLiAgVGhhdCdzIHNldCBpbiB5b3VyIGVhdmluY2ktZXZt
-LmMgaW4gdGhlCj4+IHNuZF9zb2NfZGFpX2xpbmsgc3RydWN0dXJlIHVuZGVyIHRoZSBmaWVsZCAu
-ZGFpX2ZtdC4gIE1vc3Qgb2YgdGhlbSBhcmUKPj4gc2V0IHRvIFNORF9TT0NfREFJRk1UX0RTUF9C
-Lgo+IAo+IEludGVyZXN0aW5nIHlvdSBtZW50aW9uIHRoYXQuIEl0IGluIGZhY3QgZG9lcyBzZXQg
-aXQgdG8gRFNQIG1vZGUuIFNvbWVvbmUgZWxzZSBvbiB0aGUgbGlzdCBzYWlkIGZvciBzdGVyZW8s
-IERTUCBhbmQgSTJTIG1vZGVzIHdlcmUgdGhlIHNhbWUsIGFuZCBJIGRpZG4ndCBjaGFsbGVuZ2Ug
-aGltIG9uIHRoYXQuIEkgZG9uJ3Qga25vdyBob3cgdGhlIGNvZGUgdGhhdCByZWFkcyB0aGUgbWNh
-c3AwIG92ZXJsYXkgKGFuZCB0aHVzIHJlYWRzIHRoZSBvcC1tb2RlPTAgcGFydCkgY29tbXVuaWNh
-dGVzIHdpdGggdGhlIHRsdjMyMGFpYzN4LmMgY29kZSB0byBzZXQgdGhlIGNvcnJlY3QgaTJjIHJl
-Z2lzdGVyLCBidXQgc2VlbXMgdG8gbm90IGJlIGRvaW5nIHRoYXQgY29ycmVjdGx5Lgo+IAo+IEkg
-dGhpbmsgaXQncyB0aW1lIEkgYnVpbHQgdGhhdCB0cmVlIG15c2VsZiBhbmQgZHJvcHBlZCBpbiBz
-b21lIHByaW50aygpIHN0YXRlbWVudHMuIDotLwo+IAo+IAo+IC0tIAo+IFJpY2sgTWFubgo+IHJt
-YW5uQGxhdGVuY3l6ZXJvLmNvbQo+IAo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Currently there is no clear definition of what FSYNC polarity is.
+Different drivers use its own definition of what is "normal" and what is
+"inverted" fsync. This leads to compatibility problems between drivers.
+
+For example TegraX1 driver assumes that DSP-A format with frames
+starting at rising FSYNC edge has "inverted" polarity,
+while RT5677 assumes it is "normal" polarity.
+
+Explicitly specify meaning of BCLK/FSYNC polarity to avoid future
+compatibility problems.
+
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+---
+ include/sound/soc-dai.h | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 2df96b1..91e2e61 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -48,10 +48,25 @@ struct snd_compr_stream;
+ #define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
+ 
+ /*
+- * DAI hardware signal inversions.
++ * DAI hardware signal polarity.
+  *
+  * Specifies whether the DAI can also support inverted clocks for the specified
+  * format.
++ *
++ * BCLK:
++ * - "normal" polarity means signal is available at rising edge of BCLK
++ * - "inverted" polarity means signal is available at falling edge of BCLK
++ *
++ * FSYNC "normal" polarity depends on the frame format:
++ * - I2S: frame consists of left then right channel data. Left channel starts
++ *      with falling FSYNC edge, right channel starts with rising FSYNC edge.
++ * - Left/Right Justified: frame consists of left then right channel data.
++ *      Left channel starts with rising FSYNC edge, right channel starts with
++ *      falling FSYNC edge.
++ * - DSP A/B: Frame starts with rising FSYNC edge.
++ * - AC97: Frame starts with rising FSYNC edge.
++ *
++ * "Negative" FSYNC polarity is the one opposite of "normal" polarity.
+  */
+ #define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
+ #define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
+-- 
+2.6.0.rc2.230.g3dd15c0
