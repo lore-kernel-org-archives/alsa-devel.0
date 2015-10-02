@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 14/20] media: au0828 video remove au0828_enable_analog_tuner()
-Date: Fri,  2 Oct 2015 16:07:26 -0600
-Message-ID: <04551c640d2bbe316dc866a6f3cf8d87ecc1ed27.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 07/20] media: v4l-core add v4l_enable/disable_media_tuner() helper functions
+Date: Fri,  2 Oct 2015 16:07:19 -0600
+Message-ID: <92211f7d4ac97e27443dddf5a8d35a278ebce26a.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,95 +12,80 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828_enable_analog_tuner() is no longer needed with
-v4l2-core and au0828-video invoking enable_source and
-disable_source handlers. In addition, it is unnecessary
-to check for tuner availability in queue_setup() as
-v4l2-core handles the tuner availability checks.
+Add a new interfaces to be used by v4l-core to invoke enable
+source and disable_source handlers in the media_device. The
+enable_source helper function invokes the enable_source handler
+to find tuner entity connected to the decoder and check is it
+is available or busy. If tuner is available, link is activated
+and pipeline is started. The disable_source helper function
+invokes the disable_source handler to deactivate and stop the
+pipeline.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-video.c | 61 ---------------------------------
- 1 file changed, 61 deletions(-)
+ drivers/media/v4l2-core/v4l2-dev.c | 27 +++++++++++++++++++++++++++
+ include/media/v4l2-dev.h           |  4 ++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index f041433..062730d 100644
---- a/drivers/media/usb/au0828/au0828-video.c
-+++ b/drivers/media/usb/au0828/au0828-video.c
-@@ -637,64 +637,6 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
- 	return rc;
+diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+index 982255d..159e711 100644
+--- a/drivers/media/v4l2-core/v4l2-dev.c
++++ b/drivers/media/v4l2-core/v4l2-dev.c
+@@ -233,6 +233,33 @@ struct video_device *video_devdata(struct file *file)
  }
+ EXPORT_SYMBOL(video_devdata);
  
--static int au0828_enable_analog_tuner(struct au0828_dev *dev)
--{
--#ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device *mdev = dev->media_dev;
--	struct media_entity *source;
--	struct media_link *link, *found_link = NULL;
--	int ret, active_links = 0;
--
--	if (!mdev || !dev->decoder)
--		return 0;
--
--	/*
--	 * This will find the tuner that is connected into the decoder.
--	 * Technically, this is not 100% correct, as the device may be
--	 * using an analog input instead of the tuner. However, as we can't
--	 * do DVB streaming while the DMA engine is being used for V4L2,
--	 * this should be enough for the actual needs.
--	 */
--	list_for_each_entry(link, &dev->decoder->links, list) {
--		if (link->sink->entity == dev->decoder) {
--			found_link = link;
--			if (link->flags & MEDIA_LNK_FL_ENABLED)
--				active_links++;
--			break;
--		}
--	}
--
--	if (active_links == 1 || !found_link)
--		return 0;
--
--	source = found_link->source->entity;
--	list_for_each_entry(link, &source->links, list) {
--		struct media_entity *sink;
--		int flags = 0;
--
--		sink = link->sink->entity;
--
--		if (sink == dev->decoder)
--			flags = MEDIA_LNK_FL_ENABLED;
--
--		ret = media_entity_setup_link(link, flags);
--		if (ret) {
--			pr_err(
--				"Couldn't change link %s->%s to %s. Error %d\n",
--				source->name, sink->name,
--				flags ? "enabled" : "disabled",
--				ret);
--			return ret;
--		} else
--			au0828_isocdbg(
--				"link %s->%s was %s\n",
--				source->name, sink->name,
--				flags ? "ENABLED" : "disabled");
--	}
--#endif
--	return 0;
--}
--
- static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
- 		       unsigned int *nbuffers, unsigned int *nplanes,
- 		       unsigned int sizes[], void *alloc_ctxs[])
-@@ -709,9 +651,6 @@ static int queue_setup(struct vb2_queue *vq, const struct v4l2_format *fmt,
++int v4l_enable_media_tuner(struct video_device *vdev)
++{
++#ifdef CONFIG_MEDIA_CONTROLLER
++	struct media_device *mdev = vdev->entity.graph_obj.mdev;
++	int ret;
++
++	if (!mdev || !mdev->enable_source)
++			return 0;
++	ret = mdev->enable_source(&vdev->entity, &vdev->pipe);
++	if (ret)
++		return -EBUSY;
++	return 0;
++#endif /* CONFIG_MEDIA_CONTROLLER */
++	return 0;
++}
++EXPORT_SYMBOL_GPL(v4l_enable_media_tuner);
++
++void v4l_disable_media_tuner(struct video_device *vdev)
++{
++#ifdef CONFIG_MEDIA_CONTROLLER
++	struct media_device *mdev = vdev->entity.graph_obj.mdev;
++
++	if (mdev && mdev->disable_source)
++		mdev->disable_source(&vdev->entity);
++#endif /* CONFIG_MEDIA_CONTROLLER */
++}
++EXPORT_SYMBOL_GPL(v4l_disable_media_tuner);
  
- 	*nplanes = 1;
- 	sizes[0] = size;
--
--	au0828_enable_analog_tuner(dev);
--
- 	return 0;
- }
+ /* Priority handling */
+ 
+diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
+index eeabf20..68999a3 100644
+--- a/include/media/v4l2-dev.h
++++ b/include/media/v4l2-dev.h
+@@ -87,6 +87,7 @@ struct video_device
+ #if defined(CONFIG_MEDIA_CONTROLLER)
+ 	struct media_entity entity;
+ 	struct media_intf_devnode *intf_devnode;
++	struct media_pipeline pipe;
+ #endif
+ 	/* device ops */
+ 	const struct v4l2_file_operations *fops;
+@@ -176,6 +177,9 @@ void video_unregister_device(struct video_device *vdev);
+    latter can also be used for video_device->release(). */
+ struct video_device * __must_check video_device_alloc(void);
+ 
++int v4l_enable_media_tuner(struct video_device *vdev);
++void v4l_disable_media_tuner(struct video_device *vdev);
++
+ /* this release function frees the vdev pointer */
+ void video_device_release(struct video_device *vdev);
  
 -- 
 2.1.4
