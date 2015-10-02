@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Allow 4 channel recording on
-	AIF1" to the asoc tree
-Date: Fri, 02 Oct 2015 18:13:42 +0100
-Message-ID: <E1Zi3tu-000807-47@finisterre>
-References: <1443472357-12150-1-git-send-email-benzh@chromium.org>
+Subject: Applied "ASoC: topology: ABI - Add configuration for
+	BE & Codec-Codec DAI Links" to the asoc tree
+Date: Fri, 02 Oct 2015 18:13:48 +0100
+Message-ID: <E1Zi3u0-00083h-0q@finisterre>
+References: <5a1fe81777b8416e5acc3a854aa88d8c09ab6ce3.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C442A260686
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:51 +0200 (CEST)
-In-Reply-To: <1443472357-12150-1-git-send-email-benzh@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8FAF260831
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:53 +0200 (CEST)
+In-Reply-To: <5a1fe81777b8416e5acc3a854aa88d8c09ab6ce3.1443602494.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Vedang Patel <vedang.patel@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Allow 4 channel recording on AIF1
+   ASoC: topology: ABI - Add configuration for BE & Codec-Codec DAI Links
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From fbe039bb0815e6113f82021aa8c0e36a1941f511 Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Mon, 28 Sep 2015 13:32:37 -0700
-Subject: [PATCH] ASoC: rt5645: Allow 4 channel recording on AIF1
+>From e2a9df656f28e42538562d090e2b6f3dec5b41f2 Mon Sep 17 00:00:00 2001
+From: Vedang Patel <vedang.patel@intel.com>
+Date: Wed, 30 Sep 2015 17:32:22 +0800
+Subject: [PATCH] ASoC: topology: ABI - Add configuration for BE & Codec-Codec
+ DAI Links
 
-The codec supports 4 channel recording with TDM on AIF1.
-This patch modifies the DAI capability to allow it.
+struct snd_soc_tplg_link_config is defined to configure BE & CC links.
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Vedang Patel <vedang.patel@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/sound/asoc.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 1f7045bc..66b7332e 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3113,7 +3113,7 @@ static struct snd_soc_dai_driver rt5645_dai[] = {
- 		.capture = {
- 			.stream_name = "AIF1 Capture",
- 			.channels_min = 1,
--			.channels_max = 2,
-+			.channels_max = 4,
- 			.rates = RT5645_STEREO_RATES,
- 			.formats = RT5645_FORMATS,
- 		},
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index f75fd29..538ea13 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -395,4 +395,21 @@ struct snd_soc_tplg_pcm {
+ 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
+ } __attribute__((packed));
+ 
++
++/*
++ * Describes the BE or CC link runtime supported configs or params
++ *
++ * File block representation for BE/CC link config :-
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_hdr           |  1  |
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_link_config   |  N  |
++ * +-----------------------------------+-----+
++ */
++struct snd_soc_tplg_link_config {
++	__le32 size;            /* in bytes of this structure */
++	__le32 id;              /* unique ID - used to match */
++	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
++	__le32 num_streams;     /* number of streams */
++} __attribute__((packed));
+ #endif
 -- 
 2.5.0
