@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 17/20] media: au0828 change to register/unregister entity_notify hook
-Date: Fri,  2 Oct 2015 16:07:29 -0600
-Message-ID: <c8148c1fa875207148b4cc852c912359ad3c1e71.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 12/20] media: Change v4l-core to check for tuner availability
+Date: Fri,  2 Oct 2015 16:07:24 -0600
+Message-ID: <e2c7baac1e6c4b81765583425ec33914310697f1.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,284 +12,132 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-au0828 registers entity_notify hook to create media graph for
-the device. This handler runs whenvere a new entity gets added
-to the media device. It creates necessary links from video, vbi,
-and ALSA entities to decoder and links tuner and decoder entities.
-As this handler runs as entities get added, it has to maintain
-state on the links it already created. New fields are added to
-au0828_dev to keep this state information. entity_notify gets
-unregistered before media_device unregister.
+Change s_input, s_fmt, s_tuner, s_frequency, querystd,
+s_hw_freq_seek, and vb2_internal_streamon interfaces that
+alter the tuner configuration to check for tuner availability
+by calling v4l_enable_media_tuner(). If tuner isn't free,
+return -EBUSY. v4l_disable_media_tuner() is called from
+v4l2_fh_exit() to release the tuner.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 178 ++++++++++++++++++---------------
- drivers/media/usb/au0828/au0828.h      |   6 ++
- 2 files changed, 102 insertions(+), 82 deletions(-)
+ drivers/media/v4l2-core/v4l2-fh.c        |  1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c     | 29 +++++++++++++++++++++++++++++
+ drivers/media/v4l2-core/videobuf2-core.c |  3 +++
+ 3 files changed, 33 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 544d304..ade89d9 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -137,6 +137,8 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	if (dev->media_dev &&
- 	    media_devnode_is_registered(&dev->media_dev->devnode)) {
-+		media_device_unregister_entity_notify(dev->media_dev,
-+						      &dev->entity_notify);
- 		media_device_unregister(dev->media_dev);
- 		dev->media_dev = NULL;
- 	}
-@@ -215,52 +217,22 @@ static void au0828_usb_disconnect(struct usb_interface *interface)
- 	au0828_usb_release(dev);
- }
- 
--static void au0828_media_device_register(struct au0828_dev *dev,
--					  struct usb_device *udev)
--{
--#ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device *mdev;
--	int ret;
--
--	mdev = media_device_get_devres(&udev->dev);
--	if (!mdev)
--		return;
--
--	if (!media_devnode_is_registered(&mdev->devnode)) {
--		/* register media device */
--		mdev->dev = &udev->dev;
--
--		if (udev->product)
--			strlcpy(mdev->model, udev->product,
--				sizeof(mdev->model));
--		if (udev->serial)
--			strlcpy(mdev->serial, udev->serial,
--				sizeof(mdev->serial));
--		strcpy(mdev->bus_info, udev->devpath);
--		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--		ret = media_device_register(mdev);
--		if (ret) {
--			dev_err(&udev->dev,
--				"Couldn't create a media device. Error: %d\n",
--				ret);
--			return;
--		}
--	}
--	dev->media_dev = mdev;
--#endif
--}
--
--
--static int au0828_create_media_graph(struct au0828_dev *dev)
-+void au0828_create_media_graph(struct media_entity *new, void *notify_data)
+diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
+index c97067a..538db62 100644
+--- a/drivers/media/v4l2-core/v4l2-fh.c
++++ b/drivers/media/v4l2-core/v4l2-fh.c
+@@ -92,6 +92,7 @@ void v4l2_fh_exit(struct v4l2_fh *fh)
  {
- #ifdef CONFIG_MEDIA_CONTROLLER
-+	struct au0828_dev *dev = (struct au0828_dev *) notify_data;
- 	struct media_device *mdev = dev->media_dev;
- 	struct media_entity *entity;
- 	struct media_entity *tuner = NULL, *decoder = NULL;
-+	struct media_entity *audio_capture = NULL;
- 	int i, ret;
- 
- 	if (!mdev)
--		return 0;
-+		return;
-+
-+	if (dev->tuner_linked && dev->vdev_linked && dev->vbi_linked &&
-+	    dev->audio_capture_linked)
-+		return;
- 
- 	media_device_for_each_entity(entity, mdev) {
- 		switch (entity->function) {
-@@ -270,6 +242,9 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
- 		case MEDIA_ENT_F_ATV_DECODER:
- 			decoder = entity;
- 			break;
-+		case MEDIA_ENT_F_AUDIO_CAPTURE:
-+			audio_capture = entity;
-+			break;
- 		}
- 	}
- 
-@@ -277,65 +252,111 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
- 
- 	/* Something bad happened! */
- 	if (!decoder)
--		return -EINVAL;
-+		return;
- 
--	if (tuner) {
-+	if (tuner && !dev->tuner_linked) {
-+		dev->tuner = tuner;
- 		ret = media_create_pad_link(tuner, TUNER_PAD_IF_OUTPUT,
- 					    decoder, 0,
- 				            MEDIA_LNK_FL_ENABLED);
--		if (ret)
--			return ret;
-+		if (ret == 0)
-+			dev->tuner_linked = 1;
- 	}
- 
--	if (dev->vdev.entity.graph_obj.mdev) {
-+	if (dev->vdev.entity.graph_obj.mdev && !dev->vdev_linked) {
- 		ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
- 					    &dev->vdev.entity, 0,
- 					    MEDIA_LNK_FL_ENABLED);
--		if (ret)
--			return ret;
-+		if (ret == 0)
-+			dev->vdev_linked = 1;
- 	}
--	if (dev->vbi_dev.entity.graph_obj.mdev) {
-+
-+	if (dev->vbi_dev.entity.graph_obj.mdev && !dev->vbi_linked) {
- 		ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
- 					    &dev->vbi_dev.entity, 0,
- 					    MEDIA_LNK_FL_ENABLED);
--		if (ret)
--			return ret;
--	}
-+		if (ret == 0)
-+			dev->vbi_linked = 1;
- 
--	for (i = 0; i < AU0828_MAX_INPUT; i++) {
--		struct media_entity *ent = &dev->input_ent[i];
-+		/* Input entities are registered before vbi entity */
-+		for (i = 0; i < AU0828_MAX_INPUT; i++) {
-+			struct media_entity *ent = &dev->input_ent[i];
- 
--		if (!ent->graph_obj.mdev)
--			continue;
-+			if (!ent->graph_obj.mdev)
-+				continue;
- 
--		if (AUVI_INPUT(i).type == AU0828_VMUX_UNDEFINED)
--			break;
-+			if (AUVI_INPUT(i).type == AU0828_VMUX_UNDEFINED)
-+				break;
- 
--		switch(AUVI_INPUT(i).type) {
--		case AU0828_VMUX_CABLE:
--		case AU0828_VMUX_TELEVISION:
--		case AU0828_VMUX_DVB:
--			if (!tuner)
-+			switch (AUVI_INPUT(i).type) {
-+			case AU0828_VMUX_CABLE:
-+			case AU0828_VMUX_TELEVISION:
-+			case AU0828_VMUX_DVB:
-+				if (!tuner)
-+					break;
-+
-+				media_create_pad_link(ent, 0, tuner,
-+						      TUNER_PAD_RF_INPUT,
-+						      MEDIA_LNK_FL_ENABLED);
-+				break;
-+			case AU0828_VMUX_COMPOSITE:
-+			case AU0828_VMUX_SVIDEO:
-+			default: /* AU0828_VMUX_DEBUG */
-+				/* FIXME: fix the decoder PAD */
-+				media_create_pad_link(ent, 0, decoder, 0, 0);
- 				break;
-+			}
-+		}
-+	}
- 
--			ret = media_create_pad_link(ent, 0, tuner,
--						    TUNER_PAD_RF_INPUT,
--						    MEDIA_LNK_FL_ENABLED);
--			if (ret)
--				return ret;
--			break;
--		case AU0828_VMUX_COMPOSITE:
--		case AU0828_VMUX_SVIDEO:
--		default: /* AU0828_VMUX_DEBUG */
--			/* FIXME: fix the decoder PAD */
--			ret = media_create_pad_link(ent, 0, decoder, 0, 0);
--			if (ret)
--				return ret;
--			break;
-+	if (audio_capture && !dev->audio_capture_linked) {
-+		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
-+					    audio_capture, 0,
-+					    MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->audio_capture_linked = 1;
-+	}
-+#endif
-+}
-+
-+static void au0828_media_device_register(struct au0828_dev *dev,
-+					  struct usb_device *udev)
-+{
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	struct media_device *mdev;
+ 	if (fh->vdev == NULL)
+ 		return;
++	v4l_disable_media_tuner(fh->vdev);
+ 	v4l2_event_unsubscribe_all(fh);
+ 	fh->vdev = NULL;
+ }
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 4a384fc..af6dd2f 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1035,6 +1035,12 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
+ static int v4l_s_input(const struct v4l2_ioctl_ops *ops,
+ 				struct file *file, void *fh, void *arg)
+ {
++	struct video_device *vfd = video_devdata(file);
 +	int ret;
 +
-+	mdev = media_device_get_devres(&udev->dev);
-+	if (!mdev)
-+		return;
-+
-+	if (!media_devnode_is_registered(&mdev->devnode)) {
-+		/* register media device */
-+		mdev->dev = &udev->dev;
-+
-+		if (udev->product)
-+			strlcpy(mdev->model, udev->product,
-+				sizeof(mdev->model));
-+		if (udev->serial)
-+			strlcpy(mdev->serial, udev->serial,
-+				sizeof(mdev->serial));
-+		strcpy(mdev->bus_info, udev->devpath);
-+		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
-+		ret = media_device_register(mdev);
-+		if (ret) {
-+			dev_err(&udev->dev,
-+				"Couldn't create a media device. Error: %d\n",
-+				ret);
-+			return;
- 		}
- 	}
-+	/* register entity_notify callback */
-+	dev->entity_notify.notify_data = (void *) dev;
-+	dev->entity_notify.notify = au0828_create_media_graph;
-+	media_device_register_entity_notify(mdev, &dev->entity_notify);
-+
-+	dev->media_dev = mdev;
- #endif
--	return 0;
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	return ops->vidioc_s_input(file, fh, *(unsigned int *)arg);
  }
  
- static int au0828_usb_probe(struct usb_interface *interface,
-@@ -450,13 +471,6 @@ static int au0828_usb_probe(struct usb_interface *interface,
+@@ -1433,6 +1439,9 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
+ 	int ret;
  
- 	mutex_unlock(&dev->lock);
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	v4l_sanitize_format(p);
  
--	retval = au0828_create_media_graph(dev);
--	if (retval) {
--		pr_err("%s() au0282_dev_register failed to create graph\n",
--		       __func__);
--		au0828_usb_disconnect(interface);
--	}
--
- 	return retval;
- }
+ 	switch (p->type) {
+@@ -1612,7 +1621,11 @@ static int v4l_s_tuner(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	struct v4l2_tuner *p = arg;
++	int ret;
  
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index b7940c5..3874906f 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -282,6 +282,12 @@ struct au0828_dev {
- 	struct media_entity *decoder;
- 	struct media_entity input_ent[AU0828_MAX_INPUT];
- 	struct media_pad input_pad[AU0828_MAX_INPUT];
-+	struct media_entity_notify entity_notify;
-+	struct media_entity *tuner;
-+	bool tuner_linked;
-+	bool vdev_linked;
-+	bool vbi_linked;
-+	bool audio_capture_linked;
- #endif
- };
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+ 			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
+ 	return ops->vidioc_s_tuner(file, fh, p);
+@@ -1650,7 +1663,11 @@ static int v4l_s_frequency(const struct v4l2_ioctl_ops *ops,
+ 	struct video_device *vfd = video_devdata(file);
+ 	const struct v4l2_frequency *p = arg;
+ 	enum v4l2_tuner_type type;
++	int ret;
  
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	if (vfd->vfl_type == VFL_TYPE_SDR) {
+ 		if (p->type != V4L2_TUNER_ADC && p->type != V4L2_TUNER_RF)
+ 			return -EINVAL;
+@@ -1705,7 +1722,11 @@ static int v4l_s_std(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	v4l2_std_id id = *(v4l2_std_id *)arg, norm;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	norm = id & vfd->tvnorms;
+ 	if (vfd->tvnorms && !norm)	/* Check if std is supported */
+ 		return -EINVAL;
+@@ -1719,7 +1740,11 @@ static int v4l_querystd(const struct v4l2_ioctl_ops *ops,
+ {
+ 	struct video_device *vfd = video_devdata(file);
+ 	v4l2_std_id *p = arg;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	/*
+ 	 * If no signal is detected, then the driver should return
+ 	 * V4L2_STD_UNKNOWN. Otherwise it should return tvnorms with
+@@ -1738,7 +1763,11 @@ static int v4l_s_hw_freq_seek(const struct v4l2_ioctl_ops *ops,
+ 	struct video_device *vfd = video_devdata(file);
+ 	struct v4l2_hw_freq_seek *p = arg;
+ 	enum v4l2_tuner_type type;
++	int ret;
+ 
++	ret = v4l_enable_media_tuner(vfd);
++	if (ret)
++		return ret;
+ 	/* s_hw_freq_seek is not supported for SDR for now */
+ 	if (vfd->vfl_type == VFL_TYPE_SDR)
+ 		return -EINVAL;
+diff --git a/drivers/media/v4l2-core/videobuf2-core.c b/drivers/media/v4l2-core/videobuf2-core.c
+index b866a6b..6ea6ad3 100644
+--- a/drivers/media/v4l2-core/videobuf2-core.c
++++ b/drivers/media/v4l2-core/videobuf2-core.c
+@@ -2275,6 +2275,9 @@ static int vb2_internal_streamon(struct vb2_queue *q, enum v4l2_buf_type type)
+ 	 * are available.
+ 	 */
+ 	if (q->queued_count >= q->min_buffers_needed) {
++		ret = v4l_enable_media_tuner(q->owner->vdev);
++		if (ret)
++			return ret;
+ 		ret = vb2_start_streaming(q);
+ 		if (ret) {
+ 			__vb2_queue_cancel(q);
 -- 
 2.1.4
