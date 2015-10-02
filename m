@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 09/20] media: au8522 change to create MC pad for ALSA Audio Out
-Date: Fri,  2 Oct 2015 16:07:21 -0600
-Message-ID: <3f1c71ce5febd9376fb95280858256f42a79001a.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 05/20] media: Media Controller export non locking __media_entity_setup_link()
+Date: Fri,  2 Oct 2015 16:07:17 -0600
+Message-ID: <be68adb0a1119de9ce6905451292ecbb6fe6dfb5.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,37 +12,25 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add new pad for ALSA Audio Out to au8522_media_pads.
+Export __media_entity_setup_link() to be used from code paths that hold
+the graph_mutex.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/dvb-frontends/au8522.h         | 1 +
- drivers/media/dvb-frontends/au8522_decoder.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/media/media-entity.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
-index 3c72f40..d7a997f 100644
---- a/drivers/media/dvb-frontends/au8522.h
-+++ b/drivers/media/dvb-frontends/au8522.h
-@@ -94,6 +94,7 @@ enum au8522_media_pads {
- 	AU8522_PAD_INPUT,
- 	AU8522_PAD_VID_OUT,
- 	AU8522_PAD_VBI_OUT,
-+	AU8522_PAD_AUDIO_OUT,
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 797b7b3..49a8755 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -811,6 +811,7 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
  
- 	AU8522_NUM_PADS
- };
-diff --git a/drivers/media/dvb-frontends/au8522_decoder.c b/drivers/media/dvb-frontends/au8522_decoder.c
-index 39fab1a..655dee8 100644
---- a/drivers/media/dvb-frontends/au8522_decoder.c
-+++ b/drivers/media/dvb-frontends/au8522_decoder.c
-@@ -775,6 +775,7 @@ static int au8522_probe(struct i2c_client *client,
- 	state->pads[AU8522_PAD_INPUT].flags = MEDIA_PAD_FL_SINK;
- 	state->pads[AU8522_PAD_VID_OUT].flags = MEDIA_PAD_FL_SOURCE;
- 	state->pads[AU8522_PAD_VBI_OUT].flags = MEDIA_PAD_FL_SOURCE;
-+	state->pads[AU8522_PAD_AUDIO_OUT].flags = MEDIA_PAD_FL_SOURCE;
- 	sd->entity.function = MEDIA_ENT_F_ATV_DECODER;
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(__media_entity_setup_link);
  
- 	ret = media_entity_init(&sd->entity, ARRAY_SIZE(state->pads),
+ int media_entity_setup_link(struct media_link *link, u32 flags)
+ {
 -- 
 2.1.4
