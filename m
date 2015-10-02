@@ -1,45 +1,33 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
- element to snd_soc_tplg_stream
-Date: Fri, 02 Oct 2015 19:04:15 +0100
-Message-ID: <1443809055.10986.10.camel@loki>
-References: <cover.1443605139.git.mengdong.lin@intel.com>
- <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
- <20151002165907.GU12635@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BC8C260668
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 20:04:28 +0200 (CEST)
-In-Reply-To: <20151002165907.GU12635@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, vedang.patel@intel.com
+From: Laura Abbott <labbott@fedoraproject.org>
+Subject: [PATCH] ALSA: hda: Add dock support for ThinkPad T550
+Date: Fri,  2 Oct 2015 11:09:54 -0700
+Message-ID: <1443809394-3691-1-git-send-email-labbott@fedoraproject.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Laura Abbott <labbott@fedoraproject.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-10-02 at 17:59 +0100, Mark Brown wrote:
-> On Wed, Sep 30, 2015 at 05:31:34PM +0800, mengdong.lin@intel.com wrote:
-> > From: Vedang Patel <vedang.patel@intel.com>
-> > 
-> > For codec-codec links, this struct will be mapped to the DAI links's
-> > params, which is struct snd_soc_pcm_stream and it needs a stream name.
-> 
-> OK, so this means that every DAI link name is going to become an ABI
-> too if there's a topology in there.  Not a problem but we'll need to
-> watch out for that on review...  I wonder if I can make some automated
-> checker thing.
+Much like all the other Lenovo laptops, add a quirk to make
+sound work with docking.
 
-Probably good to discuss at ELCE as there may be other things that can
-be auto-checked too ....
+Reported-and-tested-by: lacknerflo@gmail.com
+Signed-off-by: Laura Abbott <labbott@fedoraproject.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Liam
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index afec6dc..16b8dcb 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5306,6 +5306,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad X240", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
++	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+-- 
+2.4.3
