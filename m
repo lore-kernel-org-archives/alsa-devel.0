@@ -1,63 +1,66 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 04/20] media: Media Controller fix to not let stream_count go negative
-Date: Fri,  2 Oct 2015 16:07:16 -0600
-Message-ID: <28bf43b07b9ffbd90e6fae27b6a95ca07288b81b.1443822799.git.shuahkh@osg.samsung.com>
-References: <cover.1443822799.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
-References: <cover.1443822799.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, tiwai@suse.de, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, dan.carpenter@oracle.com, tskd08@gmail.com, arnd@arndb.de, ruchandani.tina@gmail.com, corbet@lwn.net, k.kozlowski@samsung.com, chehabrafael@gmail.com, prabhakar.csengg@gmail.com, elfring@users.sourceforge.net, Julia.Lawall@lip6.fr, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, chris.j.arges@canonical.com, pierre-louis.bossart@linux.intel.com, johan@oljud.se, wsa@the-dreams.de, jcragg@gmail.com, clemens@ladisch.de, daniel@zonque.org, gtmkramer@xs4all.nl, misterpib@gmail.com, takamichiho@gmail.com, pmatilai@laiskiainen.org, vladcatoi@gmail.com, damien@zamaudio.com, normalperson@yhbt.net, joe@oampo.co.uk, jussi@sonarnerd.netca
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Kernel Device Tree entries for simple-audio-card
+Date: Fri, 2 Oct 2015 15:32:01 -0700
+Message-ID: <EA2F8DB5-ACC0-4D32-9F67-807A0524AC03@latencyzero.com>
+References: <4D7C68FE-B884-489C-91DD-395FE7CE181D@latencyzero.com>
+ <CAG5mAdxc5-UuTnz24zByA64ZsrB4qnfMKF57GBVeFfWvY44xsw@mail.gmail.com>
+ <4D1E67E6-437D-490D-A577-35EB7E474A3A@latencyzero.com>
+ <CAG5mAdxnjZUBiOFU6+MBn0znUCBaGpeVQ-RaYhXch=-4n7J4uw@mail.gmail.com>
+ <F3A7E580-2E91-45D0-9C27-2FD190110686@latencyzero.com>
+ <CAG5mAdxgTzGjnvwno0D_Jo9_53stmGfsc9OQS05f3thrSFKpkw@mail.gmail.com>
+ <BE1F1488-2A4D-4EE6-A538-931DD0B34CD8@latencyzero.com>
+ <CAG5mAdzg2BSGKiaBJVSgZvL=9wxffxv_3LMiruS2-kcuTKO+xQ@mail.gmail.com>
+ <D8BC8B49-E32C-43EE-B181-60510C7B3E8E@latencyzero.com>
+ <CAG5mAdxaAapawiaaR_zasVhQKL33MHEHP1yyUCSLv0wswZ9Law@mail.gmail.com>
+ <7CCA3F5A-844A-43FF-9A4E-C0A9FB65D926@latencyzero.com>
+ <CAG5mAdyOSDt7F5czW_9EBvo3uBCW9834-1VZsXG0mvYiB1LM8g@mail.gmail.com>
+ <74203CDA-1965-48ED-AA9A-95DC9A8D83E6@latencyzero.com>
+ <532A774B-EA9D-4633-B7B4-4236746B92FE@crome.org>
+ <869D210F-8882-4067-8593-18B2BE3197E8@latencyzero.com>
+ <CAG5mAdzmH-eOMo2_prVcMFzsQxXxs667GbVSyNDx9YCiijBYEQ@mail.gmail.com>
+ <8E76EDAB-814B-46B9-A6C6-03D3184C6BA9@latencyzero.com>
+ <88789DC1-3647-46F0-A0EC-2E238A43DD57@crome.org>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id DC747261507
+ for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2015 00:32:02 +0200 (CEST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id B78D320C8E
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 18:32:01 -0400 (EDT)
+In-Reply-To: <88789DC1-3647-46F0-A0EC-2E238A43DD57@crome.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Caleb Crome <caleb@crome.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a range check to not let the stream_count become negative.
-Wthout this check, calls to stop pipeline when there is no active
-pipeline will result in stream_count < 0 condition and lock and
-preventing link state (activate/deactivate) changes. This will
-happen from error leg in start pipeline interface.
-
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/media-entity.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index eaeda25..797b7b3 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -502,9 +502,12 @@ error:
- 	media_entity_graph_walk_start(&graph, entity_err);
- 
- 	while ((entity_err = media_entity_graph_walk_next(&graph))) {
--		entity_err->stream_count--;
--		if (entity_err->stream_count == 0)
--			entity_err->pipe = NULL;
-+		/* don't let the stream_count go negative */
-+		if (entity->stream_count > 0) {
-+			entity_err->stream_count--;
-+			if (entity_err->stream_count == 0)
-+				entity_err->pipe = NULL;
-+		}
- 
- 		/*
- 		 * We haven't increased stream_count further than this
-@@ -542,9 +545,12 @@ void media_entity_pipeline_stop(struct media_entity *entity)
- 	media_entity_graph_walk_start(&graph, entity);
- 
- 	while ((entity = media_entity_graph_walk_next(&graph))) {
--		entity->stream_count--;
--		if (entity->stream_count == 0)
--			entity->pipe = NULL;
-+		/* don't let the stream_count go negative */
-+		if (entity->stream_count > 0) {
-+			entity->stream_count--;
-+			if (entity->stream_count == 0)
-+				entity->pipe = NULL;
-+		}
- 	}
- 
- 	mutex_unlock(&mdev->graph_mutex);
--- 
-2.1.4
+Cj4gT24gT2N0IDIsIDIwMTUsIGF0IDA4OjI1ICwgQ2FsZWIgQ3JvbWUgPGNhbGViQGNyb21lLm9y
+Zz4gd3JvdGU6Cj4gCj4gCj4gU2VudCBmcm9tIG15IGlQaG9uZQo+IAo+PiBPbiBPY3QgMiwgMjAx
+NSwgYXQgMjo1NSBBTSwgUmljayBNYW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+
+PiAKPj4gCj4+IEl0J3MgcHJldHR5IGV4YWN0bHkgMjQuMDAgTUh6LCDCsTAuMDIgTUh6Lgo+PiAK
+PiAKPiBPaCwgaXQncyBjb21pbmcgYmFjayB0byBtZS4gIFBlcmhhcHMgMjQgTUh6IGlzIGFsbCB0
+aGUgcGluIGNhbiBwdXQgb3V0LiAgU28gaWYgeW91IHNldCB5b3VyIHN5c2NsayB0byAyNCBNSHos
+IHRoZW4gdGhlIFBMTCB3aWxsIGdldCBzZXQgdG8gdGhlIHJpZ2h0IHRoaW5nLCBhbmQgZ2l2ZSB5
+b3UgdGhlIHJpZ2h0IGNsb2Nrcy4gIAo+IAo+IE15IGJvYXJkIGhhcyBpdHMgb3duIGNsb2NrLCBz
+byBJIGRvbid0IGFjdHVhbGx5IHVzZSB0aGUgbWNsayBmcm9tIHRoZSBiYmIuICAKCldlbGwsIHRo
+ZSBvdGhlciBBdWRpbyBDYXBlIChmcm9tIENpcmN1aXRjbykgc2VlbXMgdG8gZ2V0IGJ5IHNwZWNp
+ZnlpbmcgMTIgTUh6LiBJJ2xsIHRyeSBzZXR0aW5nIGl0IHRvIDI0LCBidXQgaXQgc2VlbXMgd2Vp
+cmQgdGhhdCB0aGV5IGNhbiB1c2UgMTIgYW5kIEkgY2FuJ3QuIE1heWJlIHRoZXkgY2FuIG9ubHkg
+dXNlIDEyIGluIHRoZSAzLjgueCBrZXJuZWwsIGFuZCBzb21ldGhpbmcgYnJva2Ugc2luY2UgdGhl
+bj8KCgo+IAo+IAo+IEFsc28sIHlvdSBjYW4gdXNlIERTUCBtb2RlIGZvciBzdGVyZW8ganVzdCBm
+aW5lLiAgSSBkb24ndCB0aGluayB5b3UgbmVlZCB0byB3b3JyeSBhYm91dCB0aGF0IGF0IGFsbCBh
+cyBsb25nIGFzIGJvdGggc2lkZXMgcmVjb2duaXplIHRoZSBmb3JtYXQuCgpHb29kIHRvIGtub3cu
+CgotLSAKUmljayBNYW5uCnJtYW5uQGxhdGVuY3l6ZXJvLmNvbQoKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
