@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 05/20] media: Media Controller export non locking __media_entity_setup_link()
-Date: Fri,  2 Oct 2015 16:07:17 -0600
-Message-ID: <be68adb0a1119de9ce6905451292ecbb6fe6dfb5.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 08/20] media: Move au8522_media_pads enum to au8522.h from au8522_priv.h
+Date: Fri,  2 Oct 2015 16:07:20 -0600
+Message-ID: <2d0214f44644c53e5180635d3fe8023b04449a5c.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,25 +12,51 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Export __media_entity_setup_link() to be used from code paths that hold
-the graph_mutex.
+Move the au8522_media_pads enum to au8522.h from au8522_priv.h.
+This will allow au0828-core to use these defines instead of
+hard-coding the pad values when it creates media graph linking
+decode pads to other entities.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/media-entity.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/dvb-frontends/au8522.h      | 7 +++++++
+ drivers/media/dvb-frontends/au8522_priv.h | 8 --------
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index 797b7b3..49a8755 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -811,6 +811,7 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
+diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
+index dde6158..3c72f40 100644
+--- a/drivers/media/dvb-frontends/au8522.h
++++ b/drivers/media/dvb-frontends/au8522.h
+@@ -90,4 +90,11 @@ enum au8522_audio_input {
+ 	AU8522_AUDIO_SIF,
+ };
  
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(__media_entity_setup_link);
++enum au8522_media_pads {
++	AU8522_PAD_INPUT,
++	AU8522_PAD_VID_OUT,
++	AU8522_PAD_VBI_OUT,
++
++	AU8522_NUM_PADS
++};
+ #endif /* __AU8522_H__ */
+diff --git a/drivers/media/dvb-frontends/au8522_priv.h b/drivers/media/dvb-frontends/au8522_priv.h
+index d6209d9..4c2a6ed 100644
+--- a/drivers/media/dvb-frontends/au8522_priv.h
++++ b/drivers/media/dvb-frontends/au8522_priv.h
+@@ -39,14 +39,6 @@
+ #define AU8522_DIGITAL_MODE 1
+ #define AU8522_SUSPEND_MODE 2
  
- int media_entity_setup_link(struct media_link *link, u32 flags)
- {
+-enum au8522_media_pads {
+-	AU8522_PAD_INPUT,
+-	AU8522_PAD_VID_OUT,
+-	AU8522_PAD_VBI_OUT,
+-
+-	AU8522_NUM_PADS
+-};
+-
+ struct au8522_state {
+ 	struct i2c_client *c;
+ 	struct i2c_adapter *i2c;
 -- 
 2.1.4
