@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Remove tdm_slot &
-	dai_fmt from snd_soc_tplg_stream" to the asoc tree
-Date: Fri, 02 Oct 2015 18:13:47 +0100
-Message-ID: <E1Zi3tz-000836-1K@finisterre>
-References: <30ca5b75b0eb2dc29ab9cbbb8c83d180799a91cd.1443602494.git.mengdong.lin@intel.com>
+Subject: Applied "ASoC: topology: ABI - Remove unused struct
+	snd_soc_tplg_stream_config" to the asoc tree
+Date: Fri, 02 Oct 2015 18:13:52 +0100
+Message-ID: <E1Zi3u4-00086Z-Rl@finisterre>
+References: <483a16f54f7ec31bce216f07973431938d1a0dc2.1443602494.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AD6F260789
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:53 +0200 (CEST)
-In-Reply-To: <30ca5b75b0eb2dc29ab9cbbb8c83d180799a91cd.1443602494.git.mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 694C0266962
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:58 +0200 (CEST)
+In-Reply-To: <483a16f54f7ec31bce216f07973431938d1a0dc2.1443602494.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>
+To: Vedang Patel <vedang.patel@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: ABI - Remove tdm_slot & dai_fmt from snd_soc_tplg_stream
+   ASoC: topology: ABI - Remove unused struct snd_soc_tplg_stream_config
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 76a822a6ae9c0c67309318bb60a4117329252fc4 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@intel.com>
-Date: Wed, 30 Sep 2015 17:32:40 +0800
-Subject: [PATCH] ASoC: topology: ABI - Remove tdm_slot & dai_fmt from
- snd_soc_tplg_stream
+>From 7654855ef84d78079109bb38195a8db6b188117b Mon Sep 17 00:00:00 2001
+From: Vedang Patel <vedang.patel@intel.com>
+Date: Wed, 30 Sep 2015 17:29:47 +0800
+Subject: [PATCH] ASoC: topology: ABI - Remove unused struct
+ snd_soc_tplg_stream_config
 
-These two fields are line parameters for BE/CC links and
-should not be from toplogy but from ACPI.
+The struct snd_soc_tplg_stream_config is no longer used in the ABI.
+We are using snd_soc_tplg_stream instead.
 
+Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 2 --
- 1 file changed, 2 deletions(-)
+ include/uapi/sound/asoc.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 538ea13..26539a7 100644
+index 2aa081c..4bef63f 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -224,8 +224,6 @@ struct snd_soc_tplg_stream {
- 	__le32 period_bytes;	/* size of period in bytes */
- 	__le32 buffer_bytes;	/* size of buffer in bytes */
- 	__le32 channels;	/* channels */
--	__le32 tdm_slot;	/* optional BE bitmask of supported TDM slots */
--	__le32 dai_fmt;		/* SND_SOC_DAIFMT_  */
+@@ -227,16 +227,6 @@ struct snd_soc_tplg_stream {
  } __attribute__((packed));
  
  /*
+- * Duplex stream configuration supported by SW/FW.
+- */
+-struct snd_soc_tplg_stream_config {
+-	__le32 size;		/* in bytes of this structure */
+-	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+-	struct snd_soc_tplg_stream playback;
+-	struct snd_soc_tplg_stream capture;
+-} __attribute__((packed));
+-
+-/*
+  * Manifest. List totals for each payload type. Not used in parsing, but will
+  * be passed to the component driver before any other objects in order for any
+  * global component resource allocations.
 -- 
 2.5.0
