@@ -1,72 +1,65 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Subject: Re: [PATCH] ASoC: Document DAI signal polarity
-Date: Fri, 2 Oct 2015 19:01:42 +0200
-Message-ID: <CA+sos7-Q8OddVOYzoSVykTz5-W_DXFyNG_m2NRnx1SAHyOPuHg@mail.gmail.com>
-References: <1443799984-26679-1-git-send-email-anatol.pomozov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop transferring issue
+Date: Fri, 2 Oct 2015 18:03:11 +0100
+Message-ID: <20151002170311.GW12635@sirena.org.uk>
+References: <006401d0fac5$2e4bb840$8ae328c0$@tangramtek.com>
+ <20150930182219.GU15635@sirena.org.uk>
+ <00f401d0fbf0$65f32220$31d96660$@tangramtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id AA672260668
- for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:02:03 +0200 (CEST)
-Received: by oixx17 with SMTP id x17so61066831oix.0
- for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2015 10:02:02 -0700 (PDT)
-In-Reply-To: <1443799984-26679-1-git-send-email-anatol.pomozov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: albertchen@realtek.com, Alsa-devel <alsa-devel@alsa-project.org>, broonie@kernel.org, lars@metafoo.de
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mz5eWKkhz39mMVQV"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <00f401d0fbf0$65f32220$31d96660$@tangramtek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: yitian <yitian.bu@tangramtek.com>
+Cc: alsa-devel@alsa-project.org, wsa@the-dreams.de, linux-kernel@vger.kernel.org, Andrew.Jackson@arm.com, tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-RGVhciBBbmF0b2wgUG9tb3pvdiwKCk9uIEZyaSwgT2N0IDIsIDIwMTUgYXQgNTozMyBQTSwgQW5h
-dG9sIFBvbW96b3YgPGFuYXRvbC5wb21vem92QGdtYWlsLmNvbT4gd3JvdGU6Cj4gQ3VycmVudGx5
-IHRoZXJlIGlzIG5vIGNsZWFyIGRlZmluaXRpb24gb2Ygd2hhdCBGU1lOQyBwb2xhcml0eSBpcy4K
-PiBEaWZmZXJlbnQgZHJpdmVycyB1c2UgaXRzIG93biBkZWZpbml0aW9uIG9mIHdoYXQgaXMgIm5v
-cm1hbCIgYW5kIHdoYXQgaXMKPiAiaW52ZXJ0ZWQiIGZzeW5jLiBUaGlzIGxlYWRzIHRvIGNvbXBh
-dGliaWxpdHkgcHJvYmxlbXMgYmV0d2VlbiBkcml2ZXJzLgo+Cj4gRm9yIGV4YW1wbGUgVGVncmFY
-MSBkcml2ZXIgYXNzdW1lcyB0aGF0IERTUC1BIGZvcm1hdCB3aXRoIGZyYW1lcwo+IHN0YXJ0aW5n
-IGF0IHJpc2luZyBGU1lOQyBlZGdlIGhhcyAiaW52ZXJ0ZWQiIHBvbGFyaXR5LAo+IHdoaWxlIFJU
-NTY3NyBhc3N1bWVzIGl0IGlzICJub3JtYWwiIHBvbGFyaXR5Lgo+Cj4gRXhwbGljaXRseSBzcGVj
-aWZ5IG1lYW5pbmcgb2YgQkNMSy9GU1lOQyBwb2xhcml0eSB0byBhdm9pZCBmdXR1cmUKPiBjb21w
-YXRpYmlsaXR5IHByb2JsZW1zLgo+Cj4gU2lnbmVkLW9mZi1ieTogQW5hdG9sIFBvbW96b3YgPGFu
-YXRvbC5wb21vem92QGdtYWlsLmNvbT4KPiAtLS0KPiAgaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgg
-fCAxNyArKysrKysrKysrKysrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygr
-KSwgMSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvc29jLWRhaS5o
-IGIvaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgKPiBpbmRleCAyZGY5NmIxLi45MWUyZTYxIDEwMDY0
-NAo+IC0tLSBhL2luY2x1ZGUvc291bmQvc29jLWRhaS5oCj4gKysrIGIvaW5jbHVkZS9zb3VuZC9z
-b2MtZGFpLmgKPiBAQCAtNDgsMTAgKzQ4LDI1IEBAIHN0cnVjdCBzbmRfY29tcHJfc3RyZWFtOwo+
-ICAjZGVmaW5lIFNORF9TT0NfREFJRk1UX0dBVEVEICAgICAgICAgICAoMCA8PCA0KSAvKiBjbG9j
-ayBpcyBnYXRlZCAqLwo+Cj4gIC8qCj4gLSAqIERBSSBoYXJkd2FyZSBzaWduYWwgaW52ZXJzaW9u
-cy4KPiArICogREFJIGhhcmR3YXJlIHNpZ25hbCBwb2xhcml0eS4KPiAgICoKPiAgICogU3BlY2lm
-aWVzIHdoZXRoZXIgdGhlIERBSSBjYW4gYWxzbyBzdXBwb3J0IGludmVydGVkIGNsb2NrcyBmb3Ig
-dGhlIHNwZWNpZmllZAo+ICAgKiBmb3JtYXQuCj4gKyAqCj4gKyAqIEJDTEs6Cj4gKyAqIC0gIm5v
-cm1hbCIgcG9sYXJpdHkgbWVhbnMgc2lnbmFsIGlzIGF2YWlsYWJsZSBhdCByaXNpbmcgZWRnZSBv
-ZiBCQ0xLCj4gKyAqIC0gImludmVydGVkIiBwb2xhcml0eSBtZWFucyBzaWduYWwgaXMgYXZhaWxh
-YmxlIGF0IGZhbGxpbmcgZWRnZSBvZiBCQ0xLCj4gKyAqCj4gKyAqIEZTWU5DICJub3JtYWwiIHBv
-bGFyaXR5IGRlcGVuZHMgb24gdGhlIGZyYW1lIGZvcm1hdDoKPiArICogLSBJMlM6IGZyYW1lIGNv
-bnNpc3RzIG9mIGxlZnQgdGhlbiByaWdodCBjaGFubmVsIGRhdGEuIExlZnQgY2hhbm5lbCBzdGFy
-dHMKPiArICogICAgICB3aXRoIGZhbGxpbmcgRlNZTkMgZWRnZSwgcmlnaHQgY2hhbm5lbCBzdGFy
-dHMgd2l0aCByaXNpbmcgRlNZTkMgZWRnZS4KPiArICogLSBMZWZ0L1JpZ2h0IEp1c3RpZmllZDog
-ZnJhbWUgY29uc2lzdHMgb2YgbGVmdCB0aGVuIHJpZ2h0IGNoYW5uZWwgZGF0YS4KPiArICogICAg
-ICBMZWZ0IGNoYW5uZWwgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UsIHJpZ2h0IGNoYW5u
-ZWwgc3RhcnRzIHdpdGgKPiArICogICAgICBmYWxsaW5nIEZTWU5DIGVkZ2UuCj4gKyAqIC0gRFNQ
-IEEvQjogRnJhbWUgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UuCj4gKyAqIC0gQUM5Nzog
-RnJhbWUgc3RhcnRzIHdpdGggcmlzaW5nIEZTWU5DIGVkZ2UuCj4gKyAqCj4gKyAqICJOZWdhdGl2
-ZSIgRlNZTkMgcG9sYXJpdHkgaXMgdGhlIG9uZSBvcHBvc2l0ZSBvZiAibm9ybWFsIiBwb2xhcml0
-eS4KPiAgICovCj4gICNkZWZpbmUgU05EX1NPQ19EQUlGTVRfTkJfTkYgICAgICAgICAgICgwIDw8
-IDgpIC8qIG5vcm1hbCBiaXQgY2xvY2sgKyBmcmFtZSAqLwo+ICAjZGVmaW5lIFNORF9TT0NfREFJ
-Rk1UX05CX0lGICAgICAgICAgICAoMiA8PCA4KSAvKiBub3JtYWwgQkNMSyArIGludiBGUk0gKi8K
-PiAtLQo+IDIuNi4wLnJjMi4yMzAuZzNkZDE1YzAKPgoKUmV2aWV3ZWQtYnk6IEJlbm/DrnQgVGjD
-qWJhdWRlYXUgPGJlbm9pdC50aGViYXVkZWF1LmRldkBnbWFpbC5jb20+CgpCZXN0IHJlZ2FyZHMs
-CkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--mz5eWKkhz39mMVQV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 01, 2015 at 10:24:42AM +0800, yitian wrote:
+
+> I think maybe two reasons:
+> 1. designware I2S IP in my chipset(new design) is using tx empty and rx
+> available signal as the DMA handshaking signal, but it may be not true
+> for all chipsets. If I2S has separate signal as DMA handshaking signal, mask
+> irq should not impact DMA transfer. But Synopsys's engineer recommend us to
+> use
+> tx and rx irq signal as the DMA handshaking signal, meanwhile we cannot find
+> separate DMA handshaking signal from designware's IP spec, that's why tx/rx
+> irq
+> will impact DMA transfer.
+
+If that's what the Synopsis engineers recommend I'd guess that other
+integrations are doing the same thing.
+
+> 2. I am using a FPGA for test, the cpu frequency of it is only 26MHz, that
+> means
+> XRUN is very easy to happen on my board. But I guess most of the developers
+> are using real chipset which can have at least 600MHz frequency so XRUN is
+> not easy to be reproduced. As my test, No XUN, no this bug...
+
+Ah, that might be it - it might just be that other systems are working
+due to race conditions.
+
+--mz5eWKkhz39mMVQV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWDrjPAAoJECTWi3JdVIfQahEH/1njlXeqdFN6Jfv/Ba4Fq6G/
+aUg0QZGJiu4E44Mt5ls4sq4Ydnc4Rr5LxkllSBgfn9b3ZtM6B6gHfpY4RKMMmH3A
+bpcP+6DySQQE5uxCZcmn9dV8YXyQDScHDnfx5dNz/bvanywcZbVgOvGxNHEJSFnU
+HD/DPQzKhylHeoJHBEaO+yloT7VqKGzyHGRFH9zuXBR2csU5yE4jrWMuPErMWUFQ
+KgZkI5JucrJ8svMlhg0saleKandDUCgCLyulc9YZ6Wb6nKsUhfkRvQA3u2YstEWF
+8YpDLDxUpdil7abWQ1U4L/8x5vdKJ+dnuKVgGPz0IwuEvI+WMfa7vFtmCJUxv44=
+=+ZTM
+-----END PGP SIGNATURE-----
+
+--mz5eWKkhz39mMVQV--
