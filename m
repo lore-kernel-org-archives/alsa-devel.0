@@ -1,56 +1,48 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: add sunxi SPDIF
- transceiver bindings
-Date: Fri, 2 Oct 2015 07:24:20 +0200
-Message-ID: <CAEKpxB=kdmrbeiq8M=dXmpccxOhd7UZTaMkLZGo9TdRB1kMz3g@mail.gmail.com>
-References: <1443635458-8873-1-git-send-email-codekipper@gmail.com>
-	<1443635458-8873-2-git-send-email-codekipper@gmail.com>
-	<20151001201215.GN7104@lukather>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt286: Fix the runtime error in the
+	booting
+Date: Fri, 2 Oct 2015 13:30:29 +0800
+Message-ID: <1443763829-9359-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBBNKXCYAKGQEJWHMSYY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151001201215.GN7104@lukather>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3987F2667F3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 07:30:38 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, bardliao@realtek.com, flubba86@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
->> +
->> +  - compatible               : should be one of the following:
->> +    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
->> +    - "allwinner,sun7i-a20-spdif": for the Allwinner A20 SoC
->> +    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
->
-> Are all these compatibles really work? Is there any significant
-> difference between the controller on all these SoCs?
-Let us assume that there isn't any difference. Remember SPDIF details
-for all of these devices is sketchy. In the A10 User Manual, it's not
-even mentioned although devices such as the Mele A2000 which I use
-come with the physical connector. It's only when the A20 Manual was
-released that we see the pin details and related components. We didn't
-see a SPDIF block spec until the H3 User Manual was released.
+The struct rt286_index_def was used by the cache function, so it cannot be
+declared as const.
 
-Looking at the SDK code I've only seen fifo level settings to be
-different for the sun6i family. It was this release that also showed
-Rx rotines. The fact of the matter is we won't know until these SoCs
-have been tested and with that in mind I'm happy to remove all
-capabilities for now until then.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BR,
-CK
-
->
-> Thanks,
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux, Kernel and Android engineering
-> http://free-electrons.com
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 1fbdb4f..79107dc 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -49,7 +49,7 @@ struct rt286_priv {
+ 	int clk_id;
+ };
+ 
+-static const struct reg_default rt286_index_def[] = {
++static struct reg_default rt286_index_def[] = {
+ 	{ 0x01, 0xaaaa },
+ 	{ 0x02, 0x8aaa },
+ 	{ 0x03, 0x0002 },
+-- 
+1.8.1.1.439.g50a6b54
