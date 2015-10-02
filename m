@@ -1,33 +1,47 @@
-From: Laura Abbott <labbott@fedoraproject.org>
-Subject: [PATCH] ALSA: hda: Add dock support for ThinkPad T550
-Date: Fri,  2 Oct 2015 11:09:54 -0700
-Message-ID: <1443809394-3691-1-git-send-email-labbott@fedoraproject.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Laura Abbott <labbott@fedoraproject.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/7] ALSA: firewire-tascam: add skeleton
+	for	TASCAM FireWire series
+Date: Fri, 2 Oct 2015 20:47:38 +0200
+Message-ID: <560ED14A.2060404@ladisch.de>
+References: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
+ <201510012147.nfdOjouA%fengguang.wu@intel.com>
+ <s5hd1wxdyr7.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D9D6A2612BD
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 20:48:17 +0200 (CEST)
+In-Reply-To: <s5hd1wxdyr7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, Stefan Richter <stefanr@s5r6.in-berlin.de>, kbuild test robot <lkp@intel.com>, ffado-devel@lists.sf.net, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Much like all the other Lenovo laptops, add a quirk to make
-sound work with docking.
+Takashi Iwai wrote:
+> kbuild test robot wrote:
+>>>> sound/firewire/tascam/tascam.c:23:16: sparse: cast to restricted __be32
+>>
+>>   > 23		data = be32_to_cpu(fw_dev->config_rom[28]);
+>
+> The code itself looks correct.  data is CPU endian.
+> The problem looks rather like that fw_dev->config_rom[] is u32.
+>
+> Stefan, can it be changed to __be32 instead?
 
-Reported-and-tested-by: lacknerflo@gmail.com
-Signed-off-by: Laura Abbott <labbott@fedoraproject.org>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+config_rom[] is CPU endian, too.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index afec6dc..16b8dcb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5306,6 +5306,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad X240", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
--- 
-2.4.3
+Strings should be read with fw_csr_string().
+
+
+Regards,
+Clemens
