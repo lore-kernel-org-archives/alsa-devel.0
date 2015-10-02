@@ -1,50 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v2 1/1] ASoC: dwc: fix dma stop transferring issue
-Date: Fri, 2 Oct 2015 18:05:44 +0100
-Message-ID: <20151002170544.GX12635@sirena.org.uk>
-References: <006401d0fac5$2e4bb840$8ae328c0$@tangramtek.com>
+Subject: Applied "ASoC: da7219: Add entry to cover DA7219
+	bindings document" to the asoc tree
+Date: Fri, 02 Oct 2015 18:13:43 +0100
+Message-ID: <E1Zi3tv-00080i-3Z@finisterre>
+References: <49c7fb102b445037d0814ebb57773d819c8d3477.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BtNCO5h84ExDStzY"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <006401d0fac5$2e4bb840$8ae328c0$@tangramtek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: yitian <yitian.bu@tangramtek.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, Andrew.Jackson@arm.com, wsa@the-dreams.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F0CC260668
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 19:13:51 +0200 (CEST)
+In-Reply-To: <49c7fb102b445037d0814ebb57773d819c8d3477.1442500784.git.Adam.Thomson.Opensource@diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---BtNCO5h84ExDStzY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: da7219: Add entry to cover DA7219 bindings document
 
-On Tue, Sep 29, 2015 at 10:43:17PM +0800, yitian wrote:
+has been applied to the asoc tree at
 
-> --- a/sound/soc/dwc/designware_i2s.c
-> +++ b/sound/soc/dwc/designware_i2s.c
-> @@ -141,13 +141,22 @@ static inline void i2s_clear_irqs(struct dw_i2s_dev
-> *dev, u32 stream)
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This doesn't apply because it's been corrupted by line wrapping - git am
-can't understand it.  Since it's just that one line I fixed it up by
-hand but please look at your mail setup to make sure this works (this
-might've been what happened with your other patch yesterday).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---BtNCO5h84ExDStzY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAEBCAAGBQJWDrlnAAoJECTWi3JdVIfQNfUH/iM+IVlEUrsAfF2lR5m1ye3a
-hlz0SwawN1MhSBw7LKSNrcfPIL9iLe3ys/A2G+WHNx5lOoxZdEffaawDgxtjeFmo
-PkELg5OjX9Ca3d5OGxehiFnJCplyycKcNMFiyPrBMUm601oz9mjbsxlhCDfHOk/D
-LJj8CaDnnoaxS8hEO2VRUEH7uCslEizefMpsBTuP9xx3iJ+FYj33ceWvzLObu9Pk
-M337QM304kATcIu5sTsQSX79uqNJjEAYtkNYf6qOkbe9l2fB+i2QKcVdO7JzNDJU
-feKLe/BM47kCOmmYb3Vfz7gbw2ua5nhT4Xwokjd6GKW0OTyegX2aEQAznH87NHs=
-=+//R
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---BtNCO5h84ExDStzY--
+Thanks,
+Mark
+
+>From 7c93377244329552a72912c63fd7503a4e88d6a1 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 29 Sep 2015 16:44:12 +0100
+Subject: [PATCH] ASoC: da7219: Add entry to cover DA7219 bindings document
+
+This adds an entry to indicate the DA7219 bindings document (and
+other Dialog codecs bindings documents) are supported.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7ba7ab7..a235822 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3361,6 +3361,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ W:	http://www.dialog-semiconductor.com/products
+ S:	Supported
+ F:	Documentation/hwmon/da90??
++F:	Documentation/devicetree/bindings/sound/da[79]*.txt
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
+-- 
+2.5.0
