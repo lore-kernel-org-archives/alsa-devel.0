@@ -1,152 +1,105 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 4/4] ASOC: sunxi: Add support for the
- spdif block
-Date: Fri, 2 Oct 2015 08:44:03 +0200
-Message-ID: <CAEKpxB=_coi06gaixgqpLm=AFbw2mPVLPim7HCk-T-Lnsgt6mw@mail.gmail.com>
-References: <1443635458-8873-1-git-send-email-codekipper@gmail.com>
-	<1443635458-8873-5-git-send-email-codekipper@gmail.com>
-	<20151001201122.GM7104@lukather>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Zoom R16/24 playback slient
+Date: Fri, 2 Oct 2015 08:51:58 +0200
+Message-ID: <alpine.DEB.2.02.1510020842020.12892@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
+ <560B8481.1080304@laiskiainen.org>
+ <alpine.DEB.2.02.1509300955510.12892@lnxricardw1.se.axis.com>
+ <560B9EA9.2090304@laiskiainen.org>
+ <alpine.DEB.2.02.1509302257330.24705@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBM6PXCYAKGQE4SBDKSQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151001201122.GM7104@lukather>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7AA7260881
+ for <alsa-devel@alsa-project.org>; Fri,  2 Oct 2015 08:52:00 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1509302257330.24705@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Panu Matilainen <pmatilai@laiskiainen.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> +config SND_SOC_SUNXI_DAI_SPDIF
->> +        tristate
->> +     depends on OF
->> +        select SND_SOC_GENERIC_DMAENGINE_PCM
->> +        select REGMAP_MMIO
->> +
->> +config SND_SOC_SUNXI_MACHINE_SPDIF
->> +        tristate "APB on-chip sun4i/sun5i/sun7i SPDIF"
->> +     depends on OF
->> +        select SND_SOC_SUNXI_DAI_SPDIF
->> +        help
->> +          Say Y if you want to add support for SoC S/PDIF audio as simple audio card.
->
-> You still haven't said why you can't use simple-card...
 
-I mentioned in the covering letter that I thought that simple-card was
-overkill. There is also a thread concerning issues with the ordering
-of module bringup here
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/070534.html.
-I was initially trying to use the dummy spdif transmitter but couldn't
-get it working, this set up works for me. I haven't got an audio guy
-sitting next to me to ping and have reached out for some guidance. I
-can do this using simple-card, it just with all the driver refactoring
-it was the main place where I thought things would break.
+On Wed, 30 Sep 2015, Ricard Wanderlof wrote:
 
->
->> +static void sun4i_spdif_configure(struct sun4i_spdif_dev *host)
->> +{
->> +     u32 reg_val;
->> +
->> +     /* soft reset SPDIF */
->> +     regmap_write(host->regmap, SUN4I_SPDIF_CTL, SUN4I_SPDIF_CTL_RESET);
->> +
->> +     /* MCLK OUTPUT enable */
->> +     regmap_update_bits(host->regmap, SUN4I_SPDIF_CTL,
->> +                     SUN4I_SPDIF_CTL_MCLKOUTEN, SUN4I_SPDIF_CTL_MCLKOUTEN);
->
-> The alignment is still not right....
+> I did a small bit of experimenting, and as far as I can tell, playback =
 
-I'm not even sure if we need mclk output enabled. Let me see what
-happens when I remove this.
+> seems to hang the device so it becomes completely unresponsive and needs =
 
->
->> +     /* flush TX FIFO */
->> +     regmap_update_bits(host->regmap, SUN4I_SPDIF_FCTL,
->> +                     SUN4I_SPDIF_FCTL_FTX, SUN4I_SPDIF_FCTL_FTX);
->> +
->> +     /* clear interrupt status */
->> +     regmap_read(host->regmap, SUN4I_SPDIF_ISTA, &reg_val);
->> +     regmap_write(host->regmap, SUN4I_SPDIF_ISTA, reg_val);
->
-> You're not using any interrupts. Why is this needed?
+> to be restarted.
 
-ditto. This wasn't brought up in the previous reviews.
+Actually, after a bit more experimenting, the R16 actually wakes up from =
 
->
->> +static int sun4i_spdif_startup(struct snd_pcm_substream *substream,
->> +                             struct snd_soc_dai *cpu_dai)
->> +{
->> +     struct snd_soc_pcm_runtime *rtd = substream->private_data;
->> +     struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(rtd->cpu_dai);
->> +
->> +     if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
->> +             return -EINVAL;
->> +
->> +     sun4i_spdif_configure(host);
->> +
->> +     return clk_prepare_enable(host->clk);
->
-> You're still not using pm_runtime...
+its unresponsive state after a couple of minutes, at least when playing a =
 
-I've removed the pm stuff and this is the same as you have it in sun4i-codec.
+small file. After that it seems to behave as before.
 
->
->> +
->> +     ret = clk_set_rate(host->audio_clk, mclk);
->> +     if (ret < 0) {
->> +             dev_err(&pdev->dev,
->> +                     "Setting pll2 clock rate for %d Hz failed!\n", mclk);
->> +             return ret;
->> +     }
->
-> You're still using the PLL2...
+I'm learning USB and USB-audio at the same time so progress is slow.
 
-I commented this out and it stopped working...let me check again.
+Installed the Zoom Windows driver on a Win7 box, followed by the bundled =
 
->
->> +
->> +     ret = clk_set_rate(host->clk, mclk);
->> +     if (ret < 0) {
->> +             dev_err(&pdev->dev,
->> +                     "Setting SPDIF clock rate for %d Hz failed!\n", mclk);
->> +             return ret;
->> +     }
->> +
->> +     reg_val = 0;
->> +     reg_val &= ~SUN4I_SPDIF_FCTL_FIFOSRC;
->> +     reg_val |= SUN4I_SPDIF_FCTL_TXTL_MASK;
->> +     reg_val |= SUN4I_SPDIF_FCTL_RXTL_MASK;
->> +     reg_val |= SUN4I_SPDIF_FCTL_TXIM;
->> +     reg_val |= SUN4I_SPDIF_FCTL_RXOM_MASK;
->> +     regmap_write(host->regmap, SUN4I_SPDIF_FCTL, reg_val);
->
-> You're still not using regmap_update_bits...
+DAW software (Cubase 6 LE), in order to dump the USB data to see what was =
 
-Why would I need to?, this is the first write to the register before
-playback and I'm not interested in keeping any of the previous fifo
-settings. Will remove"reg_val &= ~SUN4I_SPDIF_FCTL_FIFOSRC;" as that's
-not doing anything.
+going on, using USBPcap.
 
->
-> IF you're really going to ignore all the comments we did, please tell
-> us upfront. That way, we will not waste our time doing a review of
-> your patches.
+Captured the corresponding traffic in Linux using usbmon and Wireshark.
 
-All is a strong word....did you even read my covering letter?....there
-was a major refactoring of the code and I think I covered a majority
-of the comments. Apologies if you feel that you'd wasted a lot of time
-of this....it can't be any more that the EVB dts.
-Thanks anyway,
-CK
->
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux, Kernel and Android engineering
-> http://free-electrons.com
+I transferred the Windows pcap dumps to Linux for subsequent analysis in =
+
+Wireshark.
+
+It was getting late so I didn't do more than a cursory look. I noted that =
+
+the packet format is very different between Windows and Linux, but if =
+
+that's due to the different capture methods I don't know. For the USBPcap =
+
+dump each Isochronous frame contains a number of isochronous packets, =
+
+whereas the dump I do on Linux just lists the payload as 'captured =
+
+isochronous data' or somesuch. Even basic things such as the packet =
+
+lengths don't match, but I also noted that USBPcap seems to insert =
+
+metadata into the frames (to ease decoding?) Got to research that more.
+
+I did conclude however that when playing back to the R16 there seems to be =
+
+an isochronous packet flow going on with data from both ends of the =
+
+link (again, I need to read up what really to expect). What is odd is that =
+
+in Linux, the final packet from the host is a SET CONFIGURATION, and the =
+
+R16 seems to take about 5 seconds to respond to it. I thought 5 seconds =
+
+was supposed to be a general timeout when waiting for responses in USB, =
+
+not the maximum time before a device can respond. But perhaps the R16 =
+
+thinks it's in a mode where it's expecting more data from the host and =
+
+thus times out when receiving a request its not expecting and actually =
+
+goes ahead and processes the same request.
+
+My next step may be to use USBPcap to capture the data in Linux too so I =
+
+get comparable dumps. And do read up on USB audio documentation...
+
+/RIcard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
