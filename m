@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 08/20] media: Move au8522_media_pads enum to au8522.h from au8522_priv.h
-Date: Fri,  2 Oct 2015 16:07:20 -0600
-Message-ID: <2d0214f44644c53e5180635d3fe8023b04449a5c.1443822799.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 03/20] media: Media Controller enable/disable source handler API
+Date: Fri,  2 Oct 2015 16:07:15 -0600
+Message-ID: <7138deae9f47108f44577c3ba9479774c2eda79b.1443822799.git.shuahkh@osg.samsung.com>
 References: <cover.1443822799.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1443822799.git.shuahkh@osg.samsung.com>
@@ -12,51 +12,55 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Move the au8522_media_pads enum to au8522.h from au8522_priv.h.
-This will allow au0828-core to use these defines instead of
-hard-coding the pad values when it creates media graph linking
-decode pads to other entities.
+Add new fields to struct media_device to add enable_source, and
+disable_source handlers, and source_priv to stash driver private
+data that is need to run these handlers. The enable_source handler
+finds source entity for the passed in entity and check if it is
+available, and activate the link using __media_entity_setup_link()
+interface. Bridge driver is expected to implement and set these
+handlers and private data when media_device is registered or when
+bridge driver finds the media_device during probe. This is to enable
+the use-case to find tuner entity connected to the decoder entity and
+check if it is available, and activate it and start pipeline between
+the source and the entity. The disable_source handler deactivates the
+link and stops the pipeline. This handler can be invoked from the
+media core (v4l-core, dvb-core) as well as other drivers such as ALSA
+that control the media device.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/dvb-frontends/au8522.h      | 7 +++++++
- drivers/media/dvb-frontends/au8522_priv.h | 8 --------
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ include/media/media-device.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
-index dde6158..3c72f40 100644
---- a/drivers/media/dvb-frontends/au8522.h
-+++ b/drivers/media/dvb-frontends/au8522.h
-@@ -90,4 +90,11 @@ enum au8522_audio_input {
- 	AU8522_AUDIO_SIF,
- };
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index bc53f4f..9a53b19 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -101,6 +101,25 @@ struct media_device {
+ 	/* Serializes graph operations. */
+ 	struct mutex graph_mutex;
  
-+enum au8522_media_pads {
-+	AU8522_PAD_INPUT,
-+	AU8522_PAD_VID_OUT,
-+	AU8522_PAD_VBI_OUT,
++	/* Handlers to find source entity for the sink entity and
++	 * check if it is available, and activate the link using
++	 * media_entity_setup_link() interface and start pipeline
++	 * from the source to the entity.
++	 * Bridge driver is expected to implement and set the
++	 * handler when media_device is registered or when
++	 * bridge driver finds the media_device during probe.
++	 * Bridge driver sets source_priv with information
++	 * necessary to run enable/disable source handlers.
++	 *
++	 * Use-case: find tuner entity connected to the decoder
++	 * entity and check if it is available, and activate the
++	 * using media_entity_setup_link() if it is available.
++	*/
++	void *source_priv;
++	int (*enable_source)(struct media_entity *entity,
++			     struct media_pipeline *pipe);
++	void (*disable_source)(struct media_entity *entity);
 +
-+	AU8522_NUM_PADS
-+};
- #endif /* __AU8522_H__ */
-diff --git a/drivers/media/dvb-frontends/au8522_priv.h b/drivers/media/dvb-frontends/au8522_priv.h
-index d6209d9..4c2a6ed 100644
---- a/drivers/media/dvb-frontends/au8522_priv.h
-+++ b/drivers/media/dvb-frontends/au8522_priv.h
-@@ -39,14 +39,6 @@
- #define AU8522_DIGITAL_MODE 1
- #define AU8522_SUSPEND_MODE 2
- 
--enum au8522_media_pads {
--	AU8522_PAD_INPUT,
--	AU8522_PAD_VID_OUT,
--	AU8522_PAD_VBI_OUT,
--
--	AU8522_NUM_PADS
--};
--
- struct au8522_state {
- 	struct i2c_client *c;
- 	struct i2c_adapter *i2c;
+ 	int (*link_notify)(struct media_link *link, u32 flags,
+ 			   unsigned int notification);
+ };
 -- 
 2.1.4
