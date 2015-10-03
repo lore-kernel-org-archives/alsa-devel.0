@@ -1,20 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH 1/7] ALSA: firewire-tascam: add skeleton
-	for	TASCAM FireWire series
-Date: Sat, 3 Oct 2015 11:14:22 +0200
-Message-ID: <560F9C6E.70800@ladisch.de>
+ for TASCAM FireWire series
+Date: Sat, 3 Oct 2015 18:57:34 +0900
+Message-ID: <560FA68E.8050501@sakamocchi.jp>
 References: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
- <201510012147.nfdOjouA%fengguang.wu@intel.com>
- <s5hd1wxdyr7.wl-tiwai@suse.de>
+ <201510012147.nfdOjouA%fengguang.wu@intel.com> <s5hd1wxdyr7.wl-tiwai@suse.de>
  <560ED14A.2060404@ladisch.de> <560F3EB0.7020508@sakamocchi.jp>
+ <560F9C6E.70800@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B16FF2606CF
- for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2015 11:15:02 +0200 (CEST)
-In-Reply-To: <560F3EB0.7020508@sakamocchi.jp>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 230E72615FC
+ for <alsa-devel@alsa-project.org>; Sat,  3 Oct 2015 11:57:40 +0200 (CEST)
+In-Reply-To: <560F9C6E.70800@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Stefan Richter <stefanr@s5r6.in-berlin.de>, kbuild test robot <lkp@intel.com>, ffado-devel@lists.sf.net, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
->>>> 23		data = be32_to_cpu(fw_dev->config_rom[28]);
->
-> About using 'be32_to_cpu()', the 'config_rom' member actually has 'const
-> u32 *', while in the member caracters in the textual leaf are aligned in
-> big-endian.
-
-Strictly speaking, strings do not have an endianness.
-
-Most data in the actual configuration ROM is organized as big-endian 32-
-bit values, so the FireWire core converts _all_ words from big endian to
-CPU endian.  The words that are not actually 32-bit values but strings
-have to be converted back; the correct function for this is cpu_to_be32().
-
-
-Regards,
-Clemens
+T24gMjAxNeW5tDEw5pyIMDPml6UgMTg6MTQsIENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiBUYWth
+c2hpIFNha2Ftb3RvIHdyb3RlOgo+Pj4+PiAyMwkJZGF0YSA9IGJlMzJfdG9fY3B1KGZ3X2Rldi0+
+Y29uZmlnX3JvbVsyOF0pOwo+Pgo+PiBBYm91dCB1c2luZyAnYmUzMl90b19jcHUoKScsIHRoZSAn
+Y29uZmlnX3JvbScgbWVtYmVyIGFjdHVhbGx5IGhhcyAnY29uc3QKPj4gdTMyIConLCB3aGlsZSBp
+biB0aGUgbWVtYmVyIGNhcmFjdGVycyBpbiB0aGUgdGV4dHVhbCBsZWFmIGFyZSBhbGlnbmVkIGlu
+Cj4+IGJpZy1lbmRpYW4uCj4gCj4gU3RyaWN0bHkgc3BlYWtpbmcsIHN0cmluZ3MgZG8gbm90IGhh
+dmUgYW4gZW5kaWFubmVzcy4KPiAKPiBNb3N0IGRhdGEgaW4gdGhlIGFjdHVhbCBjb25maWd1cmF0
+aW9uIFJPTSBpcyBvcmdhbml6ZWQgYXMgYmlnLWVuZGlhbiAzMi0KPiBiaXQgdmFsdWVzLCBzbyB0
+aGUgRmlyZVdpcmUgY29yZSBjb252ZXJ0cyBfYWxsXyB3b3JkcyBmcm9tIGJpZyBlbmRpYW4gdG8K
+PiBDUFUgZW5kaWFuLiAgVGhlIHdvcmRzIHRoYXQgYXJlIG5vdCBhY3R1YWxseSAzMi1iaXQgdmFs
+dWVzIGJ1dCBzdHJpbmdzCj4gaGF2ZSB0byBiZSBjb252ZXJ0ZWQgYmFjazsgdGhlIGNvcnJlY3Qg
+ZnVuY3Rpb24gZm9yIHRoaXMgaXMgY3B1X3RvX2JlMzIoKS4KClllcy4gQW5kIEkgZm9yZ290IGEg
+cGFpciBvZiBjcHVfdG9fYmUzMi9iZTMyX3RvX2NwdSBpcyBzeW1tZXRyaWMgZWFjaCBvdGhlciEK
+KEknbSByZWFsbHkgYSBzdHVwaWQgZ3V5LCBzaWdoLi4uKQoKVGhpcyBwYXRjaCBzb2x2ZXMgdGhl
+IHNwYXJjZSB3YXJuaW5ncy4KCiQgZ2l0IGRpZmYKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJl
+L3Rhc2NhbS90YXNjYW0uYyBiL3NvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90YXNjYW0uYwppbmRleCBl
+ZTJmNDk4Li42ZTEwODdlIDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS90YXNjYW0vdGFzY2Ft
+LmMKKysrIGIvc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS5jCkBAIC01MCwxOSArNTAsMTkg
+QEAgc3RhdGljIGludCBjaGVja19uYW1lKHN0cnVjdCBzbmRfdHNjbSAqdHNjbSkKICAgICAgICBz
+dHJ1Y3QgZndfZGV2aWNlICpmd19kZXYgPSBmd19wYXJlbnRfZGV2aWNlKHRzY20tPnVuaXQpOwog
+ICAgICAgIGNoYXIgdmVuZG9yWzhdOwogICAgICAgIGNoYXIgbW9kZWxbOF07Ci0gICAgICAgX191
+MzIgZGF0YTsKKyAgICAgICBfX2JlMzIgZGF0YTsKCiAgICAgICAgLyogUmV0cmlldmUgbW9kZWwg
+bmFtZS4gKi8KLSAgICAgICBkYXRhID0gYmUzMl90b19jcHUoZndfZGV2LT5jb25maWdfcm9tWzI4
+XSk7CisgICAgICAgZGF0YSA9IGNwdV90b19iZTMyKGZ3X2Rldi0+Y29uZmlnX3JvbVsyOF0pOwog
+ICAgICAgIG1lbWNweShtb2RlbCwgJmRhdGEsIDQpOwotICAgICAgIGRhdGEgPSBiZTMyX3RvX2Nw
+dShmd19kZXYtPmNvbmZpZ19yb21bMjldKTsKKyAgICAgICBkYXRhID0gY3B1X3RvX2JlMzIoZndf
+ZGV2LT5jb25maWdfcm9tWzI5XSk7CiAgICAgICAgbWVtY3B5KG1vZGVsICsgNCwgJmRhdGEsIDQp
+OwogICAgICAgIG1vZGVsWzddID0gJ1wwJzsKCiAgICAgICAgLyogUmV0cmlldmUgdmVuZG9yIG5h
+bWUuICovCi0gICAgICAgZGF0YSA9IGJlMzJfdG9fY3B1KGZ3X2Rldi0+Y29uZmlnX3JvbVsyM10p
+OworICAgICAgIGRhdGEgPSBjcHVfdG9fYmUzMihmd19kZXYtPmNvbmZpZ19yb21bMjNdKTsKICAg
+ICAgICBtZW1jcHkodmVuZG9yLCAmZGF0YSwgNCk7Ci0gICAgICAgZGF0YSA9IGJlMzJfdG9fY3B1
+KGZ3X2Rldi0+Y29uZmlnX3JvbVsyNF0pOworICAgICAgIGRhdGEgPSBjcHVfdG9fYmUzMihmd19k
+ZXYtPmNvbmZpZ19yb21bMjRdKTsKICAgICAgICBtZW1jcHkodmVuZG9yICsgNCwgJmRhdGEsIDQp
+OwogICAgICAgIHZlbmRvcls3XSA9ICdcMCc7CgoKPiBJd2FpLXNhbiwKClNob3VsZCBJIHJlLXBv
+c3QgdGhpcyBwYXRjaHNldD8gT3IgeW91IGtpbmRseSBtZXJnZSB0aGVtIHdpdGggeW91cgptb2Rp
+ZmljYXRpb24/CgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
