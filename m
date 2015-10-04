@@ -1,21 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/7] ALSA: firewire-tascam: add skeleton
- for TASCAM FireWire series
-Date: Sun, 4 Oct 2015 08:33:07 +0900
-Message-ID: <561065B3.6010300@sakamocchi.jp>
-References: <1443704537-3345-2-git-send-email-o-takashi@sakamocchi.jp>
- <201510012147.nfdOjouA%fengguang.wu@intel.com> <s5hd1wxdyr7.wl-tiwai@suse.de>
- <560ED14A.2060404@ladisch.de> <560F3EB0.7020508@sakamocchi.jp>
- <560F9C6E.70800@ladisch.de> <560FA68E.8050501@sakamocchi.jp>
- <s5hvbaoc4vl.wl-tiwai@suse.de>
+Subject: [PATCH] ALSA: bebob: support Firewire I/O card of
+	Mackie Onyx 1220/1620/1640
+Date: Sun,  4 Oct 2015 09:17:03 +0900
+Message-ID: <1443917823-13516-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 53C43261171
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 01:33:12 +0200 (CEST)
-In-Reply-To: <s5hvbaoc4vl.wl-tiwai@suse.de>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5A4F26147A
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 02:17:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +19,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, Clemens Ladisch <clemens@ladisch.de>, Stefan Richter <stefanr@s5r6.in-berlin.de>, kbuild-all@01.org, ffado-devel@lists.sf.net
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, andrzej@gansiniec.pl, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBPY3QgMDQgMjAxNSAwMTowNywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFNhdCwg
-MDMgT2N0IDIwMTUgMTE6NTc6MzQgKzAyMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4K
-Pj4gT24gMjAxNeW5tDEw5pyIMDPml6UgMTg6MTQsIENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPj4+
-IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+Pj4+Pj4gMjMJCWRhdGEgPSBiZTMyX3RvX2NwdShm
-d19kZXYtPmNvbmZpZ19yb21bMjhdKTsKPj4+Pgo+Pj4+IEFib3V0IHVzaW5nICdiZTMyX3RvX2Nw
-dSgpJywgdGhlICdjb25maWdfcm9tJyBtZW1iZXIgYWN0dWFsbHkgaGFzICdjb25zdAo+Pj4+IHUz
-MiAqJywgd2hpbGUgaW4gdGhlIG1lbWJlciBjYXJhY3RlcnMgaW4gdGhlIHRleHR1YWwgbGVhZiBh
-cmUgYWxpZ25lZCBpbgo+Pj4+IGJpZy1lbmRpYW4uCj4+Pgo+Pj4gU3RyaWN0bHkgc3BlYWtpbmcs
-IHN0cmluZ3MgZG8gbm90IGhhdmUgYW4gZW5kaWFubmVzcy4KPj4+Cj4+PiBNb3N0IGRhdGEgaW4g
-dGhlIGFjdHVhbCBjb25maWd1cmF0aW9uIFJPTSBpcyBvcmdhbml6ZWQgYXMgYmlnLWVuZGlhbiAz
-Mi0KPj4+IGJpdCB2YWx1ZXMsIHNvIHRoZSBGaXJlV2lyZSBjb3JlIGNvbnZlcnRzIF9hbGxfIHdv
-cmRzIGZyb20gYmlnIGVuZGlhbiB0bwo+Pj4gQ1BVIGVuZGlhbi4gIFRoZSB3b3JkcyB0aGF0IGFy
-ZSBub3QgYWN0dWFsbHkgMzItYml0IHZhbHVlcyBidXQgc3RyaW5ncwo+Pj4gaGF2ZSB0byBiZSBj
-b252ZXJ0ZWQgYmFjazsgdGhlIGNvcnJlY3QgZnVuY3Rpb24gZm9yIHRoaXMgaXMgY3B1X3RvX2Jl
-MzIoKS4KPj4KPj4gWWVzLiBBbmQgSSBmb3Jnb3QgYSBwYWlyIG9mIGNwdV90b19iZTMyL2JlMzJf
-dG9fY3B1IGlzIHN5bW1ldHJpYyBlYWNoIG90aGVyIQo+PiAoSSdtIHJlYWxseSBhIHN0dXBpZCBn
-dXksIHNpZ2guLi4pCj4+Cj4+IFRoaXMgcGF0Y2ggc29sdmVzIHRoZSBzcGFyY2Ugd2FybmluZ3Mu
-Cj4+Cj4+ICQgZ2l0IGRpZmYKPj4gZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90
-YXNjYW0uYyBiL3NvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90YXNjYW0uYwo+PiBpbmRleCBlZTJmNDk4
-Li42ZTEwODdlIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9maXJld2lyZS90YXNjYW0vdGFzY2FtLmMK
-Pj4gKysrIGIvc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS5jCj4+IEBAIC01MCwxOSArNTAs
-MTkgQEAgc3RhdGljIGludCBjaGVja19uYW1lKHN0cnVjdCBzbmRfdHNjbSAqdHNjbSkKPj4gICAg
-ICAgICBzdHJ1Y3QgZndfZGV2aWNlICpmd19kZXYgPSBmd19wYXJlbnRfZGV2aWNlKHRzY20tPnVu
-aXQpOwo+PiAgICAgICAgIGNoYXIgdmVuZG9yWzhdOwo+PiAgICAgICAgIGNoYXIgbW9kZWxbOF07
-Cj4+IC0gICAgICAgX191MzIgZGF0YTsKPj4gKyAgICAgICBfX2JlMzIgZGF0YTsKPj4KPj4gICAg
-ICAgICAvKiBSZXRyaWV2ZSBtb2RlbCBuYW1lLiAqLwo+PiAtICAgICAgIGRhdGEgPSBiZTMyX3Rv
-X2NwdShmd19kZXYtPmNvbmZpZ19yb21bMjhdKTsKPj4gKyAgICAgICBkYXRhID0gY3B1X3RvX2Jl
-MzIoZndfZGV2LT5jb25maWdfcm9tWzI4XSk7Cj4+ICAgICAgICAgbWVtY3B5KG1vZGVsLCAmZGF0
-YSwgNCk7Cj4+IC0gICAgICAgZGF0YSA9IGJlMzJfdG9fY3B1KGZ3X2Rldi0+Y29uZmlnX3JvbVsy
-OV0pOwo+PiArICAgICAgIGRhdGEgPSBjcHVfdG9fYmUzMihmd19kZXYtPmNvbmZpZ19yb21bMjld
-KTsKPj4gICAgICAgICBtZW1jcHkobW9kZWwgKyA0LCAmZGF0YSwgNCk7Cj4+ICAgICAgICAgbW9k
-ZWxbN10gPSAnXDAnOwo+Pgo+PiAgICAgICAgIC8qIFJldHJpZXZlIHZlbmRvciBuYW1lLiAqLwo+
-PiAtICAgICAgIGRhdGEgPSBiZTMyX3RvX2NwdShmd19kZXYtPmNvbmZpZ19yb21bMjNdKTsKPj4g
-KyAgICAgICBkYXRhID0gY3B1X3RvX2JlMzIoZndfZGV2LT5jb25maWdfcm9tWzIzXSk7Cj4+ICAg
-ICAgICAgbWVtY3B5KHZlbmRvciwgJmRhdGEsIDQpOwo+PiAtICAgICAgIGRhdGEgPSBiZTMyX3Rv
-X2NwdShmd19kZXYtPmNvbmZpZ19yb21bMjRdKTsKPj4gKyAgICAgICBkYXRhID0gY3B1X3RvX2Jl
-MzIoZndfZGV2LT5jb25maWdfcm9tWzI0XSk7Cj4+ICAgICAgICAgbWVtY3B5KHZlbmRvciArIDQs
-ICZkYXRhLCA0KTsKPj4gICAgICAgICB2ZW5kb3JbN10gPSAnXDAnOwo+Pgo+Pgo+Pj4gSXdhaS1z
-YW4sCj4+Cj4+IFNob3VsZCBJIHJlLXBvc3QgdGhpcyBwYXRjaHNldD8gT3IgeW91IGtpbmRseSBt
-ZXJnZSB0aGVtIHdpdGggeW91cgo+PiBtb2RpZmljYXRpb24/Cj4gCj4gSSBhbHJlYWR5IG1lcmdl
-ZCB0aGUgbGF0ZXN0IHBhdGNoc2V0LCBzbyBpbmNyZW1lbnRhbCBwYXRjaGVzIGFyZQo+IHByZWZl
-cnJlZC4KCk9LLiBUaGFua3MuCgoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Current ALSA BeBoB drivers has an entry for this model, while the value of
+vendor ID seems to be wrong according to an user's report.
+
+The vendor had released no updated firmware, thus we can judge that this
+model had not changed the content of its config ROM. It's reasonable to fix
+the ID according to the report.
+
+$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  0425720f  bus_info_length 4, crc_length 37, crc 29199
+404  31333934  bus_name "1394"
+408  f0646122  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
+               max_rec 6 (128), max_rom 1, gen 2, spd 2 (S400)
+40c  00000ff2  company_id 00000f     |
+410  00004697  device_id f200004697  | EUI-64 00000ff200004697
+
+               root directory
+               -----------------------------------------------------------------
+414  000859be  directory_length 8, crc 22974
+418  04000082  hardware version
+41c  0c0083c0  node capabilities per IEEE 1394
+420  03000ff2  vendor
+424  8100000a  --> descriptor leaf at 44c
+428  17010065  model
+42c  8100000d  --> descriptor leaf at 460
+430  13000910  version
+434  d1000001  --> unit directory at 438
+
+               unit directory at 438
+               -----------------------------------------------------------------
+438  0004ccec  directory_length 4, crc 52460
+43c  1200a02d  specifier id: 1394 TA
+440  13010001  version: AV/C
+444  17010065  model
+448  8100000d  --> descriptor leaf at 47c
+
+               descriptor leaf at 44c
+               -----------------------------------------------------------------
+44c  0004152a  leaf_length 4, crc 5418
+450  00000000  textual descriptor
+454  00000000  minimal ASCII
+458  4d61636b  "Mack"
+45c  69650000  "ie"
+
+               descriptor leaf at 460
+               -----------------------------------------------------------------
+460  000612b5  leaf_length 6, crc 4789
+464  00000000  textual descriptor
+468  00000000  minimal ASCII
+46c  4f6e7978  "Onyx"
+470  20466972  " Fir"
+474  65776972  "ewir"
+478  65000000  "e"
+
+               descriptor leaf at 47c
+               -----------------------------------------------------------------
+47c  000612b5  leaf_length 6, crc 4789
+480  00000000  textual descriptor
+484  00000000  minimal ASCII
+488  4f6e7978  "Onyx"
+48c  20466972  " Fir"
+490  65776972  "ewir"
+494  65000000  "e"
+
+$ cat /proc/asound/card3/firewire/firmware
+Manufacturer:   bridgeCo
+Protocol Ver:   1
+Build Ver:      0
+GUID:           0x00000FF200004697
+Model ID:       0x82
+Model Rev:      1
+Firmware Date:  20040430
+Firmware Time:  131527
+Firmware ID:    0x10065
+Firmware Ver:   2320
+Base Addr:      0x20080000
+Max Size:       1572864
+Loader Date:    20040430
+Loader Time:    112036
+
+Reported-by: Andrzej Gansiniec <andrzej@gansiniec.pl>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 27a04ac..0ed5e5f 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -41,7 +41,8 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_EDIROL	0x000040ab
+ #define VEN_PRESONUS	0x00000a92
+ #define VEN_BRIDGECO	0x000007f5
+-#define VEN_MACKIE	0x0000000f
++#define VEN_MACKIE1	0x0000000f
++#define VEN_MACKIE2	0x00000ff2
+ #define VEN_STANTON	0x00001260
+ #define VEN_TASCAM	0x0000022e
+ #define VEN_BEHRINGER	0x00001564
+@@ -360,9 +361,9 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* BridgeCo, Audio5 */
+ 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
+ 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
+-	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065, &spec_normal),
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
+ 	/* Mackie, d.2 (Firewire Option) */
+-	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067, &spec_normal),
++	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
+ 	/* Stanton, ScratchAmp */
+ 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
+ 	/* Tascam, IF-FW DM */
+-- 
+2.1.4
