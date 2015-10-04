@@ -1,18 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Disable power_save_node for IDT
-	92HD73xx chips
-Date: Sun,  4 Oct 2015 22:50:11 +0200
-Message-ID: <1443991811-16715-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Sun, 4 Oct 2015 23:57:28 +0100
+Message-ID: <20151004225728.GE12635@sirena.org.uk>
+References: <20150714150352.GW11162@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70108CC68@RTITMBSV03.realtek.com.tw>
+ <55B6B92B.5010305@linux.intel.com>
+ <20150803031552.GN29916@localhost>
+ <CACuU-+ig60xn85_fKKoZRESDcupwZRekShQ-Jj3Bpj4pZu5EeA@mail.gmail.com>
+ <s5hsi5sc4m1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3745935440793901469=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EB65265262
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 22:50:09 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D4931AAD1
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 20:50:07 +0000 (UTC)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EB1E26526F
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 00:57:45 +0200 (CEST)
+In-Reply-To: <s5hsi5sc4m1.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Arun Raghavan <arun@accosted.net>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The recent widget power saving introduced some unavoidable click
-noises on old IDT 92HD73xx chips while it still seems working on the
-compatible new chips.  In the bugzilla, we tried lots of tests and
-workarounds, but they didn't help much.  So, let's disable the feature
-for these specific chips as the least (but safest) fix.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=104981
-Cc: <stable@vger.kernel.org> # v4.1+
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_sigmatel.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+--===============3745935440793901469==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="95nVhCDQCgPWiQqT"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 9d947aef2c8b..def5cc8dff02 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -4520,7 +4520,11 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
- 		return err;
- 
- 	spec = codec->spec;
--	codec->power_save_node = 1;
-+	/* enable power_save_node only for new 92HD89xx chips, as it causes
-+	 * click noises on old 92HD73xx chips.
-+	 */
-+	if ((codec->core.vendor_id & 0xfffffff0) != 0x111d7670)
-+		codec->power_save_node = 1;
- 	spec->linear_tone_beep = 0;
- 	spec->gen.mixer_nid = 0x1d;
- 	spec->have_spdif_mux = 1;
--- 
-2.5.3
+
+--95nVhCDQCgPWiQqT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Oct 03, 2015 at 06:13:26PM +0200, Takashi Iwai wrote:
+
+> Mark, do you have a list of topics available on net, e.g. via google
+> doc?
+
+Not yet, though it's basically only a couple of e-mails to collate at
+this point.
+
+--95nVhCDQCgPWiQqT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWEa7XAAoJECTWi3JdVIfQ8i0H/17WV3GaewpmlcmaGBYVas5u
+qM9UWyImsAndXCBqVBIuofYZT5pMcdaTh83eeXGD9zYzb15rfa6KXmY/o8QfntAD
+7HBbm5SbhhIyQ+neT0fzi+T0l0P0CY7uX2UixemFwKMOIidOZuKpwr4CcoMHVusI
+V17YQBMDSJij2DNVgItnBK6dyX1kwR/7VPkwQHUBZu6N16DSPs8hQUHseNe4YDrg
+/0tAW4TiEg/aZa4FO0/F2/7YJu/SZ6wHk11QLL+wgmFHjCAWcMGj7N5gmyg3SWdu
+jwVyBqKXCXlx0fDaqJz9tBgebiEU1ZMHgTBSWxZLVJsmDf7h2qvQwGrbWuKPNWI=
+=UjSI
+-----END PGP SIGNATURE-----
+
+--95nVhCDQCgPWiQqT--
+
+--===============3745935440793901469==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3745935440793901469==--
