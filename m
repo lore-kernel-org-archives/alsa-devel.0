@@ -1,15 +1,33 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: bebob: support Firewire I/O card of
-	Mackie Onyx 1220/1620/1640
-Date: Sun,  4 Oct 2015 09:17:03 +0900
-Message-ID: <1443917823-13516-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: USB audio device startup question
+Date: Sun, 4 Oct 2015 06:45:33 +0200
+Message-ID: <alpine.DEB.2.02.1510040630150.25833@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id C5A4F26147A
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 02:17:09 +0200 (CEST)
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73E1F2606F8
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 18A901806C
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:38 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id DsF+CBZIXChi for <alsa-devel@alsa-project.org>;
+ Sun,  4 Oct 2015 06:45:37 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bastet.se.axis.com (Postfix) with ESMTP id 150F718068
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id B79BC13EB
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id 7AF01814
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id 7910C34009
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,123 +37,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, andrzej@gansiniec.pl, ffado-devel@lists.sf.net
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Current ALSA BeBoB drivers has an entry for this model, while the value of
-vendor ID seems to be wrong according to an user's report.
 
-The vendor had released no updated firmware, thus we can judge that this
-model had not changed the content of its config ROM. It's reasonable to fix
-the ID according to the report.
+(This is in reference to getting the Zoom R16 to work, but the main query =
 
-$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+in this post is of a more general nature).
 
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  0425720f  bus_info_length 4, crc_length 37, crc 29199
-404  31333934  bus_name "1394"
-408  f0646122  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
-               max_rec 6 (128), max_rom 1, gen 2, spd 2 (S400)
-40c  00000ff2  company_id 00000f     |
-410  00004697  device_id f200004697  | EUI-64 00000ff200004697
+In trying to get a Zoom R16 in audio interface mode to work in Linux I'm =
 
-               root directory
-               -----------------------------------------------------------------
-414  000859be  directory_length 8, crc 22974
-418  04000082  hardware version
-41c  0c0083c0  node capabilities per IEEE 1394
-420  03000ff2  vendor
-424  8100000a  --> descriptor leaf at 44c
-428  17010065  model
-42c  8100000d  --> descriptor leaf at 460
-430  13000910  version
-434  d1000001  --> unit directory at 438
+trying to understand how the USB-audio (snd-usb-audio module) subsystem =
 
-               unit directory at 438
-               -----------------------------------------------------------------
-438  0004ccec  directory_length 4, crc 52460
-43c  1200a02d  specifier id: 1394 TA
-440  13010001  version: AV/C
-444  17010065  model
-448  8100000d  --> descriptor leaf at 47c
+works in Linux. I've looked in the USB audio version 1 and 2 documents, as =
 
-               descriptor leaf at 44c
-               -----------------------------------------------------------------
-44c  0004152a  leaf_length 4, crc 5418
-450  00000000  textual descriptor
-454  00000000  minimal ASCII
-458  4d61636b  "Mack"
-45c  69650000  "ie"
+well as the USB 2.0 standard, but there are some things that don't seem to =
 
-               descriptor leaf at 460
-               -----------------------------------------------------------------
-460  000612b5  leaf_length 6, crc 4789
-464  00000000  textual descriptor
-468  00000000  minimal ASCII
-46c  4f6e7978  "Onyx"
-470  20466972  " Fir"
-474  65776972  "ewir"
-478  65000000  "e"
+be well defined there, like exactly how the audio data is packaged in the =
 
-               descriptor leaf at 47c
-               -----------------------------------------------------------------
-47c  000612b5  leaf_length 6, crc 4789
-480  00000000  textual descriptor
-484  00000000  minimal ASCII
-488  4f6e7978  "Onyx"
-48c  20466972  " Fir"
-490  65776972  "ewir"
-494  65000000  "e"
+isochronous transfer packets.
 
-$ cat /proc/asound/card3/firewire/firmware
-Manufacturer:   bridgeCo
-Protocol Ver:   1
-Build Ver:      0
-GUID:           0x00000FF200004697
-Model ID:       0x82
-Model Rev:      1
-Firmware Date:  20040430
-Firmware Time:  131527
-Firmware ID:    0x10065
-Firmware Ver:   2320
-Base Addr:      0x20080000
-Max Size:       1572864
-Loader Date:    20040430
-Loader Time:    112036
+I've been using Wireshark to visualize the USB communication, and also =
 
-Reported-by: Andrzej Gansiniec <andrzej@gansiniec.pl>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+comparing with the corresponding transfers on a Windows box by dumping the =
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 27a04ac..0ed5e5f 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -41,7 +41,8 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- #define VEN_EDIROL	0x000040ab
- #define VEN_PRESONUS	0x00000a92
- #define VEN_BRIDGECO	0x000007f5
--#define VEN_MACKIE	0x0000000f
-+#define VEN_MACKIE1	0x0000000f
-+#define VEN_MACKIE2	0x00000ff2
- #define VEN_STANTON	0x00001260
- #define VEN_TASCAM	0x0000022e
- #define VEN_BEHRINGER	0x00001564
-@@ -360,9 +361,9 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* BridgeCo, Audio5 */
- 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
- 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
--	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010065, &spec_normal),
-+	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
- 	/* Mackie, d.2 (Firewire Option) */
--	SND_BEBOB_DEV_ENTRY(VEN_MACKIE, 0x00010067, &spec_normal),
-+	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
- 	/* Stanton, ScratchAmp */
- 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
- 	/* Tascam, IF-FW DM */
--- 
-2.1.4
+traffic with USBPcap.
+
+The only other USB audio interface I have access to here is an Edirol =
+
+UA-5. I've noted that when plugging in the UA-5, there's period of about =
+
+15 seconds during which capture and playback are set up and audio data =
+
+transferred, after which the interface is shut down again. When enabling =
+
+the R16, during the corresponding initial period I see playback data but =
+
+no capture data during this phase. I don't know if that is significant or =
+
+not, for instance, if the lack of capture data during this phase is =
+
+because the playback is not working as it should.
+
+My question is: what governs this startup phase, can someone point to a =
+
+specific part of the code or some documentation describing what is =
+
+supposed to go on here? Is it some sort of device test period to determine =
+
+that the device actually works?
+
+The problem with the R16 is that although capture works fine, playback =
+
+doesn't result in any audio. With the correct quirk set up (most =
+
+importantly, using a 24 bit format), aplay appears to work fine with no =
+
+errors, neither are there any complaints from dmesg, and looking at the =
+
+communication I can see outgoing isochronous data from the host being =
+
+transferred fine.
+
+More work needs to be done, but I've looked at the startup of the Windows =
+
+driver which is deceptively simple: it basically just sets the =
+
+appropriate capture and playback interfaces, together with sending off =
+
+some sample rate USB control commands, the isochronous link comes up and =
+
+that seems to be it. I've tried to emulate the specific USB control =
+
+commands in Linux, as well as add some delays that there appear to be in =
+
+the Windows driver, but so far it hasn't made a difference.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
