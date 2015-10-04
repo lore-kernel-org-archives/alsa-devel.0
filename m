@@ -1,102 +1,151 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH] ASoC: sun4i-codec: Rework and fix headphone routing
-Date: Sun,  4 Oct 2015 15:38:16 +0200
-Message-ID: <1443965896-6205-1-git-send-email-maxime.ripard@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Emilio Lopez <emilio@elopez.com.ar>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@free-electrons.com>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Sun, 4 Oct 2015 16:53:38 +0200
+Message-ID: <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
+ <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+ <s5h4mik6xwi.wl-tiwai@suse.de>
+ <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
+ [209.85.218.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 511E52614A1
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 16:53:59 +0200 (CEST)
+Received: by oixx17 with SMTP id x17so79368865oix.0
+ for <alsa-devel@alsa-project.org>; Sun, 04 Oct 2015 07:53:58 -0700 (PDT)
+In-Reply-To: <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Most of the boards have their headphone jack directly connected to the
-matching pins of the SoCs. Since most of the time we will have the same
-routing path, it makes sense to put that in the driver, and only have a
-property describing whether that route is enabled or not.
+Hi Raymond,
 
-It also fixes the following warning messages that were seen so far:
-sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+Do you need any testing from my side to be able to finish the developing?
 
-Reported-by: Priit Laes <plaes@plaes.org>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- .../devicetree/bindings/sound/sun4i-codec.txt      |  9 ++++----
- sound/soc/sunxi/sun4i-codec.c                      | 25 +++++++++++++++++-----
- 2 files changed, 24 insertions(+), 10 deletions(-)
+On 25 September 2015 at 06:06, Raymond Yau <superquad.vortex2@gmail.com>
+wrote:
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index 680144b74ae9..470823845698 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -13,10 +13,10 @@ Required properties:
- - clock-names: should contain followings:
-    - "apb": the parent APB clock for this controller
-    - "codec": the parent module clock
--- routing : A list of the connections between audio components.  Each
--  entry is a pair of strings, the first being the connection's sink,
--  the second being the connection's source.
- 
-+Optional Properties:
-+- allwinner,hp-jack-attached: Indicates that the headphone jack on the
-+                              board is directly routed to the SoC pins
- 
- Example:
- codec: codec@01c22c00 {
-@@ -28,6 +28,5 @@ codec: codec@01c22c00 {
- 	clock-names = "apb", "codec";
- 	dmas = <&dma 0 19>, <&dma 0 19>;
- 	dma-names = "rx", "tx";
--	routing = "Headphone Jack", "HP Right",
--		  "Headphone Jack", "HP Left";
-+	allwinner,hp-jack-attached;
- };
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 47780552dcd0..e86b8fcede5a 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -568,10 +568,18 @@ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
- 	return link;
- };
- 
-+static const struct snd_soc_dapm_widget sun4i_codec_sink_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route sun4i_codec_sink_routes[] = {
-+	{ "Headphone Jack", NULL, "HP Right" },
-+	{ "Headphone Jack", NULL, "HP Left" },
-+};
-+
- static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- {
- 	struct snd_soc_card *card;
--	int ret;
- 
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
- 	if (!card)
-@@ -584,10 +592,17 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	card->dev		= dev;
- 	card->name		= "sun4i-codec";
- 
--	ret = snd_soc_of_parse_audio_routing(card, "routing");
--	if (ret) {
--		dev_err(dev, "Failed to create our audio routing\n");
--		return NULL;
-+	/*
-+	 * FIXME: This will probably require more logic once we will
-+	 *        support other sinks (for capture for example), or
-+	 *        encounter more complicated setups where the
-+	 *        headphone jack is not directly connected to the SoC.
-+	 */
-+	if (of_property_read_bool(dev->of_node, "allwinner,hp-jack-attached")) {
-+		card->dapm_widgets	= sun4i_codec_sink_widgets;
-+		card->num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_sink_widgets);
-+		card->dapm_routes	= sun4i_codec_sink_routes;
-+		card->num_dapm_routes	= ARRAY_SIZE(sun4i_codec_sink_routes);
- 	}
- 
- 	return card;
+>
+> > >
+> > > > >
+> > > > > - add sense_nid to __snd_hda_jack_add_kctl for pin sense
+> > > > >
+> > > > > - update slave pin sense when master pin sense change
+> > > > >
+> > > > > - enable unsolicited event when widcap support UNSOL
+> > > >
+> > > > Again, please describe at first the reason you need this change.
+> Then
+> > > > start explaining about the implementation details.  For example,
+> > > > what's the difference from the existing gated_jack.
+> > > >
+> > > >
+> > >
+> > > I don't understand how gated jack work, but those headset mic in alc668
+> > > dell-headset-multi does not  use its own pin sense and won't need to
+> enable
+> > > unsol event of the headset mic node.
+> > >
+> > > As pulseaudio don't expect jack kctl can be repesent the state of
+> headphone
+> > > and mic
+> > >
+> > > This force the driver to create a headset mic kctl which is just a
+> copy of
+> > > the headphone jack kctl
+> >
+> > See what you wrote now in the above?  It's a nice introduction of the
+> > things you're trying to solve.  This kind of information is exactly
+> > what I asked for.  Please rephrase and put it in the changelog at the
+> > next time.
+> >
+> > About gated_jack: this was introduced for Chromebook for a headset.
+> > This should work similarly like your case.  The behavior of gated /
+> > gating jacks are:
+> >
+> > - When a jack A has gating_jack = B: the presence of jack A depends on
+> >   gating_jack B.  Namely, if gating_jack B is unplugged, jack A is
+> >   treated as unplugged.
+> >
+> > - When a jack B has gated_jack = A: jack B doesn't give an unsol event
+> >   by itself, but it's triggered together with gated_jack A when jack A
+> >   is plugged/unplugged.  The plug status of jack B can be read from B
+> >   itself.
+> >
+> > For Chromebook, A (gated) is mic pin and B (gating) is HP pin.
+> > That is, a headset mic is detected only when the HP pin is detected.
+> >
+> >
+>
+> The other possible usage of __snd_hda_jack_add_kctl() with different
+> sense_nid may be those asus N series notebook with ALC663 codec which seem
+> to use the hidden pin sense of node 0x1e of Digital Out pin for the
+> external Sonic Master Subwoofer
+>
+> it just add subwoofer jack kctl at subwoofer node but use the hidden jack
+> sense of node 0x1e,  while driver still create SPDIF phantom jack
+>
+> What is missing is the timer queue to check the jack state similar to
+> vt1708
+>
+> https://bugs.freedesktop.org/show_bug.cgi?id=91568#c11
+>
+> WITHOUT subwoofer:
+> sudo ./hdajacksensetest -a
+> Pin 0x11 (Not connected): present = No
+> Pin 0x12 (Not connected): present = No
+> Pin 0x13 (Not connected): present = No
+> Pin 0x14 (Internal Speaker, ATAPI): present = No
+> Pin 0x15 (Not connected): present = No
+> Pin 0x16 (Internal Speaker, ATAPI): present = No
+> Pin 0x17 (Not connected): present = No
+> Pin 0x18 (Pink Mic, Rear side): present = No
+> Pin 0x19 (Internal Mic, ATAPI): present = No
+> Pin 0x1a (Not connected): present = No
+> Pin 0x1b (Not connected): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Black SPDIF Out, Right side): present = No
+> Pin 0x21 (Green Headphone, Rear side): present = No
+>
+> WITH subwoofer:
+> sudo ./hdajacksensetest -a
+> Pin 0x11 (Not connected): present = No
+> Pin 0x12 (Not connected): present = No
+> Pin 0x13 (Not connected): present = No
+> Pin 0x14 (Internal Speaker, ATAPI): present = No
+> Pin 0x15 (Not connected): present = No
+> Pin 0x16 (Internal Speaker, ATAPI): present = No
+> Pin 0x17 (Not connected): present = No
+> Pin 0x18 (Pink Mic, Rear side): present = No
+> Pin 0x19 (Internal Mic, ATAPI): present = No
+> Pin 0x1a (Not connected): present = No
+> Pin 0x1b (Not connected): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Black SPDIF Out, Right side): present = Yes
+> Pin 0x21 (Green Headphone, Rear side): present = No
+>
+
+
+
 -- 
-2.5.3
+Arthur Borsboom
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
+
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
