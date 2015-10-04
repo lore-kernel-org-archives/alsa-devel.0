@@ -1,33 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: USB audio device startup question
-Date: Sun, 4 Oct 2015 06:45:33 +0200
-Message-ID: <alpine.DEB.2.02.1510040630150.25833@lnxricardw1.se.axis.com>
+From: Michael Shell <list1@michaelshell.org>
+Subject: sysfs: cannot create duplicate filename
+ '/devices/isa/sbawe.0/sound/card0/seq-oss-0-0'
+Date: Sun, 4 Oct 2015 01:12:38 -0400
+Message-ID: <20151004011238.3759486f630c6605dd5c7d4d@michaelshell.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 73E1F2606F8
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:38 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id 18A901806C
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:38 +0200 (CEST)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id DsF+CBZIXChi for <alsa-devel@alsa-project.org>;
- Sun,  4 Oct 2015 06:45:37 +0200 (CEST)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by bastet.se.axis.com (Postfix) with ESMTP id 150F718068
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id B79BC13EB
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by boulder.se.axis.com (Postfix) with ESMTP id 7AF01814
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by thoth.se.axis.com (Postfix) with ESMTP id 7910C34009
- for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 06:45:36 +0200 (CEST)
+Received: from barracuda.supercp.com (barracuda.supercp.com [216.234.124.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id C66C12606F8
+ for <alsa-devel@alsa-project.org>; Sun,  4 Oct 2015 07:04:08 +0200 (CEST)
+Received: from a2s43.a2hosting.com (a2s43.a2hosting.com [216.119.133.66]) by
+ barracuda.supercp.com with ESMTP id xA3T8AoeGn5JKCku for
+ <alsa-devel@alsa-project.org>; Sun, 04 Oct 2015 01:04:07 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,85 +22,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-(This is in reference to getting the Zoom R16 to work, but the main query =
 
-in this post is of a more general nature).
+  Greetings,
 
-In trying to get a Zoom R16 in audio interface mode to work in Linux I'm =
+I recently upgraded (an admittedly ancient K6-2 PCI/ISA machine) to kernel
+version 4.2.2 (compiled from source). It went surprising well, but I did
+run into a minor issue which did not occur under the older kernel 3.16.3.
 
-trying to understand how the USB-audio (snd-usb-audio module) subsystem =
+Maybe the info here will help someone else out in the future or even reveal
+a bug that might have greater implications that have not yet been seen.
 
-works in Linux. I've looked in the USB audio version 1 and 2 documents, as =
+The ancient machine has one of those ISA SoundBlaster cards whose drivers
+are compiled as modules (to allow isapnp to operate) before module loading.
 
-well as the USB 2.0 standard, but there are some things that don't seem to =
+Upon issuing a
 
-be well defined there, like exactly how the audio data is packaged in the =
+/sbin/modprobe snd-sbawe port=0x220 mpu_port=0x330 awe_port=0x620 irq=5 dma8=1 dma16=5 mic_agc=1 csp=0
 
-isochronous transfer packets.
+dmesg (under 4.2.2) spits out:
 
-I've been using Wireshark to visualize the USB communication, and also =
+EMU8000 [0x620]: 4096 KiB on-board DRAM detected
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2791 at fs/sysfs/dir.c:31 sysfs_warn_dup+0x51/0x80()
+sysfs: cannot create duplicate filename '/devices/isa/sbawe.0/sound/card0/seq-oss-0-0'
+Modules linked in: snd_emu8000_synth(+) snd_emux_synth snd_seq_virmidi snd_util_mem snd_opl3_synth snd_seq_midi_emul snd_sbawe snd_opl3_lib snd_sb16_dsp snd_sb16_csp snd_sb_common snd_mpu401_uart lp parport_pc parport
+CPU: 0 PID: 2791 Comm: modprobe Not tainted 4.2.2 #1
+.
+.
+----
+(full output with trace at the end of this message)
 
-comparing with the corresponding transfers on a Windows box by dumping the =
 
-traffic with USBPcap.
+The /sys/devices/isa/sbawe.0 directory did not exist prior to the
+attempt to load snd-sbawe and there are no other sound drivers
+in the system other than those for the Soundblaster.
 
-The only other USB audio interface I have access to here is an Edirol =
+I do still have OSS emulation selected in the kernel config - I was
+surpised that still is the recommended default. I probably could avoid
+this bug by deselecting that. I doubt I have any software that still
+requires OSS emulation, which is probably going to be removed from
+future kernels anyway (and Debian systems don't even carry it anymore).
 
-UA-5. I've noted that when plugging in the UA-5, there's period of about =
+Nevertheless, a bug is a bug and this problem should not happen. I
+think snd_seq_oss and snd_emux_synth are both trying to register
+the same sysfs name or a single driver is trying to register the
+same thing twice.
 
-15 seconds during which capture and playback are set up and audio data =
+For the record, what is the correct procedure to find out exactly
+which drivers are in conflict in duplicate sysfs filename cases
+like this?
 
-transferred, after which the interface is shut down again. When enabling =
 
-the R16, during the corresponding initial period I see playback data but =
+  Cheers and thanks in advance,
 
-no capture data during this phase. I don't know if that is significant or =
+  Mike Shell
 
-not, for instance, if the lack of capture data during this phase is =
 
-because the playback is not working as it should.
 
-My question is: what governs this startup phase, can someone point to a =
-
-specific part of the code or some documentation describing what is =
-
-supposed to go on here? Is it some sort of device test period to determine =
-
-that the device actually works?
-
-The problem with the R16 is that although capture works fine, playback =
-
-doesn't result in any audio. With the correct quirk set up (most =
-
-importantly, using a 24 bit format), aplay appears to work fine with no =
-
-errors, neither are there any complaints from dmesg, and looking at the =
-
-communication I can see outgoing isochronous data from the host being =
-
-transferred fine.
-
-More work needs to be done, but I've looked at the startup of the Windows =
-
-driver which is deceptively simple: it basically just sets the =
-
-appropriate capture and playback interfaces, together with sending off =
-
-some sample rate USB control commands, the isochronous link comes up and =
-
-that seems to be it. I've tried to emulate the specific USB control =
-
-commands in Linux, as well as add some delays that there appear to be in =
-
-the Windows driver, but so far it hasn't made a difference.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+----
+EMU8000 [0x620]: 4096 KiB on-board DRAM detected
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2791 at fs/sysfs/dir.c:31 sysfs_warn_dup+0x51/0x80()
+sysfs: cannot create duplicate filename '/devices/isa/sbawe.0/sound/card0/seq-oss-0-0'
+Modules linked in: snd_emu8000_synth(+) snd_emux_synth snd_seq_virmidi snd_util_mem snd_opl3_synth snd_seq_midi_emul snd_sbawe snd_opl3_lib snd_sb16_dsp snd_sb16_csp snd_sb_common snd_mpu401_uart lp parport_pc parport
+CPU: 0 PID: 2791 Comm: modprobe Not tainted 4.2.2 #1
+ c1604e78 c1031c40 c175c544 dd6dfc48 00000ae7 c1758c38 0000001f c1103391
+ c1103391 df493000 dd6ef2c0 dd6ec6b0 dd6bfe9c c1031d13 00000009 dd6dfc30
+ c175c544 dd6dfc48 c1103391 c1758c38 0000001f c175c544 df493fdf dd6ef2c0
+Call Trace:
+ [<c1604e78>] ? dump_stack+0xa/0x13
+ [<c1031c40>] ? warn_slowpath_common+0x80/0xc0
+ [<c1103391>] ? sysfs_warn_dup+0x51/0x80
+ [<c1103391>] ? sysfs_warn_dup+0x51/0x80
+ [<c1031d13>] ? warn_slowpath_fmt+0x33/0x40
+ [<c1103391>] ? sysfs_warn_dup+0x51/0x80
+ [<c110346b>] ? sysfs_create_dir_ns+0x6b/0x80
+ [<c11c156c>] ? kobject_add_internal+0x6c/0x2e0
+ [<c11c86cb>] ? vsnprintf+0xcb/0x400
+ [<c11c1956>] ? kobject_add+0x36/0x80
+ [<c134de21>] ? device_add+0xc1/0x500
+ [<c1441669>] ? snd_device_new+0x29/0xa0
+ [<c1460a56>] ? snd_seq_device_new+0xb6/0x100
+ [<c146096c>] ? snd_seq_device_dev_register+0xc/0x40
+ [<c1441604>] ? snd_device_register+0x44/0x80
+ [<e0bd1fc4>] ? snd_emux_init_seq_oss+0x84/0xa0 [snd_emux_synth]
+ [<e0bcd1e3>] ? snd_emux_register+0x103/0x140 [snd_emux_synth]
+ [<e0bcd000>] ? 0xe0bcd000
+ [<e0bcd020>] ? sf_sample_new+0x20/0x20 [snd_emux_synth]
+ [<e0bcd040>] ? sf_sample_free+0x20/0x20 [snd_emux_synth]
+ [<e0bdf113>] ? snd_emu8000_probe+0xd3/0x180 [snd_emu8000_synth]
+ [<c11036dd>] ? sysfs_create_link+0x1d/0x40
+ [<c13504fb>] ? driver_probe_device+0x15b/0x220
+ [<c1350631>] ? __driver_attach+0x71/0x80
+ [<c13505c0>] ? driver_probe_device+0x220/0x220
+ [<c134f000>] ? bus_for_each_dev+0x40/0x80
+ [<c134ff7a>] ? driver_attach+0x1a/0x20
+ [<c13505c0>] ? driver_probe_device+0x220/0x220
+ [<c134fcf4>] ? bus_add_driver+0xd4/0x200
+ [<c1350b91>] ? driver_register+0x51/0xe0
+ [<e0be3000>] ? 0xe0be3000
+ [<e0be3000>] ? 0xe0be3000
+ [<c10003f2>] ? do_one_initcall+0x72/0x1a0
+ [<e0be3000>] ? 0xe0be3000
+ [<c14ac646>] ? netlink_broadcast_filtered+0x166/0x3c0
+ [<c106c4a5>] ? do_init_module+0x45/0x200
+ [<c10a8425>] ? __vunmap+0x85/0xe0
+ [<c106dfaa>] ? load_module+0x186a/0x1ea0
+ [<c106e6aa>] ? SyS_init_module+0xca/0x100
+ [<c160a2dd>] ? syscall_call+0x7/0x7
+---[ end trace 826ff8353957cad3 ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2791 at lib/kobject.c:240 kobject_add_internal+0x252/0x2e0()
+kobject_add_internal failed for seq-oss-0-0 with -EEXIST, don't try to register things with the same name in the same directory.
+Modules linked in: snd_emu8000_synth(+) snd_emux_synth snd_seq_virmidi snd_util_mem snd_opl3_synth snd_seq_midi_emul snd_sbawe snd_opl3_lib snd_sb16_dsp snd_sb16_csp snd_sb_common snd_mpu401_uart lp parport_pc parport
+CPU: 0 PID: 2791 Comm: modprobe Tainted: G        W       4.2.2 #1
+ c1604e78 c1031c40 c1768d78 dd6dfc84 00000ae7 c1768e8e 000000f0 c11c1752
+ c11c1752 dd66c274 00000000 dd66c274 dd6bfe9c c1031d13 00000009 dd6dfc6c
+ c1768d78 dd6dfc84 c11c1752 c1768e8e 000000f0 c1768d78 c162bbd4 dd6ef2c0
+Call Trace:
+ [<c1604e78>] ? dump_stack+0xa/0x13
+ [<c1031c40>] ? warn_slowpath_common+0x80/0xc0
+ [<c11c1752>] ? kobject_add_internal+0x252/0x2e0
+ [<c11c1752>] ? kobject_add_internal+0x252/0x2e0
+ [<c1031d13>] ? warn_slowpath_fmt+0x33/0x40
+ [<c11c1752>] ? kobject_add_internal+0x252/0x2e0
+ [<c11c1956>] ? kobject_add+0x36/0x80
+ [<c134de21>] ? device_add+0xc1/0x500
+ [<c1441669>] ? snd_device_new+0x29/0xa0
+ [<c1460a56>] ? snd_seq_device_new+0xb6/0x100
+ [<c146096c>] ? snd_seq_device_dev_register+0xc/0x40
+ [<c1441604>] ? snd_device_register+0x44/0x80
+ [<e0bd1fc4>] ? snd_emux_init_seq_oss+0x84/0xa0 [snd_emux_synth]
+ [<e0bcd1e3>] ? snd_emux_register+0x103/0x140 [snd_emux_synth]
+ [<e0bcd000>] ? 0xe0bcd000
+ [<e0bcd020>] ? sf_sample_new+0x20/0x20 [snd_emux_synth]
+ [<e0bcd040>] ? sf_sample_free+0x20/0x20 [snd_emux_synth]
+ [<e0bdf113>] ? snd_emu8000_probe+0xd3/0x180 [snd_emu8000_synth]
+ [<c11036dd>] ? sysfs_create_link+0x1d/0x40
+ [<c13504fb>] ? driver_probe_device+0x15b/0x220
+ [<c1350631>] ? __driver_attach+0x71/0x80
+ [<c13505c0>] ? driver_probe_device+0x220/0x220
+ [<c134f000>] ? bus_for_each_dev+0x40/0x80
+ [<c134ff7a>] ? driver_attach+0x1a/0x20
+ [<c13505c0>] ? driver_probe_device+0x220/0x220
+ [<c134fcf4>] ? bus_add_driver+0xd4/0x200
+ [<c1350b91>] ? driver_register+0x51/0xe0
+ [<e0be3000>] ? 0xe0be3000
+ [<e0be3000>] ? 0xe0be3000
+ [<c10003f2>] ? do_one_initcall+0x72/0x1a0
+ [<e0be3000>] ? 0xe0be3000
+ [<c14ac646>] ? netlink_broadcast_filtered+0x166/0x3c0
+ [<c106c4a5>] ? do_init_module+0x45/0x200
+ [<c10a8425>] ? __vunmap+0x85/0xe0
+ [<c106dfaa>] ? load_module+0x186a/0x1ea0
+ [<c106e6aa>] ? SyS_init_module+0xca/0x100
+ [<c160a2dd>] ? syscall_call+0x7/0x7
+---[ end trace 826ff8353957cad4 ]---
