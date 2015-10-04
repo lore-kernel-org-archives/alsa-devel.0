@@ -1,21 +1,23 @@
-From: Michael Shell <list1@michaelshell.org>
-Subject: Re: sysfs: cannot create duplicate filename
- '/devices/isa/sbawe.0/sound/card0/seq-oss-0-0'
-Date: Mon, 5 Oct 2015 05:14:38 -0400
-Message-ID: <20151005051438.a6a9de5eda0631b18d8d0814@michaelshell.org>
-References: <20151004011238.3759486f630c6605dd5c7d4d@michaelshell.org>
- <s5h8u7id5i7.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Mon, 5 Oct 2015 00:19:41 +0100
+Message-ID: <20151004231941.GF12635@sirena.org.uk>
+References: <20150714150352.GW11162@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70108CC68@RTITMBSV03.realtek.com.tw>
+ <55B6B92B.5010305@linux.intel.com>
+ <20150803031552.GN29916@localhost>
+ <CACuU-+ig60xn85_fKKoZRESDcupwZRekShQ-Jj3Bpj4pZu5EeA@mail.gmail.com>
+ <s5hsi5sc4m1.wl-tiwai@suse.de>
+ <20151004225728.GE12635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0374591638412183721=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.supercp.com (barracuda.supercp.com [216.234.124.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 3627626044B
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 11:06:07 +0200 (CEST)
-Received: from a2s43.a2hosting.com (a2s43.a2hosting.com [216.119.133.66]) by
- barracuda.supercp.com with ESMTP id Ld9rafD1Sg3VFLbs for
- <alsa-devel@alsa-project.org>; Mon, 05 Oct 2015 05:06:05 -0400 (EDT)
-In-Reply-To: <s5h8u7id5i7.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 722CA26044B
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 11:38:44 +0200 (CEST)
+In-Reply-To: <20151004225728.GE12635@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,28 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Arun Raghavan <arun@accosted.net>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 04 Oct 2015 17:21:04 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> -	if (snd_seq_device_new(emu->card, 0, SNDRV_SEQ_DEV_ID_OSS,
-> +	if (snd_seq_device_new(emu->card, 1, SNDRV_SEQ_DEV_ID_OSS,
-
-
-   Takashi,
-
-Confirmed to work under 4.2.2. No more dmesg error messages and midi
-playback is operating normally.
+--===============0374591638412183721==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="UBYeLQbK9sqbzZRV"
+Content-Disposition: inline
 
 
-   Thank you for you help,
+--UBYeLQbK9sqbzZRV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   Mike
+On Sun, Oct 04, 2015 at 11:57:28PM +0100, Mark Brown wrote:
+> On Sat, Oct 03, 2015 at 06:13:26PM +0200, Takashi Iwai wrote:
+
+> > Mark, do you have a list of topics available on net, e.g. via google
+> > doc?
+
+> Not yet, though it's basically only a couple of e-mails to collate at
+> this point.
+
+I've just sent a mail for this.
+
+--UBYeLQbK9sqbzZRV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWEbQIAAoJECTWi3JdVIfQuiwH/3gFUSa+W7Rxps9WHN9ZlKoK
+JtVMPzCrY3coHpCXDXd5yb3LDSAzvQZUAD8Nv9qasNQ0XEnbHymLLNf6bP8z4ivj
+AdbgVnG45nBQd/XmBAj3U9HUQSEG3IjpXxrNHBSFxyrWRV3c5fEZQv7sbD5bnrAl
+YS8e8xZzB9NNpm0L8IxFpVIn4gcvSNu+9yAKFKgit6/CcFq6ATW77IgZJoQCB0oZ
+M3dGiWIxFIbHmy73AQ35BiUtvdcGS6Qjlc3uRV4xx1MVxSdi2qPGWvujVig8NDHS
+2xM97SU/zHDebM7V9r2Iy9mpKn3JC1J+5csXyrMjlMnaWLu/gGVh9A68VDnI1I0=
+=eZgr
+-----END PGP SIGNATURE-----
+
+--UBYeLQbK9sqbzZRV--
+
+--===============0374591638412183721==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-PS: In the future, is there any recommended systematic way to
-find out which drivers are conflicting with regard to this
-type of problem? The last/error one is easy, but how would
-we find out which one registered before it?
+--===============0374591638412183721==--
