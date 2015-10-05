@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Add driver suspend and resume
-	to support MEGA Fast" to the asoc tree
-Date: Mon, 05 Oct 2015 17:44:48 +0100
-Message-ID: <E1Zj8sa-0003IV-8n@finisterre>
-References: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: imx-spdif: add snd_soc_pm_ops for spdif
+	machine driver" to the asoc tree
+Date: Mon, 05 Oct 2015 17:44:50 +0100
+Message-ID: <E1Zj8sc-0003Iy-B7@finisterre>
+References: <4c1fe5d2fa0ae6cf85e9be8b3b8a52feaae7d75b.1442566367.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B1B01261519
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 18:45:05 +0200 (CEST)
-In-Reply-To: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A81D1261522
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 18:45:06 +0200 (CEST)
+In-Reply-To: <4c1fe5d2fa0ae6cf85e9be8b3b8a52feaae7d75b.1442566367.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Add driver suspend and resume to support MEGA Fast
+   ASoC: imx-spdif: add snd_soc_pm_ops for spdif machine driver
 
 has been applied to the asoc tree at
 
@@ -53,85 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 1fde5e83a17acbcfcce27f68be46a6da4344efbd Mon Sep 17 00:00:00 2001
+>From 43ac946922b337507c4131c45bf339ddcd7e7402 Mon Sep 17 00:00:00 2001
 From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 18 Sep 2015 11:09:10 +0800
-Subject: [PATCH] ASoC: fsl_sai: Add driver suspend and resume to support MEGA
- Fast
+Date: Fri, 18 Sep 2015 17:18:48 +0800
+Subject: [PATCH] ASoC: imx-spdif: add snd_soc_pm_ops for spdif machine driver
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
-modules during system suspend and resume procedure. Thus, SAI needs to save
-all the values of registers before the system suspend and restore them after
-the system resume.
+Add snd_soc_pm_ops in machine driver to make the trigger suspend/resume
+be called in suspend/resume.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_sai.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ sound/soc/fsl/imx-spdif.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index a18fd92..5c737f1 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -637,6 +637,8 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-+	case FSL_SAI_TCSR:
-+	case FSL_SAI_RCSR:
- 	case FSL_SAI_TFR:
- 	case FSL_SAI_RFR:
- 	case FSL_SAI_TDR:
-@@ -681,6 +683,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
- 	.readable_reg = fsl_sai_readable_reg,
- 	.volatile_reg = fsl_sai_volatile_reg,
- 	.writeable_reg = fsl_sai_writeable_reg,
-+	.cache_type = REGCACHE_FLAT,
- };
- 
- static int fsl_sai_probe(struct platform_device *pdev)
-@@ -802,10 +805,40 @@ static const struct of_device_id fsl_sai_ids[] = {
- 	{ /* sentinel */ }
- };
- 
-+#if CONFIG_PM_SLEEP
-+static int fsl_sai_suspend(struct device *dev)
-+{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(sai->regmap, true);
-+	regcache_mark_dirty(sai->regmap);
-+
-+	return 0;
-+}
-+
-+static int fsl_sai_resume(struct device *dev)
-+{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(sai->regmap, false);
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, FSL_SAI_CSR_SR);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, FSL_SAI_CSR_SR);
-+	msleep(1);
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
-+	return regcache_sync(sai->regmap);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops fsl_sai_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_sai_suspend, fsl_sai_resume)
-+};
-+
- static struct platform_driver fsl_sai_driver = {
- 	.probe = fsl_sai_probe,
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index 33da26a..a407e83 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -89,6 +89,7 @@ MODULE_DEVICE_TABLE(of, imx_spdif_dt_ids);
+ static struct platform_driver imx_spdif_driver = {
  	.driver = {
- 		.name = "fsl-sai",
-+		.pm = &fsl_sai_pm_ops,
- 		.of_match_table = fsl_sai_ids,
+ 		.name = "imx-spdif",
++		.pm = &snd_soc_pm_ops,
+ 		.of_match_table = imx_spdif_dt_ids,
  	},
- };
+ 	.probe = imx_spdif_audio_probe,
 -- 
 2.5.0
