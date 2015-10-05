@@ -1,130 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: atmel-i2s: add driver for the new Atmel I2S
- controller
-Date: Mon, 5 Oct 2015 14:52:42 +0100
-Message-ID: <20151005135242.GP12635@sirena.org.uk>
-References: <cover.1443535188.git.cyrille.pitchen@atmel.com>
- <f8dada26149491a584b83a59e8fcbec378ff6964.1443535188.git.cyrille.pitchen@atmel.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 1/1] ASoC: da7219: Improve error handling for
+ regulator supplies
+Date: Mon, 5 Oct 2015 15:10:04 +0100
+Message-ID: <9f50566afde93ac58ae8205316cc9d1bc2088b2f.1444053230.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ngshnjhd05HsCES+"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <f8dada26149491a584b83a59e8fcbec378ff6964.1443535188.git.cyrille.pitchen@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: nicolas.ferre@atmel.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.150])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71154260599
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 16:10:10 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
+Currently if bulk_enable() of supplies fails, the code still goes on
+to try and put the device into active state, and set expected IO
+voltage of the device. This doesn't really make sense so code now
+returns on bulk_enable() failure, with an error message. Also,
+to help with debug, failure to get supplies also provides an error
+message.
 
---ngshnjhd05HsCES+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
 
-On Tue, Sep 29, 2015 at 04:09:20PM +0200, Cyrille Pitchen wrote:
+This patch is based on changes introduced under patch:
 
-> +	if (pending & ATMEL_I2SC_INT_RXOR) {
-> +		mask = ATMEL_I2SC_SR_RXOR;
-> +
-> +		for (ch = 0; ch < ATMEL_I2SC_MAX_TDM_CHANNELS; ++ch)
-> +			if (sr & ATMEL_I2SC_SR_RXORCH(ch)) {
-> +				mask |= ATMEL_I2SC_SR_RXORCH(ch);
-> +				dev_err(dev->dev,
-> +					"RX overrun on channel %d\n", ch);
-> +			}
-> +		regmap_write(dev->regmap, ATMEL_I2SC_SCR, mask);
-> +	}
+'ASoC: codecs: Add da7219 codec driver'
+(Commit 6d817c0e9fd7536be76690bfdee88e8a81c16f7d, kernel/git/broonie/sound.git)
 
-Coding style - the for loop needs { } for legibility.
+ sound/soc/codecs/da7219.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-> +	if (pending & ATMEL_I2SC_INT_TXUR) {
-> +		mask = ATMEL_I2SC_SR_TXUR;
-> +
-> +		for (ch = 0; ch < ATMEL_I2SC_MAX_TDM_CHANNELS; ++ch)
-> +			if (sr & ATMEL_I2SC_SR_TXURCH(ch)) {
-> +				mask |= ATMEL_I2SC_SR_TXURCH(ch);
-> +				dev_err(dev->dev,
-> +					"TX underrun on channel %d\n", ch);
-> +			}
-> +		regmap_write(dev->regmap, ATMEL_I2SC_SCR, mask);
-> +
-> +	}
-> +
-> +	return IRQ_HANDLED;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 76f8fc2..c86a833 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1554,8 +1554,10 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
 
-This IRQ_HANDLED should be generated only if one of the interrupts we
-know about got handled - there was a check to see if any of the unmasked
-bits is set earlier on in the function but that's not quite the same
-check.
+ 	ret = devm_regulator_bulk_get(codec->dev, DA7219_NUM_SUPPLIES,
+ 				      da7219->supplies);
+-	if (ret)
++	if (ret) {
++		dev_err(codec->dev, "Failed to get supplies");
+ 		return ret;
++	}
 
-> +
-> +static int atmel_i2s_prepare(struct snd_pcm_substream *substream,
-> +			     struct snd_soc_dai *dai)
-> +{
-> +	struct atmel_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-> +	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-> +	unsigned int rhr, sr = 0;
-> +
-> +	if (is_playback) {
-> +		regmap_read(dev->regmap, ATMEL_I2SC_SR, &sr);
-> +		if (sr & ATMEL_I2SC_SR_RXRDY) {
-> +			dev_dbg(dev->dev, "RXRDY is set\n");
-> +			regmap_read(dev->regmap, ATMEL_I2SC_RHR, &rhr);
-> +		}
-> +	}
+ 	/* Determine VDDIO voltage provided */
+ 	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
+@@ -1567,6 +1569,10 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
 
-What's this doing?  It just seems to do two reads and issue a debug
-message...
+ 	/* Enable main supplies */
+ 	ret = regulator_bulk_enable(DA7219_NUM_SUPPLIES, da7219->supplies);
++	if (ret) {
++		dev_err(codec->dev, "Failed to enable supplies");
++		return ret;
++	}
 
-> +static int atmel_i2s_sama5d2_mck_init(struct atmel_i2s_dev *dev,
-> +				      struct device_node *np)
-> +{
-> +	#define SFR_I2SCLKSEL 0x90U
-> +	struct regmap *sfr;
-> +	int id;
-> +
-> +	id = of_alias_get_id(np, "i2s");
-> +	if (id < 0) {
-> +		dev_err(dev->dev, "failed to get alias ID\n");
-> +		return id;
-> +	}
-> +	if (id > 1) {
-> +		dev_err(dev->dev, "invalid I2S controller ID: %d\n", id);
-> +		return -EINVAL;
-> +	}
+ 	/* Ensure device in active mode */
+ 	snd_soc_write(codec, DA7219_SYSTEM_ACTIVE, DA7219_SYSTEM_ACTIVE_MASK);
+@@ -1574,7 +1580,7 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
+ 	/* Update IO voltage level range */
+ 	snd_soc_write(codec, DA7219_IO_CTRL, io_voltage_lvl);
 
-This didn't appear in the DT binding and looks pretty funky - what's
-going on here?
+-	return ret;
++	return 0;
+ }
 
-> +	sfr = syscon_regmap_lookup_by_compatible("atmel,sama5d2-sfr");
-> +	if (IS_ERR(sfr)) {
-> +		dev_err(dev->dev, "failed to get SFR syscon\n");
-> +		return PTR_ERR(sfr);
-> +	}
-
-This didn't appear in the binding either.
-
-> +	/* Get hardware capabilities. */
-> +	match = of_match_node(atmel_i2s_dt_ids, np);
-> +	dev->caps = match ? match->data : NULL;
-
-Please don't abuse the ternery operator like this, just write a normal
-if statement :/
-
---ngshnjhd05HsCES+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWEoClAAoJECTWi3JdVIfQCTwH/jg1oktqSkfR4cM4jgbmQVPp
-m5/dPsSzMZVpwuDApdLF+qPVVo1FEOi55bhFqbH5/7iSmeHP1oYX/ZoUvT1ykNBN
-ufKVVwagJX7CMyIZ4RDsnReLJ0WYTqwy6/LC0Ny8yfHOLFiRRSGJFeuKJS7B63FR
-mxCXboe9obwk5cKXSezMAPk0Wy5fcrYMDoU9/WdO++R8C2cLJpMu5aTkADcUCIpn
-bCYer9FxgWRTs0gC03EHyH1ghsjUqr9ROSZ/gFHqdRCC5g6dgeElfvh7u2H0ykQJ
-17v03y0L3xEwovQgb6dfS5NkUxmNwbFHKxbpAaKG91Ftf490bE15DIvUaOFZ5lU=
-=awYg
------END PGP SIGNATURE-----
-
---ngshnjhd05HsCES+--
+ static void da7219_handle_pdata(struct snd_soc_codec *codec)
+--
+1.9.3
