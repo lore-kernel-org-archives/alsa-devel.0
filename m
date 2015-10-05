@@ -1,25 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
- use another nid for pin sense
-Date: Mon, 5 Oct 2015 12:51:20 +0800
-Message-ID: <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
-References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
- <s5hvbb16yup.wl-tiwai@suse.de>
- <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
- <s5h4mik6xwi.wl-tiwai@suse.de>
- <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
- <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+From: Lemon <qlwy_15@163.com>
+Subject: baytrail crv2 audio mic no data
+Date: Mon, 05 Oct 2015 16:07:39 +0800
+Message-ID: <56122FCB.6020709@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f176.google.com (mail-ob0-f176.google.com
- [209.85.214.176])
- by alsa0.perex.cz (Postfix) with ESMTP id A73712652F5
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 06:51:21 +0200 (CEST)
-Received: by obbzf10 with SMTP id zf10so120206594obb.2
- for <alsa-devel@alsa-project.org>; Sun, 04 Oct 2015 21:51:20 -0700 (PDT)
-In-Reply-To: <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+Received: from m50-132.163.com (m50-132.163.com [123.125.50.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32031260436
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 10:07:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,21 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arthur Borsboom <arthurborsboom@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 1451170@bugs.launchpad.net
+To: android-ia@lists.01.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> Do you need any testing from my side to be able to finish the developing?
->
+Hello everyone,
+     I have a Z3735F board which use ssp0 connect to rt5640, I
+using linux mainline 4.2 and fw_sst_0f28.bin from
+https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/?h=byt
+the audio sound is ok, I tried many alsa config but the analog mic 
+record data is all 0, kernel no error message.
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1451170/comments/22
+I don't know why mic record data is 0, does anyone knows ?
 
-It seem that asus n550lf which also use alc668 codec but headset mic pin
-node 0x1b is detectable
 
-Can you confirm that your headset mic node is not detectable by
-hdajacksensetest ?
+regards
+LemonZou
 
-This mean that the model "headset-sonicmaster" will be quite confusing when
-asus notebooks have different ways of headset implementation
+========================================
+
+
+arecord -f dat -t wav -d 5 foobar.wav
+hexdump foobar.wav
+0000000 4952 4646 a624 000e 4157 4556 6d66 2074
+0000010 0010 0000 0001 0002 bb80 0000 ee00 0002
+0000020 0004 0010 6164 6174 a600 000e 0000 0000
+0000030 0000 0000 0000 0000 0000 0000 0000 0000
+*
+00ea62c
+
+my board mic connect to alc5640 in2p, my main config include:
+"Stereo ADC MIXL ADC1" on
+"Stereo ADC1 Mux" "ADCL"
+"RECMIXL INL"  on
+"RECMIXL BST2" on
+"pcm1_out mix 0 codec_in0" on
+"pcm1_out mix 0 codec_in1" on
+
+
+kernel message:
+[ 5329.874448] sst-mfld-platform sst-mfld-platform: Enter: enable=1 
+port_name=ssp0-port
+[ 5329.979365] intel_sst_acpi 80860F28:00: Alloc for str 3 pipe 0xe
+[ 5335.250574] sst-mfld-platform sst-mfld-platform: Enter: enable=0 
+port_name=ssp0-port
+[ 5335.253528] intel_sst_acpi 80860F28:00: Free for str 3 pipe 0xe
+
+========================================
