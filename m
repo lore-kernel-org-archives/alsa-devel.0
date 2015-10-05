@@ -1,66 +1,67 @@
-From: Lemon <qlwy_15@163.com>
-Subject: baytrail crv2 audio mic no data
-Date: Mon, 05 Oct 2015 16:07:39 +0800
-Message-ID: <56122FCB.6020709@163.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: add sunxi SPDIF
+ transceiver bindings
+Date: Mon, 5 Oct 2015 10:41:33 +0200
+Message-ID: <20151005084133.GE2696@lukather>
+References: <1443635458-8873-1-git-send-email-codekipper@gmail.com>
+ <1443635458-8873-2-git-send-email-codekipper@gmail.com>
+ <20151001201215.GN7104@lukather>
+ <CAEKpxB=kdmrbeiq8M=dXmpccxOhd7UZTaMkLZGo9TdRB1kMz3g@mail.gmail.com>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m50-132.163.com (m50-132.163.com [123.125.50.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 32031260436
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 10:07:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: android-ia@lists.01.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBSHPZCYAKGQEFTL6E4Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAEKpxB=kdmrbeiq8M=dXmpccxOhd7UZTaMkLZGo9TdRB1kMz3g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
-     I have a Z3735F board which use ssp0 connect to rt5640, I
-using linux mainline 4.2 and fw_sst_0f28.bin from
-https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/?h=byt
-the audio sound is ok, I tried many alsa config but the analog mic 
-record data is all 0, kernel no error message.
+--wULyF7TL5taEdwHz
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-I don't know why mic record data is 0, does anyone knows ?
+On Fri, Oct 02, 2015 at 07:24:20AM +0200, Code Kipper wrote:
+> >> +
+> >> +  - compatible               : should be one of the following:
+> >> +    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
+> >> +    - "allwinner,sun7i-a20-spdif": for the Allwinner A20 SoC
+> >> +    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
+> >
+> > Are all these compatibles really work? Is there any significant
+> > difference between the controller on all these SoCs?
+>
+> Let us assume that there isn't any difference. Remember SPDIF details
+> for all of these devices is sketchy. In the A10 User Manual, it's not
+> even mentioned although devices such as the Mele A2000 which I use
+> come with the physical connector. It's only when the A20 Manual was
+> released that we see the pin details and related components. We didn't
+> see a SPDIF block spec until the H3 User Manual was released.
+> 
+> Looking at the SDK code I've only seen fifo level settings to be
+> different for the sun6i family. It was this release that also showed
+> Rx rotines. The fact of the matter is we won't know until these SoCs
+> have been tested and with that in mind I'm happy to remove all
+> capabilities for now until then.
 
+The point was more that you document compatibles that you are not
+actually supporting.
 
-regards
-LemonZou
+You've only tested it on one SoC (and it actually works only on one
+SoC, or at least with one compatible), so only document that.
 
-========================================
+Maxime
 
-
-arecord -f dat -t wav -d 5 foobar.wav
-hexdump foobar.wav
-0000000 4952 4646 a624 000e 4157 4556 6d66 2074
-0000010 0010 0000 0001 0002 bb80 0000 ee00 0002
-0000020 0004 0010 6164 6174 a600 000e 0000 0000
-0000030 0000 0000 0000 0000 0000 0000 0000 0000
-*
-00ea62c
-
-my board mic connect to alc5640 in2p, my main config include:
-"Stereo ADC MIXL ADC1" on
-"Stereo ADC1 Mux" "ADCL"
-"RECMIXL INL"  on
-"RECMIXL BST2" on
-"pcm1_out mix 0 codec_in0" on
-"pcm1_out mix 0 codec_in1" on
-
-
-kernel message:
-[ 5329.874448] sst-mfld-platform sst-mfld-platform: Enter: enable=1 
-port_name=ssp0-port
-[ 5329.979365] intel_sst_acpi 80860F28:00: Alloc for str 3 pipe 0xe
-[ 5335.250574] sst-mfld-platform sst-mfld-platform: Enter: enable=0 
-port_name=ssp0-port
-[ 5335.253528] intel_sst_acpi 80860F28:00: Free for str 3 pipe 0xe
-
-========================================
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--wULyF7TL5taEdwHz--
