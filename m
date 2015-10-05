@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Improve error handling for
-	regulator supplies" to the asoc tree
-Date: Mon, 05 Oct 2015 16:11:04 +0100
-Message-ID: <E1Zj7Ps-0000uJ-V9@finisterre>
+Subject: Re: [PATCH] ASoC: Document DAI signal polarity
+Date: Mon, 5 Oct 2015 16:12:55 +0100
+Message-ID: <20151005151255.GU12635@sirena.org.uk>
+References: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4275342261354417323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BB6E26069D
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 17:11:28 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FC92260789
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 17:13:10 +0200 (CEST)
+In-Reply-To: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,90 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: albertchen@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, benoit.thebaudeau.dev@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7219: Improve error handling for regulator supplies
+--===============4275342261354417323==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AhvJQTq3ZY7+0psJ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--AhvJQTq3ZY7+0psJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Oct 01, 2015 at 11:09:19AM -0700, Anatol Pomozov wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> + * - I2S right/left justified: frame consists of left then right channel data.
+> + *      Left channel starts with rising FSYNC edge, right channel starts with
+> + *      falling FSYNC edge.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+These are just called left and right justified - they do look a lot like
+I2S but I2S isn't part of the name in normal usage so it's a little
+confusing.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Also it's more normal when talking about both left and right to list
+left first, it scans better.
 
-Thanks,
-Mark
+--AhvJQTq3ZY7+0psJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->From 4e929134eb8271abc9c52c371e056debfea6898b Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Mon, 5 Oct 2015 15:10:04 +0100
-Subject: [PATCH] ASoC: da7219: Improve error handling for regulator supplies
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Currently if bulk_enable() of supplies fails, the code still goes on
-to try and put the device into active state, and set expected IO
-voltage of the device. This doesn't really make sense so code now
-returns on bulk_enable() failure, with an error message. Also,
-to help with debug, failure to get supplies also provides an error
-message.
+iQEcBAEBCAAGBQJWEpN3AAoJECTWi3JdVIfQA1wH/3Yo8PnnPjmcX04PXg/MP5zZ
+P+lZWRNm4iSu44jbnZ8BN2O4XGBhJ99KZPmcPlmLYdmkirdSsPBvBe91ayuEBExH
+pNP9cLg/OrD5vAIu5lPdSMzWR4khJg8JSJUY30/JHRHRXvvLijRjooXtUvZeGsLr
+lzgtJp+dTfpw4LiG0eRNZoBnp9FLVA3tAkhosx7kPiw2oW2Zb4kz/RoKHNplNoRi
+zl16lo4S/lWg6W/jfKFNXg9E7vDsWjYJs3qF3aHqDkp78F0x4jXPbFOtSEnhJA5l
+8+fkfAZAZf/D72pKq+OJRgKCQjI4nlTMdK0Y2LRwt9W+M8AmxW66zu+zGmFmZLE=
+=goib
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7219.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+--AhvJQTq3ZY7+0psJ--
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 76f8fc2..c86a833 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1554,8 +1554,10 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
- 
- 	ret = devm_regulator_bulk_get(codec->dev, DA7219_NUM_SUPPLIES,
- 				      da7219->supplies);
--	if (ret)
-+	if (ret) {
-+		dev_err(codec->dev, "Failed to get supplies");
- 		return ret;
-+	}
- 
- 	/* Determine VDDIO voltage provided */
- 	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
-@@ -1567,6 +1569,10 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
- 
- 	/* Enable main supplies */
- 	ret = regulator_bulk_enable(DA7219_NUM_SUPPLIES, da7219->supplies);
-+	if (ret) {
-+		dev_err(codec->dev, "Failed to enable supplies");
-+		return ret;
-+	}
- 
- 	/* Ensure device in active mode */
- 	snd_soc_write(codec, DA7219_SYSTEM_ACTIVE, DA7219_SYSTEM_ACTIVE_MASK);
-@@ -1574,7 +1580,7 @@ static int da7219_handle_supplies(struct snd_soc_codec *codec)
- 	/* Update IO voltage level range */
- 	snd_soc_write(codec, DA7219_IO_CTRL, io_voltage_lvl);
- 
--	return ret;
-+	return 0;
- }
- 
- static void da7219_handle_pdata(struct snd_soc_codec *codec)
--- 
-2.5.0
+--===============4275342261354417323==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4275342261354417323==--
