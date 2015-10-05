@@ -1,113 +1,84 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 4/4] ALSA: hdac: Add codec read/write and check
-	power state for widgets
-Date: Mon,  5 Oct 2015 15:09:51 +0100
-Message-ID: <1444054191-17030-5-git-send-email-vinod.koul@intel.com>
-References: <1444054191-17030-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Rework and fix headphone routing
+Date: Mon, 5 Oct 2015 15:21:11 +0100
+Message-ID: <20151005142111.GR12635@sirena.org.uk>
+References: <1443965896-6205-1-git-send-email-maxime.ripard@free-electrons.com>
+ <20151005094435.GI12635@sirena.org.uk>
+ <20151005102550.GI2696@lukather>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 7237826066D
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 16:10:55 +0200 (CEST)
-In-Reply-To: <1444054191-17030-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="G23JYFG0d77Z6i/3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151005102550.GI2696@lukather>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Emilio Lopez <emilio@elopez.com.ar>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-This adds helpers to read/write the codec. Also adds a helper to check the
-power state of widgets.
+--G23JYFG0d77Z6i/3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/hdaudio.h |  6 ++++++
- sound/hda/hdac_device.c | 47 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
+On Mon, Oct 05, 2015 at 12:25:50PM +0200, Maxime Ripard wrote:
+> On Mon, Oct 05, 2015 at 10:44:35AM +0100, Mark Brown wrote:
+> > On Sun, Oct 04, 2015 at 03:38:16PM +0200, Maxime Ripard wrote:
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 49bc836fcd84..26e956f4b7c6 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -147,6 +147,12 @@ int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
- bool snd_hdac_is_supported_format(struct hdac_device *codec, hda_nid_t nid,
- 				  unsigned int format);
- 
-+int snd_hdac_codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm);
-+int snd_hdac_codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm);
-+bool snd_hdac_check_power_state(struct hdac_device *hdac,
-+		hda_nid_t nid, unsigned int target_state);
- /**
-  * snd_hdac_read_parm - read a codec parameter
-  * @codec: the codec object
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index db96042a497f..24c7a5f6f0f3 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -952,3 +952,50 @@ bool snd_hdac_is_supported_format(struct hdac_device *codec, hda_nid_t nid,
- 	return true;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_is_supported_format);
-+
-+static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
-+	unsigned int res;
-+
-+	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
-+		return -1;
-+
-+	return res;
-+}
-+
-+static int codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
-+
-+	return snd_hdac_exec_verb(hdac, cmd, flags, NULL);
-+}
-+
-+int snd_hdac_codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	return codec_read(hdac, nid, flags, verb, parm);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_codec_read);
-+
-+int snd_hdac_codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	return codec_write(hdac, nid, flags, verb, parm);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_codec_write);
-+
-+bool snd_hdac_check_power_state(struct hdac_device *hdac,
-+		hda_nid_t nid, unsigned int target_state)
-+{
-+	unsigned int state = codec_read(hdac, nid, 0,
-+				AC_VERB_GET_POWER_STATE, 0);
-+
-+	if (state & AC_PWRST_ERROR)
-+		return true;
-+	state = (state >> 4) & 0x0f;
-+	return (state == target_state);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_check_power_state);
--- 
-2.4.3
+> > > Most of the boards have their headphone jack directly connected to the
+> > > matching pins of the SoCs. Since most of the time we will have the same
+> > > routing path, it makes sense to put that in the driver, and only have a
+> > > property describing whether that route is enabled or not.
+
+> > What is the value in having just a dumb jack with no detection
+> > configured?  It doesn't actually do anything...
+
+> Well, it's how it's wired on most boards. The jack is directly
+> connected to the SoC, without any detection mechanism, not even a
+> GPIO, so we can only assume it's always there if we want it to work
+> properly.
+
+Sure, but what is the point of representing this in the driver?
+
+> > > It also fixes the following warning messages that were seen so far:
+> > > sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> > > sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
+> > > sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> > > sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+
+> > Why are these routes being added separately to adding the jack?  Just
+> > remove the broken routes.
+
+> I'm not sure I understand here. The former DT bindings example was
+> adding this route, which was broken because of the missing output
+> widget for the headphone jack.
+
+If those warnings are being seen whatever added the routes is buggy
+as-is.
+
+> My patch here adds both if the DT says that the headphone jack is
+> actually used on that board, so it should fix both issues: no broken
+> route, and no missing widgets. right?
+
+It's not really a scalable binding - it's a boolean for this one
+configuration, even adding a GPIO for detection isn't going to fit in
+terribly neatly.  I'm trying to figure out if we even need a binding
+here.
+
+--G23JYFG0d77Z6i/3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWEodRAAoJECTWi3JdVIfQq7MH/0sEWpENsYyVRIiXsdy19V7X
+61s5Ch01YY7rfQLiRas0PbXoIsqkzuefb62D9Eax+d6XciuXD+xtuLeR/M+hfuTr
+U2Ih4+DC8OIsuSIOuX4hOaXcjubpWRaC3YIG21M/Qy4nJSa0mZUpDGi9vSfSrkWh
+nwMYEcdBKhzDO/qA+qBwyInuG/A1ZxXpl/nwaAQL//KEOQEvWaQS/R4DVR5eiiz+
+a71rPkWbi8hnRFoPNxmEVKkoQF4V10zu5aU/fUQLGzO2eRODuAiByZGNH4Jrqbts
+Y3kAJajhiAhSLp0uKfWEoZkOpU6G/Ckpi66aEaj5qoNXwpp6VDSyZ8cWhPs/jTQ=
+=xG0Y
+-----END PGP SIGNATURE-----
+
+--G23JYFG0d77Z6i/3--
