@@ -1,35 +1,90 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: Re: Regarding ASoC: rt286: Fix the runtime error in
-	the booting
-Date: Mon, 5 Oct 2015 18:16:55 +0800
-Message-ID: <CAFRkauDA93VtV7pcjxkMs4JRD+eUYT53D6OyDP6gHyaMtRh0xg@mail.gmail.com>
-References: <1444039739.8819.2.camel@ingics.com>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Rework and fix headphone routing
+Date: Mon, 5 Oct 2015 12:25:50 +0200
+Message-ID: <20151005102550.GI2696@lukather>
+References: <1443965896-6205-1-git-send-email-maxime.ripard@free-electrons.com>
+ <20151005094435.GI12635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D6CD2604A4
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 12:16:56 +0200 (CEST)
-Received: by lbbwt4 with SMTP id wt4so17323210lbb.1
- for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2015 03:16:56 -0700 (PDT)
-In-Reply-To: <1444039739.8819.2.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k+G3HLlWI7eRTl+h"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151005094435.GI12635@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Emilio Lopez <emilio@elopez.com.ar>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -       rt286->index_cache = rt286_index_def;
->         rt286->index_cache_size = INDEX_CACHE_SIZE;
-> +       rt286->index_cache = devm_kmalloc(&i2c->dev, INDEX_CACHE_SIZE,
-> +                                         GFP_KERNEL);
-Should be devm_kmalloc(&i2c->dev, sizeof(rt286_index_def), GFP_KERNEL);
+
+--k+G3HLlWI7eRTl+h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Mark,
+
+On Mon, Oct 05, 2015 at 10:44:35AM +0100, Mark Brown wrote:
+> On Sun, Oct 04, 2015 at 03:38:16PM +0200, Maxime Ripard wrote:
+>=20
+> > Most of the boards have their headphone jack directly connected to the
+> > matching pins of the SoCs. Since most of the time we will have the same
+> > routing path, it makes sense to put that in the driver, and only have a
+> > property describing whether that route is enabled or not.
+>=20
+> What is the value in having just a dumb jack with no detection
+> configured?  It doesn't actually do anything...
+
+Well, it's how it's wired on most boards. The jack is directly
+connected to the SoC, without any detection mechanism, not even a
+GPIO, so we can only assume it's always there if we want it to work
+properly.
+
+> > It also fixes the following warning messages that were seen so far:
+> > sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> > sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct =
+-> Headphone Jack
+> > sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+> > sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct=
+ -> Headphone Jack
+>=20
+> Why are these routes being added separately to adding the jack?  Just
+> remove the broken routes.
+
+I'm not sure I understand here. The former DT bindings example was
+adding this route, which was broken because of the missing output
+widget for the headphone jack.
+
+My patch here adds both if the DT says that the headphone jack is
+actually used on that board, so it should fix both issues: no broken
+route, and no missing widgets. right?
+
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--k+G3HLlWI7eRTl+h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWElAuAAoJEBx+YmzsjxAgzMUP/3mUnto4PEDHu0V5k5+S8v9w
+EBsueMc2TdKlRUvHv+49fhw7Run9HnVuWsGZHdR5DzpZNEk7hx7Itd3Tj/QvRQaQ
+LryCZ9EB3IiAPtVBdkA6WoQZEKyeBNTo4kgDE+JBd0BjQvoasBSYzAzPQcplOlMF
+j6NmSUy7ZjmCkUwUj1VSTRfbyPNklZKwoJzjC84RzPaahbuiUJ/VVvbj+ap8aGhO
+UdqVWCK1WafTH12dpymn28ZQLSl8EKV5cM0nAkejQOpicn0NZ9W54slfFR6fvX53
+gb/DPVdcZxj6MXJoBLXV7AQWTw0QsZRiY5L7CuQMcG2jEVCrJR1MDRZeNQXc9W8d
+aa6aABGpuz2GZZWyoEs2Rg3vAdwcQu0Kpb550xS5+1rZ+X4jUqM+XJR6k0+HYRaL
+AtSg21X0j40B/KxVS+vUuMsvTdHeabHUoUd8BIYFJj7Ha2+OUU3zaA0ST6Gok3tv
+rStUenvOZD7+S8vCb+VZ6tVHnpu0hrNNGKZ1g7QS5vxyquRSL5JxOCm0av1gGexl
+r7xmnPTICtnhJsW3sZmNZBwICaFONBQp4AFijXvvu+zk/7xtrj6phrWEAFhJ9Roj
+Msp5GOgfpVQV06NoRcHgHpEMkMDavr6ZZeDSKzYD6Vl+EOToHkaqTIAXElEbQKaC
+x4B8t+ZDIoFtzb/c4vVT
+=dYFk
+-----END PGP SIGNATURE-----
+
+--k+G3HLlWI7eRTl+h--
