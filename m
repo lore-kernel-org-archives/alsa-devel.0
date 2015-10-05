@@ -1,14 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Audio Mini Summit 2015, 8th October, Dublin
-Date: Mon, 5 Oct 2015 00:17:52 +0100
-Message-ID: <20151004231752.GA22609@sirena.org.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt286: Fix the runtime error in the
+	booting
+Date: Mon, 5 Oct 2015 04:09:58 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694F9A57E@RTITMBSV03.realtek.com.tw>
+References: <1443763829-9359-1-git-send-email-oder_chiou@realtek.com>
+ <20151002101141.GO12635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8218209221919567917=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1658A26527E
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 01:19:05 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D76D2652CE
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 06:10:20 +0200 (CEST)
+In-Reply-To: <20151002101141.GO12635@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,74 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, "flubba86@gmail.com" <flubba86@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8218209221919567917==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-
-
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-[This message is BCCed to everyone currently on the signup list]
-
-As previously announce the audio mini-summit for this year will be this
-Thursday (8th August) at CCD in Dublin.  Topics we currently have on the
-list for discussion are:
-
- - Power saving and general system design decisions (is what we're doing
-   lining up with modern hardware with things like multiple output
-   streams?).
- - What to do with HDMI and its integration with graphics.
- - Test tools (Intel BAT and others).
- - BATCH flag.
- - ACPI simple-card and general generic card support.
- - Topology & media controller integration.
- - Kernel tinification.
- - Android <-> alsa-lib configuration translation.
- - HDA restructuring.
- - PCM core simplification - the code is currently quite complex!
- - Soundwire driver support plans.
-
-If you're planning to attend and haven't done so already please sign up
-at:
-
-  https://docs.google.com/spreadsheets/d/1bi-8GHsqlzt41FR20WiMuWILe_cZowFireVMBd-QM8Q/edit?usp=sharing
-
-Once I have details on the room & so on I will follow up to this mail
-with both.  We'll also try and sort out some dinner on Thursday night,
-if there are any special requirements for that please say (I'm assuming
-that we will have at least some vegetarians).
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWEbOfAAoJECTWi3JdVIfQAZEH/R0oBdQovL2JELW39qvMAHxB
-HRsUj0VJP+jYZERicBA2r2ucarCBnkV0nwp8dpFS3ALBKUEXWoSuoIvMsujQpWXb
-dsjlP40zbPbVGSAsYqQ05XTIhFazguPiqaBCCabUTmG4yl0KTRWqFxcLlX82Ca84
-fpayjKdptriLKgtOGEY7DomgD7DHVaEF/RK3HWCMvcjD3pRGmhZuASM0q0ZHVwKx
-g+btoRJ34AFfI3KBqHemt5DnlDQ9yOOp+F/yB8/u+7r0COP0gc/Eq34pkvB2ljCK
-VLt2inZ+q6IQZ8rfEu//6YYw/JI6p3tHu+9o03aYSNf+ONxhDQocQruO7jxZ0bA=
-=y2Vz
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
-
---===============8218209221919567917==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8218209221919567917==--
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, October 02, 2015 6:12 PM
+> To: Oder Chiou
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Bard Liao; John Lin;
+> flubba86@gmail.com
+> Subject: Re: [PATCH] ASoC: rt286: Fix the runtime error in the booting
+> 
+> On Fri, Oct 02, 2015 at 01:30:29PM +0800, Oder Chiou wrote:
+> > The struct rt286_index_def was used by the cache function, so it cannot be
+> > declared as const.
+> 
+> > -static const struct reg_default rt286_index_def[] = {
+> > +static struct reg_default rt286_index_def[] = {
+> >  	{ 0x01, 0xaaaa },
+> >  	{ 0x02, 0x8aaa },
+> >  	{ 0x03, 0x0002 },
+> 
+> This isn't obvious and seems likely to break - why is this ever being
+> modified and how is that safe?
+The table was used for the cache function of the index table, so it would be
+changed the value in the index register writing. The breaking is in that the
+variable of type "const" is changing. And the wrong modification was
+committed by "c418a84a8c8f98b1a0f30cd68d0cdf40d77aed01". The modifications of
+the commit are correct in the conventional case, but it will be breaking in
+case of rt286 and rt298.
