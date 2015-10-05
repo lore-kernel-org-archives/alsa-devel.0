@@ -1,68 +1,70 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: da7213: Add DT support to codec driver
-Date: Mon, 5 Oct 2015 16:55:43 +0100
-Message-ID: <20151005155543.GY12635@sirena.org.uk>
-References: <cover.1444042230.git.Adam.Thomson.Opensource@diasemi.com>
- <8b10191f4e14b32f831d32c66c7edebd861b70ac.1444042230.git.Adam.Thomson.Opensource@diasemi.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib] hwdep: add FireWire digi00x/tascam
+	driver support
+Date: Tue,  6 Oct 2015 01:08:59 +0900
+Message-ID: <1444061339-27519-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TrSyUYpaPvvX07X2"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <8b10191f4e14b32f831d32c66c7edebd861b70ac.1444042230.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A21B2606E5
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 18:09:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Linux 4.4 newly support these drivers. Their hardware dependent interfaces
+give functionalities to get hardware information, to lock/unlock kernel
+streaming and to receive lock status event.
 
---TrSyUYpaPvvX07X2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/hwdep.h        | 4 +++-
+ include/sound/asound.h | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-On Mon, Oct 05, 2015 at 04:40:18PM +0100, Adam Thomson wrote:
-
-> This patch adds support for DT bindings in the codec driver.
-> As part of this support, the mclk data can now be provided and
-> used to control the mclk during codec operation.
-
-Please split out the new MCLK configuration into a separate patch which
-describes what that configuration is, it's much easier to review that
-way.  Otherwise there's a couple of minor issues here but nothing too
-critical.
-
->  	case SND_SOC_BIAS_STANDBY:
->  		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-> +			/* MCLK */
-> +			clk_prepare_enable(da7213->mclk);
-> +
-
-This doesn't check the return value.
-
->  	.driver = {
->  		.name = "da7213",
-> +		.of_match_table = da7213_of_match,
-
-Please use of_match_ptr() here.
-
---TrSyUYpaPvvX07X2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWEp17AAoJECTWi3JdVIfQzekH/RfMew2zcn2SOlEXmB6NFgDH
-5DXcdrGPttjG92cTWzS2czA9Q523Vyqq+GKR0WG/x720w832fF17y8b6jCyhsoN9
-mg3Run+44NwNvhD6RRI9O4OlB9p0KIK4l71wVIbxoijjESXOLck5tFPwjSs6BV4G
-UKWmtCIz94s3qzhR1M4F0gU8MTSMDVQ0oK/EDNiBuhaiQL6ZXXDR2Mg3fnoxJu0v
-XJ8An7F3/HTGrmpdXfcfmz10RIumS/WomZK8ubQGEThHu1NFxhD0x0ebYaDA7MTr
-n9skQFzWatRRH7rOQpiIXllYRld2xLPGy08KWWD6G7tsymUt6ycjfaVS9EE9OSw=
-=WuPO
------END PGP SIGNATURE-----
-
---TrSyUYpaPvvX07X2--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/hwdep.h b/include/hwdep.h
+index 3d3c31b..2fe78cd 100644
+--- a/include/hwdep.h
++++ b/include/hwdep.h
+@@ -74,8 +74,10 @@ typedef enum _snd_hwdep_iface {
+ 	SND_HWDEP_IFACE_FW_FIREWORKS,	/**< Echo Audio Fireworks based device */
+ 	SND_HWDEP_IFACE_FW_BEBOB,	/**< BridgeCo BeBoB based device */
+ 	SND_HWDEP_IFACE_FW_OXFW,	/**< Oxford OXFW970/971 based device */
++	SND_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
++	SND_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
+ 
+-	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_OXFW	/**< last known hwdep interface */
++	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_TASCAM	/**< last known hwdep interface */
+ } snd_hwdep_iface_t;
+ 
+ /** open for reading */
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index a45be6b..a82108e 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -100,9 +100,11 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
+ 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
++	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
++	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
+ };
+ 
+ struct snd_hwdep_info {
+-- 
+2.1.4
