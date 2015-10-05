@@ -1,22 +1,18 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: davinci_evm ocp:sound: ASoC: CPU DAI (null) not
-	registered
-Date: Mon, 5 Oct 2015 03:08:21 -0700
-Message-ID: <8B8056E6-D50C-429D-B837-374C501D2106@latencyzero.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Regarding ASoC: rt286: Fix the runtime error in the
+	booting
+Date: Mon, 05 Oct 2015 18:08:59 +0800
+Message-ID: <1444039739.8819.2.camel@ingics.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 9F19B260505
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 12:08:23 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id 2D80D20339
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 06:08:23 -0400 (EDT)
-Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
- [50.168.55.93])
- by mail.messagingengine.com (Postfix) with ESMTPA id B557A680123
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 06:08:22 -0400 (EDT)
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4548B260504
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 12:09:07 +0200 (CEST)
+Received: by pacfv12 with SMTP id fv12so176478974pac.2
+ for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2015 03:09:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,99 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I've been at this for weeks and I'm still unable to get linux to work correctly with my TI codec. This is on a Beaglebone Black running a 4.1.4 kernel (later versions are worse). I've tried multiple versions of the kernel trying to narrow it down. I keep coming back to 4.1.4 as the most recent that at least generates some audio clocks.
+Hi Order,
+I just notice your patch on the ML:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-October/098390.html
+I didn't subscribe the ML and I'm not in CC so I cannot directly reply to you.
 
-The AM335x mcasp0 should be speaking i2s with the tlv320aic3104.
+I think you should make a copy of memory for index_cache rather than
+directly use the rt286_index_def if the index_cache is necessary.
 
-I have my own build from source of the BBB 4.1.4-ti-r9 release (mainline plus TI plus Beaglebone stuff). I've sprinkled some logging around the audio drivers, but so far I don't see much, and I really don't understand how all the pieces fit together.
-
-One thing I found with my logging is the mcasp MCLK (AHCLKXDIV) is never set. I have logging calls in __davinci_mcasp_set_clkdiv() (sound/soc/davinci/davinci-mcasp.c), which is the only code I could find that sets the McASP clock, and it's never called. I tried to use devmem2 to read the registers in the SoC to see if they were set correctly, but I just get a bus error (other reads do work).
-
-Errors in dmesg when I load the device tree overlay for my cape suggest I still don't have something configured correctly (see below).
-
-I'd sure appreciate any insight into these latest issues. Thanks!
-
-
-Symptoms:
-
-MCLK should be 12 MHz, but is 24.00 MHz.
-Buffer underflows when running speaker-test.
-
-Errors to console upon loading cape:
-
-[   38.502299] davinci_evm ocp:sound: ASoC: CPU DAI (null) not registered
-[   38.517917] davinci_evm ocp:sound: snd_soc_register_card failed (-517)
-[   38.530425] davinci_evm ocp:sound: ASoC: CPU DAI (null) not registered
-[   38.536996] davinci_evm ocp:sound: snd_soc_register_card failed (-517)
-[   38.564279] davinci_evm ocp:sound: ASoC: DAPM unknown pin MONO_LOUT
-
-dmesg upon loading cape overlay (https://github.com/JetForMe/podtique/blob/v1/bbb/cape/Podtique1/BB-ENABLE-PRU.dts):
-
-[  568.323587] bone_capemgr bone_capemgr: part_number 'BB-ENABLE-PRU', version 'N/A'
-[  568.323629] bone_capemgr bone_capemgr: slot #4: override
-[  568.323646] bone_capemgr bone_capemgr: Using override eeprom data at slot 4
-[  568.323663] bone_capemgr bone_capemgr: slot #4: 'Override Board Name,00A0,Override Manuf,BB-ENABLE-PRU'
-[  568.323804] bone_capemgr:capemgr_load_slot:1148: bone_capemgr bone_capemgr: slot #4: Requesting part number/version based 'BB-ENABLE-PRU-00A0.dtbo
-[  568.323825] bone_capemgr:capemgr_load_slot:1162: bone_capemgr bone_capemgr: slot #4: Requesting firmware 'BB-ENABLE-PRU-00A0.dtbo' for board-name 'Override Board Name', version '00A0'
-[  568.330369] bone_capemgr:capemgr_load_slot:1171: bone_capemgr bone_capemgr: slot #4: dtbo 'BB-ENABLE-PRU-00A0.dtbo' loaded; converting to live tree
-[  568.341685] gpio-of-helper ocp:gpio_helper: ready
-[  568.344695] bone_capemgr bone_capemgr: slot #4: dtbo 'BB-ENABLE-PRU-00A0.dtbo' loaded; overlay id #0
-[  568.387640] **** RLM davinci-evm.c:480: RLM: clock rate: 12000000
-[  568.387695] snd_soc_core:soc_bind_dai_link:938: davinci_evm ocp:sound: ASoC: binding TLV320AIC3X at idx 0
-[  568.387712] davinci_evm ocp:sound: ASoC: CPU DAI (null) not registered
-[  568.394284] davinci_evm ocp:sound: snd_soc_register_card failed (-517)
-[  568.410560] snd_soc_core:snd_soc_register_codec:3064: tlv320aic3x-codec 2-0018: codec register 2-0018
-[  568.410614] snd_soc_core:snd_soc_register_dais:2590: tlv320aic3x-codec 2-0018: ASoC: dai register 2-0018 #1
-[  568.410633] snd_soc_core:snd_soc_register_dais:2634: tlv320aic3x-codec 2-0018: ASoC: Registered DAI 'tlv320aic3x-hifi'
-[  568.410653] snd_soc_core:snd_soc_register_codec:3138: tlv320aic3x-codec 2-0018: ASoC: Registered codec 'tlv320aic3x-codec.2-0018'
-[  568.421529] **** RLM davinci-evm.c:480: RLM: clock rate: 12000000
-[  568.421588] snd_soc_core:soc_bind_dai_link:938: davinci_evm ocp:sound: ASoC: binding TLV320AIC3X at idx 0
-[  568.421605] davinci_evm ocp:sound: ASoC: CPU DAI (null) not registered
-[  568.431455] **** RLM davinci-mcasp.c:1734: davinci_mcasp_probe
-[  568.431507] base:of_property_match_string:1398: comparing tx with tx
-[  568.431544] base:of_property_match_string:1398: comparing rx with tx
-[  568.431555] base:of_property_match_string:1398: comparing rx with rx
-[  568.431608] base:of_property_match_string:1398: comparing common with tx
-[  568.431621] base:of_property_match_string:1398: comparing common with rx
-[  568.431633] base:of_property_match_string:1398: comparing rx with tx
-[  568.431643] base:of_property_match_string:1398: comparing rx with rx
-[  568.434643] base:of_property_match_string:1398: comparing tx with tx
-[  568.437971] davinci_evm ocp:sound: snd_soc_register_card failed (-517)
-[  568.446651] snd_soc_core:snd_soc_register_dais:2590: davinci-mcasp 48038000.mcasp: ASoC: dai register 48038000.mcasp #1
-[  568.446682] snd_soc_core:snd_soc_register_dais:2634: davinci-mcasp 48038000.mcasp: ASoC: Registered DAI '48038000.mcasp'
-[  568.446840] snd_soc_core:snd_soc_add_platform:2892: davinci-mcasp 48038000.mcasp: ASoC: Registered platform '48038000.mcasp'
-[  568.450046] **** RLM davinci-evm.c:480: RLM: clock rate: 12000000
-[  568.450100] snd_soc_core:soc_bind_dai_link:938: davinci_evm ocp:sound: ASoC: binding TLV320AIC3X at idx 0
-[  568.450425] snd_soc_core:snd_soc_dapm_new_dai_widgets:3494: tlv320aic3x-codec 2-0018: ASoC: adding Playback widget
-[  568.450448] snd_soc_core:snd_soc_dapm_new_dai_widgets:3513: tlv320aic3x-codec 2-0018: ASoC: adding Capture widget
-[  568.450995] snd_soc_core:soc_probe_link_dais:1334: davinci_evm ocp:sound: ASoC: probe Podtique DaVinci EVM dai link 0 late -2
-[  568.451015] snd_soc_core:soc_probe_link_dais:1334: davinci_evm ocp:sound: ASoC: probe Podtique DaVinci EVM dai link 0 late -1
-[  568.451030] snd_soc_core:soc_probe_link_dais:1334: davinci_evm ocp:sound: ASoC: probe Podtique DaVinci EVM dai link 0 late 0
-[  568.451045] snd_soc_core:soc_probe_link_dais:1334: davinci_evm ocp:sound: ASoC: probe Podtique DaVinci EVM dai link 0 late 1
-[  568.451059] snd_soc_core:soc_probe_link_dais:1334: davinci_evm ocp:sound: ASoC: probe Podtique DaVinci EVM dai link 0 late 2
-[  568.451099] davinci_evm ocp:sound: ASoC: DAPM unknown pin MONO_LOUT
-[  568.465530] snd_soc_core:soc_new_pcm:2510: davinci_evm ocp:sound: ASoC: registered pcm #0 AIC3X tlv320aic3x-hifi-0
-[  568.466155] davinci_evm ocp:sound: tlv320aic3x-hifi <-> 48038000.mcasp mapping ok
-[  568.466185] snd_soc_core:snd_soc_dapm_link_dai_widgets:3570: tlv320aic3x-codec 2-0018: Right ADC -> Capture
-[  568.466206] snd_soc_core:snd_soc_dapm_link_dai_widgets:3570: tlv320aic3x-codec 2-0018: Left ADC -> Capture
-[  568.466226] snd_soc_core:snd_soc_dapm_link_dai_widgets:3570: tlv320aic3x-codec 2-0018: Playback -> Right DAC
-[  568.466241] snd_soc_core:snd_soc_dapm_link_dai_widgets:3570: tlv320aic3x-codec 2-0018: Playback -> Left DAC
-
-upon starting speaker-test:
-
-[  572.786071] snd_soc_core:soc_pcm_open:535: ASoC: tlv320aic3x-hifi <-> 48038000.mcasp info:
-[  572.786103] snd_soc_core:soc_pcm_open:536: ASoC: rate mask 0x7fe
-[  572.786114] snd_soc_core:soc_pcm_open:538: ASoC: min ch 2 max ch 2
-[  572.786126] snd_soc_core:soc_pcm_open:540: ASoC: min rate 8000 max rate 96000
-[  572.841514] davinci-mcasp 48038000.mcasp: Transmit buffer underflow
-...repeated
-[  574.087162] davinci-mcasp 48038000.mcasp: Transmit buffer underflow
-[  579.135283] snd_soc_core:close_delayed_work:602:  TLV320AIC3X: ASoC: pop wq checking: Playback status: inactive waiting: yes
-
-
--- 
-Rick Mann
-rmann@latencyzero.com
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 1fbdb4f..210ab415 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -37,7 +37,7 @@
+ #define RT288_VENDOR_ID 0x10ec0288
+ 
+ struct rt286_priv {
+-	const struct reg_default *index_cache;
++	struct reg_default *index_cache;
+ 	int index_cache_size;
+ 	struct regmap *regmap;
+ 	struct snd_soc_codec *codec;
+@@ -1160,8 +1160,12 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 		return -ENODEV;
+ 	}
+ 
+-	rt286->index_cache = rt286_index_def;
+ 	rt286->index_cache_size = INDEX_CACHE_SIZE;
++	rt286->index_cache = devm_kmalloc(&i2c->dev, INDEX_CACHE_SIZE,
++					  GFP_KERNEL);
++	if (!rt286->index_cache)
++		return -ENOMEM;
++
+ 	rt286->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt286);
+ 
