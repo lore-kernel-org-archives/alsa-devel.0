@@ -1,67 +1,53 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: add sunxi SPDIF
- transceiver bindings
-Date: Mon, 5 Oct 2015 10:41:33 +0200
-Message-ID: <20151005084133.GE2696@lukather>
-References: <1443635458-8873-1-git-send-email-codekipper@gmail.com>
- <1443635458-8873-2-git-send-email-codekipper@gmail.com>
- <20151001201215.GN7104@lukather>
- <CAEKpxB=kdmrbeiq8M=dXmpccxOhd7UZTaMkLZGo9TdRB1kMz3g@mail.gmail.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Michael Shell <list1@michaelshell.org>
+Subject: Re: sysfs: cannot create duplicate filename
+ '/devices/isa/sbawe.0/sound/card0/seq-oss-0-0'
+Date: Mon, 5 Oct 2015 05:14:38 -0400
+Message-ID: <20151005051438.a6a9de5eda0631b18d8d0814@michaelshell.org>
+References: <20151004011238.3759486f630c6605dd5c7d4d@michaelshell.org>
+ <s5h8u7id5i7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBSHPZCYAKGQEFTL6E4Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAEKpxB=kdmrbeiq8M=dXmpccxOhd7UZTaMkLZGo9TdRB1kMz3g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from barracuda.supercp.com (barracuda.supercp.com [216.234.124.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3627626044B
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 11:06:07 +0200 (CEST)
+Received: from a2s43.a2hosting.com (a2s43.a2hosting.com [216.119.133.66]) by
+ barracuda.supercp.com with ESMTP id Ld9rafD1Sg3VFLbs for
+ <alsa-devel@alsa-project.org>; Mon, 05 Oct 2015 05:06:05 -0400 (EDT)
+In-Reply-To: <s5h8u7id5i7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---wULyF7TL5taEdwHz
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+On Sun, 04 Oct 2015 17:21:04 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-On Fri, Oct 02, 2015 at 07:24:20AM +0200, Code Kipper wrote:
-> >> +
-> >> +  - compatible               : should be one of the following:
-> >> +    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-> >> +    - "allwinner,sun7i-a20-spdif": for the Allwinner A20 SoC
-> >> +    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
-> >
-> > Are all these compatibles really work? Is there any significant
-> > difference between the controller on all these SoCs?
->
-> Let us assume that there isn't any difference. Remember SPDIF details
-> for all of these devices is sketchy. In the A10 User Manual, it's not
-> even mentioned although devices such as the Mele A2000 which I use
-> come with the physical connector. It's only when the A20 Manual was
-> released that we see the pin details and related components. We didn't
-> see a SPDIF block spec until the H3 User Manual was released.
-> 
-> Looking at the SDK code I've only seen fifo level settings to be
-> different for the sun6i family. It was this release that also showed
-> Rx rotines. The fact of the matter is we won't know until these SoCs
-> have been tested and with that in mind I'm happy to remove all
-> capabilities for now until then.
+> -	if (snd_seq_device_new(emu->card, 0, SNDRV_SEQ_DEV_ID_OSS,
+> +	if (snd_seq_device_new(emu->card, 1, SNDRV_SEQ_DEV_ID_OSS,
 
-The point was more that you document compatibles that you are not
-actually supporting.
 
-You've only tested it on one SoC (and it actually works only on one
-SoC, or at least with one compatible), so only document that.
+   Takashi,
 
-Maxime
+Confirmed to work under 4.2.2. No more dmesg error messages and midi
+playback is operating normally.
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---wULyF7TL5taEdwHz--
+
+   Thank you for you help,
+
+   Mike
+
+
+PS: In the future, is there any recommended systematic way to
+find out which drivers are conflicting with regard to this
+type of problem? The last/error one is easy, but how would
+we find out which one registered before it?
