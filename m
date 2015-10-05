@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: Add driver suspend and
-	resume to support MEGA Fast" to the asoc tree
-Date: Mon, 05 Oct 2015 17:44:45 +0100
-Message-ID: <E1Zj8sX-0003I2-TN@finisterre>
-References: <b8c48d059848c030a47b44407964eb473ea2c240.1438928296.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: fsl_ssi: Add driver suspend and resume
+	to support MEGA Fast" to the asoc tree
+Date: Mon, 05 Oct 2015 17:44:43 +0100
+Message-ID: <E1Zj8sV-0003HY-8d@finisterre>
+References: <5aa6b56070fec04f7ddea266080641e2d9780df6.1438928296.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DB23C261510
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 18:45:04 +0200 (CEST)
-In-Reply-To: <b8c48d059848c030a47b44407964eb473ea2c240.1438928296.git.zidan.wang@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11F642614D0
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 18:45:02 +0200 (CEST)
+In-Reply-To: <5aa6b56070fec04f7ddea266080641e2d9780df6.1438928296.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: Add driver suspend and resume to support MEGA Fast
+   ASoC: fsl_ssi: Add driver suspend and resume to support MEGA Fast
 
 has been applied to the asoc tree at
 
@@ -53,160 +53,163 @@ to this mail.
 Thanks,
 Mark
 
->From f9f4fa61aab9417e40898cf6706fffa94005dc44 Mon Sep 17 00:00:00 2001
+>From 05cf237972fe65eb537ea4f10e5627ceeb8f89b6 Mon Sep 17 00:00:00 2001
 From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 18 Sep 2015 11:09:11 +0800
-Subject: [PATCH] ASoC: fsl_spdif: Add driver suspend and resume to support
- MEGA Fast
+Date: Fri, 18 Sep 2015 11:09:12 +0800
+Subject: [PATCH] ASoC: fsl_ssi: Add driver suspend and resume to support MEGA
+ Fast
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
-modules during system suspend and resume procedure. Thus, SPDIF needs to save
-all the values of registers before the system suspend and restore them after
-the system resume.
+For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
+source of modules during system suspend and resume procedure. Thus,
+SSI needs to save all the values of registers before the system
+suspend and restore them after the system resume.
 
-The SRPC register should be volatile, LOCK bit is set by the hardware.
+The register SFCSR is volatile, but some bits in it need to be
+recovered after suspend/resume.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ sound/soc/fsl/fsl_ssi.c | 102 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index ab729f2..3d59bb6 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -108,6 +108,8 @@ struct fsl_spdif_priv {
- 	struct clk *sysclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	/* regcache for SRPC */
-+	u32 regcache_srpc;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 8ec6fb2..7c495d3 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -111,12 +111,75 @@ struct fsl_ssi_rxtx_reg_val {
+ 	struct fsl_ssi_reg_val rx;
+ 	struct fsl_ssi_reg_val tx;
  };
- 
- /* DPLL locked and lock loss interrupt handler */
-@@ -300,6 +302,8 @@ static int spdif_softreset(struct fsl_spdif_priv *spdif_priv)
- 	struct regmap *regmap = spdif_priv->regmap;
- 	u32 val, cycle = 1000;
- 
-+	regcache_cache_bypass(regmap, true);
 +
- 	regmap_write(regmap, REG_SPDIF_SCR, SCR_SOFT_RESET);
- 
- 	/*
-@@ -310,6 +314,10 @@ static int spdif_softreset(struct fsl_spdif_priv *spdif_priv)
- 		regmap_read(regmap, REG_SPDIF_SCR, &val);
- 	} while ((val & SCR_SOFT_RESET) && cycle--);
- 
-+	regcache_cache_bypass(regmap, false);
-+	regcache_mark_dirty(regmap);
-+	regcache_sync(regmap);
-+
- 	if (cycle)
- 		return 0;
- 	else
-@@ -997,6 +1005,14 @@ static const struct snd_soc_component_driver fsl_spdif_component = {
- };
- 
- /* FSL SPDIF REGMAP */
-+static const struct reg_default fsl_spdif_reg_defaults[] = {
-+	{0x0,  0x00000400},
-+	{0x4,  0x00000000},
-+	{0xc,  0x00000000},
-+	{0x34, 0x00000000},
++static const struct reg_default fsl_ssi_reg_defaults[] = {
++	{0x10, 0x00000000},
++	{0x18, 0x00003003},
++	{0x1c, 0x00000200},
++	{0x20, 0x00000200},
++	{0x24, 0x00040000},
++	{0x28, 0x00040000},
 +	{0x38, 0x00000000},
-+	{0x50, 0x00020f00},
++	{0x48, 0x00000000},
++	{0x4c, 0x00000000},
++	{0x54, 0x00000000},
++	{0x58, 0x00000000},
 +};
- 
- static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
- {
-@@ -1022,6 +1038,26 @@ static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+static bool fsl_spdif_volatile_reg(struct device *dev, unsigned int reg)
++
++static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
 +{
 +	switch (reg) {
-+	case REG_SPDIF_SRPC:
-+	case REG_SPDIF_SIS:
-+	case REG_SPDIF_SRL:
-+	case REG_SPDIF_SRR:
-+	case REG_SPDIF_SRCSH:
-+	case REG_SPDIF_SRCSL:
-+	case REG_SPDIF_SRU:
-+	case REG_SPDIF_SRQ:
-+	case REG_SPDIF_STL:
-+	case REG_SPDIF_STR:
-+	case REG_SPDIF_SRFM:
++	case CCSR_SSI_SACCEN:
++	case CCSR_SSI_SACCDIS:
++		return false;
++	default:
++		return true;
++	}
++}
++
++static bool fsl_ssi_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CCSR_SSI_STX0:
++	case CCSR_SSI_STX1:
++	case CCSR_SSI_SRX0:
++	case CCSR_SSI_SRX1:
++	case CCSR_SSI_SISR:
++	case CCSR_SSI_SFCSR:
++	case CCSR_SSI_SACADD:
++	case CCSR_SSI_SACDAT:
++	case CCSR_SSI_SATAG:
++	case CCSR_SSI_SACCST:
 +		return true;
 +	default:
 +		return false;
 +	}
 +}
 +
- static bool fsl_spdif_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -1047,8 +1083,12 @@ static const struct regmap_config fsl_spdif_regmap_config = {
++static bool fsl_ssi_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CCSR_SSI_SRX0:
++	case CCSR_SSI_SRX1:
++	case CCSR_SSI_SACCST:
++		return false;
++	default:
++		return true;
++	}
++}
++
+ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.max_register = CCSR_SSI_SACCDIS,
+ 	.reg_bits = 32,
  	.val_bits = 32,
- 
- 	.max_register = REG_SPDIF_STC,
-+	.reg_defaults = fsl_spdif_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_spdif_reg_defaults),
- 	.readable_reg = fsl_spdif_readable_reg,
-+	.volatile_reg = fsl_spdif_volatile_reg,
- 	.writeable_reg = fsl_spdif_writeable_reg,
+ 	.reg_stride = 4,
+ 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
++	.reg_defaults = fsl_ssi_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
++	.readable_reg = fsl_ssi_readable_reg,
++	.volatile_reg = fsl_ssi_volatile_reg,
++	.writeable_reg = fsl_ssi_writeable_reg,
 +	.cache_type = REGCACHE_RBTREE,
  };
  
- static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
-@@ -1271,6 +1311,38 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	return ret;
+ struct fsl_ssi_soc_data {
+@@ -176,6 +239,9 @@ struct fsl_ssi_private {
+ 	unsigned int baudclk_streams;
+ 	unsigned int bitclk_freq;
+ 
++	/*regcache for SFCSR*/
++	u32 regcache_sfcsr;
++
+ 	/* DMA params */
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -1513,10 +1579,46 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	return 0;
  }
  
 +#ifdef CONFIG_PM_SLEEP
-+static int fsl_spdif_suspend(struct device *dev)
++static int fsl_ssi_suspend(struct device *dev)
 +{
-+	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	struct fsl_ssi_private *ssi_private = dev_get_drvdata(dev);
++	struct regmap *regs = ssi_private->regs;
 +
-+	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
-+			&spdif_priv->regcache_srpc);
++	regmap_read(regs, CCSR_SSI_SFCSR,
++			&ssi_private->regcache_sfcsr);
 +
-+	regcache_cache_only(spdif_priv->regmap, true);
-+	regcache_mark_dirty(spdif_priv->regmap);
++	regcache_cache_only(regs, true);
++	regcache_mark_dirty(regs);
 +
 +	return 0;
 +}
 +
-+static int fsl_spdif_resume(struct device *dev)
++static int fsl_ssi_resume(struct device *dev)
 +{
-+	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	struct fsl_ssi_private *ssi_private = dev_get_drvdata(dev);
++	struct regmap *regs = ssi_private->regs;
 +
-+	regcache_cache_only(spdif_priv->regmap, false);
++	regcache_cache_only(regs, false);
 +
-+	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SRPC,
-+			SRPC_CLKSRC_SEL_MASK | SRPC_GAINSEL_MASK,
-+			spdif_priv->regcache_srpc);
++	regmap_update_bits(regs, CCSR_SSI_SFCSR,
++			CCSR_SSI_SFCSR_RFWM1_MASK | CCSR_SSI_SFCSR_TFWM1_MASK |
++			CCSR_SSI_SFCSR_RFWM0_MASK | CCSR_SSI_SFCSR_TFWM0_MASK,
++			ssi_private->regcache_sfcsr);
 +
-+	return regcache_sync(spdif_priv->regmap);
++	return regcache_sync(regs);
 +}
 +#endif /* CONFIG_PM_SLEEP */
 +
-+static const struct dev_pm_ops fsl_spdif_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_spdif_suspend, fsl_spdif_resume)
++static const struct dev_pm_ops fsl_ssi_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(fsl_ssi_suspend, fsl_ssi_resume)
 +};
 +
- static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,imx35-spdif", },
- 	{ .compatible = "fsl,vf610-spdif", },
-@@ -1282,6 +1354,7 @@ static struct platform_driver fsl_spdif_driver = {
+ static struct platform_driver fsl_ssi_driver = {
  	.driver = {
- 		.name = "fsl-spdif-dai",
- 		.of_match_table = fsl_spdif_dt_ids,
-+		.pm = &fsl_spdif_pm,
+ 		.name = "fsl-ssi-dai",
+ 		.of_match_table = fsl_ssi_ids,
++		.pm = &fsl_ssi_pm,
  	},
- 	.probe = fsl_spdif_probe,
- };
+ 	.probe = fsl_ssi_probe,
+ 	.remove = fsl_ssi_remove,
 -- 
 2.5.0
