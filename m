@@ -1,30 +1,22 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Mon, 5 Oct 2015 12:54:08 +0200
-Message-ID: <CAKor6TcqFquYu_1K07GoYpwkA2PA7-3OVO0_kCpJpmgKSJxMYw@mail.gmail.com>
-References: <20150827145614.GC5313@sirena.org.uk>
- <CAKor6Tf8kB0WPXLTBFmCzUJkMVEDu-xTEyw0-_NZvBdFSyQSFA@mail.gmail.com>
- <CAKor6TfW4reRz3m-xkCr_ZUfHQkfqT3q+S7JCpO-9F+k1QW38g@mail.gmail.com>
- <CAKor6Tf7_Hiyc1v_TGvdVAU+G84Gp+KgKeSGi8EQJRoq9rhMuw@mail.gmail.com>
- <20150902081334.GB15505@ck-lbox>
- <CAKor6TdaRqi0+a0ZHkdJngE2LPKHk0PUFrdQQ2-x59cxUa8cXA@mail.gmail.com>
- <20150904143434.GA1514@edi-sw-dsktp001.ad.cirrus.com>
- <CAKor6TfhaHfqkmz-dogJ6dEUe06QFv-ee7uPOLiEGSTh3ibkhQ@mail.gmail.com>
- <20150928090852.GF5432@ck-lbox>
- <CAKor6Tc7pb_BnkZwhXDQ1+yMvC+YwXS3LO=5snZO65E8vsUgVw@mail.gmail.com>
- <20150929075715.GG5432@ck-lbox>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: Re: Question about patch ASoC: Prevent components from
+ being bound to multiple cards
+Date: Mon, 5 Oct 2015 19:28:54 +0800
+Message-ID: <1444044534.32571.41.camel@mtksdaap41>
+References: <s5hlhcfd5az.wl-tiwai@suse.de>
+ <20150909145158.GK9751@sirena.org.uk> <s5hh9n3d4bk.wl-tiwai@suse.de>
+ <55F04AA1.3030607@metafoo.de> <1443782064.10151.28.camel@mtksdaap41>
+ <20151002144831.GQ12635@sirena.org.uk>
+ <1443884500.32571.12.camel@mtksdaap41>
+ <20151005100717.GN12635@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f193.google.com (mail-wi0-f193.google.com
- [209.85.212.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB928260508
- for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 13:09:31 +0200 (CEST)
-Received: by wicuu12 with SMTP id uu12so20426297wic.0
- for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2015 04:09:31 -0700 (PDT)
-In-Reply-To: <20150929075715.GG5432@ck-lbox>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A84D260508
+ for <alsa-devel@alsa-project.org>; Mon,  5 Oct 2015 13:28:59 +0200 (CEST)
+In-Reply-To: <20151005100717.GN12635@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,34 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, dan.carpenter@oracle.com, Mika Westerberg <mika.westerberg@linux.intel.com>, Daniel Mack <daniel@zonque.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, p.zabel@pengutronix.de, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-> Yeah branched of Linus's tree is probably best and shoving it on
-> github works for me.
->
-> Thanks,
-> Charles
+On Mon, 2015-10-05 at 11:07 +0100, Mark Brown wrote:
+> On Sat, Oct 03, 2015 at 11:01:40PM +0800, Koro Chen wrote:
+> > On Fri, 2015-10-02 at 15:48 +0100, Mark Brown wrote:
+> > > On Fri, Oct 02, 2015 at 06:34:24PM +0800, Koro Chen wrote:
+> 
+> > > > I have two cards originally but the second one failed because of the
+> > > > patch ASoC: Prevent components from being bound to multiple cards.
+> 
+> > > > My configuration is like this:
+> > > > card0: use platform's DAI component A
+> > > > card1: use the same platform's DAI component B
+> 
+> > > What do you mean by "DAI component" here?  It's not a term I'm familiar
+> > > with...
+> 
+> > Sorry I didn't make myself clear enough. In the
+> > sound/soc/mediatek/mtk-afe-pcm.c, I register two components
+> > "mtk_afe_pcm_dai_component" and "mtk_afe_hdmi_dai_component", each has
+> > its corresponding DAIs. Card0 (which is mt8173-rt5676-rt5650.c) uses
+> > DAIs from the first component, and card1 (new) uses DAIs of the second
+> > component. These two components are probed successfully and separately
+> > by card0 and card1, but card1 failed to probe another component created
+> > by snd_soc_register_platform(), which is already bound to card0.
+> 
+> OK, I see.  We probably do want to relax that restriction, it makes more
+> sense at the DAI level but at the component level when we have
+> components that have a bunch of independant DAIs hanging off a DMA
+> controler as one component (which does make sense) then it breaks.
+Thanks for your suggestion. Is it make sense if we use
+component->registered_as_component, which is only true in case of
+snd_soc_register_component() and will be false for components created by
+snd_soc_register_platform() or snd_soc_register_codec(), then modify the
+check condition like this:
 
-wow, I had already a github account for some years, but not used it yet.
+@@ -1102,11 +1102,12 @@ static int soc_probe_component(struct
+snd_soc_card *card,
+        struct snd_soc_dai *dai;
+        int ret;
 
-I just forked torvalds/linux now and I have to re-apply my patches
-into the github workflow.
+        if (!strcmp(component->name, "snd-soc-dummy"))
+                return 0;
 
-Anyway, I give you the url, where you can find the patches I made.
-I will update the repository today.
-
-I actually clone the linux repo. In the next steps I create a yoga851f
-branch , will apply the patches
-and will push them soon back to github.
-
-The URL will be:
-https://github.com/cornbob/linux
-
-Overview under:
-https://github.com/cornbob
-
-
-cheers
-chris
+        if (component->card) {
+-               if (component->card != card) {
++               if (component->card != card &&
+component->registered_as_component) {
