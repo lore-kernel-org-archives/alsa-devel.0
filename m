@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
- codec proposal
-Date: Tue, 6 Oct 2015 17:46:02 +0100
-Message-ID: <20151006164602.GV12635@sirena.org.uk>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
- <5613EC62.8000007@ti.com>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Tue, 6 Oct 2015 18:01:06 +0100
+Message-ID: <20151006170106.GX12635@sirena.org.uk>
+References: <20151004231752.GA22609@sirena.org.uk>
+ <s5hoagc9gov.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6403731322074897753=="
+Content-Type: multipart/mixed; boundary="===============3923702026374558677=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 44C49265747
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 18:46:46 +0200 (CEST)
-In-Reply-To: <5613EC62.8000007@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C08AB26577A
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 19:03:18 +0200 (CEST)
+In-Reply-To: <s5hoagc9gov.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6403731322074897753==
+--===============3923702026374558677==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="H/fcI7KrSCrurIFl"
+	protocol="application/pgp-signature"; boundary="ZWh5TmO/+UlgN+gr"
 Content-Disposition: inline
 
 
---H/fcI7KrSCrurIFl
+--ZWh5TmO/+UlgN+gr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 06, 2015 at 06:44:34PM +0300, Jyri Sarha wrote:
-> On 10/06/15 12:23, Arnaud Pouliquen wrote:
+On Tue, Oct 06, 2015 at 05:09:52PM +0200, Takashi Iwai wrote:
 
-> >In a first step, before going deep in discussion on the approach, it
-> >should be interesting to have maintainers feedback, to be sure that my
-> >approach could make sense from DRM and ALSA point of view.
+> "Same procedure as every year, James"
+> - QA / unit test
 
-> Absolutely. In the end the maintainers need to make the final decision any
-> way.
+That's already supposed to be on the list (along with the Intel BAT
+stuff).
 
-As I keep saying at least for me a very big part of that is going to be
-seeing some degree of consensus among the people working on HDMI.  I
-really don't want to get something merged and then having people turn up
-shortly afterwards saying that there's some reason to redo everything
-and I don't have much familiarity with the video stuff so I'm largely
-relying on consensus and review from the DRM side (which seems to have
-been absent thus far).
+> - Documentation
+>=20
+> Maybe some bike shedding
+> - Fuzz ctl and pcm APIs
+> - Separation between root-only and user ctl accesses
 
---H/fcI7KrSCrurIFl
+Added, though I was fairly sure we'd reached a conclusive agreement on
+pink with yellow spots last year :)
+
+--ZWh5TmO/+UlgN+gr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWE/rJAAoJECTWi3JdVIfQyYsH/0yjcUdzrCvkMRg+9IZd8Cqg
-nX6TDT+3Ztnl3kz0l+7/iIuTCa7jQZcieMZ/xRVbwcE9jGaEltUYaCbAyTJyKw9w
-ppCsa1O7blJWokCT4LpoC8bXKnM/Os25Ib5ezIqvcCDGJl+s0M9T3gXEKYxq3iDb
-UdRMsNp3DMjRcZAEXfxVH9X//gYPaxaJz0IujopBv5mgFVbxpsuPvGNaGiK6Rq3u
-5mr/i13uCip9Ni8uhMAK2QsPn51Q5x4Fb9gmBPJa5wUpkHX4rfkKiVyKfHi3IcxK
-NMNk4YYkOqGTzGuEl4LIbaay896HcZ20P9HgSAxRnSMt5kN45Jbmah4pUHFFPGM=
-=lg1R
+iQEcBAEBCAAGBQJWE/5SAAoJECTWi3JdVIfQKvoH/iroxzinJBHk8rUa/gZ06y2d
+ga57OxxrPqCI79XtiZuK2HEPA4TvDOA/uHWRWR5evNxbguvMdO+NfL3NEiOa38jb
+Y9qQnPZRDrA83W5d5tHE1t+JFi4/GfmzX8YrS3kp4wb7e2rqV0ZNzZf1Li4pc7av
+IXRIVoJTtjo7CKoCX+aZ/nT6i8CCRyD+4qCf890gbCLkBz2mqcpcI1N1ZHu0LLqP
+FfEwW0yyRMLii/LEhDOhE7YBEXsK/am5Lif5/v/r2SN+oI22C1fXKYMIvyqTdRe3
+gjo8l3sPEsVTuACyYz0fy0LuoGT7X08x2ZtkOjhjQogNRfjWT+LNKtIDWvkQgks=
+=A/yW
 -----END PGP SIGNATURE-----
 
---H/fcI7KrSCrurIFl--
+--ZWh5TmO/+UlgN+gr--
 
---===============6403731322074897753==
+--===============3923702026374558677==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6403731322074897753==--
+--===============3923702026374558677==--
