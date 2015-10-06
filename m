@@ -1,72 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Tue, 6 Oct 2015 11:50:41 +0100
-Message-ID: <20151006105041.GK12635@sirena.org.uk>
-References: <20151004231752.GA22609@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7110106553154581401=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CFD152650D4
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 12:54:03 +0200 (CEST)
-In-Reply-To: <20151004231752.GA22609@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: tas2552: fix dBscale-min declaration" to the asoc tree
+Date: Tue, 06 Oct 2015 11:56:07 +0100
+Message-ID: <E1ZjPuh-0005Gs-W9@finisterre>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: 
+Sender: stable-owner@vger.kernel.org
+To: Andreas Dannenberg <dannenberg@ti.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7110106553154581401==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WMM8o1T9zMUI1V/Q"
-Content-Disposition: inline
+   ASoC: tas2552: fix dBscale-min declaration
 
+has been applied to the asoc tree at
 
---WMM8o1T9zMUI1V/Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Oct 05, 2015 at 12:17:52AM +0100, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Once I have details on the room & so on I will follow up to this mail
-> with both.  We'll also try and sort out some dinner on Thursday night,
-> if there are any special requirements for that please say (I'm assuming
-> that we will have at least some vegetarians).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This will be in Wicklow Meeting Room 3 from 9am on Thursday.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---WMM8o1T9zMUI1V/Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJWE6eAAAoJECTWi3JdVIfQXB8H/2GF1NdG3wW442/Z17T97rf4
-xjzrFAa2eiW5vgLvLy5XHclftoYzI47NeYs9e3xLrjT88dcsfOPaKvvVLeVeBKRU
-yBNG+xkmMdfudll0UW9E0vin0Mpx4lja5udeQrj3k/Z4+7H2ZADm5zl8rmDUZB0G
-G06BooEIj7o9ImGaw2D2d7dxDabpagjorE4rQS3973Mhf9WoL4ksWfhwpQW282K+
-ZAt1pdXjKJ2KY0rlmIVvB5jKU/xfjgKFaOIC5jhAPxrnc+HN8PKa1ZwOEFHpAiYE
-rdXQZcrEcvX42fbgm5Ka4O8r6uvXQoULZl6gAYqqovkLi6C9rRvZ/nHJaQs+MoY=
-=pkC3
------END PGP SIGNATURE-----
+>From e2600460bc3aa14ca1df86318a327cbbabedf9a8 Mon Sep 17 00:00:00 2001
+From: Andreas Dannenberg <dannenberg@ti.com>
+Date: Mon, 5 Oct 2015 15:00:14 -0500
+Subject: [PATCH] ASoC: tas2552: fix dBscale-min declaration
 
---WMM8o1T9zMUI1V/Q--
+The minimum volume level for the TAS2552 (control register value 0x00)
+is -7dB however the driver declares it as -0.07dB.
 
---===============7110106553154581401==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Running amixer before the patch reports:
+dBscale-min=-0.07dB,step=1.00dB,mute=0
 
+Running amixer with the patch applied reports:
+dBscale-min=-7.00dB,step=1.00dB,mute=0
 
---===============7110106553154581401==--
+Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/tas2552.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index e3a0bca..cc1d398 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -549,7 +549,7 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
+ /*
+  * DAC digital volumes. From -7 to 24 dB in 1 dB steps
+  */
+-static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 0);
++static DECLARE_TLV_DB_SCALE(dac_tlv, -700, 100, 0);
+ 
+ static const char * const tas2552_din_source_select[] = {
+ 	"Muted",
+-- 
+2.5.0
