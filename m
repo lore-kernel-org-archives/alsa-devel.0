@@ -1,19 +1,21 @@
-From: Panu Matilainen <pmatilai@laiskiainen.org>
-Subject: Re: Zoom R16/24 playback slient
-Date: Tue, 6 Oct 2015 12:40:15 +0300
-Message-ID: <561396FF.70804@laiskiainen.org>
-References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
- <560B8481.1080304@laiskiainen.org>
- <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
+ element to snd_soc_tplg_stream
+Date: Tue, 6 Oct 2015 11:34:03 +0100
+Message-ID: <20151006103403.GH12635@sirena.org.uk>
+References: <cover.1443605139.git.mengdong.lin@intel.com>
+ <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+ <20151002165907.GU12635@sirena.org.uk>
+ <1443809055.10986.10.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9171694912257261953=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a59.g.dreamhost.com (sub5.mail.dreamhost.com
- [208.113.200.129])
- by alsa0.perex.cz (Postfix) with ESMTP id E3F052605AE
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 11:40:21 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E85052650DA
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 12:35:04 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
+ Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/06/2015 10:02 AM, Ricard Wanderlof wrote:
->
-> On Wed, 30 Sep 2015, Panu Matilainen wrote:
->
->> My memory is a bit hazy on the details, but the automatically detected
->> SNDRV_PCM_FMTBIT_S32 (which iirc means the actual 24bit values are
->> carried in 32bit chunks) seems to be the right thing for the device,
->> forcing it to something else just makes things worse. IIRC. The delay
->> was a key part, but not enough.
->>
->> Another finding from my last round in the spring I do remember clearly,
->> is that enabling both the input and output interfaces makes things hang
->> up (timeouts and nothing really works). But if you disable the input
->> interface and enable the output interface, you get an apparently working
->> playback stream. Only no sound comes out. If you disable the output and
->> enable input, capture itself works fine.
->
-> Having dived into this, and looking carefully at the data produced by the
-> Windows driver, it appears that what's happening is that the driver stuffs
-> a 32-bit length specifier at the start of each isochronous data packet.
->
-> So, for instance, instead of transferring the sample data
->
-> 00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 .. .. (40 bytes)
->
-> the Zoom driver would send:
->
-> 28 00 00 00  00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 ... (44 bytes)
->
-> No wonder the Zoom gets confused when it gets sent ordinary sample data,
-> and tries to interpret the first sample value as a length.
->
-> There doesn't seem to be anything in the ALSA USB driver to do this, and
-> I'm thinking it's Zoom specific (perhaps to overcome some deficiency in
-> the hardware (or USB firmware) in the R16?).
 
-FWIW, while poking around the source I spotted this in sound/usb/midi.c:
+--===============9171694912257261953==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rlf4BENhpGjTu/yY"
+Content-Disposition: inline
 
-/*
-  * Novation USB MIDI protocol: number of data bytes is in the first byte
-  * (when receiving) (+1!) or in the second byte (when sending); data begins
-  * at the third byte.
-  */
 
-Just goes to show such quirks are not previously unheard-of. It's MIDI 
-so the details differ, but perhaps a similar approach could be used for 
-PCM too.
+--rlf4BENhpGjTu/yY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-	- Panu -
+On Tue, Oct 06, 2015 at 08:55:58AM +0000, Lin, Mengdong wrote:
+
+> > > OK, so this means that every DAI link name is going to become an ABI
+> > > too if there's a topology in there.  Not a problem but we'll need to
+> > > watch out for that on review...  I wonder if I can make some automated
+> > > checker thing.
+
+> Do you mean we need to check if a DAI link name is already used, or if it's a valid string?
+
+No, I mean that if someone changes a name it'll invalidate topology
+files that reference that name.
+
+> Is there any naming convention for a DAI link?
+
+Not really.
+
+--rlf4BENhpGjTu/yY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWE6OVAAoJECTWi3JdVIfQOBMH/RQqbx3FD/OTdCHtBGxUrUc5
+AB7/K/TpUzjvGH0dqLkqAtcdu1fmYwjPZyeG8Od6NI43ePcBNQMXl08u10J3Sevo
+5xzAjM0gJJiwoT9Sq8k9HR4ETm+GYeTve41zPapBKSD18bs49HmP9XoEhsCW7Vo/
+M30impPbuNoArZk1HZtOcvqZLqn6U6LLRBntxH0TQN1GfTNzX4RwTDq75t+vYRKh
+UVgai8pbT5zxv0nhs0Tf5kW/z9BtofCDC+cVaHsC+rf6Ecc6xew19G4Z3o/YN6R2
+NqvtETyEG9GzWLdjSGDldjtGfBgk6GVdQEB9Kcnm44vaVH0BSNX7GxVfiEcO2jo=
+=xZdK
+-----END PGP SIGNATURE-----
+
+--rlf4BENhpGjTu/yY--
+
+--===============9171694912257261953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9171694912257261953==--
