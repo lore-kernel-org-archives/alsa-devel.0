@@ -1,39 +1,40 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
-Date: Tue, 6 Oct 2015 17:25:16 -0300
-Message-ID: <CAOMZO5C8O0p6C0hrAvHzanru9W2f8-C7MWsm3+HumoyZ9Hu6Jw@mail.gmail.com>
-References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
- <CAOMZO5COgoGU-3YNpnmSkctHMRDJ3=DuKc82Wb5zTTX7Bx2jNw@mail.gmail.com>
- <20151006181806.GS21513@n2100.arm.linux.org.uk>
- <CAOMZO5DaowTGQqN_NW7T2zv-P6a_YZUCumq4-m+OtpsKqFzELw@mail.gmail.com>
- <20151006185429.GU21513@n2100.arm.linux.org.uk>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Boss GT-001
+Date: Tue, 06 Oct 2015 21:57:18 +0100
+Message-ID: <1709594.R94tATngTf@kamdesktop>
+References: <1481883.Y22cmGKEIB@kamdesktop> <1837042.8ri5iYFGVx@kamdesktop>
+ <4761108.z7lHdDqPTH@kamdesktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20151006185429.GU21513@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
+ [209.85.212.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id D69FD2606ED
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 22:57:20 +0200 (CEST)
+Received: by wiclk2 with SMTP id lk2so772337wic.1
+ for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2015 13:57:20 -0700 (PDT)
+In-Reply-To: <4761108.z7lHdDqPTH@kamdesktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: 'Clemens Ladisch' <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgNiwgMjAxNSBhdCAzOjU0IFBNLCBSdXNzZWxsIEtpbmcgLSBBUk0gTGludXgK
-PGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBNYWtlIHN1cmUgeW91IGhhdmUgdGhl
-IEFMU0EgY29uZmlnIGZpbGUsIGFzIGFsc2FsaWIgd29uJ3QgZ2V0IG9uCj4gd2l0aCBkdy1oZG1p
-IG9ubHkgYWNjZXB0aW5nIDI0LWJpdCBhdWRpbyB3aXRob3V0IHRoaXMuICBBIGNvcHkgaXMKPiBh
-dHRhY2hlZC4gIEl0IGFsc28gdGVsbHMgQUxTQSBob3cgdG8gZGVhbCB3aXRoIG11bHRpLWNoYW5u
-ZWwgYXVkaW8KPiBhcyB3ZWxsLgoKVGhhbmtzLCBSdXNzZWxsIQoKR290IGF1ZGlvIHRvIHBsYXkg
-b24gbXkgSERNSSBUViA6LSkKCkZvciB0aGUgZW50aXJlIHNlcmllczoKClRlc3RlZC1ieTogRmFi
-aW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZhbUBmcmVlc2NhbGUuY29tPgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+On Tuesday 06 Oct 2015 20:58:01 Keith A. Milner wrote:
+
+> 
+> At this point, I'm not 100% sure what the capture format is going to be...
+
+I found a way to capture from a VM using USBMon and Wireshark.
+
+Cheers,
+
+Keith
