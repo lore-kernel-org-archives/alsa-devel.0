@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Document DAI signal polarity
-Date: Tue, 6 Oct 2015 10:33:23 +0100
-Message-ID: <20151006093323.GB12635@sirena.org.uk>
-References: <1443722959-5094-1-git-send-email-anatol.pomozov@gmail.com>
- <20151005151255.GU12635@sirena.org.uk>
- <CA+sos7_1Vo79kNG0dzhBxmaYiGG_7jX3dS+=_zPptgo=M+1N2g@mail.gmail.com>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Tue, 6 Oct 2015 10:35:31 +0100
+Message-ID: <20151006093531.GD12635@sirena.org.uk>
+References: <20151004231752.GA22609@sirena.org.uk> <5613800D.2050209@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1987672621915438964=="
+Content-Type: multipart/mixed; boundary="===============2493786596432675594=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 968302605AE
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 11:34:17 +0200 (CEST)
-In-Reply-To: <CA+sos7_1Vo79kNG0dzhBxmaYiGG_7jX3dS+=_zPptgo=M+1N2g@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E300260663
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 11:36:01 +0200 (CEST)
+In-Reply-To: <5613800D.2050209@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: albertchen@realtek.com, Alsa-devel <alsa-devel@alsa-project.org>, lars@metafoo.de, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1987672621915438964==
+--===============2493786596432675594==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="o+N5O4bNGxsQWEyZ"
+	protocol="application/pgp-signature"; boundary="DNkN4mkbZBLvViAv"
 Content-Disposition: inline
 
 
---o+N5O4bNGxsQWEyZ
-Content-Type: text/plain; charset=iso-8859-1
+--DNkN4mkbZBLvViAv
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 05, 2015 at 09:20:05PM +0200, Beno=EEt Th=E9baudeau wrote:
+On Tue, Oct 06, 2015 at 09:02:21AM +0100, Alexander E. Patrakov wrote:
+> 05.10.2015 00:17, Mark Brown wrote:
 
-> > Also it's more normal when talking about both left and right to list
-> > left first, it scans better.
+> >  - Power saving and general system design decisions (is what we're doing
+> >    lining up with modern hardware with things like multiple output
+> >    streams?).
 
-> This has already been addressed in the v2 here (you were Cc'ed):
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-October/098307.=
-html
+> I would like this to be added (I have a short presentation):
 
-That's the only version I had in my inbox.
+> "Comparison of energy efficiency of ALSA, CRAS and various versions of
+> PulseAudio on Intel-based laptops".
 
---o+N5O4bNGxsQWEyZ
+> Is this possible?
+
+That was intended to be wrapped up in the above topic.
+
+--DNkN4mkbZBLvViAv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWE5VeAAoJECTWi3JdVIfQJY8H/iSIdZ0r7nHVDZT40r7xV2Ds
-QcS0rk9rg5gTIUfh+02umqbnF3T6kZzSZDgzEzHLGa/Ql3d97FSABEG7Au/Rd8p+
-75aNaB2/cN57x0H1TA4UNJgWIIcO8jPCUsB5kW56BDfSH9LASh3wSkycPRBUqQcu
-MQKDdg/KKSCTsaGmMnI1Hpf10LhAJsttrGRw/TMshm6o8Sjbt/ejomKHCXaUZgsv
-gP9MmOn1fZlYXKl6tXNXdgUytMShMv3QsfEoeUTv9sTUJ60UWv1B6o2FndHLggys
-bj2guQnM5vitMSXBdIV3jCtH1y15zP9AI8Av+rEvuSMhucfrlQsOAgxFd8Vwj+Q=
-=+fTE
+iQEcBAEBCAAGBQJWE5XjAAoJECTWi3JdVIfQg+MH/3Nkn7z/+kkLK5iEa1RxBzPY
+uGmfcZbxnYlsDh6fmhCzZM6H9cpN6saV2M9fDB8UY0otbPZCAMjJM2OWnO1hZrYU
+/4w5kmdqlAx01TXtFku7wzHA6A0aCSsEbJWIHpNedGGW7qbxGGPu6VrT0zNInvl0
+FuunnW5kmy70l4FjkoutS3N0Vrkm6Yt+0+PwV9YMe147OOtk5kHhXJBktMqQjSoQ
+eduAmu+Ao2OqqJh495csUKUxg8ddmjH19B3iYDN0L5JXHIQ0veO97SaLST8KgROG
+KNvZdHTVG9sWdsO7famJVPD28yG0/Ig84kxd6OFGqntXzTfCLwtZ5JRguEN97fc=
+=IKr2
 -----END PGP SIGNATURE-----
 
---o+N5O4bNGxsQWEyZ--
+--DNkN4mkbZBLvViAv--
 
---===============1987672621915438964==
+--===============2493786596432675594==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1987672621915438964==--
+--===============2493786596432675594==--
