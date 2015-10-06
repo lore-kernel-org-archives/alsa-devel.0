@@ -1,19 +1,19 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Subject: Re: Zoom R16/24 playback slient
-Date: Tue, 6 Oct 2015 10:16:05 +0200
-Message-ID: <alpine.DEB.2.02.1510060933160.19610@lnxricardw1.se.axis.com>
+Date: Tue, 6 Oct 2015 10:18:41 +0200
+Message-ID: <alpine.DEB.2.02.1510061017220.19610@lnxricardw1.se.axis.com>
 References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
  <560B8481.1080304@laiskiainen.org>
- <alpine.DEB.2.02.1510060834060.19610@lnxricardw1.se.axis.com>
- <5613756A.9080209@laiskiainen.org>
+ <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
+ <56137AE7.4000601@laiskiainen.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id B6ADC264F4B
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 10:16:07 +0200 (CEST)
-In-Reply-To: <5613756A.9080209@laiskiainen.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7499264FFF
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 10:18:43 +0200 (CEST)
+In-Reply-To: <56137AE7.4000601@laiskiainen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,175 +27,35 @@ To: Panu Matilainen <pmatilai@laiskiainen.org>
 Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-On Tue, 6 Oct 2015, Panu Matilainen wrote:
-
-> >>>>>> At Sat, 29 Nov 2014 21:35:04 +0200,
-> >>>>>> Panu Matilainen wrote:
-> >>>>>>>
-> >>>>> ** UNRECOGNIZED:  0b 24 01 00 01 35 00 03 01 02 03
-> >>>>>       -> Header?
-> >>>>> ** UNRECOGNIZED:  0c 24 02 05 01 01 00 02 03 00 00 00
-> >>>>>       -> USB streaming input terminal?
-> >>>>> ** UNRECOGNIZED:  09 24 03 08 01 03 00 05 00
-> >>>>>       -> Speaker output terminal?
-> >>>>> ** UNRECOGNIZED:  0c 24 02 09 01 02 00 08 00 00 00 00
-> >>>>>       -> Microphone input terminal?
-> >>>>> ** UNRECOGNIZED:  09 24 03 0c 01 01 00 09 00
-> >>>>>       -> USB streaming output terminal?
-> >>>>>
-> =
-
-> lsusb knows about USB audio alright, the problem is all these stupid =
-
-> vendors tagging their devices and their interfaces as vendor specific, =
-
-> even if when actually are class compliant. Which is why the quirks-table =
-
-> is needed: QUIRK_AUDIO_STANDARD_INTERFACE just tells the driver to parse =
-
-> the descriptor as a standard audio interface despite it claiming to be =
-
-> vendor specific. But lsusb doesn't have access to the quirks table.
-
-That makes sense, however, I seem to recall (will double check tonight) =
-
-that lsusb still output UNRECOGNIZED for the corresponding descriptors =
-
-even when the UA-5 was set to its class complient mode.
-
-I'd have to do more research, but it would seem that the above decriptors =
-
-match something other than the USB audio version 1 or 2 specs, whatever =
-
-that might be.
-
-Part of the decoding I found was:
-(partly with reference to
-https://www.silabs.com/Support%20Documents/TechnicalDocs/AN295.pdf)
-
-
-** UNRECOGNIZED:  0b 24 01 00 01 35 00 03 01 02 03
-                        -- ----  ----- -- --------
-                        |  |       |    |     +---- device nos (cap,pb,midi)
-                        |  |       |    +---------- no of devices
-		        |  |       +--------------- total descriptors length
-                        |  +----------------------- bcdADC (0x0001) ?
-                        +-------------------------- subtype HEADER
-
-** UNRECOGNIZED:  0c 24 02 05 01 01 00 02 03 00 00 00
-                        -- -- -----    -- -----
-                        |  |   |       |     +------ channel placement (L,R)
-                        |  |   |       +------------ no of channels
-                        |  |   +-------------------- terminal type? (output)
-                        |  +------------------------ terminal ID (5)
-                        +--------------------------- streaming terminal des=
-cr.
-                                   =
-
-** UNRECOGNIZED:  09 24 03 08 01 03 00 05 00
-
-** UNRECOGNIZED:  0c 24 02 09 01 02 00 08 00 00 00 00
-                        -- -- -----    -- -----
-                        |  |   |       |     +------ channel placement (non=
-e)
-                        |  |   |       +------------ no of channels
-                        |  |   +-------------------- terminal type? (input)
-                        |  +------------------------ terminal ID (9)
-                        +--------------------------- streaming terminal des=
-cr.
-
-** UNRECOGNIZED:  09 24 03 0c 01 01 00 09 00
-
-and further down in the dump (after the interface descriptor for the output
-interface)
-
-** UNRECOGNIZED:  07 24 01 05 01 01 00
-                        -- -- -- -----
-                        |  |  |    +-------- format tag (0x0100 =3D PCM)
-                        |  |  +------------- bDelay
-                        |  +---------------- terminal link?
-                        +------------------- subtype AS_GENERAL
-                           =
-
-** UNRECOGNIZED:  14 24 02 01 02 04 18 04 44 ac 00 80 bb 00 88 58 01 00 77 =
-01
-                           -- -- -- -- -- -------- -------- -------- ------=
---
-                           |  |  |  |  |  44.1 kHz  48 kHz  88.2 kHz  96 kHz
-                           |  |  |  |  |
-                           |  |  |  |  +--- no of sample rate specifications
-                           |  |  |  +------ bit resolution (24 bits)
-                           |  |  +--------- subframe size (4 bytes)
-                           |  +------------ no of channels (2)
-                           +--------------- format type (TYPE_I)
-
-and for the input interface:
-
-** UNRECOGNIZED:  07 24 01 0c 01 01 00
-                        -- -- -- -----
-                        |  |  |    +-------- format tag (0x0100 =3D PCM)
-                        |  |  +------------- bDelay
-                        |  +---------------- terminal link?
-                        +------------------- subtype AS_GENERAL
-
-** UNRECOGNIZED:  14 24 02 01 08 04 18 04 44 ac 00 80 bb 00 88 58 01 00 77 =
-01
-                           -- -- -- -- -- -------- -------- -------- ------=
---
-                           |  |  |  |  |  44.1 kHz  48 kHz  88.2 kHz  96 kHz
-                           |  |  |  |  |
-                           |  |  |  |  +--- no of sample rate specifications
-                           |  |  |  +------ bit resolution (24 bits)
-                           |  |  +--------- subframe size (4 bytes)
-                           |  +------------ no of channels (8)
-                           +--------------- format type (TYPE_I)
-
-What doesn't make sense to me here is that certain subtypes seem to be =
-
-reused for different purposes even with the same descriptor type, for =
-
-instance descriptor type 24 has subtype 02 being used to specify terminal =
-
-type and also the data format. Perhaps the length is also a part of the =
-
-type specifier?
-
-While this could all be vendor specific based on a standard but only =
-
-loosely following it, when attempting the same interpretation on the =
-
-corresponding lsusb -v output from the Edirol UA-5, they correspond =
-
-perfectly, given the differences in the devices (for instance, the UA-5 =
-
-only runs at a single sample rate governed by a front panel switch, and in =
-
-its class-complient mode uses 2 bytes per sample with 16 bit resolution, =
-
-and in its advanced mode uses 3 bytes per sample with 24 bit resolution) =
-
-so apparently they are based on the same standard, whatever that may be.
-
-Perhaps someone can point in the right direction to some standards =
-
-document, for now, my main interest is getting the playback streaming =
-
-going, and since QUIRK_AUDIO_STANDARD_INTERFACE seems to suffice in order =
-
-to grab the format information, it is apparent that the ALSA USB layer =
-
-understands the information at least sufficiently for its purpose, so I =
-
-don't really intend to dive deeper into the descriptor interpretation for =
-
-now. Most importantly, it confirms that the correct audio format is 24 =
-
-bits in a 32 bit word.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Ck9uIFR1ZSwgNiBPY3QgMjAxNSwgUGFudSBNYXRpbGFpbmVuIHdyb3RlOgoKPiA+IEF0IHRoZSBt
+b21lbnQgSSdtIGNvbnNpZGVyaW5nIGFkZGluZyBzb21lIGFkZGl0aW9uYWwgY29kZSB0bwo+ID4g
+c291bmQvdXNiL3BjbS5jOiBwcmVwYXJlX3BsYXliYWNrX3VyYigpLCBnb3Zlcm5lZCBieSBhIG5l
+dyBib29sZWFuIGluCj4gPiBzdHJ1Y3Qgc25kX3VzYl9zdWJzdHJlYW0gaW4gYSBzaW1pbGFyIHZh
+aW4gYXMgdHhmcl9xdWlyayBpbiB0aGF0IHN0cnVjdHVyZQo+ID4gKHdoaWNoIGluIHR1cm4gaXMg
+c2V0IGluIHNvbWUgcXVpcmsgZnVuY3Rpb24gZGV0ZWN0aW5nIHRoZSBSMTYpLgo+ID4KPiA+IFdo
+YXQgbmVlZHMgdG8gYmUgZG9uZSBpcyB0byBhZGQgNCBieXRlcyB0byB0aGUgbGVuZ3RoLCBhbmQg
+YWRqdXN0IHRoZQo+ID4gb2Zmc2V0IGFjY29yZGluZ2x5LCBpbiB1cmItPmlzb19mcmFtZV9kZXNj
+W2ldLCBhbmQgdGhlbiBhZGQgdGhlIGFkZGl0aW9uYWwKPiA+IGxlbmd0aCBkZXNjcmlwdG9yIGZv
+ciBlYWNoIHBhY2tldCB3aGVuIGNvcHlpbmcgb3V0IHRoZSBkYXRhIGZ1cnRoZXIgZG93bgo+ID4g
+aW4gdGhlIHNhbWUgZnVuY3Rpb24uCj4gPgo+ID4gSXQgd291bGQgYmUgbmljZSB0byBhZGQgYSBm
+b29fcXVpcmsoKSBmdW5jdGlvbiBidXQgc2luY2UgdGhlIGFjdHVhbAo+ID4gY29weWluZyBvZiB0
+aGUgZGF0YSBuZWVkcyB0byBiZSBjaGFuZ2VkLCBpdCdzIG5vdCByZWFsbHkgcG9zc2libGUgdG8g
+ZG8KPiA+IGVmZmljaWVudGx5IHdpdGggYSBzZXBhcmF0ZSByb3V0aW5lLgo+IAo+IFNvdW5kcyBs
+aWtlIGEgcGxhbiB0byBtZSwgYnV0IGtlZXAgaW4gbWluZCBJJ20ganVzdCBhbm90aGVyIG5ld2Jp
+ZSBpbiAKPiBhbGwgdGhpcy4gQW55d2F5LCBJIHdvdWxkbid0IHdvcnJ5IGFib3V0IGNsZWFuZXN0
+IHBvc3NpYmxlIHdheSBhdCB0aGlzIAo+IHBvaW50LCBqdXN0IGRvIGEgcXVpY2stbi1kaXJ0eSBo
+YWNrIHRvIHNlZSBpZiBhZGRpbmcgdGhlIGxlbmd0aCBpcyAKPiBlbm91Z2ggdG8gZ2V0IGl0IHdv
+cmtpbmcgYW5kIHdvcnJ5IGFib3V0IHRoZSByZXN0IGxhdGVyLiBJJ2xsIHRyeSB0byAKPiBoYXZl
+IGEgbG9vayBhdCBpdCB0b28gYXMgc29vbiBhcyB0aW1lIHBlcm1pdHMsIGJ1dCBtZWFud2hpbGUg
+aWYgbW9yZSAKPiBleHBlcmllbmNlZCBwZW9wbGUgaGF2ZSBiZXR0ZXIgc3VnZ2VzdGlvbnMuLi4K
+ClllcywgYSBwcm9vZi1vZi1jb25jZXB0IGlzIG5lZWRlZCwgYW5kIHRoZXJlIG1heSBiZSBmdXJ0
+aGVyIGlzc3VlcywgYnV0IApJJ20gaG9waW5nIGZvciBzb21lIGlucHV0IHRvbyBmcm9tIHRoZSAn
+bW9yZSBleHBlcmllbmNlZCBwZW9wbGUnIGlmIHRoaXMgCmlzIHRoZSByaWdodCB3YXkgdG8gZ28g
+YWJvdXQgaXQgYmVmb3JlIEkgZ28gdG8gZmFyIGluIHRoZSB3cm9uZyBkaXJlY3Rpb24uCgovUmlj
+YXJkCi0tIApSaWNhcmQgV29sZiBXYW5kZXJsw7ZmICAgICAgICAgICAgICAgICAgICAgICAgICAg
+cmljYXJkdyhhdClheGlzLmNvbQpBeGlzIENvbW11bmljYXRpb25zIEFCLCBMdW5kLCBTd2VkZW4g
+ICAgICAgICAgICB3d3cuYXhpcy5jb20KUGhvbmUgKzQ2IDQ2IDI3MiAyMDE2ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgRmF4ICs0NiA0NiAxMyA2MSAzMApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
