@@ -1,74 +1,131 @@
-From: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting dma controller's
- quirk
-Date: Tue, 6 Oct 2015 17:21:13 +0800
-Message-ID: <56139289.7000005@rock-chips.com>
-References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
- <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
- <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
+ codec proposal
+Date: Tue, 6 Oct 2015 11:23:03 +0200
+Message-ID: <561392F7.90608@st.com>
+References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+ <56127ADB.6080700@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20151005153746.GG13501-bQVUxfxUtC13uc1i7fC1zK2pdiUAq4bhAL8bYrjMMd8@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D21642650D4
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 11:23:13 +0200 (CEST)
+In-Reply-To: <56127ADB.6080700@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "moinejf@free.fr" <moinejf@free.fr>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
+Hello Jyri,
 
-On 2015/10/5 23:37, Vinod Koul wrote:
-> On Mon, Sep 14, 2015 at 07:48:59AM +0800, Shawn Lin wrote:
->> Add dmaengine_get_quirks API for peripheral devices to query
->> quirks if they need it to make special workaround due to broken
->> dma controller design.
+Thanks your feedback, my answers in line
+
+
+On 10/05/2015 03:27 PM, Jyri Sarha wrote:
+> On 10/01/15 19:50, Arnaud Pouliquen wrote:
 >>
->> Signed-off-by: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
->> ---
+>> Version 2:
+>> This version integrates missing features upgraded to be aligned when pos=
+sible
+>> with patch set:
+>> [PATCH RFC v4 0/8] Implement generic ASoC HDMI codec and use it in tda99=
+8x
 >>
->> Changes in v5: None
->> Changes in v4: None
->> Changes in v3: None
->> Changes in v2: None
->> Changes in v1: None
->>
->>   include/linux/dmaengine.h | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
->> index e2f5eb4..5174ca4 100644
->> --- a/include/linux/dmaengine.h
->> +++ b/include/linux/dmaengine.h
->> @@ -704,6 +704,7 @@ struct dma_device {
->>
->>   	int (*device_config)(struct dma_chan *chan,
->>   			     struct dma_slave_config *config);
->> +	int (*device_get_quirks)(struct dma_chan *chan);
 >
-> And why do we want to expose this to users? THis doesnt seem right!
+> There are still some details I would like to change if we decide to go
+> the drm audio bridge way. But before all that, I would like to ask,
+> why should we go forward with your approach? Is there anything that
+> can be done with your approach, but can not be done with mine?
 >
+> Don't take me wrong, I do not see anything fundamentally wrong with
+> your approach. I would just like hear some justification why we should
+> abandon my approach - that I've been working on for some time - and go
+> forward with yours.
 
-Basically I agree not to expose dma's quirk to slave controllers...But, 
-the fact I mentioned on cover letter explain the reasons why I have to 
-let slave controllers know that they are working with a broken dma. It's 
-a dilemma that if we don't want that to be exposed(let slave 
-controllers' driver get the info via a API), we have to add broken quirk 
-for all of them ,here and there, which seems to be a disaster:(
+Both implementations are similar in term of feature. And i think both =
 
-I would appreciate it if you could give me some suggestions at your 
-earliest convenience. :)
+have advantages and drawbacks...
+The main difference, is that my approach is based on a standard service =
 
-> A quirk may exists but should be handled inside the controller driver and do
-> appropriate action. You don't tell users or expect them to handle these
+client-provider model.
+Means that ops are defined by code in charge of providing the service =
+
+(DRM) and not by the client (ALSA).
+I don't want to impose my implementation but just propose an alternative
+that makes sense for me.
+
+In a first step, before going deep in discussion on the approach, it =
+
+should be interesting to have maintainers feedback, to be sure that my =
+
+approach could make sense from DRM and ALSA point of view.
+
+@DRM (and ALSA) maintainers:
+Please, could you give a first feedback on such implementation based on =
+
+DRM API extension?
+Is it something that could be acceptable (or not) from your point of view?
+
 >
+> Here is couple of benefits I can name in my approach:
+> =AD Video side agnostic implementation
+>      The ASoC side does not need to know anything about video side
+>      implementation. There is no real exposure ASoC side internals in
+>      video side either. Even fbdev driver, or some other non DRM video
+>      driver, could use my implementation.
+My approach is the reverse: DRM driver does not need to know anything =
 
+about audio side. As ALSA is the client of DRM, seems more logical from =
 
--- 
-Best Regards
-Shawn Lin
+my point of view ...
+Now if a generic solution must be found for all video drivers, sure, =
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+your solution is more flexible.
+But if i well understood fbdev drivers are no more accepted for upstream
+(please correct me if I'm wrong).
+So i don't know we have to keep fbdev in picture...
+
+> - HDMI encoder driver implementations that do not use DRM bridge
+>     abstraction do not need add an extra DRM object just to get the
+>     audio working.
+>
+> Short comings I see in the current HDMI audio bridge approach:
+>
+> In its current from the DRM audio bridge abstraction pretends to be a
+> generic audio abstraction for DRM devices, but the implementation is
+> quite specific to external HDMI encoders with spdif and/or i2s
+> interface. There is a lot of HDMI video devices that provide the
+> digital audio interface (ASoC DAI) directly and there is no need for
+> anything but dummy codec implementation (if following ASoC
+> paradigm). Before going forward I think we should at least consider
+> how this abstraction would serve those devices.
+Sorry, but i don't see any difference between both implementations for =
+
+this point.In both implementations, ops are called only if defined.
+Could you give me name of the drivers you have in mind?
+>
+> Also, I am not entirely happy how the drm_audio_bridge_funcs are used
+> at the moment. The do not map too well to ASoC DAI callbacks and I do
+> not see too much point in creating a completely new audio-callback
+> abstraction, that is sligtly incompatible with ALSA, and then
+> translating alsa callbacks to these new callbacks. I think the
+> callbacks should map more or less directly ALSA callbacks.
+
+As API is defined in DRM, it seems more logical to match it with the one
+defined for video. From my windows, i didn't see any blocking point to
+connect codec callback with this API.
+But anyway, this API is not freezed, it could be improved with your help.
+
+Best Regards,
+Arnaud
