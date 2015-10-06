@@ -1,14 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 00/18] ALSA: hdac: move hdac helpers to core
-Date: Tue,  6 Oct 2015 16:07:37 +0100
-Message-ID: <1444144075-28963-1-git-send-email-vinod.koul@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
+ element to snd_soc_tplg_stream
+Date: Tue, 6 Oct 2015 15:06:53 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B8503D8@shsmsx102.ccr.corp.intel.com>
+References: <cover.1443605139.git.mengdong.lin@intel.com>
+ <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+ <20151002165907.GU12635@sirena.org.uk> <1443809055.10986.10.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 17C172655A5
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 17:08:39 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 364F5265716
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 17:08:40 +0200 (CEST)
+In-Reply-To: <1443809055.10986.10.camel@loki>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,62 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
+ Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+> -----Original Message-----
+> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
+> Sent: Saturday, October 03, 2015 2:04 AM
+> To: Mark Brown
+> Cc: Lin, Mengdong; alsa-devel@alsa-project.org; tiwai@suse.de; Patel,
+> Vedang; Prusty, Subhransu S; Koul, Vinod; Kp, Jeeja
+> Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name element to
+> snd_soc_tplg_stream
+> 
+> On Fri, 2015-10-02 at 17:59 +0100, Mark Brown wrote:
+> > On Wed, Sep 30, 2015 at 05:31:34PM +0800, mengdong.lin@intel.com
+> wrote:
+> > > From: Vedang Patel <vedang.patel@intel.com>
+> > >
+> > > For codec-codec links, this struct will be mapped to the DAI links's
+> > > params, which is struct snd_soc_pcm_stream and it needs a stream
+> name.
+> >
+> > OK, so this means that every DAI link name is going to become an ABI
+> > too if there's a topology in there.  Not a problem but we'll need to
+> > watch out for that on review...  I wonder if I can make some automated
+> > checker thing.
 
-Here is the second version which updates the users.
+Hi Mark,
 
-This update was done using coccinelle scripts. I also noticed that the
-coccinelle is reformaing the change lines, but changes looked good to me so
-I have kept them, please do let me know if you would like these to be
-removed.
+Do you mean we need to check if a DAI link name is already used, or if it's a valid string?
+Is there any naming convention for a DAI link?
 
-Subhransu S. Prusty (1):
-  ALSA: hdac: Copy codec helpers to core
+Thanks
+Mengdong
 
-Vinod Koul (17):
-  ALSA: hda: move hda beep to use hdac helpers
-  ALSA: hda: move hda_eld to use hdac helpers
-  ALSA: hda: move hda_generic to use hdac helpers
-  ALSA: hda: move hda_hwdep to use hdac helpers
-  ALSA: hda: move hda_jack to use hdac helpers
-  ALSA: hda: move hda_proc to use hdac helpers
-  ALSA: hda: move patch_analog to use hdac helpers
-  ALSA: hda: move patch_ca0132.c to use hdac helpers
-  ALSA: hda: move patch_cirrus to use hdac helpers
-  ALSA: hda: move to use hdac helpers
-  ALSA: hda: move patch_hdmi to use hdac helpers
-  ALSA: hda: move patch_realtek to use hdac helpers
-  ALSA: hda: move patch_si3054 to use hdac helpers
-  ALSA: hda: move patch_sigmatel to use hdac helpers
-  ALSA: hda: move patch_via to use hdac helpers
-  ALSA: hda: move hda_codec to use hdac helpers
-  ALSA: hda: remove the old helpers
-
- include/sound/hdaudio.h        |   6 +
- sound/hda/hdac_device.c        |  81 ++++++++++++
- sound/pci/hda/hda_beep.c       |   4 +-
- sound/pci/hda/hda_codec.c      | 128 +++++++-----------
- sound/pci/hda/hda_codec.h      |   5 -
- sound/pci/hda/hda_eld.c        |  65 +++++++---
- sound/pci/hda/hda_generic.c    |   9 +-
- sound/pci/hda/hda_hwdep.c      |   4 +-
- sound/pci/hda/hda_jack.c       |   8 +-
- sound/pci/hda/hda_local.h      |  13 --
- sound/pci/hda/hda_proc.c       |  80 ++++++------
- sound/pci/hda/patch_analog.c   |  10 +-
- sound/pci/hda/patch_ca0132.c   | 223 ++++++++++++++++----------------
- sound/pci/hda/patch_cirrus.c   |  52 ++++----
- sound/pci/hda/patch_conexant.c |  20 +--
- sound/pci/hda/patch_hdmi.c     | 285 +++++++++++++++++++++--------------------
- sound/pci/hda/patch_realtek.c  | 136 +++++++++++---------
- sound/pci/hda/patch_si3054.c   |  10 +-
- sound/pci/hda/patch_sigmatel.c |  78 +++++------
- sound/pci/hda/patch_via.c      |  14 +-
- 20 files changed, 660 insertions(+), 571 deletions(-)
-
--- 
-2.4.3
+> Probably good to discuss at ELCE as there may be other things that can be
+> auto-checked too ....
+> 
+> Liam
