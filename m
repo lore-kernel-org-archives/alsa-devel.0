@@ -1,65 +1,53 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Tue, 6 Oct 2015 10:59:03 +0000
-Message-ID: <1444129142.25504.7.camel@intel.com>
-References: <20151004231752.GA22609@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: WM8962: mark cache_dirty flag after software
+ reset in pm_resume
+Date: Tue, 6 Oct 2015 11:59:07 +0100
+Message-ID: <20151006105907.GM12635@sirena.org.uk>
+References: <1444115215-4388-1-git-send-email-jiada_wang@mentor.com>
+ <1444115215-4388-2-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B6B82650D4
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 12:59:07 +0200 (CEST)
-In-Reply-To: <20151004231752.GA22609@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <850A6364BB14BD48AB36E08E745469F8@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5H9Hz1/zx6zDf/+6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1444115215-4388-2-git-send-email-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-10-05 at 00:17 +0100, Mark Brown wrote:
-> [This message is BCCed to everyone currently on the signup list]
-> 
-> As previously announce the audio mini-summit for this year will be this
-> Thursday (8th August) at CCD in Dublin.  Topics we currently have on the
-> list for discussion are:
-> 
->  - Power saving and general system design decisions (is what we're doing
->    lining up with modern hardware with things like multiple output
->    streams?).
->  - What to do with HDMI and its integration with graphics.
->  - Test tools (Intel BAT and others).
->  - BATCH flag.
->  - ACPI simple-card and general generic card support.
->  - Topology & media controller integration.
->  - Kernel tinification.
->  - Android <-> alsa-lib configuration translation.
->  - HDA restructuring.
->  - PCM core simplification - the code is currently quite complex!
->  - Soundwire driver support plans.
 
-Few more topics:
+--5H9Hz1/zx6zDf/+6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- tinycompress release with alsa lib. And when is next alsa-lib release?
+On Tue, Oct 06, 2015 at 04:06:54PM +0900, Jiada Wang wrote:
 
-- ASoC Multichannel support. We have talked about it, I want recheck assumption
-before we implement something
+> +	/* All registers have been reset to default value without calling
+> +	 * to regmap interface, even if reset fails, some registers
+> +	 * maybe in intermediate status, so we need to mark regmap
+> +	 * cache_dirty flag.
+> +	 */
+> +	regcache_mark_dirty(wm8962->regmap);
 
-- ASoC/DAPM Changes we would like to do:
-	- add kcontrol suport for PGA so that we cna add user controls for DSPs
-	- add internal sink in DAPM for DSPs, like siggen
-	- Fix TLV byte controls
-	- Discuss BE-BE loops
+This is a standard thing that applies to almost all devices, there
+should be no need for such an extensive comment (which would normally
+flag up that there's something weird and surprising going on).
 
-Thanks
--- 
-~Vinod
+--5H9Hz1/zx6zDf/+6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWE6l7AAoJECTWi3JdVIfQaK8H/3T/21Wzr7bprCo11JF9kEWl
+aVYmljhvX7tOUktTpaLvf+JW1ZsvF75fj+9OfISNcB+Emz+f6tFEFmOujt5Y91Wu
+KrEPqOrmQonPwaGosdtJbyeNa6USp6469dRGwOWQ6sghnp+2z/H2mfcXEut0tHgX
+A1PTgBW65O1HUUwcPSijPpzOoHd6rI1AIWrEHCY46Hp2CmAAAtO/cvz3rmXuv6++
+uCL9hQuSqTZFwoIqedg9HvnmiHSc+KRC58Ktkn3RXR/jf4KnHpB8CrOJsYBDfmG0
+4Iisb4eH7C7Rh06BW3GLISOYRkhz+8PnvNmUO/6jyJ5PYSejLI+sOaHtb30ugh0=
+=jMzS
+-----END PGP SIGNATURE-----
+
+--5H9Hz1/zx6zDf/+6--
