@@ -1,17 +1,14 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Zoom R16/24 playback slient
-Date: Tue, 6 Oct 2015 09:02:43 +0200
-Message-ID: <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
- <560B8481.1080304@laiskiainen.org>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH 0/2] *** wm8962 regmap related fix ***
+Date: Tue, 6 Oct 2015 16:06:53 +0900
+Message-ID: <1444115215-4388-1-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id CAE49262631
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 09:02:45 +0200 (CEST)
-In-Reply-To: <560B8481.1080304@laiskiainen.org>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD52C26067B
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 09:06:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Panu Matilainen <pmatilai@laiskiainen.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: jiada_wang@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIFdlZCwgMzAgU2VwIDIwMTUsIFBhbnUgTWF0aWxhaW5lbiB3cm90ZToKCj4gTXkgbWVtb3J5
-IGlzIGEgYml0IGhhenkgb24gdGhlIGRldGFpbHMsIGJ1dCB0aGUgYXV0b21hdGljYWxseSBkZXRl
-Y3RlZCAKPiBTTkRSVl9QQ01fRk1UQklUX1MzMiAod2hpY2ggaWlyYyBtZWFucyB0aGUgYWN0dWFs
-IDI0Yml0IHZhbHVlcyBhcmUgCj4gY2FycmllZCBpbiAzMmJpdCBjaHVua3MpIHNlZW1zIHRvIGJl
-IHRoZSByaWdodCB0aGluZyBmb3IgdGhlIGRldmljZSwgCj4gZm9yY2luZyBpdCB0byBzb21ldGhp
-bmcgZWxzZSBqdXN0IG1ha2VzIHRoaW5ncyB3b3JzZS4gSUlSQy4gVGhlIGRlbGF5IAo+IHdhcyBh
-IGtleSBwYXJ0LCBidXQgbm90IGVub3VnaC4KPiAKPiBBbm90aGVyIGZpbmRpbmcgZnJvbSBteSBs
-YXN0IHJvdW5kIGluIHRoZSBzcHJpbmcgSSBkbyByZW1lbWJlciBjbGVhcmx5LCAKPiBpcyB0aGF0
-IGVuYWJsaW5nIGJvdGggdGhlIGlucHV0IGFuZCBvdXRwdXQgaW50ZXJmYWNlcyBtYWtlcyB0aGlu
-Z3MgaGFuZyAKPiB1cCAodGltZW91dHMgYW5kIG5vdGhpbmcgcmVhbGx5IHdvcmtzKS4gQnV0IGlm
-IHlvdSBkaXNhYmxlIHRoZSBpbnB1dCAKPiBpbnRlcmZhY2UgYW5kIGVuYWJsZSB0aGUgb3V0cHV0
-IGludGVyZmFjZSwgeW91IGdldCBhbiBhcHBhcmVudGx5IHdvcmtpbmcgCj4gcGxheWJhY2sgc3Ry
-ZWFtLiBPbmx5IG5vIHNvdW5kIGNvbWVzIG91dC4gSWYgeW91IGRpc2FibGUgdGhlIG91dHB1dCBh
-bmQgCj4gZW5hYmxlIGlucHV0LCBjYXB0dXJlIGl0c2VsZiB3b3JrcyBmaW5lLgoKSGF2aW5nIGRp
-dmVkIGludG8gdGhpcywgYW5kIGxvb2tpbmcgY2FyZWZ1bGx5IGF0IHRoZSBkYXRhIHByb2R1Y2Vk
-IGJ5IHRoZSAKV2luZG93cyBkcml2ZXIsIGl0IGFwcGVhcnMgdGhhdCB3aGF0J3MgaGFwcGVuaW5n
-IGlzIHRoYXQgdGhlIGRyaXZlciBzdHVmZnMgCmEgMzItYml0IGxlbmd0aCBzcGVjaWZpZXIgYXQg
-dGhlIHN0YXJ0IG9mIGVhY2ggaXNvY2hyb25vdXMgZGF0YSBwYWNrZXQuCgpTbywgZm9yIGluc3Rh
-bmNlLCBpbnN0ZWFkIG9mIHRyYW5zZmVycmluZyB0aGUgc2FtcGxlIGRhdGEKCjAwIDEyIGJmIDM0
-ICAwMCA5OCA4NyA3NiAgMDAgM2MgMjQgMzUgIDAwIDg2IDc1IDY0IC4uIC4uICg0MCBieXRlcykK
-CnRoZSBab29tIGRyaXZlciB3b3VsZCBzZW5kOgoKMjggMDAgMDAgMDAgIDAwIDEyIGJmIDM0ICAw
-MCA5OCA4NyA3NiAgMDAgM2MgMjQgMzUgIDAwIDg2IDc1IDY0IC4uLiAoNDQgYnl0ZXMpCgpObyB3
-b25kZXIgdGhlIFpvb20gZ2V0cyBjb25mdXNlZCB3aGVuIGl0IGdldHMgc2VudCBvcmRpbmFyeSBz
-YW1wbGUgZGF0YSwgCmFuZCB0cmllcyB0byBpbnRlcnByZXQgdGhlIGZpcnN0IHNhbXBsZSB2YWx1
-ZSBhcyBhIGxlbmd0aC4KClRoZXJlIGRvZXNuJ3Qgc2VlbSB0byBiZSBhbnl0aGluZyBpbiB0aGUg
-QUxTQSBVU0IgZHJpdmVyIHRvIGRvIHRoaXMsIGFuZCAKSSdtIHRoaW5raW5nIGl0J3MgWm9vbSBz
-cGVjaWZpYyAocGVyaGFwcyB0byBvdmVyY29tZSBzb21lIGRlZmljaWVuY3kgaW4gCnRoZSBoYXJk
-d2FyZSAob3IgVVNCIGZpcm13YXJlKSBpbiB0aGUgUjE2PykuCgpJJ20gdHJ5aW5nIHRvIGZpZ3Vy
-ZSBvdXQgd2hlcmUgd291bGQgYmUgdGhlIGJlc3QgcGxhY2UgdG8gYWRkIGEgcXVpcmsgZm9yIAp0
-aGlzLiBJbnB1dCBmcm9tIGFueW9uZSBrbm93bGVkZ2VhYmxlIGFib3V0IHRoZSBBTFNBIFVTQiBz
-eXN0ZW0gd291bGQgYmUgCnZlcnkgaGVscGZ1bC4KCkF0IHRoZSBtb21lbnQgSSdtIGNvbnNpZGVy
-aW5nIGFkZGluZyBzb21lIGFkZGl0aW9uYWwgY29kZSB0byAKc291bmQvdXNiL3BjbS5jOiBwcmVw
-YXJlX3BsYXliYWNrX3VyYigpLCBnb3Zlcm5lZCBieSBhIG5ldyBib29sZWFuIGluIApzdHJ1Y3Qg
-c25kX3VzYl9zdWJzdHJlYW0gaW4gYSBzaW1pbGFyIHZhaW4gYXMgdHhmcl9xdWlyayBpbiB0aGF0
-IHN0cnVjdHVyZSAKKHdoaWNoIGluIHR1cm4gaXMgc2V0IGluIHNvbWUgcXVpcmsgZnVuY3Rpb24g
-ZGV0ZWN0aW5nIHRoZSBSMTYpLgoKV2hhdCBuZWVkcyB0byBiZSBkb25lIGlzIHRvIGFkZCA0IGJ5
-dGVzIHRvIHRoZSBsZW5ndGgsIGFuZCBhZGp1c3QgdGhlIApvZmZzZXQgYWNjb3JkaW5nbHksIGlu
-IHVyYi0+aXNvX2ZyYW1lX2Rlc2NbaV0sIGFuZCB0aGVuIGFkZCB0aGUgYWRkaXRpb25hbCAKbGVu
-Z3RoIGRlc2NyaXB0b3IgZm9yIGVhY2ggcGFja2V0IHdoZW4gY29weWluZyBvdXQgdGhlIGRhdGEg
-ZnVydGhlciBkb3duIAppbiB0aGUgc2FtZSBmdW5jdGlvbi4KCkl0IHdvdWxkIGJlIG5pY2UgdG8g
-YWRkIGEgZm9vX3F1aXJrKCkgZnVuY3Rpb24gYnV0IHNpbmNlIHRoZSBhY3R1YWwgCmNvcHlpbmcg
-b2YgdGhlIGRhdGEgbmVlZHMgdG8gYmUgY2hhbmdlZCwgaXQncyBub3QgcmVhbGx5IHBvc3NpYmxl
-IHRvIGRvIAplZmZpY2llbnRseSB3aXRoIGEgc2VwYXJhdGUgcm91dGluZS4KCi9SaWNhcmQKLS0g
-ClJpY2FyZCBXb2xmIFdhbmRlcmzDtmYgICAgICAgICAgICAgICAgICAgICAgICAgICByaWNhcmR3
-KGF0KWF4aXMuY29tCkF4aXMgQ29tbXVuaWNhdGlvbnMgQUIsIEx1bmQsIFN3ZWRlbiAgICAgICAg
-ICAgIHd3dy5heGlzLmNvbQpQaG9uZSArNDYgNDYgMjcyIDIwMTYgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBGYXggKzQ2IDQ2IDEzIDYxIDMwCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+This patch set aims to fix issues in wm8962 codec driver related to regmap,
+currently any attempt to read from ALC Coefficient register will fail
+when wm8962 is in suspend mode. As ALC2 register is volatile register,
+it can't be read when cache_only flag is set.
+
+Another issue is, if wm8962's regulator is set to 'regulator-always-on'
+mode, then after wm8962 is resumed from suspend, wm8962 codec is reset,
+but cache_dirty flag isn't set, this cause difference between actual wm8962
+HW and regmap cache.
+
+Jiada Wang (2):
+  ASoC: WM8962: mark cache_dirty flag after software reset in pm_resume
+  ASoC: Codec: wm8962: declare ALC Coefficients as 4 separate registers
+
+ sound/soc/codecs/wm8962.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+-- 
+2.4.5
