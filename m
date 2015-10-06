@@ -1,19 +1,26 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Zoom R16/24 playback slient
-Date: Tue, 6 Oct 2015 10:18:41 +0200
-Message-ID: <alpine.DEB.2.02.1510061017220.19610@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
- <560B8481.1080304@laiskiainen.org>
- <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
- <56137AE7.4000601@laiskiainen.org>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Tue, 6 Oct 2015 10:22:14 +0200
+Message-ID: <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
+ <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+ <s5h4mik6xwi.wl-tiwai@suse.de>
+ <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+ <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+ <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id C7499264FFF
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 10:18:43 +0200 (CEST)
-In-Reply-To: <56137AE7.4000601@laiskiainen.org>
+Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
+ [209.85.214.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 887F3264F4B
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 10:22:35 +0200 (CEST)
+Received: by obbzf10 with SMTP id zf10so148384594obb.2
+ for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2015 01:22:34 -0700 (PDT)
+In-Reply-To: <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +30,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Panu Matilainen <pmatilai@laiskiainen.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 1451170@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIFR1ZSwgNiBPY3QgMjAxNSwgUGFudSBNYXRpbGFpbmVuIHdyb3RlOgoKPiA+IEF0IHRoZSBt
-b21lbnQgSSdtIGNvbnNpZGVyaW5nIGFkZGluZyBzb21lIGFkZGl0aW9uYWwgY29kZSB0bwo+ID4g
-c291bmQvdXNiL3BjbS5jOiBwcmVwYXJlX3BsYXliYWNrX3VyYigpLCBnb3Zlcm5lZCBieSBhIG5l
-dyBib29sZWFuIGluCj4gPiBzdHJ1Y3Qgc25kX3VzYl9zdWJzdHJlYW0gaW4gYSBzaW1pbGFyIHZh
-aW4gYXMgdHhmcl9xdWlyayBpbiB0aGF0IHN0cnVjdHVyZQo+ID4gKHdoaWNoIGluIHR1cm4gaXMg
-c2V0IGluIHNvbWUgcXVpcmsgZnVuY3Rpb24gZGV0ZWN0aW5nIHRoZSBSMTYpLgo+ID4KPiA+IFdo
-YXQgbmVlZHMgdG8gYmUgZG9uZSBpcyB0byBhZGQgNCBieXRlcyB0byB0aGUgbGVuZ3RoLCBhbmQg
-YWRqdXN0IHRoZQo+ID4gb2Zmc2V0IGFjY29yZGluZ2x5LCBpbiB1cmItPmlzb19mcmFtZV9kZXNj
-W2ldLCBhbmQgdGhlbiBhZGQgdGhlIGFkZGl0aW9uYWwKPiA+IGxlbmd0aCBkZXNjcmlwdG9yIGZv
-ciBlYWNoIHBhY2tldCB3aGVuIGNvcHlpbmcgb3V0IHRoZSBkYXRhIGZ1cnRoZXIgZG93bgo+ID4g
-aW4gdGhlIHNhbWUgZnVuY3Rpb24uCj4gPgo+ID4gSXQgd291bGQgYmUgbmljZSB0byBhZGQgYSBm
-b29fcXVpcmsoKSBmdW5jdGlvbiBidXQgc2luY2UgdGhlIGFjdHVhbAo+ID4gY29weWluZyBvZiB0
-aGUgZGF0YSBuZWVkcyB0byBiZSBjaGFuZ2VkLCBpdCdzIG5vdCByZWFsbHkgcG9zc2libGUgdG8g
-ZG8KPiA+IGVmZmljaWVudGx5IHdpdGggYSBzZXBhcmF0ZSByb3V0aW5lLgo+IAo+IFNvdW5kcyBs
-aWtlIGEgcGxhbiB0byBtZSwgYnV0IGtlZXAgaW4gbWluZCBJJ20ganVzdCBhbm90aGVyIG5ld2Jp
-ZSBpbiAKPiBhbGwgdGhpcy4gQW55d2F5LCBJIHdvdWxkbid0IHdvcnJ5IGFib3V0IGNsZWFuZXN0
-IHBvc3NpYmxlIHdheSBhdCB0aGlzIAo+IHBvaW50LCBqdXN0IGRvIGEgcXVpY2stbi1kaXJ0eSBo
-YWNrIHRvIHNlZSBpZiBhZGRpbmcgdGhlIGxlbmd0aCBpcyAKPiBlbm91Z2ggdG8gZ2V0IGl0IHdv
-cmtpbmcgYW5kIHdvcnJ5IGFib3V0IHRoZSByZXN0IGxhdGVyLiBJJ2xsIHRyeSB0byAKPiBoYXZl
-IGEgbG9vayBhdCBpdCB0b28gYXMgc29vbiBhcyB0aW1lIHBlcm1pdHMsIGJ1dCBtZWFud2hpbGUg
-aWYgbW9yZSAKPiBleHBlcmllbmNlZCBwZW9wbGUgaGF2ZSBiZXR0ZXIgc3VnZ2VzdGlvbnMuLi4K
-ClllcywgYSBwcm9vZi1vZi1jb25jZXB0IGlzIG5lZWRlZCwgYW5kIHRoZXJlIG1heSBiZSBmdXJ0
-aGVyIGlzc3VlcywgYnV0IApJJ20gaG9waW5nIGZvciBzb21lIGlucHV0IHRvbyBmcm9tIHRoZSAn
-bW9yZSBleHBlcmllbmNlZCBwZW9wbGUnIGlmIHRoaXMgCmlzIHRoZSByaWdodCB3YXkgdG8gZ28g
-YWJvdXQgaXQgYmVmb3JlIEkgZ28gdG8gZmFyIGluIHRoZSB3cm9uZyBkaXJlY3Rpb24uCgovUmlj
-YXJkCi0tIApSaWNhcmQgV29sZiBXYW5kZXJsw7ZmICAgICAgICAgICAgICAgICAgICAgICAgICAg
-cmljYXJkdyhhdClheGlzLmNvbQpBeGlzIENvbW11bmljYXRpb25zIEFCLCBMdW5kLCBTd2VkZW4g
-ICAgICAgICAgICB3d3cuYXhpcy5jb20KUGhvbmUgKzQ2IDQ2IDI3MiAyMDE2ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgRmF4ICs0NiA0NiAxMyA2MSAzMApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Asus N751JK - ALC668 - hdajacksenseresults:
+
+-----
+
+Nothing plugged in:
+
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black Headphone, Left side): present = No
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
+Pin 0x19 (Pink Mic, Left side): present = No
+Pin 0x1a (Internal Speaker): present = No
+Pin 0x1b (Black Mic, Left side): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Not connected): present = No
+Pin 0x1f (Not connected): present = No
+
+---
+
+Only headset plugged in:
+
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black Headphone, Left side): present = Yes
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
+Pin 0x19 (Pink Mic, Left side): present = No
+Pin 0x1a (Internal Speaker): present = No
+Pin 0x1b (Black Mic, Left side): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Not connected): present = No
+Pin 0x1f (Not connected): present = No
+
+---
+
+Only headphones plugged in:
+
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black Headphone, Left side): present = Yes
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
+Pin 0x19 (Pink Mic, Left side): present = No
+Pin 0x1a (Internal Speaker): present = No
+Pin 0x1b (Black Mic, Left side): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Not connected): present = No
+Pin 0x1f (Not connected): present = No
+
+---
+
+Only microphone plugged in:
+
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black Headphone, Left side): present = Yes
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
+Pin 0x19 (Pink Mic, Left side): present = No
+Pin 0x1a (Internal Speaker): present = No
+Pin 0x1b (Black Mic, Left side): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Not connected): present = No
+Pin 0x1f (Not connected): present = No
+
+---
+
+Only subwoofer plugged in:
+
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black Headphone, Left side): present = No
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
+Pin 0x19 (Pink Mic, Left side): present = No
+Pin 0x1a (Internal Speaker): present = Yes
+Pin 0x1b (Black Mic, Left side): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Not connected): present = No
+Pin 0x1f (Not connected): present = No
+
+Note that I have used hdajackretask to assing pin 0x1a -> LFE, apparently
+resulting in jack detection for the subwoofer.
+
+On 5 October 2015 at 06:51, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+
+>
+> >
+> > Do you need any testing from my side to be able to finish the developing?
+> >
+>
+>
+> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1451170/comments/22
+>
+> It seem that asus n550lf which also use alc668 codec but headset mic pin
+> node 0x1b is detectable
+>
+> Can you confirm that your headset mic node is not detectable by
+> hdajacksensetest ?
+>
+> This mean that the model "headset-sonicmaster" will be quite confusing
+> when asus notebooks have different ways of headset implementation
+>
+
+
+
+-- 
+Arthur Borsboom
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
+
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
