@@ -1,15 +1,17 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5645: Add the HW EQ for the
-	customized speaker output of Google Celes
-Date: Tue, 6 Oct 2015 10:20:05 +0800
-Message-ID: <1444098005-25968-1-git-send-email-oder_chiou@realtek.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Zoom R16/24 playback slient
+Date: Tue, 6 Oct 2015 08:47:34 +0200
+Message-ID: <alpine.DEB.2.02.1510060834060.19610@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
+ <560B8481.1080304@laiskiainen.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A9D12619D7
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 04:20:27 +0200 (CEST)
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB96D262631
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 08:47:36 +0200 (CEST)
+In-Reply-To: <560B8481.1080304@laiskiainen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,163 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
+To: Panu Matilainen <pmatilai@laiskiainen.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- include/sound/rt5645.h    |  1 +
- sound/soc/codecs/rt5645.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/rt5645.h |  5 ++++
- 3 files changed, 75 insertions(+), 1 deletion(-)
-
-diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
-index a5cf615..cf944e4 100644
---- a/include/sound/rt5645.h
-+++ b/include/sound/rt5645.h
-@@ -23,6 +23,7 @@ struct rt5645_platform_data {
- 	unsigned int jd_mode;
- 	/* Invert JD when jack insert */
- 	bool jd_invert;
-+	unsigned int eq_mode;
- };
- 
- #endif
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 4c4fe6b..def9caa 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -224,6 +224,36 @@ static const struct reg_default rt5645_reg[] = {
- 	{ 0xff, 0x6308 },
- };
- 
-+struct rt5647_eq_parameter {
-+	unsigned int reg;
-+	unsigned int val;
-+};
-+
-+#define EQ_REG_NUM 56
-+struct hweq_s {
-+	struct rt5647_eq_parameter par[EQ_REG_NUM];
-+	unsigned int ctrl;
-+};
-+
-+static const struct hweq_s hweq_param[] = {
-+	{ /* EQ_NONE */
-+		{
-+			{0, 0},
-+		},
-+		0x0000,
-+	},
-+	{ /* EQ_GOOGLE_CELES */
-+		{
-+			{0x1c0, 0x04b8},
-+			{0x1c1, 0xfd02},
-+			{0x1c2, 0x04b8},
-+			{0x1c3, 0xfd02},
-+			{0, 0},
-+		},
-+		0x0020,
-+	},
-+};
-+
- static const char *const rt5645_supply_names[] = {
- 	"avdd",
- 	"cpvdd",
-@@ -631,6 +661,27 @@ static int is_using_asrc(struct snd_soc_dapm_widget *source,
- 
- }
- 
-+static int rt5645_update_eqmode(struct snd_soc_codec *codec,
-+	unsigned int mode)
-+{
-+	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int i;
-+
-+	for (i = 0; i < EQ_REG_NUM; i++) {
-+		if (hweq_param[mode].par[i].reg)
-+			regmap_write(rt5645->regmap,
-+				hweq_param[mode].par[i].reg,
-+				hweq_param[mode].par[i].val);
-+		else
-+			break;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5645_EQ_CTRL2, 0x33fe,
-+		hweq_param[mode].ctrl);
-+
-+	return 0;
-+}
-+
- /**
-  * rt5645_sel_asrc_clk_src - select ASRC clock source for a set of filters
-  * @codec: SoC audio codec device.
-@@ -1532,9 +1583,11 @@ static int rt5645_spk_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
-+		rt5645_update_eqmode(codec, rt5645->pdata.eq_mode);
- 		snd_soc_update_bits(codec, RT5645_PWR_DIG1,
- 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
- 			RT5645_PWR_CLS_D_L,
-@@ -1543,6 +1596,7 @@ static int rt5645_spk_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-+		rt5645_update_eqmode(codec, EQ_NONE);
- 		snd_soc_update_bits(codec, RT5645_PWR_DIG1,
- 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
- 			RT5645_PWR_CLS_D_L, 0);
-@@ -3205,6 +3259,20 @@ static int strago_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
- }
- 
-+static struct rt5645_platform_data celes_platform_data = {
-+	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
-+	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
-+	.jd_mode = 3,
-+	.eq_mode = EQ_GOOGLE_CELES,
-+};
-+
-+static int celes_quirk_cb(const struct dmi_system_id *id)
-+{
-+	rt5645_pdata = &celes_platform_data;
-+
-+	return 1;
-+}
-+
- static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 	{
- 		.ident = "Intel Strago",
-@@ -3215,7 +3283,7 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 	},
- 	{
- 		.ident = "Google Celes",
--		.callback = strago_quirk_cb,
-+		.callback = celes_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Celes"),
- 		},
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 13ac732..89f25b8 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2187,6 +2187,11 @@ enum {
- 	RT5645_AD_MONO_R_FILTER = (0x1 << 5),
- };
- 
-+enum {
-+	EQ_NONE,
-+	EQ_GOOGLE_CELES,
-+};
-+
- int rt5645_sel_asrc_clk_src(struct snd_soc_codec *codec,
- 		unsigned int filter_mask, unsigned int clk_src);
- 
--- 
-1.8.1.1.439.g50a6b54
+Ck9uIFdlZCwgMzAgU2VwIDIwMTUsIFBhbnUgTWF0aWxhaW5lbiB3cm90ZToKCj4gPj4+PiBBdCBT
+YXQsIDI5IE5vdiAyMDE0IDIxOjM1OjA0ICswMjAwLAo+ID4+Pj4gUGFudSBNYXRpbGFpbmVuIHdy
+b3RlOgo+ID4+Pj4+Cj4gPj4+IFRoZSBkZXNjcmlwdG9ycyBmb3IgaW50ZXJmYWNlIDAgYXJlIGdh
+cmJhZ2UgYnV0IHdoYXQgaXMgdGhlcmUgd291bGQgc2VlbQo+ID4+PiB0byBtYXAgdG8gbG9naWNh
+bCBlbGVtZW50cyBieSBzdWJ0eXBlIGFuZCB0ZXJtaW5hbHR5cGUsIGFmdGVyIHRob3NlIHRoZT4g
+PiBkYXRhIGRvZXNuJ3Qgc2VlbSB0byBhZGQgdXAgKGVnIG51bWJlciBvZiBpbnB1dC9vdXRwdXQg
+Y2hhbm5lbHMKPiA+Pj4gbWlzc2luZy93cm9uZ2x5IHBsYWNlZCBldGMpOgo+ID4+Pgo+ID4+PiAq
+KiBVTlJFQ09HTklaRUQ6ICAwYiAyNCAwMSAwMCAwMSAzNSAwMCAwMyAwMSAwMiAwMwo+ID4+PiAg
+ICAgIC0+IEhlYWRlcj8KPiA+Pj4gKiogVU5SRUNPR05JWkVEOiAgMGMgMjQgMDIgMDUgMDEgMDEg
+MDAgMDIgMDMgMDAgMDAgMDAKPiA+Pj4gICAgICAtPiBVU0Igc3RyZWFtaW5nIGlucHV0IHRlcm1p
+bmFsPwo+ID4+PiAqKiBVTlJFQ09HTklaRUQ6ICAwOSAyNCAwMyAwOCAwMSAwMyAwMCAwNSAwMAo+
+ID4+PiAgICAgIC0+IFNwZWFrZXIgb3V0cHV0IHRlcm1pbmFsPwo+ID4+PiAqKiBVTlJFQ09HTkla
+RUQ6ICAwYyAyNCAwMiAwOSAwMSAwMiAwMCAwOCAwMCAwMCAwMCAwMAo+ID4+PiAgICAgIC0+IE1p
+Y3JvcGhvbmUgaW5wdXQgdGVybWluYWw/Cj4gPj4+ICoqIFVOUkVDT0dOSVpFRDogIDA5IDI0IDAz
+IDBjIDAxIDAxIDAwIDA5IDAwCj4gPj4+ICAgICAgLT4gVVNCIHN0cmVhbWluZyBvdXRwdXQgdGVy
+bWluYWw/Cj4gPj4+Cj4gPj4+IEFueXRoaW5nIHRoZXJlIHRoYXQgbWlnaHQgcmluZyBhIGJlbGws
+IG9yIG90aGVyIGlkZWFzIHdoZXJlIHRvIHN0YXJ0Cj4gPj4+IHBva2luZyBhdCB0aGlzIHRoaW5n
+Pwo+ID4+Cj4gPj4gWWVhaCwgbW9zdCBvZiB0aGVzZSBsb29rIGFsbW9zdCBzYW5lLCBzbyBhbnkg
+b2ZmLWJ5LW9uZSBmaXJtd2FyZQo+ID4+IGlzc3VlPwoKSSB3YXMgbG9va2luZyBhdCB0aGlzLCBh
+bmQgY29tcGFyaW5nIGl0IHRvIHRoZSBjb3JyZXNwb25kaW5nIG91dHB1dCBmcm9tIApteSBFZGly
+b2wgVUEtNSwgd2hpY2ggaXMgYSBjbGFzcy1jb21wbGllbnQgKGluIGl0cyBzdGFuZGFyZCBtb2Rl
+KSAyIGluIC8gMiAKb3V0IGRldmljZS4gVGhlIGRlc2NyaXB0b3JzIGxvb2sgc3VzcGljaW91c2x5
+IHNpbWlsYXIgb24gYm90aCBkZXZpY2VzLCAKZXNwZWNpYWxseSBjb25zaWRlcmluZyB0aGF0IHRo
+ZSBSMTYgaGFzIDggY2hhbm5lbHMgb2YgaW5wdXQgaW5zdGVhZCBvZiAyIAphbmQgYSBNSURJIGlu
+dGVyZmFjZSB3aGljaCB0aGUgVUEtNSBsYWNrcy4KCkknbSBub3Qgc3VyZSBleGFjdGx5IHdoaWNo
+IHZlcnNpb24gb2YgdGhlIFVTQiBhdWRpbyBzdGFuZGFyZCB0aGV5IApjb3JyZXNwb25kIHRvLCBs
+b29raW5nIGF0IHRoZSBzcGVjaWZpY2F0aW9ucyBmb3IgdmVyc2lvbnMgMSBhbmQgMiBpdCAKZGlk
+bid0IHNlZW0gdG8gbWFrZSBzZW5zZSwgYnV0IHRoZXkgZG8gaGFwcGVuIHRvIGNvcnJlc3BvbmQg
+dmVyeSBtdWNoIHRvIAp0aGUgZGVzY3JpcHRpb25zIGluIHRoZSBmb2xsb3dpbmcgZG9jdW1lbnQ6
+CgpodHRwczovL3d3dy5zaWxhYnMuY29tL1N1cHBvcnQlMjBEb2N1bWVudHMvVGVjaG5pY2FsRG9j
+cy9BTjI5NS5wZGYKClRoZSBmYWN0IHRoYXQgbHN1c2IgZG9lc24ndCByZWNvZ25pemUgdGhlbSBJ
+IHdvdWxkIHRoaW5rIGJvaWxzIGRvd24gdG8gdGhlIApmYWN0IHRoYXQgaXQgc2ltcGx5IGRvZXNu
+J3Qga25vdyBhYm91dCBVU0IgYXVkaW87IGl0IGFwcGVhcnMgdGhhdCB0aGUgQUxTQSAKVVNCIGRy
+aXZlciBjYW4gbWFrZSBzZW5zZSBvZiB0aGUgaW5mb3JtYXRpb24sIHdoaWNoIGlzIHdoeSB0aGUg
+cmVzdWx0aW5nIAplbnRyeSBpbiB0aGUgcXVpcmtzIHRhYmxlIGRvZXNuJ3QgbmVlZCBhIEZJWEVE
+X0VORFBPSU5UIHF1aXJrLgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21tdW5pY2F0
+aW9ucyBBQiwgTHVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25lICs0NiA0
+NiAyNzIgMjAxNiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEgMzAK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
