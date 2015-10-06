@@ -1,59 +1,51 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: codecs: tas2552: fix dBscale-min declaration
-Date: Tue, 6 Oct 2015 14:37:12 +0300
-Message-ID: <5613B268.6040701@ti.com>
-References: <1444075214-21206-1-git-send-email-dannenberg@ti.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH RFC V2 0/5] another generic audio hdmi
+ codec proposal
+Date: Tue, 6 Oct 2015 16:33:11 +0200
+Message-ID: <20151006163311.03067bb5@OPI2>
+References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+ <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1444075214-21206-1-git-send-email-dannenberg@ti.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Andreas Dannenberg <dannenberg@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Axel Lin <axel.lin@ingics.com>, Lars-Peter Clausen <lars@metafoo.de>, Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <561392F7.90608@st.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/05/2015 11:00 PM, Andreas Dannenberg wrote:
-> The minimum volume level for the TAS2552 (control register value 0x00=
-)
-> is -7dB however the driver declares it as -0.07dB.
->=20
-> Running amixer before the patch reports:
-> dBscale-min=3D-0.07dB,step=3D1.00dB,mute=3D0
->=20
-> Running amixer with the patch applied reports:
-> dBscale-min=3D-7.00dB,step=3D1.00dB,mute=3D0
-
-I have not noticed this when fixing the mute parameter.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-> ---
->  sound/soc/codecs/tas2552.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-> index e3a0bca..cc1d398 100644
-> --- a/sound/soc/codecs/tas2552.c
-> +++ b/sound/soc/codecs/tas2552.c
-> @@ -549,7 +549,7 @@ static struct snd_soc_dai_driver tas2552_dai[] =3D=
- {
->  /*
->   * DAC digital volumes. From -7 to 24 dB in 1 dB steps
->   */
-> -static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 0);
-> +static DECLARE_TLV_DB_SCALE(dac_tlv, -700, 100, 0);
-> =20
->  static const char * const tas2552_din_source_select[] =3D {
->  	"Muted",
->=20
-
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-sound" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gVHVlLCA2IE9jdCAyMDE1IDExOjIzOjAzICswMjAwCkFybmF1ZCBQb3VsaXF1ZW4gPGFybmF1
+ZC5wb3VsaXF1ZW5Ac3QuY29tPiB3cm90ZToKCVtzbmlwXQo+IEFzIEFQSSBpcyBkZWZpbmVkIGlu
+IERSTSwgaXQgc2VlbXMgbW9yZSBsb2dpY2FsIHRvIG1hdGNoIGl0IHdpdGggdGhlIG9uZQo+IGRl
+ZmluZWQgZm9yIHZpZGVvLiBGcm9tIG15IHdpbmRvd3MsIGkgZGlkbid0IHNlZSBhbnkgYmxvY2tp
+bmcgcG9pbnQgdG8KPiBjb25uZWN0IGNvZGVjIGNhbGxiYWNrIHdpdGggdGhpcyBBUEkuCj4gQnV0
+IGFueXdheSwgdGhpcyBBUEkgaXMgbm90IGZyZWV6ZWQsIGl0IGNvdWxkIGJlIGltcHJvdmVkIHdp
+dGggeW91ciBoZWxwLgoKQXJuYXVkLCB5b3VyIGltcGxlbWVudGF0aW9uIHNlZW1zIG1vcmUgaGVh
+dnkgdGhhbiBKeXJpJ3MsIGFuZCBJIGRvbid0CmZlZWwgdGhlIERSTSBicmlkZ2UuCgpGb3IgSERN
+SSwgdGhlIGV4Y2hhbmdlcyBiZXR3ZWVuIERSTSBhbmQgQUxTQSBhcmUgb25seToKLSBEUk0gLT4g
+QUxTQQogIC0gZGV2aWNlIGNvbm5lY3Rpb24gd2l0aCB0aGUgYXVkaW8gY29uc3RyYWludHMKICAt
+IGRldmljZSBkaXNjb25uZWN0aW9uCi0gQUxTQSAtPiBEUk0KICAtIHN0YXJ0IGF1ZGlvIHdpdGgg
+dGhlIGNob3NlbiBhdWRpbyBwYXJhbWV0ZXJzCiAgLSBzdG9wIGF1ZGlvCgphbmQsIGluIHRoZSBz
+eXN0ZW0sIHRoZSBIRE1JIGRldmljZXMgYXJlIHNlZW4gYXMgRFJNIGNvbm5lY3RvcnMgKHZpZGVv
+CnZpZXcpIGFuZCBhcyBBU29DIENPREVDcyAoYXVkaW8gdmlldykuCgpXZSBqdXN0IG5lZWQgYSBs
+aW5rIGJldHdlZW4gdGhlc2UgZW50aXRpZXMuCkkgZG9uJ3QgdGhpbmsgdGhhdCB0aGUgYnJpZGdl
+IG9mZmVycyB0aGlzLgoKKGdvaW5nIGZ1cnRoZXIsIGl0IHNlZW1zIG5hdHVyYWwgdG8gbWUgdGhh
+dCBib3RoIGVudGl0aWVzIHdvdWxkIGJlCnN1cHBvcnRlZCBieSB0aGUgc2FtZSBrZXJuZWwgZGV2
+aWNlIGFuZCB0aGF0IHRoZSBleGNoYW5nZSBmdW5jdGlvbnMgYW5kCnZhbHVlcyBjb3VsZCBiZSBk
+ZWZpbmVkIGJvdGggd2F5cyBmcm9tIGEgY29tbW9uIHN0cnVjdHVyZSAtIGF1ZGlvCmNvbnN0cmFp
+bnRzLCBwbGF5YmFjayBwYXJhbWV0ZXJzLCBjb25uZWN0b3IyY29kZWMgZnVuY3Rpb25zLApjb2Rl
+YzJjb25uZWN0b3IgZnVuY3Rpb25zIC0gYnV0IHRoaXMgaXMgYW4gb3RoZXIgc3RvcnkuLi4pCgot
+LSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpK
+ZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
+bGlzdGluZm8vZHJpLWRldmVsCg==
