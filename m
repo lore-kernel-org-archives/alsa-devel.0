@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Tue, 6 Oct 2015 17:56:58 +0100
-Message-ID: <20151006165658.GW12635@sirena.org.uk>
-References: <20151004231752.GA22609@sirena.org.uk>
- <1444129142.25504.7.camel@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
+ element to snd_soc_tplg_stream
+Date: Tue, 06 Oct 2015 18:35:28 +0200
+Message-ID: <5613F850.1040605@metafoo.de>
+References: <cover.1443605139.git.mengdong.lin@intel.com>
+ <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+ <20151002165907.GU12635@sirena.org.uk> <1443809055.10986.10.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
+ <20151006103403.GH12635@sirena.org.uk> <1444144590.25504.27.camel@intel.com>
+ <20151006162520.GB30592@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4099259529071836791=="
+Content-Type: multipart/mixed; boundary="===============3830581318462051494=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6729F26574A
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 19:03:33 +0200 (CEST)
-In-Reply-To: <1444129142.25504.7.camel@intel.com>
+Received: from smtp-out-060.synserver.de (smtp-out-102.synserver.de
+ [212.40.185.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56EE426574A
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 19:21:07 +0200 (CEST)
+In-Reply-To: <20151006162520.GB30592@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +26,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
+ Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============3830581318462051494==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="D7QA0aTD0v6qubd5WLhHwHvO2lmuxAL6R"
 
---===============4099259529071836791==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rtB7IEDY8voTVmfF"
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--D7QA0aTD0v6qubd5WLhHwHvO2lmuxAL6R
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+On 10/06/2015 06:25 PM, Mark Brown wrote:
+> On Tue, Oct 06, 2015 at 03:16:30PM +0000, Koul, Vinod wrote:
+>> On Tue, 2015-10-06 at 11:34 +0100, Mark Brown wrote:
+>=20
+>>> No, I mean that if someone changes a name it'll invalidate topology
+>>> files that reference that name.
+>=20
+>> Shouldn't this sort be checked in the alsa-lib while building the topo=
+logy. It should
+>> validate the names, graph and complete only when stuff is right.
+>=20
+> The problem isn't detecting the error, the point is that if someone
+> upgrades their kernel and someone changed the DAI link name then their
+> existing userspace will break.  We don't want that error to be there to=
+
+> be detected in the first place.
+
+Another thing to consider is that the topology firmware might be develope=
+d
+against a non-upstream driver. And in order for the driver to go upstream=
+ it
+needs changes that breaks the ABI interface to the firmware which is alre=
+ady
+shipped and the vendor might not provide support for updating the firmwar=
+e
+file. Having these kind of tightly coupled interdependencies between driv=
+er
+and firmware is quite risky business.
 
 
---rtB7IEDY8voTVmfF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Oct 06, 2015 at 10:59:03AM +0000, Koul, Vinod wrote:
-
-Please fix your mailer to word wrap within paragraphs.
-
-> Few more topics:
-
-OK, added.
-
-> - ASoC/DAPM Changes we would like to do:
-> 	- add kcontrol suport for PGA so that we cna add user controls for DSPs
-> 	- add internal sink in DAPM for DSPs, like siggen
-> 	- Fix TLV byte controls
-> 	- Discuss BE-BE loops
-
-This mostly sounds like it's relatively trivial stuff, do we need to
-actually discuss them with everyone there?
-
---rtB7IEDY8voTVmfF
+--D7QA0aTD0v6qubd5WLhHwHvO2lmuxAL6R
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWE/1ZAAoJECTWi3JdVIfQtG4H/Rl/DnGM2feviD3/0pZTqhRR
-4Qf223zRuiJ0ITPStsHLAZQr2VpOfTO8QDgncKaM8Y7DoLRLx2KZnVlY1Ad/rrhP
-AlkVjzzvzYCFTuIrPlcokdJnpA95iChYyf6QUZifxzTfllLKEQ61R7+rH1GFW1Bl
-nMf7TX97ttWDxFbP3Vca2dnFs+GFGNOZeJoA04KR3beYwifF6zIfUiWjzqkjYLra
-LkgzD7BHIRKsvd7R56sm2mSCJzEENeMxml0TUiySy7Sd1P5Fnekevexq/ui3Cn2R
-l89QFaubDh827n3GmfXHEKcuDesEqf1iGExpwC9lyP/H5YSgjWbo+Zce//dxFPM=
-=yrWB
+iQIcBAEBAgAGBQJWE/haAAoJEOj3aLScRbOZj44P/Auqtoa2iKIjHDLz/TEWCJae
+LsykFjEMeKDHP73buPoSP6BBRSMRSA/Sy32M9Mpx5cdAZzqftHy+z+coCJ8MeDoM
+8DN8ocQtxaP8Q5UjWrSuLkKqCP2cYfqrUONZgWz1yU15zZOygnRIe8zMNctxr0DN
+QsBQldUHzJ/jbLiHnp5Tw+4PSkI3WBxfMDqOUh97Ri+7mW5UKOFHttbhgNNYLUOP
+k4IYnwEF7hSA6QDdTlP+AziLbhcHRGh+PWpYJKSt4mP4TW5SMah1EIXJU5E8otqx
+P6lPsTHXVp6ywRT2NhP94ySbdv8N/2IutnIQCJANkHOHXnAkE/uJjCJTnoA7Q1tG
+K98d1qpyx3RpZzJ4DxNRJFm1IG6aQWeK1XM7AiVR7A8DaNisHsFShYn6Mt2X1uiT
+hDhFqqN2lC4XIlf4SiUAXt637omE/9oICq2g996q107vhEXES2jWpaB4PjmruEwC
+TwbpJOBW80BM4Nk5YAVb5yl0HintiW4+gsW2LFiVuIVr2b2UltL3CCLyfQFdArlx
+6J2tY4jLZjEnaPw5694qOkia3ykkULY/ntGkQ8WMl8LH3mKgXtchGXJi2XPo2TwE
+0n9HR4nHOTQSITcM+yroQEe088peCa8fEvHALgXsUqwxcpIxiLu+uX2mhTPJ+dKe
+cKqq/Vg5unZAncMH8znW
+=gDj2
 -----END PGP SIGNATURE-----
 
---rtB7IEDY8voTVmfF--
+--D7QA0aTD0v6qubd5WLhHwHvO2lmuxAL6R--
 
---===============4099259529071836791==
+--===============3830581318462051494==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4099259529071836791==--
+--===============3830581318462051494==--
