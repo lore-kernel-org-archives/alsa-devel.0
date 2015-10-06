@@ -1,16 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 11/18] ALSA: hda: move to use hdac helpers
-Date: Tue,  6 Oct 2015 16:07:48 +0100
-Message-ID: <1444144075-28963-12-git-send-email-vinod.koul@intel.com>
-References: <1444144075-28963-1-git-send-email-vinod.koul@intel.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
+ element to snd_soc_tplg_stream
+Date: Tue, 6 Oct 2015 15:16:30 +0000
+Message-ID: <1444144590.25504.27.camel@intel.com>
+References: <cover.1443605139.git.mengdong.lin@intel.com>
+ <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
+ <20151002165907.GU12635@sirena.org.uk> <1443809055.10986.10.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
+ <20151006103403.GH12635@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2830926574A
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 17:10:33 +0200 (CEST)
-In-Reply-To: <1444144075-28963-1-git-send-email-vinod.koul@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83A692655A5
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 17:17:04 +0200 (CEST)
+In-Reply-To: <20151006103403.GH12635@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <D01A7B74A669514C991C49DCC59C8641@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,71 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+To: "broonie@kernel.org" <broonie@kernel.org>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
+ Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move to use newly moved snd_hdac_write_codec()
-API
+On Tue, 2015-10-06 at 11:34 +0100, Mark Brown wrote:
+> On Tue, Oct 06, 2015 at 08:55:58AM +0000, Lin, Mengdong wrote:
+> 
+> > > > OK, so this means that every DAI link name is going to become an ABI
+> > > > too if there's a topology in there.  Not a problem but we'll need to
+> > > > watch out for that on review...  I wonder if I can make some automated
+> > > > checker thing.
+> 
+> > Do you mean we need to check if a DAI link name is already used, or if it's a
+> > valid string?
+> 
+> No, I mean that if someone changes a name it'll invalidate topology
+> files that reference that name.
 
-This was done using coccinelle script
+Shouldn't this sort be checked in the alsa-lib while building the topology. It should
+validate the names, graph and complete only when stuff is right.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/pci/hda/patch_conexant.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index ca03c40609fc..c6cdfae01cc0 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -147,9 +147,9 @@ static void cx_auto_turn_eapd(struct hda_codec *codec, int num_pins,
- 	int i;
- 	for (i = 0; i < num_pins; i++) {
- 		if (snd_hda_query_pin_caps(codec, pins[i]) & AC_PINCAP_EAPD)
--			snd_hda_codec_write(codec, pins[i], 0,
--					    AC_VERB_SET_EAPD_BTLENABLE,
--					    on ? 0x02 : 0);
-+			snd_hdac_codec_write(&codec->core, pins[i], 0,
-+					     AC_VERB_SET_EAPD_BTLENABLE,
-+					     on ? 0x02 : 0);
- 	}
- }
- 
-@@ -168,9 +168,9 @@ static void cx_auto_vmaster_hook_mute_led(void *private_data, int enabled)
- 	struct hda_codec *codec = private_data;
- 	struct conexant_spec *spec = codec->spec;
- 
--	snd_hda_codec_write(codec, spec->mute_led_eapd, 0,
--			    AC_VERB_SET_EAPD_BTLENABLE,
--			    enabled ? 0x00 : 0x02);
-+	snd_hdac_codec_write(&codec->core, spec->mute_led_eapd, 0,
-+			     AC_VERB_SET_EAPD_BTLENABLE,
-+			     enabled ? 0x00 : 0x02);
- }
- 
- static int cx_auto_build_controls(struct hda_codec *codec)
-@@ -212,8 +212,8 @@ static void cx_auto_reboot_notify(struct hda_codec *codec)
- 	cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, false);
- 
- 	snd_hda_codec_set_power_to_all(codec, codec->core.afg, AC_PWRST_D3);
--	snd_hda_codec_write(codec, codec->core.afg, 0,
--			    AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
-+	snd_hdac_codec_write(&codec->core, codec->core.afg, 0,
-+			     AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
- }
- 
- static void cx_auto_free(struct hda_codec *codec)
-@@ -367,8 +367,8 @@ static void olpc_xo_update_mic_boost(struct hda_codec *codec)
- 			(ch ? AC_AMP_SET_RIGHT : AC_AMP_SET_LEFT);
- 		if (!spec->dc_enable)
- 			val |= snd_hda_codec_amp_read(codec, 0x17, ch, HDA_OUTPUT, 0);
--		snd_hda_codec_write(codec, 0x17, 0,
--				    AC_VERB_SET_AMP_GAIN_MUTE, val);
-+		snd_hdac_codec_write(&codec->core, 0x17, 0,
-+				     AC_VERB_SET_AMP_GAIN_MUTE, val);
- 	}
- }
- 
 -- 
-2.4.3
+~Vinod
