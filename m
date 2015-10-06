@@ -1,72 +1,91 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH RFC] ASoC: simple-card: Update clocks binding for
- simple-card DAI subnodes
-Date: Tue, 6 Oct 2015 12:06:24 +0100
-Message-ID: <20151006110624.GO12635@sirena.org.uk>
-References: <1441977482-29215-1-git-send-email-jsarha@ti.com>
- <20150919184225.GR30445@sirena.org.uk>
- <56098BBF.2010700@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "MAINTAINERS: Remove wm97xx entry" to the asoc
+	tree
+Date: Tue, 06 Oct 2015 12:22:15 +0100
+Message-ID: <E1ZjQJz-0006Er-Ug@finisterre>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bXlZHCxcr0Plg/YJ"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56098BBF.2010700-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AF6026548F
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 13:22:53 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---bXlZHCxcr0Plg/YJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   MAINTAINERS: Remove wm97xx entry
 
-On Mon, Sep 28, 2015 at 09:49:35PM +0300, Jyri Sarha wrote:
-> On 09/19/15 21:42, Mark Brown wrote:
+has been applied to the asoc tree at
 
-> >What's the use case again?  Can we address this by converting the
-> >relevant drivers to the clock API (or improving their clock API
-> >support)?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Sorry, I forgot to reply this earlier. The reason why we need this is the
-> way McASP driver uses and provides clocks for different purposes. The most
-> pressing need is to be able to select if we want to use some external clock
-> pin as an input for McASP clock divider that produces the i2s bit-clock or
-> if we want to use McASP's internal clock source.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> There are several other things this binding would allow us, and others with
-> flexible i2s HW, to do. Some TI codecs would also benefit from a flexible
-> way of describing the used clock configuration, but Peter know that part
-> better.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I tried to make the binding as flexible and generic as possible. But I do
-> not currently see any immediate need for more than one set_sysclk() call per
-> dai. I just did not see any reason to not allow it either.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-This explains why you want to do this but what about the clock API
-portion of the question - it would be good to move the ASoC clocking
-more into the clock API, this would help integration with wider clock
-trees.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---bXlZHCxcr0Plg/YJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From ff6afc8d0df0347901e862e622b1efaeb6f1fe5d Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Fri, 2 Oct 2015 18:07:09 +0100
+Subject: [PATCH] MAINTAINERS: Remove wm97xx entry
 
-iQEcBAEBCAAGBQJWE6svAAoJECTWi3JdVIfQWG0H/iD7490KZy14vzNcEab8fHYi
-YXRar/5nTu+16vH+IYTiNBrsn1gObx5MAOn9kFEErUusOwuE5GvTAxDwuHyc5fzJ
-pN4QxpP2m2k5v6r/eY120GMBejEYwjC8WFa2QSMUSlA+yDAavRwIzDHjd25QrfZi
-3nh1dnv99iH3qOT45ENZuCT9tQc+9VHfID24oXMQMNvmeZifYuEHPmwx28s0LMtr
-OeVBw7H5Ye4rIQ2IoFl1Zkc+jbYWlgSbDRlhCy7I4+ECU26Otr27oqXMd4981tzF
-OyHHe/XLr6bOoAvq49uckz7ibDm4JsllV/aQyMGy95ymO+mENs0GHF4fYJVjYY8=
-=6sAb
------END PGP SIGNATURE-----
+Neither myself or Liam is especially interested in this driver any more
+and the devices are already covered by the general ex-Wolfson entry so
+just remove this.
 
---bXlZHCxcr0Plg/YJ--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ MAINTAINERS | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0581f47..07790df 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11363,15 +11363,6 @@ W:	http://oops.ghostprotocols.net:81/blog
+ S:	Maintained
+ F:	drivers/net/wireless/wl3501*
+ 
+-WM97XX TOUCHSCREEN DRIVERS
+-M:	Mark Brown <broonie@kernel.org>
+-M:	Liam Girdwood <lrg@slimlogic.co.uk>
+-L:	linux-input@vger.kernel.org
+-W:	https://github.com/CirrusLogic/linux-drivers/wiki
+-S:	Supported
+-F:	drivers/input/touchscreen/*wm97*
+-F:	include/linux/wm97xx.h
+-
+ WOLFSON MICROELECTRONICS DRIVERS
+ L:	patches@opensource.wolfsonmicro.com
+ T:	git https://github.com/CirrusLogic/linux-drivers.git
+-- 
+2.5.0
