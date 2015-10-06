@@ -1,19 +1,19 @@
 From: Panu Matilainen <pmatilai@laiskiainen.org>
 Subject: Re: Zoom R16/24 playback slient
-Date: Tue, 6 Oct 2015 10:16:58 +0300
-Message-ID: <5613756A.9080209@laiskiainen.org>
+Date: Tue, 6 Oct 2015 10:40:23 +0300
+Message-ID: <56137AE7.4000601@laiskiainen.org>
 References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
  <560B8481.1080304@laiskiainen.org>
- <alpine.DEB.2.02.1510060834060.19610@lnxricardw1.se.axis.com>
+ <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a68.g.dreamhost.com (sub5.mail.dreamhost.com
+Received: from homiemail-a93.g.dreamhost.com (sub5.mail.dreamhost.com
  [208.113.200.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 0242926067B
- for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 09:17:04 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1510060834060.19610@lnxricardw1.se.axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A6748264F3F
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 09:40:28 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,61 +27,71 @@ To: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/06/2015 09:47 AM, Ricard Wanderlof wrote:
+On 10/06/2015 10:02 AM, Ricard Wanderlof wrote:
 >
 > On Wed, 30 Sep 2015, Panu Matilainen wrote:
 >
->>>>>> At Sat, 29 Nov 2014 21:35:04 +0200,
->>>>>> Panu Matilainen wrote:
->>>>>>>
->>>>> The descriptors for interface 0 are garbage but what is there would seem
->>>>> to map to logical elements by subtype and terminaltype, after those the> > data doesn't seem to add up (eg number of input/output channels
->>>>> missing/wrongly placed etc):
->>>>>
->>>>> ** UNRECOGNIZED:  0b 24 01 00 01 35 00 03 01 02 03
->>>>>       -> Header?
->>>>> ** UNRECOGNIZED:  0c 24 02 05 01 01 00 02 03 00 00 00
->>>>>       -> USB streaming input terminal?
->>>>> ** UNRECOGNIZED:  09 24 03 08 01 03 00 05 00
->>>>>       -> Speaker output terminal?
->>>>> ** UNRECOGNIZED:  0c 24 02 09 01 02 00 08 00 00 00 00
->>>>>       -> Microphone input terminal?
->>>>> ** UNRECOGNIZED:  09 24 03 0c 01 01 00 09 00
->>>>>       -> USB streaming output terminal?
->>>>>
->>>>> Anything there that might ring a bell, or other ideas where to start
->>>>> poking at this thing?
->>>>
->>>> Yeah, most of these look almost sane, so any off-by-one firmware
->>>> issue?
+>> My memory is a bit hazy on the details, but the automatically detected
+>> SNDRV_PCM_FMTBIT_S32 (which iirc means the actual 24bit values are
+>> carried in 32bit chunks) seems to be the right thing for the device,
+>> forcing it to something else just makes things worse. IIRC. The delay
+>> was a key part, but not enough.
+>>
+>> Another finding from my last round in the spring I do remember clearly,
+>> is that enabling both the input and output interfaces makes things hang
+>> up (timeouts and nothing really works). But if you disable the input
+>> interface and enable the output interface, you get an apparently working
+>> playback stream. Only no sound comes out. If you disable the output and
+>> enable input, capture itself works fine.
 >
-> I was looking at this, and comparing it to the corresponding output from
-> my Edirol UA-5, which is a class-complient (in its standard mode) 2 in / 2
-> out device. The descriptors look suspiciously similar on both devices,
-> especially considering that the R16 has 8 channels of input instead of 2
-> and a MIDI interface which the UA-5 lacks.
+> Having dived into this, and looking carefully at the data produced by the
+> Windows driver, it appears that what's happening is that the driver stuffs
+> a 32-bit length specifier at the start of each isochronous data packet.
 >
-> I'm not sure exactly which version of the USB audio standard they
-> correspond to, looking at the specifications for versions 1 and 2 it
-> didn't seem to make sense, but they do happen to correspond very much to
-> the descriptions in the following document:
+> So, for instance, instead of transferring the sample data
 >
-> https://www.silabs.com/Support%20Documents/TechnicalDocs/AN295.pdf
+> 00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 .. .. (40 bytes)
 >
-> The fact that lsusb doesn't recognize them I would think boils down to the
-> fact that it simply doesn't know about USB audio; it appears that the ALSA
-> USB driver can make sense of the information, which is why the resulting
-> entry in the quirks table doesn't need a FIXED_ENDPOINT quirk.
+> the Zoom driver would send:
+>
+> 28 00 00 00  00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 ... (44 bytes)
 
-lsusb knows about USB audio alright, the problem is all these stupid 
-vendors tagging their devices and their interfaces as vendor specific, 
-even if when actually are class compliant. Which is why the quirks-table 
-is needed: QUIRK_AUDIO_STANDARD_INTERFACE just tells the driver to parse 
-the descriptor as a standard audio interface despite it claiming to be 
-vendor specific. But lsusb doesn't have access to the quirks table.
+Wow, nice detective work! :)
+
+>
+> No wonder the Zoom gets confused when it gets sent ordinary sample data,
+> and tries to interpret the first sample value as a length.
+
+Heh, indeed.
+
+> There doesn't seem to be anything in the ALSA USB driver to do this, and
+> I'm thinking it's Zoom specific (perhaps to overcome some deficiency in
+> the hardware (or USB firmware) in the R16?).
+>
+> I'm trying to figure out where would be the best place to add a quirk for
+> this. Input from anyone knowledgeable about the ALSA USB system would be
+> very helpful.
+>
+> At the moment I'm considering adding some additional code to
+> sound/usb/pcm.c: prepare_playback_urb(), governed by a new boolean in
+> struct snd_usb_substream in a similar vain as txfr_quirk in that structure
+> (which in turn is set in some quirk function detecting the R16).
+>
+> What needs to be done is to add 4 bytes to the length, and adjust the
+> offset accordingly, in urb->iso_frame_desc[i], and then add the additional
+> length descriptor for each packet when copying out the data further down
+> in the same function.
+>
+> It would be nice to add a foo_quirk() function but since the actual
+> copying of the data needs to be changed, it's not really possible to do
+> efficiently with a separate routine.
+
+
+Sounds like a plan to me, but keep in mind I'm just another newbie in 
+all this. Anyway, I wouldn't worry about cleanest possible way at this 
+point, just do a quick-n-dirty hack to see if adding the length is 
+enough to get it working and worry about the rest later. I'll try to 
+have a look at it too as soon as time permits, but meanwhile if more 
+experienced people have better suggestions...
 
 	- Panu -
-
->
-> /Ricard
->
