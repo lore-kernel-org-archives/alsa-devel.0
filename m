@@ -1,71 +1,63 @@
-From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/5] ASoC : dwc : support dw i2s in AMD
- platform
-Date: Wed, 7 Oct 2015 00:59:48 +0530
-Message-ID: <CANv6ZMbMyO2L=uByT_UQ263Z5sF2Sri=M7KrKwF33Ra42M+MoQ@mail.gmail.com>
-References: <1443217704-28814-1-git-send-email-alexander.deucher@amd.com>
- <1443217704-28814-3-git-send-email-alexander.deucher@amd.com>
- <20151005154148.GX12635@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: ad193x-spi: Fixup ad193x_spi_id table
+Date: Tue, 06 Oct 2015 18:26:56 +0200
+Message-ID: <5613F650.6020904@metafoo.de>
+References: <1444123596.7405.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20151005154148.GX12635@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeevkumar.linux@gmail.com, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-060.synserver.de (smtp-out-137.synserver.de
+ [212.40.185.137])
+ by alsa0.perex.cz (Postfix) with ESMTP id 379752657D9
+ for <alsa-devel@alsa-project.org>; Tue,  6 Oct 2015 21:35:23 +0200 (CEST)
+In-Reply-To: <1444123596.7405.2.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBPY3QgNSwgMjAxNSBhdCA5OjExIFBNLCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+IE9uIEZyaSwgU2VwIDI1LCAyMDE1IGF0IDA1OjQ4OjIzUE0gLTA0MDAs
-IEFsZXggRGV1Y2hlciB3cm90ZToKPj4gRnJvbTogTWFydXRoaSBTcmluaXZhcyBCYXl5YXZhcmFw
-dSA8TWFydXRoaS5CYXl5YXZhcmFwdUBhbWQuY29tPgo+Pgo+PiBWZW5kb3Igc3BlY2lmaWMgcXVp
-cmsgd2FzIGFkZGVkIHRvOgo+PiAxLiBTdXBwb3J0IEFNRCBwbGF0Zm9ybSB3aGljaCBoYXMgdHdv
-IGR3YyBjb250cm9sbGVycyB3aXRoIGRpZmZlcmVudAo+PiAgICBiYXNlIGFkZHJlc3MgZm9yIHBs
-YXliYWNrIGFuZCBjYXB0dXJlLiBBbHNvLCBJMlNfQ09NUF9QQVJBTV8qCj4+ICAgIHJlZ2lzdGVy
-cyBvZmZzZXRzIGRpZmZlcmVkLgo+Cj4+IDIuIFJlc3VtZSBhdWRpbyB3aGljaCB3YXMgYWN0aXZl
-IGJlZm9yZSBzeXN0ZW0gc3VzcGVuZC4KPj4gICAgQWZ0ZXIgJ3Jlc3VtZScsIGR3YyBuZWVkIHRv
-IGJlIHJlY29uZmlndXJlZCB3aXRoIHBhcmFtcwo+PiAgICBjb25maWd1cmVkIGR1cmluZyAnaHdf
-cGFyYW1zJyBjYWxsYmFjay4gV2l0aCB0aGlzLCBhdWRpbyB1c2VjYXNlCj4+ICAgIGNvbnRpbnVl
-cyBmcm9tIHdoZXJlIGl0IGdvdCBzdG9wcGVkIGJlY2F1c2Ugb2YgJ3N1c3BlbmQnLgo+Cj4gVGhp
-cyBpcyBoYXJkIHRvIHJldmlldyBzaW5jZSB0aGVyZSBhcmUgc2V2ZXJhbCBkaWZmZXJlbnQgY2hh
-bmdlcyBpbgo+IGhlcmUsIG9uZSBjaGFuZ2UgcGVyIGNvbW1pdCBpcyBtdXVjaCBtb3JlIGhlbHBm
-dWwuICBBcyBpcyBJJ20gbm90IDEwMCUKPiBzdXJlIGV4YWN0bHkgd2hhdCBlYWNoIGJpdCBvZiB0
-aGUgY2hhbmdlIGlzIGludGVuZGVkIHRvIGRvLiAgT25lIGV4YW1wbGUKPiBoZXJlIGlzIHRoYXQg
-YSBzZXBhcmF0ZSBwYXRjaCBzcGxpdHRpbmcgcGJhc2UgYW5kIGNiYXNlIHdvdWxkIGJlIHJlYWxs
-eQo+IGhlbHBmdWwuCgpPaywgSSB3aWxsIHNwbGl0IGludG8gbXVsdGlwbGUgcGF0Y2hlcyBhbmQg
-c2VuZCBhZ2Fpbi4KCj4KPj4gLS0tIGEvaW5jbHVkZS9zb3VuZC9kZXNpZ253YXJlX2kycy5oCj4+
-ICsrKyBiL2luY2x1ZGUvc291bmQvZGVzaWdud2FyZV9pMnMuaAo+PiBAQCAtNDQsNiArNDQsOSBA
-QCBzdHJ1Y3QgaTJzX3BsYXRmb3JtX2RhdGEgewo+PiAgICAgICBpbnQgY2hhbm5lbDsKPj4gICAg
-ICAgdTMyIHNuZF9mbXRzOwo+PiAgICAgICB1MzIgc25kX3JhdGVzOwo+PiArICAgICAjZGVmaW5l
-IERXX0kyU19WRU5ET1JfQU1EICgxIDw8IDApCj4+ICsgICAgIHVuc2lnbmVkIGludCBxdWlya3M7
-Cj4KPiBJIHdvdWxkIGV4cGVjdCB0byBzZWUgYSBzZXQgb2YgcXVpcmtzIHdpdGggdGhlIEFNRCBk
-ZXZpY2VzIHNlbGVjdGluZwo+IHRob3NlIHRoYXQgYXBwbHkgdG8gdGhlbSByYXRoZXIgdGhhbiBq
-dXN0IGEgcGVyIHZlbmRvciBkZWZpbmUgLSB0aGlzCj4gaXMgbW9yZSBnZW5lcmljIGFuZCBtb3Jl
-IG1haW50YWluYWJsZSBsb25nIHRlcm0uICBBTUQgbWF5IHJlcXVpcmUKPiBkaWZmZXJlbnQgc2V0
-cyBvZiBxdWlya3Mgd2l0aCBzb21lIGZ1dHVyZSBkZXZpY2UgYW5kIHN5c3RlbXMgZnJvbSBvdGhl
-cgo+IHZlbmRvcnMgbWF5IHJlcXVpcmUgc29tZSBidXQgbm90IGFsbCBvZiB0aGUgcXVpcmtzIHRo
-YXQgQU1EIHJlcXVpcmVzLgoKQWdyZWVkLiBJIHdpbGwgc2VuZCBhIHJldmlzZWQgcGF0Y2guCgo+
-Cj4+ICsgICAgIGlmIChkZXYtPnF1aXJrcyAmIERXX0kyU19WRU5ET1JfQU1EKSB7Cj4+ICsgICAg
-ICAgICAgICAgY29tcDEgPSBpMnNfcmVhZF9yZWcoZGV2LT5pMnNfcGJhc2UsIDB4MTI0KTsKPj4g
-KyAgICAgICAgICAgICBjb21wMiA9IGkyc19yZWFkX3JlZyhkZXYtPmkyc19wYmFzZSwgMHgxMjAp
-Owo+Cj4gUGxlYXNlIGFkZCBkZWZpbmVzIGZvciB0aGVzZSByZWdpc3RlcnMuICBSYXRoZXIgdGhh
-biBoYXZpbmcgdGhlIHF1aXJrCj4gY29kZSB0aHJvdWdob3V0IHRoZSBkcml2ZXIgaXQgbWlnaHQg
-YmUgY2xlYXJlciB0byBoYXZlIHRoZSBjb21wMSBhbmQKPiBjb21wMiByZWdpc3RlciBvZmZzZXRz
-IHN0b3JlZCBpbiB0aGUgZHJpdmVyIGRhdGEgc28geW91IGNhbiBqdXN0IGRvIHRoZQo+IGFjdHVh
-bCBxdWlyayBvbmNlIGF0IHByb2JlIHRpbWUuCgpBZ3JlZWQuIEkgd2lsbCBzZW5kIGEgcmV2aXNl
-ZCBwYXRjaC4KCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcK
-aHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+On 10/06/2015 11:26 AM, Axel Lin wrote:
+> AD1939 is missed from the table, so add it.
+> AD1936 and AD1937 are controlled by I2C interface, so remove them.
+> 
+> Fixes: e5224f58e3ef ("ASoC: ad193x: add support to ad1934")
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+
+Thanks for catching that.
+
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+> ---
+>  sound/soc/codecs/ad193x-spi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ad193x-spi.c b/sound/soc/codecs/ad193x-spi.c
+> index 364e8211..b55055a 100644
+> --- a/sound/soc/codecs/ad193x-spi.c
+> +++ b/sound/soc/codecs/ad193x-spi.c
+> @@ -39,9 +39,8 @@ static const struct spi_device_id ad193x_spi_id[] = {
+>  	{ "ad193x", AD193X },
+>  	{ "ad1933", AD1933 },
+>  	{ "ad1934", AD1934 },
+> -	{ "ad1936", AD193X },
+> -	{ "ad1937", AD193X },
+>  	{ "ad1938", AD193X },
+> +	{ "ad1939", AD193X },
+
+The adau1328 is actually also support by this driver, though I had send a
+patch for this a while ago, but I guess I didn't. But we can add that later
+in a separate patch.
+
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(spi, ad193x_spi_id);
+> 
