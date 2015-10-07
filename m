@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Initialize NHLT table"
-	to the asoc tree
-Date: Wed, 07 Oct 2015 16:05:40 +0100
-Message-ID: <E1ZjqHk-0000ZD-HE@finisterre>
-References: <1438971749-874-13-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add DSP support and
+	enable it" to the asoc tree
+Date: Wed, 07 Oct 2015 16:05:43 +0100
+Message-ID: <E1ZjqHn-0000Zt-50@finisterre>
+References: <1438971749-874-12-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A0FB02614A7
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:05 +0200 (CEST)
-In-Reply-To: <1438971749-874-13-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 106B2265E1A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:06 +0200 (CEST)
+In-Reply-To: <1438971749-874-12-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Initialize NHLT table
+   ASoC: Intel: Skylake: Add DSP support and enable it
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,107 @@ to this mail.
 Thanks,
 Mark
 
->From 87b2bdf02278e5623cc66e5189792fde01f829a3 Mon Sep 17 00:00:00 2001
+>From 2a29b200c6f17827ee712e719ad29366f79205ee Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 7 Oct 2015 11:31:59 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: Initialize NHLT table
+Date: Wed, 7 Oct 2015 11:31:58 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: Add DSP support and enable it
 
-Load and Initialize Non HDA Link Table in Skylake driver
-to get platform configuration.
+If processing pipe capability is supported, add DSP support.
+Adds initialization/free/suspend/resume DSP functionality.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/skylake/skl.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2f1890e..ca135b8 100644
+index 348d094..2f1890e 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -458,6 +458,11 @@ static int skl_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		goto out_free;
+@@ -166,11 +166,16 @@ static int skl_runtime_suspend(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = ebus_to_skl(ebus);
++	int ret;
  
-+	skl->nhlt = skl_nhlt_init(bus->dev);
-+
-+	if (skl->nhlt == NULL)
-+		goto out_free;
-+
- 	pci_set_drvdata(skl->pci, ebus);
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+ 	/* enable controller wake up event */
+ 	snd_hdac_chip_updatew(bus, WAKEEN, 0, STATESTS_INT_MASK);
++	ret = skl_suspend_dsp(skl);
++	if (ret < 0)
++		return ret;
+ 
+ 	snd_hdac_bus_stop_chip(bus);
+ 	snd_hdac_bus_enter_link_reset(bus);
+@@ -183,7 +188,7 @@ static int skl_runtime_resume(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+-	struct skl *hda = ebus_to_skl(ebus);
++	struct skl *skl = ebus_to_skl(ebus);
+ 	int status;
+ 
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+@@ -191,12 +196,12 @@ static int skl_runtime_resume(struct device *dev)
+ 	/* Read STATESTS before controller reset */
+ 	status = snd_hdac_chip_readw(bus, STATESTS);
+ 
+-	skl_init_pci(hda);
++	skl_init_pci(skl);
+ 	snd_hdac_bus_init_chip(bus, true);
+ 	/* disable controller Wake Up event */
+ 	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
+ 
+-	return 0;
++	return skl_resume_dsp(skl);
+ }
+ #endif /* CONFIG_PM */
+ 
+@@ -457,17 +462,19 @@ static int skl_probe(struct pci_dev *pci,
  
  	/* check if dsp is there */
+ 	if (ebus->ppcap) {
+-		/* TODO register with dsp IPC */
+-		dev_dbg(bus->dev, "Register dsp\n");
++		err = skl_init_dsp(skl);
++		if (err < 0) {
++			dev_dbg(bus->dev, "error failed to register dsp\n");
++			goto out_free;
++		}
+ 	}
+-
+ 	if (ebus->mlcap)
+ 		snd_hdac_ext_bus_get_ml_capabilities(ebus);
+ 
+ 	/* create device for soc dmic */
+ 	err = skl_dmic_device_register(skl);
+ 	if (err < 0)
+-		goto out_free;
++		goto out_dsp_free;
+ 
+ 	/* register platform dai and controls */
+ 	err = skl_platform_register(bus->dev);
+@@ -491,6 +498,8 @@ out_unregister:
+ 	skl_platform_unregister(bus->dev);
+ out_dmic_free:
+ 	skl_dmic_device_unregister(skl);
++out_dsp_free:
++	skl_free_dsp(skl);
+ out_free:
+ 	skl->init_failed = 1;
+ 	skl_free(ebus);
+@@ -507,6 +516,7 @@ static void skl_remove(struct pci_dev *pci)
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
+ 	skl_platform_unregister(&pci->dev);
++	skl_free_dsp(skl);
+ 	skl_dmic_device_unregister(skl);
+ 	skl_free(ebus);
+ 	dev_set_drvdata(&pci->dev, NULL);
 -- 
 2.5.0
