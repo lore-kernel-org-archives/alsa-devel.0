@@ -1,24 +1,18 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
- element to snd_soc_tplg_stream
-Date: Wed, 7 Oct 2015 09:48:37 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B85136A@shsmsx102.ccr.corp.intel.com>
-References: <cover.1443605139.git.mengdong.lin@intel.com>
- <08b095d38f59c43690daaa45e1d201f367812228.1443605139.git.mengdong.lin@intel.com>
- <20151002165907.GU12635@sirena.org.uk> <1443809055.10986.10.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
- <20151006103403.GH12635@sirena.org.uk> <1444144590.25504.27.camel@intel.com>
- <20151006162520.GB30592@sirena.org.uk> <5613F850.1040605@metafoo.de>
- <20151006173654.GY12635@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt286: Fix run time error while
+	modifying const data" to the asoc tree
+Date: Wed, 07 Oct 2015 10:48:32 +0100
+Message-ID: <E1ZjlKq-0002iU-2a@finisterre>
+References: <1444051360.13473.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B493265AE8
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:48:41 +0200 (CEST)
-In-Reply-To: <20151006173654.GY12635@sirena.org.uk>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94F42265AE8
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:48:54 +0200 (CEST)
+In-Reply-To: <1444051360.13473.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,48 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Kp,
- Jeeja" <jeeja.kp@intel.com>, "Prusty,
- Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
- Vedang" <vedang.patel@intel.com>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, October 07, 2015 1:37 AM
-> To: Lars-Peter Clausen
-> Cc: Koul, Vinod; alsa-devel@alsa-project.org; tiwai@suse.de; Lin, Mengdong;
-> liam.r.girdwood@linux.intel.com; Kp, Jeeja; Prusty, Subhransu S; Patel,
-> Vedang
-> Subject: Re: [alsa-devel] [PATCH v2 4/8] ASoC: topology: ABI - Add name
-> element to snd_soc_tplg_stream
-> 
-> On Tue, Oct 06, 2015 at 06:35:28PM +0200, Lars-Peter Clausen wrote:
-> > On 10/06/2015 06:25 PM, Mark Brown wrote:
-> 
-> > > The problem isn't detecting the error, the point is that if someone
-> > > upgrades their kernel and someone changed the DAI link name then
-> > > their existing userspace will break.  We don't want that error to be
-> > > there to be detected in the first place.
-> 
-> > Another thing to consider is that the topology firmware might be
-> > developed against a non-upstream driver. And in order for the driver
-> > to go upstream it needs changes that breaks the ABI interface to the
-> > firmware which is already shipped and the vendor might not provide
-> > support for updating the firmware file. Having these kind of tightly
-> > coupled interdependencies between driver and firmware is quite risky
-> business.
-> 
-> Yeah, I think we're kind of stuck with some degree of fairly tight coupling at
-> some point though - at some point we're going to need to work out which
-> link in the driver corresponds to which link in the firmware file.
+The patch
 
-There is a 'version' field in struct snd_soc_tplg_hdr, which is a vendor-specific version number.
-The driver can check this field of a firmware topology and decide whether to support this firmware or not.
+   ASoC: rt286: Fix run time error while modifying const data
 
-Is this okay?
+has been applied to the asoc tree at
 
-Thanks
-Mengdong
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From dc6d84c69cf8296b1e8e2fd0b1e115b7787ef4e9 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Mon, 5 Oct 2015 21:22:40 +0800
+Subject: [PATCH] ASoC: rt286: Fix run time error while modifying const data
+
+Make a copy of memory for index_cache rather than directly use the
+rt286_index_def to avoid run time error.
+
+Fixes: c418a84a8c8f ("ASoC: Constify reg_default tables")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt286.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index bd93658..2088dfa 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -38,7 +38,7 @@
+ #define RT288_VENDOR_ID 0x10ec0288
+ 
+ struct rt286_priv {
+-	const struct reg_default *index_cache;
++	struct reg_default *index_cache;
+ 	int index_cache_size;
+ 	struct regmap *regmap;
+ 	struct snd_soc_codec *codec;
+@@ -1161,7 +1161,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 		return -ENODEV;
+ 	}
+ 
+-	rt286->index_cache = rt286_index_def;
++	rt286->index_cache = devm_kmemdup(&i2c->dev, rt286_index_def,
++					  sizeof(rt286_index_def), GFP_KERNEL);
++	if (!rt286->index_cache)
++		return -ENOMEM;
++
+ 	rt286->index_cache_size = INDEX_CACHE_SIZE;
+ 	rt286->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt286);
+-- 
+2.5.0
