@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Initialize and load DSP
-	controls" to the asoc tree
-Date: Wed, 07 Oct 2015 16:05:50 +0100
-Message-ID: <E1ZjqHu-0000aW-EM@finisterre>
-References: <1444213919-32369-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add FE and BE hw_params
+	handling" to the asoc tree
+Date: Wed, 07 Oct 2015 16:06:05 +0100
+Message-ID: <E1ZjqI9-0000ba-2v@finisterre>
+References: <1444213919-32369-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9447926149E
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:07 +0200 (CEST)
-In-Reply-To: <1444213919-32369-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 980AB2614DD
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:22 +0200 (CEST)
+In-Reply-To: <1444213919-32369-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Initialize and load DSP controls
+   ASoC: Intel: Skylake: Add FE and BE hw_params handling
 
 has been applied to the asoc tree at
 
@@ -53,408 +53,300 @@ to this mail.
 Thanks,
 Mark
 
->From b663a8c5c9c043c47e5e0eea9f9c77ea88fbe67a Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 7 Oct 2015 11:31:57 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: Initialize and load DSP controls
+>From cfb0a87383c6c2827f108ecee3471ef981876b38 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 7 Oct 2015 11:31:55 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: Add FE and BE hw_params handling
 
-Initialize and creates DSP controls if processing pipe capability
-is supported by HW. Updates the dma_id, hw_params to module param
-to be used when DSP module has to be configured.
+For FE and BE, the PCM parameters come from FE and BE hw_params
+values passed. For a FE we convert the FE params to DSP expected
+module format and pass to DSP. For a BE we need to find the
+gateway settings (i2s/PDM) to be applied. These are queried from
+NHLT table and applied.
+
+Further for BE based on direction the settings are applied as
+either source or destination parameters.
+
+These helpers here allow the format to be calculated and queried
+as per firmware format.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c      | 141 ++++++++++++++++++++++++++-------
- sound/soc/intel/skylake/skl-topology.c |  39 +++++----
- 2 files changed, 136 insertions(+), 44 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 238 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  12 ++
+ 2 files changed, 250 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index bea2673..a8f53da 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -24,6 +24,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include "skl.h"
-+#include "skl-topology.h"
- 
- #define HDA_MONO 1
- #define HDA_STEREO 2
-@@ -214,6 +215,8 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct skl_pipe_params p_params = {0};
-+	struct skl_module_cfg *m_cfg;
- 	int ret, dma_id;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-@@ -228,6 +231,16 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	dma_id = hdac_stream(stream)->stream_tag - 1;
- 	dev_dbg(dai->dev, "dma_id=%d\n", dma_id);
- 
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.host_dma_id = dma_id;
-+	p_params.stream = substream->stream;
-+
-+	m_cfg = skl_tplg_fe_get_cpr_module(dai, p_params.stream);
-+	if (m_cfg)
-+		skl_tplg_update_pipe_params(dai->dev, m_cfg, &p_params);
-+
- 	return 0;
- }
- 
-@@ -268,6 +281,46 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
- 	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
- }
- 
-+static int skl_be_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
-+{
-+	struct skl_pipe_params p_params = {0};
-+
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	skl_tplg_be_update_params(dai, &p_params);
-+
-+	return 0;
-+}
-+
-+static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
-+		struct snd_soc_dai *dai)
-+{
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_cfg *mconfig;
-+
-+	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
-+	if (!mconfig)
-+		return -EIO;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		return skl_run_pipe(ctx, mconfig->pipe);
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		return skl_stop_pipe(ctx, mconfig->pipe);
-+
-+	default:
-+		return 0;
-+	}
-+}
-+
- static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -277,9 +330,8 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct skl_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int dma_id;
-+	struct skl_pipe_params p_params = {0};
- 
--	pr_debug("%s\n", __func__);
- 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
- 					HDAC_EXT_STREAM_TYPE_LINK);
- 	if (!link_dev)
-@@ -293,7 +345,14 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	if (dma_params)
- 		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
- 	snd_soc_dai_set_dma_data(codec_dai, substream, (void *)dma_params);
--	dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+
-+	skl_tplg_be_update_params(dai, &p_params);
- 
- 	return 0;
- }
-@@ -308,27 +367,12 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	unsigned int format_val = 0;
- 	struct skl_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_pcm_hw_params *params;
--	struct snd_interval *channels, *rate;
- 	struct hdac_ext_link *link;
- 
--	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 	if (link_dev->link_prepared) {
- 		dev_dbg(dai->dev, "already stream is prepared - returning\n");
- 		return 0;
- 	}
--	params  = devm_kzalloc(dai->dev, sizeof(*params), GFP_KERNEL);
--	if (params == NULL)
--		return -ENOMEM;
--
--	channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	channels->min = channels->max = substream->runtime->channels;
--	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	rate->min = rate->max = substream->runtime->rate;
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--					SNDRV_PCM_HW_PARAM_FIRST_MASK],
--					substream->runtime->format);
--
- 
- 	dma_params  = (struct skl_dma_params *)
- 			snd_soc_dai_get_dma_data(codec_dai, substream);
-@@ -399,13 +443,13 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_hda_be_startup(struct snd_pcm_substream *substream,
-+static int skl_be_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	return pm_runtime_get_sync(dai->dev);
- }
- 
--static void skl_hda_be_shutdown(struct snd_pcm_substream *substream,
-+static void skl_be_shutdown(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	pm_runtime_mark_last_busy(dai->dev);
-@@ -418,20 +462,28 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.prepare = skl_pcm_prepare,
- 	.hw_params = skl_pcm_hw_params,
- 	.hw_free = skl_pcm_hw_free,
-+	.trigger = skl_pcm_trigger,
- };
- 
- static struct snd_soc_dai_ops skl_dmic_dai_ops = {
--	.startup = skl_hda_be_startup,
--	.shutdown = skl_hda_be_shutdown,
-+	.startup = skl_be_startup,
-+	.hw_params = skl_be_hw_params,
-+	.shutdown = skl_be_shutdown,
-+};
-+
-+static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
-+	.startup = skl_be_startup,
-+	.hw_params = skl_be_hw_params,
-+	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
--	.startup = skl_hda_be_startup,
-+	.startup = skl_be_startup,
- 	.prepare = skl_link_pcm_prepare,
- 	.hw_params = skl_link_hw_params,
- 	.hw_free = skl_link_hw_free,
- 	.trigger = skl_link_pcm_trigger,
--	.shutdown = skl_hda_be_shutdown,
-+	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_driver skl_platform_dai[] = {
-@@ -488,6 +540,24 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- },
- /* BE CPU  Dais */
- {
-+	.name = "SSP0 Pin",
-+	.ops = &skl_be_ssp_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp0 Tx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp0 Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
- 	.name = "iDisp Pin",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
-@@ -544,7 +614,7 @@ static int skl_platform_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int skl_pcm_trigger(struct snd_pcm_substream *substream,
-+static int skl_coupled_trigger(struct snd_pcm_substream *substream,
- 					int cmd)
- {
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-@@ -618,7 +688,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_dsp_trigger(struct snd_pcm_substream *substream,
-+static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
- 		int cmd)
- {
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-@@ -675,9 +745,9 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
- 
- 	if (ebus->ppcap)
--		return skl_dsp_trigger(substream, cmd);
-+		return skl_decoupled_trigger(substream, cmd);
- 	else
--		return skl_pcm_trigger(substream, cmd);
-+		return skl_coupled_trigger(substream, cmd);
- }
- 
- /* calculate runtime delay from LPIB */
-@@ -844,7 +914,17 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
- 
-+static int skl_platform_soc_probe(struct snd_soc_platform *platform)
-+{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(platform->dev);
-+
-+	if (ebus->ppcap)
-+		return skl_tplg_init(platform, ebus);
-+
-+	return 0;
-+}
- static struct snd_soc_platform_driver skl_platform_drv  = {
-+	.probe		= skl_platform_soc_probe,
- 	.ops		= &skl_platform_ops,
- 	.pcm_new	= skl_pcm_new,
- 	.pcm_free	= skl_pcm_free,
-@@ -857,6 +937,11 @@ static const struct snd_soc_component_driver skl_component = {
- int skl_platform_register(struct device *dev)
- {
- 	int ret;
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
-+	struct skl *skl = ebus_to_skl(ebus);
-+
-+	INIT_LIST_HEAD(&skl->ppl_list);
-+	INIT_LIST_HEAD(&skl->dapm_path_list);
- 
- 	ret = snd_soc_register_platform(dev, &skl_platform_drv);
- 	if (ret) {
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 648bbbf..b1bffa5 100644
+index 6d1d29a..827f21d 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1089,8 +1089,8 @@ static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
-  * FW expects like ids, resource values, formats etc
-  */
- static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
--					struct snd_soc_dapm_widget *w,
--					struct snd_soc_tplg_dapm_widget *tplg_w)
+@@ -773,3 +773,241 @@ static int skl_tplg_pga_event(struct snd_soc_dapm_widget *w,
+ 
+ 	return 0;
+ }
++
++/*
++ * The FE params are passed by hw_params of the DAI.
++ * On hw_params, the params are stored in Gateway module of the FE and we
++ * need to calculate the format in DSP module configuration, that
++ * conversion is done here
++ */
++int skl_tplg_update_pipe_params(struct device *dev,
++			struct skl_module_cfg *mconfig,
++			struct skl_pipe_params *params)
++{
++	struct skl_pipe *pipe = mconfig->pipe;
++	struct skl_module_fmt *format = NULL;
++
++	memcpy(pipe->p_params, params, sizeof(*params));
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		format = &mconfig->in_fmt;
++	else
++		format = &mconfig->out_fmt;
++
++	/* set the hw_params */
++	format->s_freq = params->s_freq;
++	format->channels = params->ch;
++	format->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
++
++	/*
++	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit
++	 * container so update bit depth accordingly
++	 */
++	switch (format->valid_bit_depth) {
++	case SKL_DEPTH_16BIT:
++		format->bit_depth = format->valid_bit_depth;
++		break;
++
++	case SKL_DEPTH_24BIT:
++		format->bit_depth = SKL_DEPTH_32BIT;
++		break;
++
++	default:
++		dev_err(dev, "Invalid bit depth %x for pipe\n",
++				format->valid_bit_depth);
++		return -EINVAL;
++	}
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		mconfig->ibs = (format->s_freq / 1000) *
++				(format->channels) *
++				(format->bit_depth >> 3);
++	} else {
++		mconfig->obs = (format->s_freq / 1000) *
++				(format->channels) *
++				(format->bit_depth >> 3);
++	}
++
++	return 0;
++}
++
++/*
++ * Query the module config for the FE DAI
++ * This is used to find the hw_params set for that DAI and apply to FE
++ * pipeline
++ */
++struct skl_module_cfg *
++skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
++{
++	struct snd_soc_dapm_widget *w;
++	struct snd_soc_dapm_path *p = NULL;
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		w = dai->playback_widget;
++		snd_soc_dapm_widget_for_each_source_path(w, p) {
++			if (p->connect && p->sink->power &&
++					is_skl_dsp_widget_type(p->sink))
++				continue;
++
++			if (p->sink->priv) {
++				dev_dbg(dai->dev, "set params for %s\n",
++						p->sink->name);
++				return p->sink->priv;
++			}
++		}
++	} else {
++		w = dai->capture_widget;
++		snd_soc_dapm_widget_for_each_sink_path(w, p) {
++			if (p->connect && p->source->power &&
++					is_skl_dsp_widget_type(p->source))
++				continue;
++
++			if (p->source->priv) {
++				dev_dbg(dai->dev, "set params for %s\n",
++						p->source->name);
++				return p->source->priv;
++			}
++		}
++	}
++
++	return NULL;
++}
++
++static u8 skl_tplg_be_link_type(int dev_type)
++{
++	int ret;
++
++	switch (dev_type) {
++	case SKL_DEVICE_BT:
++		ret = NHLT_LINK_SSP;
++		break;
++
++	case SKL_DEVICE_DMIC:
++		ret = NHLT_LINK_DMIC;
++		break;
++
++	case SKL_DEVICE_I2S:
++		ret = NHLT_LINK_SSP;
++		break;
++
++	case SKL_DEVICE_HDALINK:
++		ret = NHLT_LINK_HDA;
++		break;
++
++	default:
++		ret = NHLT_LINK_INVALID;
++		break;
++	}
++
++	return ret;
++}
++
++/*
++ * Fill the BE gateway parameters
++ * The BE gateway expects a blob of parameters which are kept in the ACPI
++ * NHLT blob, so query the blob for interface type (i2s/pdm) and instance.
++ * The port can have multiple settings so pick based on the PCM
++ * parameters
++ */
++static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
++				struct skl_module_cfg *mconfig,
++				struct skl_pipe_params *params)
++{
++	struct skl_pipe *pipe = mconfig->pipe;
++	struct nhlt_specific_cfg *cfg;
++	struct skl *skl = get_skl_ctx(dai->dev);
++	int link_type = skl_tplg_be_link_type(mconfig->dev_type);
++
++	memcpy(pipe->p_params, params, sizeof(*params));
++
++	/* update the blob based on virtual bus_id*/
++	cfg = skl_get_ep_blob(skl, mconfig->vbus_id, link_type,
++					params->s_fmt, params->ch,
++					params->s_freq, params->stream);
++	if (cfg) {
++		mconfig->formats_config.caps_size = cfg->size;
++		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
++	} else {
++		dev_err(dai->dev, "Blob NULL for id %x type %d dirn %d\n",
++					mconfig->vbus_id, link_type,
++					params->stream);
++		dev_err(dai->dev, "PCM: ch %d, freq %d, fmt %d\n",
++				 params->ch, params->s_freq, params->s_fmt);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int skl_tplg_be_set_src_pipe_params(struct snd_soc_dai *dai,
 +				struct snd_soc_dapm_widget *w,
-+				struct snd_soc_tplg_dapm_widget *tplg_w)
- {
- 	int ret;
- 	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-@@ -1098,7 +1098,8 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl_module_cfg *mconfig;
- 	struct skl_pipe *pipe;
--	struct skl_dfw_module *dfw_config = (struct skl_dfw_module *)tplg_w->priv.data;
-+	struct skl_dfw_module *dfw_config =
-+				(struct skl_dfw_module *)tplg_w->priv.data;
++				struct skl_pipe_params *params)
++{
++	struct snd_soc_dapm_path *p;
++
++	snd_soc_dapm_widget_for_each_sink_path(w, p) {
++		if (p->connect && is_skl_dsp_widget_type(p->source) &&
++						p->source->priv) {
++
++			if (!p->source->power)
++				return skl_tplg_be_fill_pipe_params(
++						dai, p->source->priv,
++						params);
++			else
++				return -EBUSY;
++		} else {
++			return skl_tplg_be_set_src_pipe_params(
++						dai, p->source,	params);
++		}
++	}
++
++	return -EIO;
++}
++
++static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
++	struct snd_soc_dapm_widget *w, struct skl_pipe_params *params)
++{
++	struct snd_soc_dapm_path *p = NULL;
++
++	snd_soc_dapm_widget_for_each_source_path(w, p) {
++		if (p->connect && is_skl_dsp_widget_type(p->sink) &&
++						p->sink->priv) {
++
++			if (!p->sink->power)
++				return skl_tplg_be_fill_pipe_params(
++						dai, p->sink->priv, params);
++			else
++				return -EBUSY;
++
++		} else {
++			return skl_tplg_be_set_sink_pipe_params(
++						dai, p->sink, params);
++		}
++	}
++
++	return -EIO;
++}
++
++/*
++ * BE hw_params can be a source parameters (capture) or sink parameters
++ * (playback). Based on sink and source we need to either find the source
++ * list or the sink list and set the pipeline parameters
++ */
++int skl_tplg_be_update_params(struct snd_soc_dai *dai,
++				struct skl_pipe_params *params)
++{
++	struct snd_soc_dapm_widget *w;
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		w = dai->playback_widget;
++
++		return skl_tplg_be_set_src_pipe_params(dai, w, params);
++
++	} else {
++		w = dai->capture_widget;
++
++		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
++	}
++
++	return 0;
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index b3a22a6..12db94d 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -280,6 +280,18 @@ static inline struct skl *get_skl_ctx(struct device *dev)
+ 	return ebus_to_skl(ebus);
+ }
  
- 	if (!tplg_w->priv.size)
- 		goto bind_event;
-@@ -1121,12 +1122,14 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	mconfig->in_fmt.channels = dfw_config->in_fmt.channels;
- 	mconfig->in_fmt.s_freq = dfw_config->in_fmt.freq;
- 	mconfig->in_fmt.bit_depth = dfw_config->in_fmt.bit_depth;
--	mconfig->in_fmt.valid_bit_depth = dfw_config->in_fmt.valid_bit_depth;
-+	mconfig->in_fmt.valid_bit_depth =
-+				dfw_config->in_fmt.valid_bit_depth;
- 	mconfig->in_fmt.ch_cfg = dfw_config->in_fmt.ch_cfg;
- 	mconfig->out_fmt.channels = dfw_config->out_fmt.channels;
- 	mconfig->out_fmt.s_freq = dfw_config->out_fmt.freq;
- 	mconfig->out_fmt.bit_depth = dfw_config->out_fmt.bit_depth;
--	mconfig->out_fmt.valid_bit_depth = dfw_config->out_fmt.valid_bit_depth;
-+	mconfig->out_fmt.valid_bit_depth =
-+				dfw_config->out_fmt.valid_bit_depth;
- 	mconfig->out_fmt.ch_cfg = dfw_config->out_fmt.ch_cfg;
- 	mconfig->params_fixup = dfw_config->params_fixup;
- 	mconfig->converter = dfw_config->converter;
-@@ -1142,15 +1145,17 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	mconfig->time_slot = dfw_config->time_slot;
- 	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
++int skl_tplg_be_update_params(struct snd_soc_dai *dai,
++	struct skl_pipe_params *params);
++void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
++	struct skl_pipe_params *params, int stream);
++int skl_tplg_init(struct snd_soc_platform *platform,
++				struct hdac_ext_bus *ebus);
++struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
++		struct snd_soc_dai *dai, int stream);
++int skl_tplg_update_pipe_params(struct device *dev,
++		struct skl_module_cfg *mconfig, struct skl_pipe_params *params);
++
++
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
  
--	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
--						sizeof(*mconfig->m_in_pin),
--						GFP_KERNEL);
-+	mconfig->m_in_pin = devm_kzalloc(bus->dev,
-+				(mconfig->max_in_queue) *
-+					sizeof(*mconfig->m_in_pin),
-+				GFP_KERNEL);
- 	if (!mconfig->m_in_pin)
- 		return -ENOMEM;
- 
--	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
--						sizeof(*mconfig->m_out_pin),
--						GFP_KERNEL);
-+	mconfig->m_out_pin = devm_kzalloc(bus->dev,
-+				(mconfig->max_in_queue) *
-+					sizeof(*mconfig->m_out_pin),
-+				GFP_KERNEL);
- 	if (!mconfig->m_out_pin)
- 		return -ENOMEM;
- 
-@@ -1163,13 +1168,13 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 		goto bind_event;
- 
- 	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
--				mconfig->formats_config.caps_size, GFP_KERNEL);
-+			mconfig->formats_config.caps_size, GFP_KERNEL);
- 
- 	if (mconfig->formats_config.caps == NULL)
- 		return -ENOMEM;
- 
- 	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
--						 dfw_config->caps.caps_size);
-+					 dfw_config->caps.caps_size);
- 
- bind_event:
- 	if (tplg_w->event_type == 0) {
-@@ -1178,7 +1183,8 @@ bind_event:
- 	}
- 
- 	ret = snd_soc_tplg_widget_bind_event(w, skl_tplg_widget_ops,
--			ARRAY_SIZE(skl_tplg_widget_ops), tplg_w->event_type);
-+					ARRAY_SIZE(skl_tplg_widget_ops),
-+					tplg_w->event_type);
- 
- 	if (ret) {
- 		dev_err(bus->dev, "%s: No matching event handlers found for %d\n",
-@@ -1209,7 +1215,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 
- 	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
- 	if (ret < 0) {
--		dev_err(bus->dev, "config firmware %s request failed with %d\n",
-+		dev_err(bus->dev, "tplg fw %s load failed with %d\n",
- 				"dfw_sst.bin", ret);
- 		return ret;
- 	}
-@@ -1218,7 +1224,8 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 	 * The complete tplg for SKL is loaded as index 0, we don't use
- 	 * any other index
- 	 */
--	ret = snd_soc_tplg_component_load(&platform->component, &skl_tplg_ops, fw, 0);
-+	ret = snd_soc_tplg_component_load(&platform->component,
-+					&skl_tplg_ops, fw, 0);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
- 		return -EINVAL;
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
 -- 
 2.5.0
