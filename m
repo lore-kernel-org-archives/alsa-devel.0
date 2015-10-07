@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Use of_match_ptr() when
-	assigning match table" to the asoc tree
-Date: Wed, 07 Oct 2015 12:18:24 +0100
-Message-ID: <E1Zjmjo-0006R1-6f@finisterre>
-References: <0ba5a5ba6765f9f9d520a604ffd06dcb61a68822.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: da7219: Improve error checking of mclk
+	enable/disable" to the asoc tree
+Date: Wed, 07 Oct 2015 12:18:22 +0100
+Message-ID: <E1Zjmjm-0006QY-CN@finisterre>
+References: <413ccdb3a8f209045fad3063e10919a6e6ccb757.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8B5C265C96
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:18:52 +0200 (CEST)
-In-Reply-To: <0ba5a5ba6765f9f9d520a604ffd06dcb61a68822.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 84D6C265D47
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:18:59 +0200 (CEST)
+In-Reply-To: <413ccdb3a8f209045fad3063e10919a6e6ccb757.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Use of_match_ptr() when assigning match table
+   ASoC: da7219: Improve error checking of mclk enable/disable
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From b7ebd78d1d142e4e47c3547b08faf51218384583 Mon Sep 17 00:00:00 2001
+>From ba856fbd602175d386ab5a4fc0fdd89b912546cb Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Wed, 7 Oct 2015 11:57:12 +0100
-Subject: [PATCH] ASoC: da7219: Use of_match_ptr() when assigning match table
+Date: Wed, 7 Oct 2015 11:57:14 +0100
+Subject: [PATCH] ASoC: da7219: Improve error checking of mclk enable/disable
 
-Use of_match_ptr() to handle non-DT kernel scenario where match
-table should be NULL.
+Should only try to enable/disable the provided mclk, during bias
+level changes, if it's not NULL. Also return value of
+clk_prepare_enable() should be checked and dealt with accordingly.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index c86a833..adcc079 100644
+index adcc079..abba4b3 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1932,7 +1932,7 @@ MODULE_DEVICE_TABLE(i2c, da7219_i2c_id);
- static struct i2c_driver da7219_i2c_driver = {
- 	.driver = {
- 		.name = "da7219",
--		.of_match_table = da7219_of_match,
-+		.of_match_table = of_match_ptr(da7219_of_match),
- 	},
- 	.probe		= da7219_i2c_probe,
- 	.remove		= da7219_i2c_remove,
+@@ -1494,6 +1494,7 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -1502,7 +1503,14 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_STANDBY:
+ 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			/* MCLK */
+-			clk_prepare_enable(da7219->mclk);
++			if (da7219->mclk) {
++				ret = clk_prepare_enable(da7219->mclk);
++				if (ret) {
++					dev_err(codec->dev,
++						"Failed to enable mclk\n");
++					return ret;
++				}
++			}
+ 
+ 			/* Master bias */
+ 			snd_soc_update_bits(codec, DA7219_REFERENCES,
+@@ -1528,7 +1536,8 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 		}
+ 
+ 		/* MCLK */
+-		clk_disable_unprepare(da7219->mclk);
++		if (da7219->mclk)
++			clk_disable_unprepare(da7219->mclk);
+ 		break;
+ 	}
+ 
 -- 
 2.5.0
