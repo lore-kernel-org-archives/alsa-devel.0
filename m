@@ -1,19 +1,21 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
- codec proposal
-Date: Wed, 7 Oct 2015 10:19:27 +0200
-Message-ID: <5614D58F.9010102@st.com>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com> <5613EC62.8000007@ti.com>
+From: Panu Matilainen <pmatilai@laiskiainen.org>
+Subject: Re: Zoom R16/24 playback slient
+Date: Wed, 7 Oct 2015 11:44:59 +0300
+Message-ID: <5614DB8B.2000709@laiskiainen.org>
+References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
+ <560B8481.1080304@laiskiainen.org>
+ <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
+ <56137AE7.4000601@laiskiainen.org>
+ <alpine.DEB.2.02.1510070941160.17839@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F016A2658CB
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 10:19:34 +0200 (CEST)
-In-Reply-To: <5613EC62.8000007@ti.com>
+Received: from homiemail-a91.g.dreamhost.com (sub5.mail.dreamhost.com
+ [208.113.200.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id A24D22659BF
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 10:45:05 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1510070941160.17839@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,89 +25,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc: "moinejf@free.fr" <moinejf@free.fr>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
->> My approach is the reverse: DRM driver does not need to know anything
->> about audio side. As ALSA is the client of DRM, seems more logical from
->> my point of view ...
->> Now if a generic solution must be found for all video drivers, sure,
->> your solution is more flexible.
->> But if i well understood fbdev drivers are no more accepted for upstream
->> (please correct me if I'm wrong).
->> So i don't know we have to keep fbdev in picture...
+On 10/07/2015 10:53 AM, Ricard Wanderlof wrote:
+>
+> On Tue, 6 Oct 2015, Panu Matilainen wrote:
+>
+>>> Having dived into this, and looking carefully at the data produced by the
+>>> Windows driver, it appears that what's happening is that the driver stuffs
+>>> a 32-bit length specifier at the start of each isochronous data packet.
+>>>
+>>> So, for instance, instead of transferring the sample data
+>>>
+>>> 00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 .. .. (40 bytes)
+>>>
+>>> the Zoom driver would send:
+>>>
+>>> 28 00 00 00  00 12 bf 34  00 98 87 76  00 3c 24 35  00 86 75 64 ... (44 bytes)
+>>>
+>>> At the moment I'm considering adding some additional code to
+>>> sound/usb/pcm.c: prepare_playback_urb(), governed by a new boolean in
+>>> struct snd_usb_substream in a similar vain as txfr_quirk in that structure
+>>> (which in turn is set in some quirk function detecting the R16).
+>>>
+>>> What needs to be done is to add 4 bytes to the length, and adjust the
+>>> offset accordingly, in urb->iso_frame_desc[i], and then add the additional
+>>> length descriptor for each packet when copying out the data further down
+>>> in the same function.
+>>>
+>>> It would be nice to add a foo_quirk() function but since the actual
+>>> copying of the data needs to be changed, it's not really possible to do
+>>> efficiently with a separate routine.
 >>
+>> Sounds like a plan to me, but keep in mind I'm just another newbie in
+>> all this. Anyway, I wouldn't worry about cleanest possible way at this
+>> point, just do a quick-n-dirty hack to see if adding the length is
+>> enough to get it working and worry about the rest later. I'll try to
+>> have a look at it too as soon as time permits, but meanwhile if more
+>> experienced people have better suggestions...
 >
-> I am not promoting fbdev support. I am merely asking if we want to force
-> all HDMI drivers to implement a drm_bridge if they want to support audio.
->
-Yes this is a good point... My implementation is based on hypothesis 
-that HDMI drivers are now upstreamed as DRM drivers.
+> I tried this out yesterday, with good results. I only had time for limited
+> testing, but I managed to playback a couple of 44.1 kHz files (didn't test
+> anything else) without any hitches. So this is definitely the right way to
+> go. Actually it was a real joy after the R16 has been silent for a week.
+> :-)
 
->>> - HDMI encoder driver implementations that do not use DRM bridge
->>>      abstraction do not need add an extra DRM object just to get the
->>>      audio working.
->>>
->>> Short comings I see in the current HDMI audio bridge approach:
->>>
->>> In its current from the DRM audio bridge abstraction pretends to be a
->>> generic audio abstraction for DRM devices, but the implementation is
->>> quite specific to external HDMI encoders with spdif and/or i2s
->>> interface. There is a lot of HDMI video devices that provide the
->>> digital audio interface (ASoC DAI) directly and there is no need for
->>> anything but dummy codec implementation (if following ASoC
->>> paradigm). Before going forward I think we should at least consider
->>> how this abstraction would serve those devices.
->> Sorry, but i don't see any difference between both implementations for
->> this point.In both implementations, ops are called only if defined.
->> Could you give me name of the drivers you have in mind?
->
-> I am not talking about Beaglebone-Black or tda998x here. There are
-> platforms where video HW provides the digital audio interface for HDMI
-> audio directly. For instance OMAP4 and OMAP5 (see
-> sound/soc/omap/omap-hdmi-audio.c and drivers/video/fbdev/omap2/dss/) are
-> like that.
-Not checked in details but seems similar to your approach except ops 
-used by cpu_dai.
+Awesome! This will make you a hero for many :)
 
 >
->>>
->>> Also, I am not entirely happy how the drm_audio_bridge_funcs are used
->>> at the moment. The do not map too well to ASoC DAI callbacks and I do
->>> not see too much point in creating a completely new audio-callback
->>> abstraction, that is sligtly incompatible with ALSA, and then
->>> translating alsa callbacks to these new callbacks. I think the
->>> callbacks should map more or less directly ALSA callbacks.
->>
->> As API is defined in DRM, it seems more logical to match it with the one
->> defined for video. From my windows, i didn't see any blocking point to
->> connect codec callback with this API.
->> But anyway, this API is not freezed, it could be improved with your help.
+> Apart from prepare_playback_urb(), I had to make a similar change to
+> endpoint.c:prepare_outound_urb() which outputs silence before there is
+> data to send.
 >
-> The most usual things can be made to work with your API too, but the
-> translation is not the most efficient one and some features are missing,
-> for instance muting.
-Could be added but is it necessary if trigger is implemented?( see my 
-next comments)
+> Patch to follow, but there are a couple of things I need to straighten out
+> first:
+>
+> - Since we're stuffing more data in the outgoing packets, some allowance
+>    must be made for this when allocating the urb->transfer_buffer. I've got
+>    to review that code so that we don't spill over the end of the allocated
+>    buffer in some case.
+> - The best way to trigger the quirk. I'm thinking something along the
+>    lines of introducing a QUIRK_AUDIO_ZOOM_INTERFACE which enables the
+>    aforementioned bit in order to enable the quirk in
+>    prepare_playback_urb() and prepare_output_urb(), and then calls
+>    create_standard_audio_quirk() (just as QUIRK_AUDIO_STANDARD_INTERFACE
+>    would have resulted in). Then it's clear in quirks-table.h that
+>    something special is going on. (Currently I've added the quirk
+>    initialization directly in create_standard_audio_quirk(), but it seems
+>    wrong to hide it away in there).
 
-> Also, in ALSA side the prepare and trigger
-> callbacks are meant to be used only for starting and stopping the audio
-> stream.
-Yes but for me, it is required. Otherwise how to manage CPU-DAI master 
-configuration?
-if stream is stopped, cpu_dai can be stopped as there is no more stream 
-to sent on bus. If no information is sent to HDMI, This generates HDMI 
-codec or protocol issue...
-Use startup/shutdown/digital_mute seems not sufficient.
+Clearly the device not following standard here, but then all sorts of 
+other quirks get silently handled behind the scenes of 
+QUIRK_AUDIO_STANDARD_INTERFACE too so... If handled in 
+create_standard_audio_quirk() then the quirks-table entry for the thing 
+could be reduced to just:
 
-The stream is configured before either one of those are called.
-> With your API each pause+resume from a video client will reconfigure the
-> audio from the scratch.
-Configuration is sent using pre_enable operation. So no reconfiguration 
-should be re-applied.
+.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+         .ifnum = QUIRK_ANY_INTERFACE,
+         .type = QUIRK_AUTODETECT
+}
 
-Best Regards
-Arnaud
+Not that it matters a whole lot I guess.
+
+>
+> And I also need to test some more.
+
+I'd be happy to help with testing + extra eyeballs for any 
+work-in-progress patch you have. Feel free to send privately if you feel 
+its not suitable for mass-consumption yet.
+
+>
+> Also, in the dump from the Windows driver I saw some form of sample rate
+> control message being sent that Linux doesn't send, on the other hand,
+> that was sent as part of starting capture, which already has been proven
+> to work, so it might simply not be needed.
+
+Right, good to know. While capture appears to work just fine, I wouldn't 
+be surprised if there are glitches left, its probably not being used all 
+that much because of the dead playback (until now of course).
+
+	- Panu -
+
+>
+> /Ricard
+>
