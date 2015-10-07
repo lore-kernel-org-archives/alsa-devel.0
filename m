@@ -1,20 +1,26 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
- codec proposal
-Date: Wed, 07 Oct 2015 12:21:51 +0200
-Message-ID: <5614F23F.7050608@metafoo.de>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com> <5613EC62.8000007@ti.com>
- <5614D58F.9010102@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 4/8] ASoC: topology: ABI - Add name
+ element to snd_soc_tplg_stream
+Date: Wed, 7 Oct 2015 11:23:21 +0100
+Message-ID: <20151007102321.GE12635@sirena.org.uk>
+References: <20151002165907.GU12635@sirena.org.uk>
+ <1443809055.10986.10.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B84FF3F@shsmsx102.ccr.corp.intel.com>
+ <20151006103403.GH12635@sirena.org.uk>
+ <1444144590.25504.27.camel@intel.com>
+ <20151006162520.GB30592@sirena.org.uk>
+ <5613F850.1040605@metafoo.de>
+ <20151006173654.GY12635@sirena.org.uk>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B85136A@shsmsx102.ccr.corp.intel.com>
+ <s5hy4ff8064.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0911031626682179641=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-060.synserver.de (smtp-out-094.synserver.de
- [212.40.185.94])
- by alsa0.perex.cz (Postfix) with ESMTP id 38CD4265AE8
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 12:23:20 +0200 (CEST)
-In-Reply-To: <5614D58F.9010102@st.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3BDF265AFC
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 12:25:14 +0200 (CEST)
+In-Reply-To: <s5hy4ff8064.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +30,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc: "moinejf@free.fr" <moinejf@free.fr>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "bcousson@baylibre.com" <bcousson@baylibre.com>, David Airlie <airlied@linux.ie>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "broonie@kernel.org" <broonie@kernel.org>, Hans Verkuil <hans.verkuil@cisco.com>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Patel,
+ Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-Added Hans, who's working a lot on the HDMI transmitter drivers (including
-audio support) as well as the media list to Cc.
+--===============0911031626682179641==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uFTSkOzRR7IG1lTO"
+Content-Disposition: inline
 
-On 10/07/2015 10:19 AM, Arnaud Pouliquen wrote:
-> 
-> 
->>> My approach is the reverse: DRM driver does not need to know anything
->>> about audio side. As ALSA is the client of DRM, seems more logical from
->>> my point of view ...
->>> Now if a generic solution must be found for all video drivers, sure,
->>> your solution is more flexible.
->>> But if i well understood fbdev drivers are no more accepted for upstream
->>> (please correct me if I'm wrong).
->>> So i don't know we have to keep fbdev in picture...
->>>
->>
->> I am not promoting fbdev support. I am merely asking if we want to force
->> all HDMI drivers to implement a drm_bridge if they want to support audio.
->>
-> Yes this is a good point... My implementation is based on hypothesis that
-> HDMI drivers are now upstreamed as DRM drivers.
 
-The other place where you can find HDMI support is in V4L2, both receive as
-well as transmit. And while the hope for fbdev is that it will be phased out
-V4L2 will stay around for a while. And we probably want to have a common API
-that can take care of both DRM and V4L so we do not need two sets of helper
-functions for things like EDID parsing etc.
+--uFTSkOzRR7IG1lTO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Wed, Oct 07, 2015 at 12:04:19PM +0200, Takashi Iwai wrote:
+
+> How about to allow leaving this name empty as default?  Or better to
+> ask: what's the exact merit of having strict binding to DAI link?
+
+Well, if the topology is describing something like a phone at some point
+you're going to need to work out what is connected to for example the
+modem and the bluetooth, and you're probably going to want to have
+different processing pipelines in front of each.
+
+--uFTSkOzRR7IG1lTO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWFPKUAAoJECTWi3JdVIfQ7JEH/jeVjeLgL905nuQNYmT9RSzx
+dxC7u9HtPzp36nfY8fX+LhwMNCklAGs3b83ndpcfjmfSjOrNgpu6gRd65UynxGSx
+EqdGY3JS1Ym4e2djuTTr1+1Qi+dITJY3IsnBZK972ozpaRdednrPTfTcsyGjO/RO
+Z6gt7Ih/jMZtATwOXG33C1jFDlElv29lA6O2z3beGf+dU0/Ccc1u9na1f4PmjQmV
+HegpCQn301c8dUY2IcXAyRX5t97PWGcQJAEbQ3YlYSmPJFWLIZpfLvaFMGzrAROg
+oHeA+HPk5pcNR7fUo9cwe1EeuNS3fpZ0alx9Hss8oAjeI8HnqNAQWXzS53kKbxA=
+=J/ug
+-----END PGP SIGNATURE-----
+
+--uFTSkOzRR7IG1lTO--
+
+--===============0911031626682179641==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0911031626682179641==--
