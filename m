@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt286: Fix run time error while
-	modifying const data" to the asoc tree
-Date: Wed, 07 Oct 2015 10:48:32 +0100
-Message-ID: <E1ZjlKq-0002iU-2a@finisterre>
-References: <1444051360.13473.1.camel@ingics.com>
+Subject: Applied "ASoC: rt298: Make rt298_index_def const" to
+	the asoc tree
+Date: Wed, 07 Oct 2015 10:48:29 +0100
+Message-ID: <E1ZjlKn-0002i2-Dv@finisterre>
+References: <1444051428.13473.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94F42265AE8
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:48:54 +0200 (CEST)
-In-Reply-To: <1444051360.13473.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B0AF265D9B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:49:03 +0200 (CEST)
+In-Reply-To: <1444051428.13473.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt286: Fix run time error while modifying const data
+   ASoC: rt298: Make rt298_index_def const
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From dc6d84c69cf8296b1e8e2fd0b1e115b7787ef4e9 Mon Sep 17 00:00:00 2001
+>From 9eee0988f01758515ff54a5cba76c1ff24ad3d92 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Mon, 5 Oct 2015 21:22:40 +0800
-Subject: [PATCH] ASoC: rt286: Fix run time error while modifying const data
+Date: Mon, 5 Oct 2015 21:23:48 +0800
+Subject: [PATCH] ASoC: rt298: Make rt298_index_def const
 
-Make a copy of memory for index_cache rather than directly use the
-rt286_index_def to avoid run time error.
+The index_cache is per instance run time state but rt298_index_def is not.
+Make rt298_index_def const and make a copy of memory for index_cache rather
+than directly use the rt298_index_def.
 
-Fixes: c418a84a8c8f ("ASoC: Constify reg_default tables")
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 8 ++++++--
+ sound/soc/codecs/rt298.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index bd93658..2088dfa 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -38,7 +38,7 @@
- #define RT288_VENDOR_ID 0x10ec0288
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 3c2f0f8..ef8e23a 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -49,7 +49,7 @@ struct rt298_priv {
+ 	int is_hp_in;
+ };
  
- struct rt286_priv {
--	const struct reg_default *index_cache;
-+	struct reg_default *index_cache;
- 	int index_cache_size;
- 	struct regmap *regmap;
- 	struct snd_soc_codec *codec;
-@@ -1161,7 +1161,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+-static struct reg_default rt298_index_def[] = {
++static const struct reg_default rt298_index_def[] = {
+ 	{ 0x01, 0xaaaa },
+ 	{ 0x02, 0x8aaa },
+ 	{ 0x03, 0x0002 },
+@@ -1165,7 +1165,11 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
  		return -ENODEV;
  	}
  
--	rt286->index_cache = rt286_index_def;
-+	rt286->index_cache = devm_kmemdup(&i2c->dev, rt286_index_def,
-+					  sizeof(rt286_index_def), GFP_KERNEL);
-+	if (!rt286->index_cache)
+-	rt298->index_cache = rt298_index_def;
++	rt298->index_cache = devm_kmemdup(&i2c->dev, rt298_index_def,
++					  sizeof(rt298_index_def), GFP_KERNEL);
++	if (!rt298->index_cache)
 +		return -ENOMEM;
 +
- 	rt286->index_cache_size = INDEX_CACHE_SIZE;
- 	rt286->i2c = i2c;
- 	i2c_set_clientdata(i2c, rt286);
+ 	rt298->index_cache_size = INDEX_CACHE_SIZE;
+ 	rt298->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt298);
 -- 
 2.5.0
