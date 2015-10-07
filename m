@@ -1,35 +1,87 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: rt5645: fix build warning
-Date: Wed,  7 Oct 2015 17:52:12 +0530
-Message-ID: <1444220532-14199-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: Audio routing in the tlv320aic3104
+Date: Wed, 7 Oct 2015 05:52:31 -0700
+Message-ID: <0665D4EF-04B7-4930-9921-2BA72CAB7AC9@crome.org>
+References: <18B9FBAF-1EB4-413F-8639-9AC94B50F445@latencyzero.com>
+Mime-Version: 1.0 (1.0)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2A3F265E0B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 14:52:35 +0200 (CEST)
+Received: by pablk4 with SMTP id lk4so21010210pab.3
+ for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2015 05:52:34 -0700 (PDT)
+In-Reply-To: <18B9FBAF-1EB4-413F-8639-9AC94B50F445@latencyzero.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rick Mann <rmann@latencyzero.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We were getting build warning about "Section mismatch".
-dmi_platform_intel_broadwell is being referenced from the probe function
-rt5645_i2c_probe(), but dmi_platform_intel_broadwell was marked with
-__initdata.
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 4c4fe6b..89ba4ff 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3244,7 +3244,7 @@ static int buddy_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
- }
- 
--static struct dmi_system_id dmi_platform_intel_broadwell[] __initdata = {
-+static struct dmi_system_id dmi_platform_intel_broadwell[] = {
- 	{
- 		.ident = "Chrome Buddy",
- 		.callback = buddy_quirk_cb,
--- 
-1.9.1
+Sent from my iPhone
+
+> On Oct 7, 2015, at 4:12 AM, Rick Mann <rmann@latencyzero.com> wrote:
+> 
+> I've managed to get a hacky, fragile config working, in the sense that it sends my tlv320aic3104 samples from speaker-test, and the clocks and data all look good on the oscilloscope, and it ping-pongs between the left and right channel.
+> 
+> But it's outputting the signal on the HPLOUT/HPROUT pins, not the L&R Line Out pins.
+> 
+> My DTS has this:
+> 
+>    fragment@3 {
+>        target = <&ocp>;
+>        __overlay__ {
+>            sound {
+>                compatible = "ti,da830-evm-audio";
+>                ti,model = "DA830 EVM";
+>                ti,audio-codec = <&tlv320aic3x>;
+>                ti,mcasp-controller = <&mcasp0>;
+>                ti,codec-clock-rate = <12000000>;
+>                ti,audio-routing =
+>                    "Line Out",             "LLOUT",
+>                    "Line Out",             "RLOUT";
+>            };
+>        };
+>    };
+> 
+> The original had:
+> 
+>    "Headphone Jack",       "HPLOUT",
+>    "Headphone Jack",       "HPROUT",
+>    "LINE1L",               "Line In",
+>    "LINE1R",               "Line In";
+> 
+> I also have an asound.state file I got from the Audio Cape:
+> 
+>    https://raw.githubusercontent.com/CircuitCo/BeagleBone-Audio/files/asound.state
+> 
+> I don't really know how to interpret that file. One resource online said it held the current state of the system. I guess that suggests I should play with amixer. But how does the DTS routing come into play?
+> 
+> Thanks,
+> 
+
+Check for the routing in the davinci-evm.c file.  It has other routes,  I kind of recall it says some outputs are not connected.    You might have to edit routs there too. 
+
+
+> 
+> 
+> -- 
+> Rick Mann
+> rmann@latencyzero.com
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
