@@ -1,18 +1,19 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Boss GT-001
-Date: Wed, 7 Oct 2015 10:09:14 +0200
-Message-ID: <alpine.DEB.2.02.1510071000020.17839@lnxricardw1.se.axis.com>
-References: <1481883.Y22cmGKEIB@kamdesktop>
- <alpine.DEB.2.02.1510051635560.19610@lnxricardw1.se.axis.com>
- <1837042.8ri5iYFGVx@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
+ codec proposal
+Date: Wed, 7 Oct 2015 10:19:27 +0200
+Message-ID: <5614D58F.9010102@st.com>
+References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+ <56127ADB.6080700@ti.com> <561392F7.90608@st.com> <5613EC62.8000007@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id A3D432658CB
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 10:09:16 +0200 (CEST)
-In-Reply-To: <4761108.z7lHdDqPTH@kamdesktop>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F016A2658CB
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 10:19:34 +0200 (CEST)
+In-Reply-To: <5613EC62.8000007@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +23,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Keith A. Milner" <maillist@superlative.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 'Clemens Ladisch' <clemens@ladisch.de>
+To: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "moinejf@free.fr" <moinejf@free.fr>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Tue, 6 Oct 2015, Keith A. Milner wrote:
 
-> OK, so it seems that this hardware is substantially the same as the GT-10=
-0 =
+>> My approach is the reverse: DRM driver does not need to know anything
+>> about audio side. As ALSA is the client of DRM, seems more logical from
+>> my point of view ...
+>> Now if a generic solution must be found for all video drivers, sure,
+>> your solution is more flexible.
+>> But if i well understood fbdev drivers are no more accepted for upstream
+>> (please correct me if I'm wrong).
+>> So i don't know we have to keep fbdev in picture...
+>>
+>
+> I am not promoting fbdev support. I am merely asking if we want to force
+> all HDMI drivers to implement a drm_bridge if they want to support audio.
+>
+Yes this is a good point... My implementation is based on hypothesis 
+that HDMI drivers are now upstreamed as DRM drivers.
 
-> which has previously (and recently) been raised as a problem on ALSA.
-> =
+>>> - HDMI encoder driver implementations that do not use DRM bridge
+>>>      abstraction do not need add an extra DRM object just to get the
+>>>      audio working.
+>>>
+>>> Short comings I see in the current HDMI audio bridge approach:
+>>>
+>>> In its current from the DRM audio bridge abstraction pretends to be a
+>>> generic audio abstraction for DRM devices, but the implementation is
+>>> quite specific to external HDMI encoders with spdif and/or i2s
+>>> interface. There is a lot of HDMI video devices that provide the
+>>> digital audio interface (ASoC DAI) directly and there is no need for
+>>> anything but dummy codec implementation (if following ASoC
+>>> paradigm). Before going forward I think we should at least consider
+>>> how this abstraction would serve those devices.
+>> Sorry, but i don't see any difference between both implementations for
+>> this point.In both implementations, ops are called only if defined.
+>> Could you give me name of the drivers you have in mind?
+>
+> I am not talking about Beaglebone-Black or tda998x here. There are
+> platforms where video HW provides the digital audio interface for HDMI
+> audio directly. For instance OMAP4 and OMAP5 (see
+> sound/soc/omap/omap-hdmi-audio.c and drivers/video/fbdev/omap2/dss/) are
+> like that.
+Not checked in details but seems similar to your approach except ops 
+used by cpu_dai.
 
-> Clemens Ladisch wrote:
-> > Aaron Spike wrote:
-> > > On Sat, Jan 10, 2015 at 2:41 PM, Clemens Ladisch wrote:
-> > > > There is something that cannot be derived from the descriptors.
-> > > =
+>
+>>>
+>>> Also, I am not entirely happy how the drm_audio_bridge_funcs are used
+>>> at the moment. The do not map too well to ASoC DAI callbacks and I do
+>>> not see too much point in creating a completely new audio-callback
+>>> abstraction, that is sligtly incompatible with ALSA, and then
+>>> translating alsa callbacks to these new callbacks. I think the
+>>> callbacks should map more or less directly ALSA callbacks.
+>>
+>> As API is defined in DRM, it seems more logical to match it with the one
+>> defined for video. From my windows, i didn't see any blocking point to
+>> connect codec callback with this API.
+>> But anyway, this API is not freezed, it could be improved with your help.
+>
+> The most usual things can be made to work with your API too, but the
+> translation is not the most efficient one and some features are missing,
+> for instance muting.
+Could be added but is it necessary if trigger is implemented?( see my 
+next comments)
 
-> > > In a nutshell, what would someone who knew what they were doing do in=
- this
-> > > situation?
-> > =
+> Also, in ALSA side the prepare and trigger
+> callbacks are meant to be used only for starting and stopping the audio
+> stream.
+Yes but for me, it is required. Otherwise how to manage CPU-DAI master 
+configuration?
+if stream is stopped, cpu_dai can be stopped as there is no more stream 
+to sent on bus. If no information is sent to HDMI, This generates HDMI 
+codec or protocol issue...
+Use startup/shutdown/digital_mute seems not sufficient.
 
-> > 1. Use some USB sniffer to find out what commands the Windows driver se=
-nds.
-> > 2. Reverse engineer the firmware.
-> > =
+The stream is configured before either one of those are called.
+> With your API each pause+resume from a video client will reconfigure the
+> audio from the scratch.
+Configuration is sent using pre_enable operation. So no reconfiguration 
+should be re-applied.
 
-> =
-
-> I'm going to attempt to capture some USB data using this device in Window=
-s. If =
-
-> I do this, is there an accepted method for uploading the capture so it ca=
-n be =
-
-> posted here?
-> =
-
-> At this point, I'm not 100% sure what the capture format is going to be...
-
-I just went down this road while researching the Zoom R16. There's a =
-
-Windows application called USBPCap which can sniff an USB bus and dump =
-
-packets in .pcap format. A reasonally recent version of Wireshark can then =
-
-be used to analyze the data, as it supports the USBPCap output format from =
-
-a certain version (FWIW, the version of Wireshark included with Debian =
-
-Jessie works fine).
-
-The corresponding dumps on Linux can be done by loading the usbmon module =
-
-into the kernel. This allows Wireshark to sniff the USB buses.
-
-I learned though that although Wireshark is happy reading the .pcap files =
-
-produced by USBPCap, the resulting dumps can look quite different from =
-
-what Wireshark sniffs in Linux, which initially took me aback. At least =
-
-when it comes to USBPcap I think the reason is that the program actually =
-
-sniffs the data halfway up (if not at the top of) the Windows protocol =
-
-stack, meaning that there's data in the dump that does not actually occur =
-
-on the wire. I'm not sure at what level usbmon sniffs, but it looks closer =
-
-to what I'd expect on the physical cable.
-
-In practice, all data is there in both cases, but it takes a bit of =
-
-practice to actually compare the two successfully. Especially when it =
-
-comes to isochronous packets (used for audio data transfer), the USBPcap =
-
-format decodes the individual packets, whereas a dump generated via usbmon =
-
-just delivered one large blob of data, which included both the isochronous =
-
-packet headers and associated payload. Perhaps a more recent Wireshark =
-
-might fare better; at the time the level of detail was sufficient for me =
-
-so I didn't pursue it any further.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Best Regards
+Arnaud
