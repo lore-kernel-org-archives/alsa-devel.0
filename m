@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: use dw_dmac autoconfiguration"
-	to the asoc tree
-Date: Wed, 07 Oct 2015 11:38:35 +0100
-Message-ID: <E1Zjm7H-0004Ge-DF@finisterre>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH 00/18] ALSA: hdac: move hdac helpers to core
+Date: Wed, 7 Oct 2015 10:52:18 +0000
+Message-ID: <1444215136.25504.55.camel@intel.com>
+References: <1444144075-28963-1-git-send-email-vinod.koul@intel.com>
+ <s5hk2qzamsf.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E8882661EE
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 12:39:03 +0200 (CEST)
-In-Reply-To: 
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55C0F265AFC
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 12:52:25 +0200 (CEST)
+In-Reply-To: <s5hk2qzamsf.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <1BB3AE5EB202434BA993E057EF51C7AF@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,87 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, 2015-10-06 at 20:12 +0200, Takashi Iwai wrote:
+> On Tue, 06 Oct 2015 17:07:37 +0200,
+> Vinod Koul wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > Here is the second version which updates the users.
+> > 
+> > This update was done using coccinelle scripts. I also noticed that the
+> > coccinelle is reformaing the change lines, but changes looked good to me so
+> > I have kept them, please do let me know if you would like these to be
+> > removed.
+> 
+> Erm, sorry, I didn't want to motivate you in that direction.
+> Basically it's better to keep the old API as is for an old driver like
+> HDA since it makes stable kernel backporting much easier.  So, what
+> we'd need is a lazier solution, just to replace the old API as a
+> static inline function wrapping the new API.  The end result is same,
+> but it's still compatible with older kernels in the source code
+> level.
 
-   ASoC: Intel: use dw_dmac autoconfiguration
+Ah ...
 
-has been applied to the asoc tree at
+Even while doing this I was thinking that we have few wrappers and should update
+users..
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+So are you going to hold off update or do it after some point of time
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I will send updated one, though I think at some point of time we need to bite this
+bullet
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b5e5a4549c8b88a880fa3866fa3803ea9396ba03 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Mon, 5 Oct 2015 14:53:50 +0300
-Subject: [PATCH] ASoC: Intel: use dw_dmac autoconfiguration
-
-Instead of hardconding a platform data for dw_dmac let's use it's own
-autoconfiguration feature. Thus, remove hardcoded values.
-
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/sst-firmware.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index ebcca6d..1636a1e 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -26,7 +26,6 @@
- #include <linux/acpi.h>
- 
- /* supported DMA engine drivers */
--#include <linux/platform_data/dma-dw.h>
- #include <linux/dma/dw.h>
- 
- #include <asm/page.h>
-@@ -169,12 +168,6 @@ err:
- 	return ret;
- }
- 
--static struct dw_dma_platform_data dw_pdata = {
--	.is_private = 1,
--	.chan_allocation_order = CHAN_ALLOCATION_ASCENDING,
--	.chan_priority = CHAN_PRIORITY_ASCENDING,
--};
--
- static struct dw_dma_chip *dw_probe(struct device *dev, struct resource *mem,
- 	int irq)
- {
-@@ -195,7 +188,8 @@ static struct dw_dma_chip *dw_probe(struct device *dev, struct resource *mem,
- 		return ERR_PTR(err);
- 
- 	chip->dev = dev;
--	err = dw_dma_probe(chip, &dw_pdata);
-+
-+	err = dw_dma_probe(chip, NULL);
- 	if (err)
- 		return ERR_PTR(err);
- 
 -- 
-2.5.0
+~Vinod
