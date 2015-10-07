@@ -1,86 +1,77 @@
 From: Caleb Crome <caleb@crome.org>
-Subject: Re: Audio routing in the tlv320aic3104
-Date: Wed, 7 Oct 2015 05:52:31 -0700
-Message-ID: <0665D4EF-04B7-4930-9921-2BA72CAB7AC9@crome.org>
-References: <18B9FBAF-1EB4-413F-8639-9AC94B50F445@latencyzero.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels capture and lrck-mode support
+Date: Wed, 7 Oct 2015 06:04:51 -0700
+Message-ID: <F2F204F7-F5A8-4152-BF1D-454EB3E35F34@crome.org>
+References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com> <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com> <20150923162433.GQ30445@sirena.org.uk> <5608F74C.3000104@rock-chips.com> <20150930184655.GX15635@sirena.org.uk> <5614D162.3020500@rock-chips.com>
 Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id C2A3F265E0B
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 14:52:35 +0200 (CEST)
-Received: by pablk4 with SMTP id lk4so21010210pab.3
- for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2015 05:52:34 -0700 (PDT)
-In-Reply-To: <18B9FBAF-1EB4-413F-8639-9AC94B50F445@latencyzero.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rick Mann <rmann@latencyzero.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5614D162.3020500@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: sugar <sugar.zhang@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi sugar,
+   Can the rockchip support more than 8 channels?  Ideally, we would li=
+ke to capture 16 channels and playback 16 channels simultaneously. =20
 
+Thanks,  Caleb=20
 
 Sent from my iPhone
 
-> On Oct 7, 2015, at 4:12 AM, Rick Mann <rmann@latencyzero.com> wrote:
-> 
-> I've managed to get a hacky, fragile config working, in the sense that it sends my tlv320aic3104 samples from speaker-test, and the clocks and data all look good on the oscilloscope, and it ping-pongs between the left and right channel.
-> 
-> But it's outputting the signal on the HPLOUT/HPROUT pins, not the L&R Line Out pins.
-> 
-> My DTS has this:
-> 
->    fragment@3 {
->        target = <&ocp>;
->        __overlay__ {
->            sound {
->                compatible = "ti,da830-evm-audio";
->                ti,model = "DA830 EVM";
->                ti,audio-codec = <&tlv320aic3x>;
->                ti,mcasp-controller = <&mcasp0>;
->                ti,codec-clock-rate = <12000000>;
->                ti,audio-routing =
->                    "Line Out",             "LLOUT",
->                    "Line Out",             "RLOUT";
->            };
->        };
->    };
-> 
-> The original had:
-> 
->    "Headphone Jack",       "HPLOUT",
->    "Headphone Jack",       "HPROUT",
->    "LINE1L",               "Line In",
->    "LINE1R",               "Line In";
-> 
-> I also have an asound.state file I got from the Audio Cape:
-> 
->    https://raw.githubusercontent.com/CircuitCo/BeagleBone-Audio/files/asound.state
-> 
-> I don't really know how to interpret that file. One resource online said it held the current state of the system. I guess that suggests I should play with amixer. But how does the DTS routing come into play?
-> 
-> Thanks,
-> 
-
-Check for the routing in the davinci-evm.c file.  It has other routes,  I kind of recall it says some outputs are not connected.    You might have to edit routs there too. 
-
-
-> 
-> 
-> -- 
-> Rick Mann
-> rmann@latencyzero.com
-> 
-> 
+> On Oct 7, 2015, at 1:01 AM, sugar <sugar.zhang@rock-chips.com> wrote:
+>=20
+> Sorry for late reply, we were in the National Day Holiday.
+>=20
+>> =E5=9C=A8 10/1/2015 02:46, Mark Brown =E5=86=99=E9=81=93:
+>>> On Mon, Sep 28, 2015 at 04:16:12PM +0800, sugar wrote:
+>>> =E5=9C=A8 9/24/2015 00:24, Mark Brown =E5=86=99=E9=81=93:
+>>=20
+>>>> My initial thought here is that the machine driver should be respo=
+nsible
+>>>> for setting this and then the DAI driver should check to see if
+>>>> symmetric_rates are in use and configure itself appropriately.  Is=
+ there
+>>>> a reason why this won't work here?
+>>=20
+>>> It's for i2s ip configuration, in the most situation, there is no n=
+eed
+>>> to use this property, except one case:
+>>=20
+>>> In order to save gpio pins for other function use, we may use singl=
+e
+>>> lrck(tx or rx) pin. of course, it depends on product design. when i=
+n i2s
+>>> slave mode, we need to configure this to share lrck with tx/rx insi=
+de i2s
+>>> logic.
+>>=20
+>>> symmetric_rates flag works fine on rockchip platform, but it can't =
+cover the
+>>> above case.
+>>=20
+>>> Do you have any suggestion about this or maybe there is no need to =
+upstream
+>>> this special part?
+>>=20
+>> What makes you say that the symmetric_rates flag can't be used to co=
+ver
+>> this case?  What you describe above is hte normal reason for needing=
+ to
+>> enforce symmetric_rates.  The driver should be able to check if the =
+flag
+>> has been set just as well as the core is.
+>=20
+> Got it, How about the following modify?
+>=20
+> if (dai->symmetric_rates)
+>    regmap_update_bits(i2s->regmap, I2S_CKR,
+>                           I2S_CKR_TRCM_MASK,
+>                           I2S_CKR_TRCM(val));
+>=20
+>=20
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
