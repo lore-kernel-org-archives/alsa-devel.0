@@ -1,54 +1,48 @@
-From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting dma controller's
- quirk
-Date: Wed, 7 Oct 2015 15:32:06 +0100
-Message-ID: <20151007143205.GG3320@vkoul-mobl.iind.intel.com>
-References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
- <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
- <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
- <56139289.7000005@rock-chips.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH v4 5/8] ASoC: Intel: Skylake: Add topology
+ core init and handlers
+Date: Wed, 7 Oct 2015 14:37:38 +0000
+Message-ID: <1444228658.25504.61.camel@intel.com>
+References: <1444213919-32369-1-git-send-email-vinod.koul@intel.com>
+ <1444213919-32369-6-git-send-email-vinod.koul@intel.com>
+ <20151007142835.GN12635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56139289.7000005-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02A50265E1A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 16:39:14 +0200 (CEST)
+In-Reply-To: <20151007142835.GN12635@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <B506FE6742AC1A4FACAAA28616E5DB7F@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "broonie@kernel.org" <broonie@kernel.org>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 06, 2015 at 05:21:13PM +0800, Shawn Lin wrote:
-
-> >>+	int (*device_get_quirks)(struct dma_chan *chan);
-> >
-> >And why do we want to expose this to users? THis doesnt seem right!
-> >
+On Wed, 2015-10-07 at 15:28 +0100, Mark Brown wrote:
+> On Wed, Oct 07, 2015 at 11:31:56AM +0100, Vinod Koul wrote:
 > 
-> Basically I agree not to expose dma's quirk to slave controllers...But, the
-> fact I mentioned on cover letter explain the reasons why I have to let slave
-> controllers know that they are working with a broken dma. It's a dilemma
-> that if we don't want that to be exposed(let slave controllers' driver get
-> the info via a API), we have to add broken quirk for all of them ,here and
-> there, which seems to be a disaster:(
+> > +bind_event:
+> > +	if (tplg_w->event_type == 0) {
+> > +		dev_info(bus->dev, "ASoC: No event handler required\n");
+> > +		return 0;
+> > +	}
 > 
-> I would appreciate it if you could give me some suggestions at your earliest
-> convenience. :)
-> 
-> >A quirk may exists but should be handled inside the controller driver and do
-> >appropriate action. You don't tell users or expect them to handle these
-> >
-I laready gave one re-read the above lines.
+> This looks like it'll be excessively noisy...  why does the user care?
 
-Anyway I went ahead and read the usage. You are setting the slave parameters
-for this. I can see two ways:
-1. Have the quirk to driver and based on quirk reset the slave settings when
-they are set by client.
-2. Put this in DT and set the dma properties based on these quirks and let
-driver and cleint be agnostic to it
+Right. I will move to debug.. 
 
+Thanks
 -- 
 ~Vinod
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
