@@ -1,20 +1,20 @@
-From: Jyri Sarha <jsarha@ti.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
  codec proposal
-Date: Wed, 7 Oct 2015 10:36:41 +0300
-Message-ID: <5614CB89.70007@ti.com>
+Date: Wed, 7 Oct 2015 09:48:42 +0200
+Message-ID: <5614CE5A.1080406@st.com>
 References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com> <5613EC62.8000007@ti.com>
- <20151006164602.GV12635@sirena.org.uk>
- <20151006185157.GT21513@n2100.arm.linux.org.uk>
+ <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
+ <20151006163311.03067bb5@OPI2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 499DF260A59
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 09:36:49 +0200 (CEST)
-In-Reply-To: <20151006185157.GT21513@n2100.arm.linux.org.uk>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E2652658CB
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 09:48:52 +0200 (CEST)
+In-Reply-To: <20151006163311.03067bb5@OPI2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@kernel.org>
-Cc: "moinejf@free.fr" <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/06/15 21:51, Russell King - ARM Linux wrote:
-> We at least need some kind of notification system from the video part
-> to the other parts, so that we can sanely transmit connect/disconnect/
-> edid updates to different parts of the system*not*  that I'm suggesting
-> that in the case of the Dove Cubox, seeing a disconnect on HDMI should
-> kill the audio - it most_certainly_  _never_  should there, it would be
-> utterly insane, and I'm going to play hard-ball on that case.
 
-I am not proposing any automatic mechanism for killing the audio in the 
-my hdmi codec patch set. I am merely providing the means for the video 
-driver to gracefully abort the audio stream if the driver decides it can 
-not support it any more.
+On 10/06/2015 04:33 PM, Jean-Francois Moine wrote:
+> On Tue, 6 Oct 2015 11:23:03 +0200
+> Arnaud Pouliquen <arnaud.pouliquen@st.com> wrote:
+> 	[snip]
+>> As API is defined in DRM, it seems more logical to match it with the one
+>> defined for video. From my windows, i didn't see any blocking point to
+>> connect codec callback with this API.
+>> But anyway, this API is not freezed, it could be improved with your help.
+>
+> Arnaud, your implementation seems more heavy than Jyri's, and I don't
+> feel the DRM bridge.
+>
+> For HDMI, the exchanges between DRM and ALSA are only:
+> - DRM -> ALSA
+>    - device connection with the audio constraints
+>    - device disconnection
+> - ALSA -> DRM
+>    - start audio with the chosen audio parameters
+>    - stop audio
+>
+> and, in the system, the HDMI devices are seen as DRM connectors (video
+> view) and as ASoC CODECs (audio view).
+>
+> We just need a link between these entities.
+> I don't think that the bridge offers this.
+Not so heavy...
+In fact another way to differentiate the twice approaches could be to
+answer to this question:
+Should ALSA bypasses or not the DRM core/API to access to DRM HDMI 
+connector?
 
-For external HDMI encoders that is hardly ever needed, since the CPU DAI 
-is usually the bit- and frame-clock master in those cases. The CPU DAI 
-can go on banging the bits even if the encoder isn't listening. So we 
-can drop the abort_cb() that if it still annoys you after this explanation.
+Concerning bridge usage, I tried to found a link to address DRM driver 
+trough DRM API. Bridge seemed a good candidate. Perhaps the DRM encoder 
+API could be an other option to study...
 
-Best regards,
-Jyri
+Ken ar wech all/ best Regards
+Arnaud
