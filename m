@@ -1,15 +1,21 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH] ASoC: sun4i-codec: Remove the routing property
-Date: Wed,  7 Oct 2015 11:59:58 +0100
-Message-ID: <1444215598-13543-1-git-send-email-maxime.ripard@free-electrons.com>
-Mime-Version: 1.0
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Audio routing in the tlv320aic3104
+Date: Wed, 7 Oct 2015 04:12:05 -0700
+Message-ID: <18B9FBAF-1EB4-413F-8639-9AC94B50F445@latencyzero.com>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 31507265AFC
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:00:12 +0200 (CEST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id C1074260A5D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:12:07 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2B8A52033D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 07:12:07 -0400 (EDT)
+Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
+ [50.168.55.93])
+ by mail.messagingengine.com (Postfix) with ESMTPA id B9203C0001D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 07:12:06 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,76 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Emilio Lopez <emilio@elopez.com.ar>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Most of the boards have their headphone jack directly connected to the
-matching pins of the SoCs. Since most of the time we will have the same
-routing path, it makes no sense to put that in the DTS, since it will only
-be some useless duplication there.
+I've managed to get a hacky, fragile config working, in the sense that it sends my tlv320aic3104 samples from speaker-test, and the clocks and data all look good on the oscilloscope, and it ping-pongs between the left and right channel.
 
-It also fixes the following warning messages that were seen so far, on
-boards where we were using the bindings in the documentation example.
+But it's outputting the signal on the HPLOUT/HPROUT pins, not the L&R Line Out pins.
 
-sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
-sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+My DTS has this:
 
-Reported-by: Priit Laes <plaes@plaes.org>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- Documentation/devicetree/bindings/sound/sun4i-codec.txt | 6 ------
- sound/soc/sunxi/sun4i-codec.c                           | 7 -------
- 2 files changed, 13 deletions(-)
+    fragment@3 {
+        target = <&ocp>;
+        __overlay__ {
+            sound {
+                compatible = "ti,da830-evm-audio";
+                ti,model = "DA830 EVM";
+                ti,audio-codec = <&tlv320aic3x>;
+                ti,mcasp-controller = <&mcasp0>;
+                ti,codec-clock-rate = <12000000>;
+                ti,audio-routing =
+                    "Line Out",             "LLOUT",
+                    "Line Out",             "RLOUT";
+            };
+        };
+    };
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index 680144b74ae9..c92966bd5488 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -13,10 +13,6 @@ Required properties:
- - clock-names: should contain followings:
-    - "apb": the parent APB clock for this controller
-    - "codec": the parent module clock
--- routing : A list of the connections between audio components.  Each
--  entry is a pair of strings, the first being the connection's sink,
--  the second being the connection's source.
--
- 
- Example:
- codec: codec@01c22c00 {
-@@ -28,6 +24,4 @@ codec: codec@01c22c00 {
- 	clock-names = "apb", "codec";
- 	dmas = <&dma 0 19>, <&dma 0 19>;
- 	dma-names = "rx", "tx";
--	routing = "Headphone Jack", "HP Right",
--		  "Headphone Jack", "HP Left";
- };
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 47780552dcd0..bcbf4da168b6 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -571,7 +571,6 @@ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
- static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- {
- 	struct snd_soc_card *card;
--	int ret;
- 
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
- 	if (!card)
-@@ -584,12 +583,6 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	card->dev		= dev;
- 	card->name		= "sun4i-codec";
- 
--	ret = snd_soc_of_parse_audio_routing(card, "routing");
--	if (ret) {
--		dev_err(dev, "Failed to create our audio routing\n");
--		return NULL;
--	}
--
- 	return card;
- };
- 
+The original had:
+
+	"Headphone Jack",       "HPLOUT",
+	"Headphone Jack",       "HPROUT",
+	"LINE1L",               "Line In",
+	"LINE1R",               "Line In";
+
+I also have an asound.state file I got from the Audio Cape:
+
+	https://raw.githubusercontent.com/CircuitCo/BeagleBone-Audio/files/asound.state
+
+I don't really know how to interpret that file. One resource online said it held the current state of the system. I guess that suggests I should play with amixer. But how does the DTS routing come into play?
+
+Thanks,
+
+
+
+
 -- 
-2.5.3
+Rick Mann
+rmann@latencyzero.com
