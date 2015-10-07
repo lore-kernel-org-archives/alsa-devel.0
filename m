@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Improve error checking of mclk
-	enable/disable" to the asoc tree
-Date: Wed, 07 Oct 2015 12:18:22 +0100
-Message-ID: <E1Zjmjm-0006QY-CN@finisterre>
-References: <413ccdb3a8f209045fad3063e10919a6e6ccb757.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: rsnd: Remove obsolete platform data
+	support" to the asoc tree
+Date: Wed, 07 Oct 2015 12:18:53 +0100
+Message-ID: <E1ZjmkH-0006Ry-SP@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 84D6C265D47
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:18:59 +0200 (CEST)
-In-Reply-To: <413ccdb3a8f209045fad3063e10919a6e6ccb757.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AC52266085
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:19:21 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Improve error checking of mclk enable/disable
+   ASoC: rsnd: Remove obsolete platform data support
 
 has been applied to the asoc tree at
 
@@ -53,58 +52,93 @@ to this mail.
 Thanks,
 Mark
 
->From ba856fbd602175d386ab5a4fc0fdd89b912546cb Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Wed, 7 Oct 2015 11:57:14 +0100
-Subject: [PATCH] ASoC: da7219: Improve error checking of mclk enable/disable
+>From 971a41f034ce46c82f3ab7abebe14c2d1bc54e17 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Wed, 7 Oct 2015 12:42:22 +0200
+Subject: [PATCH] ASoC: rsnd: Remove obsolete platform data support
 
-Should only try to enable/disable the provided mclk, during bias
-level changes, if it's not NULL. Also return value of
-clk_prepare_enable() should be checked and dealt with accordingly.
+Since commit 3d7608e4c169af03 ("ARM: shmobile: bockw: remove legacy
+board file and config"), Renesas R-Car SoCs are only supported in
+generic DT-only ARM multi-platform builds.  The driver doesn't need to
+use platform data anymore, hence remove platform data configuration.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Move <sound/rcar_snd.h> to sound/soc/sh/rcar/, as it's no longer needed
+by platform code.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/core.c                        | 19 +++++--------------
+ {include/sound => sound/soc/sh/rcar}/rcar_snd.h |  0
+ sound/soc/sh/rcar/rsnd.h                        |  3 ++-
+ sound/soc/sh/rcar/ssi.c                         |  3 ---
+ 4 files changed, 7 insertions(+), 18 deletions(-)
+ rename {include/sound => sound/soc/sh/rcar}/rcar_snd.h (100%)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index adcc079..abba4b3 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1494,6 +1494,7 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
- {
- 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index f3feed5..00bf1ff 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1224,20 +1224,11 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	};
+ 	int ret, i;
  
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -1502,7 +1503,14 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			/* MCLK */
--			clk_prepare_enable(da7219->mclk);
-+			if (da7219->mclk) {
-+				ret = clk_prepare_enable(da7219->mclk);
-+				if (ret) {
-+					dev_err(codec->dev,
-+						"Failed to enable mclk\n");
-+					return ret;
-+				}
-+			}
+-	info = NULL;
+-	of_data = NULL;
+-	if (of_id) {
+-		info = devm_kzalloc(&pdev->dev,
+-				    sizeof(struct rcar_snd_info), GFP_KERNEL);
+-		of_data = of_id->data;
+-	} else {
+-		info = pdev->dev.platform_data;
+-	}
+-
+-	if (!info) {
+-		dev_err(dev, "driver needs R-Car sound information\n");
+-		return -ENODEV;
+-	}
++	info = devm_kzalloc(&pdev->dev, sizeof(struct rcar_snd_info),
++			    GFP_KERNEL);
++	if (!info)
++		return -ENOMEM;
++	of_data = of_id->data;
  
- 			/* Master bias */
- 			snd_soc_update_bits(codec, DA7219_REFERENCES,
-@@ -1528,7 +1536,8 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
- 		}
+ 	/*
+ 	 *	init priv data
+diff --git a/include/sound/rcar_snd.h b/sound/soc/sh/rcar/rcar_snd.h
+similarity index 100%
+rename from include/sound/rcar_snd.h
+rename to sound/soc/sh/rcar/rcar_snd.h
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 7a0e52b..f604f69 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -21,10 +21,11 @@
+ #include <linux/of_irq.h>
+ #include <linux/sh_dma.h>
+ #include <linux/workqueue.h>
+-#include <sound/rcar_snd.h>
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
  
- 		/* MCLK */
--		clk_disable_unprepare(da7219->mclk);
-+		if (da7219->mclk)
-+			clk_disable_unprepare(da7219->mclk);
- 		break;
- 	}
++#include "rcar_snd.h"
++
+ /*
+  *	pseudo register
+  *
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d45b9a7..3f5f195 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -697,9 +697,6 @@ static void rsnd_of_parse_ssi(struct platform_device *pdev,
+ 	struct device *dev = &pdev->dev;
+ 	int nr, i;
  
+-	if (!of_data)
+-		return;
+-
+ 	node = rsnd_ssi_of_node(priv);
+ 	if (!node)
+ 		return;
 -- 
 2.5.0
