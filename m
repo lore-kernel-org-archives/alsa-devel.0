@@ -1,65 +1,48 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Wed, 7 Oct 2015 08:49:29 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B8512ED@shsmsx102.ccr.corp.intel.com>
-References: <20151004231752.GA22609@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH RFC V2 0/5] another generic audio hdmi codec
+ proposal
+Date: Wed, 7 Oct 2015 10:05:14 +0100
+Message-ID: <20151007090514.GD21513@n2100.arm.linux.org.uk>
+References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
+ <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
+ <20151006163311.03067bb5@OPI2> <5614CE5A.1080406@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DEADA2659BF
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 10:49:33 +0200 (CEST)
-In-Reply-To: <20151004231752.GA22609@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <5614CE5A.1080406@st.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Mark Brown
-> Sent: Monday, October 05, 2015 7:18 AM
-> To: alsa-devel@alsa-project.org
-> Cc: Takashi Iwai; Liam Girdwood
-> Subject: [alsa-devel] Audio Mini Summit 2015, 8th October, Dublin
-> 
-> [This message is BCCed to everyone currently on the signup list]
-> 
-> As previously announce the audio mini-summit for this year will be this
-> Thursday (8th August) at CCD in Dublin.  Topics we currently have on the list
-> for discussion are:
-> 
->  - Power saving and general system design decisions (is what we're doing
->    lining up with modern hardware with things like multiple output
->    streams?).
->  - What to do with HDMI and its integration with graphics.
->  - Test tools (Intel BAT and others).
->  - BATCH flag.
->  - ACPI simple-card and general generic card support.
->  - Topology & media controller integration.
->  - Kernel tinification.
->  - Android <-> alsa-lib configuration translation.
->  - HDA restructuring.
->  - PCM core simplification - the code is currently quite complex!
->  - Soundwire driver support plans.
- 
-Hi,
-
-Can I add a topic here?
-- Add support for DisplayPort MST to HD-A.
-
-And this may request dynamic PCM support in ALSA core. 
-And Tanu told us he can help to add support for dynamic PCM to PulseAudio.
-
-Thanks
-Mengdong
+T24gV2VkLCBPY3QgMDcsIDIwMTUgYXQgMDk6NDg6NDJBTSArMDIwMCwgQXJuYXVkIFBvdWxpcXVl
+biB3cm90ZToKPiBTaG91bGQgQUxTQSBieXBhc3NlcyBvciBub3QgdGhlIERSTSBjb3JlL0FQSSB0
+byBhY2Nlc3MgdG8gRFJNIEhETUkKPiBjb25uZWN0b3I/CgpZb3UgZG9uJ3QgbmVlZCBkaXJlY3Qg
+YWNjZXNzIHRvIHRoZSBjb25uZWN0b3IgLSBhbmQgYWN0dWFsbHksIGhhdmluZwpkaXJlY3QgYWNj
+ZXNzIHRvIHRoZSBjb25uZWN0b3IgaXMgcG90ZW50aWFsbHkgcmFjeS4gIFNvIG5vLgoKPiBDb25j
+ZXJuaW5nIGJyaWRnZSB1c2FnZSwgSSB0cmllZCB0byBmb3VuZCBhIGxpbmsgdG8gYWRkcmVzcyBE
+Uk0gZHJpdmVyCj4gdHJvdWdoIERSTSBBUEkuIEJyaWRnZSBzZWVtZWQgYSBnb29kIGNhbmRpZGF0
+ZS4gUGVyaGFwcyB0aGUgRFJNIGVuY29kZXIgQVBJCj4gY291bGQgYmUgYW4gb3RoZXIgb3B0aW9u
+IHRvIHN0dWR5Li4uCgpEaWZmZXJlbnQgcGFydHMgb2YgRFJNIGRvbid0IGhlbHAgeW91IHdpdGgg
+dGhpczogd2hldGhlciBpdCdzIGEgY29ubmVjdG9yLAplbmNvZGVyIG9yIGJyaWRnZSwgeW91IHN0
+aWxsIG5lZWQgc29tZSB3YXkgdG8gZ2V0IGluZm9ybWF0aW9uIGluIGFuZCBvdXQKZnJvbSB0aGUg
+SERNSSB2aWRlbyBjb21wb25lbnQgdG8gYm90aCBIRE1JIGF1ZGlvIGFuZCBIRE1JIENFQyBjb21w
+b25lbnRzLgoKUGxlYXNlIHN0YXJ0IHNlZWluZyB0aGF0IHRoZSBwcm9ibGVtIHlvdSBoYXZlIGlu
+IGZyb250IG9mIHlvdSBjb3ZlcnMgbW9yZQp0aGFuIF9qdXN0XyBhdWRpby4gIElmIHlvdSBkZXNp
+Z24gaXQganVzdCBmb3IgYXVkaW8sIHRoZW4gd2UnbGwgcHJvYmFibHkKaGF2ZSB0byByZWRlc2ln
+biBpdCB3aGVuIGFkZHJlc3NpbmcgQ0VDIHN1cHBvcnQuCgotLSAKRlRUQyBicm9hZGJhbmQgZm9y
+IDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29y
+ZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2RyaS1kZXZlbAo=
