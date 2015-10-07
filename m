@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: add DSP platform widget
-	event handlers" to the asoc tree
-Date: Wed, 07 Oct 2015 16:06:07 +0100
-Message-ID: <E1ZjqIB-0000c5-Eu@finisterre>
-References: <1444213919-32369-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add module
+	configuration helpers" to the asoc tree
+Date: Wed, 07 Oct 2015 16:06:10 +0100
+Message-ID: <E1ZjqIE-0000cY-5i@finisterre>
+References: <1444213919-32369-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 215C5266599
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:25 +0200 (CEST)
-In-Reply-To: <1444213919-32369-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F73626659E
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:27 +0200 (CEST)
+In-Reply-To: <1444213919-32369-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: add DSP platform widget event handlers
+   ASoC: Intel: Skylake: Add module configuration helpers
 
 has been applied to the asoc tree at
 
@@ -53,522 +53,193 @@ to this mail.
 Thanks,
 Mark
 
->From d93f8e550f44ed1f54285f77f40f7962a3f25267 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 7 Oct 2015 11:31:54 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: add DSP platform widget event handlers
+>From f7590d4f1565b0d609d25113c37b9bea8a13e9f7 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Wed, 7 Oct 2015 11:31:53 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: Add module configuration helpers
 
-The Skylake driver topology model tries to model the firmware
-rule for pipeline and module creation.
-The creation rule is:
- - Create Pipe
- - Add modules to Pipe
- - Connect the modules (bind)
- - Start the pipes
+To configure a module, driver needs to send input and output PCM
+params for a module in DSP. The FE PCM params come from hw_params
+ie from user, for a BE they also come from hw_params but from
+BE-link fixups.
+So based on PCM params required driver has to find a converter
+module (src/updown/format) and then do the conversion and
+calculate PCM params in these pipelines In this patch we add the
+helper modules which allow driver to do these calculations.
 
-Similarly destroy rule is:
- - Stop the pipe
- - Disconnect it (unbind)
- - Delete the pipe
-
-In driver we use Mixer, as there will always be ONE mixer in a
-pipeline to model a pipe. The modules in pipe are modelled as PGA
-widgets.  The DAPM sequencing rules (mixer and then PGA) are used
-to create the sequence DSP expects as depicted above, and then
-widget handlers for PMU and PMD events help in that.
-
-This patch adds widget event handlers for PRE/POST PMU and
-PRE/POST PMD event for mixer and pga modules.  These event
-handlers invoke pipeline creation, destroy, module creation,
-module bind, unbind and pipeline bind unbind
-
-Event handler sequencing is implement to target the DSP FW
-sequence expectations to enable path from source to sink pipe for
-Playback/Capture.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 448 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |   7 +
- 2 files changed, 455 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 140 +++++++++++++++++++++++++++++++++
+ 1 file changed, 140 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 56baf9d..6d1d29a 100644
+index b0ee1fe..56baf9d 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -325,3 +325,451 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+@@ -27,6 +27,10 @@
+ #include "skl.h"
+ #include "skl-tplg-interface.h"
  
- 	return 0;
++#define SKL_CH_FIXUP_MASK		(1 << 0)
++#define SKL_RATE_FIXUP_MASK		(1 << 1)
++#define SKL_FMT_FIXUP_MASK		(1 << 2)
++
+ /*
+  * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
+  * ignore. This helpers checks if the SKL driver handles this widget type
+@@ -119,6 +123,137 @@ skl_tplg_free_pipe_mem(struct skl *skl, struct skl_module_cfg *mconfig)
+ 	skl->resource.mem -= mconfig->pipe->memory_pages;
  }
-+
-+/*
-+ * Mixer module represents a pipeline. So in the Pre-PMU event of mixer we
-+ * need create the pipeline. So we do following:
-+ *   - check the resources
-+ *   - Create the pipeline
-+ *   - Initialize the modules in pipeline
-+ *   - finally bind all modules together
-+ */
-+static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
-+							struct skl *skl)
-+{
-+	int ret;
-+	struct skl_module_cfg *mconfig = w->priv;
-+	struct skl_pipe_module *w_module;
-+	struct skl_pipe *s_pipe = mconfig->pipe;
-+	struct skl_module_cfg *src_module = NULL, *dst_module;
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	/* check resource available */
-+	if (!skl_tplg_alloc_pipe_mcps(skl, mconfig))
-+		return -EBUSY;
-+
-+	if (!skl_tplg_alloc_pipe_mem(skl, mconfig))
-+		return -ENOMEM;
-+
-+	/*
-+	 * Create a list of modules for pipe.
-+	 * This list contains modules from source to sink
-+	 */
-+	ret = skl_create_pipeline(ctx, mconfig->pipe);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * we create a w_list of all widgets in that pipe. This list is not
-+	 * freed on PMD event as widgets within a pipe are static. This
-+	 * saves us cycles to get widgets in pipe every time.
-+	 *
-+	 * So if we have already initialized all the widgets of a pipeline
-+	 * we skip, so check for list_empty and create the list if empty
-+	 */
-+	if (list_empty(&s_pipe->w_list)) {
-+		ret = skl_tplg_alloc_pipe_widget(ctx->dev, w, s_pipe);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Init all pipe modules from source to sink */
-+	ret = skl_tplg_init_pipe_modules(skl, s_pipe);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Bind modules from source to sink */
-+	list_for_each_entry(w_module, &s_pipe->w_list, node) {
-+		dst_module = w_module->w->priv;
-+
-+		if (src_module == NULL) {
-+			src_module = dst_module;
-+			continue;
-+		}
-+
-+		ret = skl_bind_modules(ctx, src_module, dst_module);
-+		if (ret < 0)
-+			return ret;
-+
-+		src_module = dst_module;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * A PGA represents a module in a pipeline. So in the Pre-PMU event of PGA
-+ * we need to do following:
-+ *   - Bind to sink pipeline
-+ *      Since the sink pipes can be running and we don't get mixer event on
-+ *      connect for already running mixer, we need to find the sink pipes
-+ *      here and bind to them. This way dynamic connect works.
-+ *   - Start sink pipeline, if not running
-+ *   - Then run current pipe
-+ */
-+static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
-+							struct skl *skl)
-+{
-+	struct snd_soc_dapm_path *p;
-+	struct skl_dapm_path_list *path_list;
-+	struct snd_soc_dapm_widget *source, *sink;
-+	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	struct skl_sst *ctx = skl->skl_sst;
-+	int ret = 0;
-+
-+	source = w;
-+	src_mconfig = source->priv;
-+
-+	/*
-+	 * find which sink it is connected to, bind with the sink,
-+	 * if sink is not started, start sink pipe first, then start
-+	 * this pipe
-+	 */
-+	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+		if (!p->connect)
-+			continue;
-+
-+		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
-+		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
-+
-+		/*
-+		 * here we will check widgets in sink pipelines, so that
-+		 * can be any widgets type and we are only interested if
-+		 * they are ones used for SKL so check that first
-+		 */
-+		if ((p->sink->priv != NULL) &&
-+					is_skl_dsp_widget_type(p->sink)) {
-+
-+			sink = p->sink;
-+			src_mconfig = source->priv;
-+			sink_mconfig = sink->priv;
-+
-+			/* Bind source to sink, mixin is always source */
-+			ret = skl_bind_modules(ctx, src_mconfig, sink_mconfig);
-+			if (ret)
-+				return ret;
-+
-+			/* Start sinks pipe first */
-+			if (sink_mconfig->pipe->state != SKL_PIPE_STARTED) {
-+				ret = skl_run_pipe(ctx, sink_mconfig->pipe);
-+				if (ret)
-+					return ret;
-+			}
-+
-+			path_list = kzalloc(
-+					sizeof(struct skl_dapm_path_list),
-+					GFP_KERNEL);
-+			if (path_list == NULL)
-+				return -ENOMEM;
-+
-+			/* Add connected path to one global list */
-+			path_list->dapm_path = p;
-+			list_add_tail(&path_list->node, &skl->dapm_path_list);
-+			break;
-+		}
-+	}
-+
-+	/* Start source pipe last after starting all sinks */
-+	ret = skl_run_pipe(ctx, src_mconfig->pipe);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * in the Post-PMU event of mixer we need to do following:
-+ *   - Check if this pipe is running
-+ *   - if not, then
-+ *	- bind this pipeline to its source pipeline
-+ *	  if source pipe is already running, this means it is a dynamic
-+ *	  connection and we need to bind only to that pipe
-+ *	- start this pipeline
-+ */
-+static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
-+							struct skl *skl)
-+{
-+	int ret = 0;
-+	struct snd_soc_dapm_path *p;
-+	struct snd_soc_dapm_widget *source, *sink;
-+	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	struct skl_sst *ctx = skl->skl_sst;
-+	int src_pipe_started = 0;
-+
-+	sink = w;
-+	sink_mconfig = sink->priv;
-+
-+	/*
-+	 * If source pipe is already started, that means source is driving
-+	 * one more sink before this sink got connected, Since source is
-+	 * started, bind this sink to source and start this pipe.
-+	 */
-+	snd_soc_dapm_widget_for_each_sink_path(w, p) {
-+		if (!p->connect)
-+			continue;
-+
-+		dev_dbg(ctx->dev, "sink widget=%s\n", w->name);
-+		dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+
-+		/*
-+		 * here we will check widgets in sink pipelines, so that
-+		 * can be any widgets type and we are only interested if
-+		 * they are ones used for SKL so check that first
-+		 */
-+		if ((p->source->priv != NULL) &&
-+					is_skl_dsp_widget_type(p->source)) {
-+			source = p->source;
-+			src_mconfig = source->priv;
-+			sink_mconfig = sink->priv;
-+			src_pipe_started = 1;
-+
-+			/*
-+			 * check pipe state, then no need to bind or start
-+			 * the pipe
-+			 */
-+			if (src_mconfig->pipe->state != SKL_PIPE_STARTED)
-+				src_pipe_started = 0;
-+		}
-+	}
-+
-+	if (src_pipe_started) {
-+		ret = skl_bind_modules(ctx, src_mconfig, sink_mconfig);
-+		if (ret)
-+			return ret;
-+
-+		ret = skl_run_pipe(ctx, sink_mconfig->pipe);
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * in the Pre-PMD event of mixer we need to do following:
-+ *   - Stop the pipe
-+ *   - find the source connections and remove that from dapm_path_list
-+ *   - unbind with source pipelines if still connected
-+ */
-+static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
-+							struct skl *skl)
-+{
-+	struct snd_soc_dapm_widget *source, *sink;
-+	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	int ret = 0, path_found = 0;
-+	struct skl_dapm_path_list *path_list, *tmp_list;
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	sink = w;
-+	sink_mconfig = sink->priv;
-+
-+	/* Stop the pipe */
-+	ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * This list, dapm_path_list handling here does not need any locks
-+	 * as we are under dapm lock while handling widget events.
-+	 * List can be manipulated safely only under dapm widgets handler
-+	 * routines
-+	 */
-+	list_for_each_entry_safe(path_list, tmp_list,
-+				&skl->dapm_path_list, node) {
-+		if (path_list->dapm_path->sink == sink) {
-+			dev_dbg(ctx->dev, "Path found = %s\n",
-+					path_list->dapm_path->name);
-+			source = path_list->dapm_path->source;
-+			src_mconfig = source->priv;
-+			path_found = 1;
-+
-+			list_del(&path_list->node);
-+			kfree(path_list);
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * If path_found == 1, that means pmd for source pipe has
-+	 * not occurred, source is connected to some other sink.
-+	 * so its responsibility of sink to unbind itself from source.
-+	 */
-+	if (path_found) {
-+		ret = skl_stop_pipe(ctx, src_mconfig->pipe);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = skl_unbind_modules(ctx, src_mconfig, sink_mconfig);
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * in the Post-PMD event of mixer we need to do following:
-+ *   - Free the mcps used
-+ *   - Free the mem used
-+ *   - Unbind the modules within the pipeline
-+ *   - Delete the pipeline (modules are not required to be explicitly
-+ *     deleted, pipeline delete is enough here
-+ */
-+static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
-+							struct skl *skl)
-+{
-+	struct skl_module_cfg *mconfig = w->priv;
-+	struct skl_pipe_module *w_module;
-+	struct skl_module_cfg *src_module = NULL, *dst_module;
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_pipe *s_pipe = mconfig->pipe;
-+	int ret = 0;
-+
-+	skl_tplg_free_pipe_mcps(skl, mconfig);
-+
-+	list_for_each_entry(w_module, &s_pipe->w_list, node) {
-+		dst_module = w_module->w->priv;
-+
-+		if (src_module == NULL) {
-+			src_module = dst_module;
-+			continue;
-+		}
-+
-+		ret = skl_unbind_modules(ctx, src_module, dst_module);
-+		if (ret < 0)
-+			return ret;
-+
-+		src_module = dst_module;
-+	}
-+
-+	ret = skl_delete_pipe(ctx, mconfig->pipe);
-+	skl_tplg_free_pipe_mem(skl, mconfig);
-+
-+	return ret;
-+}
-+
-+/*
-+ * in the Post-PMD event of PGA we need to do following:
-+ *   - Free the mcps used
-+ *   - Stop the pipeline
-+ *   - In source pipe is connected, unbind with source pipelines
-+ */
-+static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
-+								struct skl *skl)
-+{
-+	struct snd_soc_dapm_widget *source, *sink;
-+	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	int ret = 0, path_found = 0;
-+	struct skl_dapm_path_list *path_list, *tmp_path_list;
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	source = w;
-+	src_mconfig = source->priv;
-+
-+	skl_tplg_free_pipe_mcps(skl, src_mconfig);
-+	/* Stop the pipe since this is a mixin module */
-+	ret = skl_stop_pipe(ctx, src_mconfig->pipe);
-+	if (ret)
-+		return ret;
-+
-+	list_for_each_entry_safe(path_list, tmp_path_list, &skl->dapm_path_list, node) {
-+		if (path_list->dapm_path->source == source) {
-+			dev_dbg(ctx->dev, "Path found = %s\n",
-+					path_list->dapm_path->name);
-+			sink = path_list->dapm_path->sink;
-+			sink_mconfig = sink->priv;
-+			path_found = 1;
-+
-+			list_del(&path_list->node);
-+			kfree(path_list);
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * This is a connector and if path is found that means
-+	 * unbind between source and sink has not happened yet
-+	 */
-+	if (path_found) {
-+		ret = skl_stop_pipe(ctx, src_mconfig->pipe);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = skl_unbind_modules(ctx, src_mconfig, sink_mconfig);
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * In modelling, we assume there will be ONLY one mixer in a pipeline.  If
-+ * mixer is not required then it is treated as static mixer aka vmixer with
-+ * a hard path to source module
-+ * So we don't need to check if source is started or not as hard path puts
-+ * dependency on each other
-+ */
-+static int skl_tplg_vmixer_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct skl *skl = get_skl_ctx(dapm->dev);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return skl_tplg_mixer_dapm_pre_pmu_event(w, skl);
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		return skl_tplg_mixer_dapm_post_pmd_event(w, skl);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * In modelling, we assume there will be ONLY one mixer in a pipeline. If a
-+ * second one is required that is created as another pipe entity.
-+ * The mixer is responsible for pipe management and represent a pipeline
-+ * instance
-+ */
-+static int skl_tplg_mixer_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct skl *skl = get_skl_ctx(dapm->dev);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return skl_tplg_mixer_dapm_pre_pmu_event(w, skl);
-+
-+	case SND_SOC_DAPM_POST_PMU:
-+		return skl_tplg_mixer_dapm_post_pmu_event(w, skl);
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		return skl_tplg_mixer_dapm_pre_pmd_event(w, skl);
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		return skl_tplg_mixer_dapm_post_pmd_event(w, skl);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * In modelling, we assumed rest of the modules in pipeline are PGA. But we
-+ * are interested in last PGA (leaf PGA) in a pipeline to disconnect with
-+ * the sink when it is running (two FE to one BE or one FE to two BE)
-+ * scenarios
-+ */
-+static int skl_tplg_pga_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct skl *skl = get_skl_ctx(dapm->dev);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return skl_tplg_pga_dapm_pre_pmu_event(w, skl);
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		return skl_tplg_pga_dapm_post_pmd_event(w, skl);
-+	}
-+
-+	return 0;
-+}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 73d7916..b3a22a6 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -273,6 +273,13 @@ struct skl_dapm_path_list {
- 	struct list_head node;
- };
  
-+static inline struct skl *get_skl_ctx(struct device *dev)
-+{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
 +
-+	return ebus_to_skl(ebus);
++static void skl_dump_mconfig(struct skl_sst *ctx,
++					struct skl_module_cfg *mcfg)
++{
++	dev_dbg(ctx->dev, "Dumping config\n");
++	dev_dbg(ctx->dev, "Input Format:\n");
++	dev_dbg(ctx->dev, "channels = %d\n", mcfg->in_fmt.channels);
++	dev_dbg(ctx->dev, "s_freq = %d\n", mcfg->in_fmt.s_freq);
++	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->in_fmt.ch_cfg);
++	dev_dbg(ctx->dev, "valid bit depth = %d\n",
++			mcfg->in_fmt.valid_bit_depth);
++	dev_dbg(ctx->dev, "Output Format:\n");
++	dev_dbg(ctx->dev, "channels = %d\n", mcfg->out_fmt.channels);
++	dev_dbg(ctx->dev, "s_freq = %d\n", mcfg->out_fmt.s_freq);
++	dev_dbg(ctx->dev, "valid bit depth = %d\n",
++			mcfg->out_fmt.valid_bit_depth);
++	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->out_fmt.ch_cfg);
 +}
 +
- int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
++static void skl_tplg_update_params(struct skl_module_fmt *fmt,
++			struct skl_pipe_params *params, int fixup)
++{
++	if (fixup & SKL_RATE_FIXUP_MASK)
++		fmt->s_freq = params->s_freq;
++	if (fixup & SKL_CH_FIXUP_MASK)
++		fmt->channels = params->ch;
++	if (fixup & SKL_FMT_FIXUP_MASK)
++		fmt->valid_bit_depth = params->s_fmt;
++}
++
++/*
++ * A pipeline may have modules which impact the pcm parameters, like SRC,
++ * channel converter, format converter.
++ * We need to calculate the output params by applying the 'fixup'
++ * Topology will tell driver which type of fixup is to be applied by
++ * supplying the fixup mask, so based on that we calculate the output
++ *
++ * Now In FE the pcm hw_params is source/target format. Same is applicable
++ * for BE with its hw_params invoked.
++ * here based on FE, BE pipeline and direction we calculate the input and
++ * outfix and then apply that for a module
++ */
++static void skl_tplg_update_params_fixup(struct skl_module_cfg *m_cfg,
++		struct skl_pipe_params *params, bool is_fe)
++{
++	int in_fixup, out_fixup;
++	struct skl_module_fmt *in_fmt, *out_fmt;
++
++	in_fmt = &m_cfg->in_fmt;
++	out_fmt = &m_cfg->out_fmt;
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (is_fe) {
++			in_fixup = m_cfg->params_fixup;
++			out_fixup = (~m_cfg->converter) &
++					m_cfg->params_fixup;
++		} else {
++			out_fixup = m_cfg->params_fixup;
++			in_fixup = (~m_cfg->converter) &
++					m_cfg->params_fixup;
++		}
++	} else {
++		if (is_fe) {
++			out_fixup = m_cfg->params_fixup;
++			in_fixup = (~m_cfg->converter) &
++					m_cfg->params_fixup;
++		} else {
++			in_fixup = m_cfg->params_fixup;
++			out_fixup = (~m_cfg->converter) &
++					m_cfg->params_fixup;
++		}
++	}
++
++	skl_tplg_update_params(in_fmt, params, in_fixup);
++	skl_tplg_update_params(out_fmt, params, out_fixup);
++}
++
++/*
++ * A module needs input and output buffers, which are dependent upon pcm
++ * params, so once we have calculate params, we need buffer calculation as
++ * well.
++ */
++static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
++				struct skl_module_cfg *mcfg)
++{
++	int multiplier = 1;
++
++	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
++		multiplier = 5;
++
++	mcfg->ibs = (mcfg->in_fmt.s_freq / 1000) *
++				(mcfg->in_fmt.channels) *
++				(mcfg->in_fmt.bit_depth >> 3) *
++				multiplier;
++
++	mcfg->obs = (mcfg->out_fmt.s_freq / 1000) *
++				(mcfg->out_fmt.channels) *
++				(mcfg->out_fmt.bit_depth >> 3) *
++				multiplier;
++}
++
++static void skl_tplg_update_module_params(struct snd_soc_dapm_widget *w,
++							struct skl_sst *ctx)
++{
++	struct skl_module_cfg *m_cfg = w->priv;
++	struct skl_pipe_params *params = m_cfg->pipe->p_params;
++	int p_conn_type = m_cfg->pipe->conn_type;
++	bool is_fe;
++
++	if (!m_cfg->params_fixup)
++		return;
++
++	dev_dbg(ctx->dev, "Mconfig for widget=%s BEFORE updation\n",
++				w->name);
++
++	skl_dump_mconfig(ctx, m_cfg);
++
++	if (p_conn_type == SKL_PIPE_CONN_TYPE_FE)
++		is_fe = true;
++	else
++		is_fe = false;
++
++	skl_tplg_update_params_fixup(m_cfg, params, is_fe);
++	skl_tplg_update_buffer_size(ctx, m_cfg);
++
++	dev_dbg(ctx->dev, "Mconfig for widget=%s AFTER updation\n",
++				w->name);
++
++	skl_dump_mconfig(ctx, m_cfg);
++}
++
+ /*
+  * A pipe can have multiple modules, each of them will be a DAPM widget as
+  * well. While managing a pipeline we need to get the list of all the
+@@ -178,6 +313,11 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 		if (!skl_tplg_alloc_pipe_mcps(skl, mconfig))
+ 			return -ENOMEM;
  
- int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++		/*
++		 * apply fix/conversion to module params based on
++		 * FE/BE params
++		 */
++		skl_tplg_update_module_params(w, ctx);
+ 		ret = skl_init_module(ctx, mconfig, NULL);
+ 		if (ret < 0)
+ 			return ret;
 -- 
 2.5.0
