@@ -1,20 +1,19 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH RFC V2 0/5] another generic audio hdmi
- codec proposal
-Date: Wed, 7 Oct 2015 09:48:42 +0200
-Message-ID: <5614CE5A.1080406@st.com>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
- <20151006163311.03067bb5@OPI2>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Zoom R16/24 playback slient
+Date: Wed, 7 Oct 2015 09:53:33 +0200
+Message-ID: <alpine.DEB.2.02.1510070941160.17839@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1509292156390.6263@lnxricardw1.se.axis.com>
+ <560B8481.1080304@laiskiainen.org>
+ <alpine.DEB.2.02.1510060847350.19610@lnxricardw1.se.axis.com>
+ <56137AE7.4000601@laiskiainen.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E2652658CB
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 09:48:52 +0200 (CEST)
-In-Reply-To: <20151006163311.03067bb5@OPI2>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id B81382659BF
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 09:53:36 +0200 (CEST)
+In-Reply-To: <56137AE7.4000601@laiskiainen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Panu Matilainen <pmatilai@laiskiainen.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 10/06/2015 04:33 PM, Jean-Francois Moine wrote:
-> On Tue, 6 Oct 2015 11:23:03 +0200
-> Arnaud Pouliquen <arnaud.pouliquen@st.com> wrote:
-> 	[snip]
->> As API is defined in DRM, it seems more logical to match it with the one
->> defined for video. From my windows, i didn't see any blocking point to
->> connect codec callback with this API.
->> But anyway, this API is not freezed, it could be improved with your help.
->
-> Arnaud, your implementation seems more heavy than Jyri's, and I don't
-> feel the DRM bridge.
->
-> For HDMI, the exchanges between DRM and ALSA are only:
-> - DRM -> ALSA
->    - device connection with the audio constraints
->    - device disconnection
-> - ALSA -> DRM
->    - start audio with the chosen audio parameters
->    - stop audio
->
-> and, in the system, the HDMI devices are seen as DRM connectors (video
-> view) and as ASoC CODECs (audio view).
->
-> We just need a link between these entities.
-> I don't think that the bridge offers this.
-Not so heavy...
-In fact another way to differentiate the twice approaches could be to
-answer to this question:
-Should ALSA bypasses or not the DRM core/API to access to DRM HDMI 
-connector?
-
-Concerning bridge usage, I tried to found a link to address DRM driver 
-trough DRM API. Bridge seemed a good candidate. Perhaps the DRM encoder 
-API could be an other option to study...
-
-Ken ar wech all/ best Regards
-Arnaud
+Ck9uIFR1ZSwgNiBPY3QgMjAxNSwgUGFudSBNYXRpbGFpbmVuIHdyb3RlOgoKPiA+IEhhdmluZyBk
+aXZlZCBpbnRvIHRoaXMsIGFuZCBsb29raW5nIGNhcmVmdWxseSBhdCB0aGUgZGF0YSBwcm9kdWNl
+ZCBieSB0aGUKPiA+IFdpbmRvd3MgZHJpdmVyLCBpdCBhcHBlYXJzIHRoYXQgd2hhdCdzIGhhcHBl
+bmluZyBpcyB0aGF0IHRoZSBkcml2ZXIgc3R1ZmZzCj4gPiBhIDMyLWJpdCBsZW5ndGggc3BlY2lm
+aWVyIGF0IHRoZSBzdGFydCBvZiBlYWNoIGlzb2Nocm9ub3VzIGRhdGEgcGFja2V0Lgo+ID4KPiA+
+IFNvLCBmb3IgaW5zdGFuY2UsIGluc3RlYWQgb2YgdHJhbnNmZXJyaW5nIHRoZSBzYW1wbGUgZGF0
+YQo+ID4KPiA+IDAwIDEyIGJmIDM0ICAwMCA5OCA4NyA3NiAgMDAgM2MgMjQgMzUgIDAwIDg2IDc1
+IDY0IC4uIC4uICg0MCBieXRlcykKPiA+Cj4gPiB0aGUgWm9vbSBkcml2ZXIgd291bGQgc2VuZDoK
+PiA+Cj4gPiAyOCAwMCAwMCAwMCAgMDAgMTIgYmYgMzQgIDAwIDk4IDg3IDc2ICAwMCAzYyAyNCAz
+NSAgMDAgODYgNzUgNjQgLi4uICg0NCBieXRlcykKPiA+Cj4gPiBBdCB0aGUgbW9tZW50IEknbSBj
+b25zaWRlcmluZyBhZGRpbmcgc29tZSBhZGRpdGlvbmFsIGNvZGUgdG8KPiA+IHNvdW5kL3VzYi9w
+Y20uYzogcHJlcGFyZV9wbGF5YmFja191cmIoKSwgZ292ZXJuZWQgYnkgYSBuZXcgYm9vbGVhbiBp
+bgo+ID4gc3RydWN0IHNuZF91c2Jfc3Vic3RyZWFtIGluIGEgc2ltaWxhciB2YWluIGFzIHR4ZnJf
+cXVpcmsgaW4gdGhhdCBzdHJ1Y3R1cmUKPiA+ICh3aGljaCBpbiB0dXJuIGlzIHNldCBpbiBzb21l
+IHF1aXJrIGZ1bmN0aW9uIGRldGVjdGluZyB0aGUgUjE2KS4KPiA+Cj4gPiBXaGF0IG5lZWRzIHRv
+IGJlIGRvbmUgaXMgdG8gYWRkIDQgYnl0ZXMgdG8gdGhlIGxlbmd0aCwgYW5kIGFkanVzdCB0aGUK
+PiA+IG9mZnNldCBhY2NvcmRpbmdseSwgaW4gdXJiLT5pc29fZnJhbWVfZGVzY1tpXSwgYW5kIHRo
+ZW4gYWRkIHRoZSBhZGRpdGlvbmFsCj4gPiBsZW5ndGggZGVzY3JpcHRvciBmb3IgZWFjaCBwYWNr
+ZXQgd2hlbiBjb3B5aW5nIG91dCB0aGUgZGF0YSBmdXJ0aGVyIGRvd24KPiA+IGluIHRoZSBzYW1l
+IGZ1bmN0aW9uLgo+ID4KPiA+IEl0IHdvdWxkIGJlIG5pY2UgdG8gYWRkIGEgZm9vX3F1aXJrKCkg
+ZnVuY3Rpb24gYnV0IHNpbmNlIHRoZSBhY3R1YWwKPiA+IGNvcHlpbmcgb2YgdGhlIGRhdGEgbmVl
+ZHMgdG8gYmUgY2hhbmdlZCwgaXQncyBub3QgcmVhbGx5IHBvc3NpYmxlIHRvIGRvCj4gPiBlZmZp
+Y2llbnRseSB3aXRoIGEgc2VwYXJhdGUgcm91dGluZS4KPiAKPiBTb3VuZHMgbGlrZSBhIHBsYW4g
+dG8gbWUsIGJ1dCBrZWVwIGluIG1pbmQgSSdtIGp1c3QgYW5vdGhlciBuZXdiaWUgaW4gCj4gYWxs
+IHRoaXMuIEFueXdheSwgSSB3b3VsZG4ndCB3b3JyeSBhYm91dCBjbGVhbmVzdCBwb3NzaWJsZSB3
+YXkgYXQgdGhpcyAKPiBwb2ludCwganVzdCBkbyBhIHF1aWNrLW4tZGlydHkgaGFjayB0byBzZWUg
+aWYgYWRkaW5nIHRoZSBsZW5ndGggaXMgCj4gZW5vdWdoIHRvIGdldCBpdCB3b3JraW5nIGFuZCB3
+b3JyeSBhYm91dCB0aGUgcmVzdCBsYXRlci4gSSdsbCB0cnkgdG8gCj4gaGF2ZSBhIGxvb2sgYXQg
+aXQgdG9vIGFzIHNvb24gYXMgdGltZSBwZXJtaXRzLCBidXQgbWVhbndoaWxlIGlmIG1vcmUgCj4g
+ZXhwZXJpZW5jZWQgcGVvcGxlIGhhdmUgYmV0dGVyIHN1Z2dlc3Rpb25zLi4uCgpJIHRyaWVkIHRo
+aXMgb3V0IHllc3RlcmRheSwgd2l0aCBnb29kIHJlc3VsdHMuIEkgb25seSBoYWQgdGltZSBmb3Ig
+bGltaXRlZCAKdGVzdGluZywgYnV0IEkgbWFuYWdlZCB0byBwbGF5YmFjayBhIGNvdXBsZSBvZiA0
+NC4xIGtIeiBmaWxlcyAoZGlkbid0IHRlc3QgCmFueXRoaW5nIGVsc2UpIHdpdGhvdXQgYW55IGhp
+dGNoZXMuIFNvIHRoaXMgaXMgZGVmaW5pdGVseSB0aGUgcmlnaHQgd2F5IHRvIApnby4gQWN0dWFs
+bHkgaXQgd2FzIGEgcmVhbCBqb3kgYWZ0ZXIgdGhlIFIxNiBoYXMgYmVlbiBzaWxlbnQgZm9yIGEg
+d2Vlay4gCjotKQoKQXBhcnQgZnJvbSBwcmVwYXJlX3BsYXliYWNrX3VyYigpLCBJIGhhZCB0byBt
+YWtlIGEgc2ltaWxhciBjaGFuZ2UgdG8gCmVuZHBvaW50LmM6cHJlcGFyZV9vdXRvdW5kX3VyYigp
+IHdoaWNoIG91dHB1dHMgc2lsZW5jZSBiZWZvcmUgdGhlcmUgaXMgCmRhdGEgdG8gc2VuZC4KClBh
+dGNoIHRvIGZvbGxvdywgYnV0IHRoZXJlIGFyZSBhIGNvdXBsZSBvZiB0aGluZ3MgSSBuZWVkIHRv
+IHN0cmFpZ2h0ZW4gb3V0IApmaXJzdDoKCi0gU2luY2Ugd2UncmUgc3R1ZmZpbmcgbW9yZSBkYXRh
+IGluIHRoZSBvdXRnb2luZyBwYWNrZXRzLCBzb21lIGFsbG93YW5jZSAKICBtdXN0IGJlIG1hZGUg
+Zm9yIHRoaXMgd2hlbiBhbGxvY2F0aW5nIHRoZSB1cmItPnRyYW5zZmVyX2J1ZmZlci4gSSd2ZSBn
+b3QgCiAgdG8gcmV2aWV3IHRoYXQgY29kZSBzbyB0aGF0IHdlIGRvbid0IHNwaWxsIG92ZXIgdGhl
+IGVuZCBvZiB0aGUgYWxsb2NhdGVkIAogIGJ1ZmZlciBpbiBzb21lIGNhc2UuCi0gVGhlIGJlc3Qg
+d2F5IHRvIHRyaWdnZXIgdGhlIHF1aXJrLiBJJ20gdGhpbmtpbmcgc29tZXRoaW5nIGFsb25nIHRo
+ZQogIGxpbmVzIG9mIGludHJvZHVjaW5nIGEgUVVJUktfQVVESU9fWk9PTV9JTlRFUkZBQ0Ugd2hp
+Y2ggZW5hYmxlcyB0aGUKICBhZm9yZW1lbnRpb25lZCBiaXQgaW4gb3JkZXIgdG8gZW5hYmxlIHRo
+ZSBxdWlyayBpbiAKICBwcmVwYXJlX3BsYXliYWNrX3VyYigpIGFuZCBwcmVwYXJlX291dHB1dF91
+cmIoKSwgYW5kIHRoZW4gY2FsbHMKICBjcmVhdGVfc3RhbmRhcmRfYXVkaW9fcXVpcmsoKSAoanVz
+dCBhcyBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKICB3b3VsZCBoYXZlIHJlc3VsdGVk
+IGluKS4gVGhlbiBpdCdzIGNsZWFyIGluIHF1aXJrcy10YWJsZS5oIHRoYXQgCiAgc29tZXRoaW5n
+IHNwZWNpYWwgaXMgZ29pbmcgb24uIChDdXJyZW50bHkgSSd2ZSBhZGRlZCB0aGUgcXVpcmsgCiAg
+aW5pdGlhbGl6YXRpb24gZGlyZWN0bHkgaW4gY3JlYXRlX3N0YW5kYXJkX2F1ZGlvX3F1aXJrKCks
+IGJ1dCBpdCBzZWVtcyAKICB3cm9uZyB0byBoaWRlIGl0IGF3YXkgaW4gdGhlcmUpLgoKQW5kIEkg
+YWxzbyBuZWVkIHRvIHRlc3Qgc29tZSBtb3JlLgoKQWxzbywgaW4gdGhlIGR1bXAgZnJvbSB0aGUg
+V2luZG93cyBkcml2ZXIgSSBzYXcgc29tZSBmb3JtIG9mIHNhbXBsZSByYXRlIApjb250cm9sIG1l
+c3NhZ2UgYmVpbmcgc2VudCB0aGF0IExpbnV4IGRvZXNuJ3Qgc2VuZCwgb24gdGhlIG90aGVyIGhh
+bmQsIAp0aGF0IHdhcyBzZW50IGFzIHBhcnQgb2Ygc3RhcnRpbmcgY2FwdHVyZSwgd2hpY2ggYWxy
+ZWFkeSBoYXMgYmVlbiBwcm92ZW4gCnRvIHdvcmssIHNvIGl0IG1pZ2h0IHNpbXBseSBub3QgYmUg
+bmVlZGVkLgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21tdW5pY2F0aW9ucyBBQiwg
+THVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25lICs0NiA0NiAyNzIgMjAx
+NiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEgMzAKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
