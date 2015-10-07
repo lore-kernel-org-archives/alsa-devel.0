@@ -1,18 +1,16 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Boss GT-001
-Date: Wed, 7 Oct 2015 17:20:39 +0200
-Message-ID: <alpine.DEB.2.02.1510071709440.30181@lnxricardw1.se.axis.com>
-References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
- <alpine.DEB.2.02.1510071000020.17839@lnxricardw1.se.axis.com>
- <3067439.4bLxTPZOO7@kamdesktop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Wed, 7 Oct 2015 16:20:47 +0100
+Message-ID: <20151007152047.GQ12635@sirena.org.uk>
+References: <20151004231752.GA22609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7140271442356231214=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8B82614A7
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:20:41 +0200 (CEST)
-In-Reply-To: <3067439.4bLxTPZOO7@kamdesktop>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 812AA2614A7
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:22:09 +0200 (CEST)
+In-Reply-To: <20151004231752.GA22609@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Keith A. Milner" <maillist@superlative.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Wed, 7 Oct 2015, Keith A. Milner wrote:
+--===============7140271442356231214==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="goUWXeVfD7US0SSy"
+Content-Disposition: inline
 
-> The data I'm getting from Wireshark via USBMon seems OK from my initial
-> viewing. Incidentally, Wireshark can sniff directly from usbmon interface=
-s and
-> exposes them as capture interfaces (at least with the version I have).
 
-Same here. I might have been unclear in my previous message, but that is =
+--goUWXeVfD7US0SSy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-what I meant.
+On Mon, Oct 05, 2015 at 12:17:52AM +0100, Mark Brown wrote:
+> [This message is BCCed to everyone currently on the signup list]
+>=20
+> As previously announce the audio mini-summit for this year will be this
+> Thursday (8th August) at CCD in Dublin.  Topics we currently have on the
+> list for discussion are:
 
-> The isochronous data appears as follows:
-> =
+Current list:
 
-> "54","24.767751000","host","7.14","USB","192","URB_ISOCHRONOUS
+ - Power saving and general system design decisions (is what we're doing
+   lining up with modern hardware with things like multiple output
+   streams?).
+ - Documentation.
+ - alsa-lib releae plans.
+ - What to do with HDMI and its integration with graphics.
+ - Test tools (Intel BAT and others).
+ - BATCH flag.
+ - Fuzz control PCM APIs.
+ - Splitting out root only controls.
+ - ACPI simple-card and general generic card support.
+ - Topology & media controller integration.
+ - Kernel tinification.
+ - Android <-> alsa-lib configuration translation.
+ - HDA restructuring.
+  - Support for DisplayPort MST.
+ - PCM core simplification - the code is currently quite complex!
+ - Soundwire driver support plans.
+ - ASoC multichannel.
+ - Random DAPM changes.
 
-Yes, these are the isochronous packet headers.
+--goUWXeVfD7US0SSy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> in","eeffffff 00000000 70000000 00000000 eeffffff 70000000...",""
-       -------- -------- -------- --------
-         tag ?   offset   length   status  and again (next header)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-My understanding is that the isochronous data is sent one packet per frame =
+iQEcBAEBCAAGBQJWFThIAAoJECTWi3JdVIfQBiwH/21dSA+qFzCrzEbuBZeXqXqZ
+Fqsj71TNvqIEjlwzXN8b2ZJFuu0MoQF1dR7HOl7AInPJdXsJRVWgQViprOinHDve
+uShaHTIMzD+u491SW/orRCpGRgi2i2+UquHmyGwvMBFXa6ZT1Bv7oTjk86MwV529
+wgZQ+U1xG61E3Uz0hxF33YWSqupdTbPHsG0awTnV3UXc4baMf6fKCWwpSoKdeX2+
+CXTJzRBO8/UimZKyZKAl+XLetTMGw3CYOpxS1/lHJz/zCsKrWM+fR+W6RRWe6bMa
+BLqy5wiXPlCfKYs+AlJCcqLdVB6IEkk8h9UxR2S2AyxOgQMOAoVzZ8ZDPMGmvKE=
+=Z4pn
+-----END PGP SIGNATURE-----
 
-on the wire (interval: 1 ms for full speed, 125 =B5s (actually called a =
+--goUWXeVfD7US0SSy--
 
-microframe) for high speed) but delivering the data one packet at a time =
+--===============7140271442356231214==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-to the USB application would result in a lot of packet transfers, so =
 
-isochronous data is lumped together and delivered at some more or less =
-
-regular interval to the higher layers. So at USB API (or Wireshark) layer =
-
-you get these 'isochronous' packets which list a bunch of headers followed =
-
-by the corresponding data as a single 'packet', even though it's been =
-
-assembled from several distinct ones. The 'offset' fields are relative to =
-
-the end of the headers in the resulting packet, where the actual =
-
-isochronous data starts.
-
-> Wireshark also appears to decode them quite nicely.  I've pasted one of t=
-he
-> GET DESCRIPTOR responses below.
-> ...
-> DESCRIPTOR Response CONFIGURATION
-> =
-
-> Frame 9: 240 bytes on wire (1920 bits), 240 bytes captured (1920 bits) on
-> interface 0
-> ...
->     iInterface: 0
-> UNKNOWN DESCRIPTOR
->     bLength: 6
->     bDescriptorType: 0x24 (unknown)
-> INTERFACE DESCRIPTOR (1.1): class Vendor Specific
->     bLength: 9
->     bDescriptorType: 0x04 (INTERFACE)
-> ...
-
-Actually, you should be able to get the configuration information directly =
-
-in Linux by using 'lsusb -v'. It lists the 'Unknown descriptors' in their =
-
-entirety in hex (prefixed by 'UNRECOGNIZED:') so that you can decode them =
-
-separately without having to examine the actual binary packet content in =
-
-Wireshark.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--===============7140271442356231214==--
