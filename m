@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Remove obsolete platform data
-	support" to the asoc tree
-Date: Wed, 07 Oct 2015 15:12:38 +0100
-Message-ID: <E1ZjpSQ-0007Ua-5f@finisterre>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [FFADO-devel] [PATCH] ALSA: bebob: support
+ Firewire I/O card of Mackie Onyx 1220/1620/1640
+Date: Wed, 7 Oct 2015 16:19:56 +0200
+Message-ID: <20151007161956.58740641@kant>
+References: <1443917823-13516-1-git-send-email-o-takashi@sakamocchi.jp>
+ <20151007153801.05e4e354@kant>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4926226644C
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 16:13:06 +0200 (CEST)
-In-Reply-To: 
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3702D265E1A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 16:19:58 +0200 (CEST)
+In-Reply-To: <20151007153801.05e4e354@kant>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,124 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: ffado-devel@lists.sf.net
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, andrzej@gansiniec.pl, clemens@ladisch.de, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Oct 07 Stefan Richter wrote:
+> On Oct 04 Takashi Sakamoto wrote:
+> > Current ALSA BeBoB drivers has an entry for this model, while the value of
+> > vendor ID seems to be wrong according to an user's report.
+> > 
+> > The vendor had released no updated firmware, thus we can judge that this
+> > model had not changed the content of its config ROM. It's reasonable to fix
+> > the ID according to the report.
+> > 
+> > $ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+> > 
+> >                ROM header and bus information block
+> >                -----------------------------------------------------------------
+> > 400  0425720f  bus_info_length 4, crc_length 37, crc 29199
+> > 404  31333934  bus_name "1394"
+> > 408  f0646122  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
+> >                max_rec 6 (128), max_rom 1, gen 2, spd 2 (S400)
+> > 40c  00000ff2  company_id 00000f     |
+> > 410  00004697  device_id f200004697  | EUI-64 00000ff200004697
+> 
+> This is a mistake from the firmware author.  The company ID part (OUI-24)
+> within the EUI-64 should obviously be 0x000ff2 for Loud, Inc. instead of
+> 0x00000f for NeXT, Inc..  The firmware author accidentally shifted the
+> company ID by one byte into the device ID.
+> 
+> >                root directory
+> >                -----------------------------------------------------------------
+> > 414  000859be  directory_length 8, crc 22974
+> > 418  04000082  hardware version
+> > 41c  0c0083c0  node capabilities per IEEE 1394
+> > 420  03000ff2  vendor
+> > 424  8100000a  --> descriptor leaf at 44c
+> 
+> Here is the correct value.
+> 
+> firewire-core uses _this_ entry when it generates the modalias of a
+> FireWire unit device,
+[...]
+> The configuration file of the FFADO userspace drivers is apparently
+> affected by this matter too:
+> 
+> device_definitions = ( 
+> {
+>     vendorid    = 0x00000f;
+>     modelid     = 0x00010065;
+>     vendorname  = "Mackie";
+>     modelname   = "Onyx Firewire";
+>     driver      = "BEBOB";
+>     xmit_max_cycles_early_transmit = 4;
+> },
+> { # Added by arnonym from ffado-mixers list
+>     vendorid    = 0x00000f;
+>     modelid     = 0x00010067;
+>     vendorname  = "Mackie";
+>     modelname   = "Onyx Firewire";
+>     driver      = "BEBOB";
+>     mixer       = "MackieOnyx";
+>     xmit_max_cycles_early_transmit = 4;
+> },
+> [...]
+> 
+> I am not 100% sure, but I think that FFADO takes the vendor ID
+> from the root directory too, not from the GUID in the bus information
+> block.
+[...]
 
-   ASoC: rsnd: Remove obsolete platform data support
+Hmm, seems I was wrong.
+This is a debug log from the ffado-user mailinglist, August 31:
 
-has been applied to the asoc tree at
+1441054790505378:  (ffado.cpp)[  92] ffado_streaming_init: libffado 2.2.9999- built Jun  5 2015 15:13:52
+01789081089: Debug (devicemanager.cpp)[ 354] discover: Starting discovery...
+01789165571: Debug (Configuration.cpp)[ 163] showSetting: Group: (null)
+01789165589: Debug (Configuration.cpp)[ 185] showSetting:     vendorid = 15 (0x0000000F)
+01789165593: Debug (Configuration.cpp)[ 185] showSetting:     modelid = 65637 (0x00010065)
+01789165601: Debug (Configuration.cpp)[ 209] showSetting:     vendorname = Mackie
+01789165605: Debug (Configuration.cpp)[ 209] showSetting:     modelname = Onyx Firewire
+01789165608: Debug (Configuration.cpp)[ 209] showSetting:     driver = BEBOB
+01789165610: Debug (Configuration.cpp)[ 185] showSetting: xmit_max_cycles_early_transmit = 4 (0x00000004)
+01789165755: Debug (devicemanager.cpp)[ 616] discover: driver found for device 1
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From dcc448e619194098b24477a6d56af50c57f26f1d Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Wed, 7 Oct 2015 12:42:22 +0200
-Subject: [PATCH] ASoC: rsnd: Remove obsolete platform data support
-
-Since commit 3d7608e4c169af03 ("ARM: shmobile: bockw: remove legacy
-board file and config"), Renesas R-Car SoCs are only supported in
-generic DT-only ARM multi-platform builds.  The driver doesn't need to
-use platform data anymore, hence remove platform data configuration.
-
-Move <sound/rcar_snd.h> to sound/soc/sh/rcar/, as it's no longer needed
-by platform code.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/core.c                        | 19 +++++--------------
- {include/sound => sound/soc/sh/rcar}/rcar_snd.h |  0
- sound/soc/sh/rcar/rsnd.h                        |  3 ++-
- sound/soc/sh/rcar/ssi.c                         |  3 ---
- 4 files changed, 7 insertions(+), 18 deletions(-)
- rename {include/sound => sound/soc/sh/rcar}/rcar_snd.h (100%)
-
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index eec294d..6ef9a88 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1236,20 +1236,11 @@ static int rsnd_probe(struct platform_device *pdev)
- 	};
- 	int ret, i;
- 
--	info = NULL;
--	of_data = NULL;
--	if (of_id) {
--		info = devm_kzalloc(&pdev->dev,
--				    sizeof(struct rcar_snd_info), GFP_KERNEL);
--		of_data = of_id->data;
--	} else {
--		info = pdev->dev.platform_data;
--	}
--
--	if (!info) {
--		dev_err(dev, "driver needs R-Car sound information\n");
--		return -ENODEV;
--	}
-+	info = devm_kzalloc(&pdev->dev, sizeof(struct rcar_snd_info),
-+			    GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+	of_data = of_id->data;
- 
- 	/*
- 	 *	init priv data
-diff --git a/include/sound/rcar_snd.h b/sound/soc/sh/rcar/rcar_snd.h
-similarity index 100%
-rename from include/sound/rcar_snd.h
-rename to sound/soc/sh/rcar/rcar_snd.h
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index e4068d7..e9fef53 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -21,10 +21,11 @@
- #include <linux/of_irq.h>
- #include <linux/sh_dma.h>
- #include <linux/workqueue.h>
--#include <sound/rcar_snd.h>
- #include <sound/soc.h>
- #include <sound/pcm_params.h>
- 
-+#include "rcar_snd.h"
-+
- /*
-  *	pseudo register
-  *
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 5e05f942..842a35b 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -700,9 +700,6 @@ static void rsnd_of_parse_ssi(struct platform_device *pdev,
- 	struct device *dev = &pdev->dev;
- 	int nr, i;
- 
--	if (!of_data)
--		return;
--
- 	node = rsnd_ssi_of_node(priv);
- 	if (!node)
- 		return;
+So the original FFADO configuration works as-is.
 -- 
-2.5.0
+Stefan Richter
+-=====-===== =-=- --===
+http://arcgraph.de/sr/
