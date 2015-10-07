@@ -1,30 +1,54 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Subject: RE: [PATCH v2 0/3] ASoC: da7213: Add DT support for codec
-Date: Wed, 7 Oct 2015 14:30:51 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460879F@SW-EX-MBX01.diasemi.com>
-References: <cover.1444223905.git.Adam.Thomson.Opensource@diasemi.com>
- <20151007141039.GL12635@sirena.org.uk>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting dma controller's
+ quirk
+Date: Wed, 7 Oct 2015 15:32:06 +0100
+Message-ID: <20151007143205.GG3320@vkoul-mobl.iind.intel.com>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
+ <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
+ <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
+ <56139289.7000005@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20151007141039.GL12635-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <56139289.7000005-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gT2N0b2JlciAwNywgMjAxNSAxNToxMSwgTWFyayBCcm93biB3cm90ZToNCg0KPiA+IEFkYW0g
-VGhvbXNvbiAoMyk6DQo+ID4gICBBU29DOiBkYTcyMTM6IEFkZCBEVCBzdXBwb3J0IHRvIGNvZGVj
-IGRyaXZlcg0KPiA+ICAgQVNvQzogZGE3MjEzOiBBZGQgc3VwcG9ydCB0byBoYW5kbGUgbWNsayBk
-YXRhIHByb3ZpZGVkIHRvIGRyaXZlcg0KPiA+ICAgQVNvQzogZGE3MjEzOiBBZGQgYmluZGluZ3Mg
-ZG9jdW1lbnRhdGlvbiBmb3IgY29kZWMgZHJpdmVyDQo+IA0KPiBQbGVhc2UgcmVtZW1iZXIgdG8g
-c2VuZCB0aGUgRFQgYmluZGluZyBiZWZvcmUgdGhlIGNvZGUgYXMgaXMgbm9ybWFsLA0KPiB0aGlz
-IGhlbHBzIHJldmlldyB0aGUgY29kZSBhcyB3ZSBrbm93IGluIGFkdmFuY2Ugd2hhdCB0aGUgY29k
-ZSBpcw0KPiBzdXBwb3NlZCB0byBkby4NCg0KT2ssIHVuZGVyc3Rvb2QuIFdpbGwgbWFrZSBzdXJl
-IGluIHRoZSBmdXR1cmUgSSBvcmRlciB0aGVtIHRoaXMgd2F5LiBUaGFua3MuDQo=
+On Tue, Oct 06, 2015 at 05:21:13PM +0800, Shawn Lin wrote:
+
+> >>+	int (*device_get_quirks)(struct dma_chan *chan);
+> >
+> >And why do we want to expose this to users? THis doesnt seem right!
+> >
+> 
+> Basically I agree not to expose dma's quirk to slave controllers...But, the
+> fact I mentioned on cover letter explain the reasons why I have to let slave
+> controllers know that they are working with a broken dma. It's a dilemma
+> that if we don't want that to be exposed(let slave controllers' driver get
+> the info via a API), we have to add broken quirk for all of them ,here and
+> there, which seems to be a disaster:(
+> 
+> I would appreciate it if you could give me some suggestions at your earliest
+> convenience. :)
+> 
+> >A quirk may exists but should be handled inside the controller driver and do
+> >appropriate action. You don't tell users or expect them to handle these
+> >
+I laready gave one re-read the above lines.
+
+Anyway I went ahead and read the usage. You are setting the slave parameters
+for this. I can see two ways:
+1. Have the quirk to driver and based on quirk reset the slave settings when
+they are set by client.
+2. Put this in DT and set the dma properties based on these quirks and let
+driver and cleint be agnostic to it
+
+-- 
+~Vinod
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
