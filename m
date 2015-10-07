@@ -1,38 +1,94 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 1/2] ASoC: da7219: Use of_match_ptr() when assigning match
- table
-Date: Wed, 7 Oct 2015 11:57:12 +0100
-Message-ID: <0ba5a5ba6765f9f9d520a604ffd06dcb61a68822.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
-References: <cover.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH] ASoC: sun4i-codec: Remove the routing property
+Date: Wed,  7 Oct 2015 11:59:58 +0100
+Message-ID: <1444215598-13543-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1444214947.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31507265AFC
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:00:12 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Emilio Lopez <emilio@elopez.com.ar>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use of_match_ptr() to handle non-DT kernel scenario where match
-table should be NULL.
+Most of the boards have their headphone jack directly connected to the
+matching pins of the SoCs. Since most of the time we will have the same
+routing path, it makes no sense to put that in the DTS, since it will only
+be some useless duplication there.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+It also fixes the following warning messages that were seen so far, on
+boards where we were using the bindings in the documentation example.
+
+sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+
+Reported-by: Priit Laes <plaes@plaes.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- sound/soc/codecs/da7219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/sun4i-codec.txt | 6 ------
+ sound/soc/sunxi/sun4i-codec.c                           | 7 -------
+ 2 files changed, 13 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index c86a833..adcc079 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1932,7 +1932,7 @@ MODULE_DEVICE_TABLE(i2c, da7219_i2c_id);
- static struct i2c_driver da7219_i2c_driver = {
- 	.driver = {
- 		.name = "da7219",
--		.of_match_table = da7219_of_match,
-+		.of_match_table = of_match_ptr(da7219_of_match),
- 	},
- 	.probe		= da7219_i2c_probe,
- 	.remove		= da7219_i2c_remove,
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+index 680144b74ae9..c92966bd5488 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+@@ -13,10 +13,6 @@ Required properties:
+ - clock-names: should contain followings:
+    - "apb": the parent APB clock for this controller
+    - "codec": the parent module clock
+-- routing : A list of the connections between audio components.  Each
+-  entry is a pair of strings, the first being the connection's sink,
+-  the second being the connection's source.
+-
+ 
+ Example:
+ codec: codec@01c22c00 {
+@@ -28,6 +24,4 @@ codec: codec@01c22c00 {
+ 	clock-names = "apb", "codec";
+ 	dmas = <&dma 0 19>, <&dma 0 19>;
+ 	dma-names = "rx", "tx";
+-	routing = "Headphone Jack", "HP Right",
+-		  "Headphone Jack", "HP Left";
+ };
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 47780552dcd0..bcbf4da168b6 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -571,7 +571,6 @@ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+ {
+ 	struct snd_soc_card *card;
+-	int ret;
+ 
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+ 	if (!card)
+@@ -584,12 +583,6 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+ 	card->dev		= dev;
+ 	card->name		= "sun4i-codec";
+ 
+-	ret = snd_soc_of_parse_audio_routing(card, "routing");
+-	if (ret) {
+-		dev_err(dev, "Failed to create our audio routing\n");
+-		return NULL;
+-	}
+-
+ 	return card;
+ };
+ 
 -- 
-1.9.3
+2.5.3
