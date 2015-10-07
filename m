@@ -1,18 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add topology core init
-	and handlers" to the asoc tree
-Date: Wed, 07 Oct 2015 16:05:57 +0100
-Message-ID: <E1ZjqI1-0000b9-N7@finisterre>
-References: <1443020604-22282-6-git-send-email-vinod.koul@intel.com>
+Subject: [GIT PULL] ASoC fixes for v4.3
+Date: Wed, 7 Oct 2015 16:17:52 +0100
+Message-ID: <20151007151752.GP12635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3173167004280070814=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E899B2665A9
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:06:29 +0200 (CEST)
-In-Reply-To: <1443020604-22282-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BC4A2614A7
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 17:18:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,406 +18,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Add topology core init and handlers
+--===============3173167004280070814==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5a/gwqvMGypQC9CX"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--5a/gwqvMGypQC9CX
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The following changes since commit 049e6dde7e57f0054fdc49102e7ef4830c698b46:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  Linux 4.3-rc4 (2015-10-04 16:57:17 +0100)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+are available in the git repository at:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc=
+-fix-v4.3-rc4
 
-Thanks,
-Mark
+for you to fetch changes up to e4fc141d2a022a63c87a4851b3c688eca6a1647b:
 
->From 3af36706ff6c4ea8695e92b1ba80e183f1919684 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 7 Oct 2015 11:31:56 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: Add topology core init and handlers
+  Merge remote-tracking branches 'asoc/fix/tlv320aic3x' and 'asoc/fix/wm896=
+2' into asoc-linus (2015-10-07 16:07:50 +0100)
 
-The SKL driver does not code DSP topology in driver. It uses the
-newly added ASoC topology core to parse the topology information
-(controls, widgets and map) from topology binary.
-Each topology element passed private data which contains
-information that driver used to identify the module instance
-within firmware and send IPCs for that module to DSP firmware
-along with parameters.
-This patch adds init routine to invoke topology load and callback
-for topology creation.
+----------------------------------------------------------------
+ASoC: Fixes for v4.3
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig                      |   1 +
- sound/soc/intel/skylake/skl-topology.c       | 218 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h       |   1 -
- sound/soc/intel/skylake/skl-tplg-interface.h |  80 ++++++++++
- 4 files changed, 299 insertions(+), 1 deletion(-)
+Quite a few fixes here but they're all very small and driver specific,
+none of them really stand out if you aren't using the relevant hardware
+but they're all useful if you do happen to have an affected device.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 05fde5e6e..664df1f 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -138,4 +138,5 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- config SND_SOC_INTEL_SKYLAKE
- 	tristate
- 	select SND_HDA_EXT_CORE
-+	select SND_SOC_TOPOLOGY
- 	select SND_SOC_INTEL_SST
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 827f21d..648bbbf 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1011,3 +1011,221 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
- 
- 	return 0;
- }
-+
-+static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
-+	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
-+	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
-+	{SKL_PGA_EVENT, skl_tplg_pga_event},
-+};
-+
-+/*
-+ * The topology binary passes the pin info for a module so initialize the pin
-+ * info passed into module instance
-+ */
-+static void skl_fill_module_pin_info(struct device *dev,
-+			struct skl_module_pin *m_pin,
-+			int max_pin)
-+{
-+	int i;
-+
-+	for (i = 0; i < max_pin; i++) {
-+		m_pin[i].id.module_id = 0;
-+		m_pin[i].id.instance_id = 0;
-+		m_pin[i].in_use = false;
-+		m_pin[i].is_dynamic = true;
-+		m_pin[i].pin_index = i;
-+	}
-+}
-+
-+/*
-+ * Add pipeline from topology binary into driver pipeline list
-+ *
-+ * If already added we return that instance
-+ * Otherwise we create a new instance and add into driver list
-+ */
-+static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
-+			struct skl *skl, struct skl_dfw_pipe *dfw_pipe)
-+{
-+	struct skl_pipeline *ppl;
-+	struct skl_pipe *pipe;
-+	struct skl_pipe_params *params;
-+
-+	list_for_each_entry(ppl, &skl->ppl_list, node) {
-+		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id)
-+			return ppl->pipe;
-+	}
-+
-+	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
-+	if (!ppl)
-+		return NULL;
-+
-+	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
-+	if (!pipe)
-+		return NULL;
-+
-+	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return NULL;
-+
-+	pipe->ppl_id = dfw_pipe->pipe_id;
-+	pipe->memory_pages = dfw_pipe->memory_pages;
-+	pipe->pipe_priority = dfw_pipe->pipe_priority;
-+	pipe->conn_type = dfw_pipe->conn_type;
-+	pipe->state = SKL_PIPE_INVALID;
-+	pipe->p_params = params;
-+	INIT_LIST_HEAD(&pipe->w_list);
-+
-+	ppl->pipe = pipe;
-+	list_add(&ppl->node, &skl->ppl_list);
-+
-+	return ppl->pipe;
-+}
-+
-+/*
-+ * Topology core widget load callback
-+ *
-+ * This is used to save the private data for each widget which gives
-+ * information to the driver about module and pipeline parameters which DSP
-+ * FW expects like ids, resource values, formats etc
-+ */
-+static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
-+					struct snd_soc_dapm_widget *w,
-+					struct snd_soc_tplg_dapm_widget *tplg_w)
-+{
-+	int ret;
-+	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-+	struct skl *skl = ebus_to_skl(ebus);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl_module_cfg *mconfig;
-+	struct skl_pipe *pipe;
-+	struct skl_dfw_module *dfw_config = (struct skl_dfw_module *)tplg_w->priv.data;
-+
-+	if (!tplg_w->priv.size)
-+		goto bind_event;
-+
-+	mconfig = devm_kzalloc(bus->dev, sizeof(*mconfig), GFP_KERNEL);
-+
-+	if (!mconfig)
-+		return -ENOMEM;
-+
-+	w->priv = mconfig;
-+	mconfig->id.module_id = dfw_config->module_id;
-+	mconfig->id.instance_id = dfw_config->instance_id;
-+	mconfig->mcps = dfw_config->max_mcps;
-+	mconfig->ibs = dfw_config->ibs;
-+	mconfig->obs = dfw_config->obs;
-+	mconfig->core_id = dfw_config->core_id;
-+	mconfig->max_in_queue = dfw_config->max_in_queue;
-+	mconfig->max_out_queue = dfw_config->max_out_queue;
-+	mconfig->is_loadable = dfw_config->is_loadable;
-+	mconfig->in_fmt.channels = dfw_config->in_fmt.channels;
-+	mconfig->in_fmt.s_freq = dfw_config->in_fmt.freq;
-+	mconfig->in_fmt.bit_depth = dfw_config->in_fmt.bit_depth;
-+	mconfig->in_fmt.valid_bit_depth = dfw_config->in_fmt.valid_bit_depth;
-+	mconfig->in_fmt.ch_cfg = dfw_config->in_fmt.ch_cfg;
-+	mconfig->out_fmt.channels = dfw_config->out_fmt.channels;
-+	mconfig->out_fmt.s_freq = dfw_config->out_fmt.freq;
-+	mconfig->out_fmt.bit_depth = dfw_config->out_fmt.bit_depth;
-+	mconfig->out_fmt.valid_bit_depth = dfw_config->out_fmt.valid_bit_depth;
-+	mconfig->out_fmt.ch_cfg = dfw_config->out_fmt.ch_cfg;
-+	mconfig->params_fixup = dfw_config->params_fixup;
-+	mconfig->converter = dfw_config->converter;
-+	mconfig->m_type = dfw_config->module_type;
-+	mconfig->vbus_id = dfw_config->vbus_id;
-+
-+	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
-+	if (pipe)
-+		mconfig->pipe = pipe;
-+
-+	mconfig->dev_type = dfw_config->dev_type;
-+	mconfig->hw_conn_type = dfw_config->hw_conn_type;
-+	mconfig->time_slot = dfw_config->time_slot;
-+	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
-+
-+	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_in_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_in_pin)
-+		return -ENOMEM;
-+
-+	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_out_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_out_pin)
-+		return -ENOMEM;
-+
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_in_pin,
-+				mconfig->max_in_queue);
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_out_pin,
-+				mconfig->max_out_queue);
-+
-+	if (mconfig->formats_config.caps_size == 0)
-+		goto bind_event;
-+
-+	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
-+				mconfig->formats_config.caps_size, GFP_KERNEL);
-+
-+	if (mconfig->formats_config.caps == NULL)
-+		return -ENOMEM;
-+
-+	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
-+						 dfw_config->caps.caps_size);
-+
-+bind_event:
-+	if (tplg_w->event_type == 0) {
-+		dev_info(bus->dev, "ASoC: No event handler required\n");
-+		return 0;
-+	}
-+
-+	ret = snd_soc_tplg_widget_bind_event(w, skl_tplg_widget_ops,
-+			ARRAY_SIZE(skl_tplg_widget_ops), tplg_w->event_type);
-+
-+	if (ret) {
-+		dev_err(bus->dev, "%s: No matching event handlers found for %d\n",
-+					__func__, tplg_w->event_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_tplg_ops skl_tplg_ops  = {
-+	.widget_load = skl_tplg_widget_load,
-+};
-+
-+/* This will be read from topology manifest, currently defined here */
-+#define SKL_MAX_MCPS 30000000
-+#define SKL_FW_MAX_MEM 1000000
-+
-+/*
-+ * SKL topology init routine
-+ */
-+int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
-+{
-+	int ret;
-+	const struct firmware *fw;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
-+
-+	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "config firmware %s request failed with %d\n",
-+				"dfw_sst.bin", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * The complete tplg for SKL is loaded as index 0, we don't use
-+	 * any other index
-+	 */
-+	ret = snd_soc_tplg_component_load(&platform->component, &skl_tplg_ops, fw, 0);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "tplg component load failed%d\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	skl->resource.max_mcps = SKL_MAX_MCPS;
-+	skl->resource.max_mem = SKL_FW_MAX_MEM;
-+
-+	return 0;
-+}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 12db94d..0c83dc3 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -291,7 +291,6 @@ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
- int skl_tplg_update_pipe_params(struct device *dev,
- 		struct skl_module_cfg *mconfig, struct skl_pipe_params *params);
- 
--
- int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
- 
- int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index a506898..d14f7fe 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -19,6 +19,29 @@
- #ifndef __HDA_TPLG_INTERFACE_H__
- #define __HDA_TPLG_INTERFACE_H__
- 
-+/*
-+ * Default types range from 0~12. type can range from 0 to 0xff
-+ * SST types start at higher to avoid any overlapping in future
-+ */
-+#define SOC_CONTROL_TYPE_HDA_SST_ALGO_PARAMS	0x100
-+#define SOC_CONTROL_TYPE_HDA_SST_MUX		0x101
-+#define SOC_CONTROL_TYPE_HDA_SST_MIX		0x101
-+#define SOC_CONTROL_TYPE_HDA_SST_BYTE		0x103
-+
-+#define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
-+#define MAX_IN_QUEUE 8
-+#define MAX_OUT_QUEUE 8
-+
-+/* Event types goes here */
-+/* Reserve event type 0 for no event handlers */
-+enum skl_event_types {
-+	SKL_EVENT_NONE = 0,
-+	SKL_MIXER_EVENT,
-+	SKL_MUX_EVENT,
-+	SKL_VMIXER_EVENT,
-+	SKL_PGA_EVENT
-+};
-+
- /**
-  * enum skl_ch_cfg - channel configuration
-  *
-@@ -85,4 +108,61 @@ enum skl_dev_type {
- 	SKL_DEVICE_HDALINK = 0x4,
- 	SKL_DEVICE_NONE
- };
-+
-+struct skl_dfw_module_pin {
-+	u16 module_id;
-+	u16 instance_id;
-+	u8 pin_id;
-+	bool is_dynamic;
-+} __packed;
-+
-+struct skl_dfw_module_fmt {
-+	u32 channels;
-+	u32 freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+} __packed;
-+
-+struct skl_dfw_module_caps {
-+	u32 caps_size;
-+	u32 caps[HDA_SST_CFG_MAX];
-+};
-+
-+struct skl_dfw_pipe {
-+	u8 pipe_id;
-+	u8 pipe_priority;
-+	u16 conn_type;
-+	u32 memory_pages;
-+} __packed;
-+
-+struct skl_dfw_module {
-+	u16 module_id;
-+	u16 instance_id;
-+	u32 max_mcps;
-+	u8 core_id;
-+	u8 max_in_queue;
-+	u8 max_out_queue;
-+	u8 is_loadable;
-+	u8 conn_type;
-+	u8 dev_type;
-+	u8 hw_conn_type;
-+	u8 time_slot;
-+	u32 obs;
-+	u32 ibs;
-+	u32 params_fixup;
-+	u32 converter;
-+	u32 module_type;
-+	u32 vbus_id;
-+	struct skl_dfw_pipe pipe;
-+	struct skl_dfw_module_fmt in_fmt;
-+	struct skl_dfw_module_fmt out_fmt;
-+	struct skl_dfw_module_caps caps;
-+} __packed;
-+
-+struct skl_dfw_algo_data {
-+	u32 max;
-+	char *params;
-+} __packed;
-+
- #endif
--- 
-2.5.0
+----------------------------------------------------------------
+Andreas Dannenberg (1):
+      ASoC: tas2552: fix dBscale-min declaration
+
+Beno=EEt Th=E9baudeau (1):
+      ASoC: imx-ssi: Fix DAI hardware signal inversions
+
+Gianluca Renzi (2):
+      ASoC: sgtl5000: fix error message output for MicBias voltage
+      ASoC: sgtl5000: fix wrong register MIC_BIAS_VOLTAGE setup on probe
+
+Jiada Wang (1):
+      ASoC: wm8962: balance pm_runtime_enable
+
+Lars-Peter Clausen (1):
+      ASoC: db1200: Fix DAI link format for db1300 and db1550
+
+Mark Brown (3):
+      MAINTAINERS: Remove wm97xx entry
+      Merge remote-tracking branches 'asoc/fix/db1200', 'asoc/fix/dwc', 'as=
+oc/fix/imx-ssi', 'asoc/fix/maintainers', 'asoc/fix/rt5645', 'asoc/fix/sgtl5=
+000' and 'asoc/fix/tas2552' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/tlv320aic3x' and 'asoc/fix/w=
+m8962' into asoc-linus
+
+Oder Chiou (1):
+      ASoC: rt5645: Correct the naming and setting of ADC Boost Volume Cont=
+rol
+
+Rick Mann (1):
+      ASoC: tlv320aic3x: Prevent writing reserved registers on tlv320aic310=
+4 CODECs
+
+Yitian Bu (1):
+      ASoC: dwc: correct irq clear method
+
+yitian (1):
+      ASoC: dwc: fix dma stop transferring issue
+
+ MAINTAINERS                    |  9 ---------
+ sound/soc/au1x/db1200.c        |  4 ++++
+ sound/soc/codecs/rt5645.c      |  6 +++---
+ sound/soc/codecs/rt5645.h      | 16 +++++++++-------
+ sound/soc/codecs/sgtl5000.c    |  6 +++---
+ sound/soc/codecs/tas2552.c     |  2 +-
+ sound/soc/codecs/tlv320aic3x.c | 19 +++++++++++--------
+ sound/soc/codecs/wm8962.c      |  5 ++++-
+ sound/soc/dwc/designware_i2s.c | 19 ++++++++++++++-----
+ sound/soc/fsl/imx-ssi.c        | 19 +++++++++----------
+ 10 files changed, 58 insertions(+), 47 deletions(-)
+
+--5a/gwqvMGypQC9CX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWFTefAAoJECTWi3JdVIfQ7GoH+wStEBBHAVL7nQITElYQOIBJ
+5VKiKQoxH62G2Nf/6FbEhVhuXmJQpLIe1+3x4/BBCKORmoKXPNisiZrhAb1AXwhS
+VmzcQdTyHJQHmGwcYkGKDqoLWOlSdaw1j+fYYnKh9WyixLxqW0vW+2fEQwY71aPh
+BK29XGw9gkKBz14mBTWEqFbkNV8VLgfzyH7KdF1zEZ0LFkWFIl4MDOf3Zefc7AFJ
+8ICQYiSqcvUjiWtPLWucfITQIJU61pzHltB5W5OOHDLCuVxHEvaoMFigyw08KbtX
+cAGom6K124vjhRCQHFVyuOJU54hKuDzXtxG0D0cGtUcxYp8Q8A+YujGrxJjGywk=
+=nrth
+-----END PGP SIGNATURE-----
+
+--5a/gwqvMGypQC9CX--
+
+--===============3173167004280070814==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3173167004280070814==--
