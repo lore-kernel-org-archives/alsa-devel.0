@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/5] ALSA: firewire-lib: schedule work again
-	when MIDI substream has rest of MIDI messages
-Date: Wed,  7 Oct 2015 09:19:37 +0900
-Message-ID: <1444177179-8082-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: firewire-lib: avoid endless loop to
+	transfer MIDI messages at fatal error
+Date: Wed,  7 Oct 2015 09:19:39 +0900
+Message-ID: <1444177179-8082-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1444177179-8082-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 12D622659B5
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 02:19:44 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AE732659B6
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 02:19:46 +0200 (CEST)
 In-Reply-To: <1444177179-8082-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +25,86 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when two MIDI trigger callbacks are called immediately,
-transactions for the second MIDI messages are postpone till next trigger
-callback. This is not good for real-time message transmission.
+Currently, when asynchronous transactions finish in error state and
+retries, work scheduling and work running also continues. This
+should be canceled at fatal error because it can cause endless loop.
 
-This commit schedules work again at response handling callback if the
-MIDI substream still includes untransferred MIDI messages.
+This commit enables to cancel transferring MIDI messages when transactions
+encounter fatal errors. This is achieved by setting error state.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/firewire/lib.c | 10 ++++++++--
+ sound/firewire/lib.h |  8 ++++++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index ddc3e88..3e9afd7 100644
+index fd620e8..edf1c8b 100644
 --- a/sound/firewire/lib.c
 +++ b/sound/firewire/lib.c
-@@ -78,6 +78,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
- 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
+@@ -79,6 +79,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+ 	else if (!rcode_is_permanent_error(rcode))
+ 		/* To start next transaction immediately for recovery. */
+ 		port->next_ktime = ktime_set(0, 0);
++	else
++		/* Don't continue processing. */
++		port->error = true;
  
  	port->idling = true;
-+
-+	if (!snd_rawmidi_transmit_empty(substream))
+ 
+@@ -94,8 +97,8 @@ static void midi_port_work(struct work_struct *work)
+ 	int generation;
+ 	int type;
+ 
+-	/* Under transacting. */
+-	if (!port->idling)
++	/* Under transacting or error state. */
++	if (!port->idling || port->error)
+ 		return;
+ 
+ 	/* Nothing to do. */
+@@ -119,6 +122,9 @@ static void midi_port_work(struct work_struct *work)
+ 		if (port->consume_bytes == 0) {
+ 			port->next_ktime = ktime_set(0, 0);
+ 			schedule_work(&port->work);
++		} else {
++			/* Fatal error. */
++			port->error = true;
+ 		}
+ 		return;
+ 	}
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index 59e0865..f3f6f84 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -32,6 +32,7 @@ struct snd_fw_async_midi_port {
+ 	struct work_struct work;
+ 	bool idling;
+ 	ktime_t next_ktime;
++	bool error;
+ 
+ 	u64 addr;
+ 	struct fw_transaction transaction;
+@@ -58,8 +59,10 @@ static inline void
+ snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
+ 			   struct snd_rawmidi_substream *substream)
+ {
+-	port->substream = substream;
+-	schedule_work(&port->work);
++	if (!port->error) {
++		port->substream = substream;
 +		schedule_work(&port->work);
++	}
  }
  
- static void midi_port_work(struct work_struct *work)
+ /**
+@@ -70,6 +73,7 @@ static inline void
+ snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
+ {
+ 	port->substream = NULL;
++	port->error = false;
+ }
+ 
+ #endif
 -- 
 2.1.4
