@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Add support to handle mclk data
-	provided to driver" to the asoc tree
-Date: Wed, 07 Oct 2015 15:12:05 +0100
-Message-ID: <E1ZjpRt-0007TW-DC@finisterre>
+Subject: Applied "ASoC: da7213: Add DT support to codec driver"
+	to the asoc tree
+Date: Wed, 07 Oct 2015 15:12:16 +0100
+Message-ID: <E1ZjpS4-0007U7-Or@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BADE526646C
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 16:12:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C6CBB265E1A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 16:13:00 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Add support to handle mclk data provided to driver
+   ASoC: da7213: Add DT support to codec driver
 
 has been applied to the asoc tree at
 
@@ -52,191 +52,194 @@ to this mail.
 Thanks,
 Mark
 
->From 6e7c444318699496e6e6f30c875cf67534aeccc6 Mon Sep 17 00:00:00 2001
+>From e90996a3ea224fbeb459b8052ecd366d7990e1f3 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Wed, 7 Oct 2015 14:27:11 +0100
-Subject: [PATCH] ASoC: da7213: Add support to handle mclk data provided to
- driver
+Date: Wed, 7 Oct 2015 14:27:08 +0100
+Subject: [PATCH] ASoC: da7213: Add DT support to codec driver
 
-Driver now can make use of mclk data, if provided, to set, enable
-and disable the clock source. As part of this, the choice to
-enable clock squaring is dealt with as part of dai_sysclk() call
-rather than as platform data.
+This patch adds support for DT bindings in the codec driver.
+As part of this support, the mclk data can now be provided and
+used to control the mclk during codec operation.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/da7213.h    |  3 ---
- sound/soc/codecs/da7213.c | 67 +++++++++++++++++++++++++++++++++++++++--------
- sound/soc/codecs/da7213.h |  8 ++++--
- 3 files changed, 62 insertions(+), 16 deletions(-)
+ sound/soc/codecs/da7213.c | 123 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 118 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/da7213.h b/include/sound/da7213.h
-index 673f5c3..e7eac89 100644
---- a/include/sound/da7213.h
-+++ b/include/sound/da7213.h
-@@ -44,9 +44,6 @@ struct da7213_platform_data {
- 	enum da7213_dmic_data_sel dmic_data_sel;
- 	enum da7213_dmic_samplephase dmic_samplephase;
- 	enum da7213_dmic_clk_rate dmic_clk_rate;
--
--	/* MCLK squaring config */
--	bool mclk_squaring;
- };
- 
- #endif /* _DA7213_PDATA_H */
 diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index ab1486b..7278f93 100644
+index a9c86ef..ab1486b 100644
 --- a/sound/soc/codecs/da7213.c
 +++ b/sound/soc/codecs/da7213.c
-@@ -12,6 +12,7 @@
-  * option) any later version.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/regmap.h>
-@@ -1222,23 +1223,44 @@ static int da7213_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+
-+	if ((da7213->clk_src == clk_id) && (da7213->mclk_rate == freq))
-+		return 0;
-+
-+	if (((freq < 5000000) && (freq != 32768)) || (freq > 54000000)) {
-+		dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
-+			freq);
-+		return -EINVAL;
-+	}
- 
- 	switch (clk_id) {
- 	case DA7213_CLKSRC_MCLK:
--		if ((freq == 32768) ||
--		    ((freq >= 5000000) && (freq <= 54000000))) {
--			da7213->mclk_rate = freq;
--			return 0;
--		} else {
--			dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
--				freq);
--			return -EINVAL;
--		}
-+		da7213->mclk_squarer_en = false;
-+		break;
-+	case DA7213_CLKSRC_MCLK_SQR:
-+		da7213->mclk_squarer_en = true;
- 		break;
- 	default:
- 		dev_err(codec_dai->dev, "Unknown clock source %d\n", clk_id);
- 		return -EINVAL;
- 	}
-+
-+	da7213->clk_src = clk_id;
-+
-+	if (da7213->mclk) {
-+		freq = clk_round_rate(da7213->mclk, freq);
-+		ret = clk_set_rate(da7213->mclk, freq);
-+		if (ret) {
-+			dev_err(codec_dai->dev, "Failed to set clock rate %d\n",
-+				freq);
-+			return ret;
-+		}
-+	}
-+
-+	da7213->mclk_rate = freq;
-+
-+	return 0;
+@@ -1387,10 +1387,118 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
  }
  
- /* Supported PLL input frequencies are 5MHz - 54MHz. */
-@@ -1366,12 +1388,25 @@ static struct snd_soc_dai_driver da7213_dai = {
- static int da7213_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
- {
-+	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
++/* DT */
++static const struct of_device_id da7213_of_match[] = {
++	{ .compatible = "dlg,da7213", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, da7213_of_match);
 +
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+			/* MCLK */
-+			if (da7213->mclk) {
-+				ret = clk_prepare_enable(da7213->mclk);
-+				if (ret) {
-+					dev_err(codec->dev,
-+						"Failed to enable mclk\n");
-+					return ret;
-+				}
-+			}
-+
- 			/* Enable VMID reference & master bias */
- 			snd_soc_update_bits(codec, DA7213_REFERENCES,
- 					    DA7213_VMID_EN | DA7213_BIAS_EN,
-@@ -1382,6 +1417,10 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
- 		/* Disable VMID reference & master bias */
- 		snd_soc_update_bits(codec, DA7213_REFERENCES,
- 				    DA7213_VMID_EN | DA7213_BIAS_EN, 0);
-+
-+		/* MCLK */
-+		if (da7213->mclk)
-+			clk_disable_unprepare(da7213->mclk);
- 		break;
- 	}
- 	return 0;
-@@ -1618,9 +1657,15 @@ static int da7213_probe(struct snd_soc_codec *codec)
- 				    DA7213_DMIC_DATA_SEL_MASK |
- 				    DA7213_DMIC_SAMPLEPHASE_MASK |
- 				    DA7213_DMIC_CLK_RATE_MASK, dmic_cfg);
++static enum da7213_micbias_voltage
++	da7213_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
++{
++	switch (val) {
++	case 1600:
++		return DA7213_MICBIAS_1_6V;
++	case 2200:
++		return DA7213_MICBIAS_2_2V;
++	case 2500:
++		return DA7213_MICBIAS_2_5V;
++	case 3000:
++		return DA7213_MICBIAS_3_0V;
++	default:
++		dev_warn(codec->dev, "Invalid micbias level\n");
++		return DA7213_MICBIAS_2_2V;
 +	}
++}
++
++static enum da7213_dmic_data_sel
++	da7213_of_dmic_data_sel(struct snd_soc_codec *codec, const char *str)
++{
++	if (!strcmp(str, "lrise_rfall")) {
++		return DA7213_DMIC_DATA_LRISE_RFALL;
++	} else if (!strcmp(str, "lfall_rrise")) {
++		return DA7213_DMIC_DATA_LFALL_RRISE;
++	} else {
++		dev_warn(codec->dev, "Invalid DMIC data select type\n");
++		return DA7213_DMIC_DATA_LRISE_RFALL;
++	}
++}
++
++static enum da7213_dmic_samplephase
++	da7213_of_dmic_samplephase(struct snd_soc_codec *codec, const char *str)
++{
++	if (!strcmp(str, "on_clkedge")) {
++		return DA7213_DMIC_SAMPLE_ON_CLKEDGE;
++	} else if (!strcmp(str, "between_clkedge")) {
++		return DA7213_DMIC_SAMPLE_BETWEEN_CLKEDGE;
++	} else {
++		dev_warn(codec->dev, "Invalid DMIC sample phase\n");
++		return DA7213_DMIC_SAMPLE_ON_CLKEDGE;
++	}
++}
++
++static enum da7213_dmic_clk_rate
++	da7213_of_dmic_clkrate(struct snd_soc_codec *codec, u32 val)
++{
++	switch (val) {
++	case 1500000:
++		return DA7213_DMIC_CLK_1_5MHZ;
++	case 3000000:
++		return DA7213_DMIC_CLK_3_0MHZ;
++	default:
++		dev_warn(codec->dev, "Invalid DMIC clock rate\n");
++		return DA7213_DMIC_CLK_1_5MHZ;
++	}
++}
++
++static struct da7213_platform_data
++	*da7213_of_to_pdata(struct snd_soc_codec *codec)
++{
++	struct device_node *np = codec->dev->of_node;
++	struct da7213_platform_data *pdata;
++	const char *of_str;
++	u32 of_val32;
++
++	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
++	if (!pdata) {
++		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
++		return NULL;
++	}
++
++	if (of_property_read_u32(np, "dlg,micbias1-lvl", &of_val32) >= 0)
++		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, of_val32);
++	else
++		pdata->micbias1_lvl = DA7213_MICBIAS_2_2V;
++
++	if (of_property_read_u32(np, "dlg,micbias2-lvl", &of_val32) >= 0)
++		pdata->micbias2_lvl = da7213_of_micbias_lvl(codec, of_val32);
++	else
++		pdata->micbias2_lvl = DA7213_MICBIAS_2_2V;
++
++	if (!of_property_read_string(np, "dlg,dmic-data-sel", &of_str))
++		pdata->dmic_data_sel = da7213_of_dmic_data_sel(codec, of_str);
++	else
++		pdata->dmic_data_sel = DA7213_DMIC_DATA_LRISE_RFALL;
++
++	if (!of_property_read_string(np, "dlg,dmic-samplephase", &of_str))
++		pdata->dmic_samplephase =
++			da7213_of_dmic_samplephase(codec, of_str);
++	else
++		pdata->dmic_samplephase = DA7213_DMIC_SAMPLE_ON_CLKEDGE;
++
++	if (of_property_read_u32(np, "dlg,dmic-clkrate", &of_val32) >= 0)
++		pdata->dmic_clk_rate = da7213_of_dmic_clkrate(codec, of_val32);
++	else
++		pdata->dmic_clk_rate = DA7213_DMIC_CLK_3_0MHZ;
++
++	return pdata;
++}
++
++
+ static int da7213_probe(struct snd_soc_codec *codec)
+ {
+ 	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
+-	struct da7213_platform_data *pdata = da7213->pdata;
  
--		/* Set MCLK squaring */
--		da7213->mclk_squarer_en = pdata->mclk_squaring;
-+	/* Check if MCLK provided */
-+	da7213->mclk = devm_clk_get(codec->dev, "mclk");
-+	if (IS_ERR(da7213->mclk)) {
-+		if (PTR_ERR(da7213->mclk) != -ENOENT)
-+			return PTR_ERR(da7213->mclk);
-+		else
-+			da7213->mclk = NULL;
+ 	/* Default to using ALC auto offset calibration mode. */
+ 	snd_soc_update_bits(codec, DA7213_ALC_CTRL1,
+@@ -1450,8 +1558,15 @@ static int da7213_probe(struct snd_soc_codec *codec)
+ 	snd_soc_update_bits(codec, DA7213_LINE_CTRL,
+ 			    DA7213_LINE_AMP_OE, DA7213_LINE_AMP_OE);
+ 
++	/* Handle DT/Platform data */
++	if (codec->dev->of_node)
++		da7213->pdata = da7213_of_to_pdata(codec);
++	else
++		da7213->pdata = dev_get_platdata(codec->dev);
++
+ 	/* Set platform data values */
+ 	if (da7213->pdata) {
++		struct da7213_platform_data *pdata = da7213->pdata;
+ 		u8 micbias_lvl = 0, dmic_cfg = 0;
+ 
+ 		/* Set Mic Bias voltages */
+@@ -1507,6 +1622,7 @@ static int da7213_probe(struct snd_soc_codec *codec)
+ 		/* Set MCLK squaring */
+ 		da7213->mclk_squarer_en = pdata->mclk_squaring;
  	}
- 
++
  	return 0;
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index 9cb9ddd..030fd69 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -13,6 +13,7 @@
- #ifndef _DA7213_H
- #define _DA7213_H
+ }
  
-+#include <linux/clk.h>
- #include <linux/regmap.h>
- #include <sound/da7213.h>
+@@ -1537,7 +1653,6 @@ static int da7213_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+ 	struct da7213_priv *da7213;
+-	struct da7213_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	int ret;
  
-@@ -504,14 +505,17 @@
- #define DA7213_PLL_INDIV_20_40_MHZ_VAL	8
- #define DA7213_PLL_INDIV_40_54_MHZ_VAL	16
+ 	da7213 = devm_kzalloc(&i2c->dev, sizeof(struct da7213_priv),
+@@ -1545,9 +1660,6 @@ static int da7213_i2c_probe(struct i2c_client *i2c,
+ 	if (!da7213)
+ 		return -ENOMEM;
  
--enum clk_src {
--	DA7213_CLKSRC_MCLK
-+enum da7213_clk_src {
-+	DA7213_CLKSRC_MCLK = 0,
-+	DA7213_CLKSRC_MCLK_SQR,
- };
+-	if (pdata)
+-		da7213->pdata = pdata;
+-
+ 	i2c_set_clientdata(i2c, da7213);
  
- /* Codec private data */
- struct da7213_priv {
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 	unsigned int mclk_rate;
-+	int clk_src;
- 	bool master;
- 	bool mclk_squarer_en;
- 	bool srm_en;
+ 	da7213->regmap = devm_regmap_init_i2c(i2c, &da7213_regmap_config);
+@@ -1582,6 +1694,7 @@ MODULE_DEVICE_TABLE(i2c, da7213_i2c_id);
+ static struct i2c_driver da7213_i2c_driver = {
+ 	.driver = {
+ 		.name = "da7213",
++		.of_match_table = of_match_ptr(da7213_of_match),
+ 	},
+ 	.probe		= da7213_i2c_probe,
+ 	.remove		= da7213_remove,
 -- 
 2.5.0
