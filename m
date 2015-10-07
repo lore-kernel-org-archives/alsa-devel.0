@@ -1,20 +1,18 @@
-From: "Keith A. Milner" <maillist@superlative.org>
-Subject: Re: Boss GT-001
-Date: Wed, 07 Oct 2015 10:41:52 +0100
-Message-ID: <3067439.4bLxTPZOO7@kamdesktop>
-References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
- <alpine.DEB.2.02.1510071000020.17839@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ad193x-spi: Fixup ad193x_spi_id table"
+	to the asoc tree
+Date: Wed, 07 Oct 2015 10:45:38 +0100
+Message-ID: <E1ZjlI2-0002Ow-MD@finisterre>
+References: <1444123596.7405.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
- [209.85.212.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 71262265A3E
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:41:54 +0200 (CEST)
-Received: by wiclk2 with SMTP id lk2so204585565wic.0
- for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2015 02:41:54 -0700 (PDT)
-In-Reply-To: <alpine.DEB.2.02.1510071000020.17839@lnxricardw1.se.axis.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2A2B265A3E
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 11:46:12 +0200 (CEST)
+In-Reply-To: <1444123596.7405.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,305 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 'Clemens Ladisch' <clemens@ladisch.de>, Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Axel Lin <axel.lin@ingics.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 07 Oct 2015 10:09:14 Ricard Wanderlof wrote:
-> On Tue, 6 Oct 2015, Keith A. Milner wrote:
-> > OK, so it seems that this hardware is substantially the same as the GT-100
-> > which has previously (and recently) been raised as a problem on ALSA.
+The patch
 
-> > I'm going to attempt to capture some USB data using this device in
-> > Windows. If I do this, is there an accepted method for uploading the
-> > capture so it can be posted here?
-> > 
-> > At this point, I'm not 100% sure what the capture format is going to be...
+   ASoC: ad193x-spi: Fixup ad193x_spi_id table
 
-<Various snips>
+has been applied to the asoc tree at
 
-> I learned though that although Wireshark is happy reading the .pcap files
-> produced by USBPCap, the resulting dumps can look quite different from
-> what Wireshark sniffs in Linux, which initially took me aback. At least
-> when it comes to USBPcap I think the reason is that the program actually
-> sniffs the data halfway up (if not at the top of) the Windows protocol
-> stack, meaning that there's data in the dump that does not actually occur
-> on the wire. I'm not sure at what level usbmon sniffs, but it looks closer
-> to what I'd expect on the physical cable.
-> 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Thanks Richard.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-The data I'm getting from Wireshark via USBMon seems OK from my initial 
-viewing. Incidentally, Wireshark can sniff directly from usbmon interfaces and 
-exposes them as capture interfaces (at least with the version I have).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Here's an example of what I'm getting (exported as CSV):
-"No.","Time","Source","Destination","Protocol","Length","Info","Leftover 
-Capture Data","Comment"
-"1","0.000000000","host","7.0","USB","64","GET DESCRIPTOR Request 
-DEVICE","","This was from within Linux before I connected the USB device to 
-the Windows VM guest"
-"2","0.000203000","7.0","host","USB","82","GET DESCRIPTOR Response 
-DEVICE","","This was from within Linux before I connected the USB device to 
-the Windows VM guest"
-"3","6.343942000","host","7.0","USB","64","SET INTERFACE Request","",""
-"4","6.344069000","7.0","host","USB","64","SET INTERFACE Response","",""
-"5","6.545252000","host","0.0","USB","64","SET ADDRESS Request","",""
-"6","6.564886000","host","7.0","USB","64","GET DESCRIPTOR Request 
-DEVICE","",""
-"7","6.565099000","7.0","host","USB","82","GET DESCRIPTOR Response 
-DEVICE","",""
-"8","6.565134000","host","7.0","USB","64","GET DESCRIPTOR Request 
-CONFIGURATION","",""
-"9","6.565566000","7.0","host","USB","240","GET DESCRIPTOR Response 
-CONFIGURATION","",""
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The isochronous data appears as follows:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-"54","24.767751000","host","7.14","USB","192","URB_ISOCHRONOUS 
-in","eeffffff000000007000000000000000eeffffff70000000...",""
+Thanks,
+Mark
 
-Wireshark also appears to decode them quite nicely.  I've pasted one of the 
-GET DESCRIPTOR responses below.
+>From d46183efe3b57d06461c9bea35e1a0262391fe77 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 6 Oct 2015 17:26:36 +0800
+Subject: [PATCH] ASoC: ad193x-spi: Fixup ad193x_spi_id table
 
-Now I need to try and work out what it all means...
+AD1939 is missed from the table, so add it.
+AD1936 and AD1937 are controlled by I2C interface, so remove them.
 
-Cheers,
+Fixes: e5224f58e3ef ("ASoC: ad193x: add support to ad1934")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/ad193x-spi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Keith
-
-GET DESCRIPTOR response decode:
-
-No.     Time           Source                Destination           Length Info 
-Leftover Capture Data Comment
-      9 6.565566000    7.0                   host                  240    GET 
-DESCRIPTOR Response CONFIGURATION                                                 
-
-Frame 9: 240 bytes on wire (1920 bits), 240 bytes captured (1920 bits) on 
-interface 0
-    Interface id: 0 (usbmon3)
-    Encapsulation type: USB packets with Linux header and padding (115)
-    Arrival Time: Oct  6, 2015 22:11:10.987080000 BST
-    [Time shift for this packet: 0.000000000 seconds]
-    Epoch Time: 1444165870.987080000 seconds
-    [Time delta from previous captured frame: 0.000432000 seconds]
-    [Time delta from previous displayed frame: 0.000432000 seconds]
-    [Time since reference or first frame: 6.565566000 seconds]
-    Frame Number: 9
-    Frame Length: 240 bytes (1920 bits)
-    Capture Length: 240 bytes (1920 bits)
-    [Frame is marked: False]
-    [Frame is ignored: False]
-    [Protocols in frame: usb]
-USB URB
-    URB id: 0xffff880289c33740
-    URB type: URB_COMPLETE ('C')
-    URB transfer type: URB_CONTROL (0x02)
-    Endpoint: 0x80, Direction: IN
-        1... .... = Direction: IN (1)
-        .000 0000 = Endpoint value: 0
-    Device: 7
-    URB bus id: 3
-    Device setup request: not relevant ('-')
-    Data: present (0)
-    URB sec: 1444165870
-    URB usec: 987080
-    URB status: Success (0)
-    URB length [bytes]: 176
-    Data length [bytes]: 176
-    [Request in: 8]
-    [Time from request: 0.000432000 seconds]
-    Unused Setup Header
-    Interval: 0
-    Start frame: 0
-    Copy of Transfer Flags: 0x00000200
-    Number of ISO descriptors: 0
-CONFIGURATION DESCRIPTOR
-    bLength: 9
-    bDescriptorType: 0x02 (CONFIGURATION)
-    wTotalLength: 176
-    bNumInterfaces: 4
-    bConfigurationValue: 1
-    iConfiguration: 0
-    Configuration bmAttributes: 0xc0  SELF-POWERED  NO REMOTE-WAKEUP
-        1... .... = Must be 1: Must be 1 for USB 1.1 and higher
-        .1.. .... = Self-Powered: This device is SELF-POWERED
-        ..0. .... = Remote Wakeup: This device does NOT support remote wakeup
-    bMaxPower: 0  (0mA)
-INTERFACE DESCRIPTOR (0.0): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 0
-    bAlternateSetting: 0
-    bNumEndpoints: 0
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0xff
-    bInterfaceProtocol: 0x00
-    iInterface: 0
-INTERFACE DESCRIPTOR (1.0): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 1
-    bAlternateSetting: 0
-    bNumEndpoints: 0
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x02
-    bInterfaceProtocol: 0x02
-    iInterface: 0
-UNKNOWN DESCRIPTOR
-    bLength: 6
-    bDescriptorType: 0x24 (unknown)
-INTERFACE DESCRIPTOR (1.1): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 1
-    bAlternateSetting: 1
-    bNumEndpoints: 1
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x02
-    bInterfaceProtocol: 0x02
-    iInterface: 0
-UNKNOWN DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x24 (unknown)
-UNKNOWN DESCRIPTOR
-    bLength: 11
-    bDescriptorType: 0x24 (unknown)
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x0d  OUT  Endpoint:13
-        0... .... = Direction: OUT Endpoint
-        .... 1101 = Endpoint Number: 0x0d
-    bmAttributes: 0x05
-        .... ..01 = Transfertype: Isochronous-Transfer (0x01)
-        .... 01.. = Synchronisationtype: Asynchronous (0x01)
-        ..00 .... = Behaviourtype: Data-Endpoint (0x00)
-    wMaxPacketSize: 112
-        ...0 0... .... .... = Transactions per microframe: 1 (0)
-        .... ..00 0111 0000 = Maximum Packet Size: 112
-    bInterval: 1
-UNKNOWN DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x25 (unknown)
-INTERFACE DESCRIPTOR (2.0): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 2
-    bAlternateSetting: 0
-    bNumEndpoints: 0
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x02
-    bInterfaceProtocol: 0x01
-    iInterface: 0
-INTERFACE DESCRIPTOR (2.1): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 2
-    bAlternateSetting: 1
-    bNumEndpoints: 1
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x02
-    bInterfaceProtocol: 0x01
-    iInterface: 0
-UNKNOWN DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x24 (unknown)
-UNKNOWN DESCRIPTOR
-    bLength: 11
-    bDescriptorType: 0x24 (unknown)
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x8e  IN  Endpoint:14
-        1... .... = Direction: IN Endpoint
-        .... 1110 = Endpoint Number: 0x0e
-    bmAttributes: 0x25
-        .... ..01 = Transfertype: Isochronous-Transfer (0x01)
-        .... 01.. = Synchronisationtype: Asynchronous (0x01)
-        ..10 .... = Behaviourtype: Implicit Feedback-Data-Endpoint (0x02)
-    wMaxPacketSize: 112
-        ...0 0... .... .... = Transactions per microframe: 1 (0)
-        .... ..00 0111 0000 = Maximum Packet Size: 112
-    bInterval: 1
-UNKNOWN DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x25 (unknown)
-INTERFACE DESCRIPTOR (3.0): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 3
-    bAlternateSetting: 0
-    bNumEndpoints: 2
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x03
-    bInterfaceProtocol: 0x00
-    iInterface: 0
-UNKNOWN DESCRIPTOR
-    bLength: 6
-    bDescriptorType: 0x24 (unknown)
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x03  OUT  Endpoint:3
-        0... .... = Direction: OUT Endpoint
-        .... 0011 = Endpoint Number: 0x03
-    bmAttributes: 0x02
-        .... ..10 = Transfertype: Bulk-Transfer (0x02)
-        .... 00.. = Synchronisationtype: No Sync (0x00)
-        ..00 .... = Behaviourtype: Data-Endpoint (0x00)
-    wMaxPacketSize: 512
-        .... ..10 0000 0000 = Maximum Packet Size: 512
-    bInterval: 1
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x84  IN  Endpoint:4
-        1... .... = Direction: IN Endpoint
-        .... 0100 = Endpoint Number: 0x04
-    bmAttributes: 0x02
-        .... ..10 = Transfertype: Bulk-Transfer (0x02)
-        .... 00.. = Synchronisationtype: No Sync (0x00)
-        ..00 .... = Behaviourtype: Data-Endpoint (0x00)
-    wMaxPacketSize: 512
-        .... ..10 0000 0000 = Maximum Packet Size: 512
-    bInterval: 0
-INTERFACE DESCRIPTOR (3.1): class Vendor Specific
-    bLength: 9
-    bDescriptorType: 0x04 (INTERFACE)
-    bInterfaceNumber: 3
-    bAlternateSetting: 1
-    bNumEndpoints: 2
-    bInterfaceClass: Vendor Specific (0xff)
-    bInterfaceSubClass: 0x03
-    bInterfaceProtocol: 0x00
-    iInterface: 0
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x03  OUT  Endpoint:3
-        0... .... = Direction: OUT Endpoint
-        .... 0011 = Endpoint Number: 0x03
-    bmAttributes: 0x03
-        .... ..11 = Transfertype: Interrupt-Transfer (0x03)
-        .... 00.. = Synchronisationtype: No Sync (0x00)
-        ..00 .... = Behaviourtype: Data-Endpoint (0x00)
-    wMaxPacketSize: 512
-        ...0 0... .... .... = Transactions per microframe: 1 (0)
-        .... ..10 0000 0000 = Maximum Packet Size: 512
-    bInterval: 1
-ENDPOINT DESCRIPTOR
-    bLength: 7
-    bDescriptorType: 0x05 (ENDPOINT)
-    bEndpointAddress: 0x85  IN  Endpoint:5
-        1... .... = Direction: IN Endpoint
-        .... 0101 = Endpoint Number: 0x05
-    bmAttributes: 0x03
-        .... ..11 = Transfertype: Interrupt-Transfer (0x03)
-        .... 00.. = Synchronisationtype: No Sync (0x00)
-        ..00 .... = Behaviourtype: Data-Endpoint (0x00)
-    wMaxPacketSize: 512
-        ...0 0... .... .... = Transactions per microframe: 1 (0)
-        .... ..10 0000 0000 = Maximum Packet Size: 512
-    bInterval: 1
+diff --git a/sound/soc/codecs/ad193x-spi.c b/sound/soc/codecs/ad193x-spi.c
+index 364e8211..b55055a 100644
+--- a/sound/soc/codecs/ad193x-spi.c
++++ b/sound/soc/codecs/ad193x-spi.c
+@@ -39,9 +39,8 @@ static const struct spi_device_id ad193x_spi_id[] = {
+ 	{ "ad193x", AD193X },
+ 	{ "ad1933", AD1933 },
+ 	{ "ad1934", AD1934 },
+-	{ "ad1936", AD193X },
+-	{ "ad1937", AD193X },
+ 	{ "ad1938", AD193X },
++	{ "ad1939", AD193X },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, ad193x_spi_id);
+-- 
+2.5.0
