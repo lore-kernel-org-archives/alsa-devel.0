@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Remove obsolete platform data
-	support" to the asoc tree
-Date: Wed, 07 Oct 2015 12:18:53 +0100
-Message-ID: <E1ZjmkH-0006Ry-SP@finisterre>
+Subject: Applied "ASoC: sun4i-codec: Remove the routing
+	property" to the asoc tree
+Date: Wed, 07 Oct 2015 12:18:47 +0100
+Message-ID: <E1ZjmkB-0006RW-1X@finisterre>
+References: <1444215598-13543-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AC52266085
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:19:21 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 60B0B266198
+ for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 13:19:24 +0200 (CEST)
+In-Reply-To: <1444215598-13543-1-git-send-email-maxime.ripard@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Mark Brown <broonie@kernel.org>
+To: Priit Laes <plaes@plaes.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Remove obsolete platform data support
+   ASoC: sun4i-codec: Remove the routing property
 
 has been applied to the asoc tree at
 
@@ -52,93 +53,78 @@ to this mail.
 Thanks,
 Mark
 
->From 971a41f034ce46c82f3ab7abebe14c2d1bc54e17 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Wed, 7 Oct 2015 12:42:22 +0200
-Subject: [PATCH] ASoC: rsnd: Remove obsolete platform data support
+>From c570b82c5e6ac78be35b4e72594c0f1b1888fce1 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Wed, 7 Oct 2015 11:59:58 +0100
+Subject: [PATCH] ASoC: sun4i-codec: Remove the routing property
 
-Since commit 3d7608e4c169af03 ("ARM: shmobile: bockw: remove legacy
-board file and config"), Renesas R-Car SoCs are only supported in
-generic DT-only ARM multi-platform builds.  The driver doesn't need to
-use platform data anymore, hence remove platform data configuration.
+Most of the boards have their headphone jack directly connected to the
+matching pins of the SoCs. Since most of the time we will have the same
+routing path, it makes no sense to put that in the DTS, since it will only
+be some useless duplication there.
 
-Move <sound/rcar_snd.h> to sound/soc/sh/rcar/, as it's no longer needed
-by platform code.
+It also fixes the following warning messages that were seen so far, on
+boards where we were using the bindings in the documentation example.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Left -> direct -> Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: no sink widget found for Headphone Jack
+sun4i-codec 1c22c00.codec: ASoC: Failed to add route HP Right -> direct -> Headphone Jack
+
+Reported-by: Priit Laes <plaes@plaes.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c                        | 19 +++++--------------
- {include/sound => sound/soc/sh/rcar}/rcar_snd.h |  0
- sound/soc/sh/rcar/rsnd.h                        |  3 ++-
- sound/soc/sh/rcar/ssi.c                         |  3 ---
- 4 files changed, 7 insertions(+), 18 deletions(-)
- rename {include/sound => sound/soc/sh/rcar}/rcar_snd.h (100%)
+ Documentation/devicetree/bindings/sound/sun4i-codec.txt | 6 ------
+ sound/soc/sunxi/sun4i-codec.c                           | 7 -------
+ 2 files changed, 13 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f3feed5..00bf1ff 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1224,20 +1224,11 @@ static int rsnd_probe(struct platform_device *pdev)
- 	};
- 	int ret, i;
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+index 680144b..c92966b 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+@@ -13,10 +13,6 @@ Required properties:
+ - clock-names: should contain followings:
+    - "apb": the parent APB clock for this controller
+    - "codec": the parent module clock
+-- routing : A list of the connections between audio components.  Each
+-  entry is a pair of strings, the first being the connection's sink,
+-  the second being the connection's source.
+-
  
--	info = NULL;
--	of_data = NULL;
--	if (of_id) {
--		info = devm_kzalloc(&pdev->dev,
--				    sizeof(struct rcar_snd_info), GFP_KERNEL);
--		of_data = of_id->data;
--	} else {
--		info = pdev->dev.platform_data;
+ Example:
+ codec: codec@01c22c00 {
+@@ -28,6 +24,4 @@ codec: codec@01c22c00 {
+ 	clock-names = "apb", "codec";
+ 	dmas = <&dma 0 19>, <&dma 0 19>;
+ 	dma-names = "rx", "tx";
+-	routing = "Headphone Jack", "HP Right",
+-		  "Headphone Jack", "HP Left";
+ };
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 4778055..bcbf4da 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -571,7 +571,6 @@ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+ {
+ 	struct snd_soc_card *card;
+-	int ret;
+ 
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+ 	if (!card)
+@@ -584,12 +583,6 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+ 	card->dev		= dev;
+ 	card->name		= "sun4i-codec";
+ 
+-	ret = snd_soc_of_parse_audio_routing(card, "routing");
+-	if (ret) {
+-		dev_err(dev, "Failed to create our audio routing\n");
+-		return NULL;
 -	}
 -
--	if (!info) {
--		dev_err(dev, "driver needs R-Car sound information\n");
--		return -ENODEV;
--	}
-+	info = devm_kzalloc(&pdev->dev, sizeof(struct rcar_snd_info),
-+			    GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+	of_data = of_id->data;
+ 	return card;
+ };
  
- 	/*
- 	 *	init priv data
-diff --git a/include/sound/rcar_snd.h b/sound/soc/sh/rcar/rcar_snd.h
-similarity index 100%
-rename from include/sound/rcar_snd.h
-rename to sound/soc/sh/rcar/rcar_snd.h
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7a0e52b..f604f69 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -21,10 +21,11 @@
- #include <linux/of_irq.h>
- #include <linux/sh_dma.h>
- #include <linux/workqueue.h>
--#include <sound/rcar_snd.h>
- #include <sound/soc.h>
- #include <sound/pcm_params.h>
- 
-+#include "rcar_snd.h"
-+
- /*
-  *	pseudo register
-  *
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d45b9a7..3f5f195 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -697,9 +697,6 @@ static void rsnd_of_parse_ssi(struct platform_device *pdev,
- 	struct device *dev = &pdev->dev;
- 	int nr, i;
- 
--	if (!of_data)
--		return;
--
- 	node = rsnd_ssi_of_node(priv);
- 	if (!node)
- 		return;
 -- 
 2.5.0
