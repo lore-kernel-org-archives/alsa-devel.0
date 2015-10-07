@@ -1,48 +1,64 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH RFC V2 0/5] another generic audio hdmi codec
- proposal
-Date: Wed, 7 Oct 2015 10:05:14 +0100
-Message-ID: <20151007090514.GD21513@n2100.arm.linux.org.uk>
-References: <1443718221-5120-1-git-send-email-arnaud.pouliquen@st.com>
- <56127ADB.6080700@ti.com> <561392F7.90608@st.com>
- <20151006163311.03067bb5@OPI2> <5614CE5A.1080406@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels capture and
+ lrck-mode support
+Date: Wed, 7 Oct 2015 10:27:14 +0100
+Message-ID: <20151007092714.GZ12635@sirena.org.uk>
+References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
+ <20150923162433.GQ30445@sirena.org.uk>
+ <5608F74C.3000104@rock-chips.com>
+ <20150930184655.GX15635@sirena.org.uk>
+ <5614D162.3020500@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IHnTmDFdF6qwEwEs"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5614CE5A.1080406@st.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tony@atomide.com" <tony@atomide.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>
+In-Reply-To: <5614D162.3020500@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: sugar <sugar.zhang@rock-chips.com>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBPY3QgMDcsIDIwMTUgYXQgMDk6NDg6NDJBTSArMDIwMCwgQXJuYXVkIFBvdWxpcXVl
-biB3cm90ZToKPiBTaG91bGQgQUxTQSBieXBhc3NlcyBvciBub3QgdGhlIERSTSBjb3JlL0FQSSB0
-byBhY2Nlc3MgdG8gRFJNIEhETUkKPiBjb25uZWN0b3I/CgpZb3UgZG9uJ3QgbmVlZCBkaXJlY3Qg
-YWNjZXNzIHRvIHRoZSBjb25uZWN0b3IgLSBhbmQgYWN0dWFsbHksIGhhdmluZwpkaXJlY3QgYWNj
-ZXNzIHRvIHRoZSBjb25uZWN0b3IgaXMgcG90ZW50aWFsbHkgcmFjeS4gIFNvIG5vLgoKPiBDb25j
-ZXJuaW5nIGJyaWRnZSB1c2FnZSwgSSB0cmllZCB0byBmb3VuZCBhIGxpbmsgdG8gYWRkcmVzcyBE
-Uk0gZHJpdmVyCj4gdHJvdWdoIERSTSBBUEkuIEJyaWRnZSBzZWVtZWQgYSBnb29kIGNhbmRpZGF0
-ZS4gUGVyaGFwcyB0aGUgRFJNIGVuY29kZXIgQVBJCj4gY291bGQgYmUgYW4gb3RoZXIgb3B0aW9u
-IHRvIHN0dWR5Li4uCgpEaWZmZXJlbnQgcGFydHMgb2YgRFJNIGRvbid0IGhlbHAgeW91IHdpdGgg
-dGhpczogd2hldGhlciBpdCdzIGEgY29ubmVjdG9yLAplbmNvZGVyIG9yIGJyaWRnZSwgeW91IHN0
-aWxsIG5lZWQgc29tZSB3YXkgdG8gZ2V0IGluZm9ybWF0aW9uIGluIGFuZCBvdXQKZnJvbSB0aGUg
-SERNSSB2aWRlbyBjb21wb25lbnQgdG8gYm90aCBIRE1JIGF1ZGlvIGFuZCBIRE1JIENFQyBjb21w
-b25lbnRzLgoKUGxlYXNlIHN0YXJ0IHNlZWluZyB0aGF0IHRoZSBwcm9ibGVtIHlvdSBoYXZlIGlu
-IGZyb250IG9mIHlvdSBjb3ZlcnMgbW9yZQp0aGFuIF9qdXN0XyBhdWRpby4gIElmIHlvdSBkZXNp
-Z24gaXQganVzdCBmb3IgYXVkaW8sIHRoZW4gd2UnbGwgcHJvYmFibHkKaGF2ZSB0byByZWRlc2ln
-biBpdCB3aGVuIGFkZHJlc3NpbmcgQ0VDIHN1cHBvcnQuCgotLSAKRlRUQyBicm9hZGJhbmQgZm9y
-IDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29y
-ZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2RyaS1kZXZlbAo=
+
+--IHnTmDFdF6qwEwEs
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 07, 2015 at 04:01:38PM +0800, sugar wrote:
+> =E5=9C=A8 10/1/2015 02:46, Mark Brown =E5=86=99=E9=81=93:
+
+> >What makes you say that the symmetric_rates flag can't be used to cover
+> >this case?  What you describe above is hte normal reason for needing to
+> >enforce symmetric_rates.  The driver should be able to check if the flag
+> >has been set just as well as the core is.
+
+> Got it, How about the following modify?
+
+> if (dai->symmetric_rates)
+> 	regmap_update_bits(i2s->regmap, I2S_CKR,
+>                            I2S_CKR_TRCM_MASK,
+>                            I2S_CKR_TRCM(val));
+
+Yes, something like that.  You'll need to check both links in the DAI
+and the DAI link itself rather than just your own DAI but we should have
+a helper function for that - I'll add one, look out for a patch shortly.
+
+--IHnTmDFdF6qwEwEs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWFOVuAAoJECTWi3JdVIfQpWwH+QEtYFXR7TlM2waz18AqSecH
+oCPwlGZQMG6DF8wnGqqD2dxAJRUDh73tcctlendT3ujXm8igpxMggR/znNMXU/az
+PyghYkjBNQwaiQq4ZOG3r++5qa+yhaZxXZHz44VcH7UuHKnF716gLlfJeXsYf+Yc
+ke5BdHR9VWIfCvWTkPpJSECJWrn1DSIcTpVpS5LLDhU88bLGhs5FihPZD1xjuEKE
+DRgd92UISrlb6YCkRY6JS3WFIEnOfEX3PwyOLkOWQ4OrUvH1pQLDPWGJ4+LpD/Ae
+EPifFseXtu95J1FnNITIWDjfDNCQUBa3RdcJ5XkQMVwhQUYCTQnhALo0UA75/io=
+=B50Z
+-----END PGP SIGNATURE-----
+
+--IHnTmDFdF6qwEwEs--
