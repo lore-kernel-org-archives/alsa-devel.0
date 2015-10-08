@@ -1,17 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Thu, 08 Oct 2015 16:29:19 +0200
-Message-ID: <56167DBF.9090106@metafoo.de>
-References: <20151004231752.GA22609@sirena.org.uk>
- <20151007152047.GQ12635@sirena.org.uk> <561679FE.3060809@metafoo.de>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH v2 1/3] ASoC: rockchip: i2s: add 8 channels
+ capture support
+Date: Thu, 8 Oct 2015 07:30:43 -0700
+Message-ID: <CAG5mAdzfoK_rnQhu=NGMzto2K49uKT4eOotRh3uGX=D6KOB5gQ@mail.gmail.com>
+References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1444308009-29088-2-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3460168110361472591=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-060.synserver.de (smtp-out-111.synserver.de
- [212.40.185.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AAF87266721
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:29:31 +0200 (CEST)
-In-Reply-To: <561679FE.3060809@metafoo.de>
+Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
+ [209.85.212.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 585D3266742
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:31:03 +0200 (CEST)
+Received: by wicfx3 with SMTP id fx3so28027136wic.0
+ for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 07:31:03 -0700 (PDT)
+In-Reply-To: <1444308009-29088-2-git-send-email-sugar.zhang@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,97 +25,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, linux-kernel@vger.kernel.org, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============3460168110361472591==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="WbRk5oPhD9VMAjPXw3pstBswf4I7I6q20"
+Is it possible to allow channels > 8 if certain requirements are met?  If
+the rockchip supports 8 channels @ 32-bits/sample, that means 256
+bits/frame.  Can those 256 bits be sliced into 16 channels of 16-bit
+samples?
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WbRk5oPhD9VMAjPXw3pstBswf4I7I6q20
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+I can handle this in user space software assuming I get the actual bits
+from the audio card unmodified, but it would be better if the driver
+handled it.
 
-On 10/08/2015 04:13 PM, Lars-Peter Clausen wrote:
-> On 10/07/2015 05:20 PM, Mark Brown wrote:
->> On Mon, Oct 05, 2015 at 12:17:52AM +0100, Mark Brown wrote:
->>> [This message is BCCed to everyone currently on the signup list]
->>>
->>> As previously announce the audio mini-summit for this year will be th=
-is
->>> Thursday (8th August) at CCD in Dublin.  Topics we currently have on =
-the
->>> list for discussion are:
->>
->> Current list:
->>
->>  - Power saving and general system design decisions (is what we're doi=
-ng
->>    lining up with modern hardware with things like multiple output
->>    streams?).
->>  - Documentation.
->>  - alsa-lib releae plans.
->>  - What to do with HDMI and its integration with graphics.
->>  - Test tools (Intel BAT and others).
->>  - BATCH flag.
->>  - Fuzz control PCM APIs.
->>  - Splitting out root only controls.
->>  - ACPI simple-card and general generic card support.
->>  - Topology & media controller integration.
->>  - Kernel tinification.
->>  - Android <-> alsa-lib configuration translation.
->>  - HDA restructuring.
->>   - Support for DisplayPort MST.
->>  - PCM core simplification - the code is currently quite complex!
->>  - Soundwire driver support plans.
->>  - ASoC multichannel.
->>  - Random DAPM changes.
->=20
-> Media controller:
-> http://blogs.s-osg.org/working-complicated-problems-media-controller-wo=
-rkshop/
-
-And to give some more background information on how the constraints
-refinement works: http://metafoo.de/alsa_constraints.html
-
-It's not yet complete but should still give you and idea
+-Caleb
 
 
 
---WbRk5oPhD9VMAjPXw3pstBswf4I7I6q20
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+On Thu, Oct 8, 2015 at 5:40 AM, Sugar Zhang <sugar.zhang@rock-chips.com>
+wrote:
 
-iQIcBAEBAgAGBQJWFn2/AAoJEOj3aLScRbOZKhAP/Ry23LzjjaALGp8KKBxfuofq
-jaARRYZKQdvea79d8O+MAyASKJXWMPZ5qs79N+Bdgmm41BVCza4Da87ZOLD+ZeU+
-o4lSo9feaMR0GeucmWIn7VdTOgQ/5CwGpBwMrmSmJ21spEzpS9xMQs5/fnuj4Jzz
-6+nQ4dtHNob9DWmo7jGGGlUYk98Ld5+7vnGMiw/fqeafBasR8SpNK2vsyjfbXHWg
-DKtNjseiBEOrDDyWLosXceXIHZYO1t9QyPj4sL2VXzyGbOxXZsiwa/3eYQP2t2T2
-vCZ++BJ65GdPfMd0VUS7T3zYrdJripaEiD49Qw9K7WXSoVIY0ErlHXTCc6CV4m2f
-tt8FJks0Qrb2puDtqyG+uj88558lcR+0zY5cdptSC9rV9/nRmbn06R4aln3eA3cX
-43kEV8Mp48kxHwIRpHGOQuMQwrPaURvcA6pA0okORqMqhkyCHiFNdfCJuk/lvPDY
-FhMdA3hF8zS86BviiPGsLuAHwRcqTBVwLAaHwvA7O4ECbT6YKCSdQ4JWq0HAAqUc
-SbYXYz81dms3hLkaihkA471FLQlDA7wKWQsuWvxI3T2gRr2Fopc7OlD/H5O3zlv7
-x9KRnWeGFrIZgnyzXMK3OqhXGinXApUF7oKQdL15CyQH/OSkrkhxKtLDk0maxW0H
-dP+Yk+oGAOshOVG1Y5Gh
-=VV9r
------END PGP SIGNATURE-----
-
---WbRk5oPhD9VMAjPXw3pstBswf4I7I6q20--
-
---===============3460168110361472591==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3460168110361472591==--
+> support max 8 channels capture, please add property
+> 'rockchip,capture-channels' in dts to enable this,
+> if not, support 2 channels capture default.
+>
+> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+> ---
+>
+> Changes in v2:
+> - remove lrck mode, and move it to new patch
+>
+>  sound/soc/rockchip/rockchip_i2s.c | 40
+> +++++++++++++++++++++++++++++++++++++--
+>  sound/soc/rockchip/rockchip_i2s.h | 10 ++++++++++
+>  2 files changed, 48 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c
+> b/sound/soc/rockchip/rockchip_i2s.c
+> index b936102..f07833b 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+> @@ -245,8 +245,34 @@ static int rockchip_i2s_hw_params(struct
+> snd_pcm_substream *substream,
+>                 return -EINVAL;
+>         }
+>
+> -       regmap_update_bits(i2s->regmap, I2S_TXCR, I2S_TXCR_VDW_MASK, val);
+> -       regmap_update_bits(i2s->regmap, I2S_RXCR, I2S_RXCR_VDW_MASK, val);
+> +       switch (params_channels(params)) {
+> +       case 8:
+> +               val |= I2S_CHN_8;
+> +               break;
+> +       case 6:
+> +               val |= I2S_CHN_6;
+> +               break;
+> +       case 4:
+> +               val |= I2S_CHN_4;
+> +               break;
+> +       case 2:
+> +               val |= I2S_CHN_2;
+> +               break;
+> +       default:
+> +               dev_err(i2s->dev, "invalid channel: %d\n",
+> +                       params_channels(params));
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +               regmap_update_bits(i2s->regmap, I2S_RXCR,
+> +                                  I2S_RXCR_VDW_MASK | I2S_RXCR_CSR_MASK,
+> +                                  val);
+> +       else
+> +               regmap_update_bits(i2s->regmap, I2S_TXCR,
+> +                                  I2S_TXCR_VDW_MASK | I2S_TXCR_CSR_MASK,
+> +                                  val);
+> +
+>         regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
+>                            I2S_DMACR_TDL(16));
+>         regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
+> @@ -415,10 +441,12 @@ static const struct regmap_config
+> rockchip_i2s_regmap_config = {
+>
+>  static int rockchip_i2s_probe(struct platform_device *pdev)
+>  {
+> +       struct device_node *node = pdev->dev.of_node;
+>         struct rk_i2s_dev *i2s;
+>         struct resource *res;
+>         void __iomem *regs;
+>         int ret;
+> +       int val;
+>
+>         i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+>         if (!i2s) {
+> @@ -475,6 +503,14 @@ static int rockchip_i2s_probe(struct platform_device
+> *pdev)
+>                         goto err_pm_disable;
+>         }
+>
+> +       /* refine capture channels */
+> +       if (!of_property_read_u32(node, "rockchip,capture-channels",
+> &val)) {
+> +               if (val >= 2 && val <= 8)
+> +                       rockchip_i2s_dai.capture.channels_max = val;
+> +               else
+> +                       rockchip_i2s_dai.capture.channels_max = 2;
+> +       }
+> +
+>         ret = devm_snd_soc_register_component(&pdev->dev,
+>                                               &rockchip_i2s_component,
+>                                               &rockchip_i2s_dai, 1);
+> diff --git a/sound/soc/rockchip/rockchip_i2s.h
+> b/sound/soc/rockchip/rockchip_i2s.h
+> index 93f456f..a54ee35 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.h
+> +++ b/sound/soc/rockchip/rockchip_i2s.h
+> @@ -49,6 +49,9 @@
+>   * RXCR
+>   * receive operation control register
+>  */
+> +#define I2S_RXCR_CSR_SHIFT     15
+> +#define I2S_RXCR_CSR(x)                (x << I2S_RXCR_CSR_SHIFT)
+> +#define I2S_RXCR_CSR_MASK      (3 << I2S_RXCR_CSR_SHIFT)
+>  #define I2S_RXCR_HWT           BIT(14)
+>  #define I2S_RXCR_SJM_SHIFT     12
+>  #define I2S_RXCR_SJM_R         (0 << I2S_RXCR_SJM_SHIFT)
+> @@ -207,6 +210,13 @@ enum {
+>         ROCKCHIP_DIV_BCLK,
+>  };
+>
+> +/* channel select */
+> +#define I2S_CSR_SHIFT  15
+> +#define I2S_CHN_2      (0 << I2S_CSR_SHIFT)
+> +#define I2S_CHN_4      (1 << I2S_CSR_SHIFT)
+> +#define I2S_CHN_6      (2 << I2S_CSR_SHIFT)
+> +#define I2S_CHN_8      (3 << I2S_CSR_SHIFT)
+> +
+>  /* I2S REGS */
+>  #define I2S_TXCR       (0x0000)
+>  #define I2S_RXCR       (0x0004)
+> --
+> 2.3.6
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
