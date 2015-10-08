@@ -1,26 +1,21 @@
 From: "Keith A. Milner" <maillist@superlative.org>
 Subject: Re: Boss GT-001
-Date: Thu, 08 Oct 2015 15:03:15 +0100
-Message-ID: <2785415.8nT9MSXHrq@kamdesktop>
+Date: Thu, 08 Oct 2015 15:10:03 +0100
+Message-ID: <2169905.Ah2pGDNdB3@kamdesktop>
 References: <1481883.Y22cmGKEIB@kamdesktop>
  <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
- <53501158.2GJHLGgpfJ@kamdesktop>
+ <561675A6.8000202@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 46FAD261A76
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:03:18 +0200 (CEST)
-Received: by wicge5 with SMTP id ge5so27353477wic.0
- for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 07:03:18 -0700 (PDT)
-Received: from kamdesktop.localnet ([2001:8b0:be0a:29af::201])
- by smtp.gmail.com with ESMTPSA id he3sm46431254wjc.48.2015.10.08.07.03.16
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Thu, 08 Oct 2015 07:03:16 -0700 (PDT)
-In-Reply-To: <53501158.2GJHLGgpfJ@kamdesktop>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5A4F261A76
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:10:06 +0200 (CEST)
+Received: by wiclk2 with SMTP id lk2so30362333wic.0
+ for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 07:10:05 -0700 (PDT)
+In-Reply-To: <561675A6.8000202@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,50 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 08 Oct 2015 12:51:54 Keith A. Milner wrote:
+On Thursday 08 Oct 2015 15:54:46 Clemens Ladisch wrote:
 
-> I have some usbmon dumps which I will try to find time to analyze.
-> 
+> In theory, the driver supports this, but there are known to be some
+> bugs. And in any case there should be no problem getting the capture
+> stream to start (it's the playback stream that would have a slightly
+> wrong sample clock);
 
-Well the results of my packet dumps were interesting.
+Thanks Clemens,
 
-For audio playback, I noticed the Windows drive seemed to enable the IN 
-endpoint (EP 14) as well as the OUT one (EP 13). This seemed to match with the 
-view that explicit feedback is required for asynchronous host-to-device 
-transfers.
+That was my reading of it too. My latest quirk tests for playback use explicit 
+feedback, which seems to mirror what the Windows driver does.
 
-So I've changed the quirk as follows, which appears to work for playback 
-still:
+I'm still having no luck with recording though.
 
-.ep_attr = 0x15,
+> it's possible that this device needs some vendor-
+> specific commands, or a different order of commands. (The interesting
+> USB transactions would be everything except the isochronous ones.)
 
-This is USB_ENDPOINT_USAGE_FEEDBACK + USB_ENDPOINT_SYNC_ASYNC + 
-USB_ENDPOINT_XFER_ISOC
-
-I say works "still" because the previous value I had (0x01) worked as well. 
-However, this was basically setting the sync type to NONE instead of ASYNC, 
-and didn't configure any feedback type. This was probably free-running and, 
-effectively, similar to "ADAPTIVE", but is probably prone to occasional sync 
-problems/buffer overflows on the device.
-
-The resulting usbmon dump seems to follow the one from Windows now.
-
-Input is still a problem!
-
-Under ALSA, the input stream (via URB_ISOCHRONOUS in requests/responses) to IN 
-endpoint 14 seems to be working. However, under Windows the driver also 
-initiates the OUT endpoint 13 which then has an output stream  (via 
-URB_ISOCHRONOUS out requests/responses).
-
-I don't know if this is required by the device for some reason (explicit 
-feedback, although that doesn't make much sense to me?) or if it's just 
-something irrelevant that the Windows driver happens to do.
-
-Either way, Linux seems to get stuck with the input data (for instance, the 
-playhead in Audacity doesn't move).
+I've been looking at the usbmon dumps I have of recording under Windows and I 
+don't see anything that stands out, but I'll keep looking.
 
 Cheers,
 
