@@ -1,14 +1,25 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: nau8825: add acpi match ID
-Date: Wed,  7 Oct 2015 14:33:57 -0700
-Message-ID: <1444253637-65908-1-git-send-email-yang.a.fang@intel.com>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Boss GT-001
+Date: Thu, 08 Oct 2015 01:51:20 +0100
+Message-ID: <4797815.2qQzYzeTe7@kamdesktop>
+References: <1481883.Y22cmGKEIB@kamdesktop> <1837042.8ri5iYFGVx@kamdesktop>
+ <4761108.z7lHdDqPTH@kamdesktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A0DA261490
- for <alsa-devel@alsa-project.org>; Wed,  7 Oct 2015 23:35:23 +0200 (CEST)
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEDA7261531
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 02:51:22 +0200 (CEST)
+Received: by wiclk2 with SMTP id lk2so6586200wic.0
+ for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2015 17:51:22 -0700 (PDT)
+Received: from kamdesktop.localnet ([2001:8b0:be0a:29af::201])
+ by smtp.gmail.com with ESMTPSA id r9sm42509045wjz.35.2015.10.07.17.51.21
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Wed, 07 Oct 2015 17:51:21 -0700 (PDT)
+In-Reply-To: <4761108.z7lHdDqPTH@kamdesktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,51 +29,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, praveen.k.jain@intel.com, james.ausmus@intel.com, anatol@chromium.org, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, dgreid@chromium.org, yong.zhi@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+On Tuesday 06 Oct 2015 20:58:01 Keith A. Milner wrote:
+> OK, so it seems that this hardware is substantially the same as the GT-100
+> which has previously (and recently) been raised as a problem on ALSA.
 
-This patch adds the acpi match ID for nau8825 codec
+I'm getting somewhere...
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/codecs/nau8825.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+With the following quirk I am getting audio playback with aplay. I have what 
+seems like correct MIDI interfaces working (although not fully tested).
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index c44a7a1..5c1badf 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -16,6 +16,7 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
-+#include <linux/acpi.h>
- 
- #include <sound/initval.h>
- #include <sound/tlv.h>
-@@ -1090,10 +1091,19 @@ static const struct of_device_id nau8825_of_ids[] = {
- MODULE_DEVICE_TABLE(of, nau8825_of_ids);
- #endif
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id nau8825_acpi_match[] = {
-+	{ "10508825", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, nau8825_acpi_match);
-+#endif
-+
- static struct i2c_driver nau8825_driver = {
- 	.driver = {
- 		.name = "nau8825",
- 		.of_match_table = of_match_ptr(nau8825_of_ids),
-+		.acpi_match_table = ACPI_PTR(nau8825_acpi_match),
- 	},
- 	.probe = nau8825_i2c_probe,
- 	.remove = nau8825_i2c_remove,
--- 
-1.7.9.5
+However, recording does not seem to work.
+
+{
+	/* Boss GT-001 Guitar Interface */
+	USB_DEVICE(0x0582, 0x0187),
+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+		.vendor_name = "Boss",
+		.product_name = "GT-001",
+		.ifnum = QUIRK_ANY_INTERFACE,
+		.type = QUIRK_COMPOSITE,
+		.data = (const struct snd_usb_audio_quirk[]) {
+		  	{
+				.ifnum = 0,
+				.type = QUIRK_IGNORE_INTERFACE
+			},
+			{
+				.ifnum = 1,
+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+				.data = & (const struct audioformat) {
+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+					.channels = 4,
+					.iface = 1,
+					.altsetting = 1,
+					.altset_idx = 1,
+					.endpoint = 0x0d,
+					.ep_attr = 0x05,
+					.rates = SNDRV_PCM_RATE_44100,
+					.rate_min = 44100,
+					.rate_max = 44100,
+					.nr_rates = 1,
+					.rate_table = (unsigned int[]) { 44100 }
+				}
+			},
+			{
+				.ifnum = 2,
+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+				.data = & (const struct audioformat) {
+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
+					.channels = 4,
+					.iface = 2,
+					.altsetting = 1,
+					.altset_idx = 1,
+					.endpoint = 0x8e,
+					.ep_attr = 0x25,
+					.rates = SNDRV_PCM_RATE_44100,
+					.rate_min = 44100,
+					.rate_max = 44100,
+					.nr_rates = 1,
+					.rate_table = (unsigned int[]) { 44100 }
+				}
+			},
+			{
+				.ifnum = 3,
+				.type = QUIRK_MIDI_ROLAND
+			},
+			{
+				.ifnum = 4,
+				.type = QUIRK_IGNORE_INTERFACE
+			},
+			{
+				.ifnum = -1
+			}
+		}
+	}
+},
+
+Cheers,
+
+Keith
