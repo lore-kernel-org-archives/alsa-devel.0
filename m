@@ -1,83 +1,54 @@
-From: Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v4 5/8] clk: rockchip: Allow the RK3288 SPDIF clocks to change their parent
-Date: Thu, 08 Oct 2015 17:10:40 +0200
-Message-ID: <11755202.f1LLWMlYi0@phil>
-References: <1444311079-2892-1-git-send-email-sjoerd.simons@collabora.co.uk> <1444311079-2892-6-git-send-email-sjoerd.simons@collabora.co.uk>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Thu, 8 Oct 2015 15:43:55 +0000
+Message-ID: <1444205277.25504.49.camel@intel.com>
+References: <20151004231752.GA22609@sirena.org.uk>
+ <1444129142.25504.7.camel@intel.com> <20151006165658.GW12635@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444311079-2892-6-git-send-email-sjoerd.simons@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Cc: linux-rockchip@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC396264F03
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 17:44:32 +0200 (CEST)
+In-Reply-To: <20151006165658.GW12635@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <EC862C5F04E7C24BB9431B5710A51E5C@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "broonie@kernel.org" <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 8. Oktober 2015, 15:31:16 schrieb Sjoerd Simons:
-> The clock branches leading to sclk_spdif and sclk_spdif_8ch on RK3288
-> SoCs only feed those clocks, allow those clocks to change their parents
-> all the way up the hierarchy.
+On Tue, 2015-10-06 at 17:56 +0100, Mark Brown wrote:
+> On Tue, Oct 06, 2015 at 10:59:03AM +0000, Koul, Vinod wrote:
 > 
-> Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-
-Just as comment, if I'm seeing that right, this patch needs "clk: rockchip: 
-handle mux dependency of fractional dividers" and friends [0] to apply and 
-also actually handle the fractional dividers correctly.
-
-For the clock change itself:
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-
-
-Heiko
-
-[0] http://lists.infradead.org/pipermail/linux-rockchip/2015-August/003930.html
-
-
-> ---
+> Please fix your mailer to word wrap within paragraphs.
 > 
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
+> > Few more topics:
 > 
->  drivers/clk/rockchip/clk-rk3288.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> OK, added.
+
+Sounds good
+
 > 
-> diff --git a/drivers/clk/rockchip/clk-rk3288.c
-> b/drivers/clk/rockchip/clk-rk3288.c index 90c1c9b..4e90252 100644
-> --- a/drivers/clk/rockchip/clk-rk3288.c
-> +++ b/drivers/clk/rockchip/clk-rk3288.c
-> @@ -317,25 +317,25 @@ static struct rockchip_clk_branch
-> rk3288_clk_branches[] __initdata = {
+> > - ASoC/DAPM Changes we would like to do:
+> > 	- add kcontrol suport for PGA so that we cna add user controls for DSPs
+> > 	- add internal sink in DAPM for DSPs, like siggen
+> > 	- Fix TLV byte controls
+> > 	- Discuss BE-BE loops
 > 
->  	MUX(0, "spdif_src", mux_pll_src_cpll_gpll_p, 0,
->  			RK3288_CLKSEL_CON(5), 15, 1, MFLAGS),
-> -	COMPOSITE_NOMUX(0, "spdif_pre", "spdif_src", 0,
-> +	COMPOSITE_NOMUX(0, "spdif_pre", "spdif_src", CLK_SET_RATE_PARENT,
->  			RK3288_CLKSEL_CON(5), 0, 7, DFLAGS,
->  			RK3288_CLKGATE_CON(4), 4, GFLAGS),
-> -	COMPOSITE_FRACMUX(0, "spdif_frac", "spdif_src", 0,
-> +	COMPOSITE_FRACMUX(0, "spdif_frac", "spdif_src", CLK_SET_RATE_PARENT,
->  			RK3288_CLKSEL_CON(9), 0,
->  			RK3288_CLKGATE_CON(4), 5, GFLAGS,
-> -		MUX(0, "spdif_mux", mux_spdif_p, 0,
-> +		MUX(0, "spdif_mux", mux_spdif_p, CLK_SET_RATE_PARENT,
->  				RK3288_CLKSEL_CON(5), 8, 2, MFLAGS)),
-> -	GATE(SCLK_SPDIF, "sclk_spdif", "spdif_mux", 0,
-> +	GATE(SCLK_SPDIF, "sclk_spdif", "spdif_mux", CLK_SET_RATE_PARENT,
->  			RK3288_CLKGATE_CON(4), 6, GFLAGS),
-> -	COMPOSITE_NOMUX(0, "spdif_8ch_pre", "spdif_src", 0,
-> +	COMPOSITE_NOMUX(0, "spdif_8ch_pre", "spdif_src", CLK_SET_RATE_PARENT,
->  			RK3288_CLKSEL_CON(40), 0, 7, DFLAGS,
->  			RK3288_CLKGATE_CON(4), 7, GFLAGS),
-> -	COMPOSITE_FRACMUX(0, "spdif_8ch_frac", "spdif_8ch_pre", 0,
-> +	COMPOSITE_FRACMUX(0, "spdif_8ch_frac", "spdif_8ch_pre",
-> CLK_SET_RATE_PARENT, RK3288_CLKSEL_CON(41), 0,
->  			RK3288_CLKGATE_CON(4), 8, GFLAGS,
-> -		MUX(0, "spdif_8ch_mux", mux_spdif_8ch_p, 0,
-> +		MUX(0, "spdif_8ch_mux", mux_spdif_8ch_p, CLK_SET_RATE_PARENT,
->  				RK3288_CLKSEL_CON(40), 8, 2, MFLAGS)),
-> -	GATE(SCLK_SPDIF8CH, "sclk_spdif_8ch", "spdif_8ch_mux", 0,
-> +	GATE(SCLK_SPDIF8CH, "sclk_spdif_8ch", "spdif_8ch_mux",
-> CLK_SET_RATE_PARENT, RK3288_CLKGATE_CON(4), 9, GFLAGS),
-> 
->  	GATE(0, "sclk_acc_efuse", "xin24m", 0,
+> This mostly sounds like it's relatively trivial stuff, do we need to
+> actually discuss them with everyone there?
+
+Okay sure..
+
+-- 
+~Vinod
