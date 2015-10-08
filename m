@@ -1,71 +1,85 @@
-From: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Subject: [PATCH v4 4/8] ARM: dts: rockchip: Add SPDIF optical out on Radxa Rock
-Date: Thu,  8 Oct 2015 15:31:15 +0200
-Message-ID: <1444311079-2892-5-git-send-email-sjoerd.simons@collabora.co.uk>
-References: <1444311079-2892-1-git-send-email-sjoerd.simons@collabora.co.uk>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1444311079-2892-1-git-send-email-sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Subject: [PATCH v4 0/8] Add SPDIF support for rockchip
+Date: Thu,  8 Oct 2015 15:31:11 +0200
+Message-ID: <1444311079-2892-1-git-send-email-sjoerd.simons@collabora.co.uk>
+Return-path: <linux-clk-owner@vger.kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: linux-rockchip@lists.infradead.org
+Cc: Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Thierry Reding <treding@nvidia.com>, Olof Johansson <olof@lixom.net>, linux-clk@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Ray Jui <rjui@broadcom.com>, Javier Martinez Canillas <javier@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This enables the SPDIF optical audio output on the Radxa Rock
+This patchset adds support for the Rockchip SPDIF transceiver as present
+on RK3066, RK3188 and RK3288 boards and enables it on a Radxa rock pro.
+Tested on a Radxa Rock Pro board and Radxa Rock 2 Square board.
 
-Signed-off-by: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Quite a few changes since v3 (mostly based on review comment). One
+important addition is proper RK3288 SoC support; While according to the
+documentation it has 2 SPDIF "solutions" with the default being the old
+one, this variation doesn't actually work.. So support has been added
+to switch to the new SPDIF solution on RK3288.
 
----
+Changes in v4:
+- Require rockchip,grf on RK3288 as the 8 channel solution has to be
+  selected on that SoC
+- Make the compatibility string one of a known list rather then
+  requiring a precise list of options.
+- Change the clock names to hclk and mclk instead of spdif_hclk and
+  spdif_mclk to better match the implementation and data sheets.
+- Use hclk and mclk as the clock names matching the update devicetree
+  documentation
+- Drop something useless to_info function
+- Open-code tx control in rk_spdif_trigge
+- Use devm_regmap_init_mmio_clk to allow the regmap subsystem to manage
+  the hclk as needed
+- Use a more conventionale pm setup (turn everything on,
+  mark the device as active, enable pm and request the device to go
+  idle)
+- re-add the platfrorm:rockchip-spdif module alias
+- Also manage the hclk in the PM callbacks
+- Check the return code of clk_set_rate
+- Switch to the 8 channel spdif solutions on RK3288
+- Add support for 192khz audio rate
+- Adjust clock names to match the new names (hclk/mclk)
 
-Changes in v4: None
 Changes in v3:
+- Fix typos in commit message
 - Resent patches to a more complete list of maintainers.
 
-Changes in v2: None
+Changes in v2:
+- Remove platform: module alias as it was unused
+- Call MODULE_DEVICE_TABLE(of, ) right after the of match table
+- use rk_spdif as a prefix consistenly throughout the driver
+- Check return code of regmap_update and bubble it up
+- Sort the spdif node properties
+- Drop the 0x prefix from the node name
+- Rename the spdif@ node to sound@
 
- arch/arm/boot/dts/rk3188-radxarock.dts | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Sjoerd Simons (8):
+  ASoC: dt-bindings: add rockchip tranceiver bindings
+  ASoC: rockchip: Add rockchip SPDIF transceiver driver
+  ARM: dts: rockchip: Add SPDIF transceiver for RK3188
+  ARM: dts: rockchip: Add SPDIF optical out on Radxa Rock
+  clk: rockchip: Allow the RK3288 SPDIF clocks to change their parent
+  ARM: dts: rockchip: Add SPDIF transceiver for RK3288
+  ARM: dts: rockchip: Add SPDIF optical out on Radxa Rock2 Square
+  ARM: multi_v7_defconfig: Add rockchip audio support
 
-diff --git a/arch/arm/boot/dts/rk3188-radxarock.dts b/arch/arm/boot/dts/rk3188-radxarock.dts
-index d2180e5..797f83dd 100644
---- a/arch/arm/boot/dts/rk3188-radxarock.dts
-+++ b/arch/arm/boot/dts/rk3188-radxarock.dts
-@@ -90,6 +90,21 @@
- 		};
- 	};
- 
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "SPDIF";
-+
-+		simple-audio-card,dai-link@1 {  /* S/PDIF - S/PDIF */
-+			cpu { sound-dai = <&spdif>; };
-+			codec { sound-dai = <&spdif_out>; };
-+		};
-+	};
-+
-+	spdif_out: spdif-out {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+	};
-+
- 	ir_recv: gpio-ir-receiver {
- 		compatible = "gpio-ir-receiver";
- 		gpios = <&gpio0 10 1>;
-@@ -343,6 +358,10 @@
- 	};
- };
- 
-+&spdif {
-+	status = "okay";
-+};
-+
- &uart0 {
- 	status = "okay";
- };
+ .../devicetree/bindings/sound/rockchip-spdif.txt   |  44 +++
+ arch/arm/boot/dts/rk3188-radxarock.dts             |  19 +
+ arch/arm/boot/dts/rk3188.dtsi                      |  22 ++
+ arch/arm/boot/dts/rk3288-rock2-square.dts          |  18 +
+ arch/arm/boot/dts/rk3288.dtsi                      |  23 ++
+ arch/arm/configs/multi_v7_defconfig                |   5 +
+ drivers/clk/rockchip/clk-rk3288.c                  |  16 +-
+ sound/soc/rockchip/Kconfig                         |   8 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip_spdif.c                | 409 +++++++++++++++++++++
+ sound/soc/rockchip/rockchip_spdif.h                |  63 ++++
+ 11 files changed, 621 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+ create mode 100644 sound/soc/rockchip/rockchip_spdif.c
+ create mode 100644 sound/soc/rockchip/rockchip_spdif.h
+
 -- 
 2.6.1
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
