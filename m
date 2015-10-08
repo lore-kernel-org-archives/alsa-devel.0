@@ -1,64 +1,64 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: race condition between dmaengine_pcm_dma_complete
- and snd_pcm_release
-Date: Thu, 08 Oct 2015 11:02:27 +0200
-Message-ID: <56163123.9020106@metafoo.de>
-References: <CAMDowVWrLOK1Ysmfe1zTujw0Ev5PjPei1RBH8t_Mve_fsfe2ww@mail.gmail.com>
+From: Songjun Wu <songjun.wu-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: [RESEND PATCH v3 0/2] ASoC: atmel-classd: add driver for Atmel CLASSD
+Date: Thu, 8 Oct 2015 18:13:30 +0800
+Message-ID: <1444299212-4328-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-060.synserver.de (smtp-out-111.synserver.de
- [212.40.185.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 392D826172C
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 11:04:03 +0200 (CEST)
-In-Reply-To: <CAMDowVWrLOK1Ysmfe1zTujw0Ev5PjPei1RBH8t_Mve_fsfe2ww@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Campbell <mcampbell@izotope.com>, alsa-devel@alsa-project.org, dmaengine <dmaengine@vger.kernel.org>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org
+Cc: Songjun Wu <songjun.wu-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/06/2015 11:45 PM, Matt Campbell wrote:
-> Hi All,
-> 
-> I've been trying to track down a kernel crash I've been getting when
-> closing ALSA devices. There is a race condition between the bottom half
-> interrupt handler for the DMA system (dmaengine_pcm_dma_complete in
-> pcm_dmaengine.c) and the releasing of the sub-stream resources it receives
-> as an argument (when snd_pcm_release is called). An older thread from 2013
-> discussed this to a good extent so I wont go into the details here. I've
-> been unable to track down either a patch to fix this or even a good
-> solution that I could implement. I've spent a couple days trying to think
-> of an elegant solution and come up with nothing so far. Any input would be
-> appreciated.
-> 
-> Link to original thread:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-October/067111.html
-> 
-> It's worth nothing that the original thread points out how this can arise
-> on multi-core systems. In my case I'm on a single core system, but with the
-> real-time patch enabled and the userspace ALSA thread running at a higher
-> priority than the kernel's tasklet thread which can reproduce this almost
-> 100% of the time.
+The Audio Class D Amplifier driver includes two parts.
+1) Driver code to implement the Audio Class D Amplifier function.
+2) Device tree binding document, it describes how to add the Audio
+   Class D Amplifier in device tree.
 
-Hi,
+Changes in v3:
+- Remove '.owner' field in variable 'atmel_classd_driver',
+  since the core will do it.
+- Correct 'IS_ERR(dd->aclk)' to 'IS_ERR(dd->gclk)',
+  when geting the clock 'dd->gclk'.
 
-The answer is still the same. This is an inherent issue with the DMAengine
-API that needs to be fixed by adding a synchronization primitive that allows
-consumers to make sure that all completion tasklets have stopped running.
-Unfortunately this wasn't implemented yet, but I need this in other places
-outside of ASoC and it's on my TODO list and I'll hopefully get to it in the
-next 2 months.
+Changes in v2:
+- Change the "Mono", "Swap" and "Deemphasis" controls to
+  "Mono Switch", "Swap Switch" and "Deemphasis Switch".
+- Merge "EQ Bass", "EQ Medium" and "EQ Treble" controls
+  into one "EQ" control.
+- Change the "single-ended" and "differential" to
+  "Single ended", "Differential".
+- Merge separate left and right controls into one single
+  stereo control.
+- Add a warning if the user trys to specify an invalid
+  value in function "atmel_classd_codec_probe".
+- Use the "dev_get_regmap()" in function
+  "atmel_classd_codec_get_remap".
+- Check for errors when invoking the "clk_prepare_enable".
+- Remove the "dev_info" in function "atmel_classd_probe".
+- Add some code to create a sound card in function
+  "atmel_classd_probe".
+- Remove the DT node "Sound" and the related code.
+- Delete the device node "Sound" in dts.
 
-But in your case on a single CPU system it could also be an issue with the
-DMA controller driver itself not properly stopping the transfer when
-dma_terminate_all() is called.
+Songjun Wu (2):
+  ASoC: atmel-classd: add the Audio Class D Amplifier
+  ASoC: atmel-classd: DT binding for Class D audio amplifier driver
 
-- Lars
+ .../devicetree/bindings/sound/atmel-classd.txt     |   52 ++
+ sound/soc/atmel/Kconfig                            |    9 +
+ sound/soc/atmel/Makefile                           |    2 +
+ sound/soc/atmel/atmel-classd.c                     |  679 ++++++++++++++++++++
+ sound/soc/atmel/atmel-classd.h                     |  120 ++++
+ 5 files changed, 862 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-classd.txt
+ create mode 100644 sound/soc/atmel/atmel-classd.c
+ create mode 100644 sound/soc/atmel/atmel-classd.h
+
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
