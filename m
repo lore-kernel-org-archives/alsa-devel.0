@@ -1,34 +1,76 @@
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: Re: [PATCH v4 8/8] ARM: multi_v7_defconfig: Add rockchip audio
- support
-Date: Thu, 8 Oct 2015 15:51:25 +0200
-Message-ID: <561674DD.5040704@osg.samsung.com>
-References: <1444311079-2892-1-git-send-email-sjoerd.simons@collabora.co.uk>
- <1444311079-2892-9-git-send-email-sjoerd.simons@collabora.co.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Boss GT-001
+Date: Thu, 8 Oct 2015 15:54:46 +0200
+Message-ID: <561675A6.8000202@ladisch.de>
+References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
+ <4797815.2qQzYzeTe7@kamdesktop> <4911294.P8gonaEuuA@kamdesktop>
+ <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444311079-2892-9-git-send-email-sjoerd.simons@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, linux-rockchip@lists.infradead.org
-Cc: Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Thierry Reding <treding@nvidia.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>, Olof Johansson <olof@lixom.net>, Ray Jui <rjui@broadcom.com>, Tomeu
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 43AE3261A76
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 15:54:50 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "Keith A. Milner" <maillist@superlative.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Sjoerd,
-
-On 10/08/2015 03:31 PM, Sjoerd Simons wrote:
-> Enable support for audio device found on rockchip boards.
-> 
-> Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-> ---
-
-Patch looks good to me.
-
-Reviewed-by: Javier Martinez Canillas <javier@osg.samsung.com>
-
-Best regards,
--- 
-Javier Martinez Canillas
-Open Source Group
-Samsung Research America
+UmljYXJkIFdhbmRlcmxvZiB3cm90ZToKPiAgICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4
+MGQgIEVQIDEzIE9VVAo+ICAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgNQo+ICAgICAg
+ICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSXNvY2hyb25vdXMKPiAgICAgICAgICAgU3lu
+Y2ggVHlwZSAgICAgICAgICAgICAgIEFzeW5jaHJvbm91cwo+ICAgICAgICAgICBVc2FnZSBUeXBl
+ICAgICAgICAgICAgICAgRGF0YQo+ICAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDA3MCAg
+MXggMTEyIGJ5dGVzCj4KPiAgICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4OGUgIEVQIDE0
+IElOCj4gICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgIDM3Cj4gICAgICAgICAgIFRyYW5z
+ZmVyIFR5cGUgICAgICAgICAgICBJc29jaHJvbm91cwo+ICAgICAgICAgICBTeW5jaCBUeXBlICAg
+ICAgICAgICAgICAgQXN5bmNocm9ub3VzCj4gICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAg
+ICAgICBJbXBsaWNpdCBmZWVkYmFjayBEYXRhCj4gICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAg
+MHgwMDcwICAxeCAxMTIgYnl0ZXMKPgo+IFdoZW4gdGhlIElzb2Nocm9ub3VzIFN5bmNoIFR5cGUg
+aXMgQXN5bmNocm9ub3VzLCB0aGVyZSBtdXN0IGJlIGEgZmVlZGJhY2sKPiBjaGFubmVsIHdoZXJl
+IHRoZSBVU0IgZGV2aWNlIHJlcG9ydHMgYmFjayBpbmZvcm1hdGlvbiBzbyB0aGF0IGl0IGNhbgo+
+IGFkanVzdCB0aGUgb3V0cHV0IHNhbXBsaW5nIHJhdGUuCj4KPiBJIG1pZ2h0IGJlIGJhcmtpbmcg
+dXAgdGhlIHdyb25nIHRyZWUgaGVyZSBhcyBJJ20gbmV3IHRvIHRoaXMsIGJ1dCBpdCBsb29rcwo+
+IGFzIGlmIGVuZHBvaW50IDB4OGUgaXMgcHJvdmlkaW5nIHRoZSBmZWVkYmFjayBkYXRhLCBhbmQg
+dGhlcmUgZG9lc24ndCBzZWVtCj4gdG8gYmUgYW55IG90aGVyIGlzb2Nocm9ub3VzIGVuZHBvaW50
+IGRlZmluZWQgaW4gdGhlIGxzdXNiIGR1bXAgd2hpY2ggY291bGQKPiBiZSB1c2VkIGZvciB0aGUg
+YWN0dWFsIGNhcHR1cmUgY2RhdGEuCgpUaGUgZmlyc3QgZW5kcG9pbnQgaW4gYW4gYXVkaW8gaW50
+ZXJmYWNlIGlzIGZvciB0aGUgYWN0dWFsIHNhbXBsZXMuCgo+IEknbSBub3Qgc3VyZSB3aGF0ICdJ
+bXBsaWNpdCBmZWVkYmFjayBEYXRhJyBtZWFucyBleGFjdGx5IHRob3VnaCAtIGlzIHRoZQo+IGZl
+ZWRiYWNrIGRhdGEgbXVsdGlwbGV4ZWQgd2l0aCB0aGUgY2FwdHVyZSBkYXRhIHBlcmhhcHM/CgpU
+aGUgVVNCIDIuMCBzcGVjaWZpY2F0aW9uIHNheXM6CnwgNS4xMi40LjMgSW1wbGljaXQgRmVlZGJh
+Y2sKfAp8IEluIHNvbWUgY2FzZXMsIGltcGxlbWVudGluZyBhIHNlcGFyYXRlIGV4cGxpY2l0IGZl
+ZWRiYWNrIGVuZHBvaW50IGNhbgp8IGJlIGF2b2lkZWQuIElmIGEgZGV2aWNlIGltcGxlbWVudHMg
+YSBncm91cCBvZiBpc29jaHJvbm91cyBkYXRhCnwgZW5kcG9pbnRzIHRoYXQgYXJlIGNsb3NlbHkg
+cmVsYXRlZCBhbmQgaWY6Cnwgw6LCgMKiIEFsbCB0aGUgZW5kcG9pbnRzIGluIHRoZSBncm91cCBh
+cmUgc3luY2hyb25pemVkIChpLmUuIHVzZSBzYW1wbGUKfCBjbG9ja3MgdGhhdCBhcmUgZGVyaXZl
+ZCBmcm9tIGEgY29tbW9uIG1hc3RlciBjbG9jaykKfCDDosKAwqIgVGhlIGdyb3VwIGNvbnRhaW5z
+IG9uZSBvciBtb3JlIGlzb2Nocm9ub3VzIGRhdGEgZW5kcG9pbnRzIGluIG9uZQp8IGRpcmVjdGlv
+biB0aGF0IG5vcm1hbGx5IHdvdWxkIG5lZWQgZXhwbGljaXQgZmVlZGJhY2sKfCDDosKAwqIgVGhl
+IGdyb3VwIGNvbnRhaW5zIGF0IGxlYXN0IG9uZSBpc29jaHJvbm91cyBkYXRhIGVuZHBvaW50IGlu
+IHRoZQp8IG9wcG9zaXRlIGRpcmVjdGlvbgp8IFVuZGVyIHRoZXNlIGNpcmN1bXN0YW5jZXMsIHRo
+ZSBkZXZpY2UgbWF5IGVsZWN0IG5vdCB0byBpbXBsZW1lbnQKfCBhIHNlcGFyYXRlIGlzb2Nocm9u
+b3VzIGV4cGxpY2l0IGZlZWRiYWNrIGVuZHBvaW50LiBJbnN0ZWFkLCBmZWVkYmFjawp8IGluZm9y
+bWF0aW9uIGNhbiBiZSBkZXJpdmVkIGZyb20gdGhlIGRhdGEgZW5kcG9pbnQgaW4gdGhlIG9wcG9z
+aXRlCnwgZGlyZWN0aW9uIGJ5IG9ic2VydmluZyBpdHMgZGF0YSByYXRlLgoKSW4gdGhlb3J5LCB0
+aGUgZHJpdmVyIHN1cHBvcnRzIHRoaXMsIGJ1dCB0aGVyZSBhcmUga25vd24gdG8gYmUgc29tZQpi
+dWdzLiBBbmQgaW4gYW55IGNhc2UgdGhlcmUgc2hvdWxkIGJlIG5vIHByb2JsZW0gZ2V0dGluZyB0
+aGUgY2FwdHVyZQpzdHJlYW0gdG8gc3RhcnQgKGl0J3MgdGhlIHBsYXliYWNrIHN0cmVhbSB0aGF0
+IHdvdWxkIGhhdmUgYSBzbGlnaHRseQp3cm9uZyBzYW1wbGUgY2xvY2spOyBpdCdzIHBvc3NpYmxl
+IHRoYXQgdGhpcyBkZXZpY2UgbmVlZHMgc29tZSB2ZW5kb3ItCnNwZWNpZmljIGNvbW1hbmRzLCBv
+ciBhIGRpZmZlcmVudCBvcmRlciBvZiBjb21tYW5kcy4gKFRoZSBpbnRlcmVzdGluZwpVU0IgdHJh
+bnNhY3Rpb25zIHdvdWxkIGJlIGV2ZXJ5dGhpbmcgZXhjZXB0IHRoZSBpc29jaHJvbm91cyBvbmVz
+LikKCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
