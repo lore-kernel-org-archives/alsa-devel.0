@@ -1,17 +1,21 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Boss GT-001
-Date: Thu, 8 Oct 2015 09:02:22 +0200
-Message-ID: <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
-References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
- <4797815.2qQzYzeTe7@kamdesktop> <4911294.P8gonaEuuA@kamdesktop>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting
+ dma controller's quirk
+Date: Thu, 08 Oct 2015 10:31:18 +0200
+Message-ID: <561629D6.9010702@metafoo.de>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
+ <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
+ <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
+ <56139289.7000005@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 080D926043B
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 09:02:25 +0200 (CEST)
-In-Reply-To: <4911294.P8gonaEuuA@kamdesktop>
+Received: from smtp-out-060.synserver.de (smtp-out-107.synserver.de
+ [212.40.185.107])
+ by alsa0.perex.cz (Postfix) with ESMTP id B40232619D7
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 10:31:32 +0200 (CEST)
+In-Reply-To: <56139289.7000005@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,91 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Keith A. Milner" <maillist@superlative.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Shawn Lin <shawn.lin@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Addy Ke <addy.ke@rock-chips.com>, Doug Anderson <dianders@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Olof Johansson <olof@lixom.net>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Sonny Rao <sonnyrao@chromium.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 10/06/2015 11:21 AM, Shawn Lin wrote:
+> Hi Vinod,
+> 
+> On 2015/10/5 23:37, Vinod Koul wrote:
+>> On Mon, Sep 14, 2015 at 07:48:59AM +0800, Shawn Lin wrote:
+>>> Add dmaengine_get_quirks API for peripheral devices to query
+>>> quirks if they need it to make special workaround due to broken
+>>> dma controller design.
+>>>
+>>> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+>>> ---
+>>>
+>>> Changes in v5: None
+>>> Changes in v4: None
+>>> Changes in v3: None
+>>> Changes in v2: None
+>>> Changes in v1: None
+>>>
+>>>   include/linux/dmaengine.h | 9 +++++++++
+>>>   1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+>>> index e2f5eb4..5174ca4 100644
+>>> --- a/include/linux/dmaengine.h
+>>> +++ b/include/linux/dmaengine.h
+>>> @@ -704,6 +704,7 @@ struct dma_device {
+>>>
+>>>       int (*device_config)(struct dma_chan *chan,
+>>>                    struct dma_slave_config *config);
+>>> +    int (*device_get_quirks)(struct dma_chan *chan);
+>>
+>> And why do we want to expose this to users? THis doesnt seem right!
+>>
+> 
+> Basically I agree not to expose dma's quirk to slave controllers...But, the
+> fact I mentioned on cover letter explain the reasons why I have to let slave
+> controllers know that they are working with a broken dma. It's a dilemma
+> that if we don't want that to be exposed(let slave controllers' driver get
+> the info via a API), we have t add broken quirk for all of them ,here and
+> there, which seems to be a disaster:(
 
-On Thu, 8 Oct 2015, Keith A. Milner wrote:
+The problem with this API is that it transports values with device specific
+meanings over a generic API. Which is generally speaking not a good idea
+because the consumer witch is supposed to be generic suddenly needs to know
+which provider it is talking to.
 
-> On Thursday 08 Oct 2015 01:51:20 Keith A. Milner wrote:
-> > On Tuesday 06 Oct 2015 20:58:01 Keith A. Milner wrote:
-> > > OK, so it seems that this hardware is substantially the same as the G=
-T-100
-> > > which has previously (and recently) been raised as a problem on ALSA.
-> > =
+A better solution in this case typically is either introduce a generic API
+with generic values or a custom API with custom values, but don't mix the two.
 
-> > I'm getting somewhere...
-> > =
+> 
+> I would appreciate it if you could give me some suggestions at your earliest
+> convenience. :)
 
-> > With the following quirk I am getting audio playback with aplay. I have=
- what
-> > seems like correct MIDI interfaces working (although not fully tested).
-> > =
+In this case I think the best way to handle this is not quirks, but rather
+expose the actual maximum burst size using the DMA capabilities API. Since
+supporting only a certain burst depth is not really a quirk. All hardware
+has a limit for this and for some it might be larger or smaller than for
+others and it might be the same IP core but the maximum size depends on some
+IP core parameters. So this should be discoverable.
 
-> > However, recording does not seem to work.
-> =
-
-> I should add that, by "does not seem to work", the interface is seen, but =
-
-> nothing records. When using audacity, for instance, the playhead seems to=
- get =
-
-> stuck and doesn't advance.
-
-How does it look in Wireshark? Does the isochronous transfer for the =
-
-capture direction start?
-
-Actually, looking at your lsusb -v dump of the GT-001, I notice the =
-
-following:
-
-     Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x0d  EP 13 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x8e  EP 14 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-
-When the Isochronous Synch Type is Asynchronous, there must be a feedback =
-
-channel where the USB device reports back information so that it can =
-
-adjust the output sampling rate =
-
-(http://wiki.osdev.org/Universal_Serial_Bus#Asynchronous_Endpoints).
-
-I might be barking up the wrong tree here as I'm new to this, but it looks =
-
-as if endpoint 0x8e is providing the feedback data, and there doesn't seem =
-
-to be any other isochronous endpoint defined in the lsusb dump which could =
-
-be used for the actual capture cdata.
-
-I'm not sure what 'Implicit feedback Data' means exactly though - is the =
-
-feedback data multiplexed with the capture data perhaps?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+- Lars
