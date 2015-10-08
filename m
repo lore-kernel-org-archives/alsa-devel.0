@@ -1,69 +1,64 @@
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: [PATCH v2 3/3] ASoC: rockchip: i2s: share tx/rx lrck when symmetric_rates enabled
-Date: Thu,  8 Oct 2015 20:40:09 +0800
-Message-ID: <1444308009-29088-4-git-send-email-sugar.zhang@rock-chips.com>
-References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 3/3] ASoC: da7213: Add bindings documentation for codec driver
+Date: Thu, 8 Oct 2015 08:16:17 -0500
+Message-ID: <CAL_JsqKnDVTONB4pUWiKV8Nhz=wWyQytkGjtak5BdT1K+RrOPg@mail.gmail.com>
+References: <cover.1444223905.git.Adam.Thomson.Opensource@diasemi.com>
+ <bfc7c5e61d8c398bc4cfa56a7908032dc3bdf82f.1444223905.git.Adam.Thomson.Opensource@diasemi.com>
+ <CAL_JsqL0R0jVSm6w0V=F5c1Odw3RKATjcq96QaUcA99JJmD2Xw@mail.gmail.com> <2E89032DDAA8B9408CB92943514A0337D4609A3A@SW-EX-MBX01.diasemi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D4609A3A-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-share lrck_tx to lrck_rx when symmetric_rates enabled.
+On Thu, Oct 8, 2015 at 3:42 AM, Opensource [Adam Thomson]
+<Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org> wrote:
+> On October 07, 2015 17:22, Rob Herring wrote:
+>
+>> > +- dlg,micbias1-lvl : Voltage (mV) for Mic Bias 1
+>> > +       [<1600>, <2200>, <2500>, <3000>]
+>> > +- dlg,micbias2-lvl : Voltage (mV) for Mic Bias 2
+>> > +       [<1600>, <2200>, <2500>, <3000>]
+>>
+>> Please append the units (-microvolt).
+>
+> Given that a user needs to read the bindings document to understand what is
+> available, and what they're for, this seems a little unnecessary.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
+You may think so, but it is standard practice.
 
-Changes in v2: 
-- new patch
+>>
+>> > +- dlg,dmic-data-sel : DMIC channel select based on clock edge.
+>> > +       ["lrise_rfall", "lfall_rrise"]
+>> > +- dlg,dmic-samplephase : When to sample audio from DMIC.
+>> > +       ["on_clkedge", "between_clkedge"]
+>>
+>> How about boolean for these two.
+>
+> Wanted these to be explicit, hence not choosing boolean. Would prefer to keep
+> them as is.
+>
+>>
+>> > +- dlg,dmic-clkrate : DMIC clock frequency (MHz).
+>> > +       [<1500000>, <3000000>]
+>>
+>> So 1.5GHz or 3GHz?
+>>
+>> Add units (-hz).
+>
+> Agreed, the description of MHz is misleading so will update to Hz. Thanks.
+> Again though, I don't see what the suffix gives you, and would prefer to leave
+> the binding as is.
 
- sound/soc/rockchip/rockchip_i2s.c | 8 ++++++++
- sound/soc/rockchip/rockchip_i2s.h | 6 ++++++
- 2 files changed, 14 insertions(+)
+It tells someone reading the dts what the units are without having to
+find the documentation and helps prevent people using properties with
+differing units.
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index f07833b..58ee645 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -226,6 +226,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
- 	struct rk_i2s_dev *i2s = to_info(dai);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	unsigned int val = 0;
- 
- 	switch (params_format(params)) {
-@@ -278,6 +279,13 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
- 			   I2S_DMACR_RDL(16));
- 
-+	val = I2S_CKR_TRCM_TXRX;
-+	if (dai->driver->symmetric_rates || rtd->dai_link->symmetric_rates)
-+		val = I2S_CKR_TRCM_TXSHARE;
-+
-+	regmap_update_bits(i2s->regmap, I2S_CKR,
-+			   I2S_CKR_TRCM_MASK,
-+			   val);
- 	return 0;
- }
- 
-diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
-index a54ee35..dc6e2c7 100644
---- a/sound/soc/rockchip/rockchip_i2s.h
-+++ b/sound/soc/rockchip/rockchip_i2s.h
-@@ -78,6 +78,12 @@
-  * CKR
-  * clock generation register
- */
-+#define I2S_CKR_TRCM_SHIFT	28
-+#define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_TXSHARE	(1 << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_RXSHARE	(2 << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
- #define I2S_CKR_MSS_SHIFT	27
- #define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
- #define I2S_CKR_MSS_SLAVE	(1 << I2S_CKR_MSS_SHIFT)
--- 
-2.3.6
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
