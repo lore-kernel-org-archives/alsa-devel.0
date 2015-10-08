@@ -1,19 +1,21 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH 1/2] ASoC: WM8962: mark cache_dirty flag
- after software reset in pm_resume
-Date: Thu, 8 Oct 2015 10:34:48 +0900
-Message-ID: <5615C838.6010903@mentor.com>
-References: <1444115215-4388-1-git-send-email-jiada_wang@mentor.com>
- <1444115215-4388-2-git-send-email-jiada_wang@mentor.com>
- <20151006105907.GM12635@sirena.org.uk>
+From: sugar <sugar.zhang@rock-chips.com>
+Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels
+ capture and lrck-mode support
+Date: Thu, 8 Oct 2015 09:47:37 +0800
+Message-ID: <5615CB39.1060208@rock-chips.com>
+References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
+ <20150923162433.GQ30445@sirena.org.uk> <5608F74C.3000104@rock-chips.com>
+ <20150930184655.GX15635@sirena.org.uk> <5614D162.3020500@rock-chips.com>
+ <F2F204F7-F5A8-4152-BF1D-454EB3E35F34@crome.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 03EA1261566
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 03:34:52 +0200 (CEST)
-In-Reply-To: <20151006105907.GM12635@sirena.org.uk>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24F842665B1
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 03:47:46 +0200 (CEST)
+In-Reply-To: <F2F204F7-F5A8-4152-BF1D-454EB3E35F34@crome.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com
+To: Caleb Crome <caleb@crome.org>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On 10/06/2015 07:59 PM, Mark Brown wrote:
-> On Tue, Oct 06, 2015 at 04:06:54PM +0900, Jiada Wang wrote:
->
->> +	/* All registers have been reset to default value without calling
->> +	 * to regmap interface, even if reset fails, some registers
->> +	 * maybe in intermediate status, so we need to mark regmap
->> +	 * cache_dirty flag.
->> +	 */
->> +	regcache_mark_dirty(wm8962->regmap);
->
-> This is a standard thing that applies to almost all devices, there
-> should be no need for such an extensive comment (which would normally
-> flag up that there's something weird and surprising going on).
->
-
-Will remove the comment in next update
+SGkgQ2FsZWIsCgp3ZSBoYXZlbid0IHN1cHBvcnQgMTYgY2hhbm5lbHMgY2FwdHVyZSBhbmQgcGxh
+eWJhY2sgeWV0LCB3b3VsZCB5b3UgbWluZCAKdG8gZGV0YWlsIHRoZSB1c2UgY2FzZT8gaWYgbXVz
+dCwgd2UgbWF5IHN1cHBvcnQgdGhpcyBmZWF0dXJlIG9uIG5leHQgCmdlbmVyYXRpb24gY2hpcC4K
+CuWcqCAxMC83LzIwMTUgMjE6MDQsIENhbGViIENyb21lIOWGmemBkzoKPiBIaSBzdWdhciwKPiAg
+ICAgQ2FuIHRoZSByb2NrY2hpcCBzdXBwb3J0IG1vcmUgdGhhbiA4IGNoYW5uZWxzPyAgSWRlYWxs
+eSwgd2Ugd291bGQgbGlrZSB0byBjYXB0dXJlIDE2IGNoYW5uZWxzIGFuZCBwbGF5YmFjayAxNiBj
+aGFubmVscyBzaW11bHRhbmVvdXNseS4KPgo+IFRoYW5rcywgIENhbGViCj4KPiBTZW50IGZyb20g
+bXkgaVBob25lCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
