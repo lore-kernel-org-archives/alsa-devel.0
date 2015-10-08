@@ -1,18 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: "Keith A. Milner" <maillist@superlative.org>
 Subject: Re: Boss GT-001
-Date: Thu, 8 Oct 2015 15:54:46 +0200
-Message-ID: <561675A6.8000202@ladisch.de>
-References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
- <4797815.2qQzYzeTe7@kamdesktop> <4911294.P8gonaEuuA@kamdesktop>
+Date: Thu, 08 Oct 2015 15:03:15 +0100
+Message-ID: <2785415.8nT9MSXHrq@kamdesktop>
+References: <1481883.Y22cmGKEIB@kamdesktop>
  <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
+ <53501158.2GJHLGgpfJ@kamdesktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 43AE3261A76
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 15:54:50 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
+Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
+ [209.85.212.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46FAD261A76
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:03:18 +0200 (CEST)
+Received: by wicge5 with SMTP id ge5so27353477wic.0
+ for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 07:03:18 -0700 (PDT)
+Received: from kamdesktop.localnet ([2001:8b0:be0a:29af::201])
+ by smtp.gmail.com with ESMTPSA id he3sm46431254wjc.48.2015.10.08.07.03.16
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 08 Oct 2015 07:03:16 -0700 (PDT)
+In-Reply-To: <53501158.2GJHLGgpfJ@kamdesktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +30,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "Keith A. Milner" <maillist@superlative.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UmljYXJkIFdhbmRlcmxvZiB3cm90ZToKPiAgICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4
-MGQgIEVQIDEzIE9VVAo+ICAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgNQo+ICAgICAg
-ICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSXNvY2hyb25vdXMKPiAgICAgICAgICAgU3lu
-Y2ggVHlwZSAgICAgICAgICAgICAgIEFzeW5jaHJvbm91cwo+ICAgICAgICAgICBVc2FnZSBUeXBl
-ICAgICAgICAgICAgICAgRGF0YQo+ICAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDA3MCAg
-MXggMTEyIGJ5dGVzCj4KPiAgICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4OGUgIEVQIDE0
-IElOCj4gICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgIDM3Cj4gICAgICAgICAgIFRyYW5z
-ZmVyIFR5cGUgICAgICAgICAgICBJc29jaHJvbm91cwo+ICAgICAgICAgICBTeW5jaCBUeXBlICAg
-ICAgICAgICAgICAgQXN5bmNocm9ub3VzCj4gICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAg
-ICAgICBJbXBsaWNpdCBmZWVkYmFjayBEYXRhCj4gICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAg
-MHgwMDcwICAxeCAxMTIgYnl0ZXMKPgo+IFdoZW4gdGhlIElzb2Nocm9ub3VzIFN5bmNoIFR5cGUg
-aXMgQXN5bmNocm9ub3VzLCB0aGVyZSBtdXN0IGJlIGEgZmVlZGJhY2sKPiBjaGFubmVsIHdoZXJl
-IHRoZSBVU0IgZGV2aWNlIHJlcG9ydHMgYmFjayBpbmZvcm1hdGlvbiBzbyB0aGF0IGl0IGNhbgo+
-IGFkanVzdCB0aGUgb3V0cHV0IHNhbXBsaW5nIHJhdGUuCj4KPiBJIG1pZ2h0IGJlIGJhcmtpbmcg
-dXAgdGhlIHdyb25nIHRyZWUgaGVyZSBhcyBJJ20gbmV3IHRvIHRoaXMsIGJ1dCBpdCBsb29rcwo+
-IGFzIGlmIGVuZHBvaW50IDB4OGUgaXMgcHJvdmlkaW5nIHRoZSBmZWVkYmFjayBkYXRhLCBhbmQg
-dGhlcmUgZG9lc24ndCBzZWVtCj4gdG8gYmUgYW55IG90aGVyIGlzb2Nocm9ub3VzIGVuZHBvaW50
-IGRlZmluZWQgaW4gdGhlIGxzdXNiIGR1bXAgd2hpY2ggY291bGQKPiBiZSB1c2VkIGZvciB0aGUg
-YWN0dWFsIGNhcHR1cmUgY2RhdGEuCgpUaGUgZmlyc3QgZW5kcG9pbnQgaW4gYW4gYXVkaW8gaW50
-ZXJmYWNlIGlzIGZvciB0aGUgYWN0dWFsIHNhbXBsZXMuCgo+IEknbSBub3Qgc3VyZSB3aGF0ICdJ
-bXBsaWNpdCBmZWVkYmFjayBEYXRhJyBtZWFucyBleGFjdGx5IHRob3VnaCAtIGlzIHRoZQo+IGZl
-ZWRiYWNrIGRhdGEgbXVsdGlwbGV4ZWQgd2l0aCB0aGUgY2FwdHVyZSBkYXRhIHBlcmhhcHM/CgpU
-aGUgVVNCIDIuMCBzcGVjaWZpY2F0aW9uIHNheXM6CnwgNS4xMi40LjMgSW1wbGljaXQgRmVlZGJh
-Y2sKfAp8IEluIHNvbWUgY2FzZXMsIGltcGxlbWVudGluZyBhIHNlcGFyYXRlIGV4cGxpY2l0IGZl
-ZWRiYWNrIGVuZHBvaW50IGNhbgp8IGJlIGF2b2lkZWQuIElmIGEgZGV2aWNlIGltcGxlbWVudHMg
-YSBncm91cCBvZiBpc29jaHJvbm91cyBkYXRhCnwgZW5kcG9pbnRzIHRoYXQgYXJlIGNsb3NlbHkg
-cmVsYXRlZCBhbmQgaWY6Cnwgw6LCgMKiIEFsbCB0aGUgZW5kcG9pbnRzIGluIHRoZSBncm91cCBh
-cmUgc3luY2hyb25pemVkIChpLmUuIHVzZSBzYW1wbGUKfCBjbG9ja3MgdGhhdCBhcmUgZGVyaXZl
-ZCBmcm9tIGEgY29tbW9uIG1hc3RlciBjbG9jaykKfCDDosKAwqIgVGhlIGdyb3VwIGNvbnRhaW5z
-IG9uZSBvciBtb3JlIGlzb2Nocm9ub3VzIGRhdGEgZW5kcG9pbnRzIGluIG9uZQp8IGRpcmVjdGlv
-biB0aGF0IG5vcm1hbGx5IHdvdWxkIG5lZWQgZXhwbGljaXQgZmVlZGJhY2sKfCDDosKAwqIgVGhl
-IGdyb3VwIGNvbnRhaW5zIGF0IGxlYXN0IG9uZSBpc29jaHJvbm91cyBkYXRhIGVuZHBvaW50IGlu
-IHRoZQp8IG9wcG9zaXRlIGRpcmVjdGlvbgp8IFVuZGVyIHRoZXNlIGNpcmN1bXN0YW5jZXMsIHRo
-ZSBkZXZpY2UgbWF5IGVsZWN0IG5vdCB0byBpbXBsZW1lbnQKfCBhIHNlcGFyYXRlIGlzb2Nocm9u
-b3VzIGV4cGxpY2l0IGZlZWRiYWNrIGVuZHBvaW50LiBJbnN0ZWFkLCBmZWVkYmFjawp8IGluZm9y
-bWF0aW9uIGNhbiBiZSBkZXJpdmVkIGZyb20gdGhlIGRhdGEgZW5kcG9pbnQgaW4gdGhlIG9wcG9z
-aXRlCnwgZGlyZWN0aW9uIGJ5IG9ic2VydmluZyBpdHMgZGF0YSByYXRlLgoKSW4gdGhlb3J5LCB0
-aGUgZHJpdmVyIHN1cHBvcnRzIHRoaXMsIGJ1dCB0aGVyZSBhcmUga25vd24gdG8gYmUgc29tZQpi
-dWdzLiBBbmQgaW4gYW55IGNhc2UgdGhlcmUgc2hvdWxkIGJlIG5vIHByb2JsZW0gZ2V0dGluZyB0
-aGUgY2FwdHVyZQpzdHJlYW0gdG8gc3RhcnQgKGl0J3MgdGhlIHBsYXliYWNrIHN0cmVhbSB0aGF0
-IHdvdWxkIGhhdmUgYSBzbGlnaHRseQp3cm9uZyBzYW1wbGUgY2xvY2spOyBpdCdzIHBvc3NpYmxl
-IHRoYXQgdGhpcyBkZXZpY2UgbmVlZHMgc29tZSB2ZW5kb3ItCnNwZWNpZmljIGNvbW1hbmRzLCBv
-ciBhIGRpZmZlcmVudCBvcmRlciBvZiBjb21tYW5kcy4gKFRoZSBpbnRlcmVzdGluZwpVU0IgdHJh
-bnNhY3Rpb25zIHdvdWxkIGJlIGV2ZXJ5dGhpbmcgZXhjZXB0IHRoZSBpc29jaHJvbm91cyBvbmVz
-LikKCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Thursday 08 Oct 2015 12:51:54 Keith A. Milner wrote:
+
+> I have some usbmon dumps which I will try to find time to analyze.
+> 
+
+Well the results of my packet dumps were interesting.
+
+For audio playback, I noticed the Windows drive seemed to enable the IN 
+endpoint (EP 14) as well as the OUT one (EP 13). This seemed to match with the 
+view that explicit feedback is required for asynchronous host-to-device 
+transfers.
+
+So I've changed the quirk as follows, which appears to work for playback 
+still:
+
+.ep_attr = 0x15,
+
+This is USB_ENDPOINT_USAGE_FEEDBACK + USB_ENDPOINT_SYNC_ASYNC + 
+USB_ENDPOINT_XFER_ISOC
+
+I say works "still" because the previous value I had (0x01) worked as well. 
+However, this was basically setting the sync type to NONE instead of ASYNC, 
+and didn't configure any feedback type. This was probably free-running and, 
+effectively, similar to "ADAPTIVE", but is probably prone to occasional sync 
+problems/buffer overflows on the device.
+
+The resulting usbmon dump seems to follow the one from Windows now.
+
+Input is still a problem!
+
+Under ALSA, the input stream (via URB_ISOCHRONOUS in requests/responses) to IN 
+endpoint 14 seems to be working. However, under Windows the driver also 
+initiates the OUT endpoint 13 which then has an output stream  (via 
+URB_ISOCHRONOUS out requests/responses).
+
+I don't know if this is required by the device for some reason (explicit 
+feedback, although that doesn't make much sense to me?) or if it's just 
+something irrelevant that the Windows driver happens to do.
+
+Either way, Linux seems to get stuck with the input data (for instance, the 
+playhead in Audacity doesn't move).
+
+Cheers,
+
+Keith
