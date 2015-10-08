@@ -1,54 +1,43 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt5645: fix build warning
-Date: Thu, 08 Oct 2015 17:33:22 +0300
-Message-ID: <56167EB2.9060608@linux.intel.com>
-References: <1444220532-14199-1-git-send-email-sudipm.mukherjee@gmail.com> <20151007140527.GK12635@sirena.org.uk> <20151008085550.GA3806@sudip-pc>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Boss GT-001
+Date: Thu, 08 Oct 2015 15:34:45 +0100
+Message-ID: <1759778.mmv09JCcDY@kamdesktop>
+References: <1481883.Y22cmGKEIB@kamdesktop> <561675A6.8000202@ladisch.de>
+ <2169905.Ah2pGDNdB3@kamdesktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151008085550.GA3806@sudip-pc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
+ [209.85.212.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01F162666D6
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 16:34:48 +0200 (CEST)
+Received: by wicfx3 with SMTP id fx3so31374527wic.1
+ for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 07:34:47 -0700 (PDT)
+In-Reply-To: <2169905.Ah2pGDNdB3@kamdesktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/08/2015 11:55 AM, Sudip Mukherjee wrote:
-> On Wed, Oct 07, 2015 at 03:05:27PM +0100, Mark Brown wrote:
->> On Wed, Oct 07, 2015 at 05:52:12PM +0530, Sudip Mukherjee wrote:
->>> We were getting build warning about "Section mismatch".
->>> dmi_platform_intel_broadwell is being referenced from the probe function
->>> rt5645_i2c_probe(), but dmi_platform_intel_broadwell was marked with
->>> __initdata.
->>>
->>> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
->>
->>> -static struct dmi_system_id dmi_platform_intel_broadwell[] __initdata = {
->>> +static struct dmi_system_id dmi_platform_intel_broadwell[] = {
->>
->> This doesn't seem like the obvious fix - why are we not annotating the
->> probe function suitably (or alternatively if we can't why does
->> __initdata still exist)?
->
-> probe function should not be __init. probe can be called anytime after
-> the module has been loaded.
-> __initdata still exists as that part of the code was added by
-> e9159e7577cf ("ASoC: rt5645: Add dmi for Broadwell") which is a very
-> recent modification and I think that has been added by mistake.
-> One more argument in my favor:
-> The use in probe function is
-> if (dmi_check_system(dmi_platform_intel_braswell) ||
-> 		dmi_check_system(dmi_platform_intel_broadwell))
->
-> dmi_platform_intel_braswell is not marked as __initdata but
-> dmi_platform_intel_broadwell is marked but they both have same use at
-> the same place.
->
-If one really wants to save a few bytes then one could annotate this it 
-with __initdata_or_module (very low use in kernel) but I don't think 
-it's worth of effort and probably should be done for other sections here 
-too by another patch.
+On Thursday 08 Oct 2015 15:10:03 Keith A. Milner wrote:
 
-To me this patch looks a right thing to do at the moment.
+> I've been looking at the usbmon dumps I have of recording under Windows and
+> I don't see anything that stands out, but I'll keep looking.
 
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+If anyone else wants to take a look at these, I've uploaded the Usbmod 
+captures to a dropbox folder:
+
+https://www.dropbox.com/sh/zhh5ftklyjqmovj/AAAOVYO7hQQ_atrc2EcBKfbTa?dl=0
+
+Cheers,
+
+Keith
