@@ -1,43 +1,40 @@
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: [PATCH v2 2/3] Documentation: DT bindings: rockchip-i2s: add capture property
-Date: Thu,  8 Oct 2015 20:40:08 +0800
-Message-ID: <1444308009-29088-3-git-send-email-sugar.zhang@rock-chips.com>
-References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 0/3] ASoC: rockchip: i2s: add 8 channels
+	capture support and share lrck
+Date: Thu,  8 Oct 2015 20:40:06 +0800
+Message-ID: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A99E261A3D
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 14:40:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-rockchip,capture-channels: max capture channels, 2 channels default.
+support 8 channels capture support.
+share lrck tx/rx when symmetric_rates enabled.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
+Sugar Zhang (3):
+  ASoC: rockchip: i2s: add 8 channels capture support
+  Documentation: DT bindings: rockchip-i2s: add capture property
+  ASoC: rockchip: i2s: share tx/rx lrck when symmetric_rates enabled
 
-Changes in v2:
-- remove unused lrck property
+ .../devicetree/bindings/sound/rockchip-i2s.txt     |  2 +
+ sound/soc/rockchip/rockchip_i2s.c                  | 48 +++++++++++++++++++++-
+ sound/soc/rockchip/rockchip_i2s.h                  | 16 ++++++++
+ 3 files changed, 64 insertions(+), 2 deletions(-)
 
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 9b82c20..925dd52 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -21,6 +21,7 @@ Required properties:
- - clock-names: should contain followings:
-    - "i2s_hclk": clock for I2S BUS
-    - "i2s_clk" : clock for I2S controller
-+- rockchip,capture-channels: max capture channels, if not set, 2 channels default.
- 
- Example for rk3288 I2S controller:
- 
-@@ -34,4 +35,5 @@ i2s@ff890000 {
- 	dma-names = "tx", "rx";
- 	clock-names = "i2s_hclk", "i2s_clk";
- 	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+	rockchip,capture-channels = <2>;
- };
 -- 
 2.3.6
