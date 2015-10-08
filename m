@@ -1,14 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/2] ALSA: hdac: Copy codec helpers to core
-Date: Thu,  8 Oct 2015 09:48:05 +0100
-Message-ID: <1444294086-27031-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/2] ALSA: hda: make use of core codec fns
+Date: Thu,  8 Oct 2015 09:48:06 +0100
+Message-ID: <1444294086-27031-2-git-send-email-vinod.koul@intel.com>
+References: <1444294086-27031-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1168F2619D7
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 10:48:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 158A8261B1E
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 10:48:20 +0200 (CEST)
+In-Reply-To: <1444294086-27031-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,128 +21,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Now that we have introduced the core fns we should make hda use these
+helpers
 
-The current codec helpers are local to hda code and needs to be moved to
-core so that other users can use it.
-The helpers to read/write the codec and to check the
-power state of widgets is copied
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h |  6 ++++
- sound/hda/hdac_device.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+)
+ sound/pci/hda/hda_codec.c | 44 --------------------------------------------
+ sound/pci/hda/hda_codec.h | 18 ++++++++++++++----
+ sound/pci/hda/hda_local.h |  7 +------
+ 3 files changed, 15 insertions(+), 54 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 49bc836fcd84..26e956f4b7c6 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -147,6 +147,12 @@ int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
- bool snd_hdac_is_supported_format(struct hdac_device *codec, hda_nid_t nid,
- 				  unsigned int format);
- 
-+int snd_hdac_codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm);
-+int snd_hdac_codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm);
-+bool snd_hdac_check_power_state(struct hdac_device *hdac,
-+		hda_nid_t nid, unsigned int target_state);
- /**
-  * snd_hdac_read_parm - read a codec parameter
-  * @codec: the codec object
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index db96042a497f..b3b0ad289df1 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -952,3 +952,84 @@ bool snd_hdac_is_supported_format(struct hdac_device *codec, hda_nid_t nid,
- 	return true;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 37f43a1b34ef..2eeaf5ea20f9 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -91,50 +91,6 @@ static int codec_exec_verb(struct hdac_device *dev, unsigned int cmd,
  }
- EXPORT_SYMBOL_GPL(snd_hdac_is_supported_format);
-+
-+static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
+ 
+ /**
+- * snd_hda_codec_read - send a command and get the response
+- * @codec: the HDA codec
+- * @nid: NID to send the command
+- * @flags: optional bit flags
+- * @verb: the verb to send
+- * @parm: the parameter for the verb
+- *
+- * Send a single command and read the corresponding response.
+- *
+- * Returns the obtained response value, or -1 for an error.
+- */
+-unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+-				int flags,
+-				unsigned int verb, unsigned int parm)
+-{
+-	unsigned int cmd = snd_hdac_make_cmd(&codec->core, nid, verb, parm);
+-	unsigned int res;
+-	if (snd_hdac_exec_verb(&codec->core, cmd, flags, &res))
+-		return -1;
+-	return res;
+-}
+-EXPORT_SYMBOL_GPL(snd_hda_codec_read);
+-
+-/**
+- * snd_hda_codec_write - send a single command without waiting for response
+- * @codec: the HDA codec
+- * @nid: NID to send the command
+- * @flags: optional bit flags
+- * @verb: the verb to send
+- * @parm: the parameter for the verb
+- *
+- * Send a single command without waiting for response.
+- *
+- * Returns 0 if successful, or a negative error code.
+- */
+-int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+-			unsigned int verb, unsigned int parm)
+-{
+-	unsigned int cmd = snd_hdac_make_cmd(&codec->core, nid, verb, parm);
+-	return snd_hdac_exec_verb(&codec->core, cmd, flags, NULL);
+-}
+-EXPORT_SYMBOL_GPL(snd_hda_codec_write);
+-
+-/**
+  * snd_hda_sequence_write - sequence writes
+  * @codec: the HDA codec
+  * @seq: VERB array to send
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 2970413f18a0..95991e463abb 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -309,11 +309,21 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ /*
+  * low level functions
+  */
+-unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
++static inline unsigned int
++snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+ 				int flags,
+-				unsigned int verb, unsigned int parm);
+-int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+-			unsigned int verb, unsigned int parm);
++				unsigned int verb, unsigned int parm)
 +{
-+	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
-+	unsigned int res;
-+
-+	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
-+		return -1;
-+
-+	return res;
++	return snd_hdac_codec_read(&codec->core, nid, flags, verb, parm);
 +}
 +
-+static int codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
++static inline int
++snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
++			unsigned int verb, unsigned int parm)
 +{
-+	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
-+
-+	return snd_hdac_exec_verb(hdac, cmd, flags, NULL);
++	return snd_hdac_codec_write(&codec->core, nid, flags, verb, parm);
 +}
 +
-+/**
-+ * snd_hdac_codec_read - send a command and get the response
-+ * @hdac: the HDAC device
-+ * @nid: NID to send the command
-+ * @flags: optional bit flags
-+ * @verb: the verb to send
-+ * @parm: the parameter for the verb
-+ *
-+ * Send a single command and read the corresponding response.
-+ *
-+ * Returns the obtained response value, or -1 for an error.
-+ */
-+int snd_hdac_codec_read(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	return codec_read(hdac, nid, flags, verb, parm);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_codec_read);
-+
-+/**
-+ * snd_hdac_codec_write - send a single command without waiting for response
-+ * @hdac: the HDAC device
-+ * @nid: NID to send the command
-+ * @flags: optional bit flags
-+ * @verb: the verb to send
-+ * @parm: the parameter for the verb
-+ *
-+ * Send a single command without waiting for response.
-+ *
-+ * Returns 0 if successful, or a negative error code.
-+ */
-+int snd_hdac_codec_write(struct hdac_device *hdac, hda_nid_t nid,
-+			int flags, unsigned int verb, unsigned int parm)
-+{
-+	return codec_write(hdac, nid, flags, verb, parm);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_codec_write);
-+
-+/*
-+ * snd_hdac_check_power_state: check whether the actual power state matches
-+ * with the target state
-+ *
-+ * @hdac: the HDAC device
-+ * @nid: NID to send the command
-+ * @target_state: target state to check for
-+ *
-+ * Return true if state matches, false if not
-+ */
-+bool snd_hdac_check_power_state(struct hdac_device *hdac,
-+		hda_nid_t nid, unsigned int target_state)
-+{
-+	unsigned int state = codec_read(hdac, nid, 0,
-+				AC_VERB_GET_POWER_STATE, 0);
-+
-+	if (state & AC_PWRST_ERROR)
-+		return true;
-+	state = (state >> 4) & 0x0f;
-+	return (state == target_state);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_check_power_state);
+ #define snd_hda_param_read(codec, nid, param) \
+ 	snd_hdac_read_parm(&(codec)->core, nid, param)
+ #define snd_hda_get_sub_nodes(codec, nid, start_nid) \
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index 4a21c2199e02..d0e066e4c985 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -681,12 +681,7 @@ static inline bool
+ snd_hda_check_power_state(struct hda_codec *codec, hda_nid_t nid,
+ 			  unsigned int target_state)
+ {
+-	unsigned int state = snd_hda_codec_read(codec, nid, 0,
+-						AC_VERB_GET_POWER_STATE, 0);
+-	if (state & AC_PWRST_ERROR)
+-		return true;
+-	state = (state >> 4) & 0x0f;
+-	return (state == target_state);
++	return snd_hdac_check_power_state(&codec->core, nid, target_state);
+ }
+ 
+ unsigned int snd_hda_codec_eapd_power_filter(struct hda_codec *codec,
 -- 
 2.4.3
