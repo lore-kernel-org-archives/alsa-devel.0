@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/5] ALSA: firewire-lib: schedule work again
-	when MIDI substream has rest of MIDI messages
-Date: Fri,  9 Oct 2015 08:10:27 +0900
-Message-ID: <1444345829-17408-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: firewire-lib: add a restriction for
+	a transaction at once
+Date: Fri,  9 Oct 2015 08:10:26 +0900
+Message-ID: <1444345829-17408-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1444345829-17408-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 64396265062
+ by alsa0.perex.cz (Postfix) with ESMTP id 66A4426507D
  for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 01:10:34 +0200 (CEST)
 In-Reply-To: <1444345829-17408-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,31 +25,71 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when two MIDI trigger callbacks can be called immediately,
-transactions for the second MIDI messages can be postpone till next trigger
-callback. This is not good for real-time message transmission.
+Currently, when waiting for a response, callers can start another
+transaction by scheduling another work. This is not good for error
+processing of transaction, especially the first response is too late.
 
-This commit schedules work again at response handling callback if the
-MIDI substream still includes untransferred MIDI messages.
+This commit serialize request/response transactions, by adding one
+boolean member to represent idling state.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/firewire/lib.c | 9 +++++++++
+ sound/firewire/lib.h | 1 +
+ 2 files changed, 10 insertions(+)
 
 diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index ddc3e88..3e9afd7 100644
+index 03ada3f..ddc3e88 100644
 --- a/sound/firewire/lib.c
 +++ b/sound/firewire/lib.c
-@@ -78,6 +78,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
- 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
+@@ -76,6 +76,8 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
  
- 	port->idling = true;
+ 	if (rcode == RCODE_COMPLETE && substream != NULL)
+ 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
 +
-+	if (!snd_rawmidi_transmit_empty(substream))
-+		schedule_work(&port->work);
++	port->idling = true;
  }
  
  static void midi_port_work(struct work_struct *work)
+@@ -86,6 +88,10 @@ static void midi_port_work(struct work_struct *work)
+ 	int generation;
+ 	int type;
+ 
++	/* Under transacting. */
++	if (!port->idling)
++		return;
++
+ 	/* Nothing to do. */
+ 	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
+ 		return;
+@@ -110,6 +116,8 @@ static void midi_port_work(struct work_struct *work)
+ 		type = TCODE_WRITE_BLOCK_REQUEST;
+ 
+ 	/* Start this transaction. */
++	port->idling = false;
++
+ 	/*
+ 	 * In Linux FireWire core, when generation is updated with memory
+ 	 * barrier, node id has already been updated. In this module, After
+@@ -150,6 +158,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+ 	port->parent = fw_parent_device(unit);
+ 	port->addr = addr;
+ 	port->fill = fill;
++	port->idling = true;
+ 
+ 	INIT_WORK(&port->work, midi_port_work);
+ 
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index 37a7fe4..0af06f4 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -30,6 +30,7 @@ typedef int (*snd_fw_async_midi_port_fill)(
+ struct snd_fw_async_midi_port {
+ 	struct fw_device *parent;
+ 	struct work_struct work;
++	bool idling;
+ 
+ 	u64 addr;
+ 	struct fw_transaction transaction;
 -- 
 2.1.4
