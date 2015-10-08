@@ -1,25 +1,17 @@
-From: sugar <sugar.zhang@rock-chips.com>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: add 8 channels
- capture and lrck-mode support
-Date: Thu, 8 Oct 2015 11:59:44 +0800
-Message-ID: <5615EA30.8000205@rock-chips.com>
-References: <1442979683-9441-1-git-send-email-sugar.zhang@rock-chips.com>
- <1442979683-9441-2-git-send-email-sugar.zhang@rock-chips.com>
- <20150923162433.GQ30445@sirena.org.uk> <5608F74C.3000104@rock-chips.com>
- <20150930184655.GX15635@sirena.org.uk> <5614D162.3020500@rock-chips.com>
- <F2F204F7-F5A8-4152-BF1D-454EB3E35F34@crome.org>
- <5615CB39.1060208@rock-chips.com>
- <35DAC0DA-9141-4D6B-A065-4D0FE340E5D0@crome.org>
- <5615D898.1090101@rock-chips.com>
- <59C359E6-1944-4093-B008-1FB9CD695484@crome.org>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Boss GT-001
+Date: Thu, 8 Oct 2015 09:02:22 +0200
+Message-ID: <alpine.DEB.2.02.1510080849080.30181@lnxricardw1.se.axis.com>
+References: <1481883.Y22cmGKEIB@kamdesktop> <4761108.z7lHdDqPTH@kamdesktop>
+ <4797815.2qQzYzeTe7@kamdesktop> <4911294.P8gonaEuuA@kamdesktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F49E26155D
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 05:59:54 +0200 (CEST)
-In-Reply-To: <59C359E6-1944-4093-B008-1FB9CD695484@crome.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 080D926043B
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 09:02:25 +0200 (CEST)
+In-Reply-To: <4911294.P8gonaEuuA@kamdesktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,15 +21,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: "Keith A. Milner" <maillist@superlative.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Only the new design support 8 channels capture now, the others support 2 
-channels capture. but all of them support 32bits/sample.
 
-On 10/8/2015 11:19, Caleb Crome wrote:
->   That will work!  Do all your cortex-a parts support that?
->
-> Thanks, Caleb
-> Sent from my iPhone
+On Thu, 8 Oct 2015, Keith A. Milner wrote:
+
+> On Thursday 08 Oct 2015 01:51:20 Keith A. Milner wrote:
+> > On Tuesday 06 Oct 2015 20:58:01 Keith A. Milner wrote:
+> > > OK, so it seems that this hardware is substantially the same as the G=
+T-100
+> > > which has previously (and recently) been raised as a problem on ALSA.
+> > =
+
+> > I'm getting somewhere...
+> > =
+
+> > With the following quirk I am getting audio playback with aplay. I have=
+ what
+> > seems like correct MIDI interfaces working (although not fully tested).
+> > =
+
+> > However, recording does not seem to work.
+> =
+
+> I should add that, by "does not seem to work", the interface is seen, but =
+
+> nothing records. When using audacity, for instance, the playhead seems to=
+ get =
+
+> stuck and doesn't advance.
+
+How does it look in Wireshark? Does the isochronous transfer for the =
+
+capture direction start?
+
+Actually, looking at your lsusb -v dump of the GT-001, I notice the =
+
+following:
+
+     Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x0d  EP 13 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0070  1x 112 bytes
+        bInterval               1
+
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x8e  EP 14 IN
+        bmAttributes           37
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Implicit feedback Data
+        wMaxPacketSize     0x0070  1x 112 bytes
+        bInterval               1
+
+When the Isochronous Synch Type is Asynchronous, there must be a feedback =
+
+channel where the USB device reports back information so that it can =
+
+adjust the output sampling rate =
+
+(http://wiki.osdev.org/Universal_Serial_Bus#Asynchronous_Endpoints).
+
+I might be barking up the wrong tree here as I'm new to this, but it looks =
+
+as if endpoint 0x8e is providing the feedback data, and there doesn't seem =
+
+to be any other isochronous endpoint defined in the lsusb dump which could =
+
+be used for the actual capture cdata.
+
+I'm not sure what 'Implicit feedback Data' means exactly though - is the =
+
+feedback data multiplexed with the capture data perhaps?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
