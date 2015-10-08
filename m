@@ -1,16 +1,17 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 1/1] ASoC: da7213: Correct units description of
-	dmic-clkrate
-Date: Thu, 8 Oct 2015 11:21:54 +0100
-Message-ID: <dbcafb5ad02a756d93458e3262cf1d1eab8f607e.1444299436.git.Adam.Thomson.Opensource@diasemi.com>
+From: arun@accosted.net
+Subject: [tinycompress] [PATCH] build: Fix make distcheck
+Date: Thu,  8 Oct 2015 11:41:28 +0100
+Message-ID: <1444300888-30059-1-git-send-email-arun@accosted.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B772606D4
- for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 12:22:02 +0200 (CEST)
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0D8F2617BB
+ for <alsa-devel@alsa-project.org>; Thu,  8 Oct 2015 12:41:37 +0200 (CEST)
+Received: by wicfx3 with SMTP id fx3so18872891wic.0
+ for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 03:41:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Arun Raghavan <git@arunraghavan.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Description previously stated MHz whereas the resolution is in Hz.
-This has now has been updated to align with reality.
+From: Arun Raghavan <git@arunraghavan.net>
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+srcdir may not be the same as builddir, so use the correct variable for
+the include path.
 ---
+ src/lib/Makefile.am   | 2 +-
+ src/utils/Makefile.am | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-This patch is based on changes introduced under patch:
-
-'ASoC: da7213: Add bindings documentation for codec driver'
-(Commit a97d4e93a9bc556d0b3c2efb7695eb4c79938de7, kernel/git/broonie/sound.git)
-
- Documentation/devicetree/bindings/sound/da7213.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/da7213.txt b/Documentation/devicetree/bindings/sound/da7213.txt
-index 7280e82..5890280 100644
---- a/Documentation/devicetree/bindings/sound/da7213.txt
-+++ b/Documentation/devicetree/bindings/sound/da7213.txt
-@@ -18,7 +18,7 @@ Optional properties:
- 	["lrise_rfall", "lfall_rrise"]
- - dlg,dmic-samplephase : When to sample audio from DMIC.
- 	["on_clkedge", "between_clkedge"]
--- dlg,dmic-clkrate : DMIC clock frequency (MHz).
-+- dlg,dmic-clkrate : DMIC clock frequency (Hz).
- 	[<1500000>, <3000000>]
+diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
+index 6f900ac..4baeab5 100644
+--- a/src/lib/Makefile.am
++++ b/src/lib/Makefile.am
+@@ -2,4 +2,4 @@ tinycompressdir = $(libdir)
  
- ======
+ tinycompress_LTLIBRARIES = libtinycompress.la
+ libtinycompress_la_SOURCES = compress.c
+-libtinycompress_la_CFLAGS = -I $(top_builddir)/include
++libtinycompress_la_CFLAGS = -I$(top_srcdir)/include
+diff --git a/src/utils/Makefile.am b/src/utils/Makefile.am
+index 6a89c45..5f685e3 100644
+--- a/src/utils/Makefile.am
++++ b/src/utils/Makefile.am
+@@ -3,8 +3,8 @@ bin_PROGRAMS = cplay crecord
+ cplay_SOURCES = cplay.c
+ crecord_SOURCES = crec.c
+ 
+-cplay_CFLAGS = -I$(top_builddir)/include
+-crecord_CFLAGS = -I$(top_builddir)/include
++cplay_CFLAGS = -I$(top_srcdir)/include
++crecord_CFLAGS = -I$(top_srcdir)/include
+ 
+ 
+ cplay_LDADD = $(top_builddir)/src/lib/libtinycompress.la
 -- 
-1.9.3
+2.4.3
