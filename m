@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: add rockchip tranceiver
-	bindings" to the asoc tree
-Date: Fri, 09 Oct 2015 12:21:36 +0100
-Message-ID: <E1ZkVk0-0006cy-VV@finisterre>
-References: <1444311079-2892-2-git-send-email-sjoerd.simons@collabora.co.uk>
+Subject: Applied "ASoC: Intel: Skylake: Correct the runtime
+	handler behaviour" to the asoc tree
+Date: Fri, 09 Oct 2015 12:21:27 +0100
+Message-ID: <E1ZkVjr-0006aQ-Ee@finisterre>
+References: <1444377711-9720-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BAD79265173
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:49 +0200 (CEST)
-In-Reply-To: <1444311079-2892-2-git-send-email-sjoerd.simons@collabora.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id A71DC265158
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:45 +0200 (CEST)
+In-Reply-To: <1444377711-9720-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: add rockchip tranceiver bindings
+   ASoC: Intel: Skylake: Correct the runtime handler behaviour
 
 has been applied to the asoc tree at
 
@@ -53,70 +53,184 @@ to this mail.
 Thanks,
 Mark
 
->From 51e5084e718f990e88aeb0a9219adef15f847dc8 Mon Sep 17 00:00:00 2001
-From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Date: Thu, 8 Oct 2015 15:31:12 +0200
-Subject: [PATCH] ASoC: dt-bindings: add rockchip tranceiver bindings
+>From 84c9e2836aa7c87b19a24de091c7e7cf16124645 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Fri, 9 Oct 2015 09:01:50 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: Correct the runtime handler behaviour
 
-Add devicetree bindings for the spdif tranceiver found on
-found on rk3066, rk3188 and rk3288 SoCs
+On runtime pm resume, we need to download the firmware, also on
+suspend we need to ensure all the interrupts from controller and
+DSP are disabled.
 
-Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Also since we download the firmware on resume, we don't need to do
+so on init, so remove that bit
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/rockchip-spdif.txt   | 44 ++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+ sound/soc/intel/common/sst-dsp-priv.h |  1 +
+ sound/soc/intel/skylake/skl-sst-ipc.c | 12 ++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h |  1 +
+ sound/soc/intel/skylake/skl-sst.c     | 56 +++++++++++++++++++----------------
+ 4 files changed, 44 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-new file mode 100644
-index 0000000..33dd82c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-@@ -0,0 +1,44 @@
-+* Rockchip SPDIF transceiver
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index cbd568e..2151652 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -314,6 +314,7 @@ struct sst_dsp {
+ 	int sst_state;
+ 	struct skl_cl_dev cl_dev;
+ 	u32 intr_status;
++	const struct firmware *fw;
+ };
+ 
+ /* Size optimised DRAM/IRAM memcpy */
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 937a0a3..3345ea0 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -464,6 +464,18 @@ void skl_ipc_op_int_enable(struct sst_dsp *ctx)
+ 		SKL_ADSP_REG_HIPCCTL_BUSY, SKL_ADSP_REG_HIPCCTL_BUSY);
+ }
+ 
++void skl_ipc_op_int_disable(struct sst_dsp *ctx)
++{
++	/* disable IPC DONE interrupt */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_HIPCCTL,
++					SKL_ADSP_REG_HIPCCTL_DONE, 0);
 +
-+The S/PDIF audio block is a stereo transceiver that allows the
-+processor to receive and transmit digital audio via an coaxial cable or
-+a fibre cable.
++	/* Disable IPC BUSY interrupt */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_HIPCCTL,
++					SKL_ADSP_REG_HIPCCTL_BUSY, 0);
 +
-+Required properties:
++}
 +
-+- compatible: should be one of the following:
-+   - "rockchip,rk3288-spdif", "rockchip,rk3188-spdif" or
-+     "rockchip,rk3066-spdif"
-+- reg: physical base address of the controller and length of memory mapped
-+  region.
-+- interrupts: should contain the SPDIF interrupt.
-+- #address-cells: should be 1.
-+- #size-cells: should be 0.
-+- dmas: DMA specifiers for tx dma. See the DMA client binding,
-+  Documentation/devicetree/bindings/dma/dma.txt
-+- dma-names: should be "tx"
-+- clocks: a list of phandle + clock-specifier pairs, one for each entry
-+  in clock-names.
-+- clock-names: should contain following:
-+   - "hclk": clock for SPDIF controller
-+   - "mclk" : clock for SPDIF bus
+ bool skl_ipc_int_status(struct sst_dsp *ctx)
+ {
+ 	return sst_dsp_shim_read_unlocked(ctx,
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 9f5f672..f1a154e 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -116,6 +116,7 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
+ 
+ void skl_ipc_int_enable(struct sst_dsp *dsp);
+ void skl_ipc_op_int_enable(struct sst_dsp *ctx);
++void skl_ipc_op_int_disable(struct sst_dsp *ctx);
+ void skl_ipc_int_disable(struct sst_dsp *dsp);
+ 
+ bool skl_ipc_int_status(struct sst_dsp *dsp);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index c18ea51..3b83dc9 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -70,15 +70,31 @@ static int skl_transfer_firmware(struct sst_dsp *ctx,
+ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ {
+ 	int ret = 0, i;
+-	const struct firmware *fw = NULL;
+ 	struct skl_sst *skl = ctx->thread_context;
+ 	u32 reg;
+ 
+-	ret = request_firmware(&fw, "dsp_fw_release.bin", ctx->dev);
++	skl->boot_complete = false;
++	init_waitqueue_head(&skl->boot_wait);
 +
-+Required properties on RK3288:
-+  - rockchip,grf: the phandle of the syscon node for the general register
-+                   file (GRF)
++	if (ctx->fw == NULL) {
++		ret = request_firmware(&ctx->fw, "dsp_fw_release.bin", ctx->dev);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Request firmware failed %d\n", ret);
++			skl_dsp_disable_core(ctx);
++			return -EIO;
++		}
++	}
 +
-+Example for the rk3188 SPDIF controller:
++	ret = skl_dsp_boot(ctx);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Request firmware failed %d\n", ret);
+-		skl_dsp_disable_core(ctx);
+-		return -EIO;
++		dev_err(ctx->dev, "Boot dsp core failed ret: %d", ret);
++		goto skl_load_base_firmware_failed;
++	}
 +
-+spdif: spdif@0x1011e000 {
-+	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
-+	reg = <0x1011e000 0x2000>;
-+	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	dmas = <&dmac1_s 8>;
-+	dma-names = "tx";
-+	clock-names = "hclk", "mclk";
-+	clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
-+	status = "disabled";
-+	#sound-dai-cells = <0>;
-+};
++	ret = skl_cldma_prepare(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "CL dma prepare failed : %d", ret);
++		goto skl_load_base_firmware_failed;
+ 	}
+ 
+ 	/* enable Interrupt */
+@@ -102,7 +118,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		goto skl_load_base_firmware_failed;
+ 	}
+ 
+-	ret = skl_transfer_firmware(ctx, fw->data, fw->size);
++	ret = skl_transfer_firmware(ctx, ctx->fw->data, ctx->fw->size);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
+ 		goto skl_load_base_firmware_failed;
+@@ -118,13 +134,12 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
+ 		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
+ 	}
+-	release_firmware(fw);
+-
+ 	return 0;
+ 
+ skl_load_base_firmware_failed:
+ 	skl_dsp_disable_core(ctx);
+-	release_firmware(fw);
++	release_firmware(ctx->fw);
++	ctx->fw = NULL;
+ 	return ret;
+ }
+ 
+@@ -172,6 +187,12 @@ static int skl_set_dsp_D3(struct sst_dsp *ctx)
+ 	}
+ 	skl_dsp_set_state_locked(ctx, SKL_DSP_RESET);
+ 
++	/* disable Interrupt */
++	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
++	skl_cldma_int_disable(ctx);
++	skl_ipc_op_int_disable(ctx);
++	skl_ipc_int_disable(ctx);
++
+ 	return ret;
+ }
+ 
+@@ -235,22 +256,6 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	if (ret)
+ 		return ret;
+ 
+-	skl->boot_complete = false;
+-	init_waitqueue_head(&skl->boot_wait);
+-
+-	ret = skl_dsp_boot(sst);
+-	if (ret < 0) {
+-		dev_err(skl->dev, "Boot dsp core failed ret: %d", ret);
+-		goto free_ipc;
+-	}
+-
+-	ret = skl_cldma_prepare(sst);
+-	if (ret < 0) {
+-		dev_err(dev, "CL dma prepare failed : %d", ret);
+-		goto free_ipc;
+-	}
+-
+-
+ 	ret = sst->fw_ops.load_fw(sst);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Load base fw failed : %d", ret);
+@@ -262,7 +267,6 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 
+ 	return 0;
+ 
+-free_ipc:
+ 	skl_ipc_free(&skl->ipc);
+ 	return ret;
+ }
 -- 
 2.5.0
