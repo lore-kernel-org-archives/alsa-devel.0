@@ -1,97 +1,168 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
- I2C slaves
-Date: Fri, 9 Oct 2015 22:47:13 +0100
-Message-ID: <20151009214712.GD1481@katana>
-References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20151001203744.GA7514@katana>
- <560E4DF4.4000901@linux.intel.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH] ALSA: usb-audio: Fix max packet size
+ calculation for USB audio
+Date: Fri, 9 Oct 2015 23:47:30 +0200
+Message-ID: <alpine.DEB.2.02.1510092334230.25238@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RhUH2Ysw6aD5utA4"
-Return-path: <linux-i2c-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <560E4DF4.4000901@linux.intel.com>
-Sender: linux-i2c-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, lm-sensors@lm-sensors.org, Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jean Delvare <jdelvare@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Dustin Byford <dustin@cumulusnetworks.com>, linux@roeck-us.net
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB9CF2651F0
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 23:47:35 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---RhUH2Ysw6aD5utA4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The addition of 0xffff ("almost 1" in Q16.16 format), resulting
+in the rounding up of the resulting value, was in the wrong place,
+as it is the resulting packet size that needs to be rounded up
+to the nearest integer (e.g. if the resulting packet size is
+calculated as 55.125 bytes, we need a packet of 56 bytes),
+rather than the rate value (ep->freqmax).
 
-On Fri, Oct 02, 2015 at 12:27:16PM +0300, Jarkko Nikula wrote:
-> On 10/01/2015 11:37 PM, Wolfram Sang wrote:
-> >
-> >>This is for discussion so I didn't cc stable@vger.kernel.org yet. I was
-> >>thinking would it work if we'd keep the stable name but have an another
-> >>symlink in /sys/bus/i2c/devices/ that uses "x-00yz" name. However this
-> >>feels ill-use of devices directory and probably causes more troubles
-> >>elsewhere.
-> >
-> >Do you foresee troubles already? I am still in favour of a symlink.
-> >
-> I haven't looked at this for a while but one problem was that devices/
-> directory belongs to private structure of struct bus_type and in order to
-> create a symlink there it needs to done in drivers/base/bus.c:
-> bus_add_device() which felt quite hackish to me.
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
+Since this clearly is a sensitive part of the code, here follows a lengthy
+rationale with examples to illustrate the problem.
 
-This is just a quick prototype and untested; but I did something similar
-in the i2c-mux code:
+The code as it stands has the following expression on line 613 to =
 
-diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
-index 5f89f1e3c2f24f..715dca57ba68fd 100644
---- a/drivers/i2c/i2c-core.c
-+++ b/drivers/i2c/i2c-core.c
-@@ -970,13 +970,15 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
- {
- 	struct acpi_device *adev =3D ACPI_COMPANION(&client->dev);
-=20
--	if (adev) {
--		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
--		return;
--	}
--
- 	dev_set_name(&client->dev, "%d-%04x", i2c_adapter_id(adap),
- 		     i2c_encode_flags_to_addr(client));
-+
-+	if (adev) {
-+		char symlink_name[256];
-+
-+		snprintf(symlink_name, sizeof(symlink_name), "i2c-%s", acpi_dev_name(ade=
-v));
-+		sysfs_create_link(&client->dev.kobj, &adap->dev.kobj, symlink_name);
-+	}
- }
-=20
- /**
+calculate the maximum isochronous packet size:
 
-Shouldn't something like this be enough?
+	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3)) =
 
+			>> (16 - ep->datainterval);
 
---RhUH2Ysw6aD5utA4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Here, ep->freqmax is the maximum assumed sample frequency, calculated from =
+the
+nominal sample frequency plus 25%. It is ultimately derived from ep->freqn,
+which is in the units of samples per packet, from get_usb_full_speed_rate()
+or usb_high_speed_rate(), as applicable, in Q16.16 format.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+The expression essentially adds the Q16.16 equivalent of 0.999... (i.e.  =
 
-iQIcBAEBAgAGBQJWGDXgAAoJEBQN5MwUoCm2zF8P/AomW14UNxguuciGi/6UYf+F
-H6NFbvQ3JRADGuakdI++0Jx2Q4MiSe3yX1E6BOIfT48NddgSKQFbrOomBLxXQmPo
-0o044zbIWEeHY1R8olVGj6tO9TnEg/AR2flU9jcb9esuKvkLcO3NZPtnW/qwa0CM
-iuZlKyIP4+dk+teyBS6d/8B7eKsLNxMYMRGhKKmo8EVS2GbksBctzlFsl+OfIt7c
-BwqqkKvXDkdh837xzU7LLFYdyURI1Bpr+fow3hrH6AcU1OnnU5BazrNw80My+A7Y
-K9ienrYGle16jmdBP8Aycr0YEQTtb3JBnWxZZYf0QnTzXAxilA2a9y7U67HNR9Kz
-vTz+psQGC4lTdKrFAm3ZdF/7UvOaH/+riZd1ebpdhLCy/L4Qc9F0EBV+C4Wfk1B0
-YyT25tSgRpp81kcrls2ZLQOfWMEjBE/kA2SK/q8MCgaATcc0jUnbR5ZPckXwoZvy
-eDUQ37E70w10Fg+EAWUCwPB2OrPMCQErKDjA6CWO8RVuMVHGfpctm2ixLOCU2FUH
-9eJmpaj60VZuEzIpvjpYNKw/xfO65KAZSmX4e3nWhqfoH4LPUJcZb/5oXv6+XhKC
-aJD3enuBopvKiSiL6u/1RwLbOv0hByEyv4pXVQ39OTTb3N7h/IZNiVRVG9lOvTJo
-rzlB6Arn1uP/nBD/ACjF
-=g8tF
------END PGP SIGNATURE-----
+the largest number less than one) to the sample rate, in order to get a =
 
---RhUH2Ysw6aD5utA4--
+rate whose integer part is rounded up from the fractional value. The =
+
+multiplication with (frame_bits >> 3) yields the number of bytes in a =
+
+packet, and the (16 >> ep->datainterval) then converts it from Q16.16 back =
+
+to an integer, taking into consideration the bDataInterval field of the =
+
+endpoint descriptor, which describes how often isochronous packets are =
+
+transmitted relative to the (micro)frame rate (125us or 1ms, for USB high =
+
+speed and full speed, respectively). For this discussion we will assume a =
+
+bDataInterval of 0, so the second line of the expression just converts the =
+
+Q16.16 value to an integer.
+
+In order to illustrate the problem, we will set frame_bits 64, which
+corresponds to a frame size of 8 bytes.
+
+The problem here is that the addition of 0xffff is in the wrong place. We d=
+on't
+want the rounding up to take place on the frequency, but on the resulting
+packet size. Let's take an example. We have a sample rate of 96 kHz, so our
+ep->freqn is 786432 (see usb_high_speed_rate()). Add 25% (line 612) and we =
+get
+983040.  The calculated maxsize is then ((983040 + 65535) * 8) >> 16 =3D 12=
+7 .
+However, if we do the number of bytes calculation in a less obscure way it's
+more apparent what the true corresponding packet size is: we get =
+
+(96000 * 1.25 / 8000) * 8 =3D 120, where 1.25 is the 25% from line 612, and=
+ the
+8000 is the number of isochronous packets per second on a high speed USB
+connection (125 us microframe interval).
+
+Rephrasing the maxsize expression to:
+
+        maxsize =3D (ep->freqmax * (frame_bits >> 3) + 0xffff)
+                                >> (16 - ep->datainterval);
+
+we instead get (983040 * 8 + 65535) >> 16 =3D 120 which is the correct valu=
+e.
+
+We can also do the calculation with a non-integer sample rate which is when
+rounding comes into effect: say we have 44.1 kHz (resulting ep->freqn =3D 3=
+61267,
+and resulting ep->freqmax 361267 * 1.25 =3D 451583 (rounded down).
+
+Original maxsize =3D ((451583 + 65535) * 8) << 16 =3D 63 (63.124.. rounded =
+down)
+True maxsize =3D (44100 * 1.25 / 8000) * 8 =3D 55.125, i.e. 56 bytes requir=
+ed
+New maxsize =3D (451583 * 8 + 65535) >> 16 =3D 56
+
+This is also corroborated by the wMaxPacketSize check on line 616. Assume
+that wMaxPacketSize =3D 108, with ep->maxpacksize then having the same valu=
+e.
+As 108 < 127, we get maxsize =3D 108. ep->freqmax is then recalculated to
+(108 / 8) << 16 =3D 884736 . Putting that rate into the original maxsize
+calculation yields a maxsize of ((884736 + 65535) * 8) >> 16 =3D 115
+(with decimals 115.99988). Clearly, we should get back the 108 here,
+which we would with the new expression: (884736 * 8 + 65535) >> 16 =3D 108 .
+
+As it currently stands, the error is tolerable because it only results
+in maxsize being a bit too big which wastes a couple of bytes, either as
+a result of the first maxsize calculation, or because the resulting calcula=
+tion
+will hit the wMaxPacketSize value before the packet is too big, resulting
+in fixing the size to wMaxPacketSize even though the packet is actually not
+too long.
+
+However, I'm working on a quirk for a device which stuffs an extra four (non
+sample) bytes into each isochronous packet, and that means that the maxsize
+calculation must take this into account. During this work it became obvious
+that there was something wrong with the maxsize calculation, as the resulti=
+ng
+packet size when wMaxPacketSize was hit did not correspond to the packet
+size which triggered the if statement to start with.
+
+Since this seems to me an obvious (after looking at it for a bit...) bug I'm
+submitting this as a separate patch rather than part of the upcoming patch
+series.
+
+ sound/usb/endpoint.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index e6f7189..be8a972 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -610,7 +610,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *=
+ep,
+ =
+
+ 	/* assume max. frequency is 25% higher than nominal */
+ 	ep->freqmax =3D ep->freqn + (ep->freqn >> 2);
+-	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3))
++	maxsize =3D (ep->freqmax * (frame_bits >> 3) + 0xffff)
+ 				>> (16 - ep->datainterval);
+ 	/* but wMaxPacketSize might reduce this */
+ 	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
+-- =
+
+1.7.10.4
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
