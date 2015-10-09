@@ -1,57 +1,112 @@
-From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Subject: Re: [PATCH v4 5/8] clk: rockchip: Allow the RK3288 SPDIF clocks to
- change their parent
-Date: Fri, 09 Oct 2015 13:35:55 +0200
-Message-ID: <1444390555.9895.271.camel@collabora.co.uk>
-References: <1444311079-2892-1-git-send-email-sjoerd.simons@collabora.co.uk>
-	 <1444311079-2892-6-git-send-email-sjoerd.simons@collabora.co.uk>
-	 <11755202.f1LLWMlYi0@phil>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH v5 06/10] dmaengine: add API for getting
+ dma controller's quirk
+Date: Fri, 09 Oct 2015 13:38:05 +0200
+Message-ID: <5617A71D.4030006@metafoo.de>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com> <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com> <20151005153746.GG13501@vkoul-mobl.iind.intel.com> <56139289.7000005@rock-chips.com> <561629D6.9010702@metafoo.de> <5617A589.4090102@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <11755202.f1LLWMlYi0@phil>
+In-Reply-To: <5617A589.4090102@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Heiko Stuebner <heiko@sntech.de>
-Cc: linux-rockchip@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
+To: Shawn Lin <shawn.lin@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Addy Ke <addy.ke@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, Doug Anderson <dianders@chromium.org>, Takashi Iwai <tiwai@suse.com>, dmaengine@vger.kernel.org, Mark Brown <broonie@kernel.org>, Olof Johansson <olof@lixom.net>, Sonny Rao <sonnyrao@chromium.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey Heiko,
+On 10/09/2015 01:31 PM, Shawn Lin wrote:
+> =E5=9C=A8 2015/10/8 16:31, Lars-Peter Clausen =E5=86=99=E9=81=93:
+>> On 10/06/2015 11:21 AM, Shawn Lin wrote:
+>>> Hi Vinod,
+>>>
+>>> On 2015/10/5 23:37, Vinod Koul wrote:
+>>>> On Mon, Sep 14, 2015 at 07:48:59AM +0800, Shawn Lin wrote:
+>>>>> Add dmaengine_get_quirks API for peripheral devices to query
+>>>>> quirks if they need it to make special workaround due to broken
+>>>>> dma controller design.
+>>>>>
+>>>>> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+>>>>> ---
+>>>>>
+>>>>> Changes in v5: None
+>>>>> Changes in v4: None
+>>>>> Changes in v3: None
+>>>>> Changes in v2: None
+>>>>> Changes in v1: None
+>>>>>
+>>>>>    include/linux/dmaengine.h | 9 +++++++++
+>>>>>    1 file changed, 9 insertions(+)
+>>>>>
+>>>>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.=
+h
+>>>>> index e2f5eb4..5174ca4 100644
+>>>>> --- a/include/linux/dmaengine.h
+>>>>> +++ b/include/linux/dmaengine.h
+>>>>> @@ -704,6 +704,7 @@ struct dma_device {
+>>>>>
+>>>>>        int (*device_config)(struct dma_chan *chan,
+>>>>>                     struct dma_slave_config *config);
+>>>>> +    int (*device_get_quirks)(struct dma_chan *chan);
+>>>>
+>>>> And why do we want to expose this to users? THis doesnt seem right=
+!
+>>>>
+>>>
+>>> Basically I agree not to expose dma's quirk to slave controllers...=
+But, the
+>>> fact I mentioned on cover letter explain the reasons why I have to =
+let slave
+>>> controllers know that they are working with a broken dma. It's a di=
+lemma
+>>> that if we don't want that to be exposed(let slave controllers' dri=
+ver get
+>>> the info via a API), we have t add broken quirk for all of them ,he=
+re and
+>>> there, which seems to be a disaster:(
+>>
+>> The problem with this API is that it transports values with device s=
+pecific
+>> meanings over a generic API. Which is generally speaking not a good =
+idea
+>> because the consumer witch is supposed to be generic suddenly needs =
+to know
+>> which provider it is talking to.
+>>
+>> A better solution in this case typically is either introduce a gener=
+ic API
+>> with generic values or a custom API with custom values, but don't mi=
+x the
+>> two.
+>>
+>>>
+>>> I would appreciate it if you could give me some suggestions at your=
+ earliest
+>>> convenience. :)
+>>
+>> In this case I think the best way to handle this is not quirks, but =
+rather
+>> expose the actual maximum burst size using the DMA capabilities API.=
+ Since
+>> supporting only a certain burst depth is not really a quirk. All har=
+dware
+>> has a limit for this and for some it might be larger or smaller than=
+ for
+>> others and it might be the same IP core but the maximum size depends=
+ on some
+>> IP core parameters. So this should be discoverable.
+>>
+>=20
+> Hi Lars,
+>=20
+> Thanks for looking for that.
+>=20
+> It's a good idea if all clients of the Soc are broken, but unfortunat=
+ely
+> some of them work. So... max burst shoule be different for individual=
+s.
 
-On Thu, 2015-10-08 at 17:10 +0200, Heiko Stuebner wrote:
-> Am Donnerstag, 8. Oktober 2015, 15:31:16 schrieb Sjoerd Simons:
-> > The clock branches leading to sclk_spdif and sclk_spdif_8ch on
-> > RK3288
-> > SoCs only feed those clocks, allow those clocks to change their
-> > parents
-> > all the way up the hierarchy.
-> > 
-> > Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-> 
-> Just as comment, if I'm seeing that right, this patch needs "clk:
-> rockchip: 
-> handle mux dependency of fractional dividers" and friends [0] to
-> apply and 
-> also actually handle the fractional dividers correctly.
-> 
-> For the clock change itself:
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Well, the dma_get_slave_caps() API works on a DMA channel, so I don't t=
+hink
+this will be a problem.
 
-Oh sorry yes, i completely forgot to at that as note on this patch
-(series). These are on top of your series as those are required to make
-things actually work as expected. 
-
-Which reminds me, i was wondering how to best move that forward. Could
-you pick this one up to include it in the next round of your series?
-(Otherwise i'm happy to rebase it once you do a v2)
-
-> 
-> Heiko
-> 
-> [0] http://lists.infradead.org/pipermail/linux-rockchip/2015-August/0
-> 03930.html
-
-
--- 
-Sjoerd Simons
-Collabora Ltd.
+- Lars
