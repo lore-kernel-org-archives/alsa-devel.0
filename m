@@ -1,104 +1,59 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Feasibility of adding alternative audio transport
- besides I2S/PWM/SPDIF, etc
-Date: Fri, 9 Oct 2015 09:11:00 -0700
-Message-ID: <CAG5mAdwDFfeJgjsmhYddDvYW1oDDB3AOnPjX8DS4wbSHEADiqA@mail.gmail.com>
-References: <CAG5mAdwOugskZrHHzeQ-GSu6mAZoN3nybOvupB09FBk2oTwJnw@mail.gmail.com>
- <1444383296.2479.8.camel@loki>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
+Date: Fri, 9 Oct 2015 17:11:52 +0100
+Message-ID: <20151009161152.GB32532@n2100.arm.linux.org.uk>
+References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
+ <CAOMZO5COgoGU-3YNpnmSkctHMRDJ3=DuKc82Wb5zTTX7Bx2jNw@mail.gmail.com>
+ <20151006181806.GS21513@n2100.arm.linux.org.uk>
+ <CAOMZO5DaowTGQqN_NW7T2zv-P6a_YZUCumq4-m+OtpsKqFzELw@mail.gmail.com>
+ <20151006185429.GU21513@n2100.arm.linux.org.uk>
+ <CAOMZO5C8O0p6C0hrAvHzanru9W2f8-C7MWsm3+HumoyZ9Hu6Jw@mail.gmail.com>
+ <20151009160036.GZ32532@n2100.arm.linux.org.uk>
+ <CAOMZO5Ah=AKXr__uuYsYp1KvSHptVp1NR7YUr7akzQJ3xW2XiA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 314ED2614D6
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 18:11:20 +0200 (CEST)
-Received: by wicfx3 with SMTP id fx3so73419845wic.0
- for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2015 09:11:20 -0700 (PDT)
-In-Reply-To: <1444383296.2479.8.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: "Lu, Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Gautier,
- Bernard" <bernard.gautier@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5Ah=AKXr__uuYsYp1KvSHptVp1NR7YUr7akzQJ3xW2XiA@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 9, 2015 at 2:34 AM, Liam Girdwood
-<liam.r.girdwood@linux.intel.com> wrote:
-> On Thu, 2015-10-08 at 08:51 -0700, Caleb Crome wrote:
->> Hi All,
->>    I'm in a constant struggle to bring up many channel audio on each
->> separate SoC.
->>
->> I can easily put a microcontroller in place that will collect and
->> distrubute all the TDM channels to the codecs, and connect the
->> hardware via an SPI interface to the SoC.
->>
->> So, instead of:
->>
->> CODECS <---TDM--->  SoC
->>
->> It would be
->>
->> CODECS <---TDM---> uC <---SPI---> SoC
->>
->> So, my questions are:
->>
->> * I suspect the SPI interface could be used more universally than each
->> individual I2S/TDM interface (like FSL SSI vs. Ti McBSP vs. Ti McASP,
->> etc).  and the SPI port would provide a very common API regardless of
->> SoC.   Is that true?
->
-> Some SPI ports could probably be used for audio, but this depends on the
-> SPI port HW capabilities. e.g. the SSP port on minnowboard can be
-> configured for TDM, I2S and SPI (afaik). I don't think any advantage
-> could be gained from running in SPI mode unless your HW permits some
-> special features ?
-
-Sorry, I wasn't clear.  The point is to use the 'generic' SPI API in
-the linux kernel to stream the data, and *not* use an audio format.
-So, the idea is, the external micro would buffer up a block of data,
-(in our case, maybe 160 samples * 32 channels  = 10 kBytes), then use
-the SPI port to read and write to the micro as if it were a memory or
-something like that to transfer the data.  So the external micro would
-appear to the CPU as an external register bank, and would do all the
-audio aggregation.
-
-I was hoping that would provide a pretty much universal means of
-getting many channels of data into and out of pretty much any SoC that
-has an SPI port capable of the requisite speed.
-
-Does that make sense?
-
-I guess there would be an interrupt line from the micro->SoC that
-says, "data ready".   When that's triggered, the SPI bus just goes and
-reads 160 samples x 32 channels x 2 bytes, and writes as many as
-needed to satisfy the given application.
-
-
->
->>
->> * Is it feasible to integrate an SPI transport into the SoC/alsa
->> layer?  What are the difficulties involved with that?
->>
->
-> Yes, that's doable providing the SPI port is capable of supporting audio
-> formats and has good DMA connectivity. A DAI driver would need to be
-> written for your SPI port to allow it to send audio data within ASoC.
-
-Right.  That's the bit I'm pretty clueless on.
-
->
-> Liam
->>
->> Cheers,
->>   -Caleb
->
->
+T24gRnJpLCBPY3QgMDksIDIwMTUgYXQgMDE6MDI6MTFQTSAtMDMwMCwgRmFiaW8gRXN0ZXZhbSB3
+cm90ZToKPiBPbiBGcmksIE9jdCA5LCAyMDE1IGF0IDE6MDAgUE0sIFJ1c3NlbGwgS2luZyAtIEFS
+TSBMaW51eAo+IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiAKPiA+PiBUaGFua3Ms
+IFJ1c3NlbGwhCj4gPj4KPiA+PiBHb3QgYXVkaW8gdG8gcGxheSBvbiBteSBIRE1JIFRWIDotKQo+
+ID4+Cj4gPj4gRm9yIHRoZSBlbnRpcmUgc2VyaWVzOgo+ID4+Cj4gPj4gVGVzdGVkLWJ5OiBGYWJp
+byBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2FsZS5jb20+Cj4gPgo+ID4gSnVzdCB0byBj
+b25maXJtIC0gdGhhdCdzIGZvciBfYWxsXyBvZiB0aGVzZSA4IHBhdGNoZXMsIGluY2x1ZGluZyB0
+aGUKPiA+IGNoYW5nZXMgdG8gdGhlIEFDUiBjb2RlIGluIHRoZSBsYXN0IGZvdXIgcGF0Y2hlcywg
+YW5kIHlvdSdyZSBoYXBweSB0aGF0Cj4gPiBJIHNlbmQgYWxsIG9mIHRoZXNlOgo+ID4KPiA+IGRy
+bTogYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvOiBhZGQgYXVkaW8gZHJpdmVyCj4gPiBkcm06IGJy
+aWRnZS9kd19oZG1pLWFoYi1hdWRpbzogcGFyc2UgRUxEIGZyb20gSERNSSBkcml2ZXIKPiA+IGRy
+bTogYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvOiBiYXNpYyBzdXBwb3J0IGZvciBtdWx0aS1jaGFu
+bmVsIFBDTSBhdWRpbwo+ID4gZHJtOiBicmlkZ2UvZHdfaGRtaS1haGItYXVkaW86IGFsbG93IGxh
+cmdlciBidWZmZXIgc2l6ZXMKPiA+IGRybTogYnJpZGdlL2R3X2hkbWk6IGF2b2lkIGJlaW5nIHJl
+Y3Vyc2l2ZSBpbiBOIGNhbGN1bGF0aW9uCj4gPiBkcm06IGJyaWRnZS9kd19oZG1pOiBhZGp1c3Qg
+cGl4ZWwgY2xvY2sgdmFsdWVzIGluIE4gY2FsY3VsYXRpb24KPiA+IGRybTogYnJpZGdlL2R3X2hk
+bWk6IHJlbW92ZSByYXRpbyBzdXBwb3J0IGZyb20gQUNSIGNvZGUKPiA+IGRybTogYnJpZGdlL2R3
+X2hkbWk6IHJlcGxhY2UgQ1RTIGNhbGN1bGF0aW9uIGZvciB0aGUgQUNSCj4gCj4gVGhhdCdzIGNv
+cnJlY3QuIFRoYW5rcywgUnVzc2VsbAoKVGhhbmtzLiAgSSdsbCBkcm9wIHRoYXQgc2V0IGludG8g
+bGludXgtbmV4dCB0b25pZ2h0LCBhbG9uZyB3aXRoIHRoZSBUREE5OTh4CmFuZCBBcm1hZGEgRFJN
+IHBhdGNoZXMgdGhhdCBoYXZlbid0IHNlZW4gYW4gYWlyaW5nIHRoZXJlIHlldCAtIGJlZm9yZSBh
+c2tpbmcKRGF2aWQgdG8gcHVsbCB0aGVtIG5leHQgd2VlayAodGhlIHRpbWVzY2FsZSBoYXMgc2xp
+cHBlZC4uLikKCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkg
+YXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBt
+YWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
