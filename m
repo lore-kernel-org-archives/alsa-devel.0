@@ -1,15 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH] ALSA: usb-audio: Fix max packet size
- calculation for USB audio
-Date: Fri, 9 Oct 2015 23:47:30 +0200
-Message-ID: <alpine.DEB.2.02.1510092334230.25238@lnxricardw1.se.axis.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH alsa-lib] fix _GNU_SOURCE handling & header
+	inclusion
+Date: Fri,  9 Oct 2015 17:47:40 -0400
+Message-ID: <1444427260-19958-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id CB9CF2651F0
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 23:47:35 +0200 (CEST)
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47C46265238
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 23:47:46 +0200 (CEST)
+Received: from localhost.localdomain (localhost [127.0.0.1])
+ by smtp.gentoo.org (Postfix) with ESMTP id 1355733BF11
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 21:47:43 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,150 +22,182 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Mike Frysinger <vapier@chromium.org>
 
-The addition of 0xffff ("almost 1" in Q16.16 format), resulting
-in the rounding up of the resulting value, was in the wrong place,
-as it is the resulting packet size that needs to be rounded up
-to the nearest integer (e.g. if the resulting packet size is
-calculated as 55.125 bytes, we need a packet of 56 bytes),
-rather than the rate value (ep->freqmax).
+The configure script blindly adds -D_GNU_SOURCE to all build settings,
+even on non-GNU systems.  This isn't too much of a big deal (even if
+it uses the wrong variable -- CFLAGS instead of CPPFLAGS), except that
+the alsa-lib source itself determines whether to use GNU features when
+this is defined (such as versionsort).  So when we build on non-glibc
+systems, we get build failures like:
+src/ucm/parser.c:1268:18: error: 'versionsort' undeclared (first use in this function)
+ #define SORTFUNC versionsort
+                  ^
+src/ucm/parser.c:1272:54: note: in expansion of macro 'SORTFUNC'
+  err = scandir(filename, &namelist, filename_filter, SORTFUNC);
+                                                      ^
 
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+The correct way to add these flags is to use the autoconf helper
+AC_USE_SYSTEM_EXTENSIONS.  Unfortunately, that triggers some more
+bugs in the alsa build.  This macro adds defines to config.h and
+not directly to CPPFLAGS, so it relies on files correctly including
+config.h before anything else.  A number of alsa files do not do
+this leading to build failures.  The fix there is to shuffle the
+includes around so that the local ones come first.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
-Since this clearly is a sensitive part of the code, here follows a lengthy
-rationale with examples to illustrate the problem.
+ configure.ac               | 4 +---
+ src/conf.c                 | 2 +-
+ src/timer/timer.c          | 9 ++-------
+ src/timer/timer_hw.c       | 6 ------
+ src/timer/timer_local.h    | 5 ++---
+ src/timer/timer_query.c    | 6 ------
+ src/timer/timer_query_hw.c | 6 ------
+ src/ucm/ucm_local.h        | 2 +-
+ 8 files changed, 7 insertions(+), 33 deletions(-)
 
-The code as it stands has the following expression on line 613 to =
-
-calculate the maximum isochronous packet size:
-
-	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3)) =
-
-			>> (16 - ep->datainterval);
-
-Here, ep->freqmax is the maximum assumed sample frequency, calculated from =
-the
-nominal sample frequency plus 25%. It is ultimately derived from ep->freqn,
-which is in the units of samples per packet, from get_usb_full_speed_rate()
-or usb_high_speed_rate(), as applicable, in Q16.16 format.
-
-The expression essentially adds the Q16.16 equivalent of 0.999... (i.e.  =
-
-the largest number less than one) to the sample rate, in order to get a =
-
-rate whose integer part is rounded up from the fractional value. The =
-
-multiplication with (frame_bits >> 3) yields the number of bytes in a =
-
-packet, and the (16 >> ep->datainterval) then converts it from Q16.16 back =
-
-to an integer, taking into consideration the bDataInterval field of the =
-
-endpoint descriptor, which describes how often isochronous packets are =
-
-transmitted relative to the (micro)frame rate (125us or 1ms, for USB high =
-
-speed and full speed, respectively). For this discussion we will assume a =
-
-bDataInterval of 0, so the second line of the expression just converts the =
-
-Q16.16 value to an integer.
-
-In order to illustrate the problem, we will set frame_bits 64, which
-corresponds to a frame size of 8 bytes.
-
-The problem here is that the addition of 0xffff is in the wrong place. We d=
-on't
-want the rounding up to take place on the frequency, but on the resulting
-packet size. Let's take an example. We have a sample rate of 96 kHz, so our
-ep->freqn is 786432 (see usb_high_speed_rate()). Add 25% (line 612) and we =
-get
-983040.  The calculated maxsize is then ((983040 + 65535) * 8) >> 16 =3D 12=
-7 .
-However, if we do the number of bytes calculation in a less obscure way it's
-more apparent what the true corresponding packet size is: we get =
-
-(96000 * 1.25 / 8000) * 8 =3D 120, where 1.25 is the 25% from line 612, and=
- the
-8000 is the number of isochronous packets per second on a high speed USB
-connection (125 us microframe interval).
-
-Rephrasing the maxsize expression to:
-
-        maxsize =3D (ep->freqmax * (frame_bits >> 3) + 0xffff)
-                                >> (16 - ep->datainterval);
-
-we instead get (983040 * 8 + 65535) >> 16 =3D 120 which is the correct valu=
-e.
-
-We can also do the calculation with a non-integer sample rate which is when
-rounding comes into effect: say we have 44.1 kHz (resulting ep->freqn =3D 3=
-61267,
-and resulting ep->freqmax 361267 * 1.25 =3D 451583 (rounded down).
-
-Original maxsize =3D ((451583 + 65535) * 8) << 16 =3D 63 (63.124.. rounded =
-down)
-True maxsize =3D (44100 * 1.25 / 8000) * 8 =3D 55.125, i.e. 56 bytes requir=
-ed
-New maxsize =3D (451583 * 8 + 65535) >> 16 =3D 56
-
-This is also corroborated by the wMaxPacketSize check on line 616. Assume
-that wMaxPacketSize =3D 108, with ep->maxpacksize then having the same valu=
-e.
-As 108 < 127, we get maxsize =3D 108. ep->freqmax is then recalculated to
-(108 / 8) << 16 =3D 884736 . Putting that rate into the original maxsize
-calculation yields a maxsize of ((884736 + 65535) * 8) >> 16 =3D 115
-(with decimals 115.99988). Clearly, we should get back the 108 here,
-which we would with the new expression: (884736 * 8 + 65535) >> 16 =3D 108 .
-
-As it currently stands, the error is tolerable because it only results
-in maxsize being a bit too big which wastes a couple of bytes, either as
-a result of the first maxsize calculation, or because the resulting calcula=
-tion
-will hit the wMaxPacketSize value before the packet is too big, resulting
-in fixing the size to wMaxPacketSize even though the packet is actually not
-too long.
-
-However, I'm working on a quirk for a device which stuffs an extra four (non
-sample) bytes into each isochronous packet, and that means that the maxsize
-calculation must take this into account. During this work it became obvious
-that there was something wrong with the maxsize calculation, as the resulti=
-ng
-packet size when wMaxPacketSize was hit did not correspond to the packet
-size which triggered the if statement to start with.
-
-Since this seems to me an obvious (after looking at it for a bit...) bug I'm
-submitting this as a separate patch rather than part of the upcoming patch
-series.
-
- sound/usb/endpoint.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index e6f7189..be8a972 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -610,7 +610,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *=
-ep,
- =
-
- 	/* assume max. frequency is 25% higher than nominal */
- 	ep->freqmax =3D ep->freqn + (ep->freqn >> 2);
--	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3))
-+	maxsize =3D (ep->freqmax * (frame_bits >> 3) + 0xffff)
- 				>> (16 - ep->datainterval);
- 	/* but wMaxPacketSize might reduce this */
- 	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
--- =
-
-1.7.10.4
-
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/configure.ac b/configure.ac
+index a14e52d..9cb8614 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -27,11 +27,9 @@ AC_PREFIX_DEFAULT(/usr)
+ 
+ dnl Checks for programs.
+ 
+-CFLAGS="$CFLAGS -D_GNU_SOURCE"
+-
+-
+ AC_PROG_CC
+ AC_PROG_CPP
++AC_USE_SYSTEM_EXTENSIONS
+ AC_PROG_INSTALL
+ AC_PROG_LN_S 
+ AC_DISABLE_STATIC
+diff --git a/src/conf.c b/src/conf.c
+index c6a83ee..91fca25 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -414,12 +414,12 @@ beginning:</P>
+ */
+ 
+ 
++#include "local.h"
+ #include <stdarg.h>
+ #include <limits.h>
+ #include <sys/stat.h>
+ #include <dirent.h>
+ #include <locale.h>
+-#include "local.h"
+ #ifdef HAVE_LIBPTHREAD
+ #include <pthread.h>
+ #endif
+diff --git a/src/timer/timer.c b/src/timer/timer.c
+index b71a9f8..a25e4f7 100644
+--- a/src/timer/timer.c
++++ b/src/timer/timer.c
+@@ -67,15 +67,10 @@ This example shows opening a timer device and reading of timer events.
+  * \anchor example_test_timer
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <fcntl.h>
+-#include <signal.h>
+-#include <sys/ioctl.h>
+ #include "timer_local.h"
+ 
++#include <signal.h>
++
+ static int snd_timer_open_conf(snd_timer_t **timer,
+ 			       const char *name, snd_config_t *timer_root,
+ 			       snd_config_t *timer_conf, int mode)
+diff --git a/src/timer/timer_hw.c b/src/timer/timer_hw.c
+index e833fc8..e61b994 100644
+--- a/src/timer/timer_hw.c
++++ b/src/timer/timer_hw.c
+@@ -19,12 +19,6 @@
+  *
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <fcntl.h>
+-#include <sys/ioctl.h>
+ #include "timer_local.h"
+ 
+ #ifndef PIC
+diff --git a/src/timer/timer_local.h b/src/timer/timer_local.h
+index 8040b05..eef3b06 100644
+--- a/src/timer/timer_local.h
++++ b/src/timer/timer_local.h
+@@ -19,10 +19,9 @@
+  *
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <limits.h>
+ #include "local.h"
++#include <limits.h>
++#include <sys/ioctl.h>
+ 
+ #ifndef DOC_HIDDEN
+ typedef struct {
+diff --git a/src/timer/timer_query.c b/src/timer/timer_query.c
+index 50b098a..93d2455 100644
+--- a/src/timer/timer_query.c
++++ b/src/timer/timer_query.c
+@@ -26,12 +26,6 @@
+  *
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <fcntl.h>
+-#include <sys/ioctl.h>
+ #include "timer_local.h"
+ 
+ static int snd_timer_query_open_conf(snd_timer_query_t **timer,
+diff --git a/src/timer/timer_query_hw.c b/src/timer/timer_query_hw.c
+index 289ca52..d0c4391 100644
+--- a/src/timer/timer_query_hw.c
++++ b/src/timer/timer_query_hw.c
+@@ -19,12 +19,6 @@
+  *
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <fcntl.h>
+-#include <sys/ioctl.h>
+ #include "timer_local.h"
+ 
+ #ifndef PIC
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index c1655c7..3a5d2c2 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -36,8 +36,8 @@
+ #define UC_MGR_DEBUG
+ #endif
+ 
+-#include <pthread.h>
+ #include "local.h"
++#include <pthread.h>
+ #include "use-case.h"
+ 
+ #define MAX_FILE		256
+-- 
+2.5.2
