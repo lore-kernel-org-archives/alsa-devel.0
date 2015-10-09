@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Fri, 09 Oct 2015 15:29:23 +0200
-Message-ID: <5617C133.1080006@metafoo.de>
-References: <20151004231752.GA22609@sirena.org.uk>
- <20151007152047.GQ12635@sirena.org.uk> <561679FE.3060809@metafoo.de>
- <56167DBF.9090106@metafoo.de>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake - Add Skylake RT286
+ I2S machine driver
+Date: Fri, 9 Oct 2015 22:08:34 +0800
+Message-ID: <201510092204.E2j1aR9a%fengguang.wu@intel.com>
+References: <1444392297-17313-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3354673690656543907=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-070.synserver.de (smtp-out-092.synserver.de
- [212.40.185.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F0052606E9
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 15:29:25 +0200 (CEST)
-In-Reply-To: <56167DBF.9090106@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EE4D2606E9
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 16:10:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1444392297-17313-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,104 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Omair M Abdullah <omair.m.abdullah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, kbuild-all@01.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============3354673690656543907==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="own89PQVcw3hUTbkn6UMasHM42vnMi09e"
+Hi Omair,
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---own89PQVcw3hUTbkn6UMasHM42vnMi09e
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+[auto build test WARNING on next-20151009 -- if it's inappropriate base, please ignore]
 
-On 10/08/2015 04:29 PM, Lars-Peter Clausen wrote:
-> On 10/08/2015 04:13 PM, Lars-Peter Clausen wrote:
->> On 10/07/2015 05:20 PM, Mark Brown wrote:
->>> On Mon, Oct 05, 2015 at 12:17:52AM +0100, Mark Brown wrote:
->>>> [This message is BCCed to everyone currently on the signup list]
->>>>
->>>> As previously announce the audio mini-summit for this year will be t=
-his
->>>> Thursday (8th August) at CCD in Dublin.  Topics we currently have on=
- the
->>>> list for discussion are:
->>>
->>> Current list:
->>>
->>>  - Power saving and general system design decisions (is what we're do=
-ing
->>>    lining up with modern hardware with things like multiple output
->>>    streams?).
->>>  - Documentation.
->>>  - alsa-lib releae plans.
->>>  - What to do with HDMI and its integration with graphics.
->>>  - Test tools (Intel BAT and others).
->>>  - BATCH flag.
->>>  - Fuzz control PCM APIs.
->>>  - Splitting out root only controls.
->>>  - ACPI simple-card and general generic card support.
->>>  - Topology & media controller integration.
->>>  - Kernel tinification.
->>>  - Android <-> alsa-lib configuration translation.
->>>  - HDA restructuring.
->>>   - Support for DisplayPort MST.
->>>  - PCM core simplification - the code is currently quite complex!
->>>  - Soundwire driver support plans.
->>>  - ASoC multichannel.
->>>  - Random DAPM changes.
->>
->> Media controller:
->> http://blogs.s-osg.org/working-complicated-problems-media-controller-w=
-orkshop/
->=20
-> And to give some more background information on how the constraints
-> refinement works: http://metafoo.de/alsa_constraints.html
->=20
-> It's not yet complete but should still give you and idea
-
-Btw. when you try to size optimize the kernel have you tried to build stu=
-ff
-with link-time-optimization? A lot of the constraints refinement code is
-helper function that are only used by certain drivers. So with LTO also
-those helper function would be removed.
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
 
 
+sparse warnings: (new ones prefixed by >>)
 
---own89PQVcw3hUTbkn6UMasHM42vnMi09e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>> sound/soc/intel/skylake/skl-sst-cldma.c:48:24: sparse: incorrect type in assignment (different base types)
+   sound/soc/intel/skylake/skl-sst-cldma.c:48:24:    expected unsigned int [unsigned] [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:48:24:    got restricted __le32 [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:49:24: sparse: incorrect type in assignment (different base types)
+   sound/soc/intel/skylake/skl-sst-cldma.c:49:24:    expected unsigned int [unsigned] [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:49:24:    got restricted __le32 [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:51:24: sparse: incorrect type in assignment (different base types)
+   sound/soc/intel/skylake/skl-sst-cldma.c:51:24:    expected unsigned int [unsigned] [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:51:24:    got restricted __le32 [usertype] <noident>
+>> sound/soc/intel/skylake/skl-sst-cldma.c:54:24: sparse: incorrect type in assignment (different base types)
+   sound/soc/intel/skylake/skl-sst-cldma.c:54:24:    expected unsigned int [unsigned] [usertype] <noident>
+   sound/soc/intel/skylake/skl-sst-cldma.c:54:24:    got restricted __le32
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+vim +48 sound/soc/intel/skylake/skl-sst-cldma.c
 
-iQIcBAEBAgAGBQJWF8EzAAoJEOj3aLScRbOZLnkP/R2JGAlKm4uJThr5R42E0f3T
-BIx8lv5w7R0dr2osxiH8QGB8G/N1d62B8+bEnZSSgAM/s0SEuuAJQBkjYj0rZsrt
-ajZKle4ejVhi9ZsdsOdheTVIgyEfr8jcLjdNoiUxR6l4BBS/sYhgFr1MjIc6TaZJ
-RFNvP8tbZ9cjtLc+mlDj4EjjjKYWFuRb7CTRXb+op4i1bybzZuqggxmJo00Kd20R
-YvUuocMk0oPEWpk64pvHJifEnAjCVOBqPSLjLTaQHBsSg+l7Qbvj8QK9Wno+M8xC
-823AU66nMHrQvwNOt1VWN7tPgZHyE1NQMk93Mtd3beM2/wlrEVmosgTMTL2aTkl6
-6yA5FdyOW9e7oWcVrkqxEQFSdY3t8OlvJlmSQ+Y2LR2p/wF7v6mIfBCwh2IvzdRD
-kKLeLt32hB3fpvUFRkQKb3fEZz3i2MgYdf2R1kOgYCDQX5MZDsWkf2UxV887M2aW
-/i+KVWZjFFKJ3LRDbQXQJkBqsc+06elYs6aSJLaG3yj/UUBP/10Wb+Pd/eIdIr1l
-qh+/NzZN0U7KURvd5O4b4NawQDzMTnVFVfaXfkgOW2VbrXPIW4LBtkkSNSTif4Qj
-GPXKAt7JX5tQbAQrN25ZhGGOclppCyBPa+TrSyc/PqXsXDb96LGLuCWAffzNgM8M
-4PNWrHEeXZ9aSapp9TwN
-=eKvo
------END PGP SIGNATURE-----
+914426c8 Vinod Koul 2015-07-10  42  
+914426c8 Vinod Koul 2015-07-10  43  	ctx->cl_dev.frags = 0;
+914426c8 Vinod Koul 2015-07-10  44  	while (size > 0) {
+914426c8 Vinod Koul 2015-07-10  45  		phys_addr_t addr = virt_to_phys(dmab_data->area +
+914426c8 Vinod Koul 2015-07-10  46  				(ctx->cl_dev.frags * ctx->cl_dev.bufsize));
+914426c8 Vinod Koul 2015-07-10  47  
+914426c8 Vinod Koul 2015-07-10 @48  		bdl[0] = cpu_to_le32(lower_32_bits(addr));
+914426c8 Vinod Koul 2015-07-10  49  		bdl[1] = cpu_to_le32(upper_32_bits(addr));
+914426c8 Vinod Koul 2015-07-10  50  
+914426c8 Vinod Koul 2015-07-10  51  		bdl[2] = cpu_to_le32(ctx->cl_dev.bufsize);
+914426c8 Vinod Koul 2015-07-10  52  
+914426c8 Vinod Koul 2015-07-10  53  		size -= ctx->cl_dev.bufsize;
+914426c8 Vinod Koul 2015-07-10 @54  		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
+914426c8 Vinod Koul 2015-07-10  55  
+914426c8 Vinod Koul 2015-07-10  56  		bdl += 4;
+914426c8 Vinod Koul 2015-07-10  57  		ctx->cl_dev.frags++;
 
---own89PQVcw3hUTbkn6UMasHM42vnMi09e--
+:::::: The code at line 48 was first introduced by commit
+:::::: 914426c8657c1e934b015ffa32e7bfd0cb34f47f ASoC: Intel: Skylake: add code loader DMA operations
 
---===============3354673690656543907==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+:::::: TO: Vinod Koul <vinod.koul@intel.com>
+:::::: CC: Mark Brown <broonie@kernel.org>
 
-
---===============3354673690656543907==--
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
