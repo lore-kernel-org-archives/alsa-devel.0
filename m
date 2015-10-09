@@ -1,98 +1,75 @@
-From: Kosuke Tatsukawa <tatsu@ab.jp.nec.com>
-Subject: [PATCH] ALSA: seq_oss: fix waitqueue_active without memory barrier
- in snd-seq-oss
-Date: Fri, 9 Oct 2015 00:35:54 +0000
-Message-ID: <17EC94B0A072C34B8DCF0D30AD16044A028747B2@BPXM09GP.gisp.nec.co.jp>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Fri, 9 Oct 2015 07:11:41 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C31DE@SHSMSX101.ccr.corp.intel.com>
+References: <20151004231752.GA22609@sirena.org.uk>
+ <1444129142.25504.7.camel@intel.com> <20151006165658.GW12635@sirena.org.uk>
+ <1444205277.25504.49.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: ja-JP
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Markus Elfring <elfring@users.sourceforge.net>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA7322650C3
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 09:11:46 +0200 (CEST)
+In-Reply-To: <1444205277.25504.49.camel@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_seq_oss_readq_put_event() seems to be missing a memory barrier which
-might cause the waker to not notice the waiter and miss sending a
-wake_up as in the following figure.
 
-    snd_seq_oss_readq_put_event		    snd_seq_oss_readq_wait
-------------------------------------------------------------------------
-					/* wait_event_interruptible_timeout */
-					 /* __wait_event_interruptible_timeout */
-					  /* ___wait_event */
-					  for (;;) {									 prepare_to_wait_event(&wq, &__wait,
-					    state);
-spin_lock_irqsave(&q->lock, flags);
-if (waitqueue_active(&q->midi_sleep))
-/* The CPU might reorder the test for
-   the waitqueue up here, before
-   prior writes complete */
-					  if ((q->qlen>0 || q->head==q->tail)
-					  ...
-					  __ret = schedule_timeout(__ret)
-if (q->qlen >= q->maxlen - 1) {
-memcpy(&q->q[q->tail], ev, sizeof(*ev));
-q->tail = (q->tail + 1) % q->maxlen;
-q->qlen++;
-------------------------------------------------------------------------
+Thanks for the Mark's arrangement and all guys' joining, it's impressive and helpful to me.
 
-There are two other place in sound/core/seq/oss/ which have similar
-code.  The attached patch removes the call to waitqueue_active() leaving
-just wake_up() behind.  This fixes the problem because the call to
-spin_lock_irqsave() in wake_up() will be an ACQUIRE operation.
+I will send the group photo to Mark and then Mark can share it to all.
 
-I found this issue when I was looking through the linux source code
-for places calling waitqueue_active() before wake_up*(), but without
-preceding memory barriers, after sending a patch to fix a similar
-issue in drivers/tty/n_tty.c  (Details about the original issue can be
-found here: https://lkml.org/lkml/2015/9/28/849).
+thanks
+~Keyon (Jie Yang)
 
-Signed-off-by: Kosuke Tatsukawa <tatsu@ab.jp.nec.com>
----
- sound/core/seq/oss/seq_oss_readq.c  |    6 ++----
- sound/core/seq/oss/seq_oss_writeq.c |    4 +---
- 2 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/sound/core/seq/oss/seq_oss_readq.c b/sound/core/seq/oss/seq_oss_readq.c
-index ccd8935..046cb58 100644
---- a/sound/core/seq/oss/seq_oss_readq.c
-+++ b/sound/core/seq/oss/seq_oss_readq.c
-@@ -91,8 +91,7 @@ snd_seq_oss_readq_clear(struct seq_oss_readq *q)
- 		q->head = q->tail = 0;
- 	}
- 	/* if someone sleeping, wake'em up */
--	if (waitqueue_active(&q->midi_sleep))
--		wake_up(&q->midi_sleep);
-+	wake_up(&q->midi_sleep);
- 	q->input_time = (unsigned long)-1;
- }
- 
-@@ -138,8 +137,7 @@ snd_seq_oss_readq_put_event(struct seq_oss_readq *q, union evrec *ev)
- 	q->qlen++;
- 
- 	/* wake up sleeper */
--	if (waitqueue_active(&q->midi_sleep))
--		wake_up(&q->midi_sleep);
-+	wake_up(&q->midi_sleep);
- 
- 	spin_unlock_irqrestore(&q->lock, flags);
- 
-diff --git a/sound/core/seq/oss/seq_oss_writeq.c b/sound/core/seq/oss/seq_oss_writeq.c
-index d50338b..1f6788a 100644
---- a/sound/core/seq/oss/seq_oss_writeq.c
-+++ b/sound/core/seq/oss/seq_oss_writeq.c
-@@ -138,9 +138,7 @@ snd_seq_oss_writeq_wakeup(struct seq_oss_writeq *q, abstime_t time)
- 	spin_lock_irqsave(&q->sync_lock, flags);
- 	q->sync_time = time;
- 	q->sync_event_put = 0;
--	if (waitqueue_active(&q->sync_sleep)) {
--		wake_up(&q->sync_sleep);
--	}
-+	wake_up(&q->sync_sleep);
- 	spin_unlock_irqrestore(&q->sync_lock, flags);
- }
- 
--- 
-1.7.1
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
+> bounces@alsa-project.org] On Behalf Of Koul, Vinod
+> Sent: Thursday, October 08, 2015 11:44 PM
+> To: broonie@kernel.org
+> Cc: tiwai@suse.de; alsa-devel@alsa-project.org; lgirdwood@gmail.com
+> Subject: Re: [alsa-devel] Audio Mini Summit 2015, 8th October, Dublin
+> 
+> On Tue, 2015-10-06 at 17:56 +0100, Mark Brown wrote:
+> > On Tue, Oct 06, 2015 at 10:59:03AM +0000, Koul, Vinod wrote:
+> >
+> > Please fix your mailer to word wrap within paragraphs.
+> >
+> > > Few more topics:
+> >
+> > OK, added.
+> 
+> Sounds good
+> 
+> >
+> > > - ASoC/DAPM Changes we would like to do:
+> > > 	- add kcontrol suport for PGA so that we cna add user controls for
+> DSPs
+> > > 	- add internal sink in DAPM for DSPs, like siggen
+> > > 	- Fix TLV byte controls
+> > > 	- Discuss BE-BE loops
+> >
+> > This mostly sounds like it's relatively trivial stuff, do we need to
+> > actually discuss them with everyone there?
+> 
+> Okay sure..
+> 
+> --
+> ~Vinod
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
