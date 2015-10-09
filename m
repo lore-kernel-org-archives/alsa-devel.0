@@ -1,59 +1,97 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
-Date: Fri, 9 Oct 2015 17:11:52 +0100
-Message-ID: <20151009161152.GB32532@n2100.arm.linux.org.uk>
-References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
- <CAOMZO5COgoGU-3YNpnmSkctHMRDJ3=DuKc82Wb5zTTX7Bx2jNw@mail.gmail.com>
- <20151006181806.GS21513@n2100.arm.linux.org.uk>
- <CAOMZO5DaowTGQqN_NW7T2zv-P6a_YZUCumq4-m+OtpsKqFzELw@mail.gmail.com>
- <20151006185429.GU21513@n2100.arm.linux.org.uk>
- <CAOMZO5C8O0p6C0hrAvHzanru9W2f8-C7MWsm3+HumoyZ9Hu6Jw@mail.gmail.com>
- <20151009160036.GZ32532@n2100.arm.linux.org.uk>
- <CAOMZO5Ah=AKXr__uuYsYp1KvSHptVp1NR7YUr7akzQJ3xW2XiA@mail.gmail.com>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
+ I2C slaves
+Date: Fri, 9 Oct 2015 22:47:13 +0100
+Message-ID: <20151009214712.GD1481@katana>
+References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <20151001203744.GA7514@katana>
+ <560E4DF4.4000901@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RhUH2Ysw6aD5utA4"
+Return-path: <linux-i2c-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5Ah=AKXr__uuYsYp1KvSHptVp1NR7YUr7akzQJ3xW2XiA@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <560E4DF4.4000901@linux.intel.com>
+Sender: linux-i2c-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, lm-sensors@lm-sensors.org, Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jean Delvare <jdelvare@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Dustin Byford <dustin@cumulusnetworks.com>, linux@roeck-us.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBPY3QgMDksIDIwMTUgYXQgMDE6MDI6MTFQTSAtMDMwMCwgRmFiaW8gRXN0ZXZhbSB3
-cm90ZToKPiBPbiBGcmksIE9jdCA5LCAyMDE1IGF0IDE6MDAgUE0sIFJ1c3NlbGwgS2luZyAtIEFS
-TSBMaW51eAo+IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiAKPiA+PiBUaGFua3Ms
-IFJ1c3NlbGwhCj4gPj4KPiA+PiBHb3QgYXVkaW8gdG8gcGxheSBvbiBteSBIRE1JIFRWIDotKQo+
-ID4+Cj4gPj4gRm9yIHRoZSBlbnRpcmUgc2VyaWVzOgo+ID4+Cj4gPj4gVGVzdGVkLWJ5OiBGYWJp
-byBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2FsZS5jb20+Cj4gPgo+ID4gSnVzdCB0byBj
-b25maXJtIC0gdGhhdCdzIGZvciBfYWxsXyBvZiB0aGVzZSA4IHBhdGNoZXMsIGluY2x1ZGluZyB0
-aGUKPiA+IGNoYW5nZXMgdG8gdGhlIEFDUiBjb2RlIGluIHRoZSBsYXN0IGZvdXIgcGF0Y2hlcywg
-YW5kIHlvdSdyZSBoYXBweSB0aGF0Cj4gPiBJIHNlbmQgYWxsIG9mIHRoZXNlOgo+ID4KPiA+IGRy
-bTogYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvOiBhZGQgYXVkaW8gZHJpdmVyCj4gPiBkcm06IGJy
-aWRnZS9kd19oZG1pLWFoYi1hdWRpbzogcGFyc2UgRUxEIGZyb20gSERNSSBkcml2ZXIKPiA+IGRy
-bTogYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvOiBiYXNpYyBzdXBwb3J0IGZvciBtdWx0aS1jaGFu
-bmVsIFBDTSBhdWRpbwo+ID4gZHJtOiBicmlkZ2UvZHdfaGRtaS1haGItYXVkaW86IGFsbG93IGxh
-cmdlciBidWZmZXIgc2l6ZXMKPiA+IGRybTogYnJpZGdlL2R3X2hkbWk6IGF2b2lkIGJlaW5nIHJl
-Y3Vyc2l2ZSBpbiBOIGNhbGN1bGF0aW9uCj4gPiBkcm06IGJyaWRnZS9kd19oZG1pOiBhZGp1c3Qg
-cGl4ZWwgY2xvY2sgdmFsdWVzIGluIE4gY2FsY3VsYXRpb24KPiA+IGRybTogYnJpZGdlL2R3X2hk
-bWk6IHJlbW92ZSByYXRpbyBzdXBwb3J0IGZyb20gQUNSIGNvZGUKPiA+IGRybTogYnJpZGdlL2R3
-X2hkbWk6IHJlcGxhY2UgQ1RTIGNhbGN1bGF0aW9uIGZvciB0aGUgQUNSCj4gCj4gVGhhdCdzIGNv
-cnJlY3QuIFRoYW5rcywgUnVzc2VsbAoKVGhhbmtzLiAgSSdsbCBkcm9wIHRoYXQgc2V0IGludG8g
-bGludXgtbmV4dCB0b25pZ2h0LCBhbG9uZyB3aXRoIHRoZSBUREE5OTh4CmFuZCBBcm1hZGEgRFJN
-IHBhdGNoZXMgdGhhdCBoYXZlbid0IHNlZW4gYW4gYWlyaW5nIHRoZXJlIHlldCAtIGJlZm9yZSBh
-c2tpbmcKRGF2aWQgdG8gcHVsbCB0aGVtIG5leHQgd2VlayAodGhlIHRpbWVzY2FsZSBoYXMgc2xp
-cHBlZC4uLikKCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkg
-YXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBt
-YWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--RhUH2Ysw6aD5utA4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 02, 2015 at 12:27:16PM +0300, Jarkko Nikula wrote:
+> On 10/01/2015 11:37 PM, Wolfram Sang wrote:
+> >
+> >>This is for discussion so I didn't cc stable@vger.kernel.org yet. I was
+> >>thinking would it work if we'd keep the stable name but have an another
+> >>symlink in /sys/bus/i2c/devices/ that uses "x-00yz" name. However this
+> >>feels ill-use of devices directory and probably causes more troubles
+> >>elsewhere.
+> >
+> >Do you foresee troubles already? I am still in favour of a symlink.
+> >
+> I haven't looked at this for a while but one problem was that devices/
+> directory belongs to private structure of struct bus_type and in order to
+> create a symlink there it needs to done in drivers/base/bus.c:
+> bus_add_device() which felt quite hackish to me.
+
+This is just a quick prototype and untested; but I did something similar
+in the i2c-mux code:
+
+diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
+index 5f89f1e3c2f24f..715dca57ba68fd 100644
+--- a/drivers/i2c/i2c-core.c
++++ b/drivers/i2c/i2c-core.c
+@@ -970,13 +970,15 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
+ {
+ 	struct acpi_device *adev =3D ACPI_COMPANION(&client->dev);
+=20
+-	if (adev) {
+-		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
+-		return;
+-	}
+-
+ 	dev_set_name(&client->dev, "%d-%04x", i2c_adapter_id(adap),
+ 		     i2c_encode_flags_to_addr(client));
++
++	if (adev) {
++		char symlink_name[256];
++
++		snprintf(symlink_name, sizeof(symlink_name), "i2c-%s", acpi_dev_name(ade=
+v));
++		sysfs_create_link(&client->dev.kobj, &adap->dev.kobj, symlink_name);
++	}
+ }
+=20
+ /**
+
+Shouldn't something like this be enough?
+
+
+--RhUH2Ysw6aD5utA4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWGDXgAAoJEBQN5MwUoCm2zF8P/AomW14UNxguuciGi/6UYf+F
+H6NFbvQ3JRADGuakdI++0Jx2Q4MiSe3yX1E6BOIfT48NddgSKQFbrOomBLxXQmPo
+0o044zbIWEeHY1R8olVGj6tO9TnEg/AR2flU9jcb9esuKvkLcO3NZPtnW/qwa0CM
+iuZlKyIP4+dk+teyBS6d/8B7eKsLNxMYMRGhKKmo8EVS2GbksBctzlFsl+OfIt7c
+BwqqkKvXDkdh837xzU7LLFYdyURI1Bpr+fow3hrH6AcU1OnnU5BazrNw80My+A7Y
+K9ienrYGle16jmdBP8Aycr0YEQTtb3JBnWxZZYf0QnTzXAxilA2a9y7U67HNR9Kz
+vTz+psQGC4lTdKrFAm3ZdF/7UvOaH/+riZd1ebpdhLCy/L4Qc9F0EBV+C4Wfk1B0
+YyT25tSgRpp81kcrls2ZLQOfWMEjBE/kA2SK/q8MCgaATcc0jUnbR5ZPckXwoZvy
+eDUQ37E70w10Fg+EAWUCwPB2OrPMCQErKDjA6CWO8RVuMVHGfpctm2ixLOCU2FUH
+9eJmpaj60VZuEzIpvjpYNKw/xfO65KAZSmX4e3nWhqfoH4LPUJcZb/5oXv6+XhKC
+aJD3enuBopvKiSiL6u/1RwLbOv0hByEyv4pXVQ39OTTb3N7h/IZNiVRVG9lOvTJo
+rzlB6Arn1uP/nBD/ACjF
+=g8tF
+-----END PGP SIGNATURE-----
+
+--RhUH2Ysw6aD5utA4--
