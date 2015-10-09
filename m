@@ -1,299 +1,98 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Release of the tool for benchmarking sound server
-	power efficiency
-Date: Fri, 9 Oct 2015 00:16:22 +0100
-Message-ID: <5616F946.30604@gmail.com>
+From: Kosuke Tatsukawa <tatsu@ab.jp.nec.com>
+Subject: [PATCH] ALSA: seq_oss: fix waitqueue_active without memory barrier
+ in snd-seq-oss
+Date: Fri, 9 Oct 2015 00:35:54 +0000
+Message-ID: <17EC94B0A072C34B8DCF0D30AD16044A028747B2@BPXM09GP.gisp.nec.co.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040201060406080808020009"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id C4F59265062
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 01:16:32 +0200 (CEST)
-Received: by wicge5 with SMTP id ge5so45983220wic.0
- for <alsa-devel@alsa-project.org>; Thu, 08 Oct 2015 16:16:32 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: ja-JP
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Markus Elfring <elfring@users.sourceforge.net>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040201060406080808020009
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+snd_seq_oss_readq_put_event() seems to be missing a memory barrier which
+might cause the waker to not notice the waiter and miss sending a
+wake_up as in the following figure.
 
-Earlier today (sorry - yesterday!) at the audio mini-summit I promised 
-to release a tool that I used for evaluating sound server energy 
-efficiency. The tool is a shell script, which is attached, together with 
-an example report. It needs to be run as root (in a throwaway VM, if you 
-need), with one argument: the name of a directory to be created and 
-populated with various files. The script needs the "debootstrap" program 
-to be installed.
+    snd_seq_oss_readq_put_event		    snd_seq_oss_readq_wait
+------------------------------------------------------------------------
+					/* wait_event_interruptible_timeout */
+					 /* __wait_event_interruptible_timeout */
+					  /* ___wait_event */
+					  for (;;) {									 prepare_to_wait_event(&wq, &__wait,
+					    state);
+spin_lock_irqsave(&q->lock, flags);
+if (waitqueue_active(&q->midi_sleep))
+/* The CPU might reorder the test for
+   the waitqueue up here, before
+   prior writes complete */
+					  if ((q->qlen>0 || q->head==q->tail)
+					  ...
+					  __ret = schedule_timeout(__ret)
+if (q->qlen >= q->maxlen - 1) {
+memcpy(&q->q[q->tail], ev, sizeof(*ev));
+q->tail = (q->tail + 1) % q->maxlen;
+q->qlen++;
+------------------------------------------------------------------------
 
-The script will populate the directory with a Debian Jessie amd64 
-installation, compile CRAS there, and pack everything into an initramfs 
-file that can be used for evaluation. It will produce two files as the 
-main result: vmlinuz and initramfs.img, near the directory that it creates.
+There are two other place in sound/core/seq/oss/ which have similar
+code.  The attached patch removes the call to waitqueue_active() leaving
+just wake_up() behind.  This fixes the problem because the call to
+spin_lock_irqsave() in wake_up() will be an ACQUIRE operation.
 
-The initramfs will play a sound file in a loop (please use headphones, 
-so that your laptop does not annoy anyone) and log the laptop battery 
-energy or charge. If it drops below 75% of the initial value, the 
-experiment is terminated, the log is saved to the disk, and the laptop 
-is powered off.
+I found this issue when I was looking through the linux source code
+for places calling waitqueue_active() before wake_up*(), but without
+preceding memory barriers, after sending a patch to fix a similar
+issue in drivers/tty/n_tty.c  (Details about the original issue can be
+found here: https://lkml.org/lkml/2015/9/28/849).
 
-You can add this to your boot loader. Example for extlinux:
+Signed-off-by: Kosuke Tatsukawa <tatsu@ab.jp.nec.com>
+---
+ sound/core/seq/oss/seq_oss_readq.c  |    6 ++----
+ sound/core/seq/oss/seq_oss_writeq.c |    4 +---
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-LABEL battery-pulse7
-MENU LABEL Battery Benchmark (pulseaudio 7)
-LINUX /boot/battery-benchmark/vmlinuz
-INITRD /boot/battery-benchmark/initramfs.img
-APPEND quiet root=ram save=/dev/md126p1 test_case=pulse pa_version=7 
-latency_msec=28 dobenchmark
-
-Here is the meaning of the arguments:
-
-quiet: don't print verbose messages to the console
-root=ram: use ramfs (not tmpfs) for the extracted initramfs
-save=/dev/...: save the log to this block device at the end. The 
-/battery-reports directory will be created, and the log will be placed 
-there. FAT32, NTFS and EXT4 filesystems are supported.
-test_case=pulse|alsa|cras: what we want to test. alsa means raw hw device.
-pa_version=5|6|7: version of PulseAudio to test
-latency_msec: buffer size or its equivalent, in milliseconds
-cras_output: the correct output node for CRAS. Usually 5:0 (the default) 
-or 6:0, please see cras_test_client --dump_server_info
-resampler: force a given resampler for PulseAudio (if not given, no 
-resampler is used)
-dobenchmark: dpms-blank the screen and perform the measurement automatically
-
-To replicate the results in my presentation, it is sufficient to obtain 
-logs for all three versions of PulseAudio, as well as ALSA and CRAS, for 
-the following latency_msec values: 7, 28, 448. Please send any reports 
-created by this tool to me directly, and mention the laptop model.
-
-A big "thanks" goes to Felipe Sateler for providing Debian packages of 
-PulseAudio that are mostly compatible with Debian Jessie.
-
+diff --git a/sound/core/seq/oss/seq_oss_readq.c b/sound/core/seq/oss/seq_oss_readq.c
+index ccd8935..046cb58 100644
+--- a/sound/core/seq/oss/seq_oss_readq.c
++++ b/sound/core/seq/oss/seq_oss_readq.c
+@@ -91,8 +91,7 @@ snd_seq_oss_readq_clear(struct seq_oss_readq *q)
+ 		q->head = q->tail = 0;
+ 	}
+ 	/* if someone sleeping, wake'em up */
+-	if (waitqueue_active(&q->midi_sleep))
+-		wake_up(&q->midi_sleep);
++	wake_up(&q->midi_sleep);
+ 	q->input_time = (unsigned long)-1;
+ }
+ 
+@@ -138,8 +137,7 @@ snd_seq_oss_readq_put_event(struct seq_oss_readq *q, union evrec *ev)
+ 	q->qlen++;
+ 
+ 	/* wake up sleeper */
+-	if (waitqueue_active(&q->midi_sleep))
+-		wake_up(&q->midi_sleep);
++	wake_up(&q->midi_sleep);
+ 
+ 	spin_unlock_irqrestore(&q->lock, flags);
+ 
+diff --git a/sound/core/seq/oss/seq_oss_writeq.c b/sound/core/seq/oss/seq_oss_writeq.c
+index d50338b..1f6788a 100644
+--- a/sound/core/seq/oss/seq_oss_writeq.c
++++ b/sound/core/seq/oss/seq_oss_writeq.c
+@@ -138,9 +138,7 @@ snd_seq_oss_writeq_wakeup(struct seq_oss_writeq *q, abstime_t time)
+ 	spin_lock_irqsave(&q->sync_lock, flags);
+ 	q->sync_time = time;
+ 	q->sync_event_put = 0;
+-	if (waitqueue_active(&q->sync_sleep)) {
+-		wake_up(&q->sync_sleep);
+-	}
++	wake_up(&q->sync_sleep);
+ 	spin_unlock_irqrestore(&q->sync_lock, flags);
+ }
+ 
 -- 
-Alexander E. Patrakov
-
---------------040201060406080808020009
-Content-Type: application/x-shellscript;
- name="make-chroot.sh"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="make-chroot.sh"
-
-IyEvYmluL2Jhc2gKCnNldCAtZQpzZXQgLXUKCnVzYWdlKCkgewoJZWNobyAiVXNhZ2U6IG1h
-a2UtY2hyb290LnNoIGRpcmVjdG9yeSIgPiYyCgllY2hvICJUaGUgZGlyZWN0b3J5IG11c3Qg
-bm90IGV4aXN0IiA+JjIKCWV4aXQgMQp9CgoKaWYgWyAkIyAhPSAxIF0gOyB0aGVuCgl1c2Fn
-ZQpmaQoKdGhlZGlyPSQxCgppZiBbIC1lICIkdGhlZGlyIiBdIDsgdGhlbgoJdXNhZ2UKZmkK
-CnVtb3VudGZzKCkgewogICAgdW1vdW50ICIkdGhlZGlyL2RldiIgfHwgdHJ1ZQogICAgdW1v
-dW50ICIkdGhlZGlyL3N5cyIgfHwgdHJ1ZQogICAgdW1vdW50ICIkdGhlZGlyL3Byb2MiIHx8
-IHRydWUKfQoKZWNobyAiVGhlIGRpcmVjdG9yeSBpcyAkdGhlZGlyIgoKdHJhcCB1bW91bnRm
-cyBFWElUCgpJTkNMVURFPSJwdWxzZWF1ZGlvLGFsc2EtdXRpbHMsc294LHBvd2VydG9wLGxp
-bnV4LWltYWdlLWFtZDY0LG50ZnMtM2csY3B1ZnJlcXV0aWxzLG1kYWRtIgpJTkNMVURFPSIk
-SU5DTFVERSxidWlsZC1lc3NlbnRpYWwsZGgtYXV0b3JlY29uZixnKyssbGFkc3BhLXNkayIK
-SU5DTFVERT0iJElOQ0xVREUsbGliYXNvdW5kMi1kZXYsbGliYmx1ZXRvb3RoLWRldixsaWJk
-YnVzLTEtZGV2IgpJTkNMVURFPSIkSU5DTFVERSxsaWJzYmMtZGV2LGxpYnNwZWV4ZHNwLWRl
-dixsaWJjYXAtZGV2LGxpYnVkZXYtZGV2IgoKZGVib290c3RyYXAgLS1pbmNsdWRlPSIkSU5D
-TFVERSIgamVzc2llICIkdGhlZGlyIiBodHRwOi8vaHR0cC5kZWJpYW4ubmV0L2RlYmlhbgps
-biAtc2Ygc2Jpbi9pbml0ICIkdGhlZGlyL2luaXQiCgptb3VudCAtdCBwcm9jIHByb2MgIiR0
-aGVkaXIvcHJvYyIKbW91bnQgLXQgc3lzZnMgc3lzZnMgIiR0aGVkaXIvc3lzIgptb3VudCAt
-dCBkZXZ0bXBmcyBkZXZ0bXBmcyAiJHRoZWRpci9kZXYiCgplY2hvIGRlYmlhbiA+ICIkdGhl
-ZGlyL2V0Yy9ob3N0bmFtZSIKZWNobyAiMTI3LjAuMS4xIGRlYmlhbiIgPj4gIiR0aGVkaXIv
-ZXRjL2hvc3RzIgplY2hvICdHT1ZFUk5PUj0icG93ZXJzYXZlIicgPiAiJHRoZWRpci9ldGMv
-ZGVmYXVsdC9jcHVmcmVxdXRpbHMiCmNocm9vdCAiJHRoZWRpciIgcGFzc3dkIC1kIHJvb3QK
-CigKc2V0IC1lCnNldCAtdQpBREhEX0NPTU1JVD0iODAxMWM0ODc1NzM5ZGZiODZhOWEyNmMx
-MmI4MmUyOTY1N2NlYjQ3YyIKU05BUFNIT1Q9Imh0dHA6Ly9zbmFwc2hvdC5kZWJpYW4ub3Jn
-L2FyY2hpdmUvZGViaWFuLzIwMTUwOTI1VDE1MzkyNlovcG9vbC9tYWluLyIKY2QgIiR0aGVk
-aXIvcm9vdCIKCndnZXQgIiRTTkFQU0hPVC9kL2RidXMvbGliZGJ1cy0xLTNfMS4xMC4wLTNf
-YW1kNjQuZGViIgp3Z2V0ICIkU05BUFNIT1QvZC9kYnVzL2xpYmRidXMtMS1kZXZfMS4xMC4w
-LTNfYW1kNjQuZGViIgp3Z2V0ICIkU05BUFNIT1Qvby9vcmMvbGlib3JjLTAuNC0wXzAuNC4y
-NC0xX2FtZDY0LmRlYiIKCmZvciB2IGluIDUuMC0xMyA2LjAtNSA3LjAtMSA7IGRvCiAgICBm
-b3IgcCBpbiBwdWxzZWF1ZGlvIHB1bHNlYXVkaW8tdXRpbHMgbGlicHVsc2UwIGxpYnB1bHNl
-ZHNwIDsgZG8KICAgICAgICB3Z2V0ICIkU05BUFNIT1QvcC9wdWxzZWF1ZGlvLyR7cH1fJHt2
-fV9hbWQ2NC5kZWIiCiAgICBkb25lCmRvbmUKc2hhMXN1bSAtYyA8PCAiRU9GIgozZDk1OTQz
-YjY4YWIzMmVmNTgwZjllZDMwZjU0ZmFmM2FkMDdhZmFiICBsaWJkYnVzLTEtM18xLjEwLjAt
-M19hbWQ2NC5kZWIKMmNiMTUxMGYzMDllYTIyOTZmNTgyMWJkNzhiOTI4OTNkMTY2YjcyNyAg
-bGliZGJ1cy0xLWRldl8xLjEwLjAtM19hbWQ2NC5kZWIKYzU2NDZkZDkxNzZjMmMwZWMxZTVh
-MjFjNGNhYmQxNDQxOWQwMWY2NiAgbGlib3JjLTAuNC0wXzAuNC4yNC0xX2FtZDY0LmRlYgpi
-NzI0MjZkZGE4MmVjYmJlOGM0MmUyMDg5NmJkZjQzZmMzZGRiOTA1ICBsaWJwdWxzZTBfNS4w
-LTEzX2FtZDY0LmRlYgo2YjM4NjQyYTk0NDdlZGQzYTM5YmRiMDBiNDBmNjBiM2JjYzdkMTUx
-ICBsaWJwdWxzZTBfNi4wLTVfYW1kNjQuZGViCjY4MTBhZjk4ZDUwYTNjMzg1MmI4Mzg1ZmNj
-M2U1OTJjYzJkOWZmMjkgIGxpYnB1bHNlMF83LjAtMV9hbWQ2NC5kZWIKNWUwYjA5Y2QxNjlk
-ZTQ1N2VjZWQxNDM2OTBmMzQ5OTc0N2U5OWM0ZCAgbGlicHVsc2Vkc3BfNS4wLTEzX2FtZDY0
-LmRlYgo5MWM5ZmFkYjg1MzQ2ZjZjMzI2MGYwMDhhZjI5NzlkNTdmODUyMWFmICBsaWJwdWxz
-ZWRzcF82LjAtNV9hbWQ2NC5kZWIKYTdlYWVmMzU3NzcwNzA5NGFhM2ZmODc2Y2I0N2ViZjkw
-NjUxNWQ1ZiAgbGlicHVsc2Vkc3BfNy4wLTFfYW1kNjQuZGViCjI1MjBhY2U4YTFjOTI2M2I5
-MDE2ZmZhZGE4NzgzMDlkYzFmNGJlNzkgIHB1bHNlYXVkaW9fNS4wLTEzX2FtZDY0LmRlYgo0
-OWNlOGYwNWQ2NzdmZjk2MDgxNTNiYjM0MDc4YzIzZTMyNDNiYmY2ICBwdWxzZWF1ZGlvXzYu
-MC01X2FtZDY0LmRlYgpjZThkYWY3NmNjYjU1ZTY5N2I5YzZlZDgwMzc2OTU0NzEwOTM0ZDM5
-ICBwdWxzZWF1ZGlvXzcuMC0xX2FtZDY0LmRlYgoxZjRhMTkzYWU1OTBlNTcwNDFiNGZiYmQ4
-ZWIyNmM4MmE0MTU5YmQxICBwdWxzZWF1ZGlvLXV0aWxzXzUuMC0xM19hbWQ2NC5kZWIKNTRh
-MjYxYjlmZWJmOWVhZDliZDUxNmNkNGQ5NWU3Y2U4MjQ5ZDdhZSAgcHVsc2VhdWRpby11dGls
-c182LjAtNV9hbWQ2NC5kZWIKMzY3MjE4NWYwOTg0OTBhZTJmNmJmYTA0MzA1ZmIxY2ZkN2Rh
-YTBmZiAgcHVsc2VhdWRpby11dGlsc183LjAtMV9hbWQ2NC5kZWIKRU9GCgp3Z2V0ICJodHRw
-Oi8vemFyYi5vcmcvfmdjL2ZiL25ldy5vZ2ciCmVjaG8gZjliMWFjMzAzMjMyZDlmMGU4ZmEx
-MjZmODUwZTM1NjMxNzBlNjIwOSBuZXcub2dnIHwgc2hhMXN1bSAtYwoKd2dldCBodHRwOi8v
-bmRldmlsbGEuZnJlZS5mci9pbmlwYXJzZXIvaW5pcGFyc2VyLTMuMS50YXIuZ3oKZWNobyA0
-MWVhZTdiNDE0Y2FkOWNkNDJhZTJjMmE2NDM5NGMxMGQ3YWI2NTVlIGluaXBhcnNlci0zLjEu
-dGFyLmd6IHwgc2hhMXN1bSAtYwoKd2dldCAtTyBhZGhkLnRhci5neiAiaHR0cHM6Ly9jaHJv
-bWl1bS5nb29nbGVzb3VyY2UuY29tL2Nocm9taXVtb3MvdGhpcmRfcGFydHkvYWRoZC8rYXJj
-aGl2ZS8ke0FESERfQ09NTUlUfS50YXIuZ3oiCiMgQ2hlY2tpbmcgaW50ZWdyaXR5IG9mIGFk
-aGQudGFyLmd6IGlzIHVuZm9ydHVuYXRlbHkgbm90IHBvc3NpYmxlCgpjYXQgPiBpbmlwYXJz
-ZXItMy4wYi1jcHAucGF0Y2ggPDwiRU9GIgpkaWZmIC11ciBpbmlwYXJzZXIzLjBiL3NyYy9k
-aWN0aW9uYXJ5LmMgaW5pcGFyc2VyMy4wYi1wYXRjaGVkL3NyYy9kaWN0aW9uYXJ5LmMKLS0t
-IGluaXBhcnNlcjMuMGIvc3JjL2RpY3Rpb25hcnkuYwkyMDA3LTExLTI0IDA1OjM5OjE4LjAw
-MDAwMDAwMCArMDgwMAorKysgaW5pcGFyc2VyMy4wYi1wYXRjaGVkL3NyYy9kaWN0aW9uYXJ5
-LmMJMjAwOS0wNC0wMSAyMTozODowOS4wMDAwMDAwMDAgKzA4MDAKQEAgLTM4LDYgKzM4LDkg
-QEAKIC8qLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgIAkJCQkJCQlQcml2YXRlIGZ1bmN0aW9u
-cwogIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSovCisjaWZkZWYgX19jcGx1c3BsdXMKK2V4dGVy
-biAiQyIgeworI2VuZGlmCiAKIC8qIERvdWJsZXMgdGhlIGFsbG9jYXRlZCBzaXplIGFzc29j
-aWF0ZWQgdG8gYSBwb2ludGVyICovCiAvKiAnc2l6ZScgaXMgdGhlIGN1cnJlbnQgYWxsb2Nh
-dGVkIHNpemUuICovCkBAIC00MDEsNSArNDA0LDEwIEBACiAJZGljdGlvbmFyeV9kZWwoZCk7
-CiAJcmV0dXJuIDAgOwogfQorCisjaWZkZWYgX19jcGx1c3BsdXMKK30KKyNlbmRpZgorCiAj
-ZW5kaWYKIC8qIHZpbTogc2V0IHRzPTQgZXQgc3c9NCB0dz03NSAqLwpkaWZmIC11ciBpbmlw
-YXJzZXIzLjBiL3NyYy9pbmlwYXJzZXIuaCBpbmlwYXJzZXIzLjBiLXBhdGNoZWQvc3JjL2lu
-aXBhcnNlci5oCi0tLSBpbmlwYXJzZXIzLjBiL3NyYy9pbmlwYXJzZXIuaAkyMDA3LTExLTI0
-IDA1OjM4OjE5LjAwMDAwMDAwMCArMDgwMAorKysgaW5pcGFyc2VyMy4wYi1wYXRjaGVkL3Ny
-Yy9pbmlwYXJzZXIuaAkyMDA5LTA0LTAxIDIxOjM4OjAyLjAwMDAwMDAwMCArMDgwMApAQCAt
-NDEsNiArNDEsMTAgQEAKICNkZWZpbmUgaW5pcGFyc2VyX2dldHN0cihkLCBrKSAgaW5pcGFy
-c2VyX2dldHN0cmluZyhkLCBrLCBOVUxMKQogI2RlZmluZSBpbmlwYXJzZXJfc2V0c3RyICAg
-ICAgICBpbmlwYXJzZXJfc2V0c3RyaW5nCiAKKyNpZmRlZiBfX2NwbHVzcGx1cworZXh0ZXJu
-ICJDIiB7CisjZW5kaWYKKwogLyotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKi8KIC8qKgogICBAYnJp
-ZWYgICAgR2V0IG51bWJlciBvZiBzZWN0aW9ucyBpbiBhIGRpY3Rpb25hcnkKQEAgLTI3Nyw0
-ICsyODEsOCBAQAogLyotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSovCiB2b2lkIGluaXBhcnNlcl9m
-cmVlZGljdChkaWN0aW9uYXJ5ICogZCk7CiAKKyNpZmRlZiBfX2NwbHVzcGx1cworfQorI2Vu
-ZGlmCisKICNlbmRpZgpFT0YKCmNhdCA+IGNyYXMubWsucGFjdGggPDwgIkVPRiIKZGlmZiAt
-LWdpdCBhL2NyYXMvY3Jhcy5tayBiL2NyYXMvY3Jhcy5tawppbmRleCA4YWQ3MTVlLi5hMTUy
-MGZmIDEwMDY0NAotLS0gYS9jcmFzL2NyYXMubWsKKysrIGIvY3Jhcy9jcmFzLm1rCkBAIC0x
-Niw2ICsxNiw3IEBAICQoQURIRF9ESVIpL2NyYXMvTWFrZWZpbGU6ICQoQURIRF9ESVIpL2Ny
-YXMvY29uZmlndXJlCiAJICAgIC0tYnVpbGQ9JChDQlVJTEQpCQkJXAogCSAgICAtLWhvc3Q9
-JChDSE9TVCkJCQlcCiAJICAgIC0tcHJlZml4PS91c3IJCQlcCisJICAgIC0tbGliZGlyPS91
-c3IvbGliL3g4Nl82NC1saW51eC1nbnUgIFwKIAkgICAgLS1tYW5kaXI9L3Vzci9zaGFyZS9t
-YW4JCVwKIAkgICAgLS1pbmZvZGlyPS91c3Ivc2hhcmUvaW5mbwkJXAogCSAgICAtLWRhdGFk
-aXI9L3Vzci9zaGFyZQkJXApFT0YKCmNhdCA+IGJ1aWxkLnNoIDw8IkVPRiIKIyEvYmluL2Jh
-c2gKc2V0IC1lCmNkIC9yb290CgojIERlcGVuZGVuY2llcyBvZiBQdWxzZUF1ZGlvIDcKZHBr
-ZyAtaSBsaWJkYnVzLTEtM18xLjEwLjAtM19hbWQ2NC5kZWIgbGliZGJ1cy0xLWRldl8xLjEw
-LjAtM19hbWQ2NC5kZWIgbGlib3JjLTAuNC0wXzAuNC4yNC0xX2FtZDY0LmRlYgp0YXIgeGYg
-aW5pcGFyc2VyLTMuMS50YXIuZ3oKY2QgaW5pcGFyc2VyCnBhdGNoIC1OcDEgLWkgLi4vaW5p
-cGFyc2VyLTMuMGItY3BwLnBhdGNoCm1ha2UKY3Agc3JjLyouaCAvdXNyL2luY2x1ZGUKY3Ag
-bGliaW5pcGFyc2VyLnNvLjAgL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudQpsbiAtc2YgbGli
-aW5pcGFyc2VyLnNvLjAgL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9saWJpbmlwYXJzZXIu
-c28KbGRjb25maWcKY2QgLi4KbWtkaXIgYWRoZApjZCBhZGhkCnRhciB4ZiAuLi9hZGhkLnRh
-ci5negpwYXRjaCAtTnAxIC1pIC4uL2NyYXMubWsucGFjdGgKbWFrZQptYWtlIGluc3RhbGwK
-Y2QgLi4KRU9GCmNobW9kICt4IGJ1aWxkLnNoCgpjYXQgPiAuLi91c3Ivc2hhcmUvYWxzYS9h
-bHNhLmNvbmYuZC85MC1jcmFzLmNvbmYgPDwgIkVPRiIKcGNtLmNyYXMgewogICAgdHlwZSBj
-cmFzCn0KCmN0bC5jcmFzIHsKICAgIHR5cGUgY3Jhcwp9CkVPRgoKY2F0ID4gLi4vZXRjL3Jj
-LmxvY2FsIDw8ICJFT0YiCiMhL2Jpbi9zaAoKZ3JlcCAtcSBkb2JlbmNobWFyayAvcHJvYy9j
-bWRsaW5lIHx8IGV4aXQgMApzbGVlcCA1CgpleHBvcnQgVEVSTT1saW51eApwb3dlcnRvcCAt
-LXF1aWV0IC0tYXV0by10dW5lIDwvZGV2L3R0eTEgPi9kZXYvdHR5MSAyPiYxCiggc2xlZXAg
-NSA7IHNldHRlcm0gLS1ibGFuayBmb3JjZSA8L2Rldi90dHkxID4vZGV2L3R0eTEgMj4mMSAp
-ICYKL3Jvb3QvdGVzdC5zaCAmCmV4aXQgMApFT0YKY2htb2QgK3ggLi4vZXRjL3JjLmxvY2Fs
-CgpjYXQgPiB0ZXN0LnNoIDw8ICJFT0YiCiMhL2Jpbi9iYXNoCgpQQVRIPS9zYmluOi9iaW46
-L3Vzci9zYmluOi91c3IvYmluCgpjZCAvcm9vdApta2RpciAvdmFyL3J1bi9jcmFzCnNveCBu
-ZXcub2dnIG5ldy53YXYKCmVjaG8gMCA+IC9zeXMvY2xhc3MvZ3JhcGhpY3MvZmJjb24vY3Vy
-c29yX2JsaW5rCgpmb3IgYSBpbiBgZmluZCAvcHJvYy9hc291bmQgLW5hbWUgcHJlYWxsb2Ng
-IDsgZG8KICAgIGVjaG8gMTAyNCA+ICIkYSIKZG9uZQoKc3RhcnRkYXRlPWBkYXRlICslc2AK
-CnRlc3RfY2FzZT1wdWxzZQpldmFsIGBncmVwIC1vICd0ZXN0X2Nhc2U9W14gXSonIC9wcm9j
-L2NtZGxpbmVgCgpwYV92ZXJzaW9uPSI1IgpldmFsIGBncmVwIC1vICdwYV92ZXJzaW9uPVte
-IF0qJyAvcHJvYy9jbWRsaW5lYAoKbGF0ZW5jeV9tc2VjPTEwMDAKZXZhbCBgZ3JlcCAtbyAn
-bGF0ZW5jeV9tc2VjPVteIF0qJyAvcHJvYy9jbWRsaW5lYAoKcmVzYW1wbGVyPSIiCmV2YWwg
-YGdyZXAgLW8gJ3Jlc2FtcGxlcj1bXiBdKicgL3Byb2MvY21kbGluZWAKCmNyYXNfb3V0cHV0
-PSI1OjAiCmV2YWwgYGdyZXAgLW8gJ2NyYXNfb3V0cHV0PVteIF0qJyAvcHJvYy9jbWRsaW5l
-YAoKc2F2ZT0vZGV2L3NkYTEKZXZhbCBgZ3JlcCAtbyAnc2F2ZT1bXiBdKicgL3Byb2MvY21k
-bGluZWAKCmNhc2UgIiRwYV92ZXJzaW9uIiBpbgo1KQogICAgdj01LjAtMTMKICAgIDs7CjYp
-CiAgICB2PTYuMC01CiAgICA7OwoqKQogICAgdj03LjAtMQogICAgOzsKZXNhYwoKZHBrZyAt
-aSBsaWJwdWxzZTBfJHt2fV9hbWQ2NC5kZWIgbGlicHVsc2Vkc3BfJHt2fV9hbWQ2NC5kZWIg
-XAogICAgICAgIHB1bHNlYXVkaW9fJHt2fV9hbWQ2NC5kZWIgcHVsc2VhdWRpby11dGlsc18k
-e3Z9X2FtZDY0LmRlYgoKaWYgWyAiJHJlc2FtcGxlciIgIT0gIiIgXSA7IHRoZW4KICAgIGVj
-aG8gInJlc2FtcGxlLW1ldGhvZCA9ICRyZXNhbXBsZXIiID4+IC9ldGMvcHVsc2UvZGFlbW9u
-LmNvbmYKICAgIGVjaG8gImRlZmF1bHQtc2FtcGxlLXJhdGUgPSA0ODAwMCIgPj4gL2V0Yy9w
-dWxzZS9kYWVtb24uY29uZgogICAgZWNobyAiYWx0ZXJuYXRlLXNhbXBsZS1yYXRlID0gNDgw
-MDAiID4+IC9ldGMvcHVsc2UvZGFlbW9uLmNvbmYKZmkKCiMgQXBwcm94aW1hdGlvbiwgdmFs
-aWQgZm9yIHR3byBwZXJpb2RzIG9ubHkKcGVyaW9kX3NpemU9JCgoICggNDQxICogJGxhdGVu
-Y3lfbXNlYyArIDIyMSApIC8gNjQwICogMzIgKSkKYnVmZmVyX3NpemU9JCgoICRwZXJpb2Rf
-c2l6ZSAqIDIgKSkKCmFwbGF5X29wdHM9IiIKY2FzZSAiJHRlc3RfY2FzZSIgaW4KYWxzYSkK
-ICAgIGZvciBjYXJkIGluIDIgMSAwIDsgZG8KICAgICAgICBpZiBbIC1lIC9kZXYvc25kL3Bj
-bUMke2NhcmR9RDBwIF0gOyB0aGVuCgkgICAgYXBsYXlfb3B0cz0iLU0gLUQgaHc6JGNhcmQg
-LS1wZXJpb2Qtc2l6ZSAkcGVyaW9kX3NpemUgLS1idWZmZXItc2l6ZSAkYnVmZmVyX3NpemUi
-CglmaQogICAgZG9uZQogICAgOzsKcHVsc2UpCiAgICBwdWxzZWF1ZGlvIC0tc3RhcnQKICAg
-IHNsZWVwIDMKICAgIDs7CmNyYXMpCiAgICBjcmFzICYKICAgIHNsZWVwIDMKICAgIGNyYXNf
-dGVzdF9jbGllbnQgLS1zZWxlY3Rfb3V0cHV0ICIkY3Jhc19vdXRwdXQiCiAgICBzbGVlcCAx
-CiAgICBhcGxheV9vcHRzPSItRCBjcmFzIC0tcGVyaW9kLXNpemUgJHBlcmlvZF9zaXplIC0t
-YnVmZmVyLXNpemUgJGJ1ZmZlcl9zaXplIgogICAgYXBsYXkgJGFwbGF5X29wdHMgLWQgMSAt
-ZiBjZCAvZGV2L3plcm8KICAgIHNwZWVsIDEKICAgIDs7CmVzYWMKCnN0YXJ0ZGF0ZT1gZGF0
-ZSArJXNgCgojIEZvciB0ZXN0aW5nIGluIHFlbXUKZWNobyA0MjAwMDAwMCA+IC9yb290L2Vu
-ZXJneV9ub3cKZW5lcmd5X2ZpbGU9L3Jvb3QvZW5lcmd5X25vdwppZiBbIC1mIC9zeXMvY2xh
-c3MvcG93ZXJfc3VwcGx5L0JBVDEvZW5lcmd5X25vdyBdIDsgdGhlbgogICAgZW5lcmd5X2Zp
-bGU9L3N5cy9jbGFzcy9wb3dlcl9zdXBwbHkvQkFUMS9lbmVyZ3lfbm93CmZpCgpyZWFkIGVu
-ZXJneV9ub3cgPCAiJGVuZXJneV9maWxlIgplbmVyZ3lfc3RvcD0kKCggJGVuZXJneV9ub3cg
-KiAzIC8gNCApKQoKYWxzYWN0bCBpbml0ICAgIyBzbyB0aGF0IGFsbCBzb3VuZCBzZXJ2ZXJz
-IHBsYXkgYXQgdGhlIHNhbWUgdm9sdW1lCgpzbGVlcCAxCmVjaG8gIiMgYGNhdCAvcHJvYy9j
-bWRsaW5lYCIgPiByZXBvcnQudHh0Cgp3aGlsZSA6OyBkbwogICAgbm93PWBkYXRlICslc2AK
-ICAgIHJlYWQgZW5lcmd5X25vdyA8ICIkZW5lcmd5X2ZpbGUiCiAgICBlY2hvICQoKCAkbm93
-IC0gJHN0YXJ0ZGF0ZSApKSAkZW5lcmd5X25vdyA+PiByZXBvcnQudHh0CiAgICBpZiBbICIk
-ZW5lcmd5X25vdyIgLWx0ICIkZW5lcmd5X3N0b3AiIF0gOyB0aGVuCiAgICAgICAgbWRhZG0g
-LS1hc3NlbWJsZSAtLXNjYW4KICAgICAgICBudGZzLTNnICIkc2F2ZSIgL21udCB8fCBtb3Vu
-dCAtbyBydyAiJHNhdmUiIC9tbnQgfHwgZWNobyAiVGhlIHJlcG9ydCB3aWxsIG5vdCBiZSBz
-YXZlZCIKCW1rZGlyIC9tbnQvYmF0dGVyeS1yZXBvcnRzCgljcCByZXBvcnQudHh0IC9tbnQv
-YmF0dGVyeS1yZXBvcnRzL3JlcG9ydC0kc3RhcnRkYXRlLnR4dAoJdW1vdW50IC9tbnQgfHwg
-dHJ1ZQoJc3luYwoJc3lzdGVtY3RsIHBvd2Vyb2ZmCglzbGVlcCAxMDAwCglicmVhawogICAg
-ZmkKICAgIGNhc2UgIiR0ZXN0X2Nhc2UiIGluCiAgICBhbHNhfGNyYXMpCiAgICAgICAgYXBs
-YXkgJGFwbGF5X29wdHMgbmV3LndhdgoJOzsKICAgIHB1bHNlKQogICAgICAgIHBhcGxheSAt
-LWxhdGVuY3k9JCgoICRidWZmZXJfc2l6ZSAqIDQgKSkgbmV3LndhdgoJOzsKICAgIGVzYWMK
-ZG9uZQoKRU9GCmNobW9kICt4IHRlc3Quc2gKKQoKY2hyb290ICIkdGhlZGlyIiAvcm9vdC9i
-dWlsZC5zaAp1bW91bnRmcwoKZmluZCAiJHRoZWRpci92YXIvY2FjaGUvYXB0L2FyY2hpdmVz
-IiAtdHlwZSBmIC1uYW1lICIqLmRlYiIgLWRlbGV0ZQpybSAtcmYgIiR0aGVkaXIvcm9vdC9h
-ZGhkIiAiJHRoZWRpci9yb290L2luaXBhcnNlciIKcm0gLWYgIiR0aGVkaXIiL2Jvb3QvY29u
-ZmlnLSogIiR0aGVkaXIiL2Jvb3QvaW5pdHJkLmltZy0qICIkdGhlZGlyIi9ib290L1N5c3Rl
-bS5tYXAtKgoKKCBjZCAiJHRoZWRpciIgOyBmaW5kIC4gfCBjcGlvIC0tY3JlYXRlIC1IIG5l
-d2MgfCBnemlwIC05ICkgPiBpbml0cmFtZnMuaW1nCmNwICIkdGhlZGlyIi9ib290L3ZtbGlu
-dXoqIHZtbGludXoK
---------------040201060406080808020009
-Content-Type: text/plain; charset=UTF-8;
- name="report-1443723497.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="report-1443723497.txt"
-
-IyBxdWlldCBwY2llX2FzcG09Zm9yY2Ugcm9vdD1yYW0gc2F2ZT0vZGV2L21kMTI2cDEgdGVz
-dF9jYXNlPXB1bHNlIHBhX3ZlcnNpb249NyBsYXRlbmN5X21zZWM9MjggZG9iZW5jaG1hcmsg
-aW5pdHJkPS9ib290L2JhdHRlcnktYmVuY2htYXJrL2luaXRyYW1mcy5pbWcgQk9PVF9JTUFH
-RT0vYm9vdC9iYXR0ZXJ5LWJlbmNobWFyay92bWxpbnV6IAoxIDM2MzYwMDAwCjEwMyAzNjM2
-MDAwMAoyMDUgMzYzNjAwMDAKMzA4IDM2MzYwMDAwCjQxMCAzNjM2MDAwMAo1MTIgMzYzNjAw
-MDAKNjE0IDM2MzYwMDAwCjcxNyAzNjIzMDAwMAo4MTkgMzYxMjAwMDAKOTIxIDM1OTkwMDAw
-CjEwMjMgMzU4NTAwMDAKMTEyNiAzNTc0MDAwMAoxMjI4IDM1NjQwMDAwCjEzMzAgMzU1MzAw
-MDAKMTQzMiAzNTQyMDAwMAoxNTM1IDM1MzMwMDAwCjE2MzcgMzUyMDAwMDAKMTczOSAzNTA5
-MDAwMAoxODQyIDM1MDEwMDAwCjE5NDQgMzQ5MDAwMDAKMjA0NiAzNDgxMDAwMAoyMTQ4IDM0
-NjgwMDAwCjIyNTEgMzQ1OTAwMDAKMjM1MyAzNDQ4MDAwMAoyNDU1IDM0MzgwMDAwCjI1NTcg
-MzQxODAwMDAKMjY2MCAzMzk1MDAwMAoyNzYyIDMzNzQwMDAwCjI4NjQgMzM1MjAwMDAKMjk2
-NiAzMzI4MDAwMAozMDY5IDMzMTEwMDAwCjMxNzEgMzI4OTAwMDAKMzI3MyAzMjY5MDAwMAoz
-Mzc1IDMyNDYwMDAwCjM0NzggMzIyNjAwMDAKMzU4MCAzMjA2MDAwMAozNjgyIDMxODcwMDAw
-CjM3ODQgMzE2NzAwMDAKMzg4NyAzMTQ1MDAwMAozOTg5IDMxMjYwMDAwCjQwOTEgMzEwNjAw
-MDAKNDE5NCAzMDg4MDAwMAo0Mjk2IDMwNjgwMDAwCjQzOTggMzA1MTAwMDAKNDUwMCAzMDMx
-MDAwMAo0NjAzIDMwMTQwMDAwCjQ3MDUgMjk5NzAwMDAKNDgwNyAyOTc1MDAwMAo0OTA5IDI5
-NTcwMDAwCjUwMTIgMjkzOTAwMDAKNTExNCAyOTIzMDAwMAo1MjE2IDI5MDAwMDAwCjUzMTgg
-Mjg4NTAwMDAKNTQyMSAyODY4MDAwMAo1NTIzIDI4NDYwMDAwCjU2MjUgMjgyNjAwMDAKNTcy
-NyAyODEyMDAwMAo1ODMwIDI3OTQwMDAwCjU5MzIgMjc3NDAwMDAKNjAzNCAyNzU0MDAwMAo2
-MTM2IDI3MzcwMDAwCjYyMzkgMjcyMDAwMDAK
---------------040201060406080808020009
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------040201060406080808020009--
+1.7.1
