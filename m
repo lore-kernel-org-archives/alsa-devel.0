@@ -1,95 +1,122 @@
-From: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting dma controller's
- quirk
-Date: Fri, 9 Oct 2015 19:23:40 +0800
-Message-ID: <5617A3BC.3050401@rock-chips.com>
-References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
- <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
- <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
- <56139289.7000005@rock-chips.com>
- <20151007143205.GG3320@vkoul-mobl.iind.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dt-bindings: add rockchip tranceiver
+	bindings" to the asoc tree
+Date: Fri, 09 Oct 2015 12:21:36 +0100
+Message-ID: <E1ZkVk0-0006cy-VV@finisterre>
+References: <1444311079-2892-2-git-send-email-sjoerd.simons@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20151007143205.GG3320-bQVUxfxUtC13uc1i7fC1zK2pdiUAq4bhAL8bYrjMMd8@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAD79265173
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:49 +0200 (CEST)
+In-Reply-To: <1444311079-2892-2-git-send-email-sjoerd.simons@collabora.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2015/10/7 22:32, Vinod Koul wrote:
-> On Tue, Oct 06, 2015 at 05:21:13PM +0800, Shawn Lin wrote:
->
->>>> +	int (*device_get_quirks)(struct dma_chan *chan);
->>>
->>> And why do we want to expose this to users? THis doesnt seem right!
->>>
->>
->> Basically I agree not to expose dma's quirk to slave controllers...But, the
->> fact I mentioned on cover letter explain the reasons why I have to let slave
->> controllers know that they are working with a broken dma. It's a dilemma
->> that if we don't want that to be exposed(let slave controllers' driver get
->> the info via a API), we have to add broken quirk for all of them ,here and
->> there, which seems to be a disaster:(
->>
->> I would appreciate it if you could give me some suggestions at your earliest
->> convenience. :)
->>
->>> A quirk may exists but should be handled inside the controller driver and do
->>> appropriate action. You don't tell users or expect them to handle these
->>>
-> I laready gave one re-read the above lines.
->
-> Anyway I went ahead and read the usage. You are setting the slave parameters
-> for this. I can see two ways:
-> 1. Have the quirk to driver and based on quirk reset the slave settings when
-> they are set by client.
-> 2. Put this in DT and set the dma properties based on these quirks and let
-> driver and cleint be agnostic to it
+The patch
 
-+Mark Brown
+   ASoC: dt-bindings: add rockchip tranceiver bindings
 
-Thanks for these.
+has been applied to the asoc tree at
 
-The first one is hard for dma to distinguish "broken 
-slave"(I2S/SPI/UART..) from the unbroken ones(block devices like 
-mmc/SFC...). If all clients are broken for that, it's easy to reset the 
-slave parameters in dma driver. Unfortunately, not always, at least for 
-rockchips' Socs.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-And before V4, I did pass quirks to clents from DT, but Mark thought we 
-should avoid to get it from dt. Anyway, now I think about it again,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-(1) dma drivers doesn't know the users who should use limited burst and 
-who won't. That make it's impossible for dma drivers to handle it alone 
-or expose new API of burst capabilities to clients.
-(2) It's inappropriate to expose quirks to clients.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-so the only way I can see is to make some tricks from DT.
-I would prefer to add "burst limit" property for the broken slaves 
-instead of quirks for them which I did before V4.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Something like:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-&spi{
-max-burst-len=<1>;
-}
+Thanks,
+Mark
 
-How about?
-:)
+>From 51e5084e718f990e88aeb0a9219adef15f847dc8 Mon Sep 17 00:00:00 2001
+From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date: Thu, 8 Oct 2015 15:31:12 +0200
+Subject: [PATCH] ASoC: dt-bindings: add rockchip tranceiver bindings
 
->
+Add devicetree bindings for the spdif tranceiver found on
+found on rk3066, rk3188 and rk3288 SoCs
 
+Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/rockchip-spdif.txt   | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+new file mode 100644
+index 0000000..33dd82c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+@@ -0,0 +1,44 @@
++* Rockchip SPDIF transceiver
++
++The S/PDIF audio block is a stereo transceiver that allows the
++processor to receive and transmit digital audio via an coaxial cable or
++a fibre cable.
++
++Required properties:
++
++- compatible: should be one of the following:
++   - "rockchip,rk3288-spdif", "rockchip,rk3188-spdif" or
++     "rockchip,rk3066-spdif"
++- reg: physical base address of the controller and length of memory mapped
++  region.
++- interrupts: should contain the SPDIF interrupt.
++- #address-cells: should be 1.
++- #size-cells: should be 0.
++- dmas: DMA specifiers for tx dma. See the DMA client binding,
++  Documentation/devicetree/bindings/dma/dma.txt
++- dma-names: should be "tx"
++- clocks: a list of phandle + clock-specifier pairs, one for each entry
++  in clock-names.
++- clock-names: should contain following:
++   - "hclk": clock for SPDIF controller
++   - "mclk" : clock for SPDIF bus
++
++Required properties on RK3288:
++  - rockchip,grf: the phandle of the syscon node for the general register
++                   file (GRF)
++
++Example for the rk3188 SPDIF controller:
++
++spdif: spdif@0x1011e000 {
++	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
++	reg = <0x1011e000 0x2000>;
++	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dmas = <&dmac1_s 8>;
++	dma-names = "tx";
++	clock-names = "hclk", "mclk";
++	clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
++	status = "disabled";
++	#sound-dai-cells = <0>;
++};
 -- 
-Best Regards
-Shawn Lin
+2.5.0
