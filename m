@@ -1,18 +1,17 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH alsa-lib] fix _GNU_SOURCE handling & header
-	inclusion
-Date: Fri,  9 Oct 2015 17:47:40 -0400
-Message-ID: <1444427260-19958-1-git-send-email-vapier@gentoo.org>
+From: Ben Zhang <benzh@chromium.org>
+Subject: [PATCH 1/2] ASoC: nau8825: Add FLL configuration
+Date: Fri,  9 Oct 2015 14:49:00 -0700
+Message-ID: <1444427341-7135-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 47C46265238
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 23:47:46 +0200 (CEST)
-Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 1355733BF11
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 21:47:43 +0000 (UTC)
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A4F526522D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 23:49:08 +0200 (CEST)
+Received: by padhy16 with SMTP id hy16so97094728pad.1
+ for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2015 14:49:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,182 +21,247 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Anatol Pomozov <anatol@google.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mike Frysinger <vapier@chromium.org>
+snd_soc_codec_driver.set_pll is implemented to configure the FLL.
+The codec internal SYSCLK can be from either the MCLK pin directly,
+or the FLL. This is configured by snd_soc_codec_driver.set_pll.
 
-The configure script blindly adds -D_GNU_SOURCE to all build settings,
-even on non-GNU systems.  This isn't too much of a big deal (even if
-it uses the wrong variable -- CFLAGS instead of CPPFLAGS), except that
-the alsa-lib source itself determines whether to use GNU features when
-this is defined (such as versionsort).  So when we build on non-glibc
-systems, we get build failures like:
-src/ucm/parser.c:1268:18: error: 'versionsort' undeclared (first use in this function)
- #define SORTFUNC versionsort
-                  ^
-src/ucm/parser.c:1272:54: note: in expansion of macro 'SORTFUNC'
-  err = scandir(filename, &namelist, filename_filter, SORTFUNC);
-                                                      ^
-
-The correct way to add these flags is to use the autoconf helper
-AC_USE_SYSTEM_EXTENSIONS.  Unfortunately, that triggers some more
-bugs in the alsa build.  This macro adds defines to config.h and
-not directly to CPPFLAGS, so it relies on files correctly including
-config.h before anything else.  A number of alsa files do not do
-this leading to build failures.  The fix there is to shuffle the
-includes around so that the local ones come first.
-
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+Signed-off-by: Ben Zhang <benzh@chromium.org>
 ---
- configure.ac               | 4 +---
- src/conf.c                 | 2 +-
- src/timer/timer.c          | 9 ++-------
- src/timer/timer_hw.c       | 6 ------
- src/timer/timer_local.h    | 5 ++---
- src/timer/timer_query.c    | 6 ------
- src/timer/timer_query_hw.c | 6 ------
- src/ucm/ucm_local.h        | 2 +-
- 8 files changed, 7 insertions(+), 33 deletions(-)
+ sound/soc/codecs/nau8825.c | 162 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/nau8825.h |  28 ++++++--
+ 2 files changed, 185 insertions(+), 5 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index a14e52d..9cb8614 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -27,11 +27,9 @@ AC_PREFIX_DEFAULT(/usr)
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 5c1badf..010f50b 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -29,6 +29,58 @@
  
- dnl Checks for programs.
+ #include "nau8825.h"
  
--CFLAGS="$CFLAGS -D_GNU_SOURCE"
--
--
- AC_PROG_CC
- AC_PROG_CPP
-+AC_USE_SYSTEM_EXTENSIONS
- AC_PROG_INSTALL
- AC_PROG_LN_S 
- AC_DISABLE_STATIC
-diff --git a/src/conf.c b/src/conf.c
-index c6a83ee..91fca25 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -414,12 +414,12 @@ beginning:</P>
- */
- 
- 
-+#include "local.h"
- #include <stdarg.h>
- #include <limits.h>
- #include <sys/stat.h>
- #include <dirent.h>
- #include <locale.h>
--#include "local.h"
- #ifdef HAVE_LIBPTHREAD
- #include <pthread.h>
- #endif
-diff --git a/src/timer/timer.c b/src/timer/timer.c
-index b71a9f8..a25e4f7 100644
---- a/src/timer/timer.c
-+++ b/src/timer/timer.c
-@@ -67,15 +67,10 @@ This example shows opening a timer device and reading of timer events.
-  * \anchor example_test_timer
-  */
- 
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <fcntl.h>
--#include <signal.h>
--#include <sys/ioctl.h>
- #include "timer_local.h"
- 
-+#include <signal.h>
++#define NAU_FREF_MAX 13500000
++#define NAU_FVCO_MAX 100000000
++#define NAU_FVCO_MIN 90000000
 +
- static int snd_timer_open_conf(snd_timer_t **timer,
- 			       const char *name, snd_config_t *timer_root,
- 			       snd_config_t *timer_conf, int mode)
-diff --git a/src/timer/timer_hw.c b/src/timer/timer_hw.c
-index e833fc8..e61b994 100644
---- a/src/timer/timer_hw.c
-+++ b/src/timer/timer_hw.c
-@@ -19,12 +19,6 @@
-  *
-  */
++struct nau88xx_fll {
++	int mclk_src;
++	int ratio;
++	int fll_frac;
++	int fll_int;
++	int clk_ref_div;
++};
++
++struct nau88xx_fll_attr {
++	unsigned int param;
++	unsigned int val;
++};
++
++/* scaling for mclk from sysclk_src output */
++static const struct nau88xx_fll_attr mclk_src_scaling[] = {
++	{ 1, 0x0 },
++	{ 2, 0x2 },
++	{ 4, 0x3 },
++	{ 8, 0x4 },
++	{ 16, 0x5 },
++	{ 32, 0x6 },
++	{ 3, 0x7 },
++	{ 6, 0xa },
++	{ 12, 0xb },
++	{ 24, 0xc },
++	{ 48, 0xd },
++	{ 96, 0xe },
++	{ 5, 0xf },
++};
++
++/* ratio for input clk freq */
++static const struct nau88xx_fll_attr fll_ratio[] = {
++	{ 512000, 0x01 },
++	{ 256000, 0x02 },
++	{ 128000, 0x04 },
++	{ 64000, 0x08 },
++	{ 32000, 0x10 },
++	{ 8000, 0x20 },
++	{ 4000, 0x40 },
++};
++
++static const struct nau88xx_fll_attr fll_pre_scalar[] = {
++	{ 1, 0x0 },
++	{ 2, 0x1 },
++	{ 4, 0x2 },
++	{ 8, 0x3 },
++};
++
+ static const struct reg_default nau8825_reg_defaults[] = {
+ 	{ NAU8825_REG_ENA_CTRL, 0x00ff },
+ 	{ NAU8825_REG_CLK_DIVIDER, 0x0050 },
+@@ -808,6 +860,115 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <fcntl.h>
--#include <sys/ioctl.h>
- #include "timer_local.h"
++/**
++ * nau88xx_calc_fll_param - Calculate FLL parameters.
++ * @fll_in: external clock provided to codec.
++ * @fs: sampling rate.
++ * @fll_param: Pointer to structure of FLL parameters.
++ *
++ * Calculate FLL parameters to configure codec.
++ *
++ * Returns 0 for success or negative error code.
++ */
++static int nau88xx_calc_fll_param(unsigned int fll_in, unsigned int fs,
++		struct nau88xx_fll *fll_param)
++{
++	u64 fref, fvco, fll_input;
++	int i;
++
++	/* Ensure the reference clock frequency (FREF) is <= 13.5MHz by dividing
++	 * freq_in by 1, 2, 4, or 8 using FLL pre-scalar.
++	 * FREF = freq_in / NAU8825_FLL_REF_DIV_MASK
++	 */
++	for (i = 0; i < ARRAY_SIZE(fll_pre_scalar); i++) {
++		fref = fll_in / fll_pre_scalar[i].param;
++		if (fref <= NAU_FREF_MAX)
++			break;
++	}
++	if (i == ARRAY_SIZE(fll_pre_scalar))
++		return -EINVAL;
++	fll_param->clk_ref_div = fll_pre_scalar[i].val;
++
++	/* Choose the FLL ratio based on FREF */
++	for (i = 0; i < ARRAY_SIZE(fll_ratio); i++) {
++		if (fref >= fll_ratio[i].param)
++			break;
++	}
++	if (i == ARRAY_SIZE(fll_ratio))
++		return -EINVAL;
++	fll_param->ratio = fll_ratio[i].val;
++
++	/* Calculate the frequency of DCO (FDCO) given freq_out = 256 * Fs.
++	 * FDCO must be within the 90MHz - 100MHz or the FFL cannot be
++	 * guaranteed across the full range of operation.
++	 * FDCO = freq_out * 2 * mclk_src_scaling
++	 */
++	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
++		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
++		if (NAU_FVCO_MIN < fvco && fvco < NAU_FVCO_MAX)
++			break;
++	}
++	if (i == ARRAY_SIZE(mclk_src_scaling))
++		return -EINVAL;
++	fll_param->mclk_src = mclk_src_scaling[i].val;
++
++	/* Calculate the FLL 10-bit integer input and the FLL 16-bit fractional
++	 * input based on FDCO, FREF and FLL ratio.
++	 */
++	fll_input = (fvco << 16) / (fref * fll_param->ratio);
++	fll_param->fll_int = fll_input >> 16;
++	fll_param->fll_frac = fll_input & 0xFFFF;
++	return 0;
++}
++
++static void nau88xx_fll_apply(struct nau8825 *nau8825,
++		struct nau88xx_fll *fll_param)
++{
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
++		NAU8825_CLK_MCLK_SRC_MASK, fll_param->mclk_src);
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL1,
++			NAU8825_FLL_RATIO_MASK, fll_param->ratio);
++	/* FLL 16-bit fractional input */
++	regmap_write(nau8825->regmap, NAU8825_REG_FLL2, fll_param->fll_frac);
++	/* FLL 10-bit integer input */
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_INTEGER_MASK, fll_param->fll_int);
++	/* FLL pre-scaler */
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL4,
++			NAU8825_FLL_REF_DIV_MASK, fll_param->clk_ref_div);
++	/* select divided VCO input */
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
++			NAU8825_FLL_FILTER_SW_MASK, 0x0000);
++	/* FLL sigma delta modulator enable */
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
++			NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
++}
++
++/* freq_out must be 256*Fs in order to achieve the best performance */
++static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
++		unsigned int freq_in, unsigned int freq_out)
++{
++	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
++	struct nau88xx_fll fll_param;
++	int ret, fs;
++
++	fs = freq_out / 256;
++	ret = nau88xx_calc_fll_param(freq_in, fs, &fll_param);
++	if (ret < 0) {
++		dev_err(codec->dev, "Unsupported input clock %d\n", freq_in);
++		return ret;
++	}
++	dev_dbg(codec->dev, "mclk_src=%x ratio=%x fll_frac=%x fll_int=%x clk_ref_div=%x\n",
++		fll_param.mclk_src, fll_param.ratio, fll_param.fll_frac,
++		fll_param.fll_int, fll_param.clk_ref_div);
++
++	nau88xx_fll_apply(nau8825, &fll_param);
++	mdelay(2);
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++	return 0;
++}
++
+ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 	unsigned int freq)
+ {
+@@ -920,6 +1081,7 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
+ static struct snd_soc_codec_driver nau8825_codec_driver = {
+ 	.probe = nau8825_codec_probe,
+ 	.set_sysclk = nau8825_set_sysclk,
++	.set_pll = nau8825_set_pll,
+ 	.set_bias_level = nau8825_set_bias_level,
+ 	.suspend_bias_off = true,
  
- #ifndef PIC
-diff --git a/src/timer/timer_local.h b/src/timer/timer_local.h
-index 8040b05..eef3b06 100644
---- a/src/timer/timer_local.h
-+++ b/src/timer/timer_local.h
-@@ -19,10 +19,9 @@
-  *
-  */
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 8774923..dff8edb 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -101,13 +101,31 @@
+ #define NAU8825_ENABLE_SAR_SFT	1
  
--#include <stdio.h>
--#include <stdlib.h>
--#include <limits.h>
- #include "local.h"
-+#include <limits.h>
-+#include <sys/ioctl.h>
+ /* CLK_DIVIDER (0x3) */
+-#define NAU8825_CLK_SRC_SFT	15
+-#define NAU8825_CLK_SRC_MASK	(1 << NAU8825_CLK_SRC_SFT)
+-#define NAU8825_CLK_SRC_VCO	(1 << NAU8825_CLK_SRC_SFT)
+-#define NAU8825_CLK_SRC_MCLK	(0 << NAU8825_CLK_SRC_SFT)
++#define NAU8825_CLK_SRC_SFT			15
++#define NAU8825_CLK_SRC_MASK			(1 << NAU8825_CLK_SRC_SFT)
++#define NAU8825_CLK_SRC_VCO			(1 << NAU8825_CLK_SRC_SFT)
++#define NAU8825_CLK_SRC_MCLK			(0 << NAU8825_CLK_SRC_SFT)
++#define NAU8825_CLK_MCLK_SRC_MASK		(0xf << 0)
++
++/* FLL1 (0x04) */
++#define NAU8825_FLL_RATIO_MASK			(0x7f << 0)
++
++/* FLL3 (0x06) */
++#define NAU8825_FLL_INTEGER_MASK		(0x3ff << 0)
++
++/* FLL4 (0x07) */
++#define NAU8825_FLL_REF_DIV_MASK		(0x3 << 10)
++
++/* FLL5 (0x08) */
++#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 14)
  
- #ifndef DOC_HIDDEN
- typedef struct {
-diff --git a/src/timer/timer_query.c b/src/timer/timer_query.c
-index 50b098a..93d2455 100644
---- a/src/timer/timer_query.c
-+++ b/src/timer/timer_query.c
-@@ -26,12 +26,6 @@
-  *
-  */
+ /* FLL6 (0x9) */
+-#define NAU8825_DCO_EN	(1 << 15)
++#define NAU8825_DCO_EN_MASK			(0x1 << 15)
++#define NAU8825_DCO_EN				(0x1 << 15)
++#define NAU8825_DCO_DIS				(0x0 << 15)
++#define NAU8825_SDM_EN_MASK			(0x1 << 14)
++#define NAU8825_SDM_EN				(0x1 << 14)
++#define NAU8825_SDM_DIS				(0x0 << 14)
  
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <fcntl.h>
--#include <sys/ioctl.h>
- #include "timer_local.h"
- 
- static int snd_timer_query_open_conf(snd_timer_query_t **timer,
-diff --git a/src/timer/timer_query_hw.c b/src/timer/timer_query_hw.c
-index 289ca52..d0c4391 100644
---- a/src/timer/timer_query_hw.c
-+++ b/src/timer/timer_query_hw.c
-@@ -19,12 +19,6 @@
-  *
-  */
- 
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <fcntl.h>
--#include <sys/ioctl.h>
- #include "timer_local.h"
- 
- #ifndef PIC
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index c1655c7..3a5d2c2 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -36,8 +36,8 @@
- #define UC_MGR_DEBUG
- #endif
- 
--#include <pthread.h>
- #include "local.h"
-+#include <pthread.h>
- #include "use-case.h"
- 
- #define MAX_FILE		256
+ /* HSD_CTRL (0xc) */
+ #define NAU8825_HSD_AUTO_MODE	(1 << 6)
 -- 
-2.5.2
+2.6.0.rc2.230.g3dd15c0
