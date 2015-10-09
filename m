@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: fix build warning" to the asoc
+Subject: Applied "ASoC: nau8825: add acpi match ID" to the asoc
 	tree
-Date: Fri, 09 Oct 2015 12:21:31 +0100
-Message-ID: <E1ZkVjv-0006bq-PM@finisterre>
-References: <1444220532-14199-1-git-send-email-sudipm.mukherjee@gmail.com>
+Date: Fri, 09 Oct 2015 12:21:38 +0100
+Message-ID: <E1ZkVk2-0006dR-D7@finisterre>
+References: <1444253637-65908-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E043C265163
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:48 +0200 (CEST)
-In-Reply-To: <1444220532-14199-1-git-send-email-sudipm.mukherjee@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5731526516B
+ for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:49 +0200 (CEST)
+In-Reply-To: <1444253637-65908-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
+To: Fang Yang A <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: fix build warning
+   ASoC: nau8825: add acpi match ID
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From dc542fb4179a104fc73760a2da0fd78f68f70d6d Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Wed, 7 Oct 2015 17:52:12 +0530
-Subject: [PATCH] ASoC: rt5645: fix build warning
+>From b3681308cc7162fb08249589b5bb1b2d42e00f4b Mon Sep 17 00:00:00 2001
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Date: Wed, 7 Oct 2015 14:33:57 -0700
+Subject: [PATCH] ASoC: nau8825: add acpi match ID
 
-We were getting build warning about "Section mismatch".
-dmi_platform_intel_broadwell is being referenced from the probe function
-rt5645_i2c_probe(), but dmi_platform_intel_broadwell was marked with
-__initdata.
+This patch adds the acpi match ID for nau8825 codec
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/nau8825.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index cd1a4ec..d9993d4 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3241,7 +3241,7 @@ static int buddy_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
- }
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index c44a7a1..5c1badf 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -16,6 +16,7 @@
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
++#include <linux/acpi.h>
  
--static struct dmi_system_id dmi_platform_intel_broadwell[] __initdata = {
-+static struct dmi_system_id dmi_platform_intel_broadwell[] = {
- 	{
- 		.ident = "Chrome Buddy",
- 		.callback = buddy_quirk_cb,
+ #include <sound/initval.h>
+ #include <sound/tlv.h>
+@@ -1090,10 +1091,19 @@ static const struct of_device_id nau8825_of_ids[] = {
+ MODULE_DEVICE_TABLE(of, nau8825_of_ids);
+ #endif
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id nau8825_acpi_match[] = {
++	{ "10508825", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, nau8825_acpi_match);
++#endif
++
+ static struct i2c_driver nau8825_driver = {
+ 	.driver = {
+ 		.name = "nau8825",
+ 		.of_match_table = of_match_ptr(nau8825_of_ids),
++		.acpi_match_table = ACPI_PTR(nau8825_acpi_match),
+ 	},
+ 	.probe = nau8825_i2c_probe,
+ 	.remove = nau8825_i2c_remove,
 -- 
 2.5.0
