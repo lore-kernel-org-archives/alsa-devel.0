@@ -1,92 +1,95 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Verify the status bit
-	before handling interrupt" to the asoc tree
-Date: Fri, 09 Oct 2015 12:21:28 +0100
-Message-ID: <E1ZkVjs-0006as-SM@finisterre>
-References: <1444377711-9720-3-git-send-email-vinod.koul@intel.com>
+From: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH v5 06/10] dmaengine: add API for getting dma controller's
+ quirk
+Date: Fri, 9 Oct 2015 19:23:40 +0800
+Message-ID: <5617A3BC.3050401@rock-chips.com>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
+ <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
+ <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
+ <56139289.7000005@rock-chips.com>
+ <20151007143205.GG3320@vkoul-mobl.iind.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 79EC4265152
- for <alsa-devel@alsa-project.org>; Fri,  9 Oct 2015 13:21:45 +0200 (CEST)
-In-Reply-To: <1444377711-9720-3-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20151007143205.GG3320-bQVUxfxUtC13uc1i7fC1zK2pdiUAq4bhAL8bYrjMMd8@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 2015/10/7 22:32, Vinod Koul wrote:
+> On Tue, Oct 06, 2015 at 05:21:13PM +0800, Shawn Lin wrote:
+>
+>>>> +	int (*device_get_quirks)(struct dma_chan *chan);
+>>>
+>>> And why do we want to expose this to users? THis doesnt seem right!
+>>>
+>>
+>> Basically I agree not to expose dma's quirk to slave controllers...But, the
+>> fact I mentioned on cover letter explain the reasons why I have to let slave
+>> controllers know that they are working with a broken dma. It's a dilemma
+>> that if we don't want that to be exposed(let slave controllers' driver get
+>> the info via a API), we have to add broken quirk for all of them ,here and
+>> there, which seems to be a disaster:(
+>>
+>> I would appreciate it if you could give me some suggestions at your earliest
+>> convenience. :)
+>>
+>>> A quirk may exists but should be handled inside the controller driver and do
+>>> appropriate action. You don't tell users or expect them to handle these
+>>>
+> I laready gave one re-read the above lines.
+>
+> Anyway I went ahead and read the usage. You are setting the slave parameters
+> for this. I can see two ways:
+> 1. Have the quirk to driver and based on quirk reset the slave settings when
+> they are set by client.
+> 2. Put this in DT and set the dma properties based on these quirks and let
+> driver and cleint be agnostic to it
 
-   ASoC: Intel: Skylake: Verify the status bit before handling interrupt
++Mark Brown
 
-has been applied to the asoc tree at
+Thanks for these.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+The first one is hard for dma to distinguish "broken 
+slave"(I2S/SPI/UART..) from the unbroken ones(block devices like 
+mmc/SFC...). If all clients are broken for that, it's easy to reset the 
+slave parameters in dma driver. Unfortunately, not always, at least for 
+rockchips' Socs.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+And before V4, I did pass quirks to clents from DT, but Mark thought we 
+should avoid to get it from dt. Anyway, now I think about it again,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+(1) dma drivers doesn't know the users who should use limited burst and 
+who won't. That make it's impossible for dma drivers to handle it alone 
+or expose new API of burst capabilities to clients.
+(2) It's inappropriate to expose quirks to clients.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+so the only way I can see is to make some tricks from DT.
+I would prefer to add "burst limit" property for the broken slaves 
+instead of quirks for them which I did before V4.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Something like:
 
-Thanks,
-Mark
+&spi{
+max-burst-len=<1>;
+}
 
->From def656fe22abb4fbf174a982dcef1d40274ddb11 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 9 Oct 2015 09:01:49 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: Verify the status bit before handling
- interrupt
+How about?
+:)
 
-Like we have in legacy mode HDA driver, we need to check the
-status bit and handle interrupt only when it is not zero or all
-bits set.  We typically see the status as all 1's when controller
-resumes from suspend, So add the check here as well and don't
-handle for these cases.
+>
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-sst-dsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 194bd00..1bfb7f6 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -262,6 +262,11 @@ irqreturn_t skl_dsp_sst_interrupt(int irq, void *dev_id)
- 	val = sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPIS);
- 	ctx->intr_status = val;
- 
-+	if (val == 0xffffffff) {
-+		spin_unlock(&ctx->spinlock);
-+		return IRQ_NONE;
-+	}
-+
- 	if (val & SKL_ADSPIS_IPC) {
- 		skl_ipc_int_disable(ctx);
- 		result = IRQ_WAKE_THREAD;
 -- 
-2.5.0
+Best Regards
+Shawn Lin
