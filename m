@@ -1,24 +1,27 @@
-From: "Keith A. Milner" <maillist@superlative.org>
-Subject: Re: Boss GT-001 MIDI
-Date: Sat, 10 Oct 2015 14:16:56 +0100
-Message-ID: <1787556.aGiPR74l1T@kamdesktop>
-References: <1481883.Y22cmGKEIB@kamdesktop>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Sat, 10 Oct 2015 15:21:47 +0200
+Message-ID: <CALUcmUkCaBvobO85Amw5VTLTU490UsB+yg20eNdP_AAyO_e4kg@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
+ <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+ <s5h4mik6xwi.wl-tiwai@suse.de>
+ <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+ <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+ <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
+ <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 566DD26044B
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 15:16:59 +0200 (CEST)
-Received: by wicgb1 with SMTP id gb1so2249662wic.1
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 06:16:59 -0700 (PDT)
-Received: from kamdesktop.localnet ([2001:8b0:be0a:29af::201])
- by smtp.gmail.com with ESMTPSA id i10sm7982268wjz.41.2015.10.10.06.16.57
- for <alsa-devel@alsa-project.org>
- (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Sat, 10 Oct 2015 06:16:57 -0700 (PDT)
-In-Reply-To: <1481883.Y22cmGKEIB@kamdesktop>
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA92226044B
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 15:22:07 +0200 (CEST)
+Received: by oiao187 with SMTP id o187so8273124oia.2
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 06:22:06 -0700 (PDT)
+In-Reply-To: <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,47 +31,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 1451170@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Forking this thread to focus on MIDI issues
+Hi Raymond,
 
-This device has a single USB MIDI Interface on Interface 3, with 2 alternate 
-settings, each with 2 endpoints as follows:
+Do you need more testing on the Asus N751JK by me?
+Do you need help from other developers?
 
-Interface 3
- - Setting 0
-    - Endpoint 3 OUT Bulk Data
-    - Endpoint 4 IN Bulk Data
- - Setting 1
-    - Endpoint 3 OUT Interrupt data
-    - Endpoint 5 IN Interrupt data
+On 6 October 2015 at 10:22, Arthur Borsboom <arthurborsboom@gmail.com>
+wrote:
 
-My evaluation is that this is a new style of MIDI Interface from others 
-previously encountered. Comparing, for instance, with the Roland V Synth GT 
-which seems to have the following Interface layout:
+> Asus N751JK - ALC668 - hdajacksenseresults:
+>
+> -----
+>
+> Nothing plugged in:
+>
+> Pin 0x12 (Internal Mic): present = No
+> Pin 0x14 (Internal Speaker): present = No
+> Pin 0x15 (Black Headphone, Left side): present = No
+> Pin 0x16 (Not connected): present = No
+> Pin 0x18 (Not connected): present = No
+> Pin 0x19 (Pink Mic, Left side): present = No
+> Pin 0x1a (Internal Speaker): present = No
+> Pin 0x1b (Black Mic, Left side): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Not connected): present = No
+> Pin 0x1f (Not connected): present = No
+>
+> ---
+>
+> Only headset plugged in:
+>
+> Pin 0x12 (Internal Mic): present = No
+> Pin 0x14 (Internal Speaker): present = No
+> Pin 0x15 (Black Headphone, Left side): present = Yes
+> Pin 0x16 (Not connected): present = No
+> Pin 0x18 (Not connected): present = No
+> Pin 0x19 (Pink Mic, Left side): present = No
+> Pin 0x1a (Internal Speaker): present = No
+> Pin 0x1b (Black Mic, Left side): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Not connected): present = No
+> Pin 0x1f (Not connected): present = No
+>
+> ---
+>
+> Only headphones plugged in:
+>
+> Pin 0x12 (Internal Mic): present = No
+> Pin 0x14 (Internal Speaker): present = No
+> Pin 0x15 (Black Headphone, Left side): present = Yes
+> Pin 0x16 (Not connected): present = No
+> Pin 0x18 (Not connected): present = No
+> Pin 0x19 (Pink Mic, Left side): present = No
+> Pin 0x1a (Internal Speaker): present = No
+> Pin 0x1b (Black Mic, Left side): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Not connected): present = No
+> Pin 0x1f (Not connected): present = No
+>
+> ---
+>
+> Only microphone plugged in:
+>
+> Pin 0x12 (Internal Mic): present = No
+> Pin 0x14 (Internal Speaker): present = No
+> Pin 0x15 (Black Headphone, Left side): present = Yes
+> Pin 0x16 (Not connected): present = No
+> Pin 0x18 (Not connected): present = No
+> Pin 0x19 (Pink Mic, Left side): present = No
+> Pin 0x1a (Internal Speaker): present = No
+> Pin 0x1b (Black Mic, Left side): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Not connected): present = No
+> Pin 0x1f (Not connected): present = No
+>
+> ---
+>
+> Only subwoofer plugged in:
+>
+> Pin 0x12 (Internal Mic): present = No
+> Pin 0x14 (Internal Speaker): present = No
+> Pin 0x15 (Black Headphone, Left side): present = No
+> Pin 0x16 (Not connected): present = No
+> Pin 0x18 (Not connected): present = No
+> Pin 0x19 (Pink Mic, Left side): present = No
+> Pin 0x1a (Internal Speaker): present = Yes
+> Pin 0x1b (Black Mic, Left side): present = No
+> Pin 0x1d (Not connected): present = No
+> Pin 0x1e (Not connected): present = No
+> Pin 0x1f (Not connected): present = No
+>
+> Note that I have used hdajackretask to assing pin 0x1a -> LFE, apparently
+> resulting in jack detection for the subwoofer.
+>
+> On 5 October 2015 at 06:51, Raymond Yau <superquad.vortex2@gmail.com>
+> wrote:
+>
+>>
+>> >
+>> > Do you need any testing from my side to be able to finish the
+>> developing?
+>> >
+>>
+>>
+>> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1451170/comments/22
+>>
+>> It seem that asus n550lf which also use alc668 codec but headset mic pin
+>> node 0x1b is detectable
+>>
+>> Can you confirm that your headset mic node is not detectable by
+>> hdajacksensetest ?
+>>
+>> This mean that the model "headset-sonicmaster" will be quite confusing
+>> when asus notebooks have different ways of headset implementation
+>>
+>
+>
+>
+> --
+> Arthur Borsboom
+> Mob: +31629089953
+> Email: arthurborsboom@gmail.com
+> Skype: Arthur Borsboom, The Hague, The Netherlands
+>
+> [image: View Arthur's LinkedIn profile]
+> <http://uk.linkedin.com/in/arthurborsboom>
+>
 
-Interface 2
- - Setting 0
-    - Endpoint 3 OUT Bulk Data
-    - Endpoint 4 IN Bulk Data
- - Setting 1
-    - Endpoint 3 OUT Bulk data
-    - Endpoint 4 IN Interrupt data
 
-The major difference is that the GT.001 has Interrupt Transfer modes for both 
-IN and OUT.
 
-Looking at snd_usbmidi_switch_roland_altsetting this sets the alternate 
-setting so that the interrupt input endpoint is used. This routine looks for a 
-pair of endpoints where the OUT endpoint is Bulk transfer, and the input is 
-Interrupt transfer, and sets the mode accordingly. I've modified this to 
-support Interrupt Xfer in both directions, and this seems to work (although my 
-changes aren't read for publication yet as they are rather experimental and 
-messy, and probably break the existing detection.
+-- 
+Arthur Borsboom
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
 
-I'll try to fix this code and submit a patch.
-
-Cheers,
-
-Keith
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
