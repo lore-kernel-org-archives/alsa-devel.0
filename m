@@ -1,18 +1,25 @@
-From: maillist@superlative.org
-Subject: [PATCH 1/1] Allow any MIDI endpoint to drive use of
-	interrupt transfer on Roland devices
-Date: Sat, 10 Oct 2015 19:59:01 +0100
-Message-ID: <56195ffb.8ac9c20a.97c1e.ffffff8a@mx.google.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH V1 2/3] ASoC: fsl_spdif: spba clk is needed
+ by spdif device
+Date: Sat, 10 Oct 2015 17:03:07 -0300
+Message-ID: <CAOMZO5AY7wZ6mJEAW0rBZv_grgbnBKxSa5UZTdBRx79M96mTXw@mail.gmail.com>
+References: <cover.1442469788.git.shengjiu.wang@freescale.com>
+ <5fd6e6c463c2e8d141cf4b485f585f007a71442e.1442469788.git.shengjiu.wang@freescale.com>
+ <20150917110154.GC12027@sirena.org.uk>
+ <20150917175407.GA2544@Asurada-CZ80>
+ <20150919135040.GM12027@sirena.org.uk>
+ <20151010102657.GC25804@shlinux2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id F021126052B
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 20:59:08 +0200 (CEST)
-Received: by wiclk2 with SMTP id lk2so108078304wic.0
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 11:59:08 -0700 (PDT)
+Received: from mail-ig0-f180.google.com (mail-ig0-f180.google.com
+ [209.85.213.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 365B5260536
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 22:03:10 +0200 (CEST)
+Received: by igbni9 with SMTP id ni9so21126586igb.1
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 13:03:08 -0700 (PDT)
+In-Reply-To: <20151010102657.GC25804@shlinux2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +29,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>, "Keith A. Milner" <kamilner@superlative.org>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Timur Tabi <timur@tabi.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Keith A. Milner" <kamilner@superlative.org>
+On Sat, Oct 10, 2015 at 7:26 AM, Shengjiu Wang
+<shengjiu.wang@freescale.com> wrote:
 
-Signed-off-by: Keith A. Milner <maillist@superlative.org>
+> I think spba clock should be used by the audio IP not DMA, because in same
+> situation the FSL_SSI doesn't need this clock.
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index b901f46..52b8c72 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1860,9 +1860,14 @@ static void snd_usbmidi_switch_roland_altsetting(struct snd_usb_midi* umidi)
- 
- 	hostif = &intf->altsetting[1];
- 	intfd = get_iface_desc(hostif);
-+	/* If either or both of the endpoints support interrupt transfer,
-+	 * then use the alternate setting
-+	 */
- 	if (intfd->bNumEndpoints != 2 ||
--	    (get_endpoint(hostif, 0)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_BULK ||
--	    (get_endpoint(hostif, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT)
-+	    !((get_endpoint(hostif, 0)->bmAttributes
-+	      & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT ||
-+	    (get_endpoint(hostif, 1)->bmAttributes
-+	      & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))
- 		return;
- 
- 	snd_printdd(KERN_INFO "switching to altsetting %d with int ep\n",
--- 
-1.9.1
+According to this commit from FSL BSP, the SSI2 port on MX53 is
+connected to SPBA and needs the SPBA clock:
+
+http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/commit/arch/arm/mach-mx5/clock.c?h=imx_2.6.35_maintain&id=2438f48431b7aff00a522502d5a6ea217ea133d9
