@@ -1,19 +1,15 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [PATCH v2] ALSA: bebob: constify snd_bebob_rate_spec
-	structures
-Date: Sat, 10 Oct 2015 23:24:32 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1510102323080.2053@localhost6.localdomain6>
-References: <1444484390-22158-1-git-send-email-Julia.Lawall@lip6.fr>
- <5619308C.7000601@sakamocchi.jp>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH v3] ALSA: usb-audio: Fix max packet size
+ calculation for USB audio
+Date: Sat, 10 Oct 2015 23:43:27 +0200
+Message-ID: <alpine.DEB.2.02.1510102326500.1523@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D7EB260537
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 23:24:34 +0200 (CEST)
-In-Reply-To: <5619308C.7000601@sakamocchi.jp>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD9CF260536
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 23:43:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,434 +19,194 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-The structures of type snd_bebob_clock_spec, snd_bebob_rate_spec,
-snd_bebob_meter_spec, and snd_bebob_spec are never modified after they are
-initialized.  Make them all const.
 
-Done with the help of Coccinelle.
+Rounding must take place before multiplication with the frame size, since =
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+each packet contains a whole number of frames.
 
+We must also properly consider the data interval, as a larger data =
+
+interval will result in larger packets, which, depending on the sampling =
+
+frequency, can result in packet sizes that are less than integral =
+
+multiples of the packet size for a lower data interval.
+
+Tested with an Edirol UA-5 both at 44.1 kHz and 96 kHz.
+
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
 ---
+V2: Added tested device to commit message. No other changes.
+V3: Updated after input from Clemens. Since the expression is now getting
+    rather convoluted, added a description in the comments in the code.
+    New commit message to reflect the new version. Updated rationale below.
 
-v2: extend to snd_bebob_clock_spec, snd_bebob_meter_spec, and 
-snd_bebob_spec structures.
+The code as it stands has the following expression on line 613 to =
 
- sound/firewire/bebob/bebob.c           |    2 +-
- sound/firewire/bebob/bebob.h           |   32 ++++++++++++++++----------------
- sound/firewire/bebob/bebob_focusrite.c |   26 +++++++++++++-------------
- sound/firewire/bebob/bebob_maudio.c    |   32 ++++++++++++++++----------------
- sound/firewire/bebob/bebob_pcm.c       |    2 +-
- sound/firewire/bebob/bebob_proc.c      |    6 +++---
- sound/firewire/bebob/bebob_stream.c    |    6 +++---
- sound/firewire/bebob/bebob_terratec.c  |   10 +++++-----
- sound/firewire/bebob/bebob_yamaha.c    |    6 +++---
- 9 files changed, 61 insertions(+), 61 deletions(-)
+calculate the maximum isochronous packet size:
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 0ed5e5f..091290d 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -335,7 +335,7 @@ static void bebob_remove(struct fw_unit *unit)
- 	snd_card_free_when_closed(bebob->card);
- }
- 
--static struct snd_bebob_rate_spec normal_rate_spec = {
-+static const struct snd_bebob_rate_spec normal_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate
- };
-diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
-index a1a3949..f110900 100644
---- a/sound/firewire/bebob/bebob_focusrite.c
-+++ b/sound/firewire/bebob/bebob_focusrite.c
-@@ -200,7 +200,7 @@ end:
- 	return err;
- }
- 
--struct snd_bebob_spec saffire_le_spec;
-+const struct snd_bebob_spec saffire_le_spec;
- static enum snd_bebob_clock_type saffire_both_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,
-@@ -229,7 +229,7 @@ static const char *const saffire_meter_labels[] = {
- static int
- saffire_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
- {
--	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
-+	const struct snd_bebob_meter_spec *spec = bebob->spec->meter;
- 	unsigned int channels;
- 	u64 offset;
- 	int err;
-@@ -260,60 +260,60 @@ saffire_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
- 	return err;
- }
- 
--static struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
-+static const struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
- 	.get	= &saffirepro_both_clk_freq_get,
- 	.set	= &saffirepro_both_clk_freq_set,
- };
- /* Saffire Pro 26 I/O  */
--static struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
-+static const struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
- 	.num	= ARRAY_SIZE(saffirepro_26_clk_src_types),
- 	.types	= saffirepro_26_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
--struct snd_bebob_spec saffirepro_26_spec = {
-+const struct snd_bebob_spec saffirepro_26_spec = {
- 	.clock	= &saffirepro_26_clk_spec,
- 	.rate	= &saffirepro_both_rate_spec,
- 	.meter	= NULL
- };
- /* Saffire Pro 10 I/O */
--static struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
-+static const struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
- 	.num	= ARRAY_SIZE(saffirepro_10_clk_src_types),
- 	.types	= saffirepro_10_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
--struct snd_bebob_spec saffirepro_10_spec = {
-+const struct snd_bebob_spec saffirepro_10_spec = {
- 	.clock	= &saffirepro_10_clk_spec,
- 	.rate	= &saffirepro_both_rate_spec,
- 	.meter	= NULL
- };
- 
--static struct snd_bebob_rate_spec saffire_both_rate_spec = {
-+static const struct snd_bebob_rate_spec saffire_both_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate,
- };
--static struct snd_bebob_clock_spec saffire_both_clk_spec = {
-+static const struct snd_bebob_clock_spec saffire_both_clk_spec = {
- 	.num	= ARRAY_SIZE(saffire_both_clk_src_types),
- 	.types	= saffire_both_clk_src_types,
- 	.get	= &saffire_both_clk_src_get,
- };
- /* Saffire LE */
--static struct snd_bebob_meter_spec saffire_le_meter_spec = {
-+static const struct snd_bebob_meter_spec saffire_le_meter_spec = {
- 	.num	= ARRAY_SIZE(saffire_le_meter_labels),
- 	.labels	= saffire_le_meter_labels,
- 	.get	= &saffire_meter_get,
- };
--struct snd_bebob_spec saffire_le_spec = {
-+const struct snd_bebob_spec saffire_le_spec = {
- 	.clock	= &saffire_both_clk_spec,
- 	.rate	= &saffire_both_rate_spec,
- 	.meter	= &saffire_le_meter_spec
- };
- /* Saffire */
--static struct snd_bebob_meter_spec saffire_meter_spec = {
-+static const struct snd_bebob_meter_spec saffire_meter_spec = {
- 	.num	= ARRAY_SIZE(saffire_meter_labels),
- 	.labels	= saffire_meter_labels,
- 	.get	= &saffire_meter_get,
- };
--struct snd_bebob_spec saffire_spec = {
-+const struct snd_bebob_spec saffire_spec = {
- 	.clock	= &saffire_both_clk_spec,
- 	.rate	= &saffire_both_rate_spec,
- 	.meter	= &saffire_meter_spec
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index d3c9d8d..4d8fcc7 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -70,9 +70,9 @@ struct snd_bebob_meter_spec {
- 	int (*get)(struct snd_bebob *bebob, u32 *target, unsigned int size);
- };
- struct snd_bebob_spec {
--	struct snd_bebob_clock_spec *clock;
--	struct snd_bebob_rate_spec *rate;
--	struct snd_bebob_meter_spec *meter;
-+	const struct snd_bebob_clock_spec *clock;
-+	const struct snd_bebob_rate_spec *rate;
-+	const struct snd_bebob_meter_spec *meter;
- };
- 
- struct snd_bebob {
-@@ -235,19 +235,19 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob);
- int snd_bebob_create_hwdep_device(struct snd_bebob *bebob);
- 
- /* model specific operations */
--extern struct snd_bebob_spec phase88_rack_spec;
--extern struct snd_bebob_spec phase24_series_spec;
--extern struct snd_bebob_spec yamaha_go_spec;
--extern struct snd_bebob_spec saffirepro_26_spec;
--extern struct snd_bebob_spec saffirepro_10_spec;
--extern struct snd_bebob_spec saffire_le_spec;
--extern struct snd_bebob_spec saffire_spec;
--extern struct snd_bebob_spec maudio_fw410_spec;
--extern struct snd_bebob_spec maudio_audiophile_spec;
--extern struct snd_bebob_spec maudio_solo_spec;
--extern struct snd_bebob_spec maudio_ozonic_spec;
--extern struct snd_bebob_spec maudio_nrv10_spec;
--extern struct snd_bebob_spec maudio_special_spec;
-+extern const struct snd_bebob_spec phase88_rack_spec;
-+extern const struct snd_bebob_spec phase24_series_spec;
-+extern const struct snd_bebob_spec yamaha_go_spec;
-+extern const struct snd_bebob_spec saffirepro_26_spec;
-+extern const struct snd_bebob_spec saffirepro_10_spec;
-+extern const struct snd_bebob_spec saffire_le_spec;
-+extern const struct snd_bebob_spec saffire_spec;
-+extern const struct snd_bebob_spec maudio_fw410_spec;
-+extern const struct snd_bebob_spec maudio_audiophile_spec;
-+extern const struct snd_bebob_spec maudio_solo_spec;
-+extern const struct snd_bebob_spec maudio_ozonic_spec;
-+extern const struct snd_bebob_spec maudio_nrv10_spec;
-+extern const struct snd_bebob_spec maudio_special_spec;
- int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
- int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
- 
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index 057495d..7b86a6b 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -687,7 +687,7 @@ static const char *const nrv10_meter_labels[] = {
- static int
- normal_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
- {
--	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
-+	const struct snd_bebob_meter_spec *spec = bebob->spec->meter;
- 	unsigned int c, channels;
- 	int err;
- 
-@@ -712,85 +712,85 @@ end:
- }
- 
- /* for special customized devices */
--static struct snd_bebob_rate_spec special_rate_spec = {
-+static const struct snd_bebob_rate_spec special_rate_spec = {
- 	.get	= &special_get_rate,
- 	.set	= &special_set_rate,
- };
--static struct snd_bebob_clock_spec special_clk_spec = {
-+static const struct snd_bebob_clock_spec special_clk_spec = {
- 	.num	= ARRAY_SIZE(special_clk_types),
- 	.types	= special_clk_types,
- 	.get	= &special_clk_get,
- };
--static struct snd_bebob_meter_spec special_meter_spec = {
-+static const struct snd_bebob_meter_spec special_meter_spec = {
- 	.num	= ARRAY_SIZE(special_meter_labels),
- 	.labels	= special_meter_labels,
- 	.get	= &special_meter_get
- };
--struct snd_bebob_spec maudio_special_spec = {
-+const struct snd_bebob_spec maudio_special_spec = {
- 	.clock	= &special_clk_spec,
- 	.rate	= &special_rate_spec,
- 	.meter	= &special_meter_spec
- };
- 
- /* Firewire 410 specification */
--static struct snd_bebob_rate_spec usual_rate_spec = {
-+static const struct snd_bebob_rate_spec usual_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate,
- };
--static struct snd_bebob_meter_spec fw410_meter_spec = {
-+static const struct snd_bebob_meter_spec fw410_meter_spec = {
- 	.num	= ARRAY_SIZE(fw410_meter_labels),
- 	.labels	= fw410_meter_labels,
- 	.get	= &normal_meter_get
- };
--struct snd_bebob_spec maudio_fw410_spec = {
-+const struct snd_bebob_spec maudio_fw410_spec = {
- 	.clock	= NULL,
- 	.rate	= &usual_rate_spec,
- 	.meter	= &fw410_meter_spec
- };
- 
- /* Firewire Audiophile specification */
--static struct snd_bebob_meter_spec audiophile_meter_spec = {
-+static const struct snd_bebob_meter_spec audiophile_meter_spec = {
- 	.num	= ARRAY_SIZE(audiophile_meter_labels),
- 	.labels	= audiophile_meter_labels,
- 	.get	= &normal_meter_get
- };
--struct snd_bebob_spec maudio_audiophile_spec = {
-+const struct snd_bebob_spec maudio_audiophile_spec = {
- 	.clock	= NULL,
- 	.rate	= &usual_rate_spec,
- 	.meter	= &audiophile_meter_spec
- };
- 
- /* Firewire Solo specification */
--static struct snd_bebob_meter_spec solo_meter_spec = {
-+static const struct snd_bebob_meter_spec solo_meter_spec = {
- 	.num	= ARRAY_SIZE(solo_meter_labels),
- 	.labels	= solo_meter_labels,
- 	.get	= &normal_meter_get
- };
--struct snd_bebob_spec maudio_solo_spec = {
-+const struct snd_bebob_spec maudio_solo_spec = {
- 	.clock	= NULL,
- 	.rate	= &usual_rate_spec,
- 	.meter	= &solo_meter_spec
- };
- 
- /* Ozonic specification */
--static struct snd_bebob_meter_spec ozonic_meter_spec = {
-+static const struct snd_bebob_meter_spec ozonic_meter_spec = {
- 	.num	= ARRAY_SIZE(ozonic_meter_labels),
- 	.labels	= ozonic_meter_labels,
- 	.get	= &normal_meter_get
- };
--struct snd_bebob_spec maudio_ozonic_spec = {
-+const struct snd_bebob_spec maudio_ozonic_spec = {
- 	.clock	= NULL,
- 	.rate	= &usual_rate_spec,
- 	.meter	= &ozonic_meter_spec
- };
- 
- /* NRV10 specification */
--static struct snd_bebob_meter_spec nrv10_meter_spec = {
-+static const struct snd_bebob_meter_spec nrv10_meter_spec = {
- 	.num	= ARRAY_SIZE(nrv10_meter_labels),
- 	.labels	= nrv10_meter_labels,
- 	.get	= &normal_meter_get
- };
--struct snd_bebob_spec maudio_nrv10_spec = {
-+const struct snd_bebob_spec maudio_nrv10_spec = {
- 	.clock	= NULL,
- 	.rate	= &usual_rate_spec,
- 	.meter	= &nrv10_meter_spec
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index 2fdc1f1..ef224d6 100644
---- a/sound/firewire/bebob/bebob_pcm.c
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -155,7 +155,7 @@ static int
- pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_bebob *bebob = substream->private_data;
--	struct snd_bebob_rate_spec *spec = bebob->spec->rate;
-+	const struct snd_bebob_rate_spec *spec = bebob->spec->rate;
- 	unsigned int sampling_rate;
- 	enum snd_bebob_clock_type src;
- 	int err;
-diff --git a/sound/firewire/bebob/bebob_proc.c b/sound/firewire/bebob/bebob_proc.c
-index 301cc6a..ec24f96 100644
---- a/sound/firewire/bebob/bebob_proc.c
-+++ b/sound/firewire/bebob/bebob_proc.c
-@@ -73,7 +73,7 @@ proc_read_meters(struct snd_info_entry *entry,
- 		 struct snd_info_buffer *buffer)
- {
- 	struct snd_bebob *bebob = entry->private_data;
--	struct snd_bebob_meter_spec *spec = bebob->spec->meter;
-+	const struct snd_bebob_meter_spec *spec = bebob->spec->meter;
- 	u32 *buf;
- 	unsigned int i, c, channels, size;
- 
-@@ -138,8 +138,8 @@ proc_read_clock(struct snd_info_entry *entry,
- 		"SYT-Match",
- 	};
- 	struct snd_bebob *bebob = entry->private_data;
--	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
--	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
-+	const struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
-+	const struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
- 	enum snd_bebob_clock_type src;
- 	unsigned int rate;
- 
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index a2baa47..926e5dc 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -119,7 +119,7 @@ end:
- int snd_bebob_stream_get_clock_src(struct snd_bebob *bebob,
- 				   enum snd_bebob_clock_type *src)
- {
--	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
-+	const struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
- 	u8 addr[AVC_BRIDGECO_ADDR_BYTES], input[7];
- 	unsigned int id;
- 	enum avc_bridgeco_plug_type type;
-@@ -580,7 +580,7 @@ end:
- 
- int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- {
--	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
-+	const struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
- 	struct amdtp_stream *master, *slave;
- 	enum cip_flags sync_mode;
- 	unsigned int curr_rate;
-@@ -967,7 +967,7 @@ end:
- 
- int snd_bebob_stream_discover(struct snd_bebob *bebob)
- {
--	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
-+	const struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
- 	u8 plugs[AVC_PLUG_INFO_BUF_BYTES], addr[AVC_BRIDGECO_ADDR_BYTES];
- 	enum avc_bridgeco_plug_type type;
- 	unsigned int i;
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-index 9242e33..c38358b 100644
---- a/sound/firewire/bebob/bebob_terratec.c
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -55,30 +55,30 @@ phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- 	return 0;
- }
- 
--static struct snd_bebob_rate_spec phase_series_rate_spec = {
-+static const struct snd_bebob_rate_spec phase_series_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate,
- };
- 
- /* PHASE 88 Rack FW */
--static struct snd_bebob_clock_spec phase88_rack_clk = {
-+static const struct snd_bebob_clock_spec phase88_rack_clk = {
- 	.num	= ARRAY_SIZE(phase88_rack_clk_src_types),
- 	.types	= phase88_rack_clk_src_types,
- 	.get	= &phase88_rack_clk_src_get,
- };
--struct snd_bebob_spec phase88_rack_spec = {
-+const struct snd_bebob_spec phase88_rack_spec = {
- 	.clock	= &phase88_rack_clk,
- 	.rate	= &phase_series_rate_spec,
- 	.meter	= NULL
- };
- 
- /* 'PHASE 24 FW' and 'PHASE X24 FW' */
--static struct snd_bebob_clock_spec phase24_series_clk = {
-+static const struct snd_bebob_clock_spec phase24_series_clk = {
- 	.num	= ARRAY_SIZE(phase24_series_clk_src_types),
- 	.types	= phase24_series_clk_src_types,
- 	.get	= &phase24_series_clk_src_get,
- };
--struct snd_bebob_spec phase24_series_spec = {
-+const struct snd_bebob_spec phase24_series_spec = {
- 	.clock	= &phase24_series_clk,
- 	.rate	= &phase_series_rate_spec,
- 	.meter	= NULL
-diff --git a/sound/firewire/bebob/bebob_yamaha.c b/sound/firewire/bebob/bebob_yamaha.c
-index 5810170..90d4404 100644
---- a/sound/firewire/bebob/bebob_yamaha.c
-+++ b/sound/firewire/bebob/bebob_yamaha.c
-@@ -46,16 +46,16 @@ clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- 
- 	return 0;
- }
--static struct snd_bebob_clock_spec clock_spec = {
-+static const struct snd_bebob_clock_spec clock_spec = {
- 	.num	= ARRAY_SIZE(clk_src_types),
- 	.types	= clk_src_types,
- 	.get	= &clk_src_get,
- };
--static struct snd_bebob_rate_spec rate_spec = {
-+static const struct snd_bebob_rate_spec rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate,
- };
--struct snd_bebob_spec yamaha_go_spec = {
-+const struct snd_bebob_spec yamaha_go_spec = {
- 	.clock	= &clock_spec,
- 	.rate	= &rate_spec,
- 	.meter	= NULL
+	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3)) =
+
+			>> (16 - ep->datainterval);
+
+Here, ep->freqmax is the maximum assumed sample frequency, calculated from =
+the
+nominal sample frequency plus 25%. It is ultimately derived from ep->freqn,
+which is in the units of frames per packet, from get_usb_full_speed_rate()
+or usb_high_speed_rate(), as applicable, in Q16.16 format.
+
+The expression essentially adds the Q16.16 equivalent of 0.999... (i.e.  =
+
+the largest number less than one) to the sample rate, in order to get a =
+
+rate whose integer part is rounded up from the fractional value. The =
+
+multiplication with (frame_bits >> 3) yields the number of bytes in a =
+
+packet, and the (16 >> ep->datainterval) then converts it from Q16.16 back =
+
+to an integer, taking into consideration the bDataInterval field of the =
+
+endpoint descriptor (which describes how often isochronous packets are =
+
+transmitted relative to the (micro)frame rate (125us or 1ms, for USB high =
+
+speed and full speed, respectively)). For this discussion we will initially
+assume a bDataInterval of 0, so the second line of the expression just
+converts the Q16.16 value to an integer.
+
+In order to illustrate the problem, we will set frame_bits 64, which
+corresponds to a frame size of 8 bytes.
+
+The problem here is twofold. First, the rounding operation consists
+of the addition of 0x0.ffff and subsequent conversion to integer, but as the
+expression stands, the conversion to integer is done after multiplication
+with the frame size, rather than before. This results in the resulting
+maxsize becoming too large.
+
+Let's take an example. We have a sample rate of 96 kHz, so our ep->freqn is
+0xc0000 (see usb_high_speed_rate()). Add 25% (line 612) and we get 0xf0000.
+The calculated maxsize is then ((0xf0000 + 0x0ffff) * 8) >> 16 =3D 127 .
+However, if we do the number of bytes calculation in a less obscure way it's
+more apparent what the true corresponding packet size is: we get ceil(96000=
+ *
+1.25 / 8000) * 8 =3D 120, where 1.25 is the 25% from line 612, and the 8000=
+ is
+the number of isochronous packets per second on a high speed USB connection
+(125 us microframe interval).
+
+This is fixed by performing the complete rounding operation prior to
+multiplication with the frame rate.
+
+The second problem is that when considering the ep->datainterval, this must=
+ be
+done before rounding, in order to take the advantage of the fact that
+the number of bytes per packet is not an integer, the resulting rounded-up
+integer is not necessarily a factor of two when the data interval is increa=
+sed
+by the same factor.
+
+For instance, assuming a freqency of 41 kHz, the resulting bytes-per-packet
+value for USB high speed is 41 kHz / 8000 =3D 5.125, or 0x52000 in Q16.16
+format. With a data interval of 1 (ep->datainterval =3D 0), this 6 frames p=
+er
+packet is required, whereas with a data interval of 2 we need 10.25, i.e.
+11 frames needed.
+
+Rephrasing the maxsize expression to:
+
+	maxsize =3D (((ep->freqmax << ep->datainterval) + 0xffff) >> 16) *
+			 (frame_bits >> 3);
+
+for the above 96 kHz example we instead get =
+
+((0xf0000 + 0xffff) >> 16) * 8 =3D 120 which is the correct value.
+
+We can also do the calculation with a non-integer sample rate which is when
+rounding comes into effect: say we have 44.1 kHz (resulting ep->freqn =3D
+0x58333, and resulting ep->freqmax 0x58333 * 1.25 =3D 0x6e3ff (rounded down=
+)):
+
+Original maxsize =3D ((0x6e3ff + 0xffff) * 8) << 16 =3D 63 (63.124.. rounde=
+d down)
+True maxsize =3D ceil(44100 * 1.25 / 8000) * 8 =3D 7 * 8 =3D 56
+New maxsize =3D ((0x6e3ff + 0xffff) >> 16) * 8 =3D 7 * 8 =3D 56
+
+This is also corroborated by the wMaxPacketSize check on line 616. Assume
+that wMaxPacketSize =3D 104, with ep->maxpacksize then having the same valu=
+e.
+As 104 < 127, we get maxsize =3D 104. ep->freqmax is then recalculated to
+(104 / 8) << 16 =3D 0xd0000 . Putting that rate into the original maxsize
+calculation yields a maxsize of ((0xd0000 + 0xffff) * 8) >> 16 =3D 111
+(with decimals 111.99988). Clearly, we should get back the 104 here,
+which we would with the new expression: ((0xd0000 + 0xffff) >> 16) * 8 =3D =
+104 .
+
+As it currently stands, the error is tolerable because it only results
+in maxsize being a bit too big which wastes a couple of bytes, either as
+a result of the first maxsize calculation, or because the resulting calcula=
+tion
+will hit the wMaxPacketSize value before the packet is too big, resulting
+in fixing the size to wMaxPacketSize even though the packet is actually not
+too long.
+
+However, I'm working on a quirk for a device which stuffs an extra four (non
+sample) bytes into each isochronous packet, and that means that the maxsize
+calculation must take this into account. During this work it became obvious
+that there was something wrong with the maxsize calculation, as the resulti=
+ng
+packet size when wMaxPacketSize was hit did not correspond to the packet
+size which triggered the if statement to start with.
+
+Since this seems to me an obvious (after looking at it for a bit...) bug I'm
+submitting this as a separate patch rather than part of an upcoming patch
+series.
+
+ sound/usb/endpoint.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index e6f7189..a77d9c8 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -610,8 +610,23 @@ static int data_ep_set_params(struct snd_usb_endpoint =
+*ep,
+ =
+
+ 	/* assume max. frequency is 25% higher than nominal */
+ 	ep->freqmax =3D ep->freqn + (ep->freqn >> 2);
+-	maxsize =3D ((ep->freqmax + 0xffff) * (frame_bits >> 3))
+-				>> (16 - ep->datainterval);
++	/* Round up freqmax to nearest integer in order to calculate maximum
++	 * packet size, which must represent a whole number of frames.
++	 * This is accomplished by adding 0x0.ffff before converting the
++	 * Q16.16 format into integer.
++	 * In order to accurately calculate the maximum packet size when
++	 * the data interval is more than 1 (i.e. ep->datainterval > 0),
++	 * multiply by the data interval prior to rounding. For instance,
++	 * a freqmax of 41 kHz will result in a max packet size of 6 (5.125)
++	 * frames with a data interval of 1, but 11 (10.25) frames with a
++	 * data interval of 2.
++	 * (ep->freqmax << ep->datainterval overflows at 8.192 MHz for the
++	 * maximum datainterval value of 3, at USB full speed, higher for
++	 * USB high speed, noting that ep->freqmax is in units of
++	 * frames per packet in Q16.16 format.)
++	 */
++	maxsize =3D (((ep->freqmax << ep->datainterval) + 0xffff) >> 16) *
++			 (frame_bits >> 3);
+ 	/* but wMaxPacketSize might reduce this */
+ 	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
+ 		/* whatever fits into a max. size packet */
+-- =
+
+1.7.10.4
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
