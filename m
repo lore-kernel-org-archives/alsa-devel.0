@@ -1,20 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Dummy module and sample rates
-Date: Sat, 10 Oct 2015 15:59:34 +0800
-Message-ID: <CAN8ccia=mU9qT8+puAbprAguF-4W4_6FP8z+P7s9_jbcU1AL6w@mail.gmail.com>
-References: <56029069.60700@weiss.ch> <56039FF3.3030203@ladisch.de>
- <5603D532.9080201@weiss.ch>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2] ALSA: usb-audio: Fix max packet
+	size	calculation for USB audio
+Date: Sat, 10 Oct 2015 10:48:33 +0200
+Message-ID: <5618D0E1.1000308@ladisch.de>
+References: <alpine.DEB.2.02.1510100012390.7332@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
- [209.85.218.52])
- by alsa0.perex.cz (Postfix) with ESMTP id A786426517C
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 09:59:35 +0200 (CEST)
-Received: by oiar126 with SMTP id r126so15703510oia.0
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 00:59:34 -0700 (PDT)
-In-Reply-To: <5603D532.9080201@weiss.ch>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A37C4260436
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 10:49:22 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1510100012390.7332@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Uli Franke <uli.franke@weiss.ch>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Ricard Wanderlof wrote:
+> The addition of 0xffff ("almost 1" in Q16.16 format), resulting
+> in the rounding up of the resulting value, was in the wrong place,
+> as it is the resulting packet size that needs to be rounded up
+> to the nearest integer (e.g. if the resulting packet size is
+> calculated as 55.125 bytes, we need a packet of 56 bytes),
+> rather than the rate value (ep->freqmax).
 >
-> >> I fiddled around with the Dummy module and it seems to be the thing
-> >> we're looking for. I observed a rather strange behavior though:
-> >>
-> >> I set the hw params sample rate to 44k1 without error, but a subsequent
-> >> call of snd_pcm_start returns EPIPE. When setting hw params sample rate
-> >> to 4k this does not happen.
-> >
-> > In theory, this error code is returned if you didn't write any samples
-> > into the buffer before starting.
-> >
-> > An underrun is possible too, but should be reported later AFAIK.
-> > Could you check if a larger buffer size helps?
+> Tested with an Edirol UA-5 both at 44.1 kHz and 96 kHz.
 >
-> I checked if this is actually an XRun, as this is the official error
-> code. But even recover didn't have any effect.
+> Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+> ---
+> V2: Added tested device to commit message. No other changes.
 >
-> When I write samples before starting the stream, snd_pcm_start returns
->
->    File descriptor in bad state (-77)
->
-> which is obvious as the state of the stream changes from PREPARED to
-> RUNNING.
->
-> I tried to increase the buffer but with no effect.
->
-> No error occurs when I just write samples and omit the snd_pcm_start. I
-> just read some examples and got the impression that this seems to be
-> common practice anyhow. But up to now all my ALSA interfacing programs
-> actively started the stream and I never had any similar effect.
->
-> You can find a small test program here:
->
-> http://460c9235de50fe3b.paste.se/
+> Since this clearly is a sensitive part of the code, here follows a lengthy
+> rationale with examples to illustrate the problem.
 
-Your program did not setup sw_params but start pcm stream by
-snd_pcm_start() without snd_pcm_write() any data
+There is a maximum size for USB packets, but not for git commit messages. :)
+
+> [...]
+> The problem here is that the addition of 0xffff is in the wrong place. We don't
+> want the rounding up to take place on the frequency, but on the resulting
+> packet size.
+
+Packets must not contain partial frames, so the rounding must take place
+on the number of frames per packet.
+
+> Let's take an example. We have a sample rate of 96 kHz, so our
+> ep->freqn is 786432 (see usb_high_speed_rate()). Add 25% (line 612) and we get
+> 983040.  The calculated maxsize is then ((983040 + 65535) * 8) >> 16 = 127 .
+
+That code was intended to round correctly, but it's obviously wrong
+because the result is not an integer multiple of the frame size.
+
+(Please write Q16.16 values in hex.)
+
+> However, if we do the number of bytes calculation in a less obscure way it's
+> more apparent what the true corresponding packet size is: we get
+> (96000 * 1.25 / 8000) * 8 = 120
+
+The value inside the parentheses is the number of frames per packet, and
+must be rounded.
+
+> This is also corroborated by the wMaxPacketSize check on line 616. Assume
+> that wMaxPacketSize = 108
+
+It would not make sense to have a value that is not a multiple of the
+frame size.  (I'm not saying that it doesn't occur in practice ...)
+
+
+Regards,
+Clemens
