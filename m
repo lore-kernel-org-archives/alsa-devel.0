@@ -1,27 +1,16 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
- use another nid for pin sense
-Date: Sat, 10 Oct 2015 15:21:47 +0200
-Message-ID: <CALUcmUkCaBvobO85Amw5VTLTU490UsB+yg20eNdP_AAyO_e4kg@mail.gmail.com>
-References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
- <s5hvbb16yup.wl-tiwai@suse.de>
- <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
- <s5h4mik6xwi.wl-tiwai@suse.de>
- <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
- <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
- <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
- <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] ALSA: bebob: constify snd_bebob_rate_spec
+	structures
+Date: Sat, 10 Oct 2015 15:39:50 +0200
+Message-ID: <1444484390-22158-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id EA92226044B
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 15:22:07 +0200 (CEST)
-Received: by oiao187 with SMTP id o187so8273124oia.2
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 06:22:06 -0700 (PDT)
-In-Reply-To: <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
+Received: from mail2-relais-roc.national.inria.fr
+ (mail2-relais-roc.national.inria.fr [192.134.164.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB52F26044B
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 15:50:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,144 +20,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, 1451170@bugs.launchpad.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Raymond,
+The snd_bebob_rate_spec structure type contains only function pointers.  In
+all instances of this structure type, the functions are provided statically
+and are never changed subsequently.  Add a const annotation on all
+initializations and uses.
 
-Do you need more testing on the Asus N751JK by me?
-Do you need help from other developers?
+Done with the help of Coccinelle.
 
-On 6 October 2015 at 10:22, Arthur Borsboom <arthurborsboom@gmail.com>
-wrote:
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-> Asus N751JK - ALC668 - hdajacksenseresults:
->
-> -----
->
-> Nothing plugged in:
->
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Black Headphone, Left side): present = No
-> Pin 0x16 (Not connected): present = No
-> Pin 0x18 (Not connected): present = No
-> Pin 0x19 (Pink Mic, Left side): present = No
-> Pin 0x1a (Internal Speaker): present = No
-> Pin 0x1b (Black Mic, Left side): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Not connected): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ---
->
-> Only headset plugged in:
->
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Black Headphone, Left side): present = Yes
-> Pin 0x16 (Not connected): present = No
-> Pin 0x18 (Not connected): present = No
-> Pin 0x19 (Pink Mic, Left side): present = No
-> Pin 0x1a (Internal Speaker): present = No
-> Pin 0x1b (Black Mic, Left side): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Not connected): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ---
->
-> Only headphones plugged in:
->
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Black Headphone, Left side): present = Yes
-> Pin 0x16 (Not connected): present = No
-> Pin 0x18 (Not connected): present = No
-> Pin 0x19 (Pink Mic, Left side): present = No
-> Pin 0x1a (Internal Speaker): present = No
-> Pin 0x1b (Black Mic, Left side): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Not connected): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ---
->
-> Only microphone plugged in:
->
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Black Headphone, Left side): present = Yes
-> Pin 0x16 (Not connected): present = No
-> Pin 0x18 (Not connected): present = No
-> Pin 0x19 (Pink Mic, Left side): present = No
-> Pin 0x1a (Internal Speaker): present = No
-> Pin 0x1b (Black Mic, Left side): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Not connected): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ---
->
-> Only subwoofer plugged in:
->
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Black Headphone, Left side): present = No
-> Pin 0x16 (Not connected): present = No
-> Pin 0x18 (Not connected): present = No
-> Pin 0x19 (Pink Mic, Left side): present = No
-> Pin 0x1a (Internal Speaker): present = Yes
-> Pin 0x1b (Black Mic, Left side): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Not connected): present = No
-> Pin 0x1f (Not connected): present = No
->
-> Note that I have used hdajackretask to assing pin 0x1a -> LFE, apparently
-> resulting in jack detection for the subwoofer.
->
-> On 5 October 2015 at 06:51, Raymond Yau <superquad.vortex2@gmail.com>
-> wrote:
->
->>
->> >
->> > Do you need any testing from my side to be able to finish the
->> developing?
->> >
->>
->>
->> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1451170/comments/22
->>
->> It seem that asus n550lf which also use alc668 codec but headset mic pin
->> node 0x1b is detectable
->>
->> Can you confirm that your headset mic node is not detectable by
->> hdajacksensetest ?
->>
->> This mean that the model "headset-sonicmaster" will be quite confusing
->> when asus notebooks have different ways of headset implementation
->>
->
->
->
-> --
-> Arthur Borsboom
-> Mob: +31629089953
-> Email: arthurborsboom@gmail.com
-> Skype: Arthur Borsboom, The Hague, The Netherlands
->
-> [image: View Arthur's LinkedIn profile]
-> <http://uk.linkedin.com/in/arthurborsboom>
->
+---
+ sound/firewire/bebob/bebob.c           |    2 +-
+ sound/firewire/bebob/bebob.h           |    2 +-
+ sound/firewire/bebob/bebob_focusrite.c |    4 ++--
+ sound/firewire/bebob/bebob_maudio.c    |    4 ++--
+ sound/firewire/bebob/bebob_pcm.c       |    2 +-
+ sound/firewire/bebob/bebob_proc.c      |    2 +-
+ sound/firewire/bebob/bebob_stream.c    |    2 +-
+ sound/firewire/bebob/bebob_terratec.c  |    2 +-
+ sound/firewire/bebob/bebob_yamaha.c    |    2 +-
+ 9 files changed, 11 insertions(+), 11 deletions(-)
 
-
-
--- 
-Arthur Borsboom
-Mob: +31629089953
-Email: arthurborsboom@gmail.com
-Skype: Arthur Borsboom, The Hague, The Netherlands
-
-[image: View Arthur's LinkedIn profile]
-<http://uk.linkedin.com/in/arthurborsboom>
+diff --git a/sound/firewire/bebob/bebob_yamaha.c b/sound/firewire/bebob/bebob_yamaha.c
+index 5810170..2a9ffdb 100644
+--- a/sound/firewire/bebob/bebob_yamaha.c
++++ b/sound/firewire/bebob/bebob_yamaha.c
+@@ -51,7 +51,7 @@ static struct snd_bebob_clock_spec clock_spec = {
+ 	.types	= clk_src_types,
+ 	.get	= &clk_src_get,
+ };
+-static struct snd_bebob_rate_spec rate_spec = {
++static const struct snd_bebob_rate_spec rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate,
+ };
+diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
+index a1a3949..e62923e 100644
+--- a/sound/firewire/bebob/bebob_focusrite.c
++++ b/sound/firewire/bebob/bebob_focusrite.c
+@@ -260,7 +260,7 @@ saffire_meter_get(struct snd_bebob *bebob, u32 *buf, unsigned int size)
+ 	return err;
+ }
+ 
+-static struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
++static const struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
+ 	.get	= &saffirepro_both_clk_freq_get,
+ 	.set	= &saffirepro_both_clk_freq_set,
+ };
+@@ -287,7 +287,7 @@ struct snd_bebob_spec saffirepro_10_spec = {
+ 	.meter	= NULL
+ };
+ 
+-static struct snd_bebob_rate_spec saffire_both_rate_spec = {
++static const struct snd_bebob_rate_spec saffire_both_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate,
+ };
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 0ed5e5f..091290d 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -335,7 +335,7 @@ static void bebob_remove(struct fw_unit *unit)
+ 	snd_card_free_when_closed(bebob->card);
+ }
+ 
+-static struct snd_bebob_rate_spec normal_rate_spec = {
++static const struct snd_bebob_rate_spec normal_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate
+ };
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index d3c9d8d..aff9da3 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -71,7 +71,7 @@ struct snd_bebob_meter_spec {
+ };
+ struct snd_bebob_spec {
+ 	struct snd_bebob_clock_spec *clock;
+-	struct snd_bebob_rate_spec *rate;
++	const struct snd_bebob_rate_spec *rate;
+ 	struct snd_bebob_meter_spec *meter;
+ };
+ 
+diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
+index 9242e33..470d526 100644
+--- a/sound/firewire/bebob/bebob_terratec.c
++++ b/sound/firewire/bebob/bebob_terratec.c
+@@ -55,7 +55,7 @@ phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ 	return 0;
+ }
+ 
+-static struct snd_bebob_rate_spec phase_series_rate_spec = {
++static const struct snd_bebob_rate_spec phase_series_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate,
+ };
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 2fdc1f1..ef224d6 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -155,7 +155,7 @@ static int
+ pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_bebob *bebob = substream->private_data;
+-	struct snd_bebob_rate_spec *spec = bebob->spec->rate;
++	const struct snd_bebob_rate_spec *spec = bebob->spec->rate;
+ 	unsigned int sampling_rate;
+ 	enum snd_bebob_clock_type src;
+ 	int err;
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index a2baa47..fc7a66d 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -580,7 +580,7 @@ end:
+ 
+ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ {
+-	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
++	const struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
+ 	struct amdtp_stream *master, *slave;
+ 	enum cip_flags sync_mode;
+ 	unsigned int curr_rate;
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index 057495d..dc9cd0c 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -712,7 +712,7 @@ end:
+ }
+ 
+ /* for special customized devices */
+-static struct snd_bebob_rate_spec special_rate_spec = {
++static const struct snd_bebob_rate_spec special_rate_spec = {
+ 	.get	= &special_get_rate,
+ 	.set	= &special_set_rate,
+ };
+@@ -733,7 +733,7 @@ struct snd_bebob_spec maudio_special_spec = {
+ };
+ 
+ /* Firewire 410 specification */
+-static struct snd_bebob_rate_spec usual_rate_spec = {
++static const struct snd_bebob_rate_spec usual_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate,
+ };
+diff --git a/sound/firewire/bebob/bebob_proc.c b/sound/firewire/bebob/bebob_proc.c
+index 301cc6a..0f3b2ca 100644
+--- a/sound/firewire/bebob/bebob_proc.c
++++ b/sound/firewire/bebob/bebob_proc.c
+@@ -138,7 +138,7 @@ proc_read_clock(struct snd_info_entry *entry,
+ 		"SYT-Match",
+ 	};
+ 	struct snd_bebob *bebob = entry->private_data;
+-	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
++	const struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
+ 	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	enum snd_bebob_clock_type src;
+ 	unsigned int rate;
