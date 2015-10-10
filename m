@@ -1,23 +1,24 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1 2/3] ASoC: fsl_spdif: spba clk is needed
- by spdif device
-Date: Sat, 10 Oct 2015 18:26:58 +0800
-Message-ID: <20151010102657.GC25804@shlinux2>
-References: <cover.1442469788.git.shengjiu.wang@freescale.com>
- <5fd6e6c463c2e8d141cf4b485f585f007a71442e.1442469788.git.shengjiu.wang@freescale.com>
- <20150917110154.GC12027@sirena.org.uk>
- <20150917175407.GA2544@Asurada-CZ80>
- <20150919135040.GM12027@sirena.org.uk>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Boss GT-001 MIDI
+Date: Sat, 10 Oct 2015 14:16:56 +0100
+Message-ID: <1787556.aGiPR74l1T@kamdesktop>
+References: <1481883.Y22cmGKEIB@kamdesktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0116.outbound.protection.outlook.com [157.56.111.116])
- by alsa0.perex.cz (Postfix) with ESMTP id A50DF260436
- for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 12:27:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150919135040.GM12027@sirena.org.uk>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 566DD26044B
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 15:16:59 +0200 (CEST)
+Received: by wicgb1 with SMTP id gb1so2249662wic.1
+ for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2015 06:16:59 -0700 (PDT)
+Received: from kamdesktop.localnet ([2001:8b0:be0a:29af::201])
+ by smtp.gmail.com with ESMTPSA id i10sm7982268wjz.41.2015.10.10.06.16.57
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Sat, 10 Oct 2015 06:16:57 -0700 (PDT)
+In-Reply-To: <1481883.Y22cmGKEIB@kamdesktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,40 +28,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Xiubo.Lee@gmail.com, timur@tabi.org, lgirdwood@gmail.com, Nicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, galak@codeaurora.org, tiwai@suse.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 19, 2015 at 06:50:40AM -0700, Mark Brown wrote:
-> On Thu, Sep 17, 2015 at 10:54:08AM -0700, Nicolin Chen wrote:
-> > On Thu, Sep 17, 2015 at 12:01:54PM +0100, Mark Brown wrote:
-> > > On Thu, Sep 17, 2015 at 02:09:24PM +0800, Shengjiu Wang wrote:
-> 
-> > > > +	"dma"		  The spba clock is needed when sdma share peripheral
-> > > > +			  script is used.
-> 
-> > > It sounds like this clock is used by the DMA controller - shouldn't the
-> > > DMA controller driver be responsible for enabling it?
-> 
-> > I agree but it doesn't seems to be easy to enable and disable it
-> > dynamically along with ASoC open() and close() functions as the
-> > current clocks of SDMA get enabled when its channels are allocated
-> > during the system boot-up via generic DMA bindings.
-> 
-> Do we need to do things along with open() and close() or wouldn't doing
-> things along with the DMA operatiosn suffice?
-> 
-> > Maybe we can put in the issue_pending() and terminate_all() which
-> > are regularly called along with ASoC trigger(), or just open it
-> > permanently if the penalty of power efficiency is ignorable.
-> 
-> Or some kind of runtime PM usage within the DMA driver (possibly at
-> those points)?  It does seem like something we should solve in the DMA
-> code rather than in generic code.
-> 
+Forking this thread to focus on MIDI issues
 
-I think spba clock should be used by the audio IP not DMA, because in same
-situation the FSL_SSI doesn't need this clock.
+This device has a single USB MIDI Interface on Interface 3, with 2 alternate 
+settings, each with 2 endpoints as follows:
 
-best regards
-wang shengjiu
+Interface 3
+ - Setting 0
+    - Endpoint 3 OUT Bulk Data
+    - Endpoint 4 IN Bulk Data
+ - Setting 1
+    - Endpoint 3 OUT Interrupt data
+    - Endpoint 5 IN Interrupt data
+
+My evaluation is that this is a new style of MIDI Interface from others 
+previously encountered. Comparing, for instance, with the Roland V Synth GT 
+which seems to have the following Interface layout:
+
+Interface 2
+ - Setting 0
+    - Endpoint 3 OUT Bulk Data
+    - Endpoint 4 IN Bulk Data
+ - Setting 1
+    - Endpoint 3 OUT Bulk data
+    - Endpoint 4 IN Interrupt data
+
+The major difference is that the GT.001 has Interrupt Transfer modes for both 
+IN and OUT.
+
+Looking at snd_usbmidi_switch_roland_altsetting this sets the alternate 
+setting so that the interrupt input endpoint is used. This routine looks for a 
+pair of endpoints where the OUT endpoint is Bulk transfer, and the input is 
+Interrupt transfer, and sets the mode accordingly. I've modified this to 
+support Interrupt Xfer in both directions, and this seems to work (although my 
+changes aren't read for publication yet as they are rather experimental and 
+messy, and probably break the existing detection.
+
+I'll try to fix this code and submit a patch.
+
+Cheers,
+
+Keith
