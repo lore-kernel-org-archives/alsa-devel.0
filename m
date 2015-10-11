@@ -1,15 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib: continue packet processing
-	at detecting wrong CIP headers
-Date: Sun, 11 Oct 2015 22:33:50 +0900
-Message-ID: <1444570430-18077-1-git-send-email-o-takashi@sakamocchi.jp>
+From: maillist@superlative.org
+Subject: [RESEND PATCH 1/1] Allow any MIDI endpoint to drive
+	use of interrupt transfer on newer Roland devices
+Date: Sun, 11 Oct 2015 15:19:48 +0100
+Message-ID: <561a700d.04dfc20a.4d7e9.5ab3@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 91491260688
- for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 15:33:55 +0200 (CEST)
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF03D2606A5
+ for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 16:19:58 +0200 (CEST)
+Received: by wijq8 with SMTP id q8so24383879wij.0
+ for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 07:19:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,56 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>
 List-Id: alsa-devel@alsa-project.org
 
-In firewire-lib, isochronous packet streaming is stopped when detecting
-wrong value for FMT field of CIP headers. Although this is appropriate
-to IEC 61883-1 and 6, some BeBoB based devices with vendors' customization
-use invalid value to FMT field of CIP headers in the beginning of
-streaming.
+From: "Keith A. Milner" <maillist@superlative.org>
 
-$ journalctl
-  snd-bebob fw1.0: Detect unexpected protocol: 01000000 8000ffff
+This patch enables interrupt transfer mode for MIDI ports on newer
+Boss/Roland devices such as the GT-100/001 which support interrupt
+transfer on both IN and OUT MIDI endpoints. Previously this wasn't being
+enabled for these devices as the code was specifically looking for the
+scenario where the IN endpoint supported interrupt transfer and the OUT
+endpoint was bulk transfer. Newer devices support interrupt transfer for
+both endpoints.
 
-I got this log with M-Audio FireWire 1814. In this line, the value of FMT
-field is 0x00, while it should be 0x10 in usual AMDTP.
+This has been tested on Boss devices GT-001, BR-80 and JS-8 and Roland
+VS-20.
 
-Except for the beginning, these devices continue to transfer packets with
-valid value for FMT field, except for the beginning. Therefore, in this
-case, firewire-lib should continue to process packets. The former
-implementation of firewire-lib performs it.
+It would benefit from some regresison testing with other devices if
+possible.
 
-This commit loosens the handling of wrong value, to continue packet
-processing in the case.
+Signed-off-by: Keith A. Milner <maillist@superlative.org>
 
-Fixes: 414ba022a528('ALSA: firewire-lib: add support arbitrary value for fmt/fdf fields in CIP header')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index fa10b58..ed29026 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -468,10 +468,12 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	/* Check valid protocol or not. */
- 	fmt = (cip_header[1] & CIP_FMT_MASK) >> CIP_FMT_SHIFT;
- 	if (fmt != s->fmt) {
--		dev_err(&s->unit->device,
--			"Detect unexpected protocol: %08x %08x\n",
--			cip_header[0], cip_header[1]);
--		return -EIO;
-+		dev_info_ratelimited(&s->unit->device,
-+				     "Detect unexpected protocol: %08x %08x\n",
-+				     cip_header[0], cip_header[1]);
-+		*data_blocks = 0;
-+		pcm_frames = 0;
-+		goto end;
- 	}
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index b901f46..d50c649 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1860,9 +1860,14 @@ static void snd_usbmidi_switch_roland_altsetting(struct snd_usb_midi* umidi)
  
- 	/* Calculate data blocks */
+ 	hostif = &intf->altsetting[1];
+ 	intfd = get_iface_desc(hostif);
++       /* If either or both of the endpoints support interrupt transfer,
++        * then use the alternate setting
++        */
+ 	if (intfd->bNumEndpoints != 2 ||
+-	    (get_endpoint(hostif, 0)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_BULK ||
+-	    (get_endpoint(hostif, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT)
++	     !((get_endpoint(hostif, 0)->bmAttributes
++			& USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT ||
++	      (get_endpoint(hostif, 1)->bmAttributes
++			& USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))
+ 		return;
+ 
+ 	snd_printdd(KERN_INFO "switching to altsetting %d with int ep\n",
 -- 
-2.1.4
+1.9.1
