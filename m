@@ -1,18 +1,18 @@
-From: maillist@superlative.org
-Subject: [RESEND PATCH 1/1] Allow any MIDI endpoint to drive
-	use of interrupt transfer on newer Roland devices
-Date: Sun, 11 Oct 2015 15:19:48 +0100
-Message-ID: <561a700d.04dfc20a.4d7e9.5ab3@mx.google.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH v3] ALSA: usb-audio: Fix max packet size
+ calculation for USB audio
+Date: Sun, 11 Oct 2015 16:58:11 +0200
+Message-ID: <alpine.DEB.2.02.1510111651550.29096@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1510102326500.1523@lnxricardw1.se.axis.com>
+ <s5h612dkh8t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id EF03D2606A5
- for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 16:19:58 +0200 (CEST)
-Received: by wijq8 with SMTP id q8so24383879wij.0
- for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 07:19:58 -0700 (PDT)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3C6A2606A5
+ for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2015 16:58:16 +0200 (CEST)
+In-Reply-To: <s5h612dkh8t.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Keith A. Milner" <maillist@superlative.org>
-
-This patch enables interrupt transfer mode for MIDI ports on newer
-Boss/Roland devices such as the GT-100/001 which support interrupt
-transfer on both IN and OUT MIDI endpoints. Previously this wasn't being
-enabled for these devices as the code was specifically looking for the
-scenario where the IN endpoint supported interrupt transfer and the OUT
-endpoint was bulk transfer. Newer devices support interrupt transfer for
-both endpoints.
-
-This has been tested on Boss devices GT-001, BR-80 and JS-8 and Roland
-VS-20.
-
-It would benefit from some regresison testing with other devices if
-possible.
-
-Signed-off-by: Keith A. Milner <maillist@superlative.org>
-
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index b901f46..d50c649 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1860,9 +1860,14 @@ static void snd_usbmidi_switch_roland_altsetting(struct snd_usb_midi* umidi)
- 
- 	hostif = &intf->altsetting[1];
- 	intfd = get_iface_desc(hostif);
-+       /* If either or both of the endpoints support interrupt transfer,
-+        * then use the alternate setting
-+        */
- 	if (intfd->bNumEndpoints != 2 ||
--	    (get_endpoint(hostif, 0)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_BULK ||
--	    (get_endpoint(hostif, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_INT)
-+	     !((get_endpoint(hostif, 0)->bmAttributes
-+			& USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT ||
-+	      (get_endpoint(hostif, 1)->bmAttributes
-+			& USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_INT))
- 		return;
- 
- 	snd_printdd(KERN_INFO "switching to altsetting %d with int ep\n",
--- 
-1.9.1
+Ck9uIFN1biwgMTEgT2N0IDIwMTUsIFRha2FzaGkgSXdhaSB3cm90ZToKCj4gPiBUaGUgY29kZSBh
+cyBpdCBzdGFuZHMgaGFzIHRoZSBmb2xsb3dpbmcgZXhwcmVzc2lvbiBvbiBsaW5lIDYxMyB0byAK
+PiA+IGNhbGN1bGF0ZSB0aGUgbWF4aW11bSBpc29jaHJvbm91cyBwYWNrZXQgc2l6ZToKPiA+IC4u
+Lgo+ID4gc2l6ZSB3aGljaCB0cmlnZ2VyZWQgdGhlIGlmIHN0YXRlbWVudCB0byBzdGFydCB3aXRo
+Lgo+IAo+IFRoZSB3aG9sZSB0ZXh0IHNob3VsZCBiZSBwdXQgaW4gdGhlIGNoYW5nZWxvZy4gIFRo
+YXQncyB3aGF0IENsZW1lbnMKPiBzdWdnZXN0ZWQgaW1wbGljaXRseS4gIFRoZXJlIGlzIG5vIHJl
+YXNvbiB0byBoaWRlIHN1Y2ggYSBwcmVjaW91cwo+IGluZm9ybWF0aW9uIGZvciBsYXRlciByZWFk
+ZXJzLgoKWWVhaCwgSSB3YXNuJ3Qgc3VyZSBleGFjdGx5IHdoYXQgQ2xlbWVucyB3YXMgaGludGlu
+ZyBhdC4KCllvdSBtZWFuIHB1dCB0aGUgd2hvbGUgdGhpbmcgaW4gdGhlIGNvbW1pdCBtZXNzYWdl
+PyBJIGNhbiBjZXJ0YWlubHkgZG8gCnRoYS4gSXQgZmVlbHMgYSBiaXQgZXhjZXNzaXZlLCB0byBt
+ZSBpdCBzZWVtZWQgdGhhdCBvbmNlIHRoZSBleHByZXNzaW9uIGlzIApjb3JyZWN0IGEgc2hvcnQg
+Y29tbWl0IG1lc3NhZ2Ugc2hvdWxkIHN1ZmZpY2UgZXhwbGFpbmluZyB3aGF0IGl0IGRvZXMsIGJ1
+dCAKaW4gb3JkZXIgdG8gY29udmluY2UgcG90ZW50aWFsIHJldmlld2VycyAoYW5kIHByb3ZpZGUg
+YSBzdGFydGluZyBwb2ludCBmb3IgCmRpc2N1c3Npb24pIGFuIGV4cGxhbmF0aW9uIG9mIHRoZSBw
+cm9wb3NlZCBjaGFuZ2UgaXMgbmVlZGVkIGluIG9yZGVyIHRvIApnZXQgdGhlIHBhdGNoIGFwcGxp
+ZWQuCgpCdXQgSSBjYW4gY2VydGFpbmx5IHJld29yayBpdCBhbmQgcHV0IGl0IGluIHRoZSBjb21t
+aXQgbWVzc2FnZSBpbnN0ZWFkLgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21tdW5p
+Y2F0aW9ucyBBQiwgTHVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25lICs0
+NiA0NiAyNzIgMjAxNiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEg
+MzAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
