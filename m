@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: sh: Fit typo in Kconfig" to the asoc
-	tree
-Date: Mon, 12 Oct 2015 16:55:00 +0100
-Message-ID: <E1ZlfRE-0002nX-6g@finisterre>
+Subject: Re: [PATCH] ASoC: Intel: Skylake - Add Skylake RT286
+ I2S machine driver
+Date: Mon, 12 Oct 2015 17:17:36 +0100
+Message-ID: <20151012161736.GG4238@sirena.org.uk>
+References: <201510101650.2oGqByd9%fengguang.wu@intel.com>
+ <1444619526.3544.6.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5356917971830040743=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10B58265109
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 17:55:10 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id E75442625EE
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 18:17:47 +0200 (CEST)
+In-Reply-To: <1444619526.3544.6.camel@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Masanari Iida <standby24x7@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, lkp <lkp@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Abdullah,
+ Omair M" <omair.m.abdullah@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "Kp, Jeeja" <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoc: sh: Fit typo in Kconfig
+--===============5356917971830040743==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mhjHhnbe5PrRcwjY"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--mhjHhnbe5PrRcwjY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Oct 12, 2015 at 03:12:07AM +0000, Koul, Vinod wrote:
+> On Sat, 2015-10-10 at 16:42 +0800, kbuild test robot wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > [auto build test ERROR on next-20151009 -- if it's inappropriate base, please
+> > ignore]
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > config: arm-allmodconfig (attached as .config)
+> > reproduce:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> That's nice, thanks. We should add a depends on X86 for this to not compile on non
+> X86 code
 
-Thanks,
-Mark
+> Will send updated patch
 
->From d795eb3f5c10d36ed51ca7cd5ce411677f6f7aab Mon Sep 17 00:00:00 2001
-From: Masanari Iida <standby24x7@gmail.com>
-Date: Sat, 10 Oct 2015 14:17:58 +0900
-Subject: [PATCH] ASoc: sh: Fit typo in Kconfig
+It looks like the missing functions are just readl() and writel() which
+means that they're probably only working on x86 through implicit
+inclusion rather than intentionally - if that's the case adding (IIRC)
+linux/io.h is a better fix.
 
-s/SUR/SRU/g
+--mhjHhnbe5PrRcwjY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 07114b0..de668b2 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -40,7 +40,7 @@ config SND_SOC_RCAR
- 	select SND_SIMPLE_CARD
- 	select REGMAP_MMIO
- 	help
--	  This option enables R-Car SUR/SCU/SSIU/SSI sound support
-+	  This option enables R-Car SRU/SCU/SSIU/SSI sound support
- 
- config SND_SOC_RSRC_CARD
- 	tristate "Renesas Sampling Rate Convert Sound Card"
--- 
-2.5.0
+iQEcBAEBCAAGBQJWG90fAAoJECTWi3JdVIfQbLEH/0gADMPSMm1tB67MvoF1rKRr
+wDJuyZvv4xpnu8m1+hCC1qsX1MoINtuZ47tNU9cCcPeCdG59Maf5D5nZxOhZFeq2
+g9D1X7/cjefS755g/dE1tn+nJiwf4SxLumURS4XMrYlGnY2k44ZKZrMCsmuYNvRc
+UkHBXqU+S0Ve7/q/qEngLvsyj8zJs9iERcG2kwB4FtYNHoQnIMdrSN/PA0Z5dERV
+a+t8eeNWdHywW1G/an2dE8ss6BUrrQp9rWDOM6GGGQMkEpE3GVM9Y12wPKXxiURP
+6qWUM0c1BdB4uM9YqQ4uc9g3NkX0y8iJbTbHrYeSRnAvfi5gYNw2jk9Yhl9VtcI=
+=6vO9
+-----END PGP SIGNATURE-----
+
+--mhjHhnbe5PrRcwjY--
+
+--===============5356917971830040743==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5356917971830040743==--
