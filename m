@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ALSA: firewire-tascam: Turn on/off
-	FireWire LED
-Date: Mon, 12 Oct 2015 19:10:24 +0900
-Message-ID: <1444644625-30189-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: firewire-tascam: change device
+	probing processing
+Date: Mon, 12 Oct 2015 19:10:25 +0900
+Message-ID: <1444644625-30189-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 72D66261295
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F275B2612D7
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:31 +0200 (CEST)
 In-Reply-To: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,67 +22,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, Stefan Richter <stefanr@s5r6.in-berlin.de>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series has some LEDs on its surface. These LEDs can be
-turned on/off by receiving asynchronous transactions to a certain
-address. One of the LEDs is labels as 'FireWire'. It's better to light it
-up when this driver starts to work. Besides, the LED for 'FireWire' is
-turned off at bus reset.
+Currently, this driver picks up model name with be32_to_cpu() macro
+to align characters. This is wrong operation because the result is
+different depending on CPU endiannness.
 
-This commit implements this idea.
+Additionally, vendor released several versions of firmware for this
+series. It's not better to assign model-dependent information to
+device entry according to the version field.
 
+This commit fixes these bugs. The name of model is picked up correctly
+and used to identify model-dependent information.
+
+Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Fixes: c0949b278515('ALSA: firewire-tascam: add skeleton for TASCAM FireWire series')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-transaction.c | 14 ++++++++++++++
- sound/firewire/tascam/tascam.h             |  2 ++
- 2 files changed, 16 insertions(+)
+ sound/firewire/tascam/tascam.c | 78 +++++++++++++++++-------------------------
+ 1 file changed, 32 insertions(+), 46 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index 6b74fb5..1c9a88b 100644
---- a/sound/firewire/tascam/tascam-transaction.c
-+++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -252,6 +252,14 @@ int snd_tscm_transaction_reregister(struct snd_tscm *tscm)
- 	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
- 				  TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ON,
- 				  &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index dc07e3e..3baf1b2 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -24,16 +24,6 @@ static struct snd_tscm_spec model_specs[] = {
+ 		.is_controller = true,
+ 	},
+ 	{
+-		.name = "FW-1804",
+-		.has_adat = true,
+-		.has_spdif = true,
+-		.pcm_capture_analog_channels = 8,
+-		.pcm_playback_analog_channels = 2,
+-		.midi_capture_ports = 2,
+-		.midi_playback_ports = 4,
+-		.is_controller = false,
+-	},
+-	{
+ 		.name = "FW-1082",
+ 		.has_adat = false,
+ 		.has_spdif = true,
+@@ -43,34 +33,46 @@ static struct snd_tscm_spec model_specs[] = {
+ 		.midi_playback_ports = 2,
+ 		.is_controller = true,
+ 	},
++	/* FW-1804 mey be supported. */
+ };
+ 
+-static int check_name(struct snd_tscm *tscm)
++static int identify_model(struct snd_tscm *tscm)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
+-	char vendor[8];
++	const u32 *config_rom = fw_dev->config_rom;
+ 	char model[8];
+-	__u32 data;
+-
+-	/* Retrieve model name. */
+-	data = be32_to_cpu(fw_dev->config_rom[28]);
+-	memcpy(model, &data, 4);
+-	data = be32_to_cpu(fw_dev->config_rom[29]);
+-	memcpy(model + 4, &data, 4);
+-	model[7] = '\0';
+-
+-	/* Retrieve vendor name. */
+-	data = be32_to_cpu(fw_dev->config_rom[23]);
+-	memcpy(vendor, &data, 4);
+-	data = be32_to_cpu(fw_dev->config_rom[24]);
+-	memcpy(vendor + 4, &data, 4);
+-	vendor[7] = '\0';
++	unsigned int i;
++	u8 c;
 +
-+	/* Turn on FireWire LED. */
-+	reg = cpu_to_be32(0x0001008e);
-+	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  TSCM_ADDR_BASE + TSCM_OFFSET_LED_POWER,
-+				  &reg, sizeof(reg), 0);
++	if (fw_dev->config_rom_length < 30) {
++		dev_err(&tscm->unit->device,
++			"Configuration ROM is too short.\n");
++		return -ENODEV;
++	}
++
++	/* Pick up model name from certain addresses. */
++	for (i = 0; i < 8; i++) {
++		c = config_rom[28 + i / 4] >> (24 - 8 * (i % 4));
++		if (c == '\0')
++			break;
++		model[i] = c;
++	}
++	model[i] = '\0';
++
++	for (i = 0; i < ARRAY_SIZE(model_specs); i++) {
++		if (strcmp(model, model_specs[i].name) == 0) {
++			tscm->spec = &model_specs[i];
++			break;
++		}
++	}
++	if (tscm->spec == NULL)
++		return -ENODEV;
+ 
+ 	strcpy(tscm->card->driver, "FW-TASCAM");
+ 	strcpy(tscm->card->shortname, model);
+ 	strcpy(tscm->card->mixername, model);
+ 	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
+-		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
++		 "TASCAM %s, GUID %08x%08x at %s, S%d", model,
+ 		 cpu_to_be32(fw_dev->config_rom[3]),
+ 		 cpu_to_be32(fw_dev->config_rom[4]),
+ 		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
+@@ -108,13 +110,12 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	tscm = card->private_data;
+ 	tscm->card = card;
+ 	tscm->unit = fw_unit_get(unit);
+-	tscm->spec = (const struct snd_tscm_spec *)entry->driver_data;
+ 
+ 	mutex_init(&tscm->mutex);
+ 	spin_lock_init(&tscm->lock);
+ 	init_waitqueue_head(&tscm->hwdep_wait);
+ 
+-	err = check_name(tscm);
++	err = identify_model(tscm);
+ 	if (err < 0)
+ 		goto error;
+ 
+@@ -172,27 +173,12 @@ static void snd_tscm_remove(struct fw_unit *unit)
  }
  
- void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
-@@ -259,6 +267,12 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- 	__be32 reg;
- 	unsigned int i;
- 
-+	/* Turn off FireWire LED. */
-+	reg = cpu_to_be32(0x0000008e);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_LED_POWER,
-+			   &reg, sizeof(reg), 0);
-+
- 	/* Turn off messaging. */
- 	reg = cpu_to_be32(0x00000000);
- 	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index b86bb7f..2d028d2 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -101,6 +101,8 @@ struct snd_tscm {
- #define TSCM_OFFSET_MIDI_TX_ADDR_HI	0x0304
- #define TSCM_OFFSET_MIDI_TX_ADDR_LO	0x0308
- 
-+#define TSCM_OFFSET_LED_POWER		0x0404
-+
- #define TSCM_OFFSET_MIDI_RX_QUAD	0x4000
- 
- enum snd_tscm_clock {
+ static const struct ieee1394_device_id snd_tscm_id_table[] = {
+-	/* FW-1082 */
+-	{
+-		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+-			       IEEE1394_MATCH_SPECIFIER_ID |
+-			       IEEE1394_MATCH_VERSION,
+-		.vendor_id = 0x00022e,
+-		.specifier_id = 0x00022e,
+-		.version = 0x800003,
+-		.driver_data = (kernel_ulong_t)&model_specs[2],
+-	},
+-	/* FW-1884 */
+ 	{
+ 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+-			       IEEE1394_MATCH_SPECIFIER_ID |
+-			       IEEE1394_MATCH_VERSION,
++			       IEEE1394_MATCH_SPECIFIER_ID,
+ 		.vendor_id = 0x00022e,
+ 		.specifier_id = 0x00022e,
+-		.version = 0x800000,
+-		.driver_data = (kernel_ulong_t)&model_specs[0],
+ 	},
+-	/* FW-1804 mey be supported if IDs are clear. */
+ 	/* FE-08 requires reverse-engineering because it just has faders. */
+ 	{}
+ };
 -- 
 2.1.4
