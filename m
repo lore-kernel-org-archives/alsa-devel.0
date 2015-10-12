@@ -1,21 +1,16 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Mon, 12 Oct 2015 09:01:26 +0000
-Message-ID: <1444640485.3544.12.camel@intel.com>
-References: <20151004231752.GA22609@sirena.org.uk>
- <20151007152047.GQ12635@sirena.org.uk> <561679FE.3060809@metafoo.de>
- <56167DBF.9090106@metafoo.de> <5617C133.1080006@metafoo.de>
- <561AB4E9.9060405@perex.cz>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Packages 1.0.30 - release pending
+Date: Mon, 12 Oct 2015 10:23:49 +0100
+Message-ID: <1444641829.2528.7.camel@loki>
+References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A531260618
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 11:01:30 +0200 (CEST)
-In-Reply-To: <561AB4E9.9060405@perex.cz>
-Content-Language: en-US
-Content-ID: <A5EDA3EEBC77F84A895A607C05BF576D@intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 705C526040E
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 11:23:55 +0200 (CEST)
+In-Reply-To: <s5hvbaca40c.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,17 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>
-Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, ALSA development <alsa-devel@alsa-project.org>, "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2015-10-11 at 21:13 +0200, Jaroslav Kysela wrote:
-> Hi all,
+On Mon, 2015-10-12 at 10:24 +0200, Takashi Iwai wrote:
+> On Sun, 11 Oct 2015 21:08:01 +0200,
+> Jaroslav Kysela wrote:
+> > 
+> > Hi all,
+> > 
+> > 	I would like to release 1.0.30 version of all packages. Things to discuss:
 > 
-> 	is any atendee willing to share a report from this event ?
+> There are pending issues: one is about the topology ABI and this seems
+> still in flux.  I suppose this will be stabilized in 4.4.  Also, the
+> documentation for BAT is utterly missing, and I expect we'll get this
+> soonish.  Liam, Mengdong, any comments on these?
 
-Liam is collates notes from other folks, he should be sending these shortly
+Han is now back from vacation today and is fixing all review comments
+(including doing a man page). I'll be involved with grammar checking the
+man page too as I'm the only native English speaker in the team.
 
+Mengdong is back tomorrow and I think has a couple of topology patches
+for the parser (to support the new ABI objects).
 
--- 
-~Vinod
+I think we can probably get both completed by Friday.
+
+Thanks
+
+Liam
+
+> 
+> We've discussed a bit about the user-space package release in the
+> meeting.  Most people prefer more regular release.  My own preference
+> is to stick with the kernel release cycle -- as most of features are
+> related with the update of kernel ABI.  It's not necessarily at every
+> kernel but, e.g. with two kernel releases, so that we'll get two or
+> three releases per year.  It's just my $0.02, not insisting on it,
+> though.
+> 
+> 
+> > 1) tinycompress
+> >    - do the release this library, too ?
+> 
+> Yeah, this was requested in the meething, too.
+> 
+> >    - versioning - follow the rule for all other ALSA packages
+> >      (all packages have same version) ?
+> 
+> Vinod?
+> 
+> > 2) user-space versioning - change the numbering scheme ?
+> > 
+> > 	Basically, there aren't major rewrites of API last years and it won't
+> > probably happen quickly. Some APIs might be redesigned - simplified
+> > (mostly the mixer stuff), but I would propose to go from 1.0.x to 1.x
+> > numbering (starting with 1.1) and when a major rewrite of API will be
+> > included, we may change the first (major) version number. The release
+> > frequency is not high, so it won't hurt anything in my eyes. Comments,
+> > objections ? This discussion may end with 1.1 release instead 1.0.30.
+> 
+> Honestly speaking, not many people do care about the version number
+> nowadays as long as it increases :)  But yes, I find your proposal
+> good.  A minor update between regular release may still get a version
+> number like 1.3.1, instead of the current 1.0.28a.
+> 
+> 
+> thanks,
+> 
+> Takashi
