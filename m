@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/5] ALSA: firewire-tascam: add support for
-	outgoing MIDI messages by asynchronous transaction
-Date: Mon, 12 Oct 2015 19:10:22 +0900
-Message-ID: <1444644625-30189-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/5] ALSA: firewire-tascam: add support for
+	MIDI functionality
+Date: Mon, 12 Oct 2015 19:10:23 +0900
+Message-ID: <1444644625-30189-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E6D42610A7
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FF0B2610B1
  for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:30 +0200 (CEST)
 In-Reply-To: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,176 +25,203 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series use asynchronous transaction to receive MIDI
-messages. The transaction should be sent to a certain address.
+In former commits, this driver got functionalities to transfer/receive
+MIDI messages to/from TASCAM FireWire series.
 
-This commit supports the outgoing MIDI messages. The messages in the
-transaction includes some quirks:
- * One MIDI message is transferred in one quadlet transaction, except for
-   system exclusives.
- * MIDI running status is not allowed, thus transactions always include
-   status byte.
- * The basic data format is the same as transferring MIDI messages
-   supported in previous commit.
+This commit adds some ALSA MIDI ports to enable userspace applications
+to use the functionalities.
+
+I note that this commit doesn't support virtual MIDI ports which console
+models support. A physical controls can be assigned to a certain MIDI
+ports including physical and virtual. But the way is not clear.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-transaction.c | 95 +++++++++++++++++++++++++++++-
- sound/firewire/tascam/tascam.h             |  8 +++
- 2 files changed, 102 insertions(+), 1 deletion(-)
+ sound/firewire/tascam/Makefile      |   2 +-
+ sound/firewire/tascam/tascam-midi.c | 135 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c      |   4 ++
+ sound/firewire/tascam/tascam.h      |   2 +
+ 4 files changed, 142 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-midi.c
 
-diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index 853438d..6b74fb5 100644
---- a/sound/firewire/tascam/tascam-transaction.c
-+++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -58,6 +58,83 @@ static inline int calculate_message_bytes(u8 status)
- 	return -EINVAL;
- }
- 
-+static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
+diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
+index a1f9fe7..0fc955d 100644
+--- a/sound/firewire/tascam/Makefile
++++ b/sound/firewire/tascam/Makefile
+@@ -1,4 +1,4 @@
+ snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
+ 			    tascam-pcm.o tascam-hwdep.o tascam-transaction.o \
+-			    tascam.o
++			    tascam-midi.o tascam.o
+ obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
+diff --git a/sound/firewire/tascam/tascam-midi.c b/sound/firewire/tascam/tascam-midi.c
+new file mode 100644
+index 0000000..41f8420
+--- /dev/null
++++ b/sound/firewire/tascam/tascam-midi.c
+@@ -0,0 +1,135 @@
++/*
++ * tascam-midi.c - a part of driver for TASCAM FireWire series
++ *
++ * Copyright (c) 2015 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "tascam.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	struct snd_tscm *tscm = substream->rmidi->private_data;
-+	unsigned int port = substream->number;
-+	unsigned int len;
-+	unsigned int i;
-+	u8 status;
-+	int consume;
-+
-+	buf[0] = buf[1] = buf[2] = buf[3] = 0x00;
-+
-+	len = snd_rawmidi_transmit_peek(substream, buf + 1, 3);
-+	if (len == 0)
-+		return 0;
-+
-+	/* On exclusive message. */
-+	if (tscm->on_sysex[port]) {
-+		/* Seek the end of exclusives. */
-+		for (i = 1; i < 4 || i < len; ++i) {
-+			if (buf[i] == 0xf7) {
-+				tscm->on_sysex[port] = false;
-+				break;
-+			}
-+		}
-+
-+		/* At the end of exclusive message, use label 0x07. */
-+		if (!tscm->on_sysex[port]) {
-+			len = i;
-+			buf[0] = (port << 4) | 0x07;
-+		/* During exclusive message, use label 0x04. */
-+		} else if (len == 3) {
-+			buf[0] = (port << 4) | 0x04;
-+		/* We need to fill whole 3 bytes. Go to next change. */
-+		} else {
-+			len = 0;
-+		}
-+	} else {
-+		/* The beginning of exclusives. */
-+		if (buf[1] == 0xf0) {
-+			/* Transfer it in next chance in another condition. */
-+			tscm->on_sysex[port] = true;
-+			return 0;
-+		} else {
-+			/* On running-status. */
-+			if ((buf[1] & 0x80) != 0x80)
-+				status = tscm->running_status[port];
-+			else
-+				status = buf[1];
-+
-+			/* Calculate consume bytes. */
-+			consume = calculate_message_bytes(status);
-+			if (consume <= 0)
-+				return 0;
-+
-+			/* On running-status. */
-+			if ((buf[1] & 0x80) != 0x80) {
-+				buf[3] = buf[2];
-+				buf[2] = buf[1];
-+				buf[1] = tscm->running_status[port];
-+				consume--;
-+			} else {
-+				tscm->running_status[port] = buf[1];
-+			}
-+
-+			/* Confirm length. */
-+			if (len < consume)
-+				return 0;
-+			if (len > consume)
-+				len = consume;
-+		}
-+
-+		buf[0] = (port << 4) | (buf[1] >> 4);
-+	}
-+
-+	return len;
++	/* Do nothing. */
++	return 0;
 +}
 +
- static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
- 			   int tcode, int destination, int source,
- 			   int generation, unsigned long long offset,
-@@ -111,6 +188,7 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
- 		.start	= 0xffffe0000000ull,
- 		.end	= 0xffffe000ffffull,
- 	};
-+	unsigned int i;
- 	int err;
- 
- 	/*
-@@ -129,9 +207,21 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
- 
- 	err = snd_tscm_transaction_reregister(tscm);
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_tscm *tscm = substream->rmidi->private_data;
++
++	/* Initialize internal status. */
++	tscm->running_status[substream->number] = 0;
++	tscm->on_sysex[substream->number] = 0;
++	return 0;
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	/* Do nothing. */
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_tscm *tscm = substream->rmidi->private_data;
++
++	snd_fw_async_midi_port_finish(&tscm->out_ports[substream->number]);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_tscm *tscm = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&tscm->lock, flags);
++
++	if (up)
++		tscm->tx_midi_substreams[substrm->number] = substrm;
++	else
++		tscm->tx_midi_substreams[substrm->number] = NULL;
++
++	spin_unlock_irqrestore(&tscm->lock, flags);
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_tscm *tscm = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&tscm->lock, flags);
++
++	if (up)
++		snd_fw_async_midi_port_run(&tscm->out_ports[substrm->number],
++					   substrm);
++
++	spin_unlock_irqrestore(&tscm->lock, flags);
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++int snd_tscm_create_midi_devices(struct snd_tscm *tscm)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *stream;
++	struct snd_rawmidi_substream *subs;
++	int err;
++
++	err = snd_rawmidi_new(tscm->card, tscm->card->driver, 0,
++			      tscm->spec->midi_playback_ports,
++			      tscm->spec->midi_capture_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", tscm->card->shortname);
++	rmidi->private_data = tscm;
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++			    &midi_capture_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++	/* Set port names for MIDI input. */
++	list_for_each_entry(subs, &stream->substreams, list) {
++		/* TODO: support virtual MIDI ports. */
++		if (subs->number < tscm->spec->midi_capture_ports) {
++			/* Hardware MIDI ports. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 tscm->card->shortname, subs->number + 1);
++		}
++	}
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++			    &midi_playback_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++	/* Set port names for MIDI ourput. */
++	list_for_each_entry(subs, &stream->substreams, list) {
++		if (subs->number < tscm->spec->midi_playback_ports) {
++			/* Hardware MIDI ports only. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 tscm->card->shortname, subs->number + 1);
++		}
++	}
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index de9e8df..dc07e3e 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -132,6 +132,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
  	if (err < 0)
--		fw_core_remove_address_handler(&tscm->async_handler);
+ 		goto error;
+ 
++	err = snd_tscm_create_midi_devices(tscm);
++	if (err < 0)
 +		goto error;
 +
-+	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++) {
-+		err = snd_fw_async_midi_port_init(
-+				&tscm->out_ports[i], tscm->unit,
-+				TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_RX_QUAD,
-+				4, fill_message);
-+		if (err < 0)
-+			goto error;
-+	}
- 
- 	return err;
-+error:
-+	fw_core_remove_address_handler(&tscm->async_handler);
-+	return err;
- }
- 
- /* At bus reset, these registers are cleared. */
-@@ -167,6 +257,7 @@ int snd_tscm_transaction_reregister(struct snd_tscm *tscm)
- void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- {
- 	__be32 reg;
-+	unsigned int i;
- 
- 	/* Turn off messaging. */
- 	reg = cpu_to_be32(0x00000000);
-@@ -183,4 +274,6 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- 			   &reg, sizeof(reg), 0);
- 
- 	fw_core_remove_address_handler(&tscm->async_handler);
-+	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++)
-+		snd_fw_async_midi_port_destroy(&tscm->out_ports[i]);
- }
+ 	err = snd_tscm_create_hwdep_device(tscm);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index b0e602b..c2f0c74 100644
+index c2f0c74..b86bb7f 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -67,6 +67,14 @@ struct snd_tscm {
- 	/* For MIDI message incoming transactions. */
- 	struct fw_address_handler async_handler;
- 	struct snd_rawmidi_substream *tx_midi_substreams[TSCM_MIDI_IN_PORT_MAX];
-+
-+	/* For MIDI message outgoing transactions. */
-+	struct snd_fw_async_midi_port out_ports[TSCM_MIDI_OUT_PORT_MAX];
-+	u8 running_status[TSCM_MIDI_OUT_PORT_MAX];
-+	bool on_sysex[TSCM_MIDI_OUT_PORT_MAX];
-+
-+	/* For control messages. */
-+	struct snd_firewire_tascam_status *status;
- };
+@@ -138,6 +138,8 @@ void snd_tscm_proc_init(struct snd_tscm *tscm);
  
- #define TSCM_ADDR_BASE			0xffff00000000ull
+ int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
+ 
++int snd_tscm_create_midi_devices(struct snd_tscm *tscm);
++
+ int snd_tscm_create_hwdep_device(struct snd_tscm *tscm);
+ 
+ #endif
 -- 
 2.1.4
