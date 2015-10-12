@@ -1,51 +1,53 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
- multiple arizona (wm5102) codecs
-Date: Mon, 12 Oct 2015 22:11:38 +0200
-Message-ID: <20151012201137.GA7317@amd>
-References: <20150914115439.GA29646@amd>
- <20150914115255.GE11200@ck-lbox>
- <20151012090045.GA7448@amd>
- <20151012154715.GF4238@sirena.org.uk>
+From: James Cameron <quozl@laptop.org>
+Subject: Splitting out controls
+Date: Tue, 13 Oct 2015 07:59:08 +1100
+Message-ID: <20151012205908.GA25971@us.netrek.org>
+References: <1444657786.2528.78.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from zimbra.real-time.com (zimbra.real-time.com [63.170.91.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D8C0261497
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 22:59:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by zimbra.real-time.com (Postfix) with ESMTP id 37BD04A3384
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 15:59:34 -0500 (CDT)
+Received: from zimbra.real-time.com ([127.0.0.1])
+ by localhost (zimbra.real-time.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id L+CHHsx-37xx for <alsa-devel@alsa-project.org>;
+ Mon, 12 Oct 2015 15:59:33 -0500 (CDT)
+Received: from esk.lan (pa220-236-7-241.pa.nsw.optusnet.com.au [220.236.7.241])
+ by zimbra.real-time.com (Postfix) with ESMTPSA id 20CE24A29E7
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 15:59:33 -0500 (CDT)
 Content-Disposition: inline
-In-Reply-To: <20151012154715.GF4238@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1444657786.2528.78.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Mon, Oct 12, 2015 at 02:49:46PM +0100, Liam Girdwood wrote:
+> I've written up the minutes here below
 
-On Mon 2015-10-12 16:47:15, Mark Brown wrote:
-> On Mon, Oct 12, 2015 at 11:00:45AM +0200, Pavel Machek wrote:
+Thanks!
+
+> Splitting out controls: Takashi
+> ===============================
 > 
-> > Does this look like a step in right direction?
-> 
-> >  static const struct regulator_desc arizona_ldo1_hc = {
-> > -	.name = "LDO1",
-> 
-> No, you definitely shouldn't be doing this - the regulator names should
-> reflect the names the device has in the datasheet to aid people in going
-> from software to the hardware and back again.  They shouldn't be
-> dynamically generated at runtime.  If you need to namespace by
-device
+>  - Restricted access.  Consensus to restrict access to some controls due
+> to possibility of breaking HW at kernel level. i.e. prevent feeding
+> digital Mic into HP amp to prevent speaker over heating.
 
-They already are, see wm831x-ldo.c .
+I'd like that.  rt5631.  Avoiding at the moment by removing the controls.
 
-> provide an interface which explicitly namespaces by device rather than
-> hacking it into another interface, the usual thing is to use the struct
-> device as the context.
-
-I'll need some more help here. I need to use it from ALSA, so I don't
-think I can influence that interface easily.
-
-What is currently in tree _does not work_, as there are two arizona
-chips, and two "LDO1" regulators. (Doable) suggestions how to fix that
-are welcome.
-									Pavel
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+James Cameron
+http://quozl.linux.org.au/
