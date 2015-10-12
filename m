@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/5] ALSA: firewire-tascam: change device
-	probing processing
-Date: Mon, 12 Oct 2015 19:10:25 +0900
-Message-ID: <1444644625-30189-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: firewire-tascam: add support for
+	outgoing MIDI messages by asynchronous transaction
+Date: Mon, 12 Oct 2015 19:10:22 +0900
+Message-ID: <1444644625-30189-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id F275B2612D7
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E6D42610A7
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:30 +0200 (CEST)
 In-Reply-To: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,156 +22,179 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Stefan Richter <stefanr@s5r6.in-berlin.de>, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, this driver picks up model name with be32_to_cpu() macro
-to align characters. This is wrong operation because the result is
-different depending on CPU endiannness.
+TASCAM FireWire series use asynchronous transaction to receive MIDI
+messages. The transaction should be sent to a certain address.
 
-Additionally, vendor released several versions of firmware for this
-series. It's not better to assign model-dependent information to
-device entry according to the version field.
+This commit supports the outgoing MIDI messages. The messages in the
+transaction includes some quirks:
+ * One MIDI message is transferred in one quadlet transaction, except for
+   system exclusives.
+ * MIDI running status is not allowed, thus transactions always include
+   status byte.
+ * The basic data format is the same as transferring MIDI messages
+   supported in previous commit.
 
-This commit fixes these bugs. The name of model is picked up correctly
-and used to identify model-dependent information.
-
-Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Fixes: c0949b278515('ALSA: firewire-tascam: add skeleton for TASCAM FireWire series')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam.c | 78 +++++++++++++++++-------------------------
- 1 file changed, 32 insertions(+), 46 deletions(-)
+ sound/firewire/tascam/tascam-transaction.c | 95 +++++++++++++++++++++++++++++-
+ sound/firewire/tascam/tascam.h             |  8 +++
+ 2 files changed, 102 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index dc07e3e..3baf1b2 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -24,16 +24,6 @@ static struct snd_tscm_spec model_specs[] = {
- 		.is_controller = true,
- 	},
- 	{
--		.name = "FW-1804",
--		.has_adat = true,
--		.has_spdif = true,
--		.pcm_capture_analog_channels = 8,
--		.pcm_playback_analog_channels = 2,
--		.midi_capture_ports = 2,
--		.midi_playback_ports = 4,
--		.is_controller = false,
--	},
--	{
- 		.name = "FW-1082",
- 		.has_adat = false,
- 		.has_spdif = true,
-@@ -43,34 +33,46 @@ static struct snd_tscm_spec model_specs[] = {
- 		.midi_playback_ports = 2,
- 		.is_controller = true,
- 	},
-+	/* FW-1804 mey be supported. */
- };
- 
--static int check_name(struct snd_tscm *tscm)
-+static int identify_model(struct snd_tscm *tscm)
- {
- 	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
--	char vendor[8];
-+	const u32 *config_rom = fw_dev->config_rom;
- 	char model[8];
--	__u32 data;
--
--	/* Retrieve model name. */
--	data = be32_to_cpu(fw_dev->config_rom[28]);
--	memcpy(model, &data, 4);
--	data = be32_to_cpu(fw_dev->config_rom[29]);
--	memcpy(model + 4, &data, 4);
--	model[7] = '\0';
--
--	/* Retrieve vendor name. */
--	data = be32_to_cpu(fw_dev->config_rom[23]);
--	memcpy(vendor, &data, 4);
--	data = be32_to_cpu(fw_dev->config_rom[24]);
--	memcpy(vendor + 4, &data, 4);
--	vendor[7] = '\0';
-+	unsigned int i;
-+	u8 c;
-+
-+	if (fw_dev->config_rom_length < 30) {
-+		dev_err(&tscm->unit->device,
-+			"Configuration ROM is too short.\n");
-+		return -ENODEV;
-+	}
-+
-+	/* Pick up model name from certain addresses. */
-+	for (i = 0; i < 8; i++) {
-+		c = config_rom[28 + i / 4] >> (24 - 8 * (i % 4));
-+		if (c == '\0')
-+			break;
-+		model[i] = c;
-+	}
-+	model[i] = '\0';
-+
-+	for (i = 0; i < ARRAY_SIZE(model_specs); i++) {
-+		if (strcmp(model, model_specs[i].name) == 0) {
-+			tscm->spec = &model_specs[i];
-+			break;
-+		}
-+	}
-+	if (tscm->spec == NULL)
-+		return -ENODEV;
- 
- 	strcpy(tscm->card->driver, "FW-TASCAM");
- 	strcpy(tscm->card->shortname, model);
- 	strcpy(tscm->card->mixername, model);
- 	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
--		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
-+		 "TASCAM %s, GUID %08x%08x at %s, S%d", model,
- 		 cpu_to_be32(fw_dev->config_rom[3]),
- 		 cpu_to_be32(fw_dev->config_rom[4]),
- 		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
-@@ -108,13 +110,12 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 	tscm = card->private_data;
- 	tscm->card = card;
- 	tscm->unit = fw_unit_get(unit);
--	tscm->spec = (const struct snd_tscm_spec *)entry->driver_data;
- 
- 	mutex_init(&tscm->mutex);
- 	spin_lock_init(&tscm->lock);
- 	init_waitqueue_head(&tscm->hwdep_wait);
- 
--	err = check_name(tscm);
-+	err = identify_model(tscm);
- 	if (err < 0)
- 		goto error;
- 
-@@ -172,27 +173,12 @@ static void snd_tscm_remove(struct fw_unit *unit)
+diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
+index 853438d..6b74fb5 100644
+--- a/sound/firewire/tascam/tascam-transaction.c
++++ b/sound/firewire/tascam/tascam-transaction.c
+@@ -58,6 +58,83 @@ static inline int calculate_message_bytes(u8 status)
+ 	return -EINVAL;
  }
  
- static const struct ieee1394_device_id snd_tscm_id_table[] = {
--	/* FW-1082 */
--	{
--		.match_flags = IEEE1394_MATCH_VENDOR_ID |
--			       IEEE1394_MATCH_SPECIFIER_ID |
--			       IEEE1394_MATCH_VERSION,
--		.vendor_id = 0x00022e,
--		.specifier_id = 0x00022e,
--		.version = 0x800003,
--		.driver_data = (kernel_ulong_t)&model_specs[2],
--	},
--	/* FW-1884 */
- 	{
- 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
--			       IEEE1394_MATCH_SPECIFIER_ID |
--			       IEEE1394_MATCH_VERSION,
-+			       IEEE1394_MATCH_SPECIFIER_ID,
- 		.vendor_id = 0x00022e,
- 		.specifier_id = 0x00022e,
--		.version = 0x800000,
--		.driver_data = (kernel_ulong_t)&model_specs[0],
- 	},
--	/* FW-1804 mey be supported if IDs are clear. */
- 	/* FE-08 requires reverse-engineering because it just has faders. */
- 	{}
++static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
++{
++	struct snd_tscm *tscm = substream->rmidi->private_data;
++	unsigned int port = substream->number;
++	unsigned int len;
++	unsigned int i;
++	u8 status;
++	int consume;
++
++	buf[0] = buf[1] = buf[2] = buf[3] = 0x00;
++
++	len = snd_rawmidi_transmit_peek(substream, buf + 1, 3);
++	if (len == 0)
++		return 0;
++
++	/* On exclusive message. */
++	if (tscm->on_sysex[port]) {
++		/* Seek the end of exclusives. */
++		for (i = 1; i < 4 || i < len; ++i) {
++			if (buf[i] == 0xf7) {
++				tscm->on_sysex[port] = false;
++				break;
++			}
++		}
++
++		/* At the end of exclusive message, use label 0x07. */
++		if (!tscm->on_sysex[port]) {
++			len = i;
++			buf[0] = (port << 4) | 0x07;
++		/* During exclusive message, use label 0x04. */
++		} else if (len == 3) {
++			buf[0] = (port << 4) | 0x04;
++		/* We need to fill whole 3 bytes. Go to next change. */
++		} else {
++			len = 0;
++		}
++	} else {
++		/* The beginning of exclusives. */
++		if (buf[1] == 0xf0) {
++			/* Transfer it in next chance in another condition. */
++			tscm->on_sysex[port] = true;
++			return 0;
++		} else {
++			/* On running-status. */
++			if ((buf[1] & 0x80) != 0x80)
++				status = tscm->running_status[port];
++			else
++				status = buf[1];
++
++			/* Calculate consume bytes. */
++			consume = calculate_message_bytes(status);
++			if (consume <= 0)
++				return 0;
++
++			/* On running-status. */
++			if ((buf[1] & 0x80) != 0x80) {
++				buf[3] = buf[2];
++				buf[2] = buf[1];
++				buf[1] = tscm->running_status[port];
++				consume--;
++			} else {
++				tscm->running_status[port] = buf[1];
++			}
++
++			/* Confirm length. */
++			if (len < consume)
++				return 0;
++			if (len > consume)
++				len = consume;
++		}
++
++		buf[0] = (port << 4) | (buf[1] >> 4);
++	}
++
++	return len;
++}
++
+ static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
+ 			   int tcode, int destination, int source,
+ 			   int generation, unsigned long long offset,
+@@ -111,6 +188,7 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
+ 		.start	= 0xffffe0000000ull,
+ 		.end	= 0xffffe000ffffull,
+ 	};
++	unsigned int i;
+ 	int err;
+ 
+ 	/*
+@@ -129,9 +207,21 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
+ 
+ 	err = snd_tscm_transaction_reregister(tscm);
+ 	if (err < 0)
+-		fw_core_remove_address_handler(&tscm->async_handler);
++		goto error;
++
++	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++) {
++		err = snd_fw_async_midi_port_init(
++				&tscm->out_ports[i], tscm->unit,
++				TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_RX_QUAD,
++				4, fill_message);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	return err;
++error:
++	fw_core_remove_address_handler(&tscm->async_handler);
++	return err;
+ }
+ 
+ /* At bus reset, these registers are cleared. */
+@@ -167,6 +257,7 @@ int snd_tscm_transaction_reregister(struct snd_tscm *tscm)
+ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
+ {
+ 	__be32 reg;
++	unsigned int i;
+ 
+ 	/* Turn off messaging. */
+ 	reg = cpu_to_be32(0x00000000);
+@@ -183,4 +274,6 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
+ 			   &reg, sizeof(reg), 0);
+ 
+ 	fw_core_remove_address_handler(&tscm->async_handler);
++	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++)
++		snd_fw_async_midi_port_destroy(&tscm->out_ports[i]);
+ }
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index b0e602b..c2f0c74 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -67,6 +67,14 @@ struct snd_tscm {
+ 	/* For MIDI message incoming transactions. */
+ 	struct fw_address_handler async_handler;
+ 	struct snd_rawmidi_substream *tx_midi_substreams[TSCM_MIDI_IN_PORT_MAX];
++
++	/* For MIDI message outgoing transactions. */
++	struct snd_fw_async_midi_port out_ports[TSCM_MIDI_OUT_PORT_MAX];
++	u8 running_status[TSCM_MIDI_OUT_PORT_MAX];
++	bool on_sysex[TSCM_MIDI_OUT_PORT_MAX];
++
++	/* For control messages. */
++	struct snd_firewire_tascam_status *status;
  };
+ 
+ #define TSCM_ADDR_BASE			0xffff00000000ull
 -- 
 2.1.4
