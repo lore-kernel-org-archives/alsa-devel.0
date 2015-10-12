@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt298: correct index default value
-Date: Mon, 12 Oct 2015 18:03:05 +0100
-Message-ID: <20151012170305.GN4238@sirena.org.uk>
-References: <1444652031-9852-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt298: set register non-volatile by
+	default" to the asoc tree
+Date: Mon, 12 Oct 2015 18:04:16 +0100
+Message-ID: <E1ZlgWG-0005gG-SC@finisterre>
+References: <1444656899-13645-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2531605113722580659=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A22726512D
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 19:03:14 +0200 (CEST)
-In-Reply-To: <1444652031-9852-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8265264F3F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 19:04:22 +0200 (CEST)
+In-Reply-To: <1444656899-13645-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,50 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, ramesh.babu@intel.com, flove@realtek.com
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2531605113722580659==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2IK6idz0sKKouFF6"
-Content-Disposition: inline
+   ASoC: rt298: set register non-volatile by default
 
+has been applied to the asoc tree at
 
---2IK6idz0sKKouFF6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Oct 12, 2015 at 08:13:51PM +0800, Bard Liao wrote:
-> Some of the default value on rt298_index_def are incorrect. Change
-> them to the correct value.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---2IK6idz0sKKouFF6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJWG+fIAAoJECTWi3JdVIfQr7AH/AunpNXH7UJvPkRKpVKPjwIm
-suQmLmcd08oNrV6IZ2LzsLao8eZibS77eDv1YhLUZvQYEDCq/yt/06LVZNN795en
-ggGIn7ytSucSiBQJU31cYrvK9KzbbrZlMqmhwRFie8V8OkyLl4m2QJnBMfwfi55V
-g+gSbbqLkioaxRlq94yNTa5lG+WJJeXJ58eScKNYUnLjr3YGsYRzbyRj8vcv3jHk
-cj1kn3TeN582icYJoMxrS0aPgqcRfWX441l0aLgbn1RGXm2bdl7YItPxPdxu7CjE
-m3iOAohBxke7OUgyBpopY4Z7/e2yazUAvDwc/4I2z/cRfSl1eNEr6NObUUkM3pQ=
-=o/D+
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---2IK6idz0sKKouFF6--
+>From a5fe58fd2836987387a6ee8854c529db7f5be650 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 12 Oct 2015 21:34:59 +0800
+Subject: [PATCH] ASoC: rt298: set register non-volatile by default
 
---===============2531605113722580659==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+It is not necessary to set registers volatile. So, return false
+for default case of rt298_volatile_register.
 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt298.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============2531605113722580659==--
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 3c2f0f8..ff126a7 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -129,7 +129,7 @@ static bool rt298_volatile_register(struct device *dev, unsigned int reg)
+ 	case VERB_CMD(AC_VERB_GET_EAPD_BTLENABLE, RT298_HP_OUT, 0):
+ 		return true;
+ 	default:
+-		return true;
++		return false;
+ 	}
+ 
+ 
+-- 
+2.5.0
