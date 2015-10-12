@@ -1,16 +1,16 @@
 From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V2 02/10] ASoC: img: Add driver for I2S input
+Subject: [PATCH V2 04/10] ASoC: img: Add driver for I2S output
 	controller
-Date: Mon, 12 Oct 2015 13:40:29 +0100
-Message-ID: <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
+Date: Mon, 12 Oct 2015 13:40:31 +0100
+Message-ID: <1444653637-14711-5-git-send-email-Damien.Horsley@imgtec.com>
 References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id E15262614D4
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 14:41:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 46B062614D6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 14:41:33 +0200 (CEST)
 In-Reply-To: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,78 +27,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add driver for Imagination Technologies I2S input
+Add driver for Imagination Technologies I2S output
 controller
 
 Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 ---
- sound/soc/Kconfig          |   1 +
- sound/soc/Makefile         |   1 +
- sound/soc/img/Kconfig      |  12 ++
- sound/soc/img/Makefile     |   1 +
- sound/soc/img/img-i2s-in.c | 508 +++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 523 insertions(+)
- create mode 100644 sound/soc/img/Kconfig
- create mode 100644 sound/soc/img/Makefile
- create mode 100644 sound/soc/img/img-i2s-in.c
+ sound/soc/img/Kconfig       |   8 +
+ sound/soc/img/Makefile      |   1 +
+ sound/soc/img/img-i2s-out.c | 552 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 561 insertions(+)
+ create mode 100644 sound/soc/img/img-i2s-out.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 7de792b..f9984db 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -47,6 +47,7 @@ source "sound/soc/jz4740/Kconfig"
- source "sound/soc/nuc900/Kconfig"
- source "sound/soc/omap/Kconfig"
- source "sound/soc/kirkwood/Kconfig"
-+source "sound/soc/img/Kconfig"
- source "sound/soc/intel/Kconfig"
- source "sound/soc/mediatek/Kconfig"
- source "sound/soc/mxs/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index af0a571..7ba9de9 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_SND_SOC)	+= davinci/
- obj-$(CONFIG_SND_SOC)	+= dwc/
- obj-$(CONFIG_SND_SOC)	+= fsl/
- obj-$(CONFIG_SND_SOC)	+= jz4740/
-+obj-$(CONFIG_SND_SOC)	+= img/
- obj-$(CONFIG_SND_SOC)	+= intel/
- obj-$(CONFIG_SND_SOC)	+= mediatek/
- obj-$(CONFIG_SND_SOC)	+= mxs/
 diff --git a/sound/soc/img/Kconfig b/sound/soc/img/Kconfig
-new file mode 100644
-index 0000000..f9f73d0
---- /dev/null
+index f9f73d0..fe83c8e 100644
+--- a/sound/soc/img/Kconfig
 +++ b/sound/soc/img/Kconfig
-@@ -0,0 +1,12 @@
-+config SND_SOC_IMG
-+	bool "Audio support for Imagination Technologies designs"
-+	help
-+	  Audio support for Imagination Technologies audio hardware
+@@ -10,3 +10,11 @@ config SND_SOC_IMG_I2S_IN
+ 	help
+ 	  Say Y or M if you want to add support for I2S in driver for
+ 	  Imagination Technologies I2S in device.
 +
-+config SND_SOC_IMG_I2S_IN
-+	tristate "Imagination I2S Input Device Driver"
++config SND_SOC_IMG_I2S_OUT
++	tristate "Imagination I2S Output Device Driver"
 +	depends on SND_SOC_IMG
 +	select SND_SOC_GENERIC_DMAENGINE_PCM
 +	help
-+	  Say Y or M if you want to add support for I2S in driver for
-+	  Imagination Technologies I2S in device.
++	  Say Y or M if you want to add support for I2S out driver for
++	  Imagination Technologies I2S out device.
 diff --git a/sound/soc/img/Makefile b/sound/soc/img/Makefile
-new file mode 100644
-index 0000000..fe8426b
---- /dev/null
+index fe8426b..c41a4af 100644
+--- a/sound/soc/img/Makefile
 +++ b/sound/soc/img/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_SND_SOC_IMG_I2S_IN) += img-i2s-in.o
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+@@ -1 +1,2 @@
+ obj-$(CONFIG_SND_SOC_IMG_I2S_IN) += img-i2s-in.o
++obj-$(CONFIG_SND_SOC_IMG_I2S_OUT) += img-i2s-out.o
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
 new file mode 100644
-index 0000000..dc1e53a
+index 0000000..94809a6
 --- /dev/null
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -0,0 +1,508 @@
++++ b/sound/soc/img/img-i2s-out.c
+@@ -0,0 +1,552 @@
 +/*
-+ * IMG I2S input controller driver
++ * IMG I2S output controller driver
 + *
 + * Copyright (C) 2015 Imagination Technologies Ltd.
 + *
@@ -115,6 +85,7 @@ index 0000000..dc1e53a
 +#include <linux/module.h>
 +#include <linux/of.h>
 +#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
 +#include <linux/reset.h>
 +
 +#include <sound/core.h>
@@ -124,120 +95,177 @@ index 0000000..dc1e53a
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +
-+#define IMG_I2S_IN_RX_FIFO			0x0
++#define IMG_I2S_OUT_TX_FIFO			0x0
 +
-+#define IMG_I2S_IN_CTL				0x4
-+#define IMG_I2S_IN_CTL_ACTIVE_CHAN_MASK		0xfffffffc
-+#define IMG_I2S_IN_CTL_ACTIVE_CH_SHIFT		2
-+#define IMG_I2S_IN_CTL_16PACK_MASK		BIT(1)
-+#define IMG_I2S_IN_CTL_ME_MASK			BIT(0)
++#define IMG_I2S_OUT_CTL				0x4
++#define IMG_I2S_OUT_CTL_DATA_EN_MASK		BIT(24)
++#define IMG_I2S_OUT_CTL_ACTIVE_CHAN_MASK	0xffe000
++#define IMG_I2S_OUT_CTL_ACTIVE_CHAN_SHIFT	13
++#define IMG_I2S_OUT_CTL_FRM_SIZE_MASK		BIT(8)
++#define IMG_I2S_OUT_CTL_MASTER_MASK		BIT(6)
++#define IMG_I2S_OUT_CTL_CLK_MASK		BIT(5)
++#define IMG_I2S_OUT_CTL_CLK_EN_MASK		BIT(4)
++#define IMG_I2S_OUT_CTL_FRM_CLK_POL_MASK	BIT(3)
++#define IMG_I2S_OUT_CTL_BCLK_POL_MASK		BIT(2)
++#define IMG_I2S_OUT_CTL_ME_MASK			BIT(0)
 +
-+#define IMG_I2S_IN_CH_CTL			0x4
-+#define IMG_I2S_IN_CH_CTL_CCDEL_MASK		0x38000
-+#define IMG_I2S_IN_CH_CTL_CCDEL_SHIFT		15
-+#define IMG_I2S_IN_CH_CTL_FEN_MASK		BIT(14)
-+#define IMG_I2S_IN_CH_CTL_FMODE_MASK		BIT(13)
-+#define IMG_I2S_IN_CH_CTL_16PACK_MASK		BIT(12)
-+#define IMG_I2S_IN_CH_CTL_JUST_MASK		BIT(10)
-+#define IMG_I2S_IN_CH_CTL_PACKH_MASK		BIT(9)
-+#define IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK	BIT(8)
-+#define IMG_I2S_IN_CH_CTL_BLKP_MASK		BIT(7)
-+#define IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK	BIT(6)
-+#define IMG_I2S_IN_CH_CTL_LRD_MASK		BIT(3)
-+#define IMG_I2S_IN_CH_CTL_FW_MASK		BIT(2)
-+#define IMG_I2S_IN_CH_CTL_SW_MASK		BIT(1)
-+#define IMG_I2S_IN_CH_CTL_ME_MASK		BIT(0)
++#define IMG_I2S_OUT_CH_CTL			0x4
++#define IMG_I2S_OUT_CHAN_CTL_CH_MASK		BIT(11)
++#define IMG_I2S_OUT_CHAN_CTL_LT_MASK		BIT(10)
++#define IMG_I2S_OUT_CHAN_CTL_FMT_MASK		0xf0
++#define IMG_I2S_OUT_CHAN_CTL_FMT_SHIFT		4
++#define IMG_I2S_OUT_CHAN_CTL_JUST_MASK		BIT(3)
++#define IMG_I2S_OUT_CHAN_CTL_CLKT_MASK		BIT(1)
++#define IMG_I2S_OUT_CHAN_CTL_ME_MASK		BIT(0)
 +
-+#define IMG_I2S_IN_CH_STRIDE			0x20
++#define IMG_I2S_OUT_CH_STRIDE			0x20
 +
-+struct img_i2s_in {
++struct img_i2s_out {
 +	void __iomem *base;
 +	struct clk *clk_sys;
++	struct clk *clk_ref;
 +	struct snd_dmaengine_dai_dma_data dma_data;
 +	struct device *dev;
 +	unsigned int max_i2s_chan;
 +	void __iomem *channel_base;
++	bool force_clk_active;
 +	unsigned int active_channels;
++	struct reset_control *rst;
 +	struct snd_soc_dai_driver dai_driver;
 +};
 +
-+static inline void img_i2s_in_writel(struct img_i2s_in *i2s, u32 val, u32 reg)
++static int img_i2s_out_suspend(struct device *dev)
++{
++	struct img_i2s_out *i2s = dev_get_drvdata(dev);
++
++	if (!i2s->force_clk_active)
++		clk_disable_unprepare(i2s->clk_ref);
++
++	return 0;
++}
++
++static int img_i2s_out_resume(struct device *dev)
++{
++	struct img_i2s_out *i2s = dev_get_drvdata(dev);
++	int ret;
++
++	if (!i2s->force_clk_active) {
++		ret = clk_prepare_enable(i2s->clk_ref);
++		if (ret) {
++			dev_err(dev, "clk_enable failed: %d\n", ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static inline void img_i2s_out_writel(struct img_i2s_out *i2s, u32 val,
++					u32 reg)
 +{
 +	writel(val, i2s->base + reg);
 +}
 +
-+static inline u32 img_i2s_in_readl(struct img_i2s_in *i2s, u32 reg)
++static inline u32 img_i2s_out_readl(struct img_i2s_out *i2s, u32 reg)
 +{
 +	return readl(i2s->base + reg);
 +}
 +
-+static inline void img_i2s_in_ch_writel(struct img_i2s_in *i2s, u32 chan,
-+					u32 val, u32 reg)
++static inline void img_i2s_out_ch_writel(struct img_i2s_out *i2s,
++					u32 chan, u32 val, u32 reg)
 +{
-+	writel(val, i2s->channel_base + (chan * IMG_I2S_IN_CH_STRIDE) + reg);
++	writel(val, i2s->channel_base + (chan * IMG_I2S_OUT_CH_STRIDE) + reg);
 +}
 +
-+static inline u32 img_i2s_in_ch_readl(struct img_i2s_in *i2s, u32 chan,
++static inline u32 img_i2s_out_ch_readl(struct img_i2s_out *i2s, u32 chan,
 +					u32 reg)
 +{
-+	return readl(i2s->channel_base + (chan * IMG_I2S_IN_CH_STRIDE) + reg);
++	return readl(i2s->channel_base + (chan * IMG_I2S_OUT_CH_STRIDE) + reg);
 +}
 +
-+static inline u32 img_i2s_in_ch_disable(struct img_i2s_in *i2s, u32 chan)
++static inline u32 img_i2s_out_ch_disable(struct img_i2s_out *i2s, u32 chan)
 +{
 +	u32 reg;
 +
-+	reg = img_i2s_in_ch_readl(i2s, chan, IMG_I2S_IN_CH_CTL);
-+	reg &= ~IMG_I2S_IN_CH_CTL_ME_MASK;
-+	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
++	reg = img_i2s_out_ch_readl(i2s, chan, IMG_I2S_OUT_CH_CTL);
++	reg &= ~IMG_I2S_OUT_CHAN_CTL_ME_MASK;
++	img_i2s_out_ch_writel(i2s, chan, reg, IMG_I2S_OUT_CH_CTL);
 +
 +	return reg;
 +}
 +
-+static inline void img_i2s_in_ch_enable(struct img_i2s_in *i2s, u32 chan,
++static inline void img_i2s_out_ch_enable(struct img_i2s_out *i2s, u32 chan,
 +					u32 reg)
 +{
-+	reg |= IMG_I2S_IN_CH_CTL_ME_MASK;
-+	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
++	reg |= IMG_I2S_OUT_CHAN_CTL_ME_MASK;
++	img_i2s_out_ch_writel(i2s, chan, reg, IMG_I2S_OUT_CH_CTL);
 +}
 +
-+static inline void img_i2s_in_flush(struct img_i2s_in *i2s)
++static inline u32 img_i2s_out_disable(struct img_i2s_out *i2s)
 +{
-+	int i;
 +	u32 reg;
 +
-+	for (i = 0; i < i2s->active_channels; i++) {
-+		reg = img_i2s_in_ch_disable(i2s, i);
-+		reg |= IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		reg &= ~IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		img_i2s_in_ch_enable(i2s, i, reg);
-+	}
++	reg = img_i2s_out_readl(i2s, IMG_I2S_OUT_CTL);
++	reg &= ~IMG_I2S_OUT_CTL_ME_MASK;
++	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
++
++	return reg;
 +}
 +
-+static int img_i2s_in_trigger(struct snd_pcm_substream *substream, int cmd,
++static inline void img_i2s_out_enable(struct img_i2s_out *i2s, u32 reg)
++{
++	reg |= IMG_I2S_OUT_CTL_ME_MASK;
++	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
++}
++
++static void img_i2s_out_reset(struct img_i2s_out *i2s)
++{
++	int i;
++	u32 core_ctl, chan_ctl;
++
++	core_ctl = img_i2s_out_readl(i2s, IMG_I2S_OUT_CTL) &
++			~IMG_I2S_OUT_CTL_ME_MASK &
++			~IMG_I2S_OUT_CTL_DATA_EN_MASK;
++
++	if (!i2s->force_clk_active)
++		core_ctl &= ~IMG_I2S_OUT_CTL_CLK_EN_MASK;
++
++	chan_ctl = img_i2s_out_ch_readl(i2s, 0, IMG_I2S_OUT_CH_CTL) &
++			~IMG_I2S_OUT_CHAN_CTL_ME_MASK;
++
++	reset_control_assert(i2s->rst);
++	reset_control_deassert(i2s->rst);
++
++	for (i = 0; i < i2s->max_i2s_chan; i++)
++		img_i2s_out_ch_writel(i2s, i, chan_ctl, IMG_I2S_OUT_CH_CTL);
++
++	for (i = 0; i < i2s->active_channels; i++)
++		img_i2s_out_ch_enable(i2s, i, chan_ctl);
++
++	img_i2s_out_writel(i2s, core_ctl, IMG_I2S_OUT_CTL);
++	img_i2s_out_enable(i2s, core_ctl);
++}
++
++static int img_i2s_out_trigger(struct snd_pcm_substream *substream, int cmd,
 +	struct snd_soc_dai *dai)
 +{
-+	struct img_i2s_in *i2s = snd_soc_dai_get_drvdata(dai);
++	struct img_i2s_out *i2s = snd_soc_dai_get_drvdata(dai);
 +	u32 reg;
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_RESUME:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
-+		reg |= IMG_I2S_IN_CTL_ME_MASK;
-+		img_i2s_in_writel(i2s, reg, IMG_I2S_IN_CTL);
++		reg = img_i2s_out_readl(i2s, IMG_I2S_OUT_CTL);
++		if (!i2s->force_clk_active)
++			reg |= IMG_I2S_OUT_CTL_CLK_EN_MASK;
++		reg |= IMG_I2S_OUT_CTL_DATA_EN_MASK;
++		img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
 +		break;
-+
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
-+		reg &= ~IMG_I2S_IN_CTL_ME_MASK;
-+		img_i2s_in_writel(i2s, reg, IMG_I2S_IN_CTL);
-+		img_i2s_in_flush(i2s);
++		img_i2s_out_reset(i2s);
 +		break;
 +	default:
 +		return -EINVAL;
@@ -246,45 +274,14 @@ index 0000000..dc1e53a
 +	return 0;
 +}
 +
-+static int img_i2s_in_check_rate(struct img_i2s_in *i2s,
-+		unsigned int sample_rate, unsigned int frame_size,
-+		unsigned int *bclk_filter_enable,
-+		unsigned int *bclk_filter_value)
-+{
-+	unsigned int bclk_freq, cur_freq;
-+
-+	bclk_freq = sample_rate * frame_size;
-+
-+	cur_freq = clk_get_rate(i2s->clk_sys);
-+
-+	if (cur_freq >= bclk_freq * 8) {
-+		*bclk_filter_enable = 1;
-+		*bclk_filter_value = 0;
-+	} else if (cur_freq >= bclk_freq * 7) {
-+		*bclk_filter_enable = 1;
-+		*bclk_filter_value = 1;
-+	} else if (cur_freq >= bclk_freq * 6) {
-+		*bclk_filter_enable = 0;
-+		*bclk_filter_value = 0;
-+	} else {
-+		dev_err(i2s->dev,
-+			"Sys clock rate %u insufficient for sample rate %u\n",
-+			cur_freq, sample_rate);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int img_i2s_in_hw_params(struct snd_pcm_substream *substream,
++static int img_i2s_out_hw_params(struct snd_pcm_substream *substream,
 +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 +{
-+	struct img_i2s_in *i2s = snd_soc_dai_get_drvdata(dai);
-+	unsigned int rate, channels, i2s_channels, frame_size;
-+	unsigned int bclk_filter_enable, bclk_filter_value;
-+	int i, ret = 0;
-+	u32 reg, control_reg, control_mask, chan_control_mask;
-+	u32 control_set = 0, chan_control_set = 0;
++	struct img_i2s_out *i2s = snd_soc_dai_get_drvdata(dai);
++	unsigned int channels, i2s_channels;
++	long pre_div_a, pre_div_b, diff_a, diff_b, rate, clk_rate;
++	int i;
++	u32 reg, control_reg, control_mask, control_set = 0;
 +	snd_pcm_format_t format;
 +
 +	rate = params_rate(params);
@@ -292,95 +289,105 @@ index 0000000..dc1e53a
 +	channels = params_channels(params);
 +	i2s_channels = channels / 2;
 +
-+	switch (format) {
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		frame_size = 64;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_SW_MASK;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_FW_MASK;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_PACKH_MASK;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		frame_size = 64;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_SW_MASK;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_FW_MASK;
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		frame_size = 32;
-+		control_set |= IMG_I2S_IN_CTL_16PACK_MASK;
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_16PACK_MASK;
-+		break;
-+	default:
++	if (format != SNDRV_PCM_FORMAT_S32_LE)
 +		return -EINVAL;
-+	}
 +
 +	if ((channels < 2) ||
 +			(channels > (i2s->max_i2s_chan * 2)) ||
 +			(channels % 2))
 +		return -EINVAL;
 +
-+	control_set |= ((i2s_channels - 1) << IMG_I2S_IN_CTL_ACTIVE_CH_SHIFT);
++	pre_div_a = clk_round_rate(i2s->clk_ref, rate * 256);
++	if (pre_div_a < 0)
++		return pre_div_a;
++	pre_div_b = clk_round_rate(i2s->clk_ref, rate * 384);
++	if (pre_div_b < 0)
++		return pre_div_b;
 +
-+	ret = img_i2s_in_check_rate(i2s, rate, frame_size,
-+			&bclk_filter_enable, &bclk_filter_value);
-+	if (ret < 0)
-+		return ret;
++	diff_a = abs((pre_div_a / 256) - rate);
++	diff_b = abs((pre_div_b / 384) - rate);
 +
-+	if (bclk_filter_enable)
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_FEN_MASK;
++	/* If diffs are equal, use lower clock rate */
++	if (diff_a > diff_b)
++		clk_set_rate(i2s->clk_ref, pre_div_b);
++	else
++		clk_set_rate(i2s->clk_ref, pre_div_a);
 +
-+	if (bclk_filter_value)
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_FMODE_MASK;
++	/*
++	 * Another driver (eg alsa machine driver) may have rejected the above
++	 * change. Get the current rate and set the register bit according to
++	 * the new minimum diff
++	 */
++	clk_rate = clk_get_rate(i2s->clk_ref);
 +
-+	control_mask = (u32)(~IMG_I2S_IN_CTL_16PACK_MASK &
-+			~IMG_I2S_IN_CTL_ACTIVE_CHAN_MASK);
++	diff_a = abs((clk_rate / 256) - rate);
++	diff_b = abs((clk_rate / 384) - rate);
 +
-+	chan_control_mask = (u32)(~IMG_I2S_IN_CH_CTL_16PACK_MASK &
-+			~IMG_I2S_IN_CH_CTL_FEN_MASK &
-+			~IMG_I2S_IN_CH_CTL_FMODE_MASK &
-+			~IMG_I2S_IN_CH_CTL_SW_MASK &
-+			~IMG_I2S_IN_CH_CTL_FW_MASK &
-+			~IMG_I2S_IN_CH_CTL_PACKH_MASK);
++	if (diff_a > diff_b)
++		control_set |= IMG_I2S_OUT_CTL_CLK_MASK;
 +
-+	control_reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
++	control_set |= (((i2s_channels - 1) <<
++			IMG_I2S_OUT_CTL_ACTIVE_CHAN_SHIFT) &
++			IMG_I2S_OUT_CTL_ACTIVE_CHAN_MASK);
++
++	control_mask = (u32)(~IMG_I2S_OUT_CTL_CLK_MASK &
++			~IMG_I2S_OUT_CTL_ACTIVE_CHAN_MASK);
++
++	control_reg = img_i2s_out_disable(i2s);
 +	control_reg = (control_reg & control_mask) | control_set;
-+	img_i2s_in_writel(i2s, control_reg, IMG_I2S_IN_CTL);
++	img_i2s_out_writel(i2s, control_reg, IMG_I2S_OUT_CTL);
 +
 +	for (i = 0; i < i2s_channels; i++) {
-+		reg = img_i2s_in_ch_disable(i2s, i);
-+		reg = (reg & chan_control_mask) | chan_control_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		img_i2s_in_ch_enable(i2s, i, reg);
++		reg = img_i2s_out_ch_readl(i2s, i, IMG_I2S_OUT_CH_CTL);
++		img_i2s_out_ch_enable(i2s, i, reg);
 +	}
-+	for (; i < i2s->max_i2s_chan; i++) {
-+		reg = img_i2s_in_ch_disable(i2s, i);
-+		reg = (reg & chan_control_mask) | chan_control_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+	}
++
++	for (; i < i2s->max_i2s_chan; i++)
++		img_i2s_out_ch_disable(i2s, i);
++
++	img_i2s_out_enable(i2s, control_reg);
 +
 +	i2s->active_channels = i2s_channels;
 +
 +	return 0;
 +}
 +
-+static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 +{
-+	struct img_i2s_in *i2s = snd_soc_dai_get_drvdata(dai);
-+	int i;
-+	u32 chan_control_mask, lrd_set = 0, blkp_set = 0, chan_control_set = 0;
-+	u32 reg;
++	struct img_i2s_out *i2s = snd_soc_dai_get_drvdata(dai);
++	int i, ret = 0;
++	bool force_clk_active;
++	u32 chan_control_mask, control_mask, chan_control_set = 0;
++	u32 reg = 0, control_reg, control_set = 0;
++
++	force_clk_active = ((fmt & SND_SOC_DAIFMT_CLOCK_MASK) ==
++			SND_SOC_DAIFMT_CONT);
++
++	if (force_clk_active)
++		control_set |= IMG_I2S_OUT_CTL_CLK_EN_MASK;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		control_set |= IMG_I2S_OUT_CTL_MASTER_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
 +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
 +	case SND_SOC_DAIFMT_NB_NF:
-+		lrd_set |= IMG_I2S_IN_CH_CTL_LRD_MASK;
++		control_set |= IMG_I2S_OUT_CTL_BCLK_POL_MASK;
 +		break;
 +	case SND_SOC_DAIFMT_NB_IF:
++		control_set |= IMG_I2S_OUT_CTL_BCLK_POL_MASK;
++		control_set |= IMG_I2S_OUT_CTL_FRM_CLK_POL_MASK;
 +		break;
 +	case SND_SOC_DAIFMT_IB_NF:
-+		lrd_set |= IMG_I2S_IN_CH_CTL_LRD_MASK;
-+		blkp_set |= IMG_I2S_IN_CH_CTL_BLKP_MASK;
 +		break;
 +	case SND_SOC_DAIFMT_IB_IF:
-+		blkp_set |= IMG_I2S_IN_CH_CTL_BLKP_MASK;
++		control_set |= IMG_I2S_OUT_CTL_FRM_CLK_POL_MASK;
 +		break;
 +	default:
 +		return -EINVAL;
@@ -388,7 +395,7 @@ index 0000000..dc1e53a
 +
 +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 +	case SND_SOC_DAIFMT_I2S:
-+		chan_control_set |= IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK;
++		chan_control_set |= IMG_I2S_OUT_CHAN_CTL_CLKT_MASK;
 +		break;
 +	case SND_SOC_DAIFMT_LEFT_J:
 +		break;
@@ -396,62 +403,54 @@ index 0000000..dc1e53a
 +		return -EINVAL;
 +	}
 +
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++	control_mask = (u32)(~IMG_I2S_OUT_CTL_CLK_EN_MASK &
++		~IMG_I2S_OUT_CTL_MASTER_MASK &
++		~IMG_I2S_OUT_CTL_BCLK_POL_MASK &
++		~IMG_I2S_OUT_CTL_FRM_CLK_POL_MASK);
 +
-+	chan_control_mask = (u32)~IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK;
++	chan_control_mask = (u32)~IMG_I2S_OUT_CHAN_CTL_CLKT_MASK;
 +
-+	/*
-+	 * BLKP and LRD must be set during separate register writes
-+	 */
++	control_reg = img_i2s_out_disable(i2s);
++	control_reg = (control_reg & control_mask) | control_set;
++	img_i2s_out_writel(i2s, control_reg, IMG_I2S_OUT_CTL);
++
 +	for (i = 0; i < i2s->active_channels; i++) {
-+		reg = img_i2s_in_ch_disable(i2s, i);
++		reg = img_i2s_out_ch_disable(i2s, i);
 +		reg = (reg & chan_control_mask) | chan_control_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		reg = (reg & ~IMG_I2S_IN_CH_CTL_BLKP_MASK) | blkp_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		reg = (reg & ~IMG_I2S_IN_CH_CTL_LRD_MASK) | lrd_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		img_i2s_in_ch_enable(i2s, i, reg);
++		img_i2s_out_ch_writel(i2s, i, reg, IMG_I2S_OUT_CH_CTL);
++		img_i2s_out_ch_enable(i2s, i, reg);
 +	}
 +
-+	for (; i < i2s->max_i2s_chan; i++) {
-+		reg = img_i2s_in_ch_readl(i2s, i, IMG_I2S_IN_CH_CTL);
-+		reg = (reg & chan_control_mask) | chan_control_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		reg = (reg & ~IMG_I2S_IN_CH_CTL_BLKP_MASK) | blkp_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		reg = (reg & ~IMG_I2S_IN_CH_CTL_LRD_MASK) | lrd_set;
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+	}
++	for (; i < i2s->max_i2s_chan; i++)
++		img_i2s_out_ch_writel(i2s, i, reg, IMG_I2S_OUT_CH_CTL);
 +
-+	return 0;
++	img_i2s_out_enable(i2s, control_reg);
++
++	i2s->force_clk_active = force_clk_active;
++
++	return ret;
 +}
 +
-+static const struct snd_soc_dai_ops img_i2s_in_dai_ops = {
-+	.trigger = img_i2s_in_trigger,
-+	.hw_params = img_i2s_in_hw_params,
-+	.set_fmt = img_i2s_in_set_fmt
++static const struct snd_soc_dai_ops img_i2s_out_dai_ops = {
++	.trigger = img_i2s_out_trigger,
++	.hw_params = img_i2s_out_hw_params,
++	.set_fmt = img_i2s_out_set_fmt
 +};
 +
-+static int img_i2s_in_dai_probe(struct snd_soc_dai *dai)
++static int img_i2s_out_dai_probe(struct snd_soc_dai *dai)
 +{
-+	struct img_i2s_in *i2s = snd_soc_dai_get_drvdata(dai);
++	struct img_i2s_out *i2s = snd_soc_dai_get_drvdata(dai);
 +
-+	snd_soc_dai_init_dma_data(dai, NULL, &i2s->dma_data);
++	snd_soc_dai_init_dma_data(dai, &i2s->dma_data, NULL);
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_component_driver img_i2s_in_component = {
-+	.name = "img-i2s-in"
++static const struct snd_soc_component_driver img_i2s_out_component = {
++	.name = "img-i2s-out"
 +};
 +
-+static int img_i2s_in_dma_prepare_slave_config(struct snd_pcm_substream *st,
++static int img_i2s_out_dma_prepare_slave_config(struct snd_pcm_substream *st,
 +	struct snd_pcm_hw_params *params, struct dma_slave_config *sc)
 +{
 +	unsigned int i2s_channels = params_channels(params) / 2;
@@ -465,38 +464,36 @@ index 0000000..dc1e53a
 +	if (ret)
 +		return ret;
 +
-+	sc->src_addr = dma_data->addr;
-+	sc->src_addr_width = dma_data->addr_width;
-+	sc->src_maxburst = 4 * i2s_channels;
++	sc->dst_addr = dma_data->addr;
++	sc->dst_addr_width = dma_data->addr_width;
++	sc->dst_maxburst = 4 * i2s_channels;
 +
 +	return 0;
 +}
 +
-+static const struct snd_dmaengine_pcm_config img_i2s_in_dma_config = {
-+	.prepare_slave_config = img_i2s_in_dma_prepare_slave_config
++static const struct snd_dmaengine_pcm_config img_i2s_out_dma_config = {
++	.prepare_slave_config = img_i2s_out_dma_prepare_slave_config
 +};
 +
-+static int img_i2s_in_probe(struct platform_device *pdev)
++static int img_i2s_out_probe(struct platform_device *pdev)
 +{
-+	struct img_i2s_in *i2s;
++	struct img_i2s_out *i2s;
 +	struct resource *res;
 +	void __iomem *base;
-+	int ret, i;
-+	struct reset_control *rst;
-+	u32 reg;
++	int i, ret;
 +	unsigned int max_i2s_chan_pow_2;
-+	struct device *dev = &pdev->dev;
++	u32 reg;
 +
-+	i2s = devm_kzalloc(dev, sizeof(*i2s), GFP_KERNEL);
++	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
 +	if (!i2s)
 +		return -ENOMEM;
 +
 +	platform_set_drvdata(pdev, i2s);
 +
-+	i2s->dev = dev;
++	i2s->dev = &pdev->dev;
 +
 +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(dev, res);
++	base = devm_ioremap_resource(&pdev->dev, res);
 +	if (IS_ERR(base))
 +		return PTR_ERR(base);
 +
@@ -504,7 +501,7 @@ index 0000000..dc1e53a
 +
 +	if (of_property_read_u32(pdev->dev.of_node, "img,i2s-channels",
 +			&i2s->max_i2s_chan)) {
-+		dev_err(dev, "No img,i2s-channels property\n");
++		dev_err(&pdev->dev, "No img,i2s-channels property\n");
 +		return -EINVAL;
 +	}
 +
@@ -512,98 +509,115 @@ index 0000000..dc1e53a
 +
 +	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
 +
-+	i2s->clk_sys = devm_clk_get(dev, "sys");
++	i2s->rst = devm_reset_control_get(&pdev->dev, "rst");
++	if (IS_ERR(i2s->rst)) {
++		dev_err(&pdev->dev, "No top level reset found\n");
++		return PTR_ERR(i2s->rst);
++	}
++
++	i2s->clk_sys = devm_clk_get(&pdev->dev, "sys");
 +	if (IS_ERR(i2s->clk_sys))
 +		return PTR_ERR(i2s->clk_sys);
++
++	i2s->clk_ref = devm_clk_get(&pdev->dev, "ref");
++	if (IS_ERR(i2s->clk_ref))
++		return PTR_ERR(i2s->clk_ref);
 +
 +	ret = clk_prepare_enable(i2s->clk_sys);
 +	if (ret)
 +		return ret;
 +
-+	i2s->active_channels = 1;
-+	i2s->dma_data.addr = res->start + IMG_I2S_IN_RX_FIFO;
-+	i2s->dma_data.addr_width = 4;
++	reg = IMG_I2S_OUT_CTL_FRM_SIZE_MASK;
++	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
 +
-+	i2s->dai_driver.probe = img_i2s_in_dai_probe;
-+	i2s->dai_driver.capture.channels_min = 2;
-+	i2s->dai_driver.capture.channels_max = i2s->max_i2s_chan * 2;
-+	i2s->dai_driver.capture.rates = SNDRV_PCM_RATE_8000_192000;
-+	i2s->dai_driver.capture.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE;
-+	i2s->dai_driver.ops = &img_i2s_in_dai_ops;
-+
-+	rst = devm_reset_control_get(dev, "rst");
-+	if (IS_ERR(rst)) {
-+		dev_dbg(dev, "No top level reset found\n");
-+
-+		reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
-+		reg &= ~IMG_I2S_IN_CTL_ME_MASK;
-+		img_i2s_in_writel(i2s, reg, IMG_I2S_IN_CTL);
-+
-+		for (i = 0; i < i2s->max_i2s_chan; i++) {
-+			reg = img_i2s_in_ch_disable(i2s, i);
-+			reg |= IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
-+			img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+			reg &= ~IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
-+			img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+		}
-+	} else {
-+		reset_control_assert(rst);
-+		reset_control_deassert(rst);
-+	}
-+
-+	img_i2s_in_writel(i2s, 0, IMG_I2S_IN_CTL);
++	reg = IMG_I2S_OUT_CHAN_CTL_JUST_MASK |
++		IMG_I2S_OUT_CHAN_CTL_LT_MASK |
++		IMG_I2S_OUT_CHAN_CTL_CH_MASK |
++		(8 << IMG_I2S_OUT_CHAN_CTL_FMT_SHIFT);
 +
 +	for (i = 0; i < i2s->max_i2s_chan; i++)
-+		img_i2s_in_ch_writel(i2s, i,
-+			(4 << IMG_I2S_IN_CH_CTL_CCDEL_SHIFT) |
-+			IMG_I2S_IN_CH_CTL_JUST_MASK |
-+			IMG_I2S_IN_CH_CTL_FW_MASK, IMG_I2S_IN_CH_CTL);
++		img_i2s_out_ch_writel(i2s, i, reg, IMG_I2S_OUT_CH_CTL);
 +
-+	ret = devm_snd_soc_register_component(dev, &img_i2s_in_component,
-+						&i2s->dai_driver, 1);
-+	if (ret)
-+		goto err_clk_disable;
++	img_i2s_out_reset(i2s);
 +
-+	ret = devm_snd_dmaengine_pcm_register(dev, &img_i2s_in_dma_config, 0);
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = img_i2s_out_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
++	i2s->active_channels = 1;
++	i2s->dma_data.addr = res->start + IMG_I2S_OUT_TX_FIFO;
++	i2s->dma_data.addr_width = 4;
++	i2s->dma_data.maxburst = 4;
++
++	i2s->dai_driver.probe = img_i2s_out_dai_probe;
++	i2s->dai_driver.playback.channels_min = 2;
++	i2s->dai_driver.playback.channels_max = i2s->max_i2s_chan * 2;
++	i2s->dai_driver.playback.rates = SNDRV_PCM_RATE_8000_192000;
++	i2s->dai_driver.playback.formats = SNDRV_PCM_FMTBIT_S32_LE;
++	i2s->dai_driver.ops = &img_i2s_out_dai_ops;
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++			&img_i2s_out_component, &i2s->dai_driver, 1);
 +	if (ret)
-+		goto err_clk_disable;
++		goto err_suspend;
++
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev,
++			&img_i2s_out_dma_config, 0);
++	if (ret)
++		goto err_suspend;
 +
 +	return 0;
 +
-+err_clk_disable:
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		img_i2s_out_suspend(&pdev->dev);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
 +	clk_disable_unprepare(i2s->clk_sys);
 +
 +	return ret;
 +}
 +
-+static int img_i2s_in_dev_remove(struct platform_device *pdev)
++static int img_i2s_out_dev_remove(struct platform_device *pdev)
 +{
-+	struct img_i2s_in *i2s = platform_get_drvdata(pdev);
++	struct img_i2s_out *i2s = platform_get_drvdata(pdev);
++
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		img_i2s_out_suspend(&pdev->dev);
 +
 +	clk_disable_unprepare(i2s->clk_sys);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id img_i2s_in_of_match[] = {
-+	{ .compatible = "img,i2s-in" },
++static const struct of_device_id img_i2s_out_of_match[] = {
++	{ .compatible = "img,i2s-out" },
 +	{}
 +};
-+MODULE_DEVICE_TABLE(of, img_i2s_in_of_match);
++MODULE_DEVICE_TABLE(of, img_i2s_out_of_match);
 +
-+static struct platform_driver img_i2s_in_driver = {
-+	.driver = {
-+		.name = "img-i2s-in",
-+		.of_match_table = img_i2s_in_of_match
-+	},
-+	.probe = img_i2s_in_probe,
-+	.remove = img_i2s_in_dev_remove
++static const struct dev_pm_ops img_i2s_out_pm_ops = {
++	SET_RUNTIME_PM_OPS(img_i2s_out_suspend,
++			   img_i2s_out_resume, NULL)
 +};
-+module_platform_driver(img_i2s_in_driver);
++
++static struct platform_driver img_i2s_out_driver = {
++	.driver = {
++		.name = "img-i2s-out",
++		.of_match_table = img_i2s_out_of_match,
++		.pm = &img_i2s_out_pm_ops
++	},
++	.probe = img_i2s_out_probe,
++	.remove = img_i2s_out_dev_remove
++};
++module_platform_driver(img_i2s_out_driver);
 +
 +MODULE_AUTHOR("Damien Horsley <Damien.Horsley@imgtec.com>");
-+MODULE_DESCRIPTION("IMG I2S Input Driver");
++MODULE_DESCRIPTION("IMG I2S Output Driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 2.1.4
