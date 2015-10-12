@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Mon, 12 Oct 2015 17:54:35 +0200
-Message-ID: <561BD7BB.2090200@metafoo.de>
-References: <20151004231752.GA22609@sirena.org.uk>	<20151007152047.GQ12635@sirena.org.uk>	<561679FE.3060809@metafoo.de>	<56167DBF.9090106@metafoo.de>	<5617C133.1080006@metafoo.de>
- <s5hlhb8lbi7.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoc: sh: Fit typo in Kconfig" to the asoc
+	tree
+Date: Mon, 12 Oct 2015 16:55:00 +0100
+Message-ID: <E1ZlfRE-0002nX-6g@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-100.synserver.de (smtp-out-101.synserver.de
- [212.40.185.101])
- by alsa0.perex.cz (Postfix) with ESMTP id 315E926149E
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 17:54:39 +0200 (CEST)
-In-Reply-To: <s5hlhb8lbi7.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10B58265109
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 17:55:10 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,95 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Masanari Iida <standby24x7@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/12/2015 10:46 AM, Takashi Iwai wrote:
-> On Fri, 09 Oct 2015 15:29:23 +0200,
-> Lars-Peter Clausen wrote:
->>
->> On 10/08/2015 04:29 PM, Lars-Peter Clausen wrote:
->>> On 10/08/2015 04:13 PM, Lars-Peter Clausen wrote:
->>>> On 10/07/2015 05:20 PM, Mark Brown wrote:
->>>>> On Mon, Oct 05, 2015 at 12:17:52AM +0100, Mark Brown wrote:
->>>>>> [This message is BCCed to everyone currently on the signup list]
->>>>>>
->>>>>> As previously announce the audio mini-summit for this year will be this
->>>>>> Thursday (8th August) at CCD in Dublin.  Topics we currently have on the
->>>>>> list for discussion are:
->>>>>
->>>>> Current list:
->>>>>
->>>>>  - Power saving and general system design decisions (is what we're doing
->>>>>    lining up with modern hardware with things like multiple output
->>>>>    streams?).
->>>>>  - Documentation.
->>>>>  - alsa-lib releae plans.
->>>>>  - What to do with HDMI and its integration with graphics.
->>>>>  - Test tools (Intel BAT and others).
->>>>>  - BATCH flag.
->>>>>  - Fuzz control PCM APIs.
->>>>>  - Splitting out root only controls.
->>>>>  - ACPI simple-card and general generic card support.
->>>>>  - Topology & media controller integration.
->>>>>  - Kernel tinification.
->>>>>  - Android <-> alsa-lib configuration translation.
->>>>>  - HDA restructuring.
->>>>>   - Support for DisplayPort MST.
->>>>>  - PCM core simplification - the code is currently quite complex!
->>>>>  - Soundwire driver support plans.
->>>>>  - ASoC multichannel.
->>>>>  - Random DAPM changes.
->>>>
->>>> Media controller:
->>>> http://blogs.s-osg.org/working-complicated-problems-media-controller-workshop/
->>>
->>> And to give some more background information on how the constraints
->>> refinement works: http://metafoo.de/alsa_constraints.html
->>>
->>> It's not yet complete but should still give you and idea
->>
->> Btw. when you try to size optimize the kernel have you tried to build stuff
->> with link-time-optimization? A lot of the constraints refinement code is
->> helper function that are only used by certain drivers. So with LTO also
->> those helper function would be removed.
-> 
-> Yeah, I suggested a similar thing to Keyon before the meeting.
-> But I wonder whether LTO takes effect if the module is enabled.
-> AFAIK, Intel want to keep the modules (despite of the demanded code
-> reduction), as they seem to try the generic solution.  If the module
-> is enabled, essentially all exported symbols have to stay, so LTO
-> can't rip off anything.
+The patch
 
-Well, even if you do a modular build you still need to build both modules
-and the kernel from the same Kconfig. You can't decide that you later on
-want to enable or disable certain modules and then only re-build those. So
-at least in theory all the information about which functions are used in the
-modules and which are not is available and could be used by the LTO phase.
-But I've never worked with kernel LTO and have no idea whether that works in
-practice or not.
+   ASoc: sh: Fit typo in Kconfig
 
-But I think this is still the path that I'd recommend people to peruse.
-Since this is a generic approach and once you've figure it out you should be
-able to see the maximum amount of savings rather than the approch where you
-look at each module separately and need to go through them and identify
-functionality that can be removed. Or even try to remove vital parts of the
-framework completely.
+has been applied to the asoc tree at
 
-E.g. I'd consider parameter refining a vital part of ALSA and the core
-functionality of it is rather compact. But it provides a lot of helper
-functions of which only some are going to be used if you built a reduced
-kernel. So rather then completely disabling parameter refining use LTO to
-remove the unused helper functions.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> 
-> A possible workaround that came to my mind is to build both built-in
-> and modules.  The former contains only symbols referred inside the
-> built-in kernel while the latter module contains the rest exported
-> symbols.  But, the initialization is the problem in this case, so it's
-> not so straightforward for now...
-> 
-> 
-> Takashi
-> 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d795eb3f5c10d36ed51ca7cd5ce411677f6f7aab Mon Sep 17 00:00:00 2001
+From: Masanari Iida <standby24x7@gmail.com>
+Date: Sat, 10 Oct 2015 14:17:58 +0900
+Subject: [PATCH] ASoc: sh: Fit typo in Kconfig
+
+s/SUR/SRU/g
+
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 07114b0..de668b2 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -40,7 +40,7 @@ config SND_SOC_RCAR
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
+ 	help
+-	  This option enables R-Car SUR/SCU/SSIU/SSI sound support
++	  This option enables R-Car SRU/SCU/SSIU/SSI sound support
+ 
+ config SND_SOC_RSRC_CARD
+ 	tristate "Renesas Sampling Rate Convert Sound Card"
+-- 
+2.5.0
