@@ -1,17 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Packages 1.0.30 - release pending
-Date: Mon, 12 Oct 2015 11:51:21 +0200
-Message-ID: <561B8299.2090200@perex.cz>
-References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
- <1444640191.3544.11.camel@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/5] ALSA: firewire-tascam: add MIDI
+	functionality
+Date: Mon, 12 Oct 2015 19:10:20 +0900
+Message-ID: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 7359926040E
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 11:51:22 +0200 (CEST)
-In-Reply-To: <1444640191.3544.11.camel@intel.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7162E261294
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 12:10:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>, "tiwai@suse.de" <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Dne 12.10.2015 v 10:56 Koul, Vinod napsal(a):
-> On Mon, 2015-10-12 at 10:24 +0200, Takashi Iwai wrote:
->> On Sun, 11 Oct 2015 21:08:01 +0200,
->> Jaroslav Kysela wrote:
->>>
->>> Hi all,
->>>
->>> 	I would like to release 1.0.30 version of all packages. Things to discuss:
->>
->> There are pending issues: one is about the topology ABI and this seems
->> still in flux.  I suppose this will be stabilized in 4.4.  Also, the
->> documentation for BAT is utterly missing, and I expect we'll get this
->> soonish.  Liam, Mengdong, any comments on these?
->>
->> We've discussed a bit about the user-space package release in the
->> meeting.  Most people prefer more regular release.  My own preference
->> is to stick with the kernel release cycle -- as most of features are
->> related with the update of kernel ABI.  It's not necessarily at every
->> kernel but, e.g. with two kernel releases, so that we'll get two or
->> three releases per year.  It's just my $0.02, not insisting on it,
->> though.
->>
->>
->>> 1) tinycompress
->>>    - do the release this library, too ?
->>
->> Yeah, this was requested in the meething, too.
-> 
-> Thanks that will be great..
-> 
->>
->>>    - versioning - follow the rule for all other ALSA packages
->>>      (all packages have same version) ?
->>
->> Vinod?
-> 
-> Sure, so you guys want me to bump up the version to 1.0.30. I don't think that should
-> be an issue to align?
+Hi,
 
-Ok, fine. I just asked.
+TASCAM FireWire series driver may be newly available in Linux 4.4. For
+the driver, this patchset adds ALSA MIDI ports to communicate to physical
+MIDI ports.
 
-> Also Takashi was mentioning tar balls, do you need me to generate these and upload ?
+This patchset includes some fixes, and updates my former post:
 
-I'll generate them using my tools on the server. I also prepare the
-runtime snapshots - http://www.alsa-project.org/snapshot/ , so you may
-test the tarbar before it's versioned. I'll post a note when finished.
+[alsa-devel] [PATCH 00/25 v2] ALSA: support AMDTP variants
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/096739.html
 
-					Jaroslav
+Changes:
+ * support system exclusive messages
+ * drop virtual MIDI ports
+ * drop MMAP support via hwdep interface for status and control message
+
+Although TASCAM FireWire series has physical controls, this patchset
+doesn't support them. I think some facilities are required to enable this
+functionality:
+ * handling MIDI messages on virtual MIDI ports by this driver
+ * handling status and control messages in isochronous packet by this
+   driver
+ * parsing the status and control messages by userspace application
+ * supporting assignment of physical controls to MIDI ports by userspace
+   application
+ * turn on/off LEDs on device by userspace application
+
+These work are apparently beyond my current effort.
+
+Takashi Sakamoto (5):
+  ALSA: firewire-tascam: add support for incoming MIDI messages by
+    asynchronous transaction
+  ALSA: firewire-tascam: add support for outgoing MIDI messages by
+    asynchronous transaction
+  ALSA: firewire-tascam: add support for MIDI functionality
+  ALSA: firewire-tascam: Turn on/off FireWire LED
+  ALSA: firewire-tascam: change device probing processing
+
+ sound/firewire/tascam/Makefile             |   3 +-
+ sound/firewire/tascam/tascam-midi.c        | 135 +++++++++++++
+ sound/firewire/tascam/tascam-transaction.c | 293 +++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c             |  89 +++++----
+ sound/firewire/tascam/tascam.h             |  30 +++
+ 5 files changed, 503 insertions(+), 47 deletions(-)
+ create mode 100644 sound/firewire/tascam/tascam-midi.c
+ create mode 100644 sound/firewire/tascam/tascam-transaction.c
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.1.4
