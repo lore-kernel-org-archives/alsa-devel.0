@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Skylake - Add Skylake RT286
- I2S machine driver
-Date: Mon, 12 Oct 2015 17:17:36 +0100
-Message-ID: <20151012161736.GG4238@sirena.org.uk>
-References: <201510101650.2oGqByd9%fengguang.wu@intel.com>
- <1444619526.3544.6.camel@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
+Date: Mon, 12 Oct 2015 18:21:22 +0200
+Message-ID: <561BDE02.9070709@perex.cz>
+References: <20151004231752.GA22609@sirena.org.uk>
+ <20151007152047.GQ12635@sirena.org.uk> <561679FE.3060809@metafoo.de>
+ <56167DBF.9090106@metafoo.de> <5617C133.1080006@metafoo.de>
+ <s5hlhb8lbi7.wl-tiwai@suse.de> <561BD7BB.2090200@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5356917971830040743=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E75442625EE
- for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 18:17:47 +0200 (CEST)
-In-Reply-To: <1444619526.3544.6.camel@intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id B06D62625EE
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 18:21:22 +0200 (CEST)
+Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 90F0B149F34
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 18:21:22 +0200 (CEST)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+ by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+ 662EB8518A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 18:21:22 +0200 (CEST)
+In-Reply-To: <561BD7BB.2090200@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, lkp <lkp@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Abdullah,
- Omair M" <omair.m.abdullah@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "Kp, Jeeja" <jeeja.kp@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Dne 12.10.2015 v 17:54 Lars-Peter Clausen napsal(a):
 
---===============5356917971830040743==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mhjHhnbe5PrRcwjY"
-Content-Disposition: inline
+> E.g. I'd consider parameter refining a vital part of ALSA and the core
+> functionality of it is rather compact. But it provides a lot of helper
+> functions of which only some are going to be used if you built a reduced
+> kernel. So rather then completely disabling parameter refining use LTO to
+> remove the unused helper functions.
 
+I agree. It sounds like perfect solution for optimized kernel builds.
 
---mhjHhnbe5PrRcwjY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+					Jaroslav
 
-On Mon, Oct 12, 2015 at 03:12:07AM +0000, Koul, Vinod wrote:
-> On Sat, 2015-10-10 at 16:42 +0800, kbuild test robot wrote:
-
-> > [auto build test ERROR on next-20151009 -- if it's inappropriate base, please
-> > ignore]
-
-> > config: arm-allmodconfig (attached as .config)
-> > reproduce:
-
-> That's nice, thanks. We should add a depends on X86 for this to not compile on non
-> X86 code
-
-> Will send updated patch
-
-It looks like the missing functions are just readl() and writel() which
-means that they're probably only working on x86 through implicit
-inclusion rather than intentionally - if that's the case adding (IIRC)
-linux/io.h is a better fix.
-
---mhjHhnbe5PrRcwjY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWG90fAAoJECTWi3JdVIfQbLEH/0gADMPSMm1tB67MvoF1rKRr
-wDJuyZvv4xpnu8m1+hCC1qsX1MoINtuZ47tNU9cCcPeCdG59Maf5D5nZxOhZFeq2
-g9D1X7/cjefS755g/dE1tn+nJiwf4SxLumURS4XMrYlGnY2k44ZKZrMCsmuYNvRc
-UkHBXqU+S0Ve7/q/qEngLvsyj8zJs9iERcG2kwB4FtYNHoQnIMdrSN/PA0Z5dERV
-a+t8eeNWdHywW1G/an2dE8ss6BUrrQp9rWDOM6GGGQMkEpE3GVM9Y12wPKXxiURP
-6qWUM0c1BdB4uM9YqQ4uc9g3NkX0y8iJbTbHrYeSRnAvfi5gYNw2jk9Yhl9VtcI=
-=6vO9
------END PGP SIGNATURE-----
-
---mhjHhnbe5PrRcwjY--
-
---===============5356917971830040743==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5356917971830040743==--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
