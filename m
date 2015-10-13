@@ -1,21 +1,18 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: Audio Mini Summit 2015, 8th October, Dublin
-Date: Tue, 13 Oct 2015 01:34:19 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C56E0@SHSMSX101.ccr.corp.intel.com>
-References: <20151004231752.GA22609@sirena.org.uk>
- <20151007152047.GQ12635@sirena.org.uk> <561679FE.3060809@metafoo.de>
- <56167DBF.9090106@metafoo.de> <5617C133.1080006@metafoo.de>
- <s5hlhb8lbi7.wl-tiwai@suse.de> <561BD7BB.2090200@metafoo.de>
- <561BDE02.9070709@perex.cz>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: rockchip: spdif: Convert to use
+ devm_snd_dmaengine_pcm_register
+Date: Tue, 13 Oct 2015 10:37:10 +0800
+Message-ID: <1444703830.3259.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 88166261560
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 03:34:24 +0200 (CEST)
-In-Reply-To: <561BDE02.9070709@perex.cz>
-Content-Language: en-US
+Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
+ [209.85.220.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FBE6265474
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 04:37:16 +0200 (CEST)
+Received: by pabve7 with SMTP id ve7so5729094pab.2
+ for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2015 19:37:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
+Use resource managed API then we can remove snd_dmaengine_pcm_unregister()
+and snd_soc_unregister_component() calls in .probe error path and .remove.
 
-Thanks for pointing out this, Takashi, Lars, and Jaroslav.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/rockchip/rockchip_spdif.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-I will try this LTO firstly and see what will happen.
-
-Thanks,
-~Keyon
-
-
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Jaroslav Kysela
-> Sent: Tuesday, October 13, 2015 12:21 AM
-> To: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Audio Mini Summit 2015, 8th October, Dublin
-> 
-> Dne 12.10.2015 v 17:54 Lars-Peter Clausen napsal(a):
-> 
-> > E.g. I'd consider parameter refining a vital part of ALSA and the core
-> > functionality of it is rather compact. But it provides a lot of helper
-> > functions of which only some are going to be used if you built a
-> > reduced kernel. So rather then completely disabling parameter refining
-> > use LTO to remove the unused helper functions.
-> 
-> I agree. It sounds like perfect solution for optimized kernel builds.
-> 
-> 					Jaroslav
-> 
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index 9d5c470..a38a302 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -355,16 +355,14 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 		goto err_pm_runtime;
+ 	}
+ 
+-	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+-		goto err_pcm_register;
++		goto err_pm_runtime;
+ 	}
+ 
+ 	return 0;
+ 
+-err_pcm_register:
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+ err_pm_runtime:
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -381,8 +379,6 @@ static int rk_spdif_remove(struct platform_device *pdev)
+ 
+ 	clk_disable_unprepare(spdif->mclk);
+ 	clk_disable_unprepare(spdif->hclk);
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.1.4
