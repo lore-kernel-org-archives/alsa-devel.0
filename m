@@ -1,16 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: 'BATCH flag for USB' and 'ALSA Core Challenges'
-Date: Tue, 13 Oct 2015 11:01:48 -0500
-Message-ID: <561D2AEC.400@linux.intel.com>
-References: <1444657786.2528.78.camel@loki> <561D10AD.7010800@sakamocchi.jp>
+Subject: Re: Splitting out controls
+Date: Tue, 13 Oct 2015 11:08:40 -0500
+Message-ID: <561D2C88.5050505@linux.intel.com>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
+ <561D1B7D.9080307@linux.intel.com> <561D2997.1090401@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F392265AB9
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 18:01:51 +0200 (CEST)
-In-Reply-To: <561D10AD.7010800@sakamocchi.jp>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A0E1265CA8
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 18:09:56 +0200 (CEST)
+In-Reply-To: <561D2997.1090401@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: David Henningsson <david.henningsson@canonical.com>, James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTAvMTMvMTUgOTowOSBBTSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBIaSwKPgo+IChJ
-ZiBJIHdlcmUgaW4gwrEwMjAw44CBSSB3b3VsZCBoYXZlIGpvaW5lZCBpbiB0aGUgbWVldGluZy4u
-LikKPgo+IFRoZXJlJ3JlIHNvbWUgaW50ZXJlc3RpbmcgaXNzdWVzIGluIHRoZSBtaW51dGVzLiBX
-b3VsZCBJIHJlcXVlc3Qgc29tZW9uZQo+IG1vcmUgZXhwbGFpbmF0aW9uIGFib3V0IGl0Pwo+Cj4+
-IEJBVENIIGZsYWcgZm9yIFVTQjogQXJ1bi4KPj4gPT09PT09PT09PT09PT09PT09PT09PT09PQo+
-PiAgIC0gRmxhZyBkb2VzIG5vdCByZXNwb25kIHRvIHJlYWxpdHksIGxldHMgZGVwcmVjYXRlIGl0
-LiBubyB1c2Vycy4KPj4gICAtIER5bGFuOiBuZWVkIHRvIGtub3cgdHJhbnNmZXIgc2l6ZSBmb3Ig
-Q1JBUyAodXNlcyBleHRyYSBzYW1wbGVzIGZvcgo+PiBidWZmZXJpbmcpLgo+PiAgIC0gQkFUQ0gg
-ZmxhZyBtZWFucyBwZXJpb2Qgc2l6ZSB0cmFuc2ZlcnMsIGFwcGxpY2F0aW9ucyB0aGF0IHVzZSBu
-ZXcKPj4gZ3JhbnVsYXJpdHkgQVBJIGNhbiBpZ25vcmUgYmF0Y2ggZmxhZy4gUGllcnJlOiB0byBp
-bXBsZW1lbnQuCj4KPiBUaGUgZmlyc3QgaXRlbSBzYWlkICdCQVRDSCBmbGFnIHNob3VsZCBiZSBk
-ZXByZWNhdGVkJywgd2hpbGUKPiBCTE9DS19UUkFOU0ZFUiBmbGFnIGlzIG5vdCBtZW50aW9uZWQu
-IEFyZSB0aGVyZSBzb21lIGRpc2N1c3Npb25zIGFib3V0Cj4gdGhlIGRpZmZlcmVuY2VzIGJldHdl
-ZW4gdGhlc2UgdHdvIGZsYWdzPwo+Cj4gSSB0aGluayB0aGUgQVBJcyBzdXBwb3NlIHRoYXQgdGhl
-IG51bWJlciBvZiBQQ00gZnJhbWVzIGluIG9uZQo+IHRyYW5zZmVycmluZyBpcyB0aGUgc2FtZSBh
-cyB0aGUgbnVtYmVyIG9mIFBDTSBmcmFtZXMgaW4gb25lIHBlcmlvZCBvZgo+IGJ1ZmZlci4gUENN
-IGRldmljZSBkcml2ZXIgZGV2ZWxvcGVycyBtdXN0IGFsd2F5cyBzYXRpc2Z5IHRoaXMgcHJpbmNp
-cGxlPwo+IE9yIHRoZSBBUElzIGFsbG93IHRoZW0gdG8gaW1wbGVtZW50IHN1Y2ggZGlmZmVyZW5j
-ZXMgYW5kIHByZXNlbnQgcHJvcGVyCj4gdmFsdWUgdG8gdXNlcnNwYWNlPwoKVGhlIGlkZWEgd2Fz
-IHRvIHJlbHkgb24gdGhlIG5ldyBod19wYXJhbXMgZmllbGQgdGhhdCB3YXMgdGVudGF0aXZlbHkg
-CmNhbGxlZCBtYXhfYnVyc3QgdG8gcmVwb3J0IGhvdyBtdWNoIGRhdGEgaXMgcHVsbGVkL3B1c2hl
-ZCBhdCBvbmNlIGJ5IHRoZSAKaGFyZHdhcmUuIElmIHRoZSBkcml2ZXIgaW5kaWNhdGVkIHRoYXQg
-aXQgaGFuZGxlcyBhIGNvbXBsZXRlIHBlcmlvZCB0aGlzIAp3b3VsZCBwcm92aWRlIHRoZSBzYW1l
-IGZ1bmN0aW9uYWxpdHkgYXMgdGhlIEJBVENIIGZsYWcgdGhhdCBjb3VsZCB0aGVuIApiZSBkZXBy
-ZWNhdGVkLiBJIHdpbGwgdHJ5IHRvIHBvc3QgcGF0Y2hlcyBzb29uLgoKPgo+PiBBTFNBIENvcmUg
-Q2hhbGxlbmdlczoKPj4gPT09PT09PT09PT09PT09PT09PT09PQo+PiAtIEFMU0EgQ29yZSBsb2Nr
-aW5nIGlzIGNvbXBsaWNhdGVkLiBDb3JlIGNvZGUgaXMgcXVpdGUgZGlmZmljdWx0IHRvCj4+IHVu
-ZGVyc3RhbmQuCj4+IC0gUENNIGxpbmtpbmcgbWFrZXMgdGhpbmdzIGNvbXBsZXgKPj4gLSBBZGQg
-ZG9jdW1lbnRhdGlvbiBmb3IgbG9ja3MuCj4+ICAgLSBDb250cm9scyBjYW4gYmUgaGlkZGVuIGlu
-IFVJIHRvb2xzIHRocm91Z2ggaWZhY2VfY2FyZHMuCj4+ICAgLSBEUENNIGhpZGRlbiBQQ01zIHNo
-b3VsZCBub3QgYmUgc2hvd24gaW4gdXNlcm1vZGUsIGhpZGUgdGhlbSBmcm9tCj4+IFVzZXJtb2Rl
-Cj4KPiBUaGUgdGhpcmQgaXRlbSBtZW50aW9ucyBhYm91dCAnaWZhY2VfY2FyZHMnLCB3aGlsZSB0
-aGVyZSdubyBzdWNoCj4gc3RydWN0dXJlIGluIGtlcm5lbC91c2Vyc3BhY2UuCj4gV2hhdCdzIGl0
-IGFuZCB3aGF0IGlzIHRoZSAnVUkgdG9vbHMnPyBEb2VzIGl0IG1lYW5zIHRvIHByb2R1Y2Ugc29t
-ZSBHVUkKPiB3aWRnZXQ/CgpUaGUgaWRlYSB3YXMgdGhhdCBpZiB0aGVyZSBpcyBhIG5ldyBpbnRl
-cmZhY2UgdXNlZCBpbnN0ZWFkIG9mICdtaXhlcicgCnRoZW4gdGhlIG5ldyBjb250cm9scyB3b3Vs
-ZCBub3QgYmUgbWFkZSB2aXNpYmxlIHRvIFVJIHRvb2xzIHRoYXQgbG9vayAKZm9yIHRoZSBtaXhl
-ciBpbnRlcmZhY2UuIEJ1dCBvZiBjb3Vyc2UgYSBuZXcgdG9vbCBsb29raW5nIGZvciB0aGUgbmV3
-IAppZmFjZSB3b3VsZCBiZSBhYmxlIHRvIGRpc3BsYXkgZXZlcnl0aGluZyBzbyBpdCdzIG9ubHkg
-YSB3b3JrLWFyb3VuZC4KCj4gU29ycnkganVzdCB0byB0YWtlIG15IHF1ZXN0aW9ucyBidXQgSSdt
-IG5vdCBhIHBhcnRpY2lwYW50IG9mIHRoZSBtZWV0aW5nLi4uCgp3ZSBjZXJ0YWlubHkgaG9wZSB5
-b3UgY2FuIGpvaW4gbmV4dCB0aW1lIDotKQoKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 10/13/15 10:56 AM, David Henningsson wrote:
+>
+>
+> On 2015-10-13 16:55, Pierre-Louis Bossart wrote:
+>> On 10/13/15 2:07 AM, David Henningsson wrote:
+>>>
+>>>
+>>> On 2015-10-12 22:59, James Cameron wrote:
+>>>> On Mon, Oct 12, 2015 at 02:49:46PM +0100, Liam Girdwood wrote:
+>>>>> I've written up the minutes here below
+>>>>
+>>>> Thanks!
+>>>>
+>>>>> Splitting out controls: Takashi
+>>>>> ===============================
+>>>>>
+>>>>>   - Restricted access.  Consensus to restrict access to some controls
+>
+> Note: There is NOT consensus.
+>
+>>>>> due
+>>>>> to possibility of breaking HW at kernel level. i.e. prevent feeding
+>>>>> digital Mic into HP amp to prevent speaker over heating.
+>>>>
+>>>> I'd like that.  rt5631.  Avoiding at the moment by removing the
+>>>> controls.
+>>>
+>>> IIRC, the debate was over "do not expose dangerous controls to userspace
+>>> at all" vs "expose dangerous controls controls only to root".
+>>>
+>>> I'm strongly voting for "do not expose to userspace at all".
+>>>
+>>> I personally believe that if the physical hardware can be set to state
+>>> where it's bricked, the hardware itself is buggy.
+>>>
+>>> If the hardware is buggy, this should be worked around in BIOS or
+>>> whatever firmware is present on the machine. Otherwise there is a bug in
+>>> BIOS.
+>>>
+>>> If BIOS is buggy and cannot protect the machine from being physically
+>>> damaged, then we need to work around that in the kernel. Otherwise there
+>>> is a bug in the kernel.
+>>>
+>>> And if the kernel is buggy, we should fix the kernel. Period. :-)
+>>
+>> There are just too many variables linked to acoustic, mechanical and
+>> thermal design that just can't be handled with a simple rule at the
+>> kernel level or even BIOS/firmware. There were quite a few people in the
+>> room who voiced their opinion that handling 'dangerous' controls was an
+>> exercise for the integrator, not something that can be handled with a
+>> one-size-fits-all fix.
+>
+> If userspace can make complex decisions to avoid damage, then so can the
+> kernel. The integrator can just write that logic into the kernel instead
+> of writing it into userspace.
+
+That seems to go against everything we've done over the last few years.
+And it's not even feasible to put kernel-level safeguards with the new 
+topology tool, since the kcontrols are instantiated at run time based on 
+a firmware description.
+
+>> 'userspace' is also a vague definition, most
+>> audio servers will use profiles that will avoid using bad
+>> configurations. It's not clear to me that we have to protect against a
+>> user setting random values with alsamixer.
+>
+> Whether the devices are phones, laptops, or everything in between,
+> people are replacing their original software with other software. Surely
+> those people are messing around with mixer controls, and surely they
+> don't want their devices damaged.
+>
+> These people might replace the kernel as well, of course, but are less
+> likely to do so than to replace userspace; and if they do, they are less
+> likely to mess around with a particular audio driver, especially if that
+> driver has a big warning sign saying "changing this value might fry your
+> speaker" (which, IMO, would be appropriate).
+
+It's a valid case but I would argue that if you install new software you 
+should use profiles that have been shared or used by others. If you want 
+to protect against the limited knowledge of an individual user 'messing 
+around mixer controls' then this is going too far.
