@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v3 1/2] ASoC: soc-compress: add a config item
-	for soc-compress
-Date: Tue, 13 Oct 2015 17:11:03 +0800
-Message-ID: <1444727464-10385-2-git-send-email-yang.jie@intel.com>
+Subject: [PATCH v3 2/2] ASoC: soc-compress: split soc-compress
+	to a module
+Date: Tue, 13 Oct 2015 17:11:04 +0800
+Message-ID: <1444727464-10385-3-git-send-email-yang.jie@intel.com>
 References: <1444727464-10385-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 12511261A96
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 11:05:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D528261AD0
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 11:05:24 +0200 (CEST)
 In-Reply-To: <1444727464-10385-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,137 +25,176 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-We don't always need soc-compress in soc, here add a config item
-SND_SOC_COMPRESS, please add 'select SND_SOC_COMPRESS' to driver
-Kconfig when it is needed.
+Split soc-compress into a separate module so we only compile/load
+it when it's needed.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- include/sound/soc-dai.h                      | 2 +-
- include/sound/soc.h                          | 2 ++
- sound/soc/Kconfig                            | 6 +++++-
- sound/soc/Makefile                           | 6 +++++-
- sound/soc/intel/Kconfig                      | 1 +
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
- sound/soc/soc-compress.c                     | 1 +
- sound/soc/soc-core.c                         | 4 ++--
- 8 files changed, 18 insertions(+), 6 deletions(-)
+ sound/soc/Makefile       |  5 ++---
+ sound/soc/soc-compress.c |  9 +++++++++
+ sound/soc/soc-dapm.c     |  1 +
+ sound/soc/soc-pcm.c      | 13 +++++++++++++
+ 4 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 2df96b1..238200f 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -214,7 +214,7 @@ struct snd_soc_dai_driver {
- 	int (*suspend)(struct snd_soc_dai *dai);
- 	int (*resume)(struct snd_soc_dai *dai);
- 	/* compress dai */
--	bool compress_dai;
-+	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
- 	/* DAI is also used for the control bus */
- 	bool bus_control;
- 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 470f208..623ce0c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -452,7 +452,9 @@ int snd_soc_platform_read(struct snd_soc_platform *platform,
- int snd_soc_platform_write(struct snd_soc_platform *platform,
- 					unsigned int reg, unsigned int val);
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
-+#if IS_ENABLED(CONFIG_SND_SOC_COMPRESS)
- int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-+#endif
- 
- struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
- 		const char *dai_link, int stream);
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 7de792b..20b3069 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -9,7 +9,6 @@ menuconfig SND_SOC
- 	select SND_JACK if INPUT=y || INPUT=SND
- 	select REGMAP_I2C if I2C
- 	select REGMAP_SPI if SPI_MASTER
--	select SND_COMPRESS_OFFLOAD
- 	---help---
- 
- 	  If you want ASoC support, you should say Y here and also to the
-@@ -30,6 +29,11 @@ config SND_SOC_GENERIC_DMAENGINE_PCM
- 	bool
- 	select SND_DMAENGINE_PCM
- 
-+config SND_SOC_COMPRESS
-+	tristate
-+	select SND_COMPRESS_OFFLOAD
-+	default n
-+
- config SND_SOC_TOPOLOGY
- 	bool
- 
 diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index af0a571..a3a1505 100644
+index a3a1505..dacddf4 100644
 --- a/sound/soc/Makefile
 +++ b/sound/soc/Makefile
-@@ -1,5 +1,9 @@
+@@ -1,9 +1,8 @@
  snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o soc-utils.o
--snd-soc-core-objs += soc-pcm.o soc-compress.o soc-io.o soc-devres.o soc-ops.o
-+snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
-+
-+ifneq ($(CONFIG_SND_SOC_COMPRESS),)
-+snd-soc-core-objs += soc-compress.o
-+endif
+ snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
+ 
+-ifneq ($(CONFIG_SND_SOC_COMPRESS),)
+-snd-soc-core-objs += soc-compress.o
+-endif
++snd-soc-compress-objs := soc-compress.o
++obj-$(CONFIG_SND_SOC_COMPRESS) += snd-soc-compress.o
  
  ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
  snd-soc-core-objs += soc-topology.o
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 05fde5e6e..221e3bd 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
- 
- config SND_SST_MFLD_PLATFORM
- 	tristate
-+	select SND_SOC_COMPRESS
- 
- config SND_SST_IPC
- 	tristate
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 5e9c316..cb1dd50 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -512,7 +512,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- {
- 	.name = "compress-cpu-dai",
--	.compress_dai = 1,
-+	.compress_new = soc_new_compress,
- 	.ops = &sst_compr_dai_ops,
- 	.playback = {
- 		.stream_name = "Compress Playback",
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 025c38f..a672d9c 100644
+index a672d9c..28bb1b2 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -703,3 +703,4 @@ compr_err:
- 	kfree(compr);
+@@ -19,6 +19,7 @@
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
++#include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/compress_params.h>
+ #include <sound/compress_driver.h>
+@@ -704,3 +705,11 @@ compr_err:
  	return ret;
  }
-+EXPORT_SYMBOL_GPL(soc_new_compress);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3b471f9..24b0960 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1370,9 +1370,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 		soc_dpcm_debugfs_add(rtd);
- #endif
+ EXPORT_SYMBOL_GPL(soc_new_compress);
++
++/* Module information */
++MODULE_AUTHOR("Namarta Kohli <namartax.kohli@intel.com>");
++MODULE_AUTHOR("Ramesh Babu K V <ramesh.babu@linux.intel.com>");
++MODULE_AUTHOR("Vinod Koul <vinod.koul@linux.intel.com>");
++MODULE_DESCRIPTION("ALSA SoC Compress");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:soc-compress");
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index ff8bda4..9e32151 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3896,6 +3896,7 @@ void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+ 	soc_dapm_stream_event(rtd, stream, event);
+ 	mutex_unlock(&card->dapm_mutex);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_event);
  
--	if (cpu_dai->driver->compress_dai) {
-+	if (cpu_dai->driver->compress_new) {
- 		/*create compress_device"*/
--		ret = soc_new_compress(rtd, num);
-+		ret = cpu_dai->driver->compress_new(rtd, num);
- 		if (ret < 0) {
- 			dev_err(card->dev, "ASoC: can't create compress %s\n",
- 					 dai_link->stream_name);
+ /**
+  * snd_soc_dapm_enable_pin_unlocked - enable pin.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 3173958..517a9d4 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -86,6 +86,7 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+ 		rtd->codec_dais[i]->component->active++;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_activate);
+ 
+ /**
+  * snd_soc_runtime_deactivate() - Decrement active count for PCM runtime components
+@@ -121,6 +122,7 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
+ 		rtd->codec_dais[i]->active--;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_deactivate);
+ 
+ /**
+  * snd_soc_runtime_ignore_pmdown_time() - Check whether to ignore the power down delay
+@@ -144,6 +146,7 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	return rtd->cpu_dai->component->ignore_pmdown_time && ignore;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_ignore_pmdown_time);
+ 
+ /**
+  * snd_soc_set_runtime_hwparams - set the runtime hardware parameters
+@@ -188,6 +191,7 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(dpcm_dapm_stream_event);
+ 
+ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
+ 					struct snd_soc_dai *soc_dai)
+@@ -1209,6 +1213,7 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ 		kfree(dpcm);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_disconnect);
+ 
+ /* get BE for DAI widget and stream */
+ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+@@ -1293,6 +1298,7 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 
+ 	return paths;
+ }
++EXPORT_SYMBOL_GPL(dpcm_path_get);
+ 
+ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_dapm_widget_list **list_)
+@@ -1405,6 +1411,7 @@ int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
+ 	else
+ 		return dpcm_prune_paths(fe, stream, list);
+ }
++EXPORT_SYMBOL_GPL(dpcm_process_paths);
+ 
+ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+@@ -1414,6 +1421,7 @@ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dpcm->be->dpcm[stream].runtime_update =
+ 						SND_SOC_DPCM_UPDATE_NO;
+ }
++EXPORT_SYMBOL_GPL(dpcm_clear_pending_state);
+ 
+ static void dpcm_be_dai_startup_unwind(struct snd_soc_pcm_runtime *fe,
+ 	int stream)
+@@ -1530,6 +1538,7 @@ unwind:
+ 
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_dai_startup);
+ 
+ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+ 				 struct snd_soc_pcm_stream *stream,
+@@ -1693,6 +1702,7 @@ int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_dai_shutdown);
+ 
+ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ {
+@@ -1758,6 +1768,7 @@ int dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_dai_hw_free);
+ 
+ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ {
+@@ -1865,6 +1876,7 @@ unwind:
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_dai_hw_params);
+ 
+ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params)
+@@ -2134,6 +2146,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 	}
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(dpcm_be_dai_prepare);
+ 
+ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ {
 -- 
 1.9.1
