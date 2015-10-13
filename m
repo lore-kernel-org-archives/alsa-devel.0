@@ -1,16 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: 'BATCH flag for USB' and 'ALSA Core Challenges'
-Date: Tue, 13 Oct 2015 23:09:49 +0900
-Message-ID: <561D10AD.7010800@sakamocchi.jp>
-References: <1444657786.2528.78.camel@loki>
+Subject: Re: [PATCH 5/5] ALSA: firewire-tascam: change device
+ probing processing
+Date: Tue, 13 Oct 2015 23:12:55 +0900
+Message-ID: <561D1167.3030305@sakamocchi.jp>
+References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1444644625-30189-6-git-send-email-o-takashi@sakamocchi.jp>
+ <20151012144255.2c10e939@kant>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id E5E2F265964
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 16:09:56 +0200 (CEST)
-In-Reply-To: <1444657786.2528.78.camel@loki>
+ by alsa0.perex.cz (Postfix) with ESMTP id 059CD261AA3
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 16:12:57 +0200 (CEST)
+In-Reply-To: <20151012144255.2c10e939@kant>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgooSWYgSSB3ZXJlIGluIMKxMDIwMOOAgUkgd291bGQgaGF2ZSBqb2luZWQgaW4gdGhlIG1l
-ZXRpbmcuLi4pCgpUaGVyZSdyZSBzb21lIGludGVyZXN0aW5nIGlzc3VlcyBpbiB0aGUgbWludXRl
-cy4gV291bGQgSSByZXF1ZXN0IHNvbWVvbmUKbW9yZSBleHBsYWluYXRpb24gYWJvdXQgaXQ/Cgo+
-IEJBVENIIGZsYWcgZm9yIFVTQjogQXJ1bi4KPiA9PT09PT09PT09PT09PT09PT09PT09PT09Cj4g
-IC0gRmxhZyBkb2VzIG5vdCByZXNwb25kIHRvIHJlYWxpdHksIGxldHMgZGVwcmVjYXRlIGl0LiBu
-byB1c2Vycy4KPiAgLSBEeWxhbjogbmVlZCB0byBrbm93IHRyYW5zZmVyIHNpemUgZm9yIENSQVMg
-KHVzZXMgZXh0cmEgc2FtcGxlcyBmb3IKPiBidWZmZXJpbmcpLiAKPiAgLSBCQVRDSCBmbGFnIG1l
-YW5zIHBlcmlvZCBzaXplIHRyYW5zZmVycywgYXBwbGljYXRpb25zIHRoYXQgdXNlIG5ldwo+IGdy
-YW51bGFyaXR5IEFQSSBjYW4gaWdub3JlIGJhdGNoIGZsYWcuIFBpZXJyZTogdG8gaW1wbGVtZW50
-LgoKVGhlIGZpcnN0IGl0ZW0gc2FpZCAnQkFUQ0ggZmxhZyBzaG91bGQgYmUgZGVwcmVjYXRlZCcs
-IHdoaWxlCkJMT0NLX1RSQU5TRkVSIGZsYWcgaXMgbm90IG1lbnRpb25lZC4gQXJlIHRoZXJlIHNv
-bWUgZGlzY3Vzc2lvbnMgYWJvdXQKdGhlIGRpZmZlcmVuY2VzIGJldHdlZW4gdGhlc2UgdHdvIGZs
-YWdzPwoKSSB0aGluayB0aGUgQVBJcyBzdXBwb3NlIHRoYXQgdGhlIG51bWJlciBvZiBQQ00gZnJh
-bWVzIGluIG9uZQp0cmFuc2ZlcnJpbmcgaXMgdGhlIHNhbWUgYXMgdGhlIG51bWJlciBvZiBQQ00g
-ZnJhbWVzIGluIG9uZSBwZXJpb2Qgb2YKYnVmZmVyLiBQQ00gZGV2aWNlIGRyaXZlciBkZXZlbG9w
-ZXJzIG11c3QgYWx3YXlzIHNhdGlzZnkgdGhpcyBwcmluY2lwbGU/Ck9yIHRoZSBBUElzIGFsbG93
-IHRoZW0gdG8gaW1wbGVtZW50IHN1Y2ggZGlmZmVyZW5jZXMgYW5kIHByZXNlbnQgcHJvcGVyCnZh
-bHVlIHRvIHVzZXJzcGFjZT8KCj4gQUxTQSBDb3JlIENoYWxsZW5nZXM6Cj4gPT09PT09PT09PT09
-PT09PT09PT09PQo+IC0gQUxTQSBDb3JlIGxvY2tpbmcgaXMgY29tcGxpY2F0ZWQuIENvcmUgY29k
-ZSBpcyBxdWl0ZSBkaWZmaWN1bHQgdG8KPiB1bmRlcnN0YW5kLgo+IC0gUENNIGxpbmtpbmcgbWFr
-ZXMgdGhpbmdzIGNvbXBsZXgKPiAtIEFkZCBkb2N1bWVudGF0aW9uIGZvciBsb2Nrcy4gCj4gIC0g
-Q29udHJvbHMgY2FuIGJlIGhpZGRlbiBpbiBVSSB0b29scyB0aHJvdWdoIGlmYWNlX2NhcmRzLgo+
-ICAtIERQQ00gaGlkZGVuIFBDTXMgc2hvdWxkIG5vdCBiZSBzaG93biBpbiB1c2VybW9kZSwgaGlk
-ZSB0aGVtIGZyb20KPiBVc2VybW9kZQoKVGhlIHRoaXJkIGl0ZW0gbWVudGlvbnMgYWJvdXQgJ2lm
-YWNlX2NhcmRzJywgd2hpbGUgdGhlcmUnbm8gc3VjaApzdHJ1Y3R1cmUgaW4ga2VybmVsL3VzZXJz
-cGFjZS4KV2hhdCdzIGl0IGFuZCB3aGF0IGlzIHRoZSAnVUkgdG9vbHMnPyBEb2VzIGl0IG1lYW5z
-IHRvIHByb2R1Y2Ugc29tZSBHVUkKd2lkZ2V0PwoKU29ycnkganVzdCB0byB0YWtlIG15IHF1ZXN0
-aW9ucyBidXQgSSdtIG5vdCBhIHBhcnRpY2lwYW50IG9mIHRoZSBtZWV0aW5nLi4uCgoKUmVnYXJk
-cwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Oct 12 2015 21:42, Stefan Richter wrote:
+>> -static int check_name(struct snd_tscm *tscm)
+>> +static int identify_model(struct snd_tscm *tscm)
+>>  {
+>>  	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
+>> -	char vendor[8];
+>> +	const u32 *config_rom = fw_dev->config_rom;
+>>  	char model[8];
+>> -	__u32 data;
+>> -
+>> -	/* Retrieve model name. */
+>> -	data = be32_to_cpu(fw_dev->config_rom[28]);
+>> -	memcpy(model, &data, 4);
+>> -	data = be32_to_cpu(fw_dev->config_rom[29]);
+>> -	memcpy(model + 4, &data, 4);
+>> -	model[7] = '\0';
+>> -
+>> -	/* Retrieve vendor name. */
+>> -	data = be32_to_cpu(fw_dev->config_rom[23]);
+>> -	memcpy(vendor, &data, 4);
+>> -	data = be32_to_cpu(fw_dev->config_rom[24]);
+>> -	memcpy(vendor + 4, &data, 4);
+>> -	vendor[7] = '\0';
+>> +	unsigned int i;
+>> +	u8 c;
+>> +
+>> +	if (fw_dev->config_rom_length < 30) {
+>> +		dev_err(&tscm->unit->device,
+>> +			"Configuration ROM is too short.\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	/* Pick up model name from certain addresses. */
+>> +	for (i = 0; i < 8; i++) {
+>> +		c = config_rom[28 + i / 4] >> (24 - 8 * (i % 4));
+>> +		if (c == '\0')
+>> +			break;
+>> +		model[i] = c;
+>> +	}
+>> +	model[i] = '\0';
+> 
+> You could get a buffer overrun here.  Perhaps only go to i < 7:
+
+Indeed, thanks.
+
+> 	for (i = 0; i < 7; i++) {
+> 		[...]
+> 	}
+> 	model[i] = '\0';
+> 
+>> +	for (i = 0; i < ARRAY_SIZE(model_specs); i++) {
+>> +		if (strcmp(model, model_specs[i].name) == 0) {
+>> +			tscm->spec = &model_specs[i];
+>> +			break;
+>> +		}
+>> +	}
+>> +	if (tscm->spec == NULL)
+>> +		return -ENODEV;
+>>  
+>>  	strcpy(tscm->card->driver, "FW-TASCAM");
+>>  	strcpy(tscm->card->shortname, model);
+>>  	strcpy(tscm->card->mixername, model);
+>>  	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
+>> -		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
+>> +		 "TASCAM %s, GUID %08x%08x at %s, S%d", model,
+>>  		 cpu_to_be32(fw_dev->config_rom[3]),
+>>  		 cpu_to_be32(fw_dev->config_rom[4]),
+>>  		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
+> 
+> Should be
+> 		fw_dev->config_rom[3],
+> 		fw_dev->config_rom[4],
+> 
+> since snprintf wants CPU-endian values.
+
+Firewire-digi00x also includes the same bug.
+
+I found some endianness bug in the other modules. I'll fixed these bugs
+in the same series of patches later.
+
+
+Thanks
+
+Takashi Sakamoto
