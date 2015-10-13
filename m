@@ -1,60 +1,54 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH v2] drm/i915: set proper N/CTS in modeset
-Date: Tue, 13 Oct 2015 15:42:57 +0200
-Message-ID: <561D0A61.3090802@canonical.com>
-References: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC PATCH] ASoC: Modify check condition of multiple bindings
+ of components
+Date: Tue, 13 Oct 2015 15:44:09 +0200
+Message-ID: <561D0AA9.5080702@metafoo.de>
+References: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 22094261A3B
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 15:42:58 +0200 (CEST)
-In-Reply-To: <1443144972-81982-1-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, "Yang, Libin" <libin.yang@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Koro Chen <koro.chen@mediatek.com>, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, p.zabel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+On 10/13/2015 03:37 PM, Koro Chen wrote:
+> The patch "ASoC: Prevent components from being bound to multiple cards"
+> adds check to prevent multiple cards from using the same component.
+> However, snd_soc_register_platform() or snd_soc_register_codec() will
+> also create components, and sharing the same platform by multiple cards
+> is then refused. This happens with a platform having multiple
+> independent DAIs that share the same DMA controller.
+> 
+> Relax the condition by checking component->registered_as_component,
+> which is only true in case of snd_soc_register_component() and
+> will be false for components created by snd_soc_register_platform()
+> or snd_soc_register_codec().
 
+Binding a component to multiple cards results in internal data structure
+corruption, regardless of whether it is a raw component, CODEC or platform,
+which is why the check was added. So the proposed change wont work.
 
-On 2015-09-25 03:36, libin.yang@intel.com wrote:
-> @@ -24,8 +24,18 @@
->   #ifndef _I915_COMPONENT_H_
->   #define _I915_COMPONENT_H_
->
-> +/* MAX_PORT is the number of port
-> + * It must be sync with I915_MAX_PORTS defined i915_drv.h
-> + * 5 should be enough as only HSW, BDW, SKL need such fix.
-> + */
-> +#define MAX_PORTS 5
-> +
->   struct i915_audio_component {
->   	struct device *dev;
-> +	/**
-> +	 * @aud_sample_rate: the array of audio sample rate per port
-> +	 */
-> +	int aud_sample_rate[MAX_PORTS];
-
-Just a quick question as I was trying to understand the code:
-
-aud_sample_rate seems only set and get on the i915 side, never on the 
-hda side.
-
-In short, why is this variable here, and not in e g, as a single integer 
-in the intel_digital_port struct?
-
-That way we also avoid the possibility of MAX_PORTS becoming out of sync 
-with the i915 side.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+> 
+> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+> ---
+>  sound/soc/soc-core.c |    3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 42575b0..eca169a 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1106,7 +1106,8 @@ static int soc_probe_component(struct snd_soc_card *card,
+>  		return 0;
+>  
+>  	if (component->card) {
+> -		if (component->card != card) {
+> +		if (component->card != card &&
+> +		    component->registered_as_component) {
+>  			dev_err(component->dev,
+>  				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
+>  				card->name, component->card->name);
+> 
