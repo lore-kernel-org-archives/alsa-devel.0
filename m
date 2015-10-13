@@ -1,63 +1,45 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [RFC 0/4] ASoC: Add HDA HDMI codec driver
-Date: Tue, 13 Oct 2015 13:08:27 +0000
-Message-ID: <1444741706.2926.16.camel@intel.com>
-References: <1444393729-19745-1-git-send-email-vinod.koul@intel.com>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: [RFC PATCH] ASoC: Modify check condition of multiple bindings of components
+Date: Tue, 13 Oct 2015 21:37:57 +0800
+Message-ID: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 989F4261A3B
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 15:08:35 +0200 (CEST)
-In-Reply-To: <1444393729-19745-1-git-send-email-vinod.koul@intel.com>
-Content-Language: en-US
-Content-ID: <AA08FA8B8243CF46933E98256A259513@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "lars@metafoo.de" <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Patches Audio <patches.audio@intel.com>, "arnaud.pouliquen@st.com" <arnaud.pouliquen@st.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "ykk@rock-chips.com" <ykk@rock-chips.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, p.zabel@pengutronix.de, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-10-09 at 13:28 +0100, Vinod Koul wrote:
-> Yes, this patch series attempts to add yet another HDMI driver to
-> ASoC. This codec appears as HDA codec over HDA link. Although
-> the codec reside in display we have a HDA link from audio block
-> to this codec. The communication to codec is over HDA link
-> 
-> Thanks to i915 component infrastructure, we do not need to worry
-> about keeping the codec on, this is done by i915 for us.
-> 
-> Based on discussion with Mark here at ELCE and other attempts by
-> various folks on HDMI, I wanted to show on list the stuff we have
-> done and discuss and try to see how we converge various attempts
-> 
-> The driver here only supports stereo and doesn't do multichannel
-> just yet, will add later once we converge here. The support for
-> using i915 component notification by David will be added later
-> on.
+The patch "ASoC: Prevent components from being bound to multiple cards"
+adds check to prevent multiple cards from using the same component.
+However, snd_soc_register_platform() or snd_soc_register_codec() will
+also create components, and sharing the same platform by multiple cards
+is then refused. This happens with a platform having multiple
+independent DAIs that share the same DMA controller.
 
-Apart from comments from Russell I didn't get any other comments.
+Relax the condition by checking component->registered_as_component,
+which is only true in case of snd_soc_register_component() and
+will be false for components created by snd_soc_register_platform()
+or snd_soc_register_codec().
 
-So as a solution for many HDMI approaches in ASoC should we converge on usage of
-component framework for talking to display and not have hard dependency to display
-code. That sounds okay on X86 but I am not sure if other arch's can do this...
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+---
+ sound/soc/soc-core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Also as discussed with Russell, we should use drivers/video/hdmi.c for HDMI
-infoframes and sound/core/pcm_drm_eld.c for eld parsing. No open coding these :)
-
-Lastly, sink properties should be the properties of the connected device as read from
-ELD. That seems okay to me, other please chime in
-
-I will send updated patchset based on above.
-
-Thanks
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 42575b0..eca169a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1106,7 +1106,8 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		return 0;
+ 
+ 	if (component->card) {
+-		if (component->card != card) {
++		if (component->card != card &&
++		    component->registered_as_component) {
+ 			dev_err(component->dev,
+ 				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
+ 				card->name, component->card->name);
 -- 
-~Vinod
+1.7.9.5
