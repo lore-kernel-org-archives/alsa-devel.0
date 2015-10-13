@@ -1,135 +1,84 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2] drm/i915: Improve kernel-doc for
- i915_audio_component struct
-Date: Tue, 13 Oct 2015 17:39:18 +0200
-Message-ID: <20151013153918.GM26718@phenom.ffwll.local>
-References: <1444637277-17784-1-git-send-email-david.henningsson@canonical.com>
- <561B6CAF.8090009@canonical.com> <s5hd1wjksxk.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Feasibility of adding alternative audio transport
+ besides I2S/PWM/SPDIF, etc
+Date: Tue, 13 Oct 2015 16:37:57 +0100
+Message-ID: <20151013153757.GI14956@sirena.org.uk>
+References: <CAG5mAdwOugskZrHHzeQ-GSu6mAZoN3nybOvupB09FBk2oTwJnw@mail.gmail.com>
+ <1444383296.2479.8.camel@loki>
+ <CAG5mAdwDFfeJgjsmhYddDvYW1oDDB3AOnPjX8DS4wbSHEADiqA@mail.gmail.com>
+ <1444730265.7124.24.camel@loki>
+ <20151013123245.GF14956@sirena.org.uk>
+ <CAG5mAdzTihx=4xpneEbNoEwqdrRkspgqqu=pjGZwxonaRc37SQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hd1wjksxk.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============5289682219539479276=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61D95261AA1
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 17:38:08 +0200 (CEST)
+In-Reply-To: <CAG5mAdzTihx=4xpneEbNoEwqdrRkspgqqu=pjGZwxonaRc37SQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
+ Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Gautier,
+ Bernard" <bernard.gautier@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMTMsIDIwMTUgYXQgMTE6NDA6MjNBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIE1vbiwgMTIgT2N0IDIwMTUgMTA6MTc6NTEgKzAyMDAsCj4gRGF2aWQgSGVubmlu
-Z3Nzb24gd3JvdGU6Cj4gPiAKPiA+IAo+ID4gCj4gPiBPbiAyMDE1LTEwLTEyIDEwOjA3LCBEYXZp
-ZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+ID4gVG8gbWFrZSBrZXJuZWwtZG9jIGhhcHB5LCB0aGUg
-aTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzIHN0cnVjdAo+ID4gPiBjYW5ub3QgYmUgbmVz
-dGVkLgo+ID4gPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQu
-aGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4KPiA+ID4gLS0tCj4gPiAKPiA+IENoYW5nZXMgc2lu
-Y2UgdjE6Cj4gPiAKPiA+ICAgKiBBZGRlZCBhIG5vdGljZSBhYm91dCB3aGVuIHBpbl9lbGRfbm90
-aWZ5IGlzIGNhbGxlZAo+ID4gCj4gPiAgICogVXNlcyBuZXcgaW5saW5lIHN0cnVjdCBtZW1iZXIg
-c3R5bGUKPiA+IAo+ID4gVmVyaWZpZWQgd2l0aCAibWFrZSBodG1sZG9jcyIsIGxvb2tzIGZpbmUg
-dG8gbWUuCj4gPiAKPiA+IEFsc28sIGFwcGxpZXMgdG8gVGFrYXNoaSdzIHRyZWUgKG1hc3RlciBi
-cmFuY2gpLCBtYXliZSB3ZSBzaG91bGQgdGFrZSBpdCAKPiA+IHRocm91Z2ggVGFrYXNoaSdzIHRy
-ZWUgdG8gYXZvaWQgY29uZmxpY3RzLCBlc3BlY2lhbGx5IGFzIHRoZXJlIG1pZ2h0IGJlIAo+ID4g
-bW9yZSBzdHVmZiBjb21pbmcgdGhhdCB3YXkgKGRwIG1zdCBzdXBwb3J0IGZyb20gTWVuZ2Rvbmcs
-IGFuZCBwZXJoYXBzIAo+ID4gaW5mbyByZXRyaWV2YWwgZnJvbSBtZSkuCj4gCj4gSSdtIGZpbmUg
-dG8gdGFrZSBpdCwganVzdCBsZXQgbWUga25vdyAoYW5kIGdpdmUgYWNrcykuCgpUaGVyZSdzIG90
-aGVyIGRvYyBwYXRjaGVzIGZsb2F0aW5nIGFyb3VuZCBmb3IgdGhpcywgYW5kIEkndmUgYWxyZWFk
-eQpwdWxsZWQgaW4geW91ciBicmFuY2guIFNvcHJvYWJieWwgc2ltcGxlciBpZiBJIHB1bGwgdGhp
-cyBpbnRvCmRybS1pbnRlbC5naXQKLURhbmllbAo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hp
-Cj4gCj4gCj4gPiAKPiA+IAo+ID4gPiAgIERvY3VtZW50YXRpb24vRG9jQm9vay9kcm0udG1wbCB8
-ICAxICsKPiA+ID4gICBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oICAgfCA5MiArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0KPiA+ID4gICAyIGZpbGVzIGNoYW5n
-ZWQsIDY3IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQo+ID4gPgo+ID4gPiBkaWZmIC0t
-Z2l0IGEvRG9jdW1lbnRhdGlvbi9Eb2NCb29rL2RybS50bXBsIGIvRG9jdW1lbnRhdGlvbi9Eb2NC
-b29rL2RybS50bXBsCj4gPiA+IGluZGV4IDlkZGY4YzYuLmYxNmU0ZTggMTAwNjQ0Cj4gPiA+IC0t
-LSBhL0RvY3VtZW50YXRpb24vRG9jQm9vay9kcm0udG1wbAo+ID4gPiArKysgYi9Eb2N1bWVudGF0
-aW9uL0RvY0Jvb2svZHJtLnRtcGwKPiA+ID4gQEAgLTQwNTEsNiArNDA1MSw3IEBAIGludCBudW1f
-aW9jdGxzOzwvc3lub3BzaXM+Cj4gPiA+ICAgCTx0aXRsZT5IaWdoIERlZmluaXRpb24gQXVkaW88
-L3RpdGxlPgo+ID4gPiAgICFQZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyBIaWdo
-IERlZmluaXRpb24gQXVkaW8gb3ZlciBIRE1JIGFuZCBEaXNwbGF5IFBvcnQKPiA+ID4gICAhSWRy
-aXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ID4gKyFJaW5jbHVkZS9kcm0vaTkx
-NV9jb21wb25lbnQuaAo+ID4gPiAgICAgICAgIDwvc2VjdDI+Cj4gPiA+ICAgICAgICAgPHNlY3Qy
-Pgo+ID4gPiAgIAk8dGl0bGU+UGFuZWwgU2VsZiBSZWZyZXNoIFBTUiAoUFNSL1NSRCk8L3RpdGxl
-Pgo+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1
-ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gaW5kZXggODlkYzdkNi4uNzZjMTBjOCAxMDA2
-NDQKPiA+ID4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiArKysgYi9p
-bmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4gPiA+IEBAIC0zMCwzOCArMzAsNzggQEAKPiA+
-ID4gICAgKi8KPiA+ID4gICAjZGVmaW5lIE1BWF9QT1JUUyA1Cj4gPiA+Cj4gPiA+ICsvKioKPiA+
-ID4gKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgLSBPcHMgaW1wbGVtZW50ZWQg
-YnkgaTkxNSBkcml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCj4gPiA+ICsgKi8KPiA+ID4gK3N0
-cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgewo+ID4gPiArCS8qKgo+ID4gPiArCSAqIEBv
-d25lcjogaTkxNSBtb2R1bGUKPiA+ID4gKwkgKi8KPiA+ID4gKwlzdHJ1Y3QgbW9kdWxlICpvd25l
-cjsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAZ2V0X3Bvd2VyOiBSZXF1ZXN0IHRoYXQgcG93ZXIg
-d2VsbCBpcyB0byBiZSB0dXJuZWQgb24KPiA+ID4gKwkgKi8KPiA+ID4gKwl2b2lkICgqZ2V0X3Bv
-d2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ID4gPiArCS8qKgo+ID4gPiArCSAqIEBwdXRfcG93ZXI6
-IEFsbG93IHRoZSBwb3dlciB3ZWxsIHRvIGJlIHR1cm5lZCBvZmYKPiA+ID4gKwkgKi8KPiA+ID4g
-Kwl2b2lkICgqcHV0X3Bvd2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ID4gPiArCS8qKgo+ID4gPiAr
-CSAqIEBjb2RlY193YWtlX292ZXJyaWRlOiBGb3JjZSB0aGUgYXVkaW8gY29kZWMgdG8gc3RheSBh
-d2FrZQo+ID4gPiArCSAqLwo+ID4gPiArCXZvaWQgKCpjb2RlY193YWtlX292ZXJyaWRlKShzdHJ1
-Y3QgZGV2aWNlICosIGJvb2wgZW5hYmxlKTsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAZ2V0X2Nk
-Y2xrX2ZyZXE6IFF1ZXJ5IHRoZSBpOTE1IGRyaXZlciBhYm91dCB0aGUgY3VycmVudCBjZGNsayBm
-cmVxdWVuY3kKPiA+ID4gKwkgKi8KPiA+ID4gKwlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0
-IGRldmljZSAqKTsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAc3luY19hdWRpb19yYXRlOiBzZXQg
-bi9jdHMgYmFzZWQgb24gdGhlIHNhbXBsZSByYXRlCj4gPiA+ICsJICoKPiA+ID4gKwkgKiBDYWxs
-ZWQgZnJvbSBhdWRpbyBkcml2ZXIuIEFmdGVyIGF1ZGlvIGRyaXZlciBzZXRzIHRoZQo+ID4gPiAr
-CSAqIHNhbXBsZSByYXRlLCBpdCB3aWxsIGNhbGwgdGhpcyBmdW5jdGlvbiB0byBzZXQgbi9jdHMK
-PiA+ID4gKwkgKi8KPiA+ID4gKwlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUpKHN0cnVjdCBkZXZpY2Ug
-KiwgaW50IHBvcnQsIGludCByYXRlKTsKPiA+ID4gK307Cj4gPiA+ICsKPiA+ID4gKy8qKgo+ID4g
-PiArICogc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAtIE9wcyBpbXBsZW1l
-bnRlZCBieSBoZGEgZHJpdmVyLCBjYWxsZWQgYnkgaTkxNSBkcml2ZXIKPiA+ID4gKyAqLwo+ID4g
-PiArc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyB7Cj4gPiA+ICsJLyoqCj4g
-PiA+ICsJICogQGF1ZGlvX3B0cjogUG9pbnRlciB0byBiZSB1c2VkIGluIGNhbGwgdG8gcGluX2Vs
-ZF9ub3RpZnkKPiA+ID4gKwkgKi8KPiA+ID4gKwl2b2lkICphdWRpb19wdHI7Cj4gPiA+ICsJLyoq
-Cj4gPiA+ICsJICogQHBpbl9lbGRfbm90aWZ5OiBOb3RpZnkgdGhlIEhEQSBkcml2ZXIgdGhhdCBw
-aW4gc2Vuc2UgYW5kL29yIEVMRCBpbmZvcm1hdGlvbiBoYXMgY2hhbmdlZAo+ID4gPiArCSAqCj4g
-PiA+ICsJICogQ2FsbGVkIHdoZW4gdGhlIGk5MTUgZHJpdmVyIGhhcyBzZXQgdXAgYXVkaW8gcGlw
-ZWxpbmUgb3IgaGFzIGp1c3QKPiA+ID4gKwkgKiBiZWd1biB0byB0ZWFyIGl0IGRvd24uIFRoaXMg
-YWxsb3dzIHRoZSBIREEgZHJpdmVyIHRvIHVwZGF0ZSBpdHMKPiA+ID4gKwkgKiBzdGF0dXMgYWNj
-b3JkaW5nbHkgKGV2ZW4gd2hlbiB0aGUgSERBIGNvbnRyb2xsZXIgaXMgaW4gcG93ZXIgc2F2ZQo+
-ID4gPiArCSAqIG1vZGUpLgo+ID4gPiArCSAqLwo+ID4gPiArCXZvaWQgKCpwaW5fZWxkX25vdGlm
-eSkodm9pZCAqYXVkaW9fcHRyLCBpbnQgcG9ydCk7Cj4gPiA+ICt9Owo+ID4gPiArCj4gPiA+ICsv
-KioKPiA+ID4gKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAtIFVzZWQgZm9yIGRpcmVj
-dCBjb21tdW5pY2F0aW9uIGJldHdlZW4gaTkxNSBhbmQgaGRhIGRyaXZlcnMKPiA+ID4gKyAqLwo+
-ID4gPiAgIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCB7Cj4gPiA+ICsJLyoqCj4gPiA+ICsJ
-ICogQGRldjogaTkxNSBkZXZpY2UsIHVzZWQgYXMgcGFyYW1ldGVyIGZvciBvcHMKPiA+ID4gKwkg
-Ki8KPiA+ID4gICAJc3RydWN0IGRldmljZSAqZGV2Owo+ID4gPiAgIAkvKioKPiA+ID4gICAJICog
-QGF1ZF9zYW1wbGVfcmF0ZTogdGhlIGFycmF5IG9mIGF1ZGlvIHNhbXBsZSByYXRlIHBlciBwb3J0
-Cj4gPiA+ICAgCSAqLwo+ID4gPiAgIAlpbnQgYXVkX3NhbXBsZV9yYXRlW01BWF9QT1JUU107Cj4g
-PiA+IC0KPiA+ID4gLQljb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzIHsKPiA+
-ID4gLQkJc3RydWN0IG1vZHVsZSAqb3duZXI7Cj4gPiA+IC0JCXZvaWQgKCpnZXRfcG93ZXIpKHN0
-cnVjdCBkZXZpY2UgKik7Cj4gPiA+IC0JCXZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2Ug
-Kik7Cj4gPiA+IC0JCXZvaWQgKCpjb2RlY193YWtlX292ZXJyaWRlKShzdHJ1Y3QgZGV2aWNlICos
-IGJvb2wgZW5hYmxlKTsKPiA+ID4gLQkJaW50ICgqZ2V0X2NkY2xrX2ZyZXEpKHN0cnVjdCBkZXZp
-Y2UgKik7Cj4gPiA+IC0JCS8qKgo+ID4gPiAtCQkgKiBAc3luY19hdWRpb19yYXRlOiBzZXQgbi9j
-dHMgYmFzZWQgb24gdGhlIHNhbXBsZSByYXRlCj4gPiA+IC0JCSAqCj4gPiA+IC0JCSAqIENhbGxl
-ZCBmcm9tIGF1ZGlvIGRyaXZlci4gQWZ0ZXIgYXVkaW8gZHJpdmVyIHNldHMgdGhlCj4gPiA+IC0J
-CSAqIHNhbXBsZSByYXRlLCBpdCB3aWxsIGNhbGwgdGhpcyBmdW5jdGlvbiB0byBzZXQgbi9jdHMK
-PiA+ID4gLQkJICovCj4gPiA+IC0JCWludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRldmlj
-ZSAqLCBpbnQgcG9ydCwgaW50IHJhdGUpOwo+ID4gPiAtCX0gKm9wczsKPiA+ID4gLQo+ID4gPiAt
-CWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgewo+ID4gPiAtCQl2
-b2lkICphdWRpb19wdHI7Cj4gPiA+IC0JCS8qKgo+ID4gPiAtCQkgKiBDYWxsIGZyb20gaTkxNSBk
-cml2ZXIsIG5vdGlmeWluZyB0aGUgSERBIGRyaXZlciB0aGF0Cj4gPiA+IC0JCSAqIHBpbiBzZW5z
-ZSBhbmQvb3IgRUxEIGluZm9ybWF0aW9uIGhhcyBjaGFuZ2VkLgo+ID4gPiAtCQkgKiBAYXVkaW9f
-cHRyOgkJSERBIGRyaXZlciBvYmplY3QKPiA+ID4gLQkJICogQHBvcnQ6CQlXaGljaCBwb3J0IGhh
-cyBjaGFuZ2VkIChQT1JUQSAvIFBPUlRCIC8gUE9SVEMgZXRjKQo+ID4gPiAtCQkgKi8KPiA+ID4g
-LQkJdm9pZCAoKnBpbl9lbGRfbm90aWZ5KSh2b2lkICphdWRpb19wdHIsIGludCBwb3J0KTsKPiA+
-ID4gLQl9ICphdWRpb19vcHM7Cj4gPiA+ICsJLyoqCj4gPiA+ICsJICogQG9wczogT3BzIGltcGxl
-bWVudGVkIGJ5IGk5MTUgZHJpdmVyLCBjYWxsZWQgYnkgaGRhIGRyaXZlcgo+ID4gPiArCSAqLwo+
-ID4gPiArCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgKm9wczsKPiA+ID4g
-KwkvKioKPiA+ID4gKwkgKiBAYXVkaW9fb3BzOiBPcHMgaW1wbGVtZW50ZWQgYnkgaGRhIGRyaXZl
-ciwgY2FsbGVkIGJ5IGk5MTUgZHJpdmVyCj4gPiA+ICsJICovCj4gPiA+ICsJY29uc3Qgc3RydWN0
-IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAqYXVkaW9fb3BzOwo+ID4gPiAgIH07Cj4g
-PiA+Cj4gPiA+ICAgI2VuZGlmIC8qIF9JOTE1X0NPTVBPTkVOVF9IXyAqLwo+ID4gPgo+ID4gCj4g
-PiAtLSAKPiA+IERhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgo+ID4gaHR0cHM6Ly9s
-YXVuY2hwYWQubmV0L35kaXdpYwo+ID4gCgotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdp
-bmVlciwgSW50ZWwgQ29ycG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+
+--===============5289682219539479276==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QDIl5R72YNOeCxaP"
+Content-Disposition: inline
+
+
+--QDIl5R72YNOeCxaP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 13, 2015 at 08:33:26AM -0700, Caleb Crome wrote:
+> On Tue, Oct 13, 2015 at 5:32 AM, Mark Brown <broonie@kernel.org> wrote:
+
+> > Well, it's not triggerd from the CODEC side which is a bit different to
+> > what the CODEC vendors were trying - it sounds more like what some of
+> > the DSP vendors are doing with bursting data into the DSP over a message
+> > based interface which maps pretty well onto the existing copy()
+> > operation.
+
+> That sounds right.  Send over a messaging interface, rather than an
+> audio interface.  Which copy() operation do you mean?
+
+The one in snd_pcm_ops.
+
+--QDIl5R72YNOeCxaP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWHSVVAAoJECTWi3JdVIfQnwsH/jBRL60Wn0yQiLbGRXf3I7T1
+YhbNG6piq3Iv8AP/ebXgv1RQu4iBswhH6KHCOjFxn5tNX1MMnUAQdvirXQ+Z8sBu
+gokF+ZlL5LZYYhbPl9Cq6Q8wD9regFEwVJHxCFJriX7U3lNct+NEFOIAbuz59n2w
+qvKh7G7+QuFtnLXXdfbd0J6iGKKNmzwvZa1hoxT4CnWyA0ZNPiXuDd5lGjfNbzSl
+GpI5Z0yxo1AvlKvX2uoqZBGwT4hZ0TPKItTgZbB1qgQt/ylVUq4PA8HDyUqumNdh
+Ntxv0USDIzdCBUvUm2GrSJv/boZU4xS5J++6nIjJOwuXdDIIW1oGG0mAkMOZgJY=
+=20jT
+-----END PGP SIGNATURE-----
+
+--QDIl5R72YNOeCxaP--
+
+--===============5289682219539479276==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5289682219539479276==--
