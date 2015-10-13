@@ -1,177 +1,135 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v4] ASoC: soc-compress: add config item for
-	soc-compress to make it compiled only when needed
-Date: Tue, 13 Oct 2015 23:41:00 +0800
-Message-ID: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2] drm/i915: Improve kernel-doc for
+ i915_audio_component struct
+Date: Tue, 13 Oct 2015 17:39:18 +0200
+Message-ID: <20151013153918.GM26718@phenom.ffwll.local>
+References: <1444637277-17784-1-git-send-email-david.henningsson@canonical.com>
+ <561B6CAF.8090009@canonical.com> <s5hd1wjksxk.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C765F261AA1
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 17:35:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hd1wjksxk.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-We don't always need soc-compress in soc, here add a config item
-SND_SOC_COMPRESS, when nobody select it, the soc-compress will
-not be compiled.
-
-Here also change Kconfig to 'select SND_SOC_COMPRESS' for drivers
-that needed soc-compress.
-
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- include/sound/soc-dai.h                      |  2 +-
- include/sound/soc.h                          |  4 +++-
- sound/soc/Kconfig                            |  5 ++++-
- sound/soc/Makefile                           |  3 ++-
- sound/soc/intel/Kconfig                      |  1 +
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |  2 +-
- sound/soc/soc-compress.c                     | 12 ++++++++++--
- sound/soc/soc-core.c                         |  4 ++--
- 8 files changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 2df96b1..238200f 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -214,7 +214,7 @@ struct snd_soc_dai_driver {
- 	int (*suspend)(struct snd_soc_dai *dai);
- 	int (*resume)(struct snd_soc_dai *dai);
- 	/* compress dai */
--	bool compress_dai;
-+	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
- 	/* DAI is also used for the control bus */
- 	bool bus_control;
- 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 98e080b..10b7802 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -459,7 +459,9 @@ int snd_soc_platform_read(struct snd_soc_platform *platform,
- int snd_soc_platform_write(struct snd_soc_platform *platform,
- 					unsigned int reg, unsigned int val);
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
--int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-+#ifdef CONFIG_SND_SOC_COMPRESS
-+int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-+#endif
- 
- struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
- 		const char *dai_link, int stream);
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 7de792b..7ff7d88 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -9,7 +9,6 @@ menuconfig SND_SOC
- 	select SND_JACK if INPUT=y || INPUT=SND
- 	select REGMAP_I2C if I2C
- 	select REGMAP_SPI if SPI_MASTER
--	select SND_COMPRESS_OFFLOAD
- 	---help---
- 
- 	  If you want ASoC support, you should say Y here and also to the
-@@ -30,6 +29,10 @@ config SND_SOC_GENERIC_DMAENGINE_PCM
- 	bool
- 	select SND_DMAENGINE_PCM
- 
-+config SND_SOC_COMPRESS
-+	bool
-+	select SND_COMPRESS_OFFLOAD
-+
- config SND_SOC_TOPOLOGY
- 	bool
- 
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index af0a571..8eb06db 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -1,5 +1,6 @@
- snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o soc-utils.o
--snd-soc-core-objs += soc-pcm.o soc-compress.o soc-io.o soc-devres.o soc-ops.o
-+snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
-+snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
- 
- ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
- snd-soc-core-objs += soc-topology.o
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 664df1f..aaafb13 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
- 
- config SND_SST_MFLD_PLATFORM
- 	tristate
-+	select SND_SOC_COMPRESS
- 
- config SND_SST_IPC
- 	tristate
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 5e9c316..0487cfa 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -512,7 +512,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- {
- 	.name = "compress-cpu-dai",
--	.compress_dai = 1,
-+	.compress_new = snd_soc_new_compress,
- 	.ops = &sst_compr_dai_ops,
- 	.playback = {
- 		.stream_name = "Compress Playback",
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 025c38f..12a9820 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -612,8 +612,15 @@ static struct snd_compr_ops soc_compr_dyn_ops = {
- 	.get_codec_caps = soc_compr_get_codec_caps
- };
- 
--/* create a new compress */
--int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
-+/**
-+ * snd_soc_new_compress - create a new compress.
-+ *
-+ * @rtd: The runtime for which we will create compress
-+ * @num: the device index number (zero based - shared with normal PCMs)
-+ *
-+ * Return: 0 for success, else error.
-+ */
-+int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_platform *platform = rtd->platform;
-@@ -703,3 +710,4 @@ compr_err:
- 	kfree(compr);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_new_compress);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3b471f9..24b0960 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1370,9 +1370,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 		soc_dpcm_debugfs_add(rtd);
- #endif
- 
--	if (cpu_dai->driver->compress_dai) {
-+	if (cpu_dai->driver->compress_new) {
- 		/*create compress_device"*/
--		ret = soc_new_compress(rtd, num);
-+		ret = cpu_dai->driver->compress_new(rtd, num);
- 		if (ret < 0) {
- 			dev_err(card->dev, "ASoC: can't create compress %s\n",
- 					 dai_link->stream_name);
--- 
-1.9.1
+T24gVHVlLCBPY3QgMTMsIDIwMTUgYXQgMTE6NDA6MjNBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIE1vbiwgMTIgT2N0IDIwMTUgMTA6MTc6NTEgKzAyMDAsCj4gRGF2aWQgSGVubmlu
+Z3Nzb24gd3JvdGU6Cj4gPiAKPiA+IAo+ID4gCj4gPiBPbiAyMDE1LTEwLTEyIDEwOjA3LCBEYXZp
+ZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+ID4gVG8gbWFrZSBrZXJuZWwtZG9jIGhhcHB5LCB0aGUg
+aTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzIHN0cnVjdAo+ID4gPiBjYW5ub3QgYmUgbmVz
+dGVkLgo+ID4gPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQu
+aGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4KPiA+ID4gLS0tCj4gPiAKPiA+IENoYW5nZXMgc2lu
+Y2UgdjE6Cj4gPiAKPiA+ICAgKiBBZGRlZCBhIG5vdGljZSBhYm91dCB3aGVuIHBpbl9lbGRfbm90
+aWZ5IGlzIGNhbGxlZAo+ID4gCj4gPiAgICogVXNlcyBuZXcgaW5saW5lIHN0cnVjdCBtZW1iZXIg
+c3R5bGUKPiA+IAo+ID4gVmVyaWZpZWQgd2l0aCAibWFrZSBodG1sZG9jcyIsIGxvb2tzIGZpbmUg
+dG8gbWUuCj4gPiAKPiA+IEFsc28sIGFwcGxpZXMgdG8gVGFrYXNoaSdzIHRyZWUgKG1hc3RlciBi
+cmFuY2gpLCBtYXliZSB3ZSBzaG91bGQgdGFrZSBpdCAKPiA+IHRocm91Z2ggVGFrYXNoaSdzIHRy
+ZWUgdG8gYXZvaWQgY29uZmxpY3RzLCBlc3BlY2lhbGx5IGFzIHRoZXJlIG1pZ2h0IGJlIAo+ID4g
+bW9yZSBzdHVmZiBjb21pbmcgdGhhdCB3YXkgKGRwIG1zdCBzdXBwb3J0IGZyb20gTWVuZ2Rvbmcs
+IGFuZCBwZXJoYXBzIAo+ID4gaW5mbyByZXRyaWV2YWwgZnJvbSBtZSkuCj4gCj4gSSdtIGZpbmUg
+dG8gdGFrZSBpdCwganVzdCBsZXQgbWUga25vdyAoYW5kIGdpdmUgYWNrcykuCgpUaGVyZSdzIG90
+aGVyIGRvYyBwYXRjaGVzIGZsb2F0aW5nIGFyb3VuZCBmb3IgdGhpcywgYW5kIEkndmUgYWxyZWFk
+eQpwdWxsZWQgaW4geW91ciBicmFuY2guIFNvcHJvYWJieWwgc2ltcGxlciBpZiBJIHB1bGwgdGhp
+cyBpbnRvCmRybS1pbnRlbC5naXQKLURhbmllbAo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hp
+Cj4gCj4gCj4gPiAKPiA+IAo+ID4gPiAgIERvY3VtZW50YXRpb24vRG9jQm9vay9kcm0udG1wbCB8
+ICAxICsKPiA+ID4gICBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oICAgfCA5MiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0KPiA+ID4gICAyIGZpbGVzIGNoYW5n
+ZWQsIDY3IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQo+ID4gPgo+ID4gPiBkaWZmIC0t
+Z2l0IGEvRG9jdW1lbnRhdGlvbi9Eb2NCb29rL2RybS50bXBsIGIvRG9jdW1lbnRhdGlvbi9Eb2NC
+b29rL2RybS50bXBsCj4gPiA+IGluZGV4IDlkZGY4YzYuLmYxNmU0ZTggMTAwNjQ0Cj4gPiA+IC0t
+LSBhL0RvY3VtZW50YXRpb24vRG9jQm9vay9kcm0udG1wbAo+ID4gPiArKysgYi9Eb2N1bWVudGF0
+aW9uL0RvY0Jvb2svZHJtLnRtcGwKPiA+ID4gQEAgLTQwNTEsNiArNDA1MSw3IEBAIGludCBudW1f
+aW9jdGxzOzwvc3lub3BzaXM+Cj4gPiA+ICAgCTx0aXRsZT5IaWdoIERlZmluaXRpb24gQXVkaW88
+L3RpdGxlPgo+ID4gPiAgICFQZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyBIaWdo
+IERlZmluaXRpb24gQXVkaW8gb3ZlciBIRE1JIGFuZCBEaXNwbGF5IFBvcnQKPiA+ID4gICAhSWRy
+aXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ID4gKyFJaW5jbHVkZS9kcm0vaTkx
+NV9jb21wb25lbnQuaAo+ID4gPiAgICAgICAgIDwvc2VjdDI+Cj4gPiA+ICAgICAgICAgPHNlY3Qy
+Pgo+ID4gPiAgIAk8dGl0bGU+UGFuZWwgU2VsZiBSZWZyZXNoIFBTUiAoUFNSL1NSRCk8L3RpdGxl
+Pgo+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1
+ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gaW5kZXggODlkYzdkNi4uNzZjMTBjOCAxMDA2
+NDQKPiA+ID4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiArKysgYi9p
+bmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4gPiA+IEBAIC0zMCwzOCArMzAsNzggQEAKPiA+
+ID4gICAgKi8KPiA+ID4gICAjZGVmaW5lIE1BWF9QT1JUUyA1Cj4gPiA+Cj4gPiA+ICsvKioKPiA+
+ID4gKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgLSBPcHMgaW1wbGVtZW50ZWQg
+YnkgaTkxNSBkcml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCj4gPiA+ICsgKi8KPiA+ID4gK3N0
+cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgewo+ID4gPiArCS8qKgo+ID4gPiArCSAqIEBv
+d25lcjogaTkxNSBtb2R1bGUKPiA+ID4gKwkgKi8KPiA+ID4gKwlzdHJ1Y3QgbW9kdWxlICpvd25l
+cjsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAZ2V0X3Bvd2VyOiBSZXF1ZXN0IHRoYXQgcG93ZXIg
+d2VsbCBpcyB0byBiZSB0dXJuZWQgb24KPiA+ID4gKwkgKi8KPiA+ID4gKwl2b2lkICgqZ2V0X3Bv
+d2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ID4gPiArCS8qKgo+ID4gPiArCSAqIEBwdXRfcG93ZXI6
+IEFsbG93IHRoZSBwb3dlciB3ZWxsIHRvIGJlIHR1cm5lZCBvZmYKPiA+ID4gKwkgKi8KPiA+ID4g
+Kwl2b2lkICgqcHV0X3Bvd2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ID4gPiArCS8qKgo+ID4gPiAr
+CSAqIEBjb2RlY193YWtlX292ZXJyaWRlOiBGb3JjZSB0aGUgYXVkaW8gY29kZWMgdG8gc3RheSBh
+d2FrZQo+ID4gPiArCSAqLwo+ID4gPiArCXZvaWQgKCpjb2RlY193YWtlX292ZXJyaWRlKShzdHJ1
+Y3QgZGV2aWNlICosIGJvb2wgZW5hYmxlKTsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAZ2V0X2Nk
+Y2xrX2ZyZXE6IFF1ZXJ5IHRoZSBpOTE1IGRyaXZlciBhYm91dCB0aGUgY3VycmVudCBjZGNsayBm
+cmVxdWVuY3kKPiA+ID4gKwkgKi8KPiA+ID4gKwlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0
+IGRldmljZSAqKTsKPiA+ID4gKwkvKioKPiA+ID4gKwkgKiBAc3luY19hdWRpb19yYXRlOiBzZXQg
+bi9jdHMgYmFzZWQgb24gdGhlIHNhbXBsZSByYXRlCj4gPiA+ICsJICoKPiA+ID4gKwkgKiBDYWxs
+ZWQgZnJvbSBhdWRpbyBkcml2ZXIuIEFmdGVyIGF1ZGlvIGRyaXZlciBzZXRzIHRoZQo+ID4gPiAr
+CSAqIHNhbXBsZSByYXRlLCBpdCB3aWxsIGNhbGwgdGhpcyBmdW5jdGlvbiB0byBzZXQgbi9jdHMK
+PiA+ID4gKwkgKi8KPiA+ID4gKwlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUpKHN0cnVjdCBkZXZpY2Ug
+KiwgaW50IHBvcnQsIGludCByYXRlKTsKPiA+ID4gK307Cj4gPiA+ICsKPiA+ID4gKy8qKgo+ID4g
+PiArICogc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAtIE9wcyBpbXBsZW1l
+bnRlZCBieSBoZGEgZHJpdmVyLCBjYWxsZWQgYnkgaTkxNSBkcml2ZXIKPiA+ID4gKyAqLwo+ID4g
+PiArc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyB7Cj4gPiA+ICsJLyoqCj4g
+PiA+ICsJICogQGF1ZGlvX3B0cjogUG9pbnRlciB0byBiZSB1c2VkIGluIGNhbGwgdG8gcGluX2Vs
+ZF9ub3RpZnkKPiA+ID4gKwkgKi8KPiA+ID4gKwl2b2lkICphdWRpb19wdHI7Cj4gPiA+ICsJLyoq
+Cj4gPiA+ICsJICogQHBpbl9lbGRfbm90aWZ5OiBOb3RpZnkgdGhlIEhEQSBkcml2ZXIgdGhhdCBw
+aW4gc2Vuc2UgYW5kL29yIEVMRCBpbmZvcm1hdGlvbiBoYXMgY2hhbmdlZAo+ID4gPiArCSAqCj4g
+PiA+ICsJICogQ2FsbGVkIHdoZW4gdGhlIGk5MTUgZHJpdmVyIGhhcyBzZXQgdXAgYXVkaW8gcGlw
+ZWxpbmUgb3IgaGFzIGp1c3QKPiA+ID4gKwkgKiBiZWd1biB0byB0ZWFyIGl0IGRvd24uIFRoaXMg
+YWxsb3dzIHRoZSBIREEgZHJpdmVyIHRvIHVwZGF0ZSBpdHMKPiA+ID4gKwkgKiBzdGF0dXMgYWNj
+b3JkaW5nbHkgKGV2ZW4gd2hlbiB0aGUgSERBIGNvbnRyb2xsZXIgaXMgaW4gcG93ZXIgc2F2ZQo+
+ID4gPiArCSAqIG1vZGUpLgo+ID4gPiArCSAqLwo+ID4gPiArCXZvaWQgKCpwaW5fZWxkX25vdGlm
+eSkodm9pZCAqYXVkaW9fcHRyLCBpbnQgcG9ydCk7Cj4gPiA+ICt9Owo+ID4gPiArCj4gPiA+ICsv
+KioKPiA+ID4gKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAtIFVzZWQgZm9yIGRpcmVj
+dCBjb21tdW5pY2F0aW9uIGJldHdlZW4gaTkxNSBhbmQgaGRhIGRyaXZlcnMKPiA+ID4gKyAqLwo+
+ID4gPiAgIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCB7Cj4gPiA+ICsJLyoqCj4gPiA+ICsJ
+ICogQGRldjogaTkxNSBkZXZpY2UsIHVzZWQgYXMgcGFyYW1ldGVyIGZvciBvcHMKPiA+ID4gKwkg
+Ki8KPiA+ID4gICAJc3RydWN0IGRldmljZSAqZGV2Owo+ID4gPiAgIAkvKioKPiA+ID4gICAJICog
+QGF1ZF9zYW1wbGVfcmF0ZTogdGhlIGFycmF5IG9mIGF1ZGlvIHNhbXBsZSByYXRlIHBlciBwb3J0
+Cj4gPiA+ICAgCSAqLwo+ID4gPiAgIAlpbnQgYXVkX3NhbXBsZV9yYXRlW01BWF9QT1JUU107Cj4g
+PiA+IC0KPiA+ID4gLQljb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzIHsKPiA+
+ID4gLQkJc3RydWN0IG1vZHVsZSAqb3duZXI7Cj4gPiA+IC0JCXZvaWQgKCpnZXRfcG93ZXIpKHN0
+cnVjdCBkZXZpY2UgKik7Cj4gPiA+IC0JCXZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2Ug
+Kik7Cj4gPiA+IC0JCXZvaWQgKCpjb2RlY193YWtlX292ZXJyaWRlKShzdHJ1Y3QgZGV2aWNlICos
+IGJvb2wgZW5hYmxlKTsKPiA+ID4gLQkJaW50ICgqZ2V0X2NkY2xrX2ZyZXEpKHN0cnVjdCBkZXZp
+Y2UgKik7Cj4gPiA+IC0JCS8qKgo+ID4gPiAtCQkgKiBAc3luY19hdWRpb19yYXRlOiBzZXQgbi9j
+dHMgYmFzZWQgb24gdGhlIHNhbXBsZSByYXRlCj4gPiA+IC0JCSAqCj4gPiA+IC0JCSAqIENhbGxl
+ZCBmcm9tIGF1ZGlvIGRyaXZlci4gQWZ0ZXIgYXVkaW8gZHJpdmVyIHNldHMgdGhlCj4gPiA+IC0J
+CSAqIHNhbXBsZSByYXRlLCBpdCB3aWxsIGNhbGwgdGhpcyBmdW5jdGlvbiB0byBzZXQgbi9jdHMK
+PiA+ID4gLQkJICovCj4gPiA+IC0JCWludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRldmlj
+ZSAqLCBpbnQgcG9ydCwgaW50IHJhdGUpOwo+ID4gPiAtCX0gKm9wczsKPiA+ID4gLQo+ID4gPiAt
+CWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgewo+ID4gPiAtCQl2
+b2lkICphdWRpb19wdHI7Cj4gPiA+IC0JCS8qKgo+ID4gPiAtCQkgKiBDYWxsIGZyb20gaTkxNSBk
+cml2ZXIsIG5vdGlmeWluZyB0aGUgSERBIGRyaXZlciB0aGF0Cj4gPiA+IC0JCSAqIHBpbiBzZW5z
+ZSBhbmQvb3IgRUxEIGluZm9ybWF0aW9uIGhhcyBjaGFuZ2VkLgo+ID4gPiAtCQkgKiBAYXVkaW9f
+cHRyOgkJSERBIGRyaXZlciBvYmplY3QKPiA+ID4gLQkJICogQHBvcnQ6CQlXaGljaCBwb3J0IGhh
+cyBjaGFuZ2VkIChQT1JUQSAvIFBPUlRCIC8gUE9SVEMgZXRjKQo+ID4gPiAtCQkgKi8KPiA+ID4g
+LQkJdm9pZCAoKnBpbl9lbGRfbm90aWZ5KSh2b2lkICphdWRpb19wdHIsIGludCBwb3J0KTsKPiA+
+ID4gLQl9ICphdWRpb19vcHM7Cj4gPiA+ICsJLyoqCj4gPiA+ICsJICogQG9wczogT3BzIGltcGxl
+bWVudGVkIGJ5IGk5MTUgZHJpdmVyLCBjYWxsZWQgYnkgaGRhIGRyaXZlcgo+ID4gPiArCSAqLwo+
+ID4gPiArCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgKm9wczsKPiA+ID4g
+KwkvKioKPiA+ID4gKwkgKiBAYXVkaW9fb3BzOiBPcHMgaW1wbGVtZW50ZWQgYnkgaGRhIGRyaXZl
+ciwgY2FsbGVkIGJ5IGk5MTUgZHJpdmVyCj4gPiA+ICsJICovCj4gPiA+ICsJY29uc3Qgc3RydWN0
+IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAqYXVkaW9fb3BzOwo+ID4gPiAgIH07Cj4g
+PiA+Cj4gPiA+ICAgI2VuZGlmIC8qIF9JOTE1X0NPTVBPTkVOVF9IXyAqLwo+ID4gPgo+ID4gCj4g
+PiAtLSAKPiA+IERhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgo+ID4gaHR0cHM6Ly9s
+YXVuY2hwYWQubmV0L35kaXdpYwo+ID4gCgotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdp
+bmVlciwgSW50ZWwgQ29ycG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
+dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
