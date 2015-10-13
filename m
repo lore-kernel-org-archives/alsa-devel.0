@@ -1,19 +1,19 @@
 From: "Jie, Yang" <yang.jie@intel.com>
 Subject: Re: [PATCH v3 1/2] ASoC: soc-compress: add a config
- item for soc-compress
-Date: Tue, 13 Oct 2015 12:15:21 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C5C60@SHSMSX101.ccr.corp.intel.com>
+ item	for soc-compress
+Date: Tue, 13 Oct 2015 12:31:39 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C5C7E@SHSMSX101.ccr.corp.intel.com>
 References: <1444727464-10385-1-git-send-email-yang.jie@intel.com>
  <1444727464-10385-2-git-send-email-yang.jie@intel.com>
- <1444728328.7124.8.camel@loki>
+ <s5hk2qrkta5.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A8A40261A2F
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 14:15:31 +0200 (CEST)
-In-Reply-To: <1444728328.7124.8.camel@loki>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55406261A3B
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 14:31:51 +0200 (CEST)
+In-Reply-To: <s5hk2qrkta5.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,36 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Girdwood, Liam R
-> Sent: Tuesday, October 13, 2015 5:25 PM
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, October 13, 2015 5:33 PM
 > To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Koul, Vinod
-> Subject: Re: [PATCH v3 1/2] ASoC: soc-compress: add a config item for soc-
-> compress
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: soc-compress: add a config
+> item for soc-compress
 > 
-> + Vinod,
-> 
-> On Tue, 2015-10-13 at 17:11 +0800, Jie Yang wrote:
+> On Tue, 13 Oct 2015 11:11:03 +0200,
+> Jie Yang wrote:
+> >
 > > We don't always need soc-compress in soc, here add a config item
 > > SND_SOC_COMPRESS, please add 'select SND_SOC_COMPRESS' to driver
 > > Kconfig when it is needed.
-> 
-> We will need to identify the existing upstream compress users and add this
-> option to their Kconfig as part of this patch.
-
-Have checked that there is only one user(sst-mfld-platform-pcm.c ) for it,
-and it's Kconfig change already in this patch.
-
-~Keyon
-
-> 
-> Liam
-> 
 > >
 > > Signed-off-by: Jie Yang <yang.jie@intel.com>
 > > ---
@@ -93,6 +82,27 @@ and it's Kconfig change already in this patch.
 > > +#if IS_ENABLED(CONFIG_SND_SOC_COMPRESS)
 > >  int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
 > > +#endif
+> 
+> Maybe better to provide a dummy function returning an error when this isn't
+> enabled.
+
+But I remember that you mentioned(comment to v2 on June 15th) that you 
+don't like dummy function:
+
+'A dummy function in such a case has both merit and demerit.  The demerit is
+that you won't get errors if the driver really wants the compress support but
+just forgot to select the dependency.
+
+Takashi'
+
+> 
+> Also, as a namespace issue, we usually keep snd_ prefix for exported
+> functions.
+ 
+OK, let me change it to snd_xxx.
+
+> 
+> 
 > >
 > >  struct snd_pcm_substream *snd_soc_get_dai_substream(struct
 > snd_soc_card *card,
@@ -117,6 +127,13 @@ and it's Kconfig change already in this patch.
 > > +	tristate
 > > +	select SND_COMPRESS_OFFLOAD
 > > +	default n
+> 
+> No need for default n.  It's default.
+ 
+Okay.
+
+> 
+> 
 > > +
 > >  config SND_SOC_TOPOLOGY
 > >  	bool
@@ -134,35 +151,24 @@ and it's Kconfig change already in this patch.
 > > +ifneq ($(CONFIG_SND_SOC_COMPRESS),)
 > > +snd-soc-core-objs += soc-compress.o
 > > +endif
-> >
+> 
+> This can be simplified like
+> 
+> snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+ 
+I tried this as you have mentioned before, but it seems can't work properly
+when CONFIG_SND_SOC_COMPRESS is set to 'm'.
+Not clear why it happen yet. :(
+
+> 
+> 
 > >  ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
 > >  snd-soc-core-objs += soc-topology.o
-> > diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig index
-> > 05fde5e6e..221e3bd 100644
-> > --- a/sound/soc/intel/Kconfig
-> > +++ b/sound/soc/intel/Kconfig
-> > @@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
-> >
-> >  config SND_SST_MFLD_PLATFORM
-> >  	tristate
-> > +	select SND_SOC_COMPRESS
-> >
-> >  config SND_SST_IPC
-> >  	tristate
-> > diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> > b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> > index 5e9c316..cb1dd50 100644
-> > --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> > +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> > @@ -512,7 +512,7 @@ static struct snd_soc_dai_driver
-> > sst_platform_dai[] = {  },  {
-> >  	.name = "compress-cpu-dai",
-> > -	.compress_dai = 1,
-> > +	.compress_new = soc_new_compress,
-> >  	.ops = &sst_compr_dai_ops,
-> >  	.playback = {
-> >  		.stream_name = "Compress Playback", diff --git
-> > a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c index
+> 
+> Oh, this is also... Make another patch :)
+> 
+> 
+> > diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c index
 > > 025c38f..a672d9c 100644
 > > --- a/sound/soc/soc-compress.c
 > > +++ b/sound/soc/soc-compress.c
@@ -171,22 +177,16 @@ and it's Kconfig change already in this patch.
 > >  	return ret;
 > >  }
 > > +EXPORT_SYMBOL_GPL(soc_new_compress);
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index
-> > 3b471f9..24b0960 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -1370,9 +1370,9 @@ static int soc_probe_link_dais(struct
-> snd_soc_card *card, int num, int order)
-> >  		soc_dpcm_debugfs_add(rtd);
-> >  #endif
-> >
-> > -	if (cpu_dai->driver->compress_dai) {
-> > +	if (cpu_dai->driver->compress_new) {
-> >  		/*create compress_device"*/
-> > -		ret = soc_new_compress(rtd, num);
-> > +		ret = cpu_dai->driver->compress_new(rtd, num);
-> >  		if (ret < 0) {
-> >  			dev_err(card->dev, "ASoC: can't create
-> compress %s\n",
-> >  					 dai_link->stream_name);
 > 
+> When you're creating a new exported function, don't forget to give a proper
+> documentation in the function comment.
+
+Vinod also comment/mention this, OK, will add it. 
+
+~Keyon
+
+> 
+> 
+> thanks,
+> 
+> Takashi
