@@ -1,49 +1,33 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5645: Recheck the jack detect status
-	after resuming from S3
-Date: Tue, 13 Oct 2015 15:07:25 +0800
-Message-ID: <1444720045-15444-1-git-send-email-oder_chiou@realtek.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: wm8904: harmless underflow in wm8904_put_deemph()
+Date: Tue, 13 Oct 2015 10:08:18 +0300
+Message-ID: <20151013070818.GB31537@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 50E5C2606FB
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 09:07:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, gary_lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, dain@samsung.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Bo Shen <voice.shen@atmel.com>, Alexander Morozov <linux@meltdown.ru>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Fabio Estevam <fabio.estevam@freescale.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch rechecks the jack detect status after resuming from S3.
+We try to check that "deemph" is zero or one, but because of an
+underflow bug, it can also be negative.  It's fine, negative values are
+handled as non-zero.  But it's messy and static checkers complain so
+let's fix it.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5645.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 89ba4ff..4d54999 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2745,6 +2745,10 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
- 			RT5645_PWR_FV1 | RT5645_PWR_FV2,
- 			RT5645_PWR_FV1 | RT5645_PWR_FV2);
-+		if (rt5645->en_button_func &&
-+			snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
-+			queue_delayed_work(system_power_efficient_wq,
-+				&rt5645->jack_detect_work, msecs_to_jiffies(0));
- 		break;
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index b783743..2aa23f1 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -534,7 +534,7 @@ static int wm8904_put_deemph(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+-	int deemph = ucontrol->value.integer.value[0];
++	unsigned int deemph = ucontrol->value.integer.value[0];
  
- 	case SND_SOC_BIAS_OFF:
--- 
-1.8.1.1.439.g50a6b54
+ 	if (deemph > 1)
+ 		return -EINVAL;
