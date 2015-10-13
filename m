@@ -1,37 +1,57 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix inverted internal mic on Lenovo G50-80
-Date: Tue, 13 Oct 2015 10:10:18 +0200
-Message-ID: <1444723818-3626-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1504778@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+From: Keyon <yang.jie@linux.intel.com>
+Subject: Re: Splitting out controls
+Date: Tue, 13 Oct 2015 16:27:26 +0800
+Message-ID: <561CC06E.8050707@linux.intel.com>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ECC1260711
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 10:21:30 +0200 (CEST)
+In-Reply-To: <561CADA8.3040903@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>, James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the appropriate quirk to indicate the Lenovo G50-80 has a stereo
-mic input where one channel has reverse polarity.
-
-Alsa-info available at:
-https://launchpadlibrarian.net/220846272/AlsaInfo.txt
-
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1504778
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index ca03c40..2f0ec7c 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -819,6 +819,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo IdeaPad Z560", CXT_FIXUP_MUTE_LED_EAPD),
-+	SND_PCI_QUIRK(0x17aa, 0x390b, "Lenovo G50-80", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
--- 
-1.9.1
+Ck9uIDIwMTXlubQxMOaciDEz5pelIDE1OjA3LCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPgo+
+Cj4gT24gMjAxNS0xMC0xMiAyMjo1OSwgSmFtZXMgQ2FtZXJvbiB3cm90ZToKPj4gT24gTW9uLCBP
+Y3QgMTIsIDIwMTUgYXQgMDI6NDk6NDZQTSArMDEwMCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPj4+
+IEkndmUgd3JpdHRlbiB1cCB0aGUgbWludXRlcyBoZXJlIGJlbG93Cj4+Cj4+IFRoYW5rcyEKPj4K
+Pj4+IFNwbGl0dGluZyBvdXQgY29udHJvbHM6IFRha2FzaGkKPj4+ID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0KPj4+Cj4+PiAgIC0gUmVzdHJpY3RlZCBhY2Nlc3MuICBDb25zZW5zdXMg
+dG8gcmVzdHJpY3QgYWNjZXNzIHRvIHNvbWUgCj4+PiBjb250cm9scyBkdWUKPj4+IHRvIHBvc3Np
+YmlsaXR5IG9mIGJyZWFraW5nIEhXIGF0IGtlcm5lbCBsZXZlbC4gaS5lLiBwcmV2ZW50IGZlZWRp
+bmcKPj4+IGRpZ2l0YWwgTWljIGludG8gSFAgYW1wIHRvIHByZXZlbnQgc3BlYWtlciBvdmVyIGhl
+YXRpbmcuCj4+Cj4+IEknZCBsaWtlIHRoYXQuICBydDU2MzEuICBBdm9pZGluZyBhdCB0aGUgbW9t
+ZW50IGJ5IHJlbW92aW5nIHRoZSAKPj4gY29udHJvbHMuCj4KPiBJSVJDLCB0aGUgZGViYXRlIHdh
+cyBvdmVyICJkbyBub3QgZXhwb3NlIGRhbmdlcm91cyBjb250cm9scyB0byAKPiB1c2Vyc3BhY2Ug
+YXQgYWxsIiB2cyAiZXhwb3NlIGRhbmdlcm91cyBjb250cm9scyBjb250cm9scyBvbmx5IHRvIHJv
+b3QiLgo+Cj4gSSdtIHN0cm9uZ2x5IHZvdGluZyBmb3IgImRvIG5vdCBleHBvc2UgdG8gdXNlcnNw
+YWNlIGF0IGFsbCIuCj4KPiBJIHBlcnNvbmFsbHkgYmVsaWV2ZSB0aGF0IGlmIHRoZSBwaHlzaWNh
+bCBoYXJkd2FyZSBjYW4gYmUgc2V0IHRvIHN0YXRlIAo+IHdoZXJlIGl0J3MgYnJpY2tlZCwgdGhl
+IGhhcmR3YXJlIGl0c2VsZiBpcyBidWdneS4KPgo+IElmIHRoZSBoYXJkd2FyZSBpcyBidWdneSwg
+dGhpcyBzaG91bGQgYmUgd29ya2VkIGFyb3VuZCBpbiBCSU9TIG9yIAo+IHdoYXRldmVyIGZpcm13
+YXJlIGlzIHByZXNlbnQgb24gdGhlIG1hY2hpbmUuIE90aGVyd2lzZSB0aGVyZSBpcyBhIGJ1ZyAK
+PiBpbiBCSU9TLgo+Cj4gSWYgQklPUyBpcyBidWdneSBhbmQgY2Fubm90IHByb3RlY3QgdGhlIG1h
+Y2hpbmUgZnJvbSBiZWluZyBwaHlzaWNhbGx5IAo+IGRhbWFnZWQsIHRoZW4gd2UgbmVlZCB0byB3
+b3JrIGFyb3VuZCB0aGF0IGluIHRoZSBrZXJuZWwuIE90aGVyd2lzZSAKPiB0aGVyZSBpcyBhIGJ1
+ZyBpbiB0aGUga2VybmVsLgo+Cj4gQW5kIGlmIHRoZSBrZXJuZWwgaXMgYnVnZ3ksIHdlIHNob3Vs
+ZCBmaXggdGhlIGtlcm5lbC4gUGVyaW9kLiA6LSkKSSBhZ3JlZSB0aGF0IGFsc28gd2UgZG9uJ3Qg
+ZXhwb3NlIGRhbmdlcm91cyBjb250cm9scyBhdCBhbGwsIG9yIGV4cG9zZSAKYnV0IGRvIHNvbWUg
+cmVzdHJhaW5pbmcgYXQgY29kZWMgZHJpdmVyIHNpZGUsIGUuZy4gY2hhbmdpbmcgZGFuZ2Vyb3Vz
+IApzZXR0aW5nIHRvIHNhdmUgb25lLgpXZSAqY2Fubm90KiBtYWtlIHN1cmUgJ3Jvb3QnIG1heSBr
+bm93IHRoZSBkZXRhaWwgYWJvdXQgaXQgYW5kIGxlYXZlIHRoZSAKcmlzayB0byBoaW0uIDopCgp+
+S2V5b24KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
