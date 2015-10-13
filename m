@@ -1,25 +1,78 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [patch] ASoC: wm2000: a couple harmless underflows
-Date: Tue, 13 Oct 2015 13:29:27 +0100
-Message-ID: <20151013122927.GK8805@ck-lbox>
-References: <20151013071245.GI31537@mwanda>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH v3 2/2] ASoC: soc-compress: split
+ soc-compress to a module
+Date: Tue, 13 Oct 2015 14:03:12 +0100
+Message-ID: <1444741392.7124.30.camel@loki>
+References: <1444727464-10385-1-git-send-email-yang.jie@intel.com>
+ <1444727464-10385-3-git-send-email-yang.jie@intel.com>
+ <1444736994.2926.9.camel@intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A9229C5CB0@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20151013071245.GI31537@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 207BA261A3B
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 15:03:48 +0200 (CEST)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A9229C5CB0@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 13, 2015 at 10:12:45AM +0300, Dan Carpenter wrote:
-> We want these to be zero or one, but by mistake we also accept negative
-> values.  It's harmless but we should still clean it up.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Thanks,
-Charles
+T24gVHVlLCAyMDE1LTEwLTEzIGF0IDEzOjQyICswMTAwLCBKaWUsIFlhbmcgd3JvdGU6Cj4gPiAt
+LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gRnJvbTogS291bCwgVmlub2QKPiA+IFNlbnQ6
+IFR1ZXNkYXksIE9jdG9iZXIgMTMsIDIwMTUgNzo1MCBQTQo+ID4gVG86IEppZSwgWWFuZzsgYnJv
+b25pZUBrZXJuZWwub3JnCj4gPiBDYzogR2lyZHdvb2QsIExpYW0gUjsgYWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCj4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSCB2MyAyLzJd
+IEFTb0M6IHNvYy1jb21wcmVzczogc3BsaXQgc29jLQo+ID4gY29tcHJlc3MgdG8gYSBtb2R1bGUK
+PiA+IAo+ID4gT24gVHVlLCAyMDE1LTEwLTEzIGF0IDE3OjExICswODAwLCBKaWUgWWFuZyB3cm90
+ZToKPiA+ID4gKy8qIE1vZHVsZSBpbmZvcm1hdGlvbiAqLwo+ID4gPiArTU9EVUxFX0FVVEhPUigi
+TmFtYXJ0YSBLb2hsaSA8bmFtYXJ0YXgua29obGlAaW50ZWwuY29tPiIpOwo+ID4gPiArTU9EVUxF
+X0FVVEhPUigiUmFtZXNoIEJhYnUgSyBWIDxyYW1lc2guYmFidUBsaW51eC5pbnRlbC5jb20+Iik7
+Cj4gPiA+ICtNT0RVTEVfQVVUSE9SKCJWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGxpbnV4LmludGVs
+LmNvbT4iKTsKPiA+IAo+ID4gVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+IHBsZWFz
+ZQo+ID4gCj4gCj4gT0ssIEkgd2lsbCBjaGFuZ2UgdGhpcyBvbmUuIAo+IAo+ID4gSSBuZWVkIHRv
+IG1vdmUgb3RoZXIgaW5zdGFuY2VzIHRvbyA6KAo+ID4gCj4gPiAKPiA+ID4gK01PRFVMRV9ERVND
+UklQVElPTigiQUxTQSBTb0MgQ29tcHJlc3MiKTsKPiA+IE1PRFVMRV9MSUNFTlNFKCJHUEwiKTsK
+PiA+ID4gK01PRFVMRV9BTElBUygicGxhdGZvcm06c29jLWNvbXByZXNzIik7Cj4gPiA+IGRpZmYg
+LS1naXQgYS9zb3VuZC9zb2Mvc29jLWRhcG0uYyBiL3NvdW5kL3NvYy9zb2MtZGFwbS5jIGluZGV4
+Cj4gPiA+IGZmOGJkYTQuLjllMzIxNTEgMTAwNjQ0Cj4gPiA+IC0tLSBhL3NvdW5kL3NvYy9zb2Mt
+ZGFwbS5jCj4gPiA+ICsrKyBiL3NvdW5kL3NvYy9zb2MtZGFwbS5jCj4gPiA+IEBAIC0zODk2LDYg
+KzM4OTYsNyBAQCB2b2lkIHNuZF9zb2NfZGFwbV9zdHJlYW1fZXZlbnQoc3RydWN0Cj4gPiA+IHNu
+ZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCwgaW50IHN0cmVhbSwKPiA+ID4gIAlzb2NfZGFwbV9zdHJl
+YW1fZXZlbnQocnRkLCBzdHJlYW0sIGV2ZW50KTsKPiA+ID4gIAltdXRleF91bmxvY2soJmNhcmQt
+PmRhcG1fbXV0ZXgpOwo+ID4gPiAgfQo+ID4gPiArRVhQT1JUX1NZTUJPTF9HUEwoc25kX3NvY19k
+YXBtX3N0cmVhbV9ldmVudCk7Cj4gPiAKPiA+IFRoZXNlIGV4cG9ydHMgc2hvdWxkIGJlIGEgbmV3
+IHBhdGNoCj4gPiAKPiA+IEFuZCBhcyB3ZSBhZ3JlZWQgdGhpcyBzaG91bGQgaGF2ZSBEb2N1bWVu
+dGF0aW9uIGlmIG5vdCBhbHJlYWR5IGRvbmUgOikKPiAKPiBJdCdzIG5vdCB3aGF0IEkgcmVhbGx5
+IHdhbnQgdG8gZG8sIGl0IGludHJvZHVjZSAxMyBleHBvcnRzCj4gKEVYUE9SVF9TWU1CT0xfR1BM
+KSB3aGVuIHdlIHdhbnQgc3BsaXQgc29jLWNvbXByZXNzLmMgdG8gYSBzZXBhcmF0ZQo+IE1vZHVs
+ZSwgYW5kIGFkZGluZyBkb2N1bWVudGF0aW9uIHRvIGFsbCBvZiB0aGVzZSAxMyBmdW5jdGlvbnMo
+b25seSBmb3IKPiBzb2MtY29tcHJlc3MuYyB0byB1c2UgdGhlbSkgbG9va3Mgc29tZXdoYXQgdW5n
+cmFjZWZ1bCA6KAo+IAoKSWYgdGhlc2UgYXJlIGludGVybmFsIGZ1bmN0aW9ucyBvbmx5IChhbmQg
+dXNlZCBvbmx5IGJ5IG9uZSB1c2VyKSB0aGVuCmFkZGluZyBzb21lIHNtYWxsIGtlcm5lbCBkb2Mg
+Y29tbWVudHMgYWJvdmUgZWFjaCBmdW5jdGlvbiBzaG91bGQgYmUKZW5vdWdoLgoKTGlhbQoKPiBI
+aSBUYWthc2hpLCB3aGF0J3MgeW91ciBvcGluaW9uPyBNYXliZSB3ZSBzaG91bGQga2VlcCBzb2Mt
+Y29tcHJlc3MuYwo+IGluIHNuZC1zb2MtY29yZS5rbywgd2hpY2ggbWVhbnMgc2tpcC9pZ25vcmUg
+dGhpcyBwYXRjaCBhbmQgZG9u4oCZdCBzcGxpdCBpdD8KPiAKPiB+S2V5b24KPiA+IAo+ID4gLS0K
+PiA+IH5WaW5vZAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBDb3Jwb3JhdGlvbiAoVUspIExpbWl0ZWQK
+UmVnaXN0ZXJlZCBOby4gMTEzNDk0NSAoRW5nbGFuZCkKUmVnaXN0ZXJlZCBPZmZpY2U6IFBpcGVy
+cyBXYXksIFN3aW5kb24gU04zIDFSSgpWQVQgTm86IDg2MCAyMTczIDQ3CgpUaGlzIGUtbWFpbCBh
+bmQgYW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IK
+dGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3Ig
+ZGlzdHJpYnV0aW9uCmJ5IG90aGVycyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJl
+IG5vdCB0aGUgaW50ZW5kZWQKcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFu
+ZCBkZWxldGUgYWxsIGNvcGllcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
