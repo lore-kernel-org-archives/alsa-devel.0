@@ -1,22 +1,19 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v3 2/2] ASoC: soc-compress: split
- soc-compress to a module
-Date: Tue, 13 Oct 2015 15:43:49 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C5E64@SHSMSX101.ccr.corp.intel.com>
-References: <1444727464-10385-1-git-send-email-yang.jie@intel.com>
- <1444727464-10385-3-git-send-email-yang.jie@intel.com>
- <1444736994.2926.9.camel@intel.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A9229C5CB0@SHSMSX101.ccr.corp.intel.com>
- <s5h37xeluli.wl-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Splitting out controls
+Date: Tue, 13 Oct 2015 17:56:07 +0200
+Message-ID: <561D2997.1090401@canonical.com>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
+ <561D1B7D.9080307@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id ACBCE261AA1
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 17:43:54 +0200 (CEST)
-In-Reply-To: <s5h37xeluli.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2C55261AA1
+ for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 17:56:06 +0200 (CEST)
+In-Reply-To: <561D1B7D.9080307@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0
-bzp0aXdhaUBzdXNlLmRlXQ0KPiBTZW50OiBUdWVzZGF5LCBPY3RvYmVyIDEzLCAyMDE1IDEwOjE5
-IFBNDQo+IFRvOiBKaWUsIFlhbmcNCj4gQ2M6IEtvdWwsIFZpbm9kOyBicm9vbmllQGtlcm5lbC5v
-cmc7IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgR2lyZHdvb2QsDQo+IExpYW0gUg0KPiBT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSCB2MyAyLzJdIEFTb0M6IHNvYy1jb21wcmVz
-czogc3BsaXQgc29jLQ0KPiBjb21wcmVzcyB0byBhIG1vZHVsZQ0KPiANCj4gT24gVHVlLCAxMyBP
-Y3QgMjAxNSAxNDo0MjoxMSArMDIwMCwNCj4gSmllLCBZYW5nIHdyb3RlOg0KPiA+DQo+ID4gPiAt
-LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogS291bCwgVmlub2QNCj4gPiA+
-IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMTMsIDIwMTUgNzo1MCBQTQ0KPiA+ID4gVG86IEppZSwg
-WWFuZzsgYnJvb25pZUBrZXJuZWwub3JnDQo+ID4gPiBDYzogR2lyZHdvb2QsIExpYW0gUjsgYWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxd
-IFtQQVRDSCB2MyAyLzJdIEFTb0M6IHNvYy1jb21wcmVzczogc3BsaXQNCj4gPiA+IHNvYy0gY29t
-cHJlc3MgdG8gYSBtb2R1bGUNCj4gPiA+DQo+ID4gPiBPbiBUdWUsIDIwMTUtMTAtMTMgYXQgMTc6
-MTEgKzA4MDAsIEppZSBZYW5nIHdyb3RlOg0KPiA+ID4gPiArLyogTW9kdWxlIGluZm9ybWF0aW9u
-ICovDQo+ID4gPiA+ICtNT0RVTEVfQVVUSE9SKCJOYW1hcnRhIEtvaGxpIDxuYW1hcnRheC5rb2hs
-aUBpbnRlbC5jb20+Iik7DQo+ID4gPiA+ICtNT0RVTEVfQVVUSE9SKCJSYW1lc2ggQmFidSBLIFYN
-Cj4gPHJhbWVzaC5iYWJ1QGxpbnV4LmludGVsLmNvbT4iKTsNCj4gPiA+ID4gK01PRFVMRV9BVVRI
-T1IoIlZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAbGludXguaW50ZWwuY29tPiIpOw0KPiA+ID4NCj4g
-PiA+IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwuY29tPiBwbGVhc2UNCj4gPiA+DQo+ID4N
-Cj4gPiBPSywgSSB3aWxsIGNoYW5nZSB0aGlzIG9uZS4NCj4gPg0KPiA+ID4gSSBuZWVkIHRvIG1v
-dmUgb3RoZXIgaW5zdGFuY2VzIHRvbyA6KA0KPiA+ID4NCj4gPiA+DQo+ID4gPiA+ICtNT0RVTEVf
-REVTQ1JJUFRJT04oIkFMU0EgU29DIENvbXByZXNzIik7DQo+ID4gPiBNT0RVTEVfTElDRU5TRSgi
-R1BMIik7DQo+ID4gPiA+ICtNT0RVTEVfQUxJQVMoInBsYXRmb3JtOnNvYy1jb21wcmVzcyIpOw0K
-PiA+ID4gPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1kYXBtLmMgYi9zb3VuZC9zb2Mvc29j
-LWRhcG0uYyBpbmRleA0KPiA+ID4gPiBmZjhiZGE0Li45ZTMyMTUxIDEwMDY0NA0KPiA+ID4gPiAt
-LS0gYS9zb3VuZC9zb2Mvc29jLWRhcG0uYw0KPiA+ID4gPiArKysgYi9zb3VuZC9zb2Mvc29jLWRh
-cG0uYw0KPiA+ID4gPiBAQCAtMzg5Niw2ICszODk2LDcgQEAgdm9pZCBzbmRfc29jX2RhcG1fc3Ry
-ZWFtX2V2ZW50KHN0cnVjdA0KPiA+ID4gPiBzbmRfc29jX3BjbV9ydW50aW1lICpydGQsIGludCBz
-dHJlYW0sDQo+ID4gPiA+ICAJc29jX2RhcG1fc3RyZWFtX2V2ZW50KHJ0ZCwgc3RyZWFtLCBldmVu
-dCk7DQo+ID4gPiA+ICAJbXV0ZXhfdW5sb2NrKCZjYXJkLT5kYXBtX211dGV4KTsgIH0NCj4gPiA+
-ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHNuZF9zb2NfZGFwbV9zdHJlYW1fZXZlbnQpOw0KPiA+ID4N
-Cj4gPiA+IFRoZXNlIGV4cG9ydHMgc2hvdWxkIGJlIGEgbmV3IHBhdGNoDQo+ID4gPg0KPiA+ID4g
-QW5kIGFzIHdlIGFncmVlZCB0aGlzIHNob3VsZCBoYXZlIERvY3VtZW50YXRpb24gaWYgbm90IGFs
-cmVhZHkgZG9uZSA6KQ0KPiA+DQo+ID4gSXQncyBub3Qgd2hhdCBJIHJlYWxseSB3YW50IHRvIGRv
-LCBpdCBpbnRyb2R1Y2UgMTMgZXhwb3J0cw0KPiA+IChFWFBPUlRfU1lNQk9MX0dQTCkgd2hlbiB3
-ZSB3YW50IHNwbGl0IHNvYy1jb21wcmVzcy5jIHRvIGEgc2VwYXJhdGUNCj4gPiBNb2R1bGUsIGFu
-ZCBhZGRpbmcgZG9jdW1lbnRhdGlvbiB0byBhbGwgb2YgdGhlc2UgMTMgZnVuY3Rpb25zKG9ubHkg
-Zm9yDQo+ID4gc29jLWNvbXByZXNzLmMgdG8gdXNlIHRoZW0pIGxvb2tzIHNvbWV3aGF0IHVuZ3Jh
-Y2VmdWwgOigNCj4gPg0KPiA+IEhpIFRha2FzaGksIHdoYXQncyB5b3VyIG9waW5pb24/IE1heWJl
-IHdlIHNob3VsZCBrZWVwIHNvYy1jb21wcmVzcy5jDQo+ID4gaW4gc25kLXNvYy1jb3JlLmtvLCB3
-aGljaCBtZWFucyBza2lwL2lnbm9yZSB0aGlzIHBhdGNoIGFuZCBkb27igJl0IHNwbGl0IGl0Pw0K
-PiANCj4gV2VsbCwgSSdtIG9wZW4gYWJvdXQgaXQuICBPZiBjb3Vyc2UsIG1ha2luZyBpdCBhcyBh
-IG1vZHVsZSB3b3VsZCBtYWtlDQo+IHNlbnNlLCBldmVuIGZvciBub3JtYWwgdXNlIGNhc2VzLiAg
-QnV0IGFsbG93aW5nIHRoZSBzZWxlY3RpdmUgYnVpbGQgb2YNCj4gc29jLWNvbXByZXNzLmMgc2hv
-dWxkIGJlIGVub3VnaCBmb3IgbW9zdCBjYXNlcy4gIChJbiB0aGF0IGNhc2UsIHRoZQ0KPiBuZXcg
-a2NvbmZpZyBzaG91bGQgYmUgYSBib29sZWFuLikNCj4gDQo+IEFzIExpYW0gc3VnZ2VzdGVkLCBp
-ZiB0aGUgZXhwb3J0ZWQgZnVuY3Rpb25zIGFyZSBzdXBwb3NlZCB0byBiZQ0KPiBpbnRlcm5hbCB1
-c2Ugb25seSwgaXQncyBhbHNvIHRoZSB2ZXJ5IHJlYXNvbiB5b3UgaGF2ZSB0byB3cml0ZQ0KPiBk
-b2N1bWVudGF0aW9uLCB0b28uICBUaGUgZnVuY3Rpb24gZGVzY3JpcHRpb24gaXRzZWxmIGNhbiBi
-ZSBjb25jaXNlLA0KPiB0aGVuLg0KPiANCj4gQW5vdGhlciBwb3NzaWJpbGl0eSBpcyB0byByZWZh
-Y3RvciBzb2MtY29tcHJlc3MuYy4gIElmIHlvdSBjb21wYXJlIHRoZQ0KPiBjb2RlIHdpdGggc29j
-LXBjbS5jLCB5b3Ugc2VlIHZlcnkgbXVjaCBzaW1pbGFyaXR5LiAgQnV0IGl0J3MgYSBwYXRoDQo+
-IHRoYXQgdGFrZXMgbXVjaCBsb25nZXIsIGFsdGhvdWdoIGl0IG1pZ2h0IGJlIGNsZWFuZXIuDQog
-DQpUaGFuayB5b3UsIFRha2FzaGksIHRoZW4gSSBwcmVmZXIgb25seSBhbGxvd2luZyB0aGUgc2Vs
-ZWN0aXZlIGJ1aWxkIG9mDQpzb2MtY29tcHJlc3MuYyBoZXJlLg0KDQpXaWxsIHVwZGF0ZSBwYXRj
-aCBzb29uLg0KDQpUaGFua3MsDQp+S2V5b24NCg0KPiANCj4gDQo+IFRha2FzaGkNCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 2015-10-13 16:55, Pierre-Louis Bossart wrote:
+> On 10/13/15 2:07 AM, David Henningsson wrote:
+>>
+>>
+>> On 2015-10-12 22:59, James Cameron wrote:
+>>> On Mon, Oct 12, 2015 at 02:49:46PM +0100, Liam Girdwood wrote:
+>>>> I've written up the minutes here below
+>>>
+>>> Thanks!
+>>>
+>>>> Splitting out controls: Takashi
+>>>> ===============================
+>>>>
+>>>>   - Restricted access.  Consensus to restrict access to some controls
+
+Note: There is NOT consensus.
+
+>>>> due
+>>>> to possibility of breaking HW at kernel level. i.e. prevent feeding
+>>>> digital Mic into HP amp to prevent speaker over heating.
+>>>
+>>> I'd like that.  rt5631.  Avoiding at the moment by removing the
+>>> controls.
+>>
+>> IIRC, the debate was over "do not expose dangerous controls to userspace
+>> at all" vs "expose dangerous controls controls only to root".
+>>
+>> I'm strongly voting for "do not expose to userspace at all".
+>>
+>> I personally believe that if the physical hardware can be set to state
+>> where it's bricked, the hardware itself is buggy.
+>>
+>> If the hardware is buggy, this should be worked around in BIOS or
+>> whatever firmware is present on the machine. Otherwise there is a bug in
+>> BIOS.
+>>
+>> If BIOS is buggy and cannot protect the machine from being physically
+>> damaged, then we need to work around that in the kernel. Otherwise there
+>> is a bug in the kernel.
+>>
+>> And if the kernel is buggy, we should fix the kernel. Period. :-)
+>
+> There are just too many variables linked to acoustic, mechanical and
+> thermal design that just can't be handled with a simple rule at the
+> kernel level or even BIOS/firmware. There were quite a few people in the
+> room who voiced their opinion that handling 'dangerous' controls was an
+> exercise for the integrator, not something that can be handled with a
+> one-size-fits-all fix.
+
+If userspace can make complex decisions to avoid damage, then so can the 
+kernel. The integrator can just write that logic into the kernel instead 
+of writing it into userspace.
+
+> 'userspace' is also a vague definition, most
+> audio servers will use profiles that will avoid using bad
+> configurations. It's not clear to me that we have to protect against a
+> user setting random values with alsamixer.
+
+Whether the devices are phones, laptops, or everything in between, 
+people are replacing their original software with other software. Surely 
+those people are messing around with mixer controls, and surely they 
+don't want their devices damaged.
+
+These people might replace the kernel as well, of course, but are less 
+likely to do so than to replace userspace; and if they do, they are less 
+likely to mess around with a particular audio driver, especially if that 
+driver has a big warning sign saying "changing this value might fry your 
+speaker" (which, IMO, would be appropriate).
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
