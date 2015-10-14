@@ -1,23 +1,20 @@
 From: "Yang, Libin" <libin.yang@intel.com>
 Subject: Re: DP1.2 MST audio support discussion
-Date: Wed, 14 Oct 2015 02:03:21 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1974C8CA@SHSMSX103.ccr.corp.intel.com>
+Date: Wed, 14 Oct 2015 02:15:59 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1974C8ED@SHSMSX103.ccr.corp.intel.com>
 References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
  <561CA911.7070405@canonical.com>
  <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
  <s5hlhb7ktum.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1974C48F@SHSMSX103.ccr.corp.intel.com>
- <s5h612alvaz.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1974C669@SHSMSX103.ccr.corp.intel.com>
- <s5hzizmkaes.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id C65C4265D6C
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 04:03:40 +0200 (CEST)
-In-Reply-To: <s5hzizmkaes.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id F063A265D6C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 04:16:04 +0200 (CEST)
+In-Reply-To: <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,141 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>, "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, October 14, 2015 12:20 AM
-> To: Yang, Libin
-> Cc: David Henningsson; Lin, Mengdong; tanuk@iki.fi; Girdwood, Liam
-> R; alsa-devel@alsa-project.org; airlied@linux.ie
-> Subject: Re: DP1.2 MST audio support discussion
-> 
-> On Tue, 13 Oct 2015 16:12:58 +0200,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi,
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, October 13, 2015 10:04 PM
-> > > To: Yang, Libin
-> > > Cc: David Henningsson; Lin, Mengdong; tanuk@iki.fi; Girdwood,
-> Liam
-> > > R; alsa-devel@alsa-project.org; airlied@linux.ie
-> > > Subject: Re: DP1.2 MST audio support discussion
-> > >
-> > > On Tue, 13 Oct 2015 14:31:39 +0200,
-> > > Yang, Libin wrote:
-> > > >
-> > > > Hi Takashi,
-> > > >
-> > > > > -----Original Message-----
-> > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > Sent: Tuesday, October 13, 2015 5:21 PM
-> > > > > To: Yang, Libin
-> > > > > Cc: David Henningsson; Lin, Mengdong; tanuk@iki.fi; Girdwood,
-> > > Liam
-> > > > > R; alsa-devel@alsa-project.org; airlied@linux.ie
-> > > > > Subject: Re: DP1.2 MST audio support discussion
-> > > > >
-> > > > > On Tue, 13 Oct 2015 09:34:49 +0200,
-> > > > > Yang, Libin wrote:
-> > > > > >
-> > > > > > > One could then allocate two extra PCMs from the start (9
-> and
-> > > 10)
-> > > > > to
-> > > > > > > try
-> > > > > > > in case the other PCM is busy (my preference), or one could
-> > > steal
-> > > > > one
-> > > > > > > of
-> > > > > > > the existing non-busy ones (Takashi's preference).
-> > > > > >
-> > > > > > We will create the PCMs based on converter. This means we
-> will
-> > > > > > create 3 PCMs. And it will not support dynamically allocating
-> PCM.
-> > > > > > As there are only 3 converters, no more PCMs will be
-> supported.
-> > > > > > Each PCM will use one converter. If 3 PCMs are all used,
-> > > connecting
-> > > > > > monitor will not create new PCM.
-> > > > > >
-> > > > > > Yes, if we are not using the PCM, we can re-assign the PCM to
-> > > > > another
-> > > > > > monitor. Currently, user can't decide which PCM is used for
-> which
-> > > > > > monitor. Image the scenario PCM 3 is assigned to monitor 1,
-> > > PCM 7
-> > > > > is
-> > > > > > assigned to monitor 2, PCM 8 is assigned to monitor 3.
-> Monitor 4
-> > > is
-> > > > > > connected, no PCM is available, and driver don't know
-> whether it
-> > > > > > should steal one PCM for the monitor 4 and user can't change
-> the
-> > > > > > mapping currently.
-> > > > >
-> > > > > Actually, there are a few things to implement properly:
-> > > > >
-> > > > > 1. The plug/unplug events are triggered at the actual graphics
-> > > output
-> > > > >    switching via xrandr or such, not at the time the monitor is
-> > > > >    physically plugged/unplugged.
-> > > > >
-> > > > > 2. At switching, the unplug event must be handled at first, and
-> then
-> > > > >    the plug event.
-> > > > >
-> > > > > 3. At unplug, detach per_pin object properly from PCM.
-> > > > >    We currently just notify it via jack ctl, and doesn't care the
-> > > > >    rest.  Ideally, we should force to stop the PCM and detach
-> > > > >    internally from the assigned pin.
-> > > >
-> > > > For the switching, if we stop the PCM, when the plug event
-> > > > happens, does this mean we should play the sound from
-> > > > the beginning for continue playing the sound?
-> > > >
-> > > > It seems users will more likely hope continue playing the sound?
-> > >
-> > > The user is expected to restart the stream from the scratch instead.
-> > > My assumption is to handle it like a disconnection of a hotplug
-> > > device.
-> > >
-> > > > Some video players may use audio clock to do the Audio-Video
-> > > > Sync (I'm not very sure). If we stop the PCM, after the hotplug,
-> > > > the video player will be stopped and must play the video from
-> > > > the beginning?
-> > >
-> > > Yes.  Remember that it's a DP, i.e. always with graphics.  If you
-> > > switch the graphics, you'd need to do the full change in anyway.
-> >
-> > OK. I see. So besides we detach the PCM from the pin, how can
-> > we stop the PCM clearly? Do we notify it to userspace and let
-> > userspace stop the PCM?
-> 
-> A similar procedure like the hot unplug is needed.  Maybe an easy way
-> would be to issue snd_pcm_stop() but with
-> SND_PCM_STATE_DISCONNECTED.
-> As the userspace notification, the jack event should suffice.
-
-Get it. Thanks.
-
-> 
-> An open question is about the behavior at opening an unassigned pin.
-> So far, we don't care and allows to operate a PCM entry even if no
-> monitor is connected.  Is this still required for probing by PA?
-> Or should we better return an error if no monitor is connected (if the
-> information is reliable)?
-> 
-> 
-> Takashi
+KyBpbnRlbCBnZnggZXhwZXJ0cy4NCg0KSGkgUmF5bW9uZCwNCg0KDQpGcm9tOiBSYXltb25kIFlh
+dSBbbWFpbHRvOnN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbV0gDQpTZW50OiBXZWRuZXNkYXks
+IE9jdG9iZXIgMTQsIDIwMTUgNzo1MiBBTQ0KVG86IFRha2FzaGkgSXdhaQ0KQ2M6IEFMU0EgRGV2
+ZWxvcG1lbnQgTWFpbGluZyBMaXN0OyBEYXZpZCBIZW5uaW5nc3NvbjsgdGFudWtAaWtpLmZpOyBh
+aXJsaWVkQGxpbnV4LmllOyBZYW5nLCBMaWJpbjsgR2lyZHdvb2QsIExpYW0gUjsgTGluLCBNZW5n
+ZG9uZw0KU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBEUDEuMiBNU1QgYXVkaW8gc3VwcG9ydCBk
+aXNjdXNzaW9uDQoNCg0KPiA+DQo+ID4gPiBPbmUgY291bGQgdGhlbiBhbGxvY2F0ZSB0d28gZXh0
+cmEgUENNcyBmcm9tIHRoZSBzdGFydCAoOSBhbmQgMTApIHRvDQo+ID4gPiB0cnkNCj4gPiA+IGlu
+IGNhc2UgdGhlIG90aGVyIFBDTSBpcyBidXN5IChteSBwcmVmZXJlbmNlKSwgb3Igb25lIGNvdWxk
+IHN0ZWFsIG9uZQ0KPiA+ID4gb2YNCj4gPiA+IHRoZSBleGlzdGluZyBub24tYnVzeSBvbmVzIChU
+YWthc2hpJ3MgcHJlZmVyZW5jZSkuDQo+ID4NCj4gPiBXZSB3aWxsIGNyZWF0ZSB0aGUgUENNcyBi
+YXNlZCBvbiBjb252ZXJ0ZXIuIFRoaXMgbWVhbnMgd2Ugd2lsbA0KPiA+IGNyZWF0ZSAzIFBDTXMu
+IEFuZCBpdCB3aWxsIG5vdCBzdXBwb3J0IGR5bmFtaWNhbGx5IGFsbG9jYXRpbmcgUENNLg0KPiA+
+IEFzIHRoZXJlIGFyZSBvbmx5IDMgY29udmVydGVycywgbm8gbW9yZSBQQ01zIHdpbGwgYmUgc3Vw
+cG9ydGVkLg0KPiA+IEVhY2ggUENNIHdpbGwgdXNlIG9uZSBjb252ZXJ0ZXIuIElmIDMgUENNcyBh
+cmUgYWxsIHVzZWQsIGNvbm5lY3RpbmcNCj4gPiBtb25pdG9yIHdpbGwgbm90IGNyZWF0ZSBuZXcg
+UENNLg0KPiA+DQo+ID4gWWVzLCBpZiB3ZSBhcmUgbm90IHVzaW5nIHRoZSBQQ00sIHdlIGNhbiBy
+ZS1hc3NpZ24gdGhlIFBDTSB0byBhbm90aGVyDQo+ID4gbW9uaXRvci4gQ3VycmVudGx5LCB1c2Vy
+IGNhbid0IGRlY2lkZSB3aGljaCBQQ00gaXMgdXNlZCBmb3Igd2hpY2gNCj4gPiBtb25pdG9yLiBJ
+bWFnZSB0aGUgc2NlbmFyaW8gUENNIDMgaXMgYXNzaWduZWQgdG8gbW9uaXRvciAxLCBQQ00gNyBp
+cw0KPiA+IGFzc2lnbmVkIHRvIG1vbml0b3IgMiwgUENNIDggaXMgYXNzaWduZWQgdG8gbW9uaXRv
+ciAzLiBNb25pdG9yIDQgaXMNCj4gPiBjb25uZWN0ZWQsIG5vIFBDTSBpcyBhdmFpbGFibGUsIGFu
+ZCBkcml2ZXIgZG9uJ3Qga25vdyB3aGV0aGVyIGl0DQo+ID4gc2hvdWxkIHN0ZWFsIG9uZSBQQ00g
+Zm9yIHRoZSBtb25pdG9yIDQgYW5kIHVzZXIgY2FuJ3QgY2hhbmdlIHRoZQ0KPiA+IG1hcHBpbmcg
+Y3VycmVudGx5Lg0KPg0KPiBBY3R1YWxseSwgdGhlcmUgYXJlIGEgZmV3IHRoaW5ncyB0byBpbXBs
+ZW1lbnQgcHJvcGVybHk6DQo+DQo+IDEuIFRoZSBwbHVnL3VucGx1ZyBldmVudHMgYXJlIHRyaWdn
+ZXJlZCBhdCB0aGUgYWN0dWFsIGdyYXBoaWNzIG91dHB1dA0KPiDCoCDCoHN3aXRjaGluZyB2aWEg
+eHJhbmRyIG9yIHN1Y2gsIG5vdCBhdCB0aGUgdGltZSB0aGUgbW9uaXRvciBpcw0KPiDCoCDCoHBo
+eXNpY2FsbHkgcGx1Z2dlZC91bnBsdWdnZWQuDQo+DQo+IDIuIEF0IHN3aXRjaGluZywgdGhlIHVu
+cGx1ZyBldmVudCBtdXN0IGJlIGhhbmRsZWQgYXQgZmlyc3QsIGFuZCB0aGVuDQo+IMKgIMKgdGhl
+IHBsdWcgZXZlbnQuDQo+DQo+IDMuIEF0IHVucGx1ZywgZGV0YWNoIHBlcl9waW4gb2JqZWN0IHBy
+b3Blcmx5IGZyb20gUENNLg0KPiDCoCDCoFdlIGN1cnJlbnRseSBqdXN0IG5vdGlmeSBpdCB2aWEg
+amFjayBjdGwsIGFuZCBkb2Vzbid0IGNhcmUgdGhlDQo+IMKgIMKgcmVzdC7CoCBJZGVhbGx5LCB3
+ZSBzaG91bGQgZm9yY2UgdG8gc3RvcCB0aGUgUENNIGFuZCBkZXRhY2gNCj4gwqAgwqBpbnRlcm5h
+bGx5IGZyb20gdGhlIGFzc2lnbmVkIHBpbi4NCj4NCj4gNC4gQXQgcGx1ZywgYXNzaWduIHRoZSBt
+b25pdG9yIHRvIHRoZSBmcmVlIHBlcl9waW4gb2JqZWN0Lg0KPg0KPiBTbyB3aGF0IHdlJ3ZlIGRp
+c2N1c3NlZCBpcyBhYm91dCB0aGUgbGFzdCBzdGVwOyBob3cgdG8gbWFwIHRoZSBuZXcNCj4gbW9u
+aXRvciB0byBwZXJfcGluIG9iamVjdC7CoCBUaGlzIHJlcXVpcmVzIHRoZSBvdGhlciBzdGVwcyBi
+ZWZvcmVoYW5kDQo+IHdoaWNoIGFzc3VyZXMgYSBmcmVlIHBlcl9waW4gaXMgcHJlc2VudCBhdCBw
+bHVnIHRpbWUuDQo+DQpEbyBpdCBtZWFuIHRoYXQgb25seSBvbmUgRFAgTVNUIHBvcnQgYW5kIG5v
+IEhETUkgcG9ydCBvbiB0aGUgc2FtZSBncmFwaGljIGNhcmQgPw0KDQpbTGliaW5dIEl0IHN1cHBv
+cnQgRFAgTVNUIGFuZCBIRE1JIGJvdGggb24gdGhlIHNhbWUgZ3JhcGhpYyBjYXJkLiANCiAgICBP
+biBpbnRlbCBwbGF0Zm9ybSwgaXQgaXMgdXNpbmcgRERJIHBvcnQsIHN1cHBvcnQgYm90aCBEUCBh
+bmQgSERNSS4NCg0KSWYgRFAgTVNUIGFyZSBkYXNpeSBjaGFpbmVkLCB0aGUgdW5wbHVnIG9mIHRo
+ZSBmaXJzdCBtb25pdG9yIGZyb20gRGlzcGxheSBQb3J0IHdpbGwgY2F1c2UgYWxsIERQIG1vbml0
+b3IgaW4gdGhlIGRhc2l5IGNoYWluIGRpc2Nvbm5lY3QgDQpbTGliaW5dIEluIHRoaXMgbW9kZSwg
+bXVsdGlwbGUgaW50ZXJydXB0cyBzaG91bGQgb2NjdXI/DQogICAgSWYgc28gd2UgY2FuIGhhbmRs
+ZSB0aGUgZGFpc3kgY2hhaW5lZCBtb2RlIGVhc2lseS4NCiAgICBBbnl3YXksIGFzIHRoZSBtb25p
+dG9ycyBhcmUgb24gdGhlIHNhbWUgcGluLA0KICAgIHdlIGNhbiBhbHdheXMga25vdyB3aGV0aGVy
+IHRoZXJlIGlzIG1vbml0b3Igb24gdGhlIHBpbi4NCiAgICBUaGFua3MgZm9yIHJlbWluZGluZyBp
+dC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
