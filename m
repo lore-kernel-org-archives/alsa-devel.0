@@ -1,14 +1,16 @@
-From: "Simon Wolk" <mistervertigo@web.de>
-Subject: Sound not working after new kernel installed
-Date: Wed, 14 Oct 2015 14:22:59 +0200
-Message-ID: <trinity-85f74570-9abc-486a-82c3-4f14c20d1ad0-1444825379497@3capp-webde-bs37>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: 'BATCH flag for USB' and 'ALSA Core Challenges'
+Date: Wed, 14 Oct 2015 13:27:16 +0100
+Message-ID: <1444825636.2606.25.camel@loki>
+References: <1444657786.2528.78.camel@loki> <561D10AD.7010800@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id BEE8D26519F
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 14:22:59 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8E3F2651B4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 14:28:27 +0200 (CEST)
+In-Reply-To: <561D10AD.7010800@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,46 +20,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-   Hello everybody,
-
-
-   I don't know if my question is right here, but either way I am asking:
-
-
-   I am using an old Benq notebook (Joybook S73) mit Xubuntu 15.04. When I
-   installed a new kernel (then 3.19.0-16, but now I am using 3.19.0.28)
-   the sound on the speakers stoped working and there were no more audible
-   sounds. With headphones plugged in and a the highest possible volume I
-   could hear very silent the music played on the PC.
-
-   Up to Kernel 3.2.0-70 the sound worked fine.
-
-   System update and upgrade unfortunately did not help. Do you have any
-   idea what may be the problem?
-
-
-   I did the following to show the chip used:
-
-   simon@simon-Joybook-S73:~$ lspci -nnk | grep -i audio -A2
-
-   00:1b.0 Audio device [0403]: Intel Corporation NM10/ICH7 Family High
-   Definition Audio Controller [8086:27d8] (rev 02)
-
-   Subsystem: Benq Corporation Device [17ff:0600]
-
-   Kernel driver in use: snd_hda_intel
-
-
-   simon@simon-Joybook-S73:~$ cat /proc/asound/cards
-
-   0 [Intel ]: HDA-Intel - HDA Intel
-
-   HDA Intel at 0x6c400000 irq 29
-
-
-   Thank you for your help!
-
-   Simon
+T24gVHVlLCAyMDE1LTEwLTEzIGF0IDIzOjA5ICswOTAwLCBUYWthc2hpIFNha2Ftb3RvIHdyb3Rl
+Ogo+IEhpLAo+IAo+IChJZiBJIHdlcmUgaW4gwrEwMjAw44CBSSB3b3VsZCBoYXZlIGpvaW5lZCBp
+biB0aGUgbWVldGluZy4uLikKPiAKCkZ3aXcsIG1heWJlIHdlIHNob3VsZCBkbyBhbiBhZGRpdGlv
+bmFsIGhhbmdvdXQgb3B0aW9uIG5leHQgdGltZSBmb3IKcGVvcGxlIHdobyBjYW50IHRyYXZlbC4g
+VGhpcyBkZXBlbmRzIG9uIGRlbWFuZCB0aG91Z2ggYW5kIHdoZXRoZXIgdGhlCnZlbnVlIHdpbGwg
+Z2l2ZSB1cyBkZWNlbnQgaW50ZXJuZXQgYWNjZXNzIGFuZCB3ZSBjYW4gZ2V0IGEgbWljIHNldCB1
+cApmb3IgcHJlc2VudGVycy4gTGV0cyBsb29rIGludG8gaXQgZm9yIG5leHQgdGltZSB0aG91Z2gu
+Li4uCgpMaWFtCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
