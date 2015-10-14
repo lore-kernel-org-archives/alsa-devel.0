@@ -1,17 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: Sildes of topology status for ELEC 2015
-Date: Wed, 14 Oct 2015 13:40:54 +0100
-Message-ID: <1444826454.2606.27.camel@loki>
-References: <F46914AEC2663F4A9BB62374E5EEF8F84B85A447@shsmsx102.ccr.corp.intel.com>
- <1444812256.2606.10.camel@loki> <561E1E13.2020404@perex.cz>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add info callback for SX_TLV controls
+Date: Wed, 14 Oct 2015 13:31:24 +0100
+Message-ID: <1444825884-11827-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BAA02651B4
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 14:40:59 +0200 (CEST)
-In-Reply-To: <561E1E13.2020404@perex.cz>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACF762651A5
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 14:50:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +19,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "Takashi Iwai
- (tiwai@suse.de)" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "Mark Brown
- (broonie@sirena.org.uk)" <broonie@sirena.org.uk>
+To: broonie@kernel.org
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-10-14 at 11:19 +0200, Jaroslav Kysela wrote:
-> Dne 14.10.2015 v 10:44 Liam Girdwood napsal(a):
-> > On Wed, 2015-10-14 at 09:32 +0100, Lin, Mengdong wrote:
-> >> Hi,
-> >>
-> >> The slides of topology status is attached.
-> >>
-> >> And Libin will update DP MST audio slides based on recent alignment.
-> >>
-> > 
-> > Thanks Mengdong.
-> > 
-> > Jaroslav, can we upload PDFs to the ALSA Wiki now ?
-> 
-> Could you send me a link to tarball (like http://tinyupload.com)? I put
-> it in the ALSA HTTP/FTP server.
-> 
-> 				Thanks,
-> 					Jaroslav
-> 
+SX_TLV controls are intended for situations where the register behind
+the control has some non-zero value indicating the minimum gain
+and then gains increasing from there and eventually overflowing through
+zero.
 
-Thanks Jaroslav,
+Currently every CODEC implementing these controls specifies the minimum
+as the non-zero value for the minimum and the maximum as the number of
+gain settings available.
 
-I've created a tarball with Alexanders, Pierres, Keyon, Hans and
-Mengdongs slides.
+This means when the info callback subtracts the minimum value from the
+maximum value to calculate the number of gain levels available it is
+actually under reporting the available levels. This patch fixes this
+issue by adding a new snd_soc_info_volsw_sx callback that does not
+subtract the minimum value.
 
-http://s000.tinyupload.com/index.php?file_id=17634711296843151309
+Fixes: 1d99f2436d0d ("ASoC: core: Rework SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV")
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h |    6 ++++--
+ sound/soc/soc-ops.c |   28 ++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
-Liam
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 98e080b..bd85564 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -86,7 +86,7 @@
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
+ 	SNDRV_CTL_ELEM_ACCESS_READWRITE, \
+ 	.tlv.p  = (tlv_array),\
+-	.info = snd_soc_info_volsw, \
++	.info = snd_soc_info_volsw_sx, \
+ 	.get = snd_soc_get_volsw_sx,\
+ 	.put = snd_soc_put_volsw_sx, \
+ 	.private_value = (unsigned long)&(struct soc_mixer_control) \
+@@ -156,7 +156,7 @@
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
+ 	SNDRV_CTL_ELEM_ACCESS_READWRITE, \
+ 	.tlv.p  = (tlv_array), \
+-	.info = snd_soc_info_volsw, \
++	.info = snd_soc_info_volsw_sx, \
+ 	.get = snd_soc_get_volsw_sx, \
+ 	.put = snd_soc_put_volsw_sx, \
+ 	.private_value = (unsigned long)&(struct soc_mixer_control) \
+@@ -593,6 +593,8 @@ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_info *uinfo);
++int snd_soc_info_volsw_sx(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_info *uinfo);
+ #define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
+ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 100d92b..05977ae 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -207,6 +207,34 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_info_volsw);
+ 
+ /**
++ * snd_soc_info_volsw_sx - Mixer info callback for SX TLV controls
++ * @kcontrol: mixer control
++ * @uinfo: control element information
++ *
++ * Callback to provide information about a single mixer control, or a double
++ * mixer control that spans 2 registers of the SX TLV type. SX TLV controls
++ * have a range that represents both positive and negative values either side
++ * of zero but without a sign bit.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_info_volsw_sx(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_info *uinfo)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++
++	snd_soc_info_volsw(kcontrol, uinfo);
++	/* Max represents the number of levels in an SX control not the
++	 * maximum value, so add the minimum value back on
++	 */
++	uinfo->value.integer.max += mc->min;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_info_volsw_sx);
++
++/**
+  * snd_soc_get_volsw - single mixer get callback
+  * @kcontrol: mixer control
+  * @ucontrol: control element information
+-- 
+1.7.2.5
