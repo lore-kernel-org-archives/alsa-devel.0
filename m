@@ -1,68 +1,50 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [RFC PATCH] ASoC: Modify check condition of multiple
- bindings of components
-Date: Wed, 14 Oct 2015 11:00:01 +0200
-Message-ID: <561E1991.1050705@metafoo.de>
-References: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com> <561D0AA9.5080702@metafoo.de> <1444745902.26493.2.camel@mtksdaap41> <561D1843.1020007@metafoo.de> <1444785549.26493.12.camel@mtksdaap41>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Sildes of topology status for ELEC 2015
+Date: Wed, 14 Oct 2015 11:19:15 +0200
+Message-ID: <561E1E13.2020404@perex.cz>
+References: <F46914AEC2663F4A9BB62374E5EEF8F84B85A447@shsmsx102.ccr.corp.intel.com>
+ <1444812256.2606.10.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444785549.26493.12.camel@mtksdaap41>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id E884E265189
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 11:19:15 +0200 (CEST)
+In-Reply-To: <1444812256.2606.10.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@sirena.org.uk)" <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/14/2015 03:19 AM, Koro Chen wrote:
-> On Tue, 2015-10-13 at 16:42 +0200, Lars-Peter Clausen wrote:
->> On 10/13/2015 04:18 PM, Koro Chen wrote:
->>> On Tue, 2015-10-13 at 15:44 +0200, Lars-Peter Clausen wrote:
->>>> On 10/13/2015 03:37 PM, Koro Chen wrote:
->>>>> The patch "ASoC: Prevent components from being bound to multiple cards"
->>>>> adds check to prevent multiple cards from using the same component.
->>>>> However, snd_soc_register_platform() or snd_soc_register_codec() will
->>>>> also create components, and sharing the same platform by multiple cards
->>>>> is then refused. This happens with a platform having multiple
->>>>> independent DAIs that share the same DMA controller.
->>>>>
->>>>> Relax the condition by checking component->registered_as_component,
->>>>> which is only true in case of snd_soc_register_component() and
->>>>> will be false for components created by snd_soc_register_platform()
->>>>> or snd_soc_register_codec().
->>>>
->>>> Binding a component to multiple cards results in internal data structure
->>>> corruption, regardless of whether it is a raw component, CODEC or platform,
->>>> which is why the check was added. So the proposed change wont work.
->>>>
->>> Thanks for your comment. Is it possible to share an example of how the
->>> data structure will be corrupted? So I can study into this further.
+Dne 14.10.2015 v 10:44 Liam Girdwood napsal(a):
+> On Wed, 2015-10-14 at 09:32 +0100, Lin, Mengdong wrote:
+>> Hi,
 >>
->> Just look at soc_probe_component() and think about what happens if that runs
->> twice for two different cards. Multiple calls to list_add() on the same
->> list, controls are added multiple times, DAPM widgets are created multiple
->> times, the card field will only point to the last card.
+>> The slides of topology status is attached.
 >>
-> When multiple binding happens, soc_probe_component() just returns zero
-> without doing anything after this patch (actually it also returned zero
-> before the patch "ASoC: Prevent components from being bound to multiple
-> cards"). So the component still binds to the first card. For this case I
-> think it should be fine?
+>> And Libin will update DP MST audio slides based on recent alignment.
+>>
+> 
+> Thanks Mengdong.
+> 
+> Jaroslav, can we upload PDFs to the ALSA Wiki now ?
 
-Same answer as before more or less. There is a lot of card specific
-initialization happening in soc_probe_component(). The card field is
-initialized to the card the component is bound to, the DAPM widgets are
-created for the component in the cards DAPM graph, DAI link widgets are
-created and so on. If you bind the component to multiple cards the
-initialization will only be done for one card, the first one it was bound
-to, that doesn't make too much sense. If you look at the snd_soc_component
-data structure it should be obvious that it does not make sense to associate
-it with more than a single card.
+Could you send me a link to tarball (like http://tinyupload.com)? I put
+it in the ALSA HTTP/FTP server.
 
-It was never intended that it is possible to bind a component to multiple
-cards. That it was possible was a bug that was overlooked and some people
-tried to do it which caused apparently random crashes later on, caused by
-the data structure corruption. This is why we added the check to catch this
-kind of mistake early and to avoid the crashes.
+				Thanks,
+					Jaroslav
 
-- Lars
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
