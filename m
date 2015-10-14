@@ -1,17 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Sildes of topology status for ELEC 2015
-Date: Wed, 14 Oct 2015 11:19:15 +0200
-Message-ID: <561E1E13.2020404@perex.cz>
-References: <F46914AEC2663F4A9BB62374E5EEF8F84B85A447@shsmsx102.ccr.corp.intel.com>
- <1444812256.2606.10.camel@loki>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4] ASoC: soc-compress: add config item for
+ soc-compress to make it compiled only when needed
+Date: Wed, 14 Oct 2015 10:20:51 +0100
+Message-ID: <20151014092051.GM8805@ck-lbox>
+References: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E884E265189
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 11:19:15 +0200 (CEST)
-In-Reply-To: <1444812256.2606.10.camel@loki>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90B4E265189
+ for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 11:40:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Koul,
- Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@sirena.org.uk)" <broonie@sirena.org.uk>
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Dne 14.10.2015 v 10:44 Liam Girdwood napsal(a):
-> On Wed, 2015-10-14 at 09:32 +0100, Lin, Mengdong wrote:
->> Hi,
->>
->> The slides of topology status is attached.
->>
->> And Libin will update DP MST audio slides based on recent alignment.
->>
+On Tue, Oct 13, 2015 at 11:41:00PM +0800, Jie Yang wrote:
+> We don't always need soc-compress in soc, here add a config item
+> SND_SOC_COMPRESS, when nobody select it, the soc-compress will
+> not be compiled.
 > 
-> Thanks Mengdong.
+> Here also change Kconfig to 'select SND_SOC_COMPRESS' for drivers
+> that needed soc-compress.
 > 
-> Jaroslav, can we upload PDFs to the ALSA Wiki now ?
+> Signed-off-by: Jie Yang <yang.jie@intel.com>
+> ---
+>  include/sound/soc-dai.h                      |  2 +-
+>  include/sound/soc.h                          |  4 +++-
+>  sound/soc/Kconfig                            |  5 ++++-
+>  sound/soc/Makefile                           |  3 ++-
+>  sound/soc/intel/Kconfig                      |  1 +
+>  sound/soc/intel/atom/sst-mfld-platform-pcm.c |  2 +-
+>  sound/soc/soc-compress.c                     | 12 ++++++++++--
+>  sound/soc/soc-core.c                         |  4 ++--
+>  8 files changed, 24 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 2df96b1..238200f 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -214,7 +214,7 @@ struct snd_soc_dai_driver {
+>  	int (*suspend)(struct snd_soc_dai *dai);
+>  	int (*resume)(struct snd_soc_dai *dai);
+>  	/* compress dai */
+> -	bool compress_dai;
+> +	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
 
-Could you send me a link to tarball (like http://tinyupload.com)? I put
-it in the ALSA HTTP/FTP server.
+This feels a little awkward to be using a function pointer here.
+It somewhat implies I might want to customise this function but
+am I every going to want to set this to something other than
+snd_soc_new_compress?
 
-				Thanks,
-					Jaroslav
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 3b471f9..24b0960 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1370,9 +1370,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+>  		soc_dpcm_debugfs_add(rtd);
+>  #endif
+>  
+> -	if (cpu_dai->driver->compress_dai) {
+> +	if (cpu_dai->driver->compress_new) {
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Would it maybe be nicer to just change this to:
+if (IS_ENABLED(..)) && cpu_dai...)
+
+Anyone else have any thoughts on that?
+
+>  		/*create compress_device"*/
+> -		ret = soc_new_compress(rtd, num);
+> +		ret = cpu_dai->driver->compress_new(rtd, num);
+>  		if (ret < 0) {
+>  			dev_err(card->dev, "ASoC: can't create compress %s\n",
+>  					 dai_link->stream_name);
+
+Thanks,
+Charles
