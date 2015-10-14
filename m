@@ -1,90 +1,57 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4] ASoC: soc-compress: add config item for
- soc-compress to make it compiled only when needed
-Date: Wed, 14 Oct 2015 10:20:51 +0100
-Message-ID: <20151014092051.GM8805@ck-lbox>
-References: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v5 06/10] dmaengine: add API for getting dma
+ controller's quirk
+Date: Wed, 14 Oct 2015 16:23:10 +0530
+Message-ID: <20151014105310.GQ27370@localhost>
+References: <1442187923-5736-1-git-send-email-shawn.lin@rock-chips.com>
+ <1442188139-6017-1-git-send-email-shawn.lin@rock-chips.com>
+ <20151005153746.GG13501@vkoul-mobl.iind.intel.com>
+ <56139289.7000005@rock-chips.com>
+ <561629D6.9010702@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 90B4E265189
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 11:40:22 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+In-Reply-To: <561629D6.9010702-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 13, 2015 at 11:41:00PM +0800, Jie Yang wrote:
-> We don't always need soc-compress in soc, here add a config item
-> SND_SOC_COMPRESS, when nobody select it, the soc-compress will
-> not be compiled.
+On Thu, Oct 08, 2015 at 10:31:18AM +0200, Lars-Peter Clausen wrote:
+> > Basically I agree not to expose dma's quirk to slave controllers...But, the
+> > fact I mentioned on cover letter explain the reasons why I have to let slave
+> > controllers know that they are working with a broken dma. It's a dilemma
+> > that if we don't want that to be exposed(let slave controllers' driver get
+> > the info via a API), we have t add broken quirk for all of them ,here and
+> > there, which seems to be a disaster:(
 > 
-> Here also change Kconfig to 'select SND_SOC_COMPRESS' for drivers
-> that needed soc-compress.
+> The problem with this API is that it transports values with device specific
+> meanings over a generic API. Which is generally speaking not a good idea
+> because the consumer witch is supposed to be generic suddenly needs to know
+> which provider it is talking to.
 > 
-> Signed-off-by: Jie Yang <yang.jie@intel.com>
-> ---
->  include/sound/soc-dai.h                      |  2 +-
->  include/sound/soc.h                          |  4 +++-
->  sound/soc/Kconfig                            |  5 ++++-
->  sound/soc/Makefile                           |  3 ++-
->  sound/soc/intel/Kconfig                      |  1 +
->  sound/soc/intel/atom/sst-mfld-platform-pcm.c |  2 +-
->  sound/soc/soc-compress.c                     | 12 ++++++++++--
->  sound/soc/soc-core.c                         |  4 ++--
->  8 files changed, 24 insertions(+), 9 deletions(-)
+> A better solution in this case typically is either introduce a generic API
+> with generic values or a custom API with custom values, but don't mix the two.
 > 
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 2df96b1..238200f 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -214,7 +214,7 @@ struct snd_soc_dai_driver {
->  	int (*suspend)(struct snd_soc_dai *dai);
->  	int (*resume)(struct snd_soc_dai *dai);
->  	/* compress dai */
-> -	bool compress_dai;
-> +	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
+> > 
+> > I would appreciate it if you could give me some suggestions at your earliest
+> > convenience. :)
+> 
+> In this case I think the best way to handle this is not quirks, but rather
+> expose the actual maximum burst size using the DMA capabilities API. Since
+> supporting only a certain burst depth is not really a quirk. All hardware
+> has a limit for this and for some it might be larger or smaller than for
+> others and it might be the same IP core but the maximum size depends on some
+> IP core parameters. So this should be discoverable.
 
-This feels a little awkward to be using a function pointer here.
-It somewhat implies I might want to customise this function but
-am I every going to want to set this to something other than
-snd_soc_new_compress?
+yes that makes more sense than adding quirks, exposing the right values
+which should be a readable property for driver will ensure it works on
+system with/without quirks
 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 3b471f9..24b0960 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1370,9 +1370,9 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
->  		soc_dpcm_debugfs_add(rtd);
->  #endif
->  
-> -	if (cpu_dai->driver->compress_dai) {
-> +	if (cpu_dai->driver->compress_new) {
-
-Would it maybe be nicer to just change this to:
-if (IS_ENABLED(..)) && cpu_dai...)
-
-Anyone else have any thoughts on that?
-
->  		/*create compress_device"*/
-> -		ret = soc_new_compress(rtd, num);
-> +		ret = cpu_dai->driver->compress_new(rtd, num);
->  		if (ret < 0) {
->  			dev_err(card->dev, "ASoC: can't create compress %s\n",
->  					 dai_link->stream_name);
-
-Thanks,
-Charles
+-- 
+~Vinod
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
