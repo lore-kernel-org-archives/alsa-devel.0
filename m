@@ -1,18 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: Splitting out controls
-Date: Wed, 14 Oct 2015 19:20:32 +0100
-Message-ID: <1444846832.2606.53.camel@loki>
-References: <1444657786.2528.78.camel@loki>
- <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
- <561D1B7D.9080307@linux.intel.com> <561D2997.1090401@canonical.com>
+From: James Cameron <quozl@laptop.org>
+Subject: Re: Sound not working after new kernel installed
+Date: Thu, 15 Oct 2015 09:43:52 +1100
+Message-ID: <20151014224352.GI27911@us.netrek.org>
+References: <trinity-85f74570-9abc-486a-82c3-4f14c20d1ad0-1444825379497@3capp-webde-bs37>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ACF626153A
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 20:20:35 +0200 (CEST)
-In-Reply-To: <561D2997.1090401@canonical.com>
+Received: from zimbra.real-time.com (zimbra.real-time.com [63.170.91.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3275265232
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 00:44:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <trinity-85f74570-9abc-486a-82c3-4f14c20d1ad0-1444825379497@3capp-webde-bs37>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, James Cameron <quozl@laptop.org>
+To: Simon Wolk <mistervertigo@web.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-10-13 at 17:56 +0200, David Henningsson wrote:
+On Wed, Oct 14, 2015 at 02:22:59PM +0200, Simon Wolk wrote:
+> I am using an old Benq notebook (Joybook S73) mit Xubuntu
+> 15.04. When I installed a new kernel (then 3.19.0-16, but now I am
+> using 3.19.0.28) the sound on the speakers stoped working and there
+> were no more audible sounds. With headphones plugged in and a the
+> highest possible volume I could hear very silent the music played on
+> the PC.
 > 
-> On 2015-10-13 16:55, Pierre-Louis Bossart wrote:
-> > On 10/13/15 2:07 AM, David Henningsson wrote:
-> >>
-> >>
-> >> On 2015-10-12 22:59, James Cameron wrote:
-> >>> On Mon, Oct 12, 2015 at 02:49:46PM +0100, Liam Girdwood wrote:
-> >>>> I've written up the minutes here below
-> >>>
-> >>> Thanks!
-> >>>
-> >>>> Splitting out controls: Takashi
-> >>>> ===============================
-> >>>>
-> >>>>   - Restricted access.  Consensus to restrict access to some controls
-> 
-> Note: There is NOT consensus.
+> Up to Kernel 3.2.0-70 the sound worked fine.
 
-Sorry, this should be "control values" instead of "controls". I guess my
-typing speed was not fast enough to keep up :(
+Does 3.2.0-70 still work fine?
 
-My understanding at the time was we could use the existing clamp API to
-clamp kcontrol values (in machine drivers) to reasonable/safe values.
+A friend's laptop had an electrostatic discharge or electrical event
+that damaged the audio codec chip, taking out the headphone detect and
+headphone amp, and it showed almost same symptoms as you describe.  On
+that laptop, patching the kernel to force the headphone not present
+fixed playback from speakers.  I'm not suggesting that, but if you can
+say the old kernel still works fine you can exclude damage as cause.
 
-I did hear many objections to setting some kcontrols as RO for certain
-users and RW for other users.
+That leaves you with looking at the difference between 3.2.0 and
+3.19.0, for the driver in use.
 
-Liam
+Try other kernels between the two, to figure out which kernel
+introduced the change.
+
+-- 
+James Cameron
+http://quozl.linux.org.au/
