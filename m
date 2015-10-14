@@ -1,81 +1,57 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Wed, 14 Oct 2015 07:52:08 +0800
-Message-ID: <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <561CA911.7070405@canonical.com>
- <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
- <s5hlhb7ktum.wl-tiwai@suse.de>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: Re: [alsa-devel] [RFC PATCH] ASoC: Modify check condition of
+ multiple bindings of components
+Date: Wed, 14 Oct 2015 09:19:09 +0800
+Message-ID: <1444785549.26493.12.camel@mtksdaap41>
+References: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
+		 <561D0AA9.5080702@metafoo.de> <1444745902.26493.2.camel@mtksdaap41>
+	 <561D1843.1020007@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 2705B265CA8
- for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2015 01:52:10 +0200 (CEST)
-Received: by obbzf10 with SMTP id zf10so27038655obb.2
- for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2015 16:52:08 -0700 (PDT)
-In-Reply-To: <s5hlhb7ktum.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <561D1843.1020007@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, s.hauer@pengutronix.de, lgirdwood@gmail.com, perex@perex.cz, broonie@kernel.org, linux-mediatek@lists.infradead.org, p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > > One could then allocate two extra PCMs from the start (9 and 10) to
-> > > try
-> > > in case the other PCM is busy (my preference), or one could steal one
-> > > of
-> > > the existing non-busy ones (Takashi's preference).
-> >
-> > We will create the PCMs based on converter. This means we will
-> > create 3 PCMs. And it will not support dynamically allocating PCM.
-> > As there are only 3 converters, no more PCMs will be supported.
-> > Each PCM will use one converter. If 3 PCMs are all used, connecting
-> > monitor will not create new PCM.
-> >
-> > Yes, if we are not using the PCM, we can re-assign the PCM to another
-> > monitor. Currently, user can't decide which PCM is used for which
-> > monitor. Image the scenario PCM 3 is assigned to monitor 1, PCM 7 is
-> > assigned to monitor 2, PCM 8 is assigned to monitor 3. Monitor 4 is
-> > connected, no PCM is available, and driver don't know whether it
-> > should steal one PCM for the monitor 4 and user can't change the
-> > mapping currently.
->
-> Actually, there are a few things to implement properly:
->
-> 1. The plug/unplug events are triggered at the actual graphics output
->    switching via xrandr or such, not at the time the monitor is
->    physically plugged/unplugged.
->
-> 2. At switching, the unplug event must be handled at first, and then
->    the plug event.
->
-> 3. At unplug, detach per_pin object properly from PCM.
->    We currently just notify it via jack ctl, and doesn't care the
->    rest.  Ideally, we should force to stop the PCM and detach
->    internally from the assigned pin.
->
-> 4. At plug, assign the monitor to the free per_pin object.
->
-> So what we've discussed is about the last step; how to map the new
-> monitor to per_pin object.  This requires the other steps beforehand
-> which assures a free per_pin is present at plug time.
->
+On Tue, 2015-10-13 at 16:42 +0200, Lars-Peter Clausen wrote:
+> On 10/13/2015 04:18 PM, Koro Chen wrote:
+> > On Tue, 2015-10-13 at 15:44 +0200, Lars-Peter Clausen wrote:
+> >> On 10/13/2015 03:37 PM, Koro Chen wrote:
+> >>> The patch "ASoC: Prevent components from being bound to multiple cards"
+> >>> adds check to prevent multiple cards from using the same component.
+> >>> However, snd_soc_register_platform() or snd_soc_register_codec() will
+> >>> also create components, and sharing the same platform by multiple cards
+> >>> is then refused. This happens with a platform having multiple
+> >>> independent DAIs that share the same DMA controller.
+> >>>
+> >>> Relax the condition by checking component->registered_as_component,
+> >>> which is only true in case of snd_soc_register_component() and
+> >>> will be false for components created by snd_soc_register_platform()
+> >>> or snd_soc_register_codec().
+> >>
+> >> Binding a component to multiple cards results in internal data structure
+> >> corruption, regardless of whether it is a raw component, CODEC or platform,
+> >> which is why the check was added. So the proposed change wont work.
+> >>
+> > Thanks for your comment. Is it possible to share an example of how the
+> > data structure will be corrupted? So I can study into this further.
+> 
+> Just look at soc_probe_component() and think about what happens if that runs
+> twice for two different cards. Multiple calls to list_add() on the same
+> list, controls are added multiple times, DAPM widgets are created multiple
+> times, the card field will only point to the last card.
+> 
+When multiple binding happens, soc_probe_component() just returns zero
+without doing anything after this patch (actually it also returned zero
+before the patch "ASoC: Prevent components from being bound to multiple
+cards"). So the component still binds to the first card. For this case I
+think it should be fine?
 
-Do it mean that only one DP MST port and no HDMI port on the same graphic
-card ?
-
-If DP MST are dasiy chained, the unplug of the first monitor from Display
-Port will cause all DP monitor in the dasiy chain disconnect
+> 
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
