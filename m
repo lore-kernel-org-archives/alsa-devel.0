@@ -1,65 +1,57 @@
-From: pascal.huerst@gmail.com
-Subject: [PATCH] ASoC: adau1701: Add 44.1 KHz to supported
-	sample rates
-Date: Thu, 15 Oct 2015 13:16:06 +0200
-Message-ID: <1444907766-9892-1-git-send-email-pascal.huerst@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [RFC PATCH] ASoC: Modify check condition of
+ multiple bindings of components
+Date: Thu, 15 Oct 2015 13:10:35 +0100
+Message-ID: <20151015121035.GE14956@sirena.org.uk>
+References: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
+ <561D0AA9.5080702@metafoo.de>
+ <1444745902.26493.2.camel@mtksdaap41>
+ <561D1843.1020007@metafoo.de>
+ <1444785549.26493.12.camel@mtksdaap41>
+ <561E1991.1050705@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C904260453
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 13:16:17 +0200 (CEST)
-Received: by wicll6 with SMTP id ll6so35645186wic.0
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 04:16:16 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, Pascal Huerst <pascal.huerst@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LNKrWK8T5LDJo+fl"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <561E1991.1050705@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Koro Chen <koro.chen@mediatek.com>, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, linux-mediatek@lists.infradead.org, p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pascal Huerst <pascal.huerst@gmail.com>
 
-According to the datasheet, this device does also support 44.1 KHz
-as sample rate. This adds the necessary changes to support this.
+--LNKrWK8T5LDJo+fl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-See Datasheet: Rev. B / page 39 / SR[1:0]
+On Wed, Oct 14, 2015 at 11:00:01AM +0200, Lars-Peter Clausen wrote:
 
-Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
----
- sound/soc/codecs/adau1701.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> It was never intended that it is possible to bind a component to multiple
+> cards. That it was possible was a bug that was overlooked and some people
+> tried to do it which caused apparently random crashes later on, caused by
+> the data structure corruption. This is why we added the check to catch this
+> kind of mistake early and to avoid the crashes.
 
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index de53c0d..8b3ba51 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -459,6 +459,7 @@ static int adau1701_hw_params(struct snd_pcm_substream *substream,
- 	case 96000:
- 		val = ADAU1701_DSPCTRL_SR_96;
- 		break;
-+	case 44100:
- 	case 48000:
- 		val = ADAU1701_DSPCTRL_SR_48;
- 		break;
-@@ -623,8 +624,8 @@ static int adau1701_startup(struct snd_pcm_substream *substream,
- 	return sigmadsp_restrict_params(adau1701->sigmadsp, substream);
- }
- 
--#define ADAU1701_RATES (SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 | \
--	SNDRV_PCM_RATE_192000)
-+#define ADAU1701_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
-+	SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
- 
- #define ADAU1701_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 	SNDRV_PCM_FMTBIT_S24_LE)
--- 
-2.4.3
+This is true, but I do think it's something that we should have some
+story on supporting for some of this hardware that has a bunch of
+channels in one IP block that can't really interact with each other.
+It's going to make it a lot easier for people to think about the
+hardware and how to describe it.
+
+--LNKrWK8T5LDJo+fl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWH5e6AAoJECTWi3JdVIfQ2g4H/Ar5dygi0Ept7WJZxTow6M4O
+kPKsXIrb9X+n4mAd8Q5Od/mIR5A7OBw9ethut+gV5joU/1ajcrvmucbWMgKl1B5R
+VcKWDKdvXAIETf6m3w+qMRV0HwlVM+w+o60cfAzLEGS5NVswLRopcCdlzorac4c/
+TYHuEZabOSMv93ifg/WncFtIWJ93AcoWPkwcUFjdYheVipU4TPgQ4Pt/3wCwpjcz
+o8+sB3r6wbwle1xM9Yepa3qGpj8rjLt4f5oYpZwPWMZqUtYq3z0gvBfXl5bGPQnP
+06RGfBgf/XGSsuG0chnRFJ1C4i2cJkwRZyJO4HsXUj0qeVl4DvY3PWjMVdBLf/s=
+=93Ch
+-----END PGP SIGNATURE-----
+
+--LNKrWK8T5LDJo+fl--
