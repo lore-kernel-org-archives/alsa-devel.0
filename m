@@ -1,116 +1,58 @@
-From: Mikko Rapeli <mikko.rapeli@iki.fi>
-Subject: [PATCH v4 28/79] hdspm.h: use __u8,
-	__u32 and __u64 from linux/types.h instead of stdint.h
-Date: Thu, 15 Oct 2015 07:56:06 +0200
-Message-ID: <1444888618-4506-29-git-send-email-mikko.rapeli@iki.fi>
-References: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
+From: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH v6 09/10] snd: dmaengine-pcm: add
+ snd_dmaengine_pcm_get_caps interface
+Date: Thu, 15 Oct 2015 14:50:32 +0800
+Message-ID: <561F4CB8.1000500@rock-chips.com>
+References: <1444872865-2169-1-git-send-email-shawn.lin@rock-chips.com>
+ <1444872998-2548-1-git-send-email-shawn.lin@rock-chips.com>
+ <20151015040500.GB27370@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kapsi.fi (mail.kapsi.fi [217.30.184.167])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C2C5266485
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 07:59:03 +0200 (CEST)
-In-Reply-To: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: mikko.rapeli@iki.fi, alsa-devel@alsa-project.org, linux-api@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151015040500.GB27370@localhost>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Kernel headers should use linux/types.h based definitions.
+On 2015/10/15 12:05, Vinod Koul wrote:
+> On Thu, Oct 15, 2015 at 09:36:38AM +0800, Shawn Lin wrote:
+>> +int snd_dmaengine_pcm_get_caps(struct device *dev, struct dma_slave_caps *caps)
+>> +{
+>> +	struct snd_soc_platform *platform;
+>> +	struct dmaengine_pcm *pcm;
+>> +	int ret = -ENODEV;
+>> +
+>> +	platform = snd_soc_lookup_platform(dev);
+>> +	if (!platform)
+>> +		return ret;
+>> +
+>> +	pcm = soc_platform_to_pcm(platform);
+>> +
+>> +	if (pcm->chan)
+>> +		ret = dma_get_slave_caps(pcm->chan[0], caps);
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_get_caps);
+>
+> I don't see the need of this wrapper if you are not going to use this inside
+> common code.. Why not read this in driver, anyway you setting taht up in
+> next patch
 
-Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
----
- include/uapi/sound/hdspm.h | 40 ++++++++++++++++++----------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+okay, I will read it in driver directly.
 
-diff --git a/include/uapi/sound/hdspm.h b/include/uapi/sound/hdspm.h
-index 5737332..c4db6f5 100644
---- a/include/uapi/sound/hdspm.h
-+++ b/include/uapi/sound/hdspm.h
-@@ -20,11 +20,7 @@
-  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-  */
- 
--#ifdef __KERNEL__
- #include <linux/types.h>
--#else
--#include <stdint.h>
--#endif
- 
- /* Maximum channels is 64 even on 56Mode you have 64playbacks to matrix */
- #define HDSPM_MAX_CHANNELS      64
-@@ -46,15 +42,15 @@ enum hdspm_speed {
- /* -------------------- IOCTL Peak/RMS Meters -------------------- */
- 
- struct hdspm_peak_rms {
--	uint32_t input_peaks[64];
--	uint32_t playback_peaks[64];
--	uint32_t output_peaks[64];
-+	__u32 input_peaks[64];
-+	__u32 playback_peaks[64];
-+	__u32 output_peaks[64];
- 
--	uint64_t input_rms[64];
--	uint64_t playback_rms[64];
--	uint64_t output_rms[64];
-+	__u64 input_rms[64];
-+	__u64 playback_rms[64];
-+	__u64 output_rms[64];
- 
--	uint8_t speed; /* enum {ss, ds, qs} */
-+	__u8 speed; /* enum {ss, ds, qs} */
- 	int status2;
- };
- 
-@@ -155,21 +151,21 @@ enum hdspm_syncsource {
- };
- 
- struct hdspm_status {
--	uint8_t card_type; /* enum hdspm_io_type */
-+	__u8 card_type; /* enum hdspm_io_type */
- 	enum hdspm_syncsource autosync_source;
- 
--	uint64_t card_clock;
--	uint32_t master_period;
-+	__u64 card_clock;
-+	__u32 master_period;
- 
- 	union {
- 		struct {
--			uint8_t sync_wc; /* enum hdspm_sync */
--			uint8_t sync_madi; /* enum hdspm_sync */
--			uint8_t sync_tco; /* enum hdspm_sync */
--			uint8_t sync_in; /* enum hdspm_sync */
--			uint8_t madi_input; /* enum hdspm_madi_input */
--			uint8_t channel_format; /* enum hdspm_madi_channel_format */
--			uint8_t frame_format; /* enum hdspm_madi_frame_format */
-+			__u8 sync_wc; /* enum hdspm_sync */
-+			__u8 sync_madi; /* enum hdspm_sync */
-+			__u8 sync_tco; /* enum hdspm_sync */
-+			__u8 sync_in; /* enum hdspm_sync */
-+			__u8 madi_input; /* enum hdspm_madi_input */
-+			__u8 channel_format; /* enum hdspm_madi_channel_format */
-+			__u8 frame_format; /* enum hdspm_madi_frame_format */
- 		} madi;
- 	} card_specific;
- };
-@@ -184,7 +180,7 @@ struct hdspm_status {
- #define HDSPM_ADDON_TCO 1
- 
- struct hdspm_version {
--	uint8_t card_type; /* enum hdspm_io_type */
-+	__u8 card_type; /* enum hdspm_io_type */
- 	char cardname[20];
- 	unsigned int serial;
- 	unsigned short firmware_rev;
+Thanks.
+
+>
+
+
 -- 
-2.5.0
+Best Regards
+Shawn Lin
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
