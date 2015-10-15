@@ -1,73 +1,139 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [PATCH] ASoC: bcm2835-i2s: Fix module autoload for OF platform drivers
-Date: Wed, 14 Oct 2015 17:44:46 -0700
-Message-ID: <8737xdgdtt.fsf@eliezer.anholt.net>
-References: <20150827150401.GA32653@goodgumbo.baconseed.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150827150401.GA32653@goodgumbo.baconseed.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luis de Bethencourt <luis@debethencourt.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v6 0/10] Fix broken DMAFLUSHP on Rockchips platform
+Date: Thu, 15 Oct 2015 09:34:25 +0800
+Message-ID: <1444872865-2169-1-git-send-email-shawn.lin@rock-chips.com>
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-Luis de Bethencourt <luis@debethencourt.com> writes:
+The purpose of the DMAFLUSHP instruction:
+- Tell the peripheral to clear its status and control registers.
+- Send a message to the peripheral to resend its level status.
 
-> These platform drivers have a OF device ID table but the OF module
-> alias information is not created so module autoloading won't work.
->
-> Signed-off-by: Luis de Bethencourt <luis@debethencourt.com>
-> ---
->  sound/soc/bcm/bcm2835-i2s.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-> index 03fa1cb..8c435be 100644
-> --- a/sound/soc/bcm/bcm2835-i2s.c
-> +++ b/sound/soc/bcm/bcm2835-i2s.c
-> @@ -862,6 +862,8 @@ static const struct of_device_id bcm2835_i2s_of_match=
-[] =3D {
->  	{},
->  };
->=20=20
-> +MODULE_DEVICE_TABLE(of, bcm2835_i2s_of_match);
-> +
->  static struct platform_driver bcm2835_i2s_driver =3D {
->  	.probe		=3D bcm2835_i2s_probe,
->  	.driver		=3D {
-> --=20
+There are 3 timings described in PL330 Technical Reference Manual:
+- Timing 1: Burst request, can work well without DMAFLUSHP.
+- Timing 2: Single and burst request, DMAC will ignore the single
+	    transfer request. This timing happens if there are single
+	    and burst request.
+- Timing 3: Single transfers for a burst request, DMAC should signals
+	    datype to request the peripheral to flush the contents of
+	    any control registers. This timing happens if there is
+	    not enough MFIFO to places the burst data.
 
-It looks like this should go through the asoc tree, but I don't see it
-in there.
+A peripheral may signal a DMA request during the execution of
+DMAFLUSHP instruction, that cause DMA request being ignored by DMAC.
 
-FWIW, it is also:
+But DMAC and all peripherals on RK3X SoCs DO NOT support DMAFLUSHP.
+It can't send a message to the peripheral to resend DMA request,
+and the peripheral can't acknowledge a flush request from DMAC.
+So all DMA requests should NOT be ignored by DMAC, and DMAC will not
+notify the peripheral to flush.
 
-Acked-by: Eric Anholt <eric@anholt.net>
+To fix this problem, we need:
+- Do NOT execute DMAFLUSHP instruction.
+- Timing 2 and timing 3 should not happen.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Because on RK3X SoCs, there are 6 or below  channels and 32 MFIFO depth
+for DMAC_BUS, and 8 channels and 64 MFIFO depth for DMAC_PERI, it is
+impossible to hit the timing 3 if burst length is equal or less than 4.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Since the request type signal by the peripheral can only be set by
+software. We can set Rockchip Soc's GRF_PERIDMAC_CON0[2:1] to select single
+or burst request, if it is set b01,  all of the peripharals will signal a brust
+request. So the timing 2 will not happen, too.
 
-iQIcBAEBCgAGBQJWHvb+AAoJELXWKTbR/J7oiE8QAJw5wc/PvI5gfaLtbA0R0u92
-WPecbYXN6gL/JxE3R9JwYnjxIfJx4vS76oYPV0zuZ9MALZBFiZJGTZqBjBRI8gco
-T/nDHq+eJGgkgMdgGbNB7FO+V6vAFuSWK0MmDBoCZ/feK30uZrvQ/l07pHKcu5AY
-p8rFOBoDTfAR13IyAPAY4YdERgbMvuzCQX8S9qr/1eOZDNtPBiLHlQC2+5YHw2Ae
-LfvumM/KVbewAySt2SL5kK/sJuicizEV81+Ufw7Q6P4HwjlfeJss9PQqghXkgn0x
-FP7PuqVMKcNsV8JZBSKZ1Qh27giZf0OWtdJFm0JEjYJfKQvUFIcQ99Xc2ZggCvwz
-+Y3402U5Ppc3gJKduDk+b5y/Ki1YV6ONUoqj8+UlxTFfcaaENNc1UMiTeQ9BT/PK
-znL3vUtsqB4vItMWZELq0OvNUsWGiEJunq/G3aKXFIw4JTPDP2XP6v52GiKu+KFs
-9TSmz+O/oiXZBeoZMaxj8sx9nLi458Pxn9EssE9yXqfWAuSSOXZ2IqBpXzuTmYRa
-RnOH5maNHrMeSp0SjjSbZRaL8PGoCK792NOQrc6sACKFT6e+DyrMjXpgsMgRXEMA
-Z2FXkxRgOsX3s9Sbp5f+VtysjRnQQhSwX3hOdcKrW6wazQG9NuND6NEQBPX8G4T+
-o7IEx1GV7XohcCyYRDjT
-=4gNE
------END PGP SIGNATURE-----
---=-=-=--
+So DMAC on RK3X can support single or burst transfer, but can't support
+mixed transfer.
+
+Because burst transfer is more efficient than single transfer, this is
+confirmed by our ASIC team, who strongly suggest to use burst transfer.
+And this is confirmed by Addy's test on RK3288-Pink2 board, the speed of
+spi flash burst transfer will increase about two times than single transfer.
+Also, I have tested dw_mmc with pl330 on RK3188 platform to double confirm
+the result. That means burst transfer is reansonable.
+
+So we need a quirk not to execute DMAFLUSHP instruction and to use burst
+transfer.
+
+Note:
+- The Rockchip Soc default value of GRF_PERIDMAC_CON0[2:1] is b01. To
+  support brust transfer, these bits should not be changed in bootloader.
+
+
+Changes in v6:
+- remove expose quirk and add dma max_burst caps for clients
+- remove expose quirks and add max_burst for dmaengine
+- remove get quirks and add get slave caps
+- remove quirks and get dma caps in order to limit burst
+
+Changes in v5:
+- add Mark's tag for spi changes
+- remove unnecessary whitespace change
+- use switch statement for i2s quirk
+- use switch statement for dma_quirk's manipulation
+
+Changes in v4:
+- remove spi & i2s dts changes and query quirk from dmaengine API
+  suggeseted by Mark.
+- fix typo
+- Add dmaengine_get_quirk hook and implement it for pl330
+
+Changes in v3:
+- add Sunny's tag
+- add more rockchip drivers' changes in this patchset
+- add Reviewed-by: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+
+Changes in v2:
+- amend the author
+- reorder the patches suggested by Doug
+- add Reviewed-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org> for
+  rk3288.dtsi patch and arm-pl330.txt patch
+- fix Olof's mail address
+
+Changes in v1:
+- add From original author.
+- remove Sunny's tag
+- rename broken-no-flushp to "arm,pl330-broken-no-flushp" suggested
+  by Krzysztof.
+
+Addy Ke (3):
+  DMA: pl330: add quirk for broken no flushp
+  ARM: dts: Add arm,pl330-broken-no-flushp quirk for rk3288 platform
+  spi: rockchip: modify DMA max burst to 1
+
+Boojin Kim (1):
+  DMA: pl330: support burst mode for dev-to-mem and mem-to-dev transmit
+
+Shawn Lin (5):
+  Documentation: arm-pl330: add description of
+    arm,pl330-broken-no-flushp
+  ARM: dts: Add arm,pl330-broken-no-flushp quirk for rk3xxx platform
+  DMA: dmaengine: expose max burst capability to clients
+  DMA: pl330: add max burst for dmaengine
+  snd: dmaengine-pcm: add snd_dmaengine_pcm_get_caps interface
+
+Yiwei Cai (1):
+  ASoC: rockchip_i2s: modify DMA max burst to 1
+
+ .../devicetree/bindings/dma/arm-pl330.txt          |   1 +
+ arch/arm/boot/dts/rk3288.dtsi                      |   3 +
+ arch/arm/boot/dts/rk3xxx.dtsi                      |   3 +
+ drivers/dma/dmaengine.c                            |   1 +
+ drivers/dma/pl330.c                                | 106 +++++++++++++++------
+ drivers/spi/spi-rockchip.c                         |  12 ++-
+ include/linux/dmaengine.h                          |   4 +
+ sound/soc/rockchip/rockchip_i2s.c                  |  18 +++-
+ sound/soc/soc-generic-dmaengine-pcm.c              |  24 +++++
+ 9 files changed, 138 insertions(+), 34 deletions(-)
+
+-- 
+2.3.7
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
