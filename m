@@ -1,7 +1,7 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch 2/2] ALSA: firewire-tascam: off by one in handle_midi_tx()
-Date: Thu, 15 Oct 2015 21:17:11 +0300
-Message-ID: <20151015181711.GB3163@mwanda>
+Subject: [patch] ALSA: firewire-tascam: off by one in identify_model()
+Date: Thu, 15 Oct 2015 21:18:29 +0300
+Message-ID: <20151015181828.GC3163@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <kernel-janitors-owner@vger.kernel.org>
@@ -11,24 +11,23 @@ To: Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-My static checker complains because tscm->spec->midi_capture_ports is
-either 2 or 4 but the tscm->tx_midi_substreams[] array has 4 elements so
-this is possibly off by one.  I have looked at the code and I think it
-should be >= instead of > as well.
+In the original code, we potentially put a NUL character in model[8] and
+it caused a static checker warning.  We can put the NUL in model[7]
+instead.
 
-Fixes: 107cc0129a68 ('ALSA: firewire-tascam: add support for incoming MIDI messages by asynchronous transaction')
+Fixes: 53b3ffee7885 ('ALSA: firewire-tascam: change device probing processing')
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index 45c3ce3..d4f64ae 100644
---- a/sound/firewire/tascam/tascam-transaction.c
-+++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -158,7 +158,7 @@ static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index c6747a4..6ef2bcc 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -51,7 +51,7 @@ static int identify_model(struct snd_tscm *tscm)
+ 	}
  
- 		port = b[0] >> 4;
- 		/* TODO: support virtual MIDI ports. */
--		if (port > tscm->spec->midi_capture_ports)
-+		if (port >= tscm->spec->midi_capture_ports)
- 			goto end;
- 
- 		/* Assume the message length. */
+ 	/* Pick up model name from certain addresses. */
+-	for (i = 0; i < 8; i++) {
++	for (i = 0; i < 7; i++) {
+ 		c = config_rom[28 + i / 4] >> (24 - 8 * (i % 4));
+ 		if (c == '\0')
+ 			break;
