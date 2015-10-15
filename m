@@ -1,75 +1,45 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 2/2] media: au0828 create link between ALSA Mixer and decoder
-Date: Thu, 15 Oct 2015 14:50:53 -0600
-Message-ID: <5d44b252378049b68a9cf6ad966c1b1978848676.1444941680.git.shuahkh@osg.samsung.com>
-References: <cover.1444941680.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen 0/2] Add mixer and control interface media entities
+Date: Thu, 15 Oct 2015 14:50:51 -0600
+Message-ID: <cover.1444941680.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1444941680.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1444941680.git.shuahkh@osg.samsung.com>
-References: <cover.1444941680.git.shuahkh@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828_create_media_graph() to create pad link
-between MEDIA_ENT_F_AUDIO_MIXER entity and decoder's
-AU8522_PAD_AUDIO_OUT.
+This patch series adds the following:
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/usb/au0828/au0828-core.c | 12 ++++++++++++
+Add support for creating MEDIA_ENT_F_AUDIO_MIXER entity for
+each mixer and a MEDIA_INTF_T_ALSA_CONTROL control interface
+entity that links to mixer entities. MEDIA_INTF_T_ALSA_CONTROL
+entity corresponds to the control device for the card.
+
+Change au0828_create_media_graph() to create pad link between
+MEDIA_ENT_F_AUDIO_MIXER entity and decoder's AU8522_PAD_AUDIO_OUT.
+
+This patch series is dependent on an earlier patch series:
+
+Update ALSA, and au0828 drivers to use Managed Media Controller API:
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg92752.html
+
+Please find the media graph with mixer and control interface nodes:
+https://drive.google.com/folderview?id=0B0NIL0BQg-Alb3JFb2diMXRoQlU&usp=sharing
+New file:
+graph_mixer.png
+
+Shuah Khan (2):
+  sound/usb: Create media mixer function and control interface entities
+  media: au0828 create link between ALSA Mixer and decoder
+
+ drivers/media/usb/au0828/au0828-core.c | 12 +++++
  drivers/media/usb/au0828/au0828.h      |  1 +
- 2 files changed, 13 insertions(+)
+ sound/usb/card.c                       |  5 ++
+ sound/usb/media.c                      | 85 ++++++++++++++++++++++++++++++++++
+ sound/usb/media.h                      |  4 ++
+ sound/usb/mixer.h                      |  1 +
+ sound/usb/usbaudio.h                   |  1 +
+ 7 files changed, 109 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 7af5d0d..84b2405 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -225,6 +225,7 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 	struct media_entity *entity;
- 	struct media_entity *tuner = NULL, *decoder = NULL;
- 	struct media_entity *audio_capture = NULL;
-+	struct media_entity *mixer = NULL;
- 	int i, ret;
- 
- 	if (!mdev)
-@@ -245,6 +246,9 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		case MEDIA_ENT_F_AUDIO_CAPTURE:
- 			audio_capture = entity;
- 			break;
-+		case MEDIA_ENT_F_AUDIO_MIXER:
-+			mixer = entity;
-+			break;
- 		}
- 	}
- 
-@@ -316,6 +320,14 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		if (ret == 0)
- 			dev->audio_capture_linked = 1;
- 	}
-+
-+	if (mixer && !dev->mixer_linked) {
-+		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
-+					    mixer, 0,
-+					    MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->mixer_linked = 1;
-+	}
- #endif
- }
- 
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 2f4d597..6dd81b2 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -288,6 +288,7 @@ struct au0828_dev {
- 	bool vdev_linked;
- 	bool vbi_linked;
- 	bool audio_capture_linked;
-+	bool mixer_linked;
- 	struct media_link *active_link;
- 	struct media_entity *active_link_owner;
- #endif
 -- 
 2.1.4
