@@ -1,36 +1,42 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [alsa-devel] [RFC PATCH] ASoC: Modify check condition of
- multiple bindings of components
-Date: Thu, 15 Oct 2015 20:49:40 +0800
-Message-ID: <1444913380.26493.38.camel@mtksdaap41>
-References: <1444743477-48819-1-git-send-email-koro.chen@mediatek.com>
-	 <561D0AA9.5080702@metafoo.de> <1444745902.26493.2.camel@mtksdaap41>
-	 <561D1843.1020007@metafoo.de> <1444785549.26493.12.camel@mtksdaap41>
-	 <561E1991.1050705@metafoo.de> <20151015121035.GE14956@sirena.org.uk>
+From: Martin Pietryka <martin.pietryka@streamunlimited.com>
+Subject: DSD: Playing silence before and after actual audio data
+Date: Thu, 15 Oct 2015 15:01:56 +0200
+Message-ID: <561FA3C4.8040205@streamunlimited.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151015121035.GE14956@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, linux-mediatek@lists.infradead.org, p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bsmtp4.bon.at (bsmtp4.bon.at [195.3.86.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A231260453
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 15:01:57 +0200 (CEST)
+Received: from [10.1.14.177] (vpn.streamunlimited.com [91.114.0.140])
+ by bsmtp4.bon.at (Postfix) with ESMTPSA id 3nc9jx23gzz5tlW
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 15:01:57 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-10-15 at 13:10 +0100, Mark Brown wrote:
-> On Wed, Oct 14, 2015 at 11:00:01AM +0200, Lars-Peter Clausen wrote:
-> 
-> > It was never intended that it is possible to bind a component to multiple
-> > cards. That it was possible was a bug that was overlooked and some people
-> > tried to do it which caused apparently random crashes later on, caused by
-> > the data structure corruption. This is why we added the check to catch this
-> > kind of mistake early and to avoid the crashes.
-> 
-> This is true, but I do think it's something that we should have some
-> story on supporting for some of this hardware that has a bunch of
-> channels in one IP block that can't really interact with each other.
-> It's going to make it a lot easier for people to think about the
-> hardware and how to describe it.
-Yes, and if in some cases we must use multiple cards, it seems the only
-option left is to separate an ASoC platform driver into multiple
-drivers. It does not make sense to me since there is only one HW block.
+Hi guys,
+
+I'm trying to figure out the best way to insert ~40ms worth of silence 
+pattern before and after playing back DSD data.
+
+There seems to be support inside ALSA for a DSD silence pattern, but as 
+far as I have seen it's only used when an underrun might occur 
+(silence_threshold, silence_size).
+
+Is there some possibility inside ALSA to basically insert silence before 
+and after playback, or how hard would it be to implement something like 
+this? I have looked a bit for myself and for me it seems that the 
+modifications needed inside ALSA to achieve this feature are 
+substantial, but of course I also might have missed something.
+
+Martin
