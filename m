@@ -1,30 +1,73 @@
-From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v6 01/10] DMA: pl330: support burst mode for dev-to-mem
- and mem-to-dev transmit
-Date: Thu, 15 Oct 2015 09:38:22 +0530
-Message-ID: <20151015040821.GD27370@localhost>
-References: <1444872865-2169-1-git-send-email-shawn.lin@rock-chips.com>
- <1444872912-2215-1-git-send-email-shawn.lin@rock-chips.com>
+From: Mikko Rapeli <mikko.rapeli@iki.fi>
+Subject: [PATCH v4 17/79] include/uapi/sound/emu10k1.h: added
+	EMU10K1 version of DECLARE_BITMAP macro
+Date: Thu, 15 Oct 2015 07:55:55 +0200
+Message-ID: <1444888618-4506-18-git-send-email-mikko.rapeli@iki.fi>
+References: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1444872912-2215-1-git-send-email-shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Addy Ke <addy.ke-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kapsi.fi (mail.kapsi.fi [217.30.184.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4296265366
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 07:58:40 +0200 (CEST)
+In-Reply-To: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: mikko.rapeli@iki.fi, alsa-devel@alsa-project.org, linux-api@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 15, 2015 at 09:35:12AM +0800, Shawn Lin wrote:
-> From: Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> 
-Please fix the subsystem name in this series. Its dmaengine:...
-
-Git log should tell you the acceptable style for a subsystem
-
--- 
-~Vinod
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Rml4ZXMgdXNlcnNwYWNlIGNvbXBpbGF0aW9uIGVycm9yOgoKZXJyb3I6IGV4cGVjdGVkIHNwZWNp
+Zmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg4oCYREVDTEFSRV9CSVRNQVDigJkKICBERUNMQVJF
+X0JJVE1BUChncHJfdmFsaWQsIDB4MjAwKTsgLyogYml0bWFzayBvZiB2YWxpZCBpbml0aWFsaXpl
+cnMgKi8KCkRFQ0xBUkVfQklUTUFQIG1hY3JvIGlzIG5vdCBtZWFudCBmb3IgdXNlcnNwYWNlIGhl
+YWRlcnMgYW5kIHRodXMKYWRkZWQgaGVyZSBhcyBwcml2YXRlIGNvcHkgZm9yIGVtdTEway5oLgoK
+Rml4IHdhcyBzdWdnZXN0ZWQgYnkgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4gaW4gbWVz
+c2FnZQo8MjE2ODgwNy40WXhoNWdsMTFRQHd1ZXJmZWw+IGFuZCBUYWthc2hpIEl3YWkgPHRpd2Fp
+QHN1c2UuZGU+CmluIG1lc3NhZ2UgPHM1aDF0aHg4OHRrLndsLXRpd2FpQHN1c2UuZGU+IG9uIGxr
+bWwuCgpTaWduZWQtb2ZmLWJ5OiBNaWtrbyBSYXBlbGkgPG1pa2tvLnJhcGVsaUBpa2kuZmk+Ci0t
+LQogaW5jbHVkZS91YXBpL3NvdW5kL2VtdTEwazEuaCB8IDE0ICsrKysrKysrKysrLS0tCiAxIGZp
+bGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
+YS9pbmNsdWRlL3VhcGkvc291bmQvZW11MTBrMS5oIGIvaW5jbHVkZS91YXBpL3NvdW5kL2VtdTEw
+azEuaAppbmRleCBlYzE1MzViLi41MTc1ZTE2IDEwMDY0NAotLS0gYS9pbmNsdWRlL3VhcGkvc291
+bmQvZW11MTBrMS5oCisrKyBiL2luY2x1ZGUvdWFwaS9zb3VuZC9lbXUxMGsxLmgKQEAgLTM0LDYg
+KzM0LDE0IEBACiAKICNkZWZpbmUgRU1VMTBLMV9GWDgwMTBfUENNX0NPVU5UCQk4CiAKKy8qCisg
+KiBGb2xsb3dpbmcgZGVmaW5pdGlvbiBpcyBjb3BpZWQgZnJvbSBsaW51eC90eXBlcy5oIHRvIHN1
+cHBvcnQgY29tcGlsaW5nCisgKiB0aGlzIGhlYWRlciBmaWxlIGluIHVzZXJzcGFjZSBzaW5jZSB0
+aGV5IGFyZSBub3QgZ2VuZXJhbGx5IGF2YWlsYWJsZSBmb3IKKyAqIHVhcGkgaGVhZGVycy4KKyAq
+LworI2RlZmluZSBfX0VNVTEwSzFfREVDTEFSRV9CSVRNQVAobmFtZSxiaXRzKSBcCisJdW5zaWdu
+ZWQgbG9uZyBuYW1lWyhiaXRzKSAvIChzaXplb2YodW5zaWduZWQgbG9uZykgKiA4KV0KKwogLyog
+aW5zdHJ1Y3Rpb24gc2V0ICovCiAjZGVmaW5lIGlNQUMwCSAweDAwCS8qIFIgPSBBICsgKFggKiBZ
+ID4+IDMxKSAgIDsgc2F0dXJhdGlvbiAqLwogI2RlZmluZSBpTUFDMQkgMHgwMQkvKiBSID0gQSAr
+ICgtWCAqIFkgPj4gMzEpICA7IHNhdHVyYXRpb24gKi8KQEAgLTMwMCw3ICszMDgsNyBAQCBzdHJ1
+Y3Qgc25kX2VtdTEwazFfZng4MDEwX2NvbnRyb2xfb2xkX2dwciB7CiBzdHJ1Y3Qgc25kX2VtdTEw
+azFfZng4MDEwX2NvZGUgewogCWNoYXIgbmFtZVsxMjhdOwogCi0JREVDTEFSRV9CSVRNQVAoZ3By
+X3ZhbGlkLCAweDIwMCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5pdGlhbGl6ZXJzICovCisJX19F
+TVUxMEsxX0RFQ0xBUkVfQklUTUFQKGdwcl92YWxpZCwgMHgyMDApOyAvKiBiaXRtYXNrIG9mIHZh
+bGlkIGluaXRpYWxpemVycyAqLwogCV9fdTMyIF9fdXNlciAqZ3ByX21hcDsJCS8qIGluaXRpYWxp
+emVycyAqLwogCiAJdW5zaWduZWQgaW50IGdwcl9hZGRfY29udHJvbF9jb3VudDsgLyogY291bnQg
+b2YgR1BSIGNvbnRyb2xzIHRvIGFkZC9yZXBsYWNlICovCkBAIC0zMTMsMTEgKzMyMSwxMSBAQCBz
+dHJ1Y3Qgc25kX2VtdTEwazFfZng4MDEwX2NvZGUgewogCXVuc2lnbmVkIGludCBncHJfbGlzdF9j
+b250cm9sX3RvdGFsOyAvKiB0b3RhbCBjb3VudCBvZiBHUFIgY29udHJvbHMgKi8KIAlzdHJ1Y3Qg
+c25kX2VtdTEwazFfZng4MDEwX2NvbnRyb2xfZ3ByIF9fdXNlciAqZ3ByX2xpc3RfY29udHJvbHM7
+IC8qIGxpc3RlZCBHUFIgY29udHJvbHMgKi8KIAotCURFQ0xBUkVfQklUTUFQKHRyYW1fdmFsaWQs
+IDB4MTAwKTsgLyogYml0bWFzayBvZiB2YWxpZCBpbml0aWFsaXplcnMgKi8KKwlfX0VNVTEwSzFf
+REVDTEFSRV9CSVRNQVAodHJhbV92YWxpZCwgMHgxMDApOyAvKiBiaXRtYXNrIG9mIHZhbGlkIGlu
+aXRpYWxpemVycyAqLwogCV9fdTMyIF9fdXNlciAqdHJhbV9kYXRhX21hcDsJICAvKiBkYXRhIGlu
+aXRpYWxpemVycyAqLwogCV9fdTMyIF9fdXNlciAqdHJhbV9hZGRyX21hcDsJICAvKiBtYXAgaW5p
+dGlhbGl6ZXJzICovCiAKLQlERUNMQVJFX0JJVE1BUChjb2RlX3ZhbGlkLCAxMDI0KTsgLyogYml0
+bWFzayBvZiB2YWxpZCBpbnN0cnVjdGlvbnMgKi8KKwlfX0VNVTEwSzFfREVDTEFSRV9CSVRNQVAo
+Y29kZV92YWxpZCwgMTAyNCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5zdHJ1Y3Rpb25zICovCiAJ
+X191MzIgX191c2VyICpjb2RlOwkJICAvKiBvbmUgaW5zdHJ1Y3Rpb24gLSA2NCBiaXRzICovCiB9
+OwogCi0tIAoyLjUuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
