@@ -1,16 +1,16 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH 7/7] ALSA: USB-audio: Remove mixer entry from
-	Zoom R16/24 quirk
-Date: Thu, 15 Oct 2015 12:57:37 +0200
-Message-ID: <1444906657-16791-8-git-send-email-ricardw@axis.com>
+Subject: [PATCH 3/7] ALSA: USB-audio: Break out creation of
+	silent urbs from prepare_outbound_urb()
+Date: Thu, 15 Oct 2015 12:57:33 +0200
+Message-ID: <1444906657-16791-4-git-send-email-ricardw@axis.com>
 References: <1444906657-16791-1-git-send-email-ricardw@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 1969C260492
- for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 12:57:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 90B9C26049A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 12:57:42 +0200 (CEST)
 In-Reply-To: <1444906657-16791-1-git-send-email-ricardw@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,82 @@ To: alsa-devel <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Ricard Wanderlof <ricardw@axis.com>, Ricard Wanderlof <ricard2005@butoba.net>
 List-Id: alsa-devel@alsa-project.org
 
-The device has no mixer (and identifies itself as such), so just skip
-the mixer definition.
+Refactoring in preparation for adding Zoom R16 quirk.
 
 Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
 ---
- sound/usb/quirks-table.h | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/usb/endpoint.c | 46 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 4a8ca637..722b77b 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3182,8 +3182,6 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index a77d9c8..825a06c 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -183,13 +183,38 @@ static void retire_inbound_urb(struct snd_usb_endpoint *ep,
+ 		ep->retire_data_urb(ep->data_subs, urb);
+ }
+ 
++static void prepare_silent_urb(struct snd_usb_endpoint *ep,
++			       struct snd_urb_ctx *ctx)
++{
++	struct urb *urb = ctx->urb;
++	unsigned int offs = 0;
++	int i;
++
++	for (i = 0; i < ctx->packets; ++i) {
++		int counts;
++
++		if (ctx->packet_size[i])
++			counts = ctx->packet_size[i];
++		else
++			counts = snd_usb_endpoint_next_packet_size(ep);
++
++		urb->iso_frame_desc[i].offset = offs * ep->stride;
++		urb->iso_frame_desc[i].length = counts * ep->stride;
++		offs += counts;
++	}
++
++	urb->number_of_packets = ctx->packets;
++	urb->transfer_buffer_length = offs * ep->stride;
++	memset(urb->transfer_buffer, ep->silence_value,
++	       offs * ep->stride);
++}
++
+ /*
+  * Prepare a PLAYBACK urb for submission to the bus.
+  */
+ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
+ 				 struct snd_urb_ctx *ctx)
  {
- 	/*
- 	 * ZOOM R16/24 in audio interface mode.
--	 * Mixer descriptors are garbage, further quirks will be needed
--	 * to make any of it functional, thus disabled for now.
- 	 * Playback requires an extra four byte LE length indicator
- 	 * at the start of each isochronous packet. This quirk is
- 	 * enabled in create_standard_audio_quirk().
-@@ -3194,11 +3192,6 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 		.type = QUIRK_COMPOSITE,
- 		.data = (const struct snd_usb_audio_quirk[]) {
- 			{
--				/* Mixer */
--				.ifnum = 0,
--				.type = QUIRK_IGNORE_INTERFACE,
--			},
--			{
- 				/* Playback  */
- 				.ifnum = 1,
- 				.type = QUIRK_AUDIO_STANDARD_INTERFACE,
+-	int i;
+ 	struct urb *urb = ctx->urb;
+ 	unsigned char *cp = urb->transfer_buffer;
+ 
+@@ -201,24 +226,7 @@ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
+ 			ep->prepare_data_urb(ep->data_subs, urb);
+ 		} else {
+ 			/* no data provider, so send silence */
+-			unsigned int offs = 0;
+-			for (i = 0; i < ctx->packets; ++i) {
+-				int counts;
+-
+-				if (ctx->packet_size[i])
+-					counts = ctx->packet_size[i];
+-				else
+-					counts = snd_usb_endpoint_next_packet_size(ep);
+-
+-				urb->iso_frame_desc[i].offset = offs * ep->stride;
+-				urb->iso_frame_desc[i].length = counts * ep->stride;
+-				offs += counts;
+-			}
+-
+-			urb->number_of_packets = ctx->packets;
+-			urb->transfer_buffer_length = offs * ep->stride;
+-			memset(urb->transfer_buffer, ep->silence_value,
+-			       offs * ep->stride);
++			prepare_silent_urb(ep, ctx);
+ 		}
+ 		break;
+ 
 -- 
 2.1.4
