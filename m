@@ -1,32 +1,62 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: oss: underflow in snd_mixer_oss_proc_write()
-Date: Thu, 15 Oct 2015 10:01:42 +0300
-Message-ID: <20151015070141.GA6422@mwanda>
+Subject: Re: ALSA: firewire-lib: schedule work again when MIDI
+ substream has rest of MIDI messages
+Date: Thu, 15 Oct 2015 10:04:18 +0300
+Message-ID: <20151015070418.GA7076@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9983F265E28
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 09:04:27 +0200 (CEST)
 Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: o-takashi@sakamocchi.jp
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We cap the upper bound of "idx" but not the negative side.  Let's make
-it unsigned to fix this.
+Hello Takashi Sakamoto,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+This is a semi-automatic email about new static checker warnings.
 
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index a99f720..7a8c79d 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -1177,7 +1177,8 @@ static void snd_mixer_oss_proc_write(struct snd_info_entry *entry,
- 	struct snd_mixer_oss *mixer = entry->private_data;
- 	char line[128], str[32], idxstr[16];
- 	const char *cptr;
--	int ch, idx;
-+	unsigned int idx;
-+	int ch;
- 	struct snd_mixer_oss_assign_table *tbl;
- 	struct slot *slot;
- 
+The patch e8a40d9bcb23: "ALSA: firewire-lib: schedule work again when 
+MIDI substream has rest of MIDI messages" from Oct 9, 2015, leads to 
+the following Smatch complaint:
+
+sound/firewire/lib.c:88 async_midi_port_callback()
+	 error: we previously assumed 'substream' could be null (see line 77)
+
+sound/firewire/lib.c
+    76	
+    77		if (rcode == RCODE_COMPLETE && substream != NULL)
+                                               ^^^^^^^^^^^^^^^^^
+Existing code assumes substream can be NULL.
+
+    78			snd_rawmidi_transmit_ack(substream, port->consume_bytes);
+    79		else if (!rcode_is_permanent_error(rcode))
+    80			/* To start next transaction immediately for recovery. */
+    81			port->next_ktime = ktime_set(0, 0);
+    82		else
+    83			/* Don't continue processing. */
+    84			port->error = true;
+    85	
+    86		port->idling = true;
+    87	
+    88		if (!snd_rawmidi_transmit_empty(substream))
+                                                ^^^^^^^^^
+Patch adds an unchecked dereference (inside the function call).
+
+    89			schedule_work(&port->work);
+    90	}
+
+regards,
+dan carpenter
