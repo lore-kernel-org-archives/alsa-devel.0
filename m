@@ -1,14 +1,17 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH 0/7] ALSA: USB-audio: Support Zoom R16 playback
-Date: Thu, 15 Oct 2015 12:57:30 +0200
-Message-ID: <1444906657-16791-1-git-send-email-ricardw@axis.com>
+Subject: [PATCH 6/7] ALSA: USB-audio: Adjust max packet size
+	calculation for tx_length_quirk
+Date: Thu, 15 Oct 2015 12:57:36 +0200
+Message-ID: <1444906657-16791-7-git-send-email-ricardw@axis.com>
+References: <1444906657-16791-1-git-send-email-ricardw@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 183DD260462
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 004A626046B
  for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 12:57:40 +0200 (CEST)
+In-Reply-To: <1444906657-16791-1-git-send-email-ricardw@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +25,43 @@ To: alsa-devel <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Ricard Wanderlof <ricardw@axis.com>, Ricard Wanderlof <ricard2005@butoba.net>
 List-Id: alsa-devel@alsa-project.org
 
-The Zoom R16 has a nonstandard playback format where each isochronous
-packet contains a length descriptor in the first four bytes. Curiously,
-capture data does not contain this and requires no quirk.
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
+ sound/usb/endpoint.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-The quirk involves adding the extra length descriptor whenever outgoing
-isochronous packets are generated, both in pcm.c (outgoing audio) and
-endpoint.c (silent data). The calculation for the max packet size in
-endpoint.c is also affected.
-
-This patch series refactors some code in pcm.c and endpoint.c before the
-actual quirk implementation. A commit then cleans up the entry in the
-quirks table.
-
-Tested with a Zoom R16, both separately using arecord and aplay (8 channel
-capture and 2 channel playback, respectively), as well as capture and
-playback together together using the Ardour digitial audio workstation
-application.  The R24 reportedly is compatible with the R16, but I don't
-have access to one so I can't test it, and consequently the patch series
-only mentions the R16.
-
-Also tested using an Edirol UA-5 in both class compliant (16-bit) and
-"advanced" (24 bit, forces the use of quirks) modes in order to do some
-form of regression testing.
-
-Ricard Wanderlof (7):
-  Break out copying to urb from prepare_playback_urb()
-  Also move out hwptr_done wrap from prepare_playback_urb()
-  Break out creation of silent urbs from prepare_outbound_urb()
-  Add offset parameter to copy_to_urb()
-  Add quirk for Zoom R16 playback
-  Adjust max packet size calculation for tx_length_quirk
-  Remove mixer entry from Zoom R16/24 quirk
-
- sound/usb/card.h         |  1 +
- sound/usb/endpoint.c     | 73 +++++++++++++++++++++++++++++++++--------------
- sound/usb/pcm.c          | 74 +++++++++++++++++++++++++++++++++++++-----------
- sound/usb/quirks-table.h | 14 +++------
- sound/usb/quirks.c       |  3 ++
- sound/usb/stream.c       |  1 +
- sound/usb/usbaudio.h     |  1 +
- 7 files changed, 119 insertions(+), 48 deletions(-)
-
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 1c5280a..2acc603 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -617,6 +617,8 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep,
+ 	unsigned int max_packs_per_period, urbs_per_period, urb_packs;
+ 	unsigned int max_urbs, i;
+ 	int frame_bits = snd_pcm_format_physical_width(pcm_format) * channels;
++	int tx_length_quirk = (ep->chip->tx_length_quirk &&
++			       usb_pipeout(ep->pipe));
+ 
+ 	if (pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE && fmt->dsd_dop) {
+ 		/*
+@@ -650,11 +652,17 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep,
+ 	 */
+ 	maxsize = (((ep->freqmax << ep->datainterval) + 0xffff) >> 16) *
+ 			 (frame_bits >> 3);
++	if (tx_length_quirk)
++		maxsize += sizeof(u32); /* Space for u32 length descriptor */
+ 	/* but wMaxPacketSize might reduce this */
+ 	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
+ 		/* whatever fits into a max. size packet */
+-		maxsize = ep->maxpacksize;
+-		ep->freqmax = (maxsize / (frame_bits >> 3))
++		unsigned int data_maxsize = maxsize = ep->maxpacksize;
++
++		if (tx_length_quirk)
++			/* Need to remove the length descriptor to calc freq */
++			data_maxsize -= sizeof(u32);
++		ep->freqmax = (data_maxsize / (frame_bits >> 3))
+ 				<< (16 - ep->datainterval);
+ 	}
+ 
 -- 
 2.1.4
