@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add info callback for SX_TLV controls" to the asoc tree
-Date: Fri, 16 Oct 2015 17:41:08 +0100
-Message-ID: <E1Zn844-00086g-Mg@debutante>
-References: <1444825884-11827-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1444825884-11827-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: stable-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Brian Austin <brian.austin@cirrus.com>Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rt298: correct index default value" to
+	the asoc tree
+Date: Fri, 16 Oct 2015 17:41:10 +0100
+Message-ID: <E1Zn846-00087d-Id@debutante>
+References: <1444980092-8801-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52485260453
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:41:18 +0200 (CEST)
+In-Reply-To: <1444980092-8801-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add info callback for SX_TLV controls
+   ASoC: rt298: correct index default value
 
 has been applied to the asoc tree at
 
@@ -37,106 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 34198710f55b5f359f43e67d9a08fe5aadfbca1b Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 14 Oct 2015 13:31:24 +0100
-Subject: [PATCH] ASoC: Add info callback for SX_TLV controls
+>From 7ba6e4ef76c7e43101bd5e0f8987c11a8ed0d325 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Fri, 16 Oct 2015 15:21:32 +0800
+Subject: [PATCH] ASoC: rt298: correct index default value
 
-SX_TLV controls are intended for situations where the register behind
-the control has some non-zero value indicating the minimum gain
-and then gains increasing from there and eventually overflowing through
-zero.
+Some of the default value on rt298_index_def are incorrect. Change
+them to the correct value.
 
-Currently every CODEC implementing these controls specifies the minimum
-as the non-zero value for the minimum and the maximum as the number of
-gain settings available.
-
-This means when the info callback subtracts the minimum value from the
-maximum value to calculate the number of gain levels available it is
-actually under reporting the available levels. This patch fixes this
-issue by adding a new snd_soc_info_volsw_sx callback that does not
-subtract the minimum value.
-
-Fixes: 1d99f2436d0d ("ASoC: core: Rework SOC_DOUBLE_R_SX_TLV add SOC_SINGLE_SX_TLV")
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
-Tested-by: Brian Austin <brian.austin@cirrus.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- include/sound/soc.h |  6 ++++--
- sound/soc/soc-ops.c | 28 ++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt298.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 884e728b09d9..26ede14597da 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -86,7 +86,7 @@
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
- 	SNDRV_CTL_ELEM_ACCESS_READWRITE, \
- 	.tlv.p  = (tlv_array),\
--	.info = snd_soc_info_volsw, \
-+	.info = snd_soc_info_volsw_sx, \
- 	.get = snd_soc_get_volsw_sx,\
- 	.put = snd_soc_put_volsw_sx, \
- 	.private_value = (unsigned long)&(struct soc_mixer_control) \
-@@ -156,7 +156,7 @@
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
- 	SNDRV_CTL_ELEM_ACCESS_READWRITE, \
- 	.tlv.p  = (tlv_array), \
--	.info = snd_soc_info_volsw, \
-+	.info = snd_soc_info_volsw_sx, \
- 	.get = snd_soc_get_volsw_sx, \
- 	.put = snd_soc_put_volsw_sx, \
- 	.private_value = (unsigned long)&(struct soc_mixer_control) \
-@@ -574,6 +574,8 @@ int snd_soc_put_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
-+int snd_soc_info_volsw_sx(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_info *uinfo);
- #define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
- int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 100d92b5b77e..05977ae1ff2a 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -207,6 +207,34 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
- EXPORT_SYMBOL_GPL(snd_soc_info_volsw);
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 3c2f0f8d6266..d3e30a645ae3 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -50,24 +50,24 @@ struct rt298_priv {
+ };
  
- /**
-+ * snd_soc_info_volsw_sx - Mixer info callback for SX TLV controls
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Callback to provide information about a single mixer control, or a double
-+ * mixer control that spans 2 registers of the SX TLV type. SX TLV controls
-+ * have a range that represents both positive and negative values either side
-+ * of zero but without a sign bit.
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_volsw_sx(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+
-+	snd_soc_info_volsw(kcontrol, uinfo);
-+	/* Max represents the number of levels in an SX control not the
-+	 * maximum value, so add the minimum value back on
-+	 */
-+	uinfo->value.integer.max += mc->min;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_sx);
-+
-+/**
-  * snd_soc_get_volsw - single mixer get callback
-  * @kcontrol: mixer control
-  * @ucontrol: control element information
+ static struct reg_default rt298_index_def[] = {
+-	{ 0x01, 0xaaaa },
+-	{ 0x02, 0x8aaa },
++	{ 0x01, 0xa5a8 },
++	{ 0x02, 0x8e95 },
+ 	{ 0x03, 0x0002 },
+-	{ 0x04, 0xaf01 },
+-	{ 0x08, 0x000d },
+-	{ 0x09, 0xd810 },
+-	{ 0x0a, 0x0120 },
++	{ 0x04, 0xaf67 },
++	{ 0x08, 0x200f },
++	{ 0x09, 0xd010 },
++	{ 0x0a, 0x0100 },
+ 	{ 0x0b, 0x0000 },
+ 	{ 0x0d, 0x2800 },
+-	{ 0x0f, 0x0000 },
+-	{ 0x19, 0x0a17 },
++	{ 0x0f, 0x0022 },
++	{ 0x19, 0x0217 },
+ 	{ 0x20, 0x0020 },
+ 	{ 0x33, 0x0208 },
+ 	{ 0x46, 0x0300 },
+-	{ 0x49, 0x0004 },
+-	{ 0x4f, 0x50e9 },
+-	{ 0x50, 0x2000 },
+-	{ 0x63, 0x2902 },
++	{ 0x49, 0x4004 },
++	{ 0x4f, 0x50c9 },
++	{ 0x50, 0x3000 },
++	{ 0x63, 0x1b02 },
+ 	{ 0x67, 0x1111 },
+ 	{ 0x68, 0x1016 },
+ 	{ 0x69, 0x273f },
 -- 
 2.6.1
