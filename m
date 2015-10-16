@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: correct index default value" to
-	the asoc tree
-Date: Fri, 16 Oct 2015 17:41:10 +0100
-Message-ID: <E1Zn846-00087d-Id@debutante>
-References: <1444980092-8801-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rsnd: Announce for removing Gen1 SRU
+	support" to the asoc tree
+Date: Fri, 16 Oct 2015 17:41:11 +0100
+Message-ID: <E1Zn847-000886-HL@debutante>
+References: <87eggxn88u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 52485260453
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:41:18 +0200 (CEST)
-In-Reply-To: <1444980092-8801-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73A00260470
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:41:19 +0200 (CEST)
+In-Reply-To: <87eggxn88u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: correct index default value
+   ASoC: rsnd: Announce for removing Gen1 SRU support
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 7ba6e4ef76c7e43101bd5e0f8987c11a8ed0d325 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Fri, 16 Oct 2015 15:21:32 +0800
-Subject: [PATCH] ASoC: rt298: correct index default value
+>From 4362495734d155e10174ace9066827780edaed0d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 14 Oct 2015 08:56:07 +0000
+Subject: [PATCH] ASoC: rsnd: Announce for removing Gen1 SRU support
 
-Some of the default value on rt298_index_def are incorrect. Change
-them to the correct value.
+Gen1 SRU support was created for preparation of Gen2 SRC support,
+but no-one is using this feature (sampling rate convert) on Gen1.
+BockW had used SRU before, but it was pass through mode.
+This means it is same as SSI. And BockW "platform base" code was
+removed from upstream code. It is now supported via DT, but it doesn't
+use SRU. More detail, r8a7778.dtsi has "rcar_sound,src" entry, but
+no-one is using this feature today. SRU probing has no relation to this
+removing. This means there is no effect for DT compatibility, no issues
+on upstream kernel.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Gen2 SRC was created from Gen1 SRU, these are similar but not same IP.
+Keeping Gen1 SRU in current driver is a little bit difficult,
+and no-one is using it today. Gen1 sound is still supported via SSI.
+Gen1 SRU support will be removed in the next kernel version.
+This patch announces it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/sh/rcar/src.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 3c2f0f8d6266..d3e30a645ae3 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -50,24 +50,24 @@ struct rt298_priv {
- };
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index ca7a20f03c9b..1d379e825a9d 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -1036,8 +1036,10 @@ int rsnd_src_probe(struct platform_device *pdev,
+ 	int i, nr, ret;
  
- static struct reg_default rt298_index_def[] = {
--	{ 0x01, 0xaaaa },
--	{ 0x02, 0x8aaa },
-+	{ 0x01, 0xa5a8 },
-+	{ 0x02, 0x8e95 },
- 	{ 0x03, 0x0002 },
--	{ 0x04, 0xaf01 },
--	{ 0x08, 0x000d },
--	{ 0x09, 0xd810 },
--	{ 0x0a, 0x0120 },
-+	{ 0x04, 0xaf67 },
-+	{ 0x08, 0x200f },
-+	{ 0x09, 0xd010 },
-+	{ 0x0a, 0x0100 },
- 	{ 0x0b, 0x0000 },
- 	{ 0x0d, 0x2800 },
--	{ 0x0f, 0x0000 },
--	{ 0x19, 0x0a17 },
-+	{ 0x0f, 0x0022 },
-+	{ 0x19, 0x0217 },
- 	{ 0x20, 0x0020 },
- 	{ 0x33, 0x0208 },
- 	{ 0x46, 0x0300 },
--	{ 0x49, 0x0004 },
--	{ 0x4f, 0x50e9 },
--	{ 0x50, 0x2000 },
--	{ 0x63, 0x2902 },
-+	{ 0x49, 0x4004 },
-+	{ 0x4f, 0x50c9 },
-+	{ 0x50, 0x3000 },
-+	{ 0x63, 0x1b02 },
- 	{ 0x67, 0x1111 },
- 	{ 0x68, 0x1016 },
- 	{ 0x69, 0x273f },
+ 	ops = NULL;
+-	if (rsnd_is_gen1(priv))
++	if (rsnd_is_gen1(priv)) {
+ 		ops = &rsnd_src_gen1_ops;
++		dev_warn(dev, "Gen1 support will be removed soon\n");
++	}
+ 	if (rsnd_is_gen2(priv))
+ 		ops = &rsnd_src_gen2_ops;
+ 	if (!ops) {
 -- 
 2.6.1
