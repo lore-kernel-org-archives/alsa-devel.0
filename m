@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: HDMI codec, way forward?
-Date: Fri, 16 Oct 2015 15:12:51 +0100
-Message-ID: <20151016141251.GL14956@sirena.org.uk>
-References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
+Date: Fri, 16 Oct 2015 15:15:25 +0100
+Message-ID: <20151016141525.GM14956@sirena.org.uk>
+References: <5620E482.6050507@ti.com>
+ <562100EC.4030701@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3029967738480357641=="
+Content-Type: multipart/mixed; boundary="===============1093111138908474799=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4215A2606A2
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:12:59 +0200 (CEST)
-In-Reply-To: <20151016133717.GI32532@n2100.arm.linux.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07D872606A2
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:15:31 +0200 (CEST)
+In-Reply-To: <562100EC.4030701@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Russell King - ARM Linux =?utf-8?B?4oCO?= <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3029967738480357641==
+--===============1093111138908474799==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6aLNMpa4RfPduGT7"
+	protocol="application/pgp-signature"; boundary="mpBQsTDkJwM+mRv6"
 Content-Disposition: inline
 
 
---6aLNMpa4RfPduGT7
+--mpBQsTDkJwM+mRv6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 16, 2015 at 02:37:17PM +0100, Russell King - ARM Linux wrote:
+On Fri, Oct 16, 2015 at 03:51:40PM +0200, Arnaud Pouliquen wrote:
 
-> If all the effort that's been put into discussion was put into sorting
-> out a solution, maybe we'd be a little further forward than we are now.
+> - Does trigger is needed when CPU-DAI is master on bus?
+> Otherwise how to inform HDMI that I2S bus is no more clocked? I'm not
+> sure that mute is sufficient for all hardwares... For instance for my
+> hardware CTS parameter is hardware computed based on I2S L/R clock.
 
-> I've sent one proposal which uses a notifier to inform audio and CEC
-> drivers about state changes in the HDMI video side, and had precisely
-> zero replies to it - people seemed to prefer discussing stuff rather
-> than reviewing code and coming up with actual solutions.
+I'd expect us to be always calling trigger - is there some debate on
+this?  Obviously since it's called in atomic context it can be difficult
+to use but we should be notifying.
 
-I agree entirely with the above.  FWIW I'm not reviewing code so much
-because I don't feel I have enough HDMI-specific knowledge to make sure
-things are general enough and the lack of discussion makes me unsure
-that it's really helping - I don't want to give the impression that it's
-a case of addressing some code level comments I might have when I'm not
-sure we're even travelling in the right direction.
-
---6aLNMpa4RfPduGT7
+--mpBQsTDkJwM+mRv6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWIQXiAAoJECTWi3JdVIfQpjYH/0E7C8wIMzD7NmN16IFS5jvj
-FIhPiEjA29Z7rtc+9ET6yeZzsgT0GYz6MRNu/6KdNsoCKfx5PoPBzMekpe282HoD
-pObU3NsulZtesS4KnLEQtZjH6F5WSHzqIptdXUpqc+YH9j0fpMNIkz9/vclViyE6
-+pcLVaoXRjDcxp631lboft0a2zZ8bJuFojnwpEViwp810qsEBaDE6UTvyk/XlCMo
-QLtHwUD8pkYqwZwlhsReOblPG1sFeKOISJx3XZGbJFksK9QQqDsbS9lxboF130Ek
-zOs2KCJP/lib2ywxWkvgdRiIiD2a244j+Gxshp/VPNGB/eR9rt7I37VF4KO4UpU=
-=k65h
+iQEcBAEBCAAGBQJWIQZ8AAoJECTWi3JdVIfQFy4H/2gn+xU/mFgdfh5uk1bO9oSV
+jdtBuvg13UqysPrQ8yZNcohJjMuwK5kq7GdguVfZJYhxKiqe2EAzu1nrbcw1MDOq
+oj1yZ1BtUZcT8xPpSgPDuXwwHUzCFBUO579kTroc1l7lMhypqa41g1QUflL76Y9D
+lLEeZiiF+jzHGtGKae472MgHodyMADZ5cUehPiP22bp4K1tFmhWR8vnv1KmaUyTi
+BUwn3MbBjrW3u4ph8vBa5e2IpMr0tbSlW54/vIPt/+W43N1cSuv8CIfllOqE6FIs
+IXyVYQfkBOXLlgNeFjHliXcncmZHFd9dnpgf/9wfMuFt3Vg7vjmWnJqAb7pQ5Ps=
+=Lfhu
 -----END PGP SIGNATURE-----
 
---6aLNMpa4RfPduGT7--
+--mpBQsTDkJwM+mRv6--
 
---===============3029967738480357641==
+--===============1093111138908474799==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3029967738480357641==--
+--===============1093111138908474799==--
