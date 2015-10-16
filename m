@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: HDMI codec, way forward?
-Date: Fri, 16 Oct 2015 15:06:37 +0100
-Message-ID: <20151016140637.GK14956@sirena.org.uk>
-References: <5620E482.6050507@ti.com>
- <5620EE2F.8070504@metafoo.de>
+Date: Fri, 16 Oct 2015 15:12:51 +0100
+Message-ID: <20151016141251.GL14956@sirena.org.uk>
+References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
+ <20151016133717.GI32532@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5802091073748859524=="
+Content-Type: multipart/mixed; boundary="===============3029967738480357641=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 20DDA2606A2
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:06:55 +0200 (CEST)
-In-Reply-To: <5620EE2F.8070504@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4215A2606A2
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:12:59 +0200 (CEST)
+In-Reply-To: <20151016133717.GI32532@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,87 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux =?utf-8?B?4oCO?= <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5802091073748859524==
+--===============3029967738480357641==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="O6uyWUGY5J97yCxj"
+	protocol="application/pgp-signature"; boundary="6aLNMpa4RfPduGT7"
 Content-Disposition: inline
 
 
---O6uyWUGY5J97yCxj
+--6aLNMpa4RfPduGT7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 16, 2015 at 02:31:43PM +0200, Lars-Peter Clausen wrote:
-> On 10/16/2015 01:50 PM, Jyri Sarha wrote:
+On Fri, Oct 16, 2015 at 02:37:17PM +0100, Russell King - ARM Linux wrote:
 
-> > My conclusion from the Lars-Peter's latest mail [2] related to the
-> > subject is that the wind is currently blowing slightly in favour of my
-> > version of the hdmi codec [3], or at least not in favour of Arnaud's
-> > version [4].
+> If all the effort that's been put into discussion was put into sorting
+> out a solution, maybe we'd be a little further forward than we are now.
 
-> > So how should we proceed? Are we still waiting for some feedback from
-> > DRM/video side?
+> I've sent one proposal which uses a notifier to inform audio and CEC
+> drivers about state changes in the HDMI video side, and had precisely
+> zero replies to it - people seemed to prefer discussing stuff rather
+> than reviewing code and coming up with actual solutions.
 
-That too, though given that they have never commented on these serieses
-at all as far as I remember and are generally not very vocal IME I'm
-probably OK with just applying something.
+I agree entirely with the above.  FWIW I'm not reviewing code so much
+because I don't feel I have enough HDMI-specific knowledge to make sure
+things are general enough and the lack of discussion makes me unsure
+that it's really helping - I don't want to give the impression that it's
+a case of addressing some code level comments I might have when I'm not
+sure we're even travelling in the right direction.
 
-> What needs to happen is that everybody who is working on HDMI audio suppo=
-rt
-> should get their heads together and come up with a common solution that
-> works for everybody, rather than having everybody trying to push their own
-> solution and put the maintainer in the spotlight of having to choose one
-> (Mark has been asking for this for the past half year or so).
-
-Longer, I think.  In this context things like the work that Russell has
-done with the EDID handling is really great - making common code that
-other people are able to adopt and use, and where I can see that there's
-reasonably widespread buy in.  There was some debate about the
-differences between your patch set and the very similar patch set that
-Arnaud posted which was good to see but it felt like that petered out
-rather than drew to a conclusion, I'd at least expect to see a new
-version appear that the pair of you can hopefully agree on or some
-active statement that you both support one or the other version that's
-there now.
-
-It's one thing if there's unresolvable differences that someone just
-needs to take a call on but right now it just feels like it's more that=20
-there's a lack of engagement.  What I don't want to do is merge
-something and then find a few months later that it needs big reworks
-(as opposed to extensions) because it's missed some important things
-that are a problem for large classes of hardware.  Having separate
-approaches for completely different classes of hardware would be fine I
-think but we need to understand what they are and ensure that as far as
-possible the user experience outside the kernel is consistent.
-
---O6uyWUGY5J97yCxj
+--6aLNMpa4RfPduGT7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWIQRtAAoJECTWi3JdVIfQyqIH/RKA7whO8QpdcAlC2BV40YSY
-1SfJ/yIrjy1Y0d1L1fLW++0Vm6HTQG4mDcWgYmx/MTpQPT2wPd9htiqYtqUhanFl
-curSlwtNBgt4OBw4ufsxhrSND1ElctaHhTPHRFNY455h1WaFIWPUgOKUZrZyZ4MG
-NOJcG0L1fcohPJAZYB8p60oIbYGl+uMusNJahrvcw5il34KOzURv407N5hHvkYpb
-8Lqix7XyMRZuY+GZ8tonc0N/x1Z1EVqAZ8jwY2Nheo5gG/J4yVvq8dDG7XxorsMQ
-bkqHS4oq4ehvzUmFkK1NjivU3qCNOCu5FjnnTuIrAYNLkl2jCktOr4l4iFbbHvY=
-=Qo6b
+iQEcBAEBCAAGBQJWIQXiAAoJECTWi3JdVIfQpjYH/0E7C8wIMzD7NmN16IFS5jvj
+FIhPiEjA29Z7rtc+9ET6yeZzsgT0GYz6MRNu/6KdNsoCKfx5PoPBzMekpe282HoD
+pObU3NsulZtesS4KnLEQtZjH6F5WSHzqIptdXUpqc+YH9j0fpMNIkz9/vclViyE6
++pcLVaoXRjDcxp631lboft0a2zZ8bJuFojnwpEViwp810qsEBaDE6UTvyk/XlCMo
+QLtHwUD8pkYqwZwlhsReOblPG1sFeKOISJx3XZGbJFksK9QQqDsbS9lxboF130Ek
+zOs2KCJP/lib2ywxWkvgdRiIiD2a244j+Gxshp/VPNGB/eR9rt7I37VF4KO4UpU=
+=k65h
 -----END PGP SIGNATURE-----
 
---O6uyWUGY5J97yCxj--
+--6aLNMpa4RfPduGT7--
 
---===============5802091073748859524==
+--===============3029967738480357641==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5802091073748859524==--
+--===============3029967738480357641==--
