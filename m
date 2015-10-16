@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: HDMI codec, way forward?
-Date: Fri, 16 Oct 2015 15:15:25 +0100
-Message-ID: <20151016141525.GM14956@sirena.org.uk>
-References: <5620E482.6050507@ti.com>
- <562100EC.4030701@st.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Splitting out controls
+Date: Fri, 16 Oct 2015 09:49:25 -0500
+Message-ID: <56210E75.70501@linux.intel.com>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
+ <561D1B7D.9080307@linux.intel.com> <561D2997.1090401@canonical.com>
+ <561D2C88.5050505@linux.intel.com> <56209C2A.1010602@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1093111138908474799=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07D872606A2
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:15:31 +0200 (CEST)
-In-Reply-To: <562100EC.4030701@st.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 063B52606A2
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:49:28 +0200 (CEST)
+In-Reply-To: <56209C2A.1010602@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Russell King - ARM Linux =?utf-8?B?4oCO?= <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, Jyri Sarha <jsarha@ti.com>
+To: David Henningsson <david.henningsson@canonical.com>, James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1093111138908474799==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mpBQsTDkJwM+mRv6"
-Content-Disposition: inline
+> We actively enable and advocate that people with limited knowledge can
+> 'mess around mixer controls'. That's why we have an alsamixer
+> application in the first place, and teach people how to use it.
 
-
---mpBQsTDkJwM+mRv6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Oct 16, 2015 at 03:51:40PM +0200, Arnaud Pouliquen wrote:
-
-> - Does trigger is needed when CPU-DAI is master on bus?
-> Otherwise how to inform HDMI that I2S bus is no more clocked? I'm not
-> sure that mute is sufficient for all hardwares... For instance for my
-> hardware CTS parameter is hardware computed based on I2S L/R clock.
-
-I'd expect us to be always calling trigger - is there some debate on
-this?  Obviously since it's called in atomic context it can be difficult
-to use but we should be notifying.
-
---mpBQsTDkJwM+mRv6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWIQZ8AAoJECTWi3JdVIfQFy4H/2gn+xU/mFgdfh5uk1bO9oSV
-jdtBuvg13UqysPrQ8yZNcohJjMuwK5kq7GdguVfZJYhxKiqe2EAzu1nrbcw1MDOq
-oj1yZ1BtUZcT8xPpSgPDuXwwHUzCFBUO579kTroc1l7lMhypqa41g1QUflL76Y9D
-lLEeZiiF+jzHGtGKae472MgHodyMADZ5cUehPiP22bp4K1tFmhWR8vnv1KmaUyTi
-BUwn3MbBjrW3u4ph8vBa5e2IpMr0tbSlW54/vIPt/+W43N1cSuv8CIfllOqE6FIs
-IXyVYQfkBOXLlgNeFjHliXcncmZHFd9dnpgf/9wfMuFt3Vg7vjmWnJqAb7pQ5Ps=
-=Lfhu
------END PGP SIGNATURE-----
-
---mpBQsTDkJwM+mRv6--
-
---===============1093111138908474799==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1093111138908474799==--
+What you are describing is the traditional approach where the number of 
+controls is limited, a couple of switches here and a set of volume 
+controls there.
+With new devices having mixers all over the place, be it in codecs or 
+DSPs, it's not uncommon to have several hundred controls. There is no 
+way users will be able to find out on their own what values they should 
+use and it would be misleading to think developers are able to identify 
+all lethal combinations of settings. We've also moved all these control 
+settings from kernel to userspace to avoid hardcoding values that are 
+platform specific.
+Bottom line we have to move to profiles, stop guessing values based on 
+control names or avoid letting users poke random values in alsamixer. 
+This just doesn't scale any more. thinking that the alsamixer 
+command-line remains the default user-facing interface moving forward is 
+just not right, it's a developer tool.
