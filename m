@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Splitting out controls
-Date: Fri, 16 Oct 2015 09:49:25 -0500
-Message-ID: <56210E75.70501@linux.intel.com>
-References: <1444657786.2528.78.camel@loki>
- <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
- <561D1B7D.9080307@linux.intel.com> <561D2997.1090401@canonical.com>
- <561D2C88.5050505@linux.intel.com> <56209C2A.1010602@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4] ASoC: rt5645: Add the HW EQ for the
+ customized speaker output of Google Celes
+Date: Fri, 16 Oct 2015 16:16:18 +0100
+Message-ID: <20151016151618.GQ14956@sirena.org.uk>
+References: <1444803300-31699-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3585126595728332642=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 063B52606A2
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:49:28 +0200 (CEST)
-In-Reply-To: <56209C2A.1010602@canonical.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73FBB2606C3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 17:16:25 +0200 (CEST)
+In-Reply-To: <1444803300-31699-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, gary_lin@realtek.com, john.lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
-> We actively enable and advocate that people with limited knowledge can
-> 'mess around mixer controls'. That's why we have an alsamixer
-> application in the first place, and teach people how to use it.
+--===============3585126595728332642==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uwJuRjKj6RbLtb4h"
+Content-Disposition: inline
 
-What you are describing is the traditional approach where the number of 
-controls is limited, a couple of switches here and a set of volume 
-controls there.
-With new devices having mixers all over the place, be it in codecs or 
-DSPs, it's not uncommon to have several hundred controls. There is no 
-way users will be able to find out on their own what values they should 
-use and it would be misleading to think developers are able to identify 
-all lethal combinations of settings. We've also moved all these control 
-settings from kernel to userspace to avoid hardcoding values that are 
-platform specific.
-Bottom line we have to move to profiles, stop guessing values based on 
-control names or avoid letting users poke random values in alsamixer. 
-This just doesn't scale any more. thinking that the alsamixer 
-command-line remains the default user-facing interface moving forward is 
-just not right, it's a developer tool.
+
+--uwJuRjKj6RbLtb4h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Oct 14, 2015 at 02:15:00PM +0800, Oder Chiou wrote:
+> Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+
+The userspace interface is now what I'd expec tbut I'm still quite
+confused by this.  Why is this not a normal bytes control?  There's
+something going on with private data here but I'm not sure what it's
+supposed to do over writing to the device - a changelog might've
+helped...
+
+> +static int rt5645_hweq_get(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+> +	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
+> +	char *p = ucontrol->value.bytes.data;
+> +
+> +	if (rt5645->pdata.hweq)
+> +		memcpy(p, rt5645->eq_param,
+> +			RT5645_HWEQ_NUM * sizeof(struct rt5645_eq_param_s));
+> +
+> +	return 0;
+
+There's a validation function below - we should be using it when the
+user supplies data so they can tell if their settings took effect.
+
+> +static struct rt5645_platform_data celes_platform_data = {
+> +	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
+> +	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+> +	.jd_mode = 3,
+> +	.hweq = true,
+> +};
+
+Why is the hweq setting part of platform data (and why is the platform
+data for a specific system being set as part of this patch)?  This is
+just a setting that can be set, there's nothing system specific about it
+and it's not like we're even passing in a system specific tuning here.
+
+Please, one change per patch and describe changes in the changelog.
+
+--uwJuRjKj6RbLtb4h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWIRTBAAoJECTWi3JdVIfQoEQH/AzGJMCAOjHDGzuJK8AaZojH
+GJ/kjTo0YYMFJvtpwCiS/02EMNinzzmakLkkE5N5ZHTHyf0C6I3IYAlU+bKXwCd5
+YwMS470u8co4PpC+UtpfB42IZdd10XSi6vdfHmfI5fubbrfDCc3zzGTNHj0n0bPn
+WkFZii/x0vPiWnraEidxKvUOVSNq6tln8oBppgvrDczPyNt+6mDeUWxsoYOiDJXo
+29XfxjsvoGRNWIrQmUGsSzHliAtLIHoSsfHhZ3pn4hZiECpigz0a447eDmwjT4qm
+MeMXVmiEU2rMGJ3iWfj8EnI1XyTy4Z/mJk6hJBIdKJ3tLNVwTrGs5pxN/5M5EXc=
+=9WET
+-----END PGP SIGNATURE-----
+
+--uwJuRjKj6RbLtb4h--
+
+--===============3585126595728332642==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3585126595728332642==--
