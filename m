@@ -1,61 +1,72 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Subject: Re: HDMI codec, way forward?
-Date: Fri, 16 Oct 2015 14:37:17 +0100
-Message-ID: <20151016133717.GI32532@n2100.arm.linux.org.uk>
+Date: Fri, 16 Oct 2015 15:51:40 +0200
+Message-ID: <562100EC.4030701@st.com>
 References: <5620E482.6050507@ti.com>
- <5620EE2F.8070504@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <5620EE2F.8070504@metafoo.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D861A26069D
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 15:51:46 +0200 (CEST)
+In-Reply-To: <5620E482.6050507@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, David Airlie <airlied@linux.ie>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, =?UTF-8?B?UnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IOKAjg==?= <linux@arm.linux.org.uk>, "lars@metafoo.de" <lars@metafoo.de>, Jean-Francois Moine <moinejf@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBPY3QgMTYsIDIwMTUgYXQgMDI6MzE6NDNQTSArMDIwMCwgTGFycy1QZXRlciBDbGF1
-c2VuIHdyb3RlOgo+IE9uIDEwLzE2LzIwMTUgMDE6NTAgUE0sIEp5cmkgU2FyaGEgd3JvdGU6Cj4g
-PiBBZnRlciByZWFkaW5nIHRoZSBFTENFIEF1ZGlvIG1pbmkgY29uZiBtaW51dGVzIFsxXSBJIGdh
-dGhlciB0aGF0IEhETUkKPiA+IGF1ZGlvIHdhcyBub3QgZGlzY3Vzc2VkIGFmdGVyIGFsbC4KPiAK
-PiBJdCB3YXMgZGlzY3Vzc2VkLCBidXQgcmF0aGVyIHNob3J0bHkgYW5kIG9ubHkgaW4gdGhlIGNv
-bnRleHQgb2YgdGhlIEhEQS4KPiAoQWRkaW5nIFZpbm9kIHRvIENjLCB3aG8gcHJlc2VudGVkIHll
-dCBhbm90aGVyIGFwcHJvYWNoIHRvIHRoZSBwcm9ibGVtIGxhc3QKPiB3ZWVrKQo+IAo+ID4gCj4g
-PiBNeSBjb25jbHVzaW9uIGZyb20gdGhlIExhcnMtUGV0ZXIncyBsYXRlc3QgbWFpbCBbMl0gcmVs
-YXRlZCB0byB0aGUKPiA+IHN1YmplY3QgaXMgdGhhdCB0aGUgd2luZCBpcyBjdXJyZW50bHkgYmxv
-d2luZyBzbGlnaHRseSBpbiBmYXZvdXIgb2YgbXkKPiA+IHZlcnNpb24gb2YgdGhlIGhkbWkgY29k
-ZWMgWzNdLCBvciBhdCBsZWFzdCBub3QgaW4gZmF2b3VyIG9mIEFybmF1ZCdzCj4gPiB2ZXJzaW9u
-IFs0XS4KPiA+IAo+ID4gU28gaG93IHNob3VsZCB3ZSBwcm9jZWVkPyBBcmUgd2Ugc3RpbGwgd2Fp
-dGluZyBmb3Igc29tZSBmZWVkYmFjayBmcm9tCj4gPiBEUk0vdmlkZW8gc2lkZT8KPiA+Cj4gCj4g
-V2hhdCBuZWVkcyB0byBoYXBwZW4gaXMgdGhhdCBldmVyeWJvZHkgd2hvIGlzIHdvcmtpbmcgb24g
-SERNSSBhdWRpbyBzdXBwb3J0Cj4gc2hvdWxkIGdldCB0aGVpciBoZWFkcyB0b2dldGhlciBhbmQg
-Y29tZSB1cCB3aXRoIGEgY29tbW9uIHNvbHV0aW9uIHRoYXQKPiB3b3JrcyBmb3IgZXZlcnlib2R5
-LCByYXRoZXIgdGhhbiBoYXZpbmcgZXZlcnlib2R5IHRyeWluZyB0byBwdXNoIHRoZWlyIG93bgo+
-IHNvbHV0aW9uIGFuZCBwdXQgdGhlIG1haW50YWluZXIgaW4gdGhlIHNwb3RsaWdodCBvZiBoYXZp
-bmcgdG8gY2hvb3NlIG9uZQo+IChNYXJrIGhhcyBiZWVuIGFza2luZyBmb3IgdGhpcyBmb3IgdGhl
-IHBhc3QgaGFsZiB5ZWFyIG9yIHNvKS4KClNvcnJ5LCBidXQgaG93IGFib3V0IHBlb3BsZSB0cnkg
-dG8gY29tZSB1cCB3aXRoIF9hIHNvbHV0aW9uXyBmaXJzdC4KVGhlcmUncyBiZWVuIGxvYWRzIG9m
-IHRhbGsgYWJvdXQgdGhpcywgbG90cyBvZiBkcml2ZXJzIHRyeWluZyB0byBkbwppbnRlZ3JhdGVk
-IG9yIGRyaXZlciBzcGVjaWZpYyBhcHByb2FjaGVzLCBidXQgb25seSBvbmUgb3IgdHdvIGF0dGVt
-cHRzCmF0IGRvaW5nIHNvbWV0aGluZyBkcml2ZXIgaW5kZXBlbmRlbnQuCgpJZiBhbGwgdGhlIGVm
-Zm9ydCB0aGF0J3MgYmVlbiBwdXQgaW50byBkaXNjdXNzaW9uIHdhcyBwdXQgaW50byBzb3J0aW5n
-Cm91dCBhIHNvbHV0aW9uLCBtYXliZSB3ZSdkIGJlIGEgbGl0dGxlIGZ1cnRoZXIgZm9yd2FyZCB0
-aGFuIHdlIGFyZSBub3cuCgpJJ3ZlIHNlbnQgb25lIHByb3Bvc2FsIHdoaWNoIHVzZXMgYSBub3Rp
-ZmllciB0byBpbmZvcm0gYXVkaW8gYW5kIENFQwpkcml2ZXJzIGFib3V0IHN0YXRlIGNoYW5nZXMg
-aW4gdGhlIEhETUkgdmlkZW8gc2lkZSwgYW5kIGhhZCBwcmVjaXNlbHkKemVybyByZXBsaWVzIHRv
-IGl0IC0gcGVvcGxlIHNlZW1lZCB0byBwcmVmZXIgZGlzY3Vzc2luZyBzdHVmZiByYXRoZXIKdGhh
-biByZXZpZXdpbmcgY29kZSBhbmQgY29taW5nIHVwIHdpdGggYWN0dWFsIHNvbHV0aW9ucy4KCi0t
-IApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBk
-b3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
-ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+> After reading the ELCE Audio mini conf minutes [1] I gather that HDMI
+> audio was not discussed after all.
+>
+> My conclusion from the Lars-Peter's latest mail [2] related to the
+> subject is that the wind is currently blowing slightly in favour of my
+> version of the hdmi codec [3], or at least not in favour of Arnaud's
+> version [4].
+Based on previous discussions and lack of feedback from DRM community,
+This make sens for me.
+
+>
+> So how should we proceed? Are we still waiting for some feedback from
+> DRM/video side?
+>
+> There was not too many clear suggestions to my latest patch series
+> [3], so I do not see too much point in sending yet another version of
+> that series.
+  For me, some points need to be clarified:
+- Do we need the abort callback. Is there a uses cases that makes it 
+mandatory (some timeout mechanism already exists to stop audio...)
+
+- Does trigger is needed when CPU-DAI is master on bus?
+Otherwise how to inform HDMI that I2S bus is no more clocked? I'm not
+sure that mute is sufficient for all hardwares... For instance for my
+hardware CTS parameter is hardware computed based on I2S L/R clock.
+
+- IEC controls to support compress mode. This should be handled by codec 
+driver in I2S mode, but not in SPDIF mode.
+
+>
+> Arnaud, if I'd try to make a patch series that would implement sti
+> HDMI audio with my HDMI codec, would you be willing try that out?
+hmm...more simple that i do the stuff for sti platform as some pieces of 
+code are missing today in kernel (Device tree part).
+I will try to find time next week to make a prototype for test and give 
+you a feedback.
+
+Additional point: We should also define some new helper functions:
+
+- For N and CTS HDMI parameters: In my RFC i have proposed helper 
+function, don't know if that matches with other platforms need...
+
+- For IEC standard controls (could be added in core/pcm_iec958.c)
+
+BR,
+Arnaud
