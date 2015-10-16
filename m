@@ -1,14 +1,18 @@
 From: han.lu@intel.com
-Subject: [PATCH V3 0/4] BAT: some fixes
-Date: Fri, 16 Oct 2015 16:12:02 +0800
-Message-ID: <cover.1444982584.git.han.lu@intel.com>
+Subject: [PATCH V3 1/4] BAT: Merge message strings
+Date: Fri, 16 Oct 2015 16:12:03 +0800
+Message-ID: <e74a6cd0b7d0edb4f56b7729345377fc7a4077c8.1444982584.git.han.lu@intel.com>
+References: <cover.1444982584.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 32E4C26062B
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 10:14:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1122726062F
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 10:14:36 +0200 (CEST)
+In-Reply-To: <cover.1444982584.git.han.lu@intel.com>
+In-Reply-To: <cover.1444982584.git.han.lu@intel.com>
+References: <cover.1444982584.git.han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +28,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-some fixes and adjusts.
+Remove redundant error messages.
 
-Lu, Han (4):
-  BAT: Merge message strings
-  BAT: Use colon instead of comma for separation
-  BAT: Adjust parameters and strings
-  BAT: Use dynamic temp file
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
- bat/bat.c    | 77 +++++++++++++++++++++++++++++++++---------------------------
- bat/common.h |  2 +-
- 2 files changed, 43 insertions(+), 36 deletions(-)
-
+diff --git a/bat/bat.c b/bat/bat.c
+index 24c74e8..4320e22 100644
+--- a/bat/bat.c
++++ b/bat/bat.c
+@@ -41,43 +41,33 @@ static int get_duration(struct bat *bat)
+ 	char *ptrf, *ptri;
+ 
+ 	duration_f = strtof(bat->narg, &ptrf);
+-	if (duration_f == HUGE_VALF || duration_f == -HUGE_VALF) {
+-		fprintf(bat->err, _("duration float overflow: %f %d\n"),
+-				duration_f, -errno);
+-		return -errno;
+-	} else if (duration_f == 0.0 && errno != 0) {
+-		fprintf(bat->err, _("duration float underflow: %f %d\n"),
+-				duration_f, -errno);
+-		return -errno;
+-	}
++	if (duration_f == HUGE_VALF || duration_f == -HUGE_VALF
++			|| (duration_f == 0.0 && errno != 0))
++		goto err_exit;
+ 
+ 	duration_i = strtol(bat->narg, &ptri, 10);
+-	if (duration_i == LONG_MAX) {
+-		fprintf(bat->err, _("duration long overflow: %ld %d\n"),
+-				duration_i, -errno);
+-		return -errno;
+-	} else if (duration_i == LONG_MIN) {
+-		fprintf(bat->err, _("duration long underflow: %ld %d\n"),
+-				duration_i, -errno);
+-		return -errno;
+-	}
++	if (duration_i == LONG_MAX || duration_i == LONG_MIN)
++		goto err_exit;
+ 
+-	if (*ptrf == 's') {
++	if (*ptrf == 's')
+ 		bat->frames = duration_f * bat->rate;
+-	} else if (*ptri == 0) {
++	else if (*ptri == 0)
+ 		bat->frames = duration_i;
+-	} else {
+-		fprintf(bat->err, _("invalid duration: %s\n"), bat->narg);
+-		return -EINVAL;
+-	}
++	else
++		bat->frames = -1;
+ 
+ 	if (bat->frames <= 0 || bat->frames > MAX_FRAMES) {
+-		fprintf(bat->err, _("duration out of range: (0, %d(%ds))\n"),
+-				MAX_FRAMES, (bat->frames / bat->rate));
++		fprintf(bat->err, _("Invalid duration. Range: (0, %d(%fs))\n"),
++				MAX_FRAMES, (double)MAX_FRAMES / bat->rate);
+ 		return -EINVAL;
+ 	}
+ 
+ 	return 0;
++
++err_exit:
++	fprintf(bat->err, _("Duration overflow/underflow: %d\n"), -errno);
++
++	return -errno;
+ }
+ 
+ static void get_sine_frequencies(struct bat *bat, char *freq)
 -- 
 1.9.1
