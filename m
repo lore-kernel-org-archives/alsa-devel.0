@@ -1,20 +1,15 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH 0/7] ALSA: USB-audio: Support Zoom R16
-	playback
-Date: Fri, 16 Oct 2015 13:20:22 +0200
-Message-ID: <alpine.DEB.2.02.1510161318490.4075@lnxricardw1.se.axis.com>
-References: <1444906657-16791-1-git-send-email-ricardw@axis.com>
- <s5h4mhrguy4.wl-tiwai@suse.de>
- <alpine.DEB.2.02.1510160916060.4075@lnxricardw1.se.axis.com>
- <s5h8u73jf31.wl-tiwai@suse.de>
+Subject: [PATCH] ALSA: USB-audio: Add support for Novation
+ Nocturn MIDIcontrol surface
+Date: Fri, 16 Oct 2015 13:38:33 +0200
+Message-ID: <alpine.DEB.2.02.1510161332480.4075@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B5EF260671
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 13:20:24 +0200 (CEST)
-In-Reply-To: <s5h8u73jf31.wl-tiwai@suse.de>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 417D4260671
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 13:38:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>, Ricard Wanderlof <ricard2005@butoba.net>, alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Ricard at home <ricard2005@butoba.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Fri, 16 Oct 2015, Takashi Iwai wrote:
+The Nocturn needs the MIDI_RAW_BYTES quirk, like other Novation devices.
 
-> > unsigned int length;
-> > u32 packet_length =3D cpu_to_le32((u32)length);
-> =
+Tested that the Nocturn shows up in aconnect, and that it can be used
+as a control surface (using the xtor synthesizer patch editor).
 
-> No, other way round: the problem is that packet_length is declared as
-> u32 while it should be __le32.  The length variable must be CPU
-> endian, of course, as you apply C arithmetic.
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
 
-So the cast shouldn't be necessary then, i.e. just simply:
+I've noticed that checkpatch complains about the space between the & and (,
+but in the interest of consistency I've not changed this. Is there some
+reason for the space, or would it be worth while cleaning up the file?
 
-unsigned int length;
-__le32 packet_length =3D cpu_to_le32(length);
+ sound/usb/quirks-table.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-?
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index e475665..99de061 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2664,6 +2664,15 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
++	USB_DEVICE(0x1235, 0x000a),
++	.driver_info =3D (unsigned long) & (const struct snd_usb_audio_quirk) {
++		/* .vendor_name =3D "Novation", */
++		/* .product_name =3D "Nocturn", */
++		.ifnum =3D 0,
++		.type =3D QUIRK_MIDI_RAW_BYTES
++	}
++},
++{
+ 	USB_DEVICE(0x1235, 0x000e),
+ 	.driver_info =3D (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name =3D "Novation", */
+-- =
 
-It makes sense to me (although that doesn't necessarily make it right. :-) )
+2.1.4
 
-/Ricard
 -- =
 
 Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
