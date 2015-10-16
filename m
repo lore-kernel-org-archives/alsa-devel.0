@@ -1,17 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/6] ALSA: hda - Add a common helper to give
-	the codec modalias string
-Date: Fri, 16 Oct 2015 18:20:55 +0200
-Message-ID: <1445012458-3337-4-git-send-email-tiwai@suse.de>
-References: <1445012458-3337-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 0/6] HD-audio modalias support patchset
+Date: Fri, 16 Oct 2015 18:20:52 +0200
+Message-ID: <1445012458-3337-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BAEE266715
+ by alsa0.perex.cz (Postfix) with ESMTP id 8506F26671C
  for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:21:07 +0200 (CEST)
-In-Reply-To: <1445012458-3337-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +22,63 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja Kp <jeeja.kp@intel.com>, Subhransu S Prusty <subhransu.s.prusty@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch provide a new common helper function,
-snd_hdac_codec_modalias(), to give the codec modalias name string.
-This function will be used by multiple places in the later patches.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/hdaudio.h |  1 +
- sound/hda/hdac_device.c | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
+this is a patchset to add the support of automatic modalias creation
+for HD-audio codec drivers like other standard drivers.  Currently,
+the HDA codec driver has put module alias manually due to ugly
+historical reasons.  This patch finally moves to the saner way.
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index ddca48eb02e0..e2b712c90d3f 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -109,6 +109,7 @@ void snd_hdac_device_exit(struct hdac_device *dev);
- int snd_hdac_device_register(struct hdac_device *codec);
- void snd_hdac_device_unregister(struct hdac_device *codec);
- int snd_hdac_device_set_chip_name(struct hdac_device *codec, const char *name);
-+int snd_hdac_codec_modalias(struct hdac_device *hdac, char *buf, size_t size);
- 
- int snd_hdac_refresh_widgets(struct hdac_device *codec);
- int snd_hdac_refresh_widget_sysfs(struct hdac_device *codec);
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 4b06b26cee06..bbdb25f5bbb9 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -186,6 +186,21 @@ int snd_hdac_device_set_chip_name(struct hdac_device *codec, const char *name)
- EXPORT_SYMBOL_GPL(snd_hdac_device_set_chip_name);
- 
- /**
-+ * snd_hdac_codec_modalias - give the module alias name
-+ * @codec: HDAC device
-+ * @buf: string buffer to store
-+ * @size: string buffer size
-+ *
-+ * Returns the size of string, like snprintf(), or a negative error code.
-+ */
-+int snd_hdac_codec_modalias(struct hdac_device *codec, char *buf, size_t size)
-+{
-+	return snprintf(buf, size, "hdaudio:v%08Xr%08Xa%02X\n",
-+			codec->vendor_id, codec->revision_id, codec->type);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_codec_modalias);
-+
-+/**
-  * snd_hdac_make_cmd - compose a 32bit command word to be sent to the
-  *	HD-audio controller
-  * @codec: the codec object
+Also it adds the udev modalias support so that it can be autoloaded in
+udev.
+
+The patchset was initiated by Intel people for SKL ASoC drivers.  Now
+I brushed up and made it working for legacy drivers.
+
+The current patchset is found in topic/hda-modalias branch of sound
+git tree, too.
+
+
+thanks,
+
+Takashi
+
+===
+
+Subhransu S. Prusty (2):
+  ALSA: hda - Add hduadio support to DEVTABLE
+  ALSA: hda - Add hdaudio bus modalias support
+
+Takashi Iwai (3):
+  ALSA: hda - Add api_version to hda_device_id struct
+  ALSA: hda - Add a common helper to give the codec modalias string
+  ALSA: hda - convert to hda_device_id
+
+Thierry Reding (1):
+  ALSA: hda - Advertise MODALIAS in uevent
+
+ include/linux/mod_devicetable.h   |   8 ++
+ include/sound/hdaudio.h           |  12 +--
+ scripts/mod/devicetable-offsets.c |   5 +
+ scripts/mod/file2alias.c          |  17 +++
+ sound/hda/hda_bus_type.c          |  13 +++
+ sound/hda/hdac_device.c           |  15 +++
+ sound/hda/hdac_sysfs.c            |   8 ++
+ sound/pci/hda/hda_bind.c          |  32 +++---
+ sound/pci/hda/hda_codec.h         |  19 ++--
+ sound/pci/hda/hda_generic.c       |   7 +-
+ sound/pci/hda/patch_analog.c      |  37 ++++---
+ sound/pci/hda/patch_ca0110.c      |  15 ++-
+ sound/pci/hda/patch_ca0132.c      |   9 +-
+ sound/pci/hda/patch_cirrus.c      |  21 ++--
+ sound/pci/hda/patch_cmedia.c      |  15 ++-
+ sound/pci/hda/patch_conexant.c    | 118 ++++++---------------
+ sound/pci/hda/patch_hdmi.c        | 201 +++++++++++++----------------------
+ sound/pci/hda/patch_realtek.c     | 122 ++++++++++------------
+ sound/pci/hda/patch_si3054.c      |  39 +++----
+ sound/pci/hda/patch_sigmatel.c    | 214 +++++++++++++++++++-------------------
+ sound/pci/hda/patch_via.c         | 153 ++++++++++-----------------
+ 21 files changed, 475 insertions(+), 605 deletions(-)
+
 -- 
 2.6.1
