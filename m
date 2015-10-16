@@ -1,45 +1,62 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen 0/2] Add mixer and control interface media entities
-Date: Thu, 15 Oct 2015 14:50:51 -0600
-Message-ID: <cover.1444941680.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Fri, 16 Oct 2015 08:32:50 +0800
+Message-ID: <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <561CA911.7070405@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF06A260522
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 02:32:53 +0200 (CEST)
+Received: by oihr205 with SMTP id r205so55833095oih.3
+ for <alsa-devel@alsa-project.org>; Thu, 15 Oct 2015 17:32:50 -0700 (PDT)
+In-Reply-To: <s5htwpuj6f5.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds the following:
+> >
+> > Do it mean that only one DP MST port and no HDMI port on the same
+graphic
+> > card ?
+>
+> No.
 
-Add support for creating MEDIA_ENT_F_AUDIO_MIXER entity for
-each mixer and a MEDIA_INTF_T_ALSA_CONTROL control interface
-entity that links to mixer entities. MEDIA_INTF_T_ALSA_CONTROL
-entity corresponds to the control device for the card.
+If there is only one HDMI and one Display Port, this mean that there are
+two pin complexes
 
-Change au0828_create_media_graph() to create pad link between
-MEDIA_ENT_F_AUDIO_MIXER entity and decoder's AU8522_PAD_AUDIO_OUT.
+How about the name of jack detection kctl of three Display Port monitors
+which are created on the same pin complex but different dev_index ?
 
-This patch series is dependent on an earlier patch series:
+Will three three display port monitor playback devices always play
+different stream even when the displays are in clone mode ?
 
-Update ALSA, and au0828 drivers to use Managed Media Controller API:
-https://www.mail-archive.com/linux-media@vger.kernel.org/msg92752.html
+>
+> > If DP MST are dasiy chained, the unplug of the first monitor from
+Display
+> > Port will cause all DP monitor in the dasiy chain disconnect
+>
+> Yes.
+>
 
-Please find the media graph with mixer and control interface nodes:
-https://drive.google.com/folderview?id=0B0NIL0BQg-Alb3JFb2diMXRoQlU&usp=sharing
-New file:
-graph_mixer.png
-
-Shuah Khan (2):
-  sound/usb: Create media mixer function and control interface entities
-  media: au0828 create link between ALSA Mixer and decoder
-
- drivers/media/usb/au0828/au0828-core.c | 12 +++++
- drivers/media/usb/au0828/au0828.h      |  1 +
- sound/usb/card.c                       |  5 ++
- sound/usb/media.c                      | 85 ++++++++++++++++++++++++++++++++++
- sound/usb/media.h                      |  4 ++
- sound/usb/mixer.h                      |  1 +
- sound/usb/usbaudio.h                   |  1 +
- 7 files changed, 109 insertions(+)
-
--- 
-2.1.4
+Do the power off of the Display Port in the middle of the dasiy chain also
+affect the last display port mointor in the dasiy chain ?
