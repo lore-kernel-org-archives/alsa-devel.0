@@ -1,23 +1,18 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Fri, 16 Oct 2015 08:51:30 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1974F6DD@SHSMSX103.ccr.corp.intel.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <561CA911.7070405@canonical.com>
- <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
- <s5hlhb7ktum.wl-tiwai@suse.de>
- <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
- <s5htwpuj6f5.wl-tiwai@suse.de>
- <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
- <s5h7fmngvxu.wl-tiwai@suse.de>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH V3 3/4] BAT: Adjust parameters and strings
+Date: Fri, 16 Oct 2015 08:57:18 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83BF27201@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1444982584.git.han.lu@intel.com>
+ <3a99986b04bfd6a0e845d91c9a22e1d3b85e6653.1444982584.git.han.lu@intel.com>
+ <s5hio67jj88.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 798FD26062F
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 10:51:36 +0200 (CEST)
-In-Reply-To: <s5h7fmngvxu.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC4D226062F
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 10:57:21 +0200 (CEST)
+In-Reply-To: <s5hio67jj88.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,74 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Gautier, Bernard" <bernard.gautier@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi,
 
 > -----Original Message-----
 > From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, October 16, 2015 2:38 PM
-> To: Raymond Yau
-> Cc: Yang, Libin; ALSA Development Mailing List; airlied@linux.ie; Lin,
-> Mengdong; Girdwood, Liam R; tanuk@iki.fi; David Henningsson
-> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+> Sent: Friday, October 16, 2015 4:44 PM
+> To: Lu, Han
+> Cc: Girdwood, Liam R; Gautier, Bernard; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH V3 3/4] BAT: Adjust parameters and strings
 > 
-> On Fri, 16 Oct 2015 02:32:50 +0200,
-> Raymond Yau wrote:
+> On Fri, 16 Oct 2015 10:12:05 +0200,
+> han.lu@intel.com wrote:
 > >
-> > > >
-> > > > Do it mean that only one DP MST port and no HDMI port on the
-> same
-> > graphic
-> > > > card ?
-> > >
-> > > No.
+> > From: "Lu, Han" <han.lu@intel.com>
 > >
-> > If there is only one HDMI and one Display Port, this mean that there
-> are
-> > two pin complexes
+> > Use rational parameters and clearer comments.
 > 
-> Yes, and the mapping doesn't change in this case as before.
+> This doesn't match with what you actually changed exactly.
 > 
-> > How about the name of jack detection kctl of three Display Port
-> monitors
-> > which are created on the same pin complex but different dev_index ?
+> In general, please give more care and love to the changelog comments.
+> This is the only verbose information the later reader can receive.
 > 
-> It's one of the models we've considered.  Basically the number of
-> devices can be up to 64 (or such) per pin.  For Intel case, due to the
-> limitation of converters, it's up to 3.  For other GPUs that may drive
-> more simultaneous outputs, the number increases in square.  If a GPU
-> may handle 16 outputs, it'll be 256 entries.
-> 
-> Although the 256 entries are certainly manageable as kctl, whether
-> this is the best representation for user-space is a question.
+> Also, using argv[0] as the command name isn't appropriate.  You can pass a
+> different name to argv[0] freely.  Use a constant pre-defined program name
+> instead.
 
-This is what I concern. Each device entry should have one tag
-for unsol event. This means each device entry will create a jack?
+Sorry! I'll be more careful about change log comments. And I'll use pre-defined
+name instead of argv[0].
 
+BR,
+Han Lu
 > 
-> > Will three three display port monitor playback devices always play
-> > different stream even when the displays are in clone mode ?
 > 
-> The clone mode is another messy part...
-> 
-> > > > If DP MST are dasiy chained, the unplug of the first monitor from
-> > Display
-> > > > Port will cause all DP monitor in the dasiy chain disconnect
-> > >
-> > > Yes.
-> > >
-> >
-> > Do the power off of the Display Port in the middle of the dasiy chain
-> also
-> > affect the last display port mointor in the dasiy chain ?
-> 
-> Possibly.  But it's not what we really care, as this is the thing the
-> graphics side should handle.
-> 
+> thanks,
 > 
 > Takashi
+> 
+> 
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
+> >
+> > diff --git a/bat/bat.c b/bat/bat.c
+> > index 2320984..02b1abd 100644
+> > --- a/bat/bat.c
+> > +++ b/bat/bat.c
+> > @@ -268,16 +268,16 @@ static void test_capture(struct bat *bat)
+> >  	}
+> >  }
+> >
+> > -static void usage(struct bat *bat, char *argv[])
+> > +static void usage(struct bat *bat, const char *command)
+> >  {
+> >  	fprintf(bat->log,
+> >  _("Usage:%s [Option]...\n"
+> >  "\n"
+> >  "-h, --help             help\n"
+> > -"-D                     sound card\n"
+> > +"-D                     pcm for both playback and capture\n"
+> >  "-P                     playback pcm\n"
+> >  "-C                     capture pcm\n"
+> > -"-f                     sample size\n"
+> > +"-f                     sample format\n"
+> >  "-c                     number of channels\n"
+> >  "-r                     sampling rate\n"
+> >  "-n                     frames to capture\n"
+> > @@ -289,7 +289,7 @@ _("Usage:%s [Option]...\n"
+> >  "    --file=#           input file\n"
+> >  "    --saveplay=#       save playback content to target file, for debug\n"
+> >  "    --local            internal loop, bypass hardware\n"
+> > -), argv[0]);
+> > +), command);
+> >  	fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
+> >  			snd_pcm_format_name(SND_PCM_FORMAT_U8),
+> >
+> 	snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
+> > @@ -402,7 +402,7 @@ static void parse_arguments(struct bat *bat, int argc,
+> char *argv[])
+> >  			break;
+> >  		case 'h':
+> >  		default:
+> > -			usage(bat, argv);
+> > +			usage(bat, argv[0]);
+> >  			exit(EXIT_SUCCESS);
+> >  		}
+> >  	}
+> > --
+> > 1.9.1
+> >
