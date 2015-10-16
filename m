@@ -1,17 +1,20 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: HDMI codec, way forward?
-Date: Fri, 16 Oct 2015 15:51:40 +0200
-Message-ID: <562100EC.4030701@st.com>
-References: <5620E482.6050507@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: race condition between dmaengine_pcm_dma_complete
+ and snd_pcm_release
+Date: Fri, 16 Oct 2015 15:55:07 +0200
+Message-ID: <562101BB.5010001@metafoo.de>
+References: <CAMDowVWrLOK1Ysmfe1zTujw0Ev5PjPei1RBH8t_Mve_fsfe2ww@mail.gmail.com>	<56163123.9020106@metafoo.de>	<CAMDowVViAToVdECaJnX4ZdqgoF0rw-tQHsQW6-meWOF=CxcV4w@mail.gmail.com>
+ <CAMDowVUdCJi5mrd9o40QpOAAVmQ2b4i7cmSbwOjSHq1R0WcSqw@mail.gmail.com>
+ <561BA106.4090002@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D861A26069D
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 15:51:46 +0200 (CEST)
-In-Reply-To: <5620E482.6050507@ti.com>
+Received: from smtp-out-188.synserver.de (smtp-out-218.synserver.de
+ [212.40.185.218])
+ by alsa0.perex.cz (Postfix) with ESMTP id 268922606BB
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 15:55:10 +0200 (CEST)
+In-Reply-To: <561BA106.4090002@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, David Airlie <airlied@linux.ie>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, =?UTF-8?B?UnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IOKAjg==?= <linux@arm.linux.org.uk>, "lars@metafoo.de" <lars@metafoo.de>, Jean-Francois Moine <moinejf@free.fr>
+To: Matt Campbell <mcampbell@izotope.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jonah Petri <jpetri@izotope.com>
 List-Id: alsa-devel@alsa-project.org
 
-> After reading the ELCE Audio mini conf minutes [1] I gather that HDMI
-> audio was not discussed after all.
->
-> My conclusion from the Lars-Peter's latest mail [2] related to the
-> subject is that the wind is currently blowing slightly in favour of my
-> version of the hdmi codec [3], or at least not in favour of Arnaud's
-> version [4].
-Based on previous discussions and lack of feedback from DRM community,
-This make sens for me.
+On 10/12/2015 02:01 PM, Lars-Peter Clausen wrote:
+> On 10/08/2015 03:46 PM, Matt Campbell wrote:
+>> Hi Lars,
+>>
+>> Note: re-sending this message because I accidentally wasn't plain text
+>> email so it got bounced from the email list (thanks GMail). Sorry for
+>> the double mail to those that are CC'd.
+>>
+>> Thanks for the info, this felt like a limitation to the DMA engine
+>> before I found this older thread so it's good to have that feeling
+>> validated.
+>>
+>> Just for posterity I'll describe the situation I'm in with the RT
+>> patch. I'm on an i.MX6 solo processor which uses the imx-sdma driver.
+>> As far as I can tell, terminate_all properly shuts off the DMA (simply
+>> disabling the bit in the controller). The issue I'm having is the
+>> described in the following steps:
+>>
+>> 1) An SDMA interrupt comes in, is handled by the top half and the
+>> bottom half tasklet is scheduled.
+>>
+>> 2) Control returns to my RT process which is higher priority than the
+>> tasklet thread. My process decides it is time to shutdown and calls
+>> snd_pcm_close which will terminate the DMA and deallocates everything
+>> (including the substream which is the argument data to the tasklet)
+>>
+>> 3) With my process out of the way the dma tasklet can run. It
+>> eventually calls dmaengine_pcm_dma_complete (or in my case
+>> imx_pcm_dma_complete). You'll run into problems when dereferencing the
+>> now invalid substream pointer.
+>>
+>> I have one other note about your proposed fix. In
+>> dmaengine_pcm_dma_complete you can end up with xrun handling which
+>> will result in a reset of the stream including calling terminate_all
+>> on the DMA. I'm worried that even with an API call to the DMA system
+>> to synchronize completion of DMA tasklets, you could end up with a
+>> deadlock when this is called from the tasklet itself when resetting
+>> the stream. I think we need to put the tasklet synchronization just
+>> before snd_pcm_release is called (as you suggested in the older
+>> thread). This still makes me uneasy because deadlock is still possible
+>> if the tasklet takes locks that are held when snd_pcm_release is
+>> called. Thanks for the input!
+> 
+> Yes, very good analysis. This is the reason why we can't synchronize in
+> terminate_all() itself and have to introduce a separate synchronization
+> primitive to the API. Most users will be fine with terminating and syncing
+> at the same time, hence it makes sense to introduce a new API
+> terminate_all_sync() to cover those common cases. For cases where it is not
+> possible, e.g. because they either terminate the DMA from atomic context or
+> they can end up calling terminate_all() from the completion callback, a new
+> separate API function (e.g. dmaengine_synchronize()) will be introduced.
+> Users which use the asynchronous terminate API need to call
+> dmaengine_synchronize() before they free any resources that are accessed in
+> either the completion callback or the memory that is accessed by the DMA itself.
+> 
+>> This still makes me uneasy because deadlock is still possible
+>> if the tasklet takes locks that are held when snd_pcm_release is
+>> called. Thanks for the input
+> 
+> Good point. If that can happen we properly need to reference count the
+> struct that is passed to the complete callback.
+> 
 
->
-> So how should we proceed? Are we still waiting for some feedback from
-> DRM/video side?
->
-> There was not too many clear suggestions to my latest patch series
-> [3], so I do not see too much point in sending yet another version of
-> that series.
-  For me, some points need to be clarified:
-- Do we need the abort callback. Is there a uses cases that makes it 
-mandatory (some timeout mechanism already exists to stop audio...)
-
-- Does trigger is needed when CPU-DAI is master on bus?
-Otherwise how to inform HDMI that I2S bus is no more clocked? I'm not
-sure that mute is sufficient for all hardwares... For instance for my
-hardware CTS parameter is hardware computed based on I2S L/R clock.
-
-- IEC controls to support compress mode. This should be handled by codec 
-driver in I2S mode, but not in SPDIF mode.
-
->
-> Arnaud, if I'd try to make a patch series that would implement sti
-> HDMI audio with my HDMI codec, would you be willing try that out?
-hmm...more simple that i do the stuff for sti platform as some pieces of 
-code are missing today in kernel (Device tree part).
-I will try to find time next week to make a prototype for test and give 
-you a feedback.
-
-Additional point: We should also define some new helper functions:
-
-- For N and CTS HDMI parameters: In my RFC i have proposed helper 
-function, don't know if that matches with other platforms need...
-
-- For IEC standard controls (could be added in core/pcm_iec958.c)
-
-BR,
-Arnaud
+Thinking a bit more about this, this shouldn't be possible to happen. The
+completion callback runs in atomic context, which means in can only use
+spinlocks etc. On the other hand the dmaengine_synchronize() function must
+not be called from atomic context, this means it can't be called while
+holding a lock that can be taken from within the complete callback.
