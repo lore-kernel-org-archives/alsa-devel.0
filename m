@@ -1,20 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: race condition between dmaengine_pcm_dma_complete
- and snd_pcm_release
-Date: Fri, 16 Oct 2015 15:55:07 +0200
-Message-ID: <562101BB.5010001@metafoo.de>
-References: <CAMDowVWrLOK1Ysmfe1zTujw0Ev5PjPei1RBH8t_Mve_fsfe2ww@mail.gmail.com>	<56163123.9020106@metafoo.de>	<CAMDowVViAToVdECaJnX4ZdqgoF0rw-tQHsQW6-meWOF=CxcV4w@mail.gmail.com>
- <CAMDowVUdCJi5mrd9o40QpOAAVmQ2b4i7cmSbwOjSHq1R0WcSqw@mail.gmail.com>
- <561BA106.4090002@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: HDMI codec, way forward?
+Date: Fri, 16 Oct 2015 15:06:37 +0100
+Message-ID: <20151016140637.GK14956@sirena.org.uk>
+References: <5620E482.6050507@ti.com>
+ <5620EE2F.8070504@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5802091073748859524=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 268922606BB
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 15:55:10 +0200 (CEST)
-In-Reply-To: <561BA106.4090002@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20DDA2606A2
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 16:06:55 +0200 (CEST)
+In-Reply-To: <5620EE2F.8070504@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,75 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Campbell <mcampbell@izotope.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jonah Petri <jpetri@izotope.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux =?utf-8?B?4oCO?= <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/12/2015 02:01 PM, Lars-Peter Clausen wrote:
-> On 10/08/2015 03:46 PM, Matt Campbell wrote:
->> Hi Lars,
->>
->> Note: re-sending this message because I accidentally wasn't plain text
->> email so it got bounced from the email list (thanks GMail). Sorry for
->> the double mail to those that are CC'd.
->>
->> Thanks for the info, this felt like a limitation to the DMA engine
->> before I found this older thread so it's good to have that feeling
->> validated.
->>
->> Just for posterity I'll describe the situation I'm in with the RT
->> patch. I'm on an i.MX6 solo processor which uses the imx-sdma driver.
->> As far as I can tell, terminate_all properly shuts off the DMA (simply
->> disabling the bit in the controller). The issue I'm having is the
->> described in the following steps:
->>
->> 1) An SDMA interrupt comes in, is handled by the top half and the
->> bottom half tasklet is scheduled.
->>
->> 2) Control returns to my RT process which is higher priority than the
->> tasklet thread. My process decides it is time to shutdown and calls
->> snd_pcm_close which will terminate the DMA and deallocates everything
->> (including the substream which is the argument data to the tasklet)
->>
->> 3) With my process out of the way the dma tasklet can run. It
->> eventually calls dmaengine_pcm_dma_complete (or in my case
->> imx_pcm_dma_complete). You'll run into problems when dereferencing the
->> now invalid substream pointer.
->>
->> I have one other note about your proposed fix. In
->> dmaengine_pcm_dma_complete you can end up with xrun handling which
->> will result in a reset of the stream including calling terminate_all
->> on the DMA. I'm worried that even with an API call to the DMA system
->> to synchronize completion of DMA tasklets, you could end up with a
->> deadlock when this is called from the tasklet itself when resetting
->> the stream. I think we need to put the tasklet synchronization just
->> before snd_pcm_release is called (as you suggested in the older
->> thread). This still makes me uneasy because deadlock is still possible
->> if the tasklet takes locks that are held when snd_pcm_release is
->> called. Thanks for the input!
-> 
-> Yes, very good analysis. This is the reason why we can't synchronize in
-> terminate_all() itself and have to introduce a separate synchronization
-> primitive to the API. Most users will be fine with terminating and syncing
-> at the same time, hence it makes sense to introduce a new API
-> terminate_all_sync() to cover those common cases. For cases where it is not
-> possible, e.g. because they either terminate the DMA from atomic context or
-> they can end up calling terminate_all() from the completion callback, a new
-> separate API function (e.g. dmaengine_synchronize()) will be introduced.
-> Users which use the asynchronous terminate API need to call
-> dmaengine_synchronize() before they free any resources that are accessed in
-> either the completion callback or the memory that is accessed by the DMA itself.
-> 
->> This still makes me uneasy because deadlock is still possible
->> if the tasklet takes locks that are held when snd_pcm_release is
->> called. Thanks for the input
-> 
-> Good point. If that can happen we properly need to reference count the
-> struct that is passed to the complete callback.
-> 
 
-Thinking a bit more about this, this shouldn't be possible to happen. The
-completion callback runs in atomic context, which means in can only use
-spinlocks etc. On the other hand the dmaengine_synchronize() function must
-not be called from atomic context, this means it can't be called while
-holding a lock that can be taken from within the complete callback.
+--===============5802091073748859524==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="O6uyWUGY5J97yCxj"
+Content-Disposition: inline
+
+
+--O6uyWUGY5J97yCxj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 16, 2015 at 02:31:43PM +0200, Lars-Peter Clausen wrote:
+> On 10/16/2015 01:50 PM, Jyri Sarha wrote:
+
+> > My conclusion from the Lars-Peter's latest mail [2] related to the
+> > subject is that the wind is currently blowing slightly in favour of my
+> > version of the hdmi codec [3], or at least not in favour of Arnaud's
+> > version [4].
+
+> > So how should we proceed? Are we still waiting for some feedback from
+> > DRM/video side?
+
+That too, though given that they have never commented on these serieses
+at all as far as I remember and are generally not very vocal IME I'm
+probably OK with just applying something.
+
+> What needs to happen is that everybody who is working on HDMI audio suppo=
+rt
+> should get their heads together and come up with a common solution that
+> works for everybody, rather than having everybody trying to push their own
+> solution and put the maintainer in the spotlight of having to choose one
+> (Mark has been asking for this for the past half year or so).
+
+Longer, I think.  In this context things like the work that Russell has
+done with the EDID handling is really great - making common code that
+other people are able to adopt and use, and where I can see that there's
+reasonably widespread buy in.  There was some debate about the
+differences between your patch set and the very similar patch set that
+Arnaud posted which was good to see but it felt like that petered out
+rather than drew to a conclusion, I'd at least expect to see a new
+version appear that the pair of you can hopefully agree on or some
+active statement that you both support one or the other version that's
+there now.
+
+It's one thing if there's unresolvable differences that someone just
+needs to take a call on but right now it just feels like it's more that=20
+there's a lack of engagement.  What I don't want to do is merge
+something and then find a few months later that it needs big reworks
+(as opposed to extensions) because it's missed some important things
+that are a problem for large classes of hardware.  Having separate
+approaches for completely different classes of hardware would be fine I
+think but we need to understand what they are and ensure that as far as
+possible the user experience outside the kernel is consistent.
+
+--O6uyWUGY5J97yCxj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWIQRtAAoJECTWi3JdVIfQyqIH/RKA7whO8QpdcAlC2BV40YSY
+1SfJ/yIrjy1Y0d1L1fLW++0Vm6HTQG4mDcWgYmx/MTpQPT2wPd9htiqYtqUhanFl
+curSlwtNBgt4OBw4ufsxhrSND1ElctaHhTPHRFNY455h1WaFIWPUgOKUZrZyZ4MG
+NOJcG0L1fcohPJAZYB8p60oIbYGl+uMusNJahrvcw5il34KOzURv407N5hHvkYpb
+8Lqix7XyMRZuY+GZ8tonc0N/x1Z1EVqAZ8jwY2Nheo5gG/J4yVvq8dDG7XxorsMQ
+bkqHS4oq4ehvzUmFkK1NjivU3qCNOCu5FjnnTuIrAYNLkl2jCktOr4l4iFbbHvY=
+=Qo6b
+-----END PGP SIGNATURE-----
+
+--O6uyWUGY5J97yCxj--
+
+--===============5802091073748859524==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5802091073748859524==--
