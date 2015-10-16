@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/6] ALSA: hda - Advertise MODALIAS in uevent
-Date: Fri, 16 Oct 2015 18:20:58 +0200
-Message-ID: <1445012458-3337-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/6] ALSA: hda - Add hdaudio bus modalias
+	support
+Date: Fri, 16 Oct 2015 18:20:56 +0200
+Message-ID: <1445012458-3337-5-git-send-email-tiwai@suse.de>
 References: <1445012458-3337-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B5A3266723
+ by alsa0.perex.cz (Postfix) with ESMTP id B0253266728
  for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:21:07 +0200 (CEST)
 In-Reply-To: <1445012458-3337-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,54 +25,43 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja Kp <jeeja.kp@intel.com>, Subhransu S Prusty <subhransu.s.prusty@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-By setting the MODALIAS variable in uevents, userspace helpers will be
-enabled to load modules via the module alias associated with a device.
+This patch just adds modalias sysfs entry to each hdaudio bus entry.
 
-This information is required to automatically load HDA codec drivers
-instead of having to explicitly request the various modules in the HDA
-core code.
+[rewritten to call the common helper function by tiwai]
 
-[Note that currently the legacy HDA controller driver tries to bind
- codec modules manually.  It's for supporting the fallback generic
- drivers.  This new udev modalias support was added rather for ASoC
- HDA ext drivers, since this addition itself won't hurt the legacy HDA
- -- tiwai]
-
-[Use the common helper function to generate the modalias -- tiwai]
-
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/hda/hda_bus_type.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/hda/hdac_sysfs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/hda/hda_bus_type.c b/sound/hda/hda_bus_type.c
-index bcb1a79eec38..3060e2aee36f 100644
---- a/sound/hda/hda_bus_type.c
-+++ b/sound/hda/hda_bus_type.c
-@@ -64,9 +64,21 @@ static int hda_bus_match(struct device *dev, struct device_driver *drv)
- 	return 1;
- }
+diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
+index c71142dea98a..42d61bf41969 100644
+--- a/sound/hda/hdac_sysfs.c
++++ b/sound/hda/hdac_sysfs.c
+@@ -45,6 +45,13 @@ CODEC_ATTR(mfg);
+ CODEC_ATTR_STR(vendor_name);
+ CODEC_ATTR_STR(chip_name);
  
-+static int hda_uevent(struct device *dev, struct kobj_uevent_env *env)
++static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
++			     char *buf)
 +{
-+	char modalias[32];
-+
-+	snd_hdac_codec_modalias(dev_to_hdac_dev(dev), modalias,
-+				sizeof(modalias));
-+	if (add_uevent_var(env, "MODALIAS=%s", modalias))
-+		return -ENOMEM;
-+	return 0;
++	return snd_hdac_codec_modalias(dev_to_hdac_dev(dev), buf, 256);
 +}
++static DEVICE_ATTR_RO(modalias);
 +
- struct bus_type snd_hda_bus_type = {
- 	.name = "hdaudio",
- 	.match = hda_bus_match,
-+	.uevent = hda_uevent,
+ static struct attribute *hdac_dev_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_vendor_id.attr,
+@@ -54,6 +61,7 @@ static struct attribute *hdac_dev_attrs[] = {
+ 	&dev_attr_mfg.attr,
+ 	&dev_attr_vendor_name.attr,
+ 	&dev_attr_chip_name.attr,
++	&dev_attr_modalias.attr,
+ 	NULL
  };
- EXPORT_SYMBOL_GPL(snd_hda_bus_type);
  
 -- 
 2.6.1
