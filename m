@@ -1,88 +1,216 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v3] drm/i915: Improve kernel-doc for
-	i915_audio_component struct
-Date: Fri, 16 Oct 2015 11:24:24 +0200
-Message-ID: <1444987464-8657-1-git-send-email-david.henningsson@canonical.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ALSA: timer: add config item to export PCM
+	timer disabling for expert
+Date: Fri, 16 Oct 2015 17:57:46 +0800
+Message-ID: <1444989466-12457-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: tiwai@suse.de, daniel@ffwll.ch, jani.nikula@linux.intel.com, libin.yang@intel.com, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A60F26065C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 11:51:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9u
-aWNhbC5jb20+Ci0tLQoKTm93IHJlYmFzZWQgYWdhaW5zdCBkcm0taW50ZWwgZ2l0IG1hc3Rlci4K
-CiBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIHwgNjkgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1MSBpbnNlcnRpb25zKCsp
-LCAxOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVu
-dC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAppbmRleCAzMGQ4OWUwLi5mYWIxMzg1
-IDEwMDY0NAotLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCisrKyBiL2luY2x1ZGUv
-ZHJtL2k5MTVfY29tcG9uZW50LmgKQEAgLTMxLDQ3ICszMSw4MCBAQAogI2RlZmluZSBNQVhfUE9S
-VFMgNQogCiAvKioKLSAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgLSBjYWxsYmFj
-a3MgZGVmaW5lZCBpbiBnZnggZHJpdmVyCi0gKiBAb3duZXI6IHRoZSBtb2R1bGUgb3duZXIKLSAq
-IEBnZXRfcG93ZXI6IGdldCB0aGUgUE9XRVJfRE9NQUlOX0FVRElPIHBvd2VyIHdlbGwKLSAqIEBw
-dXRfcG93ZXI6IHB1dCB0aGUgUE9XRVJfRE9NQUlOX0FVRElPIHBvd2VyIHdlbGwKLSAqIEBjb2Rl
-Y193YWtlX292ZXJyaWRlOiBFbmFibGUvRGlzYWJsZSBnZW5lcmF0aW5nIHRoZSBjb2RlYyB3YWtl
-IHNpZ25hbAotICogQGdldF9jZGNsa19mcmVxOiBnZXQgdGhlIENvcmUgRGlzcGxheSBDbG9jayBp
-biBLSHoKLSAqIEBzeW5jX2F1ZGlvX3JhdGU6IHNldCBuL2N0cyBiYXNlZCBvbiB0aGUgc2FtcGxl
-IHJhdGUKKyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgLSBPcHMgaW1wbGVtZW50
-ZWQgYnkgaTkxNSBkcml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCiAgKi8KIHN0cnVjdCBpOTE1
-X2F1ZGlvX2NvbXBvbmVudF9vcHMgeworCS8qKgorCSAqIEBvd25lcjogaTkxNSBtb2R1bGUKKwkg
-Ki8KIAlzdHJ1Y3QgbW9kdWxlICpvd25lcjsKKwkvKioKKwkgKiBAZ2V0X3Bvd2VyOiBnZXQgdGhl
-IFBPV0VSX0RPTUFJTl9BVURJTyBwb3dlciB3ZWxsCisJICoKKwkgKiBSZXF1ZXN0IHRoZSBwb3dl
-ciB3ZWxsIHRvIGJlIHR1cm5lZCBvbi4KKwkgKi8KIAl2b2lkICgqZ2V0X3Bvd2VyKShzdHJ1Y3Qg
-ZGV2aWNlICopOworCS8qKgorCSAqIEBwdXRfcG93ZXI6IHB1dCB0aGUgUE9XRVJfRE9NQUlOX0FV
-RElPIHBvd2VyIHdlbGwKKwkgKgorCSAqIEFsbG93IHRoZSBwb3dlciB3ZWxsIHRvIGJlIHR1cm5l
-ZCBvZmYuCisJICovCiAJdm9pZCAoKnB1dF9wb3dlcikoc3RydWN0IGRldmljZSAqKTsKKwkvKioK
-KwkgKiBAY29kZWNfd2FrZV9vdmVycmlkZTogRW5hYmxlL2Rpc2FibGUgY29kZWMgd2FrZSBzaWdu
-YWwKKwkgKi8KIAl2b2lkICgqY29kZWNfd2FrZV9vdmVycmlkZSkoc3RydWN0IGRldmljZSAqLCBi
-b29sIGVuYWJsZSk7CisJLyoqCisJICogQGdldF9jZGNsa19mcmVxOiBHZXQgdGhlIENvcmUgRGlz
-cGxheSBDbG9jayBpbiBrSHoKKwkgKi8KIAlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0IGRl
-dmljZSAqKTsKKwkvKioKKwkgKiBAc3luY19hdWRpb19yYXRlOiBzZXQgbi9jdHMgYmFzZWQgb24g
-dGhlIHNhbXBsZSByYXRlCisJICoKKwkgKiBDYWxsZWQgZnJvbSBhdWRpbyBkcml2ZXIuIEFmdGVy
-IGF1ZGlvIGRyaXZlciBzZXRzIHRoZQorCSAqIHNhbXBsZSByYXRlLCBpdCB3aWxsIGNhbGwgdGhp
-cyBmdW5jdGlvbiB0byBzZXQgbi9jdHMKKwkgKi8KIAlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUpKHN0
-cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludCByYXRlKTsKIH07CiAKKy8qKgorICogc3RydWN0
-IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAtIE9wcyBpbXBsZW1lbnRlZCBieSBoZGEg
-ZHJpdmVyLCBjYWxsZWQgYnkgaTkxNSBkcml2ZXIKKyAqLwogc3RydWN0IGk5MTVfYXVkaW9fY29t
-cG9uZW50X2F1ZGlvX29wcyB7CisJLyoqCisJICogQGF1ZGlvX3B0cjogUG9pbnRlciB0byBiZSB1
-c2VkIGluIGNhbGwgdG8gcGluX2VsZF9ub3RpZnkKKwkgKi8KIAl2b2lkICphdWRpb19wdHI7CiAJ
-LyoqCi0JICogQ2FsbCBmcm9tIGk5MTUgZHJpdmVyLCBub3RpZnlpbmcgdGhlIEhEQSBkcml2ZXIg
-dGhhdAotCSAqIHBpbiBzZW5zZSBhbmQvb3IgRUxEIGluZm9ybWF0aW9uIGhhcyBjaGFuZ2VkLgot
-CSAqIEBhdWRpb19wdHI6CQlIREEgZHJpdmVyIG9iamVjdAotCSAqIEBwb3J0OglXaGljaCBwb3J0
-IGhhcyBjaGFuZ2VkIChQT1JUQSAvIFBPUlRCIC8gUE9SVEMgZXRjKQorCSAqIEBwaW5fZWxkX25v
-dGlmeTogTm90aWZ5IHRoZSBIREEgZHJpdmVyIHRoYXQgcGluIHNlbnNlIGFuZC9vciBFTEQgaW5m
-b3JtYXRpb24gaGFzIGNoYW5nZWQKKwkgKgorCSAqIENhbGxlZCB3aGVuIHRoZSBpOTE1IGRyaXZl
-ciBoYXMgc2V0IHVwIGF1ZGlvIHBpcGVsaW5lIG9yIGhhcyBqdXN0CisJICogYmVndW4gdG8gdGVh
-ciBpdCBkb3duLiBUaGlzIGFsbG93cyB0aGUgSERBIGRyaXZlciB0byB1cGRhdGUgaXRzCisJICog
-c3RhdHVzIGFjY29yZGluZ2x5IChldmVuIHdoZW4gdGhlIEhEQSBjb250cm9sbGVyIGlzIGluIHBv
-d2VyIHNhdmUKKwkgKiBtb2RlKS4KIAkgKi8KIAl2b2lkICgqcGluX2VsZF9ub3RpZnkpKHZvaWQg
-KmF1ZGlvX3B0ciwgaW50IHBvcnQpOwogfTsKIAogLyoqCi0gKiBzdHJ1Y3QgaTkxNV9hdWRpb19j
-b21wb25lbnQgLSB1c2VkIGZvciBhdWRpbyB2aWRlbyBpbnRlcmFjdGlvbgotICogQGRldjogdGhl
-IGRldmljZSBmcm9tIGdmeCBkcml2ZXIKLSAqIEBhdWRfc2FtcGxlX3JhdGU6IHRoZSBhcnJheSBv
-ZiBhdWRpbyBzYW1wbGUgcmF0ZSBwZXIgcG9ydAotICogQG9wczogY2FsbGJhY2sgZm9yIGF1ZGlv
-IGRyaXZlciBjYWxsaW5nCi0gKiBAYXVkaW9fb3BzOiBDYWxsIGZyb20gaTkxNSBkcml2ZXIKKyAq
-IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAtIFVzZWQgZm9yIGRpcmVjdCBjb21tdW5pY2F0
-aW9uIGJldHdlZW4gaTkxNSBhbmQgaGRhIGRyaXZlcnMKICAqLwogc3RydWN0IGk5MTVfYXVkaW9f
-Y29tcG9uZW50IHsKKwkvKioKKwkgKiBAZGV2OiBpOTE1IGRldmljZSwgdXNlZCBhcyBwYXJhbWV0
-ZXIgZm9yIG9wcworCSAqLwogCXN0cnVjdCBkZXZpY2UgKmRldjsKKwkvKioKKwkgKiBAYXVkX3Nh
-bXBsZV9yYXRlOiB0aGUgYXJyYXkgb2YgYXVkaW8gc2FtcGxlIHJhdGUgcGVyIHBvcnQKKwkgKi8K
-IAlpbnQgYXVkX3NhbXBsZV9yYXRlW01BWF9QT1JUU107Ci0KKwkvKioKKwkgKiBAb3BzOiBPcHMg
-aW1wbGVtZW50ZWQgYnkgaTkxNSBkcml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCisJICovCiAJ
-Y29uc3Qgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyAqb3BzOwotCisJLyoqCisJICog
-QGF1ZGlvX29wczogT3BzIGltcGxlbWVudGVkIGJ5IGhkYSBkcml2ZXIsIGNhbGxlZCBieSBpOTE1
-IGRyaXZlcgorCSAqLwogCWNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19v
-cHMgKmF1ZGlvX29wczsKIH07CiAKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2ludGVsLWdmeAo=
+PCM timer is not always used. For embedded device, we need an interface
+to disable it when it is not needed, to shrink the kernel size and
+memory footprint, here add CONFIG_SND_PCM_TIMER for it.
+
+When both CONFIG_SND_PCM_TIMER and CONFIG_SND_TIMER is unselected,
+about 25KB saving bonus we can get.
+
+Please be noted that when disabled, those stubs who using pcm timer
+(e.g. dmix, dsnoop & co) may work incorrectlly.
+
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ include/sound/pcm.h     |  8 +++++++-
+ sound/core/Kconfig      | 13 ++++++++++++-
+ sound/core/Makefile     |  3 ++-
+ sound/core/pcm_lib.c    |  2 ++
+ sound/core/pcm_native.c | 36 ++++++++++++++++--------------------
+ 5 files changed, 39 insertions(+), 23 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 691e7ee..79cf943 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1117,10 +1117,16 @@ static inline void snd_pcm_set_runtime_buffer(struct snd_pcm_substream *substrea
+  *  Timer interface
+  */
+ 
++#ifdef CONFIG_SND_PCM_TIMER
+ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream);
+ void snd_pcm_timer_init(struct snd_pcm_substream *substream);
+ void snd_pcm_timer_done(struct snd_pcm_substream *substream);
+-
++#else
++static inline void
++snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream) {}
++static inline void snd_pcm_timer_init(struct snd_pcm_substream *substream) {}
++static inline void snd_pcm_timer_done(struct snd_pcm_substream *substream) {}
++#endif
+ /**
+  * snd_pcm_gettime - Fill the timespec depending on the timestamp mode
+  * @runtime: PCM runtime instance
+diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+index 6c96fee..e3e9491 100644
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -4,7 +4,7 @@ config SND_TIMER
+ 
+ config SND_PCM
+ 	tristate
+-	select SND_TIMER
++	select SND_TIMER if SND_PCM_TIMER
+ 
+ config SND_PCM_ELD
+ 	bool
+@@ -93,6 +93,17 @@ config SND_PCM_OSS_PLUGINS
+           support conversion of channels, formats and rates. It will
+           behave like most of new OSS/Free drivers in 2.4/2.6 kernels.
+ 
++config SND_PCM_TIMER
++	bool "PCM timer interface" if EXPERT
++	default y
++	help
++	  If you disable this option, pcm timer will be inavailable, so
++	  those stubs used pcm timer (e.g. dmix, dsnoop & co) may work
++	  incorrectlly.
++
++	  For some embedded device, we may disable it to reduce memory
++	  footprint, about 20KB on x86_64 platform.
++
+ config SND_SEQUENCER_OSS
+ 	bool "OSS Sequencer API"
+ 	depends on SND_SEQUENCER
+diff --git a/sound/core/Makefile b/sound/core/Makefile
+index 3354f91..48ab4b8 100644
+--- a/sound/core/Makefile
++++ b/sound/core/Makefile
+@@ -13,8 +13,9 @@ snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
+ snd-$(CONFIG_SND_VMASTER) += vmaster.o
+ snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
+ 
+-snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
++snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_misc.o \
+ 		pcm_memory.o memalloc.o
++snd-pcm-$(CONFIG_SND_PCM_TIMER) += pcm_timer.o
+ snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
+ snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+ snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7d45645..6dc4277 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1883,8 +1883,10 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
+ 	    snd_pcm_update_hw_ptr0(substream, 1) < 0)
+ 		goto _end;
+ 
++#ifdef CONFIG_SND_PCM_TIMER
+ 	if (substream->timer_running)
+ 		snd_timer_interrupt(substream->timer, 1);
++#endif
+  _end:
+ 	snd_pcm_stream_unlock_irqrestore(substream, flags);
+ 	if (runtime->transfer_ack_end)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 75888dd..d5672ed 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -486,6 +486,16 @@ static void snd_pcm_set_state(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_stream_unlock_irq(substream);
+ }
+ 
++static inline void snd_pcm_timer_notify(struct snd_pcm_substream *substream,
++					int event)
++{
++#ifdef CONFIG_SND_PCM_TIMER
++	if (substream->timer)
++		snd_timer_notify(substream->timer, event,
++					&substream->runtime->trigger_tstamp);
++#endif
++}
++
+ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+@@ -1042,9 +1052,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream, int state)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+ 	    runtime->silence_size > 0)
+ 		snd_pcm_playback_silence(substream, ULONG_MAX);
+-	if (substream->timer)
+-		snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MSTART,
+-				 &runtime->trigger_tstamp);
++	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTART);
+ }
+ 
+ static struct action_ops snd_pcm_action_start = {
+@@ -1092,9 +1100,7 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
+ 	if (runtime->status->state != state) {
+ 		snd_pcm_trigger_tstamp(substream);
+ 		runtime->status->state = state;
+-		if (substream->timer)
+-			snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MSTOP,
+-					 &runtime->trigger_tstamp);
++		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTOP);
+ 	}
+ 	wake_up(&runtime->sleep);
+ 	wake_up(&runtime->tsleep);
+@@ -1208,18 +1214,12 @@ static void snd_pcm_post_pause(struct snd_pcm_substream *substream, int push)
+ 	snd_pcm_trigger_tstamp(substream);
+ 	if (push) {
+ 		runtime->status->state = SNDRV_PCM_STATE_PAUSED;
+-		if (substream->timer)
+-			snd_timer_notify(substream->timer,
+-					 SNDRV_TIMER_EVENT_MPAUSE,
+-					 &runtime->trigger_tstamp);
++		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MPAUSE);
+ 		wake_up(&runtime->sleep);
+ 		wake_up(&runtime->tsleep);
+ 	} else {
+ 		runtime->status->state = SNDRV_PCM_STATE_RUNNING;
+-		if (substream->timer)
+-			snd_timer_notify(substream->timer,
+-					 SNDRV_TIMER_EVENT_MCONTINUE,
+-					 &runtime->trigger_tstamp);
++		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MCONTINUE);
+ 	}
+ }
+ 
+@@ -1267,9 +1267,7 @@ static void snd_pcm_post_suspend(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_trigger_tstamp(substream);
+ 	runtime->status->suspended_state = runtime->status->state;
+ 	runtime->status->state = SNDRV_PCM_STATE_SUSPENDED;
+-	if (substream->timer)
+-		snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MSUSPEND,
+-				 &runtime->trigger_tstamp);
++	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSUSPEND);
+ 	wake_up(&runtime->sleep);
+ 	wake_up(&runtime->tsleep);
+ }
+@@ -1373,9 +1371,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_trigger_tstamp(substream);
+ 	runtime->status->state = runtime->status->suspended_state;
+-	if (substream->timer)
+-		snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MRESUME,
+-				 &runtime->trigger_tstamp);
++	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
+ }
+ 
+ static struct action_ops snd_pcm_action_resume = {
+-- 
+2.1.4
