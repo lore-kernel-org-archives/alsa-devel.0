@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Announce for removing Gen1 SRU
-	support" to the asoc tree
-Date: Fri, 16 Oct 2015 17:41:11 +0100
-Message-ID: <E1Zn847-000886-HL@debutante>
-References: <87eggxn88u.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: Gen1 probe is not error" to the
+	asoc tree
+Date: Fri, 16 Oct 2015 17:41:09 +0100
+Message-ID: <E1Zn845-000879-Kj@debutante>
+References: <87mvvkom0t.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73A00260470
- for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:41:19 +0200 (CEST)
-In-Reply-To: <87eggxn88u.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E6F8260517
+ for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2015 18:41:22 +0200 (CEST)
+In-Reply-To: <87mvvkom0t.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Announce for removing Gen1 SRU support
+   ASoC: rsnd: Gen1 probe is not error
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 4362495734d155e10174ace9066827780edaed0d Mon Sep 17 00:00:00 2001
+>From 8a98b4223d0eab88bba5eb215b275da4ff6ed99c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Oct 2015 08:56:07 +0000
-Subject: [PATCH] ASoC: rsnd: Announce for removing Gen1 SRU support
+Date: Thu, 15 Oct 2015 03:25:28 +0000
+Subject: [PATCH] ASoC: rsnd: Gen1 probe is not error
 
-Gen1 SRU support was created for preparation of Gen2 SRC support,
-but no-one is using this feature (sampling rate convert) on Gen1.
-BockW had used SRU before, but it was pass through mode.
-This means it is same as SSI. And BockW "platform base" code was
-removed from upstream code. It is now supported via DT, but it doesn't
-use SRU. More detail, r8a7778.dtsi has "rcar_sound,src" entry, but
-no-one is using this feature today. SRU probing has no relation to this
-removing. This means there is no effect for DT compatibility, no issues
-on upstream kernel.
-
-Gen2 SRC was created from Gen1 SRU, these are similar but not same IP.
-Keeping Gen1 SRU in current driver is a little bit difficult,
-and no-one is using it today. Gen1 sound is still supported via SSI.
-Gen1 SRU support will be removed in the next kernel version.
-This patch announces it.
+Probing from Gen1 is not error. This patch fixup it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/ctu.c | 6 ++----
+ sound/soc/sh/rcar/dvc.c | 6 ++----
+ sound/soc/sh/rcar/mix.c | 6 ++----
+ 3 files changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index ca7a20f03c9b..1d379e825a9d 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -1036,8 +1036,10 @@ int rsnd_src_probe(struct platform_device *pdev,
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index a3e7c716e1f7..f1541f464f30 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -118,10 +118,8 @@ int rsnd_ctu_probe(struct platform_device *pdev,
  	int i, nr, ret;
  
- 	ops = NULL;
--	if (rsnd_is_gen1(priv))
-+	if (rsnd_is_gen1(priv)) {
- 		ops = &rsnd_src_gen1_ops;
-+		dev_warn(dev, "Gen1 support will be removed soon\n");
-+	}
- 	if (rsnd_is_gen2(priv))
- 		ops = &rsnd_src_gen2_ops;
- 	if (!ops) {
+ 	/* This driver doesn't support Gen1 at this point */
+-	if (rsnd_is_gen1(priv)) {
+-		dev_warn(dev, "CTU is not supported on Gen1\n");
+-		return -EINVAL;
+-	}
++	if (rsnd_is_gen1(priv))
++		return 0;
+ 
+ 	rsnd_of_parse_ctu(pdev, of_data, priv);
+ 
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 8d8eee6350c9..e36c0ac3374b 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -333,10 +333,8 @@ int rsnd_dvc_probe(struct platform_device *pdev,
+ 	int i, nr, ret;
+ 
+ 	/* This driver doesn't support Gen1 at this point */
+-	if (rsnd_is_gen1(priv)) {
+-		dev_warn(dev, "CMD is not supported on Gen1\n");
+-		return -EINVAL;
+-	}
++	if (rsnd_is_gen1(priv))
++		return 0;
+ 
+ 	rsnd_of_parse_dvc(pdev, of_data, priv);
+ 
+diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
+index 8544403ffb26..ac2687d9ee55 100644
+--- a/sound/soc/sh/rcar/mix.c
++++ b/sound/soc/sh/rcar/mix.c
+@@ -151,10 +151,8 @@ int rsnd_mix_probe(struct platform_device *pdev,
+ 	int i, nr, ret;
+ 
+ 	/* This driver doesn't support Gen1 at this point */
+-	if (rsnd_is_gen1(priv)) {
+-		dev_warn(dev, "MIX is not supported on Gen1\n");
+-		return -EINVAL;
+-	}
++	if (rsnd_is_gen1(priv))
++		return 0;
+ 
+ 	rsnd_of_parse_mix(pdev, of_data, priv);
+ 
 -- 
 2.6.1
