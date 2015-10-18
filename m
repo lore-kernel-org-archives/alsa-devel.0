@@ -1,51 +1,52 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/6] HD-audio modalias support patchset
-Date: Sun, 18 Oct 2015 20:41:54 +0530
-Message-ID: <20151018151154.GQ27370@localhost>
-References: <1445012458-3337-1-git-send-email-tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: HDMI codec, way forward?
+Date: Sun, 18 Oct 2015 16:20:48 +0100
+Message-ID: <20151018152048.GT32532@n2100.arm.linux.org.uk>
+References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
+ <20151016133717.GI32532@n2100.arm.linux.org.uk>
+ <20151018150834.GP27370@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 64CC12605CC
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 17:08:44 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <1445012458-3337-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeeja Kp <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Subhransu S Prusty <subhransu.s.prusty@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
+In-Reply-To: <20151018150834.GP27370@localhost>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 16, 2015 at 06:20:52PM +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> this is a patchset to add the support of automatic modalias creation
-> for HD-audio codec drivers like other standard drivers.  Currently,
-> the HDA codec driver has put module alias manually due to ugly
-> historical reasons.  This patch finally moves to the saner way.
-> 
-> Also it adds the udev modalias support so that it can be autoloaded in
-> udev.
-> 
-> The patchset was initiated by Intel people for SKL ASoC drivers.  Now
-> I brushed up and made it working for legacy drivers.
-> 
-> The current patchset is found in topic/hda-modalias branch of sound
-> git tree, too.
-
-Thanks for posting this,
-
-This series looks great to me. Me and Subhransu will test it out in next day
-or so and will get back with results on ASoC side :)
-
--- 
-~Vinod
+T24gU3VuLCBPY3QgMTgsIDIwMTUgYXQgMDg6Mzg6MzRQTSArMDUzMCwgVmlub2QgS291bCB3cm90
+ZToKPiBPbiBGcmksIE9jdCAxNiwgMjAxNSBhdCAwMjozNzoxN1BNICswMTAwLCBSdXNzZWxsIEtp
+bmcgLSBBUk0gTGludXggd3JvdGU6Cj4gPiBJJ3ZlIHNlbnQgb25lIHByb3Bvc2FsIHdoaWNoIHVz
+ZXMgYSBub3RpZmllciB0byBpbmZvcm0gYXVkaW8gYW5kIENFQwo+ID4gZHJpdmVycyBhYm91dCBz
+dGF0ZSBjaGFuZ2VzIGluIHRoZSBIRE1JIHZpZGVvIHNpZGUsIGFuZCBoYWQgcHJlY2lzZWx5Cj4g
+PiB6ZXJvIHJlcGxpZXMgdG8gaXQgLSBwZW9wbGUgc2VlbWVkIHRvIHByZWZlciBkaXNjdXNzaW5n
+IHN0dWZmIHJhdGhlcgo+ID4gdGhhbiByZXZpZXdpbmcgY29kZSBhbmQgY29taW5nIHVwIHdpdGgg
+YWN0dWFsIHNvbHV0aW9ucy4KPiAKPiBEbyB5b3UgbWluZCBzZW5kaW5nIG1lIGEgcG9pbnRlciB0
+byB0aGlzIHNlcmllcywgSSB3b3VsZCBsaWtlIHRvIHJlYWQgdGhpcwo+IHVwCgpJdCBpc24ndCBh
+IHNlcmllcy4gIEl0J3MgYSBwcm90b3R5cGUgcGF0Y2ggdGhhdCBJIHBvc3RlZCBpbiBvbmUgb2Yg
+dGhlCnByZXZpb3VzIHRocmVhZHMgZWFybGllciB0aGlzIG1vbnRoOgoKRGF0ZTogVHVlLCA2IE9j
+dCAyMDE1IDE5OjUxOjU3ICswMTAwClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIFJG
+QyBWMiAwLzVdIGFub3RoZXIgZ2VuZXJpYyBhdWRpbyBoZG1pIGNvZGVjCiBwcm9wb3NhbApNZXNz
+YWdlLUlEOiA8MjAxNTEwMDYxODUxNTcuR1QyMTUxM0BuMjEwMC5hcm0ubGludXgub3JnLnVrPgoK
+QXMgSSd2ZSBzYWlkIHRoZXJlLCBhdWRpbyBpcyBub3QgdGhlIG9ubHkgaXNzdWUgaGVyZSwgQ0VD
+IGFsc28gbmVlZHMgdG8KaGF2ZSBhY2Nlc3MgdG8gbXVjaCB0aGUgc2FtZSBpbmZvcm1hdGlvbiB0
+aGF0IGF1ZGlvIG5lZWRzLgoKQ0VDIG5lZWRzIHRvIGtub3cgdHdvIHRoaW5nczogd2hlbiB0aGUg
+SERNSSBzaW5rIGlzIGRpc2Nvbm5lY3RlZCwgYW5kCndoZW4gdGhlIEhETUkgc2luaydzIEVESUQg
+aXMgYXZhaWxhYmxlIChzcGVjaWZpY2FsbHksIENFQyBuZWVkcyB0byBrbm93CnRoZSBIRE1JIHBo
+eXNpY2FsIGFkZHJlc3MgZm9yIGl0c2VsZiwgd2hpY2ggaXMgcGFzc2VkIGFzIGEgbnVtYmVyIHZp
+YQp0aGUgRURJRCBIRE1JIHZlbmRvciBibG9jay4pCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAu
+OG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGlu
+ZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
+aS1kZXZlbAo=
