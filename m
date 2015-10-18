@@ -1,52 +1,64 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: HDMI codec, way forward?
-Date: Sun, 18 Oct 2015 16:20:48 +0100
-Message-ID: <20151018152048.GT32532@n2100.arm.linux.org.uk>
+Date: Sun, 18 Oct 2015 21:43:29 +0530
+Message-ID: <20151018161329.GV27370@localhost>
 References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
  <20151016133717.GI32532@n2100.arm.linux.org.uk>
  <20151018150834.GP27370@localhost>
+ <20151018152048.GT32532@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD741264EE5
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 18:10:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20151018150834.GP27370@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+In-Reply-To: <20151018152048.GT32532@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBPY3QgMTgsIDIwMTUgYXQgMDg6Mzg6MzRQTSArMDUzMCwgVmlub2QgS291bCB3cm90
-ZToKPiBPbiBGcmksIE9jdCAxNiwgMjAxNSBhdCAwMjozNzoxN1BNICswMTAwLCBSdXNzZWxsIEtp
-bmcgLSBBUk0gTGludXggd3JvdGU6Cj4gPiBJJ3ZlIHNlbnQgb25lIHByb3Bvc2FsIHdoaWNoIHVz
-ZXMgYSBub3RpZmllciB0byBpbmZvcm0gYXVkaW8gYW5kIENFQwo+ID4gZHJpdmVycyBhYm91dCBz
-dGF0ZSBjaGFuZ2VzIGluIHRoZSBIRE1JIHZpZGVvIHNpZGUsIGFuZCBoYWQgcHJlY2lzZWx5Cj4g
-PiB6ZXJvIHJlcGxpZXMgdG8gaXQgLSBwZW9wbGUgc2VlbWVkIHRvIHByZWZlciBkaXNjdXNzaW5n
-IHN0dWZmIHJhdGhlcgo+ID4gdGhhbiByZXZpZXdpbmcgY29kZSBhbmQgY29taW5nIHVwIHdpdGgg
-YWN0dWFsIHNvbHV0aW9ucy4KPiAKPiBEbyB5b3UgbWluZCBzZW5kaW5nIG1lIGEgcG9pbnRlciB0
-byB0aGlzIHNlcmllcywgSSB3b3VsZCBsaWtlIHRvIHJlYWQgdGhpcwo+IHVwCgpJdCBpc24ndCBh
-IHNlcmllcy4gIEl0J3MgYSBwcm90b3R5cGUgcGF0Y2ggdGhhdCBJIHBvc3RlZCBpbiBvbmUgb2Yg
-dGhlCnByZXZpb3VzIHRocmVhZHMgZWFybGllciB0aGlzIG1vbnRoOgoKRGF0ZTogVHVlLCA2IE9j
-dCAyMDE1IDE5OjUxOjU3ICswMTAwClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIFJG
-QyBWMiAwLzVdIGFub3RoZXIgZ2VuZXJpYyBhdWRpbyBoZG1pIGNvZGVjCiBwcm9wb3NhbApNZXNz
-YWdlLUlEOiA8MjAxNTEwMDYxODUxNTcuR1QyMTUxM0BuMjEwMC5hcm0ubGludXgub3JnLnVrPgoK
-QXMgSSd2ZSBzYWlkIHRoZXJlLCBhdWRpbyBpcyBub3QgdGhlIG9ubHkgaXNzdWUgaGVyZSwgQ0VD
-IGFsc28gbmVlZHMgdG8KaGF2ZSBhY2Nlc3MgdG8gbXVjaCB0aGUgc2FtZSBpbmZvcm1hdGlvbiB0
-aGF0IGF1ZGlvIG5lZWRzLgoKQ0VDIG5lZWRzIHRvIGtub3cgdHdvIHRoaW5nczogd2hlbiB0aGUg
-SERNSSBzaW5rIGlzIGRpc2Nvbm5lY3RlZCwgYW5kCndoZW4gdGhlIEhETUkgc2luaydzIEVESUQg
-aXMgYXZhaWxhYmxlIChzcGVjaWZpY2FsbHksIENFQyBuZWVkcyB0byBrbm93CnRoZSBIRE1JIHBo
-eXNpY2FsIGFkZHJlc3MgZm9yIGl0c2VsZiwgd2hpY2ggaXMgcGFzc2VkIGFzIGEgbnVtYmVyIHZp
-YQp0aGUgRURJRCBIRE1JIHZlbmRvciBibG9jay4pCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAu
-OG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGlu
-ZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
-aS1kZXZlbAo=
+On Sun, Oct 18, 2015 at 04:20:48PM +0100, Russell King - ARM Linux wrote:
+> On Sun, Oct 18, 2015 at 08:38:34PM +0530, Vinod Koul wrote:
+> > On Fri, Oct 16, 2015 at 02:37:17PM +0100, Russell King - ARM Linux wrote:
+> > > I've sent one proposal which uses a notifier to inform audio and CEC
+> > > drivers about state changes in the HDMI video side, and had precisely
+> > > zero replies to it - people seemed to prefer discussing stuff rather
+> > > than reviewing code and coming up with actual solutions.
+> > 
+> > Do you mind sending me a pointer to this series, I would like to read this
+> > up
+> 
+> It isn't a series.  It's a prototype patch that I posted in one of the
+> previous threads earlier this month:
+> 
+> Date: Tue, 6 Oct 2015 19:51:57 +0100
+> Subject: Re: [alsa-devel] [PATCH RFC V2 0/5] another generic audio hdmi codec
+>  proposal
+> Message-ID: <20151006185157.GT21513@n2100.arm.linux.org.uk>
+> 
+> As I've said there, audio is not the only issue here, CEC also needs to
+> have access to much the same information that audio needs.
+> 
+> CEC needs to know two things: when the HDMI sink is disconnected, and
+> when the HDMI sink's EDID is available (specifically, CEC needs to know
+> the HDMI physical address for itself, which is passed as a number via
+> the EDID HDMI vendor block.)
+
+Right but can I ask why you didn't try making video as component and then
+CEC, audio and others receive the notification over this. I don't know if
+there are any limitations to this since you wrote component bits you are the
+best person to comment...
+
+-- 
+~Vinod
