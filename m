@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/18] ASoC: adav80x: Use
+Subject: [PATCH 08/18] ASoC: twl4030: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:22 +0200
-Message-ID: <1445175573-11784-8-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:23 +0200
+Message-ID: <1445175573-11784-9-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 8492D261AF0
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D075A264F28
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:53 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,27 +30,51 @@ Use the new snd_pcm_hw_constraint_single() helper function instead of
 calling snd_pcm_hw_constraint_minmax() with the same value for min and max
 to install a constraint that limits the possible configuration values to a
 single value. Using snd_pcm_hw_constraint_single() makes the indented
-result clearer.
+result clearer and is slightly shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/adav80x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl4030.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index 198c924..acff8d6 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -728,8 +728,8 @@ static int adav80x_dai_startup(struct snd_pcm_substream *substream,
- 	if (!snd_soc_codec_is_active(codec) || !adav80x->rate)
- 		return 0;
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 2713e18..a5a4e9f 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1612,19 +1612,16 @@ static void twl4030_constraints(struct twl4030_priv *twl4030,
+ 		return;
  
--	return snd_pcm_hw_constraint_minmax(substream->runtime,
--			SNDRV_PCM_HW_PARAM_RATE, adav80x->rate, adav80x->rate);
-+	return snd_pcm_hw_constraint_single(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_RATE, adav80x->rate);
+ 	/* Set the constraints according to the already configured stream */
+-	snd_pcm_hw_constraint_minmax(slv_substream->runtime,
++	snd_pcm_hw_constraint_single(slv_substream->runtime,
+ 				SNDRV_PCM_HW_PARAM_RATE,
+-				twl4030->rate,
+ 				twl4030->rate);
+ 
+-	snd_pcm_hw_constraint_minmax(slv_substream->runtime,
++	snd_pcm_hw_constraint_single(slv_substream->runtime,
+ 				SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
+-				twl4030->sample_bits,
+ 				twl4030->sample_bits);
+ 
+-	snd_pcm_hw_constraint_minmax(slv_substream->runtime,
++	snd_pcm_hw_constraint_single(slv_substream->runtime,
+ 				SNDRV_PCM_HW_PARAM_CHANNELS,
+-				twl4030->channels,
+ 				twl4030->channels);
  }
  
- static void adav80x_dai_shutdown(struct snd_pcm_substream *substream,
+@@ -1669,9 +1666,9 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
+ 			/* In option2 4 channel is not supported, set the
+ 			 * constraint for the first stream for channels, the
+ 			 * second stream will 'inherit' this cosntraint */
+-			snd_pcm_hw_constraint_minmax(substream->runtime,
++			snd_pcm_hw_constraint_single(substream->runtime,
+ 						     SNDRV_PCM_HW_PARAM_CHANNELS,
+-						     2, 2);
++						     2);
+ 		}
+ 		twl4030->master_substream = substream;
+ 	}
 -- 
 2.1.4
