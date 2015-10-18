@@ -1,15 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: fireworks/bebob/oxfw/dice: enable to
-	make as built-in
-Date: Sun, 18 Oct 2015 13:46:47 +0900
-Message-ID: <1445143608-23297-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] ALSA: USB-audio: Add support for Novation
+ Nocturn MIDIcontrol surface
+Date: Sun, 18 Oct 2015 08:30:07 +0200
+Message-ID: <alpine.DEB.2.02.1510180827050.24963@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1510161332480.4075@lnxricardw1.se.axis.com>
+ <56212516.2050003@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CDF2261480
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 06:46:53 +0200 (CEST)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5259261518
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 08:30:11 +0200 (CEST)
+In-Reply-To: <56212516.2050003@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,65 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Ricard at home <ricard2005@butoba.net>
 List-Id: alsa-devel@alsa-project.org
 
-When committed to upstream, these four modules had wrong entries for
-Makefile. This forces them to be loadable modules even if they're set
-as built-in.
 
-This commit fixes this bug.
+On Fri, 16 Oct 2015, Clemens Ladisch wrote:
 
-Fixes: b5b04336015e('ALSA: fireworks: Add skelton for Fireworks based devices')
-Fixes: fd6f4b0dc167('ALSA: bebob: Add skelton for BeBoB based devices')
-Fixes: 1a4e39c2e5ca('ALSA: oxfw: Move to its own directory')
-Fixes: 14ff6a094815('ALSA: dice: Move file to its own directory')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/Makefile     | 2 +-
- sound/firewire/dice/Makefile      | 2 +-
- sound/firewire/fireworks/Makefile | 2 +-
- sound/firewire/oxfw/Makefile      | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+> Ricard Wanderlof wrote:
+> > I've noticed that checkpatch complains about the space between the & an=
+d (,
+> > but in the interest of consistency I've not changed this. Is there some
+> > reason for the space
+> =
 
-diff --git a/sound/firewire/bebob/Makefile b/sound/firewire/bebob/Makefile
-index 6cf470c..af7ed66 100644
---- a/sound/firewire/bebob/Makefile
-+++ b/sound/firewire/bebob/Makefile
-@@ -1,4 +1,4 @@
- snd-bebob-objs := bebob_command.o bebob_stream.o bebob_proc.o bebob_midi.o \
- 		  bebob_pcm.o bebob_hwdep.o bebob_terratec.o bebob_yamaha.o \
- 		  bebob_focusrite.o bebob_maudio.o bebob.o
--obj-m += snd-bebob.o
-+obj-$(CONFIG_SND_BEBOB) += snd-bebob.o
-diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
-index 9ef228e..55b4be9 100644
---- a/sound/firewire/dice/Makefile
-+++ b/sound/firewire/dice/Makefile
-@@ -1,3 +1,3 @@
- snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
- 		 dice-pcm.o dice-hwdep.o dice.o
--obj-m += snd-dice.o
-+obj-$(CONFIG_SND_DICE) += snd-dice.o
-diff --git a/sound/firewire/fireworks/Makefile b/sound/firewire/fireworks/Makefile
-index 0c74408..15ef7f7 100644
---- a/sound/firewire/fireworks/Makefile
-+++ b/sound/firewire/fireworks/Makefile
-@@ -1,4 +1,4 @@
- snd-fireworks-objs := fireworks_transaction.o fireworks_command.o \
- 		      fireworks_stream.o fireworks_proc.o fireworks_midi.o \
- 		      fireworks_pcm.o fireworks_hwdep.o fireworks.o
--obj-m += snd-fireworks.o
-+obj-$(CONFIG_SND_FIREWORKS) += snd-fireworks.o
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index a926850..06ff50f 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,3 +1,3 @@
- snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o \
- 		 oxfw-proc.o oxfw-midi.o oxfw-hwdep.o oxfw.o
--obj-m += snd-oxfw.o
-+obj-$(CONFIG_SND_OXFW) += snd-oxfw.o
--- 
-2.1.4
+> Yes.   But it's not a particularly substantial reason,
+
+... and what is it pray tell ...? ;-)
+
+> and you're not the first person to mention this checkpatch complaint, so =
+
+> feel free to kill them.
+> =
+
+> > would it be worth while cleaning up the file?
+> =
+
+> Yes, it would be worth while cleaning up the file by restoring the
+> proper VID/PID order of the entries.  :)
+
+I hadn't even noticed that. I suppose it does not really make that much of =
+
+a difference, as if you're looking for a specific device you'd just do an =
+
+ordinary search through the file. But of course it makes sense if nothing =
+
+else as it makes it clear exactly where to add a new entry.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
