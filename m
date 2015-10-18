@@ -1,19 +1,18 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: audio-over-SPI driver for ASoC
-Date: Sun, 18 Oct 2015 07:03:11 -0700
-Message-ID: <CAG5mAdxrNhfNe4tdWDYY82QcLhi33b9srTez+UVFGkF5JfAuwA@mail.gmail.com>
-References: <5617CF54.7090508@orthogonaldevices.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: HDMI codec, way forward?
+Date: Sun, 18 Oct 2015 20:32:13 +0530
+Message-ID: <20151018150213.GN27370@localhost>
+References: <5620E482.6050507@ti.com>
+ <5620EE2F.8070504@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D3AB2616EF
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 16:03:31 +0200 (CEST)
-Received: by wicfv8 with SMTP id fv8so45154520wic.0
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 07:03:31 -0700 (PDT)
-In-Reply-To: <5617CF54.7090508@orthogonaldevices.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C3782605CC
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 16:59:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5620EE2F.8070504@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Clarkson <clarkson@orthogonaldevices.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Russell King - ARM Linux =?utf-8?B?4oCO?= <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Brian,
-   I've been thinking of doing something sort of similar, but perhaps
-different.  It looks like you plan to go I2S/TDM into the McSPI, correct?
-I've done this with a microcontroller before, which works mostly.  The
-problem is that since the SPI port doesn't know about the frame sync
-signal, any ESD strike that comes along provides an extra clock, and your
-entire bit-stream gets out of sync.  So, as long as you can protect from
-ESD well, it will work at the hardware level.
+On Fri, Oct 16, 2015 at 02:31:43PM +0200, Lars-Peter Clausen wrote:
+> On 10/16/2015 01:50 PM, Jyri Sarha wrote:
+> > After reading the ELCE Audio mini conf minutes [1] I gather that HDMI
+> > audio was not discussed after all.
+> 
+> It was discussed, but rather shortly and only in the context of the HDA.
+> (Adding Vinod to Cc, who presented yet another approach to the problem last
+> week)
 
-I've been thinking about using an interposer microcontroller that will
-convert I2S to a packetized SPI protocol, so I can have any number of codec
-channels, up to the limit of the SPI speed.  I'm not sure how it will all
-work though (you can see my previous email on the subject).
+Thanks for adding me :)
 
-Anyway, I'm definitely interested to hear how things are progressing.
+Based on the links sent by Jyri, I did look up the series from Jyri and
+Arnaud. I have tried to summarize the approach but please do correct me if I
+got something wrong
 
--Caleb
+There are similarities but both are trying to add an interface between audio
+and display.
 
+Jyri's approach to add generic IEC code makes sense and drives reuse. I kind
+of didn't like adding rates and formats for DAIs, if they are placeholders
+then it is okay but otherwise we should read and set them from ELD. Also I
+have reservations about hdmi_codec_ops and this being set by drm driver, why
+not use component interface for these things and let data be shared!
 
-On Fri, Oct 9, 2015 at 7:29 AM, Brian Clarkson <
-clarkson@orthogonaldevices.com> wrote:
+Arnaud's approach to add N,CTS helpers is great. But having calls to drm
+from audio side for drm enabling wouldn't have been required if we have
+component interface here.
 
-> Hi
->
-> I'm about to embark on the development of an ASoC capture driver that uses
-> SPI to stream the samples to the processor.  I'm still spending a lot of my
-> time going through the ALSA kernel code but as I do that may I have some
-> suggestions as to which examples would be closest to my case?  My
-> development hardware is AM335x --> McSPI --> ADS8868.
->
-> So far I think I have achieved a solid understanding of the "simple-card"
-> case where you have dai-link that connects a processor peripheral driver
-> (e.g. McASP ) with a codec driver and forms a snd_soc_card that can be
-> registered.  Is my best option to:
->
-> - write a new CPU DAI (snd_soc_dai_driver) based on the existing SPI driver
-> - write a new CODEC DAI (snd_soc_dai_driver) which will be mostly empty
-> - write a new platform driver that populates and registers a new
-> snd_soc_card struct with the above in a dai_link?
->
-> Any advice would be much appreciated.
->
-> Cheers,
-> Brian
->
-> --
-> Orthogonal Devices
-> Tokyo, Japan
-> www.orthogonaldevices.com
-> +81 80 8700 2340
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+If we have these calls on a component interface and use these as generic ops
+for the audio-drm interface rather than i915 which is implemented today we
+don't need to export symbols and create a dependency between these two side.
+
+Also I would again like you folks to review the HDA HDMI ASoC driver RFC I
+posted recently [1]. We use component interface and have been adding more
+callback to interface. David added notification [2] and we plan to add ELD
+query as well soonish.
+
+[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2015-October/098730.html
+[2]: http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/097042.html
+
+-- 
+~Vinod
