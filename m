@@ -1,17 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: 'BATCH flag for USB' and 'ALSA Core Challenges'
-Date: Sun, 18 Oct 2015 12:22:23 +0900
-Message-ID: <5623106F.9050601@sakamocchi.jp>
-References: <1444657786.2528.78.camel@loki> <561D10AD.7010800@sakamocchi.jp>
- <561D18D7.1040906@gmail.com>
+Subject: PowerEfficiency.odp is not public (Re: Sildes of
+ topology status for ELEC 2015)
+Date: Sun, 18 Oct 2015 12:42:35 +0900
+Message-ID: <5623152B.8080501@sakamocchi.jp>
+References: <F46914AEC2663F4A9BB62374E5EEF8F84B85A447@shsmsx102.ccr.corp.intel.com>
+ <1444812256.2606.10.camel@loki> <561E1E13.2020404@perex.cz>
+ <1444826454.2606.27.camel@loki> <561E511E.70602@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id DD7B3261294
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 05:22:26 +0200 (CEST)
-In-Reply-To: <561D18D7.1040906@gmail.com>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29E72261294
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 05:42:38 +0200 (CEST)
+In-Reply-To: <561E511E.70602@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Mark Brown (broonie@sirena.org.uk)" <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxleGFuZGVyLAoKT24gT2N0IDEzIDIwMTUgMjM6NDQsIEFsZXhhbmRlciBFLiBQYXRyYWtv
-diB3cm90ZToKPiAxMy4xMC4yMDE1IDE5OjA5LCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+PiBI
-aSwKPj4KPj4gKElmIEkgd2VyZSBpbiDCsTAyMDDjgIFJIHdvdWxkIGhhdmUgam9pbmVkIGluIHRo
-ZSBtZWV0aW5nLi4uKQo+Pgo+PiBUaGVyZSdyZSBzb21lIGludGVyZXN0aW5nIGlzc3VlcyBpbiB0
-aGUgbWludXRlcy4gV291bGQgSSByZXF1ZXN0IHNvbWVvbmUKPj4gbW9yZSBleHBsYWluYXRpb24g
-YWJvdXQgaXQ/Cj4+Cj4+PiBCQVRDSCBmbGFnIGZvciBVU0I6IEFydW4uCj4+PiA9PT09PT09PT09
-PT09PT09PT09PT09PT09Cj4+PiAgIC0gRmxhZyBkb2VzIG5vdCByZXNwb25kIHRvIHJlYWxpdHks
-IGxldHMgZGVwcmVjYXRlIGl0LiBubyB1c2Vycy4KPj4+ICAgLSBEeWxhbjogbmVlZCB0byBrbm93
-IHRyYW5zZmVyIHNpemUgZm9yIENSQVMgKHVzZXMgZXh0cmEgc2FtcGxlcyBmb3IKPj4+IGJ1ZmZl
-cmluZykuCj4+PiAgIC0gQkFUQ0ggZmxhZyBtZWFucyBwZXJpb2Qgc2l6ZSB0cmFuc2ZlcnMsIGFw
-cGxpY2F0aW9ucyB0aGF0IHVzZSBuZXcKPj4+IGdyYW51bGFyaXR5IEFQSSBjYW4gaWdub3JlIGJh
-dGNoIGZsYWcuIFBpZXJyZTogdG8gaW1wbGVtZW50Lgo+PiBUaGUgZmlyc3QgaXRlbSBzYWlkICdC
-QVRDSCBmbGFnIHNob3VsZCBiZSBkZXByZWNhdGVkJywgd2hpbGUKPj4gQkxPQ0tfVFJBTlNGRVIg
-ZmxhZyBpcyBub3QgbWVudGlvbmVkLiBBcmUgdGhlcmUgc29tZSBkaXNjdXNzaW9ucyBhYm91dAo+
-PiB0aGUgZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGVzZSB0d28gZmxhZ3M/Cj4gCj4gVGhlcmUgaXMg
-bm8gY29uc3BpcmFjeSBoZXJlLCBqdXN0IGluYWNjdXJhdGVseS13cml0dGVuIG1pbnV0ZXMuIFRo
-ZQo+IHByb3Bvc2FsIHRvIGRlcHJlY2F0ZSB3YXMgYWJvdXQgdGhlIEJMT0NLX1RSQU5TRkVSIGZs
-YWcgKGJlY2F1c2UKPiBjdXJyZW50bHkgaXQgbWVhbnMgYWJzb2x1dGVseSBvdGhpbmcgYW5kIGhh
-cyBubyB1c2VycyksIGFsdGhvdWdoIEkKPiBzdXBwb3J0IGRlcHJlY2F0aW9uIG9mIHRoZSBCQVRD
-SCBmbGFnIHRvby4KCkluIG15IHVuZGVyc3RhbmRpbmcsIHRoZXNlIHR3byBmbGFncyByZWxhdGUg
-dG8gY2FsY3VsYXRpbmcgdGhlIG51bWJlciBvZgp0cmFuc2ZlcnJlZCBQQ00gZnJhbWVzIHdpdGhp
-biBhIHBlcmlvZC4gQWx0aG91Z2gsIGp1c3QgbWVudGhpb25pbmcgYWJvdXQKb25lIG9mIHRoZW0g
-aXMgYSBiaXQgc3RyYW5nZSB0byBtZS4gU28gSSBhc2tlZCBpdC4gSSBoYXZlIG5vIGludGVyZXN0
-cwppbiB0aGUgb3RoZXJzLgoKPiBQbGVhc2Ugc2VlIHRoaXMgZW1haWwgdGhhdCBleHBsYWlucyB0
-aGUgaW50ZW5kZWQgbWVhbmluZyBvZiB0aGUgZmxhZ3M6Cj4gCj4gaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LUp1bmUvMDkzNzUwLmh0bWwK
-CkFueXdheSwgSSB0aGluayBpdCdzIGEgd29yc2Ugd2F5IHRvIGNoYW5nZSB0aGUgaW50ZXJmYWNl
-cyBiZXR3ZWVuCnVzZXJzcGFjZSB3aXRob3V0IGVub3VnaCBkb2N1bWVudGF0aW9uLgoKPj4gSSB0
-aGluayB0aGUgQVBJcyBzdXBwb3NlIHRoYXQgdGhlIG51bWJlciBvZiBQQ00gZnJhbWVzIGluIG9u
-ZQo+PiB0cmFuc2ZlcnJpbmcgaXMgdGhlIHNhbWUgYXMgdGhlIG51bWJlciBvZiBQQ00gZnJhbWVz
-IGluIG9uZSBwZXJpb2Qgb2YKPj4gYnVmZmVyLiBQQ00gZGV2aWNlIGRyaXZlciBkZXZlbG9wZXJz
-IG11c3QgYWx3YXlzIHNhdGlzZnkgdGhpcyBwcmluY2lwbGU/Cj4+IE9yIHRoZSBBUElzIGFsbG93
-IHRoZW0gdG8gaW1wbGVtZW50IHN1Y2ggZGlmZmVyZW5jZXMgYW5kIHByZXNlbnQgcHJvcGVyCj4+
-IHZhbHVlIHRvIHVzZXJzcGFjZT8KPiAKPiBUaGUgaW50ZW50aW9uIGlzIHRvIHByb3ZpZGUgZHJp
-dmVyIGRldmVsb3BlcnMgdGhlIG1lYW5zIHRvIGV4cHJlc3MgdGhlCj4gc2l0dWF0aW9uIHdpdGgg
-dGhlIHRyYW5zZmVyIHNpemUgYW5kIHBvaW50ZXIgZ3JhbnVsYXJpdHkgaW4gYSB1c2VmdWwKPiBt
-YW5uZXIsIGFuZCB0d28gYm9vbGVhbiBmbGFncyBqdXN0IGRvbid0IGN1dCBpdC4gU28gc29tZSBu
-ZXcgQVBJIGlzIG5lZWRlZC4KCkRpdHRvLgoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Jaroslav,
+
+On Oct 14 2015 21:57, Jaroslav Kysela wrote:
+> Dne 14.10.2015 v 14:40 Liam Girdwood napsal(a):
+>> On Wed, 2015-10-14 at 11:19 +0200, Jaroslav Kysela wrote:
+>>> Dne 14.10.2015 v 10:44 Liam Girdwood napsal(a):
+>>>> On Wed, 2015-10-14 at 09:32 +0100, Lin, Mengdong wrote:
+>>>>> Hi,
+>>>>>
+>>>>> The slides of topology status is attached.
+>>>>>
+>>>>> And Libin will update DP MST audio slides based on recent alignment.
+>>>>>
+>>>>
+>>>> Thanks Mengdong.
+>>>>
+>>>> Jaroslav, can we upload PDFs to the ALSA Wiki now ?
+>>>
+>>> Could you send me a link to tarball (like http://tinyupload.com)? I put
+>>> it in the ALSA HTTP/FTP server.
+>>>
+>>> 				Thanks,
+>>> 					Jaroslav
+>>>
+>>
+>> Thanks Jaroslav,
+>>
+>> I've created a tarball with Alexanders, Pierres, Keyon, Hans and
+>> Mengdongs slides.
+>>
+>> http://s000.tinyupload.com/index.php?file_id=17634711296843151309
+> 
+> 
+> http://alsa-project.org/files/talks/summit-autumn-2015/
+> ftp://ftp.alsa-project.org/pub/talks/summit-autumn-2015/
+
+$ LANG=C wget
+http://alsa-project.org/files/talks/summit-autumn-2015/PowerEfficiency.odp
+--2015-10-18 12:40:49--
+http://alsa-project.org/files/talks/summit-autumn-2015/PowerEfficiency.odp
+wget: /home/mocchi/.netrc:1: unknown token "ine"
+wget: /home/mocchi/.netrc:1: unknown token "android.googlesource.com"
+wget: /home/mocchi/.netrc:1: warning: 'login' token appears before any
+machine name
+wget: /home/mocchi/.netrc:1: warning: 'password' token appears before
+any machine name
+Resolving alsa-project.org (alsa-project.org)... 77.48.224.243
+Connecting to alsa-project.org (alsa-project.org)|77.48.224.243|:80...
+connected.
+HTTP request sent, awaiting response... 403 Forbidden
+2015-10-18 12:40:50 ERROR 403: Forbidden.
+
+I'm happy to get this resource.
+
+
+Cheers
+
+Takashi Sakamoto
