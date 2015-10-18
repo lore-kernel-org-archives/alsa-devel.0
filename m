@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/18] ASoC: cht_bsw_max98090: Use
-	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:31 +0200
-Message-ID: <1445175573-11784-17-git-send-email-lars@metafoo.de>
-References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: avoid NULL pointer
+	dereference after closing MIDI port
+Date: Sun, 18 Oct 2015 22:58:37 +0900
+Message-ID: <1445176717-12004-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
- [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 36A6D265112
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:10 +0200 (CEST)
-In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id C21A7261AF6
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:58:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the new snd_pcm_hw_constraint_single() helper function rather than
-installing a list constraint with a single value. Since
-snd_pcm_hw_constraint_single() sets a static constraint while
-snd_pcm_hw_constraint_list() sets a dynamic constraint the former is
-slightly more efficient and it also needs less code.
+When asynchronous MIDI port is closed before callbacked, the callback
+function causes NULL pointer dereference to missing MIDI substream.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+This commit fixes this bug.
+
+Fixes: e8a40d9bcb23('ALSA: firewire-lib: schedule work again when MIDI substream has rest of MIDI messages')
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ sound/firewire/lib.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 49f4869..4e2fcf1 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -193,20 +193,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index edf1c8b..f80aafa 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -74,7 +74,11 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+ 	struct snd_fw_async_midi_port *port = callback_data;
+ 	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
  
--static unsigned int rates_48000[] = {
--	48000,
--};
--
--static struct snd_pcm_hw_constraint_list constraints_48000 = {
--	.count = ARRAY_SIZE(rates_48000),
--	.list  = rates_48000,
--};
--
- static int cht_aif1_startup(struct snd_pcm_substream *substream)
- {
--	return snd_pcm_hw_constraint_list(substream->runtime, 0,
--			SNDRV_PCM_HW_PARAM_RATE,
--			&constraints_48000);
-+	return snd_pcm_hw_constraint_single(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_RATE, 48000);
- }
- 
- static int cht_max98090_headset_init(struct snd_soc_component *component)
+-	if (rcode == RCODE_COMPLETE && substream != NULL)
++	/* This port is closed. */
++	if (substream == NULL)
++		return;
++
++	if (rcode == RCODE_COMPLETE)
+ 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
+ 	else if (!rcode_is_permanent_error(rcode))
+ 		/* To start next transaction immediately for recovery. */
 -- 
 2.1.4
