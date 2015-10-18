@@ -1,18 +1,20 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH] ALSA: USB-audio: Add support for Novation
- Nocturn MIDIcontrol surface
-Date: Sun, 18 Oct 2015 08:30:07 +0200
-Message-ID: <alpine.DEB.2.02.1510180827050.24963@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1510161332480.4075@lnxricardw1.se.axis.com>
- <56212516.2050003@ladisch.de>
+Subject: Re: Splitting out controls
+Date: Sun, 18 Oct 2015 08:41:42 +0200
+Message-ID: <alpine.DEB.2.02.1510180836390.24963@lnxricardw1.se.axis.com>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org> <561CADA8.3040903@canonical.com>
+ <1445009730.3536.18.camel@rf-debian.wolfsonmicro.main>
+ <s5h1tcug5w2.wl-tiwai@suse.de> <56226F21.3040902@linux.intel.com>
+ <s5h6125cwl2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id D5259261518
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 08:30:11 +0200 (CEST)
-In-Reply-To: <56212516.2050003@ladisch.de>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C146261518
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 08:41:45 +0200 (CEST)
+In-Reply-To: <s5h6125cwl2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Ricard at home <ricard2005@butoba.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>, James Cameron <quozl@laptop.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Fri, 16 Oct 2015, Clemens Ladisch wrote:
+On Sat, 17 Oct 2015, Takashi Iwai wrote:
 
-> Ricard Wanderlof wrote:
-> > I've noticed that checkpatch complains about the space between the & an=
-d (,
-> > but in the interest of consistency I've not changed this. Is there some
-> > reason for the space
-> =
+> I won't say that we can always save the world.  But there is certainly
+> a room for improvement for a little bit more safety than now.  At
+> least, if hardware manufacturer or system integrator already knows the
+> dangerous part, we should provide some easy way to paper over it.
 
-> Yes.   But it's not a particularly substantial reason,
+Is there any form of statistics on more precisely what type of failures in =
 
-... and what is it pray tell ...? ;-)
+this area occur in the real world? Speakers have been mentioned (and I =
 
-> and you're not the first person to mention this checkpatch complaint, so =
+think were the original issue that started the discussion) and are a clear =
 
-> feel free to kill them.
-> =
+case. One could imagine output stages being overdriven (even with no load) =
 
-> > would it be worth while cleaning up the file?
-> =
+in some way, or mismatched signal levels which could cause an opamp to =
 
-> Yes, it would be worth while cleaning up the file by restoring the
-> proper VID/PID order of the entries.  :)
+fail for instance. But have any such cases been reported? It would seem =
 
-I hadn't even noticed that. I suppose it does not really make that much of =
+very hard to diagnose for one thing, unless a hardware manufacturer =
 
-a difference, as if you're looking for a specific device you'd just do an =
+explicitly noted it in some documentation (which I suspect would be very =
 
-ordinary search through the file. But of course it makes sense if nothing =
+unlikely for say a motherboard or sound card manufacturer).
 
-else as it makes it clear exactly where to add a new entry.
+My point is really that it might be a good idea to get some idea of the =
+
+potential failure modes before introducing a mechanism to protect us from =
+
+them.
 
 /Ricard
 -- =
