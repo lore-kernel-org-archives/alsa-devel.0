@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/18] ASoC: wl1273: Use
-	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:25 +0200
-Message-ID: <1445175573-11784-11-git-send-email-lars@metafoo.de>
-References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/5] ALSA: firewire: suppress sparse warnings
+	due to endianness handling
+Date: Sun, 18 Oct 2015 22:39:48 +0900
+Message-ID: <1445175593-11293-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
- [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id D4023265054
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:58 +0200 (CEST)
-In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E5B1265071
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the new snd_pcm_hw_constraint_single() helper function instead of
-calling snd_pcm_hw_constraint_minmax() with the same value for min and max
-to install a constraint that limits the possible configuration values to a
-single value. Using snd_pcm_hw_constraint_single() makes the indented
-result clearer.
+Hi,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wl1273.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+This patchset fixes some issues related to sparse warnings about
+endianness handling for ALSA firewire stack.
 
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index 80fb1dc..7693c11 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -307,11 +307,10 @@ static int wl1273_startup(struct snd_pcm_substream *substream,
- 
- 	switch (wl1273->mode) {
- 	case WL1273_MODE_BT:
--		snd_pcm_hw_constraint_minmax(substream->runtime,
--					     SNDRV_PCM_HW_PARAM_RATE,
--					     8000, 8000);
--		snd_pcm_hw_constraint_minmax(substream->runtime,
--					     SNDRV_PCM_HW_PARAM_CHANNELS, 1, 1);
-+		snd_pcm_hw_constraint_single(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_RATE, 8000);
-+		snd_pcm_hw_constraint_single(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_CHANNELS, 1);
- 		break;
- 	case WL1273_MODE_FM_RX:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+For writing this patchset, I use 'C=1 CF=-D__CHECK_ENDIAN__' options to
+'make' command. If they're not enough, please inform to me.
+
+Takashi Sakamoto (5):
+  ALSA: dice: correct variable types for __be32 data
+  ALSA: dice: assign converted data to the same type of variable
+  ALSA: fireworks: use u32 type for be32_to_cpup() macro
+  ALSA: bebob: use correct type for __be32 data
+  ALSA: firewire-digi00x/firewire-tascam: remove wrong conversion for
+    Config ROM
+
+ sound/firewire/bebob/bebob_maudio.c          |  2 +-
+ sound/firewire/dice/dice-stream.c            | 12 ++++++------
+ sound/firewire/dice/dice.c                   |  3 ++-
+ sound/firewire/digi00x/digi00x.c             |  3 +--
+ sound/firewire/fireworks/fireworks_command.c |  2 +-
+ sound/firewire/tascam/tascam.c               |  3 +--
+ 6 files changed, 12 insertions(+), 13 deletions(-)
+
 -- 
 2.1.4
