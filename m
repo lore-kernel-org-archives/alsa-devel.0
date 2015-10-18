@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 06/18] ALSA: rme9652: Use
+Subject: [PATCH 07/18] ASoC: adav80x: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:21 +0200
-Message-ID: <1445175573-11784-7-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:22 +0200
+Message-ID: <1445175573-11784-8-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DEF4261691
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8492D261AF0
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:52 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,35 +34,23 @@ result clearer.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/rme9652/hdspm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/adav80x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index cb666c7..8bc8016 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6080,18 +6080,17 @@ static int snd_hdspm_open(struct snd_pcm_substream *substream)
- 					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
- 					     32, 4096);
- 		/* RayDAT & AIO have a fixed buffer of 16384 samples per channel */
--		snd_pcm_hw_constraint_minmax(runtime,
-+		snd_pcm_hw_constraint_single(runtime,
- 					     SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
--					     16384, 16384);
-+					     16384);
- 		break;
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index 198c924..acff8d6 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -728,8 +728,8 @@ static int adav80x_dai_startup(struct snd_pcm_substream *substream,
+ 	if (!snd_soc_codec_is_active(codec) || !adav80x->rate)
+ 		return 0;
  
- 	default:
- 		snd_pcm_hw_constraint_minmax(runtime,
- 					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
- 					     64, 8192);
--		snd_pcm_hw_constraint_minmax(runtime,
--					     SNDRV_PCM_HW_PARAM_PERIODS,
--					     2, 2);
-+		snd_pcm_hw_constraint_single(runtime,
-+					     SNDRV_PCM_HW_PARAM_PERIODS, 2);
- 		break;
- 	}
+-	return snd_pcm_hw_constraint_minmax(substream->runtime,
+-			SNDRV_PCM_HW_PARAM_RATE, adav80x->rate, adav80x->rate);
++	return snd_pcm_hw_constraint_single(substream->runtime,
++			SNDRV_PCM_HW_PARAM_RATE, adav80x->rate);
+ }
  
+ static void adav80x_dai_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.1.4
