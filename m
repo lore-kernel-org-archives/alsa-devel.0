@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 15/18] ASoC: bytcr_rt5640: Use
+Subject: [PATCH 17/18] ASoC: cht_bsw_rt5645: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:30 +0200
-Message-ID: <1445175573-11784-16-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:32 +0200
+Message-ID: <1445175573-11784-18-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id B54BB265128
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 279B1261AD8
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:12 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,14 +34,14 @@ slightly more efficient and it also needs less code.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 14 ++------------
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 14 ++------------
  1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index c445312..7a5c9a3 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -117,20 +117,10 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 7be8461..38d65a3 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -235,20 +235,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
@@ -54,7 +54,7 @@ index c445312..7a5c9a3 100644
 -	.list  = rates_48000,
 -};
 -
- static int byt_aif1_startup(struct snd_pcm_substream *substream)
+ static int cht_aif1_startup(struct snd_pcm_substream *substream)
  {
 -	return snd_pcm_hw_constraint_list(substream->runtime, 0,
 -			SNDRV_PCM_HW_PARAM_RATE,
@@ -63,6 +63,6 @@ index c445312..7a5c9a3 100644
 +			SNDRV_PCM_HW_PARAM_RATE, 48000);
  }
  
- static struct snd_soc_ops byt_aif1_ops = {
+ static struct snd_soc_ops cht_aif1_ops = {
 -- 
 2.1.4
