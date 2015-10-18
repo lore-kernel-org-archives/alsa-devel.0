@@ -1,57 +1,56 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: HDMI codec, way forward?
-Date: Sun, 18 Oct 2015 18:16:42 +0100
-Message-ID: <20151018171641.GV32532@n2100.arm.linux.org.uk>
-References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
- <20151018150834.GP27370@localhost>
- <20151018152048.GT32532@n2100.arm.linux.org.uk>
- <20151018161329.GV27370@localhost>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 11/18] ASoC: n810: Use
+	snd_pcm_hw_constraint_single()
+Date: Sun, 18 Oct 2015 20:18:37 +0300
+Message-ID: <5623D46D.2010309@bitmer.com>
+References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+ <1445175573-11784-12-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20151018161329.GV27370@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 572A126513F
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 19:18:42 +0200 (CEST)
+In-Reply-To: <1445175573-11784-12-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBPY3QgMTgsIDIwMTUgYXQgMDk6NDM6MjlQTSArMDUzMCwgVmlub2QgS291bCB3cm90
-ZToKPiBSaWdodCBidXQgY2FuIEkgYXNrIHdoeSB5b3UgZGlkbid0IHRyeSBtYWtpbmcgdmlkZW8g
-YXMgY29tcG9uZW50IGFuZCB0aGVuCj4gQ0VDLCBhdWRpbyBhbmQgb3RoZXJzIHJlY2VpdmUgdGhl
-IG5vdGlmaWNhdGlvbiBvdmVyIHRoaXMuCgpPa2F5LCBJIHRoaW5rIEkgc2VlIHdoYXQgeW91J3Jl
-IGdldHRpbmcgYXQuICBObywgSSBkb24ndCB3YW50IHRvIHRpZQp0aGlzIHN0dWZmIGludG8gdGhl
-IGNvbXBvbmVudCBoZWxwZXJzIGJlY2F1c2UgdGhhdCdzIHRoZSB3cm9uZyBhcHByb2FjaC4KClRo
-ZSBjb21wb25lbnQgaGVscGVyIGlzIHB1cmVseSBhYm91dCBjb21iaW5pbmcgc2V2ZXJhbCBzdHJ1
-Y3QgZGV2aWNlcwppbnRvIG9uZSBsYXJnZXIgY29tcG9uZW50IGZvciBhIHN1YnN5c3RlbSB3aGlj
-aCBkZWFscyB3aXRoIGNhcmQtbGV2ZWwKY29tcG9uZW50cy4gIEl0J3Mgbm90IGFib3V0IGNyb3Nz
-LXN1YnN5c3RlbSBzdHVmZi4KClRoZSBwcm9ibGVtIHdpdGggdXNpbmcgaXQgZm9yIGNyb3NzLXN1
-YnN5c3RlbSBzdHVmZiBpcyB0aGF0IGl0IGJlY29tZXMKdG9vIHRpZ2h0bHkgYm91bmQgdG9nZXRo
-ZXI6IHdoeSBzaG91bGQgdGhlIGdyYXBoaWNzIHNpZGUgZ2V0IHRvcm4gZG93bgppZiB5b3UgdW5s
-b2FkIHRoZSBhdWRpbyBvciBDRUMgZHJpdmVyPwoKQXVkaW8gYW5kIENFQyBhcmUgcmF0aGVyIG9w
-dGlvbmFsIGZvciBIRE1JIC0gSERNSSBjYW4gd29yayB3aXRob3V0IGF1ZGlvCmFuZCBDRUMgYmVp
-bmcgcHJlc2VudC4gIEhvd2V2ZXIsIGF1ZGlvIGNhbid0IGJlIGNvbnZleWVkIGFjcm9zcyB0aGUg
-bGluawp3aXRob3V0IHRoZSB2aWRlbyBzaWRlIGJlaW5nIGNvbmZpZ3VyZWQuICBTbywgaXQgbWFr
-ZXMgc2Vuc2UgdG8gYWxsb3cKdGhlIENFQyBhbmQgYXVkaW8gcGFydHMgdG8gYmUgbG9hZGVkIHNl
-cGFyYXRlbHkgKHBvc3NpYmx5IGFzIG1vZHVsZXMpCndoaWxlIGhhdmluZyB0aGUgdmlkZW8gcGFy
-dHMgYnVpbHQtaW4gdG8gdGhlIGtlcm5lbCAtIGVzcGVjaWFsbHkgaWYgeW91CndhbnQgdG8gdXNl
-IHRoZSBIRE1JIG91dHB1dCBhcyB0aGUgY29uc29sZS4KCkJpbmRpbmcgQ0VDIGFuZCBhdWRpbyBp
-bnRvIHRoZSBjb21wb25lbnQgaGVscGVyIGFsb25nc2lkZSB0aGUgdmlkZW8gcGFydAp3aWxsIG1l
-YW4gdGhhdCBub3RoaW5nIHdpbGwgY29tZSB1cCB1bnRpbCBhbGwgdGhlIGNvbXBvbmVudHMgYXJl
-IHByZXNlbnQsCmFuZCBldmVyeXRoaW5nIHdpbGwgYmUgdG9ybiBkb3duIHdoZW4gYW55IG9uZSBv
-ZiB0aG9zZSBjb21wb25lbnRzIGFyZQpyZW1vdmVkLiAgQ2xlYXJseSwgdGhhdCdzIHVuZGVzaXJh
-YmxlLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCA5
-LjZNYnBzIGRvd24gNDAwa2JwcyB1cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxp
-bmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+On 10/18/2015 04:39 PM, Lars-Peter Clausen wrote:
+> Use the new snd_pcm_hw_constraint_single() helper function instead of
+> calling snd_pcm_hw_constraint_minmax() with the same value for min and max
+> to install a constraint that limits the possible configuration values to a
+> single value. Using snd_pcm_hw_constraint_single() makes the indented
+> result clearer and is slightly shorter.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/omap/n810.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+> index dcb5336..190f868 100644
+> --- a/sound/soc/omap/n810.c
+> +++ b/sound/soc/omap/n810.c
+> @@ -99,8 +99,7 @@ static int n810_startup(struct snd_pcm_substream *substream)
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  
+> -	snd_pcm_hw_constraint_minmax(runtime,
+> -				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+> +	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+>  
+>  	n810_ext_control(&rtd->card->dapm);
+>  	return clk_prepare_enable(sys_clkout2);
+> 
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
