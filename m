@@ -1,20 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3] ALSA: tascam: improve loop condition
- to filling MIDI bytes in transaction
-Date: Sun, 18 Oct 2015 21:13:08 +0900
-Message-ID: <56238CD4.30900@sakamocchi.jp>
-References: <1445162538-12293-1-git-send-email-o-takashi@sakamocchi.jp>
- <1445162538-12293-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8rgbi7r.wl-tiwai@suse.de> <562379B5.309@sakamocchi.jp>
- <s5h7fmkbd4r.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 01/18] ALSA: Add helper function to add single
+	value constraint
+Date: Sun, 18 Oct 2015 15:39:16 +0200
+Message-ID: <1445175573-11784-2-git-send-email-lars@metafoo.de>
+References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id E24D2261583
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 14:13:16 +0200 (CEST)
-In-Reply-To: <s5h7fmkbd4r.wl-tiwai@suse.de>
+Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
+ [212.40.185.225])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FBBE2616EF
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:41 +0200 (CEST)
+In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 18 2015 21:00, Takashi Iwai wrote:
-> On Sun, 18 Oct 2015 12:51:33 +0200,
-> Takashi Sakamoto wrote:
->>
->> On Oct 18 2015 19:10, Takashi Iwai wrote:
->>> On Sun, 18 Oct 2015 12:02:17 +0200,
->>> Takashi Sakamoto wrote:
->>>>
->>>> It includes meaningless condition. This commit improve it.
->>>>
->>>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>>> ---
->>>>  sound/firewire/tascam/tascam-transaction.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
->>>> index 7fcee81..4ffaa8a 100644
->>>> --- a/sound/firewire/tascam/tascam-transaction.c
->>>> +++ b/sound/firewire/tascam/tascam-transaction.c
->>>> @@ -74,7 +74,7 @@ static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
->>>>  	/* On exclusive message. */
->>>>  	if (tscm->on_sysex[port]) {
->>>>  		/* Seek the end of exclusives. */
->>>> -		for (i = 1; i < 4 || i < len; ++i) {
->>>> +		for (i = 1; i < len + 1; ++i) {
->>>
->>> This doesn't look like an improvement...
->>> The fix should be rather like:
->>> 		for (i = 1; i < 4 && i < len; ++i) {
->>
->> The 'len' variable is assigned to the return value of
->> snd_rawmidi_transmit_peek(). The third argument to call this function is
->> 3, thus the value of this variable equals to or is less than 3.
->>
->> The aim of this loop is to find EOX (end of exclusive) byte in retrieved
->> bytes, then break the loop.The index goes from 1 to the end of retrieved
->> bytes. Thus, 'i < 4 || i < len' is not so proper, here.
-> 
-> Then the patch description is incorrect.  You actually fix something
-> that was a buggy behavior.
+The recommended and most efficient way to constraint a configuration
+parameter to a single value is to set the minimum and maximum allowed
+values to the same value, i.e. calling snd_pcm_hw_constraint_minmax() with
+the same value for min and max.
 
-It's not so buggy behaviour because the loop continue to seek the buffer
-till its end (4th byte), always. But this is against my intention to
-stop the seek in the end of retrieved byte.
+It is not necessarily obvious though that this is the approach that should
+be taken and some drivers have come up with other ways of solving this
+problem, e.g. installing a list constraint with a single item. List
+constraints are dynamic constraints though and hence less efficient than
+the static min-max constraint.
 
-Anyway, the code is not good.
+This patch introduces a new helper function called
+snd_pcm_hw_constraint_single() which only takes a single value has the same
+effect as calling snd_pcm_hw_constraint_minmax() with the same values for
+min and max. But it is hopefully semantically more expressive, making it
+clear that this is the preferred way of setting a single value constraint.
 
-> Overall, the code is confusing because the real data buffer begins at
-> offset 1 and len doesn't mean the size of the values written to buf[].
-> Maybe it's better to be like:
-> 	char *msg = buf + 1;
-> 
-> and use msg[x] instead of buf[1+x].  Then len really corresponds to
-> the size of msg[].
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/pcm.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-That's a good idea. OK, I'll post the revised version, later.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2882ddd..b767666 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1028,6 +1028,22 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
+ 			snd_pcm_hw_rule_func_t func, void *private,
+ 			int dep, ...);
+ 
++/**
++ * snd_pcm_hw_constraint_single() - Constrain parameter to a single value
++ * @runtime: PCM runtime instance
++ * @var: The hw_params variable to constrain
++ * @val: The value to constrain to
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++static inline int snd_pcm_hw_constraint_single(
++	struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++	unsigned int val)
++{
++	return snd_pcm_hw_constraint_minmax(runtime, var, val, val);
++}
++
+ int snd_pcm_format_signed(snd_pcm_format_t format);
+ int snd_pcm_format_unsigned(snd_pcm_format_t format);
+ int snd_pcm_format_linear(snd_pcm_format_t format);
+-- 
+2.1.4
