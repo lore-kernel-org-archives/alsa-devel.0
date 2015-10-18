@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 17/18] ASoC: cht_bsw_rt5645: Use
+Subject: [PATCH 18/18] ASoC: cht_bsw_rt5672: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:32 +0200
-Message-ID: <1445175573-11784-18-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:33 +0200
+Message-ID: <1445175573-11784-19-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 279B1261AD8
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9978E265104
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:13 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,14 +34,14 @@ slightly more efficient and it also needs less code.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 14 ++------------
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 14 ++------------
  1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 7be8461..38d65a3 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -235,20 +235,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 23fe040..5621ccd 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -222,20 +222,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
