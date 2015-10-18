@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: ad193x-spi: Add adau1328 to
- ad193x_spi_id table
-Date: Sun, 18 Oct 2015 11:07:51 +0200
-Message-ID: <56236167.3030704@metafoo.de>
-References: <1445133971.9933.1.camel@ingics.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: tascam: clear extra MIDI byte of
+	asynchronous transaction
+Date: Sun, 18 Oct 2015 19:02:18 +0900
+Message-ID: <1445162538-12293-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1445162538-12293-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 30C7A261552
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 11:08:10 +0200 (CEST)
-In-Reply-To: <1445133971.9933.1.camel@ingics.com>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26B5B26168C
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 12:02:26 +0200 (CEST)
+In-Reply-To: <1445162538-12293-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,15 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/18/2015 04:06 AM, Axel Lin wrote:
-> This driver also supports adau1328, thus add adau1328 to ad193x_spi_id.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+When MIDI buffer stores two or more MIDI messages, TASCAM driver
+transfers asynchronous transactions including one MIDI message and
+extra bytes in second MIDI message.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+This commit fixes this bug by clear needless bytes in the buffer.
 
-Thanks.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/tascam/tascam-transaction.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
+index 4ffaa8a..4bedfe4 100644
+--- a/sound/firewire/tascam/tascam-transaction.c
++++ b/sound/firewire/tascam/tascam-transaction.c
+@@ -130,6 +130,9 @@ static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
+ 		buf[0] = (port << 4) | (buf[1] >> 4);
+ 	}
+ 
++	if (len < 3)
++		memset(buf + 1, 0, 3 - len);
++
+ 	return len;
+ }
+ 
+-- 
+2.1.4
