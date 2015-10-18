@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 18/18] ASoC: cht_bsw_rt5672: Use
+Subject: [PATCH 16/18] ASoC: cht_bsw_max98090: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:33 +0200
-Message-ID: <1445175573-11784-19-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:31 +0200
+Message-ID: <1445175573-11784-17-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 9978E265104
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A6D265112
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:40:10 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,14 +34,14 @@ slightly more efficient and it also needs less code.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 14 ++------------
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 14 ++------------
  1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 23fe040..5621ccd 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -222,20 +222,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 49f4869..4e2fcf1 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -193,20 +193,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
@@ -63,6 +63,6 @@ index 23fe040..5621ccd 100644
 +			SNDRV_PCM_HW_PARAM_RATE, 48000);
  }
  
- static struct snd_soc_ops cht_aif1_ops = {
+ static int cht_max98090_headset_init(struct snd_soc_component *component)
 -- 
 2.1.4
