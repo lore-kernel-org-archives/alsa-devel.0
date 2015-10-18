@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/18] ASoC: uda134x: Use
-	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:24 +0200
-Message-ID: <1445175573-11784-10-git-send-email-lars@metafoo.de>
-References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: dice: assign converted data to the
+	same type of variable
+Date: Sun, 18 Oct 2015 22:39:50 +0900
+Message-ID: <1445175593-11293-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1445175593-11293-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
- [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 56E23264F32
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:57 +0200 (CEST)
-In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66947264F30
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:58 +0200 (CEST)
+In-Reply-To: <1445175593-11293-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the new snd_pcm_hw_constraint_single() helper function instead of
-calling snd_pcm_hw_constraint_minmax() with the same value for min and max
-to install a constraint that limits the possible configuration values to a
-single value. Using snd_pcm_hw_constraint_single() makes the indented
-result clearer and is slightly shorter.
+In former commit, u32 data was assigned to __be32 variable instead of an
+int variable. This is not enough solution because it still causes sparse
+warnings.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+dice.c:80:23: warning: incorrect type in assignment (different base types)
+dice.c:80:23:    expected restricted __be32 [usertype] value
+dice.c:80:23:    got unsigned int
+dice.c:81:21: warning: restricted __be32 degrades to integer
+dice.c:81:46: warning: restricted __be32 degrades to integer
+
+This commit fixes this bug.
+
+Fixes: 7c2d4c0cf5ba('ALSA: dice: Split transaction functionality into a file')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/uda134x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/firewire/dice/dice.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index e190263..e4c694c 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -150,14 +150,12 @@ static int uda134x_startup(struct snd_pcm_substream *substream,
- 			 master_runtime->sample_bits,
- 			 master_runtime->rate);
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 70a111d..5d99436 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -29,7 +29,8 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	struct fw_csr_iterator it;
+ 	int key, val, vendor = -1, model = -1, err;
+ 	unsigned int category, i;
+-	__be32 *pointers, value;
++	__be32 *pointers;
++	u32 value;
+ 	__be32 version;
  
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		snd_pcm_hw_constraint_single(substream->runtime,
- 					     SNDRV_PCM_HW_PARAM_RATE,
--					     master_runtime->rate,
- 					     master_runtime->rate);
- 
--		snd_pcm_hw_constraint_minmax(substream->runtime,
-+		snd_pcm_hw_constraint_single(substream->runtime,
- 					     SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
--					     master_runtime->sample_bits,
- 					     master_runtime->sample_bits);
- 
- 		uda134x->slave_substream = substream;
+ 	pointers = kmalloc_array(ARRAY_SIZE(min_values), sizeof(__be32),
 -- 
 2.1.4
