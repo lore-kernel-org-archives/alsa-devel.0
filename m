@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/18] ALSA: korg1212: Use
+Subject: [PATCH 05/18] ALSA: rme96: Use
 	snd_pcm_hw_constraint_single()
-Date: Sun, 18 Oct 2015 15:39:17 +0200
-Message-ID: <1445175573-11784-3-git-send-email-lars@metafoo.de>
+Date: Sun, 18 Oct 2015 15:39:20 +0200
+Message-ID: <1445175573-11784-6-git-send-email-lars@metafoo.de>
 References: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-225.synserver.de
  [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id A49452619F5
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E5C4261ACA
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 15:39:47 +0200 (CEST)
 In-Reply-To: <1445175573-11784-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,38 +32,32 @@ to install a constraint that limits the possible configuration values to a
 single value. Using snd_pcm_hw_constraint_single() makes the indented
 result clearer.
 
-While we are at it also fix some code style issues in the affected lines.
-
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/korg1212/korg1212.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/pci/rme96.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index 7acbc21..9e1ad11 100644
---- a/sound/pci/korg1212/korg1212.c
-+++ b/sound/pci/korg1212/korg1212.c
-@@ -1394,7 +1394,9 @@ static int snd_korg1212_playback_open(struct snd_pcm_substream *substream)
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index 2306ccf..714df90 100644
+--- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -1152,13 +1152,13 @@ rme96_set_buffer_size_constraint(struct rme96 *rme96,
+ {
+ 	unsigned int size;
  
-         spin_unlock_irqrestore(&korg1212->lock, flags);
- 
--        snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, kPlayBufferFrames, kPlayBufferFrames);
-+	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				     kPlayBufferFrames);
-+
-         return 0;
- }
- 
-@@ -1422,8 +1424,8 @@ static int snd_korg1212_capture_open(struct snd_pcm_substream *substream)
- 
-         spin_unlock_irqrestore(&korg1212->lock, flags);
- 
--        snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
--				     kPlayBufferFrames, kPlayBufferFrames);
-+	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				     kPlayBufferFrames);
-         return 0;
- }
- 
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+-				     RME96_BUFFER_SIZE, RME96_BUFFER_SIZE);
++	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++				     RME96_BUFFER_SIZE);
+ 	if ((size = rme96->playback_periodsize) != 0 ||
+ 	    (size = rme96->capture_periodsize) != 0)
+-		snd_pcm_hw_constraint_minmax(runtime,
++		snd_pcm_hw_constraint_single(runtime,
+ 					     SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+-					     size, size);
++					     size);
+ 	else
+ 		snd_pcm_hw_constraint_list(runtime, 0,
+ 					   SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
 -- 
 2.1.4
