@@ -1,14 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/3] ALSA: oxfw: add support for TASCAM FireOne
-Date: Sun, 18 Oct 2015 17:09:37 +0900
-Message-ID: <1445155780-7600-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: PowerEfficiency.odp is not public (Re: Sildes of
+ topology status for ELEC 2015)
+Date: Sun, 18 Oct 2015 11:01:38 +0200
+Message-ID: <56235FF2.9050801@perex.cz>
+References: <F46914AEC2663F4A9BB62374E5EEF8F84B85A447@shsmsx102.ccr.corp.intel.com>
+ <1444812256.2606.10.camel@loki> <561E1E13.2020404@perex.cz>
+ <1444826454.2606.27.camel@loki> <561E511E.70602@perex.cz>
+ <5623152B.8080501@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id AC424261561
- for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 10:09:44 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F732261552
+ for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2015 11:01:39 +0200 (CEST)
+In-Reply-To: <5623152B.8080501@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,127 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Mark Brown (broonie@sirena.org.uk)" <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dne 18.10.2015 v 05:42 Takashi Sakamoto napsal(a):
 
-This parchset adds support for TASCAM FireOne to ALSA OXFW driver. PCM and
-MIDI functionalities become available including physical controls. The
-first and second patches are preparation for it.
+>>
+>> http://alsa-project.org/files/talks/summit-autumn-2015/
+>> ftp://ftp.alsa-project.org/pub/talks/summit-autumn-2015/
+> 
+> $ LANG=C wget
+> http://alsa-project.org/files/talks/summit-autumn-2015/PowerEfficiency.odp
+> HTTP request sent, awaiting response... 403 Forbidden
 
-This model supports some extra commands. So as the other ALSA drivers for
-sound and music units on IEEE 1394 bus, they should be implemented in
-userspace applications. For your information, I note them:
+It's fixed now. Thanks.
 
-(Jog/Shuttle display mode)
-./firewire-request /dev/fw1 fcp 0x01ff0000022e46493110ffff
-response: 000: 0c ff 00 00 02 2e 46 49 31 10 06
- * The last byte is:
-  * 0x00: always off
-  * 0x01: always on
-  * 0x02: breathe
-  * 0x03: metronome
-  * 0x04: MIDI clock rotate
-  * 0x05: MIDI clock flash
-  * 0x06: jog slow rotate
-  * 0x07: Jog track 
-
-(Control surface mode)
-./firewire-request /dev/fw1 fcp 0x01ff0000022e46493111ffff
-response: 000: 0c ff 00 00 02 2e 46 49 31 11 00
- * The last bytes is:
-  * 0x00: FireOne native
-  * 0x01: Mackie Human User Interface emulation
-
-(Input monitor monaural)
-./firewire-request /dev/fw1 fcp 0x01ff0000022e46493112ffff
-response: 000: 0c ff 00 00 02 2e 46 49 31 12 00
- * The last byte is:
-  * 0x00: off
-  * 0x01: on
-
-(Firmware version, read-only)
-./firewire-request /dev/fw1 fcp 0x01ff0000022e46493113ffff
-response: 000: 0c ff 00 00 02 2e 46 49 31 13 02
- * The last byte is:
-  * 0x02: version 2
-
-
-I can see additional commands from Windows driver. They seem to be used to
-retrieve the name of data channels.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0000000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 00 00 12 0c ......HST`......
-response: 010: 41 75 64 69 6f 20 4f 75 74 20 4c 00             Audio Out L.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0000010040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 00 01 12 0c ......HST`......
-response: 010: 41 75 64 69 6f 20 4f 75 74 20 52 00             Audio Out R.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0000020040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 00 02 12 09 ......HST`......
-response: 010: 4d 69 64 69 20 4f 75 74 20                      Midi Out 
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0001000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 01 00 12 0b ......HST`......
-response: 010: 41 75 64 69 6f 20 49 6e 20 41 00                Audio In A.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0001010040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 01 01 12 0b ......HST`......
-response: 010: 41 75 64 69 6f 20 49 6e 20 42 00                Audio In B.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff0001020040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 00 01 02 12 08 ......HST`......
-response: 010: 4d 69 64 69 20 49 6e 20                         Midi In 
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0000000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 70 ff 00 00 00 12 06 ......HSTp......
-response: 010: 41 75 64 69 6f 20                               Audio 
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0000010040
-response: 000: 0c ff 00 00 02 2e 48 53 54 70 ff 00 00 01 12 00 ......HSTp......
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0000020040
-response: 000: 0a ff 00 00 02 2e 48 53 54 70 ff 00 00 02 00 40 ......HSTp.....@
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0001000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 70 ff 00 01 00 12 06 ......HSTp......
-response: 010: 41 75 64 69 6f 20                               Audio 
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0001010040
-response: 000: 0c ff 00 00 02 2e 48 53 54 70 ff 00 01 01 12 00 ......HSTp......
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535470ff0001020040
-response: 000: 0a ff 00 00 02 2e 48 53 54 70 ff 00 01 02 00 40 ......HSTp.....@
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff8100000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 81 00 00 12 0c ......HST`......
-response: 010: 4d 69 64 69 20 49 6e 20 4f 6e 65 00             Midi In One.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff8101000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 81 01 00 12 0d ......HST`......
-response: 010: 4d 69 64 69 20 4f 75 74 20 4f 6e 65 00          Midi Out One.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff8200000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 82 00 00 12 0c ......HST`......
-response: 010: 4d 69 64 69 20 49 6e 20 54 77 6f 00             Midi In Two.
-
-./firewire-request /dev/fw1 fcp 0x01ff0000022e48535460ff8201000040
-response: 000: 0c ff 00 00 02 2e 48 53 54 60 ff 82 01 00 12 0d ......HST`......
-response: 010: 4d 69 64 69 20 4f 75 74 20 54 77 6f 00          Midi Out Two.
-
-
-Takashi Sakamoto (3):
-  ALSA: oxfw: calculating MIDI ports in stream discover
-  ALSA: oxfw: support more MIDI ports
-  ALSA: oxfw: add an entry for TASCAM FireOne
-
- sound/firewire/oxfw/oxfw-midi.c   | 24 +++---------------------
- sound/firewire/oxfw/oxfw-stream.c | 37 +++++++++++++++++++++++++++++++++++--
- sound/firewire/oxfw/oxfw.c        | 17 +++++++++++++++++
- 3 files changed, 55 insertions(+), 23 deletions(-)
+					Jaroslav
 
 -- 
-2.1.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
