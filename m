@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ad193x-spi: Add adau1328 to
-	ad193x_spi_id table" to the asoc tree
-Date: Mon, 19 Oct 2015 20:43:16 +0100
-Message-ID: <E1ZoGKy-0002AP-2R@debutante>
-References: <1445133971.9933.1.camel@ingics.com>
+Subject: Re: Implementing sub-stream multiplexing in DAI
+Date: Mon, 19 Oct 2015 20:44:45 +0100
+Message-ID: <20151019194445.GU32054@sirena.org.uk>
+References: <85DFEED57DC57344B2483EF7BF8CB60552A848D9@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1355842076671873209=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D523D265D6A
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 21:43:27 +0200 (CEST)
-In-Reply-To: <1445133971.9933.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 364C22660EA
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 21:44:50 +0200 (CEST)
+In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60552A848D9@BGSMSX104.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +20,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, "Shah,
+ Hardik T" <hardik.t.shah@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: ad193x-spi: Add adau1328 to ad193x_spi_id table
+--===============1355842076671873209==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nZJAkgcjPzQrJB+u"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--nZJAkgcjPzQrJB+u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Oct 19, 2015 at 10:11:12AM +0000, Ughreja, Rakesh A wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> In order to implement sub-stream multiplexing as a part of single BE DAI =
+I=20
+> have following observations.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I'm not quite sure what you mean here?  Do you mean mixing or something
+else?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> 1. All BE DAI ops gets called only once even if two different FE DAIs are=
+=20
+> connected to a BE DAI.
+> 2. BE DAI ops are always called with sub-stream 0.
 
-Thanks,
-Mark
+> are these expected ?
 
->From 355b27e181f667dad248a40d3d4d48150e9a593c Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 18 Oct 2015 10:06:11 +0800
-Subject: [PATCH] ASoC: ad193x-spi: Add adau1328 to ad193x_spi_id table
+> What is the best way to allow calling of BE DAI ops with different=20
+> sub-stream ID so that I can do link configuration based on sub-stream=20
+> parameters ? can you give some pointers ?
 
-This driver also supports adau1328, thus add adau1328 to ad193x_spi_id.
+I think that's all what is supposed to happen with DPCM - it really only
+understands one stream with one configuration per DAI, it's expecting
+everything to get combined with mixers rather than TDM.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/ad193x-spi.c | 1 +
- 1 file changed, 1 insertion(+)
+--nZJAkgcjPzQrJB+u
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/soc/codecs/ad193x-spi.c b/sound/soc/codecs/ad193x-spi.c
-index b55055a6a265..431f95da1de1 100644
---- a/sound/soc/codecs/ad193x-spi.c
-+++ b/sound/soc/codecs/ad193x-spi.c
-@@ -41,6 +41,7 @@ static const struct spi_device_id ad193x_spi_id[] = {
- 	{ "ad1934", AD1934 },
- 	{ "ad1938", AD193X },
- 	{ "ad1939", AD193X },
-+	{ "adau1328", AD193X },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, ad193x_spi_id);
--- 
-2.6.1
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWJUgsAAoJECTWi3JdVIfQtkYH/jZHzbEr9gtqfJ5cSE4XwXFB
+4vfV0YXS2Z7lxyUHyneb2iEksd3PrU9oFD9YaNWIL40gF9RaXZFsOcSGnQphUfmj
+Ws/gZDqYAekmQQcWI6rM7tDRh25388JuccR1IxTApsufF+1bvCkVf/Yyjp0QL9iu
+49GaMIUvUQ0jOJh22JAv1iOIh0dYJZwnJBgsrsYg1evxVteBP1JGshpimVuj2adN
+Vv3vpgeW3yjs5Y+s9aLQbLBI3UtxjmDsI9Q+c7xlfTAFf0lqTPSpkdrdxiiem/Xg
+vjLkzumUxZRcDT0aPAvR70rJqnMedTd3iPhoNrlSOlgP4t1tyifiH7y2ZnoS3X0=
+=QBJE
+-----END PGP SIGNATURE-----
+
+--nZJAkgcjPzQrJB+u--
+
+--===============1355842076671873209==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1355842076671873209==--
