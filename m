@@ -1,33 +1,73 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [alsa-devel] [PATCH v1 1/4] ASoC: codec: Inno codec driver for
- RK3036 SoC
-Date: Mon, 19 Oct 2015 08:56:51 +0200
-Message-ID: <alpine.DEB.2.02.1510190855250.4075@lnxricardw1.se.axis.com>
-References: <1444698070-4191-1-git-send-email-zhengsq@rock-chips.com> <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shunqian Zheng <zhengsq@rock-chips.com>
-Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "heiko@sntech.de" <heiko@sntech.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "benzh@chromium.org" <benzh@chromium.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Subject: [PATCH] ASoC: dt-bindings: Drop unneeded properties rockchip i2s/spdif bindings
+Date: Mon, 19 Oct 2015 10:15:39 +0200
+Message-ID: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Neither the rockchip i2s nor the rockchip spdif binding support child
+devices so #address-cells and #size-cells properties aren't required.
+Remove these from the bindings.
 
-On Tue, 13 Oct 2015, Shunqian Zheng wrote:
+Signed-off-by: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+---
+This patch is on top of the ASoC tree
 
-> +static const struct of_device_id rk3036_codec_of_match[] =3D {
-> +       { .compatible =3D "rk3036-codec", },
-> +       {}
-> +};
-> +MODULE_DEVICE_TABLE(of, rk3036_codec_of_match);
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt   | 4 ----
+ Documentation/devicetree/bindings/sound/rockchip-spdif.txt | 4 ----
+ 2 files changed, 8 deletions(-)
 
-Isn't a compatible string normally in the form "rockchip,rk3036-codec" =
-?
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 9b82c20..085e0bc 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -12,8 +12,6 @@ Required properties:
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the I2S interrupt.
+-- #address-cells: should be 1.
+-- #size-cells: should be 0.
+ - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+ 	Documentation/devicetree/bindings/dma/dma.txt
+ - dma-names: should include "tx" and "rx".
+@@ -28,8 +26,6 @@ i2s@ff890000 {
+ 	compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
+ 	reg = <0xff890000 0x10000>;
+ 	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+ 	dmas = <&pdma1 0>, <&pdma1 1>;
+ 	dma-names = "tx", "rx";
+ 	clock-names = "i2s_hclk", "i2s_clk";
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+index 33dd82c..e64dbde 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+@@ -12,8 +12,6 @@ Required properties:
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the SPDIF interrupt.
+-- #address-cells: should be 1.
+-- #size-cells: should be 0.
+ - dmas: DMA specifiers for tx dma. See the DMA client binding,
+   Documentation/devicetree/bindings/dma/dma.txt
+ - dma-names: should be "tx"
+@@ -33,8 +31,6 @@ spdif: spdif@0x1011e000 {
+ 	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
+ 	reg = <0x1011e000 0x2000>;
+ 	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+ 	dmas = <&dmac1_s 8>;
+ 	dma-names = "tx";
+ 	clock-names = "hclk", "mclk";
+-- 
+2.6.1
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
