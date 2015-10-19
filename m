@@ -1,65 +1,36 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Headphone Mic and PA
-Date: Mon, 19 Oct 2015 13:20:21 +0200
-Message-ID: <5624D1F5.3090005@canonical.com>
-References: <s5hsi57i3qm.wl-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch v2] ALSA: firewire-tascam: off by one in identify_model()
+Date: Mon, 19 Oct 2015 14:29:27 +0300
+Message-ID: <20151019112927.GA31691@mwanda>
+References: <5622EF20.6010708@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id DED582657FE
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 13:20:20 +0200 (CEST)
-In-Reply-To: <s5hsi57i3qm.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5622EF20.6010708@sakamocchi.jp>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Let's leave space for the NUL char otherwise the static checkers
+complain that we go beyond the end of the array.
 
+Fixes: 53b3ffee7885 ('ALSA: firewire-tascam: change device probing processing') 
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: I truncated the last char in v1 instead of making the buffer larger
 
-On 2015-10-19 11:53, Takashi Iwai wrote:
-> Hi David,
->
-> I'm currently checking the bug report regarding PA, and this looks
-> like an issue with "Headphone Mic" jack control.
->
-> The reported problem is that PA doesn't react properly when both HP
-> and dock line-out jacks are plugged and line-out is unplugged.  The
-> machine in question is Dell E7250, and I see that it has only
-> "Headphone Mic Jack" kctl without "Headphone Jack" kctl.  Is this the
-> intentional behavior?
-
-Yes. The "Headphone Mic Jack" indicates that the jack can be used to 
-indicate either "Headphone" or "Mic". The additional "Headset Mic 
-Phantom Jack" indicates that headset is a third usage for the jack and 
-there is no hardware that can detect which one of them it is. So it 
-looks correct to me.
-
-Also the Dell E7250 is Ubuntu certified, but I don't think docking 
-stations are part of that certification suite (at least not for Dell E7250).
-
-I skimmed through the opensuse bug as well. Two notes:
-
-  1) Here's a guide of how to generate a PA log, avoiding the autospawn 
-problem: https://wiki.ubuntu.com/PulseAudio/Log
-
-  2) There is a patch series in the pipeline [2] that Tanu has promised 
-to review, that makes module-switch-on-port-available more aggressive w 
-r t being able to reroute away from unavailable things. I suspect it 
-would help here, but I'm not completely sure.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[2] http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/23504
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index c6747a4..79cb9e9 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -40,7 +40,7 @@ static int identify_model(struct snd_tscm *tscm)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
+ 	const u32 *config_rom = fw_dev->config_rom;
+-	char model[8];
++	char model[9];
+ 	unsigned int i;
+ 	u8 c;
+ 
