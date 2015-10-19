@@ -1,19 +1,19 @@
 From: Caleb Crome <caleb@crome.org>
 Subject: Re: [PATCH v2 0/3] Add support for Cirrus Logic
  CS47L24 and WM1831 codecs
-Date: Mon, 19 Oct 2015 07:50:26 -0700
-Message-ID: <CAG5mAdzqT6YpxikoNm9oxOvR8psi0_MCaw7nt0dPjzhSQnrn-A@mail.gmail.com>
+Date: Mon, 19 Oct 2015 07:52:25 -0700
+Message-ID: <CAG5mAdxCPdPXbieWUTph0WeboQcRNX5hXwzQiGqouartK2M9SA@mail.gmail.com>
 References: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 4228A260430
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:50:46 +0200 (CEST)
-Received: by wicll6 with SMTP id ll6so9575552wic.1
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 07:50:46 -0700 (PDT)
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 032582604D1
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:52:45 +0200 (CEST)
+Received: by wijp11 with SMTP id p11so10089307wij.0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 07:52:44 -0700 (PDT)
 In-Reply-To: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,16 +28,16 @@ To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Cc: devicetree@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+(Accidentally sent HTML format last time, so re-sending...)
+
 Does anybody have support written for the CS53L30 4 channel ADC ?
 
 
 Thanks,
  -Caleb
 
-
-On Mon, Oct 19, 2015 at 7:13 AM, Richard Fitzgerald <
-rf@opensource.wolfsonmicro.com> wrote:
-
+On Mon, Oct 19, 2015 at 7:13 AM, Richard Fitzgerald
+<rf@opensource.wolfsonmicro.com> wrote:
 > mfd patch based on Lee Jones's for-next
 > gpio patch based on Linus Walleij's for-next
 > ASoC patch based on Mark Brown's for-next
@@ -58,8 +58,7 @@ rf@opensource.wolfsonmicro.com> wrote:
 >  drivers/mfd/arizona-irq.c                         |   40 +-
 >  drivers/mfd/arizona-spi.c                         |    7 +
 >  drivers/mfd/arizona.h                             |    4 +
->  drivers/mfd/cs47l24-tables.c                      | 1629
-> +++++++++++++++++++++
+>  drivers/mfd/cs47l24-tables.c                      | 1629 +++++++++++++++++++++
 >  include/linux/mfd/arizona/core.h                  |    3 +
 >  sound/soc/codecs/Kconfig                          |    8 +
 >  sound/soc/codecs/Makefile                         |    2 +
@@ -77,4 +76,3 @@ rf@opensource.wolfsonmicro.com> wrote:
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
