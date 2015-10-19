@@ -1,20 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Headphone Mic and PA
-Date: Tue, 20 Oct 2015 00:37:51 +0800
-Message-ID: <CAN8cciaeQO3xyU0VnGkKF+5b75h8K8=tJMAsFarcBZ-c0rw_CA@mail.gmail.com>
-References: <s5hsi57i3qm.wl-tiwai@suse.de>
-	<5624D1F5.3090005@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2 02/10] ASoC: img: Add driver for I2S
+ input controller
+Date: Mon, 19 Oct 2015 18:47:32 +0100
+Message-ID: <20151019174732.GG32054@sirena.org.uk>
+References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2992134259866398615=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 77A72265AFF
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 18:37:52 +0200 (CEST)
-Received: by oiad129 with SMTP id d129so39399220oia.0
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 09:37:51 -0700 (PDT)
-In-Reply-To: <5624D1F5.3090005@canonical.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8A0E265B4F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 19:47:48 +0200 (CEST)
+In-Reply-To: <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +22,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, gaznims@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Damien Horsley <Damien.Horsley@imgtec.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, James Hartley <James.Hartley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNS0xMC0xOSDkuIvljYg3OjIw5pa8ICJEYXZpZCBIZW5uaW5nc3NvbiIgPGRhdmlkLmhlbm5p
-bmdzc29uQGNhbm9uaWNhbC5jb20+5a+r6YGT77yaCj4KPgo+Cj4gT24gMjAxNS0xMC0xOSAxMTo1
-MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pgo+PiBIaSBEYXZpZCwKPj4KPj4gSSdtIGN1cnJlbnRs
-eSBjaGVja2luZyB0aGUgYnVnIHJlcG9ydCByZWdhcmRpbmcgUEEsIGFuZCB0aGlzIGxvb2tzCj4+
-IGxpa2UgYW4gaXNzdWUgd2l0aCAiSGVhZHBob25lIE1pYyIgamFjayBjb250cm9sLgo+Pgo+PiBU
-aGUgcmVwb3J0ZWQgcHJvYmxlbSBpcyB0aGF0IFBBIGRvZXNuJ3QgcmVhY3QgcHJvcGVybHkgd2hl
-biBib3RoIEhQCj4+IGFuZCBkb2NrIGxpbmUtb3V0IGphY2tzIGFyZSBwbHVnZ2VkIGFuZCBsaW5l
-LW91dCBpcyB1bnBsdWdnZWQuICBUaGUKPj4gbWFjaGluZSBpbiBxdWVzdGlvbiBpcyBEZWxsIEU3
-MjUwLCBhbmQgSSBzZWUgdGhhdCBpdCBoYXMgb25seQo+PiAiSGVhZHBob25lIE1pYyBKYWNrIiBr
-Y3RsIHdpdGhvdXQgIkhlYWRwaG9uZSBKYWNrIiBrY3RsLiAgSXMgdGhpcyB0aGUKPj4gaW50ZW50
-aW9uYWwgYmVoYXZpb3I/Cj4KPgo+IFllcy4gVGhlICJIZWFkcGhvbmUgTWljIEphY2siIGluZGlj
-YXRlcyB0aGF0IHRoZSBqYWNrIGNhbiBiZSB1c2VkIHRvCmluZGljYXRlIGVpdGhlciAiSGVhZHBo
-b25lIiBvciAiTWljIi4gVGhlIGFkZGl0aW9uYWwgIkhlYWRzZXQgTWljIFBoYW50b20KSmFjayIg
-aW5kaWNhdGVzIHRoYXQgaGVhZHNldCBpcyBhIHRoaXJkIHVzYWdlIGZvciB0aGUgamFjayBhbmQg
-dGhlcmUgaXMgbm8KaGFyZHdhcmUgdGhhdCBjYW4gZGV0ZWN0IHdoaWNoIG9uZSBvZiB0aGVtIGl0
-IGlzLiBTbyBpdCBsb29rcyBjb3JyZWN0IHRvIG1lLgo+Cj4gQWxzbyB0aGUgRGVsbCBFNzI1MCBp
-cyBVYnVudHUgY2VydGlmaWVkLCBidXQgSSBkb24ndCB0aGluayBkb2NraW5nCnN0YXRpb25zIGFy
-ZSBwYXJ0IG9mIHRoYXQgY2VydGlmaWNhdGlvbiBzdWl0ZSAoYXQgbGVhc3Qgbm90IGZvciBEZWxs
-IEU3MjUwKS4KPgo+IEkgc2tpbW1lZCB0aHJvdWdoIHRoZSBvcGVuc3VzZSBidWcgYXMgd2VsbC4g
-VHdvIG5vdGVzOgo+Cj4gIDEpIEhlcmUncyBhIGd1aWRlIG9mIGhvdyB0byBnZW5lcmF0ZSBhIFBB
-IGxvZywgYXZvaWRpbmcgdGhlIGF1dG9zcGF3bgpwcm9ibGVtOiBodHRwczovL3dpa2kudWJ1bnR1
-LmNvbS9QdWxzZUF1ZGlvL0xvZwo+Cj4gIDIpIFRoZXJlIGlzIGEgcGF0Y2ggc2VyaWVzIGluIHRo
-ZSBwaXBlbGluZSBbMl0gdGhhdCBUYW51IGhhcyBwcm9taXNlZCB0bwpyZXZpZXcsIHRoYXQgbWFr
-ZXMgbW9kdWxlLXN3aXRjaC1vbi1wb3J0LWF2YWlsYWJsZSBtb3JlIGFnZ3Jlc3NpdmUgdyByIHQK
-YmVpbmcgYWJsZSB0byByZXJvdXRlIGF3YXkgZnJvbSB1bmF2YWlsYWJsZSB0aGluZ3MuIEkgc3Vz
-cGVjdCBpdCB3b3VsZCBoZWxwCmhlcmUsIGJ1dCBJJ20gbm90IGNvbXBsZXRlbHkgc3VyZS4KCmNv
-bnRyb2wuMTMgewppZmFjZSBNSVhFUgpuYW1lICdDYXB0dXJlIFNvdXJjZScKdmFsdWUgJ0ludGVy
-bmFsIE1pYycKY29tbWVudCB7CmFjY2VzcyAncmVhZCB3cml0ZScKdHlwZSBFTlVNRVJBVEVECmNv
-dW50IDEKaXRlbS4wICdIZWFkcGhvbmUgTWljJwppdGVtLjEgJ0RvY2sgTWljJwppdGVtLjIgJ0hl
-YWRzZXQgTWljJwppdGVtLjMgJ0ludGVybmFsIE1pYycKfQp9CgpEbyBhbGNfaGVhZHNldCBtb2Rl
-IHN0aWxsIHdvcmsgd2hlbiB0aGVyZSBpcyBkb2NrIG1pYyA/CgpodHRwczovL2dpdC5rZXJuZWwu
-b3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQvY29tbWl0L3NvdW5kL3Bj
-aS9oZGE/aWQ9NzNiZGQ1OTc4MjNlMjIzMWRjODgyNTc3ZGJiYWY4ZGY5MmZlMTc3NQoKaGRhX25p
-ZF90IG11eF9waW4gPSBzcGVjLT5nZW4uaW11eF9waW5zW3NwZWMtPmdlbi5jdXJfbXV4WzBdXTsK
-aGRhX25pZF90IGhwX3BpbiA9IHNwZWMtPmdlbi5hdXRvY2ZnLmhwX3BpbnNbMF07CgppbnQgbmV3
-X2hlYWRzZXRfbW9kZTsKCmlmICghc25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgaHBfcGluKSkK
-bmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19IRUFEU0VUX01PREVfVU5QTFVHR0VEOwplbHNlIGlmICht
-dXhfcGluID09IHNwZWMtPmhlYWRzZXRfbWljX3BpbikKbmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19I
-RUFEU0VUX01PREVfSEVBRFNFVDsKZWxzZSBpZiAobXV4X3BpbiA9PSBzcGVjLT5oZWFkcGhvbmVf
-bWljX3BpbikKbmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19IRUFEU0VUX01PREVfTUlDOwplbHNlCm5l
-d19oZWFkc2V0X21vZGUgPSBBTENfSEVBRFNFVF9NT0RFX0hFQURQSE9ORTsKCmh0dHBzOi8vYnVn
-emlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTA0OTAxCgpUaGUgb3RoZXIgZXhhbXBs
-ZXMgYXJlIERlbGwgQWxpZW53YXJlIDE4IHdoaWNoIGhhdmUgbWljIGphY2ssIGhlYWRwaG9uZQpq
-YWNrIGFuZCBoZWFkc2V0IGphY2sgOgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+
+--===============2992134259866398615==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tvOENZuN7d6HfOWU"
+Content-Disposition: inline
+
+
+--tvOENZuN7d6HfOWU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 12, 2015 at 01:40:29PM +0100, Damien Horsley wrote:
+
+> +static inline u32 img_i2s_in_ch_disable(struct img_i2s_in *i2s, u32 chan)
+> +{
+> +	u32 reg;
+> +
+> +	reg = img_i2s_in_ch_readl(i2s, chan, IMG_I2S_IN_CH_CTL);
+> +	reg &= ~IMG_I2S_IN_CH_CTL_ME_MASK;
+> +	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
+> +
+> +	return reg;
+> +}
+> +
+> +static inline void img_i2s_in_ch_enable(struct img_i2s_in *i2s, u32 chan,
+> +					u32 reg)
+> +{
+> +	reg |= IMG_I2S_IN_CH_CTL_ME_MASK;
+> +	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
+> +}
+
+The APIs here all seem a bit odd - for example the enable API taking a
+register value as an argument (normally reg is a register address BTW)
+and returning a value but the disable API doing a read/modify/write
+cycle.
+
+> +static inline void img_i2s_in_flush(struct img_i2s_in *i2s)
+> +{
+> +	int i;
+> +	u32 reg;
+> +
+> +	for (i = 0; i < i2s->active_channels; i++) {
+> +		reg = img_i2s_in_ch_disable(i2s, i);
+> +		reg |= IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
+> +		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
+> +		reg &= ~IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
+> +		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
+> +		img_i2s_in_ch_enable(i2s, i, reg);
+> +	}
+> +}
+
+This all seems to be connected to this, which is itself slightly funky
+especially in the context of the only user...
+
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
+> +		reg &= ~IMG_I2S_IN_CTL_ME_MASK;
+> +		img_i2s_in_writel(i2s, reg, IMG_I2S_IN_CTL);
+> +		img_i2s_in_flush(i2s);
+> +		break;
+
+...which looks like it'll enable everything, then disable and reenable.
+Plus needing to do a flush on trigger seems weird.
+
+> +	if ((channels < 2) ||
+> +			(channels > (i2s->max_i2s_chan * 2)) ||
+> +			(channels % 2))
+> +		return -EINVAL;
+
+This indentation is very weird.
+
+> +	control_mask = (u32)(~IMG_I2S_IN_CTL_16PACK_MASK &
+> +			~IMG_I2S_IN_CTL_ACTIVE_CHAN_MASK);
+
+> +	chan_control_mask = (u32)(~IMG_I2S_IN_CH_CTL_16PACK_MASK &
+> +			~IMG_I2S_IN_CH_CTL_FEN_MASK &
+> +			~IMG_I2S_IN_CH_CTL_FMODE_MASK &
+> +			~IMG_I2S_IN_CH_CTL_SW_MASK &
+> +			~IMG_I2S_IN_CH_CTL_FW_MASK &
+> +			~IMG_I2S_IN_CH_CTL_PACKH_MASK);
+
+This also looks very odd.  Normally we'd write masks as being the valid
+bits and or them together.
+
+> +	i2s->clk_sys = devm_clk_get(dev, "sys");
+> +	if (IS_ERR(i2s->clk_sys))
+> +		return PTR_ERR(i2s->clk_sys);
+
+Please print an error message so people can tell why things failed.
+
+> +	rst = devm_reset_control_get(dev, "rst");
+> +	if (IS_ERR(rst)) {
+> +		dev_dbg(dev, "No top level reset found\n");
+
+You should check for -EPROBE_DEFER here and just return the error here
+if you get it (on the basis that the reset framework ought to be using a
+different error if there's nothing bound in DT).
+
+--tvOENZuN7d6HfOWU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWJSyvAAoJECTWi3JdVIfQa/wH/1w0CE8JNBK6L1LreMlGdTEa
+/32HzAyos5fILFvDBuasU5vyS+KzGh6TGDEnbk0yaHF4wh3mvGdDe4A2YFP7Wta1
+sTuLuCyqL1br1YHfW7VMpuksmOpCnka8jruGdcFwTy7o32GWgUJsLX/l8spaIzwQ
+kXUSbfa4SC7CBCzfJh+STbhG3XkfxMOAulkJKIJ3rKCaR1A8ImcmSBLIzY180k1/
+cD+gppD54FcuYM0sfEm7CnOKavalHc0sAnBK6DJZs6kq44XhZCnHa1VVSwzPZkJe
+lKIcsIKGsqbP26BszLtzTKAgKwUKO9rzISgK5CGSLwT9wOBwtbI7ZMEM+j3L7sc=
+=nTHX
+-----END PGP SIGNATURE-----
+
+--tvOENZuN7d6HfOWU--
+
+--===============2992134259866398615==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2992134259866398615==--
