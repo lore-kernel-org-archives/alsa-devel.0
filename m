@@ -1,73 +1,69 @@
-From: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Subject: [PATCH] ASoC: dt-bindings: Drop unneeded properties rockchip i2s/spdif bindings
-Date: Mon, 19 Oct 2015 10:15:39 +0200
-Message-ID: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v6 4/4] drm/i915: set proper N/CTS in
+	modeset
+Date: Mon, 19 Oct 2015 11:25:22 +0300
+Message-ID: <8737x71czx.fsf@intel.com>
+References: <1441174301-144177-1-git-send-email-libin.yang@intel.com>
+ <1441174301-144177-4-git-send-email-libin.yang@intel.com>
+ <8737yx44hh.fsf@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196F88C1@SHSMSX103.ccr.corp.intel.com>
+ <87twrd2nyl.fsf@intel.com> <s5h7fo9osh0.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52F0126572A
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 10:21:56 +0200 (CEST)
+In-Reply-To: <s5h7fo9osh0.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Neither the rockchip i2s nor the rockchip spdif binding support child
-devices so #address-cells and #size-cells properties aren't required.
-Remove these from the bindings.
+On Wed, 02 Sep 2015, Takashi Iwai <tiwai@suse.de> wrote:
+> On Wed, 02 Sep 2015 11:02:42 +0200,
+> Jani Nikula wrote:
+>> 
+>> >> Nitpick. I'd prefer some sharing with the similar blocks from the
+>> >> earlier patch. Also a debug message on n == 0 would be nice; you
+>> >> probably didn't notice your audio_config_get_rate() wasn't working
+>> >> right
+>> >> because this silently fell back to the automatic mode here.
+>> >
+>> > OK, I will add the msg. As you and Ville are insisting on
+>> > sharing code, I will do it in next version.
+>> 
+>> Well, really, I'm fine with having that part duplicated as-is for now,
+>> we can fix it later. More important to focus on getting
+>> audio_config_get_rate() right.
+>> 
+>> I don't know if you're still targeting v4.3 with this (up to Takashi I
+>> guess) we'll really need to wrap this up soon.
+>
+> I'm in favor of merging this into 4.3, so it'd be appreciated if Libin
+> can prepare the fixed version soonish, indeed.
 
-Signed-off-by: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
----
-This patch is on top of the ASoC tree
+Takashi, just to double check, none of this made it into v4.3 after all?
 
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt   | 4 ----
- Documentation/devicetree/bindings/sound/rockchip-spdif.txt | 4 ----
- 2 files changed, 8 deletions(-)
+BR,
+Jani.
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 9b82c20..085e0bc 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -12,8 +12,6 @@ Required properties:
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the I2S interrupt.
--- #address-cells: should be 1.
--- #size-cells: should be 0.
- - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
- 	Documentation/devicetree/bindings/dma/dma.txt
- - dma-names: should include "tx" and "rx".
-@@ -28,8 +26,6 @@ i2s@ff890000 {
- 	compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
- 	reg = <0xff890000 0x10000>;
- 	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
--	#address-cells = <1>;
--	#size-cells = <0>;
- 	dmas = <&pdma1 0>, <&pdma1 1>;
- 	dma-names = "tx", "rx";
- 	clock-names = "i2s_hclk", "i2s_clk";
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-index 33dd82c..e64dbde 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-@@ -12,8 +12,6 @@ Required properties:
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the SPDIF interrupt.
--- #address-cells: should be 1.
--- #size-cells: should be 0.
- - dmas: DMA specifiers for tx dma. See the DMA client binding,
-   Documentation/devicetree/bindings/dma/dma.txt
- - dma-names: should be "tx"
-@@ -33,8 +31,6 @@ spdif: spdif@0x1011e000 {
- 	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
- 	reg = <0x1011e000 0x2000>;
- 	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--	#address-cells = <1>;
--	#size-cells = <0>;
- 	dmas = <&dmac1_s 8>;
- 	dma-names = "tx";
- 	clock-names = "hclk", "mclk";
+
+
+>
+>
+> thanks,
+>
+> Takashi
+
 -- 
-2.6.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Jani Nikula, Intel Open Source Technology Center
