@@ -1,19 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/5] ALSA: firewire-tascam: add MIDI
-	functionality
-Date: Mon, 19 Oct 2015 23:21:09 +0900
-Message-ID: <5624FC55.8000100@sakamocchi.jp>
-References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
- <20151012144816.130ac379@kant> <20151012222019.GB16052@marvin.atrad.com.au>
- <561CD0A0.6000708@sakamocchi.jp> <20151013100228.GA16452@marvin.atrad.com.au>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v4] ASoC: soc-compress: add config item for
+ soc-compress to make it compiled only when needed
+Date: Mon, 19 Oct 2015 14:22:40 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C7BC1@SHSMSX101.ccr.corp.intel.com>
+References: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
+ <20151014092051.GM8805@ck-lbox>
+ <E7B1D079BA13FB44A978CC8F69C7D6A9229C6351@SHSMSX101.ccr.corp.intel.com>
+ <20151014124659.GN8805@ck-lbox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 273F1265CB5
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:21:13 +0200 (CEST)
-In-Reply-To: <20151013100228.GA16452@marvin.atrad.com.au>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 420AC265A9D
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:23:20 +0200 (CEST)
+In-Reply-To: <20151014124659.GN8805@ck-lbox>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Woithe <jwoithe@just42.net>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Stefan Richter <stefanr@s5r6.in-berlin.de>, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jonathan,
-
-On Oct 13 2015 19:02, Jonathan Woithe wrote:
->> I'm glad to get your help for these issues, Stefan and Jonathan.
+> -----Original Message-----
+> From: Charles Keepax [mailto:ckeepax@opensource.wolfsonmicro.com]
+> Sent: Wednesday, October 14, 2015 8:47 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH v4] ASoC: soc-compress: add config item for
+> soc-compress to make it compiled only when needed
 > 
-> Now that there is functional infrastructure within ALSA to build on I am
-> hoping to start experimenting with RME and MOTU devices over the next few
-> months by porting my FFADO streaming drivers to ALSA.
+> On Wed, Oct 14, 2015 at 12:57:38PM +0000, Jie, Yang wrote:
+> > > >  	int (*suspend)(struct snd_soc_dai *dai);
+> > > >  	int (*resume)(struct snd_soc_dai *dai);
+> > > >  	/* compress dai */
+> > > > -	bool compress_dai;
+> > > > +	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
+> > >
+> > > This feels a little awkward to be using a function pointer here.
+> > > It somewhat implies I might want to customise this function but am I
+> > > every going to want to set this to something other than
+> snd_soc_new_compress?
+> >
+> > Hi Charles, we used compress_dai bool before(in v2), but for that we
+> > need add empty inline soc_compress_new(), Takashi suggest we use
+> > callback func pointer here, it can be compress_new or any other creation
+> here.
+> > This is flexible and can be extended if any new stuff has to be handled.
+> 
+> If everyone else is happy with it, then I don't mind. It obviously works, just
+> felt a little odd to me.
 
-This year I got some supports (not commercial) from Japan office of
-Synthax Inc. They lent some RME models to me. At the beginning of audio
-and music unit on IEEE 1394 bus, I'll borrow FireFace 400 and start to
-develop for ALSA RME driver, next month.
+Umm, maybe we can extend it in the future when new stuff emerge. 
 
-Currently, ALSA MOTU driver is under working in my repository, so it's
-better to start your development for it.
+Hi Mark, sorry to bother you, do you have any more comment about this patch?
 
+Thanks,
+~Keyon
 
-Thanks
-
-Takashi Sakamoto
+> 
+> Thanks,
+> Charles
