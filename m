@@ -1,43 +1,98 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Implementing sub-stream multiplexing in DAI
-Date: Mon, 19 Oct 2015 10:11:12 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552A848D9@BGSMSX104.gar.corp.intel.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v3] drm/i915: Improve kernel-doc for
+ i915_audio_component struct
+Date: Mon, 19 Oct 2015 12:23:12 +0200
+Message-ID: <20151019102312.GY13786@phenom.ffwll.local>
+References: <1444987464-8657-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AC592657FE
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 12:11:17 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "Shah,
- Hardik T" <hardik.t.shah@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <1444987464-8657-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-In order to implement sub-stream multiplexing as a part of single BE DAI I 
-have following observations.
-
-1. All BE DAI ops gets called only once even if two different FE DAIs are 
-connected to a BE DAI.
-2. BE DAI ops are always called with sub-stream 0.
-
-are these expected ?
-
-What is the best way to allow calling of BE DAI ops with different 
-sub-stream ID so that I can do link configuration based on sub-stream 
-parameters ? can you give some pointers ?
-
-Regards,
-Rakesh
+T24gRnJpLCBPY3QgMTYsIDIwMTUgYXQgMTE6MjQ6MjRBTSArMDIwMCwgRGF2aWQgSGVubmluZ3Nz
+b24gd3JvdGU6Cj4gU2lnbmVkLW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5p
+bmdzc29uQGNhbm9uaWNhbC5jb20+CgpRdWV1ZWQgZm9yIC1uZXh0LCB0aGFua3MgZm9yIHRoZSBw
+YXRjaC4KLURhbmllbAoKPiAtLS0KPiAKPiBOb3cgcmViYXNlZCBhZ2FpbnN0IGRybS1pbnRlbCBn
+aXQgbWFzdGVyLgo+IAo+ICBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIHwgNjkgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQs
+IDUxIGluc2VydGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9pbmNs
+dWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+
+IGluZGV4IDMwZDg5ZTAuLmZhYjEzODUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9j
+b21wb25lbnQuaAo+ICsrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiBAQCAtMzEs
+NDcgKzMxLDgwIEBACj4gICNkZWZpbmUgTUFYX1BPUlRTIDUKPiAgCj4gIC8qKgo+IC0gKiBzdHJ1
+Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzIC0gY2FsbGJhY2tzIGRlZmluZWQgaW4gZ2Z4IGRy
+aXZlcgo+IC0gKiBAb3duZXI6IHRoZSBtb2R1bGUgb3duZXIKPiAtICogQGdldF9wb3dlcjogZ2V0
+IHRoZSBQT1dFUl9ET01BSU5fQVVESU8gcG93ZXIgd2VsbAo+IC0gKiBAcHV0X3Bvd2VyOiBwdXQg
+dGhlIFBPV0VSX0RPTUFJTl9BVURJTyBwb3dlciB3ZWxsCj4gLSAqIEBjb2RlY193YWtlX292ZXJy
+aWRlOiBFbmFibGUvRGlzYWJsZSBnZW5lcmF0aW5nIHRoZSBjb2RlYyB3YWtlIHNpZ25hbAo+IC0g
+KiBAZ2V0X2NkY2xrX2ZyZXE6IGdldCB0aGUgQ29yZSBEaXNwbGF5IENsb2NrIGluIEtIego+IC0g
+KiBAc3luY19hdWRpb19yYXRlOiBzZXQgbi9jdHMgYmFzZWQgb24gdGhlIHNhbXBsZSByYXRlCj4g
+KyAqIHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgLSBPcHMgaW1wbGVtZW50ZWQgYnkg
+aTkxNSBkcml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCj4gICAqLwo+ICBzdHJ1Y3QgaTkxNV9h
+dWRpb19jb21wb25lbnRfb3BzIHsKPiArCS8qKgo+ICsJICogQG93bmVyOiBpOTE1IG1vZHVsZQo+
+ICsJICovCj4gIAlzdHJ1Y3QgbW9kdWxlICpvd25lcjsKPiArCS8qKgo+ICsJICogQGdldF9wb3dl
+cjogZ2V0IHRoZSBQT1dFUl9ET01BSU5fQVVESU8gcG93ZXIgd2VsbAo+ICsJICoKPiArCSAqIFJl
+cXVlc3QgdGhlIHBvd2VyIHdlbGwgdG8gYmUgdHVybmVkIG9uLgo+ICsJICovCj4gIAl2b2lkICgq
+Z2V0X3Bvd2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ICsJLyoqCj4gKwkgKiBAcHV0X3Bvd2VyOiBw
+dXQgdGhlIFBPV0VSX0RPTUFJTl9BVURJTyBwb3dlciB3ZWxsCj4gKwkgKgo+ICsJICogQWxsb3cg
+dGhlIHBvd2VyIHdlbGwgdG8gYmUgdHVybmVkIG9mZi4KPiArCSAqLwo+ICAJdm9pZCAoKnB1dF9w
+b3dlcikoc3RydWN0IGRldmljZSAqKTsKPiArCS8qKgo+ICsJICogQGNvZGVjX3dha2Vfb3ZlcnJp
+ZGU6IEVuYWJsZS9kaXNhYmxlIGNvZGVjIHdha2Ugc2lnbmFsCj4gKwkgKi8KPiAgCXZvaWQgKCpj
+b2RlY193YWtlX292ZXJyaWRlKShzdHJ1Y3QgZGV2aWNlICosIGJvb2wgZW5hYmxlKTsKPiArCS8q
+Kgo+ICsJICogQGdldF9jZGNsa19mcmVxOiBHZXQgdGhlIENvcmUgRGlzcGxheSBDbG9jayBpbiBr
+SHoKPiArCSAqLwo+ICAJaW50ICgqZ2V0X2NkY2xrX2ZyZXEpKHN0cnVjdCBkZXZpY2UgKik7Cj4g
+KwkvKioKPiArCSAqIEBzeW5jX2F1ZGlvX3JhdGU6IHNldCBuL2N0cyBiYXNlZCBvbiB0aGUgc2Ft
+cGxlIHJhdGUKPiArCSAqCj4gKwkgKiBDYWxsZWQgZnJvbSBhdWRpbyBkcml2ZXIuIEFmdGVyIGF1
+ZGlvIGRyaXZlciBzZXRzIHRoZQo+ICsJICogc2FtcGxlIHJhdGUsIGl0IHdpbGwgY2FsbCB0aGlz
+IGZ1bmN0aW9uIHRvIHNldCBuL2N0cwo+ICsJICovCj4gIAlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUp
+KHN0cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludCByYXRlKTsKPiAgfTsKPiAgCj4gKy8qKgo+
+ICsgKiBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzIC0gT3BzIGltcGxlbWVu
+dGVkIGJ5IGhkYSBkcml2ZXIsIGNhbGxlZCBieSBpOTE1IGRyaXZlcgo+ICsgKi8KPiAgc3RydWN0
+IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyB7Cj4gKwkvKioKPiArCSAqIEBhdWRpb19w
+dHI6IFBvaW50ZXIgdG8gYmUgdXNlZCBpbiBjYWxsIHRvIHBpbl9lbGRfbm90aWZ5Cj4gKwkgKi8K
+PiAgCXZvaWQgKmF1ZGlvX3B0cjsKPiAgCS8qKgo+IC0JICogQ2FsbCBmcm9tIGk5MTUgZHJpdmVy
+LCBub3RpZnlpbmcgdGhlIEhEQSBkcml2ZXIgdGhhdAo+IC0JICogcGluIHNlbnNlIGFuZC9vciBF
+TEQgaW5mb3JtYXRpb24gaGFzIGNoYW5nZWQuCj4gLQkgKiBAYXVkaW9fcHRyOgkJSERBIGRyaXZl
+ciBvYmplY3QKPiAtCSAqIEBwb3J0OglXaGljaCBwb3J0IGhhcyBjaGFuZ2VkIChQT1JUQSAvIFBP
+UlRCIC8gUE9SVEMgZXRjKQo+ICsJICogQHBpbl9lbGRfbm90aWZ5OiBOb3RpZnkgdGhlIEhEQSBk
+cml2ZXIgdGhhdCBwaW4gc2Vuc2UgYW5kL29yIEVMRCBpbmZvcm1hdGlvbiBoYXMgY2hhbmdlZAo+
+ICsJICoKPiArCSAqIENhbGxlZCB3aGVuIHRoZSBpOTE1IGRyaXZlciBoYXMgc2V0IHVwIGF1ZGlv
+IHBpcGVsaW5lIG9yIGhhcyBqdXN0Cj4gKwkgKiBiZWd1biB0byB0ZWFyIGl0IGRvd24uIFRoaXMg
+YWxsb3dzIHRoZSBIREEgZHJpdmVyIHRvIHVwZGF0ZSBpdHMKPiArCSAqIHN0YXR1cyBhY2NvcmRp
+bmdseSAoZXZlbiB3aGVuIHRoZSBIREEgY29udHJvbGxlciBpcyBpbiBwb3dlciBzYXZlCj4gKwkg
+KiBtb2RlKS4KPiAgCSAqLwo+ICAJdm9pZCAoKnBpbl9lbGRfbm90aWZ5KSh2b2lkICphdWRpb19w
+dHIsIGludCBwb3J0KTsKPiAgfTsKPiAgCj4gIC8qKgo+IC0gKiBzdHJ1Y3QgaTkxNV9hdWRpb19j
+b21wb25lbnQgLSB1c2VkIGZvciBhdWRpbyB2aWRlbyBpbnRlcmFjdGlvbgo+IC0gKiBAZGV2OiB0
+aGUgZGV2aWNlIGZyb20gZ2Z4IGRyaXZlcgo+IC0gKiBAYXVkX3NhbXBsZV9yYXRlOiB0aGUgYXJy
+YXkgb2YgYXVkaW8gc2FtcGxlIHJhdGUgcGVyIHBvcnQKPiAtICogQG9wczogY2FsbGJhY2sgZm9y
+IGF1ZGlvIGRyaXZlciBjYWxsaW5nCj4gLSAqIEBhdWRpb19vcHM6IENhbGwgZnJvbSBpOTE1IGRy
+aXZlcgo+ICsgKiBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgLSBVc2VkIGZvciBkaXJlY3Qg
+Y29tbXVuaWNhdGlvbiBiZXR3ZWVuIGk5MTUgYW5kIGhkYSBkcml2ZXJzCj4gICAqLwo+ICBzdHJ1
+Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgewo+ICsJLyoqCj4gKwkgKiBAZGV2OiBpOTE1IGRldmlj
+ZSwgdXNlZCBhcyBwYXJhbWV0ZXIgZm9yIG9wcwo+ICsJICovCj4gIAlzdHJ1Y3QgZGV2aWNlICpk
+ZXY7Cj4gKwkvKioKPiArCSAqIEBhdWRfc2FtcGxlX3JhdGU6IHRoZSBhcnJheSBvZiBhdWRpbyBz
+YW1wbGUgcmF0ZSBwZXIgcG9ydAo+ICsJICovCj4gIAlpbnQgYXVkX3NhbXBsZV9yYXRlW01BWF9Q
+T1JUU107Cj4gLQo+ICsJLyoqCj4gKwkgKiBAb3BzOiBPcHMgaW1wbGVtZW50ZWQgYnkgaTkxNSBk
+cml2ZXIsIGNhbGxlZCBieSBoZGEgZHJpdmVyCj4gKwkgKi8KPiAgCWNvbnN0IHN0cnVjdCBpOTE1
+X2F1ZGlvX2NvbXBvbmVudF9vcHMgKm9wczsKPiAtCj4gKwkvKioKPiArCSAqIEBhdWRpb19vcHM6
+IE9wcyBpbXBsZW1lbnRlZCBieSBoZGEgZHJpdmVyLCBjYWxsZWQgYnkgaTkxNSBkcml2ZXIKPiAr
+CSAqLwo+ICAJY29uc3Qgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlvX29wcyAqYXVk
+aW9fb3BzOwo+ICB9Owo+ICAKPiAtLSAKPiAxLjkuMQo+IAoKLS0gCkRhbmllbCBWZXR0ZXIKU29m
+dHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBt
+YWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
