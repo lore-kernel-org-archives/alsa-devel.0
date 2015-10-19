@@ -1,107 +1,48 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 0/8] Add ASoC support for AMD APUs [v4]
-Date: Mon, 19 Oct 2015 11:11:19 -0400
-Message-ID: <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
-References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: rockchip: i2s: add 8 channels
+ capture support
+Date: Mon, 19 Oct 2015 16:15:25 +0100
+Message-ID: <20151019151525.GA32054@sirena.org.uk>
+References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1444308009-29088-2-git-send-email-sugar.zhang@rock-chips.com>
+ <CAG5mAdzfoK_rnQhu=NGMzto2K49uKT4eOotRh3uGX=D6KOB5gQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu, Maruthi" <maruthi.bayyavarapu@amd.com>, rajeev kumar <rajeevkumar.linux@gmail.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAG5mAdzfoK_rnQhu=NGMzto2K49uKT4eOotRh3uGX=D6KOB5gQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.com, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, linux-rockchip@lists.infradead.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBPY3QgOCwgMjAxNSBhdCAxMjoxMiBQTSwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hl
-ckBnbWFpbC5jb20+IHdyb3RlOgo+IFRoaXMgcGF0Y2ggc2V0IGltcGxlbWVudHMgc3VwcG9ydCBm
-b3IgaTJzIGF1ZGlvIGFuZCBuZXcgQU1EIEdQVXMuCj4gVGhlIGkycyBjb2RlYyBpcyBmZWQgYnkg
-YSBETUEgZW5naW5lIG9uIHRoZSBHUFUuICBUbyBoYW5kbGUgdGhpcwo+IHdlIGNyZWF0ZSBtZmQg
-Y2VsbHMgd2hpY2ggd2UgaGFuZyB0aGUgaTJzIGNvZGVjIGFuZCBETUEgZW5naW5lIG9uLgo+IEJl
-Y2F1c2Ugb2YgdGhpcywgdGhpcyBwYXRjaCBzZXQgY292ZXJzIHR3byBzdWJzeXN0ZW1zOiBkcm0g
-YW5kIGFsc2EuCj4gVGhlIGRybSBwYXRjaGVzIGFkZCBzdXBwb3J0IGZvciB0aGUgQUNQIGh3IGJs
-b2NrIHdoaWNoIHByb3ZpZGVzIHRoZQo+IERNQSBlbmdpbmUgZm9yIHRoZSBpMnMgY29kZWMuICBU
-aGUgYWxzYSBwYXRjaGVzIGFkZCB0aGUgQVNvQyBkcml2ZXIKPiBmb3IgdGhlIGkycyBjb2RlYy4g
-IFNpbmNlIHRoZSBhbHNhIGNoYW5nZXMgZGVwZW5kIG9uIHRoZSBkcm0gY2hhbmdlcwo+IGluIHRo
-aXMgcGF0Y2ggc2V0IGFzIHdlbGwgYXMgc29tZSBvdGhlciBkcm0gY2hhbmdlcyBxdWV1ZWQgZm9y
-IDQuMywKPiBJJ2QgbGlrZSB0byB0YWtlIHRoZSBhbHNhIHBhdGNoZXMgaW4gdmlhIHRoZSBkcm0g
-dHJlZS4KPgoKUGluZz8gIEFueW9uZSBoYWQgYSBjaGFuY2UgdG8gbG9vayBvdmVyIHRoaXMgbGF0
-ZXN0IHJldmlzaW9uPyAgSSB0aGluawp3ZSd2ZSBhZGRyZXNzZWQgYWxsIHRoZSBvdXRzdGFuZGlu
-ZyBjb21tZW50cy4KClRoYW5rcywKCkFsZXgKCj4gVjIgY2hhbmdlczoKPiAtIFVzZSB0aGUgTUZE
-IHN1YnN5c3RlbSByYXRoZXIgdGhhbiBhZGRpbmcgb3VyIG93biBidXMKPiAtIFNxdWFzaCBhbGwg
-c3ViLWZlYXR1cmUgcGF0Y2hlcyB0b2dldGhlcgo+IC0gZml4IGNvbW1lbnRzIG1lbnRpb25lZCBp
-biBwcmV2aW91cyByZXZpZXcKPgo+IFYzIGNoYW5nZXM6Cj4gLSBVcGRhdGUgdGhlIGRlc2lnbndh
-cmUgZHJpdmVyIHRvIGhhbmRsZSBzbGF2ZSBtb2RlLCBhbWQgc3BlY2lmaWMKPiAgIGZlYXR1cmVz
-Cj4gLSBVc2UgdGhlIGRlc2lnbndhcmUgZHJpdmVyIGRpcmVjdGx5IGZvciBpMnMKPiAtIE1vdmUg
-dGhlIERNQSBoYW5kbGluZyBmcm9tIHRoZSBHUFUgZHJpdmVyIGludG8gdGhlIEFNRCBBU29DCj4g
-ICBkcml2ZXIKPiAtIENoYW5nZSB0aGUgbGljZW5zZSBvbiB0aGUgQVNvQyBkcml2ZXIgdG8gR1BM
-Cj4KPiB2NCBjaGFuZ2VzOgo+IC0gcGF0Y2ggIkFTb0MgOiBkd2MgOiBzdXBwb3J0IGR3IGkycyBp
-biBzbGF2ZSBtb2RlIiBhY2NlcHRlZAo+IC0gQWRkIGEgX2RhaV9mbXQoKSBvcGVyYXRpb24gdGhh
-dCBjaGVja3MgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIG1vZGUKPiAgIHdlJ3JlIHNldHRpbmcgY29y
-cmVzcG9uZHMgdG8gd2hhdCB3ZSByZWFkIGJhY2sgZnJvbSB0aGUgaGFyZHdhcmUuCj4gLSBTcGxp
-dCBzcGVjaWZpYyBxdWlya3MgaW50byBzZXBhcmF0ZSBwYXRjaGVzCj4gLSBTZXQgdGhlIHNwZWNp
-ZmljIHF1aXJrcyB0aGF0IGFwcGx5IHRvIEFNRCBjaGlwcyBpbiB0aGUgYWNwIGRyaXZlcgo+Cj4g
-UGF0Y2ggNyBhZGRzIHRoZSByZWdpc3RlciBoZWFkZXJzIGZvciB0aGUgQUNQIGJsb2NrIHdoaWNo
-IGlzIGEKPiBwcmV0dHkgYmlnIHBhdGNoIHNvIEkndmUgZXhjbHVkZWQgaXQgZnJvbSBlbWFpbC4g
-IFRoZSBlbnRpcmUgcGF0Y2gKPiBzZXQgY2FuIGJlIHZpZXdlZCBoZXJlOgo+IGh0dHA6Ly9jZ2l0
-LmZyZWVkZXNrdG9wLm9yZy9+YWdkNWYvbGludXgvbG9nLz9oPWFjcC11cHN0cmVhbTUKPgo+IFRo
-YW5rcywKPgo+IEFsZXgKPgo+IE1hcnV0aGkgQmF5eWF2YXJhcHUgKDEpOgo+ICAgZHJtL2FtZDog
-YWRkIEFDUCBkcml2ZXIgc3VwcG9ydAo+Cj4gTWFydXRoaSBTcmluaXZhcyBCYXl5YXZhcmFwdSAo
-Nyk6Cj4gICBBU29DIDogZHdjIDogYWRkIGNoZWNrIGZvciBtYXN0ZXIvc2xhdmUgZm9ybWF0Cj4g
-ICBBU29DIDogZHdjIDogYWRkIGRpZmZlcmVudCBwbGF5YmFjay9jYXB0dXJlIGJhc2UKPiAgIEFT
-b0MgOiBkd2MgOiBhZGQgcXVpcmsgZm9yIGR3YyBjb250cm9sbGVyIGluc3RhbmNlcwo+ICAgQVNv
-QyA6IGR3YyA6IGFkZCBxdWlyayBmb3IgZGlmZmVyZW50IHJlZ2lzdGVyIG9mZnNldAo+ICAgQVNv
-QyA6IGR3YyA6IHJlY29uZmlndXJlIGR3YyBpbiAncmVzdW1lJyBmcm9tICdzdXNwZW5kJwo+ICAg
-QVNvQyA6IEFNRCA6IGFkZCBBQ1AgMi4yIHJlZ2lzdGVyIGhlYWRlcnMKPiAgIEFTb0M6IEFNRDog
-YWRkIEFNRCBBU29DIEFDUC1JMlMgZHJpdmVyCj4KPiAgZHJpdmVycy9ncHUvZHJtL0tjb25maWcg
-ICAgICAgICAgICAgICAgICAgICAgfCAgICAyICsKPiAgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3Av
-S2NvbmZpZyAgICAgICAgICAgICAgfCAgIDEwICsKPiAgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3Av
-TWFrZWZpbGUgICAgICAgICAgICAgfCAgICA5ICsKPiAgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3Av
-YWNwX2h3LmMgICAgICAgICAgICAgfCAgMTI3ICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNw
-L2luY2x1ZGUvYWNwX2dmeF9pZi5oIHwgICA0OSArCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1k
-Z3B1L01ha2VmaWxlICAgICAgICAgIHwgICAxMyArLQo+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHUuaCAgICAgICAgICB8ICAgMTIgKwo+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHVfYWNwLmMgICAgICB8ICAyNzUgKysrCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQv
-YW1kZ3B1L2FtZGdwdV9hY3AuaCAgICAgIHwgICA0MSArCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQv
-YW1kZ3B1L3ZpLmMgICAgICAgICAgICAgIHwgICAxMiArCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQv
-aW5jbHVkZS9hbWRfc2hhcmVkLmggICAgIHwgICAgMSArCj4gIGluY2x1ZGUvbGludXgvbWZkL2Ft
-ZF9hY3AuaCAgICAgICAgICAgICAgICAgIHwgICA0MyArCj4gIGluY2x1ZGUvc291bmQvZGVzaWdu
-d2FyZV9pMnMuaCAgICAgICAgICAgICAgIHwgICAgNiArCj4gIHNvdW5kL3NvYy9LY29uZmlnICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSArCj4gIHNvdW5kL3NvYy9NYWtlZmlsZSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSArCj4gIHNvdW5kL3NvYy9hbWQvS2NvbmZp
-ZyAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNCArCj4gIHNvdW5kL3NvYy9hbWQvTWFrZWZp
-bGUgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyArCj4gIHNvdW5kL3NvYy9hbWQvYWNwLXBj
-bS1kbWEuYyAgICAgICAgICAgICAgICAgIHwgIDUxOCArKysrKysKPiAgc291bmQvc29jL2FtZC9h
-Y3AuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNzM2ICsrKysrKysrKwo+ICBzb3VuZC9z
-b2MvYW1kL2FjcC5oICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNDcgKysKPiAgc291bmQv
-c29jL2FtZC9pbmNsdWRlL2FjcF8yXzJfZC5oICAgICAgICAgICAgfCAgNjA5ICsrKysrKysKPiAg
-c291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8yXzJfZW51bS5oICAgICAgICAgfCAxMDY4ICsrKysr
-KysrKysrKwo+ICBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNwXzJfMl9zaF9tYXNrLmggICAgICB8
-IDIyOTIgKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgc291bmQvc29jL2R3Yy9kZXNpZ253
-YXJlX2kycy5jICAgICAgICAgICAgICAgfCAgMjA2ICsrLQo+ICAyNCBmaWxlcyBjaGFuZ2VkLCA2
-MTIxIGluc2VydGlvbnMoKyksIDY0IGRlbGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
-ZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvS2NvbmZpZwo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9ncHUvZHJtL2FtZC9hY3AvTWFrZWZpbGUKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZl
-cnMvZ3B1L2RybS9hbWQvYWNwL2FjcF9ody5jCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJz
-L2dwdS9kcm0vYW1kL2FjcC9pbmNsdWRlL2FjcF9nZnhfaWYuaAo+ICBjcmVhdGUgbW9kZSAxMDA2
-NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jCj4gIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmgKPiAgY3JlYXRl
-IG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL2FtZF9hY3AuaAo+ICBjcmVhdGUgbW9kZSAx
-MDA2NDQgc291bmQvc29jL2FtZC9LY29uZmlnCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9z
-b2MvYW1kL01ha2VmaWxlCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvYW1kL2FjcC1w
-Y20tZG1hLmMKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLmMKPiAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLmgKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX2QuaAo+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
-c291bmQvc29jL2FtZC9pbmNsdWRlL2FjcF8yXzJfZW51bS5oCj4gIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNwXzJfMl9zaF9tYXNrLmgKPgo+IC0tCj4gMS44LjMu
-MQo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 08, 2015 at 07:30:43AM -0700, Caleb Crome wrote:
+> Is it possible to allow channels > 8 if certain requirements are met?  If
+> the rockchip supports 8 channels @ 32-bits/sample, that means 256
+> bits/frame.  Can those 256 bits be sliced into 16 channels of 16-bit
+> samples?
+
+Please don't top post.
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWJQkMAAoJECTWi3JdVIfQD2QH/35lxehoSqChGjdt3aRyIgA8
+j0BNpcF9szWwSpKpTFSfBYzCer/Cm6yyQSFUKYXs4DEY57AgMVwbcjcqYLNmCzNJ
+DB3PHugNhLssaZZeRxTLCfpJYVMhCGUzcoC8/9SXSVx0iTssjbLFH0Bx7pHPbrHo
+NZcfn2Oq2Q231WjYAX8pOlBk//AYaKcDNob3gIx4dnyYfbfJ/w/yLj3u6/sybqnF
+KWD308NBu0o+90Lpt9Di4Wg9vvWRdzm9XOZ3nbXIVxBiCljXRlbcPYKdZpiZ6XP7
+Rd7zETtxgUjSEL0NF9fIYDSYKstWdlDZSA41vcqdPtQEjJCl4j/fFOhY8nk6n50=
+=k8uM
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
