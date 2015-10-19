@@ -1,52 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH V2 00/10] Add support for Imagination
- Technologies audio controllers
-Date: Mon, 19 Oct 2015 19:36:16 +0100
-Message-ID: <20151019183616.GL32054@sirena.org.uk>
-References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+Subject: Re: [alsa-devel] [PATCH v1 1/4] ASoC: codec: Inno codec driver for
+ RK3036 SoC
+Date: Mon, 19 Oct 2015 19:54:14 +0100
+Message-ID: <20151019185414.GO32054@sirena.org.uk>
+References: <1444698070-4191-1-git-send-email-zhengsq@rock-chips.com>
+ <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com>
+ <alpine.DEB.2.02.1510190855250.4075@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="w2xx78T4DcG3O+DJ"
+	protocol="application/pgp-signature"; boundary="f0PSjARDFl/vfYT5"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+In-Reply-To: <alpine.DEB.2.02.1510190855250.4075@lnxricardw1.se.axis.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Horsley <Damien.Horsley@imgtec.com>
-Cc: alsa-devel@alsa-project.org, James Hartley <James.Hartley@imgtec.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Shunqian Zheng <zhengsq@rock-chips.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "heiko@sntech.de" <heiko@sntech.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "benzh@chromium.org" <benzh@chromium.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---w2xx78T4DcG3O+DJ
+--f0PSjARDFl/vfYT5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 12, 2015 at 01:40:27PM +0100, Damien Horsley wrote:
-> From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
->=20
-> Add drivers and binding documents for the following Imagination Technolog=
-ies audio controllers:
+On Mon, Oct 19, 2015 at 08:56:51AM +0200, Ricard Wanderlof wrote:
+> On Tue, 13 Oct 2015, Shunqian Zheng wrote:
 
-This all looks mostly good, I had a few fairly minor comments which
-should be fairly easy to address, mostly stylistic.
+> > +static const struct of_device_id rk3036_codec_of_match[] = {
+> > +       { .compatible = "rk3036-codec", },
+> > +       {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, rk3036_codec_of_match);
 
-Please also fix your mail client to word wrap within paragraphs at
-something substantially less than 80 columns.  Doing this makes your
-messages much easier to read and reply to.
+> Isn't a compatible string normally in the form "rockchip,rk3036-codec" ?
 
---w2xx78T4DcG3O+DJ
+Yes, it needs vendor namespacing.
+
+--f0PSjARDFl/vfYT5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWJTgfAAoJECTWi3JdVIfQO5kH/203CIE8SQc1FlJ+NouRleiB
-B1KPSKkaepyebgmG76kyWQCwhsyZxd3+bI8/kMKXWl+Az6e+Xb6zu0IloWomvwLO
-/PZAZEdlrqWLAypARa7r7Bh2E6xVKOIFGiKHwa+vAt0Fs57qsIJLUyh+E5RsFla8
-306tkFlj61IsX4sG5EdAyjybHfo93+hSjiBAPtvljGrmdU9hLxSdqPLhsoaP8ijb
-C9iRTI77oPL/G1hJIC8Z0oJDkDIhd/xkHPgYWhVpwYHLQUtRYReNbfB3IdDbI6XS
-ekKrdzGc1mAXzYLUeVxXlBS6fxIogEhN7eKEXOxzEg4lf3g+JouzJz5kN1nu8Es=
-=LIfz
+iQEcBAEBCAAGBQJWJTxVAAoJECTWi3JdVIfQdf8H/0+TPUuLQaSrhGLWhHkSaTUY
+yoSdLKSf52RidLRcyoWxpfi/k+DoV38OLOlR8o1jjbeqC6FCu1l8ueywb8tXh+Ca
+fmhxmB24zvr7vcDOeY9ORX7KTOknJ+EeQkaWtDUvdYNAYPyADHYSbXSVaxrKqpzR
+DZ3a4UItVRD3XEEGSZQERmImknPQLhkcFw2Ms1K725aEpHLLcrwLGLZg1nDw4kJ4
+QK97C/kRUpSYUki3pAPh0HYH/e2t52PhwPrQcp+ztjPK0Zl9nSGMQcoOuUrMQL8Y
+gdjHsE3Whjmhq/j0is9SgpJ+xrCYk5tM5XJVcLVlAIAGLs7CM36HAT7J9ej0Nrs=
+=LnLC
 -----END PGP SIGNATURE-----
 
---w2xx78T4DcG3O+DJ--
+--f0PSjARDFl/vfYT5--
