@@ -1,21 +1,20 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v4] ASoC: soc-compress: add config item for
- soc-compress to make it compiled only when needed
-Date: Mon, 19 Oct 2015 14:22:40 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9229C7BC1@SHSMSX101.ccr.corp.intel.com>
-References: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
- <20151014092051.GM8805@ck-lbox>
- <E7B1D079BA13FB44A978CC8F69C7D6A9229C6351@SHSMSX101.ccr.corp.intel.com>
- <20151014124659.GN8805@ck-lbox>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH v2 0/3] Add support for Cirrus Logic
+ CS47L24 and WM1831 codecs
+Date: Mon, 19 Oct 2015 07:50:26 -0700
+Message-ID: <CAG5mAdzqT6YpxikoNm9oxOvR8psi0_MCaw7nt0dPjzhSQnrn-A@mail.gmail.com>
+References: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 420AC265A9D
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:23:20 +0200 (CEST)
-In-Reply-To: <20151014124659.GN8805@ck-lbox>
-Content-Language: en-US
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4228A260430
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:50:46 +0200 (CEST)
+Received: by wicll6 with SMTP id ll6so9575552wic.1
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 07:50:46 -0700 (PDT)
+In-Reply-To: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,47 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: devicetree@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Charles Keepax [mailto:ckeepax@opensource.wolfsonmicro.com]
-> Sent: Wednesday, October 14, 2015 8:47 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [alsa-devel] [PATCH v4] ASoC: soc-compress: add config item for
-> soc-compress to make it compiled only when needed
-> 
-> On Wed, Oct 14, 2015 at 12:57:38PM +0000, Jie, Yang wrote:
-> > > >  	int (*suspend)(struct snd_soc_dai *dai);
-> > > >  	int (*resume)(struct snd_soc_dai *dai);
-> > > >  	/* compress dai */
-> > > > -	bool compress_dai;
-> > > > +	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
-> > >
-> > > This feels a little awkward to be using a function pointer here.
-> > > It somewhat implies I might want to customise this function but am I
-> > > every going to want to set this to something other than
-> snd_soc_new_compress?
-> >
-> > Hi Charles, we used compress_dai bool before(in v2), but for that we
-> > need add empty inline soc_compress_new(), Takashi suggest we use
-> > callback func pointer here, it can be compress_new or any other creation
-> here.
-> > This is flexible and can be extended if any new stuff has to be handled.
-> 
-> If everyone else is happy with it, then I don't mind. It obviously works, just
-> felt a little odd to me.
+Does anybody have support written for the CS53L30 4 channel ADC ?
 
-Umm, maybe we can extend it in the future when new stuff emerge. 
-
-Hi Mark, sorry to bother you, do you have any more comment about this patch?
 
 Thanks,
-~Keyon
+ -Caleb
 
-> 
-> Thanks,
-> Charles
+
+On Mon, Oct 19, 2015 at 7:13 AM, Richard Fitzgerald <
+rf@opensource.wolfsonmicro.com> wrote:
+
+> mfd patch based on Lee Jones's for-next
+> gpio patch based on Linus Walleij's for-next
+> ASoC patch based on Mark Brown's for-next
+>
+> Lee/Mark - can one of you take all three patches (with maintainer acks) so
+> that the patch set is kept together?
+>
+> Richard Fitzgerald (3):
+>   mfd: arizona: Support Cirrus Logic CS47L24 and WM1831
+>   gpio: arizona: Support Cirrus Logic CS47L24 and WM1831
+>   ASoC: cs47l24: Add driver for Cirrus Logic CS47L24 and WM1831 codecs
+>
+>  Documentation/devicetree/bindings/mfd/arizona.txt |    4 +-
+>  drivers/gpio/gpio-arizona.c                       |    4 +
+>  drivers/mfd/Kconfig                               |   19 +-
+>  drivers/mfd/Makefile                              |    3 +
+>  drivers/mfd/arizona-core.c                        |   74 +-
+>  drivers/mfd/arizona-irq.c                         |   40 +-
+>  drivers/mfd/arizona-spi.c                         |    7 +
+>  drivers/mfd/arizona.h                             |    4 +
+>  drivers/mfd/cs47l24-tables.c                      | 1629
+> +++++++++++++++++++++
+>  include/linux/mfd/arizona/core.h                  |    3 +
+>  sound/soc/codecs/Kconfig                          |    8 +
+>  sound/soc/codecs/Makefile                         |    2 +
+>  sound/soc/codecs/cs47l24.c                        | 1148 +++++++++++++++
+>  sound/soc/codecs/cs47l24.h                        |   23 +
+>  14 files changed, 2942 insertions(+), 26 deletions(-)
+>  create mode 100644 drivers/mfd/cs47l24-tables.c
+>  create mode 100644 sound/soc/codecs/cs47l24.c
+>  create mode 100644 sound/soc/codecs/cs47l24.h
+>
+> --
+> 1.9.1
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
