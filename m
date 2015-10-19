@@ -1,19 +1,21 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: [PATCH v4 2/2] ASoC: nau8825: Show device properties
-Date: Mon, 19 Oct 2015 16:49:06 -0700
-Message-ID: <1445298546-23975-3-git-send-email-benzh@chromium.org>
-References: <1445298546-23975-1-git-send-email-benzh@chromium.org>
+From: Ben Zhang <benzh@google.com>
+Subject: Re: [PATCH v3 1/2] ASoC: nau8825: Add FLL configuration
+Date: Mon, 19 Oct 2015 16:56:15 -0700
+Message-ID: <CAOV7ByJs4Fnu9VBHJWb7Q74ZnmJRrp4bJf=2XXLXgFGEd_=Xcg@mail.gmail.com>
+References: <1444427341-7135-1-git-send-email-benzh@chromium.org>
+ <1444452616-32903-1-git-send-email-benzh@chromium.org>
+ <20151019152557.GB32054@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AAA82652C5
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 01:49:36 +0200 (CEST)
-Received: by padhk11 with SMTP id hk11so1208128pad.1
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:49:35 -0700 (PDT)
-In-Reply-To: <1445298546-23975-1-git-send-email-benzh@chromium.org>
+Received: from mail-yk0-f176.google.com (mail-yk0-f176.google.com
+ [209.85.160.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 302A22652C5
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 01:56:16 +0200 (CEST)
+Received: by ykdr3 with SMTP id r3so1191544ykd.1
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:56:15 -0700 (PDT)
+In-Reply-To: <20151019152557.GB32054@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Anatol Pomozov <anatol@google.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, kbuild test robot <lkp@intel.com>, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Anatol Pomozov <anatol@google.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-The codec device properties are printed for debugging.
+On Mon, Oct 19, 2015 at 8:25 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Oct 09, 2015 at 09:50:16PM -0700, Ben Zhang wrote:
+>> snd_soc_codec_driver.set_pll is implemented to configure the FLL.
+>> The codec internal SYSCLK can be from either the MCLK pin directly,
+>> or the FLL. This is configured by snd_soc_codec_driver.set_pll.
+>
+> Please don't post new patches in the middle of an existing series, and
+> please don't post partial patch serieses - both makit it hard to follow
+> what's going on and what the current version is.  As it is I'm a bit
+> confused as I have a v3 1/2 but no 2/2...
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
----
- sound/soc/codecs/nau8825.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Sorry about the confusion. I uploaded a complete v4 patch series which
+is the latest version. Won't post partial update again. Please ignore
+all the previous versions.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index bd58b96..7fc7b4e 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1100,6 +1100,34 @@ static void nau8825_reset_chip(struct regmap *regmap)
- 	regmap_write(regmap, NAU8825_REG_RESET, 0x00);
- }
- 
-+static void nau8825_print_device_properties(struct nau8825 *nau8825)
-+{
-+	int i;
-+	struct device *dev = nau8825->dev;
-+
-+	dev_dbg(dev, "jkdet-enable:         %d\n", nau8825->jkdet_enable);
-+	dev_dbg(dev, "jkdet-pull-enable:    %d\n", nau8825->jkdet_pull_enable);
-+	dev_dbg(dev, "jkdet-pull-up:        %d\n", nau8825->jkdet_pull_up);
-+	dev_dbg(dev, "jkdet-polarity:       %d\n", nau8825->jkdet_polarity);
-+	dev_dbg(dev, "micbias-voltage:      %d\n", nau8825->micbias_voltage);
-+	dev_dbg(dev, "vref-impedance:       %d\n", nau8825->vref_impedance);
-+
-+	dev_dbg(dev, "sar-threshold-num:    %d\n", nau8825->sar_threshold_num);
-+	for (i = 0; i < nau8825->sar_threshold_num; i++)
-+		dev_dbg(dev, "sar-threshold[%d]=%d\n", i,
-+				nau8825->sar_threshold[i]);
-+
-+	dev_dbg(dev, "sar-hysteresis:       %d\n", nau8825->sar_hysteresis);
-+	dev_dbg(dev, "sar-voltage:          %d\n", nau8825->sar_voltage);
-+	dev_dbg(dev, "sar-compare-time:     %d\n", nau8825->sar_compare_time);
-+	dev_dbg(dev, "sar-sampling-time:    %d\n", nau8825->sar_sampling_time);
-+	dev_dbg(dev, "short-key-debounce:   %d\n", nau8825->key_debounce);
-+	dev_dbg(dev, "jack-insert-debounce: %d\n",
-+			nau8825->jack_insert_debounce);
-+	dev_dbg(dev, "jack-eject-debounce:  %d\n",
-+			nau8825->jack_eject_debounce);
-+}
-+
- static int nau8825_read_device_properties(struct device *dev,
- 	struct nau8825 *nau8825) {
- 
-@@ -1213,6 +1241,8 @@ static int nau8825_i2c_probe(struct i2c_client *i2c,
- 	nau8825->dev = dev;
- 	nau8825->irq = i2c->irq;
- 
-+	nau8825_print_device_properties(nau8825);
-+
- 	nau8825_reset_chip(nau8825->regmap);
- 	ret = regmap_read(nau8825->regmap, NAU8825_REG_I2C_DEVICE_ID, &value);
- 	if (ret < 0) {
--- 
-2.6.0.rc2.230.g3dd15c0
+Ben
