@@ -1,48 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: rockchip: i2s: add 8 channels
- capture support
-Date: Mon, 19 Oct 2015 16:15:25 +0100
-Message-ID: <20151019151525.GA32054@sirena.org.uk>
-References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
- <1444308009-29088-2-git-send-email-sugar.zhang@rock-chips.com>
- <CAG5mAdzfoK_rnQhu=NGMzto2K49uKT4eOotRh3uGX=D6KOB5gQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ASoC: nau8825: Add FLL configuration
+Date: Mon, 19 Oct 2015 16:25:57 +0100
+Message-ID: <20151019152557.GB32054@sirena.org.uk>
+References: <1444427341-7135-1-git-send-email-benzh@chromium.org>
+ <1444452616-32903-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdzfoK_rnQhu=NGMzto2K49uKT4eOotRh3uGX=D6KOB5gQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.com, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, linux-rockchip@lists.infradead.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1290251760924655317=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDF722656F3
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 17:26:03 +0200 (CEST)
+In-Reply-To: <1444452616-32903-1-git-send-email-benzh@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ben Zhang <benzh@chromium.org>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Anatol Pomozov <anatol@google.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---OgqxwSJOaUobr8KG
+--===============1290251760924655317==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
+Content-Disposition: inline
+
+
+--jho1yZJdad60DJr+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 08, 2015 at 07:30:43AM -0700, Caleb Crome wrote:
-> Is it possible to allow channels > 8 if certain requirements are met?  If
-> the rockchip supports 8 channels @ 32-bits/sample, that means 256
-> bits/frame.  Can those 256 bits be sliced into 16 channels of 16-bit
-> samples?
+On Fri, Oct 09, 2015 at 09:50:16PM -0700, Ben Zhang wrote:
+> snd_soc_codec_driver.set_pll is implemented to configure the FLL.
+> The codec internal SYSCLK can be from either the MCLK pin directly,
+> or the FLL. This is configured by snd_soc_codec_driver.set_pll.
 
-Please don't top post.
+Please don't post new patches in the middle of an existing series, and
+please don't post partial patch serieses - both makit it hard to follow
+what's going on and what the current version is.  As it is I'm a bit
+confused as I have a v3 1/2 but no 2/2...
 
---OgqxwSJOaUobr8KG
+--jho1yZJdad60DJr+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWJQkMAAoJECTWi3JdVIfQD2QH/35lxehoSqChGjdt3aRyIgA8
-j0BNpcF9szWwSpKpTFSfBYzCer/Cm6yyQSFUKYXs4DEY57AgMVwbcjcqYLNmCzNJ
-DB3PHugNhLssaZZeRxTLCfpJYVMhCGUzcoC8/9SXSVx0iTssjbLFH0Bx7pHPbrHo
-NZcfn2Oq2Q231WjYAX8pOlBk//AYaKcDNob3gIx4dnyYfbfJ/w/yLj3u6/sybqnF
-KWD308NBu0o+90Lpt9Di4Wg9vvWRdzm9XOZ3nbXIVxBiCljXRlbcPYKdZpiZ6XP7
-Rd7zETtxgUjSEL0NF9fIYDSYKstWdlDZSA41vcqdPtQEjJCl4j/fFOhY8nk6n50=
-=k8uM
+iQEcBAEBCAAGBQJWJQuEAAoJECTWi3JdVIfQJcgH/3n4OuK4DFIiOM70Xe+iQItR
+6abA30OdlUvkBVK4LcXMgjgUJKJHSJ0+oLUtiM9FWqd2axNMqzwUr+Vd+K4E7xff
+VxxWfBPo99cImRqjKELr4d8WymypAKUjoGNXKdxC8/OG3rxheJ16hNxpIRzhneTp
+SDRP0tcq7J/AX1XvJhNak4vOTsROEwYWuqNZnPMAmV1lzSuGwg1pIIIF+9VGSCSe
+ODx50S1u+gzv7VkRHn1P1fgiwKu3977nv4+g3pvEsNmdgHn+bTptdW+eNPCo0/E/
+UBr66uzs3RPllg/7hWo0Sb68Hp1IEtbw4fcN+XyyTZ1hGY2p69xnIb0O4M8zi2A=
+=g9Vw
 -----END PGP SIGNATURE-----
 
---OgqxwSJOaUobr8KG--
+--jho1yZJdad60DJr+--
+
+--===============1290251760924655317==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1290251760924655317==--
