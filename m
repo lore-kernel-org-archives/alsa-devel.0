@@ -1,58 +1,52 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH V2 08/10] ASoC: img: Add driver for SPDIF
- input controller
-Date: Mon, 19 Oct 2015 19:27:58 +0100
-Message-ID: <20151019182758.GK32054@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH V2 00/10] Add support for Imagination
+ Technologies audio controllers
+Date: Mon, 19 Oct 2015 19:36:16 +0100
+Message-ID: <20151019183616.GL32054@sirena.org.uk>
 References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
- <1444653637-14711-9-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k18oBAwMkTg3OUap"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="w2xx78T4DcG3O+DJ"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1444653637-14711-9-git-send-email-Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Damien Horsley <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, James Hartley <James.Hartley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Damien Horsley <Damien.Horsley@imgtec.com>
+Cc: alsa-devel@alsa-project.org, James Hartley <James.Hartley@imgtec.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---k18oBAwMkTg3OUap
+--w2xx78T4DcG3O+DJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 12, 2015 at 01:40:35PM +0100, Damien Horsley wrote:
+On Mon, Oct 12, 2015 at 01:40:27PM +0100, Damien Horsley wrote:
+> From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+>=20
+> Add drivers and binding documents for the following Imagination Technolog=
+ies audio controllers:
 
-> +static int img_spdif_in_get_lock_acquire(struct snd_kcontrol *kcontrol,
-> +				  struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_dai *cpu_dai = snd_kcontrol_chip(kcontrol);
-> +	struct img_spdif_in *spdif = snd_soc_dai_get_drvdata(cpu_dai);
-> +
-> +	ucontrol->value.integer.value[0] = spdif->lock_acquire;
-> +
-> +	return 0;
-> +}
+This all looks mostly good, I had a few fairly minor comments which
+should be fairly easy to address, mostly stylistic.
 
-It would be nice to get some documentation of what these controls are...
+Please also fix your mail client to word wrap within paragraphs at
+something substantially less than 80 columns.  Doing this makes your
+messages much easier to read and reply to.
 
---k18oBAwMkTg3OUap
+--w2xx78T4DcG3O+DJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWJTYuAAoJECTWi3JdVIfQUSsH/0OyVUdjnBm+bHJDFM447k+U
-3ObSZ6IIGW+Wjq4t7p+cJqmtC2E0aHz+8Knfjo4G7ItoHIYbUObkehmml7UJuZR0
-843C2jjwob5oaaKsXjNZi3EIya1frsin31OLt9OK+PBZHldot2nHKqFGExO5oiMf
-dVqgdlsOjGGUL8h/DOD7SkeJnXhi2HbJWqSWFOImiBRlyE4P8+G7Qof9+nrPKPcu
-hkTngSWg1Ho6IwnhYm9N1a6NCZHyTkm0RzMb73qk7/cxwPKGF0uiIdOfBpyNr2uA
-syJZ7NjhWgMjVFWS1XPpa4ggjz23p9KNf87jbzQFbHpoTCi0eVmRi5nBqmRqpUk=
-=wqHD
+iQEcBAEBCAAGBQJWJTgfAAoJECTWi3JdVIfQO5kH/203CIE8SQc1FlJ+NouRleiB
+B1KPSKkaepyebgmG76kyWQCwhsyZxd3+bI8/kMKXWl+Az6e+Xb6zu0IloWomvwLO
+/PZAZEdlrqWLAypARa7r7Bh2E6xVKOIFGiKHwa+vAt0Fs57qsIJLUyh+E5RsFla8
+306tkFlj61IsX4sG5EdAyjybHfo93+hSjiBAPtvljGrmdU9hLxSdqPLhsoaP8ijb
+C9iRTI77oPL/G1hJIC8Z0oJDkDIhd/xkHPgYWhVpwYHLQUtRYReNbfB3IdDbI6XS
+ekKrdzGc1mAXzYLUeVxXlBS6fxIogEhN7eKEXOxzEg4lf3g+JouzJz5kN1nu8Es=
+=LIfz
 -----END PGP SIGNATURE-----
 
---k18oBAwMkTg3OUap--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--w2xx78T4DcG3O+DJ--
