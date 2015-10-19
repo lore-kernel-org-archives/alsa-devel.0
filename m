@@ -1,108 +1,33 @@
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH v2 3/7] ALSA: USB-audio: Break out creation of
-	silent urbs from prepare_outbound_urb()
-Date: Mon, 19 Oct 2015 08:52:51 +0200
-Message-ID: <1445237575-396-4-git-send-email-ricardw@axis.com>
-References: <1444906657-16791-1-git-send-email-ricardw@axis.com>
- <1445237575-396-1-git-send-email-ricardw@axis.com>
+Subject: Re: [alsa-devel] [PATCH v1 1/4] ASoC: codec: Inno codec driver for
+ RK3036 SoC
+Date: Mon, 19 Oct 2015 08:56:51 +0200
+Message-ID: <alpine.DEB.2.02.1510190855250.4075@lnxricardw1.se.axis.com>
+References: <1444698070-4191-1-git-send-email-zhengsq@rock-chips.com> <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id B40DA265743
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 08:53:06 +0200 (CEST)
-In-Reply-To: <1445237575-396-1-git-send-email-ricardw@axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Ricard Wanderlof <ricardw@axis.com>, Ricard Wanderlof <ricard2005@butoba.net>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shunqian Zheng <zhengsq@rock-chips.com>
+Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "heiko@sntech.de" <heiko@sntech.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "benzh@chromium.org" <benzh@chromium.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Refactoring in preparation for adding Zoom R16/24 quirk.
-No functional change.
 
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
----
- sound/usb/endpoint.c | 46 +++++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+On Tue, 13 Oct 2015, Shunqian Zheng wrote:
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index a77d9c8..825a06c 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -183,13 +183,38 @@ static void retire_inbound_urb(struct snd_usb_endpoint *ep,
- 		ep->retire_data_urb(ep->data_subs, urb);
- }
- 
-+static void prepare_silent_urb(struct snd_usb_endpoint *ep,
-+			       struct snd_urb_ctx *ctx)
-+{
-+	struct urb *urb = ctx->urb;
-+	unsigned int offs = 0;
-+	int i;
-+
-+	for (i = 0; i < ctx->packets; ++i) {
-+		int counts;
-+
-+		if (ctx->packet_size[i])
-+			counts = ctx->packet_size[i];
-+		else
-+			counts = snd_usb_endpoint_next_packet_size(ep);
-+
-+		urb->iso_frame_desc[i].offset = offs * ep->stride;
-+		urb->iso_frame_desc[i].length = counts * ep->stride;
-+		offs += counts;
-+	}
-+
-+	urb->number_of_packets = ctx->packets;
-+	urb->transfer_buffer_length = offs * ep->stride;
-+	memset(urb->transfer_buffer, ep->silence_value,
-+	       offs * ep->stride);
-+}
-+
- /*
-  * Prepare a PLAYBACK urb for submission to the bus.
-  */
- static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
- 				 struct snd_urb_ctx *ctx)
- {
--	int i;
- 	struct urb *urb = ctx->urb;
- 	unsigned char *cp = urb->transfer_buffer;
- 
-@@ -201,24 +226,7 @@ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
- 			ep->prepare_data_urb(ep->data_subs, urb);
- 		} else {
- 			/* no data provider, so send silence */
--			unsigned int offs = 0;
--			for (i = 0; i < ctx->packets; ++i) {
--				int counts;
--
--				if (ctx->packet_size[i])
--					counts = ctx->packet_size[i];
--				else
--					counts = snd_usb_endpoint_next_packet_size(ep);
--
--				urb->iso_frame_desc[i].offset = offs * ep->stride;
--				urb->iso_frame_desc[i].length = counts * ep->stride;
--				offs += counts;
--			}
--
--			urb->number_of_packets = ctx->packets;
--			urb->transfer_buffer_length = offs * ep->stride;
--			memset(urb->transfer_buffer, ep->silence_value,
--			       offs * ep->stride);
-+			prepare_silent_urb(ep, ctx);
- 		}
- 		break;
- 
--- 
-2.1.4
+> +static const struct of_device_id rk3036_codec_of_match[] =3D {
+> +       { .compatible =3D "rk3036-codec", },
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(of, rk3036_codec_of_match);
+
+Isn't a compatible string normally in the form "rockchip,rk3036-codec" =
+?
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
