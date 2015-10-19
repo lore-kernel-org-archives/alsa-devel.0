@@ -1,19 +1,18 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH v4] ASoC: rt5645: Add the HW EQ for the
-	customized speaker output of Google Celes
-Date: Mon, 19 Oct 2015 06:34:52 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694F9DE17@RTITMBSV03.realtek.com.tw>
-References: <1444803300-31699-1-git-send-email-oder_chiou@realtek.com>
- <20151016151618.GQ14956@sirena.org.uk>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH v2 2/7] ALSA: USB-audio: Also move out
+	hwptr_done wrap from prepare_playback_urb()
+Date: Mon, 19 Oct 2015 08:52:50 +0200
+Message-ID: <1445237575-396-3-git-send-email-ricardw@axis.com>
+References: <1444906657-16791-1-git-send-email-ricardw@axis.com>
+ <1445237575-396-1-git-send-email-ricardw@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id AF652265701
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 08:34:59 +0200 (CEST)
-In-Reply-To: <20151016151618.GQ14956@sirena.org.uk>
-Content-Language: zh-TW
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB1E8265701
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 08:53:04 +0200 (CEST)
+In-Reply-To: <1445237575-396-1-git-send-email-ricardw@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gary_lin <gary_lin@realtek.com>, John Lin <john.lin@realtek.com>, "woojoo.lee@samsung.com" <woojoo.lee@samsung.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Ricard Wanderlof <ricardw@axis.com>, Ricard Wanderlof <ricard2005@butoba.net>
 List-Id: alsa-devel@alsa-project.org
 
-> The userspace interface is now what I'd expec tbut I'm still quite
-> confused by this.  Why is this not a normal bytes control?  There's
-> something going on with private data here but I'm not sure what it's
-> supposed to do over writing to the device - a changelog might've
-> helped...
-> 
-We want to set the register table to the following struct byte-by-byte.
-struct rt5645_eq_param_s {
-	unsigned short reg;
-	unsigned short val;
-};
-Due to the length and target registers of the table are variant, we allocate
-the maximum size of register settings to store the data, and they should be
-controlled by DAPM for following the sequence, so the settings will be
-applied to the hardware in the speaker event of DAPM.
+Refactoring in preparation for adding Zoom R16/24 quirk.
+No functional change.
 
-> There's a validation function below - we should be using it when the
-> user supplies data so they can tell if their settings took effect.
-> 
-We will add the validation function in the function "rt5645_hweq_put", if
-the settings are validated, it will be copied to the private data "eq_param".
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
+ sound/usb/pcm.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> Why is the hweq setting part of platform data (and why is the platform
-> data for a specific system being set as part of this patch)?  This is
-> just a setting that can be set, there's nothing system specific about it
-> and it's not like we're even passing in a system specific tuning here.
-> 
-In the default, we want to disable the HW EQ function, and it is only enabled
-by the customers' request, so we set it in the platform data. The parameters
-of the HW EQ only can be passed by ALSA binary control.
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 4292bad..ee8dd9e 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1383,6 +1383,8 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
+ 			subs->hwptr_done++;
+ 		}
+ 	}
++	if (subs->hwptr_done >= runtime->buffer_size * stride)
++		subs->hwptr_done -= runtime->buffer_size * stride;
+ }
+ 
+ static void copy_to_urb(struct snd_usb_substream *subs,
+@@ -1403,6 +1405,8 @@ static void copy_to_urb(struct snd_usb_substream *subs,
+ 		       runtime->dma_area + subs->hwptr_done, bytes);
+ 	}
+ 	subs->hwptr_done += bytes;
++	if (subs->hwptr_done >= runtime->buffer_size * stride)
++		subs->hwptr_done -= runtime->buffer_size * stride;
+ }
+ 
+ static void prepare_playback_urb(struct snd_usb_substream *subs,
+@@ -1480,14 +1484,13 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		}
+ 
+ 		subs->hwptr_done += bytes;
++		if (subs->hwptr_done >= runtime->buffer_size * stride)
++			subs->hwptr_done -= runtime->buffer_size * stride;
+ 	} else {
+ 		/* usual PCM */
+ 		copy_to_urb(subs, urb, stride, bytes);
+ 	}
+ 
+-	if (subs->hwptr_done >= runtime->buffer_size * stride)
+-		subs->hwptr_done -= runtime->buffer_size * stride;
+-
+ 	/* update delay with exact number of samples queued */
+ 	runtime->delay = subs->last_delay;
+ 	runtime->delay += frames;
+-- 
+2.1.4
