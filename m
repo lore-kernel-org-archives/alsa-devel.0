@@ -1,18 +1,20 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: fsl_ssi.c: Getting channel slips with fsl_ssi.c in TDM
-	(network) mode.
-Date: Mon, 19 Oct 2015 08:55:38 -0700
-Message-ID: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Headphone Mic and PA
+Date: Tue, 20 Oct 2015 00:37:51 +0800
+Message-ID: <CAN8cciaeQO3xyU0VnGkKF+5b75h8K8=tJMAsFarcBZ-c0rw_CA@mail.gmail.com>
+References: <s5hsi57i3qm.wl-tiwai@suse.de>
+	<5624D1F5.3090005@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 766B22654BA
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 17:55:58 +0200 (CEST)
-Received: by wicfv8 with SMTP id fv8so12544965wic.0
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 08:55:58 -0700 (PDT)
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
+ [209.85.218.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77A72265AFF
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 18:37:52 +0200 (CEST)
+Received: by oiad129 with SMTP id d129so39399220oia.0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 09:37:51 -0700 (PDT)
+In-Reply-To: <5624D1F5.3090005@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,140 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>, gaznims@gmail.com
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Arnaud, all,
-
-I'm trying to get the i.MX6 SSI working in 16-channel TDM mode.  FYI, I'm
-working with the stock 4.3 kernel at https://github.com/torvalds/linux.
-
-When I apply the patch below, the SSI does all configure properly and even
-starts streaming properly with all the bits in the right place on the SSI
-pins.  However, given a little bit of time and/or IO to the SD card, the
-bit-stream slips by 1 slot, causing all of the channels to be misaligned.
-
-My changes to the SSI driver are very minimal (shown below), and amount to
-forcing it into network (TDM) mode, and changing the maximum channels, and
-setting the STCCR DC mask.
-
-There is no indication from user space that anything has slipped, so the
-data stream just continues on shifted by 1 slot.
-
-You (Arnaud) mentioned in a previous thread ("Multiple codecs on one sound
-card for multi-channel sound card"), that I should just have to set
-channels_max (and presumably the other changes I mentioned), and it'll work
-mostly.  However, it's very unreliable at the moment.
-
-Any thoughts to how I can diagnose this problem would be greatly
-appreciated!
-
-So, what happens is this:
-
-The SSI Starts sending data like this:
-SLOT 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
-DATA 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
-
-But then after time, something slips and without warning it goes to:
-SLOT 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
-DATA 15 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 37c5cd4..73778c2 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -749,7 +749,10 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream
-*substream,
-                 CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
-                 channels == 1 ? 0 : i2smode);
-     }
--
-+    ssi_private->i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL |
-CCSR_SSI_SCR_NET;
-+    regmap_update_bits(regs, CCSR_SSI_SCR,
-+               CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
-+               ssi_private->i2s_mode);
-     /*
-      * FIXME: The documentation says that SxCCR[WL] should not be
-      * modified while the SSI is enabled.  The only time this can
-@@ -863,6 +866,15 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
-         return -EINVAL;
-     }
-     scr |= ssi_private->i2s_mode;
-+    // Set to 16 slots/frame
-+    regmap_update_bits(regs, CCSR_SSI_STCCR,
-+               CCSR_SSI_SxCCR_DC_MASK,
-+               CCSR_SSI_SxCCR_DC(16));
-+
-+    regmap_update_bits(regs, CCSR_SSI_SRCCR,
-+               CCSR_SSI_SxCCR_DC_MASK,
-+               CCSR_SSI_SxCCR_DC(16));
-+
-
-     /* DAI clock inversion */
-     switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -1084,14 +1099,14 @@ static struct snd_soc_dai_driver
-fsl_ssi_dai_template = {
-     .playback = {
-         .stream_name = "CPU-Playback",
-         .channels_min = 1,
--        .channels_max = 2,
-+        .channels_max = 16,
-         .rates = FSLSSI_I2S_RATES,
-         .formats = FSLSSI_I2S_FORMATS,
-     },
-     .capture = {
-         .stream_name = "CPU-Capture",
-         .channels_min = 1,
--        .channels_max = 2,
-+        .channels_max = 16,
-         .rates = FSLSSI_I2S_RATES,
-         .formats = FSLSSI_I2S_FORMATS,
-     },
-
-Another thing I have tried is changing the watermark level for the fifo to
-give the DMA interrupt some extra time.  The problem still happens, but
-seems to be a bit better.
-
-The fifo watermark change is this:
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 73778c2..7c2e4b0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -54,6 +54,8 @@
- #include "fsl_ssi.h"
- #include "imx-pcm.h"
-
-+#define WATERMARK 8
-+
- /**
-  * FSLSSI_I2S_RATES: sample rates supported by the I2S
-  *
-@@ -943,7 +950,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
-      * size.
-      */
-     if (ssi_private->use_dma)
--        wm = ssi_private->fifo_depth - 2;
-+        wm = ssi_private->fifo_depth - WATERMARK;
-     else
-         wm = ssi_private->fifo_depth;
-
-@@ -1260,8 +1267,8 @@ static int fsl_ssi_imx_probe(struct platform_device
-*pdev,
-      * We have burstsize be "fifo_depth - 2" to match the SSI
-      * watermark setting in fsl_ssi_startup().
-      */
--    ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
--    ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
-+    ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth -
-WATERMARK;
-+    ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth -
-WATERMARK;
-     ssi_private->dma_params_tx.addr = ssi_private->ssi_phys +
-CCSR_SSI_STX0;
-     ssi_private->dma_params_rx.addr = ssi_private->ssi_phys +
-CCSR_SSI_SRX0;
-
-
-Thanks,
-  -Caleb
+MjAxNS0xMC0xOSDkuIvljYg3OjIw5pa8ICJEYXZpZCBIZW5uaW5nc3NvbiIgPGRhdmlkLmhlbm5p
+bmdzc29uQGNhbm9uaWNhbC5jb20+5a+r6YGT77yaCj4KPgo+Cj4gT24gMjAxNS0xMC0xOSAxMTo1
+MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pgo+PiBIaSBEYXZpZCwKPj4KPj4gSSdtIGN1cnJlbnRs
+eSBjaGVja2luZyB0aGUgYnVnIHJlcG9ydCByZWdhcmRpbmcgUEEsIGFuZCB0aGlzIGxvb2tzCj4+
+IGxpa2UgYW4gaXNzdWUgd2l0aCAiSGVhZHBob25lIE1pYyIgamFjayBjb250cm9sLgo+Pgo+PiBU
+aGUgcmVwb3J0ZWQgcHJvYmxlbSBpcyB0aGF0IFBBIGRvZXNuJ3QgcmVhY3QgcHJvcGVybHkgd2hl
+biBib3RoIEhQCj4+IGFuZCBkb2NrIGxpbmUtb3V0IGphY2tzIGFyZSBwbHVnZ2VkIGFuZCBsaW5l
+LW91dCBpcyB1bnBsdWdnZWQuICBUaGUKPj4gbWFjaGluZSBpbiBxdWVzdGlvbiBpcyBEZWxsIEU3
+MjUwLCBhbmQgSSBzZWUgdGhhdCBpdCBoYXMgb25seQo+PiAiSGVhZHBob25lIE1pYyBKYWNrIiBr
+Y3RsIHdpdGhvdXQgIkhlYWRwaG9uZSBKYWNrIiBrY3RsLiAgSXMgdGhpcyB0aGUKPj4gaW50ZW50
+aW9uYWwgYmVoYXZpb3I/Cj4KPgo+IFllcy4gVGhlICJIZWFkcGhvbmUgTWljIEphY2siIGluZGlj
+YXRlcyB0aGF0IHRoZSBqYWNrIGNhbiBiZSB1c2VkIHRvCmluZGljYXRlIGVpdGhlciAiSGVhZHBo
+b25lIiBvciAiTWljIi4gVGhlIGFkZGl0aW9uYWwgIkhlYWRzZXQgTWljIFBoYW50b20KSmFjayIg
+aW5kaWNhdGVzIHRoYXQgaGVhZHNldCBpcyBhIHRoaXJkIHVzYWdlIGZvciB0aGUgamFjayBhbmQg
+dGhlcmUgaXMgbm8KaGFyZHdhcmUgdGhhdCBjYW4gZGV0ZWN0IHdoaWNoIG9uZSBvZiB0aGVtIGl0
+IGlzLiBTbyBpdCBsb29rcyBjb3JyZWN0IHRvIG1lLgo+Cj4gQWxzbyB0aGUgRGVsbCBFNzI1MCBp
+cyBVYnVudHUgY2VydGlmaWVkLCBidXQgSSBkb24ndCB0aGluayBkb2NraW5nCnN0YXRpb25zIGFy
+ZSBwYXJ0IG9mIHRoYXQgY2VydGlmaWNhdGlvbiBzdWl0ZSAoYXQgbGVhc3Qgbm90IGZvciBEZWxs
+IEU3MjUwKS4KPgo+IEkgc2tpbW1lZCB0aHJvdWdoIHRoZSBvcGVuc3VzZSBidWcgYXMgd2VsbC4g
+VHdvIG5vdGVzOgo+Cj4gIDEpIEhlcmUncyBhIGd1aWRlIG9mIGhvdyB0byBnZW5lcmF0ZSBhIFBB
+IGxvZywgYXZvaWRpbmcgdGhlIGF1dG9zcGF3bgpwcm9ibGVtOiBodHRwczovL3dpa2kudWJ1bnR1
+LmNvbS9QdWxzZUF1ZGlvL0xvZwo+Cj4gIDIpIFRoZXJlIGlzIGEgcGF0Y2ggc2VyaWVzIGluIHRo
+ZSBwaXBlbGluZSBbMl0gdGhhdCBUYW51IGhhcyBwcm9taXNlZCB0bwpyZXZpZXcsIHRoYXQgbWFr
+ZXMgbW9kdWxlLXN3aXRjaC1vbi1wb3J0LWF2YWlsYWJsZSBtb3JlIGFnZ3Jlc3NpdmUgdyByIHQK
+YmVpbmcgYWJsZSB0byByZXJvdXRlIGF3YXkgZnJvbSB1bmF2YWlsYWJsZSB0aGluZ3MuIEkgc3Vz
+cGVjdCBpdCB3b3VsZCBoZWxwCmhlcmUsIGJ1dCBJJ20gbm90IGNvbXBsZXRlbHkgc3VyZS4KCmNv
+bnRyb2wuMTMgewppZmFjZSBNSVhFUgpuYW1lICdDYXB0dXJlIFNvdXJjZScKdmFsdWUgJ0ludGVy
+bmFsIE1pYycKY29tbWVudCB7CmFjY2VzcyAncmVhZCB3cml0ZScKdHlwZSBFTlVNRVJBVEVECmNv
+dW50IDEKaXRlbS4wICdIZWFkcGhvbmUgTWljJwppdGVtLjEgJ0RvY2sgTWljJwppdGVtLjIgJ0hl
+YWRzZXQgTWljJwppdGVtLjMgJ0ludGVybmFsIE1pYycKfQp9CgpEbyBhbGNfaGVhZHNldCBtb2Rl
+IHN0aWxsIHdvcmsgd2hlbiB0aGVyZSBpcyBkb2NrIG1pYyA/CgpodHRwczovL2dpdC5rZXJuZWwu
+b3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQvY29tbWl0L3NvdW5kL3Bj
+aS9oZGE/aWQ9NzNiZGQ1OTc4MjNlMjIzMWRjODgyNTc3ZGJiYWY4ZGY5MmZlMTc3NQoKaGRhX25p
+ZF90IG11eF9waW4gPSBzcGVjLT5nZW4uaW11eF9waW5zW3NwZWMtPmdlbi5jdXJfbXV4WzBdXTsK
+aGRhX25pZF90IGhwX3BpbiA9IHNwZWMtPmdlbi5hdXRvY2ZnLmhwX3BpbnNbMF07CgppbnQgbmV3
+X2hlYWRzZXRfbW9kZTsKCmlmICghc25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgaHBfcGluKSkK
+bmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19IRUFEU0VUX01PREVfVU5QTFVHR0VEOwplbHNlIGlmICht
+dXhfcGluID09IHNwZWMtPmhlYWRzZXRfbWljX3BpbikKbmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19I
+RUFEU0VUX01PREVfSEVBRFNFVDsKZWxzZSBpZiAobXV4X3BpbiA9PSBzcGVjLT5oZWFkcGhvbmVf
+bWljX3BpbikKbmV3X2hlYWRzZXRfbW9kZSA9IEFMQ19IRUFEU0VUX01PREVfTUlDOwplbHNlCm5l
+d19oZWFkc2V0X21vZGUgPSBBTENfSEVBRFNFVF9NT0RFX0hFQURQSE9ORTsKCmh0dHBzOi8vYnVn
+emlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTA0OTAxCgpUaGUgb3RoZXIgZXhhbXBs
+ZXMgYXJlIERlbGwgQWxpZW53YXJlIDE4IHdoaWNoIGhhdmUgbWljIGphY2ssIGhlYWRwaG9uZQpq
+YWNrIGFuZCBoZWFkc2V0IGphY2sgOgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
