@@ -1,52 +1,314 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/4] dmaengine: axi_dmac: Add synchronization support
-Date: Tue, 20 Oct 2015 11:46:30 +0200
-Message-ID: <1445334391-12272-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/4] dmaengine: Add transfer termination
+	synchronization support
+Date: Tue, 20 Oct 2015 11:46:28 +0200
+Message-ID: <1445334391-12272-2-git-send-email-lars@metafoo.de>
 References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-188.synserver.de (smtp-out-200.synserver.de
+ [212.40.185.200])
+ by alsa0.perex.cz (Postfix) with ESMTP id 214F126640F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 11:46:41 +0200 (CEST)
 In-Reply-To: <1445334391-12272-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Laurent Pinchart <renesas@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Qiao Zhou <zhouqiao@marvell.com>, Shengjiu Wang <shengjiu.wang@freescale.com>, Matt Campbell <mcampbell@izotope.com>, Jonah Petri <jpetri@izotope.com>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, Laurent Pinchart <renesas@ideasonboard.com>, Matt Campbell <mcampbell@izotope.com>, dmaengine@vger.kernel.org, Russell King <rmk+kernel@arm.linux.org.uk>, Dan Williams <dan.j.williams@intel.com>, Jonah Petri <jpetri@izotope.com>
 List-Id: alsa-devel@alsa-project.org
 
-Implement the new device_synchronize() callback to allow proper
-synchronization when stopping a channel. Since the driver already makes
-sure that no new complete callbacks are scheduled after the
-device_terminate_all() callback has been called, all left to do in the
-device_synchronize() callback is to wait for all currently running complete
-callbacks to finish.
+The DMAengine API has a long standing race condition that is inherent to
+the API itself. Calling dmaengine_terminate_all() is supposed to stop and
+abort any pending or active transfers that have previously been submitted.
+Unfortunately it is possible that this operation races against a currently
+running (or with some drivers also scheduled) completion callback.
+
+Since the API allows dmaengine_terminate_all() to be called from atomic
+context as well as from within a completion callback it is not possible to
+synchronize to the execution of the completion callback from within
+dmaengine_terminate_all() itself.
+
+This means that a user of the DMAengine API does not know when it is safe
+to free resources used in the completion callback, which can result in a
+use-after-free race condition.
+
+This patch addresses the issue by introducing an explicit synchronization
+primitive to the DMAengine API called dmaengine_synchronize().
+
+The existing dmaengine_terminate_all() is deprecated in favor of
+dmaengine_terminate_sync() and dmaengine_terminate_async(). The former
+aborts all pending and active transfers and synchronizes to the current
+context, meaning it will wait until all running completion callbacks have
+finished. This means it is only possible to call this function from
+non-atomic context. The later function does not synchronize, but can still
+be used in atomic context or from within a complete callback. It has to be
+followed up by dmaengine_synchronize() before a client can free the
+resources used in a completion callback.
+
+In addition to this the semantics of the device_terminate_all() callback
+are slightly relaxed by this patch. It is now OK for a driver to only
+schedule the termination of the active transfer, but does not necessarily
+have to wait until the DMA controller has completely stopped. The driver
+must ensure though that the controller has stopped and no longer accesses
+any memory when the device_synchronize() callback returns.
+
+This was in part done since most drivers do not pay attention to this
+anyway at the moment and to emphasize that this needs to be done when the
+device_synchronize() callback is implemented. But it also helps with
+implementing support for devices where stopping the controller can require
+operations that may sleep.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- drivers/dma/dma-axi-dmac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/dmaengine/client.txt   | 38 ++++++++++++++-
+ Documentation/dmaengine/provider.txt | 20 +++++++-
+ drivers/dma/dmaengine.c              |  5 +-
+ include/linux/dmaengine.h            | 90 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 148 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
-index 5b2395e..c346809 100644
---- a/drivers/dma/dma-axi-dmac.c
-+++ b/drivers/dma/dma-axi-dmac.c
-@@ -307,6 +307,13 @@ static int axi_dmac_terminate_all(struct dma_chan *c)
- 	return 0;
+diff --git a/Documentation/dmaengine/client.txt b/Documentation/dmaengine/client.txt
+index 11fb87f..d9f9f46 100644
+--- a/Documentation/dmaengine/client.txt
++++ b/Documentation/dmaengine/client.txt
+@@ -128,7 +128,7 @@ The slave DMA usage consists of following steps:
+ 	transaction.
+ 
+ 	For cyclic DMA, a callback function may wish to terminate the
+-	DMA via dmaengine_terminate_all().
++	DMA via dmaengine_terminate_async().
+ 
+ 	Therefore, it is important that DMA engine drivers drop any
+ 	locks before calling the callback function which may cause a
+@@ -166,12 +166,29 @@ The slave DMA usage consists of following steps:
+ 
+ Further APIs:
+ 
+-1. int dmaengine_terminate_all(struct dma_chan *chan)
++1. int dmaengine_terminate_sync(struct dma_chan *chan)
++   int dmaengine_terminate_async(struct dma_chan *chan)
++   int dmaengine_terminate_all(struct dma_chan *chan) /* DEPRECATED */
+ 
+    This causes all activity for the DMA channel to be stopped, and may
+    discard data in the DMA FIFO which hasn't been fully transferred.
+    No callback functions will be called for any incomplete transfers.
+ 
++   Two variants of this function are available.
++
++   dmaengine_terminate_async() might not wait until the DMA has been fully
++   stopped or until any running complete callbacks have finished. But it is
++   possible to call dmaengine_terminate_async() from atomic context or from
++   within a complete callback. dmaengine_synchronize() must be called before it
++   is safe to free the memory accessed by the DMA transfer or free resources
++   accessed from within the complete callback.
++
++   dmaengine_terminate_sync() will wait for the transfer and any running
++   complete callbacks to finish before it returns. But the function must not be
++   called from atomic context or from within a complete callback.
++
++   dmaengine_terminate_all() is deprecated and should not be used in new code.
++
+ 2. int dmaengine_pause(struct dma_chan *chan)
+ 
+    This pauses activity on the DMA channel without data loss.
+@@ -197,3 +214,20 @@ Further APIs:
+ 	a running DMA channel.  It is recommended that DMA engine users
+ 	pause or stop (via dmaengine_terminate_all()) the channel before
+ 	using this API.
++
++5. void dmaengine_synchronize(struct dma_chan *chan)
++
++  Synchronize the termination of the DMA channel to the current context.
++
++  This function should be used after dmaengine_terminate_async() to synchronize
++  the termination of the DMA channel to the current context. The function will
++  wait for the transfer and any running complete callbacks to finish before it
++  returns.
++
++  If dmaengine_terminate_async() is used to stop the DMA channel this function
++  must be called before it is safe to free memory accessed by previously
++  submitted descriptors or to free any resources accessed within the complete
++  callback of previously submitted descriptors.
++
++  The behavior of this function is undefined if dma_async_issue_pending() has
++  been called between dmaengine_terminate_async() and this function.
+diff --git a/Documentation/dmaengine/provider.txt b/Documentation/dmaengine/provider.txt
+index 67d4ce4..122b7f4 100644
+--- a/Documentation/dmaengine/provider.txt
++++ b/Documentation/dmaengine/provider.txt
+@@ -327,8 +327,24 @@ supported.
+ 
+    * device_terminate_all
+      - Aborts all the pending and ongoing transfers on the channel
+-     - This command should operate synchronously on the channel,
+-       terminating right away all the channels
++     - For aborted transfers the complete callback should not be called
++     - Can be called from atomic context or from within a complete
++       callback of a descriptor. Must not sleep. Drivers must be able
++       to handle this correctly.
++     - Termination may be asynchronous. The driver does not have to
++       wait until the currently active transfer has completely stopped.
++       See device_synchronize.
++
++   * device_synchronize
++     - Must synchronize the termination of a channel to the current
++       context.
++     - Must make sure that memory for previously submitted
++       descriptors is no longer accessed by the DMA controller.
++     - Must make sure that all complete callbacks for previously
++       submitted descriptors have finished running and none are
++       scheduled to run.
++     - May sleep.
++
+ 
+ Misc notes (stuff that should be documented, but don't really know
+ where to put them)
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index 3ecec14..d6fc82e 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -265,8 +265,11 @@ static void dma_chan_put(struct dma_chan *chan)
+ 	module_put(dma_chan_to_owner(chan));
+ 
+ 	/* This channel is not in use anymore, free it */
+-	if (!chan->client_count && chan->device->device_free_chan_resources)
++	if (!chan->client_count && chan->device->device_free_chan_resources) {
++		/* Make sure all operations have completed */
++		dmaengine_synchronize(chan);
+ 		chan->device->device_free_chan_resources(chan);
++	}
+ 
+ 	/* If the channel is used via a DMA request router, free the mapping */
+ 	if (chan->router && chan->router->route_free) {
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 7ea9184..4cb5087 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -653,6 +653,8 @@ enum dmaengine_alignment {
+  *	paused. Returns 0 or an error code
+  * @device_terminate_all: Aborts all transfers on a channel. Returns 0
+  *	or an error code
++ * @device_synchronize: Synchronizes the termination of a transfers to the
++ *  current context.
+  * @device_tx_status: poll for transaction completion, the optional
+  *	txstate parameter can be supplied with a pointer to get a
+  *	struct with auxiliary transfer status information, otherwise the call
+@@ -733,6 +735,7 @@ struct dma_device {
+ 	int (*device_pause)(struct dma_chan *chan);
+ 	int (*device_resume)(struct dma_chan *chan);
+ 	int (*device_terminate_all)(struct dma_chan *chan);
++	void (*device_synchronize)(struct dma_chan *chan);
+ 
+ 	enum dma_status (*device_tx_status)(struct dma_chan *chan,
+ 					    dma_cookie_t cookie,
+@@ -824,6 +827,13 @@ static inline struct dma_async_tx_descriptor *dmaengine_prep_dma_sg(
+ 			src_sg, src_nents, flags);
  }
  
-+static void axi_dmac_synchronize(struct dma_chan *c)
++/**
++ * dmaengine_terminate_all() - Terminate all active DMA transfers
++ * @chan: The channel for which to terminate the transfers
++ *
++ * This function is DEPRECATED use either dmaengine_terminate_sync() or
++ * dmaengine_terminate_async() instead.
++ */
+ static inline int dmaengine_terminate_all(struct dma_chan *chan)
+ {
+ 	if (chan->device->device_terminate_all)
+@@ -832,6 +842,86 @@ static inline int dmaengine_terminate_all(struct dma_chan *chan)
+ 	return -ENOSYS;
+ }
+ 
++/**
++ * dmaengine_terminate_async() - Terminate all active DMA transfers
++ * @chan: The channel for which to terminate the transfers
++ *
++ * Calling this function will terminate all active and pending descriptors
++ * that have previously been submitted to the channel. It is not guaranteed
++ * though that the transfer for the active descriptor has stopped when the
++ * function returns. Furthermore it is possible the complete callback of a
++ * submitted transfer is still running when this function returns.
++ *
++ * dmaengine_synchronize() needs to be called before it is safe to free
++ * any memory that is accessed by previously submitted descriptors or before
++ * freeing any resources accessed from within the completion callback of any
++ * perviously submitted descriptors.
++ *
++ * This function can be called from atomic context as well as from within a
++ * complete callback of a descriptor submitted on the same channel.
++ *
++ * If none of the two conditions above apply consider using
++ * dmaengine_terminate_sync() instead.
++ */
++static inline int dmaengine_terminate_async(struct dma_chan *chan)
 +{
-+	struct axi_dmac_chan *chan = to_axi_dmac_chan(c);
++	if (chan->device->device_terminate_all)
++		return chan->device->device_terminate_all(chan);
 +
-+	vchan_synchronize(&chan->vchan);
++	return -EINVAL;
 +}
 +
- static void axi_dmac_issue_pending(struct dma_chan *c)
++/**
++ * dmaengine_synchronize() - Synchronize DMA channel termination
++ * @chan: The channel to synchronize
++ *
++ * Synchronizes to the DMA channel termination to the current context. When this
++ * function returns it is guaranteed that all transfers for previously issued
++ * descriptors have stopped and and it is safe to free the memory assoicated
++ * with them. Furthermore it is guaranteed that all complete callback functions
++ * for a previously submitted descriptor have finished running and it is safe to
++ * free resources accessed from within the complete callbacks.
++ *
++ * The behavior of this function is undefined if dma_async_issue_pending() has
++ * been called between dmaengine_terminate_async() and this function.
++ *
++ * This function must only be called from non-atomic context and must not be
++ * called from within a complete callback of a descriptor submitted on the same
++ * channel.
++ */
++static inline void dmaengine_synchronize(struct dma_chan *chan)
++{
++	if (chan->device->device_synchronize)
++		chan->device->device_synchronize(chan);
++}
++
++/**
++ * dmaengine_terminate_sync() - Terminate all active DMA transfers
++ * @chan: The channel for which to terminate the transfers
++ *
++ * Calling this function will terminate all active and pending transfers
++ * that have previously been submitted to the channel. It is similar to
++ * dmaengine_terminate_async() but guarantees that the DMA transfer has actually
++ * stopped and that all complete callbacks have finished running when the
++ * function returns.
++ *
++ * This function must only be called from non-atomic context and must not be
++ * called from within a complete callback of a descriptor submitted on the same
++ * channel.
++ */
++static inline int dmaengine_terminate_sync(struct dma_chan *chan)
++{
++	int ret;
++
++	ret = dmaengine_terminate_async(chan);
++	if (ret)
++		return ret;
++
++	dmaengine_synchronize(chan);
++
++	return 0;
++}
++
+ static inline int dmaengine_pause(struct dma_chan *chan)
  {
- 	struct axi_dmac_chan *chan = to_axi_dmac_chan(c);
-@@ -613,6 +620,7 @@ static int axi_dmac_probe(struct platform_device *pdev)
- 	dma_dev->device_prep_dma_cyclic = axi_dmac_prep_dma_cyclic;
- 	dma_dev->device_prep_interleaved_dma = axi_dmac_prep_interleaved;
- 	dma_dev->device_terminate_all = axi_dmac_terminate_all;
-+	dma_dev->device_synchronize = axi_dmac_synchronize;
- 	dma_dev->dev = &pdev->dev;
- 	dma_dev->chancnt = 1;
- 	dma_dev->src_addr_widths = BIT(dmac->chan.src_width);
+ 	if (chan->device->device_pause)
 -- 
 2.1.4
