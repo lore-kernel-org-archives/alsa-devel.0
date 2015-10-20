@@ -1,69 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 0/4] ASoC: Add HDA HDMI codec driver
-Date: Tue, 20 Oct 2015 01:15:36 +0100
-Message-ID: <20151020001536.GW32054@sirena.org.uk>
-References: <1444393729-19745-1-git-send-email-vinod.koul@intel.com>
- <1444741706.2926.16.camel@intel.com>
+From: Dave Airlie <airlied@gmail.com>
+Subject: Re: [PATCH 0/8] Add ASoC support for AMD APUs [v4]
+Date: Tue, 20 Oct 2015 10:19:38 +1000
+Message-ID: <CAPM=9txzacA+04MA5VOjF3V3EuQguuF244PSvQ3pXKkhKNV__Q@mail.gmail.com>
+References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
+ <20151020001422.GV32054@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7801734144633132305=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0540B2652C5
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 02:15:50 +0200 (CEST)
-In-Reply-To: <1444741706.2926.16.camel@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Patches Audio <patches.audio@intel.com>, "arnaud.pouliquen@st.com" <arnaud.pouliquen@st.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "ykk@rock-chips.com" <ykk@rock-chips.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20151020001422.GV32054@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7801734144633132305==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kZn00QyXxdr8qbeL"
-Content-Disposition: inline
-
-
---kZn00QyXxdr8qbeL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Oct 13, 2015 at 01:08:27PM +0000, Koul, Vinod wrote:
-
-> Apart from comments from Russell I didn't get any other comments.
-
-There were mails from the LKP bot saying this didn't build...
-
---kZn00QyXxdr8qbeL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWJYenAAoJECTWi3JdVIfQ2cEH/2wZhIZBZYWlpeLv6Stj/lih
-yBqziIPYnF375BWCzHQgt14N/b6dimMCzoLKNucWSwPy60KvQ8YifTZD2uOtXwdJ
-FkorXzQOp+bUalx+n3T07jD7HgB9Ubd0Ajb6Iz0+kW1awebDQdWvFWzJS39qHRpI
-vXoEIa5y8rqtcI/z4TzgUSD2/MvHq2x+w2CgkWM1Nm/a6W+lqFc7bAIMPaG/jifQ
-tORT/sNbB4Rt8FE2Dcif9cbla5za5iuZplwzq+LIw1P30CpOYRmpyjzRSfmXCzCR
-bTICAcl+knMgncTskeWS1B+a1ReI+IrYS/ouUPeuOTdXdB0Yt6+8JeLboWVo9EU=
-=NNj8
------END PGP SIGNATURE-----
-
---kZn00QyXxdr8qbeL--
-
---===============7801734144633132305==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7801734144633132305==--
+T24gMjAgT2N0b2JlciAyMDE1IGF0IDEwOjE0LCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5v
+cmc+IHdyb3RlOgo+IE9uIE1vbiwgT2N0IDE5LCAyMDE1IGF0IDExOjExOjE5QU0gLTA0MDAsIEFs
+ZXggRGV1Y2hlciB3cm90ZToKPgo+PiBQaW5nPyAgQW55b25lIGhhZCBhIGNoYW5jZSB0byBsb29r
+IG92ZXIgdGhpcyBsYXRlc3QgcmV2aXNpb24/ICBJIHRoaW5rCj4+IHdlJ3ZlIGFkZHJlc3NlZCBh
+bGwgdGhlIG91dHN0YW5kaW5nIGNvbW1lbnRzLgo+Cj4gUGxlYXNlIGRvbid0IHNlbmQgY29udGVu
+dCBmcmVlIHBpbmdzIGFuZCBwbGVhc2UgYWxsb3cgYSByZWFzb25hYmxlIHRpbWUKPiBmb3IgcmV2
+aWV3LiAgUGVvcGxlIGdldCBidXN5LCBnbyBvbiBob2xpZGF5LCBhdHRlbmQgY29uZmVyZW5jZXMg
+YW5kIHNvCj4gb24gc28gdW5sZXNzIHRoZXJlIGlzIHNvbWUgcmVhc29uIGZvciB1cmdlbmN5IChs
+aWtlIGNyaXRpY2FsIGJ1ZyBmaXhlcykKPiBwbGVhc2UgYWxsb3cgYXQgbGVhc3QgYSBjb3VwbGUg
+b2Ygd2Vla3MgZm9yIHJldmlldy4gIFNlbmRpbmcgY29udGVudAo+IGZyZWUgcGluZ3MganVzdCBh
+ZGRzIHRvIHRoZSBtYWlsIHZvbHVtZSAoaWYgdGhleSBhcmUgc2VlbiBhdCBhbGwpIGFuZCBpZgo+
+IHNvbWV0aGluZyBoYXMgZ29uZSB3cm9uZyB5b3UnbGwgaGF2ZSB0byByZXNlbmQgdGhlIHBhdGNo
+ZXMgYW55d2F5LgoKSGkgTWFyaywKClRvIGJlIGhvbmVzdCwgbWFpbnRhaW5lcnMgYWxzbyBmb3Jn
+ZXQsIGdldCBidXN5IGRvaW5nIG90aGVyIHRoaW5ncywKZ2V0IGRpdmVydGVkIGRvd24gcmFiYml0
+IGhvbGVzLApnZXQgdGFza2VkIHRvIGRvIHNvbWV0aGluZyBlbHNlLiBXZSBhbHNvIGRvbid0IGtu
+b3cgd2hlbiBtYWludGFpbmVycwphcmUgYXQgY29uZmVyZW5jZXMsCm9yIG9uIGhvbGlkYXlzLgoK
+SSBkb24ndCB0aGluayByZXBpbmdpbmcgcGF0Y2hlcyBhZnRlciAxMSBkYXlzIGlzIHRoYXQgdW5y
+ZWFzb25hYmxlIGlmCnlvdSd2ZSBnb3R0ZW4gcmVwbGllcyBxdWlja2VyCnRoYW4gdGhhdCBwcmV2
+aW91c2x5LgoKSSdkIHByZWZlciBhIGNvbnRlbnQgZnJlZSBwaW5nLCByYXRoZXIgdGhhbiBhbm90
+aGVyIHJvdW5kIG9mIHRoZQpwYXRjaGVzIHdpdGggdHdvIHNwZWxsaW5nIG1pc3Rha2VzCmZpeGVk
+IGV0Yy4KCkRhdmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
+ZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+Cg==
