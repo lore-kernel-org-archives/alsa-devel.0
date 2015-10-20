@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ad193x: Drop .volatile_reg
+Subject: Applied "ASoC: ssm2518: Drop .volatile_reg
 	implementation" to the asoc tree
-Date: Tue, 20 Oct 2015 20:32:25 +0100
-Message-ID: <E1Zoce1-0003bE-0Q@debutante>
-References: <1445331371.25880.3.camel@ingics.com>
+Date: Tue, 20 Oct 2015 20:32:24 +0100
+Message-ID: <E1Zoce0-0003al-39@debutante>
+References: <1445331286.25880.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A9C22604C6
+ by alsa0.perex.cz (Postfix) with ESMTP id 834062604D5
  for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 21:32:44 +0200 (CEST)
-In-Reply-To: <1445331371.25880.3.camel@ingics.com>
+In-Reply-To: <1445331286.25880.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ad193x: Drop .volatile_reg implementation
+   ASoC: ssm2518: Drop .volatile_reg implementation
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 92b822a499607c32ce12ffd798a095babedc3202 Mon Sep 17 00:00:00 2001
+>From ce7b8dbdded8552d1fd25cc9289da361c5cc765e Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 20 Oct 2015 16:56:11 +0800
-Subject: [PATCH] ASoC: ad193x: Drop .volatile_reg implementation
+Date: Tue, 20 Oct 2015 16:54:46 +0800
+Subject: [PATCH] ASoC: ssm2518: Drop .volatile_reg implementation
 
-adau193x_reg_volatile() always return false.
-This seems pointless because current code uses REGCACHE_NONE cache_type
-which is supposed to be volatile.
+The implementation of ssm2518_register_volatile always returns false,
+this behavior is the same as no .volatile_reg callback implementation
+when cache_type != REGCACHE_NONE.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 6 ------
+ sound/soc/codecs/ssm2518.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 76d7966bd72c..3a3f3f2343d7 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -418,14 +418,8 @@ static struct snd_soc_codec_driver soc_codec_dev_ad193x = {
- 	.num_dapm_routes = ARRAY_SIZE(audio_paths),
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index ddb0203fc649..86b81a60ac52 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -723,17 +723,11 @@ static struct snd_soc_codec_driver ssm2518_codec_driver = {
+ 	.num_dapm_routes = ARRAY_SIZE(ssm2518_routes),
  };
  
--static bool adau193x_reg_volatile(struct device *dev, unsigned int reg)
+-static bool ssm2518_register_volatile(struct device *dev, unsigned int reg)
 -{
 -	return false;
 -}
 -
- const struct regmap_config ad193x_regmap_config = {
- 	.max_register = AD193X_NUM_REGS - 1,
--	.volatile_reg = adau193x_reg_volatile,
- };
- EXPORT_SYMBOL_GPL(ad193x_regmap_config);
+ static const struct regmap_config ssm2518_regmap_config = {
+ 	.val_bits = 8,
+ 	.reg_bits = 8,
  
+ 	.max_register = SSM2518_REG_DRC_9,
+-	.volatile_reg = ssm2518_register_volatile,
+ 
+ 	.cache_type = REGCACHE_RBTREE,
+ 	.reg_defaults = ssm2518_reg_defaults,
 -- 
 2.6.1
