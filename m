@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix deadlock at error in building
-	PCM
-Date: Tue, 20 Oct 2015 16:36:56 +0200
-Message-ID: <1445351816-17849-1-git-send-email-tiwai@suse.de>
+From: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
+Subject: Getting ICS43432 MEMS mic working with TMS320DM365
+	processor
+Date: Tue, 20 Oct 2015 09:37:19 -0500
+Message-ID: <CACaQK7C8V9G5EFoxpTaDcF38zbU=OqErsd8YksbH=0OThCbydg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DC1EC2665B4
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:36:58 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 589F7AB4B
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 14:36:57 +0000 (UTC)
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CCB82665C7
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:37:20 +0200 (CEST)
+Received: by wicfv8 with SMTP id fv8so32054084wic.0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 07:37:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +25,19 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The HDA codec driver issues snd_hda_codec_reset() at the error path of
-PCM build.  This was needed in the earlier code base, but the recent
-rewrite to use the standard bus binding made this a deadlock:
- modprobe        D 0000000000000005     0   720    716 0x00000080
- Call Trace:
-  [<ffffffff816a5dbe>] schedule+0x3e/0x90
-  [<ffffffff816a61a5>] schedule_preempt_disabled+0x15/0x20
-  [<ffffffff816a7ae5>] __mutex_lock_slowpath+0xb5/0x120
-  [<ffffffff816a7b6b>] mutex_lock+0x1b/0x30
-  [<ffffffff8148656b>] device_release_driver+0x1b/0x30
-  [<ffffffff81485c15>] bus_remove_device+0x105/0x180
-  [<ffffffff814822b9>] device_del+0x139/0x260
-  [<ffffffffa05e0ec5>] snd_hdac_device_unregister+0x25/0x30 [snd_hda_core]
-  [<ffffffffa074fa6a>] snd_hda_codec_reset+0x2a/0x70 [snd_hda_codec]
-  [<ffffffffa075007b>] snd_hda_codec_build_pcms+0x18b/0x1b0 [snd_hda_codec]
-  [<ffffffffa074a44e>] hda_codec_driver_probe+0xbe/0x140 [snd_hda_codec]
-  [<ffffffff81486ac4>] driver_probe_device+0x1f4/0x460
-  [<ffffffff81486dc0>] __driver_attach+0x90/0xa0
-  [<ffffffff81484844>] bus_for_each_dev+0x64/0xa0
-  [<ffffffff814862de>] driver_attach+0x1e/0x20
-  [<ffffffff81485e7b>] bus_add_driver+0x1eb/0x280
-  [<ffffffff81487680>] driver_register+0x60/0xe0
-  [<ffffffffa074a0da>] __hda_codec_driver_register+0x5a/0x60 [snd_hda_codec]
-  [<ffffffffa070a01e>] realtek_driver_init+0x1e/0x1000 [snd_hda_codec_realtek]
-  [<ffffffff810002f3>] do_one_initcall+0xb3/0x200
-  [<ffffffff816a1fc5>] do_init_module+0x60/0x1f8
-  [<ffffffff810ee5c3>] load_module+0x1653/0x1bd0
-  [<ffffffff810eed48>] SYSC_finit_module+0x98/0xc0
-  [<ffffffff810eed8e>] SyS_finit_module+0xe/0x10
-  [<ffffffff816aa032>] entry_SYSCALL_64_fastpath+0x16/0x75
+Hello,
 
-The simple fix is just to remove this call, since we don't need to
-think about unbinding at there any longer.
+I have configured the TM320DM365 McBSP with clock and frame synchronization
+signals. Also see the ICS43432 MIC serial data on the oscilloscope, but do
+not get the right output in my application.
 
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=948758
-Cc: <stable@vger.kernel.org> # v4.1+
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I have mapped the DaVinci McBSP with the CQ0093VC audio codec driver.
+Is this mapping correct or is it necessary to map the McBSP with ICS-43432
+codec driver?
+Since, I have not applied the patch, I have used CQ0093VC codec driver.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 37f43a1b34ef..a249d5486889 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3367,10 +3367,8 @@ int snd_hda_codec_build_pcms(struct hda_codec *codec)
- 	int dev, err;
- 
- 	err = snd_hda_codec_parse_pcms(codec);
--	if (err < 0) {
--		snd_hda_codec_reset(codec);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	/* attach a new PCM streams */
- 	list_for_each_entry(cpcm, &codec->pcm_list_head, list) {
--- 
-2.6.1
+Please do let me know if the ICS-43432 patch really necessary for the MIC
+to work.
+
+Thank you,
+Ankhit
