@@ -1,19 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RFT] ASoC: wm8904: Make undocumented
- registers non-readable
-Date: Tue, 20 Oct 2015 10:20:49 +0100
-Message-ID: <20151020092049.GC10520@ck-lbox>
-References: <1445051470.3014.1.camel@ingics.com>
+Subject: [PATCH] ASoC: wm8904: Correct number of EQ registers
+Date: Tue, 20 Oct 2015 10:25:58 +0100
+Message-ID: <1445333158-18580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E6D42663E5
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 11:39:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1445051470.3014.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E77862663E5
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 11:44:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, axel.lin@ingics.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 17, 2015 at 11:11:10AM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
-> I think the intention of wm8904_readable_register is to return false for
-> undocumented registers, but current code returns true for all cases in
-> wm8904_readable_register.
-> Please review if this patch is correct or not.
-> Thanks.
+There are 24 EQ registers not 25, I suspect this bug came about because
+the registers start at EQ1 not zero. The bug is relatively harmless as
+the extra register written is an unused one.
 
-Ok so I have been through every register access in the driver
-(yes that was a bit boring) and it looks like the driver only
-accesses a register that isn't marked as readable once. But this
-looks to be a bug. WM8904_EQ_REGS is set to 25, but there are
-only 24 registers in the EQ. This appears to be a mistake caused
-by the fact the registers start numbering from 1 rather than 0. I
-will send a patch to fix this small bug and this patch looks fine
-to me:
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ include/sound/wm8904.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Unfortunately I don't have hardware to test the patch, but I have
-reviewed it pretty carefully and am happy.
-
-Thanks,
-Charles
+diff --git a/include/sound/wm8904.h b/include/sound/wm8904.h
+index 898be3a..6d8f8fb 100644
+--- a/include/sound/wm8904.h
++++ b/include/sound/wm8904.h
+@@ -119,7 +119,7 @@
+ #define WM8904_MIC_REGS  2
+ #define WM8904_GPIO_REGS 4
+ #define WM8904_DRC_REGS  4
+-#define WM8904_EQ_REGS   25
++#define WM8904_EQ_REGS   24
+ 
+ /**
+  * DRC configurations are specified with a label and a set of register
+-- 
+1.7.2.5
