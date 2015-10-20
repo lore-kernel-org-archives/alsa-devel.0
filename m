@@ -1,18 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/4] dmaengine: Add transfer termination
-	synchronization support
-Date: Tue, 20 Oct 2015 11:46:28 +0200
-Message-ID: <1445334391-12272-2-git-send-email-lars@metafoo.de>
-References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5640: Fill up the IN3's support
+Date: Tue, 20 Oct 2015 18:43:30 +0800
+Message-ID: <1445337810-13696-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-200.synserver.de
- [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id 214F126640F
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 11:46:41 +0200 (CEST)
-In-Reply-To: <1445334391-12272-1-git-send-email-lars@metafoo.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57797266513
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 12:43:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,293 +18,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Qiao Zhou <zhouqiao@marvell.com>, Laurent Pinchart <renesas@ideasonboard.com>, Matt Campbell <mcampbell@izotope.com>, dmaengine@vger.kernel.org, Russell King <rmk+kernel@arm.linux.org.uk>, Dan Williams <dan.j.williams@intel.com>, Jonah Petri <jpetri@izotope.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The DMAengine API has a long standing race condition that is inherent to
-the API itself. Calling dmaengine_terminate_all() is supposed to stop and
-abort any pending or active transfers that have previously been submitted.
-Unfortunately it is possible that this operation races against a currently
-running (or with some drivers also scheduled) completion callback.
-
-Since the API allows dmaengine_terminate_all() to be called from atomic
-context as well as from within a completion callback it is not possible to
-synchronize to the execution of the completion callback from within
-dmaengine_terminate_all() itself.
-
-This means that a user of the DMAengine API does not know when it is safe
-to free resources used in the completion callback, which can result in a
-use-after-free race condition.
-
-This patch addresses the issue by introducing an explicit synchronization
-primitive to the DMAengine API called dmaengine_synchronize().
-
-The existing dmaengine_terminate_all() is deprecated in favor of
-dmaengine_terminate_sync() and dmaengine_terminate_async(). The former
-aborts all pending and active transfers and synchronizes to the current
-context, meaning it will wait until all running completion callbacks have
-finished. This means it is only possible to call this function from
-non-atomic context. The later function does not synchronize, but can still
-be used in atomic context or from within a complete callback. It has to be
-followed up by dmaengine_synchronize() before a client can free the
-resources used in a completion callback.
-
-In addition to this the semantics of the device_terminate_all() callback
-are slightly relaxed by this patch. It is now OK for a driver to only
-schedule the termination of the active transfer, but does not necessarily
-have to wait until the DMA controller has completely stopped. The driver
-must ensure though that the controller has stopped and no longer accesses
-any memory when the device_synchronize() callback returns.
-
-This was in part done since most drivers do not pay attention to this
-anyway at the moment and to emphasize that this needs to be done when the
-device_synchronize() callback is implemented. But it also helps with
-implementing support for devices where stopping the controller can require
-operations that may sleep.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- Documentation/dmaengine/client.txt   | 38 ++++++++++++++-
- Documentation/dmaengine/provider.txt | 20 +++++++-
- drivers/dma/dmaengine.c              |  5 +-
- include/linux/dmaengine.h            | 90 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 148 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5640.txt |  9 ++++++---
+ include/sound/rt5640.h                             |  3 ++-
+ sound/soc/codecs/rt5640.c                          | 22 +++++++++++++++++++++-
+ 3 files changed, 29 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/dmaengine/client.txt b/Documentation/dmaengine/client.txt
-index 11fb87f..d9f9f46 100644
---- a/Documentation/dmaengine/client.txt
-+++ b/Documentation/dmaengine/client.txt
-@@ -128,7 +128,7 @@ The slave DMA usage consists of following steps:
- 	transaction.
+diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
+index bac4d9a..9e62f6e 100644
+--- a/Documentation/devicetree/bindings/sound/rt5640.txt
++++ b/Documentation/devicetree/bindings/sound/rt5640.txt
+@@ -14,7 +14,8 @@ Optional properties:
  
- 	For cyclic DMA, a callback function may wish to terminate the
--	DMA via dmaengine_terminate_all().
-+	DMA via dmaengine_terminate_async().
+ - realtek,in1-differential
+ - realtek,in2-differential
+-  Boolean. Indicate MIC1/2 input are differential, rather than single-ended.
++- realtek,in3-differential
++  Boolean. Indicate MIC1/2/3 input are differential, rather than single-ended.
  
- 	Therefore, it is important that DMA engine drivers drop any
- 	locks before calling the callback function which may cause a
-@@ -166,12 +166,29 @@ The slave DMA usage consists of following steps:
+ - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
  
- Further APIs:
+@@ -24,9 +25,11 @@ Pins on the device (for linking into audio routes) for RT5639/RT5640:
+   * DMIC2
+   * MICBIAS1
+   * IN1P
+-  * IN1R
++  * IN1N
+   * IN2P
+-  * IN2R
++  * IN2N
++  * IN3P
++  * IN3N
+   * HPOL
+   * HPOR
+   * LOUTL
+diff --git a/include/sound/rt5640.h b/include/sound/rt5640.h
+index 59d26dd..e3c84b9 100644
+--- a/include/sound/rt5640.h
++++ b/include/sound/rt5640.h
+@@ -12,9 +12,10 @@
+ #define __LINUX_SND_RT5640_H
  
--1. int dmaengine_terminate_all(struct dma_chan *chan)
-+1. int dmaengine_terminate_sync(struct dma_chan *chan)
-+   int dmaengine_terminate_async(struct dma_chan *chan)
-+   int dmaengine_terminate_all(struct dma_chan *chan) /* DEPRECATED */
+ struct rt5640_platform_data {
+-	/* IN1 & IN2 can optionally be differential */
++	/* IN1 & IN2 & IN3 can optionally be differential */
+ 	bool in1_diff;
+ 	bool in2_diff;
++	bool in3_diff;
  
-    This causes all activity for the DMA channel to be stopped, and may
-    discard data in the DMA FIFO which hasn't been fully transferred.
-    No callback functions will be called for any incomplete transfers.
+ 	bool dmic_en;
+ 	bool dmic1_data_pin; /* 0 = IN1P; 1 = GPIO3 */
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index e1ceeb8..f2beb1a 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -405,11 +405,14 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5640_DAC1_DIG_VOL,
+ 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
+ 			175, 0, dac_vol_tlv),
+-	/* IN1/IN2 Control */
++	/* IN1/IN2/IN3 Control */
+ 	SOC_SINGLE_TLV("IN1 Boost", RT5640_IN1_IN2,
+ 		RT5640_BST_SFT1, 8, 0, bst_tlv),
+ 	SOC_SINGLE_TLV("IN2 Boost", RT5640_IN3_IN4,
+ 		RT5640_BST_SFT2, 8, 0, bst_tlv),
++	SOC_SINGLE_TLV("IN3 Boost", RT5640_IN1_IN2,
++		RT5640_BST_SFT2, 8, 0, bst_tlv),
++
+ 	/* INL/INR Volume Control */
+ 	SOC_DOUBLE_TLV("IN Capture Volume", RT5640_INL_INR_VOL,
+ 			RT5640_INL_VOL_SFT, RT5640_INR_VOL_SFT,
+@@ -598,6 +601,8 @@ static const struct snd_kcontrol_new rt5640_rec_l_mix[] = {
+ 			RT5640_M_HP_L_RM_L_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("INL Switch", RT5640_REC_L2_MIXER,
+ 			RT5640_M_IN_L_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5640_REC_L2_MIXER,
++			RT5640_M_BST2_RM_L_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("BST2 Switch", RT5640_REC_L2_MIXER,
+ 			RT5640_M_BST4_RM_L_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("BST1 Switch", RT5640_REC_L2_MIXER,
+@@ -611,6 +616,8 @@ static const struct snd_kcontrol_new rt5640_rec_r_mix[] = {
+ 			RT5640_M_HP_R_RM_R_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("INR Switch", RT5640_REC_R2_MIXER,
+ 			RT5640_M_IN_R_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5640_REC_R2_MIXER,
++			RT5640_M_BST2_RM_R_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("BST2 Switch", RT5640_REC_R2_MIXER,
+ 			RT5640_M_BST4_RM_R_SFT, 1, 1),
+ 	SOC_DAPM_SINGLE("BST1 Switch", RT5640_REC_R2_MIXER,
+@@ -1065,6 +1072,8 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("IN1N"),
+ 	SND_SOC_DAPM_INPUT("IN2P"),
+ 	SND_SOC_DAPM_INPUT("IN2N"),
++	SND_SOC_DAPM_INPUT("IN3P"),
++	SND_SOC_DAPM_INPUT("IN3N"),
+ 	SND_SOC_DAPM_PGA("DMIC L1", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("DMIC R1", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("DMIC L2", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -1081,6 +1090,8 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 		RT5640_PWR_BST1_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("BST2", RT5640_PWR_ANLG2,
+ 		RT5640_PWR_BST4_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST3", RT5640_PWR_ANLG2,
++		RT5640_PWR_BST2_BIT, 0, NULL, 0),
+ 	/* Input Volume */
+ 	SND_SOC_DAPM_PGA("INL VOL", RT5640_PWR_VOL,
+ 		RT5640_PWR_IN_L_BIT, 0, NULL, 0),
+@@ -1310,6 +1321,7 @@ static const struct snd_soc_dapm_widget rt5639_specific_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"IN1P", NULL, "LDO2"},
+ 	{"IN2P", NULL, "LDO2"},
++	{"IN3P", NULL, "LDO2"},
  
-+   Two variants of this function are available.
-+
-+   dmaengine_terminate_async() might not wait until the DMA has been fully
-+   stopped or until any running complete callbacks have finished. But it is
-+   possible to call dmaengine_terminate_async() from atomic context or from
-+   within a complete callback. dmaengine_synchronize() must be called before it
-+   is safe to free the memory accessed by the DMA transfer or free resources
-+   accessed from within the complete callback.
-+
-+   dmaengine_terminate_sync() will wait for the transfer and any running
-+   complete callbacks to finish before it returns. But the function must not be
-+   called from atomic context or from within a complete callback.
-+
-+   dmaengine_terminate_all() is deprecated and should not be used in new code.
-+
- 2. int dmaengine_pause(struct dma_chan *chan)
+ 	{"DMIC L1", NULL, "DMIC1"},
+ 	{"DMIC R1", NULL, "DMIC1"},
+@@ -1320,18 +1332,22 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
+ 	{"BST1", NULL, "IN1N"},
+ 	{"BST2", NULL, "IN2P"},
+ 	{"BST2", NULL, "IN2N"},
++	{"BST3", NULL, "IN3P"},
++	{"BST3", NULL, "IN3N"},
  
-    This pauses activity on the DMA channel without data loss.
-@@ -197,3 +214,20 @@ Further APIs:
- 	a running DMA channel.  It is recommended that DMA engine users
- 	pause or stop (via dmaengine_terminate_all()) the channel before
- 	using this API.
-+
-+5. void dmaengine_synchronize(struct dma_chan *chan)
-+
-+  Synchronize the termination of the DMA channel to the current context.
-+
-+  This function should be used after dmaengine_terminate_async() to synchronize
-+  the termination of the DMA channel to the current context. The function will
-+  wait for the transfer and any running complete callbacks to finish before it
-+  returns.
-+
-+  If dmaengine_terminate_async() is used to stop the DMA channel this function
-+  must be called before it is safe to free memory accessed by previously
-+  submitted descriptors or to free any resources accessed within the complete
-+  callback of previously submitted descriptors.
-+
-+  The behavior of this function is undefined if dma_async_issue_pending() has
-+  been called between dmaengine_terminate_async() and this function.
-diff --git a/Documentation/dmaengine/provider.txt b/Documentation/dmaengine/provider.txt
-index 67d4ce4..122b7f4 100644
---- a/Documentation/dmaengine/provider.txt
-+++ b/Documentation/dmaengine/provider.txt
-@@ -327,8 +327,24 @@ supported.
+ 	{"INL VOL", NULL, "IN2P"},
+ 	{"INR VOL", NULL, "IN2N"},
  
-    * device_terminate_all
-      - Aborts all the pending and ongoing transfers on the channel
--     - This command should operate synchronously on the channel,
--       terminating right away all the channels
-+     - For aborted transfers the complete callback should not be called
-+     - Can be called from atomic context or from within a complete
-+       callback of a descriptor. Must not sleep. Drivers must be able
-+       to handle this correctly.
-+     - Termination may be asynchronous. The driver does not have to
-+       wait until the currently active transfer has completely stopped.
-+       See device_synchronize.
-+
-+   * device_synchronize
-+     - Must synchronize the termination of a channel to the current
-+       context.
-+     - Must make sure that memory for previously submitted
-+       descriptors is no longer accessed by the DMA controller.
-+     - Must make sure that all complete callbacks for previously
-+       submitted descriptors have finished running and none are
-+       scheduled to run.
-+     - May sleep.
-+
+ 	{"RECMIXL", "HPOL Switch", "HPOL"},
+ 	{"RECMIXL", "INL Switch", "INL VOL"},
++	{"RECMIXL", "BST3 Switch", "BST3"},
+ 	{"RECMIXL", "BST2 Switch", "BST2"},
+ 	{"RECMIXL", "BST1 Switch", "BST1"},
+ 	{"RECMIXL", "OUT MIXL Switch", "OUT MIXL"},
  
- Misc notes (stuff that should be documented, but don't really know
- where to put them)
-diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-index 3ecec14..d6fc82e 100644
---- a/drivers/dma/dmaengine.c
-+++ b/drivers/dma/dmaengine.c
-@@ -265,8 +265,11 @@ static void dma_chan_put(struct dma_chan *chan)
- 	module_put(dma_chan_to_owner(chan));
+ 	{"RECMIXR", "HPOR Switch", "HPOR"},
+ 	{"RECMIXR", "INR Switch", "INR VOL"},
++	{"RECMIXR", "BST3 Switch", "BST3"},
+ 	{"RECMIXR", "BST2 Switch", "BST2"},
+ 	{"RECMIXR", "BST1 Switch", "BST1"},
+ 	{"RECMIXR", "OUT MIXR Switch", "OUT MIXR"},
+@@ -2260,6 +2276,10 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5640->regmap, RT5640_IN3_IN4,
+ 					RT5640_IN_DF2, RT5640_IN_DF2);
  
- 	/* This channel is not in use anymore, free it */
--	if (!chan->client_count && chan->device->device_free_chan_resources)
-+	if (!chan->client_count && chan->device->device_free_chan_resources) {
-+		/* Make sure all operations have completed */
-+		dmaengine_synchronize(chan);
- 		chan->device->device_free_chan_resources(chan);
-+	}
++	if (rt5640->pdata.in3_diff)
++		regmap_update_bits(rt5640->regmap, RT5640_IN1_IN2,
++					RT5640_IN_DF2, RT5640_IN_DF2);
++
+ 	rt5640->hp_mute = 1;
  
- 	/* If the channel is used via a DMA request router, free the mapping */
- 	if (chan->router && chan->router->route_free) {
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 7ea9184..4cb5087 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -653,6 +653,8 @@ enum dmaengine_alignment {
-  *	paused. Returns 0 or an error code
-  * @device_terminate_all: Aborts all transfers on a channel. Returns 0
-  *	or an error code
-+ * @device_synchronize: Synchronizes the termination of a transfers to the
-+ *  current context.
-  * @device_tx_status: poll for transaction completion, the optional
-  *	txstate parameter can be supplied with a pointer to get a
-  *	struct with auxiliary transfer status information, otherwise the call
-@@ -733,6 +735,7 @@ struct dma_device {
- 	int (*device_pause)(struct dma_chan *chan);
- 	int (*device_resume)(struct dma_chan *chan);
- 	int (*device_terminate_all)(struct dma_chan *chan);
-+	void (*device_synchronize)(struct dma_chan *chan);
- 
- 	enum dma_status (*device_tx_status)(struct dma_chan *chan,
- 					    dma_cookie_t cookie,
-@@ -824,6 +827,13 @@ static inline struct dma_async_tx_descriptor *dmaengine_prep_dma_sg(
- 			src_sg, src_nents, flags);
- }
- 
-+/**
-+ * dmaengine_terminate_all() - Terminate all active DMA transfers
-+ * @chan: The channel for which to terminate the transfers
-+ *
-+ * This function is DEPRECATED use either dmaengine_terminate_sync() or
-+ * dmaengine_terminate_async() instead.
-+ */
- static inline int dmaengine_terminate_all(struct dma_chan *chan)
- {
- 	if (chan->device->device_terminate_all)
-@@ -832,6 +842,86 @@ static inline int dmaengine_terminate_all(struct dma_chan *chan)
- 	return -ENOSYS;
- }
- 
-+/**
-+ * dmaengine_terminate_async() - Terminate all active DMA transfers
-+ * @chan: The channel for which to terminate the transfers
-+ *
-+ * Calling this function will terminate all active and pending descriptors
-+ * that have previously been submitted to the channel. It is not guaranteed
-+ * though that the transfer for the active descriptor has stopped when the
-+ * function returns. Furthermore it is possible the complete callback of a
-+ * submitted transfer is still running when this function returns.
-+ *
-+ * dmaengine_synchronize() needs to be called before it is safe to free
-+ * any memory that is accessed by previously submitted descriptors or before
-+ * freeing any resources accessed from within the completion callback of any
-+ * perviously submitted descriptors.
-+ *
-+ * This function can be called from atomic context as well as from within a
-+ * complete callback of a descriptor submitted on the same channel.
-+ *
-+ * If none of the two conditions above apply consider using
-+ * dmaengine_terminate_sync() instead.
-+ */
-+static inline int dmaengine_terminate_async(struct dma_chan *chan)
-+{
-+	if (chan->device->device_terminate_all)
-+		return chan->device->device_terminate_all(chan);
-+
-+	return -EINVAL;
-+}
-+
-+/**
-+ * dmaengine_synchronize() - Synchronize DMA channel termination
-+ * @chan: The channel to synchronize
-+ *
-+ * Synchronizes to the DMA channel termination to the current context. When this
-+ * function returns it is guaranteed that all transfers for previously issued
-+ * descriptors have stopped and and it is safe to free the memory assoicated
-+ * with them. Furthermore it is guaranteed that all complete callback functions
-+ * for a previously submitted descriptor have finished running and it is safe to
-+ * free resources accessed from within the complete callbacks.
-+ *
-+ * The behavior of this function is undefined if dma_async_issue_pending() has
-+ * been called between dmaengine_terminate_async() and this function.
-+ *
-+ * This function must only be called from non-atomic context and must not be
-+ * called from within a complete callback of a descriptor submitted on the same
-+ * channel.
-+ */
-+static inline void dmaengine_synchronize(struct dma_chan *chan)
-+{
-+	if (chan->device->device_synchronize)
-+		chan->device->device_synchronize(chan);
-+}
-+
-+/**
-+ * dmaengine_terminate_sync() - Terminate all active DMA transfers
-+ * @chan: The channel for which to terminate the transfers
-+ *
-+ * Calling this function will terminate all active and pending transfers
-+ * that have previously been submitted to the channel. It is similar to
-+ * dmaengine_terminate_async() but guarantees that the DMA transfer has actually
-+ * stopped and that all complete callbacks have finished running when the
-+ * function returns.
-+ *
-+ * This function must only be called from non-atomic context and must not be
-+ * called from within a complete callback of a descriptor submitted on the same
-+ * channel.
-+ */
-+static inline int dmaengine_terminate_sync(struct dma_chan *chan)
-+{
-+	int ret;
-+
-+	ret = dmaengine_terminate_async(chan);
-+	if (ret)
-+		return ret;
-+
-+	dmaengine_synchronize(chan);
-+
-+	return 0;
-+}
-+
- static inline int dmaengine_pause(struct dma_chan *chan)
- {
- 	if (chan->device->device_pause)
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
 -- 
-2.1.4
+1.8.1.1.439.g50a6b54
