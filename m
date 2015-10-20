@@ -1,16 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V4 3/4] BAT: Change comments and interface of
-	usage()
-Date: Tue, 20 Oct 2015 16:45:47 +0800
-Message-ID: <32cd61d012efbf11292d4719fa14a0be30677a91.1445330404.git.han.lu@intel.com>
+Subject: [PATCH V4 4/4] BAT: Use dynamic temp file
+Date: Tue, 20 Oct 2015 16:45:48 +0800
+Message-ID: <0e967a07bb092cbf821f025bd75ef6b835a29a54.1445330404.git.han.lu@intel.com>
 References: <cover.1445330404.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D553026646C
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 10:48:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B3F35266497
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 10:48:47 +0200 (CEST)
 In-Reply-To: <cover.1445330404.git.han.lu@intel.com>
 In-Reply-To: <cover.1445330404.git.han.lu@intel.com>
 References: <cover.1445330404.git.han.lu@intel.com>
@@ -29,71 +28,74 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-1. Change comment strings to make the descriptions more clear;
-2. Add indent for option lines that have no indent;
-3. Use a const string instead of argv[0] as program name.
+Use dynamic temp file instead of fixed temp file to store recorded
+wav data, for better security.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
 diff --git a/bat/bat.c b/bat/bat.c
-index 2320984..2be3efb 100644
+index 2be3efb..e1343fb 100644
 --- a/bat/bat.c
 +++ b/bat/bat.c
-@@ -268,28 +268,27 @@ static void test_capture(struct bat *bat)
- 	}
- }
- 
--static void usage(struct bat *bat, char *argv[])
-+static void usage(struct bat *bat)
+@@ -451,6 +451,7 @@ static int validate_options(struct bat *bat)
+ static int bat_init(struct bat *bat)
  {
- 	fprintf(bat->log,
--_("Usage:%s [Option]...\n"
-+_("Usage: bat [-options]...\n"
- "\n"
--"-h, --help             help\n"
--"-D                     sound card\n"
--"-P                     playback pcm\n"
--"-C                     capture pcm\n"
--"-f                     sample size\n"
--"-c                     number of channels\n"
--"-r                     sampling rate\n"
--"-n                     frames to capture\n"
--"-k                     sigma k\n"
--"-F                     target frequency\n"
--"-p                     total number of periods to play/capture\n"
--"    --log=#            path of log file. if not set, logs be put to stdout,\n"
--"                       and errors be put to stderr.\n"
--"    --file=#           input file\n"
--"    --saveplay=#       save playback content to target file, for debug\n"
--"    --local            internal loop, bypass hardware\n"
--), argv[0]);
-+"  -h, --help             this help\n"
-+"  -D                     pcm device for both playback and capture\n"
-+"  -P                     pcm device for playback\n"
-+"  -C                     pcm device for capture\n"
-+"  -f                     sample format\n"
-+"  -c                     number of channels\n"
-+"  -r                     sampling rate\n"
-+"  -n                     frames to playback or capture\n"
-+"  -k                     parameter for frequency detecting threshold\n"
-+"  -F                     target frequency\n"
-+"  -p                     total number of periods to play/capture\n"
-+"      --log=#            file that both stdout and strerr redirecting to\n"
-+"      --file=#           file for playback\n"
-+"      --saveplay=#       file that storing playback content, for debug\n"
-+"      --local            internal loop, set to bypass pcm hardware devices\n"
-+));
- 	fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
- 			snd_pcm_format_name(SND_PCM_FORMAT_U8),
- 			snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
-@@ -402,7 +401,7 @@ static void parse_arguments(struct bat *bat, int argc, char *argv[])
- 			break;
- 		case 'h':
- 		default:
--			usage(bat, argv);
-+			usage(bat);
- 			exit(EXIT_SUCCESS);
- 		}
+ 	int err = 0;
++	char name[] = TEMP_RECORD_FILE_NAME;
+ 
+ 	/* Determine logging to a file or stdout and stderr */
+ 	if (bat->logarg) {
+@@ -473,10 +474,23 @@ static int bat_init(struct bat *bat)
  	}
+ 
+ 	/* Determine capture file */
+-	if (bat->local)
++	if (bat->local) {
+ 		bat->capture.file = bat->playback.file;
+-	else
+-		bat->capture.file = TEMP_RECORD_FILE_NAME;
++	} else {
++		/* create temp file for sound record and analysis */
++		err = mkstemp(name);
++		if (err == -1) {
++			fprintf(bat->err, _("Fail to create record file: %d\n"),
++					-errno);
++			return -errno;
++		}
++		/* store file name which is dynamically created */
++		bat->capture.file = strdup(name);
++		if (bat->capture.file == NULL)
++			return -errno;
++		/* close temp file */
++		close(err);
++	}
+ 
+ 	/* Initial for playback */
+ 	if (bat->playback.file == NULL) {
+@@ -590,8 +604,11 @@ analyze:
+ 	err = analyze_capture(&bat);
+ out:
+ 	fprintf(bat.log, _("\nReturn value is %d\n"), err);
++
+ 	if (bat.logarg)
+ 		fclose(bat.log);
++	if (!bat.local)
++		free(bat.capture.file);
+ 
+ 	return err;
+ }
+diff --git a/bat/common.h b/bat/common.h
+index f0254ab..90bc3e2 100644
+--- a/bat/common.h
++++ b/bat/common.h
+@@ -15,7 +15,7 @@
+ 
+ #include <alsa/asoundlib.h>
+ 
+-#define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav"
++#define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav.XXXXXX"
+ 
+ #define OPT_BASE			300
+ #define OPT_LOG				(OPT_BASE + 1)
 -- 
 1.9.1
