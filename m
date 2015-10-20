@@ -1,17 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/3] ASoC: dapm: Add
-	snd_soc_dapm_kcontrol_widget()
-Date: Tue, 20 Oct 2015 22:30:08 +0530
-Message-ID: <1445360408-3478-4-git-send-email-vinod.koul@intel.com>
-References: <1445360408-3478-1-git-send-email-vinod.koul@intel.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: BAT: why MAX_NUMBER_OF_CHANNELS and CHANNEL_MAX
+	separate?
+Date: Tue, 20 Oct 2015 10:39:27 -0700
+Message-ID: <CAG5mAdwK9c8xBVhDFjn4mGD3KnaER1saxPSUe4qmz5xTr=RdmA@mail.gmail.com>
+References: <CAG5mAdz0XcEwqJtCKps+=WBtu5A6SnkCkL889RpXHWhLvF4OjA@mail.gmail.com>
+ <1445355673.7033.51.camel@loki> <s5hwpuhlewl.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A2026661D
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 18:57:06 +0200 (CEST)
-In-Reply-To: <1445360408-3478-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80811266610
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 19:39:47 +0200 (CEST)
+Received: by wijp11 with SMTP id p11so58751013wij.0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 10:39:47 -0700 (PDT)
+In-Reply-To: <s5hwpuhlewl.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
+ Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Gautier,
+ Bernard" <bernard.gautier@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mythri P K <mythri.p.k@intel.com>
+On Tue, Oct 20, 2015 at 8:48 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 20 Oct 2015 17:41:13 +0200,
+> Liam Girdwood wrote:
+>>
+>> On Tue, 2015-10-20 at 08:36 -0700, Caleb Crome wrote:
+>> > Hi,
+>> >    I'm starting to bring up BAT on my board to see if it's going to work for me.
+>> >
+>> > I'm starting from https://github.com/hanlui/bat, is that the correct
+>> > place to start from?
+>>
+>> I think that's Han's old git repo. He has a dev branch here :-
+>>
+>> https://github.com/01org/bat
+>>
+>> and bat support is now also in alsa-utils git too.
+>
+> Right, please follow alsa-utils git repo for avoiding confusion.
+>
+>
+> Takashi
+Wait, should I use
+  https://github.com/01org/bat
+or
+ git://git.alsa-project.org/alsa-utils.git
 
-Given a kcontrol, we may want to access the parent widget
-and it's associated data. So export function to return it.
+I'm trying to compile git://git.alsa-project.org/alsa-utils.git, but
+having a terrible time getting everything to compile.
 
-Signed-off-by: Mythri P K <mythri.p.k@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/soc-dapm.h |  3 +++
- sound/soc/soc-dapm.c     | 12 ++++++++++++
- 2 files changed, 15 insertions(+)
+After running the ./gitcompile script, I get a few warning/error
+messages but it does finally generate a ./configure script.  However,
+./configure fails with the following:
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 5abba037d245..7855cfe46b69 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -451,6 +451,9 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
- 	struct snd_kcontrol *kcontrol);
- 
-+struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
-+		struct snd_kcontrol *kcontrol);
-+
- int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
- 	enum snd_soc_bias_level level);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 352cddf84b1f..016eba10b1ec 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -509,6 +509,18 @@ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
- }
- 
- /**
-+ * snd_soc_dapm_kcontrol_widget() - Returns the widget associated to a
-+ *   kcontrol
-+ * @kcontrol: The kcontrol
-+ */
-+struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
-+				struct snd_kcontrol *kcontrol)
-+{
-+	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0];
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_widget);
-+
-+/**
-  * snd_soc_dapm_kcontrol_dapm() - Returns the dapm context associated to a
-  *  kcontrol
-  * @kcontrol: The kcontrol
--- 
-1.9.1
+# ./configure
+...
+checking for pthread_create in -lpthread... yes
+checking for librt... checking for clock_gettime in -lrt... yes
+checking for xmlto... yes
+./configure: line 7984: udev: command not found
+checking for ANSI C header files... yes
+./configure: line 8119: syntax error near unexpected token `NCURSESW,'
+./configure: line 8119: `        PKG_CHECK_MODULES(NCURSESW, ncursesw,'
+
+
+Both git repos have the same issue for me.
+
+I'm running on an arm (Freescale i.MX6)
+aclocal version 1.15, gettextize version 0.19.6, autoheader version
+2.69, automake version 1.15, autoconf version 2.69,
+
+BTW, on the OP, it appears that MAX_NUMBER_OF_CHANNELS has already been removed.
+
+Thanks,
+-Caleb
