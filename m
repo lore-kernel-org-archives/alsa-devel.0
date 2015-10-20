@@ -1,67 +1,46 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/4] ALSA: pcm_dmaengine: Properly synchronize DMA on shutdown
-Date: Tue, 20 Oct 2015 11:46:31 +0200
-Message-ID: <1445334391-12272-5-git-send-email-lars@metafoo.de>
-References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 0/4] dmaengine: Add transfer termination synchronization support
+Date: Tue, 20 Oct 2015 11:46:27 +0200
+Message-ID: <1445334391-12272-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1445334391-12272-1-git-send-email-lars@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>
 Cc: Dan Williams <dan.j.williams@intel.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Laurent Pinchart <renesas@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Qiao Zhou <zhouqiao@marvell.com>, Shengjiu Wang <shengjiu.wang@freescale.com>, Matt Campbell <mcampbell@izotope.com>, Jonah Petri <jpetri@izotope.com>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Use the new dmaengine_synchronize() function to make sure that all complete
-callbacks have finished running before the runtime data, which is accessed
-in the completed callback, is freed.
+The DMAengine API has a long standing issue that is inherent to the API
+itself. For a client that calls dmaengine_terminate_all() it is not
+possible to properly synchronize the completion of any currently running
+complete callbacks to the current context. This means it is possible to end
+up with a use-after-free race condition if client frees resources that are
+accessed in a complete callback before the complete callback has finished
+running.
 
-This fixes a long standing use-after-free race condition that has been
-observed on some systems.
+This patch series introduces a new explicit synchronization primitive to
+the DMAengine API which allows clients to ensure that all complete
+callbacks have finished running. This allows them to safely free any
+resources that might be accessed in a complete callback.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/core/pcm_dmaengine.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+The series for now only implements synchronization support for a single
+driver and only updates single client to make use of the new API. If there
+is agreement on the general approach more will follow.
 
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index fba365a..697c166 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -202,13 +202,13 @@ int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		if (runtime->info & SNDRV_PCM_INFO_PAUSE)
- 			dmaengine_pause(prtd->dma_chan);
- 		else
--			dmaengine_terminate_all(prtd->dma_chan);
-+			dmaengine_terminate_async(prtd->dma_chan);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		dmaengine_pause(prtd->dma_chan);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
--		dmaengine_terminate_all(prtd->dma_chan);
-+		dmaengine_terminate_async(prtd->dma_chan);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -346,6 +346,7 @@ int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
- 
-+	dmaengine_synchronize(prtd->dma_chan);
- 	kfree(prtd);
- 
- 	return 0;
-@@ -362,9 +363,11 @@ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
- 
-+	dmaengine_synchronize(prtd->dma_chan);
- 	dma_release_channel(prtd->dma_chan);
-+	kfree(prtd);
- 
--	return snd_dmaengine_pcm_close(substream);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close_release_chan);
- 
+- Lars
+
+Lars-Peter Clausen (4):
+  dmaengine: Add transfer termination synchronization support
+  dmaengine: virt-dma: Add synchronization helper function
+  dmaengine: axi_dmac: Add synchronization support
+  ALSA: pcm_dmaengine: Properly synchronize DMA on shutdown
+
+ Documentation/dmaengine/client.txt   | 38 ++++++++++++++-
+ Documentation/dmaengine/provider.txt | 20 +++++++-
+ drivers/dma/dma-axi-dmac.c           |  8 ++++
+ drivers/dma/dmaengine.c              |  5 +-
+ drivers/dma/virt-dma.h               | 13 ++++++
+ include/linux/dmaengine.h            | 90 ++++++++++++++++++++++++++++++++++++
+ sound/core/pcm_dmaengine.c           |  9 ++--
+ 7 files changed, 175 insertions(+), 8 deletions(-)
+
 -- 
 2.1.4
