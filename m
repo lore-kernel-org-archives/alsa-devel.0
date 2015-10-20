@@ -1,78 +1,30 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] HDMI codec, way forward?
-Date: Tue, 20 Oct 2015 09:08:00 +0100
-Message-ID: <20151020080800.GU32532@n2100.arm.linux.org.uk>
-References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
- <20151018150834.GP27370@localhost>
- <20151018152048.GT32532@n2100.arm.linux.org.uk>
- <20151018161329.GV27370@localhost>
- <20151018171641.GV32532@n2100.arm.linux.org.uk>
- <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: WM8962: mark cache_dirty flag after software
+ reset in pm_resume
+Date: Tue, 20 Oct 2015 08:55:19 +0100
+Message-ID: <20151020075519.GA10520@ck-lbox>
+References: <1445309232-24094-1-git-send-email-jiada_wang@mentor.com>
+ <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20151020033809.GZ27370@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+In-Reply-To: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMjAsIDIwMTUgYXQgMDk6MDg6MDlBTSArMDUzMCwgVmlub2QgS291bCB3cm90
-ZToKPiBPbiBNb24sIE9jdCAxOSwgMjAxNSBhdCAwMzoyMDozMFBNICswMjAwLCBUYWthc2hpIEl3
-YWkgd3JvdGU6Cj4gPiBPbiBTdW4sIDE4IE9jdCAyMDE1IDE5OjE2OjQyICswMjAwLAo+ID4gUnVz
-c2VsbCBLaW5nIC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gPiAKPiA+ID4gT24gU3VuLCBPY3QgMTgs
-IDIwMTUgYXQgMDk6NDM6MjlQTSArMDUzMCwgVmlub2QgS291bCB3cm90ZToKPiA+ID4gPiBSaWdo
-dCBidXQgY2FuIEkgYXNrIHdoeSB5b3UgZGlkbid0IHRyeSBtYWtpbmcgdmlkZW8gYXMgY29tcG9u
-ZW50IGFuZCB0aGVuCj4gPiA+ID4gQ0VDLCBhdWRpbyBhbmQgb3RoZXJzIHJlY2VpdmUgdGhlIG5v
-dGlmaWNhdGlvbiBvdmVyIHRoaXMuCj4gPiA+IAo+ID4gPiBPa2F5LCBJIHRoaW5rIEkgc2VlIHdo
-YXQgeW91J3JlIGdldHRpbmcgYXQuICBObywgSSBkb24ndCB3YW50IHRvIHRpZQo+ID4gPiB0aGlz
-IHN0dWZmIGludG8gdGhlIGNvbXBvbmVudCBoZWxwZXJzIGJlY2F1c2UgdGhhdCdzIHRoZSB3cm9u
-ZyBhcHByb2FjaC4KPiA+ID4gCj4gPiA+IFRoZSBjb21wb25lbnQgaGVscGVyIGlzIHB1cmVseSBh
-Ym91dCBjb21iaW5pbmcgc2V2ZXJhbCBzdHJ1Y3QgZGV2aWNlcwo+ID4gPiBpbnRvIG9uZSBsYXJn
-ZXIgY29tcG9uZW50IGZvciBhIHN1YnN5c3RlbSB3aGljaCBkZWFscyB3aXRoIGNhcmQtbGV2ZWwK
-PiA+ID4gY29tcG9uZW50cy4gIEl0J3Mgbm90IGFib3V0IGNyb3NzLXN1YnN5c3RlbSBzdHVmZi4K
-PiA+ID4gCj4gPiA+IFRoZSBwcm9ibGVtIHdpdGggdXNpbmcgaXQgZm9yIGNyb3NzLXN1YnN5c3Rl
-bSBzdHVmZiBpcyB0aGF0IGl0IGJlY29tZXMKPiA+ID4gdG9vIHRpZ2h0bHkgYm91bmQgdG9nZXRo
-ZXI6IHdoeSBzaG91bGQgdGhlIGdyYXBoaWNzIHNpZGUgZ2V0IHRvcm4gZG93bgo+ID4gPiBpZiB5
-b3UgdW5sb2FkIHRoZSBhdWRpbyBvciBDRUMgZHJpdmVyPwo+ID4gPiAKPiA+ID4gQXVkaW8gYW5k
-IENFQyBhcmUgcmF0aGVyIG9wdGlvbmFsIGZvciBIRE1JIC0gSERNSSBjYW4gd29yayB3aXRob3V0
-IGF1ZGlvCj4gPiA+IGFuZCBDRUMgYmVpbmcgcHJlc2VudC4gIEhvd2V2ZXIsIGF1ZGlvIGNhbid0
-IGJlIGNvbnZleWVkIGFjcm9zcyB0aGUgbGluawo+ID4gPiB3aXRob3V0IHRoZSB2aWRlbyBzaWRl
-IGJlaW5nIGNvbmZpZ3VyZWQuICBTbywgaXQgbWFrZXMgc2Vuc2UgdG8gYWxsb3cKPiA+ID4gdGhl
-IENFQyBhbmQgYXVkaW8gcGFydHMgdG8gYmUgbG9hZGVkIHNlcGFyYXRlbHkgKHBvc3NpYmx5IGFz
-IG1vZHVsZXMpCj4gPiA+IHdoaWxlIGhhdmluZyB0aGUgdmlkZW8gcGFydHMgYnVpbHQtaW4gdG8g
-dGhlIGtlcm5lbCAtIGVzcGVjaWFsbHkgaWYgeW91Cj4gPiA+IHdhbnQgdG8gdXNlIHRoZSBIRE1J
-IG91dHB1dCBhcyB0aGUgY29uc29sZS4KPiA+ID4gCj4gPiA+IEJpbmRpbmcgQ0VDIGFuZCBhdWRp
-byBpbnRvIHRoZSBjb21wb25lbnQgaGVscGVyIGFsb25nc2lkZSB0aGUgdmlkZW8gcGFydAo+ID4g
-PiB3aWxsIG1lYW4gdGhhdCBub3RoaW5nIHdpbGwgY29tZSB1cCB1bnRpbCBhbGwgdGhlIGNvbXBv
-bmVudHMgYXJlIHByZXNlbnQsCj4gPiA+IGFuZCBldmVyeXRoaW5nIHdpbGwgYmUgdG9ybiBkb3du
-IHdoZW4gYW55IG9uZSBvZiB0aG9zZSBjb21wb25lbnRzIGFyZQo+ID4gPiByZW1vdmVkLiAgQ2xl
-YXJseSwgdGhhdCdzIHVuZGVzaXJhYmxlLgo+ID4gCj4gPiBDdXJyZW50bHkgaTkxNS9hdWRpbyBj
-b21wb25lbnQgd29ya3MgYXMgeW91IGRlc2NyaWJlZC4gIFRoZSBhdWRpbyBpcwo+ID4gb3B0aW9u
-YWwgYW5kIEhETUkgZ3JhcGhpY3Mgd29ya3Mgd2l0aG91dCBhdWRpbywgd2hpbGUgSERNSSBIRC1h
-dWRpbwo+ID4gbWFuZGF0ZXMgaTkxNSBncmFwaGljcy4KPiAKPiBSaWdodCwgYnV0IHdlIGFsc28g
-YWRkIGFkZGl0aW9uYWwgaW50ZXJmYWNlIG9uIHRvcCBvZiB0aGlzIHRvIGFsbG93IHRoaW5ncwo+
-IGxpa2UgZW5zdXJpbmcgZGlzcGxheSBpcyBvbiB3aGVuIGF1ZGlvIHdhbnRzIHRvIHJ1biBhbmQg
-bm93IG5vdGlmaWNhdGlvbiBmb3IKPiBldmVudHMuCj4gCj4gSSBkb24ndCBzZWUgYSByZWFzb24g
-d2h5IHRoaXMgY2FuIGJlIHVzZWQgYXMgc2luZ2xlIGludGVyZmFjZSB0byBiaW5kIGFzIHdlbGwK
-PiBhcyB0YWxrIHRvIGRpc3BsYXkgZnJvbSB2YXJpb3VzIGNvbXBvbmVudHMsIHVubGVzcyBJIG1p
-c3NlZCBvYnZpb3VzIHdoaWNoCj4gcHJldmVudCB1cyBmcm9tIGRvaW5nIHRoaXMgaW4gbm9uIGk5
-MTUgY2FzZXMuLi4KCk1heWJlIEkgY2FuIGNvbW1lbnQgbW9yZSBzcGVjaWZpY2FsbHkgaWYgSSBz
-YXcgdGhlIGNvZGUuICBSaWdodCBub3cgYWxsCkknbSBhd2FyZSBvZiBpcyB0aGlzIGlkZWEgd2l0
-aG91dCBhbnkgY29kZSwgYW5kIEkgZG9uJ3QgbGlrZSBpdC4KCi0tIApGVFRDIGJyb2FkYmFuZCBm
-b3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNj
-b3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
-ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vZHJpLWRldmVsCg==
+On Tue, Oct 20, 2015 at 11:47:11AM +0900, Jiada Wang wrote:
+> By doing software reset of wm8962 in pm_resume, all registers which
+> have already been set will be reset to default value without regmap
+> interface be involved, thus driver need to mark cache_dirty flag,
+> to let regcache can be updated by regcache_sync().
+> 
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
