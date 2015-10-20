@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Fill up the IN3's support
-Date: Tue, 20 Oct 2015 15:48:36 +0100
-Message-ID: <20151020144836.GA32054@sirena.org.uk>
-References: <1445337810-13696-1-git-send-email-oder_chiou@realtek.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Getting ICS43432 MEMS mic working with TMS320DM365
+ processor
+Date: Tue, 20 Oct 2015 17:05:12 +0200
+Message-ID: <alpine.DEB.2.02.1510201701000.4740@lnxricardw1.se.axis.com>
+References: <CACaQK7C8V9G5EFoxpTaDcF38zbU=OqErsd8YksbH=0OThCbydg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7131288693689067328=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E14F926660B
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:48:41 +0200 (CEST)
-In-Reply-To: <1445337810-13696-1-git-send-email-oder_chiou@realtek.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82C95266925
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 17:05:15 +0200 (CEST)
+In-Reply-To: <CACaQK7C8V9G5EFoxpTaDcF38zbU=OqErsd8YksbH=0OThCbydg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7131288693689067328==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tArtifyz9D3PkaxN"
-Content-Disposition: inline
+On Tue, 20 Oct 2015, Ankhit Vivekananda wrote:
 
+> Hello,
+> =
 
---tArtifyz9D3PkaxN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> I have configured the TM320DM365 McBSP with clock and frame synchronizati=
+on
+> signals. Also see the ICS43432 MIC serial data on the oscilloscope, but do
+> not get the right output in my application.
+> =
 
-On Tue, Oct 20, 2015 at 06:43:30PM +0800, Oder Chiou wrote:
+> I have mapped the DaVinci McBSP with the CQ0093VC audio codec driver.
+> Is this mapping correct or is it necessary to map the McBSP with ICS-43432
+> codec driver?
+> Since, I have not applied the patch, I have used CQ0093VC codec driver.
+> =
 
-> -  * IN1R
-> +  * IN1N
+> Please do let me know if the ICS-43432 patch really necessary for the MIC
+> to work.
 
-This is an unrelated change which should really have been in a separate
-patch.
+Are you using the CQ0093VC driver to communicate with the ICS-43432, but =
 
---tArtifyz9D3PkaxN
-Content-Type: application/pgp-signature; name="signature.asc"
+no actual CQ0093VC codec then?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+That won't work. The ICS-43432 basically uses 64 bits per frame, with 24 =
 
-iQEbBAEBCAAGBQJWJlRDAAoJECTWi3JdVIfQRyQH+KHqU5DzKWBwn4NYvYLrFKgr
-cBc4idroQB4quKJm7Zsk/saSxqUX93NmPDoOYvjdyLdxQm6Mj+vB2b9HPqzlney5
-orwZPn/HElI0gocg9BINuyGZxI7/NQ5PHlLmDcr8DpdBNymfOqgkykQ41hOQ9724
-mmWLZDHeZ+f2E+Hhuawj4FXhymO06R/qXH4UtiWpOa8XWkBhpoJs981fV2jwDSXi
-/aXWlPcBRDTiyPj0uy5dE23722ZZ6bwehkOCAqcbGURG6vnoeqKbjfM9e5WpgwSA
-zxNjeF0aAZb9CJa8A8E6UqqAXnJ2bs7aQhHDHxJRTMhkok4azVWRAUsgsS6wbw==
-=evfa
------END PGP SIGNATURE-----
+valid bits per channel, i.e. S24_LE or S32, whereas the CQ0093VC seems to =
 
---tArtifyz9D3PkaxN--
+only support the U8 or S16_LE formats.
 
---===============7131288693689067328==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+There might be another codec driver which is more suitable, but it makes =
 
+the most sense to use the ICS-43432 driver as it is intended for the =
 
---===============7131288693689067328==--
+hardware in question.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
