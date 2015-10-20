@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8904: Correct number of EQ registers" to the asoc tree
+Subject: Applied "ASoC: ad193x: Drop .volatile_reg
+	implementation" to the asoc tree
 Date: Tue, 20 Oct 2015 20:32:25 +0100
-Message-ID: <E1Zoce1-0003bh-UV@debutante>
-References: <1445333158-18580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1445333158-18580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: stable-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Message-ID: <E1Zoce1-0003bE-0Q@debutante>
+References: <1445331371.25880.3.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A9C22604C6
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 21:32:44 +0200 (CEST)
+In-Reply-To: <1445331371.25880.3.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8904: Correct number of EQ registers
+   ASoC: ad193x: Drop .volatile_reg implementation
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 97aff2c03a1e4d343266adadb52313613efb027f Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 20 Oct 2015 10:25:58 +0100
-Subject: [PATCH] ASoC: wm8904: Correct number of EQ registers
+>From 92b822a499607c32ce12ffd798a095babedc3202 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 20 Oct 2015 16:56:11 +0800
+Subject: [PATCH] ASoC: ad193x: Drop .volatile_reg implementation
 
-There are 24 EQ registers not 25, I suspect this bug came about because
-the registers start at EQ1 not zero. The bug is relatively harmless as
-the extra register written is an unused one.
+adau193x_reg_volatile() always return false.
+This seems pointless because current code uses REGCACHE_NONE cache_type
+which is supposed to be volatile.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- include/sound/wm8904.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ad193x.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/include/sound/wm8904.h b/include/sound/wm8904.h
-index 898be3a8db9a..6d8f8fba3341 100644
---- a/include/sound/wm8904.h
-+++ b/include/sound/wm8904.h
-@@ -119,7 +119,7 @@
- #define WM8904_MIC_REGS  2
- #define WM8904_GPIO_REGS 4
- #define WM8904_DRC_REGS  4
--#define WM8904_EQ_REGS   25
-+#define WM8904_EQ_REGS   24
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 76d7966bd72c..3a3f3f2343d7 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -418,14 +418,8 @@ static struct snd_soc_codec_driver soc_codec_dev_ad193x = {
+ 	.num_dapm_routes = ARRAY_SIZE(audio_paths),
+ };
  
- /**
-  * DRC configurations are specified with a label and a set of register
+-static bool adau193x_reg_volatile(struct device *dev, unsigned int reg)
+-{
+-	return false;
+-}
+-
+ const struct regmap_config ad193x_regmap_config = {
+ 	.max_register = AD193X_NUM_REGS - 1,
+-	.volatile_reg = adau193x_reg_volatile,
+ };
+ EXPORT_SYMBOL_GPL(ad193x_regmap_config);
+ 
 -- 
 2.6.1
