@@ -1,47 +1,75 @@
-From: Ben Zhang <benzh@google.com>
-Subject: Re: [PATCH v3 1/2] ASoC: nau8825: Add FLL configuration
-Date: Mon, 19 Oct 2015 16:56:15 -0700
-Message-ID: <CAOV7ByJs4Fnu9VBHJWb7Q74ZnmJRrp4bJf=2XXLXgFGEd_=Xcg@mail.gmail.com>
-References: <1444427341-7135-1-git-send-email-benzh@chromium.org>
- <1444452616-32903-1-git-send-email-benzh@chromium.org>
- <20151019152557.GB32054@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/8] Add ASoC support for AMD APUs [v4]
+Date: Tue, 20 Oct 2015 01:14:22 +0100
+Message-ID: <20151020001422.GV32054@sirena.org.uk>
+References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f176.google.com (mail-yk0-f176.google.com
- [209.85.160.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 302A22652C5
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 01:56:16 +0200 (CEST)
-Received: by ykdr3 with SMTP id r3so1191544ykd.1
- for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2015 16:56:15 -0700 (PDT)
-In-Reply-To: <20151019152557.GB32054@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, kbuild test robot <lkp@intel.com>, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Anatol Pomozov <anatol@google.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>
+Content-Type: multipart/mixed; boundary="===============0115108589=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 19, 2015 at 8:25 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Oct 09, 2015 at 09:50:16PM -0700, Ben Zhang wrote:
->> snd_soc_codec_driver.set_pll is implemented to configure the FLL.
->> The codec internal SYSCLK can be from either the MCLK pin directly,
->> or the FLL. This is configured by snd_soc_codec_driver.set_pll.
->
-> Please don't post new patches in the middle of an existing series, and
-> please don't post partial patch serieses - both makit it hard to follow
-> what's going on and what the current version is.  As it is I'm a bit
-> confused as I have a v3 1/2 but no 2/2...
 
-Sorry about the confusion. I uploaded a complete v4 patch series which
-is the latest version. Won't post partial update again. Please ignore
-all the previous versions.
+--===============0115108589==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0cPfB1ccX8kkdppm"
+Content-Disposition: inline
 
-Ben
+
+--0cPfB1ccX8kkdppm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 19, 2015 at 11:11:19AM -0400, Alex Deucher wrote:
+
+> Ping?  Anyone had a chance to look over this latest revision?  I think
+> we've addressed all the outstanding comments.
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  Sending content
+free pings just adds to the mail volume (if they are seen at all) and if
+something has gone wrong you'll have to resend the patches anyway.
+
+--0cPfB1ccX8kkdppm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWJYddAAoJECTWi3JdVIfQNgcH/AlqVzlYlkubmf+kakgZCf04
+dzKvZF04MLLZHTZsyLvbQkRAWjevMoEXzPoOOXTk0wEbCW4J3b1JQ2UPsOL54eeO
+Hz8j7fji+kZQJBOgfcNPogBVdDrHD8ZwTtGnn5iew6ysPg3KmvKSMLsQgB42UZkg
+3/TY6SmT20uBIVkOh06/9mmZtyLrV7fjYFybVt4Afr1rv0BhaIR+v+a1vthXwljc
+LYJBwRM7Mq28XSgmthl+Uv0YNHEsRn61keNrIeiLcykhat1z+D1Gd2Ulr+0TpXGU
+fY6odgMnPJ/NT+6VUunzjJabtPPzd9sWZTC9ouO+bYRiFnFimHujfpVGPGSnb/g=
+=YtoL
+-----END PGP SIGNATURE-----
+
+--0cPfB1ccX8kkdppm--
+
+--===============0115108589==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
+cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============0115108589==--
