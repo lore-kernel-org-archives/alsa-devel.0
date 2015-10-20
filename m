@@ -1,21 +1,17 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
-	TDM (network) mode.
-Date: Tue, 20 Oct 2015 10:43:14 -0700
-Message-ID: <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH] ALSA: compress: Add
+ SND_AUDIOCODEC_BESPOKE
+Date: Tue, 20 Oct 2015 12:47:58 -0500
+Message-ID: <56267E4E.8010609@linux.intel.com>
+References: <1445348358-23306-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id B0AF9266610
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 19:43:33 +0200 (CEST)
-Received: by wicll6 with SMTP id ll6so56722139wic.0
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 10:43:33 -0700 (PDT)
-In-Reply-To: <5625EF02.30602@invoxia.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A8C6266610
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 19:48:01 +0200 (CEST)
+In-Reply-To: <1445348358-23306-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,130 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMjAsIDIwMTUgYXQgMTI6MzYgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEu
-Y29tCjxhcm5hdWQubW91aWNoZUBpbnZveGlhLmNvbT4gd3JvdGU6Cj4gSGVsbG8gQ2FsZWIsCj4K
-PiBJIGdvIHRocm91Z2ggYWxsIFtmZXddIHBhdGNocyB3ZSBhcHBseSB0byB0aGUgNC4wIGxpbnV4
-IHRyZWUgKGRpZG4ndCBqdW1wIHRvCj4gNC4yIHlldCkuCj4gVGhlcmUgaXMgb25lIGNvbmNlcm5p
-bmcgdGhlIERNQSBmaXJtd2FyZSB5b3UgY2FuIGZpbmQgaW4gdGhlIGZyZWVzY2FsZSB0cmVlLAo+
-IGF2YWlsYWJsZSBhdCBnaXQ6Ly9naXQuZnJlZXNjYWxlLmNvbS9pbXgvbGludXgtMi42LWlteC5n
-aXQKPgo+IGNvbW1pdCA2MTliZmNhODk5MDhiOTBjZDY2MDZlZDg5NGMxODBkZjBjNDgxNTA4Cj4g
-QXV0aG9yOiBTaGF3biBHdW8gPHNoYXduLmd1b0BmcmVlc2NhbGUuY29tPgo+IERhdGU6ICAgVHVl
-IEp1bCAxNiAyMjo1MzoxOCAyMDEzICswODAwCj4KPiAgICAgRU5HUjAwMjY5OTQ1OiBmaXJ3bWFy
-ZTogaW14OiBhZGQgaW14NnEgc2RtYSBzY3JpcHQKPgo+ICAgICBBZGQgaW14NnEgc2RtYSBzY3Jp
-cHQgd2hpY2ggd2lsbCBiZSB1c2VkIGJ5IGFsbCBpLk1YNiBzZXJpZXMuCj4KPiAgICAgU2lnbmVk
-LW9mZi1ieTogU2hhd24gR3VvIDxzaGF3bi5ndW9AZnJlZXNjYWxlLmNvbT4KPgo+ICBmaXJtd2Fy
-ZS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPiAgZmlybXdhcmUvaW14L3Nk
-bWEvc2RtYS1pbXg2cS5iaW4uaWhleCB8IDExNgo+ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
-PiAgMiBmaWxlcyBjaGFuZ2VkLCAxMTcgaW5zZXJ0aW9ucygrKQo+Cj4KPiBJIGRvbid0IGtub3cg
-aG93IDQuM3JjTiBjYXRjaCBzb21lIG9mIHRoZSBmcmVlc2NhbGUgcGF0Y2guIGJ1dCB5b3UgbWF5
-IGNoZWNrCj4gaWYgeW91IG5lZWQgdG8gYXBwbHkgdGhpcyBvbmUuCj4gSSBrbm93IHRoZXJlIGFy
-ZSBzb21lIG90aGVyIFNETUEgZmlybXdhcmUgYXZhaWxhYmxlIGFsbCBhcm91bmQgaW4gdGhpcwo+
-IGZyZWVzY2FsZSB0cmVlLiBJIGRpZG4ndCBmaW5kIHByb3BlciByZWxlYXNlIG5vdGUgb3IgZG9j
-dW1lbnRhdGlvbi4gTWF5IGJlCj4geW91IGNhbiB0ZXN0IHRoZW0gYWxzby4KPgo+IEFybmF1ZAoK
-SGkgQXJuYXVkLAogIE15IHJvb3QgZmlsZXN5c3RlbSBhbHJlYWR5IGhhZCB0aGF0IGZpcm13YXJl
-IGluIGl0ICh0aGUga2VybmVsCmRpZG4ndCBoYXZlIHRoZSBrZXJuZWwgcGF0Y2gsIGJ1dCB3aGVu
-IEkgYXBwbGllZCB0aGF0IHBhdGNoLCB0aGUKZ2VuZXJhdGVkIHNkbWEgc2NyaXB0IHdhcyBpZGVu
-dGljYWwuCgpTbywgdW5mb3J0dW5hdGVseSwgdGhhdCdzIG5vdCB0aGUgcHJvYmxlbSB3aXRoIHRo
-ZSBjaGFubmVsIHNsaXBwaW5nLgpBbnkgb3RoZXIgdGhvdWdodHMgb24gd2h5IHRoZSBjaGFubmVs
-IHdvdWxkIHNsaXA/ICBPciBwb2ludGVycyBvbiBob3cKdG8gZGlhZ25vc2U/ICBJIGhhdmUgYW4g
-b3NjaWxsb3Njb3BlICYga25vdyBob3cgdG8gdXNlIGl0IDotKSAgQWxzbywgSQpjYW4gZmxpcCBh
-IEdQSU8gdG8gd2F0Y2ggZm9yIHRpbWluZyBvZiBpbnRlcnJ1cHRzLCBldGMgKGFsdGhvdWdoIEkK
-aGF2ZW4ndCBkb25lIHRoYXQgeWV0KS4KCgpUaGFua3MsCiAgLUNhbGViCgoKCgo+Cj4KPiBMZSAx
-OS8xMC8yMDE1IDE3OjU1LCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4+Cj4+IEhlbGxvIEFybmF1
-ZCwgYWxsLAo+Pgo+PiBJJ20gdHJ5aW5nIHRvIGdldCB0aGUgaS5NWDYgU1NJIHdvcmtpbmcgaW4g
-MTYtY2hhbm5lbCBURE0gbW9kZS4gIEZZSSwgSSdtCj4+IHdvcmtpbmcgd2l0aCB0aGUgc3RvY2sg
-NC4zIGtlcm5lbCBhdCBodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXguCj4+Cj4+IFdo
-ZW4gSSBhcHBseSB0aGUgcGF0Y2ggYmVsb3csIHRoZSBTU0kgZG9lcyBhbGwgY29uZmlndXJlIHBy
-b3Blcmx5IGFuZCBldmVuCj4+IHN0YXJ0cyBzdHJlYW1pbmcgcHJvcGVybHkgd2l0aCBhbGwgdGhl
-IGJpdHMgaW4gdGhlIHJpZ2h0IHBsYWNlIG9uIHRoZSBTU0kKPj4gcGlucy4gIEhvd2V2ZXIsIGdp
-dmVuIGEgbGl0dGxlIGJpdCBvZiB0aW1lIGFuZC9vciBJTyB0byB0aGUgU0QgY2FyZCwgdGhlCj4+
-IGJpdC1zdHJlYW0gc2xpcHMgYnkgMSBzbG90LCBjYXVzaW5nIGFsbCBvZiB0aGUgY2hhbm5lbHMg
-dG8gYmUgbWlzYWxpZ25lZC4KPj4KPj4gTXkgY2hhbmdlcyB0byB0aGUgU1NJIGRyaXZlciBhcmUg
-dmVyeSBtaW5pbWFsIChzaG93biBiZWxvdyksIGFuZCBhbW91bnQgdG8KPj4gZm9yY2luZyBpdCBp
-bnRvIG5ldHdvcmsgKFRETSkgbW9kZSwgYW5kIGNoYW5naW5nIHRoZSBtYXhpbXVtIGNoYW5uZWxz
-LCBhbmQKPj4gc2V0dGluZyB0aGUgU1RDQ1IgREMgbWFzay4KPj4KPj4gVGhlcmUgaXMgbm8gaW5k
-aWNhdGlvbiBmcm9tIHVzZXIgc3BhY2UgdGhhdCBhbnl0aGluZyBoYXMgc2xpcHBlZCwgc28gdGhl
-Cj4+IGRhdGEgc3RyZWFtIGp1c3QgY29udGludWVzIG9uIHNoaWZ0ZWQgYnkgMSBzbG90Lgo+Pgo+
-PiBZb3UgKEFybmF1ZCkgbWVudGlvbmVkIGluIGEgcHJldmlvdXMgdGhyZWFkICgiTXVsdGlwbGUg
-Y29kZWNzIG9uIG9uZSBzb3VuZAo+PiBjYXJkIGZvciBtdWx0aS1jaGFubmVsIHNvdW5kIGNhcmQi
-KSwgdGhhdCBJIHNob3VsZCBqdXN0IGhhdmUgdG8gc2V0Cj4+IGNoYW5uZWxzX21heCAoYW5kIHBy
-ZXN1bWFibHkgdGhlIG90aGVyIGNoYW5nZXMgSSBtZW50aW9uZWQpLCBhbmQgaXQnbGwgd29yawo+
-PiBtb3N0bHkuIEhvd2V2ZXIsIGl0J3MgdmVyeSB1bnJlbGlhYmxlIGF0IHRoZSBtb21lbnQuCj4+
-Cj4+IEFueSB0aG91Z2h0cyB0byBob3cgSSBjYW4gZGlhZ25vc2UgdGhpcyBwcm9ibGVtIHdvdWxk
-IGJlIGdyZWF0bHkKPj4gYXBwcmVjaWF0ZWQhCj4+Cj4+IFNvLCB3aGF0IGhhcHBlbnMgaXMgdGhp
-czoKPj4KPj4gVGhlIFNTSSBTdGFydHMgc2VuZGluZyBkYXRhIGxpa2UgdGhpczoKPj4gU0xPVCAw
-ICAxICAyICAzICA0ICA1ICA2ICA3ICA4ICA5ICAxMCAxMSAxMiAxMyAxNCAxNQo+PiBEQVRBIDAg
-IDEgIDIgIDMgIDQgIDUgIDYgIDcgIDggIDkgIDEwIDExIDEyIDEzIDE0IDE1Cj4+Cj4+IEJ1dCB0
-aGVuIGFmdGVyIHRpbWUsIHNvbWV0aGluZyBzbGlwcyBhbmQgd2l0aG91dCB3YXJuaW5nIGl0IGdv
-ZXMgdG86Cj4+IFNMT1QgMCAgMSAgMiAgMyAgNCAgNSAgNiAgNyAgOCAgOSAgMTAgMTEgMTIgMTMg
-MTQgMTUKPj4gREFUQSAxNSAwICAxICAyICAzICA0ICA1ICA2ICA3ICA4ICA5ICAxMCAxMSAxMiAx
-MyAxNAo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9mc2xfc3NpLmMgYi9zb3VuZC9z
-b2MvZnNsL2ZzbF9zc2kuYwo+PiBpbmRleCAzN2M1Y2Q0Li43Mzc3OGMyIDEwMDY0NAo+PiAtLS0g
-YS9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYwo+PiArKysgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zc2ku
-Ywo+PiBAQCAtNzQ5LDcgKzc0OSwxMCBAQCBzdGF0aWMgaW50IGZzbF9zc2lfaHdfcGFyYW1zKHN0
-cnVjdCBzbmRfcGNtX3N1YnN0cmVhbQo+PiAqc3Vic3RyZWFtLAo+PiAgICAgICAgICAgICAgICAg
-IENDU1JfU1NJX1NDUl9ORVQgfCBDQ1NSX1NTSV9TQ1JfSTJTX01PREVfTUFTSywKPj4gICAgICAg
-ICAgICAgICAgICBjaGFubmVscyA9PSAxID8gMCA6IGkyc21vZGUpOwo+PiAgICAgIH0KPj4gLQo+
-PiArICAgIHNzaV9wcml2YXRlLT5pMnNfbW9kZSA9IENDU1JfU1NJX1NDUl9JMlNfTU9ERV9OT1JN
-QUwgfAo+PiBDQ1NSX1NTSV9TQ1JfTkVUOwo+PiArICAgIHJlZ21hcF91cGRhdGVfYml0cyhyZWdz
-LCBDQ1NSX1NTSV9TQ1IsCj4+ICsgICAgICAgICAgICAgICBDQ1NSX1NTSV9TQ1JfTkVUIHwgQ0NT
-Ul9TU0lfU0NSX0kyU19NT0RFX01BU0ssCj4+ICsgICAgICAgICAgICAgICBzc2lfcHJpdmF0ZS0+
-aTJzX21vZGUpOwo+PiAgICAgIC8qCj4+ICAgICAgICogRklYTUU6IFRoZSBkb2N1bWVudGF0aW9u
-IHNheXMgdGhhdCBTeENDUltXTF0gc2hvdWxkIG5vdCBiZQo+PiAgICAgICAqIG1vZGlmaWVkIHdo
-aWxlIHRoZSBTU0kgaXMgZW5hYmxlZC4gIFRoZSBvbmx5IHRpbWUgdGhpcyBjYW4KPj4gQEAgLTg2
-Myw2ICs4NjYsMTUgQEAgc3RhdGljIGludCBfZnNsX3NzaV9zZXRfZGFpX2ZtdChzdHJ1Y3QgZGV2
-aWNlICpkZXYsCj4+ICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+PiAgICAgIH0KPj4gICAgICBz
-Y3IgfD0gc3NpX3ByaXZhdGUtPmkyc19tb2RlOwo+PiArICAgIC8vIFNldCB0byAxNiBzbG90cy9m
-cmFtZQo+PiArICAgIHJlZ21hcF91cGRhdGVfYml0cyhyZWdzLCBDQ1NSX1NTSV9TVENDUiwKPj4g
-KyAgICAgICAgICAgICAgIENDU1JfU1NJX1N4Q0NSX0RDX01BU0ssCj4+ICsgICAgICAgICAgICAg
-ICBDQ1NSX1NTSV9TeENDUl9EQygxNikpOwo+PiArCj4+ICsgICAgcmVnbWFwX3VwZGF0ZV9iaXRz
-KHJlZ3MsIENDU1JfU1NJX1NSQ0NSLAo+PiArICAgICAgICAgICAgICAgQ0NTUl9TU0lfU3hDQ1Jf
-RENfTUFTSywKPj4gKyAgICAgICAgICAgICAgIENDU1JfU1NJX1N4Q0NSX0RDKDE2KSk7Cj4+ICsK
-Pj4KPj4gICAgICAvKiBEQUkgY2xvY2sgaW52ZXJzaW9uICovCj4+ICAgICAgc3dpdGNoIChmbXQg
-JiBTTkRfU09DX0RBSUZNVF9JTlZfTUFTSykgewo+PiBAQCAtMTA4NCwxNCArMTA5OSwxNCBAQCBz
-dGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlcgo+PiBmc2xfc3NpX2RhaV90ZW1wbGF0ZSA9
-IHsKPj4gICAgICAucGxheWJhY2sgPSB7Cj4+ICAgICAgICAgIC5zdHJlYW1fbmFtZSA9ICJDUFUt
-UGxheWJhY2siLAo+PiAgICAgICAgICAuY2hhbm5lbHNfbWluID0gMSwKPj4gLSAgICAgICAgLmNo
-YW5uZWxzX21heCA9IDIsCj4+ICsgICAgICAgIC5jaGFubmVsc19tYXggPSAxNiwKPj4gICAgICAg
-ICAgLnJhdGVzID0gRlNMU1NJX0kyU19SQVRFUywKPj4gICAgICAgICAgLmZvcm1hdHMgPSBGU0xT
-U0lfSTJTX0ZPUk1BVFMsCj4+ICAgICAgfSwKPj4gICAgICAuY2FwdHVyZSA9IHsKPj4gICAgICAg
-ICAgLnN0cmVhbV9uYW1lID0gIkNQVS1DYXB0dXJlIiwKPj4gICAgICAgICAgLmNoYW5uZWxzX21p
-biA9IDEsCj4+IC0gICAgICAgIC5jaGFubmVsc19tYXggPSAyLAo+PiArICAgICAgICAuY2hhbm5l
-bHNfbWF4ID0gMTYsCj4+ICAgICAgICAgIC5yYXRlcyA9IEZTTFNTSV9JMlNfUkFURVMsCj4+ICAg
-ICAgICAgIC5mb3JtYXRzID0gRlNMU1NJX0kyU19GT1JNQVRTLAo+PiAgICAgIH0sCj4+Cj4+IEFu
-b3RoZXIgdGhpbmcgSSBoYXZlIHRyaWVkIGlzIGNoYW5naW5nIHRoZSB3YXRlcm1hcmsgbGV2ZWwg
-Zm9yIHRoZSBmaWZvIHRvCj4+IGdpdmUgdGhlIERNQSBpbnRlcnJ1cHQgc29tZSBleHRyYSB0aW1l
-LiBUaGUgcHJvYmxlbSBzdGlsbCBoYXBwZW5zLCBidXQgc2VlbXMKPj4gdG8gYmUgYSBiaXQgYmV0
-dGVyLgo+Pgo+PiBUaGUgZmlmbyB3YXRlcm1hcmsgY2hhbmdlIGlzIHRoaXM6Cj4+IGRpZmYgLS1n
-aXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NzaS5jCj4+
-IGluZGV4IDczNzc4YzIuLjdjMmU0YjAgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9mc2wvZnNs
-X3NzaS5jCj4+ICsrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NzaS5jCj4+IEBAIC01NCw2ICs1NCw4
-IEBACj4+ICAjaW5jbHVkZSAiZnNsX3NzaS5oIgo+PiAgI2luY2x1ZGUgImlteC1wY20uaCIKPj4K
-Pj4gKyNkZWZpbmUgV0FURVJNQVJLIDgKPj4gKwo+PiAgLyoqCj4+ICAgKiBGU0xTU0lfSTJTX1JB
-VEVTOiBzYW1wbGUgcmF0ZXMgc3VwcG9ydGVkIGJ5IHRoZSBJMlMKPj4gICAqCj4+IEBAIC05NDMs
-NyArOTUwLDcgQEAgc3RhdGljIGludCBfZnNsX3NzaV9zZXRfZGFpX2ZtdChzdHJ1Y3QgZGV2aWNl
-ICpkZXYsCj4+ICAgICAgICogc2l6ZS4KPj4gICAgICAgKi8KPj4gICAgICBpZiAoc3NpX3ByaXZh
-dGUtPnVzZV9kbWEpCj4+IC0gICAgICAgIHdtID0gc3NpX3ByaXZhdGUtPmZpZm9fZGVwdGggLSAy
-Owo+PiArICAgICAgICB3bSA9IHNzaV9wcml2YXRlLT5maWZvX2RlcHRoIC0gV0FURVJNQVJLOwo+
-PiAgICAgIGVsc2UKPj4gICAgICAgICAgd20gPSBzc2lfcHJpdmF0ZS0+Zmlmb19kZXB0aDsKPj4K
-Pj4gQEAgLTEyNjAsOCArMTI2Nyw4IEBAIHN0YXRpYyBpbnQgZnNsX3NzaV9pbXhfcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZQo+PiAqcGRldiwKPj4gICAgICAgKiBXZSBoYXZlIGJ1cnN0c2l6
-ZSBiZSAiZmlmb19kZXB0aCAtIDIiIHRvIG1hdGNoIHRoZSBTU0kKPj4gICAgICAgKiB3YXRlcm1h
-cmsgc2V0dGluZyBpbiBmc2xfc3NpX3N0YXJ0dXAoKS4KPj4gICAgICAgKi8KPj4gLSAgICBzc2lf
-cHJpdmF0ZS0+ZG1hX3BhcmFtc190eC5tYXhidXJzdCA9IHNzaV9wcml2YXRlLT5maWZvX2RlcHRo
-IC0gMjsKPj4gLSAgICBzc2lfcHJpdmF0ZS0+ZG1hX3BhcmFtc19yeC5tYXhidXJzdCA9IHNzaV9w
-cml2YXRlLT5maWZvX2RlcHRoIC0gMjsKPj4gKyAgICBzc2lfcHJpdmF0ZS0+ZG1hX3BhcmFtc190
-eC5tYXhidXJzdCA9IHNzaV9wcml2YXRlLT5maWZvX2RlcHRoIC0KPj4gV0FURVJNQVJLOwo+PiAr
-ICAgIHNzaV9wcml2YXRlLT5kbWFfcGFyYW1zX3J4Lm1heGJ1cnN0ID0gc3NpX3ByaXZhdGUtPmZp
-Zm9fZGVwdGggLQo+PiBXQVRFUk1BUks7Cj4+ICAgICAgc3NpX3ByaXZhdGUtPmRtYV9wYXJhbXNf
-dHguYWRkciA9IHNzaV9wcml2YXRlLT5zc2lfcGh5cyArCj4+IENDU1JfU1NJX1NUWDA7Cj4+ICAg
-ICAgc3NpX3ByaXZhdGUtPmRtYV9wYXJhbXNfcnguYWRkciA9IHNzaV9wcml2YXRlLT5zc2lfcGh5
-cyArCj4+IENDU1JfU1NJX1NSWDA7Cj4+Cj4+Cj4+IFRoYW5rcywKPj4gICAtQ2FsZWIKPj4KPgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 10/20/15 8:39 AM, Charles Keepax wrote:
+> When working with the compressed framework occasionally vendors will
+> use esoteric internal audio formats. For such formats it doesn't really
+> make sense to add an new define to the kernel as their use is not
+> sufficiently general.
+>
+> This patch adds a new define SND_AUDIOCODEC_BESPOKE that vendors can use
+> in such situations.
+>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>   include/uapi/sound/compress_params.h |    3 ++-
+>   1 files changed, 2 insertions(+), 1 deletions(-)
+>
+> diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
+> index d9bd9ca..e284380 100644
+> --- a/include/uapi/sound/compress_params.h
+> +++ b/include/uapi/sound/compress_params.h
+> @@ -73,7 +73,8 @@
+>   #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
+>   #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
+>   #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
+> -#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_G729
+> +#define SND_AUDIOCODEC_BESPOKE               ((__u32) 0x0000000E)
+
+No real objections from me, this is better than overloading PCM for this 
+purpose...
+Since this is clearly an escape mechanism for a non-standard codec, 
+maybe we should use an ID that's not in sequence, eg 0x00001000.
+If you need to set parameters maybe we should also change the definition 
+of snd_enc_generic so that the reserved fields can be used for custom 
+parameters, or document that their use is permitted for this sort of ID.
+
+> +#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_BESPOKE
+>
+>   /*
+>    * Profile and modes are listed with bit masks. This allows for a
+>
