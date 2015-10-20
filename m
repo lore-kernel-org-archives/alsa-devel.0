@@ -1,75 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/8] Add ASoC support for AMD APUs [v4]
-Date: Tue, 20 Oct 2015 01:14:22 +0100
-Message-ID: <20151020001422.GV32054@sirena.org.uk>
-References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
- <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
+Subject: Re: [RFC 0/4] ASoC: Add HDA HDMI codec driver
+Date: Tue, 20 Oct 2015 01:15:36 +0100
+Message-ID: <20151020001536.GW32054@sirena.org.uk>
+References: <1444393729-19745-1-git-send-email-vinod.koul@intel.com>
+ <1444741706.2926.16.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0115108589=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CADnq5_OwjyjL+Xn3-f==Z3qPCD03kM-+8f5fwvKxvwRwXyyMJQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+Content-Type: multipart/mixed; boundary="===============7801734144633132305=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0540B2652C5
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 02:15:50 +0200 (CEST)
+In-Reply-To: <1444741706.2926.16.camel@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Patches Audio <patches.audio@intel.com>, "arnaud.pouliquen@st.com" <arnaud.pouliquen@st.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "ykk@rock-chips.com" <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0115108589==
+--===============7801734144633132305==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0cPfB1ccX8kkdppm"
+	protocol="application/pgp-signature"; boundary="kZn00QyXxdr8qbeL"
 Content-Disposition: inline
 
 
---0cPfB1ccX8kkdppm
+--kZn00QyXxdr8qbeL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Oct 19, 2015 at 11:11:19AM -0400, Alex Deucher wrote:
+On Tue, Oct 13, 2015 at 01:08:27PM +0000, Koul, Vinod wrote:
 
-> Ping?  Anyone had a chance to look over this latest revision?  I think
-> we've addressed all the outstanding comments.
+> Apart from comments from Russell I didn't get any other comments.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  Sending content
-free pings just adds to the mail volume (if they are seen at all) and if
-something has gone wrong you'll have to resend the patches anyway.
+There were mails from the LKP bot saying this didn't build...
 
---0cPfB1ccX8kkdppm
+--kZn00QyXxdr8qbeL
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWJYddAAoJECTWi3JdVIfQNgcH/AlqVzlYlkubmf+kakgZCf04
-dzKvZF04MLLZHTZsyLvbQkRAWjevMoEXzPoOOXTk0wEbCW4J3b1JQ2UPsOL54eeO
-Hz8j7fji+kZQJBOgfcNPogBVdDrHD8ZwTtGnn5iew6ysPg3KmvKSMLsQgB42UZkg
-3/TY6SmT20uBIVkOh06/9mmZtyLrV7fjYFybVt4Afr1rv0BhaIR+v+a1vthXwljc
-LYJBwRM7Mq28XSgmthl+Uv0YNHEsRn61keNrIeiLcykhat1z+D1Gd2Ulr+0TpXGU
-fY6odgMnPJ/NT+6VUunzjJabtPPzd9sWZTC9ouO+bYRiFnFimHujfpVGPGSnb/g=
-=YtoL
+iQEcBAEBCAAGBQJWJYenAAoJECTWi3JdVIfQ2cEH/2wZhIZBZYWlpeLv6Stj/lih
+yBqziIPYnF375BWCzHQgt14N/b6dimMCzoLKNucWSwPy60KvQ8YifTZD2uOtXwdJ
+FkorXzQOp+bUalx+n3T07jD7HgB9Ubd0Ajb6Iz0+kW1awebDQdWvFWzJS39qHRpI
+vXoEIa5y8rqtcI/z4TzgUSD2/MvHq2x+w2CgkWM1Nm/a6W+lqFc7bAIMPaG/jifQ
+tORT/sNbB4Rt8FE2Dcif9cbla5za5iuZplwzq+LIw1P30CpOYRmpyjzRSfmXCzCR
+bTICAcl+knMgncTskeWS1B+a1ReI+IrYS/ouUPeuOTdXdB0Yt6+8JeLboWVo9EU=
+=NNj8
 -----END PGP SIGNATURE-----
 
---0cPfB1ccX8kkdppm--
+--kZn00QyXxdr8qbeL--
 
---===============0115108589==
-Content-Type: text/plain; charset="utf-8"
+--===============7801734144633132305==
+Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
 
---===============0115108589==--
+--===============7801734144633132305==--
