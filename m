@@ -1,91 +1,70 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: BAT: why MAX_NUMBER_OF_CHANNELS and CHANNEL_MAX
-	separate?
-Date: Tue, 20 Oct 2015 11:41:18 -0700
-Message-ID: <CAG5mAdzGbz97F_9giN8nYxU-8HVLV3ceaXvnm6NFv_MmYRiEwg@mail.gmail.com>
-References: <CAG5mAdz0XcEwqJtCKps+=WBtu5A6SnkCkL889RpXHWhLvF4OjA@mail.gmail.com>
- <1445355673.7033.51.camel@loki> <s5hwpuhlewl.wl-tiwai@suse.de>
- <CAG5mAdwK9c8xBVhDFjn4mGD3KnaER1saxPSUe4qmz5xTr=RdmA@mail.gmail.com>
- <s5hoaft1kt5.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C62F2604C3
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 20:41:38 +0200 (CEST)
-Received: by wijp11 with SMTP id p11so61161041wij.0
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 11:41:38 -0700 (PDT)
-In-Reply-To: <s5hoaft1kt5.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
- Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Gautier,
- Bernard" <bernard.gautier@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm8904: Correct number of EQ registers" to the asoc tree
+Date: Tue, 20 Oct 2015 20:32:25 +0100
+Message-ID: <E1Zoce1-0003bh-UV@debutante>
+References: <1445333158-18580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1445333158-18580-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: stable-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2015 at 11:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 20 Oct 2015 19:39:27 +0200,
-> Caleb Crome wrote:
->>
->> On Tue, Oct 20, 2015 at 8:48 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Tue, 20 Oct 2015 17:41:13 +0200,
->> > Liam Girdwood wrote:
->> >>
->> >> On Tue, 2015-10-20 at 08:36 -0700, Caleb Crome wrote:
->> >> > Hi,
->> >> >    I'm starting to bring up BAT on my board to see if it's going to work for me.
->> >> >
->> >> > I'm starting from https://github.com/hanlui/bat, is that the correct
->> >> > place to start from?
->> >>
->> >> I think that's Han's old git repo. He has a dev branch here :-
->> >>
->> >> https://github.com/01org/bat
->> >>
->> >> and bat support is now also in alsa-utils git too.
->> >
->> > Right, please follow alsa-utils git repo for avoiding confusion.
->> >
->> >
->> > Takashi
->> Wait, should I use
->>   https://github.com/01org/bat
->> or
->>  git://git.alsa-project.org/alsa-utils.git
->>
->> I'm trying to compile git://git.alsa-project.org/alsa-utils.git, but
->> having a terrible time getting everything to compile.
->>
->> After running the ./gitcompile script, I get a few warning/error
->> messages but it does finally generate a ./configure script.  However,
->> ./configure fails with the following:
->>
->> # ./configure
->> ...
->> checking for pthread_create in -lpthread... yes
->> checking for librt... checking for clock_gettime in -lrt... yes
->> checking for xmlto... yes
->> ./configure: line 7984: udev: command not found
->> checking for ANSI C header files... yes
->> ./configure: line 8119: syntax error near unexpected token `NCURSESW,'
->> ./configure: line 8119: `        PKG_CHECK_MODULES(NCURSESW, ncursesw,'
->
-> Did you install pkgconfig (or pkg-config)?  It's almost a must for
-> building the stuff with GNU auto-tools nowadays.
->
->
-> Takashi
+The patch
 
-Et Voila!  That works.  Thanks Takashi!
+   ASoC: wm8904: Correct number of EQ registers
 
--Caleb
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 97aff2c03a1e4d343266adadb52313613efb027f Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 20 Oct 2015 10:25:58 +0100
+Subject: [PATCH] ASoC: wm8904: Correct number of EQ registers
+
+There are 24 EQ registers not 25, I suspect this bug came about because
+the registers start at EQ1 not zero. The bug is relatively harmless as
+the extra register written is an unused one.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ include/sound/wm8904.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/wm8904.h b/include/sound/wm8904.h
+index 898be3a8db9a..6d8f8fba3341 100644
+--- a/include/sound/wm8904.h
++++ b/include/sound/wm8904.h
+@@ -119,7 +119,7 @@
+ #define WM8904_MIC_REGS  2
+ #define WM8904_GPIO_REGS 4
+ #define WM8904_DRC_REGS  4
+-#define WM8904_EQ_REGS   25
++#define WM8904_EQ_REGS   24
+ 
+ /**
+  * DRC configurations are specified with a label and a set of register
+-- 
+2.6.1
