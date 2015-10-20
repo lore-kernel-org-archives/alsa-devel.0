@@ -1,30 +1,40 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: WM8962: mark cache_dirty flag after software
- reset in pm_resume
-Date: Tue, 20 Oct 2015 08:55:19 +0100
-Message-ID: <20151020075519.GA10520@ck-lbox>
-References: <1445309232-24094-1-git-send-email-jiada_wang@mentor.com>
- <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
+From: han.lu@intel.com
+Subject: [PATCH V4 0/4] Some fixes against previous comments
+Date: Tue, 20 Oct 2015 16:45:44 +0800
+Message-ID: <cover.1445330404.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2644026621A
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 10:48:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, liam.r.girdwood@intel.com, bernard.gautier@intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2015 at 11:47:11AM +0900, Jiada Wang wrote:
-> By doing software reset of wm8962 in pm_resume, all registers which
-> have already been set will be reset to default value without regmap
-> interface be involved, thus driver need to mark cache_dirty flag,
-> to let regcache can be updated by regcache_sync().
-> 
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
+From: "Lu, Han" <han.lu@intel.com>
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Some fixes and adjustments against previous comments of Takashi
 
-Thanks,
-Charles
+Lu, Han (4):
+  BAT: Remove redundant message strings
+  BAT: Use colon instead of comma for separation
+  BAT: Change comments and interface of usage()
+  BAT: Use dynamic temp file
+
+ bat/bat.c    | 106 +++++++++++++++++++++++++++++++----------------------------
+ bat/common.h |   2 +-
+ 2 files changed, 57 insertions(+), 51 deletions(-)
+
+-- 
+1.9.1
