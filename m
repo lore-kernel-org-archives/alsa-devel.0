@@ -1,23 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: HDMI codec, way forward?
-Date: Tue, 20 Oct 2015 09:08:09 +0530
-Message-ID: <20151020033809.GZ27370@localhost>
-References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
- <20151018150834.GP27370@localhost>
- <20151018152048.GT32532@n2100.arm.linux.org.uk>
- <20151018161329.GV27370@localhost>
- <20151018171641.GV32532@n2100.arm.linux.org.uk>
- <s5hwpuj2dwh.wl-tiwai@suse.de>
+Subject: Re: [PATCH 0/6] HD-audio modalias support patchset
+Date: Tue, 20 Oct 2015 11:46:40 +0530
+Message-ID: <20151020061640.GA27370@localhost>
+References: <1445012458-3337-1-git-send-email-tiwai@suse.de>
+ <20151018151154.GQ27370@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B6AD8265E10
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 05:34:59 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E630E265FAE
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 08:13:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hwpuj2dwh.wl-tiwai@suse.de>
+In-Reply-To: <20151018151154.GQ27370@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, David Airlie <airlied@linux.ie>, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jeeja Kp <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Subhransu S Prusty <subhransu.s.prusty@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 19, 2015 at 03:20:30PM +0200, Takashi Iwai wrote:
-> On Sun, 18 Oct 2015 19:16:42 +0200,
-> Russell King - ARM Linux wrote:
+On Sun, Oct 18, 2015 at 08:41:54PM +0530, Vinod Koul wrote:
+> On Fri, Oct 16, 2015 at 06:20:52PM +0200, Takashi Iwai wrote:
+> > Hi,
 > > 
-> > On Sun, Oct 18, 2015 at 09:43:29PM +0530, Vinod Koul wrote:
-> > > Right but can I ask why you didn't try making video as component and then
-> > > CEC, audio and others receive the notification over this.
+> > this is a patchset to add the support of automatic modalias creation
+> > for HD-audio codec drivers like other standard drivers.  Currently,
+> > the HDA codec driver has put module alias manually due to ugly
+> > historical reasons.  This patch finally moves to the saner way.
 > > 
-> > Okay, I think I see what you're getting at.  No, I don't want to tie
-> > this stuff into the component helpers because that's the wrong approach.
+> > Also it adds the udev modalias support so that it can be autoloaded in
+> > udev.
 > > 
-> > The component helper is purely about combining several struct devices
-> > into one larger component for a subsystem which deals with card-level
-> > components.  It's not about cross-subsystem stuff.
+> > The patchset was initiated by Intel people for SKL ASoC drivers.  Now
+> > I brushed up and made it working for legacy drivers.
 > > 
-> > The problem with using it for cross-subsystem stuff is that it becomes
-> > too tightly bound together: why should the graphics side get torn down
-> > if you unload the audio or CEC driver?
-> > 
-> > Audio and CEC are rather optional for HDMI - HDMI can work without audio
-> > and CEC being present.  However, audio can't be conveyed across the link
-> > without the video side being configured.  So, it makes sense to allow
-> > the CEC and audio parts to be loaded separately (possibly as modules)
-> > while having the video parts built-in to the kernel - especially if you
-> > want to use the HDMI output as the console.
-> > 
-> > Binding CEC and audio into the component helper alongside the video part
-> > will mean that nothing will come up until all the components are present,
-> > and everything will be torn down when any one of those components are
-> > removed.  Clearly, that's undesirable.
+> > The current patchset is found in topic/hda-modalias branch of sound
+> > git tree, too.
 > 
-> Currently i915/audio component works as you described.  The audio is
-> optional and HDMI graphics works without audio, while HDMI HD-audio
-> mandates i915 graphics.
+> Thanks for posting this,
+> 
+> This series looks great to me. Me and Subhransu will test it out in next day
+> or so and will get back with results on ASoC side :)
 
-Right, but we also add additional interface on top of this to allow things
-like ensuring display is on when audio wants to run and now notification for
-events.
+Hi Takashi,
 
-I don't see a reason why this can be used as single interface to bind as well
-as talk to display from various components, unless I missed obvious which
-prevent us from doing this in non i915 cases...
+For the whole series
+
+Reviewed-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Subhransu S Prusty <subhransu.s.prusty@intel.com>
+
+Also please apply below patch which adds HDA_CODEC_EXT_ENTRY. We have tested
+HDMI patches with this
+
+-----------------><8----------------><8----------------
+
+>From 79f4fb6600810103737939c186f928c74ed058fe Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 19 Oct 2015 16:58:46 +0530
+Subject: [PATCH] ALSA: hdac: Add macro for hda ext devices entry
+
+With the new modalias infrastructure support added for hda, create a macro
+for ext devices similar to legacy to add the device entry.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio_ext.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 719edff2a77b..425af0674557 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -40,6 +40,13 @@ void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus);
+ #define hbus_to_ebus(_bus) \
+ 	container_of(_bus, struct hdac_ext_bus, bus)
+ 
++#define HDA_CODEC_REV_EXT_ENTRY(_vid, _rev, _name, drv_data) \
++	{ .vendor_id = (_vid), .rev_id = (_rev), .name = (_name), \
++	  .api_version = HDA_DEV_ASOC, \
++	  .driver_data = (unsigned long)(drv_data) }
++#define HDA_CODEC_EXT_ENTRY(_vid, _revid, _name, _drv_data) \
++	HDA_CODEC_REV_EXT_ENTRY(_vid, _revid, _name, _drv_data)
++
+ int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
+ void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+ void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
+
 
 -- 
 ~Vinod
