@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: firewire-tascam: remove buffer
-	initialization in driver side
-Date: Tue, 20 Oct 2015 23:46:55 +0900
-Message-ID: <1445352419-21827-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: firewire-tascam: clear extra MIDI
+	bytes in an asynchronous transaction
+Date: Tue, 20 Oct 2015 23:46:59 +0900
+Message-ID: <1445352419-21827-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1445352419-21827-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 921D92665E2
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:47:04 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F0BC22665E5
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:47:05 +0200 (CEST)
 In-Reply-To: <1445352419-21827-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,27 +25,72 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The given buffer to callback function is cleared in caller side.
+When MIDI buffer stores two or more MIDI messages, TASCAM driver
+transfers asynchronous transactions including one MIDI message and
+extra bytes from second MIDI message.
 
-This commit removes buffer initialization in callee side.
+This commit fixes this bug by clearing needless bytes in the buffer. The
+consumed bytes are already calculated correctly, thus the sequence of
+transactions is already correct.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-transaction.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/firewire/tascam/tascam-transaction.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index d4f64ae..370f932 100644
+index 99098aa..904ce03 100644
 --- a/sound/firewire/tascam/tascam-transaction.c
 +++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -67,8 +67,6 @@ static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
- 	u8 status;
- 	int consume;
+@@ -93,8 +93,10 @@ static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
+ 			*label = (port << 4) | 0x04;
+ 		/* We need to fill whole 3 bytes. Go to next change. */
+ 		} else {
+-			consume = 0;
++			return 0;
+ 		}
++
++		len = consume;
+ 	} else {
+ 		/* The beginning of exclusives. */
+ 		if (msg[0] == 0xf0) {
+@@ -115,24 +117,30 @@ static int fill_message(struct snd_rawmidi_substream *substream, u8 *buf)
  
--	buf[0] = buf[1] = buf[2] = buf[3] = 0x00;
+ 			/* On running-status. */
+ 			if ((msg[0] & 0x80) != 0x80) {
++				/* Enough MIDI bytes were not retrieved. */
++				if (consume < len - 1)
++					return 0;
++				consume = len - 1;
++
+ 				msg[2] = msg[1];
+ 				msg[1] = msg[0];
+ 				msg[0] = tscm->running_status[port];
+-				consume--;
+ 			} else {
++				/* Enough MIDI bytes were not retrieved. */
++				if (consume < len)
++					return 0;
++				consume = len;
++
+ 				tscm->running_status[port] = msg[0];
+ 			}
 -
- 	len = snd_rawmidi_transmit_peek(substream, buf + 1, 3);
- 	if (len == 0)
- 		return 0;
+-			/* Confirm length. */
+-			if (consume < len)
+-				return 0;
+-			if (consume > len)
+-				consume = len;
+ 		}
+ 
+ 		*label = (port << 4) | (msg[0] >> 4);
+ 	}
+ 
++	if (len > 0 && len < 3)
++		memset(msg + len, 0, 3 - len);
++
+ 	return consume;
+ }
+ 
 -- 
 2.1.4
