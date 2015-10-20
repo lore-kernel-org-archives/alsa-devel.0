@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/3] ASoC: dapm: add PGA kcontrol,
-	dai_link enhancement &
-Date: Tue, 20 Oct 2015 21:08:49 +0530
-Message-ID: <1445355532-28310-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/3] ASoC: dapm: Add
+	snd_soc_dapm_kcontrol_widget()
+Date: Tue, 20 Oct 2015 21:08:52 +0530
+Message-ID: <1445355532-28310-4-git-send-email-vinod.koul@intel.com>
+References: <1445355532-28310-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 06083266594
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 17:36:02 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 393812665CC
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 17:36:07 +0200 (CEST)
+In-Reply-To: <1445355532-28310-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,25 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds few small patches in DAPM which we require for Intel DSPs
-Firsts adds support for having kcontrol on PGAs. This is required for
-modules which are modelled as PGA but cna be user configurable. Next is new
-callback on snd_soc_dai_link_events(). Lastly a macro to return widget
-associated with a kcontrol
+From: Mythri P K <mythri.p.k@intel.com>
 
-Jeeja KP (2):
-  ASoC: dapm: Add kcontrol support for PGAs
-  ASoC: dapm: Add startup & shutdown for dai_links
+Given a kcontrol, we may want to access the parent widget
+and it's associated data. So export function to return it.
 
-Mythri P K (1):
-  ASoC: dapm: Add snd_soc_dapm_kcontrol_widget()
-
+Signed-off-by: Mythri P K <mythri.p.k@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
  include/sound/soc-dapm.h |  3 +++
- sound/soc/soc-dapm.c     | 64 ++++++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 60 insertions(+), 7 deletions(-)
+ sound/soc/soc-dapm.c     | 12 ++++++++++++
+ 2 files changed, 15 insertions(+)
 
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 5abba037d245..7855cfe46b69 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -451,6 +451,9 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
+ 	struct snd_kcontrol *kcontrol);
+ 
++struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
++		struct snd_kcontrol *kcontrol);
++
+ int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
+ 	enum snd_soc_bias_level level);
+ 
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index ef8064df2678..d54ee252ba74 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -509,6 +509,18 @@ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ }
+ 
+ /**
++ * snd_soc_dapm_kcontrol_widget() - Returns the widget associated to a
++ *   kcontrol
++ * @kcontrol: The kcontrol
++ */
++struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
++				struct snd_kcontrol *kcontrol)
++{
++	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0];
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_widget);
++
++/**
+  * snd_soc_dapm_kcontrol_dapm() - Returns the dapm context associated to a
+  *  kcontrol
+  * @kcontrol: The kcontrol
 -- 
 1.9.1
