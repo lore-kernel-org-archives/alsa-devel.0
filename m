@@ -1,60 +1,78 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 0/5] ALSA: firewire-tascam: add MIDI
-	functionality
-Date: Tue, 20 Oct 2015 09:39:07 +0200
-Message-ID: <20151020093907.033831d3@kant>
-References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
- <20151012144816.130ac379@kant>
- <20151012222019.GB16052@marvin.atrad.com.au>
- <561CD0A0.6000708@sakamocchi.jp> <20151013161516.27cb80cc@kant>
- <5624FA84.70208@sakamocchi.jp>
- <20151019233640.GB8953@marvin.atrad.com.au>
- <56258FE6.9000304@sakamocchi.jp>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] HDMI codec, way forward?
+Date: Tue, 20 Oct 2015 09:08:00 +0100
+Message-ID: <20151020080800.GU32532@n2100.arm.linux.org.uk>
+References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
+ <20151016133717.GI32532@n2100.arm.linux.org.uk>
+ <20151018150834.GP27370@localhost>
+ <20151018152048.GT32532@n2100.arm.linux.org.uk>
+ <20151018161329.GV27370@localhost>
+ <20151018171641.GV32532@n2100.arm.linux.org.uk>
+ <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id E430C2605E8
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 09:39:08 +0200 (CEST)
-In-Reply-To: <56258FE6.9000304@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>, clemens@ladisch.de, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20151020033809.GZ27370@localhost>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 20 Takashi Sakamoto wrote:
-> When using polkit correctly, I guess users doesn't need to join in
-> 'audio' group, so as PulseAudio achieved with polkit.
-
-With regard to access to /dev/fw* files, this is true with the existing
-FFADO rules too.  60-ffado.rules sets ENV{ID_FFADO}="1", and
-consolekit's 70-udev-acl.rules recognizes ID_FFADO and runs udev-acl on
-the device.
-
-(I.e. the current "console" owner is granted access to the character
-device file via access control list (ACL), which is a mechanism in
-parallel to Unix permission flags.)
-
-The console owner policy and ACL mechanism are not a complete replacement
-for the group mechanism though:
-  - There may be headless systems and other occasions at which the audio
-    user is not console owner.
-  - Processes involved in capture or playback, i.e. applications beyond
-    mixers, may require realtime scheduling class privilege and memlocking
-    privilege, which are traditionally configured for Unix groups and
-    users (typically for a group).  Not sure whether a mechanism exists
-    which can implement a console owner policy for realtime and memlock
-    privileges.
--- 
-Stefan Richter
--=====-===== =-=- =-=--
-http://arcgraph.de/sr/
+T24gVHVlLCBPY3QgMjAsIDIwMTUgYXQgMDk6MDg6MDlBTSArMDUzMCwgVmlub2QgS291bCB3cm90
+ZToKPiBPbiBNb24sIE9jdCAxOSwgMjAxNSBhdCAwMzoyMDozMFBNICswMjAwLCBUYWthc2hpIEl3
+YWkgd3JvdGU6Cj4gPiBPbiBTdW4sIDE4IE9jdCAyMDE1IDE5OjE2OjQyICswMjAwLAo+ID4gUnVz
+c2VsbCBLaW5nIC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gPiAKPiA+ID4gT24gU3VuLCBPY3QgMTgs
+IDIwMTUgYXQgMDk6NDM6MjlQTSArMDUzMCwgVmlub2QgS291bCB3cm90ZToKPiA+ID4gPiBSaWdo
+dCBidXQgY2FuIEkgYXNrIHdoeSB5b3UgZGlkbid0IHRyeSBtYWtpbmcgdmlkZW8gYXMgY29tcG9u
+ZW50IGFuZCB0aGVuCj4gPiA+ID4gQ0VDLCBhdWRpbyBhbmQgb3RoZXJzIHJlY2VpdmUgdGhlIG5v
+dGlmaWNhdGlvbiBvdmVyIHRoaXMuCj4gPiA+IAo+ID4gPiBPa2F5LCBJIHRoaW5rIEkgc2VlIHdo
+YXQgeW91J3JlIGdldHRpbmcgYXQuICBObywgSSBkb24ndCB3YW50IHRvIHRpZQo+ID4gPiB0aGlz
+IHN0dWZmIGludG8gdGhlIGNvbXBvbmVudCBoZWxwZXJzIGJlY2F1c2UgdGhhdCdzIHRoZSB3cm9u
+ZyBhcHByb2FjaC4KPiA+ID4gCj4gPiA+IFRoZSBjb21wb25lbnQgaGVscGVyIGlzIHB1cmVseSBh
+Ym91dCBjb21iaW5pbmcgc2V2ZXJhbCBzdHJ1Y3QgZGV2aWNlcwo+ID4gPiBpbnRvIG9uZSBsYXJn
+ZXIgY29tcG9uZW50IGZvciBhIHN1YnN5c3RlbSB3aGljaCBkZWFscyB3aXRoIGNhcmQtbGV2ZWwK
+PiA+ID4gY29tcG9uZW50cy4gIEl0J3Mgbm90IGFib3V0IGNyb3NzLXN1YnN5c3RlbSBzdHVmZi4K
+PiA+ID4gCj4gPiA+IFRoZSBwcm9ibGVtIHdpdGggdXNpbmcgaXQgZm9yIGNyb3NzLXN1YnN5c3Rl
+bSBzdHVmZiBpcyB0aGF0IGl0IGJlY29tZXMKPiA+ID4gdG9vIHRpZ2h0bHkgYm91bmQgdG9nZXRo
+ZXI6IHdoeSBzaG91bGQgdGhlIGdyYXBoaWNzIHNpZGUgZ2V0IHRvcm4gZG93bgo+ID4gPiBpZiB5
+b3UgdW5sb2FkIHRoZSBhdWRpbyBvciBDRUMgZHJpdmVyPwo+ID4gPiAKPiA+ID4gQXVkaW8gYW5k
+IENFQyBhcmUgcmF0aGVyIG9wdGlvbmFsIGZvciBIRE1JIC0gSERNSSBjYW4gd29yayB3aXRob3V0
+IGF1ZGlvCj4gPiA+IGFuZCBDRUMgYmVpbmcgcHJlc2VudC4gIEhvd2V2ZXIsIGF1ZGlvIGNhbid0
+IGJlIGNvbnZleWVkIGFjcm9zcyB0aGUgbGluawo+ID4gPiB3aXRob3V0IHRoZSB2aWRlbyBzaWRl
+IGJlaW5nIGNvbmZpZ3VyZWQuICBTbywgaXQgbWFrZXMgc2Vuc2UgdG8gYWxsb3cKPiA+ID4gdGhl
+IENFQyBhbmQgYXVkaW8gcGFydHMgdG8gYmUgbG9hZGVkIHNlcGFyYXRlbHkgKHBvc3NpYmx5IGFz
+IG1vZHVsZXMpCj4gPiA+IHdoaWxlIGhhdmluZyB0aGUgdmlkZW8gcGFydHMgYnVpbHQtaW4gdG8g
+dGhlIGtlcm5lbCAtIGVzcGVjaWFsbHkgaWYgeW91Cj4gPiA+IHdhbnQgdG8gdXNlIHRoZSBIRE1J
+IG91dHB1dCBhcyB0aGUgY29uc29sZS4KPiA+ID4gCj4gPiA+IEJpbmRpbmcgQ0VDIGFuZCBhdWRp
+byBpbnRvIHRoZSBjb21wb25lbnQgaGVscGVyIGFsb25nc2lkZSB0aGUgdmlkZW8gcGFydAo+ID4g
+PiB3aWxsIG1lYW4gdGhhdCBub3RoaW5nIHdpbGwgY29tZSB1cCB1bnRpbCBhbGwgdGhlIGNvbXBv
+bmVudHMgYXJlIHByZXNlbnQsCj4gPiA+IGFuZCBldmVyeXRoaW5nIHdpbGwgYmUgdG9ybiBkb3du
+IHdoZW4gYW55IG9uZSBvZiB0aG9zZSBjb21wb25lbnRzIGFyZQo+ID4gPiByZW1vdmVkLiAgQ2xl
+YXJseSwgdGhhdCdzIHVuZGVzaXJhYmxlLgo+ID4gCj4gPiBDdXJyZW50bHkgaTkxNS9hdWRpbyBj
+b21wb25lbnQgd29ya3MgYXMgeW91IGRlc2NyaWJlZC4gIFRoZSBhdWRpbyBpcwo+ID4gb3B0aW9u
+YWwgYW5kIEhETUkgZ3JhcGhpY3Mgd29ya3Mgd2l0aG91dCBhdWRpbywgd2hpbGUgSERNSSBIRC1h
+dWRpbwo+ID4gbWFuZGF0ZXMgaTkxNSBncmFwaGljcy4KPiAKPiBSaWdodCwgYnV0IHdlIGFsc28g
+YWRkIGFkZGl0aW9uYWwgaW50ZXJmYWNlIG9uIHRvcCBvZiB0aGlzIHRvIGFsbG93IHRoaW5ncwo+
+IGxpa2UgZW5zdXJpbmcgZGlzcGxheSBpcyBvbiB3aGVuIGF1ZGlvIHdhbnRzIHRvIHJ1biBhbmQg
+bm93IG5vdGlmaWNhdGlvbiBmb3IKPiBldmVudHMuCj4gCj4gSSBkb24ndCBzZWUgYSByZWFzb24g
+d2h5IHRoaXMgY2FuIGJlIHVzZWQgYXMgc2luZ2xlIGludGVyZmFjZSB0byBiaW5kIGFzIHdlbGwK
+PiBhcyB0YWxrIHRvIGRpc3BsYXkgZnJvbSB2YXJpb3VzIGNvbXBvbmVudHMsIHVubGVzcyBJIG1p
+c3NlZCBvYnZpb3VzIHdoaWNoCj4gcHJldmVudCB1cyBmcm9tIGRvaW5nIHRoaXMgaW4gbm9uIGk5
+MTUgY2FzZXMuLi4KCk1heWJlIEkgY2FuIGNvbW1lbnQgbW9yZSBzcGVjaWZpY2FsbHkgaWYgSSBz
+YXcgdGhlIGNvZGUuICBSaWdodCBub3cgYWxsCkknbSBhd2FyZSBvZiBpcyB0aGlzIGlkZWEgd2l0
+aG91dCBhbnkgY29kZSwgYW5kIEkgZG9uJ3QgbGlrZSBpdC4KCi0tIApGVFRDIGJyb2FkYmFuZCBm
+b3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNj
+b3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vZHJpLWRldmVsCg==
