@@ -1,36 +1,57 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen v2 1/3] sound/usb: Fix media_stream_delete() to remove intf devnode
-Date: Tue, 20 Oct 2015 17:25:14 -0600
-Message-ID: <192c21ec5392e122c22caeca2b19f50fea4440b0.1445380851.git.shuahkh@osg.samsung.com>
-References: <cover.1445380851.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen v2 0/3] Add mixer and control interface media entities
+Date: Tue, 20 Oct 2015 17:25:13 -0600
+Message-ID: <cover.1445380851.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
-References: <cover.1445380851.git.shuahkh@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-media_stream_delete() doesn't remove intf_devnode. Fix it to
-call media_devnode_remove() to remove the intf_devnode.
+This patch v2 series adds the following:
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- sound/usb/media.c | 1 +
- 1 file changed, 1 insertion(+)
+A fix to media_stream_delete() to remove intf devnode.
 
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 9b455ad..0cbfee6 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -173,6 +173,7 @@ void media_stream_delete(struct snd_usb_substream *subs)
- 		mdev = media_device_find_devres(&subs->dev->dev);
- 		if (mdev) {
- 			media_entity_remove_links(&mctl->media_entity);
-+			media_devnode_remove(mctl->intf_devnode);
- 			media_device_unregister_entity(&mctl->media_entity);
- 			media_entity_cleanup(&mctl->media_entity);
- 		}
+Add support for creating MEDIA_ENT_F_AUDIO_MIXER entity for
+each mixer and a MEDIA_INTF_T_ALSA_CONTROL control interface
+entity that links to mixer entities. MEDIA_INTF_T_ALSA_CONTROL
+entity corresponds to the control device for the card.
+
+Change au0828_create_media_graph() to create pad link
+between MEDIA_ENT_F_AUDIO_MIXER entity and decoder's
+AU8522_PAD_AUDIO_OUT. With mixer entity now linked to
+decoder, change to link MEDIA_ENT_F_AUDIO_CAPTURE to
+mixer's source pad
+
+Changes since v1:
+1. Included the fix to media_stream_delete() which was by mistake
+   not included in the patch v1.
+2. Fixed mixer to decoder link and mider to capture node links
+   based on Mauro Chehapb's review comments on the media graph.
+
+This patch series is dependent on an earlier patch series:
+
+Update ALSA, and au0828 drivers to use Managed Media Controller API:
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg92752.html
+
+Please find the media graphs for ALSA work with mixer and control
+interface nodes:
+
+https://drive.google.com/folderview?id=0B0NIL0BQg-AlLWE3SzAxazBJWm8&usp=sharing
+
+Shuah Khan (3):
+  sound/usb: Fix media_stream_delete() to remove intf devnode
+  sound/usb: Create media mixer function and control interface entities
+  media: au0828 create link between ALSA Mixer and decoder
+
+ drivers/media/usb/au0828/au0828-core.c | 17 +++++--
+ drivers/media/usb/au0828/au0828.h      |  1 +
+ sound/usb/card.c                       |  5 ++
+ sound/usb/media.c                      | 90 ++++++++++++++++++++++++++++++++++
+ sound/usb/media.h                      | 20 ++++++++
+ sound/usb/mixer.h                      |  1 +
+ sound/usb/usbaudio.h                   |  1 +
+ 7 files changed, 132 insertions(+), 3 deletions(-)
+
 -- 
 2.1.4
