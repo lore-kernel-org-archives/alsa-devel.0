@@ -1,56 +1,36 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/5 v2] ALSA: firewire-tascam: fix sending
- the same MIDI bytes in two transactions
-Date: Wed, 21 Oct 2015 07:46:17 +0900
-Message-ID: <5626C439.4070004@sakamocchi.jp>
-References: <1445352419-21827-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hlhax1kcm.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 31D502604C6
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 00:46:24 +0200 (CEST)
-In-Reply-To: <s5hlhax1kcm.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen v2 1/3] sound/usb: Fix media_stream_delete() to remove intf devnode
+Date: Tue, 20 Oct 2015 17:25:14 -0600
+Message-ID: <192c21ec5392e122c22caeca2b19f50fea4440b0.1445380851.git.shuahkh@osg.samsung.com>
+References: <cover.1445380851.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
+References: <cover.1445380851.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNeW5tDEw5pyIMjHml6UgMDM6MTEsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBUdWUs
-IDIwIE9jdCAyMDE1IDE2OjQ2OjU0ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEhpLAo+Pgo+PiBUaGlzIHBhdGNoc2V0IGlzIHJldmlzZWQgdmVyc2lvbiBvZiBteSBwcmV2
-aW91cyBwb3N0Ogo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9h
-bHNhLWRldmVsLzIwMTUtT2N0b2Jlci8wOTkxMjMuaHRtbAo+Pgo+PiBUaGUgbWFpbiBwdXJwb3Nl
-IG9mIHRoaXMgcGF0Y2hzZXQgaXMgdG8gZml4IGFuIGlzc3VlIHRoYXQgYSB0cmFuc2FjdGlvbiBj
-YW4KPj4gaW5jbHVkZSBNSURJIGJ5dGVzIGluIHRoZSBuZXh0IG1lc3NhZ2UuIFRoZSBsYXN0IHBh
-dGNoIHNvbHZlcyB0aGlzIGlzc3VlLAo+PiBhbmQgdGhlIGZpcnN0IDQgcGF0Y2hlcyBhcmUgZm9y
-IGJldHRlciBzaGFwZSBvZiBjb2RlIGluY2x1ZGluZyBhIHNtYWxsCj4+IGZpeGVzLgo+Pgo+PiBD
-aGFuZ2VzOgo+PiAgKiBhZGQgYnVmZmVyIGFsaWFzCj4+ICAqIHJlZmluZSBsb2NhbCB2YXJpYWJs
-ZXMKPiAKPiBBcHBsaWVzIGFsbCBwYXRjaGVzIG5vdy4gIFRoYW5rcy4KClRoYW5rcy4KCkluIHRo
-aXMgZGV2ZWxvcGluZyBwZXJpb2QsIEknbGwgcG9zdCBzb21lIHBhdGNoZXMgZm9yIHJlZmFjdG9y
-aW5nIG9mCmZpcmV3b3JrcyBhbmQgYmVib2IgbW9kdWxlcyB0aWxsIHRoaXMgd2Vla2VuZCwgdGhl
-biBmaW5pc2ggbXkgd29yayBmb3IgNC40LgoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KCj4g
-Cj4gCj4gVGFrYXNoaQo+IAo+Pgo+Pgo+PiBUYWthc2hpIFNha2Ftb3RvICg1KToKPj4gICBBTFNB
-OiBmaXJld2lyZS10YXNjYW06IHJlbW92ZSBidWZmZXIgaW5pdGlhbGl6YXRpb24gaW4gZHJpdmVy
-IHNpZGUKPj4gICBBTFNBOiBmaXJld2lyZS10YXNjYW06IGNoYW5nZSB0eXBlIG9mIHZhbGlhYmxl
-cyBhY2NvcmRpbmcgdG8gZnVuY3Rpb24KPj4gICAgIHByb3RvdHlwZQo+PiAgIEFMU0E6IGZpcmV3
-aXJlLXRhc2NhbTogdXNlIGJldHRlciBuYW1lIGZvciBsb2NhbCB2YXJpYWJsZXMgdG8gZGVzY3Jp
-YmUKPj4gICAgIHRoZWlyIGludGVuc2lvbgo+PiAgIEFMU0E6IGZpcmV3aXJlLXRhc2NhbTogZml4
-IGxvb3AgY29uZGl0aW9uIHdpdGggc29tZSByZWFkYWJsZSB2YXJpYWJsZXMKPj4gICBBTFNBOiBm
-aXJld2lyZS10YXNjYW06IGNsZWFyIGV4dHJhIE1JREkgYnl0ZSBpbiBhbiBhc3luY2hyb25vdXMK
-Pj4gICAgIHRyYW5zYWN0aW9uCj4+Cj4+ICBzb3VuZC9maXJld2lyZS90YXNjYW0vdGFzY2FtLXRy
-YW5zYWN0aW9uLmMgfCA3MyArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0KPj4gIDEgZmls
-ZSBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCspLCAzMiBkZWxldGlvbnMoLSkKPj4KPj4gLS0gCj4+
-IDIuMS40Cj4+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+media_stream_delete() doesn't remove intf_devnode. Fix it to
+call media_devnode_remove() to remove the intf_devnode.
+
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ sound/usb/media.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 9b455ad..0cbfee6 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -173,6 +173,7 @@ void media_stream_delete(struct snd_usb_substream *subs)
+ 		mdev = media_device_find_devres(&subs->dev->dev);
+ 		if (mdev) {
+ 			media_entity_remove_links(&mctl->media_entity);
++			media_devnode_remove(mctl->intf_devnode);
+ 			media_device_unregister_entity(&mctl->media_entity);
+ 			media_entity_cleanup(&mctl->media_entity);
+ 		}
+-- 
+2.1.4
