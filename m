@@ -1,24 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: HDMI codec, way forward?
-Date: Tue, 20 Oct 2015 19:31:48 +0530
-Message-ID: <20151020140148.GC27370@localhost>
-References: <5620E482.6050507@ti.com> <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
- <20151018150834.GP27370@localhost>
- <20151018152048.GT32532@n2100.arm.linux.org.uk>
- <20151018161329.GV27370@localhost>
- <20151018171641.GV32532@n2100.arm.linux.org.uk>
- <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
- <20151020080800.GU32532@n2100.arm.linux.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix deadlock at error in building
+	PCM
+Date: Tue, 20 Oct 2015 16:36:56 +0200
+Message-ID: <1445351816-17849-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A7242665B6
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 15:58:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20151020080800.GU32532@n2100.arm.linux.org.uk>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC1EC2665B4
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 16:36:58 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 589F7AB4B
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 14:36:57 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,28 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, David Airlie <airlied@linux.ie>, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2015 at 09:08:00AM +0100, Russell King - ARM Linux wrote:
-> > > Currently i915/audio component works as you described.  The audio is
-> > > optional and HDMI graphics works without audio, while HDMI HD-audio
-> > > mandates i915 graphics.
-> > 
-> > Right, but we also add additional interface on top of this to allow
-> > things like ensuring display is on when audio wants to run and now
-> > notification for events.
-> > 
-> > I don't see a reason why this can be used as single interface to bind as
-> > well as talk to display from various components, unless I missed obvious
-> > which prevent us from doing this in non i915 cases...
-> 
-> Maybe I can comment more specifically if I saw the code.  Right now all
-> I'm aware of is this idea without any code, and I don't like it.
+The HDA codec driver issues snd_hda_codec_reset() at the error path of
+PCM build.  This was needed in the earlier code base, but the recent
+rewrite to use the standard bus binding made this a deadlock:
+ modprobe        D 0000000000000005     0   720    716 0x00000080
+ Call Trace:
+  [<ffffffff816a5dbe>] schedule+0x3e/0x90
+  [<ffffffff816a61a5>] schedule_preempt_disabled+0x15/0x20
+  [<ffffffff816a7ae5>] __mutex_lock_slowpath+0xb5/0x120
+  [<ffffffff816a7b6b>] mutex_lock+0x1b/0x30
+  [<ffffffff8148656b>] device_release_driver+0x1b/0x30
+  [<ffffffff81485c15>] bus_remove_device+0x105/0x180
+  [<ffffffff814822b9>] device_del+0x139/0x260
+  [<ffffffffa05e0ec5>] snd_hdac_device_unregister+0x25/0x30 [snd_hda_core]
+  [<ffffffffa074fa6a>] snd_hda_codec_reset+0x2a/0x70 [snd_hda_codec]
+  [<ffffffffa075007b>] snd_hda_codec_build_pcms+0x18b/0x1b0 [snd_hda_codec]
+  [<ffffffffa074a44e>] hda_codec_driver_probe+0xbe/0x140 [snd_hda_codec]
+  [<ffffffff81486ac4>] driver_probe_device+0x1f4/0x460
+  [<ffffffff81486dc0>] __driver_attach+0x90/0xa0
+  [<ffffffff81484844>] bus_for_each_dev+0x64/0xa0
+  [<ffffffff814862de>] driver_attach+0x1e/0x20
+  [<ffffffff81485e7b>] bus_add_driver+0x1eb/0x280
+  [<ffffffff81487680>] driver_register+0x60/0xe0
+  [<ffffffffa074a0da>] __hda_codec_driver_register+0x5a/0x60 [snd_hda_codec]
+  [<ffffffffa070a01e>] realtek_driver_init+0x1e/0x1000 [snd_hda_codec_realtek]
+  [<ffffffff810002f3>] do_one_initcall+0xb3/0x200
+  [<ffffffff816a1fc5>] do_init_module+0x60/0x1f8
+  [<ffffffff810ee5c3>] load_module+0x1653/0x1bd0
+  [<ffffffff810eed48>] SYSC_finit_module+0x98/0xc0
+  [<ffffffff810eed8e>] SyS_finit_module+0xe/0x10
+  [<ffffffff816aa032>] entry_SYSCALL_64_fastpath+0x16/0x75
 
-Ok, i will be post my patches tomorrow. FWIW uses interface in
-sound/hda/hdac_i915.c for display power up/down
+The simple fix is just to remove this call, since we don't need to
+think about unbinding at there any longer.
 
+Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=948758
+Cc: <stable@vger.kernel.org> # v4.1+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_codec.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 37f43a1b34ef..a249d5486889 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3367,10 +3367,8 @@ int snd_hda_codec_build_pcms(struct hda_codec *codec)
+ 	int dev, err;
+ 
+ 	err = snd_hda_codec_parse_pcms(codec);
+-	if (err < 0) {
+-		snd_hda_codec_reset(codec);
++	if (err < 0)
+ 		return err;
+-	}
+ 
+ 	/* attach a new PCM streams */
+ 	list_for_each_entry(cpcm, &codec->pcm_list_head, list) {
 -- 
-~Vinod
+2.6.1
