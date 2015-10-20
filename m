@@ -1,16 +1,16 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH 1/2] ASoC: WM8962: mark cache_dirty flag after
-	software reset in pm_resume
-Date: Tue, 20 Oct 2015 11:47:11 +0900
-Message-ID: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
+Subject: [PATCH 2/2] ASoC: Codec: wm8962: declare ALC
+	Coefficients as 4 separate registers
+Date: Tue, 20 Oct 2015 11:47:12 +0900
+Message-ID: <1445309232-24094-3-git-send-email-jiada_wang@mentor.com>
 References: <1445309232-24094-1-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C653265E10
- for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 04:47:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EBA8265E23
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 04:47:12 +0200 (CEST)
 In-Reply-To: <1445309232-24094-1-git-send-email-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,28 +25,37 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
 Cc: jiada_wang@mentor.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-By doing software reset of wm8962 in pm_resume, all registers which
-have already been set will be reset to default value without regmap
-interface be involved, thus driver need to mark cache_dirty flag,
-to let regcache can be updated by regcache_sync().
+As ALC2 register is volatile, declare it as one of ALC Coefficients
+register together with other non-volatile registers will cause issue,
+in case wm8962 has enter suspend mode, and cache_only flag is set,
+any attempt to read from ALC2 will fail.
+
+Instead of declaring one ALC Coefficients register which contains
+ALC1 ~ ALC3 and Noise Gate, this patch declares 4 separate registers,
+so that regmap can handle these registers differently based on their
+classification.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- sound/soc/codecs/wm8962.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wm8962.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 293e47a..a3d7778 100644
+index a3d7778..157530c 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -3805,6 +3805,8 @@ static int wm8962_runtime_resume(struct device *dev)
+@@ -1782,8 +1782,11 @@ SND_SOC_BYTES("HD Bass Coefficients", WM8962_HDBASS_AI_1, 30),
  
- 	wm8962_reset(wm8962);
+ SOC_DOUBLE("ALC Switch", WM8962_ALC1, WM8962_ALCL_ENA_SHIFT,
+ 		WM8962_ALCR_ENA_SHIFT, 1, 0),
+-SND_SOC_BYTES_MASK("ALC Coefficients", WM8962_ALC1, 4,
++SND_SOC_BYTES_MASK("ALC1", WM8962_ALC1, 1,
+ 		WM8962_ALCL_ENA_MASK | WM8962_ALCR_ENA_MASK),
++SND_SOC_BYTES("ALC2", WM8962_ALC2, 1),
++SND_SOC_BYTES("ALC3", WM8962_ALC3, 1),
++SND_SOC_BYTES("Noise Gate", WM8962_NOISE_GATE, 1),
+ };
  
-+	regcache_mark_dirty(wm8962->regmap);
-+
- 	/* SYSCLK defaults to on; make sure it is off so we can safely
- 	 * write to registers if the device is declocked.
- 	 */
+ static const struct snd_kcontrol_new wm8962_spk_mono_controls[] = {
 -- 
 2.4.5
