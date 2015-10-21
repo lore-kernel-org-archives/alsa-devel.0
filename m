@@ -1,105 +1,59 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] HDMI codec, way forward?
-Date: Wed, 21 Oct 2015 19:19:38 +0100
-Message-ID: <20151021181938.GL32532@n2100.arm.linux.org.uk>
-References: <20151020080800.GU32532@n2100.arm.linux.org.uk>
- <20151020140148.GC27370@localhost>
- <20151021092744.GC32532@n2100.arm.linux.org.uk>
- <s5heggol4o7.wl-tiwai@suse.de>
- <20151021140307.GE32532@n2100.arm.linux.org.uk>
- <s5ha8rcl3c8.wl-tiwai@suse.de>
- <20151021143747.GG32532@n2100.arm.linux.org.uk>
- <20151021161927.GG27370@localhost>
- <20151021173437.GK32532@n2100.arm.linux.org.uk>
- <s5htwpkxfv9.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH] ALSA: compress: Add
+ SND_AUDIOCODEC_BESPOKE'
+Date: Wed, 21 Oct 2015 13:46:49 -0500
+Message-ID: <5627DD99.5000502@linux.intel.com>
+References: <1445348358-23306-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <56267E4E.8010609@linux.intel.com> <20151020193711.GF32054@sirena.org.uk>
+ <20151021153248.GE27370@localhost> <20151021153614.GD10520@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5htwpkxfv9.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DF3B2606AC
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 20:46:53 +0200 (CEST)
+In-Reply-To: <20151021153614.GD10520@ck-lbox>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBPY3QgMjEsIDIwMTUgYXQgMDc6NTk6MDZQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMjEgT2N0IDIwMTUgMTk6MzQ6MzcgKzAyMDAsCj4gUnVzc2VsbCBLaW5n
-IC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gCj4gPiBPbiBXZWQsIE9jdCAyMSwgMjAxNSBhdCAwOTo0
-OToyOFBNICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+ID4gPiBPbiBXZWQsIE9jdCAyMSwgMjAx
-NSBhdCAwMzozNzo0N1BNICswMTAwLCBSdXNzZWxsIEtpbmcgLSBBUk0gTGludXggd3JvdGU6Cj4g
-PiA+ID4gSW4gYW55IGNhc2UsIHRoaXMgZG9lc24ndCAoYW5kIGNhbid0KSBzb2x2ZSB0aGUgQ0VD
-IHByb2JsZW0sIHNvIGl0J3Mgbm90Cj4gPiA+ID4gYSBzb2x1dGlvbiB0byB0aGUgcHJvYmxlbSBh
-dCBoYW5kLgo+ID4gPiAKPiA+ID4gU29ycnkgYW0gbm90IHN1cmUgSSBmb2xsb3cgdGhlIHJlYXNv
-bnMgZm9yIHRoYXQsIHdvdWxkbid0IENFQyBiZSBhbm90aGVyCj4gPiA+IHNsYXZlIGluIHN1Y2gg
-YW4gaW50ZXJmYWNlPyBJIHRob3VnaCBjb21wb25lbnQgZndrIGRpZCBhbGxvdyB1cyB0byBoYXZl
-Cj4gPiA+IG11bHRpcGxlIHNsYXZlcy4uCj4gPiAKPiA+IE5vdCB3aXRoIHRoZSB3YXkgeW91J3Jl
-IHVzaW5nIHRoZSBjb21wb25lbnQgaGVscGVyIGhlcmUuCj4gPiAKPiA+IEkgZ3Vlc3MgdGhhdCBu
-b3QgYWxsIG15IG1lc3NhZ2UgaXMgYmVpbmcgcmVhZCwgYmVjYXVzZSBwZW9wbGUga2VlcAo+ID4g
-cmVwbHlpbmcgaGFsZi13YXkgZG93biBteSBtZXNzYWdlcy4uLgo+ID4gCj4gPiBZb3UgY2FuIG9u
-bHkgcmVnaXN0ZXIgYSBzdHJ1Y3QgZGV2aWNlIF9vbmNlXyBhcyBhIHNsYXZlIGRldmljZS4KPiA+
-IAo+ID4gV2l0aCB0aGUgd2F5IHlvdSdyZSB1c2luZyBpdCBoZXJlIGZvciBhdWRpbywgeW91J3Jl
-IHJlZ2lzdGVyaW5nIHRoZQo+ID4gaTkxNSBEUk0gZGV2aWNlIGFzIGEgc2xhdmUgY29tcG9uZW50
-IGRldmljZSwgYW5kIHRoZSBhdWRpbyBzaWRlIGFzCj4gPiB0aGUgbWFzdGVyLiAgVGhhdCBtZWFu
-cyB0aGUgYXVkaW8gbWFzdGVyIGNhbiBiaW5kIHRvIHRoZSBEUk0gc2xhdmUKPiA+IGNvbXBvbmVu
-dCBkZXZpY2UuCj4gPiAKPiA+IFlvdSBjYW4ndCB0aGVuIGhhdmUgYSBDRUMgbWFzdGVyIGJpbmQg
-dG8gdGhlIGk5MTUgRFJNIHNsYXZlIGRldmljZQo+ID4gKGl0J3MgYWxyZWFkeSBib3VuZCB0byB0
-aGUgYXVkaW8gbWFzdGVyIGRldmljZSksIGFuZCB5b3UgY2FuJ3QKPiA+IHJlZ2lzdGVyIHRoZSBp
-OTE1IERSTSBkZXZpY2UgYXMgYSBzZWNvbmQgc2xhdmUgY29tcG9uZW50IGRldmljZS4KPiA+IEl0
-IGJlY29tZXMgaW5kaXN0aW5ndWlzaGFibGUgZnJvbSB0aGUgZmlyc3QsIGFuZCB0aGVyZSdzIG5v
-IHdheQo+ID4gdG8gdGVsbCB3aGljaCBvZiB0aGUgdHdvIGRpZmZlcmVudCAnb3BzJyBzdHJ1Y3R1
-cmVzIHNob3VsZCBiZSB1c2VkCj4gPiB3aXRoIHdoaWNoIG1hc3Rlci4KPiA+IAo+ID4gSSBzYWlk
-IHRoaXMgaW4gbXkgbWVzc2FnZSAyMDE1MTAyMTE0MDMwNy5HRTMyNTMyQG4yMTAwLmFybS5saW51
-eC5vcmcudWsKPiA+IHdoaWNoIHdhcyB0d28gb2YgbXkgcmVwbGllcyBhZ28gaW4gdGhpcyBzdWIt
-dGhyZWFkLgo+IAo+IENhbid0IHRoZSBsaW1pdGF0aW9uIG9mIHNpbmdsZSBzbGF2ZSBkZXYgYmUg
-ZXh0ZW5kZWQgc2ltcGx5PyAgZS5nLiBhZGQKPiBzb21lIG1hdGNoaW5nIHNlbWFudGljcyB0byBj
-b21wb25lbnRfbWFzdGVyX2FkZF9jaGlsZCgpIGxpa2UgYSBzaGFyZWQKPiBrZXkgaW4gYm90aCBt
-YXN0ZXIgYW5kIHNsYXZlLCBhbmQgbGV0IGFzc2lnbiBvbmx5IHRoZSBtYXRjaGVkIHNsYXZlLgoK
-SSd2ZSBhbHJlYWR5IGV4cGxhaW5lZCB0aGF0IGluIHRoZSBlbWFpbCBtZXNzYWdlIEkgcmVmZXJy
-ZWQgdG8gYnkKbWVzc2FnZSBJRCBhYm92ZSAod2hpY2ggd2FzIGEgcmVwbHkgdG8gb25lIG9mIHlv
-dXIgcHJldmlvdXMgbWVzc2FnZXMpCgpUaGlzIGlzIHdoeSBJIGZpbmQgZW1haWwgc3VjaCBhIHBv
-b3IgY29tbXVuaWNhdGlvbiBtZWRpdW0gLSBJJ20gcXVpdGUKc3VyZSBtb3N0IHBlb3BsZSBvbmx5
-IHJlYWQgaGFsZiBhbiBlbWFpbCBtZXNzYWdlIGJlZm9yZSBoaXR0aW5nIHJlcGx5LAphbmQgdGhl
-biB0aGV5IHN0aWNrIHRoZWlyIHJlcGx5IGFmdGVyIHdoZXJlIHRoZXkgc3RvcHBlZCByZWFkaW5n
-IGFuZApuZXZlciBib3RoZXIgcmVhZGluZyB0aGUgcmVzdCBvZiB0aGUgbWVzc2FnZS4gIE5vcm1h
-bGx5LCBhdCB0aGlzIHBvaW50LApJJ2xsIHN0YXJ0IGdldHRpbmcgZ3J1bXB5IGFuZCBzZW5kaW5n
-IGZydXN0cmF0ZWQgZW1haWxzLi4uIHdoaWNoIHdvdWxkCmV2ZW50dWFsbHkgZGVyaWRlIGludG8g
-ZmxhbWVzLCBidXQgbGV0J3MgX3RyeV8gdG8ga2VlcCB0aGlzIGNpdmlsLgoKSGVyZSdzIHRoZSBy
-ZWxldmFudCBwYXJhZ3JhcGggZnJvbSB0aGUgYWJvdmUgcmVmZXJlbmNlZCBtZXNzYWdlLCBhbmQK
-dG8gbWFrZSB0aGUgYXBwcm9wcmlhdGUgYml0IHN0YW5kIG91dCwgSSd2ZSB1bmRlcmxpbmVkIGl0
-IHdpdGggXi4KCj4gSG93ZXZlciwgdGhlcmUncyBhIGx1cmtpbmcgcHJvYmxlbTogeW91IGNhbid0
-IHJlZ2lzdGVyIHRoZSBzYW1lIHN0cnVjdAo+IGRldmljZSBhcyBhIHNsYXZlIG1vcmUgdGhhbiBv
-bmNlIGludG8gdGhlIGNvbXBvbmVudCBoZWxwZXJzIC0gdGhhdCdzCj4gYmVjYXVzZSBpdCdzIGRl
-c2lnbmVkIHRvIGxvb2sgZm9yIGRldmljZXMuICBUaGVyZSdzIGludGVudGlvbmFsbHkgbm8KICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eXl5eXl5eXl5eXl5e
-Xl5eXl5eXl5eXgo+IGxpbmthZ2UgYmV0d2VlbiB0aGUgc2xhdmUgb3BzIGFuZCBtYXN0ZXIgb3Bz
-IHRvIGFsbG93IGZvciBnZW5lcmljCiAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5e
-Xl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl4KPiBzbGF2ZSBkcml2ZXJzIChsaWtlIHRk
-YTk5OHgpIHRvIGJlIHVzZWQgd2l0aCBkaWZmZXJlbnQgbWFzdGVyIGRyaXZlcnMKICBeXl5eXl5e
-Xl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5e
-Xl5eXl4KPiAoYXJtYWRhLCB0aWxjZGMsIGV0YykuICBJbiB0aGVvcnksIHlvdSBjYW4gcmVnaXN0
-ZXIgdGhlIG1hc3RlciBkZXZpY2UKICBeXl5eXl5eXl5eXl5eXl5eXl5eXl4KPiBvZiBvbmUgY29t
-cG9uZW50aXNlZCBzeXN0ZW0gYXMgYSBzbGF2ZSBkZXZpY2Ugb2YgYW5vdGhlciwgYnV0IHRoYXQK
-PiByZXF1aXJlcyBhIG11Y2ggbW9yZSBjb21wbGljYXRlZCBsb2NraW5nIHNldHVwIGluIGNvbXBv
-bmVudC5jIChJIGhhdmUKPiBwYXRjaGVzIGZvciB0aGF0LCBidXQgSSd2ZSByZXNpc3RlZCBzZW5k
-aW5nIHRoZW0gYmVjYXVzZSBpdCBtYWtlcyB0aGUKPiBsb2NraW5nIHZlcnkgbWVzc3kuKQoKSW4g
-YSBzdWJzZXF1ZW50IHNlbnRlbmNlLCBJIGFsc28gYWRkcmVzcyB0aGUgaXNzdWUgdGhhdCB3b3Vs
-ZCBvY2N1cgppZiBhbnkgb2YgdGhlIGFscmVhZHkgY29tcG9uZW50aXNlZCBEUk0gZHJpdmVycyB3
-ZXJlIHRvIGF0dGVtcHQgd2hhdAp5b3UncmUgZG9pbmcgaW4gaTkxNSAtIGFsdGhvdWdoIEkgc2F5
-IGl0J3Mgc29sdmFibGUsIEkndmUgcmVzaXN0ZWQKdGhhdCBiZWNhdXNlIGl0IG1ha2VzIHRoZSBs
-b2NraW5nIGluIHRoZXJlIF9tdWNoXyBtb3JlIGhhaXJ5LCBhbmQgSSdtCm5vdyBub3QgY2VydGFp
-biB0aGF0IG15IG1vcmUgY29tcGxleCBsb2NraW5nIGltcGxlbWVudGF0aW9uIHdvdWxkCmV2ZW4g
-Y29wZSB3aXRoIHRoYXQgc2NlbmFyaW8uCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAuOG1pbGUg
-bGluZTogY3VycmVudGx5IGF0IDkuNk1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBz
-cGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
-bAo=
+On 10/21/15 10:36 AM, Charles Keepax wrote:
+> On Wed, Oct 21, 2015 at 09:02:49PM +0530, Vinod Koul wrote:
+>> On Tue, Oct 20, 2015 at 08:37:11PM +0100, Mark Brown wrote:
+>>> On Tue, Oct 20, 2015 at 12:47:58PM -0500, Pierre-Louis Bossart wrote:
+>>
+>>>> If you need to set parameters maybe we should also change the definition of
+>>>> snd_enc_generic so that the reserved fields can be used for custom
+>>>> parameters, or document that their use is permitted for this sort of ID.
+>>>
+>>> It does mean the core can't grab them but quite what the core is
+>>> supposed to usefully do for something like this is unclear to me so...
+>>
+>> Well in case of compressed formats, core doesn't do anything, we just act as
+>> a transport and shove down data and information.
+>>
+>> I do like Pierre's idea of giving some meaning to formats and use some
+>> reserved fields, but somehow I can't think of a clean solution for this!
+>
+> Personally, I feel a bit like doing nothing at the moment might
+> be the best solution. If BESPOKE is for icky stuff that won't be
+> generic trying to pull out generic fields to go in snd_enc_generic
+> seems like a challenging exercise, and we can look submissions
+> that use it and keep an eye out for anything that might be
+> generic enough to go in there, rather than adding a bunch of
+> stuff that ends up never getting used.
+
+I was only suggesting to redefine these fields from 'reserved' to 'use 
+for whatever parameters are needed for this BESPOKE codec type'. I 
+wasn't trying to come-up with generic fields or predict future usages of 
+non-standard codecs, that would be a waste of time indeed.
