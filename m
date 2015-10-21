@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: fix wrong setting of gpio2_en"
-	to the asoc tree
-Date: Wed, 21 Oct 2015 13:34:20 +0100
-Message-ID: <E1Zosay-0003zj-Au@finisterre>
-References: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt298: Make rt298_index_def const" to
+	the asoc tree
+Date: Wed, 21 Oct 2015 13:34:24 +0100
+Message-ID: <E1Zosb2-00040E-3K@finisterre>
+References: <1444051428.13473.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B582606B7
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:32 +0200 (CEST)
-In-Reply-To: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 71EE52666C1
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:38 +0200 (CEST)
+In-Reply-To: <1444051428.13473.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: fix wrong setting of gpio2_en
+   ASoC: rt298: Make rt298_index_def const
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From f8f2dc4a7127725383c93b501fcc4e47871b0a9d Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 21 Oct 2015 16:18:18 +0800
-Subject: [PATCH] ASoC: rt298: fix wrong setting of gpio2_en
+>From 9eee0988f01758515ff54a5cba76c1ff24ad3d92 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Mon, 5 Oct 2015 21:23:48 +0800
+Subject: [PATCH] ASoC: rt298: Make rt298_index_def const
 
-The register value to enable gpio2 was incorrect. So fix it.
+The index_cache is per instance run time state but rt298_index_def is not.
+Make rt298_index_def const and make a copy of memory for index_cache rather
+than directly use the rt298_index_def.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt298.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index d3e30a6..f823eb5 100644
+index 3c2f0f8..ef8e23a 100644
 --- a/sound/soc/codecs/rt298.c
 +++ b/sound/soc/codecs/rt298.c
-@@ -1214,7 +1214,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
- 	mdelay(10);
+@@ -49,7 +49,7 @@ struct rt298_priv {
+ 	int is_hp_in;
+ };
  
- 	if (!rt298->pdata.gpio2_en)
--		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x4000);
-+		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x40);
- 	else
- 		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0);
+-static struct reg_default rt298_index_def[] = {
++static const struct reg_default rt298_index_def[] = {
+ 	{ 0x01, 0xaaaa },
+ 	{ 0x02, 0x8aaa },
+ 	{ 0x03, 0x0002 },
+@@ -1165,7 +1165,11 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 		return -ENODEV;
+ 	}
  
+-	rt298->index_cache = rt298_index_def;
++	rt298->index_cache = devm_kmemdup(&i2c->dev, rt298_index_def,
++					  sizeof(rt298_index_def), GFP_KERNEL);
++	if (!rt298->index_cache)
++		return -ENOMEM;
++
+ 	rt298->index_cache_size = INDEX_CACHE_SIZE;
+ 	rt298->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt298);
 -- 
 2.6.1
