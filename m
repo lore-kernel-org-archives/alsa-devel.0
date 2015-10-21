@@ -1,134 +1,69 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [alsa-devel] HDMI codec, way forward?
-Date: Wed, 21 Oct 2015 17:36:01 +0200
-Message-ID: <20151021153601.GH16848@phenom.ffwll.local>
-References: <20151018171641.GV32532@n2100.arm.linux.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: HDMI codec, way forward?
+Date: Wed, 21 Oct 2015 21:22:43 +0530
+Message-ID: <20151021155243.GF27370@localhost>
+References: <20151016133717.GI32532@n2100.arm.linux.org.uk>
+ <20151018150834.GP27370@localhost>
+ <20151018152048.GT32532@n2100.arm.linux.org.uk>
+ <20151018161329.GV27370@localhost>
+ <20151018171641.GV32532@n2100.arm.linux.org.uk>
  <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
  <20151020080800.GU32532@n2100.arm.linux.org.uk>
- <20151020140148.GC27370@localhost>
- <20151021092744.GC32532@n2100.arm.linux.org.uk>
- <s5heggol4o7.wl-tiwai@suse.de>
- <20151021140307.GE32532@n2100.arm.linux.org.uk>
- <s5ha8rcl3c8.wl-tiwai@suse.de> <s5hzizcjnjg.wl-tiwai@suse.de>
+ <20151020140148.GC27370@localhost> <87wpugwpqr.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id C67212606BB
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 17:49:29 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hzizcjnjg.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+In-Reply-To: <87wpugwpqr.fsf@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, broonie@kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>, "Deak, Imre" <imre.deak@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBPY3QgMjEsIDIwMTUgYXQgMDQ6Mzc6MDdQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMjEgT2N0IDIwMTUgMTY6MTA6MzEgKzAyMDAsCj4gVGFrYXNoaSBJd2Fp
-IHdyb3RlOgo+ID4gCj4gPiBPbiBXZWQsIDIxIE9jdCAyMDE1IDE2OjAzOjA3ICswMjAwLAo+ID4g
-UnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gPiAKPiA+ID4gT24gV2VkLCBPY3Qg
-MjEsIDIwMTUgYXQgMDM6NDE6NDRQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gPiA+
-IE9uIFdlZCwgMjEgT2N0IDIwMTUgMTE6Mjc6NDQgKzAyMDAsCj4gPiA+ID4gUnVzc2VsbCBLaW5n
-IC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBPbiBUdWUsIE9jdCAyMCwg
-MjAxNSBhdCAwNzozMTo0OFBNICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+ID4gPiA+ID4gPiBP
-biBUdWUsIE9jdCAyMCwgMjAxNSBhdCAwOTowODowMEFNICswMTAwLCBSdXNzZWxsIEtpbmcgLSBB
-Uk0gTGludXggd3JvdGU6Cj4gPiA+ID4gPiA+ID4gPiA+IEN1cnJlbnRseSBpOTE1L2F1ZGlvIGNv
-bXBvbmVudCB3b3JrcyBhcyB5b3UgZGVzY3JpYmVkLiAgVGhlIGF1ZGlvIGlzCj4gPiA+ID4gPiA+
-ID4gPiA+IG9wdGlvbmFsIGFuZCBIRE1JIGdyYXBoaWNzIHdvcmtzIHdpdGhvdXQgYXVkaW8sIHdo
-aWxlIEhETUkgSEQtYXVkaW8KPiA+ID4gPiA+ID4gPiA+ID4gbWFuZGF0ZXMgaTkxNSBncmFwaGlj
-cy4KPiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gUmlnaHQsIGJ1dCB3ZSBhbHNvIGFk
-ZCBhZGRpdGlvbmFsIGludGVyZmFjZSBvbiB0b3Agb2YgdGhpcyB0byBhbGxvdwo+ID4gPiA+ID4g
-PiA+ID4gdGhpbmdzIGxpa2UgZW5zdXJpbmcgZGlzcGxheSBpcyBvbiB3aGVuIGF1ZGlvIHdhbnRz
-IHRvIHJ1biBhbmQgbm93Cj4gPiA+ID4gPiA+ID4gPiBub3RpZmljYXRpb24gZm9yIGV2ZW50cy4K
-PiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gSSBkb24ndCBzZWUgYSByZWFzb24gd2h5
-IHRoaXMgY2FuIGJlIHVzZWQgYXMgc2luZ2xlIGludGVyZmFjZSB0byBiaW5kIGFzCj4gPiA+ID4g
-PiA+ID4gPiB3ZWxsIGFzIHRhbGsgdG8gZGlzcGxheSBmcm9tIHZhcmlvdXMgY29tcG9uZW50cywg
-dW5sZXNzIEkgbWlzc2VkIG9idmlvdXMKPiA+ID4gPiA+ID4gPiA+IHdoaWNoIHByZXZlbnQgdXMg
-ZnJvbSBkb2luZyB0aGlzIGluIG5vbiBpOTE1IGNhc2VzLi4uCj4gPiA+ID4gPiA+ID4gCj4gPiA+
-ID4gPiA+ID4gTWF5YmUgSSBjYW4gY29tbWVudCBtb3JlIHNwZWNpZmljYWxseSBpZiBJIHNhdyB0
-aGUgY29kZS4gIFJpZ2h0IG5vdyBhbGwKPiA+ID4gPiA+ID4gPiBJJ20gYXdhcmUgb2YgaXMgdGhp
-cyBpZGVhIHdpdGhvdXQgYW55IGNvZGUsIGFuZCBJIGRvbid0IGxpa2UgaXQuCj4gPiA+ID4gPiA+
-IAo+ID4gPiA+ID4gPiBPaywgaSB3aWxsIGJlIHBvc3QgbXkgcGF0Y2hlcyB0b21vcnJvdy4gRldJ
-VyB1c2VzIGludGVyZmFjZSBpbgo+ID4gPiA+ID4gPiBzb3VuZC9oZGEvaGRhY19pOTE1LmMgZm9y
-IGRpc3BsYXkgcG93ZXIgdXAvZG93bgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBUaGlzOgo+ID4gPiA+
-ID4gCj4gPiA+ID4gPiAgICAgICAgIGNvbXBvbmVudF9tYXRjaF9hZGQoZGV2LCAmbWF0Y2gsIGhk
-YWNfY29tcG9uZW50X21hc3Rlcl9tYXRjaCwgYnVzKTsKPiA+ID4gPiA+ICAgICAgICAgcmV0ID0g
-Y29tcG9uZW50X21hc3Rlcl9hZGRfd2l0aF9tYXRjaChkZXYsICZoZGFjX2NvbXBvbmVudF9tYXN0
-ZXJfb3BzLAo+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIG1hdGNoKTsKPiA+ID4gPiA+ICAgICAgICAgaWYgKHJldCA8IDApCj4gPiA+ID4gPiAg
-ICAgICAgICAgICAgICAgZ290byBvdXRfZXJyOwo+ID4gPiA+ID4gCj4gPiA+ID4gPiAgICAgICAg
-IC8qCj4gPiA+ID4gPiAgICAgICAgICAqIEF0bSwgd2UgZG9uJ3Qgc3VwcG9ydCBkZWZlcnJpbmcg
-dGhlIGNvbXBvbmVudCBiaW5kaW5nLCBzbyBtYWtlIHN1cmUKPiA+ID4gPiA+ICAgICAgICAgICog
-aTkxNSBpcyBsb2FkZWQgYW5kIHRoYXQgdGhlIGJpbmRpbmcgc3VjY2Vzc2Z1bGx5IGNvbXBsZXRl
-cy4KPiA+ID4gPiA+ICAgICAgICAgICovCj4gPiA+ID4gPiAgICAgICAgIHJlcXVlc3RfbW9kdWxl
-KCJpOTE1Iik7Cj4gPiA+ID4gPiAKPiA+ID4gPiA+ICAgICAgICAgaWYgKCFhY29tcC0+b3BzKSB7
-Cj4gPiA+ID4gPiAgICAgICAgICAgICAgICAgcmV0ID0gLUVOT0RFVjsKPiA+ID4gPiA+ICAgICAg
-ICAgICAgICAgICBnb3RvIG91dF9tYXN0ZXJfZGVsOwo+ID4gPiA+ID4gICAgICAgICB9Cj4gPiA+
-ID4gPiAKPiA+ID4gPiA+IGlzIHJlYWxseSBub3QgbmljZS4KPiA+ID4gPiAKPiA+ID4gPiBZZWFo
-LCBhZG1pdHRlZGx5IGl0J3MgYSByZWFsbHkgdWdseSB3b3JrYXJvdW5kLiAgSXQncyBjb2RlZCBp
-biB0aGF0Cj4gPiA+ID4gd2F5IGp1c3QgdG8gbWFrZSBvdXIgbGl2ZXMgZWFzaWVyOiBpdCB3b3Jr
-cyB3ZWxsIGluIG1vc3QgY2FzZXMgZm9yCj4gPiA+ID4gaTkxNSAvIGhkLWF1ZGlvLgo+ID4gPiA+
-IAo+ID4gPiA+IEFjdHVhbGx5LCBpdCdzIGVhc3kgdG8gbW9kaWZ5IHRoZSBoZGEgY29kZSBpbiB0
-aGUgcmlnaHQgd2F5LCBpLmUuIHRvCj4gPiA+ID4gZGVmZXIgdmlhIGNvbXBvbmVudCBiaW5kIG9w
-cy4gIEhvd2V2ZXIsIG9uZSBkcmF3YmFjayBpcyB0aGF0IGl0J3Mgbm90Cj4gPiA+ID4gdHJpdmlh
-bCB0byBoYW5kbGUgdGhlIGZhbGxiYWNrIGNhc2U7IG5hbWVseSwgSEQtYXVkaW8gbWlnaHQgbm90
-IG5lZWQKPiA+ID4gPiBpOTE1IGJpbmRpbmcsIGRlcGVuZGluZyBvbiB0aGUgY2hpcCBtb2RlbCBh
-bmQgdGhlIGNvbmZpZ3VyYXRpb24uCj4gPiA+ID4gCj4gPiA+ID4gQnJhc3dlbGwgYW5kIFNreWxh
-a2UgaGF2ZSBhICh2aXJ0dWFsbHkpIHNpbmdsZSBhdWRpbyBjb250cm9sbGVyIGFzCj4gPiA+ID4g
-ZGVmYXVsdCwgYW5kIHRoaXMgbWFuYWdlcyBib3RoIHRoZSBhbmFsb2cgYW5kIEhETUkvRFAgY29k
-ZWNzLiAgVGhlCj4gPiA+ID4gaTkxNSBpbnRlcmFjdGlvbiBpcyByZXF1aXJlZCBvbmx5IGZvciB0
-aGUgbGF0dGVyIGNvZGVjcywgYW5kIHRodXMgZm9yCj4gPiA+ID4gdGhlIGZvcm1lciwgaXQncyBv
-cHRpb25hbC4gIElmIHdlIGRlZmVyIGJpbmRpbmcsIHRoZSBpbnN0YW50aWF0aW9uCj4gPiA+ID4g
-d29uJ3QgaGFwcGVuIHVubGVzcyBpdCdzIGJvdW5kIHdpdGggaTkxNS4gIFNvLCBpZiBpOTE1IGlz
-bid0Cj4gPiA+ID4gaW5pdGlhbGl6ZWQgKGUuZy4gYnkgYm9vdGluZyB3aXRoIG5vbW9kZXNldCBv
-cHRpb24pLCB0aGUgd2hvbGUgYXVkaW8KPiA+ID4gPiB3aWxsIGJlIGdvbmUsIHRvby4gIE9UT0gs
-IEhhc3dlbGwgYW5kIEJyYXN3ZWxsIGhhdmUgYSBkZWRpY2F0ZWQgSERBCj4gPiA+ID4gY29udHJv
-bGxlciBmb3IgSERNSS9EUCwgYW5kIHRoZXkgbXVzdCBiZSBkaXNhYmxlZCAob3IgZmFpbCkgdW5s
-ZXNzCj4gPiA+ID4gYm91bmQgd2l0aCBncmFwaGljcy4KPiA+ID4gPiAKPiA+ID4gPiBJdCdzIGEg
-Y29ybmVyIGNhc2UsIHNvIHdlIG1pZ2h0IGJldHRlciBpZ25vcmUgdGhpcy4gIEJ1dCBpdCdkIGJl
-Cj4gPiA+ID4gY2VydGFpbmx5IGEgInJlZ3Jlc3Npb24iIC0tIGF0IGxlYXN0LCBJIHVzZWQgdG8g
-dGVzdCB0aGlzIGluIHRoYXQgd2F5Cj4gPiA+ID4gc29tZXRpbWVzIGluIHRoZSBwYXN0LiAgU28g
-aXQgcmVtYWlucyBpbiB0aGUgY3VycmVudCB3YXkgYXMgaXMuCj4gPiA+ID4gCj4gPiA+ID4gSXQn
-cyBvbmUgb2YgdGhlIHJlYXNvbnMgSSBtZW50aW9uZWQgaXQgYmVpbmcgYSBzdG9wIGdhcC4gIEJ1
-dCwgSSB0aGluawo+ID4gPiA+IHRoZSBjb25jZXB0LCBwYXNzaW5nIG9wcyB2aWEgY29tcG9uZW50
-LCBpcyBhY3R1YWxseSB3b3JraW5nLCBhbmQKPiA+ID4gPiBzaG91bGQgYmUgYXBwbGljYWJsZSB0
-byBvdGhlciBkcm0vYXVkaW8gZHJpdmVycy4gIFRoYXQncyB0aGUgcG9pbnQuCj4gPiA+IAo+ID4g
-PiBJdCdzIG9ubHkgdGhlIHBvaW50IGlmIHlvdSBjYW4gY29kZSBpdCB1cCBwcm9wZXJseSwgd2hp
-Y2ggZnJvbSB3aGF0IEkKPiA+ID4gcmVhZCBpbiB0aGF0IGZpbGUsIGl0IGlzbid0Lgo+ID4gCj4g
-PiBBbiBpZGVhIGNhbiBmbHkgd2l0aG91dCBjb2RpbmcsIHRvbyA6KQo+ID4gCj4gPiA+IEJ1aWxk
-IHRoZSBpOTE1IERSTSBkcml2ZXJzIGFzIGEgbW9kdWxlLCBsb2FkIHVwIHRoZSBzeXN0ZW0sIGFu
-ZCB0aGVuCj4gPiA+IHRyeSByZW1vdmluZyB0aGUgaTkxNSBEUk0gbW9kdWxlIGFuZCBzZWUgd2hh
-dCBoYXBwZW5zIHRvIHRoZSBhdWRpbyBwYXJ0Lgo+ID4gPiBGb3Igc3RhcnRlcnMsIHlvdSBoYXZl
-IG5vIHByb3RlY3Rpb24gd2hhdCBzbyBldmVyIGFnYWluc3QgYWNvbXAtPm9wcyBvcgo+ID4gPiBh
-Y29tcC0+ZGV2IGJlY29taW5nIE5VTEwgLSBpdCdzIGhlbGxpc2hseSByYWN5Lgo+ID4gCj4gPiBZ
-ZXMsIHZlcnkgbGlrZWx5Lgo+ID4gCj4gPiA+IFNlY29uZGx5LCB5b3UgcmVqZWN0IHRoZSBpbml0
-aWFsaXNhdGlvbiBpZiBhY29tcC0+b3BzIGlzbid0IHNldCwgYnV0IHlvdQo+ID4gPiBhbGxvdyBh
-Y29tcC0+b3BzIHRvIGxhdGVyIGJlY29tZSB1bnNldCBieSB0aGUgaTkxNSBEUk0gbW9kdWxlIGJl
-aW5nCj4gPiA+IHJlbW92ZWQuICBJZiB5b3UgY2FuIGNvcGUgd2l0aCBhY29tcC0+b3BzIGJlaW5n
-IHVuc2V0IGF0IGEgcmFuZG9tIHBvaW50Cj4gPiA+IGR1cmluZyB0aGUgYXVkaW8gZHJpdmVyJ3Mg
-dXNlLCB3aHkgY2FuJ3QgeW91IGNvcGUgd2l0aCBpdCBiZWluZyBzZXQgYXQKPiA+ID4gc29tZSBy
-YW5kb20gcG9pbnQgbGF0ZXI/Cj4gPiAKPiA+IFNldHRpbmcvdW5zZXR0aW5nIG9uIHRoZSBmbHkg
-d291bGQgYmUgcGlja3kgYmVjYXVzZSB0aGUgY29kZSBkb2VzCj4gPiByZWZjb3VudGluZy4gIE1h
-eWJlIGFuIGVhc2llciBvcHRpb24gaXMgdG8gaW5jL2RlYyBtb2R1bGUgdXNhZ2UKPiA+IGNvdW50
-IGFwcHJvcHJpYXRlbHkgaW4gdXNlLgo+IAo+IC4uLiBhbmQgYWN0dWFsbHkgd2UgcGluIGF0IG1h
-c3RlciBiaW5kOgo+IAo+IHN0YXRpYyBpbnQgaGRhY19jb21wb25lbnRfbWFzdGVyX2JpbmQoc3Ry
-dWN0IGRldmljZSAqZGV2KQo+IHsKPiAuLi4uLgo+IAkvKgo+IAkgKiBBdG0sIHdlIGRvbid0IHN1
-cHBvcnQgZHluYW1pYyB1bmJpbmRpbmcgaW5pdGlhdGVkIGJ5IHRoZSBjaGlsZAo+IAkgKiBjb21w
-b25lbnQsIHNvIHBpbiBpdHMgY29udGFpbmluZyBtb2R1bGUgdW50aWwgd2UgdW5iaW5kLgo+IAkg
-Ki8KPiAJaWYgKCF0cnlfbW9kdWxlX2dldChhY29tcC0+b3BzLT5vd25lcikpIHsKPiAKPiBzbyB1
-bmxvYWRpbmcgaTkxNSBtb2R1bGUgd29uJ3QgaGFwcGVuIChidXQgb3RoZXIgbWV0aG9kIGZvciB1
-bmJpbmRpbmcKPiBzdGlsbCBwb3NzaWJsZSkuCgpQaW5uaW5nIHRoZSBtb2R1bGUgb25seSBwcmV2
-ZW50cyB0aGUgY29kZSBmcm9tIGRpc2FwcGVhcmluZywgbm90IHRoZQpkcml2ZXIgaXRzZWxmIGZy
-b20gZGlzYXBwZWFyaW5nLiBZb3UgY2FuIHN0aWxsIGp1c3QgbWFudWFsbHkgdW5iaW5kCnRocm91
-Z2ggc3lzZnMuIFRoZSByZWFsIGZpeCBpcyByZWFsbHkgd2hhdCBSdXNzZWxsIGRlc2NyaWJlZC4K
-LURhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9y
-YXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9kcmktZGV2ZWwK
+On Wed, Oct 21, 2015 at 12:11:08PM +0300, Jani Nikula wrote:
+> On Tue, 20 Oct 2015, Vinod Koul <vinod.koul@intel.com> wrote:
+> > On Tue, Oct 20, 2015 at 09:08:00AM +0100, Russell King - ARM Linux wrote:
+> >> > > Currently i915/audio component works as you described.  The audio is
+> >> > > optional and HDMI graphics works without audio, while HDMI HD-audio
+> >> > > mandates i915 graphics.
+> >> > 
+> >> > Right, but we also add additional interface on top of this to allow
+> >> > things like ensuring display is on when audio wants to run and now
+> >> > notification for events.
+> >> > 
+> >> > I don't see a reason why this can be used as single interface to bind as
+> >> > well as talk to display from various components, unless I missed obvious
+> >> > which prevent us from doing this in non i915 cases...
+> >> 
+> >> Maybe I can comment more specifically if I saw the code.  Right now all
+> >> I'm aware of is this idea without any code, and I don't like it.
+> >
+> > Ok, i will be post my patches tomorrow. FWIW uses interface in
+> > sound/hda/hdac_i915.c for display power up/down
+> 
+> Side note, some of the Intel HD audio controller registers are in a
+> power domain controlled by i915. The audio drivers needs to do power
+> get/put, otherwise the audio driver loses its marbles when i915 switches
+> off power. OTOH audio needs to be a good citizen so i915 can reach low
+> power states.
+> 
+> Just a shout from the back, unsure if this is relevant at this point...
+
+We are putting the get/put calls in driver's suspend and resume handler,
+that way we would suspend when not in use and ensure display suspends
+too...
+
+-- 
+~Vinod
