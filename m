@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Drop unneeded properties
-	rockchip i2s/spdif bindings" to the asoc tree
-Date: Wed, 21 Oct 2015 13:34:11 +0100
-Message-ID: <E1Zosap-0003ym-UA@finisterre>
-References: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
+Subject: Applied "ASoC: rt298: fix remove unnedded clk setting"
+	to the asoc tree
+Date: Wed, 21 Oct 2015 13:34:15 +0100
+Message-ID: <E1Zosat-0003zF-Fu@finisterre>
+References: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24E382606B2
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:26 +0200 (CEST)
-In-Reply-To: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8339426665D
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:29 +0200 (CEST)
+In-Reply-To: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Drop unneeded properties rockchip i2s/spdif bindings
+   ASoC: rt298: fix remove unnedded clk setting
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 13531520e3106e73474225b68b889e9dc7da329e Mon Sep 17 00:00:00 2001
-From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Date: Mon, 19 Oct 2015 10:15:39 +0200
-Subject: [PATCH] ASoC: rockchip: Drop unneeded properties rockchip i2s/spdif
- bindings
+>From 38b409d66fa84e91afd5340fd772609185b20fa9 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 21 Oct 2015 16:18:19 +0800
+Subject: [PATCH] ASoC: rt298: fix remove unnedded clk setting
 
-Neither the rockchip i2s nor the rockchip spdif binding support child
-devices so #address-cells and #size-cells properties aren't required.
-Remove these from the bindings.
+The bit is no longer present. So remove it.
 
-Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt   | 4 ----
- Documentation/devicetree/bindings/sound/rockchip-spdif.txt | 4 ----
- 2 files changed, 8 deletions(-)
+ sound/soc/codecs/rt298.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 9b82c20..085e0bc 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -12,8 +12,6 @@ Required properties:
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the I2S interrupt.
--- #address-cells: should be 1.
--- #size-cells: should be 0.
- - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
- 	Documentation/devicetree/bindings/dma/dma.txt
- - dma-names: should include "tx" and "rx".
-@@ -28,8 +26,6 @@ i2s@ff890000 {
- 	compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
- 	reg = <0xff890000 0x10000>;
- 	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
--	#address-cells = <1>;
--	#size-cells = <0>;
- 	dmas = <&pdma1 0>, <&pdma1 1>;
- 	dma-names = "tx", "rx";
- 	clock-names = "i2s_hclk", "i2s_clk";
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-index 33dd82c..e64dbde 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-@@ -12,8 +12,6 @@ Required properties:
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the SPDIF interrupt.
--- #address-cells: should be 1.
--- #size-cells: should be 0.
- - dmas: DMA specifiers for tx dma. See the DMA client binding,
-   Documentation/devicetree/bindings/dma/dma.txt
- - dma-names: should be "tx"
-@@ -33,8 +31,6 @@ spdif: spdif@0x1011e000 {
- 	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
- 	reg = <0x1011e000 0x2000>;
- 	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--	#address-cells = <1>;
--	#size-cells = <0>;
- 	dmas = <&dmac1_s 8>;
- 	dma-names = "tx";
- 	clock-names = "hclk", "mclk";
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index ef8e23a..f00fe02 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -856,8 +856,6 @@ static int rt298_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		snd_soc_update_bits(codec,
+ 			RT298_I2S_CTRL2, 0x0100, 0x0100);
+ 		snd_soc_update_bits(codec,
+-			RT298_PLL_CTRL, 0x4, 0x4);
+-		snd_soc_update_bits(codec,
+ 			RT298_PLL_CTRL1, 0x20, 0x0);
+ 	}
+ 
 -- 
 2.6.1
