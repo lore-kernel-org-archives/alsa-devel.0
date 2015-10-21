@@ -1,14 +1,14 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: Intel: Add Skylake HDA platform driver
-Date: Wed, 21 Oct 2015 23:53:14 +0300
-Message-ID: <20151021205314.GA9839@mwanda>
+Subject: Re: ASoC: Intel: Skylake: Add SKL DSP initialization
+Date: Wed, 21 Oct 2015 23:53:48 +0300
+Message-ID: <20151021205348.GB9839@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id B3F892612AE
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 22:53:40 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DBA02667B1
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 22:54:01 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,41 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
+To: subhransu.s.prusty@intel.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jeeja KP,
+Hello Subhransu S. Prusty,
 
-This is a semi-automatic email about new static checker warnings.
+The patch a750ba5f5a56: "ASoC: Intel: Skylake: Add SKL DSP
+initialization" from Jul 10, 2015, leads to the following static
+checker warning:
 
-The patch a40e693c7f5e: "ASoC: Intel: Add Skylake HDA platform 
-driver" from Jul 9, 2015, leads to the following Smatch complaint:
+	sound/soc/intel/skylake/skl-sst.c:270 skl_sst_dsp_init()
+	info: ignoring unreachable code.
 
-sound/soc/intel/skylake/skl-pcm.c:802 skl_get_position()
-	 warn: variable dereferenced before check 'substream->runtime' (see line 792)
+sound/soc/intel/skylake/skl-sst.c
+   252          sst->dsp_ops = dsp_ops;
+   253          sst->fw_ops = skl_fw_ops;
+   254  
+   255          ret = skl_ipc_init(dev, skl);
+   256          if (ret)
+   257                  return ret;
+   258  
+   259          ret = sst->fw_ops.load_fw(sst);
+   260          if (ret < 0) {
+   261                  dev_err(dev, "Load base fw failed : %d", ret);
+   262                  return ret;
 
-sound/soc/intel/skylake/skl-pcm.c
-   791		struct snd_pcm_substream *substream = hstr->substream;
-   792		struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-                                            ^^^^^^^^^^^^^^^^^^^^^^
-Dereference inside function.
+Presumably this should be a "goto free_ipc;" here?
 
-   793		unsigned int pos;
-   794		int delay;
-   795	
-   796		/* use the position buffer as default */
-   797		pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
-   798	
-   799		if (pos >= hdac_stream(hstream)->bufsize)
-   800			pos = 0;
-   801	
-   802		if (substream->runtime) {
-                    ^^^^^^^^^^^^^^^^^^
-Checked too late.
+   263          }
+   264  
+   265          if (dsp)
+   266                  *dsp = skl;
+   267  
+   268          return 0;
+   269  
+   270          skl_ipc_free(&skl->ipc);
+                ^^^^^^^^^^^^^^^^^^^^^^^
+Unreachable.
 
-   803			delay = skl_get_delay_from_lpib(ebus, hstream, pos)
-   804							 + codec_delay;
+   271          return ret;
+   272  }
+   273  EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+
 
 regards,
 dan carpenter
