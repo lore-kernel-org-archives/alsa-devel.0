@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: fix remove unnedded clk setting"
+Subject: Applied "ASoC: rt298: fix wrong setting of gpio2_en"
 	to the asoc tree
-Date: Wed, 21 Oct 2015 13:34:15 +0100
-Message-ID: <E1Zosat-0003zF-Fu@finisterre>
-References: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
+Date: Wed, 21 Oct 2015 13:34:20 +0100
+Message-ID: <E1Zosay-0003zj-Au@finisterre>
+References: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8339426665D
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:29 +0200 (CEST)
-In-Reply-To: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 48B582606B7
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:32 +0200 (CEST)
+In-Reply-To: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: fix remove unnedded clk setting
+   ASoC: rt298: fix wrong setting of gpio2_en
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 38b409d66fa84e91afd5340fd772609185b20fa9 Mon Sep 17 00:00:00 2001
+>From f8f2dc4a7127725383c93b501fcc4e47871b0a9d Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 21 Oct 2015 16:18:19 +0800
-Subject: [PATCH] ASoC: rt298: fix remove unnedded clk setting
+Date: Wed, 21 Oct 2015 16:18:18 +0800
+Subject: [PATCH] ASoC: rt298: fix wrong setting of gpio2_en
 
-The bit is no longer present. So remove it.
+The register value to enable gpio2 was incorrect. So fix it.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/rt298.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index ef8e23a..f00fe02 100644
+index d3e30a6..f823eb5 100644
 --- a/sound/soc/codecs/rt298.c
 +++ b/sound/soc/codecs/rt298.c
-@@ -856,8 +856,6 @@ static int rt298_set_dai_sysclk(struct snd_soc_dai *dai,
- 		snd_soc_update_bits(codec,
- 			RT298_I2S_CTRL2, 0x0100, 0x0100);
- 		snd_soc_update_bits(codec,
--			RT298_PLL_CTRL, 0x4, 0x4);
--		snd_soc_update_bits(codec,
- 			RT298_PLL_CTRL1, 0x20, 0x0);
- 	}
+@@ -1214,7 +1214,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 	mdelay(10);
+ 
+ 	if (!rt298->pdata.gpio2_en)
+-		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x4000);
++		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x40);
+ 	else
+ 		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0);
  
 -- 
 2.6.1
