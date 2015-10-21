@@ -1,16 +1,14 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2 2/2] ASoC: rt5640: Fill up the IN3's support
-Date: Wed, 21 Oct 2015 09:46:06 +0800
-Message-ID: <1445391966-24849-2-git-send-email-oder_chiou@realtek.com>
-References: <1445391966-24849-1-git-send-email-oder_chiou@realtek.com>
+From: han.lu@intel.com
+Subject: [PATCH 1/1] BAT: Add man page
+Date: Wed, 21 Oct 2015 14:53:27 +0800
+Message-ID: <1445410407-30442-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id DEEF22604FF
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 03:46:25 +0200 (CEST)
-In-Reply-To: <1445391966-24849-1-git-send-email-oder_chiou@realtek.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FAB72605FA
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 08:56:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,153 +18,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com, pierre-louis.bossart@intel.com
+To: tiwai@suse.de, liam.r.girdwood@intel.com, bernard.gautier@intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- Documentation/devicetree/bindings/sound/rt5640.txt |  5 ++++-
- include/sound/rt5640.h                             |  3 ++-
- sound/soc/codecs/rt5640.c                          | 22 +++++++++++++++++++++-
- 3 files changed, 27 insertions(+), 3 deletions(-)
+From: "Lu, Han" <han.lu@intel.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
-index 5d062a5..9e62f6e 100644
---- a/Documentation/devicetree/bindings/sound/rt5640.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5640.txt
-@@ -14,7 +14,8 @@ Optional properties:
- 
- - realtek,in1-differential
- - realtek,in2-differential
--  Boolean. Indicate MIC1/2 input are differential, rather than single-ended.
-+- realtek,in3-differential
-+  Boolean. Indicate MIC1/2/3 input are differential, rather than single-ended.
- 
- - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
- 
-@@ -27,6 +28,8 @@ Pins on the device (for linking into audio routes) for RT5639/RT5640:
-   * IN1N
-   * IN2P
-   * IN2N
-+  * IN3P
-+  * IN3N
-   * HPOL
-   * HPOR
-   * LOUTL
-diff --git a/include/sound/rt5640.h b/include/sound/rt5640.h
-index 59d26dd..e3c84b9 100644
---- a/include/sound/rt5640.h
-+++ b/include/sound/rt5640.h
-@@ -12,9 +12,10 @@
- #define __LINUX_SND_RT5640_H
- 
- struct rt5640_platform_data {
--	/* IN1 & IN2 can optionally be differential */
-+	/* IN1 & IN2 & IN3 can optionally be differential */
- 	bool in1_diff;
- 	bool in2_diff;
-+	bool in3_diff;
- 
- 	bool dmic_en;
- 	bool dmic1_data_pin; /* 0 = IN1P; 1 = GPIO3 */
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index e1ceeb8..f2beb1a 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -405,11 +405,14 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
- 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5640_DAC1_DIG_VOL,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			175, 0, dac_vol_tlv),
--	/* IN1/IN2 Control */
-+	/* IN1/IN2/IN3 Control */
- 	SOC_SINGLE_TLV("IN1 Boost", RT5640_IN1_IN2,
- 		RT5640_BST_SFT1, 8, 0, bst_tlv),
- 	SOC_SINGLE_TLV("IN2 Boost", RT5640_IN3_IN4,
- 		RT5640_BST_SFT2, 8, 0, bst_tlv),
-+	SOC_SINGLE_TLV("IN3 Boost", RT5640_IN1_IN2,
-+		RT5640_BST_SFT2, 8, 0, bst_tlv),
+Add more information about BAT utility, including design intent,
+principles, use mode, hardware connection, options, example and
+return value.
+
+Signed-off-by: Lu, Han <han.lu@intel.com>
+
+diff --git a/bat/Makefile.am b/bat/Makefile.am
+index 0849d0d..3a76d7f 100644
+--- a/bat/Makefile.am
++++ b/bat/Makefile.am
+@@ -1,4 +1,7 @@
+ bin_PROGRAMS = bat
++man_MANS = bat.1
 +
- 	/* INL/INR Volume Control */
- 	SOC_DOUBLE_TLV("IN Capture Volume", RT5640_INL_INR_VOL,
- 			RT5640_INL_VOL_SFT, RT5640_INR_VOL_SFT,
-@@ -598,6 +601,8 @@ static const struct snd_kcontrol_new rt5640_rec_l_mix[] = {
- 			RT5640_M_HP_L_RM_L_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("INL Switch", RT5640_REC_L2_MIXER,
- 			RT5640_M_IN_L_RM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5640_REC_L2_MIXER,
-+			RT5640_M_BST2_RM_L_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("BST2 Switch", RT5640_REC_L2_MIXER,
- 			RT5640_M_BST4_RM_L_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("BST1 Switch", RT5640_REC_L2_MIXER,
-@@ -611,6 +616,8 @@ static const struct snd_kcontrol_new rt5640_rec_r_mix[] = {
- 			RT5640_M_HP_R_RM_R_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("INR Switch", RT5640_REC_R2_MIXER,
- 			RT5640_M_IN_R_RM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5640_REC_R2_MIXER,
-+			RT5640_M_BST2_RM_R_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("BST2 Switch", RT5640_REC_R2_MIXER,
- 			RT5640_M_BST4_RM_R_SFT, 1, 1),
- 	SOC_DAPM_SINGLE("BST1 Switch", RT5640_REC_R2_MIXER,
-@@ -1065,6 +1072,8 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
- 	SND_SOC_DAPM_INPUT("IN1N"),
- 	SND_SOC_DAPM_INPUT("IN2P"),
- 	SND_SOC_DAPM_INPUT("IN2N"),
-+	SND_SOC_DAPM_INPUT("IN3P"),
-+	SND_SOC_DAPM_INPUT("IN3N"),
- 	SND_SOC_DAPM_PGA("DMIC L1", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("DMIC R1", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("DMIC L2", SND_SOC_NOPM, 0, 0, NULL, 0),
-@@ -1081,6 +1090,8 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
- 		RT5640_PWR_BST1_BIT, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("BST2", RT5640_PWR_ANLG2,
- 		RT5640_PWR_BST4_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST3", RT5640_PWR_ANLG2,
-+		RT5640_PWR_BST2_BIT, 0, NULL, 0),
- 	/* Input Volume */
- 	SND_SOC_DAPM_PGA("INL VOL", RT5640_PWR_VOL,
- 		RT5640_PWR_IN_L_BIT, 0, NULL, 0),
-@@ -1310,6 +1321,7 @@ static const struct snd_soc_dapm_widget rt5639_specific_dapm_widgets[] = {
- static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
- 	{"IN1P", NULL, "LDO2"},
- 	{"IN2P", NULL, "LDO2"},
-+	{"IN3P", NULL, "LDO2"},
++EXTRA_DIST = bat.1
  
- 	{"DMIC L1", NULL, "DMIC1"},
- 	{"DMIC R1", NULL, "DMIC1"},
-@@ -1320,18 +1332,22 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
- 	{"BST1", NULL, "IN1N"},
- 	{"BST2", NULL, "IN2P"},
- 	{"BST2", NULL, "IN2N"},
-+	{"BST3", NULL, "IN3P"},
-+	{"BST3", NULL, "IN3N"},
- 
- 	{"INL VOL", NULL, "IN2P"},
- 	{"INR VOL", NULL, "IN2N"},
- 
- 	{"RECMIXL", "HPOL Switch", "HPOL"},
- 	{"RECMIXL", "INL Switch", "INL VOL"},
-+	{"RECMIXL", "BST3 Switch", "BST3"},
- 	{"RECMIXL", "BST2 Switch", "BST2"},
- 	{"RECMIXL", "BST1 Switch", "BST1"},
- 	{"RECMIXL", "OUT MIXL Switch", "OUT MIXL"},
- 
- 	{"RECMIXR", "HPOR Switch", "HPOR"},
- 	{"RECMIXR", "INR Switch", "INR VOL"},
-+	{"RECMIXR", "BST3 Switch", "BST3"},
- 	{"RECMIXR", "BST2 Switch", "BST2"},
- 	{"RECMIXR", "BST1 Switch", "BST1"},
- 	{"RECMIXR", "OUT MIXR Switch", "OUT MIXR"},
-@@ -2260,6 +2276,10 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5640->regmap, RT5640_IN3_IN4,
- 					RT5640_IN_DF2, RT5640_IN_DF2);
- 
-+	if (rt5640->pdata.in3_diff)
-+		regmap_update_bits(rt5640->regmap, RT5640_IN1_IN2,
-+					RT5640_IN_DF2, RT5640_IN_DF2);
+ bat_SOURCES = \
+ 	bat.c \
+diff --git a/bat/bat.1 b/bat/bat.1
+new file mode 100644
+index 0000000..e00fc27
+--- /dev/null
++++ b/bat/bat.1
+@@ -0,0 +1,158 @@
++.TH BAT 1 "20th October 2015"
++.SH NAME
++bat \- command\-line sound tester for ALSA sound card driver
 +
- 	rt5640->hp_mute = 1;
- 
- 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
++.SH SYNOPSIS
++\fBbat\fP [\fIflags\fP]
++
++.SH DESCRIPTION
++\fBBAT(Basic Audio Tester)\fP is a simple command\-line utility intended
++to help automate audio driver and sound server testing with little human
++interaction. BAT can be used to test audio quality, stress test features
++and test audio before and after PM state changes.
++
++BAT's design is relatively simple. BAT plays an audio stream and captures
++the same stream in either a digital or analog loop back. It then compares
++the captured stream using a FFT to the original to determine if the test
++case passes or fails.
++
++BAT can either run wholly on the target machine being tested (standalone
++mode) or can run as a client/server mode where by bat client runs on the
++target and runs as a server on a separate tester machine. The client/server
++mode still requires some manual interaction for synchronization, but this
++is actively being developed for future releases.
++
++The hardware testing configuration may require the use of an analog cable
++connecting target to tester machines or a cable to create an analog
++loopback if no loopback mode is not available on the sound hardware that
++is being tested.
++An analog loopback cable can be used to connect the "line in" to "line out"
++jacks to create a loopback. If only headphone and mic jacks (or combo jack)
++are available then the following simple circuit can be used to create an
++analog loopback :-
++
++https://source.android.com/devices/audio/loopback.html
++
++.SH OPTIONS
++.TP
++\fI\-h, \-\-help\fP
++Help: show syntax.
++.TP
++\fI\-D\fP
++Select sound card to be tested by name.
++.TP
++\fI\-P\fP
++Select the playback PCM device.
++.TP
++\fI\-C\fP
++Select the capture PCM device.
++.TP
++\fI\-f\fP
++Sample format
++.br
++Recognized sample formats are: U8 S16_LE S24_3LE S32_LE
++.br
++Some of these may not be available on selected hardware
++.br
++The available format shortcuts are:
++.nf
++\-f cd (16 bit little endian, 44100, stereo) [\-f S16_LE \-c2 \-r44100]
++\-f dat (16 bit little endian, 48000, stereo) [\-f S16_LE \-c2 \-r48000]
++.fi
++If no format is given S16_LE is used.
++.TP
++\fI\-c\fP
++The number of channels. The default is one channel.
++Valid values at the moment are 1 or 2.
++.TP
++\fI\-r\fP
++Sampling rate in Hertz. The default rate is 44100 Hertz.
++Valid values depends on hardware support.
++.TP
++\fI\-n\fP
++Duration of generated signal.
++The value could be either of the two forms:
++.br
++1. Decimal integer, means number of frames;
++.br
++2. Floating point with suffix 's', means number of seconds.
++.br
++The default is 2 seconds.
++.TP
++\fI\-k\fP
++Sigma k value for analysis.
++.br
++The analysis function reads data from WAV file, run FFT against the data
++to get magnitude of frequency vectors, and then calculates the average
++value and standard deviation of frequency vectors. After that, we define
++a threshold:
++.br
++threshold = k * standard_deviation + mean_value
++.br
++Frequencies with amplitude larger than threshold will be recognized as a
++peak, and the frequency with largest peak value will be recognized as a
++detected frequency.
++.br
++BAT then compares the detected frequency to target frequency, to decide
++if the detecting passes or fails.
++.br
++The default value is 3.0.
++.TP
++\fI\-F\fP
++Target frequency for signal generation and analysis, in Hertz.
++The default is 997.0 Hertz.
++Valid range is (DC_THRESHOLD, 40% * Sampling rate).
++.TP
++\fI\-p\fP
++Total number of periods to play or capture.
++.TP
++\fI\-\-log=#\fP
++Write stderr and stdout output to this log file.
++.TP
++\fI\-\-file=#\fP
++Input WAV file for playback.
++.TP
++\fI\-\-saveplay=#\fP
++Target WAV file to save capture test content.
++.TP
++\fI\-\-local\fP
++Internal loopback mode.
++Playback, capture and analysis internal to BAT only. This is intended for
++developers to test new BAT features as no audio is routed outside of BAT.
++
++.SH EXAMPLES
++
++.TP
++\fBbat \-P plughw:0,0 \-C plughw:0,0 \-c 2 \-f S32_LE \-F 250\fR
++Generate and play a sine wave of 250 Hertz with 2 channel and S32_LE format,
++and then capture and analyze.
++
++.TP
++\fBbat \-P plughw:0,0 \-C plughw:0,0 \-\-file 500Hz.wav\fR
++Play the RIFF WAV file "500Hz.wav" which contains 500 Hertz waveform LPCM
++data, and then capture and analyze.
++
++.SH RETURN VALUE
++.br
++On success, returns 0.
++.br
++If no peak be detected, returns -1001;
++.br
++If only DC be detected, returns -1002;
++.br
++If peak frequency does not match with the target frequency, returns -1003.
++
++.SH SEE ALSO
++\fB
++aplay(1)
++\fP
++
++.SH BUGS
++Currently only support RIFF WAV format with PCM data. Please report any bugs to
++the alsa-devel mailing list.
++
++.SH AUTHOR
++\fBbat\fP is by Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bernard Gautier
++<bernard.gautier@intel.com> and Han Lu <han.lu@intel.com>.
++This document is by Liam Girdwood <liam.r.girdwood@linux.intel.com> and Han Lu
++<han.lu@intel.com>.
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
