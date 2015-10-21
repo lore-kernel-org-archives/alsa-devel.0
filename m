@@ -1,92 +1,104 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] HDMI codec, way forward?
-Date: Wed, 21 Oct 2015 10:27:44 +0100
-Message-ID: <20151021092744.GC32532@n2100.arm.linux.org.uk>
-References: <5620EE2F.8070504@metafoo.de>
- <20151016133717.GI32532@n2100.arm.linux.org.uk>
- <20151018150834.GP27370@localhost>
- <20151018152048.GT32532@n2100.arm.linux.org.uk>
- <20151018161329.GV27370@localhost>
- <20151018171641.GV32532@n2100.arm.linux.org.uk>
- <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
- <20151020080800.GU32532@n2100.arm.linux.org.uk>
- <20151020140148.GC27370@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4] ASoC: rt5645: Add the HW EQ for the
+ customized speaker output of Google Celes
+Date: Wed, 21 Oct 2015 11:34:04 +0100
+Message-ID: <20151021103404.GK32054@sirena.org.uk>
+References: <1444803300-31699-1-git-send-email-oder_chiou@realtek.com>
+ <20151016151618.GQ14956@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694F9DE17@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20151020140148.GC27370@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============4385177956417978254=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5196260622
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 12:34:11 +0200 (CEST)
+In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694F9DE17@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gary_lin <gary_lin@realtek.com>, John Lin <john.lin@realtek.com>, "woojoo.lee@samsung.com" <woojoo.lee@samsung.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMjAsIDIwMTUgYXQgMDc6MzE6NDhQTSArMDUzMCwgVmlub2QgS291bCB3cm90
-ZToKPiBPbiBUdWUsIE9jdCAyMCwgMjAxNSBhdCAwOTowODowMEFNICswMTAwLCBSdXNzZWxsIEtp
-bmcgLSBBUk0gTGludXggd3JvdGU6Cj4gPiA+ID4gQ3VycmVudGx5IGk5MTUvYXVkaW8gY29tcG9u
-ZW50IHdvcmtzIGFzIHlvdSBkZXNjcmliZWQuICBUaGUgYXVkaW8gaXMKPiA+ID4gPiBvcHRpb25h
-bCBhbmQgSERNSSBncmFwaGljcyB3b3JrcyB3aXRob3V0IGF1ZGlvLCB3aGlsZSBIRE1JIEhELWF1
-ZGlvCj4gPiA+ID4gbWFuZGF0ZXMgaTkxNSBncmFwaGljcy4KPiA+ID4gCj4gPiA+IFJpZ2h0LCBi
-dXQgd2UgYWxzbyBhZGQgYWRkaXRpb25hbCBpbnRlcmZhY2Ugb24gdG9wIG9mIHRoaXMgdG8gYWxs
-b3cKPiA+ID4gdGhpbmdzIGxpa2UgZW5zdXJpbmcgZGlzcGxheSBpcyBvbiB3aGVuIGF1ZGlvIHdh
-bnRzIHRvIHJ1biBhbmQgbm93Cj4gPiA+IG5vdGlmaWNhdGlvbiBmb3IgZXZlbnRzLgo+ID4gPiAK
-PiA+ID4gSSBkb24ndCBzZWUgYSByZWFzb24gd2h5IHRoaXMgY2FuIGJlIHVzZWQgYXMgc2luZ2xl
-IGludGVyZmFjZSB0byBiaW5kIGFzCj4gPiA+IHdlbGwgYXMgdGFsayB0byBkaXNwbGF5IGZyb20g
-dmFyaW91cyBjb21wb25lbnRzLCB1bmxlc3MgSSBtaXNzZWQgb2J2aW91cwo+ID4gPiB3aGljaCBw
-cmV2ZW50IHVzIGZyb20gZG9pbmcgdGhpcyBpbiBub24gaTkxNSBjYXNlcy4uLgo+ID4gCj4gPiBN
-YXliZSBJIGNhbiBjb21tZW50IG1vcmUgc3BlY2lmaWNhbGx5IGlmIEkgc2F3IHRoZSBjb2RlLiAg
-UmlnaHQgbm93IGFsbAo+ID4gSSdtIGF3YXJlIG9mIGlzIHRoaXMgaWRlYSB3aXRob3V0IGFueSBj
-b2RlLCBhbmQgSSBkb24ndCBsaWtlIGl0Lgo+IAo+IE9rLCBpIHdpbGwgYmUgcG9zdCBteSBwYXRj
-aGVzIHRvbW9ycm93LiBGV0lXIHVzZXMgaW50ZXJmYWNlIGluCj4gc291bmQvaGRhL2hkYWNfaTkx
-NS5jIGZvciBkaXNwbGF5IHBvd2VyIHVwL2Rvd24KClRoaXM6CgogICAgICAgIGNvbXBvbmVudF9t
-YXRjaF9hZGQoZGV2LCAmbWF0Y2gsIGhkYWNfY29tcG9uZW50X21hc3Rlcl9tYXRjaCwgYnVzKTsK
-ICAgICAgICByZXQgPSBjb21wb25lbnRfbWFzdGVyX2FkZF93aXRoX21hdGNoKGRldiwgJmhkYWNf
-Y29tcG9uZW50X21hc3Rlcl9vcHMsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBtYXRjaCk7CiAgICAgICAgaWYgKHJldCA8IDApCiAgICAgICAgICAgICAgICBn
-b3RvIG91dF9lcnI7CgogICAgICAgIC8qCiAgICAgICAgICogQXRtLCB3ZSBkb24ndCBzdXBwb3J0
-IGRlZmVycmluZyB0aGUgY29tcG9uZW50IGJpbmRpbmcsIHNvIG1ha2Ugc3VyZQogICAgICAgICAq
-IGk5MTUgaXMgbG9hZGVkIGFuZCB0aGF0IHRoZSBiaW5kaW5nIHN1Y2Nlc3NmdWxseSBjb21wbGV0
-ZXMuCiAgICAgICAgICovCiAgICAgICAgcmVxdWVzdF9tb2R1bGUoImk5MTUiKTsKCiAgICAgICAg
-aWYgKCFhY29tcC0+b3BzKSB7CiAgICAgICAgICAgICAgICByZXQgPSAtRU5PREVWOwogICAgICAg
-ICAgICAgICAgZ290byBvdXRfbWFzdGVyX2RlbDsKICAgICAgICB9CgppcyByZWFsbHkgbm90IG5p
-Y2UuCgpUaGUgd2hvbGUgcG9pbnQgb2YgdGhlIGNvbXBvbmVudCBoZWxwZXIgaXMgdGhhdCB5b3Ug
-ZG9uJ3QgY2FyZSB3aGVuIHRoZQpzbGF2ZXMgY29tZSBhbG9uZy4gIFRoZSBhYm92ZSBjb2RlIGRv
-ZXMgY2FyZSBhYm91dCB0aGF0LCBiZWNhdXNlIGl0CmV4cGVjdHMgdGhhdCB0aGUgbWFzdGVyIGFu
-ZCBzbGF2ZXMgd2lsbCBiZSBib3VuZCBlaXRoZXIgaW5zaWRlCmNvbXBvbmVudF9tYXN0ZXJfYWRk
-X3dpdGhfbWF0Y2goKSwgb3IgdmlhIHRoYXQgcmVxdWVzdF9tb2R1bGUgKHdoaWNoCm1heSBoYXBw
-ZW4gYXN5bmNocm9ub3VzbHkpIGFuZCBlbmRzIHVwIHNldHRpbmcgLT5vcHMuCgpUaGlzIHdvbid0
-IHdvcmsgZm9yIHN5c3RlbXMgaW4gdGhlIHByZXNlbmNlIG9mIGRlZmVycmVkIHByb2JpbmcsIHNp
-bmNlCnRoZXJlJ3Mgb25seSBhIHdlYWsgY29ubmVjdGlvbiBiZXR3ZWVuIGxvYWRpbmcgYSBtb2R1
-bGUgYW5kIHRoZSBkcml2ZXIKc3VjY2Vzc2Z1bGx5IHByb2JpbmcgaXRzIGRldmljZS4KCklmIHlv
-dSBhcnJhbmdlIGZvciB0aGUgYXVkaW8gZGV2aWNlIHRvIGZpbmlzaCBwcm9iaW5nIGluIHRoZSBt
-YXN0ZXIncwpiaW5kIGNhbGxiYWNrLCB0aGF0IHdvdWxkIGJlIF9mYXJfIGJldHRlciwgYW5kIHdv
-dWxkIGJlIGluIGxpbmUgd2l0aApob3cgdGhlIGNvbXBvbmVudCBoZWxwZXIgaXMgc3VwcG9zZWQg
-dG8gd29yay4gIEl0IGFsc28gbWVhbnMgdGhhdCBpZgp5b3VyIHNsYXZlICh0aGUgdmlkZW8gc2lk
-ZSkgZ29lcyBhd2F5LCB5b3UnbGwga25vdyBhYm91dCBpdCBhcyB0aGUKdW5iaW5kIGNhbGxiYWNr
-IHdpbGwgYmUgY2FsbGVkIChhdCB3aGljaCBwb2ludCB5b3Ugc2hvdWxkIHRlYXIgZG93bgp0aGUg
-YXVkaW8gZGV2aWNlLikKCkhvd2V2ZXIsIHRoZXJlJ3MgYSBsdXJraW5nIHByb2JsZW06IHlvdSBj
-YW4ndCByZWdpc3RlciB0aGUgc2FtZSBzdHJ1Y3QKZGV2aWNlIGFzIGEgc2xhdmUgbW9yZSB0aGFu
-IG9uY2UgaW50byB0aGUgY29tcG9uZW50IGhlbHBlcnMgLSB0aGF0J3MKYmVjYXVzZSBpdCdzIGRl
-c2lnbmVkIHRvIGxvb2sgZm9yIGRldmljZXMuICBUaGVyZSdzIGludGVudGlvbmFsbHkgbm8KbGlu
-a2FnZSBiZXR3ZWVuIHRoZSBzbGF2ZSBvcHMgYW5kIG1hc3RlciBvcHMgdG8gYWxsb3cgZm9yIGdl
-bmVyaWMKc2xhdmUgZHJpdmVycyAobGlrZSB0ZGE5OTh4KSB0byBiZSB1c2VkIHdpdGggZGlmZmVy
-ZW50IG1hc3RlciBkcml2ZXJzCihhcm1hZGEsIHRpbGNkYywgZXRjKS4gIEluIHRoZW9yeSwgeW91
-IGNhbiByZWdpc3RlciB0aGUgbWFzdGVyIGRldmljZQpvZiBvbmUgY29tcG9uZW50aXNlZCBzeXN0
-ZW0gYXMgYSBzbGF2ZSBkZXZpY2Ugb2YgYW5vdGhlciwgYnV0IHRoYXQKcmVxdWlyZXMgYSBtdWNo
-IG1vcmUgY29tcGxpY2F0ZWQgbG9ja2luZyBzZXR1cCBpbiBjb21wb25lbnQuYyAoSSBoYXZlCnBh
-dGNoZXMgZm9yIHRoYXQsIGJ1dCBJJ3ZlIHJlc2lzdGVkIHNlbmRpbmcgdGhlbSBiZWNhdXNlIGl0
-IG1ha2VzIHRoZQpsb2NraW5nIHZlcnkgbWVzc3kuKQoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAw
-LjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCA5LjZNYnBzIGRvd24gNDAwa2JwcyB1cAphY2NvcmRp
-bmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
-cmktZGV2ZWwK
+
+--===============4385177956417978254==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vlBIoVqBuM4vJEpx"
+Content-Disposition: inline
+
+
+--vlBIoVqBuM4vJEpx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 19, 2015 at 06:34:52AM +0000, Oder Chiou wrote:
+> > The userspace interface is now what I'd expec tbut I'm still quite
+> > confused by this.  Why is this not a normal bytes control?  There's
+> > something going on with private data here but I'm not sure what it's
+> > supposed to do over writing to the device - a changelog might've
+> > helped...
+
+> We want to set the register table to the following struct byte-by-byte.
+> struct rt5645_eq_param_s {
+> 	unsigned short reg;
+> 	unsigned short val;
+> };
+> Due to the length and target registers of the table are variant, we allocate
+> the maximum size of register settings to store the data, and they should be
+> controlled by DAPM for following the sequence, so the settings will be
+> applied to the hardware in the speaker event of DAPM.
+
+This *really* needed to be called out in the changelog.  Why are we
+specifying the parameters in this format rather than just letting people
+set the coefficients like other drivers do?  This is extremely unusual
+and basically lets userspace write anything they like anywhere in the
+device as part of the coefficients which doesn't seem like a good idea.
+Look at how other drivers do bytes controls.
+
+> > Why is the hweq setting part of platform data (and why is the platform
+> > data for a specific system being set as part of this patch)?  This is
+> > just a setting that can be set, there's nothing system specific about it
+> > and it's not like we're even passing in a system specific tuning here.
+
+> In the default, we want to disable the HW EQ function, and it is only enabled
+> by the customers' request, so we set it in the platform data. The parameters
+> of the HW EQ only can be passed by ALSA binary control.
+
+This doesn't make much sense in an open system like Linux - the user can
+always change the code to enable this, it's just getting in the way of
+providing the configurability to force them to change their DT or kernel
+and if they need to provide the settings from userspace anyway the
+switch in the kernel isn't really doing anything.
+
+--vlBIoVqBuM4vJEpx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWJ2ocAAoJECTWi3JdVIfQBWYH/1qvsmlQDXvmvnp2n+IrfVJK
+5FSq9B6Nl4pr82oOHblcz1L+XYUHhHJ4uZSUTVQBSfw42sM1p6Ra/Nmp6u1U0XJB
+nbyOWcRh7oo6Hi7JZmAxkwQ1l1mYmRtUm8pgwgvcLI+3u/xRApF5F8xW/orzqDQU
+GHsL2X7mpR4bqu6wpdSgRZ5DPrkuFQ0Nsik0Fwsx49claQuvSDD4a0eEUc3SoqSn
+kejCbdvgmp1K1Lpwys4Qjq1EyKv3TjMuFOVYfTaAOwwwcoux/y1jEjf4HmWE8Xus
+f5GXjr6QaUHnSDe/+SWOPXLkCwmb9V4taVvogl9Y/l8OciovG/qtsW97+wxhDbc=
+=Q+bO
+-----END PGP SIGNATURE-----
+
+--vlBIoVqBuM4vJEpx--
+
+--===============4385177956417978254==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4385177956417978254==--
