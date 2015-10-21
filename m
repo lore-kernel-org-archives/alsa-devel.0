@@ -1,17 +1,19 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt298: fix remove unnedded clk
-	setting
-Date: Wed, 21 Oct 2015 16:18:19 +0800
-Message-ID: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
-References: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH RFT] ASoC: da7219: Fix da7219->alc_en state
+ when enabling ALC
+Date: Wed, 21 Oct 2015 09:00:06 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460B2E4@SW-EX-MBX01.diasemi.com>
+References: <1445387677.5319.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 4617F2605A6
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 10:18:32 +0200 (CEST)
-In-Reply-To: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3975F2605C7
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 11:00:09 +0200 (CEST)
+In-Reply-To: <1445387677.5319.1.camel@ingics.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, ramesh.babu@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <Support.Opensource@diasemi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The bit is no longer present. So remove it.
+On October 21, 2015 01:35, Axel Lin wrote:
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt298.c | 2 --
- 1 file changed, 2 deletions(-)
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/codecs/da7219.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 86c528a..e36a7b7 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -402,7 +402,7 @@ static int da7219_alc_sw_put(struct snd_kcontrol *kcontrol,
+>  	/* Force ALC offset calibration if enabling ALC */
+>  	if ((ucontrol->value.integer.value[0]) && (!da7219->alc_en)) {
+>  		da7219_alc_calib(codec);
+> -		da7219->alc_en = false;
+> +		da7219->alc_en = true;
+>  	} else {
+>  		da7219->alc_en = false;
+>  	}
+> --
+> 2.1.4
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index b3f795c..30c6de6 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -855,8 +855,6 @@ static int rt298_set_dai_sysclk(struct snd_soc_dai *dai,
- 		snd_soc_update_bits(codec,
- 			RT298_I2S_CTRL2, 0x0100, 0x0100);
- 		snd_soc_update_bits(codec,
--			RT298_PLL_CTRL, 0x4, 0x4);
--		snd_soc_update_bits(codec,
- 			RT298_PLL_CTRL1, 0x20, 0x0);
- 	}
- 
--- 
-1.8.1.1.439.g50a6b54
+Tested-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
