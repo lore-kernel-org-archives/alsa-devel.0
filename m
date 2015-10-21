@@ -1,41 +1,34 @@
-From: Keyon <yang.jie@linux.intel.com>
-Subject: Re: linux-next: Tree for Oct 20 (sound/soc/intel)
-Date: Wed, 21 Oct 2015 20:27:00 +0800
-Message-ID: <56278494.4080401@linux.intel.com>
-References: <20151020162604.4b5b6381@canb.auug.org.au>
- <56266FE5.6090304@infradead.org>
+From: Timur Tabi <timur@tabi.org>
+Subject: Gmail thinks most alsa-devel mail is spam
+Date: Wed, 21 Oct 2015 07:21:17 -0500
+Message-ID: <5627833D.8020908@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <56266FE5.6090304@infradead.org>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mailman-owner@alsa-project.org, alsa-devel-owner@alsa-project.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-On 2015=E5=B9=B410=E6=9C=8821=E6=97=A5 00:46, Randy Dunlap wrote:
-> On 10/19/15 22:26, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20151019:
->>
-> on x86_64:
->
-> when CONFIG_DW_DMAC is not enabled.
->
->
-> sound/built-in.o: In function `sst_dma_new':
-> (.text+0xd7b38): undefined reference to `dw_dma_probe'
-> sound/built-in.o: In function `sst_dma_free':
-> (.text+0xd7c0a): undefined reference to `dw_dma_remove'
->
->
-> Full randconfig file is attached.
->
+I use gmail to subscribe to Linux mailing lists, and most of the mail to 
+alsa-devel ends up in the spam folder.  According to gmail, the reason is:
 
-thanks for reporting it, will submit patch to fix it soon.
+"Why is this message in Spam? It is in violation of Google's recommended 
+email sender guidelines."
 
-~Keyon
+and then it tell me to look here:
+
+https://support.google.com/mail/answer/81126?hl=en#authentication
+
+Is this something that can be fixed?  It's really annoying have to check 
+my spam folder every day to fish out messages from alsa-devel.
