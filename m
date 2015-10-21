@@ -1,22 +1,14 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Wed, 21 Oct 2015 09:32:05 +0200
-Message-ID: <56273F75.2040702@invoxia.com>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
- <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt298: fix wrong setting of gpio2_en
+Date: Wed, 21 Oct 2015 16:18:18 +0800
+Message-ID: <1445415499-29200-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
- [209.85.212.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 79DCA260586
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 09:32:10 +0200 (CEST)
-Received: by wicll6 with SMTP id ll6so77594173wic.0
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 00:32:08 -0700 (PDT)
-In-Reply-To: <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 474292605B0
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 10:18:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, ramesh.babu@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpMZSAyMC8xMC8yMDE1IDE5OjQzLCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4gT24gVHVlLCBP
-Y3QgMjAsIDIwMTUgYXQgMTI6MzYgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tCj4gPGFy
-bmF1ZC5tb3VpY2hlQGludm94aWEuY29tPiB3cm90ZToKPj4gSGVsbG8gQ2FsZWIsCj4+Cj4+IEkg
-Z28gdGhyb3VnaCBhbGwgW2Zld10gcGF0Y2hzIHdlIGFwcGx5IHRvIHRoZSA0LjAgbGludXggdHJl
-ZSAoZGlkbid0IGp1bXAgdG8KPj4gNC4yIHlldCkuCj4+IFRoZXJlIGlzIG9uZSBjb25jZXJuaW5n
-IHRoZSBETUEgZmlybXdhcmUgeW91IGNhbiBmaW5kIGluIHRoZSBmcmVlc2NhbGUgdHJlZSwKPj4g
-YXZhaWxhYmxlIGF0IGdpdDovL2dpdC5mcmVlc2NhbGUuY29tL2lteC9saW51eC0yLjYtaW14Lmdp
-dAo+Pgo+PiBjb21taXQgNjE5YmZjYTg5OTA4YjkwY2Q2NjA2ZWQ4OTRjMTgwZGYwYzQ4MTUwOAo+
-PiBBdXRob3I6IFNoYXduIEd1byA8c2hhd24uZ3VvQGZyZWVzY2FsZS5jb20+Cj4+IERhdGU6ICAg
-VHVlIEp1bCAxNiAyMjo1MzoxOCAyMDEzICswODAwCj4+Cj4+ICAgICAgRU5HUjAwMjY5OTQ1OiBm
-aXJ3bWFyZTogaW14OiBhZGQgaW14NnEgc2RtYSBzY3JpcHQKPj4KPj4gICAgICBBZGQgaW14NnEg
-c2RtYSBzY3JpcHQgd2hpY2ggd2lsbCBiZSB1c2VkIGJ5IGFsbCBpLk1YNiBzZXJpZXMuCj4+Cj4+
-ICAgICAgU2lnbmVkLW9mZi1ieTogU2hhd24gR3VvIDxzaGF3bi5ndW9AZnJlZXNjYWxlLmNvbT4K
-Pj4KPj4gICBmaXJtd2FyZS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPj4g
-ICBmaXJtd2FyZS9pbXgvc2RtYS9zZG1hLWlteDZxLmJpbi5paGV4IHwgMTE2Cj4+ICsrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysKPj4gICAyIGZpbGVzIGNoYW5nZWQsIDExNyBpbnNlcnRpb25zKCsp
-Cj4+Cj4+Cj4+IEkgZG9uJ3Qga25vdyBob3cgNC4zcmNOIGNhdGNoIHNvbWUgb2YgdGhlIGZyZWVz
-Y2FsZSBwYXRjaC4gYnV0IHlvdSBtYXkgY2hlY2sKPj4gaWYgeW91IG5lZWQgdG8gYXBwbHkgdGhp
-cyBvbmUuCj4+IEkga25vdyB0aGVyZSBhcmUgc29tZSBvdGhlciBTRE1BIGZpcm13YXJlIGF2YWls
-YWJsZSBhbGwgYXJvdW5kIGluIHRoaXMKPj4gZnJlZXNjYWxlIHRyZWUuIEkgZGlkbid0IGZpbmQg
-cHJvcGVyIHJlbGVhc2Ugbm90ZSBvciBkb2N1bWVudGF0aW9uLiBNYXkgYmUKPj4geW91IGNhbiB0
-ZXN0IHRoZW0gYWxzby4KPj4KPj4gQXJuYXVkCj4gSGkgQXJuYXVkLAo+ICAgIE15IHJvb3QgZmls
-ZXN5c3RlbSBhbHJlYWR5IGhhZCB0aGF0IGZpcm13YXJlIGluIGl0ICh0aGUga2VybmVsCj4gZGlk
-bid0IGhhdmUgdGhlIGtlcm5lbCBwYXRjaCwgYnV0IHdoZW4gSSBhcHBsaWVkIHRoYXQgcGF0Y2gs
-IHRoZQo+IGdlbmVyYXRlZCBzZG1hIHNjcmlwdCB3YXMgaWRlbnRpY2FsLgo+Cj4gU28sIHVuZm9y
-dHVuYXRlbHksIHRoYXQncyBub3QgdGhlIHByb2JsZW0gd2l0aCB0aGUgY2hhbm5lbCBzbGlwcGlu
-Zy4KPiBBbnkgb3RoZXIgdGhvdWdodHMgb24gd2h5IHRoZSBjaGFubmVsIHdvdWxkIHNsaXA/ICBP
-ciBwb2ludGVycyBvbiBob3cKPiB0byBkaWFnbm9zZT8gIEkgaGF2ZSBhbiBvc2NpbGxvc2NvcGUg
-JiBrbm93IGhvdyB0byB1c2UgaXQgOi0pICBBbHNvLCBJCj4gY2FuIGZsaXAgYSBHUElPIHRvIHdh
-dGNoIGZvciB0aW1pbmcgb2YgaW50ZXJydXB0cywgZXRjIChhbHRob3VnaCBJCj4gaGF2ZW4ndCBk
-b25lIHRoYXQgeWV0KS4KPgo+Cj4gVGhhbmtzLAo+ICAgIC1DYWxlYgoKSGVsbG8gQ2FsZWIsCgpJ
-biB5b3VyIHNpdHVhdGlvbiwgSSB3b3VsZDoKLSBjaGVjayBpZiBUVUUwLzEgZmxhZyBuZXZlciBy
-aXNlIChUcmFuc21pdHRlciBVbmRlcnJ1bikgYnkgYWN0aXZhdGluZyAKdGhlIFRVRTAvMUlFIGJp
-dCB0byBnZW5lcmF0ZSByZWxhdGVkIGludGVycnVwdHMuIEl0IGxvb2tzIGxpa2UgYWxyZWFkeSAK
-ZW5hYmxlZCBpbiA0LjAgYnkgY29sbGVjdGluZyBzdGF0aXN0aWNzIHdpdGggZnNsX3NzaV9kYmdf
-aXNyKCkuIERlc3BpdGUgCnRoZXJlIGlzIG5vIHByaW50ayBtZXNzYWdlIG9uIHVuZGVycnVuLCBz
-dGF0cyBjYW4gYmUgcmVhZCBmcm9tIAovc3lzL2tlcm5lbC9kZWJ1Zy94eHh4LnNzaS9zdGF0cy4K
-Ci0gSSBzdXNwZWN0IHRoZSBkbWEgaXMgbm90IGZhc3QgZW5vdWdoIHRvIGZpbGwgdGhlIEZJRk8u
-IG1heSBiZSB5b3UgCnNob3VsZCBkaWcgdG8gY2hlY2sgaG93IFNETUEgcHJpb3JpdHkgYXJlIGNv
-bmZpZ3VyZWQgYW1vbmdzIHRoZSAKZGlmZmVyZW50cyBETUEgY2hhbm5lbHMuCk5vdCBzb21ldGhp
-bmcgSSBhbHJlYWR5IGxvb2sgYXQgYmVmb3JlLiBBIHF1aWNrIGxvb2sgc3VnZ2VzdCB0aGF0IApE
-TUFfUFJJT19ISUdIIGlzIF9OT1RfIGNvbmZpZ3VyZWQgYnkgdGhlIGZzbF9zc2kuYyBkcml2ZXIg
-KHdoZXJhcyB0aGUgCmlteC1zc2kuYyBkaWQpCgpSZWdhcmRzLApBcm5hdWQKCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The register value to enable gpio2 was incorrect. So fix it.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt298.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 56e5e1a..b3f795c 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1217,7 +1217,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 	mdelay(10);
+ 
+ 	if (!rt298->pdata.gpio2_en)
+-		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x4000);
++		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0x40);
+ 	else
+ 		regmap_write(rt298->regmap, RT298_SET_DMIC2_DEFAULT, 0);
+ 
+-- 
+1.8.1.1.439.g50a6b54
