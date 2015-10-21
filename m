@@ -1,74 +1,109 @@
-From: Martin Pietryka <martin.pietryka@streamunlimited.com>
-Subject: Hot to properly output DSD silence pattern
-	before/after playback?
-Date: Wed, 21 Oct 2015 15:46:33 +0200
-Message-ID: <56279739.6050409@streamunlimited.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] HDMI codec, way forward?
+Date: Wed, 21 Oct 2015 15:03:07 +0100
+Message-ID: <20151021140307.GE32532@n2100.arm.linux.org.uk>
+References: <20151018150834.GP27370@localhost>
+ <20151018152048.GT32532@n2100.arm.linux.org.uk>
+ <20151018161329.GV27370@localhost>
+ <20151018171641.GV32532@n2100.arm.linux.org.uk>
+ <s5hwpuj2dwh.wl-tiwai@suse.de> <20151020033809.GZ27370@localhost>
+ <20151020080800.GU32532@n2100.arm.linux.org.uk>
+ <20151020140148.GC27370@localhost>
+ <20151021092744.GC32532@n2100.arm.linux.org.uk>
+ <s5heggol4o7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bsmtp4.bon.at (bsmtp4.bon.at [195.3.86.186])
- by alsa0.perex.cz (Postfix) with ESMTP id BF27B260692
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 15:46:33 +0200 (CEST)
-Received: from [10.1.14.177] (vpn.streamunlimited.com [91.114.0.140])
- by bsmtp4.bon.at (Postfix) with ESMTPSA id 3ngtQd4L8rz5tlT
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 15:46:33 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5heggol4o7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, tomi.valkeinen@ti.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Guys,
-
-I have already asked the question last week, but the thing got a bit 
-more complicated.
-
-So we need to achieve the following when playing back DSD audio:
-
-1.) Start outputting the DSD silence pattern (0x69) for ~40ms
-2.) After ~10ms unset a mute GPIO
-3.) Start outputting DSD data after silence is over
-
-and after DSD playback is finished a similar procedure:
-
-1.) Start outputting the DSD silence pattern (0x69) for ~40ms
-2.) After ~10ms set a mute GPIO
-3.) (let silence run out)
-
-In addition to that, we also have the need to toggle the mute GPIO from 
-an appropriate place at an appropriate time, the timing does not have to 
-be exact but we need to be sure that the actual hardware already started 
-outputting the silence samples.
-
-We have figured out three possibilities where to add the silence:
-1.) Inside our application:
-     We are using GStreamer and for various reasons we currently can't 
-do it here without a significant effort.
-
-2.) Inside alsa-lib:
-     The idea here is to inject a snd_pcm_writei() call on the first 
-call of snd_pcm_writei() and inside snd_pcm_drain(). This is really 
-ugly, but doable, I already have a simple proof of concept working. But 
-here I think the GPIO stuff will get really complicated.
-
-3.) Inside the kernel:
-     Modify the soc driver to output the silence pattern before and 
-after playback.
-
-So what do you guys think would be the best approach to this problem, 
-are there any other possibilities?
-
-I would imagine someone has had to do something similar before, but I 
-couldn't find anything with Google, so if you know something regarding 
-this, please let me know.
-
-Thanks,
-
-Martin
+T24gV2VkLCBPY3QgMjEsIDIwMTUgYXQgMDM6NDE6NDRQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFdlZCwgMjEgT2N0IDIwMTUgMTE6Mjc6NDQgKzAyMDAsCj4gUnVzc2VsbCBLaW5n
+IC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gCj4gPiBPbiBUdWUsIE9jdCAyMCwgMjAxNSBhdCAwNzoz
+MTo0OFBNICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+ID4gPiBPbiBUdWUsIE9jdCAyMCwgMjAx
+NSBhdCAwOTowODowMEFNICswMTAwLCBSdXNzZWxsIEtpbmcgLSBBUk0gTGludXggd3JvdGU6Cj4g
+PiA+ID4gPiA+IEN1cnJlbnRseSBpOTE1L2F1ZGlvIGNvbXBvbmVudCB3b3JrcyBhcyB5b3UgZGVz
+Y3JpYmVkLiAgVGhlIGF1ZGlvIGlzCj4gPiA+ID4gPiA+IG9wdGlvbmFsIGFuZCBIRE1JIGdyYXBo
+aWNzIHdvcmtzIHdpdGhvdXQgYXVkaW8sIHdoaWxlIEhETUkgSEQtYXVkaW8KPiA+ID4gPiA+ID4g
+bWFuZGF0ZXMgaTkxNSBncmFwaGljcy4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gUmlnaHQsIGJ1dCB3
+ZSBhbHNvIGFkZCBhZGRpdGlvbmFsIGludGVyZmFjZSBvbiB0b3Agb2YgdGhpcyB0byBhbGxvdwo+
+ID4gPiA+ID4gdGhpbmdzIGxpa2UgZW5zdXJpbmcgZGlzcGxheSBpcyBvbiB3aGVuIGF1ZGlvIHdh
+bnRzIHRvIHJ1biBhbmQgbm93Cj4gPiA+ID4gPiBub3RpZmljYXRpb24gZm9yIGV2ZW50cy4KPiA+
+ID4gPiA+IAo+ID4gPiA+ID4gSSBkb24ndCBzZWUgYSByZWFzb24gd2h5IHRoaXMgY2FuIGJlIHVz
+ZWQgYXMgc2luZ2xlIGludGVyZmFjZSB0byBiaW5kIGFzCj4gPiA+ID4gPiB3ZWxsIGFzIHRhbGsg
+dG8gZGlzcGxheSBmcm9tIHZhcmlvdXMgY29tcG9uZW50cywgdW5sZXNzIEkgbWlzc2VkIG9idmlv
+dXMKPiA+ID4gPiA+IHdoaWNoIHByZXZlbnQgdXMgZnJvbSBkb2luZyB0aGlzIGluIG5vbiBpOTE1
+IGNhc2VzLi4uCj4gPiA+ID4gCj4gPiA+ID4gTWF5YmUgSSBjYW4gY29tbWVudCBtb3JlIHNwZWNp
+ZmljYWxseSBpZiBJIHNhdyB0aGUgY29kZS4gIFJpZ2h0IG5vdyBhbGwKPiA+ID4gPiBJJ20gYXdh
+cmUgb2YgaXMgdGhpcyBpZGVhIHdpdGhvdXQgYW55IGNvZGUsIGFuZCBJIGRvbid0IGxpa2UgaXQu
+Cj4gPiA+IAo+ID4gPiBPaywgaSB3aWxsIGJlIHBvc3QgbXkgcGF0Y2hlcyB0b21vcnJvdy4gRldJ
+VyB1c2VzIGludGVyZmFjZSBpbgo+ID4gPiBzb3VuZC9oZGEvaGRhY19pOTE1LmMgZm9yIGRpc3Bs
+YXkgcG93ZXIgdXAvZG93bgo+ID4gCj4gPiBUaGlzOgo+ID4gCj4gPiAgICAgICAgIGNvbXBvbmVu
+dF9tYXRjaF9hZGQoZGV2LCAmbWF0Y2gsIGhkYWNfY29tcG9uZW50X21hc3Rlcl9tYXRjaCwgYnVz
+KTsKPiA+ICAgICAgICAgcmV0ID0gY29tcG9uZW50X21hc3Rlcl9hZGRfd2l0aF9tYXRjaChkZXYs
+ICZoZGFjX2NvbXBvbmVudF9tYXN0ZXJfb3BzLAo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIG1hdGNoKTsKPiA+ICAgICAgICAgaWYgKHJldCA8IDApCj4g
+PiAgICAgICAgICAgICAgICAgZ290byBvdXRfZXJyOwo+ID4gCj4gPiAgICAgICAgIC8qCj4gPiAg
+ICAgICAgICAqIEF0bSwgd2UgZG9uJ3Qgc3VwcG9ydCBkZWZlcnJpbmcgdGhlIGNvbXBvbmVudCBi
+aW5kaW5nLCBzbyBtYWtlIHN1cmUKPiA+ICAgICAgICAgICogaTkxNSBpcyBsb2FkZWQgYW5kIHRo
+YXQgdGhlIGJpbmRpbmcgc3VjY2Vzc2Z1bGx5IGNvbXBsZXRlcy4KPiA+ICAgICAgICAgICovCj4g
+PiAgICAgICAgIHJlcXVlc3RfbW9kdWxlKCJpOTE1Iik7Cj4gPiAKPiA+ICAgICAgICAgaWYgKCFh
+Y29tcC0+b3BzKSB7Cj4gPiAgICAgICAgICAgICAgICAgcmV0ID0gLUVOT0RFVjsKPiA+ICAgICAg
+ICAgICAgICAgICBnb3RvIG91dF9tYXN0ZXJfZGVsOwo+ID4gICAgICAgICB9Cj4gPiAKPiA+IGlz
+IHJlYWxseSBub3QgbmljZS4KPiAKPiBZZWFoLCBhZG1pdHRlZGx5IGl0J3MgYSByZWFsbHkgdWds
+eSB3b3JrYXJvdW5kLiAgSXQncyBjb2RlZCBpbiB0aGF0Cj4gd2F5IGp1c3QgdG8gbWFrZSBvdXIg
+bGl2ZXMgZWFzaWVyOiBpdCB3b3JrcyB3ZWxsIGluIG1vc3QgY2FzZXMgZm9yCj4gaTkxNSAvIGhk
+LWF1ZGlvLgo+IAo+IEFjdHVhbGx5LCBpdCdzIGVhc3kgdG8gbW9kaWZ5IHRoZSBoZGEgY29kZSBp
+biB0aGUgcmlnaHQgd2F5LCBpLmUuIHRvCj4gZGVmZXIgdmlhIGNvbXBvbmVudCBiaW5kIG9wcy4g
+IEhvd2V2ZXIsIG9uZSBkcmF3YmFjayBpcyB0aGF0IGl0J3Mgbm90Cj4gdHJpdmlhbCB0byBoYW5k
+bGUgdGhlIGZhbGxiYWNrIGNhc2U7IG5hbWVseSwgSEQtYXVkaW8gbWlnaHQgbm90IG5lZWQKPiBp
+OTE1IGJpbmRpbmcsIGRlcGVuZGluZyBvbiB0aGUgY2hpcCBtb2RlbCBhbmQgdGhlIGNvbmZpZ3Vy
+YXRpb24uCj4gCj4gQnJhc3dlbGwgYW5kIFNreWxha2UgaGF2ZSBhICh2aXJ0dWFsbHkpIHNpbmds
+ZSBhdWRpbyBjb250cm9sbGVyIGFzCj4gZGVmYXVsdCwgYW5kIHRoaXMgbWFuYWdlcyBib3RoIHRo
+ZSBhbmFsb2cgYW5kIEhETUkvRFAgY29kZWNzLiAgVGhlCj4gaTkxNSBpbnRlcmFjdGlvbiBpcyBy
+ZXF1aXJlZCBvbmx5IGZvciB0aGUgbGF0dGVyIGNvZGVjcywgYW5kIHRodXMgZm9yCj4gdGhlIGZv
+cm1lciwgaXQncyBvcHRpb25hbC4gIElmIHdlIGRlZmVyIGJpbmRpbmcsIHRoZSBpbnN0YW50aWF0
+aW9uCj4gd29uJ3QgaGFwcGVuIHVubGVzcyBpdCdzIGJvdW5kIHdpdGggaTkxNS4gIFNvLCBpZiBp
+OTE1IGlzbid0Cj4gaW5pdGlhbGl6ZWQgKGUuZy4gYnkgYm9vdGluZyB3aXRoIG5vbW9kZXNldCBv
+cHRpb24pLCB0aGUgd2hvbGUgYXVkaW8KPiB3aWxsIGJlIGdvbmUsIHRvby4gIE9UT0gsIEhhc3dl
+bGwgYW5kIEJyYXN3ZWxsIGhhdmUgYSBkZWRpY2F0ZWQgSERBCj4gY29udHJvbGxlciBmb3IgSERN
+SS9EUCwgYW5kIHRoZXkgbXVzdCBiZSBkaXNhYmxlZCAob3IgZmFpbCkgdW5sZXNzCj4gYm91bmQg
+d2l0aCBncmFwaGljcy4KPiAKPiBJdCdzIGEgY29ybmVyIGNhc2UsIHNvIHdlIG1pZ2h0IGJldHRl
+ciBpZ25vcmUgdGhpcy4gIEJ1dCBpdCdkIGJlCj4gY2VydGFpbmx5IGEgInJlZ3Jlc3Npb24iIC0t
+IGF0IGxlYXN0LCBJIHVzZWQgdG8gdGVzdCB0aGlzIGluIHRoYXQgd2F5Cj4gc29tZXRpbWVzIGlu
+IHRoZSBwYXN0LiAgU28gaXQgcmVtYWlucyBpbiB0aGUgY3VycmVudCB3YXkgYXMgaXMuCj4gCj4g
+SXQncyBvbmUgb2YgdGhlIHJlYXNvbnMgSSBtZW50aW9uZWQgaXQgYmVpbmcgYSBzdG9wIGdhcC4g
+IEJ1dCwgSSB0aGluawo+IHRoZSBjb25jZXB0LCBwYXNzaW5nIG9wcyB2aWEgY29tcG9uZW50LCBp
+cyBhY3R1YWxseSB3b3JraW5nLCBhbmQKPiBzaG91bGQgYmUgYXBwbGljYWJsZSB0byBvdGhlciBk
+cm0vYXVkaW8gZHJpdmVycy4gIFRoYXQncyB0aGUgcG9pbnQuCgpJdCdzIG9ubHkgdGhlIHBvaW50
+IGlmIHlvdSBjYW4gY29kZSBpdCB1cCBwcm9wZXJseSwgd2hpY2ggZnJvbSB3aGF0IEkKcmVhZCBp
+biB0aGF0IGZpbGUsIGl0IGlzbid0LgoKQnVpbGQgdGhlIGk5MTUgRFJNIGRyaXZlcnMgYXMgYSBt
+b2R1bGUsIGxvYWQgdXAgdGhlIHN5c3RlbSwgYW5kIHRoZW4KdHJ5IHJlbW92aW5nIHRoZSBpOTE1
+IERSTSBtb2R1bGUgYW5kIHNlZSB3aGF0IGhhcHBlbnMgdG8gdGhlIGF1ZGlvIHBhcnQuCkZvciBz
+dGFydGVycywgeW91IGhhdmUgbm8gcHJvdGVjdGlvbiB3aGF0IHNvIGV2ZXIgYWdhaW5zdCBhY29t
+cC0+b3BzIG9yCmFjb21wLT5kZXYgYmVjb21pbmcgTlVMTCAtIGl0J3MgaGVsbGlzaGx5IHJhY3ku
+CgpTZWNvbmRseSwgeW91IHJlamVjdCB0aGUgaW5pdGlhbGlzYXRpb24gaWYgYWNvbXAtPm9wcyBp
+c24ndCBzZXQsIGJ1dCB5b3UKYWxsb3cgYWNvbXAtPm9wcyB0byBsYXRlciBiZWNvbWUgdW5zZXQg
+YnkgdGhlIGk5MTUgRFJNIG1vZHVsZSBiZWluZwpyZW1vdmVkLiAgSWYgeW91IGNhbiBjb3BlIHdp
+dGggYWNvbXAtPm9wcyBiZWluZyB1bnNldCBhdCBhIHJhbmRvbSBwb2ludApkdXJpbmcgdGhlIGF1
+ZGlvIGRyaXZlcidzIHVzZSwgd2h5IGNhbid0IHlvdSBjb3BlIHdpdGggaXQgYmVpbmcgc2V0IGF0
+CnNvbWUgcmFuZG9tIHBvaW50IGxhdGVyPwoKSSBkb24ndCB0aGluayB0aGlzIGNvZGUgaGFzIGJl
+ZW4gdGhvdWdodCB0aHJvdWdoIGF0IGFsbC4KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWls
+ZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRv
+IHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
+dmVsCg==
