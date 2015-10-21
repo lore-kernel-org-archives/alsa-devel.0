@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Fix da7219->alc_en state when
-	enabling ALC" to the asoc tree
-Date: Wed, 21 Oct 2015 13:34:07 +0100
-Message-ID: <E1Zosal-0003y6-QF@finisterre>
-References: <1445387677.5319.1.camel@ingics.com>
+Subject: Applied "ASoC: rockchip: Drop unneeded properties
+	rockchip i2s/spdif bindings" to the asoc tree
+Date: Wed, 21 Oct 2015 13:34:11 +0100
+Message-ID: <E1Zosap-0003ym-UA@finisterre>
+References: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E35726067D
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:22 +0200 (CEST)
-In-Reply-To: <1445387677.5319.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 24E382606B2
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:26 +0200 (CEST)
+In-Reply-To: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Fix da7219->alc_en state when enabling ALC
+   ASoC: rockchip: Drop unneeded properties rockchip i2s/spdif bindings
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 638fae17a370a04a02c44c1539b444d94d1a5bf4 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 21 Oct 2015 08:34:37 +0800
-Subject: [PATCH] ASoC: da7219: Fix da7219->alc_en state when enabling ALC
+>From 13531520e3106e73474225b68b889e9dc7da329e Mon Sep 17 00:00:00 2001
+From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Date: Mon, 19 Oct 2015 10:15:39 +0200
+Subject: [PATCH] ASoC: rockchip: Drop unneeded properties rockchip i2s/spdif
+ bindings
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Neither the rockchip i2s nor the rockchip spdif binding support child
+devices so #address-cells and #size-cells properties aren't required.
+Remove these from the bindings.
+
+Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt   | 4 ----
+ Documentation/devicetree/bindings/sound/rockchip-spdif.txt | 4 ----
+ 2 files changed, 8 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index abba4b3..f238c1e 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -402,7 +402,7 @@ static int da7219_alc_sw_put(struct snd_kcontrol *kcontrol,
- 	/* Force ALC offset calibration if enabling ALC */
- 	if ((ucontrol->value.integer.value[0]) && (!da7219->alc_en)) {
- 		da7219_alc_calib(codec);
--		da7219->alc_en = false;
-+		da7219->alc_en = true;
- 	} else {
- 		da7219->alc_en = false;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 9b82c20..085e0bc 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -12,8 +12,6 @@ Required properties:
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the I2S interrupt.
+-- #address-cells: should be 1.
+-- #size-cells: should be 0.
+ - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+ 	Documentation/devicetree/bindings/dma/dma.txt
+ - dma-names: should include "tx" and "rx".
+@@ -28,8 +26,6 @@ i2s@ff890000 {
+ 	compatible = "rockchip,rk3288-i2s", "rockchip,rk3066-i2s";
+ 	reg = <0xff890000 0x10000>;
+ 	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+ 	dmas = <&pdma1 0>, <&pdma1 1>;
+ 	dma-names = "tx", "rx";
+ 	clock-names = "i2s_hclk", "i2s_clk";
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+index 33dd82c..e64dbde 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+@@ -12,8 +12,6 @@ Required properties:
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the SPDIF interrupt.
+-- #address-cells: should be 1.
+-- #size-cells: should be 0.
+ - dmas: DMA specifiers for tx dma. See the DMA client binding,
+   Documentation/devicetree/bindings/dma/dma.txt
+ - dma-names: should be "tx"
+@@ -33,8 +31,6 @@ spdif: spdif@0x1011e000 {
+ 	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
+ 	reg = <0x1011e000 0x2000>;
+ 	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+ 	dmas = <&dmac1_s 8>;
+ 	dma-names = "tx";
+ 	clock-names = "hclk", "mclk";
 -- 
 2.6.1
