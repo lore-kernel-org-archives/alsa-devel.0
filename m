@@ -1,19 +1,23 @@
 From: Caleb Crome <caleb@crome.org>
-Subject: Re: Gmail thinks most alsa-devel mail is spam
-Date: Wed, 21 Oct 2015 12:32:22 -0700
-Message-ID: <CAG5mAdyivbfwi1JBwHdu+c89j0GkE0Cux+eww7+SnAvUTkCPug@mail.gmail.com>
-References: <5627833D.8020908@tabi.org>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+	TDM (network) mode.
+Date: Wed, 21 Oct 2015 12:37:41 -0700
+Message-ID: <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
- [209.85.212.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 272B4260715
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 21:32:43 +0200 (CEST)
-Received: by wicfx6 with SMTP id fx6so106144820wic.1
- for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 12:32:42 -0700 (PDT)
-In-Reply-To: <5627833D.8020908@tabi.org>
+Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
+ [209.85.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ED4E260713
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 21:38:01 +0200 (CEST)
+Received: by wikq8 with SMTP id q8so66181wik.1
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 12:38:00 -0700 (PDT)
+In-Reply-To: <56273F75.2040702@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, alsa-devel-owner@alsa-project.org, mailman-owner@alsa-project.org
+To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Timur,
-   Very interesting. I checked myself, and I get almost all the alsa
-emails without them going to spam. (I'm using gmail too).  However, 2
-specifically did end up in spam:
-
-[alsa-devel] [PATCH 0/3] ASoC: dapm: add PGA kcontrol, dai_link enhancement &
-
-and
-
-[alsa-devel] Driver for audio power amplifier ICs?
-
-
-I updated my filter so it will never go to spam:
-
-In gmail go to
-
-   settings->Filters and blocked Addresses->Create New Filter
-
-Subject = [alsa-devel]
-
-Then, "Create Filter With This Search"
-
-Then "Apply The Label" = alsa
-and tick the box that says, "Never send it to Spam"
-and the box that says, "Also apply this filter to matching conversations"
-
-That should get you out of the check-spam loop.
-
--Caleb
-
-
-
-
-
-
-On Wed, Oct 21, 2015 at 5:21 AM, Timur Tabi <timur@tabi.org> wrote:
-> Hi,
->
-> I use gmail to subscribe to Linux mailing lists, and most of the mail to
-> alsa-devel ends up in the spam folder.  According to gmail, the reason is:
->
-> "Why is this message in Spam? It is in violation of Google's recommended
-> email sender guidelines."
->
-> and then it tell me to look here:
->
-> https://support.google.com/mail/answer/81126?hl=en#authentication
->
-> Is this something that can be fixed?  It's really annoying have to check my
-> spam folder every day to fish out messages from alsa-devel.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gV2VkLCBPY3QgMjEsIDIwMTUgYXQgMTI6MzIgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEu
+Y29tCjxhcm5hdWQubW91aWNoZUBpbnZveGlhLmNvbT4gd3JvdGU6Cj4KPgo+IExlIDIwLzEwLzIw
+MTUgMTk6NDMsIENhbGViIENyb21lIGEgw6ljcml0IDoKPj4gSGkgQXJuYXVkLAo+PiAgICBNeSBy
+b290IGZpbGVzeXN0ZW0gYWxyZWFkeSBoYWQgdGhhdCBmaXJtd2FyZSBpbiBpdCAodGhlIGtlcm5l
+bAo+PiBkaWRuJ3QgaGF2ZSB0aGUga2VybmVsIHBhdGNoLCBidXQgd2hlbiBJIGFwcGxpZWQgdGhh
+dCBwYXRjaCwgdGhlCj4+IGdlbmVyYXRlZCBzZG1hIHNjcmlwdCB3YXMgaWRlbnRpY2FsLgo+Pgo+
+PiBTbywgdW5mb3J0dW5hdGVseSwgdGhhdCdzIG5vdCB0aGUgcHJvYmxlbSB3aXRoIHRoZSBjaGFu
+bmVsIHNsaXBwaW5nLgo+PiBBbnkgb3RoZXIgdGhvdWdodHMgb24gd2h5IHRoZSBjaGFubmVsIHdv
+dWxkIHNsaXA/ICBPciBwb2ludGVycyBvbiBob3cKPj4gdG8gZGlhZ25vc2U/ICBJIGhhdmUgYW4g
+b3NjaWxsb3Njb3BlICYga25vdyBob3cgdG8gdXNlIGl0IDotKSAgQWxzbywgSQo+PiBjYW4gZmxp
+cCBhIEdQSU8gdG8gd2F0Y2ggZm9yIHRpbWluZyBvZiBpbnRlcnJ1cHRzLCBldGMgKGFsdGhvdWdo
+IEkKPj4gaGF2ZW4ndCBkb25lIHRoYXQgeWV0KS4KPj4KPj4KPj4gVGhhbmtzLAo+PiAgICAtQ2Fs
+ZWIKPgo+Cj4gSGVsbG8gQ2FsZWIsCj4KPiBJbiB5b3VyIHNpdHVhdGlvbiwgSSB3b3VsZDoKPiAt
+IGNoZWNrIGlmIFRVRTAvMSBmbGFnIG5ldmVyIHJpc2UgKFRyYW5zbWl0dGVyIFVuZGVycnVuKSBi
+eSBhY3RpdmF0aW5nIHRoZQo+IFRVRTAvMUlFIGJpdCB0byBnZW5lcmF0ZSByZWxhdGVkIGludGVy
+cnVwdHMuIEl0IGxvb2tzIGxpa2UgYWxyZWFkeSBlbmFibGVkCj4gaW4gNC4wIGJ5IGNvbGxlY3Rp
+bmcgc3RhdGlzdGljcyB3aXRoIGZzbF9zc2lfZGJnX2lzcigpLiBEZXNwaXRlIHRoZXJlIGlzIG5v
+Cj4gcHJpbnRrIG1lc3NhZ2Ugb24gdW5kZXJydW4sIHN0YXRzIGNhbiBiZSByZWFkIGZyb20KPiAv
+c3lzL2tlcm5lbC9kZWJ1Zy94eHh4LnNzaS9zdGF0cy4KCkhlaCwgSSBjaGVja2VkIHRoYXQgYW5k
+IEkgY291bGRuJ3QgZ2V0IHRoZSBmc2xfc3NpX2RiZ19pc3IgdG8gdHJpZ2dlcgpldmVyLCBmb3Ig
+YW55IHJlYXNvbi4gIFNvbWVob3cgaW50ZXJydXB0cyBzZWVtIHRvIGJlIGRpc2FibGVkIGluIHRo
+ZQpTU0kgZHJpdmVyLCBhbmQgSSBjYW4ndCBmaWd1cmUgb3V0IGhvdyB0byBlbmFibGUgdGhlbS4g
+IEl0IGFwcGVhcnMKdGhhdCB0aGUgb25seSBpbnRlcnJ1cHQgcmVxdWlyZWQgaXMgdGhlIERNQSBp
+bnRlcnJ1cHQsIGFuZCBTU0kKaW50ZXJydXB0cyBhcmUgbm90IGNoZWNrZWQuICAgIFRoZSAvc3lz
+L2tlcm5lbC9kZWJ1Zy94eHh4LnNzaS9zdGF0cwpmaWxlIHJlYWRzIGFsbCB6ZXJvcyBubyBtYXR0
+ZXIgd2hhdCwgZXZlbiBkdXJpbmcgcGxheWluZywgYW5kIGV2ZW4KYWZ0ZXIgdGhlIHVzZXIgc3Bh
+Y2UgZGV0ZWN0cyB1bmRlcnJ1bnMuCgo+Cj4gLSBJIHN1c3BlY3QgdGhlIGRtYSBpcyBub3QgZmFz
+dCBlbm91Z2ggdG8gZmlsbCB0aGUgRklGTy4gbWF5IGJlIHlvdSBzaG91bGQKPiBkaWcgdG8gY2hl
+Y2sgaG93IFNETUEgcHJpb3JpdHkgYXJlIGNvbmZpZ3VyZWQgYW1vbmdzIHRoZSBkaWZmZXJlbnRz
+IERNQQo+IGNoYW5uZWxzLgo+IE5vdCBzb21ldGhpbmcgSSBhbHJlYWR5IGxvb2sgYXQgYmVmb3Jl
+LiBBIHF1aWNrIGxvb2sgc3VnZ2VzdCB0aGF0Cj4gRE1BX1BSSU9fSElHSCBpcyBfTk9UXyBjb25m
+aWd1cmVkIGJ5IHRoZSBmc2xfc3NpLmMgZHJpdmVyICh3aGVyYXMgdGhlCj4gaW14LXNzaS5jIGRp
+ZCkKCgpBaCBoYSEgIFBlcmhhcHMgdGhhdCdzIGl0LiAgSSB3aWxsIGNoZWNrIGludG8gdGhhdC4g
+IE1heWJlIHRoYXQncyB0aGUKcm9vdCBjYXVzZS4gIFRoYW5rcyBzbyBtdWNoLgoKLUNhbGViCgoK
+Pgo+IFJlZ2FyZHMsCj4gQXJuYXVkCj4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
