@@ -1,12 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Fix da7219->alc_en state when enabling ALC" to the asoc tree
-Date: Wed, 21 Oct 2015 13:34:04 +0100
-Message-ID: <E1Zosai-0003xc-0o@finisterre>
+Subject: Applied "ASoC: da7219: Fix da7219->alc_en state when
+	enabling ALC" to the asoc tree
+Date: Wed, 21 Oct 2015 13:34:07 +0100
+Message-ID: <E1Zosal-0003y6-QF@finisterre>
 References: <1445387677.5319.1.camel@ingics.com>
-Return-path: <stable-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E35726067D
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 14:34:22 +0200 (CEST)
 In-Reply-To: <1445387677.5319.1.camel@ingics.com>
-Sender: stable-owner@vger.kernel.org
-To: Axel Lin <axel.lin@ingics.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
@@ -37,15 +53,13 @@ to this mail.
 Thanks,
 Mark
 
->From c5cff89b5f64b4fc7f6fd9be44b1aa7e766a94e4 Mon Sep 17 00:00:00 2001
+>From 638fae17a370a04a02c44c1539b444d94d1a5bf4 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
 Date: Wed, 21 Oct 2015 08:34:37 +0800
 Subject: [PATCH] ASoC: da7219: Fix da7219->alc_en state when enabling ALC
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Tested-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
  sound/soc/codecs/da7219.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
