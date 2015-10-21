@@ -1,52 +1,67 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: Drop unneeded properties rockchip
- i2s/spdif bindings
-Date: Wed, 21 Oct 2015 13:28:43 +0100
-Message-ID: <20151021122843.GD8232@sirena.org.uk>
-References: <1445242539-9098-1-git-send-email-sjoerd.simons@collabora.co.uk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HWvPVVuAAfuRc6SZ"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1445242539-9098-1-git-send-email-sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: da7219: Fix da7219->alc_en state when enabling ALC" to the asoc tree
+Date: Wed, 21 Oct 2015 13:34:04 +0100
+Message-ID: <E1Zosai-0003xc-0o@finisterre>
+References: <1445387677.5319.1.camel@ingics.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1445387677.5319.1.camel@ingics.com>
+Sender: stable-owner@vger.kernel.org
+To: Axel Lin <axel.lin@ingics.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---HWvPVVuAAfuRc6SZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: da7219: Fix da7219->alc_en state when enabling ALC
 
-On Mon, Oct 19, 2015 at 10:15:39AM +0200, Sjoerd Simons wrote:
-> Neither the rockchip i2s nor the rockchip spdif binding support child
-> devices so #address-cells and #size-cells properties aren't required.
-> Remove these from the bindings.
->=20
-> Signed-off-by: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+has been applied to the asoc tree at
 
-Please use subject lines matching the style for the subsystem!
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---HWvPVVuAAfuRc6SZ
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJWJ4T6AAoJECTWi3JdVIfQDH8H/j6i6DoQFVBR8WxRo8MLyzge
-shApzhJKDtc4fBb5laviTf2F1oDX3347A1Yynn2GLVEjQnL0s5Jty12Swv2fGStZ
-Yr5nssU4Ck27ko9QJClUM8KKF+KZvyZxwljvLSr2guyd10S78M1QUNmfhCZ/h6cM
-HOvlJEdumd24nEjwqxB9Jff8yFQhN2MGjtWoAzHy9ux+Hpfz/kxg/R8u5A0WGp7N
-o3q8PV20J0aCk3hardponMm6aZ5Yn+BubEpK0fMHRmakzCuKfiMCV7KYv9Edrm2Q
-HchiFkgQdpMtkqKzhYrKnVmrxv80y1lHc+fh1nuQ95qr4Rst/DzsUOQhJQpDwWw=
-=mXbM
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---HWvPVVuAAfuRc6SZ--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c5cff89b5f64b4fc7f6fd9be44b1aa7e766a94e4 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 21 Oct 2015 08:34:37 +0800
+Subject: [PATCH] ASoC: da7219: Fix da7219->alc_en state when enabling ALC
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Tested-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index abba4b3..f238c1e 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -402,7 +402,7 @@ static int da7219_alc_sw_put(struct snd_kcontrol *kcontrol,
+ 	/* Force ALC offset calibration if enabling ALC */
+ 	if ((ucontrol->value.integer.value[0]) && (!da7219->alc_en)) {
+ 		da7219_alc_calib(codec);
+-		da7219->alc_en = false;
++		da7219->alc_en = true;
+ 	} else {
+ 		da7219->alc_en = false;
+ 	}
+-- 
+2.6.1
