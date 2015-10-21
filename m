@@ -1,86 +1,48 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen v2 3/3] media: au0828 create link between ALSA Mixer and decoder
-Date: Tue, 20 Oct 2015 17:25:16 -0600
-Message-ID: <c2499491a5c4f215efeaf15312078736a207afab.1445380851.git.shuahkh@osg.samsung.com>
-References: <cover.1445380851.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1445380851.git.shuahkh@osg.samsung.com>
-References: <cover.1445380851.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: da7219: Fix da7219->alc_en state
+	when enabling ALC
+Date: Wed, 21 Oct 2015 08:34:37 +0800
+Message-ID: <1445387677.5319.1.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCA212604D5
+ for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2015 02:34:45 +0200 (CEST)
+Received: by pacfv9 with SMTP id fv9so37724775pac.3
+ for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2015 17:34:44 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828_create_media_graph() to create pad link
-between MEDIA_ENT_F_AUDIO_MIXER entity and decoder's
-AU8522_PAD_AUDIO_OUT. With mixer entity now linked to
-decoder, change to link MEDIA_ENT_F_AUDIO_CAPTURE to
-mixer's source pad.
-
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 17 ++++++++++++++---
- drivers/media/usb/au0828/au0828.h      |  1 +
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 7af5d0d..3ef6fee 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -225,6 +225,7 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 	struct media_entity *entity;
- 	struct media_entity *tuner = NULL, *decoder = NULL;
- 	struct media_entity *audio_capture = NULL;
-+	struct media_entity *mixer = NULL;
- 	int i, ret;
- 
- 	if (!mdev)
-@@ -245,6 +246,9 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		case MEDIA_ENT_F_AUDIO_CAPTURE:
- 			audio_capture = entity;
- 			break;
-+		case MEDIA_ENT_F_AUDIO_MIXER:
-+			mixer = entity;
-+			break;
- 		}
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 86c528a..e36a7b7 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -402,7 +402,7 @@ static int da7219_alc_sw_put(struct snd_kcontrol *kcontrol,
+ 	/* Force ALC offset calibration if enabling ALC */
+ 	if ((ucontrol->value.integer.value[0]) && (!da7219->alc_en)) {
+ 		da7219_alc_calib(codec);
+-		da7219->alc_en = false;
++		da7219->alc_en = true;
+ 	} else {
+ 		da7219->alc_en = false;
  	}
- 
-@@ -309,13 +313,20 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		}
- 	}
- 
--	if (audio_capture && !dev->audio_capture_linked) {
--		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
--					    audio_capture, 0,
-+	if (mixer && audio_capture && !dev->audio_capture_linked) {
-+		ret = media_create_pad_link(mixer, 1, audio_capture, 0,
- 					    MEDIA_LNK_FL_ENABLED);
- 		if (ret == 0)
- 			dev->audio_capture_linked = 1;
- 	}
-+
-+	if (mixer && !dev->mixer_linked) {
-+		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
-+					    mixer, 0,
-+					    MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->mixer_linked = 1;
-+	}
- #endif
- }
- 
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 2f4d597..6dd81b2 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -288,6 +288,7 @@ struct au0828_dev {
- 	bool vdev_linked;
- 	bool vbi_linked;
- 	bool audio_capture_linked;
-+	bool mixer_linked;
- 	struct media_link *active_link;
- 	struct media_entity *active_link_owner;
- #endif
 -- 
 2.1.4
