@@ -1,19 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Add the HWEQ for the
- customized speaker output
-Date: Thu, 22 Oct 2015 14:08:41 +0100
-Message-ID: <20151022130841.GN8232@sirena.org.uk>
-References: <1445410711-28828-1-git-send-email-oder_chiou@realtek.com>
- <20151021103519.GL32054@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694F9ED0C@RTITMBSV03.realtek.com.tw>
+Subject: [GIT PULL] ASoC updates for v4.3
+Date: Fri, 23 Oct 2015 08:48:42 +0900
+Message-ID: <20151022234842.GE29919@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7413494153311398439=="
+Content-Type: multipart/mixed; boundary="===============1478169118872554495=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CFAB266AEC
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:36:57 +0200 (CEST)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694F9ED0C@RTITMBSV03.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E5EC266C0E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:48:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +18,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7413494153311398439==
+--===============1478169118872554495==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kUBUi7JBpjcBtem/"
+	protocol="application/pgp-signature"; boundary="4Epv4kl9IRBfg3rk"
 Content-Disposition: inline
 
 
---kUBUi7JBpjcBtem/
+--4Epv4kl9IRBfg3rk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 21, 2015 at 12:47:34PM +0000, Oder Chiou wrote:
-> > > +struct rt5645_eq_param_s {
-> > > +	unsigned short reg;
-> > > +	unsigned short val;
-> > > +};
+The following changes since commit 7379047d5585187d1288486d4627873170d0005a:
 
-> > As I said in reply to your earlier version just now this seems like a
-> > really strange way of configuring things - we'd need to understand why
-> > this is a good format for doing the configuration.
+  Linux 4.3-rc6 (2015-10-18 16:08:42 -0700)
 
-> There are 56 registers(0x1a4 to 0x1cd and 0x1e5 to 0x1f8) for setting the
-> EQ parameters, and there is a register(0xb1) to control how many bands are
-> enabled. The EQ parameters are affected by which bands are enabled, and we
-> can set the EQ parameters which are required. The goal is to implement the
+are available in the git repository at:
 
-56 registers isn't so many in total but...
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.3-rc6
 
-> function as simple as possible. In case of the Google Celes, we can only set
-> 5 registers. We have added the check function in the "rt5645_hweq_put", if
-> the settings are invalid, they are not copied to private data. In the enable
-> function, we also validate the registers, and only the 57 registers can be
-> set. Could you give us some hint?
+for you to fetch changes up to f69eccc4b248ce53b1b830034babd0a795d5763c:
 
-It's a lot simpler from a kernel code point of view to just export the
-full register coefficient block - but it's nice to see your tuning
-software is smart enough to be able to output the smaller set of
-register writes!  I think this is fine if you can put the above
-explanation into the changelog and also change things to remove the need
-to specify platform data and just always provide these controls, with
-validation of the registers being written I think that is a good idea,
-especially given the separate register for specifying how many bands are
-enabled.
+  Merge remote-tracking branches 'asoc/fix/rt298', 'asoc/fix/sx', 'asoc/fix/wm8904' and 'asoc/fix/wm8962' into asoc-linus (2015-10-23 08:44:14 +0900)
 
---kUBUi7JBpjcBtem/
+----------------------------------------------------------------
+ASoC: Fixes for v4.3
+
+A bunch of driver fixes plus one core fix which fixes problems with
+misreporting values from _SX controls following a recent refactoring.
+This had gone unnoticed as such controls are quite rare.
+
+----------------------------------------------------------------
+Bard Liao (2):
+      ASoC: rt298: correct index default value
+      ASoC: rt298: fix wrong setting of gpio2_en
+
+Charles Keepax (2):
+      ASoC: Add info callback for SX_TLV controls
+      ASoC: wm8904: Correct number of EQ registers
+
+Jiada Wang (1):
+      ASoC: wm8962: mark cache_dirty flag after software reset in pm_resume
+
+Mark Brown (3):
+      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-fix-rt5645
+      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/rt298', 'asoc/fix/sx', 'asoc/fix/wm8904' and 'asoc/fix/wm8962' into asoc-linus
+
+ include/sound/soc.h       |  6 ++++--
+ include/sound/wm8904.h    |  2 +-
+ sound/soc/codecs/rt298.c  | 26 +++++++++++++-------------
+ sound/soc/codecs/wm8962.c |  2 ++
+ sound/soc/soc-ops.c       | 28 ++++++++++++++++++++++++++++
+ 5 files changed, 48 insertions(+), 16 deletions(-)
+
+--4Epv4kl9IRBfg3rk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWKN/ZAAoJECTWi3JdVIfQAYgH/1tyyZe75E7WyIVOPRXe6mki
-7v21xCdoMmXhQwQS7wnzABS+0UhyFtDNcqR4RRz1Ua+AYMTlvFKD/wOF3tglbj6J
-OXSgAN51ofjvuGJ3jL3px4JY7yQ1Bvx0y9o8wmhMgJn8Z07tMvWFiWb3dPbYd4MU
-l5qHhLP4Pu2mB6uq3BCzmExYSXVYSg+2WnAQAMyIAqrY1kaA3wGfZZN6FZH/ooJa
-W5e0Isid06CZq6I8VBSwXjWueUxyH47tgEFfCdz2dFftLMOYVvwQgtD4H/FfOJnV
-pPE6D+HT3t872+2tL96CBEZvHKg9QWZ4HCMRBegd5KWXz3C5DhQmCfJH2R2XU/4=
-=HYlZ
+iQEcBAEBCAAGBQJWKXXZAAoJECTWi3JdVIfQ4fsH/jSLKr1+43c1PU4Bgq4tJQMM
+DPA1mJgG2wrPsmmokiMcCYvtr9p4GBigsJvE55/nBFIXiq8g6N+27jzr8FJfG3xu
+rRr1D0pJy4wDWHzEHOpGnpvwbzUohm4r75oVuJ+3aPYFJhih5DQLGt0f2228muzJ
+LxS5BoOrl44CwWVjjlmxrNcWBubFGAhEpgiuD0n7/ZQwqzFtdzzzVSSjG3z7U/DG
+O8vigdDJjmfXPrGucw7JUSvCNKKaU6dTMU4VnOeH+pVjow1VHNUvj+2GYtqLO2lc
+v3bNdgNJnaKr6B2n7v0AgPLXltbULNEz8V6caR6wlrr6i+5oF48MiVVgGZSDNvA=
+=mZqQ
 -----END PGP SIGNATURE-----
 
---kUBUi7JBpjcBtem/--
+--4Epv4kl9IRBfg3rk--
 
---===============7413494153311398439==
+--===============1478169118872554495==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7413494153311398439==--
+--===============1478169118872554495==--
