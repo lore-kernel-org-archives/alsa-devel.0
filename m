@@ -1,87 +1,71 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v2] ASoC: Intel: sst: only use sst-firmware when DW DMAC is available
-Date: Thu, 22 Oct 2015 13:55:07 +0800
-Message-ID: <1445493307-13667-1-git-send-email-yang.jie@intel.com>
-Return-path: <linux-next-owner@vger.kernel.org>
-Sender: linux-next-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, rdunlap@infradead.org, sfr@canb.auug.org.au, liam.r.girdwood@intel.com, yang.jie@intel.com, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, vinod.koul@intel.com, jarkko.nikula@intel.com, linux-audio-intel@eclists.intel.com
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Thu, 22 Oct 2015 08:51:47 +0200
+Message-ID: <56288783.1080503@canonical.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <561CA911.7070405@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+ <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+ <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8098E26059D
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 08:51:42 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Yang, Libin" <libin.yang@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "airlied@linux.ie" <airlied@linux.ie>, "tanuk@iki.fi" <tanuk@iki.fi>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currentlly, we use Synopsys DesignWare DMA Controller for
-baytrail/haswell/broadwell ADSP firmware loading, but for
-skylake, we don't use it, compiling sst-firmware.c may
-introduce error when CONFIG_DW_DMAC_CORE is not enabled:
 
-    sound/built-in.o: In function `sst_dma_new':
-    (.text+0xd7b38): undefined reference to `dw_dma_probe'
-    sound/built-in.o: In function `sst_dma_free':
-    (.text+0xd7c0a): undefined reference to `dw_dma_remove'
 
-Here we only compile sst-firmware when CONFIG_DW_DMAC_CORE
-is selected, to fix the linking error issue.
+On 2015-10-22 03:31, Yang, Libin wrote:
+> Hi Raymond,
+>
+>>
+>> From: Raymond Yau [mailto:superquad.vortex2@gmail.com]
+>> Sent: Friday, October 16, 2015 8:33 AM
+>> To: Takashi Iwai
+>> Cc: airlied@linux.ie; tanuk@iki.fi; David Henningsson; Yang, Libin; Lin,
+>> Mengdong; Girdwood, Liam R; ALSA Development Mailing List
+>> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+>>
+>>
+>>>>
+>>>> Do it mean that only one DP MST port and no HDMI port on the
+>> same graphic
+>>>> card ?
+>>>
+>>> No.
+>> If there is only one HDMI and one Display Port, this mean that there
+>> are two pin complexes
+>> How about the name of jack detection kctl of three Display Port
+>> monitors  which are created on the same pin complex but different
+>> dev_index ?
+>
+> For the jack name, what do you think if we change to
+> "HDMI/DP, pin=n, dev=m" format? Will it impact on pulseaudio?
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/common/Makefile  | 6 +++++-
- sound/soc/intel/common/sst-dsp.c | 2 ++
- sound/soc/intel/common/sst-dsp.h | 2 ++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+Yes, it will impact PulseAudio. It will require changes to files in
 
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index f24154c..d910558 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -1,7 +1,11 @@
--snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
-+snd-soc-sst-dsp-objs := sst-dsp.o
- snd-soc-sst-acpi-objs := sst-acpi.o
- snd-soc-sst-ipc-objs := sst-ipc.o
- 
-+ifneq ($(CONFIG_DW_DMAC_CORE),)
-+snd-soc-sst-dsp-objs += sst-firmware.o
-+endif
-+
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
- obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
- 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index a627236..c9452e0 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -420,6 +420,7 @@ void sst_dsp_inbox_read(struct sst_dsp *sst, void *message, size_t bytes)
- }
- EXPORT_SYMBOL_GPL(sst_dsp_inbox_read);
- 
-+#if IS_ENABLED(CONFIG_DW_DMAC_CORE)
- struct sst_dsp *sst_dsp_new(struct device *dev,
- 	struct sst_dsp_device *sst_dev, struct sst_pdata *pdata)
- {
-@@ -484,6 +485,7 @@ void sst_dsp_free(struct sst_dsp *sst)
- 	sst_dma_free(sst->dma);
- }
- EXPORT_SYMBOL_GPL(sst_dsp_free);
-+#endif
- 
- /* Module information */
- MODULE_AUTHOR("Liam Girdwood");
-diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index 1f45f18..859f0de 100644
---- a/sound/soc/intel/common/sst-dsp.h
-+++ b/sound/soc/intel/common/sst-dsp.h
-@@ -216,10 +216,12 @@ struct sst_pdata {
- 	void *dsp;
- };
- 
-+#if IS_ENABLED(CONFIG_DW_DMAC_CORE)
- /* Initialization */
- struct sst_dsp *sst_dsp_new(struct device *dev,
- 	struct sst_dsp_device *sst_dev, struct sst_pdata *pdata);
- void sst_dsp_free(struct sst_dsp *sst);
-+#endif
- 
- /* SHIM Read / Write */
- void sst_dsp_shim_write(struct sst_dsp *sst, u32 offset, u32 value);
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths
+
 -- 
-2.1.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
