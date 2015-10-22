@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove duplicate parameter from
-	rsnd_ssi_xxx()" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:44 +0900
-Message-ID: <E1ZpOzQ-0008Te-1L@finisterre>
-References: <87r3knsiml.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Let snd_soc_limit_volume() take a
+	snd_soc_card" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:34 +0900
+Message-ID: <E1ZpOzG-0008Rl-9z@finisterre>
+References: <1445180673-27790-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F95B266B31
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:53 +0200 (CEST)
-In-Reply-To: <87r3knsiml.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 815B6266B42
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:52 +0200 (CEST)
+In-Reply-To: <1445180673-27790-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove duplicate parameter from rsnd_ssi_xxx()
+   ASoC: Let snd_soc_limit_volume() take a snd_soc_card
 
 has been applied to the asoc tree at
 
@@ -53,137 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From b415b4d3122a466f3a73d86a1dd2dcdc13de7ef3 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Oct 2015 03:15:46 +0000
-Subject: [PATCH] ASoC: rsnd: remove duplicate parameter from rsnd_ssi_xxx()
+>From 26d9ca3462df8f7e83fc372b23c8da5ed2b1c4f3 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Sun, 18 Oct 2015 17:04:33 +0200
+Subject: [PATCH] ASoC: Let snd_soc_limit_volume() take a snd_soc_card
 
-rsnd_ssi_use_busif() and rsnd_ssi_is_pin_sharing() are the function
-which returns current SSI status. But these requests duplicated parameter.
-This patch removes duplicated parameter.
+snd_soc_limit_volume() operates on a card and the CODEC that is passed in
+is only used to look up the card. Let it directly take the card instead.
+This makes it possible to use it when no snd_soc_codec is available.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  |  3 +--
- sound/soc/sh/rcar/dma.c  |  2 +-
- sound/soc/sh/rcar/rsnd.h |  7 +++++--
- sound/soc/sh/rcar/src.c  |  2 +-
- sound/soc/sh/rcar/ssi.c  | 11 ++++++-----
- 5 files changed, 14 insertions(+), 11 deletions(-)
+ include/sound/soc.h   | 2 +-
+ sound/soc/omap/rx51.c | 2 +-
+ sound/soc/soc-ops.c   | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index c4ebbb7..2a5b3a2 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -69,11 +69,10 @@ static u32 rsnd_adg_calculate_rbgx(unsigned long div)
- static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 884e728..71e0c05 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -591,7 +591,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+-int snd_soc_limit_volume(struct snd_soc_codec *codec,
++int snd_soc_limit_volume(struct snd_soc_card *card,
+ 	const char *name, int max);
+ int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
+ 		       struct snd_ctl_elem_info *uinfo);
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 3bebfb1..9953890 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -297,7 +297,7 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+ 		dev_err(card->dev, "Failed to add TPA6130A2 controls\n");
+ 		return err;
+ 	}
+-	snd_soc_limit_volume(codec, "TPA6130A2 Headphone Playback Volume", 42);
++	snd_soc_limit_volume(card, "TPA6130A2 Headphone Playback Volume", 42);
+ 
+ 	err = omap_mcbsp_st_add_controls(rtd, 2);
+ 	if (err < 0) {
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 100d92b..20f702a 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -560,16 +560,16 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_range);
+ /**
+  * snd_soc_limit_volume - Set new limit to an existing volume control.
+  *
+- * @codec: where to look for the control
++ * @card: where to look for the control
+  * @name: Name of the control
+  * @max: new maximum limit
+  *
+  * Return 0 for success, else error.
+  */
+-int snd_soc_limit_volume(struct snd_soc_codec *codec,
++int snd_soc_limit_volume(struct snd_soc_card *card,
+ 	const char *name, int max)
  {
- 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
--	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	int id = rsnd_mod_id(mod);
- 	int ws = id;
+-	struct snd_card *card = codec->component.card->snd_card;
++	struct snd_card *snd_card = card->snd_card;
+ 	struct snd_kcontrol *kctl;
+ 	struct soc_mixer_control *mc;
+ 	int found = 0;
+@@ -579,7 +579,7 @@ int snd_soc_limit_volume(struct snd_soc_codec *codec,
+ 	if (unlikely(!name || max <= 0))
+ 		return -EINVAL;
  
--	if (rsnd_ssi_is_pin_sharing(rsnd_ssi_mod_get(priv, id))) {
-+	if (rsnd_ssi_is_pin_sharing(io)) {
- 		switch (id) {
- 		case 1:
- 		case 2:
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index bfbb8a5..5d084d0 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -470,7 +470,7 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
- 		dev_err(dev, "DVC is selected without SRC\n");
- 
- 	/* use SSIU or SSI ? */
--	if (is_ssi && rsnd_ssi_use_busif(io, mod))
-+	if (is_ssi && rsnd_ssi_use_busif(io))
- 		is_ssi++;
- 
- 	return (is_from) ?
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 38c16d7..0853298 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -572,9 +572,12 @@ int rsnd_ssi_probe(struct platform_device *pdev,
- void rsnd_ssi_remove(struct platform_device *pdev,
- 		     struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
--int rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
--int rsnd_ssi_use_busif(struct rsnd_dai_stream *io, struct rsnd_mod *mod);
-+int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
-+
-+#define rsnd_ssi_is_pin_sharing(io)	\
-+	__rsnd_ssi_is_pin_sharing(rsnd_io_to_mod_ssi(io))
-+int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
- 
- /*
-  *	R-Car SRC
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 37d41f0..261b502 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -159,7 +159,7 @@ int rsnd_src_ssiu_start(struct rsnd_mod *ssi_mod,
- 	/*
- 	 * SSI_MODE1
- 	 */
--	if (rsnd_ssi_is_pin_sharing(ssi_mod)) {
-+	if (rsnd_ssi_is_pin_sharing(io)) {
- 		int shift = -1;
- 		switch (ssi_id) {
- 		case 1:
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index e550621..1427ec2 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -86,8 +86,9 @@ struct rsnd_ssi {
- #define rsnd_ssi_of_node(priv) \
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,ssi")
- 
--int rsnd_ssi_use_busif(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
-+int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
- {
-+	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	int use_busif = 0;
- 
-@@ -394,7 +395,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 
--	rsnd_src_ssiu_start(mod, io, rsnd_ssi_use_busif(io, mod));
-+	rsnd_src_ssiu_start(mod, io, rsnd_ssi_use_busif(io));
- 
- 	rsnd_ssi_hw_start(ssi, io);
- 
-@@ -613,7 +614,7 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
- 	int is_play = rsnd_io_is_play(io);
- 	char *name;
- 
--	if (rsnd_ssi_use_busif(io, mod))
-+	if (rsnd_ssi_use_busif(io))
- 		name = is_play ? "rxu" : "txu";
- 	else
- 		name = is_play ? "rx" : "tx";
-@@ -659,7 +660,7 @@ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get((struct rsnd_ssi *)(priv->ssi) + id);
- }
- 
--int rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
-+int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 
-@@ -670,7 +671,7 @@ static void rsnd_ssi_parent_setup(struct rsnd_priv *priv, struct rsnd_ssi *ssi)
- {
- 	struct rsnd_mod *mod = rsnd_mod_get(ssi);
- 
--	if (!rsnd_ssi_is_pin_sharing(mod))
-+	if (!__rsnd_ssi_is_pin_sharing(mod))
- 		return;
- 
- 	switch (rsnd_mod_id(mod)) {
+-	list_for_each_entry(kctl, &card->controls, list) {
++	list_for_each_entry(kctl, &snd_card->controls, list) {
+ 		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name))) {
+ 			found = 1;
+ 			break;
 -- 
 2.6.1
