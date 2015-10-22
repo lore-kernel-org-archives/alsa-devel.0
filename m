@@ -1,27 +1,20 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Thu, 22 Oct 2015 07:40:23 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <561CA911.7070405@canonical.com>
- <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
- <s5hlhb7ktum.wl-tiwai@suse.de>
- <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
- <s5htwpuj6f5.wl-tiwai@suse.de>
- <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
- <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
- <56288783.1080503@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
- <56288FF7.9030400@canonical.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Fwd: Re: Gmail thinks most alsa-devel mail is spam
+Date: Thu, 22 Oct 2015 09:43:12 +0200
+Message-ID: <56289390.40902@perex.cz>
+References: <5627833D.8020908@tabi.org>
+ <CAG5mAdyivbfwi1JBwHdu+c89j0GkE0Cux+eww7+SnAvUTkCPug@mail.gmail.com>
+ <CAOZdJXXWDuU=Rk03KwixpFu1LYYX8Kzaq6q-wu-rA9uGTvHSWw@mail.gmail.com>
+ <CAA+gEbYUaJcJ+qHskBfCd79JLEmjexhmMPGQE27i-sydOZgugA@mail.gmail.com>
+ <CAA+gEbaUQEm0HAKNs7t=aXSt6X7KOPnsdSTAhGRoVAq89J3WGw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EC972606F9
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 09:40:28 +0200 (CEST)
-In-Reply-To: <56288FF7.9030400@canonical.com>
-Content-Language: en-US
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AD282606F9
+ for <Alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 09:43:13 +0200 (CEST)
+In-Reply-To: <CAA+gEbaUQEm0HAKNs7t=aXSt6X7KOPnsdSTAhGRoVAq89J3WGw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,83 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "airlied@linux.ie" <airlied@linux.ie>, "tanuk@iki.fi" <tanuk@iki.fi>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+To: "A. C. Censi" <accensi@gmail.com>, ALSA development <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dne 22.10.2015 v 03:55 A. C. Censi napsal(a):
 
-> >>>> From: Raymond Yau [mailto:superquad.vortex2@gmail.com]
-> >>>> Sent: Friday, October 16, 2015 8:33 AM
-> >>>> To: Takashi Iwai
-> >>>> Cc: airlied@linux.ie; tanuk@iki.fi; David Henningsson; Yang, Libin;
-> >> Lin,
-> >>>> Mengdong; Girdwood, Liam R; ALSA Development Mailing List
-> >>>> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> >>>>
-> >>>>
-> >>>>>>
-> >>>>>> Do it mean that only one DP MST port and no HDMI port on
-> the
-> >>>> same graphic
-> >>>>>> card ?
-> >>>>>
-> >>>>> No.
-> >>>> If there is only one HDMI and one Display Port, this mean that
-> there
-> >>>> are two pin complexes
-> >>>> How about the name of jack detection kctl of three Display Port
-> >>>> monitors  which are created on the same pin complex but
-> different
-> >>>> dev_index ?
-> >>>
-> >>> For the jack name, what do you think if we change to
-> >>> "HDMI/DP, pin=n, dev=m" format? Will it impact on pulseaudio?
-> >>
-> >> Yes, it will impact PulseAudio. It will require changes to files in
-> >>
-> >>
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/
-> >> alsa/mixer/paths
-> >
-> > So does this mean we should not change the name "HDMI/DP,pcm=3
-> Jack"
-> > to "HDMI/DP,pin=n, dev=m Jack", otherwise the old PA will not work
-> with
-> > the new driver?
+> I have the same problem and not only with gmail, but my company server does
+> the same check
 > 
-> Yes. And I don't understand why you need to do it, either - if you have
-> three display port monitors on one pin, then they will all get different
-> PCMs (8, 9 and 10), and they will signal their Jack status through
-> "HDMI/DP,pcm=8 Jack", "HDMI/DP,pcm=9 Jack" and
-> "HDMI/DP,pcm=10 Jack".
-
-OK, I see. Thanks. I will not change the jack kctl name.
-BTW, the PCM number will be the same as converter, which means
-it will be 3 on Intel platforms.
-
+> Probably the misclassification is due to:
 > 
-> Given that my proposed mapping algorithm will never change pin to
-> PCM
-> mapping (unless you have two displayport outputs and use MST on
-> both), I
-> think we can get away with not exposing the actual pin to userspace.
-> And should this later become necessary, we can add a separate kctl for
-> that.
+> - Keep valid reverse DNS records for the IP address(es) from which you send
+> mail, pointing to your domain.
 
-My current thought is to expose the same jack kctls (same number and
-same name) to userspace while we will create hda_jack_tbl for each device
-entry. When pcm is bound to the device entry, the corresponding
-jack kctl will be bound to the device entry.
+> Received: from alsa0.perex.cz ([2002:4d30:e0f1:1:5054:ff:fe8b:a8f0])
 
-Regards,
-Libin
+OK. The outgoing e-mails should be from IPv4 now which has registered
+reverse DNS record. You may check.
 
-> 
-> --
-> David Henningsson, Canonical Ltd.
-> https://launchpad.net/~diwic
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
