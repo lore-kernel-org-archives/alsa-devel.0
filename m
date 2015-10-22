@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: mark cache_dirty flag after
-	software reset in pm_resume" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:40 +0900
-Message-ID: <E1ZpOzM-0008TB-IK@finisterre>
-References: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
+Subject: Applied "ASoC: rsnd: remove unused rsnd_dma_to_ssi()
+	macro" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:48 +0900
+Message-ID: <E1ZpOzU-0008UC-7c@finisterre>
+References: <87si53sin1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C100266B43
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:53 +0200 (CEST)
-In-Reply-To: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E7085266B4E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:59 +0200 (CEST)
+In-Reply-To: <87si53sin1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: mark cache_dirty flag after software reset in pm_resume
+   ASoC: rsnd: remove unused rsnd_dma_to_ssi() macro
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 4eb0f7abcefad2d4c127aa7502d3122635eddab0 Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Tue, 20 Oct 2015 11:47:11 +0900
-Subject: [PATCH] ASoC: wm8962: mark cache_dirty flag after software reset in
- pm_resume
+>From 69819f527afba7a909a2aba32521a3bea8e3b60b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 22 Oct 2015 03:15:26 +0000
+Subject: [PATCH] ASoC: rsnd: remove unused rsnd_dma_to_ssi() macro
 
-By doing software reset of wm8962 in pm_resume, all registers which
-have already been set will be reset to default value without regmap
-interface be involved, thus driver need to mark cache_dirty flag,
-to let regcache can be updated by regcache_sync().
+rsnd_dma_to_ssi() is no longer used, let's remove it.
 
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sh/rcar/ssi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b4eb975..45f06d5f 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3804,6 +3804,8 @@ static int wm8962_runtime_resume(struct device *dev)
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d70720a..e550621 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -79,7 +79,6 @@ struct rsnd_ssi {
  
- 	wm8962_reset(wm8962);
- 
-+	regcache_mark_dirty(wm8962->regmap);
-+
- 	/* SYSCLK defaults to on; make sure it is off so we can safely
- 	 * write to registers if the device is declocked.
- 	 */
+ #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+-#define rsnd_dma_to_ssi(dma)  rsnd_mod_to_ssi(rsnd_dma_to_mod(dma))
+ #define rsnd_ssi_pio_available(ssi) ((ssi)->info->irq > 0)
+ #define rsnd_ssi_parent(ssi) ((ssi)->parent)
+ #define rsnd_ssi_mode_flags(p) ((p)->info->flags)
 -- 
 2.6.1
