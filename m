@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8731: harmless underflow in
-	wm8731_put_deemph()" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:29 +0900
-Message-ID: <E1ZpOzB-0008QJ-IK@finisterre>
-References: <20151013070857.GC31537@mwanda>
+Subject: Applied "ASoC: wm8904: harmless underflow in
+	wm8904_put_deemph()" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:30 +0900
+Message-ID: <E1ZpOzC-0008Qm-VD@finisterre>
+References: <20151013070818.GB31537@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34D34266B22
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:40 +0200 (CEST)
-In-Reply-To: <20151013070857.GC31537@mwanda>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EDE7266AC9
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:41 +0200 (CEST)
+In-Reply-To: <20151013070818.GB31537@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8731: harmless underflow in wm8731_put_deemph()
+   ASoC: wm8904: harmless underflow in wm8904_put_deemph()
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 523bade22428d4c6742dd7bfb4c0259a23bb9ec3 Mon Sep 17 00:00:00 2001
+>From 931dfa6931448ccfd12d4ccd8d1d9289ceb92439 Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 13 Oct 2015 10:08:57 +0300
-Subject: [PATCH] ASoC: wm8731: harmless underflow in wm8731_put_deemph()
+Date: Tue, 13 Oct 2015 10:08:18 +0300
+Subject: [PATCH] ASoC: wm8904: harmless underflow in wm8904_put_deemph()
 
-The code tries to verify that "deemph" is zero or one, but it fails to
-account for that it can be negative.  It's harmless because negatives
-are treated the same as one, but we should fix it just to silence the
-static checker warning.
+We try to check that "deemph" is zero or one, but because of an
+underflow bug, it can also be negative.  It's fine, negative values are
+handled as non-zero.  But it's messy and static checkers complain so
+let's fix it.
 
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8731.c | 2 +-
+ sound/soc/codecs/wm8904.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index ace8645..07cf1bd 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -132,7 +132,7 @@ static int wm8731_put_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index b783743..2aa23f1 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -534,7 +534,7 @@ static int wm8904_put_deemph(struct snd_kcontrol *kcontrol,
  {
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
 -	int deemph = ucontrol->value.integer.value[0];
 +	unsigned int deemph = ucontrol->value.integer.value[0];
- 	int ret = 0;
  
  	if (deemph > 1)
+ 		return -EINVAL;
 -- 
 2.6.1
