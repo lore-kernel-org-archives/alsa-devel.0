@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-classd: add the Audio Class D
-	Amplifier" to the asoc tree
-Date: Fri, 23 Oct 2015 08:08:56 +0900
-Message-ID: <E1ZpOyf-0008IX-00@finisterre>
-References: <1444299212-4328-2-git-send-email-songjun.wu@atmel.com>
+Subject: Applied "ASoC: fsl-asoc-card: add AC'97 support" to
+	the asoc tree
+Date: Fri, 23 Oct 2015 08:09:00 +0900
+Message-ID: <E1ZpOyi-0008JW-9K@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EF95266AC4
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:09 +0200 (CEST)
-In-Reply-To: <1444299212-4328-2-git-send-email-songjun.wu@atmel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 38535266AB0
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:12 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
+To: Maciej Szmigiero <mail@maciej.szmigiero.name>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel-classd: add the Audio Class D Amplifier
+   ASoC: fsl-asoc-card: add AC'97 support
 
 has been applied to the asoc tree at
 
@@ -53,868 +52,327 @@ to this mail.
 Thanks,
 Mark
 
->From e0a25b6d18624140905d79775f9e1b05c12502f5 Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@atmel.com>
-Date: Thu, 8 Oct 2015 18:13:31 +0800
-Subject: [PATCH] ASoC: atmel-classd: add the Audio Class D Amplifier
+>From 50760cad9de969fe85b24465afe6396b8bbc6a3f Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Sat, 19 Sep 2015 02:00:25 +0200
+Subject: [PATCH] ASoC: fsl-asoc-card: add AC'97 support
 
-Add driver for the digital imput to PWM output stereo
-class D amplifier. It comes with filter, digitally
-controlled gain, an equalizer and a dmphase filter.
+Add AC'97 support to fsl-asoc-card using generic
+ASoC AC'97 CODEC.
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+The SSI controller will silently enable any TX
+AC'97 slots that have their bits set in SLOTREQ
+received from CODEC and then will redirect some
+of playback samples there.
+
+That's why it is important to make sure that
+any of CODEC playback slots that can pull samples
+are set to slots 3/4 (standard PCM playback slots).
+Currently, this applies to S/PDIF slots as they
+were seen to pull samples sometimes even with
+S/PDIF output being disabled.
+
+Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/Kconfig        |   9 +
- sound/soc/atmel/Makefile       |   2 +
- sound/soc/atmel/atmel-classd.c | 679 +++++++++++++++++++++++++++++++++++++++++
- sound/soc/atmel/atmel-classd.h | 120 ++++++++
- 4 files changed, 810 insertions(+)
- create mode 100644 sound/soc/atmel/atmel-classd.c
- create mode 100644 sound/soc/atmel/atmel-classd.h
+ .../devicetree/bindings/sound/fsl-asoc-card.txt    |  10 +-
+ sound/soc/fsl/fsl-asoc-card.c                      | 140 ++++++++++++++++-----
+ 2 files changed, 116 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 1489cd4..2d30464 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -59,4 +59,13 @@ config SND_AT91_SOC_SAM9X5_WM8731
- 	help
- 	  Say Y if you want to add support for audio SoC on an
- 	  at91sam9x5 based board that is using WM8731 codec.
-+
-+config SND_ATMEL_SOC_CLASSD
-+	tristate "Atmel ASoC driver for boards using CLASSD"
-+	depends on ARCH_AT91 || COMPILE_TEST
-+	select SND_ATMEL_SOC_DMA
-+	select REGMAP_MMIO
-+	help
-+	  Say Y if you want to add support for Atmel ASoC driver for boards using
-+	  CLASSD.
- endif
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index b327e5c..f6f7db4 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -11,7 +11,9 @@ obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
- snd-soc-sam9g20-wm8731-objs := sam9g20_wm8731.o
- snd-atmel-soc-wm8904-objs := atmel_wm8904.o
- snd-soc-sam9x5-wm8731-objs := sam9x5_wm8731.o
-+snd-atmel-soc-classd-objs := atmel-classd.o
+diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+index a96774c..ce55c0a 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+@@ -13,13 +13,15 @@ So having this generic sound card allows all Freescale SoC users to benefit
+ from the simplification of a new card support and the capability of the wide
+ sample rates support through ASRC.
  
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
- obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
- obj-$(CONFIG_SND_AT91_SOC_SAM9X5_WM8731) += snd-soc-sam9x5-wm8731.o
-+obj-$(CONFIG_SND_ATMEL_SOC_CLASSD) += snd-atmel-soc-classd.o
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-new file mode 100644
-index 0000000..8276675
---- /dev/null
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -0,0 +1,679 @@
-+/* Atmel ALSA SoC Audio Class D Amplifier (CLASSD) driver
-+ *
-+ * Copyright (C) 2015 Atmel
-+ *
-+ * Author: Songjun Wu <songjun.wu@atmel.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 or later
-+ * as published by the Free Software Foundation.
-+ */
+-Note: The card is initially designed for those sound cards who use I2S and
+-      PCM DAI formats. However, it'll be also possible to support those non
+-      I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as long
+-      as the driver has been properly upgraded.
++Note: The card is initially designed for those sound cards who use AC'97, I2S
++      and PCM DAI formats. However, it'll be also possible to support those non
++      AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
++      long as the driver has been properly upgraded.
+ 
+ 
+ The compatible list for this generic sound card currently:
++ "fsl,imx-audio-ac97"
 +
-+#include <linux/of.h>
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/tlv.h>
-+#include "atmel-classd.h"
-+
-+struct atmel_classd_pdata {
-+	bool non_overlap_enable;
-+	int non_overlap_time;
-+	int pwm_type;
-+	const char *card_name;
-+};
-+
-+struct atmel_classd {
-+	dma_addr_t phy_base;
-+	struct regmap *regmap;
-+	struct clk *pclk;
-+	struct clk *gclk;
-+	struct clk *aclk;
-+	int irq;
-+	const struct atmel_classd_pdata *pdata;
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id atmel_classd_of_match[] = {
-+	{
-+		.compatible = "atmel,sama5d2-classd",
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(of, atmel_classd_of_match);
-+
-+static struct atmel_classd_pdata *atmel_classd_dt_init(struct device *dev)
+  "fsl,imx-audio-cs42888"
+ 
+  "fsl,imx-audio-wm8962"
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 5aeb6ed..33628a0 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -14,6 +14,9 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#if IS_ENABLED(CONFIG_SND_AC97_CODEC)
++#include <sound/ac97_codec.h>
++#endif
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+@@ -115,6 +118,11 @@ static const struct snd_soc_dapm_widget fsl_asoc_card_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+ };
+ 
++static bool fsl_asoc_card_is_ac97(struct fsl_asoc_card_priv *priv)
 +{
-+	struct device_node *np = dev->of_node;
-+	struct atmel_classd_pdata *pdata;
-+	const char *pwm_type;
-+	int ret;
++	return priv->dai_fmt == SND_SOC_DAIFMT_AC97;
++}
 +
-+	if (!np) {
-+		dev_err(dev, "device node not found\n");
-+		return ERR_PTR(-EINVAL);
+ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params)
+ {
+@@ -133,7 +141,9 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	 * set_bias_level(), bypass the remaining settings in hw_params().
+ 	 * Note: (dai_fmt & CBM_CFM) includes CBM_CFM and CBM_CFS.
+ 	 */
+-	if (priv->card.set_bias_level && priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM)
++	if ((priv->card.set_bias_level &&
++	     priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM) ||
++	    fsl_asoc_card_is_ac97(priv))
+ 		return 0;
+ 
+ 	/* Specific configurations of DAIs starts from here */
+@@ -300,7 +310,7 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 	ext_port--;
+ 
+ 	/*
+-	 * Use asynchronous mode (6 wires) for all cases.
++	 * Use asynchronous mode (6 wires) for all cases except AC97.
+ 	 * If only 4 wires are needed, just set SSI into
+ 	 * synchronous mode and enable 4 PADs in IOMUX.
+ 	 */
+@@ -346,15 +356,30 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		if (!fsl_asoc_card_is_ac97(priv))
++			return -EINVAL;
 +	}
 +
-+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return ERR_PTR(-ENOMEM);
++	if (fsl_asoc_card_is_ac97(priv)) {
++		int_ptcr = IMX_AUDMUX_V2_PTCR_SYN |
++			   IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
++			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
++		ext_ptcr = IMX_AUDMUX_V2_PTCR_SYN |
++			   IMX_AUDMUX_V2_PTCR_TFSEL(int_port) |
++			   IMX_AUDMUX_V2_PTCR_TFSDIR;
+ 	}
+ 
+ 	/* Asynchronous mode can not be set along with RCLKDIR */
+-	ret = imx_audmux_v2_configure_port(int_port, 0,
+-					   IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
+-	if (ret) {
+-		dev_err(dev, "audmux internal port setup failed\n");
+-		return ret;
++	if (!fsl_asoc_card_is_ac97(priv)) {
++		unsigned int pdcr =
++				IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port);
 +
-+	ret = of_property_read_string(np, "atmel,pwm-type", &pwm_type);
-+	if ((ret == 0) && (strcmp(pwm_type, "diff") == 0))
-+		pdata->pwm_type = CLASSD_MR_PWMTYP_DIFF;
-+	else
-+		pdata->pwm_type = CLASSD_MR_PWMTYP_SINGLE;
++		ret = imx_audmux_v2_configure_port(int_port, 0,
++						   pdcr);
++		if (ret) {
++			dev_err(dev, "audmux internal port setup failed\n");
++			return ret;
++		}
+ 	}
+ 
+ 	ret = imx_audmux_v2_configure_port(int_port, int_ptcr,
+@@ -364,11 +389,16 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
+ 		return ret;
+ 	}
+ 
+-	ret = imx_audmux_v2_configure_port(ext_port, 0,
+-					   IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
+-	if (ret) {
+-		dev_err(dev, "audmux external port setup failed\n");
+-		return ret;
++	if (!fsl_asoc_card_is_ac97(priv)) {
++		unsigned int pdcr =
++				IMX_AUDMUX_V2_PDCR_RXDSEL(int_port);
 +
-+	ret = of_property_read_u32(np,
-+			"atmel,non-overlap-time", &pdata->non_overlap_time);
-+	if (ret)
-+		pdata->non_overlap_enable = false;
-+	else
-+		pdata->non_overlap_enable = true;
++		ret = imx_audmux_v2_configure_port(ext_port, 0,
++						   pdcr);
++		if (ret) {
++			dev_err(dev, "audmux external port setup failed\n");
++			return ret;
++		}
+ 	}
+ 
+ 	ret = imx_audmux_v2_configure_port(ext_port, ext_ptcr,
+@@ -389,6 +419,23 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
+ 	struct device *dev = card->dev;
+ 	int ret;
+ 
++	if (fsl_asoc_card_is_ac97(priv)) {
++#if IS_ENABLED(CONFIG_SND_AC97_CODEC)
++		struct snd_soc_codec *codec = card->rtd[0].codec;
++		struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
 +
-+	ret = of_property_read_string(np, "atmel,model", &pdata->card_name);
-+	if (ret)
-+		pdata->card_name = "CLASSD";
-+
-+	return pdata;
-+}
-+#else
-+static inline struct atmel_classd_pdata *
-+atmel_classd_dt_init(struct device *dev)
-+{
-+	return ERR_PTR(-EINVAL);
-+}
++		/*
++		 * Use slots 3/4 for S/PDIF so SSI won't try to enable
++		 * other slots and send some samples there
++		 * due to SLOTREQ bits for S/PDIF received from codec
++		 */
++		snd_ac97_update_bits(ac97, AC97_EXTENDED_STATUS,
++				     AC97_EA_SPSA_SLOT_MASK, AC97_EA_SPSA_3_4);
 +#endif
 +
-+#define ATMEL_CLASSD_RATES (SNDRV_PCM_RATE_8000 \
-+			| SNDRV_PCM_RATE_16000	| SNDRV_PCM_RATE_22050 \
-+			| SNDRV_PCM_RATE_32000	| SNDRV_PCM_RATE_44100 \
-+			| SNDRV_PCM_RATE_48000	| SNDRV_PCM_RATE_88200 \
-+			| SNDRV_PCM_RATE_96000)
-+
-+static const struct snd_pcm_hardware atmel_classd_hw = {
-+	.info			= SNDRV_PCM_INFO_MMAP
-+				| SNDRV_PCM_INFO_MMAP_VALID
-+				| SNDRV_PCM_INFO_INTERLEAVED
-+				| SNDRV_PCM_INFO_RESUME
-+				| SNDRV_PCM_INFO_PAUSE,
-+	.formats		= (SNDRV_PCM_FMTBIT_S16_LE),
-+	.rates			= ATMEL_CLASSD_RATES,
-+	.rate_min		= 8000,
-+	.rate_max		= 96000,
-+	.channels_min		= 2,
-+	.channels_max		= 2,
-+	.buffer_bytes_max	= 64 * 1024,
-+	.period_bytes_min	= 256,
-+	.period_bytes_max	= 32 * 1024,
-+	.periods_min		= 2,
-+	.periods_max		= 256,
-+};
-+
-+#define ATMEL_CLASSD_PREALLOC_BUF_SIZE  (64 * 1024)
-+
-+/* cpu dai component */
-+static int atmel_classd_cpu_dai_startup(struct snd_pcm_substream *substream,
-+					struct snd_soc_dai *cpu_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+
-+	regmap_write(dd->regmap, CLASSD_THR, 0x0);
-+
-+	return clk_prepare_enable(dd->pclk);
-+}
-+
-+static void atmel_classd_cpu_dai_shutdown(struct snd_pcm_substream *substream,
-+					struct snd_soc_dai *cpu_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+
-+	clk_disable_unprepare(dd->pclk);
-+}
-+
-+static const struct snd_soc_dai_ops atmel_classd_cpu_dai_ops = {
-+	.startup	= atmel_classd_cpu_dai_startup,
-+	.shutdown	= atmel_classd_cpu_dai_shutdown,
-+};
-+
-+static struct snd_soc_dai_driver atmel_classd_cpu_dai = {
-+	.playback = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= ATMEL_CLASSD_RATES,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = &atmel_classd_cpu_dai_ops,
-+};
-+
-+static const struct snd_soc_component_driver atmel_classd_cpu_dai_component = {
-+	.name = "atmel-classd",
-+};
-+
-+/* platform */
-+static int
-+atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params,
-+	struct dma_slave_config *slave_config)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+
-+	if (params_physical_width(params) != 16) {
-+		dev_err(rtd->platform->dev,
-+			"only supports 16-bit audio data\n");
-+		return -EINVAL;
++		return 0;
 +	}
 +
-+	slave_config->direction		= DMA_MEM_TO_DEV;
-+	slave_config->dst_addr		= dd->phy_base + CLASSD_THR;
-+	slave_config->dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	slave_config->dst_maxburst	= 1;
-+	slave_config->src_maxburst	= 1;
-+	slave_config->device_fc		= false;
-+
-+	return 0;
-+}
-+
-+static const struct snd_dmaengine_pcm_config
-+atmel_classd_dmaengine_pcm_config = {
-+	.prepare_slave_config	= atmel_classd_platform_configure_dma,
-+	.pcm_hardware		= &atmel_classd_hw,
-+	.prealloc_buffer_size	= ATMEL_CLASSD_PREALLOC_BUF_SIZE,
-+};
-+
-+/* codec */
-+static const char * const mono_mode_text[] = {
-+	"mix", "sat", "left", "right"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(classd_mono_mode_enum,
-+			CLASSD_INTPMR, CLASSD_INTPMR_MONO_MODE_SHIFT,
-+			mono_mode_text);
-+
-+static const char * const eqcfg_text[] = {
-+	"Treble-12dB", "Treble-6dB",
-+	"Medium-8dB", "Medium-3dB",
-+	"Bass-12dB", "Bass-6dB",
-+	"0 dB",
-+	"Bass+6dB", "Bass+12dB",
-+	"Medium+3dB", "Medium+8dB",
-+	"Treble+6dB", "Treble+12dB",
-+};
-+
-+static const unsigned int eqcfg_value[] = {
-+	CLASSD_INTPMR_EQCFG_T_CUT_12, CLASSD_INTPMR_EQCFG_T_CUT_6,
-+	CLASSD_INTPMR_EQCFG_M_CUT_8, CLASSD_INTPMR_EQCFG_M_CUT_3,
-+	CLASSD_INTPMR_EQCFG_B_CUT_12, CLASSD_INTPMR_EQCFG_B_CUT_6,
-+	CLASSD_INTPMR_EQCFG_FLAT,
-+	CLASSD_INTPMR_EQCFG_B_BOOST_6, CLASSD_INTPMR_EQCFG_B_BOOST_12,
-+	CLASSD_INTPMR_EQCFG_M_BOOST_3, CLASSD_INTPMR_EQCFG_M_BOOST_8,
-+	CLASSD_INTPMR_EQCFG_T_BOOST_6, CLASSD_INTPMR_EQCFG_T_BOOST_12,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(classd_eqcfg_enum,
-+		CLASSD_INTPMR, CLASSD_INTPMR_EQCFG_SHIFT, 0xf,
-+		eqcfg_text, eqcfg_value);
-+
-+static const DECLARE_TLV_DB_SCALE(classd_digital_tlv, -7800, 100, 1);
-+
-+static const struct snd_kcontrol_new atmel_classd_snd_controls[] = {
-+SOC_DOUBLE_TLV("Playback Volume", CLASSD_INTPMR,
-+		CLASSD_INTPMR_ATTL_SHIFT, CLASSD_INTPMR_ATTR_SHIFT,
-+		78, 1, classd_digital_tlv),
-+
-+SOC_SINGLE("Deemphasis Switch", CLASSD_INTPMR,
-+		CLASSD_INTPMR_DEEMP_SHIFT, 1, 0),
-+
-+SOC_SINGLE("Mono Switch", CLASSD_INTPMR, CLASSD_INTPMR_MONO_SHIFT, 1, 0),
-+
-+SOC_SINGLE("Swap Switch", CLASSD_INTPMR, CLASSD_INTPMR_SWAP_SHIFT, 1, 0),
-+
-+SOC_ENUM("Mono Mode", classd_mono_mode_enum),
-+
-+SOC_ENUM("EQ", classd_eqcfg_enum),
-+};
-+
-+static const char * const pwm_type[] = {
-+	"Single ended", "Differential"
-+};
-+
-+static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
-+	const struct atmel_classd_pdata *pdata = dd->pdata;
-+	u32 mask, val;
-+
-+	mask = CLASSD_MR_PWMTYP_MASK;
-+	val = pdata->pwm_type << CLASSD_MR_PWMTYP_SHIFT;
-+
-+	mask |= CLASSD_MR_NON_OVERLAP_MASK;
-+	if (pdata->non_overlap_enable) {
-+		val |= (CLASSD_MR_NON_OVERLAP_EN
-+			<< CLASSD_MR_NON_OVERLAP_SHIFT);
-+
-+		mask |= CLASSD_MR_NOVR_VAL_MASK;
-+		switch (pdata->non_overlap_time) {
-+		case 5:
-+			val |= (CLASSD_MR_NOVR_VAL_5NS
-+				<< CLASSD_MR_NOVR_VAL_SHIFT);
-+			break;
-+		case 10:
-+			val |= (CLASSD_MR_NOVR_VAL_10NS
-+				<< CLASSD_MR_NOVR_VAL_SHIFT);
-+			break;
-+		case 15:
-+			val |= (CLASSD_MR_NOVR_VAL_15NS
-+				<< CLASSD_MR_NOVR_VAL_SHIFT);
-+			break;
-+		case 20:
-+			val |= (CLASSD_MR_NOVR_VAL_20NS
-+				<< CLASSD_MR_NOVR_VAL_SHIFT);
-+			break;
-+		default:
-+			val |= (CLASSD_MR_NOVR_VAL_10NS
-+				<< CLASSD_MR_NOVR_VAL_SHIFT);
-+			dev_warn(codec->dev,
-+				"non-overlapping value %d is invalid, the default value 10 is specified\n",
-+				pdata->non_overlap_time);
-+			break;
-+		}
-+	}
-+
-+	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
-+
-+	dev_info(codec->dev,
-+		"PWM modulation type is %s, non-overlapping is %s\n",
-+		pwm_type[pdata->pwm_type],
-+		pdata->non_overlap_enable?"enabled":"disabled");
-+
-+	return 0;
-+}
-+
-+static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
-+{
-+	return dev_get_regmap(dev, NULL);
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_classd = {
-+	.probe		= atmel_classd_codec_probe,
-+	.controls	= atmel_classd_snd_controls,
-+	.num_controls	= ARRAY_SIZE(atmel_classd_snd_controls),
-+	.get_regmap	= atmel_classd_codec_get_remap,
-+};
-+
-+/* codec dai component */
-+static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+	int ret;
-+
-+	ret = clk_prepare_enable(dd->aclk);
-+	if (ret)
-+		return ret;
-+
-+	return clk_prepare_enable(dd->gclk);
-+}
-+
-+static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
-+	int mute)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u32 mask, val;
-+
-+	mask = CLASSD_MR_LMUTE_MASK | CLASSD_MR_RMUTE_MASK;
-+
-+	if (mute)
-+		val = mask;
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+ 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
+ 	if (ret) {
+@@ -407,7 +454,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	struct platform_device *cpu_pdev;
+ 	struct fsl_asoc_card_priv *priv;
+ 	struct i2c_client *codec_dev;
+-	struct clk *codec_clk;
+ 	const char *codec_dai_name;
+ 	u32 width;
+ 	int ret;
+@@ -420,9 +466,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	/* Give a chance to old DT binding */
+ 	if (!cpu_np)
+ 		cpu_np = of_parse_phandle(np, "ssi-controller", 0);
+-	codec_np = of_parse_phandle(np, "audio-codec", 0);
+-	if (!cpu_np || !codec_np) {
+-		dev_err(&pdev->dev, "phandle missing or invalid\n");
++	if (!cpu_np) {
++		dev_err(&pdev->dev, "CPU phandle missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto fail;
+ 	}
+@@ -434,22 +479,24 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
+-	codec_dev = of_find_i2c_device_by_node(codec_np);
+-	if (!codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec platform device\n");
+-		ret = -EINVAL;
+-		goto fail;
+-	}
++	codec_np = of_parse_phandle(np, "audio-codec", 0);
++	if (codec_np)
++		codec_dev = of_find_i2c_device_by_node(codec_np);
 +	else
-+		val = 0;
++		codec_dev = NULL;
+ 
+ 	asrc_np = of_parse_phandle(np, "audio-asrc", 0);
+ 	if (asrc_np)
+ 		asrc_pdev = of_find_device_by_node(asrc_np);
+ 
+ 	/* Get the MCLK rate only, and leave it controlled by CODEC drivers */
+-	codec_clk = clk_get(&codec_dev->dev, NULL);
+-	if (!IS_ERR(codec_clk)) {
+-		priv->codec_priv.mclk_freq = clk_get_rate(codec_clk);
+-		clk_put(codec_clk);
++	if (codec_dev) {
++		struct clk *codec_clk = clk_get(&codec_dev->dev, NULL);
 +
-+	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
-+
-+	return 0;
-+}
-+
-+#define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
-+#define CLASSD_ACLK_RATE_12M288_MPY_8  (12228 * 1000 * 8)
-+
-+static struct {
-+	int rate;
-+	int sample_rate;
-+	int dsp_clk;
-+	unsigned long aclk_rate;
-+} const sample_rates[] = {
-+	{ 8000,  CLASSD_INTPMR_FRAME_8K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
-+	{ 16000, CLASSD_INTPMR_FRAME_16K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
-+	{ 32000, CLASSD_INTPMR_FRAME_32K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
-+	{ 48000, CLASSD_INTPMR_FRAME_48K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
-+	{ 96000, CLASSD_INTPMR_FRAME_96K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
-+	{ 22050, CLASSD_INTPMR_FRAME_22K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
-+	{ 44100, CLASSD_INTPMR_FRAME_44K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
-+	{ 88200, CLASSD_INTPMR_FRAME_88K,
-+	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
-+};
-+
-+static int
-+atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	int fs;
-+	int i, best, best_val, cur_val, ret;
-+	u32 mask, val;
-+
-+	fs = params_rate(params);
-+
-+	best = 0;
-+	best_val = abs(fs - sample_rates[0].rate);
-+	for (i = 1; i < ARRAY_SIZE(sample_rates); i++) {
-+		/* Closest match */
-+		cur_val = abs(fs - sample_rates[i].rate);
-+		if (cur_val < best_val) {
-+			best = i;
-+			best_val = cur_val;
++		if (!IS_ERR(codec_clk)) {
++			priv->codec_priv.mclk_freq = clk_get_rate(codec_clk);
++			clk_put(codec_clk);
 +		}
+ 	}
+ 
+ 	/* Default sample rate and format, will be updated in hw_params() */
+@@ -486,11 +533,21 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
+ 		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
++	} else if (of_device_is_compatible(np, "fsl,imx-audio-ac97")) {
++		codec_dai_name = "ac97-hifi";
++		priv->card.set_bias_level = NULL;
++		priv->dai_fmt = SND_SOC_DAIFMT_AC97;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
+ 		return -EINVAL;
+ 	}
+ 
++	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
++		dev_err(&pdev->dev, "failed to find codec device\n");
++		ret = -EINVAL;
++		goto asrc_fail;
 +	}
 +
-+	dev_dbg(codec->dev,
-+		"Selected SAMPLE_RATE of %dHz, ACLK_RATE of %ldHz\n",
-+		sample_rates[best].rate, sample_rates[best].aclk_rate);
+ 	/* Common settings for corresponding Freescale CPU DAI driver */
+ 	if (strstr(cpu_np->name, "ssi")) {
+ 		/* Only SSI needs to configure AUDMUX */
+@@ -507,7 +564,9 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
+ 	}
+ 
+-	sprintf(priv->name, "%s-audio", codec_dev->name);
++	snprintf(priv->name, sizeof(priv->name), "%s-audio",
++		 fsl_asoc_card_is_ac97(priv) ? "ac97" :
++		 codec_dev->name);
+ 
+ 	/* Initialize sound card */
+ 	priv->pdev = pdev;
+@@ -531,8 +590,26 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ 	/* Normal DAI Link */
+ 	priv->dai_link[0].cpu_of_node = cpu_np;
+-	priv->dai_link[0].codec_of_node = codec_np;
+ 	priv->dai_link[0].codec_dai_name = codec_dai_name;
 +
-+	clk_disable_unprepare(dd->gclk);
-+	clk_disable_unprepare(dd->aclk);
++	if (!fsl_asoc_card_is_ac97(priv))
++		priv->dai_link[0].codec_of_node = codec_np;
++	else {
++		u32 idx;
 +
-+	ret = clk_set_rate(dd->aclk, sample_rates[best].aclk_rate);
-+	if (ret)
-+		return ret;
++		ret = of_property_read_u32(cpu_np, "cell-index", &idx);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"cannot get CPU index property\n");
++			goto asrc_fail;
++		}
 +
-+	mask = CLASSD_INTPMR_DSP_CLK_FREQ_MASK | CLASSD_INTPMR_FRAME_MASK;
-+	val = (sample_rates[best].dsp_clk << CLASSD_INTPMR_DSP_CLK_FREQ_SHIFT)
-+	| (sample_rates[best].sample_rate << CLASSD_INTPMR_FRAME_SHIFT);
-+
-+	snd_soc_update_bits(codec, CLASSD_INTPMR, mask, val);
-+
-+	ret = clk_prepare_enable(dd->aclk);
-+	if (ret)
-+		return ret;
-+
-+	return clk_prepare_enable(dd->gclk);
-+}
-+
-+static void
-+atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
-+
-+	clk_disable_unprepare(dd->gclk);
-+	clk_disable_unprepare(dd->aclk);
-+}
-+
-+static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
-+					struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+
-+	snd_soc_update_bits(codec, CLASSD_MR,
-+				CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK,
-+				(CLASSD_MR_LEN_DIS << CLASSD_MR_LEN_SHIFT)
-+				|(CLASSD_MR_REN_DIS << CLASSD_MR_REN_SHIFT));
-+
-+	return 0;
-+}
-+
-+static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
-+					int cmd, struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u32 mask, val;
-+
-+	mask = CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		val = mask;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		val = (CLASSD_MR_LEN_DIS << CLASSD_MR_LEN_SHIFT)
-+			| (CLASSD_MR_REN_DIS << CLASSD_MR_REN_SHIFT);
-+		break;
-+	default:
-+		return -EINVAL;
++		priv->dai_link[0].codec_name =
++				devm_kasprintf(&pdev->dev, GFP_KERNEL,
++					       "ac97-codec.%u",
++					       (unsigned int)idx);
 +	}
 +
-+	snd_soc_update_bits(codec, CLASSD_MR, mask, val);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops atmel_classd_codec_dai_ops = {
-+	.digital_mute	= atmel_classd_codec_dai_digital_mute,
-+	.startup	= atmel_classd_codec_dai_startup,
-+	.shutdown	= atmel_classd_codec_dai_shutdown,
-+	.hw_params	= atmel_classd_codec_dai_hw_params,
-+	.prepare	= atmel_classd_codec_dai_prepare,
-+	.trigger	= atmel_classd_codec_dai_trigger,
-+};
-+
-+#define ATMEL_CLASSD_CODEC_DAI_NAME  "atmel-classd-hifi"
-+
-+static struct snd_soc_dai_driver atmel_classd_codec_dai = {
-+	.name = ATMEL_CLASSD_CODEC_DAI_NAME,
-+	.playback = {
-+		.stream_name	= "Playback",
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= ATMEL_CLASSD_RATES,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = &atmel_classd_codec_dai_ops,
-+};
-+
-+/* ASoC sound card */
-+static int atmel_classd_asoc_card_init(struct device *dev,
-+					struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
-+
-+	dai_link = devm_kzalloc(dev, sizeof(*dai_link), GFP_KERNEL);
-+	if (!dai_link)
-+		return -ENOMEM;
-+
-+	dai_link->name			= "CLASSD";
-+	dai_link->stream_name		= "CLASSD PCM";
-+	dai_link->codec_dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
-+	dai_link->cpu_dai_name		= dev_name(dev);
-+	dai_link->codec_name		= dev_name(dev);
-+	dai_link->platform_name		= dev_name(dev);
-+
-+	card->dai_link	= dai_link;
-+	card->num_links	= 1;
-+	card->name	= dd->pdata->card_name;
-+	card->dev	= dev;
-+
-+	return 0;
-+};
-+
-+/* regmap configuration */
-+static const struct reg_default atmel_classd_reg_defaults[] = {
-+	{ CLASSD_INTPMR,   0x00301212 },
-+};
-+
-+#define ATMEL_CLASSD_REG_MAX    0xE4
-+static const struct regmap_config atmel_classd_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= ATMEL_CLASSD_REG_MAX,
-+
-+	.cache_type		= REGCACHE_FLAT,
-+	.reg_defaults		= atmel_classd_reg_defaults,
-+	.num_reg_defaults	= ARRAY_SIZE(atmel_classd_reg_defaults),
-+};
-+
-+static int atmel_classd_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct atmel_classd *dd;
-+	struct resource *res;
-+	void __iomem *io_base;
-+	const struct atmel_classd_pdata *pdata;
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	pdata = dev_get_platdata(dev);
-+	if (!pdata) {
-+		pdata = atmel_classd_dt_init(dev);
-+		if (IS_ERR(pdata))
-+			return PTR_ERR(pdata);
-+	}
-+
-+	dd = devm_kzalloc(dev, sizeof(*dd), GFP_KERNEL);
-+	if (!dd)
-+		return -ENOMEM;
-+
-+	dd->pdata = pdata;
-+
-+	dd->irq = platform_get_irq(pdev, 0);
-+	if (dd->irq < 0) {
-+		ret = dd->irq;
-+		dev_err(dev, "failed to could not get irq: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dd->pclk = devm_clk_get(dev, "pclk");
-+	if (IS_ERR(dd->pclk)) {
-+		ret = PTR_ERR(dd->pclk);
-+		dev_err(dev, "failed to get peripheral clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dd->gclk = devm_clk_get(dev, "gclk");
-+	if (IS_ERR(dd->gclk)) {
-+		ret = PTR_ERR(dd->gclk);
-+		dev_err(dev, "failed to get GCK clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dd->aclk = devm_clk_get(dev, "aclk");
-+	if (IS_ERR(dd->aclk)) {
-+		ret = PTR_ERR(dd->aclk);
-+		dev_err(dev, "failed to get audio clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(dev, "no memory resource\n");
-+		return -ENXIO;
-+	}
-+
-+	io_base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(io_base)) {
-+		ret =  PTR_ERR(io_base);
-+		dev_err(dev, "failed to remap register memory: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dd->phy_base = res->start;
-+
-+	dd->regmap = devm_regmap_init_mmio(dev, io_base,
-+					&atmel_classd_regmap_config);
-+	if (IS_ERR(dd->regmap)) {
-+		ret = PTR_ERR(dd->regmap);
-+		dev_err(dev, "failed to init register map: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_snd_soc_register_component(dev,
-+					&atmel_classd_cpu_dai_component,
-+					&atmel_classd_cpu_dai, 1);
-+	if (ret) {
-+		dev_err(dev, "could not register CPU DAI: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(dev,
-+					&atmel_classd_dmaengine_pcm_config,
-+					0);
-+	if (ret) {
-+		dev_err(dev, "could not register platform: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_register_codec(dev, &soc_codec_dev_classd,
-+					&atmel_classd_codec_dai, 1);
-+	if (ret) {
-+		dev_err(dev, "could not register codec: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* register sound card */
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+
-+	snd_soc_card_set_drvdata(card, dd);
-+	platform_set_drvdata(pdev, card);
-+
-+	ret = atmel_classd_asoc_card_init(dev, card);
-+	if (ret) {
-+		dev_err(dev, "failed to init sound card\n");
-+		return ret;
-+	}
-+
-+	ret = devm_snd_soc_register_card(dev, card);
-+	if (ret) {
-+		dev_err(dev, "failed to register sound card: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int atmel_classd_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver atmel_classd_driver = {
-+	.driver	= {
-+		.name		= "atmel-classd",
-+		.of_match_table	= of_match_ptr(atmel_classd_of_match),
-+		.pm		= &snd_soc_pm_ops,
-+	},
-+	.probe	= atmel_classd_probe,
-+	.remove	= atmel_classd_remove,
-+};
-+module_platform_driver(atmel_classd_driver);
-+
-+MODULE_DESCRIPTION("Atmel ClassD driver under ALSA SoC architecture");
-+MODULE_AUTHOR("Songjun Wu <songjun.wu@atmel.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/atmel/atmel-classd.h b/sound/soc/atmel/atmel-classd.h
-new file mode 100644
-index 0000000..73f8fdd
---- /dev/null
-+++ b/sound/soc/atmel/atmel-classd.h
-@@ -0,0 +1,120 @@
-+#ifndef __ATMEL_CLASSD_H_
-+#define __ATMEL_CLASSD_H_
-+
-+#define CLASSD_CR		0x00000000
-+#define CLASSD_CR_RESET		0x1
-+
-+#define CLASSD_MR			0x00000004
-+
-+#define CLASSD_MR_LEN_DIS		0x0
-+#define CLASSD_MR_LEN_EN		0x1
-+#define CLASSD_MR_LEN_MASK		(0x1 << 0)
-+#define CLASSD_MR_LEN_SHIFT		(0)
-+
-+#define CLASSD_MR_LMUTE_DIS		0x0
-+#define CLASSD_MR_LMUTE_EN		0x1
-+#define CLASSD_MR_LMUTE_SHIFT		(0x1)
-+#define CLASSD_MR_LMUTE_MASK		(0x1 << 1)
-+
-+#define CLASSD_MR_REN_DIS		0x0
-+#define CLASSD_MR_REN_EN		0x1
-+#define CLASSD_MR_REN_MASK		(0x1 << 4)
-+#define CLASSD_MR_REN_SHIFT		(4)
-+
-+#define CLASSD_MR_RMUTE_DIS		0x0
-+#define CLASSD_MR_RMUTE_EN		0x1
-+#define CLASSD_MR_RMUTE_SHIFT		(0x5)
-+#define CLASSD_MR_RMUTE_MASK		(0x1 << 5)
-+
-+#define CLASSD_MR_PWMTYP_SINGLE		0x0
-+#define CLASSD_MR_PWMTYP_DIFF		0x1
-+#define CLASSD_MR_PWMTYP_MASK		(0x1 << 8)
-+#define CLASSD_MR_PWMTYP_SHIFT		(8)
-+
-+#define CLASSD_MR_NON_OVERLAP_DIS	0x0
-+#define CLASSD_MR_NON_OVERLAP_EN	0x1
-+#define CLASSD_MR_NON_OVERLAP_MASK	(0x1 << 16)
-+#define CLASSD_MR_NON_OVERLAP_SHIFT	(16)
-+
-+#define CLASSD_MR_NOVR_VAL_5NS		0x0
-+#define CLASSD_MR_NOVR_VAL_10NS		0x1
-+#define CLASSD_MR_NOVR_VAL_15NS		0x2
-+#define CLASSD_MR_NOVR_VAL_20NS		0x3
-+#define CLASSD_MR_NOVR_VAL_MASK		(0x3 << 20)
-+#define CLASSD_MR_NOVR_VAL_SHIFT	(20)
-+
-+#define CLASSD_INTPMR				0x00000008
-+
-+#define CLASSD_INTPMR_ATTL_MASK			(0x3f << 0)
-+#define CLASSD_INTPMR_ATTL_SHIFT		(0)
-+#define CLASSD_INTPMR_ATTR_MASK			(0x3f << 8)
-+#define CLASSD_INTPMR_ATTR_SHIFT		(8)
-+
-+#define CLASSD_INTPMR_DSP_CLK_FREQ_12M288	0x0
-+#define CLASSD_INTPMR_DSP_CLK_FREQ_11M2896	0x1
-+#define CLASSD_INTPMR_DSP_CLK_FREQ_MASK		(0x1 << 16)
-+#define CLASSD_INTPMR_DSP_CLK_FREQ_SHIFT	(16)
-+
-+#define CLASSD_INTPMR_DEEMP_DIS			0x0
-+#define CLASSD_INTPMR_DEEMP_EN			0x1
-+#define CLASSD_INTPMR_DEEMP_MASK		(0x1 << 18)
-+#define CLASSD_INTPMR_DEEMP_SHIFT		(18)
-+
-+#define CLASSD_INTPMR_SWAP_LEFT_ON_LSB		0x0
-+#define CLASSD_INTPMR_SWAP_RIGHT_ON_LSB		0x1
-+#define CLASSD_INTPMR_SWAP_MASK			(0x1 << 19)
-+#define CLASSD_INTPMR_SWAP_SHIFT		(19)
-+
-+#define CLASSD_INTPMR_FRAME_8K			0x0
-+#define CLASSD_INTPMR_FRAME_16K			0x1
-+#define CLASSD_INTPMR_FRAME_32K			0x2
-+#define CLASSD_INTPMR_FRAME_48K			0x3
-+#define CLASSD_INTPMR_FRAME_96K			0x4
-+#define CLASSD_INTPMR_FRAME_22K			0x5
-+#define CLASSD_INTPMR_FRAME_44K			0x6
-+#define CLASSD_INTPMR_FRAME_88K			0x7
-+#define CLASSD_INTPMR_FRAME_MASK		(0x7 << 20)
-+#define CLASSD_INTPMR_FRAME_SHIFT		(20)
-+
-+#define CLASSD_INTPMR_EQCFG_FLAT		0x0
-+#define CLASSD_INTPMR_EQCFG_B_BOOST_12		0x1
-+#define CLASSD_INTPMR_EQCFG_B_BOOST_6		0x2
-+#define CLASSD_INTPMR_EQCFG_B_CUT_12		0x3
-+#define CLASSD_INTPMR_EQCFG_B_CUT_6		0x4
-+#define CLASSD_INTPMR_EQCFG_M_BOOST_3		0x5
-+#define CLASSD_INTPMR_EQCFG_M_BOOST_8		0x6
-+#define CLASSD_INTPMR_EQCFG_M_CUT_3		0x7
-+#define CLASSD_INTPMR_EQCFG_M_CUT_8		0x8
-+#define CLASSD_INTPMR_EQCFG_T_BOOST_12		0x9
-+#define CLASSD_INTPMR_EQCFG_T_BOOST_6		0xa
-+#define CLASSD_INTPMR_EQCFG_T_CUT_12		0xb
-+#define CLASSD_INTPMR_EQCFG_T_CUT_6		0xc
-+#define CLASSD_INTPMR_EQCFG_SHIFT		(24)
-+
-+#define CLASSD_INTPMR_MONO_DIS			0x0
-+#define CLASSD_INTPMR_MONO_EN			0x1
-+#define CLASSD_INTPMR_MONO_MASK			(0x1 << 28)
-+#define CLASSD_INTPMR_MONO_SHIFT		(28)
-+
-+#define CLASSD_INTPMR_MONO_MODE_MIX		0x0
-+#define CLASSD_INTPMR_MONO_MODE_SAT		0x1
-+#define CLASSD_INTPMR_MONO_MODE_LEFT		0x2
-+#define CLASSD_INTPMR_MONO_MODE_RIGHT		0x3
-+#define CLASSD_INTPMR_MONO_MODE_MASK		(0x3 << 29)
-+#define CLASSD_INTPMR_MONO_MODE_SHIFT		(29)
-+
-+#define CLASSD_INTSR	0x0000000c
-+
-+#define CLASSD_THR	0x00000010
-+
-+#define CLASSD_IER	0x00000014
-+
-+#define CLASSD_IDR	0x00000018
-+
-+#define CLASSD_IMR	0x0000001c
-+
-+#define CLASSD_ISR	0x00000020
-+
-+#define CLASSD_WPMR	0x000000e4
-+
-+#endif
+ 	priv->dai_link[0].platform_of_node = cpu_np;
+ 	priv->dai_link[0].dai_fmt = priv->dai_fmt;
+ 	priv->card.num_links = 1;
+@@ -543,6 +620,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->dai_link[1].platform_of_node = asrc_np;
+ 		priv->dai_link[2].codec_dai_name = codec_dai_name;
+ 		priv->dai_link[2].codec_of_node = codec_np;
++		priv->dai_link[2].codec_name =
++				priv->dai_link[0].codec_name;
+ 		priv->dai_link[2].cpu_of_node = cpu_np;
+ 		priv->dai_link[2].dai_fmt = priv->dai_fmt;
+ 		priv->card.num_links = 3;
+@@ -578,14 +657,15 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ asrc_fail:
+ 	of_node_put(asrc_np);
+-fail:
+ 	of_node_put(codec_np);
++fail:
+ 	of_node_put(cpu_np);
+ 
+ 	return ret;
+ }
+ 
+ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-ac97", },
+ 	{ .compatible = "fsl,imx-audio-cs42888", },
+ 	{ .compatible = "fsl,imx-audio-sgtl5000", },
+ 	{ .compatible = "fsl,imx-audio-wm8962", },
 -- 
 2.6.1
