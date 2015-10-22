@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: rsnd: fixup rsnd_dai_call() behavior
-	for .stop/.quit" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:53 +0900
-Message-ID: <E1ZpOzZ-00004q-9K@finisterre>
-References: <87vb9zsio7.wl%kuninori.morimoto.gx@renesas.com>
+	for unimplemented method" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:57 +0900
+Message-ID: <E1ZpOzd-00005v-E8@finisterre>
+References: <87wpufsiox.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 74880266B54
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:10:10 +0200 (CEST)
-In-Reply-To: <87vb9zsio7.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 47E80266B57
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:10:11 +0200 (CEST)
+In-Reply-To: <87wpufsiox.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup rsnd_dai_call() behavior for .stop/.quit
+   ASoC: rsnd: fixup rsnd_dai_call() behavior for unimplemented method
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From 89e3e2c352a523be46be5104bf18e200a8ccd444 Mon Sep 17 00:00:00 2001
+>From 32a96d558d02581c32b09401b8aa5eecb3965d3e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Oct 2015 03:14:43 +0000
-Subject: [PATCH] ASoC: rsnd: fixup rsnd_dai_call() behavior for .stop/.quit
+Date: Thu, 22 Oct 2015 03:14:21 +0000
+Subject: [PATCH] ASoC: rsnd: fixup rsnd_dai_call() behavior for unimplemented
+ method
 
-Current rsnd_dai_call returns immediately if rsnd_mod_call return fail.
-Thus, each callback-count can be unbalanced for example .init was OK,
-start was OK, but, .stop was not OK. This case .quit should be called
-but isn't called. And, rsnd_dai_stream_quit() also not be called.
-rsnd_dai_call() should call all .stop/.quit eventhough it returns error.
+Current rsnd_dai_call didn't count callback-count if callback
+wasn't implemented. Thus, it counts can be unbalance.
+ex) .start : implemented
+    .stop  : not implemented
+This patch solve this issue
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ sound/soc/sh/rcar/core.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 5c67144..deed48ef 100644
+index c0182ac..5c67144 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -327,9 +327,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 		mod = (io)->mod[i];				\
- 		if (!mod)					\
- 			continue;				\
--		ret = rsnd_mod_call(mod, io, fn, param);	\
--		if (ret < 0)					\
--			break;					\
-+		ret |= rsnd_mod_call(mod, io, fn, param);	\
- 	}							\
- 	ret;							\
+@@ -300,7 +300,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ /*
+  *	rsnd_dai functions
+  */
+-#define __rsnd_mod_call(mod, io, func, param...)		\
++#define rsnd_mod_call(mod, io, func, param...)			\
+ ({								\
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);		\
+ 	struct device *dev = rsnd_priv_to_dev(priv);		\
+@@ -308,7 +308,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	u8 val  = (mod->status >> __rsnd_mod_shift_##func) & 0xF;	\
+ 	u8 add  = ((val + __rsnd_mod_add_##func) & 0xF);		\
+ 	int ret = 0;							\
+-	int call = (val == __rsnd_mod_call_##func);			\
++	int call = (val == __rsnd_mod_call_##func) && (mod)->ops->func;	\
+ 	mod->status = (mod->status & ~mask) +				\
+ 		(add << __rsnd_mod_shift_##func);			\
+ 	dev_dbg(dev, "%s[%d]\t0x%08x %s\n",				\
+@@ -319,11 +319,6 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	ret;								\
  })
-@@ -495,16 +493,10 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		ret = rsnd_dai_call(stop, io, priv);
--		if (ret < 0)
--			goto dai_trigger_end;
  
--		ret = rsnd_dai_call(quit, io, priv);
--		if (ret < 0)
--			goto dai_trigger_end;
-+		ret |= rsnd_dai_call(quit, io, priv);
- 
--		ret = rsnd_platform_call(priv, dai, stop, ssi_id);
--		if (ret < 0)
--			goto dai_trigger_end;
-+		ret |= rsnd_platform_call(priv, dai, stop, ssi_id);
- 
- 		rsnd_dai_stream_quit(io);
- 		break;
+-#define rsnd_mod_call(mod, io, func, param...)	\
+-	(!(mod) ? -ENODEV :			\
+-	 !((mod)->ops->func) ? 0 :		\
+-	 __rsnd_mod_call(mod, io, func, param))
+-
+ #define rsnd_dai_call(fn, io, param...)				\
+ ({								\
+ 	struct rsnd_mod *mod;					\
 -- 
 2.6.1
