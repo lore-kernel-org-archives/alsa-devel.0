@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup struct rsnd_gen::res array
-	size" to the asoc tree
-Date: Fri, 23 Oct 2015 08:10:09 +0900
-Message-ID: <E1ZpOzp-00007d-Hx@finisterre>
-References: <871tcntxav.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: fixup print debug message after
+	read" to the asoc tree
+Date: Fri, 23 Oct 2015 08:10:13 +0900
+Message-ID: <E1ZpOzt-000086-Lx@finisterre>
+References: <8737x3txbg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07EA8266B76
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:10:19 +0200 (CEST)
-In-Reply-To: <871tcntxav.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2B71266B3C
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:10:25 +0200 (CEST)
+In-Reply-To: <8737x3txbg.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup struct rsnd_gen::res array size
+   ASoC: rsnd: fixup print debug message after read
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 9993c16d460e2965da4357575060373a5577167a Mon Sep 17 00:00:00 2001
+>From c9b9638f617871aa83c197eed8f068294c843b69 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Oct 2015 03:13:27 +0000
-Subject: [PATCH] ASoC: rsnd: fixup struct rsnd_gen::res array size
+Date: Thu, 22 Oct 2015 03:13:06 +0000
+Subject: [PATCH] ASoC: rsnd: fixup print debug message after read
 
-struct rsnd_gen :: res array size should be RSND_BASE_MAX,
-not RSND_REG_MAX. This patch fixup it, and indicates whether
-each data array size is based on what
+debug meesage for rsnd_mod_read() should be prints after read
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/gen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 0c69f83..76da762 100644
+index f04d17b..0c69f83 100644
 --- a/sound/soc/sh/rcar/gen.c
 +++ b/sound/soc/sh/rcar/gen.c
-@@ -22,13 +22,15 @@
- #include "rsnd.h"
+@@ -79,11 +79,11 @@ u32 rsnd_read(struct rsnd_priv *priv,
+ 	if (!rsnd_is_accessible_reg(priv, gen, reg))
+ 		return 0;
  
- struct rsnd_gen {
--	void __iomem *base[RSND_BASE_MAX];
--
- 	struct rsnd_gen_ops *ops;
- 
-+	/* RSND_BASE_MAX base */
-+	void __iomem *base[RSND_BASE_MAX];
-+	phys_addr_t res[RSND_BASE_MAX];
- 	struct regmap *regmap[RSND_BASE_MAX];
++	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
 +
-+	/* RSND_REG_MAX base */
- 	struct regmap_field *regs[RSND_REG_MAX];
--	phys_addr_t res[RSND_REG_MAX];
- };
+ 	dev_dbg(dev, "r %s[%d] - %4d : %08x\n",
+ 		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, val);
  
- #define rsnd_priv_to_gen(p)	((struct rsnd_gen *)(p)->gen)
-@@ -182,6 +184,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
-+	/* RSND_BASE_MAX base */
- 	gen->base[reg_id] = base;
- 	gen->regmap[reg_id] = regmap;
- 	gen->res[reg_id] = res->start;
-@@ -198,6 +201,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
- 		if (IS_ERR(regs))
- 			return PTR_ERR(regs);
- 
-+		/* RSND_REG_MAX base */
- 		gen->regs[conf[i].idx] = regs;
- 	}
+-	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
+-
+ 	return val;
+ }
  
 -- 
 2.6.1
