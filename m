@@ -1,73 +1,136 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: Constify rate
-	constraints
-Date: Thu, 22 Oct 2015 11:58:38 -0700
-Message-ID: <20151022185837.GB4614@Asurada-CZ80>
-References: <1445503403-22934-1-git-send-email-lars@metafoo.de>
- <1445503403-22934-3-git-send-email-lars@metafoo.de>
+From: Damien Horsley <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoC: img: Add driver for I2S input
+ controller
+Date: Thu, 22 Oct 2015 20:09:38 +0100
+Message-ID: <56293472.7000401@imgtec.com>
+References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
+ <20151019174732.GG32054@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id B32A426683C
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 20:58:44 +0200 (CEST)
-Received: by pasz6 with SMTP id z6so93883987pas.2
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 11:58:41 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1445503403-22934-3-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151019174732.GG32054-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, James Hartley <James.Hartley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 22, 2015 at 10:43:23AM +0200, Lars-Peter Clausen wrote:
-> The rate constraints in this driver are shared between all device
-> instances. It should not be (and is not) modified at runtime, so make them
-> const.
+On 19/10/15 18:47, Mark Brown wrote:
+> On Mon, Oct 12, 2015 at 01:40:29PM +0100, Damien Horsley wrote:
 > 
-> While we are at it also change the type of the rates array from u32 to
-> unsigned int. While both resolve to the same type, u32 is usually used to
-> empathize that the value is for a 32-bit hardware register or similar which
-> makes it slightly confusing in this context.
+>> +static inline u32 img_i2s_in_ch_disable(struct img_i2s_in *i2s, u32 chan)
+>> +{
+>> +	u32 reg;
+>> +
+>> +	reg = img_i2s_in_ch_readl(i2s, chan, IMG_I2S_IN_CH_CTL);
+>> +	reg &= ~IMG_I2S_IN_CH_CTL_ME_MASK;
+>> +	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
+>> +
+>> +	return reg;
+>> +}
+>> +
+>> +static inline void img_i2s_in_ch_enable(struct img_i2s_in *i2s, u32 chan,
+>> +					u32 reg)
+>> +{
+>> +	reg |= IMG_I2S_IN_CH_CTL_ME_MASK;
+>> +	img_i2s_in_ch_writel(i2s, chan, reg, IMG_I2S_IN_CH_CTL);
+>> +}
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> The APIs here all seem a bit odd - for example the enable API taking a
+> register value as an argument (normally reg is a register address BTW)
+> and returning a value but the disable API doing a read/modify/write
+> cycle.
+>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Sure. It reduces the number of register accesses this way, but the
+difference in execution time is not significant. Would you prefer these
+to both do read-modify-writes?
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>> +static inline void img_i2s_in_flush(struct img_i2s_in *i2s)
+>> +{
+>> +	int i;
+>> +	u32 reg;
+>> +
+>> +	for (i = 0; i < i2s->active_channels; i++) {
+>> +		reg = img_i2s_in_ch_disable(i2s, i);
+>> +		reg |= IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
+>> +		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
+>> +		reg &= ~IMG_I2S_IN_CH_CTL_FIFO_FLUSH_MASK;
+>> +		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
+>> +		img_i2s_in_ch_enable(i2s, i, reg);
+>> +	}
+>> +}
 > 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 784725b..38505f3 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -27,13 +27,13 @@
->  #define FSL_SAI_FLAGS (FSL_SAI_CSR_SEIE |\
->  		       FSL_SAI_CSR_FEIE)
->  
-> -static u32 fsl_sai_rates[] = {
-> +static const unsigned int fsl_sai_rates[] = {
->  	8000, 11025, 12000, 16000, 22050,
->  	24000, 32000, 44100, 48000, 64000,
->  	88200, 96000, 176400, 192000
->  };
->  
-> -static struct snd_pcm_hw_constraint_list fsl_sai_rate_constraints = {
-> +static const struct snd_pcm_hw_constraint_list fsl_sai_rate_constraints = {
->  	.count = ARRAY_SIZE(fsl_sai_rates),
->  	.list = fsl_sai_rates,
->  };
-> -- 
-> 2.1.4
+> This all seems to be connected to this, which is itself slightly funky
+> especially in the context of the only user...
 > 
+
+They are also used during hw_params and set_format.
+
+>> +	case SNDRV_PCM_TRIGGER_STOP:
+>> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+>> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>> +		reg = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
+>> +		reg &= ~IMG_I2S_IN_CTL_ME_MASK;
+>> +		img_i2s_in_writel(i2s, reg, IMG_I2S_IN_CTL);
+>> +		img_i2s_in_flush(i2s);
+>> +		break;
+> 
+> ...which looks like it'll enable everything, then disable and reenable.
+> Plus needing to do a flush on trigger seems weird.
+> 
+
+If the FIFOs are not flushed, some samples from the previous stream will
+be transferred to the user application when the block is started again
+
+>> +	if ((channels < 2) ||
+>> +			(channels > (i2s->max_i2s_chan * 2)) ||
+>> +			(channels % 2))
+>> +		return -EINVAL;
+> 
+> This indentation is very weird.
+> 
+
+Ok. What is the correct indentation for this?
+
+>> +	control_mask = (u32)(~IMG_I2S_IN_CTL_16PACK_MASK &
+>> +			~IMG_I2S_IN_CTL_ACTIVE_CHAN_MASK);
+> 
+>> +	chan_control_mask = (u32)(~IMG_I2S_IN_CH_CTL_16PACK_MASK &
+>> +			~IMG_I2S_IN_CH_CTL_FEN_MASK &
+>> +			~IMG_I2S_IN_CH_CTL_FMODE_MASK &
+>> +			~IMG_I2S_IN_CH_CTL_SW_MASK &
+>> +			~IMG_I2S_IN_CH_CTL_FW_MASK &
+>> +			~IMG_I2S_IN_CH_CTL_PACKH_MASK);
+> 
+> This also looks very odd.  Normally we'd write masks as being the valid
+> bits and or them together.
+> 
+
+Ok
+
+>> +	i2s->clk_sys = devm_clk_get(dev, "sys");
+>> +	if (IS_ERR(i2s->clk_sys))
+>> +		return PTR_ERR(i2s->clk_sys);
+> 
+> Please print an error message so people can tell why things failed.
+>
+
+Ok
+
+
+>> +	rst = devm_reset_control_get(dev, "rst");
+>> +	if (IS_ERR(rst)) {
+>> +		dev_dbg(dev, "No top level reset found\n");
+> 
+> You should check for -EPROBE_DEFER here and just return the error here
+> if you get it (on the basis that the reset framework ought to be using a
+> different error if there's nothing bound in DT).
+> 
+
+Ok
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
