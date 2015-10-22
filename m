@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Add
-	snd_soc_dapm_kcontrol_widget()" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:06 +0900
-Message-ID: <E1ZpOyo-0008La-Ff@finisterre>
-References: <1445355532-28310-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: dapm: Add startup & shutdown for
+	dai_links" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:07 +0900
+Message-ID: <E1ZpOyp-0008M4-SA@finisterre>
+References: <1445355532-28310-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 69A32266ABF
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:16 +0200 (CEST)
-In-Reply-To: <1445355532-28310-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 42B30266AE4
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:18 +0200 (CEST)
+In-Reply-To: <1445355532-28310-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Add snd_soc_dapm_kcontrol_widget()
+   ASoC: dapm: Add startup & shutdown for dai_links
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 93e39a11520c000c9086215460bf27b35b09c724 Mon Sep 17 00:00:00 2001
-From: Mythri P K <mythri.p.k@intel.com>
-Date: Tue, 20 Oct 2015 22:30:08 +0530
-Subject: [PATCH] ASoC: dapm: Add snd_soc_dapm_kcontrol_widget()
+>From 9b8ef9f6b3fcccc2b6ce4bb59d8ab55b36a8b8f0 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 20 Oct 2015 22:30:07 +0530
+Subject: [PATCH] ASoC: dapm: Add startup & shutdown for dai_links
 
-Given a kcontrol, we may want to access the parent widget
-and it's associated data. So export function to return it.
+For DAI link events, DSPs would like to get notified for startup
+and shutdown event as well apart for existing hw_params. This
+helps managing DSP resource allocation and freeup on these events
+So add support for startup and shutdown for
+snd_soc_dai_link_event()
 
-Signed-off-by: Mythri P K <mythri.p.k@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h |  3 +++
- sound/soc/soc-dapm.c     | 12 ++++++++++++
- 2 files changed, 15 insertions(+)
+ sound/soc/soc-dapm.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 5abba03..7855cfe 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -451,6 +451,9 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
- 	struct snd_kcontrol *kcontrol);
- 
-+struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
-+		struct snd_kcontrol *kcontrol);
-+
- int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
- 	enum snd_soc_bias_level level);
- 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a28d6a1..38281c2 100644
+index 9762ac4..a28d6a1 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -509,6 +509,18 @@ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
- }
+@@ -3478,11 +3478,29 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		if (source->driver->ops && source->driver->ops->startup) {
++			ret = source->driver->ops->startup(&substream, source);
++			if (ret < 0) {
++				dev_err(source->dev,
++					"ASoC: startup() failed: %d\n", ret);
++				goto out;
++			}
++			source->active++;
++		}
+ 		ret = soc_dai_hw_params(&substream, params, source);
+ 		if (ret < 0)
+ 			goto out;
  
- /**
-+ * snd_soc_dapm_kcontrol_widget() - Returns the widget associated to a
-+ *   kcontrol
-+ * @kcontrol: The kcontrol
-+ */
-+struct snd_soc_dapm_widget *snd_soc_dapm_kcontrol_widget(
-+				struct snd_kcontrol *kcontrol)
-+{
-+	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0];
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_widget);
+ 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		if (sink->driver->ops && sink->driver->ops->startup) {
++			ret = sink->driver->ops->startup(&substream, sink);
++			if (ret < 0) {
++				dev_err(sink->dev,
++					"ASoC: startup() failed: %d\n", ret);
++				goto out;
++			}
++			sink->active++;
++		}
+ 		ret = soc_dai_hw_params(&substream, params, sink);
+ 		if (ret < 0)
+ 			goto out;
+@@ -3502,6 +3520,18 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0 && ret != -ENOTSUPP)
+ 			dev_warn(sink->dev, "ASoC: Failed to mute: %d\n", ret);
+ 		ret = 0;
 +
-+/**
-  * snd_soc_dapm_kcontrol_dapm() - Returns the dapm context associated to a
-  *  kcontrol
-  * @kcontrol: The kcontrol
++		source->active--;
++		if (source->driver->ops && source->driver->ops->shutdown) {
++			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++			source->driver->ops->shutdown(&substream, source);
++		}
++
++		sink->active--;
++		if (sink->driver->ops && sink->driver->ops->shutdown) {
++			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++			sink->driver->ops->shutdown(&substream, sink);
++		}
+ 		break;
+ 
+ 	default:
 -- 
 2.6.1
