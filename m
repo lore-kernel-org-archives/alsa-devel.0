@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Let snd_soc_limit_volume() take a
-	snd_soc_card" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:34 +0900
-Message-ID: <E1ZpOzG-0008Rl-9z@finisterre>
-References: <1445180673-27790-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: wm8962: mark cache_dirty flag after
+	software reset in pm_resume" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:40 +0900
+Message-ID: <E1ZpOzM-0008TB-IK@finisterre>
+References: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 815B6266B42
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:52 +0200 (CEST)
-In-Reply-To: <1445180673-27790-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C100266B43
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:53 +0200 (CEST)
+In-Reply-To: <1445309232-24094-2-git-send-email-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@kernel.org>
+To: Jiada Wang <jiada_wang@mentor.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Let snd_soc_limit_volume() take a snd_soc_card
+   ASoC: wm8962: mark cache_dirty flag after software reset in pm_resume
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 26d9ca3462df8f7e83fc372b23c8da5ed2b1c4f3 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 18 Oct 2015 17:04:33 +0200
-Subject: [PATCH] ASoC: Let snd_soc_limit_volume() take a snd_soc_card
+>From 4eb0f7abcefad2d4c127aa7502d3122635eddab0 Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Tue, 20 Oct 2015 11:47:11 +0900
+Subject: [PATCH] ASoC: wm8962: mark cache_dirty flag after software reset in
+ pm_resume
 
-snd_soc_limit_volume() operates on a card and the CODEC that is passed in
-is only used to look up the card. Let it directly take the card instead.
-This makes it possible to use it when no snd_soc_codec is available.
+By doing software reset of wm8962 in pm_resume, all registers which
+have already been set will be reset to default value without regmap
+interface be involved, thus driver need to mark cache_dirty flag,
+to let regcache can be updated by regcache_sync().
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h   | 2 +-
- sound/soc/omap/rx51.c | 2 +-
- sound/soc/soc-ops.c   | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8962.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 884e728..71e0c05 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -591,7 +591,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
--int snd_soc_limit_volume(struct snd_soc_codec *codec,
-+int snd_soc_limit_volume(struct snd_soc_card *card,
- 	const char *name, int max);
- int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
- 		       struct snd_ctl_elem_info *uinfo);
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 3bebfb1..9953890 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -297,7 +297,7 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
- 		dev_err(card->dev, "Failed to add TPA6130A2 controls\n");
- 		return err;
- 	}
--	snd_soc_limit_volume(codec, "TPA6130A2 Headphone Playback Volume", 42);
-+	snd_soc_limit_volume(card, "TPA6130A2 Headphone Playback Volume", 42);
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index b4eb975..45f06d5f 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3804,6 +3804,8 @@ static int wm8962_runtime_resume(struct device *dev)
  
- 	err = omap_mcbsp_st_add_controls(rtd, 2);
- 	if (err < 0) {
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 100d92b..20f702a 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -560,16 +560,16 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_range);
- /**
-  * snd_soc_limit_volume - Set new limit to an existing volume control.
-  *
-- * @codec: where to look for the control
-+ * @card: where to look for the control
-  * @name: Name of the control
-  * @max: new maximum limit
-  *
-  * Return 0 for success, else error.
-  */
--int snd_soc_limit_volume(struct snd_soc_codec *codec,
-+int snd_soc_limit_volume(struct snd_soc_card *card,
- 	const char *name, int max)
- {
--	struct snd_card *card = codec->component.card->snd_card;
-+	struct snd_card *snd_card = card->snd_card;
- 	struct snd_kcontrol *kctl;
- 	struct soc_mixer_control *mc;
- 	int found = 0;
-@@ -579,7 +579,7 @@ int snd_soc_limit_volume(struct snd_soc_codec *codec,
- 	if (unlikely(!name || max <= 0))
- 		return -EINVAL;
+ 	wm8962_reset(wm8962);
  
--	list_for_each_entry(kctl, &card->controls, list) {
-+	list_for_each_entry(kctl, &snd_card->controls, list) {
- 		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name))) {
- 			found = 1;
- 			break;
++	regcache_mark_dirty(wm8962->regmap);
++
+ 	/* SYSCLK defaults to on; make sure it is off so we can safely
+ 	 * write to registers if the device is declocked.
+ 	 */
 -- 
 2.6.1
