@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove unused rsnd_dma_to_ssi()
-	macro" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:48 +0900
-Message-ID: <E1ZpOzU-0008UC-7c@finisterre>
-References: <87si53sin1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rename rsnd_mod_hw_start/stop to
+	rsnd_mod_power_on/off" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:50 +0900
+Message-ID: <E1ZpOzW-0008Ut-W4@finisterre>
+References: <87twpjsins.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7085266B4E
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:59 +0200 (CEST)
-In-Reply-To: <87si53sin1.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C930266B29
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:10:00 +0200 (CEST)
+In-Reply-To: <87twpjsins.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove unused rsnd_dma_to_ssi() macro
+   ASoC: rsnd: rename rsnd_mod_hw_start/stop to rsnd_mod_power_on/off
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,150 @@ to this mail.
 Thanks,
 Mark
 
->From 69819f527afba7a909a2aba32521a3bea8e3b60b Mon Sep 17 00:00:00 2001
+>From c9929345018927acaf52c14c57d78116067be6c9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Oct 2015 03:15:26 +0000
-Subject: [PATCH] ASoC: rsnd: remove unused rsnd_dma_to_ssi() macro
+Date: Thu, 22 Oct 2015 03:15:04 +0000
+Subject: [PATCH] ASoC: rsnd: rename rsnd_mod_hw_start/stop to
+ rsnd_mod_power_on/off
 
-rsnd_dma_to_ssi() is no longer used, let's remove it.
+rsnd_mod_hw_start/stop were unclear naming.
+It became rsnd_mod_power_on/off by this patch
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sh/rcar/ctu.c  | 4 ++--
+ sound/soc/sh/rcar/dvc.c  | 4 ++--
+ sound/soc/sh/rcar/mix.c  | 4 ++--
+ sound/soc/sh/rcar/rsnd.h | 4 ++--
+ sound/soc/sh/rcar/src.c  | 4 ++--
+ sound/soc/sh/rcar/ssi.c  | 4 ++--
+ 6 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index f1541f46..3cb214a 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -35,7 +35,7 @@ static int rsnd_ctu_init(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_start(mod);
++	rsnd_mod_power_on(mod);
+ 
+ 	rsnd_ctu_initialize_lock(mod);
+ 
+@@ -50,7 +50,7 @@ static int rsnd_ctu_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_stop(mod);
++	rsnd_mod_power_off(mod);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index e36c0ac..58f6909 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -153,7 +153,7 @@ static int rsnd_dvc_init(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_start(mod);
++	rsnd_mod_power_on(mod);
+ 
+ 	rsnd_dvc_soft_reset(mod);
+ 
+@@ -175,7 +175,7 @@ static int rsnd_dvc_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_stop(mod);
++	rsnd_mod_power_off(mod);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
+index ac2687d..953dd0b 100644
+--- a/sound/soc/sh/rcar/mix.c
++++ b/sound/soc/sh/rcar/mix.c
+@@ -58,7 +58,7 @@ static int rsnd_mix_init(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_start(mod);
++	rsnd_mod_power_on(mod);
+ 
+ 	rsnd_mix_soft_reset(mod);
+ 
+@@ -83,7 +83,7 @@ static int rsnd_mix_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
+-	rsnd_mod_hw_stop(mod);
++	rsnd_mod_power_off(mod);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index e9fef53..38c16d7 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -330,8 +330,8 @@ struct rsnd_mod {
+ #define rsnd_mod_to_priv(mod) ((mod)->priv)
+ #define rsnd_mod_to_dma(mod) (&(mod)->dma)
+ #define rsnd_mod_id(mod) ((mod) ? (mod)->id : -1)
+-#define rsnd_mod_hw_start(mod)	clk_enable((mod)->clk)
+-#define rsnd_mod_hw_stop(mod)	clk_disable((mod)->clk)
++#define rsnd_mod_power_on(mod)	clk_enable((mod)->clk)
++#define rsnd_mod_power_off(mod)	clk_disable((mod)->clk)
+ #define rsnd_mod_get(ip)	(&(ip)->mod)
+ 
+ int rsnd_mod_init(struct rsnd_priv *priv,
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 1d379e8..37d41f0 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -352,7 +352,7 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ {
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 
+-	rsnd_mod_hw_start(mod);
++	rsnd_mod_power_on(mod);
+ 
+ 	rsnd_src_soft_reset(mod);
+ 
+@@ -373,7 +373,7 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 
+-	rsnd_mod_hw_stop(mod);
++	rsnd_mod_power_off(mod);
+ 
+ 	if (src->err)
+ 		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d70720a..e550621 100644
+index 40e2b5d..d70720a 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -79,7 +79,6 @@ struct rsnd_ssi {
+@@ -184,7 +184,7 @@ static void rsnd_ssi_hw_start(struct rsnd_ssi *ssi,
+ 	u32 cr;
  
- #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
--#define rsnd_dma_to_ssi(dma)  rsnd_mod_to_ssi(rsnd_dma_to_mod(dma))
- #define rsnd_ssi_pio_available(ssi) ((ssi)->info->irq > 0)
- #define rsnd_ssi_parent(ssi) ((ssi)->parent)
- #define rsnd_ssi_mode_flags(p) ((p)->info->flags)
+ 	if (0 == ssi->usrcnt) {
+-		rsnd_mod_hw_start(mod);
++		rsnd_mod_power_on(mod);
+ 
+ 		if (rsnd_rdai_is_clk_master(rdai)) {
+ 			struct rsnd_ssi *ssi_parent = rsnd_ssi_parent(ssi);
+@@ -265,7 +265,7 @@ static void rsnd_ssi_hw_stop(struct rsnd_dai_stream *io, struct rsnd_ssi *ssi)
+ 				rsnd_ssi_master_clk_stop(ssi);
+ 		}
+ 
+-		rsnd_mod_hw_stop(mod);
++		rsnd_mod_power_off(mod);
+ 
+ 		ssi->chan = 0;
+ 	}
 -- 
 2.6.1
