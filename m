@@ -1,88 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/8] ASoC : dwc : add quirk for dwc controller instances
-Date: Fri, 23 Oct 2015 00:05:04 +0900
-Message-ID: <20151022150504.GS8232@sirena.org.uk>
-References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
- <1444320760-21936-4-git-send-email-alexander.deucher@amd.com>
+Subject: Re: [PATCH v2 2/3] Documentation: DT bindings: rockchip-i2s: add
+ capture property
+Date: Fri, 23 Oct 2015 01:50:17 +0900
+Message-ID: <20151022165017.GA8232@sirena.org.uk>
+References: <1444308009-29088-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1444308009-29088-3-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1654425124=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1444320760-21936-4-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, perex@perex.cz
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="azskX66S5GHWoEK7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1444308009-29088-3-git-send-email-sugar.zhang@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1654425124==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="s9pXJW6w71JX4l3T"
-Content-Disposition: inline
-
-
---s9pXJW6w71JX4l3T
+--azskX66S5GHWoEK7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 08, 2015 at 12:12:36PM -0400, Alex Deucher wrote:
-> From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
->=20
-> Added a qurik to assign different base addresses for different
-> dwc controllers present on platform for playback and capture.
+On Thu, Oct 08, 2015 at 08:40:08PM +0800, Sugar Zhang wrote:
 
-I don't understand what the above means, sorry.  Normally the address
-ranges for devices are supplied via resources when the device is
-registered.
+> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> @@ -21,6 +21,7 @@ Required properties:
+>  - clock-names: should contain followings:
+>     - "i2s_hclk": clock for I2S BUS
+>     - "i2s_clk" : clock for I2S controller
+> +- rockchip,capture-channels: max capture channels, if not set, 2 channels default.
 
-> +	if (dev->quirks & DW_I2S_QUIRK_MULTI_DWC) {
-> +		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
-> +			i2s_write_reg(dev->i2s_pbase, CER, 0);
-> +			i2s_write_reg(dev->i2s_pbase, IER, 0);
-> +		} else {
-> +			i2s_write_reg(dev->i2s_cbase, CER, 0);
-> +			i2s_write_reg(dev->i2s_cbase, IER, 0);
-> +		}
+If this can not be set then it's an optional property, not a required
+property, and should be in the optional properties section.  Please send
+a followup patch fixing that.
 
-This looks like it might be part of the previous change to merge
-separate playback and capture instances of the controller into one
-device rather than a separate change?  But perhaps what this is saying
-is also that the controller instances aren't actually totally separate
-after all and the prior change maps well onto the hardware...
-
---s9pXJW6w71JX4l3T
+--azskX66S5GHWoEK7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWKPsgAAoJECTWi3JdVIfQUVQH/jDKTjyfxtI5aqqj+ueCEpia
-DUoLdSJFQNUGeXPZ7xtplyJAZ31ksAho9G7yrEBB/VgsZ81bc4Gn68lrWx8x8ieh
-8+WAgjW97QRcl/nMPj/kzC5VhNpvUyf+5mejtFFfFEDiDVV5E88ROJmP+ikRllt5
-Ywg9myuvsb+iLVSaBLP0Z7vAjwPwKDoVQovln3BdfSr9UAfhq2ke5TmTrZ51Vemo
-/j+A2jdgP3ATAiwDg3rmn/aBRZ8cigi7M3nF+p2Vw6aIyojWbF2EbOZgAOCV+MzS
-aDp5pnWJ3AAqWvcaN1L3PX9y1KwHPXSUBMtgtcQJdZIyJvpcUpItg/vHjph3a5M=
-=1Nxj
+iQEcBAEBCAAGBQJWKRPIAAoJECTWi3JdVIfQFawH/2WohZEj2f9LB1ZNFWeGJcv3
+Q3NsU6A88hcDC69WDlKFDl3fsbPKaeos5/J7u24iefFNvuubK1D/l42QDkJLQ00U
+WgWqLHnqKOfZAb5OdVP8oq115RRYr+n+V+7FrkJgCWlH/mguYQWNyRO1D/iqF16s
+I+a/7d+2RC/AEM94rIpU20qpT7PFR3R2mfWnF5wHqMKwF+qscs120ljaVlmuthg+
+OtzFkurCC2hLJQunU67bIyvFP7iJfvQbUugrsKdBPTCSsh6EtPrkcAaNE4k/Fz29
+lytAIo0SOpg0r8K3rdQ+o9GyEiw+0IZQaaUP5WE8XlDQTlELKXML8IwnW34OOjw=
+=R90i
 -----END PGP SIGNATURE-----
 
---s9pXJW6w71JX4l3T--
-
---===============1654425124==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
-
---===============1654425124==--
+--azskX66S5GHWoEK7--
