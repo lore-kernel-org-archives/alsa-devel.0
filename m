@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: switch from ioremap_cache to
-	memremap" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:12 +0900
-Message-ID: <E1ZpOyu-0008N0-Dc@finisterre>
+Subject: Applied "ASoC: dapm: Add kcontrol support for PGAs" to
+	the asoc tree
+Date: Fri, 23 Oct 2015 08:09:11 +0900
+Message-ID: <E1ZpOyt-0008MX-BB@finisterre>
+References: <1445360408-3478-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B37D266AF9
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:21 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id E3954266AF7
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:20 +0200 (CEST)
+In-Reply-To: <1445360408-3478-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Williams <dan.j.williams@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Mythri P K <mythri.p.k@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: switch from ioremap_cache to memremap
+   ASoC: dapm: Add kcontrol support for PGAs
 
 has been applied to the asoc tree at
 
@@ -52,79 +53,79 @@ to this mail.
 Thanks,
 Mark
 
->From ba40a854ea4f9d81368dc023bd25ac4073058039 Mon Sep 17 00:00:00 2001
-From: Dan Williams <dan.j.williams@intel.com>
-Date: Fri, 9 Oct 2015 18:16:36 -0400
-Subject: [PATCH] ASoC: Intel: switch from ioremap_cache to memremap
+>From 19a2557b76d64f26c761925cb4fecefb5d72c099 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 20 Oct 2015 22:30:06 +0530
+Subject: [PATCH] ASoC: dapm: Add kcontrol support for PGAs
 
-In preparation for deprecating ioremap_cache() convert its usage in
-skl-nhlt to memremap.
+For DSPs we can define processing blocks as DAPM PGA widgets.
+Some of these proceesing blocks can be configured by usermode
+like EQ etc. So we need to add support of kcontrol for PGA
+widgets.
 
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mythri P K <mythri.p.k@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 10 +++++-----
- sound/soc/intel/skylake/skl.h      |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/soc-dapm.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 13036b1..b0c7bd1 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -25,7 +25,7 @@ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
- 
- #define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
- 
--void __iomem *skl_nhlt_init(struct device *dev)
-+void *skl_nhlt_init(struct device *dev)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index f4bf21a..9762ac4 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -779,7 +779,7 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
+  * Determine if a kcontrol is shared. If it is, look it up. If it isn't,
+  * create it. Either way, add the widget into the control's widget list
+  */
+-static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
++static int dapm_create_or_share_kcontrol(struct snd_soc_dapm_widget *w,
+ 	int kci)
  {
- 	acpi_handle handle;
- 	union acpi_object *obj;
-@@ -40,17 +40,17 @@ void __iomem *skl_nhlt_init(struct device *dev)
- 	if (obj && obj->type == ACPI_TYPE_BUFFER) {
- 		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+@@ -810,6 +810,7 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
+ 			switch (w->id) {
+ 			case snd_soc_dapm_switch:
+ 			case snd_soc_dapm_mixer:
++			case snd_soc_dapm_pga:
+ 				wname_in_long_name = true;
+ 				kcname_in_long_name = true;
+ 				break;
+@@ -899,7 +900,7 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
+ 				continue;
  
--		return ioremap_cache(nhlt_ptr->min_addr, nhlt_ptr->length);
-+		return memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
-+				MEMREMAP_WB);
+ 			if (!w->kcontrols[i]) {
+-				ret = dapm_create_or_share_mixmux_kcontrol(w, i);
++				ret = dapm_create_or_share_kcontrol(w, i);
+ 				if (ret < 0)
+ 					return ret;
+ 			}
+@@ -952,7 +953,7 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
+ 		return -EINVAL;
  	}
  
- 	dev_err(dev, "device specific method to extract NHLT blob failed\n");
- 	return NULL;
- }
+-	ret = dapm_create_or_share_mixmux_kcontrol(w, 0);
++	ret = dapm_create_or_share_kcontrol(w, 0);
+ 	if (ret < 0)
+ 		return ret;
  
--void skl_nhlt_free(void __iomem *addr)
-+void skl_nhlt_free(void *addr)
+@@ -967,9 +968,13 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
+ /* create new dapm volume control */
+ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
  {
--	iounmap(addr);
--	addr = NULL;
-+	memunmap(addr);
+-	if (w->num_kcontrols)
+-		dev_err(w->dapm->dev,
+-			"ASoC: PGA controls not supported: '%s'\n", w->name);
++	int i, ret;
++
++	for (i = 0; i < w->num_kcontrols; i++) {
++		ret = dapm_create_or_share_kcontrol(w, i);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	return 0;
  }
- 
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index e980d78..dd2e79a 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -62,7 +62,7 @@ struct skl {
- 	unsigned int init_failed:1; /* delayed init failed */
- 	struct platform_device *dmic_dev;
- 
--	void __iomem *nhlt; /* nhlt ptr */
-+	void *nhlt; /* nhlt ptr */
- 	struct skl_sst *skl_sst; /* sst skl ctx */
- 
- 	struct skl_dsp_resource resource;
-@@ -83,8 +83,8 @@ struct skl_dma_params {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--void __iomem *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(void __iomem *addr);
-+void *skl_nhlt_init(struct device *dev);
-+void skl_nhlt_free(void *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
 -- 
 2.6.1
