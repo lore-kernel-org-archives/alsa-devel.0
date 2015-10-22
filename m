@@ -1,14 +1,23 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: Gmail thinks most alsa-devel mail is spam
-Date: Wed, 21 Oct 2015 17:53:06 -0500
-Message-ID: <CAOZdJXXWDuU=Rk03KwixpFu1LYYX8Kzaq6q-wu-rA9uGTvHSWw@mail.gmail.com>
-References: <5627833D.8020908@tabi.org>
- <CAG5mAdyivbfwi1JBwHdu+c89j0GkE0Cux+eww7+SnAvUTkCPug@mail.gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Thu, 22 Oct 2015 01:31:12 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <561CA911.7070405@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+ <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <CAG5mAdyivbfwi1JBwHdu+c89j0GkE0Cux+eww7+SnAvUTkCPug@mail.gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id C04C2266807
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 03:31:18 +0200 (CEST)
+In-Reply-To: <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,24 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, mailman-owner@alsa-project.org, Timur Tabi <timur@tabi.org>, alsa-devel-owner@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 21, 2015 at 2:32 PM, Caleb Crome <caleb@crome.org> wrote:
+Hi Raymond,
 
-> In gmail go to
->
->    settings->Filters and blocked Addresses->Create New Filter
->
-> Subject = [alsa-devel]
->
-> Then, "Create Filter With This Search"
->
-> Then "Apply The Label" = alsa
-> and tick the box that says, "Never send it to Spam"
+> 
+> From: Raymond Yau [mailto:superquad.vortex2@gmail.com]
+> Sent: Friday, October 16, 2015 8:33 AM
+> To: Takashi Iwai
+> Cc: airlied@linux.ie; tanuk@iki.fi; David Henningsson; Yang, Libin; Lin,
+> Mengdong; Girdwood, Liam R; ALSA Development Mailing List
+> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+> 
+> 
+> > >
+> > > Do it mean that only one DP MST port and no HDMI port on the
+> same graphic
+> > > card ?
+> >
+> > No.
+> If there is only one HDMI and one Display Port, this mean that there
+> are two pin complexes
+> How about the name of jack detection kctl of three Display Port
+> monitors  which are created on the same pin complex but different
+> dev_index ?
 
-All that does is disable the spam filter completely for alsa-devel,
-which means I'll get more spam.  Then I will have to scan my
-alsa-devel folder to remove actual spam, which is more difficult than
-fishing out legitimate mail from the spam folder.
+For the jack name, what do you think if we change to 
+"HDMI/DP, pin=n, dev=m" format? Will it impact on pulseaudio?
+
+Regards,
+Libin
+
+> Will three three display port monitor playback devices always play
+> different stream even when the displays are in clone mode ?
+> >
+> > > If DP MST are dasiy chained, the unplug of the first monitor from
+> Display
+> > > Port will cause all DP monitor in the dasiy chain disconnect
+> >
+> > Yes.
+> >
+> Do the power off of the Display Port in the middle of the dasiy chain
+> also affect the last display port mointor in the dasiy chain ?
