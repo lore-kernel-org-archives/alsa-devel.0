@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/9] ASoC: Intel: Skylake: Fix return for
-	pm_runtime_get_sync()
-Date: Thu, 22 Oct 2015 23:22:34 +0530
-Message-ID: <1445536362-26670-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/9] ASoC: Intel: Skylake: Remove BE copier
+	blob memcpy
+Date: Thu, 22 Oct 2015 23:22:35 +0530
+Message-ID: <1445536362-26670-3-git-send-email-vinod.koul@intel.com>
 References: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 596FA260545
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 19:49:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BD915260568
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 19:49:32 +0200 (CEST)
 In-Reply-To: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,28 +27,31 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-pm_runtime_get_sync() will return a negative value in case of
-error and can return postive value for success.  The return check
-for pm_runtime_get_sync() must be less than 0, so fix it
+The BE copier private data allowed endpoint configuration blobs, now these
+are queried from BIOS, we don't need to copy the blob, but only capability.
+
+Removing the blob from private data will not allocate memory for module
+specific config in which case memcpy will fail. Fix is to assign the ptr
+queried from the NHLT table for the endpoint configuration.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index a8f53da11ae3..a2f94ce1679d 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -116,7 +116,7 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 	ret = pm_runtime_get_sync(dai->dev);
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 
- 	stream = snd_hdac_ext_stream_assign(ebus, substream,
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index a5d8420ce69a..7c920857007e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -926,7 +926,7 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+ 					params->s_freq, params->stream);
+ 	if (cfg) {
+ 		mconfig->formats_config.caps_size = cfg->size;
+-		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
++		mconfig->formats_config.caps = (u32 *) &cfg->caps;
+ 	} else {
+ 		dev_err(dai->dev, "Blob NULL for id %x type %d dirn %d\n",
+ 					mconfig->vbus_id, link_type,
 -- 
 1.9.1
