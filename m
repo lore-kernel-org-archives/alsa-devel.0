@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: soc-compress: add config item for
- soc-compress to make it compiled only when needed
-Date: Thu, 22 Oct 2015 13:51:46 +0100
-Message-ID: <20151022125146.GK8232@sirena.org.uk>
-References: <1444750860-19355-1-git-send-email-yang.jie@intel.com>
- <20151014092051.GM8805@ck-lbox>
- <E7B1D079BA13FB44A978CC8F69C7D6A9229C6351@SHSMSX101.ccr.corp.intel.com>
- <20151014124659.GN8805@ck-lbox>
+Subject: Re: [Minutes] ELCE Audio mini conf.
+Date: Fri, 23 Oct 2015 02:10:44 +0900
+Message-ID: <20151022171044.GB29919@sirena.org.uk>
+References: <1444657786.2528.78.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9087815715928974672=="
+Content-Type: multipart/mixed; boundary="===============8269271233421011446=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E09E0266D17
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:33:44 +0200 (CEST)
-In-Reply-To: <20151014124659.GN8805@ck-lbox>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06166266D1A
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:33:45 +0200 (CEST)
+In-Reply-To: <1444657786.2528.78.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9087815715928974672==
+--===============8269271233421011446==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Qo8f1a4rgWw9S/zY"
+	protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
 Content-Disposition: inline
 
 
---Qo8f1a4rgWw9S/zY
+--xXmbgvnjoT4axfJE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 14, 2015 at 01:46:59PM +0100, Charles Keepax wrote:
-> On Wed, Oct 14, 2015 at 12:57:38PM +0000, Jie, Yang wrote:
+On Mon, Oct 12, 2015 at 02:49:46PM +0100, Liam Girdwood wrote:
+> I've written up the minutes here below (including Vinod's minutes after
+> I left for my flight). Please do feel free to correct or add any missing
+> items.
 
-> > Hi Charles, we used compress_dai bool before(in v2), but for that we need
-> > add empty inline soc_compress_new(), Takashi suggest we use callback
-> > func pointer here, it can be compress_new or any other creation here.
-> > This is flexible and can be extended if any new stuff has to be handled.
+Thanks Liam and Vinod for doing the minutes!
 
-> If everyone else is happy with it, then I don't mind. It
-> obviously works, just felt a little odd to me.
-
-Yes, it's not very nice but it does help finesse things.  :/
-
---Qo8f1a4rgWw9S/zY
+--xXmbgvnjoT4axfJE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWKNvhAAoJECTWi3JdVIfQM4cIAIUeTRg+1W+QZHQWU2yXMeXT
-i+ggNY7tSmSWj7dE87b6naN/80ctdHx1R6GKS0DICmUEP3vQsQ9hZ6Y0wB0tYlWJ
-tm44rZbFuPkacJ9R9dcDIG30enhK+hbD9P0YjKTQfKThevQChBCps/OIgio56yif
-I1ekM6xR8L7QoGBhKM7GChIvSuhjazky6rvf/eIu/jBpLE7ECb7Dn2dnZmgMjUcO
-RGFztKSAwdSUxCRej92GF0RJUC9+HwD6OvLJuzAx17en/hASsXAKsKyn6bzuO5OI
-FxACBhLDaD3DjsKb/fQ3g1VboMY6n9q4D4HBQFmFiSsZhNDGXDurDm6SmKDdsUA=
-=k/Tu
+iQEcBAEBCAAGBQJWKRiTAAoJECTWi3JdVIfQEEEH/A3UgZ6NAvG79CwqElPLYaDo
+WQmePmWJNEGrs8pvzyVriDtslMP3M2Qo76hoGlZZ/DPWuC1ub76mHBpiIbi3QfMr
+htAjI/zBzy69iQFLDPKGPO7AjNsyUyJBXlXIq2YtKeA8QCIEFZy832ENUzJ3C5Tc
+1ibkpA3tUU3qTsDMTcJIcl10uwBNFum+3KksUDc8zh2sIGBzn1w4NaLhv/+xEwvp
+NjOVc4YGCvNJzUX+8IttgoSF1+I5PYG5Y3uZ9WF7yYG6mBJ7mbB/gnI0+1B09ySd
+P8t5PoJ+X9eQAvc3WT1HzvVMzfzRny/NGmkmN4V6GjjLvjh4RtKCzwMkiyAb+Zs=
+=DocH
 -----END PGP SIGNATURE-----
 
---Qo8f1a4rgWw9S/zY--
+--xXmbgvnjoT4axfJE--
 
---===============9087815715928974672==
+--===============8269271233421011446==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9087815715928974672==--
+--===============8269271233421011446==--
