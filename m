@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Add startup & shutdown for
-	dai_links" to the asoc tree
-Date: Fri, 23 Oct 2015 08:09:07 +0900
-Message-ID: <E1ZpOyp-0008M4-SA@finisterre>
-References: <1445355532-28310-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: switch from ioremap_cache to
+	memremap" to the asoc tree
+Date: Fri, 23 Oct 2015 08:09:12 +0900
+Message-ID: <E1ZpOyu-0008N0-Dc@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42B30266AE4
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:18 +0200 (CEST)
-In-Reply-To: <1445355532-28310-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B37D266AF9
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 01:09:21 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Dan Williams <dan.j.williams@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Add startup & shutdown for dai_links
+   ASoC: Intel: switch from ioremap_cache to memremap
 
 has been applied to the asoc tree at
 
@@ -53,76 +52,79 @@ to this mail.
 Thanks,
 Mark
 
->From 9b8ef9f6b3fcccc2b6ce4bb59d8ab55b36a8b8f0 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 20 Oct 2015 22:30:07 +0530
-Subject: [PATCH] ASoC: dapm: Add startup & shutdown for dai_links
+>From ba40a854ea4f9d81368dc023bd25ac4073058039 Mon Sep 17 00:00:00 2001
+From: Dan Williams <dan.j.williams@intel.com>
+Date: Fri, 9 Oct 2015 18:16:36 -0400
+Subject: [PATCH] ASoC: Intel: switch from ioremap_cache to memremap
 
-For DAI link events, DSPs would like to get notified for startup
-and shutdown event as well apart for existing hw_params. This
-helps managing DSP resource allocation and freeup on these events
-So add support for startup and shutdown for
-snd_soc_dai_link_event()
+In preparation for deprecating ioremap_cache() convert its usage in
+skl-nhlt to memremap.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ sound/soc/intel/skylake/skl-nhlt.c | 10 +++++-----
+ sound/soc/intel/skylake/skl.h      |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9762ac4..a28d6a1 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3478,11 +3478,29 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		if (source->driver->ops && source->driver->ops->startup) {
-+			ret = source->driver->ops->startup(&substream, source);
-+			if (ret < 0) {
-+				dev_err(source->dev,
-+					"ASoC: startup() failed: %d\n", ret);
-+				goto out;
-+			}
-+			source->active++;
-+		}
- 		ret = soc_dai_hw_params(&substream, params, source);
- 		if (ret < 0)
- 			goto out;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 13036b1..b0c7bd1 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -25,7 +25,7 @@ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
  
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		if (sink->driver->ops && sink->driver->ops->startup) {
-+			ret = sink->driver->ops->startup(&substream, sink);
-+			if (ret < 0) {
-+				dev_err(sink->dev,
-+					"ASoC: startup() failed: %d\n", ret);
-+				goto out;
-+			}
-+			sink->active++;
-+		}
- 		ret = soc_dai_hw_params(&substream, params, sink);
- 		if (ret < 0)
- 			goto out;
-@@ -3502,6 +3520,18 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		if (ret != 0 && ret != -ENOTSUPP)
- 			dev_warn(sink->dev, "ASoC: Failed to mute: %d\n", ret);
- 		ret = 0;
-+
-+		source->active--;
-+		if (source->driver->ops && source->driver->ops->shutdown) {
-+			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+			source->driver->ops->shutdown(&substream, source);
-+		}
-+
-+		sink->active--;
-+		if (sink->driver->ops && sink->driver->ops->shutdown) {
-+			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+			sink->driver->ops->shutdown(&substream, sink);
-+		}
- 		break;
+ #define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
  
- 	default:
+-void __iomem *skl_nhlt_init(struct device *dev)
++void *skl_nhlt_init(struct device *dev)
+ {
+ 	acpi_handle handle;
+ 	union acpi_object *obj;
+@@ -40,17 +40,17 @@ void __iomem *skl_nhlt_init(struct device *dev)
+ 	if (obj && obj->type == ACPI_TYPE_BUFFER) {
+ 		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
+ 
+-		return ioremap_cache(nhlt_ptr->min_addr, nhlt_ptr->length);
++		return memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
++				MEMREMAP_WB);
+ 	}
+ 
+ 	dev_err(dev, "device specific method to extract NHLT blob failed\n");
+ 	return NULL;
+ }
+ 
+-void skl_nhlt_free(void __iomem *addr)
++void skl_nhlt_free(void *addr)
+ {
+-	iounmap(addr);
+-	addr = NULL;
++	memunmap(addr);
+ }
+ 
+ static struct nhlt_specific_cfg *skl_get_specific_cfg(
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index e980d78..dd2e79a 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -62,7 +62,7 @@ struct skl {
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 	struct platform_device *dmic_dev;
+ 
+-	void __iomem *nhlt; /* nhlt ptr */
++	void *nhlt; /* nhlt ptr */
+ 	struct skl_sst *skl_sst; /* sst skl ctx */
+ 
+ 	struct skl_dsp_resource resource;
+@@ -83,8 +83,8 @@ struct skl_dma_params {
+ int skl_platform_unregister(struct device *dev);
+ int skl_platform_register(struct device *dev);
+ 
+-void __iomem *skl_nhlt_init(struct device *dev);
+-void skl_nhlt_free(void __iomem *addr);
++void *skl_nhlt_init(struct device *dev);
++void skl_nhlt_free(void *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
+ 
 -- 
 2.6.1
