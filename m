@@ -1,18 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: rx1950_uda1380: Constify rate
+Subject: [PATCH 1/3] ASoC: h1940_uda1380: Constify rate
 	constraints
-Date: Thu, 22 Oct 2015 10:43:22 +0200
-Message-ID: <1445503403-22934-2-git-send-email-lars@metafoo.de>
-References: <1445503403-22934-1-git-send-email-lars@metafoo.de>
+Date: Thu, 22 Oct 2015 10:43:21 +0200
+Message-ID: <1445503403-22934-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-188.synserver.de (smtp-out-188.synserver.de
  [212.40.185.188])
- by alsa0.perex.cz (Postfix) with ESMTP id 747742661DE
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 10:43:34 +0200 (CEST)
-In-Reply-To: <1445503403-22934-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 688ED2661DE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 10:46:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,22 +32,22 @@ field.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/rx1950_uda1380.c | 5 ++---
+ sound/soc/samsung/h1940_uda1380.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index 35e37c4..fa096ab 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -38,16 +38,15 @@ static int rx1950_hw_params(struct snd_pcm_substream *substream,
- static int rx1950_spk_power(struct snd_soc_dapm_widget *w,
- 				struct snd_kcontrol *kcontrol, int event);
+diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
+index c72e9fb..5f5825f 100644
+--- a/sound/soc/samsung/h1940_uda1380.c
++++ b/sound/soc/samsung/h1940_uda1380.c
+@@ -26,16 +26,15 @@
+ #include <mach/gpio-samsung.h>
+ #include "s3c24xx-i2s.h"
  
 -static unsigned int rates[] = {
 +static const unsigned int rates[] = {
- 	16000,
+ 	11025,
+ 	22050,
  	44100,
- 	48000,
  };
  
 -static struct snd_pcm_hw_constraint_list hw_rates = {
