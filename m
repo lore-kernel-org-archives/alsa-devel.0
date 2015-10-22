@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 8/9] ASoC: Intel: Skylake: Fix to set Non
-	gateway copier cfg
-Date: Thu, 22 Oct 2015 23:22:41 +0530
-Message-ID: <1445536362-26670-9-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 9/9] ASoC: Intel: Skylake: Add support to
+	topology for module static pin
+Date: Thu, 22 Oct 2015 23:22:42 +0530
+Message-ID: <1445536362-26670-10-git-send-email-vinod.koul@intel.com>
 References: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id CA8D22667D7
- for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 19:53:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 11DA12605AE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2015 19:53:51 +0200 (CEST)
 In-Reply-To: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,67 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Dharageswari.R" <dharageswari.r@intel.com>, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-If copier instance is connected to a DMA gateway then driver
-needs to configure the gateway configuration otherwise set
-it to invalid.
-This patch sets the non gateway copier node value to invalid.
+Some module pin connection are static and defined by the topology.
+This patch adds support for static pin definitions in topology widget
+private data
 
-Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c       | 8 +++++++-
- sound/soc/intel/skylake/skl-tplg-interface.h | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c       | 32 +++++++++++++++-------------
+ sound/soc/intel/skylake/skl-tplg-interface.h |  6 ++++--
+ 2 files changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index a1001a686aa9..50a109503a3f 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -321,6 +321,7 @@ static void skl_copy_copier_caps(struct skl_module_cfg *mconfig,
- 			(mconfig->formats_config.caps_size) / 4;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 68e1b00ce7ed..a7854c8fc523 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1034,18 +1034,17 @@ static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
+  * The topology binary passes the pin info for a module so initialize the pin
+  * info passed into module instance
+  */
+-static void skl_fill_module_pin_info(struct device *dev,
+-			struct skl_module_pin *m_pin,
+-			int max_pin)
++static void skl_fill_module_pin_info(struct skl_dfw_module_pin *dfw_pin,
++						struct skl_module_pin *m_pin,
++						bool is_dynamic, int max_pin)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < max_pin; i++) {
+-		m_pin[i].id.module_id = 0;
+-		m_pin[i].id.instance_id = 0;
++		m_pin[i].id.module_id = dfw_pin[i].module_id;
++		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
+ 		m_pin[i].in_use = false;
+-		m_pin[i].is_dynamic = true;
+-		m_pin[i].pin_index = i;
++		m_pin[i].is_dynamic = is_dynamic;
+ 	}
  }
  
-+#define SKL_NON_GATEWAY_CPR_NODE_ID 0xFFFFFFFF
- /*
-  * Calculate the gatewat settings required for copier module, type of
-  * gateway and index of gateway to use
-@@ -367,13 +368,18 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 		node_id.node.vindex = params->link_dma_id;
- 		break;
+@@ -1164,17 +1163,20 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 	if (!mconfig->m_in_pin)
+ 		return -ENOMEM;
  
--	default:
-+	case SKL_DEVICE_HDAHOST:
- 		node_id.node.dma_type =
- 			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
- 			SKL_DMA_HDA_HOST_OUTPUT_CLASS :
- 			SKL_DMA_HDA_HOST_INPUT_CLASS;
- 		node_id.node.vindex = params->host_dma_id;
- 		break;
+-	mconfig->m_out_pin = devm_kzalloc(bus->dev,
+-				(mconfig->max_in_queue) *
+-					sizeof(*mconfig->m_out_pin),
+-				GFP_KERNEL);
++	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_out_queue) *
++						sizeof(*mconfig->m_out_pin),
++						GFP_KERNEL);
+ 	if (!mconfig->m_out_pin)
+ 		return -ENOMEM;
+ 
+-	skl_fill_module_pin_info(bus->dev, mconfig->m_in_pin,
+-				mconfig->max_in_queue);
+-	skl_fill_module_pin_info(bus->dev, mconfig->m_out_pin,
+-				mconfig->max_out_queue);
++	skl_fill_module_pin_info(dfw_config->in_pin, mconfig->m_in_pin,
++						dfw_config->is_dynamic_in_pin,
++						mconfig->max_in_queue);
 +
-+	default:
-+		cpr_mconfig->gtw_cfg.node_id = SKL_NON_GATEWAY_CPR_NODE_ID;
-+		cpr_mconfig->cpr_feature_mask = 0;
-+		return;
- 	}
++	skl_fill_module_pin_info(dfw_config->out_pin, mconfig->m_out_pin,
++						 dfw_config->is_dynamic_out_pin,
++							mconfig->max_out_queue);
++
  
- 	cpr_mconfig->gtw_cfg.node_id = node_id.val;
+ 	if (mconfig->formats_config.caps_size == 0)
+ 		goto bind_event;
 diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index d14f7fe64aa8..718d3d5df9a8 100644
+index 718d3d5df9a8..2bc396d54cbe 100644
 --- a/sound/soc/intel/skylake/skl-tplg-interface.h
 +++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -106,6 +106,7 @@ enum skl_dev_type {
- 	SKL_DEVICE_I2S = 0x2,
- 	SKL_DEVICE_SLIMBUS = 0x3,
- 	SKL_DEVICE_HDALINK = 0x4,
-+	SKL_DEVICE_HDAHOST = 0x5,
- 	SKL_DEVICE_NONE
- };
+@@ -113,8 +113,6 @@ enum skl_dev_type {
+ struct skl_dfw_module_pin {
+ 	u16 module_id;
+ 	u16 instance_id;
+-	u8 pin_id;
+-	bool is_dynamic;
+ } __packed;
+ 
+ struct skl_dfw_module_fmt {
+@@ -155,9 +153,13 @@ struct skl_dfw_module {
+ 	u32 converter;
+ 	u32 module_type;
+ 	u32 vbus_id;
++	u8 is_dynamic_in_pin;
++	u8 is_dynamic_out_pin;
+ 	struct skl_dfw_pipe pipe;
+ 	struct skl_dfw_module_fmt in_fmt;
+ 	struct skl_dfw_module_fmt out_fmt;
++	struct skl_dfw_module_pin in_pin[MAX_IN_QUEUE];
++	struct skl_dfw_module_pin out_pin[MAX_OUT_QUEUE];
+ 	struct skl_dfw_module_caps caps;
+ } __packed;
  
 -- 
 1.9.1
