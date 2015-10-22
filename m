@@ -1,80 +1,60 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC : dwc : add check for master/slave format
-Date: Thu, 22 Oct 2015 15:56:14 +0100
-Message-ID: <20151022145614.GQ8232@sirena.org.uk>
-References: <1444320760-21936-1-git-send-email-alexander.deucher@amd.com>
- <1444320760-21936-2-git-send-email-alexander.deucher@amd.com>
+Subject: Re: [PATCH v2 3/3] ASoC: cs47l24: Add driver for Cirrus Logic
+ CS47L24 and WM1831 codecs
+Date: Thu, 22 Oct 2015 13:40:57 +0100
+Message-ID: <20151022124057.GG8232@sirena.org.uk>
+References: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1445264027-7357-4-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1568500067=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1444320760-21936-2-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, perex@perex.cz
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ahP6B03r4gLOj5uD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1445264027-7357-4-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1568500067==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l8yJEXo8J9fv7OFY"
-Content-Disposition: inline
-
-
---l8yJEXo8J9fv7OFY
+--ahP6B03r4gLOj5uD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 08, 2015 at 12:12:34PM -0400, Alex Deucher wrote:
-> From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
->=20
-> DW i2s controller's master/slave config can be read from a
-> read-only register. Machine driver can try to set a master/slave
-> format on cpu-dai using 'set_fmt' of dai ops. A check is added to
-> verify codec is master when dwc is slave and vice-versa.
->=20
-> Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-> ---
+On Mon, Oct 19, 2015 at 03:13:47PM +0100, Richard Fitzgerald wrote:
 
-I can't apply this, you've not added a Signed-off-by for code sent by
-someone else as covered in SubmittingPatches.
+> @@ -134,6 +134,7 @@ config SND_SOC_ALL_CODECS
+>  	select SND_SOC_WM5100 if I2C
+>  	select SND_SOC_WM5102 if MFD_WM5102
+>  	select SND_SOC_WM5110 if MFD_WM5110
+> +	select SND_SOC_CS47L24 if MFD_CS47L24
+>  	select SND_SOC_WM8350 if MFD_WM8350
+>  	select SND_SOC_WM8400 if MFD_WM8400
+>  	select SND_SOC_WM8510 if SND_SOC_I2C_AND_SPI
 
-Please also try to use subject lines matching the style for the
-subsystem.
+Please keep the Makefile and Kconfig sorted.
 
---l8yJEXo8J9fv7OFY
+> +config SND_SOC_CS47L24
+> +	tristate "TEST cs47l24"
+> +
+
+This isn't a good help text for the symbol.
+
+Otherwise the code looks good.
+
+--ahP6B03r4gLOj5uD
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWKPkNAAoJECTWi3JdVIfQL84H/R+YMTSRR7jfJ0ZwW5f6ZmFn
-ROxebYS3mhQlYUASDQ8atrD0KyY9kDsaoGA4d/3Pjayj4FZKq86zVhzbMFPkH5w7
-l3c5OsIux8lmAiHM7nctKK41weC2o29PtV4jTZxo+bsb1tW1tyNOOvJOB7RiUG6/
-F10Z5AH8jVMwqSlcnVreur/3LIaLYIkRZpGWz7XsZhYiAqaNjOrd79fZIHWzj344
-07lshwgaCFsbC+9+KMKnx6EVfOQA57XxtzZ0Rmh7ciQmWY9Q/sT+u3ms4h51BpKP
-B5FAubnZP+FowXEWNR87efnkIpoKg3UQyEirC8kseM26WyyzZuqyEivs1zVrnkw=
-=3C4c
+iQEcBAEBCAAGBQJWKNlYAAoJECTWi3JdVIfQ51wH/jRi5+mpiG8OZ8PLj37oVxd7
+U7XpNGssv/lOU18+dWhQcEwkW3NND+rwB9zOyYrropl5eaNtA0UQheoI9Qj9DyqW
+0hhvDoPcYYaaWtP8dQrMifm8y4xAsfWos/qmd7OlcycoOIEXmI0RkVUugckhKK13
+oYqD5wkTfIhBlyWu2+XzpR9ZTTafcVdMU9lDovhNxbaZwrke+Bvk1StlQgxB3ShJ
+WzKZFtYKk8jpRwMIGMtnKA2Yo/DEi+uCqOAP+cyfVL8m6Ne4ZAUC//zwNy71GiyU
+JP6zZIzi+w/eN8VJoEryi6cGYBMOD50aqNjRGnwiCBrHdvxZyMeycrt71MSLbeI=
+=vy8I
 -----END PGP SIGNATURE-----
 
---l8yJEXo8J9fv7OFY--
-
---===============1568500067==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
-
---===============1568500067==--
+--ahP6B03r4gLOj5uD--
