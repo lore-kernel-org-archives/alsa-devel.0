@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add support to disable
-	module notifications" to the asoc tree
-Date: Sat, 24 Oct 2015 02:47:44 +0900
-Message-ID: <E1ZpgRM-0006U0-Lt@finisterre>
-References: <1445536362-26670-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to set Non gateway
+	copier cfg" to the asoc tree
+Date: Sat, 24 Oct 2015 02:47:42 +0900
+Message-ID: <E1ZpgRK-0006T0-HE@finisterre>
+References: <1445536362-26670-9-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CC0826516A
+ by alsa0.perex.cz (Postfix) with ESMTP id B22822651AA
  for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:47:53 +0200 (CEST)
-In-Reply-To: <1445536362-26670-7-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1445536362-26670-9-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: "Dharageswari.R" <dharageswari.r@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add support to disable module notifications
+   ASoC: Intel: Skylake: Fix to set Non gateway copier cfg
 
 has been applied to the asoc tree at
 
@@ -53,100 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 4e10996ba810031a493d903539f595e053826103 Mon Sep 17 00:00:00 2001
+>From bfa764accdea017b1c557f43fa5f2c77a0dc3b15 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 22 Oct 2015 23:22:39 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add support to disable module
- notifications
+Date: Thu, 22 Oct 2015 23:22:41 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to set Non gateway copier cfg
 
-Each FW modules can report underrun/overrun notification from
-all modules. This patch disables underrun/overrun notification after
-firmware is loaded.
-This will be supportted for debug mode only thru debugfs
+If copier instance is connected to a DMA gateway then driver
+needs to configure the gateway configuration otherwise set
+it to invalid.
+This patch sets the non gateway copier node value to invalid.
 
+Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 28 ++++++++++++++++++++++++++--
- sound/soc/intel/skylake/skl-topology.h |  5 +++++
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c       | 8 +++++++-
+ sound/soc/intel/skylake/skl-tplg-interface.h | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 77c0736..ca7bbee 100644
+index a1001a6..50a1095 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -54,6 +54,24 @@ static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
- 	return 0;
+@@ -321,6 +321,7 @@ static void skl_copy_copier_caps(struct skl_module_cfg *mconfig,
+ 			(mconfig->formats_config.caps_size) / 4;
  }
  
-+#define NOTIFICATION_PARAM_ID 3
-+#define NOTIFICATION_MASK 0xf
-+
-+/* disable notfication for underruns/overruns from firmware module */
-+static void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
-+{
-+	struct notification_mask mask;
-+	struct skl_ipc_large_config_msg	msg = {0};
-+
-+	mask.notify = NOTIFICATION_MASK;
-+	mask.enable = enable;
-+
-+	msg.large_param_id = NOTIFICATION_PARAM_ID;
-+	msg.param_data_size = sizeof(mask);
-+
-+	skl_ipc_set_large_config(&ctx->ipc, &msg, (u32 *)&mask);
-+}
-+
- int skl_init_dsp(struct skl *skl)
- {
- 	void __iomem *mmio_base;
-@@ -79,7 +97,7 @@ int skl_init_dsp(struct skl *skl)
++#define SKL_NON_GATEWAY_CPR_NODE_ID 0xFFFFFFFF
+ /*
+  * Calculate the gatewat settings required for copier module, type of
+  * gateway and index of gateway to use
+@@ -367,13 +368,18 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
+ 		node_id.node.vindex = params->link_dma_id;
+ 		break;
  
- 	ret = skl_sst_dsp_init(bus->dev, mmio_base, irq,
- 			loader_ops, &skl->skl_sst);
--
-+	skl_dsp_enable_notification(skl->skl_sst, false);
- 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
- 
- 	return ret;
-@@ -122,6 +140,7 @@ int skl_suspend_dsp(struct skl *skl)
- int skl_resume_dsp(struct skl *skl)
- {
- 	struct skl_sst *ctx = skl->skl_sst;
-+	int ret;
- 
- 	/* if ppcap is not supported return 0 */
- 	if (!skl->ebus.ppcap)
-@@ -131,7 +150,12 @@ int skl_resume_dsp(struct skl *skl)
- 	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
- 	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
- 
--	return skl_dsp_wake(ctx->dsp);
-+	ret = skl_dsp_wake(ctx->dsp);
-+	if (ret < 0)
-+		return ret;
+-	default:
++	case SKL_DEVICE_HDAHOST:
+ 		node_id.node.dma_type =
+ 			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
+ 			SKL_DMA_HDA_HOST_OUTPUT_CLASS :
+ 			SKL_DMA_HDA_HOST_INPUT_CLASS;
+ 		node_id.node.vindex = params->host_dma_id;
+ 		break;
 +
-+	skl_dsp_enable_notification(skl->skl_sst, false);
-+	return ret;
- }
++	default:
++		cpr_mconfig->gtw_cfg.node_id = SKL_NON_GATEWAY_CPR_NODE_ID;
++		cpr_mconfig->cpr_feature_mask = 0;
++		return;
+ 	}
  
- enum skl_bitdepth skl_get_bit_depth(int params)
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 2399535..76053a8 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -129,6 +129,11 @@ struct skl_src_module_cfg {
- 	enum skl_s_freq src_cfg;
- } __packed;
+ 	cpr_mconfig->gtw_cfg.node_id = node_id.val;
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index d14f7fe..718d3d5 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -106,6 +106,7 @@ enum skl_dev_type {
+ 	SKL_DEVICE_I2S = 0x2,
+ 	SKL_DEVICE_SLIMBUS = 0x3,
+ 	SKL_DEVICE_HDALINK = 0x4,
++	SKL_DEVICE_HDAHOST = 0x5,
+ 	SKL_DEVICE_NONE
+ };
  
-+struct notification_mask {
-+	u32 notify;
-+	u32 enable;
-+} __packed;
-+
- struct skl_up_down_mixer_cfg {
- 	struct skl_base_cfg base_cfg;
- 	enum skl_ch_cfg out_ch_cfg;
 -- 
 2.6.1
