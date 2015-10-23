@@ -1,33 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Roland/Edirol M-16DX
-Date: Fri, 23 Oct 2015 10:27:51 +0200
-Message-ID: <alpine.DEB.2.02.1510231017080.14239@lnxricardw1.se.axis.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: No sound after suspend-to-ram
+Date: Fri, 23 Oct 2015 08:28:13 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A236B9@RTITMBSV09.realtek.com.tw>
+References: <CALcwt_Acar7dhMHtEo9PtSi+RBcpXXDcQTNHZr-CEfNYhhWmRA@mail.gmail.com>
+ <s5hh9ljj5nd.wl-tiwai@suse.de>
+ <CALcwt_DPaX1-oBw6gVUT85bFLUKeQGcv=M9aCBHsHD=+eu_bVA@mail.gmail.com>
+ <s5hsi52ujmp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 98787261527
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id 3A0CF1821B
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:54 +0200 (CEST)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id P2P5bsQVBr0p for <alsa-devel@alsa-project.org>;
- Fri, 23 Oct 2015 10:27:53 +0200 (CEST)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by bastet.se.axis.com (Postfix) with ESMTP id 218071806C
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id BACFE127
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by boulder.se.axis.com (Postfix) with ESMTP id AD7ACA5
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by thoth.se.axis.com (Postfix) with ESMTP id AB3D034009
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83B0F2617A5
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:28:18 +0200 (CEST)
+In-Reply-To: <s5hsi52ujmp.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,208 +24,304 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, George Gugulea <gugulea@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-The Roland/Edirol M-16DX is a digital mixer which can also function as a =
+Was speaker no sound only? Or Headphone also no sound. 
 
-18 channel capture / 2 channel playback USB 2.0 interface. The device has =
-
-been added to quirks-table.h and has been reported as working with one =
-
-problem: when playing back there's severe audio distortion at regular =
-
-intervals (several seconds), which has been traced to the fact that the =
-
-device utilizes the IN endpoint as an implicit feedback channel; see the =
-
-output from lsusb -vvv from a 7 year old post by Lasse K=E4rkk=E4inen below =
-
-for reference:
-
-> Bus 007 Device 025: ID 0582:00c4 Roland Corp.
-> Device Descriptor:
->    bLength                18
->    bDescriptorType         1
->    bcdUSB               2.00
->    bDeviceClass          255 Vendor Specific Class
->    bDeviceSubClass         0
->    bDeviceProtocol       255
->    bMaxPacketSize0        64
->    idVendor           0x0582 Roland Corp.
->    idProduct          0x00c4
->    bcdDevice            0.00
->    iManufacturer           1 EDIROL
->    iProduct                2 M-16DX
->    iSerial                 0
->    bNumConfigurations      1
->    Configuration Descriptor:
->      bLength                 9
->      bDescriptorType         2
->      wTotalLength          167
->      bNumInterfaces          3
->      bConfigurationValue     1
->      iConfiguration          0
->      bmAttributes         0xc0
->        Self Powered
->      MaxPower                0mA
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        0
->        bAlternateSetting       0
->        bNumEndpoints           0
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      1
->        bInterfaceProtocol      2
->        iInterface              0
->        ** UNRECOGNIZED:  06 24 f1 01 00 00
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        0
->        bAlternateSetting       1
->        bNumEndpoints           1
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      2
->        bInterfaceProtocol      2
->        iInterface              0
->        ** UNRECOGNIZED:  07 24 01 01 00 01 00
->        ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 80 bb 00
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x02  EP 2 OUT
->          bmAttributes            5
->            Transfer Type            Isochronous
->            Synch Type               Asynchronous
->            Usage Type               Data
->          wMaxPacketSize     0x0038  1x 56 bytes
->          bInterval               1
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        1
->        bAlternateSetting       0
->        bNumEndpoints           0
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      1
->        bInterfaceProtocol      2
->        iInterface              0
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        1
->        bAlternateSetting       1
->        bNumEndpoints           1
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      2
->        bInterfaceProtocol      1
->        iInterface              0
->        ** UNRECOGNIZED:  07 24 01 07 00 01 00
->        ** UNRECOGNIZED:  0b 24 02 01 12 04 18 01 80 bb 00
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x81  EP 1 IN
->          bmAttributes           37
->            Transfer Type            Isochronous
->            Synch Type               Asynchronous
->            Usage Type               Implicit feedback Data
->          wMaxPacketSize     0x01f8  1x 504 bytes
->          bInterval               1
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        2
->        bAlternateSetting       0
->        bNumEndpoints           2
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      1
->        bInterfaceProtocol      3
->        iInterface              0
->        ** UNRECOGNIZED:  06 24 f1 02 01 01
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x04  EP 4 OUT
->          bmAttributes            2
->            Transfer Type            Bulk
->            Synch Type               None
->            Usage Type               Data
->          wMaxPacketSize     0x0200  1x 512 bytes
->          bInterval               1
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x83  EP 3 IN
->          bmAttributes            2
->            Transfer Type            Bulk
->            Synch Type               None
->            Usage Type               Data
->          wMaxPacketSize     0x0200  1x 512 bytes
->          bInterval               1
->      Interface Descriptor:
->        bLength                 9
->        bDescriptorType         4
->        bInterfaceNumber        2
->        bAlternateSetting       1
->        bNumEndpoints           2
->        bInterfaceClass       255 Vendor Specific Class
->        bInterfaceSubClass      1
->        bInterfaceProtocol      3
->        iInterface              0
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x04  EP 4 OUT
->          bmAttributes            2
->            Transfer Type            Bulk
->            Synch Type               None
->            Usage Type               Data
->          wMaxPacketSize     0x0200  1x 512 bytes
->          bInterval               1
->        Endpoint Descriptor:
->          bLength                 7
->          bDescriptorType         5
->          bEndpointAddress     0x83  EP 3 IN
->          bmAttributes            3
->            Transfer Type            Interrupt
->            Synch Type               None
->            Usage Type               Data
->          wMaxPacketSize     0x0200  1x 512 bytes
->          bInterval               1
-
-On Fri, 14 Nov 2008, Clemens confirmed this in a post:
-
-> James Trevelyan wrote:
-> > ...
-> > However, what I did notice is that in all circumstances the windows
-> > driver was capturing at the same time as playback, even when I was not
-> > asking it to record.  This suggests to me that the comment in the driver
-> > source about synchronising playback to capture has some relevance ...
-> =
-
-> Indeed.  The driver would have to send the data at the exact speed of
-> the device's internal clock, and the only way to determine that clock's
-> speed is to capture data.
-> =
-
-> So far I haven't found the time to rewrite the driver to support this
-> synchronization mechanism.
-
-I seem to recall reading posts not to long ago that refer to using an =
-
-implicit feedback path; my question is, was this in fact implemented, =
-
-meaning that a device like the M-16DX should function as expected also for =
-
-playback?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Friday, October 23, 2015 3:31 PM
+> To: George Gugulea
+> Cc: Kailang; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] No sound after suspend-to-ram
+> 
+> On Thu, 22 Oct 2015 23:23:05 +0200,
+> George Gugulea wrote:
+> > 
+> > I did now with 4.3.0-rc6 and there is the same problem.
+> > I reattached the two outputs, before and after (as a patch) 
+> suspend-to-ram:
+> > diff -u alsa-info.txt.4.3-rc6.before alsa-info.txt.4.3-rc6.after > 
+> > alsa-info.txt.4.3-rc6.patch
+> 
+> OK, so we need to hunt more.
+> 
+> Kailang, could you check whether anything missing for this codec?
+> The symptom appears like the COEF thingy you fixed by extra 
+> init verbs.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > 
+> > 
+> > On Thu, Oct 22, 2015 at 6:15 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > On Thu, 22 Oct 2015 10:38:37 +0200,
+> > > George Gugulea wrote:
+> > >>
+> > >> After a fresh reboot, the sound works ok but if I put 
+> the computer 
+> > >> to sleep (pm-suspend), after it wakes up there is no 
+> sound anymore.
+> > >>
+> > >> I did try 'alsa force-reload' after suspend but still no sound.
+> > >> After 'pm-hibernate' sound is back again.
+> > >>
+> > >> I found an old thread here:
+> > >> https://bugzilla.kernel.org/show_bug.cgi?id=49421 where Michael 
+> > >> seems to have the same problem which is still unsolved; 
+> maybe I can 
+> > >> help with more info.
+> > >>
+> > >> I attached the 'alsa-info.sh' output before and after suspend:
+> > >> 'alsa-info.txt.before' and 'alsa-info.txt.after' (as a patch to 
+> > >> stay below 80k mail size rule: diff -u alsa-info.txt.before 
+> > >> alsa-info.txt.after > alsa-info.txt.patch)
+> > >>
+> > >> The only difference between before and after is this one:
+> > >> @@ -241,7 +241,7 @@
+> > >>  Node 0x11 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+> > >>    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
+> > >>    Amp-In vals:  [0x12 0x12]
+> > >> -  Converter: stream=4, channel=0
+> > >> +  Converter: stream=0, channel=0
+> > >>    SDI-Select: 0
+> > >>    PCM:
+> > >>      rates [0x160]: 44100 48000 96000
+> > >>
+> > >>
+> > >> The PC is here: 
+> > >> http://www.dell.com/us/p/xps-27-2720-aio/pd?ref=PD_OC,
+> > >> but the 2y older version with no touch
+> > >>
+> > >> If I boot into windows (8.1) everything works great, including 
+> > >> sound (even after suspend)
+> > >
+> > > Did you test with 4.3-rc kernel?  3.19 is very old.
+> > >
+> > > It's likely codec-specific stuff, as there is no 
+> difference seen in 
+> > > alsa-info.sh outputs (the converter is the value assigned 
+> > > dynamically at playback, so it doesn't matter at all).
+> > >
+> > >
+> > > Takashi
+> > 
+> > 
+> > 
+> > --
+> > gg
+> > [2 alsa-info.txt.4.3-rc6.before <application/octet-stream (base64)>]
+> > 
+> > --- alsa-info.txt.4.3-rc6.before	2015-10-22 
+> 23:41:24.265081408 +0300
+> > +++ alsa-info.txt.4.3-rc6.after	2015-10-22 
+> 23:46:30.584791012 +0300
+> > @@ -3,7 +3,7 @@
+> >  !!ALSA Information Script v 0.4.64
+> >  !!################################
+> >  
+> > -!!Script ran on: Thu Oct 22 20:41:23 UTC 2015
+> > +!!Script ran on: Thu Oct 22 20:46:30 UTC 2015
+> >  
+> >  
+> >  !!Linux Distribution
+> > @@ -142,26 +142,26 @@
+> >      ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+> >    Device: name="ALC3260 Analog", type="Audio", device=0
+> >    Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
+> > -  Amp-Out vals:  [0x25 0x25]
+> > -  Converter: stream=5, channel=0
+> > +  Amp-Out vals:  [0x21 0x21]
+> > +  Converter: stream=0, channel=0
+> >    PCM:
+> >      rates [0x560]: 44100 48000 96000 192000
+> >      bits [0xe]: 16 20 24
+> >      formats [0x1]: PCM
+> >    Power states:  D0 D1 D2 D3 EPSS
+> > -  Power: setting=D0, actual=D0
+> > +  Power: setting=D3, actual=D3
+> >  Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+> >    Control: name="Speaker Playback Volume", index=0, device=0
+> >      ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+> >    Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
+> > -  Amp-Out vals:  [0x25 0x25]
+> > -  Converter: stream=5, channel=0
+> > +  Amp-Out vals:  [0x21 0x21]
+> > +  Converter: stream=0, channel=0
+> >    PCM:
+> >      rates [0x560]: 44100 48000 96000 192000
+> >      bits [0xe]: 16 20 24
+> >      formats [0x1]: PCM
+> >    Power states:  D0 D1 D2 D3 EPSS
+> > -  Power: setting=D0, actual=D0
+> > +  Power: setting=D3, actual=D3
+> >  Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x05 
+> > [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x06 
+> [Audio Output] 
+> > wcaps 0x611: Stereo Digital @@ -182,7 +182,7 @@
+> >      ControlAmp: chs=3, dir=In, idx=0, ofs=0
+> >    Device: name="ALC3260 Analog", type="Audio", device=0
+> >    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
+> > -  Amp-In vals:  [0x11 0x11]
+> > +  Amp-In vals:  [0x10 0x10]
+> >    Converter: stream=0, channel=0
+> >    SDI-Select: 0
+> >    PCM:
+> > @@ -240,7 +240,7 @@
+> >  Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x11 
+> > [Audio Input] wcaps 0x10051b: Stereo Amp-In
+> >    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
+> > -  Amp-In vals:  [0x11 0x11]
+> > +  Amp-In vals:  [0x10 0x10]
+> >    Converter: stream=1, channel=0
+> >    SDI-Select: 0
+> >    PCM:
+> > @@ -288,7 +288,7 @@
+> >      Misc = NO_PRESENCE
+> >    Pin-ctls: 0x40: OUT
+> >    Power states:  D0 D1 D2 D3 EPSS
+> > -  Power: setting=D0, actual=D0
+> > +  Power: setting=D3, actual=D3
+> >    Connection: 2
+> >       0x0c 0x0d*
+> >  Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out @@ -531,8 
+> > +531,8 @@  crw-rw----+ 1 root audio 116,  2 Oct 22 23:40 
+> > /dev/snd/controlC0  crw-rw----+ 1 root audio 116,  6 Oct 22 23:40 
+> > /dev/snd/hwC0D0  crw-rw----+ 1 root audio 116,  7 Oct 22 23:40 
+> > /dev/snd/hwC0D3
+> > -crw-rw----+ 1 root audio 116,  4 Oct 22 23:40 /dev/snd/pcmC0D0c
+> > -crw-rw----+ 1 root audio 116,  3 Oct 22 23:40 /dev/snd/pcmC0D0p
+> > +crw-rw----+ 1 root audio 116,  4 Oct 22 23:46 /dev/snd/pcmC0D0c
+> > +crw-rw----+ 1 root audio 116,  3 Oct 22 23:45 /dev/snd/pcmC0D0p
+> >  crw-rw----+ 1 root audio 116,  5 Oct 22 23:40 /dev/snd/pcmC0D3p  
+> > crw-rw----+ 1 root audio 116,  1 Oct 22 23:40 /dev/snd/seq  
+> > crw-rw----+ 1 root audio 116, 33 Oct 22 23:40 
+> /dev/snd/timer @@ -578,7 
+> > +578,7 @@
+> >    Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+> >    Playback channels: Mono
+> >    Limits: Playback 0 - 64
+> > -  Mono: Playback 38 [59%] [-26.00dB] [on]
+> > +  Mono: Playback 34 [53%] [-30.00dB] [on]
+> >  Simple mixer control 'Headphone',0
+> >    Capabilities: pvolume pswitch
+> >    Playback channels: Front Left - Front Right @@ -598,8 +598,8 @@
+> >    Playback channels: Front Left - Front Right
+> >    Limits: Playback 0 - 255
+> >    Mono:
+> > -  Front Left: Playback 255 [100%] [0.00dB]
+> > -  Front Right: Playback 255 [100%] [0.00dB]
+> > +  Front Left: Playback 253 [99%] [-0.40dB]  Front Right: 
+> Playback 253 
+> > + [99%] [-0.40dB]
+> >  Simple mixer control 'Mic',0
+> >    Capabilities: pvolume pswitch
+> >    Playback channels: Front Left - Front Right @@ -629,8 +629,8 @@
+> >    Capabilities: cvolume cswitch
+> >    Capture channels: Front Left - Front Right
+> >    Limits: Capture 0 - 46
+> > -  Front Left: Capture 17 [37%] [0.00dB] [on]
+> > -  Front Right: Capture 17 [37%] [0.00dB] [on]
+> > +  Front Left: Capture 16 [35%] [-1.00dB] [on]  Front 
+> Right: Capture 
+> > + 16 [35%] [-1.00dB] [on]
+> >  Simple mixer control 'Auto-Mute Mode',0
+> >    Capabilities: enum
+> >    Items: 'Disabled' 'Enabled'
+> > @@ -745,8 +745,8 @@
+> >  	control.8 {
+> >  		iface MIXER
+> >  		name 'Capture Volume'
+> > -		value.0 17
+> > -		value.1 17
+> > +		value.0 16
+> > +		value.1 16
+> >  		comment {
+> >  			access 'read write'
+> >  			type INTEGER
+> > @@ -754,8 +754,8 @@
+> >  			range '0 - 46'
+> >  			dbmin -1700
+> >  			dbmax 2900
+> > -			dbvalue.0 0
+> > -			dbvalue.1 0
+> > +			dbvalue.0 -100
+> > +			dbvalue.1 -100
+> >  		}
+> >  	}
+> >  	control.9 {
+> > @@ -804,7 +804,7 @@
+> >  	control.12 {
+> >  		iface MIXER
+> >  		name 'Master Playback Volume'
+> > -		value 38
+> > +		value 34
+> >  		comment {
+> >  			access 'read write'
+> >  			type INTEGER
+> > @@ -812,7 +812,7 @@
+> >  			range '0 - 64'
+> >  			dbmin -6400
+> >  			dbmax 0
+> > -			dbvalue.0 -2600
+> > +			dbvalue.0 -3000
+> >  		}
+> >  	}
+> >  	control.13 {
+> > @@ -999,8 +999,8 @@
+> >  	control.29 {
+> >  		iface MIXER
+> >  		name 'PCM Playback Volume'
+> > -		value.0 255
+> > -		value.1 255
+> > +		value.0 253
+> > +		value.1 253
+> >  		comment {
+> >  			access 'read write user'
+> >  			type INTEGER
+> > @@ -1009,8 +1009,8 @@
+> >  			tlv '0000000100000008ffffec1400000014'
+> >  			dbmin -5100
+> >  			dbmax 0
+> > -			dbvalue.0 0
+> > -			dbvalue.1 0
+> > +			dbvalue.0 -40
+> > +			dbvalue.1 -40
+> >  		}
+> >  	}
+> >  }
+> > @@ -1021,6 +1021,8 @@
+> >  !!------------------
+> >  
+> >  Module
+> > +alx
+> > +mdio
+> >  cmac
+> >  rfcomm
+> >  bnep
+> > @@ -1131,11 +1133,9 @@
+> >  psmouse
+> >  ahci
+> >  sdhci_pci
+> > -alx
+> >  rtsx_pci
+> >  libahci
+> >  sdhci
+> > -mdio
+> >  floppy
+> >  
+> >  
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
