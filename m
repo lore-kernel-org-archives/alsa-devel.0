@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix return for
-	pm_runtime_get_sync()" to the asoc tree
-Date: Sat, 24 Oct 2015 02:47:50 +0900
-Message-ID: <E1ZpgRS-0006WN-4Q@finisterre>
-References: <1445536362-26670-2-git-send-email-vinod.koul@intel.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: BAT: restructuring code
+Date: Fri, 23 Oct 2015 10:54:40 -0700
+Message-ID: <CAG5mAdyXhtQZhMho8axExER37hGQw0svBB5G5nfd1GYCujC0qg@mail.gmail.com>
+References: <CAG5mAdzfSiKTVZDttkr-=r48tYbwMo=0KdehRoH3GDGpj-OCqg@mail.gmail.com>
+ <1445597272.2491.28.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 730BD2650FA
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:47:59 +0200 (CEST)
-In-Reply-To: <1445536362-26670-2-git-send-email-vinod.koul@intel.com>
+Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
+ [209.85.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2AF7264FE7
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:54:59 +0200 (CEST)
+Received: by wicll6 with SMTP id ll6so41464912wic.0
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:54:59 -0700 (PDT)
+In-Reply-To: <1445597272.2491.28.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +24,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "Lu, Han" <han.lu@intel.com>, "Gautier,
+ Bernard" <bernard.gautier@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Oct 23, 2015 at 3:47 AM, Liam Girdwood
+<liam.r.girdwood@linux.intel.com> wrote:
+> Hi Caleb,
+>
+> I have no problem as long as we can still support Android (via tinyalsa)
+> and Chrome (via alsa-lib) and also tinycompress. You will need to
+> justify any changes you make in your commit message.
+>
+> Btw, probably best to also CC alsa-devel mailing list for these sort of
+> questions too as other folks doing BAT patches may also be interested.
+>
+> Fwiw, a structure like your proposing could also be used for SIMD based
+> optimisations too (if we ever need them).
+>
+> Liam
+>
+> On Thu, 2015-10-22 at 17:23 -0700, Caleb Crome wrote:
+>> Hi guys,
+>>    since i've got several different tests to write, I'm basically
+>> rewriting a meaningful section of the code to make the
+>> init/generate/playout/analyze modular.
+>>
+>> To that end, I'm creating a struct like this:
+>>
+>>
+>> struct bat_ops {
+>>     (void *)(*init)(int channels, int format, float sample_rate, float
+>> *frequencies)
+>>     // generate_playout_data is called every period to, well, generate
+>> the data to be played.
+>>     int     (*generate_playout_data)(void *priv, int frames, void *buffer);
+>>     // process_capture_data is called every period to do something
+>> with the data.
+>>     int     (*process_input_data)(void *priv, int frames, const void *buffer);
+>>     // analyze is called at the end of the whole capture time.  Can be
+>> used to analyze and report results.
+>>     int     (*analyze)(void *priv);
+>>     void    (*free)(**priv);
+>> };
+>>
+>> Then, we can create a separate ops struct for each type of test, i.e.
+>> a generated sine wave, reading from a file, ramp test, etc.
+>>
+>> The alsa code is fantastically complex, so I'm not touching any of
+>> that.  :-/   Just splitting out the generate, capture, and analysis to
+>> be modular.
+>>
+>> Let me know if you think this is going to be a problem.
+>>
+>> -Caleb
+>
+>
 
-   ASoC: Intel: Skylake: Fix return for pm_runtime_get_sync()
+In order to support the molecularity, I need the ability for each
+module (i.e. test type) to accept its own arguments.  In order to
+accomplish this, I think it would be better to use argp instead of
+getopt_long.  Is it okay if I switch it over?  Will that break
+android?
 
-has been applied to the asoc tree at
+Basically, I need the general options like sample rate, channels and
+format to be in the first set of arguments, but then be able to call a
+second parser to manage the module's options, like sine frequency (for
+the sine based test), or impulse response length (for an impulse
+response test).
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Perhaps there's a way to do it with getopt_long, but it doesn't look
+too simple because getopt_long requires all the options to be already
+defined before parsing starts, whereas argp can bring in new parsers
+(from the ops struct previously described).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Any thoughts?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9270b7b92615324ecda2b3fa0be98b4ab6c3e361 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 22 Oct 2015 23:22:34 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix return for pm_runtime_get_sync()
-
-pm_runtime_get_sync() will return a negative value in case of
-error and can return postive value for success.  The return check
-for pm_runtime_get_sync() must be less than 0, so fix it
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index a8f53da..a2f94ce 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -116,7 +116,7 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 	ret = pm_runtime_get_sync(dai->dev);
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 
- 	stream = snd_hdac_ext_stream_assign(ebus, substream,
--- 
-2.6.1
+-Caleb
