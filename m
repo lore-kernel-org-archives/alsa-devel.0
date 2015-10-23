@@ -1,41 +1,79 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: I/O errors,
- snd_pcm_hw_params_get_ functions don't deliver values and system
- freezes on drop/drain/close
-Date: Fri, 23 Oct 2015 15:57:39 +0200
-Message-ID: <562A3CD3.1000504@metafoo.de>
-References: <1445521660731.90972@rwth-aachen.de>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH 1/2] spi: Add THIS_MODULE to spi_driver in SPI core
+Date: Fri, 23 Oct 2015 08:59:10 -0500
+Message-ID: <1445608751-8432-2-git-send-email-afd@ti.com>
+References: <1445608751-8432-1-git-send-email-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-193.synserver.de
- [212.40.185.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42193261734
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 15:57:43 +0200 (CEST)
-In-Reply-To: <1445521660731.90972@rwth-aachen.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Bommes, Michael" <Michael.Bommes@rwth-aachen.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1445608751-8432-1-git-send-email-afd@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F. Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2015 03:47 PM, Bommes, Michael wrote:
-[...]
-> 
-> System freeze looks like driver issue, or might this only be a wrong usage of the driver?
+Add spi_register_driver helper macro that adds THIS_MODULE to
+spi_driver for the registering driver. We rename and modify
+the existing spi_register_driver to enable this.
 
-Trying to configure a ALSA sound card with wrong parameters should not
-result in a system freeze or any other kind of system failure. The driver
-should reject those values and report an error to the application and that's it.
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+---
+ drivers/spi/spi.c       | 7 ++++---
+ include/linux/spi/spi.h | 6 +++++-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-So it looks like there is an issue with the driver that you are using. I'd
-recommend to contact the driver vendor and ask them for assistance.
-
-- Lars
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 3abb390..51e33db 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -305,12 +305,13 @@ static void spi_drv_shutdown(struct device *dev)
+ }
+ 
+ /**
+- * spi_register_driver - register a SPI driver
++ * __spi_register_driver - register a SPI driver
+  * @sdrv: the driver to register
+  * Context: can sleep
+  */
+-int spi_register_driver(struct spi_driver *sdrv)
++int __spi_register_driver(struct module *owner, struct spi_driver *sdrv)
+ {
++	sdrv->driver.owner = owner;
+ 	sdrv->driver.bus = &spi_bus_type;
+ 	if (sdrv->probe)
+ 		sdrv->driver.probe = spi_drv_probe;
+@@ -320,7 +321,7 @@ int spi_register_driver(struct spi_driver *sdrv)
+ 		sdrv->driver.shutdown = spi_drv_shutdown;
+ 	return driver_register(&sdrv->driver);
+ }
+-EXPORT_SYMBOL_GPL(spi_register_driver);
++EXPORT_SYMBOL_GPL(__spi_register_driver);
+ 
+ /*-------------------------------------------------------------------------*/
+ 
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 269e8af..e2da17b 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -250,7 +250,7 @@ static inline struct spi_driver *to_spi_driver(struct device_driver *drv)
+ 	return drv ? container_of(drv, struct spi_driver, driver) : NULL;
+ }
+ 
+-extern int spi_register_driver(struct spi_driver *sdrv);
++extern int __spi_register_driver(struct module *owner, struct spi_driver *sdrv);
+ 
+ /**
+  * spi_unregister_driver - reverse effect of spi_register_driver
+@@ -263,6 +263,10 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+ 		driver_unregister(&sdrv->driver);
+ }
+ 
++/* use a define to avoid include chaining to get THIS_MODULE */
++#define spi_register_driver(driver) \
++	__spi_register_driver(THIS_MODULE, driver)
++
+ /**
+  * module_spi_driver() - Helper macro for registering a SPI driver
+  * @__spi_driver: spi_driver struct
+-- 
+1.9.1
