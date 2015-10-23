@@ -1,11 +1,16 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [RESEND PATCH 1/8] ASoC: dwc: add check for master/slave format
-Date: Fri, 23 Oct 2015 17:15:41 -0400
-Message-ID: <1445634941-25326-1-git-send-email-alexander.deucher@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 8/8] ASoC: AMD: add AMD ASoC ACP-I2S driver
+Date: Sat, 24 Oct 2015 06:17:05 +0900
+Message-ID: <20151023211705.GA5103@sirena.org.uk>
+References: <1444320760-21936-8-git-send-email-alexander.deucher@amd.com>
+ <20151022161415.GU8232@sirena.org.uk>
+ <CANv6ZMY_8MzZK0StdgAnzN7EqZVJ3tMz88pKACb3sGKXmRTtXQ@mail.gmail.com>
+ <20151023193152.GL29919@sirena.org.uk>
+ <CADnq5_M_XyTgyfCpSfA77ce-rFCkRJg6VkfPWriEHNkRbU8m-Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0941896656=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CADnq5_M_XyTgyfCpSfA77ce-rFCkRJg6VkfPWriEHNkRbU8m-Q@mail.gmail.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -15,42 +20,57 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
-Cc: Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, lgirdwood@gmail.com, perex@perex.cz
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, maruthi srinivas <maruthi.srinivas.b@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFydXRoaSBTcmluaXZhcyBCYXl5YXZhcmFwdSA8TWFydXRoaS5CYXl5YXZhcmFwdUBh
-bWQuY29tPgoKRFcgaTJzIGNvbnRyb2xsZXIncyBtYXN0ZXIvc2xhdmUgY29uZmlnIGNhbiBiZSBy
-ZWFkIGZyb20gYQpyZWFkLW9ubHkgcmVnaXN0ZXIuIE1hY2hpbmUgZHJpdmVyIGNhbiB0cnkgdG8g
-c2V0IGEgbWFzdGVyL3NsYXZlCmZvcm1hdCBvbiBjcHUtZGFpIHVzaW5nICdzZXRfZm10JyBvZiBk
-YWkgb3BzLiBBIGNoZWNrIGlzIGFkZGVkIHRvCnZlcmlmeSBjb2RlYyBpcyBtYXN0ZXIgd2hlbiBk
-d2MgaXMgc2xhdmUgYW5kIHZpY2UtdmVyc2EuCgpTaWduZWQtb2ZmLWJ5OiBNYXJ1dGhpIEJheXlh
-dmFyYXB1IDxtYXJ1dGhpLmJheXlhdmFyYXB1QGFtZC5jb20+ClNpZ25lZC1vZmYtYnk6IEFsZXgg
-RGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KLS0tCiBzb3VuZC9zb2MvZHdjL2Rl
-c2lnbndhcmVfaTJzLmMgfCAzMSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZp
-bGUgY2hhbmdlZCwgMzEgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9kd2Mv
-ZGVzaWdud2FyZV9pMnMuYyBiL3NvdW5kL3NvYy9kd2MvZGVzaWdud2FyZV9pMnMuYwppbmRleCAz
-YTUyZjgyLi5mNDI3MzI1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJz
-LmMKKysrIGIvc291bmQvc29jL2R3Yy9kZXNpZ253YXJlX2kycy5jCkBAIC0zNDEsMTIgKzM0MSw0
-MyBAQCBzdGF0aWMgaW50IGR3X2kyc190cmlnZ2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAogCXJldHVybiByZXQ7CiB9CiAKK3N0YXRpYyBpbnQgZHdfaTJzX3NldF9mbXQo
-c3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpLCB1bnNpZ25lZCBpbnQgZm10KQoreworCXN0cnVj
-dCBkd19pMnNfZGV2ICpkZXYgPSBzbmRfc29jX2RhaV9nZXRfZHJ2ZGF0YShjcHVfZGFpKTsKKwlp
-bnQgcmV0ID0gMDsKKworCXN3aXRjaCAoZm10ICYgU05EX1NPQ19EQUlGTVRfTUFTVEVSX01BU0sp
-IHsKKwljYXNlIFNORF9TT0NfREFJRk1UX0NCTV9DRk06CisJCWlmIChkZXYtPmNhcGFiaWxpdHkg
-JiBEV19JMlNfU0xBVkUpCisJCQlyZXQgPSAwOworCQllbHNlCisJCQlyZXQgPSAtRUlOVkFMOwor
-CQlicmVhazsKKwljYXNlIFNORF9TT0NfREFJRk1UX0NCU19DRlM6CisJCWlmIChkZXYtPmNhcGFi
-aWxpdHkgJiBEV19JMlNfTUFTVEVSKQorCQkJcmV0ID0gMDsKKwkJZWxzZQorCQkJcmV0ID0gLUVJ
-TlZBTDsKKwkJYnJlYWs7CisJY2FzZSBTTkRfU09DX0RBSUZNVF9DQk1fQ0ZTOgorCWNhc2UgU05E
-X1NPQ19EQUlGTVRfQ0JTX0NGTToKKwkJcmV0ID0gLUVJTlZBTDsKKwkJYnJlYWs7CisJZGVmYXVs
-dDoKKwkJZGV2X2RiZyhkZXYtPmRldiwgImR3YyA6IEludmFsaWQgbWFzdGVyL3NsYXZlIGZvcm1h
-dFxuIik7CisJCXJldCA9IC1FSU5WQUw7CisJCWJyZWFrOworCX0KKwlyZXR1cm4gcmV0OworfQor
-CiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBkd19pMnNfZGFpX29wcyA9IHsKIAkuc3Rh
-cnR1cAk9IGR3X2kyc19zdGFydHVwLAogCS5zaHV0ZG93bgk9IGR3X2kyc19zaHV0ZG93biwKIAku
-aHdfcGFyYW1zCT0gZHdfaTJzX2h3X3BhcmFtcywKIAkucHJlcGFyZQk9IGR3X2kyc19wcmVwYXJl
-LAogCS50cmlnZ2VyCT0gZHdfaTJzX3RyaWdnZXIsCisJLnNldF9mbXQJPSBkd19pMnNfc2V0X2Zt
-dCwKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnRfZHJpdmVyIGR3
-X2kyc19jb21wb25lbnQgPSB7Ci0tIAoxLjguMy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============0941896656==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Disposition: inline
+
+
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 23, 2015 at 04:39:07PM -0400, Alex Deucher wrote:
+
+> something.  In this particular case, most of the common infrastructure
+> that should be utilized for this particular patch set comes from
+> non-traditional x86 platforms so most of us that come from a more
+> traditional x86 background as not as familiar with them.  Searching
+
+A lot of this infrastructure (like genirq) comes as much from the x86
+side as anywhere else :(
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWKqPQAAoJECTWi3JdVIfQMK4H/i1HRRqLRAHr8A9nA92IFHIX
+e/D1CG2TK6OwD5sQwKxDapbqjGWy2N7Vf0SMjW81/+I/GqBR8L+7TsXBuUFPBhIO
+oAHXL33Hy1VwTKyl1Re4PLg3wiEH3DyJmV0iogo7rK3nu8izmPVv2S97/IF0+/1u
+4zLhp4xra+jODUkswRwmKA3HBhHJyKtFRrhIFTtcQfRundRNT+VQEX08ftUXOPVK
+WQdohMeftty+SRly7il3YTz4epCfBmn7otU5SX95NthSODDu77qXGUSaEXroNaIE
++ZPIJHrKn5FQDAhyvGoaH5qeu1//3idvPIdFmV51kRAzWNqgcfLvlP++rW+cPrQ=
+=KUAZ
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
+
+--===============0941896656==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
+cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============0941896656==--
