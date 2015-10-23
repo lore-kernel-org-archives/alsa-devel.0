@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/9] ASoC: Intel: Skylake: Update for ssp
- node index in copier cfg
-Date: Sat, 24 Oct 2015 01:30:52 +0900
-Message-ID: <20151023163052.GI29919@sirena.org.uk>
-References: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
- <1445536362-26670-6-git-send-email-vinod.koul@intel.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: [PATCH 2/2] BAT: Change maximum number of channels
+	from 2 to 64
+Date: Fri, 23 Oct 2015 17:11:42 +0000
+Message-ID: <1445620302-18408-2-git-send-email-caleb@crome.org>
+References: <1445620302-18408-1-git-send-email-caleb@crome.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8009412764871033759=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2440261AAF
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 18:31:03 +0200 (CEST)
-In-Reply-To: <1445536362-26670-6-git-send-email-vinod.koul@intel.com>
+Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
+ [209.85.220.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7D182625D7
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:11:49 +0200 (CEST)
+Received: by pasz6 with SMTP id z6so123197107pas.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:11:48 -0700 (PDT)
+In-Reply-To: <1445620302-18408-1-git-send-email-caleb@crome.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +24,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: alsa-devel@alsa-project.org
+Cc: Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
+Changed maximum number of channels to 64.
 
---===============8009412764871033759==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="o7gdRJTuwFmWapyH"
-Content-Disposition: inline
+Added a round-robbin frequency assignment from the command line so
+that every frequency need not be specified on the command line.
+For example,
+      -c 6 -F 100:200:250
+will result frequencies for the 6 channels to be set identically
+as if the command was
+       -c 6 -F 100:200:250:100:200:250
+---
+ bat/bat.c    | 37 ++++++++++++++++++++++++++-----------
+ bat/common.h |  2 +-
+ 2 files changed, 27 insertions(+), 12 deletions(-)
 
-
---o7gdRJTuwFmWapyH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 22, 2015 at 11:22:38PM +0530, Vinod Koul wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> DSP firmware has interface change for SSP node index structure.
-> New FW interface removes the dual_mono field and adds 4 bits for
-> TDM slot group index. This patch updates the ssp dma to align with
-> the DSP firmware structure.
-
-This probably doesn't matter right now since things haven't been
-released yet but it's going to become an ABI issue...
-
---o7gdRJTuwFmWapyH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWKmC7AAoJECTWi3JdVIfQSwcH/1UlS6CM4g+X7a8RHeBHSYRd
-zQmOA6vjUMs2Cdb4nBL0yxC79E1Sq/pMPF6CuzYhBKmBXAqqUvEk9Cs1E5eMi1mn
-CMFvwdqZs33TbZUdLsUcAudRCwbSUTNs7sQhkBCF1bB/S60DCzUaTb5EDSu8I9fV
-TznveC3FbfC187tA2ePROjh1RDom3D1T9ASTGnNptjNZHuTi3zhgM4x7HcUwLzsw
-jR38MX62NG1pMSvWVUtruMyFbaAW9+XQZJmocQKBcs3CDSMe9g/QSh5ral9L4o1E
-HeweuspUD+v6V0KCqnFLlSRRt5ik6RKjY0L5qsKpl/or4btQX1N8cfbpgzlH+GY=
-=P/m0
------END PGP SIGNATURE-----
-
---o7gdRJTuwFmWapyH--
-
---===============8009412764871033759==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8009412764871033759==--
+diff --git a/bat/bat.c b/bat/bat.c
+index 086b9fa..9c046e6 100644
+--- a/bat/bat.c
++++ b/bat/bat.c
+@@ -73,16 +73,30 @@ err_exit:
+ 
+ static void get_sine_frequencies(struct bat *bat, char *freq)
+ {
+-	char *tmp1;
+-
+-	tmp1 = strchr(freq, ':');
+-	if (tmp1 == NULL) {
+-		bat->target_freq[1] = bat->target_freq[0] = atof(optarg);
+-	} else {
+-		*tmp1 = '\0';
+-		bat->target_freq[0] = atof(optarg);
+-		bat->target_freq[1] = atof(tmp1 + 1);
++	char *tmp0, *tmp1;
++	int ncolons;
++	int nfreqs;
++	int i;
++	ncolons = 0;
++	tmp1 = freq;
++	while ((tmp1 = strchr(tmp1, ':'))) {
++		tmp1++;
++		ncolons ++;
++	}
++	nfreqs = ncolons+1;
++
++	tmp0 = freq;
++	tmp1 = strchr(tmp0, ':');
++	for (i = 0; i < MAX_CHANNELS && i < nfreqs; i++) {
++		if (i+1 < nfreqs)
++			*tmp1 = '\0';
++		bat->target_freq[i] = atof(tmp0);
++		tmp0 = tmp1+1;
++		if (i+1 < nfreqs)
++			tmp1 = strchr(tmp0, ':');
+ 	}
++	for (i = nfreqs; i < MAX_CHANNELS; i++)
++		bat->target_freq[i] = bat->target_freq[i % nfreqs];
+ }
+ 
+ static void get_format(struct bat *bat, char *optarg)
+@@ -302,6 +316,7 @@ _("Usage: bat [-options]...\n"
+ 
+ static void set_defaults(struct bat *bat)
+ {
++	int i;
+ 	memset(bat, 0, sizeof(struct bat));
+ 
+ 	/* Set default values */
+@@ -313,8 +328,8 @@ static void set_defaults(struct bat *bat)
+ 	bat->convert_float_to_sample = convert_float_to_int16;
+ 	bat->convert_sample_to_double = convert_int16_to_double;
+ 	bat->frames = bat->rate * 2;
+-	bat->target_freq[0] = 997.0;
+-	bat->target_freq[1] = 997.0;
++	for (i = 0; i < MAX_CHANNELS; i++)
++		bat->target_freq[i] = 997.0;
+ 	bat->sigma_k = 3.0;
+ 	bat->playback.device = NULL;
+ 	bat->capture.device = NULL;
+diff --git a/bat/common.h b/bat/common.h
+index c04452d..6d5e46e 100644
+--- a/bat/common.h
++++ b/bat/common.h
+@@ -30,7 +30,7 @@
+ #define WAV_DATA			COMPOSE('d', 'a', 't', 'a')
+ #define WAV_FORMAT_PCM			1	/* PCM WAVE file encoding */
+ 
+-#define MAX_CHANNELS			2
++#define MAX_CHANNELS			64
+ #define MIN_CHANNELS			1
+ #define MAX_PEAKS			10
+ #define MAX_FRAMES			(10 * 1024 * 1024)
+-- 
+2.6.1
