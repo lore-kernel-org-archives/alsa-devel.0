@@ -1,25 +1,33 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: fix no frame clk in master
- mode
-Date: Fri, 23 Oct 2015 00:48:19 -0700
-Message-ID: <20151023074816.GA9024@Asurada-CZ80>
-References: <2ec370890aca1bf5e8b796d7ebbfc95a0161980e.1439345935.git.zidan.wang@freescale.com>
- <20150812035317.GA3194@Asurada-CZ80>
- <20150812075914.GC21786@shlinux2> <20150812091916.GA1512@Asurada>
- <20150818020152.GA17381@shlinux2> <20150821074737.GA1796@Asurada>
- <20150821084018.GA11926@shlinux2>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Roland/Edirol M-16DX
+Date: Fri, 23 Oct 2015 10:27:51 +0200
+Message-ID: <alpine.DEB.2.02.1510231017080.14239@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 128C22614A4
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 09:48:26 +0200 (CEST)
-Received: by padhk11 with SMTP id hk11so111457867pad.1
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 00:48:24 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150821084018.GA11926@shlinux2>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98787261527
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 3A0CF1821B
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:54 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id P2P5bsQVBr0p for <alsa-devel@alsa-project.org>;
+ Fri, 23 Oct 2015 10:27:53 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bastet.se.axis.com (Postfix) with ESMTP id 218071806C
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id BACFE127
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id AD7ACA5
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id AB3D034009
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:27:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,65 +37,208 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-	Sorry for late reply.
 
-On Fri, Aug 21, 2015 at 04:40:20PM +0800, Zidan Wang wrote:
-> > > > > > > After several open/close sai test with ctrl+c, there will be I/O error.
-> > > > > > > The SAI can't work anymore, can't recover. There will be no frame clock.
-> > > > > > > With adding the software reset in trigger stop, the issue can be fixed.
-> > 
-> > > > > > It doesn't look like a decent fix to me. Is it the only fix that
-> > > > > > IC team suggests? And why put this reset in the trigger function.
-> > > > > > Your MEGA fast patch has already included a software reset in the
-> > > > > > PM runtime functions. When dealing with CTRL+C test cases, that
-> > > > > > software reset should have worked as well.
-> > 
-> > > > > The MEGA fast patch add the suspend/resume function, but CTRL+C will not
-> > > > > trigger suspend/resume function.
-> > > > > When CTRL+C, it will trigger stop and software reset SAI.
-> > > > > IC team suggest us to rest it, but I don't know if it's the only fix.
-> > 
-> > > > You can try to add SET_RUNTIME_PM_OPS() and to see if the suspend
-> > > > function is called right after pressing ctrl+c.
-> > 
-> > > The runtime suspend function will be call after the power down time. So if i
-> > > playback again before the power down time, runtime suspend will not be called.
-> > 
-> > I see.. Can you provide me a test case to reproduce this issue?
-> 
-> 1. aplay -Dhw:0 /unit_tests/audio8k16S.wav
-> 2. ctrl+c
-> 
-> Set SAI to master mode, then try it several times.
+The Roland/Edirol M-16DX is a digital mixer which can also function as a =
 
-I've reproduced the issue and tried a few fixes but it turns out
-putting a reset procedure in the trigger is seemly the only fix.
-(Even using pm_runtime without power down delay does not cover
- all the test cases.)
+18 channel capture / 2 channel playback USB 2.0 interface. The device has =
 
-So I suggest you first to double confirm with the IC team if the
-problem is caused by defect of the internal bit clock generator
-and reseting is the only option. After that, I'll accept the fix.
+been added to quirks-table.h and has been reported as working with one =
 
-However, you may also need to refine your commit log and comments
-in the driver for the following points:
+problem: when playing back there's severe audio distortion at regular =
 
-1) This is a hardware bug/errata and reset is the only option.
-2) According to the reference manual, the software reset doesn't
-   reset any control register but only internal hardware logics
-   such as bit clock generator, status flags, and FIFO pointers.
-   (Our purpose is just to reset the clock generator while the
-    software reset is the only way to do that.)
-3) Since slave mode doesn't use the clock generator, only apply
-   the reset procedure to the master mode.
+intervals (several seconds), which has been traced to the fact that the =
 
-Additionally, we may also need to take care of asynchronous mode
-later as TX clock generator will not be reset when RX is still
-running.
+device utilizes the IN endpoint as an implicit feedback channel; see the =
 
-Nicolin
+output from lsusb -vvv from a 7 year old post by Lasse K=E4rkk=E4inen below =
+
+for reference:
+
+> Bus 007 Device 025: ID 0582:00c4 Roland Corp.
+> Device Descriptor:
+>    bLength                18
+>    bDescriptorType         1
+>    bcdUSB               2.00
+>    bDeviceClass          255 Vendor Specific Class
+>    bDeviceSubClass         0
+>    bDeviceProtocol       255
+>    bMaxPacketSize0        64
+>    idVendor           0x0582 Roland Corp.
+>    idProduct          0x00c4
+>    bcdDevice            0.00
+>    iManufacturer           1 EDIROL
+>    iProduct                2 M-16DX
+>    iSerial                 0
+>    bNumConfigurations      1
+>    Configuration Descriptor:
+>      bLength                 9
+>      bDescriptorType         2
+>      wTotalLength          167
+>      bNumInterfaces          3
+>      bConfigurationValue     1
+>      iConfiguration          0
+>      bmAttributes         0xc0
+>        Self Powered
+>      MaxPower                0mA
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        0
+>        bAlternateSetting       0
+>        bNumEndpoints           0
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      1
+>        bInterfaceProtocol      2
+>        iInterface              0
+>        ** UNRECOGNIZED:  06 24 f1 01 00 00
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        0
+>        bAlternateSetting       1
+>        bNumEndpoints           1
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      2
+>        bInterfaceProtocol      2
+>        iInterface              0
+>        ** UNRECOGNIZED:  07 24 01 01 00 01 00
+>        ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 80 bb 00
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x02  EP 2 OUT
+>          bmAttributes            5
+>            Transfer Type            Isochronous
+>            Synch Type               Asynchronous
+>            Usage Type               Data
+>          wMaxPacketSize     0x0038  1x 56 bytes
+>          bInterval               1
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        1
+>        bAlternateSetting       0
+>        bNumEndpoints           0
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      1
+>        bInterfaceProtocol      2
+>        iInterface              0
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        1
+>        bAlternateSetting       1
+>        bNumEndpoints           1
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      2
+>        bInterfaceProtocol      1
+>        iInterface              0
+>        ** UNRECOGNIZED:  07 24 01 07 00 01 00
+>        ** UNRECOGNIZED:  0b 24 02 01 12 04 18 01 80 bb 00
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x81  EP 1 IN
+>          bmAttributes           37
+>            Transfer Type            Isochronous
+>            Synch Type               Asynchronous
+>            Usage Type               Implicit feedback Data
+>          wMaxPacketSize     0x01f8  1x 504 bytes
+>          bInterval               1
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        2
+>        bAlternateSetting       0
+>        bNumEndpoints           2
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      1
+>        bInterfaceProtocol      3
+>        iInterface              0
+>        ** UNRECOGNIZED:  06 24 f1 02 01 01
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x04  EP 4 OUT
+>          bmAttributes            2
+>            Transfer Type            Bulk
+>            Synch Type               None
+>            Usage Type               Data
+>          wMaxPacketSize     0x0200  1x 512 bytes
+>          bInterval               1
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x83  EP 3 IN
+>          bmAttributes            2
+>            Transfer Type            Bulk
+>            Synch Type               None
+>            Usage Type               Data
+>          wMaxPacketSize     0x0200  1x 512 bytes
+>          bInterval               1
+>      Interface Descriptor:
+>        bLength                 9
+>        bDescriptorType         4
+>        bInterfaceNumber        2
+>        bAlternateSetting       1
+>        bNumEndpoints           2
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass      1
+>        bInterfaceProtocol      3
+>        iInterface              0
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x04  EP 4 OUT
+>          bmAttributes            2
+>            Transfer Type            Bulk
+>            Synch Type               None
+>            Usage Type               Data
+>          wMaxPacketSize     0x0200  1x 512 bytes
+>          bInterval               1
+>        Endpoint Descriptor:
+>          bLength                 7
+>          bDescriptorType         5
+>          bEndpointAddress     0x83  EP 3 IN
+>          bmAttributes            3
+>            Transfer Type            Interrupt
+>            Synch Type               None
+>            Usage Type               Data
+>          wMaxPacketSize     0x0200  1x 512 bytes
+>          bInterval               1
+
+On Fri, 14 Nov 2008, Clemens confirmed this in a post:
+
+> James Trevelyan wrote:
+> > ...
+> > However, what I did notice is that in all circumstances the windows
+> > driver was capturing at the same time as playback, even when I was not
+> > asking it to record.  This suggests to me that the comment in the driver
+> > source about synchronising playback to capture has some relevance ...
+> =
+
+> Indeed.  The driver would have to send the data at the exact speed of
+> the device's internal clock, and the only way to determine that clock's
+> speed is to capture data.
+> =
+
+> So far I haven't found the time to rewrite the driver to support this
+> synchronization mechanism.
+
+I seem to recall reading posts not to long ago that refer to using an =
+
+implicit feedback path; my question is, was this in fact implemented, =
+
+meaning that a device like the M-16DX should function as expected also for =
+
+playback?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
