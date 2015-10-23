@@ -1,104 +1,60 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: BAT: restructuring code
-Date: Fri, 23 Oct 2015 10:54:40 -0700
-Message-ID: <CAG5mAdyXhtQZhMho8axExER37hGQw0svBB5G5nfd1GYCujC0qg@mail.gmail.com>
-References: <CAG5mAdzfSiKTVZDttkr-=r48tYbwMo=0KdehRoH3GDGpj-OCqg@mail.gmail.com>
- <1445597272.2491.28.camel@loki>
+From: Sebastian Reichel <sre-GFxCN5SEZAc@public.gmane.org>
+Subject: Re: [PATCH 0/2] Remove .owner from spi_drivers
+Date: Fri, 23 Oct 2015 20:29:12 +0200
+Message-ID: <20151023182911.GA14674@earth>
+References: <1445608751-8432-1-git-send-email-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
- [209.85.212.175])
- by alsa0.perex.cz (Postfix) with ESMTP id D2AF7264FE7
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:54:59 +0200 (CEST)
-Received: by wicll6 with SMTP id ll6so41464912wic.0
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:54:59 -0700 (PDT)
-In-Reply-To: <1445597272.2491.28.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "Lu, Han" <han.lu@intel.com>, "Gautier,
- Bernard" <bernard.gautier@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1445608751-8432-1-git-send-email-afd-l0cyMroinI0@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 23, 2015 at 3:47 AM, Liam Girdwood
-<liam.r.girdwood@linux.intel.com> wrote:
-> Hi Caleb,
->
-> I have no problem as long as we can still support Android (via tinyalsa)
-> and Chrome (via alsa-lib) and also tinycompress. You will need to
-> justify any changes you make in your commit message.
->
-> Btw, probably best to also CC alsa-devel mailing list for these sort of
-> questions too as other folks doing BAT patches may also be interested.
->
-> Fwiw, a structure like your proposing could also be used for SIMD based
-> optimisations too (if we ever need them).
->
-> Liam
->
-> On Thu, 2015-10-22 at 17:23 -0700, Caleb Crome wrote:
->> Hi guys,
->>    since i've got several different tests to write, I'm basically
->> rewriting a meaningful section of the code to make the
->> init/generate/playout/analyze modular.
->>
->> To that end, I'm creating a struct like this:
->>
->>
->> struct bat_ops {
->>     (void *)(*init)(int channels, int format, float sample_rate, float
->> *frequencies)
->>     // generate_playout_data is called every period to, well, generate
->> the data to be played.
->>     int     (*generate_playout_data)(void *priv, int frames, void *buffer);
->>     // process_capture_data is called every period to do something
->> with the data.
->>     int     (*process_input_data)(void *priv, int frames, const void *buffer);
->>     // analyze is called at the end of the whole capture time.  Can be
->> used to analyze and report results.
->>     int     (*analyze)(void *priv);
->>     void    (*free)(**priv);
->> };
->>
->> Then, we can create a separate ops struct for each type of test, i.e.
->> a generated sine wave, reading from a file, ramp test, etc.
->>
->> The alsa code is fantastically complex, so I'm not touching any of
->> that.  :-/   Just splitting out the generate, capture, and analysis to
->> be modular.
->>
->> Let me know if you think this is going to be a problem.
->>
->> -Caleb
->
->
 
-In order to support the molecularity, I need the ability for each
-module (i.e. test type) to accept its own arguments.  In order to
-accomplish this, I think it would be better to use argp instead of
-getopt_long.  Is it okay if I switch it over?  Will that break
-android?
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Basically, I need the general options like sample rate, channels and
-format to be in the first set of arguments, but then be able to call a
-second parser to manage the module's options, like sine frequency (for
-the sine based test), or impulse response length (for an impulse
-response test).
+Hi,
 
-Perhaps there's a way to do it with getopt_long, but it doesn't look
-too simple because getopt_long requires all the options to be already
-defined before parsing starts, whereas argp can bring in new parsers
-(from the ops struct previously described).
+On Fri, Oct 23, 2015 at 08:59:09AM -0500, Andrew F. Davis wrote:
+> This series adds a helper macro to the SPI core that assigns the owner
+> in spi_drivers so individual drivers do not have to do this, this is
+> similar to other subsystems like platform_driver and i2c_driver that
+> have made this change.
 
-Any thoughts?
+Probably it makes sense to also update the related coccinelle
+script: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
--Caleb
+-- Sebastian
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBCgAGBQJWKnx0AAoJENju1/PIO/qakQkP/iBMf0gW76bpGYZ88bgGWHD+
+hWF4q3PN8jQswRA4owg8gMqUuLkH/Yv42ISL7HA7wPyQFjpdUHSx3i3B+Obs1Qm9
+K2+m12SZjYPh2R5LVtYIggQXID4mrcWlVnNfNEVYokrcCl+9BaZ+3JHZDWpum/9x
+kLk5rAVUeD8iMp0TKSZgXhIzIlv+qlSJt8sNsrML7RlAk7EmlJrqcwmosknn99SI
+zP1zIs92YjNh64/4lXO6BHhZFIFr4pCfQ8tLQGo4ArkaFJ2vRiEm1TIjWGBjhsg/
+ej5N8JqSRLJtDjYLpRu9yjvHDgQuNYu27SMORUNF9Ytlk6OB0pDmkxlojs5YA8Uk
+TBYmwXRO/e4ikMgCSoBK64sKktTiXxiYdwqWsPMZlDHHt/5QuOqZCczwLj5FN1Wf
+Vi38JZ5KJyZmN7gaUS0LXDKR2A/FXkHsAO4BMhg6YNrQbDV6dLqiqAky8jMoDMYh
+kWbRHEi+L4etey4ngyzP+JNMIFziNsAE0gPisHLcZXbiChfnsZBwA3lNmD8OJBWx
+gZDkBxsezR8Tde1evv5lJ8xtuZVd86oWtLs4Ic4Wr6ElHZcI9P3PFrky5KP4I0sv
+8AF6QJwOKgsMPp5n56XZuwMDiHtSjVcsOqlhBjGnoM1D/EvSfdBgnnKY65LW8tS5
+MBSkaUR34hhJOlGnh4kN
+=t6XM
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
