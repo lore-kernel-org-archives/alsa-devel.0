@@ -1,20 +1,31 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: No sound after suspend-to-ram
-Date: Fri, 23 Oct 2015 08:28:13 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A236B9@RTITMBSV09.realtek.com.tw>
-References: <CALcwt_Acar7dhMHtEo9PtSi+RBcpXXDcQTNHZr-CEfNYhhWmRA@mail.gmail.com>
- <s5hh9ljj5nd.wl-tiwai@suse.de>
- <CALcwt_DPaX1-oBw6gVUT85bFLUKeQGcv=M9aCBHsHD=+eu_bVA@mail.gmail.com>
- <s5hsi52ujmp.wl-tiwai@suse.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Fri, 23 Oct 2015 08:35:26 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B862EAD@shsmsx102.ccr.corp.intel.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <561CA911.7070405@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+ <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+ <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+ <56288783.1080503@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
+ <56288FF7.9030400@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
+ <5628A3EB.8050306@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
+ <s5h7fmew2oj.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 83B0F2617A5
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:28:18 +0200 (CEST)
-In-Reply-To: <s5hsi52ujmp.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A42C826153D
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:35:31 +0200 (CEST)
+In-Reply-To: <s5h7fmew2oj.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,304 +35,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, George Gugulea <gugulea@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-Was speaker no sound only? Or Headphone also no sound. 
-
 > -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Friday, October 23, 2015 3:31 PM
-> To: George Gugulea
-> Cc: Kailang; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] No sound after suspend-to-ram
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, October 23, 2015 1:54 PM
 > 
-> On Thu, 22 Oct 2015 23:23:05 +0200,
-> George Gugulea wrote:
-> > 
-> > I did now with 4.3.0-rc6 and there is the same problem.
-> > I reattached the two outputs, before and after (as a patch) 
-> suspend-to-ram:
-> > diff -u alsa-info.txt.4.3-rc6.before alsa-info.txt.4.3-rc6.after > 
-> > alsa-info.txt.4.3-rc6.patch
-> 
-> OK, so we need to hunt more.
-> 
-> Kailang, could you check whether anything missing for this codec?
-> The symptom appears like the COEF thingy you fixed by extra 
-> init verbs.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > 
-> > 
-> > On Thu, Oct 22, 2015 at 6:15 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Thu, 22 Oct 2015 10:38:37 +0200,
-> > > George Gugulea wrote:
-> > >>
-> > >> After a fresh reboot, the sound works ok but if I put 
-> the computer 
-> > >> to sleep (pm-suspend), after it wakes up there is no 
-> sound anymore.
-> > >>
-> > >> I did try 'alsa force-reload' after suspend but still no sound.
-> > >> After 'pm-hibernate' sound is back again.
-> > >>
-> > >> I found an old thread here:
-> > >> https://bugzilla.kernel.org/show_bug.cgi?id=49421 where Michael 
-> > >> seems to have the same problem which is still unsolved; 
-> maybe I can 
-> > >> help with more info.
-> > >>
-> > >> I attached the 'alsa-info.sh' output before and after suspend:
-> > >> 'alsa-info.txt.before' and 'alsa-info.txt.after' (as a patch to 
-> > >> stay below 80k mail size rule: diff -u alsa-info.txt.before 
-> > >> alsa-info.txt.after > alsa-info.txt.patch)
-> > >>
-> > >> The only difference between before and after is this one:
-> > >> @@ -241,7 +241,7 @@
-> > >>  Node 0x11 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-> > >>    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-> > >>    Amp-In vals:  [0x12 0x12]
-> > >> -  Converter: stream=4, channel=0
-> > >> +  Converter: stream=0, channel=0
-> > >>    SDI-Select: 0
-> > >>    PCM:
-> > >>      rates [0x160]: 44100 48000 96000
-> > >>
-> > >>
-> > >> The PC is here: 
-> > >> http://www.dell.com/us/p/xps-27-2720-aio/pd?ref=PD_OC,
-> > >> but the 2y older version with no touch
-> > >>
-> > >> If I boot into windows (8.1) everything works great, including 
-> > >> sound (even after suspend)
+> On Fri, 23 Oct 2015 07:30:12 +0200,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: David Henningsson [mailto:david.henningsson@canonical.com]
+> > > Sent: Thursday, October 22, 2015 4:53 PM
+> >
+> > [snip]
+> >
+> > > I'll try to explain my suggestion (which I believe Takashi's buying
+> > > too) one more time then:
 > > >
-> > > Did you test with 4.3-rc kernel?  3.19 is very old.
+> > > First, when a monitor is plugged in, we need to dynamically assign
+> > > this monitor to five PCM devices. I believe this scheme will be best:
 > > >
-> > > It's likely codec-specific stuff, as there is no 
-> difference seen in 
-> > > alsa-info.sh outputs (the converter is the value assigned 
-> > > dynamically at playback, so it doesn't matter at all).
+> > > For a monitor at pin nid 0x05, dev index 0, it will prefer PCM 3.
+> > > For a monitor at pin nid 0x06, dev index 0, it will prefer PCM 7.
+> > > For a monitor at pin nid 0x07, dev index 0, it will prefer PCM 8.
+> > > For a monitor at dev index 1 (any pin), it will prefer PCM 9.
+> > > For a monitor at dev index 2 (any pin), it will prefer PCM 10.
 > > >
-> > >
-> > > Takashi
-> > 
-> > 
-> > 
-> > --
-> > gg
-> > [2 alsa-info.txt.4.3-rc6.before <application/octet-stream (base64)>]
-> > 
-> > --- alsa-info.txt.4.3-rc6.before	2015-10-22 
-> 23:41:24.265081408 +0300
-> > +++ alsa-info.txt.4.3-rc6.after	2015-10-22 
-> 23:46:30.584791012 +0300
-> > @@ -3,7 +3,7 @@
-> >  !!ALSA Information Script v 0.4.64
-> >  !!################################
-> >  
-> > -!!Script ran on: Thu Oct 22 20:41:23 UTC 2015
-> > +!!Script ran on: Thu Oct 22 20:46:30 UTC 2015
-> >  
-> >  
-> >  !!Linux Distribution
-> > @@ -142,26 +142,26 @@
-> >      ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-> >    Device: name="ALC3260 Analog", type="Audio", device=0
-> >    Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-> > -  Amp-Out vals:  [0x25 0x25]
-> > -  Converter: stream=5, channel=0
-> > +  Amp-Out vals:  [0x21 0x21]
-> > +  Converter: stream=0, channel=0
-> >    PCM:
-> >      rates [0x560]: 44100 48000 96000 192000
-> >      bits [0xe]: 16 20 24
-> >      formats [0x1]: PCM
-> >    Power states:  D0 D1 D2 D3 EPSS
-> > -  Power: setting=D0, actual=D0
-> > +  Power: setting=D3, actual=D3
-> >  Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-> >    Control: name="Speaker Playback Volume", index=0, device=0
-> >      ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-> >    Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-> > -  Amp-Out vals:  [0x25 0x25]
-> > -  Converter: stream=5, channel=0
-> > +  Amp-Out vals:  [0x21 0x21]
-> > +  Converter: stream=0, channel=0
-> >    PCM:
-> >      rates [0x560]: 44100 48000 96000 192000
-> >      bits [0xe]: 16 20 24
-> >      formats [0x1]: PCM
-> >    Power states:  D0 D1 D2 D3 EPSS
-> > -  Power: setting=D0, actual=D0
-> > +  Power: setting=D3, actual=D3
-> >  Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x05 
-> > [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x06 
-> [Audio Output] 
-> > wcaps 0x611: Stereo Digital @@ -182,7 +182,7 @@
-> >      ControlAmp: chs=3, dir=In, idx=0, ofs=0
-> >    Device: name="ALC3260 Analog", type="Audio", device=0
-> >    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-> > -  Amp-In vals:  [0x11 0x11]
-> > +  Amp-In vals:  [0x10 0x10]
-> >    Converter: stream=0, channel=0
-> >    SDI-Select: 0
-> >    PCM:
-> > @@ -240,7 +240,7 @@
-> >  Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono  Node 0x11 
-> > [Audio Input] wcaps 0x10051b: Stereo Amp-In
-> >    Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-> > -  Amp-In vals:  [0x11 0x11]
-> > +  Amp-In vals:  [0x10 0x10]
-> >    Converter: stream=1, channel=0
-> >    SDI-Select: 0
-> >    PCM:
-> > @@ -288,7 +288,7 @@
-> >      Misc = NO_PRESENCE
-> >    Pin-ctls: 0x40: OUT
-> >    Power states:  D0 D1 D2 D3 EPSS
-> > -  Power: setting=D0, actual=D0
-> > +  Power: setting=D3, actual=D3
-> >    Connection: 2
-> >       0x0c 0x0d*
-> >  Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out @@ -531,8 
-> > +531,8 @@  crw-rw----+ 1 root audio 116,  2 Oct 22 23:40 
-> > /dev/snd/controlC0  crw-rw----+ 1 root audio 116,  6 Oct 22 23:40 
-> > /dev/snd/hwC0D0  crw-rw----+ 1 root audio 116,  7 Oct 22 23:40 
-> > /dev/snd/hwC0D3
-> > -crw-rw----+ 1 root audio 116,  4 Oct 22 23:40 /dev/snd/pcmC0D0c
-> > -crw-rw----+ 1 root audio 116,  3 Oct 22 23:40 /dev/snd/pcmC0D0p
-> > +crw-rw----+ 1 root audio 116,  4 Oct 22 23:46 /dev/snd/pcmC0D0c
-> > +crw-rw----+ 1 root audio 116,  3 Oct 22 23:45 /dev/snd/pcmC0D0p
-> >  crw-rw----+ 1 root audio 116,  5 Oct 22 23:40 /dev/snd/pcmC0D3p  
-> > crw-rw----+ 1 root audio 116,  1 Oct 22 23:40 /dev/snd/seq  
-> > crw-rw----+ 1 root audio 116, 33 Oct 22 23:40 
-> /dev/snd/timer @@ -578,7 
-> > +578,7 @@
-> >    Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-> >    Playback channels: Mono
-> >    Limits: Playback 0 - 64
-> > -  Mono: Playback 38 [59%] [-26.00dB] [on]
-> > +  Mono: Playback 34 [53%] [-30.00dB] [on]
-> >  Simple mixer control 'Headphone',0
-> >    Capabilities: pvolume pswitch
-> >    Playback channels: Front Left - Front Right @@ -598,8 +598,8 @@
-> >    Playback channels: Front Left - Front Right
-> >    Limits: Playback 0 - 255
-> >    Mono:
-> > -  Front Left: Playback 255 [100%] [0.00dB]
-> > -  Front Right: Playback 255 [100%] [0.00dB]
-> > +  Front Left: Playback 253 [99%] [-0.40dB]  Front Right: 
-> Playback 253 
-> > + [99%] [-0.40dB]
-> >  Simple mixer control 'Mic',0
-> >    Capabilities: pvolume pswitch
-> >    Playback channels: Front Left - Front Right @@ -629,8 +629,8 @@
-> >    Capabilities: cvolume cswitch
-> >    Capture channels: Front Left - Front Right
-> >    Limits: Capture 0 - 46
-> > -  Front Left: Capture 17 [37%] [0.00dB] [on]
-> > -  Front Right: Capture 17 [37%] [0.00dB] [on]
-> > +  Front Left: Capture 16 [35%] [-1.00dB] [on]  Front 
-> Right: Capture 
-> > + 16 [35%] [-1.00dB] [on]
-> >  Simple mixer control 'Auto-Mute Mode',0
-> >    Capabilities: enum
-> >    Items: 'Disabled' 'Enabled'
-> > @@ -745,8 +745,8 @@
-> >  	control.8 {
-> >  		iface MIXER
-> >  		name 'Capture Volume'
-> > -		value.0 17
-> > -		value.1 17
-> > +		value.0 16
-> > +		value.1 16
-> >  		comment {
-> >  			access 'read write'
-> >  			type INTEGER
-> > @@ -754,8 +754,8 @@
-> >  			range '0 - 46'
-> >  			dbmin -1700
-> >  			dbmax 2900
-> > -			dbvalue.0 0
-> > -			dbvalue.1 0
-> > +			dbvalue.0 -100
-> > +			dbvalue.1 -100
-> >  		}
-> >  	}
-> >  	control.9 {
-> > @@ -804,7 +804,7 @@
-> >  	control.12 {
-> >  		iface MIXER
-> >  		name 'Master Playback Volume'
-> > -		value 38
-> > +		value 34
-> >  		comment {
-> >  			access 'read write'
-> >  			type INTEGER
-> > @@ -812,7 +812,7 @@
-> >  			range '0 - 64'
-> >  			dbmin -6400
-> >  			dbmax 0
-> > -			dbvalue.0 -2600
-> > +			dbvalue.0 -3000
-> >  		}
-> >  	}
-> >  	control.13 {
-> > @@ -999,8 +999,8 @@
-> >  	control.29 {
-> >  		iface MIXER
-> >  		name 'PCM Playback Volume'
-> > -		value.0 255
-> > -		value.1 255
-> > +		value.0 253
-> > +		value.1 253
-> >  		comment {
-> >  			access 'read write user'
-> >  			type INTEGER
-> > @@ -1009,8 +1009,8 @@
-> >  			tlv '0000000100000008ffffec1400000014'
-> >  			dbmin -5100
-> >  			dbmax 0
-> > -			dbvalue.0 0
-> > -			dbvalue.1 0
-> > +			dbvalue.0 -40
-> > +			dbvalue.1 -40
-> >  		}
-> >  	}
-> >  }
-> > @@ -1021,6 +1021,8 @@
-> >  !!------------------
-> >  
-> >  Module
-> > +alx
-> > +mdio
-> >  cmac
-> >  rfcomm
-> >  bnep
-> > @@ -1131,11 +1133,9 @@
-> >  psmouse
-> >  ahci
-> >  sdhci_pci
-> > -alx
-> >  rtsx_pci
-> >  libahci
-> >  sdhci
-> > -mdio
-> >  floppy
-> >  
-> >  
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > For monitors at dev indices > 2 (can that happen?), or if the PCM is
+> > > already assigned to something else, try PCMs in this order: 9, 10, 3, 7, 8.
+> > > (Subject to discussion perhaps, I don't think the order matters too
+> > > much, because conflicts will be rare in practice.)
+> >
+> > Hi David,
+> >
+> > Would you please clarify why PA needs such a fixed binding between PCM
+> 3,7, 8 and pin 0x05,6,7?
 > 
-> ------Please consider the environment before printing this e-mail.
+> It's not PA's requirement.  The only concern here is for people who uses
+> ALSA device directly, e.g. via aplay -Dhdmi:2.  The first monitor is
+> guaranteed to be mapped to the compatible position for such people.
+
+Excuse me, could you share more background info here?
+Even before DP MST support, it seems that such people need to know what pin is used to connect a monitor. Why?
+
+The user can enumerate the PCM devices, and the PCM's jack ioctl can show whether a monitor is available behind this PCM device, no matter the driver uses fixed or dynamic binding between the PCM and pins.
+So people can always choose a PCM to use a monitor. I feel they need not care which pin is used for the monitor.
+
+> > And how will PA handle PCM 9,10 in a different way?
+> > They are not bound to pins, and even not able to dev indexes.
+> > In practice, a platform will usually support either a DP port or a HDMI port
+> from the Intel integrated GPU for cost consideration.
+> > But theoretically i915 can use same device index on two different pins to
+> connect monitors, e.g. pin 0x05, dev index 2 for one monitor and pin 0x06,
+> dev index 2 for the other.
+> >
+> > On Intel platforms, the max dev indices is 2. Not sure about Nvidia and
+> AMD.
 > 
+> The whole number should be min(pins * 2 - 1, pins * 64).  It's two for Intel,
+> and 7 or more on AMD/Nvidia.
+> 
+> As we've discussed, this "reserved" area is basically optional.  We have them
+> for keeping compatibility more easily.  Even if this are is exhausted, you can
+> still try to map to any empty slot as the last resort.  So, in practice, maybe
+> adding just two extra for this reserved area should suffice.  That is, the
+> scheme is:
+> 
+> - Try a static mapping at first
+> - If already occupied, try a dynamic mapping in reserved area
+> - If a dynamic mapping area is exhausted, try to find any empty slot
+> 
+> The device index number doesn't matter.  If it conflicts, try another.
+> 
+
+Thanks for your clarification! This scheme should work.
+I misunderstood "prefer" as "fixed binding" in David's suggestion.
+
+Regards
+Mengdong
