@@ -1,17 +1,17 @@
 From: Caleb Crome <caleb@crome.org>
 Subject: [PATCH 1/2] BAT: Add missing locale.h header
-Date: Fri, 23 Oct 2015 17:11:41 +0000
-Message-ID: <1445620302-18408-1-git-send-email-caleb@crome.org>
+Date: Fri, 23 Oct 2015 17:46:09 +0000
+Message-ID: <1445622370-18673-1-git-send-email-caleb@crome.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 79F5D261B2A
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:11:48 +0200 (CEST)
-Received: by pacfv9 with SMTP id fv9so128923562pac.3
- for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:11:46 -0700 (PDT)
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3166C2625E3
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 19:46:17 +0200 (CEST)
+Received: by pasz6 with SMTP id z6so123873307pas.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 10:46:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
