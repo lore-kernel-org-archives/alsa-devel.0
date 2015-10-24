@@ -1,21 +1,15 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH 2/2] BAT: convert from getopt_long to argp
-Date: Sat, 24 Oct 2015 08:38:07 -0700
-Message-ID: <CAG5mAdw+-eZ3pQ-Cb1ycrCp+Kz_OniZjYP+xF40AOWV966Zd_g@mail.gmail.com>
-References: <1445639356-20343-1-git-send-email-caleb@crome.org>
- <1445639356-20343-2-git-send-email-caleb@crome.org>
- <s5hoafoaf07.wl-tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH] ASoC: wm9713: convert to regmap
+Date: Sat, 24 Oct 2015 22:12:19 +0200
+Message-ID: <1445717539-409-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
- [209.85.212.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A70C260430
- for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 17:38:27 +0200 (CEST)
-Received: by wicfx6 with SMTP id fx6so64415192wic.1
- for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 08:38:26 -0700 (PDT)
-In-Reply-To: <s5hoafoaf07.wl-tiwai@suse.de>
+Received: from smtp.smtpout.orange.fr (smtp02.smtpout.orange.fr
+ [80.12.242.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69A7426580E
+ for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 22:18:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,318 +19,539 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 24, 2015 at 12:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sat, 24 Oct 2015 00:29:16 +0200,
-> Caleb Crome wrote:
->>
->> Convert from getopt_long to argp in preparation for converting to
->> modular test framework.  This is to allow each module type to have
->> its own set of options.
->>
->> argp allows multiple argument sets to be used, whereas
->> getopt_long is limited in that regard.
->
-> This patch seems dropping the gettext translations completely...?
->
->
-> Takashi
->
+Convert the Wolfson WM9713 to regmap API. This will leverage all the
+regmap functions (debug, registers update, etc ...).
 
-Ah, I had trouble compiling with the _() stuff.  I kept getting
-compile errors with the multi-line strings, so I removed it just to
-get the rest of the patch working, and forgot to put it back in.  I'll
-resubmit when I work out what was wrong.  (I've never used gettext
-before, or submitted to linux sources before, or used git before, so
-thanks for bearing with me while I come up to speed).
+As a bonus, this will pave the path to gpio chip introduction, and
+devicetree support.
 
--Caleb
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ sound/soc/codecs/Kconfig  |   1 +
+ sound/soc/codecs/wm9713.c | 284 ++++++++++++++++++++++++----------------------
+ 2 files changed, 147 insertions(+), 138 deletions(-)
 
-
-
->>
->> Signed-off-by: Caleb Crome <caleb@crome.org>
->> ---
->>  bat/bat.c | 233 ++++++++++++++++++++++++++++++++++----------------------------
->>  1 file changed, 129 insertions(+), 104 deletions(-)
->>
->> diff --git a/bat/bat.c b/bat/bat.c
->> index 9c046e6..36705c1 100644
->> --- a/bat/bat.c
->> +++ b/bat/bat.c
->> @@ -20,7 +20,8 @@
->>  #include <string.h>
->>  #include <errno.h>
->>  #include <pthread.h>
->> -#include <getopt.h>
->> +#include <argp.h>
->> +#include <error.h>
->>  #include <math.h>
->>  #include <limits.h>
->>  #include <locale.h>
->> @@ -283,37 +284,6 @@ static void test_capture(struct bat *bat)
->>       }
->>  }
->>
->> -static void usage(struct bat *bat)
->> -{
->> -     fprintf(bat->log,
->> -_("Usage: bat [-options]...\n"
->> -"\n"
->> -"  -h, --help             this help\n"
->> -"  -D                     pcm device for both playback and capture\n"
->> -"  -P                     pcm device for playback\n"
->> -"  -C                     pcm device for capture\n"
->> -"  -f                     sample format\n"
->> -"  -c                     number of channels\n"
->> -"  -r                     sampling rate\n"
->> -"  -n                     frames to playback or capture\n"
->> -"  -k                     parameter for frequency detecting threshold\n"
->> -"  -F                     target frequency\n"
->> -"  -p                     total number of periods to play/capture\n"
->> -"      --log=#            file that both stdout and strerr redirecting to\n"
->> -"      --file=#           file for playback\n"
->> -"      --saveplay=#       file that storing playback content, for debug\n"
->> -"      --local            internal loop, set to bypass pcm hardware devices\n"
->> -));
->> -     fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
->> -                     snd_pcm_format_name(SND_PCM_FORMAT_U8),
->> -                     snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
->> -                     snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
->> -                     snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
->> -     fprintf(bat->log, _("The available format shotcuts are:\n"));
->> -     fprintf(bat->log, _("-f cd (16 bit little endian, 44100, stereo)\n"));
->> -     fprintf(bat->log, _("-f dat (16 bit little endian, 48000, stereo)\n"));
->> -}
->> -
->>  static void set_defaults(struct bat *bat)
->>  {
->>       int i;
->> @@ -344,82 +314,136 @@ static void set_defaults(struct bat *bat)
->>       bat->err = stderr;
->>  }
->>
->> +
->> +static error_t parse_opt (int key, char *arg, struct argp_state *state)
->> +{
->> +     struct bat *bat = state->input;
->> +     switch (key) {
->> +     case OPT_LOG:
->> +             bat->logarg = arg;
->> +             break;
->> +     case OPT_READFILE:
->> +             bat->playback.file = arg;
->> +             break;
->> +     case OPT_SAVEPLAY:
->> +             bat->debugplay = arg;
->> +             break;
->> +     case OPT_LOCAL:
->> +             bat->local = true;
->> +             break;
->> +     case 'D':
->> +             if (bat->playback.device == NULL)
->> +                     bat->playback.device = arg;
->> +             if (bat->capture.device == NULL)
->> +                     bat->capture.device = arg;
->> +             break;
->> +     case 'P':
->> +             if (bat->capture.mode == MODE_SINGLE)
->> +                     bat->capture.mode = MODE_LOOPBACK;
->> +             else
->> +                     bat->playback.mode = MODE_SINGLE;
->> +             bat->playback.device = arg;
->> +             break;
->> +     case 'C':
->> +             if (bat->playback.mode == MODE_SINGLE)
->> +                     bat->playback.mode = MODE_LOOPBACK;
->> +             else
->> +                     bat->capture.mode = MODE_SINGLE;
->> +             bat->capture.device = arg;
->> +             break;
->> +     case 'n':
->> +             bat->narg = arg;
->> +             break;
->> +     case 'F':
->> +             get_sine_frequencies(bat, arg);
->> +             break;
->> +     case 'c':
->> +             bat->channels = atoi(arg);
->> +             break;
->> +     case 'r':
->> +             bat->rate = atoi(arg);
->> +             break;
->> +     case 'f':
->> +             get_format(bat, arg);
->> +             break;
->> +     case 'k':
->> +             bat->sigma_k = atof(arg);
->> +             break;
->> +     case 'p':
->> +             bat->periods_total = atoi(arg);
->> +             bat->period_is_limited = true;
->> +             break;
->> +     default:
->> +             return ARGP_ERR_UNKNOWN;
->> +             break;
->> +     }
->> +     return 0;
->> +}
->>  static void parse_arguments(struct bat *bat, int argc, char *argv[])
->>  {
->> -     int c, option_index;
->> -     static const char short_options[] = "D:P:C:f:n:F:c:r:s:k:p:lth";
->> -     static const struct option long_options[] = {
->> -             {"help",     0, 0, 'h'},
->> -             {"log",      1, 0, OPT_LOG},
->> -             {"file",     1, 0, OPT_READFILE},
->> -             {"saveplay", 1, 0, OPT_SAVEPLAY},
->> -             {"local",    0, 0, OPT_LOCAL},
->> -             {0, 0, 0, 0}
->> +
->> +     const char doc[] =
->> +             "Basic Audio Tester\n"
->> +             "\n"
->> +             "Uses a loopback configuration or 2 PC configuration "
->> +             "(play on one PC and record on the other) to test "
->> +             "if if audio is flowing smoothly."
->> +             "\n"
->> +             "Full documentation in the bat man page and at "
->> +             "https://github.com/01org/bat/wiki"
->> +             "\n"
->> +             "Recognized sample formats are: %s %s %s %s\n"
->> +             "The available format shotcuts are:\n"
->> +             "\t-f cd (16 bit little endian, 44100, stereo)\n"
->> +             "\t-f dat (16 bit little endian, 48000, stereo)\n";
->> +
->> +     const char args_doc[] = "";
->> +
->> +     struct argp_option options[] = {
->> +             {"log", OPT_LOG, "FILENAME", 0,
->> +              "file that both stdout and strerr redirecting to", 0},
->> +             {"file", OPT_READFILE, "FILENAME", 0,
->> +              "file for playback",0},
->> +             {"saveplay", OPT_SAVEPLAY, "FILENAME", 0,
->> +              "file for storing playback content, for debug", 0},
->> +             {"local", OPT_LOCAL, 0, 0,
->> +              "internal loopback, set to bypass pcm hardware devices",0},
->> +             {"device-duplex", 'D', "DEVICE", 0,
->> +              "pcm device for both playback and capture", 0},
->> +             {"device-playback", 'P', "DEVICE", 0,
->> +              "pcm device for playback", 0},
->> +             {"device-capture", 'C', "DEVICE", 0,
->> +              "pcm device for capture", 0},
->> +             {"sample_format" , 'f', "FORMAT", 0,
->> +              "sample format", 0},
->> +             {"channels", 'c', "CHANNELS", 0,
->> +              "number of channels", 0},
->> +             {"sample-rate", 'r', "SAMP/SEC", 0,
->> +              "sampling rate", 0},
->> +             {"frames", 'n', "FRAMES", 0,
->> +              "The number of frames for playback and/or capture", 0},
->> +             {"threshold", 'k', "THRESHOLD", 0,
->> +              "parameter for frequency detecting threshold", 0},
->> +             {"target-frequency", 'F', "FREQUENCY", 0,
->> +              "target frequency for sin test ", 0},
->> +             {"periods", 'p', "PERIODS", 0,
->> +              "total number of periods to play/capture", 0},
->> +             { 0 }
->>       };
->>
->> -     while ((c = getopt_long(argc, argv, short_options, long_options,
->> -                                     &option_index)) != -1) {
->> -             switch (c) {
->> -             case OPT_LOG:
->> -                     bat->logarg = optarg;
->> -                     break;
->> -             case OPT_READFILE:
->> -                     bat->playback.file = optarg;
->> -                     break;
->> -             case OPT_SAVEPLAY:
->> -                     bat->debugplay = optarg;
->> -                     break;
->> -             case OPT_LOCAL:
->> -                     bat->local = true;
->> -                     break;
->> -             case 'D':
->> -                     if (bat->playback.device == NULL)
->> -                             bat->playback.device = optarg;
->> -                     if (bat->capture.device == NULL)
->> -                             bat->capture.device = optarg;
->> -                     break;
->> -             case 'P':
->> -                     if (bat->capture.mode == MODE_SINGLE)
->> -                             bat->capture.mode = MODE_LOOPBACK;
->> -                     else
->> -                             bat->playback.mode = MODE_SINGLE;
->> -                     bat->playback.device = optarg;
->> -                     break;
->> -             case 'C':
->> -                     if (bat->playback.mode == MODE_SINGLE)
->> -                             bat->playback.mode = MODE_LOOPBACK;
->> -                     else
->> -                             bat->capture.mode = MODE_SINGLE;
->> -                     bat->capture.device = optarg;
->> -                     break;
->> -             case 'n':
->> -                     bat->narg = optarg;
->> -                     break;
->> -             case 'F':
->> -                     get_sine_frequencies(bat, optarg);
->> -                     break;
->> -             case 'c':
->> -                     bat->channels = atoi(optarg);
->> -                     break;
->> -             case 'r':
->> -                     bat->rate = atoi(optarg);
->> -                     break;
->> -             case 'f':
->> -                     get_format(bat, optarg);
->> -                     break;
->> -             case 'k':
->> -                     bat->sigma_k = atof(optarg);
->> -                     break;
->> -             case 'p':
->> -                     bat->periods_total = atoi(optarg);
->> -                     bat->period_is_limited = true;
->> -                     break;
->> -             case 'h':
->> -             default:
->> -                     usage(bat);
->> -                     exit(EXIT_SUCCESS);
->> -             }
->> -     }
->> +     char *doc_filled;
->> +
->> +     const int doc_size = strlen(doc) + 20*4;
->> +     doc_filled = malloc(doc_size);
->> +     snprintf(doc_filled, doc_size, doc,
->> +              snd_pcm_format_name(SND_PCM_FORMAT_U8),
->> +              snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
->> +              snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
->> +              snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
->> +
->> +     struct argp  argp = {options, parse_opt, args_doc, doc_filled};
->> +     argp_parse(&argp, argc, argv, 0, 0, bat);
->> +     free(doc_filled);
->>  }
->>
->>  static int validate_options(struct bat *bat)
->> @@ -498,6 +522,7 @@ static int bat_init(struct bat *bat)
->>                       fprintf(bat->err, _("Fail to create record file: %d\n"),
->>                                       -errno);
->>                       return -errno;
->> +
->>               }
->>               /* store file name which is dynamically created */
->>               bat->capture.file = strdup(name);
->> --
->> 2.6.1
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 0c9733ecd17f..ba306f8f3717 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -879,6 +879,7 @@ config SND_SOC_WM9712
+ 
+ config SND_SOC_WM9713
+ 	tristate
++	select REGMAP_AC97
+ 
+ # Amp
+ config SND_SOC_LM4857
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 4083a5130cbd..18f371b2add5 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
++#include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+@@ -39,34 +40,6 @@ struct wm9713_priv {
+ 	struct mutex lock;
+ };
+ 
+-static unsigned int ac97_read(struct snd_soc_codec *codec,
+-	unsigned int reg);
+-static int ac97_write(struct snd_soc_codec *codec,
+-	unsigned int reg, unsigned int val);
+-
+-/*
+- * WM9713 register cache
+- * Reg 0x3c bit 15 is used by touch driver.
+- */
+-static const u16 wm9713_reg[] = {
+-	0x6174, 0x8080, 0x8080, 0x8080,
+-	0xc880, 0xe808, 0xe808, 0x0808,
+-	0x00da, 0x8000, 0xd600, 0xaaa0,
+-	0xaaa0, 0xaaa0, 0x0000, 0x0000,
+-	0x0f0f, 0x0040, 0x0000, 0x7f00,
+-	0x0405, 0x0410, 0xbb80, 0xbb80,
+-	0x0000, 0xbb80, 0x0000, 0x4523,
+-	0x0000, 0x2000, 0x7eff, 0xffff,
+-	0x0000, 0x0000, 0x0080, 0x0000,
+-	0x0000, 0x0000, 0xfffe, 0xffff,
+-	0x0000, 0x0000, 0x0000, 0xfffe,
+-	0x4000, 0x0000, 0x0000, 0x0000,
+-	0xb032, 0x3e00, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0006,
+-	0x0001, 0x0000, 0x574d, 0x4c13,
+-};
+-
+ #define HPL_MIXER 0
+ #define HPR_MIXER 1
+ 
+@@ -220,18 +193,15 @@ static int wm9713_voice_shutdown(struct snd_soc_dapm_widget *w,
+ 				 struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	u16 status, rate;
+ 
+ 	if (WARN_ON(event != SND_SOC_DAPM_PRE_PMD))
+ 		return -EINVAL;
+ 
+ 	/* Gracefully shut down the voice interface. */
+-	status = ac97_read(codec, AC97_EXTENDED_MID) | 0x1000;
+-	rate = ac97_read(codec, AC97_HANDSET_RATE) & 0xF0FF;
+-	ac97_write(codec, AC97_HANDSET_RATE, rate | 0x0200);
++	snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0f00, 0x0200);
+ 	schedule_timeout_interruptible(msecs_to_jiffies(1));
+-	ac97_write(codec, AC97_HANDSET_RATE, rate | 0x0F00);
+-	ac97_write(codec, AC97_EXTENDED_MID, status);
++	snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0f00, 0x0f00);
++	snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x1000, 0x1000);
+ 
+ 	return 0;
+ }
+@@ -674,39 +644,97 @@ static const struct snd_soc_dapm_route wm9713_audio_map[] = {
+ 	{"Capture Mono Mux", "Right", "Right Capture Source"},
+ };
+ 
+-static unsigned int ac97_read(struct snd_soc_codec *codec,
+-	unsigned int reg)
++static bool wm9713_readable_reg(struct device *dev, unsigned int reg)
+ {
+-	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
+-
+-	if (reg == AC97_RESET || reg == AC97_GPIO_STATUS ||
+-		reg == AC97_VENDOR_ID1 || reg == AC97_VENDOR_ID2 ||
+-		reg == AC97_CD)
+-		return soc_ac97_ops->read(wm9713->ac97, reg);
+-	else {
+-		reg = reg >> 1;
+-
+-		if (reg >= (ARRAY_SIZE(wm9713_reg)))
+-			return -EIO;
+-
+-		return cache[reg];
++	switch (reg) {
++	case AC97_RESET ... AC97_PCM_SURR_DAC_RATE:
++	case AC97_PCM_LR_ADC_RATE:
++	case AC97_CENTER_LFE_MASTER:
++	case AC97_SPDIF ... AC97_LINE1_LEVEL:
++	case AC97_GPIO_CFG ... 0x5c:
++	case AC97_CODEC_CLASS_REV ... AC97_PCI_SID:
++	case 0x74 ... AC97_VENDOR_ID2:
++		return true;
++	default:
++		return false;
+ 	}
+ }
+ 
+-static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+-	unsigned int val)
++static bool wm9713_writeable_reg(struct device *dev, unsigned int reg)
+ {
+-	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
++	switch (reg) {
++	case AC97_VENDOR_ID1:
++	case AC97_VENDOR_ID2:
++		return false;
++	default:
++		return wm9713_readable_reg(dev, reg);
++	}
++}
+ 
+-	u16 *cache = codec->reg_cache;
+-	soc_ac97_ops->write(wm9713->ac97, reg, val);
+-	reg = reg >> 1;
+-	if (reg < (ARRAY_SIZE(wm9713_reg)))
+-		cache[reg] = val;
++static const struct reg_default wm9713_reg_defaults[] = {
++	{ 0x02, 0x8080 },	/* Speaker Output Volume */
++	{ 0x04, 0x8080 },	/* Headphone Output Volume */
++	{ 0x06, 0x8080 },	/* Out3/OUT4 Volume */
++	{ 0x08, 0xc880 },	/* Mono Volume */
++	{ 0x0a, 0xe808 },	/* LINEIN Volume */
++	{ 0x0c, 0xe808 },	/* DAC PGA Volume */
++	{ 0x0e, 0x0808 },	/* MIC PGA Volume */
++	{ 0x10, 0x00da },	/* MIC Routing Control */
++	{ 0x12, 0x8000 },	/* Record PGA Volume */
++	{ 0x14, 0xd600 },	/* Record Routing */
++	{ 0x16, 0xaaa0 },	/* PCBEEP Volume */
++	{ 0x18, 0xaaa0 },	/* VxDAC Volume */
++	{ 0x1a, 0xaaa0 },	/* AUXDAC Volume */
++	{ 0x1c, 0x0000 },	/* Output PGA Mux */
++	{ 0x1e, 0x0000 },	/* DAC 3D control */
++	{ 0x20, 0x0f0f },	/* DAC Tone Control*/
++	{ 0x22, 0x0040 },	/* MIC Input Select & Bias */
++	{ 0x24, 0x0000 },	/* Output Volume Mapping & Jack */
++	{ 0x26, 0x7f00 },	/* Powerdown Ctrl/Stat*/
++	{ 0x28, 0x0405 },	/* Extended Audio ID */
++	{ 0x2a, 0x0410 },	/* Extended Audio Start/Ctrl */
++	{ 0x2c, 0xbb80 },	/* Audio DACs Sample Rate */
++	{ 0x2e, 0xbb80 },	/* AUXDAC Sample Rate */
++	{ 0x32, 0xbb80 },	/* Audio ADCs Sample Rate */
++	{ 0x36, 0x4523 },	/* PCM codec control */
++	{ 0x3a, 0x2000 },	/* SPDIF control */
++	{ 0x3c, 0xfdff },	/* Powerdown 1 */
++	{ 0x3e, 0xffff },	/* Powerdown 2 */
++	{ 0x40, 0x0000 },	/* General Purpose */
++	{ 0x42, 0x0000 },	/* Fast Power-Up Control */
++	{ 0x44, 0x0080 },	/* MCLK/PLL Control */
++	{ 0x46, 0x0000 },	/* MCLK/PLL Control */
++	{ 0x4c, 0xfffe },	/* GPIO Pin Configuration */
++	{ 0x4e, 0xffff },	/* GPIO Pin Polarity / Type */
++	{ 0x50, 0x0000 },	/* GPIO Pin Sticky */
++	{ 0x52, 0x0000 },	/* GPIO Pin Wake-Up */
++				/* GPIO Pin Status */
++	{ 0x56, 0xfffe },	/* GPIO Pin Sharing */
++	{ 0x58, 0x4000 },	/* GPIO PullUp/PullDown */
++	{ 0x5a, 0x0000 },	/* Additional Functions 1 */
++	{ 0x5c, 0x0000 },	/* Additional Functions 2 */
++	{ 0x60, 0xb032 },	/* ALC Control */
++	{ 0x62, 0x3e00 },	/* ALC / Noise Gate Control */
++	{ 0x64, 0x0000 },	/* AUXDAC input control */
++	{ 0x74, 0x0000 },	/* Digitiser Reg 1 */
++	{ 0x76, 0x0006 },	/* Digitiser Reg 2 */
++	{ 0x78, 0x0001 },	/* Digitiser Reg 3 */
++	{ 0x7a, 0x0000 },	/* Digitiser Read Back */
++};
+ 
+-	return 0;
+-}
++static const struct regmap_config wm9713_regmap_config = {
++	.reg_bits = 16,
++	.reg_stride = 2,
++	.val_bits = 16,
++	.max_register = 0x7e,
++	.cache_type = REGCACHE_RBTREE,
++
++	.reg_defaults = wm9713_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(wm9713_reg_defaults),
++	.volatile_reg = regmap_ac97_default_volatile,
++	.readable_reg = wm9713_readable_reg,
++	.writeable_reg = wm9713_writeable_reg,
++};
+ 
+ /* PLL divisors */
+ struct _pll_div {
+@@ -793,10 +821,8 @@ static int wm9713_set_pll(struct snd_soc_codec *codec,
+ 	/* turn PLL off ? */
+ 	if (freq_in == 0) {
+ 		/* disable PLL power and select ext source */
+-		reg = ac97_read(codec, AC97_HANDSET_RATE);
+-		ac97_write(codec, AC97_HANDSET_RATE, reg | 0x0080);
+-		reg = ac97_read(codec, AC97_EXTENDED_MID);
+-		ac97_write(codec, AC97_EXTENDED_MID, reg | 0x0200);
++		snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0080, 0x0080);
++		snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x0200, 0x0200);
+ 		wm9713->pll_in = 0;
+ 		return 0;
+ 	}
+@@ -806,7 +832,7 @@ static int wm9713_set_pll(struct snd_soc_codec *codec,
+ 	if (pll_div.k == 0) {
+ 		reg = (pll_div.n << 12) | (pll_div.lf << 11) |
+ 			(pll_div.divsel << 9) | (pll_div.divctl << 8);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 	} else {
+ 		/* write the fractional k to the reg 0x46 pages */
+ 		reg2 = (pll_div.n << 12) | (pll_div.lf << 11) | (1 << 10) |
+@@ -814,33 +840,31 @@ static int wm9713_set_pll(struct snd_soc_codec *codec,
+ 
+ 		/* K [21:20] */
+ 		reg = reg2 | (0x5 << 4) | (pll_div.k >> 20);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 
+ 		/* K [19:16] */
+ 		reg = reg2 | (0x4 << 4) | ((pll_div.k >> 16) & 0xf);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 
+ 		/* K [15:12] */
+ 		reg = reg2 | (0x3 << 4) | ((pll_div.k >> 12) & 0xf);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 
+ 		/* K [11:8] */
+ 		reg = reg2 | (0x2 << 4) | ((pll_div.k >> 8) & 0xf);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 
+ 		/* K [7:4] */
+ 		reg = reg2 | (0x1 << 4) | ((pll_div.k >> 4) & 0xf);
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 
+ 		reg = reg2 | (0x0 << 4) | (pll_div.k & 0xf); /* K [3:0] */
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg);
++		snd_soc_write(codec, AC97_LINE1_LEVEL, reg);
+ 	}
+ 
+ 	/* turn PLL on and select as source */
+-	reg = ac97_read(codec, AC97_EXTENDED_MID);
+-	ac97_write(codec, AC97_EXTENDED_MID, reg & 0xfdff);
+-	reg = ac97_read(codec, AC97_HANDSET_RATE);
+-	ac97_write(codec, AC97_HANDSET_RATE, reg & 0xff7f);
++	snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x0200, 0x0000);
++	snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0080, 0x0000);
+ 	wm9713->pll_in = freq_in;
+ 
+ 	/* wait 10ms AC97 link frames for the link to stabilise */
+@@ -863,10 +887,10 @@ static int wm9713_set_dai_tristate(struct snd_soc_dai *codec_dai,
+ 	int tristate)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 reg = ac97_read(codec, AC97_CENTER_LFE_MASTER) & 0x9fff;
+ 
+ 	if (tristate)
+-		ac97_write(codec, AC97_CENTER_LFE_MASTER, reg);
++		snd_soc_update_bits(codec, AC97_CENTER_LFE_MASTER,
++				    0x6000, 0x0000);
+ 
+ 	return 0;
+ }
+@@ -879,36 +903,30 @@ static int wm9713_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+ 		int div_id, int div)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 reg;
+ 
+ 	switch (div_id) {
+ 	case WM9713_PCMCLK_DIV:
+-		reg = ac97_read(codec, AC97_HANDSET_RATE) & 0xf0ff;
+-		ac97_write(codec, AC97_HANDSET_RATE, reg | div);
++		snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0f00, div);
+ 		break;
+ 	case WM9713_CLKA_MULT:
+-		reg = ac97_read(codec, AC97_HANDSET_RATE) & 0xfffd;
+-		ac97_write(codec, AC97_HANDSET_RATE, reg | div);
++		snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0002, div);
+ 		break;
+ 	case WM9713_CLKB_MULT:
+-		reg = ac97_read(codec, AC97_HANDSET_RATE) & 0xfffb;
+-		ac97_write(codec, AC97_HANDSET_RATE, reg | div);
++		snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x0004, div);
+ 		break;
+ 	case WM9713_HIFI_DIV:
+-		reg = ac97_read(codec, AC97_HANDSET_RATE) & 0x8fff;
+-		ac97_write(codec, AC97_HANDSET_RATE, reg | div);
++		snd_soc_update_bits(codec, AC97_HANDSET_RATE, 0x7000, div);
+ 		break;
+ 	case WM9713_PCMBCLK_DIV:
+-		reg = ac97_read(codec, AC97_CENTER_LFE_MASTER) & 0xf1ff;
+-		ac97_write(codec, AC97_CENTER_LFE_MASTER, reg | div);
++		snd_soc_update_bits(codec, AC97_CENTER_LFE_MASTER, 0x0e00, div);
+ 		break;
+ 	case WM9713_PCMCLK_PLL_DIV:
+-		reg = ac97_read(codec, AC97_LINE1_LEVEL) & 0xff80;
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg | 0x60 | div);
++		snd_soc_update_bits(codec, AC97_LINE1_LEVEL,
++				    0x007f, div | 0x60);
+ 		break;
+ 	case WM9713_HIFI_PLL_DIV:
+-		reg = ac97_read(codec, AC97_LINE1_LEVEL) & 0xff80;
+-		ac97_write(codec, AC97_LINE1_LEVEL, reg | 0x70 | div);
++		snd_soc_update_bits(codec, AC97_LINE1_LEVEL,
++				    0x007f, div | 0x70);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -921,7 +939,7 @@ static int wm9713_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 gpio = ac97_read(codec, AC97_GPIO_CFG) & 0xffc5;
++	u16 gpio = snd_soc_read(codec, AC97_GPIO_CFG) & 0xffc5;
+ 	u16 reg = 0x8000;
+ 
+ 	/* clock masters */
+@@ -974,8 +992,8 @@ static int wm9713_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		break;
+ 	}
+ 
+-	ac97_write(codec, AC97_GPIO_CFG, gpio);
+-	ac97_write(codec, AC97_CENTER_LFE_MASTER, reg);
++	snd_soc_write(codec, AC97_GPIO_CFG, gpio);
++	snd_soc_write(codec, AC97_CENTER_LFE_MASTER, reg);
+ 	return 0;
+ }
+ 
+@@ -984,24 +1002,24 @@ static int wm9713_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+-	u16 reg = ac97_read(codec, AC97_CENTER_LFE_MASTER) & 0xfff3;
+ 
++	/* enable PCM interface in master mode */
+ 	switch (params_width(params)) {
+ 	case 16:
+ 		break;
+ 	case 20:
+-		reg |= 0x0004;
++		snd_soc_update_bits(codec, AC97_CENTER_LFE_MASTER,
++				    0x000c, 0x0004);
+ 		break;
+ 	case 24:
+-		reg |= 0x0008;
++		snd_soc_update_bits(codec, AC97_CENTER_LFE_MASTER,
++				    0x000c, 0x0008);
+ 		break;
+ 	case 32:
+-		reg |= 0x000c;
++		snd_soc_update_bits(codec, AC97_CENTER_LFE_MASTER,
++				    0x000c, 0x000c);
+ 		break;
+ 	}
+-
+-	/* enable PCM interface in master mode */
+-	ac97_write(codec, AC97_CENTER_LFE_MASTER, reg);
+ 	return 0;
+ }
+ 
+@@ -1011,17 +1029,15 @@ static int ac97_hifi_prepare(struct snd_pcm_substream *substream,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int reg;
+-	u16 vra;
+ 
+-	vra = ac97_read(codec, AC97_EXTENDED_STATUS);
+-	ac97_write(codec, AC97_EXTENDED_STATUS, vra | 0x1);
++	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x0001, 0x0001);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = AC97_PCM_FRONT_DAC_RATE;
+ 	else
+ 		reg = AC97_PCM_LR_ADC_RATE;
+ 
+-	return ac97_write(codec, reg, runtime->rate);
++	return snd_soc_write(codec, reg, runtime->rate);
+ }
+ 
+ static int ac97_aux_prepare(struct snd_pcm_substream *substream,
+@@ -1029,17 +1045,14 @@ static int ac97_aux_prepare(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	u16 vra, xsle;
+ 
+-	vra = ac97_read(codec, AC97_EXTENDED_STATUS);
+-	ac97_write(codec, AC97_EXTENDED_STATUS, vra | 0x1);
+-	xsle = ac97_read(codec, AC97_PCI_SID);
+-	ac97_write(codec, AC97_PCI_SID, xsle | 0x8000);
++	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x0001, 0x0001);
++	snd_soc_update_bits(codec, AC97_PCI_SID, 0x8000, 0x8000);
+ 
+ 	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
+ 		return -ENODEV;
+ 
+-	return ac97_write(codec, AC97_PCM_SURR_DAC_RATE, runtime->rate);
++	return snd_soc_write(codec, AC97_PCM_SURR_DAC_RATE, runtime->rate);
+ }
+ 
+ #define WM9713_RATES (SNDRV_PCM_RATE_8000  |	\
+@@ -1128,27 +1141,23 @@ static struct snd_soc_dai_driver wm9713_dai[] = {
+ static int wm9713_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+-	u16 reg;
+-
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		/* enable thermal shutdown */
+-		reg = ac97_read(codec, AC97_EXTENDED_MID) & 0x1bff;
+-		ac97_write(codec, AC97_EXTENDED_MID, reg);
++		snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0xe400, 0x0000);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+ 		/* enable master bias and vmid */
+-		reg = ac97_read(codec, AC97_EXTENDED_MID) & 0x3bff;
+-		ac97_write(codec, AC97_EXTENDED_MID, reg);
+-		ac97_write(codec, AC97_POWERDOWN, 0x0000);
++		snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0xc400, 0x0000);
++		snd_soc_write(codec, AC97_POWERDOWN, 0x0000);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		/* disable everything including AC link */
+-		ac97_write(codec, AC97_EXTENDED_MID, 0xffff);
+-		ac97_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
+-		ac97_write(codec, AC97_POWERDOWN, 0xffff);
++		snd_soc_write(codec, AC97_EXTENDED_MID, 0xffff);
++		snd_soc_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
++		snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
+ 		break;
+ 	}
+ 	return 0;
+@@ -1156,16 +1165,14 @@ static int wm9713_set_bias_level(struct snd_soc_codec *codec,
+ 
+ static int wm9713_soc_suspend(struct snd_soc_codec *codec)
+ {
+-	u16 reg;
+-
+ 	/* Disable everything except touchpanel - that will be handled
+ 	 * by the touch driver and left disabled if touch is not in
+ 	 * use. */
+-	reg = ac97_read(codec, AC97_EXTENDED_MID);
+-	ac97_write(codec, AC97_EXTENDED_MID, reg | 0x7fff);
+-	ac97_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
+-	ac97_write(codec, AC97_POWERDOWN, 0x6f00);
+-	ac97_write(codec, AC97_POWERDOWN, 0xffff);
++	snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x7fff,
++				 0x7fff);
++	snd_soc_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
++	snd_soc_write(codec, AC97_POWERDOWN, 0x6f00);
++	snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
+ 
+ 	return 0;
+ }
+@@ -1203,16 +1210,23 @@ static int wm9713_soc_resume(struct snd_soc_codec *codec)
+ static int wm9713_soc_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
+-	int reg;
++	struct regmap *regmap;
+ 
+ 	wm9713->ac97 = snd_soc_new_ac97_codec(codec, WM9713_VENDOR_ID,
+ 		WM9713_VENDOR_ID_MASK);
+ 	if (IS_ERR(wm9713->ac97))
+ 		return PTR_ERR(wm9713->ac97);
+ 
++	regmap = devm_regmap_init_ac97(wm9713->ac97, &wm9713_regmap_config);
++	if (IS_ERR(regmap)) {
++		snd_soc_free_ac97_codec(wm9713->ac97);
++		return PTR_ERR(regmap);
++	}
++
++	snd_soc_codec_init_regmap(codec, regmap);
++
+ 	/* unmute the adc - move to kcontrol */
+-	reg = ac97_read(codec, AC97_CD) & 0x7fff;
+-	ac97_write(codec, AC97_CD, reg);
++	snd_soc_update_bits(codec, AC97_CD, 0x7fff, 0x0000);
+ 
+ 	return 0;
+ }
+@@ -1230,13 +1244,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9713 = {
+ 	.remove = 	wm9713_soc_remove,
+ 	.suspend =	wm9713_soc_suspend,
+ 	.resume = 	wm9713_soc_resume,
+-	.read = ac97_read,
+-	.write = ac97_write,
+ 	.set_bias_level = wm9713_set_bias_level,
+-	.reg_cache_size = ARRAY_SIZE(wm9713_reg),
+-	.reg_word_size = sizeof(u16),
+-	.reg_cache_step = 2,
+-	.reg_cache_default = wm9713_reg,
+ 
+ 	.controls = wm9713_snd_ac97_controls,
+ 	.num_controls = ARRAY_SIZE(wm9713_snd_ac97_controls),
+-- 
+2.1.4
