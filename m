@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: fireworks: change type of substream
-	counter from atomic_t to unsigned int
-Date: Sat, 24 Oct 2015 11:28:32 +0900
-Message-ID: <1445653712-14234-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2] ALSA: fireworks: move mutex from function
+	callees to callers
+Date: Sat, 24 Oct 2015 11:28:31 +0900
+Message-ID: <1445653712-14234-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1445653712-14234-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C737265388
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D9F8265680
  for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 04:28:41 +0200 (CEST)
 In-Reply-To: <1445653712-14234-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,189 +25,162 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The counter is incremented/decremented in critical section protected with
-mutex. Therefore, no need to use atomic_t.
+Currently, critical section is protected by mutex in functions of
+fireworks_stream.c. Callers increments/decrements substreams counter
+before calling the functions. Moving mutex to the callers side allows
+to change type of the substeram counter from atomic_t to unsigned int.
 
-This commit changes the type to unsigned int.
+This commit is a preparation for obsoleting the usage of atomic_t for
+substream counter.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks.h        |  4 ++--
- sound/firewire/fireworks/fireworks_midi.c   |  8 ++++----
- sound/firewire/fireworks/fireworks_pcm.c    |  8 ++++----
- sound/firewire/fireworks/fireworks_stream.c | 25 ++++++++++++-------------
- 4 files changed, 22 insertions(+), 23 deletions(-)
+ sound/firewire/fireworks/fireworks_midi.c   |  8 ++++++++
+ sound/firewire/fireworks/fireworks_pcm.c    | 20 ++++++++++++++++----
+ sound/firewire/fireworks/fireworks_stream.c |  7 -------
+ 3 files changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index c7cb7de..96c4e0c 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -86,8 +86,8 @@ struct snd_efw {
- 	struct amdtp_stream rx_stream;
- 	struct cmp_connection out_conn;
- 	struct cmp_connection in_conn;
--	atomic_t capture_substreams;
--	atomic_t playback_substreams;
-+	unsigned int capture_substreams;
-+	unsigned int playback_substreams;
- 
- 	/* hardware metering parameters */
- 	unsigned int phys_out;
 diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index 38232dc..3e8c4cf 100644
+index fba01bb..38232dc 100644
 --- a/sound/firewire/fireworks/fireworks_midi.c
 +++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -18,7 +18,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+@@ -17,8 +17,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
  		goto end;
  
- 	mutex_lock(&efw->mutex);
--	atomic_inc(&efw->capture_substreams);
-+	efw->capture_substreams++;
++	mutex_lock(&efw->mutex);
+ 	atomic_inc(&efw->capture_substreams);
  	err = snd_efw_stream_start_duplex(efw, 0);
- 	mutex_unlock(&efw->mutex);
++	mutex_unlock(&efw->mutex);
  	if (err < 0)
-@@ -38,7 +38,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 		snd_efw_stream_lock_release(efw);
+ 
+@@ -35,8 +37,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
  		goto end;
  
- 	mutex_lock(&efw->mutex);
--	atomic_inc(&efw->playback_substreams);
-+	efw->playback_substreams++;
++	mutex_lock(&efw->mutex);
+ 	atomic_inc(&efw->playback_substreams);
  	err = snd_efw_stream_start_duplex(efw, 0);
- 	mutex_unlock(&efw->mutex);
++	mutex_unlock(&efw->mutex);
  	if (err < 0)
-@@ -52,7 +52,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ 		snd_efw_stream_lock_release(efw);
+ end:
+@@ -47,8 +51,10 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ {
  	struct snd_efw *efw = substream->rmidi->private_data;
  
- 	mutex_lock(&efw->mutex);
--	atomic_dec(&efw->capture_substreams);
-+	efw->capture_substreams--;
++	mutex_lock(&efw->mutex);
+ 	atomic_dec(&efw->capture_substreams);
  	snd_efw_stream_stop_duplex(efw);
- 	mutex_unlock(&efw->mutex);
++	mutex_unlock(&efw->mutex);
  
-@@ -65,7 +65,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ 	snd_efw_stream_lock_release(efw);
+ 	return 0;
+@@ -58,8 +64,10 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ {
  	struct snd_efw *efw = substream->rmidi->private_data;
  
- 	mutex_lock(&efw->mutex);
--	atomic_dec(&efw->playback_substreams);
-+	efw->playback_substreams--;
++	mutex_lock(&efw->mutex);
+ 	atomic_dec(&efw->playback_substreams);
  	snd_efw_stream_stop_duplex(efw);
- 	mutex_unlock(&efw->mutex);
++	mutex_unlock(&efw->mutex);
  
+ 	snd_efw_stream_lock_release(efw);
+ 	return 0;
 diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 69f15a6..f4fbf75 100644
+index d27135b..69f15a6 100644
 --- a/sound/firewire/fireworks/fireworks_pcm.c
 +++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -253,7 +253,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+@@ -251,8 +251,11 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&efw->mutex);
--		atomic_inc(&efw->capture_substreams);
-+		efw->capture_substreams++;
- 		mutex_unlock(&efw->mutex);
- 	}
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&efw->mutex);
+ 		atomic_inc(&efw->capture_substreams);
++		mutex_unlock(&efw->mutex);
++	}
  
-@@ -274,7 +274,7 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 	amdtp_am824_set_pcm_format(&efw->tx_stream, params_format(hw_params));
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&efw->mutex);
--		atomic_inc(&efw->playback_substreams);
-+		efw->playback_substreams++;
- 		mutex_unlock(&efw->mutex);
- 	}
+@@ -269,8 +272,11 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
  
-@@ -289,7 +289,7 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&efw->mutex);
+ 		atomic_inc(&efw->playback_substreams);
++		mutex_unlock(&efw->mutex);
++	}
  
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&efw->mutex);
--		atomic_dec(&efw->capture_substreams);
-+		efw->capture_substreams--;
- 		mutex_unlock(&efw->mutex);
- 	}
+ 	amdtp_am824_set_pcm_format(&efw->rx_stream, params_format(hw_params));
  
-@@ -303,7 +303,7 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
+@@ -281,8 +287,11 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_efw *efw = substream->private_data;
  
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&efw->mutex);
--		atomic_dec(&efw->playback_substreams);
-+		efw->playback_substreams--;
- 		mutex_unlock(&efw->mutex);
- 	}
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&efw->mutex);
+ 		atomic_dec(&efw->capture_substreams);
++		mutex_unlock(&efw->mutex);
++	}
+ 
+ 	snd_efw_stream_stop_duplex(efw);
+ 
+@@ -292,8 +301,11 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_efw *efw = substream->private_data;
+ 
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&efw->mutex);
+ 		atomic_dec(&efw->playback_substreams);
++		mutex_unlock(&efw->mutex);
++	}
+ 
+ 	snd_efw_stream_stop_duplex(efw);
  
 diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 6930745..968a40a 100644
+index 759f6e3..6930745 100644
 --- a/sound/firewire/fireworks/fireworks_stream.c
 +++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -209,14 +209,13 @@ end:
- int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- {
- 	struct amdtp_stream *master, *slave;
--	atomic_t *slave_substreams;
-+	unsigned int slave_substreams;
- 	enum cip_flags sync_mode;
+@@ -214,8 +214,6 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
  	unsigned int curr_rate;
  	int err = 0;
  
+-	mutex_lock(&efw->mutex);
+-
  	/* Need no substreams */
--	if ((atomic_read(&efw->playback_substreams) == 0) &&
--	    (atomic_read(&efw->capture_substreams)  == 0))
-+	if (efw->playback_substreams == 0 && efw->capture_substreams  == 0)
- 		goto end;
+ 	if ((atomic_read(&efw->playback_substreams) == 0) &&
+ 	    (atomic_read(&efw->capture_substreams)  == 0))
+@@ -286,7 +284,6 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+ 		}
+ 	}
+ end:
+-	mutex_unlock(&efw->mutex);
+ 	return err;
+ }
  
- 	err = get_sync_mode(efw, &sync_mode);
-@@ -225,11 +224,11 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- 	if (sync_mode == CIP_SYNC_TO_DEVICE) {
- 		master = &efw->tx_stream;
- 		slave  = &efw->rx_stream;
--		slave_substreams  = &efw->playback_substreams;
-+		slave_substreams  = efw->playback_substreams;
- 	} else {
- 		master = &efw->rx_stream;
- 		slave  = &efw->tx_stream;
--		slave_substreams = &efw->capture_substreams;
-+		slave_substreams = efw->capture_substreams;
+@@ -307,16 +304,12 @@ void snd_efw_stream_stop_duplex(struct snd_efw *efw)
+ 		master_substreams = &efw->capture_substreams;
  	}
  
- 	/*
-@@ -275,7 +274,7 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- 	}
- 
- 	/* start slave if needed */
--	if (atomic_read(slave_substreams) > 0 && !amdtp_stream_running(slave)) {
-+	if (slave_substreams > 0 && !amdtp_stream_running(slave)) {
- 		err = start_stream(efw, slave, rate);
- 		if (err < 0) {
- 			dev_err(&efw->unit->device,
-@@ -290,24 +289,24 @@ end:
- void snd_efw_stream_stop_duplex(struct snd_efw *efw)
- {
- 	struct amdtp_stream *master, *slave;
--	atomic_t *master_substreams, *slave_substreams;
-+	unsigned int master_substreams, slave_substreams;
- 
- 	if (efw->master == &efw->rx_stream) {
- 		slave  = &efw->tx_stream;
- 		master = &efw->rx_stream;
--		slave_substreams  = &efw->capture_substreams;
--		master_substreams = &efw->playback_substreams;
-+		slave_substreams  = efw->capture_substreams;
-+		master_substreams = efw->playback_substreams;
- 	} else {
- 		slave  = &efw->rx_stream;
- 		master = &efw->tx_stream;
--		slave_substreams  = &efw->playback_substreams;
--		master_substreams = &efw->capture_substreams;
-+		slave_substreams  = efw->playback_substreams;
-+		master_substreams = efw->capture_substreams;
- 	}
- 
--	if (atomic_read(slave_substreams) == 0) {
-+	if (slave_substreams == 0) {
+-	mutex_lock(&efw->mutex);
+-
+ 	if (atomic_read(slave_substreams) == 0) {
  		stop_stream(efw, slave);
  
--		if (atomic_read(master_substreams) == 0)
-+		if (master_substreams == 0)
+ 		if (atomic_read(master_substreams) == 0)
  			stop_stream(efw, master);
  	}
+-
+-	mutex_unlock(&efw->mutex);
  }
+ 
+ void snd_efw_stream_update_duplex(struct snd_efw *efw)
 -- 
 2.1.4
