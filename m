@@ -1,19 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Roland/Edirol M-16DX
-Date: Sat, 24 Oct 2015 07:51:31 +0200
-Message-ID: <alpine.DEB.2.02.1510240745580.3097@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1510231017080.14239@lnxricardw1.se.axis.com>
- <562A136E.3030108@ladisch.de>
- <alpine.DEB.2.02.1510231640080.14239@lnxricardw1.se.axis.com>
- <562A4D7E.6040401@ladisch.de>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: da7219: Use logical instead of bitwise
+ OR for boolean expression
+Date: Sat, 24 Oct 2015 14:28:33 +0800
+Message-ID: <1445668113.26836.0.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 51CF5265755
- for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 07:51:36 +0200 (CEST)
-In-Reply-To: <562A4D7E.6040401@ladisch.de>
+Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
+ [209.85.220.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D12D2656FB
+ for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 08:28:39 +0200 (CEST)
+Received: by pacfv9 with SMTP id fv9so143120156pac.3
+ for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2015 23:28:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, 23 Oct 2015, Clemens Ladisch wrote:
-
-> Ricard Wanderlof wrote:
-> > On Fri, 23 Oct 2015, Clemens Ladisch wrote:
-> >> Ricard Wanderlof wrote:
-> >>> meaning that a device like the M-16DX should function as expected als=
-o for
-> >>> playback?
-> >>
-> >> There is some bug in the code that should detect such Roland devices.
-> >
-> > I'm not sure what you mean, is there a bug that fails to detect when it=
- is
-> > necessary to use implcit feedback specifically when using Roland device=
-s?
-> =
-
-> Yes.
-
-Sounds like something that shouldn't be too hard to fix given a device =
-
-at hand as well as a couple of hours of debugging time then.
-
-Any more ideas of what the problem is? E.g. because for whatever reason =
-
-it's not enough to have an entry in the quirks table, or something else =
-
-completely (like the number of capture and playback channels being =
-
-different)?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index abba4b3..86c528a 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1306,7 +1306,7 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	channels = params_channels(params);
+-	if ((channels < 1) | (channels > DA7219_DAI_CH_NUM_MAX)) {
++	if ((channels < 1) || (channels > DA7219_DAI_CH_NUM_MAX)) {
+ 		dev_err(codec->dev,
+ 			"Invalid number of channels, only 1 to %d supported\n",
+ 			DA7219_DAI_CH_NUM_MAX);
+-- 
+2.1.4
