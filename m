@@ -1,101 +1,342 @@
-From: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
-Subject: [PATCH] ASoC: sun4i-codec: use consistent names for PA controls
-Date: Sat, 24 Oct 2015 13:11:52 +0100
-Message-ID: <1445688712-31951-1-git-send-email-ats@offog.org>
-Reply-To: ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH 2/2] BAT: convert from getopt_long to argp
+Date: Sat, 24 Oct 2015 08:38:07 -0700
+Message-ID: <CAG5mAdw+-eZ3pQ-Cb1ycrCp+Kz_OniZjYP+xF40AOWV966Zd_g@mail.gmail.com>
+References: <1445639356-20343-1-git-send-email-caleb@crome.org>
+ <1445639356-20343-2-git-send-email-caleb@crome.org>
+ <s5hoafoaf07.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCQPXGGUXQGBBGHLVWYQKGQEF4SSX5I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A70C260430
+ for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 17:38:27 +0200 (CEST)
+Received: by wicfx6 with SMTP id fx6so64415192wic.1
+ for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 08:38:26 -0700 (PDT)
+In-Reply-To: <s5hoafoaf07.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The power amplifier for the headphone output is called "the PA" and "the
-headphone amplifier" in Allwinner's documentation for the A10 and A20.
-sun4i-codec calls it "PA" in some places and "Pre-Amplifier" (which
-isn't really accurate) in others, leading to user-visible controls with
-different names referring to the same device.
+On Sat, Oct 24, 2015 at 12:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sat, 24 Oct 2015 00:29:16 +0200,
+> Caleb Crome wrote:
+>>
+>> Convert from getopt_long to argp in preparation for converting to
+>> modular test framework.  This is to allow each module type to have
+>> its own set of options.
+>>
+>> argp allows multiple argument sets to be used, whereas
+>> getopt_long is limited in that regard.
+>
+> This patch seems dropping the gettext translations completely...?
+>
+>
+> Takashi
+>
 
-When this driver implements audio input, it'll also need to expose
-controls for the line and mic input preamps, so just referring to "the
-Pre-Amplifier" will be ambiguous.
+Ah, I had trouble compiling with the _() stuff.  I kept getting
+compile errors with the multi-line strings, so I removed it just to
+get the rest of the patch working, and forgot to put it back in.  I'll
+resubmit when I work out what was wrong.  (I've never used gettext
+before, or submitted to linux sources before, or used git before, so
+thanks for bearing with me while I come up to speed).
 
-Change it to use "PA" consistently for the power amplifier.
+-Caleb
 
-Signed-off-by: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index bcbf4da..ff3304d 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -2,6 +2,7 @@
-  * Copyright 2014 Emilio L=C3=B3pez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>
-  * Copyright 2014 Jon Smirl <jonsmirl-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-  * Copyright 2015 Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-+ * Copyright 2015 Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
-  *
-  * Based on the Allwinner SDK driver, released under the GPL.
-  *
-@@ -452,12 +453,12 @@ static const struct snd_soc_dapm_widget sun4i_codec_d=
-apm_widgets[] =3D {
- 	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
- 			    SUN4I_CODEC_DAC_ACTL_MIXEN, 0, NULL, 0),
-=20
--	/* Pre-Amplifier */
--	SND_SOC_DAPM_MIXER("Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
-+	/* Headphone output power amplifier */
-+	SND_SOC_DAPM_MIXER("PA", SUN4I_CODEC_ADC_ACTL,
- 			   SUN4I_CODEC_ADC_ACTL_PA_EN, 0,
- 			   sun4i_codec_pa_mixer_controls,
- 			   ARRAY_SIZE(sun4i_codec_pa_mixer_controls)),
--	SND_SOC_DAPM_SWITCH("Pre-Amplifier Mute", SND_SOC_NOPM, 0, 0,
-+	SND_SOC_DAPM_SWITCH("PA Mute", SND_SOC_NOPM, 0, 0,
- 			    &sun4i_codec_pa_mute),
-=20
- 	SND_SOC_DAPM_OUTPUT("HP Right"),
-@@ -480,16 +481,16 @@ static const struct snd_soc_dapm_route sun4i_codec_da=
-pm_routes[] =3D {
- 	{ "Left Mixer", NULL, "Mixer Enable" },
- 	{ "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
-=20
--	/* Pre-Amplifier Mixer Routes */
--	{ "Pre-Amplifier", "Mixer Playback Switch", "Left Mixer" },
--	{ "Pre-Amplifier", "Mixer Playback Switch", "Right Mixer" },
--	{ "Pre-Amplifier", "DAC Playback Switch", "Left DAC" },
--	{ "Pre-Amplifier", "DAC Playback Switch", "Right DAC" },
-+	/* PA Mixer Routes */
-+	{ "PA", "Mixer Playback Switch", "Left Mixer" },
-+	{ "PA", "Mixer Playback Switch", "Right Mixer" },
-+	{ "PA", "DAC Playback Switch", "Left DAC" },
-+	{ "PA", "DAC Playback Switch", "Right DAC" },
-=20
- 	/* PA -> HP path */
--	{ "Pre-Amplifier Mute", "Switch", "Pre-Amplifier" },
--	{ "HP Right", NULL, "Pre-Amplifier Mute" },
--	{ "HP Left", NULL, "Pre-Amplifier Mute" },
-+	{ "PA Mute", "Switch", "PA" },
-+	{ "HP Right", NULL, "PA Mute" },
-+	{ "HP Left", NULL, "PA Mute" },
- };
-=20
- static struct snd_soc_codec_driver sun4i_codec_codec =3D {
---=20
-2.1.4
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+>>
+>> Signed-off-by: Caleb Crome <caleb@crome.org>
+>> ---
+>>  bat/bat.c | 233 ++++++++++++++++++++++++++++++++++----------------------------
+>>  1 file changed, 129 insertions(+), 104 deletions(-)
+>>
+>> diff --git a/bat/bat.c b/bat/bat.c
+>> index 9c046e6..36705c1 100644
+>> --- a/bat/bat.c
+>> +++ b/bat/bat.c
+>> @@ -20,7 +20,8 @@
+>>  #include <string.h>
+>>  #include <errno.h>
+>>  #include <pthread.h>
+>> -#include <getopt.h>
+>> +#include <argp.h>
+>> +#include <error.h>
+>>  #include <math.h>
+>>  #include <limits.h>
+>>  #include <locale.h>
+>> @@ -283,37 +284,6 @@ static void test_capture(struct bat *bat)
+>>       }
+>>  }
+>>
+>> -static void usage(struct bat *bat)
+>> -{
+>> -     fprintf(bat->log,
+>> -_("Usage: bat [-options]...\n"
+>> -"\n"
+>> -"  -h, --help             this help\n"
+>> -"  -D                     pcm device for both playback and capture\n"
+>> -"  -P                     pcm device for playback\n"
+>> -"  -C                     pcm device for capture\n"
+>> -"  -f                     sample format\n"
+>> -"  -c                     number of channels\n"
+>> -"  -r                     sampling rate\n"
+>> -"  -n                     frames to playback or capture\n"
+>> -"  -k                     parameter for frequency detecting threshold\n"
+>> -"  -F                     target frequency\n"
+>> -"  -p                     total number of periods to play/capture\n"
+>> -"      --log=#            file that both stdout and strerr redirecting to\n"
+>> -"      --file=#           file for playback\n"
+>> -"      --saveplay=#       file that storing playback content, for debug\n"
+>> -"      --local            internal loop, set to bypass pcm hardware devices\n"
+>> -));
+>> -     fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
+>> -                     snd_pcm_format_name(SND_PCM_FORMAT_U8),
+>> -                     snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
+>> -                     snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
+>> -                     snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
+>> -     fprintf(bat->log, _("The available format shotcuts are:\n"));
+>> -     fprintf(bat->log, _("-f cd (16 bit little endian, 44100, stereo)\n"));
+>> -     fprintf(bat->log, _("-f dat (16 bit little endian, 48000, stereo)\n"));
+>> -}
+>> -
+>>  static void set_defaults(struct bat *bat)
+>>  {
+>>       int i;
+>> @@ -344,82 +314,136 @@ static void set_defaults(struct bat *bat)
+>>       bat->err = stderr;
+>>  }
+>>
+>> +
+>> +static error_t parse_opt (int key, char *arg, struct argp_state *state)
+>> +{
+>> +     struct bat *bat = state->input;
+>> +     switch (key) {
+>> +     case OPT_LOG:
+>> +             bat->logarg = arg;
+>> +             break;
+>> +     case OPT_READFILE:
+>> +             bat->playback.file = arg;
+>> +             break;
+>> +     case OPT_SAVEPLAY:
+>> +             bat->debugplay = arg;
+>> +             break;
+>> +     case OPT_LOCAL:
+>> +             bat->local = true;
+>> +             break;
+>> +     case 'D':
+>> +             if (bat->playback.device == NULL)
+>> +                     bat->playback.device = arg;
+>> +             if (bat->capture.device == NULL)
+>> +                     bat->capture.device = arg;
+>> +             break;
+>> +     case 'P':
+>> +             if (bat->capture.mode == MODE_SINGLE)
+>> +                     bat->capture.mode = MODE_LOOPBACK;
+>> +             else
+>> +                     bat->playback.mode = MODE_SINGLE;
+>> +             bat->playback.device = arg;
+>> +             break;
+>> +     case 'C':
+>> +             if (bat->playback.mode == MODE_SINGLE)
+>> +                     bat->playback.mode = MODE_LOOPBACK;
+>> +             else
+>> +                     bat->capture.mode = MODE_SINGLE;
+>> +             bat->capture.device = arg;
+>> +             break;
+>> +     case 'n':
+>> +             bat->narg = arg;
+>> +             break;
+>> +     case 'F':
+>> +             get_sine_frequencies(bat, arg);
+>> +             break;
+>> +     case 'c':
+>> +             bat->channels = atoi(arg);
+>> +             break;
+>> +     case 'r':
+>> +             bat->rate = atoi(arg);
+>> +             break;
+>> +     case 'f':
+>> +             get_format(bat, arg);
+>> +             break;
+>> +     case 'k':
+>> +             bat->sigma_k = atof(arg);
+>> +             break;
+>> +     case 'p':
+>> +             bat->periods_total = atoi(arg);
+>> +             bat->period_is_limited = true;
+>> +             break;
+>> +     default:
+>> +             return ARGP_ERR_UNKNOWN;
+>> +             break;
+>> +     }
+>> +     return 0;
+>> +}
+>>  static void parse_arguments(struct bat *bat, int argc, char *argv[])
+>>  {
+>> -     int c, option_index;
+>> -     static const char short_options[] = "D:P:C:f:n:F:c:r:s:k:p:lth";
+>> -     static const struct option long_options[] = {
+>> -             {"help",     0, 0, 'h'},
+>> -             {"log",      1, 0, OPT_LOG},
+>> -             {"file",     1, 0, OPT_READFILE},
+>> -             {"saveplay", 1, 0, OPT_SAVEPLAY},
+>> -             {"local",    0, 0, OPT_LOCAL},
+>> -             {0, 0, 0, 0}
+>> +
+>> +     const char doc[] =
+>> +             "Basic Audio Tester\n"
+>> +             "\n"
+>> +             "Uses a loopback configuration or 2 PC configuration "
+>> +             "(play on one PC and record on the other) to test "
+>> +             "if if audio is flowing smoothly."
+>> +             "\n"
+>> +             "Full documentation in the bat man page and at "
+>> +             "https://github.com/01org/bat/wiki"
+>> +             "\n"
+>> +             "Recognized sample formats are: %s %s %s %s\n"
+>> +             "The available format shotcuts are:\n"
+>> +             "\t-f cd (16 bit little endian, 44100, stereo)\n"
+>> +             "\t-f dat (16 bit little endian, 48000, stereo)\n";
+>> +
+>> +     const char args_doc[] = "";
+>> +
+>> +     struct argp_option options[] = {
+>> +             {"log", OPT_LOG, "FILENAME", 0,
+>> +              "file that both stdout and strerr redirecting to", 0},
+>> +             {"file", OPT_READFILE, "FILENAME", 0,
+>> +              "file for playback",0},
+>> +             {"saveplay", OPT_SAVEPLAY, "FILENAME", 0,
+>> +              "file for storing playback content, for debug", 0},
+>> +             {"local", OPT_LOCAL, 0, 0,
+>> +              "internal loopback, set to bypass pcm hardware devices",0},
+>> +             {"device-duplex", 'D', "DEVICE", 0,
+>> +              "pcm device for both playback and capture", 0},
+>> +             {"device-playback", 'P', "DEVICE", 0,
+>> +              "pcm device for playback", 0},
+>> +             {"device-capture", 'C', "DEVICE", 0,
+>> +              "pcm device for capture", 0},
+>> +             {"sample_format" , 'f', "FORMAT", 0,
+>> +              "sample format", 0},
+>> +             {"channels", 'c', "CHANNELS", 0,
+>> +              "number of channels", 0},
+>> +             {"sample-rate", 'r', "SAMP/SEC", 0,
+>> +              "sampling rate", 0},
+>> +             {"frames", 'n', "FRAMES", 0,
+>> +              "The number of frames for playback and/or capture", 0},
+>> +             {"threshold", 'k', "THRESHOLD", 0,
+>> +              "parameter for frequency detecting threshold", 0},
+>> +             {"target-frequency", 'F', "FREQUENCY", 0,
+>> +              "target frequency for sin test ", 0},
+>> +             {"periods", 'p', "PERIODS", 0,
+>> +              "total number of periods to play/capture", 0},
+>> +             { 0 }
+>>       };
+>>
+>> -     while ((c = getopt_long(argc, argv, short_options, long_options,
+>> -                                     &option_index)) != -1) {
+>> -             switch (c) {
+>> -             case OPT_LOG:
+>> -                     bat->logarg = optarg;
+>> -                     break;
+>> -             case OPT_READFILE:
+>> -                     bat->playback.file = optarg;
+>> -                     break;
+>> -             case OPT_SAVEPLAY:
+>> -                     bat->debugplay = optarg;
+>> -                     break;
+>> -             case OPT_LOCAL:
+>> -                     bat->local = true;
+>> -                     break;
+>> -             case 'D':
+>> -                     if (bat->playback.device == NULL)
+>> -                             bat->playback.device = optarg;
+>> -                     if (bat->capture.device == NULL)
+>> -                             bat->capture.device = optarg;
+>> -                     break;
+>> -             case 'P':
+>> -                     if (bat->capture.mode == MODE_SINGLE)
+>> -                             bat->capture.mode = MODE_LOOPBACK;
+>> -                     else
+>> -                             bat->playback.mode = MODE_SINGLE;
+>> -                     bat->playback.device = optarg;
+>> -                     break;
+>> -             case 'C':
+>> -                     if (bat->playback.mode == MODE_SINGLE)
+>> -                             bat->playback.mode = MODE_LOOPBACK;
+>> -                     else
+>> -                             bat->capture.mode = MODE_SINGLE;
+>> -                     bat->capture.device = optarg;
+>> -                     break;
+>> -             case 'n':
+>> -                     bat->narg = optarg;
+>> -                     break;
+>> -             case 'F':
+>> -                     get_sine_frequencies(bat, optarg);
+>> -                     break;
+>> -             case 'c':
+>> -                     bat->channels = atoi(optarg);
+>> -                     break;
+>> -             case 'r':
+>> -                     bat->rate = atoi(optarg);
+>> -                     break;
+>> -             case 'f':
+>> -                     get_format(bat, optarg);
+>> -                     break;
+>> -             case 'k':
+>> -                     bat->sigma_k = atof(optarg);
+>> -                     break;
+>> -             case 'p':
+>> -                     bat->periods_total = atoi(optarg);
+>> -                     bat->period_is_limited = true;
+>> -                     break;
+>> -             case 'h':
+>> -             default:
+>> -                     usage(bat);
+>> -                     exit(EXIT_SUCCESS);
+>> -             }
+>> -     }
+>> +     char *doc_filled;
+>> +
+>> +     const int doc_size = strlen(doc) + 20*4;
+>> +     doc_filled = malloc(doc_size);
+>> +     snprintf(doc_filled, doc_size, doc,
+>> +              snd_pcm_format_name(SND_PCM_FORMAT_U8),
+>> +              snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
+>> +              snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
+>> +              snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
+>> +
+>> +     struct argp  argp = {options, parse_opt, args_doc, doc_filled};
+>> +     argp_parse(&argp, argc, argv, 0, 0, bat);
+>> +     free(doc_filled);
+>>  }
+>>
+>>  static int validate_options(struct bat *bat)
+>> @@ -498,6 +522,7 @@ static int bat_init(struct bat *bat)
+>>                       fprintf(bat->err, _("Fail to create record file: %d\n"),
+>>                                       -errno);
+>>                       return -errno;
+>> +
+>>               }
+>>               /* store file name which is dynamically created */
+>>               bat->capture.file = strdup(name);
+>> --
+>> 2.6.1
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
