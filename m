@@ -1,90 +1,101 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 5/9] ASoC: Intel: Skylake: Update for ssp
- node index in copier cfg
-Date: Sat, 24 Oct 2015 17:26:08 +0530
-Message-ID: <20151024115607.GH27370@localhost>
-References: <1445536362-26670-1-git-send-email-vinod.koul@intel.com>
- <1445536362-26670-6-git-send-email-vinod.koul@intel.com>
- <20151023163052.GI29919@sirena.org.uk>
+From: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+Subject: [PATCH] ASoC: sun4i-codec: use consistent names for PA controls
+Date: Sat, 24 Oct 2015 13:11:52 +0100
+Message-ID: <1445688712-31951-1-git-send-email-ats@offog.org>
+Reply-To: ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0860401625718881087=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A51AE26574E
- for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2015 13:52:50 +0200 (CEST)
-In-Reply-To: <20151023163052.GI29919@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCQPXGGUXQGBBGHLVWYQKGQEF4SSX5I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+The power amplifier for the headphone output is called "the PA" and "the
+headphone amplifier" in Allwinner's documentation for the A10 and A20.
+sun4i-codec calls it "PA" in some places and "Pre-Amplifier" (which
+isn't really accurate) in others, leading to user-visible controls with
+different names referring to the same device.
 
---===============0860401625718881087==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qyHYMwAXsHLOQihY"
-Content-Disposition: inline
+When this driver implements audio input, it'll also need to expose
+controls for the line and mic input preamps, so just referring to "the
+Pre-Amplifier" will be ambiguous.
 
+Change it to use "PA" consistently for the power amplifier.
 
---qyHYMwAXsHLOQihY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-On Sat, Oct 24, 2015 at 01:30:52AM +0900, Mark Brown wrote:
-> On Thu, Oct 22, 2015 at 11:22:38PM +0530, Vinod Koul wrote:
-> > From: Jeeja KP <jeeja.kp@intel.com>
-> >=20
-> > DSP firmware has interface change for SSP node index structure.
-> > New FW interface removes the dual_mono field and adds 4 bits for
-> > TDM slot group index. This patch updates the ssp dma to align with
-> > the DSP firmware structure.
->=20
-> This probably doesn't matter right now since things haven't been
-> released yet but it's going to become an ABI issue...
-
-Yes, I am trying to ensure after this cycle is done we dont have any more
-interface changes..
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index bcbf4da..ff3304d 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -2,6 +2,7 @@
+  * Copyright 2014 Emilio L=C3=B3pez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>
+  * Copyright 2014 Jon Smirl <jonsmirl-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+  * Copyright 2015 Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
++ * Copyright 2015 Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+  *
+  * Based on the Allwinner SDK driver, released under the GPL.
+  *
+@@ -452,12 +453,12 @@ static const struct snd_soc_dapm_widget sun4i_codec_d=
+apm_widgets[] =3D {
+ 	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
+ 			    SUN4I_CODEC_DAC_ACTL_MIXEN, 0, NULL, 0),
+=20
+-	/* Pre-Amplifier */
+-	SND_SOC_DAPM_MIXER("Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
++	/* Headphone output power amplifier */
++	SND_SOC_DAPM_MIXER("PA", SUN4I_CODEC_ADC_ACTL,
+ 			   SUN4I_CODEC_ADC_ACTL_PA_EN, 0,
+ 			   sun4i_codec_pa_mixer_controls,
+ 			   ARRAY_SIZE(sun4i_codec_pa_mixer_controls)),
+-	SND_SOC_DAPM_SWITCH("Pre-Amplifier Mute", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_SWITCH("PA Mute", SND_SOC_NOPM, 0, 0,
+ 			    &sun4i_codec_pa_mute),
+=20
+ 	SND_SOC_DAPM_OUTPUT("HP Right"),
+@@ -480,16 +481,16 @@ static const struct snd_soc_dapm_route sun4i_codec_da=
+pm_routes[] =3D {
+ 	{ "Left Mixer", NULL, "Mixer Enable" },
+ 	{ "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
+=20
+-	/* Pre-Amplifier Mixer Routes */
+-	{ "Pre-Amplifier", "Mixer Playback Switch", "Left Mixer" },
+-	{ "Pre-Amplifier", "Mixer Playback Switch", "Right Mixer" },
+-	{ "Pre-Amplifier", "DAC Playback Switch", "Left DAC" },
+-	{ "Pre-Amplifier", "DAC Playback Switch", "Right DAC" },
++	/* PA Mixer Routes */
++	{ "PA", "Mixer Playback Switch", "Left Mixer" },
++	{ "PA", "Mixer Playback Switch", "Right Mixer" },
++	{ "PA", "DAC Playback Switch", "Left DAC" },
++	{ "PA", "DAC Playback Switch", "Right DAC" },
+=20
+ 	/* PA -> HP path */
+-	{ "Pre-Amplifier Mute", "Switch", "Pre-Amplifier" },
+-	{ "HP Right", NULL, "Pre-Amplifier Mute" },
+-	{ "HP Left", NULL, "Pre-Amplifier Mute" },
++	{ "PA Mute", "Switch", "PA" },
++	{ "HP Right", NULL, "PA Mute" },
++	{ "HP Left", NULL, "PA Mute" },
+ };
+=20
+ static struct snd_soc_codec_driver sun4i_codec_codec =3D {
+--=20
+2.1.4
 
 --=20
-~Vinod
-
---qyHYMwAXsHLOQihY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJWK3HXAAoJEHwUBw8lI4NHOa4P/2sB3P9LXvQ3C01Z5NIViBeX
-GwH1SCb6KmSY+ifWF0H1qZiS/tuSylHfJyO5vD1Wero2Y+j/cMSCJSGrf0Yu8ciz
-CU4lhNOgAqVlJg7JaGKSNmNAOtiu7oEmFDS8FzKMI5o/gdii3avPrspt9vdJlAqY
-x76ooCgvN5EtMONfSS5eTXg4B3uU8hamDpc9Q7P1xU/pmKZ2iaLGuKX9pb4/4S3K
-twNnKtMZvfS03n01v01WyERRmrtqWaR0bo4wboGMWV1mM88qqqMiTGz0G7T/lgSJ
-gYGevER1ROGmA7DhEGlLA1wF7aKJPTdgFVb+9PkRGA920BSjlM5NkRITDSBc808t
-JvYJEk476ljVDbxyqPiFclK+eOEUKpfg1+FfPLKBZa9caef4352+KHF4Tfb42kaO
-OuIo18eXw90v6FU9RaKk6m7w0YpFiRlsNQeLXOuavChs8qA9W0tjQiI1DQbjo7F3
-n7jHTTzz/jMYBeBEL6xY0wa4ToNnqmu65uzseKSMvPeZMAlptNdx+rOhtuMjo6YB
-y2EbvNJnvOUhT1M3dgmfxFNLXmyFXhNG/nr4MK8uFrSZnH6aZcW2eIrkPS207eEO
-SwE5aud42Olx9PtFEFYnEpjmoDQ2jk3/bJghY4rFg+O4qy9f4PBftYuseOtQTVKT
-NLxvllvYTda9cAnFoDev
-=63X5
------END PGP SIGNATURE-----
-
---qyHYMwAXsHLOQihY--
-
---===============0860401625718881087==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0860401625718881087==--
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
