@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: fix Rx synchrounous mode" to
-	the asoc tree
-Date: Mon, 26 Oct 2015 16:36:33 +0900
-Message-ID: <E1ZqcKX-0002Di-2f@finisterre>
-References: <1445301743-24173-1-git-send-email-stefan@agner.ch>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 2/6] ASoC: hdac-hdmi: Add hdmi driver
+Date: Mon, 26 Oct 2015 08:30:45 +0000
+Message-ID: <1445848243.5321.45.camel@intel.com>
+References: <1445821673-4947-1-git-send-email-vinod.koul@intel.com>
+ <1445821673-4947-3-git-send-email-vinod.koul@intel.com>
+ <s5h1tci9jfd.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D3DB02604A1
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 08:36:56 +0100 (CET)
-In-Reply-To: <1445301743-24173-1-git-send-email-stefan@agner.ch>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1840C260522
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 09:31:10 +0100 (CET)
+In-Reply-To: <s5h1tci9jfd.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <240444C3854A534EB051F76F083E0063@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Agner <stefan@agner.ch>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, Patches Audio <patches.audio@intel.com>, "arnaud.pouliquen@st.com" <arnaud.pouliquen@st.com>, "jsarha@ti.com" <jsarha@ti.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "ykk@rock-chips.com" <ykk@rock-chips.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, 2015-10-26 at 08:29 +0100, Takashi Iwai wrote:
+> On Mon, 26 Oct 2015 02:07:49 +0100,
+> Vinod Koul wrote:
+> > +/*
+> > + * Parse all nodes and store the cvt/pin nids in array
+> > + * Add one time initialization for pin and cvt widgets
+> > + */
+> > +static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+> > +{
+> ....
+> > +	/*
+> > +	 * Currently on board only 1 pin and 1 converter enabled.
+> > +	 * So using fixed map for dai_id:pin:cvt
+> > +	 */
+> > +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[0],
+> > +			hdmi->cvt_nid[0], 0);
+> 
+> Isn't this assumption too naive?
+> And such a restriction has to be written more clearly in the
+> changelog.
 
-   ASoC: fsl_sai: fix Rx synchrounous mode
+The intention here in this series is to have basic HDMI features enabled :) The
+intention is to keep adding stuff to support multichannel, IEC, multiple outputs, SW
+notification etc once basic driver is merged
 
-has been applied to the asoc tree at
+Agreed we can add this to changelog. I can send updated rev, once I have other
+comments
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3cc7780b6fc04318ab08d84f739503989200cf55 Mon Sep 17 00:00:00 2001
-From: Stefan Agner <stefan@agner.ch>
-Date: Mon, 19 Oct 2015 17:42:23 -0700
-Subject: [PATCH] ASoC: fsl_sai: fix Rx synchrounous mode
-
-When using the Rx clock for both, transmitter and receiver, the
-transmitter needs to be set to synchronous with receiver.
-
-This reverts 855675f6e6a6 ("ASoC: fsl_sai: Set SYNC bit of TCR2 to
-Asynchronous Mode"), which, judiging from the commit log, seems to
-mixed up between the two synchronous modes: The boolean
-sai->synchronous[TX] is indicating wheather the SAI should work in
-Rx synchronous mode (sync Tx with Rx), hence if the value is true,
-the SYNC field of TCR2 needs to be set to 0x1 ("Synchronous with
-receiver").
-
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_sai.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index a18fd92..1f0e552 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -454,7 +454,8 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	 * Rx sync with Tx clocks: Clear SYNC for Tx, set it for Rx.
- 	 * Tx sync with Rx clocks: Clear SYNC for Rx, set it for Tx.
- 	 */
--	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC, 0);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC,
-+		           sai->synchronous[TX] ? FSL_SAI_CR2_SYNC : 0);
- 	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
- 			   sai->synchronous[RX] ? FSL_SAI_CR2_SYNC : 0);
- 
 -- 
-2.6.1
+~Vinod
