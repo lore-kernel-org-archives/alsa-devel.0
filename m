@@ -1,64 +1,38 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v2] ASoC: wm9713: convert to regmap
-Date: Mon, 26 Oct 2015 18:53:27 +0100
-Message-ID: <8737wxldns.fsf@belgarion.home>
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: wm9713: convert to regmap
+Date: Mon, 26 Oct 2015 19:02:32 +0100
+Message-ID: <87y4epjyo7.fsf@belgarion.home>
 References: <1445722627-28854-1-git-send-email-robert.jarzmik@free.fr>
-	<20151026110257.GH10520@ck-lbox>
+	<562E0E18.80500@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151026110257.GH10520@ck-lbox> (Charles Keepax's message of
-	"Mon, 26 Oct 2015 11:02:57 +0000")
+In-Reply-To: <562E0E18.80500@metafoo.de> (Lars-Peter Clausen's message of
+	"Mon, 26 Oct 2015 12:27:20 +0100")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
+Lars-Peter Clausen <lars@metafoo.de> writes:
 
-> On Sat, Oct 24, 2015 at 11:37:07PM +0200, Robert Jarzmik wrote:
->> Convert the Wolfson WM9713 to regmap API. This will leverage all the
->> regmap functions (debug, registers update, etc ...).
->> 
->> As a bonus, this will pave the path to gpio chip introduction, and
->> devicetree support.
->> 
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> ---
->> Since v1: fix suspend/resume (that specific part is not tested yet)
->> ---
->>  sound/soc/codecs/Kconfig  |   1 +
->>  sound/soc/codecs/wm9713.c | 296 +++++++++++++++++++++++-----------------------
->>  2 files changed, 152 insertions(+), 145 deletions(-)
-> <snip>
->> @@ -1156,16 +1165,17 @@ static int wm9713_set_bias_level(struct snd_soc_codec *codec,
->>  
->>  static int wm9713_soc_suspend(struct snd_soc_codec *codec)
->>  {
->> -	u16 reg;
->> +	regcache_cache_only(codec->component.regmap, true);
->> +	snd_soc_cache_sync(codec);
+> On 10/24/2015 11:37 PM, Robert Jarzmik wrote:
+> [...]
+>> -static unsigned int ac97_read(struct snd_soc_codec *codec,
+>> -	unsigned int reg);
+>> -static int ac97_write(struct snd_soc_codec *codec,
+>> -	unsigned int reg, unsigned int val);
 >
-> I am assuming we don't want to be doing a cache_sync just after we
-> have marked the regmap as cache only.
-Ah, this denotes my lack of understanding of regmap cache behavior.
-Basically what I want at this point is that :
- 1) All previous writes should hit the cache (cache coherency barrier)
- 2) All subsequent writes should not go into the cache (uncached writes)
-    => especially the next writes in wm9713_soc_suspend()
+> For review purposes it would be helpful to split this into two patches. One
+> performing the regmap conversion the other replacing
+> ac97_read()/ac97_write() with the matching snd_soc_ calls (or
+> snd_soc_update_bits).
+Most certainly, I'll do that. If bissection is not broken, it's fine by me.
 
->> +	snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x7fff,
->> +				 0x7fff);
->> +	snd_soc_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
->> +	snd_soc_write(codec, AC97_POWERDOWN, 0x6f00);
->> +	snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
+>> +	snd_soc_codec_init_regmap(codec, regmap);
 >
-> Also as you have already marked the regmap as cache only these
-> writes won't go to the hardware.
-Ah, exactly the opposite of what I wanted :(
-
-Would you have an example driver I can inspire myself from. If not, I'll dig in
-more in the regmap cache API.
+> You need to call snd_soc_odec_exit_regmap() when the CODEC is unbound.
+Ah yes, I'll put that in the next iteration, thanks.
 
 Cheers.
 
