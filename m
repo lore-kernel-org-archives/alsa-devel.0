@@ -1,18 +1,25 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Delay issue in ALSA in connecting GSM call
-Date: Mon, 26 Oct 2015 09:44:34 +0000
-Message-ID: <SG2PR04MB069561F1F542C929AAF5EC64C3230@SG2PR04MB0695.apcprd04.prod.outlook.com>
-References: <SG2PR04MB0695C70149EFD11BF229C903C3260@SG2PR04MB0695.apcprd04.prod.outlook.com>
+From: Erik de Castro Lopo <mle+la@mega-nerd.com>
+Subject: Re: Using snd_pcm_set_params() on a capture handle
+Date: Mon, 26 Oct 2015 20:54:31 +1100
+Message-ID: <20151026205431.e306afd9e96991ebe7fa7889@mega-nerd.com>
+References: <20151025174442.b318e489f0568566a4b82908@mega-nerd.com>
+ <562D376E.7000308@ladisch.de>
+ <20151026194701.7258eceaea5cb7a7a41bcf94@mega-nerd.com>
+ <562DEF9C.8090706@ladisch.de>
+ <20151026202321.cc3f5496a60a9369542d6be6@mega-nerd.com>
+ <562DF600.8020809@ladisch.de>
+Reply-To: alsa-devel@alsa-project.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0092.outbound.protection.outlook.com [104.47.125.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 8287A26061E
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 10:44:38 +0100 (CET)
-In-Reply-To: <SG2PR04MB0695C70149EFD11BF229C903C3260@SG2PR04MB0695.apcprd04.prod.outlook.com>
-Content-Language: en-US
+Received: from hendrix.mega-nerd.net (hendrix.mega-nerd.net [203.206.230.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id 952B926060E
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 10:54:33 +0100 (CET)
+Received: from rollins.mnn (pharoah-vpn [10.9.8.2])
+ by hendrix.mega-nerd.net (Postfix) with SMTP id CDAA9C06BF
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 20:54:31 +1100 (AEDT)
+In-Reply-To: <562DF600.8020809@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +29,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
+Clemens Ladisch wrote:
 
+> To get the current parameters of the device, use snd_pcm_hw_params_current().
 
-Am awaiting, Could you please provide your valuable guidance or inputs w.r.t the below issue
+Ah, that makes sense. Now I get:
 
+    ACCESS:  RW_INTERLEAVED
+    FORMAT:  S32_LE
+    SUBFORMAT:  STD
+    SAMPLE_BITS: [0 0]
+    FRAME_BITS: [64 64]
+    CHANNELS: [2 2]
+    RATE: [48000 48000]
+    PERIOD_TIME: [6250 6250]
+    PERIOD_SIZE: [300 300]
+    PERIOD_BYTES: [0 0]
+    PERIODS: [0 0]
+    BUFFER_TIME: [0 0]
+    BUFFER_SIZE: [1200 1200]
+    BUFFER_BYTES: [9600 9600]
+    TICK_TIME: [0 0]
 
-Kindly do the needful as early as possible
+Why is SAMPLE_BITS == [0 0], even though the format is S32_LE?
 
-
-Many Thanks in advance
-
-
-________________________________
-From: Srinivasan S
-Sent: Friday, October 23, 2015 2:40 PM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
-Subject: Delay issue in ALSA in connecting GSM call
-
-
-Dear Clemens,
-
-
-I am using the above ALSA application to connect GSM two way call, I see that there seems to be a delay of 3 seconds, when GSM call is made, that ie., it takes 3 seconds to hear on the speaker of our custom board when ever we talk from GSM & the delay is same when  ever we talk from board MIC to speaker of GSM
-
-But I tried to do loopback using the below command instead of using the above attached ALSA application, but still the delay issue persists
-arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-
-Could you please let me know how this delay issue can be resolved, Could you please provide any inputs or guidance w.r.t this issue
-
-
-Any help would be greatly appreciated
-
-Kindly do the needful as early as possible
-
-Many Thanks in advance
+Erik
+-- 
+----------------------------------------------------------------------
+Erik de Castro Lopo
+http://www.mega-nerd.com/
