@@ -1,17 +1,17 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH] ASoC: fsl-sai: add default register map for
-	regmap cache
-Date: Mon, 26 Oct 2015 15:19:03 +0800
-Message-ID: <1445843945-13319-2-git-send-email-zidan.wang@freescale.com>
+Subject: [PATCH] ASoC: fsl_ssi: using macro for default
+	register map
+Date: Mon, 26 Oct 2015 15:19:05 +0800
+Message-ID: <1445843945-13319-4-git-send-email-zidan.wang@freescale.com>
 References: <1445843945-13319-1-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0147.outbound.protection.outlook.com [157.56.111.147])
- by alsa0.perex.cz (Postfix) with ESMTP id 935D92604A4
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 08:17:18 +0100 (CET)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0114.outbound.protection.outlook.com [65.55.169.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53FC22604A1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 08:17:27 +0100 (CET)
 In-Reply-To: <1445843945-13319-1-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,71 +26,45 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-FSL_SAI_TDR register is writable and not readable. According to
-regmap_volatile() function, if FSL_SAI_TDR want to be volatile,
-it should be readable. So we should remove FSL_SAI_TDR from volatile
-register list.
-
-If the flat cache don't have default register map, when do regcache_sync
-operation, the non volatile and writable registers will be synchronised
-to 0. FSL_SAI_TDR reigster will be written a 0 and cause channel swap.
-So add default register map for flat cache, and such register will not
-be written.
+using macro for default register map
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/fsl/fsl_sai.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 784725b..18101b9 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -608,6 +608,22 @@ static const struct snd_soc_component_driver fsl_component = {
- 	.name           = "fsl-sai",
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 95d2392..674abf7 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -113,17 +113,17 @@ struct fsl_ssi_rxtx_reg_val {
  };
  
-+static struct reg_default fsl_sai_reg_defaults[] = {
-+	{FSL_SAI_TCR1, 0},
-+	{FSL_SAI_TCR2, 0},
-+	{FSL_SAI_TCR3, 0},
-+	{FSL_SAI_TCR4, 0},
-+	{FSL_SAI_TCR5, 0},
-+	{FSL_SAI_TDR,  0},
-+	{FSL_SAI_TMR,  0},
-+	{FSL_SAI_RCR1, 0},
-+	{FSL_SAI_RCR2, 0},
-+	{FSL_SAI_RCR3, 0},
-+	{FSL_SAI_RCR4, 0},
-+	{FSL_SAI_RCR5, 0},
-+	{FSL_SAI_RMR,  0},
-+};
-+
- static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -641,13 +657,11 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
- 	case FSL_SAI_RCSR:
- 	case FSL_SAI_TFR:
- 	case FSL_SAI_RFR:
--	case FSL_SAI_TDR:
- 	case FSL_SAI_RDR:
- 		return true;
- 	default:
- 		return false;
- 	}
--
- }
+ static const struct reg_default fsl_ssi_reg_defaults[] = {
+-	{0x10, 0x00000000},
+-	{0x18, 0x00003003},
+-	{0x1c, 0x00000200},
+-	{0x20, 0x00000200},
+-	{0x24, 0x00040000},
+-	{0x28, 0x00040000},
+-	{0x38, 0x00000000},
+-	{0x48, 0x00000000},
+-	{0x4c, 0x00000000},
+-	{0x54, 0x00000000},
+-	{0x58, 0x00000000},
++	{CCSR_SSI_SCR,     0x00000000},
++	{CCSR_SSI_SIER,    0x00003003},
++	{CCSR_SSI_STCR,    0x00000200},
++	{CCSR_SSI_SRCR,    0x00000200},
++	{CCSR_SSI_STCCR,   0x00040000},
++	{CCSR_SSI_SRCCR,   0x00040000},
++	{CCSR_SSI_SACNT,   0x00000000},
++	{CCSR_SSI_STMSK,   0x00000000},
++	{CCSR_SSI_SRMSK,   0x00000000},
++	{CCSR_SSI_SACCEN,  0x00000000},
++	{CCSR_SSI_SACCDIS, 0x00000000},
+ };
  
- static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
-@@ -680,6 +694,8 @@ static const struct regmap_config fsl_sai_regmap_config = {
- 	.val_bits = 32,
- 
- 	.max_register = FSL_SAI_RMR,
-+	.reg_defaults = fsl_sai_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_sai_reg_defaults),
- 	.readable_reg = fsl_sai_readable_reg,
- 	.volatile_reg = fsl_sai_volatile_reg,
- 	.writeable_reg = fsl_sai_writeable_reg,
+ static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
 -- 
 1.9.1
