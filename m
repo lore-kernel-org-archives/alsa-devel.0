@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 0/6] ASoC: Add HDA HDMI codec driver
-Date: Mon, 26 Oct 2015 10:07:47 +0900
-Message-ID: <1445821673-4947-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 1/6] ALSA: hdac: structure definition for
+	ext_dma_params
+Date: Mon, 26 Oct 2015 10:07:48 +0900
+Message-ID: <1445821673-4947-2-git-send-email-vinod.koul@intel.com>
+References: <1445821673-4947-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id F00E0260453
- for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 02:08:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2799326044B
+ for <alsa-devel@alsa-project.org>; Mon, 26 Oct 2015 02:08:28 +0100 (CET)
+In-Reply-To: <1445821673-4947-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Yakir Yang <ykk@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Yakir Yang <ykk@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Hi all,
+This extends the structure definition of ext_device and adds
+definition for dma_params which will be used when hdmi codec.
 
-This is second series of the HDA HDMI patches. This attempts to add HDA
-based HDMI driver and uses i915 component framework to interact with
-display for power up/down. The communication to codec is over HDA link
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio_ext.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-If at all we need a change in interface, we can i915 interface which can be
-made transparent to users
-
-Due to dependency on already merged patches in ALSA tree, it would be best
-if this get merged thru ALSA tree
-
-Changes in v2:
-- remove infoframe open code and use video one
-- add pm on/off i915 triggers
-- add ext_dma_params struct
-
-Subhransu S. Prusty (6):
-  ALSA: hdac: structure definition for ext_dma_params
-  ASoC: hdac-hdmi: Add hdmi driver
-  ASoC: hdac_hdmi: Add PM support for HDMI
-  ASoC: hdac_hdmi: Add hdac hdmi dai ops
-  ASoC: hdac_hdmi: Setup and start infoframe
-  ASoC: hdac_hdmi: Use i915 component framework for PM
-
- include/sound/hdaudio_ext.h  |   6 +
- sound/soc/codecs/Kconfig     |   5 +
- sound/soc/codecs/Makefile    |   2 +
- sound/soc/codecs/hdac_hdmi.c | 659 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 672 insertions(+)
- create mode 100644 sound/soc/codecs/hdac_hdmi.c
-
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index a4cadd9c297a..425af0674557 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -186,9 +186,15 @@ struct hdac_ext_device {
+ 	/* codec ops */
+ 	struct hdac_ext_codec_ops ops;
+ 
++	struct snd_card *card;
++	void *scodec;
+ 	void *private_data;
+ };
+ 
++struct hdac_ext_dma_params {
++	u32 format;
++	u8 stream_tag;
++};
+ #define to_ehdac_device(dev) (container_of((dev), \
+ 				 struct hdac_ext_device, hdac))
+ /*
 -- 
 2.4.3
