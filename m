@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: DMA related definition goes to
-	dma.c" to the asoc tree
-Date: Tue, 27 Oct 2015 13:49:07 +0900
-Message-ID: <E1ZqwC3-0004tU-Gy@finisterre>
-References: <87y4eq3u6o.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: DMA become SSI/SRC member" to the
+	asoc tree
+Date: Tue, 27 Oct 2015 13:49:14 +0900
+Message-ID: <E1ZqwCA-0004u8-1a@finisterre>
+References: <87ziz63u7i.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 390DA2657D2
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:16 +0100 (CET)
-In-Reply-To: <87y4eq3u6o.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D923626529F
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:22 +0100 (CET)
+In-Reply-To: <87ziz63u7i.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: DMA related definition goes to dma.c
+   ASoC: rsnd: DMA become SSI/SRC member
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2e7f7286bd4f446df594a7b6846ad3c81fa47732 Mon Sep 17 00:00:00 2001
+>From 5455d8717862722e7909b41cd989d00131fc2dfd Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Oct 2015 08:38:58 +0000
-Subject: [PATCH] ASoC: rsnd: DMA related definition goes to dma.c
+Date: Mon, 26 Oct 2015 08:38:26 +0000
+Subject: [PATCH] ASoC: rsnd: DMA become SSI/SRC member
 
 Renesas sound needs many devices
 (SSI/SSIU/SRC/CTU/MIX/DVC/CMD/AudioDMAC/AudioDMACpp).
@@ -66,91 +66,243 @@ CMD is implemented as part of CTU/MIX/DVC
 AudioDMAC/AudioDMACpp are implemented as part of SSI/SRC
 It is nice sense that these all devices are implemented as mod.
 
-DMA will be implemented as module. Current DMA definition is no longer
-needed on rsnd.h. Let's move it to dma.c
+Current rsnd_mod is member of rsnd_mod. But the DMA user is only
+SSI/SRC. This DMA will be implemented as module. As 1st step, DMA
+become SSI/SRC member by this patch.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c  | 24 ++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h | 23 -----------------------
- 2 files changed, 24 insertions(+), 23 deletions(-)
+ sound/soc/sh/rcar/dma.c  | 19 ++++++++++++++++---
+ sound/soc/sh/rcar/rsnd.h |  8 ++++----
+ sound/soc/sh/rcar/src.c  | 19 +++++++++++++------
+ sound/soc/sh/rcar/ssi.c  | 16 ++++++++++------
+ 4 files changed, 43 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 923120c..00e83e0 100644
+index 5d084d0..923120c 100644
 --- a/sound/soc/sh/rcar/dma.c
 +++ b/sound/soc/sh/rcar/dma.c
-@@ -22,6 +22,27 @@
- /* PDMACHCR */
- #define PDMACHCR_DE		(1 << 0)
+@@ -606,14 +606,17 @@ void rsnd_dma_quit(struct rsnd_dai_stream *io, struct rsnd_dma *dma)
+ 	dma->ops->quit(io, dma);
+ }
  
-+
-+struct rsnd_dmaen {
-+	struct dma_chan		*chan;
-+};
-+
-+struct rsnd_dmapp {
-+	int			dmapp_id;
-+	u32			chcr;
-+};
-+
-+struct rsnd_dma {
-+	struct rsnd_dma_ops	*ops;
-+	struct rsnd_mod		*mod;
-+	dma_addr_t		src_addr;
-+	dma_addr_t		dst_addr;
-+	union {
-+		struct rsnd_dmaen en;
-+		struct rsnd_dmapp pp;
-+	} dma;
-+};
-+
- struct rsnd_dma_ctrl {
- 	void __iomem *base;
- 	int dmapp_num;
-@@ -37,6 +58,9 @@ struct rsnd_dma_ops {
- };
+-int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id)
++struct rsnd_dma *rsnd_dma_init(struct rsnd_dai_stream *io,
++			       struct rsnd_mod *mod, int id)
+ {
+ 	struct rsnd_mod *mod_from = NULL;
+ 	struct rsnd_mod *mod_to = NULL;
+ 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+ 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
++	struct rsnd_dma *dma;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	int is_play = rsnd_io_is_play(io);
++	int ret;
  
- #define rsnd_priv_to_dmac(p)	((struct rsnd_dma_ctrl *)(p)->dma)
-+#define rsnd_dma_to_dmaen(dma)	(&(dma)->dma.en)
-+#define rsnd_dma_to_dmapp(dma)	(&(dma)->dma.pp)
-+#define rsnd_dma_to_mod(_dma) ((dma)->mod)
+ 	/*
+ 	 * DMA failed. try to PIO mode
+@@ -622,7 +625,13 @@ int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id)
+ 	 *	rsnd_rdai_continuance_probe()
+ 	 */
+ 	if (!dmac)
+-		return -EAGAIN;
++		return ERR_PTR(-EAGAIN);
++
++	dma = devm_kzalloc(dev, sizeof(*dma), GFP_KERNEL);
++	if (!dma)
++		return ERR_PTR(-ENOMEM);
++
++	dma->mod = mod;
  
- /*
-  *		Audio DMAC
+ 	rsnd_dma_of_path(dma, io, is_play, &mod_from, &mod_to);
+ 
+@@ -644,7 +653,11 @@ int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id)
+ 		rsnd_mod_name(mod_from), rsnd_mod_id(mod_from),
+ 		rsnd_mod_name(mod_to),   rsnd_mod_id(mod_to));
+ 
+-	return dma->ops->init(io, dma, id, mod_from, mod_to);
++	ret = dma->ops->init(io, dma, id, mod_from, mod_to);
++	if (ret < 0)
++		return ERR_PTR(ret);
++
++	return dma;
+ }
+ 
+ int rsnd_dma_probe(struct platform_device *pdev,
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 1c08eaa..1dc05a2 100644
+index 0853298..1c08eaa 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -195,29 +195,6 @@ void rsnd_path_parse(struct rsnd_priv *priv,
-  */
- struct rsnd_dma;
+@@ -206,6 +206,7 @@ struct rsnd_dmapp {
  
--struct rsnd_dmaen {
--	struct dma_chan		*chan;
--};
--
--struct rsnd_dmapp {
--	int			dmapp_id;
--	u32			chcr;
--};
--
--struct rsnd_dma {
--	struct rsnd_dma_ops	*ops;
--	struct rsnd_mod		*mod;
--	dma_addr_t		src_addr;
--	dma_addr_t		dst_addr;
--	union {
--		struct rsnd_dmaen en;
--		struct rsnd_dmapp pp;
--	} dma;
--};
--#define rsnd_dma_to_dmaen(dma)	(&(dma)->dma.en)
--#define rsnd_dma_to_dmapp(dma)	(&(dma)->dma.pp)
--#define rsnd_dma_to_mod(_dma) ((dma)->mod)
--
+ struct rsnd_dma {
+ 	struct rsnd_dma_ops	*ops;
++	struct rsnd_mod		*mod;
+ 	dma_addr_t		src_addr;
+ 	dma_addr_t		dst_addr;
+ 	union {
+@@ -215,11 +216,12 @@ struct rsnd_dma {
+ };
+ #define rsnd_dma_to_dmaen(dma)	(&(dma)->dma.en)
+ #define rsnd_dma_to_dmapp(dma)	(&(dma)->dma.pp)
+-#define rsnd_dma_to_mod(_dma) container_of((_dma), struct rsnd_mod, dma)
++#define rsnd_dma_to_mod(_dma) ((dma)->mod)
+ 
  void rsnd_dma_start(struct rsnd_dai_stream *io, struct rsnd_dma *dma);
  void rsnd_dma_stop(struct rsnd_dai_stream *io, struct rsnd_dma *dma);
- struct rsnd_dma *rsnd_dma_init(struct rsnd_dai_stream *io,
+-int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id);
++struct rsnd_dma *rsnd_dma_init(struct rsnd_dai_stream *io,
++			       struct rsnd_mod *mod, int id);
+ void rsnd_dma_quit(struct rsnd_dai_stream *io, struct rsnd_dma *dma);
+ int rsnd_dma_probe(struct platform_device *pdev,
+ 		   const struct rsnd_of_data *of_data,
+@@ -278,7 +280,6 @@ struct rsnd_mod {
+ 	int id;
+ 	enum rsnd_mod_type type;
+ 	struct rsnd_mod_ops *ops;
+-	struct rsnd_dma dma;
+ 	struct rsnd_priv *priv;
+ 	struct clk *clk;
+ 	u32 status;
+@@ -328,7 +329,6 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_hw_params	0
+ 
+ #define rsnd_mod_to_priv(mod) ((mod)->priv)
+-#define rsnd_mod_to_dma(mod) (&(mod)->dma)
+ #define rsnd_mod_id(mod) ((mod) ? (mod)->id : -1)
+ #define rsnd_mod_power_on(mod)	clk_enable((mod)->clk)
+ #define rsnd_mod_power_off(mod)	clk_disable((mod)->clk)
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 261b502..3296f1e 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -22,6 +22,7 @@
+ struct rsnd_src {
+ 	struct rsnd_src_platform_info *info; /* rcar_snd.h */
+ 	struct rsnd_mod mod;
++	struct rsnd_dma *dma;
+ 	struct rsnd_kctrl_cfg_s sen;  /* sync convert enable */
+ 	struct rsnd_kctrl_cfg_s sync; /* sync convert */
+ 	u32 convert_rate; /* sampling rate convert */
+@@ -30,6 +31,7 @@ struct rsnd_src {
+ 
+ #define RSND_SRC_NAME_SIZE 16
+ 
++#define rsnd_src_to_dma(src) ((src)->dma)
+ #define rsnd_src_nr(priv) ((priv)->src_nr)
+ #define rsnd_enable_sync_convert(src) ((src)->sen.val)
+ #define rsnd_src_of_node(priv) \
+@@ -839,9 +841,9 @@ static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
+ 			return ret;
+ 	}
+ 
+-	ret = rsnd_dma_init(io,
+-			    rsnd_mod_to_dma(mod),
+-			    src->info->dma_id);
++	src->dma = rsnd_dma_init(io, mod, src->info->dma_id);
++	if (IS_ERR(src->dma))
++		return PTR_ERR(src->dma);
+ 
+ 	return ret;
+ }
+@@ -850,7 +852,9 @@ static int rsnd_src_remove_gen2(struct rsnd_mod *mod,
+ 				struct rsnd_dai_stream *io,
+ 				struct rsnd_priv *priv)
+ {
+-	rsnd_dma_quit(io, rsnd_mod_to_dma(mod));
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
++
++	rsnd_dma_quit(io, rsnd_src_to_dma(src));
+ 
+ 	return 0;
+ }
+@@ -880,7 +884,9 @@ static int rsnd_src_start_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_dai_stream *io,
+ 			       struct rsnd_priv *priv)
+ {
+-	rsnd_dma_start(io, rsnd_mod_to_dma(mod));
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
++
++	rsnd_dma_start(io, rsnd_src_to_dma(src));
+ 
+ 	return _rsnd_src_start_gen2(mod, io);
+ }
+@@ -889,11 +895,12 @@ static int rsnd_src_stop_gen2(struct rsnd_mod *mod,
+ 			      struct rsnd_dai_stream *io,
+ 			      struct rsnd_priv *priv)
+ {
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 	int ret;
+ 
+ 	ret = _rsnd_src_stop_gen2(mod);
+ 
+-	rsnd_dma_stop(io, rsnd_mod_to_dma(mod));
++	rsnd_dma_stop(io, rsnd_src_to_dma(src));
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 1427ec2..eec17bc 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -63,6 +63,7 @@ struct rsnd_ssi {
+ 	struct rsnd_ssi_platform_info *info; /* rcar_snd.h */
+ 	struct rsnd_ssi *parent;
+ 	struct rsnd_mod mod;
++	struct rsnd_dma *dma;
+ 
+ 	u32 cr_own;
+ 	u32 cr_clk;
+@@ -77,6 +78,7 @@ struct rsnd_ssi {
+ 		((pos) = ((struct rsnd_ssi *)(priv)->ssi + i));		\
+ 	     i++)
+ 
++#define rsnd_ssi_to_dma(mod) ((ssi)->dma)
+ #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+ #define rsnd_ssi_pio_available(ssi) ((ssi)->info->irq > 0)
+@@ -537,9 +539,9 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = rsnd_dma_init(
+-		io, rsnd_mod_to_dma(mod),
+-		dma_id);
++	ssi->dma = rsnd_dma_init(io, mod, dma_id);
++	if (IS_ERR(ssi->dma))
++		return PTR_ERR(ssi->dma);
+ 
+ 	return ret;
+ }
+@@ -552,7 +554,7 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	int irq = ssi->info->irq;
+ 
+-	rsnd_dma_quit(io, rsnd_mod_to_dma(mod));
++	rsnd_dma_quit(io, rsnd_ssi_to_dma(ssi));
+ 
+ 	/* PIO will request IRQ again */
+ 	devm_free_irq(dev, irq, mod);
+@@ -585,7 +587,8 @@ static int rsnd_ssi_dma_start(struct rsnd_mod *mod,
+ 			      struct rsnd_dai_stream *io,
+ 			      struct rsnd_priv *priv)
+ {
+-	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	struct rsnd_dma *dma = rsnd_ssi_to_dma(ssi);
+ 
+ 	rsnd_dma_start(io, dma);
+ 
+@@ -598,7 +601,8 @@ static int rsnd_ssi_dma_stop(struct rsnd_mod *mod,
+ 			     struct rsnd_dai_stream *io,
+ 			     struct rsnd_priv *priv)
+ {
+-	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	struct rsnd_dma *dma = rsnd_ssi_to_dma(ssi);
+ 
+ 	rsnd_ssi_stop(mod, io, priv);
+ 
 -- 
 2.6.1
