@@ -1,17 +1,18 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH alsa-lib] move page helpers to common code
-Date: Tue, 27 Oct 2015 17:27:55 -0400
-Message-ID: <1445981275-2132-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH alsa-lib 1/2] pcm: drop unused sys/shm.h
+	inclusion
+Date: Tue, 27 Oct 2015 17:28:03 -0400
+Message-ID: <1445981284-2182-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F16C260636
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 22:28:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 84FA8260633
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 22:28:08 +0100 (CET)
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 77AAF340845
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 21:28:02 +0000 (UTC)
+ by smtp.gentoo.org (Postfix) with ESMTP id 9FB04340B0B
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 21:28:07 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,107 +27,91 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mike Frysinger <vapier@chromium.org>
 
-If you build with --disable-pcm, the rawmidi code fails to link because
-it uses the page_size helper declared in local.h, but the page_* funcs
-are in the pcm mmap module.  Move these funcs into conf.c so that they
-are always available to the rest of the system.
+This header isn't used in these files, so stop trying to include it.
+This helps builds on systems that don't provide the header (such as
+Android/Bionic).
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- src/conf.c         | 36 ++++++++++++++++++++++++++++++++++++
- src/pcm/pcm_mmap.c | 36 ------------------------------------
- 2 files changed, 36 insertions(+), 36 deletions(-)
+ src/pcm/pcm.c         | 1 -
+ src/pcm/pcm_generic.c | 1 -
+ src/pcm/pcm_hw.c      | 1 -
+ src/pcm/pcm_null.c    | 1 -
+ src/pcm/pcm_plugin.c  | 1 -
+ src/pcm/pcm_share.c   | 1 -
+ 6 files changed, 6 deletions(-)
 
-diff --git a/src/conf.c b/src/conf.c
-index 91fca25..a4f2a4f 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -4876,3 +4876,39 @@ static void _snd_config_end(void)
- 	files_info_count = 0;
- }
- #endif
-+
-+size_t page_size(void)
-+{
-+	long s = sysconf(_SC_PAGE_SIZE);
-+	assert(s > 0);
-+	return s;
-+}
-+
-+size_t page_align(size_t size)
-+{
-+	size_t r;
-+	long psz = page_size();
-+	r = size % psz;
-+	if (r)
-+		return size + psz - r;
-+	return size;
-+}
-+
-+size_t page_ptr(size_t object_offset, size_t object_size, size_t *offset, size_t *mmap_offset)
-+{
-+	size_t r;
-+	long psz = page_size();
-+	assert(offset);
-+	assert(mmap_offset);
-+	*mmap_offset = object_offset;
-+	object_offset %= psz;
-+	*mmap_offset -= object_offset;
-+	object_size += object_offset;
-+	r = object_size % psz;
-+	if (r)
-+		r = object_size + psz - r;
-+	else
-+		r = object_size;
-+	*offset = object_offset;
-+	return r;
-+}
-diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
-index 83e74e5..470bd04 100644
---- a/src/pcm/pcm_mmap.c
-+++ b/src/pcm/pcm_mmap.c
-@@ -26,42 +26,6 @@
- #include <sys/shm.h>
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index f5fc728..cbbc55a 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -635,7 +635,6 @@ playback devices.
+ #include <signal.h>
+ #include <ctype.h>
+ #include <sys/poll.h>
+-#include <sys/shm.h>
+ #include <sys/mman.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+diff --git a/src/pcm/pcm_generic.c b/src/pcm/pcm_generic.c
+index 9b60591..4dbef08 100644
+--- a/src/pcm/pcm_generic.c
++++ b/src/pcm/pcm_generic.c
+@@ -26,7 +26,6 @@
+  *
+  */
+ 
+-#include <sys/shm.h>
+ #include <sys/ioctl.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 232b197..66aec5c 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -36,7 +36,6 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <sys/shm.h>
+ #include "pcm_local.h"
+ #include "../control/control_local.h"
+ #include "../timer/timer_local.h"
+diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
+index 0529820..5e63caa 100644
+--- a/src/pcm/pcm_null.c
++++ b/src/pcm/pcm_null.c
+@@ -28,7 +28,6 @@
+   
+ #include <byteswap.h>
+ #include <limits.h>
+-#include <sys/shm.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+ 
+diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
+index c19e2f1..d007e8c 100644
+--- a/src/pcm/pcm_plugin.c
++++ b/src/pcm/pcm_plugin.c
+@@ -82,7 +82,6 @@ pcm.rate44100Hz {
+ 
+ */
+   
+-#include <sys/shm.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
+index 4b68f1f..5d8aaf2 100644
+--- a/src/pcm/pcm_share.c
++++ b/src/pcm/pcm_share.c
+@@ -35,7 +35,6 @@
+ #include <math.h>
+ #include <sys/socket.h>
+ #include <sys/poll.h>
+-#include <sys/shm.h>
+ #include <pthread.h>
  #include "pcm_local.h"
  
--size_t page_size(void)
--{
--	long s = sysconf(_SC_PAGE_SIZE);
--	assert(s > 0);
--	return s;
--}
--
--size_t page_align(size_t size)
--{
--	size_t r;
--	long psz = page_size();
--	r = size % psz;
--	if (r)
--		return size + psz - r;
--	return size;
--}
--
--size_t page_ptr(size_t object_offset, size_t object_size, size_t *offset, size_t *mmap_offset)
--{
--	size_t r;
--	long psz = page_size();
--	assert(offset);
--	assert(mmap_offset);
--	*mmap_offset = object_offset;
--	object_offset %= psz;
--	*mmap_offset -= object_offset;
--	object_size += object_offset;
--	r = object_size % psz;
--	if (r)
--		r = object_size + psz - r;
--	else
--		r = object_size;
--	*offset = object_offset;
--	return r;
--}
--
- void snd_pcm_mmap_appl_backward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
- {
- 	snd_pcm_sframes_t appl_ptr = *pcm->appl.ptr;
 -- 
 2.5.2
