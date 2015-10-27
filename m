@@ -1,17 +1,27 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Packages 1.0.30 - release pending
-Date: Tue, 27 Oct 2015 17:01:42 +0100
-Message-ID: <562F9FE6.5060704@perex.cz>
-References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
- <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+ TDM (network) mode.
+Date: Tue, 27 Oct 2015 09:02:51 -0700
+Message-ID: <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+ <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
+ <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E54C260527
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 17:01:43 +0100 (CET)
-In-Reply-To: <1445959655.7199.12.camel@loki>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD9F12606CB
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 17:03:11 +0100 (CET)
+Received: by wicfx6 with SMTP id fx6so166374847wic.1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 09:03:11 -0700 (PDT)
+In-Reply-To: <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +31,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, ALSA development <alsa-devel@alsa-project.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 27.10.2015 v 16:27 Liam Girdwood napsal(a):
-> On Tue, 2015-10-27 at 16:16 +0100, Takashi Iwai wrote:
->> On Mon, 12 Oct 2015 10:24:19 +0200,
->> Takashi Iwai wrote:
->>>
->>> On Sun, 11 Oct 2015 21:08:01 +0200,
->>> Jaroslav Kysela wrote:
->>>>
->>>> Hi all,
->>>>
->>>> 	I would like to release 1.0.30 version of all packages. Things to discuss:
->>>
->>> There are pending issues: one is about the topology ABI and this seems
->>> still in flux.  I suppose this will be stabilized in 4.4.  Also, the
->>> documentation for BAT is utterly missing, and I expect we'll get this
->>> soonish.  Liam, Mengdong, any comments on these?
+On Tue, Oct 27, 2015 at 2:41 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> Hi Markus/Caleb,
+>
+> On Tue, Oct 27, 2015 at 5:13 AM, Markus Pargmann <mpa@pengutronix.de> wrote:
+>> Hi,
+>
+>> Cc Nicolin, Fabio, Shawn
 >>
-> 
-> BAT (stage1) is now upstream including documentation. Caleb and Han are
-> working on new BAT features and these should be part of the 1.0.31 alsa
-> package release.
+>> Perhaps you have an idea about this?
+>
+> Could you please try it without using the external SDMA firmware?
 
-Thanks for the info. Yes, the man page is there. I'm just curious - what
-features will be added? BTW: 1.0.31 should be 1,1.1 - no more 1.0.x
-releases.
-				Jaroslav
+I do need *some* SDMA firmware, correct?  The firmware that I'm using
+ends up in /lib/firmware/imx/sdma/sdma-imx6q.bin and is md5sum
+5d4584134cc4cba62e1be2f382cd6f3a.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+It's the exact same file that came on the root filesystem as is
+generated from the freescale kernel tree, literally the same MD5SUM.
+
+Or, should I simply remove that file?  I haven't looked into how the
+kernel driver and the .bin file interact, but I do see that the
+imx6qdl.dtsi references the imx/sdma/sdma-imx6q.bin file.
+
+Thanks,
+  -Caleb
+
+>
+> Regards,
+>
+> Fabio Estevam
