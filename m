@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 07/17] ASoC: Intel: Skylake: Fix bit depth when
-	querying the NHLT blob
-Date: Tue, 27 Oct 2015 09:22:50 +0900
-Message-ID: <1445905380-18167-8-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 08/17] ASoC: Intel: Skylake: use module_pin
+	info for unbind
+Date: Tue, 27 Oct 2015 09:22:51 +0900
+Message-ID: <1445905380-18167-9-git-send-email-vinod.koul@intel.com>
 References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0136A26519F
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 866A32651ED
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:38 +0100 (CET)
 In-Reply-To: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,28 +27,227 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Bps calculation is not correct as this needs to be based on valid
-bit depth.  16 bit fmt bit depth is 16 bit and for 24 and 32 bit
-as it is container size This patch fixes the bps.
+in_pin and out_pin list for a module has the information about
+the module that are bound together. So we can directly look at
+pin information of module for binding and unbind.
+
+As a result the preinitialized dapm_path_last we had is removed
+and code and memory optimzed.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c      |   1 -
+ sound/soc/intel/skylake/skl-topology.c | 108 +++++++++++----------------------
+ sound/soc/intel/skylake/skl-topology.h |   5 --
+ sound/soc/intel/skylake/skl.h          |   1 -
+ 4 files changed, 34 insertions(+), 81 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index b0c7bd113aac..3ff22eba5875 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -115,7 +115,7 @@ struct nhlt_specific_cfg
- 	struct device *dev = bus->dev;
- 	struct nhlt_specific_cfg *sp_config;
- 	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
--	u16 bps = num_ch * s_fmt;
-+	u16 bps = (s_fmt == 16) ? 16 : 32;
- 	u8 j;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 1242beac4e46..1a9cd00c0b0a 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -938,7 +938,6 @@ int skl_platform_register(struct device *dev)
+ 	struct skl *skl = ebus_to_skl(ebus);
  
- 	dump_config(dev, instance, link_type, s_fmt, num_ch, s_rate, dirn, bps);
+ 	INIT_LIST_HEAD(&skl->ppl_list);
+-	INIT_LIST_HEAD(&skl->dapm_path_list);
+ 
+ 	ret = snd_soc_register_platform(dev, &skl_platform_drv);
+ 	if (ret) {
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index e8258d4807ff..abbf8e7eb3e7 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -411,7 +411,6 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 							struct skl *skl)
+ {
+ 	struct snd_soc_dapm_path *p;
+-	struct skl_dapm_path_list *path_list;
+ 	struct snd_soc_dapm_widget *source, *sink;
+ 	struct skl_module_cfg *src_mconfig, *sink_mconfig;
+ 	struct skl_sst *ctx = skl->skl_sst;
+@@ -455,16 +454,6 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 				if (ret)
+ 					return ret;
+ 			}
+-
+-			path_list = kzalloc(
+-					sizeof(struct skl_dapm_path_list),
+-					GFP_KERNEL);
+-			if (path_list == NULL)
+-				return -ENOMEM;
+-
+-			/* Add connected path to one global list */
+-			path_list->dapm_path = p;
+-			list_add_tail(&path_list->node, &skl->dapm_path_list);
+ 			break;
+ 		}
+ 	}
+@@ -552,54 +541,37 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
+ static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
+ 							struct skl *skl)
+ {
+-	struct snd_soc_dapm_widget *source, *sink;
+ 	struct skl_module_cfg *src_mconfig, *sink_mconfig;
+-	int ret = 0, path_found = 0;
+-	struct skl_dapm_path_list *path_list, *tmp_list;
++	int ret = 0, i;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 
+-	sink = w;
+-	sink_mconfig = sink->priv;
++	sink_mconfig = w->priv;
+ 
+ 	/* Stop the pipe */
+ 	ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * This list, dapm_path_list handling here does not need any locks
+-	 * as we are under dapm lock while handling widget events.
+-	 * List can be manipulated safely only under dapm widgets handler
+-	 * routines
+-	 */
+-	list_for_each_entry_safe(path_list, tmp_list,
+-				&skl->dapm_path_list, node) {
+-		if (path_list->dapm_path->sink == sink) {
+-			dev_dbg(ctx->dev, "Path found = %s\n",
+-					path_list->dapm_path->name);
+-			source = path_list->dapm_path->source;
+-			src_mconfig = source->priv;
+-			path_found = 1;
++	for (i = 0; i < sink_mconfig->max_in_queue; i++) {
++		if (sink_mconfig->m_in_pin[i].pin_state == SKL_PIN_BIND_DONE) {
++			src_mconfig = sink_mconfig->m_in_pin[i].tgt_mcfg;
++			if (!src_mconfig)
++				continue;
++			/*
++			 * If path_found == 1, that means pmd for source
++			 * pipe has not occurred, source is connected to
++			 * some other sink. so its responsibility of sink
++			 * to unbind itself from source.
++			 */
++			ret = skl_stop_pipe(ctx, src_mconfig->pipe);
++			if (ret < 0)
++				return ret;
+ 
+-			list_del(&path_list->node);
+-			kfree(path_list);
+-			break;
++			ret = skl_unbind_modules(ctx,
++						src_mconfig, sink_mconfig);
+ 		}
+ 	}
+ 
+-	/*
+-	 * If path_found == 1, that means pmd for source pipe has
+-	 * not occurred, source is connected to some other sink.
+-	 * so its responsibility of sink to unbind itself from source.
+-	 */
+-	if (path_found) {
+-		ret = skl_stop_pipe(ctx, src_mconfig->pipe);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = skl_unbind_modules(ctx, src_mconfig, sink_mconfig);
+-	}
+-
+ 	return ret;
+ }
+ 
+@@ -653,14 +625,11 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 								struct skl *skl)
+ {
+-	struct snd_soc_dapm_widget *source, *sink;
+ 	struct skl_module_cfg *src_mconfig, *sink_mconfig;
+-	int ret = 0, path_found = 0;
+-	struct skl_dapm_path_list *path_list, *tmp_path_list;
++	int ret = 0, i;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 
+-	source = w;
+-	src_mconfig = source->priv;
++	src_mconfig = w->priv;
+ 
+ 	skl_tplg_free_pipe_mcps(skl, src_mconfig);
+ 	/* Stop the pipe since this is a mixin module */
+@@ -668,32 +637,23 @@ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	if (ret)
+ 		return ret;
+ 
+-	list_for_each_entry_safe(path_list, tmp_path_list, &skl->dapm_path_list, node) {
+-		if (path_list->dapm_path->source == source) {
+-			dev_dbg(ctx->dev, "Path found = %s\n",
+-					path_list->dapm_path->name);
+-			sink = path_list->dapm_path->sink;
+-			sink_mconfig = sink->priv;
+-			path_found = 1;
+-
+-			list_del(&path_list->node);
+-			kfree(path_list);
+-			break;
++	for (i = 0; i < src_mconfig->max_out_queue; i++) {
++		if (src_mconfig->m_out_pin[i].pin_state == SKL_PIN_BIND_DONE) {
++			sink_mconfig = src_mconfig->m_out_pin[i].tgt_mcfg;
++			if (!sink_mconfig)
++				continue;
++			/*
++			 * This is a connecter and if path is found that means
++			 * unbind between source and sink has not happened yet
++			 */
++			ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
++			if (ret < 0)
++				return ret;
++			ret = skl_unbind_modules(ctx, src_mconfig,
++							sink_mconfig);
+ 		}
+ 	}
+ 
+-	/*
+-	 * This is a connector and if path is found that means
+-	 * unbind between source and sink has not happened yet
+-	 */
+-	if (path_found) {
+-		ret = skl_stop_pipe(ctx, src_mconfig->pipe);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = skl_unbind_modules(ctx, src_mconfig, sink_mconfig);
+-	}
+-
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index cd8768308f29..1b35cb6c397a 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -280,11 +280,6 @@ struct skl_pipeline {
+ 	struct list_head node;
+ };
+ 
+-struct skl_dapm_path_list {
+-	struct snd_soc_dapm_path *dapm_path;
+-	struct list_head node;
+-};
+-
+ static inline struct skl *get_skl_ctx(struct device *dev)
+ {
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index dd2e79ae45a8..f803ebb10605 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -67,7 +67,6 @@ struct skl {
+ 
+ 	struct skl_dsp_resource resource;
+ 	struct list_head ppl_list;
+-	struct list_head dapm_path_list;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
 -- 
 2.4.3
