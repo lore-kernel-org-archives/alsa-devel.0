@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix to ignore blob
-	check if link type is HDA" to the asoc tree
-Date: Tue, 27 Oct 2015 13:49:35 +0900
-Message-ID: <E1ZqwCV-0004w9-Ah@finisterre>
-References: <1445905380-18167-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to ignore
+	codec_mask check in probe" to the asoc tree
+Date: Tue, 27 Oct 2015 13:49:36 +0900
+Message-ID: <E1ZqwCW-0004wc-Lb@finisterre>
+References: <1445905380-18167-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A675B2651B8
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:45 +0100 (CET)
-In-Reply-To: <1445905380-18167-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CBCB265314
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:46 +0100 (CET)
+In-Reply-To: <1445905380-18167-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix to ignore blob check if link type is HDA
+   ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From d38aca5910f665c09e7aeb006fcf19eb3aa789b7 Mon Sep 17 00:00:00 2001
+>From 17894555d5e2d00e6c6da43342c320c8364d8f0a Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 27 Oct 2015 09:22:48 +0900
-Subject: [PATCH] ASoC: Intel: Skylake: Fix to ignore blob check if link type
- is HDA
+Date: Tue, 27 Oct 2015 09:22:47 +0900
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
 
-If link type is HDA, NHLT blob is null, as NHLT defines non HDA
-links only.  So we should ignore blob query for HDA links.
+We have both I2S and hda codec support in the driver. codec_mask
+check is relevant only for hda codec and some boards may have
+only I2S Codec, so removed probe error in case no hda codec is
+found and update the log to info as it may not be error.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/skylake/skl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 313a02d..e11a9e4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -921,6 +921,9 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 5319529..211ef6e2 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -434,8 +434,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
  
- 	memcpy(pipe->p_params, params, sizeof(*params));
+ 	/* codec detection */
+ 	if (!bus->codec_mask) {
+-		dev_err(bus->dev, "no codecs found!\n");
+-		return -ENODEV;
++		dev_info(bus->dev, "no hda codecs found!\n");
+ 	}
  
-+	if (link_type == NHLT_LINK_HDA)
-+		return 0;
-+
- 	/* update the blob based on virtual bus_id*/
- 	cfg = skl_get_ep_blob(skl, mconfig->vbus_id, link_type,
- 					params->s_fmt, params->ch,
+ 	return 0;
 -- 
 2.6.1
