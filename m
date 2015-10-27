@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 09/17] ASoC: Intel: Skylake: Add support for
-	virtual dsp widgets
-Date: Tue, 27 Oct 2015 09:22:52 +0900
-Message-ID: <1445905380-18167-10-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 10/17] ASoC: Intel: Skylake: Fix DSP pipe
+	underrun/overrun issue
+Date: Tue, 27 Oct 2015 09:22:53 +0900
+Message-ID: <1445905380-18167-11-git-send-email-vinod.koul@intel.com>
 References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E36A6265051
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:41 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DF00B2651EB
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:45 +0100 (CET)
 In-Reply-To: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,221 +27,236 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-In SKL topology routes, some paths can be connected by a widget
-which are not a DSP FW widget and virtual with respect to
-firmware. In these case when module has to bind, then the
-virtual DSP modules needs to skipped till a actual DSP module is
-found which connects the pipelines.
+While rigourous testing of SKL drivers, we noticed underuns and
+overuns and on debug realized that we need to change driver
+handling of FE pipe startup and shutdown
 
-So we need to walk the graph and find a widget which is real in
-nature. This patch adds that support and splits
-skl_tplg_pga_dapm_pre_pmu_event() fn with parsing code to
-skl_tplg_bind_sinks() fn and call that recursively as well as
-while parsing
-
-The patch moves code a bit while splitting so diffstat doesn't
-tell real picture
+We need to start DMA and then run pipe together and not split
+these up. Similarly while stopping we should stop pipe and then
+DMA in a sequence.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 133 ++++++++++++++++++++-------------
- 1 file changed, 83 insertions(+), 50 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c      | 133 +++++++++++++++++++--------------
+ sound/soc/intel/skylake/skl-topology.c |  13 ++--
+ 2 files changed, 85 insertions(+), 61 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index abbf8e7eb3e7..0c6e7833e652 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -397,40 +397,24 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 1a9cd00c0b0a..2517ec576ffc 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -295,29 +295,101 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 	return skl_tplg_be_update_params(dai, &p_params);
  }
  
--/*
-- * A PGA represents a module in a pipeline. So in the Pre-PMU event of PGA
-- * we need to do following:
-- *   - Bind to sink pipeline
-- *      Since the sink pipes can be running and we don't get mixer event on
-- *      connect for already running mixer, we need to find the sink pipes
-- *      here and bind to them. This way dynamic connect works.
-- *   - Start sink pipeline, if not running
-- *   - Then run current pipe
-- */
--static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
--							struct skl *skl)
-+static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
-+				struct skl *skl,
-+				struct skl_module_cfg *src_mconfig)
- {
- 	struct snd_soc_dapm_path *p;
--	struct snd_soc_dapm_widget *source, *sink;
--	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	struct snd_soc_dapm_widget *sink = NULL;
-+	struct skl_module_cfg *sink_mconfig;
- 	struct skl_sst *ctx = skl->skl_sst;
--	int ret = 0;
--
--	source = w;
--	src_mconfig = source->priv;
-+	int ret;
- 
--	/*
--	 * find which sink it is connected to, bind with the sink,
--	 * if sink is not started, start sink pipe first, then start
--	 * this pipe
--	 */
--	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+	snd_soc_dapm_widget_for_each_sink_path(w, p) {
- 		if (!p->connect)
- 			continue;
- 
- 		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
- 		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
- 
-+		sink = p->sink;
- 		/*
- 		 * here we will check widgets in sink pipelines, so that
- 		 * can be any widgets type and we are only interested if
-@@ -440,7 +424,6 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 					is_skl_dsp_widget_type(p->sink)) {
- 
- 			sink = p->sink;
--			src_mconfig = source->priv;
- 			sink_mconfig = sink->priv;
- 
- 			/* Bind source to sink, mixin is always source */
-@@ -454,10 +437,43 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 				if (ret)
- 					return ret;
- 			}
--			break;
- 		}
- 	}
- 
-+	if (!sink)
-+		return skl_tplg_bind_sinks(sink, skl, src_mconfig);
++static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
++		int cmd)
++{
++	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_ext_stream *stream;
++	int start;
++	unsigned long cookie;
++	struct hdac_stream *hstr;
++
++	stream = get_hdac_ext_stream(substream);
++	hstr = hdac_stream(stream);
++
++	if (!hstr->prepared)
++		return -EPIPE;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		start = 1;
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		start = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	spin_lock_irqsave(&bus->reg_lock, cookie);
++
++	if (start) {
++		snd_hdac_stream_start(hdac_stream(stream), true);
++		snd_hdac_stream_timecounter_init(hstr, 0);
++	} else {
++		snd_hdac_stream_stop(hdac_stream(stream));
++	}
++
++	spin_unlock_irqrestore(&bus->reg_lock, cookie);
 +
 +	return 0;
 +}
 +
-+/*
-+ * A PGA represents a module in a pipeline. So in the Pre-PMU event of PGA
-+ * we need to do following:
-+ *   - Bind to sink pipeline
-+ *      Since the sink pipes can be running and we don't get mixer event on
-+ *      connect for already running mixer, we need to find the sink pipes
-+ *      here and bind to them. This way dynamic connect works.
-+ *   - Start sink pipeline, if not running
-+ *   - Then run current pipe
-+ */
-+static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
-+								struct skl *skl)
-+{
-+	struct skl_module_cfg *src_mconfig;
-+	struct skl_sst *ctx = skl->skl_sst;
-+	int ret = 0;
+ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct skl *skl = get_skl_ctx(dai->dev);
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	struct skl_module_cfg *mconfig;
++	int ret;
+ 
+ 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
+ 	if (!mconfig)
+ 		return -EIO;
+ 
+ 	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
++		/*
++		 * Start HOST DMA and Start FE Pipe.This is to make sure that
++		 * there are no underrun/overrun in the case when the FE
++		 * pipeline is started but there is a delay in starting the
++		 * DMA channel on the host.
++		 */
++		ret = skl_decoupled_trigger(substream, cmd);
++		if (ret < 0)
++			return ret;
+ 		return skl_run_pipe(ctx, mconfig->pipe);
++		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		return skl_stop_pipe(ctx, mconfig->pipe);
++	case SNDRV_PCM_TRIGGER_STOP:
++		/*
++		 * Stop FE Pipe first and stop DMA. This is to make sure that
++		 * there are no underrun/overrun in the case if there is a delay
++		 * between the two operations.
++		 */
++		ret = skl_stop_pipe(ctx, mconfig->pipe);
++		if (ret < 0)
++			return ret;
 +
-+	src_mconfig = w->priv;
++		ret = skl_decoupled_trigger(substream, cmd);
++		break;
+ 
+ 	default:
+-		return 0;
++		return -EINVAL;
+ 	}
 +
-+	/*
-+	 * find which sink it is connected to, bind with the sink,
-+	 * if sink is not started, start sink pipe first, then start
-+	 * this pipe
-+	 */
-+	ret = skl_tplg_bind_sinks(w, skl, src_mconfig);
-+	if (ret)
-+		return ret;
-+
- 	/* Start source pipe last after starting all sinks */
- 	ret = skl_run_pipe(ctx, src_mconfig->pipe);
- 	if (ret)
-@@ -466,6 +482,38 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
++	return 0;
+ }
+ 
+ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+@@ -685,66 +757,15 @@ static int skl_coupled_trigger(struct snd_pcm_substream *substream,
  	return 0;
  }
  
-+static struct snd_soc_dapm_widget *skl_get_src_dsp_widget(
-+		struct snd_soc_dapm_widget *w, struct skl *skl)
-+{
-+	struct snd_soc_dapm_path *p;
-+	struct snd_soc_dapm_widget *src_w = NULL;
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+		src_w = p->source;
-+		if (!p->connect)
-+			continue;
-+
-+		dev_dbg(ctx->dev, "sink widget=%s\n", w->name);
-+		dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+
-+		/*
-+		 * here we will check widgets in sink pipelines, so that can
-+		 * be any widgets type and we are only interested if they are
-+		 * ones used for SKL so check that first
-+		 */
-+		if ((p->source->priv != NULL) &&
-+					is_skl_dsp_widget_type(p->source)) {
-+			return p->source;
-+		}
-+	}
-+
-+	if (src_w != NULL)
-+		return skl_get_src_dsp_widget(src_w, skl);
-+
-+	return NULL;
-+}
-+
- /*
-  * in the Post-PMU event of mixer we need to do following:
-  *   - Check if this pipe is running
-@@ -479,7 +527,6 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
- 							struct skl *skl)
+-static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
+-		int cmd)
+-{
+-	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+-	struct hdac_bus *bus = ebus_to_hbus(ebus);
+-	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct hdac_ext_stream *stream;
+-	int start;
+-	unsigned long cookie;
+-	struct hdac_stream *hstr;
+-
+-	dev_dbg(bus->dev, "In %s cmd=%d streamname=%s\n", __func__, cmd, cpu_dai->name);
+-
+-	stream = get_hdac_ext_stream(substream);
+-	hstr = hdac_stream(stream);
+-
+-	if (!hstr->prepared)
+-		return -EPIPE;
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-		start = 1;
+-		break;
+-
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		start = 0;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	spin_lock_irqsave(&bus->reg_lock, cookie);
+-
+-	if (start)
+-		snd_hdac_stream_start(hdac_stream(stream), true);
+-	else
+-		snd_hdac_stream_stop(hdac_stream(stream));
+-
+-	if (start)
+-		snd_hdac_stream_timecounter_init(hstr, 0);
+-
+-	spin_unlock_irqrestore(&bus->reg_lock, cookie);
+-
+-	return 0;
+-}
+ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
+ 					int cmd)
  {
- 	int ret = 0;
--	struct snd_soc_dapm_path *p;
- 	struct snd_soc_dapm_widget *source, *sink;
- 	struct skl_module_cfg *src_mconfig, *sink_mconfig;
- 	struct skl_sst *ctx = skl->skl_sst;
-@@ -493,32 +540,18 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
- 	 * one more sink before this sink got connected, Since source is
- 	 * started, bind this sink to source and start this pipe.
- 	 */
--	snd_soc_dapm_widget_for_each_sink_path(w, p) {
--		if (!p->connect)
--			continue;
--
--		dev_dbg(ctx->dev, "sink widget=%s\n", w->name);
--		dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+	source = skl_get_src_dsp_widget(w, skl);
-+	if (source != NULL) {
-+		src_mconfig = source->priv;
-+		sink_mconfig = sink->priv;
-+		src_pipe_started = 1;
+ 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
  
- 		/*
--		 * here we will check widgets in sink pipelines, so that
--		 * can be any widgets type and we are only interested if
--		 * they are ones used for SKL so check that first
-+		 * check pipe state, then no need to bind or start the
-+		 * pipe
- 		 */
--		if ((p->source->priv != NULL) &&
--					is_skl_dsp_widget_type(p->source)) {
--			source = p->source;
--			src_mconfig = source->priv;
--			sink_mconfig = sink->priv;
--			src_pipe_started = 1;
--
--			/*
--			 * check pipe state, then no need to bind or start
--			 * the pipe
--			 */
--			if (src_mconfig->pipe->state != SKL_PIPE_STARTED)
--				src_pipe_started = 0;
--		}
-+		if (src_mconfig->pipe->state != SKL_PIPE_STARTED)
-+			src_pipe_started = 0;
+-	if (ebus->ppcap)
+-		return skl_decoupled_trigger(substream, cmd);
+-	else
++	if (!ebus->ppcap)
+ 		return skl_coupled_trigger(substream, cmd);
++
++	return 0;
+ }
+ 
+ /* calculate runtime delay from LPIB */
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 0c6e7833e652..2f263ddd696d 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -433,7 +433,10 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 
+ 			/* Start sinks pipe first */
+ 			if (sink_mconfig->pipe->state != SKL_PIPE_STARTED) {
+-				ret = skl_run_pipe(ctx, sink_mconfig->pipe);
++				if (sink_mconfig->pipe->conn_type !=
++							SKL_PIPE_CONN_TYPE_FE)
++					ret = skl_run_pipe(ctx,
++							sink_mconfig->pipe);
+ 				if (ret)
+ 					return ret;
+ 			}
+@@ -475,9 +478,8 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 		return ret;
+ 
+ 	/* Start source pipe last after starting all sinks */
+-	ret = skl_run_pipe(ctx, src_mconfig->pipe);
+-	if (ret)
+-		return ret;
++	if (src_mconfig->pipe->conn_type != SKL_PIPE_CONN_TYPE_FE)
++		return skl_run_pipe(ctx, src_mconfig->pipe);
+ 
+ 	return 0;
+ }
+@@ -559,7 +561,8 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = skl_run_pipe(ctx, sink_mconfig->pipe);
++		if (sink_mconfig->pipe->conn_type != SKL_PIPE_CONN_TYPE_FE)
++			ret = skl_run_pipe(ctx, sink_mconfig->pipe);
  	}
  
- 	if (src_pipe_started) {
+ 	return ret;
 -- 
 2.4.3
