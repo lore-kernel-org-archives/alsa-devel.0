@@ -1,28 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Tue, 27 Oct 2015 14:10:03 -0200
-Message-ID: <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
- <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
- <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
- <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
- <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
- <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Packages 1.0.30 - release pending
+Date: Tue, 27 Oct 2015 16:40:50 +0000
+Message-ID: <1445964050.7199.14.camel@loki>
+References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
+ <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
+ <562F9FE6.5060704@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
- [209.85.223.195])
- by alsa0.perex.cz (Postfix) with ESMTP id CBEA2260851
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 17:10:06 +0100 (CET)
-Received: by ioii189 with SMTP id i189so7328939ioi.1
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 09:10:04 -0700 (PDT)
-In-Reply-To: <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A7372614AA
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 17:41:03 +0100 (CET)
+In-Reply-To: <562F9FE6.5060704@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,28 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>, "Lu, Han" <han.lu@intel.com>, Caleb Crome <caleb@crome.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, ALSA development <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2015 at 2:02 PM, Caleb Crome <caleb@crome.org> wrote:
++ Han and Caleb
 
->> Could you please try it without using the external SDMA firmware?
->
-> I do need *some* SDMA firmware, correct?  The firmware that I'm using
-> ends up in /lib/firmware/imx/sdma/sdma-imx6q.bin and is md5sum
-> 5d4584134cc4cba62e1be2f382cd6f3a.
+On Tue, 2015-10-27 at 17:01 +0100, Jaroslav Kysela wrote:
+> Dne 27.10.2015 v 16:27 Liam Girdwood napsal(a):
+> > On Tue, 2015-10-27 at 16:16 +0100, Takashi Iwai wrote:
+> >> On Mon, 12 Oct 2015 10:24:19 +0200,
+> >> Takashi Iwai wrote:
+> >>>
+> >>> On Sun, 11 Oct 2015 21:08:01 +0200,
+> >>> Jaroslav Kysela wrote:
+> >>>>
+> >>>> Hi all,
+> >>>>
+> >>>> 	I would like to release 1.0.30 version of all packages. Things to discuss:
+> >>>
+> >>> There are pending issues: one is about the topology ABI and this seems
+> >>> still in flux.  I suppose this will be stabilized in 4.4.  Also, the
+> >>> documentation for BAT is utterly missing, and I expect we'll get this
+> >>> soonish.  Liam, Mengdong, any comments on these?
+> >>
+> > 
+> > BAT (stage1) is now upstream including documentation. Caleb and Han are
+> > working on new BAT features and these should be part of the 1.0.31 alsa
+> > package release.
+> 
+> Thanks for the info. Yes, the man page is there. I'm just curious - what
+> features will be added? BTW: 1.0.31 should be 1,1.1 - no more 1.0.x
+> releases.
+> 				Jaroslav
+> 
 
-SSI can operate with the ROM SDMA firmware.
+I think Han will be adding support for Android and some automation
+scripting, whilst Caleb is adding more audio feature tests.
 
-I would like to know if this issue also happens if you don't pass the
-external firmware and use the internal ROM SDMA firmware instead.
-
-Also, could you try bumping the SSI and SDMA clock rates at the maximum?
-
-Adding Shengjiu in case he has any thoughts on getting TDM support in
-the SSI driver.
-
-Regards,
-
-Fabio Estevam
+Liam
