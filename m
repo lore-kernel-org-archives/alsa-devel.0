@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup rsnd_dma_of_path method for
-	mod base common method" to the asoc tree
-Date: Tue, 27 Oct 2015 13:48:51 +0900
-Message-ID: <E1ZqwBn-0004rU-79@finisterre>
-References: <87si4y3u4d.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: enable to use rsnd_dai_connect()
+	from each mod" to the asoc tree
+Date: Tue, 27 Oct 2015 13:48:54 +0900
+Message-ID: <E1ZqwBq-0004sQ-2W@finisterre>
+References: <87vb9u3u5j.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 711542651AC
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:00 +0100 (CET)
-In-Reply-To: <87si4y3u4d.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B21AC26520E
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:02 +0100 (CET)
+In-Reply-To: <87vb9u3u5j.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup rsnd_dma_of_path method for mod base common method
+   ASoC: rsnd: enable to use rsnd_dai_connect() from each mod
 
 has been applied to the asoc tree at
 
@@ -53,11 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 144e80f562dd1f53948696c871552752b2055430 Mon Sep 17 00:00:00 2001
+>From 56a7e69a741e1a0412f685fb95aa9bd6aedd8f6b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Oct 2015 08:40:19 +0000
-Subject: [PATCH] ASoC: rsnd: fixup rsnd_dma_of_path method for mod base common
- method
+Date: Mon, 26 Oct 2015 08:39:41 +0000
+Subject: [PATCH] ASoC: rsnd: enable to use rsnd_dai_connect() from each mod
 
 Renesas sound needs many devices
 (SSI/SSIU/SRC/CTU/MIX/DVC/CMD/AudioDMAC/AudioDMACpp).
@@ -67,78 +66,114 @@ CMD is implemented as part of CTU/MIX/DVC
 AudioDMAC/AudioDMACpp are implemented as part of SSI/SRC
 It is nice sense that these all devices are implemented as mod.
 
-Current rsnd_dma_of_path is assuming that all mods are related to DMA.
-But it will be wrong. This patch tidyup this wrong assumption
+DMAC/SSIU/SSI-parent/CMD will be implemented as module, but these are
+not customer controlled module. These should be automatically install
+to system. Because of this, rsnd_dai_connect() should be called from
+each mod. SSI can be very special, because it will be installed as
+SSI-parent / SSI-child. Thus, new rsnd_dai_connect() has type parameter
+which should be mod->type except SSI-parent
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ sound/soc/sh/rcar/core.c | 32 +++++++++++++++++---------------
+ sound/soc/sh/rcar/rsnd.h |  3 +++
+ 2 files changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 705e524b..697f882 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -533,7 +533,7 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
- 	struct rsnd_mod *mod_start, *mod_end;
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(this);
- 	struct device *dev = rsnd_priv_to_dev(priv);
--	int nr, i;
-+	int nr, i, idx;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index deed48ef..d7d2a59 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -332,8 +332,9 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	ret;							\
+ })
  
- 	if (!ssi)
- 		return;
-@@ -562,23 +562,24 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
- 	mod_start	= (is_play) ? NULL : ssi;
- 	mod_end		= (is_play) ? ssi  : NULL;
+-static int rsnd_dai_connect(struct rsnd_mod *mod,
+-			    struct rsnd_dai_stream *io)
++int rsnd_dai_connect(struct rsnd_mod *mod,
++		     struct rsnd_dai_stream *io,
++		     enum rsnd_mod_type type)
+ {
+ 	struct rsnd_priv *priv;
+ 	struct device *dev;
+@@ -344,7 +345,7 @@ static int rsnd_dai_connect(struct rsnd_mod *mod,
+ 	priv = rsnd_mod_to_priv(mod);
+ 	dev = rsnd_priv_to_dev(priv);
  
--	mod[0] = mod_start;
-+	idx = 0;
-+	mod[idx++] = mod_start;
- 	for (i = 1; i < nr; i++) {
- 		if (src) {
--			mod[i] = src;
-+			mod[idx++] = src;
- 			src = NULL;
- 		} else if (ctu) {
--			mod[i] = ctu;
-+			mod[idx++] = ctu;
- 			ctu = NULL;
- 		} else if (mix) {
--			mod[i] = mix;
-+			mod[idx++] = mix;
- 			mix = NULL;
- 		} else if (dvc) {
--			mod[i] = dvc;
-+			mod[idx++] = dvc;
- 			dvc = NULL;
- 		}
- 	}
--	mod[i] = mod_end;
-+	mod[idx] = mod_end;
+-	io->mod[mod->type] = mod;
++	io->mod[type] = mod;
  
- 	/*
- 	 *		| SSI | SRC |
-@@ -587,8 +588,8 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
- 	 * !is_play	|  *  |  o  |
- 	 */
- 	if ((this == ssi) == (is_play)) {
--		*mod_from	= mod[nr - 1];
--		*mod_to		= mod[nr];
-+		*mod_from	= mod[idx - 1];
-+		*mod_to		= mod[idx];
- 	} else {
- 		*mod_from	= mod[0];
- 		*mod_to		= mod[1];
-@@ -596,7 +597,7 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
+ 	dev_dbg(dev, "%s[%d] is connected to io (%s)\n",
+ 		rsnd_mod_name(mod), rsnd_mod_id(mod),
+@@ -354,9 +355,10 @@ static int rsnd_dai_connect(struct rsnd_mod *mod,
+ }
  
- 	dev_dbg(dev, "module connection (this is %s[%d])\n",
- 		rsnd_mod_name(this), rsnd_mod_id(this));
--	for (i = 0; i <= nr; i++) {
-+	for (i = 0; i <= idx; i++) {
- 		dev_dbg(dev, "  %s[%d]%s\n",
- 		       rsnd_mod_name(mod[i]), rsnd_mod_id(mod[i]),
- 		       (mod[i] == *mod_from) ? " from" :
+ static void rsnd_dai_disconnect(struct rsnd_mod *mod,
+-				struct rsnd_dai_stream *io)
++				struct rsnd_dai_stream *io,
++				enum rsnd_mod_type type)
+ {
+-	io->mod[mod->type] = NULL;
++	io->mod[type] = NULL;
+ }
+ 
+ struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id)
+@@ -572,32 +574,32 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.set_fmt	= rsnd_soc_dai_set_fmt,
+ };
+ 
+-#define rsnd_path_add(priv, io, type)				\
++#define rsnd_path_add(priv, io, _type)				\
+ ({								\
+ 	struct rsnd_mod *mod;					\
+ 	int ret = 0;						\
+ 	int id = -1;						\
+ 								\
+-	if (rsnd_is_enable_path(io, type)) {			\
+-		id = rsnd_info_id(priv, io, type);		\
++	if (rsnd_is_enable_path(io, _type)) {			\
++		id = rsnd_info_id(priv, io, _type);		\
+ 		if (id >= 0) {					\
+-			mod = rsnd_##type##_mod_get(priv, id);	\
+-			ret = rsnd_dai_connect(mod, io);	\
++			mod = rsnd_##_type##_mod_get(priv, id);	\
++			ret = rsnd_dai_connect(mod, io, mod->type);\
+ 		}						\
+ 	}							\
+ 	ret;							\
+ })
+ 
+-#define rsnd_path_remove(priv, io, type)			\
++#define rsnd_path_remove(priv, io, _type)			\
+ {								\
+ 	struct rsnd_mod *mod;					\
+ 	int id = -1;						\
+ 								\
+-	if (rsnd_is_enable_path(io, type)) {			\
+-		id = rsnd_info_id(priv, io, type);		\
++	if (rsnd_is_enable_path(io, _type)) {			\
++		id = rsnd_info_id(priv, io, _type);		\
+ 		if (id >= 0) {					\
+-			mod = rsnd_##type##_mod_get(priv, id);	\
+-			rsnd_dai_disconnect(mod, io);		\
++			mod = rsnd_##_type##_mod_get(priv, id);	\
++			rsnd_dai_disconnect(mod, io, mod->type);\
+ 		}						\
+ 	}							\
+ }
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index dc31f6d..996fa1e 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -380,6 +380,9 @@ struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id);
+ bool rsnd_dai_pointer_update(struct rsnd_dai_stream *io, int cnt);
+ void rsnd_dai_period_elapsed(struct rsnd_dai_stream *io);
+ int rsnd_dai_pointer_offset(struct rsnd_dai_stream *io, int additional);
++int rsnd_dai_connect(struct rsnd_mod *mod,
++		     struct rsnd_dai_stream *io,
++		     enum rsnd_mod_type type);
+ 
+ /*
+  *	R-Car Gen1/Gen2
 -- 
 2.6.1
