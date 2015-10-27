@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 00/17] ASoC: Intel: Skylake: More fixes and
-	updates
-Date: Tue, 27 Oct 2015 09:22:43 +0900
-Message-ID: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 02/17] ASoC: Intel: Skylake: Fix not to ignore
+	return value in be hw_params
+Date: Tue, 27 Oct 2015 09:22:45 +0900
+Message-ID: <1445905380-18167-3-git-send-email-vinod.koul@intel.com>
+References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A84FC2651C0
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:10 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 529FC2651ED
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:17 +0100 (CET)
+In-Reply-To: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+From: Jeeja KP <jeeja.kp@intel.com>
 
-This series adds more minor fixes and some enhancements to the driver.
-Most of the fixes patches are single line count changes
+Return value from skl_tplg_be_update_params() is ignored. But if the
+blob is null then the hw_params needs to return error.
+This patch fixes the issue by not ignoring return value from
+skl_tplg_be_update_params().
 
-The enhancements are:
-- optimizing code and using module pin info for unbinding
-- supporting virtual dsp widgets like switches in topology
-- add pin formats and supports multiple heterogeneous pins
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Hardik T Shah (3):
-  ASoC: Intel: Skylake: Add multiple pin formats
-  ASoC: Intel: Skylake: Update the topology interface structure
-  ASoC: Intel: Skylake: Add support for module GUIDs
-
-Jeeja KP (14):
-  ASoC: Intel: Skylake: Fix to correct check for non DSP widget
-  ASoC: Intel: Skylake: Fix not to ignore return value in be hw_params
-  ASoC: Intel: Skylake: Fix to add 32 bit in update FE params
-  ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
-  ASoC: Intel: Skylake: Fix to ignore blob check if link type is HDA
-  ASoC: Intel: Skylake: Fix support for multiple pins in a module
-  ASoC: Intel: Skylake: Fix bit depth when querying the NHLT blob
-  ASoC: Intel: Skylake: use module_pin info for unbind
-  ASoC: Intel: Skylake: Add support for virtual dsp widgets
-  ASoC: Intel: Skylake: Fix DSP pipe underrun/overrun issue
-  ASoC: Intel: Skylake: Fix to remove be copier widget power check
-  ASoC: Intel: Skylake: Ignore rate check for DMIC link
-  ASoC: Intel: Skylake: Fix to remove channel_map calculation
-  ASoC: Intel: Skylake: Fix PM behaviour
-
- sound/soc/intel/skylake/skl-messages.c       | 189 +++++--------
- sound/soc/intel/skylake/skl-nhlt.c           |  19 +-
- sound/soc/intel/skylake/skl-pcm.c            | 139 +++++-----
- sound/soc/intel/skylake/skl-topology.c       | 387 ++++++++++++++-------------
- sound/soc/intel/skylake/skl-topology.h       |  35 ++-
- sound/soc/intel/skylake/skl-tplg-interface.h |  90 +++++--
- sound/soc/intel/skylake/skl.c                |  63 +++--
- sound/soc/intel/skylake/skl.h                |   1 -
- 8 files changed, 483 insertions(+), 440 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index a2f94ce1679d..1242beac4e46 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -291,9 +291,8 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 	p_params.ch = params_channels(params);
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.stream = substream->stream;
+-	skl_tplg_be_update_params(dai, &p_params);
+ 
+-	return 0;
++	return skl_tplg_be_update_params(dai, &p_params);
+ }
+ 
+ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+@@ -352,9 +351,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	p_params.stream = substream->stream;
+ 	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
+ 
+-	skl_tplg_be_update_params(dai, &p_params);
+-
+-	return 0;
++	return skl_tplg_be_update_params(dai, &p_params);
+ }
+ 
+ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
 -- 
 2.4.3
