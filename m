@@ -1,24 +1,18 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 0/5] ALSA: firewire-tascam: add MIDI
-	functionality
-Date: Tue, 27 Oct 2015 02:38:57 +0100
-Message-ID: <20151027023857.1bd708b8@kant>
-References: <1444644625-30189-1-git-send-email-o-takashi@sakamocchi.jp>
- <20151012144816.130ac379@kant>
- <20151012222019.GB16052@marvin.atrad.com.au>
- <561CD0A0.6000708@sakamocchi.jp> <20151013161516.27cb80cc@kant>
- <5624FA84.70208@sakamocchi.jp>
- <20151019233640.GB8953@marvin.atrad.com.au>
- <56258FE6.9000304@sakamocchi.jp> <20151020093907.033831d3@kant>
- <562E444D.5070400@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: use mod base common method on
+	SSI-parent" to the asoc tree
+Date: Tue, 27 Oct 2015 13:48:18 +0900
+Message-ID: <E1ZqwBG-0004lo-NQ@finisterre>
+References: <87bnbm3tyb.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EC3D2651A5
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 02:38:59 +0100 (CET)
-In-Reply-To: <562E444D.5070400@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E61A2651A5
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:48:31 +0100 (CET)
+In-Reply-To: <87bnbm3tyb.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,111 +22,547 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 27 Takashi Sakamoto wrote:
-> On Oct 20 2015 16:39, Stefan Richter wrote:
-> > The console owner policy and ACL mechanism are not a complete replacement
-> > for the group mechanism though:
-> >   - There may be headless systems and other occasions at which the audio
-> >     user is not console owner.
-> 
-> I think usual user doesn't use such systems. Here, I imagine the user
-> works with major Linux discribution such as Ubuntu.
-> 
-> >   - Processes involved in capture or playback, i.e. applications beyond
-> >     mixers, may require realtime scheduling class privilege and memlocking
-> >     privilege, which are traditionally configured for Unix groups and
-> >     users (typically for a group).  Not sure whether a mechanism exists
-> >     which can implement a console owner policy for realtime and memlock
-> >     privileges.
-> 
-> Hm. About such applications which changes scheduling attributes of
-> tasks, the user intentionally run for his or her purpose. I think this
-> is not so usual cases which the system should support as a default.
+The patch
 
-I mentioned the two points mostly as an illustration for pros and cons of
-Unix groups mechanism/ policy in comparison to ACL mechanism/ console
-owner policy.
+   ASoC: rsnd: use mod base common method on SSI-parent
 
-If one of us submits new rules for inclusion into mainline systemd git, I
-assume that the udev rules maintainers of the systemd project will direct
-us as necessary, so that good default mechanisms and policies are
-implemented.
+has been applied to the asoc tree at
 
-[...]
-> There's another issue. In this time, I also added TASCAM FireOne support
-> to ALSA OXFW driver. Any login users are granted to access the
-> corresponding character device, while the device node belongs to 'video'
-> user. I think this line causes this issue:
-> https://github.com/systemd/systemd/blob/c379f143a5ccdbc94a87cfca0174e7f21fa05f26/rules/50-udev-default.rules#L43
-> 
-> The model has 0x00a02d for 'specifier_id' in its unit directory of
-> CONFIG ROM. This may match the line.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-In earlier times, some or all of these lines had comments that explained
-what is what. The comments were removed eventually.  Here is what each
-Specifier and Version (i.e. protocol) identifiers means (see also bottom of
-http://1394ta.org/1394-test-resources/):
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-SUBSYSTEM=="firewire", ATTR{units}=="*0x00a02d:0x00010*", GROUP="video"
-	specifier: 1394 TA
-	protocol: IIDC (Instrumentation & Industrial Digital Camera)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-SUBSYSTEM=="firewire", ATTR{units}=="*0x00b09d:0x00010*", GROUP="video"
-	specifier: Point Grey Research, Inc.
-	protocol: IIDC
-	(actually plain IIDC as specified by 1394 TA, but AFAIK the
-	nonstandard specifier ID is there to get the vendor's driver
-	loaded on other OSs)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-SUBSYSTEM=="firewire", ATTR{units}=="*0x00a02d:0x010001*", GROUP="video"
-	specifier: 1394 TA
-	protocol: AV/C
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-SUBSYSTEM=="firewire", ATTR{units}=="*0x00a02d:0x014001*", GROUP="video"
-	specifier: 1394 TA
-	protocol: AV/C and vendor-unique
+Thanks,
+Mark
 
-Note, the "*" asterisks in these patterns serve two purposes:  First, a
-node with several units will expose a space-separated list of
-specifier:version tuples in the units attribute.  Second, the version ID
-is always 24 bits wide, but we may want to match just the uppermost 20 or
-fewer bits of the version.
+>From ce4fdeada560c6f22ec9fb687440dbe61699545f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 26 Oct 2015 08:43:57 +0000
+Subject: [PATCH] ASoC: rsnd: use mod base common method on SSI-parent
 
-BTW, the "units" attribute and the others are described in
-Documentation/ABI/stable/sysfs-bus-firewire.  But here is an example from
-a device with four units:
-$ cat /sys/bus/firewire/devices/fw13/*{name,units}
-iSight
-Apple Computer, Inc.
-0x00a02d:0x000102 0x000a27:0x000010 0x000a27:0x000011 0x000a27:0x000012
-(IIDC v1.30, iSight audio, iSight factory, iSight iris units)
+Renesas sound needs many devices
+(SSI/SSIU/SRC/CTU/MIX/DVC/CMD/AudioDMAC/AudioDMACpp).
+SSI/SRC/CTU/MIX/DVC are implemented as module.
+SSI parent, SSIU are implemented as part of SSI
+CMD is implemented as part of CTU/MIX/DVC
+AudioDMAC/AudioDMACpp are implemented as part of SSI/SRC
+It is nice sense that these all devices are implemented as mod.
 
-As you know, firewire-core merely discovers nodes and units (including AV/C
-units), but not subdevices below them, such as SBP logical units or AV/C
-subunits.  Consequently, firewire-core does not expose a sysfs attribute
-which describes the AV/C subunit type (monitor, audio, disc, tape, tuner,
-camera, music, and more).  The first udev rules for FireWire devices were
-written in times when camcorders and other DV devices were considered more
-numerous in use than audio AV/C devices.  Hence the choice of GROUP="video"
-which has been carried over from that time.  In addition, many
-distributions
-at the time added new user accounts to a "video" group by default, but
-fewer distributions did the same with an "audio" group.
+This patch makes SSI parent mod base common method
 
-Do we need to add AV/C subunit discovery to firewire-core, in order to add
-AV/C subunit type attributes to sysfs?  Perhaps not, if we can come up with
-udev rules for audio devices which work off existing attributes like those
-which the audio kernel drivers themselves match by their mod-alias.  We
-need to restrict ourselves to "node device attributes"
-in /sys/bus/firewire/devices/fw[0-9]+/ though.  The "unit device
-attributes" in /sys/bus/firewire/devices/fw[0-9]+[.][0-9]+/ cannot be used
-because they are populated in later uevents than the one which
-triggers creation of the /dev/fw* file.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/rsnd.h |   2 +
+ sound/soc/sh/rcar/ssi.c  | 301 +++++++++++++++++++++++++----------------------
+ 2 files changed, 161 insertions(+), 142 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 81c789f..599dfb6 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -211,6 +211,7 @@ enum rsnd_mod_type {
+ 	RSND_MOD_CMD,
+ 	RSND_MOD_SRC,
+ 	RSND_MOD_SSIU,
++	RSND_MOD_SSIP, /* SSI parent */
+ 	RSND_MOD_SSI,
+ 	RSND_MOD_MAX,
+ };
+@@ -339,6 +340,7 @@ struct rsnd_dai_stream {
+ };
+ #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+ #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
++#define rsnd_io_to_mod_ssip(io)	rsnd_io_to_mod((io), RSND_MOD_SSIP)
+ #define rsnd_io_to_mod_src(io)	rsnd_io_to_mod((io), RSND_MOD_SRC)
+ #define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
+ #define rsnd_io_to_mod_mix(io)	rsnd_io_to_mod((io), RSND_MOD_MIX)
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index bb08d66..3e814711 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -67,7 +67,9 @@ struct rsnd_ssi {
+ 
+ 	u32 cr_own;
+ 	u32 cr_clk;
++	u32 cr_mode;
+ 	int chan;
++	int rate;
+ 	int err;
+ 	unsigned int usrcnt;
+ };
+@@ -82,9 +84,9 @@ struct rsnd_ssi {
+ #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+ #define rsnd_ssi_pio_available(ssi) ((ssi)->info->irq > 0)
+-#define rsnd_ssi_parent(ssi) ((ssi)->parent)
+ #define rsnd_ssi_mode_flags(p) ((p)->info->flags)
+ #define rsnd_ssi_dai_id(ssi) ((ssi)->info->dai_id)
++#define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
+ #define rsnd_ssi_of_node(priv) \
+ 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,ssi")
+ 
+@@ -168,7 +170,9 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
++	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct rsnd_mod *mod = rsnd_mod_get(ssi);
++	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
+ 	int j, ret;
+ 	int ssi_clk_mul_table[] = {
+ 		1, 2, 4, 8, 16, 6, 12,
+@@ -176,6 +180,21 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 	unsigned int main_rate;
+ 	unsigned int rate = rsnd_src_get_ssi_rate(priv, io, runtime);
+ 
++	if (!rsnd_rdai_is_clk_master(rdai))
++		return 0;
++
++	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
++		return 0;
++
++	if (ssi->usrcnt > 1) {
++		if (ssi->rate != rate) {
++			dev_err(dev, "SSI parent/child should use same rate\n");
++			return -EINVAL;
++		}
++
++		return 0;
++	}
++
+ 	/*
+ 	 * Find best clock, and try to start ADG
+ 	 */
+@@ -193,6 +212,10 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 			ssi->cr_clk	= FORCE | SWL_32 |
+ 				SCKD | SWSD | CKDV(j);
+ 
++			ssi->rate = rate;
++
++			rsnd_mod_write(mod, SSIWSR, CONT);
++
+ 			dev_dbg(dev, "%s[%d] outputs %u Hz\n",
+ 				rsnd_mod_name(mod),
+ 				rsnd_mod_id(mod), rate);
+@@ -205,113 +228,26 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 	return -EIO;
+ }
+ 
+-static void rsnd_ssi_master_clk_stop(struct rsnd_ssi *ssi)
+-{
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
+-
+-	ssi->cr_clk = 0;
+-	rsnd_adg_ssi_clk_stop(mod);
+-}
+-
+-static void rsnd_ssi_hw_start(struct rsnd_ssi *ssi,
+-			      struct rsnd_dai_stream *io)
++static void rsnd_ssi_master_clk_stop(struct rsnd_ssi *ssi,
++				     struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_mod *mod = rsnd_mod_get(ssi);
+-	u32 cr_mode;
+-	u32 cr;
+-
+-	if (0 == ssi->usrcnt) {
+-		rsnd_mod_power_on(mod);
+-
+-		if (rsnd_rdai_is_clk_master(rdai)) {
+-			struct rsnd_ssi *ssi_parent = rsnd_ssi_parent(ssi);
+-
+-			if (ssi_parent)
+-				rsnd_ssi_hw_start(ssi_parent, io);
+-			else
+-				rsnd_ssi_master_clk_start(ssi, io);
+-		}
+-	}
+-
+-	if (rsnd_ssi_is_dma_mode(mod)) {
+-		cr_mode = UIEN | OIEN |	/* over/under run */
+-			  DMEN;		/* DMA : enable DMA */
+-	} else {
+-		cr_mode = DIEN;		/* PIO : enable Data interrupt */
+-	}
+-
+-	cr  =	ssi->cr_own	|
+-		ssi->cr_clk	|
+-		cr_mode		|
+-		EN;
+-
+-	rsnd_mod_write(mod, SSICR, cr);
+-
+-	/* enable WS continue */
+-	if (rsnd_rdai_is_clk_master(rdai))
+-		rsnd_mod_write(mod, SSIWSR, CONT);
+-
+-	/* clear error status */
+-	rsnd_ssi_status_clear(mod);
++	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
+ 
+-	ssi->usrcnt++;
+-
+-	dev_dbg(dev, "%s[%d] hw started\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod));
+-}
+-
+-static void rsnd_ssi_hw_stop(struct rsnd_dai_stream *io, struct rsnd_ssi *ssi)
+-{
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+-	u32 cr;
+-
+-	if (0 == ssi->usrcnt) {
+-		dev_err(dev, "%s called without starting\n", __func__);
++	if (!rsnd_rdai_is_clk_master(rdai))
+ 		return;
+-	}
+-
+-	ssi->usrcnt--;
+-
+-	if (0 == ssi->usrcnt) {
+-		/*
+-		 * disable all IRQ,
+-		 * and, wait all data was sent
+-		 */
+-		cr  =	ssi->cr_own	|
+-			ssi->cr_clk;
+-
+-		rsnd_mod_write(mod, SSICR, cr | EN);
+-		rsnd_ssi_status_check(mod, DIRQ);
+-
+-		/*
+-		 * disable SSI,
+-		 * and, wait idle state
+-		 */
+-		rsnd_mod_write(mod, SSICR, cr);	/* disabled all */
+-		rsnd_ssi_status_check(mod, IIRQ);
+ 
+-		if (rsnd_rdai_is_clk_master(rdai)) {
+-			struct rsnd_ssi *ssi_parent = rsnd_ssi_parent(ssi);
+-
+-			if (ssi_parent)
+-				rsnd_ssi_hw_stop(io, ssi_parent);
+-			else
+-				rsnd_ssi_master_clk_stop(ssi);
+-		}
++	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
++		return;
+ 
+-		rsnd_mod_power_off(mod);
++	if (ssi->usrcnt > 1)
++		return;
+ 
+-		ssi->chan = 0;
+-	}
++	ssi->cr_clk	= 0;
++	ssi->rate	= 0;
+ 
+-	dev_dbg(dev, "%s[%d] hw stopped\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod));
++	rsnd_adg_ssi_clk_stop(mod);
+ }
+ 
+ /*
+@@ -325,6 +261,18 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	u32 cr;
++	int ret;
++
++	ssi->usrcnt++;
++
++	rsnd_mod_power_on(mod);
++
++	ret = rsnd_ssi_master_clk_start(ssi, io);
++	if (ret < 0)
++		return ret;
++
++	if (rsnd_ssi_is_parent(mod, io))
++		return 0;
+ 
+ 	cr = FORCE;
+ 
+@@ -359,12 +307,24 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	if (rsnd_io_is_play(io))
+ 		cr |= TRMD;
+ 
+-	/*
+-	 * set ssi parameter
+-	 */
+ 	ssi->cr_own	= cr;
++
++	if (rsnd_ssi_is_dma_mode(mod)) {
++		cr =	UIEN | OIEN |	/* over/under run */
++			DMEN;		/* DMA : enable DMA */
++	} else {
++		cr =	DIEN;		/* PIO : enable Data interrupt */
++	}
++
++	ssi->cr_mode	= cr;
++
+ 	ssi->err	= -1; /* ignore 1st error */
+ 
++	/* clear error status */
++	rsnd_ssi_status_clear(mod);
++
++	rsnd_ssi_irq_enable(mod);
++
+ 	return 0;
+ }
+ 
+@@ -375,6 +335,9 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 
++	if (rsnd_ssi_is_parent(mod, io))
++		goto rsnd_ssi_quit_end;
++
+ 	if (ssi->err > 0)
+ 		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod), ssi->err);
+@@ -382,6 +345,19 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	ssi->cr_own	= 0;
+ 	ssi->err	= 0;
+ 
++	rsnd_ssi_irq_disable(mod);
++
++rsnd_ssi_quit_end:
++	rsnd_ssi_master_clk_stop(ssi, io);
++
++	rsnd_mod_power_off(mod);
++
++	ssi->usrcnt--;
++
++	if (ssi->usrcnt < 0)
++		dev_err(dev, "%s[%d] usrcnt error\n",
++			rsnd_mod_name(mod), rsnd_mod_id(mod));
++
+ 	return 0;
+ }
+ 
+@@ -391,14 +367,13 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
+ 			      struct snd_pcm_hw_params *params)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	struct rsnd_ssi *ssi_parent = rsnd_ssi_parent(ssi);
+ 	int chan = params_channels(params);
+ 
+ 	/*
+ 	 * Already working.
+ 	 * It will happen if SSI has parent/child connection.
+ 	 */
+-	if (ssi->usrcnt) {
++	if (ssi->usrcnt > 1) {
+ 		/*
+ 		 * it is error if child <-> parent SSI uses
+ 		 * different channels.
+@@ -407,11 +382,7 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
+ 			return -EIO;
+ 	}
+ 
+-	/* It will be removed on rsnd_ssi_hw_stop */
+ 	ssi->chan = chan;
+-	if (ssi_parent)
+-		return rsnd_ssi_hw_params(rsnd_mod_get(ssi_parent), io,
+-					  substream, params);
+ 
+ 	return 0;
+ }
+@@ -432,15 +403,59 @@ static u32 rsnd_ssi_record_error(struct rsnd_ssi *ssi)
+ 	return status;
+ }
+ 
++static int __rsnd_ssi_start(struct rsnd_mod *mod,
++			    struct rsnd_dai_stream *io,
++			    struct rsnd_priv *priv)
++{
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	u32 cr;
++
++	cr  =	ssi->cr_own	|
++		ssi->cr_clk	|
++		ssi->cr_mode	|
++		EN;
++
++	rsnd_mod_write(mod, SSICR, cr);
++
++	return 0;
++}
++
+ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 			  struct rsnd_dai_stream *io,
+ 			  struct rsnd_priv *priv)
+ {
++	/*
++	 * no limit to start
++	 * see also
++	 *	rsnd_ssi_stop
++	 *	rsnd_ssi_interrupt
++	 */
++	return __rsnd_ssi_start(mod, io, priv);
++}
++
++static int __rsnd_ssi_stop(struct rsnd_mod *mod,
++			   struct rsnd_dai_stream *io,
++			   struct rsnd_priv *priv)
++{
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	u32 cr;
++
++	/*
++	 * disable all IRQ,
++	 * and, wait all data was sent
++	 */
++	cr  =	ssi->cr_own	|
++		ssi->cr_clk;
+ 
+-	rsnd_ssi_hw_start(ssi, io);
++	rsnd_mod_write(mod, SSICR, cr | EN);
++	rsnd_ssi_status_check(mod, DIRQ);
+ 
+-	rsnd_ssi_irq_enable(mod);
++	/*
++	 * disable SSI,
++	 * and, wait idle state
++	 */
++	rsnd_mod_write(mod, SSICR, cr);	/* disabled all */
++	rsnd_ssi_status_check(mod, IIRQ);
+ 
+ 	return 0;
+ }
+@@ -451,13 +466,16 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 
+-	rsnd_ssi_irq_disable(mod);
+-
+-	rsnd_ssi_record_error(ssi);
+-
+-	rsnd_ssi_hw_stop(io, ssi);
++	/*
++	 * don't stop if not last user
++	 * see also
++	 *	rsnd_ssi_start
++	 *	rsnd_ssi_interrupt
++	 */
++	if (ssi->usrcnt > 1)
++		return 0;
+ 
+-	return 0;
++	return __rsnd_ssi_stop(mod, io, priv);
+ }
+ 
+ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+@@ -505,8 +523,8 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 		dev_dbg(dev, "%s[%d] restart\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 
+-		rsnd_ssi_stop(mod, io, priv);
+-		rsnd_ssi_start(mod, io, priv);
++		__rsnd_ssi_stop(mod, io, priv);
++		__rsnd_ssi_start(mod, io, priv);
+ 	}
+ 
+ 	if (ssi->err > 1024) {
+@@ -535,6 +553,27 @@ static irqreturn_t rsnd_ssi_interrupt(int irq, void *data)
+ /*
+  *		SSI PIO
+  */
++static void rsnd_ssi_parent_attach(struct rsnd_mod *mod,
++				   struct rsnd_dai_stream *io,
++				   struct rsnd_priv *priv)
++{
++	if (!__rsnd_ssi_is_pin_sharing(mod))
++		return;
++
++	switch (rsnd_mod_id(mod)) {
++	case 1:
++	case 2:
++		rsnd_dai_connect(rsnd_ssi_mod_get(priv, 0), io, RSND_MOD_SSIP);
++		break;
++	case 4:
++		rsnd_dai_connect(rsnd_ssi_mod_get(priv, 3), io, RSND_MOD_SSIP);
++		break;
++	case 8:
++		rsnd_dai_connect(rsnd_ssi_mod_get(priv, 7), io, RSND_MOD_SSIP);
++		break;
++	}
++}
++
+ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 				 struct rsnd_dai_stream *io,
+ 				 struct rsnd_priv *priv)
+@@ -543,6 +582,8 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	int ret;
+ 
++	rsnd_ssi_parent_attach(mod, io, priv);
++
+ 	ret = rsnd_ssiu_attach(io, mod);
+ 	if (ret < 0)
+ 		return ret;
+@@ -679,28 +720,6 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
+ 	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
+ }
+ 
+-static void rsnd_ssi_parent_setup(struct rsnd_priv *priv, struct rsnd_ssi *ssi)
+-{
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
+-
+-	if (!__rsnd_ssi_is_pin_sharing(mod))
+-		return;
+-
+-	switch (rsnd_mod_id(mod)) {
+-	case 1:
+-	case 2:
+-		ssi->parent = rsnd_mod_to_ssi(rsnd_ssi_mod_get(priv, 0));
+-		break;
+-	case 4:
+-		ssi->parent = rsnd_mod_to_ssi(rsnd_ssi_mod_get(priv, 3));
+-		break;
+-	case 8:
+-		ssi->parent = rsnd_mod_to_ssi(rsnd_ssi_mod_get(priv, 7));
+-		break;
+-	}
+-}
+-
+-
+ static void rsnd_of_parse_ssi(struct platform_device *pdev,
+ 			      const struct rsnd_of_data *of_data,
+ 			      struct rsnd_priv *priv)
+@@ -810,8 +829,6 @@ int rsnd_ssi_probe(struct platform_device *pdev,
+ 				    RSND_MOD_SSI, i);
+ 		if (ret)
+ 			return ret;
+-
+-		rsnd_ssi_parent_setup(priv, ssi);
+ 	}
+ 
+ 	return 0;
 -- 
-Stefan Richter
--=====-===== =-=- ==-==
-http://arcgraph.de/sr/
+2.6.1
