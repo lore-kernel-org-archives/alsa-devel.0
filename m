@@ -1,16 +1,19 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: alsa audio open error
-Date: Tue, 27 Oct 2015 08:46:18 +0000
-Message-ID: <SG2PR04MB069529C060558B48A7586228C3220@SG2PR04MB0695.apcprd04.prod.outlook.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: wm9713: convert to regmap
+Date: Tue, 27 Oct 2015 09:10:09 +0000
+Message-ID: <20151027091009.GJ10520@ck-lbox>
+References: <1445722627-28854-1-git-send-email-robert.jarzmik@free.fr>
+ <20151026110257.GH10520@ck-lbox> <8737wxldns.fsf@belgarion.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-PU1-obe.outbound.protection.outlook.com
- (mail-pu1apc01on0127.outbound.protection.outlook.com [104.47.126.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BA9C2608BB
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 09:46:23 +0100 (CET)
-Content-Language: en-US
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E542260418
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 10:27:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <8737wxldns.fsf@belgarion.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,54 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa community,
+On Mon, Oct 26, 2015 at 06:53:27PM +0100, Robert Jarzmik wrote:
+> Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
+> 
+> > On Sat, Oct 24, 2015 at 11:37:07PM +0200, Robert Jarzmik wrote:
+> >> Convert the Wolfson WM9713 to regmap API. This will leverage all the
+> >> regmap functions (debug, registers update, etc ...).
+> >> 
+> >> As a bonus, this will pave the path to gpio chip introduction, and
+> >> devicetree support.
+> >> 
+> >> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> >> ---
+> > I am assuming we don't want to be doing a cache_sync just after we
+> > have marked the regmap as cache only.
+> Ah, this denotes my lack of understanding of regmap cache behavior.
+> Basically what I want at this point is that :
+>  1) All previous writes should hit the cache (cache coherency barrier)
+>  2) All subsequent writes should not go into the cache (uncached writes)
+>     => especially the next writes in wm9713_soc_suspend()
 
-I facing the below error, am using am335x & ti sdk 8
+Cache only means that writes will only go into the cache. Cache
+sync writes the current state of the cache out to the hardware.
+Normally you would put the cache into cache only during suspend
+this allows controls etc. to still function but the writes go to
+the cache and thus the user doesn't need to worry if the codec is
+active or not. Then on resume you would turn cache only off such
+that writes will go to the hardware again and do a cache sync (you
+will need a call to mark the cache as dirty at some point as well),
+this will bring the hardware up to date with the writes that
+happened whilst it was suspended.
 
-Something wrong when execute arecord & aplay :
+Doing an update_bits that bypasses the cache can be difficult.
+You can use regcache_cache_bypass to effectively turn the cache
+off, but you need to synchronise it with everything else to
+ensure that no writes you want to hit the cache happen whilst it
+is disabled. Also you can use multi_write_bypassed to do a bunch
+of writes atomically that don't hit the cache, but those are
+whole writes rather than update_bits.
 
-arecord and aplay does not work for the first time & it works after throwing error after 5 times
+> > Also as you have already marked the regmap as cache only these
+> > writes won't go to the hardware.
+> Ah, exactly the opposite of what I wanted :(
+> 
+> Would you have an example driver I can inspire myself from. If not, I'll dig in
+> more in the regmap cache API.
 
-Couple of times I get the below error:
+wm8962 for example shows fairly typical use of these APIs.
 
-
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-^CAborted by signal Interrupt...
-Aborted by signal Interrupt...
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm_dsnoop.c:618:(snd_pcm_dsnoop_open) unable to open slave
-arecord: main:722: audio open error: Invalid argument
-aplay: playback:2715: read error
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm_dshare.c:710:(snd_pcm_dshare_open) unable to open slave
-aplay: main:722: audio open error: Invalid argument
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm_dshare.c:710:(snd_pcm_dshare_open) unable to open slave
-aplay: main:722: audio open error: Invalid argument
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm_dshare.c:710:(snd_pcm_dshare_open) unable to open slave
-aplay: main:722: audio open error: Invalid argument
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm_dshare.c:710:(snd_pcm_dshare_open) unable to open slave
-aplay: main:722: audio open error: Invalid argument
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-root@lifeline:/# arecord -D VINL8 -f S16_LE | aplay -D VOUTR8
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-
-But there is no answer...
-
-Could someone give me some clues?
-
-Kindly do the needful as early as possible
-
-Many Thanks in advance
+Thanks,
+Charles
