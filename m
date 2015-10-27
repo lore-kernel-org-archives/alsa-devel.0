@@ -1,17 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 01/17] ASoC: Intel: Skylake: Fix to correct
-	check for non DSP widget
-Date: Tue, 27 Oct 2015 09:22:44 +0900
-Message-ID: <1445905380-18167-2-git-send-email-vinod.koul@intel.com>
-References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 00/17] ASoC: Intel: Skylake: More fixes and
+	updates
+Date: Tue, 27 Oct 2015 09:22:43 +0900
+Message-ID: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id EF9D12651E3
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:13 +0100 (CET)
-In-Reply-To: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A84FC2651C0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:23:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Hi all,
 
-To get the FE copier module, the check to ignore non DSP widgets
-was wrong. This path corrects the check to ignore non DSP widget.
+This series adds more minor fixes and some enhancements to the driver.
+Most of the fixes patches are single line count changes
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The enhancements are:
+- optimizing code and using module pin info for unbinding
+- supporting virtual dsp widgets like switches in topology
+- add pin formats and supports multiple heterogeneous pins
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a7854c8fc523..98ccd42b8867 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -846,7 +846,7 @@ skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
- 		w = dai->playback_widget;
- 		snd_soc_dapm_widget_for_each_sink_path(w, p) {
- 			if (p->connect && p->sink->power &&
--					is_skl_dsp_widget_type(p->sink))
-+					!is_skl_dsp_widget_type(p->sink))
- 				continue;
- 
- 			if (p->sink->priv) {
-@@ -859,7 +859,7 @@ skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
- 		w = dai->capture_widget;
- 		snd_soc_dapm_widget_for_each_source_path(w, p) {
- 			if (p->connect && p->source->power &&
--					is_skl_dsp_widget_type(p->source))
-+					!is_skl_dsp_widget_type(p->source))
- 				continue;
- 
- 			if (p->source->priv) {
+Hardik T Shah (3):
+  ASoC: Intel: Skylake: Add multiple pin formats
+  ASoC: Intel: Skylake: Update the topology interface structure
+  ASoC: Intel: Skylake: Add support for module GUIDs
+
+Jeeja KP (14):
+  ASoC: Intel: Skylake: Fix to correct check for non DSP widget
+  ASoC: Intel: Skylake: Fix not to ignore return value in be hw_params
+  ASoC: Intel: Skylake: Fix to add 32 bit in update FE params
+  ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
+  ASoC: Intel: Skylake: Fix to ignore blob check if link type is HDA
+  ASoC: Intel: Skylake: Fix support for multiple pins in a module
+  ASoC: Intel: Skylake: Fix bit depth when querying the NHLT blob
+  ASoC: Intel: Skylake: use module_pin info for unbind
+  ASoC: Intel: Skylake: Add support for virtual dsp widgets
+  ASoC: Intel: Skylake: Fix DSP pipe underrun/overrun issue
+  ASoC: Intel: Skylake: Fix to remove be copier widget power check
+  ASoC: Intel: Skylake: Ignore rate check for DMIC link
+  ASoC: Intel: Skylake: Fix to remove channel_map calculation
+  ASoC: Intel: Skylake: Fix PM behaviour
+
+ sound/soc/intel/skylake/skl-messages.c       | 189 +++++--------
+ sound/soc/intel/skylake/skl-nhlt.c           |  19 +-
+ sound/soc/intel/skylake/skl-pcm.c            | 139 +++++-----
+ sound/soc/intel/skylake/skl-topology.c       | 387 ++++++++++++++-------------
+ sound/soc/intel/skylake/skl-topology.h       |  35 ++-
+ sound/soc/intel/skylake/skl-tplg-interface.h |  90 +++++--
+ sound/soc/intel/skylake/skl.c                |  63 +++--
+ sound/soc/intel/skylake/skl.h                |   1 -
+ 8 files changed, 483 insertions(+), 440 deletions(-)
+
 -- 
 2.4.3
