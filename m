@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix to ignore
-	codec_mask check in probe" to the asoc tree
-Date: Tue, 27 Oct 2015 13:49:36 +0900
-Message-ID: <E1ZqwCW-0004wc-Lb@finisterre>
-References: <1445905380-18167-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to add 32 bit in
+	update FE params" to the asoc tree
+Date: Tue, 27 Oct 2015 13:49:38 +0900
+Message-ID: <E1ZqwCY-0004x5-0I@finisterre>
+References: <1445905380-18167-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CBCB265314
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:46 +0100 (CET)
-In-Reply-To: <1445905380-18167-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F8472657B1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:48 +0100 (CET)
+In-Reply-To: <1445905380-18167-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
+   ASoC: Intel: Skylake: Fix to add 32 bit in update FE params
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 17894555d5e2d00e6c6da43342c320c8364d8f0a Mon Sep 17 00:00:00 2001
+>From 9f891328816ceda2dce3ea25e1e1d375e0c6453d Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 27 Oct 2015 09:22:47 +0900
-Subject: [PATCH] ASoC: Intel: Skylake: Fix to ignore codec_mask check in probe
+Date: Tue, 27 Oct 2015 09:22:46 +0900
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to add 32 bit in update FE params
 
-We have both I2S and hda codec support in the driver. codec_mask
-check is relevant only for hda codec and some boards may have
-only I2S Codec, so removed probe error in case no hda codec is
-found and update the log to info as it may not be error.
+In case of 32 bit, the FE update params returns error as it falls
+thru to default case. This patch adds 32 bit depth handling in
+update FE params.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 5319529..211ef6e2 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -434,8 +434,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 98ccd42..313a02d 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -809,6 +809,7 @@ int skl_tplg_update_pipe_params(struct device *dev,
+ 		break;
  
- 	/* codec detection */
- 	if (!bus->codec_mask) {
--		dev_err(bus->dev, "no codecs found!\n");
--		return -ENODEV;
-+		dev_info(bus->dev, "no hda codecs found!\n");
- 	}
+ 	case SKL_DEPTH_24BIT:
++	case SKL_DEPTH_32BIT:
+ 		format->bit_depth = SKL_DEPTH_32BIT;
+ 		break;
  
- 	return 0;
 -- 
 2.6.1
