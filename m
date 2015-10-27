@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Don't stop HW even if a large
-	number of errors occur" to the asoc tree
-Date: Tue, 27 Oct 2015 13:48:30 +0900
-Message-ID: <E1ZqwBS-0004pa-9t@finisterre>
-References: <87mvv63u29.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: avoid pointless loop in
+	rsnd_mod_interrupt()" to the asoc tree
+Date: Tue, 27 Oct 2015 13:48:28 +0900
+Message-ID: <E1ZqwBQ-0004p6-Rp@finisterre>
+References: <87lhaq3u1s.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F6272651A5
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:48:39 +0100 (CET)
-In-Reply-To: <87mvv63u29.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 758492651FD
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:48:38 +0100 (CET)
+In-Reply-To: <87lhaq3u1s.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Don't stop HW even if a large number of errors occur
+   ASoC: rsnd: avoid pointless loop in rsnd_mod_interrupt()
 
 has been applied to the asoc tree at
 
@@ -53,111 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From d4a5d70fc97f6edda5945802a5a026571d2f40fa Mon Sep 17 00:00:00 2001
+>From f1b28110be591426ee9d0f36888fef4e37d707a9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Oct 2015 08:41:36 +0000
-Subject: [PATCH] ASoC: rsnd: Don't stop HW even if a large number of errors
- occur
+Date: Mon, 26 Oct 2015 08:41:53 +0000
+Subject: [PATCH] ASoC: rsnd: avoid pointless loop in rsnd_mod_interrupt()
 
-Current SSI/SRC restarts HW if under/over flow happened to avoid L/R
-invert issue. But it will stop HW if too many error happen.
-But if it stops on HW, other side under/over flow happen. OTHA, it will
-be forever loop interrupt if something strange error happen on
-HW/driver without escape route of large number error.
+Current Renesas sound driver doesn't have 1:1 relationship between
+stream <-> mod because it is supporting MIX. Because of this reason
+rsnd_mod_interrupt() is searching correspond mod by for loop.
+But this loop is not needed, because each mod has own type.
+This patch avoid pointless loop by using mod->type.
 
-To avoid this issue, it indicates error message if large number error
-occur, and disables error interrupt.
+This patch is good for SSI-parent support, because stream might have
+2 SSI as SSI-parent/child. SSI interrupt handler will be called twice
+if stream has SSI-parent without this patch.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 17 ++++++++++-------
- sound/soc/sh/rcar/ssi.c | 15 +++++++++------
- 2 files changed, 19 insertions(+), 13 deletions(-)
+ sound/soc/sh/rcar/core.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 3f6993f..0d96ce5 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -690,6 +690,8 @@ static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
- 				      struct rsnd_dai_stream *io)
- {
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 5f20d67..8af2d22 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -192,19 +192,16 @@ void rsnd_mod_interrupt(struct rsnd_mod *mod,
  	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct rsnd_src *src = rsnd_mod_to_src(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 
- 	spin_lock(&priv->lock);
- 
-@@ -698,18 +700,19 @@ static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
- 		goto rsnd_src_interrupt_gen2_out;
- 
- 	if (rsnd_src_error_record_gen2(mod)) {
--		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--		struct rsnd_src *src = rsnd_mod_to_src(mod);
--		struct device *dev = rsnd_priv_to_dev(priv);
- 
- 		dev_dbg(dev, "%s[%d] restart\n",
- 			rsnd_mod_name(mod), rsnd_mod_id(mod));
- 
- 		_rsnd_src_stop_gen2(mod);
--		if (src->err < 1024)
--			_rsnd_src_start_gen2(mod, io);
--		else
--			dev_warn(dev, "no more SRC restart\n");
-+		_rsnd_src_start_gen2(mod, io);
-+	}
-+
-+	if (src->err > 1024) {
-+		rsnd_src_irq_disable_gen2(mod);
-+
-+		dev_warn(dev, "no more %s[%d] restart\n",
-+			 rsnd_mod_name(mod), rsnd_mod_id(mod));
- 	}
- 
- rsnd_src_interrupt_gen2_out:
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index c7d9434..86e51ce 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -456,6 +456,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 	int is_dma = rsnd_ssi_is_dma_mode(mod);
- 	u32 status;
- 	bool elapsed = false;
-@@ -489,8 +490,6 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 
- 	/* DMA only */
- 	if (is_dma && (status & (UIRQ | OIRQ))) {
--		struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_dai_stream *io;
+ 	struct rsnd_dai *rdai;
+-	int i, j;
 -
- 		/*
- 		 * restart SSI
- 		 */
-@@ -498,14 +497,18 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+-	for_each_rsnd_dai(rdai, priv, j) {
++	int i;
  
- 		rsnd_ssi_stop(mod, io, priv);
--		if (ssi->err < 1024)
--			rsnd_ssi_start(mod, io, priv);
--		else
--			dev_warn(dev, "no more SSI restart\n");
-+		rsnd_ssi_start(mod, io, priv);
+-		for (i = 0; i < RSND_MOD_MAX; i++) {
+-			io = &rdai->playback;
+-			if (mod == io->mod[i])
+-				callback(mod, io);
++	for_each_rsnd_dai(rdai, priv, i) {
++		io = &rdai->playback;
++		if (mod == io->mod[mod->type])
++			callback(mod, io);
+ 
+-			io = &rdai->capture;
+-			if (mod == io->mod[i])
+-				callback(mod, io);
+-		}
++		io = &rdai->capture;
++		if (mod == io->mod[mod->type])
++			callback(mod, io);
  	}
- 
- 	rsnd_ssi_record_error(ssi, status);
- 
-+	if (ssi->err > 1024) {
-+		rsnd_ssi_irq_disable(mod);
-+
-+		dev_warn(dev, "no more %s[%d] restart\n",
-+			 rsnd_mod_name(mod), rsnd_mod_id(mod));
-+	}
-+
- rsnd_ssi_interrupt_out:
- 	spin_unlock(&priv->lock);
+ }
  
 -- 
 2.6.1
