@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 14/17] ASoC: Intel: Skylake: Add support for
-	module GUIDs
-Date: Tue, 27 Oct 2015 09:22:57 +0900
-Message-ID: <1445905380-18167-15-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 15/17] ASoC: Intel: Skylake: Ignore rate check
+	for DMIC link
+Date: Tue, 27 Oct 2015 09:22:58 +0900
+Message-ID: <1445905380-18167-16-git-send-email-vinod.koul@intel.com>
 References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 74E1F2651FE
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:24:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 16FC8265341
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 01:24:04 +0100 (CET)
 In-Reply-To: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,72 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hardik T Shah <hardik.t.shah@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-The DSP FW specifies loadable modules using GUIDs so add support to
-specify the GUIDs from topology
+DMIC NHLT entry is sample rate agnostic, so ignore the rate
+checks for DMIC type
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Omair M Abdullah <omair.m.abdullah@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 4 ++++
- sound/soc/intel/skylake/skl-topology.h       | 1 +
- sound/soc/intel/skylake/skl-tplg-interface.h | 3 +++
- 3 files changed, 8 insertions(+)
+ sound/soc/intel/skylake/skl-nhlt.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 37e5c4fc0f10..3c5f06235889 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1164,6 +1164,10 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	mconfig->time_slot = dfw_config->time_slot;
- 	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 3ff22eba5875..6e4b21cdb1bd 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -55,7 +55,7 @@ void skl_nhlt_free(void *addr)
  
-+	if (dfw_config->is_loadable)
-+		memcpy(mconfig->guid, dfw_config->uuid,
-+					ARRAY_SIZE(dfw_config->uuid));
-+
- 	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
- 						sizeof(*mconfig->m_in_pin),
- 						GFP_KERNEL);
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 4b0a59898676..57cb7b8dd269 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -246,6 +246,7 @@ enum skl_module_state {
- };
+ static struct nhlt_specific_cfg *skl_get_specific_cfg(
+ 		struct device *dev, struct nhlt_fmt *fmt,
+-		u8 no_ch, u32 rate, u16 bps)
++		u8 no_ch, u32 rate, u16 bps, u8 linktype)
+ {
+ 	struct nhlt_specific_cfg *sp_config;
+ 	struct wav_fmt *wfmt;
+@@ -68,11 +68,17 @@ static struct nhlt_specific_cfg *skl_get_specific_cfg(
+ 		wfmt = &fmt_config->fmt_ext.fmt;
+ 		dev_dbg(dev, "ch=%d fmt=%d s_rate=%d\n", wfmt->channels,
+ 			 wfmt->bits_per_sample, wfmt->samples_per_sec);
+-		if (wfmt->channels == no_ch && wfmt->samples_per_sec == rate &&
+-					wfmt->bits_per_sample == bps) {
++		if (wfmt->channels == no_ch && wfmt->bits_per_sample == bps) {
++			/*
++			 * if link type is dmic ignore rate check as the blob is
++			 * generic for all rates
++			 */
+ 			sp_config = &fmt_config->config;
++			if (linktype == NHLT_LINK_DMIC)
++				return sp_config;
  
- struct skl_module_cfg {
-+	char guid[SKL_UUID_STR_SZ];
- 	struct skl_module_inst_id id;
- 	u8 domain;
- 	bool homogenous_inputs;
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index aeb8f251675a..20c068754d08 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -32,6 +32,7 @@
- #define MAX_IN_QUEUE 8
- #define MAX_OUT_QUEUE 8
+-			return sp_config;
++			if (wfmt->samples_per_sec == rate)
++				return sp_config;
+ 		}
  
-+#define SKL_UUID_STR_SZ 40
- /* Event types goes here */
- /* Reserve event type 0 for no event handlers */
- enum skl_event_types {
-@@ -174,6 +175,8 @@ struct skl_dfw_pipe {
- } __packed;
- 
- struct skl_dfw_module {
-+	char uuid[SKL_UUID_STR_SZ];
-+
- 	u16 module_id;
- 	u16 instance_id;
- 	u32 max_mcps;
+ 		fmt_config = (struct nhlt_fmt_cfg *)(fmt_config->config.caps +
+@@ -128,7 +134,8 @@ struct nhlt_specific_cfg
+ 		if (skl_check_ep_match(dev, epnt, instance, link_type, dirn)) {
+ 			fmt = (struct nhlt_fmt *)(epnt->config.caps +
+ 						 epnt->config.size);
+-			sp_config = skl_get_specific_cfg(dev, fmt, num_ch, s_rate, bps);
++			sp_config = skl_get_specific_cfg(dev, fmt, num_ch,
++							s_rate, bps, link_type);
+ 			if (sp_config)
+ 				return sp_config;
+ 		}
 -- 
 2.4.3
