@@ -1,31 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Tue, 27 Oct 2015 16:57:40 -0200
-Message-ID: <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
- <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
- <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
- <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
- <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
- <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
- <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
- <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
- <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-sai: add default register map
+ for regmap cache
+Date: Tue, 27 Oct 2015 12:40:45 -0700
+Message-ID: <20151027194045.GA6882@Asurada-CZ80>
+References: <1445843945-13319-1-git-send-email-zidan.wang@freescale.com>
+ <1445843945-13319-2-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f173.google.com (mail-io0-f173.google.com
- [209.85.223.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 15CD02605F0
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 19:57:42 +0100 (CET)
-Received: by iofz202 with SMTP id z202so231567241iof.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 11:57:41 -0700 (PDT)
-In-Reply-To: <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 254A226061B
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 20:40:52 +0100 (CET)
+Received: by pabla5 with SMTP id la5so38278933pab.0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 12:40:51 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1445843945-13319-2-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,45 +26,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>, Roberto Fichera <kernel@tekno-soft.it>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-[Adding Roberto in the thread as he is also trying to get SSI TDM support/
+On Mon, Oct 26, 2015 at 03:19:03PM +0800, Zidan Wang wrote:
+> FSL_SAI_TDR register is writable and not readable. According to
+> regmap_volatile() function, if FSL_SAI_TDR want to be volatile,
+> it should be readable. So we should remove FSL_SAI_TDR from volatile
+> register list.
 
-On Tue, Oct 27, 2015 at 2:45 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> On Tue, Oct 27, 2015 at 2:42 PM, Caleb Crome <caleb@crome.org> wrote:
->> On Tue, Oct 27, 2015 at 9:10 AM, Fabio Estevam <festevam@gmail.com> wrote:
->>> On Tue, Oct 27, 2015 at 2:02 PM, Caleb Crome <caleb@crome.org> wrote:
->>>
->>>>> Could you please try it without using the external SDMA firmware?
->>>>
->>>> I do need *some* SDMA firmware, correct?  The firmware that I'm using
->>>> ends up in /lib/firmware/imx/sdma/sdma-imx6q.bin and is md5sum
->>>> 5d4584134cc4cba62e1be2f382cd6f3a.
->>>
->>> SSI can operate with the ROM SDMA firmware.
->>>
->>> I would like to know if this issue also happens if you don't pass the
->>> external firmware and use the internal ROM SDMA firmware instead.
->>
->> Ah, good to know.  Do I just remove reference in the .dtsi file?
->> Remove the file from the filesystem?  I'll do both to be doubly sure
->> :-)
->
-> Just remove it from the rootfs. Then you will see a message from the
-> kernel saying that no external SDMA firmware could be found and that
-> the internal one is going to be used.
->
->>> Also, could you try bumping the SSI and SDMA clock rates at the maximum?
->>
->> Any idea how I do that?  I guess it's in the .dtsi file perhaps?  I'll
->> poke around.
->
-> You can try to call clk_set_rate() with the maximum allowed frequency
-> inside the ssi driver. I don't recall on top of my head what is this
-> value though.
->
-> Regards,
->
-> Fabio Estevam
+It'd be nicer to see the other two commit logs are as detailed
+as this one. When people in the future rewind one of the other
+drivers through git-log, they will be less clear since they may
+not pay attention to this one. But I can ignore this time as it 
+doesn't matter imo.
+
+> If the flat cache don't have default register map, when do regcache_sync
+> operation, the non volatile and writable registers will be synchronised
+> to 0. FSL_SAI_TDR reigster will be written a 0 and cause channel swap.
+> So add default register map for flat cache, and such register will not
+> be written.
+> 
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+
+For the whole series,
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thank you
+
+> ---
+>  sound/soc/fsl/fsl_sai.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 784725b..18101b9 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -608,6 +608,22 @@ static const struct snd_soc_component_driver fsl_component = {
+>  	.name           = "fsl-sai",
+>  };
+>  
+> +static struct reg_default fsl_sai_reg_defaults[] = {
+> +	{FSL_SAI_TCR1, 0},
+> +	{FSL_SAI_TCR2, 0},
+> +	{FSL_SAI_TCR3, 0},
+> +	{FSL_SAI_TCR4, 0},
+> +	{FSL_SAI_TCR5, 0},
+> +	{FSL_SAI_TDR,  0},
+> +	{FSL_SAI_TMR,  0},
+> +	{FSL_SAI_RCR1, 0},
+> +	{FSL_SAI_RCR2, 0},
+> +	{FSL_SAI_RCR3, 0},
+> +	{FSL_SAI_RCR4, 0},
+> +	{FSL_SAI_RCR5, 0},
+> +	{FSL_SAI_RMR,  0},
+> +};
+> +
+>  static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+>  {
+>  	switch (reg) {
+> @@ -641,13 +657,11 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+>  	case FSL_SAI_RCSR:
+>  	case FSL_SAI_TFR:
+>  	case FSL_SAI_RFR:
+> -	case FSL_SAI_TDR:
+>  	case FSL_SAI_RDR:
+>  		return true;
+>  	default:
+>  		return false;
+>  	}
+> -
+>  }
+>  
+>  static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
+> @@ -680,6 +694,8 @@ static const struct regmap_config fsl_sai_regmap_config = {
+>  	.val_bits = 32,
+>  
+>  	.max_register = FSL_SAI_RMR,
+> +	.reg_defaults = fsl_sai_reg_defaults,
+> +	.num_reg_defaults = ARRAY_SIZE(fsl_sai_reg_defaults),
+>  	.readable_reg = fsl_sai_readable_reg,
+>  	.volatile_reg = fsl_sai_volatile_reg,
+>  	.writeable_reg = fsl_sai_writeable_reg,
+> -- 
+> 1.9.1
+> 
