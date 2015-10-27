@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: move
-	rsnd_src_ssi_irq_enable/disable() to ssi.c" to the asoc tree
-Date: Tue, 27 Oct 2015 13:48:44 +0900
-Message-ID: <E1ZqwBg-0004r1-RS@finisterre>
-References: <87r3ki3u3t.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove all modules when PIO
+	fallback" to the asoc tree
+Date: Tue, 27 Oct 2015 13:48:52 +0900
+Message-ID: <E1ZqwBo-0004rx-KV@finisterre>
+References: <87twpe3u4y.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98E352654F1
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:48:53 +0100 (CET)
-In-Reply-To: <87r3ki3u3t.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EBB6265512
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:01 +0100 (CET)
+In-Reply-To: <87twpe3u4y.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: move rsnd_src_ssi_irq_enable/disable() to ssi.c
+   ASoC: rsnd: remove all modules when PIO fallback
 
 has been applied to the asoc tree at
 
@@ -53,132 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 3931a39c5edc57a0477bc2e9fcaf1fa0698bf168 Mon Sep 17 00:00:00 2001
+>From 2a0eecb9cb73b235561951b6492f666e4e9ebbe1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Oct 2015 08:40:41 +0000
-Subject: [PATCH] ASoC: rsnd: move rsnd_src_ssi_irq_enable/disable() to ssi.c
+Date: Mon, 26 Oct 2015 08:40:02 +0000
+Subject: [PATCH] ASoC: rsnd: remove all modules when PIO fallback
 
-Part of SSI IRQ enable/disable was controlled by SRU (on Gen1)
-or CMD (on Gen2). Because of this reason SSI IRQ function was
-implemented under src.c. but it is not understandable.
-Let's move it to ssi.c
+Current Renesas sound is supporting PIO fallback if it can't use DMA.
+In such case, it should remove all attached modules, but current driver
+is missing about CTU/MIX. Because current implement requests
+specific mod for remove.
+To avoid same things in future, this patch removes all mods,
+and re-connects SSI when PIO fallback case.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h |  2 --
- sound/soc/sh/rcar/src.c  | 28 ----------------------------
- sound/soc/sh/rcar/ssi.c  | 32 ++++++++++++++++++++++++++++++--
- 3 files changed, 30 insertions(+), 32 deletions(-)
+ sound/soc/sh/rcar/core.c | 25 ++++++++-----------------
+ 1 file changed, 8 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 996fa1e..d6365dc 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -576,8 +576,6 @@ int rsnd_src_ssiu_start(struct rsnd_mod *ssi_mod,
- 			int use_busif);
- int rsnd_src_ssiu_stop(struct rsnd_mod *ssi_mod,
- 		       struct rsnd_dai_stream *io);
--int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod);
--int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index d7d2a59..b6fc0d8 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -590,20 +590,6 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	ret;							\
+ })
  
- /*
-  *	R-Car CTU
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index abfcc24..513094e 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -210,34 +210,6 @@ int rsnd_src_ssiu_stop(struct rsnd_mod *ssi_mod,
- 	return 0;
- }
- 
--int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod)
--{
--	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
--
--	if (rsnd_is_gen1(priv))
--		return 0;
--
--	/* enable SSI interrupt if Gen2 */
--	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE,
--		       rsnd_ssi_is_dma_mode(ssi_mod) ?
--		       0x0e000000 : 0x0f000000);
--
--	return 0;
+-#define rsnd_path_remove(priv, io, _type)			\
+-{								\
+-	struct rsnd_mod *mod;					\
+-	int id = -1;						\
+-								\
+-	if (rsnd_is_enable_path(io, _type)) {			\
+-		id = rsnd_info_id(priv, io, _type);		\
+-		if (id >= 0) {					\
+-			mod = rsnd_##_type##_mod_get(priv, id);	\
+-			rsnd_dai_disconnect(mod, io, mod->type);\
+-		}						\
+-	}							\
 -}
 -
--int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod)
--{
--	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
--
--	if (rsnd_is_gen1(priv))
--		return 0;
--
--	/* disable SSI interrupt if Gen2 */
--	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE, 0x00000000);
--
--	return 0;
--}
--
- static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
- 				 struct rsnd_src *src)
+ void rsnd_path_parse(struct rsnd_priv *priv,
+ 		     struct rsnd_dai_stream *io)
  {
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d4803a8..c7d9434 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -124,6 +124,34 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
- 	dev_warn(dev, "status check failed\n");
- }
+@@ -1163,6 +1149,9 @@ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
  
-+static int rsnd_ssi_irq_enable(struct rsnd_mod *ssi_mod)
-+{
-+	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
+ 	ret = rsnd_dai_call(probe, io, priv);
+ 	if (ret == -EAGAIN) {
++		struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
++		int i;
 +
-+	if (rsnd_is_gen1(priv))
-+		return 0;
-+
-+	/* enable SSI interrupt if Gen2 */
-+	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE,
-+		       rsnd_ssi_is_dma_mode(ssi_mod) ?
-+		       0x0e000000 : 0x0f000000);
-+
-+	return 0;
-+}
-+
-+static int rsnd_ssi_irq_disable(struct rsnd_mod *ssi_mod)
-+{
-+	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
-+
-+	if (rsnd_is_gen1(priv))
-+		return 0;
-+
-+	/* disable SSI interrupt if Gen2 */
-+	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE, 0x00000000);
-+
-+	return 0;
-+}
-+
- static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
- 				     struct rsnd_dai_stream *io)
- {
-@@ -401,7 +429,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 		/*
+ 		 * Fallback to PIO mode
+ 		 */
+@@ -1177,10 +1166,12 @@ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
+ 		rsnd_dai_call(remove, io, priv);
  
- 	rsnd_ssi_hw_start(ssi, io);
+ 		/*
+-		 * remove SRC/DVC from DAI,
++		 * remove all mod from io
++		 * and, re connect ssi
+ 		 */
+-		rsnd_path_remove(priv, io, src);
+-		rsnd_path_remove(priv, io, dvc);
++		for (i = 0; i < RSND_MOD_MAX; i++)
++			rsnd_dai_disconnect((io)->mod[i], io, i);
++		rsnd_dai_connect(ssi_mod, io, RSND_MOD_SSI);
  
--	rsnd_src_ssi_irq_enable(mod);
-+	rsnd_ssi_irq_enable(mod);
- 
- 	return 0;
- }
-@@ -412,7 +440,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 
--	rsnd_src_ssi_irq_disable(mod);
-+	rsnd_ssi_irq_disable(mod);
- 
- 	rsnd_ssi_record_error(ssi, rsnd_mod_read(mod, SSISR));
- 
+ 		/*
+ 		 * fallback
 -- 
 2.6.1
