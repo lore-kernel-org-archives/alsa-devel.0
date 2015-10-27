@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix not to ignore
-	return value in be hw_params" to the asoc tree
-Date: Tue, 27 Oct 2015 13:49:39 +0900
-Message-ID: <E1ZqwCZ-0004xZ-6M@finisterre>
-References: <1445905380-18167-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to correct check
+	for non DSP widget" to the asoc tree
+Date: Tue, 27 Oct 2015 13:49:40 +0900
+Message-ID: <E1ZqwCa-0004y2-Bu@finisterre>
+References: <1445905380-18167-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45E832658DF
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:49 +0100 (CET)
-In-Reply-To: <1445905380-18167-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 296412658F9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 05:49:50 +0100 (CET)
+In-Reply-To: <1445905380-18167-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix not to ignore return value in be hw_params
+   ASoC: Intel: Skylake: Fix to correct check for non DSP widget
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 68a255813adf564f608ade539bceb994b176bdde Mon Sep 17 00:00:00 2001
+>From 7b83ff3806f9f23cfd0dbe6162ac72e920460cf5 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 27 Oct 2015 09:22:45 +0900
-Subject: [PATCH] ASoC: Intel: Skylake: Fix not to ignore return value in be
- hw_params
+Date: Tue, 27 Oct 2015 09:22:44 +0900
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to correct check for non DSP widget
 
-Return value from skl_tplg_be_update_params() is ignored. But if the
-blob is null then the hw_params needs to return error.
-This patch fixes the issue by not ignoring return value from
-skl_tplg_be_update_params().
+To get the FE copier module, the check to ignore non DSP widgets
+was wrong. This path corrects the check to ignore non DSP widget.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index a2f94ce..1242bea 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -291,9 +291,8 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
- 	p_params.ch = params_channels(params);
- 	p_params.s_freq = params_rate(params);
- 	p_params.stream = substream->stream;
--	skl_tplg_be_update_params(dai, &p_params);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index a7854c8..98ccd42 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -846,7 +846,7 @@ skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
+ 		w = dai->playback_widget;
+ 		snd_soc_dapm_widget_for_each_sink_path(w, p) {
+ 			if (p->connect && p->sink->power &&
+-					is_skl_dsp_widget_type(p->sink))
++					!is_skl_dsp_widget_type(p->sink))
+ 				continue;
  
--	return 0;
-+	return skl_tplg_be_update_params(dai, &p_params);
- }
+ 			if (p->sink->priv) {
+@@ -859,7 +859,7 @@ skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
+ 		w = dai->capture_widget;
+ 		snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 			if (p->connect && p->source->power &&
+-					is_skl_dsp_widget_type(p->source))
++					!is_skl_dsp_widget_type(p->source))
+ 				continue;
  
- static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
-@@ -352,9 +351,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	p_params.stream = substream->stream;
- 	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
- 
--	skl_tplg_be_update_params(dai, &p_params);
--
--	return 0;
-+	return skl_tplg_be_update_params(dai, &p_params);
- }
- 
- static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 			if (p->source->priv) {
 -- 
 2.6.1
