@@ -1,70 +1,117 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Tue, 27 Oct 2015 13:11:02 -0700
-Message-ID: <20151027201101.GA9527@Asurada-CZ80>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
- <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
- <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
- <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
+From: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+Subject: [PATCH v2] ASoC: sun4i-codec: use consistent names for
+ PA controls
+Date: Tue, 27 Oct 2015 21:00:45 +0000
+Message-ID: <1445979645-1664-1-git-send-email-ats@offog.org>
+Reply-To: ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A2B926061B
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 21:11:09 +0100 (CET)
-Received: by pasz6 with SMTP id z6so231736519pas.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 13:11:07 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20151027071344.GC25728@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Caleb Crome <caleb@crome.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCQPXGGUXQGBBC6MX6YQKGQEKGB3LLY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2015 at 08:13:44AM +0100, Markus Pargmann wrote:
+The power amplifier for the headphone output is called "the PA" and "the
+headphone amplifier" in Allwinner's documentation for the A10 and A20.
+sun4i-codec calls it "PA" in some places and "Pre-Amplifier" (which
+isn't really accurate) in others, leading to user-visible controls with
+different names referring to the same device.
 
-> > So, the dma priority doesn't seem to be the issue.  It's now set in
-> > the device tree, and strangely it's set to priority 0 (the highest)
-> > along with the UARTS.  priority 0 is just the highest in the device
-> > tree -- it gets remapped to priority 3 in the sdma driver.  the DT
-> > exposes only 3 levels of DMA priority, low, medium, and high.  I
-> > created a new level that maps to DMA priroity 7 (the highest in the
-> > hardware), but still got the problem.
-> > 
-> > So, still something unknown causing dma to miss samples.  must be in
-> > the dma ISR I would assume.  I guess it's time to look into that.
+When this driver implements audio input, it'll also need to expose
+controls for the line and mic input preamps, so just referring to "the
+Pre-Amplifier" will be ambiguous.
 
-> Cc Nicolin, Fabio, Shawn
-> 
-> Perhaps you have an idea about this?
+Change it to use "Power Amplifier" consistently for the power
+amplifier's controls.
 
-Off the top of my head:
+Signed-off-by: Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+---
+Changes in v2:
+- use "Power Amplifier" rather than "PA"
+---
+ sound/soc/sunxi/sun4i-codec.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-1) Enable TUE0, TUE1, ROE0, ROE1 to see if there is any IRQ trigged.
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index bcbf4da..1bb896d 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -2,6 +2,7 @@
+  * Copyright 2014 Emilio L=C3=B3pez <emilio-0Z03zUJReD5OxF6Tv1QG9Q@public.gmane.org>
+  * Copyright 2014 Jon Smirl <jonsmirl-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+  * Copyright 2015 Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
++ * Copyright 2015 Adam Sampson <ats-G+91BasbrijYtjvyW6yDsg@public.gmane.org>
+  *
+  * Based on the Allwinner SDK driver, released under the GPL.
+  *
+@@ -404,7 +405,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mut=
+e =3D
+ static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+=20
+ static const struct snd_kcontrol_new sun4i_codec_widgets[] =3D {
+-	SOC_SINGLE_TLV("PA Volume", SUN4I_CODEC_DAC_ACTL,
++	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
+ };
+@@ -452,12 +453,12 @@ static const struct snd_soc_dapm_widget sun4i_codec_d=
+apm_widgets[] =3D {
+ 	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
+ 			    SUN4I_CODEC_DAC_ACTL_MIXEN, 0, NULL, 0),
+=20
+-	/* Pre-Amplifier */
+-	SND_SOC_DAPM_MIXER("Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
++	/* Power Amplifier */
++	SND_SOC_DAPM_MIXER("Power Amplifier", SUN4I_CODEC_ADC_ACTL,
+ 			   SUN4I_CODEC_ADC_ACTL_PA_EN, 0,
+ 			   sun4i_codec_pa_mixer_controls,
+ 			   ARRAY_SIZE(sun4i_codec_pa_mixer_controls)),
+-	SND_SOC_DAPM_SWITCH("Pre-Amplifier Mute", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_SWITCH("Power Amplifier Mute", SND_SOC_NOPM, 0, 0,
+ 			    &sun4i_codec_pa_mute),
+=20
+ 	SND_SOC_DAPM_OUTPUT("HP Right"),
+@@ -480,16 +481,16 @@ static const struct snd_soc_dapm_route sun4i_codec_da=
+pm_routes[] =3D {
+ 	{ "Left Mixer", NULL, "Mixer Enable" },
+ 	{ "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
+=20
+-	/* Pre-Amplifier Mixer Routes */
+-	{ "Pre-Amplifier", "Mixer Playback Switch", "Left Mixer" },
+-	{ "Pre-Amplifier", "Mixer Playback Switch", "Right Mixer" },
+-	{ "Pre-Amplifier", "DAC Playback Switch", "Left DAC" },
+-	{ "Pre-Amplifier", "DAC Playback Switch", "Right DAC" },
++	/* Power Amplifier Routes */
++	{ "Power Amplifier", "Mixer Playback Switch", "Left Mixer" },
++	{ "Power Amplifier", "Mixer Playback Switch", "Right Mixer" },
++	{ "Power Amplifier", "DAC Playback Switch", "Left DAC" },
++	{ "Power Amplifier", "DAC Playback Switch", "Right DAC" },
+=20
+-	/* PA -> HP path */
+-	{ "Pre-Amplifier Mute", "Switch", "Pre-Amplifier" },
+-	{ "HP Right", NULL, "Pre-Amplifier Mute" },
+-	{ "HP Left", NULL, "Pre-Amplifier Mute" },
++	/* Headphone Output Routes */
++	{ "Power Amplifier Mute", "Switch", "Power Amplifier" },
++	{ "HP Right", NULL, "Power Amplifier Mute" },
++	{ "HP Left", NULL, "Power Amplifier Mute" },
+ };
+=20
+ static struct snd_soc_codec_driver sun4i_codec_codec =3D {
+--=20
+2.1.4
 
-2) Set the watermarks for both TX and RX to 8 while using burst sizes
-   of 6. It'd be nicer to provisionally set these numbers using hard
-   code than your current change depending on fifo_depth as it might
-   be an odd value.
-
-3) Try to enlarge the ALSA period size in the asound.conf or passing
-   parameters when you do the playback/capture so that the number of
-   interrupts from SDMA may reduce.
-
-You may also see if the reproducibility is somehow reduced or not.
-
-Nicolin
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
