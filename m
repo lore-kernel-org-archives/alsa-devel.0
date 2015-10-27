@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 3/6] ASoC: hdac_hdmi: Add PM support for HDMI
-Date: Tue, 27 Oct 2015 16:42:14 +0900
-Message-ID: <1445931737-30393-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 6/6] ASoC: hdac_hdmi: Use i915 component
+	framework for PM
+Date: Tue, 27 Oct 2015 16:42:17 +0900
+Message-ID: <1445931737-30393-7-git-send-email-vinod.koul@intel.com>
 References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C9362260499
- for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 08:42:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8650826069C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2015 08:42:58 +0100 (CET)
 In-Reply-To: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,114 +27,75 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Power up/down the AFG node during runtime resume/suspend.
+Use the component framework to keep the display on till the
+playback in progress.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 64 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index bda91a31f839..bc50030e16d7 100644
+index 1702691672d6..d76fa5b482d2 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -60,6 +60,13 @@ struct hdac_hdmi_priv {
- 	struct hdac_hdmi_dai_pin_map dai_map[3];
- };
+@@ -25,6 +25,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/hdaudio_ext.h>
++#include <sound/hda_i915.h>
+ #include "../../hda/local.h"
  
-+static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
-+{
-+	struct hdac_device *hdac = container_of(dev, struct hdac_device, dev);
-+
-+	return container_of(hdac, struct hdac_ext_device, hdac);
-+}
-+
- static int hdac_hdmi_query_cvt_params(struct hdac_device *hdac, struct hdac_hdmi_cvt *cvt)
+ #define AMP_OUT_MUTE		0xb080
+@@ -563,14 +564,26 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
  {
- 	int err;
-@@ -254,11 +261,28 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
- 	/* Imp: Store the card pointer in hda_codec */
- 	edev->card = dapm->card->snd_card;
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
++	struct hdac_bus *bus = hdac->bus;
++	int err;
  
-+	/*
-+	 * hdac_device core already sets the state to active and calls
-+	 * get_noresume. So enable runtime and set the device to suspend.
-+	 */
-+	pm_runtime_enable(&edev->hdac.dev);
-+	pm_runtime_put(&edev->hdac.dev);
-+	pm_runtime_suspend(&edev->hdac.dev);
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+ 
++	/* controller may not have been initialized for the first time */
++	if (!bus)
++		return 0;
 +
-+	return 0;
-+}
+ 	/* Power down afg */
+ 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
+ 		snd_hdac_codec_write(hdac, hdac->afg, 0,
+ 			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
+ 
++	err = snd_hdac_display_power(bus, false);
++	if (err < 0) {
++		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++		return err;
++	}
 +
-+static int hdmi_codec_remove(struct snd_soc_codec *codec)
-+{
-+	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
-+
-+	pm_runtime_disable(&edev->hdac.dev);
  	return 0;
  }
  
- static struct snd_soc_codec_driver hdmi_hda_codec = {
- 	.probe		= hdmi_codec_probe,
-+	.remove		= hdmi_codec_remove,
- 	.idle_bias_off	= true,
- };
+@@ -578,9 +591,21 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ {
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
++	struct hdac_bus *bus = hdac->bus;
++	int err;
  
-@@ -312,6 +336,45 @@ static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
- 	return 0;
- }
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
  
-+#ifdef CONFIG_PM
-+static int hdac_hdmi_runtime_suspend(struct device *dev)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(dev);
-+	struct hdac_device *hdac = &edev->hdac;
++	/* controller may not have been initialized for the first time */
++	if (!bus)
++		return 0;
 +
-+	dev_dbg(dev, "Enter: %s\n", __func__);
++	err = snd_hdac_display_power(bus, true);
++	if (err < 0) {
++		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++		return err;
++	}
 +
-+	/* Power down afg */
-+	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
-+		snd_hdac_codec_write(hdac, hdac->afg, 0,
-+			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_runtime_resume(struct device *dev)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(dev);
-+	struct hdac_device *hdac = &edev->hdac;
-+
-+	dev_dbg(dev, "Enter: %s\n", __func__);
-+
-+	/* Power up afg */
-+	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
-+		snd_hdac_codec_write(hdac, hdac->afg, 0,
-+			AC_VERB_SET_POWER_STATE, AC_PWRST_D0);
-+
-+	return 0;
-+}
-+#else
-+#define hdac_hdmi_runtime_suspend NULL
-+#define hdac_hdmi_runtime_resume NULL
-+#endif
-+
-+static const struct dev_pm_ops hdac_hdmi_pm = {
-+	SET_RUNTIME_PM_OPS(hdac_hdmi_runtime_suspend, hdac_hdmi_runtime_resume, NULL)
-+};
-+
- static const struct hda_device_id hdmi_list[] = {
- 	HDA_CODEC_EXT_ENTRY(0x80862809, 0x100000, "Skylake HDMI", 0),
- 	{}
-@@ -323,6 +386,7 @@ static struct hdac_ext_driver hdmi_driver = {
- 	. hdac = {
- 		.driver = {
- 			.name   = "HDMI HDA Codec",
-+			.pm = &hdac_hdmi_pm,
- 		},
- 		.id_table       = hdmi_list,
- 	},
+ 	/* Power up afg */
+ 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
+ 		snd_hdac_codec_write(hdac, hdac->afg, 0,
 -- 
 2.4.3
