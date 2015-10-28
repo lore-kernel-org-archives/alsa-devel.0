@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: STL and STR registers are
-	non volatile" to the asoc tree
-Date: Wed, 28 Oct 2015 10:09:04 +0900
-Message-ID: <E1ZrFEe-0000uE-7T@finisterre>
-References: <1445843945-13319-3-git-send-email-zidan.wang@freescale.com>
+Subject: Applied "ASoC: fsl-sai: add default register map for
+	regmap cache" to the asoc tree
+Date: Wed, 28 Oct 2015 10:09:16 +0900
+Message-ID: <E1ZrFEq-0000up-8s@finisterre>
+References: <1445843945-13319-2-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 66507265838
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:09:16 +0100 (CET)
-In-Reply-To: <1445843945-13319-3-git-send-email-zidan.wang@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D61902659D3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:09:27 +0100 (CET)
+In-Reply-To: <1445843945-13319-2-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: STL and STR registers are non volatile
+   ASoC: fsl-sai: add default register map for regmap cache
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,78 @@ to this mail.
 Thanks,
 Mark
 
->From 2a0035113a0f16305476083fc6bacdd0e29b1e5f Mon Sep 17 00:00:00 2001
+>From b9b21722ff2e431c85d33bcc950327093cf9a991 Mon Sep 17 00:00:00 2001
 From: Zidan Wang <zidan.wang@freescale.com>
-Date: Mon, 26 Oct 2015 15:19:04 +0800
-Subject: [PATCH] ASoC: fsl_spdif: STL and STR registers are non volatile
+Date: Mon, 26 Oct 2015 15:19:03 +0800
+Subject: [PATCH] ASoC: fsl-sai: add default register map for regmap cache
 
-STL and STR registers are writable and not readable. So they are non volatile.
-Remove them from volatile list, and add default register value for them.
+FSL_SAI_TDR register is writable and not readable. According to
+regmap_volatile() function, if FSL_SAI_TDR want to be volatile,
+it should be readable. So we should remove FSL_SAI_TDR from volatile
+register list.
+
+If the flat cache don't have default register map, when do regcache_sync
+operation, the non volatile and writable registers will be synchronised
+to 0. FSL_SAI_TDR reigster will be written a 0 and cause channel swap.
+So add default register map for flat cache, and such register will not
+be written.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 3d59bb6..28a8823 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1006,12 +1006,14 @@ static const struct snd_soc_component_driver fsl_spdif_component = {
- 
- /* FSL SPDIF REGMAP */
- static const struct reg_default fsl_spdif_reg_defaults[] = {
--	{0x0,  0x00000400},
--	{0x4,  0x00000000},
--	{0xc,  0x00000000},
--	{0x34, 0x00000000},
--	{0x38, 0x00000000},
--	{0x50, 0x00020f00},
-+	{REG_SPDIF_SCR,    0x00000400},
-+	{REG_SPDIF_SRCD,   0x00000000},
-+	{REG_SPDIF_SIE,	   0x00000000},
-+	{REG_SPDIF_STL,	   0x00000000},
-+	{REG_SPDIF_STR,	   0x00000000},
-+	{REG_SPDIF_STCSCH, 0x00000000},
-+	{REG_SPDIF_STCSCL, 0x00000000},
-+	{REG_SPDIF_STC,	   0x00020f00},
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index a4435f5..987fc54 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -608,6 +608,22 @@ static const struct snd_soc_component_driver fsl_component = {
+ 	.name           = "fsl-sai",
  };
  
- static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
-@@ -1049,8 +1051,6 @@ static bool fsl_spdif_volatile_reg(struct device *dev, unsigned int reg)
- 	case REG_SPDIF_SRCSL:
- 	case REG_SPDIF_SRU:
- 	case REG_SPDIF_SRQ:
--	case REG_SPDIF_STL:
--	case REG_SPDIF_STR:
- 	case REG_SPDIF_SRFM:
++static struct reg_default fsl_sai_reg_defaults[] = {
++	{FSL_SAI_TCR1, 0},
++	{FSL_SAI_TCR2, 0},
++	{FSL_SAI_TCR3, 0},
++	{FSL_SAI_TCR4, 0},
++	{FSL_SAI_TCR5, 0},
++	{FSL_SAI_TDR,  0},
++	{FSL_SAI_TMR,  0},
++	{FSL_SAI_RCR1, 0},
++	{FSL_SAI_RCR2, 0},
++	{FSL_SAI_RCR3, 0},
++	{FSL_SAI_RCR4, 0},
++	{FSL_SAI_RCR5, 0},
++	{FSL_SAI_RMR,  0},
++};
++
+ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -641,13 +657,11 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_RCSR:
+ 	case FSL_SAI_TFR:
+ 	case FSL_SAI_RFR:
+-	case FSL_SAI_TDR:
+ 	case FSL_SAI_RDR:
  		return true;
  	default:
+ 		return false;
+ 	}
+-
+ }
+ 
+ static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
+@@ -680,6 +694,8 @@ static const struct regmap_config fsl_sai_regmap_config = {
+ 	.val_bits = 32,
+ 
+ 	.max_register = FSL_SAI_RMR,
++	.reg_defaults = fsl_sai_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(fsl_sai_reg_defaults),
+ 	.readable_reg = fsl_sai_readable_reg,
+ 	.volatile_reg = fsl_sai_volatile_reg,
+ 	.writeable_reg = fsl_sai_writeable_reg,
 -- 
 2.6.1
