@@ -1,18 +1,30 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Disable 64bit address for Creative
-	HDA controllers
-Date: Wed, 28 Oct 2015 06:30:39 +0100
-Message-ID: <1446010239-15584-1-git-send-email-tiwai@suse.de>
+From: Roberto Fichera <kernel@tekno-soft.it>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+ TDM (network) mode.
+Date: Wed, 28 Oct 2015 09:11:39 +0100
+Message-ID: <5630833B.10309@tekno-soft.it>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+ <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
+ <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+ <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DE1CD2614FF
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 06:30:40 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 98954AC0B
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 05:30:53 +0000 (UTC)
+Received: from mail.tekno-soft.it (li153-180.members.linode.com
+ [109.74.206.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 906332605EA
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 09:11:59 +0100 (CET)
+In-Reply-To: <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +34,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>, Caleb Crome <caleb@crome.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-We've had many reports that some Creative sound cards with CA0132
-don't work well.  Some reported that it starts working after reloading
-the module, while some reported it starts working when a 32bit kernel
-is used.  All these facts seem implying that the chip fails to
-communicate when the buffer is located in 64bit address.
+On 10/27/2015 07:57 PM, Fabio Estevam wrote:
+> [Adding Roberto in the thread as he is also trying to get SSI TDM support/
 
-This patch addresses these issues by just adding AZX_DCAPS_NO_64BIT
-flag to the corresponding PCI entries.  I casually had a chance to
-test an SB Recon3D board, and indeed this seems helping.
+Thanks Fabio,
 
-Although this hasn't been tested on all Creative devices, it's safer
-to assume that this restriction applies to the rest of them, too.  So
-the flag is applied to all Creative entries.
+I'm also having the same issue but employing SSI in TDM master mode against a SLIC Si32178
+using its PCM mode. PCLK is at 2048KHz, FSYNC is 8KHz slot length is 32 bits (SSI wants
+this since when in master mode) but valid data set to be 8bits in the SSI register.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+My Current situation is that I've a custom fsl_ssi.c driver to control the SSI in TDM master mode
+both PCLK and FSYNC works perfectly fine, the SLIC has a register that I can check via SPI for
+such purpose, I can see the clocking status from its side. The main problem I've is exactly the same
+Caleb is having, after a certain amount of SDMA transfers, roughly 1000 or so, everything stops
+without any apparent reason.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c38c68f57938..61b8b75a3c80 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -334,6 +334,7 @@ enum {
- 
- #define AZX_DCAPS_PRESET_CTHDA \
- 	(AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB |\
-+	 AZX_DCAPS_NO_64BIT |\
- 	 AZX_DCAPS_4K_BDLE_BOUNDARY | AZX_DCAPS_SNOOP_OFF)
- 
- /*
-@@ -2284,11 +2285,13 @@ static const struct pci_device_id azx_ids[] = {
- 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
- 	  .class_mask = 0xffffff,
- 	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
-+	  AZX_DCAPS_NO_64BIT |
- 	  AZX_DCAPS_RIRB_PRE_DELAY | AZX_DCAPS_POSFIX_LPIB },
- #else
- 	/* this entry seems still valid -- i.e. without emu20kx chip */
- 	{ PCI_DEVICE(0x1102, 0x0009),
- 	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
-+	  AZX_DCAPS_NO_64BIT |
- 	  AZX_DCAPS_RIRB_PRE_DELAY | AZX_DCAPS_POSFIX_LPIB },
- #endif
- 	/* CM8888 */
--- 
-2.6.2
+
+>
+> On Tue, Oct 27, 2015 at 2:45 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>> On Tue, Oct 27, 2015 at 2:42 PM, Caleb Crome <caleb@crome.org> wrote:
+>>> On Tue, Oct 27, 2015 at 9:10 AM, Fabio Estevam <festevam@gmail.com> wrote:
+>>>> On Tue, Oct 27, 2015 at 2:02 PM, Caleb Crome <caleb@crome.org> wrote:
+>>>>
+>>>>>> Could you please try it without using the external SDMA firmware?
+>>>>> I do need *some* SDMA firmware, correct?  The firmware that I'm using
+>>>>> ends up in /lib/firmware/imx/sdma/sdma-imx6q.bin and is md5sum
+>>>>> 5d4584134cc4cba62e1be2f382cd6f3a.
+>>>> SSI can operate with the ROM SDMA firmware.
+>>>>
+>>>> I would like to know if this issue also happens if you don't pass the
+>>>> external firmware and use the internal ROM SDMA firmware instead.
+>>> Ah, good to know.  Do I just remove reference in the .dtsi file?
+>>> Remove the file from the filesystem?  I'll do both to be doubly sure
+>>> :-)
+>> Just remove it from the rootfs. Then you will see a message from the
+>> kernel saying that no external SDMA firmware could be found and that
+>> the internal one is going to be used.
+>>
+>>>> Also, could you try bumping the SSI and SDMA clock rates at the maximum?
+>>> Any idea how I do that?  I guess it's in the .dtsi file perhaps?  I'll
+>>> poke around.
+>> You can try to call clk_set_rate() with the maximum allowed frequency
+>> inside the ssi driver. I don't recall on top of my head what is this
+>> value though.
+>>
+>> Regards,
+>>
+>> Fabio Estevam
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
