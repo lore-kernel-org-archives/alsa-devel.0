@@ -1,25 +1,34 @@
 From: Caleb Crome <caleb@crome.org>
 Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
  TDM (network) mode.
-Date: Wed, 28 Oct 2015 15:06:40 -0700
-Message-ID: <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
+Date: Wed, 28 Oct 2015 15:09:41 -0700
+Message-ID: <CAG5mAdzQGD5h3AVX3KMOwqDKAtcm1+csipnFEwu_ow5KpKdayQ@mail.gmail.com>
 References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
  <5625EF02.30602@invoxia.com>
  <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
  <56273F75.2040702@invoxia.com>
  <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
  <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de> <20151027201101.GA9527@Asurada-CZ80>
+ <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+ <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
+ <5630833B.10309@tekno-soft.it>
+ <CAG5mAdzt4T8ZZTMX2TZJCQOf-e+HS81V37ib+yCJOFqcwBAj7Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id AC6BD264FFF
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 23:07:00 +0100 (CET)
-Received: by wmff134 with SMTP id f134so13120692wmf.1
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 15:07:00 -0700 (PDT)
-In-Reply-To: <20151027201101.GA9527@Asurada-CZ80>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C648265011
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 23:10:01 +0100 (CET)
+Received: by wijp11 with SMTP id p11so271413735wij.0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 15:10:00 -0700 (PDT)
+In-Reply-To: <CAG5mAdzt4T8ZZTMX2TZJCQOf-e+HS81V37ib+yCJOFqcwBAj7Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,116 +38,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Roberto Fichera <kernel@tekno-soft.it>
-Cc: Markus Pargmann <mpa@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+To: Roberto Fichera <kernel@tekno-soft.it>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2015 at 1:11 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Tue, Oct 27, 2015 at 08:13:44AM +0100, Markus Pargmann wrote:
->
->> > So, the dma priority doesn't seem to be the issue.  It's now set in
->> > the device tree, and strangely it's set to priority 0 (the highest)
->> > along with the UARTS.  priority 0 is just the highest in the device
->> > tree -- it gets remapped to priority 3 in the sdma driver.  the DT
->> > exposes only 3 levels of DMA priority, low, medium, and high.  I
->> > created a new level that maps to DMA priroity 7 (the highest in the
->> > hardware), but still got the problem.
->> >
->> > So, still something unknown causing dma to miss samples.  must be in
->> > the dma ISR I would assume.  I guess it's time to look into that.
->
->> Cc Nicolin, Fabio, Shawn
+On Wed, Oct 28, 2015 at 6:59 AM, Caleb Crome <caleb@crome.org> wrote:
+> On Wed, Oct 28, 2015 at 1:11 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
+>> On 10/27/2015 07:57 PM, Fabio Estevam wrote:
+>>> [Adding Roberto in the thread as he is also trying to get SSI TDM support/
 >>
->> Perhaps you have an idea about this?
+>> Thanks Fabio,
+>>
+>> I'm also having the same issue but employing SSI in TDM master mode against a SLIC Si32178
+>> using its PCM mode. PCLK is at 2048KHz, FSYNC is 8KHz slot length is 32 bits (SSI wants
+>> this since when in master mode) but valid data set to be 8bits in the SSI register.
+>>
+>> My Current situation is that I've a custom fsl_ssi.c driver to control the SSI in TDM master mode
+>> both PCLK and FSYNC works perfectly fine, the SLIC has a register that I can check via SPI for
+>> such purpose, I can see the clocking status from its side. The main problem I've is exactly the same
+>> Caleb is having, after a certain amount of SDMA transfers, roughly 1000 or so, everything stops
+>> without any apparent reason.
 >
-> Off the top of my head:
+> My problem is that the channels randomly slip a slot and all words end
+> up in the wrong slot.  I suspect this is a DMA issue, but I really
+> haven't diagnosed it yet.  I don't get a full stop on the data.
 >
-> 1) Enable TUE0, TUE1, ROE0, ROE1 to see if there is any IRQ trigged.
-Ah, I found that SIER TIE & RIE were not enabled. I enabled them (and
-just submitted a patch to the list, which will need to be fixed).
-
-With my 2 patches, the
-
-/sys/kernel/debug/2028000.ssi/stats
-
-file now shows the proper interrupts.
-
+> FYI, I'm using a very recent 4.3 kernel from linus's repo, but 4.2
+> behaved the same.
 >
-> 2) Set the watermarks for both TX and RX to 8 while using burst sizes
->    of 6. It'd be nicer to provisionally set these numbers using hard
->    code than your current change depending on fifo_depth as it might
->    be an odd value.
 
-Ah, this is fascinating you say this.  fifo_depth is definitely odd,
-it's 15 as set in imx6qdl.dtsi:
-fsl,fifo-depth = <15>;
-But the DMA maxburst is made even later in the code...
-
-Setting the watermark to 8 and maxburst to 8 dramatically reduces the
-channel slip rate, in fact, i didn't see a slip for more than 30
-minutes of playing.  That's a new record for sure.  But, eventually,
-there was an underrun, and the channels slipped.
-
-Setting watermark to 8 and maxburst to 6 still had some slips,
-seemingly more than 8 & 8.
-
-I feel like a monkey randomly typing at my keyboard though.  I don't
-know why maxburst=8 worked better.  I get the
-feeling that I was just lucky.
-
-There does seem to be a correlation between user space reported
-underruns and this channel slip, although they definitely are not 1:1
-ratio:  underruns happen without slips and slips happen without
-underruns.  The latter is very disturbing because user space has no
-idea something is wrong.
-
-My test is simply to run aplay with a 1000 second, 16 channel sound
-file, and watch
-the data decoded on my scope.   The sound file has the channel number
-encoded as the most significant nibble of each word, and a do a
-conditional trigger to watch to make sure the most significant nibble
-after the fram sync is '0'.  i.e. trigger if there is a rising edge on
-data within 300ns of the rising edge of fsync.
-
-Here's the patch that has worked the best so far.
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 73778c2..b834f77 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -943,7 +943,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
-         * size.
-         */
-        if (ssi_private->use_dma)
--               wm = ssi_private->fifo_depth - 2;
-+               wm = 8;
-        else
-                wm = ssi_private->fifo_depth;
-
-@@ -1260,8 +1260,8 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
-         * We have burstsize be "fifo_depth - 2" to match the SSI
-         * watermark setting in fsl_ssi_startup().
-         */
--       ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
--       ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
-+       ssi_private->dma_params_tx.maxburst = 8;
-+       ssi_private->dma_params_rx.maxburst = 8;
-        ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
-        ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
-
-
->
-> 3) Try to enlarge the ALSA period size in the asound.conf or passing
->    parameters when you do the playback/capture so that the number of
->    interrupts from SDMA may reduce.
-I checked this earlier and it seemed to help, but didn't solve the
-issue.  I will check it again with my latest updates.
+Now I'm recalling when I tried the patches on 4.1, everything
+definitely froze.  What kernel are you using?.  I'm basically using
+the 4.3-rc7
 
 -Caleb
-
-
-
->
-> You may also see if the reproducibility is somehow reduced or not.
->
-> Nicolin
