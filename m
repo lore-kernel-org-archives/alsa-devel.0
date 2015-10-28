@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 02/10] ASoC: img: Add driver for I2S
- input controller
-Date: Wed, 28 Oct 2015 10:04:43 +0900
-Message-ID: <20151028010443.GX28319@sirena.org.uk>
-References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
- <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
- <20151019174732.GG32054@sirena.org.uk>
- <56293472.7000401@imgtec.com>
- <20151023225723.GO29919@sirena.org.uk>
- <562F824F.9070407@imgtec.com>
+Subject: Applied "ASoC: fsl_ssi: using macro for default
+	register map" to the asoc tree
+Date: Wed, 28 Oct 2015 10:09:02 +0900
+Message-ID: <E1ZrFEc-0000tj-QY@finisterre>
+References: <1445843945-13319-4-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0509053987684889000=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 482A92656F5
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:05:04 +0100 (CET)
-In-Reply-To: <562F824F.9070407@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CB732656F5
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:09:16 +0100 (CET)
+In-Reply-To: <1445843945-13319-4-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,62 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Horsley <Damien.Horsley@imgtec.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, James Hartley <James.Hartley@imgtec.com>
+To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0509053987684889000==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="E5HUUwS3R9LcK7+r"
-Content-Disposition: inline
+   ASoC: fsl_ssi: using macro for default register map
 
+has been applied to the asoc tree at
 
---E5HUUwS3R9LcK7+r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Oct 27, 2015 at 01:55:27PM +0000, Damien Horsley wrote:
-> On 23/10/15 23:57, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Shouldn't we be doing that flush on stream close instead?  If nothing
-> > else the flush is going to discard a bit of data if the stream is just
-> > paused.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The FIFOs are only 8 frames in size, so I am not sure there is an
-> issue with these frames being lost.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> I think it also makes sense to keep the blocks consistent with each
-> other. The spdif (out and in), and parallel out, all flush automatically
-> when stopped, and the fifo for the i2s out block is cleared when the
-> reset is asserted.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This seems like an issue that got missed in the other drivers then.  I'd
-expect the trigger operation to be a minimal operation which starts and
-stops the data transfer, not doing anything else.
+Thanks,
+Mark
 
---E5HUUwS3R9LcK7+r
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 43f20d51f4d5070f5e254119419ce2c98ab0c2bd Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Mon, 26 Oct 2015 15:19:05 +0800
+Subject: [PATCH] ASoC: fsl_ssi: using macro for default register map
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+using macro for default register map
 
-iQEcBAEBCAAGBQJWMB8qAAoJECTWi3JdVIfQjyoH/AqvualpliASdv2dh3haXToA
-dQ6tFIHMTCqNlWn0e4zljQmfOfhP8Ub8/NH/JOir2TQCgQD47TxUaqzoSr5V+JDc
-uCFBj4PQsHzXEVypazrwQMEvCwcnTxAksZGDzjU34TtRHiDQaw/s7Lc6QqE7mba/
-I3hc4a4LYJrUdjie+UM+j6SopxBQ4htpXDUpCUvBWLyq6wjuv8hBmXDlgV9uu2ex
-oXtXNG2rKAGCYwgcsSlaw4yrza/78+noh+HkvEPna6gtkfTovd1oervQXss/XUtc
-nEjI+k2syIEvNYK5vtICfmzYuAVuAfWOKKPq9gX0omQE/tiEb7/E4KZd9RBkeH0=
-=kOxG
------END PGP SIGNATURE-----
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_ssi.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
---E5HUUwS3R9LcK7+r--
-
---===============0509053987684889000==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0509053987684889000==--
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 7c495d3..5908ec9 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -113,17 +113,17 @@ struct fsl_ssi_rxtx_reg_val {
+ };
+ 
+ static const struct reg_default fsl_ssi_reg_defaults[] = {
+-	{0x10, 0x00000000},
+-	{0x18, 0x00003003},
+-	{0x1c, 0x00000200},
+-	{0x20, 0x00000200},
+-	{0x24, 0x00040000},
+-	{0x28, 0x00040000},
+-	{0x38, 0x00000000},
+-	{0x48, 0x00000000},
+-	{0x4c, 0x00000000},
+-	{0x54, 0x00000000},
+-	{0x58, 0x00000000},
++	{CCSR_SSI_SCR,     0x00000000},
++	{CCSR_SSI_SIER,    0x00003003},
++	{CCSR_SSI_STCR,    0x00000200},
++	{CCSR_SSI_SRCR,    0x00000200},
++	{CCSR_SSI_STCCR,   0x00040000},
++	{CCSR_SSI_SRCCR,   0x00040000},
++	{CCSR_SSI_SACNT,   0x00000000},
++	{CCSR_SSI_STMSK,   0x00000000},
++	{CCSR_SSI_SRMSK,   0x00000000},
++	{CCSR_SSI_SACCEN,  0x00000000},
++	{CCSR_SSI_SACCDIS, 0x00000000},
+ };
+ 
+ static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
+-- 
+2.6.1
