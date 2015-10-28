@@ -1,29 +1,30 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Wed, 28 Oct 2015 21:53:51 -0700
-Message-ID: <20151029045350.GA3374@Asurada-CZ80>
-References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
- <5625EF02.30602@invoxia.com>
- <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
- <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
- <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
- <20151027201101.GA9527@Asurada-CZ80>
- <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [PATCH v2- ALSA 1/3] HDA - Allow hda_jack_tbl to
+ use another nid for pin sense
+Date: Wed, 28 Oct 2015 22:24:54 +0100
+Message-ID: <CALUcmUnQ+9NRSyzuj8DhM9svYiaznu7qb7HQv=csjOGuu_NhJQ@mail.gmail.com>
+References: <CAN8cciYNotgS=1qis4ciOQqoYwjND4y=tpxJGmZt1HGahTV3+Q@mail.gmail.com>
+ <s5hvbb16yup.wl-tiwai@suse.de>
+ <CAN8cciZ0HKP+RNRRsbNXpo0azmqBKBjejXJRwx8PRuHiw3pZ9w@mail.gmail.com>
+ <s5h4mik6xwi.wl-tiwai@suse.de>
+ <CAN8cciZ1xbRQg3aYKjDSq5K1eL44fFKZJdq52WP2Uht_A8JFDA@mail.gmail.com>
+ <CALUcmUno7vKTU-45=+6spkbBbp671NiDhu2Oj4RVbNWLQYGoLw@mail.gmail.com>
+ <CAN8ccia0OSv8Nyx-jUF+LneVaAcf80SwxvfA3Btdx5cqxEg2CQ@mail.gmail.com>
+ <CALUcmU=DRvSEmvGNCfDc0dVHRQ9TmnK0U=094E64Sc5wxsAV5g@mail.gmail.com>
+ <CALUcmUkCaBvobO85Amw5VTLTU490UsB+yg20eNdP_AAyO_e4kg@mail.gmail.com>
+ <CAN8ccia8sgSfZxDtFTy1Qf3zCq=eov_8Fm8AfvAwJ1v1f4rqAw@mail.gmail.com>
+ <CALUcmUmSdno39sDEfEuetqCiWXKwXQivGUF0_4Zj8Nkn5hZJoA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id DA9432654B5
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 05:53:59 +0100 (CET)
-Received: by padhy1 with SMTP id hy1so22511115pad.0
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 21:53:58 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
+Received: from mail-ob0-f176.google.com (mail-ob0-f176.google.com
+ [209.85.214.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id B782D264F28
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 22:25:14 +0100 (CET)
+Received: by obbwb3 with SMTP id wb3so18132608obb.0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 14:25:14 -0700 (PDT)
+In-Reply-To: <CALUcmUmSdno39sDEfEuetqCiWXKwXQivGUF0_4Zj8Nkn5hZJoA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,87 +34,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, jason.braddock.69@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Fabio Pellegrin <pellegrin.fabio@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 28, 2015 at 03:06:40PM -0700, Caleb Crome wrote:
+Hi Raymond,
 
-> > 2) Set the watermarks for both TX and RX to 8 while using burst sizes
-> >    of 6. It'd be nicer to provisionally set these numbers using hard
-> >    code than your current change depending on fifo_depth as it might
-> >    be an odd value.
+Just to refresh, for the Asus N751JK (ALC668) I currently make everything
+work with the following workarounds (mainline kernel 4.2.4)
 
-> Ah, this is fascinating you say this.  fifo_depth is definitely odd,
-> it's 15 as set in imx6qdl.dtsi:
+To enable the base speaker, I use hdajackretask and I assign unconnected
+pin 0x1a to Internal Speaker (LFE).
+To switch to the microphone of my headset after plugin, I open pavucontrol
+and change from Internal Microphone to Headset Microphone (due to missing
+jack detection).
+To switch to the microphone of my laptop after unplug, I do the opposite. :)
 
-> fsl,fifo-depth = <15>;
-> But the DMA maxburst is made even later in the code...
+If dealing with the microphone issue is too time consuming, would you mind
+to at least offer the patch for the sub woofer to the Alsa mailinglist?
 
-And odd number for burst size may course a similar problem like
-channel swapping in two-channel cases because the number of data
-FIFO is 2 -- an even number. But it seems not to be related to
-your problem here.
+If necessary, I still have the patchset of 7 patches which worked on my
+system.
 
-> Setting the watermark to 8 and maxburst to 8 dramatically reduces the
-> channel slip rate, in fact, i didn't see a slip for more than 30
-> minutes of playing.  That's a new record for sure.  But, eventually,
-> there was an underrun, and the channels slipped.
-> 
-> Setting watermark to 8 and maxburst to 6 still had some slips,
-> seemingly more than 8 & 8.
-> 
-> I feel like a monkey randomly typing at my keyboard though.  I don't
-> know why maxburst=8 worked better.  I get the
-> feeling that I was just lucky.
+On 14 October 2015 at 08:50, Arthur Borsboom <arthurborsboom@gmail.com>
+wrote:
 
-That's actually another possible root cause -- performance issue.
-burst=8 will have less bus transaction number than the case when
-burst=6. As you have quite a lot channels comparing to normal 2
-channels, you need to feed the FIFO more frequently. If SDMA does
-not feed the data before the input FIFO gets underrun, a channel
-swapping might happen: in your case, channel slip.
+> I don't understand what you mean by quad speak array. Please keep in mind
+> that I am not a driver developer / sound guru.
+> The Asus N751JK laptop has two built-in speakers, 1 external base speaker
+> (with a yellow jack) and 1 combo jack for headset, headphones or microphone.
+>
+> The headset I am using is a headset which I received with my LG phone.
+> The only thing written on it is: "LG" and "Made in Indonesia" :)
+>
+> But let me rephrase what I currently do to make everything work
+> (workarounds) with the mainline kernel (4.2.2)
+>
+> To enable the base speaker, I use hdajackretask and I assign unconnected
+> pin 0x1a to Internal Speaker (LFE).
+> To switch to the microphone of my headset after plugin, I open pavucontrol
+> and change from Internal Microphone to Headset Microphone (due to missing
+> jack detection).
+> To switch to the microphone of my laptop after unplug, I do the opposite.
+> :)
+>
+> Does this help?
+>
+> On 14 October 2015 at 01:35, Raymond Yau <superquad.vortex2@gmail.com>
+> wrote:
+>
+>> >
+>> > Do you need more testing on the Asus N751JK by me?
+>> > Do you need help from other developers?
+>>
+>> Do all speakers of quad speaker array work as expected ?
+>>
+>> If ASUS N550LF can use headset by default, it is strange that your N750JK
+>> need any modification for the headset mic pin since they are using same
+>> codec ALC668 with similar BIOS pin default, quad speaker array and Sonic
+>> Master Subwoofer
+>>
+>> If you only test CTIA headset, it is better to name the model according
+>> to what you have tested
+>>
+>
+>
+>
+> --
+> Arthur Borsboom
+> Mob: +31629089953
+> Email: arthurborsboom@gmail.com
+> Skype: Arthur Borsboom, The Hague, The Netherlands
+>
+> [image: View Arthur's LinkedIn profile]
+> <http://uk.linkedin.com/in/arthurborsboom>
+>
 
-> There does seem to be a correlation between user space reported
-> underruns and this channel slip, although they definitely are not 1:1
 
-Reported by user space? Are you saying that's an ALSA underrun in
-the user space, not a hardware underrun reported by the IRQ in the
-driver? They are quite different. ALSA underrun comes from the DMA
-buffer gets underrun while the other one results from FIFO feeding
-efficiency. For ALSA underrun, enlarging the playback period size
-and period number will ease the problem:
 
-period number = buffer size / period size;
+-- 
+Arthur Borsboom
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
 
-An ALSA underrun may not be companied by a hardware underrun but
-they may co-exist.
-
-> ratio:  underruns happen without slips and slips happen without
-> underruns.  The latter is very disturbing because user space has no
-> idea something is wrong.
-
-> @@ -1260,8 +1260,8 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
->          * We have burstsize be "fifo_depth - 2" to match the SSI
->          * watermark setting in fsl_ssi_startup().
->          */
-> -       ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
-> -       ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
-> +       ssi_private->dma_params_tx.maxburst = 8;
-> +       ssi_private->dma_params_rx.maxburst = 8;
-
-I am actually thinking about setting a watermark to a larger number.
-I forgot how the SDMA script handles this number. But if this burst
-size means the overall data count per transaction, it might indicate
-that each FIFO only gets half of the burst size due to dual FIFOs.
-
-Therefore, if setting watermark to 8, each FIFO has 7 (15 - 8) space
-left, the largest safe burst size could be 14 (7 * 2) actually.
-
-Yes. That's kind of fine tunning the parameters. And for your case,
-you may try a larger number as the SSI is simultaneously consuming
-a large amount of data even though it sounds risky. But it's worth
-trying since you are using SSI which only has tight FIFOs not like
-ESAI has 128 depth.
-
-Nicolin
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
