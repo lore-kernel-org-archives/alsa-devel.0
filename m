@@ -1,18 +1,31 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/2] ASoC: wm9713: convert to regmap
-Date: Wed, 28 Oct 2015 12:43:51 +0000
-Message-ID: <20151028124351.GK10520@ck-lbox>
-References: <1445983102-15490-1-git-send-email-robert.jarzmik@free.fr>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+ TDM (network) mode.
+Date: Wed, 28 Oct 2015 06:53:57 -0700
+Message-ID: <CAG5mAdy-PhQvMdKNL_C8QMnGEd8U1h0aj66cgoJQckdWyBJ9Ew@mail.gmail.com>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+ <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
+ <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BEC5261615
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 14:00:45 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1445983102-15490-1-git-send-email-robert.jarzmik@free.fr>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F7AB2619FA
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 14:54:17 +0100 (CET)
+Received: by wijp11 with SMTP id p11so256289425wij.0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 06:54:17 -0700 (PDT)
+In-Reply-To: <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,296 +35,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2015 at 10:58:21PM +0100, Robert Jarzmik wrote:
-> Convert the Wolfson WM9713 to regmap API. This will leverage all the
-> regmap functions (debug, registers update, etc ...).
-> 
-> As a bonus, this will pave the path to gpio chip introduction, and
-> devicetree support.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
-> Since v1: fix suspend/resume (that specific part is not tested yet)
-> Since v2: split out the snd_soc_*() from regmap support
-> ---
->  sound/soc/codecs/Kconfig  |   1 +
->  sound/soc/codecs/wm9713.c | 182 ++++++++++++++++++++++++++++------------------
->  2 files changed, 114 insertions(+), 69 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index 0c9733ecd17f..ba306f8f3717 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -879,6 +879,7 @@ config SND_SOC_WM9712
->  
->  config SND_SOC_WM9713
->  	tristate
-> +	select REGMAP_AC97
->  
->  # Amp
->  config SND_SOC_LM4857
-> diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-> index 4083a5130cbd..8e2cc1112e40 100644
-> --- a/sound/soc/codecs/wm9713.c
-> +++ b/sound/soc/codecs/wm9713.c
-> @@ -19,6 +19,7 @@
->  #include <linux/slab.h>
->  #include <linux/module.h>
->  #include <linux/device.h>
-> +#include <linux/regmap.h>
->  #include <sound/core.h>
->  #include <sound/pcm.h>
->  #include <sound/ac97_codec.h>
-> @@ -39,33 +40,15 @@ struct wm9713_priv {
->  	struct mutex lock;
->  };
->  
-> -static unsigned int ac97_read(struct snd_soc_codec *codec,
-> -	unsigned int reg);
-> -static int ac97_write(struct snd_soc_codec *codec,
-> -	unsigned int reg, unsigned int val);
-> -
-> -/*
-> - * WM9713 register cache
-> - * Reg 0x3c bit 15 is used by touch driver.
-> - */
-> -static const u16 wm9713_reg[] = {
-> -	0x6174, 0x8080, 0x8080, 0x8080,
-> -	0xc880, 0xe808, 0xe808, 0x0808,
-> -	0x00da, 0x8000, 0xd600, 0xaaa0,
-> -	0xaaa0, 0xaaa0, 0x0000, 0x0000,
-> -	0x0f0f, 0x0040, 0x0000, 0x7f00,
-> -	0x0405, 0x0410, 0xbb80, 0xbb80,
-> -	0x0000, 0xbb80, 0x0000, 0x4523,
-> -	0x0000, 0x2000, 0x7eff, 0xffff,
-> -	0x0000, 0x0000, 0x0080, 0x0000,
-> -	0x0000, 0x0000, 0xfffe, 0xffff,
-> -	0x0000, 0x0000, 0x0000, 0xfffe,
-> -	0x4000, 0x0000, 0x0000, 0x0000,
-> -	0xb032, 0x3e00, 0x0000, 0x0000,
-> -	0x0000, 0x0000, 0x0000, 0x0000,
-> -	0x0000, 0x0000, 0x0000, 0x0006,
-> -	0x0001, 0x0000, 0x574d, 0x4c13,
-> -};
-> +static unsigned int ac97_read(struct snd_soc_codec *codec, unsigned int reg)
-> +{
-> +	return snd_soc_read(codec, reg);
-> +}
-> +static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
-> +		      unsigned int val)
-> +{
-> +	return snd_soc_write(codec, reg, val);
-> +}
->  
->  #define HPL_MIXER 0
->  #define HPR_MIXER 1
-> @@ -674,39 +657,97 @@ static const struct snd_soc_dapm_route wm9713_audio_map[] = {
->  	{"Capture Mono Mux", "Right", "Right Capture Source"},
->  };
->  
-> -static unsigned int ac97_read(struct snd_soc_codec *codec,
-> -	unsigned int reg)
-> +static bool wm9713_readable_reg(struct device *dev, unsigned int reg)
->  {
-> -	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
-> -	u16 *cache = codec->reg_cache;
-> -
-> -	if (reg == AC97_RESET || reg == AC97_GPIO_STATUS ||
-> -		reg == AC97_VENDOR_ID1 || reg == AC97_VENDOR_ID2 ||
-> -		reg == AC97_CD)
-> -		return soc_ac97_ops->read(wm9713->ac97, reg);
-> -	else {
-> -		reg = reg >> 1;
-> -
-> -		if (reg >= (ARRAY_SIZE(wm9713_reg)))
-> -			return -EIO;
-> -
-> -		return cache[reg];
-> +	switch (reg) {
-> +	case AC97_RESET ... AC97_PCM_SURR_DAC_RATE:
-> +	case AC97_PCM_LR_ADC_RATE:
-> +	case AC97_CENTER_LFE_MASTER:
-> +	case AC97_SPDIF ... AC97_LINE1_LEVEL:
-> +	case AC97_GPIO_CFG ... 0x5c:
-> +	case AC97_CODEC_CLASS_REV ... AC97_PCI_SID:
-> +	case 0x74 ... AC97_VENDOR_ID2:
-> +		return true;
-> +	default:
-> +		return false;
->  	}
->  }
->  
-> -static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
-> -	unsigned int val)
-> +static bool wm9713_writeable_reg(struct device *dev, unsigned int reg)
->  {
-> -	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
-> +	switch (reg) {
-> +	case AC97_VENDOR_ID1:
-> +	case AC97_VENDOR_ID2:
-> +		return false;
-> +	default:
-> +		return wm9713_readable_reg(dev, reg);
-> +	}
-> +}
->  
-> -	u16 *cache = codec->reg_cache;
-> -	soc_ac97_ops->write(wm9713->ac97, reg, val);
-> -	reg = reg >> 1;
-> -	if (reg < (ARRAY_SIZE(wm9713_reg)))
-> -		cache[reg] = val;
-> +static const struct reg_default wm9713_reg_defaults[] = {
-> +	{ 0x02, 0x8080 },	/* Speaker Output Volume */
-> +	{ 0x04, 0x8080 },	/* Headphone Output Volume */
-> +	{ 0x06, 0x8080 },	/* Out3/OUT4 Volume */
-> +	{ 0x08, 0xc880 },	/* Mono Volume */
-> +	{ 0x0a, 0xe808 },	/* LINEIN Volume */
-> +	{ 0x0c, 0xe808 },	/* DAC PGA Volume */
-> +	{ 0x0e, 0x0808 },	/* MIC PGA Volume */
-> +	{ 0x10, 0x00da },	/* MIC Routing Control */
-> +	{ 0x12, 0x8000 },	/* Record PGA Volume */
-> +	{ 0x14, 0xd600 },	/* Record Routing */
-> +	{ 0x16, 0xaaa0 },	/* PCBEEP Volume */
-> +	{ 0x18, 0xaaa0 },	/* VxDAC Volume */
-> +	{ 0x1a, 0xaaa0 },	/* AUXDAC Volume */
-> +	{ 0x1c, 0x0000 },	/* Output PGA Mux */
-> +	{ 0x1e, 0x0000 },	/* DAC 3D control */
-> +	{ 0x20, 0x0f0f },	/* DAC Tone Control*/
-> +	{ 0x22, 0x0040 },	/* MIC Input Select & Bias */
-> +	{ 0x24, 0x0000 },	/* Output Volume Mapping & Jack */
-> +	{ 0x26, 0x7f00 },	/* Powerdown Ctrl/Stat*/
-> +	{ 0x28, 0x0405 },	/* Extended Audio ID */
-> +	{ 0x2a, 0x0410 },	/* Extended Audio Start/Ctrl */
-> +	{ 0x2c, 0xbb80 },	/* Audio DACs Sample Rate */
-> +	{ 0x2e, 0xbb80 },	/* AUXDAC Sample Rate */
-> +	{ 0x32, 0xbb80 },	/* Audio ADCs Sample Rate */
-> +	{ 0x36, 0x4523 },	/* PCM codec control */
-> +	{ 0x3a, 0x2000 },	/* SPDIF control */
-> +	{ 0x3c, 0xfdff },	/* Powerdown 1 */
-> +	{ 0x3e, 0xffff },	/* Powerdown 2 */
-> +	{ 0x40, 0x0000 },	/* General Purpose */
-> +	{ 0x42, 0x0000 },	/* Fast Power-Up Control */
-> +	{ 0x44, 0x0080 },	/* MCLK/PLL Control */
-> +	{ 0x46, 0x0000 },	/* MCLK/PLL Control */
-> +	{ 0x4c, 0xfffe },	/* GPIO Pin Configuration */
-> +	{ 0x4e, 0xffff },	/* GPIO Pin Polarity / Type */
-> +	{ 0x50, 0x0000 },	/* GPIO Pin Sticky */
-> +	{ 0x52, 0x0000 },	/* GPIO Pin Wake-Up */
-> +				/* GPIO Pin Status */
-> +	{ 0x56, 0xfffe },	/* GPIO Pin Sharing */
-> +	{ 0x58, 0x4000 },	/* GPIO PullUp/PullDown */
-> +	{ 0x5a, 0x0000 },	/* Additional Functions 1 */
-> +	{ 0x5c, 0x0000 },	/* Additional Functions 2 */
-> +	{ 0x60, 0xb032 },	/* ALC Control */
-> +	{ 0x62, 0x3e00 },	/* ALC / Noise Gate Control */
-> +	{ 0x64, 0x0000 },	/* AUXDAC input control */
-> +	{ 0x74, 0x0000 },	/* Digitiser Reg 1 */
-> +	{ 0x76, 0x0006 },	/* Digitiser Reg 2 */
-> +	{ 0x78, 0x0001 },	/* Digitiser Reg 3 */
-> +	{ 0x7a, 0x0000 },	/* Digitiser Read Back */
-> +};
->  
-> -	return 0;
-> -}
-> +static const struct regmap_config wm9713_regmap_config = {
-> +	.reg_bits = 16,
-> +	.reg_stride = 2,
-> +	.val_bits = 16,
-> +	.max_register = 0x7e,
-> +	.cache_type = REGCACHE_RBTREE,
-> +
-> +	.reg_defaults = wm9713_reg_defaults,
-> +	.num_reg_defaults = ARRAY_SIZE(wm9713_reg_defaults),
-> +	.volatile_reg = regmap_ac97_default_volatile,
-> +	.readable_reg = wm9713_readable_reg,
-> +	.writeable_reg = wm9713_writeable_reg,
-> +};
->  
->  /* PLL divisors */
->  struct _pll_div {
-> @@ -1158,6 +1199,9 @@ static int wm9713_soc_suspend(struct snd_soc_codec *codec)
->  {
->  	u16 reg;
->  
-> +	snd_soc_cache_sync(codec);
+On Tue, Oct 27, 2015 at 9:45 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Tue, Oct 27, 2015 at 2:42 PM, Caleb Crome <caleb@crome.org> wrote:
+>> On Tue, Oct 27, 2015 at 9:10 AM, Fabio Estevam <festevam@gmail.com> wrote:
+>>> On Tue, Oct 27, 2015 at 2:02 PM, Caleb Crome <caleb@crome.org> wrote:
+>>>
+>>>>> Could you please try it without using the external SDMA firmware?
+>>>>
+>>>> I do need *some* SDMA firmware, correct?  The firmware that I'm using
+>>>> ends up in /lib/firmware/imx/sdma/sdma-imx6q.bin and is md5sum
+>>>> 5d4584134cc4cba62e1be2f382cd6f3a.
+>>>
+>>> SSI can operate with the ROM SDMA firmware.
+>>>
+>>> I would like to know if this issue also happens if you don't pass the
+>>> external firmware and use the internal ROM SDMA firmware instead.
+>>
+>> Ah, good to know.  Do I just remove reference in the .dtsi file?
+>> Remove the file from the filesystem?  I'll do both to be doubly sure
+>> :-)
+>
+> Just remove it from the rootfs. Then you will see a message from the
+> kernel saying that no external SDMA firmware could be found and that
+> the internal one is going to be used.
 
-There doesn't seem to be much point in syncing the cache at the
-start of a suspend, in theory I would expect the cache to be in
-sync at this point anyway.
+I gave it a try.  No noticeable  change in behavior.
 
-I think you are thinking of this wrong, cache_sync does not
-ensure all previous writes have been commited, as I explained
-in my last email it literally writes the cache to the hardware,
-suspend usually turns the hardware off. So why write all the
-registers to the hardware just before turning it off.
+>
+>>> Also, could you try bumping the SSI and SDMA clock rates at the maximum?
+>>
+>> Any idea how I do that?  I guess it's in the .dtsi file perhaps?  I'll
+>> poke around.
+>
+> You can try to call clk_set_rate() with the maximum allowed frequency
+> inside the ssi driver. I don't recall on top of my head what is this
+> value though.
 
-> +	regcache_cache_bypass(codec->component.regmap, true);
+I don't know what to use as a parameter to clk_set_rate().  The 2
+clocks that I see in the SDMA configuration are clk_ipg, and clk_ahb.
+The IMX6SDLRM syas, "configurable clock options for the SDMA core and
+the ARM platform DMA units.  1:2 ratio with maximum of SDMA core
+running at ARM platform peripheral bus speed and DMS running at max
+DMA frequency.  1:1 ratio when both SDMA core and ARM platform DMA
+clocks are set to the ARM platform peripheral bus speed"
 
-Why is the necessary? I can't see an obvious sign that these
-writes bypass the cache in the non-regmap version, am I missing
-something? Also if this is necessary I would quite like it to be
-accompanied by a comment in the code to explain why it is safe to
-do this here. Regarding the inherent dangers of cache bypass I
-explained in my last email.
+But, I have a hard time reconsiling that statement with the code in
+sdma_init, which references only the ipg and ahb clocks.  I put in a
+printk, and found the clk_ipg and clk_ahb to be 132 MHz.
 
-> +
->  	/* Disable everything except touchpanel - that will be handled
->  	 * by the touch driver and left disabled if touch is not in
->  	 * use. */
-> @@ -1173,14 +1217,14 @@ static int wm9713_soc_suspend(struct snd_soc_codec *codec)
+The IMX6SDLRM.pdf, page 4717 says: "...but the SDMA core is physically
+limited to a maximum 104 MHz frequency...".
 
-I would have expected to see the cache being put into cache only
-mode at some point during suspend, am I missing something here as
-well?
+So, I just don't know what clock to set to 104 MHz, or if the 104MHz
+really is the right limit.  Any ideas?
 
-Again this feels like you are getting confused on the
-functionality of the API, bypassing the cache makes all
-reads/writes go to the hardware, suspend normally turns the
-hardware off. Directing all reads/writes to go to the hardware in
-a function that normally turns the hardware off looks odd.
 
->  static int wm9713_soc_resume(struct snd_soc_codec *codec)
->  {
->  	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
-> -	int i, ret;
-> -	u16 *cache = codec->reg_cache;
-> +	int ret;
->  
->  	ret = snd_ac97_reset(wm9713->ac97, true, WM9713_VENDOR_ID,
->  		WM9713_VENDOR_ID_MASK);
->  	if (ret < 0)
->  		return ret;
->  
-> +	regcache_cache_bypass(codec->component.regmap, false);
->  	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
->  
->  	/* do we need to re-start the PLL ? */
-> @@ -1188,14 +1232,10 @@ static int wm9713_soc_resume(struct snd_soc_codec *codec)
->  		wm9713_set_pll(codec, 0, wm9713->pll_in, 0);
->  
->  	/* only synchronise the codec if warm reset failed */
-> -	if (ret == 0) {
-> -		for (i = 2; i < ARRAY_SIZE(wm9713_reg) << 1; i += 2) {
-> -			if (i == AC97_POWERDOWN || i == AC97_EXTENDED_MID ||
-> -				i == AC97_EXTENDED_MSTATUS || i > 0x66)
-> -				continue;
-> -			soc_ac97_ops->write(wm9713->ac97, i, cache[i>>1]);
-> -		}
-> -	}
-> +	if (ret == 0)
-> +		regcache_mark_dirty(codec->component.regmap);
-> +
-> +	snd_soc_cache_sync(codec);
+This made me think that possibly the problem is with cpufreq
+dynamically scaling the core frequency. So I tried:
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 
-Probably best to have both the mark_dirty and the cache_sync in
-the if. Whilst the cache sync is a no-op if it hasn't been marked
-as dirty, will just be a bit clearer this is indentical to the
-pre-regmap code and more likely to remain that way under future
-changes.
+To ensure that the clocks don't dynamically switch on me, but I still
+get channel slips.  Unfortunately,  it's hard to get statistical
+measures with my eyeballs (watching a scope with TDM decode).  It
+might be a little better, but still fails.
 
 Thanks,
-Charles
+  -Caleb
+
+
+>
+> Regards,
+>
+> Fabio Estevam
