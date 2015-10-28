@@ -1,65 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoC: img: Add driver for I2S
- input controller
-Date: Thu, 29 Oct 2015 08:43:34 +0900
-Message-ID: <20151028234334.GF28319@sirena.org.uk>
-References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
- <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
- <20151019174732.GG32054@sirena.org.uk>
- <56293472.7000401@imgtec.com>
- <20151023225723.GO29919@sirena.org.uk>
- <562F824F.9070407@imgtec.com>
- <20151028010443.GX28319@sirena.org.uk>
- <56313B9C.8030502@imgtec.com>
+Subject: Re: [PATCH v3 1/2] ASoC: wm9713: convert to regmap
+Date: Thu, 29 Oct 2015 08:47:15 +0900
+Message-ID: <20151028234715.GG28319@sirena.org.uk>
+References: <1445983102-15490-1-git-send-email-robert.jarzmik@free.fr>
+ <20151028124351.GK10520@ck-lbox>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="b/1LfoxmgmdMg2Yp"
+	protocol="application/pgp-signature"; boundary="yHmUJ2Jgby4Rx//r"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <56313B9C.8030502@imgtec.com>
+In-Reply-To: <20151028124351.GK10520@ck-lbox>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Horsley <Damien.Horsley@imgtec.com>
-Cc: alsa-devel@alsa-project.org, James Hartley <James.Hartley@imgtec.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---b/1LfoxmgmdMg2Yp
+--yHmUJ2Jgby4Rx//r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 28, 2015 at 09:18:20PM +0000, Damien Horsley wrote:
-> On 28/10/15 01:04, Mark Brown wrote:
+On Wed, Oct 28, 2015 at 12:43:51PM +0000, Charles Keepax wrote:
+> On Tue, Oct 27, 2015 at 10:58:21PM +0100, Robert Jarzmik wrote:
 
-> >> I think it also makes sense to keep the blocks consistent with each
-> >> other. The spdif (out and in), and parallel out, all flush automatically
-> >> when stopped, and the fifo for the i2s out block is cleared when the
-> >> reset is asserted.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-> > This seems like an issue that got missed in the other drivers then.  I'd
-> > expect the trigger operation to be a minimal operation which starts and
-> > stops the data transfer, not doing anything else.
+> Why is the necessary? I can't see an obvious sign that these
+> writes bypass the cache in the non-regmap version, am I missing
+> something? Also if this is necessary I would quite like it to be
+> accompanied by a comment in the code to explain why it is safe to
+> do this here. Regarding the inherent dangers of cache bypass I
+> explained in my last email.
 
-> The spdif out, spdif in, and parallel out blocks auto-flush whenever
-> they are stopped. It is not possible for software to prevent this behavior.
+It's probably worth pointing out that the functionality in the regmap
+API is essentially the same as the functionality in the old ASoC cache
+code, a conversion should pretty much be a case of directly translating
+API calls.
 
-Oh, so this isn't the drivers doing this?  In that case it's fine for
-them to do that, if it's what the hardware does it's what the hardware
-does.  It sounded like you were saying that there was similar code in
-the other drivers.
-
---b/1LfoxmgmdMg2Yp
+--yHmUJ2Jgby4Rx//r
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWMV2mAAoJECTWi3JdVIfQPaUH/jOiapc4JkMTkvvv9ZM+Tm/M
-lD+MciI97+XqrGEN52Tw+7PgxmFrNo4QKCph0q7P4mkdR+HoOi9vhaX6w5NikQUC
-YE1USNDZZyugIBvKmFHF3dUB7rTEFUd6VLF0KaiIN4cAbxXauJMWYo/9zt2UzeeS
-PdsrhYycJXSemHRvBItRXe3o5ID/Lar9gZJeFKUdOAHrBB4F0Xfsnj+JO8c1u3OV
-xlivtWavyqB3KhtRMIPey20bmgAUp7TKynmsi8XdvsD59dIAuhO9y9/F4S0t1uuI
-Ka92rmG2RxGfGjbW/p5xwUuPuxrON3adP9MhjKWbo2mYZ+0tuzMAolyMuKh1iiY=
-=g61v
+iQEcBAEBCAAGBQJWMV6CAAoJECTWi3JdVIfQyJUH/RZEzqvI+AsFLiddYxAab9Bv
+6QbFEAZgyM7W8jH34D2/FZ28n33t8jif3d56OtYLi7nEVIFzpEyIyT9WT7uvtqWH
+y10t5SF6zErVoggXDhCXxLK6OTuqQ2tTpIyq2ZvGtkunvs+KJlXGHETaSxuPrzdx
+BFOsGKdL4g03fEUCrWAZZoiQ/6MezB2Yxqr+pIa+rJY2SlAe4s0AQ/edaqLyIlUX
+QcaeWrVg3YIY0gEzDGVIqGIUj1lop60CdsPs7Jo2bx8aqcGA1zJ6FBkAlZzQ0+9x
+2merXEDRlqvwzhEd/C50wDbCaRZYxzsJXc3LAtSAVcEYZ3Mv5CLjmv43Lv1WrjA=
+=lcar
 -----END PGP SIGNATURE-----
 
---b/1LfoxmgmdMg2Yp--
+--yHmUJ2Jgby4Rx//r--
