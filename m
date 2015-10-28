@@ -1,17 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: dpcm: Make BE prepare possible in
-	suspend state
-Date: Wed, 28 Oct 2015 08:34:25 +0000
-Message-ID: <1446021265.2443.3.camel@loki>
-References: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ALSA: Constify ratden/ratnum constraints
+Date: Wed, 28 Oct 2015 11:37:53 +0100
+Message-ID: <1446028673-30436-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 38E6D2606E8
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 09:34:30 +0100 (CET)
-In-Reply-To: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
+Received: from smtp-out-188.synserver.de (smtp-out-189.synserver.de
+ [212.40.185.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FEC5261504
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 11:38:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,24 +19,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-10-28 at 10:15 +0800, Koro Chen wrote:
-> During suspend/resume, there is a flow that if a driver does not support
-> SNDRV_PCM_INFO_RESUME, it will fail at snd_pcm_resume(), and user space
-> can then issue SNDRV_PCM_IOCTL_PREPARE to let audio continue to play.
-> 
-> However, in dpcm_be_dai_prepare() it only allows BEs to be prepared
-> in state SND_SOC_DPCM_STATE_HW_PARAMS or SND_SOC_DPCM_STATE_STOP.
-> The BE state will then stay in SND_SOC_DPCM_STATE_SUSPEND, consequently
-> dpcm_be_dai_shutdown() is skipped in the end of playback and
-> be_substream->runtime is not cleared while this runtime is actually freed
-> by snd_pcm_detach_substream(). If another suspend comes, a NULL pointer
-> dereference will happen in snd_pcm_suspend() when accessing
-> BE substream's runtime.
-> 
-> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+The ALSA core does not modify the constraints provided by a driver. Most
+constraint helper functions already take a const pointer to the constraint
+description, the exception at the moment being the ratden and ratnum
+constraints. Make those const as well, this allows a driver to declare them
+as const.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/pcm.h  | 10 +++++-----
+ sound/core/pcm_lib.c | 17 +++++++++--------
+ 2 files changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 4e6ad74..b0be092 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -265,12 +265,12 @@ struct snd_ratden {
+ 
+ struct snd_pcm_hw_constraint_ratnums {
+ 	int nrats;
+-	struct snd_ratnum *rats;
++	const struct snd_ratnum *rats;
+ };
+ 
+ struct snd_pcm_hw_constraint_ratdens {
+ 	int nrats;
+-	struct snd_ratden *rats;
++	const struct snd_ratden *rats;
+ };
+ 
+ struct snd_pcm_hw_constraint_list {
+@@ -970,7 +970,7 @@ int snd_interval_list(struct snd_interval *i, unsigned int count,
+ int snd_interval_ranges(struct snd_interval *i, unsigned int count,
+ 			const struct snd_interval *list, unsigned int mask);
+ int snd_interval_ratnum(struct snd_interval *i,
+-			unsigned int rats_count, struct snd_ratnum *rats,
++			unsigned int rats_count, const struct snd_ratnum *rats,
+ 			unsigned int *nump, unsigned int *denp);
+ 
+ void _snd_pcm_hw_params_any(struct snd_pcm_hw_params *params);
+@@ -1000,11 +1000,11 @@ int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
+ int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
+ 				  unsigned int cond,
+ 				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratnums *r);
++				  const struct snd_pcm_hw_constraint_ratnums *r);
+ int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
+ 				  unsigned int cond,
+ 				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratdens *r);
++				  const struct snd_pcm_hw_constraint_ratdens *r);
+ int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
+ 				 unsigned int cond,
+ 				 unsigned int width,
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 05a3ca9..6b5a811 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -801,7 +801,7 @@ void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
+  * negative error code.
+  */
+ int snd_interval_ratnum(struct snd_interval *i,
+-			unsigned int rats_count, struct snd_ratnum *rats,
++			unsigned int rats_count, const struct snd_ratnum *rats,
+ 			unsigned int *nump, unsigned int *denp)
+ {
+ 	unsigned int best_num, best_den;
+@@ -920,7 +920,8 @@ EXPORT_SYMBOL(snd_interval_ratnum);
+  * negative error code.
+  */
+ static int snd_interval_ratden(struct snd_interval *i,
+-			       unsigned int rats_count, struct snd_ratden *rats,
++			       unsigned int rats_count,
++			       const struct snd_ratden *rats,
+ 			       unsigned int *nump, unsigned int *denp)
+ {
+ 	unsigned int best_num, best_diff, best_den;
+@@ -1339,7 +1340,7 @@ EXPORT_SYMBOL(snd_pcm_hw_constraint_ranges);
+ static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
+ 				   struct snd_pcm_hw_rule *rule)
+ {
+-	struct snd_pcm_hw_constraint_ratnums *r = rule->private;
++	const struct snd_pcm_hw_constraint_ratnums *r = rule->private;
+ 	unsigned int num = 0, den = 0;
+ 	int err;
+ 	err = snd_interval_ratnum(hw_param_interval(params, rule->var),
+@@ -1363,10 +1364,10 @@ static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
+ int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
+ 				  unsigned int cond,
+ 				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratnums *r)
++				  const struct snd_pcm_hw_constraint_ratnums *r)
+ {
+ 	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_ratnums, r,
++				   snd_pcm_hw_rule_ratnums, (void *)r,
+ 				   var, -1);
+ }
+ 
+@@ -1375,7 +1376,7 @@ EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
+ static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
+ 				   struct snd_pcm_hw_rule *rule)
+ {
+-	struct snd_pcm_hw_constraint_ratdens *r = rule->private;
++	const struct snd_pcm_hw_constraint_ratdens *r = rule->private;
+ 	unsigned int num = 0, den = 0;
+ 	int err = snd_interval_ratden(hw_param_interval(params, rule->var),
+ 				  r->nrats, r->rats, &num, &den);
+@@ -1398,10 +1399,10 @@ static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
+ int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
+ 				  unsigned int cond,
+ 				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratdens *r)
++				  const struct snd_pcm_hw_constraint_ratdens *r)
+ {
+ 	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_ratdens, r,
++				   snd_pcm_hw_rule_ratdens, (void *)r,
+ 				   var, -1);
+ }
+ 
+-- 
+2.1.4
