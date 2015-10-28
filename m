@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: using macro for default
-	register map" to the asoc tree
-Date: Wed, 28 Oct 2015 10:09:02 +0900
-Message-ID: <E1ZrFEc-0000tj-QY@finisterre>
-References: <1445843945-13319-4-git-send-email-zidan.wang@freescale.com>
+Subject: Applied "ASoC: fsl_spdif: STL and STR registers are
+	non volatile" to the asoc tree
+Date: Wed, 28 Oct 2015 10:09:04 +0900
+Message-ID: <E1ZrFEe-0000uE-7T@finisterre>
+References: <1445843945-13319-3-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CB732656F5
+ by alsa0.perex.cz (Postfix) with ESMTP id 66507265838
  for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:09:16 +0100 (CET)
-In-Reply-To: <1445843945-13319-4-git-send-email-zidan.wang@freescale.com>
+In-Reply-To: <1445843945-13319-3-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: using macro for default register map
+   ASoC: fsl_spdif: STL and STR registers are non volatile
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 43f20d51f4d5070f5e254119419ce2c98ab0c2bd Mon Sep 17 00:00:00 2001
+>From 2a0035113a0f16305476083fc6bacdd0e29b1e5f Mon Sep 17 00:00:00 2001
 From: Zidan Wang <zidan.wang@freescale.com>
-Date: Mon, 26 Oct 2015 15:19:05 +0800
-Subject: [PATCH] ASoC: fsl_ssi: using macro for default register map
+Date: Mon, 26 Oct 2015 15:19:04 +0800
+Subject: [PATCH] ASoC: fsl_spdif: STL and STR registers are non volatile
 
-using macro for default register map
+STL and STR registers are writable and not readable. So they are non volatile.
+Remove them from volatile list, and add default register value for them.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7c495d3..5908ec9 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -113,17 +113,17 @@ struct fsl_ssi_rxtx_reg_val {
- };
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 3d59bb6..28a8823 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1006,12 +1006,14 @@ static const struct snd_soc_component_driver fsl_spdif_component = {
  
- static const struct reg_default fsl_ssi_reg_defaults[] = {
--	{0x10, 0x00000000},
--	{0x18, 0x00003003},
--	{0x1c, 0x00000200},
--	{0x20, 0x00000200},
--	{0x24, 0x00040000},
--	{0x28, 0x00040000},
+ /* FSL SPDIF REGMAP */
+ static const struct reg_default fsl_spdif_reg_defaults[] = {
+-	{0x0,  0x00000400},
+-	{0x4,  0x00000000},
+-	{0xc,  0x00000000},
+-	{0x34, 0x00000000},
 -	{0x38, 0x00000000},
--	{0x48, 0x00000000},
--	{0x4c, 0x00000000},
--	{0x54, 0x00000000},
--	{0x58, 0x00000000},
-+	{CCSR_SSI_SCR,     0x00000000},
-+	{CCSR_SSI_SIER,    0x00003003},
-+	{CCSR_SSI_STCR,    0x00000200},
-+	{CCSR_SSI_SRCR,    0x00000200},
-+	{CCSR_SSI_STCCR,   0x00040000},
-+	{CCSR_SSI_SRCCR,   0x00040000},
-+	{CCSR_SSI_SACNT,   0x00000000},
-+	{CCSR_SSI_STMSK,   0x00000000},
-+	{CCSR_SSI_SRMSK,   0x00000000},
-+	{CCSR_SSI_SACCEN,  0x00000000},
-+	{CCSR_SSI_SACCDIS, 0x00000000},
+-	{0x50, 0x00020f00},
++	{REG_SPDIF_SCR,    0x00000400},
++	{REG_SPDIF_SRCD,   0x00000000},
++	{REG_SPDIF_SIE,	   0x00000000},
++	{REG_SPDIF_STL,	   0x00000000},
++	{REG_SPDIF_STR,	   0x00000000},
++	{REG_SPDIF_STCSCH, 0x00000000},
++	{REG_SPDIF_STCSCL, 0x00000000},
++	{REG_SPDIF_STC,	   0x00020f00},
  };
  
- static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
+ static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
+@@ -1049,8 +1051,6 @@ static bool fsl_spdif_volatile_reg(struct device *dev, unsigned int reg)
+ 	case REG_SPDIF_SRCSL:
+ 	case REG_SPDIF_SRU:
+ 	case REG_SPDIF_SRQ:
+-	case REG_SPDIF_STL:
+-	case REG_SPDIF_STR:
+ 	case REG_SPDIF_SRFM:
+ 		return true;
+ 	default:
 -- 
 2.6.1
