@@ -1,146 +1,73 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 1/2] ASoC: wm9713: convert to regmap
-Date: Wed, 28 Oct 2015 21:34:33 +0100
-Message-ID: <87io5qka06.fsf@belgarion.home>
-References: <1445983102-15490-1-git-send-email-robert.jarzmik@free.fr>
-	<20151028124351.GK10520@ck-lbox>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH] FSL_SSI: fix fsl_ssi interrupt reporting
+ so that interrupts are only reported when they have been enabled.
+Date: Wed, 28 Oct 2015 13:47:58 -0700
+Message-ID: <CAG5mAdxC+9CSkY1sA8xPo0oF5XdCM_9-KzGqX9JsyD_txAae_w@mail.gmail.com>
+References: <1446061992-88379-1-git-send-email-caleb@crome.org>
+ <CAOMZO5A9tmEuGQfLJr17xHVmcJVAg26vfMMdfKcxrymdm_ejUw@mail.gmail.com>
+ <CAG5mAdw76bSNZ2uQEJChXi3VJKQc_OjC90EpWtknTUpqtKC+9Q@mail.gmail.com>
+ <CAOMZO5DA9SgeW1Xcvoo9V35icSf8H2F3cN-K-dFi32wOJMe8HA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151028124351.GK10520@ck-lbox> (Charles Keepax's message of
-	"Wed, 28 Oct 2015 12:43:51 +0000")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
+ [209.85.212.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9C11264F28
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 21:48:17 +0100 (CET)
+Received: by wicfv8 with SMTP id fv8so26847604wic.0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 13:48:17 -0700 (PDT)
+In-Reply-To: <CAOMZO5DA9SgeW1Xcvoo9V35icSf8H2F3cN-K-dFi32wOJMe8HA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Markus Pargmann <mpa@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
-
->> @@ -1158,6 +1199,9 @@ static int wm9713_soc_suspend(struct snd_soc_codec *codec)
->>  {
->>  	u16 reg;
->>  
->> +	snd_soc_cache_sync(codec);
+On Wed, Oct 28, 2015 at 1:25 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Wed, Oct 28, 2015 at 6:18 PM, Caleb Crome <caleb@crome.org> wrote:
+>> On Wed, Oct 28, 2015 at 1:08 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>>> Hi Caleb,
+>>>
+>>> On Wed, Oct 28, 2015 at 5:53 PM, Caleb Crome <caleb@crome.org> wrote:
+>>>
+>>>> +// call fsl_ssi_dbg_update_sier_enbled every time sier is
+>>>> +// updated.  it tracks which interrupts have ever been enabled.
+>>>> +// so that the print function can keep track.
+>>>
+>>> The standard style for multi-line comments is:
+>>>
+>>> /*
+>>>  * Bla bla bla
+>>>  * bla bla
+>>>  * foo foo
+>>>  */
+>> Ah, thanks.  Will fix it and resubmit.
 >
-> There doesn't seem to be much point in syncing the cache at the
-> start of a suspend, in theory I would expect the cache to be in
-> sync at this point anyway.
-> I think you are thinking of this wrong, cache_sync does not
-> ensure all previous writes have been commited, as I explained
-> in my last email it literally writes the cache to the hardware,
-> suspend usually turns the hardware off. So why write all the
-> registers to the hardware just before turning it off.
-Indeed, I'll remove it.
-
->> +	regcache_cache_bypass(codec->component.regmap, true);
+> Some more tips:
 >
-> Why is the necessary? I can't see an obvious sign that these
-> writes bypass the cache in the non-regmap version, am I missing
-> something?
-This is because to mimic the previous behavior, the next 4 writes
-(AC97_EXTENDED_MID, AC97_EXTENDED_MSTATUS, AC97_POWERDOWN * 2) should hit the
-hardware but not the cache (hence the bypass), but see below for the follow-up
-of my thinking.
-
-> Also if this is necessary I would quite like it to be
-> accompanied by a comment in the code to explain why it is safe to
-> do this here. Regarding the inherent dangers of cache bypass I
-> explained in my last email.
-Well, once suspended I supposed no access should be done before the resume
-function is called, hence the "safe" part.
-
->>  	/* Disable everything except touchpanel - that will be handled
->>  	 * by the touch driver and left disabled if touch is not in
->>  	 * use. */
->> @@ -1173,14 +1217,14 @@ static int wm9713_soc_suspend(struct snd_soc_codec *codec)
+> - The Subject should be something like: ASoC: fsl_ssi: Fix fsl_ssi
+> interrupt reporting
 >
-> I would have expected to see the cache being put into cache only
-> mode at some point during suspend, am I missing something here as
-> well?
-Why ? Once suspended, why would you expect an access to be done to the regmap ?
-What is the case this "cache only" protects us from ?
-
-> Again this feels like you are getting confused on the
-> functionality of the API, bypassing the cache makes all
-> reads/writes go to the hardware, suspend normally turns the
-> hardware off. Directing all reads/writes to go to the hardware in
-> a function that normally turns the hardware off looks odd.
-Yes, I must certainly misunderstand something.
-Once again I must understand first why you expect accesses to be done after a
-suspend function was called ...
-
->> +	if (ret == 0)
->> +		regcache_mark_dirty(codec->component.regmap);
->> +
->> +	snd_soc_cache_sync(codec);
+> - Then run  ./scripts/checkpatch.pl 0001-yourpatch.patch to see
+> potential issues. The // comment issue would be reported by checkpatch
 >
-> Probably best to have both the mark_dirty and the cache_sync in
-> the if. Whilst the cache sync is a no-op if it hasn't been marked
-> as dirty, will just be a bit clearer this is indentical to the
-> pre-regmap code and more likely to remain that way under future
-> changes.
-I must admit I was expecting that the 4 registers I wrote directly to hardware
-in bypass mode were marked as "dirty", and this sync() would restore them ...
+> - Also run  ./scripts/get_maintainer.pl 0001-yourpatch.patch so that
+> you get the correct people to Cc the patch too. The email address you
+> put for Timur is no longer valid and Nicolin must be on Cc.
+>
+> Regards,
+>
+> Fabio Estevam
 
-Anyway, I have another idea to simplify the code greatly, it's only I'm not sure
-if my thinking is right. The idea is that these 3 registers (AC97_EXTENDED_MID,
-AC97_EXTENDED_MSTATUS, AC97_POWERDOWN) should never land in the regmap
-cache. What I think is that because they are in regmap_ac97_default_volatile(),
-they already have this property. Therefore, there is no need to do the bypass
-thing, and I could end up with :
+Great.  Thank you, that will make things go more smoothly for me.
 
-static int wm9713_soc_suspend(struct snd_soc_codec *codec)
-{
-	/* Disable everything except touchpanel - that will be handled
-	 * by the touch driver and left disabled if touch is not in
-	 * use. */
-	snd_soc_update_bits(codec, AC97_EXTENDED_MID, 0x7fff,
-				 0x7fff);
-	snd_soc_write(codec, AC97_EXTENDED_MSTATUS, 0xffff);
-	snd_soc_write(codec, AC97_POWERDOWN, 0x6f00);
-	snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
-
-        /*
-         * RJK: still need to be convinced why this is necessary for this
-         *      next line
-         */
-        regcache_cache_only(codec->regmap, true);
-
-	return 0;
-}
-
-static int wm9713_soc_resume(struct snd_soc_codec *codec)
-{
-	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
-	int ret;
-
-        /*
-         * RJK: still need to be convinced why this is necessary for this
-         *      next line
-         */
-        regcache_cache_only(codec->regmap, false);
-
-	ret = snd_ac97_reset(wm9713->ac97, true, WM9713_VENDOR_ID,
-		WM9713_VENDOR_ID_MASK);
-	if (ret < 0)
-		return ret;
-
-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
-
-	/* do we need to re-start the PLL ? */
-	if (wm9713->pll_in)
-		wm9713_set_pll(codec, 0, wm9713->pll_in, 0);
-
-	/* only synchronise the codec if warm reset failed */
-	if (ret == 0) {
-		regcache_mark_dirty(codec->component.regmap);
-		snd_soc_cache_sync(codec);
-	}
-
-	return ret;
-}
-
-Thanks for your reviews.
-
--- 
-Robert
+Thanks,
+ -Caleb
