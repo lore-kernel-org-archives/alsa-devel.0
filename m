@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Use logical instead of bitwise
-	OR for boolean expression" to the asoc tree
-Date: Wed, 28 Oct 2015 09:22:59 +0900
-Message-ID: <E1ZrEW3-0007Yx-2f@finisterre>
-References: <1445668113.26836.0.camel@ingics.com>
+Subject: Re: [PATCH V2 02/10] ASoC: img: Add driver for I2S
+ input controller
+Date: Wed, 28 Oct 2015 10:04:43 +0900
+Message-ID: <20151028010443.GX28319@sirena.org.uk>
+References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
+ <20151019174732.GG32054@sirena.org.uk>
+ <56293472.7000401@imgtec.com>
+ <20151023225723.GO29919@sirena.org.uk>
+ <562F824F.9070407@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0509053987684889000=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D90C265185
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 01:23:12 +0100 (CET)
-In-Reply-To: <1445668113.26836.0.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 482A92656F5
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 02:05:04 +0100 (CET)
+In-Reply-To: <562F824F.9070407@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Damien Horsley <Damien.Horsley@imgtec.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, James Hartley <James.Hartley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7219: Use logical instead of bitwise OR for boolean expression
+--===============0509053987684889000==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="E5HUUwS3R9LcK7+r"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--E5HUUwS3R9LcK7+r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Oct 27, 2015 at 01:55:27PM +0000, Damien Horsley wrote:
+> On 23/10/15 23:57, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Shouldn't we be doing that flush on stream close instead?  If nothing
+> > else the flush is going to discard a bit of data if the stream is just
+> > paused.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> The FIFOs are only 8 frames in size, so I am not sure there is an
+> issue with these frames being lost.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> I think it also makes sense to keep the blocks consistent with each
+> other. The spdif (out and in), and parallel out, all flush automatically
+> when stopped, and the fifo for the i2s out block is cleared when the
+> reset is asserted.
 
-Thanks,
-Mark
+This seems like an issue that got missed in the other drivers then.  I'd
+expect the trigger operation to be a minimal operation which starts and
+stops the data transfer, not doing anything else.
 
->From 6b26f6172b77734386dbd728163d14165a2d89bf Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 24 Oct 2015 14:28:33 +0800
-Subject: [PATCH] ASoC: da7219: Use logical instead of bitwise OR for boolean
- expression
+--E5HUUwS3R9LcK7+r
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index f238c1e..e36a7b7 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1306,7 +1306,7 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	channels = params_channels(params);
--	if ((channels < 1) | (channels > DA7219_DAI_CH_NUM_MAX)) {
-+	if ((channels < 1) || (channels > DA7219_DAI_CH_NUM_MAX)) {
- 		dev_err(codec->dev,
- 			"Invalid number of channels, only 1 to %d supported\n",
- 			DA7219_DAI_CH_NUM_MAX);
--- 
-2.6.1
+iQEcBAEBCAAGBQJWMB8qAAoJECTWi3JdVIfQjyoH/AqvualpliASdv2dh3haXToA
+dQ6tFIHMTCqNlWn0e4zljQmfOfhP8Ub8/NH/JOir2TQCgQD47TxUaqzoSr5V+JDc
+uCFBj4PQsHzXEVypazrwQMEvCwcnTxAksZGDzjU34TtRHiDQaw/s7Lc6QqE7mba/
+I3hc4a4LYJrUdjie+UM+j6SopxBQ4htpXDUpCUvBWLyq6wjuv8hBmXDlgV9uu2ex
+oXtXNG2rKAGCYwgcsSlaw4yrza/78+noh+HkvEPna6gtkfTovd1oervQXss/XUtc
+nEjI+k2syIEvNYK5vtICfmzYuAVuAfWOKKPq9gX0omQE/tiEb7/E4KZd9RBkeH0=
+=kOxG
+-----END PGP SIGNATURE-----
+
+--E5HUUwS3R9LcK7+r--
+
+--===============0509053987684889000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0509053987684889000==--
