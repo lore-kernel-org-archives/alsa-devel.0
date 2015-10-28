@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup rsnd_dmapp_stop() return
-	value" to the asoc tree
-Date: Wed, 28 Oct 2015 13:57:52 +0900
-Message-ID: <E1ZrIo4-00042j-UH@finisterre>
-References: <87twpb8vqj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: call rsnd_src_quit() from
+	rsnd_src_quit_gen2()" to the asoc tree
+Date: Wed, 28 Oct 2015 13:57:54 +0900
+Message-ID: <E1ZrIo6-00043D-LJ@finisterre>
+References: <87vb9r8vs3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D49DA26586C
+ by alsa0.perex.cz (Postfix) with ESMTP id DF4EF265900
  for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 05:58:05 +0100 (CET)
-In-Reply-To: <87twpb8vqj.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vb9r8vs3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup rsnd_dmapp_stop() return value
+   ASoC: rsnd: call rsnd_src_quit() from rsnd_src_quit_gen2()
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8e1b5e70e7fa7c2c2df1ab37047a8e14ecdbb5ca Mon Sep 17 00:00:00 2001
+>From 7b0beb13bc31693ede4f6b4a3f24c451b74118ac Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Oct 2015 04:31:03 +0000
-Subject: [PATCH] ASoC: rsnd: fixup rsnd_dmapp_stop() return value
+Date: Wed, 28 Oct 2015 04:30:11 +0000
+Subject: [PATCH] ASoC: rsnd: call rsnd_src_quit() from rsnd_src_quit_gen2()
 
-45a4394d03("ASoC: rsnd: use mod base common method on DMA phase3")
-Exchanged "void rsnd_dmapp_stop()" to "int rsnd_dmapp_stop()",
-but it returns inverted value. This patch fixup it.
+2d604e03("ASoC: rsnd: disable SRC.out only when stop timing")
+added rsnd_src_quit_gen2(), but it should call rsnd_src_quit()
+same as before. This patch fixup it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/src.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index fc70e97..9917b985 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -368,11 +368,11 @@ static int rsnd_dmapp_stop(struct rsnd_mod *mod,
- 
- 	for (i = 0; i < 1024; i++) {
- 		if (0 == rsnd_dmapp_read(dma, PDMACHCR))
--			return -EIO;
-+			return 0;
- 		udelay(1);
- 	}
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index a710799c..776b0ef 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -621,7 +621,7 @@ static int rsnd_src_quit_gen2(struct rsnd_mod *mod,
+ 	/* stop both out/in */
+ 	rsnd_mod_write(mod, SRC_CTRL, 0);
  
 -	return 0;
-+	return -EIO;
++	return rsnd_src_quit(mod, io, priv);
  }
  
- static int rsnd_dmapp_start(struct rsnd_mod *mod,
+ static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
 -- 
 2.6.1
