@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: set ALC2 as non-volatile
-	register" to the asoc tree
-Date: Wed, 28 Oct 2015 09:21:44 +0900
-Message-ID: <E1ZrEUq-0007Fs-7E@finisterre>
-References: <1445577528-2354-1-git-send-email-jiada_wang@mentor.com>
+Subject: Applied "ASoC: da7219: Use logical instead of bitwise
+	OR for boolean expression" to the asoc tree
+Date: Wed, 28 Oct 2015 09:22:59 +0900
+Message-ID: <E1ZrEW3-0007Yx-2f@finisterre>
+References: <1445668113.26836.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 974AE26149D
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 01:21:58 +0100 (CET)
-In-Reply-To: <1445577528-2354-1-git-send-email-jiada_wang@mentor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D90C265185
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 01:23:12 +0100 (CET)
+In-Reply-To: <1445668113.26836.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: set ALC2 as non-volatile register
+   ASoC: da7219: Use logical instead of bitwise OR for boolean expression
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 0b170f7acd2ab1ca0771b933493b9241706117b4 Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Fri, 23 Oct 2015 14:18:48 +0900
-Subject: [PATCH] ASoC: wm8962: set ALC2 as non-volatile register
+>From 6b26f6172b77734386dbd728163d14165a2d89bf Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Sat, 24 Oct 2015 14:28:33 +0800
+Subject: [PATCH] ASoC: da7219: Use logical instead of bitwise OR for boolean
+ expression
 
-Previously ALC2 register is set as a volatile register, declare
-it as one of ALC Coefficients register together with other non-volatile
-registers will cause issue, in case wm8962 has enter suspend mode,
-and cache_only flag is set, any attempt to read from ALC2 will fail.
-
-Because the 5 status bits in ALC2 aren't used anywhere nor are useful
-to end user, so this patch removes ALC2 register from volatile
-register list to make ALC2 be possible to be accessed when cache_only
-flag is set.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b4eb975..2976200 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -131,7 +131,7 @@ static const struct reg_default wm8962_reg[] = {
- 	{ 15, 0x6243 },   /* R15    - Software Reset */
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index f238c1e..e36a7b7 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1306,7 +1306,7 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- 	{ 17, 0x007B },   /* R17    - ALC1 */
--
-+	{ 18, 0x0000 },   /* R18    - ALC2 */
- 	{ 19, 0x1C32 },   /* R19    - ALC3 */
- 	{ 20, 0x3200 },   /* R20    - Noise Gate */
- 	{ 21, 0x00C0 },   /* R21    - Left ADC volume */
-@@ -794,7 +794,6 @@ static bool wm8962_volatile_register(struct device *dev, unsigned int reg)
- 	case WM8962_CLOCKING1:
- 	case WM8962_CLOCKING2:
- 	case WM8962_SOFTWARE_RESET:
--	case WM8962_ALC2:
- 	case WM8962_THERMAL_SHUTDOWN_STATUS:
- 	case WM8962_ADDITIONAL_CONTROL_4:
- 	case WM8962_DC_SERVO_6:
+ 	channels = params_channels(params);
+-	if ((channels < 1) | (channels > DA7219_DAI_CH_NUM_MAX)) {
++	if ((channels < 1) || (channels > DA7219_DAI_CH_NUM_MAX)) {
+ 		dev_err(codec->dev,
+ 			"Invalid number of channels, only 1 to %d supported\n",
+ 			DA7219_DAI_CH_NUM_MAX);
 -- 
 2.6.1
