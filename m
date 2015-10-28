@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: call rsnd_src_quit() from
-	rsnd_src_quit_gen2()" to the asoc tree
-Date: Wed, 28 Oct 2015 13:57:54 +0900
-Message-ID: <E1ZrIo6-00043D-LJ@finisterre>
-References: <87vb9r8vs3.wl%kuninori.morimoto.gx@renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Disable 64bit address for Creative
+	HDA controllers
+Date: Wed, 28 Oct 2015 06:30:39 +0100
+Message-ID: <1446010239-15584-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF4EF265900
- for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 05:58:05 +0100 (CET)
-In-Reply-To: <87vb9r8vs3.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE1CD2614FF
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 06:30:40 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 98954AC0B
+ for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2015 05:30:53 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+We've had many reports that some Creative sound cards with CA0132
+don't work well.  Some reported that it starts working after reloading
+the module, while some reported it starts working when a 32bit kernel
+is used.  All these facts seem implying that the chip fails to
+communicate when the buffer is located in 64bit address.
 
-   ASoC: rsnd: call rsnd_src_quit() from rsnd_src_quit_gen2()
+This patch addresses these issues by just adding AZX_DCAPS_NO_64BIT
+flag to the corresponding PCI entries.  I casually had a chance to
+test an SB Recon3D board, and indeed this seems helping.
 
-has been applied to the asoc tree at
+Although this hasn't been tested on all Creative devices, it's safer
+to assume that this restriction applies to the rest of them, too.  So
+the flag is applied to all Creative entries.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7b0beb13bc31693ede4f6b4a3f24c451b74118ac Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Oct 2015 04:30:11 +0000
-Subject: [PATCH] ASoC: rsnd: call rsnd_src_quit() from rsnd_src_quit_gen2()
-
-2d604e03("ASoC: rsnd: disable SRC.out only when stop timing")
-added rsnd_src_quit_gen2(), but it should call rsnd_src_quit()
-same as before. This patch fixup it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/rcar/src.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index a710799c..776b0ef 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -621,7 +621,7 @@ static int rsnd_src_quit_gen2(struct rsnd_mod *mod,
- 	/* stop both out/in */
- 	rsnd_mod_write(mod, SRC_CTRL, 0);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c38c68f57938..61b8b75a3c80 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -334,6 +334,7 @@ enum {
  
--	return 0;
-+	return rsnd_src_quit(mod, io, priv);
- }
+ #define AZX_DCAPS_PRESET_CTHDA \
+ 	(AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB |\
++	 AZX_DCAPS_NO_64BIT |\
+ 	 AZX_DCAPS_4K_BDLE_BOUNDARY | AZX_DCAPS_SNOOP_OFF)
  
- static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
+ /*
+@@ -2284,11 +2285,13 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
+ 	  .class_mask = 0xffffff,
+ 	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
++	  AZX_DCAPS_NO_64BIT |
+ 	  AZX_DCAPS_RIRB_PRE_DELAY | AZX_DCAPS_POSFIX_LPIB },
+ #else
+ 	/* this entry seems still valid -- i.e. without emu20kx chip */
+ 	{ PCI_DEVICE(0x1102, 0x0009),
+ 	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
++	  AZX_DCAPS_NO_64BIT |
+ 	  AZX_DCAPS_RIRB_PRE_DELAY | AZX_DCAPS_POSFIX_LPIB },
+ #endif
+ 	/* CM8888 */
 -- 
-2.6.1
+2.6.2
