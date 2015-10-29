@@ -1,30 +1,28 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Caleb Crome <caleb@crome.org>
 Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
  TDM (network) mode.
-Date: Thu, 29 Oct 2015 11:36:19 -0700
-Message-ID: <20151029183617.GC3492@Asurada-CZ80>
-References: <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+Date: Thu, 29 Oct 2015 12:06:16 -0700
+Message-ID: <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
+References: <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
  <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
- <20151027201101.GA9527@Asurada-CZ80>
+ <20151027071344.GC25728@pengutronix.de> <20151027201101.GA9527@Asurada-CZ80>
  <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
  <20151029045350.GA3374@Asurada-CZ80>
  <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <CAG5mAdw220n3K8vfRAgixxeYa=rBp5YbOrn_8ecwH+KN0JOnnA@mail.gmail.com>
- <56323D3F.4080708@tekno-soft.it>
- <CAG5mAdywpA1af60wTwgPWMPGWmz7cYDHOycbSUeWHF3Znyr78w@mail.gmail.com>
+ <20151029171936.GA3492@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id A3EC6261ADA
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 19:36:24 +0100 (CET)
-Received: by padhy1 with SMTP id hy1so42056991pad.0
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 11:36:22 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdywpA1af60wTwgPWMPGWmz7cYDHOycbSUeWHF3Znyr78w@mail.gmail.com>
+Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD5B226170F
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 20:06:36 +0100 (CET)
+Received: by wmeg8 with SMTP id g8so30080178wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 12:06:36 -0700 (PDT)
+In-Reply-To: <20151029171936.GA3492@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,194 +32,159 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2015 at 08:54:00AM -0700, Caleb Crome wrote:
+STARTUP ISSUE SOLVED (INELEGANTLY)
 
-> The 35 and 36 are for Dual fifo mode only, and no current system (with
-> fsl_ssi.c anyway) uses dual fifo mode.  How do I know?  Because the
-> it's definitely broken in the fsl_ssi.c.  I was just about to report
-> that bug.
+:-)
 
-Broken? Where? The reason why there's no current system using that
-is because there is no SDMA patch to upload a newer version of the
-SDMA firmware which is always included in the Freescale official
-release. Yes, you saw that patch in the beginning of this thread.
-For SDMA DT binding, number 22 is the configurations of Dual FIFO
-script but it would break most of the upstream users as upstream
-Kernels running with a default ROM firmware don't have that script.
+On Thu, Oct 29, 2015 at 10:19 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> On Thu, Oct 29, 2015 at 06:44:12AM -0700, Caleb Crome wrote:
+>> > Reported by user space? Are you saying that's an ALSA underrun in
+>> > the user space, not a hardware underrun reported by the IRQ in the
+>> > driver? They are quite different. ALSA underrun comes from the DMA
+>> > buffer gets underrun while the other one results from FIFO feeding
+>> > efficiency. For ALSA underrun, enlarging the playback period size
+>> > and period number will ease the problem:
+>
+>> Sometimes they happen at the same time.  So, I run aplay, and all is
+>
+> The 'they' is indicating ALSA underrun + hardware underrun or ALSA
+> underrun + channel slip?
 
-If you want to use Dual FIFO mode with upstream Kernels, apply the
-change I provided you in my previous reply along with these two:
+Exactly, they tend to come together, but either can come without the other.
 
-commit 2490a94afbcb139f68f7872e5645d66b99720a52
-Author: Shawn Guo <shawn.guo@freescale.com>
-Date:   Tue Jul 16 22:53:18 2013 +0800
+> It's not quite logical for a channel slip
+> resulting from an ALSA underrun as it should restart by calling the
+> trigger() functions in DAI drivers IIRC.
 
-    ENGR00269945: firwmare: imx: add imx6q sdma script
-    
-    Add imx6q sdma script which will be used by all i.MX6 series.
-    
-    Signed-off-by: Shawn Guo <shawn.guo@freescale.com>
+This actually is exactly what I'm seeing now.  I'm seeing the
+*startup* happening from the trigger starting up slipped.  So this
+does make perfect sense to me.
 
-diff --git a/firmware/Makefile b/firmware/Makefile
-index e297e1b..7b22ab3 100644
---- a/firmware/Makefile
-+++ b/firmware/Makefile
-@@ -61,6 +61,7 @@ fw-shipped-$(CONFIG_DRM_RADEON) += radeon/R100_cp.bin radeon/R200_cp.bin \
- 				   radeon/RV770_pfp.bin radeon/RV770_me.bin \
- 				   radeon/RV730_pfp.bin radeon/RV730_me.bin \
- 				   radeon/RV710_pfp.bin radeon/RV710_me.bin
-+fw-shipped-$(CONFIG_IMX_SDMA) += imx/sdma/sdma-imx6q.bin
- fw-shipped-$(CONFIG_DVB_AV7110) += av7110/bootcode.bin
- fw-shipped-$(CONFIG_DVB_TTUSB_BUDGET) += ttusb-budget/dspbootcode.bin
- fw-shipped-$(CONFIG_E100) += e100/d101m_ucode.bin e100/d101s_ucode.bin \
-diff --git a/firmware/imx/sdma/sdma-imx6q.bin.ihex b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-new file mode 100644
-index 0000000..2e561f0
---- /dev/null
-+++ b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-@@ -0,0 +1,116 @@
-+:1000000053444D4101000000010000001C000000AD
-+:1000100026000000B40000007A0600008202000002
-+:10002000FFFFFFFF00000000FFFFFFFFFFFFFFFFDC
-+:10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
-+:10004000FFFFFFFFFFFFFFFF6A1A0000FFFFFFFF38
-+:10005000EB020000BB180000FFFFFFFF08040000D8
-+:10006000FFFFFFFFC0030000FFFFFFFFFFFFFFFFD9
-+:10007000FFFFFFFFAB020000FFFFFFFF7B0300005D
-+:10008000FFFFFFFFFFFFFFFF4C0400006E040000B6
-+:10009000FFFFFFFF00180000FFFFFFFFFFFFFFFF54
-+:1000A000000000000018000062180000161A00008E
-+:1000B000061B0000E3C1DB57E35FE357F352016A1D
-+:1000C0008F00D500017D8D00A005EB5D7804037DD8
-+:1000D00079042C7D367C79041F7CEE56000F600677
-+:1000E000057D0965437E0A62417E20980A623E7E54
-+:1000F00009653C7E12051205AD026007037DFB55C4
-+:10010000D36D2B98FB55041DD36DC86A2F7F011F3B
-+:1001100003200048E47C5398FB55D76D1500057803
-+:100120000962C86A0962C86AD76D5298FB55D76DD3
-+:100130001500150005780A62C86A0A62C86AD76D98
-+:100140005298FB55D76D15001500150005780B6208
-+:10015000C86A0B62C86AD76D097CDF6D077F000033
-+:10016000EB55004D077DFAC1E35706980700CC68B0
-+:100170000C6813C20AC20398D9C1E3C1DB57E35F1D
-+:10018000E357F352216A8F00D500017D8D00A00551
-+:10019000EB5DFB567804037D79042A7D317C79047C
-+:1001A000207C700B1103EB53000F6003057D096584
-+:1001B000377E0A62357E86980A62327E0965307E15
-+:1001C00012051205AD026007027C065A8E98265A67
-+:1001D000277F011F03200048E87C700B1103135395
-+:1001E000AF98150004780962065A0962265AAE983B
-+:1001F0001500150004780A62065A0A62265AAE985B
-+:1002000015001500150004780B62065A0B62265A79
-+:10021000077C0000EB55004D067DFAC1E357699855
-+:1002200007000C6813C20AC26698700B11031353BF
-+:100230006C07017CD9C1FB5E8A066B07017CD9C1C2
-+:10024000F35EDB59D3588F0110010F398B003CC18D
-+:100250002B7DC05AC85B4EC1277C88038906E35CAE
-+:10026000FF0D1105FF1DBC053E07004D187D7008F0
-+:1002700011007E07097D7D07027D2852E698F8521D
-+:10028000DB54BC02CC02097C7C07027D2852EF982B
-+:10029000F852D354BC02CC02097D0004DD988B00D7
-+:1002A000C052C85359C1D67D0002CD98FF08BF0087
-+:1002B0007F07157D8804D500017D8D00A005EB5DCD
-+:1002C0008F0212021202FF3ADA05027C3E071899E9
-+:1002D000A402DD02027D3E0718995E071899EB55CE
-+:1002E0009805EB5DF352FB546A07267D6C07017D90
-+:1002F00055996B07577C6907047D6807027D010EDD
-+:100300002F999358D600017D8E009355A005935DDB
-+:10031000A00602780255045D1D7C004E087C69072A
-+:10032000037D0255177E3C99045D147F8906935026
-+:100330000048017D2799A099150006780255045DB3
-+:100340004F070255245D2F07017CA09917006F0706
-+:10035000017C012093559D000700A7D9F598D36C27
-+:100360006907047D6807027D010E64999358D600E1
-+:10037000017D8E009355A005935DA006027802557D
-+:10038000C86D0F7C004E087C6907037D0255097E0D
-+:100390007199C86D067F890693500048017D5C996C
-+:1003A000A0999A99C36A6907047D6807027D010EC6
-+:1003B00087999358D600017D8E009355A005935DD3
-+:1003C000A0060278C865045D0F7C004E087C6907B2
-+:1003D000037DC865097E9499045D067F8906935064
-+:1003E0000048017D7F99A09993559D000700FF6CFF
-+:1003F000A7D9F5980000E354EB55004D017CF59822
-+:10040000DD98E354EB55FF0A1102FF1A7F07027CC7
-+:10041000A005B4999D008C05BA05A0051002BA0488
-+:10042000AD0454040600E3C1DB57FB52C36AF35228
-+:10043000056A8F00D500017D8D00A005EB5D780475
-+:10044000037D79042B7D1E7C7904337CEE56000FEE
-+:10045000FB556007027DC36DD599041DC36DC8624D
-+:100460003B7E6006027D10021202096A357F12028D
-+:10047000096A327F1202096A2F7F011F0320004898
-+:10048000E77C099AFB55C76D150015001500057826
-+:10049000C8620B6AC8620B6AC76D089AFB55C76DC4
-+:1004A000150015000578C8620A6AC8620A6AC76D35
-+:1004B000089AFB55C76D15000578C862096AC862BD
-+:1004C000096AC76D097C286A077F0000EB55004D5B
-+:1004D000057DFAC1DB57BF9977C254040AC2BA99A5
-+:1004E000D9C1E3C1DB57F352056A8F00D500017D06
-+:1004F0008D00A005FB567804037D7904297D1F7CBF
-+:1005000079042E7CE35D700D1105ED55000F600739
-+:10051000027D0652329A2652337E6005027D100219
-+:100520001202096A2D7F1202096A2A7F1202096AE1
-+:10053000277F011F03200048EA7CE3555D9A1500E0
-+:1005400015001500047806520B6A26520B6A5C9A55
-+:1005500015001500047806520A6A26520A6A5C9A47
-+:10056000150004780652096A2652096A097C286A2D
-+:10057000077F0000DB57004D057DFAC1DB571B9A52
-+:1005800077C254040AC2189AE3C1DB57F352056AD2
-+:10059000FB568E02941AC36AC8626902247D941EB7
-+:1005A000C36ED36EC8624802C86A9426981EC36E92
-+:1005B000D36EC8624C02C86A9826C36E981EC36E7A
-+:1005C000C8629826C36E6002097CC8626E02247DF0
-+:1005D000096A1E7F0125004D257D849A286A187FAF
-+:1005E00004627AC2B89AE36E8F00D805017D8D004F
-+:1005F000A005C8626E02107D096A0A7F0120F97C9D
-+:10060000286A067F0000004D0D7DFAC1DB576E9A07
-+:10061000070004620C6AB59A286AFA7F04627AC2FB
-+:1006200058045404286AF47F0AC26B9AD9C1E3C102
-+:10063000DB57F352056AFB568E02941A0252690286
-+:100640001D7D941E06524802065A9426981E065294
-+:100650004C02065A9826981E065260020A7C98267A
-+:1006600006526E02237D096A1D7F0125004D247DFF
-+:10067000D19A286A177F04627AC2029B8F00D8053C
-+:10068000017D8D00A00506526E02107D096A0A7F69
-+:100690000120F97C286A067F0000004D0D7DFAC11B
-+:1006A000DB57C19A070004620C6AFF9A286AFA7F36
-+:1006B00004627AC258045404286AF47F0AC2BE9ABB
-+:1006C000016E0B612F7E0B622D7E0B632B7E0C0D5A
-+:1006D0001704170417049D04081DCC05017C0C0D9C
-+:1006E000D16A000F4207C86FDD6F1C7F8E009D002E
-+:1006F00001680B67177ED56B04080278C86F120774
-+:10070000117C0B670F7E04080278C86F12070A7C01
-+:10071000DD6F087FD169010FC86FDD6F037F0101B5
-+:0E0720000004129B0700FF680C680002129B89
-+:00000001FF
+I am playing a very short ramp.wav file and seeing how often it starts
+up 'slipped' with the extra 0.  It started up incorrectly 20 out of
+300 trials.  So, the startup is failing 7% of the time.
 
+It occurred to me that perhaps the problem has to do when exactly when
+during the frame-sync period the fsl_ssi_trigger function was called.
+Perhaps, if it's called near the end or beginning of a frame, somehow
+something gets messed up.  (The docs for the SCR register imply some
+of this, but it talks about either 2 or 6 bit clocks, so I'd expect
+the error rate to be lower than 7% (more like 2.5%).
 
-commit 870291e6b0019ff0a9a135f2641c7801b36a80ef
-Author: Nicolin Chen <nicoleotsuka@gmail.com>
-Date:   Thu Sep 4 21:42:35 2014 -0700
+So, I implemented a really inelegant patch to synchronize the trigger
+with the frame sync signal, and I got ZERO errors out of 500 trials!
+This seems to have nailed the startup problem!
 
-    firmware: imx: sdma v2
-    
-    In the upstream kernel, i.MX6 series uses SDMA firmware V2. However,
-    we actually don't have a strict version control internally. So this
-    patch just simply hacks the firmware to change the version number to
-    V2.
-    
-    Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+In addition, I have run about 20 minutes of audio with no slips or
+problems, even though there have been aplay underruns.  This is a
+major step forward for me :-)
 
-diff --git a/firmware/imx/sdma/sdma-imx6q.bin.ihex b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-index 2e561f0..ceb114b 100644
---- a/firmware/imx/sdma/sdma-imx6q.bin.ihex
-+++ b/firmware/imx/sdma/sdma-imx6q.bin.ihex
-@@ -1,4 +1,4 @@
--:1000000053444D4101000000010000001C000000AD
-+:1000000053444D4102000000010000001C000000AC
- :1000100026000000B40000007A0600008202000002
- :10002000FFFFFFFF00000000FFFFFFFFFFFFFFFFDC
- :10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
+The idea is to enable the SSI before enabling DMA.  Then wait for a
+frame sync by polling.  Once I get the frame sync disable the SSI, and
+let the trigger function continue.
+
+How should this be done properly?
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 73778c2..8cd8284 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -328,6 +328,41 @@ static void fsl_ssi_rxtx_config(struct
+fsl_ssi_private *ssi_private,
+     }
+ }
+
++/*
++ * wait for a frame sync.  do this by enabling the SSI,
++ * then waiting for sync to happen, then disabling the SSI
++ * and put it back to the state it was at first
++ */
++static void wait_for_tfs(struct regmap *regs)
++{
++    u32 tfs;
++    u32 scr;
++    int maxcount = 100000;
++    regmap_read(regs, CCSR_SSI_SCR, &scr);
++    regmap_update_bits(regs, CCSR_SSI_SCR, 0x3, 0x3);
++    while(maxcount--) {
++        /* clear TFS bit */
++        regmap_update_bits(regs, CCSR_SSI_SISR, CCSR_SSI_SISR_TFS, 0);
++        regmap_read(regs, CCSR_SSI_SISR, &tfs);
++        if ((tfs & CCSR_SSI_SISR_TFS)==0)
++            break; /* tfs went to 0 */
++    }
++    if (maxcount < 0) {
++        printk(KERN_INFO "timed out 1, sisr = 0x%08x\n", tfs);
++    }
++    maxcount = 100000;
++    while(maxcount--) {
++        /* waiting for tfs to go to 1. */
++        regmap_read(regs, CCSR_SSI_SISR, &tfs);
++        if ((tfs & CCSR_SSI_SISR_TFS))
++            break; /* tfs went to 1 */
++    }
++    if (maxcount < 0) {
++        printk(KERN_INFO "timed out 2\n");
++    }
++    regmap_write(regs, CCSR_SSI_SCR, scr);
++}
++
+ /*
+  * Calculate the bits that have to be disabled for the current stream that is
+  * getting disabled. This keeps the bits enabled that are necessary for the
+@@ -360,7 +395,10 @@ static void fsl_ssi_config(struct fsl_ssi_private
+*ssi_private, bool enable,
+     int nr_active_streams;
+     u32 scr_val;
+     int keep_active;
+-
++    wait_for_tfs(regs); /* synchronize with the start of a frame
++                 * to get done with this function well
++                 * before the end of a frame
++                 */
+     regmap_read(regs, CCSR_SSI_SCR, &scr_val);
+
+     nr_active_streams = !!(scr_val & CCSR_SSI_SCR_TE) +
+@@ -943,9 +980,9 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+      * size.
+      */
+     if (ssi_private->use_dma)
+-        wm = ssi_private->fifo_depth - 2;
++        wm = 8;
+     else
+-        wm = ssi_private->fifo_depth;
++        wm = 8;
+
+     regmap_write(regs, CCSR_SSI_SFCSR,
+             CCSR_SSI_SFCSR_TFWM0(wm) | CCSR_SSI_SFCSR_RFWM0(wm) |
+@@ -1260,8 +1297,8 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+      * We have burstsize be "fifo_depth - 2" to match the SSI
+      * watermark setting in fsl_ssi_startup().
+      */
+-    ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
+-    ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
++    ssi_private->dma_params_tx.maxburst = 8;
++    ssi_private->dma_params_rx.maxburst = 8;
+     ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
+     ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
+
+>
+>> fine.  Then the user space app will underrun, and then I look at the
+>> scope, and the channels have slipped.  So somehow the start/restart
+>> after the underrun is not always perfect I guess.
+>
+>> Is there any mechanism for the DMA fifo underruns to be reported back
+>> to user space?  There certainly should be, because the consequences
+>
+> No. The release from Freescale official tree has a reset procedure
+> applied to ESAI underrun but not SSI but I guess you may want to
+> refer to that.
+
+Ooh, that can be a problem.   Maybe I'll take a look.  But for the
+moment, it appears that, so far, for now, the system is working.
+
+-Caleb
