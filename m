@@ -1,11 +1,9 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
  TDM (network) mode.
-Date: Thu, 29 Oct 2015 11:11:35 -0700
-Message-ID: <20151029181135.GB3492@Asurada-CZ80>
-References: <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
- <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+Date: Thu, 29 Oct 2015 11:36:19 -0700
+Message-ID: <20151029183617.GC3492@Asurada-CZ80>
+References: <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
  <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
  <20151027071344.GC25728@pengutronix.de>
  <20151027201101.GA9527@Asurada-CZ80>
@@ -13,18 +11,20 @@ References: <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
  <20151029045350.GA3374@Asurada-CZ80>
  <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
  <CAG5mAdw220n3K8vfRAgixxeYa=rBp5YbOrn_8ecwH+KN0JOnnA@mail.gmail.com>
+ <56323D3F.4080708@tekno-soft.it>
+ <CAG5mAdywpA1af60wTwgPWMPGWmz7cYDHOycbSUeWHF3Znyr78w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E87B26170F
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 19:11:40 +0100 (CET)
-Received: by padhk11 with SMTP id hk11so47516710pad.1
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 11:11:38 -0700 (PDT)
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3EC6261ADA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 19:36:24 +0100 (CET)
+Received: by padhy1 with SMTP id hy1so42056991pad.0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 11:36:22 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <CAG5mAdw220n3K8vfRAgixxeYa=rBp5YbOrn_8ecwH+KN0JOnnA@mail.gmail.com>
+In-Reply-To: <CAG5mAdywpA1af60wTwgPWMPGWmz7cYDHOycbSUeWHF3Znyr78w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,111 +38,190 @@ To: Caleb Crome <caleb@crome.org>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2015 at 07:55:59AM -0700, Caleb Crome wrote:
+On Thu, Oct 29, 2015 at 08:54:00AM -0700, Caleb Crome wrote:
 
-> >> Therefore, if setting watermark to 8, each FIFO has 7 (15 - 8) space
-> >> left, the largest safe burst size could be 14 (7 * 2) actually.
+> The 35 and 36 are for Dual fifo mode only, and no current system (with
+> fsl_ssi.c anyway) uses dual fifo mode.  How do I know?  Because the
+> it's definitely broken in the fsl_ssi.c.  I was just about to report
+> that bug.
 
-> > Oh, does this depend on the data size?  I'm using 16-bit data, so I
-> > guess the bursts are measured in 2 byte units?  Does this mean that
-> > the burst size should be dynamically adjusted depending on word size
-> > (I guess done in hw_params)?
+Broken? Where? The reason why there's no current system using that
+is because there is no SDMA patch to upload a newer version of the
+SDMA firmware which is always included in the Freescale official
+release. Yes, you saw that patch in the beginning of this thread.
+For SDMA DT binding, number 22 is the configurations of Dual FIFO
+script but it would break most of the upstream users as upstream
+Kernels running with a default ROM firmware don't have that script.
 
-You don't need to do that. It's already been taken care in the DMA
-code.
+If you want to use Dual FIFO mode with upstream Kernels, apply the
+change I provided you in my previous reply along with these two:
 
-> Okay, so wm=8 and maxburst=14 definitely does not work at all,.  wm=8,
-> maxburst=8 works okay, but still not perfect.
+commit 2490a94afbcb139f68f7872e5645d66b99720a52
+Author: Shawn Guo <shawn.guo@freescale.com>
+Date:   Tue Jul 16 22:53:18 2013 +0800
 
-Make sure you are using Dual FIFO configurations for both SDMA and
-SSI. You can refer to my change below (I've tested it with a two-
-channel test case being played in 44.1KHz 16-bit):
+    ENGR00269945: firwmare: imx: add imx6q sdma script
+    
+    Add imx6q sdma script which will be used by all i.MX6 series.
+    
+    Signed-off-by: Shawn Guo <shawn.guo@freescale.com>
 
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index b8a5056..f4c7308 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -307,7 +307,7 @@
- 					clocks = <&clks IMX6SX_CLK_SSI1_IPG>,
- 						 <&clks IMX6SX_CLK_SSI1>;
- 					clock-names = "ipg", "baud";
--					dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
-+					dmas = <&sdma 37 22 0>, <&sdma 38 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -321,7 +321,7 @@
- 					clocks = <&clks IMX6SX_CLK_SSI2_IPG>,
- 						 <&clks IMX6SX_CLK_SSI2>;
- 					clock-names = "ipg", "baud";
--					dmas = <&sdma 41 1 0>, <&sdma 42 1 0>;
-+					dmas = <&sdma 41 22 0>, <&sdma 42 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-@@ -335,7 +335,7 @@
- 					clocks = <&clks IMX6SX_CLK_SSI3_IPG>,
- 						 <&clks IMX6SX_CLK_SSI3>;
- 					clock-names = "ipg", "baud";
--					dmas = <&sdma 45 1 0>, <&sdma 46 1 0>;
-+					dmas = <&sdma 45 22 0>, <&sdma 46 22 0>;
- 					dma-names = "rx", "tx";
- 					fsl,fifo-depth = <15>;
- 					status = "disabled";
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 674abf7..7cfe661 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1002,8 +1002,8 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		wm = ssi_private->fifo_depth;
- 
- 	regmap_write(regs, CCSR_SSI_SFCSR,
--			CCSR_SSI_SFCSR_TFWM0(wm) | CCSR_SSI_SFCSR_RFWM0(wm) |
--			CCSR_SSI_SFCSR_TFWM1(wm) | CCSR_SSI_SFCSR_RFWM1(wm));
-+			CCSR_SSI_SFCSR_TFWM0(8) | CCSR_SSI_SFCSR_RFWM0(8) |
-+			CCSR_SSI_SFCSR_TFWM1(8) | CCSR_SSI_SFCSR_RFWM1(8));
- 
- 	if (ssi_private->use_dual_fifo) {
- 		regmap_update_bits(regs, CCSR_SSI_SRCR, CCSR_SSI_SRCR_RFEN1,
-@@ -1322,8 +1322,9 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 		/* When using dual fifo mode, we need to keep watermark
- 		 * as even numbers due to dma script limitation.
- 		 */
--		ssi_private->dma_params_tx.maxburst &= ~0x1;
--		ssi_private->dma_params_rx.maxburst &= ~0x1;
-+		dev_info(&pdev->dev, "tunning burst size for Dual FIFO mode\n");
-+		ssi_private->dma_params_tx.maxburst = 16;
-+		ssi_private->dma_params_rx.maxburst = 16;
- 	}
- 
- 	if (!ssi_private->use_dma) {
+diff --git a/firmware/Makefile b/firmware/Makefile
+index e297e1b..7b22ab3 100644
+--- a/firmware/Makefile
++++ b/firmware/Makefile
+@@ -61,6 +61,7 @@ fw-shipped-$(CONFIG_DRM_RADEON) += radeon/R100_cp.bin radeon/R200_cp.bin \
+ 				   radeon/RV770_pfp.bin radeon/RV770_me.bin \
+ 				   radeon/RV730_pfp.bin radeon/RV730_me.bin \
+ 				   radeon/RV710_pfp.bin radeon/RV710_me.bin
++fw-shipped-$(CONFIG_IMX_SDMA) += imx/sdma/sdma-imx6q.bin
+ fw-shipped-$(CONFIG_DVB_AV7110) += av7110/bootcode.bin
+ fw-shipped-$(CONFIG_DVB_TTUSB_BUDGET) += ttusb-budget/dspbootcode.bin
+ fw-shipped-$(CONFIG_E100) += e100/d101m_ucode.bin e100/d101s_ucode.bin \
+diff --git a/firmware/imx/sdma/sdma-imx6q.bin.ihex b/firmware/imx/sdma/sdma-imx6q.bin.ihex
+new file mode 100644
+index 0000000..2e561f0
+--- /dev/null
++++ b/firmware/imx/sdma/sdma-imx6q.bin.ihex
+@@ -0,0 +1,116 @@
++:1000000053444D4101000000010000001C000000AD
++:1000100026000000B40000007A0600008202000002
++:10002000FFFFFFFF00000000FFFFFFFFFFFFFFFFDC
++:10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
++:10004000FFFFFFFFFFFFFFFF6A1A0000FFFFFFFF38
++:10005000EB020000BB180000FFFFFFFF08040000D8
++:10006000FFFFFFFFC0030000FFFFFFFFFFFFFFFFD9
++:10007000FFFFFFFFAB020000FFFFFFFF7B0300005D
++:10008000FFFFFFFFFFFFFFFF4C0400006E040000B6
++:10009000FFFFFFFF00180000FFFFFFFFFFFFFFFF54
++:1000A000000000000018000062180000161A00008E
++:1000B000061B0000E3C1DB57E35FE357F352016A1D
++:1000C0008F00D500017D8D00A005EB5D7804037DD8
++:1000D00079042C7D367C79041F7CEE56000F600677
++:1000E000057D0965437E0A62417E20980A623E7E54
++:1000F00009653C7E12051205AD026007037DFB55C4
++:10010000D36D2B98FB55041DD36DC86A2F7F011F3B
++:1001100003200048E47C5398FB55D76D1500057803
++:100120000962C86A0962C86AD76D5298FB55D76DD3
++:100130001500150005780A62C86A0A62C86AD76D98
++:100140005298FB55D76D15001500150005780B6208
++:10015000C86A0B62C86AD76D097CDF6D077F000033
++:10016000EB55004D077DFAC1E35706980700CC68B0
++:100170000C6813C20AC20398D9C1E3C1DB57E35F1D
++:10018000E357F352216A8F00D500017D8D00A00551
++:10019000EB5DFB567804037D79042A7D317C79047C
++:1001A000207C700B1103EB53000F6003057D096584
++:1001B000377E0A62357E86980A62327E0965307E15
++:1001C00012051205AD026007027C065A8E98265A67
++:1001D000277F011F03200048E87C700B1103135395
++:1001E000AF98150004780962065A0962265AAE983B
++:1001F0001500150004780A62065A0A62265AAE985B
++:1002000015001500150004780B62065A0B62265A79
++:10021000077C0000EB55004D067DFAC1E357699855
++:1002200007000C6813C20AC26698700B11031353BF
++:100230006C07017CD9C1FB5E8A066B07017CD9C1C2
++:10024000F35EDB59D3588F0110010F398B003CC18D
++:100250002B7DC05AC85B4EC1277C88038906E35CAE
++:10026000FF0D1105FF1DBC053E07004D187D7008F0
++:1002700011007E07097D7D07027D2852E698F8521D
++:10028000DB54BC02CC02097C7C07027D2852EF982B
++:10029000F852D354BC02CC02097D0004DD988B00D7
++:1002A000C052C85359C1D67D0002CD98FF08BF0087
++:1002B0007F07157D8804D500017D8D00A005EB5DCD
++:1002C0008F0212021202FF3ADA05027C3E071899E9
++:1002D000A402DD02027D3E0718995E071899EB55CE
++:1002E0009805EB5DF352FB546A07267D6C07017D90
++:1002F00055996B07577C6907047D6807027D010EDD
++:100300002F999358D600017D8E009355A005935DDB
++:10031000A00602780255045D1D7C004E087C69072A
++:10032000037D0255177E3C99045D147F8906935026
++:100330000048017D2799A099150006780255045DB3
++:100340004F070255245D2F07017CA09917006F0706
++:10035000017C012093559D000700A7D9F598D36C27
++:100360006907047D6807027D010E64999358D600E1
++:10037000017D8E009355A005935DA006027802557D
++:10038000C86D0F7C004E087C6907037D0255097E0D
++:100390007199C86D067F890693500048017D5C996C
++:1003A000A0999A99C36A6907047D6807027D010EC6
++:1003B00087999358D600017D8E009355A005935DD3
++:1003C000A0060278C865045D0F7C004E087C6907B2
++:1003D000037DC865097E9499045D067F8906935064
++:1003E0000048017D7F99A09993559D000700FF6CFF
++:1003F000A7D9F5980000E354EB55004D017CF59822
++:10040000DD98E354EB55FF0A1102FF1A7F07027CC7
++:10041000A005B4999D008C05BA05A0051002BA0488
++:10042000AD0454040600E3C1DB57FB52C36AF35228
++:10043000056A8F00D500017D8D00A005EB5D780475
++:10044000037D79042B7D1E7C7904337CEE56000FEE
++:10045000FB556007027DC36DD599041DC36DC8624D
++:100460003B7E6006027D10021202096A357F12028D
++:10047000096A327F1202096A2F7F011F0320004898
++:10048000E77C099AFB55C76D150015001500057826
++:10049000C8620B6AC8620B6AC76D089AFB55C76DC4
++:1004A000150015000578C8620A6AC8620A6AC76D35
++:1004B000089AFB55C76D15000578C862096AC862BD
++:1004C000096AC76D097C286A077F0000EB55004D5B
++:1004D000057DFAC1DB57BF9977C254040AC2BA99A5
++:1004E000D9C1E3C1DB57F352056A8F00D500017D06
++:1004F0008D00A005FB567804037D7904297D1F7CBF
++:1005000079042E7CE35D700D1105ED55000F600739
++:10051000027D0652329A2652337E6005027D100219
++:100520001202096A2D7F1202096A2A7F1202096AE1
++:10053000277F011F03200048EA7CE3555D9A1500E0
++:1005400015001500047806520B6A26520B6A5C9A55
++:1005500015001500047806520A6A26520A6A5C9A47
++:10056000150004780652096A2652096A097C286A2D
++:10057000077F0000DB57004D057DFAC1DB571B9A52
++:1005800077C254040AC2189AE3C1DB57F352056AD2
++:10059000FB568E02941AC36AC8626902247D941EB7
++:1005A000C36ED36EC8624802C86A9426981EC36E92
++:1005B000D36EC8624C02C86A9826C36E981EC36E7A
++:1005C000C8629826C36E6002097CC8626E02247DF0
++:1005D000096A1E7F0125004D257D849A286A187FAF
++:1005E00004627AC2B89AE36E8F00D805017D8D004F
++:1005F000A005C8626E02107D096A0A7F0120F97C9D
++:10060000286A067F0000004D0D7DFAC1DB576E9A07
++:10061000070004620C6AB59A286AFA7F04627AC2FB
++:1006200058045404286AF47F0AC26B9AD9C1E3C102
++:10063000DB57F352056AFB568E02941A0252690286
++:100640001D7D941E06524802065A9426981E065294
++:100650004C02065A9826981E065260020A7C98267A
++:1006600006526E02237D096A1D7F0125004D247DFF
++:10067000D19A286A177F04627AC2029B8F00D8053C
++:10068000017D8D00A00506526E02107D096A0A7F69
++:100690000120F97C286A067F0000004D0D7DFAC11B
++:1006A000DB57C19A070004620C6AFF9A286AFA7F36
++:1006B00004627AC258045404286AF47F0AC2BE9ABB
++:1006C000016E0B612F7E0B622D7E0B632B7E0C0D5A
++:1006D0001704170417049D04081DCC05017C0C0D9C
++:1006E000D16A000F4207C86FDD6F1C7F8E009D002E
++:1006F00001680B67177ED56B04080278C86F120774
++:10070000117C0B670F7E04080278C86F12070A7C01
++:10071000DD6F087FD169010FC86FDD6F037F0101B5
++:0E0720000004129B0700FF680C680002129B89
++:00000001FF
 
-And make sure you have the dev_info() printed out in your console.
-/* 22 in the DT is to call the Dual FIFO SDMA script */
 
-> It started with:
-> 
-> frame 0:  00, 00, 10, 20, 30, 40, 50, 60, 70, 80, 90, a0, b0, c0, d0, e0
-> frame 1:  f0, 01, 11, 21, 31, 41, 51, 61, 71, 81, 91, a1, b1, c1, d1, e1
+commit 870291e6b0019ff0a9a135f2641c7801b36a80ef
+Author: Nicolin Chen <nicoleotsuka@gmail.com>
+Date:   Thu Sep 4 21:42:35 2014 -0700
 
-If this happens, just try to let SDMA work before SSI starts to
-read FIFOs -- enabling TDMAE or RDMAE before enabling TE or RE:
+    firmware: imx: sdma v2
+    
+    In the upstream kernel, i.MX6 series uses SDMA firmware V2. However,
+    we actually don't have a strict version control internally. So this
+    patch just simply hacks the firmware to change the version number to
+    V2.
+    
+    Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-@@ -1093,6 +1093,15 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			regmap_update_bits(regs, CCSR_SSI_SIER,
-+					   CCSR_SSI_SIER_TDMAE,
-+					   CCSR_SSI_SIER_TDMAE);
-+		else
-+			regmap_update_bits(regs, CCSR_SSI_SIER,
-+					   CCSR_SSI_SIER_RDMAE,
-+					   CCSR_SSI_SIER_RDMAE);
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			fsl_ssi_tx_config(ssi_private, true);
- 		else
- 			fsl_ssi_rx_config(ssi_private, true);
-
-Nicolin
+diff --git a/firmware/imx/sdma/sdma-imx6q.bin.ihex b/firmware/imx/sdma/sdma-imx6q.bin.ihex
+index 2e561f0..ceb114b 100644
+--- a/firmware/imx/sdma/sdma-imx6q.bin.ihex
++++ b/firmware/imx/sdma/sdma-imx6q.bin.ihex
+@@ -1,4 +1,4 @@
+-:1000000053444D4101000000010000001C000000AD
++:1000000053444D4102000000010000001C000000AC
+ :1000100026000000B40000007A0600008202000002
+ :10002000FFFFFFFF00000000FFFFFFFFFFFFFFFFDC
+ :10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
