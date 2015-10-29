@@ -1,36 +1,39 @@
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] ASoC: rsrc-card: Clarify compatible value
-Date: Thu, 29 Oct 2015 20:59:55 +0100
-Message-ID: <1446148795-20629-1-git-send-email-geert+renesas@glider.be>
-Return-path: <linux-sh-owner@vger.kernel.org>
-Sender: linux-sh-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: print audio ring buffer in kernel space
+Date: Thu, 29 Oct 2015 21:06:26 +0100
+Message-ID: <56327C42.6000202@ladisch.de>
+References: <CACaQK7C7bH1wHomQyJLS=N1V+m5DeSus=4cjB=2WMv4B+3Np+Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 27BC52651A5
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 21:07:02 +0100 (CET)
+In-Reply-To: <CACaQK7C7bH1wHomQyJLS=N1V+m5DeSus=4cjB=2WMv4B+3Np+Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The compatible value can be board-specific, not SoC-specific.
-Add curly braces to indicate that the board type is optional.
+Ankhit Vivekananda wrote:
+> I am trying to print the ring buffer used for DMA transfer using ALSA in
+> kernel space. I was able to print the ring buffer in user space after
+> calling the snd_pcm_readi() function. But, wanted to know as to which file
+> I need to be looking at to print the hardware buffer in kernel space.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The driver typically does not access the buffer.  There is no such file.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-index 962748a8d9194dee..2b2caa281ce38abc 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-@@ -4,8 +4,8 @@ Renesas Sampling Rate Convert Sound Card specifies audio DAI connections of SoC
- 
- Required properties:
- 
--- compatible				: "renesas,rsrc-card,<board>"
--					  Examples with soctypes are:
-+- compatible				: "renesas,rsrc-card{,<board>}"
-+					  Examples with boards are:
- 					    - "renesas,rsrc-card"
- 					    - "renesas,rsrc-card,lager"
- 					    - "renesas,rsrc-card,koelsch"
--- 
-1.9.1
+(And why would you need it?  Do you suspect an error in the
+implementation of snd_pcm_readi()?)
 
+
+Regards,
+Clemens
