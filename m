@@ -1,30 +1,29 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
  TDM (network) mode.
-Date: Thu, 29 Oct 2015 16:04:05 -0700
-Message-ID: <20151029230404.GB44369@Asurada-CZ80>
-References: <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+Date: Thu, 29 Oct 2015 16:05:50 -0700
+Message-ID: <20151029230549.GC44369@Asurada-CZ80>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
  <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
  <20151027071344.GC25728@pengutronix.de>
- <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
- <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
- <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
- <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
- <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
- <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
- <5630833B.10309@tekno-soft.it>
+ <20151027201101.GA9527@Asurada-CZ80>
+ <563085E5.1030401@tekno-soft.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id F20A3265843
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 00:04:09 +0100 (CET)
-Received: by padhy1 with SMTP id hy1so47647311pad.0
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 16:04:08 -0700 (PDT)
+Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
+ [209.85.218.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B06426584A
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 00:05:55 +0100 (CET)
+Received: by oiad129 with SMTP id d129so49847843oia.0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 16:05:54 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <5630833B.10309@tekno-soft.it>
+In-Reply-To: <563085E5.1030401@tekno-soft.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,22 +34,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Roberto Fichera <kernel@tekno-soft.it>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 28, 2015 at 09:11:39AM +0100, Roberto Fichera wrote:
- 
-> I'm also having the same issue but employing SSI in TDM master mode against a SLIC Si32178
-> using its PCM mode. PCLK is at 2048KHz, FSYNC is 8KHz slot length is 32 bits (SSI wants
-> this since when in master mode) but valid data set to be 8bits in the SSI register.
+On Wed, Oct 28, 2015 at 09:23:01AM +0100, Roberto Fichera wrote:
+> On 10/27/2015 09:11 PM, Nicolin Chen wrote:
+> > On Tue, Oct 27, 2015 at 08:13:44AM +0100, Markus Pargmann wrote:
+> >
+> >>> So, the dma priority doesn't seem to be the issue.  It's now set in
+> >>> the device tree, and strangely it's set to priority 0 (the highest)
+> >>> along with the UARTS.  priority 0 is just the highest in the device
+> >>> tree -- it gets remapped to priority 3 in the sdma driver.  the DT
+> >>> exposes only 3 levels of DMA priority, low, medium, and high.  I
+> >>> created a new level that maps to DMA priroity 7 (the highest in the
+> >>> hardware), but still got the problem.
+> >>>
+> >>> So, still something unknown causing dma to miss samples.  must be in
+> >>> the dma ISR I would assume.  I guess it's time to look into that.
+> >> Cc Nicolin, Fabio, Shawn
+> >>
+> >> Perhaps you have an idea about this?
+> > Off the top of my head:
+> >
+> > 1) Enable TUE0, TUE1, ROE0, ROE1 to see if there is any IRQ trigged.
+> 
+> I'm my case I was never able to see an interrupt triggered when setting both RDMAE and TDMAE
+> bits in the SIER register.
 
-> My Current situation is that I've a custom fsl_ssi.c driver to control the SSI in TDM master mode
-> both PCLK and FSYNC works perfectly fine, the SLIC has a register that I can check via SPI for
-> such purpose, I can see the clocking status from its side. The main problem I've is exactly the same
-> Caleb is having, after a certain amount of SDMA transfers, roughly 1000 or so, everything stops
-> without any apparent reason.
-
-I will start to help you to figure out your problem. But it seems that
-you are having a different issue here with clock generation. I don't
-get why you said *same issue*. For double confirm, the the "everything
-stops" mentioned, does it mean that clock from SSI stops?
+Your problem may not involve with hardware FIFO underrun at all
+so it's quite normal for you to have no IRQ in my opinion.
