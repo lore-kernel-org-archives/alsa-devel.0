@@ -1,21 +1,15 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Unknown PCM cards.pcm.front
-Date: Thu, 29 Oct 2015 01:30:39 -0700
-Message-ID: <14E6E6A6-54AE-4EB5-8106-791B95650733@latencyzero.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+From: Bard Liao <bardliao@realtek.com>
+Subject: Different reg_default for rt5650 codec
+Date: Thu, 29 Oct 2015 11:17:26 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 2721A2654D4
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 09:30:41 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 77447206FE
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 04:30:40 -0400 (EDT)
-Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
- [50.168.55.93])
- by mail.messagingengine.com (Postfix) with ESMTPA id 1C68A68010F
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 04:30:39 -0400 (EDT)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EF4A260537
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 12:17:32 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,23 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-In my custom cape for Beaglebone black, I'm able to play audio reasonably well. But for one situation when my C++ app (which plays via libao) opens an output, this is written to my app's output:
+Mark,
 
-	"ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.front"
+rt5645.c support both rt5645 and rt5650 codec. And the default value of
+registers are not identical. So, we may need separate reg_defaults for
+rt5645 and rt5650.  My idea is to assign a new reg_defaults once rt5650
+is detected.
+Something like
+	case RT5650_DEVICE_ID:
++		rt5645->regmap-> reg_defaults = rt5650_reg;
++		rt5645->regmap-> num_reg_defaults = ARRAY_SIZE(rt5650_reg)
+		rt5645->codec_type = CODEC_TYPE_RT5650;
+		break;
 
-Googling, I found this advice:
+Is that ok?
 
-	http://alexpb.com/notes/articles/2012/11/14/error-when-playing-audio-on-raspbian-on-a-raspberry-pi/
+Or should I use different regmap_config? There is one question if I use
+different regmap_config. We will know which codec it is by regmap_read.
+So, regmap is init before we know which codec it is. Assume rt5645_regmap
+is used and what should I do once rt5650 is detected?
 
-Which works.
+Thanks.
 
-My question is, why do I get it only in this instance? Is it because I might be opening the audio device twice simultaneously? That's about the only thing that might set this situation apart from all the others.
+Bard Liao
 
-TIA,
-
--- 
-Rick Mann
-rmann@latencyzero.com
+Computer Peripherals Business Unit
+Realtek Semiconductor Corp.
+886-3-578-0211 ext. 13334
+bardliao@realtek.com
