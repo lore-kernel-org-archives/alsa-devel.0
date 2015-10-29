@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: Make BE prepare possible in
-	suspend state" to the asoc tree
-Date: Thu, 29 Oct 2015 09:16:48 +0900
-Message-ID: <E1Zratc-0006SQ-1r@finisterre>
-References: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
+Subject: Applied "ASoC: rsnd: Add missing initialization of ADG
+	req_rate" to the asoc tree
+Date: Thu, 29 Oct 2015 09:53:59 +0900
+Message-ID: <E1ZrbTb-00079u-FA@finisterre>
+References: <1446044628-16924-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1952C265091
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 01:17:03 +0100 (CET)
-In-Reply-To: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E7B7B264F30
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 01:54:17 +0100 (CET)
+In-Reply-To: <1446044628-16924-1-git-send-email-geert+renesas@glider.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Koro Chen <koro.chen@mediatek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: Make BE prepare possible in suspend state
+   ASoC: rsnd: Add missing initialization of ADG req_rate
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 0fa0697af79f5c8b080f7a1b8af87fe3b422e746 Mon Sep 17 00:00:00 2001
-From: Koro Chen <koro.chen@mediatek.com>
-Date: Wed, 28 Oct 2015 10:15:34 +0800
-Subject: [PATCH] ASoC: dpcm: Make BE prepare possible in suspend state
+>From b212be688128b539bb2c69c5da25b04b5551f421 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Wed, 28 Oct 2015 16:03:48 +0100
+Subject: [PATCH] ASoC: rsnd: Add missing initialization of ADG req_rate
 
-During suspend/resume, there is a flow that if a driver does not support
-SNDRV_PCM_INFO_RESUME, it will fail at snd_pcm_resume(), and user space
-can then issue SNDRV_PCM_IOCTL_PREPARE to let audio continue to play.
+If the "clock-frequency" DT property is not found, req_rate is used
+uninitialized, and the "audio_clkout" clock will be created with an
+arbitrary clock rate.
 
-However, in dpcm_be_dai_prepare() it only allows BEs to be prepared
-in state SND_SOC_DPCM_STATE_HW_PARAMS or SND_SOC_DPCM_STATE_STOP.
-The BE state will then stay in SND_SOC_DPCM_STATE_SUSPEND, consequently
-dpcm_be_dai_shutdown() is skipped in the end of playback and
-be_substream->runtime is not cleared while this runtime is actually freed
-by snd_pcm_detach_substream(). If another suspend comes, a NULL pointer
-dereference will happen in snd_pcm_suspend() when accessing
-BE substream's runtime.
+This uninitialized kernel stack data may leak to userspace through
+/sys/kernel/debug/clk/clk_summary, cfr. the value in the "rate" column:
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+       clock     enable_cnt  prepare_cnt        rate   accuracy   phase
+    --------------------------------------------------------------------
+     audio_clkout         0            0  4001836240          0 0
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/adg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 70e4b9d..9cf33b8 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2068,7 +2068,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
- 
- 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
- 			continue;
- 
- 		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 2a5b3a2..b123734 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -437,7 +437,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct device_node *np = dev->of_node;
+ 	u32 ckr, rbgx, rbga, rbgb;
+-	u32 rate, req_rate, div;
++	u32 rate, req_rate = 0, div;
+ 	uint32_t count = 0;
+ 	unsigned long req_48kHz_rate, req_441kHz_rate;
+ 	int i;
 -- 
 2.6.1
