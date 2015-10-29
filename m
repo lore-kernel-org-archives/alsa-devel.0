@@ -1,14 +1,20 @@
-From: =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
-Subject: [PATCH] ASoC: Intel: Skylake: fix typo in sizeof
-Date: Thu, 29 Oct 2015 23:04:41 +0100
-Message-ID: <1446156281-31024-1-git-send-email-vincent.stehle@laposte.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Unknown PCM cards.pcm.front
+Date: Thu, 29 Oct 2015 15:21:24 -0700
+Message-ID: <0732364B-9CD1-4CB2-9E5A-DB8AB74EB3D4@latencyzero.com>
+References: <14E6E6A6-54AE-4EB5-8106-791B95650733@latencyzero.com>
+ <56321547.7080508@ladisch.de>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F2F02651A5
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 23:05:12 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A92F72651A5
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 23:21:26 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id E94E920661
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 18:21:25 -0400 (EDT)
+In-Reply-To: <56321547.7080508@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: trivial@kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHNpemUgb2YgdGhlIHBvaW50ZXIgdG8gYSBkYXRhIHN0cnVjdHVyZSB0byBzZW5kIGlzIGVy
-cm9uZW91c2x5CnBhc3NlZCB0byBzc3RfaXBjX3R4X21lc3NhZ2Vfd2FpdCgpIGFzIGl0cyB0eF9i
-eXRlcyBhcmd1bWVudC4gSXQgc2hvdWxkCmJlIGdpdmVuIHRoZSBzaXplIG9mIHRoZSBwb2ludGVk
-IHNrbF9pcGNfZHhzdGF0ZV9pbmZvIHN0cnVjdHVyZSBpbnN0ZWFkLgoKQ29pbmNpZGVudGFsbHks
-IGJvdGggdGhlIHBvaW50ZXIgYW5kIHRoZSBzdHJ1Y3R1cmUgaGF2ZSB0aGUgc2FtZSBzaXplIG9m
-CjggYnl0ZXMgb24gYSA2NCBiaXQgbWFjaGluZSwgd2hpY2ggIm1hc2tzIiB0aGUgaXNzdWUuIENv
-bXBpbGluZyBmb3IgMzIKYml0IHJldmVhbHMgdGhlIGlzc3VlIG1vcmUgY2xlYXJseS4KCkZpeCB0
-aGUgdHlwbyBmb3IgY29ycmVjdG5lc3MsIGFuZCB0byBtYWtlIHRoZSBjb2RlIHJvYnVzdCB0byBm
-dXR1cmUKZXZvbHV0aW9ucyBvZiB0aGUgc2tsX2lwY19keHN0YXRlX2luZm8gc3RydWN0dXJlIHNp
-emUuCgpUaGlzIGZpeGVzIHRoZSBmb2xsb3dpbmcgY29jY2ljaGVjayBlcnJvcjoKCiAgc291bmQv
-c29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYzo2NDE6OC0xNDogRVJST1I6IGFwcGxpY2F0
-aW9uIG9mIHNpemVvZiB0byBwb2ludGVyCgpTaWduZWQtb2ZmLWJ5OiBWaW5jZW50IFN0ZWhsw6kg
-PHZpbmNlbnQuc3RlaGxlQGxhcG9zdGUubmV0PgpDYzogU3ViaHJhbnN1IFMuIFBydXN0eSA8c3Vi
-aHJhbnN1LnMucHJ1c3R5QGludGVsLmNvbT4KQ2M6IEplZWphIEtQIDxqZWVqYS5rcEBpbnRlbC5j
-b20+CkNjOiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KQ2M6IE1hcmsgQnJvd24g
-PGJyb29uaWVAa2VybmVsLm9yZz4KQ2M6IHRyaXZpYWxAa2VybmVsLm9yZwotLS0KIHNvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwv
-c2t5bGFrZS9za2wtc3N0LWlwYy5jIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1p
-cGMuYwppbmRleCA5MzdhMGEzLi45YWVlODM1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwv
-c2t5bGFrZS9za2wtc3N0LWlwYy5jCisrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1z
-c3QtaXBjLmMKQEAgLTYzOCw3ICs2MzgsNyBAQCBpbnQgc2tsX2lwY19zZXRfZHgoc3RydWN0IHNz
-dF9nZW5lcmljX2lwYyAqaXBjLCB1OCBpbnN0YW5jZV9pZCwKIAlkZXZfZGJnKGlwYy0+ZGV2LCAi
-SW4gJXMgcHJpbWFyeSA9JXggZXh0PSV4XG4iLCBfX2Z1bmNfXywKIAkJCSBoZWFkZXIucHJpbWFy
-eSwgaGVhZGVyLmV4dGVuc2lvbik7CiAJcmV0ID0gc3N0X2lwY190eF9tZXNzYWdlX3dhaXQoaXBj
-LCAqaXBjX2hlYWRlciwKLQkJCQlkeCwgc2l6ZW9mKGR4KSwgTlVMTCwgMCk7CisJCQkJZHgsIHNp
-emVvZigqZHgpLCBOVUxMLCAwKTsKIAlpZiAocmV0IDwgMCkgewogCQlkZXZfZXJyKGlwYy0+ZGV2
-LCAiaXBjOiBzZXQgZHggZmFpbGVkLCBlcnIgJWRcbiIsIHJldCk7CiAJCXJldHVybiByZXQ7Ci0t
-IAoyLjYuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+> On Oct 29, 2015, at 05:47 , Clemens Ladisch <clemens@ladisch.de> wrote:
+> 
+> Rick Mann wrote:
+>> "ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.front"
+> 
+> This means that some code tried to open device named "front", and that there
+> is no such definition for your hardware.
+
+Thanks, Clemens,
+
+Here's my code that opens the device:
+
+
+    int driverID = ::ao_default_driver_id();
+    ao_sample_format format = { 0 };
+    format.bits = 16;
+    format.channels = inNumChannels;
+    format.rate = inRate;
+    format.byte_format = AO_FMT_LITTLE;
+	
+    mDevice = ::ao_open_live(driverID, &format, NULL);
+    if (mDevice == NULL)
+    {
+        LogDebug("Error opening output device");
+    }
+
+I'm not sure where the change in default device would come from.
+
+-- 
+Rick Mann
+rmann@latencyzero.com
