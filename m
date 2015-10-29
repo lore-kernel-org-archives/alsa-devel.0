@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Fix typo in kernel doc comment for
-	snd_soc_put_volsw_sx()" to the asoc tree
-Date: Thu, 29 Oct 2015 09:16:46 +0900
-Message-ID: <E1Zrata-0006Rx-Tf@finisterre>
-References: <1446046818-19234-1-git-send-email-tiwai@suse.de>
+Subject: Applied "ASoC: dpcm: Make BE prepare possible in
+	suspend state" to the asoc tree
+Date: Thu, 29 Oct 2015 09:16:48 +0900
+Message-ID: <E1Zratc-0006SQ-1r@finisterre>
+References: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0714A264F30
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 01:17:02 +0100 (CET)
-In-Reply-To: <1446046818-19234-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1952C265091
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 01:17:03 +0100 (CET)
+In-Reply-To: <1445998534-38246-1-git-send-email-koro.chen@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <lkp@intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Koro Chen <koro.chen@mediatek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Fix typo in kernel doc comment for snd_soc_put_volsw_sx()
+   ASoC: dpcm: Make BE prepare possible in suspend state
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From c5f01a2e2791ddbaeb95d9165c1184470a07688f Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 28 Oct 2015 16:40:18 +0100
-Subject: [PATCH] ASoC: Fix typo in kernel doc comment for
- snd_soc_put_volsw_sx()
+>From 0fa0697af79f5c8b080f7a1b8af87fe3b422e746 Mon Sep 17 00:00:00 2001
+From: Koro Chen <koro.chen@mediatek.com>
+Date: Wed, 28 Oct 2015 10:15:34 +0800
+Subject: [PATCH] ASoC: dpcm: Make BE prepare possible in suspend state
 
-Spotted by kbuild bot:
- sound/soc/soc-ops.c:415: warning: No description found for parameter 'ucontrol'
- sound/soc/soc-ops.c:415: warning: Excess function parameter 'uinfo' description in 'snd_soc_put_volsw_sx'
+During suspend/resume, there is a flow that if a driver does not support
+SNDRV_PCM_INFO_RESUME, it will fail at snd_pcm_resume(), and user space
+can then issue SNDRV_PCM_IOCTL_PREPARE to let audio continue to play.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+However, in dpcm_be_dai_prepare() it only allows BEs to be prepared
+in state SND_SOC_DPCM_STATE_HW_PARAMS or SND_SOC_DPCM_STATE_STOP.
+The BE state will then stay in SND_SOC_DPCM_STATE_SUSPEND, consequently
+dpcm_be_dai_shutdown() is skipped in the end of playback and
+be_substream->runtime is not cleared while this runtime is actually freed
+by snd_pcm_detach_substream(). If another suspend comes, a NULL pointer
+dereference will happen in snd_pcm_suspend() when accessing
+BE substream's runtime.
+
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 100d92b..f8cf781 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -376,7 +376,7 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_sx);
- /**
-  * snd_soc_put_volsw_sx - double mixer set callback
-  * @kcontrol: mixer control
-- * @uinfo: control element information
-+ * @ucontrol: control element information
-  *
-  * Callback to set the value of a double mixer control that spans 2 registers.
-  *
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 70e4b9d..9cf33b8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2068,7 +2068,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 			continue;
+ 
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+-		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
+ 			continue;
+ 
+ 		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
 -- 
 2.6.1
