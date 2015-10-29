@@ -1,30 +1,14 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Thu, 29 Oct 2015 12:28:17 -0700
-Message-ID: <20151029192816.GA43706@Asurada-CZ80>
-References: <56273F75.2040702@invoxia.com>
- <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
- <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de>
- <20151027201101.GA9527@Asurada-CZ80>
- <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
- <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-cs46xx: Fix suspend for all channels
+Date: Thu, 29 Oct 2015 20:52:24 +0100
+Message-ID: <1446148344-1209-1-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
- [209.85.218.47])
- by alsa0.perex.cz (Postfix) with ESMTP id EDD5526170F
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 20:28:23 +0100 (CET)
-Received: by oies66 with SMTP id s66so46238064oie.1
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 12:28:22 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
+Received: from gsystem.sk (ns.gsystem.sk [62.176.172.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08DEC264F34
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 20:52:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,39 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.com>, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2015 at 12:06:16PM -0700, Caleb Crome wrote:
+snd_cs46xx_suspend() is missing snd_pcm_suspend_all calls for pcm_rear,
+pcm_center_lfe and pcm_iec958.
 
-> This actually is exactly what I'm seeing now.  I'm seeing the
-> *startup* happening from the trigger starting up slipped.  So this
-> does make perfect sense to me.
+There's also a copy/paste bug in snd_cs46xx_pcm_iec958(), overwriting
+pcm_rear in struct snd_cs46xx, leaving pcm_iec958 unused.
 
-I saw your problem in the other reply. And I suggested you to let
-DMA work first before SSI gets enabled. As SDMA in that case would
-transfer one burst length (16 if you applied my patch I sent you)
-and pause before SSI gets enabled. Then SSI would have enough data
-to send out without any startup issue.
+Fix all this to allow all channels to survive suspend/resume.
 
-> It occurred to me that perhaps the problem has to do when exactly when
-> during the frame-sync period the fsl_ssi_trigger function was called.
-> Perhaps, if it's called near the end or beginning of a frame, somehow
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/cs46xx/cs46xx_lib.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I don't know how you measured if it's before of after. But the frame
-should not start until trigger() gets call -- more clearly SSIEN and
-TE get enabled. From my point of view, you problem should be caused
-by SSI getting enabled without enough data in the FIFO. And that's
-what I just described in the previous paragraph and previous reply.
-
-> something gets messed up.  (The docs for the SCR register imply some
-> of this, but it talks about either 2 or 6 bit clocks, so I'd expect
-> the error rate to be lower than 7% (more like 2.5%).
-
-> In addition, I have run about 20 minutes of audio with no slips or
-> problems, even though there have been aplay underruns.  This is a
-> major step forward for me :-)
-
-It'd be better to avoid user space ALSA underun as it may skip some
-data.
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index e62c841..2706f27 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -1864,7 +1864,7 @@ int snd_cs46xx_pcm_iec958(struct snd_cs46xx *chip, int device)
+ 	/* global setup */
+ 	pcm->info_flags = 0;
+ 	strcpy(pcm->name, "CS46xx - IEC958");
+-	chip->pcm_rear = pcm;
++	chip->pcm_iec958 = pcm;
+ 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      snd_dma_pci_data(chip->pci), 64*1024, 256*1024);
+@@ -3780,6 +3780,11 @@ static int snd_cs46xx_suspend(struct device *dev)
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	chip->in_suspend = 1;
+ 	snd_pcm_suspend_all(chip->pcm);
++#ifdef CONFIG_SND_CS46XX_NEW_DSP
++	snd_pcm_suspend_all(chip->pcm_rear);
++	snd_pcm_suspend_all(chip->pcm_center_lfe);
++	snd_pcm_suspend_all(chip->pcm_iec958);
++#endif
+ 	// chip->ac97_powerdown = snd_cs46xx_codec_read(chip, AC97_POWER_CONTROL);
+ 	// chip->ac97_general_purpose = snd_cs46xx_codec_read(chip, BA0_AC97_GENERAL_PURPOSE);
+ 
+-- 
+Ondrej Zary
