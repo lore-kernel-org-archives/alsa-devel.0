@@ -1,28 +1,22 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Thu, 29 Oct 2015 16:33:26 -0700
-Message-ID: <CAG5mAdwnjLdxNNgC3go_NDERUSDxem9ZQFigyF5yaEWuXV2r4g@mail.gmail.com>
-References: <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
- <20151027071344.GC25728@pengutronix.de> <20151027201101.GA9527@Asurada-CZ80>
- <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
- <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
- <20151029224713.GA44369@Asurada-CZ80>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Noise in tlv320aic3104-based audio system
+Date: Thu, 29 Oct 2015 16:40:25 -0700
+Message-ID: <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
+References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
+ <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
+ <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
+ <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 09818265891
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 00:33:47 +0100 (CET)
-Received: by wmeg8 with SMTP id g8so121234wme.1
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 16:33:46 -0700 (PDT)
-In-Reply-To: <20151029224713.GA44369@Asurada-CZ80>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D34BF265891
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 00:40:27 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 29F3A2096E
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 19:40:27 -0400 (EDT)
+In-Reply-To: <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,95 +26,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Caleb Crome <caleb@crome.org>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2015 at 3:47 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Thu, Oct 29, 2015 at 03:23:41PM -0700, Caleb Crome wrote:
->
->> > I saw your problem in the other reply. And I suggested you to let
->> > DMA work first before SSI gets enabled. As SDMA in that case would
->> > transfer one burst length (16 if you applied my patch I sent you)
->> > and pause before SSI gets enabled. Then SSI would have enough data
->> > to send out without any startup issue.
->>
->> Ah ha, you are exactly right.  The root cause is that TE and SSIE are
->> enabled at the same regmap write, with no opportunity for delay
->> between the SSIE and TE.
->> DMA can only get going if SSIE is enabled, and the only place SSIE
->> gets enabled is exactly the same line that TE gets enabled.
->
-> A little difference between your point and mine is that you think
-> DMA request only starts when SSIE and TDMAE both get set while I
-> only think about TDMAE. It's hard to say which one is correct as
-> it depends on the design of IP wrapper but you can fairly test it
-> with your change below: Mask both TE with SSIE and set them after
-> the delay. If it doesn't work, yours is the correct one.
-
-Ah, that's one thing that's very clear in the FSL datasheet:  the
-FIFOs are ZEROED if SSIE is 0.  This means that even if the DMA were
-trying to dump data in before SSIE is enabled, the data would go to
-bit heaven.
-
-The docs for TE say, "The normal transmit enable sequence is to write
-data to the STX register(s) and then set the TE bit." (page 5145 of
-IMX6SDLRM.pdf)
-
-So in the DMA + fifo case the words, "write data to the STX
-register(s)" imply that it's actually DMA writing to FIFOs, which then
-write the STX register.  So, the sequence must be:  enable SSIE &
-TDMAE to allow DMA to write to the fifo, then later enable TE, right?
-
->
->> I've looked over your emails and I don't see the patch that shows a
->
-> You may need to open an offline email that I sent you with patches
-> in its attachment. I can see it via Gmail anyway.
-
-Will do.  Thanks.
-
->
->> pause between SSIE enable and TE enable.  (I do see the dual-fifo
->> example -- thank you!  I'll give that a try -- it may further reduce
->> stress on the system).
->
-> I'm sure dual FIFO will get better performance. But the example I
-> gave you doesn't set RX parameters so well. You may need to fine
-> tune it later.
->
->> Is adding the udelay the best way to put a delay between SSIE and TE enable?
->> Are there any other mechanisms for that?
->
-> Having a delay is much safer for you but surely it's not a common
-> practice that's best all other platforms such as two-channel cases
-> and those who needs performance.
->
-> I encourage you to try to follow one of patches I gave you that
-> sets TDMAE/RDMAE at the beginning of the trigger(). Surely you may
-> change it to TDMAE | SSIE after you find out that SSIE is indeed
-> required. If you are still having trouble, adding a delay would
-> be nice for you but it may be hard for me to ack it if you want
-> to merge it in the driver.
-
-I now I see your patch!  Okay, I'll give that a go, but it's still
-just a race condition between the regmap_update_bits with TDMAE (your
-patch) verses the regmap_update_bits from fsl_ssi_config. You're just
-hoping that a DMA write happens between TDMAE and the end of
-fsl_ssi_config where TE is enabled.
-
-Now I think I get it though.  We do TMDAE + SSIEN like your patch,
-then a short while loop on SFCSR.TFCNT0.  After the first word gets
-written to the fifo, TFCNT0 should go > 0, and then we can release TE.
-
-There may be a better status register to wait on but TFCNT0 seems like
-it will do the trick.
-
-What do you think of that solution?  Any better register to wait on?
-Would that be acceptable to merge into the driver?
-
-Thanks,
-  -Caleb
-
->
-> Nicolin
+VGhhbmtzLCBDYWxlYiwgYW5zd2VycyBiZWxvdzoKCj4gT24gT2N0IDI5LCAyMDE1LCBhdCAxNjow
+OCAsIENhbGViIENyb21lIDxjYWxlYkBjcm9tZS5vcmc+IHdyb3RlOgo+IAo+IE9uIFRodSwgT2N0
+IDI5LCAyMDE1IGF0IDI6NTYgUE0sIFJpY2sgTWFubiA8cm1hbm5AbGF0ZW5jeXplcm8uY29tPiB3
+cm90ZToKPj4gCj4+PiBPbiBPY3QgMjksIDIwMTUsIGF0IDE0OjIxICwgQmVub8OudCBUaMOpYmF1
+ZGVhdSA8YmVub2l0LnRoZWJhdWRlYXUuZGV2QGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiAKPj4+IERl
+YXIgUmljayBNYW5uLAo+Pj4gCj4+PiBPbiBUaHUsIE9jdCAyOSwgMjAxNSBhdCA4OjU5IEFNLCBS
+aWNrIE1hbm4gPHJtYW5uQGxhdGVuY3l6ZXJvLmNvbT4gd3JvdGU6Cj4+Pj4gSSBoYXZlIGEgY3Vz
+dG9tIGNhcGUgb24gYSBCZWFnbGVib25lIEJsYWNrIHRoYXQgdXNlcyBhIHRsdjMyMGFpYzMxMDQs
+IGNvbm5lY3RlZCB0byBhIHRwYTMxNDBkMiBhdWRpbyBwb3dlciBhbXAuIEkgY3VycmVudGx5IG1h
+bnVhbGx5IGNvbnRyb2wgdGhlIC9zaHVkb3duIHBpbnMgb24gdGhlIHR3byBJQ3MsIGFuZCBqdXN0
+IHR1cm4gdGhlbSBvbiBiZWZvcmUgZG9pbmcgYW55dGhpbmcgZWxzZS4KPj4+PiAKPj4+PiBUaGUg
+c3lzdGVtIHdvcmtzLiBCdXQgSSBub3RpY2UgdGhhdCB3aGVuIEkgb3BlbiB0aGUgb3V0cHV0IGRl
+dmljZSBmb3Igd3JpdGluZyAodmlhIGxpYmFvKSwgSSBpbW1lZGlhdGVseSBoZWFyIGhpc3MsIGV2
+ZW4gYmVmb3JlIEkgc2VuZCBhbnkgc2FtcGxlcyB0byB0aGUgZGV2aWNlLiBBZnRlciBJIGNsb3Nl
+IHRoZSBsaWJhbyBhdWRpbyBkZXZpY2UsIGEgZmV3IHNlY29uZHMgbGF0ZXIgTGludXggc2VuZHMg
+c29tZSBpMmMgY29tbWFuZHMgdG8gdGhlIHRsdjMyMCBhbmQgaXQncyBvbmNlIGFnYWluIHNpbGVu
+dC4KPj4+PiAKPj4+PiBUaGUgcGVyY2VpdmVkIGFtcGxpdHVkZSBvZiB0aGlzIGhpc3MgZG9lcyBu
+b3Qgc2VlbSB0byBiZSBhZmZlY3RlZCBieSAiYW1peGVyIHNldCBQQ00gPDAgLSAxMjc+IiBjYWxs
+cy4KPj4+PiAKPj4+PiBEb2VzIGFueW9uZSBoYXZlIGFueSBpZGVhIHdoZXJlIHRoaXMgbm9pc2Ug
+bWlnaHQgYmUgY29taW5nIGZyb20/IElzIGl0IGp1c3QgdGhlcm1hbCBvciBvdGhlciBub2lzZSBp
+biB0aGUgcm91dGluZyBvZiBhdWRpbyB3aXRoaW4gdGhlIHRsdjMyMD8gSXMgdGhlcmUgc29tZSBj
+b25maWd1cmF0aW9uIG9yIHJvdXRpbmcgSSBtaWdodCBiZSBhYmxlIHRvIGNoYW5nZSB0byBhdm9p
+ZCBpdD8gRGlkIEkgc2NyZXcgdXAgc29tZXdoZXJlIGluIG15IGNpcmN1aXQgZGVzaWduIG9yIGxh
+eW91dCB0aGF0IG9ubHkgbWFuaWZlc3RzIHdoZW4gbGludXggY29uZmlndXJlcyB0aGUgY2hpcCBm
+b3Igb3BlcmF0aW9uPwo+Pj4+IAo+Pj4+IEFueSBpZGVhcyBhcmUgYXBwcmVjaWF0ZWQuIFRoYW5r
+cy4KPj4gCj4+IFRoYW5rcyBCZW5vaXQsCj4+IAo+Pj4gSXQgY291bGQgYmUgbWFueSB0aGluZ3Ms
+IGJ1dCBoZXJlIGFyZSBhIGZldyBpZGVhczoKPj4+IC0gTWFrZSBzdXJlIHRoYXQgeW91IGhhdmUg
+Zm9sbG93ZWQgY2FyZWZ1bGx5IHRoZSBkYXRhIHNoZWV0cyAoQ09ERUMgKwo+Pj4gYW1wKSByZWdh
+cmRpbmcgdGhlIGhhcmR3YXJlIHNjaGVtYXRpYyBhbmQgbGF5b3V0LiBJSVJDLCB0aGUgVExWIGhh
+cyBhCj4+PiB0aGVybWFsIHBhZCB0aGF0IHNob3VsZCBiZSBncm91bmRlZC4KPj4gCj4+PiAtIE1h
+a2Ugc3VyZSB0aGF0IHRoZSBhdWRpbyBwb3dlciBzdXBwbGllcyBhcmUgY2xlYW4gZW5vdWdoLiBZ
+b3UgY2FuCj4+PiBkZXJpdmUgdGhlbSBmcm9tIG1vcmUgZ2VuZXJhbC1wdXJwb3NlIHBvd2VyIHN1
+cHBsaWVzIGlmIGZpbHRlcmluZyBpcwo+Pj4gYWRkZWQuIFRoZSBQQ0IgbGF5b3V0IG11c3QgZGVm
+aW5lIGEgY2xlYXIgYXVkaW8gYXJlYSwgaWRlYWxseSB3aXRoIGEKPj4+IHBsYW5lIGZvciB0aGUg
+YXVkaW8gcG93ZXIgc3VwcGx5IG9uIG9uZSBvZiB0aGUgbGF5ZXJzLiBFdmVuIGJldHRlciwKPj4+
+IHlvdSBjYW4gdXNlIGRlZGljYXRlZCBsb3ctbm9pc2UgcG93ZXIgc3VwcGxpZXMuCj4+IAo+PiBJ
+IHRyaWVkIHRvIGZvbGxvdyB0aGUgbGF5b3V0IGd1aWRlbGluZXMgZXhhY3RseS4gSXQncyBhIGZv
+dXItbGF5ZXIgYm9hcmQgd2l0aCBhIHNvbGlkIGdyb3VuZCBwbGFuZSB1bmRlciB0aGUgYW5hbG9n
+IHNlY3Rpb25zLCBhbmQgaXQncyBpc29sYXRlZCBmcm9tIHRoZSBkaWdpdGFsIGdyb3VuZC4gSGVy
+ZSdzIGEgc2hvdCBvZiB0aGUgYm9hcmQ6Cj4+IAo+PiAgICAgICAgaHR0cHM6Ly9jYW1vLmdpdGh1
+YnVzZXJjb250ZW50LmNvbS84MzNiZGUxMjMwM2M5NjA3MjU5ZTQ4NmI4YjMwMTUwM2RjYzY5YTk0
+LzY4NzQ3NDcwNzMzYTJmMmY2NjYxNzI2ZDMxMmU3Mzc0NjE3NDY5NjM2NjZjNjk2MzZiNzIyZTYz
+NmY2ZDJmMzYzNzM4MmYzMjMxMzQzMTM5MzYzMTM4MzIzNzMwNWYzMDMyMzMzMzYzMzE2NDM1NjYz
+NTVmNjgyZTZhNzA2Nwo+IAo+IEZZSSwgSGVucnkgT3R0J3MgZ3JlYXQgYm9vayAoRWxlY3Ryb21h
+Z25ldGljIENvbXBhdGliaWxpdHkKPiBFbmdpbmVlcmluZykgc3Ryb25nbHkgZGlzY291cmFnZXMg
+dGhlIHVzZSBvZiBzZXBhcmF0ZSBkaWdpdGFsIGFuZAo+IGFuYWxvZyBncm91bmQgcGxhbmVzLiAg
+T24gbW9kZXJuIG1peGVkIHNpZ25hbCBib2FyZHMsIHRoZXkgZG9uJ3QgbWFrZQo+IGEgbG90IG9m
+IHNlbnNlLCBhbmQgSUlSQyBoZSBzYXlzIHNvbWV0aGluZyB0byB0aGUgZWZmZWN0IG9mLCAiZG9u
+J3QKPiB1c2UgYSBzZXBhcmF0ZSBncm91bmQgcGxhbmUgZXZlbiB0aG91Z2ggbWFudWZhY3R1cmVy
+cyBpbmV4cGxpY2FibHkKPiBzdGlsbCByZWNvbW1lbmQgdGhlbSIuIDotKSAgICBUaGV5IGtleSBp
+cyBwaHlzaWNhbCBzZXBhcmF0aW9uIG9mCj4gYW5hbG9nIGFuZCBkaWdpdGFsIHNpZ25hbHMsIG5v
+dCBzZXBhcmF0ZSBncm91bmQgcGxhbmVzLgoKR29vZCB0byBrbm93OyBJJ2xsIGdldCB0aGUgYm9v
+ay4gT2RkIHRoYXQgbWFudWZhY3R1cmVycyBjb250aW51ZSB0byByZWNvbW1lbmQgdGhpcy4gSW4g
+YW55IGNhc2UsIEkgZG8gYmVsaWV2ZSBteSBkaWdpdGFsIGFuZCBhbmFsb2cgc2lnbmFscyBhcmUg
+c2VwYXJhdGUuCgpPbmUgdGhpbmcgSSBkaWRuJ3QgZG8gd2FzIHBvdXIgZ3JvdW5kIGZsb29kIG9u
+IHRoZSB0b3AgbGF5ZXIgYmV0d2VlbiB0cmFjZXMuCgo+IFRoYXQgc2FpZCwgd2hpY2ggR05EIHBs
+YW5lIGlzIHlvdXIgUUZOIHBhZCBjb25uZWN0ZWQgdG8/ICBJdCBsb29rcyB0bwo+IGJlIHRoZSBh
+bmFsb2cgcGxhbmUsIGFuZCB3aGVyZSBhcmUgdGhlIHR3byBwbGFuZXMgY29ubmVjdGVkIHRvZ2V0
+aGVyCj4gKHNob3VsZCBiZSBsaXRlcmFsbHkgdW5kZXIgdGhlIGNvZGVjKS4KCkl0J3MgY29ubmVj
+dGVkIHRvIHRoZSBhbmFsb2cgZ3JvdW5kLiBUaGUgZGlnaXRhbCBhbmQgYW5hbG9nIGdyb3VuZHMg
+YXJlIGNvbm5lY3RlZCByaWdodCB1bmRlciB0aGUgbGFyZ2UgdHJhY2UgdGhhdCBicmluZ3MgdGhl
+IDE0IFYgdG8gdGhlIHBvd2VyIGFtcC4gSXQncyB0aGUgc2hvcnQsIGZhdCBibHVlIHRyYWNlIG9u
+IHRvcCBvZiB0aGUgZmF0IHB1cnBsZSB0cmFjZS4gSnVzdCBiZWxvdyB0aGUgQ09ERUMuCgo+IElm
+IHRoZSB0d28gcGxhbmVzIGFyZSBjb25uZWN0ZWQgdW5kZXIgdGhlIGNvZGVjLCB0aGVuIHRoZSBs
+YXlvdXQgbG9va3MKPiBva2F5LiAgSWYgdGhleSBhcmUgbm90IGNvbm5lY3RlZCB1bmRlciB0aGUg
+Y29kZWMsIG9yIGF0IGxlYXN0IGNsb3NlLAo+IGFuZCBpZiB5b3UgY2FuIGRpZyBvdXQgeW91ciBn
+cm91bmQgcGxhbmVzLCB0cnkgc29sZGVyaW5nIGEgc29sZGVyCj4gYnJhaWQgYmV0d2VlbiB0aGVt
+LCBqdW1wZXJpbmcgZnJvbSB5b3VyIFFGTSBwYWQgdmlhcyBvdmVyIHRvIHlvdXIKPiBkaWdpdGFs
+IGdyb3VuZCB3aXRoIGxvdyBpbXBlZGFuY2Ugc29sZGVyIGJyYWlkIChzb2xkZXIgd2ljaykuCgpJ
+IHdvbid0IGJlIGFibGUgdG8gZG8gdGhpcy4KCj4gV2hhdCBhcmUgTDIgYW5kIEwzIGZvcj8gIExD
+IGZpbHRlcnMgb24gcG93ZXIgc3VwcGxpZXMgY2FuIGdldCBuYXN0eSBpZgo+IHlvdSdyZSBub3Qg
+Y2FyZWZ1bC4gIEluIGZhY3QsIHRoZXkncmUgYWxtb3N0IGFsd2F5cyBuYXN0eSBvbiBwb3dlcgo+
+IHN1cHBsaWVzIGJlY2F1c2UgdGhleSBjYXVzZSBhIHN0cm9uZyByZXNvbmFuY2UgKHRoZXJlIGFy
+ZSBleGNlcHRpb25zCj4gb2YgY291cnNlLi4uKS4gIFlvdSBjYW4gdHJ5IGp1c3Qgc2hvcnRpbmcg
+dGhlbSBvdXQuCj4gCj4gVGhlIHZpYXMgZnJvbSB5b3VyIGJ5cGFzcyBjYXBzIChDMTYsIEMxNykg
+dG8gR05EIGxvb2tzIHByZXR0eSBoaWdoCj4gaW1wZWRhbmNlLCB1c2luZyBvbmx5IGEgc2luZ2xl
+IHNoYXJlZCB2aWEuICAgSWRlYWxseSwgeW91IHNob3VsZCB1c2UgMgo+IHZpYXMgcGVyIGNhcCwg
+YW5kIHRoaWNrIHdpcmVzLgoKQWgsIGdvb2QgdG8ga25vdy4gSSBjYW4gbWFrZSB0aGF0IGNoYW5n
+ZSBvbiBhIG5ldyByZXYgb2YgdGhlIGJvYXJkIChJIHdhbnQgdG8gYWRkIHRlc3QgcG9pbnRzLCBh
+bmQgYnJpbmcgb3V0IHNvbWUgb2YgdGhlIGFkZGl0aW9uYWwgaW5wdXRzIGFuZCBvdXRwdXRzIG9m
+IHRoZSBDT0RFQyB0byBtYWtlIHRoaXMgYm9hcmQgYSBsaXR0bGUgbW9yZSBnZW5lcmFsbHkgdXNl
+ZnVsKS4KCj4gQnV0Li4gZXZlbiB3aXRoIGFsbCB0aG9zZSBjb21tZW50cywgbm90aGluZyBsb29r
+cyBob3JyaWJseSB3cm9uZy4gIEkKPiBjYW4ndCB0ZWxsIGZyb20gdGhlIHNjcmVlbnNob3QgLS0g
+YXJlIHlvdSAxMDAlIHN1cmUgdGhhdCBldmVyeSBHTkQgb24KPiB0aGUgYW5hbG9nIHBsYW5lIGNv
+bm5lY3RzIHRvIHRoZSBhbmFsb2cgcGxhbmU/CgpQcmV0dHkgc3VyZS4gWW91IGNhbiBzZWUgdGhl
+IGluZGl2aWR1YWwgbGF5ZXJzIGFuZCBib2FyZCBwaG90b3MgaGVyZTogaHR0cHM6Ly93d3cuZmxp
+Y2tyLmNvbS9waG90b3MvamV0Zm9ybWUvYWxidW1zLzcyMTU3NjU4MzAxOTQ5MzE2LCBidXQgSSBq
+dXN0IGxvb2tlZCBhdCB0aGUgbGF5ZXIgaW4gbXkgUENCIHNvZnR3YXJlIGFnYWluLCBhbmQgSSBk
+b24ndCB0aGluayBJIG1pc3NlZCBhbnkuCgo+IAo+PiAKPj4gUmVkIGlzIHRvcCBsYXllciwgbGln
+aHQgYmx1ZSBpcyB0aGUgZ3JvdW5kIHBsYW5lIChzZWNvbmQgbGF5ZXIpLCBwdXJwbGUgaXMgdGhl
+IHRoaXJkIGxheWVyLCBhbmQgZGFyayBibHVlIGlzIHRoZSBib3R0b20gbGF5ZXIuCj4+IAo+PiBU
+aGVyZSBhcmUgZGVkaWNhdGVkIExET3MgZm9yIGV2ZXJ5dGhpbmcsIGZlZCBmcm9tIGEgbWFpbiA1
+IFYgREMtREMgY29udmVydGVyLiBUaGUgbWFpbiBhbXBsaWZpZXIgcG93ZXIgY29tZXMgZnJvbSB0
+aGUgbWFpbiBwb3dlciBpbnB1dCwgd2hpY2ggaW4gdGhpcyBpbnN0YW5jZSBpcyBhIGxpbmVhciBj
+b25zdGFudC1jdXJyZW50IGJlbmNoIHN1cHBseS4gSXQncyBhbHNvIGhlYXZpbHkgTEMtZmlsdGVy
+ZWQsIGFzIHBlciB0aGUgZGF0YSBzaGVldCBndWlkZWxpbmVzLgo+IAo+IFdoZXJlIGRvZXMgaXQg
+c2F5IHRvIExDIGZpbHRlciB0aGUgcG93ZXIgc3VwcGx5IGluIHRoZSBkYXRhc2hlZXQgLS0gSQo+
+IGRpZG4ndCBzZWUgdGhhdC4KCkkgZm9sbG93ZWQgdGhlIHJlZmVyZW5jZSBib2FyZCAoaHR0cDov
+L3d3dy50aS5jb20vdG9vbC90cGEzMTQwZDJwd3Bldm0pIGRlc2lnbiAoc29ycnksIGNvbmZsYXRl
+ZCB0aGUgdHdvKS4gVGhlIEVWTSdzIGRhdGFzaGVldCBoYXMgc2NoZW1hdGljcy4KCj4+IFRoZSBi
+aWdnZXN0IHJlYXNvbiBJJ20gZmFpcmx5IHN1cmUgaXQncyBub3QgdGhlIGJvYXJkIGxheW91dCBp
+cyB0aGF0IHRoZSBub2lzZSBpcyBkcmFtYXRpY2FsbHkgcmVkdWNlZCB3aGVuIHRoZSBBTFNBIGF1
+ZGlvIGRldmljZSBpcyBub3Qgb3BlbiwgZXZlbiB0aG91Z2ggdGhlIElDcyBhcmUgcG93ZXJlZCBh
+bmQgZW5hYmxlZC4KPiAKPiBZZWFoLCBidXQgdGhlIERBQyBpc24ndCBlbmFibGVkIEkgYmVsaWV2
+ZSAtLSBpdCBvZnRlbiBnZXRzIHNodXQgb2ZmCj4gZXZlbiB0aG91Z2ggdGhlIGNoaXAgaXMgZW5h
+YmxlZC4KCkFncmVlZC4gS2luZGEgc2FkIHRoZSBEQUMgZ2VuZXJhdGVzIHNvIG11Y2ggbm9pc2Ug
+ZXZlbiB3aGVuIHJlY2VpdmluZyBubyBzYW1wbGVzLgoKPj4gCj4+PiAtIE1ha2Ugc3VyZSB0aGF0
+IGFsbCB1bnVzZWQgQ09ERUMgcGlucyBhcmUgY29uZmlndXJlZCBhcyBub3QgY29ubmVjdGVkIGlu
+IEFMU0EuCj4+PiAtIE1ha2Ugc3VyZSB0aGF0IGFsbCB1bnVzZWQgYXVkaW8gcGF0aHMgYXJlIGRp
+c2FibGVkLiBZb3UgY2FuIHVzZQo+Pj4gYGFsc2FjdGwgc3RvcmVgIHRvIGR1bXAgYW5kIGNoZWNr
+IGV2ZXJ5dGhpbmcuCj4+IAo+PiBJJ2xsIHNlZSB3aGF0IEkgY2FuIHNlZS4gT24gdGhlIFRJIGUy
+ZSBmb3J1bSwgaXQgd2FzIHN1Z2dlc3RlZCB0byBlbnN1cmUgdGhlIERBQyBhdWRpbyBwYXRoIGdv
+ZXMgdGhyb3VnaCB0aGUgb3V0cHV0IG1peGVyLCByYXRoZXIgdGhhbiBieXBhc3NpbmcgaXQsIGJl
+Y2F1c2UgaXQgYWN0cyBhcyBhIG5vaXNlIGZpbHRlciAoZGlhZ3JhbSBpbiB0aGUgcG9zdCkuCj4+
+IAo+PiAgICAgICAgaHR0cDovL2UyZS50aS5jb20vc3VwcG9ydC9kYXRhX2NvbnZlcnRlcnMvYXVk
+aW9fY29udmVydGVycy9mLzY0L3AvNDY1NzM4LzE2NzE0MjUjMTY3MTQyNQo+PiAKPj4gSSBkb24n
+dCBrbm93IHdoYXQgdGhlIGFjdHVhbCByb3V0aW5nIGlzLCBhcyBJIGRvbid0IHVuZGVyc3RhbmQg
+dGhlIEFMU0EgY29uZmlndXJhdGlvbi4gSGVyZSdzIG15IGFzb3VuZC5zdGF0ZSBhZnRlciBleGVj
+dXRpbmcgYXNsYWN0bCBzdG9yZToKPj4gCj4+ICAgICAgICBodHRwczovL2dpc3QuZ2l0aHViLmNv
+bS9KZXRGb3JNZS81ZDAxOTM4ZGNkOTUyNTU3ZDJhZgo+PiAKPj4gSGVyZSdzIG15IERUUzoKPj4g
+Cj4+ICAgICAgICBodHRwczovL2dpdGh1Yi5jb20vSmV0Rm9yTWUvcG9kdGlxdWUvYmxvYi9jN2Vl
+MTQ2ZjJiODhkYTE3ZmQ0ZTYxYjBhMWE2NzA3YzkxMDA3ZWYwL2JiYi9jYXBlL1BvZHRpcXVlMS9C
+Qi1CT05FLUFVREktMDMtMDBBMC5kdHMjTDEzNi1MMTUwCj4+IAo+Pj4gLSBJZiBwb3NzaWJsZSwg
+eW91IGNhbiBhbHNvIGxpc3RlbiB0byB0aGUgVExWIG91dHB1dHMgZGlyZWN0bHkKPj4+IHdpdGhv
+dXQgdGhlIGFtcCBpbiBvcmRlciB0byBrbm93IGlmIGl0J3MgY2F1c2VkIGJ5IHRoZSBhbXAgb3Ig
+YmVmb3JlCj4+PiBpdCBpbiB0aGUgYXVkaW8gY2hhaW4uCj4+IAo+PiBIbW0sIG5vdCBzdXJlIGhv
+dyB0byBsaXN0ZW4gdG8gdGhlbS4gQnV0IGxpa2UgSSBzYWlkLCBJIGRvbid0IHRoaW5rIGl0J3Mg
+Y2F1c2VkIGJ5IHRoZSBhbXAuIE9uY2UgdGhlIENPREVDIGlzIHJlc2V0IGJ5IEFMU0EsIHRoZSBu
+b2lzZSBzdG9wcywgZXZlbiB0aG91Z2ggdGhlIGFtcCByZW1haW5zIHBvd2VyZWQuCj4+IAo+PiBJ
+IHRyaWVkIHRvIGxvb2sgYXQgdGhlIG91dHB1dCBvbiBhbiBvc2NpbGxvc2NvcGUsIGJ1dCB0aGlz
+IGhhcyBwcm92ZWQgY2hhbGxlbmdpbmcuCj4gCj4gVmVyeSBkaWZmaWN1bHQgd2l0aCBhIHNjb3Bl
+LiAgWW91IGNhbiB1c2UgYW4gTEMgZmlsdGVyIGZvciB0aGF0LCBidXQKPiBldmVuIHNvLCB0aGVy
+ZSBpIHN0aWxsIGEgdG9uIG9mIGhpZ2ggZnJlcXVlbmN5IGNydWQgbGVmdCBkdWUgdG8gdGhlCj4g
+c2lnbWEgZGVsdGEgZGFjcy4gIE11Y2ggYmV0dGVyIHRvIHVzZSBhIHBybyBhdWRpbyBzb3VuZCBj
+YXJkIHdpdGggcHJvCj4gYXVkaW8gbGV2ZWwgYmFsYW5jZWQgaW5wdXRzIGxpa2UgUk1FIEZpcmVm
+YWNlIG9yIEx5bnguICBUaGVyZSBhcmUgbWFueQo+IG90aGVycywgdGhvdWdoIEknbSBvbmx5IHJl
+YWxseSBmYW1pbGlhciB3aXRoIHRoZSBmaXJlZmFjZS4KCkhhaGEhIFRoYXQncyBhbXVzaW5nLiBJ
+IGRvbid0IGhhdmUgdGhlIGJ1ZGdldCBmb3IgdGhhdCwgc2FkbHkuIEFyZSB5b3UgaW4gdGhlIEJh
+eSBBcmVhPyBDYW4gSSBjb21lIG92ZXI/Cgo+PiBJIGNhbiBzZWUgc2lnbmFsIG9uIHRoZSBsaW5l
+IGFzIHNvb24gYXMgdGhlIENPREVDIGlzIGNvbmZpZ3VyZWQgYnkgQUxTQSwgZXZlbiBiZWZvcmUg
+c2VuZGluZyBpdCBzYW1wbGVzLiBPbmNlIHRoZSBDT0RFQyBpcyByZXNldCBieSBBTFNBLCB0aGUg
+c2lnbmFsIHZpc2libGUgcmVkdWNlcyBzdWJzdGFudGlhbGx5Lgo+IAo+IFllcCwgdGhhdCdzIGJl
+Y2FzZSB0aGUgY29kZWMgaXRzZWxmIGlzIHR1cm5lZCBvbi9vZmYuICB0aGVyZSB3aWxsIGJlCj4g
+bG90cyBvZiBkaWdpdGFsIG5vaXNlIHVwIG92ZXIgYSBmZXcgTUh6LCBhbmQgaXQgbWFrZXMgdmll
+d2luZyB3aXRoIGEKPiBzY29wZSBhbG1vc3QgaW1wb3NzaWJsZS4gIEdldCBhIHBybyBhdWRpbyBz
+b3VuZCBjYXJkIDotKQoKOi0pCgpJIHdhbnQgdG8gdHJ5IHRoZSBlMmUgZW5naW5lZXIncyBzdWdn
+ZXN0aW9uIHRvIHJvdXRlIHRoZSBhdWRpbyB0aHJvdWdoIHRoZSBvdXRwdXQgbWl4ZXIsIGJ1dCB0
+aGF0IGRvZXNuJ3QgYWN0dWFsbHkgc2VlbSB0byBiZSBwb3NzaWJsZSB0byBkbyAoeW91IGNhbiBk
+byBpdCBmb3IgdGhlIEhQIG91dCwgYnV0IG5vdCB0aGUgbGluZSBvdXQpLiBJbiBmYWN0LCB0aGUg
+ZGlhZ3JhbSBpcyBzbyBiaXphcnJlIGFzIHRvIG1ha2UgbWUgdGhpbmsgaXQncyBpbmNvcnJlY3Qu
+IEZvciBleGFtcGxlLCB5b3UgZG9uJ3Qgc2VlbSB0byBiZSBhYmxlIHRvIHJvdXRlIHRoZSBMJlIg
+REFDIG91dHB1dCB0byB0aGUgTGluZSBPdXQgTCZSIG1peGVycywgYnV0IHlvdSBjYW4gc2hvcnQg
+dGhlIEwmUiBEQUMgb3V0cHV0cyB0b2dldGhlci4KClRoYW5rcyBmb3IgdGFraW5nIGEgbG9vayBh
+dCB0aGlzLCBDYWxlYiwgSSBhcHByZWNpYXRlIGl0LgoKLS0gClJpY2sgTWFubgpybWFubkBsYXRl
+bmN5emVyby5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
