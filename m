@@ -1,21 +1,14 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/4] dmaengine: Add transfer termination
-	synchronization support
-Date: Thu, 29 Oct 2015 23:59:40 +0200
-Message-ID: <CAHp75Vey9zQMCWB63BDsOqEGKQh3SvANWCbH1har-vmXoAquXQ@mail.gmail.com>
-References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
- <1445334391-12272-2-git-send-email-lars@metafoo.de>
+From: =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
+Subject: [PATCH] ASoC: Intel: Skylake: fix typo in sizeof
+Date: Thu, 29 Oct 2015 23:04:41 +0100
+Message-ID: <1446156281-31024-1-git-send-email-vincent.stehle@laposte.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f193.google.com (mail-yk0-f193.google.com
- [209.85.160.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3B82265522
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 22:59:41 +0100 (CET)
-Received: by ykdr3 with SMTP id r3so4646944ykd.0
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 14:59:40 -0700 (PDT)
-In-Reply-To: <1445334391-12272-2-git-send-email-lars@metafoo.de>
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F2F02651A5
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 23:05:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@freescale.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Qiao Zhou <zhouqiao@marvell.com>, Laurent Pinchart <renesas@ideasonboard.com>, Matt Campbell <mcampbell@izotope.com>, dmaengine <dmaengine@vger.kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Dan Williams <dan.j.williams@intel.com>, Jonah Petri <jpetri@izotope.com>
+To: alsa-devel@alsa-project.org
+Cc: trivial@kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2015 at 12:46 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> The DMAengine API has a long standing race condition that is inherent to
-> the API itself. Calling dmaengine_terminate_all() is supposed to stop and
-> abort any pending or active transfers that have previously been submitted.
-> Unfortunately it is possible that this operation races against a currently
-> running (or with some drivers also scheduled) completion callback.
-
-[]
-
-> +/**
-> + * dmaengine_terminate_sync() - Terminate all active DMA transfers
-> + * @chan: The channel for which to terminate the transfers
-> + *
-> + * Calling this function will terminate all active and pending transfers
-> + * that have previously been submitted to the channel. It is similar to
-> + * dmaengine_terminate_async() but guarantees that the DMA transfer has actually
-> + * stopped and that all complete callbacks have finished running when the
-> + * function returns.
-> + *
-> + * This function must only be called from non-atomic context and must not be
-> + * called from within a complete callback of a descriptor submitted on the same
-> + * channel.
-> + */
-> +static inline int dmaengine_terminate_sync(struct dma_chan *chan)
-> +{
-> +       int ret;
-
-Might be a good idea to add might_sleep(); here.
-
-> +
-> +       ret = dmaengine_terminate_async(chan);
-> +       if (ret)
-> +               return ret;
-> +
-> +       dmaengine_synchronize(chan);
-> +
-> +       return 0;
-> +}
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+VGhlIHNpemUgb2YgdGhlIHBvaW50ZXIgdG8gYSBkYXRhIHN0cnVjdHVyZSB0byBzZW5kIGlzIGVy
+cm9uZW91c2x5CnBhc3NlZCB0byBzc3RfaXBjX3R4X21lc3NhZ2Vfd2FpdCgpIGFzIGl0cyB0eF9i
+eXRlcyBhcmd1bWVudC4gSXQgc2hvdWxkCmJlIGdpdmVuIHRoZSBzaXplIG9mIHRoZSBwb2ludGVk
+IHNrbF9pcGNfZHhzdGF0ZV9pbmZvIHN0cnVjdHVyZSBpbnN0ZWFkLgoKQ29pbmNpZGVudGFsbHks
+IGJvdGggdGhlIHBvaW50ZXIgYW5kIHRoZSBzdHJ1Y3R1cmUgaGF2ZSB0aGUgc2FtZSBzaXplIG9m
+CjggYnl0ZXMgb24gYSA2NCBiaXQgbWFjaGluZSwgd2hpY2ggIm1hc2tzIiB0aGUgaXNzdWUuIENv
+bXBpbGluZyBmb3IgMzIKYml0IHJldmVhbHMgdGhlIGlzc3VlIG1vcmUgY2xlYXJseS4KCkZpeCB0
+aGUgdHlwbyBmb3IgY29ycmVjdG5lc3MsIGFuZCB0byBtYWtlIHRoZSBjb2RlIHJvYnVzdCB0byBm
+dXR1cmUKZXZvbHV0aW9ucyBvZiB0aGUgc2tsX2lwY19keHN0YXRlX2luZm8gc3RydWN0dXJlIHNp
+emUuCgpUaGlzIGZpeGVzIHRoZSBmb2xsb3dpbmcgY29jY2ljaGVjayBlcnJvcjoKCiAgc291bmQv
+c29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYzo2NDE6OC0xNDogRVJST1I6IGFwcGxpY2F0
+aW9uIG9mIHNpemVvZiB0byBwb2ludGVyCgpTaWduZWQtb2ZmLWJ5OiBWaW5jZW50IFN0ZWhsw6kg
+PHZpbmNlbnQuc3RlaGxlQGxhcG9zdGUubmV0PgpDYzogU3ViaHJhbnN1IFMuIFBydXN0eSA8c3Vi
+aHJhbnN1LnMucHJ1c3R5QGludGVsLmNvbT4KQ2M6IEplZWphIEtQIDxqZWVqYS5rcEBpbnRlbC5j
+b20+CkNjOiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KQ2M6IE1hcmsgQnJvd24g
+PGJyb29uaWVAa2VybmVsLm9yZz4KQ2M6IHRyaXZpYWxAa2VybmVsLm9yZwotLS0KIHNvdW5kL3Nv
+Yy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwv
+c2t5bGFrZS9za2wtc3N0LWlwYy5jIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1p
+cGMuYwppbmRleCA5MzdhMGEzLi45YWVlODM1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwv
+c2t5bGFrZS9za2wtc3N0LWlwYy5jCisrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1z
+c3QtaXBjLmMKQEAgLTYzOCw3ICs2MzgsNyBAQCBpbnQgc2tsX2lwY19zZXRfZHgoc3RydWN0IHNz
+dF9nZW5lcmljX2lwYyAqaXBjLCB1OCBpbnN0YW5jZV9pZCwKIAlkZXZfZGJnKGlwYy0+ZGV2LCAi
+SW4gJXMgcHJpbWFyeSA9JXggZXh0PSV4XG4iLCBfX2Z1bmNfXywKIAkJCSBoZWFkZXIucHJpbWFy
+eSwgaGVhZGVyLmV4dGVuc2lvbik7CiAJcmV0ID0gc3N0X2lwY190eF9tZXNzYWdlX3dhaXQoaXBj
+LCAqaXBjX2hlYWRlciwKLQkJCQlkeCwgc2l6ZW9mKGR4KSwgTlVMTCwgMCk7CisJCQkJZHgsIHNp
+emVvZigqZHgpLCBOVUxMLCAwKTsKIAlpZiAocmV0IDwgMCkgewogCQlkZXZfZXJyKGlwYy0+ZGV2
+LCAiaXBjOiBzZXQgZHggZmFpbGVkLCBlcnIgJWRcbiIsIHJldCk7CiAJCXJldHVybiByZXQ7Ci0t
+IAoyLjYuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
