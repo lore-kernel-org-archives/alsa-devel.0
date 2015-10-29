@@ -1,38 +1,41 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Packages 1.0.30 - release pending
-Date: Thu, 29 Oct 2015 10:23:13 +0900
-Message-ID: <20151029012311.GA18368@vkoul-mobl.iind.intel.com>
-References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
- <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
- <562F9FE6.5060704@perex.cz>
+Subject: Re: [PATCH 0/4] dmaengine: Add transfer termination synchronization
+ support
+Date: Thu, 29 Oct 2015 10:26:50 +0900
+Message-ID: <20151029012649.GB18368@vkoul-mobl.iind.intel.com>
+References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C11392652C4
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 02:23:42 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <562F9FE6.5060704@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, "Lin, Mengdong" <mengdong.lin@intel.com>
+In-Reply-To: <1445334391-12272-1-git-send-email-lars@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.com>, Dan Williams <dan.j.williams@intel.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Laurent Pinchart <renesas@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Qiao Zhou <zhouqiao@marvell.com>, Shengjiu Wang <shengjiu.wang@freescale.com>, Matt Campbell <mcampbell@izotope.com>, Jonah Petri <jpetri@izotope.com>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2015 at 05:01:42PM +0100, Jaroslav Kysela wrote:
-> >>>> 	I would like to release 1.0.30 version of all packages. Things to discuss:
+On Tue, Oct 20, 2015 at 11:46:27AM +0200, Lars-Peter Clausen wrote:
+> The DMAengine API has a long standing issue that is inherent to the API
+> itself. For a client that calls dmaengine_terminate_all() it is not
+> possible to properly synchronize the completion of any currently running
+> complete callbacks to the current context. This means it is possible to end
+> up with a use-after-free race condition if client frees resources that are
+> accessed in a complete callback before the complete callback has finished
+> running.
+> 
+> This patch series introduces a new explicit synchronization primitive to
+> the DMAengine API which allows clients to ensure that all complete
+> callbacks have finished running. This allows them to safely free any
+> resources that might be accessed in a complete callback.
+> 
+> The series for now only implements synchronization support for a single
+> driver and only updates single client to make use of the new API. If there
+> is agreement on the general approach more will follow.
 
-On a side note, I checked the tinycompress tar balls, things look good to
-me.
-Thanks for adding this :)
+Thanks Lars for getting this done.
+
+I have merged this to topic/test/async branch and this will be in next
+kernel revision. We are too close to merge window right now
 
 -- 
 ~Vinod
