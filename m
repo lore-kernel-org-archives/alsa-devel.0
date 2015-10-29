@@ -1,41 +1,60 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/4] dmaengine: Add transfer termination synchronization
- support
-Date: Thu, 29 Oct 2015 10:26:50 +0900
-Message-ID: <20151029012649.GB18368@vkoul-mobl.iind.intel.com>
-References: <1445334391-12272-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: Intel: Skylake: Fix the SSP0 Fmt
+	fixup to 24 bit
+Date: Thu, 29 Oct 2015 12:31:34 +0900
+Message-ID: <1446089495-31250-1-git-send-email-vinod.koul@intel.com>
+References: <1445905380-18167-18-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1445334391-12272-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.com>, Dan Williams <dan.j.williams@intel.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Laurent Pinchart <renesas@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Qiao Zhou <zhouqiao@marvell.com>, Shengjiu Wang <shengjiu.wang@freescale.com>, Matt Campbell <mcampbell@izotope.com>, Jonah Petri <jpetri@izotope.com>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4811526531F
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 04:31:53 +0100 (CET)
+In-Reply-To: <1445905380-18167-18-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2015 at 11:46:27AM +0200, Lars-Peter Clausen wrote:
-> The DMAengine API has a long standing issue that is inherent to the API
-> itself. For a client that calls dmaengine_terminate_all() it is not
-> possible to properly synchronize the completion of any currently running
-> complete callbacks to the current context. This means it is possible to end
-> up with a use-after-free race condition if client frees resources that are
-> accessed in a complete callback before the complete callback has finished
-> running.
-> 
-> This patch series introduces a new explicit synchronization primitive to
-> the DMAengine API which allows clients to ensure that all complete
-> callbacks have finished running. This allows them to safely free any
-> resources that might be accessed in a complete callback.
-> 
-> The series for now only implements synchronization support for a single
-> driver and only updates single client to make use of the new API. If there
-> is agreement on the general approach more will follow.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Thanks Lars for getting this done.
+SSP0 FMT uses 24 bits so fix to the value to 24 bits
 
-I have merged this to topic/test/async branch and this will be in next
-kernel revision. We are too close to merge window right now
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/boards/skl_rt286.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index a73a431bd8b7..e6af48491229 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -112,12 +112,15 @@ static int skylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 
+ 	/* The output is 48KHz, stereo, 16bits */
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+-	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+ 
++	/* set SSP0 to 24 bit */
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
+ 
 -- 
-~Vinod
+2.4.3
