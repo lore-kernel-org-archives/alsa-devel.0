@@ -1,20 +1,19 @@
-From: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
-Subject: Re: print audio ring buffer in kernel space
-Date: Thu, 29 Oct 2015 15:11:00 -0500
-Message-ID: <CACaQK7COwmTMf0UBeKXRCtjAtDBLCHC2wMhKnNByAfUuWAKwDA@mail.gmail.com>
-References: <CACaQK7C7bH1wHomQyJLS=N1V+m5DeSus=4cjB=2WMv4B+3Np+Q@mail.gmail.com>
- <56327C42.6000202@ladisch.de>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Subject: Re: Noise in tlv320aic3104-based audio system
+Date: Thu, 29 Oct 2015 22:21:33 +0100
+Message-ID: <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
+References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
- [209.85.212.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E6EF2651A5
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 21:11:01 +0100 (CET)
-Received: by wicll6 with SMTP id ll6so237550950wic.0
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 13:11:01 -0700 (PDT)
-In-Reply-To: <56327C42.6000202@ladisch.de>
+Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
+ [209.85.214.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 361882651A5
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 22:21:54 +0100 (CET)
+Received: by obbza9 with SMTP id za9so28518987obb.1
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 14:21:53 -0700 (PDT)
+In-Reply-To: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Rick Mann <rmann@latencyzero.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-No, I do not suspect an error in the snd_pcm_readi(), but would want to
-print the data(using printk) from the hardware buffer directly, and see
-that it matches with the buffer after snd_pcm_readi() call. I would want to
-know where the hardware buffer is located at so that I can trace it down.
-
-Regards,
-Ankhit
-
-On Thu, Oct 29, 2015 at 3:06 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-
-> Ankhit Vivekananda wrote:
-> > I am trying to print the ring buffer used for DMA transfer using ALSA in
-> > kernel space. I was able to print the ring buffer in user space after
-> > calling the snd_pcm_readi() function. But, wanted to know as to which
-> file
-> > I need to be looking at to print the hardware buffer in kernel space.
->
-> The driver typically does not access the buffer.  There is no such file.
->
-> (And why would you need it?  Do you suspect an error in the
-> implementation of snd_pcm_readi()?)
->
->
-> Regards,
-> Clemens
->
+RGVhciBSaWNrIE1hbm4sCgpPbiBUaHUsIE9jdCAyOSwgMjAxNSBhdCA4OjU5IEFNLCBSaWNrIE1h
+bm4gPHJtYW5uQGxhdGVuY3l6ZXJvLmNvbT4gd3JvdGU6Cj4gSSBoYXZlIGEgY3VzdG9tIGNhcGUg
+b24gYSBCZWFnbGVib25lIEJsYWNrIHRoYXQgdXNlcyBhIHRsdjMyMGFpYzMxMDQsIGNvbm5lY3Rl
+ZCB0byBhIHRwYTMxNDBkMiBhdWRpbyBwb3dlciBhbXAuIEkgY3VycmVudGx5IG1hbnVhbGx5IGNv
+bnRyb2wgdGhlIC9zaHVkb3duIHBpbnMgb24gdGhlIHR3byBJQ3MsIGFuZCBqdXN0IHR1cm4gdGhl
+bSBvbiBiZWZvcmUgZG9pbmcgYW55dGhpbmcgZWxzZS4KPgo+IFRoZSBzeXN0ZW0gd29ya3MuIEJ1
+dCBJIG5vdGljZSB0aGF0IHdoZW4gSSBvcGVuIHRoZSBvdXRwdXQgZGV2aWNlIGZvciB3cml0aW5n
+ICh2aWEgbGliYW8pLCBJIGltbWVkaWF0ZWx5IGhlYXIgaGlzcywgZXZlbiBiZWZvcmUgSSBzZW5k
+IGFueSBzYW1wbGVzIHRvIHRoZSBkZXZpY2UuIEFmdGVyIEkgY2xvc2UgdGhlIGxpYmFvIGF1ZGlv
+IGRldmljZSwgYSBmZXcgc2Vjb25kcyBsYXRlciBMaW51eCBzZW5kcyBzb21lIGkyYyBjb21tYW5k
+cyB0byB0aGUgdGx2MzIwIGFuZCBpdCdzIG9uY2UgYWdhaW4gc2lsZW50Lgo+Cj4gVGhlIHBlcmNl
+aXZlZCBhbXBsaXR1ZGUgb2YgdGhpcyBoaXNzIGRvZXMgbm90IHNlZW0gdG8gYmUgYWZmZWN0ZWQg
+YnkgImFtaXhlciBzZXQgUENNIDwwIC0gMTI3PiIgY2FsbHMuCj4KPiBEb2VzIGFueW9uZSBoYXZl
+IGFueSBpZGVhIHdoZXJlIHRoaXMgbm9pc2UgbWlnaHQgYmUgY29taW5nIGZyb20/IElzIGl0IGp1
+c3QgdGhlcm1hbCBvciBvdGhlciBub2lzZSBpbiB0aGUgcm91dGluZyBvZiBhdWRpbyB3aXRoaW4g
+dGhlIHRsdjMyMD8gSXMgdGhlcmUgc29tZSBjb25maWd1cmF0aW9uIG9yIHJvdXRpbmcgSSBtaWdo
+dCBiZSBhYmxlIHRvIGNoYW5nZSB0byBhdm9pZCBpdD8gRGlkIEkgc2NyZXcgdXAgc29tZXdoZXJl
+IGluIG15IGNpcmN1aXQgZGVzaWduIG9yIGxheW91dCB0aGF0IG9ubHkgbWFuaWZlc3RzIHdoZW4g
+bGludXggY29uZmlndXJlcyB0aGUgY2hpcCBmb3Igb3BlcmF0aW9uPwo+Cj4gQW55IGlkZWFzIGFy
+ZSBhcHByZWNpYXRlZC4gVGhhbmtzLgoKSXQgY291bGQgYmUgbWFueSB0aGluZ3MsIGJ1dCBoZXJl
+IGFyZSBhIGZldyBpZGVhczoKIC0gTWFrZSBzdXJlIHRoYXQgeW91IGhhdmUgZm9sbG93ZWQgY2Fy
+ZWZ1bGx5IHRoZSBkYXRhIHNoZWV0cyAoQ09ERUMgKwphbXApIHJlZ2FyZGluZyB0aGUgaGFyZHdh
+cmUgc2NoZW1hdGljIGFuZCBsYXlvdXQuIElJUkMsIHRoZSBUTFYgaGFzIGEKdGhlcm1hbCBwYWQg
+dGhhdCBzaG91bGQgYmUgZ3JvdW5kZWQuCiAtIE1ha2Ugc3VyZSB0aGF0IHRoZSBhdWRpbyBwb3dl
+ciBzdXBwbGllcyBhcmUgY2xlYW4gZW5vdWdoLiBZb3UgY2FuCmRlcml2ZSB0aGVtIGZyb20gbW9y
+ZSBnZW5lcmFsLXB1cnBvc2UgcG93ZXIgc3VwcGxpZXMgaWYgZmlsdGVyaW5nIGlzCmFkZGVkLiBU
+aGUgUENCIGxheW91dCBtdXN0IGRlZmluZSBhIGNsZWFyIGF1ZGlvIGFyZWEsIGlkZWFsbHkgd2l0
+aCBhCnBsYW5lIGZvciB0aGUgYXVkaW8gcG93ZXIgc3VwcGx5IG9uIG9uZSBvZiB0aGUgbGF5ZXJz
+LiBFdmVuIGJldHRlciwKeW91IGNhbiB1c2UgZGVkaWNhdGVkIGxvdy1ub2lzZSBwb3dlciBzdXBw
+bGllcy4KIC0gTWFrZSBzdXJlIHRoYXQgYWxsIHVudXNlZCBDT0RFQyBwaW5zIGFyZSBjb25maWd1
+cmVkIGFzIG5vdCBjb25uZWN0ZWQgaW4gQUxTQS4KIC0gTWFrZSBzdXJlIHRoYXQgYWxsIHVudXNl
+ZCBhdWRpbyBwYXRocyBhcmUgZGlzYWJsZWQuIFlvdSBjYW4gdXNlCmBhbHNhY3RsIHN0b3JlYCB0
+byBkdW1wIGFuZCBjaGVjayBldmVyeXRoaW5nLgogLSBJZiBwb3NzaWJsZSwgeW91IGNhbiBhbHNv
+IGxpc3RlbiB0byB0aGUgVExWIG91dHB1dHMgZGlyZWN0bHkKd2l0aG91dCB0aGUgYW1wIGluIG9y
+ZGVyIHRvIGtub3cgaWYgaXQncyBjYXVzZWQgYnkgdGhlIGFtcCBvciBiZWZvcmUKaXQgaW4gdGhl
+IGF1ZGlvIGNoYWluLgoKQmVzdCByZWdhcmRzLApCZW5vw650Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
