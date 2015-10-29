@@ -1,21 +1,33 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Noise in tlv320aic3104-based audio system
-Date: Thu, 29 Oct 2015 00:59:48 -0700
-Message-ID: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+From: Roberto Fichera <kernel@tekno-soft.it>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+ TDM (network) mode.
+Date: Thu, 29 Oct 2015 09:04:48 +0100
+Message-ID: <5631D320.9030604@tekno-soft.it>
+References: <CAG5mAdxM_p2TWKhZne7AVGnhVfhVWA3gFe3pu6QQ8djb7TtjEA@mail.gmail.com>
+ <5625EF02.30602@invoxia.com>
+ <CAG5mAdw1Sj25hPWsFKqwQzgKft1_YWkN=7WNkW=kXGiF9P=kUA@mail.gmail.com>
+ <56273F75.2040702@invoxia.com>
+ <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+ <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
+ <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+ <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
+ <5630833B.10309@tekno-soft.it>
+ <CAG5mAdzt4T8ZZTMX2TZJCQOf-e+HS81V37ib+yCJOFqcwBAj7Q@mail.gmail.com>
+ <CAG5mAdzQGD5h3AVX3KMOwqDKAtcm1+csipnFEwu_ow5KpKdayQ@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 93D63261AD0
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 08:59:50 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id D1F08205FD
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 03:59:49 -0400 (EDT)
-Received: from [192.168.15.51] (c-50-168-55-93.hsd1.ca.comcast.net
- [50.168.55.93])
- by mail.messagingengine.com (Postfix) with ESMTPA id 768146800D5
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 03:59:49 -0400 (EDT)
+Received: from mail.tekno-soft.it (li153-180.members.linode.com
+ [109.74.206.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A9FA261AD0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 09:05:09 +0100 (CET)
+In-Reply-To: <CAG5mAdzQGD5h3AVX3KMOwqDKAtcm1+csipnFEwu_ow5KpKdayQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +37,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have a custom cape on a Beaglebone Black that uses a tlv320aic3104, connected to a tpa3140d2 audio power amp. I currently manually control the /shudown pins on the two ICs, and just turn them on before doing anything else.
+On 10/28/2015 11:09 PM, Caleb Crome wrote:
+> On Wed, Oct 28, 2015 at 6:59 AM, Caleb Crome <caleb@crome.org> wrote:
+>> On Wed, Oct 28, 2015 at 1:11 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
+>>> On 10/27/2015 07:57 PM, Fabio Estevam wrote:
+>>>> [Adding Roberto in the thread as he is also trying to get SSI TDM support/
+>>> Thanks Fabio,
+>>>
+>>> I'm also having the same issue but employing SSI in TDM master mode against a SLIC Si32178
+>>> using its PCM mode. PCLK is at 2048KHz, FSYNC is 8KHz slot length is 32 bits (SSI wants
+>>> this since when in master mode) but valid data set to be 8bits in the SSI register.
+>>>
+>>> My Current situation is that I've a custom fsl_ssi.c driver to control the SSI in TDM master mode
+>>> both PCLK and FSYNC works perfectly fine, the SLIC has a register that I can check via SPI for
+>>> such purpose, I can see the clocking status from its side. The main problem I've is exactly the same
+>>> Caleb is having, after a certain amount of SDMA transfers, roughly 1000 or so, everything stops
+>>> without any apparent reason.
+>> My problem is that the channels randomly slip a slot and all words end
+>> up in the wrong slot.  I suspect this is a DMA issue, but I really
+>> haven't diagnosed it yet.  I don't get a full stop on the data.
+>>
+>> FYI, I'm using a very recent 4.3 kernel from linus's repo, but 4.2
+>> behaved the same.
+>>
+> Now I'm recalling when I tried the patches on 4.1, everything
+> definitely froze.  What kernel are you using?.  I'm basically using
+> the 4.3-rc7
 
-The system works. But I notice that when I open the output device for writing (via libao), I immediately hear hiss, even before I send any samples to the device. After I close the libao audio device, a few seconds later Linux sends some i2c commands to the tlv320 and it's once again silent.
+Currently the Freescale offical v3.14.28_ga_1.0.0 coming with Yocto Fido.
 
-The perceived amplitude of this hiss does not seem to be affected by "amixer set PCM <0 - 127>" calls.
-
-Does anyone have any idea where this noise might be coming from? Is it just thermal or other noise in the routing of audio within the tlv320? Is there some configuration or routing I might be able to change to avoid it? Did I screw up somewhere in my circuit design or layout that only manifests when linux configures the chip for operation?
-
-Any ideas are appreciated. Thanks.
-
--- 
-Rick Mann
-rmann@latencyzero.com
+>
+> -Caleb
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
