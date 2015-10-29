@@ -1,30 +1,30 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
  TDM (network) mode.
-Date: Thu, 29 Oct 2015 15:47:14 -0700
-Message-ID: <20151029224713.GA44369@Asurada-CZ80>
-References: <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
+Date: Thu, 29 Oct 2015 16:04:05 -0700
+Message-ID: <20151029230404.GB44369@Asurada-CZ80>
+References: <CAG5mAdxDmh3XDZSSHb8Oa7s-rosdVvTZPqu2zyDC42rMcqxxHA@mail.gmail.com>
+ <CAG5mAdwC00qbu9zMHKjx5JZX_2CobBo81+jtpsWGPHPQ0jKX0A@mail.gmail.com>
  <20151027071344.GC25728@pengutronix.de>
- <20151027201101.GA9527@Asurada-CZ80>
- <CAG5mAdz=TKSmXBOqKfSj0FYfk3c6syBa87OazyGRRF0NU4snXA@mail.gmail.com>
- <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+ <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
+ <5630833B.10309@tekno-soft.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id EBF162651A5
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 23:47:20 +0100 (CET)
-Received: by pacfv9 with SMTP id fv9so55444167pac.3
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 15:47:19 -0700 (PDT)
+Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
+ [209.85.220.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id F20A3265843
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 00:04:09 +0100 (CET)
+Received: by padhy1 with SMTP id hy1so47647311pad.0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 16:04:08 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
+In-Reply-To: <5630833B.10309@tekno-soft.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,56 +34,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Roberto Fichera <kernel@tekno-soft.it>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2015 at 03:23:41PM -0700, Caleb Crome wrote:
+On Wed, Oct 28, 2015 at 09:11:39AM +0100, Roberto Fichera wrote:
+ 
+> I'm also having the same issue but employing SSI in TDM master mode against a SLIC Si32178
+> using its PCM mode. PCLK is at 2048KHz, FSYNC is 8KHz slot length is 32 bits (SSI wants
+> this since when in master mode) but valid data set to be 8bits in the SSI register.
 
-> > I saw your problem in the other reply. And I suggested you to let
-> > DMA work first before SSI gets enabled. As SDMA in that case would
-> > transfer one burst length (16 if you applied my patch I sent you)
-> > and pause before SSI gets enabled. Then SSI would have enough data
-> > to send out without any startup issue.
-> 
-> Ah ha, you are exactly right.  The root cause is that TE and SSIE are
-> enabled at the same regmap write, with no opportunity for delay
-> between the SSIE and TE.
-> DMA can only get going if SSIE is enabled, and the only place SSIE
-> gets enabled is exactly the same line that TE gets enabled.
+> My Current situation is that I've a custom fsl_ssi.c driver to control the SSI in TDM master mode
+> both PCLK and FSYNC works perfectly fine, the SLIC has a register that I can check via SPI for
+> such purpose, I can see the clocking status from its side. The main problem I've is exactly the same
+> Caleb is having, after a certain amount of SDMA transfers, roughly 1000 or so, everything stops
+> without any apparent reason.
 
-A little difference between your point and mine is that you think
-DMA request only starts when SSIE and TDMAE both get set while I
-only think about TDMAE. It's hard to say which one is correct as
-it depends on the design of IP wrapper but you can fairly test it
-with your change below: Mask both TE with SSIE and set them after
-the delay. If it doesn't work, yours is the correct one.
-
-> I've looked over your emails and I don't see the patch that shows a
-
-You may need to open an offline email that I sent you with patches
-in its attachment. I can see it via Gmail anyway.
-
-> pause between SSIE enable and TE enable.  (I do see the dual-fifo
-> example -- thank you!  I'll give that a try -- it may further reduce
-> stress on the system).
-
-I'm sure dual FIFO will get better performance. But the example I
-gave you doesn't set RX parameters so well. You may need to fine
-tune it later.
-
-> Is adding the udelay the best way to put a delay between SSIE and TE enable?
-> Are there any other mechanisms for that?
-
-Having a delay is much safer for you but surely it's not a common
-practice that's best all other platforms such as two-channel cases
-and those who needs performance.
-
-I encourage you to try to follow one of patches I gave you that
-sets TDMAE/RDMAE at the beginning of the trigger(). Surely you may
-change it to TDMAE | SSIE after you find out that SSIE is indeed
-required. If you are still having trouble, adding a delay would
-be nice for you but it may be hard for me to ack it if you want
-to merge it in the driver.
-
-Nicolin
+I will start to help you to figure out your problem. But it seems that
+you are having a different issue here with clock generation. I don't
+get why you said *same issue*. For double confirm, the the "everything
+stops" mentioned, does it mean that clock from SSI stops?
