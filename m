@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "- filename :
-	ASoC-rsrc-card-Clarify-compatible-value.patch
-Date: Fri, 30 Oct 2015 10:43:28 +0900
-Message-ID: <E1Zryj2-0008UR-Ne@finisterre>
+Subject: Re: [PATCH 1/2] ASoC: Intel: Skylake: Fix the SSP0 Fmt
+	fixup to 24 bit
+Date: Fri, 30 Oct 2015 11:08:18 +0900
+Message-ID: <E1Zrz74-00017I-Nc@finisterre>
+References: <1446089495-31250-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EB61265AB3
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 02:43:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BE765265917
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 03:08:24 +0100 (CET)
+In-Reply-To: <1446089495-31250-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,17 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-- name          : ASoC: rsrc-card: Clarify compatible value" to the asoc tree
-In-Reply-To:  <1446148795-20629-1-git-send-email-geert+renesas@glider.be>
-
 The patch
 
-   - filename      : ASoC-rsrc-card-Clarify-compatible-value.patch
-- name          : ASoC: rsrc-card: Clarify compatible value
+   ASoC: Intel: Skylake: Fix the SSP0 Fmt fixup to 24 bit
 
 has been applied to the asoc tree at
 
@@ -55,35 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 33833b9af9ec89356fbfcd9ff0679b136f20e12f Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Thu, 29 Oct 2015 20:59:55 +0100
-Subject: [PATCH] ASoC: rsrc-card: Clarify compatible value
+>From 0b5a4831607f4d2c21f1779470d14253137050a3 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Thu, 29 Oct 2015 12:31:34 +0900
+Subject: [PATCH] ASoC: Intel: Skylake: Fix the SSP0 Fmt fixup to 24 bit
 
-The compatible value can be board-specific, not SoC-specific.
-Add curly braces to indicate that the board type is optional.
+SSP0 FMT uses 24 bits so fix to the value to 24 bits
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-index 962748a..2b2caa2 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-@@ -4,8 +4,8 @@ Renesas Sampling Rate Convert Sound Card specifies audio DAI connections of SoC
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index a73a431..e6af484 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -112,12 +112,15 @@ static int skylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
  
- Required properties:
+ 	/* The output is 48KHz, stereo, 16bits */
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+-	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
  
--- compatible				: "renesas,rsrc-card,<board>"
--					  Examples with soctypes are:
-+- compatible				: "renesas,rsrc-card{,<board>}"
-+					  Examples with boards are:
- 					    - "renesas,rsrc-card"
- 					    - "renesas,rsrc-card,lager"
- 					    - "renesas,rsrc-card,koelsch"
++	/* set SSP0 to 24 bit */
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
+ 
 -- 
 2.6.1
