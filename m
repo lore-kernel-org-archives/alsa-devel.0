@@ -1,92 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Different reg_default for rt5650 codec
-Date: Fri, 30 Oct 2015 10:19:32 +0900
-Message-ID: <20151030011932.GN28319@sirena.org.uk>
-References: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoC: img: Add driver for I2S
+ input controller
+Date: Fri, 30 Oct 2015 10:20:20 +0900
+Message-ID: <20151030012020.GO28319@sirena.org.uk>
+References: <1444653637-14711-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1444653637-14711-3-git-send-email-Damien.Horsley@imgtec.com>
+ <20151019174732.GG32054@sirena.org.uk>
+ <56293472.7000401@imgtec.com>
+ <20151023225723.GO29919@sirena.org.uk>
+ <562F824F.9070407@imgtec.com>
+ <20151028010443.GX28319@sirena.org.uk>
+ <56313B9C.8030502@imgtec.com>
+ <20151028234334.GF28319@sirena.org.uk>
+ <56323E83.5010605@imgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6794334330656895021=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A40265917
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 02:19:36 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4cokgWgqjr3t8EL1"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <56323E83.5010605-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Damien Horsley <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, James Hartley <James.Hartley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6794334330656895021==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Fm6XlJPzS/ViAqAU"
-Content-Disposition: inline
-
-
---Fm6XlJPzS/ViAqAU
+--4cokgWgqjr3t8EL1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 29, 2015 at 11:17:26AM +0000, Bard Liao wrote:
+On Thu, Oct 29, 2015 at 03:42:59PM +0000, Damien Horsley wrote:
 
-> Something like
-> 	case RT5650_DEVICE_ID:
-> +		rt5645->regmap-> reg_defaults =3D rt5650_reg;
-> +		rt5645->regmap-> num_reg_defaults =3D ARRAY_SIZE(rt5650_reg)
-> 		rt5645->codec_type =3D CODEC_TYPE_RT5650;
-> 		break;
->=20
-> Is that ok?
+> For the I2S In, there is another issue with flushing on stream close. If
+> the stream is stopped, then reconfigured to use a larger number of
+> channels (without the stream being closed), then the per-channel fifos
+> will become inconsistent with each other. The new channels will have no
+> samples in their FIFOs, while the others may contain samples from the
+> previous stream.
 
-No, that's not OK - the config needs to be constant and...
+> Would hw_params be the correct place to flush instead?
 
-> Or should I use different regmap_config? There is one question if I use
-> different regmap_config. We will know which codec it is by regmap_read.
-> So, regmap is init before we know which codec it is. Assume rt5645_regmap
-> is used and what should I do once rt5650 is detected?
+Yes, you could flush there (or in both places for that matter).
 
-=2E..you definitely can't change it after you registered the CODEC, regmap
-will ignore that.  What should be happening here is that the devices
-should be being registered using different identifiers so that before we
-try to create the regmap we know what device is being used.
-
-If there are buggy BIOSs out there that don't do that what I'd recommend
-doing is creating a temporary regmap with no defaults or anything, just
-the basic I/O.  Use that to read the identification registers from the
-device and then create a second regmap with the actual configuration for
-the device.
-
---Fm6XlJPzS/ViAqAU
+--4cokgWgqjr3t8EL1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWMsWjAAoJECTWi3JdVIfQadQH/3us0gfilzfHa5ECTiQIvA5w
-BADnYlqF7eRVqpWLvkMyrkDtK2SqM3WCNyfFQPy3kx0xscedc7h2DqbVizqRlRCa
-Ak70roEaFXwrJ9DUjNJzD7bh1JwqC5i5GzCa72JhbPNOUxrDA1XWaqBvBXtPBvo0
-FVtEy8rpLYsO5OJXKGxKq35rIbo8tGph0OrAaC5L67gYcX+Dg0XbDVaPksp/jG8a
-l5fSbIyU1EJQURdoTa/c/azar0X3TMIdRVwoZJd0BfEAGriLmBitmcJ5y/sGLSWI
-NlWGDjGZBZn3TFoUY8xo4niD6ANWsHRdme228KOytOv3I8FLIpRjRaNbwr289eM=
-=BglU
+iQEcBAEBCAAGBQJWMsXTAAoJECTWi3JdVIfQScQIAIUUol1l/hftAmRCj1o4rstl
+VfdYytoikfmuGsLzQ1NtQ+KohYWRM20kRErAqwtt3DWSxyLmLUCbXuRyapy3v+f6
+YpWhUlsXD7NSRSW5d5vomPWm0uSQn3CwbgiVcWncf0WOdox31LjHjg+uB5GJGCFL
+8+gdsSRrKrYj3uZ4C7SoVFrLX5NFP/mEmiLeVm+TJFus9PI8JBMPVc84x1EJVtQL
+0Sp1/8E5CZddDmsSqJYFySTNDNCX2BC57yuxeG1dVKkiVls3/oSEA6YGJj8Ciw4V
+0PtBLDVcQgobnN6CVQER1Fv1K6Sc/rvw/Y5tyM0wxy9IkFYRdodWhxsRZF6nx/c=
+=db4Y
 -----END PGP SIGNATURE-----
 
---Fm6XlJPzS/ViAqAU--
-
---===============6794334330656895021==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6794334330656895021==--
+--4cokgWgqjr3t8EL1--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
