@@ -1,28 +1,28 @@
 From: Caleb Crome <caleb@crome.org>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Fri, 30 Oct 2015 11:10:28 -0700
-Message-ID: <CAG5mAdySHyZUnXhzwrFNkvbo9Cc2GOYHNLQYeArdaFPoL4CDtg@mail.gmail.com>
-References: <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
- <20151029224713.GA44369@Asurada-CZ80>
- <CAG5mAdwnjLdxNNgC3go_NDERUSDxem9ZQFigyF5yaEWuXV2r4g@mail.gmail.com>
- <20151030012934.GA5456@Asurada-GSX> <56332A4E.3010704@invoxia.com>
- <20151030154946.GA3505@Asurada-CZ80>
+Subject: Re: Noise in tlv320aic3104-based audio system
+Date: Fri, 30 Oct 2015 11:11:50 -0700
+Message-ID: <CAG5mAdxkPOm8D==wpBhOkx9fxvv9_XsrS2=jZCMdYrYYE1bYYg@mail.gmail.com>
+References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
+ <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
+ <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
+ <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
+ <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
+ <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
+ <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
+ <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
+ <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
+ <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 329C926067B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 19:10:48 +0100 (CET)
-Received: by wmff134 with SMTP id f134so17714308wmf.1
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 11:10:48 -0700 (PDT)
-In-Reply-To: <20151030154946.GA3505@Asurada-CZ80>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23D3A26067B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 19:12:10 +0100 (CET)
+Received: by wicfx6 with SMTP id fx6so15827016wic.1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 11:12:09 -0700 (PDT)
+In-Reply-To: <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,63 +32,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Cc: Rick Mann <rmann@latencyzero.com>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 30, 2015 at 8:49 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Fri, Oct 30, 2015 at 09:29:02AM +0100, arnaud.mouiche@invoxia.com wrote:
->
->> At imx50 age, I remember one workaround was to fill the fifo
->> manually, writing directly a number of samples (equal to the number
->> of slots for one frame to keep the synchronization), and then,
->> enable the TMDAE.
->> This just allow to not have to wait an undefined period of time for
->> the DMA to be ready.
->> But, on the other hand, if the time to wait the DMA is short enough,
->> it should not be an issue.
->
-> Nice input. This reminds me of the zero-filling step inside the
-> ESAI startup procedure:
->
->         case SNDRV_PCM_TRIGGER_START:
->         case SNDRV_PCM_TRIGGER_RESUME:
->         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->                 regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
->                                    ESAI_xFCR_xFEN_MASK, ESAI_xFCR_xFEN);
->
->                 /* Write initial words reqiured by ESAI as normal procedure */
->                 for (i = 0; tx && i < channels; i++)
->                         regmap_write(esai_priv->regmap, REG_ESAI_ETDR, 0x0);
->
->                 regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
->                                    tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
->                                    tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
->                 break;
->
-> It's exactly the same thing to prevent underrun. This might be
-> a reasonable alternative option due to no polling overhead and
-> timeout handling.
->
-> Thanks
-> Nicolin
-
-Interesting, but in the SSI case, the # channels can easily be larger
-than the fifo size.  For example, I'm using 16 channels, and the fifo
-size is only 15.  Of course, with the dual fifo enabled, then this
-restriction is eased to a maximum # of slots of 30.
-
-I'll do a quick check this morning with Nicolin's suggested patch, and
-see how many loops it needs to poll before the fifo gets a word.  My
-suspicion is that Nicolin's hunch is correct: that is,  that the
-context switch provides enough time for the DMA to push a word.
-
-Will check back shortly.
-
-Then, we'll have the problem that Arnaud bring up -- when starting the
-Rx after Tx, we will have fresh new problems.  In fact, I'm 100% sure
-we will -- I already see it with a portaudio program that must bring
-up tx and rx separately.  I think I'll start a new thread for that
-problem once this one is put to bed.
-
--Caleb
+T24gRnJpLCBPY3QgMzAsIDIwMTUgYXQgMzowMyBBTSwgQmVub8OudCBUaMOpYmF1ZGVhdQo8YmVu
+b2l0LnRoZWJhdWRlYXUuZGV2QGdtYWlsLmNvbT4gd3JvdGU6Cj4gRGVhciBSaWNrIE1hbm4sCj4K
+PiBPbiBGcmksIE9jdCAzMCwgMjAxNSBhdCA2OjQ1IEFNLCBSaWNrIE1hbm4gPHJtYW5uQGxhdGVu
+Y3l6ZXJvLmNvbT4gd3JvdGU6Cj4+Cj4+PiBPbiBPY3QgMjksIDIwMTUsIGF0IDIwOjQzICwgQ2Fs
+ZWIgQ3JvbWUgPGNhbGViQGNyb21lLm9yZz4gd3JvdGU6Cj4+Pgo+Pj4gVGhlIGRhdGEgc2hlZXRz
+IGZvciB0aG9zZSBhaWMgY29kZWNzIGFyZSBwcmV0dHkgZ29vZCBJIHRoaW5rLgo+Pj4KPj4+IEFs
+c28sIHJvdXRpbmcgZGlyZWN0IG9yIHRocm91Z2ggYSBtaXhlciB3aWxsIGJlIGEgbWlub3IgZGlm
+ZmVyZW5jZSwgbm90IGEgbWFqb3Igb25lLgo+Pj4KPj4+IEl0IGp1c3Qgb2NjdXJyZWQgdG8gbWUs
+IHRoZSBub2lzZSBjb3VsZCBlYXNpbHkgYmUgY29taW5nIGZyb20gYSBkaXJlY3QgaW5wdXQgLT4g
+b3V0cHV0IHJvdXRlLCBieXBhc3NpbmcgdGhlIGFkYyBhbmQgZGFjIGFsdG9nZXRoZXIuIE1ha2Ug
+c3VyZSBhbGwgYnlwYXNzIHJvdXRlcyBhcmUgemVyb2VkIG91dC4gIFRoZSB0cmljayBpcyBjb3Jy
+ZWxhdGluZyB0aGUgZGF0YXNoZWV0IHJvdXRlcyB3aXRoIHRoZSBhbHNhIG1peGVyIGNvbnRyb2xz
+IHRoYXQgY29ycmVzcG9uZCB0byB0aGVtIC4gIEVub3VnaCBzdGFyaW5nIGF0IHRoZSBhaWMzeC5j
+IGZpbGVzIHdpbGwgZXZlbnR1YWxseSBzaGVkIGxpZ2h0Oi0pCj4+Cj4+IEkndmUgemVyb2VkIG91
+dCBldmVyeXRoaW5nIEkgY291bGQgZmluZC4gTm90aGluZyBoYWQgYW4gZWZmZWN0IHVudGlsIEkg
+Z290IHRvIHRoZSBEQUMgbXV4ZXMsIGF0IHdoaWNoIHBvaW50IHRoZSBiZWhhdmlvciBnZXRzIHJl
+YWxseSB3ZWlyZC4gQ2hhbmdpbmcgdGhvc2UgZ2V0cyBtZSB0byBsZWZ0IG9yIHJpZ2h0IG91dHB1
+dCwgYnV0IG5ldmVyIGJvdGggYWdhaW4gdW50aWwgSSByZXNldCB0aGUgQ09ERUMuCj4+Cj4+IE5v
+bmUgb2YgdGhpcyBhZmZlY3RlZCB0aGUgaGlzcy4KPgo+IENhbiB5b3UgdHJ5IGBhbHNhY3RsIHJl
+c3RvcmVgIHdpdGggdGhpcyBhc291bmQuc3RhdGU/Cj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20v
+YnRoZWJhdWRlYXUvZTAwNDkyZWJmMDMwOWY4ZGJhY2UKPgo+IFRJJ3MgZGlhZ3JhbSBpbiB0aGUg
+ZGF0YSBzaGVldCBpcyBtaXNzaW5nIGEgZmV3IHRoaW5ncy4gU29tZSBwYXRocyBhcmUKPiBhbHNv
+IHdyb25nLiBUaGUgZGVzY3JpcHRpb24gb2YgdGhlIHJlZ2lzdGVycyBpcyByaWdodCBob3dldmVy
+LCBzbyBpdAo+IGlzIHRoZSByZWZlcmVuY2UuIEkgaGF2ZSB1c2VkIGV4dGVuc2l2ZWx5IGEgc2lt
+aWxhciBzZXR1cCB3aXRoIGFuCj4gb2xkZXIga2VybmVsLCBhbmQgaXQgd29ya3MgZmluZS4KCkhl
+eSwgdGhhdCdzIGdyZWF0IHRvIGtub3cuICBJIGd1ZXNzIEkgaGF2ZW4ndCBnb25lIG92ZXIgZXZl
+cnkgcmVnaXN0ZXIKYW5kIGNvbXBhcmVkIHRvIHRoZSBkcmF3aW5nLiAgVGhhbmtzIGZvciB0aGUg
+aW5mby4KIC1jYWxlYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
