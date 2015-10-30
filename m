@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: fix typo in sizeof
-Date: Fri, 30 Oct 2015 12:02:58 +0900
-Message-ID: <20151030030255.GW28319@sirena.org.uk>
-References: <1446156281-31024-1-git-send-email-vincent.stehle@laposte.net>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: Different reg_default for rt5650 codec
+Date: Fri, 30 Oct 2015 03:40:40 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7010C37D2@RTITMBSV03.realtek.com.tw>
+References: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
+ <20151030011932.GN28319@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1352210407217811904=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D272265DEF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 04:03:02 +0100 (CET)
-In-Reply-To: <1446156281-31024-1-git-send-email-vincent.stehle@laposte.net>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B58265E26
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 04:40:54 +0100 (CET)
+In-Reply-To: <20151030011932.GN28319@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vincent =?iso-8859-1?Q?Stehl=E9?= <vincent.stehle@laposte.net>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, October 30, 2015 9:20 AM
+> To: Bard Liao
+> Cc: John Lin; Oder Chiou; alsa-devel@alsa-project.org; Flove; Jack Yu
+> Subject: Re: Different reg_default for rt5650 codec
+> 
+> On Thu, Oct 29, 2015 at 11:17:26AM +0000, Bard Liao wrote:
+> 
+> > Something like
+> > 	case RT5650_DEVICE_ID:
+> > +		rt5645->regmap-> reg_defaults = rt5650_reg;
+> > +		rt5645->regmap-> num_reg_defaults = ARRAY_SIZE(rt5650_reg)
+> > 		rt5645->codec_type = CODEC_TYPE_RT5650;
+> > 		break;
+> >
+> > Is that ok?
+> 
+> No, that's not OK - the config needs to be constant and...
+> 
+> > Or should I use different regmap_config? There is one question if I use
+> > different regmap_config. We will know which codec it is by
+> regmap_read.
+> > So, regmap is init before we know which codec it is. Assume
+> rt5645_regmap
+> > is used and what should I do once rt5650 is detected?
+> 
+> ...you definitely can't change it after you registered the CODEC, regmap
+> will ignore that.  What should be happening here is that the devices
+> should be being registered using different identifiers so that before we
+> try to create the regmap we know what device is being used.
+> 
+> If there are buggy BIOSs out there that don't do that what I'd recommend
+> doing is creating a temporary regmap with no defaults or anything, just
+> the basic I/O.  Use that to read the identification registers from the
+> device and then create a second regmap with the actual configuration for
+> the device.
 
---===============1352210407217811904==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xxgoS+Xwt19NyhFM"
-Content-Disposition: inline
+Thanks Mark. I will follow your suggestion to create a temporary regmap
+to get the codec ID.
 
-
---xxgoS+Xwt19NyhFM
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 29, 2015 at 11:04:41PM +0100, Vincent Stehl=E9 wrote:
-> The size of the pointer to a data structure to send is erroneously
-> passed to sst_ipc_tx_message_wait() as its tx_bytes argument. It should
-> be given the size of the pointed skl_ipc_dxstate_info structure instead.
-
-This was reported by 0 day, please don't ignore reports from 0 day.
-
-> Cc: trivial@kernel.org
-
-This doesn't look like a trivial fix...
-
---xxgoS+Xwt19NyhFM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWMt3fAAoJECTWi3JdVIfQ0XUH/1Ey18LeDkqd0ot6aVF+kIIs
-YoauXhIEYscFRJu25GP3WlfTBBlmXM6i+VLy/JWdR4W4JTw+VlWbO0FVACGMJctx
-a2L17xDhLr1Ed0h6WUnS9znsr4/qDQXdx8QuX4U6FuJi/0AHogyWIv2DBB8hWR8O
-K+GNGvRRY24FwnpcUmWfZTa9Gl9WJ7laelVVcN5CB5f/cZIvD2mcYjqM25jyeKjL
-Ag8gbSdDB79l8p/ZcSR52nE43HyT13D+9P6QMHsLZJ468OKG7NvEdy9yJjy7NhFr
-dFwEIehT169lkGncx4rg9oylLHVP4XIAlUkGim4dJpocl93Twym7MMllwPlEhQc=
-=yttT
------END PGP SIGNATURE-----
-
---xxgoS+Xwt19NyhFM--
-
---===============1352210407217811904==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1352210407217811904==--
+> 
+> ------Please consider the environment before printing this e-mail.
