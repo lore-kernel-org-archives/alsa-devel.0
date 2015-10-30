@@ -1,24 +1,18 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Noise in tlv320aic3104-based audio system
-Date: Thu, 29 Oct 2015 17:38:03 -0700
-Message-ID: <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
-References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
- <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
- <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
- <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
- <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
- <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/17] ASoC: Intel: Skylake: More fixes and
+	updates
+Date: Fri, 30 Oct 2015 09:50:25 +0900
+Message-ID: <20151030005025.GM28319@sirena.org.uk>
+References: <1445905380-18167-1-git-send-email-vinod.koul@intel.com>
+ <20151029033434.GA31066@vkoul-mobl.iind.intel.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8038700932718176915=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 6713D265917
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 01:38:05 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 04CC320377
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 20:38:04 -0400 (EDT)
-In-Reply-To: <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5071265917
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 01:50:32 +0100 (CET)
+In-Reply-To: <20151029033434.GA31066@vkoul-mobl.iind.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,73 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmtzLCBCZW5vw650LAoKPiBZb3UgY2FuIGFsc28gc2ltcGx5IGFycmFuZ2UgeW91ciBsaW5l
-IG91dHB1dCB0byBjb25uZWN0IGl0IHRvIGV4dGVybmFsCj4gYW1wbGlmaWVkIHNwZWFrZXJzLiBK
-dXN0IHRha2UgY2FyZSBhYm91dCB0aGUgZGlmZmVyZW50aWFsIHRoaW5nCj4gZGVwZW5kaW5nIG9u
-IGhvdyB5b3VyIG9uLWJvYXJkIGFtcGxpZmllciBpcyBmZWQuIEJ1dCB5b3Ugc2hvdWxkIHRyeQo+
-IHRoZSBzb2Z0d2FyZSBzdHVmZiBiZWxvdyBiZWZvcmUgc3BlbmRpbmcgdGltZSBvbiBoYXJkd2Fy
-ZSB0ZXN0aW5nLgo+IAo+PiBJIHdhbnQgdG8gdHJ5IHRoZSBlMmUgZW5naW5lZXIncyBzdWdnZXN0
-aW9uIHRvIHJvdXRlIHRoZSBhdWRpbyB0aHJvdWdoIHRoZSBvdXRwdXQgbWl4ZXIsIGJ1dCB0aGF0
-IGRvZXNuJ3QgYWN0dWFsbHkgc2VlbSB0byBiZSBwb3NzaWJsZSB0byBkbyAoeW91IGNhbiBkbyBp
-dCBmb3IgdGhlIEhQIG91dCwgYnV0IG5vdCB0aGUgbGluZSBvdXQpLiBJbiBmYWN0LCB0aGUgZGlh
-Z3JhbSBpcyBzbyBiaXphcnJlIGFzIHRvIG1ha2UgbWUgdGhpbmsgaXQncyBpbmNvcnJlY3QuIEZv
-ciBleGFtcGxlLCB5b3UgZG9uJ3Qgc2VlbSB0byBiZSBhYmxlIHRvIHJvdXRlIHRoZSBMJlIgREFD
-IG91dHB1dCB0byB0aGUgTGluZSBPdXQgTCZSIG1peGVycywgYnV0IHlvdSBjYW4gc2hvcnQgdGhl
-IEwmUiBEQUMgb3V0cHV0cyB0b2dldGhlci4KPiAKPiBZb3VyIGFzb3VuZC5zdGF0ZSBkb2Vzbid0
-IGxvb2sgcmlnaHQuIEkgdGhpbmsgdGhhdCdzIHRoZSBpc3N1ZS4gWW91Cj4gY2FuIHVzZSBhbWl4
-ZXIgdG8gZml4IHRoZW0gb25lIGJ5IG9uZS4gVGhlbiwgeW91IGNhbiBzYXZlIHRoZSByZXN1bHRz
-Cj4gd2l0aCBgYWxzYWN0bCBzdG9yZWAsIGFuZCB5b3UgY2FuIHJlbG9hZCBhbGwgdGhlIGNoYW5n
-ZXMgaW4gYSBzaW5nbGUKPiBzdGVwIGxhdGVyIHdpdGggYGFsc2FjdGwgcmVzdG9yZWAuCj4gCj4g
-Rmlyc3QsIGp1c3QgbG9va2luZyBhdCB0aGUgYXVkaW8gcGF0aHMgZGlhZ3JhbSwgdGhlcmUgYXJl
-IGNvbnRyb2xzCj4gdGhhdCBzZWVtIHRvIGJlIHVucmVsYXRlZCwgZS5nLiB0aGUgTW9ubyBzdHVm
-ZiBhbmQgdGhlIExpbmUyTC9SCj4gZGlmZmVyZW50aWFsIG9wdGlvbnMuIEJ1dCBtYXliZSB0aGlz
-IGRpYWdyYW0gaXMganVzdCBub3QgYWNjdXJhdGUKPiBlbm91Z2guIFlvdSBjYW4gY2hlY2sgdGhp
-cyBpbiB0aGUgZHJpdmVyIHZzLiB0aGUgZGF0YSBzaGVldC4gSWYKPiBhY3R1YWxseSB1bnJlbGF0
-ZWQsIHRoZXNlIGNvbnRyb2xzIGFyZSBqdXN0IGZvciB0aGUgb3RoZXIgQ09ERUNzCj4gc3VwcG9y
-dGVkIGJ5IHRoaXMgZHJpdmVyLiBUaGF0IHNob3VsZG4ndCBiZSB0aGUgY2F1c2Ugb2YgeW91ciBp
-c3N1ZQo+IGFueXdheS4KPiAKPiBTd2l0Y2ggb2ZmIG9yIG11dGUgYWxsIHRoZSBmb2xsb3dpbmcg
-Y29udHJvbHM6Cj4gLSBhbGwgY3Jvc3MtY2hhbm5lbCBjb250cm9sczogTCAtPiBSIGFuZCBSIC0+
-IEwsCj4gLSBhbGwgYnlwYXNzIGNvbnRyb2xzLAo+IC0gYWxsIExpbmUxTC9SLCBMaW5lMkwvUiwg
-TW9ubywgSFBbTC9ST1VUL0NPTV0sIFBHQSwgQUdDLCBBREMgY29udHJvbHMuCj4gCj4gWW91IG5l
-ZWQgdG8gdW5tdXRlIExpbmUgREFDIFBsYXliYWNrIFZvbHVtZS4KPiAKPiBZb3UgbmVlZCB0byBz
-d2l0Y2ggb24gTGVmdCBMaW5lIE1peGVyIERBQ0wxIFN3aXRjaCBhbmQgUmlnaHQgTGluZQo+IE1p
-eGVyIERBQ1IxIFN3aXRjaCAoYWxyZWFkeSBkb25lIGluIHlvdXIgYXNvdW5kLnN0YXRlKS4KPiAK
-PiBZb3UgaGF2ZSB0byBzd2l0Y2ggTGVmdCBEQUMgTXV4IHRvIERBQ19MMSBhbmQgUmlnaHQgREFD
-IE11eCB0byBEQUNfUjEuCj4gSSB0aGluayB0aGF0J3MgdGhlIG1haW4gaXNzdWUuCgpJIGdvdCB0
-aGF0IGZpbGUgZnJvbSB0aGUgQ2lyY3VpdENvIEF1ZGlvIENhcGUgKHNpbmNlIGl0IHVzZXMgdGhl
-IHNhbWUgQ09ERUMgSSB1c2U7IGluIGZhY3QsIEkgY2hvc2UgbXkgQ09ERUMgYmVjYXVzZSB0aGF0
-IG9uZSB3YXMga25vd24gdG8gd29yaykuIEl0J3MgZW50aXJlbHkgcG9zc2libGUgaXQncyB3cm9u
-ZywgYWx0aG91Z2ggSSBoYXZlIGRvbmUgYSBsaXR0bGUgc3dpdGNoaW5nIG15c2VsZi4KCkFzIEkg
-bWVudGlvbmVkIGluIHRoZSBvdGhlciBwb3N0LCB0aGUgdGx2MzIwYWljMzEwNCdzIGRhdGFzaGVl
-dCBkZXNjcmliZXMgYSByZWFsbHkgYml6YXJyZSAoSU1ITykgc2V0IG9mIGF2YWlsYWJsZSByb3V0
-ZXMuIEkgaG9wZSB0aGUgZGF0YSBzaGVldCBpcyB3cm9uZywgYmVjYXVzZSBJIGRvbid0IHNlZSBh
-IHdheSB0byByb3V0ZSBib3RoIERBQ3MgdG8gdGhlaXIgcmVzcGVjdGl2ZSBMaW5lIE91dHMgdmlh
-IHRoZSBtaXhlcnMgKGFzIHN1Z2dlc3RlZCBieSBUSSksIG9ubHkgaW4gYnlwYXNzLgoKQSBjb3Vw
-bGUgd2Vla3MgYWdvIEkgZGlkIHNwZW5kIGEgbG90IG9mIHRpbWUgbG9va2luZyBhdCB0aGUgZHJp
-dmVyIGNvZGUgKHRsdjMyMGFpYzN4LmMpLCB0cnlpbmcgdG8gdW5kZXJzdGFuZCBob3cgaXQgbWFw
-cyByb3V0ZXMgdG8gcmVnaXN0ZXIgY2FsbHMsIGV0Yy4gSSBmb3VuZCBJIGNvdWxkbid0IHF1aXRl
-IGNvcnJlbGF0ZSBuYW1lcyBvZiB0aGluZ3MgaW4gdGhlIGRyaXZlciB3aXRoIG5hbWVzIGluIHRo
-ZSBhc291bmQuc3RhdGUgZmlsZS4gSXMgdGhlcmUgYSB3YXkgdG8gZ2VuZXJhdGUgYSBkZWZhdWx0
-IGFzb3VuZC5zdGF0ZSBmaWxlPyBGb3IgZXhhbXBsZSwgaWYgSSBkZWxldGUgdGhlIGZpbGUgYWx0
-b2dldGhlciwgYW5kIHRoZW4gcmVib290LCByZWxvYWQgbXkgRGV2aWNlIFRyZWUgT3ZlcmxheSwg
-YW5kIHRoZW4gaXNzdWUgYWxzYWN0bCBzdG9yZSwgd2lsbCBpdCBjcmVhdGUgYSAiY2xlYW4iIGFz
-b3VuZCBmaWxlIHdpdGgganVzdCB0aGUgcmlnaHQgY29udHJvbHMgKHdpdGggZGVmYXVsdHMpPyBP
-ciBtdXN0IHRoYXQgZmlsZSBiZSBjcmVhdGVkIGluIHBhcmFsbGVsIGJ5IGhhbmQ/CgpXaGVuIEkg
-aGF2ZSBtb3JlIHRpbWUgdG9uaWdodCBhdCBob21lIEknbGwgc2VlIGlmIEkgY2FuIG1ha2Ugc2Vu
-c2Ugb2YgdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIHRoZSBkcml2ZXIgY29kZSBhbmQgdGhlIGFz
-b3VuZC5zdGF0ZSBmaWxlLgoKUGFydCBvZiB3aGVyZSBJIHRyaXAgdXAgaXMgdGhhdCBpdCBzZWVt
-cyBBTFNBIHVzZXMgdGhlIHN0cmluZ3MgKGxpa2UgIlBDTSBQbGF5YmFjayBWb2x1bWUiKSB0byBt
-YXRjaCBiZXR3ZWVuIGNoaXAgcmVnaXN0ZXJzIGFuZCBVSS4gQ29taW5nIGZyb20gYW4gQXBwbGUg
-YmFja2dyb3VuZCwgSSB3b3VsZCBuZXZlciB3cml0ZSBjb2RlIHRoYXQgZGVwZW5kZWQgb24gaHVt
-YW4tcmVhZGFibGUgc3RyaW5ncyBhcyBpZGVudGlmaWVycyAoYmVjYXVzZSB5b3UgdHlwaWNhbGx5
-IHdhbnQgdG8gYmUgYWJsZSB0byBjaGFuZ2Ugb3IgdHJhbnNsYXRlIHRoZW0pLiBIb3dldmVyLCB0
-aGF0IGRvZXMgc2VlbSB0byBiZSB3aGF0J3MgZ29pbmcgb24gaGVyZS4KCkFueXdheSwgdGhhbmtz
-IGZvciB0aGUgYWRkaXRpb25hbCBleHBsYW5hdGlvbiwgaXQncyB2ZXJ5IGhlbHBmdWwuCgoKLS0g
-ClJpY2sgTWFubgpybWFubkBsYXRlbmN5emVyby5jb20KCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============8038700932718176915==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="k1whYXOlSGJlk+LY"
+Content-Disposition: inline
+
+
+--k1whYXOlSGJlk+LY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 29, 2015 at 12:34:37PM +0900, Vinod Koul wrote:
+
+> Jeeja found two more fixes for this so I have appended these to the last
+> patch. First fixes bit format on SSP port and second fixes the missing
+> machine entry required as BIOS doesn't have that
+
+> They seem to appear in this thread so easy to find :)
+
+Please don't send new patches as followups to something in the middle of
+a series, it creates confusion trying to understand what the current
+version of the series is intended to be.  Please resend whatever you
+want applying as a separate series.
+
+--k1whYXOlSGJlk+LY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWMr7QAAoJECTWi3JdVIfQQwkH+gKAlobUFpVd0V5NwAFEVYcO
+OfLQczoPU4oTF9DDhdLgi3wa7Pwpmv1VmwftqMBhKMgAIAK/Ww5n/Kq0BfVBYZ3U
+JwGyasKJxVnFxZE6CPc+Td8GwsFBIAC0mR/10+eoyKkwExNB8IN5AzkX4k8dFtV/
+7n118RDhWYyHgn3gdHiB+89IF1TJmkXHq2faI4ZaLcjOs7mUu8fTwrvyTR4d/DqI
+Yey63Cmr9IKhFfruYQmYR6mAdx5yrpGosT0VEnP82XNG/gXX42+Km/XSQ6JNx+oz
+PxX9BH8utKTnhblLF7dCMOM1eeuqylDhG4ISA8iCSxk7GNqDRpV5SaE8FEqGvLw=
+=pT8F
+-----END PGP SIGNATURE-----
+
+--k1whYXOlSGJlk+LY--
+
+--===============8038700932718176915==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8038700932718176915==--
