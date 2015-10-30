@@ -1,69 +1,160 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Noise in tlv320aic3104-based audio system
-Date: Fri, 30 Oct 2015 11:11:50 -0700
-Message-ID: <CAG5mAdxkPOm8D==wpBhOkx9fxvv9_XsrS2=jZCMdYrYYE1bYYg@mail.gmail.com>
-References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
- <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
- <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
- <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
- <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
- <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
- <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
- <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
- <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
- <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 1/3] mfd: arizona: Support Cirrus Logic CS47L24 and
+ WM1831
+Date: Fri, 30 Oct 2015 18:29:41 +0000
+Message-ID: <20151030182941.GI4058@x1>
+References: <1445264027-7357-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1445264027-7357-2-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 23D3A26067B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 19:12:10 +0100 (CET)
-Received: by wicfx6 with SMTP id fx6so15827016wic.1
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 11:12:09 -0700 (PDT)
-In-Reply-To: <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: Rick Mann <rmann@latencyzero.com>, Alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1445264027-7357-2-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: linus.walleij@linaro.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBPY3QgMzAsIDIwMTUgYXQgMzowMyBBTSwgQmVub8OudCBUaMOpYmF1ZGVhdQo8YmVu
-b2l0LnRoZWJhdWRlYXUuZGV2QGdtYWlsLmNvbT4gd3JvdGU6Cj4gRGVhciBSaWNrIE1hbm4sCj4K
-PiBPbiBGcmksIE9jdCAzMCwgMjAxNSBhdCA2OjQ1IEFNLCBSaWNrIE1hbm4gPHJtYW5uQGxhdGVu
-Y3l6ZXJvLmNvbT4gd3JvdGU6Cj4+Cj4+PiBPbiBPY3QgMjksIDIwMTUsIGF0IDIwOjQzICwgQ2Fs
-ZWIgQ3JvbWUgPGNhbGViQGNyb21lLm9yZz4gd3JvdGU6Cj4+Pgo+Pj4gVGhlIGRhdGEgc2hlZXRz
-IGZvciB0aG9zZSBhaWMgY29kZWNzIGFyZSBwcmV0dHkgZ29vZCBJIHRoaW5rLgo+Pj4KPj4+IEFs
-c28sIHJvdXRpbmcgZGlyZWN0IG9yIHRocm91Z2ggYSBtaXhlciB3aWxsIGJlIGEgbWlub3IgZGlm
-ZmVyZW5jZSwgbm90IGEgbWFqb3Igb25lLgo+Pj4KPj4+IEl0IGp1c3Qgb2NjdXJyZWQgdG8gbWUs
-IHRoZSBub2lzZSBjb3VsZCBlYXNpbHkgYmUgY29taW5nIGZyb20gYSBkaXJlY3QgaW5wdXQgLT4g
-b3V0cHV0IHJvdXRlLCBieXBhc3NpbmcgdGhlIGFkYyBhbmQgZGFjIGFsdG9nZXRoZXIuIE1ha2Ug
-c3VyZSBhbGwgYnlwYXNzIHJvdXRlcyBhcmUgemVyb2VkIG91dC4gIFRoZSB0cmljayBpcyBjb3Jy
-ZWxhdGluZyB0aGUgZGF0YXNoZWV0IHJvdXRlcyB3aXRoIHRoZSBhbHNhIG1peGVyIGNvbnRyb2xz
-IHRoYXQgY29ycmVzcG9uZCB0byB0aGVtIC4gIEVub3VnaCBzdGFyaW5nIGF0IHRoZSBhaWMzeC5j
-IGZpbGVzIHdpbGwgZXZlbnR1YWxseSBzaGVkIGxpZ2h0Oi0pCj4+Cj4+IEkndmUgemVyb2VkIG91
-dCBldmVyeXRoaW5nIEkgY291bGQgZmluZC4gTm90aGluZyBoYWQgYW4gZWZmZWN0IHVudGlsIEkg
-Z290IHRvIHRoZSBEQUMgbXV4ZXMsIGF0IHdoaWNoIHBvaW50IHRoZSBiZWhhdmlvciBnZXRzIHJl
-YWxseSB3ZWlyZC4gQ2hhbmdpbmcgdGhvc2UgZ2V0cyBtZSB0byBsZWZ0IG9yIHJpZ2h0IG91dHB1
-dCwgYnV0IG5ldmVyIGJvdGggYWdhaW4gdW50aWwgSSByZXNldCB0aGUgQ09ERUMuCj4+Cj4+IE5v
-bmUgb2YgdGhpcyBhZmZlY3RlZCB0aGUgaGlzcy4KPgo+IENhbiB5b3UgdHJ5IGBhbHNhY3RsIHJl
-c3RvcmVgIHdpdGggdGhpcyBhc291bmQuc3RhdGU/Cj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20v
-YnRoZWJhdWRlYXUvZTAwNDkyZWJmMDMwOWY4ZGJhY2UKPgo+IFRJJ3MgZGlhZ3JhbSBpbiB0aGUg
-ZGF0YSBzaGVldCBpcyBtaXNzaW5nIGEgZmV3IHRoaW5ncy4gU29tZSBwYXRocyBhcmUKPiBhbHNv
-IHdyb25nLiBUaGUgZGVzY3JpcHRpb24gb2YgdGhlIHJlZ2lzdGVycyBpcyByaWdodCBob3dldmVy
-LCBzbyBpdAo+IGlzIHRoZSByZWZlcmVuY2UuIEkgaGF2ZSB1c2VkIGV4dGVuc2l2ZWx5IGEgc2lt
-aWxhciBzZXR1cCB3aXRoIGFuCj4gb2xkZXIga2VybmVsLCBhbmQgaXQgd29ya3MgZmluZS4KCkhl
-eSwgdGhhdCdzIGdyZWF0IHRvIGtub3cuICBJIGd1ZXNzIEkgaGF2ZW4ndCBnb25lIG92ZXIgZXZl
-cnkgcmVnaXN0ZXIKYW5kIGNvbXBhcmVkIHRvIHRoZSBkcmF3aW5nLiAgVGhhbmtzIGZvciB0aGUg
-aW5mby4KIC1jYWxlYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Mon, 19 Oct 2015, Richard Fitzgerald wrote:
+
+> This patch adds the regmap configuration tables and
+> core MFD handling for the CS47L24 and WM1831 codecs.
+>=20
+> Note that compared to the other Arizona codecs, these devices
+> do not have an LDO1 or micsupp regulators, extcon driver, or
+> the DCVDD isolation control.
+>=20
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/arizona.txt |    4 +-
+
+Separate patch please.
+
+>  drivers/mfd/Kconfig                               |   19 +-
+>  drivers/mfd/Makefile                              |    3 +
+>  drivers/mfd/arizona-core.c                        |   74 +-
+>  drivers/mfd/arizona-irq.c                         |   40 +-
+>  drivers/mfd/arizona-spi.c                         |    7 +
+>  drivers/mfd/arizona.h                             |    4 +
+>  drivers/mfd/cs47l24-tables.c                      | 1629 +++++++++++=
+++++++++++
+>  include/linux/mfd/arizona/core.h                  |    3 +
+>  9 files changed, 1757 insertions(+), 26 deletions(-)
+>  create mode 100644 drivers/mfd/cs47l24-tables.c
+>=20
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Docu=
+mentation/devicetree/bindings/mfd/arizona.txt
+> index a8fee60..73f28fa 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -1,4 +1,4 @@
+> -Wolfson Arizona class audio SoCs
+> +Cirrus Logic/Wolfson Microelectronics Arizona class audio SoCs
+> =20
+>  These devices are audio SoCs with extensive digital capabilites and =
+a range
+>  of analogue I/O.
+> @@ -12,6 +12,8 @@ Required properties:
+>          "wlf,wm8997"
+>          "wlf,wm8998"
+>          "wlf,wm1814"
+> +        "wlf,wm1831"
+> +        "cirrus,cs47l24"
+> =20
+>    - reg : I2C slave address when connected using I2C, chip select nu=
+mber when
+>      using SPI.
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 4d92df6..d25bbb3 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1370,24 +1370,24 @@ config MFD_ARIZONA
+>  	bool
+> =20
+>  config MFD_ARIZONA_I2C
+> -	tristate "Wolfson Microelectronics Arizona platform with I2C"
+> +	tristate "Cirrus Logic/Wolfson Microelectronics Arizona platform wi=
+th I2C"
+>  	select MFD_ARIZONA
+>  	select MFD_CORE
+>  	select REGMAP_I2C
+>  	depends on I2C
+>  	help
+> -	  Support for the Wolfson Microelectronics Arizona platform audio S=
+oC
+> -	  core functionality controlled via I2C.
+> +	  Support for the Cirrus Logic/Wolfson Microelectronics Arizona pla=
+tform
+> +	  audio SoC core functionality controlled via I2C.
+> =20
+>  config MFD_ARIZONA_SPI
+> -	tristate "Wolfson Microelectronics Arizona platform with SPI"
+> +	tristate "Cirrus Logic/Wolfson Microelectronics Arizona platform wi=
+th SPI"
+>  	select MFD_ARIZONA
+>  	select MFD_CORE
+>  	select REGMAP_SPI
+>  	depends on SPI_MASTER
+>  	help
+> -	  Support for the Wolfson Microelectronics Arizona platform audio S=
+oC
+> -	  core functionality controlled via I2C.
+> +	  Support for the Cirrus Logic/Wolfson Microelectronics Arizona pla=
+tform
+> +	  audio SoC core functionality controlled via I2C.
+> =20
+>  config MFD_WM5102
+>  	bool "Wolfson Microelectronics WM5102"
+> @@ -1414,6 +1414,13 @@ config MFD_WM8998
+>  	help
+>  	  Support for Wolfson Microelectronics WM8998 low power audio SoC
+> =20
+> +config MFD_CS47L24
+> +	bool "Cirrus Logic CS47L24 and WM1831"
+> +	depends on MFD_ARIZONA
+> +	help
+> +	  Support for Cirrus Logic CS47L24 and WM1831 low power audio SoC
+> +
+> +
+
+Superflous '\n'.
+
+[...]
+
+> diff --git a/drivers/mfd/cs47l24-tables.c b/drivers/mfd/cs47l24-table=
+s.c
+> new file mode 100644
+> index 0000000..f877586
+> --- /dev/null
+> +++ b/drivers/mfd/cs47l24-tables.c
+> @@ -0,0 +1,1629 @@
+> +/*
+> + * cs47l24-tables.c  --  data tables for CS47L24 codec
+
+Please remove this filename.
+
+They have a habit of becoming unaligned.
+
+> + * Copyright 2015 Cirrus Logic, Inc.
+> + *
+> + * Author: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> + *
+> + * This program is free software; you can redistribute it and/or mod=
+ify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+
+[...]
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
+--
+To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
