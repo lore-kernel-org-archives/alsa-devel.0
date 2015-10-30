@@ -1,26 +1,16 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Noise in tlv320aic3104-based audio system
-Date: Thu, 29 Oct 2015 18:08:06 -0700
-Message-ID: <74948082-F465-445E-8CB4-6F401061A4DD@latencyzero.com>
-References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
- <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
- <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
- <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
- <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
- <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
- <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
- <20151030005320.GB7311@us.netrek.org>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Different reg_default for rt5650 codec
+Date: Fri, 30 Oct 2015 10:19:32 +0900
+Message-ID: <20151030011932.GN28319@sirena.org.uk>
+References: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6794334330656895021=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A1CD9265917
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 02:08:08 +0100 (CET)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 26D152031A
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 21:08:08 -0400 (EDT)
-In-Reply-To: <20151030005320.GB7311@us.netrek.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33A40265917
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 02:19:36 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7010C3663@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,35 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: James Cameron <quozl@laptop.org>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>, =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-> On Oct 29, 2015, at 17:53 , James Cameron <quozl@laptop.org> wrote:
-> 
-> On Thu, Oct 29, 2015 at 05:38:03PM -0700, Rick Mann wrote:
->> ... Is there a way to generate a default asound.state file? For
->> example, if I delete the file altogether, and then reboot, reload my
->> Device Tree Overlay, and then issue alsactl store, will it create a
->> "clean" asound file with just the right controls (with defaults)?
-> 
-> Yes, that's the way it is usually done; delete the file, somehow avoid
-> it being written on shutdown, then on next boot whatever the driver
-> and hardware has as a default will be used.  Many drivers will use
-> what the hardware has in registers.  If the system firmware hasn't
-> touched those registers, then you should have chip reset values.  If
-> the chip is specified without reset values, you'll have unpredictable
-> values.  Exciting times ensue.
+--===============6794334330656895021==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Fm6XlJPzS/ViAqAU"
+Content-Disposition: inline
 
-Thanks James...Cameron? Whoa. ;-)
 
-I think what I'll do is reboot, delete the file, then load the overlay which will add the device to the device tree (it's not there after boot).
+--Fm6XlJPzS/ViAqAU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I might delete the file, reboot, delete it again? Dunno. We'll see.
+On Thu, Oct 29, 2015 at 11:17:26AM +0000, Bard Liao wrote:
 
-Thanks for the confirmation that it works this way.
+> Something like
+> 	case RT5650_DEVICE_ID:
+> +		rt5645->regmap-> reg_defaults =3D rt5650_reg;
+> +		rt5645->regmap-> num_reg_defaults =3D ARRAY_SIZE(rt5650_reg)
+> 		rt5645->codec_type =3D CODEC_TYPE_RT5650;
+> 		break;
+>=20
+> Is that ok?
 
--- 
-Rick Mann
-rmann@latencyzero.com
+No, that's not OK - the config needs to be constant and...
+
+> Or should I use different regmap_config? There is one question if I use
+> different regmap_config. We will know which codec it is by regmap_read.
+> So, regmap is init before we know which codec it is. Assume rt5645_regmap
+> is used and what should I do once rt5650 is detected?
+
+=2E..you definitely can't change it after you registered the CODEC, regmap
+will ignore that.  What should be happening here is that the devices
+should be being registered using different identifiers so that before we
+try to create the regmap we know what device is being used.
+
+If there are buggy BIOSs out there that don't do that what I'd recommend
+doing is creating a temporary regmap with no defaults or anything, just
+the basic I/O.  Use that to read the identification registers from the
+device and then create a second regmap with the actual configuration for
+the device.
+
+--Fm6XlJPzS/ViAqAU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWMsWjAAoJECTWi3JdVIfQadQH/3us0gfilzfHa5ECTiQIvA5w
+BADnYlqF7eRVqpWLvkMyrkDtK2SqM3WCNyfFQPy3kx0xscedc7h2DqbVizqRlRCa
+Ak70roEaFXwrJ9DUjNJzD7bh1JwqC5i5GzCa72JhbPNOUxrDA1XWaqBvBXtPBvo0
+FVtEy8rpLYsO5OJXKGxKq35rIbo8tGph0OrAaC5L67gYcX+Dg0XbDVaPksp/jG8a
+l5fSbIyU1EJQURdoTa/c/azar0X3TMIdRVwoZJd0BfEAGriLmBitmcJ5y/sGLSWI
+NlWGDjGZBZn3TFoUY8xo4niD6ANWsHRdme228KOytOv3I8FLIpRjRaNbwr289eM=
+=BglU
+-----END PGP SIGNATURE-----
+
+--Fm6XlJPzS/ViAqAU--
+
+--===============6794334330656895021==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6794334330656895021==--
