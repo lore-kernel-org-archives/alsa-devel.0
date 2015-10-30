@@ -1,21 +1,30 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [PATCH alsa-lib] pcm: dmix: Handle slave PCM xrun
- and unexpected states properly
-Date: Fri, 30 Oct 2015 21:36:31 +0500
-Message-ID: <56339C8F.5060306@gmail.com>
-References: <1446221936-8327-1-git-send-email-tiwai@suse.de>
- <56339BEC.5090204@gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
+ TDM (network) mode.
+Date: Fri, 30 Oct 2015 10:21:41 -0700
+Message-ID: <20151030172141.GA4193@Asurada-CZ80>
+References: <20151027071344.GC25728@pengutronix.de>
+ <CAOMZO5DPL6H+Ahz_32Zn8AmDU8muGnVQG_owrGXtDQ1MQXcQ5g@mail.gmail.com>
+ <CAG5mAdzxHTqYf0MjogUPYKze9WqKaKXpQvqSvvmSBZJORAQz2Q@mail.gmail.com>
+ <CAOMZO5D0Xqpv2LDHfgWf87b8YwaZy424q_9wLTh8bYzoqJwq3g@mail.gmail.com>
+ <CAG5mAdxAgyC4YNK80bu=JubPV1CfSiazf9QdWjgVFsgvzdGM8A@mail.gmail.com>
+ <CAOMZO5CmALnrsCyTwd+v4NvLzZc1QuoSL8vDLi6z9s4mGTMV9g@mail.gmail.com>
+ <CAOMZO5AOPSDH55mkJPbmn_VyNc173cFY6Uykg74-BznxWmwOvg@mail.gmail.com>
+ <5630833B.10309@tekno-soft.it>
+ <20151029230404.GB44369@Asurada-CZ80>
+ <563357BD.6020202@tekno-soft.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id F1A6026051B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 17:36:33 +0100 (CET)
-Received: by wicfv8 with SMTP id fv8so14533809wic.0
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 09:36:33 -0700 (PDT)
-In-Reply-To: <56339BEC.5090204@gmail.com>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FB0D260663
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 18:21:48 +0100 (CET)
+Received: by pacfv9 with SMTP id fv9so83165012pac.3
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 10:21:47 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <563357BD.6020202@tekno-soft.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +34,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Roberto Fichera <kernel@tekno-soft.it>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-30.10.2015 21:33, Alexander E. Patrakov wrote:
-> [resending to the list, sorry for the duplicate]
->
-> 30.10.2015 21:18, Takashi Iwai wrote:
->> Currently, dmix & co plugins ignore the XRUN state of the slave PCM.
->> It's (supposedly) because dmix deals with the PCM in a free-wheel
->> mode, which is equivalent with XRUN.  But, this difference (whether
->> the correct freewheel or XRUN) should be done by the kernel, and we
->> may have an XRUN state indeed (e.g. via xrun injection).
->>
->> This patch fixes this lack of behavior, to handle PCM xrun and does
->> prepare when the slave PCM is in such a state.
->>
->> Also, the patch consolidates the prepare callback for all dmix, dsnoop
->> and dshare plugins, and fix/cleanup a bit for dshare/dsnoop codes to
->> align with dsnoop code.
->>
->> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->
-> Just a nitpick.
->
-> In snd_pcm_direct_prepare(), you use snd_pcm_state(...) directly in the
-> switch statement, but in other places of the patch you introduce a
-> temporary variable for the state. Why?
+On Fri, Oct 30, 2015 at 12:42:53PM +0100, Roberto Fichera wrote:
 
-Sorry for the noise - you do need a temporary variable, because you 
-return its value.
 
->
-> Also, in snd_pcm_direct_prepare(), the "dmix" variable name is confusing.
->
+>         /*
+>          * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
+>          * don't use FIFO 1.  We program the transmit water to signal a
+>          * DMA transfer if there are only two (or fewer) elements left
+>          * in the FIFO. 
+>          */
 
-So, other than that, the patch looks OK.
+> SSI clock calculated and then enabled. Both TX and RX DMA channel are requested in the probe() function as below.
+> and the corresponding TX and RX SDMA event in DTS are using the default from imx6sx.dtsi:
 
--- 
-Alexander E. Patrakov
+Since you are using single FIFO configuration, which SDMA script
+are you using? This should reflects in the Device Tree. As far as
+I learned, FSL 3.14 is using number 22 for SSIs which is the one
+for Dual FIFO Mode.
+
+> At this time I should see the DMA callbacks called every burst_size words. This behaviour
+> doesn't really happen as I wish because I can see from a proc file that such callbacks
+> are called from 1 to 20000 times and then anymore. This is also confirmed by the fact that
+> the interrupt 34 (sdma) doesn't increase anymore but matches my internal counters collected
+> within my callbacks. Here is what I can inspect from the data I have collected:
+
+Just for clarification, the behaviour doesn't happen as you wish
+is just the DMA stopped? I remember you also mentioned bit clock
+has stopped as you can check the clock status from the Codec chip.
+
+> SSI Registers:
+>         ssi_sfcsr=0x0088f088
+
+At this point you have data in RxFIFO and get empty in TxFIFO, so
+the DMA requests from both side should be issued. If the DMA stops
+as you described, you must check those two channels from the SDMA
+side by dumping SDMAARM_STOP_STAT, SDMAARM_HSTART, SDMAARM_EVTOVR,
+SDMAARM_EVTPEND, SDMAARM_EVTERR, SDMAARM_DSPOVR and SDMAARM_HOSTOVR
+registers.
+
+Overall, I don't see an obvious defect from you SSI side, but you
+may also try to toggle TDMAE and RDMAE at the point that callback
+stops -- re-raise the DMA requests by disabling and enabling TDMAE
+and RDMAE again and see if it works. I think either something did
+intervene register controls of SDMA or SSI, or SDMA have missed the
+request signals from SSI.
