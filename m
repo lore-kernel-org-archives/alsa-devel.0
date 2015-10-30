@@ -1,18 +1,28 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH alsa-lib] pcm: dmix: Handle slave PCM xrun and
-	unexpected states properly
-Date: Fri, 30 Oct 2015 17:18:56 +0100
-Message-ID: <1446221936-8327-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: Noise in tlv320aic3104-based audio system
+Date: Fri, 30 Oct 2015 09:27:31 -0700
+Message-ID: <BDDAB52E-A2EF-4CFF-8ECE-5DA86ECBCFB8@latencyzero.com>
+References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
+ <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
+ <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
+ <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
+ <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
+ <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
+ <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
+ <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
+ <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
+ <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C159826051B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 17:18:57 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DB286ABE5
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 16:19:17 +0000 (UTC)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 378D526051B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 17:27:34 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 703802089B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 12:27:33 -0400 (EDT)
+In-Reply-To: <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,226 +32,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, dmix & co plugins ignore the XRUN state of the slave PCM.
-It's (supposedly) because dmix deals with the PCM in a free-wheel
-mode, which is equivalent with XRUN.  But, this difference (whether
-the correct freewheel or XRUN) should be done by the kernel, and we
-may have an XRUN state indeed (e.g. via xrun injection).
-
-This patch fixes this lack of behavior, to handle PCM xrun and does
-prepare when the slave PCM is in such a state.
-
-Also, the patch consolidates the prepare callback for all dmix, dsnoop
-and dshare plugins, and fix/cleanup a bit for dshare/dsnoop codes to
-align with dsnoop code.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_direct.c | 22 ++++++++++++++++++++++
- src/pcm/pcm_direct.h |  3 +++
- src/pcm/pcm_dmix.c   | 16 +++-------------
- src/pcm/pcm_dshare.c | 22 +++++++---------------
- src/pcm/pcm_dsnoop.c | 23 +++++++----------------
- 5 files changed, 42 insertions(+), 44 deletions(-)
-
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 195fddf06cda..fd3877c30d04 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -807,6 +807,28 @@ int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map)
- 	return snd_pcm_set_chmap(dmix->spcm, map);
- }
- 
-+int snd_pcm_direct_prepare(snd_pcm_t *pcm)
-+{
-+	snd_pcm_direct_t *dmix = pcm->private_data;
-+	int err;
-+
-+	switch (snd_pcm_state(dmix->spcm)) {
-+	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
-+	case SND_PCM_STATE_DISCONNECTED:
-+		err = snd_pcm_prepare(dmix->spcm);
-+		if (err < 0)
-+			return err;
-+		snd_pcm_start(dmix->spcm);
-+		break;
-+	}
-+	snd_pcm_direct_check_interleave(dmix, pcm);
-+	dmix->state = SND_PCM_STATE_PREPARED;
-+	dmix->appl_ptr = dmix->last_appl_ptr = 0;
-+	dmix->hw_ptr = 0;
-+	return snd_pcm_direct_set_timer_params(dmix);
-+}
-+
- int snd_pcm_direct_resume(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
-diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 9b1ddbcf424a..611ad29a4821 100644
---- a/src/pcm/pcm_direct.h
-+++ b/src/pcm/pcm_direct.h
-@@ -224,6 +224,8 @@ struct snd_pcm_direct {
- 	snd1_pcm_direct_mmap
- #define snd_pcm_direct_munmap \
- 	snd1_pcm_direct_munmap
-+#define snd_pcm_direct_prepare \
-+	snd1_pcm_direct_prepare
- #define snd_pcm_direct_resume \
- 	snd1_pcm_direct_resume
- #define snd_pcm_direct_timer_stop \
-@@ -304,6 +306,7 @@ int snd_pcm_direct_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t * params);
- int snd_pcm_direct_channel_info(snd_pcm_t *pcm, snd_pcm_channel_info_t * info);
- int snd_pcm_direct_mmap(snd_pcm_t *pcm);
- int snd_pcm_direct_munmap(snd_pcm_t *pcm);
-+int snd_pcm_direct_prepare(snd_pcm_t *pcm);
- int snd_pcm_direct_resume(snd_pcm_t *pcm);
- int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix);
- void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix);
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 58e4975d5225..b26a5c790e7e 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -450,9 +450,10 @@ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
- 	snd_pcm_state_t state;
- 	state = snd_pcm_state(dmix->spcm);
- 	switch (state) {
-+	case SND_PCM_STATE_XRUN:
- 	case SND_PCM_STATE_SUSPENDED:
--		return state;
- 	case SND_PCM_STATE_DISCONNECTED:
-+		dmix->state = state;
- 		return state;
- 	default:
- 		break;
-@@ -533,17 +534,6 @@ static int snd_pcm_dmix_hwsync(snd_pcm_t *pcm)
- 	}
- }
- 
--static int snd_pcm_dmix_prepare(snd_pcm_t *pcm)
--{
--	snd_pcm_direct_t *dmix = pcm->private_data;
--
--	snd_pcm_direct_check_interleave(dmix, pcm);
--	dmix->state = SND_PCM_STATE_PREPARED;
--	dmix->appl_ptr = dmix->last_appl_ptr = 0;
--	dmix->hw_ptr = 0;
--	return snd_pcm_direct_set_timer_params(dmix);
--}
--
- static void reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
- {
- 	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
-@@ -920,7 +910,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dmix_fast_ops = {
- 	.state = snd_pcm_dmix_state,
- 	.hwsync = snd_pcm_dmix_hwsync,
- 	.delay = snd_pcm_dmix_delay,
--	.prepare = snd_pcm_dmix_prepare,
-+	.prepare = snd_pcm_direct_prepare,
- 	.reset = snd_pcm_dmix_reset,
- 	.start = snd_pcm_dmix_start,
- 	.drop = snd_pcm_dmix_drop,
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 02370dc7082d..58e47bbeac67 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -237,11 +237,14 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dshare = pcm->private_data;
--	switch (snd_pcm_state(dshare->spcm)) {
-+	snd_pcm_state_t state;
-+	state = snd_pcm_state(dshare->spcm);
-+	switch (state) {
-+	case SND_PCM_STATE_XRUN:
- 	case SND_PCM_STATE_SUSPENDED:
--		return SND_PCM_STATE_SUSPENDED;
- 	case SND_PCM_STATE_DISCONNECTED:
--		return SND_PCM_STATE_DISCONNECTED;
-+		dshare->state = state;
-+		return state;
- 	default:
- 		break;
- 	}
-@@ -296,17 +299,6 @@ static int snd_pcm_dshare_hwsync(snd_pcm_t *pcm)
- 	}
- }
- 
--static int snd_pcm_dshare_prepare(snd_pcm_t *pcm)
--{
--	snd_pcm_direct_t *dshare = pcm->private_data;
--
--	snd_pcm_direct_check_interleave(dshare, pcm);
--	dshare->state = SND_PCM_STATE_PREPARED;
--	dshare->appl_ptr = dshare->last_appl_ptr = 0;
--	dshare->hw_ptr = 0;
--	return snd_pcm_direct_set_timer_params(dshare);
--}
--
- static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dshare = pcm->private_data;
-@@ -595,7 +587,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dshare_fast_ops = {
- 	.state = snd_pcm_dshare_state,
- 	.hwsync = snd_pcm_dshare_hwsync,
- 	.delay = snd_pcm_dshare_delay,
--	.prepare = snd_pcm_dshare_prepare,
-+	.prepare = snd_pcm_direct_prepare,
- 	.reset = snd_pcm_dshare_reset,
- 	.start = snd_pcm_dshare_start,
- 	.drop = snd_pcm_dshare_drop,
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 8a2e87ad0ae1..576c35b111cd 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -201,12 +201,14 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dsnoop = pcm->private_data;
--	switch (snd_pcm_state(dsnoop->spcm)) {
-+	snd_pcm_state_t state;
-+	state = snd_pcm_state(dsnoop->spcm);
-+	switch (state) {
-+	case SND_PCM_STATE_XRUN:
- 	case SND_PCM_STATE_SUSPENDED:
--		return SND_PCM_STATE_SUSPENDED;
- 	case SND_PCM_STATE_DISCONNECTED:
--		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
--		return -ENODEV;
-+		dsnoop->state = state;
-+		return state;
- 	default:
- 		break;
- 	}
-@@ -258,17 +260,6 @@ static int snd_pcm_dsnoop_hwsync(snd_pcm_t *pcm)
- 	}
- }
- 
--static int snd_pcm_dsnoop_prepare(snd_pcm_t *pcm)
--{
--	snd_pcm_direct_t *dsnoop = pcm->private_data;
--
--	snd_pcm_direct_check_interleave(dsnoop, pcm);
--	dsnoop->state = SND_PCM_STATE_PREPARED;
--	dsnoop->appl_ptr = 0;
--	dsnoop->hw_ptr = 0;
--	return snd_pcm_direct_set_timer_params(dsnoop);
--}
--
- static int snd_pcm_dsnoop_reset(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dsnoop = pcm->private_data;
-@@ -497,7 +488,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dsnoop_fast_ops = {
- 	.state = snd_pcm_dsnoop_state,
- 	.hwsync = snd_pcm_dsnoop_hwsync,
- 	.delay = snd_pcm_dsnoop_delay,
--	.prepare = snd_pcm_dsnoop_prepare,
-+	.prepare = snd_pcm_direct_prepare,
- 	.reset = snd_pcm_dsnoop_reset,
- 	.start = snd_pcm_dsnoop_start,
- 	.drop = snd_pcm_dsnoop_drop,
--- 
-2.6.2
+Cgo+IE9uIE9jdCAzMCwgMjAxNSwgYXQgMDM6MDMsIEJlbm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9p
+dC50aGViYXVkZWF1LmRldkBnbWFpbC5jb20+IHdyb3RlOgo+IAo+IERlYXIgUmljayBNYW5uLAo+
+IAo+PiBPbiBGcmksIE9jdCAzMCwgMjAxNSBhdCA2OjQ1IEFNLCBSaWNrIE1hbm4gPHJtYW5uQGxh
+dGVuY3l6ZXJvLmNvbT4gd3JvdGU6Cj4+IAo+Pj4gT24gT2N0IDI5LCAyMDE1LCBhdCAyMDo0MyAs
+IENhbGViIENyb21lIDxjYWxlYkBjcm9tZS5vcmc+IHdyb3RlOgo+Pj4gCj4+PiBUaGUgZGF0YSBz
+aGVldHMgZm9yIHRob3NlIGFpYyBjb2RlY3MgYXJlIHByZXR0eSBnb29kIEkgdGhpbmsuCj4+PiAK
+Pj4+IEFsc28sIHJvdXRpbmcgZGlyZWN0IG9yIHRocm91Z2ggYSBtaXhlciB3aWxsIGJlIGEgbWlu
+b3IgZGlmZmVyZW5jZSwgbm90IGEgbWFqb3Igb25lLgo+Pj4gCj4+PiBJdCBqdXN0IG9jY3VycmVk
+IHRvIG1lLCB0aGUgbm9pc2UgY291bGQgZWFzaWx5IGJlIGNvbWluZyBmcm9tIGEgZGlyZWN0IGlu
+cHV0IC0+IG91dHB1dCByb3V0ZSwgYnlwYXNzaW5nIHRoZSBhZGMgYW5kIGRhYyBhbHRvZ2V0aGVy
+LiBNYWtlIHN1cmUgYWxsIGJ5cGFzcyByb3V0ZXMgYXJlIHplcm9lZCBvdXQuICBUaGUgdHJpY2sg
+aXMgY29ycmVsYXRpbmcgdGhlIGRhdGFzaGVldCByb3V0ZXMgd2l0aCB0aGUgYWxzYSBtaXhlciBj
+b250cm9scyB0aGF0IGNvcnJlc3BvbmQgdG8gdGhlbSAuICBFbm91Z2ggc3RhcmluZyBhdCB0aGUg
+YWljM3guYyBmaWxlcyB3aWxsIGV2ZW50dWFsbHkgc2hlZCBsaWdodDotKQo+PiAKPj4gSSd2ZSB6
+ZXJvZWQgb3V0IGV2ZXJ5dGhpbmcgSSBjb3VsZCBmaW5kLiBOb3RoaW5nIGhhZCBhbiBlZmZlY3Qg
+dW50aWwgSSBnb3QgdG8gdGhlIERBQyBtdXhlcywgYXQgd2hpY2ggcG9pbnQgdGhlIGJlaGF2aW9y
+IGdldHMgcmVhbGx5IHdlaXJkLiBDaGFuZ2luZyB0aG9zZSBnZXRzIG1lIHRvIGxlZnQgb3Igcmln
+aHQgb3V0cHV0LCBidXQgbmV2ZXIgYm90aCBhZ2FpbiB1bnRpbCBJIHJlc2V0IHRoZSBDT0RFQy4K
+Pj4gCj4+IE5vbmUgb2YgdGhpcyBhZmZlY3RlZCB0aGUgaGlzcy4KPiAKPiBDYW4geW91IHRyeSBg
+YWxzYWN0bCByZXN0b3JlYCB3aXRoIHRoaXMgYXNvdW5kLnN0YXRlPwo+IGh0dHBzOi8vZ2lzdC5n
+aXRodWIuY29tL2J0aGViYXVkZWF1L2UwMDQ5MmViZjAzMDlmOGRiYWNlCj4gCj4gVEkncyBkaWFn
+cmFtIGluIHRoZSBkYXRhIHNoZWV0IGlzIG1pc3NpbmcgYSBmZXcgdGhpbmdzLiBTb21lIHBhdGhz
+IGFyZQo+IGFsc28gd3JvbmcuIFRoZSBkZXNjcmlwdGlvbiBvZiB0aGUgcmVnaXN0ZXJzIGlzIHJp
+Z2h0IGhvd2V2ZXIsIHNvIGl0Cj4gaXMgdGhlIHJlZmVyZW5jZS4gSSBoYXZlIHVzZWQgZXh0ZW5z
+aXZlbHkgYSBzaW1pbGFyIHNldHVwIHdpdGggYW4KPiBvbGRlciBrZXJuZWwsIGFuZCBpdCB3b3Jr
+cyBmaW5lLgo+IAo+IEJlc3QgcmVnYXJkcywKPiBCZW5vw650CgpUaGFuayB5b3UsIEJlbm/DrnQu
+IEknbSBvdXQgb2YgdG93biB1bnRpbCBTdW5kYXkgbmlnaHQsIHdpbGwgdHJ5IGl0IHRoZW4uIFRo
+YW5rcyBmb3IgY29uZmlybWluZyB0aGUgZXJyb3JzIGluIHRoZSBkYXRhIHNoZWV0LgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
