@@ -1,29 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Fri, 30 Oct 2015 09:07:18 -0700
-Message-ID: <20151030160717.GB3505@Asurada-CZ80>
-References: <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
- <20151029224713.GA44369@Asurada-CZ80>
- <CAG5mAdwnjLdxNNgC3go_NDERUSDxem9ZQFigyF5yaEWuXV2r4g@mail.gmail.com>
- <20151030012934.GA5456@Asurada-GSX> <56332A4E.3010704@invoxia.com>
- <56332E2C.4070405@invoxia.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH alsa-lib] pcm: dmix: Handle slave PCM xrun and
+	unexpected states properly
+Date: Fri, 30 Oct 2015 17:18:56 +0100
+Message-ID: <1446221936-8327-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 90B8A26051B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 17:07:22 +0100 (CET)
-Received: by pacfv9 with SMTP id fv9so81489460pac.3
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 09:07:21 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <56332E2C.4070405@invoxia.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C159826051B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 17:18:57 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DB286ABE5
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 16:19:17 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,49 +22,226 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, shengjiu.wang@freescale.com, Caleb Crome <caleb@crome.org>, Markus Pargmann <mpa@pengutronix.de>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Shengjiu.
+Currently, dmix & co plugins ignore the XRUN state of the slave PCM.
+It's (supposedly) because dmix deals with the PCM in a free-wheel
+mode, which is equivalent with XRUN.  But, this difference (whether
+the correct freewheel or XRUN) should be done by the kernel, and we
+may have an XRUN state indeed (e.g. via xrun injection).
 
-On Fri, Oct 30, 2015 at 09:45:32AM +0100, arnaud.mouiche@invoxia.com wrote:
+This patch fixes this lack of behavior, to handle PCM xrun and does
+prepare when the slave PCM is in such a state.
 
-> >At imx50 age, I remember one workaround was to fill the fifo
-> >manually, writing directly a number of samples (equal to the
-> >number of slots for one frame to keep the synchronization), and
-> >then, enable the TMDAE.
-> >This just allow to not have to wait an undefined period of time
-> >for the DMA to be ready.
-> >But, on the other hand, if the time to wait the DMA is short
-> >enough, it should not be an issue.
+Also, the patch consolidates the prepare callback for all dmix, dsnoop
+and dshare plugins, and fix/cleanup a bit for dshare/dsnoop codes to
+align with dsnoop code.
 
-> In the same idea, they were other similar issues to deal with
-> concerning the RX and TX fifo.
-> 
-> 1) Still some samples in the TX fifo when stoping/ re-starting the
-> TX, while RX stream is going on.
-> Since we can't reset the TX fifo content without disabling SSIEN,
-> possible samples filled by the TX DMA are still there when the TX
-> stream stops. And when we start it again, they introduce a random
-> de-synchronization of the output.
-> The workaround for this case was to add additional zero samples in
-> the fifo manually to reach a multiple of the frame size.
-> But I would prefer a way to empty manually the fifo instead. If
-> Freescale can help us to find another way as they know the internal
-> of the SSI...
-> 
-> 2) the same for RX fifo, if the RX stream is stopped/-restarted,
-> while TX stream is not stopped.
-> We may still have some samples in the RX fifo, and those fifo must
-> be removed before starting the RX again.
-> This was more simple in this case, since we only need to read the RX
-> register manually until the fifo is empty, before enabling the DMA.
-> 
-> Obviously, disabling the SSIEN completely to start on good basis is
-> not possible since we will lose a random number of samples already
-> present in the fifo corresponding to the stream we don't want to
-> stop, and this number of samples may not be a multiple of slots.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_direct.c | 22 ++++++++++++++++++++++
+ src/pcm/pcm_direct.h |  3 +++
+ src/pcm/pcm_dmix.c   | 16 +++-------------
+ src/pcm/pcm_dshare.c | 22 +++++++---------------
+ src/pcm/pcm_dsnoop.c | 23 +++++++----------------
+ 5 files changed, 42 insertions(+), 44 deletions(-)
 
-You are right. Since SSI doesn't have separate FIFO reset bits
-for TX and RX respectively. These could be issues.
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 195fddf06cda..fd3877c30d04 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -807,6 +807,28 @@ int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map)
+ 	return snd_pcm_set_chmap(dmix->spcm, map);
+ }
+ 
++int snd_pcm_direct_prepare(snd_pcm_t *pcm)
++{
++	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
++
++	switch (snd_pcm_state(dmix->spcm)) {
++	case SND_PCM_STATE_XRUN:
++	case SND_PCM_STATE_SUSPENDED:
++	case SND_PCM_STATE_DISCONNECTED:
++		err = snd_pcm_prepare(dmix->spcm);
++		if (err < 0)
++			return err;
++		snd_pcm_start(dmix->spcm);
++		break;
++	}
++	snd_pcm_direct_check_interleave(dmix, pcm);
++	dmix->state = SND_PCM_STATE_PREPARED;
++	dmix->appl_ptr = dmix->last_appl_ptr = 0;
++	dmix->hw_ptr = 0;
++	return snd_pcm_direct_set_timer_params(dmix);
++}
++
+ int snd_pcm_direct_resume(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index 9b1ddbcf424a..611ad29a4821 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -224,6 +224,8 @@ struct snd_pcm_direct {
+ 	snd1_pcm_direct_mmap
+ #define snd_pcm_direct_munmap \
+ 	snd1_pcm_direct_munmap
++#define snd_pcm_direct_prepare \
++	snd1_pcm_direct_prepare
+ #define snd_pcm_direct_resume \
+ 	snd1_pcm_direct_resume
+ #define snd_pcm_direct_timer_stop \
+@@ -304,6 +306,7 @@ int snd_pcm_direct_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t * params);
+ int snd_pcm_direct_channel_info(snd_pcm_t *pcm, snd_pcm_channel_info_t * info);
+ int snd_pcm_direct_mmap(snd_pcm_t *pcm);
+ int snd_pcm_direct_munmap(snd_pcm_t *pcm);
++int snd_pcm_direct_prepare(snd_pcm_t *pcm);
+ int snd_pcm_direct_resume(snd_pcm_t *pcm);
+ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix);
+ void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix);
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index 58e4975d5225..b26a5c790e7e 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -450,9 +450,10 @@ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dmix->spcm);
+ 	switch (state) {
++	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+-		return state;
+ 	case SND_PCM_STATE_DISCONNECTED:
++		dmix->state = state;
+ 		return state;
+ 	default:
+ 		break;
+@@ -533,17 +534,6 @@ static int snd_pcm_dmix_hwsync(snd_pcm_t *pcm)
+ 	}
+ }
+ 
+-static int snd_pcm_dmix_prepare(snd_pcm_t *pcm)
+-{
+-	snd_pcm_direct_t *dmix = pcm->private_data;
+-
+-	snd_pcm_direct_check_interleave(dmix, pcm);
+-	dmix->state = SND_PCM_STATE_PREPARED;
+-	dmix->appl_ptr = dmix->last_appl_ptr = 0;
+-	dmix->hw_ptr = 0;
+-	return snd_pcm_direct_set_timer_params(dmix);
+-}
+-
+ static void reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
+ {
+ 	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+@@ -920,7 +910,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dmix_fast_ops = {
+ 	.state = snd_pcm_dmix_state,
+ 	.hwsync = snd_pcm_dmix_hwsync,
+ 	.delay = snd_pcm_dmix_delay,
+-	.prepare = snd_pcm_dmix_prepare,
++	.prepare = snd_pcm_direct_prepare,
+ 	.reset = snd_pcm_dmix_reset,
+ 	.start = snd_pcm_dmix_start,
+ 	.drop = snd_pcm_dmix_drop,
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 02370dc7082d..58e47bbeac67 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -237,11 +237,14 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+-	switch (snd_pcm_state(dshare->spcm)) {
++	snd_pcm_state_t state;
++	state = snd_pcm_state(dshare->spcm);
++	switch (state) {
++	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+-		return SND_PCM_STATE_SUSPENDED;
+ 	case SND_PCM_STATE_DISCONNECTED:
+-		return SND_PCM_STATE_DISCONNECTED;
++		dshare->state = state;
++		return state;
+ 	default:
+ 		break;
+ 	}
+@@ -296,17 +299,6 @@ static int snd_pcm_dshare_hwsync(snd_pcm_t *pcm)
+ 	}
+ }
+ 
+-static int snd_pcm_dshare_prepare(snd_pcm_t *pcm)
+-{
+-	snd_pcm_direct_t *dshare = pcm->private_data;
+-
+-	snd_pcm_direct_check_interleave(dshare, pcm);
+-	dshare->state = SND_PCM_STATE_PREPARED;
+-	dshare->appl_ptr = dshare->last_appl_ptr = 0;
+-	dshare->hw_ptr = 0;
+-	return snd_pcm_direct_set_timer_params(dshare);
+-}
+-
+ static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+@@ -595,7 +587,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dshare_fast_ops = {
+ 	.state = snd_pcm_dshare_state,
+ 	.hwsync = snd_pcm_dshare_hwsync,
+ 	.delay = snd_pcm_dshare_delay,
+-	.prepare = snd_pcm_dshare_prepare,
++	.prepare = snd_pcm_direct_prepare,
+ 	.reset = snd_pcm_dshare_reset,
+ 	.start = snd_pcm_dshare_start,
+ 	.drop = snd_pcm_dshare_drop,
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 8a2e87ad0ae1..576c35b111cd 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -201,12 +201,14 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+-	switch (snd_pcm_state(dsnoop->spcm)) {
++	snd_pcm_state_t state;
++	state = snd_pcm_state(dsnoop->spcm);
++	switch (state) {
++	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+-		return SND_PCM_STATE_SUSPENDED;
+ 	case SND_PCM_STATE_DISCONNECTED:
+-		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
++		dsnoop->state = state;
++		return state;
+ 	default:
+ 		break;
+ 	}
+@@ -258,17 +260,6 @@ static int snd_pcm_dsnoop_hwsync(snd_pcm_t *pcm)
+ 	}
+ }
+ 
+-static int snd_pcm_dsnoop_prepare(snd_pcm_t *pcm)
+-{
+-	snd_pcm_direct_t *dsnoop = pcm->private_data;
+-
+-	snd_pcm_direct_check_interleave(dsnoop, pcm);
+-	dsnoop->state = SND_PCM_STATE_PREPARED;
+-	dsnoop->appl_ptr = 0;
+-	dsnoop->hw_ptr = 0;
+-	return snd_pcm_direct_set_timer_params(dsnoop);
+-}
+-
+ static int snd_pcm_dsnoop_reset(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+@@ -497,7 +488,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dsnoop_fast_ops = {
+ 	.state = snd_pcm_dsnoop_state,
+ 	.hwsync = snd_pcm_dsnoop_hwsync,
+ 	.delay = snd_pcm_dsnoop_delay,
+-	.prepare = snd_pcm_dsnoop_prepare,
++	.prepare = snd_pcm_direct_prepare,
+ 	.reset = snd_pcm_dsnoop_reset,
+ 	.start = snd_pcm_dsnoop_start,
+ 	.drop = snd_pcm_dsnoop_drop,
+-- 
+2.6.2
