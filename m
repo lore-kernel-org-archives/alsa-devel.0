@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 09/17] ASoC: Intel: Skylake: Add support
-	for virtual dsp widgets
-Date: Fri, 30 Oct 2015 11:08:38 +0900
-Message-ID: <E1Zrz7O-0001Ce-Gh@finisterre>
-References: <1445905380-18167-10-git-send-email-vinod.koul@intel.com>
+Subject: Re: Splitting out controls
+Date: Fri, 30 Oct 2015 11:36:18 +0900
+Message-ID: <20151030023618.GR28319@sirena.org.uk>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org>
+ <561CADA8.3040903@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0324633006520330855=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8294826606B
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 03:08:41 +0100 (CET)
-In-Reply-To: <1445905380-18167-10-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D219265917
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 03:36:25 +0100 (CET)
+In-Reply-To: <561CADA8.3040903@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,258 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, James Cameron <quozl@laptop.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Add support for virtual dsp widgets
+--===============0324633006520330855==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="htVlOAOs/VIaEhiC"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--htVlOAOs/VIaEhiC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Oct 13, 2015 at 09:07:20AM +0200, David Henningsson wrote:
+> On 2015-10-12 22:59, James Cameron wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+James, please don't drop CCs (this is the convention for kernel lists).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> I personally believe that if the physical hardware can be set to state where
+> it's bricked, the hardware itself is buggy.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> If the hardware is buggy, this should be worked around in BIOS or whatever
+> firmware is present on the machine. Otherwise there is a bug in BIOS.
 
-Thanks,
-Mark
+This is just not possible for most systems, there is no BIOS only a
+bootoloader which hands off control to the kernel and stops running at
+that point.
 
->From 9a3b9dc636b03a01c9f1b7ce699242983a32d579 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 27 Oct 2015 09:22:52 +0900
-Subject: [PATCH] ASoC: Intel: Skylake: Add support for virtual dsp widgets
+--htVlOAOs/VIaEhiC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In SKL topology routes, some paths can be connected by a widget
-which are not a DSP FW widget and virtual with respect to
-firmware. In these case when module has to bind, then the
-virtual DSP modules needs to skipped till a actual DSP module is
-found which connects the pipelines.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-So we need to walk the graph and find a widget which is real in
-nature. This patch adds that support and splits
-skl_tplg_pga_dapm_pre_pmu_event() fn with parsing code to
-skl_tplg_bind_sinks() fn and call that recursively as well as
-while parsing
+iQEcBAEBCAAGBQJWMtedAAoJECTWi3JdVIfQzNgH/2X5QSqd83R4EcHioJrv3wbS
+5T+DweLqc7svJbdgvzjiu+QMglnbEzgWL0MHWyHKkVDrWSPDeM3dv/sNmXEcOJMb
+e8Ths5lYYw5+W0VbSd8q6wjSTFsiCH4z/JxixqNeWW7Pd38exB9AE6cCTKgUr+yo
+4S6vLOPgnezZFb84Wz842fMNCR8sKHS8pPxhBlVCEtt/x9idCtNu8vjw8mLjoxZh
+XKvfbMu2xmLGVmJMG2SFdA4Q7gLEcf8c49U5jOO/T4jZxYFAT3uHJH6gok2iB8tV
+3901w9uEGiLOtjs5F3Zdmal8wpVR2ufEPNVN63bfbwWV3CsSB4xFpgaK7ba82lE=
+=8MpL
+-----END PGP SIGNATURE-----
 
-The patch moves code a bit while splitting so diffstat doesn't
-tell real picture
+--htVlOAOs/VIaEhiC--
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.c | 133 ++++++++++++++++++++-------------
- 1 file changed, 83 insertions(+), 50 deletions(-)
+--===============0324633006520330855==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index abbf8e7..0c6e783 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -397,40 +397,24 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--/*
-- * A PGA represents a module in a pipeline. So in the Pre-PMU event of PGA
-- * we need to do following:
-- *   - Bind to sink pipeline
-- *      Since the sink pipes can be running and we don't get mixer event on
-- *      connect for already running mixer, we need to find the sink pipes
-- *      here and bind to them. This way dynamic connect works.
-- *   - Start sink pipeline, if not running
-- *   - Then run current pipe
-- */
--static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
--							struct skl *skl)
-+static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
-+				struct skl *skl,
-+				struct skl_module_cfg *src_mconfig)
- {
- 	struct snd_soc_dapm_path *p;
--	struct snd_soc_dapm_widget *source, *sink;
--	struct skl_module_cfg *src_mconfig, *sink_mconfig;
-+	struct snd_soc_dapm_widget *sink = NULL;
-+	struct skl_module_cfg *sink_mconfig;
- 	struct skl_sst *ctx = skl->skl_sst;
--	int ret = 0;
--
--	source = w;
--	src_mconfig = source->priv;
-+	int ret;
- 
--	/*
--	 * find which sink it is connected to, bind with the sink,
--	 * if sink is not started, start sink pipe first, then start
--	 * this pipe
--	 */
--	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+	snd_soc_dapm_widget_for_each_sink_path(w, p) {
- 		if (!p->connect)
- 			continue;
- 
- 		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
- 		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
- 
-+		sink = p->sink;
- 		/*
- 		 * here we will check widgets in sink pipelines, so that
- 		 * can be any widgets type and we are only interested if
-@@ -440,7 +424,6 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 					is_skl_dsp_widget_type(p->sink)) {
- 
- 			sink = p->sink;
--			src_mconfig = source->priv;
- 			sink_mconfig = sink->priv;
- 
- 			/* Bind source to sink, mixin is always source */
-@@ -454,10 +437,43 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 				if (ret)
- 					return ret;
- 			}
--			break;
- 		}
- 	}
- 
-+	if (!sink)
-+		return skl_tplg_bind_sinks(sink, skl, src_mconfig);
-+
-+	return 0;
-+}
-+
-+/*
-+ * A PGA represents a module in a pipeline. So in the Pre-PMU event of PGA
-+ * we need to do following:
-+ *   - Bind to sink pipeline
-+ *      Since the sink pipes can be running and we don't get mixer event on
-+ *      connect for already running mixer, we need to find the sink pipes
-+ *      here and bind to them. This way dynamic connect works.
-+ *   - Start sink pipeline, if not running
-+ *   - Then run current pipe
-+ */
-+static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
-+								struct skl *skl)
-+{
-+	struct skl_module_cfg *src_mconfig;
-+	struct skl_sst *ctx = skl->skl_sst;
-+	int ret = 0;
-+
-+	src_mconfig = w->priv;
-+
-+	/*
-+	 * find which sink it is connected to, bind with the sink,
-+	 * if sink is not started, start sink pipe first, then start
-+	 * this pipe
-+	 */
-+	ret = skl_tplg_bind_sinks(w, skl, src_mconfig);
-+	if (ret)
-+		return ret;
-+
- 	/* Start source pipe last after starting all sinks */
- 	ret = skl_run_pipe(ctx, src_mconfig->pipe);
- 	if (ret)
-@@ -466,6 +482,38 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static struct snd_soc_dapm_widget *skl_get_src_dsp_widget(
-+		struct snd_soc_dapm_widget *w, struct skl *skl)
-+{
-+	struct snd_soc_dapm_path *p;
-+	struct snd_soc_dapm_widget *src_w = NULL;
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+		src_w = p->source;
-+		if (!p->connect)
-+			continue;
-+
-+		dev_dbg(ctx->dev, "sink widget=%s\n", w->name);
-+		dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+
-+		/*
-+		 * here we will check widgets in sink pipelines, so that can
-+		 * be any widgets type and we are only interested if they are
-+		 * ones used for SKL so check that first
-+		 */
-+		if ((p->source->priv != NULL) &&
-+					is_skl_dsp_widget_type(p->source)) {
-+			return p->source;
-+		}
-+	}
-+
-+	if (src_w != NULL)
-+		return skl_get_src_dsp_widget(src_w, skl);
-+
-+	return NULL;
-+}
-+
- /*
-  * in the Post-PMU event of mixer we need to do following:
-  *   - Check if this pipe is running
-@@ -479,7 +527,6 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
- 							struct skl *skl)
- {
- 	int ret = 0;
--	struct snd_soc_dapm_path *p;
- 	struct snd_soc_dapm_widget *source, *sink;
- 	struct skl_module_cfg *src_mconfig, *sink_mconfig;
- 	struct skl_sst *ctx = skl->skl_sst;
-@@ -493,32 +540,18 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
- 	 * one more sink before this sink got connected, Since source is
- 	 * started, bind this sink to source and start this pipe.
- 	 */
--	snd_soc_dapm_widget_for_each_sink_path(w, p) {
--		if (!p->connect)
--			continue;
--
--		dev_dbg(ctx->dev, "sink widget=%s\n", w->name);
--		dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+	source = skl_get_src_dsp_widget(w, skl);
-+	if (source != NULL) {
-+		src_mconfig = source->priv;
-+		sink_mconfig = sink->priv;
-+		src_pipe_started = 1;
- 
- 		/*
--		 * here we will check widgets in sink pipelines, so that
--		 * can be any widgets type and we are only interested if
--		 * they are ones used for SKL so check that first
-+		 * check pipe state, then no need to bind or start the
-+		 * pipe
- 		 */
--		if ((p->source->priv != NULL) &&
--					is_skl_dsp_widget_type(p->source)) {
--			source = p->source;
--			src_mconfig = source->priv;
--			sink_mconfig = sink->priv;
--			src_pipe_started = 1;
--
--			/*
--			 * check pipe state, then no need to bind or start
--			 * the pipe
--			 */
--			if (src_mconfig->pipe->state != SKL_PIPE_STARTED)
--				src_pipe_started = 0;
--		}
-+		if (src_mconfig->pipe->state != SKL_PIPE_STARTED)
-+			src_pipe_started = 0;
- 	}
- 
- 	if (src_pipe_started) {
--- 
-2.6.1
+
+--===============0324633006520330855==--
