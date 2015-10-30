@@ -1,7 +1,7 @@
-From: Caleb Crome <caleb@crome.org>
+From: Rick Mann <rmann@latencyzero.com>
 Subject: Re: Noise in tlv320aic3104-based audio system
-Date: Thu, 29 Oct 2015 20:43:19 -0700
-Message-ID: <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
+Date: Thu, 29 Oct 2015 22:45:21 -0700
+Message-ID: <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
 References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
  <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
  <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
@@ -9,17 +9,18 @@ References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
  <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
  <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
  <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id A2C81265FCF
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 04:43:22 +0100 (CET)
-Received: by padhk11 with SMTP id hk11so60362850pad.1
- for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2015 20:43:21 -0700 (PDT)
-In-Reply-To: <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 6514D265E1A
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 06:45:24 +0100 (CET)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id A7D8020A91
+ for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 01:45:23 -0400 (EDT)
+In-Reply-To: <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,85 +30,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rick Mann <rmann@latencyzero.com>
+To: Caleb Crome <caleb@crome.org>
 Cc: Alsa-devel <alsa-devel@alsa-project.org>, =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpTZW50IGZyb20gbXkgaVBob25lCgo+IE9uIE9jdCAyOSwgMjAxNSwgYXQgNTozOCBQTSwgUmlj
-ayBNYW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+IAo+IFRoYW5rcywgQmVub8Ou
-dCwKPiAKPj4gWW91IGNhbiBhbHNvIHNpbXBseSBhcnJhbmdlIHlvdXIgbGluZSBvdXRwdXQgdG8g
-Y29ubmVjdCBpdCB0byBleHRlcm5hbAo+PiBhbXBsaWZpZWQgc3BlYWtlcnMuIEp1c3QgdGFrZSBj
-YXJlIGFib3V0IHRoZSBkaWZmZXJlbnRpYWwgdGhpbmcKPj4gZGVwZW5kaW5nIG9uIGhvdyB5b3Vy
-IG9uLWJvYXJkIGFtcGxpZmllciBpcyBmZWQuIEJ1dCB5b3Ugc2hvdWxkIHRyeQo+PiB0aGUgc29m
-dHdhcmUgc3R1ZmYgYmVsb3cgYmVmb3JlIHNwZW5kaW5nIHRpbWUgb24gaGFyZHdhcmUgdGVzdGlu
-Zy4KPj4gCj4+PiBJIHdhbnQgdG8gdHJ5IHRoZSBlMmUgZW5naW5lZXIncyBzdWdnZXN0aW9uIHRv
-IHJvdXRlIHRoZSBhdWRpbyB0aHJvdWdoIHRoZSBvdXRwdXQgbWl4ZXIsIGJ1dCB0aGF0IGRvZXNu
-J3QgYWN0dWFsbHkgc2VlbSB0byBiZSBwb3NzaWJsZSB0byBkbyAoeW91IGNhbiBkbyBpdCBmb3Ig
-dGhlIEhQIG91dCwgYnV0IG5vdCB0aGUgbGluZSBvdXQpLiBJbiBmYWN0LCB0aGUgZGlhZ3JhbSBp
-cyBzbyBiaXphcnJlIGFzIHRvIG1ha2UgbWUgdGhpbmsgaXQncyBpbmNvcnJlY3QuIEZvciBleGFt
-cGxlLCB5b3UgZG9uJ3Qgc2VlbSB0byBiZSBhYmxlIHRvIHJvdXRlIHRoZSBMJlIgREFDIG91dHB1
-dCB0byB0aGUgTGluZSBPdXQgTCZSIG1peGVycywgYnV0IHlvdSBjYW4gc2hvcnQgdGhlIEwmUiBE
-QUMgb3V0cHV0cyB0b2dldGhlci4KPj4gCj4+IFlvdXIgYXNvdW5kLnN0YXRlIGRvZXNuJ3QgbG9v
-ayByaWdodC4gSSB0aGluayB0aGF0J3MgdGhlIGlzc3VlLiBZb3UKPj4gY2FuIHVzZSBhbWl4ZXIg
-dG8gZml4IHRoZW0gb25lIGJ5IG9uZS4gVGhlbiwgeW91IGNhbiBzYXZlIHRoZSByZXN1bHRzCj4+
-IHdpdGggYGFsc2FjdGwgc3RvcmVgLCBhbmQgeW91IGNhbiByZWxvYWQgYWxsIHRoZSBjaGFuZ2Vz
-IGluIGEgc2luZ2xlCj4+IHN0ZXAgbGF0ZXIgd2l0aCBgYWxzYWN0bCByZXN0b3JlYC4KPj4gCj4+
-IEZpcnN0LCBqdXN0IGxvb2tpbmcgYXQgdGhlIGF1ZGlvIHBhdGhzIGRpYWdyYW0sIHRoZXJlIGFy
-ZSBjb250cm9scwo+PiB0aGF0IHNlZW0gdG8gYmUgdW5yZWxhdGVkLCBlLmcuIHRoZSBNb25vIHN0
-dWZmIGFuZCB0aGUgTGluZTJML1IKPj4gZGlmZmVyZW50aWFsIG9wdGlvbnMuIEJ1dCBtYXliZSB0
-aGlzIGRpYWdyYW0gaXMganVzdCBub3QgYWNjdXJhdGUKPj4gZW5vdWdoLiBZb3UgY2FuIGNoZWNr
-IHRoaXMgaW4gdGhlIGRyaXZlciB2cy4gdGhlIGRhdGEgc2hlZXQuIElmCj4+IGFjdHVhbGx5IHVu
-cmVsYXRlZCwgdGhlc2UgY29udHJvbHMgYXJlIGp1c3QgZm9yIHRoZSBvdGhlciBDT0RFQ3MKPj4g
-c3VwcG9ydGVkIGJ5IHRoaXMgZHJpdmVyLiBUaGF0IHNob3VsZG4ndCBiZSB0aGUgY2F1c2Ugb2Yg
-eW91ciBpc3N1ZQo+PiBhbnl3YXkuCj4+IAo+PiBTd2l0Y2ggb2ZmIG9yIG11dGUgYWxsIHRoZSBm
-b2xsb3dpbmcgY29udHJvbHM6Cj4+IC0gYWxsIGNyb3NzLWNoYW5uZWwgY29udHJvbHM6IEwgLT4g
-UiBhbmQgUiAtPiBMLAo+PiAtIGFsbCBieXBhc3MgY29udHJvbHMsCj4+IC0gYWxsIExpbmUxTC9S
-LCBMaW5lMkwvUiwgTW9ubywgSFBbTC9ST1VUL0NPTV0sIFBHQSwgQUdDLCBBREMgY29udHJvbHMu
-Cj4+IAo+PiBZb3UgbmVlZCB0byB1bm11dGUgTGluZSBEQUMgUGxheWJhY2sgVm9sdW1lLgo+PiAK
-Pj4gWW91IG5lZWQgdG8gc3dpdGNoIG9uIExlZnQgTGluZSBNaXhlciBEQUNMMSBTd2l0Y2ggYW5k
-IFJpZ2h0IExpbmUKPj4gTWl4ZXIgREFDUjEgU3dpdGNoIChhbHJlYWR5IGRvbmUgaW4geW91ciBh
-c291bmQuc3RhdGUpLgo+PiAKPj4gWW91IGhhdmUgdG8gc3dpdGNoIExlZnQgREFDIE11eCB0byBE
-QUNfTDEgYW5kIFJpZ2h0IERBQyBNdXggdG8gREFDX1IxLgo+PiBJIHRoaW5rIHRoYXQncyB0aGUg
-bWFpbiBpc3N1ZS4KPiAKPiBJIGdvdCB0aGF0IGZpbGUgZnJvbSB0aGUgQ2lyY3VpdENvIEF1ZGlv
-IENhcGUgKHNpbmNlIGl0IHVzZXMgdGhlIHNhbWUgQ09ERUMgSSB1c2U7IGluIGZhY3QsIEkgY2hv
-c2UgbXkgQ09ERUMgYmVjYXVzZSB0aGF0IG9uZSB3YXMga25vd24gdG8gd29yaykuIEl0J3MgZW50
-aXJlbHkgcG9zc2libGUgaXQncyB3cm9uZywgYWx0aG91Z2ggSSBoYXZlIGRvbmUgYSBsaXR0bGUg
-c3dpdGNoaW5nIG15c2VsZi4KPiAKPiBBcyBJIG1lbnRpb25lZCBpbiB0aGUgb3RoZXIgcG9zdCwg
-dGhlIHRsdjMyMGFpYzMxMDQncyBkYXRhc2hlZXQgZGVzY3JpYmVzIGEgcmVhbGx5IGJpemFycmUg
-KElNSE8pIHNldCBvZiBhdmFpbGFibGUgcm91dGVzLiBJIGhvcGUgdGhlIGRhdGEgc2hlZXQgaXMg
-d3JvbmcsIGJlY2F1c2UgSSBkb24ndCBzZWUgYSB3YXkgdG8gcm91dGUgYm90aCBEQUNzIHRvIHRo
-ZWlyIHJlc3BlY3RpdmUgTGluZSBPdXRzIHZpYSB0aGUgbWl4ZXJzIChhcyBzdWdnZXN0ZWQgYnkg
-VEkpLCBvbmx5IGluIGJ5cGFzcy4KPiAKPiBBIGNvdXBsZSB3ZWVrcyBhZ28gSSBkaWQgc3BlbmQg
-YSBsb3Qgb2YgdGltZSBsb29raW5nIGF0IHRoZSBkcml2ZXIgY29kZSAodGx2MzIwYWljM3guYyks
-IHRyeWluZyB0byB1bmRlcnN0YW5kIGhvdyBpdCBtYXBzIHJvdXRlcyB0byByZWdpc3RlciBjYWxs
-cywgZXRjLiBJIGZvdW5kIEkgY291bGRuJ3QgcXVpdGUgY29ycmVsYXRlIG5hbWVzIG9mIHRoaW5n
-cyBpbiB0aGUgZHJpdmVyIHdpdGggbmFtZXMgaW4gdGhlIGFzb3VuZC5zdGF0ZSBmaWxlLiBJcyB0
-aGVyZSBhIHdheSB0byBnZW5lcmF0ZSBhIGRlZmF1bHQgYXNvdW5kLnN0YXRlIGZpbGU/IEZvciBl
-eGFtcGxlLCBpZiBJIGRlbGV0ZSB0aGUgZmlsZSBhbHRvZ2V0aGVyLCBhbmQgdGhlbiByZWJvb3Qs
-IHJlbG9hZCBteSBEZXZpY2UgVHJlZSBPdmVybGF5LCBhbmQgdGhlbiBpc3N1ZSBhbHNhY3RsIHN0
-b3JlLCB3aWxsIGl0IGNyZWF0ZSBhICJjbGVhbiIgYXNvdW5kIGZpbGUgd2l0aCBqdXN0IHRoZSBy
-aWdodCBjb250cm9scyAod2l0aCBkZWZhdWx0cyk/IE9yIG11c3QgdGhhdCBmaWxlIGJlIGNyZWF0
-ZWQgaW4gcGFyYWxsZWwgYnkgaGFuZD8KPiAKCgpUaGUgZGF0YSBzaGVldHMgZm9yIHRob3NlIGFp
-YyBjb2RlY3MgYXJlIHByZXR0eSBnb29kIEkgdGhpbmsuICAKCkFsc28sIHJvdXRpbmcgZGlyZWN0
-IG9yIHRocm91Z2ggYSBtaXhlciB3aWxsIGJlIGEgbWlub3IgZGlmZmVyZW5jZSwgbm90IGEgbWFq
-b3Igb25lLgoKSXQganVzdCBvY2N1cnJlZCB0byBtZSwgdGhlIG5vaXNlIGNvdWxkIGVhc2lseSBi
-ZSBjb21pbmcgZnJvbSBhIGRpcmVjdCBpbnB1dCAtPiBvdXRwdXQgcm91dGUsIGJ5cGFzc2luZyB0
-aGUgYWRjIGFuZCBkYWMgYWx0b2dldGhlci4gIE1ha2Ugc3VyZSBhbGwgYnlwYXNzIHJvdXRlcyBh
-cmUgemVyb2VkIG91dC4gIFRoZSB0cmljayBpcyBjb3JyZWxhdGluZyB0aGUgZGF0YXNoZWV0IHJv
-dXRlcyB3aXRoIHRoZSBhbHNhIG1peGVyIGNvbnRyb2xzIHRoYXQgY29ycmVzcG9uZCB0byB0aGVt
-IC4gIEVub3VnaCBzdGFyaW5nIGF0IHRoZSBhaWMzeC5jIGZpbGVzIHdpbGwgZXZlbnR1YWxseSBz
-aGVkIGxpZ2h0Oi0pIAoKCgoKPiBXaGVuIEkgaGF2ZSBtb3JlIHRpbWUgdG9uaWdodCBhdCBob21l
-IEknbGwgc2VlIGlmIEkgY2FuIG1ha2Ugc2Vuc2Ugb2YgdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVu
-IHRoZSBkcml2ZXIgY29kZSBhbmQgdGhlIGFzb3VuZC5zdGF0ZSBmaWxlLgo+IAo+IFBhcnQgb2Yg
-d2hlcmUgSSB0cmlwIHVwIGlzIHRoYXQgaXQgc2VlbXMgQUxTQSB1c2VzIHRoZSBzdHJpbmdzIChs
-aWtlICJQQ00gUGxheWJhY2sgVm9sdW1lIikgdG8gbWF0Y2ggYmV0d2VlbiBjaGlwIHJlZ2lzdGVy
-cyBhbmQgVUkuIENvbWluZyBmcm9tIGFuIEFwcGxlIGJhY2tncm91bmQsIEkgd291bGQgbmV2ZXIg
-d3JpdGUgY29kZSB0aGF0IGRlcGVuZGVkIG9uIGh1bWFuLXJlYWRhYmxlIHN0cmluZ3MgYXMgaWRl
-bnRpZmllcnMgKGJlY2F1c2UgeW91IHR5cGljYWxseSB3YW50IHRvIGJlIGFibGUgdG8gY2hhbmdl
-IG9yIHRyYW5zbGF0ZSB0aGVtKS4gSG93ZXZlciwgdGhhdCBkb2VzIHNlZW0gdG8gYmUgd2hhdCdz
-IGdvaW5nIG9uIGhlcmUuCj4gCj4gQW55d2F5LCB0aGFua3MgZm9yIHRoZSBhZGRpdGlvbmFsIGV4
-cGxhbmF0aW9uLCBpdCdzIHZlcnkgaGVscGZ1bC4KPiAKPiAKPiAtLSAKPiBSaWNrIE1hbm4KPiBy
-bWFubkBsYXRlbmN5emVyby5jb20KPiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+> On Oct 29, 2015, at 20:43 , Caleb Crome <caleb@crome.org> wrote:
+> 
+> The data sheets for those aic codecs are pretty good I think.  
+> 
+> Also, routing direct or through a mixer will be a minor difference, not a major one.
+> 
+> It just occurred to me, the noise could easily be coming from a direct input -> output route, bypassing the adc and dac altogether. Make sure all bypass routes are zeroed out.  The trick is correlating the datasheet routes with the alsa mixer controls that correspond to them .  Enough staring at the aic3x.c files will eventually shed light:-) 
+
+I've zeroed out everything I could find. Nothing had an effect until I got to the DAC muxes, at which point the behavior gets really weird. Changing those gets me to left or right output, but never both again until I reset the CODEC.
+
+None of this affected the hiss.
+
+
+-- 
+Rick Mann
+rmann@latencyzero.com
