@@ -1,30 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Fri, 30 Oct 2015 18:48:45 -0700
-Message-ID: <20151031014845.GB3525@Asurada-CZ80>
-References: <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
- <20151029224713.GA44369@Asurada-CZ80>
- <CAG5mAdwnjLdxNNgC3go_NDERUSDxem9ZQFigyF5yaEWuXV2r4g@mail.gmail.com>
- <20151030012934.GA5456@Asurada-GSX>
- <CAG5mAdwUKwzGvpO3ckKZWfE+oKXHK7umT5Z3Ru3Oyq8AD7gNMg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: topology: ABI - Rename dai_elems to
+	pcm_elems in manifest" to the asoc tree
+Date: Sat, 31 Oct 2015 11:49:36 +0900
+Message-ID: <E1ZsMEa-0003RB-Bt@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id F28CF260462
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 02:48:49 +0100 (CET)
-Received: by padhk11 with SMTP id hk11so89561313pad.1
- for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2015 18:48:48 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdwUKwzGvpO3ckKZWfE+oKXHK7umT5Z3Ru3Oyq8AD7gNMg@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42D52260462
+ for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 03:49:43 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,82 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Lin Mengdong <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 30, 2015 at 03:04:37PM -0700, Caleb Crome wrote:
- 
-> **********************
-> ** Problem 1 *******
-> **********************
-> When I enable your patch in single fifo mode we get maxburst lost
-> samples at the beginning of the stream.  The important bit is below.
-> It doesn't matter if the SSIEN comes before or after the TDMAE, the
-> samples are lost.  Surely because something in the fsl_ssi_config
-> clears the fifo.  I didn't look into that yet.
+The patch
 
-The config function has gone way complicated than I realized.
-But you may need to dig a little bit to make a perfect point
-to insert your change as it might break other platforms: AC97
-and old i.MX and MPC.
+   ASoC: topology: ABI - Rename dai_elems to pcm_elems in manifest
 
-> --------------------------- snip -------------------
-> 
-> If instead, I do the SSIEN at the bottom of the fsl_ssi_configure
-> function like this, it works perfectly (in single fifo mode)
-> 
-> --------------------------- snip -------------------
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -435,8 +435,49 @@ static void fsl_ssi_config(struct fsl_ssi_private
-> *ssi_private, bool enable,
-> 
->  config_done:
->      /* Enabling of subunits is done after configuration */
-> -    if (enable)
-> +    if (enable) {
-> +        /* eanble SSI */
-> +        regmap_update_bits(regs, CCSR_SSI_SCR,
-> +                   CCSR_SSI_SCR_SSIEN,
-> +                   CCSR_SSI_SCR_SSIEN);
-> +        /*
-> +         * We must wait here until the DMA actually manages to
-> +         * get a word into the Tx FIFO.  Only if starting a Tx
-> +         * stream.
-> +         * In tests on an MX6 at 1GHz clock speed, the do
-> +         * loop below never iterated at all (i.e. it dropped
-> +         * through without repeating ever.  which means that
-> +         * the DMA has had time to get some words into the TX
-> +         * buffer. In fact, the tfcnt0 was always 13, so it
-> +         * was quite full by the time it reached this point,
-> +         * so this do loop should never be a bottleneck.  If
-> +         * max iterations is hit, then something might be
-> +         * wrong.  report it in that case.
-> +         */
-> +        int tfcnt0 = 0;
-> +        int tfcnt1 = 1;
-> +        int max_iterations = 1000;
-> +        if (vals->scr & CCSR_SSI_SCR_TE) {
-> +            u32 sfcsr;
-> +            do {
-> +                regmap_read(regs, CCSR_SSI_SFCSR, &sfcsr);
-> +                tfcnt0 = CCSR_SSI_SFCSR_TFCNT0(sfcsr);
-> +                tfcnt1 = CCSR_SSI_SFCSR_TFCNT0(sfcsr);
-> +            } while(max_iterations-- && (tfcnt0 == 0) && (tfcnt1 == 0));
-> +        }
-> +        if (max_iterations <= 0) {
-> +            /*
-> +             * The DMA definitely should have stuck at
-> +             * least a word into the FIFO by now.  Report
-> +             * an error, but continue on blindly anyway,
-> +             * even though the SSI might not start right.
-> +             */
-> +            struct platform_device *pdev = ssi_private->pdev;
-> +            dev_err(&pdev->dev, "max_iterations reached when"
-> +                "starting SSI Tx\n");
-> +        }
+has been applied to the asoc tree at
 
-Looks like polling is the only way to safely kick off. It's okay.
-But I would like to see how the change will be after merging the
-simultaneous TE/RE work around. It may need go a long way with
-other platform users.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From bbb64300469d207f62c08ea7358c839991a52877 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@intel.com>
+Date: Fri, 30 Oct 2015 15:13:16 +0800
+Subject: [PATCH] ASoC: topology: ABI - Rename dai_elems to pcm_elems in
+ manifest
+
+This field is the number of PCM objects (a pair of FE DAI and DAI link).
+
+Signed-off-by: Lin Mengdong <mengdong.lin@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/uapi/sound/asoc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 26539a7..c4cc1e4 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -243,7 +243,7 @@ struct snd_soc_tplg_manifest {
+ 	__le32 control_elems;	/* number of control elements */
+ 	__le32 widget_elems;	/* number of widget elements */
+ 	__le32 graph_elems;	/* number of graph elements */
+-	__le32 dai_elems;	/* number of DAI elements */
++	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+-- 
+2.6.1
