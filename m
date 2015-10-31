@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Rename dai_elems to
-	pcm_elems in manifest" to the asoc tree
-Date: Sat, 31 Oct 2015 11:49:36 +0900
-Message-ID: <E1ZsMEa-0003RB-Bt@finisterre>
+Subject: Re: [PATCH] ASoC: topology: Reenable use from userspace
+Date: Sat, 31 Oct 2015 11:54:48 +0900
+Message-ID: <20151031025448.GA28319@sirena.org.uk>
+References: <1445830900-1752-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8170037242997229825=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42D52260462
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 03:49:43 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id C7608260462
+ for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 03:54:54 +0100 (CET)
+In-Reply-To: <1445830900-1752-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lin Mengdong <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mendong Lin <mengdong.lin@intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: ABI - Rename dai_elems to pcm_elems in manifest
+--===============8170037242997229825==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Qcw+NG9yjQzXdZsc"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--Qcw+NG9yjQzXdZsc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Oct 26, 2015 at 12:41:40PM +0900, Mark Brown wrote:
+> We had inserted a #error into the topology UAPI code to ensure that the
+> ABI was not adopted by userspace while final review and testing was
+> ongoing.  Since we are now comfortable that the ABI is suitable for
+> production remove the #error, future changes will include provision for
+> backwards compatibility.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Are we OK with this?  Looking for some acks and reviews...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I saw a reply from Vinod but nobody else here.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--Qcw+NG9yjQzXdZsc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From bbb64300469d207f62c08ea7358c839991a52877 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@intel.com>
-Date: Fri, 30 Oct 2015 15:13:16 +0800
-Subject: [PATCH] ASoC: topology: ABI - Rename dai_elems to pcm_elems in
- manifest
+iQEbBAEBCAAGBQJWNC13AAoJECTWi3JdVIfQ3fMH+Mwfc07cOe6Rv/NbPb8fIC6W
+H6Xrv0qh9ey1njNv0eFOYfKVIL66grxfnrZ7abL1s4xrQWzAuhpW6I+vCt3eJ6Nd
+cyl5IjWfj5iic6LfE48VCmdxIEMWQSNBouy3Mor8M2FBPwpgxaaN1yBtGtXBkFLN
+rnp9fxbKA1fcDOQ/njzV8OGXE4f/IpC/U/I5pj/yC1bvF91fz8eVRNxWAcW5DOgj
+k4aOQpCs8vgkMK5gptvS57ojiK9OG30fc8APQpI/jI8q26eruRkZAMVCgk19xH0U
+XIIktmYNg8E9FhmbyQkdKYOBsReqbU7u7wDkKwOJ/ecaimKQSfADRUnLub218A==
+=7DMl
+-----END PGP SIGNATURE-----
 
-This field is the number of PCM objects (a pair of FE DAI and DAI link).
+--Qcw+NG9yjQzXdZsc--
 
-Signed-off-by: Lin Mengdong <mengdong.lin@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/uapi/sound/asoc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============8170037242997229825==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 26539a7..c4cc1e4 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -243,7 +243,7 @@ struct snd_soc_tplg_manifest {
- 	__le32 control_elems;	/* number of control elements */
- 	__le32 widget_elems;	/* number of widget elements */
- 	__le32 graph_elems;	/* number of graph elements */
--	__le32 dai_elems;	/* number of DAI elements */
-+	__le32 pcm_elems;	/* number of PCM elements */
- 	__le32 dai_link_elems;	/* number of DAI link elements */
- 	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
--- 
-2.6.1
+
+--===============8170037242997229825==--
