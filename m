@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix missing
- machine device creation
-Date: Sun, 1 Nov 2015 11:54:38 +0900
-Message-ID: <20151101025438.GH28319@sirena.org.uk>
-References: <1446217461-2106-1-git-send-email-vinod.koul@intel.com>
- <1446217461-2106-2-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH v3 2/6] ASoC: hdac-hdmi: Add hdmi driver
+Date: Sun, 1 Nov 2015 12:02:31 +0900
+Message-ID: <20151101030231.GB17819@sirena.org.uk>
+References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
+ <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2471954668234558894=="
+Content-Type: multipart/mixed; boundary="===============3454716098090650887=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 970F326061B
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:53:47 +0100 (CET)
-In-Reply-To: <1446217461-2106-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83F66260708
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:54:02 +0100 (CET)
+In-Reply-To: <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2471954668234558894==
+--===============3454716098090650887==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+84OEkE2sKTXuqtJ"
+	protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
 Content-Disposition: inline
 
 
---+84OEkE2sKTXuqtJ
+--24zk1gE8NUlDmwG9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 30, 2015 at 08:34:18PM +0530, Vinod Koul wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> The UEFI BIOS does not create a machine entry for Linux devices
-> so add a table style machine registration to fix this missing
-> entry
+On Tue, Oct 27, 2015 at 04:42:13PM +0900, Vinod Koul wrote:
 
-How does this relate to the existing sst_acpi code?  This might be
-clearer with a user...
+> +	if (err < 0)
+> +		dev_err(&hdac->dev, "Failed to query pcm params for nid: %d\n", cvt->nid);
 
-> +static struct sst_machines *sst_acpi_find_machine(
-> +	struct sst_machines *machines)
-> +{
-> +	struct sst_machines *mach;
-> +	bool found =3D false;
-> +
-> +	for (mach =3D machines; mach->codec_id; mach++)
-> +		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
-> +						  sst_acpi_mach_match,
-> +						  &found, NULL)) && found)
-> +			return mach;
-> +
-> +	return NULL;
-> +}
+That looks like the NID is being printed as an error code.
 
-=2E..but the code looks extremely similar.
+> +	/*
+> +	 * Currently on board only 1 pin and 1 converter enabled for
+> +	 * simplification, more will be added eventually
+> +	 * So using fixed map for dai_id:pin:cvt
+> +	 */
+> +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[0],
+> +			hdmi->cvt_nid[0], 0);
 
---+84OEkE2sKTXuqtJ
+I'm not entirely sure I understand what this is all doing.  It looks
+like it's trying to translate the HDA widget map into a DAPM map which
+seems sensible but it appears it's making some simplifying assumptions
+about the device it's dealing with?
+
+> +static const struct hda_device_id hdmi_list[] = {
+> +	HDA_CODEC_EXT_ENTRY(0x80862809, 0x100000, "Skylake HDMI", 0),
+> +	{}
+> +};
+
+Which is plausible since it's a driver for a specific HDA CODEC.
+
+--24zk1gE8NUlDmwG9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWNX7tAAoJECTWi3JdVIfQeEkH+wYwpovk0GHxdl/XxzMhpKBw
-0ZabnTJtD90faJXGGVztnrYEMCcLbvGiZYgsadyYcGyomjf/BfZt2FGQJCbbDIGh
-jDerfYEFxY0JoKsJXIYTioNYly7QGDoHSzYkmvPYIyOAIjOYYdJLPsvehPYM++LO
-T5f93EsERrQyXJ8W2R1e4X0NjYAooJ0gWPf4n0C8HiR2E41XwpNIdJyVjl1g1CR4
-OmJoK/cUvWUoVyjCKx6WM2ljIN15dzxjQtULDhnHKlYim/i8qpD/ThT5iwY6N8lk
-NDcXvlahWdjUDmI14ikmBij8sY6VS2sO10akQ+Z2Io4lFrJ860RRfJtjU9F0hhw=
-=R0iO
+iQEcBAEBCAAGBQJWNYDGAAoJECTWi3JdVIfQjz4H/30T+m5wO5YNiacsZFWY7U/A
+m4+zUqd6HOeBhdWdRDBZorPXNhDVcgkmGnYvFsb6cXLQJ9mCvI4brIrrXVQq90c5
+1wZc761dYnXZDc/vPezaM+Ky/uFNfnGDuGT6hbjb8gWLMoYawwJUm7fuYBPK00Ft
+NOyTTj76fGlnuz40UT1E6AhkDClAwafeA1FUk4soF05fjtrnigO2V3lJ23yfwr8H
+vPXH5zjFcwCzPx3MtqrBhrMAPNfdI+EC1PZfXKMsdm8CUIrTLhJhR7d1z2UqTByk
+qcg6Wzpdc+tzOesrT1mTAXoEnixH8T+GUUGskVFYUFPJLXhQl8njWNkl4Wmo0qI=
+=bVtd
 -----END PGP SIGNATURE-----
 
---+84OEkE2sKTXuqtJ--
+--24zk1gE8NUlDmwG9--
 
---===============2471954668234558894==
+--===============3454716098090650887==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2471954668234558894==--
+--===============3454716098090650887==--
