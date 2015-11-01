@@ -1,17 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/6] ASoC: hdac-hdmi: Add hdmi driver
-Date: Sun, 1 Nov 2015 12:02:31 +0900
-Message-ID: <20151101030231.GB17819@sirena.org.uk>
-References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
- <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
+Subject: Re: Splitting out controls
+Date: Sun, 1 Nov 2015 11:45:00 +0900
+Message-ID: <20151101024500.GG28319@sirena.org.uk>
+References: <1444657786.2528.78.camel@loki>
+ <20151012205908.GA25971@us.netrek.org>
+ <561CADA8.3040903@canonical.com>
+ <20151030023618.GR28319@sirena.org.uk>
+ <56332C17.4010303@canonical.com>
+ <20151030085302.GE7311@us.netrek.org>
+ <5633329E.8040003@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3454716098090650887=="
+Content-Type: multipart/mixed; boundary="===============5651055454279985745=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 83F66260708
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:54:02 +0100 (CET)
-In-Reply-To: <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D4AEC2606D4
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:53:55 +0100 (CET)
+In-Reply-To: <5633329E.8040003@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, James Cameron <quozl@laptop.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3454716098090650887==
+--===============5651055454279985745==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
+	protocol="application/pgp-signature"; boundary="dGMqxDINbOsorC0c"
 Content-Disposition: inline
 
 
---24zk1gE8NUlDmwG9
+--dGMqxDINbOsorC0c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 27, 2015 at 04:42:13PM +0900, Vinod Koul wrote:
+On Fri, Oct 30, 2015 at 10:04:30AM +0100, David Henningsson wrote:
+> On 2015-10-30 09:53, James Cameron wrote:
+> >On Fri, Oct 30, 2015 at 09:36:39AM +0100, David Henningsson wrote:
 
-> +	if (err < 0)
-> +		dev_err(&hdac->dev, "Failed to query pcm params for nid: %d\n", cvt->nid);
+> >>The BIOS can poke the hardware, set registers in such ways that
+> >>volumes are limited. Registers that the kernel never touches.
 
-That looks like the NID is being printed as an error code.
+> >I'm not sure how that would work.  The BIOS developers and the kernel
+> >developers would have to agree on what registers are to be touched by
+> >the BIOS only.  In my case, with the rt5631, the registers could not
+> >be easily isolated in that fashion.  And if the kernel hit the reset
+> >bit in one of the registers, whatever the BIOS had set would be lost.
 
-> +	/*
-> +	 * Currently on board only 1 pin and 1 converter enabled for
-> +	 * simplification, more will be added eventually
-> +	 * So using fixed map for dai_id:pin:cvt
-> +	 */
-> +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[0],
-> +			hdmi->cvt_nid[0], 0);
+> >Oh, and power management.  The codec can be powered down by suspend,
+> >with the BIOS uninvolved in resume.
 
-I'm not entirely sure I understand what this is all doing.  It looks
-like it's trying to translate the HDA widget map into a DAPM map which
-seems sensible but it appears it's making some simplifying assumptions
-about the device it's dealing with?
+> The way it has come to work on HDA is that the codec vendor has a number of
+> "secret" registers, which they only tell the BIOS developers about, and (to
+> our frustration) are quite reluctant to tell us about.
 
-> +static const struct hda_device_id hdmi_list[] = {
-> +	HDA_CODEC_EXT_ENTRY(0x80862809, 0x100000, "Skylake HDMI", 0),
-> +	{}
-> +};
+> And certainly the BIOS is involved in setting these registers on S3 resume,
+> too.
 
-Which is plausible since it's a driver for a specific HDA CODEC.
+This is all extremely specific to how HDA works on x86 systems with
+UEFI and ACPI, it's not at all applicable generally.
 
---24zk1gE8NUlDmwG9
+> One could imagine having ACPI calls for putting a codec in suspend/resume,
+> but as I said, in many cases (such as yours) this just makes things more
+> complicated. It's better dealt with in the kernel codec driver instead.
+
+This then gets us back into the problem of having to have very system
+specific tuning in drivers somehow which is challenging to deploy.
+
+--dGMqxDINbOsorC0c
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWNYDGAAoJECTWi3JdVIfQjz4H/30T+m5wO5YNiacsZFWY7U/A
-m4+zUqd6HOeBhdWdRDBZorPXNhDVcgkmGnYvFsb6cXLQJ9mCvI4brIrrXVQq90c5
-1wZc761dYnXZDc/vPezaM+Ky/uFNfnGDuGT6hbjb8gWLMoYawwJUm7fuYBPK00Ft
-NOyTTj76fGlnuz40UT1E6AhkDClAwafeA1FUk4soF05fjtrnigO2V3lJ23yfwr8H
-vPXH5zjFcwCzPx3MtqrBhrMAPNfdI+EC1PZfXKMsdm8CUIrTLhJhR7d1z2UqTByk
-qcg6Wzpdc+tzOesrT1mTAXoEnixH8T+GUUGskVFYUFPJLXhQl8njWNkl4Wmo0qI=
-=bVtd
+iQEcBAEBCAAGBQJWNXysAAoJECTWi3JdVIfQ1XYH/R27Xz6keD7xb6K0wZFekRpl
+VnNpkEXAi5Lfs0hVgBkclASZFSPXc+vXQDAI6L2sfex0R7p/U8AzOzCvxj7UAKDQ
+J8+U3XVp2mznFNh9mQUAMCZQfR+e3tJ1Clkl/2jY6XTeOIIQR5w1L/vF4qOfiOJJ
+2qGiBmp1osCvDl+/52nGdEeDBeTTdJ7nJrWP6mnyH90bCacxmpaBVX0QFqz9QX/9
+WGxDaEI2l6hOxneqcmrtWU3bkzy7T6qYe7hkXF1kDiqoWMRM+GpMWmVE/utiY6ea
+RhcFg1Jhg8PU7+k5MdLs95ySZ7ZEDV3SbDpKfeGtteG8vDCgB0caSblytvM0ci4=
+=Y2DU
 -----END PGP SIGNATURE-----
 
---24zk1gE8NUlDmwG9--
+--dGMqxDINbOsorC0c--
 
---===============3454716098090650887==
+--===============5651055454279985745==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3454716098090650887==--
+--===============5651055454279985745==--
