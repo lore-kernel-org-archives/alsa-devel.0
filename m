@@ -1,29 +1,36 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: fsl_ssi.c: Getting channel slips with fsl_ssi.c in
- TDM (network) mode.
-Date: Sat, 31 Oct 2015 09:22:54 -0700
-Message-ID: <CAG5mAdztDH3V1Q1Y2RQpeHoNWJPa9X9KGFhCw3zirh_-_v4ruw@mail.gmail.com>
-References: <20151029045350.GA3374@Asurada-CZ80>
- <CAG5mAdwQd3ep7ZSNHDEni6caKeFPyvXhM0g=BjqPFA_gDSU1DQ@mail.gmail.com>
- <20151029171936.GA3492@Asurada-CZ80>
- <CAG5mAdzci2hPUBzFo+k3+CorfzQZD9_knQ2TXw1db1KoBL5Eyw@mail.gmail.com>
- <20151029192816.GA43706@Asurada-CZ80>
- <CAG5mAdzJ2_MizAq2ACXwnA=wfO=xujGbUdB2OvcDi=7fHQfyBQ@mail.gmail.com>
- <20151029224713.GA44369@Asurada-CZ80>
- <CAG5mAdwnjLdxNNgC3go_NDERUSDxem9ZQFigyF5yaEWuXV2r4g@mail.gmail.com>
- <20151030012934.GA5456@Asurada-GSX>
- <CAG5mAdwUKwzGvpO3ckKZWfE+oKXHK7umT5Z3Ru3Oyq8AD7gNMg@mail.gmail.com>
- <20151031014845.GB3525@Asurada-CZ80>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Sun, 1 Nov 2015 16:53:14 +0800
+Message-ID: <CAN8cciYwLyJcxh0QYOH0LgSD9NhWQ3JYy=TecYYFuTx-iA7SHQ@mail.gmail.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <561CA911.7070405@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+ <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+ <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+ <56288783.1080503@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
+ <56288FF7.9030400@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
+ <5628A3EB.8050306@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
+ <562A1237.2090909@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
+ <s5hvb9or3zj.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 752F8260513
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 17:23:14 +0100 (CET)
-Received: by wmec75 with SMTP id c75so31846278wme.1
- for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2015 09:23:14 -0700 (PDT)
-In-Reply-To: <20151031014845.GB3525@Asurada-CZ80>
+Received: from mail-ob0-f194.google.com (mail-ob0-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id D04A8260421
+ for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2015 09:53:15 +0100 (CET)
+Received: by obctp1 with SMTP id tp1so6273614obc.3
+ for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2015 01:53:14 -0700 (PDT)
+In-Reply-To: <s5hvb9or3zj.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,108 +40,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, "Lu,
+ Han" <han.lu@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 30, 2015 at 6:48 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Fri, Oct 30, 2015 at 03:04:37PM -0700, Caleb Crome wrote:
+> >
+> > There are still some opens. Would you please help to comment?
+> >
+> > 1. SPDIF kctl.
+> > This SPDIF number will be the same as PCM and be bound to the PCM.
+> > The pin nid of SPDIF will not be initialized. And the pin nid will be
+assigned
+> > After PCM is bound to the pin. (How to assign?)
 >
->> **********************
->> ** Problem 1 *******
->> **********************
->> When I enable your patch in single fifo mode we get maxburst lost
->> samples at the beginning of the stream.  The important bit is below.
->> It doesn't matter if the SSIEN comes before or after the TDMAE, the
->> samples are lost.  Surely because something in the fsl_ssi_config
->> clears the fifo.  I didn't look into that yet.
->
-> The config function has gone way complicated than I realized.
+> I don't understand the question.  Could you elaborate?
 
-I know!  It's quite complex and has taken me some time to pretty much
-understand.
+Are there any difference between three display ports in dasiy chain ?
 
-> But you may need to dig a little bit to make a perfect point
-> to insert your change as it might break other platforms: AC97
-> and old i.MX and MPC.
-
-The simple change to first enable SSIE, then TX should not cause any
-issues I think.  The current code enables TE and SSIE at the same
-time, which is clearly against what the datasheet says to do.  I
-believe the end of the fsl_ssi_config file in fact is the right place
-to do it, regardless of platform or format.  (As long as the fifo &
-dima are enabled).
-
->
-
-
-
->> --------------------------- snip -------------------
->>
->> If instead, I do the SSIEN at the bottom of the fsl_ssi_configure
->> function like this, it works perfectly (in single fifo mode)
->>
->> --------------------------- snip -------------------
->> +++ b/sound/soc/fsl/fsl_ssi.c
->> @@ -435,8 +435,49 @@ static void fsl_ssi_config(struct fsl_ssi_private
->> *ssi_private, bool enable,
->>
->>  config_done:
->>      /* Enabling of subunits is done after configuration */
->> -    if (enable)
->> +    if (enable) {
->> +        /* eanble SSI */
->> +        regmap_update_bits(regs, CCSR_SSI_SCR,
->> +                   CCSR_SSI_SCR_SSIEN,
->> +                   CCSR_SSI_SCR_SSIEN);
->> +        /*
->> +         * We must wait here until the DMA actually manages to
->> +         * get a word into the Tx FIFO.  Only if starting a Tx
->> +         * stream.
->> +         * In tests on an MX6 at 1GHz clock speed, the do
->> +         * loop below never iterated at all (i.e. it dropped
->> +         * through without repeating ever.  which means that
->> +         * the DMA has had time to get some words into the TX
->> +         * buffer. In fact, the tfcnt0 was always 13, so it
->> +         * was quite full by the time it reached this point,
->> +         * so this do loop should never be a bottleneck.  If
->> +         * max iterations is hit, then something might be
->> +         * wrong.  report it in that case.
->> +         */
->> +        int tfcnt0 = 0;
->> +        int tfcnt1 = 1;
->> +        int max_iterations = 1000;
->> +        if (vals->scr & CCSR_SSI_SCR_TE) {
->> +            u32 sfcsr;
->> +            do {
->> +                regmap_read(regs, CCSR_SSI_SFCSR, &sfcsr);
->> +                tfcnt0 = CCSR_SSI_SFCSR_TFCNT0(sfcsr);
->> +                tfcnt1 = CCSR_SSI_SFCSR_TFCNT0(sfcsr);
->> +            } while(max_iterations-- && (tfcnt0 == 0) && (tfcnt1 == 0));
->> +        }
->> +        if (max_iterations <= 0) {
->> +            /*
->> +             * The DMA definitely should have stuck at
->> +             * least a word into the FIFO by now.  Report
->> +             * an error, but continue on blindly anyway,
->> +             * even though the SSI might not start right.
->> +             */
->> +            struct platform_device *pdev = ssi_private->pdev;
->> +            dev_err(&pdev->dev, "max_iterations reached when"
->> +                "starting SSI Tx\n");
->> +        }
->
-> Looks like polling is the only way to safely kick off. It's okay.
-
-'polling' is a strong word because it never actually loops :-)
-Perhaps 'checking' is a better word.
-
-> But I would like to see how the change will be after merging the
-> simultaneous TE/RE work around.
-
-I'm not sure I understand this statement.  What's the simultaneous
-TE/RE work around?  It appears that the trigger function *only* does
-either one or the other, and not simultaneously. Is there a patch in
-the works to make tx/rx happen simultaneously?
-
--Caleb
+As they are physically connected to the same complex, do they have own
+playback switches or only one mute switch for three displayports ?
