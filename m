@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Splitting out controls
-Date: Sun, 1 Nov 2015 11:45:00 +0900
-Message-ID: <20151101024500.GG28319@sirena.org.uk>
-References: <1444657786.2528.78.camel@loki>
- <20151012205908.GA25971@us.netrek.org>
- <561CADA8.3040903@canonical.com>
- <20151030023618.GR28319@sirena.org.uk>
- <56332C17.4010303@canonical.com>
- <20151030085302.GE7311@us.netrek.org>
- <5633329E.8040003@canonical.com>
+Subject: Re: [PATCH v3 1/6] ALSA: hdac: structure definition
+ for ext_dma_params
+Date: Sun, 1 Nov 2015 11:56:52 +0900
+Message-ID: <20151101025652.GA17819@sirena.org.uk>
+References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
+ <1445931737-30393-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5651055454279985745=="
+Content-Type: multipart/mixed; boundary="===============4412343695801759593=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D4AEC2606D4
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:53:55 +0100 (CET)
-In-Reply-To: <5633329E.8040003@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 62FE526061B
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 09:54:02 +0100 (CET)
+In-Reply-To: <1445931737-30393-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,76 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, James Cameron <quozl@laptop.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5651055454279985745==
+--===============4412343695801759593==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dGMqxDINbOsorC0c"
+	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
 Content-Disposition: inline
 
 
---dGMqxDINbOsorC0c
+--h31gzZEtNLTqOjlF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 30, 2015 at 10:04:30AM +0100, David Henningsson wrote:
-> On 2015-10-30 09:53, James Cameron wrote:
-> >On Fri, Oct 30, 2015 at 09:36:39AM +0100, David Henningsson wrote:
+On Tue, Oct 27, 2015 at 04:42:12PM +0900, Vinod Koul wrote:
+> From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+>=20
+> This extends the structure definition of ext_device and adds
+> definition for dma_params which will be used when hdmi codec.
+>=20
+> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  include/sound/hdaudio_ext.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-> >>The BIOS can poke the hardware, set registers in such ways that
-> >>volumes are limited. Registers that the kernel never touches.
+Takashi?
 
-> >I'm not sure how that would work.  The BIOS developers and the kernel
-> >developers would have to agree on what registers are to be touched by
-> >the BIOS only.  In my case, with the rt5631, the registers could not
-> >be easily isolated in that fashion.  And if the kernel hit the reset
-> >bit in one of the registers, whatever the BIOS had set would be lost.
-
-> >Oh, and power management.  The codec can be powered down by suspend,
-> >with the BIOS uninvolved in resume.
-
-> The way it has come to work on HDA is that the codec vendor has a number of
-> "secret" registers, which they only tell the BIOS developers about, and (to
-> our frustration) are quite reluctant to tell us about.
-
-> And certainly the BIOS is involved in setting these registers on S3 resume,
-> too.
-
-This is all extremely specific to how HDA works on x86 systems with
-UEFI and ACPI, it's not at all applicable generally.
-
-> One could imagine having ACPI calls for putting a codec in suspend/resume,
-> but as I said, in many cases (such as yours) this just makes things more
-> complicated. It's better dealt with in the kernel codec driver instead.
-
-This then gets us back into the problem of having to have very system
-specific tuning in drivers somehow which is challenging to deploy.
-
---dGMqxDINbOsorC0c
+--h31gzZEtNLTqOjlF
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWNXysAAoJECTWi3JdVIfQ1XYH/R27Xz6keD7xb6K0wZFekRpl
-VnNpkEXAi5Lfs0hVgBkclASZFSPXc+vXQDAI6L2sfex0R7p/U8AzOzCvxj7UAKDQ
-J8+U3XVp2mznFNh9mQUAMCZQfR+e3tJ1Clkl/2jY6XTeOIIQR5w1L/vF4qOfiOJJ
-2qGiBmp1osCvDl+/52nGdEeDBeTTdJ7nJrWP6mnyH90bCacxmpaBVX0QFqz9QX/9
-WGxDaEI2l6hOxneqcmrtWU3bkzy7T6qYe7hkXF1kDiqoWMRM+GpMWmVE/utiY6ea
-RhcFg1Jhg8PU7+k5MdLs95ySZ7ZEDV3SbDpKfeGtteG8vDCgB0caSblytvM0ci4=
-=Y2DU
+iQEcBAEBCAAGBQJWNX9zAAoJECTWi3JdVIfQsH0H/RcD3J/xUv5ueY03GUqyQ49M
+S3M1Gh3B7W4a0DvPK2nQIXuS9g2pMvLEMYpfjS3196NeEuacv6bEGhjo8lUsIHdp
+7lwnIvE6oKtGdEedgUz7pnS/UBsDsWiLQzybXEC5sfjWSmxnYJYtR+QnHdApO0Zv
+Qkckxh6fSajtUkq94DpzERPt2pHvjW1QfmLg8/1NHLIoqzoOKZYb5L/PkjPNSFRi
+9FqavdwsyLv2UDXSrI3kHIbt7vOXUnud1BCebsbX/cLVzfM+HrnDkW3SPtX3K/qJ
+m/vi5Y/kbtXzIrB45JXJ3ylMQp9UMo4/hfxYkWImQ1VHUqWYT0TR+m8XyDhhBaM=
+=aJj4
 -----END PGP SIGNATURE-----
 
---dGMqxDINbOsorC0c--
+--h31gzZEtNLTqOjlF--
 
---===============5651055454279985745==
+--===============4412343695801759593==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5651055454279985745==--
+--===============4412343695801759593==--
