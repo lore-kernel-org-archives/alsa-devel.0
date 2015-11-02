@@ -1,7 +1,7 @@
 From: Caesar Wang <wxt@rock-chips.com>
-Subject: [PATCH 2/3] ASoC: rockchip-max98090: add the divider the clock for cpu
-Date: Mon,  2 Nov 2015 11:14:01 +0800
-Message-ID: <1446434042-2139-2-git-send-email-wxt@rock-chips.com>
+Subject: [PATCH 3/3] ASoC: rockchip-rt5645: add the divider the clock for cpu
+Date: Mon,  2 Nov 2015 11:14:02 +0800
+Message-ID: <1446434042-2139-3-git-send-email-wxt@rock-chips.com>
 References: <1446434042-2139-1-git-send-email-wxt@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1446434042-2139-1-git-send-email-wxt@rock-chips.com>
@@ -19,14 +19,14 @@ this patch should can set each divider to arrange the clock distribution.
 Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 ---
 
- sound/soc/rockchip/rockchip_max98090.c | 32 ++++++++++++++++++++++++++++++++
+ sound/soc/rockchip/rockchip_rt5645.c | 32 ++++++++++++++++++++++++++++++++
  1 file changed, 32 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 26567b1..8547155 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -75,8 +75,25 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 68c62e4..35fe000 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -74,8 +74,25 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
@@ -52,7 +52,7 @@ index 26567b1..8547155 100644
  	switch (params_rate(params)) {
  	case 8000:
  	case 16000:
-@@ -105,6 +122,21 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+@@ -104,6 +121,21 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
  		return ret;
  	}
  
