@@ -1,17 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 2/6] ASoC: hdac-hdmi: Add hdmi driver
-Date: Mon, 2 Nov 2015 15:36:42 +0530
-Message-ID: <20151102100642.GK21326@localhost>
-References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
- <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
- <20151101030231.GB17819@sirena.org.uk>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix missing
+ machine device creation
+Date: Mon, 2 Nov 2015 15:41:08 +0530
+Message-ID: <20151102101108.GL21326@localhost>
+References: <1446217461-2106-1-git-send-email-vinod.koul@intel.com>
+ <1446217461-2106-2-git-send-email-vinod.koul@intel.com>
+ <20151101025438.GH28319@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2257374658569090026=="
+Content-Type: multipart/mixed; boundary="===============0282892474599776350=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D01402607C8
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 11:03:15 +0100 (CET)
-In-Reply-To: <20151101030231.GB17819@sirena.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E6872607C8
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 11:07:40 +0100 (CET)
+In-Reply-To: <20151101025438.GH28319@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2257374658569090026==
+--===============0282892474599776350==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
+	protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
 Content-Disposition: inline
 
 
---TYecfFk8j8mZq+dy
+--zbGR4y+acU1DwHSi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 01, 2015 at 12:02:31PM +0900, Mark Brown wrote:
-> On Tue, Oct 27, 2015 at 04:42:13PM +0900, Vinod Koul wrote:
+On Sun, Nov 01, 2015 at 11:54:38AM +0900, Mark Brown wrote:
+> On Fri, Oct 30, 2015 at 08:34:18PM +0530, Vinod Koul wrote:
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> >=20
+> > The UEFI BIOS does not create a machine entry for Linux devices
+> > so add a table style machine registration to fix this missing
+> > entry
 >=20
-> > +	if (err < 0)
-> > +		dev_err(&hdac->dev, "Failed to query pcm params for nid: %d\n", cvt-=
->nid);
+> How does this relate to the existing sst_acpi code?  This might be
+> clearer with a user...
+
+It is similar but sst_machines structure is entirely different. In Skylake
+case we only need machine entry name and rest of the information is coming
+=66rom topology manifest data. I will try to move this as well to topology
+data later, but for now on upstream to get audio out from boards I need this
+patch :)
+
+I am not sure I follow the comment on user, the SKL driver here is user in
+this
+
+> > +static struct sst_machines *sst_acpi_find_machine(
+> > +	struct sst_machines *machines)
+> > +{
+> > +	struct sst_machines *mach;
+> > +	bool found =3D false;
+> > +
+> > +	for (mach =3D machines; mach->codec_id; mach++)
+> > +		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
+> > +						  sst_acpi_mach_match,
+> > +						  &found, NULL)) && found)
+> > +			return mach;
+> > +
+> > +	return NULL;
+> > +}
 >=20
-> That looks like the NID is being printed as an error code.
+> ...but the code looks extremely similar.
 
-No this prints the NID for which query fails, but agree we should print the
-error code too, that might be very helpful :)
-
-> > +	/*
-> > +	 * Currently on board only 1 pin and 1 converter enabled for
-> > +	 * simplification, more will be added eventually
-> > +	 * So using fixed map for dai_id:pin:cvt
-> > +	 */
-> > +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[=
-0],
-> > +			hdmi->cvt_nid[0], 0);
->=20
-> I'm not entirely sure I understand what this is all doing.  It looks
-> like it's trying to translate the HDA widget map into a DAPM map which
-> seems sensible but it appears it's making some simplifying assumptions
-> about the device it's dealing with?
-
-The device is actually quite simple and yes we simplified even further by
-ignoring multiple pins for now. We will keep adding more features and adding
-stuff to map as we go along..
+as explained above code is similar but everyone uses different sst_machines
+strcuture.
 
 --=20
 ~Vinod
 
---TYecfFk8j8mZq+dy
+--zbGR4y+acU1DwHSi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJWNzWyAAoJEHwUBw8lI4NH2y0P/RgaTwvVTAFO6qfRQxlxkxRv
-HiE4S+6pC4Zm9L9Qe3M4ijGGuO5YFSlYGFON0Ypv2FvnfPD2zaLNQtqsNYkjZ3qT
-aPCUvzf2Zwu9xF5LWBU9IrjHsPNn4wazEFQo2EPXtmNQdbvcIfTJCrSSh76zX9xB
-Yi6xZeTvLcPOVuuTTdrroPJJwOS4LuUYd89B438JHwAiDasWgkj0uA39BKILQEXo
-9QAYWVFnvzXVYmA7cXrNtmWfNVWXd2InCmbN/SYYPW6Jarwoc1+3Ha0Scbgbj8lb
-SxltcmwW+eP/v1MnWBR9UjibfXii3M/J5t40T7li7hXBh7VMmHtazb1Qt4dGaztm
-ejRth3BxiupfRpu8Tr9hmnosfeZWPT+HB7RXHfvqK/Jgptgqv+ZVqWQlgpKeHLn5
-wmwUf+YS1ppMJ3aRUutmZlQbL6OfEbMeWHpVf9IMB7mlaF+fQJ+Ra6gNHjg9lzFZ
-8H9GLpUH57MDmY+Yp/P1oZ7B/rHXehsHPMjm4iT+j6MwwJLJ6nRAc6PPYymAiqdP
-20d6SWJx3lIpxnMYjBgJUpspbKxmxsUvMMOoiZQCZ2Y5woMcJipPzoZ8lqHnzepO
-1gTdlOmqUORhyH4dpJHno3zRTAvZxLfjvDk39ZMz/6FvMszFercfQe47rNr+XSAQ
-wljI+zID2SZIFXeLcuLO
-=HSAF
+iQIcBAEBAgAGBQJWNza8AAoJEHwUBw8lI4NHGHcP/iA5WZRbOQ5xMRukR9YMnyGB
+yrkDa7j4TPd2g9v3Fq0MuS1iXISiEG7UeIj1qXDLPJrGBm6WAOXalQHXzQa7sMtk
+21NLdW4ZUtXcoEjEVxs3z8D5sjN4DikX6SiEyLrl1L+Z/olXVYl4GJojCs2J2cW4
+XEaHS+bHYVGM8AQOV7PDISgC5/UTnk+dEwX0hOfaqQk48Q7O8s45uM+vE0WsNkOu
+NHusaqoZhlwdnN54Qj6s2v/N7b9wtPB+h/unq/yOpm7UAFgCsnWdoQC3fAi4YQvr
+j2veQl8X2URUH8RR2jg1sLAaf1xUGopBBtfl2bvKem7aPv+kXyTtjHWdvj0A9ToX
+FHtghiY+y6NVDW0w4VxJNBOo7sC6GO7OIAra0oT3w6xqY+30iZyj3g04tpygb+/y
+lJFywlfg0m5jWwuck2omR53zAnEyEiUVFITbn6lLVqRvRmqD9fxMi8D0mUWdb3+d
+TiP7RYi/CLOR0O6II0ifG6S/mNxb/0AnxKetR0pW63yGad6hW8+901oBGapUtFqS
+niBMiZtTKX9adDw5zredfD5LFmRVaISgIPA/7IyBPYJoAZ+WSzacKU4aeFWPL2Tq
+ZcOwwtaQeZ/IMohk3dBSTHO0zesX7TFGatHfK2NRRO1Mm/88X3sLFu2IoIWo8j/y
+sIp4l27ioFtPwZt0yKMV
+=PVuV
 -----END PGP SIGNATURE-----
 
---TYecfFk8j8mZq+dy--
+--zbGR4y+acU1DwHSi--
 
---===============2257374658569090026==
+--===============0282892474599776350==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2257374658569090026==--
+--===============0282892474599776350==--
