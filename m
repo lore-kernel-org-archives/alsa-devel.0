@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: wm8960 sleep time is too long when system suspend
-Date: Mon, 2 Nov 2015 11:12:40 +0000
-Message-ID: <20151102111240.GB20228@sirena.org.uk>
-References: <20151102084402.GA7603@shlinux2>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH] ASoC: da7219: Use logical instead of
+ bitwise OR for boolean expression
+Date: Mon, 2 Nov 2015 11:14:44 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460BEEC@SW-EX-MBX01.diasemi.com>
+References: <1445668113.26836.0.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8165417502919163099=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF4552607C8
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 12:12:48 +0100 (CET)
-In-Reply-To: <20151102084402.GA7603@shlinux2>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE7292607C8
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 12:14:47 +0100 (CET)
+In-Reply-To: <1445668113.26836.0.camel@ingics.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <Support.Opensource@diasemi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On October 24, 2015 07:29, Axel Lin wrote:
 
---===============8165417502919163099==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
-Content-Disposition: inline
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/codecs/da7219.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index abba4b3..86c528a 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -1306,7 +1306,7 @@ static int da7219_hw_params(struct snd_pcm_substream
+> *substream,
+>  	}
+> 
+>  	channels = params_channels(params);
+> -	if ((channels < 1) | (channels > DA7219_DAI_CH_NUM_MAX)) {
+> +	if ((channels < 1) || (channels > DA7219_DAI_CH_NUM_MAX)) {
+>  		dev_err(codec->dev,
+>  			"Invalid number of channels, only 1 to %d supported\n",
+>  			DA7219_DAI_CH_NUM_MAX);
+> --
+> 2.1.4
 
-
---yNb1oOkm5a9FJOVX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 02, 2015 at 04:44:04PM +0800, Zidan Wang wrote:
-
-> Hi Mark,
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
-> In wm8960 codec driver, suspend_bias_off has been enabled. So when
-> system suspend, the wm8960 codec will go to bias off, it will disable
-> VMID and VREF, then sleep 600ms. It seems that 600ms is too long for
-> system suspend.
-
-> Because the wm8960 datasheet don't mentioned the sleep time, so i want
-> to check with you if we can shorten the sleep time.
-
-These times are totally normal for a VMID referenced CODEC like the
-wm8960, attempting to ramp faster produces audible artifacting.
-
---yNb1oOkm5a9FJOVX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWN0UjAAoJECTWi3JdVIfQ6w8H/1Dxstznkt5srWj8sHZvRjAX
-S7PVnHupoIBKVKNcRib3UBsEvhInFt1fcHj3pbt9I96jF6OuznTo6oGSVyxPuKvd
-dFdtBpRo1i6jTsLvs9i4pHMj2nyiu4UPG423iE/Yv4vLKMdUBvpGNbGZsfPOkNFa
-JmLT/D5Y05HhyXcqEi4Qwg+IaEewoNsIFDNzm2WQqeTXwNKskmPfZ3JdkoTl1oC6
-XK5gSjvBHhUL7Mo04rNe44VIoVA/J5S6lXWOs9EUVy/yc0iMjKVTL//rcXKSUiMr
-zuD9LZd7p774T6tXeH4DYoWQEK5ZtUhz2GBWGGjZ6qBcdt8y1oGVFV3tAJp4vsE=
-=NjwX
------END PGP SIGNATURE-----
-
---yNb1oOkm5a9FJOVX--
-
---===============8165417502919163099==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8165417502919163099==--
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
