@@ -1,101 +1,49 @@
-From: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2 1/2] dt-bindings: sound: Add DT bindings for Broadcom Cygnus audio
-Date: Mon, 2 Nov 2015 14:11:23 -0800
-Message-ID: <1446502284-23907-2-git-send-email-ssimran@broadcom.com>
-References: <1446502284-23907-1-git-send-email-ssimran@broadcom.com>
+From: Simran Rai <ssimran@broadcom.com>
+Subject: [PATCH v2 0/2] Add audio support for Broadcom Cygnus SoC
+Date: Mon, 2 Nov 2015 14:11:22 -0800
+Message-ID: <1446502284-23907-1-git-send-email-ssimran@broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1446502284-23907-1-git-send-email-ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Simran Rai <ssimran@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings for audio driver in Broadcom Cygnus.
+Hi,
 
-Signed-off-by: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Reviewed-by: Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Reviewed-by: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
----
- .../bindings/sound/brcm,cygnus-audio.txt           |   63 ++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+This patchset contains audio support for Broadcom's Cygnus SoC. It
+contains DT bindings and core audio driver. The audio driver
+supports both capture and playback of Audio PCM samples over I2S/TDM
+interface and provides playback support over SPDIF interface.
+
+This patchset is derived from a previously submitted patchset:
+http://lkml.iu.edu/hypermail/linux/kernel/1503.3/05434.html
+
+This patchset has been tested on Cygnus wireless audio bcm958305K board.
+It is based on v4.3-rc5  and is available from github:
+
+repo: https://github.com/Broadcom/cygnus-linux/tree/cygnus-sound-v2
+
+Changes from v1:
+  - Address code review comments. Fixed print format of type size_t and
+    pointer.
+
+Simran Rai (2):
+  dt-bindings: sound: Add DT bindings for Broadcom Cygnus audio
+  VOIP-5227 Add Broadcom Cygnus audio driver.
+
+ .../bindings/sound/brcm,cygnus-audio.txt           |   63 +
+ sound/soc/bcm/Kconfig                              |   18 +
+ sound/soc/bcm/Makefile                             |    5 +
+ sound/soc/bcm/cygnus-pcm.c                         |  903 ++++++++++++
+ sound/soc/bcm/cygnus-ssp.c                         | 1532 ++++++++++++++++++++
+ sound/soc/bcm/cygnus-ssp.h                         |  129 ++
+ 6 files changed, 2650 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ create mode 100644 sound/soc/bcm/cygnus-pcm.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.h
 
-diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-new file mode 100644
-index 0000000..73cddb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-@@ -0,0 +1,63 @@
-+BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
-+
-+Required properties:
-+	- compatible : "brcm,cygnus-audio"
-+	- #address-cells: 32bit valued, 1 cell.
-+	- #size-cells:  32bit valued, 0 cell.
-+	- reg : Should contain audio registers location and length
-+	- reg-names: names of the registers listed in "reg" property
-+		Valid names are "aud" and "i2s_in". "aud" contains a
-+		set of DMA, I2S_OUT and SPDIF registers. "i2s_in" contains
-+		a set of I2S_IN registers.
-+	- clocks: PLL and leaf clocks used by audio ports
-+	- clock-names: names of 3 leaf clocks used by audio ports
-+		Valid names are "ch0_audio", "ch1_audio", "ch2_audio"
-+	- interrupts: audio DMA interrupt number
-+
-+SSP Subnode properties:
-+- reg: The index of ssp port interface to use
-+	Valid value are 0, 1, 2, or 3 (for spdif)
-+- channel-group: Surround sound grouping that controls which channel
-+  outputs belong to a group, specifically useful in Multi-channel
-+  Interfaces grouping of serial port. In multi-channel stereo, use
-+  "2_0", in 3.1 multi-channel grouping, use "3_1" and in 5.1
-+  multi-channel grouping, use "5_1".
-+
-+
-+Example:
-+	cygnus_audio: audio@180ae000 {
-+		compatible = "brcm,cygnus-audio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x180ae000 0xafd>, <0x180aec00 0x1f8>;
-+		reg-names = "aud", "i2s_in";
-+		clocks = <&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
-+				<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
-+				<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
-+		clock-names = "ch0_audio", "ch1_audio", "ch2_audio";
-+		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		ssp0: ssp_port@0 {
-+			reg = <0>;
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			status = "okay";
-+		};
-+
-+		ssp1: ssp_port@1 {
-+			reg = <1>;
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			status = "disabled";
-+		};
-+
-+		ssp2: ssp_port@2 {
-+			reg = <2>;
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			status = "disabled";
-+		};
-+
-+		spdif: spdif_port@3 {
-+			reg = <3>;
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			status = "disabled";
-+		};
-+	};
 -- 
 1.7.9.5
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
