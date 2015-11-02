@@ -1,19 +1,29 @@
-From: Roberto Fichera <kernel@tekno-soft.it>
-Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
- number of samples
-Date: Mon, 2 Nov 2015 19:03:24 +0100
-Message-ID: <5637A56C.5030103@tekno-soft.it>
-References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
- <5634870A.4080206@tekno-soft.it> <5637A288.4080807@tekno-soft.it>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Subject: Re: Noise in tlv320aic3104-based audio system
+Date: Mon, 2 Nov 2015 22:04:33 +0100
+Message-ID: <CA+sos78RipD1RHR1=2PJtCq59=piKd-NBQ5UApE_DQ=c-7w6qQ@mail.gmail.com>
+References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
+ <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
+ <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
+ <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
+ <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
+ <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
+ <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
+ <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
+ <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
+ <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
+ <F55227BC-F77B-4823-963F-B64027C05BB9@latencyzero.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.tekno-soft.it (li153-180.members.linode.com
- [109.74.206.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 710A8261A8B
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 19:03:44 +0100 (CET)
-In-Reply-To: <5637A288.4080807@tekno-soft.it>
+Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13221260695
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 22:04:56 +0100 (CET)
+Received: by obbza9 with SMTP id za9so104519337obb.1
+ for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2015 13:04:53 -0800 (PST)
+In-Reply-To: <F55227BC-F77B-4823-963F-B64027C05BB9@latencyzero.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,18 +33,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
+To: Rick Mann <rmann@latencyzero.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/02/2015 06:51 PM, Roberto Fichera wrote:
->>> >> Overall, I don't see an obvious defect from you SSI side, but you
->>> >> may also try to toggle TDMAE and RDMAE at the point that callback
->>> >> stops -- re-raise the DMA requests by disabling and enabling TDMAE
->>> >> and RDMAE again and see if it works. I think either something did
->>> >> intervene register controls of SDMA or SSI, 
->> > I will try this one.
-> I will go over this tomorrow morning.
->
-
-I've tried it just now but doesn't work at all! I'm getting only 2 sdma transfers.
+RGVhciBSaWNrIE1hbm4sCgpPbiBNb24sIE5vdiAyLCAyMDE1IGF0IDg6NTAgQU0sIFJpY2sgTWFu
+biA8cm1hbm5AbGF0ZW5jeXplcm8uY29tPiB3cm90ZToKPgo+PiBPbiBPY3QgMzAsIDIwMTUsIGF0
+IDAzOjAzICwgQmVub8OudCBUaMOpYmF1ZGVhdSA8YmVub2l0LnRoZWJhdWRlYXUuZGV2QGdtYWls
+LmNvbT4gd3JvdGU6Cj4+Cj4+IERlYXIgUmljayBNYW5uLAo+Pgo+PiBPbiBGcmksIE9jdCAzMCwg
+MjAxNSBhdCA2OjQ1IEFNLCBSaWNrIE1hbm4gPHJtYW5uQGxhdGVuY3l6ZXJvLmNvbT4gd3JvdGU6
+Cj4+Pgo+Pj4+IE9uIE9jdCAyOSwgMjAxNSwgYXQgMjA6NDMgLCBDYWxlYiBDcm9tZSA8Y2FsZWJA
+Y3JvbWUub3JnPiB3cm90ZToKPj4+Pgo+Pj4+IFRoZSBkYXRhIHNoZWV0cyBmb3IgdGhvc2UgYWlj
+IGNvZGVjcyBhcmUgcHJldHR5IGdvb2QgSSB0aGluay4KPj4+Pgo+Pj4+IEFsc28sIHJvdXRpbmcg
+ZGlyZWN0IG9yIHRocm91Z2ggYSBtaXhlciB3aWxsIGJlIGEgbWlub3IgZGlmZmVyZW5jZSwgbm90
+IGEgbWFqb3Igb25lLgo+Pj4+Cj4+Pj4gSXQganVzdCBvY2N1cnJlZCB0byBtZSwgdGhlIG5vaXNl
+IGNvdWxkIGVhc2lseSBiZSBjb21pbmcgZnJvbSBhIGRpcmVjdCBpbnB1dCAtPiBvdXRwdXQgcm91
+dGUsIGJ5cGFzc2luZyB0aGUgYWRjIGFuZCBkYWMgYWx0b2dldGhlci4gTWFrZSBzdXJlIGFsbCBi
+eXBhc3Mgcm91dGVzIGFyZSB6ZXJvZWQgb3V0LiAgVGhlIHRyaWNrIGlzIGNvcnJlbGF0aW5nIHRo
+ZSBkYXRhc2hlZXQgcm91dGVzIHdpdGggdGhlIGFsc2EgbWl4ZXIgY29udHJvbHMgdGhhdCBjb3Jy
+ZXNwb25kIHRvIHRoZW0gLiAgRW5vdWdoIHN0YXJpbmcgYXQgdGhlIGFpYzN4LmMgZmlsZXMgd2ls
+bCBldmVudHVhbGx5IHNoZWQgbGlnaHQ6LSkKPj4+Cj4+PiBJJ3ZlIHplcm9lZCBvdXQgZXZlcnl0
+aGluZyBJIGNvdWxkIGZpbmQuIE5vdGhpbmcgaGFkIGFuIGVmZmVjdCB1bnRpbCBJIGdvdCB0byB0
+aGUgREFDIG11eGVzLCBhdCB3aGljaCBwb2ludCB0aGUgYmVoYXZpb3IgZ2V0cyByZWFsbHkgd2Vp
+cmQuIENoYW5naW5nIHRob3NlIGdldHMgbWUgdG8gbGVmdCBvciByaWdodCBvdXRwdXQsIGJ1dCBu
+ZXZlciBib3RoIGFnYWluIHVudGlsIEkgcmVzZXQgdGhlIENPREVDLgo+Pj4KPj4+IE5vbmUgb2Yg
+dGhpcyBhZmZlY3RlZCB0aGUgaGlzcy4KPj4KPj4gQ2FuIHlvdSB0cnkgYGFsc2FjdGwgcmVzdG9y
+ZWAgd2l0aCB0aGlzIGFzb3VuZC5zdGF0ZT8KPj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYnRo
+ZWJhdWRlYXUvZTAwNDkyZWJmMDMwOWY4ZGJhY2UKPj4KPj4gVEkncyBkaWFncmFtIGluIHRoZSBk
+YXRhIHNoZWV0IGlzIG1pc3NpbmcgYSBmZXcgdGhpbmdzLiBTb21lIHBhdGhzIGFyZQo+PiBhbHNv
+IHdyb25nLiBUaGUgZGVzY3JpcHRpb24gb2YgdGhlIHJlZ2lzdGVycyBpcyByaWdodCBob3dldmVy
+LCBzbyBpdAo+PiBpcyB0aGUgcmVmZXJlbmNlLiBJIGhhdmUgdXNlZCBleHRlbnNpdmVseSBhIHNp
+bWlsYXIgc2V0dXAgd2l0aCBhbgo+PiBvbGRlciBrZXJuZWwsIGFuZCBpdCB3b3JrcyBmaW5lLgo+
+Cj4gQmVub8OudCwgaXQgbWlnaHQgYmUgYmVuZWZpY2lhbCBpZiB5b3UgY29tbWVudGVkIG9uIG15
+IGUyZSBwb3N0IHRvIGluZGljYXRlIHNvbWUgb2YgdGhlIG1pc3NpbmcgcGF0aHMgeW91IG1lbnRp
+b25lZC4gTHVpcyBzYWlkIGhlJ2Qgbm90aWZ5IHNvbWVvbmUgYXQgVEkgKHByZXN1bWFibHkpIGFi
+b3V0IHRoZSBlcnJvciBpbiB0aGUgZGlhZ3JhbSwgYnV0IGhlIG1heSBub3Qga25vdyB0byBhZGQg
+bWlzc2luZyBwYXRocywgYXMgd2VsbC4KPgo+IE9yIGxldCBtZSBrbm93IHdoaWNoIG9uZXMgYXJl
+IG1pc3NpbmcgYW5kIEknbGwgYWRkIHRoYXQuCgpJIGhhdmUgZ29uZSB0aHJvdWdoIGFzb3VuZC5z
+dGF0ZSB0byBsb29rIGZvciBpbmNvbnNpc3RlbmNpZXMgd2l0aCB0aGUKZGlhZ3JhbS4gQWxsIHRo
+ZSB3cm9uZyBvciBtaXNzaW5nIHBhdGhzIGFyZSBvbiBEQUNfUjEsIHdoaWNoIHNob3VsZApqdXN0
+IGJlIG1hZGUgc3ltbWV0cmljYWwgdG8gREFDX0wxLiBBbHNvLCB0aGUgImV4dGVybmFsIGZlZWRi
+YWNrIgp2YWx1ZSBvZiB0aGUgUmlnaHQgSFBDT00gTXV4IGlzIG5vdCByZXByZXNlbnRlZCBvbiB0
+aGUgZGlhZ3JhbSAoc2VlCnJlZ2lzdGVyIDM4KS4gVGhlcmUgd2VyZSBtYW55IG90aGVyIGluY29u
+c2lzdGVuY2llcywgYnV0IGJlY2F1c2Ugb2YKeW91ciBEVFMgKHNlZSBiZWxvdykuCgpJIGhhZCB0
+b2xkIHlvdSBpbiBvbmUgb2YgbXkgcHJldmlvdXMgcG9zdHMgdGhhdCB0aGVyZSB3ZXJlIHdlaXJk
+CnRoaW5ncyB0aGF0IHNob3VsZCBub3QgYmUgcHJlc2VudCwgbGlrZSB0aGUgbW9ubyBjb250cm9s
+cywgYW5kIGluZGVlZDoKeW91ciBEVFMgaXMgd3JvbmcuIFlvdSBzaG91bGQgcmVwbGFjZQogIGNv
+bXBhdGlibGUgPSAidGksdGx2MzIwYWljM3giOwp3aXRoCiAgY29tcGF0aWJsZSA9ICJ0aSx0bHYz
+MjBhaWMzMTA0IjsKVGhhdCB3aWxsIHJlbW92ZSBhIGxvdCBvZiBOL0EgY29udHJvbHMgKDE6IGZp
+eCB5b3VyIC5kdHMsIDI6IHJlc3RvcmUKbXkgYXNvdW5kLnN0YXRlLCAzOiBzdG9yZSBpdCBpbiBv
+cmRlciB0byByZW1vdmUgZXh0cmEgY29udHJvbHMpIHRoYXQKbWF5IGhhdmUgYW4gZWZmZWN0IG9u
+IHlvdXIgaGlzcyBpZiB1c2VkOiBhbGwgTW9ubywgTGluZTIsIGFuZCBNaWMzCmNvbnRyb2xzLiBT
+b21lIE1pYzIgY29udHJvbHMgc2hvdWxkIGFsc28gYXBwZWFyLCB3aGljaCB5b3Ugc2hvdWxkCmRp
+c2FibGUuCgpCZXN0IHJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
