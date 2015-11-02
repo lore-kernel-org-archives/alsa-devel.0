@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: topology: Reenable use from userspace
-Date: Mon, 02 Nov 2015 10:47:31 +0000
-Message-ID: <1446461251.2623.26.camel@loki>
-References: <1445830900-1752-1-git-send-email-broonie@kernel.org>
- <20151031025448.GA28319@sirena.org.uk>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: Re: wm8960 sleep time is too long when system suspend
+Date: Mon, 2 Nov 2015 18:49:23 +0800
+Message-ID: <20151102104921.GA4769@shlinux2>
+References: <20151102084402.GA7603@shlinux2> <20151102091855.GO10520@ck-lbox>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C3652607C8
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 11:47:35 +0100 (CET)
-In-Reply-To: <20151031025448.GA28319@sirena.org.uk>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0110.outbound.protection.outlook.com [65.55.169.110])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDC1B2607C8
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 11:51:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151102091855.GO10520@ck-lbox>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Mendong Lin <mengdong.lin@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2015-10-31 at 11:54 +0900, Mark Brown wrote:
-> On Mon, Oct 26, 2015 at 12:41:40PM +0900, Mark Brown wrote:
-> > We had inserted a #error into the topology UAPI code to ensure that the
-> > ABI was not adopted by userspace while final review and testing was
-> > ongoing.  Since we are now comfortable that the ABI is suitable for
-> > production remove the #error, future changes will include provision for
-> > backwards compatibility.
+On Mon, Nov 02, 2015 at 09:18:55AM +0000, Charles Keepax wrote:
+> On Mon, Nov 02, 2015 at 04:44:04PM +0800, Zidan Wang wrote:
+> > Hi Mark,
+> > 
+> > In wm8960 codec driver, suspend_bias_off has been enabled. So when system suspend, the wm8960 codec will go to bias off,
+> > it will disable VMID and VREF, then sleep 600ms. It seems that 600ms is too long for system suspend.
+> > 
+> > Because the wm8960 datasheet don't mentioned the sleep time, so i want to check with you if we can shorten the sleep time.
 > 
-> > Are we OK with this?  Looking for some acks and reviews...
+> I can't say that I am explicit familiar with the required delay
+> there, but the comment in the code says that we are letting VMID
+> and VREF discharge, which I certainly could believe would take a
+> while. My guess would be that we likely weren't super excited
+> about putting a 600mS delay in, which probably means it was
+> necessary for some reason.
 > 
-> I saw a reply from Vinod but nobody else here.
+> How much where you hoping to reduce it by? I can see if I can
+> find a hardware engineer who still remembers enough about the
+> part to discuss it with.
+> 
 
-Mengdong are we good here ?
+Some customer can't accept such long system suspend time. It's better to spend less than 100ms for system suspend.
+Codec suspend is a part of system suspend, so it should be less than 100ms, and as short as possible.
 
-Liam
+
+Best Regards,
+Zidan Wang
+
+> Thanks,
+> Charles
