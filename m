@@ -1,18 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: wm8960 sleep time is too long when system suspend
-Date: Mon, 2 Nov 2015 09:18:55 +0000
-Message-ID: <20151102091855.GO10520@ck-lbox>
-References: <20151102084402.GA7603@shlinux2>
+From: Roberto Fichera <kernel@tekno-soft.it>
+Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
+ number of samples
+Date: Mon, 2 Nov 2015 10:57:38 +0100
+Message-ID: <56373392.6010901@tekno-soft.it>
+References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
+ <5634870A.4080206@tekno-soft.it>
+ <CAOMZO5AXbMgJUgVHA2954NfvYEfX5eaWzTwprpgL1krCJ-Ut6w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A89B4260691
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 10:34:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20151102084402.GA7603@shlinux2>
+Received: from mail.tekno-soft.it (li153-180.members.linode.com
+ [109.74.206.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0D3226070C
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 10:57:57 +0100 (CET)
+In-Reply-To: <CAOMZO5AXbMgJUgVHA2954NfvYEfX5eaWzTwprpgL1krCJ-Ut6w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 02, 2015 at 04:44:04PM +0800, Zidan Wang wrote:
-> Hi Mark,
-> 
-> In wm8960 codec driver, suspend_bias_off has been enabled. So when system suspend, the wm8960 codec will go to bias off,
-> it will disable VMID and VREF, then sleep 600ms. It seems that 600ms is too long for system suspend.
-> 
-> Because the wm8960 datasheet don't mentioned the sleep time, so i want to check with you if we can shorten the sleep time.
+On 11/01/2015 09:31 PM, Fabio Estevam wrote:
 
-I can't say that I am explicit familiar with the required delay
-there, but the comment in the code says that we are letting VMID
-and VREF discharge, which I certainly could believe would take a
-while. My guess would be that we likely weren't super excited
-about putting a 600mS delay in, which probably means it was
-necessary for some reason.
+Hi Fabio,
 
-How much where you hoping to reduce it by? I can see if I can
-find a hardware engineer who still remembers enough about the
-part to discuss it with.
+> Hi Roberto,
+>
+> On Sat, Oct 31, 2015 at 7:16 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
+>
+>>> Since you are using single FIFO configuration, which SDMA script
+>>> are you using? This should reflects in the Device Tree. As far as
+>>> I learned, FSL 3.14 is using number 22 for SSIs which is the one
+>>> for Dual FIFO Mode.
+>> No! Currently is 1. Here the Freescale's v3.14.28 GA imx6sx.dtsi entry
+>>
+>>                 ssi1: ssi@02028000 {
+>>                     compatible = "fsl,imx6sx-ssi", "fsl,imx21-ssi";
+>>                     reg = <0x02028000 0x4000>;
+>>                     interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+>>                     clocks = <&clks IMX6SX_CLK_SSI1_IPG>,
+>>                          <&clks IMX6SX_CLK_SSI1>;
+>>                     clock-names = "ipg", "baud";
+>>                     dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
+>>                     dma-names = "rx", "tx";
+>>                     status = "disabled";
+>>                 };
+> Take a look at imx_3.14.38_6ul_ga branch; It does use 22 in the dmas nodes:
+> http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/arch/arm/boot/dts/imx6sx.dtsi?h=imx_3.14.38_6ul_ga
+>
+> However, this list is only about mainline kernel, so please run all
+> your tests with mainline instead of FSL 3.14.
+>
 
-Thanks,
-Charles
+Ok! I'm doing that right now.
