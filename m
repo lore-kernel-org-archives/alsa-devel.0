@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: wm8960 sleep time is too long when system suspend
-Date: Mon, 2 Nov 2015 11:16:26 +0000
-Message-ID: <20151102111626.GC20228@sirena.org.uk>
-References: <20151102084402.GA7603@shlinux2> <20151102091855.GO10520@ck-lbox>
- <20151102104921.GA4769@shlinux2>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix missing
+ machine device creation
+Date: Mon, 2 Nov 2015 12:07:27 +0000
+Message-ID: <20151102120727.GD20228@sirena.org.uk>
+References: <1446217461-2106-1-git-send-email-vinod.koul@intel.com>
+ <1446217461-2106-2-git-send-email-vinod.koul@intel.com>
+ <20151101025438.GH28319@sirena.org.uk>
+ <20151102101108.GL21326@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8170514415580706468=="
+Content-Type: multipart/mixed; boundary="===============3539557446528474738=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 21C672614D3
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 12:16:33 +0100 (CET)
-In-Reply-To: <20151102104921.GA4769@shlinux2>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C146261507
+ for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 13:07:35 +0100 (CET)
+In-Reply-To: <20151102101108.GL21326@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +24,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8170514415580706468==
+--===============3539557446528474738==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
+	protocol="application/pgp-signature"; boundary="JwB53PgKC5A7+0Ej"
 Content-Disposition: inline
 
 
---KN5l+BnMqAQyZLvT
+--JwB53PgKC5A7+0Ej
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 02, 2015 at 06:49:23PM +0800, Zidan Wang wrote:
+On Mon, Nov 02, 2015 at 03:41:08PM +0530, Vinod Koul wrote:
+> On Sun, Nov 01, 2015 at 11:54:38AM +0900, Mark Brown wrote:
 
-> Some customer can't accept such long system suspend time. It's better
-> to spend less than 100ms for system suspend.  Codec suspend is a part
-> of system suspend, so it should be less than 100ms, and as short as
-> possible.
+> > > The UEFI BIOS does not create a machine entry for Linux devices
+> > > so add a table style machine registration to fix this missing
+> > > entry
 
-Users need to be realistic about the performance they can expect with
-older devices.  Systems that need fast power on/off times should be
-using ground referenced CODECs, fundamentally ramping VMID quickly is
-incompatible with avoiding pops and clicks.
+> > How does this relate to the existing sst_acpi code?  This might be
+> > clearer with a user...
 
---KN5l+BnMqAQyZLvT
+> It is similar but sst_machines structure is entirely different. In Skylake
+> case we only need machine entry name and rest of the information is coming
+
+So what exactly is the "machine entry name" supposed to be here and why
+don't we use any board specific information?
+
+> from topology manifest data. I will try to move this as well to topology
+> data later, but for now on upstream to get audio out from boards I need this
+> patch :)
+
+I'm not sure I entirely believe that this is going to work well in
+practice TBH.
+
+> I am not sure I follow the comment on user, the SKL driver here is user in
+> this
+
+There are no machines defined for this.
+
+--JwB53PgKC5A7+0Ej
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWN0YJAAoJECTWi3JdVIfQF5YH/27s0ijBtMp8a5oRESj939Gh
-e+BRJTbiPxYfaLU9cF+TZJnpIhGovmvPhMK8UXkrH95H533bevUhJEvXKnTKzTGq
-zY91PXbZ+WgzfzCTg1d6nwKxOxeIFVzoRXOIsxY+CQlDiDgojowDmv4bzMNxmZkr
-EY5YVVtE/Msn+yGSJS4oOkPj90+g4wEbfuqFL10bM3QrGd4FuroIbCBlFvxxttog
-/PZIEu/DxznEwu2iqH93L5LRqEww//GzXj3xGTAMo7KvNMqLazelwsjA+7winUPI
-TBphzZojjW6MJ3TFrGAv8uZqkvUeX/Is9bYGJW4EYrfsORzg0h4NVKD7VMYPE1g=
-=Cn2+
+iQEcBAEBCAAGBQJWN1H/AAoJECTWi3JdVIfQhM8H+wabsZ8nslwh3HhWrBOJVPfr
+o/vmVzeSbMl6ibrH6qZo+BODtyrnBxJ8y+CSJxajPDo9+giobbfs20SLy4Vlx4At
+Pe12SFfH8rbwG3d9wqCiykxtHZ1lDu4/uGoFziTnL+kPg57CioAwOocpr5ThY2OW
++yw7j/gxcJjQ4AQcaIIFbkm8Q+Ey47HOmmQfH7/KiwDxKqUOgp306vPeVFSOrsix
+nK2i9ONzOhWoRqVWvSS3Mv98ysZ3KAxQ4IeUizNcxE2qllyvTFWoJrfhbryV0Zsh
+cf8+0sEY/kvjRyExmylu6IdzG3sxwwx7JlCD423NOPqv4V6DB2lsDpqEzLj8azY=
+=V9tL
 -----END PGP SIGNATURE-----
 
---KN5l+BnMqAQyZLvT--
+--JwB53PgKC5A7+0Ej--
 
---===============8170514415580706468==
+--===============3539557446528474738==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8170514415580706468==--
+--===============3539557446528474738==--
