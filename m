@@ -1,104 +1,101 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: Noise in tlv320aic3104-based audio system
-Date: Mon, 2 Nov 2015 13:14:31 -0800
-Message-ID: <860491AC-044C-4C5C-B91A-66557CF98ADB@latencyzero.com>
-References: <2C04C84B-D0DC-40F6-9E5C-0BE659ABD7CA@latencyzero.com>
- <CA+sos79u_usBFsV=w5PKN5xq10E_biFrWWX__Cn4kXqAYcKKPA@mail.gmail.com>
- <D00A3079-506F-4C42-8353-A903208D70AA@latencyzero.com>
- <CAG5mAdwvbBSVsnvYMbh3UJnnT9hZ2nMzvFzUpWb+KPJqummr8g@mail.gmail.com>
- <71E80DDD-A9CF-454B-84F8-3D6A61106678@latencyzero.com>
- <CA+sos7-E8agRg-LhOLo4reZp09BJjV2P_nTfSDWT9_u+2h4dqw@mail.gmail.com>
- <D388183F-A107-4831-AB29-4AC9817BDE4A@latencyzero.com>
- <42AE61D4-AD45-4FF3-B155-C64335968B08@crome.org>
- <4B13BA45-F4A0-43B8-BCB0-B2FDA87CD8A3@latencyzero.com>
- <CA+sos781MV8qAVgP2czb0WDOwqX91JRue_320ChY=EQpQMOPKQ@mail.gmail.com>
- <F55227BC-F77B-4823-963F-B64027C05BB9@latencyzero.com>
- <CA+sos78RipD1RHR1=2PJtCq59=piKd-NBQ5UApE_DQ=c-7w6qQ@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 0467B260695
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 22:14:34 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 7A2752065A
- for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2015 16:14:32 -0500 (EST)
-In-Reply-To: <CA+sos78RipD1RHR1=2PJtCq59=piKd-NBQ5UApE_DQ=c-7w6qQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Caleb Crome <caleb@crome.org>
+From: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH v2 1/2] dt-bindings: sound: Add DT bindings for Broadcom Cygnus audio
+Date: Mon, 2 Nov 2015 14:11:23 -0800
+Message-ID: <1446502284-23907-2-git-send-email-ssimran@broadcom.com>
+References: <1446502284-23907-1-git-send-email-ssimran@broadcom.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1446502284-23907-1-git-send-email-ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gT24gTm92IDIsIDIwMTUsIGF0IDEzOjA0ICwgQmVub8OudCBUaMOpYmF1ZGVhdSA8YmVub2l0
-LnRoZWJhdWRlYXUuZGV2QGdtYWlsLmNvbT4gd3JvdGU6Cj4gCj4gRGVhciBSaWNrIE1hbm4sCj4g
-Cj4gT24gTW9uLCBOb3YgMiwgMjAxNSBhdCA4OjUwIEFNLCBSaWNrIE1hbm4gPHJtYW5uQGxhdGVu
-Y3l6ZXJvLmNvbT4gd3JvdGU6Cj4+IAo+Pj4gT24gT2N0IDMwLCAyMDE1LCBhdCAwMzowMyAsIEJl
-bm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9pdC50aGViYXVkZWF1LmRldkBnbWFpbC5jb20+IHdyb3Rl
-Ogo+Pj4gCj4+PiBEZWFyIFJpY2sgTWFubiwKPj4+IAo+Pj4gT24gRnJpLCBPY3QgMzAsIDIwMTUg
-YXQgNjo0NSBBTSwgUmljayBNYW5uIDxybWFubkBsYXRlbmN5emVyby5jb20+IHdyb3RlOgo+Pj4+
-IAo+Pj4+PiBPbiBPY3QgMjksIDIwMTUsIGF0IDIwOjQzICwgQ2FsZWIgQ3JvbWUgPGNhbGViQGNy
-b21lLm9yZz4gd3JvdGU6Cj4+Pj4+IAo+Pj4+PiBUaGUgZGF0YSBzaGVldHMgZm9yIHRob3NlIGFp
-YyBjb2RlY3MgYXJlIHByZXR0eSBnb29kIEkgdGhpbmsuCj4+Pj4+IAo+Pj4+PiBBbHNvLCByb3V0
-aW5nIGRpcmVjdCBvciB0aHJvdWdoIGEgbWl4ZXIgd2lsbCBiZSBhIG1pbm9yIGRpZmZlcmVuY2Us
-IG5vdCBhIG1ham9yIG9uZS4KPj4+Pj4gCj4+Pj4+IEl0IGp1c3Qgb2NjdXJyZWQgdG8gbWUsIHRo
-ZSBub2lzZSBjb3VsZCBlYXNpbHkgYmUgY29taW5nIGZyb20gYSBkaXJlY3QgaW5wdXQgLT4gb3V0
-cHV0IHJvdXRlLCBieXBhc3NpbmcgdGhlIGFkYyBhbmQgZGFjIGFsdG9nZXRoZXIuIE1ha2Ugc3Vy
-ZSBhbGwgYnlwYXNzIHJvdXRlcyBhcmUgemVyb2VkIG91dC4gIFRoZSB0cmljayBpcyBjb3JyZWxh
-dGluZyB0aGUgZGF0YXNoZWV0IHJvdXRlcyB3aXRoIHRoZSBhbHNhIG1peGVyIGNvbnRyb2xzIHRo
-YXQgY29ycmVzcG9uZCB0byB0aGVtIC4gIEVub3VnaCBzdGFyaW5nIGF0IHRoZSBhaWMzeC5jIGZp
-bGVzIHdpbGwgZXZlbnR1YWxseSBzaGVkIGxpZ2h0Oi0pCj4+Pj4gCj4+Pj4gSSd2ZSB6ZXJvZWQg
-b3V0IGV2ZXJ5dGhpbmcgSSBjb3VsZCBmaW5kLiBOb3RoaW5nIGhhZCBhbiBlZmZlY3QgdW50aWwg
-SSBnb3QgdG8gdGhlIERBQyBtdXhlcywgYXQgd2hpY2ggcG9pbnQgdGhlIGJlaGF2aW9yIGdldHMg
-cmVhbGx5IHdlaXJkLiBDaGFuZ2luZyB0aG9zZSBnZXRzIG1lIHRvIGxlZnQgb3IgcmlnaHQgb3V0
-cHV0LCBidXQgbmV2ZXIgYm90aCBhZ2FpbiB1bnRpbCBJIHJlc2V0IHRoZSBDT0RFQy4KPj4+PiAK
-Pj4+PiBOb25lIG9mIHRoaXMgYWZmZWN0ZWQgdGhlIGhpc3MuCj4+PiAKPj4+IENhbiB5b3UgdHJ5
-IGBhbHNhY3RsIHJlc3RvcmVgIHdpdGggdGhpcyBhc291bmQuc3RhdGU/Cj4+PiBodHRwczovL2dp
-c3QuZ2l0aHViLmNvbS9idGhlYmF1ZGVhdS9lMDA0OTJlYmYwMzA5ZjhkYmFjZQo+Pj4gCj4+PiBU
-SSdzIGRpYWdyYW0gaW4gdGhlIGRhdGEgc2hlZXQgaXMgbWlzc2luZyBhIGZldyB0aGluZ3MuIFNv
-bWUgcGF0aHMgYXJlCj4+PiBhbHNvIHdyb25nLiBUaGUgZGVzY3JpcHRpb24gb2YgdGhlIHJlZ2lz
-dGVycyBpcyByaWdodCBob3dldmVyLCBzbyBpdAo+Pj4gaXMgdGhlIHJlZmVyZW5jZS4gSSBoYXZl
-IHVzZWQgZXh0ZW5zaXZlbHkgYSBzaW1pbGFyIHNldHVwIHdpdGggYW4KPj4+IG9sZGVyIGtlcm5l
-bCwgYW5kIGl0IHdvcmtzIGZpbmUuCj4+IAo+PiBCZW5vw650LCBpdCBtaWdodCBiZSBiZW5lZmlj
-aWFsIGlmIHlvdSBjb21tZW50ZWQgb24gbXkgZTJlIHBvc3QgdG8gaW5kaWNhdGUgc29tZSBvZiB0
-aGUgbWlzc2luZyBwYXRocyB5b3UgbWVudGlvbmVkLiBMdWlzIHNhaWQgaGUnZCBub3RpZnkgc29t
-ZW9uZSBhdCBUSSAocHJlc3VtYWJseSkgYWJvdXQgdGhlIGVycm9yIGluIHRoZSBkaWFncmFtLCBi
-dXQgaGUgbWF5IG5vdCBrbm93IHRvIGFkZCBtaXNzaW5nIHBhdGhzLCBhcyB3ZWxsLgo+PiAKPj4g
-T3IgbGV0IG1lIGtub3cgd2hpY2ggb25lcyBhcmUgbWlzc2luZyBhbmQgSSdsbCBhZGQgdGhhdC4K
-ClRoYW5rIHlvdSwKCj4gSSBoYXZlIGdvbmUgdGhyb3VnaCBhc291bmQuc3RhdGUgdG8gbG9vayBm
-b3IgaW5jb25zaXN0ZW5jaWVzIHdpdGggdGhlCj4gZGlhZ3JhbS4gQWxsIHRoZSB3cm9uZyBvciBt
-aXNzaW5nIHBhdGhzIGFyZSBvbiBEQUNfUjEsIHdoaWNoIHNob3VsZAo+IGp1c3QgYmUgbWFkZSBz
-eW1tZXRyaWNhbCB0byBEQUNfTDEuIEFsc28sIHRoZSAiZXh0ZXJuYWwgZmVlZGJhY2siCj4gdmFs
-dWUgb2YgdGhlIFJpZ2h0IEhQQ09NIE11eCBpcyBub3QgcmVwcmVzZW50ZWQgb24gdGhlIGRpYWdy
-YW0gKHNlZQo+IHJlZ2lzdGVyIDM4KS4gVGhlcmUgd2VyZSBtYW55IG90aGVyIGluY29uc2lzdGVu
-Y2llcywgYnV0IGJlY2F1c2Ugb2YKPiB5b3VyIERUUyAoc2VlIGJlbG93KS4KPiAKPiBJIGhhZCB0
-b2xkIHlvdSBpbiBvbmUgb2YgbXkgcHJldmlvdXMgcG9zdHMgdGhhdCB0aGVyZSB3ZXJlIHdlaXJk
-Cj4gdGhpbmdzIHRoYXQgc2hvdWxkIG5vdCBiZSBwcmVzZW50LCBsaWtlIHRoZSBtb25vIGNvbnRy
-b2xzLCBhbmQgaW5kZWVkOgo+IHlvdXIgRFRTIGlzIHdyb25nLiBZb3Ugc2hvdWxkIHJlcGxhY2UK
-PiAgY29tcGF0aWJsZSA9ICJ0aSx0bHYzMjBhaWMzeCI7Cj4gd2l0aAo+ICBjb21wYXRpYmxlID0g
-InRpLHRsdjMyMGFpYzMxMDQiOwoKSSdsbCB0cnkgdGhpcywgYnV0IGl0IHRvb2sgbWUgYSBsb25n
-IHRpbWUgdG8gZ2V0IHRoZSBEVFMgdG8gZG8gdGhlIHJpZ2h0IHRoaW5nIGF0IGFsbC4gSW4gZmFj
-dCwgb25lIG9mIG15IHByb2JsZW1zIHRvIHNvbHZlIHNvb24gaXMgZ2V0dGluZyBpdCBhbGwgdG8g
-d29yayBpbiBhIDQuMSBrZXJuZWwgKGN1cnJlbnRseSBJJ20gdXNpbmcgMy44KS4gSW4gNC4xLCB0
-aGUgcHJvYmxlbSBJIHJ1biBpbnRvIGlzIHRoZSBNQ0xLIGlzbid0IGdldHRpbmcgc2V0IGNvcnJl
-Y3RseSAoaXQgZ2VuZXJhdGVzIGEgMjQgTUh6IGNsb2NrIGluc3RlYWQgb2YgYSAxMiBNSHogY2xv
-Y2spLgoKSSBmZWVsIGxpa2UgSSBvcmlnaW5hbGx5IHRyaWVkICJ0aSx0bHYzMjBhaWMzMTA0IiBh
-bmQgdGhhdCBkaWRuJ3Qgd29yay4gSG93ZXZlciwgSSB3aWxsIHRyeSBpdCBhZ2FpbiB0b25pZ2h0
-LgoKPiBUaGF0IHdpbGwgcmVtb3ZlIGEgbG90IG9mIE4vQSBjb250cm9scyAoMTogZml4IHlvdXIg
-LmR0cywgMjogcmVzdG9yZQo+IG15IGFzb3VuZC5zdGF0ZSwgMzogc3RvcmUgaXQgaW4gb3JkZXIg
-dG8gcmVtb3ZlIGV4dHJhIGNvbnRyb2xzKSB0aGF0Cj4gbWF5IGhhdmUgYW4gZWZmZWN0IG9uIHlv
-dXIgaGlzcyBpZiB1c2VkOiBhbGwgTW9ubywgTGluZTIsIGFuZCBNaWMzCj4gY29udHJvbHMuIFNv
-bWUgTWljMiBjb250cm9scyBzaG91bGQgYWxzbyBhcHBlYXIsIHdoaWNoIHlvdSBzaG91bGQKPiBk
-aXNhYmxlLgoKVGhhbmsgeW91LCB0aGF0IG1ha2VzIHNlbnNlLiBJIGFwcHJlY2lhdGUgaXQuCgoK
-LS0gClJpY2sgTWFubgpybWFubkBsYXRlbmN5emVyby5jb20KCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Add bindings for audio driver in Broadcom Cygnus.
+
+Signed-off-by: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Reviewed-by: Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Reviewed-by: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+---
+ .../bindings/sound/brcm,cygnus-audio.txt           |   63 ++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+new file mode 100644
+index 0000000..73cddb3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+@@ -0,0 +1,63 @@
++BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
++
++Required properties:
++	- compatible : "brcm,cygnus-audio"
++	- #address-cells: 32bit valued, 1 cell.
++	- #size-cells:  32bit valued, 0 cell.
++	- reg : Should contain audio registers location and length
++	- reg-names: names of the registers listed in "reg" property
++		Valid names are "aud" and "i2s_in". "aud" contains a
++		set of DMA, I2S_OUT and SPDIF registers. "i2s_in" contains
++		a set of I2S_IN registers.
++	- clocks: PLL and leaf clocks used by audio ports
++	- clock-names: names of 3 leaf clocks used by audio ports
++		Valid names are "ch0_audio", "ch1_audio", "ch2_audio"
++	- interrupts: audio DMA interrupt number
++
++SSP Subnode properties:
++- reg: The index of ssp port interface to use
++	Valid value are 0, 1, 2, or 3 (for spdif)
++- channel-group: Surround sound grouping that controls which channel
++  outputs belong to a group, specifically useful in Multi-channel
++  Interfaces grouping of serial port. In multi-channel stereo, use
++  "2_0", in 3.1 multi-channel grouping, use "3_1" and in 5.1
++  multi-channel grouping, use "5_1".
++
++
++Example:
++	cygnus_audio: audio@180ae000 {
++		compatible = "brcm,cygnus-audio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x180ae000 0xafd>, <0x180aec00 0x1f8>;
++		reg-names = "aud", "i2s_in";
++		clocks = <&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
++				<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
++				<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
++		clock-names = "ch0_audio", "ch1_audio", "ch2_audio";
++		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
++
++		ssp0: ssp_port@0 {
++			reg = <0>;
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			status = "okay";
++		};
++
++		ssp1: ssp_port@1 {
++			reg = <1>;
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			status = "disabled";
++		};
++
++		ssp2: ssp_port@2 {
++			reg = <2>;
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			status = "disabled";
++		};
++
++		spdif: spdif_port@3 {
++			reg = <3>;
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			status = "disabled";
++		};
++	};
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
