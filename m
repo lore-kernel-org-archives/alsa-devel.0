@@ -1,59 +1,71 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
- number of samples
-Date: Sun, 1 Nov 2015 18:31:33 -0200
-Message-ID: <CAOMZO5AXbMgJUgVHA2954NfvYEfX5eaWzTwprpgL1krCJ-Ut6w@mail.gmail.com>
-References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
- <5634870A.4080206@tekno-soft.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f174.google.com (mail-ig0-f174.google.com
- [209.85.213.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 28A19260523
- for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2015 21:31:35 +0100 (CET)
-Received: by igbhv6 with SMTP id hv6so42332845igb.0
- for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2015 12:31:34 -0800 (PST)
-In-Reply-To: <5634870A.4080206@tekno-soft.it>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Roberto Fichera <kernel@tekno-soft.it>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: [PATCH 1/3] ASoC: rockchip: i2s: Add set the divider clock API
+Date: Mon,  2 Nov 2015 11:14:00 +0800
+Message-ID: <1446434042-2139-1-git-send-email-wxt@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>
+Cc: linux-rockchip@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Roberto,
+In order to support more rates, add the divider clock api.
 
-On Sat, Oct 31, 2015 at 7:16 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
+As the input source clock to the module is MCLK_I2S,
+and by the divider of the module, the clock generator generates
+SCLK and LRCK to transmitter and receiver.
 
->> Since you are using single FIFO configuration, which SDMA script
->> are you using? This should reflects in the Device Tree. As far as
->> I learned, FSL 3.14 is using number 22 for SSIs which is the one
->> for Dual FIFO Mode.
->
-> No! Currently is 1. Here the Freescale's v3.14.28 GA imx6sx.dtsi entry
->
->                 ssi1: ssi@02028000 {
->                     compatible = "fsl,imx6sx-ssi", "fsl,imx21-ssi";
->                     reg = <0x02028000 0x4000>;
->                     interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
->                     clocks = <&clks IMX6SX_CLK_SSI1_IPG>,
->                          <&clks IMX6SX_CLK_SSI1>;
->                     clock-names = "ipg", "baud";
->                     dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
->                     dma-names = "rx", "tx";
->                     status = "disabled";
->                 };
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+---
 
-Take a look at imx_3.14.38_6ul_ga branch; It does use 22 in the dmas nodes:
-http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/tree/arch/arm/boot/dts/imx6sx.dtsi?h=imx_3.14.38_6ul_ga
+ sound/soc/rockchip/rockchip_i2s.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-However, this list is only about mainline kernel, so please run all
-your tests with mainline instead of FSL 3.14.
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index b936102..2086a6a 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -286,6 +286,34 @@ static int rockchip_i2s_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int rockchip_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
++				   int div_id, int div)
++{
++	struct rk_i2s_dev *i2s = to_info(cpu_dai);
++	unsigned int val = 0;
++
++	dev_dbg(i2s->dev, "%s: div_id=%d, div=%d\n", __func__, div_id, div);
++
++	switch (div_id) {
++	case ROCKCHIP_DIV_BCLK:
++		val |= I2S_CKR_TSD(div);
++		val |= I2S_CKR_RSD(div);
++		regmap_update_bits(i2s->regmap, I2S_CKR,
++				   I2S_CKR_TSD_MASK | I2S_CKR_RSD_MASK,
++				   val);
++		break;
++	case ROCKCHIP_DIV_MCLK:
++		val |= I2S_CKR_MDIV(div);
++		regmap_update_bits(i2s->regmap, I2S_CKR,
++				   I2S_CKR_MDIV_MASK, val);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
+ 				   unsigned int freq, int dir)
+ {
+@@ -311,6 +339,7 @@ static int rockchip_i2s_dai_probe(struct snd_soc_dai *dai)
+ 
+ static const struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
+ 	.hw_params = rockchip_i2s_hw_params,
++	.set_clkdiv = rockchip_i2s_set_clkdiv,
+ 	.set_sysclk = rockchip_i2s_set_sysclk,
+ 	.set_fmt = rockchip_i2s_set_fmt,
+ 	.trigger = rockchip_i2s_trigger,
+-- 
+1.9.1
