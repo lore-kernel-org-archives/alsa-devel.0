@@ -1,16 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: Intel: Skylake: Add support for virtual dsp
-	widgets
-Date: Tue, 3 Nov 2015 14:42:35 +0300
-Message-ID: <20151103114235.GA17955@mwanda>
+From: Keyon <yang.jie@linux.intel.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix missing
+ machine device creation
+Date: Tue, 3 Nov 2015 20:29:02 +0800
+Message-ID: <5638A88E.5050908@linux.intel.com>
+References: <20151102153229.GP21326@localhost>
+ <20151103112458.GO20228@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 20A1B260601
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 12:42:46 +0100 (CET)
-Content-Disposition: inline
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90AF1260601
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 13:22:46 +0100 (CET)
+In-Reply-To: <20151103112458.GO20228@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jeeja KP,
-
-This is a semi-automatic email about new static checker warnings.
-
-The patch 9a3b9dc636b0: "ASoC: Intel: Skylake: Add support for 
-virtual dsp widgets" from Oct 27, 2015, leads to the following Smatch 
-complaint:
-
-sound/soc/intel/skylake/skl-topology.c:453 skl_tplg_bind_sinks()
-	 error: we previously assumed 'sink' could be null (see line 452)
-
-sound/soc/intel/skylake/skl-topology.c
-   451	
-   452		if (!sink)
-                     ^^^^
-New check.  Reversed?
-
-   453			return skl_tplg_bind_sinks(sink, skl, src_mconfig);
-                                                   ^^^^
-This is dereferenced inside the function.
-
-   454	
-   455		return 0;
-
-regards,
-dan carpenter
+CgpPbiAyMDE15bm0MTHmnIgwM+aXpSAxOToyNCwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
+IE5vdiAwMiwgMjAxNSBhdCAwOTowMjoyOVBNICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+PiBP
+biBNb24sIE5vdiAwMiwgMjAxNSBhdCAxMjowNzoyN1BNICswMDAwLCBNYXJrIEJyb3duIHdyb3Rl
+Ogo+Pj4gT24gTW9uLCBOb3YgMDIsIDIwMTUgYXQgMDM6NDE6MDhQTSArMDUzMCwgVmlub2QgS291
+bCB3cm90ZToKPgo+Pj4+IEl0IGlzIHNpbWlsYXIgYnV0IHNzdF9tYWNoaW5lcyBzdHJ1Y3R1cmUg
+aXMgZW50aXJlbHkgZGlmZmVyZW50LiBJbiBTa3lsYWtlCj4+Pj4gY2FzZSB3ZSBvbmx5IG5lZWQg
+bWFjaGluZSBlbnRyeSBuYW1lIGFuZCByZXN0IG9mIHRoZSBpbmZvcm1hdGlvbiBpcyBjb21pbmcK
+Pgo+Pj4gU28gd2hhdCBleGFjdGx5IGlzIHRoZSAibWFjaGluZSBlbnRyeSBuYW1lIiBzdXBwb3Nl
+ZCB0byBiZSBoZXJlIGFuZCB3aHkKPj4+IGRvbid0IHdlIHVzZSBhbnkgYm9hcmQgc3BlY2lmaWMg
+aW5mb3JtYXRpb24/Cj4KPj4gRm9yIHRoaXMgY2FzZSB0aGUgbWFjaGluZSBlbnRyeSBuYW1lIGlz
+ICJza2xfYWxjMjg2c19pMnMiLCB3aGljaCBpcyB0aGUgUlQKPj4gQUxDIDI4NiBjb2RlYyBjb21i
+aW5hdGlvbiBvbiBTa3lsYWtlLgo+PiBUaGUgU0tMIG1hY2hpbmUgZHJpdmVyIG5lZWRzIHRoaXMg
+YXMgcGxhdGZvcm0gZGV2aWNlIGFuZCB3ZSBjcmVhdGUgaXQgaGVyZQo+Cj4+PiArc3RhdGljIHN0
+cnVjdCBzc3RfbWFjaGluZXMgc3N0X3NrbF9kZXZkYXRhW10gPSB7Cj4+PiArCXsgIklOVDM0M0Ei
+LCAic2tsX2FsYzI4NnNfaTJzIiB9LAo+Pj4gK307Cj4+Cj4+IFRoaXMgc2F5cyBmb3IgU0tMLCB3
+aXRoIGNvZGVjIElEICJJTlQzNDNBIiBjcmVhdGUgInNrbF9hbGMyODZzX2kycyIgbWFjaGluZQo+
+PiBwbGF0Zm9ybSBkZXZpY2UKPj4gRm9yIGRpZmZlcmVudCBjb2RlYyBjb21iaW5hdGlvbiB3ZSBj
+YW4gdXNlIGNvZGVjIEFDUEkgbmFtZXMgdG8gbWF0Y2gKPgo+IEknbSBoYXZpbmcgYSBoYXJkIHRp
+bWUgc2VlaW5nIHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gdGhpcyBhbmQgd2hhdCdzCj4gZ29pbmcg
+b24gaW4gc3N0LWFjcGkuICBUaGV5IHNlZW0gdG8gYmUgZG9pbmcgdGhlIHNhbWUgdGhpbmcgaW4g
+c2xpZ2h0bHkKPiBkaWZmZXJlbnQgd2F5cywgdGhleSBib3RoIG1hdGNoIHRhYmxlcyBvZiBDT0RF
+QyBJRHMgdG8gbWFjaGluZSBkcml2ZXIKPiBuYW1lcyB3aXRoIHRoZSBkaXN0aW5jdGlvbiBiZWlu
+ZyB0aGF0IHRoaXMgZG9lc24ndCBwcm92aWRlIGEgZmlybXdhcmUKPiBmaWxlbmFtZSB3aGVyZWFz
+IHNzdC1hY3BpIGRvZXMgYnV0IHRoZSBtZWNoYW5pY3Mgb2YgbWFwcGluZyBhIENPREVDIHRvIGEK
+PiBtYWNoaW5lIGRyaXZlciBzZWVtIG90aGVyd2lzZSB0aGUgc2FtZS4KCmFncmVlIHRoYXQgaXQg
+bWF5IGJlIGJldHRlciBpZiB3ZSBjYW4gcmV1c2Uob3IgbWVyZ2Ugd2l0aCkgc3N0IGRyaXZlciAK
+KGludGVsL2NvbW1vbi9zc3QtYWNwaS5jKSBmb3IgU0tMLgoKdGhhbmtzLAp+S2V5b24KCj4KPj4+
+PiBJIGFtIG5vdCBzdXJlIEkgZm9sbG93IHRoZSBjb21tZW50IG9uIHVzZXIsIHRoZSBTS0wgZHJp
+dmVyIGhlcmUgaXMgdXNlciBpbgo+Pj4+IHRoaXMKPgo+Pj4gVGhlcmUgYXJlIG5vIG1hY2hpbmVz
+IGRlZmluZWQgZm9yIHRoaXMuCj4KPj4gc291bmQvc29jL2ludGVsL2JvYXJkcy9za2xfcnQyODYu
+Ywo+Cj4gVWdoLCB0aGUgbWFjaGluZXMgdGFibGUgaXMgKnJlYWxseSogYnVyaWVkIGF0IHRoZSBi
+b3R0b20gb2YgdGhlIGZpbGUKPiBoZXJlIDooCj4KPgo+Cj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
