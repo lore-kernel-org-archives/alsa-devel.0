@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: fix range of OPCLK_REF" to the
-	asoc tree
-Date: Tue, 03 Nov 2015 19:09:41 +0000
-Message-ID: <E1Ztgxh-0007OC-Lh@debutante>
-References: <1446560652-3144-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm8998: Remove duplicated consts" to
+	the asoc tree
+Date: Tue, 03 Nov 2015 19:09:42 +0000
+Message-ID: <E1Ztgxi-0007Oh-Iv@debutante>
+References: <1446563150-28755-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89B8F2604D1
+ by alsa0.perex.cz (Postfix) with ESMTP id B69AE2604D3
  for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 20:09:51 +0100 (CET)
-In-Reply-To: <1446560652-3144-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1446563150-28755-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: fix range of OPCLK_REF
+   ASoC: wm8998: Remove duplicated consts
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From 341604ad839d10314af51669fd454dc0aa2ef288 Mon Sep 17 00:00:00 2001
+>From 82d6717f675f4ce7764c1978d844c59b57ca1499 Mon Sep 17 00:00:00 2001
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Tue, 3 Nov 2015 14:24:12 +0000
-Subject: [PATCH] ASoC: arizona: fix range of OPCLK_REF
+Date: Tue, 3 Nov 2015 15:05:50 +0000
+Subject: [PATCH] ASoC: wm8998: Remove duplicated consts
 
-The code was able to generate illegal OPCLK_REF values because the
-reference frequency tables listed all values of SYSCLK instead of
-valid values for OPCLK_REF clock. The maximum OPCLK_REF clock is
-49.152MHz or 45.1584MHz.
+The SOC_xxx_DECL() macros already include 'const' so there's
+no need to put a const in the source where they are used.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/codecs/wm8998.c | 46 +++++++++++++++++++++++-----------------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 8a2221ab3d10..586789597ecd 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -979,24 +979,18 @@ void arizona_init_dvfs(struct arizona_priv *priv)
- }
- EXPORT_SYMBOL_GPL(arizona_init_dvfs);
- 
--static unsigned int arizona_sysclk_48k_rates[] = {
-+static unsigned int arizona_opclk_ref_48k_rates[] = {
- 	6144000,
- 	12288000,
- 	24576000,
- 	49152000,
--	73728000,
--	98304000,
--	147456000,
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 8782dfb628ab..7719bc509e50 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -199,20 +199,20 @@ static const char * const wm8998_inmux_texts[] = {
+ 	"B",
  };
  
--static unsigned int arizona_sysclk_44k1_rates[] = {
-+static unsigned int arizona_opclk_ref_44k1_rates[] = {
- 	5644800,
- 	11289600,
- 	22579200,
- 	45158400,
--	67737600,
--	90316800,
--	135475200,
+-static const SOC_ENUM_SINGLE_DECL(wm8998_in1muxl_enum,
+-				  ARIZONA_ADC_DIGITAL_VOLUME_1L,
+-				  ARIZONA_IN1L_SRC_SHIFT,
+-				  wm8998_inmux_texts);
++static SOC_ENUM_SINGLE_DECL(wm8998_in1muxl_enum,
++			    ARIZONA_ADC_DIGITAL_VOLUME_1L,
++			    ARIZONA_IN1L_SRC_SHIFT,
++			    wm8998_inmux_texts);
+ 
+-static const SOC_ENUM_SINGLE_DECL(wm8998_in1muxr_enum,
+-				  ARIZONA_ADC_DIGITAL_VOLUME_1R,
+-				  ARIZONA_IN1R_SRC_SHIFT,
+-				  wm8998_inmux_texts);
++static SOC_ENUM_SINGLE_DECL(wm8998_in1muxr_enum,
++			    ARIZONA_ADC_DIGITAL_VOLUME_1R,
++			    ARIZONA_IN1R_SRC_SHIFT,
++			    wm8998_inmux_texts);
+ 
+-static const SOC_ENUM_SINGLE_DECL(wm8998_in2mux_enum,
+-				  ARIZONA_ADC_DIGITAL_VOLUME_2L,
+-				  ARIZONA_IN2L_SRC_SHIFT,
+-				  wm8998_inmux_texts);
++static SOC_ENUM_SINGLE_DECL(wm8998_in2mux_enum,
++			    ARIZONA_ADC_DIGITAL_VOLUME_2L,
++			    ARIZONA_IN2L_SRC_SHIFT,
++			    wm8998_inmux_texts);
+ 
+ static const struct snd_kcontrol_new wm8998_in1mux[2] = {
+ 	SOC_DAPM_ENUM_EXT("IN1L Mux", wm8998_in1muxl_enum,
+@@ -522,17 +522,17 @@ static const unsigned int wm8998_aec_loopback_values[] = {
+ 	0, 1, 2, 3, 4, 6, 7, 8, 9,
  };
  
- static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
-@@ -1021,11 +1015,11 @@ static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
- 	}
+-static const SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec1_loopback,
+-					ARIZONA_DAC_AEC_CONTROL_1,
+-					ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
+-					wm8998_aec_loopback_texts,
+-					wm8998_aec_loopback_values);
+-
+-static const SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec2_loopback,
+-					ARIZONA_DAC_AEC_CONTROL_2,
+-					ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
+-					wm8998_aec_loopback_texts,
+-					wm8998_aec_loopback_values);
++static SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec1_loopback,
++				  ARIZONA_DAC_AEC_CONTROL_1,
++				  ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
++				  wm8998_aec_loopback_texts,
++				  wm8998_aec_loopback_values);
++
++static SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec2_loopback,
++				  ARIZONA_DAC_AEC_CONTROL_2,
++				  ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
++				  wm8998_aec_loopback_texts,
++				  wm8998_aec_loopback_values);
  
- 	if (refclk % 8000)
--		rates = arizona_sysclk_44k1_rates;
-+		rates = arizona_opclk_ref_44k1_rates;
- 	else
--		rates = arizona_sysclk_48k_rates;
-+		rates = arizona_opclk_ref_48k_rates;
- 
--	for (ref = 0; ref < ARRAY_SIZE(arizona_sysclk_48k_rates) &&
-+	for (ref = 0; ref < ARRAY_SIZE(arizona_opclk_ref_48k_rates) &&
- 		     rates[ref] <= refclk; ref++) {
- 		div = 1;
- 		while (rates[ref] / div >= freq && div < 32) {
+ static const struct snd_kcontrol_new wm8998_aec_loopback_mux[] = {
+ 	SOC_DAPM_ENUM("AEC1 Loopback", wm8998_aec1_loopback),
 -- 
 2.6.2
