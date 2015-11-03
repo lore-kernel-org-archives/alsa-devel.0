@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: Make rt298_index_def const" to
-	the asoc tree
-Date: Tue, 03 Nov 2015 15:15:55 +0000
-Message-ID: <E1ZtdJT-0003rE-1i@debutante>
-References: <1444051428.13473.2.camel@ingics.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH MC Next Gen v2 2/3] sound/usb: Create media
+ mixer function and control interface entities
+Date: Tue, 3 Nov 2015 09:06:45 -0700
+Message-ID: <5638DB95.3070007@osg.samsung.com>
+References: <cover.1445380851.git.shuahkh@osg.samsung.com>
+ <2f95ce0190c05e994e02bdc4393be21ec7609adf.1445380851.git.shuahkh@osg.samsung.com>
+ <s5hzizbweye.wl-tiwai@suse.de> <562D4B9E.7010006@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2C062614CA
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 16:16:04 +0100 (CET)
-In-Reply-To: <1444051428.13473.2.camel@ingics.com>
+Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D26826044E
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 17:06:55 +0100 (CET)
+In-Reply-To: <562D4B9E.7010006@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +23,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, alsa-devel@alsa-project.org, mchehab@osg.samsung.com, chehabrafael@gmail.com, prabhakar.csengg@gmail.com, hans.verkuil@cisco.com, linux-media@vger.kernel.org, chris.j.arges@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 10/25/2015 03:37 PM, Shuah Khan wrote:
+> On 10/22/2015 01:16 AM, Takashi Iwai wrote:
+>> On Wed, 21 Oct 2015 01:25:15 +0200,
+>> Shuah Khan wrote:
+>>>
+>>> Add support for creating MEDIA_ENT_F_AUDIO_MIXER entity for
+>>> each mixer and a MEDIA_INTF_T_ALSA_CONTROL control interface
+>>> entity that links to mixer entities. MEDIA_INTF_T_ALSA_CONTROL
+>>> entity corresponds to the control device for the card.
+>>>
+>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>>> ---
+>>>   sound/usb/card.c     |  5 +++
+>>>   sound/usb/media.c    | 89
+>>> ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>   sound/usb/media.h    | 20 ++++++++++++
+>>>   sound/usb/mixer.h    |  1 +
+>>>   sound/usb/usbaudio.h |  1 +
+>>>   5 files changed, 116 insertions(+)
+>>>
+>>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>>> index 469d2bf..d004cb4 100644
+>>> --- a/sound/usb/card.c
+>>> +++ b/sound/usb/card.c
+>>> @@ -560,6 +560,9 @@ static int usb_audio_probe(struct usb_interface
+>>> *intf,
+>>>       if (err < 0)
+>>>           goto __error;
+>>>
+>>> +    /* Create media entities for mixer and control dev */
+>>> +    media_mixer_init(chip);
+>>> +
+>>>       usb_chip[chip->index] = chip;
+>>>       chip->num_interfaces++;
+>>>       chip->probing = 0;
+>>> @@ -616,6 +619,8 @@ static void usb_audio_disconnect(struct
+>>> usb_interface *intf)
+>>>           list_for_each(p, &chip->midi_list) {
+>>>               snd_usbmidi_disconnect(p);
+>>>           }
+>>> +        /* delete mixer media resources */
+>>> +        media_mixer_delete(chip);
+>>>           /* release mixer resources */
+>>>           list_for_each_entry(mixer, &chip->mixer_list, list) {
+>>>               snd_usb_mixer_disconnect(mixer);
+>>> diff --git a/sound/usb/media.c b/sound/usb/media.c
+>>> index 0cbfee6..a26ea8b 100644
+>>> --- a/sound/usb/media.c
+>>> +++ b/sound/usb/media.c
+>>> @@ -199,4 +199,93 @@ void media_stop_pipeline(struct
+>>> snd_usb_substream *subs)
+>>>       if (mctl)
+>>>           media_disable_source(mctl);
+>>>   }
+>>> +
+>>> +int media_mixer_init(struct snd_usb_audio *chip)
+>>> +{
+>>> +    struct device *ctl_dev = &chip->card->ctl_dev;
+>>> +    struct media_intf_devnode *ctl_intf;
+>>> +    struct usb_mixer_interface *mixer;
+>>> +    struct media_device *mdev;
+>>> +    struct media_mixer_ctl *mctl;
+>>> +    u32 intf_type = MEDIA_INTF_T_ALSA_CONTROL;
+>>> +    int ret;
+>>> +
+>>> +    mdev = media_device_find_devres(&chip->dev->dev);
+>>> +    if (!mdev)
+>>> +        return -ENODEV;
+>>> +
+>>> +    ctl_intf = (struct media_intf_devnode *)
+>>> chip->ctl_intf_media_devnode;
+>>
+>> Why do we need cast?  Can't chip->ctl_intf_media_devnode itself be
+>> struct media_intf_devndoe pointer?
+> 
+> Yeah. There is no need to cast here. I will fix it.
 
-   ASoC: rt298: Make rt298_index_def const
+Sorry I misspoke. The reason for this cast is ctl_intf_media_devnode
+is void to avoid including media.h and other media files in usbaudio.h
 
-has been applied to the asoc tree at
+The same approach I took for card.h when adding media_ctl to
+struct snd_usb_substream
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Does this sound reasonable or would you rather see these to be
+their respective struct pointers which would require including
+media.h in these headers?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+thanks,
+-- Shuah
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9eee0988f01758515ff54a5cba76c1ff24ad3d92 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Mon, 5 Oct 2015 21:23:48 +0800
-Subject: [PATCH] ASoC: rt298: Make rt298_index_def const
-
-The index_cache is per instance run time state but rt298_index_def is not.
-Make rt298_index_def const and make a copy of memory for index_cache rather
-than directly use the rt298_index_def.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt298.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 3c2f0f8d6266..ef8e23aab2d3 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -49,7 +49,7 @@ struct rt298_priv {
- 	int is_hp_in;
- };
- 
--static struct reg_default rt298_index_def[] = {
-+static const struct reg_default rt298_index_def[] = {
- 	{ 0x01, 0xaaaa },
- 	{ 0x02, 0x8aaa },
- 	{ 0x03, 0x0002 },
-@@ -1165,7 +1165,11 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
- 		return -ENODEV;
- 	}
- 
--	rt298->index_cache = rt298_index_def;
-+	rt298->index_cache = devm_kmemdup(&i2c->dev, rt298_index_def,
-+					  sizeof(rt298_index_def), GFP_KERNEL);
-+	if (!rt298->index_cache)
-+		return -ENOMEM;
-+
- 	rt298->index_cache_size = INDEX_CACHE_SIZE;
- 	rt298->i2c = i2c;
- 	i2c_set_clientdata(i2c, rt298);
 -- 
-2.6.2
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
