@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: fix remove unnedded clk setting"
-	to the asoc tree
-Date: Tue, 03 Nov 2015 15:15:54 +0000
-Message-ID: <E1ZtdJS-0003ql-4U@debutante>
-References: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt298: Make rt298_index_def const" to
+	the asoc tree
+Date: Tue, 03 Nov 2015 15:15:55 +0000
+Message-ID: <E1ZtdJT-0003rE-1i@debutante>
+References: <1444051428.13473.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 461F12606D7
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 16:16:02 +0100 (CET)
-In-Reply-To: <1445415499-29200-2-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2C062614CA
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 16:16:04 +0100 (CET)
+In-Reply-To: <1444051428.13473.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: fix remove unnedded clk setting
+   ASoC: rt298: Make rt298_index_def const
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 38b409d66fa84e91afd5340fd772609185b20fa9 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 21 Oct 2015 16:18:19 +0800
-Subject: [PATCH] ASoC: rt298: fix remove unnedded clk setting
+>From 9eee0988f01758515ff54a5cba76c1ff24ad3d92 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Mon, 5 Oct 2015 21:23:48 +0800
+Subject: [PATCH] ASoC: rt298: Make rt298_index_def const
 
-The bit is no longer present. So remove it.
+The index_cache is per instance run time state but rt298_index_def is not.
+Make rt298_index_def const and make a copy of memory for index_cache rather
+than directly use the rt298_index_def.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/rt298.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index ef8e23aab2d3..f00fe02d34ab 100644
+index 3c2f0f8d6266..ef8e23aab2d3 100644
 --- a/sound/soc/codecs/rt298.c
 +++ b/sound/soc/codecs/rt298.c
-@@ -856,8 +856,6 @@ static int rt298_set_dai_sysclk(struct snd_soc_dai *dai,
- 		snd_soc_update_bits(codec,
- 			RT298_I2S_CTRL2, 0x0100, 0x0100);
- 		snd_soc_update_bits(codec,
--			RT298_PLL_CTRL, 0x4, 0x4);
--		snd_soc_update_bits(codec,
- 			RT298_PLL_CTRL1, 0x20, 0x0);
+@@ -49,7 +49,7 @@ struct rt298_priv {
+ 	int is_hp_in;
+ };
+ 
+-static struct reg_default rt298_index_def[] = {
++static const struct reg_default rt298_index_def[] = {
+ 	{ 0x01, 0xaaaa },
+ 	{ 0x02, 0x8aaa },
+ 	{ 0x03, 0x0002 },
+@@ -1165,7 +1165,11 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 		return -ENODEV;
  	}
  
+-	rt298->index_cache = rt298_index_def;
++	rt298->index_cache = devm_kmemdup(&i2c->dev, rt298_index_def,
++					  sizeof(rt298_index_def), GFP_KERNEL);
++	if (!rt298->index_cache)
++		return -ENOMEM;
++
+ 	rt298->index_cache_size = INDEX_CACHE_SIZE;
+ 	rt298->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt298);
 -- 
 2.6.2
