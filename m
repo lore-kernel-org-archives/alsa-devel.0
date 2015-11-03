@@ -1,82 +1,52 @@
-From: Caesar Wang <wxt@rock-chips.com>
-Subject: [PATCH v1 5/5] ASoC: rockchip-rt5645: Add the divider clock for cpu
-Date: Tue,  3 Nov 2015 09:33:58 +0800
-Message-ID: <1446514438-13922-6-git-send-email-wxt@rock-chips.com>
-References: <1446514438-13922-1-git-send-email-wxt@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1446514438-13922-1-git-send-email-wxt@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>
-Cc: Sonny Rao <sonnyrao@chromium.org>, Dylan Reid <dgreid@chromium.org>, Doug Anderson <dianders@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, linux-rockchip@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: JongHo Kim <furmuwon@gmail.com>
+Subject: [PATCH] ASoC: wm8960: Fix the Input PGA Mute switch
+Date: Tue,  3 Nov 2015 11:06:32 +0900
+Message-ID: <1446516392-68653-1-git-send-email-furmuwon@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
+ [209.85.220.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 155A0264F22
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 03:07:29 +0100 (CET)
+Received: by pasz6 with SMTP id z6so3396065pas.2
+ for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2015 18:07:28 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, JongHo Kim <furmuwon@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add to set the cpu/codec DAI configure, let's divider the
-Transmit/Receive clock for cpu.
+Change the xinvert value from 0 to 1 on the "Capture Switch" control
+WM8960 datasheet is shown as follows:
+Bit 7 at 00h and 01h register address
+1 : Enable Mute, 0 : Disable Mute
 
-In master mode, The SCLK and LRCK are configured as output,
-this patch should can set each divider to arrange the clock distribution.
-
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
-
+Signed-off-by: JongHo Kim <furmuwon@gmail.com>
 ---
+ sound/soc/codecs/wm8960.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v1:
-- Fix a subject missspell.
-
- sound/soc/rockchip/rockchip_rt5645.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index edff07f..4c1a693 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -74,8 +74,25 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int dai_fmt = rtd->card->dai_link->dai_fmt;
- 	int mclk;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 0563753..5380798 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -229,7 +229,7 @@ SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
+ SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
+ 	6, 1, 0),
+ SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
+-	7, 1, 0),
++	7, 1, 1),
  
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, dai_fmt);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev,
-+			"failed to set the format for codec side\n");
-+		return ret;
-+	}
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, dai_fmt);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev,
-+			"failed to set the format for cpu side\n");
-+		return ret;
-+	}
-+
- 	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
-@@ -109,6 +126,21 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	/* The codec is master mode, that's not needed set clkdiv for cpu */
-+	if ((dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBM_CFM)
-+		return ret;
-+
-+	/* the LRCK clock for cpu */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, ROCKCHIP_DIV_BCLK,
-+				     (mclk / 4) / params_rate(params));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* the SCLK clock for cpu */
-+	snd_soc_dai_set_clkdiv(cpu_dai, ROCKCHIP_DIV_MCLK, 4);
-+	if (ret < 0)
-+		return ret;
-+
- 	return ret;
- }
- 
+ SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
+ 	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
 -- 
 1.9.1
