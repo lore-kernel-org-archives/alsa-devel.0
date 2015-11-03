@@ -1,101 +1,62 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8998: Remove duplicated consts
-Date: Tue, 3 Nov 2015 15:05:50 +0000
-Message-ID: <1446563150-28755-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 0/5]  Add support for Cirrus Logic CS47L24 and WM1831 codecs
+Date: Tue, 3 Nov 2015 15:08:31 +0000
+Message-ID: <1446563316-28878-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C0AE260673
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 16:06:16 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Sender: linux-gpio-owner@vger.kernel.org
+To: lee.jones@linaro.org, linus.walleij@linaro.org, broonie@kernel.org
+Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The SOC_xxx_DECL() macros already include 'const' so there's
-no need to put a const in the source where they are used.
+----
+Changes since v2
+MFD:
+  - Make binding doc a separate patch, add updates to supply bindings
+  - Fix review comments
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8998.c | 46 +++++++++++++++++++++++-----------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ASoC::
+  - Fix sort order in KConfig and Makefile
 
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 8782dfb..7719bc5 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -199,20 +199,20 @@ static const char * const wm8998_inmux_texts[] = {
- 	"B",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(wm8998_in1muxl_enum,
--				  ARIZONA_ADC_DIGITAL_VOLUME_1L,
--				  ARIZONA_IN1L_SRC_SHIFT,
--				  wm8998_inmux_texts);
-+static SOC_ENUM_SINGLE_DECL(wm8998_in1muxl_enum,
-+			    ARIZONA_ADC_DIGITAL_VOLUME_1L,
-+			    ARIZONA_IN1L_SRC_SHIFT,
-+			    wm8998_inmux_texts);
- 
--static const SOC_ENUM_SINGLE_DECL(wm8998_in1muxr_enum,
--				  ARIZONA_ADC_DIGITAL_VOLUME_1R,
--				  ARIZONA_IN1R_SRC_SHIFT,
--				  wm8998_inmux_texts);
-+static SOC_ENUM_SINGLE_DECL(wm8998_in1muxr_enum,
-+			    ARIZONA_ADC_DIGITAL_VOLUME_1R,
-+			    ARIZONA_IN1R_SRC_SHIFT,
-+			    wm8998_inmux_texts);
- 
--static const SOC_ENUM_SINGLE_DECL(wm8998_in2mux_enum,
--				  ARIZONA_ADC_DIGITAL_VOLUME_2L,
--				  ARIZONA_IN2L_SRC_SHIFT,
--				  wm8998_inmux_texts);
-+static SOC_ENUM_SINGLE_DECL(wm8998_in2mux_enum,
-+			    ARIZONA_ADC_DIGITAL_VOLUME_2L,
-+			    ARIZONA_IN2L_SRC_SHIFT,
-+			    wm8998_inmux_texts);
- 
- static const struct snd_kcontrol_new wm8998_in1mux[2] = {
- 	SOC_DAPM_ENUM_EXT("IN1L Mux", wm8998_in1muxl_enum,
-@@ -522,17 +522,17 @@ static const unsigned int wm8998_aec_loopback_values[] = {
- 	0, 1, 2, 3, 4, 6, 7, 8, 9,
- };
- 
--static const SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec1_loopback,
--					ARIZONA_DAC_AEC_CONTROL_1,
--					ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
--					wm8998_aec_loopback_texts,
--					wm8998_aec_loopback_values);
--
--static const SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec2_loopback,
--					ARIZONA_DAC_AEC_CONTROL_2,
--					ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
--					wm8998_aec_loopback_texts,
--					wm8998_aec_loopback_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec1_loopback,
-+				  ARIZONA_DAC_AEC_CONTROL_1,
-+				  ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
-+				  wm8998_aec_loopback_texts,
-+				  wm8998_aec_loopback_values);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(wm8998_aec2_loopback,
-+				  ARIZONA_DAC_AEC_CONTROL_2,
-+				  ARIZONA_AEC_LOOPBACK_SRC_SHIFT, 0xf,
-+				  wm8998_aec_loopback_texts,
-+				  wm8998_aec_loopback_values);
- 
- static const struct snd_kcontrol_new wm8998_aec_loopback_mux[] = {
- 	SOC_DAPM_ENUM("AEC1 Loopback", wm8998_aec1_loopback),
+MAINTAINERS:
+  - Add patch to update MAINTAINERS
+----
+
+mfd patch based on Lee Jones's for-next
+gpio patch based on Linus Walleij's for-next
+ASoC patch based on Mark Brown's for-next
+
+Lee/Mark - can one of you take all three patches (with maintainer acks) so
+that the patch set is kept together?
+
+Richard Fitzgerald (5):
+  mfd: arizona: Support Cirrus Logic CS47L24 and WM1831
+  mfd: arizona: Update DT bindings to add CS47L24 and WM1831
+  gpio: arizona: Support Cirrus Logic CS47L24 and WM1831
+  ASoC: cs47l24: Add driver for Cirrus Logic CS47L24 and WM1831 codecs
+  MAINTAINERS: Update Wolfson Micro section to include CS47L24 source
+
+ Documentation/devicetree/bindings/mfd/arizona.txt |    9 +-
+ MAINTAINERS                                       |    2 +
+ drivers/gpio/gpio-arizona.c                       |    4 +
+ drivers/mfd/Kconfig                               |   18 +-
+ drivers/mfd/Makefile                              |    3 +
+ drivers/mfd/arizona-core.c                        |   74 +-
+ drivers/mfd/arizona-irq.c                         |   40 +-
+ drivers/mfd/arizona-spi.c                         |    7 +
+ drivers/mfd/arizona.h                             |    4 +
+ drivers/mfd/cs47l24-tables.c                      | 1629 +++++++++++++++++++++
+ include/linux/mfd/arizona/core.h                  |    3 +
+ sound/soc/codecs/Kconfig                          |    8 +
+ sound/soc/codecs/Makefile                         |    2 +
+ sound/soc/codecs/cs47l24.c                        | 1148 +++++++++++++++
+ sound/soc/codecs/cs47l24.h                        |   23 +
+ 15 files changed, 2948 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/mfd/cs47l24-tables.c
+ create mode 100644 sound/soc/codecs/cs47l24.c
+ create mode 100644 sound/soc/codecs/cs47l24.h
+
 -- 
 1.9.1
+
