@@ -1,20 +1,21 @@
-From: Lee Jones <lee.jones@linaro.org>
+From: Sebastien Jan <sjan@baylibre.com>
 Subject: Re: [PATCH] mfd: arizona: Add DT binding for irq_gpio
 	property
-Date: Tue, 3 Nov 2015 13:29:52 +0000
-Message-ID: <20151103132952.GF3503@x1>
+Date: Tue, 3 Nov 2015 14:47:01 +0100
+Message-ID: <5638BAD5.7050005@baylibre.com>
 References: <1446549612-18221-1-git-send-email-sjan@baylibre.com>
+ <20151103132952.GF3503@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ED272606BB
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 14:29:55 +0100 (CET)
-Received: by wmeg8 with SMTP id g8so84537291wme.0
- for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2015 05:29:55 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1446549612-18221-1-git-send-email-sjan@baylibre.com>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36C6D2606D6
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 14:47:05 +0100 (CET)
+Received: by wicfx6 with SMTP id fx6so69700082wic.1
+ for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2015 05:47:04 -0800 (PST)
+In-Reply-To: <20151103132952.GF3503@x1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Jan <sjan@baylibre.com>
+To: Lee Jones <lee.jones@linaro.org>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAwMyBOb3YgMjAxNSwgU2ViYXN0aWVuIEphbiB3cm90ZToKCj4gU2lnbmVkLW9mZi1i
-eTogU2ViYXN0aWVuIEphbiA8c2phbkBiYXlsaWJyZS5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbWZk
-L2FyaXpvbmEtY29yZS5jIHwgNSArKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25z
-KCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWZkL2FyaXpvbmEtY29yZS5jIGIvZHJpdmVy
-cy9tZmQvYXJpem9uYS1jb3JlLmMKPiBpbmRleCA0NGNmZGJiLi4yM2EwZjkzIDEwMDY0NAo+IC0t
-LSBhL2RyaXZlcnMvbWZkL2FyaXpvbmEtY29yZS5jCj4gKysrIGIvZHJpdmVycy9tZmQvYXJpem9u
-YS1jb3JlLmMKPiBAQCAtODE0LDYgKzgxNCwxMSBAQCBzdGF0aWMgaW50IGFyaXpvbmFfb2ZfZ2V0
-X2NvcmVfcGRhdGEoc3RydWN0IGFyaXpvbmEgKmFyaXpvbmEpCj4gIAkJY291bnQrKzsKPiAgCX0K
-PiAgCj4gKwlhcml6b25hLT5wZGF0YS5pcnFfZ3BpbyA9IG9mX2dldF9uYW1lZF9ncGlvKGFyaXpv
-bmEtPmRldi0+b2Zfbm9kZSwKPiArCQkJCQkJCSJ3bGYsaXJxX2dwaW8iLCAwKTsKPiArCWlmIChh
-cml6b25hLT5wZGF0YS5pcnFfZ3BpbyA8IDApCj4gKwkJYXJpem9uYS0+cGRhdGEuaXJxX2dwaW8g
-PSAwOwoKVGhpcyBpcyB3cm9uZyBvbiBhIG51bWJlciBvZiBsZXZlbHMuCgpGaXJzdGx5LCBhbGwg
-cHJvcGVydGllcyBtdXN0IGJlIGRvY3VtZW50ZWQuICBTZWNvbmRseSwgdW5kZXJzY29yZXMKYXJl
-bid0IGFsbG93ZWQgaW4gRFQuICBUaGlyZGx5LCB0aGlzIGlzIGEgZ2VuZXJpYyBiaW5kaW5nIC0t
-IG5vIG5lZWQKZm9yIHRoZSB2ZW5kb3IgcHJlZml4LiAgQW5kIGxhc3RseSwgR1BJTyBiaW5kaW5n
-cyBhbHJlYWR5IGhhdmUgYQpmb3JtYXQgLS0gaXQgc2hvdWxkIGJlIHNpbXBseSAnaXJxLWdwaW9z
-Jy4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5nIFRlYW0g
-TGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9s
-bG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 03/11/2015 14:29, Lee Jones wrote:
+> On Tue, 03 Nov 2015, Sebastien Jan wrote:
+>
+>> Signed-off-by: Sebastien Jan <sjan@baylibre.com>
+>> ---
+>>   drivers/mfd/arizona-core.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+>> index 44cfdbb..23a0f93 100644
+>> --- a/drivers/mfd/arizona-core.c
+>> +++ b/drivers/mfd/arizona-core.c
+>> @@ -814,6 +814,11 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+>>   		count++;
+>>   	}
+>>   
+>> +	arizona->pdata.irq_gpio = of_get_named_gpio(arizona->dev->of_node,
+>> +							"wlf,irq_gpio", 0);
+>> +	if (arizona->pdata.irq_gpio < 0)
+>> +		arizona->pdata.irq_gpio = 0;
+> This is wrong on a number of levels.
+>
+> Firstly, all properties must be documented.  Secondly, underscores
+> aren't allowed in DT.  Thirdly, this is a generic binding -- no need
+> for the vendor prefix.  And lastly, GPIO bindings already have a
+> format -- it should be simply 'irq-gpios'.
+Thanks Lee, I'll post a v2 with these changes (and updated bindings 
+document).
