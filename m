@@ -1,70 +1,50 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: fix range of OPCLK_REF
-Date: Tue, 3 Nov 2015 14:24:12 +0000
-Message-ID: <1446560652-3144-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2] mfd: arizona: Add DT binding for irq-gpios property
+Date: Tue, 3 Nov 2015 15:04:50 +0000
+Message-ID: <20151103150450.GP20228@sirena.org.uk>
+References: <1446559806-3315-1-git-send-email-sjan@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ssZxAlvqSOvXAj81"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1446559806-3315-1-git-send-email-sjan-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sebastien Jan <sjan-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>
+Cc: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The code was able to generate illegal OPCLK_REF values because the
-reference frequency tables listed all values of SYSCLK instead of
-valid values for OPCLK_REF clock. The maximum OPCLK_REF clock is
-49.152MHz or 45.1584MHz.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+--ssZxAlvqSOvXAj81
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 9929efc..b3ea24d 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1023,24 +1023,18 @@ void arizona_init_dvfs(struct arizona_priv *priv)
- }
- EXPORT_SYMBOL_GPL(arizona_init_dvfs);
- 
--static unsigned int arizona_sysclk_48k_rates[] = {
-+static unsigned int arizona_opclk_ref_48k_rates[] = {
- 	6144000,
- 	12288000,
- 	24576000,
- 	49152000,
--	73728000,
--	98304000,
--	147456000,
- };
- 
--static unsigned int arizona_sysclk_44k1_rates[] = {
-+static unsigned int arizona_opclk_ref_44k1_rates[] = {
- 	5644800,
- 	11289600,
- 	22579200,
- 	45158400,
--	67737600,
--	90316800,
--	135475200,
- };
- 
- static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
-@@ -1065,11 +1059,11 @@ static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
- 	}
- 
- 	if (refclk % 8000)
--		rates = arizona_sysclk_44k1_rates;
-+		rates = arizona_opclk_ref_44k1_rates;
- 	else
--		rates = arizona_sysclk_48k_rates;
-+		rates = arizona_opclk_ref_48k_rates;
- 
--	for (ref = 0; ref < ARRAY_SIZE(arizona_sysclk_48k_rates) &&
-+	for (ref = 0; ref < ARRAY_SIZE(arizona_opclk_ref_48k_rates) &&
- 		     rates[ref] <= refclk; ref++) {
- 		div = 1;
- 		while (rates[ref] / div >= freq && div < 32) {
--- 
-1.9.1
+On Tue, Nov 03, 2015 at 03:10:06PM +0100, Sebastien Jan wrote:
+
+> +  - irq-gpios : GPIO specifier for the GPIO connected to /IRQ
+
+The platform data this is providing is essentially a workaround for the
+lack of an irq_to_gpio() function and the use of it is a workaround for
+the lack of level triggered IRQ emulation in genirq...  do we really
+want this in the ABI (especially as a generic thing)?
+
+--ssZxAlvqSOvXAj81
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWOM0RAAoJECTWi3JdVIfQ+AQH/09S0d5+AzdVFTjFytEc5MGk
+th1v5OlWKQ612HOZK1Qux2ib/FNcSQsNGVDH+/zOs9Q0/va+brCHd57l+XO6W2gi
+0/6j+a+OhsHMqTQ+yjGHTMDEssjp3VQxXXzlG9Xrf4eYlkg8dUd6huYBC6om0NWc
+Ue+1EY/zinmvVpLkOGUgnFWCFan1o0zkgm23cKVuijAyRWXAOnETlDMNMHL0Uyqs
+uNm77+Qo41GRW1w6YoEwc5AZAv2uemEJCM+++ZViJ5mQx2bfmOB6nju+SnpzMsm4
+fNO+DvPh2ZI9VGQ5NblFaskYQDim/hy3ZtrVs8+JPUjT3IQZ4qHzDvPf1aoKqh8=
+=/f+2
+-----END PGP SIGNATURE-----
+
+--ssZxAlvqSOvXAj81--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
