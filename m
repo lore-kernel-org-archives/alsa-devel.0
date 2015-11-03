@@ -1,64 +1,70 @@
-From: Sebastien Jan <sjan@baylibre.com>
-Subject: [PATCH v2] mfd: arizona: Add DT binding for irq-gpios
-	property
-Date: Tue,  3 Nov 2015 15:10:06 +0100
-Message-ID: <1446559806-3315-1-git-send-email-sjan@baylibre.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: fix range of OPCLK_REF
+Date: Tue, 3 Nov 2015 14:24:12 +0000
+Message-ID: <1446560652-3144-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6347B2606DA
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 15:10:53 +0100 (CET)
-Received: by wmll128 with SMTP id l128so88116940wml.0
- for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2015 06:10:51 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Sebastien Jan <sjan@baylibre.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Sebastien Jan <sjan@baylibre.com>
----
- Documentation/devicetree/bindings/mfd/arizona.txt | 2 ++
- drivers/mfd/arizona-core.c                        | 5 +++++
- 2 files changed, 7 insertions(+)
+The code was able to generate illegal OPCLK_REF values because the
+reference frequency tables listed all values of SYSCLK instead of
+valid values for OPCLK_REF clock. The maximum OPCLK_REF clock is
+49.152MHz or 45.1584MHz.
 
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index a8fee60..f9405ad 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -46,6 +46,8 @@ Optional properties:
-   - wlf,reset : GPIO specifier for the GPIO controlling /RESET
-   - wlf,ldoena : GPIO specifier for the GPIO controlling LDOENA
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 9929efc..b3ea24d 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1023,24 +1023,18 @@ void arizona_init_dvfs(struct arizona_priv *priv)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_dvfs);
  
-+  - irq-gpios : GPIO specifier for the GPIO connected to /IRQ
-+
-   - wlf,gpio-defaults : A list of GPIO configuration register values. Defines
-     for the appropriate values can found in <dt-bindings/mfd/arizona.txt>. If
-     absent, no configuration of these registers is performed. If any entry has
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 44cfdbb..2046617 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -814,6 +814,11 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 		count++;
+-static unsigned int arizona_sysclk_48k_rates[] = {
++static unsigned int arizona_opclk_ref_48k_rates[] = {
+ 	6144000,
+ 	12288000,
+ 	24576000,
+ 	49152000,
+-	73728000,
+-	98304000,
+-	147456000,
+ };
+ 
+-static unsigned int arizona_sysclk_44k1_rates[] = {
++static unsigned int arizona_opclk_ref_44k1_rates[] = {
+ 	5644800,
+ 	11289600,
+ 	22579200,
+ 	45158400,
+-	67737600,
+-	90316800,
+-	135475200,
+ };
+ 
+ static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
+@@ -1065,11 +1059,11 @@ static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
  	}
  
-+	arizona->pdata.irq_gpio = of_get_named_gpio(arizona->dev->of_node,
-+							"irq-gpios", 0);
-+	if (arizona->pdata.irq_gpio < 0)
-+		arizona->pdata.irq_gpio = 0;
-+
- 	return 0;
- }
+ 	if (refclk % 8000)
+-		rates = arizona_sysclk_44k1_rates;
++		rates = arizona_opclk_ref_44k1_rates;
+ 	else
+-		rates = arizona_sysclk_48k_rates;
++		rates = arizona_opclk_ref_48k_rates;
  
+-	for (ref = 0; ref < ARRAY_SIZE(arizona_sysclk_48k_rates) &&
++	for (ref = 0; ref < ARRAY_SIZE(arizona_opclk_ref_48k_rates) &&
+ 		     rates[ref] <= refclk; ref++) {
+ 		div = 1;
+ 		while (rates[ref] / div >= freq && div < 32) {
 -- 
 1.9.1
