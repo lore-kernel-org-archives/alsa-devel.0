@@ -1,15 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 0/2] ASoC: Change the PCM runtime array to a
-	list
-Date: Tue,  3 Nov 2015 13:03:03 +0800
-Message-ID: <cover.1446521493.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Vendor drivers get a link's runtime
+	by snd_soc_get_pcm_runtime()
+Date: Tue,  3 Nov 2015 13:04:35 +0800
+Message-ID: <fc2186435744be7a35a9cc69da2422217916c65b.1446521493.git.mengdong.lin@linux.intel.com>
+References: <cover.1446521493.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id F2768264F3F
- for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 05:47:40 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EBDF264F37
+ for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2015 05:49:17 +0100 (CET)
+In-Reply-To: <cover.1446521493.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +22,414 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Lin Mengdong <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Lin Mengdong <mengdong.lin@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The 2 patches are a preparation to allow the topology core to create
-PCM devices dyanmically. Probing a compoent may load its topology and
-come up with new DAI links and thus new runtimes. So impmenting the 
-PCM runtimes in a list make it easier to add new runtimes.
+Vendor drivers no longer access a DAI link's runtime by the link index
+but by matching the link name via snd_soc_get_pcm_runtime(). We assume
+each DAI link has a unique name.
 
-Mengdong Lin (2):
-  ASoC: Vendor drivers get a link's runtime by snd_soc_get_pcm_runtime()
-  ASoC: Change the PCM runtime array to a list
+This is preparation for changing runtimes from an array to a list later.
 
- include/sound/soc.h                          |   5 +-
- sound/soc/fsl/fsl-asoc-card.c                |   5 +-
- sound/soc/fsl/imx-wm8962.c                   |  10 +-
- sound/soc/generic/simple-card.c              |  12 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |  12 +-
- sound/soc/intel/boards/cht_bsw_max98090_ti.c |   7 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c      |   7 +-
- sound/soc/intel/boards/cht_bsw_rt5672.c      |   7 +-
- sound/soc/pxa/mioa701_wm9713.c               |   6 +-
- sound/soc/samsung/bells.c                    |  40 +++-
- sound/soc/samsung/littlemill.c               |  32 +++-
- sound/soc/samsung/odroidx2_max98090.c        |   9 +-
- sound/soc/samsung/snow.c                     |   9 +-
- sound/soc/samsung/speyside.c                 |  12 +-
- sound/soc/samsung/tobermory.c                |  21 ++-
- sound/soc/sh/rcar/core.c                     |   2 +-
- sound/soc/sh/rcar/rsrc-card.c                |   6 +-
- sound/soc/soc-core.c                         | 263 ++++++++++++++++-----------
- sound/soc/soc-dapm.c                         |   7 +-
- sound/soc/soc-pcm.c                          |  22 +--
- sound/soc/tegra/tegra_wm8903.c               |   3 +-
- 21 files changed, 307 insertions(+), 190 deletions(-)
+Vendor drivers changed:
+sound/soc/fsl/fsl-asoc-card.c
+sound/soc/fsl/imx-wm8962.c
+sound/soc/pxa/mioa701_wm9713.c
+sound/soc/samsung/bells.c
+sound/soc/samsung/littlemill.c
+sound/soc/samsung/odroidx2_max98090.c
+sound/soc/samsung/snow.c
+sound/soc/samsung/speyside.c
+sound/soc/samsung/tobermory.c
+sound/soc/tegra/tegra_wm8903
 
+Signed-off-by: Lin Mengdong <mengdong.lin@linux.intel.com>
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 0901d5e..bd8c71d 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -212,12 +212,15 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
+ 					enum snd_soc_bias_level level)
+ {
+ 	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(card);
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	struct codec_priv *codec_priv = &priv->codec_priv;
+ 	struct device *dev = card->dev;
+ 	unsigned int pll_out;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index b38b98c..201a70d 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -69,13 +69,16 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
+ 					struct snd_soc_dapm_context *dapm,
+ 					enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	struct imx_priv *priv = &card_priv;
+ 	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = &priv->pdev->dev;
+ 	unsigned int pll_out;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -135,12 +138,15 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
+ 
+ static int imx_wm8962_late_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	struct imx_priv *priv = &card_priv;
+ 	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = &priv->pdev->dev;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
+ 			data->clk_frequency, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 29bc60e8..5c8f9db 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -81,8 +81,12 @@ static int rear_amp_power(struct snd_soc_codec *codec, int power)
+ static int rear_amp_event(struct snd_soc_dapm_widget *widget,
+ 			  struct snd_kcontrol *kctl, int event)
+ {
+-	struct snd_soc_codec *codec = widget->dapm->card->rtd[0].codec;
++	struct snd_soc_card *card = widget->dapm->card;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_codec *codec;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec = rtd->codec;
+ 	return rear_amp_power(codec, SND_SOC_DAPM_EVENT_ON(event));
+ }
+ 
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index e5f05e6..3dd246f 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -58,11 +58,16 @@ static int bells_set_bias_level(struct snd_soc_card *card,
+ 				struct snd_soc_dapm_context *dapm,
+ 				enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[DAI_DSP_CODEC].codec_dai;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_codec *codec;
+ 	struct bells_drvdata *bells = card->drvdata;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	codec_dai = rtd->codec_dai;
++	codec = codec_dai->codec;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -99,11 +104,16 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
+ 				     struct snd_soc_dapm_context *dapm,
+ 				     enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[DAI_DSP_CODEC].codec_dai;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_codec *codec;
+ 	struct bells_drvdata *bells = card->drvdata;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	codec_dai = rtd->codec_dai;
++	codec = codec_dai->codec;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -137,14 +147,22 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
+ static int bells_late_probe(struct snd_soc_card *card)
+ {
+ 	struct bells_drvdata *bells = card->drvdata;
+-	struct snd_soc_codec *wm0010 = card->rtd[DAI_AP_DSP].codec;
+-	struct snd_soc_codec *codec = card->rtd[DAI_DSP_CODEC].codec;
+-	struct snd_soc_dai *aif1_dai = card->rtd[DAI_DSP_CODEC].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_codec *wm0010;
++	struct snd_soc_codec *codec;
++	struct snd_soc_dai *aif1_dai;
+ 	struct snd_soc_dai *aif2_dai;
+ 	struct snd_soc_dai *aif3_dai;
+ 	struct snd_soc_dai *wm9081_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_AP_DSP].name);
++	wm0010 = rtd->codec;
++
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	codec = rtd->codec;
++	aif1_dai = rtd->codec_dai;
++
+ 	ret = snd_soc_codec_set_sysclk(codec, ARIZONA_CLK_SYSCLK,
+ 				       ARIZONA_CLK_SRC_FLL1,
+ 				       bells->sysclk_rate,
+@@ -181,7 +199,8 @@ static int bells_late_probe(struct snd_soc_card *card)
+ 		return ret;
+ 	}
+ 
+-	aif2_dai = card->rtd[DAI_CODEC_CP].cpu_dai;
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_CODEC_CP].name);
++	aif2_dai = rtd->cpu_dai;
+ 
+ 	ret = snd_soc_dai_set_sysclk(aif2_dai, ARIZONA_CLK_ASYNCCLK, 0, 0);
+ 	if (ret != 0) {
+@@ -192,8 +211,9 @@ static int bells_late_probe(struct snd_soc_card *card)
+ 	if (card->num_rtd == DAI_CODEC_SUB)
+ 		return 0;
+ 
+-	aif3_dai = card->rtd[DAI_CODEC_SUB].cpu_dai;
+-	wm9081_dai = card->rtd[DAI_CODEC_SUB].codec_dai;
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_CODEC_SUB].name);
++	aif3_dai = rtd->cpu_dai;
++	wm9081_dai = rtd->codec_dai;
+ 
+ 	ret = snd_soc_dai_set_sysclk(aif3_dai, ARIZONA_CLK_SYSCLK, 0, 0);
+ 	if (ret != 0) {
+diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
+index 31a820e..7cb204e 100644
+--- a/sound/soc/samsung/littlemill.c
++++ b/sound/soc/samsung/littlemill.c
+@@ -23,9 +23,13 @@ static int littlemill_set_bias_level(struct snd_soc_card *card,
+ 					  struct snd_soc_dapm_context *dapm,
+ 					  enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *aif1_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	aif1_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != aif1_dai->dev)
+ 		return 0;
+ 
+@@ -66,9 +70,13 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
+ 					       struct snd_soc_dapm_context *dapm,
+ 					       enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *aif1_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	aif1_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != aif1_dai->dev)
+ 		return 0;
+ 
+@@ -168,9 +176,13 @@ static int bbclk_ev(struct snd_soc_dapm_widget *w,
+ 		    struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_card *card = w->dapm->card;
+-	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *aif2_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	aif2_dai = rtd->cpu_dai;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
+@@ -245,11 +257,19 @@ static struct snd_soc_jack littlemill_headset;
+ 
+ static int littlemill_late_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_codec *codec = card->rtd[0].codec;
+-	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
+-	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_codec *codec;
++	struct snd_soc_dai *aif1_dai;
++	struct snd_soc_dai *aif2_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec = rtd->codec;
++	aif1_dai = rtd->codec_dai;
++
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	aif2_dai = rtd->cpu_dai;
++
+ 	ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
+ 				     32768, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+diff --git a/sound/soc/samsung/odroidx2_max98090.c b/sound/soc/samsung/odroidx2_max98090.c
+index 596f118..0421727 100644
+--- a/sound/soc/samsung/odroidx2_max98090.c
++++ b/sound/soc/samsung/odroidx2_max98090.c
+@@ -25,10 +25,15 @@ static struct snd_soc_dai_link odroidx2_dai[];
+ 
+ static int odroidx2_late_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
+-	struct snd_soc_dai *cpu_dai = card->rtd[0].cpu_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_dai *cpu_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
++	cpu_dai = rtd->cpu_dai;
++
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
+ 						SND_SOC_CLOCK_IN);
+ 
+diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
+index 07ce2cf..d8ac907 100644
+--- a/sound/soc/samsung/snow.c
++++ b/sound/soc/samsung/snow.c
+@@ -35,10 +35,15 @@ static struct snd_soc_dai_link snow_dai[] = {
+ 
+ static int snow_late_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
+-	struct snd_soc_dai *cpu_dai = card->rtd[0].cpu_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_dai *cpu_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
++	cpu_dai = rtd->cpu_dai;
++
+ 	/* Set the MCLK rate for the codec */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+ 					FIN_PLL_RATE, SND_SOC_CLOCK_IN);
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index d1ae21c..083ef5e 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -25,9 +25,13 @@ static int speyside_set_bias_level(struct snd_soc_card *card,
+ 				   struct snd_soc_dapm_context *dapm,
+ 				   enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[1].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	codec_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -57,9 +61,13 @@ static int speyside_set_bias_level_post(struct snd_soc_card *card,
+ 					struct snd_soc_dapm_context *dapm,
+ 					enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[1].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	codec_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index 85ccfb7..3310eda 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -23,9 +23,13 @@ static int tobermory_set_bias_level(struct snd_soc_card *card,
+ 					  struct snd_soc_dapm_context *dapm,
+ 					  enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -62,9 +66,13 @@ static int tobermory_set_bias_level_post(struct snd_soc_card *card,
+ 					       struct snd_soc_dapm_context *dapm,
+ 					       enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec_dai = rtd->codec_dai;
++
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+ 
+@@ -170,10 +178,15 @@ static struct snd_soc_jack_pin tobermory_headset_pins[] = {
+ 
+ static int tobermory_late_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_codec *codec = card->rtd[0].codec;
+-	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_codec *codec;
++	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	codec = rtd->codec;
++	codec_dai = rtd->codec_dai;
++
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
+ 				     32768, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 2160400..e485278 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -199,7 +199,8 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ {
+-	struct snd_soc_pcm_runtime *rtd = &(card->rtd[0]);
++	struct snd_soc_pcm_runtime *rtd =
++		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
 -- 
 1.9.1
