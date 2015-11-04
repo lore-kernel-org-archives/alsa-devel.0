@@ -1,18 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm9713: add gpio chip
-Date: Wed, 4 Nov 2015 18:33:22 +0000
-Message-ID: <20151104183322.GD2549@ck-lbox>
-References: <1446657164-25012-1-git-send-email-robert.jarzmik@free.fr>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [GIT PULL]: Add sst audio firmware for Skylake
+Date: Wed, 4 Nov 2015 14:04:54 -0500
+Message-ID: <20151104190454.GE12383@merlin.infradead.org>
+References: <20151104122631.GL12910@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 725312606B8
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 19:49:18 +0100 (CET)
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE01B2606B8
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 20:04:57 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1446657164-25012-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <20151104122631.GL12910@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 04, 2015 at 06:12:44PM +0100, Robert Jarzmik wrote:
-> The Wolfson WM9713 provides 8 GPIOs. If the gpiolib is compiled in the
-> kernel, declare a gpio chip.
+On Wed, Nov 04, 2015 at 05:56:31PM +0530, Vinod Koul wrote:
+> Hello Linux firmware maintainers,
 > 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
+> Please PULL to receive the Intel audio firmware for audio DSP in Skylake
+> platforms.
+> 
 
-You should probably make a seperate driver within GPIO for this
-and then tie the two together, using an MFD. I appreciate that is
-more work but it is likely a nicer solution overall.
+pulled, thanks.
 
-Thanks,
-Charles
+> This firmware uses the Intel binary firmware release licence along with
+> newlibc license and is fully redistributable
+> 
+> The following changes since commit 66d3d8d7607c9a3a7d083f81990f6523f5842065:
+> 
+>   Add FW binary used by mwlwifi driver. (2015-10-18 19:28:55 +0100)
+> 
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+> 
+> for you to fetch changes up to 33a1bc51b670ee198045b68b968d5575bd49c907:
+> 
+>   linux-firmware: add Skylake audio firmware (2015-11-04 17:26:40 +0530)
+> 
+> ----------------------------------------------------------------
+> Vinod Koul (1):
+>       linux-firmware: add Skylake audio firmware
+> 
+>  LICENCE.adsp_sst         | 999 +++++++++++++++++++++++++++++++++++++++++++++++
+>  WHENCE                   |  10 +
+>  intel/dsp_fw_release.bin | Bin 0 -> 233472 bytes
+>  3 files changed, 1009 insertions(+)
+>  create mode 100644 LICENCE.adsp_sst
+>  create mode 100644 intel/dsp_fw_release.bin
+> 
+> Thanks
+> -- 
+> ~Vinod
