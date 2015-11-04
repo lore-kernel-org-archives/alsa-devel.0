@@ -1,16 +1,16 @@
 From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V3 01/11] ASoC: img: Add binding document for
-	I2S input controller
-Date: Wed, 4 Nov 2015 14:40:47 +0000
-Message-ID: <1446648057-373-2-git-send-email-Damien.Horsley@imgtec.com>
+Subject: [PATCH V3 03/11] ASoC: img: Add binding document for
+	I2S output controller
+Date: Wed, 4 Nov 2015 14:40:49 +0000
+Message-ID: <1446648057-373-4-git-send-email-Damien.Horsley@imgtec.com>
 References: <1446648057-373-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E2272604DD
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:41:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 49BDB260522
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:41:54 +0100 (CET)
 In-Reply-To: <1446648057-373-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,26 +27,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add a binding document for Imagination Technologies I2S input
+Add binding document for Imagination Technologies I2S output
 controller
 
 Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 ---
- .../devicetree/bindings/sound/img,i2s-in.txt       | 47 ++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,i2s-in.txt
+ .../devicetree/bindings/sound/img,i2s-out.txt      | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/img,i2s-out.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/img,i2s-in.txt b/Documentation/devicetree/bindings/sound/img,i2s-in.txt
+diff --git a/Documentation/devicetree/bindings/sound/img,i2s-out.txt b/Documentation/devicetree/bindings/sound/img,i2s-out.txt
 new file mode 100644
-index 0000000..423265c
+index 0000000..0159415
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,i2s-in.txt
-@@ -0,0 +1,47 @@
-+Imagination Technologies I2S Input Controller
++++ b/Documentation/devicetree/bindings/sound/img,i2s-out.txt
+@@ -0,0 +1,51 @@
++Imagination Technologies I2S Output Controller
 +
 +Required Properties:
 +
-+  - compatible : Compatible list, must contain "img,i2s-in"
++  - compatible : Compatible list, must contain "img,i2s-out"
 +
 +  - #sound-dai-cells : Must be equal to 0
 +
@@ -54,39 +54,43 @@ index 0000000..423265c
 +
 +  - clocks : Contains an entry for each entry in clock-names
 +
-+  - clock-names : Must include the following entry:
++  - clock-names : Must include the following entries:
 +	"sys"	The system clock
++	"ref"	The reference clock
 +
 +  - dmas: Contains an entry for each entry in dma-names.
 +
 +  - dma-names: Must include the following entry:
-+	"rx"	Single DMA channel used by all active I2S channels
++	"tx"	Single DMA channel used by all active I2S channels
 +
-+  - img,i2s-channels : Number of I2S channels instantiated in the I2S in block
++  - img,i2s-channels : Number of I2S channels instantiated in the I2S out block
++
++  - resets: Contains a phandle to the I2S out reset signal
++
++  - reset-names: Contains the reset signal name "rst"
 +
 +Optional Properties:
 +
-+  - interrupts : Contains the I2S in interrupts. Depending on
++  - interrupts : Contains the I2S out interrupts. Depending on
 +	the configuration, there may be no interrupts, one interrupt,
 +	or an interrupt per I2S channel. For the case where there is
 +	one interrupt per channel, the interrupts should be listed
 +	in ascending channel order
 +
-+  - resets: Contains a phandle to the I2S in reset signal
-+
-+  - reset-names: Contains the reset signal name "rst"
-+
 +Example:
 +
-+i2s_in: i2s-in@18100800 {
-+	compatible = "img,i2s-in";
-+	reg = <0x18100800 0x200>;
-+	interrupts = <GIC_SHARED 7 IRQ_TYPE_LEVEL_HIGH>;
-+	dmas = <&mdc 30 0xffffffff 0>;
-+	dma-names = "rx";
-+	clocks = <&cr_periph SYS_CLK_I2S_IN>;
-+	clock-names = "sys";
++i2s_out: i2s-out@18100A00 {
++	compatible = "img,i2s-out";
++	reg = <0x18100A00 0x200>;
++	interrupts = <GIC_SHARED 13 IRQ_TYPE_LEVEL_HIGH>;
++	dmas = <&mdc 23 0xffffffff 0>;
++	dma-names = "tx";
++	clocks = <&cr_periph SYS_CLK_I2S_OUT>,
++		 <&clk_core CLK_I2S>;
++	clock-names = "sys", "ref";
 +	img,i2s-channels = <6>;
++	resets = <&pistachio_reset PISTACHIO_RESET_I2S_OUT>;
++	reset-names = "rst";
 +	#sound-dai-cells = <0>;
 +};
 -- 
