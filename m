@@ -1,14 +1,19 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: nau8825: fix stream_name conflicting
-Date: Tue,  3 Nov 2015 16:13:39 -0800
-Message-ID: <1446596019-83464-1-git-send-email-yang.a.fang@intel.com>
+From: Libin Yang <libin.yang@linux.intel.com>
+Subject: Re: [RFC PATCH 1/2] ALSA: hda - add hda_dev_t typedef
+ for DP MST audio
+Date: Wed, 4 Nov 2015 10:37:52 +0800
+Message-ID: <56396F80.6000004@linux.intel.com>
+References: <1446538973-109373-1-git-send-email-libin.yang@linux.intel.com>
+ <1446538973-109373-2-git-send-email-libin.yang@linux.intel.com>
+ <s5hvb9jnj39.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 846812617C1
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 01:15:20 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02800265086
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 03:39:14 +0100 (CET)
+In-Reply-To: <s5hvb9jnj39.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,63 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, joe.konno@intel.com, yang.a.fang@intel.com, sathyanarayana.nujella@intel.com, naveen.m@intel.com, vedang.patel@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: M Naveen <naveen.m@intel.com>
+On 11/04/2015 12:28 AM, Takashi Iwai wrote:
+> On Tue, 03 Nov 2015 09:22:52 +0100,
+> libin.yang@linux.intel.com wrote:
+>>
+>> From: Libin Yang <libin.yang@intel.com>
+>>
+>> Signed-off-by: Libin Yang <libin.yang@intel.com>
+>> ---
+>>   include/sound/hdaudio.h | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+>> index e2b712c..1f54964 100644
+>> --- a/include/sound/hdaudio.h
+>> +++ b/include/sound/hdaudio.h
+>> @@ -15,6 +15,7 @@
+>>
+>>   /* codec node id */
+>>   typedef u16 hda_nid_t;
+>> +typedef u8 hda_dev_t;
+>
+> This isn't used in any ABI, so we don't have to define the type.
+> Just use int instead.
+>
+> NID was defined there because it's used in ABI and it can represent
+> the purpose more clearly.  (Also at the early time of driver writing,
+> the size itself wasn't 100% clear; we started writing it before
+> HD-audio spec got solid.)
 
-There is naming conflict with dai stream_name defined in dmic.c
-so assign different name
+OK. I will use int type directly.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: M Naveen <naveen.m@intel.com>
----
- sound/soc/codecs/nau8825.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Best Regards,
+Libin
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 7fc7b4e..4d00ac0 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -298,8 +298,8 @@ static const struct snd_kcontrol_new nau8825_dacr_mux =
- 
- 
- static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
--	SND_SOC_DAPM_AIF_OUT("AIFTX", "Capture", 0, NAU8825_REG_I2S_PCM_CTRL2,
--		15, 1),
-+	SND_SOC_DAPM_AIF_OUT("AIFTX", "AIF1 Capture", 0,
-+		NAU8825_REG_I2S_PCM_CTRL2, 15, 1),
- 
- 	SND_SOC_DAPM_INPUT("MIC"),
- 	SND_SOC_DAPM_MICBIAS("MICBIAS", NAU8825_REG_MIC_BIAS, 8, 0),
-@@ -365,8 +365,8 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
- 	{"ADC", NULL, "ADC Power"},
- 	{"AIFTX", NULL, "ADC"},
- 
--	{"DDACL", NULL, "Playback"},
--	{"DDACR", NULL, "Playback"},
-+	{"DDACL", NULL, "AIF1 Playback"},
-+	{"DDACR", NULL, "AIF1 Playback"},
- 	{"DDACL", NULL, "DDAC Clock"},
- 	{"DDACR", NULL, "DDAC Clock"},
- 	{"DACL Mux", "DACL", "DDACL"},
-@@ -495,14 +495,14 @@ static const struct snd_soc_dai_ops nau8825_dai_ops = {
- static struct snd_soc_dai_driver nau8825_dai = {
- 	.name = "nau8825-hifi",
- 	.playback = {
--		.stream_name	 = "Playback",
-+		.stream_name	 = "AIF1 Playback",
- 		.channels_min	 = 1,
- 		.channels_max	 = 2,
- 		.rates		 = NAU8825_RATES,
- 		.formats	 = NAU8825_FORMATS,
- 	},
- 	.capture = {
--		.stream_name	 = "Capture",
-+		.stream_name	 = "AIF1 Capture",
- 		.channels_min	 = 1,
- 		.channels_max	 = 1,
- 		.rates		 = NAU8825_RATES,
--- 
-1.7.9.5
+>
+>
+> thanks,
+>
+> Takashi
+>
