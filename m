@@ -1,17 +1,19 @@
-From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V3 10/11] ASoC: img: Add binding document for
-	SPDIF output controller
-Date: Wed, 4 Nov 2015 14:40:56 +0000
-Message-ID: <1446648057-373-11-git-send-email-Damien.Horsley@imgtec.com>
-References: <1446648057-373-1-git-send-email-Damien.Horsley@imgtec.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/6] ASoC: hdac-hdmi: Add hdmi driver
+Date: Wed, 4 Nov 2015 14:48:45 +0000
+Message-ID: <20151104144845.GK1717@sirena.org.uk>
+References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
+ <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
+ <20151101030231.GB17819@sirena.org.uk>
+ <20151102100642.GK21326@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3740987462390091495=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id F401426574A
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:41:58 +0100 (CET)
-In-Reply-To: <1446648057-373-1-git-send-email-Damien.Horsley@imgtec.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A58C260522
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:49:09 +0100 (CET)
+In-Reply-To: <20151102100642.GK21326@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, James Hartley <James.Hartley@imgtec.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, tiwai@suse.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add binding document for Imagination Technologies SPDIF
-ouput controller
+--===============3740987462390091495==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YQEH9CATo+4lan7A"
+Content-Disposition: inline
 
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
----
- .../devicetree/bindings/sound/img,spdif-out.txt    | 44 ++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-out.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-out.txt b/Documentation/devicetree/bindings/sound/img,spdif-out.txt
-new file mode 100644
-index 0000000..470a519
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,spdif-out.txt
-@@ -0,0 +1,44 @@
-+Imagination Technologies SPDIF Output Controller
-+
-+Required Properties:
-+
-+  - compatible : Compatible list, must contain "img,spdif-out"
-+
-+  - #sound-dai-cells : Must be equal to 0
-+
-+  - reg : Offset and length of the register set for the device
-+
-+  - dmas: Contains an entry for each entry in dma-names.
-+
-+  - dma-names: Must include the following entry:
-+	"tx"
-+
-+  - clocks : Contains an entry for each entry in clock-names.
-+
-+  - clock-names : Includes the following entries:
-+	"sys"	The system clock
-+	"ref"	The reference clock
-+
-+  - resets: Contains a phandle to the spdif out reset signal
-+
-+  - reset-names: Contains the reset signal name "rst"
-+
-+Optional Properties:
-+
-+  - interrupts : Contains the parallel out interrupt, if present
-+
-+Example:
-+
-+spdif_out: spdif-out@18100D00 {
-+	compatible = "img,spdif-out";
-+	reg = <0x18100D00 0x100>;
-+	interrupts = <GIC_SHARED 21 IRQ_TYPE_LEVEL_HIGH>;
-+	dmas = <&mdc 14 0xffffffff 0>;
-+	dma-names = "tx";
-+	clocks = <&cr_periph SYS_CLK_SPDIF_OUT>,
-+		 <&clk_core CLK_SPDIF>;
-+	clock-names = "sys", "ref";
-+	resets = <&pistachio_reset PISTACHIO_RESET_SPDIF_OUT>;
-+	reset-names = "rst";
-+	#sound-dai-cells = <0>;
-+};
--- 
-2.1.4
+--YQEH9CATo+4lan7A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Nov 02, 2015 at 03:36:42PM +0530, Vinod Koul wrote:
+> On Sun, Nov 01, 2015 at 12:02:31PM +0900, Mark Brown wrote:
+> > On Tue, Oct 27, 2015 at 04:42:13PM +0900, Vinod Koul wrote:
+
+> > > +	if (err < 0)
+> > > +		dev_err(&hdac->dev, "Failed to query pcm params for nid: %d\n", cvt->nid);
+
+> > That looks like the NID is being printed as an error code.
+
+> No this prints the NID for which query fails, but agree we should print the
+> error code too, that might be very helpful :)
+
+No, it's also the format for the message - normally we do "message:
+code".
+
+> > > +	/*
+> > > +	 * Currently on board only 1 pin and 1 converter enabled for
+> > > +	 * simplification, more will be added eventually
+> > > +	 * So using fixed map for dai_id:pin:cvt
+> > > +	 */
+> > > +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[0],
+> > > +			hdmi->cvt_nid[0], 0);
+
+> > I'm not entirely sure I understand what this is all doing.  It looks
+> > like it's trying to translate the HDA widget map into a DAPM map which
+> > seems sensible but it appears it's making some simplifying assumptions
+> > about the device it's dealing with?
+
+> The device is actually quite simple and yes we simplified even further by
+> ignoring multiple pins for now. We will keep adding more features and adding
+> stuff to map as we go along..
+
+That's not giving me a clear picture of what the code is doing or how
+we're working with the device - we've got some code parsing the HDA
+graph, some code hard coding things and I don't really know why or how
+anything fits together so I'm a bit nonplussed about what I'm reviewing
+here.
+
+--YQEH9CATo+4lan7A
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWOhrMAAoJECTWi3JdVIfQ3Y0H/1ofQayQYY+jkZ5h3FZ/VHbZ
+H6c1DrELmYpbeWtev0lhxGfAvM4blXszM5Kuy05mMnQRAheQ1fuhRkn+DMf0OiTr
+Iu9gDavaxNqDS4kJYifPq1zDUpio8SWQkBU1UjWhv/oxuh8zu5mBV4XZRj46cAEg
+Fc/xTKUrYEw8z+RDZLhdHeuQg0ZvGQAle/skHyZZfPxSPYEFgJX4WP5tFSEI7CEp
+OmxwhtqYlNDzcw/gi6E4UxSacVnzQNHlt1yybUBgXEbSwx1YOsAPDJ9Sst2WBDY7
+9szdYc+EOxmcjHGdxHPVLiB9JXaMFiYjpNwr9G9qozpfevMv1tLgS2ezVQYjtl4=
+=Xf90
+-----END PGP SIGNATURE-----
+
+--YQEH9CATo+4lan7A--
+
+--===============3740987462390091495==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3740987462390091495==--
