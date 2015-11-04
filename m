@@ -1,29 +1,22 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V1 2/3] ASoC: fsl_spdif: spba clk is needed
- by spdif device
-Date: Wed, 4 Nov 2015 09:31:28 -0800
-Message-ID: <20151104173127.GA3794@Asurada-CZ80>
-References: <cover.1442469788.git.shengjiu.wang@freescale.com>
- <5fd6e6c463c2e8d141cf4b485f585f007a71442e.1442469788.git.shengjiu.wang@freescale.com>
- <20150917110154.GC12027@sirena.org.uk>
- <20150917175407.GA2544@Asurada-CZ80>
- <20150919135040.GM12027@sirena.org.uk>
- <20151010102657.GC25804@shlinux2>
- <CAOMZO5AY7wZ6mJEAW0rBZv_grgbnBKxSa5UZTdBRx79M96mTXw@mail.gmail.com>
- <20151010203556.GA2522@Asurada-CZ80>
- <20151104083442.GA21193@shlinux2>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
+ number of samples
+Date: Wed, 4 Nov 2015 09:41:23 -0800
+Message-ID: <CAG5mAdw_VZFjKz7_H+jg=48-Y3uG1-xGT2P8M1cGm8PQqunkzQ@mail.gmail.com>
+References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
+ <5634870A.4080206@tekno-soft.it>
+ <CAG5mAdwUMd5q3fKBv6_1Laag7vij19ZjeOcZzm-ZzLH0E6QjKA@mail.gmail.com>
+ <563A253C.7080709@tekno-soft.it> <563A380E.8060406@tekno-soft.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 48A2B260481
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 18:31:35 +0100 (CET)
-Received: by pabfh17 with SMTP id fh17so58704157pab.0
- for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2015 09:31:33 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20151104083442.GA21193@shlinux2>
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2BE0260537
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 18:41:42 +0100 (CET)
+Received: by wmff134 with SMTP id f134so47939456wmf.0
+ for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2015 09:41:42 -0800 (PST)
+In-Reply-To: <563A380E.8060406@tekno-soft.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,30 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Fabio Estevam <festevam@gmail.com>
+To: Roberto Fichera <kernel@tekno-soft.it>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 04, 2015 at 04:34:44PM +0800, Shengjiu Wang wrote:
-> I discussed this issue with IC team. The SPBA bus has 3 master port,
-> one is for SDMA, one is for MCU (ARM core), the third one is for DSP (
-> currently there is no connection for DSP). Any two master port are used
-> simultaneously, there will be arbitration issue when SPBA clock is not
-> enabled.
-> 
-> So I think it is better put SPBA clock in Audio IP, because if there is
-> DSP master port + MCU master used, there will be issue too. (DSP master 
-> port is not used in i.MX chip). Anyway I think put it in SDMA driver is
-> not good choice, if SDMA is removed, there will be still issue. Put it
-> in Audio IP maybe more safe.
+On Wed, Nov 4, 2015 at 8:53 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
+> On 11/04/2015 04:33 PM, Roberto Fichera wrote:
+>>         *RX DMA frame count=36795*
+>>         RX DMA addr=0x9ef0e000
+>>         RX DMA buffer len=16
+>>         *TX DMA frame count=36795*
+>>         TX DMA addr=0x9ee49000
+>>         TX DMA buffer len=16
 
-It's really ambiguous here as it's not easy to say which side is
-the best. I'm personally okay if you insist so. However, you need
-to refine the patch as I suggested in my first reply and document
-it well: Apparently, "dma" is not a good name for this clock. And
-it should be an optional property so as not to break the old DTBs.
-And only the platforms (check DT compatible) that use the arbiter
-can fetch the clock or get a warning when not present in the DTB.
 
-Thanks
-Nicolin
+I notice your DMA buffer length is very short, which would require
+very frequency interrupts to service, right?   Can you increase your
+DMA buffer length by increasing the period size?  Maybe that would
+help reduce the likelyhood of a failure.  Although it would be good to
+be able to recover from a failure gracefully.
+-Caleb
