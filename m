@@ -1,16 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Unregister a card from userspace?
-Date: Wed, 4 Nov 2015 12:24:42 +0100
-Message-ID: <5639EAFA.9060008@ladisch.de>
-References: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: fix stream_name conflicting
+Date: Wed, 4 Nov 2015 11:26:23 +0000
+Message-ID: <20151104112623.GY20228@sirena.org.uk>
+References: <1446596019-83464-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0150741310481736213=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1A159260431
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 12:24:45 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE43826546B
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 12:26:30 +0100 (CET)
+In-Reply-To: <1446596019-83464-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,21 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, joe.konno@intel.com, lgirdwood@gmail.com, sathyanarayana.nujella@intel.com, naveen.m@intel.com, vedang.patel@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Ricard Wanderlof wrote:
-> My use case is that I have a card driver I'm working on as a module, and
-> while insmodding it works fine, I can't rmmod it because once
-> snd_soc_register_card() has been called, it has a usage count of 2 and
-> thus cannot be rmmod:ed.
 
-soc_probe_component() adds a reference to each component's driver's
-module.  Maybe putting each component into its own module would help.
-
-Anyway, you should be able to unbind the driver:
-<https://lwn.net/Articles/143397/>
+--===============0150741310481736213==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Z8pjODCYYz+3zRe3"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--Z8pjODCYYz+3zRe3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 03, 2015 at 04:13:39PM -0800, yang.a.fang@intel.com wrote:
+> From: M Naveen <naveen.m@intel.com>
+>=20
+> There is naming conflict with dai stream_name defined in dmic.c
+> so assign different name
+
+What sort of conflict?  All names are scoped within their device,
+conflicts are inevitable since we support havig more than one instance
+of a device in the system.
+
+--Z8pjODCYYz+3zRe3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWOeteAAoJECTWi3JdVIfQGz0H+gORmOAwhQljQBpMJEFWAqFW
+FRm+K5wbuH2orAyYqLVXUbbnH+4sSjn1NQsH3ebVjLiYUZyJb3EmJaMyk2e+jMbP
+qOcjAxArVLcBFrheHWto3nE/3nP887RNNMiQAXLee9+PFXpKLsBpHJB8xE2Y9ubj
+XQ5k6S8OEfRdqadGAkJhn8fR7hMXF+vTixnFwGGPGHarX9D9mGYIJwYZCqGug01c
+ObHdqf8T7MUwFbNADFc0h6OWU9aMDY08jYPyoXHjUN2/Fgi3wiRHAE8wDfFriMQp
+pZBd6my4uRppzA7YGSuYRJbJ9f2ER1Cd6Pok4XuwLrFEkBiNsPzt3fkHOd4xq1c=
+=hQ+O
+-----END PGP SIGNATURE-----
+
+--Z8pjODCYYz+3zRe3--
+
+--===============0150741310481736213==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0150741310481736213==--
