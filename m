@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: DVC settings matches to
-	datasheet" to the asoc tree
-Date: Wed, 04 Nov 2015 14:53:10 +0000
-Message-ID: <E1ZtzR0-0002zh-7F@finisterre>
-References: <87egg6w44g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: move CMD related operation to
+	cmd.c" to the asoc tree
+Date: Wed, 04 Nov 2015 14:53:16 +0000
+Message-ID: <E1ZtzR6-00030A-SV@finisterre>
+References: <87fv0mw45h.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CA4A2657FE
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:53:22 +0100 (CET)
-In-Reply-To: <87egg6w44g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 567C42657FF
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:53:27 +0100 (CET)
+In-Reply-To: <87fv0mw45h.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: DVC settings matches to datasheet
+   ASoC: rsnd: move CMD related operation to cmd.c
 
 has been applied to the asoc tree at
 
@@ -53,182 +53,108 @@ to this mail.
 Thanks,
 Mark
 
->From ee461716b5fff232e880be0f40270de9cf7245bf Mon Sep 17 00:00:00 2001
+>From dbfa05de25625f9569f23c9caee1eace4b5bbe67 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 4 Nov 2015 08:44:12 +0000
-Subject: [PATCH] ASoC: rsnd: DVC settings matches to datasheet
+Date: Wed, 4 Nov 2015 08:43:33 +0000
+Subject: [PATCH] ASoC: rsnd: move CMD related operation to cmd.c
 
-Current DVC settings order was rough.
-This patch makes it match to datasheet.
+8cca6e11c1 ("ASoC: rsnd: use mod base common method on CMD")
+added cmd.c. Let's move CMD related operation to cmd.c
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dvc.c | 119 +++++++++++++++++++++++++++++++-----------------
- 1 file changed, 77 insertions(+), 42 deletions(-)
+ sound/soc/sh/rcar/cmd.c | 20 ++++++++++++++++++++
+ sound/soc/sh/rcar/dvc.c | 24 +-----------------------
+ 2 files changed, 21 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 651c057..0dc8a2a 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -70,65 +70,105 @@ static void rsnd_dvc_soft_reset(struct rsnd_mod *mod)
- 	rsnd_mod_write(mod, DVC_SWRSR, 1);
- }
+diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
+index 731d74b..47ef47c 100644
+--- a/sound/soc/sh/rcar/cmd.c
++++ b/sound/soc/sh/rcar/cmd.c
+@@ -81,14 +81,34 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
  
--#define rsnd_dvc_initialize_lock(mod)	__rsnd_dvc_initialize_lock(mod, 1)
--#define rsnd_dvc_initialize_unlock(mod)	__rsnd_dvc_initialize_lock(mod, 0)
--static void __rsnd_dvc_initialize_lock(struct rsnd_mod *mod, u32 enable)
--{
--	rsnd_mod_write(mod, DVC_DVUIR, enable);
--}
-+#define rsnd_dvc_get_vrpdr(dvc) (dvc->rup.val << 8 | dvc->rdown.val)
-+#define rsnd_dvc_get_vrdbr(dvc) (0x3ff - (dvc->volume.val[0] >> 13))
+ 	rsnd_mod_write(mod, CMD_ROUTE_SLCT, data);
  
--static void rsnd_dvc_volume_update(struct rsnd_dai_stream *io,
--				   struct rsnd_mod *mod)
-+static void rsnd_dvc_volume_parameter(struct rsnd_dai_stream *io,
-+					      struct rsnd_mod *mod)
- {
- 	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
- 	u32 val[RSND_DVC_CHANNELS];
--	u32 dvucr = 0;
--	u32 mute = 0;
- 	int i;
- 
--	for (i = 0; i < dvc->mute.cfg.size; i++)
--		mute |= (!!dvc->mute.cfg.val[i]) << i;
-+	/* Enable Ramp */
-+	if (dvc->ren.val)
-+		for (i = 0; i < RSND_DVC_CHANNELS; i++)
-+			val[i] = dvc->volume.cfg.max;
-+	else
-+		for (i = 0; i < RSND_DVC_CHANNELS; i++)
-+			val[i] = dvc->volume.val[i];
- 
--	/* Disable DVC Register access */
--	rsnd_mod_write(mod, DVC_DVUER, 0);
-+	/* Enable Digital Volume */
-+	rsnd_mod_write(mod, DVC_VOL0R, val[0]);
-+	rsnd_mod_write(mod, DVC_VOL1R, val[1]);
++	rsnd_adg_set_cmd_timsel_gen2(mod, io);
++
++	return 0;
 +}
 +
-+static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
-+				 struct rsnd_mod *mod)
++static int rsnd_cmd_start(struct rsnd_mod *mod,
++			  struct rsnd_dai_stream *io,
++			  struct rsnd_priv *priv)
 +{
-+	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
-+	u32 dvucr = 0;
-+	u32 vrctr = 0;
-+	u32 vrpdr = 0;
-+	u32 vrdbr = 0;
-+
-+	/* Enable Digital Volume, Zero Cross Mute Mode */
-+	dvucr |= 0x101;
+ 	rsnd_mod_write(mod, CMD_CTRL, 0x10);
  
- 	/* Enable Ramp */
- 	if (dvc->ren.val) {
- 		dvucr |= 0x10;
- 
--		/* Digital Volume Max */
--		for (i = 0; i < RSND_DVC_CHANNELS; i++)
--			val[i] = dvc->volume.cfg.max;
--
--		rsnd_mod_write(mod, DVC_VRCTR, 0xff);
--		rsnd_mod_write(mod, DVC_VRPDR, dvc->rup.val << 8 |
--					       dvc->rdown.val);
- 		/*
- 		 * FIXME !!
- 		 * use scale-downed Digital Volume
- 		 * as Volume Ramp
- 		 * 7F FFFF -> 3FF
- 		 */
--		rsnd_mod_write(mod, DVC_VRDBR,
--			       0x3ff - (dvc->volume.val[0] >> 13));
--
--	} else {
--		for (i = 0; i < RSND_DVC_CHANNELS; i++)
--			val[i] = dvc->volume.val[i];
-+		vrctr = 0xff;
-+		vrpdr = rsnd_dvc_get_vrpdr(dvc);
-+		vrdbr = rsnd_dvc_get_vrdbr(dvc);
- 	}
- 
--	/* Enable Digital Volume */
--	dvucr |= 0x100;
--	rsnd_mod_write(mod, DVC_VOL0R, val[0]);
--	rsnd_mod_write(mod, DVC_VOL1R, val[1]);
-+	/* Initialize operation */
-+	rsnd_mod_write(mod, DVC_DVUIR, 1);
-+
-+	/* General Information */
-+	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr_bit(mod, io));
-+	rsnd_mod_write(mod, DVC_DVUCR, dvucr);
-+
-+	/* Volume Ramp Parameter */
-+	rsnd_mod_write(mod, DVC_VRCTR, vrctr);
-+	rsnd_mod_write(mod, DVC_VRPDR, vrpdr);
-+	rsnd_mod_write(mod, DVC_VRDBR, vrdbr);
-+
-+	/* Digital Volume Function Parameter */
-+	rsnd_dvc_volume_parameter(io, mod);
-+
-+	/* cancel operation */
-+	rsnd_mod_write(mod, DVC_DVUIR, 0);
-+}
-+
-+static void rsnd_dvc_volume_update(struct rsnd_dai_stream *io,
-+				   struct rsnd_mod *mod)
-+{
-+	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
-+	u32 zcmcr = 0;
-+	u32 vrpdr = 0;
-+	u32 vrdbr = 0;
-+	int i;
-+
-+	for (i = 0; i < dvc->mute.cfg.size; i++)
-+		zcmcr |= (!!dvc->mute.cfg.val[i]) << i;
- 
--	/*  Enable Mute */
--	if (mute) {
--		dvucr |= 0x1;
--		rsnd_mod_write(mod, DVC_ZCMCR, mute);
-+	if (dvc->ren.val) {
-+		vrpdr = rsnd_dvc_get_vrpdr(dvc);
-+		vrdbr = rsnd_dvc_get_vrdbr(dvc);
- 	}
- 
--	rsnd_mod_write(mod, DVC_DVUCR, dvucr);
-+	/* Disable DVC Register access */
-+	rsnd_mod_write(mod, DVC_DVUER, 0);
-+
-+	/* Zero Cross Mute Function */
-+	rsnd_mod_write(mod, DVC_ZCMCR, zcmcr);
-+
-+	/* Volume Ramp Function */
-+	rsnd_mod_write(mod, DVC_VRPDR, vrpdr);
-+	rsnd_mod_write(mod, DVC_VRDBR, vrdbr);
-+	/* add DVC_VRWTR here */
-+
-+	/* Digital Volume Function Parameter */
-+	rsnd_dvc_volume_parameter(io, mod);
- 
- 	/* Enable DVC Register access */
- 	rsnd_mod_write(mod, DVC_DVUER, 1);
-@@ -164,15 +204,10 @@ static int rsnd_dvc_init(struct rsnd_mod *mod,
- 
- 	rsnd_dvc_soft_reset(mod);
- 
--	rsnd_dvc_initialize_lock(mod);
-+	rsnd_dvc_volume_init(io, mod);
- 
--	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr_bit(mod, io));
--
--	/* ch0/ch1 Volume */
- 	rsnd_dvc_volume_update(io, mod);
- 
--	rsnd_dvc_initialize_unlock(mod);
--
  	return 0;
  }
+ 
++static int rsnd_cmd_stop(struct rsnd_mod *mod,
++			 struct rsnd_dai_stream *io,
++			 struct rsnd_priv *priv)
++{
++	rsnd_mod_write(mod, CMD_CTRL, 0);
++
++	return 0;
++}
++
+ static struct rsnd_mod_ops rsnd_cmd_ops = {
+ 	.name	= CMD_NAME,
+ 	.init	= rsnd_cmd_init,
++	.start	= rsnd_cmd_start,
++	.stop	= rsnd_cmd_stop,
+ };
+ 
+ int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id)
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index d207000..651c057 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -171,7 +171,7 @@ static int rsnd_dvc_init(struct rsnd_mod *mod,
+ 	/* ch0/ch1 Volume */
+ 	rsnd_dvc_volume_update(io, mod);
+ 
+-	rsnd_adg_set_cmd_timsel_gen2(mod, io);
++	rsnd_dvc_initialize_unlock(mod);
+ 
+ 	return 0;
+ }
+@@ -185,26 +185,6 @@ static int rsnd_dvc_quit(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_dvc_start(struct rsnd_mod *mod,
+-			  struct rsnd_dai_stream *io,
+-			  struct rsnd_priv *priv)
+-{
+-	rsnd_dvc_initialize_unlock(mod);
+-
+-	rsnd_mod_write(mod, CMD_CTRL, 0x10);
+-
+-	return 0;
+-}
+-
+-static int rsnd_dvc_stop(struct rsnd_mod *mod,
+-			 struct rsnd_dai_stream *io,
+-			 struct rsnd_priv *priv)
+-{
+-	rsnd_mod_write(mod, CMD_CTRL, 0);
+-
+-	return 0;
+-}
+-
+ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
+ 			    struct rsnd_dai_stream *io,
+ 			    struct snd_soc_pcm_runtime *rtd)
+@@ -278,8 +258,6 @@ static struct rsnd_mod_ops rsnd_dvc_ops = {
+ 	.remove		= rsnd_dvc_remove_,
+ 	.init		= rsnd_dvc_init,
+ 	.quit		= rsnd_dvc_quit,
+-	.start		= rsnd_dvc_start,
+-	.stop		= rsnd_dvc_stop,
+ 	.pcm_new	= rsnd_dvc_pcm_new,
+ };
  
 -- 
 2.6.1
