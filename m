@@ -1,22 +1,24 @@
-From: Roberto Fichera <kernel@tekno-soft.it>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
  number of samples
-Date: Wed, 4 Nov 2015 18:52:12 +0100
-Message-ID: <563A45CC.2070605@tekno-soft.it>
+Date: Wed, 4 Nov 2015 09:58:16 -0800
+Message-ID: <20151104175815.GB3794@Asurada-CZ80>
 References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
  <5634870A.4080206@tekno-soft.it>
  <CAG5mAdwUMd5q3fKBv6_1Laag7vij19ZjeOcZzm-ZzLH0E6QjKA@mail.gmail.com>
- <563A253C.7080709@tekno-soft.it> <563A380E.8060406@tekno-soft.it>
- <CAG5mAdw_VZFjKz7_H+jg=48-Y3uG1-xGT2P8M1cGm8PQqunkzQ@mail.gmail.com>
+ <563A253C.7080709@tekno-soft.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.tekno-soft.it (li153-180.members.linode.com
- [109.74.206.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C8F4260537
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 18:52:32 +0100 (CET)
-In-Reply-To: <CAG5mAdw_VZFjKz7_H+jg=48-Y3uG1-xGT2P8M1cGm8PQqunkzQ@mail.gmail.com>
+Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
+ [209.85.220.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15DD1260537
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 18:58:21 +0100 (CET)
+Received: by pasz6 with SMTP id z6so61055489pas.2
+ for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2015 09:58:19 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <563A253C.7080709@tekno-soft.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,37 +28,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
+To: Roberto Fichera <kernel@tekno-soft.it>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/04/2015 06:41 PM, Caleb Crome wrote:
-> On Wed, Nov 4, 2015 at 8:53 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->> On 11/04/2015 04:33 PM, Roberto Fichera wrote:
->>>         *RX DMA frame count=36795*
->>>         RX DMA addr=0x9ef0e000
->>>         RX DMA buffer len=16
->>>         *TX DMA frame count=36795*
->>>         TX DMA addr=0x9ee49000
->>>         TX DMA buffer len=16
->
-> I notice your DMA buffer length is very short, which would require
-> very frequency interrupts to service, right?   Can you increase your
-> DMA buffer length by increasing the period size?  Maybe that would
-> help reduce the likelyhood of a failure.  
+On Wed, Nov 04, 2015 at 04:33:16PM +0100, Roberto Fichera wrote:
+ 
+> With the patch below I'm able to see the error happening. And more likely it happen just just afterwards
+> the EVTERR notify the problem to the ISR. At this point the DMA simply stalls due to some problems, most
+> likely because the SSI FIFO is in overflow or underflow condition. I will do add the code to dump the SSI
 
-Not sure if this can help! SSI TDM is set to 32 slots but only 2 are masked. So every frame only
-2 slots are pushed/pulled from the FIFOs. maxburst is set to pull a block of 8 elements from the
-FIFOs, DMA cyclic call it period. So the full DMA buffer is filled in buffer size / period DMA iterations.
+No, SSI FIFO under/overflow were caused by the DMA stall as their
+channels got error out -- SSI was still consuming the TX FIFO and
+filling the RX FIFO while DMA didn't move the data at all so SSI
+FIFOs got under/overflowed.
 
-> Although it would be good to
-> be able to recover from a failure gracefully.
+> I think that at this point we should in theory restart the DMA channel, but however how to fix this and
+> why this is happening?
 
-Yep! I will try to restart the DMA channels from a failure to see if this might work or not.
+According to Reference Manual:
+----
 
-> -Caleb
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+1) The CHNERR[i] bit is set when a DMA request that triggers channel
+i is received through the corresponding input pins and the EP[i]
+bit is already set;
+
+2) Externally triggered channel pending flag EP[i] is set by the
+scheduler when the channel was activated by a DMA request. It can
+be cleared by the ith channel script.
+
+----
+
+It looks like your system made another DMA request while the SDMA
+was still in the middle of the transaction for the same channel.
+I guess you should find a way to make less frequent DMA requests,
+making higher watermarks and larger burst size for example.
