@@ -1,16 +1,13 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: Add mediatek HDMI codec driver
-Date: Wed, 4 Nov 2015 12:03:43 +0000
-Message-ID: <20151104120343.GZ20228@sirena.org.uk>
-References: <1446638053-12143-1-git-send-email-p.zabel@pengutronix.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [GIT PULL]: Add sst audio firmware for Skylake
+Date: Wed, 4 Nov 2015 17:56:31 +0530
+Message-ID: <20151104122631.GL12910@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5546807396474365269=="
+Content-Type: multipart/mixed; boundary="===============2029326172848643250=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D507526044B
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 13:03:55 +0100 (CET)
-In-Reply-To: <1446638053-12143-1-git-send-email-p.zabel@pengutronix.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE8F5260481
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 13:23:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +17,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>, linux-arm-kernel@lists.infradead.org
+To: linux-firmware@kernel.org
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5546807396474365269==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7fVM7fn5T1d7Fqim"
+--===============2029326172848643250==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f0KYrhQ4vYSV2aJu"
 Content-Disposition: inline
 
 
---7fVM7fn5T1d7Fqim
+--f0KYrhQ4vYSV2aJu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 04, 2015 at 12:54:13PM +0100, Philipp Zabel wrote:
+Hello Linux firmware maintainers,
 
-> This driver is based on the work of DW HDMI codec driver.
-> It controls mediatek HDMI Tx's audio module, and handles
-> HDMI jack detection by sharing IRQ with HDMI Tx.
+Please PULL to receive the Intel audio firmware for audio DSP in Skylake
+platforms.
 
-How does this relate to all the other HDMI related work that's going on,
-especially around handling of the EDID data?  I'm not seeing anything in
-here that uses the constraints code that Russell added for example.  As
-I keep saying I really want to see some collaboration and consensus here
-with the goal of sharing code and achieving a consistent userspace
-interface rather than a lot of individual independently implemented
-drivers.
+This firmware uses the Intel binary firmware release licence along with
+newlibc license and is fully redistributable
 
---7fVM7fn5T1d7Fqim
+The following changes since commit 66d3d8d7607c9a3a7d083f81990f6523f5842065:
+
+  Add FW binary used by mwlwifi driver. (2015-10-18 19:28:55 +0100)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+
+for you to fetch changes up to 33a1bc51b670ee198045b68b968d5575bd49c907:
+
+  linux-firmware: add Skylake audio firmware (2015-11-04 17:26:40 +0530)
+
+----------------------------------------------------------------
+Vinod Koul (1):
+      linux-firmware: add Skylake audio firmware
+
+ LICENCE.adsp_sst         | 999 +++++++++++++++++++++++++++++++++++++++++++=
+++++
+ WHENCE                   |  10 +
+ intel/dsp_fw_release.bin | Bin 0 -> 233472 bytes
+ 3 files changed, 1009 insertions(+)
+ create mode 100644 LICENCE.adsp_sst
+ create mode 100644 intel/dsp_fw_release.bin
+
+Thanks
+--=20
+~Vinod
+
+--f0KYrhQ4vYSV2aJu
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWOfQaAAoJECTWi3JdVIfQoOkH+QFfUyyNyef9gK84uZSUw64q
-la83BKf4TX8X3zvH/QfIMGbyW3NE8Rwm5o6lawNSnhfcUdHGgqu6lcPuxbBkIWRJ
-Ul5jJcfLzyC5VQIxivAh3XN3ATpYcIcuvG/ZgtovtcPBZJ1p31pXX0SIw8XNAkzZ
-i+qqR6mvJhIQr3g4v6wbxW14bhYGiTrqOXw860HlKC0DhdhOKQjsvYfosKZRlpxr
-xuXd4wYtykHhgbKCE31z9onJwT52atYJUi/9x99pZXeaVReKP9tUrvha43Uo5Xtj
-VeIAF+/ul5X/Ln/QOuq7DbupfHZXe+zSL0n2iqzZEgkMXPudpRjKw2YzoH0Iuk4=
-=pJbs
+iQIcBAEBAgAGBQJWOfl3AAoJEHwUBw8lI4NHmUYQAKz4CQTS2Gq6N+HypdVAd2oD
+oSLEPYQJYiTHoxhj/xaXWoOIeksybudF1Q1eVUovfjJMCR/YfxIdwQ7lK37xQTnD
+8f0F5r7wRnnfIQXLXfFJ2JCdJofVzVppZVkeeEM2mwfKCwRBTXiy24tbrZEruN2x
+2yrng6tw3ezPWUh6jyT5LzmqrDmgN8Xmzcbl2DbnxFHOf376wAXGa+ASEmsoT/ZM
+h8qYA+SfW1x+o4xyh1Nz43OPDFuafb0MPo7tcLMLjkWU6AqmUInsqppMSSdq1hXg
+IFHtksgkvfKraQMQ3YrTRM5Li7GOZn1z2PMy+IZXdBxbRmLxbZCTcsfmOIjK2Kzk
+8A69/EOdN6G7hkrTGQTxgs/DPoi9u4ebG9qajI9E6Tr3kSLWj8CRbKLUEW+/I5Op
+6j98tMq8QDCdPtf2bHBwL/FULi0MyHjUqQZ0Jz+Q4ZezkMb9ayRC5t2YLq8Rw7/n
+h5JVJsMRVEkn/z3hus4xCWW0yUQ5HFKzYFvBPdwdcge9cuBC94g3F40BI76Dr9p7
+3ydnYZHZS0sLIRMV4covPtdpyOFLt/ffe2N6GtUjGr3RhQcH1q9XJdfLJBNjN9Oj
+HrPdiJ9KzDf60YQ+lqYpa/rubRJ6KVzVvC+y/nlApnfABCIfgUoi+dldB+tGjsWE
+wdBsWRjzAhDyXQW/pH4R
+=seMd
 -----END PGP SIGNATURE-----
 
---7fVM7fn5T1d7Fqim--
+--f0KYrhQ4vYSV2aJu--
 
---===============5546807396474365269==
+--===============2029326172848643250==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5546807396474365269==--
+--===============2029326172848643250==--
