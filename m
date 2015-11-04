@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img: Add binding document for SPDIF
-	input controller" to the asoc tree
-Date: Wed, 04 Nov 2015 14:59:22 +0000
-Message-ID: <E1ZtzX0-0003Ta-GY@finisterre>
-References: <1443625696-29296-8-git-send-email-Damien.Horsley@imgtec.com>
+Subject: Applied "ASoC: img: Add binding document for parallel
+	output controller" to the asoc tree
+Date: Wed, 04 Nov 2015 14:59:25 +0000
+Message-ID: <E1ZtzX3-0003UX-Ux@finisterre>
+References: <1443625696-29296-6-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ED7E2655DB
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:59:35 +0100 (CET)
-In-Reply-To: <1443625696-29296-8-git-send-email-Damien.Horsley@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7C7A265745
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:59:38 +0100 (CET)
+In-Reply-To: <1443625696-29296-6-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: img: Add binding document for SPDIF input controller
+   ASoC: img: Add binding document for parallel output controller
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From 6ef44cda2506d82b35c16e7b22299c7c2ab12df0 Mon Sep 17 00:00:00 2001
+>From 20959eede6da7d9175f216b2f86e77a6e5b1ef2f Mon Sep 17 00:00:00 2001
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
-Date: Wed, 4 Nov 2015 14:40:53 +0000
-Subject: [PATCH] ASoC: img: Add binding document for SPDIF input controller
+Date: Wed, 4 Nov 2015 14:40:51 +0000
+Subject: [PATCH] ASoC: img: Add binding document for parallel output
+ controller
 
-Add binding document for Imagination Technologies SPDIF
-input controller
+Add binding document for Imagination Technologies parallel
+output controller
 
 Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/img,spdif-in.txt     | 41 ++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
+ .../devicetree/bindings/sound/img,parallel-out.txt | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/img,parallel-out.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
+diff --git a/Documentation/devicetree/bindings/sound/img,parallel-out.txt b/Documentation/devicetree/bindings/sound/img,parallel-out.txt
 new file mode 100644
-index 0000000..aab9a81
+index 0000000..a3015d2
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-@@ -0,0 +1,41 @@
-+Imagination Technologies SPDIF Input Controller
++++ b/Documentation/devicetree/bindings/sound/img,parallel-out.txt
+@@ -0,0 +1,44 @@
++Imagination Technologies Parallel Output Controller
 +
 +Required Properties:
 +
-+  - compatible : Compatible list, must contain "img,spdif-in"
++  - compatible : Compatible list, must contain "img,parallel-out".
 +
 +  - #sound-dai-cells : Must be equal to 0
 +
-+  - reg : Offset and length of the register set for the device
++  - reg : Offset and length of the register set for the device.
 +
 +  - dmas: Contains an entry for each entry in dma-names.
 +
 +  - dma-names: Must include the following entry:
-+	"rx"
++	"tx"
 +
-+  - clocks : Contains an entry for each entry in clock-names
++  - clocks : Contains an entry for each entry in clock-names.
 +
 +  - clock-names : Includes the following entries:
 +	"sys"	The system clock
++	"ref"	The reference clock
++
++  - resets: Contains a phandle to the parallel out reset signal
++
++  - reset-names: Contains the reset signal name "rst"
 +
 +Optional Properties:
 +
-+  - resets: Should contain a phandle to the spdif in reset signal, if any
-+
-+  - reset-names: Should contain the reset signal name "rst", if a
-+	reset phandle is given
-+
-+  - interrupts : Contains the spdif in interrupt, if present
++  - interrupts : Contains the parallel out interrupt, if present
 +
 +Example:
 +
-+spdif_in: spdif-in@18100E00 {
-+	compatible = "img,spdif-in";
-+	reg = <0x18100E00 0x100>;
-+	interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
-+	dmas = <&mdc 15 0xffffffff 0>;
-+	dma-names = "rx";
-+	clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
-+	clock-names = "sys";
++parallel_out: parallel-out@18100C00 {
++	compatible = "img,parallel-out";
++	reg = <0x18100C00 0x100>;
++	interrupts = <GIC_SHARED 19 IRQ_TYPE_LEVEL_HIGH>;
++	dmas = <&mdc 16 0xffffffff 0>;
++	dma-names = "tx";
++	clocks = <&cr_periph SYS_CLK_PAUD_OUT>,
++		 <&clk_core CLK_AUDIO_DAC>;
++	clock-names = "sys", "ref";
++	resets = <&pistachio_reset PISTACHIO_RESET_PRL_OUT>;
++	reset-names = "rst";
 +	#sound-dai-cells = <0>;
 +};
 -- 
