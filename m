@@ -1,18 +1,23 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Apply pin fixup for HP ProBook
-	6550b
-Date: Wed,  4 Nov 2015 22:41:48 +0100
-Message-ID: <1446673308-15659-1-git-send-email-tiwai@suse.de>
+From: Roberto Fichera <kernel@tekno-soft.it>
+Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
+ number of samples
+Date: Wed, 4 Nov 2015 22:47:05 +0100
+Message-ID: <563A7CD9.6030804@tekno-soft.it>
+References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
+ <5634870A.4080206@tekno-soft.it>
+ <CAG5mAdwUMd5q3fKBv6_1Laag7vij19ZjeOcZzm-ZzLH0E6QjKA@mail.gmail.com>
+ <563A253C.7080709@tekno-soft.it> <563A380E.8060406@tekno-soft.it>
+ <CAG5mAdw_VZFjKz7_H+jg=48-Y3uG1-xGT2P8M1cGm8PQqunkzQ@mail.gmail.com>
+ <563A45CC.2070605@tekno-soft.it> <20151104181144.GA4057@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 36A9326073E
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 22:41:50 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D8054AAF4
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 21:41:31 +0000 (UTC)
+Received: from mail.tekno-soft.it (li153-180.members.linode.com
+ [109.74.206.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE3E026073E
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 22:47:22 +0100 (CET)
+In-Reply-To: <20151104181144.GA4057@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-HP ProBook 6550b needs the same pin fixup applied to other HP B-series
-laptops with docks for making its headphone and dock headphone jacks
-working properly.  We just need to add the codec SSID to the list.
+On 11/04/2015 07:11 PM, Nicolin Chen wrote:
+> On Wed, Nov 04, 2015 at 06:52:12PM +0100, Roberto Fichera wrote:
+>
+>>> I notice your DMA buffer length is very short, which would require
+>>> very frequency interrupts to service, right?   Can you increase your
+>>> DMA buffer length by increasing the period size?  Maybe that would
+>>> help reduce the likelyhood of a failure.  
+>> Not sure if this can help! SSI TDM is set to 32 slots but only 2 are masked. So every frame only
+>> 2 slots are pushed/pulled from the FIFOs. maxburst is set to pull a block of 8 elements from the
+>> FIFOs, DMA cyclic call it period. So the full DMA buffer is filled in buffer size / period DMA iterations.
+> A smaller period size may course DMA buffer over/underrun -- ALSA
+> over/underrun even though it seems that you didn't report any.
+>
+> And apparently SDMA would get more interrupt/callbacks. I would
+> suggest a larger period size and buffer size although I cannot
+> tie your problem with the size. But you may try.
 
-Bugzilla: https://bugzilla.kernel.org/attachment.cgi?id=191971
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_sigmatel.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 08a0f6a35cca..826122d8acee 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -702,6 +702,7 @@ static bool hp_bnb2011_with_dock(struct hda_codec *codec)
- static bool hp_blike_system(u32 subsystem_id)
- {
- 	switch (subsystem_id) {
-+	case 0x103c1473: /* HP ProBook 6550b */
- 	case 0x103c1520:
- 	case 0x103c1521:
- 	case 0x103c1523:
--- 
-2.6.2
+Do you mean something like 2KB buffer and a period of 64 or 128 frames?
+SDMA is supposed to wait the FIFO capacity
+to complete a period, right?
