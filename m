@@ -1,19 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix missing
- machine device creation
-Date: Wed, 4 Nov 2015 21:37:18 +0530
-Message-ID: <20151104160718.GM12910@localhost>
-References: <20151102153229.GP21326@localhost>
- <20151103112458.GO20228@sirena.org.uk>
- <20151103175708.GH12910@localhost>
- <20151104142958.GG1717@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Packages 1.0.30 - release pending
+Date: Wed, 04 Nov 2015 16:17:07 +0000
+Message-ID: <1446653827.2801.19.camel@loki>
+References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
+ <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B866C43@shsmsx102.ccr.corp.intel.com>
+ <563A1641.1070503@perex.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7870879696070512296=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 61482260481
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 17:05:10 +0100 (CET)
-In-Reply-To: <20151104142958.GG1717@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5800260481
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 17:17:13 +0100 (CET)
+In-Reply-To: <563A1641.1070503@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,79 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, ALSA development <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2015-11-04 at 15:29 +0100, Jaroslav Kysela wrote:
+> Dne 28.10.2015 v 16:06 Lin, Mengdong napsal(a):
+> 
+> > I expect the other kernel and user space patches will be submitted next week after the internal review.
+> 
+> Any progress for the user space? If I don't receive the updates for the
+> user space packages until Friday CEST morning, I'll release 1.1.0
+> without them. We can release 1.1.1 quickly when all things are finished
+> for the topology code. The distributions can adapt to new tools (like
+> alsatplg) in 1.1.0 and then just receive the updated code (1.1.1).
+> 
 
---===============7870879696070512296==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
-
-
---/3yNEOqWowh/8j+e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 04, 2015 at 02:29:58PM +0000, Mark Brown wrote:
-> On Tue, Nov 03, 2015 at 11:27:08PM +0530, Vinod Koul wrote:
-> > On Tue, Nov 03, 2015 at 11:24:58AM +0000, Mark Brown wrote:
->=20
-> > > I'm having a hard time seeing the difference between this and what's
-> > > going on in sst-acpi.  They seem to be doing the same thing in slight=
-ly
-> > > different ways, they both match tables of CODEC IDs to machine driver
-> > > names with the distinction being that this doesn't provide a firmware
-> > > filename whereas sst-acpi does but the mechanics of mapping a CODEC t=
-o a
-> > > machine driver seem otherwise the same.
->=20
-> > I don't disagree with your observation, the code does same stuff and on=
-ly
-> > difference is the data we require here, so commonizing becomes tricky
->=20
-> The only difference in data appears to be a firmware file name?
-The one atom code uses is quite different, but i did manage to create a
-global one and ignore those in other places
-
-I will send updated patches moving all to common apci match code and then
-add SKL to common code
+It's all going through internal review and testing now. Mengdong can
+probably post to the list tomorrow if all is OK, otherwise we can go for
+1.1.1.
 
 Thanks
---=20
-~Vinod
 
---/3yNEOqWowh/8j+e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Liam
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJWOi02AAoJEHwUBw8lI4NHc8cP/i8Szd4BUN+C1l0Oygb0T5AN
-vvrqrvrvcMTCVq3pHKuE22K4gkBeXApNiw/UtqNQKA9kC0PXrxa8YNdw539SFpWf
-6Pomnh9zpkGUG8n2p6WSlI6xgYSt1YxShEvBRPvJVafI+wV2BxTglzoxuv3xgIiQ
-2nu1r4DyyQ30uzK8gImURKXgvWPxtMlwQT18Bkutj3jWni5yDj6RizSLaXMuwQT+
-blDJ7D1RUdOpspQgt2XZ/pcSe1w5PmyFJOoZGeX8PGlMclp7+Gqz2L2p18HiazPx
-wStsP9w9hmrhfwy1Oqb5Rc3EH1zsAeUmfrc34TNa8f2jY4fbwTxPlm58bLm+djaO
-xLO6HrvyHX4ImJ88ZezmvZP2NJWLlJwLzDgqIdsI35soCT9f/KtSbIKLmwe8l/tF
-8yLTU2NvROKCrCcZc/IyklzHhkspUxKfoCYEvAqK+Qy/hAnTrk1M78RELLN1hU8y
-YQLDOjgdiva/rk/kMA+dkCmUuoECpmen1MHFWxRa08Yc4Oo3bdEIfEkBrom4jS3l
-+mJtTBa4OBDTMGM6nuRVYL1aB3u7BYUHn4OWlOI0PLkHTC1YIdosG4ARv5q9Jw1C
-kv1ZCLKOqPeAKNCrfxUhhYqqEEH9JMz0tPhYKAN6Blqqi5cY62DnViyA0W2Zq+wK
-b+M0K3BtnXXkQdMbwAqQ
-=VGlt
------END PGP SIGNATURE-----
-
---/3yNEOqWowh/8j+e--
-
---===============7870879696070512296==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7870879696070512296==--
+> 			Thanks,
+> 				Jaroslav
+> 
+> BTW: Everyone probably found testing packages on FTP - /pub/testing or
+> through the snapshot page.
+> 
