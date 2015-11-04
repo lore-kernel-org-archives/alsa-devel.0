@@ -1,48 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rockchip: i2s: Add set the divider clock API
-Date: Wed, 4 Nov 2015 13:54:51 +0000
-Message-ID: <20151104135451.GB1717@sirena.org.uk>
-References: <1446434042-2139-1-git-send-email-wxt@rock-chips.com>
+Subject: Re: [PATCH v2 0/2] Add audio support for Broadcom
+	Cygnus SoC
+Date: Wed, 4 Nov 2015 14:06:26 +0000
+Message-ID: <20151104140626.GD1717@sirena.org.uk>
+References: <1446502284-23907-1-git-send-email-ssimran@broadcom.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4bRzO86E/ozDv8r1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1446434042-2139-1-git-send-email-wxt@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caesar Wang <wxt@rock-chips.com>
-Cc: Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3284194311747703226=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36E1B260418
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:06:39 +0100 (CET)
+In-Reply-To: <1446502284-23907-1-git-send-email-ssimran@broadcom.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Simran Rai <ssimran@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---4bRzO86E/ozDv8r1
+--===============3284194311747703226==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="P+33d92oIH25kiaB"
+Content-Disposition: inline
+
+
+--P+33d92oIH25kiaB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 02, 2015 at 11:14:00AM +0800, Caesar Wang wrote:
-> In order to support more rates, add the divider clock api.
+On Mon, Nov 02, 2015 at 02:11:22PM -0800, Simran Rai wrote:
 
-> As the input source clock to the module is MCLK_I2S,
-> and by the divider of the module, the clock generator generates
-> SCLK and LRCK to transmitter and receiver.
+> Simran Rai (2):
+>   dt-bindings: sound: Add DT bindings for Broadcom Cygnus audio
+>   VOIP-5227 Add Broadcom Cygnus audio driver.
 
-Why is this a requirement?  The clock to use as a source should normally
-be specified via set_sysclk() and any internal dividers calculated
-automatically by the driver.
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
---4bRzO86E/ozDv8r1
+--P+33d92oIH25kiaB
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWOg4rAAoJECTWi3JdVIfQMgIH/jCjY7jaU6R38DpFQ1iQCS6Y
-Ig5zNk+PTq6jW8n1Zj2CAqML2Z4qO2JmhSm8dPyAP8w/bNyi+Mga4iPjDvomhT5d
-ZUUL7pRCbw6ufBhuSALlU2YYCSeC904+ELIkWH6XHlJOCiwOdJRfLG2Xr7KYJ3Vo
-+N8uFBQkfRC0OrrVTNH3cXo5XrP8MHssRyAw9AfGIvO3bUlErJCeV5uK6Cy6xVJN
-+fI09fvIAbj4w9f0C2nWJ4CbxhEQFX/ksKdhbQgc7gJTqV6IHI8Ns3eR2p+6AXo2
-o62Oz9Z8oOz0NCLBbByoZr94hJ3NmahuQ5sMgn4DB9iP+GlnzkxQZocGYRdSpy4=
-=5K1g
+iQEcBAEBCAAGBQJWOhDhAAoJECTWi3JdVIfQM0IH/0sD7kabgG9F02HN/r9hbJaY
+RSLNtuHh/8iO5hM/pLNf5HKefAsFzA6qkJBvV3a/1rEWzTJc5/LT0ULzvcWdToJT
+YOENkuvnVfYoK4aBlAG3awWGvaow87fZ8yHfdiHNx04PLqxztNPzdRKGfJW9/Ak/
+XU3RTAcHtNX54XUc+8G3Qj9LY1LAIxctM6PVyaIHMkHEA+xPqdYg9j9EaYmJ/BwC
+wOoyoXCtVg6UWm1fBkRADxyRDZS0pDFJb6o8CnxYNdBfZvFz6utSaXKfXZ4rhDUz
+eDGj0+6cVZhaNLImXb9RpUH+WLKAbZipdhw96Bf0SnAc9/9WFH0eSlUHMHk/OLw=
+=sAyX
 -----END PGP SIGNATURE-----
 
---4bRzO86E/ozDv8r1--
+--P+33d92oIH25kiaB--
+
+--===============3284194311747703226==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3284194311747703226==--
