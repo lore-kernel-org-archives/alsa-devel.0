@@ -1,18 +1,34 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img: Add binding document for I2S input
-	controller" to the asoc tree
-Date: Wed, 04 Nov 2015 14:59:38 +0000
-Message-ID: <E1ZtzXG-0003WU-VD@finisterre>
-References: <1446648057-373-2-git-send-email-Damien.Horsley@imgtec.com>
+From: Jani Nikula <jani.nikula@intel.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Wed, 04 Nov 2015 17:04:00 +0200
+Message-ID: <87twp1n6vz.fsf@intel.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <s5hlhb7ktum.wl-tiwai@suse.de>
+ <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
+ <s5htwpuj6f5.wl-tiwai@suse.de>
+ <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
+ <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+ <56288783.1080503@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
+ <56288FF7.9030400@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
+ <5628A3EB.8050306@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
+ <562A1237.2090909@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
+ <s5hvb9or3zj.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
+ <563716D7.3000502@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73F052657F3
- for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 15:59:51 +0100 (CET)
-In-Reply-To: <1446648057-373-2-git-send-email-Damien.Horsley@imgtec.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id B19C52658CE
+ for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2015 16:00:40 +0100 (CET)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,104 +38,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: "Yang, Libin" <libin.yang@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, "tanuk@iki.fi" <tanuk@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 04 Nov 2015, "Yang, Libin" <libin.yang@intel.com> wrote:
+> + Jani, who is from Intel gfx team. 
+>
+>> -----Original Message-----
+>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>> Sent: Monday, November 02, 2015 3:55 PM
+>> To: Yang, Libin; Takashi Iwai
+>> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
+>> Development Mailing List; Girdwood, Liam R; Lu, Han
+>> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+>> 
+>> 
+>> 
+>> On 2015-11-02 08:30, Yang, Libin wrote:
+>> >
+>> >>> 4. power management
+>> >>> If we close the PCM when disconnecting monitor, the driver will
+>> >> return
+>> >>> -ENODEV, and we assume user space will close the PCM at once .
+>> >> ... if we implement it.  Actually this behavior (returning -ENODEV) is
+>> >> not mandatory and needs investigation beforehand, whether this
+>> >> breaks
+>> >> any applications, especially PA.
+>> > Yes. I heard that PA has dummy PCM and when there is no HW to
+>> > play the audio, PA can smoothly move the PCM from HW to dummy
+>> > PCM. If it's true, stopping PCM will not break PA, I think.
+>> 
+>> Well, in most cases (not all) there will be an analog output available,
+>> so we're more likely to move there than to a dummy PCM. The
+>> problem is
+>> that PA does not currently figure out that a -ENODEV means that one
+>> should switch from a digital to an analog profile. So, at least at this
+>> point, don't expect a "smooth move".
+>> 
+>> I'm not sure if this is a good idea or not, but just brainstorming here:
+>> 
+>> If PA (or other application) tries to play back to a PCM, and that PCM
+>> is currently unassigned. What would happen if we actually assigned a
+>> converter node at that point, but no pin node connected to that
+>> converter node? Would that give a backwards compatible behaviour? I
+>> e,
+>> audio userspace could successfully play back audio through the
+>> converter
+>> node, but then the audio goes nowhere because there is no pin node
+>> assigned?
+>
+> GFX team hope us that if there is no monitor connected, audio
+> should release gfx so gfx driver can enter power save mode.
+> Based on the requirement, audio driver may need stop playback
+> as soon as the monitor is disconnected.
 
-   ASoC: img: Add binding document for I2S input controller
+Rather, as soon as the userspace responding to hotplug uevents has
+reacted and disabled the display. See [1] for a better explanation. In
+other words, it would be desirable that you call the put power hook in
+response to intel_audio_codec_disable().
 
-has been applied to the asoc tree at
+BR,
+Jani.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+[1] https://bugs.freedesktop.org/show_bug.cgi?id=90447#c19
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>
+>> 
+>> (Or perhaps we PA developers should actually start supporting this
+>> properly like we said that we should do, for like three years or
+>> something...)
+>> 
+>> // David
+>
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b01f1b06c2da93bd7c58fda432f57d47c166d79a Mon Sep 17 00:00:00 2001
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
-Date: Wed, 4 Nov 2015 14:40:47 +0000
-Subject: [PATCH] ASoC: img: Add binding document for I2S input controller
-
-Add a binding document for Imagination Technologies I2S input
-controller
-
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/img,i2s-in.txt       | 47 ++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,i2s-in.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/img,i2s-in.txt b/Documentation/devicetree/bindings/sound/img,i2s-in.txt
-new file mode 100644
-index 0000000..423265c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,i2s-in.txt
-@@ -0,0 +1,47 @@
-+Imagination Technologies I2S Input Controller
-+
-+Required Properties:
-+
-+  - compatible : Compatible list, must contain "img,i2s-in"
-+
-+  - #sound-dai-cells : Must be equal to 0
-+
-+  - reg : Offset and length of the register set for the device
-+
-+  - clocks : Contains an entry for each entry in clock-names
-+
-+  - clock-names : Must include the following entry:
-+	"sys"	The system clock
-+
-+  - dmas: Contains an entry for each entry in dma-names.
-+
-+  - dma-names: Must include the following entry:
-+	"rx"	Single DMA channel used by all active I2S channels
-+
-+  - img,i2s-channels : Number of I2S channels instantiated in the I2S in block
-+
-+Optional Properties:
-+
-+  - interrupts : Contains the I2S in interrupts. Depending on
-+	the configuration, there may be no interrupts, one interrupt,
-+	or an interrupt per I2S channel. For the case where there is
-+	one interrupt per channel, the interrupts should be listed
-+	in ascending channel order
-+
-+  - resets: Contains a phandle to the I2S in reset signal
-+
-+  - reset-names: Contains the reset signal name "rst"
-+
-+Example:
-+
-+i2s_in: i2s-in@18100800 {
-+	compatible = "img,i2s-in";
-+	reg = <0x18100800 0x200>;
-+	interrupts = <GIC_SHARED 7 IRQ_TYPE_LEVEL_HIGH>;
-+	dmas = <&mdc 30 0xffffffff 0>;
-+	dma-names = "rx";
-+	clocks = <&cr_periph SYS_CLK_I2S_IN>;
-+	clock-names = "sys";
-+	img,i2s-channels = <6>;
-+	#sound-dai-cells = <0>;
-+};
 -- 
-2.6.1
+Jani Nikula, Intel Open Source Technology Center
