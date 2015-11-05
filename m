@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 05/13] ASoC: Implement DAI links in a list &
-	define API to add a link
-Date: Thu,  5 Nov 2015 17:59:02 +0800
-Message-ID: <86b51c69423940d3c05c1f5fb9a58c1a65afa341.1446717205.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 06/13] ASoC: Add add_dai_link ops for a soc
+	card
+Date: Thu,  5 Nov 2015 17:59:11 +0800
+Message-ID: <7dc5e61b6df2eb7ae52ded08f7928b7ae519d069.1446717205.git.mengdong.lin@linux.intel.com>
 References: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 20AF9265CAC
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:43:36 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66922265AE4
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:43:45 +0100 (CET)
 In-Reply-To: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,110 +27,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Implement a dai link list for the soc card.
-
-Add API snd_soc_add_dai_link() to add an DAI links dynamically, e.g.
-based on topology.
-
-The predefined DAI links are reserved to keep backward compatibility, and
-they will also be added to the list.
-
-Open:
-No API to remove a DAI link from the list, because there is no request
-from topology atm. When machine driver is removed, the dynamically added
-links need to be removed and freed. Need a clear working flow.
+When a new DAI link is added, the ASoC core will call this ops to notify
+a machine driver for extra intialization.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 232b30d..60e5fda 100644
+index 60e5fda..9a0e0e8 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1037,6 +1037,8 @@ struct snd_soc_dai_link {
+@@ -1103,6 +1103,9 @@ struct snd_soc_card {
+ 				   struct snd_soc_dapm_context *dapm,
+ 				   enum snd_soc_bias_level level);
  
- 	/* pmdown_time is ignored at stop */
- 	unsigned int ignore_pmdown_time:1;
++	int (*add_dai_link)(struct snd_soc_card *,
++			    struct snd_soc_dai_link *link);
 +
-+	struct list_head list; /* dai link list of the soc card */
- };
- 
- struct snd_soc_codec_conf {
-@@ -1104,8 +1106,11 @@ struct snd_soc_card {
  	long pmdown_time;
  
  	/* CPU <--> Codec DAI links  */
--	struct snd_soc_dai_link *dai_link;
--	int num_links;
-+	struct snd_soc_dai_link *dai_link;  /* predefined links only */
-+	int num_links;  /* predefined links only */
-+	struct list_head dai_link_list; /* all links */
-+	int num_dai_links;
-+
- 	struct list_head rtd_list;
- 	int num_rtd;
- 
-@@ -1647,6 +1652,9 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 				   struct device_node *of_node,
- 				   struct snd_soc_dai_link *dai_link);
- 
-+void snd_soc_add_dai_link(struct snd_soc_card *card,
-+				struct snd_soc_dai_link *dai_link);
-+
- #include <sound/soc-dai.h>
- 
- #ifdef CONFIG_DEBUG_FS
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 878a9fe..c855e30 100644
+index c855e30..24e0c50 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1228,6 +1228,27 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 	return 0;
- }
- 
-+/**
-+ * snd_soc_add_dai_link - Add a DAI link dynamically
-+ * @card: The ASoC card to which the DAI link is added
-+ * @dai_link: The new DAI link to add
-+ *
-+ * This function adds a DAI link to the ASoC card, and creates a ASoC
-+ * runtime for the link.
-+ *
-+ * Note: For adding DAI links dynamically by machine drivers based on
-+ * the topology info when probing the platform component. And machine
-+ * drivers can still define static DAI links in dai_link array.
-+ */
-+void snd_soc_add_dai_link(struct snd_soc_card *card,
-+		struct snd_soc_dai_link *dai_link)
-+{
-+	lockdep_assert_held(&client_mutex);
-+	list_add_tail(&dai_link->list, &card->dai_link_list);
-+	card->num_dai_links++;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_add_dai_link);
-+
- static void soc_set_name_prefix(struct snd_soc_card *card,
- 				struct snd_soc_component *component)
+@@ -1243,6 +1243,10 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ void snd_soc_add_dai_link(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
  {
-@@ -1722,6 +1743,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 			goto base_error;
- 	}
- 
-+	/* add predefined DAI links to the list */
-+	for (i = 0; i < card->num_links; i++)
-+		snd_soc_add_dai_link(card, card->dai_link+i);
++	/* Notify the machine driver for extra initialization. */
++	if (card && card->add_dai_link)
++		card->add_dai_link(card, dai_link);
 +
- 	/* initialize the register cache for each available codec */
- 	list_for_each_entry(codec, &codec_list, list) {
- 		if (codec->cache_init)
-@@ -2479,6 +2504,9 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 
- 	snd_soc_initialize_card_lists(card);
- 
-+	INIT_LIST_HEAD(&card->dai_link_list);
-+	card->num_dai_links = 0;
-+
- 	INIT_LIST_HEAD(&card->rtd_list);
- 	card->num_rtd = 0;
- 
+ 	lockdep_assert_held(&client_mutex);
+ 	list_add_tail(&dai_link->list, &card->dai_link_list);
+ 	card->num_dai_links++;
 -- 
 1.9.1
