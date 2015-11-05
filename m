@@ -1,7 +1,7 @@
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 Subject: Re: Packages 1.0.30 - release pending
-Date: Thu, 5 Nov 2015 21:04:06 +0800
-Message-ID: <563B53C6.7000503@linux.intel.com>
+Date: Thu, 5 Nov 2015 21:07:11 +0800
+Message-ID: <563B547F.6050206@linux.intel.com>
 References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
  <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
  <F46914AEC2663F4A9BB62374E5EEF8F84B866C43@shsmsx102.ccr.corp.intel.com>
@@ -11,9 +11,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 09D04265AB2
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 13:48:49 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36967265AB2
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 13:51:44 +0100 (CET)
 In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F84B879250@shsmsx102.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,6 +27,8 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+
 
 On 11/05/2015 11:08 AM, Lin, Mengdong wrote:
 >> -----Original Message-----
@@ -52,9 +54,14 @@ On 11/05/2015 11:08 AM, Lin, Mengdong wrote:
 >>
 >> It's all going through internal review and testing now. Mengdong can probably
 >> post to the list tomorrow if all is OK, otherwise we can go for 1.1.1.
+>
+> I think it's better to go for 1.1.1. The internal review is just ongoing.
 
-I've sent out the alsa-lib patches for topology ABI update. Please 
-review.The thread name is "topology: Align ABI with kernel to version 4".
+
+I've sent out the alsa-lib patches for topology ABI update after the 
+internal review. The thread name is "topology: Align ABI with kernel to 
+version 4". Please help to review and evaluate if it's ok for this 1.1.0 
+release.
 
 All ABI updates have been merged in sound kernel except this one: 
 topology: ABI - Rename dai_elems to pcm_elems in manifest
