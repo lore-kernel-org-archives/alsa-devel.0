@@ -1,36 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Thu, 5 Nov 2015 17:39:43 +0800
-Message-ID: <CAN8cciap4zwL8Y+gyiJLkTC_2P5ewknKfWzbMSj2cmTvjAAukw@mail.gmail.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <s5htwpuj6f5.wl-tiwai@suse.de>
- <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
- <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
- <56288783.1080503@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
- <56288FF7.9030400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
- <5628A3EB.8050306@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
- <562A1237.2090909@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
- <s5hvb9or3zj.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
- <563716D7.3000502@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
- <563B1C37.4010400@canonical.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 00/13] ASoC: topology: Add support for PCM,
+	BE & CC links
+Date: Thu,  5 Nov 2015 17:58:19 +0800
+Message-ID: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f195.google.com (mail-ob0-f195.google.com
- [209.85.214.195])
- by alsa0.perex.cz (Postfix) with ESMTP id E9E00260508
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:39:44 +0100 (CET)
-Received: by obcyn7 with SMTP id yn7so1031268obc.0
- for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2015 01:39:43 -0800 (PST)
-In-Reply-To: <563B1C37.4010400@canonical.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DF76260508
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:42:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -40,21 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "airlied@linux.ie" <airlied@linux.ie>, "Nikula, Jani" <jani.nikula@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, "Lu, Han" <han.lu@intel.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> So I'm asking my question again. What would happen (on Intel hardware),
-if you stream audio to a converter node on the audio codec, and there is no
-pin node connected to that converter node?
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=d1f15e06b2af57228d11e33e06a172ff58f5bc1c
+This series allows the topology core to create PCM devices dynamically,
+as well as configure BE and CC DAI links.
 
-For alt analog playback device , it return EBUSY when DAC of HP is not
-available (independent switch is OFF)
+Mengdong Lin (12):
+  ASoC: Vendor drivers get a link's runtime by snd_soc_get_pcm_runtime()
+  ASoC: Change the PCM runtime array to a list
+  ASoC: Define soc_init_dai_link() to wrap link intialization.
+  ASoC: Change 2nd argument of soc_bind_dai_link() to DAI link pointer
+  ASoC: Implement DAI links in a list & define API to add a link
+  ASoC: Add add_dai_link ops for a soc card
+  ASoC: soc_bind_dai_link() directly returns success for a bound DAI
+    link
+  ASoC: Bind new DAI links after probing components
+  ASoC: The soc card can have auxiliary components
+  ASoC: Support adding a DAI dynamically
+  ASoC: topology: Add PCM DAIs dynamically when loading them
+  ASoC: topology: Add support for FE DAI links
 
-BTW, as pulseaudio does not support multi streaming (e.g. playing different
-audio stream to HP and rear panel of desktop)
+Vedang Patel (1):
+  ASoC: topology: Add support for BE and CC DAI Links
 
-How can pulseaudio support displayport multi streaming ?
+ include/sound/soc-dai.h                      |   1 +
+ include/sound/soc-topology.h                 |  22 +-
+ include/sound/soc.h                          |  38 +-
+ sound/soc/fsl/fsl-asoc-card.c                |   5 +-
+ sound/soc/fsl/imx-wm8962.c                   |  10 +-
+ sound/soc/generic/simple-card.c              |  12 +-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |  12 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c |   7 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c      |   7 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c      |   7 +-
+ sound/soc/pxa/mioa701_wm9713.c               |   6 +-
+ sound/soc/samsung/bells.c                    |  40 +-
+ sound/soc/samsung/littlemill.c               |  32 +-
+ sound/soc/samsung/odroidx2_max98090.c        |   9 +-
+ sound/soc/samsung/snow.c                     |   9 +-
+ sound/soc/samsung/speyside.c                 |  12 +-
+ sound/soc/samsung/tobermory.c                |  21 +-
+ sound/soc/sh/rcar/core.c                     |   2 +-
+ sound/soc/sh/rcar/rsrc-card.c                |   6 +-
+ sound/soc/soc-core.c                         | 629 ++++++++++++++++++---------
+ sound/soc/soc-dapm.c                         |   7 +-
+ sound/soc/soc-pcm.c                          |  22 +-
+ sound/soc/soc-topology.c                     | 284 ++++++++++--
+ sound/soc/tegra/tegra_wm8903.c               |   3 +-
+ 24 files changed, 879 insertions(+), 324 deletions(-)
+
+-- 
+1.9.1
