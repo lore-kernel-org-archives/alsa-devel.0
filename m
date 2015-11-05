@@ -1,134 +1,137 @@
-From: Shunqian Zheng <zhengsq@rock-chips.com>
-Subject: Re: [PATCH v1 1/4] ASoC: codec: Inno codec driver for RK3036 SoC
-Date: Thu, 05 Nov 2015 17:52:02 +0800
-Message-ID: <563B26C2.60005@rock-chips.com>
-References: <1444698070-4191-1-git-send-email-zhengsq@rock-chips.com> <1444698070-4191-2-git-send-email-zhengsq@rock-chips.com> <20151019190949.GP32054@sirena.org.uk>
-Reply-To: zhengsq@rock-chips.com
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 12/13] ASoC: topology: Add support for FE
+	DAI links
+Date: Thu,  5 Nov 2015 18:00:06 +0800
+Message-ID: <5c62e7d5a59a2e861a3708ac40fa50973112c9f8.1446717205.git.mengdong.lin@linux.intel.com>
+References: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151019190949.GP32054@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, benzh@chromium.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E003265CB5
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:44:40 +0100 (CET)
+In-Reply-To: <cover.1446717205.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-I sended the v2 patches and fixed the follows,
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-On 2015=E5=B9=B410=E6=9C=8820=E6=97=A5 03:09, Mark Brown wrote:
-> On Tue, Oct 13, 2015 at 09:01:06AM +0800, Shunqian Zheng wrote:
->
->> +config SND_SOC_INNO_RK3036
->> +	tristate "Inno codec driver for RK3036 SoC"
->> +	depends on ARCH_ROCKCHIP
->> +
-> There doesn't appear to be any build dependency here so can we have a=
-n
-> || COMPILE_TEST please and also add to SND_SOC_ALL_CODECS.
-Delete the dependency and add to SND_SOC_ALL_CODECS.
->
->> +#define DEBUG
-> Please remove this for upstream.
-Removed.
->
->> +static int rk3036_codec_dai_set_sysclk(struct snd_soc_dai *dai, int=
- clk_id,
->> +				       unsigned int fre, int dir)
->> +{
->> +	/* Nothing to be done here */
->> +	return 0;
->> +}
-> Remove empty functions, if they can be empty they can just be omitted=
-=2E
-Removed.
->
->> +static int rk3036_codec_dai_digital_mute(struct snd_soc_dai *dai, i=
-nt mute)
->> +{
->> +	struct snd_soc_codec *codec =3D dai->codec;
->> +	unsigned int val =3D 0;
->> +
->> +	dev_dbg(codec->dev, "rk3036_codec dai mute : %d\n", mute);
->> +	if (mute)
->> +		val |=3D INNO_REG_09_HP_OUTR_MUTE_YES |
->> +		       INNO_REG_09_HP_OUTL_MUTE_YES;
->> +	else
->> +		val |=3D INNO_REG_09_HP_OUTR_MUTE_NO |
->> +		       INNO_REG_09_HP_OUTL_MUTE_NO;
-> Does the device actually need muting to avoid audio issues?  If not i=
-t
-> looks like this is something that might be better made a user visible
-> control instead.
-Make mute as a control.
->
->> +static void rk3036_codec_power_off(struct snd_soc_codec *codec)
->> +{
->> +	struct inno_reg_val *reg_val;
->> +	int i;
->> +static void rk3036_codec_power_on(struct snd_soc_codec *codec)
->> +{
->> +	struct inno_reg_val *reg_val;
->> +	int i;
-> I'd expect to see these be part of the set_bias_level() operation.
-Move the part of setting precharge current  to set_bias_level()
->
->> +	dev_dbg(codec->dev, "rk3036_codec power on\n");
->> +	/* set a big current for capacitor discharging. */
->> +	snd_soc_write(codec, INNO_REG_10, INNO_REG_10_MAX_CUR);
->> +	mdelay(10);
->> +	/* start precharge */
->> +	snd_soc_write(codec, INNO_REG_06, INNO_REG_06_DAC_PRECHARGE);
->> +	mdelay(100);
->> +
->> +	for (i =3D 0; i < ARRAY_SIZE(inno_codec_open_path); i++) {
->> +		reg_val =3D &inno_codec_open_path[i];
->> +		snd_soc_write(codec, reg_val->reg, reg_val->val);
->> +		mdelay(5);
->> +	}
-> This looks suspicious...  why isn't the power up sequence managed via
-> DAPM?
-Use DAPM to manage the power up path.
->
->> +static struct regmap *rk3036_codec_get_regmap(struct device *dev)
->> +{
->> +	struct rk3036_codec_priv *priv =3D dev_get_drvdata(dev);
->> +
->> +	dev_dbg(dev, "rk3036_codec get regmap\n");
->> +	return priv->regmap;
->> +}
-> There's already dev_get_regmap().
-Delete this functions.
->
->> +static int codec_reg_read(void *context, unsigned int reg, unsigned=
- int *val)
->> +{
->> +	struct rk3036_codec_priv *priv =3D context;
->> +	void __iomem *base =3D priv->base;
->> +
->> +	*val =3D readl(base + reg);
->> +	return 0;
->> +}
->> +static struct regmap_bus codec_regmap_bus =3D {
->> +	.reg_read =3D codec_reg_read,
->> +	.reg_write =3D codec_reg_write,
-> This looks like it's just regmap_mmio, why not just use that?
-Use the devm_regmap_init_mmio().
->
->> +	ret =3D regmap_write(grf, 0x00140, BIT(16 + 10) | BIT(10));
->> +	if (ret !=3D 0) {
-> Can we have some defines for this rather than all the magic numbers?
-Define some macros for grf select.
->
->> +static void rk3036_codec_platform_shutdown(struct platform_device *=
-pdev)
->> +{
->> +	/*TODO:*/
->> +}
-> If you use DAPM you shouldn't need to do anything here.
-Delete it.
+FE DAI links can be created from topology.
 
-Thank you very much,
-Shunqian
+And a machine driver can register add_dai_link ops to the soc card,
+to get notified when a new DAI link is created and bind machine-specific
+info to the link.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index b51c207..6324537 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -123,6 +123,12 @@ struct snd_soc_tplg_ops {
+ 	int (*dai_unload)(struct snd_soc_component *,
+ 		struct snd_soc_dobj *);
+ 
++	/* DAI link - used for any driver specific init */
++	int (*link_load)(struct snd_soc_component *,
++		struct snd_soc_dai_link *link);
++	int (*link_unload)(struct snd_soc_component *,
++		struct snd_soc_dobj *);
++
+ 	/* callback to handle vendor bespoke data */
+ 	int (*vendor_load)(struct snd_soc_component *,
+ 		struct snd_soc_tplg_hdr *);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4d07a9e..31fe60a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1039,6 +1039,7 @@ struct snd_soc_dai_link {
+ 	unsigned int ignore_pmdown_time:1;
+ 
+ 	struct list_head list; /* dai link list of the soc card */
++	struct snd_soc_dobj dobj;
+ };
+ 
+ struct snd_soc_codec_conf {
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 2201261..d07c6b0 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -340,6 +340,16 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
++/* pass dynamic FE DAI configurations to component driver */
++static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
++	struct snd_soc_dai_link *link)
++{
++	if (tplg->comp && tplg->ops && tplg->ops->link_load)
++		return tplg->ops->link_load(tplg->comp, link);
++
++	return 0;
++}
++
+ /* tell the component driver that all firmware has been loaded in this request */
+ static void soc_tplg_complete(struct soc_tplg *tplg)
+ {
+@@ -1617,10 +1627,46 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	return snd_soc_add_dai(tplg->comp, dai_drv);
+ }
+ 
++static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
++	struct snd_soc_tplg_pcm *pcm)
++{
++	struct snd_soc_dai_link *link;
++	int ret;
++
++	link = kzalloc(sizeof(struct snd_soc_dai_link), GFP_KERNEL);
++	if (link == NULL)
++		return -ENOMEM;
++
++	link->name = pcm->pcm_name;
++	link->stream_name = pcm->pcm_name;
++
++	/* pass control to component driver for optional further init */
++	ret = soc_tplg_dai_link_load(tplg, link);
++	if (ret < 0) {
++		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
++		kfree(link);
++		return ret;
++	}
++
++	link->dobj.index = tplg->index;
++	link->dobj.ops = tplg->ops;
++	link->dobj.type = SND_SOC_DOBJ_DAI_LINK;
++	list_add(&link->dobj.list, &tplg->comp->dobj_list);
++
++	snd_soc_add_dai_link(tplg->comp->card, link);
++	return 0;
++}
++
+ static int soc_tplg_pcm_create(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_pcm *pcm)
+ {
+-	return soc_tplg_dai_create(tplg, pcm);
++	int ret;
++
++	ret = soc_tplg_dai_create(tplg, pcm);
++	if (ret < 0)
++		return ret;
++
++	return  soc_tplg_fe_link_create(tplg, pcm);
+ }
+ 
+ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+-- 
+1.9.1
