@@ -1,44 +1,67 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH 1/2] ASoC: da7218: Add bindings documentation for DA7218
- audio codec
-Date: Thu, 5 Nov 2015 17:59:29 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460C91F@SW-EX-MBX01.diasemi.com>
-References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <b7132781a4a41a20549e13b1835bb7f808f6be82.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <20151105145856.GM18409@sirena.org.uk>
+From: Alexandra Yates <alexandra.yates@linux.intel.com>
+Subject: Re: [PATCH V2] Intel device IDs Audio
+Date: Thu, 5 Nov 2015 11:51:52 -0800
+Message-ID: <563BB358.6060604@linux.intel.com>
+References: <s5h37wk3fjs.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151105145856.GM18409@sirena.org.uk>
-Content-Language: en-US
+In-Reply-To: <s5h37wk3fjs.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, perex@perex.cz, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTm92ZW1iZXIgMDUsIDIwMTUgMTQ6NTksIE1hcmsgQnJvd24gd3JvdGU6DQoNCj4gPiArLSBk
-bGcsbGRvLWx2bCA6IFJlcXVpcmVkIGludGVybmFsIExETyB2b2x0YWdlIChtVikgbGV2ZWwNCj4g
-PiArCVs8MTA1MD4sIDwxMTAwPiwgPDEyMDA+LCA8MTQwMD5dDQo+IA0KPiBXaHkgd291bGQgdGhp
-cyBldmVyIGJlIGFueXRoaW5nIG90aGVyIHRoYW4gdGhlIG1pbmltdW0gdm9sdGFnZSwgYW5kDQo+
-IG1pZ2h0IHdlIG5vdCB3YW50IHRvIHZhcnkgaXQgYXQgcnVudGltZT8NCg0KTm9ybWFsbHkgeW91
-IGFyZSBjb3JyZWN0IGFuZCB5b3UnbGwgd2FudCBtaW5pbXVtIHZvbHRhZ2UgZm9yIHRoZSBkaWdp
-dGFsIGVuZ2luZQ0KYnV0IHRoZXJlIG1heSBiZSB0aGUgcG9zc2liaWxpdHkgZm9yIGNlcnRhaW4g
-cGxhdGZvcm0gc2NlbmFyaW9zIHRoYXQgdG8gbWVldA0KdGltaW5ncyBhIGhpZ2hlciB2b2x0YWdl
-IGlzIHJlcXVpcmVkLiBXb3VsZCBwcmVmZXIgdG8gbGVhdmUgdGhpcyBpbiBpbiBjYXNlIGl0DQpp
-cyByZXF1aXJlZCBpbiB0aGUgZnV0dXJlLiBBcyBhIHNpZGUsIHRoZSBkZWZhdWx0IHNldHRpbmcg
-aXMgdGhlIGxvd2VzdCB2b2x0YWdlLA0KaWYgdGhpcyBiaW5kaW5nIGlzIG5vdCBwcm92aWRlZC4N
-Cg0KPiANCj4gPiArLSBkbGcsYmlxdWFkLWNmZyA6IExpc3Qgb2YgZGF0YSAmIGFkZHJlc3MgcGFp
-cnMgdG8gY29uZmlndXJlIEJpUXVhZCBmaWx0ZXJzDQo+ID4gKwlbIDwge2RhdGExfSB7YWRkcjF9
-IHtkYXRhMn0ge2FkZHIyfSAuLi4gPjsgXQ0KPiA+ICstIGRsZyxzdC1iaXF1YWQtY2ZnIDogTGlz
-dCBvZiBkYXRhICYgYWRkcmVzcyBwYWlycyB0byBjb25maWd1cmUgU2lkZXRvbmUNCj4gPiArCQkg
-ICAgICBCaVF1YWQgZmlsdGVycw0KPiA+ICsJWyA8IHtkYXRhMX0ge2FkZHIxfSB7ZGF0YTJ9IHth
-ZGRyMn0gLi4uID47IF0NCj4gDQo+IFRoZXNlIGxvb2sgbGlrZSBEU1AgY29lZmZpY2llbnRzIHdo
-aWNoIEkgd291bGQgdGhlcmVmb3JlIGV4cGVjdCB0byBiZQ0KPiBjb25maWd1cmFibGUgYXQgcnVu
-dGltZSB2aWEgYSBiaW5hcnkgY29udHJvbCByYXRoZXIgdGhhbiBzcGVjaWZpZWQgaW4NCj4gdGhl
-IERUIC0gd2h5IGFyZSB0aGV5IGluIHRoZSBEVD8NCg0KVGhlIGV4cGVjdGF0aW9uIHdhcyB0aGVz
-ZSB3b3VsZCBiZSBzZXQgb25jZSBhbmQgbGVmdCBmb3IgYSBwbGF0Zm9ybSwgd2hpY2ggaXMNCndo
-eSBJIGFkZGVkIHRoZW0gdG8gdGhlIERULiBIb3dldmVyIHRoZXJlJ3Mgbm8gcmVhc29uIHRoZXkg
-Y291bGRuJ3QgYmUgbW92ZWQNCnRvIGJpbmFyeSBjb250cm9sLiBIYXZpbmcgbG9va2VkIGF0IG90
-aGVyIGNvZGVjcywgSSBhc3N1bWUgU05EX1NPQ19CWVRFUyogd291bGQNCmJlIHRoZSBwcmVmZXJy
-ZWQgbWV0aG9kIGZvciBzZXR0aW5nIHRoaXMga2luZCBvZiBkYXRhPw0K
+Takashi,
+
+On 11/05/2015 02:29 AM, Takashi Iwai wrote:
+> On Thu, 05 Nov 2015 00:56:09 +0100,
+> Alexandra Yates wrote:
+>>
+>> Adding Intel codename Lewisburg platform device IDs for audio.
+>>
+>> Signed-off-by: Alexandra Yates <alexandra.yates@linux.intel.com>
+>
+> Thanks.  Though, I still believe the position after Wellsburg is best
+> (which is the similar chip that has the same driver type and driver
+>   caps bits), so I rearranged it.  Also the subject was aligned.
+> And last but not least, Cc to stable was added.
+>
+
+Thank you for your review and making the additional changes. I'll keep 
+your methodology for future reference.
+
+Is this mean that the patch was accepted upstream?
+
+>
+> Takashi
+>
+>> ---
+>>   sound/pci/hda/hda_intel.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index c38c68f..e8d1151 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -2168,6 +2168,11 @@ static const struct pci_device_id azx_ids[] = {
+>>   	/* ICH10 */
+>>   	{ PCI_DEVICE(0x8086, 0x3a6e),
+>>   	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
+>> +	/* Lewisburg */
+>> +	{ PCI_DEVICE(0x8086, 0xa1f0),
+>> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>> +	{ PCI_DEVICE(0x8086, 0xa270),
+>> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>>   	/* Generic Intel */
+>>   	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_ANY_ID),
+>>   	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
+>> --
+>> 1.9.1
+>>
+>>
+
+-- 
+Thank you,
+<Alexandra>
