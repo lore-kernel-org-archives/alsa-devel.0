@@ -1,67 +1,86 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/5] mfd: arizona: Update DT bindings to add CS47L24
- and WM1831
-Date: Thu, 5 Nov 2015 08:35:15 -0600
-Message-ID: <20151105143515.GA26865@rob-hp-laptop>
-References: <1446563316-28878-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1446563316-28878-3-git-send-email-rf@opensource.wolfsonmicro.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: Packages 1.0.30 - release pending
+Date: Thu, 5 Nov 2015 14:43:48 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B879E35@shsmsx102.ccr.corp.intel.com>
+References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
+ <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B866C43@shsmsx102.ccr.corp.intel.com>
+ <563A1641.1070503@perex.cz> <1446653827.2801.19.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B879250@shsmsx102.ccr.corp.intel.com>
+ <563B53C6.7000503@linux.intel.com> <563B55CD.5070207@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1446563316-28878-3-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, linus.walleij@linaro.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 004C6265E3C
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 15:43:52 +0100 (CET)
+In-Reply-To: <563B55CD.5070207@perex.cz>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Mengdong Lin <mengdong.lin@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 03, 2015 at 03:08:33PM +0000, Richard Fitzgerald wrote:
-> This updates the Arizona MFD device tree bindings to add the
-> Cirrus Logic CS47L24 and WM1831 codecs. Note that unlike all the
-> other codecs the DCVDD-supply and MICVDD-supply are mandatory.
+> -----Original Message-----
+> From: Jaroslav Kysela [mailto:perex@perex.cz]
+> Sent: Thursday, November 05, 2015 9:13 PM
+> To: Mengdong Lin; Lin, Mengdong; Liam Girdwood
+> Cc: Takashi Iwai; Koul, Vinod; ALSA development
+> Subject: Re: [alsa-devel] Packages 1.0.30 - release pending
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
->  Documentation/devicetree/bindings/mfd/arizona.txt | 9 ++++++++-
-
-Acked-by: Rob Herring <robh@kernel.org>
-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> Dne 5.11.2015 v 14:04 Mengdong Lin napsal(a):
+> > On 11/05/2015 11:08 AM, Lin, Mengdong wrote:
+> >>> -----Original Message-----
+> >>> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
+> >>> Sent: Thursday, November 05, 2015 12:17 AM
+> >>> To: Jaroslav Kysela
+> >>> Cc: Lin, Mengdong; Takashi Iwai; Koul, Vinod; ALSA development
+> >>> Subject: Re: [alsa-devel] Packages 1.0.30 - release pending
+> >>>
+> >>> On Wed, 2015-11-04 at 15:29 +0100, Jaroslav Kysela wrote:
+> >>>> Dne 28.10.2015 v 16:06 Lin, Mengdong napsal(a):
+> >>>>
+> >>>>> I expect the other kernel and user space patches will be submitted
+> >>>>> next week
+> >>> after the internal review.
+> >>>>
+> >>>> Any progress for the user space? If I don't receive the updates for
+> >>>> the user space packages until Friday CEST morning, I'll release
+> >>>> 1.1.0 without them. We can release 1.1.1 quickly when all things
+> >>>> are finished for the topology code. The distributions can adapt to
+> >>>> new tools (like
+> >>>> alsatplg) in 1.1.0 and then just receive the updated code (1.1.1).
+> >>>>
+> >>>
+> >>> It's all going through internal review and testing now. Mengdong can
+> >>> probably post to the list tomorrow if all is OK, otherwise we can go for
+> 1.1.1.
+> >
+> > I've sent out the alsa-lib patches for topology ABI update. Please
+> > review.The thread name is "topology: Align ABI with kernel to version 4".
+> >
+> > All ABI updates have been merged in sound kernel except this one:
+> > topology: ABI - Rename dai_elems to pcm_elems in manifest This patch
+> > is still in ASoC kernel, topic/topology branch.
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-> index 18be0cb..84e1af5 100644
-> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> @@ -1,4 +1,4 @@
-> -Wolfson Arizona class audio SoCs
-> +Cirrus Logic/Wolfson Microelectronics Arizona class audio SoCs
->  
->  These devices are audio SoCs with extensive digital capabilites and a range
->  of analogue I/O.
-> @@ -6,12 +6,14 @@ of analogue I/O.
->  Required properties:
->  
->    - compatible : One of the following chip-specific strings:
-> +        "cirrus,cs47l24"
->          "wlf,wm5102"
->          "wlf,wm5110"
->          "wlf,wm8280"
->          "wlf,wm8997"
->          "wlf,wm8998"
->          "wlf,wm1814"
-> +        "wlf,wm1831"
->  
->    - reg : I2C slave address when connected using I2C, chip select number when
->      using SPI.
-> @@ -41,6 +43,10 @@ Required properties:
->  
->    - SPKVDD-supply : Speaker driver power supply (wm8997)
->  
-> +  - DCVDD-supply : Main power supply (cs47l24, wm1831)
-> +
-> +  - MICVDD-supply : Microphone power supply (cs47l24, wm1831)
-> +
+> I did a quick review and I've no issue with it.
+> 
+> Takashi, any comments to include these patches ?
+> 
+> Lin, do we need a change to the topology utility in alsa-utils ?
 
-We normally do lower case, but I guess these aren't new...
+No. There is no need to change the topology utility in alsa-utils.
 
-Rob
+Thanks for your and Takashi's review!
+
+Regards
+Mengdong
