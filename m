@@ -1,16 +1,16 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 13/13] ASoC: topology: Add support for BE
-	and CC DAI Links
-Date: Thu,  5 Nov 2015 18:00:14 +0800
-Message-ID: <3a020923df80f288fdbb977204fd0cd848bc0f18.1446717205.git.mengdong.lin@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 00/13] ASoC: topology: Add support for
+ PCM, BE & CC links
+Date: Thu, 5 Nov 2015 18:15:39 +0800
+Message-ID: <563B2C4B.4030901@linux.intel.com>
 References: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 34C52265CAC
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:44:50 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FC74260557
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 11:00:13 +0100 (CET)
 In-Reply-To: <cover.1446717205.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,209 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, Vedang Patel <vedang.patel@intel.com>
+Cc: tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Vedang Patel <vedang.patel@intel.com>
+Hi Mark,
 
-Adding support to modify already existing BE and CC DAI Links.
-The links are matches using unique id (be_id) of the links.
+Sorry, please over look this thread now.
 
-Now, the params member in the snd_soc_dai_link struct will be
-populated with stream related information.
+I should wait for your comments on the other thread "[PATCH v2 0/2] 
+ASoC: Change the PCM runtime array to a list" at first. The 2 patches
+are preparation to support dynamic PCM in topology.
 
-Signed-off-by: Vedang Patel <vedang.patel@intel.com>
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Thanks
+Mengdong
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 6324537..f37f5d8 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -40,6 +40,7 @@ enum snd_soc_dobj_type {
- 	SND_SOC_DOBJ_BYTES,
- 	SND_SOC_DOBJ_PCM,
- 	SND_SOC_DOBJ_DAI_LINK,
-+	SND_SOC_DOBJ_BACKEND_LINK,
- 	SND_SOC_DOBJ_CODEC_LINK,
- 	SND_SOC_DOBJ_WIDGET,
- };
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 31fe60a..875c361 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -992,6 +992,9 @@ struct snd_soc_dai_link {
- 	const struct snd_soc_pcm_stream *params;
- 	unsigned int num_params;
- 
-+	/* Stores HW params. Used by topology core. */
-+	const struct snd_pcm_hardware *hw_params;
-+
- 	unsigned int dai_fmt;           /* format to set on init */
- 
- 	enum snd_soc_dpcm_trigger trigger[2]; /* trigger type for DPCM */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index d07c6b0..83c8dd8 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -48,9 +48,11 @@
- #define SOC_TPLG_PASS_PCM_DAI		4
- #define SOC_TPLG_PASS_GRAPH		5
- #define SOC_TPLG_PASS_PINS		6
-+#define SOC_TPLG_PASS_BE_LINK		7
-+#define SOC_TPLG_PASS_CC_LINK		8
- 
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
--#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_PINS
-+#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_CC_LINK
- 
- struct soc_tplg {
- 	const struct firmware *fw;
-@@ -263,6 +265,8 @@ static enum snd_soc_dobj_type get_dobj_type(struct snd_soc_tplg_hdr *hdr,
- 		return SND_SOC_DOBJ_PCM;
- 	case SND_SOC_TPLG_TYPE_CODEC_LINK:
- 		return SND_SOC_DOBJ_CODEC_LINK;
-+	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
-+		return SND_SOC_DOBJ_BACKEND_LINK;
- 	default:
- 		return SND_SOC_DOBJ_NONE;
- 	}
-@@ -522,6 +526,21 @@ static void remove_pcm_dai(struct snd_soc_component *comp,
- 	kfree(dai);
- }
- 
-+static void soc_tplg_free_be_cc_params(struct snd_soc_component *comp,
-+	struct snd_soc_dobj *dobj, int pass)
-+{
-+	struct snd_soc_card *card = comp->card;
-+	struct snd_soc_dai_link *dai_link = card->dai_link;
-+	int i, num_links = card->num_links;
-+
-+	if (pass != SOC_TPLG_PASS_BE_LINK || pass != SOC_TPLG_PASS_CC_LINK)
-+		return;
-+
-+	/* loop through all dai_links. */
-+	for (i = 0; i < num_links; i++)
-+		kfree(dai_link->hw_params);
-+
-+}
- /* bind a kcontrol to it's IO handlers */
- static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 	struct snd_kcontrol_new *k,
-@@ -1701,6 +1720,89 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
-+static void soc_tplg_make_hw_params(struct snd_pcm_hardware *hw,
-+	struct snd_soc_tplg_stream *streams, int num_streams)
-+{
-+	struct snd_soc_tplg_stream *stream;
-+	unsigned int rate;
-+	int i;
-+
-+	for (i = 0; i < num_streams; i++) {
-+		stream = streams + i;
-+		hw->formats |= stream->format;
-+
-+		hw->rates |= stream->rate;
-+		rate = snd_pcm_rate_bit_to_rate(stream->rate);
-+		if (!hw->rate_min || hw->rate_min > rate)
-+			hw->rate_min = rate;
-+		if (hw->rate_max < rate)
-+			hw->rate_max = rate;
-+
-+		if (!hw->channels_min || hw->channels_min > stream->channels)
-+			hw->channels_min = stream->channels;
-+		if (hw->channels_max < stream->channels)
-+			hw->channels_max = stream->channels;
-+
-+		if (!hw->period_bytes_min
-+			|| hw->period_bytes_min > stream->period_bytes)
-+			hw->period_bytes_min = stream->period_bytes;
-+		if (hw->period_bytes_max < stream->period_bytes)
-+			hw->period_bytes_max = stream->period_bytes;
-+
-+		if (hw->buffer_bytes_max < stream->buffer_bytes)
-+			hw->buffer_bytes_max = stream->buffer_bytes;
-+		}
-+}
-+
-+/* modify already existing backend links and codec links. */
-+static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
-+	struct snd_soc_tplg_hdr *hdr)
-+{
-+	int i, j;
-+	struct snd_soc_tplg_link_config *link;
-+	struct snd_soc_card *card = tplg->comp->card;
-+	struct snd_soc_dai_link *dai_link = card->dai_link;
-+	struct snd_pcm_hardware *pcm_hw;
-+	int count = hdr->count, num_dailinks = card->num_links;
-+
-+	if (tplg->pass != SOC_TPLG_PASS_BE_LINK &&
-+		tplg->pass != SOC_TPLG_PASS_CC_LINK)
-+		return 0;
-+
-+	for (i = 0; i < count; i++) {
-+		link = (struct snd_soc_tplg_link_config *) tplg->pos;
-+		/**
-+		 * The machine driver will initially create BE and CC Links.
-+		 * In topology, we are searching for the existing BE Link
-+		 * by it unique id (be_id).
-+		 */
-+		for (j = 0; j < num_dailinks; j++) {
-+			if (dai_link[j].be_id == link->id)
-+				break;
-+		}
-+
-+		if (j == num_dailinks && dai_link[j].be_id != link->id) {
-+			dev_err(tplg->dev,
-+				"ASoC: cannot find Back End DAI with id %d",
-+				link->id);
-+			continue;
-+		}
-+
-+		/* copy the data from tplg_elem to BE/CC DAI Link. */
-+		pcm_hw = kzalloc(sizeof(struct snd_pcm_hardware), GFP_KERNEL);
-+		if (!pcm_hw)
-+			return -ENOMEM;
-+		soc_tplg_make_hw_params(pcm_hw,
-+			link->stream, link->num_streams);
-+		dai_link[j].hw_params = pcm_hw;
-+
-+		tplg->pos += sizeof(struct snd_soc_tplg_link_config);
-+	}
-+
-+
-+	return 0;
-+}
-+
- static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
-@@ -1791,8 +1893,10 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
- 		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_PCM:
- 	case SND_SOC_TPLG_TYPE_DAI_LINK:
--	case SND_SOC_TPLG_TYPE_CODEC_LINK:
- 		return soc_tplg_pcm_elems_load(tplg, hdr);
-+	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
-+	case SND_SOC_TPLG_TYPE_CODEC_LINK:
-+		return soc_tplg_link_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_MANIFEST:
- 		return soc_tplg_manifest_load(tplg, hdr);
- 	default:
-@@ -1950,9 +2054,12 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
- 				break;
- 			case SND_SOC_DOBJ_PCM:
- 			case SND_SOC_DOBJ_DAI_LINK:
--			case SND_SOC_DOBJ_CODEC_LINK:
- 				remove_pcm_dai(comp, dobj, pass);
- 				break;
-+			case SND_SOC_DOBJ_BACKEND_LINK:
-+			case SND_SOC_DOBJ_CODEC_LINK:
-+				soc_tplg_free_be_cc_params(comp, dobj, pass);
-+				break;
- 			default:
- 				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
- 					dobj->type);
--- 
-1.9.1
+On 11/05/2015 05:58 PM, mengdong.lin@linux.intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>
+> This series allows the topology core to create PCM devices dynamically,
+> as well as configure BE and CC DAI links.
+>
+> Mengdong Lin (12):
+>    ASoC: Vendor drivers get a link's runtime by snd_soc_get_pcm_runtime()
+>    ASoC: Change the PCM runtime array to a list
+>    ASoC: Define soc_init_dai_link() to wrap link intialization.
+>    ASoC: Change 2nd argument of soc_bind_dai_link() to DAI link pointer
+>    ASoC: Implement DAI links in a list & define API to add a link
+>    ASoC: Add add_dai_link ops for a soc card
+>    ASoC: soc_bind_dai_link() directly returns success for a bound DAI
+>      link
+>    ASoC: Bind new DAI links after probing components
+>    ASoC: The soc card can have auxiliary components
+>    ASoC: Support adding a DAI dynamically
+>    ASoC: topology: Add PCM DAIs dynamically when loading them
+>    ASoC: topology: Add support for FE DAI links
+>
+> Vedang Patel (1):
+>    ASoC: topology: Add support for BE and CC DAI Links
+>
+>   include/sound/soc-dai.h                      |   1 +
+>   include/sound/soc-topology.h                 |  22 +-
+>   include/sound/soc.h                          |  38 +-
+>   sound/soc/fsl/fsl-asoc-card.c                |   5 +-
+>   sound/soc/fsl/imx-wm8962.c                   |  10 +-
+>   sound/soc/generic/simple-card.c              |  12 +-
+>   sound/soc/intel/atom/sst-mfld-platform-pcm.c |  12 +-
+>   sound/soc/intel/boards/cht_bsw_max98090_ti.c |   7 +-
+>   sound/soc/intel/boards/cht_bsw_rt5645.c      |   7 +-
+>   sound/soc/intel/boards/cht_bsw_rt5672.c      |   7 +-
+>   sound/soc/pxa/mioa701_wm9713.c               |   6 +-
+>   sound/soc/samsung/bells.c                    |  40 +-
+>   sound/soc/samsung/littlemill.c               |  32 +-
+>   sound/soc/samsung/odroidx2_max98090.c        |   9 +-
+>   sound/soc/samsung/snow.c                     |   9 +-
+>   sound/soc/samsung/speyside.c                 |  12 +-
+>   sound/soc/samsung/tobermory.c                |  21 +-
+>   sound/soc/sh/rcar/core.c                     |   2 +-
+>   sound/soc/sh/rcar/rsrc-card.c                |   6 +-
+>   sound/soc/soc-core.c                         | 629 ++++++++++++++++++---------
+>   sound/soc/soc-dapm.c                         |   7 +-
+>   sound/soc/soc-pcm.c                          |  22 +-
+>   sound/soc/soc-topology.c                     | 284 ++++++++++--
+>   sound/soc/tegra/tegra_wm8903.c               |   3 +-
+>   24 files changed, 879 insertions(+), 324 deletions(-)
+>
