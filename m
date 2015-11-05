@@ -1,67 +1,41 @@
-From: Alexandra Yates <alexandra.yates@linux.intel.com>
-Subject: Re: [PATCH V2] Intel device IDs Audio
-Date: Thu, 5 Nov 2015 11:51:52 -0800
-Message-ID: <563BB358.6060604@linux.intel.com>
-References: <s5h37wk3fjs.wl-tiwai@suse.de>
+From: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: sound: Add DT bindings for Broadcom
+ Cygnus audio
+Date: Thu, 5 Nov 2015 12:01:52 -0800
+Message-ID: <563BB5B0.5040501@broadcom.com>
+References: <1446502284-23907-2-git-send-email-ssimran@broadcom.com>
+ <20151104140746.GE1717@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h37wk3fjs.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, perex@perex.cz, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151104140746.GE1717-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+Hi Mark,
 
-On 11/05/2015 02:29 AM, Takashi Iwai wrote:
-> On Thu, 05 Nov 2015 00:56:09 +0100,
-> Alexandra Yates wrote:
->>
->> Adding Intel codename Lewisburg platform device IDs for audio.
->>
->> Signed-off-by: Alexandra Yates <alexandra.yates@linux.intel.com>
+On 11/4/2015 6:07 AM, Mark Brown wrote:
+> On Mon, Nov 02, 2015 at 02:11:23PM -0800, Simran Rai wrote:
 >
-> Thanks.  Though, I still believe the position after Wellsburg is best
-> (which is the similar chip that has the same driver type and driver
->   caps bits), so I rearranged it.  Also the subject was aligned.
-> And last but not least, Cc to stable was added.
->
+>> +- channel-group: Surround sound grouping that controls which channel
+>> +  outputs belong to a group, specifically useful in Multi-channel
+>> +  Interfaces grouping of serial port. In multi-channel stereo, use
+>> +  "2_0", in 3.1 multi-channel grouping, use "3_1" and in 5.1
+>> +  multi-channel grouping, use "5_1".
+> I don't really understand what this means or why this is not runtime
+> configured.
+By runtime configured, do you mean passing the channel grouping through 
+machine file? Is there any specific callback that I can use?
 
-Thank you for your review and making the additional changes. I'll keep 
-your methodology for future reference.
+I will implement your suggestions from other patches too and send out 
+next revision by early next week.
 
-Is this mean that the patch was accepted upstream?
-
->
-> Takashi
->
->> ---
->>   sound/pci/hda/hda_intel.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index c38c68f..e8d1151 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -2168,6 +2168,11 @@ static const struct pci_device_id azx_ids[] = {
->>   	/* ICH10 */
->>   	{ PCI_DEVICE(0x8086, 0x3a6e),
->>   	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
->> +	/* Lewisburg */
->> +	{ PCI_DEVICE(0x8086, 0xa1f0),
->> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
->> +	{ PCI_DEVICE(0x8086, 0xa270),
->> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
->>   	/* Generic Intel */
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_ANY_ID),
->>   	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
->> --
->> 1.9.1
->>
->>
-
--- 
-Thank you,
-<Alexandra>
+Thanks,
+Simran
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
