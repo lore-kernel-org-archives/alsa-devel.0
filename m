@@ -1,17 +1,23 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH v2 00/13] ASoC: topology: Add support for
- PCM, BE & CC links
-Date: Thu, 5 Nov 2015 18:15:39 +0800
-Message-ID: <563B2C4B.4030901@linux.intel.com>
-References: <cover.1446717205.git.mengdong.lin@linux.intel.com>
+From: Roberto Fichera <kernel@tekno-soft.it>
+Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
+ number of samples
+Date: Thu, 5 Nov 2015 11:03:30 +0100
+Message-ID: <563B2972.10202@tekno-soft.it>
+References: <CAG5mAdxYEL22o=9AKQefb-vkf8KATEojH0qgPWzfAim+5fm5vQ@mail.gmail.com>
+ <5634870A.4080206@tekno-soft.it>
+ <CAG5mAdwUMd5q3fKBv6_1Laag7vij19ZjeOcZzm-ZzLH0E6QjKA@mail.gmail.com>
+ <563A253C.7080709@tekno-soft.it> <563A380E.8060406@tekno-soft.it>
+ <CAG5mAdw_VZFjKz7_H+jg=48-Y3uG1-xGT2P8M1cGm8PQqunkzQ@mail.gmail.com>
+ <563A45CC.2070605@tekno-soft.it> <20151104181144.GA4057@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FC74260557
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 11:00:13 +0100 (CET)
-In-Reply-To: <cover.1446717205.git.mengdong.lin@linux.intel.com>
+Received: from mail.tekno-soft.it (li153-180.members.linode.com
+ [109.74.206.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56EA026531B
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 11:03:51 +0100 (CET)
+In-Reply-To: <20151104181144.GA4057@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Caleb Crome <caleb@crome.org>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On 11/04/2015 07:11 PM, Nicolin Chen wrote:
+> On Wed, Nov 04, 2015 at 06:52:12PM +0100, Roberto Fichera wrote:
+>
+>>> I notice your DMA buffer length is very short, which would require
+>>> very frequency interrupts to service, right?   Can you increase your
+>>> DMA buffer length by increasing the period size?  Maybe that would
+>>> help reduce the likelyhood of a failure.  
+>> Not sure if this can help! SSI TDM is set to 32 slots but only 2 are masked. So every frame only
+>> 2 slots are pushed/pulled from the FIFOs. maxburst is set to pull a block of 8 elements from the
+>> FIFOs, DMA cyclic call it period. So the full DMA buffer is filled in buffer size / period DMA iterations.
+> A smaller period size may course DMA buffer over/underrun -- ALSA
+> over/underrun even though it seems that you didn't report any.
+>
+> And apparently SDMA would get more interrupt/callbacks. I would
+> suggest a larger period size and buffer size although I cannot
+> tie your problem with the size. But you may try.
+>
 
-Sorry, please over look this thread now.
+Following your suggestion, I've increased the buffer size to 2K and set the period to fifo_length - 2 (13),
+with that I'm now running substantially smooth except 3 EVTERR on RX DMA over 4 million of interrupts.
 
-I should wait for your comments on the other thread "[PATCH v2 0/2] 
-ASoC: Change the PCM runtime array to a list" at first. The 2 patches
-are preparation to support dynamic PCM in topology.
-
-Thanks
-Mengdong
-
-On 11/05/2015 05:58 PM, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
->
-> This series allows the topology core to create PCM devices dynamically,
-> as well as configure BE and CC DAI links.
->
-> Mengdong Lin (12):
->    ASoC: Vendor drivers get a link's runtime by snd_soc_get_pcm_runtime()
->    ASoC: Change the PCM runtime array to a list
->    ASoC: Define soc_init_dai_link() to wrap link intialization.
->    ASoC: Change 2nd argument of soc_bind_dai_link() to DAI link pointer
->    ASoC: Implement DAI links in a list & define API to add a link
->    ASoC: Add add_dai_link ops for a soc card
->    ASoC: soc_bind_dai_link() directly returns success for a bound DAI
->      link
->    ASoC: Bind new DAI links after probing components
->    ASoC: The soc card can have auxiliary components
->    ASoC: Support adding a DAI dynamically
->    ASoC: topology: Add PCM DAIs dynamically when loading them
->    ASoC: topology: Add support for FE DAI links
->
-> Vedang Patel (1):
->    ASoC: topology: Add support for BE and CC DAI Links
->
->   include/sound/soc-dai.h                      |   1 +
->   include/sound/soc-topology.h                 |  22 +-
->   include/sound/soc.h                          |  38 +-
->   sound/soc/fsl/fsl-asoc-card.c                |   5 +-
->   sound/soc/fsl/imx-wm8962.c                   |  10 +-
->   sound/soc/generic/simple-card.c              |  12 +-
->   sound/soc/intel/atom/sst-mfld-platform-pcm.c |  12 +-
->   sound/soc/intel/boards/cht_bsw_max98090_ti.c |   7 +-
->   sound/soc/intel/boards/cht_bsw_rt5645.c      |   7 +-
->   sound/soc/intel/boards/cht_bsw_rt5672.c      |   7 +-
->   sound/soc/pxa/mioa701_wm9713.c               |   6 +-
->   sound/soc/samsung/bells.c                    |  40 +-
->   sound/soc/samsung/littlemill.c               |  32 +-
->   sound/soc/samsung/odroidx2_max98090.c        |   9 +-
->   sound/soc/samsung/snow.c                     |   9 +-
->   sound/soc/samsung/speyside.c                 |  12 +-
->   sound/soc/samsung/tobermory.c                |  21 +-
->   sound/soc/sh/rcar/core.c                     |   2 +-
->   sound/soc/sh/rcar/rsrc-card.c                |   6 +-
->   sound/soc/soc-core.c                         | 629 ++++++++++++++++++---------
->   sound/soc/soc-dapm.c                         |   7 +-
->   sound/soc/soc-pcm.c                          |  22 +-
->   sound/soc/soc-topology.c                     | 284 ++++++++++--
->   sound/soc/tegra/tegra_wm8903.c               |   3 +-
->   24 files changed, 879 insertions(+), 324 deletions(-)
->
+Thanks Nicolin! I'm quite happy now!
