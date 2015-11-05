@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup comment position of
-	rsnd_mod_xxx" to the asoc tree
-Date: Thu, 05 Nov 2015 14:15:43 +0000
-Message-ID: <E1ZuLKJ-0007nx-Rc@finisterre>
-References: <878u6cq1h6.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: call clk_prepare()/clk_enable()
+	for AUDIO_CLKx" to the asoc tree
+Date: Thu, 05 Nov 2015 14:15:40 +0000
+Message-ID: <E1ZuLKG-0007nN-Rx@finisterre>
+References: <877flwq1fd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C73D42660C7
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 15:15:55 +0100 (CET)
-In-Reply-To: <878u6cq1h6.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AC022660B3
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 15:15:54 +0100 (CET)
+In-Reply-To: <877flwq1fd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup comment position of rsnd_mod_xxx
+   ASoC: rsnd: call clk_prepare()/clk_enable() for AUDIO_CLKx
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,90 @@ to this mail.
 Thanks,
 Mark
 
->From f038f7f64963157a400077bf5c6568428403980a Mon Sep 17 00:00:00 2001
+>From 52eda3afce4892bbea6a2ae2e791d94aa0a5de1a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 5 Nov 2015 08:50:10 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup comment position of rsnd_mod_xxx
+Date: Thu, 5 Nov 2015 08:51:15 +0000
+Subject: [PATCH] ASoC: rsnd: call clk_prepare()/clk_enable() for AUDIO_CLKx
 
-f1df12290("ASoC: rsnd: add common mod confirm method")
-added rsnd_mod_make_sure(), but rsnd_mod_xxx() comment position
-was wrong. This patch tidyup it.
+ADG can output AUDIO_CLKOUTx, and these are generated from
+AUDIO_CLKx. Thus we need to call clk_prepare()/clk_enable()
+for AUDIO_CLKx.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/adg.c  | 21 +++++++++++++++++++--
+ sound/soc/sh/rcar/core.c |  1 +
+ sound/soc/sh/rcar/rsnd.h |  2 ++
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 5586b88..1363966 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -127,6 +127,9 @@ MODULE_DEVICE_TABLE(of, rsnd_of_match);
- #define rsnd_info_id(priv, io, name) \
- 	((io)->info->name - priv->info->name##_info)
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index b123734..1946ce8 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -418,15 +418,20 @@ static void rsnd_adg_get_clkin(struct rsnd_priv *priv,
+ 		[CLKC]	= "clk_c",
+ 		[CLKI]	= "clk_i",
+ 	};
+-	int i;
++	int i, ret;
  
-+/*
-+ *	rsnd_mod functions
-+ */
- void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type)
- {
- 	if (mod->type != type) {
-@@ -138,9 +141,6 @@ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type)
+ 	for (i = 0; i < CLKMAX; i++) {
+ 		clk = devm_clk_get(dev, clk_name[i]);
+ 		adg->clk[i] = IS_ERR(clk) ? NULL : clk;
  	}
+ 
+-	for_each_rsnd_clk(clk, adg, i)
++	for_each_rsnd_clk(clk, adg, i) {
++		ret = clk_prepare_enable(clk);
++		if (ret < 0)
++			dev_warn(dev, "can't use clk %d\n", i);
++
+ 		dev_dbg(dev, "clk %d : %p : %ld\n", i, clk, clk_get_rate(clk));
++	}
  }
  
--/*
-- *	rsnd_mod functions
-- */
- char *rsnd_mod_name(struct rsnd_mod *mod)
- {
- 	if (!mod || !mod->ops)
+ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+@@ -600,3 +605,15 @@ int rsnd_adg_probe(struct platform_device *pdev,
+ 
+ 	return 0;
+ }
++
++void rsnd_adg_remove(struct platform_device *pdev,
++		     struct rsnd_priv *priv)
++{
++	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
++	struct clk *clk;
++	int i;
++
++	for_each_rsnd_clk(clk, adg, i) {
++		clk_disable_unprepare(clk);
++	}
++}
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 1363966..81250cf 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1227,6 +1227,7 @@ static int rsnd_remove(struct platform_device *pdev)
+ 		rsnd_mix_remove,
+ 		rsnd_dvc_remove,
+ 		rsnd_cmd_remove,
++		rsnd_adg_remove,
+ 	};
+ 	int ret = 0, i;
+ 
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 599dfb6..8efa19f 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -405,6 +405,8 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
+ int rsnd_adg_probe(struct platform_device *pdev,
+ 		   const struct rsnd_of_data *of_data,
+ 		   struct rsnd_priv *priv);
++void rsnd_adg_remove(struct platform_device *pdev,
++		     struct rsnd_priv *priv);
+ int rsnd_adg_set_convert_clk_gen1(struct rsnd_priv *priv,
+ 				  struct rsnd_mod *mod,
+ 				  unsigned int src_rate,
 -- 
 2.6.1
