@@ -1,20 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: Packages 1.0.30 - release pending
-Date: Thu, 5 Nov 2015 03:08:47 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B879250@shsmsx102.ccr.corp.intel.com>
-References: <561AB391.6030504@perex.cz> <s5hvbaca40c.wl-tiwai@suse.de>
- <s5hlhaomjem.wl-tiwai@suse.de> <1445959655.7199.12.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F84B866C43@shsmsx102.ccr.corp.intel.com>
- <563A1641.1070503@perex.cz> <1446653827.2801.19.camel@loki>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 0/2] ASoC: Change the PCM runtime array to a
+	list
+Date: Thu,  5 Nov 2015 11:30:34 +0800
+Message-ID: <cover.1446692512.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C80E22606E9
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 04:08:52 +0100 (CET)
-In-Reply-To: <1446653827.2801.19.camel@loki>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4E5026048C
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 04:15:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,48 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
-> Sent: Thursday, November 05, 2015 12:17 AM
-> To: Jaroslav Kysela
-> Cc: Lin, Mengdong; Takashi Iwai; Koul, Vinod; ALSA development
-> Subject: Re: [alsa-devel] Packages 1.0.30 - release pending
-> 
-> On Wed, 2015-11-04 at 15:29 +0100, Jaroslav Kysela wrote:
-> > Dne 28.10.2015 v 16:06 Lin, Mengdong napsal(a):
-> >
-> > > I expect the other kernel and user space patches will be submitted next week
-> after the internal review.
-> >
-> > Any progress for the user space? If I don't receive the updates for
-> > the user space packages until Friday CEST morning, I'll release 1.1.0
-> > without them. We can release 1.1.1 quickly when all things are
-> > finished for the topology code. The distributions can adapt to new
-> > tools (like
-> > alsatplg) in 1.1.0 and then just receive the updated code (1.1.1).
-> >
-> 
-> It's all going through internal review and testing now. Mengdong can probably
-> post to the list tomorrow if all is OK, otherwise we can go for 1.1.1.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-I think it's better to go for 1.1.1. The internal review is just ongoing.
+The 2 patches are a preparation to allow the topology core to create
+PCM devices dynamically. Probing a component may load its topology and
+come up with new DAI links and thus new runtimes. So implementing the
+PCM runtimes in a list makes it easier to add new runtimes.
 
-Thanks
-Mengdong
+History:
+  v2: Rebase the patches to ASoC for-next v4.3 kernel.
 
-> 
-> Thanks
-> 
-> Liam
-> 
-> > 			Thanks,
-> > 				Jaroslav
-> >
-> > BTW: Everyone probably found testing packages on FTP - /pub/testing or
-> > through the snapshot page.
-> >
-> 
+Mengdong Lin (2):
+  ASoC: Vendor drivers get a link's runtime by snd_soc_get_pcm_runtime()
+  ASoC: Change the PCM runtime array to a list
+
+ include/sound/soc.h                          |   5 +-
+ sound/soc/fsl/fsl-asoc-card.c                |   5 +-
+ sound/soc/fsl/imx-wm8962.c                   |  10 +-
+ sound/soc/generic/simple-card.c              |  12 +-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |  12 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c |   7 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c      |   7 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c      |   7 +-
+ sound/soc/pxa/mioa701_wm9713.c               |   6 +-
+ sound/soc/samsung/bells.c                    |  40 +++-
+ sound/soc/samsung/littlemill.c               |  32 +++-
+ sound/soc/samsung/odroidx2_max98090.c        |   9 +-
+ sound/soc/samsung/snow.c                     |   9 +-
+ sound/soc/samsung/speyside.c                 |  12 +-
+ sound/soc/samsung/tobermory.c                |  21 ++-
+ sound/soc/sh/rcar/core.c                     |   2 +-
+ sound/soc/sh/rcar/rsrc-card.c                |   6 +-
+ sound/soc/soc-core.c                         | 263 ++++++++++++++++-----------
+ sound/soc/soc-dapm.c                         |   7 +-
+ sound/soc/soc-pcm.c                          |  22 +--
+ sound/soc/tegra/tegra_wm8903.c               |   3 +-
+ 21 files changed, 307 insertions(+), 190 deletions(-)
+
+-- 
+1.9.1
