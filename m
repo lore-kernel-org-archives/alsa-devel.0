@@ -1,142 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: call clk_prepare()/clk_enable()
-	for AUDIO_CLKx" to the asoc tree
-Date: Thu, 05 Nov 2015 14:15:40 +0000
-Message-ID: <E1ZuLKG-0007nN-Rx@finisterre>
-References: <877flwq1fd.wl%kuninori.morimoto.gx@renesas.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 2/5] mfd: arizona: Update DT bindings to add CS47L24
+ and WM1831
+Date: Thu, 5 Nov 2015 08:35:15 -0600
+Message-ID: <20151105143515.GA26865@rob-hp-laptop>
+References: <1446563316-28878-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1446563316-28878-3-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AC022660B3
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 15:15:54 +0100 (CET)
-In-Reply-To: <877flwq1fd.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1446563316-28878-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, linus.walleij@linaro.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, Nov 03, 2015 at 03:08:33PM +0000, Richard Fitzgerald wrote:
+> This updates the Arizona MFD device tree bindings to add the
+> Cirrus Logic CS47L24 and WM1831 codecs. Note that unlike all the
+> other codecs the DCVDD-supply and MICVDD-supply are mandatory.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/arizona.txt | 9 ++++++++-
 
-   ASoC: rsnd: call clk_prepare()/clk_enable() for AUDIO_CLKx
+Acked-by: Rob Herring <robh@kernel.org>
 
-has been applied to the asoc tree at
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+> index 18be0cb..84e1af5 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -1,4 +1,4 @@
+> -Wolfson Arizona class audio SoCs
+> +Cirrus Logic/Wolfson Microelectronics Arizona class audio SoCs
+>  
+>  These devices are audio SoCs with extensive digital capabilites and a range
+>  of analogue I/O.
+> @@ -6,12 +6,14 @@ of analogue I/O.
+>  Required properties:
+>  
+>    - compatible : One of the following chip-specific strings:
+> +        "cirrus,cs47l24"
+>          "wlf,wm5102"
+>          "wlf,wm5110"
+>          "wlf,wm8280"
+>          "wlf,wm8997"
+>          "wlf,wm8998"
+>          "wlf,wm1814"
+> +        "wlf,wm1831"
+>  
+>    - reg : I2C slave address when connected using I2C, chip select number when
+>      using SPI.
+> @@ -41,6 +43,10 @@ Required properties:
+>  
+>    - SPKVDD-supply : Speaker driver power supply (wm8997)
+>  
+> +  - DCVDD-supply : Main power supply (cs47l24, wm1831)
+> +
+> +  - MICVDD-supply : Microphone power supply (cs47l24, wm1831)
+> +
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+We normally do lower case, but I guess these aren't new...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 52eda3afce4892bbea6a2ae2e791d94aa0a5de1a Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 5 Nov 2015 08:51:15 +0000
-Subject: [PATCH] ASoC: rsnd: call clk_prepare()/clk_enable() for AUDIO_CLKx
-
-ADG can output AUDIO_CLKOUTx, and these are generated from
-AUDIO_CLKx. Thus we need to call clk_prepare()/clk_enable()
-for AUDIO_CLKx.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/adg.c  | 21 +++++++++++++++++++--
- sound/soc/sh/rcar/core.c |  1 +
- sound/soc/sh/rcar/rsnd.h |  2 ++
- 3 files changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index b123734..1946ce8 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -418,15 +418,20 @@ static void rsnd_adg_get_clkin(struct rsnd_priv *priv,
- 		[CLKC]	= "clk_c",
- 		[CLKI]	= "clk_i",
- 	};
--	int i;
-+	int i, ret;
- 
- 	for (i = 0; i < CLKMAX; i++) {
- 		clk = devm_clk_get(dev, clk_name[i]);
- 		adg->clk[i] = IS_ERR(clk) ? NULL : clk;
- 	}
- 
--	for_each_rsnd_clk(clk, adg, i)
-+	for_each_rsnd_clk(clk, adg, i) {
-+		ret = clk_prepare_enable(clk);
-+		if (ret < 0)
-+			dev_warn(dev, "can't use clk %d\n", i);
-+
- 		dev_dbg(dev, "clk %d : %p : %ld\n", i, clk, clk_get_rate(clk));
-+	}
- }
- 
- static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
-@@ -600,3 +605,15 @@ int rsnd_adg_probe(struct platform_device *pdev,
- 
- 	return 0;
- }
-+
-+void rsnd_adg_remove(struct platform_device *pdev,
-+		     struct rsnd_priv *priv)
-+{
-+	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
-+	struct clk *clk;
-+	int i;
-+
-+	for_each_rsnd_clk(clk, adg, i) {
-+		clk_disable_unprepare(clk);
-+	}
-+}
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 1363966..81250cf 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1227,6 +1227,7 @@ static int rsnd_remove(struct platform_device *pdev)
- 		rsnd_mix_remove,
- 		rsnd_dvc_remove,
- 		rsnd_cmd_remove,
-+		rsnd_adg_remove,
- 	};
- 	int ret = 0, i;
- 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 599dfb6..8efa19f 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -405,6 +405,8 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
- int rsnd_adg_probe(struct platform_device *pdev,
- 		   const struct rsnd_of_data *of_data,
- 		   struct rsnd_priv *priv);
-+void rsnd_adg_remove(struct platform_device *pdev,
-+		     struct rsnd_priv *priv);
- int rsnd_adg_set_convert_clk_gen1(struct rsnd_priv *priv,
- 				  struct rsnd_mod *mod,
- 				  unsigned int src_rate,
--- 
-2.6.1
+Rob
