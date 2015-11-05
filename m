@@ -1,61 +1,45 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH] ALSA: compress: Add
- SND_AUDIOCODEC_BESPOKE'
-Date: Thu, 5 Nov 2015 11:27:39 +0530
-Message-ID: <20151105055739.GR12910@localhost>
-References: <1445348358-23306-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <56267E4E.8010609@linux.intel.com>
- <20151020193711.GF32054@sirena.org.uk>
- <20151021153248.GE27370@localhost> <20151021153614.GD10520@ck-lbox>
+From: Sebastien Jan <sjan-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH v2] mfd: arizona: Add DT binding for irq-gpios property
+Date: Thu, 5 Nov 2015 07:08:01 +0100
+Message-ID: <563AF241.5030404@baylibre.com>
+References: <1446559806-3315-1-git-send-email-sjan@baylibre.com>
+ <20151103150450.GP20228@sirena.org.uk> <20151103165247.GC2549@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DDD5F265919
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 06:54:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20151021153614.GD10520@ck-lbox>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, tiwai@suse.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151103165247.GC2549@ck-lbox>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 21, 2015 at 04:36:14PM +0100, Charles Keepax wrote:
-> On Wed, Oct 21, 2015 at 09:02:49PM +0530, Vinod Koul wrote:
-> > On Tue, Oct 20, 2015 at 08:37:11PM +0100, Mark Brown wrote:
-> > > On Tue, Oct 20, 2015 at 12:47:58PM -0500, Pierre-Louis Bossart wrote:
-> > 
-> > > > If you need to set parameters maybe we should also change the definition of
-> > > > snd_enc_generic so that the reserved fields can be used for custom
-> > > > parameters, or document that their use is permitted for this sort of ID.
-> > > 
-> > > It does mean the core can't grab them but quite what the core is
-> > > supposed to usefully do for something like this is unclear to me so...
-> > 
-> > Well in case of compressed formats, core doesn't do anything, we just act as
-> > a transport and shove down data and information.
-> > 
-> > I do like Pierre's idea of giving some meaning to formats and use some
-> > reserved fields, but somehow I can't think of a clean solution for this!
-> 
-> Personally, I feel a bit like doing nothing at the moment might
-> be the best solution. If BESPOKE is for icky stuff that won't be
-> generic trying to pull out generic fields to go in snd_enc_generic
-> seems like a challenging exercise, and we can look submissions
-> that use it and keep an eye out for anything that might be
-> generic enough to go in there, rather than adding a bunch of
-> stuff that ends up never getting used.
+On 03/11/2015 17:52, Charles Keepax wrote:
+> On Tue, Nov 03, 2015 at 03:04:50PM +0000, Mark Brown wrote:
+>> On Tue, Nov 03, 2015 at 03:10:06PM +0100, Sebastien Jan wrote:
+>>
+>>> +  - irq-gpios : GPIO specifier for the GPIO connected to /IRQ
+>> The platform data this is providing is essentially a workaround for the
+>> lack of an irq_to_gpio() function and the use of it is a workaround for
+>> the lack of level triggered IRQ emulation in genirq...  do we really
+>> want this in the ABI (especially as a generic thing)?
+> Personally I would rather not add this to the DT unless we really
+> had to.
+>
+> Also are you sure this is necessary on your system? Specifically
+> you only need this entry if the CODEC is connected to an IRQ line
+> that only supports edge triggered IRQs.
 
-So what is the conclusion here..? Are we all okay with this approach?
+Mark, Charles, thanks for pointing me to this information.
 
--- 
-~Vinod
+I don't have this specific constraint on my system and could finally 
+also have it working using the regular interrupts / interrup-parent 
+properties.
+
+So this new binding is not required for my case. I suppose we can forget 
+about it.
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
