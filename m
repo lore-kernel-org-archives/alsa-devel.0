@@ -1,7 +1,7 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: DP1.2 MST audio support discussion
-Date: Thu, 5 Nov 2015 10:07:03 +0100
-Message-ID: <563B1C37.4010400@canonical.com>
+Date: Thu, 5 Nov 2015 17:39:43 +0800
+Message-ID: <CAN8cciap4zwL8Y+gyiJLkTC_2P5ewknKfWzbMSj2cmTvjAAukw@mail.gmail.com>
 References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
  <s5htwpuj6f5.wl-tiwai@suse.de>
  <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
@@ -19,15 +19,18 @@ References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com
  <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
  <563716D7.3000502@canonical.com>
  <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
+ <563B1C37.4010400@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E4C526531B
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:07:07 +0100 (CET)
-In-Reply-To: <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
+Received: from mail-ob0-f195.google.com (mail-ob0-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9E00260508
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 10:39:44 +0100 (CET)
+Received: by obcyn7 with SMTP id yn7so1031268obc.0
+ for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2015 01:39:43 -0800 (PST)
+In-Reply-To: <563B1C37.4010400@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,73 +40,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Yang, Libin" <libin.yang@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Nikula, Jani" <jani.nikula@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, "tanuk@iki.fi" <tanuk@iki.fi>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "airlied@linux.ie" <airlied@linux.ie>, "Nikula, Jani" <jani.nikula@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 2015-11-04 15:17, Yang, Libin wrote:
-> + Jani, who is from Intel gfx team.
 >
->> -----Original Message-----
->> From: David Henningsson [mailto:david.henningsson@canonical.com]
->> Sent: Monday, November 02, 2015 3:55 PM
->> To: Yang, Libin; Takashi Iwai
->> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
->> Development Mailing List; Girdwood, Liam R; Lu, Han
->> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
->>
->>
->>
->> On 2015-11-02 08:30, Yang, Libin wrote:
->>>
->>>>> 4. power management
->>>>> If we close the PCM when disconnecting monitor, the driver will
->>>> return
->>>>> -ENODEV, and we assume user space will close the PCM at once .
->>>> ... if we implement it.  Actually this behavior (returning -ENODEV) is
->>>> not mandatory and needs investigation beforehand, whether this
->>>> breaks
->>>> any applications, especially PA.
->>> Yes. I heard that PA has dummy PCM and when there is no HW to
->>> play the audio, PA can smoothly move the PCM from HW to dummy
->>> PCM. If it's true, stopping PCM will not break PA, I think.
->>
->> Well, in most cases (not all) there will be an analog output available,
->> so we're more likely to move there than to a dummy PCM. The
->> problem is
->> that PA does not currently figure out that a -ENODEV means that one
->> should switch from a digital to an analog profile. So, at least at this
->> point, don't expect a "smooth move".
->>
->> I'm not sure if this is a good idea or not, but just brainstorming here:
->>
->> If PA (or other application) tries to play back to a PCM, and that PCM
->> is currently unassigned. What would happen if we actually assigned a
->> converter node at that point, but no pin node connected to that
->> converter node? Would that give a backwards compatible behaviour? I
->> e,
->> audio userspace could successfully play back audio through the
->> converter
->> node, but then the audio goes nowhere because there is no pin node
->> assigned?
->
-> GFX team hope us that if there is no monitor connected, audio
-> should release gfx so gfx driver can enter power save mode.
-> Based on the requirement, audio driver may need stop playback
-> as soon as the monitor is disconnected.
+> So I'm asking my question again. What would happen (on Intel hardware),
+if you stream audio to a converter node on the audio codec, and there is no
+pin node connected to that converter node?
 
-I'm not talking about continuous playback here, so power consumption 
-should not be a big concern. E g, if it takes a second or so before PA 
-reroutes audio somewhere else, it's not a big deal from a power save 
-perspective.
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=d1f15e06b2af57228d11e33e06a172ff58f5bc1c
 
-So I'm asking my question again. What would happen (on Intel hardware), 
-if you stream audio to a converter node on the audio codec, and there is 
-no pin node connected to that converter node?
+For alt analog playback device , it return EBUSY when DAC of HP is not
+available (independent switch is OFF)
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+BTW, as pulseaudio does not support multi streaming (e.g. playing different
+audio stream to HP and rear panel of desktop)
+
+How can pulseaudio support displayport multi streaming ?
