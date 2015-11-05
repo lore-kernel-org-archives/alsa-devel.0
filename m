@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: move atom driver to common
-	acpi match" to the asoc tree
-Date: Thu, 05 Nov 2015 16:29:41 +0000
-Message-ID: <E1ZuNPx-0001Km-Dd@finisterre>
-References: <1446739455-22332-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix skl machine driver
+	creation" to the asoc tree
+Date: Thu, 05 Nov 2015 16:29:39 +0000
+Message-ID: <E1ZuNPv-0001K4-GF@finisterre>
+References: <1446739455-22332-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 35DB02663F6
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 17:29:53 +0100 (CET)
-In-Reply-To: <1446739455-22332-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B5B9D266485
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2015 17:29:56 +0100 (CET)
+In-Reply-To: <1446739455-22332-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: move atom driver to common acpi match
+   ASoC: Intel: Skylake: Fix skl machine driver creation
 
 has been applied to the asoc tree at
 
@@ -53,225 +53,140 @@ to this mail.
 Thanks,
 Mark
 
->From 0f021f92962ec6441ba8cd10e149bbfd893988f0 Mon Sep 17 00:00:00 2001
+>From d8d2cde2c0060744551b56319fd1c0c9355efaeb Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 5 Nov 2015 21:34:12 +0530
-Subject: [PATCH] ASoC: Intel: Atom: move atom driver to common acpi match
+Date: Thu, 5 Nov 2015 21:34:13 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix skl machine driver creation
 
-This patch moves the atom driver to use the common acpi match
-functions.  Since atom driver has few more information in machine
-table, these are appended to table and set to NULL for common
-driver
+Now that we have common match code in place, update the SKL
+driver to use the common match routines for driver entry creation
+for UEFI BIOS systems
 
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Omair M Abdullah <omair.m.abdullah@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig             |  1 +
- sound/soc/intel/atom/sst/sst_acpi.c | 67 +++++++++++--------------------------
- sound/soc/intel/common/sst-acpi.c   |  8 ++---
- sound/soc/intel/common/sst-acpi.h   |  5 +++
- 4 files changed, 29 insertions(+), 52 deletions(-)
+ sound/soc/intel/skylake/skl.c | 55 +++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/intel/skylake/skl.h |  1 +
+ 2 files changed, 54 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 6d67357..043a873 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -23,6 +23,7 @@ config SND_SST_IPC_PCI
- config SND_SST_IPC_ACPI
- 	tristate
- 	select SND_SST_IPC
-+	select SND_SOC_INTEL_SST
- 	depends on ACPI
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 9b94a8c..59336cb 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -26,6 +26,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
+ #include <sound/pcm.h>
++#include "../common/sst-acpi.h"
+ #include "skl.h"
  
- config SND_SOC_INTEL_SST
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index bb19b58..f3d109e 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -40,18 +40,9 @@
- #include <acpi/acpi_bus.h>
- #include "../sst-mfld-platform.h"
- #include "../../common/sst-dsp.h"
-+#include "../../common/sst-acpi.h"
- #include "sst.h"
- 
--struct sst_machines {
--	char *codec_id;
--	char board[32];
--	char machine[32];
--	void (*machine_quirk)(void);
--	char firmware[FW_NAME_SIZE];
--	struct sst_platform_info *pdata;
--
--};
--
- /* LPE viewpoint addresses */
- #define SST_BYT_IRAM_PHY_START	0xff2c0000
- #define SST_BYT_IRAM_PHY_END	0xff2d4000
-@@ -223,37 +214,16 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ /*
+@@ -251,6 +252,42 @@ static int skl_free(struct hdac_ext_bus *ebus)
  	return 0;
  }
  
--static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	*(bool *)context = true;
--	return AE_OK;
--}
--
--static struct sst_machines *sst_acpi_find_machine(
--	struct sst_machines *machines)
--{
--	struct sst_machines *mach;
--	bool found = false;
--
--	for (mach = machines; mach->codec_id; mach++)
--		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
--						  sst_acpi_mach_match,
--						  &found, NULL)) && found)
--			return mach;
--
--	return NULL;
--}
--
- static int sst_acpi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	int ret = 0;
- 	struct intel_sst_drv *ctx;
- 	const struct acpi_device_id *id;
--	struct sst_machines *mach;
-+	struct sst_acpi_mach *mach;
- 	struct platform_device *mdev;
- 	struct platform_device *plat_dev;
-+	struct sst_platform_info *pdata;
- 	unsigned int dev_id;
- 
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-@@ -261,12 +231,13 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	dev_dbg(dev, "for %s", id->id);
- 
--	mach = (struct sst_machines *)id->driver_data;
-+	mach = (struct sst_acpi_mach *)id->driver_data;
- 	mach = sst_acpi_find_machine(mach);
- 	if (mach == NULL) {
- 		dev_err(dev, "No matching machine driver found\n");
- 		return -ENODEV;
- 	}
-+	pdata = mach->pdata;
- 
- 	ret = kstrtouint(id->id, 16, &dev_id);
- 	if (ret < 0) {
-@@ -276,16 +247,16 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 
- 	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
- 
--	plat_dev = platform_device_register_data(dev, mach->pdata->platform, -1, NULL, 0);
-+	plat_dev = platform_device_register_data(dev, pdata->platform, -1, NULL, 0);
- 	if (IS_ERR(plat_dev)) {
--		dev_err(dev, "Failed to create machine device: %s\n", mach->pdata->platform);
-+		dev_err(dev, "Failed to create machine device: %s\n", pdata->platform);
- 		return PTR_ERR(plat_dev);
- 	}
- 
- 	/* Create platform device for sst machine driver */
--	mdev = platform_device_register_data(dev, mach->machine, -1, NULL, 0);
-+	mdev = platform_device_register_data(dev, mach->drv_name, -1, NULL, 0);
- 	if (IS_ERR(mdev)) {
--		dev_err(dev, "Failed to create machine device: %s\n", mach->machine);
-+		dev_err(dev, "Failed to create machine device: %s\n", mach->drv_name);
- 		return PTR_ERR(mdev);
- 	}
- 
-@@ -294,8 +265,8 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Fill sst platform data */
--	ctx->pdata = mach->pdata;
--	strcpy(ctx->firmware_name, mach->firmware);
-+	ctx->pdata = pdata;
-+	strcpy(ctx->firmware_name, mach->fw_filename);
- 
- 	ret = sst_platform_get_resources(ctx);
- 	if (ret)
-@@ -342,22 +313,22 @@ static int sst_acpi_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct sst_machines sst_acpi_bytcr[] = {
--	{"10EC5640", "T100", "bytt100_rt5640", NULL, "intel/fw_sst_0f28.bin",
-+static struct sst_acpi_mach sst_acpi_bytcr[] = {
-+	{"10EC5640", "bytt100_rt5640", "intel/fw_sst_0f28.bin", "T100", NULL,
- 						&byt_rvp_platform_data },
- 	{},
- };
- 
- /* Cherryview-based platforms: CherryTrail and Braswell */
--static struct sst_machines sst_acpi_chv[] = {
--	{"10EC5670", "cht-bsw", "cht-bsw-rt5672", NULL, "intel/fw_sst_22a8.bin",
-+static struct sst_acpi_mach sst_acpi_chv[] = {
-+	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-+						&chv_platform_data },
-+	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
--	{"10EC5645", "cht-bsw", "cht-bsw-rt5645", NULL, "intel/fw_sst_22a8.bin",
-+	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
--	{"10EC5650", "cht-bsw", "cht-bsw-rt5645", NULL, "intel/fw_sst_22a8.bin",
-+	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
--	{"193C9890", "cht-bsw", "cht-bsw-max98090", NULL,
--	"intel/fw_sst_22a8.bin", &chv_platform_data },
- 	{},
- };
- 
-diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-index 94a43e6..7a85c57 100644
---- a/sound/soc/intel/common/sst-acpi.c
-+++ b/sound/soc/intel/common/sst-acpi.c
-@@ -180,7 +180,7 @@ static int sst_acpi_remove(struct platform_device *pdev)
- }
- 
- static struct sst_acpi_mach haswell_machines[] = {
--	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin" },
-+	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin", NULL, NULL, NULL },
- 	{}
- };
- 
-@@ -198,7 +198,7 @@ static struct sst_acpi_desc sst_acpi_haswell_desc = {
- };
- 
- static struct sst_acpi_mach broadwell_machines[] = {
--	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin" },
-+	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin", NULL, NULL, NULL },
- 	{}
- };
- 
-@@ -216,8 +216,8 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
- };
- 
- static struct sst_acpi_mach baytrail_machines[] = {
--	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
--	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
-+	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
-+	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
- 	{}
- };
- 
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index 1dc0595..3ee3b7a 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -25,4 +25,9 @@ struct sst_acpi_mach {
- 	const char *drv_name;
- 	/* firmware file name */
- 	const char *fw_filename;
++static int skl_machine_device_register(struct skl *skl, void *driver_data)
++{
++	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct platform_device *pdev;
++	struct sst_acpi_mach *mach = driver_data;
++	int ret;
 +
-+	/* board name */
-+	const char *board;
-+	void (*machine_quirk)(void);
-+	void *pdata;
++	mach = sst_acpi_find_machine(mach);
++	if (mach == NULL) {
++		dev_err(bus->dev, "No matching machine driver found\n");
++		return -ENODEV;
++	}
++
++	pdev = platform_device_alloc(mach->drv_name, -1);
++	if (pdev == NULL) {
++		dev_err(bus->dev, "platform device alloc failed\n");
++		return -EIO;
++	}
++
++	ret = platform_device_add(pdev);
++	if (ret) {
++		dev_err(bus->dev, "failed to add machine device\n");
++		platform_device_put(pdev);
++		return -EIO;
++	}
++	skl->i2s_dev = pdev;
++
++	return 0;
++}
++
++static void skl_machine_device_unregister(struct skl *skl)
++{
++	if (skl->i2s_dev)
++		platform_device_unregister(skl->i2s_dev);
++}
++
+ static int skl_dmic_device_register(struct skl *skl)
+ {
+ 	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
+@@ -479,10 +516,15 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	/* check if dsp is there */
+ 	if (ebus->ppcap) {
++		err = skl_machine_device_register(skl,
++				  (void *)pci_id->driver_data);
++		if (err < 0)
++			goto out_free;
++
+ 		err = skl_init_dsp(skl);
+ 		if (err < 0) {
+ 			dev_dbg(bus->dev, "error failed to register dsp\n");
+-			goto out_free;
++			goto out_mach_free;
+ 		}
+ 	}
+ 	if (ebus->mlcap)
+@@ -517,6 +559,8 @@ out_dmic_free:
+ 	skl_dmic_device_unregister(skl);
+ out_dsp_free:
+ 	skl_free_dsp(skl);
++out_mach_free:
++	skl_machine_device_unregister(skl);
+ out_free:
+ 	skl->init_failed = 1;
+ 	skl_free(ebus);
+@@ -534,15 +578,22 @@ static void skl_remove(struct pci_dev *pci)
+ 	pci_dev_put(pci);
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
++	skl_machine_device_unregister(skl);
+ 	skl_dmic_device_unregister(skl);
+ 	skl_free(ebus);
+ 	dev_set_drvdata(&pci->dev, NULL);
+ }
+ 
++static struct sst_acpi_mach sst_skl_devdata[] = {
++	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
++	{}
++};
++
+ /* PCI IDs */
+ static const struct pci_device_id skl_ids[] = {
+ 	/* Sunrise Point-LP */
+-	{ PCI_DEVICE(0x8086, 0x9d70), 0},
++	{ PCI_DEVICE(0x8086, 0x9d70),
++		.driver_data = (unsigned long)&sst_skl_devdata},
+ 	{ 0, }
  };
+ MODULE_DEVICE_TABLE(pci, skl_ids);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f803ebb..9b1beed 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -61,6 +61,7 @@ struct skl {
+ 
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 	struct platform_device *dmic_dev;
++	struct platform_device *i2s_dev;
+ 
+ 	void *nhlt; /* nhlt ptr */
+ 	struct skl_sst *skl_sst; /* sst skl ctx */
 -- 
 2.6.1
