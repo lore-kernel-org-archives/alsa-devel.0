@@ -1,160 +1,76 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: fsl_ssi.c: Roberto's problem: ssi hangs after some
- number of samples
-Date: Thu, 5 Nov 2015 16:35:39 -0800
-Message-ID: <CAG5mAdyR_ZOMoOZk-rhyOgD9Z_1+9MbuGaVhBjnSi9OdPMKwCQ@mail.gmail.com>
-References: <CAG5mAdz+RDM8r1o+Q5WHhQM134Lp7Dxn78+ixX1D_u7G=WqE8w@mail.gmail.com>
- <563BD376.60305@tekno-soft.it>
- <CAG5mAdxVcnuvcPiKPUAn+HfMfTJ=g25DzGE-dXEx=HVNbrA0yQ@mail.gmail.com>
- <563BDAD5.3040007@tekno-soft.it>
- <CAG5mAdwQVC+0YW06R+6KCM++RPDx+k8Db7YpYC=Ewn=esR+63g@mail.gmail.com>
- <563BDFC5.9000005@tekno-soft.it>
- <CAG5mAdxb1FERvEypjmHSSmRw5_KhwGBSzRmUspu9D4WwC+e3oA@mail.gmail.com>
- <563BE606.9020606@tekno-soft.it>
- <CAG5mAdx+kt=PD2vGSPgk28fbX2bhLrye8dypGnfkBT=BWtPX6g@mail.gmail.com>
- <563BEA66.4000401@tekno-soft.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id B220526170F
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 01:35:59 +0100 (CET)
-Received: by wicll6 with SMTP id ll6so20621780wic.0
- for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2015 16:35:59 -0800 (PST)
-In-Reply-To: <563BEA66.4000401@tekno-soft.it>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Roberto Fichera <kernel@tekno-soft.it>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>, Markus Pargmann <mpa@pengutronix.de>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Subject: [PATCH v3 3/3] ASoC: rockchip: i2s: share tx/rx lrck when symmetric_rates enabled
+Date: Fri,  6 Nov 2015 09:38:11 +0800
+Message-ID: <1446773891-32174-4-git-send-email-sugar.zhang@rock-chips.com>
+References: <1446773891-32174-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1446773891-32174-1-git-send-email-sugar.zhang@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 5, 2015 at 3:46 PM, Roberto Fichera <kernel@tekno-soft.it> wrote:
-> On 11/06/2015 12:30 AM, Caleb Crome wrote:
->> On Thu, Nov 5, 2015 at 3:28 PM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>
->>> On 11/06/2015 12:21 AM, Caleb Crome wrote:
->>>> On Thu, Nov 5, 2015 at 3:01 PM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>>> On 11/05/2015 11:49 PM, Caleb Crome wrote:
->>>>>> On Thu, Nov 5, 2015 at 2:40 PM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>>>>> On 11/05/2015 11:25 PM, Caleb Crome wrote:
->>>>>>>> On Thu, Nov 5, 2015 at 2:08 PM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>>>>>>> On 11/05/2015 10:34 PM, Caleb Crome wrote:
->>>>>>>>>> On Thu, Nov 5, 2015 at 3:48 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>>>>>>>>> On 11/05/2015 12:30 PM, Fabio Estevam wrote:
->>>>>>>>>>>> On Thu, Nov 5, 2015 at 8:03 AM, Roberto Fichera <kernel@tekno-soft.it> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>>> Following your suggestion, I've increased the buffer size to 2K and set the period to fifo_length - 2 (13),
->>>>>>>>>>>>> with that I'm now running substantially smooth except 3 EVTERR on RX DMA over 4 million of interrupts.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Thanks Nicolin! I'm quite happy now!
->>>>>>>>>>>> That's good progress, Roberto.
->>>>>>>>>>>>
->>>>>>>>>>>> It would be nice if you and Caleb could post the patches to the mailing list.
->>>>>>>>>>>>
->>>>>>>>>> Yes, when I get something quite solid, I'd like to submit it all to
->>>>>>>>>> the list, and hope to get it into the kernel so nobody else has to go
->>>>>>>>>> through this pain again.
->>>>>>>>>>
->>>>>>>>>>> Indeed! Now the TDM is stable, I've also found the reason of the EVTERRs, which was related to some stale
->>>>>>>>>>> code I've used to enable and disable both RDMAE and TDMAE bits to try to reset the transfers.
->>>>>>>>>>> Once removed that code everything is looks ok now.
->>>>>>>>>>>
->>>>>>>>>>> Regarding patches, well, from my side there isn't nothing special compared to the original fsl_ssi.c code.
->>>>>>>>>>> I'm basically running against a very skinny fsl_ssi.c version, I've just setup a bit larger DMA buffer, from
->>>>>>>>>>> 16bytes to 2K, and now reduced the DMA period to 8 because I'm mostly comfortable with that size to simplify
->>>>>>>>>>> sampling exchange against DAHDI subsystem within my DMA callbacks.
->>>>>>>>>>>
->>>>>>>>>>> In a few words, my problem was related due to a DMA buffer too small.
->>>>>>>>>>>
->>>>>>>>>>> What eventually might be interesting to have is the INTRMASK and EVTERR DMA setting to trigger DMA
->>>>>>>>>>> related errors, but I guess this need to be discussed elsewhere.
->>>>>>>>>> I have implemented roberto's patch on the 4.2 kernel, and I get a huge
->>>>>>>>>> number of EVTERR interrupts.  Something like 7200/second at 16kHz
->>>>>>>>>> sample rate.  But strangely, the audio seems to be correct.
->>>>>>>>> I've notice that clearing the EVTERR bit seems restarting the given SDMA.
->>>>>>>>>
->>>>>>>>>> My patch is slightly different in that it just enables EVTERR for all
->>>>>>>>>> channels, not just for the SSI.  Might as well see if there are any
->>>>>>>>>> other problems.
->>>>>>>>> Oh yes! This will overload the SDMA isr.
->>>>>>>> It didn't seem to.  There didn't seem to be any other DMA happening in
->>>>>>>> my system, definitely none that made the EVTRR trigger.  However, I
->>>>>>>> changed it back to the way you had it.  No differences, still got a
->>>>>>>> TON of EVTERRs.
->>>>>>> This might be related to SDMA request when another is pending.
->>>>>>>
->>>>>>>>> How bigger is your audio buffer?
->>>>>>>>> In your case I guess you will need something like 16KHz * 16 channels *
->>>>>>>>> 2 bytes (16bits) = 512K minimum.
->>>>>>>>> I would try to start from 1MB or maybe more.
->>>>>>>> That's 2 seconds of audio!  We definitely need less buffering than
->>>>>>>> that.    We pretty much need a latency of 100ms, worst case, or 1600
->>>>>>>> frames, or 51,200 bytes.
->>>>>>> I haven't checked in detail how the DAI buffering is working, but likely
->>>>>>> the samples are passed not in buffer size chunks but instead with less
->>>>>>> granularity. Having a large buffer gives more chance to the SSI to not
->>>>>>> overlap DMA requests, hence no more EVTERRs.
->>>>>>>
->>>>>>> I would give it a try.
->>>>>>>> I did change the max buffer size to 1MB though, but I'm not sure how
->>>>>>>> much is actually being used.
->>>>>>> I guess it's 64K, look for IMX_SSI_DMABUF_SIZE.
->>>>>>>
->>>>>>>
->>>>>> Exactly, I changed that to 1024*1024, but still I don't get zero
->>>>>> EVTERRs, even when I set my periods long and number of periods high.
->>>>> They decreased?
->>>>>
->>>> the big win was going to dual fifo, but they're still there at
->>>> something like 17/second.
->>> What about your current fifo_depth? Are you using the full length?
->>>
->> Do you mean in the SSI watermark, or some other FIFO depth?
->
-> Sorry! SSI watermark.
->
->> I'm currently operating at watermark = 6 & DMA maxburst of 12 (dual fifo mode).
->>
->> That's the best performing so far.
->
-> Have you already played to see if increasing the watermark to 8 and
-> maxburst to 15 decrease the EVTERRs?
+we share lrck_tx to lrck_rx only if when both i2s symmetric_rates and
+dai_link symmetric_rates enabled.
 
+if only lrck_tx is wired into external codec, we should enable this to
+provider lrck for rx logic inside i2s module.
 
-16kHz, wm=8, maxburst = 15:  total data integrity failure.
-    data coming out the port is not in order.  Also, get
-    EVTERRs on ch 1 and ch 2.
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+---
 
-48kHz, wm=8, maxburst = 16: 100 EVTERRs/sec, but data is right.
+Changes in v3:
+- modify the judgment condition
 
-16kHz, wm=8, maxburst = 16:  0 EVTERRs/sec but data on SSI is wrong.
+Changes in v2:
+- new patch
 
-48kHz, wm=7, maxburst = 14:  total system lockup. (might be infinite
-printk's or something, but it's dead).
+ sound/soc/rockchip/rockchip_i2s.c | 8 ++++++++
+ sound/soc/rockchip/rockchip_i2s.h | 6 ++++++
+ 2 files changed, 14 insertions(+)
 
-
-Interestingly, even with I'm getting many EVTERRs, I'm not getting SSI
-FIFO under/overruns.  How is that possible?
-
-Will try more tomorrow...
-
--caleb
-
-> I haven't check how the SDMA script works in dual fifo mode, but I think
-> that in this operating mode, maxburst
-> might be also 16.
->> -Caleb
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index f07833b..5190199 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -226,6 +226,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct rk_i2s_dev *i2s = to_info(dai);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	unsigned int val = 0;
+ 
+ 	switch (params_format(params)) {
+@@ -278,6 +279,13 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
+ 			   I2S_DMACR_RDL(16));
+ 
++	val = I2S_CKR_TRCM_TXRX;
++	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
++		val = I2S_CKR_TRCM_TXSHARE;
++
++	regmap_update_bits(i2s->regmap, I2S_CKR,
++			   I2S_CKR_TRCM_MASK,
++			   val);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index a54ee35..dc6e2c7 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -78,6 +78,12 @@
+  * CKR
+  * clock generation register
+ */
++#define I2S_CKR_TRCM_SHIFT	28
++#define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXSHARE	(1 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_RXSHARE	(2 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_MSS_SHIFT	27
+ #define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
+ #define I2S_CKR_MSS_SLAVE	(1 << I2S_CKR_MSS_SHIFT)
+-- 
+2.3.6
