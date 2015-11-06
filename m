@@ -1,45 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/3] ASoC: rockchip: i2s: share tx/rx lrck when
- symmetric_rates enabled
-Date: Fri, 6 Nov 2015 12:02:42 +0000
-Message-ID: <20151106120241.GI18409@sirena.org.uk>
-References: <1446773891-32174-1-git-send-email-sugar.zhang@rock-chips.com>
- <1446773891-32174-4-git-send-email-sugar.zhang@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Fh0SynPkUvrWGMR0"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1446773891-32174-4-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: rsnd: fixup SCU_SYS_INT_EN1 address" to the asoc tree
+Date: Fri, 06 Nov 2015 12:09:32 +0000
+Message-ID: <E1Zufpk-00056I-B9@finisterre>
+References: <87io5gj9en.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <87io5gj9en.wl%kuninori.morimoto.gx@renesas.com>
+Sender: stable-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---Fh0SynPkUvrWGMR0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: rsnd: fixup SCU_SYS_INT_EN1 address
 
-On Fri, Nov 06, 2015 at 09:38:11AM +0800, Sugar Zhang wrote:
-> we share lrck_tx to lrck_rx only if when both i2s symmetric_rates and
-> dai_link symmetric_rates enabled.
+has been applied to the asoc tree at
 
-This looks good but seems to depend on patch 1 so I can't apply it yet.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---Fh0SynPkUvrWGMR0
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJWPJbhAAoJECTWi3JdVIfQmW4IAIFnSP5z+e9eg6HWpSAyeYCW
-UPXVGTrAmK+tdiMXJCRX9ivDJsJesYnY7kaeTIF4SApYcnkYApm6aztMmKE1lH+O
-6bXnm8R0EML6vWv3xL78Cyr239NaXKFAt3JPScoLbNJXYdJDuTwK7kI2iiZQMBsd
-7T2ykOug+RmRpx7HGyYG70gfaxSTliErLYTa5eMJfUR1nqFjem0SOCNDnKBbyp0F
-WLMNnTaF3scosqNjAfK8jnkHwmP6LCl6HA4INfT4lJLdzFH0VVMYZ1x/vBbg4DA2
-ZVH03YnEoIi/1kgIo0uV3vKXRXQEBE+HeHVzGmIQ1ZLeAL832tbyTbkb2mJbAJI=
-=JRo2
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---Fh0SynPkUvrWGMR0--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 021c5d9469960b8c68aa1d1825f7bfd8d61e157d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 5 Nov 2015 23:53:03 +0000
+Subject: [PATCH] ASoC: rsnd: fixup SCU_SYS_INT_EN1 address
+
+cfcefe0126 ("ASoC: rsnd: add recovery support for under/over flow
+error on SRC") added SCU_SYS_INT_EN1 address, but it should be
+0x1d4, not 0x1c4. This patch fixup it.
+
+Fixes: cfcefe0126 ("ASoC: rsnd: add recovery support for under/over flow error on SRC")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/sh/rcar/gen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index f04d17b..916b38d 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -231,7 +231,7 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
+ 		RSND_GEN_S_REG(SCU_SYS_STATUS0,	0x1c8),
+ 		RSND_GEN_S_REG(SCU_SYS_INT_EN0,	0x1cc),
+ 		RSND_GEN_S_REG(SCU_SYS_STATUS1,	0x1d0),
+-		RSND_GEN_S_REG(SCU_SYS_INT_EN1,	0x1c4),
++		RSND_GEN_S_REG(SCU_SYS_INT_EN1,	0x1d4),
+ 		RSND_GEN_M_REG(SRC_SWRSR,	0x200,	0x40),
+ 		RSND_GEN_M_REG(SRC_SRCIR,	0x204,	0x40),
+ 		RSND_GEN_M_REG(SRC_ADINR,	0x214,	0x40),
+-- 
+2.6.1
