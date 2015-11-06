@@ -1,52 +1,53 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: wm9713: add gpio chip
-Date: Fri, 06 Nov 2015 21:47:35 +0100
-Message-ID: <87r3k2am8o.fsf@belgarion.home>
+Date: Fri, 6 Nov 2015 21:22:12 +0000
+Message-ID: <20151106212212.GL18409@sirena.org.uk>
 References: <1446657164-25012-1-git-send-email-robert.jarzmik@free.fr>
-	<20151104183322.GD2549@ck-lbox> <87oaf9bls9.fsf@belgarion.home>
-	<20151106092913.GC3378@x1> <20151106092733.GG2549@ck-lbox>
-	<20151106094828.GD3378@x1>
+ <20151104183322.GD2549@ck-lbox>
+ <87oaf9bls9.fsf@belgarion.home>
+ <20151106092913.GC3378@x1>
+ <20151106092733.GG2549@ck-lbox>
+ <20151106094828.GD3378@x1>
+ <87r3k2am8o.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bg/E/yN4pR4or5qL"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151106094828.GD3378@x1> (Lee Jones's message of "Fri, 6 Nov
-	2015 09:48:28 +0000")
+Content-Disposition: inline
+In-Reply-To: <87r3k2am8o.fsf@belgarion.home>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Jones <lee.jones@linaro.org> writes:
 
-> On Fri, 06 Nov 2015, Charles Keepax wrote:
->
->> On Fri, Nov 06, 2015 at 09:29:13AM +0000, Lee Jones wrote:
->> > On Wed, 04 Nov 2015, Robert Jarzmik wrote:
->> > 
->> > > Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
->> > > 
->> > > > On Wed, Nov 04, 2015 at 06:12:44PM +0100, Robert Jarzmik wrote:
->> > > >> The Wolfson WM9713 provides 8 GPIOs. If the gpiolib is compiled in the
->> > > >> kernel, declare a gpio chip.
->> > > >> 
->> > > >> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> 
->> Apologies Lee, we are discussing a patch that adds a GPIO driver
->> into an AC97 CODEC. I had suggested that perhaps we should put
->> the GPIO driver as a seperate driver under GPIO and link the two
->> with an MFD. But Mark has already replied in the thread to say
->> that he doesn't think that will be necessary. Although he did
->> raise some concerns that perhaps it could be done more generally
->> as it should apply to other AC97 CODECs as well.
->> 
->> So I think you can probably safely ignore this for now, sorry
->> for the noise.
+--bg/E/yN4pR4or5qL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ok, so where I should target this code at ? Should this land in
-sound/soc/soc-ac97.c ? Or somewhere else ? I'd like to see where you think the
-init_gpio() and free_gpio() should be put.
+On Fri, Nov 06, 2015 at 09:47:35PM +0100, Robert Jarzmik wrote:
 
-Cheers.
+> Ok, so where I should target this code at ? Should this land in
+> sound/soc/soc-ac97.c ? Or somewhere else ? I'd like to see where you think the
+> init_gpio() and free_gpio() should be put.
 
--- 
-Robert
+Sounds like a reasonable place, or possibly even the ALSA level AC'97
+stuff (though I'd question if anyone would ever use it outside of an
+ASoC system).
+
+--bg/E/yN4pR4or5qL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWPRoEAAoJECTWi3JdVIfQrSkH/i75usxZBQ5TJql5ZfFEv5so
+UdwRUG5VigU8XYoqEM81XZwRNPFMBLFbDpj5pQ+cdX876WNEICvszsTSJnRbeDBj
+mQSEYABae7hV1++ikkeVSg+8pneizj5/mmIOsFYQXiNIG3W0PudFSTQRwjhBS59y
+Yp19cFVMbb+kl4eJw23n32EeDloSl9FCBgJAcKdwl/6j5J8eiIu7fZqi3ohkzlIN
+W+1doC/hPMUyehLldqQUPTFuGjQQIy387HZbyFbe6+stCzEqrcNM66+lWyX5SG7h
+ucM/XR2RZmLVFgkPlsYWIuNfULa6ldk+P3jf4mXhey51jnXQmLDHc4ZjwV/4Hhs=
+=DXam
+-----END PGP SIGNATURE-----
+
+--bg/E/yN4pR4or5qL--
