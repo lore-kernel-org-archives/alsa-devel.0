@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip-max98090: Allow more sample
-	rates" to the asoc tree
-Date: Fri, 06 Nov 2015 12:09:37 +0000
-Message-ID: <E1Zufpp-00057K-Fc@finisterre>
-References: <1446809896-11254-3-git-send-email-wxt@rock-chips.com>
+Subject: Applied "ASoC: rockchip: i2s: change bclk and lrck
+	according to sample rates" to the asoc tree
+Date: Fri, 06 Nov 2015 12:09:39 +0000
+Message-ID: <E1Zufpr-00057v-No@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 394A9260421
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 13:09:44 +0100 (CET)
-In-Reply-To: <1446809896-11254-3-git-send-email-wxt@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F3190260429
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 13:09:45 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip-max98090: Allow more sample rates
+   ASoC: rockchip: i2s: change bclk and lrck according to sample rates
 
 has been applied to the asoc tree at
 
@@ -53,41 +52,77 @@ to this mail.
 Thanks,
 Mark
 
->From dfc15c9e42819c5bb7586751b3d03534362287aa Mon Sep 17 00:00:00 2001
+>From daf7fdaa9909c22a30504f3fbf64861f6fb222af Mon Sep 17 00:00:00 2001
 From: Caesar Wang <wxt@rock-chips.com>
-Date: Fri, 6 Nov 2015 19:38:15 +0800
-Subject: [PATCH] ASoC: rockchip-max98090: Allow more sample rates
+Date: Fri, 6 Nov 2015 19:38:14 +0800
+Subject: [PATCH] ASoC: rockchip: i2s: change bclk and lrck according to sample
+ rates
 
-The MAX98090 audio codec support sample rates from 8 to 96 kHz
-as the dai claim.
+This patch sets the dividers autonomously.
+
+when i2s works on master mode, and sample rates changed. We need to change
+bclk and lrck at the same time for cpu internal side.
+
+As the input source clock to the module is MCLK_I2S,
+and by the divider of the module, the clock generator generates
+SCLK and LRCK to transmitter and receiver.
 
 Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/rockchip/rockchip_i2s.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 26567b1..5436102 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -80,11 +80,17 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
-+	case 24000:
-+	case 32000:
- 	case 48000:
-+	case 64000:
- 	case 96000:
- 		mclk = 12288000;
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 58ee645..ce880f3 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -41,6 +41,7 @@ struct rk_i2s_dev {
+ */
+ 	bool tx_start;
+ 	bool rx_start;
++	bool is_master_mode;
+ };
+ 
+ static int i2s_runtime_suspend(struct device *dev)
+@@ -174,9 +175,11 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		/* Set source clock in Master mode */
+ 		val = I2S_CKR_MSS_MASTER;
++		i2s->is_master_mode = true;
  		break;
-+	case 11025:
-+	case 22050:
- 	case 44100:
-+	case 88200:
- 		mclk = 11289600;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		val = I2S_CKR_MSS_SLAVE;
++		i2s->is_master_mode = false;
  		break;
  	default:
+ 		return -EINVAL;
+@@ -228,6 +231,26 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct rk_i2s_dev *i2s = to_info(dai);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	unsigned int val = 0;
++	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
++
++	if (i2s->is_master_mode) {
++		mclk_rate = clk_get_rate(i2s->mclk);
++		bclk_rate = 2 * 32 * params_rate(params);
++		if (bclk_rate && mclk_rate % bclk_rate)
++			return -EINVAL;
++
++		div_bclk = mclk_rate / bclk_rate;
++		div_lrck = bclk_rate / params_rate(params);
++		regmap_update_bits(i2s->regmap, I2S_CKR,
++				   I2S_CKR_MDIV_MASK,
++				   I2S_CKR_MDIV(div_bclk));
++
++		regmap_update_bits(i2s->regmap, I2S_CKR,
++				   I2S_CKR_TSD_MASK |
++				   I2S_CKR_RSD_MASK,
++				   I2S_CKR_TSD(div_lrck) |
++				   I2S_CKR_RSD(div_lrck));
++	}
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S8:
 -- 
 2.6.1
