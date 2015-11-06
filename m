@@ -1,163 +1,52 @@
-From: Dinesh Ravindran <rite2dinesh@gmail.com>
-Subject: Re: Alsa Crackling Noise
-Date: Fri, 6 Nov 2015 18:27:45 +0100
-Message-ID: <CAGX90YX+PtNYrcBkcn_f+_cdOPT8raQc1Xe6HMSfK=H5G6FPOQ@mail.gmail.com>
-References: <CAGX90YUOKi4rSJvbTUGCzTow6tgtoBkkRhYuzdYqnnzLcComtg@mail.gmail.com>
- <CAG5mAdz-xNGHi_TU4Y+pRT2tiZ9TEbxqZA8PcGtGi52VgKGOUw@mail.gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH] ASoC: wm9713: add gpio chip
+Date: Fri, 06 Nov 2015 21:47:35 +0100
+Message-ID: <87r3k2am8o.fsf@belgarion.home>
+References: <1446657164-25012-1-git-send-email-robert.jarzmik@free.fr>
+	<20151104183322.GD2549@ck-lbox> <87oaf9bls9.fsf@belgarion.home>
+	<20151106092913.GC3378@x1> <20151106092733.GG2549@ck-lbox>
+	<20151106094828.GD3378@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 45246260538
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 18:27:46 +0100 (CET)
-Received: by wmll128 with SMTP id l128so46727879wml.0
- for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2015 09:27:46 -0800 (PST)
-In-Reply-To: <CAG5mAdz-xNGHi_TU4Y+pRT2tiZ9TEbxqZA8PcGtGi52VgKGOUw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20151106094828.GD3378@x1> (Lee Jones's message of "Fri, 6 Nov
+	2015 09:48:28 +0000")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The USB soundcard natively supports the sampling rate of 8kHz. We tried
-with all three options of the kernel preemption model, and it doesn't make
-any difference. The CPU utilization is almost zero, and interestingly when
-the CPU consumption is high the audio sounds better(we notice when we copy
-a file via ssh, cpu consumption goes upto 33%).
+Lee Jones <lee.jones@linaro.org> writes:
 
-The default premption model is set to none, however we tried with both
-voluntary and Low-Latency Desktop, it doesn't make any difference.
-
-One thing we noticed was that even though from our application(or aplay) we
-set the access to SND_PCM_ACCESS_RW_INTERLEAVED,
-/proc/asound/card0/pcm0p/sub0/hw_params shows it as MMAP_INTERLEAVED, we're
-not sure why it is so and what the impact could be.
-
-Does it has to do with the low level USB transfer, where it it waiting for
-more data to transfer it in one shot,  because, at higher sampling rate we
-have more data to transfer. But it still doesn't explain why printing some
-debug statements or having a larger alsa buffer works.
-
-
-
-
-best regards
-Dinesh
-
-On Fri, Nov 6, 2015 at 5:37 PM, Caleb Crome <caleb@crome.org> wrote:
-
-> On Fri, Nov 6, 2015 at 1:59 AM, Dinesh Ravindran <rite2dinesh@gmail.com>
-> wrote:
-> > We have been facing a weird issue with Alsa recently. Sometimes the audio
-> > plays out with out any noise and sometimes it has lot of cracking noise,
-> > really a lot. The weird situation is when another application is printing
-> > out some debug statements to a console it sounds good. The behavior is
-> same
-> > with a custom developed alsa application and also with aplay. Any
-> thoughts?
-> > If we have a really big buffer size of around 2sec it works somehow, but
-> we
-> > really want to analyze why alsa exhibits this strange behavior. Is it the
-> > alsa itself or is it just a symptom of a bigger issue at system level?
-> >
-> > All the test we are carrying out it at 8KHz, at higher sampling rate(48k)
-> > we do not see this behaviour.
-> >
-> >
-> > These are the scenarios in which it sounds good:
-> > 1. If any application is printing to the console while audio is being
-> > played out or even just holding the return button on the console helps.
-> > 2. If we enable xrun debug with echo 29 >
-> > /proc/asound/card0/pcm0p/xrun_debug it sounds good.
-> > 3. If we have really big buffer size around 2 seconds.
-> > 4. Or sometimes on fresh start of the machine until it enters xrun state
-> > once.
-> >
-> >
-> >
-> > We have the following setup:
-> >
-> > Processor: ARM926EJ-S
+> On Fri, 06 Nov 2015, Charles Keepax wrote:
 >
-> What's your CPU utilization when playing 8kHz?  It's interesting that
-> 48kHz has no problem, but 8kHz does.  My first guess would be that
-> alsa is forced to resample in software, causing the cpu load to go up.
->    Do you know what rates your actual codec can run at?
->
-> Others on this list are infinitely more likely to know the true answer :-)
->
-> Another question: what's the preemption model in your kernel config?
-> under kernel features->Preemption model?  You can also check your
-> .config for CONFIG_PREEMPT=y
->
-> -Caleb
->
-> > Kernel: 3.14.53
-> > Alsa-lib: 1.0.29
-> > Alsa-Util: 1.0.29
-> > Audio Chip: CONEXANT USB AUDIO
-> >
-> >> aplay -Dplughw:0,0 8kz_8000.wav  #to play file
-> >
-> >
-> > cat /proc/asound/card0/stream0
-> > ----------------------------------------
-> >
-> > Playback:
-> >   Status: Stop
-> >   Interface 2
-> >     Altset 1
-> >     Format: S16_LE
-> >     Channels: 2
-> >     Endpoint: 1 OUT (ADAPTIVE)
-> >     Rates: 8000, 16000, 24000, 32000, 44100, 48000
-> >
-> > Hw params:
-> > --------------
-> >
-> > access: MMAP_INTERLEAVED
-> > format: S16_LE
-> > subformat: STD
-> > channels: 2
-> > rate: 8000 (8000/1)
-> > period_size: 1000
-> > buffer_size: 4000
-> >
-> > sw params:
-> > -------------
-> >
-> > tstamp_mode: NONE
-> > period_step: 1
-> > avail_min: 1000
-> > start_threshold: 4000
-> > stop_threshold: 4000
-> > silence_threshold: 0
-> > silence_size: 0
-> > boundary: 2097152000
-> >
-> > status:
-> > --------
-> >
-> > state: RUNNING
-> > owner_pid   : 1852
-> > trigger_time: 3667.436640852
-> > tstamp      : 3756.680343977
-> > delay       : 3296
-> > avail       : 720
-> > avail_max   : 1000
-> > -----
-> > hw_ptr      : 712720
-> > appl_ptr    : 716000
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+>> On Fri, Nov 06, 2015 at 09:29:13AM +0000, Lee Jones wrote:
+>> > On Wed, 04 Nov 2015, Robert Jarzmik wrote:
+>> > 
+>> > > Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
+>> > > 
+>> > > > On Wed, Nov 04, 2015 at 06:12:44PM +0100, Robert Jarzmik wrote:
+>> > > >> The Wolfson WM9713 provides 8 GPIOs. If the gpiolib is compiled in the
+>> > > >> kernel, declare a gpio chip.
+>> > > >> 
+>> > > >> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>> 
+>> Apologies Lee, we are discussing a patch that adds a GPIO driver
+>> into an AC97 CODEC. I had suggested that perhaps we should put
+>> the GPIO driver as a seperate driver under GPIO and link the two
+>> with an MFD. But Mark has already replied in the thread to say
+>> that he doesn't think that will be necessary. Although he did
+>> raise some concerns that perhaps it could be done more generally
+>> as it should apply to other AC97 CODECs as well.
+>> 
+>> So I think you can probably safely ignore this for now, sorry
+>> for the noise.
+
+Ok, so where I should target this code at ? Should this land in
+sound/soc/soc-ac97.c ? Or somewhere else ? I'd like to see where you think the
+init_gpio() and free_gpio() should be put.
+
+Cheers.
+
+-- 
+Robert
