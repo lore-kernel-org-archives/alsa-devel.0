@@ -1,49 +1,31 @@
-From: Caesar Wang <wxt@rock-chips.com>
-Subject: [PATCH v2 3/3] ASoC: rockchip-rt5645: Allow more sample rates
-Date: Fri,  6 Nov 2015 19:38:16 +0800
-Message-ID: <1446809896-11254-4-git-send-email-wxt@rock-chips.com>
-References: <1446809896-11254-1-git-send-email-wxt@rock-chips.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
+Date: Fri, 6 Nov 2015 11:53:00 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460CA3D@SW-EX-MBX01.diasemi.com>
+References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151105152736.GO18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
+ <20151106112141.GE18409@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1446809896-11254-1-git-send-email-wxt@rock-chips.com>
+In-Reply-To: <20151106112141.GE18409@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>
-Cc: kmixter@chromium.org, Sonny Rao <sonnyrao@chromium.org>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, Dylan Reid <dgreid@chromium.org>, benchan@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-The RT5645 audio codec support sample rates from 8 to 96 kHz
-as the dai claim.
-
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
-
----
-
-Changes in v2:
-- add the 64000 sample rate for rt5645.
-
- sound/soc/rockchip/rockchip_rt5645.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index 68c62e4..440a802 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -79,11 +79,17 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
-+	case 24000:
-+	case 32000:
- 	case 48000:
-+	case 64000:
- 	case 96000:
- 		mclk = 12288000;
- 		break;
-+	case 11025:
-+	case 22050:
- 	case 44100:
-+	case 88200:
- 		mclk = 11289600;
- 		break;
- 	default:
--- 
-1.9.1
+T24gTm92ZW1iZXIgNiwgMjAxNSAxMToyMiwgTWFyayBCcm93biB3cm90ZToNCg0KPiA+ID4gPiAr
+c3RhdGljIGludCBkYTcyMThfbWljX2x2bF9kZXRfc3dfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wg
+Kmtjb250cm9sLA0KPiA+ID4gPiArCQkJCSAgICAgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAq
+dWNvbnRyb2wpDQo+ID4gPiA+ICt7DQo+IA0KPiA+ID4gV2h5IGlzIHRoaXMgYSB1c2VyIHZpc2li
+bGUgY29udHJvbD8NCj4gDQo+ID4gSSBjYW4gZW52aXNhZ2UgaW4gYSBzeXN0ZW0geW91IG1heSB3
+YW50IHRvIGNob29zZSB3aGljaCBjYXB0dXJlIGNoYW5uZWxzIGNhbg0KPiA+IHRyaWdnZXIgbGV2
+ZWwgZGV0ZWN0aW9uIChpZiBhbnkpLCBhbmQgdGhpcyBtYXkgY2hhbmdlIGRlcGVuZGluZyBvbiB0
+aGUgdXNlLWNhc2UNCj4gPiBhdCB0aGUgdGltZSwgc28gaGF2aW5nIGl0IGFzIGEgY29udHJvbCBt
+YWtlcyBzZW5zZSB0byBtZS4NCj4gDQo+IFdoYXQgaXMgYSAiY2FwdHVyZSBjaGFubmVsIiBoZXJl
+Pw0KDQpJbnB1dCBmaWx0ZXJzIDFML1IgYW5kIDJML1IsIHdoaWNoIGFyZSBmZWQgZnJvbSBlaXRo
+ZXIgTWljMShBREMxKSBvciBETWljMUwvUg0KYW5kIE1pYzIoQURDMikgb3IgRE1pYzJML1IuDQo=
