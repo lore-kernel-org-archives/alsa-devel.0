@@ -1,108 +1,77 @@
-From: Dinesh Ravindran <rite2dinesh@gmail.com>
-Subject: Alsa Crackling Noise
-Date: Fri, 6 Nov 2015 10:59:35 +0100
-Message-ID: <CAGX90YUOKi4rSJvbTUGCzTow6tgtoBkkRhYuzdYqnnzLcComtg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: da7218: Add bindings documentation for DA7218
+ audio codec
+Date: Fri, 6 Nov 2015 10:30:32 +0000
+Message-ID: <20151106103032.GY18409@sirena.org.uk>
+References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <b7132781a4a41a20549e13b1835bb7f808f6be82.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151105145856.GM18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460C91F@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 85A24260423
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 10:59:35 +0100 (CET)
-Received: by wmec201 with SMTP id c201so13025189wme.1
- for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2015 01:59:35 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="B7FF+pnjRCrp0ISR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460C91F@SW-EX-MBX01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have been facing a weird issue with Alsa recently. Sometimes the audio
-plays out with out any noise and sometimes it has lot of cracking noise,
-really a lot. The weird situation is when another application is printing
-out some debug statements to a console it sounds good. The behavior is same
-with a custom developed alsa application and also with aplay. Any thoughts?
-If we have a really big buffer size of around 2sec it works somehow, but we
-really want to analyze why alsa exhibits this strange behavior. Is it the
-alsa itself or is it just a symptom of a bigger issue at system level?
 
-All the test we are carrying out it at 8KHz, at higher sampling rate(48k)
-we do not see this behaviour.
+--B7FF+pnjRCrp0ISR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Nov 05, 2015 at 05:59:29PM +0000, Opensource [Adam Thomson] wrote:
+> On November 05, 2015 14:59, Mark Brown wrote:
 
-These are the scenarios in which it sounds good:
-1. If any application is printing to the console while audio is being
-played out or even just holding the return button on the console helps.
-2. If we enable xrun debug with echo 29 >
-/proc/asound/card0/pcm0p/xrun_debug it sounds good.
-3. If we have really big buffer size around 2 seconds.
-4. Or sometimes on fresh start of the machine until it enters xrun state
-once.
+> > > +- dlg,ldo-lvl : Required internal LDO voltage (mV) level
+> > > +	[<1050>, <1100>, <1200>, <1400>]
 
+> > Why would this ever be anything other than the minimum voltage, and
+> > might we not want to vary it at runtime?
 
+> Normally you are correct and you'll want minimum voltage for the digital engine
+> but there may be the possibility for certain platform scenarios that to meet
+> timings a higher voltage is required. Would prefer to leave this in in case it
+> is required in the future. As a side, the default setting is the lowest voltage,
+> if this binding is not provided.
 
-We have the following setup:
+That doesn't make a huge degree of sense - your non-specific "certain
+platform scenarios" are almost certainly going to be DVFS things where
+you need to boost the voltage of the LDO when the device needs to
+operate at particularly high frequencies in which case the driver really
+ought to just manage the voltage appropriately as required (ideally only
+boosting it at the times where the extra load exists).
 
-Processor: ARM926EJ-S
-Kernel: 3.14.53
-Alsa-lib: 1.0.29
-Alsa-Util: 1.0.29
-Audio Chip: CONEXANT USB AUDIO
+Unless you can be more specific about what the intended use is this just
+doesn't seem like something we should be specifying in DT.
 
-> aplay -Dplughw:0,0 8kz_8000.wav  #to play file
+> > These look like DSP coefficients which I would therefore expect to be
+> > configurable at runtime via a binary control rather than specified in
+> > the DT - why are they in the DT?
 
+> The expectation was these would be set once and left for a platform, which is
+> why I added them to the DT. However there's no reason they couldn't be moved
+> to binary control. Having looked at other codecs, I assume SND_SOC_BYTES* would
+> be the preferred method for setting this kind of data?
 
-cat /proc/asound/card0/stream0
-----------------------------------------
+Yes.
 
-Playback:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 8000, 16000, 24000, 32000, 44100, 48000
+--B7FF+pnjRCrp0ISR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Hw params:
---------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 8000 (8000/1)
-period_size: 1000
-buffer_size: 4000
+iQEcBAEBCAAGBQJWPIFHAAoJECTWi3JdVIfQt08H/0WkndFHZtEZogwh1UBOZbkX
+J7HuBti0sirozDtkzAc/rq2Su8x/yEjtnFMGFieBzT0vaHJtN3AW2g1R+PKw2Hxg
+gAfaFEZ4diZX4SPS7SPPQuDPi7tGt9leJ3u3bpKMsFMthaj2UUOgKJp+2246D2QM
+uUITga79ecLlPorHVacB5rBrU+0dkIbPVE0dN4E+MdOHT4x1q5B2yL6yzALT3hIx
+AFTcnQ65Cvs5wo2dHgryvcaK7YdKzeLOn6ZGJhu8Ce528tK7Uw3zD9jc4fMtGJpi
+8znVeLsNKX/C7cBoP6Ngk/PvLA82IDK75tJOyl/a0263fx+v7AbXkbSYN+BjMi0=
+=y5Uc
+-----END PGP SIGNATURE-----
 
-sw params:
--------------
-
-tstamp_mode: NONE
-period_step: 1
-avail_min: 1000
-start_threshold: 4000
-stop_threshold: 4000
-silence_threshold: 0
-silence_size: 0
-boundary: 2097152000
-
-status:
---------
-
-state: RUNNING
-owner_pid   : 1852
-trigger_time: 3667.436640852
-tstamp      : 3756.680343977
-delay       : 3296
-avail       : 720
-avail_max   : 1000
------
-hw_ptr      : 712720
-appl_ptr    : 716000
+--B7FF+pnjRCrp0ISR--
