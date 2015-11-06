@@ -1,76 +1,59 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
-Date: Fri, 6 Nov 2015 11:11:38 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
+Date: Fri, 6 Nov 2015 11:21:41 +0000
+Message-ID: <20151106112141.GE18409@sirena.org.uk>
 References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
  <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
  <20151105152736.GO18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.140])
- by alsa0.perex.cz (Postfix) with ESMTP id D385A26040E
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 12:11:41 +0100 (CET)
-In-Reply-To: <20151105152736.GO18409@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SqEuGDw53xMPnx3c"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460CA0C-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On November 5, 2015 15:28, Mark Brown wrote:
 
-> > +/* ALC */
-> > +static void da7218_alc_calib(struct snd_soc_codec *codec)
-> > +{
-> > +	struct da7218_priv *da7218 = snd_soc_codec_get_drvdata(codec);
-> > +	u8 calib_ctrl;
-> > +	int i = 0;
-> > +	bool calibrated = false;
-> > +
-> > +	/* Bypass cache so it saves current settings */
-> > +	regcache_cache_bypass(da7218->regmap, true);
-> 
-> What ensures that nothing else is running at the same time this is?
+--SqEuGDw53xMPnx3c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Is a fair point. Originally I was saving the state of registers then
-re-instating them at the end, which worked fine, but then was trying to be
-clever and tidy things up by bypassing the cache instead. Will revert back to
-the previous method.
+On Fri, Nov 06, 2015 at 11:11:38AM +0000, Opensource [Adam Thomson] wrote:
+> On November 5, 2015 15:28, Mark Brown wrote:
 
-> 
-> > +static int da7218_mic_lvl_det_sw_put(struct snd_kcontrol *kcontrol,
-> > +				     struct snd_ctl_elem_value *ucontrol)
-> > +{
-> 
-> Why is this a user visible control?
+> > > +static int da7218_mic_lvl_det_sw_put(struct snd_kcontrol *kcontrol,
+> > > +				     struct snd_ctl_elem_value *ucontrol)
+> > > +{
 
-I can envisage in a system you may want to choose which capture channels can
-trigger level detection (if any), and this may change depending on the use-case
-at the time, so having it as a control makes sense to me.
+> > Why is this a user visible control?
 
-> 
-> > +	/* Default all mixers off */
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTDAI_1L, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTDAI_1R, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTDAI_2L, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTDAI_2R, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTFILT_1L, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_OUTFILT_1R, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_ST_OUTFILT_1L, 0);
-> > +	snd_soc_write(codec, DA7218_DROUTING_ST_OUTFILT_1R, 0);
-> 
-> We generally just use the device defaults, why change them?
+> I can envisage in a system you may want to choose which capture channels can
+> trigger level detection (if any), and this may change depending on the use-case
+> at the time, so having it as a control makes sense to me.
 
-I figured it made more sense to have the device start with audio routes disabled
-but I can remove this as it's really not essential.
+What is a "capture channel" here?
+
+--SqEuGDw53xMPnx3c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWPI1BAAoJECTWi3JdVIfQinwH/0YBLaeoxEDWZM2SRf23/7OZ
+/0Re3FtooatAyplUdqwyT8UZezCYuW94EA5fRuhgUslcja+wxfPrbbXk9lBPgpWs
+htwFXfLY7Y0Yl/5CW8P8SiYCAXU1rLNnYwQD1SRHtBWSMdF4cDrH/CNXU7hrfXX9
+gGoN0vRSPoWUyXWtqRJUgvIfkIuoAYekOiGvqa+VvvCL+42oSTJFI1+AnMEQAYl6
+CmL2xHUyWPjM/xiY6dg9uGcn2Tp1dfoXu9/YYHWDRIU99SXW0nSJFI5TQgjMbIMQ
+SuEZ2JyerEkyt+K+nzsnIDpXSRuLIhP0tPszvELvGiA6CcL6aJlw2p317EtdQAo=
+=GlxG
+-----END PGP SIGNATURE-----
+
+--SqEuGDw53xMPnx3c--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
