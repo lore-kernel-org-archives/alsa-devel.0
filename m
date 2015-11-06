@@ -1,61 +1,91 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: sound: Add DT bindings for Broadcom
- Cygnus audio
-Date: Fri, 6 Nov 2015 10:31:47 +0000
-Message-ID: <20151106103147.GZ18409@sirena.org.uk>
-References: <1446502284-23907-2-git-send-email-ssimran@broadcom.com>
- <20151104140746.GE1717@sirena.org.uk>
- <563BB5B0.5040501@broadcom.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5645: Power up the RC clock to
+ make sure the speaker volume adjust properly
+Date: Fri, 6 Nov 2015 10:44:33 +0000
+Message-ID: <20151106104433.GB18409@sirena.org.uk>
+References: <1446724551-27762-1-git-send-email-oder_chiou@realtek.com>
+ <20151105121230.GD18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA2BE6@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="E9SPMlsjsjqOlA3h"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <563BB5B0.5040501-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6274902627131654048=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DF3C2602F1
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 11:44:43 +0100 (CET)
+In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FA2BE6@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---E9SPMlsjsjqOlA3h
+--===============6274902627131654048==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JoJCGVnM/36AiBh+"
+Content-Disposition: inline
+
+
+--JoJCGVnM/36AiBh+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 05, 2015 at 12:01:52PM -0800, Simran Rai wrote:
-> On 11/4/2015 6:07 AM, Mark Brown wrote:
-> >On Mon, Nov 02, 2015 at 02:11:23PM -0800, Simran Rai wrote:
+On Fri, Nov 06, 2015 at 02:52:36AM +0000, Oder Chiou wrote:
 
-> >>+  Interfaces grouping of serial port. In multi-channel stereo, use
-> >>+  "2_0", in 3.1 multi-channel grouping, use "3_1" and in 5.1
-> >>+  multi-channel grouping, use "5_1".
+> > > +	cancel_delayed_work_sync(&rt5645->rcclock_work);
 
-> >I don't really understand what this means or why this is not runtime
-> >configured.
+> > > +	regmap_update_bits(rt5645->regmap, RT5645_MICBIAS,
+> > > +		RT5645_PWR_CLK25M_MASK, RT5645_PWR_CLK25M_PU);
 
-> By runtime configured, do you mean passing the channel grouping through
-> machine file? Is there any specific callback that I can use?
+> > > +	ret = snd_soc_put_volsw(kcontrol, ucontrol);
 
-No, this appears to just be setting the number of channels which is
-normally configured depending on how many channels userspace is playing.
+> > > +	queue_delayed_work(system_power_efficient_wq, &rt5645->rcclock_work,
+> > > +		msecs_to_jiffies(200));
 
---E9SPMlsjsjqOlA3h
+> > A more idiomatic way of doing this is to just have the
+> > queue_delayed_work() - there's no need to cancel a work item before
+> > requeuing it, the workqueue code will do the right thing.  Can you
+> > please submit a followup patch cleaning that up?
+
+> Thank you for the kind advice. The "cancel_delayed_work_sync" is essential
+> in case of the operation of kcontrol continuously. We want to make sure the
+> RC clock can be powered up at least 200ms after the speaker volume is
+> adjusted, so we add the "cancel_delayed_work_sync" on the top of the
+> function and requeue it, thanks.
+
+What makes you claim that this is "essential in case of the operation of
+kcontrol continuously"?
+
+--JoJCGVnM/36AiBh+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWPIGSAAoJECTWi3JdVIfQMzkH/RbJZgjHPea2lsTTRqSaUY6V
-6GFlAq9Wh6bLhWriatoHx73OjtJ+Rq/Z4jZhWuAlbk+6oHXt/+t1Xu+XsFysC0jq
-fT2WVc3UiJ91Nc1DFvtZRZU3Xmm7swFa9pK3Z3rkex+CS5uIeLrdEzmWdh7hg70R
-PINuJOoEC1Kw+BQLpUas6qIro0lkDi4Steg5Nt2yo2Xryt1HBV0Q6x4IBQXRo8Y2
-hI/g2R8n8MUf+qG952/kqUUR5j2C7d0G56oUCfcl4U4de5wqfbukncKsjSbMsEJY
-2LXo9V9EEXN2EnKnjMWkcNBTKcADLAmya5XDHBe4CXMEaE1cgUjgVwxhbV+q+rQ=
-=GfL5
+iQEcBAEBCAAGBQJWPISQAAoJECTWi3JdVIfQc/sH/33hWGoN8HmxvGdSPqcmI/T0
+au6mIQSmhehZVXYSot9rsXexx3mXtaWd42StzIghcoOoNSFuLh9KBtudCz6qhWwg
+ko81LKps5bhh4Ot0HcaqxzhS+eMXy8VhDBIY9xlfjxjgVLQ682XKxnsqTHwu3TGX
+OpxaQo0EHi6r424a5uWeg6prmtEHrdLYvKdJkONPWbNyJmbA1LnqcIo+nXTg5Wxv
+rKYof+oz8OVEUVWWnWRgA05L/BbmtLCEo0LtmOHWHjkAZ1O+2xhwWkfDavIKU5fi
+mwz1zqUlQcSOm0j3Q4SzKKXh8VhutuzhIZwS830+WruSrSL+vpeVTtLfAWqeo4Y=
+=IxpE
 -----END PGP SIGNATURE-----
 
---E9SPMlsjsjqOlA3h--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--JoJCGVnM/36AiBh+--
+
+--===============6274902627131654048==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6274902627131654048==--
