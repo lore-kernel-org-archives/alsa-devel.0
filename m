@@ -1,14 +1,14 @@
 From: Zhihe Tu <tuzhihe@pcasl.com>
 Subject: Re: Intel  Cherry Trail platform sound issue
-Date: Fri, 6 Nov 2015 17:16:33 +0800
-Message-ID: <000401d11873$d5bf8860$813e9920$@com>
+Date: Fri, 6 Nov 2015 17:15:22 +0800
+Message-ID: <000301d11873$ac76af60$05640e20$@com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.pcasl.com (mail.pcasl.com [211.154.131.149])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B0A32604FC
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 10:16:50 +0100 (CET)
+Received: from mail.pcasl.com (unknown [118.194.228.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8C102661B5
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 10:17:16 +0100 (CET)
 References: 
 In-Reply-To: 
 Content-Language: zh-cn
