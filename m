@@ -1,59 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
-Date: Fri, 6 Nov 2015 11:21:41 +0000
-Message-ID: <20151106112141.GE18409@sirena.org.uk>
-References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <20151105152736.GO18409@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SqEuGDw53xMPnx3c"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460CA0C-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: [PATCH v2 0/3] Support more sample rates, let the rates normal work
+Date: Fri,  6 Nov 2015 19:38:13 +0800
+Message-ID: <1446809896-11254-1-git-send-email-wxt@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>
+Cc: kmixter@chromium.org, Sonny Rao <sonnyrao@chromium.org>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, Dylan Reid <dgreid@chromium.org>, benchan@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+That's seem the moment rockchip-codec driver other than 44100 and 48000
+do not work.
+Says the (max98090, rt5640).
 
---SqEuGDw53xMPnx3c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+----
+As the chromeos reported
+issue:(https://chromium.googlesource.com/chromiumos/third_party/kernel/+/v3.14)
 
-On Fri, Nov 06, 2015 at 11:11:38AM +0000, Opensource [Adam Thomson] wrote:
-> On November 5, 2015 15:28, Mark Brown wrote:
+For detail:
+        In that bug we want to add 32000 to
+        sound/soc/rockchip/rockchip_max98090.c rk_aif1_hw_params.
+        However that does not work.
 
-> > > +static int da7218_mic_lvl_det_sw_put(struct snd_kcontrol *kcontrol,
-> > > +				     struct snd_ctl_elem_value *ucontrol)
-> > > +{
+        Previously, in
+        https://chromium-review.googlesource.com/#/c/268398/ , rate
+        8000, 1600, 96000 were added.
+        However, those rates do not work. I got the same audio as 48000
+        when I run
 
-> > Why is this a user visible control?
+        aplay -D hw:0,0
+        /usr/local/autotest/cros/audio/fix_440_16_half.raw --rate 8000
+        -f S16_LE -c2
+        aplay -D hw:0,0
+        /usr/local/autotest/cros/audio/fix_440_16_half.raw --rate 16000
+        -f S16_LE -c2
+        aplay -D hw:0,0
+        /usr/local/autotest/cros/audio/fix_440_16_half.raw --rate 96000
+        -f S16_LE -c2
 
-> I can envisage in a system you may want to choose which capture channels can
-> trigger level detection (if any), and this may change depending on the use-case
-> at the time, so having it as a control makes sense to me.
+        They all sound identical to
+        aplay -D hw:0,0
+        /usr/local/autotest/cros/audio/fix_440_16_half.raw --rate 48000
+        -f S16_LE -c2
 
-What is a "capture channel" here?
+        Also, recording using
+        aplay -D hw:0,0 /usr/local/test.raw --rate 96000 -f S16_LE -c2
+        and examine the output we see it was recording using 48000.
 
---SqEuGDw53xMPnx3c
-Content-Type: application/pgp-signature; name="signature.asc"
+        Okay, let's add this series patchs to fix this issue.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+        arecord -D hw:0 -f S16_LE -c 2 --rate [8000-96000] -d 5 foobar.wav
+        and
+            aplay -D hw:0 foobar.wav
+Tested on veyron devices.
 
-iQEcBAEBCAAGBQJWPI1BAAoJECTWi3JdVIfQinwH/0YBLaeoxEDWZM2SRf23/7OZ
-/0Re3FtooatAyplUdqwyT8UZezCYuW94EA5fRuhgUslcja+wxfPrbbXk9lBPgpWs
-htwFXfLY7Y0Yl/5CW8P8SiYCAXU1rLNnYwQD1SRHtBWSMdF4cDrH/CNXU7hrfXX9
-gGoN0vRSPoWUyXWtqRJUgvIfkIuoAYekOiGvqa+VvvCL+42oSTJFI1+AnMEQAYl6
-CmL2xHUyWPjM/xiY6dg9uGcn2Tp1dfoXu9/YYHWDRIU99SXW0nSJFI5TQgjMbIMQ
-SuEZ2JyerEkyt+K+nzsnIDpXSRuLIhP0tPszvELvGiA6CcL6aJlw2p317EtdQAo=
-=GlxG
------END PGP SIGNATURE-----
 
---SqEuGDw53xMPnx3c--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Changes in v2:
+- move the set clock divider into rockchip i2s.
+- add the 64000 sample rates for max98090.
+- add the 64000 sample rate for rt5645.
+
+Caesar Wang (3):
+  ASoC: rockchip: i2s: change bclk and lrck according to sample rates
+  ASoC: rockchip-max98090: Allow more sample rates
+  ASoC: rockchip-rt5645: Allow more sample rates
+
+ sound/soc/rockchip/rockchip_i2s.c      | 23 +++++++++++++++++++++++
+ sound/soc/rockchip/rockchip_max98090.c |  6 ++++++
+ sound/soc/rockchip/rockchip_rt5645.c   |  6 ++++++
+ 3 files changed, 35 insertions(+)
+
+-- 
+1.9.1
