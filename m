@@ -1,60 +1,63 @@
-From: Caesar Wang <wxt@rock-chips.com>
-Subject: Re: [PATCH v1 1/5] ASoC: rockchip: i2s: Support to set
- the divider clock API
-Date: Fri, 6 Nov 2015 17:42:30 +0800
-Message-ID: <563C7606.7050504@rock-chips.com>
-References: <1446514438-13922-1-git-send-email-wxt@rock-chips.com>
- <1446514438-13922-2-git-send-email-wxt@rock-chips.com>
- <20151104143431.GH1717@sirena.org.uk> <563AEF97.1080304@gmail.com>
- <20151105161615.GS18409@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm9713: add gpio chip
+Date: Fri, 6 Nov 2015 09:27:33 +0000
+Message-ID: <20151106092733.GG2549@ck-lbox>
+References: <1446657164-25012-1-git-send-email-robert.jarzmik@free.fr>
+ <20151104183322.GD2549@ck-lbox>
+ <87oaf9bls9.fsf@belgarion.home>
+ <20151106092913.GC3378@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BA08265DDC
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 10:42:39 +0100 (CET)
-In-Reply-To: <20151105161615.GS18409@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Doug Anderson <dianders@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>, Dylan Reid <dgreid@chromium.org>, Sonny Rao <sonnyrao@chromium.org>, linux-arm-kernel@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151106092913.GC3378@x1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgIE1hcmssCgpWZXJ5IHJlc3BvbnNpdmUsIHRoYW5rcyB5b3VyIGNvbW1lbnQuCgrlnKggMjAx
-NeW5tDEx5pyIMDbml6UgMDA6MTYsIE1hcmsgQnJvd24g5YaZ6YGTOgo+IE9uIFRodSwgTm92IDA1
-LCAyMDE1IGF0IDAxOjU2OjM5UE0gKzA4MDAsIENhZXNhciBXYW5nIHdyb3RlOgo+PiDlnKggMjAx
-NeW5tDEx5pyIMDTml6UgMjI6MzQsIE1hcmsgQnJvd24g5YaZ6YGTOgo+Pj4gU2FtZSB0aGluZyBh
-cyB5b3VyIG90aGVyIHZlcnkgc2ltaWxhciBwYXRjaDogd2h5IGRvZXMgdGhpcyBmZWF0dXJlCj4+
-PiByZXF1aXJlIHNldF9jbGtkaXYoKT8KPj4gT2theSwgeW91IHNhaWQgIgo+PiBXaHkgaXMgdGhp
-cyBhIHJlcXVpcmVtZW50PyAgVGhlIGNsb2NrIHRvIHVzZSBhcyBhIHNvdXJjZSBzaG91bGQgbm9y
-bWFsbHkKPj4gYmUgc3BlY2lmaWVkIHZpYSBzZXRfc3lzY2xrKCkgYW5kIGFueSBpbnRlcm5hbCBk
-aXZpZGVycyBjYWxjdWxhdGVkCj4+IGF1dG9tYXRpY2FsbHkgYnkgdGhlIGRyaXZlci4KPj4gIgo+
-PiBJIHRoaW5rIHdlIHNob3VsZCBkaXZpZGVyIHNldHRpbmdzIGZvciB0aGVzZSBkaWZmZXJlbnQg
-c2FtcGxlIHJhdGVzLgo+IFN1cmUsIHRoZSBxdWVzdGlvbiBpcyBob3cgdGhlc2UgdGhpbmdzIGdl
-dCBzZXQuCj4KPj4gICBJZiB0aGUgY29kZWMgaXMgbWFzdGVyIG1vZGUsIHdlIGFyZSAqbm90KiBu
-ZWVkIHRoaXMgb3BlcmF0ZS4KPj4gICBJZiB0aGUgY29kZWMgaXMgc2xhdmUgbW9kZSwgd2UgYXJl
-IG5lZWQgdG8gZGl2aWRlciB0aGUgTUNMSyB0byBzZXR0aW5nIHRoZSBkaWZmZXJlbnQgc2FtcGxl
-IHJhdGVzLgo+PiAoZm9yIGV4YW1wbGUsIHRoZSBzYW1wbGUgcmF0ZXMgKDhrLCA0OGspIHRoZSBj
-bG9jayBpcyBNQ0xLLCB0aGUgY2xvY2sgc2hvdWxkIGJlIGRpdmlkZXIgY3B1IGlwICkKPj4gImRp
-dmlkZXJzIGNhbGN1bGF0ZWQgYXV0b21hdGljYWxseSBieSB0aGUgZHJpdmVyIiwgdGhhdCBzaG91
-bGQgYmUgb2NjdXJlZCBieSBjb2RlYyhtYXg5ODA5MAo+PiApIGRyaXZlciwgYnV0IHRoZSBkaXZp
-ZGVyIGNsb2NrcyAoTFJDSywgU0NMSykgc2hvdWxkIG5lZWQgdG8gc2V0IGZvciBjcHUgaW50ZXJu
-YWwgc2lkZS4KPiBTbyB0aGUgQ1BVIGtub3dzIHdoYXQgcmF0ZXMgaXQgbmVlZHMgdG8gc2V0IGFu
-ZCB3aGF0IGNsb2NrcyBpdCdzIGdldHRpbmcKPiBpbiwgd2h5IGNhbid0IGl0IHNldCB0aGUgZGl2
-aWRlcnMgYXV0b25vbW91c2x5LgoKU291bmQgcmVzb25hYmxlLCAgZml4ZWQgaW4gbmV4dCB2ZXJz
-aW9uLgoKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPiBMaW51eC1yb2NrY2hpcCBtYWlsaW5nIGxpc3QKPiBMaW51eC1yb2NrY2hpcEBsaXN0cy5p
-bmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1yb2NrY2hpcAoKCi0tIApjYWVzYXIgd2FuZyB8IHNvZnR3YXJlIGVuZ2luZWVyIHwg
-d3h0QHJvY2stY2hpcC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Fri, Nov 06, 2015 at 09:29:13AM +0000, Lee Jones wrote:
+> On Wed, 04 Nov 2015, Robert Jarzmik wrote:
+> 
+> > Charles Keepax <ckeepax@opensource.wolfsonmicro.com> writes:
+> > 
+> > > On Wed, Nov 04, 2015 at 06:12:44PM +0100, Robert Jarzmik wrote:
+> > >> The Wolfson WM9713 provides 8 GPIOs. If the gpiolib is compiled in the
+> > >> kernel, declare a gpio chip.
+> > >> 
+> > >> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> > >> ---
+> > >
+> > > You should probably make a seperate driver within GPIO for this
+> > > and then tie the two together, using an MFD. I appreciate that is
+> > > more work but it is likely a nicer solution overall.
+> > 
+> > I'd like to first have a confirmation from :
+> >  - Mark (Brown)
+> >  - and Lee (Jones)
+> > 
+> > The confirmation I'm looking for states that :
+> >  - the wm9713 should have a part in the mfd tree
+> >  - the gpio part should be in drivers/gpio
+> >  - the sound soc codecs will remain as is
+> >  - if the future driver/mfd/wm9713.c is technically sound, it will be accepted
+> > 
+> > I remember at least one example where the MFD approach was rejected from mfd
+> > tree for pxa gpios, so I won't work unless I have a confirmation from both
+> > maintainers.
+> 
+> I have no idea what you're talking about.  Context please?
+
+Apologies Lee, we are discussing a patch that adds a GPIO driver
+into an AC97 CODEC. I had suggested that perhaps we should put
+the GPIO driver as a seperate driver under GPIO and link the two
+with an MFD. But Mark has already replied in the thread to say
+that he doesn't think that will be necessary. Although he did
+raise some concerns that perhaps it could be done more generally
+as it should apply to other AC97 CODECs as well.
+
+So I think you can probably safely ignore this for now, sorry
+for the noise.
+
+Thanks,
+Charles
