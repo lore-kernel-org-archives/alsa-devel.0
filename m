@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup SCU_SYS_INT_EN1 address" to the asoc tree
-Date: Fri, 06 Nov 2015 12:09:32 +0000
-Message-ID: <E1Zufpk-00056I-B9@finisterre>
-References: <87io5gj9en.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <87io5gj9en.wl%kuninori.morimoto.gx@renesas.com>
-Sender: stable-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rockchip-rt5645: Allow more sample
+	rates" to the asoc tree
+Date: Fri, 06 Nov 2015 12:09:34 +0000
+Message-ID: <E1Zufpm-00056l-NC@finisterre>
+References: <1446809896-11254-4-git-send-email-wxt@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08B42260420
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2015 13:09:44 +0100 (CET)
+In-Reply-To: <1446809896-11254-4-git-send-email-wxt@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Caesar Wang <wxt@rock-chips.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup SCU_SYS_INT_EN1 address
+   ASoC: rockchip-rt5645: Allow more sample rates
 
 has been applied to the asoc tree at
 
@@ -37,35 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 021c5d9469960b8c68aa1d1825f7bfd8d61e157d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 5 Nov 2015 23:53:03 +0000
-Subject: [PATCH] ASoC: rsnd: fixup SCU_SYS_INT_EN1 address
+>From 8916bdb49800558b36fd0baaf36470234b91fa96 Mon Sep 17 00:00:00 2001
+From: Caesar Wang <wxt@rock-chips.com>
+Date: Fri, 6 Nov 2015 19:38:16 +0800
+Subject: [PATCH] ASoC: rockchip-rt5645: Allow more sample rates
 
-cfcefe0126 ("ASoC: rsnd: add recovery support for under/over flow
-error on SRC") added SCU_SYS_INT_EN1 address, but it should be
-0x1d4, not 0x1c4. This patch fixup it.
+The RT5645 audio codec support sample rates from 8 to 96 kHz
+as the dai claim.
 
-Fixes: cfcefe0126 ("ASoC: rsnd: add recovery support for under/over flow error on SRC")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/sh/rcar/gen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_rt5645.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index f04d17b..916b38d 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -231,7 +231,7 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
- 		RSND_GEN_S_REG(SCU_SYS_STATUS0,	0x1c8),
- 		RSND_GEN_S_REG(SCU_SYS_INT_EN0,	0x1cc),
- 		RSND_GEN_S_REG(SCU_SYS_STATUS1,	0x1d0),
--		RSND_GEN_S_REG(SCU_SYS_INT_EN1,	0x1c4),
-+		RSND_GEN_S_REG(SCU_SYS_INT_EN1,	0x1d4),
- 		RSND_GEN_M_REG(SRC_SWRSR,	0x200,	0x40),
- 		RSND_GEN_M_REG(SRC_SRCIR,	0x204,	0x40),
- 		RSND_GEN_M_REG(SRC_ADINR,	0x214,	0x40),
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 68c62e4..440a802 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -79,11 +79,17 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_rate(params)) {
+ 	case 8000:
+ 	case 16000:
++	case 24000:
++	case 32000:
+ 	case 48000:
++	case 64000:
+ 	case 96000:
+ 		mclk = 12288000;
+ 		break;
++	case 11025:
++	case 22050:
+ 	case 44100:
++	case 88200:
+ 		mclk = 11289600;
+ 		break;
+ 	default:
 -- 
 2.6.1
