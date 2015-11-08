@@ -1,14 +1,16 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ALSA: ctxfi: constify amixer_rsc_ops structure
-Date: Sun,  8 Nov 2015 23:17:04 +0100
-Message-ID: <1447021024-10392-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Sender: kernel-janitors-owner@vger.kernel.org
+Subject: [PATCH v2] ALSA: ctxfi: constify rsc ops structures
+Date: Sun,  8 Nov 2015 23:40:41 +0100
+Message-ID: <1447022441-18364-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1447021024-10392-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1447021024-10392-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>
 Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The amixer_rsc_ops structure is never modified, so declare it as
+The various rsc ops structures are never modified, so declare them as
 const.
 
 Done with the help of Coccinelle.
@@ -16,14 +18,36 @@ Done with the help of Coccinelle.
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/pci/ctxfi/ctamixer.c |    2 +-
- sound/pci/ctxfi/ctamixer.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+
+v2: This does the following types all at once: dao_rsc_ops, dai_rsc_ops,
+amixer_rsc_ops, src_rsc_ops, srcimp_rsc_ops, rsc_ops.  Most of these types
+are only used in specific files, but the rsc_ops structures appear in all
+of the files, so just do them all at once.  This patch thus also replaces
+the one with the subject "ALSA: ctxfi: constify dao and dai rsc ops structures"
+
+ sound/pci/ctxfi/ctamixer.c   |    6 +++---
+ sound/pci/ctxfi/ctamixer.h   |    2 +-
+ sound/pci/ctxfi/ctdaio.c     |   10 +++++-----
+ sound/pci/ctxfi/ctdaio.h     |    4 ++--
+ sound/pci/ctxfi/ctresource.c |    2 +-
+ sound/pci/ctxfi/ctresource.h |    2 +-
+ sound/pci/ctxfi/ctsrc.c      |    6 +++---
+ sound/pci/ctxfi/ctsrc.h      |    4 ++--
+ 8 files changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/sound/pci/ctxfi/ctamixer.c b/sound/pci/ctxfi/ctamixer.c
-index c7dc38d..465b5c5 100644
+index c7dc38d..5fcbb06 100644
 --- a/sound/pci/ctxfi/ctamixer.c
 +++ b/sound/pci/ctxfi/ctamixer.c
+@@ -49,7 +49,7 @@ static int amixer_output_slot(const struct rsc *rsc)
+ 	return (amixer_index(rsc) << 4) + 0x4;
+ }
+ 
+-static struct rsc_ops amixer_basic_rsc_ops = {
++static const struct rsc_ops amixer_basic_rsc_ops = {
+ 	.master		= amixer_master,
+ 	.next_conj	= amixer_next_conj,
+ 	.index		= amixer_index,
 @@ -186,7 +186,7 @@ static int amixer_setup(struct amixer *amixer, struct rsc *input,
  	return 0;
  }
@@ -33,6 +57,15 @@ index c7dc38d..465b5c5 100644
  	.set_input		= amixer_set_input,
  	.set_invalid_squash	= amixer_set_invalid_squash,
  	.set_scale		= amixer_set_y,
+@@ -357,7 +357,7 @@ static int sum_output_slot(const struct rsc *rsc)
+ 	return (sum_index(rsc) << 4) + 0xc;
+ }
+ 
+-static struct rsc_ops sum_basic_rsc_ops = {
++static const struct rsc_ops sum_basic_rsc_ops = {
+ 	.master		= sum_master,
+ 	.next_conj	= sum_next_conj,
+ 	.index		= sum_index,
 diff --git a/sound/pci/ctxfi/ctamixer.h b/sound/pci/ctxfi/ctamixer.h
 index 72f42f2..2de18aa 100644
 --- a/sound/pci/ctxfi/ctamixer.h
@@ -46,4 +79,151 @@ index 72f42f2..2de18aa 100644
  };
  
  struct amixer_rsc_ops {
-
+diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
+index 9b87dd2..7f089cb 100644
+--- a/sound/pci/ctxfi/ctdaio.c
++++ b/sound/pci/ctxfi/ctdaio.c
+@@ -83,21 +83,21 @@ static int daio_in_next_conj_20k2(struct rsc *rsc)
+ 	return rsc->conj += 0x100;
+ }
+ 
+-static struct rsc_ops daio_out_rsc_ops = {
++static const struct rsc_ops daio_out_rsc_ops = {
+ 	.master		= daio_master,
+ 	.next_conj	= daio_out_next_conj,
+ 	.index		= daio_index,
+ 	.output_slot	= NULL,
+ };
+ 
+-static struct rsc_ops daio_in_rsc_ops_20k1 = {
++static const struct rsc_ops daio_in_rsc_ops_20k1 = {
+ 	.master		= daio_master,
+ 	.next_conj	= daio_in_next_conj_20k1,
+ 	.index		= NULL,
+ 	.output_slot	= daio_index,
+ };
+ 
+-static struct rsc_ops daio_in_rsc_ops_20k2 = {
++static const struct rsc_ops daio_in_rsc_ops_20k2 = {
+ 	.master		= daio_master,
+ 	.next_conj	= daio_in_next_conj_20k2,
+ 	.index		= NULL,
+@@ -263,7 +263,7 @@ static int dao_clear_right_input(struct dao *dao)
+ 	return 0;
+ }
+ 
+-static struct dao_rsc_ops dao_ops = {
++static const struct dao_rsc_ops dao_ops = {
+ 	.set_spos		= dao_spdif_set_spos,
+ 	.commit_write		= dao_commit_write,
+ 	.get_spos		= dao_spdif_get_spos,
+@@ -318,7 +318,7 @@ static int dai_commit_write(struct dai *dai)
+ 	return 0;
+ }
+ 
+-static struct dai_rsc_ops dai_ops = {
++static const struct dai_rsc_ops dai_ops = {
+ 	.set_srt_srcl		= dai_set_srt_srcl,
+ 	.set_srt_srcr		= dai_set_srt_srcr,
+ 	.set_srt_msr		= dai_set_srt_msr,
+diff --git a/sound/pci/ctxfi/ctdaio.h b/sound/pci/ctxfi/ctdaio.h
+index 0ebbf35..a30be73 100644
+--- a/sound/pci/ctxfi/ctdaio.h
++++ b/sound/pci/ctxfi/ctdaio.h
+@@ -51,7 +51,7 @@ struct daio {
+ 
+ struct dao {
+ 	struct daio daio;
+-	struct dao_rsc_ops *ops;	/* DAO specific operations */
++	const struct dao_rsc_ops *ops;	/* DAO specific operations */
+ 	struct imapper **imappers;
+ 	struct daio_mgr *mgr;
+ 	struct hw *hw;
+@@ -60,7 +60,7 @@ struct dao {
+ 
+ struct dai {
+ 	struct daio daio;
+-	struct dai_rsc_ops *ops;	/* DAI specific operations */
++	const struct dai_rsc_ops *ops;	/* DAI specific operations */
+ 	struct hw *hw;
+ 	void *ctrl_blk;
+ };
+diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
+index 1a97e40..c5124c3 100644
+--- a/sound/pci/ctxfi/ctresource.c
++++ b/sound/pci/ctxfi/ctresource.c
+@@ -127,7 +127,7 @@ static int rsc_master(struct rsc *rsc)
+ 	return rsc->conj = rsc->idx;
+ }
+ 
+-static struct rsc_ops rsc_generic_ops = {
++static const struct rsc_ops rsc_generic_ops = {
+ 	.index		= rsc_index,
+ 	.output_slot	= audio_ring_slot,
+ 	.master		= rsc_master,
+diff --git a/sound/pci/ctxfi/ctresource.h b/sound/pci/ctxfi/ctresource.h
+index 9b746c3..736d9f7 100644
+--- a/sound/pci/ctxfi/ctresource.h
++++ b/sound/pci/ctxfi/ctresource.h
+@@ -39,7 +39,7 @@ struct rsc {
+ 	u32 msr:4;	/* The Master Sample Rate a resource working on */
+ 	void *ctrl_blk;	/* Chip specific control info block for a resource */
+ 	struct hw *hw;	/* Chip specific object for hardware access means */
+-	struct rsc_ops *ops;	/* Generic resource operations */
++	const struct rsc_ops *ops;	/* Generic resource operations */
+ };
+ 
+ struct rsc_ops {
+diff --git a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
+index ec1f084..a5a72df 100644
+--- a/sound/pci/ctxfi/ctsrc.c
++++ b/sound/pci/ctxfi/ctsrc.c
+@@ -335,7 +335,7 @@ static int src_default_config_arcrw(struct src *src)
+ 	return 0;
+ }
+ 
+-static struct src_rsc_ops src_rsc_ops = {
++static const struct src_rsc_ops src_rsc_ops = {
+ 	.set_state		= src_set_state,
+ 	.set_bm			= src_set_bm,
+ 	.set_sf			= src_set_sf,
+@@ -611,7 +611,7 @@ static int srcimp_index(const struct rsc *rsc)
+ 	return container_of(rsc, struct srcimp, rsc)->idx[rsc->conj];
+ }
+ 
+-static struct rsc_ops srcimp_basic_rsc_ops = {
++static const struct rsc_ops srcimp_basic_rsc_ops = {
+ 	.master		= srcimp_master,
+ 	.next_conj	= srcimp_next_conj,
+ 	.index		= srcimp_index,
+@@ -662,7 +662,7 @@ static int srcimp_unmap(struct srcimp *srcimp)
+ 	return 0;
+ }
+ 
+-static struct srcimp_rsc_ops srcimp_ops = {
++static const struct srcimp_rsc_ops srcimp_ops = {
+ 	.map = srcimp_map,
+ 	.unmap = srcimp_unmap
+ };
+diff --git a/sound/pci/ctxfi/ctsrc.h b/sound/pci/ctxfi/ctsrc.h
+index da7573c..92944a0 100644
+--- a/sound/pci/ctxfi/ctsrc.h
++++ b/sound/pci/ctxfi/ctsrc.h
+@@ -48,7 +48,7 @@ struct src_rsc_ops;
+ struct src {
+ 	struct rsc rsc; /* Basic resource info */
+ 	struct src *intlv; /* Pointer to next interleaved SRC in a series */
+-	struct src_rsc_ops *ops; /* SRC specific operations */
++	const struct src_rsc_ops *ops; /* SRC specific operations */
+ 	/* Number of contiguous srcs for interleaved usage */
+ 	unsigned char multi;
+ 	unsigned char mode; /* Working mode of this SRC resource */
+@@ -110,7 +110,7 @@ struct srcimp {
+ 	struct imapper *imappers;
+ 	unsigned int mapped; /* A bit-map indicating which conj rsc is mapped */
+ 	struct srcimp_mgr *mgr;
+-	struct srcimp_rsc_ops *ops;
++	const struct srcimp_rsc_ops *ops;
+ };
+ 
+ struct srcimp_rsc_ops {
