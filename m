@@ -1,20 +1,21 @@
-From: Libin Yang <libin.yang@linux.intel.com>
-Subject: Re: [RFC PATCH 2/2] ALSA: hda - HDMI codec driver
- dynamically attach PCM
-Date: Mon, 9 Nov 2015 09:38:18 +0800
-Message-ID: <563FF90A.3000206@linux.intel.com>
-References: <1446538973-109373-1-git-send-email-libin.yang@linux.intel.com>
- <1446538973-109373-3-git-send-email-libin.yang@linux.intel.com>
- <s5htwp3nicg.wl-tiwai@suse.de> <563999C2.90406@linux.intel.com>
- <563C3BBC.60009@linux.intel.com> <s5hpoznlcez.wl-tiwai@suse.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Power up the RC clock to
+	make sure the speaker volume adjust properly
+Date: Mon, 9 Nov 2015 03:13:09 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694FA36C9@RTITMBSV03.realtek.com.tw>
+References: <1446724551-27762-1-git-send-email-oder_chiou@realtek.com>
+ <20151105121230.GD18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA2BE6@RTITMBSV03.realtek.com.tw>
+ <20151106104433.GB18409@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 38F242606D2
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 02:39:49 +0100 (CET)
-In-Reply-To: <s5hpoznlcez.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56CE52606D8
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 04:13:35 +0100 (CET)
+In-Reply-To: <20151106104433.GB18409@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,90 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-On 11/06/2015 05:12 PM, Takashi Iwai wrote:
-> On Fri, 06 Nov 2015 06:33:48 +0100,
-> Libin Yang wrote:
->>
->> Hi Takashi,
->>
->> On 11/04/2015 01:38 PM, Libin Yang wrote:
->>> On 11/04/2015 12:44 AM, Takashi Iwai wrote:
->>>> On Tue, 03 Nov 2015 09:22:53 +0100,
->>>> libin.yang@linux.intel.com wrote:
->>>>>
->>>>> From: Libin Yang <libin.yang@intel.com>
->>>>>
->>>>> Allocate the PCM based on the number of pin and device entry.
->>>>> The number of PCM is pin num plus device entry number per pin.
->>>>> For example, on Intel platform, it will be 5 PCMs.
->>>>>
->>>>> Do not attach the PCM to pin in initialization.
->>>>> Dynamically attach PCM to pin when monitor is connected
->>>>> in HDMI audio codec driver.
->>>>>
->>>>> When monitor is disconnected, detach the PCM from the pin.
->>>>> And if the audio is playing, stop the playback.
->>>>>
->>>>> The below is the example of device entry and PCM binding:
->>>>> For a monitor is plugged in, we need to dynamically assign
->>>>> this monitor to 5 PCM devices (on Intel platform):
->>>>> For a monitor at pin nid 0x05, dev index 0, it will prefer PCM 3
->>>>> For a monitor at pin nid 0x06, dev index 0, it will prefer PCM 7
->>>>> For a monitor at pin nid 0x07, dev index 0, it will prefer PCM 8
->>>>> For a monitor at dev index 1 (any pin), it will prefer PCM 9
->>>>> For a monitor at dev index 2 (any pin), it will prefer PCM 10
->>>>>
->>>>> If the preferred PCM is not available, try PCM in this order:
->>>>> 9, 10, 3, 7 ,8.
->>>>>
->>>>> Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
->>>>
->>>> We should split the changes to a few patches here.  For example,
->>>> stopping the stream at discussion is basically an implementation
->>>> independent from the MST itself.  IOW, the dynamic attach/detach can
->>>> be implemented and tested even without MST support.  Let's code them
->>>> at first, then add MST support.
->>>
->>> This patch actually doesn't depend on MST. I use the dev_num to
->>> determine how many PCMs to be created.
->>>
->>> To Split the patch, how about I create the PCM number based the pin
->>> number in the patch?
->>>
->>>>
->>>> Also, it's an open question whether we apply the dynamic attach/detach
->>>> to all devices that use the generic hdmi framework.  It means
->>>> including AMD and Nvidia.  You hard-coded it to be applied
->>>> unconditionally.  Would it break anything potentially...?
->>>
->>> I have no other verdors platforms to test. But it seems to be OK on
->>> other platforms. The impact is, i think, it will stop the stream when
->>> monitor is disconnected. Should we apply the code by judging whehter
->>> it is Intel platform?
->>
->> If you are concerning the impact on other vendors, what about I create
->> a separate mst codec driver? In the driver, I will still use virtual
->> pin, but other vendors platform will not be supported at the moment.
->> Other vendors can add their patches to the new codec driver to support
->> their own mst audio.
->
-> No, it's not the option.  Such a behavior change is the big burden to
-> user-space.  We should provide consistent behavior as much as
-> possible.
-
-OK, I see. What do you think if I judge the platform before using DP 
-MST mode?
-
-Best Regards,
-Libin
-
->
->
-> Takashi
->
+> > Thank you for the kind advice. The "cancel_delayed_work_sync" is
+> > essential in case of the operation of kcontrol continuously. We want
+> > to make sure the RC clock can be powered up at least 200ms after the
+> > speaker volume is adjusted, so we add the "cancel_delayed_work_sync"
+> > on the top of the function and requeue it, thanks.
+> 
+> What makes you claim that this is "essential in case of the operation of kcontrol
+> continuously"?
+> 
+Like the Chrome OS, while the user pull the volume bar up or down, the
+kcontrol will be manipulated by the UI continuously and seamlessly. In this
+kind of case, if the "cancel_delayed_work_sync" is removed, the
+queue_delayed_work will be failed within 200ms after the previous
+queue_delayed_work, and it will not be able to make sure the power of the
+RC clock enabled at least 200ms, thanks.
