@@ -1,17 +1,14 @@
-From: Zhihe Tu <tuzhihe@pcasl.com>
-Subject: Intel Cherry Trail  --  No sound in linux
-Date: Mon, 9 Nov 2015 11:21:23 +0800
-Message-ID: <000501d11a9d$b5b6aa90$2123ffb0$@com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5659: add rt5659 codec driver
+Date: Mon, 9 Nov 2015 14:47:34 +0800
+Message-ID: <1447051654-15989-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.pcasl.com (unknown [118.194.228.23])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A7832606D8
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 04:21:28 +0100 (CET)
-References: 
-In-Reply-To: 
-Content-Language: zh-cn
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABA2D260881
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 07:48:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,1210 +18,6271 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+This is the initial codec driver for rt5659.
 
-I'm trying to make the CherryTrail tablet works in ubuntu14.04.3,  there's
-no sound at all,  but it works in win8 & android.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ Documentation/devicetree/bindings/sound/rt5659.txt |   75 +
+ include/sound/rt5659.h                             |   49 +
+ sound/soc/codecs/Kconfig                           |    6 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/rt5659.c                          | 4223 ++++++++++++++++++++
+ sound/soc/codecs/rt5659.h                          | 1819 +++++++++
+ 6 files changed, 6174 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5659.txt
+ create mode 100644 include/sound/rt5659.h
+ create mode 100644 sound/soc/codecs/rt5659.c
+ create mode 100644 sound/soc/codecs/rt5659.h
 
-Full dmesg:
-[    0.000000] Initializing cgroup subsys cpuset
-[    0.000000] Initializing cgroup subsys cpu
-[    0.000000] Initializing cgroup subsys cpuacct
-[    0.000000] Linux version 3.19.0-25-generic (buildd@lgw01-20) (gcc
-version 4.8.2 (Ubuntu 4.8.2-19ubuntu1) ) #26~14.04.1-Ubuntu SMP Fri Jul 24
-21:16:20 UTC 2015 (Ubuntu 3.19.0-25.26~14.04.1-generic 3.19.8-ckt2)
-[    0.000000] Command line:
-BOOT_IMAGE=/boot/vmlinuz-3.19.0-25-generic.efi.signed
-root=UUID=a6ccfb7f-4e13-429f-8f8e-fe3a4f2e00f2 ro console=tty0
-console=ttyS0,115200 quiet splash
-[    0.000000] KERNEL supported cpus:
-[    0.000000]   Intel GenuineIntel
-[    0.000000]   AMD AuthenticAMD
-[    0.000000]   Centaur CentaurHauls
-[    0.000000] e820: BIOS-provided physical RAM map:
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000008efff] usable
-[    0.000000] BIOS-e820: [mem 0x000000000008f000-0x000000000008ffff] ACPI
-NVS
-[    0.000000] BIOS-e820: [mem 0x0000000000090000-0x000000000009dfff] usable
-[    0.000000] BIOS-e820: [mem 0x000000000009e000-0x000000000009ffff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000001fffffff] usable
-[    0.000000] BIOS-e820: [mem 0x0000000020000000-0x00000000201fffff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x0000000020200000-0x000000003b120fff] usable
-[    0.000000] BIOS-e820: [mem 0x000000003b121000-0x000000003b150fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x000000003b151000-0x000000003b274fff] usable
-[    0.000000] BIOS-e820: [mem 0x000000003b275000-0x000000003b75dfff] ACPI
-NVS
-[    0.000000] BIOS-e820: [mem 0x000000003b75e000-0x000000003ba14fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x000000003ba15000-0x000000003ba6efff] type
-20
-[    0.000000] BIOS-e820: [mem 0x000000003ba6f000-0x000000003ba74fff] usable
-[    0.000000] BIOS-e820: [mem 0x000000003ba75000-0x000000003ba75fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x000000003ba76000-0x000000003ba78fff] usable
-[    0.000000] BIOS-e820: [mem 0x000000003ba79000-0x000000003ba79fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x000000003ba7a000-0x000000003bffffff] usable
-[    0.000000] BIOS-e820: [mem 0x00000000e0000000-0x00000000e3ffffff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fea00000-0x00000000feafffff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fec00000-0x00000000fec00fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed01000-0x00000000fed01fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed03000-0x00000000fed03fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed06000-0x00000000fed06fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed08000-0x00000000fed09fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed1c000-0x00000000fed1cfff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fed80000-0x00000000fedbffff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fee00000-0x00000000fee00fff]
-reserved
-[    0.000000] BIOS-e820: [mem 0x00000000ffc00000-0x00000000ffffffff]
-reserved
-[    0.000000] NX (Execute Disable) protection: active
-[    0.000000] efi: EFI v2.40 by American Megatrends
-[    0.000000] efi:  ACPI=0x3b2b9000  ACPI 2.0=0x3b2b9000  SMBIOS=0x3b918f98
-
-[    0.000000] efi: mem00: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000000000000-0x000000000008f000) (0MB)
-[    0.000000] efi: mem01: [ACPI Memory NVS    |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000000008f000-0x0000000000090000) (0MB)
-[    0.000000] efi: mem02: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000000090000-0x000000000009e000) (0MB)
-[    0.000000] efi: mem03: [Reserved           |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000000009e000-0x00000000000a0000) (0MB)
-[    0.000000] efi: mem04: [Loader Data        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000000100000-0x00000000014d6000) (19MB)
-[    0.000000] efi: mem05: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x00000000014d6000-0x0000000002000000) (11MB)
-[    0.000000] efi: mem06: [Loader Data        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000002000000-0x00000000033d6000) (19MB)
-[    0.000000] efi: mem07: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x00000000033d6000-0x0000000011ebe000) (234MB)
-[    0.000000] efi: mem08: [Loader Data        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000011ebe000-0x0000000020000000) (225MB)
-[    0.000000] efi: mem09: [Reserved           |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000020000000-0x0000000020200000) (2MB)
-[    0.000000] efi: mem10: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000020200000-0x0000000035a2c000) (344MB)
-[    0.000000] efi: mem11: [Loader Data        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000035a2c000-0x0000000036d0e000) (18MB)
-[    0.000000] efi: mem12: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000036d0e000-0x0000000037894000) (11MB)
-[    0.000000] efi: mem13: [Loader Code        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x0000000037894000-0x000000003797e000) (0MB)
-[    0.000000] efi: mem14: [Boot Data          |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003797e000-0x000000003a020000) (38MB)
-[    0.000000] efi: mem15: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003a020000-0x000000003ae76000) (14MB)
-[    0.000000] efi: mem16: [Boot Code          |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ae76000-0x000000003b121000) (2MB)
-[    0.000000] efi: mem17: [Reserved           |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003b121000-0x000000003b151000) (0MB)
-[    0.000000] efi: mem18: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003b151000-0x000000003b26b000) (1MB)
-[    0.000000] efi: mem19: [Loader Data        |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003b26b000-0x000000003b275000) (0MB)
-[    0.000000] efi: mem20: [ACPI Memory NVS    |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003b275000-0x000000003b75e000) (4MB)
-[    0.000000] efi: mem21: [Runtime Data       |RUN|  |  |  |
-|WB|WT|WC|UC] range=[0x000000003b75e000-0x000000003ba15000) (2MB)
-[    0.000000] efi: mem22: [Runtime Code       |RUN|  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba15000-0x000000003ba6f000) (0MB)
-[    0.000000] efi: mem23: [Conventional Memory|   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba6f000-0x000000003ba70000) (0MB)
-[    0.000000] efi: mem24: [Boot Data          |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba70000-0x000000003ba75000) (0MB)
-[    0.000000] efi: mem25: [Runtime Data       |RUN|  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba75000-0x000000003ba76000) (0MB)
-[    0.000000] efi: mem26: [Boot Data          |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba76000-0x000000003ba79000) (0MB)
-[    0.000000] efi: mem27: [Runtime Data       |RUN|  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba79000-0x000000003ba7a000) (0MB)
-[    0.000000] efi: mem28: [Boot Data          |   |  |  |  |
-|WB|WT|WC|UC] range=[0x000000003ba7a000-0x000000003c000000) (5MB)
-[    0.000000] efi: mem29: [MMIO Port Space    |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000e0000000-0x00000000e4000000) (64MB)
-[    0.000000] efi: mem30: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fea00000-0x00000000feb00000) (1MB)
-[    0.000000] efi: mem31: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fec00000-0x00000000fec01000) (0MB)
-[    0.000000] efi: mem32: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed01000-0x00000000fed02000) (0MB)
-[    0.000000] efi: mem33: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed03000-0x00000000fed04000) (0MB)
-[    0.000000] efi: mem34: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed06000-0x00000000fed07000) (0MB)
-[    0.000000] efi: mem35: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed08000-0x00000000fed0a000) (0MB)
-[    0.000000] efi: mem36: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed1c000-0x00000000fed1d000) (0MB)
-[    0.000000] efi: mem37: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fed80000-0x00000000fedc0000) (0MB)
-[    0.000000] efi: mem38: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000fee00000-0x00000000fee01000) (0MB)
-[    0.000000] efi: mem39: [Memory Mapped I/O  |RUN|  |  |  |   |  |  |
-|UC] range=[0x00000000ffc00000-0x0000000100000000) (4MB)
-[    0.000000] SMBIOS 2.8 present.
-[    0.000000] DMI: To be filled by O.E.M. To be filled by O.E.M./Cherry
-Trail CR, BIOS 5.011 10/28/2015
-[    0.000000] e820: update [mem 0x00000000-0x00000fff] usable ==> reserved
-[    0.000000] e820: remove [mem 0x000a0000-0x000fffff] usable
-[    0.000000] AGP: No AGP bridge found
-[    0.000000] e820: last_pfn = 0x3c000 max_arch_pfn = 0x400000000
-[    0.000000] MTRR default type: uncachable
-[    0.000000] MTRR fixed ranges enabled:
-[    0.000000]   00000-9FFFF write-back
-[    0.000000]   A0000-FFFFF write-protect
-[    0.000000] MTRR variable ranges enabled:
-[    0.000000]   0 base 000000000 mask FC0000000 write-back
-[    0.000000]   1 base 03E000000 mask FFE000000 uncachable
-[    0.000000]   2 base 03D000000 mask FFF000000 uncachable
-[    0.000000]   3 base 03C800000 mask FFF800000 uncachable
-[    0.000000]   4 base 03C400000 mask FFFC00000 uncachable
-[    0.000000]   5 disabled
-[    0.000000]   6 disabled
-[    0.000000]   7 disabled
-[    0.000000] PAT configuration [0-7]: WB  WC  UC- UC  WB  WC  UC- UC  
-[    0.000000] original variable MTRRs
-[    0.000000] reg 0, base: 0GB, range: 1GB, type WB
-[    0.000000] reg 1, base: 992MB, range: 32MB, type UC
-[    0.000000] reg 2, base: 976MB, range: 16MB, type UC
-[    0.000000] reg 3, base: 968MB, range: 8MB, type UC
-[    0.000000] reg 4, base: 964MB, range: 4MB, type UC
-[    0.000000] total RAM covered: 964M
-[    0.000000] Found optimal setting for mtrr clean up
-[    0.000000]  gran_size: 64K 	chunk_size: 64K 	num_reg: 5  	lose
-cover RAM: 0G
-[    0.000000] New variable MTRRs
-[    0.000000] reg 0, base: 0GB, range: 512MB, type WB
-[    0.000000] reg 1, base: 512MB, range: 256MB, type WB
-[    0.000000] reg 2, base: 768MB, range: 128MB, type WB
-[    0.000000] reg 3, base: 896MB, range: 64MB, type WB
-[    0.000000] reg 4, base: 960MB, range: 4MB, type WB
-[    0.000000] Scanning 1 areas for low memory corruption
-[    0.000000] Base memory trampoline at [ffff880000098000] 98000 size 24576
-[    0.000000] init_memory_mapping: [mem 0x00000000-0x000fffff]
-[    0.000000]  [mem 0x00000000-0x000fffff] page 4k
-[    0.000000] BRK [0x02fd4000, 0x02fd4fff] PGTABLE
-[    0.000000] BRK [0x02fd5000, 0x02fd5fff] PGTABLE
-[    0.000000] BRK [0x02fd6000, 0x02fd6fff] PGTABLE
-[    0.000000] init_memory_mapping: [mem 0x3ac00000-0x3adfffff]
-[    0.000000]  [mem 0x3ac00000-0x3adfffff] page 2M
-[    0.000000] init_memory_mapping: [mem 0x20200000-0x3abfffff]
-[    0.000000]  [mem 0x20200000-0x3abfffff] page 2M
-[    0.000000] init_memory_mapping: [mem 0x00100000-0x1fffffff]
-[    0.000000]  [mem 0x00100000-0x001fffff] page 4k
-[    0.000000]  [mem 0x00200000-0x1fffffff] page 2M
-[    0.000000] init_memory_mapping: [mem 0x3ae00000-0x3b120fff]
-[    0.000000]  [mem 0x3ae00000-0x3affffff] page 2M
-[    0.000000]  [mem 0x3b000000-0x3b120fff] page 4k
-[    0.000000] BRK [0x02fd7000, 0x02fd7fff] PGTABLE
-[    0.000000] init_memory_mapping: [mem 0x3b151000-0x3b274fff]
-[    0.000000]  [mem 0x3b151000-0x3b274fff] page 4k
-[    0.000000] BRK [0x02fd8000, 0x02fd8fff] PGTABLE
-[    0.000000] init_memory_mapping: [mem 0x3ba6f000-0x3ba74fff]
-[    0.000000]  [mem 0x3ba6f000-0x3ba74fff] page 4k
-[    0.000000] BRK [0x02fd9000, 0x02fd9fff] PGTABLE
-[    0.000000] init_memory_mapping: [mem 0x3ba76000-0x3ba78fff]
-[    0.000000]  [mem 0x3ba76000-0x3ba78fff] page 4k
-[    0.000000] init_memory_mapping: [mem 0x3ba7a000-0x3bffffff]
-[    0.000000]  [mem 0x3ba7a000-0x3bbfffff] page 4k
-[    0.000000]  [mem 0x3bc00000-0x3bffffff] page 2M
-[    0.000000] RAMDISK: [mem 0x35a2c000-0x36d0dfff]
-[    0.000000] ACPI: Early table checksum verification disabled
-[    0.000000] ACPI: RSDP 0x000000003B2B9000 000024 (v02 ALASKA)
-[    0.000000] ACPI: XSDT 0x000000003B2B90A8 0000CC (v01 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: FACP 0x000000003B2D5180 00010C (v05 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: DSDT 0x000000003B2B9208 01BF77 (v02 ALASKA A M I
-01072009 INTL 20120913)
-[    0.000000] ACPI: FACS 0x000000003B75DF80 000040
-[    0.000000] ACPI: APIC 0x000000003B2D5290 000084 (v03 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: FPDT 0x000000003B2D5318 000044 (v01 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: FIDT 0x000000003B2D5360 00009C (v01 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: MCFG 0x000000003B2D5400 00003C (v01 ALASKA A M I
-01072009 MSFT 00000097)
-[    0.000000] ACPI: SSDT 0x000000003B2D5440 003FD8 (v01 DptfTb DptfTab
-00001000 INTL 20120913)
-[    0.000000] ACPI: SSDT 0x000000003B2D9418 000654 (v01 CpuDpf CpuDptf
-00001000 INTL 20120913)
-[    0.000000] ACPI: SSDT 0x000000003B2D9A70 000058 (v01 LowPM  LowPwrM
-00001000 INTL 20120913)
-[    0.000000] ACPI: UEFI 0x000000003B2D9AC8 000042 (v01 ALASKA A M I
-00000000      00000000)
-[    0.000000] ACPI: HPET 0x000000003B2D9B10 000038 (v01 ALASKA A M I
-01072009 AMI. 00000005)
-[    0.000000] ACPI: SSDT 0x000000003B2D9B48 000763 (v01 PmRef  CpuPm
-00003000 INTL 20120913)
-[    0.000000] ACPI: SSDT 0x000000003B2DA2B0 000290 (v01 PmRef  Cpu0Tst
-00003000 INTL 20120913)
-[    0.000000] ACPI: SSDT 0x000000003B2DA540 00017A (v01 PmRef  ApTst
-00003000 INTL 20120913)
-[    0.000000] ACPI: SSDT 0x000000003B2DA6C0 00043A (v01 Intel_ Tpm2Tabl
-00001000 INTL 20120913)
-[    0.000000] ACPI: TPM2 0x000000003B2DAB00 000034 (v03
-00000000      00000000)
-[    0.000000] ACPI: LPIT 0x000000003B2DAB38 000104 (v01 ALASKA A M I
-00000005 MSFT 0100000D)
-[    0.000000] ACPI: BCFG 0x000000003B2DAC40 000139 (v01 INTEL  BATTCONF
-00000001 INTL 00000000)
-[    0.000000] ACPI: PRAM 0x000000003B2DAD80 000030 (v01
-00000001      00000000)
-[    0.000000] ACPI: BGRT 0x000000003B2DADB0 000038 (v01 ALASKA A M I
-01072009 AMI  00010013)
-[    0.000000] ACPI: CSRT 0x000000003B2DADE8 00014C (v00 INTEL  LANFORDC
-00000005 MSFT 0100000D)
-[    0.000000] ACPI: WDAT 0x000000003B2DAF38 000104 (v01
-00000000      00000000)
-[    0.000000] ACPI: Local APIC address 0xfee00000
-[    0.000000] No NUMA configuration found
-[    0.000000] Faking a node at [mem 0x0000000000000000-0x000000003bffffff]
-[    0.000000] NODE_DATA(0) allocated [mem 0x3b270000-0x3b274fff]
-[    0.000000]  [ffffea0000000000-ffffea0000ffffff] PMD ->
-[ffff880034a00000-ffff8800359fffff] on node 0
-[    0.000000] Zone ranges:
-[    0.000000]   DMA      [mem 0x00001000-0x00ffffff]
-[    0.000000]   DMA32    [mem 0x01000000-0x3bffffff]
-[    0.000000]   Normal   empty
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x00001000-0x0008efff]
-[    0.000000]   node   0: [mem 0x00090000-0x0009dfff]
-[    0.000000]   node   0: [mem 0x00100000-0x1fffffff]
-[    0.000000]   node   0: [mem 0x20200000-0x3b120fff]
-[    0.000000]   node   0: [mem 0x3b151000-0x3b274fff]
-[    0.000000]   node   0: [mem 0x3ba6f000-0x3ba74fff]
-[    0.000000]   node   0: [mem 0x3ba76000-0x3ba78fff]
-[    0.000000]   node   0: [mem 0x3ba7a000-0x3bffffff]
-[    0.000000] Initmem setup node 0 [mem 0x00001000-0x3bffffff]
-[    0.000000] On node 0 totalpages: 243056
-[    0.000000]   DMA zone: 64 pages used for memmap
-[    0.000000]   DMA zone: 22 pages reserved
-[    0.000000]   DMA zone: 3996 pages, LIFO batch:0
-[    0.000000]   DMA32 zone: 3776 pages used for memmap
-[    0.000000]   DMA32 zone: 239060 pages, LIFO batch:31
-[    0.000000] Reserving Intel graphics stolen memory at
-0x3cc00000-0x3ebfffff
-[    0.000000] ACPI: PM-Timer IO Port: 0x408
-[    0.000000] ACPI: Local APIC address 0xfee00000
-[    0.000000] ACPI: LAPIC (acpi_id[0x01] lapic_id[0x00] enabled)
-[    0.000000] ACPI: LAPIC (acpi_id[0x02] lapic_id[0x02] enabled)
-[    0.000000] ACPI: LAPIC (acpi_id[0x03] lapic_id[0x04] enabled)
-[    0.000000] ACPI: LAPIC (acpi_id[0x04] lapic_id[0x06] enabled)
-[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x01] high edge lint[0x1])
-[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x02] high edge lint[0x1])
-[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x03] high edge lint[0x1])
-[    0.000000] ACPI: LAPIC_NMI (acpi_id[0x04] high edge lint[0x1])
-[    0.000000] ACPI: IOAPIC (id[0x01] address[0xfec00000] gsi_base[0])
-[    0.000000] IOAPIC[0]: apic_id 1, version 32, address 0xfec00000, GSI
-0-114
-[    0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
-[    0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
-[    0.000000] ACPI: IRQ0 used by override.
-[    0.000000] ACPI: IRQ9 used by override.
-[    0.000000] Using ACPI (MADT) for SMP configuration information
-[    0.000000] ACPI: HPET id: 0x8086a201 base: 0xfed00000
-[    0.000000] smpboot: Allowing 4 CPUs, 0 hotplug CPUs
-[    0.000000] PM: Registered nosave memory: [mem 0x00000000-0x00000fff]
-[    0.000000] PM: Registered nosave memory: [mem 0x0008f000-0x0008ffff]
-[    0.000000] PM: Registered nosave memory: [mem 0x0009e000-0x0009ffff]
-[    0.000000] PM: Registered nosave memory: [mem 0x000a0000-0x000fffff]
-[    0.000000] PM: Registered nosave memory: [mem 0x20000000-0x201fffff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3b121000-0x3b150fff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3b275000-0x3b75dfff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3b75e000-0x3ba14fff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3ba15000-0x3ba6efff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3ba75000-0x3ba75fff]
-[    0.000000] PM: Registered nosave memory: [mem 0x3ba79000-0x3ba79fff]
-[    0.000000] e820: [mem 0x3ec00000-0xdfffffff] available for PCI devices
-[    0.000000] Booting paravirtualized kernel on bare hardware
-[    0.000000] setup_percpu: NR_CPUS:256 nr_cpumask_bits:256 nr_cpu_ids:4
-nr_node_ids:1
-[    0.000000] PERCPU: Embedded 31 pages/cpu @ffff88003ac00000 s86144 r8192
-d32640 u524288
-[    0.000000] pcpu-alloc: s86144 r8192 d32640 u524288 alloc=1*2097152
-[    0.000000] pcpu-alloc: [0] 0 1 2 3 
-[    0.000000] Built 1 zonelists in Node order, mobility grouping on.  Total
-pages: 239194
-[    0.000000] Policy zone: DMA32
-[    0.000000] Kernel command line:
-BOOT_IMAGE=/boot/vmlinuz-3.19.0-25-generic.efi.signed
-root=UUID=a6ccfb7f-4e13-429f-8f8e-fe3a4f2e00f2 ro console=tty0
-console=ttyS0,115200 quiet splash
-[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
-[    0.000000] AGP: Checking aperture...
-[    0.000000] AGP: No AGP bridge found
-[    0.000000] Calgary: detecting Calgary via BIOS EBDA area
-[    0.000000] Calgary: Unable to locate Rio Grande table in EBDA - bailing!
-[    0.000000] Memory: 871436K/972224K available (7918K kernel code, 1172K
-rwdata, 3752K rodata, 1408K init, 1292K bss, 100788K reserved, 0K
-cma-reserved)
-[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-[    0.000000] Hierarchical RCU implementation.
-[    0.000000] 	RCU dyntick-idle grace-period acceleration is enabled.
-[    0.000000] 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=4.
-[    0.000000] RCU: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
-[    0.000000] NR_IRQS:16640 nr_irqs:1024 16
-[    0.000000] 	Offload RCU callbacks from all CPUs
-[    0.000000] 	Offload RCU callbacks from CPUs: 0-3.
-[    0.000000] Console: colour dummy device 80x25
-[    0.000000] console [tty0] enabled
-[    0.000000] console [ttyS0] enabled
-[    0.000000] hpet clockevent registered
-[    0.000000] tsc: Fast TSC calibration failed
-[    0.000000] tsc: PIT calibration matches HPET. 1 loops
-[    0.000000] tsc: Detected 1439.756 MHz processor
-[    0.000055] Calibrating delay loop (skipped), value calculated using
-timer frequency.. 2879.51 BogoMIPS (lpj=5759024)
-[    0.000064] pid_max: default: 32768 minimum: 301
-[    0.000077] ACPI: Core revision 20141107
-[    0.059843] ACPI: All ACPI Tables successfully acquired
-[    0.061748] Security Framework initialized
-[    0.061783] AppArmor: AppArmor initialized
-[    0.061788] Yama: becoming mindful.
-[    0.062025] Dentry cache hash table entries: 131072 (order: 8, 1048576
-bytes)
-[    0.062690] Inode-cache hash table entries: 65536 (order: 7, 524288
-bytes)
-[    0.062998] Mount-cache hash table entries: 2048 (order: 2, 16384 bytes)
-[    0.063010] Mountpoint-cache hash table entries: 2048 (order: 2, 16384
-bytes)
-[    0.063466] Initializing cgroup subsys memory
-[    0.063485] Initializing cgroup subsys devices
-[    0.063493] Initializing cgroup subsys freezer
-[    0.063500] Initializing cgroup subsys net_cls
-[    0.063507] Initializing cgroup subsys blkio
-[    0.063513] Initializing cgroup subsys perf_event
-[    0.063520] Initializing cgroup subsys net_prio
-[    0.063527] Initializing cgroup subsys hugetlb
-[    0.063569] CPU: Physical Processor ID: 0
-[    0.063574] CPU: Processor Core ID: 0
-[    0.063581] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
-[    0.063581] ENERGY_PERF_BIAS: View and update with
-x86_energy_perf_policy(8)
-[    0.069096] mce: CPU supports 6 MCE banks
-[    0.069112] CPU0: Thermal monitoring enabled (TM1)
-[    0.069117] process: using mwait in idle threads
-[    0.069128] Last level iTLB entries: 4KB 48, 2MB 0, 4MB 0
-[    0.069128] Last level dTLB entries: 4KB 256, 2MB 16, 4MB 16, 1GB 0
-[    0.069299] Freeing SMP alternatives memory: 32K (ffffffff81e87000 -
-ffffffff81e8f000)
-[    0.076136] ftrace: allocating 29988 entries in 118 pages
-[    0.100956] ..TIMER: vector=0x30 apic1=0 pin1=2 apic2=0 pin2=0
-[    0.140637] smpboot: CPU0: Intel(R) Atom(TM) x5-Z8300  CPU @ 1.44GHz
-(fam: 06, model: 4c, stepping: 03)
-[    0.140658] TSC deadline timer enabled
-[    0.140713] Performance Events: PEBS fmt2+, 8-deep LBR, Silvermont
-events, full-width counters, Intel PMU driver.
-[    0.140735] ... version:                3
-[    0.140738] ... bit width:              40
-[    0.140740] ... generic registers:      2
-[    0.140743] ... value mask:             000000ffffffffff
-[    0.140746] ... max period:             000000ffffffffff
-[    0.140749] ... fixed-purpose events:   3
-[    0.140751] ... event mask:             0000000700000003
-[    0.143082] x86: Booting SMP configuration:
-[    0.143090] .... node  #0, CPUs:      #1
-[    0.161790] NMI watchdog: enabled on all CPUs, permanently consumes one
-hw-PMU counter.
-[    0.162136]  #2 #3
-[    0.199497] x86: Booted up 1 node, 4 CPUs
-[    0.199504] smpboot: Total of 4 processors activated (11518.04 BogoMIPS)
-[    0.200858] devtmpfs: initialized
-[    0.210027] evm: security.selinux
-[    0.210032] evm: security.SMACK64
-[    0.210034] evm: security.SMACK64EXEC
-[    0.210037] evm: security.SMACK64TRANSMUTE
-[    0.210041] evm: security.SMACK64MMAP
-[    0.210045] evm: security.ima
-[    0.210047] evm: security.capability
-[    0.210216] PM: Registering ACPI NVS region [mem 0x0008f000-0x0008ffff]
-(4096 bytes)
-[    0.210223] PM: Registering ACPI NVS region [mem 0x3b275000-0x3b75dfff]
-(5148672 bytes)
-[    0.210808] pinctrl core: initialized pinctrl subsystem
-[    0.211083] RTC time:  3:38:58, date: 11/05/15
-[    0.211431] NET: Registered protocol family 16
-[    0.217704] cpuidle: using governor ladder
-[    0.221718] cpuidle: using governor menu
-[    0.221896] ACPI: bus type PCI registered
-[    0.221904] acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5
-[    0.222125] PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem
-0xe0000000-0xefffffff] (base 0xe0000000)
-[    0.222134] PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved in E820
-[    0.222140] PCI: MMCONFIG for 0000 [bus00-3f] at [mem
-0xe0000000-0xe3ffffff] (base 0xe0000000) (size reduced!)
-[    0.222425] PCI: Using configuration type 1 for base access
-[    0.228718] ACPI: Added _OSI(Module Device)
-[    0.228725] ACPI: Added _OSI(Processor Device)
-[    0.228729] ACPI: Added _OSI(3.0 _SCP Extensions)
-[    0.228732] ACPI: Added _OSI(Processor Aggregator Device)
-[    0.268886] ACPI: Dynamic OEM Table Load:
-[    0.268908] ACPI: SSDT 0xFFFF8800377E2800 00057B (v01 PmRef  Cpu0Ist
-00003000 INTL 20120913)
-[    0.271345] ACPI: Dynamic OEM Table Load:
-[    0.271359] ACPI: SSDT 0xFFFF88003A0A0400 0003A5 (v01 PmRef  Cpu0Cst
-00003001 INTL 20120913)
-[    0.274269] ACPI: Dynamic OEM Table Load:
-[    0.274284] ACPI: SSDT 0xFFFF88003A037E00 00015F (v01 PmRef  ApIst
-00003000 INTL 20120913)
-[    0.276658] ACPI: Dynamic OEM Table Load:
-[    0.276671] ACPI: SSDT 0xFFFF88003A0813C0 00008D (v01 PmRef  ApCst
-00003000 INTL 20120913)
-[    0.281297] ACPI: Interpreter enabled
-[    0.281317] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State
-[\_S1_] (20141107/hwxface-580)
-[    0.281330] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State
-[\_S2_] (20141107/hwxface-580)
-[    0.281341] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State
-[\_S3_] (20141107/hwxface-580)
-[    0.281371] ACPI: (supports S0 S4 S5)
-[    0.281375] ACPI: Using IOAPIC for interrupt routing
-[    0.281464] PCI: Using host bridge windows from ACPI; if necessary, use
-"pci=nocrs" and report a bug
-[    0.282483] ACPI: Power Resource [P06X] (off)
-[    0.284598] ACPI: Power Resource [ID3C] (on)
-[    0.287328] ACPI: Power Resource [USBC] (on)
-[    0.288525] ACPI: Power Resource [WWPR] (off)
-[    0.289310] ACPI: Power Resource [WWPR] (off)
-[    0.290498] ACPI: Power Resource [WWPR] (off)
-[    0.291238] ACPI: Power Resource [WWPR] (off)
-[    0.292024] ACPI: Power Resource [WWPR] (off)
-[    0.292859] ACPI: Power Resource [WWPR] (off)
-[    0.308580] ACPI: Power Resource [CLK3] (on)
-[    0.308696] ACPI: Power Resource [CLK4] (on)
-[    0.320804] ACPI: Power Resource [CLK2] (on)
-[    0.321372] ACPI: Power Resource [CLK1] (on)
-[    0.323522] ACPI: Power Resource [CLK0] (on)
-[    0.323640] ACPI: Power Resource [CLK1] (on)
-[    0.325796] ACPI: Power Resource [P19X] (off)
-[    0.338506] ACPI: Power Resource [P28X] (off)
-[    0.338620] ACPI: Power Resource [P18X] (off)
-[    0.338738] ACPI: Power Resource [P12X] (off)
-[    0.338847] ACPI: Power Resource [P28P] (off)
-[    0.338961] ACPI: Power Resource [P18P] (off)
-[    0.339098] ACPI: Power Resource [P28T] (off)
-[    0.339207] ACPI: Power Resource [P18D] (off)
-[    0.339330] ACPI: Power Resource [P18T] (off)
-[    0.339440] ACPI: Power Resource [P3P3] (off)
-[    0.339556] ACPI: Power Resource [P12T] (off)
-[    0.339666] ACPI: Power Resource [P28W] (off)
-[    0.339798] ACPI: Power Resource [P18W] (off)
-[    0.339908] ACPI: Power Resource [P12W] (off)
-[    0.340024] ACPI: Power Resource [P33W] (off)
-[    0.340137] ACPI: Power Resource [P33X] (off)
-[    0.340360]  (null): Returned _DSD data is not valid, skipping
-[    0.347658] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
-[    0.347675] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM
-ClockPM Segments MSI]
-[    0.348234] acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug PME AER
-PCIeCapability]
-[    0.349008] acpi PNP0A08:00: [Firmware Info]: MMCONFIG for domain 0000
-[bus 00-3f] only partially covers this bridge
-[    0.349848] PCI host bridge to bus 0000:00
-[    0.349858] pci_bus 0000:00: root bus resource [bus 00-ff]
-[    0.349864] pci_bus 0000:00: root bus resource [io  0x0000-0x006f]
-[    0.349869] pci_bus 0000:00: root bus resource [io  0x0078-0x0cf7]
-[    0.349875] pci_bus 0000:00: root bus resource [io  0x0d00-0xffff]
-[    0.349880] pci_bus 0000:00: root bus resource [mem
-0x000a0000-0x000bffff]
-[    0.349885] pci_bus 0000:00: root bus resource [mem
-0x000c0000-0x000dffff]
-[    0.349890] pci_bus 0000:00: root bus resource [mem
-0x000e0000-0x000fffff]
-[    0.349895] pci_bus 0000:00: root bus resource [mem
-0x20000000-0x201fffff]
-[    0.349900] pci_bus 0000:00: root bus resource [mem
-0x3cc00001-0x3ec00000]
-[    0.349905] pci_bus 0000:00: root bus resource [mem
-0x40000000-0xdfffffff]
-[    0.349923] pci 0000:00:00.0: [8086:2280] type 00 class 0x060000
-[    0.350308] pci 0000:00:02.0: [8086:22b0] type 00 class 0x030000
-[    0.350347] pci 0000:00:02.0: reg 0x10: [mem 0x90000000-0x90ffffff 64bit]
-[    0.350365] pci 0000:00:02.0: reg 0x18: [mem 0x80000000-0x8fffffff 64bit
-pref]
-[    0.350378] pci 0000:00:02.0: reg 0x20: [io  0xf000-0xf03f]
-[    0.350742] pci 0000:00:0b.0: [8086:22dc] type 00 class 0x118000
-[    0.350776] pci 0000:00:0b.0: reg 0x10: [mem 0x9153b000-0x9153bfff 64bit]
-[    0.351186] pci 0000:00:14.0: [8086:22b5] type 00 class 0x0c0330
-[    0.351228] pci 0000:00:14.0: reg 0x10: [mem 0x91500000-0x9150ffff 64bit]
-[    0.351352] pci 0000:00:14.0: PME# supported from D3hot D3cold
-[    0.351659] pci 0000:00:1a.0: [8086:2298] type 00 class 0x108000
-[    0.351690] pci 0000:00:1a.0: reg 0x10: [mem 0x91300000-0x913fffff]
-[    0.351708] pci 0000:00:1a.0: reg 0x14: [mem 0x91200000-0x912fffff]
-[    0.351833] pci 0000:00:1a.0: PME# supported from D0 D3hot
-[    0.352123] pci 0000:00:1c.0: [8086:22c8] type 01 class 0x060400
-[    0.352261] pci 0000:00:1c.0: PME# supported from D0 D3hot D3cold
-[    0.352564] pci 0000:00:1f.0: [8086:229c] type 00 class 0x060100
-[    0.353150] pci 0000:01:00.0: [10ec:8168] type 00 class 0x020000
-[    0.353186] pci 0000:01:00.0: reg 0x10: [io  0xe000-0xe0ff]
-[    0.353234] pci 0000:01:00.0: reg 0x18: [mem 0x91404000-0x91404fff 64bit]
-[    0.353264] pci 0000:01:00.0: reg 0x20: [mem 0x91400000-0x91403fff 64bit
-pref]
-[    0.353410] pci 0000:01:00.0: supports D1 D2
-[    0.353415] pci 0000:01:00.0: PME# supported from D0 D1 D2 D3hot D3cold
-[    0.359785] pci 0000:00:1c.0: PCI bridge to [bus 01]
-[    0.359796] pci 0000:00:1c.0:   bridge window [io  0xe000-0xefff]
-[    0.359804] pci 0000:00:1c.0:   bridge window [mem 0x91400000-0x914fffff]
-[    0.371990] ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372160] ACPI: PCI Interrupt Link [LNKB] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372324] ACPI: PCI Interrupt Link [LNKC] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372488] ACPI: PCI Interrupt Link [LNKD] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372657] ACPI: PCI Interrupt Link [LNKE] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372822] ACPI: PCI Interrupt Link [LNKF] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.372991] ACPI: PCI Interrupt Link [LNKG] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.373157] ACPI: PCI Interrupt Link [LNKH] (IRQs 3 4 5 6 10 11 12 14 15)
-*0, disabled.
-[    0.377673] vgaarb: setting as boot device: PCI:0000:00:02.0
-[    0.377681] vgaarb: device added:
-PCI:0000:00:02.0,decodes=io+mem,owns=io+mem,locks=none
-[    0.377687] vgaarb: loaded
-[    0.377691] vgaarb: bridge control possible 0000:00:02.0
-[    0.378320] SCSI subsystem initialized
-[    0.378451] libata version 3.00 loaded.
-[    0.378528] ACPI: bus type USB registered
-[    0.378588] usbcore: registered new interface driver usbfs
-[    0.378616] usbcore: registered new interface driver hub
-[    0.378673] usbcore: registered new device driver usb
-[    0.379233] PCI: Using ACPI for IRQ routing
-[    0.381966] PCI: pci_cache_line_size set to 64 bytes
-[    0.382028] Expanded resource reserved due to conflict with PCI Bus
-0000:00
-[    0.382035] e820: reserve RAM buffer [mem 0x0008f000-0x0008ffff]
-[    0.382040] e820: reserve RAM buffer [mem 0x0009e000-0x0009ffff]
-[    0.382044] e820: reserve RAM buffer [mem 0x3b121000-0x3bffffff]
-[    0.382048] e820: reserve RAM buffer [mem 0x3b275000-0x3bffffff]
-[    0.382052] e820: reserve RAM buffer [mem 0x3ba75000-0x3bffffff]
-[    0.382056] e820: reserve RAM buffer [mem 0x3ba79000-0x3bffffff]
-[    0.382369] NetLabel: Initializing
-[    0.382375] NetLabel:  domain hash size = 128
-[    0.382378] NetLabel:  protocols = UNLABELED CIPSOv4
-[    0.382410] NetLabel:  unlabeled traffic allowed by default
-[    0.382619] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0
-[    0.382630] hpet0: 3 comparators, 64-bit 14.318180 MHz counter
-[    0.384727] Switched to clocksource hpet
-[    0.399118] AppArmor: AppArmor Filesystem Enabled
-[    0.399314] pnp: PnP ACPI init
-[    0.399604] system 00:00: [io  0x0680-0x069f] has been reserved
-[    0.399613] system 00:00: [io  0x0400-0x047f] could not be reserved
-[    0.399619] system 00:00: [io  0x0500-0x05fe] has been reserved
-[    0.399629] system 00:00: Plug and Play ACPI device, IDs PNP0c02 (active)
-[    0.399846] pnp 00:01: Plug and Play ACPI device, IDs PNP0501 (active)
-[    0.406549] system 00:02: [mem 0x91539000-0x91539fff] has been reserved
-[    0.406560] system 00:02: [mem 0x91537000-0x91537fff] has been reserved
-[    0.406566] system 00:02: [mem 0x91535000-0x91535fff] has been reserved
-[    0.406572] system 00:02: [mem 0x91524000-0x91524fff] has been reserved
-[    0.406578] system 00:02: [mem 0x91522000-0x91522fff] has been reserved
-[    0.406584] system 00:02: [mem 0x91520000-0x91520fff] has been reserved
-[    0.406590] system 00:02: [mem 0x9151e000-0x9151efff] has been reserved
-[    0.406596] system 00:02: [mem 0x9151c000-0x9151cfff] has been reserved
-[    0.406602] system 00:02: [mem 0x9151a000-0x9151afff] has been reserved
-[    0.406607] system 00:02: [mem 0x91518000-0x91518fff] has been reserved
-[    0.406613] system 00:02: [mem 0x91533000-0x91533fff] has been reserved
-[    0.406619] system 00:02: [mem 0x91531000-0x91531fff] has been reserved
-[    0.406625] system 00:02: [mem 0x9152f000-0x9152ffff] has been reserved
-[    0.406631] system 00:02: [mem 0x9152d000-0x9152dfff] has been reserved
-[    0.406637] system 00:02: [mem 0x9152b000-0x9152bfff] has been reserved
-[    0.406643] system 00:02: [mem 0x91529000-0x91529fff] has been reserved
-[    0.406649] system 00:02: [mem 0x91527000-0x91527fff] has been reserved
-[    0.406655] system 00:02: [mem 0x91525000-0x91525fff] has been reserved
-[    0.406664] system 00:02: Plug and Play ACPI device, IDs PNP0c02 (active)
-[    0.406910] system 00:03: [mem 0xe0000000-0xefffffff] could not be
-reserved
-[    0.406918] system 00:03: [mem 0xfea00000-0xfeafffff] has been reserved
-[    0.406926] system 00:03: [mem 0xfed01000-0xfed01fff] has been reserved
-[    0.406932] system 00:03: [mem 0xfed03000-0xfed03fff] has been reserved
-[    0.406938] system 00:03: [mem 0xfed06000-0xfed06fff] has been reserved
-[    0.406944] system 00:03: [mem 0xfed08000-0xfed09fff] has been reserved
-[    0.406950] system 00:03: [mem 0xfed80000-0xfedbffff] could not be
-reserved
-[    0.406956] system 00:03: [mem 0xfed1c000-0xfed1cfff] has been reserved
-[    0.406962] system 00:03: [mem 0xfee00000-0xfeefffff] could not be
-reserved
-[    0.406969] system 00:03: Plug and Play ACPI device, IDs PNP0c02 (active)
-[    0.407350] pnp 00:04: Plug and Play ACPI device, IDs PNP0b00 (active)
-[    0.408815] pnp: PnP ACPI: found 5 devices
-[    0.420099] pci 0000:00:1c.0: PCI bridge to [bus 01]
-[    0.420110] pci 0000:00:1c.0:   bridge window [io  0xe000-0xefff]
-[    0.420123] pci 0000:00:1c.0:   bridge window [mem 0x91400000-0x914fffff]
-[    0.420143] pci_bus 0000:00: resource 4 [io  0x0000-0x006f]
-[    0.420148] pci_bus 0000:00: resource 5 [io  0x0078-0x0cf7]
-[    0.420153] pci_bus 0000:00: resource 6 [io  0x0d00-0xffff]
-[    0.420158] pci_bus 0000:00: resource 7 [mem 0x000a0000-0x000bffff]
-[    0.420163] pci_bus 0000:00: resource 8 [mem 0x000c0000-0x000dffff]
-[    0.420168] pci_bus 0000:00: resource 9 [mem 0x000e0000-0x000fffff]
-[    0.420173] pci_bus 0000:00: resource 10 [mem 0x20000000-0x201fffff]
-[    0.420178] pci_bus 0000:00: resource 11 [mem 0x3cc00001-0x3ec00000]
-[    0.420183] pci_bus 0000:00: resource 12 [mem 0x40000000-0xdfffffff]
-[    0.420188] pci_bus 0000:01: resource 0 [io  0xe000-0xefff]
-[    0.420193] pci_bus 0000:01: resource 1 [mem 0x91400000-0x914fffff]
-[    0.420257] NET: Registered protocol family 2
-[    0.420691] TCP established hash table entries: 8192 (order: 4, 65536
-bytes)
-[    0.420774] TCP bind hash table entries: 8192 (order: 5, 131072 bytes)
-[    0.420831] TCP: Hash tables configured (established 8192 bind 8192)
-[    0.420888] TCP: reno registered
-[    0.420899] UDP hash table entries: 512 (order: 2, 16384 bytes)
-[    0.420916] UDP-Lite hash table entries: 512 (order: 2, 16384 bytes)
-[    0.421020] NET: Registered protocol family 1
-[    0.421061] pci 0000:00:02.0: Video device with shadowed ROM
-[    0.421524] PCI: CLS 64 bytes, default 64
-[    0.421658] Trying to unpack rootfs image as initramfs...
-[    1.119592] Freeing initrd memory: 19336K (ffff880035a2c000 -
-ffff880036d0e000)
-[    1.120212] microcode: CPU0 sig=0x406c3, pf=0x1, revision=0x34f
-[    1.120231] microcode: CPU1 sig=0x406c3, pf=0x1, revision=0x34f
-[    1.120253] microcode: CPU2 sig=0x406c3, pf=0x1, revision=0x34f
-[    1.120273] microcode: CPU3 sig=0x406c3, pf=0x1, revision=0x34f
-[    1.120420] microcode: Microcode Update Driver: v2.00
-<tigran@aivazian.fsnet.co.uk>, Peter Oruba
-[    1.120540] Scanning for low memory corruption every 60 seconds
-[    1.121493] futex hash table entries: 1024 (order: 4, 65536 bytes)
-[    1.121531] Initialise system trusted keyring
-[    1.121591] audit: initializing netlink subsys (disabled)
-[    1.121637] audit: type=2000 audit(1446694739.116:1): initialized
-[    1.122361] HugeTLB registered 2 MB page size, pre-allocated 0 pages
-[    1.126700] zpool: loaded
-[    1.126708] zbud: loaded
-[    1.127112] VFS: Disk quotas dquot_6.5.2
-[    1.127218] VFS: Dquot-cache hash table entries: 512 (order 0, 4096
-bytes)
-[    1.128655] fuse init (API version 7.23)
-[    1.129071] Key type big_key registered
-[    1.130403] Key type asymmetric registered
-[    1.130413] Asymmetric key parser 'x509' registered
-[    1.130541] Block layer SCSI generic (bsg) driver version 0.4 loaded
-(major 252)
-[    1.130674] io scheduler noop registered
-[    1.130683] io scheduler deadline registered (default)
-[    1.130780] io scheduler cfq registered
-[    1.131457] pcieport 0000:00:1c.0: Signaling PME through PCIe PME
-interrupt
-[    1.131465] pci 0000:01:00.0: Signaling PME through PCIe PME interrupt
-[    1.131475] pcie_pme 0000:00:1c.0:pcie01: service driver pcie_pme loaded
-[    1.131493] pci_hotplug: PCI Hot Plug PCI Core version: 0.5
-[    1.131537] pciehp: PCI Express Hot Plug Controller Driver version: 0.4
-[    1.131654] intel_idle: does not run on family 6 model 76
-[    1.132323] ACPI: AC Adapter [ADP1] (on-line)
-[    1.133021] input: Power Button as
-/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input0
-[    1.133032] ACPI: Power Button [PWRB]
-[    1.133154] input: Power Button as
-/devices/LNXSYSTM:00/LNXPWRBN:00/input/input1
-[    1.133162] ACPI: Power Button [PWRF]
-[    1.136254] Monitor-Mwait will be used to enter C-1 state
-[    1.136269] Monitor-Mwait will be used to enter C-2 state
-[    1.136278] Monitor-Mwait will be used to enter C-3 state
-[    1.136303] ACPI: acpi_idle registered with cpuidle
-[    1.139572] thermal LNXTHERM:00: registered as thermal_zone0
-[    1.139579] ACPI: Thermal Zone [TZ00] (0 C)
-[    1.139740] GHES: HEST is not enabled!
-[    1.140058] Serial: 8250/16550 driver, 32 ports, IRQ sharing enabled
-[    1.160432] 00:01: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a
-16550A
-[    1.165306] Linux agpgart interface v0.103
-[    1.169348] brd: module loaded
-[    1.171356] loop: module loaded
-[    1.171959] libphy: Fixed MDIO Bus: probed
-[    1.171970] tun: Universal TUN/TAP device driver, 1.6
-[    1.171973] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
-[    1.172105] PPP generic driver version 2.4.2
-[    1.172621] xhci_hcd 0000:00:14.0: xHCI Host Controller
-[    1.172639] xhci_hcd 0000:00:14.0: new USB bus registered, assigned bus
-number 1
-[    1.172872] xhci_hcd 0000:00:14.0: cache line size of 64 is not supported
-[    1.173077] usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
-[    1.173083] usb usb1: New USB device strings: Mfr=3, Product=2,
-SerialNumber=1
-[    1.173089] usb usb1: Product: xHCI Host Controller
-[    1.173094] usb usb1: Manufacturer: Linux 3.19.0-25-generic xhci-hcd
-[    1.173098] usb usb1: SerialNumber: 0000:00:14.0
-[    1.173443] hub 1-0:1.0: USB hub found
-[    1.173477] hub 1-0:1.0: 7 ports detected
-[    1.175216] xhci_hcd 0000:00:14.0: xHCI Host Controller
-[    1.175228] xhci_hcd 0000:00:14.0: new USB bus registered, assigned bus
-number 2
-[    1.175337] usb usb2: New USB device found, idVendor=1d6b, idProduct=0003
-[    1.175343] usb usb2: New USB device strings: Mfr=3, Product=2,
-SerialNumber=1
-[    1.175348] usb usb2: Product: xHCI Host Controller
-[    1.175352] usb usb2: Manufacturer: Linux 3.19.0-25-generic xhci-hcd
-[    1.175356] usb usb2: SerialNumber: 0000:00:14.0
-[    1.175649] hub 2-0:1.0: USB hub found
-[    1.175679] hub 2-0:1.0: 6 ports detected
-[    1.177265] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-[    1.177287] ehci-pci: EHCI PCI platform driver
-[    1.177325] ehci-platform: EHCI generic platform driver
-[    1.177382] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-[    1.177398] ohci-pci: OHCI PCI platform driver
-[    1.177431] ohci-platform: OHCI generic platform driver
-[    1.177460] uhci_hcd: USB Universal Host Controller Interface driver
-[    1.177594] i8042: PNP: No PS/2 controller found. Probing ports directly.
-[    1.708758] i8042: Can't read CTR while initializing i8042
-[    1.714923] i8042: probe of i8042 failed with error -5
-[    1.715258] mousedev: PS/2 mouse device common for all mice
-[    1.715960] rtc_cmos 00:04: rtc core: registered rtc_cmos as rtc0
-[    1.716030] rtc_cmos 00:04: alarms up to one month, y3k, 242 bytes nvram,
-hpet irqs
-[    1.716081] i2c /dev entries driver
-[    1.716277] device-mapper: uevent: version 1.0.3
-[    1.716626] device-mapper: ioctl: 4.29.0-ioctl (2014-10-28) initialised:
-dm-devel@redhat.com
-[    1.716653] Intel P-state driver initializing.
-[    1.717035] Consider also installing thermald for improved thermal
-control.
-[    1.717075] ledtrig-cpu: registered to indicate activity on CPUs
-[    1.717100] EFI Variables Facility v0.08 2004-May-17
-[    1.721916] PCCT header not found.
-[    1.721920] ACPI PCC probe failed.
-[    1.725933] TCP: cubic registered
-[    1.726180] NET: Registered protocol family 10
-[    1.727180] NET: Registered protocol family 17
-[    1.727206] Key type dns_resolver registered
-[    1.728224] Loading compiled-in X.509 certificates
-[    1.730298] Loaded X.509 cert 'Magrathea: Glacier signing key:
-6aaa11d18c2d3a40b1b4dbe5bf8ad656ddf51838'
-[    1.730329] registered taskstats version 1
-[    1.735935] Key type trusted registered
-[    1.745812] Key type encrypted registered
-[    1.745831] AppArmor: AppArmor sha1 policy hashing enabled
-[    1.745839] ima: No TPM chip found, activating TPM-bypass!
-[    1.745888] evm: HMAC attrs: 0x1
-[    1.746817]   Magic number: 7:302:613
-[    1.747405] rtc_cmos 00:04: setting system clock to 2015-11-05 03:38:59
-UTC (1446694739)
-[    1.747688] BIOS EDD facility v0.16 2004-Jun-25, 0 devices found
-[    1.747692] EDD information not available.
-[    1.748166] PM: Hibernation image not present or could not be loaded.
-[    1.749602] Freeing unused kernel memory: 1408K (ffffffff81d27000 -
-ffffffff81e87000)
-[    1.749609] Write protecting the kernel read-only data: 12288k
-[    1.750902] Freeing unused kernel memory: 260K (ffff8800027bf000 -
-ffff880002800000)
-[    1.751232] Freeing unused kernel memory: 344K (ffff880002baa000 -
-ffff880002c00000)
-[    1.779223] systemd-udevd[118]: starting version 204
-[    1.833258] sdhci: Secure Digital Host Controller Interface driver
-[    1.833265] sdhci: Copyright(c) Pierre Ossman
-[    1.837817] sdhci-acpi 80860F14:00: No vmmc regulator found
-[    1.837825] sdhci-acpi 80860F14:00: No vqmmc regulator found
-[    1.841112] mmc0: SDHCI controller on ACPI [80860F14:00] using ADMA
-[    1.841568] sdhci-acpi 80860F14:03: failed to setup card detect gpio
-[    1.842585] sdhci-acpi 80860F14:03: No vmmc regulator found
-[    1.842590] sdhci-acpi 80860F14:03: No vqmmc regulator found
-[    1.845869] mmc1: SDHCI controller on ACPI [80860F14:03] using ADMA
-[    1.882366] r8169 Gigabit Ethernet driver 2.3LK-NAPI loaded
-[    1.883236] r8169 0000:01:00.0 eth0: RTL8168evl/8111evl at
-0xffffc900001fe000, 24:1c:04:02:20:a8, XID 0c900800 IRQ 117
-[    1.883244] r8169 0000:01:00.0 eth0: jumbo features [frames: 9200 bytes,
-tx checksumming: ko]
-[    1.920549] usb 1-2: new high-speed USB device number 2 using xhci_hcd
-[    1.974261] mmc0: BKOPS_EN bit is not set
-[    1.983350] mmc0: new HS200 MMC card at address 0001
-[    1.988056] Driver 'mmcblk' needs updating - please use bus_type methods
-[    1.988445] mmcblk0: mmc0:0001 008GE0 7.28 GiB 
-[    1.988586] mmcblk0boot0: mmc0:0001 008GE0 partition 1 4.00 MiB
-[    1.988771] mmcblk0boot1: mmc0:0001 008GE0 partition 2 4.00 MiB
-[    1.989032] mmcblk0rpmb: mmc0:0001 008GE0 partition 3 4.00 MiB
-[    1.992025]  mmcblk0: p1 p2 p3
-[    2.092201] EXT4-fs (mmcblk0p2): INFO: recovery required on readonly
-filesystem
-[    2.092210] EXT4-fs (mmcblk0p2): write access will be enabled during
-recovery
-[    2.097865] EXT4-fs (mmcblk0p2): recovery complete
-[    2.102291] EXT4-fs (mmcblk0p2): mounted filesystem with ordered data
-mode. Opts: (null)
-[    2.117147] tsc: Refined TSC clocksource calibration: 1439.952 MHz
-[    2.827564] usb 1-2: New USB device found, idVendor=174c, idProduct=1153
-[    2.827580] usb 1-2: New USB device strings: Mfr=2, Product=3,
-SerialNumber=1
-[    2.827585] usb 1-2: Product: AS2115
-[    2.827588] usb 1-2: Manufacturer: ASMedia
-[    2.827591] usb 1-2: SerialNumber: 00000000000000000000
-[    2.940544] usb 1-4: new high-speed USB device number 3 using xhci_hcd
-[    3.071550] usb 1-4: New USB device found, idVendor=05e3, idProduct=0608
-[    3.071559] usb 1-4: New USB device strings: Mfr=0, Product=1,
-SerialNumber=0
-[    3.071564] usb 1-4: Product: USB2.0 Hub
-[    3.073272] hub 1-4:1.0: USB hub found
-[    3.073607] hub 1-4:1.0: 4 ports detected
-[    3.116441] Switched to clocksource tsc
-[    3.208481] random: init urandom read with 25 bits of entropy available
-[    3.256075] init: plymouth-upstart-bridge main process (178) terminated
-with status 1
-[    3.256111] init: plymouth-upstart-bridge main process ended, respawning
-[    3.272117] init: plymouth-upstart-bridge main process (188) terminated
-with status 1
-[    3.272150] init: plymouth-upstart-bridge main process ended, respawning
-[    3.284089] init: plymouth-upstart-bridge main process (191) terminated
-with status 1
-[    3.284122] init: plymouth-upstart-bridge main process ended, respawning
-[    3.348435] usb 1-4.1: new low-speed USB device number 4 using xhci_hcd
-[    3.439526] usb 1-4.1: New USB device found, idVendor=0461,
-idProduct=4d81
-[    3.439534] usb 1-4.1: New USB device strings: Mfr=0, Product=2,
-SerialNumber=0
-[    3.439539] usb 1-4.1: Product: USB Optical Mouse
-[    3.439756] usb 1-4.1: ep 0x81 - rounding interval to 64 microframes, ep
-desc says 80 microframes
-[    3.512419] usb 1-4.2: new low-speed USB device number 5 using xhci_hcd
-[    3.606272] usb 1-4.2: New USB device found, idVendor=413c,
-idProduct=2003
-[    3.606281] usb 1-4.2: New USB device strings: Mfr=1, Product=2,
-SerialNumber=0
-[    3.606286] usb 1-4.2: Product: Dell USB Keyboard
-[    3.606290] usb 1-4.2: Manufacturer: Dell
-[    3.606532] usb 1-4.2: ep 0x81 - rounding interval to 128 microframes, ep
-desc says 192 microframes
-[    3.640338] Adding 970748k swap on /dev/mmcblk0p3.  Priority:-1 extents:1
-across:970748k SSFS
-[    3.680388] usb 1-4.3: new high-speed USB device number 6 using xhci_hcd
-[    3.769360] usb 1-4.3: New USB device found, idVendor=0bda,
-idProduct=8179
-[    3.769369] usb 1-4.3: New USB device strings: Mfr=1, Product=2,
-SerialNumber=3
-[    3.769374] usb 1-4.3: Product: 802.11n NIC
-[    3.769378] usb 1-4.3: Manufacturer: Realtek
-[    3.769382] usb 1-4.3: SerialNumber: 8C18D9CA30B7
-[    3.907161] systemd-udevd[305]: starting version 204
-[    4.015323] lp: driver loaded but no devices found
-[    4.033848] ppdev: user-space parallel port driver
-[    4.058009] EXT4-fs (mmcblk0p2): re-mounted. Opts: errors=remount-ro
-[    4.195005] GPIO chip INT33FF:00: failed to get GPIO descriptor
-[    4.201670] cherryview-pinctrl INT33FF:00: Failed to request GPIO
-[    4.291667] 8086228A:00: ttyS4 at MMIO 0x91521000 (irq = 39, base_baud =
-2764800) is a 16550A
-[    4.292352] 8086228A:01: ttyS5 at MMIO 0x9151f000 (irq = 40, base_baud =
-2764800) is a 16550A
-[    4.382448] axp20x i2c-INT33F4:00: AXP20x variant AXP288 found
-[    4.443370] axp20x i2c-INT33F4:00: Failed to request IRQ -1 for
-axp288_irq_chip: -22
-[    4.452092] axp20x i2c-INT33F4:00: failed to add irq chip: -22
-[    4.501844] axp20x: probe of i2c-INT33F4:00 failed with error -22
-[    4.506906] dw_dmac INTL9C60:00: DesignWare DMA Controller, 8 channels
-[    4.508438] dw_dmac INTL9C60:01: DesignWare DMA Controller, 8 channels
-[    4.570505] Bluetooth: Core ver 2.20
-[    4.570551] NET: Registered protocol family 31
-[    4.570555] Bluetooth: HCI device and connection manager initialized
-[    4.570565] Bluetooth: HCI socket layer initialized
-[    4.570572] Bluetooth: L2CAP socket layer initialized
-[    4.570587] Bluetooth: SCO socket layer initialized
-[    4.582232] hidraw: raw HID events driver (C) Jiri Kosina
-[    4.593034] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
-[    4.593041] Bluetooth: BNEP filters: protocol multicast
-[    4.593051] Bluetooth: BNEP socket layer initialized
-[    4.609849] Bluetooth: RFCOMM TTY layer initialized
-[    4.609866] Bluetooth: RFCOMM socket layer initialized
-[    4.609883] Bluetooth: RFCOMM ver 1.11
-[    4.635305] audit: type=1400 audit(1446694742.384:2): apparmor="STATUS"
-operation="profile_load" profile="unconfined"
-name="/usr/lib/cups/backend/cups-pdf" pid=511 comm="apparmor_parser"
-[    4.635323] audit: type=1400 audit(1446694742.384:3): apparmor="STATUS"
-operation="profile_load" profile="unconfined" name="/usr/sbin/cupsd" pid=511
-comm="apparmor_parser"
-[    4.636748] audit: type=1400 audit(1446694742.388:4): apparmor="STATUS"
-operation="profile_replace" profile="unconfined" name="/usr/sbin/cupsd"
-pid=511 comm="apparmor_parser"
-[    4.649358] proc_thermal 0000:00:0b.0: enabling device (0000 -> 0002)
-[    4.701121] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
-[    4.706660] [drm] Initialized drm 1.1.0 20060810
-[    4.720159] intel_sst_acpi 808622A8:00: LPE base: 0x91000000
-size:0x200000
-[    4.720167] intel_sst_acpi 808622A8:00: IRAM base: 0x910c0000
-[    4.720215] intel_sst_acpi 808622A8:00: DRAM base: 0x91100000
-[    4.720227] intel_sst_acpi 808622A8:00: SHIM base: 0x91140000
-[    4.720240] intel_sst_acpi 808622A8:00: Mailbox base: 0x91144000
-[    4.720251] intel_sst_acpi 808622A8:00: DDR base: 0x20000000
-[    4.734153] intel_sst_acpi 808622A8:00: Got drv data max stream 25
-[    4.861511] usb-storage 1-2:1.0: USB Mass Storage device detected
-[    4.871676] usbcore: registered new interface driver usbhid
-[    4.871684] usbhid: USB HID core driver
-[    4.872347] scsi host0: usb-storage 1-2:1.0
-[    4.872630] usbcore: registered new interface driver usb-storage
-[    4.880552] r8188eu: module is from the staging directory, the quality is
-unknown, you have been warned.
-[    4.895379] Chip Version Info:
-CHIP_8188E_Normal_Chip_TSMC_D_CUT_1T1R_RomVer(0)
-[    4.895620] usbcore: registered new interface driver uas
-[    4.927588] audit: type=1400 audit(1446694742.676:5): apparmor="STATUS"
-operation="profile_load" profile="unconfined" name="/sbin/dhclient" pid=550
-comm="apparmor_parser"
-[    4.927608] audit: type=1400 audit(1446694742.676:6): apparmor="STATUS"
-operation="profile_load" profile="unconfined"
-name="/usr/lib/NetworkManager/nm-dhcp-client.action" pid=550
-comm="apparmor_parser"
-[    4.927619] audit: type=1400 audit(1446694742.676:7): apparmor="STATUS"
-operation="profile_load" profile="unconfined"
-name="/usr/lib/connman/scripts/dhclient-script" pid=550
-comm="apparmor_parser"
-[    4.929084] audit: type=1400 audit(1446694742.680:8): apparmor="STATUS"
-operation="profile_replace" profile="unconfined"
-name="/usr/lib/NetworkManager/nm-dhcp-client.action" pid=550
-comm="apparmor_parser"
-[    4.929101] audit: type=1400 audit(1446694742.680:9): apparmor="STATUS"
-operation="profile_replace" profile="unconfined"
-name="/usr/lib/connman/scripts/dhclient-script" pid=550
-comm="apparmor_parser"
-[    4.929843] audit: type=1400 audit(1446694742.680:10): apparmor="STATUS"
-operation="profile_replace" profile="unconfined"
-name="/usr/lib/connman/scripts/dhclient-script" pid=550
-comm="apparmor_parser"
-[    4.951727] usbcore: registered new interface driver r8188eu
-[    4.955295] [drm] Memory usable by graphics device = 2048M
-[    4.955306] [drm] Replacing VGA console driver
-[    4.961060] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
-[    4.961068] [drm] Driver supports precise vblank timestamp query.
-[    4.998028] SSE version of gcm_enc/dec engaged.
-[    5.016454] vgaarb: device changed decodes:
-PCI:0000:00:02.0,olddecodes=io+mem,decodes=io+mem:owns=io+mem
-[    5.087464] ACPI: Video Device [GFX0] (multi-head: yes  rom: no  post:
-no)
-[    5.091130] acpi device:01: registered as cooling_device5
-[    5.097790] acpi device:02: registered as cooling_device6
-[    5.098626] acpi device:03: registered as cooling_device7
-[    5.099681] acpi device:04: registered as cooling_device8
-[    5.101166] acpi device:05: registered as cooling_device9
-[    5.102115] acpi device:06: registered as cooling_device10
-[    5.103058] acpi device:07: registered as cooling_device11
-[    5.105954] acpi device:08: registered as cooling_device12
-[    5.106285] input: Video Bus as
-/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input2
-[    5.120213] [drm] Initialized i915_bpo 1.6.0 20150522 for 0000:00:02.0 on
-minor 0
-[    5.147861] [drm] GMBUS [i915 gmbus dpb] timed out, falling back to bit
-banging on pin 5
-[    5.182476] intel_rapl: Found RAPL domain package
-[    5.182484] intel_rapl: Found RAPL domain core
-[    5.255993] [drm] GMBUS [i915 gmbus dpc] timed out, falling back to bit
-banging on pin 4
-[    5.301837] input: gpio-keys as
-/devices/platform/gpio-keys.0.auto/input/input3
-[    5.303634] input: gpio-keys as
-/devices/platform/gpio-keys.1.auto/input/input4
-[    5.317576] fbcon: inteldrmfb (fb0) is primary device
-[    5.365439] random: nonblocking pool is initialized
-[    5.369766] init: failsafe main process (594) killed by TERM signal
-[    5.440768] input: USB Optical Mouse as
-/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4.1/1-4.1:1.0/0003:0461:4D81.000
-1/input/input5
-[    5.442390] hid-generic 0003:0461:4D81.0001: input,hidraw0: USB HID v1.11
-Mouse [USB Optical Mouse] on usb-0000:00:14.0-4.1/input0
-[    5.443708] input: Dell Dell USB Keyboard as
-/devices/pci0000:00/0000:00:14.0/usb1/1-4/1-4.2/1-4.2:1.0/0003:413C:2003.000
-2/input/input6
-[    5.463371] cht-bsw-rt5672 cht-bsw-rt5672: snd-soc-dummy-dai <->
-media-cpu-dai mapping ok
-[    5.463406] compress asoc: snd-soc-dummy-dai <-> compress-cpu-dai mapping
-ok
-[    5.475786] cht-bsw-rt5672 cht-bsw-rt5672: rt5670-aif1 <-> ssp2-port
-mapping ok
-[    5.507355] hid-generic 0003:413C:2003.0002: input,hidraw1: USB HID v1.10
-Keyboard [Dell Dell USB Keyboard] on usb-0000:00:14.0-4.2/input0
-[    5.695892] Console: switching to colour frame buffer device 170x48
-[    5.712458] i915_bpo 0000:00:02.0: fb0: inteldrmfb frame buffer device
-[    5.712461] i915_bpo 0000:00:02.0: registered panic notifier
-[    5.725983] cfg80211: Calling CRDA to update world regulatory domain
-[    5.872710] scsi 0:0:0:0: Direct-Access     ASMT     2115             0
-PQ: 0 ANSI: 6
-[    5.873522] sd 0:0:0:0: Attached scsi generic sg0 type 0
-[    5.875671] sd 0:0:0:0: [sda] Attached SCSI removable disk
-[    5.907038] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 0 doesn't have DAPM widget!!!
-[    5.922073] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 1 doesn't have DAPM widget!!!
-[    5.935876] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 2 doesn't have DAPM widget!!!
-[    5.949941] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 3 doesn't have DAPM widget!!!
-[    5.968241] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
-[    5.968267] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
-[    5.968292] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
-[    5.968318] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
-[    6.155728] audit_printk_skb: 51 callbacks suppressed
-[    6.155736] audit: type=1400 audit(1446694743.908:28): apparmor="STATUS"
-operation="profile_replace" profile="unconfined" name="pxgsettings" pid=816
-comm="apparmor_parser"
-[    6.155751] audit: type=1400 audit(1446694743.908:29): apparmor="STATUS"
-operation="profile_replace" profile="unconfined" name="sanitized_helper"
-pid=816 comm="apparmor_parser"
-[    6.155764] audit: type=1400 audit(1446694743.908:30): apparmor="STATUS"
-operation="profile_replace" profile="unconfined"
-name="/usr/lib/telepathy/telepathy-ofono" pid=816 comm="apparmor_parser"
-[    6.155826] audit: type=1400 audit(1446694743.908:31): apparmor="STATUS"
-operation="profile_replace" profile="unconfined"
-name="/usr/lib/cups/backend/cups-pdf" pid=818 comm="apparmor_parser"
-[    6.155848] audit: type=1400 audit(1446694743.908:32): apparmor="STATUS"
-operation="profile_replace" profile="unconfined" name="/usr/sbin/cupsd"
-pid=818 comm="apparmor_parser"
-[    6.155914] audit: type=1400 audit(1446694743.908:33): apparmor="STATUS"
-operation="profile_load" profile="unconfined" name="/usr/sbin/tcpdump"
-pid=820 comm="apparmor_parser"
-[    6.157244] audit: type=1400 audit(1446694743.908:34): apparmor="STATUS"
-operation="profile_replace" profile="unconfined" name="/usr/sbin/cupsd"
-pid=818 comm="apparmor_parser"
-[    6.157790] audit: type=1400 audit(1446694743.908:35): apparmor="STATUS"
-operation="profile_load" profile="unconfined" name="/usr/bin/evince" pid=814
-comm="apparmor_parser"
-[    6.157804] audit: type=1400 audit(1446694743.908:36): apparmor="STATUS"
-operation="profile_load" profile="unconfined" name="sanitized_helper"
-pid=814 comm="apparmor_parser"
-[    6.157815] audit: type=1400 audit(1446694743.908:37): apparmor="STATUS"
-operation="profile_load" profile="unconfined"
-name="/usr/bin/evince-previewer" pid=814 comm="apparmor_parser"
-[    6.279854] MAC Address = 8c:18:d9:ca:30:b7
-[    6.281275] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
-[    6.284438] R8188EU: ERROR indicate disassoc
-[    6.284756] cfg80211: World regulatory domain updated:
-[    6.284763] cfg80211:  DFS Master region: unset
-[    6.284767] cfg80211:   (start_freq - end_freq @ bandwidth),
-(max_antenna_gain, max_eirp), (dfs_cac_time)
-[    6.284773] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (300
-mBi, 2000 mBm), (N/A)
-[    6.284778] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (300
-mBi, 2000 mBm), (N/A)
-[    6.284782] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (300
-mBi, 2000 mBm), (N/A)
-[    6.284786] cfg80211:   (5170000 KHz - 5250000 KHz @ 40000 KHz), (300
-mBi, 2000 mBm), (N/A)
-[    6.284790] cfg80211:   (5735000 KHz - 5835000 KHz @ 40000 KHz), (300
-mBi, 2000 mBm), (N/A)
-[    6.285245] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
-[    6.441750] r8169 0000:01:00.0 eth0: link down
-[    6.441840] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
-[    6.617144] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 0 doesn't have DAPM widget!!!
-[    6.632519] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 1 doesn't have DAPM widget!!!
-[    6.647501] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 2 doesn't have DAPM widget!!!
-[    6.662176] sst-mfld-platform sst-mfld-platform: Slot control: codec_out
-tx interleaver slot 3 doesn't have DAPM widget!!!
-[    6.677049] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
-[    6.692739] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
-[    6.692765] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
-[    6.692792] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
-[    7.541669] init: plymouth-upstart-bridge main process ended, respawning
-[    9.804555]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.811916]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.819327]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.827341]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.834913]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.844113]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.851496]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.858845]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.866614]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.874281]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.884480]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.892266]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.899762]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.907476]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.915306]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.924078]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.932106]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.940442]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.949569]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.959182]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.977089]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.987402]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[    9.996602]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.005384]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.016121]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.025183]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.034474]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.041833]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.055318]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.066303]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.074727]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.082143]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.090646]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.100117]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.107906]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.116587]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.124249]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.132162]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.139952]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.147834]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
-[   10.159472] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.162179] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   10.163874] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.164488] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   10.165994] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.166626] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   10.168438] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.169549] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   10.171607] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.189856] intel_sst_acpi 808622A8:00: Alloc for str 1 pipe 0x90
-[   10.204244] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   10.205026] intel_sst_acpi 808622A8:00: Free for str 1 pipe 0x90
-[   10.215195] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-port_name=ssp2-port
-[   10.216190] intel_sst_acpi 808622A8:00: Alloc for str 1 pipe 0x90
-[   15.265583] sst-mfld-platform sst-mfld-platform: Enter: enable=0
-port_name=ssp2-port
-[   15.266794] intel_sst_acpi 808622A8:00: Free for str 1 pipe 0x90
-
-
-
-I got intel sst firmware fw_sst_22a8.bin from
-https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tre
-e/intel,  I guess this firmware is designed for ssp2, but the ssp0 is
-connected to AIF1 of RT5672 , ssp2 is conneted to AIF2.  
-
-Can anyone help to solve this? 
-
-
-................
-Thanks
-Tu
-
+diff --git a/Documentation/devicetree/bindings/sound/rt5659.txt b/Documentation/devicetree/bindings/sound/rt5659.txt
+new file mode 100644
+index 0000000..5f79e7f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rt5659.txt
+@@ -0,0 +1,75 @@
++RT5659/RT5658 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++- compatible : One of "realtek,rt5659" or "realtek,rt5658".
++
++- reg : The I2C address of the device.
++
++- interrupts : The CODEC's interrupt output.
++
++Optional properties:
++
++- realtek,in1-differential
++- realtek,in3-differential
++- realtek,in4-differential
++  Boolean. Indicate MIC1/3/4 input are differential, rather than single-ended.
++
++- realtek,dmic1-data-pin
++  0: dmic1 is not used
++  1: using IN2N pin as dmic1 data pin
++  2: using GPIO5 pin as dmic1 data pin
++  3: using GPIO9 pin as dmic1 data pin
++  4: using GPIO11 pin as dmic1 data pin
++
++- realtek,dmic2-data-pin
++  0: dmic2 is not used
++  1: using IN2P pin as dmic2 data pin
++  2: using GPIO6 pin as dmic2 data pin
++  3: using GPIO10 pin as dmic2 data pin
++  4: using GPIO12 pin as dmic2 data pin
++
++- realtek,jd-src
++  0: No JD is used
++  1: using JD3 as JD source
++
++- realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
++- realtek,reset-gpios : The GPIO that controls the CODEC's RESET pin.
++
++Pins on the device (for linking into audio routes) for RT5659/RT5658:
++
++  * DMIC L1
++  * DMIC R1
++  * DMIC L2
++  * DMIC R2
++  * IN1P
++  * IN1N
++  * IN2P
++  * IN2N
++  * IN3P
++  * IN3N
++  * IN4P
++  * IN4N
++  * HPOL
++  * HPOR
++  * SPOL
++  * SPOR
++  * LOUTL
++  * LOUTR
++  * MONOOUT
++  * PDML
++  * PDMR
++  * SPDIF
++
++Example:
++
++rt5659 {
++	compatible = "realtek,rt5659";
++	reg = <0x1b>;
++	interrupt-parent = <&gpio>;
++	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	realtek,ldo1-en-gpios =
++		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
++};
+diff --git a/include/sound/rt5659.h b/include/sound/rt5659.h
+new file mode 100644
+index 0000000..656c4d5
+--- /dev/null
++++ b/include/sound/rt5659.h
+@@ -0,0 +1,49 @@
++/*
++ * linux/sound/rt5659.h -- Platform data for RT5659
++ *
++ * Copyright 2013 Realtek Microelectronics
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_SND_RT5659_H
++#define __LINUX_SND_RT5659_H
++
++enum rt5659_dmic1_data_pin {
++	RT5659_DMIC1_NULL,
++	RT5659_DMIC1_DATA_IN2N,
++	RT5659_DMIC1_DATA_GPIO5,
++	RT5659_DMIC1_DATA_GPIO9,
++	RT5659_DMIC1_DATA_GPIO11,
++};
++
++enum rt5659_dmic2_data_pin {
++	RT5659_DMIC2_NULL,
++	RT5659_DMIC2_DATA_IN2P,
++	RT5659_DMIC2_DATA_GPIO6,
++	RT5659_DMIC2_DATA_GPIO10,
++	RT5659_DMIC2_DATA_GPIO12,
++};
++
++enum rt5659_jd_src {
++	RT5659_JD_NULL,
++	RT5659_JD3,
++};
++
++struct rt5659_platform_data {
++	bool in1_diff;
++	bool in3_diff;
++	bool in4_diff;
++
++	int ldo1_en; /* GPIO for LDO1_EN */
++	int reset; /* GPIO for RESET */
++
++	enum rt5659_dmic1_data_pin dmic1_data_pin;
++	enum rt5659_dmic2_data_pin dmic2_data_pin;
++	enum rt5659_jd_src jd_src;
++};
++
++#endif
++
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cfdafc4..f22c66b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -93,6 +93,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_RT5640 if I2C
+ 	select SND_SOC_RT5645 if I2C
+ 	select SND_SOC_RT5651 if I2C
++	select SND_SOC_RT5659 if I2C
+ 	select SND_SOC_RT5670 if I2C
+ 	select SND_SOC_RT5677 if I2C && SPI_MASTER
+ 	select SND_SOC_SGTL5000 if I2C
+@@ -526,11 +527,13 @@ config SND_SOC_RL6231
+ 	default y if SND_SOC_RT5640=y
+ 	default y if SND_SOC_RT5645=y
+ 	default y if SND_SOC_RT5651=y
++	default y if SND_SOC_RT5659=y
+ 	default y if SND_SOC_RT5670=y
+ 	default y if SND_SOC_RT5677=y
+ 	default m if SND_SOC_RT5640=m
+ 	default m if SND_SOC_RT5645=m
+ 	default m if SND_SOC_RT5651=m
++	default m if SND_SOC_RT5659=m
+ 	default m if SND_SOC_RT5670=m
+ 	default m if SND_SOC_RT5677=m
  
-
-__________ Information from ESET Smart Security, version of virus signature
-database 4468 (20090929) __________
-
-The message was checked by ESET Smart Security.
-
-http://www.eset.com
+@@ -562,6 +565,9 @@ config SND_SOC_RT5645
+ config SND_SOC_RT5651
+ 	tristate
  
++config SND_SOC_RT5659
++	tristate
++
+ config SND_SOC_RT5670
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index f632fc4..418e89e 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -89,6 +89,7 @@ snd-soc-rt5631-objs := rt5631.o
+ snd-soc-rt5640-objs := rt5640.o
+ snd-soc-rt5645-objs := rt5645.o
+ snd-soc-rt5651-objs := rt5651.o
++snd-soc-rt5659-objs := rt5659.o
+ snd-soc-rt5670-objs := rt5670.o
+ snd-soc-rt5677-objs := rt5677.o
+ snd-soc-rt5677-spi-objs := rt5677-spi.o
+@@ -284,6 +285,7 @@ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
+ obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
++obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
+ obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
+ obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
+ obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+new file mode 100644
+index 0000000..820d8fa
+--- /dev/null
++++ b/sound/soc/codecs/rt5659.c
+@@ -0,0 +1,4223 @@
++/*
++ * rt5659.c  --  RT5659/RT5658 ALSA SoC audio codec driver
++ *
++ * Copyright 2015 Realtek Semiconductor Corp.
++ * Author: Bard Liao <bardliao@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/acpi.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/jack.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++#include <sound/rt5659.h>
++
++#include "rl6231.h"
++#include "rt5659.h"
++
++static const struct reg_default rt5659_reg[] = {
++	{ 0x0000, 0x0000 },
++	{ 0x0001, 0x4848 },
++	{ 0x0002, 0x8080 },
++	{ 0x0003, 0xc8c8 },
++	{ 0x0004, 0xc80a },
++	{ 0x0005, 0x0000 },
++	{ 0x0006, 0x0000 },
++	{ 0x0007, 0x0103 },
++	{ 0x0008, 0x0080 },
++	{ 0x0009, 0x0000 },
++	{ 0x000a, 0x0000 },
++	{ 0x000c, 0x0000 },
++	{ 0x000d, 0x0000 },
++	{ 0x000f, 0x0808 },
++	{ 0x0010, 0x3080 },
++	{ 0x0011, 0x4a00 },
++	{ 0x0012, 0x4e00 },
++	{ 0x0015, 0x42c1 },
++	{ 0x0016, 0x0000 },
++	{ 0x0018, 0x000b },
++	{ 0x0019, 0xafaf },
++	{ 0x001a, 0xafaf },
++	{ 0x001b, 0x0011 },
++	{ 0x001c, 0x2f2f },
++	{ 0x001d, 0x2f2f },
++	{ 0x001e, 0x2f2f },
++	{ 0x001f, 0x0000 },
++	{ 0x0020, 0x0000 },
++	{ 0x0021, 0x0000 },
++	{ 0x0022, 0x5757 },
++	{ 0x0023, 0x0039 },
++	{ 0x0026, 0xc060 },
++	{ 0x0027, 0xd8d8 },
++	{ 0x0029, 0x8080 },
++	{ 0x002a, 0xaaaa },
++	{ 0x002b, 0xaaaa },
++	{ 0x002c, 0x00af },
++	{ 0x002d, 0x0000 },
++	{ 0x002f, 0x1002 },
++	{ 0x0031, 0x5000 },
++	{ 0x0032, 0x0000 },
++	{ 0x0033, 0x0000 },
++	{ 0x0034, 0x0000 },
++	{ 0x0035, 0x0000 },
++	{ 0x0036, 0x0000 },
++	{ 0x003a, 0x0000 },
++	{ 0x003b, 0x0000 },
++	{ 0x003c, 0x007f },
++	{ 0x003d, 0x0000 },
++	{ 0x003e, 0x007f },
++	{ 0x0040, 0x0808 },
++	{ 0x0046, 0x001f },
++	{ 0x0047, 0x001f },
++	{ 0x0048, 0x0003 },
++	{ 0x0049, 0xe061 },
++	{ 0x004a, 0x0000 },
++	{ 0x004b, 0x031f },
++	{ 0x004d, 0x0000 },
++	{ 0x004e, 0x001f },
++	{ 0x004f, 0x0000 },
++	{ 0x0050, 0x001f },
++	{ 0x0052, 0xf000 },
++	{ 0x0053, 0x0111 },
++	{ 0x0054, 0x0064 },
++	{ 0x0055, 0x0080 },
++	{ 0x0056, 0xef0e },
++	{ 0x0057, 0xf0f0 },
++	{ 0x0058, 0xef0e },
++	{ 0x0059, 0xf0f0 },
++	{ 0x005a, 0xef0e },
++	{ 0x005b, 0xf0f0 },
++	{ 0x005c, 0xf000 },
++	{ 0x005d, 0x0000 },
++	{ 0x005e, 0x1f2c },
++	{ 0x005f, 0x1f2c },
++	{ 0x0060, 0x2717 },
++	{ 0x0061, 0x0000 },
++	{ 0x0062, 0x0000 },
++	{ 0x0063, 0x003e },
++	{ 0x0064, 0x0000 },
++	{ 0x0065, 0x0000 },
++	{ 0x0066, 0x0000 },
++	{ 0x0067, 0x0000 },
++	{ 0x006a, 0x0000 },
++	{ 0x006b, 0x0000 },
++	{ 0x006c, 0x0000 },
++	{ 0x006e, 0x0000 },
++	{ 0x006f, 0x0000 },
++	{ 0x0070, 0x8000 },
++	{ 0x0071, 0x8000 },
++	{ 0x0072, 0x8000 },
++	{ 0x0073, 0x1110 },
++	{ 0x0074, 0xfe00 },
++	{ 0x0075, 0x2409 },
++	{ 0x0076, 0x000a },
++	{ 0x0077, 0x00f0 },
++	{ 0x0078, 0x0000 },
++	{ 0x0079, 0x0000 },
++	{ 0x007a, 0x0123 },
++	{ 0x007b, 0x8003 },
++	{ 0x0080, 0x0000 },
++	{ 0x0081, 0x0000 },
++	{ 0x0082, 0x0000 },
++	{ 0x0083, 0x0000 },
++	{ 0x0084, 0x0000 },
++	{ 0x0085, 0x0000 },
++	{ 0x0086, 0x0008 },
++	{ 0x0087, 0x0000 },
++	{ 0x0088, 0x0000 },
++	{ 0x0089, 0x0000 },
++	{ 0x008a, 0x0000 },
++	{ 0x008b, 0x0000 },
++	{ 0x008c, 0x0003 },
++	{ 0x008e, 0x0000 },
++	{ 0x008f, 0x1000 },
++	{ 0x0090, 0x0646 },
++	{ 0x0091, 0x0c16 },
++	{ 0x0092, 0x0073 },
++	{ 0x0093, 0x0000 },
++	{ 0x0094, 0x0080 },
++	{ 0x0097, 0x0000 },
++	{ 0x0098, 0x0000 },
++	{ 0x0099, 0x0000 },
++	{ 0x009a, 0x0000 },
++	{ 0x009b, 0x0000 },
++	{ 0x009c, 0x007f },
++	{ 0x009d, 0x0000 },
++	{ 0x009e, 0x007f },
++	{ 0x009f, 0x0000 },
++	{ 0x00a0, 0x0060 },
++	{ 0x00a1, 0x90a1 },
++	{ 0x00ae, 0x2000 },
++	{ 0x00af, 0x0000 },
++	{ 0x00b0, 0x2000 },
++	{ 0x00b1, 0x0000 },
++	{ 0x00b2, 0x0000 },
++	{ 0x00b6, 0x0000 },
++	{ 0x00b7, 0x0000 },
++	{ 0x00b8, 0x0000 },
++	{ 0x00b9, 0x0000 },
++	{ 0x00ba, 0x0000 },
++	{ 0x00bb, 0x0000 },
++	{ 0x00be, 0x0000 },
++	{ 0x00bf, 0x0000 },
++	{ 0x00c0, 0x0000 },
++	{ 0x00c1, 0x0000 },
++	{ 0x00c2, 0x0000 },
++	{ 0x00c3, 0x0000 },
++	{ 0x00c4, 0x0003 },
++	{ 0x00c5, 0x0000 },
++	{ 0x00cb, 0xa02f },
++	{ 0x00cc, 0x0000 },
++	{ 0x00cd, 0x0e02 },
++	{ 0x00d6, 0x0000 },
++	{ 0x00d7, 0x2244 },
++	{ 0x00d9, 0x0809 },
++	{ 0x00da, 0x0000 },
++	{ 0x00db, 0x0008 },
++	{ 0x00dc, 0x00c0 },
++	{ 0x00dd, 0x6724 },
++	{ 0x00de, 0x3131 },
++	{ 0x00df, 0x0008 },
++	{ 0x00e0, 0x4000 },
++	{ 0x00e1, 0x3131 },
++	{ 0x00e4, 0x400c },
++	{ 0x00e5, 0x8031 },
++	{ 0x00ea, 0xb320 },
++	{ 0x00eb, 0x0000 },
++	{ 0x00ec, 0xb300 },
++	{ 0x00ed, 0x0000 },
++	{ 0x00f0, 0x0000 },
++	{ 0x00f1, 0x0202 },
++	{ 0x00f2, 0x0ddd },
++	{ 0x00f3, 0x0ddd },
++	{ 0x00f4, 0x0ddd },
++	{ 0x00f6, 0x0000 },
++	{ 0x00f7, 0x0000 },
++	{ 0x00f8, 0x0000 },
++	{ 0x00f9, 0x0000 },
++	{ 0x00fa, 0x8000 },
++	{ 0x00fb, 0x0000 },
++	{ 0x00fc, 0x0000 },
++	{ 0x00fd, 0x0001 },
++	{ 0x00fe, 0x10ec },
++	{ 0x00ff, 0x6311 },
++	{ 0x0100, 0xaaaa },
++	{ 0x010a, 0xaaaa },
++	{ 0x010b, 0x00a0 },
++	{ 0x010c, 0xaeae },
++	{ 0x010d, 0xaaaa },
++	{ 0x010e, 0xaaa8 },
++	{ 0x010f, 0xa0aa },
++	{ 0x0110, 0xe02a },
++	{ 0x0111, 0xa702 },
++	{ 0x0112, 0xaaaa },
++	{ 0x0113, 0x2800 },
++	{ 0x0116, 0x0000 },
++	{ 0x0117, 0x0f00 },
++	{ 0x011a, 0x0020 },
++	{ 0x011b, 0x0011 },
++	{ 0x011c, 0x0150 },
++	{ 0x011d, 0x0000 },
++	{ 0x011e, 0x0000 },
++	{ 0x011f, 0x0000 },
++	{ 0x0120, 0x0000 },
++	{ 0x0121, 0x009b },
++	{ 0x0122, 0x5014 },
++	{ 0x0123, 0x0421 },
++	{ 0x0124, 0x7cea },
++	{ 0x0125, 0x0420 },
++	{ 0x0126, 0x5550 },
++	{ 0x0132, 0x0000 },
++	{ 0x0133, 0x0000 },
++	{ 0x0137, 0x5055 },
++	{ 0x0138, 0x3700 },
++	{ 0x0139, 0x79a1 },
++	{ 0x013a, 0x2020 },
++	{ 0x013b, 0x2020 },
++	{ 0x013c, 0x2005 },
++	{ 0x013e, 0x1f00 },
++	{ 0x013f, 0x0000 },
++	{ 0x0145, 0x0002 },
++	{ 0x0146, 0x0000 },
++	{ 0x0147, 0x0000 },
++	{ 0x0148, 0x0000 },
++	{ 0x0150, 0x1813 },
++	{ 0x0151, 0x0690 },
++	{ 0x0152, 0x1c17 },
++	{ 0x0153, 0x6883 },
++	{ 0x0154, 0xd3ce },
++	{ 0x0155, 0x352d },
++	{ 0x0156, 0x00eb },
++	{ 0x0157, 0x3717 },
++	{ 0x0158, 0x4c6a },
++	{ 0x0159, 0xe41b },
++	{ 0x015a, 0x2a13 },
++	{ 0x015b, 0xb600 },
++	{ 0x015c, 0xc730 },
++	{ 0x015d, 0x35d4 },
++	{ 0x015e, 0x00bf },
++	{ 0x0160, 0x0ec0 },
++	{ 0x0161, 0x0020 },
++	{ 0x0162, 0x0080 },
++	{ 0x0163, 0x0800 },
++	{ 0x0164, 0x0000 },
++	{ 0x0165, 0x0000 },
++	{ 0x0166, 0x0000 },
++	{ 0x0167, 0x001f },
++	{ 0x0170, 0x4e80 },
++	{ 0x0171, 0x0020 },
++	{ 0x0172, 0x0080 },
++	{ 0x0173, 0x0800 },
++	{ 0x0174, 0x000c },
++	{ 0x0175, 0x0000 },
++	{ 0x0190, 0x3300 },
++	{ 0x0191, 0x2200 },
++	{ 0x0192, 0x0000 },
++	{ 0x01b0, 0x4b38 },
++	{ 0x01b1, 0x0000 },
++	{ 0x01b2, 0x0000 },
++	{ 0x01b3, 0x0000 },
++	{ 0x01c0, 0x0045 },
++	{ 0x01c1, 0x0540 },
++	{ 0x01c2, 0x0000 },
++	{ 0x01c3, 0x0030 },
++	{ 0x01c7, 0x0000 },
++	{ 0x01c8, 0x5757 },
++	{ 0x01c9, 0x5757 },
++	{ 0x01ca, 0x5757 },
++	{ 0x01cb, 0x5757 },
++	{ 0x01cc, 0x5757 },
++	{ 0x01cd, 0x5757 },
++	{ 0x01ce, 0x006f },
++	{ 0x01da, 0x0000 },
++	{ 0x01db, 0x0000 },
++	{ 0x01de, 0x7d00 },
++	{ 0x01df, 0x10c0 },
++	{ 0x01e0, 0x06a1 },
++	{ 0x01e1, 0x0000 },
++	{ 0x01e2, 0x0000 },
++	{ 0x01e3, 0x0000 },
++	{ 0x01e4, 0x0001 },
++	{ 0x01e6, 0x0000 },
++	{ 0x01e7, 0x0000 },
++	{ 0x01e8, 0x0000 },
++	{ 0x01ea, 0x0000 },
++	{ 0x01eb, 0x0000 },
++	{ 0x01ec, 0x0000 },
++	{ 0x01ed, 0x0000 },
++	{ 0x01ee, 0x0000 },
++	{ 0x01ef, 0x0000 },
++	{ 0x01f0, 0x0000 },
++	{ 0x01f1, 0x0000 },
++	{ 0x01f2, 0x0000 },
++	{ 0x01f6, 0x1e04 },
++	{ 0x01f7, 0x01a1 },
++	{ 0x01f8, 0x0000 },
++	{ 0x01f9, 0x0000 },
++	{ 0x01fa, 0x0002 },
++	{ 0x01fb, 0x0000 },
++	{ 0x01fc, 0x0000 },
++	{ 0x01fd, 0x0000 },
++	{ 0x01fe, 0x0000 },
++	{ 0x0200, 0x066c },
++	{ 0x0201, 0x7fff },
++	{ 0x0202, 0x7fff },
++	{ 0x0203, 0x0000 },
++	{ 0x0204, 0x0000 },
++	{ 0x0205, 0x0000 },
++	{ 0x0206, 0x0000 },
++	{ 0x0207, 0x0000 },
++	{ 0x0208, 0x0000 },
++	{ 0x0256, 0x0000 },
++	{ 0x0257, 0x0000 },
++	{ 0x0258, 0x0000 },
++	{ 0x0259, 0x0000 },
++	{ 0x025a, 0x0000 },
++	{ 0x025b, 0x3333 },
++	{ 0x025c, 0x3333 },
++	{ 0x025d, 0x3333 },
++	{ 0x025e, 0x0000 },
++	{ 0x025f, 0x0000 },
++	{ 0x0260, 0x0000 },
++	{ 0x0261, 0x0022 },
++	{ 0x0262, 0x0300 },
++	{ 0x0265, 0x1e80 },
++	{ 0x0266, 0x0131 },
++	{ 0x0267, 0x0003 },
++	{ 0x0268, 0x0000 },
++	{ 0x0269, 0x0000 },
++	{ 0x026a, 0x0000 },
++	{ 0x026b, 0x0000 },
++	{ 0x026c, 0x0000 },
++	{ 0x026d, 0x0000 },
++	{ 0x026e, 0x0000 },
++	{ 0x026f, 0x0000 },
++	{ 0x0270, 0x0000 },
++	{ 0x0271, 0x0000 },
++	{ 0x0272, 0x0000 },
++	{ 0x0273, 0x0000 },
++	{ 0x0280, 0x0000 },
++	{ 0x0281, 0x0000 },
++	{ 0x0282, 0x0418 },
++	{ 0x0283, 0x7fff },
++	{ 0x0284, 0x7000 },
++	{ 0x0290, 0x01d0 },
++	{ 0x0291, 0x0100 },
++	{ 0x02fa, 0x0000 },
++	{ 0x02fb, 0x0000 },
++	{ 0x02fc, 0x0000 },
++	{ 0x0300, 0x001f },
++	{ 0x0301, 0x032c },
++	{ 0x0302, 0x5f21 },
++	{ 0x0303, 0x4000 },
++	{ 0x0304, 0x4000 },
++	{ 0x0305, 0x0600 },
++	{ 0x0306, 0x8000 },
++	{ 0x0307, 0x0700 },
++	{ 0x0308, 0x001f },
++	{ 0x0309, 0x032c },
++	{ 0x030a, 0x5f21 },
++	{ 0x030b, 0x4000 },
++	{ 0x030c, 0x4000 },
++	{ 0x030d, 0x0600 },
++	{ 0x030e, 0x8000 },
++	{ 0x030f, 0x0700 },
++	{ 0x0310, 0x4560 },
++	{ 0x0311, 0xa4a8 },
++	{ 0x0312, 0x7418 },
++	{ 0x0313, 0x0000 },
++	{ 0x0314, 0x0006 },
++	{ 0x0315, 0x00ff },
++	{ 0x0316, 0xc400 },
++	{ 0x0317, 0x4560 },
++	{ 0x0318, 0xa4a8 },
++	{ 0x0319, 0x7418 },
++	{ 0x031a, 0x0000 },
++	{ 0x031b, 0x0006 },
++	{ 0x031c, 0x00ff },
++	{ 0x031d, 0xc400 },
++	{ 0x0320, 0x0f20 },
++	{ 0x0321, 0x8700 },
++	{ 0x0322, 0x7dc2 },
++	{ 0x0323, 0xa178 },
++	{ 0x0324, 0x5383 },
++	{ 0x0325, 0x7dc2 },
++	{ 0x0326, 0xa178 },
++	{ 0x0327, 0x5383 },
++	{ 0x0328, 0x003e },
++	{ 0x0329, 0x02c1 },
++	{ 0x032a, 0xd37d },
++	{ 0x0330, 0x00a6 },
++	{ 0x0331, 0x04c3 },
++	{ 0x0332, 0x27c8 },
++	{ 0x0333, 0xbf50 },
++	{ 0x0334, 0x0045 },
++	{ 0x0335, 0x2007 },
++	{ 0x0336, 0x7418 },
++	{ 0x0337, 0x0501 },
++	{ 0x0338, 0x0000 },
++	{ 0x0339, 0x0010 },
++	{ 0x033a, 0x1010 },
++	{ 0x0340, 0x0800 },
++	{ 0x0341, 0x0800 },
++	{ 0x0342, 0x0800 },
++	{ 0x0343, 0x0800 },
++	{ 0x0344, 0x0000 },
++	{ 0x0345, 0x0000 },
++	{ 0x0346, 0x0000 },
++	{ 0x0347, 0x0000 },
++	{ 0x0348, 0x0000 },
++	{ 0x0349, 0x0000 },
++	{ 0x034a, 0x0000 },
++	{ 0x034b, 0x0000 },
++	{ 0x034c, 0x0000 },
++	{ 0x034d, 0x0000 },
++	{ 0x034e, 0x0000 },
++	{ 0x034f, 0x0000 },
++	{ 0x0350, 0x0000 },
++	{ 0x0351, 0x0000 },
++	{ 0x0352, 0x0000 },
++	{ 0x0353, 0x0000 },
++	{ 0x0354, 0x0000 },
++	{ 0x0355, 0x0000 },
++	{ 0x0356, 0x0000 },
++	{ 0x0357, 0x0000 },
++	{ 0x0358, 0x0000 },
++	{ 0x0359, 0x0000 },
++	{ 0x035a, 0x0000 },
++	{ 0x035b, 0x0000 },
++	{ 0x035c, 0x0000 },
++	{ 0x035d, 0x0000 },
++	{ 0x035e, 0x2000 },
++	{ 0x035f, 0x0000 },
++	{ 0x0360, 0x2000 },
++	{ 0x0361, 0x2000 },
++	{ 0x0362, 0x0000 },
++	{ 0x0363, 0x2000 },
++	{ 0x0364, 0x0200 },
++	{ 0x0365, 0x0000 },
++	{ 0x0366, 0x0000 },
++	{ 0x0367, 0x0000 },
++	{ 0x0368, 0x0000 },
++	{ 0x0369, 0x0000 },
++	{ 0x036a, 0x0000 },
++	{ 0x036b, 0x0000 },
++	{ 0x036c, 0x0000 },
++	{ 0x036d, 0x0000 },
++	{ 0x036e, 0x0200 },
++	{ 0x036f, 0x0000 },
++	{ 0x0370, 0x0000 },
++	{ 0x0371, 0x0000 },
++	{ 0x0372, 0x0000 },
++	{ 0x0373, 0x0000 },
++	{ 0x0374, 0x0000 },
++	{ 0x0375, 0x0000 },
++	{ 0x0376, 0x0000 },
++	{ 0x0377, 0x0000 },
++	{ 0x03d0, 0x0000 },
++	{ 0x03d1, 0x0000 },
++	{ 0x03d2, 0x0000 },
++	{ 0x03d3, 0x0000 },
++	{ 0x03d4, 0x2000 },
++	{ 0x03d5, 0x2000 },
++	{ 0x03d6, 0x0000 },
++	{ 0x03d7, 0x0000 },
++	{ 0x03d8, 0x2000 },
++	{ 0x03d9, 0x2000 },
++	{ 0x03da, 0x2000 },
++	{ 0x03db, 0x2000 },
++	{ 0x03dc, 0x0000 },
++	{ 0x03dd, 0x0000 },
++	{ 0x03de, 0x0000 },
++	{ 0x03df, 0x2000 },
++	{ 0x03e0, 0x0000 },
++	{ 0x03e1, 0x0000 },
++	{ 0x03e2, 0x0000 },
++	{ 0x03e3, 0x0000 },
++	{ 0x03e4, 0x0000 },
++	{ 0x03e5, 0x0000 },
++	{ 0x03e6, 0x0000 },
++	{ 0x03e7, 0x0000 },
++	{ 0x03e8, 0x0000 },
++	{ 0x03e9, 0x0000 },
++	{ 0x03ea, 0x0000 },
++	{ 0x03eb, 0x0000 },
++	{ 0x03ec, 0x0000 },
++	{ 0x03ed, 0x0000 },
++	{ 0x03ee, 0x0000 },
++	{ 0x03ef, 0x0000 },
++	{ 0x03f0, 0x0800 },
++	{ 0x03f1, 0x0800 },
++	{ 0x03f2, 0x0800 },
++	{ 0x03f3, 0x0800 },
++};
++
++static bool rt5659_volatile_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case RT5659_RESET:
++	case RT5659_EJD_CTRL_2:
++	case RT5659_SILENCE_CTRL:
++	case RT5659_DAC2_DIG_VOL:
++	case RT5659_HP_IMP_GAIN_2:
++	case RT5659_PDM_OUT_CTRL:
++	case RT5659_PDM_DATA_CTRL_1:
++	case RT5659_PDM_DATA_CTRL_4:
++	case RT5659_HAPTIC_GEN_CTRL_1:
++	case RT5659_HAPTIC_GEN_CTRL_3:
++	case RT5659_HAPTIC_LPF_CTRL_3:
++	case RT5659_CLK_DET:
++	case RT5659_MICBIAS_1:
++	case RT5659_ASRC_11:
++	case RT5659_ADC_EQ_CTRL_1:
++	case RT5659_DAC_EQ_CTRL_1:
++	case RT5659_INT_ST_1:
++	case RT5659_INT_ST_2:
++	case RT5659_GPIO_STA:
++	case RT5659_SINE_GEN_CTRL_1:
++	case RT5659_IL_CMD_1:
++	case RT5659_4BTN_IL_CMD_1:
++	case RT5659_PSV_IL_CMD_1:
++	case RT5659_AJD1_CTRL:
++	case RT5659_AJD2_AJD3_CTRL:
++	case RT5659_JD_CTRL_3:
++	case RT5659_VENDOR_ID:
++	case RT5659_VENDOR_ID_1:
++	case RT5659_DEVICE_ID:
++	case RT5659_MEMORY_TEST:
++	case RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL:
++	case RT5659_VOL_TEST:
++	case RT5659_STO_NG2_CTRL_1:
++	case RT5659_STO_NG2_CTRL_5:
++	case RT5659_STO_NG2_CTRL_6:
++	case RT5659_STO_NG2_CTRL_7:
++	case RT5659_MONO_NG2_CTRL_1:
++	case RT5659_MONO_NG2_CTRL_5:
++	case RT5659_MONO_NG2_CTRL_6:
++	case RT5659_HP_IMP_SENS_CTRL_1:
++	case RT5659_HP_IMP_SENS_CTRL_3:
++	case RT5659_HP_IMP_SENS_CTRL_4:
++	case RT5659_HP_CALIB_CTRL_1:
++	case RT5659_HP_CALIB_CTRL_9:
++	case RT5659_HP_CALIB_STA_1:
++	case RT5659_HP_CALIB_STA_2:
++	case RT5659_HP_CALIB_STA_3:
++	case RT5659_HP_CALIB_STA_4:
++	case RT5659_HP_CALIB_STA_5:
++	case RT5659_HP_CALIB_STA_6:
++	case RT5659_HP_CALIB_STA_7:
++	case RT5659_HP_CALIB_STA_8:
++	case RT5659_HP_CALIB_STA_9:
++	case RT5659_MONO_AMP_CALIB_CTRL_1:
++	case RT5659_MONO_AMP_CALIB_CTRL_3:
++	case RT5659_MONO_AMP_CALIB_STA_1:
++	case RT5659_MONO_AMP_CALIB_STA_2:
++	case RT5659_MONO_AMP_CALIB_STA_3:
++	case RT5659_MONO_AMP_CALIB_STA_4:
++	case RT5659_SPK_PWR_LMT_STA_1:
++	case RT5659_SPK_PWR_LMT_STA_2:
++	case RT5659_SPK_PWR_LMT_STA_3:
++	case RT5659_SPK_PWR_LMT_STA_4:
++	case RT5659_SPK_PWR_LMT_STA_5:
++	case RT5659_SPK_PWR_LMT_STA_6:
++	case RT5659_SPK_DC_CAILB_CTRL_1:
++	case RT5659_SPK_DC_CAILB_STA_1:
++	case RT5659_SPK_DC_CAILB_STA_2:
++	case RT5659_SPK_DC_CAILB_STA_3:
++	case RT5659_SPK_DC_CAILB_STA_4:
++	case RT5659_SPK_DC_CAILB_STA_5:
++	case RT5659_SPK_DC_CAILB_STA_6:
++	case RT5659_SPK_DC_CAILB_STA_7:
++	case RT5659_SPK_DC_CAILB_STA_8:
++	case RT5659_SPK_DC_CAILB_STA_9:
++	case RT5659_SPK_DC_CAILB_STA_10:
++	case RT5659_SPK_VDD_STA_1:
++	case RT5659_SPK_VDD_STA_2:
++	case RT5659_SPK_DC_DET_CTRL_1:
++	case RT5659_PURE_DC_DET_CTRL_1:
++	case RT5659_PURE_DC_DET_CTRL_2:
++	case RT5659_DRC1_PRIV_1:
++	case RT5659_DRC1_PRIV_4:
++	case RT5659_DRC1_PRIV_5:
++	case RT5659_DRC1_PRIV_6:
++	case RT5659_DRC1_PRIV_7:
++	case RT5659_DRC2_PRIV_1:
++	case RT5659_DRC2_PRIV_4:
++	case RT5659_DRC2_PRIV_5:
++	case RT5659_DRC2_PRIV_6:
++	case RT5659_DRC2_PRIV_7:
++	case RT5659_ALC_PGA_STA_1:
++	case RT5659_ALC_PGA_STA_2:
++	case RT5659_ALC_PGA_STA_3:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rt5659_readable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case RT5659_RESET:
++	case RT5659_SPO_VOL:
++	case RT5659_HP_VOL:
++	case RT5659_LOUT:
++	case RT5659_MONO_OUT:
++	case RT5659_HPL_GAIN:
++	case RT5659_HPR_GAIN:
++	case RT5659_MONO_GAIN:
++	case RT5659_SPDIF_CTRL_1:
++	case RT5659_SPDIF_CTRL_2:
++	case RT5659_CAL_BST_CTRL:
++	case RT5659_IN1_IN2:
++	case RT5659_IN3_IN4:
++	case RT5659_INL1_INR1_VOL:
++	case RT5659_EJD_CTRL_1:
++	case RT5659_EJD_CTRL_2:
++	case RT5659_EJD_CTRL_3:
++	case RT5659_SILENCE_CTRL:
++	case RT5659_PSV_CTRL:
++	case RT5659_SIDETONE_CTRL:
++	case RT5659_DAC1_DIG_VOL:
++	case RT5659_DAC2_DIG_VOL:
++	case RT5659_DAC_CTRL:
++	case RT5659_STO1_ADC_DIG_VOL:
++	case RT5659_MONO_ADC_DIG_VOL:
++	case RT5659_STO2_ADC_DIG_VOL:
++	case RT5659_STO1_BOOST:
++	case RT5659_MONO_BOOST:
++	case RT5659_STO2_BOOST:
++	case RT5659_HP_IMP_GAIN_1:
++	case RT5659_HP_IMP_GAIN_2:
++	case RT5659_STO1_ADC_MIXER:
++	case RT5659_MONO_ADC_MIXER:
++	case RT5659_AD_DA_MIXER:
++	case RT5659_STO_DAC_MIXER:
++	case RT5659_MONO_DAC_MIXER:
++	case RT5659_DIG_MIXER:
++	case RT5659_A_DAC_MUX:
++	case RT5659_DIG_INF23_DATA:
++	case RT5659_PDM_OUT_CTRL:
++	case RT5659_PDM_DATA_CTRL_1:
++	case RT5659_PDM_DATA_CTRL_2:
++	case RT5659_PDM_DATA_CTRL_3:
++	case RT5659_PDM_DATA_CTRL_4:
++	case RT5659_SPDIF_CTRL:
++	case RT5659_REC1_GAIN:
++	case RT5659_REC1_L1_MIXER:
++	case RT5659_REC1_L2_MIXER:
++	case RT5659_REC1_R1_MIXER:
++	case RT5659_REC1_R2_MIXER:
++	case RT5659_CAL_REC:
++	case RT5659_REC2_L1_MIXER:
++	case RT5659_REC2_L2_MIXER:
++	case RT5659_REC2_R1_MIXER:
++	case RT5659_REC2_R2_MIXER:
++	case RT5659_SPK_L_MIXER:
++	case RT5659_SPK_R_MIXER:
++	case RT5659_SPO_AMP_GAIN:
++	case RT5659_ALC_BACK_GAIN:
++	case RT5659_MONOMIX_GAIN:
++	case RT5659_MONOMIX_IN_GAIN:
++	case RT5659_OUT_L_GAIN:
++	case RT5659_OUT_L_MIXER:
++	case RT5659_OUT_R_GAIN:
++	case RT5659_OUT_R_MIXER:
++	case RT5659_LOUT_MIXER:
++	case RT5659_HAPTIC_GEN_CTRL_1:
++	case RT5659_HAPTIC_GEN_CTRL_2:
++	case RT5659_HAPTIC_GEN_CTRL_3:
++	case RT5659_HAPTIC_GEN_CTRL_4:
++	case RT5659_HAPTIC_GEN_CTRL_5:
++	case RT5659_HAPTIC_GEN_CTRL_6:
++	case RT5659_HAPTIC_GEN_CTRL_7:
++	case RT5659_HAPTIC_GEN_CTRL_8:
++	case RT5659_HAPTIC_GEN_CTRL_9:
++	case RT5659_HAPTIC_GEN_CTRL_10:
++	case RT5659_HAPTIC_GEN_CTRL_11:
++	case RT5659_HAPTIC_LPF_CTRL_1:
++	case RT5659_HAPTIC_LPF_CTRL_2:
++	case RT5659_HAPTIC_LPF_CTRL_3:
++	case RT5659_PWR_DIG_1:
++	case RT5659_PWR_DIG_2:
++	case RT5659_PWR_ANLG_1:
++	case RT5659_PWR_ANLG_2:
++	case RT5659_PWR_ANLG_3:
++	case RT5659_PWR_MIXER:
++	case RT5659_PWR_VOL:
++	case RT5659_PRIV_INDEX:
++	case RT5659_CLK_DET:
++	case RT5659_PRIV_DATA:
++	case RT5659_PRE_DIV_1:
++	case RT5659_PRE_DIV_2:
++	case RT5659_I2S1_SDP:
++	case RT5659_I2S2_SDP:
++	case RT5659_I2S3_SDP:
++	case RT5659_ADDA_CLK_1:
++	case RT5659_ADDA_CLK_2:
++	case RT5659_DMIC_CTRL_1:
++	case RT5659_DMIC_CTRL_2:
++	case RT5659_TDM_CTRL_1:
++	case RT5659_TDM_CTRL_2:
++	case RT5659_TDM_CTRL_3:
++	case RT5659_TDM_CTRL_4:
++	case RT5659_TDM_CTRL_5:
++	case RT5659_GLB_CLK:
++	case RT5659_PLL_CTRL_1:
++	case RT5659_PLL_CTRL_2:
++	case RT5659_ASRC_1:
++	case RT5659_ASRC_2:
++	case RT5659_ASRC_3:
++	case RT5659_ASRC_4:
++	case RT5659_ASRC_5:
++	case RT5659_ASRC_6:
++	case RT5659_ASRC_7:
++	case RT5659_ASRC_8:
++	case RT5659_ASRC_9:
++	case RT5659_ASRC_10:
++	case RT5659_DEPOP_1:
++	case RT5659_DEPOP_2:
++	case RT5659_DEPOP_3:
++	case RT5659_HP_CHARGE_PUMP_1:
++	case RT5659_HP_CHARGE_PUMP_2:
++	case RT5659_MICBIAS_1:
++	case RT5659_MICBIAS_2:
++	case RT5659_ASRC_11:
++	case RT5659_ASRC_12:
++	case RT5659_ASRC_13:
++	case RT5659_REC_M1_M2_GAIN_CTRL:
++	case RT5659_RC_CLK_CTRL:
++	case RT5659_CLASSD_CTRL_1:
++	case RT5659_CLASSD_CTRL_2:
++	case RT5659_ADC_EQ_CTRL_1:
++	case RT5659_ADC_EQ_CTRL_2:
++	case RT5659_DAC_EQ_CTRL_1:
++	case RT5659_DAC_EQ_CTRL_2:
++	case RT5659_DAC_EQ_CTRL_3:
++	case RT5659_IRQ_CTRL_1:
++	case RT5659_IRQ_CTRL_2:
++	case RT5659_IRQ_CTRL_3:
++	case RT5659_IRQ_CTRL_4:
++	case RT5659_IRQ_CTRL_5:
++	case RT5659_IRQ_CTRL_6:
++	case RT5659_INT_ST_1:
++	case RT5659_INT_ST_2:
++	case RT5659_GPIO_CTRL_1:
++	case RT5659_GPIO_CTRL_2:
++	case RT5659_GPIO_CTRL_3:
++	case RT5659_GPIO_CTRL_4:
++	case RT5659_GPIO_CTRL_5:
++	case RT5659_GPIO_STA:
++	case RT5659_SINE_GEN_CTRL_1:
++	case RT5659_SINE_GEN_CTRL_2:
++	case RT5659_SINE_GEN_CTRL_3:
++	case RT5659_HP_AMP_DET_CTRL_1:
++	case RT5659_HP_AMP_DET_CTRL_2:
++	case RT5659_SV_ZCD_1:
++	case RT5659_SV_ZCD_2:
++	case RT5659_IL_CMD_1:
++	case RT5659_IL_CMD_2:
++	case RT5659_IL_CMD_3:
++	case RT5659_IL_CMD_4:
++	case RT5659_4BTN_IL_CMD_1:
++	case RT5659_4BTN_IL_CMD_2:
++	case RT5659_4BTN_IL_CMD_3:
++	case RT5659_PSV_IL_CMD_1:
++	case RT5659_PSV_IL_CMD_2:
++	case RT5659_ADC_STO1_HP_CTRL_1:
++	case RT5659_ADC_STO1_HP_CTRL_2:
++	case RT5659_ADC_MONO_HP_CTRL_1:
++	case RT5659_ADC_MONO_HP_CTRL_2:
++	case RT5659_AJD1_CTRL:
++	case RT5659_AJD2_AJD3_CTRL:
++	case RT5659_JD1_THD:
++	case RT5659_JD2_THD:
++	case RT5659_JD3_THD:
++	case RT5659_JD_CTRL_1:
++	case RT5659_JD_CTRL_2:
++	case RT5659_JD_CTRL_3:
++	case RT5659_JD_CTRL_4:
++	case RT5659_DIG_MISC:
++	case RT5659_DUMMY_2:
++	case RT5659_DUMMY_3:
++	case RT5659_VENDOR_ID:
++	case RT5659_VENDOR_ID_1:
++	case RT5659_DEVICE_ID:
++	case RT5659_DAC_ADC_DIG_VOL:
++	case RT5659_BIAS_CUR_CTRL_1:
++	case RT5659_BIAS_CUR_CTRL_2:
++	case RT5659_BIAS_CUR_CTRL_3:
++	case RT5659_BIAS_CUR_CTRL_4:
++	case RT5659_BIAS_CUR_CTRL_5:
++	case RT5659_BIAS_CUR_CTRL_6:
++	case RT5659_BIAS_CUR_CTRL_7:
++	case RT5659_BIAS_CUR_CTRL_8:
++	case RT5659_BIAS_CUR_CTRL_9:
++	case RT5659_BIAS_CUR_CTRL_10:
++	case RT5659_MEMORY_TEST:
++	case RT5659_VREF_REC_OP_FB_CAP_CTRL:
++	case RT5659_CLASSD_0:
++	case RT5659_CLASSD_1:
++	case RT5659_CLASSD_2:
++	case RT5659_CLASSD_3:
++	case RT5659_CLASSD_4:
++	case RT5659_CLASSD_5:
++	case RT5659_CLASSD_6:
++	case RT5659_CLASSD_7:
++	case RT5659_CLASSD_8:
++	case RT5659_CLASSD_9:
++	case RT5659_CLASSD_10:
++	case RT5659_CHARGE_PUMP_1:
++	case RT5659_CHARGE_PUMP_2:
++	case RT5659_DIG_IN_CTRL_1:
++	case RT5659_DIG_IN_CTRL_2:
++	case RT5659_PAD_DRIVING_CTRL:
++	case RT5659_SOFT_RAMP_DEPOP:
++	case RT5659_PLL:
++	case RT5659_CHOP_DAC:
++	case RT5659_CHOP_ADC:
++	case RT5659_CALIB_ADC_CTRL:
++	case RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL:
++	case RT5659_VOL_TEST:
++	case RT5659_TEST_MODE_CTRL_1:
++	case RT5659_TEST_MODE_CTRL_2:
++	case RT5659_TEST_MODE_CTRL_3:
++	case RT5659_TEST_MODE_CTRL_4:
++	case RT5659_BASSBACK_CTRL:
++	case RT5659_MP3_PLUS_CTRL_1:
++	case RT5659_MP3_PLUS_CTRL_2:
++	case RT5659_MP3_HPF_A1:
++	case RT5659_MP3_HPF_A2:
++	case RT5659_MP3_HPF_H0:
++	case RT5659_MP3_LPF_H0:
++	case RT5659_3D_SPK_CTRL:
++	case RT5659_3D_SPK_COEF_1:
++	case RT5659_3D_SPK_COEF_2:
++	case RT5659_3D_SPK_COEF_3:
++	case RT5659_3D_SPK_COEF_4:
++	case RT5659_3D_SPK_COEF_5:
++	case RT5659_3D_SPK_COEF_6:
++	case RT5659_3D_SPK_COEF_7:
++	case RT5659_STO_NG2_CTRL_1:
++	case RT5659_STO_NG2_CTRL_2:
++	case RT5659_STO_NG2_CTRL_3:
++	case RT5659_STO_NG2_CTRL_4:
++	case RT5659_STO_NG2_CTRL_5:
++	case RT5659_STO_NG2_CTRL_6:
++	case RT5659_STO_NG2_CTRL_7:
++	case RT5659_STO_NG2_CTRL_8:
++	case RT5659_MONO_NG2_CTRL_1:
++	case RT5659_MONO_NG2_CTRL_2:
++	case RT5659_MONO_NG2_CTRL_3:
++	case RT5659_MONO_NG2_CTRL_4:
++	case RT5659_MONO_NG2_CTRL_5:
++	case RT5659_MONO_NG2_CTRL_6:
++	case RT5659_MID_HP_AMP_DET:
++	case RT5659_LOW_HP_AMP_DET:
++	case RT5659_LDO_CTRL:
++	case RT5659_HP_DECROSS_CTRL_1:
++	case RT5659_HP_DECROSS_CTRL_2:
++	case RT5659_HP_DECROSS_CTRL_3:
++	case RT5659_HP_DECROSS_CTRL_4:
++	case RT5659_HP_IMP_SENS_CTRL_1:
++	case RT5659_HP_IMP_SENS_CTRL_2:
++	case RT5659_HP_IMP_SENS_CTRL_3:
++	case RT5659_HP_IMP_SENS_CTRL_4:
++	case RT5659_HP_IMP_SENS_MAP_1:
++	case RT5659_HP_IMP_SENS_MAP_2:
++	case RT5659_HP_IMP_SENS_MAP_3:
++	case RT5659_HP_IMP_SENS_MAP_4:
++	case RT5659_HP_IMP_SENS_MAP_5:
++	case RT5659_HP_IMP_SENS_MAP_6:
++	case RT5659_HP_IMP_SENS_MAP_7:
++	case RT5659_HP_IMP_SENS_MAP_8:
++	case RT5659_HP_LOGIC_CTRL_1:
++	case RT5659_HP_LOGIC_CTRL_2:
++	case RT5659_HP_CALIB_CTRL_1:
++	case RT5659_HP_CALIB_CTRL_2:
++	case RT5659_HP_CALIB_CTRL_3:
++	case RT5659_HP_CALIB_CTRL_4:
++	case RT5659_HP_CALIB_CTRL_5:
++	case RT5659_HP_CALIB_CTRL_6:
++	case RT5659_HP_CALIB_CTRL_7:
++	case RT5659_HP_CALIB_CTRL_9:
++	case RT5659_HP_CALIB_CTRL_10:
++	case RT5659_HP_CALIB_CTRL_11:
++	case RT5659_HP_CALIB_STA_1:
++	case RT5659_HP_CALIB_STA_2:
++	case RT5659_HP_CALIB_STA_3:
++	case RT5659_HP_CALIB_STA_4:
++	case RT5659_HP_CALIB_STA_5:
++	case RT5659_HP_CALIB_STA_6:
++	case RT5659_HP_CALIB_STA_7:
++	case RT5659_HP_CALIB_STA_8:
++	case RT5659_HP_CALIB_STA_9:
++	case RT5659_MONO_AMP_CALIB_CTRL_1:
++	case RT5659_MONO_AMP_CALIB_CTRL_2:
++	case RT5659_MONO_AMP_CALIB_CTRL_3:
++	case RT5659_MONO_AMP_CALIB_CTRL_4:
++	case RT5659_MONO_AMP_CALIB_CTRL_5:
++	case RT5659_MONO_AMP_CALIB_STA_1:
++	case RT5659_MONO_AMP_CALIB_STA_2:
++	case RT5659_MONO_AMP_CALIB_STA_3:
++	case RT5659_MONO_AMP_CALIB_STA_4:
++	case RT5659_SPK_PWR_LMT_CTRL_1:
++	case RT5659_SPK_PWR_LMT_CTRL_2:
++	case RT5659_SPK_PWR_LMT_CTRL_3:
++	case RT5659_SPK_PWR_LMT_STA_1:
++	case RT5659_SPK_PWR_LMT_STA_2:
++	case RT5659_SPK_PWR_LMT_STA_3:
++	case RT5659_SPK_PWR_LMT_STA_4:
++	case RT5659_SPK_PWR_LMT_STA_5:
++	case RT5659_SPK_PWR_LMT_STA_6:
++	case RT5659_FLEX_SPK_BST_CTRL_1:
++	case RT5659_FLEX_SPK_BST_CTRL_2:
++	case RT5659_FLEX_SPK_BST_CTRL_3:
++	case RT5659_FLEX_SPK_BST_CTRL_4:
++	case RT5659_SPK_EX_LMT_CTRL_1:
++	case RT5659_SPK_EX_LMT_CTRL_2:
++	case RT5659_SPK_EX_LMT_CTRL_3:
++	case RT5659_SPK_EX_LMT_CTRL_4:
++	case RT5659_SPK_EX_LMT_CTRL_5:
++	case RT5659_SPK_EX_LMT_CTRL_6:
++	case RT5659_SPK_EX_LMT_CTRL_7:
++	case RT5659_ADJ_HPF_CTRL_1:
++	case RT5659_ADJ_HPF_CTRL_2:
++	case RT5659_SPK_DC_CAILB_CTRL_1:
++	case RT5659_SPK_DC_CAILB_CTRL_2:
++	case RT5659_SPK_DC_CAILB_CTRL_3:
++	case RT5659_SPK_DC_CAILB_CTRL_4:
++	case RT5659_SPK_DC_CAILB_CTRL_5:
++	case RT5659_SPK_DC_CAILB_STA_1:
++	case RT5659_SPK_DC_CAILB_STA_2:
++	case RT5659_SPK_DC_CAILB_STA_3:
++	case RT5659_SPK_DC_CAILB_STA_4:
++	case RT5659_SPK_DC_CAILB_STA_5:
++	case RT5659_SPK_DC_CAILB_STA_6:
++	case RT5659_SPK_DC_CAILB_STA_7:
++	case RT5659_SPK_DC_CAILB_STA_8:
++	case RT5659_SPK_DC_CAILB_STA_9:
++	case RT5659_SPK_DC_CAILB_STA_10:
++	case RT5659_SPK_VDD_STA_1:
++	case RT5659_SPK_VDD_STA_2:
++	case RT5659_SPK_DC_DET_CTRL_1:
++	case RT5659_SPK_DC_DET_CTRL_2:
++	case RT5659_SPK_DC_DET_CTRL_3:
++	case RT5659_PURE_DC_DET_CTRL_1:
++	case RT5659_PURE_DC_DET_CTRL_2:
++	case RT5659_DUMMY_4:
++	case RT5659_DUMMY_5:
++	case RT5659_DUMMY_6:
++	case RT5659_DRC1_CTRL_1:
++	case RT5659_DRC1_CTRL_2:
++	case RT5659_DRC1_CTRL_3:
++	case RT5659_DRC1_CTRL_4:
++	case RT5659_DRC1_CTRL_5:
++	case RT5659_DRC1_CTRL_6:
++	case RT5659_DRC1_HARD_LMT_CTRL_1:
++	case RT5659_DRC1_HARD_LMT_CTRL_2:
++	case RT5659_DRC2_CTRL_1:
++	case RT5659_DRC2_CTRL_2:
++	case RT5659_DRC2_CTRL_3:
++	case RT5659_DRC2_CTRL_4:
++	case RT5659_DRC2_CTRL_5:
++	case RT5659_DRC2_CTRL_6:
++	case RT5659_DRC2_HARD_LMT_CTRL_1:
++	case RT5659_DRC2_HARD_LMT_CTRL_2:
++	case RT5659_DRC1_PRIV_1:
++	case RT5659_DRC1_PRIV_2:
++	case RT5659_DRC1_PRIV_3:
++	case RT5659_DRC1_PRIV_4:
++	case RT5659_DRC1_PRIV_5:
++	case RT5659_DRC1_PRIV_6:
++	case RT5659_DRC1_PRIV_7:
++	case RT5659_DRC2_PRIV_1:
++	case RT5659_DRC2_PRIV_2:
++	case RT5659_DRC2_PRIV_3:
++	case RT5659_DRC2_PRIV_4:
++	case RT5659_DRC2_PRIV_5:
++	case RT5659_DRC2_PRIV_6:
++	case RT5659_DRC2_PRIV_7:
++	case RT5659_MULTI_DRC_CTRL:
++	case RT5659_CROSS_OVER_1:
++	case RT5659_CROSS_OVER_2:
++	case RT5659_CROSS_OVER_3:
++	case RT5659_CROSS_OVER_4:
++	case RT5659_CROSS_OVER_5:
++	case RT5659_CROSS_OVER_6:
++	case RT5659_CROSS_OVER_7:
++	case RT5659_CROSS_OVER_8:
++	case RT5659_CROSS_OVER_9:
++	case RT5659_CROSS_OVER_10:
++	case RT5659_ALC_PGA_CTRL_1:
++	case RT5659_ALC_PGA_CTRL_2:
++	case RT5659_ALC_PGA_CTRL_3:
++	case RT5659_ALC_PGA_CTRL_4:
++	case RT5659_ALC_PGA_CTRL_5:
++	case RT5659_ALC_PGA_CTRL_6:
++	case RT5659_ALC_PGA_CTRL_7:
++	case RT5659_ALC_PGA_CTRL_8:
++	case RT5659_ALC_PGA_STA_1:
++	case RT5659_ALC_PGA_STA_2:
++	case RT5659_ALC_PGA_STA_3:
++	case RT5659_DAC_L_EQ_PRE_VOL:
++	case RT5659_DAC_R_EQ_PRE_VOL:
++	case RT5659_DAC_L_EQ_POST_VOL:
++	case RT5659_DAC_R_EQ_POST_VOL:
++	case RT5659_DAC_L_EQ_LPF1_A1:
++	case RT5659_DAC_L_EQ_LPF1_H0:
++	case RT5659_DAC_R_EQ_LPF1_A1:
++	case RT5659_DAC_R_EQ_LPF1_H0:
++	case RT5659_DAC_L_EQ_BPF2_A1:
++	case RT5659_DAC_L_EQ_BPF2_A2:
++	case RT5659_DAC_L_EQ_BPF2_H0:
++	case RT5659_DAC_R_EQ_BPF2_A1:
++	case RT5659_DAC_R_EQ_BPF2_A2:
++	case RT5659_DAC_R_EQ_BPF2_H0:
++	case RT5659_DAC_L_EQ_BPF3_A1:
++	case RT5659_DAC_L_EQ_BPF3_A2:
++	case RT5659_DAC_L_EQ_BPF3_H0:
++	case RT5659_DAC_R_EQ_BPF3_A1:
++	case RT5659_DAC_R_EQ_BPF3_A2:
++	case RT5659_DAC_R_EQ_BPF3_H0:
++	case RT5659_DAC_L_EQ_BPF4_A1:
++	case RT5659_DAC_L_EQ_BPF4_A2:
++	case RT5659_DAC_L_EQ_BPF4_H0:
++	case RT5659_DAC_R_EQ_BPF4_A1:
++	case RT5659_DAC_R_EQ_BPF4_A2:
++	case RT5659_DAC_R_EQ_BPF4_H0:
++	case RT5659_DAC_L_EQ_HPF1_A1:
++	case RT5659_DAC_L_EQ_HPF1_H0:
++	case RT5659_DAC_R_EQ_HPF1_A1:
++	case RT5659_DAC_R_EQ_HPF1_H0:
++	case RT5659_DAC_L_EQ_HPF2_A1:
++	case RT5659_DAC_L_EQ_HPF2_A2:
++	case RT5659_DAC_L_EQ_HPF2_H0:
++	case RT5659_DAC_R_EQ_HPF2_A1:
++	case RT5659_DAC_R_EQ_HPF2_A2:
++	case RT5659_DAC_R_EQ_HPF2_H0:
++	case RT5659_DAC_L_BI_EQ_BPF1_H0_1:
++	case RT5659_DAC_L_BI_EQ_BPF1_H0_2:
++	case RT5659_DAC_L_BI_EQ_BPF1_B1_1:
++	case RT5659_DAC_L_BI_EQ_BPF1_B1_2:
++	case RT5659_DAC_L_BI_EQ_BPF1_B2_1:
++	case RT5659_DAC_L_BI_EQ_BPF1_B2_2:
++	case RT5659_DAC_L_BI_EQ_BPF1_A1_1:
++	case RT5659_DAC_L_BI_EQ_BPF1_A1_2:
++	case RT5659_DAC_L_BI_EQ_BPF1_A2_1:
++	case RT5659_DAC_L_BI_EQ_BPF1_A2_2:
++	case RT5659_DAC_R_BI_EQ_BPF1_H0_1:
++	case RT5659_DAC_R_BI_EQ_BPF1_H0_2:
++	case RT5659_DAC_R_BI_EQ_BPF1_B1_1:
++	case RT5659_DAC_R_BI_EQ_BPF1_B1_2:
++	case RT5659_DAC_R_BI_EQ_BPF1_B2_1:
++	case RT5659_DAC_R_BI_EQ_BPF1_B2_2:
++	case RT5659_DAC_R_BI_EQ_BPF1_A1_1:
++	case RT5659_DAC_R_BI_EQ_BPF1_A1_2:
++	case RT5659_DAC_R_BI_EQ_BPF1_A2_1:
++	case RT5659_DAC_R_BI_EQ_BPF1_A2_2:
++	case RT5659_ADC_L_EQ_LPF1_A1:
++	case RT5659_ADC_R_EQ_LPF1_A1:
++	case RT5659_ADC_L_EQ_LPF1_H0:
++	case RT5659_ADC_R_EQ_LPF1_H0:
++	case RT5659_ADC_L_EQ_BPF1_A1:
++	case RT5659_ADC_R_EQ_BPF1_A1:
++	case RT5659_ADC_L_EQ_BPF1_A2:
++	case RT5659_ADC_R_EQ_BPF1_A2:
++	case RT5659_ADC_L_EQ_BPF1_H0:
++	case RT5659_ADC_R_EQ_BPF1_H0:
++	case RT5659_ADC_L_EQ_BPF2_A1:
++	case RT5659_ADC_R_EQ_BPF2_A1:
++	case RT5659_ADC_L_EQ_BPF2_A2:
++	case RT5659_ADC_R_EQ_BPF2_A2:
++	case RT5659_ADC_L_EQ_BPF2_H0:
++	case RT5659_ADC_R_EQ_BPF2_H0:
++	case RT5659_ADC_L_EQ_BPF3_A1:
++	case RT5659_ADC_R_EQ_BPF3_A1:
++	case RT5659_ADC_L_EQ_BPF3_A2:
++	case RT5659_ADC_R_EQ_BPF3_A2:
++	case RT5659_ADC_L_EQ_BPF3_H0:
++	case RT5659_ADC_R_EQ_BPF3_H0:
++	case RT5659_ADC_L_EQ_BPF4_A1:
++	case RT5659_ADC_R_EQ_BPF4_A1:
++	case RT5659_ADC_L_EQ_BPF4_A2:
++	case RT5659_ADC_R_EQ_BPF4_A2:
++	case RT5659_ADC_L_EQ_BPF4_H0:
++	case RT5659_ADC_R_EQ_BPF4_H0:
++	case RT5659_ADC_L_EQ_HPF1_A1:
++	case RT5659_ADC_R_EQ_HPF1_A1:
++	case RT5659_ADC_L_EQ_HPF1_H0:
++	case RT5659_ADC_R_EQ_HPF1_H0:
++	case RT5659_ADC_L_EQ_PRE_VOL:
++	case RT5659_ADC_R_EQ_PRE_VOL:
++	case RT5659_ADC_L_EQ_POST_VOL:
++	case RT5659_ADC_R_EQ_POST_VOL:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const DECLARE_TLV_DB_SCALE(hp_vol_tlv, -2325, 75, 0);
++static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
++static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
++static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
++static const DECLARE_TLV_DB_SCALE(in_bst_tlv, -1200, 75, 0);
++
++/* Interface data select */
++static const char * const rt5659_data_select[] = {
++	"L/R", "R/L", "L/L", "R/R"
++};
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if1_01_adc_enum,
++	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT01_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if1_23_adc_enum,
++	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT23_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if1_45_adc_enum,
++	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT45_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if1_67_adc_enum,
++	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT67_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if2_dac_enum,
++	RT5659_DIG_INF23_DATA, RT5659_IF2_DAC_SEL_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if2_adc_enum,
++	RT5659_DIG_INF23_DATA, RT5659_IF2_ADC_SEL_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if3_dac_enum,
++	RT5659_DIG_INF23_DATA, RT5659_IF3_DAC_SEL_SFT, rt5659_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5659_if3_adc_enum,
++	RT5659_DIG_INF23_DATA, RT5659_IF3_ADC_SEL_SFT, rt5659_data_select);
++
++static const struct snd_kcontrol_new rt5659_if1_01_adc_swap_mux =
++	SOC_DAPM_ENUM("IF1 01 ADC Swap Source", rt5659_if1_01_adc_enum);
++
++static const struct snd_kcontrol_new rt5659_if1_23_adc_swap_mux =
++	SOC_DAPM_ENUM("IF1 23 ADC1 Swap Source", rt5659_if1_23_adc_enum);
++
++static const struct snd_kcontrol_new rt5659_if1_45_adc_swap_mux =
++	SOC_DAPM_ENUM("IF1 45 ADC1 Swap Source", rt5659_if1_45_adc_enum);
++
++static const struct snd_kcontrol_new rt5659_if1_67_adc_swap_mux =
++	SOC_DAPM_ENUM("IF1 67 ADC1 Swap Source", rt5659_if1_67_adc_enum);
++
++static const struct snd_kcontrol_new rt5659_if2_dac_swap_mux =
++	SOC_DAPM_ENUM("IF2 DAC Swap Source", rt5659_if2_dac_enum);
++
++static const struct snd_kcontrol_new rt5659_if2_adc_swap_mux =
++	SOC_DAPM_ENUM("IF2 ADC Swap Source", rt5659_if2_adc_enum);
++
++static const struct snd_kcontrol_new rt5659_if3_dac_swap_mux =
++	SOC_DAPM_ENUM("IF3 DAC Swap Source", rt5659_if3_dac_enum);
++
++static const struct snd_kcontrol_new rt5659_if3_adc_swap_mux =
++	SOC_DAPM_ENUM("IF3 ADC Swap Source", rt5659_if3_adc_enum);
++
++static const char * const rt5659_asrc_clk_src[] = {
++	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
++	"clk_i2s3_track", "clk_sys2", "clk_sys3"
++};
++
++static unsigned int rt5659_asrc_clk_map_values[] = {
++	0, 1, 2, 3, 5, 6,
++};
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_da_sto_asrc_enum, RT5659_ASRC_2, RT5659_DA_STO_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_da_monol_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_L_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_da_monor_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_R_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_ad_sto1_asrc_enum, RT5659_ASRC_2, RT5659_AD_STO1_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_ad_sto2_asrc_enum, RT5659_ASRC_3, RT5659_AD_STO2_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_ad_monol_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_L_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static const SOC_VALUE_ENUM_SINGLE_DECL(
++	rt5659_ad_monor_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_R_T_SFT, 0x7,
++	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
++
++static int rt5659_hp_vol_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	int ret = snd_soc_put_volsw(kcontrol, ucontrol);
++
++	if (snd_soc_read(codec, RT5659_STO_NG2_CTRL_1) & RT5659_NG2_EN) {
++		snd_soc_update_bits(codec, RT5659_STO_NG2_CTRL_1,
++			RT5659_NG2_EN_MASK, RT5659_NG2_DIS);
++		snd_soc_update_bits(codec, RT5659_STO_NG2_CTRL_1,
++			RT5659_NG2_EN_MASK, RT5659_NG2_EN);
++	}
++
++	return ret;
++}
++
++static void rt5659_enable_push_button_irq(struct snd_soc_codec *codec,
++	bool enable)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++
++	if (enable) {
++		snd_soc_write(codec, RT5659_4BTN_IL_CMD_1, 0x000b);
++
++		/* MICBIAS1 and Mic Det Power for button detect*/
++		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
++		snd_soc_dapm_force_enable_pin(dapm,
++			"Mic Det Power");
++		snd_soc_dapm_sync(dapm);
++
++		snd_soc_update_bits(codec, RT5659_PWR_ANLG_2,
++			RT5659_PWR_MB1, RT5659_PWR_MB1);
++		snd_soc_update_bits(codec, RT5659_PWR_VOL,
++			RT5659_PWR_MIC_DET, RT5659_PWR_MIC_DET);
++
++		snd_soc_update_bits(codec, RT5659_IRQ_CTRL_2,
++				RT5659_IL_IRQ_MASK, RT5659_IL_IRQ_EN);
++		snd_soc_update_bits(codec, RT5659_4BTN_IL_CMD_2,
++				RT5659_4BTN_IL_MASK, RT5659_4BTN_IL_EN);
++	} else {
++		snd_soc_update_bits(codec, RT5659_4BTN_IL_CMD_2,
++				RT5659_4BTN_IL_MASK, RT5659_4BTN_IL_DIS);
++		snd_soc_update_bits(codec, RT5659_IRQ_CTRL_2,
++				RT5659_IL_IRQ_MASK, RT5659_IL_IRQ_DIS);
++		/* MICBIAS1 and Mic Det Power for button detect*/
++		snd_soc_dapm_disable_pin(dapm, "MICBIAS1");
++		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++		snd_soc_dapm_sync(dapm);
++	}
++}
++
++/**
++ * rt5659_headset_detect - Detect headset.
++ * @codec: SoC audio codec device.
++ * @jack_insert: Jack insert or not.
++ *
++ * Detect whether is headset or not when jack inserted.
++ *
++ * Returns detect status.
++ */
++
++static int rt5659_headset_detect(struct snd_soc_codec *codec, int jack_insert)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	int val, i = 0, sleep_time[5] = {300, 150, 100, 50, 30};
++	int reg_63;
++
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	if (jack_insert) {
++		snd_soc_dapm_force_enable_pin(dapm,
++			"Mic Det Power");
++		snd_soc_dapm_sync(dapm);
++		reg_63 = snd_soc_read(codec, RT5659_PWR_ANLG_1);
++
++		snd_soc_update_bits(codec, RT5659_PWR_ANLG_1,
++			RT5659_PWR_VREF2 | RT5659_PWR_MB,
++			RT5659_PWR_VREF2 | RT5659_PWR_MB);
++		msleep(20);
++		snd_soc_update_bits(codec, RT5659_PWR_ANLG_1,
++			RT5659_PWR_FV2, RT5659_PWR_FV2);
++
++		snd_soc_write(codec, RT5659_EJD_CTRL_2, 0x4160);
++		snd_soc_update_bits(codec, RT5659_EJD_CTRL_1,
++			0x20, 0x0);
++		msleep(20);
++		snd_soc_update_bits(codec, RT5659_EJD_CTRL_1,
++			0x20, 0x20);
++
++		while (i < 5) {
++			msleep(sleep_time[i]);
++			val = snd_soc_read(codec, RT5659_EJD_CTRL_2) & 0x0003;
++			i++;
++			if (val == 0x1 || val == 0x2 || val == 0x3)
++				break;
++		}
++
++		switch (val) {
++		case 1:
++			rt5659->jack_type = SND_JACK_HEADSET;
++			rt5659_enable_push_button_irq(codec, true);
++			break;
++		default:
++			snd_soc_write(codec, RT5659_PWR_ANLG_1, reg_63);
++			rt5659->jack_type = SND_JACK_HEADPHONE;
++			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++			snd_soc_dapm_sync(dapm);
++			break;
++		}
++	} else {
++		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++		snd_soc_dapm_sync(dapm);
++		if (rt5659->jack_type == SND_JACK_HEADSET)
++			rt5659_enable_push_button_irq(codec, false);
++		rt5659->jack_type = 0;
++	}
++
++	dev_dbg(codec->dev, "jack_type = %d\n", rt5659->jack_type);
++	return rt5659->jack_type;
++}
++
++static int rt5659_button_detect(struct snd_soc_codec *codec)
++{
++	int btn_type, val;
++
++	val = snd_soc_read(codec, RT5659_4BTN_IL_CMD_1);
++	btn_type = val & 0xfff0;
++	snd_soc_write(codec, RT5659_4BTN_IL_CMD_1, val);
++
++	return btn_type;
++}
++
++static irqreturn_t rt5659_irq(int irq, void *data)
++{
++	struct rt5659_priv *rt5659 = data;
++
++	queue_delayed_work(system_power_efficient_wq,
++			   &rt5659->jack_detect_work, msecs_to_jiffies(250));
++
++	return IRQ_HANDLED;
++}
++
++int rt5659_set_jack_detect(struct snd_soc_codec *codec,
++	struct snd_soc_jack *hs_jack)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	rt5659->hs_jack = hs_jack;
++
++	rt5659_irq(0, rt5659);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt5659_set_jack_detect);
++
++static void rt5659_jack_detect_work(struct work_struct *work)
++{
++	struct rt5659_priv *rt5659 =
++		container_of(work, struct rt5659_priv, jack_detect_work.work);
++	int val, btn_type, report = 0;
++
++	if (!rt5659->codec)
++		return;
++
++	val = snd_soc_read(rt5659->codec, RT5659_INT_ST_1) & 0x0080;
++	if (!val) {
++		/* jack in */
++		if (rt5659->jack_type == 0) {
++			/* jack was out, report jack type */
++			report = rt5659_headset_detect(rt5659->codec, 1);
++		} else {
++			/* jack is already in, report button event */
++			report = SND_JACK_HEADSET;
++			btn_type = rt5659_button_detect(rt5659->codec);
++			/**
++			 * rt5659 can report three kinds of button behavior,
++			 * one click, double click and hold. However,
++			 * currently we will report button pressed/released
++			 * event. So all the three button behaviors are
++			 * treated as button pressed.
++			 */
++			switch (btn_type) {
++			case 0x8000:
++			case 0x4000:
++			case 0x2000:
++				report |= SND_JACK_BTN_0;
++				break;
++			case 0x1000:
++			case 0x0800:
++			case 0x0400:
++				report |= SND_JACK_BTN_1;
++				break;
++			case 0x0200:
++			case 0x0100:
++			case 0x0080:
++				report |= SND_JACK_BTN_2;
++				break;
++			case 0x0040:
++			case 0x0020:
++			case 0x0010:
++				report |= SND_JACK_BTN_3;
++				break;
++			case 0x0000: /* unpressed */
++				break;
++			default:
++				btn_type = 0;
++				dev_err(rt5659->codec->dev,
++					"Unexpected button code 0x%04x\n",
++					btn_type);
++				break;
++			}
++
++			/* button release or spurious interrput*/
++			if (btn_type == 0)
++				report =  rt5659->jack_type;
++		}
++	} else {
++		/* jack out */
++		report = rt5659_headset_detect(rt5659->codec, 0);
++	}
++
++	snd_soc_jack_report(rt5659->hs_jack, report, SND_JACK_HEADSET |
++			    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			    SND_JACK_BTN_2 | SND_JACK_BTN_3);
++}
++
++static const struct snd_kcontrol_new rt5659_snd_controls[] = {
++	/* Speaker Output Volume */
++	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5659_SPO_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* Headphone Output Volume */
++	SOC_DOUBLE_R_EXT_TLV("Headphone Playback Volume", RT5659_HPL_GAIN,
++		RT5659_HPR_GAIN, RT5659_G_HP_SFT, 31, 1, snd_soc_get_volsw,
++		rt5659_hp_vol_put, hp_vol_tlv),
++
++	/* Mono Output Volume */
++	SOC_SINGLE_TLV("Mono Playback Volume", RT5659_MONO_OUT,
++		RT5659_L_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* Output Volume */
++	SOC_DOUBLE_TLV("OUT Playback Volume", RT5659_LOUT,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 39, 1, out_vol_tlv),
++
++	/* DAC Digital Volume */
++	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5659_DAC1_DIG_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 175, 0, dac_vol_tlv),
++	SOC_DOUBLE("DAC1 Playback Switch", RT5659_AD_DA_MIXER,
++		RT5659_M_DAC1_L_SFT, RT5659_M_DAC1_R_SFT, 1, 1),
++
++	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5659_DAC2_DIG_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 175, 0, dac_vol_tlv),
++	SOC_DOUBLE("DAC2 Playback Switch", RT5659_DAC_CTRL,
++		RT5659_M_DAC2_L_VOL_SFT, RT5659_M_DAC2_R_VOL_SFT, 1, 1),
++
++	/* IN1/IN2/IN3/IN4 Volume */
++	SOC_SINGLE_TLV("IN1 Boost Volume", RT5659_IN1_IN2,
++		RT5659_BST1_SFT, 69, 0, in_bst_tlv),
++	SOC_SINGLE_TLV("IN2 Boost Volume", RT5659_IN1_IN2,
++		RT5659_BST2_SFT, 69, 0, in_bst_tlv),
++	SOC_SINGLE_TLV("IN3 Boost Volume", RT5659_IN3_IN4,
++		RT5659_BST3_SFT, 69, 0, in_bst_tlv),
++	SOC_SINGLE_TLV("IN4 Boost Volume", RT5659_IN3_IN4,
++		RT5659_BST4_SFT, 69, 0, in_bst_tlv),
++
++	/* INL/INR Volume Control */
++	SOC_DOUBLE_TLV("IN Capture Volume", RT5659_INL1_INR1_VOL,
++		RT5659_INL_VOL_SFT, RT5659_INR_VOL_SFT, 31, 1, in_vol_tlv),
++
++	/* ADC Digital Volume Control */
++	SOC_DOUBLE("STO1 ADC Capture Switch", RT5659_STO1_ADC_DIG_VOL,
++		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("STO1 ADC Capture Volume", RT5659_STO1_ADC_DIG_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
++	SOC_DOUBLE("Mono ADC Capture Switch", RT5659_MONO_ADC_DIG_VOL,
++		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5659_MONO_ADC_DIG_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
++	SOC_DOUBLE("STO2 ADC Capture Switch", RT5659_STO2_ADC_DIG_VOL,
++		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("STO2 ADC Capture Volume", RT5659_STO2_ADC_DIG_VOL,
++		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
++
++	/* ADC Boost Volume Control */
++	SOC_DOUBLE_TLV("STO1 ADC Boost Gain Volume", RT5659_STO1_BOOST,
++		RT5659_STO1_ADC_L_BST_SFT, RT5659_STO1_ADC_R_BST_SFT,
++		3, 0, adc_bst_tlv),
++
++	SOC_DOUBLE_TLV("Mono ADC Boost Gain Volume", RT5659_MONO_BOOST,
++		RT5659_MONO_ADC_L_BST_SFT, RT5659_MONO_ADC_R_BST_SFT,
++		3, 0, adc_bst_tlv),
++
++	SOC_DOUBLE_TLV("STO2 ADC Boost Gain Volume", RT5659_STO2_BOOST,
++		RT5659_STO2_ADC_L_BST_SFT, RT5659_STO2_ADC_R_BST_SFT,
++		3, 0, adc_bst_tlv),
++
++	SOC_SINGLE("DAC IF1 DAC1 L Data Switch", RT5659_TDM_CTRL_4, 12, 7, 0),
++	SOC_SINGLE("DAC IF1 DAC1 R Data Switch", RT5659_TDM_CTRL_4, 8, 7, 0),
++	SOC_SINGLE("DAC IF1 DAC2 L Data Switch", RT5659_TDM_CTRL_4, 4, 7, 0),
++	SOC_SINGLE("DAC IF1 DAC2 R Data Switch", RT5659_TDM_CTRL_4, 0, 7, 0),
++};
++
++/**
++ * set_dmic_clk - Set parameter of dmic.
++ *
++ * @w: DAPM widget.
++ * @kcontrol: The kcontrol of this widget.
++ * @event: Event id.
++ *
++ * Choose dmic clock between 1MHz and 3MHz.
++ * It is better for clock to approximate 3MHz.
++ */
++static int set_dmic_clk(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++	int pd, idx = -EINVAL;
++
++	pd = rl6231_get_pre_div(rt5659->regmap,
++		RT5659_ADDA_CLK_1, RT5659_I2S_PD1_SFT);
++	idx = rl6231_calc_dmic_clk(rt5659->sysclk / pd);
++
++	if (idx < 0)
++		dev_err(codec->dev, "Failed to set DMIC clock\n");
++	else {
++		snd_soc_update_bits(codec, RT5659_DMIC_CTRL_1,
++			RT5659_DMIC_CLK_MASK, idx << RT5659_DMIC_CLK_SFT);
++	}
++	return idx;
++}
++
++static int set_adc_clk(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_update_bits(codec, RT5659_CHOP_ADC,
++			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK,
++			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK);
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_update_bits(codec, RT5659_CHOP_ADC,
++			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK, 0);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++
++}
++
++static int rt5659_charge_pump_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Depop */
++		snd_soc_write(codec, RT5659_DEPOP_1, 0x0009);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_write(codec, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *w,
++			 struct snd_soc_dapm_widget *sink)
++{
++	unsigned int val;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	val = snd_soc_read(codec, RT5659_GLB_CLK);
++	val &= RT5659_SCLK_SRC_MASK;
++	if (val == RT5659_SCLK_SRC_PLL1)
++		return 1;
++	else
++		return 0;
++}
++
++static int is_using_asrc(struct snd_soc_dapm_widget *w,
++			 struct snd_soc_dapm_widget *sink)
++{
++	unsigned int reg, shift, val;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (w->shift) {
++	case RT5659_ADC_MONO_R_ASRC_SFT:
++		reg = RT5659_ASRC_3;
++		shift = RT5659_AD_MONO_R_T_SFT;
++		break;
++	case RT5659_ADC_MONO_L_ASRC_SFT:
++		reg = RT5659_ASRC_3;
++		shift = RT5659_AD_MONO_L_T_SFT;
++		break;
++	case RT5659_ADC_STO1_ASRC_SFT:
++		reg = RT5659_ASRC_2;
++		shift = RT5659_AD_STO1_T_SFT;
++		break;
++	case RT5659_DAC_MONO_R_ASRC_SFT:
++		reg = RT5659_ASRC_2;
++		shift = RT5659_DA_MONO_R_T_SFT;
++		break;
++	case RT5659_DAC_MONO_L_ASRC_SFT:
++		reg = RT5659_ASRC_2;
++		shift = RT5659_DA_MONO_L_T_SFT;
++		break;
++	case RT5659_DAC_STO_ASRC_SFT:
++		reg = RT5659_ASRC_2;
++		shift = RT5659_DA_STO_T_SFT;
++		break;
++	default:
++		return 0;
++	}
++
++	val = (snd_soc_read(codec, reg) >> shift) & 0xf;
++	switch (val) {
++	case 1:
++	case 2:
++	case 3:
++		/* I2S_Pre_Div1 should be 1 in asrc mode */
++		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++			RT5659_I2S_PD1_MASK, RT5659_I2S_PD1_2);
++		return 1;
++	default:
++		return 0;
++	}
++
++}
++
++/* Digital Mixer */
++static const struct snd_kcontrol_new rt5659_sto1_adc_l_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_STO1_ADC_MIXER,
++			RT5659_M_STO1_ADC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_STO1_ADC_MIXER,
++			RT5659_M_STO1_ADC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_sto1_adc_r_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_STO1_ADC_MIXER,
++			RT5659_M_STO1_ADC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_STO1_ADC_MIXER,
++			RT5659_M_STO1_ADC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_mono_adc_l_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_MONO_ADC_MIXER,
++			RT5659_M_MONO_ADC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_MONO_ADC_MIXER,
++			RT5659_M_MONO_ADC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_mono_adc_r_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_MONO_ADC_MIXER,
++			RT5659_M_MONO_ADC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_MONO_ADC_MIXER,
++			RT5659_M_MONO_ADC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5659_AD_DA_MIXER,
++			RT5659_M_ADCMIX_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC1 Switch", RT5659_AD_DA_MIXER,
++			RT5659_M_DAC1_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5659_AD_DA_MIXER,
++			RT5659_M_ADCMIX_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC1 Switch", RT5659_AD_DA_MIXER,
++			RT5659_M_DAC1_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_sto_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_L1_STO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_R1_STO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_L2_STO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_R2_STO_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_sto_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_L1_STO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_R1_STO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_L2_STO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_STO_DAC_MIXER,
++			RT5659_M_DAC_R2_STO_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_mono_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_L1_MONO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_R1_MONO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_L2_MONO_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_R2_MONO_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_mono_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_L1_MONO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_R1_MONO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_L2_MONO_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONO_DAC_MIXER,
++			RT5659_M_DAC_R2_MONO_R_SFT, 1, 1),
++};
++
++/* Analog Input Mixer */
++static const struct snd_kcontrol_new rt5659_rec1_l_mix[] = {
++	SOC_DAPM_SINGLE("SPKVOLL Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_SPKVOLL_RM1_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_INL_RM1_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_BST4_RM1_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_BST3_RM1_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_BST2_RM1_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_BST1_RM1_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_rec1_r_mix[] = {
++	SOC_DAPM_SINGLE("HPOVOLR Switch", RT5659_REC1_L2_MIXER,
++			RT5659_M_HPOVOLR_RM1_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5659_REC1_R2_MIXER,
++			RT5659_M_INR_RM1_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC1_R2_MIXER,
++			RT5659_M_BST4_RM1_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC1_R2_MIXER,
++			RT5659_M_BST3_RM1_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC1_R2_MIXER,
++			RT5659_M_BST2_RM1_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC1_R2_MIXER,
++			RT5659_M_BST1_RM1_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_rec2_l_mix[] = {
++	SOC_DAPM_SINGLE("SPKVOLL Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_SPKVOL_RM2_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOLL Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_OUTVOLL_RM2_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_BST4_RM2_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_BST3_RM2_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_BST2_RM2_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC2_L2_MIXER,
++			RT5659_M_BST1_RM2_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_rec2_r_mix[] = {
++	SOC_DAPM_SINGLE("MONOVOL Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_MONOVOL_RM2_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOLR Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_OUTVOLR_RM2_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_BST4_RM2_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_BST3_RM2_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_BST2_RM2_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC2_R2_MIXER,
++			RT5659_M_BST1_RM2_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_spk_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_SPK_L_MIXER,
++			RT5659_M_DAC_L2_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_SPK_L_MIXER,
++			RT5659_M_BST1_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5659_SPK_L_MIXER,
++			RT5659_M_IN_L_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5659_SPK_L_MIXER,
++			RT5659_M_IN_R_SM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_SPK_L_MIXER,
++			RT5659_M_BST3_SM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_spk_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_SPK_R_MIXER,
++			RT5659_M_DAC_R2_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_SPK_R_MIXER,
++			RT5659_M_BST4_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5659_SPK_R_MIXER,
++			RT5659_M_IN_L_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5659_SPK_R_MIXER,
++			RT5659_M_IN_R_SM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_SPK_R_MIXER,
++			RT5659_M_BST3_SM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_monovol_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_DAC_L2_MM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_DAC_R2_MM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_BST1_MM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_BST2_MM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_BST3_MM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_out_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_OUT_L_MIXER,
++			RT5659_M_DAC_L2_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INL Switch", RT5659_OUT_L_MIXER,
++			RT5659_M_IN_L_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5659_OUT_L_MIXER,
++			RT5659_M_BST1_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_OUT_L_MIXER,
++			RT5659_M_BST2_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_OUT_L_MIXER,
++			RT5659_M_BST3_OM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_out_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_OUT_R_MIXER,
++			RT5659_M_DAC_R2_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("INR Switch", RT5659_OUT_R_MIXER,
++			RT5659_M_IN_R_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5659_OUT_R_MIXER,
++			RT5659_M_BST2_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST3 Switch", RT5659_OUT_R_MIXER,
++			RT5659_M_BST3_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST4 Switch", RT5659_OUT_R_MIXER,
++			RT5659_M_BST4_OM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_spo_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_SPO_AMP_GAIN,
++			RT5659_M_DAC_L2_SPKOMIX_SFT, 1, 0),
++	SOC_DAPM_SINGLE("SPKVOL L Switch", RT5659_SPO_AMP_GAIN,
++			RT5659_M_SPKVOLL_SPKOMIX_SFT, 1, 0),
++};
++
++static const struct snd_kcontrol_new rt5659_spo_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_SPO_AMP_GAIN,
++			RT5659_M_DAC_R2_SPKOMIX_SFT, 1, 0),
++	SOC_DAPM_SINGLE("SPKVOL R Switch", RT5659_SPO_AMP_GAIN,
++			RT5659_M_SPKVOLR_SPKOMIX_SFT, 1, 0),
++};
++
++static const struct snd_kcontrol_new rt5659_mono_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_DAC_L2_MA_SFT, 1, 1),
++	SOC_DAPM_SINGLE("MONOVOL Switch", RT5659_MONOMIX_IN_GAIN,
++			RT5659_M_MONOVOL_MA_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_lout_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_LOUT_MIXER,
++			RT5659_M_DAC_L2_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOL L Switch", RT5659_LOUT_MIXER,
++			RT5659_M_OV_L_LM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5659_lout_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_LOUT_MIXER,
++			RT5659_M_DAC_R2_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTVOL R Switch", RT5659_LOUT_MIXER,
++			RT5659_M_OV_R_LM_SFT, 1, 1),
++};
++
++/*DAC L2, DAC R2*/
++/*MX-1B [6:4], MX-1B [2:0]*/
++static const char * const rt5659_dac2_src[] = {
++	"IF1 DAC2", "IF2 DAC", "IF3 DAC", "Mono ADC MIX"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dac_l2_enum, RT5659_DAC_CTRL,
++	RT5659_DAC_L2_SEL_SFT, rt5659_dac2_src);
++
++static const struct snd_kcontrol_new rt5659_dac_l2_mux =
++	SOC_DAPM_ENUM("DAC L2 Source", rt5659_dac_l2_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dac_r2_enum, RT5659_DAC_CTRL,
++	RT5659_DAC_R2_SEL_SFT, rt5659_dac2_src);
++
++static const struct snd_kcontrol_new rt5659_dac_r2_mux =
++	SOC_DAPM_ENUM("DAC R2 Source", rt5659_dac_r2_enum);
++
++
++/* STO1 ADC1 Source */
++/* MX-26 [13] */
++static const char * const rt5659_sto1_adc1_src[] = {
++	"DAC MIX", "ADC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_sto1_adc1_enum, RT5659_STO1_ADC_MIXER,
++	RT5659_STO1_ADC1_SRC_SFT, rt5659_sto1_adc1_src);
++
++static const struct snd_kcontrol_new rt5659_sto1_adc1_mux =
++	SOC_DAPM_ENUM("Stereo1 ADC1 Source", rt5659_sto1_adc1_enum);
++
++/* STO1 ADC Source */
++/* MX-26 [12] */
++static const char * const rt5659_sto1_adc_src[] = {
++	"ADC1", "ADC2"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_sto1_adc_enum, RT5659_STO1_ADC_MIXER,
++	RT5659_STO1_ADC_SRC_SFT, rt5659_sto1_adc_src);
++
++static const struct snd_kcontrol_new rt5659_sto1_adc_mux =
++	SOC_DAPM_ENUM("Stereo1 ADC Source", rt5659_sto1_adc_enum);
++
++/* STO1 ADC2 Source */
++/* MX-26 [11] */
++static const char * const rt5659_sto1_adc2_src[] = {
++	"DAC MIX", "DMIC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_sto1_adc2_enum, RT5659_STO1_ADC_MIXER,
++	RT5659_STO1_ADC2_SRC_SFT, rt5659_sto1_adc2_src);
++
++static const struct snd_kcontrol_new rt5659_sto1_adc2_mux =
++	SOC_DAPM_ENUM("Stereo1 ADC2 Source", rt5659_sto1_adc2_enum);
++
++/* STO1 DMIC Source */
++/* MX-26 [8] */
++static const char * const rt5659_sto1_dmic_src[] = {
++	"DMIC1", "DMIC2"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_sto1_dmic_enum, RT5659_STO1_ADC_MIXER,
++	RT5659_STO1_DMIC_SRC_SFT, rt5659_sto1_dmic_src);
++
++static const struct snd_kcontrol_new rt5659_sto1_dmic_mux =
++	SOC_DAPM_ENUM("Stereo1 DMIC Source", rt5659_sto1_dmic_enum);
++
++
++/* MONO ADC L2 Source */
++/* MX-27 [12] */
++static const char * const rt5659_mono_adc_l2_src[] = {
++	"Mono DAC MIXL", "DMIC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adc_l2_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_L2_SRC_SFT, rt5659_mono_adc_l2_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_l2_mux =
++	SOC_DAPM_ENUM("Mono ADC L2 Source", rt5659_mono_adc_l2_enum);
++
++
++/* MONO ADC L1 Source */
++/* MX-27 [11] */
++static const char * const rt5659_mono_adc_l1_src[] = {
++	"Mono DAC MIXL", "ADC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adc_l1_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_L1_SRC_SFT, rt5659_mono_adc_l1_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_l1_mux =
++	SOC_DAPM_ENUM("Mono ADC L1 Source", rt5659_mono_adc_l1_enum);
++
++/* MONO ADC L Source, MONO ADC R Source*/
++/* MX-27 [10:9], MX-27 [2:1] */
++static const char * const rt5659_mono_adc_src[] = {
++	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adc_l_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_L_SRC_SFT, rt5659_mono_adc_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_l_mux =
++	SOC_DAPM_ENUM("Mono ADC L Source", rt5659_mono_adc_l_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adcr_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_R_SRC_SFT, rt5659_mono_adc_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_r_mux =
++	SOC_DAPM_ENUM("Mono ADC R Source", rt5659_mono_adcr_enum);
++
++/* MONO DMIC L Source */
++/* MX-27 [8] */
++static const char * const rt5659_mono_dmic_l_src[] = {
++	"DMIC1 L", "DMIC2 L"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_dmic_l_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_DMIC_L_SRC_SFT, rt5659_mono_dmic_l_src);
++
++static const struct snd_kcontrol_new rt5659_mono_dmic_l_mux =
++	SOC_DAPM_ENUM("Mono DMIC L Source", rt5659_mono_dmic_l_enum);
++
++/* MONO ADC R2 Source */
++/* MX-27 [4] */
++static const char * const rt5659_mono_adc_r2_src[] = {
++	"Mono DAC MIXR", "DMIC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adc_r2_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_R2_SRC_SFT, rt5659_mono_adc_r2_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_r2_mux =
++	SOC_DAPM_ENUM("Mono ADC R2 Source", rt5659_mono_adc_r2_enum);
++
++/* MONO ADC R1 Source */
++/* MX-27 [3] */
++static const char * const rt5659_mono_adc_r1_src[] = {
++	"Mono DAC MIXR", "ADC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_adc_r1_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_ADC_R1_SRC_SFT, rt5659_mono_adc_r1_src);
++
++static const struct snd_kcontrol_new rt5659_mono_adc_r1_mux =
++	SOC_DAPM_ENUM("Mono ADC R1 Source", rt5659_mono_adc_r1_enum);
++
++/* MONO DMIC R Source */
++/* MX-27 [0] */
++static const char * const rt5659_mono_dmic_r_src[] = {
++	"DMIC1 R", "DMIC2 R"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_mono_dmic_r_enum, RT5659_MONO_ADC_MIXER,
++	RT5659_MONO_DMIC_R_SRC_SFT, rt5659_mono_dmic_r_src);
++
++static const struct snd_kcontrol_new rt5659_mono_dmic_r_mux =
++	SOC_DAPM_ENUM("Mono DMIC R Source", rt5659_mono_dmic_r_enum);
++
++
++/* DAC R1 Source, DAC L1 Source*/
++/* MX-29 [11:10], MX-29 [9:8]*/
++static const char * const rt5659_dac1_src[] = {
++	"IF1 DAC1", "IF2 DAC", "IF3 DAC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dac_r1_enum, RT5659_AD_DA_MIXER,
++	RT5659_DAC1_R_SEL_SFT, rt5659_dac1_src);
++
++static const struct snd_kcontrol_new rt5659_dac_r1_mux =
++	SOC_DAPM_ENUM("DAC R1 Source", rt5659_dac_r1_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dac_l1_enum, RT5659_AD_DA_MIXER,
++	RT5659_DAC1_L_SEL_SFT, rt5659_dac1_src);
++
++static const struct snd_kcontrol_new rt5659_dac_l1_mux =
++	SOC_DAPM_ENUM("DAC L1 Source", rt5659_dac_l1_enum);
++
++/* DAC Digital Mixer L Source, DAC Digital Mixer R Source*/
++/* MX-2C [6], MX-2C [4]*/
++static const char * const rt5659_dig_dac_mix_src[] = {
++	"Stereo DAC Mixer", "Mono DAC Mixer"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dig_dac_mixl_enum, RT5659_DIG_MIXER,
++	RT5659_DAC_MIX_L_SFT, rt5659_dig_dac_mix_src);
++
++static const struct snd_kcontrol_new rt5659_dig_dac_mixl_mux =
++	SOC_DAPM_ENUM("DAC Digital Mixer L Source", rt5659_dig_dac_mixl_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_dig_dac_mixr_enum, RT5659_DIG_MIXER,
++	RT5659_DAC_MIX_R_SFT, rt5659_dig_dac_mix_src);
++
++static const struct snd_kcontrol_new rt5659_dig_dac_mixr_mux =
++	SOC_DAPM_ENUM("DAC Digital Mixer R Source", rt5659_dig_dac_mixr_enum);
++
++/* Analog DAC L1 Source, Analog DAC R1 Source*/
++/* MX-2D [3], MX-2D [2]*/
++static const char * const rt5659_alg_dac1_src[] = {
++	"DAC", "Stereo DAC Mixer"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_alg_dac_l1_enum, RT5659_A_DAC_MUX,
++	RT5659_A_DACL1_SFT, rt5659_alg_dac1_src);
++
++static const struct snd_kcontrol_new rt5659_alg_dac_l1_mux =
++	SOC_DAPM_ENUM("Analog DACL1 Source", rt5659_alg_dac_l1_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_alg_dac_r1_enum, RT5659_A_DAC_MUX,
++	RT5659_A_DACR1_SFT, rt5659_alg_dac1_src);
++
++static const struct snd_kcontrol_new rt5659_alg_dac_r1_mux =
++	SOC_DAPM_ENUM("Analog DACR1 Source", rt5659_alg_dac_r1_enum);
++
++/* Analog DAC LR Source, Analog DAC R2 Source*/
++/* MX-2D [1], MX-2D [0]*/
++static const char * const rt5659_alg_dac2_src[] = {
++	"Stereo DAC Mixer", "Mono DAC Mixer"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_alg_dac_l2_enum, RT5659_A_DAC_MUX,
++	RT5659_A_DACL2_SFT, rt5659_alg_dac2_src);
++
++static const struct snd_kcontrol_new rt5659_alg_dac_l2_mux =
++	SOC_DAPM_ENUM("Analog DAC L2 Source", rt5659_alg_dac_l2_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_alg_dac_r2_enum, RT5659_A_DAC_MUX,
++	RT5659_A_DACR2_SFT, rt5659_alg_dac2_src);
++
++static const struct snd_kcontrol_new rt5659_alg_dac_r2_mux =
++	SOC_DAPM_ENUM("Analog DAC R2 Source", rt5659_alg_dac_r2_enum);
++
++/* Interface2 ADC Data Input*/
++/* MX-2F [13:12] */
++static const char * const rt5659_if2_adc_in_src[] = {
++	"IF_ADC1", "IF_ADC2", "DAC_REF", "IF_ADC3"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_if2_adc_in_enum, RT5659_DIG_INF23_DATA,
++	RT5659_IF2_ADC_IN_SFT, rt5659_if2_adc_in_src);
++
++static const struct snd_kcontrol_new rt5659_if2_adc_in_mux =
++	SOC_DAPM_ENUM("IF2 ADC IN Source", rt5659_if2_adc_in_enum);
++
++/* Interface3 ADC Data Input*/
++/* MX-2F [1:0] */
++static const char * const rt5659_if3_adc_in_src[] = {
++	"IF_ADC1", "IF_ADC2", "DAC_REF", "Stereo2_ADC_L/R"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_if3_adc_in_enum, RT5659_DIG_INF23_DATA,
++	RT5659_IF3_ADC_IN_SFT, rt5659_if3_adc_in_src);
++
++static const struct snd_kcontrol_new rt5659_if3_adc_in_mux =
++	SOC_DAPM_ENUM("IF3 ADC IN Source", rt5659_if3_adc_in_enum);
++
++/* PDM 1 L/R*/
++/* MX-31 [15] [13] */
++static const char * const rt5659_pdm_src[] = {
++	"Mono DAC", "Stereo DAC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_pdm_l_enum, RT5659_PDM_OUT_CTRL,
++	RT5659_PDM1_L_SFT, rt5659_pdm_src);
++
++static const struct snd_kcontrol_new rt5659_pdm_l_mux =
++	SOC_DAPM_ENUM("PDM L Source", rt5659_pdm_l_enum);
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_pdm_r_enum, RT5659_PDM_OUT_CTRL,
++	RT5659_PDM1_R_SFT, rt5659_pdm_src);
++
++static const struct snd_kcontrol_new rt5659_pdm_r_mux =
++	SOC_DAPM_ENUM("PDM R Source", rt5659_pdm_r_enum);
++
++/* SPDIF Output source*/
++/* MX-36 [1:0] */
++static const char * const rt5659_spdif_src[] = {
++	"IF1_DAC1", "IF1_DAC2", "IF2_DAC", "IF3_DAC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_spdif_enum, RT5659_SPDIF_CTRL,
++	RT5659_SPDIF_SEL_SFT, rt5659_spdif_src);
++
++static const struct snd_kcontrol_new rt5659_spdif_mux =
++	SOC_DAPM_ENUM("SPDIF Source", rt5659_spdif_enum);
++
++/* I2S1 TDM ADCDAT Source */
++/* MX-78[4:0] */
++static const char * const rt5659_rx_adc_data_src[] = {
++	"AD1:AD2:DAC:NUL", "AD1:AD2:NUL:DAC", "AD1:DAC:AD2:NUL",
++	"AD1:DAC:NUL:AD2", "AD1:NUL:DAC:AD2", "AD1:NUL:AD2:DAC",
++	"AD2:AD1:DAC:NUL", "AD2:AD1:NUL:DAC", "AD2:DAC:AD1:NUL",
++	"AD2:DAC:NUL:AD1", "AD2:NUL:DAC:AD1", "AD1:NUL:AD1:DAC",
++	"DAC:AD1:AD2:NUL", "DAC:AD1:NUL:AD2", "DAC:AD2:AD1:NUL",
++	"DAC:AD2:NUL:AD1", "DAC:NUL:DAC:AD2", "DAC:NUL:AD2:DAC",
++	"NUL:AD1:AD2:DAC", "NUL:AD1:DAC:AD2", "NUL:AD2:AD1:DAC",
++	"NUL:AD2:DAC:AD1", "NUL:DAC:DAC:AD2", "NUL:DAC:AD2:DAC"
++};
++
++static const SOC_ENUM_SINGLE_DECL(
++	rt5659_rx_adc_data_enum, RT5659_TDM_CTRL_2,
++	RT5659_ADCDAT_SRC_SFT, rt5659_rx_adc_data_src);
++
++static const struct snd_kcontrol_new rt5659_rx_adc_dac_mux =
++	SOC_DAPM_ENUM("TDM ADCDAT Source", rt5659_rx_adc_data_enum);
++
++/* Out Volume Switch */
++static const struct snd_kcontrol_new spkvol_l_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_SPO_VOL, RT5659_VOL_L_SFT, 1, 1);
++
++static const struct snd_kcontrol_new spkvol_r_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_SPO_VOL, RT5659_VOL_R_SFT, 1, 1);
++
++static const struct snd_kcontrol_new monovol_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_MONO_OUT, RT5659_VOL_L_SFT, 1, 1);
++
++static const struct snd_kcontrol_new outvol_l_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_VOL_L_SFT, 1, 1);
++
++static const struct snd_kcontrol_new outvol_r_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_VOL_R_SFT, 1, 1);
++
++/* Out Switch */
++static const struct snd_kcontrol_new spo_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_CLASSD_2, RT5659_M_RF_DIG_SFT, 1, 1);
++
++static const struct snd_kcontrol_new mono_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_MONO_OUT, RT5659_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hpo_l_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_HP_VOL, RT5659_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hpo_r_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_HP_VOL, RT5659_R_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new lout_l_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_L_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new lout_r_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_R_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new pdm_l_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_PDM_OUT_CTRL, RT5659_M_PDM1_L_SFT, 1,
++		1);
++
++static const struct snd_kcontrol_new pdm_r_switch =
++	SOC_DAPM_SINGLE("Switch", RT5659_PDM_OUT_CTRL, RT5659_M_PDM1_R_SFT, 1,
++		1);
++
++static int rt5659_spk_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5659_CLASSD_CTRL_1,
++			RT5659_POW_CLSD_DB_MASK, RT5659_POW_CLSD_DB_EN);
++		snd_soc_update_bits(codec, RT5659_CLASSD_2,
++			RT5659_M_RI_DIG, RT5659_M_RI_DIG);
++		snd_soc_write(codec, RT5659_CLASSD_1, 0x0803);
++		snd_soc_write(codec, RT5659_SPK_DC_CAILB_CTRL_3, 0x0000);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_write(codec, RT5659_CLASSD_1, 0x0011);
++		snd_soc_update_bits(codec, RT5659_CLASSD_2,
++			RT5659_M_RI_DIG, 0x0);
++		snd_soc_write(codec, RT5659_SPK_DC_CAILB_CTRL_3, 0x0003);
++		snd_soc_update_bits(codec, RT5659_CLASSD_CTRL_1,
++			RT5659_POW_CLSD_DB_MASK, RT5659_POW_CLSD_DB_DIS);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++
++}
++
++static int rt5659_mono_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_write(codec, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e00);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_write(codec, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e04);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++
++}
++
++static int rt5659_hp_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_write(codec, RT5659_HP_CHARGE_PUMP_1, 0x0e1e);
++		snd_soc_update_bits(codec, RT5659_DEPOP_1, 0x0010, 0x0010);
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_write(codec, RT5659_DEPOP_1, 0x0000);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int set_dmic_power(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		/*Add delay to avoid pop noise*/
++		msleep(450);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("LDO2", RT5659_PWR_ANLG_3, RT5659_PWR_LDO2_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_SUPPLY("PLL", RT5659_PWR_ANLG_3, RT5659_PWR_PLL_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Mic Det Power", RT5659_PWR_VOL,
++		RT5659_PWR_MIC_DET_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("Mono Vref", RT5659_PWR_ANLG_1,
++		RT5659_PWR_VREF3_BIT, 0, NULL, 0),
++
++	/* ASRC */
++	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5659_ASRC_1,
++		RT5659_I2S1_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("I2S2 ASRC", 1, RT5659_ASRC_1,
++		RT5659_I2S2_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("I2S3 ASRC", 1, RT5659_ASRC_1,
++		RT5659_I2S3_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("DAC STO ASRC", 1, RT5659_ASRC_1,
++		RT5659_DAC_STO_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("DAC Mono L ASRC", 1, RT5659_ASRC_1,
++		RT5659_DAC_MONO_L_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("DAC Mono R ASRC", 1, RT5659_ASRC_1,
++		RT5659_DAC_MONO_R_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5659_ASRC_1,
++		RT5659_ADC_STO1_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ADC Mono L ASRC", 1, RT5659_ASRC_1,
++		RT5659_ADC_MONO_L_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ADC Mono R ASRC", 1, RT5659_ASRC_1,
++		RT5659_ADC_MONO_R_ASRC_SFT, 0, NULL, 0),
++
++	/* Input Side */
++	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5659_PWR_ANLG_2, RT5659_PWR_MB1_BIT,
++		0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5659_PWR_ANLG_2, RT5659_PWR_MB2_BIT,
++		0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MICBIAS3", RT5659_PWR_ANLG_2, RT5659_PWR_MB3_BIT,
++		0, NULL, 0),
++
++	/* Input Lines */
++	SND_SOC_DAPM_INPUT("DMIC L1"),
++	SND_SOC_DAPM_INPUT("DMIC R1"),
++	SND_SOC_DAPM_INPUT("DMIC L2"),
++	SND_SOC_DAPM_INPUT("DMIC R2"),
++
++	SND_SOC_DAPM_INPUT("IN1P"),
++	SND_SOC_DAPM_INPUT("IN1N"),
++	SND_SOC_DAPM_INPUT("IN2P"),
++	SND_SOC_DAPM_INPUT("IN2N"),
++	SND_SOC_DAPM_INPUT("IN3P"),
++	SND_SOC_DAPM_INPUT("IN3N"),
++	SND_SOC_DAPM_INPUT("IN4P"),
++	SND_SOC_DAPM_INPUT("IN4N"),
++
++	SND_SOC_DAPM_PGA("DMIC1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("DMIC2", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
++		set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5659_DMIC_CTRL_1,
++		RT5659_DMIC_1_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5659_DMIC_CTRL_1,
++		RT5659_DMIC_2_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
++
++	/* Boost */
++	SND_SOC_DAPM_PGA("BST1", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST1_P_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST2", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST2_P_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST3", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST3_P_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("BST4", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST4_P_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("BST1 Power", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("BST2 Power", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("BST3 Power", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST3_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("BST4 Power", RT5659_PWR_ANLG_2,
++		RT5659_PWR_BST4_BIT, 0, NULL, 0),
++
++
++	/* Input Volume */
++	SND_SOC_DAPM_PGA("INL VOL", RT5659_PWR_VOL, RT5659_PWR_IN_L_BIT,
++		0, NULL, 0),
++	SND_SOC_DAPM_PGA("INR VOL", RT5659_PWR_VOL, RT5659_PWR_IN_R_BIT,
++		0, NULL, 0),
++
++	/* REC Mixer */
++	SND_SOC_DAPM_MIXER("RECMIX1L", RT5659_PWR_MIXER, RT5659_PWR_RM1_L_BIT,
++		0, rt5659_rec1_l_mix, ARRAY_SIZE(rt5659_rec1_l_mix)),
++	SND_SOC_DAPM_MIXER("RECMIX1R", RT5659_PWR_MIXER, RT5659_PWR_RM1_R_BIT,
++		0, rt5659_rec1_r_mix, ARRAY_SIZE(rt5659_rec1_r_mix)),
++	SND_SOC_DAPM_MIXER("RECMIX2L", RT5659_PWR_MIXER, RT5659_PWR_RM2_L_BIT,
++		0, rt5659_rec2_l_mix, ARRAY_SIZE(rt5659_rec2_l_mix)),
++	SND_SOC_DAPM_MIXER("RECMIX2R", RT5659_PWR_MIXER, RT5659_PWR_RM2_R_BIT,
++		0, rt5659_rec2_r_mix, ARRAY_SIZE(rt5659_rec2_r_mix)),
++
++	/* ADCs */
++	SND_SOC_DAPM_ADC("ADC1 L", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC1 R", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC2 L", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC2 R", NULL, SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_SUPPLY("ADC1 L Power", RT5659_PWR_DIG_1,
++		RT5659_PWR_ADC_L1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC1 R Power", RT5659_PWR_DIG_1,
++		RT5659_PWR_ADC_R1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC2 L Power", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_L2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC2 R Power", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_R2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC1 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
++		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_SUPPLY("ADC2 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
++		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++
++	/* ADC Mux */
++	SND_SOC_DAPM_MUX("Stereo1 DMIC L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_dmic_mux),
++	SND_SOC_DAPM_MUX("Stereo1 DMIC R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_dmic_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc1_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc1_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc2_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc2_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc_mux),
++	SND_SOC_DAPM_MUX("Stereo1 ADC R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_sto1_adc_mux),
++	SND_SOC_DAPM_MUX("Mono ADC L2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_l2_mux),
++	SND_SOC_DAPM_MUX("Mono ADC R2 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_r2_mux),
++	SND_SOC_DAPM_MUX("Mono ADC L1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_l1_mux),
++	SND_SOC_DAPM_MUX("Mono ADC R1 Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_r1_mux),
++	SND_SOC_DAPM_MUX("Mono DMIC L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_dmic_l_mux),
++	SND_SOC_DAPM_MUX("Mono DMIC R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_dmic_r_mux),
++	SND_SOC_DAPM_MUX("Mono ADC L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_l_mux),
++	SND_SOC_DAPM_MUX("Mono ADC R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_mono_adc_r_mux),
++	/* ADC Mixer */
++	SND_SOC_DAPM_SUPPLY("ADC Stereo1 Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_S1F_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC Stereo2 Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_S2F_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXL", SND_SOC_NOPM,
++		0, 0, rt5659_sto1_adc_l_mix,
++		ARRAY_SIZE(rt5659_sto1_adc_l_mix)),
++	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXR", SND_SOC_NOPM,
++		0, 0, rt5659_sto1_adc_r_mix,
++		ARRAY_SIZE(rt5659_sto1_adc_r_mix)),
++	SND_SOC_DAPM_SUPPLY("ADC Mono Left Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_MF_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Mono ADC MIXL", RT5659_MONO_ADC_DIG_VOL,
++		RT5659_L_MUTE_SFT, 1, rt5659_mono_adc_l_mix,
++		ARRAY_SIZE(rt5659_mono_adc_l_mix)),
++	SND_SOC_DAPM_SUPPLY("ADC Mono Right Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_ADC_MF_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Mono ADC MIXR", RT5659_MONO_ADC_DIG_VOL,
++		RT5659_R_MUTE_SFT, 1, rt5659_mono_adc_r_mix,
++		ARRAY_SIZE(rt5659_mono_adc_r_mix)),
++
++	/* ADC PGA */
++	SND_SOC_DAPM_PGA("IF_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Stereo2 ADC LR", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_PGA("Stereo1 ADC Volume L", RT5659_STO1_ADC_DIG_VOL,
++		RT5659_L_MUTE_SFT, 1, NULL, 0),
++	SND_SOC_DAPM_PGA("Stereo1 ADC Volume R", RT5659_STO1_ADC_DIG_VOL,
++		RT5659_R_MUTE_SFT, 1, NULL, 0),
++
++	/* Digital Interface */
++	SND_SOC_DAPM_SUPPLY("I2S1", RT5659_PWR_DIG_1, RT5659_PWR_I2S1_BIT,
++		0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC2", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC1 L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC1 R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC2 L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC2 R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("I2S2", RT5659_PWR_DIG_1, RT5659_PWR_I2S2_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF2 ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("I2S3", RT5659_PWR_DIG_1, RT5659_PWR_I2S3_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF3 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	/* Digital Interface Select */
++	SND_SOC_DAPM_PGA("TDM AD1:AD2:DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("TDM AD2:DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MUX("TDM Data Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_rx_adc_dac_mux),
++	SND_SOC_DAPM_MUX("IF2 ADC Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_if2_adc_in_mux),
++	SND_SOC_DAPM_MUX("IF3 ADC Mux", SND_SOC_NOPM, 0, 0,
++		&rt5659_if3_adc_in_mux),
++	SND_SOC_DAPM_MUX("IF1 01 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if1_01_adc_swap_mux),
++	SND_SOC_DAPM_MUX("IF1 23 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if1_23_adc_swap_mux),
++	SND_SOC_DAPM_MUX("IF1 45 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if1_45_adc_swap_mux),
++	SND_SOC_DAPM_MUX("IF1 67 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if1_67_adc_swap_mux),
++	SND_SOC_DAPM_MUX("IF2 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if2_dac_swap_mux),
++	SND_SOC_DAPM_MUX("IF2 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if2_adc_swap_mux),
++	SND_SOC_DAPM_MUX("IF3 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if3_dac_swap_mux),
++	SND_SOC_DAPM_MUX("IF3 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5659_if3_adc_swap_mux),
++
++	/* Audio Interface */
++	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF2RX", "AIF2 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF2TX", "AIF2 Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF3RX", "AIF3 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF3TX", "AIF3 Capture", 0, SND_SOC_NOPM, 0, 0),
++
++	/* Output Side */
++	/* DAC mixer before sound effect  */
++	SND_SOC_DAPM_MIXER("DAC1 MIXL", SND_SOC_NOPM, 0, 0,
++		rt5659_dac_l_mix, ARRAY_SIZE(rt5659_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("DAC1 MIXR", SND_SOC_NOPM, 0, 0,
++		rt5659_dac_r_mix, ARRAY_SIZE(rt5659_dac_r_mix)),
++
++	/* DAC channel Mux */
++	SND_SOC_DAPM_MUX("DAC L1 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_l1_mux),
++	SND_SOC_DAPM_MUX("DAC R1 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_r1_mux),
++	SND_SOC_DAPM_MUX("DAC L2 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_l2_mux),
++	SND_SOC_DAPM_MUX("DAC R2 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_r2_mux),
++
++	SND_SOC_DAPM_MUX("DAC L1 Source", SND_SOC_NOPM, 0, 0,
++		&rt5659_alg_dac_l1_mux),
++	SND_SOC_DAPM_MUX("DAC R1 Source", SND_SOC_NOPM, 0, 0,
++		&rt5659_alg_dac_r1_mux),
++	SND_SOC_DAPM_MUX("DAC L2 Source", SND_SOC_NOPM, 0, 0,
++		&rt5659_alg_dac_l2_mux),
++	SND_SOC_DAPM_MUX("DAC R2 Source", SND_SOC_NOPM, 0, 0,
++		&rt5659_alg_dac_r2_mux),
++
++	/* DAC Mixer */
++	SND_SOC_DAPM_SUPPLY("DAC Stereo1 Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_DAC_S1F_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC Mono Left Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_DAC_MF_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC Mono Right Filter", RT5659_PWR_DIG_2,
++		RT5659_PWR_DAC_MF_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5659_sto_dac_l_mix, ARRAY_SIZE(rt5659_sto_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5659_sto_dac_r_mix, ARRAY_SIZE(rt5659_sto_dac_r_mix)),
++	SND_SOC_DAPM_MIXER("Mono DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5659_mono_dac_l_mix, ARRAY_SIZE(rt5659_mono_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("Mono DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5659_mono_dac_r_mix, ARRAY_SIZE(rt5659_mono_dac_r_mix)),
++	SND_SOC_DAPM_MUX("DAC MIXL", SND_SOC_NOPM, 0, 0,
++		&rt5659_dig_dac_mixl_mux),
++	SND_SOC_DAPM_MUX("DAC MIXR", SND_SOC_NOPM, 0, 0,
++		&rt5659_dig_dac_mixr_mux),
++
++	/* DACs */
++	SND_SOC_DAPM_SUPPLY_S("DAC L1 Power", 1, RT5659_PWR_DIG_1,
++		RT5659_PWR_DAC_L1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("DAC R1 Power", 1, RT5659_PWR_DIG_1,
++		RT5659_PWR_DAC_R1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_DAC("DAC L1", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC R1", NULL, SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5659_PWR_DIG_1,
++		RT5659_PWR_DAC_L2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5659_PWR_DIG_1,
++		RT5659_PWR_DAC_R2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_DAC("DAC L2", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC R2", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_PGA("DAC_REF", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	/* OUT Mixer */
++	SND_SOC_DAPM_MIXER("SPK MIXL", RT5659_PWR_MIXER, RT5659_PWR_SM_L_BIT,
++		0, rt5659_spk_l_mix, ARRAY_SIZE(rt5659_spk_l_mix)),
++	SND_SOC_DAPM_MIXER("SPK MIXR", RT5659_PWR_MIXER, RT5659_PWR_SM_R_BIT,
++		0, rt5659_spk_r_mix, ARRAY_SIZE(rt5659_spk_r_mix)),
++	SND_SOC_DAPM_MIXER("MONOVOL MIX", RT5659_PWR_MIXER, RT5659_PWR_MM_BIT,
++		0, rt5659_monovol_mix, ARRAY_SIZE(rt5659_monovol_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXL", RT5659_PWR_MIXER, RT5659_PWR_OM_L_BIT,
++		0, rt5659_out_l_mix, ARRAY_SIZE(rt5659_out_l_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXR", RT5659_PWR_MIXER, RT5659_PWR_OM_R_BIT,
++		0, rt5659_out_r_mix, ARRAY_SIZE(rt5659_out_r_mix)),
++
++	/* Output Volume */
++	SND_SOC_DAPM_SWITCH("SPKVOL L", RT5659_PWR_VOL, RT5659_PWR_SV_L_BIT, 0,
++		&spkvol_l_switch),
++	SND_SOC_DAPM_SWITCH("SPKVOL R", RT5659_PWR_VOL, RT5659_PWR_SV_R_BIT, 0,
++		&spkvol_r_switch),
++	SND_SOC_DAPM_SWITCH("MONOVOL", RT5659_PWR_VOL, RT5659_PWR_MV_BIT, 0,
++		&monovol_switch),
++	SND_SOC_DAPM_SWITCH("OUTVOL L", RT5659_PWR_VOL, RT5659_PWR_OV_L_BIT, 0,
++		&outvol_l_switch),
++	SND_SOC_DAPM_SWITCH("OUTVOL R", RT5659_PWR_VOL, RT5659_PWR_OV_R_BIT, 0,
++		&outvol_r_switch),
++
++	/* SPO/MONO/HPO/LOUT */
++	SND_SOC_DAPM_MIXER("SPO L MIX", SND_SOC_NOPM, 0, 0, rt5659_spo_l_mix,
++		ARRAY_SIZE(rt5659_spo_l_mix)),
++	SND_SOC_DAPM_MIXER("SPO R MIX", SND_SOC_NOPM, 0, 0, rt5659_spo_r_mix,
++		ARRAY_SIZE(rt5659_spo_r_mix)),
++	SND_SOC_DAPM_MIXER("Mono MIX", SND_SOC_NOPM, 0,	0, rt5659_mono_mix,
++		ARRAY_SIZE(rt5659_mono_mix)),
++	SND_SOC_DAPM_MIXER("LOUT L MIX", SND_SOC_NOPM, 0, 0, rt5659_lout_l_mix,
++		ARRAY_SIZE(rt5659_lout_l_mix)),
++	SND_SOC_DAPM_MIXER("LOUT R MIX", SND_SOC_NOPM, 0, 0, rt5659_lout_r_mix,
++		ARRAY_SIZE(rt5659_lout_r_mix)),
++
++	SND_SOC_DAPM_PGA_S("SPK Amp", 1, RT5659_PWR_DIG_1, RT5659_PWR_CLS_D_BIT,
++		0, rt5659_spk_event, SND_SOC_DAPM_POST_PMD |
++		SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_PGA_S("Mono Amp", 1, RT5659_PWR_ANLG_1, RT5659_PWR_MA_BIT,
++		0, rt5659_mono_event, SND_SOC_DAPM_POST_PMD |
++		SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5659_hp_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA("LOUT Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
++		rt5659_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_SWITCH("SPO Playback", SND_SOC_NOPM, 0, 0, &spo_switch),
++	SND_SOC_DAPM_SWITCH("Mono Playback", SND_SOC_NOPM, 0, 0,
++		&mono_switch),
++	SND_SOC_DAPM_SWITCH("HPO L Playback", SND_SOC_NOPM, 0, 0,
++		&hpo_l_switch),
++	SND_SOC_DAPM_SWITCH("HPO R Playback", SND_SOC_NOPM, 0, 0,
++		&hpo_r_switch),
++	SND_SOC_DAPM_SWITCH("LOUT L Playback", SND_SOC_NOPM, 0, 0,
++		&lout_l_switch),
++	SND_SOC_DAPM_SWITCH("LOUT R Playback", SND_SOC_NOPM, 0, 0,
++		&lout_r_switch),
++	SND_SOC_DAPM_SWITCH("PDM L Playback", SND_SOC_NOPM, 0, 0,
++		&pdm_l_switch),
++	SND_SOC_DAPM_SWITCH("PDM R Playback", SND_SOC_NOPM, 0, 0,
++		&pdm_r_switch),
++
++	/* PDM */
++	SND_SOC_DAPM_SUPPLY("PDM Power", RT5659_PWR_DIG_2,
++		RT5659_PWR_PDM1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MUX("PDM L Mux", RT5659_PDM_OUT_CTRL,
++		RT5659_M_PDM1_L_SFT, 1, &rt5659_pdm_l_mux),
++	SND_SOC_DAPM_MUX("PDM R Mux", RT5659_PDM_OUT_CTRL,
++		RT5659_M_PDM1_R_SFT, 1, &rt5659_pdm_r_mux),
++
++	/* SPDIF */
++	SND_SOC_DAPM_MUX("SPDIF Mux", SND_SOC_NOPM, 0, 0, &rt5659_spdif_mux),
++
++	SND_SOC_DAPM_SUPPLY("SYS CLK DET", RT5659_CLK_DET, 3, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("CLKDET", RT5659_CLK_DET, 0, 0, NULL, 0),
++
++	/* Output Lines */
++	SND_SOC_DAPM_OUTPUT("HPOL"),
++	SND_SOC_DAPM_OUTPUT("HPOR"),
++	SND_SOC_DAPM_OUTPUT("SPOL"),
++	SND_SOC_DAPM_OUTPUT("SPOR"),
++	SND_SOC_DAPM_OUTPUT("LOUTL"),
++	SND_SOC_DAPM_OUTPUT("LOUTR"),
++	SND_SOC_DAPM_OUTPUT("MONOOUT"),
++	SND_SOC_DAPM_OUTPUT("PDML"),
++	SND_SOC_DAPM_OUTPUT("PDMR"),
++	SND_SOC_DAPM_OUTPUT("SPDIF"),
++};
++
++static const struct snd_soc_dapm_route rt5659_dapm_routes[] = {
++	/*PLL*/
++	{ "ADC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "ADC Stereo2 Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "ADC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "ADC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "DAC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "DAC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll },
++	{ "DAC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll },
++
++	/*ASRC*/
++	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
++	{ "ADC Mono Left Filter", NULL, "ADC Mono L ASRC", is_using_asrc },
++	{ "ADC Mono Right Filter", NULL, "ADC Mono R ASRC", is_using_asrc },
++	{ "DAC Mono Left Filter", NULL, "DAC Mono L ASRC", is_using_asrc },
++	{ "DAC Mono Right Filter", NULL, "DAC Mono R ASRC", is_using_asrc },
++	{ "DAC Stereo1 Filter", NULL, "DAC STO ASRC", is_using_asrc },
++
++	{ "SYS CLK DET", NULL, "CLKDET" },
++
++	{ "I2S1", NULL, "I2S1 ASRC" },
++	{ "I2S2", NULL, "I2S2 ASRC" },
++	{ "I2S3", NULL, "I2S3 ASRC" },
++
++	{ "IN1P", NULL, "LDO2" },
++	{ "IN2P", NULL, "LDO2" },
++	{ "IN3P", NULL, "LDO2" },
++	{ "IN4P", NULL, "LDO2" },
++
++	{ "DMIC1", NULL, "DMIC L1" },
++	{ "DMIC1", NULL, "DMIC R1" },
++	{ "DMIC2", NULL, "DMIC L2" },
++	{ "DMIC2", NULL, "DMIC R2" },
++
++	{ "BST1", NULL, "IN1P" },
++	{ "BST1", NULL, "IN1N" },
++	{ "BST1", NULL, "BST1 Power" },
++	{ "BST2", NULL, "IN2P" },
++	{ "BST2", NULL, "IN2N" },
++	{ "BST2", NULL, "BST2 Power" },
++	{ "BST3", NULL, "IN3P" },
++	{ "BST3", NULL, "IN3N" },
++	{ "BST3", NULL, "BST3 Power" },
++	{ "BST4", NULL, "IN4P" },
++	{ "BST4", NULL, "IN4N" },
++	{ "BST4", NULL, "BST4 Power" },
++
++	{ "INL VOL", NULL, "IN2P" },
++	{ "INR VOL", NULL, "IN2N" },
++
++	{ "RECMIX1L", "SPKVOLL Switch", "SPKVOL L" },
++	{ "RECMIX1L", "INL Switch", "INL VOL" },
++	{ "RECMIX1L", "BST4 Switch", "BST4" },
++	{ "RECMIX1L", "BST3 Switch", "BST3" },
++	{ "RECMIX1L", "BST2 Switch", "BST2" },
++	{ "RECMIX1L", "BST1 Switch", "BST1" },
++
++	{ "RECMIX1R", "HPOVOLR Switch", "HPO R Playback" },
++	{ "RECMIX1R", "INR Switch", "INR VOL" },
++	{ "RECMIX1R", "BST4 Switch", "BST4" },
++	{ "RECMIX1R", "BST3 Switch", "BST3" },
++	{ "RECMIX1R", "BST2 Switch", "BST2" },
++	{ "RECMIX1R", "BST1 Switch", "BST1" },
++
++	{ "RECMIX2L", "SPKVOLL Switch", "SPKVOL L" },
++	{ "RECMIX2L", "OUTVOLL Switch", "OUTVOL L" },
++	{ "RECMIX2L", "BST4 Switch", "BST4" },
++	{ "RECMIX2L", "BST3 Switch", "BST3" },
++	{ "RECMIX2L", "BST2 Switch", "BST2" },
++	{ "RECMIX2L", "BST1 Switch", "BST1" },
++
++	{ "RECMIX2R", "MONOVOL Switch", "MONOVOL" },
++	{ "RECMIX2R", "OUTVOLR Switch", "OUTVOL R" },
++	{ "RECMIX2R", "BST4 Switch", "BST4" },
++	{ "RECMIX2R", "BST3 Switch", "BST3" },
++	{ "RECMIX2R", "BST2 Switch", "BST2" },
++	{ "RECMIX2R", "BST1 Switch", "BST1" },
++
++	{ "ADC1 L", NULL, "RECMIX1L" },
++	{ "ADC1 L", NULL, "ADC1 L Power" },
++	{ "ADC1 L", NULL, "ADC1 clock" },
++	{ "ADC1 R", NULL, "RECMIX1R" },
++	{ "ADC1 R", NULL, "ADC1 R Power" },
++	{ "ADC1 R", NULL, "ADC1 clock" },
++
++	{ "ADC2 L", NULL, "RECMIX2L" },
++	{ "ADC2 L", NULL, "ADC2 L Power" },
++	{ "ADC2 L", NULL, "ADC2 clock" },
++	{ "ADC2 R", NULL, "RECMIX2R" },
++	{ "ADC2 R", NULL, "ADC2 R Power" },
++	{ "ADC2 R", NULL, "ADC2 clock" },
++
++	{ "DMIC L1", NULL, "DMIC CLK" },
++	{ "DMIC L1", NULL, "DMIC1 Power" },
++	{ "DMIC R1", NULL, "DMIC CLK" },
++	{ "DMIC R1", NULL, "DMIC1 Power" },
++	{ "DMIC L2", NULL, "DMIC CLK" },
++	{ "DMIC L2", NULL, "DMIC2 Power" },
++	{ "DMIC R2", NULL, "DMIC CLK" },
++	{ "DMIC R2", NULL, "DMIC2 Power" },
++
++	{ "Stereo1 DMIC L Mux", "DMIC1", "DMIC L1" },
++	{ "Stereo1 DMIC L Mux", "DMIC2", "DMIC L2" },
++
++	{ "Stereo1 DMIC R Mux", "DMIC1", "DMIC R1" },
++	{ "Stereo1 DMIC R Mux", "DMIC2", "DMIC R2" },
++
++	{ "Mono DMIC L Mux", "DMIC1 L", "DMIC L1" },
++	{ "Mono DMIC L Mux", "DMIC2 L", "DMIC L2" },
++
++	{ "Mono DMIC R Mux", "DMIC1 R", "DMIC R1" },
++	{ "Mono DMIC R Mux", "DMIC2 R", "DMIC R2" },
++
++	{ "Stereo1 ADC L Mux", "ADC1", "ADC1 L" },
++	{ "Stereo1 ADC L Mux", "ADC2", "ADC2 L" },
++	{ "Stereo1 ADC R Mux", "ADC1", "ADC1 R" },
++	{ "Stereo1 ADC R Mux", "ADC2", "ADC2 R" },
++
++	{ "Stereo1 ADC L1 Mux", "ADC", "Stereo1 ADC L Mux" },
++	{ "Stereo1 ADC L1 Mux", "DAC MIX", "DAC MIXL" },
++	{ "Stereo1 ADC L2 Mux", "DMIC", "Stereo1 DMIC L Mux" },
++	{ "Stereo1 ADC L2 Mux", "DAC MIX", "DAC MIXL" },
++
++	{ "Stereo1 ADC R1 Mux", "ADC", "Stereo1 ADC R Mux" },
++	{ "Stereo1 ADC R1 Mux", "DAC MIX", "DAC MIXR" },
++	{ "Stereo1 ADC R2 Mux", "DMIC", "Stereo1 DMIC R Mux" },
++	{ "Stereo1 ADC R2 Mux", "DAC MIX", "DAC MIXR" },
++
++	{ "Mono ADC L Mux", "ADC1 L", "ADC1 L" },
++	{ "Mono ADC L Mux", "ADC1 R", "ADC1 R" },
++	{ "Mono ADC L Mux", "ADC2 L", "ADC2 L" },
++	{ "Mono ADC L Mux", "ADC2 R", "ADC2 R" },
++
++	{ "Mono ADC R Mux", "ADC1 L", "ADC1 L" },
++	{ "Mono ADC R Mux", "ADC1 R", "ADC1 R" },
++	{ "Mono ADC R Mux", "ADC2 L", "ADC2 L" },
++	{ "Mono ADC R Mux", "ADC2 R", "ADC2 R" },
++
++	{ "Mono ADC L2 Mux", "DMIC", "Mono DMIC L Mux" },
++	{ "Mono ADC L2 Mux", "Mono DAC MIXL", "Mono DAC MIXL" },
++	{ "Mono ADC L1 Mux", "Mono DAC MIXL", "Mono DAC MIXL" },
++	{ "Mono ADC L1 Mux", "ADC",  "Mono ADC L Mux" },
++
++	{ "Mono ADC R1 Mux", "Mono DAC MIXR", "Mono DAC MIXR" },
++	{ "Mono ADC R1 Mux", "ADC", "Mono ADC R Mux" },
++	{ "Mono ADC R2 Mux", "DMIC", "Mono DMIC R Mux" },
++	{ "Mono ADC R2 Mux", "Mono DAC MIXR", "Mono DAC MIXR" },
++
++	{ "Stereo1 ADC MIXL", "ADC1 Switch", "Stereo1 ADC L1 Mux" },
++	{ "Stereo1 ADC MIXL", "ADC2 Switch", "Stereo1 ADC L2 Mux" },
++	{ "Stereo1 ADC MIXL", NULL, "ADC Stereo1 Filter" },
++
++	{ "Stereo1 ADC MIXR", "ADC1 Switch", "Stereo1 ADC R1 Mux" },
++	{ "Stereo1 ADC MIXR", "ADC2 Switch", "Stereo1 ADC R2 Mux" },
++	{ "Stereo1 ADC MIXR", NULL, "ADC Stereo1 Filter" },
++
++	{ "Mono ADC MIXL", "ADC1 Switch", "Mono ADC L1 Mux" },
++	{ "Mono ADC MIXL", "ADC2 Switch", "Mono ADC L2 Mux" },
++	{ "Mono ADC MIXL", NULL, "ADC Mono Left Filter" },
++
++	{ "Mono ADC MIXR", "ADC1 Switch", "Mono ADC R1 Mux" },
++	{ "Mono ADC MIXR", "ADC2 Switch", "Mono ADC R2 Mux" },
++	{ "Mono ADC MIXR", NULL, "ADC Mono Right Filter" },
++
++	{ "Stereo1 ADC Volume L", NULL, "Stereo1 ADC MIXL" },
++	{ "Stereo1 ADC Volume R", NULL, "Stereo1 ADC MIXR" },
++
++	{ "IF_ADC1", NULL, "Stereo1 ADC Volume L" },
++	{ "IF_ADC1", NULL, "Stereo1 ADC Volume R" },
++	{ "IF_ADC2", NULL, "Mono ADC MIXL" },
++	{ "IF_ADC2", NULL, "Mono ADC MIXR" },
++
++	{ "TDM AD1:AD2:DAC", NULL, "IF_ADC1" },
++	{ "TDM AD1:AD2:DAC", NULL, "IF_ADC2" },
++	{ "TDM AD1:AD2:DAC", NULL, "DAC_REF" },
++	{ "TDM AD2:DAC", NULL, "IF_ADC2" },
++	{ "TDM AD2:DAC", NULL, "DAC_REF" },
++	{ "TDM Data Mux", "AD1:AD2:DAC:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:AD2:NUL:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:DAC:AD2:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:DAC:NUL:AD2", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:NUL:DAC:AD2", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:NUL:AD2:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD2:AD1:DAC:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD2:AD1:NUL:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD2:DAC:AD1:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD2:DAC:NUL:AD1", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD2:NUL:DAC:AD1", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "AD1:NUL:AD1:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "DAC:AD1:AD2:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "DAC:AD1:NUL:AD2", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "DAC:AD2:AD1:NUL", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "DAC:AD2:NUL:AD1", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "DAC:NUL:DAC:AD2", "TDM AD2:DAC" },
++	{ "TDM Data Mux", "DAC:NUL:AD2:DAC", "TDM AD2:DAC" },
++	{ "TDM Data Mux", "NUL:AD1:AD2:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "NUL:AD1:DAC:AD2", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "NUL:AD2:AD1:DAC", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "NUL:AD2:DAC:AD1", "TDM AD1:AD2:DAC" },
++	{ "TDM Data Mux", "NUL:DAC:DAC:AD2", "TDM AD2:DAC" },
++	{ "TDM Data Mux", "NUL:DAC:AD2:DAC", "TDM AD2:DAC" },
++	{ "IF1 01 ADC Swap Mux", "L/R", "TDM Data Mux" },
++	{ "IF1 01 ADC Swap Mux", "R/L", "TDM Data Mux" },
++	{ "IF1 01 ADC Swap Mux", "L/L", "TDM Data Mux" },
++	{ "IF1 01 ADC Swap Mux", "R/R", "TDM Data Mux" },
++	{ "IF1 23 ADC Swap Mux", "L/R", "TDM Data Mux" },
++	{ "IF1 23 ADC Swap Mux", "R/L", "TDM Data Mux" },
++	{ "IF1 23 ADC Swap Mux", "L/L", "TDM Data Mux" },
++	{ "IF1 23 ADC Swap Mux", "R/R", "TDM Data Mux" },
++	{ "IF1 45 ADC Swap Mux", "L/R", "TDM Data Mux" },
++	{ "IF1 45 ADC Swap Mux", "R/L", "TDM Data Mux" },
++	{ "IF1 45 ADC Swap Mux", "L/L", "TDM Data Mux" },
++	{ "IF1 45 ADC Swap Mux", "R/R", "TDM Data Mux" },
++	{ "IF1 67 ADC Swap Mux", "L/R", "TDM Data Mux" },
++	{ "IF1 67 ADC Swap Mux", "R/L", "TDM Data Mux" },
++	{ "IF1 67 ADC Swap Mux", "L/L", "TDM Data Mux" },
++	{ "IF1 67 ADC Swap Mux", "R/R", "TDM Data Mux" },
++	{ "IF1 ADC", NULL, "IF1 01 ADC Swap Mux" },
++	{ "IF1 ADC", NULL, "IF1 23 ADC Swap Mux" },
++	{ "IF1 ADC", NULL, "IF1 45 ADC Swap Mux" },
++	{ "IF1 ADC", NULL, "IF1 67 ADC Swap Mux" },
++	{ "IF1 ADC", NULL, "I2S1" },
++
++	{ "IF2 ADC Mux", "IF_ADC1", "IF_ADC1" },
++	{ "IF2 ADC Mux", "IF_ADC2", "IF_ADC2" },
++	{ "IF2 ADC Mux", "IF_ADC3", "IF_ADC3" },
++	{ "IF2 ADC Mux", "DAC_REF", "DAC_REF" },
++	{ "IF2 ADC", NULL, "IF2 ADC Mux"},
++	{ "IF2 ADC", NULL, "I2S2" },
++
++	{ "IF3 ADC Mux", "IF_ADC1", "IF_ADC1" },
++	{ "IF3 ADC Mux", "IF_ADC2", "IF_ADC2" },
++	{ "IF3 ADC Mux", "Stereo2_ADC_L/R", "Stereo2 ADC LR" },
++	{ "IF3 ADC Mux", "DAC_REF", "DAC_REF" },
++	{ "IF3 ADC", NULL, "IF3 ADC Mux"},
++	{ "IF3 ADC", NULL, "I2S3" },
++
++	{ "AIF1TX", NULL, "IF1 ADC" },
++	{ "IF2 ADC Swap Mux", "L/R", "IF2 ADC" },
++	{ "IF2 ADC Swap Mux", "R/L", "IF2 ADC" },
++	{ "IF2 ADC Swap Mux", "L/L", "IF2 ADC" },
++	{ "IF2 ADC Swap Mux", "R/R", "IF2 ADC" },
++	{ "AIF2TX", NULL, "IF2 ADC Swap Mux" },
++	{ "IF3 ADC Swap Mux", "L/R", "IF3 ADC" },
++	{ "IF3 ADC Swap Mux", "R/L", "IF3 ADC" },
++	{ "IF3 ADC Swap Mux", "L/L", "IF3 ADC" },
++	{ "IF3 ADC Swap Mux", "R/R", "IF3 ADC" },
++	{ "AIF3TX", NULL, "IF3 ADC Swap Mux" },
++
++	{ "IF1 DAC1", NULL, "AIF1RX" },
++	{ "IF1 DAC2", NULL, "AIF1RX" },
++	{ "IF2 DAC Swap Mux", "L/R", "AIF2RX" },
++	{ "IF2 DAC Swap Mux", "R/L", "AIF2RX" },
++	{ "IF2 DAC Swap Mux", "L/L", "AIF2RX" },
++	{ "IF2 DAC Swap Mux", "R/R", "AIF2RX" },
++	{ "IF2 DAC", NULL, "IF2 DAC Swap Mux" },
++	{ "IF3 DAC Swap Mux", "L/R", "AIF3RX" },
++	{ "IF3 DAC Swap Mux", "R/L", "AIF3RX" },
++	{ "IF3 DAC Swap Mux", "L/L", "AIF3RX" },
++	{ "IF3 DAC Swap Mux", "R/R", "AIF3RX" },
++	{ "IF3 DAC", NULL, "IF3 DAC Swap Mux" },
++
++	{ "IF1 DAC1", NULL, "I2S1" },
++	{ "IF1 DAC2", NULL, "I2S1" },
++	{ "IF2 DAC", NULL, "I2S2" },
++	{ "IF3 DAC", NULL, "I2S3" },
++
++	{ "IF1 DAC2 L", NULL, "IF1 DAC2" },
++	{ "IF1 DAC2 R", NULL, "IF1 DAC2" },
++	{ "IF1 DAC1 L", NULL, "IF1 DAC1" },
++	{ "IF1 DAC1 R", NULL, "IF1 DAC1" },
++	{ "IF2 DAC L", NULL, "IF2 DAC" },
++	{ "IF2 DAC R", NULL, "IF2 DAC" },
++	{ "IF3 DAC L", NULL, "IF3 DAC" },
++	{ "IF3 DAC R", NULL, "IF3 DAC" },
++
++	{ "DAC L1 Mux", "IF1 DAC1", "IF1 DAC1 L" },
++	{ "DAC L1 Mux", "IF2 DAC", "IF2 DAC L" },
++	{ "DAC L1 Mux", "IF3 DAC", "IF3 DAC L" },
++	{ "DAC L1 Mux", NULL, "DAC Stereo1 Filter" },
++
++	{ "DAC R1 Mux", "IF1 DAC1", "IF1 DAC1 R" },
++	{ "DAC R1 Mux", "IF2 DAC", "IF2 DAC R" },
++	{ "DAC R1 Mux", "IF3 DAC", "IF3 DAC R" },
++	{ "DAC R1 Mux", NULL, "DAC Stereo1 Filter" },
++
++	{ "DAC1 MIXL", "Stereo ADC Switch", "Stereo1 ADC Volume L" },
++	{ "DAC1 MIXL", "DAC1 Switch", "DAC L1 Mux" },
++	{ "DAC1 MIXR", "Stereo ADC Switch", "Stereo1 ADC Volume R" },
++	{ "DAC1 MIXR", "DAC1 Switch", "DAC R1 Mux" },
++
++	{ "DAC_REF", NULL, "DAC1 MIXL" },
++	{ "DAC_REF", NULL, "DAC1 MIXR" },
++
++	{ "DAC L2 Mux", "IF1 DAC2", "IF1 DAC2 L" },
++	{ "DAC L2 Mux", "IF2 DAC", "IF2 DAC L" },
++	{ "DAC L2 Mux", "IF3 DAC", "IF3 DAC L" },
++	{ "DAC L2 Mux", "Mono ADC MIX", "Mono ADC MIXL" },
++	{ "DAC L2 Mux", NULL, "DAC Mono Left Filter" },
++
++	{ "DAC R2 Mux", "IF1 DAC2", "IF1 DAC2 R" },
++	{ "DAC R2 Mux", "IF2 DAC", "IF2 DAC R" },
++	{ "DAC R2 Mux", "IF3 DAC", "IF3 DAC R" },
++	{ "DAC R2 Mux", "Mono ADC MIX", "Mono ADC MIXR" },
++	{ "DAC R2 Mux", NULL, "DAC Mono Right Filter" },
++
++	{ "Stereo DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Stereo DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Stereo DAC MIXL", "DAC L2 Switch", "DAC L2 Mux" },
++	{ "Stereo DAC MIXL", "DAC R2 Switch", "DAC R2 Mux" },
++
++	{ "Stereo DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Stereo DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Stereo DAC MIXR", "DAC L2 Switch", "DAC L2 Mux" },
++	{ "Stereo DAC MIXR", "DAC R2 Switch", "DAC R2 Mux" },
++
++	{ "Mono DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Mono DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Mono DAC MIXL", "DAC L2 Switch", "DAC L2 Mux" },
++	{ "Mono DAC MIXL", "DAC R2 Switch", "DAC R2 Mux" },
++	{ "Mono DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Mono DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Mono DAC MIXR", "DAC R2 Switch", "DAC R2 Mux" },
++	{ "Mono DAC MIXR", "DAC L2 Switch", "DAC L2 Mux" },
++
++	{ "DAC MIXL", "Stereo DAC Mixer", "Stereo DAC MIXL" },
++	{ "DAC MIXL", "Mono DAC Mixer", "Mono DAC MIXL" },
++	{ "DAC MIXR", "Stereo DAC Mixer", "Stereo DAC MIXR" },
++	{ "DAC MIXR", "Mono DAC Mixer", "Mono DAC MIXR" },
++
++	{ "DAC L1 Source", NULL, "DAC L1 Power" },
++	{ "DAC L1 Source", "DAC", "DAC1 MIXL" },
++	{ "DAC L1 Source", "Stereo DAC Mixer", "Stereo DAC MIXL" },
++	{ "DAC R1 Source", NULL, "DAC R1 Power" },
++	{ "DAC R1 Source", "DAC", "DAC1 MIXR" },
++	{ "DAC R1 Source", "Stereo DAC Mixer", "Stereo DAC MIXR" },
++	{ "DAC L2 Source", "Stereo DAC Mixer", "Stereo DAC MIXL" },
++	{ "DAC L2 Source", "Mono DAC Mixer", "Mono DAC MIXL" },
++	{ "DAC L2 Source", NULL, "DAC L2 Power" },
++	{ "DAC R2 Source", "Stereo DAC Mixer", "Stereo DAC MIXR" },
++	{ "DAC R2 Source", "Mono DAC Mixer", "Mono DAC MIXR" },
++	{ "DAC R2 Source", NULL, "DAC R2 Power" },
++
++	{ "DAC L1", NULL, "DAC L1 Source" },
++	{ "DAC R1", NULL, "DAC R1 Source" },
++	{ "DAC L2", NULL, "DAC L2 Source" },
++	{ "DAC R2", NULL, "DAC R2 Source" },
++
++	{ "SPK MIXL", "DAC L2 Switch", "DAC L2" },
++	{ "SPK MIXL", "BST1 Switch", "BST1" },
++	{ "SPK MIXL", "INL Switch", "INL VOL" },
++	{ "SPK MIXL", "INR Switch", "INR VOL" },
++	{ "SPK MIXL", "BST3 Switch", "BST3" },
++	{ "SPK MIXR", "DAC R2 Switch", "DAC R2" },
++	{ "SPK MIXR", "BST4 Switch", "BST4" },
++	{ "SPK MIXR", "INL Switch", "INL VOL" },
++	{ "SPK MIXR", "INR Switch", "INR VOL" },
++	{ "SPK MIXR", "BST3 Switch", "BST3" },
++
++	{ "MONOVOL MIX", "DAC L2 Switch", "DAC L2" },
++	{ "MONOVOL MIX", "DAC R2 Switch", "DAC R2" },
++	{ "MONOVOL MIX", "BST1 Switch", "BST1" },
++	{ "MONOVOL MIX", "BST2 Switch", "BST2" },
++	{ "MONOVOL MIX", "BST3 Switch", "BST3" },
++
++	{ "OUT MIXL", "DAC L2 Switch", "DAC L2" },
++	{ "OUT MIXL", "INL Switch", "INL VOL" },
++	{ "OUT MIXL", "BST1 Switch", "BST1" },
++	{ "OUT MIXL", "BST2 Switch", "BST2" },
++	{ "OUT MIXL", "BST3 Switch", "BST3" },
++	{ "OUT MIXR", "DAC R2 Switch", "DAC R2" },
++	{ "OUT MIXR", "INR Switch", "INR VOL" },
++	{ "OUT MIXR", "BST2 Switch", "BST2" },
++	{ "OUT MIXR", "BST3 Switch", "BST3" },
++	{ "OUT MIXR", "BST4 Switch", "BST4" },
++
++	{ "SPKVOL L", "Switch", "SPK MIXL" },
++	{ "SPKVOL R", "Switch", "SPK MIXR" },
++	{ "SPO L MIX", "DAC L2 Switch", "DAC L2" },
++	{ "SPO L MIX", "SPKVOL L Switch", "SPKVOL L" },
++	{ "SPO R MIX", "DAC R2 Switch", "DAC R2" },
++	{ "SPO R MIX", "SPKVOL R Switch", "SPKVOL R" },
++	{ "SPK Amp", NULL, "SPO L MIX" },
++	{ "SPK Amp", NULL, "SPO R MIX" },
++	{ "SPK Amp", NULL, "SYS CLK DET" },
++	{ "SPO Playback", "Switch", "SPK Amp" },
++	{ "SPOL", NULL, "SPO Playback" },
++	{ "SPOR", NULL, "SPO Playback" },
++
++	{ "MONOVOL", "Switch", "MONOVOL MIX" },
++	{ "Mono MIX", "DAC L2 Switch", "DAC L2" },
++	{ "Mono MIX", "MONOVOL Switch", "MONOVOL" },
++	{ "Mono Amp", NULL, "Mono MIX" },
++	{ "Mono Amp", NULL, "Mono Vref" },
++	{ "Mono Amp", NULL, "SYS CLK DET" },
++	{ "Mono Playback", "Switch", "Mono Amp" },
++	{ "MONOOUT", NULL, "Mono Playback" },
++
++	{ "HP Amp", NULL, "DAC L1" },
++	{ "HP Amp", NULL, "DAC R1" },
++	{ "HP Amp", NULL, "Charge Pump" },
++	{ "HP Amp", NULL, "SYS CLK DET" },
++	{ "HPO L Playback", "Switch", "HP Amp"},
++	{ "HPO R Playback", "Switch", "HP Amp"},
++	{ "HPOL", NULL, "HPO L Playback" },
++	{ "HPOR", NULL, "HPO R Playback" },
++
++	{ "OUTVOL L", "Switch", "OUT MIXL" },
++	{ "OUTVOL R", "Switch", "OUT MIXR" },
++	{ "LOUT L MIX", "DAC L2 Switch", "DAC L2" },
++	{ "LOUT L MIX", "OUTVOL L Switch", "OUTVOL L" },
++	{ "LOUT R MIX", "DAC R2 Switch", "DAC R2" },
++	{ "LOUT R MIX", "OUTVOL R Switch", "OUTVOL R" },
++	{ "LOUT Amp", NULL, "LOUT L MIX" },
++	{ "LOUT Amp", NULL, "LOUT R MIX" },
++	{ "LOUT Amp", NULL, "SYS CLK DET" },
++	{ "LOUT L Playback", "Switch", "LOUT Amp" },
++	{ "LOUT R Playback", "Switch", "LOUT Amp" },
++	{ "LOUTL", NULL, "LOUT L Playback" },
++	{ "LOUTR", NULL, "LOUT R Playback" },
++
++	{ "PDM L Mux", "Mono DAC", "Mono DAC MIXL" },
++	{ "PDM L Mux", "Stereo DAC", "Stereo DAC MIXL" },
++	{ "PDM L Mux", NULL, "PDM Power" },
++	{ "PDM R Mux", "Mono DAC", "Mono DAC MIXR" },
++	{ "PDM R Mux", "Stereo DAC", "Stereo DAC MIXR" },
++	{ "PDM R Mux", NULL, "PDM Power" },
++	{ "PDM L Playback", "Switch", "PDM L Mux" },
++	{ "PDM R Playback", "Switch", "PDM R Mux" },
++	{ "PDML", NULL, "PDM L Playback" },
++	{ "PDMR", NULL, "PDM R Playback" },
++
++	{ "SPDIF Mux", "IF3_DAC", "IF3 DAC" },
++	{ "SPDIF Mux", "IF2_DAC", "IF2 DAC" },
++	{ "SPDIF Mux", "IF1_DAC2", "IF1 DAC2" },
++	{ "SPDIF Mux", "IF1_DAC1", "IF1 DAC1" },
++	{ "SPDIF", NULL, "SPDIF Mux" },
++};
++
++static int rt5659_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val_len = 0, val_clk, mask_clk;
++	int pre_div, frame_size;
++
++	rt5659->lrck[dai->id] = params_rate(params);
++	pre_div = rl6231_get_clk_info(rt5659->sysclk, rt5659->lrck[dai->id]);
++	if (pre_div < 0) {
++		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
++			rt5659->lrck[dai->id], dai->id);
++		return -EINVAL;
++	}
++	frame_size = snd_soc_params_to_frame_size(params);
++	if (frame_size < 0) {
++		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
++		return -EINVAL;
++	}
++
++	dev_dbg(dai->dev, "lrck is %dHz and pre_div is %d for iis %d\n",
++				rt5659->lrck[dai->id], pre_div, dai->id);
++
++	switch (params_width(params)) {
++	case 16:
++		break;
++	case 20:
++		val_len |= RT5659_I2S_DL_20;
++		break;
++	case 24:
++		val_len |= RT5659_I2S_DL_24;
++		break;
++	case 8:
++		val_len |= RT5659_I2S_DL_8;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (dai->id) {
++	case RT5659_AIF1:
++		mask_clk = RT5659_I2S_PD1_MASK;
++		val_clk = pre_div << RT5659_I2S_PD1_SFT;
++		snd_soc_update_bits(codec, RT5659_I2S1_SDP,
++			RT5659_I2S_DL_MASK, val_len);
++		break;
++	case RT5659_AIF2:
++		mask_clk = RT5659_I2S_PD2_MASK;
++		val_clk = pre_div << RT5659_I2S_PD2_SFT;
++		snd_soc_update_bits(codec, RT5659_I2S2_SDP,
++			RT5659_I2S_DL_MASK, val_len);
++		break;
++	case RT5659_AIF3:
++		mask_clk = RT5659_I2S_PD3_MASK;
++		val_clk = pre_div << RT5659_I2S_PD3_SFT;
++		snd_soc_update_bits(codec, RT5659_I2S3_SDP,
++			RT5659_I2S_DL_MASK, val_len);
++		break;
++	default:
++		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
++		return -EINVAL;
++	}
++
++	snd_soc_update_bits(codec, RT5659_ADDA_CLK_1, mask_clk, val_clk);
++
++	switch (rt5659->lrck[dai->id]) {
++	case 192000:
++		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_32);
++		break;
++	case 96000:
++		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_64);
++		break;
++	default:
++		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_128);
++		break;
++	}
++
++	return 0;
++}
++
++static int rt5659_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		rt5659->master[dai->id] = 1;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		reg_val |= RT5659_I2S_MS_S;
++		rt5659->master[dai->id] = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		reg_val |= RT5659_I2S_BP_INV;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		reg_val |= RT5659_I2S_DF_LEFT;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		reg_val |= RT5659_I2S_DF_PCM_A;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		reg_val |= RT5659_I2S_DF_PCM_B;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (dai->id) {
++	case RT5659_AIF1:
++		snd_soc_update_bits(codec, RT5659_I2S1_SDP,
++			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
++			RT5659_I2S_DF_MASK, reg_val);
++		break;
++	case RT5659_AIF2:
++		snd_soc_update_bits(codec, RT5659_I2S2_SDP,
++			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
++			RT5659_I2S_DF_MASK, reg_val);
++		break;
++	case RT5659_AIF3:
++		snd_soc_update_bits(codec, RT5659_I2S3_SDP,
++			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
++			RT5659_I2S_DF_MASK, reg_val);
++		break;
++	default:
++		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++
++	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
++		return 0;
++
++	switch (clk_id) {
++	case RT5659_SCLK_S_MCLK:
++		reg_val |= RT5659_SCLK_SRC_MCLK;
++		break;
++	case RT5659_SCLK_S_PLL1:
++		reg_val |= RT5659_SCLK_SRC_PLL1;
++		break;
++	case RT5659_SCLK_S_RCCLK:
++		reg_val |= RT5659_SCLK_SRC_RCCLK;
++		break;
++	default:
++		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, RT5659_GLB_CLK,
++		RT5659_SCLK_SRC_MASK, reg_val);
++	rt5659->sysclk = freq;
++	rt5659->sysclk_src = clk_id;
++
++	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
++
++	return 0;
++}
++
++static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
++			unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++	struct rl6231_pll_code pll_code;
++	int ret;
++
++	if (Source == rt5659->pll_src && freq_in == rt5659->pll_in &&
++	    freq_out == rt5659->pll_out)
++		return 0;
++
++	if (!freq_in || !freq_out) {
++		dev_dbg(codec->dev, "PLL disabled\n");
++
++		rt5659->pll_in = 0;
++		rt5659->pll_out = 0;
++		snd_soc_update_bits(codec, RT5659_GLB_CLK,
++			RT5659_SCLK_SRC_MASK, RT5659_SCLK_SRC_MCLK);
++		return 0;
++	}
++
++	switch (Source) {
++	case RT5659_PLL1_S_MCLK:
++		snd_soc_update_bits(codec, RT5659_GLB_CLK,
++			RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_MCLK);
++		break;
++	case RT5659_PLL1_S_BCLK1:
++		snd_soc_update_bits(codec, RT5659_GLB_CLK,
++				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK1);
++		break;
++	case RT5659_PLL1_S_BCLK2:
++		snd_soc_update_bits(codec, RT5659_GLB_CLK,
++				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK2);
++		break;
++	case RT5659_PLL1_S_BCLK3:
++		snd_soc_update_bits(codec, RT5659_GLB_CLK,
++				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK3);
++		break;
++	default:
++		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
++		return -EINVAL;
++	}
++
++	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
++	if (ret < 0) {
++		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
++		return ret;
++	}
++
++	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=%d\n",
++		pll_code.m_bp, (pll_code.m_bp ? 0 : pll_code.m_code),
++		pll_code.n_code, pll_code.k_code);
++
++	snd_soc_write(codec, RT5659_PLL_CTRL_1,
++		pll_code.n_code << RT5659_PLL_N_SFT | pll_code.k_code);
++	snd_soc_write(codec, RT5659_PLL_CTRL_2,
++		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5659_PLL_M_SFT |
++		pll_code.m_bp << RT5659_PLL_M_BP_SFT);
++
++	rt5659->pll_in = freq_in;
++	rt5659->pll_out = freq_out;
++	rt5659->pll_src = Source;
++
++	return 0;
++}
++
++static int rt5659_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
++			unsigned int rx_mask, int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	unsigned int val = 0;
++
++	if (rx_mask || tx_mask)
++		val |= (1 << 15);
++
++	switch (slots) {
++	case 4:
++		val |= (1 << 10);
++		val |= (1 << 8);
++		break;
++	case 6:
++		val |= (2 << 10);
++		val |= (2 << 8);
++		break;
++	case 8:
++		val |= (3 << 10);
++		val |= (3 << 8);
++		break;
++	case 2:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (slot_width) {
++	case 20:
++		val |= (1 << 6);
++		val |= (1 << 4);
++		break;
++	case 24:
++		val |= (2 << 6);
++		val |= (2 << 4);
++		break;
++	case 32:
++		val |= (3 << 6);
++		val |= (3 << 4);
++		break;
++	case 16:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	snd_soc_update_bits(codec, RT5659_TDM_CTRL_1, 0x8ff0, val);
++
++	return 0;
++}
++
++static int rt5659_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
++
++	rt5659->bclk[dai->id] = ratio;
++
++	if (ratio == 64) {
++		switch (dai->id) {
++		case RT5659_AIF2:
++			snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++				RT5659_I2S_BCLK_MS2_MASK,
++				RT5659_I2S_BCLK_MS2_64);
++			break;
++		case RT5659_AIF3:
++			snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
++				RT5659_I2S_BCLK_MS3_MASK,
++				RT5659_I2S_BCLK_MS3_64);
++			break;
++		}
++	}
++
++	return 0;
++}
++
++static int rt5659_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	switch (level) {
++	case SND_SOC_BIAS_PREPARE:
++		regmap_update_bits(rt5659->regmap, RT5659_DIG_MISC,
++			RT5659_DIG_GATE_CTRL, RT5659_DIG_GATE_CTRL);
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_DIG_1,
++			RT5659_PWR_LDO,	RT5659_PWR_LDO);
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2,
++			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2);
++		msleep(20);
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++			RT5659_PWR_FV1 | RT5659_PWR_FV2,
++			RT5659_PWR_FV1 | RT5659_PWR_FV2);
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_DIG_1,
++			RT5659_PWR_LDO, 0);
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2
++			| RT5659_PWR_FV1 | RT5659_PWR_FV2,
++			RT5659_PWR_MB | RT5659_PWR_VREF2);
++		regmap_update_bits(rt5659->regmap, RT5659_DIG_MISC,
++			RT5659_DIG_GATE_CTRL, 0);
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int rt5659_probe(struct snd_soc_codec *codec)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	rt5659->codec = codec;
++
++	return 0;
++}
++
++static int rt5659_remove(struct snd_soc_codec *codec)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	regmap_write(rt5659->regmap, RT5659_RESET, 0);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int rt5659_suspend(struct snd_soc_codec *codec)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(rt5659->regmap, true);
++	regcache_mark_dirty(rt5659->regmap);
++	return 0;
++}
++
++static int rt5659_resume(struct snd_soc_codec *codec)
++{
++	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(rt5659->regmap, false);
++	regcache_sync(rt5659->regmap);
++
++	return 0;
++}
++#else
++#define rt5659_suspend NULL
++#define rt5659_resume NULL
++#endif
++
++#define RT5659_STEREO_RATES SNDRV_PCM_RATE_8000_192000
++#define RT5659_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
++		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
++
++static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
++	.hw_params = rt5659_hw_params,
++	.set_fmt = rt5659_set_dai_fmt,
++	.set_sysclk = rt5659_set_dai_sysclk,
++	.set_tdm_slot = rt5659_set_tdm_slot,
++	.set_pll = rt5659_set_dai_pll,
++	.set_bclk_ratio = rt5659_set_bclk_ratio,
++};
++
++static struct snd_soc_dai_driver rt5659_dai[] = {
++	{
++		.name = "rt5659-aif1",
++		.id = RT5659_AIF1,
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.ops = &rt5659_aif_dai_ops,
++	},
++	{
++		.name = "rt5659-aif2",
++		.id = RT5659_AIF2,
++		.playback = {
++			.stream_name = "AIF2 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF2 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.ops = &rt5659_aif_dai_ops,
++	},
++	{
++		.name = "rt5659-aif3",
++		.id = RT5659_AIF3,
++		.playback = {
++			.stream_name = "AIF3 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF3 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5659_STEREO_RATES,
++			.formats = RT5659_FORMATS,
++		},
++		.ops = &rt5659_aif_dai_ops,
++	},
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
++	.probe = rt5659_probe,
++	.remove = rt5659_remove,
++	.suspend = rt5659_suspend,
++	.resume = rt5659_resume,
++	.set_bias_level = rt5659_set_bias_level,
++	.idle_bias_off = true,
++	.controls = rt5659_snd_controls,
++	.num_controls = ARRAY_SIZE(rt5659_snd_controls),
++	.dapm_widgets = rt5659_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(rt5659_dapm_widgets),
++	.dapm_routes = rt5659_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(rt5659_dapm_routes),
++};
++
++
++static const struct regmap_config rt5659_regmap = {
++	.reg_bits = 16,
++	.val_bits = 16,
++	.max_register = 0x0400,
++	.volatile_reg = rt5659_volatile_register,
++	.readable_reg = rt5659_readable_register,
++	.cache_type = REGCACHE_RBTREE,
++	.reg_defaults = rt5659_reg,
++	.num_reg_defaults = ARRAY_SIZE(rt5659_reg),
++};
++
++static const struct i2c_device_id rt5659_i2c_id[] = {
++	{ "rt5658", 0 },
++	{ "rt5659", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, rt5659_i2c_id);
++
++static int rt5659_parse_dt(struct rt5659_priv *rt5659, struct device *dev)
++{
++	rt5659->pdata.in1_diff = device_property_read_bool(dev,
++					"realtek,in1-differential");
++	rt5659->pdata.in3_diff = device_property_read_bool(dev,
++					"realtek,in3-differential");
++	rt5659->pdata.in4_diff = device_property_read_bool(dev,
++					"realtek,in4-differential");
++
++
++	device_property_read_u32(dev, "realtek,dmic1-data-pin",
++		&rt5659->pdata.dmic1_data_pin);
++	device_property_read_u32(dev, "realtek,dmic2-data-pin",
++		&rt5659->pdata.dmic2_data_pin);
++	device_property_read_u32(dev, "realtek,jd-src",
++		&rt5659->pdata.jd_src);
++
++	return 0;
++}
++
++static void rt5659_calibrate(struct rt5659_priv *rt5659)
++{
++	int value, count;
++
++	/* Calibrate HPO Start */
++	/* Fine tune HP Performance */
++	regmap_write(rt5659->regmap, RT5659_BIAS_CUR_CTRL_8, 0xa502);
++	regmap_write(rt5659->regmap, RT5659_CHOP_DAC, 0x3030);
++
++	regmap_write(rt5659->regmap, RT5659_PRE_DIV_1, 0xef00);
++	regmap_write(rt5659->regmap, RT5659_PRE_DIV_2, 0xeffc);
++	regmap_write(rt5659->regmap, RT5659_MICBIAS_2, 0x0280);
++	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x0001);
++	regmap_write(rt5659->regmap, RT5659_GLB_CLK, 0x8000);
++
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xaa7e);
++	msleep(60);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xfe7e);
++	msleep(50);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0004);
++	regmap_write(rt5659->regmap, RT5659_PWR_DIG_2, 0x0400);
++	msleep(50);
++	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0080);
++	usleep_range(10000, 10005);
++	regmap_write(rt5659->regmap, RT5659_DEPOP_1, 0x0009);
++	msleep(50);
++	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0f80);
++	msleep(50);
++	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0e16);
++	msleep(50);
++
++	/* Enalbe K ADC Power And Clock */
++	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0505);
++	msleep(50);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0184);
++	regmap_write(rt5659->regmap, RT5659_CALIB_ADC_CTRL, 0x3c05);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c1);
++
++	/* K Headphone */
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x5100);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0014);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0xd100);
++	msleep(60);
++
++	/* Manual K ADC Offset */
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x4900);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0016);
++	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_1,
++		0x8000, 0x8000);
++
++	count = 0;
++	while (true) {
++		regmap_read(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, &value);
++		if (value & 0x8000)
++			usleep_range(10000, 10005);
++		else
++			break;
++
++		if (count > 30) {
++			dev_err(rt5659->codec->dev,
++				"HP Calibration 1 Failure\n");
++			return;
++		}
++
++		count++;
++	}
++
++	/* Manual K Internal Path Offset */
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
++	regmap_write(rt5659->regmap, RT5659_HP_VOL, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x4500);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x001f);
++	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_1,
++		0x8000, 0x8000);
++
++	count = 0;
++	while (true) {
++		regmap_read(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, &value);
++		if (value & 0x8000)
++			usleep_range(10000, 10005);
++		else
++			break;
++
++		if (count > 85) {
++			dev_err(rt5659->codec->dev,
++				"HP Calibration 2 Failure\n");
++			return;
++		}
++
++		count++;
++	}
++
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c0);
++	/* Calibrate HPO End */
++
++	/* Calibrate SPO Start */
++	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x2021);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_CTRL_1, 0x0260);
++	regmap_write(rt5659->regmap, RT5659_PWR_MIXER, 0x3000);
++	regmap_write(rt5659->regmap, RT5659_PWR_VOL, 0xc000);
++	regmap_write(rt5659->regmap, RT5659_A_DAC_MUX, 0x000c);
++	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x8000);
++	regmap_write(rt5659->regmap, RT5659_SPO_VOL, 0x0808);
++	regmap_write(rt5659->regmap, RT5659_SPK_L_MIXER, 0x001e);
++	regmap_write(rt5659->regmap, RT5659_SPK_R_MIXER, 0x001e);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_1, 0x0803);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_2, 0x0554);
++	regmap_write(rt5659->regmap, RT5659_SPO_AMP_GAIN, 0x1103);
++
++	/* Enalbe K ADC Power And Clock */
++	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0909);
++	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x0001,
++		0x0001);
++
++	/* Start Calibration */
++	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x0021);
++	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_1, 0x3e80);
++	regmap_update_bits(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_1,
++		0x8000, 0x8000);
++
++	count = 0;
++	while (true) {
++		regmap_read(rt5659->regmap,
++				RT5659_SPK_DC_CAILB_CTRL_1, &value);
++		if (value & 0x8000)
++			usleep_range(10000, 10005);
++		else
++			break;
++
++		if (count > 10) {
++			dev_err(rt5659->codec->dev,
++				"SPK Calibration Failure\n");
++			return;
++		}
++
++		count++;
++	}
++	/* Calibrate SPO End */
++
++	/* Calibrate MONO Start */
++	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_MONOMIX_IN_GAIN, 0x021f);
++	regmap_write(rt5659->regmap, RT5659_MONO_OUT, 0x480a);
++	/* MONO NG2 GAIN 5dB */
++	regmap_write(rt5659->regmap, RT5659_MONO_GAIN, 0x0003);
++	regmap_write(rt5659->regmap, RT5659_MONO_NG2_CTRL_5, 0x0009);
++
++	/* Start Calibration */
++	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x000f);
++	regmap_write(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e00);
++	regmap_update_bits(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1,
++		0x8000, 0x8000);
++
++	count = 0;
++	while (true) {
++		regmap_read(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1,
++			&value);
++		if (value & 0x8000)
++			usleep_range(10000, 10005);
++		else
++			break;
++
++		if (count > 35) {
++			dev_err(rt5659->codec->dev,
++				"Mono Calibration Failure\n");
++			return;
++		}
++
++		count++;
++	}
++
++	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x0003);
++	/* Calibrate MONO End */
++
++	/* Power Off */
++	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0808);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_CALIB_ADC_CTRL, 0x2005);
++	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c0);
++	regmap_write(rt5659->regmap, RT5659_DEPOP_1, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_1, 0x0011);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_2, 0x0150);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xfe3e);
++	regmap_write(rt5659->regmap, RT5659_MONO_OUT, 0xc80a);
++	regmap_write(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e04);
++	regmap_write(rt5659->regmap, RT5659_PWR_MIXER, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_PWR_VOL, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_PWR_DIG_2, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0x003e);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_CTRL_1, 0x0060);
++	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x2021);
++	regmap_write(rt5659->regmap, RT5659_GLB_CLK, 0x0000);
++	regmap_write(rt5659->regmap, RT5659_MICBIAS_2, 0x0080);
++	regmap_write(rt5659->regmap, RT5659_HP_VOL, 0x8080);
++	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
++}
++
++static int rt5659_i2c_probe(struct i2c_client *i2c,
++		    const struct i2c_device_id *id)
++{
++	struct rt5659_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	struct rt5659_priv *rt5659;
++	int ret;
++	unsigned int val;
++
++	rt5659 = devm_kzalloc(&i2c->dev, sizeof(struct rt5659_priv),
++		GFP_KERNEL);
++
++	if (rt5659 == NULL)
++		return -ENOMEM;
++
++	rt5659->i2c = i2c;
++	i2c_set_clientdata(i2c, rt5659);
++
++	if (pdata)
++		rt5659->pdata = *pdata;
++	else
++		rt5659_parse_dt(rt5659, &i2c->dev);
++
++	rt5659->gpiod_ldo1_en = devm_gpiod_get_optional(&i2c->dev, "ldo1-en",
++							GPIOD_OUT_HIGH);
++	if (IS_ERR(rt5659->gpiod_ldo1_en))
++		dev_warn(&i2c->dev, "Request ldo1-en GPIO failed\n");
++
++	rt5659->gpiod_reset = devm_gpiod_get_optional(&i2c->dev, "reset",
++							GPIOD_OUT_HIGH);
++
++	/* Sleep for 300 ms miniumum */
++	usleep_range(300000, 350000);
++
++	rt5659->regmap = devm_regmap_init_i2c(i2c, &rt5659_regmap);
++	if (IS_ERR(rt5659->regmap)) {
++		ret = PTR_ERR(rt5659->regmap);
++		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
++			ret);
++		return ret;
++	}
++
++	regmap_read(rt5659->regmap, RT5659_DEVICE_ID, &val);
++	if (val != DEVICE_ID) {
++		dev_err(&i2c->dev,
++			"Device with ID register %x is not rt5659\n", val);
++		return -ENODEV;
++	}
++
++	regmap_write(rt5659->regmap, RT5659_RESET, 0);
++
++	rt5659_calibrate(rt5659);
++
++	/* line in diff mode*/
++	if (rt5659->pdata.in1_diff)
++		regmap_update_bits(rt5659->regmap, RT5659_IN1_IN2,
++			RT5659_IN1_DF_MASK, RT5659_IN1_DF_MASK);
++	if (rt5659->pdata.in3_diff)
++		regmap_update_bits(rt5659->regmap, RT5659_IN3_IN4,
++			RT5659_IN3_DF_MASK, RT5659_IN3_DF_MASK);
++	if (rt5659->pdata.in4_diff)
++		regmap_update_bits(rt5659->regmap, RT5659_IN3_IN4,
++			RT5659_IN4_DF_MASK, RT5659_IN4_DF_MASK);
++
++	/* DMIC pin*/
++	if (rt5659->pdata.dmic1_data_pin != RT5659_DMIC1_NULL ||
++		rt5659->pdata.dmic2_data_pin != RT5659_DMIC2_NULL) {
++		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
++			RT5659_GP2_PIN_MASK, RT5659_GP2_PIN_DMIC1_SCL);
++
++		switch (rt5659->pdata.dmic1_data_pin) {
++		case RT5659_DMIC1_DATA_IN2N:
++			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_IN2N);
++			break;
++
++		case RT5659_DMIC1_DATA_GPIO5:
++			regmap_update_bits(rt5659->regmap,
++				RT5659_GPIO_CTRL_3,
++				RT5659_I2S2_PIN_MASK,
++				RT5659_I2S2_PIN_GPIO);
++			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO5);
++			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
++				RT5659_GP5_PIN_MASK, RT5659_GP5_PIN_DMIC1_SDA);
++			break;
++
++		case RT5659_DMIC1_DATA_GPIO9:
++			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO9);
++			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
++				RT5659_GP9_PIN_MASK, RT5659_GP9_PIN_DMIC1_SDA);
++			break;
++
++		case RT5659_DMIC1_DATA_GPIO11:
++			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO11);
++			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
++				RT5659_GP11_PIN_MASK,
++				RT5659_GP11_PIN_DMIC1_SDA);
++			break;
++
++		default:
++			dev_dbg(&i2c->dev, "no DMIC1\n");
++			break;
++		}
++
++		switch (rt5659->pdata.dmic2_data_pin) {
++		case RT5659_DMIC2_DATA_IN2P:
++			regmap_update_bits(rt5659->regmap,
++				RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_2_DP_MASK,
++				RT5659_DMIC_2_DP_IN2P);
++			break;
++
++		case RT5659_DMIC2_DATA_GPIO6:
++			regmap_update_bits(rt5659->regmap,
++				RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_2_DP_MASK,
++				RT5659_DMIC_2_DP_GPIO6);
++			regmap_update_bits(rt5659->regmap,
++				RT5659_GPIO_CTRL_1,
++				RT5659_GP6_PIN_MASK,
++				RT5659_GP6_PIN_DMIC2_SDA);
++			break;
++
++		case RT5659_DMIC2_DATA_GPIO10:
++			regmap_update_bits(rt5659->regmap,
++				RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_2_DP_MASK,
++				RT5659_DMIC_2_DP_GPIO10);
++			regmap_update_bits(rt5659->regmap,
++				RT5659_GPIO_CTRL_1,
++				RT5659_GP10_PIN_MASK,
++				RT5659_GP10_PIN_DMIC2_SDA);
++			break;
++
++		case RT5659_DMIC2_DATA_GPIO12:
++			regmap_update_bits(rt5659->regmap,
++				RT5659_DMIC_CTRL_1,
++				RT5659_DMIC_2_DP_MASK,
++				RT5659_DMIC_2_DP_GPIO12);
++			regmap_update_bits(rt5659->regmap,
++				RT5659_GPIO_CTRL_1,
++				RT5659_GP12_PIN_MASK,
++				RT5659_GP12_PIN_DMIC2_SDA);
++			break;
++
++		default:
++			dev_dbg(&i2c->dev, "no DMIC2\n");
++			break;
++
++		}
++	} else {
++		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
++			RT5659_GP2_PIN_MASK | RT5659_GP5_PIN_MASK |
++			RT5659_GP9_PIN_MASK | RT5659_GP11_PIN_MASK |
++			RT5659_GP6_PIN_MASK | RT5659_GP10_PIN_MASK |
++			RT5659_GP12_PIN_MASK,
++			RT5659_GP2_PIN_GPIO2 | RT5659_GP5_PIN_GPIO5 |
++			RT5659_GP9_PIN_GPIO9 | RT5659_GP11_PIN_GPIO11 |
++			RT5659_GP6_PIN_GPIO6 | RT5659_GP10_PIN_GPIO10 |
++			RT5659_GP12_PIN_GPIO12);
++		regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
++			RT5659_DMIC_1_DP_MASK | RT5659_DMIC_2_DP_MASK,
++			RT5659_DMIC_1_DP_IN2N | RT5659_DMIC_2_DP_IN2P);
++	}
++
++	switch (rt5659->pdata.jd_src) {
++	case RT5659_JD3:
++		regmap_write(rt5659->regmap, RT5659_EJD_CTRL_1, 0xa880);
++		regmap_write(rt5659->regmap, RT5659_RC_CLK_CTRL, 0x9000);
++		regmap_write(rt5659->regmap, RT5659_GPIO_CTRL_1, 0xc800);
++		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
++				RT5659_PWR_MB, RT5659_PWR_MB);
++		regmap_write(rt5659->regmap, RT5659_PWR_ANLG_2, 0x0001);
++		regmap_write(rt5659->regmap, RT5659_IRQ_CTRL_2, 0x0040);
++		break;
++	case RT5659_JD_NULL:
++		break;
++	default:
++		dev_warn(&i2c->dev, "Currently, support JD3 only\n");
++		break;
++	}
++
++	INIT_DELAYED_WORK(&rt5659->jack_detect_work, rt5659_jack_detect_work);
++
++	if (rt5659->i2c->irq) {
++		ret = request_threaded_irq(rt5659->i2c->irq, NULL, rt5659_irq,
++			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
++			| IRQF_ONESHOT, "rt5659", rt5659);
++		if (ret)
++			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++
++	}
++
++	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5659,
++			rt5659_dai, ARRAY_SIZE(rt5659_dai));
++
++	if (ret) {
++		if (rt5659->i2c->irq)
++			free_irq(rt5659->i2c->irq, rt5659);
++	}
++
++	return 0;
++}
++
++static int rt5659_i2c_remove(struct i2c_client *i2c)
++{
++	snd_soc_unregister_codec(&i2c->dev);
++
++	return 0;
++}
++
++void rt5659_i2c_shutdown(struct i2c_client *client)
++{
++	struct rt5659_priv *rt5659 = i2c_get_clientdata(client);
++
++	regmap_write(rt5659->regmap, RT5659_RESET, 0);
++}
++
++static const struct of_device_id rt5659_of_match[] = {
++	{ .compatible = "realtek,rt5658", },
++	{ .compatible = "realtek,rt5659", },
++	{},
++};
++
++static struct acpi_device_id rt5659_acpi_match[] = {
++		{ "10EC5658", 0},
++		{ "10EC5659", 0},
++		{ },
++};
++MODULE_DEVICE_TABLE(acpi, rt5659_acpi_match);
++
++struct i2c_driver rt5659_i2c_driver = {
++	.driver = {
++		.name = "rt5659",
++		.owner = THIS_MODULE,
++		.of_match_table = rt5659_of_match,
++		.acpi_match_table = ACPI_PTR(rt5659_acpi_match),
++	},
++	.probe = rt5659_i2c_probe,
++	.remove = rt5659_i2c_remove,
++	.shutdown = rt5659_i2c_shutdown,
++	.id_table = rt5659_i2c_id,
++};
++module_i2c_driver(rt5659_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC RT5659 driver");
++MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
+new file mode 100644
+index 0000000..8f07ee9
+--- /dev/null
++++ b/sound/soc/codecs/rt5659.h
+@@ -0,0 +1,1819 @@
++/*
++ * rt5659.h  --  RT5659/RT5658 ALSA SoC audio driver
++ *
++ * Copyright 2015 Realtek Microelectronics
++ * Author: Bard Liao <bardliao@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __RT5659_H__
++#define __RT5659_H__
++
++#include <sound/rt5659.h>
++
++#define DEVICE_ID 0x6311
++
++/* Info */
++#define RT5659_RESET				0x0000
++#define RT5659_VENDOR_ID			0x00fd
++#define RT5659_VENDOR_ID_1			0x00fe
++#define RT5659_DEVICE_ID			0x00ff
++/*  I/O - Output */
++#define RT5659_SPO_VOL				0x0001
++#define RT5659_HP_VOL				0x0002
++#define RT5659_LOUT				0x0003
++#define RT5659_MONO_OUT				0x0004
++#define RT5659_HPL_GAIN				0x0005
++#define RT5659_HPR_GAIN				0x0006
++#define RT5659_MONO_GAIN			0x0007
++#define RT5659_SPDIF_CTRL_1			0x0008
++#define RT5659_SPDIF_CTRL_2			0x0009
++/* I/O - Input */
++#define RT5659_CAL_BST_CTRL			0x000a
++#define RT5659_IN1_IN2				0x000c
++#define RT5659_IN3_IN4				0x000d
++#define RT5659_INL1_INR1_VOL			0x000f
++/* I/O - Speaker */
++#define RT5659_EJD_CTRL_1			0x0010
++#define RT5659_EJD_CTRL_2			0x0011
++#define RT5659_EJD_CTRL_3			0x0012
++#define RT5659_SILENCE_CTRL			0x0015
++#define RT5659_PSV_CTRL				0x0016
++/* I/O - Sidetone */
++#define RT5659_SIDETONE_CTRL			0x0018
++/* I/O - ADC/DAC/DMIC */
++#define RT5659_DAC1_DIG_VOL			0x0019
++#define RT5659_DAC2_DIG_VOL			0x001a
++#define RT5659_DAC_CTRL				0x001b
++#define RT5659_STO1_ADC_DIG_VOL			0x001c
++#define RT5659_MONO_ADC_DIG_VOL			0x001d
++#define RT5659_STO2_ADC_DIG_VOL			0x001e
++#define RT5659_STO1_BOOST			0x001f
++#define RT5659_MONO_BOOST			0x0020
++#define RT5659_STO2_BOOST			0x0021
++#define RT5659_HP_IMP_GAIN_1			0x0022
++#define RT5659_HP_IMP_GAIN_2			0x0023
++/* Mixer - D-D */
++#define RT5659_STO1_ADC_MIXER			0x0026
++#define RT5659_MONO_ADC_MIXER			0x0027
++#define RT5659_AD_DA_MIXER			0x0029
++#define RT5659_STO_DAC_MIXER			0x002a
++#define RT5659_MONO_DAC_MIXER			0x002b
++#define RT5659_DIG_MIXER			0x002c
++#define RT5659_A_DAC_MUX			0x002d
++#define RT5659_DIG_INF23_DATA			0x002f
++/* Mixer - PDM */
++#define RT5659_PDM_OUT_CTRL			0x0031
++#define RT5659_PDM_DATA_CTRL_1			0x0032
++#define RT5659_PDM_DATA_CTRL_2			0x0033
++#define RT5659_PDM_DATA_CTRL_3			0x0034
++#define RT5659_PDM_DATA_CTRL_4			0x0035
++#define RT5659_SPDIF_CTRL			0x0036
++
++/* Mixer - ADC */
++#define RT5659_REC1_GAIN			0x003a
++#define RT5659_REC1_L1_MIXER			0x003b
++#define RT5659_REC1_L2_MIXER			0x003c
++#define RT5659_REC1_R1_MIXER			0x003d
++#define RT5659_REC1_R2_MIXER			0x003e
++#define RT5659_CAL_REC				0x0040
++#define RT5659_REC2_L1_MIXER			0x009b
++#define RT5659_REC2_L2_MIXER			0x009c
++#define RT5659_REC2_R1_MIXER			0x009d
++#define RT5659_REC2_R2_MIXER			0x009e
++#define RT5659_RC_CLK_CTRL			0x009f
++/* Mixer - DAC */
++#define RT5659_SPK_L_MIXER			0x0046
++#define RT5659_SPK_R_MIXER			0x0047
++#define RT5659_SPO_AMP_GAIN			0x0048
++#define RT5659_ALC_BACK_GAIN			0x0049
++#define RT5659_MONOMIX_GAIN			0x004a
++#define RT5659_MONOMIX_IN_GAIN			0x004b
++#define RT5659_OUT_L_GAIN			0x004d
++#define RT5659_OUT_L_MIXER			0x004e
++#define RT5659_OUT_R_GAIN			0x004f
++#define RT5659_OUT_R_MIXER			0x0050
++#define RT5659_LOUT_MIXER			0x0052
++
++#define RT5659_HAPTIC_GEN_CTRL_1		0x0053
++#define RT5659_HAPTIC_GEN_CTRL_2		0x0054
++#define RT5659_HAPTIC_GEN_CTRL_3		0x0055
++#define RT5659_HAPTIC_GEN_CTRL_4		0x0056
++#define RT5659_HAPTIC_GEN_CTRL_5		0x0057
++#define RT5659_HAPTIC_GEN_CTRL_6		0x0058
++#define RT5659_HAPTIC_GEN_CTRL_7		0x0059
++#define RT5659_HAPTIC_GEN_CTRL_8		0x005a
++#define RT5659_HAPTIC_GEN_CTRL_9		0x005b
++#define RT5659_HAPTIC_GEN_CTRL_10		0x005c
++#define RT5659_HAPTIC_GEN_CTRL_11		0x005d
++#define RT5659_HAPTIC_LPF_CTRL_1		0x005e
++#define RT5659_HAPTIC_LPF_CTRL_2		0x005f
++#define RT5659_HAPTIC_LPF_CTRL_3		0x0060
++/* Power */
++#define RT5659_PWR_DIG_1			0x0061
++#define RT5659_PWR_DIG_2			0x0062
++#define RT5659_PWR_ANLG_1			0x0063
++#define RT5659_PWR_ANLG_2			0x0064
++#define RT5659_PWR_ANLG_3			0x0065
++#define RT5659_PWR_MIXER			0x0066
++#define RT5659_PWR_VOL				0x0067
++/* Private Register Control */
++#define RT5659_PRIV_INDEX			0x006a
++#define RT5659_CLK_DET				0x006b
++#define RT5659_PRIV_DATA			0x006c
++/* System Clock Pre Divider Gating Control */
++#define RT5659_PRE_DIV_1			0x006e
++#define RT5659_PRE_DIV_2			0x006f
++/* Format - ADC/DAC */
++#define RT5659_I2S1_SDP				0x0070
++#define RT5659_I2S2_SDP				0x0071
++#define RT5659_I2S3_SDP				0x0072
++#define RT5659_ADDA_CLK_1			0x0073
++#define RT5659_ADDA_CLK_2			0x0074
++#define RT5659_DMIC_CTRL_1			0x0075
++#define RT5659_DMIC_CTRL_2			0x0076
++/* Format - TDM Control */
++#define RT5659_TDM_CTRL_1			0x0077
++#define RT5659_TDM_CTRL_2			0x0078
++#define RT5659_TDM_CTRL_3			0x0079
++#define RT5659_TDM_CTRL_4			0x007a
++#define RT5659_TDM_CTRL_5			0x007b
++
++/* Function - Analog */
++#define RT5659_GLB_CLK				0x0080
++#define RT5659_PLL_CTRL_1			0x0081
++#define RT5659_PLL_CTRL_2			0x0082
++#define RT5659_ASRC_1				0x0083
++#define RT5659_ASRC_2				0x0084
++#define RT5659_ASRC_3				0x0085
++#define RT5659_ASRC_4				0x0086
++#define RT5659_ASRC_5				0x0087
++#define RT5659_ASRC_6				0x0088
++#define RT5659_ASRC_7				0x0089
++#define RT5659_ASRC_8				0x008a
++#define RT5659_ASRC_9				0x008b
++#define RT5659_ASRC_10				0x008c
++#define RT5659_DEPOP_1				0x008e
++#define RT5659_DEPOP_2				0x008f
++#define RT5659_DEPOP_3				0x0090
++#define RT5659_HP_CHARGE_PUMP_1			0x0091
++#define RT5659_HP_CHARGE_PUMP_2			0x0092
++#define RT5659_MICBIAS_1			0x0093
++#define RT5659_MICBIAS_2			0x0094
++#define RT5659_ASRC_11				0x0097
++#define RT5659_ASRC_12				0x0098
++#define RT5659_ASRC_13				0x0099
++#define RT5659_REC_M1_M2_GAIN_CTRL		0x009a
++#define RT5659_CLASSD_CTRL_1			0x00a0
++#define RT5659_CLASSD_CTRL_2			0x00a1
++
++/* Function - Digital */
++#define RT5659_ADC_EQ_CTRL_1			0x00ae
++#define RT5659_ADC_EQ_CTRL_2			0x00af
++#define RT5659_DAC_EQ_CTRL_1			0x00b0
++#define RT5659_DAC_EQ_CTRL_2			0x00b1
++#define RT5659_DAC_EQ_CTRL_3			0x00b2
++
++#define RT5659_IRQ_CTRL_1			0x00b6
++#define RT5659_IRQ_CTRL_2			0x00b7
++#define RT5659_IRQ_CTRL_3			0x00b8
++#define RT5659_IRQ_CTRL_4			0x00b9
++#define RT5659_IRQ_CTRL_5			0x00ba
++#define RT5659_IRQ_CTRL_6			0x00bb
++#define RT5659_INT_ST_1				0x00be
++#define RT5659_INT_ST_2				0x00bf
++#define RT5659_GPIO_CTRL_1			0x00c0
++#define RT5659_GPIO_CTRL_2			0x00c1
++#define RT5659_GPIO_CTRL_3			0x00c2
++#define RT5659_GPIO_CTRL_4			0x00c3
++#define RT5659_GPIO_CTRL_5			0x00c4
++#define RT5659_GPIO_STA				0x00c5
++#define RT5659_SINE_GEN_CTRL_1			0x00cb
++#define RT5659_SINE_GEN_CTRL_2			0x00cc
++#define RT5659_SINE_GEN_CTRL_3			0x00cd
++#define RT5659_HP_AMP_DET_CTRL_1		0x00d6
++#define RT5659_HP_AMP_DET_CTRL_2		0x00d7
++#define RT5659_SV_ZCD_1				0x00d9
++#define RT5659_SV_ZCD_2				0x00da
++#define RT5659_IL_CMD_1				0x00db
++#define RT5659_IL_CMD_2				0x00dc
++#define RT5659_IL_CMD_3				0x00dd
++#define RT5659_IL_CMD_4				0x00de
++#define RT5659_4BTN_IL_CMD_1			0x00df
++#define RT5659_4BTN_IL_CMD_2			0x00e0
++#define RT5659_4BTN_IL_CMD_3			0x00e1
++#define RT5659_PSV_IL_CMD_1			0x00e4
++#define RT5659_PSV_IL_CMD_2			0x00e5
++
++#define RT5659_ADC_STO1_HP_CTRL_1		0x00ea
++#define RT5659_ADC_STO1_HP_CTRL_2		0x00eb
++#define RT5659_ADC_MONO_HP_CTRL_1		0x00ec
++#define RT5659_ADC_MONO_HP_CTRL_2		0x00ed
++#define RT5659_AJD1_CTRL			0x00f0
++#define RT5659_AJD2_AJD3_CTRL			0x00f1
++#define RT5659_JD1_THD				0x00f2
++#define RT5659_JD2_THD				0x00f3
++#define RT5659_JD3_THD				0x00f4
++#define RT5659_JD_CTRL_1			0x00f6
++#define RT5659_JD_CTRL_2			0x00f7
++#define RT5659_JD_CTRL_3			0x00f8
++#define RT5659_JD_CTRL_4			0x00f9
++/* General Control */
++#define RT5659_DIG_MISC				0x00fa
++#define RT5659_DUMMY_2				0x00fb
++#define RT5659_DUMMY_3				0x00fc
++
++#define RT5659_DAC_ADC_DIG_VOL			0x0100
++#define RT5659_BIAS_CUR_CTRL_1			0x010a
++#define RT5659_BIAS_CUR_CTRL_2			0x010b
++#define RT5659_BIAS_CUR_CTRL_3			0x010c
++#define RT5659_BIAS_CUR_CTRL_4			0x010d
++#define RT5659_BIAS_CUR_CTRL_5			0x010e
++#define RT5659_BIAS_CUR_CTRL_6			0x010f
++#define RT5659_BIAS_CUR_CTRL_7			0x0110
++#define RT5659_BIAS_CUR_CTRL_8			0x0111
++#define RT5659_BIAS_CUR_CTRL_9			0x0112
++#define RT5659_BIAS_CUR_CTRL_10			0x0113
++#define RT5659_MEMORY_TEST			0x0116
++#define RT5659_VREF_REC_OP_FB_CAP_CTRL		0x0117
++#define RT5659_CLASSD_0				0x011a
++#define RT5659_CLASSD_1				0x011b
++#define RT5659_CLASSD_2				0x011c
++#define RT5659_CLASSD_3				0x011d
++#define RT5659_CLASSD_4				0x011e
++#define RT5659_CLASSD_5				0x011f
++#define RT5659_CLASSD_6				0x0120
++#define RT5659_CLASSD_7				0x0121
++#define RT5659_CLASSD_8				0x0122
++#define RT5659_CLASSD_9				0x0123
++#define RT5659_CLASSD_10			0x0124
++#define RT5659_CHARGE_PUMP_1			0x0125
++#define RT5659_CHARGE_PUMP_2			0x0126
++#define RT5659_DIG_IN_CTRL_1			0x0132
++#define RT5659_DIG_IN_CTRL_2			0x0133
++#define RT5659_PAD_DRIVING_CTRL			0x0137
++#define RT5659_SOFT_RAMP_DEPOP			0x0138
++#define RT5659_PLL				0x0139
++#define RT5659_CHOP_DAC				0x013a
++#define RT5659_CHOP_ADC				0x013b
++#define RT5659_CALIB_ADC_CTRL			0x013c
++#define RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL	0x013e
++#define RT5659_VOL_TEST				0x013f
++#define RT5659_TEST_MODE_CTRL_1			0x0145
++#define RT5659_TEST_MODE_CTRL_2			0x0146
++#define RT5659_TEST_MODE_CTRL_3			0x0147
++#define RT5659_TEST_MODE_CTRL_4			0x0148
++#define RT5659_BASSBACK_CTRL			0x0150
++#define RT5659_MP3_PLUS_CTRL_1			0x0151
++#define RT5659_MP3_PLUS_CTRL_2			0x0152
++#define RT5659_MP3_HPF_A1			0x0153
++#define RT5659_MP3_HPF_A2			0x0154
++#define RT5659_MP3_HPF_H0			0x0155
++#define RT5659_MP3_LPF_H0			0x0156
++#define RT5659_3D_SPK_CTRL			0x0157
++#define RT5659_3D_SPK_COEF_1			0x0158
++#define RT5659_3D_SPK_COEF_2			0x0159
++#define RT5659_3D_SPK_COEF_3			0x015a
++#define RT5659_3D_SPK_COEF_4			0x015b
++#define RT5659_3D_SPK_COEF_5			0x015c
++#define RT5659_3D_SPK_COEF_6			0x015d
++#define RT5659_3D_SPK_COEF_7			0x015e
++#define RT5659_STO_NG2_CTRL_1			0x0160
++#define RT5659_STO_NG2_CTRL_2			0x0161
++#define RT5659_STO_NG2_CTRL_3			0x0162
++#define RT5659_STO_NG2_CTRL_4			0x0163
++#define RT5659_STO_NG2_CTRL_5			0x0164
++#define RT5659_STO_NG2_CTRL_6			0x0165
++#define RT5659_STO_NG2_CTRL_7			0x0166
++#define RT5659_STO_NG2_CTRL_8			0x0167
++#define RT5659_MONO_NG2_CTRL_1			0x0170
++#define RT5659_MONO_NG2_CTRL_2			0x0171
++#define RT5659_MONO_NG2_CTRL_3			0x0172
++#define RT5659_MONO_NG2_CTRL_4			0x0173
++#define RT5659_MONO_NG2_CTRL_5			0x0174
++#define RT5659_MONO_NG2_CTRL_6			0x0175
++#define RT5659_MID_HP_AMP_DET			0x0190
++#define RT5659_LOW_HP_AMP_DET			0x0191
++#define RT5659_LDO_CTRL				0x0192
++#define RT5659_HP_DECROSS_CTRL_1		0x01b0
++#define RT5659_HP_DECROSS_CTRL_2		0x01b1
++#define RT5659_HP_DECROSS_CTRL_3		0x01b2
++#define RT5659_HP_DECROSS_CTRL_4		0x01b3
++#define RT5659_HP_IMP_SENS_CTRL_1		0x01c0
++#define RT5659_HP_IMP_SENS_CTRL_2		0x01c1
++#define RT5659_HP_IMP_SENS_CTRL_3		0x01c2
++#define RT5659_HP_IMP_SENS_CTRL_4		0x01c3
++#define RT5659_HP_IMP_SENS_MAP_1		0x01c7
++#define RT5659_HP_IMP_SENS_MAP_2		0x01c8
++#define RT5659_HP_IMP_SENS_MAP_3		0x01c9
++#define RT5659_HP_IMP_SENS_MAP_4		0x01ca
++#define RT5659_HP_IMP_SENS_MAP_5		0x01cb
++#define RT5659_HP_IMP_SENS_MAP_6		0x01cc
++#define RT5659_HP_IMP_SENS_MAP_7		0x01cd
++#define RT5659_HP_IMP_SENS_MAP_8		0x01ce
++#define RT5659_HP_LOGIC_CTRL_1			0x01da
++#define RT5659_HP_LOGIC_CTRL_2			0x01db
++#define RT5659_HP_CALIB_CTRL_1			0x01de
++#define RT5659_HP_CALIB_CTRL_2			0x01df
++#define RT5659_HP_CALIB_CTRL_3			0x01e0
++#define RT5659_HP_CALIB_CTRL_4			0x01e1
++#define RT5659_HP_CALIB_CTRL_5			0x01e2
++#define RT5659_HP_CALIB_CTRL_6			0x01e3
++#define RT5659_HP_CALIB_CTRL_7			0x01e4
++#define RT5659_HP_CALIB_CTRL_9			0x01e6
++#define RT5659_HP_CALIB_CTRL_10			0x01e7
++#define RT5659_HP_CALIB_CTRL_11			0x01e8
++#define RT5659_HP_CALIB_STA_1			0x01ea
++#define RT5659_HP_CALIB_STA_2			0x01eb
++#define RT5659_HP_CALIB_STA_3			0x01ec
++#define RT5659_HP_CALIB_STA_4			0x01ed
++#define RT5659_HP_CALIB_STA_5			0x01ee
++#define RT5659_HP_CALIB_STA_6			0x01ef
++#define RT5659_HP_CALIB_STA_7			0x01f0
++#define RT5659_HP_CALIB_STA_8			0x01f1
++#define RT5659_HP_CALIB_STA_9			0x01f2
++#define RT5659_MONO_AMP_CALIB_CTRL_1		0x01f6
++#define RT5659_MONO_AMP_CALIB_CTRL_2		0x01f7
++#define RT5659_MONO_AMP_CALIB_CTRL_3		0x01f8
++#define RT5659_MONO_AMP_CALIB_CTRL_4		0x01f9
++#define RT5659_MONO_AMP_CALIB_CTRL_5		0x01fa
++#define RT5659_MONO_AMP_CALIB_STA_1		0x01fb
++#define RT5659_MONO_AMP_CALIB_STA_2		0x01fc
++#define RT5659_MONO_AMP_CALIB_STA_3		0x01fd
++#define RT5659_MONO_AMP_CALIB_STA_4		0x01fe
++#define RT5659_SPK_PWR_LMT_CTRL_1		0x0200
++#define RT5659_SPK_PWR_LMT_CTRL_2		0x0201
++#define RT5659_SPK_PWR_LMT_CTRL_3		0x0202
++#define RT5659_SPK_PWR_LMT_STA_1		0x0203
++#define RT5659_SPK_PWR_LMT_STA_2		0x0204
++#define RT5659_SPK_PWR_LMT_STA_3		0x0205
++#define RT5659_SPK_PWR_LMT_STA_4		0x0206
++#define RT5659_SPK_PWR_LMT_STA_5		0x0207
++#define RT5659_SPK_PWR_LMT_STA_6		0x0208
++#define RT5659_FLEX_SPK_BST_CTRL_1		0x0256
++#define RT5659_FLEX_SPK_BST_CTRL_2		0x0257
++#define RT5659_FLEX_SPK_BST_CTRL_3		0x0258
++#define RT5659_FLEX_SPK_BST_CTRL_4		0x0259
++#define RT5659_SPK_EX_LMT_CTRL_1		0x025a
++#define RT5659_SPK_EX_LMT_CTRL_2		0x025b
++#define RT5659_SPK_EX_LMT_CTRL_3		0x025c
++#define RT5659_SPK_EX_LMT_CTRL_4		0x025d
++#define RT5659_SPK_EX_LMT_CTRL_5		0x025e
++#define RT5659_SPK_EX_LMT_CTRL_6		0x025f
++#define RT5659_SPK_EX_LMT_CTRL_7		0x0260
++#define RT5659_ADJ_HPF_CTRL_1			0x0261
++#define RT5659_ADJ_HPF_CTRL_2			0x0262
++#define RT5659_SPK_DC_CAILB_CTRL_1		0x0265
++#define RT5659_SPK_DC_CAILB_CTRL_2		0x0266
++#define RT5659_SPK_DC_CAILB_CTRL_3		0x0267
++#define RT5659_SPK_DC_CAILB_CTRL_4		0x0268
++#define RT5659_SPK_DC_CAILB_CTRL_5		0x0269
++#define RT5659_SPK_DC_CAILB_STA_1		0x026a
++#define RT5659_SPK_DC_CAILB_STA_2		0x026b
++#define RT5659_SPK_DC_CAILB_STA_3		0x026c
++#define RT5659_SPK_DC_CAILB_STA_4		0x026d
++#define RT5659_SPK_DC_CAILB_STA_5		0x026e
++#define RT5659_SPK_DC_CAILB_STA_6		0x026f
++#define RT5659_SPK_DC_CAILB_STA_7		0x0270
++#define RT5659_SPK_DC_CAILB_STA_8		0x0271
++#define RT5659_SPK_DC_CAILB_STA_9		0x0272
++#define RT5659_SPK_DC_CAILB_STA_10		0x0273
++#define RT5659_SPK_VDD_STA_1			0x0280
++#define RT5659_SPK_VDD_STA_2			0x0281
++#define RT5659_SPK_DC_DET_CTRL_1		0x0282
++#define RT5659_SPK_DC_DET_CTRL_2		0x0283
++#define RT5659_SPK_DC_DET_CTRL_3		0x0284
++#define RT5659_PURE_DC_DET_CTRL_1		0x0290
++#define RT5659_PURE_DC_DET_CTRL_2		0x0291
++#define RT5659_DUMMY_4				0x02fa
++#define RT5659_DUMMY_5				0x02fb
++#define RT5659_DUMMY_6				0x02fc
++#define RT5659_DRC1_CTRL_1			0x0300
++#define RT5659_DRC1_CTRL_2			0x0301
++#define RT5659_DRC1_CTRL_3			0x0302
++#define RT5659_DRC1_CTRL_4			0x0303
++#define RT5659_DRC1_CTRL_5			0x0304
++#define RT5659_DRC1_CTRL_6			0x0305
++#define RT5659_DRC1_HARD_LMT_CTRL_1		0x0306
++#define RT5659_DRC1_HARD_LMT_CTRL_2		0x0307
++#define RT5659_DRC2_CTRL_1			0x0308
++#define RT5659_DRC2_CTRL_2			0x0309
++#define RT5659_DRC2_CTRL_3			0x030a
++#define RT5659_DRC2_CTRL_4			0x030b
++#define RT5659_DRC2_CTRL_5			0x030c
++#define RT5659_DRC2_CTRL_6			0x030d
++#define RT5659_DRC2_HARD_LMT_CTRL_1		0x030e
++#define RT5659_DRC2_HARD_LMT_CTRL_2		0x030f
++#define RT5659_DRC1_PRIV_1			0x0310
++#define RT5659_DRC1_PRIV_2			0x0311
++#define RT5659_DRC1_PRIV_3			0x0312
++#define RT5659_DRC1_PRIV_4			0x0313
++#define RT5659_DRC1_PRIV_5			0x0314
++#define RT5659_DRC1_PRIV_6			0x0315
++#define RT5659_DRC1_PRIV_7			0x0316
++#define RT5659_DRC2_PRIV_1			0x0317
++#define RT5659_DRC2_PRIV_2			0x0318
++#define RT5659_DRC2_PRIV_3			0x0319
++#define RT5659_DRC2_PRIV_4			0x031a
++#define RT5659_DRC2_PRIV_5			0x031b
++#define RT5659_DRC2_PRIV_6			0x031c
++#define RT5659_DRC2_PRIV_7			0x031d
++#define RT5659_MULTI_DRC_CTRL			0x0320
++#define RT5659_CROSS_OVER_1			0x0321
++#define RT5659_CROSS_OVER_2			0x0322
++#define RT5659_CROSS_OVER_3			0x0323
++#define RT5659_CROSS_OVER_4			0x0324
++#define RT5659_CROSS_OVER_5			0x0325
++#define RT5659_CROSS_OVER_6			0x0326
++#define RT5659_CROSS_OVER_7			0x0327
++#define RT5659_CROSS_OVER_8			0x0328
++#define RT5659_CROSS_OVER_9			0x0329
++#define RT5659_CROSS_OVER_10			0x032a
++#define RT5659_ALC_PGA_CTRL_1			0x0330
++#define RT5659_ALC_PGA_CTRL_2			0x0331
++#define RT5659_ALC_PGA_CTRL_3			0x0332
++#define RT5659_ALC_PGA_CTRL_4			0x0333
++#define RT5659_ALC_PGA_CTRL_5			0x0334
++#define RT5659_ALC_PGA_CTRL_6			0x0335
++#define RT5659_ALC_PGA_CTRL_7			0x0336
++#define RT5659_ALC_PGA_CTRL_8			0x0337
++#define RT5659_ALC_PGA_STA_1			0x0338
++#define RT5659_ALC_PGA_STA_2			0x0339
++#define RT5659_ALC_PGA_STA_3			0x033a
++#define RT5659_DAC_L_EQ_PRE_VOL			0x0340
++#define RT5659_DAC_R_EQ_PRE_VOL			0x0341
++#define RT5659_DAC_L_EQ_POST_VOL		0x0342
++#define RT5659_DAC_R_EQ_POST_VOL		0x0343
++#define RT5659_DAC_L_EQ_LPF1_A1			0x0344
++#define RT5659_DAC_L_EQ_LPF1_H0			0x0345
++#define RT5659_DAC_R_EQ_LPF1_A1			0x0346
++#define RT5659_DAC_R_EQ_LPF1_H0			0x0347
++#define RT5659_DAC_L_EQ_BPF2_A1			0x0348
++#define RT5659_DAC_L_EQ_BPF2_A2			0x0349
++#define RT5659_DAC_L_EQ_BPF2_H0			0x034a
++#define RT5659_DAC_R_EQ_BPF2_A1			0x034b
++#define RT5659_DAC_R_EQ_BPF2_A2			0x034c
++#define RT5659_DAC_R_EQ_BPF2_H0			0x034d
++#define RT5659_DAC_L_EQ_BPF3_A1			0x034e
++#define RT5659_DAC_L_EQ_BPF3_A2			0x034f
++#define RT5659_DAC_L_EQ_BPF3_H0			0x0350
++#define RT5659_DAC_R_EQ_BPF3_A1			0x0351
++#define RT5659_DAC_R_EQ_BPF3_A2			0x0352
++#define RT5659_DAC_R_EQ_BPF3_H0			0x0353
++#define RT5659_DAC_L_EQ_BPF4_A1			0x0354
++#define RT5659_DAC_L_EQ_BPF4_A2			0x0355
++#define RT5659_DAC_L_EQ_BPF4_H0			0x0356
++#define RT5659_DAC_R_EQ_BPF4_A1			0x0357
++#define RT5659_DAC_R_EQ_BPF4_A2			0x0358
++#define RT5659_DAC_R_EQ_BPF4_H0			0x0359
++#define RT5659_DAC_L_EQ_HPF1_A1			0x035a
++#define RT5659_DAC_L_EQ_HPF1_H0			0x035b
++#define RT5659_DAC_R_EQ_HPF1_A1			0x035c
++#define RT5659_DAC_R_EQ_HPF1_H0			0x035d
++#define RT5659_DAC_L_EQ_HPF2_A1			0x035e
++#define RT5659_DAC_L_EQ_HPF2_A2			0x035f
++#define RT5659_DAC_L_EQ_HPF2_H0			0x0360
++#define RT5659_DAC_R_EQ_HPF2_A1			0x0361
++#define RT5659_DAC_R_EQ_HPF2_A2			0x0362
++#define RT5659_DAC_R_EQ_HPF2_H0			0x0363
++#define RT5659_DAC_L_BI_EQ_BPF1_H0_1		0x0364
++#define RT5659_DAC_L_BI_EQ_BPF1_H0_2		0x0365
++#define RT5659_DAC_L_BI_EQ_BPF1_B1_1		0x0366
++#define RT5659_DAC_L_BI_EQ_BPF1_B1_2		0x0367
++#define RT5659_DAC_L_BI_EQ_BPF1_B2_1		0x0368
++#define RT5659_DAC_L_BI_EQ_BPF1_B2_2		0x0369
++#define RT5659_DAC_L_BI_EQ_BPF1_A1_1		0x036a
++#define RT5659_DAC_L_BI_EQ_BPF1_A1_2		0x036b
++#define RT5659_DAC_L_BI_EQ_BPF1_A2_1		0x036c
++#define RT5659_DAC_L_BI_EQ_BPF1_A2_2		0x036d
++#define RT5659_DAC_R_BI_EQ_BPF1_H0_1		0x036e
++#define RT5659_DAC_R_BI_EQ_BPF1_H0_2		0x036f
++#define RT5659_DAC_R_BI_EQ_BPF1_B1_1		0x0370
++#define RT5659_DAC_R_BI_EQ_BPF1_B1_2		0x0371
++#define RT5659_DAC_R_BI_EQ_BPF1_B2_1		0x0372
++#define RT5659_DAC_R_BI_EQ_BPF1_B2_2		0x0373
++#define RT5659_DAC_R_BI_EQ_BPF1_A1_1		0x0374
++#define RT5659_DAC_R_BI_EQ_BPF1_A1_2		0x0375
++#define RT5659_DAC_R_BI_EQ_BPF1_A2_1		0x0376
++#define RT5659_DAC_R_BI_EQ_BPF1_A2_2		0x0377
++#define RT5659_ADC_L_EQ_LPF1_A1			0x03d0
++#define RT5659_ADC_R_EQ_LPF1_A1			0x03d1
++#define RT5659_ADC_L_EQ_LPF1_H0			0x03d2
++#define RT5659_ADC_R_EQ_LPF1_H0			0x03d3
++#define RT5659_ADC_L_EQ_BPF1_A1			0x03d4
++#define RT5659_ADC_R_EQ_BPF1_A1			0x03d5
++#define RT5659_ADC_L_EQ_BPF1_A2			0x03d6
++#define RT5659_ADC_R_EQ_BPF1_A2			0x03d7
++#define RT5659_ADC_L_EQ_BPF1_H0			0x03d8
++#define RT5659_ADC_R_EQ_BPF1_H0			0x03d9
++#define RT5659_ADC_L_EQ_BPF2_A1			0x03da
++#define RT5659_ADC_R_EQ_BPF2_A1			0x03db
++#define RT5659_ADC_L_EQ_BPF2_A2			0x03dc
++#define RT5659_ADC_R_EQ_BPF2_A2			0x03dd
++#define RT5659_ADC_L_EQ_BPF2_H0			0x03de
++#define RT5659_ADC_R_EQ_BPF2_H0			0x03df
++#define RT5659_ADC_L_EQ_BPF3_A1			0x03e0
++#define RT5659_ADC_R_EQ_BPF3_A1			0x03e1
++#define RT5659_ADC_L_EQ_BPF3_A2			0x03e2
++#define RT5659_ADC_R_EQ_BPF3_A2			0x03e3
++#define RT5659_ADC_L_EQ_BPF3_H0			0x03e4
++#define RT5659_ADC_R_EQ_BPF3_H0			0x03e5
++#define RT5659_ADC_L_EQ_BPF4_A1			0x03e6
++#define RT5659_ADC_R_EQ_BPF4_A1			0x03e7
++#define RT5659_ADC_L_EQ_BPF4_A2			0x03e8
++#define RT5659_ADC_R_EQ_BPF4_A2			0x03e9
++#define RT5659_ADC_L_EQ_BPF4_H0			0x03ea
++#define RT5659_ADC_R_EQ_BPF4_H0			0x03eb
++#define RT5659_ADC_L_EQ_HPF1_A1			0x03ec
++#define RT5659_ADC_R_EQ_HPF1_A1			0x03ed
++#define RT5659_ADC_L_EQ_HPF1_H0			0x03ee
++#define RT5659_ADC_R_EQ_HPF1_H0			0x03ef
++#define RT5659_ADC_L_EQ_PRE_VOL			0x03f0
++#define RT5659_ADC_R_EQ_PRE_VOL			0x03f1
++#define RT5659_ADC_L_EQ_POST_VOL		0x03f2
++#define RT5659_ADC_R_EQ_POST_VOL		0x03f3
++
++
++
++/* global definition */
++#define RT5659_L_MUTE				(0x1 << 15)
++#define RT5659_L_MUTE_SFT			15
++#define RT5659_VOL_L_MUTE			(0x1 << 14)
++#define RT5659_VOL_L_SFT			14
++#define RT5659_R_MUTE				(0x1 << 7)
++#define RT5659_R_MUTE_SFT			7
++#define RT5659_VOL_R_MUTE			(0x1 << 6)
++#define RT5659_VOL_R_SFT			6
++#define RT5659_L_VOL_MASK			(0x3f << 8)
++#define RT5659_L_VOL_SFT			8
++#define RT5659_R_VOL_MASK			(0x3f)
++#define RT5659_R_VOL_SFT			0
++
++/*Headphone Amp L/R Analog Gain and Digital NG2 Gain Control (0x0005 0x0006)*/
++#define RT5659_G_HP				(0x1f << 8)
++#define RT5659_G_HP_SFT				8
++#define RT5659_G_STO_DA_DMIX			(0x1f)
++#define RT5659_G_STO_DA_SFT			0
++
++/* IN1/IN2 Control (0x000c) */
++#define RT5659_IN1_DF_MASK			(0x1 << 15)
++#define RT5659_IN1_DF				15
++#define RT5659_BST1_MASK			(0x7f << 8)
++#define RT5659_BST1_SFT				8
++#define RT5659_BST2_MASK			(0x7f)
++#define RT5659_BST2_SFT				0
++
++/* IN3/IN4 Control (0x000d) */
++#define RT5659_IN3_DF_MASK			(0x1 << 15)
++#define RT5659_IN3_DF				15
++#define RT5659_BST3_MASK			(0x7f << 8)
++#define RT5659_BST3_SFT				8
++#define RT5659_IN4_DF_MASK			(0x1 << 7)
++#define RT5659_IN4_DF				7
++#define RT5659_BST4_MASK			(0x7f)
++#define RT5659_BST4_SFT				0
++
++/* INL and INR Volume Control (0x000f) */
++#define RT5659_INL_VOL_MASK			(0x1f << 8)
++#define RT5659_INL_VOL_SFT			8
++#define RT5659_INR_VOL_MASK			(0x1f)
++#define RT5659_INR_VOL_SFT			0
++
++/* Embeeded Jack and Type Detection Control 1 (0x0010) */
++#define RT5659_EMB_JD_EN			(0x1 << 15)
++#define RT5659_EMB_JD_EN_SFT			15
++#define RT5659_JD_MODE				(0x1 << 13)
++#define RT5659_JD_MODE_SFT			13
++#define RT5659_EXT_JD_EN			(0x1 << 11)
++#define RT5659_EXT_JD_EN_SFT			11
++#define RT5659_EXT_JD_DIG			(0x1 << 9)
++
++/* Embeeded Jack and Type Detection Control 2 (0x0011) */
++#define RT5659_EXT_JD_SRC			(0x7 << 4)
++#define RT5659_EXT_JD_SRC_SFT			4
++#define RT5659_EXT_JD_SRC_GPIO_JD1		(0x0 << 4)
++#define RT5659_EXT_JD_SRC_GPIO_JD2		(0x1 << 4)
++#define RT5659_EXT_JD_SRC_JD1_1			(0x2 << 4)
++#define RT5659_EXT_JD_SRC_JD1_2			(0x3 << 4)
++#define RT5659_EXT_JD_SRC_JD2			(0x4 << 4)
++#define RT5659_EXT_JD_SRC_JD3			(0x5 << 4)
++#define RT5659_EXT_JD_SRC_MANUAL		(0x6 << 4)
++
++/* Slience Detection Control (0x0015) */
++#define RT5659_SIL_DET_MASK			(0x1 << 15)
++#define RT5659_SIL_DET_DIS			(0x0 << 15)
++#define RT5659_SIL_DET_EN			(0x1 << 15)
++
++/* Sidetone Control (0x0018) */
++#define RT5659_ST_SEL_MASK			(0x7 << 9)
++#define RT5659_ST_SEL_SFT			9
++#define RT5659_ST_EN				(0x1 << 6)
++#define RT5659_ST_EN_SFT			6
++
++/* DAC1 Digital Volume (0x0019) */
++#define RT5659_DAC_L1_VOL_MASK			(0xff << 8)
++#define RT5659_DAC_L1_VOL_SFT			8
++#define RT5659_DAC_R1_VOL_MASK			(0xff)
++#define RT5659_DAC_R1_VOL_SFT			0
++
++/* DAC2 Digital Volume (0x001a) */
++#define RT5659_DAC_L2_VOL_MASK			(0xff << 8)
++#define RT5659_DAC_L2_VOL_SFT			8
++#define RT5659_DAC_R2_VOL_MASK			(0xff)
++#define RT5659_DAC_R2_VOL_SFT			0
++
++/* DAC2 Control (0x001b) */
++#define RT5659_M_DAC2_L_VOL			(0x1 << 13)
++#define RT5659_M_DAC2_L_VOL_SFT			13
++#define RT5659_M_DAC2_R_VOL			(0x1 << 12)
++#define RT5659_M_DAC2_R_VOL_SFT			12
++#define RT5659_DAC_L2_SEL_MASK			(0x7 << 4)
++#define RT5659_DAC_L2_SEL_SFT			4
++#define RT5659_DAC_R2_SEL_MASK			(0x7 << 0)
++#define RT5659_DAC_R2_SEL_SFT			0
++
++/* ADC Digital Volume Control (0x001c) */
++#define RT5659_ADC_L_VOL_MASK			(0x7f << 8)
++#define RT5659_ADC_L_VOL_SFT			8
++#define RT5659_ADC_R_VOL_MASK			(0x7f)
++#define RT5659_ADC_R_VOL_SFT			0
++
++/* Mono ADC Digital Volume Control (0x001d) */
++#define RT5659_MONO_ADC_L_VOL_MASK		(0x7f << 8)
++#define RT5659_MONO_ADC_L_VOL_SFT		8
++#define RT5659_MONO_ADC_R_VOL_MASK		(0x7f)
++#define RT5659_MONO_ADC_R_VOL_SFT		0
++
++/* Stereo1 ADC Boost Gain Control (0x001f) */
++#define RT5659_STO1_ADC_L_BST_MASK		(0x3 << 14)
++#define RT5659_STO1_ADC_L_BST_SFT		14
++#define RT5659_STO1_ADC_R_BST_MASK		(0x3 << 12)
++#define RT5659_STO1_ADC_R_BST_SFT		12
++
++/* Mono ADC Boost Gain Control (0x0020) */
++#define RT5659_MONO_ADC_L_BST_MASK		(0x3 << 14)
++#define RT5659_MONO_ADC_L_BST_SFT		14
++#define RT5659_MONO_ADC_R_BST_MASK		(0x3 << 12)
++#define RT5659_MONO_ADC_R_BST_SFT		12
++
++/* Stereo1 ADC Boost Gain Control (0x001f) */
++#define RT5659_STO2_ADC_L_BST_MASK		(0x3 << 14)
++#define RT5659_STO2_ADC_L_BST_SFT		14
++#define RT5659_STO2_ADC_R_BST_MASK		(0x3 << 12)
++#define RT5659_STO2_ADC_R_BST_SFT		12
++
++/* Stereo ADC Mixer Control (0x0026) */
++#define RT5659_M_STO1_ADC_L1			(0x1 << 15)
++#define RT5659_M_STO1_ADC_L1_SFT		15
++#define RT5659_M_STO1_ADC_L2			(0x1 << 14)
++#define RT5659_M_STO1_ADC_L2_SFT		14
++#define RT5659_STO1_ADC1_SRC_MASK		(0x1 << 13)
++#define RT5659_STO1_ADC1_SRC_SFT		13
++#define RT5659_STO1_ADC1_SRC_ADC		(0x1 << 13)
++#define RT5659_STO1_ADC1_SRC_DACMIX		(0x0 << 13)
++#define RT5659_STO1_ADC_SRC_MASK		(0x1 << 12)
++#define RT5659_STO1_ADC_SRC_SFT			12
++#define RT5659_STO1_ADC_SRC_ADC1		(0x1 << 12)
++#define RT5659_STO1_ADC_SRC_ADC2		(0x0 << 12)
++#define RT5659_STO1_ADC2_SRC_MASK		(0x1 << 11)
++#define RT5659_STO1_ADC2_SRC_SFT		11
++#define RT5659_STO1_DMIC_SRC_MASK		(0x1 << 8)
++#define RT5659_STO1_DMIC_SRC_SFT		8
++#define RT5659_STO1_DMIC_SRC_DMIC2		(0x1 << 8)
++#define RT5659_STO1_DMIC_SRC_DMIC1		(0x0 << 8)
++#define RT5659_M_STO1_ADC_R1			(0x1 << 6)
++#define RT5659_M_STO1_ADC_R1_SFT		6
++#define RT5659_M_STO1_ADC_R2			(0x1 << 5)
++#define RT5659_M_STO1_ADC_R2_SFT		5
++
++/* Mono1 ADC Mixer control (0x0027) */
++#define RT5659_M_MONO_ADC_L1			(0x1 << 15)
++#define RT5659_M_MONO_ADC_L1_SFT		15
++#define RT5659_M_MONO_ADC_L2			(0x1 << 14)
++#define RT5659_M_MONO_ADC_L2_SFT		14
++#define RT5659_MONO_ADC_L2_SRC_MASK		(0x1 << 12)
++#define RT5659_MONO_ADC_L2_SRC_SFT		12
++#define RT5659_MONO_ADC_L1_SRC_MASK		(0x1 << 11)
++#define RT5659_MONO_ADC_L1_SRC_SFT		11
++#define RT5659_MONO_ADC_L_SRC_MASK		(0x3 << 9)
++#define RT5659_MONO_ADC_L_SRC_SFT		9
++#define RT5659_MONO_DMIC_L_SRC_MASK		(0x1 << 8)
++#define RT5659_MONO_DMIC_L_SRC_SFT		8
++#define RT5659_M_MONO_ADC_R1			(0x1 << 7)
++#define RT5659_M_MONO_ADC_R1_SFT		7
++#define RT5659_M_MONO_ADC_R2			(0x1 << 6)
++#define RT5659_M_MONO_ADC_R2_SFT		6
++#define RT5659_STO2_ADC_SRC_MASK		(0x1 << 5)
++#define RT5659_STO2_ADC_SRC_SFT			5
++#define RT5659_MONO_ADC_R2_SRC_MASK		(0x1 << 4)
++#define RT5659_MONO_ADC_R2_SRC_SFT		4
++#define RT5659_MONO_ADC_R1_SRC_MASK		(0x1 << 3)
++#define RT5659_MONO_ADC_R1_SRC_SFT		3
++#define RT5659_MONO_ADC_R_SRC_MASK		(0x3 << 1)
++#define RT5659_MONO_ADC_R_SRC_SFT		1
++#define RT5659_MONO_DMIC_R_SRC_MASK		0x1
++#define RT5659_MONO_DMIC_R_SRC_SFT		0
++
++/* ADC Mixer to DAC Mixer Control (0x0029) */
++#define RT5659_M_ADCMIX_L			(0x1 << 15)
++#define RT5659_M_ADCMIX_L_SFT			15
++#define RT5659_M_DAC1_L				(0x1 << 14)
++#define RT5659_M_DAC1_L_SFT			14
++#define RT5659_DAC1_R_SEL_MASK			(0x3 << 10)
++#define RT5659_DAC1_R_SEL_SFT			10
++#define RT5659_DAC1_R_SEL_IF1			(0x0 << 10)
++#define RT5659_DAC1_R_SEL_IF2			(0x1 << 10)
++#define RT5659_DAC1_R_SEL_IF3			(0x2 << 10)
++#define RT5659_DAC1_L_SEL_MASK			(0x3 << 8)
++#define RT5659_DAC1_L_SEL_SFT			8
++#define RT5659_DAC1_L_SEL_IF1			(0x0 << 8)
++#define RT5659_DAC1_L_SEL_IF2			(0x1 << 8)
++#define RT5659_DAC1_L_SEL_IF3			(0x2 << 8)
++#define RT5659_M_ADCMIX_R			(0x1 << 7)
++#define RT5659_M_ADCMIX_R_SFT			7
++#define RT5659_M_DAC1_R				(0x1 << 6)
++#define RT5659_M_DAC1_R_SFT			6
++
++/* Stereo DAC Mixer Control (0x002a) */
++#define RT5659_M_DAC_L1_STO_L			(0x1 << 15)
++#define RT5659_M_DAC_L1_STO_L_SFT		15
++#define RT5659_G_DAC_L1_STO_L_MASK		(0x1 << 14)
++#define RT5659_G_DAC_L1_STO_L_SFT		14
++#define RT5659_M_DAC_R1_STO_L			(0x1 << 13)
++#define RT5659_M_DAC_R1_STO_L_SFT		13
++#define RT5659_G_DAC_R1_STO_L_MASK		(0x1 << 12)
++#define RT5659_G_DAC_R1_STO_L_SFT		12
++#define RT5659_M_DAC_L2_STO_L			(0x1 << 11)
++#define RT5659_M_DAC_L2_STO_L_SFT		11
++#define RT5659_G_DAC_L2_STO_L_MASK		(0x1 << 10)
++#define RT5659_G_DAC_L2_STO_L_SFT		10
++#define RT5659_M_DAC_R2_STO_L			(0x1 << 9)
++#define RT5659_M_DAC_R2_STO_L_SFT		9
++#define RT5659_G_DAC_R2_STO_L_MASK		(0x1 << 8)
++#define RT5659_G_DAC_R2_STO_L_SFT		8
++#define RT5659_M_DAC_L1_STO_R			(0x1 << 7)
++#define RT5659_M_DAC_L1_STO_R_SFT		7
++#define RT5659_G_DAC_L1_STO_R_MASK		(0x1 << 6)
++#define RT5659_G_DAC_L1_STO_R_SFT		6
++#define RT5659_M_DAC_R1_STO_R			(0x1 << 5)
++#define RT5659_M_DAC_R1_STO_R_SFT		5
++#define RT5659_G_DAC_R1_STO_R_MASK		(0x1 << 4)
++#define RT5659_G_DAC_R1_STO_R_SFT		4
++#define RT5659_M_DAC_L2_STO_R			(0x1 << 3)
++#define RT5659_M_DAC_L2_STO_R_SFT		3
++#define RT5659_G_DAC_L2_STO_R_MASK		(0x1 << 2)
++#define RT5659_G_DAC_L2_STO_R_SFT		2
++#define RT5659_M_DAC_R2_STO_R			(0x1 << 1)
++#define RT5659_M_DAC_R2_STO_R_SFT		1
++#define RT5659_G_DAC_R2_STO_R_MASK		(0x1)
++#define RT5659_G_DAC_R2_STO_R_SFT		0
++
++/* Mono DAC Mixer Control (0x002b) */
++#define RT5659_M_DAC_L1_MONO_L			(0x1 << 15)
++#define RT5659_M_DAC_L1_MONO_L_SFT		15
++#define RT5659_G_DAC_L1_MONO_L_MASK		(0x1 << 14)
++#define RT5659_G_DAC_L1_MONO_L_SFT		14
++#define RT5659_M_DAC_R1_MONO_L			(0x1 << 13)
++#define RT5659_M_DAC_R1_MONO_L_SFT		13
++#define RT5659_G_DAC_R1_MONO_L_MASK		(0x1 << 12)
++#define RT5659_G_DAC_R1_MONO_L_SFT		12
++#define RT5659_M_DAC_L2_MONO_L			(0x1 << 11)
++#define RT5659_M_DAC_L2_MONO_L_SFT		11
++#define RT5659_G_DAC_L2_MONO_L_MASK		(0x1 << 10)
++#define RT5659_G_DAC_L2_MONO_L_SFT		10
++#define RT5659_M_DAC_R2_MONO_L			(0x1 << 9)
++#define RT5659_M_DAC_R2_MONO_L_SFT		9
++#define RT5659_G_DAC_R2_MONO_L_MASK		(0x1 << 8)
++#define RT5659_G_DAC_R2_MONO_L_SFT		8
++#define RT5659_M_DAC_L1_MONO_R			(0x1 << 7)
++#define RT5659_M_DAC_L1_MONO_R_SFT		7
++#define RT5659_G_DAC_L1_MONO_R_MASK		(0x1 << 6)
++#define RT5659_G_DAC_L1_MONO_R_SFT		6
++#define RT5659_M_DAC_R1_MONO_R			(0x1 << 5)
++#define RT5659_M_DAC_R1_MONO_R_SFT		5
++#define RT5659_G_DAC_R1_MONO_R_MASK		(0x1 << 4)
++#define RT5659_G_DAC_R1_MONO_R_SFT		4
++#define RT5659_M_DAC_L2_MONO_R			(0x1 << 3)
++#define RT5659_M_DAC_L2_MONO_R_SFT		3
++#define RT5659_G_DAC_L2_MONO_R_MASK		(0x1 << 2)
++#define RT5659_G_DAC_L2_MONO_R_SFT		2
++#define RT5659_M_DAC_R2_MONO_R			(0x1 << 1)
++#define RT5659_M_DAC_R2_MONO_R_SFT		1
++#define RT5659_G_DAC_R2_MONO_R_MASK		(0x1)
++#define RT5659_G_DAC_R2_MONO_R_SFT		0
++
++/* Digital Mixer Control (0x002c) */
++#define RT5659_M_DAC_MIX_L			(0x1 << 7)
++#define RT5659_M_DAC_MIX_L_SFT			7
++#define RT5659_DAC_MIX_L_MASK			(0x1 << 6)
++#define RT5659_DAC_MIX_L_SFT			6
++#define RT5659_M_DAC_MIX_R			(0x1 << 5)
++#define RT5659_M_DAC_MIX_R_SFT			5
++#define RT5659_DAC_MIX_R_MASK			(0x1 << 4)
++#define RT5659_DAC_MIX_R_SFT			4
++
++/* Analog DAC Input Source Control (0x002d) */
++#define RT5659_A_DACL1_SEL			(0x1 << 3)
++#define RT5659_A_DACL1_SFT			3
++#define RT5659_A_DACR1_SEL			(0x1 << 2)
++#define RT5659_A_DACR1_SFT			2
++#define RT5659_A_DACL2_SEL			(0x1 << 1)
++#define RT5659_A_DACL2_SFT			1
++#define RT5659_A_DACR2_SEL			(0x1 << 0)
++#define RT5659_A_DACR2_SFT			0
++
++/* Digital Interface Data Control (0x002f) */
++#define RT5659_IF2_ADC3_IN_MASK			(0x3 << 14)
++#define RT5659_IF2_ADC3_IN_SFT			14
++#define RT5659_IF2_ADC_IN_MASK			(0x3 << 12)
++#define RT5659_IF2_ADC_IN_SFT			12
++#define RT5659_IF2_DAC_SEL_MASK			(0x3 << 10)
++#define RT5659_IF2_DAC_SEL_SFT			10
++#define RT5659_IF2_ADC_SEL_MASK			(0x3 << 8)
++#define RT5659_IF2_ADC_SEL_SFT			8
++#define RT5659_IF3_DAC_SEL_MASK			(0x3 << 6)
++#define RT5659_IF3_DAC_SEL_SFT			6
++#define RT5659_IF3_ADC_SEL_MASK			(0x3 << 4)
++#define RT5659_IF3_ADC_SEL_SFT			4
++#define RT5659_IF3_ADC_IN_MASK			(0x3 << 0)
++#define RT5659_IF3_ADC_IN_SFT			0
++
++/* PDM Output Control (0x0031) */
++#define RT5659_PDM1_L_MASK			(0x1 << 15)
++#define RT5659_PDM1_L_SFT			15
++#define RT5659_M_PDM1_L				(0x1 << 14)
++#define RT5659_M_PDM1_L_SFT			14
++#define RT5659_PDM1_R_MASK			(0x1 << 13)
++#define RT5659_PDM1_R_SFT			13
++#define RT5659_M_PDM1_R				(0x1 << 12)
++#define RT5659_M_PDM1_R_SFT			12
++#define RT5659_PDM2_BUSY			(0x1 << 7)
++#define RT5659_PDM1_BUSY			(0x1 << 6)
++#define RT5659_PDM_PATTERN			(0x1 << 5)
++#define RT5659_PDM_GAIN				(0x1 << 4)
++#define RT5659_PDM_DIV_MASK			(0x3)
++
++/*S/PDIF Output Control (0x0036) */
++#define RT5659_SPDIF_SEL_MASK			(0x3 << 0)
++#define RT5659_SPDIF_SEL_SFT			0
++
++/* REC Left Mixer Control 2 (0x003c) */
++#define RT5659_M_BST1_RM1_L			(0x1 << 5)
++#define RT5659_M_BST1_RM1_L_SFT			5
++#define RT5659_M_BST2_RM1_L			(0x1 << 4)
++#define RT5659_M_BST2_RM1_L_SFT			4
++#define RT5659_M_BST3_RM1_L			(0x1 << 3)
++#define RT5659_M_BST3_RM1_L_SFT			3
++#define RT5659_M_BST4_RM1_L			(0x1 << 2)
++#define RT5659_M_BST4_RM1_L_SFT			2
++#define RT5659_M_INL_RM1_L			(0x1 << 1)
++#define RT5659_M_INL_RM1_L_SFT			1
++#define RT5659_M_SPKVOLL_RM1_L			(0x1)
++#define RT5659_M_SPKVOLL_RM1_L_SFT		0
++
++/* REC Right Mixer Control 2 (0x003e) */
++#define RT5659_M_BST1_RM1_R			(0x1 << 5)
++#define RT5659_M_BST1_RM1_R_SFT			5
++#define RT5659_M_BST2_RM1_R			(0x1 << 4)
++#define RT5659_M_BST2_RM1_R_SFT			4
++#define RT5659_M_BST3_RM1_R			(0x1 << 3)
++#define RT5659_M_BST3_RM1_R_SFT			3
++#define RT5659_M_BST4_RM1_R			(0x1 << 2)
++#define RT5659_M_BST4_RM1_R_SFT			2
++#define RT5659_M_INR_RM1_R			(0x1 << 1)
++#define RT5659_M_INR_RM1_R_SFT			1
++#define RT5659_M_HPOVOLR_RM1_R			(0x1)
++#define RT5659_M_HPOVOLR_RM1_R_SFT		0
++
++/* SPK Left Mixer Control (0x0046) */
++#define RT5659_M_BST3_SM_L			(0x1 << 4)
++#define RT5659_M_BST3_SM_L_SFT			4
++#define RT5659_M_IN_R_SM_L			(0x1 << 3)
++#define RT5659_M_IN_R_SM_L_SFT			3
++#define RT5659_M_IN_L_SM_L			(0x1 << 2)
++#define RT5659_M_IN_L_SM_L_SFT			2
++#define RT5659_M_BST1_SM_L			(0x1 << 1)
++#define RT5659_M_BST1_SM_L_SFT			1
++#define RT5659_M_DAC_L2_SM_L			(0x1)
++#define RT5659_M_DAC_L2_SM_L_SFT		0
++
++/* SPK Right Mixer Control (0x0047) */
++#define RT5659_M_BST3_SM_R			(0x1 << 4)
++#define RT5659_M_BST3_SM_R_SFT			4
++#define RT5659_M_IN_R_SM_R			(0x1 << 3)
++#define RT5659_M_IN_R_SM_R_SFT			3
++#define RT5659_M_IN_L_SM_R			(0x1 << 2)
++#define RT5659_M_IN_L_SM_R_SFT			2
++#define RT5659_M_BST4_SM_R			(0x1 << 1)
++#define RT5659_M_BST4_SM_R_SFT			1
++#define RT5659_M_DAC_R2_SM_R			(0x1)
++#define RT5659_M_DAC_R2_SM_R_SFT		0
++
++/* SPO Amp Input and Gain Control (0x0048) */
++#define RT5659_M_DAC_L2_SPKOMIX			(0x1 << 13)
++#define RT5659_M_DAC_L2_SPKOMIX_SFT		13
++#define RT5659_M_SPKVOLL_SPKOMIX		(0x1 << 12)
++#define RT5659_M_SPKVOLL_SPKOMIX_SFT		12
++#define RT5659_M_DAC_R2_SPKOMIX			(0x1 << 9)
++#define RT5659_M_DAC_R2_SPKOMIX_SFT		9
++#define RT5659_M_SPKVOLR_SPKOMIX		(0x1 << 8)
++#define RT5659_M_SPKVOLR_SPKOMIX_SFT		8
++
++/* MONOMIX Input and Gain Control (0x004b) */
++#define RT5659_M_MONOVOL_MA			(0x1 << 9)
++#define RT5659_M_MONOVOL_MA_SFT			9
++#define RT5659_M_DAC_L2_MA			(0x1 << 8)
++#define RT5659_M_DAC_L2_MA_SFT			8
++#define RT5659_M_BST3_MM			(0x1 << 4)
++#define RT5659_M_BST3_MM_SFT			4
++#define RT5659_M_BST2_MM			(0x1 << 3)
++#define RT5659_M_BST2_MM_SFT			3
++#define RT5659_M_BST1_MM			(0x1 << 2)
++#define RT5659_M_BST1_MM_SFT			2
++#define RT5659_M_DAC_R2_MM			(0x1 << 1)
++#define RT5659_M_DAC_R2_MM_SFT			1
++#define RT5659_M_DAC_L2_MM			(0x1)
++#define RT5659_M_DAC_L2_MM_SFT			0
++
++/* Output Left Mixer Control 1 (0x004d) */
++#define RT5659_G_BST3_OM_L_MASK			(0x7 << 12)
++#define RT5659_G_BST3_OM_L_SFT			12
++#define RT5659_G_BST2_OM_L_MASK			(0x7 << 9)
++#define RT5659_G_BST2_OM_L_SFT			9
++#define RT5659_G_BST1_OM_L_MASK			(0x7 << 6)
++#define RT5659_G_BST1_OM_L_SFT			6
++#define RT5659_G_IN_L_OM_L_MASK			(0x7 << 3)
++#define RT5659_G_IN_L_OM_L_SFT			3
++#define RT5659_G_DAC_L2_OM_L_MASK		(0x7 << 0)
++#define RT5659_G_DAC_L2_OM_L_SFT		0
++
++/* Output Left Mixer Input Control (0x004e) */
++#define RT5659_M_BST3_OM_L			(0x1 << 4)
++#define RT5659_M_BST3_OM_L_SFT			4
++#define RT5659_M_BST2_OM_L			(0x1 << 3)
++#define RT5659_M_BST2_OM_L_SFT			3
++#define RT5659_M_BST1_OM_L			(0x1 << 2)
++#define RT5659_M_BST1_OM_L_SFT			2
++#define RT5659_M_IN_L_OM_L			(0x1 << 1)
++#define RT5659_M_IN_L_OM_L_SFT			1
++#define RT5659_M_DAC_L2_OM_L			(0x1)
++#define RT5659_M_DAC_L2_OM_L_SFT		0
++
++/* Output Right Mixer Input Control (0x0050) */
++#define RT5659_M_BST4_OM_R			(0x1 << 4)
++#define RT5659_M_BST4_OM_R_SFT			4
++#define RT5659_M_BST3_OM_R			(0x1 << 3)
++#define RT5659_M_BST3_OM_R_SFT			3
++#define RT5659_M_BST2_OM_R			(0x1 << 2)
++#define RT5659_M_BST2_OM_R_SFT			2
++#define RT5659_M_IN_R_OM_R			(0x1 << 1)
++#define RT5659_M_IN_R_OM_R_SFT			1
++#define RT5659_M_DAC_R2_OM_R			(0x1)
++#define RT5659_M_DAC_R2_OM_R_SFT		0
++
++/* LOUT Mixer Control (0x0052) */
++#define RT5659_M_DAC_L2_LM			(0x1 << 15)
++#define RT5659_M_DAC_L2_LM_SFT			15
++#define RT5659_M_DAC_R2_LM			(0x1 << 14)
++#define RT5659_M_DAC_R2_LM_SFT			14
++#define RT5659_M_OV_L_LM			(0x1 << 13)
++#define RT5659_M_OV_L_LM_SFT			13
++#define RT5659_M_OV_R_LM			(0x1 << 12)
++#define RT5659_M_OV_R_LM_SFT			12
++
++/* Power Management for Digital 1 (0x0061) */
++#define RT5659_PWR_I2S1				(0x1 << 15)
++#define RT5659_PWR_I2S1_BIT			15
++#define RT5659_PWR_I2S2				(0x1 << 14)
++#define RT5659_PWR_I2S2_BIT			14
++#define RT5659_PWR_I2S3				(0x1 << 13)
++#define RT5659_PWR_I2S3_BIT			13
++#define RT5659_PWR_SPDIF			(0x1 << 12)
++#define RT5659_PWR_SPDIF_BIT			12
++#define RT5659_PWR_DAC_L1			(0x1 << 11)
++#define RT5659_PWR_DAC_L1_BIT			11
++#define RT5659_PWR_DAC_R1			(0x1 << 10)
++#define RT5659_PWR_DAC_R1_BIT			10
++#define RT5659_PWR_DAC_L2			(0x1 << 9)
++#define RT5659_PWR_DAC_L2_BIT			9
++#define RT5659_PWR_DAC_R2			(0x1 << 8)
++#define RT5659_PWR_DAC_R2_BIT			8
++#define RT5659_PWR_LDO				(0x1 << 7)
++#define RT5659_PWR_LDO_BIT			7
++#define RT5659_PWR_ADC_L1			(0x1 << 4)
++#define RT5659_PWR_ADC_L1_BIT			4
++#define RT5659_PWR_ADC_R1			(0x1 << 3)
++#define RT5659_PWR_ADC_R1_BIT			3
++#define RT5659_PWR_ADC_L2			(0x1 << 2)
++#define RT5659_PWR_ADC_L2_BIT			4
++#define RT5659_PWR_ADC_R2			(0x1 << 1)
++#define RT5659_PWR_ADC_R2_BIT			1
++#define RT5659_PWR_CLS_D			(0x1)
++#define RT5659_PWR_CLS_D_BIT			0
++
++/* Power Management for Digital 2 (0x0062) */
++#define RT5659_PWR_ADC_S1F			(0x1 << 15)
++#define RT5659_PWR_ADC_S1F_BIT			15
++#define RT5659_PWR_ADC_S2F			(0x1 << 14)
++#define RT5659_PWR_ADC_S2F_BIT			14
++#define RT5659_PWR_ADC_MF_L			(0x1 << 13)
++#define RT5659_PWR_ADC_MF_L_BIT			13
++#define RT5659_PWR_ADC_MF_R			(0x1 << 12)
++#define RT5659_PWR_ADC_MF_R_BIT			12
++#define RT5659_PWR_DAC_S1F			(0x1 << 10)
++#define RT5659_PWR_DAC_S1F_BIT			10
++#define RT5659_PWR_DAC_MF_L			(0x1 << 9)
++#define RT5659_PWR_DAC_MF_L_BIT			9
++#define RT5659_PWR_DAC_MF_R			(0x1 << 8)
++#define RT5659_PWR_DAC_MF_R_BIT			8
++#define RT5659_PWR_PDM1				(0x1 << 7)
++#define RT5659_PWR_PDM1_BIT			7
++
++/* Power Management for Analog 1 (0x0063) */
++#define RT5659_PWR_VREF1			(0x1 << 15)
++#define RT5659_PWR_VREF1_BIT			15
++#define RT5659_PWR_FV1				(0x1 << 14)
++#define RT5659_PWR_FV1_BIT			14
++#define RT5659_PWR_VREF2			(0x1 << 13)
++#define RT5659_PWR_VREF2_BIT			13
++#define RT5659_PWR_FV2				(0x1 << 12)
++#define RT5659_PWR_FV2_BIT			12
++#define RT5659_PWR_VREF3			(0x1 << 11)
++#define RT5659_PWR_VREF3_BIT			11
++#define RT5659_PWR_FV3				(0x1 << 10)
++#define RT5659_PWR_FV3_BIT			10
++#define RT5659_PWR_MB				(0x1 << 9)
++#define RT5659_PWR_MB_BIT			9
++#define RT5659_PWR_LM				(0x1 << 8)
++#define RT5659_PWR_LM_BIT			8
++#define RT5659_PWR_BG				(0x1 << 7)
++#define RT5659_PWR_BG_BIT			7
++#define RT5659_PWR_MA				(0x1 << 6)
++#define RT5659_PWR_MA_BIT			6
++#define RT5659_PWR_HA_L				(0x1 << 5)
++#define RT5659_PWR_HA_L_BIT			5
++#define RT5659_PWR_HA_R				(0x1 << 4)
++#define RT5659_PWR_HA_R_BIT			4
++
++/* Power Management for Analog 2 (0x0064) */
++#define RT5659_PWR_BST1				(0x1 << 15)
++#define RT5659_PWR_BST1_BIT			15
++#define RT5659_PWR_BST2				(0x1 << 14)
++#define RT5659_PWR_BST2_BIT			14
++#define RT5659_PWR_BST3				(0x1 << 13)
++#define RT5659_PWR_BST3_BIT			13
++#define RT5659_PWR_BST4				(0x1 << 12)
++#define RT5659_PWR_BST4_BIT			12
++#define RT5659_PWR_MB1				(0x1 << 11)
++#define RT5659_PWR_MB1_BIT			11
++#define RT5659_PWR_MB2				(0x1 << 10)
++#define RT5659_PWR_MB2_BIT			10
++#define RT5659_PWR_MB3				(0x1 << 9)
++#define RT5659_PWR_MB3_BIT			9
++#define RT5659_PWR_BST1_P			(0x1 << 6)
++#define RT5659_PWR_BST1_P_BIT			6
++#define RT5659_PWR_BST2_P			(0x1 << 5)
++#define RT5659_PWR_BST2_P_BIT			5
++#define RT5659_PWR_BST3_P			(0x1 << 4)
++#define RT5659_PWR_BST3_P_BIT			4
++#define RT5659_PWR_BST4_P			(0x1 << 3)
++#define RT5659_PWR_BST4_P_BIT			3
++#define RT5659_PWR_JD1				(0x1 << 2)
++#define RT5659_PWR_JD1_BIT			2
++#define RT5659_PWR_JD2				(0x1 << 1)
++#define RT5659_PWR_JD2_BIT			1
++#define RT5659_PWR_JD3				(0x1)
++#define RT5659_PWR_JD3_BIT			0
++
++/* Power Management for Analog 3 (0x0065) */
++#define RT5659_PWR_BST_L			(0x1 << 8)
++#define RT5659_PWR_BST_L_BIT			8
++#define RT5659_PWR_BST_R			(0x1 << 7)
++#define RT5659_PWR_BST_R_BIT			7
++#define RT5659_PWR_PLL				(0x1 << 6)
++#define RT5659_PWR_PLL_BIT			6
++#define RT5659_PWR_LDO5				(0x1 << 5)
++#define RT5659_PWR_LDO5_BIT			5
++#define RT5659_PWR_LDO4				(0x1 << 4)
++#define RT5659_PWR_LDO4_BIT			4
++#define RT5659_PWR_LDO3				(0x1 << 3)
++#define RT5659_PWR_LDO3_BIT			3
++#define RT5659_PWR_LDO2				(0x1 << 2)
++#define RT5659_PWR_LDO2_BIT			2
++#define RT5659_PWR_SVD				(0x1 << 1)
++#define RT5659_PWR_SVD_BIT			1
++
++/* Power Management for Mixer (0x0066) */
++#define RT5659_PWR_OM_L				(0x1 << 15)
++#define RT5659_PWR_OM_L_BIT			15
++#define RT5659_PWR_OM_R				(0x1 << 14)
++#define RT5659_PWR_OM_R_BIT			14
++#define RT5659_PWR_SM_L				(0x1 << 13)
++#define RT5659_PWR_SM_L_BIT			13
++#define RT5659_PWR_SM_R				(0x1 << 12)
++#define RT5659_PWR_SM_R_BIT			12
++#define RT5659_PWR_RM1_L			(0x1 << 11)
++#define RT5659_PWR_RM1_L_BIT			11
++#define RT5659_PWR_RM1_R			(0x1 << 10)
++#define RT5659_PWR_RM1_R_BIT			10
++#define RT5659_PWR_MM				(0x1 << 8)
++#define RT5659_PWR_MM_BIT			8
++#define RT5659_PWR_RM2_L			(0x1 << 3)
++#define RT5659_PWR_RM2_L_BIT			3
++#define RT5659_PWR_RM2_R			(0x1 << 2)
++#define RT5659_PWR_RM2_R_BIT			2
++
++/* Power Management for Volume (0x0067) */
++#define RT5659_PWR_SV_L				(0x1 << 15)
++#define RT5659_PWR_SV_L_BIT			15
++#define RT5659_PWR_SV_R				(0x1 << 14)
++#define RT5659_PWR_SV_R_BIT			14
++#define RT5659_PWR_OV_L				(0x1 << 13)
++#define RT5659_PWR_OV_L_BIT			13
++#define RT5659_PWR_OV_R				(0x1 << 12)
++#define RT5659_PWR_OV_R_BIT			12
++#define RT5659_PWR_IN_L				(0x1 << 9)
++#define RT5659_PWR_IN_L_BIT			9
++#define RT5659_PWR_IN_R				(0x1 << 8)
++#define RT5659_PWR_IN_R_BIT			8
++#define RT5659_PWR_MV				(0x1 << 7)
++#define RT5659_PWR_MV_BIT			7
++#define RT5659_PWR_MIC_DET			(0x1 << 5)
++#define RT5659_PWR_MIC_DET_BIT			5
++
++/* I2S1/2/3 Audio Serial Data Port Control (0x0070 0x0071 0x0072) */
++#define RT5659_I2S_MS_MASK			(0x1 << 15)
++#define RT5659_I2S_MS_SFT			15
++#define RT5659_I2S_MS_M				(0x0 << 15)
++#define RT5659_I2S_MS_S				(0x1 << 15)
++#define RT5659_I2S_O_CP_MASK			(0x3 << 12)
++#define RT5659_I2S_O_CP_SFT			12
++#define RT5659_I2S_O_CP_OFF			(0x0 << 12)
++#define RT5659_I2S_O_CP_U_LAW			(0x1 << 12)
++#define RT5659_I2S_O_CP_A_LAW			(0x2 << 12)
++#define RT5659_I2S_I_CP_MASK			(0x3 << 10)
++#define RT5659_I2S_I_CP_SFT			10
++#define RT5659_I2S_I_CP_OFF			(0x0 << 10)
++#define RT5659_I2S_I_CP_U_LAW			(0x1 << 10)
++#define RT5659_I2S_I_CP_A_LAW			(0x2 << 10)
++#define RT5659_I2S_BP_MASK			(0x1 << 8)
++#define RT5659_I2S_BP_SFT			8
++#define RT5659_I2S_BP_NOR			(0x0 << 8)
++#define RT5659_I2S_BP_INV			(0x1 << 8)
++#define RT5659_I2S_DL_MASK			(0x3 << 4)
++#define RT5659_I2S_DL_SFT			4
++#define RT5659_I2S_DL_16			(0x0 << 4)
++#define RT5659_I2S_DL_20			(0x1 << 4)
++#define RT5659_I2S_DL_24			(0x2 << 4)
++#define RT5659_I2S_DL_8				(0x3 << 4)
++#define RT5659_I2S_DF_MASK			(0x7)
++#define RT5659_I2S_DF_SFT			0
++#define RT5659_I2S_DF_I2S			(0x0)
++#define RT5659_I2S_DF_LEFT			(0x1)
++#define RT5659_I2S_DF_PCM_A			(0x2)
++#define RT5659_I2S_DF_PCM_B			(0x3)
++#define RT5659_I2S_DF_PCM_A_N			(0x6)
++#define RT5659_I2S_DF_PCM_B_N			(0x7)
++
++/* ADC/DAC Clock Control 1 (0x0073) */
++#define RT5659_I2S_PD1_MASK			(0x7 << 12)
++#define RT5659_I2S_PD1_SFT			12
++#define RT5659_I2S_PD1_1			(0x0 << 12)
++#define RT5659_I2S_PD1_2			(0x1 << 12)
++#define RT5659_I2S_PD1_3			(0x2 << 12)
++#define RT5659_I2S_PD1_4			(0x3 << 12)
++#define RT5659_I2S_PD1_6			(0x4 << 12)
++#define RT5659_I2S_PD1_8			(0x5 << 12)
++#define RT5659_I2S_PD1_12			(0x6 << 12)
++#define RT5659_I2S_PD1_16			(0x7 << 12)
++#define RT5659_I2S_BCLK_MS2_MASK		(0x1 << 11)
++#define RT5659_I2S_BCLK_MS2_SFT			11
++#define RT5659_I2S_BCLK_MS2_32			(0x0 << 11)
++#define RT5659_I2S_BCLK_MS2_64			(0x1 << 11)
++#define RT5659_I2S_PD2_MASK			(0x7 << 8)
++#define RT5659_I2S_PD2_SFT			8
++#define RT5659_I2S_PD2_1			(0x0 << 8)
++#define RT5659_I2S_PD2_2			(0x1 << 8)
++#define RT5659_I2S_PD2_3			(0x2 << 8)
++#define RT5659_I2S_PD2_4			(0x3 << 8)
++#define RT5659_I2S_PD2_6			(0x4 << 8)
++#define RT5659_I2S_PD2_8			(0x5 << 8)
++#define RT5659_I2S_PD2_12			(0x6 << 8)
++#define RT5659_I2S_PD2_16			(0x7 << 8)
++#define RT5659_I2S_BCLK_MS3_MASK		(0x1 << 7)
++#define RT5659_I2S_BCLK_MS3_SFT			7
++#define RT5659_I2S_BCLK_MS3_32			(0x0 << 7)
++#define RT5659_I2S_BCLK_MS3_64			(0x1 << 7)
++#define RT5659_I2S_PD3_MASK			(0x7 << 4)
++#define RT5659_I2S_PD3_SFT			4
++#define RT5659_I2S_PD3_1			(0x0 << 4)
++#define RT5659_I2S_PD3_2			(0x1 << 4)
++#define RT5659_I2S_PD3_3			(0x2 << 4)
++#define RT5659_I2S_PD3_4			(0x3 << 4)
++#define RT5659_I2S_PD3_6			(0x4 << 4)
++#define RT5659_I2S_PD3_8			(0x5 << 4)
++#define RT5659_I2S_PD3_12			(0x6 << 4)
++#define RT5659_I2S_PD3_16			(0x7 << 4)
++#define RT5659_DAC_OSR_MASK			(0x3 << 2)
++#define RT5659_DAC_OSR_SFT			2
++#define RT5659_DAC_OSR_128			(0x0 << 2)
++#define RT5659_DAC_OSR_64			(0x1 << 2)
++#define RT5659_DAC_OSR_32			(0x2 << 2)
++#define RT5659_DAC_OSR_16			(0x3 << 2)
++#define RT5659_ADC_OSR_MASK			(0x3)
++#define RT5659_ADC_OSR_SFT			0
++#define RT5659_ADC_OSR_128			(0x0)
++#define RT5659_ADC_OSR_64			(0x1)
++#define RT5659_ADC_OSR_32			(0x2)
++#define RT5659_ADC_OSR_16			(0x3)
++
++/* Digital Microphone Control (0x0075) */
++#define RT5659_DMIC_1_EN_MASK			(0x1 << 15)
++#define RT5659_DMIC_1_EN_SFT			15
++#define RT5659_DMIC_1_DIS			(0x0 << 15)
++#define RT5659_DMIC_1_EN			(0x1 << 15)
++#define RT5659_DMIC_2_EN_MASK			(0x1 << 14)
++#define RT5659_DMIC_2_EN_SFT			14
++#define RT5659_DMIC_2_DIS			(0x0 << 14)
++#define RT5659_DMIC_2_EN			(0x1 << 14)
++#define RT5659_DMIC_1L_LH_MASK			(0x1 << 13)
++#define RT5659_DMIC_1L_LH_SFT			13
++#define RT5659_DMIC_1L_LH_RISING		(0x0 << 13)
++#define RT5659_DMIC_1L_LH_FALLING		(0x1 << 13)
++#define RT5659_DMIC_1R_LH_MASK			(0x1 << 12)
++#define RT5659_DMIC_1R_LH_SFT			12
++#define RT5659_DMIC_1R_LH_RISING		(0x0 << 12)
++#define RT5659_DMIC_1R_LH_FALLING		(0x1 << 12)
++#define RT5659_DMIC_2_DP_MASK			(0x3 << 10)
++#define RT5659_DMIC_2_DP_SFT			10
++#define RT5659_DMIC_2_DP_GPIO6			(0x0 << 10)
++#define RT5659_DMIC_2_DP_GPIO10			(0x1 << 10)
++#define RT5659_DMIC_2_DP_GPIO12			(0x2 << 10)
++#define RT5659_DMIC_2_DP_IN2P			(0x3 << 10)
++#define RT5659_DMIC_CLK_MASK			(0x7 << 5)
++#define RT5659_DMIC_CLK_SFT			5
++#define RT5659_DMIC_1_DP_MASK			(0x3 << 0)
++#define RT5659_DMIC_1_DP_SFT			0
++#define RT5659_DMIC_1_DP_GPIO5			(0x0 << 0)
++#define RT5659_DMIC_1_DP_GPIO9			(0x1 << 0)
++#define RT5659_DMIC_1_DP_GPIO11			(0x2 << 0)
++#define RT5659_DMIC_1_DP_IN2N			(0x3 << 0)
++
++/* TDM control 1 (0x0078)*/
++#define RT5659_DS_ADC_SLOT01_SFT		14
++#define RT5659_DS_ADC_SLOT23_SFT		12
++#define RT5659_DS_ADC_SLOT45_SFT		10
++#define RT5659_DS_ADC_SLOT67_SFT		8
++#define RT5659_ADCDAT_SRC_MASK			0x1f
++#define RT5659_ADCDAT_SRC_SFT			0
++
++/* Global Clock Control (0x0080) */
++#define RT5659_SCLK_SRC_MASK			(0x3 << 14)
++#define RT5659_SCLK_SRC_SFT			14
++#define RT5659_SCLK_SRC_MCLK			(0x0 << 14)
++#define RT5659_SCLK_SRC_PLL1			(0x1 << 14)
++#define RT5659_SCLK_SRC_RCCLK			(0x2 << 14)
++#define RT5659_PLL1_SRC_MASK			(0x7 << 11)
++#define RT5659_PLL1_SRC_SFT			11
++#define RT5659_PLL1_SRC_MCLK			(0x0 << 11)
++#define RT5659_PLL1_SRC_BCLK1			(0x1 << 11)
++#define RT5659_PLL1_SRC_BCLK2			(0x2 << 11)
++#define RT5659_PLL1_SRC_BCLK3			(0x3 << 11)
++#define RT5659_PLL1_PD_MASK			(0x1 << 3)
++#define RT5659_PLL1_PD_SFT			3
++#define RT5659_PLL1_PD_1			(0x0 << 3)
++#define RT5659_PLL1_PD_2			(0x1 << 3)
++
++#define RT5659_PLL_INP_MAX			40000000
++#define RT5659_PLL_INP_MIN			256000
++/* PLL M/N/K Code Control 1 (0x0081) */
++#define RT5659_PLL_N_MAX			0x001ff
++#define RT5659_PLL_N_MASK			(RT5659_PLL_N_MAX << 7)
++#define RT5659_PLL_N_SFT			7
++#define RT5659_PLL_K_MAX			0x001f
++#define RT5659_PLL_K_MASK			(RT5659_PLL_K_MAX)
++#define RT5659_PLL_K_SFT			0
++
++/* PLL M/N/K Code Control 2 (0x0082) */
++#define RT5659_PLL_M_MAX			0x00f
++#define RT5659_PLL_M_MASK			(RT5659_PLL_M_MAX << 12)
++#define RT5659_PLL_M_SFT			12
++#define RT5659_PLL_M_BP				(0x1 << 11)
++#define RT5659_PLL_M_BP_SFT			11
++
++/* PLL tracking mode 1 (0x0083) */
++#define RT5659_I2S3_ASRC_MASK			(0x1 << 13)
++#define RT5659_I2S3_ASRC_SFT			13
++#define RT5659_I2S2_ASRC_MASK			(0x1 << 12)
++#define RT5659_I2S2_ASRC_SFT			12
++#define RT5659_I2S1_ASRC_MASK			(0x1 << 11)
++#define RT5659_I2S1_ASRC_SFT			11
++#define RT5659_DAC_STO_ASRC_MASK		(0x1 << 10)
++#define RT5659_DAC_STO_ASRC_SFT			10
++#define RT5659_DAC_MONO_L_ASRC_MASK		(0x1 << 9)
++#define RT5659_DAC_MONO_L_ASRC_SFT		9
++#define RT5659_DAC_MONO_R_ASRC_MASK		(0x1 << 8)
++#define RT5659_DAC_MONO_R_ASRC_SFT		8
++#define RT5659_DMIC_STO1_ASRC_MASK		(0x1 << 7)
++#define RT5659_DMIC_STO1_ASRC_SFT		7
++#define RT5659_DMIC_MONO_L_ASRC_MASK		(0x1 << 5)
++#define RT5659_DMIC_MONO_L_ASRC_SFT		5
++#define RT5659_DMIC_MONO_R_ASRC_MASK		(0x1 << 4)
++#define RT5659_DMIC_MONO_R_ASRC_SFT		4
++#define RT5659_ADC_STO1_ASRC_MASK		(0x1 << 3)
++#define RT5659_ADC_STO1_ASRC_SFT		3
++#define RT5659_ADC_MONO_L_ASRC_MASK		(0x1 << 1)
++#define RT5659_ADC_MONO_L_ASRC_SFT		1
++#define RT5659_ADC_MONO_R_ASRC_MASK		(0x1)
++#define RT5659_ADC_MONO_R_ASRC_SFT		0
++
++/* PLL tracking mode 2 (0x0084)*/
++#define RT5659_DA_STO_T_MASK			(0x7 << 12)
++#define RT5659_DA_STO_T_SFT			12
++#define RT5659_DA_MONO_L_T_MASK			(0x7 << 8)
++#define RT5659_DA_MONO_L_T_SFT			8
++#define RT5659_DA_MONO_R_T_MASK			(0x7 << 4)
++#define RT5659_DA_MONO_R_T_SFT			4
++#define RT5659_AD_STO1_T_MASK			(0x7)
++#define RT5659_AD_STO1_T_SFT			0
++
++/* PLL tracking mode 3 (0x0085)*/
++#define RT5659_AD_STO2_T_MASK			(0x7 << 8)
++#define RT5659_AD_STO2_T_SFT			8
++#define RT5659_AD_MONO_L_T_MASK			(0x7 << 4)
++#define RT5659_AD_MONO_L_T_SFT			4
++#define RT5659_AD_MONO_R_T_MASK			(0x7)
++#define RT5659_AD_MONO_R_T_SFT			0
++
++/* ASRC Control 4 (0x0086) */
++#define RT5659_I2S1_RATE_MASK			(0xf << 12)
++#define RT5659_I2S1_RATE_SFT			12
++#define RT5659_I2S2_RATE_MASK			(0xf << 8)
++#define RT5659_I2S2_RATE_SFT			8
++#define RT5659_I2S3_RATE_MASK			(0xf << 4)
++#define RT5659_I2S3_RATE_SFT			4
++
++/* Depop Mode Control 1 (0x8e) */
++#define RT5659_SMT_TRIG_MASK			(0x1 << 15)
++#define RT5659_SMT_TRIG_SFT			15
++#define RT5659_SMT_TRIG_DIS			(0x0 << 15)
++#define RT5659_SMT_TRIG_EN			(0x1 << 15)
++#define RT5659_HP_L_SMT_MASK			(0x1 << 9)
++#define RT5659_HP_L_SMT_SFT			9
++#define RT5659_HP_L_SMT_DIS			(0x0 << 9)
++#define RT5659_HP_L_SMT_EN			(0x1 << 9)
++#define RT5659_HP_R_SMT_MASK			(0x1 << 8)
++#define RT5659_HP_R_SMT_SFT			8
++#define RT5659_HP_R_SMT_DIS			(0x0 << 8)
++#define RT5659_HP_R_SMT_EN			(0x1 << 8)
++#define RT5659_HP_CD_PD_MASK			(0x1 << 7)
++#define RT5659_HP_CD_PD_SFT			7
++#define RT5659_HP_CD_PD_DIS			(0x0 << 7)
++#define RT5659_HP_CD_PD_EN			(0x1 << 7)
++#define RT5659_RSTN_MASK			(0x1 << 6)
++#define RT5659_RSTN_SFT				6
++#define RT5659_RSTN_DIS				(0x0 << 6)
++#define RT5659_RSTN_EN				(0x1 << 6)
++#define RT5659_RSTP_MASK			(0x1 << 5)
++#define RT5659_RSTP_SFT				5
++#define RT5659_RSTP_DIS				(0x0 << 5)
++#define RT5659_RSTP_EN				(0x1 << 5)
++#define RT5659_HP_CO_MASK			(0x1 << 4)
++#define RT5659_HP_CO_SFT			4
++#define RT5659_HP_CO_DIS			(0x0 << 4)
++#define RT5659_HP_CO_EN				(0x1 << 4)
++#define RT5659_HP_CP_MASK			(0x1 << 3)
++#define RT5659_HP_CP_SFT			3
++#define RT5659_HP_CP_PD				(0x0 << 3)
++#define RT5659_HP_CP_PU				(0x1 << 3)
++#define RT5659_HP_SG_MASK			(0x1 << 2)
++#define RT5659_HP_SG_SFT			2
++#define RT5659_HP_SG_DIS			(0x0 << 2)
++#define RT5659_HP_SG_EN				(0x1 << 2)
++#define RT5659_HP_DP_MASK			(0x1 << 1)
++#define RT5659_HP_DP_SFT			1
++#define RT5659_HP_DP_PD				(0x0 << 1)
++#define RT5659_HP_DP_PU				(0x1 << 1)
++#define RT5659_HP_CB_MASK			(0x1)
++#define RT5659_HP_CB_SFT			0
++#define RT5659_HP_CB_PD				(0x0)
++#define RT5659_HP_CB_PU				(0x1)
++
++/* Depop Mode Control 2 (0x8f) */
++#define RT5659_DEPOP_MASK			(0x1 << 13)
++#define RT5659_DEPOP_SFT			13
++#define RT5659_DEPOP_AUTO			(0x0 << 13)
++#define RT5659_DEPOP_MAN			(0x1 << 13)
++#define RT5659_RAMP_MASK			(0x1 << 12)
++#define RT5659_RAMP_SFT				12
++#define RT5659_RAMP_DIS				(0x0 << 12)
++#define RT5659_RAMP_EN				(0x1 << 12)
++#define RT5659_BPS_MASK				(0x1 << 11)
++#define RT5659_BPS_SFT				11
++#define RT5659_BPS_DIS				(0x0 << 11)
++#define RT5659_BPS_EN				(0x1 << 11)
++#define RT5659_FAST_UPDN_MASK			(0x1 << 10)
++#define RT5659_FAST_UPDN_SFT			10
++#define RT5659_FAST_UPDN_DIS			(0x0 << 10)
++#define RT5659_FAST_UPDN_EN			(0x1 << 10)
++#define RT5659_MRES_MASK			(0x3 << 8)
++#define RT5659_MRES_SFT				8
++#define RT5659_MRES_15MO			(0x0 << 8)
++#define RT5659_MRES_25MO			(0x1 << 8)
++#define RT5659_MRES_35MO			(0x2 << 8)
++#define RT5659_MRES_45MO			(0x3 << 8)
++#define RT5659_VLO_MASK				(0x1 << 7)
++#define RT5659_VLO_SFT				7
++#define RT5659_VLO_3V				(0x0 << 7)
++#define RT5659_VLO_32V				(0x1 << 7)
++#define RT5659_DIG_DP_MASK			(0x1 << 6)
++#define RT5659_DIG_DP_SFT			6
++#define RT5659_DIG_DP_DIS			(0x0 << 6)
++#define RT5659_DIG_DP_EN			(0x1 << 6)
++#define RT5659_DP_TH_MASK			(0x3 << 4)
++#define RT5659_DP_TH_SFT			4
++
++/* Depop Mode Control 3 (0x90) */
++#define RT5659_CP_SYS_MASK			(0x7 << 12)
++#define RT5659_CP_SYS_SFT			12
++#define RT5659_CP_FQ1_MASK			(0x7 << 8)
++#define RT5659_CP_FQ1_SFT			8
++#define RT5659_CP_FQ2_MASK			(0x7 << 4)
++#define RT5659_CP_FQ2_SFT			4
++#define RT5659_CP_FQ3_MASK			(0x7)
++#define RT5659_CP_FQ3_SFT			0
++#define RT5659_CP_FQ_1_5_KHZ			0
++#define RT5659_CP_FQ_3_KHZ			1
++#define RT5659_CP_FQ_6_KHZ			2
++#define RT5659_CP_FQ_12_KHZ			3
++#define RT5659_CP_FQ_24_KHZ			4
++#define RT5659_CP_FQ_48_KHZ			5
++#define RT5659_CP_FQ_96_KHZ			6
++#define RT5659_CP_FQ_192_KHZ			7
++
++/* HPOUT charge pump 1 (0x0091) */
++#define RT5659_OSW_L_MASK			(0x1 << 11)
++#define RT5659_OSW_L_SFT			11
++#define RT5659_OSW_L_DIS			(0x0 << 11)
++#define RT5659_OSW_L_EN				(0x1 << 11)
++#define RT5659_OSW_R_MASK			(0x1 << 10)
++#define RT5659_OSW_R_SFT			10
++#define RT5659_OSW_R_DIS			(0x0 << 10)
++#define RT5659_OSW_R_EN				(0x1 << 10)
++#define RT5659_PM_HP_MASK			(0x3 << 8)
++#define RT5659_PM_HP_SFT			8
++#define RT5659_PM_HP_LV				(0x0 << 8)
++#define RT5659_PM_HP_MV				(0x1 << 8)
++#define RT5659_PM_HP_HV				(0x2 << 8)
++#define RT5659_IB_HP_MASK			(0x3 << 6)
++#define RT5659_IB_HP_SFT			6
++#define RT5659_IB_HP_125IL			(0x0 << 6)
++#define RT5659_IB_HP_25IL			(0x1 << 6)
++#define RT5659_IB_HP_5IL			(0x2 << 6)
++#define RT5659_IB_HP_1IL			(0x3 << 6)
++
++/* PV detection and SPK gain control (0x92) */
++#define RT5659_PVDD_DET_MASK			(0x1 << 15)
++#define RT5659_PVDD_DET_SFT			15
++#define RT5659_PVDD_DET_DIS			(0x0 << 15)
++#define RT5659_PVDD_DET_EN			(0x1 << 15)
++#define RT5659_SPK_AG_MASK			(0x1 << 14)
++#define RT5659_SPK_AG_SFT			14
++#define RT5659_SPK_AG_DIS			(0x0 << 14)
++#define RT5659_SPK_AG_EN			(0x1 << 14)
++
++/* Micbias Control (0x93) */
++#define RT5659_MIC1_BS_MASK			(0x1 << 15)
++#define RT5659_MIC1_BS_SFT			15
++#define RT5659_MIC1_BS_9AV			(0x0 << 15)
++#define RT5659_MIC1_BS_75AV			(0x1 << 15)
++#define RT5659_MIC2_BS_MASK			(0x1 << 14)
++#define RT5659_MIC2_BS_SFT			14
++#define RT5659_MIC2_BS_9AV			(0x0 << 14)
++#define RT5659_MIC2_BS_75AV			(0x1 << 14)
++#define RT5659_MIC1_CLK_MASK			(0x1 << 13)
++#define RT5659_MIC1_CLK_SFT			13
++#define RT5659_MIC1_CLK_DIS			(0x0 << 13)
++#define RT5659_MIC1_CLK_EN			(0x1 << 13)
++#define RT5659_MIC2_CLK_MASK			(0x1 << 12)
++#define RT5659_MIC2_CLK_SFT			12
++#define RT5659_MIC2_CLK_DIS			(0x0 << 12)
++#define RT5659_MIC2_CLK_EN			(0x1 << 12)
++#define RT5659_MIC1_OVCD_MASK			(0x1 << 11)
++#define RT5659_MIC1_OVCD_SFT			11
++#define RT5659_MIC1_OVCD_DIS			(0x0 << 11)
++#define RT5659_MIC1_OVCD_EN			(0x1 << 11)
++#define RT5659_MIC1_OVTH_MASK			(0x3 << 9)
++#define RT5659_MIC1_OVTH_SFT			9
++#define RT5659_MIC1_OVTH_600UA			(0x0 << 9)
++#define RT5659_MIC1_OVTH_1500UA			(0x1 << 9)
++#define RT5659_MIC1_OVTH_2000UA			(0x2 << 9)
++#define RT5659_MIC2_OVCD_MASK			(0x1 << 8)
++#define RT5659_MIC2_OVCD_SFT			8
++#define RT5659_MIC2_OVCD_DIS			(0x0 << 8)
++#define RT5659_MIC2_OVCD_EN			(0x1 << 8)
++#define RT5659_MIC2_OVTH_MASK			(0x3 << 6)
++#define RT5659_MIC2_OVTH_SFT			6
++#define RT5659_MIC2_OVTH_600UA			(0x0 << 6)
++#define RT5659_MIC2_OVTH_1500UA			(0x1 << 6)
++#define RT5659_MIC2_OVTH_2000UA			(0x2 << 6)
++#define RT5659_PWR_MB_MASK			(0x1 << 5)
++#define RT5659_PWR_MB_SFT			5
++#define RT5659_PWR_MB_PD			(0x0 << 5)
++#define RT5659_PWR_MB_PU			(0x1 << 5)
++#define RT5659_PWR_CLK25M_MASK			(0x1 << 4)
++#define RT5659_PWR_CLK25M_SFT			4
++#define RT5659_PWR_CLK25M_PD			(0x0 << 4)
++#define RT5659_PWR_CLK25M_PU			(0x1 << 4)
++
++/* REC Mixer 2 Left Control 2 (0x009c) */
++#define RT5659_M_BST1_RM2_L			(0x1 << 5)
++#define RT5659_M_BST1_RM2_L_SFT			5
++#define RT5659_M_BST2_RM2_L			(0x1 << 4)
++#define RT5659_M_BST2_RM2_L_SFT			4
++#define RT5659_M_BST3_RM2_L			(0x1 << 3)
++#define RT5659_M_BST3_RM2_L_SFT			3
++#define RT5659_M_BST4_RM2_L			(0x1 << 2)
++#define RT5659_M_BST4_RM2_L_SFT			2
++#define RT5659_M_OUTVOLL_RM2_L			(0x1 << 1)
++#define RT5659_M_OUTVOLL_RM2_L_SFT		1
++#define RT5659_M_SPKVOL_RM2_L			(0x1)
++#define RT5659_M_SPKVOL_RM2_L_SFT		0
++
++/* REC Mixer 2 Right Control 2 (0x009e) */
++#define RT5659_M_BST1_RM2_R			(0x1 << 5)
++#define RT5659_M_BST1_RM2_R_SFT			5
++#define RT5659_M_BST2_RM2_R			(0x1 << 4)
++#define RT5659_M_BST2_RM2_R_SFT			4
++#define RT5659_M_BST3_RM2_R			(0x1 << 3)
++#define RT5659_M_BST3_RM2_R_SFT			3
++#define RT5659_M_BST4_RM2_R			(0x1 << 2)
++#define RT5659_M_BST4_RM2_R_SFT			2
++#define RT5659_M_OUTVOLR_RM2_R			(0x1 << 1)
++#define RT5659_M_OUTVOLR_RM2_R_SFT		1
++#define RT5659_M_MONOVOL_RM2_R			(0x1)
++#define RT5659_M_MONOVOL_RM2_R_SFT		0
++
++/* Class D Output Control (0x00a0) */
++#define RT5659_POW_CLSD_DB_MASK			(0x1 << 9)
++#define RT5659_POW_CLSD_DB_EN			(0x1 << 9)
++#define RT5659_POW_CLSD_DB_DIS			(0x0 << 9)
++
++/* EQ Control 1 (0x00b0) */
++#define RT5659_EQ_SRC_DAC			(0x0 << 15)
++#define RT5659_EQ_SRC_ADC			(0x1 << 15)
++#define RT5659_EQ_UPD				(0x1 << 14)
++#define RT5659_EQ_UPD_BIT			14
++#define RT5659_EQ_CD_MASK			(0x1 << 13)
++#define RT5659_EQ_CD_SFT			13
++#define RT5659_EQ_CD_DIS			(0x0 << 13)
++#define RT5659_EQ_CD_EN				(0x1 << 13)
++#define RT5659_EQ_DITH_MASK			(0x3 << 8)
++#define RT5659_EQ_DITH_SFT			8
++#define RT5659_EQ_DITH_NOR			(0x0 << 8)
++#define RT5659_EQ_DITH_LSB			(0x1 << 8)
++#define RT5659_EQ_DITH_LSB_1			(0x2 << 8)
++#define RT5659_EQ_DITH_LSB_2			(0x3 << 8)
++
++/* IRQ Control 1 (0x00b7) */
++#define RT5659_JD1_1_EN_MASK			(0x1 << 15)
++#define RT5659_JD1_1_EN_SFT			15
++#define RT5659_JD1_1_DIS			(0x0 << 15)
++#define RT5659_JD1_1_EN				(0x1 << 15)
++#define RT5659_JD1_2_EN_MASK			(0x1 << 12)
++#define RT5659_JD1_2_EN_SFT			12
++#define RT5659_JD1_2_DIS			(0x0 << 12)
++#define RT5659_JD1_2_EN				(0x1 << 12)
++#define RT5659_IL_IRQ_MASK			(0x1 << 3)
++#define RT5659_IL_IRQ_DIS			(0x0 << 3)
++#define RT5659_IL_IRQ_EN			(0x1 << 3)
++
++/* IRQ Control 5 (0x00ba) */
++#define RT5659_IRQ_JD_EN			(0x1 << 3)
++#define RT5659_IRQ_JD_EN_SFT			3
++
++/* GPIO Control 1 (0x00c0) */
++#define RT5659_GP1_PIN_MASK			(0x1 << 15)
++#define RT5659_GP1_PIN_SFT			15
++#define RT5659_GP1_PIN_GPIO1			(0x0 << 15)
++#define RT5659_GP1_PIN_IRQ			(0x1 << 15)
++#define RT5659_GP2_PIN_MASK			(0x1 << 14)
++#define RT5659_GP2_PIN_SFT			14
++#define RT5659_GP2_PIN_GPIO2			(0x0 << 14)
++#define RT5659_GP2_PIN_DMIC1_SCL		(0x1 << 14)
++#define RT5659_GP3_PIN_MASK			(0x1 << 13)
++#define RT5659_GP3_PIN_SFT			13
++#define RT5659_GP3_PIN_GPIO3			(0x0 << 13)
++#define RT5659_GP3_PIN_PDM_SCL			(0x1 << 13)
++#define RT5659_GP4_PIN_MASK			(0x1 << 12)
++#define RT5659_GP4_PIN_SFT			12
++#define RT5659_GP4_PIN_GPIO4			(0x0 << 12)
++#define RT5659_GP4_PIN_PDM_SDA			(0x1 << 12)
++#define RT5659_GP5_PIN_MASK			(0x1 << 11)
++#define RT5659_GP5_PIN_SFT			11
++#define RT5659_GP5_PIN_GPIO5			(0x0 << 11)
++#define RT5659_GP5_PIN_DMIC1_SDA		(0x1 << 11)
++#define RT5659_GP6_PIN_MASK			(0x1 << 10)
++#define RT5659_GP6_PIN_SFT			10
++#define RT5659_GP6_PIN_GPIO6			(0x0 << 10)
++#define RT5659_GP6_PIN_DMIC2_SDA		(0x1 << 10)
++#define RT5659_GP7_PIN_MASK			(0x1 << 9)
++#define RT5659_GP7_PIN_SFT			9
++#define RT5659_GP7_PIN_GPIO7			(0x0 << 9)
++#define RT5659_GP7_PIN_PDM_SCL			(0x1 << 9)
++#define RT5659_GP8_PIN_MASK			(0x1 << 8)
++#define RT5659_GP8_PIN_SFT			8
++#define RT5659_GP8_PIN_GPIO8			(0x0 << 8)
++#define RT5659_GP8_PIN_PDM_SDA			(0x1 << 8)
++#define RT5659_GP9_PIN_MASK			(0x1 << 7)
++#define RT5659_GP9_PIN_SFT			7
++#define RT5659_GP9_PIN_GPIO9			(0x0 << 7)
++#define RT5659_GP9_PIN_DMIC1_SDA		(0x1 << 7)
++#define RT5659_GP10_PIN_MASK			(0x1 << 6)
++#define RT5659_GP10_PIN_SFT			6
++#define RT5659_GP10_PIN_GPIO10			(0x0 << 6)
++#define RT5659_GP10_PIN_DMIC2_SDA		(0x1 << 6)
++#define RT5659_GP11_PIN_MASK			(0x1 << 5)
++#define RT5659_GP11_PIN_SFT			5
++#define RT5659_GP11_PIN_GPIO11			(0x0 << 5)
++#define RT5659_GP11_PIN_DMIC1_SDA		(0x1 << 5)
++#define RT5659_GP12_PIN_MASK			(0x1 << 4)
++#define RT5659_GP12_PIN_SFT			4
++#define RT5659_GP12_PIN_GPIO12			(0x0 << 4)
++#define RT5659_GP12_PIN_DMIC2_SDA		(0x1 << 4)
++#define RT5659_GP13_PIN_MASK			(0x3 << 2)
++#define RT5659_GP13_PIN_SFT			2
++#define RT5659_GP13_PIN_GPIO13			(0x0 << 2)
++#define RT5659_GP13_PIN_SPDIF_SDA		(0x1 << 2)
++#define RT5659_GP13_PIN_DMIC2_SCL		(0x2 << 2)
++#define RT5659_GP13_PIN_PDM_SCL			(0x3 << 2)
++#define RT5659_GP15_PIN_MASK			(0x3)
++#define RT5659_GP15_PIN_SFT			0
++#define RT5659_GP15_PIN_GPIO15			(0x0)
++#define RT5659_GP15_PIN_DMIC3_SCL		(0x1)
++#define RT5659_GP15_PIN_PDM_SDA			(0x2)
++
++/* GPIO Control 2 (0x00c1)*/
++#define RT5659_GP1_PF_IN			(0x0 << 2)
++#define RT5659_GP1_PF_OUT			(0x1 << 2)
++#define RT5659_GP1_PF_MASK			(0x1 << 2)
++#define RT5659_GP1_PF_SFT			2
++
++/* GPIO Control 3 (0x00c2) */
++#define RT5659_I2S2_PIN_MASK			(0x1 << 15)
++#define RT5659_I2S2_PIN_SFT			15
++#define RT5659_I2S2_PIN_I2S			(0x0 << 15)
++#define RT5659_I2S2_PIN_GPIO			(0x1 << 15)
++
++/* Soft volume and zero cross control 1 (0x00d9) */
++#define RT5659_SV_MASK				(0x1 << 15)
++#define RT5659_SV_SFT				15
++#define RT5659_SV_DIS				(0x0 << 15)
++#define RT5659_SV_EN				(0x1 << 15)
++#define RT5659_OUT_SV_MASK			(0x1 << 13)
++#define RT5659_OUT_SV_SFT			13
++#define RT5659_OUT_SV_DIS			(0x0 << 13)
++#define RT5659_OUT_SV_EN			(0x1 << 13)
++#define RT5659_HP_SV_MASK			(0x1 << 12)
++#define RT5659_HP_SV_SFT			12
++#define RT5659_HP_SV_DIS			(0x0 << 12)
++#define RT5659_HP_SV_EN				(0x1 << 12)
++#define RT5659_ZCD_DIG_MASK			(0x1 << 11)
++#define RT5659_ZCD_DIG_SFT			11
++#define RT5659_ZCD_DIG_DIS			(0x0 << 11)
++#define RT5659_ZCD_DIG_EN			(0x1 << 11)
++#define RT5659_ZCD_MASK				(0x1 << 10)
++#define RT5659_ZCD_SFT				10
++#define RT5659_ZCD_PD				(0x0 << 10)
++#define RT5659_ZCD_PU				(0x1 << 10)
++#define RT5659_SV_DLY_MASK			(0xf)
++#define RT5659_SV_DLY_SFT			0
++
++/* Soft volume and zero cross control 2 (0x00da) */
++#define RT5659_ZCD_HP_MASK			(0x1 << 15)
++#define RT5659_ZCD_HP_SFT			15
++#define RT5659_ZCD_HP_DIS			(0x0 << 15)
++#define RT5659_ZCD_HP_EN			(0x1 << 15)
++
++/* 4 Button Inline Command Control 2 (0x00e0) */
++#define RT5659_4BTN_IL_MASK			(0x1 << 15)
++#define RT5659_4BTN_IL_EN			(0x1 << 15)
++#define RT5659_4BTN_IL_DIS			(0x0 << 15)
++
++/* Analog JD Control 1 (0x00f0) */
++#define RT5659_JD1_MODE_MASK			(0x3 << 0)
++#define RT5659_JD1_MODE_0			(0x0 << 0)
++#define RT5659_JD1_MODE_1			(0x1 << 0)
++#define RT5659_JD1_MODE_2			(0x2 << 0)
++
++/* Jack Detect Control 3 (0x00f8) */
++#define RT5659_JD_TRI_HPO_SEL_MASK		(0x7)
++#define RT5659_JD_TRI_HPO_SEL_SFT		(0)
++#define RT5659_JD_HPO_GPIO_JD1			(0x0)
++#define RT5659_JD_HPO_JD1_1			(0x1)
++#define RT5659_JD_HPO_JD1_2			(0x2)
++#define RT5659_JD_HPO_JD2			(0x3)
++#define RT5659_JD_HPO_GPIO_JD2			(0x4)
++#define RT5659_JD_HPO_JD3			(0x5)
++#define RT5659_JD_HPO_JD_D			(0x6)
++
++/* Digital Misc Control (0x00fa) */
++#define RT5659_AM_MASK				(0x1 << 7)
++#define RT5659_AM_EN				(0x1 << 7)
++#define RT5659_AM_DIS				(0x1 << 7)
++#define RT5659_DIG_GATE_CTRL			0x1
++#define RT5659_DIG_GATE_CTRL_SFT		(0)
++
++/* Chopper and Clock control for ADC (0x011c)*/
++#define RT5659_M_RF_DIG_MASK			(0x1 << 12)
++#define RT5659_M_RF_DIG_SFT			12
++#define RT5659_M_RI_DIG				(0x1 << 11)
++
++/* Chopper and Clock control for DAC (0x013a)*/
++#define RT5659_CKXEN_DAC1_MASK			(0x1 << 13)
++#define RT5659_CKXEN_DAC1_SFT			13
++#define RT5659_CKGEN_DAC1_MASK			(0x1 << 12)
++#define RT5659_CKGEN_DAC1_SFT			12
++#define RT5659_CKXEN_DAC2_MASK			(0x1 << 5)
++#define RT5659_CKXEN_DAC2_SFT			5
++#define RT5659_CKGEN_DAC2_MASK			(0x1 << 4)
++#define RT5659_CKGEN_DAC2_SFT			4
++
++/* Chopper and Clock control for ADC (0x013b)*/
++#define RT5659_CKXEN_ADCC_MASK			(0x1 << 13)
++#define RT5659_CKXEN_ADCC_SFT			13
++#define RT5659_CKGEN_ADCC_MASK			(0x1 << 12)
++#define RT5659_CKGEN_ADCC_SFT			12
++
++/* Test Mode Control 1 (0x0145) */
++#define RT5659_AD2DA_LB_MASK			(0x1 << 9)
++#define RT5659_AD2DA_LB_SFT			9
++
++/* Stereo Noise Gate Control 1 (0x0160) */
++#define RT5659_NG2_EN_MASK			(0x1 << 15)
++#define RT5659_NG2_EN				(0x1 << 15)
++#define RT5659_NG2_DIS				(0x0 << 15)
++
++/* System Clock Source */
++enum {
++	RT5659_SCLK_S_MCLK,
++	RT5659_SCLK_S_PLL1,
++	RT5659_SCLK_S_RCCLK,
++};
++
++/* PLL1 Source */
++enum {
++	RT5659_PLL1_S_MCLK,
++	RT5659_PLL1_S_BCLK1,
++	RT5659_PLL1_S_BCLK2,
++	RT5659_PLL1_S_BCLK3,
++	RT5659_PLL1_S_BCLK4,
++};
++
++enum {
++	RT5659_AIF1,
++	RT5659_AIF2,
++	RT5659_AIF3,
++	RT5659_AIF4,
++	RT5659_AIFS,
++};
++
++struct rt5659_pll_code {
++	bool m_bp;
++	int m_code;
++	int n_code;
++	int k_code;
++};
++
++struct rt5659_priv {
++	struct snd_soc_codec *codec;
++	struct rt5659_platform_data pdata;
++	struct regmap *regmap;
++	struct i2c_client *i2c;
++	struct gpio_desc *gpiod_ldo1_en;
++	struct gpio_desc *gpiod_reset;
++	struct snd_soc_jack *hs_jack;
++	struct delayed_work jack_detect_work;
++
++	int sysclk;
++	int sysclk_src;
++	int lrck[RT5659_AIFS];
++	int bclk[RT5659_AIFS];
++	int master[RT5659_AIFS];
++	int v_id;
++
++	int pll_src;
++	int pll_in;
++	int pll_out;
++
++	int jack_type;
++
++};
++
++int rt5659_set_jack_detect(struct snd_soc_codec *codec,
++	struct snd_soc_jack *hs_jack);
++
++#endif /* __RT5659_H__ */
+-- 
+1.8.1.1.439.g50a6b54
