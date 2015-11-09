@@ -1,16 +1,16 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH] ASoC: fsl-sai: don't set bclk for Tx/Rx
-	Synchronous with another SAI mode
-Date: Mon, 9 Nov 2015 19:02:29 +0800
-Message-ID: <b1cf60241eab0069250d00e47e80bb04ce676412.1447066811.git.zidan.wang@freescale.com>
+Subject: [PATCH] ASoC: fsl-sai: set xCR4/xCR5/xMR for SAI
+	master mode
+Date: Mon, 9 Nov 2015 19:03:13 +0800
+Message-ID: <090f3aafd8c07a5a29e97c568c6fc0602a0bd5ad.1447066800.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0115.outbound.protection.outlook.com [157.56.111.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F0F326153C
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 12:00:34 +0100 (CET)
+ (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 626B72619FB
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 12:01:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +24,55 @@ To: broonie@kernel.org
 Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-In fsl_sai_set_bclk function, we should not set bclk for Tx/Rx Synchronous
-with another SAI mode.
+For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
+generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
+RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
+error sometimes.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/fsl/fsl_sai.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index ffd5f9a..14c3078 100644
+index 14c3078..9d74ff3 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -354,13 +354,25 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 		return -EINVAL;
- 	}
+@@ -427,6 +427,35 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
  
--	if ((tx && sai->synchronous[TX]) || (!tx && !sai->synchronous[RX])) {
+ 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
+ 
 +	/*
-+	 * 1) For Asynchronous mode, we must set RCR2 register for capture, and
-+	 *    set TCR2 register for playback.
-+	 * 2) For Tx sync with Rx clock, we must set RCR2 register for playback
-+	 *    and capture.
-+	 * 3) For Rx sync with Tx clock, we must set TCR2 register for playback
-+	 *    and capture.
-+	 * 4) For Tx and Rx are both Synchronous with another SAI, we just
-+	 *    ignore it.
++	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
++	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
++	 * RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
++	 * error.
 +	 */
-+	if ((sai->synchronous[TX] && !sai->synchronous[RX]) ||
-+	    (!tx && !sai->synchronous[RX])) {
- 		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
- 				   FSL_SAI_CR2_MSEL_MASK,
- 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
- 		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
- 				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
--	} else {
-+	} else if ((sai->synchronous[RX] && !sai->synchronous[TX]) ||
-+		   (tx && !sai->synchronous[TX])) {
- 		regmap_update_bits(sai->regmap, FSL_SAI_TCR2,
- 				   FSL_SAI_CR2_MSEL_MASK,
- 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
++
++	if (!sai->is_slave_mode) {
++		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
++			regmap_update_bits(sai->regmap, FSL_SAI_TCR4,
++				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++				val_cr4);
++			regmap_update_bits(sai->regmap, FSL_SAI_TCR5,
++				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
++				FSL_SAI_CR5_FBT_MASK, val_cr5);
++			regmap_write(sai->regmap, FSL_SAI_TMR,
++				~0UL - ((1 << channels) - 1));
++		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
++			regmap_update_bits(sai->regmap, FSL_SAI_RCR4,
++				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++				val_cr4);
++			regmap_update_bits(sai->regmap, FSL_SAI_RCR5,
++				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
++				FSL_SAI_CR5_FBT_MASK, val_cr5);
++			regmap_write(sai->regmap, FSL_SAI_RMR,
++				~0UL - ((1 << channels) - 1));
++		}
++	}
++
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+ 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
+ 			   val_cr4);
 -- 
 1.9.1
