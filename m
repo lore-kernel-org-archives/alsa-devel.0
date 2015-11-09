@@ -1,18 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2] ALSA: compress: Add
-	SND_AUDIOCODEC_BESPOKE
-Date: Mon, 9 Nov 2015 10:13:55 +0530
-Message-ID: <20151109044354.GE22709@localhost>
-References: <1446828354-28767-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: sugar <sugar.zhang@rock-chips.com>
+Subject: Re: [PATCH v3 1/3] ASoC: rockchip: i2s: add 8 channels
+ capture support
+Date: Mon, 9 Nov 2015 15:21:53 +0800
+Message-ID: <56404991.6000505@rock-chips.com>
+References: <1446773891-32174-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1446773891-32174-2-git-send-email-sugar.zhang@rock-chips.com>
+ <20151106120020.GH18409@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E4DA9260715
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 05:40:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1446828354-28767-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id A95F9260418
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 08:21:59 +0100 (CET)
+In-Reply-To: <20151106120020.GH18409@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 06, 2015 at 04:45:54PM +0000, Charles Keepax wrote:
-> When working with the compressed framework occasionally vendors will
-> use esoteric internal audio formats. For such formats it doesn't really
-> make sense to add an new define to the kernel as their use is not
-> sufficiently general.
-> 
-> This patch adds a new define SND_AUDIOCODEC_BESPOKE that vendors can use
-> in such situations.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
 
--- 
-~Vinod
+On 11/6/2015 20:00, Mark Brown wrote:
+> On Fri, Nov 06, 2015 at 09:38:09AM +0800, Sugar Zhang wrote:
+>
+>> +	/* refine capture channels */
+>> +	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
+>> +		if (val >= 2 && val <= 8)
+>> +			rockchip_i2s_dai.capture.channels_max = val;
+>> +		else
+>> +			rockchip_i2s_dai.capture.channels_max = 2;
+>> +	}
+>
+> You should make a copy of the rockchip_i2s_dai struct in your driver
+> data and modify that rather than modifying the original - what happens
+> if sommeone makes a SoC with two I2S DAIs, one with many channels and
+> another with only two?  Samsung SoCs often have an arrangement like that
+> for exmaple.
+>
+
+Yes, I agree, because this patch was merged into mainline, I will post a 
+new one based on the latest code to fix this, thanks.
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>
