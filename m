@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/4] ASoC: core: Pass kcontrol to bytes tlv
-	callbacks
-Date: Mon,  9 Nov 2015 23:20:00 +0530
-Message-ID: <1447091401-24298-4-git-send-email-vinod.koul@intel.com>
-References: <1447091401-24298-1-git-send-email-vinod.koul@intel.com>
+From: Andreas Dannenberg <dannenberg@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Fix TDM slot rx/tx mask
+	associations
+Date: Mon, 9 Nov 2015 12:19:19 -0600
+Message-ID: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EF752616F3
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 18:46:42 +0100 (CET)
-In-Reply-To: <1447091401-24298-1-git-send-email-vinod.koul@intel.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71D292606CB
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 19:19:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
+Cc: linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Andreas Dannenberg <dannenberg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mythri P K <mythri.p.k@intel.com>
+Fixes the associations between the tx_mask and rx_mask and the associated
+playback / capture streams during setting of the TDM slot. With this
+patch in place it is now possible for example to only populate tx_mask
+(leaving rx_mask as 0) for output-only codecs to control the TDM slot(s)
+the McASP serial port uses for transmit. Before that, this scenario
+would incorrectly rely on the rx_mask for this.
 
-Add kcontrol to the tlv callbacks in soc_bytes_ext, as it is
-needed for referencing the corresponding control in the driver
-code
-
-Also fix the only upstream user in topology core
-
-Signed-off-by: Mythri P K <mythri.p.k@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
 ---
- include/sound/soc-topology.h | 6 ++++--
- include/sound/soc.h          | 6 ++++--
- sound/soc/soc-ops.c          | 4 ++--
- 3 files changed, 10 insertions(+), 6 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 086cd7ff6ddc..5b68e3f5aa85 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -92,8 +92,10 @@ struct snd_soc_tplg_kcontrol_ops {
- /* Bytes ext operations, for TLV byte controls */
- struct snd_soc_tplg_bytes_ext_ops {
- 	u32 id;
--	int (*get)(unsigned int __user *bytes, unsigned int size);
--	int (*put)(const unsigned int __user *bytes, unsigned int size);
-+	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
-+							unsigned int size);
-+	int (*put)(struct snd_kcontrol *kcontrol,
-+			const unsigned int __user *bytes, unsigned int size);
- };
- 
- /*
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e93927789d98..e09673dbae1b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1228,8 +1228,10 @@ struct soc_bytes_ext {
- 	struct snd_soc_dobj dobj;
- 
- 	/* used for TLV byte control */
--	int (*get)(unsigned int __user *bytes, unsigned int size);
--	int (*put)(const unsigned int __user *bytes, unsigned int size);
-+	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
-+			unsigned int size);
-+	int (*put)(struct snd_kcontrol *kcontrol, const unsigned int __user *bytes,
-+			unsigned int size);
- };
- 
- /* multi register control */
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index ecd38e52285a..ba3e49010ac3 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -779,11 +779,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
- 	switch (op_flag) {
- 	case SNDRV_CTL_TLV_OP_READ:
- 		if (params->get)
--			ret = params->get(tlv, count);
-+			ret = params->get(kcontrol, tlv, count);
- 		break;
- 	case SNDRV_CTL_TLV_OP_WRITE:
- 		if (params->put)
--			ret = params->put(tlv, count);
-+			ret = params->put(kcontrol, tlv, count);
- 		break;
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 4495a40..caa0beb 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -681,8 +681,8 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
  	}
- 	return ret;
+ 
+ 	mcasp->tdm_slots = slots;
+-	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
+-	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
+ 	mcasp->slot_width = slot_width;
+ 
+ 	return davinci_mcasp_set_ch_constraints(mcasp);
 -- 
 1.9.1
