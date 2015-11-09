@@ -1,21 +1,21 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH] topology: Include <linux/types.h> in API
-	header file
-Date: Mon, 9 Nov 2015 19:34:29 +0530
-Message-ID: <20151109140425.GA5572@subhransu-desktop>
-References: <1446813576-29295-1-git-send-email-mengdong.lin@linux.intel.com>
- <s5hoaf7z3k2.wl-tiwai@suse.de> <20151106133118.GA18120@localhost>
- <s5hfv0jz200.wl-tiwai@suse.de> <1446820647.2776.19.camel@loki>
- <s5h4mgzyyve.wl-tiwai@suse.de> <1446821837.2776.27.camel@loki>
+From: Libin Yang <libin.yang@linux.intel.com>
+Subject: Re: [RFC PATCH 2/2] ALSA: hda - HDMI codec driver
+ dynamically attach PCM
+Date: Mon, 9 Nov 2015 16:45:19 +0800
+Message-ID: <56405D1F.5030902@linux.intel.com>
+References: <1446538973-109373-1-git-send-email-libin.yang@linux.intel.com>
+ <1446538973-109373-3-git-send-email-libin.yang@linux.intel.com>
+ <s5htwp3nicg.wl-tiwai@suse.de> <563999C2.90406@linux.intel.com>
+ <563C3BBC.60009@linux.intel.com> <s5hpoznlcez.wl-tiwai@suse.de>
+ <563FF90A.3000206@linux.intel.com> <s5hoaf3k3og.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C090260527
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:32:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1446821837.2776.27.camel@loki>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFEC2260527
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:47:07 +0100 (CET)
+In-Reply-To: <s5hoaf3k3og.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +25,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, Takashi Iwai <tiwai@suse.de>, mengdong.lin@intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 06, 2015 at 02:57:17PM +0000, Liam Girdwood wrote:
-> On Fri, 2015-11-06 at 15:40 +0100, Takashi Iwai wrote:
-> > On Fri, 06 Nov 2015 15:37:27 +0100,
-> > Liam Girdwood wrote:
-> > > 
-> > > 
-> > > >From 568f769269122e90fceee605a98a1a526db2b3d4 Mon Sep 17 00:00:00 2001
-> > > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > > Date: Fri, 6 Nov 2015 14:30:36 +0000
-> > > Subject: [PATCH] topology: remove little endian type from userspace header.
-> > > 
-> > > Use a generic unsigned long long for formats instead of an ABI endian
-> > > specific __le64 type.
-> > 
-> > Or use uint64_t instead.  This is the standard definition of 64bit
-> > integer.  I thought we already include stdint.h somewhere, but you can
-> > included it there again to be sure, too.
-> > 
-> 
-> I didn't see stdint.h so used unsigned long long on the first patch. The
-> patch below fixes this though :-
-> 
-> From 52d3023e482ac856692bf27819d97d9a037a055b Mon Sep 17 00:00:00 2001
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Date: Fri, 6 Nov 2015 14:30:36 +0000
-> Subject: [PATCH] topology: remove little endian type from userspace header.
-> 
-> Use a generic uint64_t for formats instead of an ABI endian specific
-> __le64 type.
 
-Tested and it works fine.
+On 11/09/2015 03:55 PM, Takashi Iwai wrote:
+> On Mon, 09 Nov 2015 02:38:18 +0100,
+> Libin Yang wrote:
+>>
+>> Hi Takashi,
+>>
+>> On 11/06/2015 05:12 PM, Takashi Iwai wrote:
+>>> On Fri, 06 Nov 2015 06:33:48 +0100,
+>>> Libin Yang wrote:
+>>>>
+>>>> Hi Takashi,
+>>>>
+>>>> On 11/04/2015 01:38 PM, Libin Yang wrote:
+>>>>> On 11/04/2015 12:44 AM, Takashi Iwai wrote:
+>>>>>> On Tue, 03 Nov 2015 09:22:53 +0100,
+>>>>>> libin.yang@linux.intel.com wrote:
+>>>>>>>
+>>>>>>> From: Libin Yang <libin.yang@intel.com>
+>>>>>>>
+>>>>>>> Allocate the PCM based on the number of pin and device entry.
+>>>>>>> The number of PCM is pin num plus device entry number per pin.
+>>>>>>> For example, on Intel platform, it will be 5 PCMs.
+>>>>>>>
+>>>>>>> Do not attach the PCM to pin in initialization.
+>>>>>>> Dynamically attach PCM to pin when monitor is connected
+>>>>>>> in HDMI audio codec driver.
+>>>>>>>
+>>>>>>> When monitor is disconnected, detach the PCM from the pin.
+>>>>>>> And if the audio is playing, stop the playback.
+>>>>>>>
+>>>>>>> The below is the example of device entry and PCM binding:
+>>>>>>> For a monitor is plugged in, we need to dynamically assign
+>>>>>>> this monitor to 5 PCM devices (on Intel platform):
+>>>>>>> For a monitor at pin nid 0x05, dev index 0, it will prefer PCM 3
+>>>>>>> For a monitor at pin nid 0x06, dev index 0, it will prefer PCM 7
+>>>>>>> For a monitor at pin nid 0x07, dev index 0, it will prefer PCM 8
+>>>>>>> For a monitor at dev index 1 (any pin), it will prefer PCM 9
+>>>>>>> For a monitor at dev index 2 (any pin), it will prefer PCM 10
+>>>>>>>
+>>>>>>> If the preferred PCM is not available, try PCM in this order:
+>>>>>>> 9, 10, 3, 7 ,8.
+>>>>>>>
+>>>>>>> Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+>>>>>>
+>>>>>> We should split the changes to a few patches here.  For example,
+>>>>>> stopping the stream at discussion is basically an implementation
+>>>>>> independent from the MST itself.  IOW, the dynamic attach/detach can
+>>>>>> be implemented and tested even without MST support.  Let's code them
+>>>>>> at first, then add MST support.
+>>>>>
+>>>>> This patch actually doesn't depend on MST. I use the dev_num to
+>>>>> determine how many PCMs to be created.
+>>>>>
+>>>>> To Split the patch, how about I create the PCM number based the pin
+>>>>> number in the patch?
+>>>>>
+>>>>>>
+>>>>>> Also, it's an open question whether we apply the dynamic attach/detach
+>>>>>> to all devices that use the generic hdmi framework.  It means
+>>>>>> including AMD and Nvidia.  You hard-coded it to be applied
+>>>>>> unconditionally.  Would it break anything potentially...?
+>>>>>
+>>>>> I have no other verdors platforms to test. But it seems to be OK on
+>>>>> other platforms. The impact is, i think, it will stop the stream when
+>>>>> monitor is disconnected. Should we apply the code by judging whehter
+>>>>> it is Intel platform?
+>>>>
+>>>> If you are concerning the impact on other vendors, what about I create
+>>>> a separate mst codec driver? In the driver, I will still use virtual
+>>>> pin, but other vendors platform will not be supported at the moment.
+>>>> Other vendors can add their patches to the new codec driver to support
+>>>> their own mst audio.
+>>>
+>>> No, it's not the option.  Such a behavior change is the big burden to
+>>> user-space.  We should provide consistent behavior as much as
+>>> possible.
+>>
+>> OK, I see. What do you think if I judge the platform before using DP
+>> MST mode?
+>
+> Yes, I'd love to have more tests before doing any radical changes.
+>
+> As already mentioned, basically your work has to individual changes:
+> the stream validation and dynamic disconnect per monitor plug/unplug,
+> and the MST support via dynamic PCM assignment.
+>
+> The former is definitely a generic framework, and it's worth to have
+> even without MST support.  OTOH, the former *is* the biggest change
+> from user-space POV.  User won't notice much about the latter -- the
+> usage pattern should be almost same.  So, it's the former change we
+> need to test and evaluate carefully.
 
-> 
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> ---
->  include/topology.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/topology.h b/include/topology.h
-> index b631871..993537c 100644
-> --- a/include/topology.h
-> +++ b/include/topology.h
-> @@ -21,6 +21,8 @@
->  #ifndef __ALSA_TOPOLOGY_H
->  #define __ALSA_TOPOLOGY_H
->  
-> +#include <stdint.h>
-> +
->  #ifdef __cplusplus
->  extern "C" {
->  #endif
-> @@ -665,7 +667,7 @@ struct snd_tplg_stream_template {
->   */
->  struct snd_tplg_stream_caps_template {
->  	const char *name;	/*!< name of the stream caps */
-> -	__le64 formats;	/*!< supported formats SNDRV_PCM_FMTBIT_* */
-> +	uint64_t formats;	/*!< supported formats SNDRV_PCM_FMTBIT_* */
->  	unsigned int rates;	/*!< supported rates SNDRV_PCM_RATE_* */
->  	unsigned int rate_min;	/*!< min rate */
->  	unsigned int rate_max;	/*!< max rate */
-> -- 
-> 2.5.0
-> 
-> 
+OK. I will split the patch into 2 parts: one is dynamic disconnect, 
+the other is MST support.
 
--- 
+For the safety, the dynamic assignment and MST support will only be 
+used on Intel platforms: HSW, BDW, SKL. I can do the test on the 
+platforms.
+
+Best Regards,
+Libin
+
+>
+>
+> Takashi
+>
