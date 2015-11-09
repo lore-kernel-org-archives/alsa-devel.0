@@ -1,68 +1,82 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
-Date: Mon, 9 Nov 2015 14:02:25 +0000
-Message-ID: <20151109140225.GA26072@sirena.org.uk>
-References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <20151105152736.GO18409@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
- <20151106112141.GE18409@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CA3D@SW-EX-MBX01.diasemi.com>
- <20151106115451.GG18409@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CAAD@SW-EX-MBX01.diasemi.com>
- <20151108103429.GC6746@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CC6C@SW-EX-MBX01.diasemi.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5645: Power up the RC clock to
+ make sure the speaker volume adjust properly
+Date: Mon, 9 Nov 2015 14:09:05 +0000
+Message-ID: <20151109140905.GB26072@sirena.org.uk>
+References: <1446724551-27762-1-git-send-email-oder_chiou@realtek.com>
+ <20151105121230.GD18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA2BE6@RTITMBSV03.realtek.com.tw>
+ <20151106104433.GB18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA36C9@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460CC6C-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1330094800915001292=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CAC026051F
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 15:09:28 +0100 (CET)
+In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FA36C9@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---u3/rZRmxL6MmkK24
+--===============1330094800915001292==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kXdP64Ggrk/fb43R"
+Content-Disposition: inline
+
+
+--kXdP64Ggrk/fb43R
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 09, 2015 at 12:28:39PM +0000, Opensource [Adam Thomson] wrote:
-> On November 8, 2015 10:34, Mark Brown wrote:
+On Mon, Nov 09, 2015 at 03:13:09AM +0000, Oder Chiou wrote:
 
-> > What I'm trying to figure out here is if this depends on the audio
-> > routing at runtime or if it's got dedicated configuration?
+> > What makes you claim that this is "essential in case of the operation of kcontrol
+> > continuously"?
 
-> This feature is available for any/all mics connected. Which mics are enabled
-> is a runtime configuration of routing, so to me it makes sense also that we can
-> configure which channel triggers an event, based on our scenario at that time.
+> Like the Chrome OS, while the user pull the volume bar up or down, the
+> kcontrol will be manipulated by the UI continuously and seamlessly. In this
+> kind of case, if the "cancel_delayed_work_sync" is removed, the
+> queue_delayed_work will be failed within 200ms after the previous
+> queue_delayed_work, and it will not be able to make sure the power of the
+> RC clock enabled at least 200ms, thanks.
 
-The general userspace expectation is that the detection is always active
-and consistent rather than varying at runtime - runtime variability
-might be a bit surprising for it, and even then variability in what is
-detected based on other settings is a bit surprising.  If the hardware
-is that limited I guess it's about all that can be done but I'm still
-not clear what the use cases are for configuring the levels (as opposed
-ot the routing).
+No, it won't.  To repeat what I said if you just schedule the delayed
+work again without cancelling then the right thing will happen.
 
---u3/rZRmxL6MmkK24
+--kXdP64Ggrk/fb43R
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWQKdtAAoJECTWi3JdVIfQukQH/0UPcE6SnYsX8OCuFbuTTYqV
-xq8SW6lLVQnx2AavoQVlPu9bLvOpD73XzvI738Emh8DysF+kSWnxrVHhTYOkykoG
-uDYRm+LLoN0BFWDZ0pYHURgMotu3qr7xO2x3duO/serWwxcZIn1kIuHLgw/ygjAW
-eriSr9tzUYEm8Cp/actPWLBmEpfhrrQqg4RJYluJezW7OPYTOMCirdMzGCnr+7Wq
-8+gBn6bkkq9i7BaPCPIWGrib8eoakI6WihIYkKtSz5Zhxfq6AVPw9mhVlJ9EMvyX
-Rb52Ox7KkDrookIqtWf/Imrs4PQNvS3olLX6EUnr2aimUA58zVh0xXx2dB5GGwM=
-=g5xJ
+iQEcBAEBCAAGBQJWQKj7AAoJECTWi3JdVIfQAI8H/1vyXMSy5Uc0efVZn4ZcvgDC
+20Ofv6pN5P2Rvws2rDeF+jiHYrAmpMXzO4t01bFVCpEdVvjhw8rrxpZ5SudKJRPG
+jugMY8VlZphiVuAPY72QQmfhjO8er6Kp14owSL6a7JjhryHXSe45nS55st7oNEg1
+UOMx1WaWXmFy3qLSJpQrNV4Uee0T806g1XfZcm9Rkn0z/TxsSzpcHa2m9mz3Mm5U
+Rcfnmch8pRXHEFH5EEy4Do5bXniYXIuZVlEMbYTWnH11i+aEbnlEmNJVQVngokF9
+M18rBaW9g9RBoFGz2uf6KkQ6bEXXXiJz8UWwLBFwkqX8uYuMX4auwjVIswD58a0=
+=XAjX
 -----END PGP SIGNATURE-----
 
---u3/rZRmxL6MmkK24--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--kXdP64Ggrk/fb43R--
+
+--===============1330094800915001292==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1330094800915001292==--
