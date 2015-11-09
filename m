@@ -1,16 +1,15 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH] ASoC: fsl-sai: set xCR4/xCR5/xMR for SAI
-	master mode
-Date: Mon, 9 Nov 2015 19:03:13 +0800
-Message-ID: <090f3aafd8c07a5a29e97c568c6fc0602a0bd5ad.1447066800.git.zidan.wang@freescale.com>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] usb: Add native DSD support for Aune X1S
+Date: Mon,  9 Nov 2015 12:13:55 +0100
+Message-ID: <1447067635-7672-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 626B72619FB
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 12:01:00 +0100 (CET)
+Received: from lb3-smtp-cloud6.xs4all.net (lb3-smtp-cloud6.xs4all.net
+ [194.109.24.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BE9626153C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 12:14:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
-error sometimes.
+This patch adds native DSD support for the Aune X1S 32BIT/384 DSD DAC
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
 ---
- sound/soc/fsl/fsl_sai.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 14c3078..9d74ff3 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -427,6 +427,35 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
- 
-+	/*
-+	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-+	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-+	 * RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
-+	 * error.
-+	 */
-+
-+	if (!sai->is_slave_mode) {
-+		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
-+			regmap_update_bits(sai->regmap, FSL_SAI_TCR4,
-+				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+				val_cr4);
-+			regmap_update_bits(sai->regmap, FSL_SAI_TCR5,
-+				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-+				FSL_SAI_CR5_FBT_MASK, val_cr5);
-+			regmap_write(sai->regmap, FSL_SAI_TMR,
-+				~0UL - ((1 << channels) - 1));
-+		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
-+			regmap_update_bits(sai->regmap, FSL_SAI_RCR4,
-+				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+				val_cr4);
-+			regmap_update_bits(sai->regmap, FSL_SAI_RCR5,
-+				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-+				FSL_SAI_CR5_FBT_MASK, val_cr5);
-+			regmap_write(sai->regmap, FSL_SAI_RMR,
-+				~0UL - ((1 << channels) - 1));
-+		}
-+	}
-+
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
- 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
- 			   val_cr4);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 4897ea1..5ca80e7 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1274,6 +1274,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	case USB_ID(0x20b1, 0x000a): /* Gustard DAC-X20U */
+ 	case USB_ID(0x20b1, 0x2009): /* DIYINHK DSD DXD 384kHz USB to I2S/DSD */
+ 	case USB_ID(0x20b1, 0x2023): /* JLsounds I2SoverUSB */
++	case USB_ID(0x20b1, 0x3023): /* Aune X1S 32BIT/384 DSD DAC */
+ 		if (fp->altsetting == 3)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
 -- 
-1.9.1
+2.1.0
