@@ -1,22 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 2/6] ASoC: hdac-hdmi: Add hdmi driver
-Date: Mon, 9 Nov 2015 13:43:56 +0530
-Message-ID: <20151109081356.GF22709@localhost>
-References: <1445931737-30393-1-git-send-email-vinod.koul@intel.com>
- <1445931737-30393-3-git-send-email-vinod.koul@intel.com>
- <20151101030231.GB17819@sirena.org.uk>
- <20151102100642.GK21326@localhost>
- <20151104144845.GK1717@sirena.org.uk>
- <20151109043919.GC22709@localhost> <s5hpozjk3v4.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.1.0 release
+Date: Mon, 9 Nov 2015 09:29:43 +0100
+Message-ID: <56405977.8060405@perex.cz>
+References: <54EF4E28.4060204@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D785C260527
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:10:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hpozjk3v4.wl-tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B406260527
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:29:44 +0100 (CET)
+Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C98C0149F0C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:29:43 +0100 (CET)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+ by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+ A9193853C2
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 09:29:43 +0100 (CET)
+In-Reply-To: <54EF4E28.4060204@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,87 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, patches.audio@intel.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, liam.r.girdwood@linux.intel.com, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2015 at 08:51:11AM +0100, Takashi Iwai wrote:
-> On Mon, 09 Nov 2015 05:39:20 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Wed, Nov 04, 2015 at 02:48:45PM +0000, Mark Brown wrote:
-> > > > > > +	/*
-> > > > > > +	 * Currently on board only 1 pin and 1 converter enabled for
-> > > > > > +	 * simplification, more will be added eventually
-> > > > > > +	 * So using fixed map for dai_id:pin:cvt
-> > > > > > +	 */
-> > > > > > +	return hdac_hdmi_init_dai_map(edev, &hdmi->dai_map[0], hdmi->pin_nid[0],
-> > > > > > +			hdmi->cvt_nid[0], 0);
-> > > 
-> > > > > I'm not entirely sure I understand what this is all doing.  It looks
-> > > > > like it's trying to translate the HDA widget map into a DAPM map which
-> > > > > seems sensible but it appears it's making some simplifying assumptions
-> > > > > about the device it's dealing with?
-> > > 
-> > > > The device is actually quite simple and yes we simplified even further by
-> > > > ignoring multiple pins for now. We will keep adding more features and adding
-> > > > stuff to map as we go along..
-> > > 
-> > > That's not giving me a clear picture of what the code is doing or how
-> > > we're working with the device - we've got some code parsing the HDA
-> > > graph, some code hard coding things and I don't really know why or how
-> > > anything fits together so I'm a bit nonplussed about what I'm reviewing
-> > > here.
-> > 
-> > Sorry for late reply, somehow seemed to miss this earlier..
-> > 
-> > Here is the complete picture let me know if things are not clear
-> > 
-> > This code has below structure (from the specs).
-> > 
-> > 			Root Node (0)
-> > 			     |
-> > 			   AFG  (1)
-> > 			     |
-> > 	Converter (2) ----------------	Pin Widget (5)
-> > 			     |
-> > 	Converter (3) ----------------	Pin Widget (6)
-> > 			     |
-> > 	Converter (4) ----------------	Pin Widget (7)
-> > 			     |
-> > 			Vendor Widget (8)
-> > 
-> > Numbers in braces indicated NID values for these nodes
-> > 
-> > Currently we are using only one pin which is used on our ref board and seems
-> > to be default config.
-> > After the base driver is done we will add code to enumerate all the nodes.
-> > Based on node capability we will parse and add widgets for all the queried
-> > nodes. So for this case will be 3 nodes and 3 widgets created
-> > 
-> > Since coding for each widget would not make sense so we created a generic
-> > function hdac_hdmi_init_dai_map() based on the node passed which we will use
-> > later for all the queried pins
-> 
-> Note that the mapping between converters and pins are arbitrary on
-> many HDMI/DP codecs.  Although it's implicitly implemented as 1:1 on a
-> few Intel codecs (in GPU), with the extension of MST, the routing will
-> be again dynamic, too.  Also, many codecs have amp on converter or pin
-> in addition.
+Hello all,
 
-Yes that is why we didn't say converter pin pair although by looking at
-diagram one can assume that and in many case it is true but we should not
-rely on this in our code
+  the userspace packages (except alsa-firmware,alsa-oss and pyalsa) were
+released today. This release introduces the tinycompress package. You
+may download them from the ALSA website http://www.alsa-project.org or
+directly from the FTP server ftp://ftp.alsa-project.org/pub .
 
-> Since it's targeted only for ASoC skylake and upward, it's fine to
-> start from the simplest assumption.  But you need to make clear how
-> generic your driver will support in feature, as the code complexity
-> will depend on it.
+Full list of changes:
 
-So right now we are going to use 1:1 mapping as simple design but the
-thinking from us is that we should add DAPM widgets for converters and pins
-and routing to pin should be decided by DAPM map.
-The converter to pin configuration should be derived by the user settings.
+  http://www.alsa-project.org/main/index.php/Changes_v1.0.29_v1.1.0
+
+			Have fun,
+				Jaroslav
 
 -- 
-~Vinod
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
