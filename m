@@ -1,14 +1,17 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: nau8825: add pm function
-Date: Mon,  9 Nov 2015 12:56:00 -0800
-Message-ID: <1447102560-14243-1-git-send-email-yang.a.fang@intel.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix TDM slot rx/tx
+	mask associations
+Date: Mon, 9 Nov 2015 23:38:38 +0200
+Message-ID: <5641125E.5030804@ti.com>
+References: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 80BB92604F8
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 21:57:36 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id F40872604F8
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 22:38:43 +0100 (CET)
+In-Reply-To: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,71 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, james.ausmus@intel.com, yang.a.fang@intel.com, srinivas.sripathi@intel.com, sathyanarayana.nujella@intel.com, vedang.patel@intel.com, yong.zhi@intel.com
+To: Andreas Dannenberg <dannenberg@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
 
-This patch adds pm function and fixes following issues
-1.i2c timeout after resume, after resume we saw interrupt handler
-is called prior to i2c controller is resumed.This causes i2c timeout
-2.no audio after resume
+For what little there is to review.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
----
- sound/soc/codecs/nau8825.c |   31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+I only had HW that worked with symmetric masks, so I did not hit this 
+myself. Should have hacked something to codec end to be able to test 
+asymetric masks at McASP end.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 7fc7b4e..c1b87c5 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1271,6 +1271,36 @@ static int nau8825_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int nau8825_suspend(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct nau8825 *nau8825 = dev_get_drvdata(dev);
-+
-+	disable_irq(client->irq);
-+	regcache_cache_only(nau8825->regmap, true);
-+	regcache_mark_dirty(nau8825->regmap);
-+
-+	return 0;
-+}
-+
-+static int nau8825_resume(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct nau8825 *nau8825 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(nau8825->regmap, false);
-+	regcache_sync(nau8825->regmap);
-+	enable_irq(client->irq);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops nau8825_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(nau8825_suspend, nau8825_resume)
-+};
-+
- static const struct i2c_device_id nau8825_i2c_ids[] = {
- 	{ "nau8825", 0 },
- 	{ }
-@@ -1297,6 +1327,7 @@ static struct i2c_driver nau8825_driver = {
- 		.name = "nau8825",
- 		.of_match_table = of_match_ptr(nau8825_of_ids),
- 		.acpi_match_table = ACPI_PTR(nau8825_acpi_match),
-+		.pm = &nau8825_pm,
- 	},
- 	.probe = nau8825_i2c_probe,
- 	.remove = nau8825_i2c_remove,
--- 
-1.7.9.5
+Thanks,
+Jyri
+
+On 11/09/15 20:19, Andreas Dannenberg wrote:
+> Fixes the associations between the tx_mask and rx_mask and the associated
+> playback / capture streams during setting of the TDM slot. With this
+> patch in place it is now possible for example to only populate tx_mask
+> (leaving rx_mask as 0) for output-only codecs to control the TDM slot(s)
+> the McASP serial port uses for transmit. Before that, this scenario
+> would incorrectly rely on the rx_mask for this.
+>
+> Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
+> ---
+>   sound/soc/davinci/davinci-mcasp.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+> index 4495a40..caa0beb 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -681,8 +681,8 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
+>   	}
+>
+>   	mcasp->tdm_slots = slots;
+> -	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
+> -	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
+> +	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
+> +	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
+>   	mcasp->slot_width = slot_width;
+>
+>   	return davinci_mcasp_set_ch_constraints(mcasp);
+>
