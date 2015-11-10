@@ -1,67 +1,49 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix TDM slot rx/tx
-	mask associations
-Date: Mon, 9 Nov 2015 23:38:38 +0200
-Message-ID: <5641125E.5030804@ti.com>
-References: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
+From: Simran Rai <ssimran@broadcom.com>
+Subject: [PATCH v4 0/3]ASoC: cygnus: Add audio support for Broadcom Cygnus SoC
+Date: Mon, 9 Nov 2015 16:17:41 -0800
+Message-ID: <1447114664-21799-1-git-send-email-ssimran@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id F40872604F8
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2015 22:38:43 +0100 (CET)
-In-Reply-To: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Dannenberg <dannenberg@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Simran Rai <ssimran@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
+Hi,
 
-For what little there is to review.
+This patchset contains audio support for Broadcom's Cygnus SoC. It
+contains DT bindings and core audio driver. The audio driver
+supports both capture and playback of Audio PCM samples over I2S/TDM
+interface and provides playback support over SPDIF interface.
 
-I only had HW that worked with symmetric masks, so I did not hit this 
-myself. Should have hacked something to codec end to be able to test 
-asymetric masks at McASP end.
+This patchset is derived from a previously submitted patchset:
+http://lkml.iu.edu/hypermail/linux/kernel/1503.3/05434.html
 
-Thanks,
-Jyri
+This patchset has been tested on Cygnus wireless audio bcm958305K board.
+It is based on v4.3-rc5  and is available from github:
 
-On 11/09/15 20:19, Andreas Dannenberg wrote:
-> Fixes the associations between the tx_mask and rx_mask and the associated
-> playback / capture streams during setting of the TDM slot. With this
-> patch in place it is now possible for example to only populate tx_mask
-> (leaving rx_mask as 0) for output-only codecs to control the TDM slot(s)
-> the McASP serial port uses for transmit. Before that, this scenario
-> would incorrectly rely on the rx_mask for this.
->
-> Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-> ---
->   sound/soc/davinci/davinci-mcasp.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-> index 4495a40..caa0beb 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -681,8 +681,8 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
->   	}
->
->   	mcasp->tdm_slots = slots;
-> -	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
-> -	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
-> +	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
-> +	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
->   	mcasp->slot_width = slot_width;
->
->   	return davinci_mcasp_set_ch_constraints(mcasp);
->
+repo: https://github.com/Broadcom/cygnus-linux/tree/cygnus-sound-v4
+
+Changes from v3:
+- Fix the subject lines to match the style for the subsystem
+
+Simran Rai (3):
+  ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
+  ASoC: cygnus: Add Cygnus audio DAI driver
+  ASoC: cygnus: Add Cygnus audio DMA driver
+
+ .../bindings/sound/brcm,cygnus-audio.txt           |   54 +
+ sound/soc/bcm/Kconfig                              |    9 +
+ sound/soc/bcm/Makefile                             |    5 +
+ sound/soc/bcm/cygnus-pcm.c                         |  859 +++++++++++
+ sound/soc/bcm/cygnus-ssp.c                         | 1508 ++++++++++++++++++++
+ sound/soc/bcm/cygnus-ssp.h                         |  129 ++
+ 6 files changed, 2564 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ create mode 100644 sound/soc/bcm/cygnus-pcm.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.h
+
+-- 
+1.7.9.5
