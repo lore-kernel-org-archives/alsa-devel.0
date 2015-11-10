@@ -1,18 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: damp: Reset dapm wcache after
  freeing damp widgets
-Date: Tue, 10 Nov 2015 10:37:10 +0000
-Message-ID: <20151110103710.GI2549@ck-lbox>
+Date: Tue, 10 Nov 2015 12:31:44 +0100
+Message-ID: <5641D5A0.60606@metafoo.de>
 References: <1447075826-641-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 23ACF2606CA
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 11:52:48 +0100 (CET)
-Content-Disposition: inline
+Received: from smtp-out-188.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F7082625ED
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 12:31:47 +0100 (CET)
 In-Reply-To: <1447075826-641-1-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,22 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2015 at 03:30:26PM +0200, Jyri Sarha wrote:
-> If there is anything in damp->path_source_cache or
-> damp->path_sink_cache, it can not be valid after the widgets have been
-> freed. Without this patch a repeated remove and load of a machine
-> driver may cause NULL pointer reference in dapm_wcache_lookup() when a
-> freed widget, not belonging to any list, is haunting in the wcache.
-> 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> Reported-by: Felipe Balbi <balbi@ti.com>
-> ---
+On 11/09/2015 02:30 PM, Jyri Sarha wrote:
+[...]
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index ff8bda4..d78db59 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -2286,6 +2286,9 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+>  			continue;
+>  		snd_soc_dapm_free_widget(w);
+>  	}
+> +
+> +	dapm->path_sink_cache.widget = NULL;
+> +	dapm->path_source_cache.widget = NULL;
+>  }
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Looks good, but this is not the only place where we free widgets. Can you
+add a helper function snd_soc_dapm_reset_cache() (or similar) and then call
+this from dapm_free_widgets() as well as snd_soc_tplg_widget_remove_all().
 
-Thanks,
-Charles
+- Lars
