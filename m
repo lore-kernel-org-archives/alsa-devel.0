@@ -1,68 +1,54 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: Move 22M/24M clock control into I2S ops
-Date: Tue, 10 Nov 2015 15:26:12 +0800
-Message-ID: <1447140372-10048-1-git-send-email-koro.chen@mediatek.com>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Subject: [PATCH 2/3] ASoC: rockchip: add playback property
+Date: Tue, 10 Nov 2015 15:32:08 +0800
+Message-ID: <1447140729-18267-3-git-send-email-sugar.zhang@rock-chips.com>
+References: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3659C260522
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 08:32:26 +0100 (CET)
+In-Reply-To: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-22M/24M clocks are only required for I2S, so move the control to
-I2S DAI ops.
+rockchip,playback-channels: max playback channels, 8 channels default.
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 ---
- sound/soc/mediatek/mtk-afe-pcm.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index f5baf3c..7f71343 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -299,8 +299,6 @@ static int mtk_afe_dais_enable_clks(struct mtk_afe *afe,
- 			dev_err(afe->dev, "Failed to enable m_ck\n");
- 			return ret;
- 		}
--		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 2267d24..b7f3a93 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -19,6 +19,7 @@ Required properties:
+ - clock-names: should contain followings:
+    - "i2s_hclk": clock for I2S BUS
+    - "i2s_clk" : clock for I2S controller
++- rockchip,playback-channels: max playback channels, if not set, 8 channels default.
+ - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
  
- 	if (b_ck) {
-@@ -340,12 +338,8 @@ static int mtk_afe_dais_set_clks(struct mtk_afe *afe,
- static void mtk_afe_dais_disable_clks(struct mtk_afe *afe,
- 				      struct clk *m_ck, struct clk *b_ck)
- {
--	if (m_ck) {
--		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
-+	if (m_ck)
- 		clk_disable_unprepare(m_ck);
--	}
- 	if (b_ck)
- 		clk_disable_unprepare(b_ck);
- }
-@@ -360,6 +354,8 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
- 		return 0;
- 
- 	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
- 	return 0;
- }
- 
-@@ -373,6 +369,9 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
- 		return;
- 
- 	mtk_afe_set_i2s_enable(afe, false);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
- 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
- 
- 	/* disable AFE */
+ Example for rk3288 I2S controller:
+@@ -31,5 +32,6 @@ i2s@ff890000 {
+ 	dma-names = "tx", "rx";
+ 	clock-names = "i2s_hclk", "i2s_clk";
+ 	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
++	rockchip,playback-channels = <8>;
+ 	rockchip,capture-channels = <2>;
+ };
 -- 
-1.7.9.5
+2.3.6
