@@ -1,22 +1,13 @@
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: [PATCH 0/3] ASoC: rockchip: i2s: compatible with different chips
-Date: Tue, 10 Nov 2015 15:32:06 +0800
-Message-ID: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Subject: [PATCH 1/3] ASoC: rockchip: i2s: compatible with different chips
+Date: Tue, 10 Nov 2015 15:32:07 +0800
+Message-ID: <1447140729-18267-2-git-send-email-sugar.zhang@rock-chips.com>
+References: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
 there maybe more than one i2s module inside chip, and these i2s modules
@@ -32,17 +23,54 @@ capture property to specify these values.
 there are default channels configuration in driver: 8 channels playback
 and 2 channels capture. if not add property, we use the default values.
 
-Sugar Zhang (3):
-  ASoC: rockchip: i2s: compatible with different chips
-  ASoC: rockchip: add playback property
-  ARM: dts: rockchip: add channels properties for i2s
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
- .../devicetree/bindings/sound/rockchip-i2s.txt       |  2 ++
- arch/arm/boot/dts/rk3066a.dtsi                       |  6 ++++++
- arch/arm/boot/dts/rk3188.dtsi                        |  2 ++
- arch/arm/boot/dts/rk3288.dtsi                        |  2 ++
- sound/soc/rockchip/rockchip_i2s.c                    | 20 +++++++++++++++-----
- 5 files changed, 27 insertions(+), 5 deletions(-)
-
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 58ee645..ec88e94 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -451,6 +451,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
+ 	struct rk_i2s_dev *i2s;
++	struct snd_soc_dai_driver *soc_dai;
+ 	struct resource *res;
+ 	void __iomem *regs;
+ 	int ret;
+@@ -511,17 +512,26 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 			goto err_pm_disable;
+ 	}
+ 
+-	/* refine capture channels */
++	soc_dai = devm_kzalloc(&pdev->dev,
++			       sizeof(*soc_dai), GFP_KERNEL);
++	if (!soc_dai)
++		return -ENOMEM;
++
++	memcpy(soc_dai, &rockchip_i2s_dai, sizeof(*soc_dai));
++	if (!of_property_read_u32(node, "rockchip,playback-channels", &val)) {
++		if (val >= 2 && val <= 8)
++			soc_dai->playback.channels_max = val;
++	}
++
+ 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
+ 		if (val >= 2 && val <= 8)
+-			rockchip_i2s_dai.capture.channels_max = val;
+-		else
+-			rockchip_i2s_dai.capture.channels_max = 2;
++			soc_dai->capture.channels_max = val;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &rockchip_i2s_component,
+-					      &rockchip_i2s_dai, 1);
++					      soc_dai, 1);
++
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI\n");
+ 		goto err_suspend;
 -- 
 2.3.6
