@@ -1,91 +1,48 @@
-From: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH 3/3] ARM: dts: rockchip: add channels properties for i2s
-Date: Tue, 10 Nov 2015 15:32:09 +0800
-Message-ID: <1447140729-18267-4-git-send-email-sugar.zhang@rock-chips.com>
-References: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Subject: [PATCH 0/3] ASoC: rockchip: i2s: compatible with different chips
+Date: Tue, 10 Nov 2015 15:32:06 +0800
+Message-ID: <1447140729-18267-1-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1447140729-18267-1-git-send-email-sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
-Cc: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-add playback and capture properties to compatible various chips.
+there maybe more than one i2s module inside chip, and these i2s modules
+have different channels features.
 
-Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
----
- arch/arm/boot/dts/rk3066a.dtsi | 6 ++++++
- arch/arm/boot/dts/rk3188.dtsi  | 2 ++
- arch/arm/boot/dts/rk3288.dtsi  | 2 ++
- 3 files changed, 10 insertions(+)
+for example: there are 3 i2s in rk3066, one support 8 channels playback
+and 2 channels capture, but the others only support 2 channels playback
+and 2 channels capture.
 
-diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 946f187..1003f9c 100644
---- a/arch/arm/boot/dts/rk3066a.dtsi
-+++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -103,6 +103,8 @@
- 		dma-names = "tx", "rx";
- 		clock-names = "i2s_hclk", "i2s_clk";
- 		clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+		rockchip,playback-channels = <8>;
-+		rockchip,capture-channels = <2>;
- 		status = "disabled";
- 	};
- 
-@@ -118,6 +120,8 @@
- 		dma-names = "tx", "rx";
- 		clock-names = "i2s_hclk", "i2s_clk";
- 		clocks = <&cru HCLK_I2S1>, <&cru SCLK_I2S1>;
-+		rockchip,playback-channels = <2>;
-+		rockchip,capture-channels = <2>;
- 		status = "disabled";
- 	};
- 
-@@ -133,6 +137,8 @@
- 		dma-names = "tx", "rx";
- 		clock-names = "i2s_hclk", "i2s_clk";
- 		clocks = <&cru HCLK_I2S2>, <&cru SCLK_I2S2>;
-+		rockchip,playback-channels = <2>;
-+		rockchip,capture-channels = <2>;
- 		status = "disabled";
- 	};
- 
-diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
-index 3163042..b9b6b3a 100644
---- a/arch/arm/boot/dts/rk3188.dtsi
-+++ b/arch/arm/boot/dts/rk3188.dtsi
-@@ -118,6 +118,8 @@
- 		dma-names = "tx", "rx";
- 		clock-names = "i2s_hclk", "i2s_clk";
- 		clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+		rockchip,playback-channels = <2>;
-+		rockchip,capture-channels = <2>;
- 		status = "disabled";
- 	};
- 
-diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-index 4e7c6b7..e7ce9f1 100644
---- a/arch/arm/boot/dts/rk3288.dtsi
-+++ b/arch/arm/boot/dts/rk3288.dtsi
-@@ -669,6 +669,8 @@
- 		clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s0_bus>;
-+		rockchip,playback-channels = <8>;
-+		rockchip,capture-channels = <2>;
- 		status = "disabled";
- 	};
- 
+in order to compatible with these various chips, we add playback and
+capture property to specify these values.
+
+there are default channels configuration in driver: 8 channels playback
+and 2 channels capture. if not add property, we use the default values.
+
+Sugar Zhang (3):
+  ASoC: rockchip: i2s: compatible with different chips
+  ASoC: rockchip: add playback property
+  ARM: dts: rockchip: add channels properties for i2s
+
+ .../devicetree/bindings/sound/rockchip-i2s.txt       |  2 ++
+ arch/arm/boot/dts/rk3066a.dtsi                       |  6 ++++++
+ arch/arm/boot/dts/rk3188.dtsi                        |  2 ++
+ arch/arm/boot/dts/rk3288.dtsi                        |  2 ++
+ sound/soc/rockchip/rockchip_i2s.c                    | 20 +++++++++++++++-----
+ 5 files changed, 27 insertions(+), 5 deletions(-)
+
 -- 
 2.3.6
