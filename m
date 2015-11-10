@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: damp: Reset dapm wcache after
- freeing damp widgets
-Date: Tue, 10 Nov 2015 12:31:44 +0100
-Message-ID: <5641D5A0.60606@metafoo.de>
-References: <1447075826-641-1-git-send-email-jsarha@ti.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5645: Use the mod_delayed_work instead
+	of the queue_delayed_work and cancel_delayed_work_sync
+Date: Tue, 10 Nov 2015 19:35:18 +0800
+Message-ID: <1447155318-31001-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-220.synserver.de
- [212.40.185.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F7082625ED
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 12:31:47 +0100 (CET)
-In-Reply-To: <1447075826-641-1-git-send-email-jsarha@ti.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28B712625ED
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 12:35:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, broonie@kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/09/2015 02:30 PM, Jyri Sarha wrote:
-[...]
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index ff8bda4..d78db59 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2286,6 +2286,9 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
->  			continue;
->  		snd_soc_dapm_free_widget(w);
->  	}
-> +
-> +	dapm->path_sink_cache.widget = NULL;
-> +	dapm->path_source_cache.widget = NULL;
->  }
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Looks good, but this is not the only place where we free widgets. Can you
-add a helper function snd_soc_dapm_reset_cache() (or similar) and then call
-this from dapm_free_widgets() as well as snd_soc_tplg_widget_remove_all().
-
-- Lars
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 672fafd..4e81181 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -572,14 +572,12 @@ static int rt5645_spk_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 
+-	cancel_delayed_work_sync(&rt5645->rcclock_work);
+-
+ 	regmap_update_bits(rt5645->regmap, RT5645_MICBIAS,
+ 		RT5645_PWR_CLK25M_MASK, RT5645_PWR_CLK25M_PU);
+ 
+ 	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 
+-	queue_delayed_work(system_power_efficient_wq, &rt5645->rcclock_work,
++	mod_delayed_work(system_power_efficient_wq, &rt5645->rcclock_work,
+ 		msecs_to_jiffies(200));
+ 
+ 	return ret;
+-- 
+1.8.1.1.439.g50a6b54
