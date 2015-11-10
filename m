@@ -1,61 +1,104 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Unregister a card from userspace?
-Date: Tue, 10 Nov 2015 08:55:48 +0100
-Message-ID: <alpine.DEB.2.02.1511100852180.15344@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
- <56408259.2030604@felipetonello.com>
+From: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH 12/13] [media] omap3isp: Support for deferred probing when
+ requesting DMA channel
+Date: Tue, 10 Nov 2015 09:56:17 +0200
+Message-ID: <5641A321.2070209@ti.com>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-13-git-send-email-peter.ujfalusi@ti.com>
+ <11319647.puY9n5DpsR@avalon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ACE2260591
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 08:55:51 +0100 (CET)
-In-Reply-To: <56408259.2030604@felipetonello.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Felipe Ferreri Tonello <eu@felipetonello.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <11319647.puY9n5DpsR@avalon>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laurent Pinchart <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>
+Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Laurent,
 
-On Mon, 9 Nov 2015, Felipe Ferreri Tonello wrote:
+On 11/09/2015 09:50 PM, Laurent Pinchart wrote:
+> Hi Peter,
+>=20
+> Thank you for the patch.
+>=20
+> What happened to this patch series ? It looks like=20
+> dma_request_slave_channel_compat_reason() isn't in mainline, so I can=
+'t apply=20
+> this patch.
+>=20
+> I'll mark this patch as deferred in patchwork, please resubmit it if =
+you=20
+> resubmit the series
 
-> > while insmodding it works fine, I can't rmmod it because once
-> > snd_soc_register_card() has been called, it has a usage count of 2 and
-> > thus cannot be rmmod:ed.
-> =
+The original series - containing this patch - generated a bit of discus=
+sion
+and it seams that I will need to do bigger change in the dmaengine API
+compared to this.
+I think this patch can be dropped as the dmaengine changes will not go =
+in as
+they were.
 
-> You have to unregister that card upon freeing your module.
+(and by the look of it the issue you're trying to fix
+> still exists, so it would be nice if you could get it eventually fixe=
+d).
 
-But that is precisely the problem. The framework that manages the =
+Yes, the issue still valid for the OMAP/DaVinci driver the series was t=
+ouching.
 
-insertion and deletion of modules notes that my module has a usage count =
+I will try to send a new series in the coming weeks.
 
-that is > 0 (in my case it is 2, which I'm convinced is because the card =
+Thanks,
+P=E9ter
+>=20
+> On Tuesday 26 May 2015 16:26:07 Peter Ujfalusi wrote:
+>> Switch to use ma_request_slave_channel_compat_reason() to request th=
+e DMA
+>> channel. Only fall back to pio mode if the error code returned is no=
+t
+>> -EPROBE_DEFER, otherwise return from the probe with the -EPROBE_DEFE=
+R.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+>> CC: Laurent Pinchart <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>
+>> CC: Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+>> ---
+>>  drivers/media/platform/omap3isp/isphist.c | 12 +++++++++---
+>>  1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/omap3isp/isphist.c
+>> b/drivers/media/platform/omap3isp/isphist.c index
+>> 7138b043a4aa..e690ca13af0e 100644
+>> --- a/drivers/media/platform/omap3isp/isphist.c
+>> +++ b/drivers/media/platform/omap3isp/isphist.c
+>> @@ -499,14 +499,20 @@ int omap3isp_hist_init(struct isp_device *isp)
+>>  		if (res)
+>>  			sig =3D res->start;
+>>
+>> -		hist->dma_ch =3D dma_request_slave_channel_compat(mask,
+>> +		hist->dma_ch =3D dma_request_slave_channel_compat_reason(mask,
+>>  				omap_dma_filter_fn, &sig, isp->dev, "hist");
+>> -		if (!hist->dma_ch)
+>> +		if (IS_ERR(hist->dma_ch)) {
+>> +			ret =3D PTR_ERR(hist->dma_ch);
+>> +			if (ret =3D=3D -EPROBE_DEFER)
+>> +				return ret;
+>> +
+>> +			hist->dma_ch =3D NULL;
+>>  			dev_warn(isp->dev,
+>>  				 "hist: DMA channel request failed, using PIO\n");
+>> -		else
+>> +		} else {
+>>  			dev_dbg(isp->dev, "hist: using DMA channel %s\n",
+>>  				dma_chan_name(hist->dma_ch));
+>> +		}
+>>  	}
+>>
+>>  	hist->ops =3D &hist_ops;
+>=20
 
-has been registered with ALSA), and refuses to free the module. So there =
-
-is now way any unregister_card call can be made when my module is freed, =
-
-as due to the usage count it would never even be attempted.
-
-I suppose one way would be to have a specific call into the module which =
-
-unregisters the card, and the module could then be freed as usual =
-
-afterwards, but it seems like a bit of a hack.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
