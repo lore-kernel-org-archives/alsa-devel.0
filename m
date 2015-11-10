@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Fix TDM slot rx/tx mask
-	associations" to the asoc tree
-Date: Tue, 10 Nov 2015 18:53:36 +0000
-Message-ID: <E1ZwE2y-0001if-NG@debutante>
-References: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
+Subject: Applied "ASoC: img: parallel out: Add missing
+	initialiser" to the asoc tree
+Date: Tue, 10 Nov 2015 18:53:37 +0000
+Message-ID: <E1ZwE2z-0001j8-M9@debutante>
+References: <1447164575-32593-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E0EFB265469
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 19:53:42 +0100 (CET)
-In-Reply-To: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EC72260575
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 19:53:45 +0100 (CET)
+In-Reply-To: <1447164575-32593-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Dannenberg <dannenberg@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Fix TDM slot rx/tx mask associations
+   ASoC: img: parallel out: Add missing initialiser
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 1bdd593247ee5a74eb58828a4cf18bdc8a5f1baa Mon Sep 17 00:00:00 2001
-From: Andreas Dannenberg <dannenberg@ti.com>
-Date: Mon, 9 Nov 2015 12:19:19 -0600
-Subject: [PATCH] ASoC: davinci-mcasp: Fix TDM slot rx/tx mask associations
+>From 31bba6f8f7a436e7412dad87822bfbb1321963a8 Mon Sep 17 00:00:00 2001
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Date: Tue, 10 Nov 2015 14:09:35 +0000
+Subject: [PATCH] ASoC: img: parallel out: Add missing initialiser
 
-Fixes the associations between the tx_mask and rx_mask and the associated
-playback / capture streams during setting of the TDM slot. With this
-patch in place it is now possible for example to only populate tx_mask
-(leaving rx_mask as 0) for output-only codecs to control the TDM slot(s)
-the McASP serial port uses for transmit. Before that, this scenario
-would incorrectly rely on the rx_mask for this.
+Add missing initialiser for control_set variable
+in img_prl_out_set_fmt
 
-Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/img/img-parallel-out.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 4495a40a9468..caa0bebcd7f4 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -681,8 +681,8 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
- 	}
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index beda18b18c64..c1610a054d65 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -154,7 +154,7 @@ static int img_prl_out_hw_params(struct snd_pcm_substream *substream,
+ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct img_prl_out *prl = snd_soc_dai_get_drvdata(dai);
+-	u32 reg, control_set;
++	u32 reg, control_set = 0;
  
- 	mcasp->tdm_slots = slots;
--	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
--	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
-+	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
-+	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
- 	mcasp->slot_width = slot_width;
- 
- 	return davinci_mcasp_set_ch_constraints(mcasp);
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
 -- 
 2.6.2
