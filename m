@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Reset dapm wcache after freeing
-	damp widgets" to the asoc tree
-Date: Tue, 10 Nov 2015 18:53:35 +0000
-Message-ID: <E1ZwE2x-0001iB-Pj@debutante>
-References: <1447171962-15736-1-git-send-email-jsarha@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Fix TDM slot rx/tx mask
+	associations" to the asoc tree
+Date: Tue, 10 Nov 2015 18:53:36 +0000
+Message-ID: <E1ZwE2y-0001if-NG@debutante>
+References: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B8930265357
+ by alsa0.perex.cz (Postfix) with ESMTP id E0EFB265469
  for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 19:53:42 +0100 (CET)
-In-Reply-To: <1447171962-15736-1-git-send-email-jsarha@ti.com>
+In-Reply-To: <1447093159-32294-1-git-send-email-dannenberg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, Felipe Balbi <balbi@ti.com>, Mark Brown <broonie@kernel.org>
+To: Andreas Dannenberg <dannenberg@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Reset dapm wcache after freeing damp widgets
+   ASoC: davinci-mcasp: Fix TDM slot rx/tx mask associations
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From fd589a1be20fdd76ef97700dd0185e7a060546dc Mon Sep 17 00:00:00 2001
-From: Jyri Sarha <jsarha@ti.com>
-Date: Tue, 10 Nov 2015 18:12:42 +0200
-Subject: [PATCH] ASoC: dapm: Reset dapm wcache after freeing damp widgets
+>From 1bdd593247ee5a74eb58828a4cf18bdc8a5f1baa Mon Sep 17 00:00:00 2001
+From: Andreas Dannenberg <dannenberg@ti.com>
+Date: Mon, 9 Nov 2015 12:19:19 -0600
+Subject: [PATCH] ASoC: davinci-mcasp: Fix TDM slot rx/tx mask associations
 
-If there is anything in damp->path_source_cache or
-damp->path_sink_cache, it can not be valid after the widgets have been
-freed. Without this patch a repeated remove and load of a machine
-driver may cause NULL pointer reference in dapm_wcache_lookup() when a
-freed widget, not belonging to any list, is haunting in the wcache.
+Fixes the associations between the tx_mask and rx_mask and the associated
+playback / capture streams during setting of the TDM slot. With this
+patch in place it is now possible for example to only populate tx_mask
+(leaving rx_mask as 0) for output-only codecs to control the TDM slot(s)
+the McASP serial port uses for transmit. Before that, this scenario
+would incorrectly rely on the rx_mask for this.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
-Reported-by: Felipe Balbi <balbi@ti.com>
+Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h | 1 +
- sound/soc/soc-dapm.c     | 7 +++++++
- sound/soc/soc-topology.c | 1 +
- 3 files changed, 9 insertions(+)
+ sound/soc/davinci/davinci-mcasp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 7855cfe46b69..95a937eafb79 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -398,6 +398,7 @@ int snd_soc_dapm_del_routes(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_weak_routes(struct snd_soc_dapm_context *dapm,
- 			     const struct snd_soc_dapm_route *route, int num);
- void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w);
-+void snd_soc_dapm_reset_cache(struct snd_soc_dapm_context *dapm);
- 
- /* dapm events */
- void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 016eba10b1ec..7d009428934a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2293,6 +2293,12 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
- 	kfree(w);
- }
- 
-+void snd_soc_dapm_reset_cache(struct snd_soc_dapm_context *dapm)
-+{
-+	dapm->path_sink_cache.widget = NULL;
-+	dapm->path_source_cache.widget = NULL;
-+}
-+
- /* free all dapm widgets and resources */
- static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
- {
-@@ -2303,6 +2309,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
- 			continue;
- 		snd_soc_dapm_free_widget(w);
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 4495a40a9468..caa0bebcd7f4 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -681,8 +681,8 @@ static int davinci_mcasp_set_tdm_slot(struct snd_soc_dai *dai,
  	}
-+	snd_soc_dapm_reset_cache(dapm);
- }
  
- static struct snd_soc_dapm_widget *dapm_find_widget(
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8d7ec80af51b..cce63fe65dd9 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1805,6 +1805,7 @@ void snd_soc_tplg_widget_remove_all(struct snd_soc_dapm_context *dapm,
- 		snd_soc_tplg_widget_remove(w);
- 		snd_soc_dapm_free_widget(w);
- 	}
-+	snd_soc_dapm_reset_cache(dapm);
- }
- EXPORT_SYMBOL_GPL(snd_soc_tplg_widget_remove_all);
+ 	mcasp->tdm_slots = slots;
+-	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = rx_mask;
+-	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = tx_mask;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
++	mcasp->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
+ 	mcasp->slot_width = slot_width;
  
+ 	return davinci_mcasp_set_ch_constraints(mcasp);
 -- 
 2.6.2
