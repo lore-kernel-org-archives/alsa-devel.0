@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: multicodec: No matching channels with system
- with DACs and ADCs on same bus
-Date: Tue, 10 Nov 2015 19:30:08 +0100
-Message-ID: <564237B0.70906@metafoo.de>
-References: <CAG5mAdzz0ZnXx_t3+G+f5FuaqfxmfRfBW6_r3vcX2Rybb3LuYg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: damp: Reset dapm wcache after
+ freeing damp widgets
+Date: Tue, 10 Nov 2015 18:53:08 +0000
+Message-ID: <20151110185308.GK12392@sirena.org.uk>
+References: <1447171962-15736-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4519893087748283794=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-224.synserver.de
- [212.40.185.224])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D63526053D
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 19:30:11 +0100 (CET)
-In-Reply-To: <CAG5mAdzz0ZnXx_t3+G+f5FuaqfxmfRfBW6_r3vcX2Rybb3LuYg@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9AC726053D
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 19:53:16 +0100 (CET)
+In-Reply-To: <1447171962-15736-1-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
- Han" <han.lu@intel.com>, Takashi Iwai <tiwai@suse.de>, =?windows-1252?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, lars@metafoo.de, balbi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/10/2015 06:12 PM, Caleb Crome wrote:
-> Hi again,
->   I have a system that has separate DACs and ADCs, as opposed to
-> bidirectional CODECS.
-> 
-> The ADCs have a snd_soc_dai_driver structure that have a .capture
-> field defined with a .rates parameter, and the DACs have a
-> snd_soc_dai_driver structure that have a .playback field defined with
-> a .rates parameter.
-> 
-> However, the ADCs have no .playback.rates, and the DACs have no
-> .capture.rates. Even though the ADC can record at a given rate and the
-> DAC can play at that same rate, the soc_pcm_init_runtime_hw function
-> calculates the rates in this loop:
-> 
-> ------------------------------
->     /* first calculate min/max only for CODECs in the DAI link */
->     for (i = 0; i < rtd->num_codecs; i++) {
->         codec_dai_drv = rtd->codec_dais[i]->driver;
->         if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->             codec_stream = &codec_dai_drv->playback;
->         else
->             codec_stream = &codec_dai_drv->capture;
->         chan_min = max(chan_min, codec_stream->channels_min);
->         chan_max = min(chan_max, codec_stream->channels_max);
->         rate_min = max(rate_min, codec_stream->rate_min);
->         rate_max = min_not_zero(rate_max, codec_stream->rate_max);
->         formats &= codec_stream->formats;
->         rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
->     }
-> ------------------------------
-> 
-> which can't work out that one side is play only and the other is
-> record only, yet they do in fact have matching rates.  So, I get a "no
-> matching channels" error.
-[...]
 
-Try the latest asoc/for-next kernel. There is a patch[1] that addresses the
-issue.
+--===============4519893087748283794==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="F55Y67F01HNW3AgB"
+Content-Disposition: inline
 
-- Lars
 
-[1]
-http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/soc-pcm.c?h=for-next&id=cde79035c6cf578dd33dfea3e39666efc27cbcf2
+--F55Y67F01HNW3AgB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 10, 2015 at 06:12:42PM +0200, Jyri Sarha wrote:
+> If there is anything in damp->path_source_cache or
+> damp->path_sink_cache, it can not be valid after the widgets have been
+> freed. Without this patch a repeated remove and load of a machine
+> driver may cause NULL pointer reference in dapm_wcache_lookup() when a
+> freed widget, not belonging to any list, is haunting in the wcache.
+
+Please try to check the spelling in your subject lines!
+
+--F55Y67F01HNW3AgB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWQj0TAAoJECTWi3JdVIfQ9cgH/i1fMd1t+b9AMmQeClvIFrtm
+aJJgYSEz4Y68gSvEZB+Alyo3WSLelM8eYUaePxWNVaK9nrQYEFkTViI4fnlQLZVn
+5jUkrkc2P0mUM4RBosdDVkG81fNqg5WtT1D8wWBD1axCflvsZs7wB6NeHwuruPCw
++Skl6wPbt8sjq/hhtvL/Gm77FCtEviPdkxymKgSIhQPaudQ0vIpygTMTQy7fVUxN
+eHxLCX5Vj53TAv7XC/jeSxcGgRCVV6DaCILoSbc4LSJ7cV4vL4w/VHv8hFhp++G8
+4C7QWni+6GFFU/C3OvukYM39u6AAfZmdwL1o9HAYPFxI1Ci6ZFF7k3Fg5M50IS0=
+=eXqx
+-----END PGP SIGNATURE-----
+
+--F55Y67F01HNW3AgB--
+
+--===============4519893087748283794==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4519893087748283794==--
