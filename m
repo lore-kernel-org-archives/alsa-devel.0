@@ -1,17 +1,28 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 6/6] ASoC: hdac_hdmi: Use i915 component
-	framework for PM
-Date: Tue, 10 Nov 2015 18:42:10 +0530
-Message-ID: <1447161130-24889-7-git-send-email-vinod.koul@intel.com>
-References: <1447161130-24889-1-git-send-email-vinod.koul@intel.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
+Date: Tue, 10 Nov 2015 13:55:30 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460CEA5@SW-EX-MBX01.diasemi.com>
+References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151105152736.GO18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
+ <20151106112141.GE18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CA3D@SW-EX-MBX01.diasemi.com>
+ <20151106115451.GG18409@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CAAD@SW-EX-MBX01.diasemi.com>
+ <20151108103429.GC6746@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CC6C@SW-EX-MBX01.diasemi.com>
+ <20151109140225.GA26072@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A10262651FE
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 14:09:02 +0100 (CET)
-In-Reply-To: <1447161130-24889-1-git-send-email-vinod.koul@intel.com>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 666012651B9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 14:55:33 +0100 (CET)
+In-Reply-To: <20151109140225.GA26072@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,81 +32,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
+To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+On November 9, 2015 14:02, Mark Brown wrote:
 
-Use the component framework to keep the display on till the
-playback in progress.
+> > > What I'm trying to figure out here is if this depends on the audio
+> > > routing at runtime or if it's got dedicated configuration?
+> 
+> > This feature is available for any/all mics connected. Which mics are enabled
+> > is a runtime configuration of routing, so to me it makes sense also that we can
+> > configure which channel triggers an event, based on our scenario at that time.
+> 
+> The general userspace expectation is that the detection is always active
+> and consistent rather than varying at runtime - runtime variability
+> might be a bit surprising for it, and even then variability in what is
+> detected based on other settings is a bit surprising.  If the hardware
+> is that limited I guess it's about all that can be done but I'm still
+> not clear what the use cases are for configuring the levels (as opposed
+> ot the routing).
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c02e6d3a6314..d1552620257f 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -25,6 +25,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/hdaudio_ext.h>
-+#include <sound/hda_i915.h>
- #include "../../hda/local.h"
- 
- #define AMP_OUT_MUTE		0xb080
-@@ -559,14 +560,26 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- {
- 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
- 	struct hdac_device *hdac = &edev->hdac;
-+	struct hdac_bus *bus = hdac->bus;
-+	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
- 
-+	/* controller may not have been initialized for the first time */
-+	if (!bus)
-+		return 0;
-+
- 	/* Power down afg */
- 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
- 		snd_hdac_codec_write(hdac, hdac->afg, 0,
- 			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
- 
-+	err = snd_hdac_display_power(bus, false);
-+	if (err < 0) {
-+		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		return err;
-+	}
-+
- 	return 0;
- }
- 
-@@ -574,9 +587,21 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- {
- 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
- 	struct hdac_device *hdac = &edev->hdac;
-+	struct hdac_bus *bus = hdac->bus;
-+	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
- 
-+	/* controller may not have been initialized for the first time */
-+	if (!bus)
-+		return 0;
-+
-+	err = snd_hdac_display_power(bus, true);
-+	if (err < 0) {
-+		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		return err;
-+	}
-+
- 	/* Power up afg */
- 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
- 		snd_hdac_codec_write(hdac, hdac->afg, 0,
--- 
-1.9.1
+How about the example of always on voice in Android, which can be enabled and
+disabled, depending on user settings, and routing will vary depending on which
+mic is in use at the time? For the levelling is it not plausible that a user
+could configure the level based on their current environment. You have
+moderately loud background noise, then your threshold would want to be
+higher, but in a quiet environment the likelihood is you would want to lower
+that threshold?
