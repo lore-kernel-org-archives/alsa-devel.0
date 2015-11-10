@@ -1,101 +1,103 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
-Date: Tue, 10 Nov 2015 16:42:02 +0000
-Message-ID: <20151110164202.GH12392@sirena.org.uk>
-References: <20151106115451.GG18409@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CAAD@SW-EX-MBX01.diasemi.com>
- <20151108103429.GC6746@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CC6C@SW-EX-MBX01.diasemi.com>
- <20151109140225.GA26072@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CEA5@SW-EX-MBX01.diasemi.com>
- <20151110141513.GF12392@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CED5@SW-EX-MBX01.diasemi.com>
- <20151110154434.GG12392@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D460CF5D@SW-EX-MBX01.diasemi.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: ASoC: multicodec: No matching channels with system
+ with DACs and ADCs on same bus
+Date: Tue, 10 Nov 2015 09:12:21 -0800
+Message-ID: <CAG5mAdzz0ZnXx_t3+G+f5FuaqfxmfRfBW6_r3vcX2Rybb3LuYg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xQmOcGOVkeO43v2v"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460CF5D-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79F6A265262
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 18:12:41 +0100 (CET)
+Received: by wmec201 with SMTP id c201so144321556wme.0
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 09:12:41 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
+ Han" <han.lu@intel.com>, =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi again,
+  I have a system that has separate DACs and ADCs, as opposed to
+bidirectional CODECS.
 
---xQmOcGOVkeO43v2v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The ADCs have a snd_soc_dai_driver structure that have a .capture
+field defined with a .rates parameter, and the DACs have a
+snd_soc_dai_driver structure that have a .playback field defined with
+a .rates parameter.
 
-On Tue, Nov 10, 2015 at 04:21:04PM +0000, Opensource [Adam Thomson] wrote:
-> On November 10, 2015 15:45, Mark Brown wrote:
+However, the ADCs have no .playback.rates, and the DACs have no
+.capture.rates. Even though the ADC can record at a given rate and the
+DAC can play at that same rate, the soc_pcm_init_runtime_hw function
+calculates the rates in this loop:
 
-> > That seems like a particularly unfortunate choice given that
-> > VOICECOMMAND is used in the standard Google headset mapping (see
-> > ts3a227e for an example, that's a device specifically aimed at providing
-> > accessory detection in Chromebooks).  There's also been some pushback
-> > against using the input devices due to the difficulty in enabling apps
-> > to access input devices - ALSA controls were preferred instead but
-> > that's less helpful for tinyalsa.  Perhaps that can be added relatively
-> > easily, or a uevent or something.
+------------------------------
+    /* first calculate min/max only for CODECs in the DAI link */
+    for (i = 0; i < rtd->num_codecs; i++) {
+        codec_dai_drv = rtd->codec_dais[i]->driver;
+        if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+            codec_stream = &codec_dai_drv->playback;
+        else
+            codec_stream = &codec_dai_drv->capture;
+        chan_min = max(chan_min, codec_stream->channels_min);
+        chan_max = min(chan_max, codec_stream->channels_max);
+        rate_min = max(rate_min, codec_stream->rate_min);
+        rate_max = min_not_zero(rate_max, codec_stream->rate_max);
+        formats &= codec_stream->formats;
+        rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+    }
+------------------------------
 
-> I chose VOICECOMMAND as I thought this kind of feature might offer the sa=
-me kind
-> of use as the physical button, but if this only for Google headset use th=
-en fair
-> enough.=20
+which can't work out that one side is play only and the other is
+record only, yet they do in fact have matching rates.  So, I get a "no
+matching channels" error.
 
-No, that's a generic button but the point is that the expected workflow
-=66rom userspace is going to be different if the user pressed a button to
-initiate a voice command compared to if they use an activation phrase.
 
-> > Not sure what the best way forward here is, the other implementations of
-> > this that I'm aware of do more of the detection in offload and present
-> > streams of detected audio to userspace via normal capture.
+Here are my example drivers declarations:
+for the ADC:
+----------------------
+static struct snd_soc_dai_driver cs53l30_dai = {
+    .name = "cs53l30-hifi",
+    .capture = {
+        .stream_name = "Capture",
+        .channels_min = 4,
+        .channels_max = 16,
+        .rates = SNDRV_PCM_RATE_16000,
+        .formats =SNDRV_PCM_FMTBIT_S16_LE,
+    },
+};
+--------------------
 
-> Yes, this is far more simplistic, and any voice processing or capture is =
-not
-> handled by the codec. It just an indication of above threshold noise leve=
-l at
-> the mic. For the implementations you know of, how are those events indica=
-ted to
-> user-space?
+and for the DAC
 
-I'm not aware of any implementations that just do the activity
-detection.  I've seen hardware with it but nobody using it in software.
+----------------------
+static struct snd_soc_dai_driver tlv320dac3100_dai = {
+    .name = "tlv320dac3100-hifi",
+    .playback = {
+        .stream_name = "Playback",
+        .channels_min = 2,
+        .channels_max = 16,
+        .rates = SNDRV_PCM_RATE_16000,
+        .formats =SNDRV_PCM_FMTBIT_S16_LE,
+    },
+    .ops = &tlv320dac3100_dai_ops,
+};
+------------------------------
 
-> > I would at least suggest moving this into a separate patch and doing
-> > the integration separately.
+I was able to fake it out by adding a .playback field to my ADC with 0
+channels, and a .capture field to my DAC with 0 channels.
 
-> Are you happy for me to leave the actual controls for this feature in, wi=
-thout
-> the user-space reporting side? Otherwise it's a pain to strip that out, a=
-nd then
-> re-instate later. The event can be masked off until the user-space report=
-ing
-> is added in a subsequent patch.
+My question is: what's the right way to manage this?  I assume we
+should probably tweak soc_pcm_init_runtime_hw, right?
 
-Possibly, let's see what the code looks like.
-
---xQmOcGOVkeO43v2v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWQh5ZAAoJECTWi3JdVIfQuIUH/jPDxB0jpVqwXZxUtj7ZB3Hz
-G6SvrvGa1aC3AkMqDdJWF5xpBl44vRB+vO0oF2utzF06u8lzFYiDArQ7zGWDPH6V
-Xpwn+kzY/7UjO2HPMZMKXBBYy7/qtKAXsQK0XtoE1/LjrhHmiD5B6a6SJqrZcPxy
-N6gsWDpt++R1Fsldy1+WEZWiWMQDzlxvczVepO428yKlSf3T8Y9utL6BmQSL7zOs
-JhNbTZr1arzJCJLdLVoRB+UWVE8WPTjOXBAxLZVwmylimkBU9LGWqaE1ApFtFrXe
-qYzpUmoAYa8mrp66yZ3bkNT5VKnXvzzronCzHFi0m3oNwzI3SfOCrOcVPTifSpI=
-=PiIb
------END PGP SIGNATURE-----
-
---xQmOcGOVkeO43v2v--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+  -Caleb
