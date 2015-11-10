@@ -1,18 +1,23 @@
-From: Michael Pogrebinsky <michael.pogrebinsky@daqri.com>
-Subject: ASoC Sound Driver I2S over LPE,
-	Intel Baytrail SoC. MinnowBoard Max
-Date: Mon, 9 Nov 2015 17:31:02 -0800
-Message-ID: <CAGOuWmvw39beNdaLgdBGXk9rNWw9vwbFfQNSBw50KLYpGa_AHA@mail.gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Power up the RC clock to
+	make sure the speaker volume adjust properly
+Date: Tue, 10 Nov 2015 03:59:52 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694FA3A6A@RTITMBSV03.realtek.com.tw>
+References: <1446724551-27762-1-git-send-email-oder_chiou@realtek.com>
+ <20151105121230.GD18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA2BE6@RTITMBSV03.realtek.com.tw>
+ <20151106104433.GB18409@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FA36C9@RTITMBSV03.realtek.com.tw>
+ <20151109140905.GB26072@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f178.google.com (mail-ig0-f178.google.com
- [209.85.213.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 61603260509
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 02:31:04 +0100 (CET)
-Received: by igbxm8 with SMTP id xm8so63685447igb.1
- for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2015 17:31:03 -0800 (PST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A26C260504
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 04:59:57 +0100 (CET)
+In-Reply-To: <20151109140905.GB26072@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +27,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I have the MinnowBoard Max with Baytrail Atom (ValleyView) SoC.
-I'm attempting to write an Alsa (ASoC) driver for my sound card to
-work with this board.
-PCM should work through I2S for this sound card I have.
-
->From my understanding Baytrail's I2S goes over LPE. I read this
-thread:https://www.mail-archive.com/elinux-minnowboard@lists.elinux.org/msg01572.html
-
-So I understand that I need the 3 components for my ASoC driver. However I
-am having trouble at understanding how to communicate with the LPE to get
-the I2S working.
-
-Here is what I have done so far:
-I am running Ubuntu 14.04 LTS, kernel : 4.3.0-040300rc4
-
-First of all I downloaded the firmware fw_sst_0f28.bin-48kHz_i2s_master
-fromhttps://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware/+/refs/heads/master/intel/fw_sst_0f28.bin-48kHz_i2s_master
-
-And put it /lib/firmware/intel/.
-Later I went to the Bios and enabled LPE in PCI mode. I do see the LPE
-controller now, but it shows as UNCLAIMED.
-
-Later I looked at the sound/soc/inte/baytrail/ and from my understanding
-in order for me to get the I2S working I need to load this module so I did
-modprobe snd-soc-sst-baytrail-pcm. Later I wrote a simple codec and machine
-driver (looking at the example of sound/soc/intel/boards/byt_max98090)
-however everytime I attempt to register the sound card with
-snd_soc_register_card, I get the following error message in dmesg : "ASoC:
-CPU DAI baytrail-pcm-audio not registered".
-
->From this I deduct that although I loaded the snd-soc-sst-baytrail-pcm
-module, the driver has not actually been loaded.
-I'm clueless on how to proceed from here.
-
-I would highly appreciate your help.
+> On Mon, Nov 09, 2015 at 03:13:09AM +0000, Oder Chiou wrote:
+> 
+> > > What makes you claim that this is "essential in case of the operation of kcontrol
+> > > continuously"?
+> 
+> > Like the Chrome OS, while the user pull the volume bar up or down, the
+> > kcontrol will be manipulated by the UI continuously and seamlessly. In this
+> > kind of case, if the "cancel_delayed_work_sync" is removed, the
+> > queue_delayed_work will be failed within 200ms after the previous
+> > queue_delayed_work, and it will not be able to make sure the power of the
+> > RC clock enabled at least 200ms, thanks.
+> 
+> No, it won't.  To repeat what I said if you just schedule the delayed
+> work again without cancelling then the right thing will happen.
+> 
+The following logs are our test result.
+===========================================================================
+[  123.365789] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 1
+[  123.367204] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 0
+[  123.392307] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 0
+[  123.393542] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 0
+[  123.469445] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 0
+[  123.470581] [rt5645_spk_put_volsw]->(584) queue_delayed_work ret = 0
+[  123.565417] [rt5645_rcclock_work]->(3156)
+===========================================================================
+If we didn't cancel the delayed work, the function will return false to
+indicate the delayed work that are already on the queue. It will make the
+delayed work that cannot make sure to be manipulated at least 200ms after
+the last rt5645_spk_put_volsw was manipulated. In the log, we remove the
+cancel_delayed_work and there is only 95ms delay that cannot meet our
+requirement, thanks.
