@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen v3 4/6] sound/usb: Fix media_stream_init() and media_stream_delete() error paths
-Date: Tue, 10 Nov 2015 13:40:47 -0700
-Message-ID: <249a5b1eb3463167d2aef448265d638bf90c72f2.1447184001.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen v3 6/6] media: au0828-core fix ignoring return value errors
+Date: Tue, 10 Nov 2015 13:40:49 -0700
+Message-ID: <296cd8810aa89866df6a8c1d97e228047b1072cf.1447184001.git.shuahkh@osg.samsung.com>
 References: <cover.1447183999.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1447183999.git.shuahkh@osg.samsung.com>
@@ -12,63 +12,65 @@ To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.c
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix media_stream_init() to free memory in error paths. Fix
-media_stream_delete() to remove unnecessary set media_dev
-pointer to null before free mctl.
+Fix the ignoring return value errors found during kbuild bot
+compile test.
+
+drivers/media/usb/au0828/au0828-core.c:298:5: warning: ignoring
+return value of 'media_create_pad_link', declared with attribute
+warn_unused_result [-Wunused-result]
+
+drivers/media/usb/au0828/au0828-core.c:356:2: warning: ignoring
+return value of 'media_device_register_entity_notify', declared
+with attribute warn_unused_result [-Wunused-result]
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- sound/usb/media.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/media/usb/au0828/au0828-core.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 6df346a..bebe27b 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -127,7 +127,6 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- 	if (!mctl)
- 		return -ENOMEM;
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 3ef6fee..5b595a6 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -299,15 +299,20 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
+ 				if (!tuner)
+ 					break;
  
--	subs->media_ctl = (void *) mctl;
- 	mctl->media_dev = mdev;
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
-@@ -143,13 +142,16 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- 	media_entity_init(&mctl->media_entity, 1, &mctl->media_pad);
- 	ret =  media_device_register_entity(mctl->media_dev,
- 					    &mctl->media_entity);
--	if (ret)
-+	if (ret) {
-+		kfree(mctl);
- 		return ret;
-+	}
- 	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
- 						  MAJOR(pcm_dev->devt),
- 						  MINOR(pcm_dev->devt));
- 	if (!mctl->intf_devnode) {
- 		media_device_unregister_entity(&mctl->media_entity);
-+		kfree(mctl);
- 		return -ENOMEM;
- 	}
- 	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
-@@ -158,8 +160,10 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- 	if (!mctl->intf_link) {
- 		media_devnode_remove(mctl->intf_devnode);
- 		media_device_unregister_entity(&mctl->media_entity);
-+		kfree(mctl);
- 		return -ENOMEM;
- 	}
-+	subs->media_ctl = (void *) mctl;
- 	return 0;
- }
- 
-@@ -177,7 +181,6 @@ void media_stream_delete(struct snd_usb_substream *subs)
- 			media_device_unregister_entity(&mctl->media_entity);
- 			media_entity_cleanup(&mctl->media_entity);
+-				media_create_pad_link(ent, 0, tuner,
+-						      TUNER_PAD_RF_INPUT,
+-						      MEDIA_LNK_FL_ENABLED);
++				ret = media_create_pad_link(ent, 0, tuner,
++							TUNER_PAD_RF_INPUT,
++							MEDIA_LNK_FL_ENABLED);
++				if (ret)
++					pr_err("Create pad link err %d\n", ret);
+ 				break;
+ 			case AU0828_VMUX_COMPOSITE:
+ 			case AU0828_VMUX_SVIDEO:
+ 			default: /* AU0828_VMUX_DEBUG */
+ 				/* FIXME: fix the decoder PAD */
+-				media_create_pad_link(ent, 0, decoder, 0, 0);
++				ret = media_create_pad_link(ent, 0, decoder,
++							    0, 0);
++				if (ret)
++					pr_err("Create pad link err %d\n", ret);
+ 				break;
+ 			}
  		}
--		mctl->media_dev = NULL;
- 		kfree(mctl);
- 		subs->media_ctl = NULL;
- 	}
+@@ -504,7 +509,13 @@ static void au0828_media_device_register(struct au0828_dev *dev,
+ 	/* register entity_notify callback */
+ 	dev->entity_notify.notify_data = (void *) dev;
+ 	dev->entity_notify.notify = au0828_create_media_graph;
+-	media_device_register_entity_notify(mdev, &dev->entity_notify);
++	ret = media_device_register_entity_notify(mdev, &dev->entity_notify);
++	if (ret) {
++		dev_err(&udev->dev,
++			"Couldn't register entity_notify handler. Error: %d\n",
++			ret);
++		return;
++	}
+ 
+ 	/* set enable_source */
+ 	mdev->source_priv = (void *) dev;
 -- 
 2.5.0
