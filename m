@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen v3 3/6] media: au0828 create link between ALSA Mixer and decoder
-Date: Tue, 10 Nov 2015 13:40:46 -0700
-Message-ID: <f6f2b7c42ade7842503b512f6a3435afff8e803d.1447184000.git.shuahkh@osg.samsung.com>
+Subject: [PATCH MC Next Gen v3 4/6] sound/usb: Fix media_stream_init() and media_stream_delete() error paths
+Date: Tue, 10 Nov 2015 13:40:47 -0700
+Message-ID: <249a5b1eb3463167d2aef448265d638bf90c72f2.1447184001.git.shuahkh@osg.samsung.com>
 References: <cover.1447183999.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1447183999.git.shuahkh@osg.samsung.com>
@@ -12,75 +12,63 @@ To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.c
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828_create_media_graph() to create pad link
-between MEDIA_ENT_F_AUDIO_MIXER entity and decoder's
-AU8522_PAD_AUDIO_OUT. With mixer entity now linked to
-decoder, change to link MEDIA_ENT_F_AUDIO_CAPTURE to
-mixer's source pad.
+Fix media_stream_init() to free memory in error paths. Fix
+media_stream_delete() to remove unnecessary set media_dev
+pointer to null before free mctl.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 17 ++++++++++++++---
- drivers/media/usb/au0828/au0828.h      |  1 +
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ sound/usb/media.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 7af5d0d..3ef6fee 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -225,6 +225,7 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 	struct media_entity *entity;
- 	struct media_entity *tuner = NULL, *decoder = NULL;
- 	struct media_entity *audio_capture = NULL;
-+	struct media_entity *mixer = NULL;
- 	int i, ret;
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 6df346a..bebe27b 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -127,7 +127,6 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
+ 	if (!mctl)
+ 		return -ENOMEM;
  
- 	if (!mdev)
-@@ -245,6 +246,9 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		case MEDIA_ENT_F_AUDIO_CAPTURE:
- 			audio_capture = entity;
- 			break;
-+		case MEDIA_ENT_F_AUDIO_MIXER:
-+			mixer = entity;
-+			break;
- 		}
- 	}
- 
-@@ -309,13 +313,20 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 		}
- 	}
- 
--	if (audio_capture && !dev->audio_capture_linked) {
--		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
--					    audio_capture, 0,
-+	if (mixer && audio_capture && !dev->audio_capture_linked) {
-+		ret = media_create_pad_link(mixer, 1, audio_capture, 0,
- 					    MEDIA_LNK_FL_ENABLED);
- 		if (ret == 0)
- 			dev->audio_capture_linked = 1;
- 	}
-+
-+	if (mixer && !dev->mixer_linked) {
-+		ret = media_create_pad_link(decoder, AU8522_PAD_AUDIO_OUT,
-+					    mixer, 0,
-+					    MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->mixer_linked = 1;
+-	subs->media_ctl = (void *) mctl;
+ 	mctl->media_dev = mdev;
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
+@@ -143,13 +142,16 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
+ 	media_entity_init(&mctl->media_entity, 1, &mctl->media_pad);
+ 	ret =  media_device_register_entity(mctl->media_dev,
+ 					    &mctl->media_entity);
+-	if (ret)
++	if (ret) {
++		kfree(mctl);
+ 		return ret;
 +	}
- #endif
+ 	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
+ 						  MAJOR(pcm_dev->devt),
+ 						  MINOR(pcm_dev->devt));
+ 	if (!mctl->intf_devnode) {
+ 		media_device_unregister_entity(&mctl->media_entity);
++		kfree(mctl);
+ 		return -ENOMEM;
+ 	}
+ 	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
+@@ -158,8 +160,10 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
+ 	if (!mctl->intf_link) {
+ 		media_devnode_remove(mctl->intf_devnode);
+ 		media_device_unregister_entity(&mctl->media_entity);
++		kfree(mctl);
+ 		return -ENOMEM;
+ 	}
++	subs->media_ctl = (void *) mctl;
+ 	return 0;
  }
  
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 2f4d597..6dd81b2 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -288,6 +288,7 @@ struct au0828_dev {
- 	bool vdev_linked;
- 	bool vbi_linked;
- 	bool audio_capture_linked;
-+	bool mixer_linked;
- 	struct media_link *active_link;
- 	struct media_entity *active_link_owner;
- #endif
+@@ -177,7 +181,6 @@ void media_stream_delete(struct snd_usb_substream *subs)
+ 			media_device_unregister_entity(&mctl->media_entity);
+ 			media_entity_cleanup(&mctl->media_entity);
+ 		}
+-		mctl->media_dev = NULL;
+ 		kfree(mctl);
+ 		subs->media_ctl = NULL;
+ 	}
 -- 
 2.5.0
