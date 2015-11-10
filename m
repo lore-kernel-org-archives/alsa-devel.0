@@ -1,10 +1,8 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/2] ASoC: codecs: Add da7218 codec driver
-Date: Tue, 10 Nov 2015 13:55:30 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460CEA5@SW-EX-MBX01.diasemi.com>
-References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <01a9b6e96b66327cf9a27781c13aa50545380acb.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
- <20151105152736.GO18409@sirena.org.uk>
+Date: Tue, 10 Nov 2015 14:15:13 +0000
+Message-ID: <20151110141513.GF12392@sirena.org.uk>
+References: <20151105152736.GO18409@sirena.org.uk>
  <2E89032DDAA8B9408CB92943514A0337D460CA0C@SW-EX-MBX01.diasemi.com>
  <20151106112141.GE18409@sirena.org.uk>
  <2E89032DDAA8B9408CB92943514A0337D460CA3D@SW-EX-MBX01.diasemi.com>
@@ -13,50 +11,58 @@ References: <cover.1446718490.git.Adam.Thomson.Opensource@diasemi.com>
  <20151108103429.GC6746@sirena.org.uk>
  <2E89032DDAA8B9408CB92943514A0337D460CC6C@SW-EX-MBX01.diasemi.com>
  <20151109140225.GA26072@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D460CEA5@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 666012651B9
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 14:55:33 +0100 (CET)
-In-Reply-To: <20151109140225.GA26072@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vKFfOv5t3oGVpiF+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D460CEA5@SW-EX-MBX01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On November 9, 2015 14:02, Mark Brown wrote:
 
-> > > What I'm trying to figure out here is if this depends on the audio
-> > > routing at runtime or if it's got dedicated configuration?
-> 
-> > This feature is available for any/all mics connected. Which mics are enabled
-> > is a runtime configuration of routing, so to me it makes sense also that we can
-> > configure which channel triggers an event, based on our scenario at that time.
-> 
-> The general userspace expectation is that the detection is always active
-> and consistent rather than varying at runtime - runtime variability
-> might be a bit surprising for it, and even then variability in what is
-> detected based on other settings is a bit surprising.  If the hardware
-> is that limited I guess it's about all that can be done but I'm still
-> not clear what the use cases are for configuring the levels (as opposed
-> ot the routing).
+--vKFfOv5t3oGVpiF+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-How about the example of always on voice in Android, which can be enabled and
-disabled, depending on user settings, and routing will vary depending on which
-mic is in use at the time? For the levelling is it not plausible that a user
-could configure the level based on their current environment. You have
-moderately loud background noise, then your threshold would want to be
-higher, but in a quiet environment the likelihood is you would want to lower
-that threshold?
+On Tue, Nov 10, 2015 at 01:55:30PM +0000, Opensource [Adam Thomson] wrote:
+> On November 9, 2015 14:02, Mark Brown wrote:
+
+> > The general userspace expectation is that the detection is always active
+> > and consistent rather than varying at runtime - runtime variability
+> > might be a bit surprising for it, and even then variability in what is
+> > detected based on other settings is a bit surprising.  If the hardware
+> > is that limited I guess it's about all that can be done but I'm still
+> > not clear what the use cases are for configuring the levels (as opposed
+> > ot the routing).
+
+> How about the example of always on voice in Android, which can be enabled and
+> disabled, depending on user settings, and routing will vary depending on which
+> mic is in use at the time? For the levelling is it not plausible that a user
+> could configure the level based on their current environment. You have
+> moderately loud background noise, then your threshold would want to be
+> higher, but in a quiet environment the likelihood is you would want to lower
+> that threshold?
+
+So this *isn't* a normal mic detection feature?  What's the userspace
+interface for reporting then?
+
+--vKFfOv5t3oGVpiF+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWQfvwAAoJECTWi3JdVIfQfewH/3mOjWDQbcgdcdBqZlMirgjQ
+ztPu/biyfDnojUEG6tARBWSkfAzE6PXHqVGiqoDYy8Q3WoGad/5sP40P1TLNR2ZS
+GJtBncQINRp7HQPNcz2DwD0rVm5dGguo8V4ejbnIlQ00m8VzaV81L2qEf/Eb7tjN
+fcje9YVbUIrRrO2JSBYkZQpcCwLQb4L6/yYewY5Emgg18DfWqUO+yFBfVQQbx2Q1
+PbjDP0Mf/cIm8Gc9AAkzepbeE87CZdymvawg0fTZrt8BRm8Vnmqj28s+5YtD01an
+Fmnw7vMGYjRmYyFxxcYzXgOZsZFDkpp6403Op0ybJJGRa+2iRC6rH7ugl//MhxI=
+=GtpQ
+-----END PGP SIGNATURE-----
+
+--vKFfOv5t3oGVpiF+--
