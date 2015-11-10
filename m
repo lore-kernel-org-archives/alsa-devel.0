@@ -1,76 +1,83 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH MC Next Gen v3 6/6] media: au0828-core fix ignoring return value errors
-Date: Tue, 10 Nov 2015 13:40:49 -0700
-Message-ID: <296cd8810aa89866df6a8c1d97e228047b1072cf.1447184001.git.shuahkh@osg.samsung.com>
-References: <cover.1447183999.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1447183999.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1447183999.git.shuahkh@osg.samsung.com>
-References: <cover.1447183999.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.de, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: ASoC: multicodec: No matching channels with system
+ with DACs and ADCs on same bus
+Date: Tue, 10 Nov 2015 13:33:02 -0800
+Message-ID: <CAG5mAdx7peaB5W2rOnZdfpF44HRY8uKZnD4ykqkBTvLaCXAJUQ@mail.gmail.com>
+References: <CAG5mAdzz0ZnXx_t3+G+f5FuaqfxmfRfBW6_r3vcX2Rybb3LuYg@mail.gmail.com>
+ <564237B0.70906@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B8FA261643
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 22:33:22 +0100 (CET)
+Received: by wmww144 with SMTP id w144so136042359wmw.1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 13:33:21 -0800 (PST)
+In-Reply-To: <564237B0.70906@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
+ Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the ignoring return value errors found during kbuild bot
-compile test.
+Ah, that looks like the one!
 
-drivers/media/usb/au0828/au0828-core.c:298:5: warning: ignoring
-return value of 'media_create_pad_link', declared with attribute
-warn_unused_result [-Wunused-result]
+Thanks,
+ -Caleb
 
-drivers/media/usb/au0828/au0828-core.c:356:2: warning: ignoring
-return value of 'media_device_register_entity_notify', declared
-with attribute warn_unused_result [-Wunused-result]
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/usb/au0828/au0828-core.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 3ef6fee..5b595a6 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -299,15 +299,20 @@ void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- 				if (!tuner)
- 					break;
- 
--				media_create_pad_link(ent, 0, tuner,
--						      TUNER_PAD_RF_INPUT,
--						      MEDIA_LNK_FL_ENABLED);
-+				ret = media_create_pad_link(ent, 0, tuner,
-+							TUNER_PAD_RF_INPUT,
-+							MEDIA_LNK_FL_ENABLED);
-+				if (ret)
-+					pr_err("Create pad link err %d\n", ret);
- 				break;
- 			case AU0828_VMUX_COMPOSITE:
- 			case AU0828_VMUX_SVIDEO:
- 			default: /* AU0828_VMUX_DEBUG */
- 				/* FIXME: fix the decoder PAD */
--				media_create_pad_link(ent, 0, decoder, 0, 0);
-+				ret = media_create_pad_link(ent, 0, decoder,
-+							    0, 0);
-+				if (ret)
-+					pr_err("Create pad link err %d\n", ret);
- 				break;
- 			}
- 		}
-@@ -504,7 +509,13 @@ static void au0828_media_device_register(struct au0828_dev *dev,
- 	/* register entity_notify callback */
- 	dev->entity_notify.notify_data = (void *) dev;
- 	dev->entity_notify.notify = au0828_create_media_graph;
--	media_device_register_entity_notify(mdev, &dev->entity_notify);
-+	ret = media_device_register_entity_notify(mdev, &dev->entity_notify);
-+	if (ret) {
-+		dev_err(&udev->dev,
-+			"Couldn't register entity_notify handler. Error: %d\n",
-+			ret);
-+		return;
-+	}
- 
- 	/* set enable_source */
- 	mdev->source_priv = (void *) dev;
--- 
-2.5.0
+On Tue, Nov 10, 2015 at 10:30 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> On 11/10/2015 06:12 PM, Caleb Crome wrote:
+>> Hi again,
+>>   I have a system that has separate DACs and ADCs, as opposed to
+>> bidirectional CODECS.
+>>
+>> The ADCs have a snd_soc_dai_driver structure that have a .capture
+>> field defined with a .rates parameter, and the DACs have a
+>> snd_soc_dai_driver structure that have a .playback field defined with
+>> a .rates parameter.
+>>
+>> However, the ADCs have no .playback.rates, and the DACs have no
+>> .capture.rates. Even though the ADC can record at a given rate and the
+>> DAC can play at that same rate, the soc_pcm_init_runtime_hw function
+>> calculates the rates in this loop:
+>>
+>> ------------------------------
+>>     /* first calculate min/max only for CODECs in the DAI link */
+>>     for (i = 0; i < rtd->num_codecs; i++) {
+>>         codec_dai_drv = rtd->codec_dais[i]->driver;
+>>         if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>>             codec_stream = &codec_dai_drv->playback;
+>>         else
+>>             codec_stream = &codec_dai_drv->capture;
+>>         chan_min = max(chan_min, codec_stream->channels_min);
+>>         chan_max = min(chan_max, codec_stream->channels_max);
+>>         rate_min = max(rate_min, codec_stream->rate_min);
+>>         rate_max = min_not_zero(rate_max, codec_stream->rate_max);
+>>         formats &= codec_stream->formats;
+>>         rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+>>     }
+>> ------------------------------
+>>
+>> which can't work out that one side is play only and the other is
+>> record only, yet they do in fact have matching rates.  So, I get a "no
+>> matching channels" error.
+> [...]
+>
+> Try the latest asoc/for-next kernel. There is a patch[1] that addresses the
+> issue.
+>
+> - Lars
+>
+> [1]
+> http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/soc-pcm.c?h=for-next&id=cde79035c6cf578dd33dfea3e39666efc27cbcf2
+>
