@@ -1,76 +1,83 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ASoC: Intel: constify sst_block_ops structures
-Date: Wed, 11 Nov 2015 00:18:52 +0100
-Message-ID: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Jie Yang <yang.jie@linux.intel.com>
-Cc: kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Keyon <yang.jie@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: constify sst_block_ops
+ structures
+Date: Wed, 11 Nov 2015 08:53:24 +0800
+Message-ID: <56429184.1020803@linux.intel.com>
+References: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 542EC265249
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 01:47:01 +0100 (CET)
+In-Reply-To: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The sst_block_ops structure is never modified, and is thus declared as
-const.
-
-Done with the help of Coccinelle.
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- sound/soc/intel/common/sst-dsp-priv.h     |    6 +++---
- sound/soc/intel/common/sst-firmware.c     |    4 ++--
- sound/soc/intel/haswell/sst-haswell-dsp.c |    2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index 2151652..d21f16d 100644
---- a/sound/soc/intel/common/sst-dsp-priv.h
-+++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -243,7 +243,7 @@ struct sst_mem_block {
- 	u32 size;			/* block size */
- 	u32 index;			/* block index 0..N */
- 	enum sst_mem_type type;		/* block memory type IRAM/DRAM */
--	struct sst_block_ops *ops;	/* block operations, if any */
-+	const struct sst_block_ops *ops;/* block operations, if any */
- 
- 	/* block status */
- 	u32 bytes_used;			/* bytes in use by modules */
-@@ -376,8 +376,8 @@ void sst_block_free_scratch(struct sst_dsp *dsp);
- 
- /* Register the DSPs memory blocks - would be nice to read from ACPI */
- struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
--	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
--	void *private);
-+	u32 size, enum sst_mem_type type, const struct sst_block_ops *ops,
-+	u32 index, void *private);
- void sst_mem_block_unregister_all(struct sst_dsp *dsp);
- 
- /* Create/Free DMA resources */
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index 1636a1e..bee04a9 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -1014,8 +1014,8 @@ EXPORT_SYMBOL_GPL(sst_module_runtime_restore);
- 
- /* register a DSP memory block for use with FW based modules */
- struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
--	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
--	void *private)
-+	u32 size, enum sst_mem_type type, const struct sst_block_ops *ops,
-+	u32 index, void *private)
- {
- 	struct sst_mem_block *block;
- 
-diff --git a/sound/soc/intel/haswell/sst-haswell-dsp.c b/sound/soc/intel/haswell/sst-haswell-dsp.c
-index 7f94920..b2bec36 100644
---- a/sound/soc/intel/haswell/sst-haswell-dsp.c
-+++ b/sound/soc/intel/haswell/sst-haswell-dsp.c
-@@ -607,7 +607,7 @@ static int hsw_block_disable(struct sst_mem_block *block)
- 	return 0;
- }
- 
--static struct sst_block_ops sst_hsw_ops = {
-+static const struct sst_block_ops sst_hsw_ops = {
- 	.enable = hsw_block_enable,
- 	.disable = hsw_block_disable,
- };
-
+Ck9uIDIwMTXlubQxMeaciDEx5pelIDA3OjE4LCBKdWxpYSBMYXdhbGwgd3JvdGU6Cj4gVGhlIHNz
+dF9ibG9ja19vcHMgc3RydWN0dXJlIGlzIG5ldmVyIG1vZGlmaWVkLCBhbmQgaXMgdGh1cyBkZWNs
+YXJlZCBhcwo+IGNvbnN0Lgo+Cj4gRG9uZSB3aXRoIHRoZSBoZWxwIG9mIENvY2NpbmVsbGUuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBKdWxpYSBMYXdhbGwgPEp1bGlhLkxhd2FsbEBsaXA2LmZyPgoKVGhh
+bmtzLgoKQWNrZWQtYnk6IEppZSBZYW5nIDx5YW5nLmppZUBpbnRlbC5jb20+Cgo+Cj4gLS0tCj4g
+ICBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1kc3AtcHJpdi5oICAgICB8ICAgIDYgKysrLS0t
+Cj4gICBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2FyZS5jICAgICB8ICAgIDQgKyst
+LQo+ICAgc291bmQvc29jL2ludGVsL2hhc3dlbGwvc3N0LWhhc3dlbGwtZHNwLmMgfCAgICAyICst
+Cj4gICAzIGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPgo+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1kc3AtcHJpdi5oIGIvc291
+bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZHNwLXByaXYuaAo+IGluZGV4IDIxNTE2NTIuLmQyMWYx
+NmQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZHNwLXByaXYuaAo+
+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWRzcC1wcml2LmgKPiBAQCAtMjQzLDcg
+KzI0Myw3IEBAIHN0cnVjdCBzc3RfbWVtX2Jsb2NrIHsKPiAgIAl1MzIgc2l6ZTsJCQkvKiBibG9j
+ayBzaXplICovCj4gICAJdTMyIGluZGV4OwkJCS8qIGJsb2NrIGluZGV4IDAuLk4gKi8KPiAgIAll
+bnVtIHNzdF9tZW1fdHlwZSB0eXBlOwkJLyogYmxvY2sgbWVtb3J5IHR5cGUgSVJBTS9EUkFNICov
+Cj4gLQlzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzOwkvKiBibG9jayBvcGVyYXRpb25zLCBpZiBh
+bnkgKi8KPiArCWNvbnN0IHN0cnVjdCBzc3RfYmxvY2tfb3BzICpvcHM7LyogYmxvY2sgb3BlcmF0
+aW9ucywgaWYgYW55ICovCj4KPiAgIAkvKiBibG9jayBzdGF0dXMgKi8KPiAgIAl1MzIgYnl0ZXNf
+dXNlZDsJCQkvKiBieXRlcyBpbiB1c2UgYnkgbW9kdWxlcyAqLwo+IEBAIC0zNzYsOCArMzc2LDgg
+QEAgdm9pZCBzc3RfYmxvY2tfZnJlZV9zY3JhdGNoKHN0cnVjdCBzc3RfZHNwICpkc3ApOwo+Cj4g
+ICAvKiBSZWdpc3RlciB0aGUgRFNQcyBtZW1vcnkgYmxvY2tzIC0gd291bGQgYmUgbmljZSB0byBy
+ZWFkIGZyb20gQUNQSSAqLwo+ICAgc3RydWN0IHNzdF9tZW1fYmxvY2sgKnNzdF9tZW1fYmxvY2tf
+cmVnaXN0ZXIoc3RydWN0IHNzdF9kc3AgKmRzcCwgdTMyIG9mZnNldCwKPiAtCXUzMiBzaXplLCBl
+bnVtIHNzdF9tZW1fdHlwZSB0eXBlLCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLCB1MzIgaW5k
+ZXgsCj4gLQl2b2lkICpwcml2YXRlKTsKPiArCXUzMiBzaXplLCBlbnVtIHNzdF9tZW1fdHlwZSB0
+eXBlLCBjb25zdCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLAo+ICsJdTMyIGluZGV4LCB2b2lk
+ICpwcml2YXRlKTsKPiAgIHZvaWQgc3N0X21lbV9ibG9ja191bnJlZ2lzdGVyX2FsbChzdHJ1Y3Qg
+c3N0X2RzcCAqZHNwKTsKPgo+ICAgLyogQ3JlYXRlL0ZyZWUgRE1BIHJlc291cmNlcyAqLwo+IGRp
+ZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2FyZS5jIGIvc291bmQv
+c29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYwo+IGluZGV4IDE2MzZhMWUuLmJlZTA0YTkg
+MTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYwo+ICsr
+KyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWZpcm13YXJlLmMKPiBAQCAtMTAxNCw4ICsx
+MDE0LDggQEAgRVhQT1JUX1NZTUJPTF9HUEwoc3N0X21vZHVsZV9ydW50aW1lX3Jlc3RvcmUpOwo+
+Cj4gICAvKiByZWdpc3RlciBhIERTUCBtZW1vcnkgYmxvY2sgZm9yIHVzZSB3aXRoIEZXIGJhc2Vk
+IG1vZHVsZXMgKi8KPiAgIHN0cnVjdCBzc3RfbWVtX2Jsb2NrICpzc3RfbWVtX2Jsb2NrX3JlZ2lz
+dGVyKHN0cnVjdCBzc3RfZHNwICpkc3AsIHUzMiBvZmZzZXQsCj4gLQl1MzIgc2l6ZSwgZW51bSBz
+c3RfbWVtX3R5cGUgdHlwZSwgc3RydWN0IHNzdF9ibG9ja19vcHMgKm9wcywgdTMyIGluZGV4LAo+
+IC0Jdm9pZCAqcHJpdmF0ZSkKPiArCXUzMiBzaXplLCBlbnVtIHNzdF9tZW1fdHlwZSB0eXBlLCBj
+b25zdCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLAo+ICsJdTMyIGluZGV4LCB2b2lkICpwcml2
+YXRlKQo+ICAgewo+ICAgCXN0cnVjdCBzc3RfbWVtX2Jsb2NrICpibG9jazsKPgo+IGRpZmYgLS1n
+aXQgYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1kc3AuYyBiL3NvdW5kL3Nv
+Yy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLWRzcC5jCj4gaW5kZXggN2Y5NDkyMC4uYjJiZWMz
+NiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1kc3Au
+Ywo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLWRzcC5jCj4gQEAg
+LTYwNyw3ICs2MDcsNyBAQCBzdGF0aWMgaW50IGhzd19ibG9ja19kaXNhYmxlKHN0cnVjdCBzc3Rf
+bWVtX2Jsb2NrICpibG9jaykKPiAgIAlyZXR1cm4gMDsKPiAgIH0KPgo+IC1zdGF0aWMgc3RydWN0
+IHNzdF9ibG9ja19vcHMgc3N0X2hzd19vcHMgPSB7Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3N0
+X2Jsb2NrX29wcyBzc3RfaHN3X29wcyA9IHsKPiAgIAkuZW5hYmxlID0gaHN3X2Jsb2NrX2VuYWJs
+ZSwKPiAgIAkuZGlzYWJsZSA9IGhzd19ibG9ja19kaXNhYmxlLAo+ICAgfTsKPgo+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
