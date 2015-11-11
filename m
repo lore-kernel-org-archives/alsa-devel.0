@@ -1,16 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] pcm: simple: Fix asserts
-Date: Wed, 11 Nov 2015 16:21:38 +0100
-Message-ID: <56435D02.6010202@perex.cz>
-References: <1447254670-31813-1-git-send-email-peda@lysator.liu.se>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback
+ when monitor is disconnected
+Date: Wed, 11 Nov 2015 15:22:17 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19779F0A@SHSMSX103.ccr.corp.intel.com>
+References: <1447231149-88326-1-git-send-email-libin.yang@linux.intel.com>
+ <s5h4mgs6h9l.wl-tiwai@suse.de>	<s5hfv0ck4ka.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19779E77@SHSMSX103.ccr.corp.intel.com>
+ <s5h6118k2dh.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F0BF26043C
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 16:21:39 +0100 (CET)
-In-Reply-To: <1447254670-31813-1-git-send-email-peda@lysator.liu.se>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE18826587F
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 16:22:22 +0100 (CET)
+In-Reply-To: <s5h6118k2dh.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,18 +25,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 11.11.2015 v 16:11 Peter Rosin napsal(a):
-> From: Peter Rosin <peda@axentia.se>
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, November 11, 2015 11:00 PM
+> To: Yang, Libin
+> Cc: libin.yang@linux.intel.com; David Henningsson; alsa-devel@alsa-
+> project.org; mengdong.lin@linux.intel.com
+> Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback when
+> monitor is disconnected
 > 
-> Do not error out on the boundaries.
+> On Wed, 11 Nov 2015 15:43:00 +0100,
+> Yang, Libin wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Yang, Libin
+> > > Sent: Wednesday, November 11, 2015 10:24 PM
+> > > To: 'Takashi Iwai'; libin.yang@linux.intel.com
+> > > Cc: David Henningsson; alsa-devel@alsa-project.org;
+> > > mengdong.lin@linux.intel.com
+> > > Subject: RE: [PATCH] ALSA - hda: hdmi flag to stop playback when
+> > > monitor is disconnected
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Wednesday, November 11, 2015 10:13 PM
+> > > > To: libin.yang@linux.intel.com
+> > > > Cc: David Henningsson; alsa-devel@alsa-project.org;
+> > > > mengdong.lin@linux.intel.com; Yang, Libin
+> > > > Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback when
+> > > > monitor is disconnected
+> > > >
+> > > > On Wed, 11 Nov 2015 10:02:14 +0100,
+> > > > Takashi Iwai wrote:
+> > > > >
+> > > > > On Wed, 11 Nov 2015 09:39:09 +0100,
+> > > > > libin.yang@linux.intel.com wrote:
+> > > > > >
+> > > > > > From: Libin Yang <libin.yang@linux.intel.com>
+> > > > > >
+> > > > > > Add a flag that user can decide to stop HDMI/DP playback when
+> > > > > > the corresponding monitor is disconnected and refuse to open
+> PCM
+> > > > > > if there is no monitor connected.
+> > > > > >
+> > > > > > Background:
+> > > > > > When a monitor is disconnected and a new monitor is connected,
+> > > > > > the parameters of the 2 monitors may be different. Audio driver
+> > > > > > need handle this situation.
+> > > > > >
+> > > > > > Besides, stopping playback when monitor is disconnected will
+> > > > > > help to save the power.
+> > > > > >
+> > > > > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> > > > >
+> > > > > Thanks.  Below are just nitpicking, so let's test this patch at first,
+> > > > > especially to see whether it has any significant influence on PA,
+> then
+> > > > > respin with the fixes.
+> > > > >
+> > > > > David, care to check in your side, too?
+> > > >
+> > > > So I tested this with PA 7.1, and it failed, unfortunately.
+> > > > In short:
+> > > > - PA needs the PCM access at probe.  If it gets an error, the device
+> > > >   will be never enumerated again
+> > >
+> > > Thanks for test.
+> > >
+> > > If so, should we re-write the hdmi_pcm_open() and
+> > > generic_hdmi_playback_pcm_prepare() function to make
+> > > the probe works? Or not support dynamic pcm assignment?
+> > >
+> > > > - PA removes the device when it's disconnected.  The PCM stop with
+> > > >   DISCONNECT state leads to the device disappearance.
+> > >
+> > > If we can't use DISCONNECT, what else can we use? Or we can't
+> > > stop PCM when monitor is disconnected?
+> >
+> > BTW: I did the test on aplay. But I missed the test on PA.
+> > Where can I get the PA test cases?
+> 
+> Just use PA on your desktop.  Start PA with and without monitor
+> plugged.  Play via DP, then unplug, then watch the state change of
+> PA.
 
-Applied. Thanks.
+Get it. Thanks.
 
+Regards,
+Libin
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+> 
+> Takashi
