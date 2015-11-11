@@ -1,39 +1,15 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Wed, 11 Nov 2015 08:33:18 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19779CDE@SHSMSX103.ccr.corp.intel.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
- <56288783.1080503@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
- <56288FF7.9030400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
- <5628A3EB.8050306@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
- <562A1237.2090909@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
- <s5hvb9or3zj.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
- <563716D7.3000502@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
- <563B1C37.4010400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D197786EB@SHSMSX103.ccr.corp.intel.com>
- <5641A088.50609@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19778A43@SHSMSX103.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D19779C61@SHSMSX103.ccr.corp.intel.com>
- <s5hbnb155bm.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19779C97@SHSMSX103.ccr.corp.intel.com>
- <s5h8u6554c4.wl-tiwai@suse.de>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA - hda: hdmi flag to stop playback when
+	monitor is disconnected
+Date: Wed, 11 Nov 2015 16:39:09 +0800
+Message-ID: <1447231149-88326-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CBB32605B1
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 09:33:23 +0100 (CET)
-In-Reply-To: <s5h8u6554c4.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EEB82605B1
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 09:40:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -43,193 +19,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>, "'airlied@linux.ie'" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Nikula,
- Jani" <jani.nikula@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>, 'Raymond Yau' <superquad.vortex2@gmail.com>, "'tanuk@iki.fi'" <tanuk@iki.fi>, 'David Henningsson' <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+From: Libin Yang <libin.yang@linux.intel.com>
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, November 11, 2015 4:27 PM
-> To: Yang, Libin
-> Cc: 'David Henningsson'; Lin, Mengdong; 'Raymond Yau'; 'airlied@linux.ie';
-> 'tanuk@iki.fi'; 'ALSA Development Mailing List'; Girdwood, Liam R; Lu,
-> Han; Nikula, Jani
-> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> 
-> On Wed, 11 Nov 2015 09:11:49 +0100,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi,
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Wednesday, November 11, 2015 4:06 PM
-> > > To: Yang, Libin
-> > > Cc: 'David Henningsson'; Lin, Mengdong; 'Raymond Yau';
-> 'airlied@linux.ie';
-> > > 'tanuk@iki.fi'; 'ALSA Development Mailing List'; Girdwood, Liam R; Lu,
-> > > Han; Nikula, Jani
-> > > Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> > >
-> > > On Wed, 11 Nov 2015 08:58:29 +0100,
-> > > Yang, Libin wrote:
-> > > >
-> > > >
-> > > > > -----Original Message-----
-> > > > > From: Yang, Libin
-> > > > > Sent: Wednesday, November 11, 2015 10:04 AM
-> > > > > To: David Henningsson; Takashi Iwai
-> > > > > Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi;
-> ALSA
-> > > > > Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula, Jani
-> > > > > Subject: RE: [alsa-devel] DP1.2 MST audio support discussion
-> > > > >
-> > > > >
-> > > > > > -----Original Message-----
-> > > > > > From: David Henningsson
-> > > [mailto:david.henningsson@canonical.com]
-> > > > > > Sent: Tuesday, November 10, 2015 3:45 PM
-> > > > > > To: Yang, Libin; Takashi Iwai
-> > > > > > Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi;
-> > > ALSA
-> > > > > > Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula,
-> Jani
-> > > > > > Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > On 2015-11-10 07:46, Yang, Libin wrote:
-> > > > > > > Hi David,
-> > > > > > >
-> > > > > > >
-> > > > > > >> -----Original Message-----
-> > > > > > >> From: David Henningsson
-> > > > > [mailto:david.henningsson@canonical.com]
-> > > > > > >> Sent: Thursday, November 05, 2015 5:07 PM
-> > > > > > >> To: Yang, Libin; Takashi Iwai
-> > > > > > >> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie;
-> tanuk@iki.fi;
-> > > > > ALSA
-> > > > > > >> Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula,
-> > > Jani
-> > > > > > >> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> > > > > > >>
-> > > > > > >>
-> > > > > > >>
-> > > > > > >> So I'm asking my question again. What would happen (on
-> Intel
-> > > > > > hardware),
-> > > > > > >> if you stream audio to a converter node on the audio codec,
-> and
-> > > > > there
-> > > > > > is
-> > > > > > >> no pin node connected to that converter node?
-> > > > > > >
-> > > > > > > I changed the audio driver and did the test today. The test is:
-> > > > > > > 1. Pin 5 connect to converter 2 and playback, there is sound
-> from
-> > > pin
-> > > > > 5.
-> > > > > > > 2. Pin 5 connect to converter 2 (no other pin is connected to
-> cvt2),
-> > > no
-> > > > > > sound.
-> > > > > > > 3. Pin 5 connect back to cvt 2, there is sound, playback is
-> normal.
-> > > > > > >
-> > > > > > > And in step 2, the playback is still ongoing but no sound is out
-> from
-> > > > > any
-> > > > > > pin.
-> > > > > >
-> > > > > > Sounds good to me, thanks for testing. Is this workaround
-> > > something
-> > > > > we
-> > > > > > could utilize in order to not break userspace? (This is a question
-> for
-> > > > > > both you and Takashi.)
-> > > > > >
-> > > > > > What we'll end up is essentially three types of objects:
-> > > > > >
-> > > > > >   * PCM device (5 devices, 3,7,8,9,10)
-> > > > > >    - all five devices are allocated when the driver initializes
-> > > > >
-> > > > > This should be for Intel platform, right? The actually number
-> > > > > should be:
-> > > > > pin number + device entry number - 1.
-> > > > > On intel platform, pin_num = 3, dev_num = 3, so it will be 5.
-> > > > >
-> > > > > >    - all kcontrols are always bound to the PCM device (jack kctl,
-> eld
-> > > > > > kctl, iec958 kctls etc)
-> > > > >
-> > > > > Sure, I agree on it.
-> > > > >
-> > > > > >
-> > > > > >   * Monitor (pin + MST index)
-> > > > > >    - dynamically bound to a PCM at monitor plug-in time,
-> according
-> > > to a
-> > > > > > scheme that maximises the possibility for a monitor to always
-> end
-> > > up at
-> > > > > > the same PCM (as specified in earlier emails)
-> > > > > >
-> > > > > >   * Converter node (3 nodes for Intel hardware)
-> > > > > >     - dynamically bound to a PCM at playback open time
-> (regardless
-> > > of
-> > > > > > whether the PCM has a monitor or not)
-> > > > >
-> > > > > If so, we still need use converter on codec. This means we can't
-> turn
-> > > > > off the power well in i915.
-> > > > >
-> > > > > To save the power, i915 suggests that if no monitor is connected,
-> > > > > we should not use the HDMI codec. This means open a PCM with
-> > > > > no pin attached will fail. Disconnecting monitor when the
-> > > corresponding
-> > > > > PCM is playback will trigger stop PCM.
-> > > > >
-> > > > > To help move to the new method smoothly, I will add a flag.
-> > > > > User can decide whether to use the aggressive power saving
-> > > > > solution or not.
-> > > >
-> > > > In  hdmi_pcm_open(), it will judge whether pin_idx is valid,
-> > > > if not it will return -EINVAL. So for dynamic PCM assignment,
-> > > > open will fail if no monitor is connected.
-> > > >
-> > > > If we want to support open on PCM without monitor, many
-> > > > code must be rewrited. And it seems open a PCM without
-> > > > monitor is not a good behavior. As Raymond said in previous
-> > > > email, For alt analog playback device , it return EBUSY when
-> > > > DAC of HP is not available. I think for HDMI audio we can
-> > > > have the aligned behavior? And -ENODEV may be better.
-> > >
-> > > Libin, it's why I've been repeated asking to split the patches,
-> > > instead of posting a big iron patch.  Then we can test and evaluate
-> > > whether this part is really working in general.
-> >
-> > Yes, I understand. :) The patches are being split. Suppose these 2 days
-> > patches should be ready for review.
-> 
-> Well, you don't have to post full patchset at all.  Rather in such a
-> case, a gradual test is preferred.  That is, cook this functionality
-> patch(es) quickly, and let people test it.  Once after it's confirmed,
-> start working on the rest.  It's not worth to wait for a week for each
-> respin because of the size and the features of of the whole patchset.
+Add a flag that user can decide to stop HDMI/DP playback when
+the corresponding monitor is disconnected and refuse to open PCM
+if there is no monitor connected.
 
-Get it. I will submit the patches if any is ready.
+Background:
+When a monitor is disconnected and a new monitor is connected,
+the parameters of the 2 monitors may be different. Audio driver
+need handle this situation.
 
-BTW: for the DP MST audio, can we put the patches into a new branch first
-and wait all patches for MST audio are ready and mature, and then move 
-the patches to master branch?
+Besides, stopping playback when monitor is disconnected will
+help to save the power.
 
-> 
-> 
-> Takashi
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index f503a88..4f5023a 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -47,6 +47,11 @@ static bool static_hdmi_pcm;
+ module_param(static_hdmi_pcm, bool, 0644);
+ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 
++static bool hdmi_pcm_stop_on_disconnect;
++module_param(hdmi_pcm_stop_on_disconnect, bool, 0644);
++MODULE_PARM_DESC(hdmi_pcm_stop_on_disconnect,
++				 "Stop PCM when monitor is disconnected");
++
+ #define is_haswell(codec)  ((codec)->core.vendor_id == 0x80862807)
+ #define is_broadwell(codec)    ((codec)->core.vendor_id == 0x80862808)
+ #define is_skylake(codec) ((codec)->core.vendor_id == 0x80862809)
+@@ -72,6 +77,7 @@ struct hdmi_spec_per_cvt {
+ 
+ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
++	int pin_idx;
+ 	int num_mux_nids;
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+ 	int mux_idx;
+@@ -1456,6 +1462,9 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 	per_pin = get_pin(spec, pin_idx);
+ 	eld = &per_pin->sink_eld;
+ 
++	if (hdmi_pcm_stop_on_disconnect && !eld->eld_valid)
++		return -ENODEV;
++
+ 	err = hdmi_choose_cvt(codec, pin_idx, &cvt_idx, &mux_idx);
+ 	if (err < 0)
+ 		return err;
+@@ -1529,6 +1538,28 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
+ 	return 0;
+ }
+ 
++static void hdmi_pcm_stop(struct hdmi_spec *spec,
++					struct hdmi_spec_per_pin *per_pin)
++{
++	struct hda_codec *codec = per_pin->codec;
++	struct snd_pcm_substream *substream;
++	int pin_idx = per_pin->pin_idx;
++
++	if (!hdmi_pcm_stop_on_disconnect)
++		return;
++
++	substream = get_pcm_rec(spec, pin_idx)->pcm->streams[0].substream;
++
++	snd_pcm_stream_lock_irq(substream);
++	if (substream && substream->runtime &&
++		snd_pcm_running(substream)) {
++		codec_info(codec,
++			"HDMI: monitor disconnected, try to stop playback\n");
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
++	}
++	snd_pcm_stream_unlock_irq(substream);
++}
++
+ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ {
+ 	struct hda_jack_tbl *jack;
+@@ -1586,6 +1617,8 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		}
+ 	}
+ 
++	if (!eld->eld_valid)
++		hdmi_pcm_stop(spec, per_pin);
+ 	if (pin_eld->eld_valid != eld->eld_valid)
+ 		eld_changed = true;
+ 
+@@ -1680,6 +1713,7 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 		return -ENOMEM;
+ 
+ 	per_pin->pin_nid = pin_nid;
++	per_pin->pin_idx = pin_idx;
+ 	per_pin->non_pcm = false;
+ 
+ 	err = hdmi_read_pin_conn(codec, pin_idx);
+-- 
+1.9.1
