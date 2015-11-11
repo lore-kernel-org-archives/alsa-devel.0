@@ -1,34 +1,22 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Wed, 11 Nov 2015 02:04:13 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19778A43@SHSMSX103.ccr.corp.intel.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
- <56288783.1080503@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
- <56288FF7.9030400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
- <5628A3EB.8050306@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
- <562A1237.2090909@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
- <s5hvb9or3zj.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
- <563716D7.3000502@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
- <563B1C37.4010400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D197786EB@SHSMSX103.ccr.corp.intel.com>
- <5641A088.50609@canonical.com>
+From: Michael Pogrebinsky <michael.pogrebinsky@daqri.com>
+Subject: Re: ASoC Sound Driver I2S over LPE,
+ Intel Baytrail SoC. MinnowBoard Max
+Date: Tue, 10 Nov 2015 18:18:47 -0800
+Message-ID: <CAGOuWmsw8OKOxLEF0bXGY8-JSdJRxFjvgm1WTHGrL700xSRR-g@mail.gmail.com>
+References: <CAGOuWmvw39beNdaLgdBGXk9rNWw9vwbFfQNSBw50KLYpGa_AHA@mail.gmail.com>
+ <56423D44.60505@linux.intel.com>
+ <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F57626526D
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 03:04:19 +0100 (CET)
-In-Reply-To: <5641A088.50609@canonical.com>
-Content-Language: en-US
+Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20CFC26526D
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 03:18:49 +0100 (CET)
+Received: by iouu10 with SMTP id u10so13191086iou.0
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 18:18:48 -0800 (PST)
+In-Reply-To: <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,99 +26,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Nikula, Jani" <jani.nikula@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, "tanuk@iki.fi" <tanuk@iki.fi>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: John Hawley <john.hawley@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Pierre,
+I downloaded 4.3 stable kernel, and I applied all the commits in the repo
+you forwarded to me.
+I'm running into an issue, where after doing those instructions:
+"iasl -tc dsdt_minnow.dsl
 
-> -----Original Message-----
-> From: David Henningsson [mailto:david.henningsson@canonical.com]
-> Sent: Tuesday, November 10, 2015 3:45 PM
-> To: Yang, Libin; Takashi Iwai
-> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
-> Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula, Jani
-> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> 
-> 
-> 
-> On 2015-11-10 07:46, Yang, Libin wrote:
-> > Hi David,
-> >
-> >
-> >> -----Original Message-----
-> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
-> >> Sent: Thursday, November 05, 2015 5:07 PM
-> >> To: Yang, Libin; Takashi Iwai
-> >> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
-> >> Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula, Jani
-> >> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
-> >>
-> >>
-> >>
-> >> So I'm asking my question again. What would happen (on Intel
-> hardware),
-> >> if you stream audio to a converter node on the audio codec, and there
-> is
-> >> no pin node connected to that converter node?
-> >
-> > I changed the audio driver and did the test today. The test is:
-> > 1. Pin 5 connect to converter 2 and playback, there is sound from pin 5.
-> > 2. Pin 5 connect to converter 2 (no other pin is connected to cvt2), no
-> sound.
-> > 3. Pin 5 connect back to cvt 2, there is sound, playback is normal.
-> >
-> > And in step 2, the playback is still ongoing but no sound is out from any
-> pin.
-> 
-> Sounds good to me, thanks for testing. Is this workaround something we
-> could utilize in order to not break userspace? (This is a question for
-> both you and Takashi.)
-> 
-> What we'll end up is essentially three types of objects:
-> 
->   * PCM device (5 devices, 3,7,8,9,10)
->    - all five devices are allocated when the driver initializes
+mv dsdt_minnow.hex include/
 
-This should be for Intel platform, right? The actually number
-should be:
-pin number + device entry number - 1.
-On intel platform, pin_num = 3, dev_num = 3, so it will be 5.
+the options following options need to be set in the .config
+for the tables to be taken into account:
 
->    - all kcontrols are always bound to the PCM device (jack kctl, eld
-> kctl, iec958 kctls etc)
+CONFIG_ACPI_CUSTOM_DSDT_FILE=dsdt_minnow.hex
+CONFIG_ACPI_CUSTOM_DSDT=y"
 
-Sure, I agree on it.
+"
+I am not able to boot the kernel.
+The last message I see on the screen before it goes blank is the system is
+trying to load rmfs.
+If I take the kernel with your patches however, and do not set the
+Config_ACPI_CUSTOM_DST_FILE to dsdt_minnow.hex and do not run the iasl
+tool. ( I just take the kernel with the patches) the system loads.
 
-> 
->   * Monitor (pin + MST index)
->    - dynamically bound to a PCM at monitor plug-in time, according to a
-> scheme that maximises the possibility for a monitor to always end up at
-> the same PCM (as specified in earlier emails)
-> 
->   * Converter node (3 nodes for Intel hardware)
->     - dynamically bound to a PCM at playback open time (regardless of
-> whether the PCM has a monitor or not)
+On the same note I should mention that I am running on Atom E3825 64 bit.
+Thanks,
+Michael
 
-If so, we still need use converter on codec. This means we can't turn
-off the power well in i915.
 
-To save the power, i915 suggests that if no monitor is connected,
-we should not use the HDMI codec. This means open a PCM with
-no pin attached will fail. Disconnecting monitor when the corresponding
-PCM is playback will trigger stop PCM.
 
-To help move to the new method smoothly, I will add a flag.
-User can decide whether to use the aggressive power saving
-solution or not.
 
->     - return -EBUSY in case there is no free converter node
 
-Regards,
-Libin
+On Tue, Nov 10, 2015 at 11:59 AM, Michael Pogrebinsky <
+michael.pogrebinsky@daqri.com> wrote:
 
-> 
-> 
+> Hi Pierre,
+> Thank you so much for your reply, and for sharing your repo.
+> This is great news for me, as I was blocked for a while on this issue. And
+> I'm particularly happy that this is all done on top of the 4.3 Kernel, this
+> is very professional of you. I will try the code, and definitely let you
+> know how it goes, or if I have any issues.
+>
+> Thank you again,
+> Michael
+>
+>
+>
+> On Tue, Nov 10, 2015 at 10:53 AM, Pierre-Louis Bossart <
+> pierre-louis.bossart@linux.intel.com> wrote:
+>
+>> Hi Michael,
+>>
+>> I have the MinnowBoard Max with Baytrail Atom (ValleyView) SoC.
+>>> I'm attempting to write an Alsa (ASoC) driver for my sound card to
+>>> work with this board.
+>>> PCM should work through I2S for this sound card I have.
+>>>
+>>
+>> Good to hear. There are several folks in Intel trying to enable I2S over
+>> the low-speed connector for 3rd party enablement or help 'makers'. This is
+>> still work-in-progress but we can already share some elements of
+>> information based on our own experience:
+>> 1. the default 0.82 firmware doesn't enable the I2S pins, we are
+>> currently using a DSDT override to configure them.
+>> 2. the audio codec needs to be registered as a child of I2C6 (it's
+>> typically I2C2 on regular baytrail platforms). this is also part of the
+>> DSDT override.
+>> 3. since we need to support multiple audio codecs, we'd like to add a
+>> mechanism to add information in the SSDT table to be able to boot the same
+>> kernel and select the right drivers. Alternatively you will have to use the
+>> DSDT override method until this mechanism is ready.
+>> 4. there is no MCLK on existing MinnowBoards, so your codec will have to
+>> drive its PLL from the BLCK. newer versions of the MinnowBoard Turbot will
+>> support an MCLK but they are in pre-production stage and to the best of my
+>> knowledge not available commercially yet.
+>> 5. to get the best long-term support you really want to use the newer
+>> DPCM-based driver/firmware for e.g 24-bit, TDM and deep-buffer support. We
+>> have a set of patches that have not been published upstream yet but if you
+>> are interested you can look at my github
+>> https://github.com/plbossart/sound/tree/minnow-v4.3-24bit. In theory if
+>> you take this code and change the DSDT to support your _HID just like it
+>> was done for the rt5651 the drivers should load and register a sound card.
+>> Disclaimer: there is no official support on this branch and rebases/fixes
+>> may happen at any time. the code will be submitted upstream when ready.
+>>
+>> If you provide more information on which codec you are trying to link to
+>> we can help further.
+>> -Pierre
+>>
+>
+>
+>
 > --
-> David Henningsson, Canonical Ltd.
-> https://launchpad.net/~diwic
+>
+> [image: DAQRI] <http://daqri.com/>
+>
+> Michael Pogrebinsky
+>
+> Senior Android Developer - DAQRI Smart Helmet Applications
+>
+> *Tel:* *844-327-7443*
+>
+> michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
+> DAQRI.com <http://daqri.com/>
+>
+
+
+
+-- 
+
+[image: DAQRI] <http://daqri.com/>
+
+Michael Pogrebinsky
+
+Senior Android Developer - DAQRI Smart Helmet Applications
+
+*Tel:* *844-327-7443*
+
+michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
+DAQRI.com <http://daqri.com/>
