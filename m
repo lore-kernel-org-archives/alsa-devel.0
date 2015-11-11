@@ -1,21 +1,21 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback
- when monitor is disconnected
-Date: Wed, 11 Nov 2015 15:22:17 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19779F0A@SHSMSX103.ccr.corp.intel.com>
-References: <1447231149-88326-1-git-send-email-libin.yang@linux.intel.com>
- <s5h4mgs6h9l.wl-tiwai@suse.de>	<s5hfv0ck4ka.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19779E77@SHSMSX103.ccr.corp.intel.com>
- <s5h6118k2dh.wl-tiwai@suse.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Unregister a card from userspace?
+Date: Wed, 11 Nov 2015 16:24:20 +0100
+Message-ID: <alpine.DEB.2.02.1511111621350.11990@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
+ <56408259.2030604@felipetonello.com>
+ <alpine.DEB.2.02.1511100852180.15344@lnxricardw1.se.axis.com>
+ <564319CD.3070305@felipetonello.com>
+ <alpine.DEB.2.02.1511111348380.11990@lnxricardw1.se.axis.com>
+ <56433E0A.20804@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CE18826587F
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 16:22:22 +0100 (CET)
-In-Reply-To: <s5h6118k2dh.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2334C26049B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 16:24:22 +0100 (CET)
+In-Reply-To: <56433E0A.20804@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,102 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Felipe Ferreri Tonello <eu@felipetonello.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, November 11, 2015 11:00 PM
-> To: Yang, Libin
-> Cc: libin.yang@linux.intel.com; David Henningsson; alsa-devel@alsa-
-> project.org; mengdong.lin@linux.intel.com
-> Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback when
-> monitor is disconnected
-> 
-> On Wed, 11 Nov 2015 15:43:00 +0100,
-> Yang, Libin wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Yang, Libin
-> > > Sent: Wednesday, November 11, 2015 10:24 PM
-> > > To: 'Takashi Iwai'; libin.yang@linux.intel.com
-> > > Cc: David Henningsson; alsa-devel@alsa-project.org;
-> > > mengdong.lin@linux.intel.com
-> > > Subject: RE: [PATCH] ALSA - hda: hdmi flag to stop playback when
-> > > monitor is disconnected
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > Sent: Wednesday, November 11, 2015 10:13 PM
-> > > > To: libin.yang@linux.intel.com
-> > > > Cc: David Henningsson; alsa-devel@alsa-project.org;
-> > > > mengdong.lin@linux.intel.com; Yang, Libin
-> > > > Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback when
-> > > > monitor is disconnected
-> > > >
-> > > > On Wed, 11 Nov 2015 10:02:14 +0100,
-> > > > Takashi Iwai wrote:
-> > > > >
-> > > > > On Wed, 11 Nov 2015 09:39:09 +0100,
-> > > > > libin.yang@linux.intel.com wrote:
-> > > > > >
-> > > > > > From: Libin Yang <libin.yang@linux.intel.com>
-> > > > > >
-> > > > > > Add a flag that user can decide to stop HDMI/DP playback when
-> > > > > > the corresponding monitor is disconnected and refuse to open
-> PCM
-> > > > > > if there is no monitor connected.
-> > > > > >
-> > > > > > Background:
-> > > > > > When a monitor is disconnected and a new monitor is connected,
-> > > > > > the parameters of the 2 monitors may be different. Audio driver
-> > > > > > need handle this situation.
-> > > > > >
-> > > > > > Besides, stopping playback when monitor is disconnected will
-> > > > > > help to save the power.
-> > > > > >
-> > > > > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
-> > > > >
-> > > > > Thanks.  Below are just nitpicking, so let's test this patch at first,
-> > > > > especially to see whether it has any significant influence on PA,
-> then
-> > > > > respin with the fixes.
-> > > > >
-> > > > > David, care to check in your side, too?
-> > > >
-> > > > So I tested this with PA 7.1, and it failed, unfortunately.
-> > > > In short:
-> > > > - PA needs the PCM access at probe.  If it gets an error, the device
-> > > >   will be never enumerated again
-> > >
-> > > Thanks for test.
-> > >
-> > > If so, should we re-write the hdmi_pcm_open() and
-> > > generic_hdmi_playback_pcm_prepare() function to make
-> > > the probe works? Or not support dynamic pcm assignment?
-> > >
-> > > > - PA removes the device when it's disconnected.  The PCM stop with
-> > > >   DISCONNECT state leads to the device disappearance.
-> > >
-> > > If we can't use DISCONNECT, what else can we use? Or we can't
-> > > stop PCM when monitor is disconnected?
-> >
-> > BTW: I did the test on aplay. But I missed the test on PA.
-> > Where can I get the PA test cases?
-> 
-> Just use PA on your desktop.  Start PA with and without monitor
-> plugged.  Play via DP, then unplug, then watch the state change of
-> PA.
+On Wed, 11 Nov 2015, Lars-Peter Clausen wrote:
 
-Get it. Thanks.
+> >> How is your architecture? If you use one card for each probe of module
+> >> then each bind should create one device, right?
+> > =
 
-Regards,
-Libin
+> > In this case, it is a device which is located on the SoC. There is only =
 
-> 
-> 
-> Takashi
+> > one instance of it. When the module is loaded, it loads a codec driver =
+
+> > with its associated DAI driver, a PCM driver, snd-soc-dummy-dai, and th=
+en =
+
+> > a machine driver to tie it all together, finally registering the card w=
+ith =
+
+> > ALSA.
+> > =
+
+> > Looking in /sys/bus/platform/devices, there seems to be one device crea=
+ted =
+
+> > for the codec itself, and one for the machine driver. I don't know if =
+
+> > that's right or wrong, the ALSA driver hierarchy works in the sense tha=
+t I =
+
+> > can capture audio from it anyway.
+> =
+
+> Which one is the module you can't unload? The module that contains the
+> machine driver should only have its reference count increment when a
+> playback or capture stream is active so you can't remove it when it is
+> actively in use.
+
+As it is currently I've got all drivers in the same module. Since there is =
+
+only one possible choice for the PCM and DAI drivers when using this =
+
+particular codec, it seemed pointless to several modules for the =
+
+constituent parts.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
