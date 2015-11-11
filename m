@@ -1,56 +1,101 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: ASoC: multicodec: No matching channels with system
- with DACs and ADCs on same bus
-Date: Wed, 11 Nov 2015 12:15:27 -0800
-Message-ID: <CAG5mAdwBuHdq=+b_NYWfC=awLaA94jwE_LHBLk28JuBQSzj_2w@mail.gmail.com>
-References: <CAG5mAdzz0ZnXx_t3+G+f5FuaqfxmfRfBW6_r3vcX2Rybb3LuYg@mail.gmail.com>
- <alpine.DEB.2.02.1511110828390.15792@lnxricardw1.se.axis.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] ASoC: da7218: Add bindings documentation for
+ DA7218 audio codec
+Date: Wed, 11 Nov 2015 14:19:46 -0600
+Message-ID: <20151111201946.GA24618@rob-hp-laptop>
+References: <cover.1447254553.git.Adam.Thomson.Opensource@diasemi.com>
+ <760d212f18efec816701f2b3e9fc549ca86d31ee.1447254553.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id A6C5F261AAB
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 21:15:47 +0100 (CET)
-Received: by wmec201 with SMTP id c201so62649386wme.1
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 12:15:46 -0800 (PST)
-In-Reply-To: <alpine.DEB.2.02.1511110828390.15792@lnxricardw1.se.axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lu,
- Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <760d212f18efec816701f2b3e9fc549ca86d31ee.1447254553.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBOb3YgMTAsIDIwMTUgYXQgMTE6MzggUE0sIFJpY2FyZCBXYW5kZXJsb2YgPApyaWNh
-cmQud2FuZGVybG9mQGF4aXMuY29tPiB3cm90ZToKCj4KPiBPbiBUdWUsIDEwIE5vdiAyMDE1LCBD
-YWxlYiBDcm9tZSB3cm90ZToKPgo+ID4gICBJIGhhdmUgYSBzeXN0ZW0gdGhhdCBoYXMgc2VwYXJh
-dGUgREFDcyBhbmQgQURDcywgYXMgb3Bwb3NlZCB0bwo+ID4gYmlkaXJlY3Rpb25hbCBDT0RFQ1Mu
-Cj4gPgo+ID4gVGhlIEFEQ3MgaGF2ZSBhIHNuZF9zb2NfZGFpX2RyaXZlciBzdHJ1Y3R1cmUgdGhh
-dCBoYXZlIGEgLmNhcHR1cmUKPiA+IGZpZWxkIGRlZmluZWQgd2l0aCBhIC5yYXRlcyBwYXJhbWV0
-ZXIsIGFuZCB0aGUgREFDcyBoYXZlIGEKPiA+IHNuZF9zb2NfZGFpX2RyaXZlciBzdHJ1Y3R1cmUg
-dGhhdCBoYXZlIGEgLnBsYXliYWNrIGZpZWxkIGRlZmluZWQgd2l0aAo+ID4gYSAucmF0ZXMgcGFy
-YW1ldGVyLgo+ID4KPiA+IEhvd2V2ZXIsIHRoZSBBRENzIGhhdmUgbm8gLnBsYXliYWNrLnJhdGVz
-LCBhbmQgdGhlIERBQ3MgaGF2ZSBubwo+ID4gLmNhcHR1cmUucmF0ZXMuIEV2ZW4gdGhvdWdoIHRo
-ZSBBREMgY2FuIHJlY29yZCBhdCBhIGdpdmVuIHJhdGUgYW5kIHRoZQo+ID4gREFDIGNhbiBwbGF5
-IGF0IHRoYXQgc2FtZSByYXRlLCB0aGUgc29jX3BjbV9pbml0X3J1bnRpbWVfaHcgZnVuY3Rpb24K
-PiA+IGNhbGN1bGF0ZXMgdGhlIHJhdGVzIGluIHRoaXMgbG9vcDoKPiA+IC4uLgo+Cj4gSSBoYWQg
-dGhlIHNhbWUgcHJvYmxlbSBlYXJsaWVyIHRoaXMgeWVhci4gSSBzdWJtaXR0ZWQgYSBwYXRjaCB3
-aGljaCB0YWtlcwo+IGNhcmUgb2YgdGhpcyB0aGF0IHdhcyBhcHBsaWVkIGEgbGl0dGxlIG92ZXIg
-YSBtb250aCBhZ286Cj4KPgo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJt
-YWlsL2Fsc2EtZGV2ZWwvMjAxNS1TZXB0ZW1iZXIvMDk3NzI5Lmh0bWwKPgo+Ci9SaWNhcmQKPiAt
-LQo+IFJpY2FyZCBXb2xmIFdhbmRlcmzDtmYgICAgICAgICAgICAgICAgICAgICAgICAgICByaWNh
-cmR3KGF0KWF4aXMuY29tCj4gQXhpcyBDb21tdW5pY2F0aW9ucyBBQiwgTHVuZCwgU3dlZGVuICAg
-ICAgICAgICAgd3d3LmF4aXMuY29tCj4gUGhvbmUgKzQ2IDQ2IDI3MiAyMDE2ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgRmF4ICs0NiA0NiAxMyA2MSAzMAo+CgpZZXAsIHBlcmZlY3QuICBUaGFu
-a3MsCiAgLUNhbGViCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Wed, Nov 11, 2015 at 03:40:22PM +0000, Adam Thomson wrote:
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/da7218.txt | 106 +++++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/da7218.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/da7218.txt b/Documentation/devicetree/bindings/sound/da7218.txt
+> new file mode 100644
+> index 0000000..35a53dd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/da7218.txt
+> @@ -0,0 +1,106 @@
+> +Dialog Semiconductor DA7218 Audio Codec bindings
+> +
+> +DA7218 is an audio codec with HP detect feature.
+> +
+> +======
+> +
+> +Required properties:
+> +- compatible : Should be "dlg,da7217" or "dlg,da7218"
+> +- reg: Specifies the I2C slave address
+> +
+> +- VDD-supply: VDD power supply for the device
+> +- VDDMIC-supply: VDDMIC power supply for the device
+> +- VDDIO-supply: VDDIO power supply for the device
+> +  (See Documentation/devicetree/bindings/regulator/regulator.txt for further
+> +   information relating to regulators)
+> +
+> +Optional properties:
+> +- interrupt-parent: Specifies the phandle of the interrupt controller to which
+> +  the IRQs from DA7218 are delivered to.
+> +- interrupts: IRQ line info for DA7218 chip.
+> +  (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt for
+> +   further information relating to interrupt properties)
+> +- interrupt-names : Name associated with interrupt line. Should be "wakeup" if
+> +  interrupt is to be used to wake system, otherwise "irq" should be used.
+> +- wakeup-source: Flag to indicate this device can wake system (suspend/resume).
+> +
+> +- clocks : phandle and clock specifier for codec MCLK.
+> +- clock-names : Clock name string for 'clocks' attribute, should be "mclk".
+> +
+> +- dlg,micbias1-lvl : Voltage (mV) for Mic Bias 1
+> +	[<1200>, <1600>, <1800>, <2000>, <2200>, <2400>, <2600>, <2800>, <3000>]
+> +- dlg,micbias2-lvl : Voltage (mV) for Mic Bias 2
+> +	[<1200>, <1600>, <1800>, <2000>, <2200>, <2400>, <2600>, <2800>, <3000>]
+
+Units please (-microvolt).
+
+> +- dlg,mic1-amp-in-sel : Mic1 input source type
+> +	["diff", "se_p", "se_n"]
+> +- dlg,mic2-amp-in-sel : Mic2 input source type
+> +	["diff", "se_p", "se_n"]
+> +- dlg,dmic1-data-sel : DMIC1 channel select based on clock edge.
+> +	["lrise_rfall", "lfall_rrise"]
+> +- dlg,dmic1-samplephase : When to sample audio from DMIC1.
+> +	["on_clkedge", "between_clkedge"]
+> +- dlg,dmic1-clkrate : DMic1 clock frequency (Hz).
+> +	[<1500000>, <3000000>]
+> +- dlg,dmic2-data-sel : DMic2 channel select based on clock edge.
+> +	["lrise_rfall", "lfall_rrise"]
+> +- dlg,dmic2-samplephase : When to sample audio from DMic2.
+> +	["on_clkedge", "between_clkedge"]
+> +- dlg,dmic2-clkrate : DMic2 clock frequency (Hz).
+> +	[<1500000>, <3000000>]
+> +- dlg,hp-diff-single-supply : Boolean flag, use single supply for HP
+> +			      (DA7217 only)
+> +
+> +======
+> +
+> +Optional Child node - 'da7218_hpldet' (DA7218 only):
+> +
+> +Optional properties:
+> +- dlg,jack-rate : Time between jack detect measurements (us)
+> +	[<5>, <10>, <20>, <40>, <80>, <160>, <320>, <640>]
+
+Units
+
+Rob
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
