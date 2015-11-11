@@ -1,22 +1,24 @@
-From: Anatol Pomazau <anatol@google.com>
-Subject: Re: [PATCH] ASoC: rt5677: Avoid the pop sound that
- comes from the filter power
-Date: Wed, 11 Nov 2015 09:29:03 -0800
-Message-ID: <CALj_zD7EkmQr5cXugeaW62-1+9JTyk87kUBEdXrQV5vQhDGqAg@mail.gmail.com>
-References: <1447063264-19301-1-git-send-email-oder_chiou@realtek.com>
- <CALj_zD6FMWYAT5msvRnb=kzh2OPt0jR-BP8L5DkbedJeNxkvtw@mail.gmail.com>
- <7EB0DE829A537248AF2ED30C97D12694FA4ED0@RTITMBSV03.realtek.com.tw>
+From: Michael Pogrebinsky <michael.pogrebinsky@daqri.com>
+Subject: Re: ASoC Sound Driver I2S over LPE,
+ Intel Baytrail SoC. MinnowBoard Max
+Date: Wed, 11 Nov 2015 09:53:56 -0800
+Message-ID: <CAGOuWmuc+zbDc0j=24OxYRoSnMKRUwaK_sRU0QOE=WUuLERO6w@mail.gmail.com>
+References: <CAGOuWmvw39beNdaLgdBGXk9rNWw9vwbFfQNSBw50KLYpGa_AHA@mail.gmail.com>
+ <56423D44.60505@linux.intel.com>
+ <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
+ <CAGOuWmsw8OKOxLEF0bXGY8-JSdJRxFjvgm1WTHGrL700xSRR-g@mail.gmail.com>
+ <564363BC.1010705@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f182.google.com (mail-yk0-f182.google.com
- [209.85.160.182])
- by alsa0.perex.cz (Postfix) with ESMTP id A8A082604E2
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 18:29:04 +0100 (CET)
-Received: by ykfs79 with SMTP id s79so60323042ykf.1
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 09:29:03 -0800 (PST)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FA4ED0@RTITMBSV03.realtek.com.tw>
+Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF0CB2605C0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 18:53:59 +0100 (CET)
+Received: by ioc74 with SMTP id 74so40810834ioc.2
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 09:53:56 -0800 (PST)
+In-Reply-To: <564363BC.1010705@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,313 +28,287 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Albert Chen <albertchen@realtek.com>, "broonie@kernel.org" <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: John Hawley <john.hawley@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi Pierre,
+Thank you for your reply,
+Did you mean enabling and disabling LPSS and HDAudio in the BIOS or Kernel
+config?
+I checked in the BIOS and LPSS is enabled ( ACPI Mode). And I2C6 is enabled
+as well.
+Regarding the HDAudio - Do you mean South Cluster Configuration - >Audio
+Configuration - >Audio Controller ? I see only 2 options there, LPE Audio
+Support and
+"Audio Controller
+--Azalia VCi Enable
+--Azalia Docking Support Enable
+--Azalia PME Enable
+--Azalia HDMI Codec"
+I disabled it and it didn't make a difference,
+LPE controller is enabled ( I tried both ACPI and PCI mode)
 
-On Tue, Nov 10, 2015 at 6:25 PM, Oder Chiou <oder_chiou@realtek.com> wrote:
+Regarding the dsdt_minnow.hex , I did not modify it, I simply run the
+instruction and copied the hex file to include/.
+The output of iasl command is :
 
-> Hi Anatol,
->
->
->
-> What these AUTODISABLE above for? Are they needed?
->
-> They are needed for the power up sequence that make sure the un-mute
-> should be done after the filter power up.
->
-
-Thanks for the explanation.
-
-Reported-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-Tested-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-
-For those of us who does not have access to the internal structure of the
-> chip, could you please add a comment why this delay is needed here? What
-> the chip is doing these 50ms?
->
-> The delay is done before the mixer un-mute, and it should delay some time
-> to prevent the pop sound.
->
-
-I was looking for more technical information to understand this problem
-better. Does this digital filter has an analog widget that needs time to
-power up, some kind of charge pump for bias voltage? And please add the
-comment to the rt5677_filter_power_event() function, future code readers
-say "thank you" for having clear explanation in places like this one.
-
-The 50ms delay is decided by our internal discussion, and it just waits the
-> pop sound going away
->
-
-Is there a way to reduce this 50ms delay? Maybe use some kind of a
-precharger?
+iasl -tc dsdt_minnow.dsl
 
 
+Intel ACPI Component Architecture
+
+ASL Optimizing Compiler version 20140214-64 [Mar 29 2014]
+
+Copyright (c) 2000 - 2014 Intel Corporation
+
+
+dsdt_minnow.dsl   2780:             Method (XDEP, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   2784:                     Name (_DEP, Package (0x01)
+
+Remark   2089 -            Object is not referenced ^  (Name is within
+method [XDEP])
+
+
+dsdt_minnow.dsl   3570:                             Name (_T_0, Zero)
+
+Remark   2011 -               Use of compiler reserved name ^  (_T_0)
+
+
+dsdt_minnow.dsl   3672:                             Name (_T_0, Zero)
+
+Remark   2011 -               Use of compiler reserved name ^  (_T_0)
+
+
+dsdt_minnow.dsl   3774:                             Name (_T_0, Zero)
+
+Remark   2011 -               Use of compiler reserved name ^  (_T_0)
+
+
+dsdt_minnow.dsl   3876:                             Name (_T_0, Zero)
+
+Remark   2011 -               Use of compiler reserved name ^  (_T_0)
+
+
+dsdt_minnow.dsl   4607:             Method (_CRS, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   4643:             Method (GDEP, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   4647:                     Name (_DEP, Package (0x01)
+
+Remark   2089 -            Object is not referenced ^  (Name is within
+method [GDEP])
+
+
+dsdt_minnow.dsl   7690:                 Method (_CRS, 0, NotSerialized)
+
+Remark   2120 -                                   ^ Control Method should
+be made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8194:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8205:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8216:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8300:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8311:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8322:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8407:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8418:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8429:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8513:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8524:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8535:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8659:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8670:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8681:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8765:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8776:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8787:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8913:             Method (SSCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8924:             Method (FMCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+dsdt_minnow.dsl   8935:             Method (FPCN, 0, NotSerialized)
+
+Remark   2120 -                               ^ Control Method should be
+made Serialized (due to creation of named objects within)
+
+
+ASL Input:     dsdt_minnow.dsl - 9261 lines, 257789 bytes, 3258 keywords
+
+AML Output:    dsdt.aml - 31359 bytes, 1147 named objects, 2111 executable
+opcodes
+
+Hex Dump:      dsdt_minnow.hex - 294325 bytes
+
+
+Compilation complete. 0 Errors, 0 Warnings, 31 Remarks, 130 Optimizations
+
+
+Thanks again for your help Pierre,
+
+
+Michael
+
+
+
+On Wed, Nov 11, 2015 at 7:50 AM, Pierre-Louis Bossart <
+pierre-louis.bossart@linux.intel.com> wrote:
+
+> On 11/10/15 8:18 PM, Michael Pogrebinsky wrote:
 >
-> *From:* Anatol Pomazau [mailto:anatol@google.com]
-> *Sent:* Tuesday, November 10, 2015 2:05 AM
-> *To:* Oder Chiou
-> *Cc:* broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
-> Flove; Bard Liao; John Lin; Jack Yu; Albert Chen
-> *Subject:* Re: [PATCH] ASoC: rt5677: Avoid the pop sound that comes from
-> the filter power
+>> Hi Pierre,
+>> I downloaded 4.3 stable kernel, and I applied all the commits in the repo
+>> you forwarded to me.
+>> I'm running into an issue, where after doing those instructions:
+>> "iasl -tc dsdt_minnow.dsl
+>>
+>> mv dsdt_minnow.hex include/
+>>
 >
+> This is only needed if you modified dsdt_minnow.dsl. if you did, can you
+> provide the log of iasl to make sure the .hex file generation goes well.
 >
+> the options following options need to be set in the .config
+>> for the tables to be taken into account:
+>>
+>> CONFIG_ACPI_CUSTOM_DSDT_FILE=dsdt_minnow.hex
+>> CONFIG_ACPI_CUSTOM_DSDT=y"
+>>
 >
-> Hi
+> yes
 >
+> I am not able to boot the kernel.
+>>
 >
+> did you try with the unmodified .hex file but those two options set?
 >
-> Thanks Oder into looking this.
+> Another thing to look at is that you need to enable the LPSS (and
+> specifically I2C6) and disable HDAudio in the boot menu.
 >
->
->
-> We've been working with awesome Realtek engineers on fixing pop in
-> AIF1->AIF2 audio path and I confirm that this patch fixes the problem.
->
->
->
->
->
-> On Mon, Nov 9, 2015 at 2:01 AM, Oder Chiou <oder_chiou@realtek.com> wrote:
->
-> The patch changes the type of DACs mixer to AUTODISABLE and add the delay
-> time after power up to avoid the pop sound that comes from the filter
-> power.
->
-> Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-> ---
->  sound/soc/codecs/rt5677.c | 100
-> ++++++++++++++++++++++++++++------------------
->  1 file changed, 61 insertions(+), 39 deletions(-)
->
-> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-> index b4cd7e3..69d987a 100644
-> --- a/sound/soc/codecs/rt5677.c
-> +++ b/sound/soc/codecs/rt5677.c
-> @@ -1386,90 +1386,90 @@ static const struct snd_kcontrol_new
-> rt5677_dac_r_mix[] = {
->  };
->
->  static const struct snd_kcontrol_new rt5677_sto1_dac_l_mix[] = {
-> -       SOC_DAPM_SINGLE("ST L Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("ST L Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_ST_DAC1_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC1_L_STO_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC2_L_STO_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC1_R_STO_L_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_sto1_dac_r_mix[] = {
-> -       SOC_DAPM_SINGLE("ST R Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("ST R Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_ST_DAC1_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC1_R_STO_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC2_R_STO_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
->                         RT5677_M_DAC1_L_STO_R_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_mono_dac_l_mix[] = {
-> -       SOC_DAPM_SINGLE("ST L Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("ST L Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_ST_DAC2_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC1_L_MONO_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC2_L_MONO_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC2_R_MONO_L_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_mono_dac_r_mix[] = {
-> -       SOC_DAPM_SINGLE("ST R Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("ST R Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_ST_DAC2_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC1_R_MONO_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC2_R_MONO_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
->                         RT5677_M_DAC2_L_MONO_R_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_dd1_l_mix[] = {
-> -       SOC_DAPM_SINGLE("Sto DAC Mix L Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix L Switch",
-> RT5677_DD1_MIXER,
->                         RT5677_M_STO_L_DD1_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("Mono DAC Mix L Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix L Switch",
-> RT5677_DD1_MIXER,
->                         RT5677_M_MONO_L_DD1_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC3 L Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 L Switch", RT5677_DD1_MIXER,
->                         RT5677_M_DAC3_L_DD1_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC3 R Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 R Switch", RT5677_DD1_MIXER,
->                         RT5677_M_DAC3_R_DD1_L_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_dd1_r_mix[] = {
-> -       SOC_DAPM_SINGLE("Sto DAC Mix R Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix R Switch",
-> RT5677_DD1_MIXER,
->                         RT5677_M_STO_R_DD1_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("Mono DAC Mix R Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix R Switch",
-> RT5677_DD1_MIXER,
->                         RT5677_M_MONO_R_DD1_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC3 R Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 R Switch", RT5677_DD1_MIXER,
->                         RT5677_M_DAC3_R_DD1_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC3 L Switch", RT5677_DD1_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 L Switch", RT5677_DD1_MIXER,
->                         RT5677_M_DAC3_L_DD1_R_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_dd2_l_mix[] = {
-> -       SOC_DAPM_SINGLE("Sto DAC Mix L Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix L Switch",
-> RT5677_DD2_MIXER,
->                         RT5677_M_STO_L_DD2_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("Mono DAC Mix L Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix L Switch",
-> RT5677_DD2_MIXER,
->                         RT5677_M_MONO_L_DD2_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC4 L Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 L Switch", RT5677_DD2_MIXER,
->                         RT5677_M_DAC4_L_DD2_L_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC4 R Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 R Switch", RT5677_DD2_MIXER,
->                         RT5677_M_DAC4_R_DD2_L_SFT, 1, 1),
->  };
->
->  static const struct snd_kcontrol_new rt5677_dd2_r_mix[] = {
-> -       SOC_DAPM_SINGLE("Sto DAC Mix R Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix R Switch",
-> RT5677_DD2_MIXER,
->                         RT5677_M_STO_R_DD2_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("Mono DAC Mix R Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix R Switch",
-> RT5677_DD2_MIXER,
->                         RT5677_M_MONO_R_DD2_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC4 R Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 R Switch", RT5677_DD2_MIXER,
->                         RT5677_M_DAC4_R_DD2_R_SFT, 1, 1),
-> -       SOC_DAPM_SINGLE("DAC4 L Switch", RT5677_DD2_MIXER,
-> +       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 L Switch", RT5677_DD2_MIXER,
->                         RT5677_M_DAC4_L_DD2_R_SFT, 1, 1),
->  };
->
->
->
-> I tested the kernel change with filter power delay only (the changes
-> below) and it was enough for me to fix the pop sound.
->
->
->
-> What these AUTODISABLE above for? Are they needed?
->
->
->
->
->
->
-> @@ -2596,6 +2596,21 @@ static int rt5677_vref_event(struct
-> snd_soc_dapm_widget *w,
->         return 0;
->  }
->
-> +static int rt5677_filter_power_event(struct snd_soc_dapm_widget *w,
-> +       struct snd_kcontrol *kcontrol, int event)
-> +{
-> +       switch (event) {
-> +       case SND_SOC_DAPM_POST_PMU:
-> +               msleep(50);
->
->
->
-> For those of us who does not have access to the internal structure of the
-> chip, could you please add a comment why this delay is needed here? What
-> the chip is doing these 50ms?
->
->
->
->
->
-> +               break;
-> +
-> +       default:
-> +               return 0;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
->         SND_SOC_DAPM_SUPPLY("PLL1", RT5677_PWR_ANLG2, RT5677_PWR_PLL1_BIT,
->                 0, rt5677_set_pll1_event, SND_SOC_DAPM_PRE_PMU |
-> @@ -3072,19 +3087,26 @@ static const struct snd_soc_dapm_widget
-> rt5677_dapm_widgets[] = {
->
->         /* DAC Mixer */
->         SND_SOC_DAPM_SUPPLY("dac stereo1 filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_S1F_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_S1F_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono2 left filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M2F_L_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M2F_L_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono2 right filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M2F_R_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M2F_R_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono3 left filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M3F_L_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M3F_L_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono3 right filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M3F_R_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M3F_R_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono4 left filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M4F_L_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M4F_L_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->         SND_SOC_DAPM_SUPPLY("dac mono4 right filter", RT5677_PWR_DIG2,
-> -               RT5677_PWR_DAC_M4F_R_BIT, 0, NULL, 0),
-> +               RT5677_PWR_DAC_M4F_R_BIT, 0, rt5677_filter_power_event,
-> +               SND_SOC_DAPM_POST_PMU),
->
->         SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
->                 rt5677_sto1_dac_l_mix, ARRAY_SIZE(rt5677_sto1_dac_l_mix)),
-> --
-> 1.8.1.1.439.g50a6b54
->
->
->
->
-> ------Please consider the environment before printing this e-mail.
->
+
+
+
+-- 
+
+[image: DAQRI] <http://daqri.com/>
+
+Michael Pogrebinsky
+
+Senior Android Developer - DAQRI Smart Helmet Applications
+
+*Tel:* *844-327-7443*
+
+michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
+DAQRI.com <http://daqri.com/>
