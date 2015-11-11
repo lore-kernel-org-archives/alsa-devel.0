@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/9] ASoC: Intel: Skylake: Don't enable
-	WAKEENABLE on suspend
-Date: Thu, 12 Nov 2015 00:16:42 +0530
-Message-ID: <1447267609-27816-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 4/9] ASoC: Intel: Skylake: Fix cleanup of dma
+	buffer
+Date: Thu, 12 Nov 2015 00:16:44 +0530
+Message-ID: <1447267609-27816-5-git-send-email-vinod.koul@intel.com>
 References: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 782782606B8
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 19:43:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 740162606A5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 19:43:41 +0100 (CET)
 In-Reply-To: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +27,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-For HDA codecs WAKEENABLE bit is to programmed if codec event
-change has to wake the system when suspended.
-
-In skylake I2S systems which are currently supported we have
-only HDMI codec, which doesn't use this capability to detect a
-HDMI connect/ disconnect event. HDMI HDA codec uses display
-interface to detect connect/disconnect event.
-
-This patch removes the WAKEBIT enabling during device D0/D3 as
-this seems to cause spurious wakes on the system
+During firmware download, dma buffers are allocated in prepare
+and never freed on clean up. This patch frees the allocated dma
+buffer in cldma controller clean up.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 5 +++++
+ sound/soc/intel/skylake/skl-sst.c       | 9 +++++----
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 390f839d6168..b771b74781ca 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -191,9 +191,6 @@ static int skl_runtime_suspend(struct device *dev)
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index 44748ba98da2..f62dc339a1ce 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -137,6 +137,11 @@ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
  
- 	dev_dbg(bus->dev, "in %s\n", __func__);
- 
--	/* enable controller wake up event */
--	snd_hdac_chip_updatew(bus, WAKEEN, 0, STATESTS_INT_MASK);
--
- 	return _skl_suspend(ebus);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
++
++	if (&ctx->cl_dev.dmab_data)
++		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
++	if (&ctx->cl_dev.dmab_bdl)
++	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
  }
  
-@@ -203,17 +200,11 @@ static int skl_runtime_resume(struct device *dev)
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl *skl = ebus_to_skl(ebus);
--	int status;
+ static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 0c5039f2bd09..36dfc326d1fa 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -115,7 +115,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		dev_err(ctx->dev,
+ 			"Timeout waiting for ROM init done, reg:0x%x\n", reg);
+ 		ret = -EIO;
+-		goto skl_load_base_firmware_failed;
++		goto transfer_firmware_failed;
+ 	}
  
- 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 	ret = skl_transfer_firmware(ctx, ctx->fw->data, ctx->fw->size);
+@@ -128,15 +128,17 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		if (ret == 0) {
+ 			dev_err(ctx->dev, "DSP boot failed, FW Ready timed-out\n");
+ 			ret = -EIO;
+-			goto skl_load_base_firmware_failed;
++			goto transfer_firmware_failed;
+ 		}
  
--	/* Read STATESTS before controller reset */
--	status = snd_hdac_chip_readw(bus, STATESTS);
+ 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
+ 		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
+ 	}
+ 	return 0;
 -
- 	skl_init_pci(skl);
- 	snd_hdac_bus_init_chip(bus, true);
--	/* disable controller Wake Up event */
--	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
- 
- 	return _skl_resume(ebus);
++transfer_firmware_failed:
++	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
+ skl_load_base_firmware_failed:
++	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
+ 	skl_dsp_disable_core(ctx);
+ 	release_firmware(ctx->fw);
+ 	ctx->fw = NULL;
+@@ -277,7 +279,6 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ {
+ 	skl_ipc_free(&ctx->ipc);
+-	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
+ 	ctx->dsp->ops->free(ctx->dsp);
  }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_cleanup);
 -- 
 1.9.1
