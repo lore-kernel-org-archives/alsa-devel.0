@@ -1,22 +1,19 @@
-From: Michael Pogrebinsky <michael.pogrebinsky@daqri.com>
-Subject: Re: ASoC Sound Driver I2S over LPE,
- Intel Baytrail SoC. MinnowBoard Max
-Date: Tue, 10 Nov 2015 18:18:47 -0800
-Message-ID: <CAGOuWmsw8OKOxLEF0bXGY8-JSdJRxFjvgm1WTHGrL700xSRR-g@mail.gmail.com>
-References: <CAGOuWmvw39beNdaLgdBGXk9rNWw9vwbFfQNSBw50KLYpGa_AHA@mail.gmail.com>
- <56423D44.60505@linux.intel.com>
- <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5677: Avoid the pop sound that
+	comes from the filter power
+Date: Wed, 11 Nov 2015 02:25:55 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694FA4ED0@RTITMBSV03.realtek.com.tw>
+References: <1447063264-19301-1-git-send-email-oder_chiou@realtek.com>
+ <CALj_zD6FMWYAT5msvRnb=kzh2OPt0jR-BP8L5DkbedJeNxkvtw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
- [209.85.223.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 20CFC26526D
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 03:18:49 +0100 (CET)
-Received: by iouu10 with SMTP id u10so13191086iou.0
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2015 18:18:48 -0800 (PST)
-In-Reply-To: <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2F0626526D
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 03:26:04 +0100 (CET)
+In-Reply-To: <CALj_zD6FMWYAT5msvRnb=kzh2OPt0jR-BP8L5DkbedJeNxkvtw@mail.gmail.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,125 +23,240 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: John Hawley <john.hawley@intel.com>, alsa-devel@alsa-project.org
+To: Anatol Pomazau <anatol@google.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Albert Chen <albertchen@realtek.com>, "broonie@kernel.org" <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
-I downloaded 4.3 stable kernel, and I applied all the commits in the repo
-you forwarded to me.
-I'm running into an issue, where after doing those instructions:
-"iasl -tc dsdt_minnow.dsl
+Hi Anatol,
 
-mv dsdt_minnow.hex include/
+What these AUTODISABLE above for? Are they needed?
+They are needed for the power up sequence that make sure the un-mute should be done after the filter power up.
 
-the options following options need to be set in the .config
-for the tables to be taken into account:
+For those of us who does not have access to the internal structure of the chip, could you please add a comment why this delay is needed here? What the chip is doing these 50ms?
+The delay is done before the mixer un-mute, and it should delay some time to prevent the pop sound.
+The 50ms delay is decided by our internal discussion, and it just waits the pop sound going away
 
-CONFIG_ACPI_CUSTOM_DSDT_FILE=dsdt_minnow.hex
-CONFIG_ACPI_CUSTOM_DSDT=y"
+Thanks.
+Oder
 
-"
-I am not able to boot the kernel.
-The last message I see on the screen before it goes blank is the system is
-trying to load rmfs.
-If I take the kernel with your patches however, and do not set the
-Config_ACPI_CUSTOM_DST_FILE to dsdt_minnow.hex and do not run the iasl
-tool. ( I just take the kernel with the patches) the system loads.
+From: Anatol Pomazau [mailto:anatol@google.com]
+Sent: Tuesday, November 10, 2015 2:05 AM
+To: Oder Chiou
+Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Bard Liao; John Lin; Jack Yu; Albert Chen
+Subject: Re: [PATCH] ASoC: rt5677: Avoid the pop sound that comes from the filter power
 
-On the same note I should mention that I am running on Atom E3825 64 bit.
-Thanks,
-Michael
+Hi
+
+Thanks Oder into looking this.
+
+We've been working with awesome Realtek engineers on fixing pop in AIF1->AIF2 audio path and I confirm that this patch fixes the problem.
 
 
+On Mon, Nov 9, 2015 at 2:01 AM, Oder Chiou <oder_chiou@realtek.com<mailto:oder_chiou@realtek.com>> wrote:
+The patch changes the type of DACs mixer to AUTODISABLE and add the delay
+time after power up to avoid the pop sound that comes from the filter
+power.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com<mailto:oder_chiou@realtek.com>>
+---
+ sound/soc/codecs/rt5677.c | 100 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 61 insertions(+), 39 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index b4cd7e3..69d987a 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -1386,90 +1386,90 @@ static const struct snd_kcontrol_new rt5677_dac_r_mix[] = {
+ };
+
+ static const struct snd_kcontrol_new rt5677_sto1_dac_l_mix[] = {
+-       SOC_DAPM_SINGLE("ST L Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("ST L Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_ST_DAC1_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC1_L_STO_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC2_L_STO_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC1_R_STO_L_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_sto1_dac_r_mix[] = {
+-       SOC_DAPM_SINGLE("ST R Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("ST R Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_ST_DAC1_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC1_R_STO_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC2_R_STO_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_STO1_DAC_MIXER,
+                        RT5677_M_DAC1_L_STO_R_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_mono_dac_l_mix[] = {
+-       SOC_DAPM_SINGLE("ST L Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("ST L Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_ST_DAC2_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 L Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 L Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC1_L_MONO_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC2_L_MONO_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC2_R_MONO_L_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_mono_dac_r_mix[] = {
+-       SOC_DAPM_SINGLE("ST R Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("ST R Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_ST_DAC2_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC1 R Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC1 R Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC1_R_MONO_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 R Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC2_R_MONO_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC2 L Switch", RT5677_MONO_DAC_MIXER,
+                        RT5677_M_DAC2_L_MONO_R_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_dd1_l_mix[] = {
+-       SOC_DAPM_SINGLE("Sto DAC Mix L Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix L Switch", RT5677_DD1_MIXER,
+                        RT5677_M_STO_L_DD1_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("Mono DAC Mix L Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix L Switch", RT5677_DD1_MIXER,
+                        RT5677_M_MONO_L_DD1_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC3 L Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 L Switch", RT5677_DD1_MIXER,
+                        RT5677_M_DAC3_L_DD1_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC3 R Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 R Switch", RT5677_DD1_MIXER,
+                        RT5677_M_DAC3_R_DD1_L_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_dd1_r_mix[] = {
+-       SOC_DAPM_SINGLE("Sto DAC Mix R Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix R Switch", RT5677_DD1_MIXER,
+                        RT5677_M_STO_R_DD1_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("Mono DAC Mix R Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix R Switch", RT5677_DD1_MIXER,
+                        RT5677_M_MONO_R_DD1_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC3 R Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 R Switch", RT5677_DD1_MIXER,
+                        RT5677_M_DAC3_R_DD1_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC3 L Switch", RT5677_DD1_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC3 L Switch", RT5677_DD1_MIXER,
+                        RT5677_M_DAC3_L_DD1_R_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_dd2_l_mix[] = {
+-       SOC_DAPM_SINGLE("Sto DAC Mix L Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix L Switch", RT5677_DD2_MIXER,
+                        RT5677_M_STO_L_DD2_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("Mono DAC Mix L Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix L Switch", RT5677_DD2_MIXER,
+                        RT5677_M_MONO_L_DD2_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC4 L Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 L Switch", RT5677_DD2_MIXER,
+                        RT5677_M_DAC4_L_DD2_L_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC4 R Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 R Switch", RT5677_DD2_MIXER,
+                        RT5677_M_DAC4_R_DD2_L_SFT, 1, 1),
+ };
+
+ static const struct snd_kcontrol_new rt5677_dd2_r_mix[] = {
+-       SOC_DAPM_SINGLE("Sto DAC Mix R Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Sto DAC Mix R Switch", RT5677_DD2_MIXER,
+                        RT5677_M_STO_R_DD2_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("Mono DAC Mix R Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("Mono DAC Mix R Switch", RT5677_DD2_MIXER,
+                        RT5677_M_MONO_R_DD2_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC4 R Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 R Switch", RT5677_DD2_MIXER,
+                        RT5677_M_DAC4_R_DD2_R_SFT, 1, 1),
+-       SOC_DAPM_SINGLE("DAC4 L Switch", RT5677_DD2_MIXER,
++       SOC_DAPM_SINGLE_AUTODISABLE("DAC4 L Switch", RT5677_DD2_MIXER,
+                        RT5677_M_DAC4_L_DD2_R_SFT, 1, 1),
+ };
+
+I tested the kernel change with filter power delay only (the changes below) and it was enough for me to fix the pop sound.
+
+What these AUTODISABLE above for? Are they needed?
 
 
 
-On Tue, Nov 10, 2015 at 11:59 AM, Michael Pogrebinsky <
-michael.pogrebinsky@daqri.com> wrote:
+@@ -2596,6 +2596,21 @@ static int rt5677_vref_event(struct snd_soc_dapm_widget *w,
+        return 0;
+ }
 
-> Hi Pierre,
-> Thank you so much for your reply, and for sharing your repo.
-> This is great news for me, as I was blocked for a while on this issue. And
-> I'm particularly happy that this is all done on top of the 4.3 Kernel, this
-> is very professional of you. I will try the code, and definitely let you
-> know how it goes, or if I have any issues.
->
-> Thank you again,
-> Michael
->
->
->
-> On Tue, Nov 10, 2015 at 10:53 AM, Pierre-Louis Bossart <
-> pierre-louis.bossart@linux.intel.com> wrote:
->
->> Hi Michael,
->>
->> I have the MinnowBoard Max with Baytrail Atom (ValleyView) SoC.
->>> I'm attempting to write an Alsa (ASoC) driver for my sound card to
->>> work with this board.
->>> PCM should work through I2S for this sound card I have.
->>>
->>
->> Good to hear. There are several folks in Intel trying to enable I2S over
->> the low-speed connector for 3rd party enablement or help 'makers'. This is
->> still work-in-progress but we can already share some elements of
->> information based on our own experience:
->> 1. the default 0.82 firmware doesn't enable the I2S pins, we are
->> currently using a DSDT override to configure them.
->> 2. the audio codec needs to be registered as a child of I2C6 (it's
->> typically I2C2 on regular baytrail platforms). this is also part of the
->> DSDT override.
->> 3. since we need to support multiple audio codecs, we'd like to add a
->> mechanism to add information in the SSDT table to be able to boot the same
->> kernel and select the right drivers. Alternatively you will have to use the
->> DSDT override method until this mechanism is ready.
->> 4. there is no MCLK on existing MinnowBoards, so your codec will have to
->> drive its PLL from the BLCK. newer versions of the MinnowBoard Turbot will
->> support an MCLK but they are in pre-production stage and to the best of my
->> knowledge not available commercially yet.
->> 5. to get the best long-term support you really want to use the newer
->> DPCM-based driver/firmware for e.g 24-bit, TDM and deep-buffer support. We
->> have a set of patches that have not been published upstream yet but if you
->> are interested you can look at my github
->> https://github.com/plbossart/sound/tree/minnow-v4.3-24bit. In theory if
->> you take this code and change the DSDT to support your _HID just like it
->> was done for the rt5651 the drivers should load and register a sound card.
->> Disclaimer: there is no official support on this branch and rebases/fixes
->> may happen at any time. the code will be submitted upstream when ready.
->>
->> If you provide more information on which codec you are trying to link to
->> we can help further.
->> -Pierre
->>
->
->
->
-> --
->
-> [image: DAQRI] <http://daqri.com/>
->
-> Michael Pogrebinsky
->
-> Senior Android Developer - DAQRI Smart Helmet Applications
->
-> *Tel:* *844-327-7443*
->
-> michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
-> DAQRI.com <http://daqri.com/>
->
++static int rt5677_filter_power_event(struct snd_soc_dapm_widget *w,
++       struct snd_kcontrol *kcontrol, int event)
++{
++       switch (event) {
++       case SND_SOC_DAPM_POST_PMU:
++               msleep(50);
+
+For those of us who does not have access to the internal structure of the chip, could you please add a comment why this delay is needed here? What the chip is doing these 50ms?
 
 
++               break;
++
++       default:
++               return 0;
++       }
++
++       return 0;
++}
++
+ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
+        SND_SOC_DAPM_SUPPLY("PLL1", RT5677_PWR_ANLG2, RT5677_PWR_PLL1_BIT,
+                0, rt5677_set_pll1_event, SND_SOC_DAPM_PRE_PMU |
+@@ -3072,19 +3087,26 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
 
--- 
+        /* DAC Mixer */
+        SND_SOC_DAPM_SUPPLY("dac stereo1 filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_S1F_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_S1F_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono2 left filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M2F_L_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M2F_L_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono2 right filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M2F_R_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M2F_R_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono3 left filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M3F_L_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M3F_L_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono3 right filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M3F_R_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M3F_R_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono4 left filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M4F_L_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M4F_L_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("dac mono4 right filter", RT5677_PWR_DIG2,
+-               RT5677_PWR_DAC_M4F_R_BIT, 0, NULL, 0),
++               RT5677_PWR_DAC_M4F_R_BIT, 0, rt5677_filter_power_event,
++               SND_SOC_DAPM_POST_PMU),
 
-[image: DAQRI] <http://daqri.com/>
+        SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
+                rt5677_sto1_dac_l_mix, ARRAY_SIZE(rt5677_sto1_dac_l_mix)),
+--
+1.8.1.1.439.g50a6b54
 
-Michael Pogrebinsky
 
-Senior Android Developer - DAQRI Smart Helmet Applications
-
-*Tel:* *844-327-7443*
-
-michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
-DAQRI.com <http://daqri.com/>
+------Please consider the environment before printing this e-mail.
