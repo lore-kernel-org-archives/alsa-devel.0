@@ -1,17 +1,34 @@
-From: Keyon <yang.jie@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: constify sst_block_ops
- structures
-Date: Wed, 11 Nov 2015 08:53:24 +0800
-Message-ID: <56429184.1020803@linux.intel.com>
-References: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: DP1.2 MST audio support discussion
+Date: Wed, 11 Nov 2015 02:04:13 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19778A43@SHSMSX103.ccr.corp.intel.com>
+References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
+ <56288783.1080503@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
+ <56288FF7.9030400@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
+ <5628A3EB.8050306@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
+ <562A1237.2090909@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B8632DF@shsmsx102.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D19755BE7@SHSMSX103.ccr.corp.intel.com>
+ <s5hvb9or3zj.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D197574CE@SHSMSX103.ccr.corp.intel.com>
+ <563716D7.3000502@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19765611@SHSMSX103.ccr.corp.intel.com>
+ <563B1C37.4010400@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D197786EB@SHSMSX103.ccr.corp.intel.com>
+ <5641A088.50609@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 542EC265249
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 01:47:01 +0100 (CET)
-In-Reply-To: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F57626526D
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 03:04:19 +0100 (CET)
+In-Reply-To: <5641A088.50609@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +38,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Nikula, Jani" <jani.nikula@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>, Raymond Yau <superquad.vortex2@gmail.com>, "tanuk@iki.fi" <tanuk@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTXlubQxMeaciDEx5pelIDA3OjE4LCBKdWxpYSBMYXdhbGwgd3JvdGU6Cj4gVGhlIHNz
-dF9ibG9ja19vcHMgc3RydWN0dXJlIGlzIG5ldmVyIG1vZGlmaWVkLCBhbmQgaXMgdGh1cyBkZWNs
-YXJlZCBhcwo+IGNvbnN0Lgo+Cj4gRG9uZSB3aXRoIHRoZSBoZWxwIG9mIENvY2NpbmVsbGUuCj4K
-PiBTaWduZWQtb2ZmLWJ5OiBKdWxpYSBMYXdhbGwgPEp1bGlhLkxhd2FsbEBsaXA2LmZyPgoKVGhh
-bmtzLgoKQWNrZWQtYnk6IEppZSBZYW5nIDx5YW5nLmppZUBpbnRlbC5jb20+Cgo+Cj4gLS0tCj4g
-ICBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1kc3AtcHJpdi5oICAgICB8ICAgIDYgKysrLS0t
-Cj4gICBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2FyZS5jICAgICB8ICAgIDQgKyst
-LQo+ICAgc291bmQvc29jL2ludGVsL2hhc3dlbGwvc3N0LWhhc3dlbGwtZHNwLmMgfCAgICAyICst
-Cj4gICAzIGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPgo+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1kc3AtcHJpdi5oIGIvc291
-bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZHNwLXByaXYuaAo+IGluZGV4IDIxNTE2NTIuLmQyMWYx
-NmQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZHNwLXByaXYuaAo+
-ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWRzcC1wcml2LmgKPiBAQCAtMjQzLDcg
-KzI0Myw3IEBAIHN0cnVjdCBzc3RfbWVtX2Jsb2NrIHsKPiAgIAl1MzIgc2l6ZTsJCQkvKiBibG9j
-ayBzaXplICovCj4gICAJdTMyIGluZGV4OwkJCS8qIGJsb2NrIGluZGV4IDAuLk4gKi8KPiAgIAll
-bnVtIHNzdF9tZW1fdHlwZSB0eXBlOwkJLyogYmxvY2sgbWVtb3J5IHR5cGUgSVJBTS9EUkFNICov
-Cj4gLQlzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzOwkvKiBibG9jayBvcGVyYXRpb25zLCBpZiBh
-bnkgKi8KPiArCWNvbnN0IHN0cnVjdCBzc3RfYmxvY2tfb3BzICpvcHM7LyogYmxvY2sgb3BlcmF0
-aW9ucywgaWYgYW55ICovCj4KPiAgIAkvKiBibG9jayBzdGF0dXMgKi8KPiAgIAl1MzIgYnl0ZXNf
-dXNlZDsJCQkvKiBieXRlcyBpbiB1c2UgYnkgbW9kdWxlcyAqLwo+IEBAIC0zNzYsOCArMzc2LDgg
-QEAgdm9pZCBzc3RfYmxvY2tfZnJlZV9zY3JhdGNoKHN0cnVjdCBzc3RfZHNwICpkc3ApOwo+Cj4g
-ICAvKiBSZWdpc3RlciB0aGUgRFNQcyBtZW1vcnkgYmxvY2tzIC0gd291bGQgYmUgbmljZSB0byBy
-ZWFkIGZyb20gQUNQSSAqLwo+ICAgc3RydWN0IHNzdF9tZW1fYmxvY2sgKnNzdF9tZW1fYmxvY2tf
-cmVnaXN0ZXIoc3RydWN0IHNzdF9kc3AgKmRzcCwgdTMyIG9mZnNldCwKPiAtCXUzMiBzaXplLCBl
-bnVtIHNzdF9tZW1fdHlwZSB0eXBlLCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLCB1MzIgaW5k
-ZXgsCj4gLQl2b2lkICpwcml2YXRlKTsKPiArCXUzMiBzaXplLCBlbnVtIHNzdF9tZW1fdHlwZSB0
-eXBlLCBjb25zdCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLAo+ICsJdTMyIGluZGV4LCB2b2lk
-ICpwcml2YXRlKTsKPiAgIHZvaWQgc3N0X21lbV9ibG9ja191bnJlZ2lzdGVyX2FsbChzdHJ1Y3Qg
-c3N0X2RzcCAqZHNwKTsKPgo+ICAgLyogQ3JlYXRlL0ZyZWUgRE1BIHJlc291cmNlcyAqLwo+IGRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2FyZS5jIGIvc291bmQv
-c29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYwo+IGluZGV4IDE2MzZhMWUuLmJlZTA0YTkg
-MTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYwo+ICsr
-KyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWZpcm13YXJlLmMKPiBAQCAtMTAxNCw4ICsx
-MDE0LDggQEAgRVhQT1JUX1NZTUJPTF9HUEwoc3N0X21vZHVsZV9ydW50aW1lX3Jlc3RvcmUpOwo+
-Cj4gICAvKiByZWdpc3RlciBhIERTUCBtZW1vcnkgYmxvY2sgZm9yIHVzZSB3aXRoIEZXIGJhc2Vk
-IG1vZHVsZXMgKi8KPiAgIHN0cnVjdCBzc3RfbWVtX2Jsb2NrICpzc3RfbWVtX2Jsb2NrX3JlZ2lz
-dGVyKHN0cnVjdCBzc3RfZHNwICpkc3AsIHUzMiBvZmZzZXQsCj4gLQl1MzIgc2l6ZSwgZW51bSBz
-c3RfbWVtX3R5cGUgdHlwZSwgc3RydWN0IHNzdF9ibG9ja19vcHMgKm9wcywgdTMyIGluZGV4LAo+
-IC0Jdm9pZCAqcHJpdmF0ZSkKPiArCXUzMiBzaXplLCBlbnVtIHNzdF9tZW1fdHlwZSB0eXBlLCBj
-b25zdCBzdHJ1Y3Qgc3N0X2Jsb2NrX29wcyAqb3BzLAo+ICsJdTMyIGluZGV4LCB2b2lkICpwcml2
-YXRlKQo+ICAgewo+ICAgCXN0cnVjdCBzc3RfbWVtX2Jsb2NrICpibG9jazsKPgo+IGRpZmYgLS1n
-aXQgYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1kc3AuYyBiL3NvdW5kL3Nv
-Yy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLWRzcC5jCj4gaW5kZXggN2Y5NDkyMC4uYjJiZWMz
-NiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1kc3Au
-Ywo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLWRzcC5jCj4gQEAg
-LTYwNyw3ICs2MDcsNyBAQCBzdGF0aWMgaW50IGhzd19ibG9ja19kaXNhYmxlKHN0cnVjdCBzc3Rf
-bWVtX2Jsb2NrICpibG9jaykKPiAgIAlyZXR1cm4gMDsKPiAgIH0KPgo+IC1zdGF0aWMgc3RydWN0
-IHNzdF9ibG9ja19vcHMgc3N0X2hzd19vcHMgPSB7Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3N0
-X2Jsb2NrX29wcyBzc3RfaHN3X29wcyA9IHsKPiAgIAkuZW5hYmxlID0gaHN3X2Jsb2NrX2VuYWJs
-ZSwKPiAgIAkuZGlzYWJsZSA9IGhzd19ibG9ja19kaXNhYmxlLAo+ICAgfTsKPgo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Tuesday, November 10, 2015 3:45 PM
+> To: Yang, Libin; Takashi Iwai
+> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
+> Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula, Jani
+> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+> 
+> 
+> 
+> On 2015-11-10 07:46, Yang, Libin wrote:
+> > Hi David,
+> >
+> >
+> >> -----Original Message-----
+> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> >> Sent: Thursday, November 05, 2015 5:07 PM
+> >> To: Yang, Libin; Takashi Iwai
+> >> Cc: Lin, Mengdong; Raymond Yau; airlied@linux.ie; tanuk@iki.fi; ALSA
+> >> Development Mailing List; Girdwood, Liam R; Lu, Han; Nikula, Jani
+> >> Subject: Re: [alsa-devel] DP1.2 MST audio support discussion
+> >>
+> >>
+> >>
+> >> So I'm asking my question again. What would happen (on Intel
+> hardware),
+> >> if you stream audio to a converter node on the audio codec, and there
+> is
+> >> no pin node connected to that converter node?
+> >
+> > I changed the audio driver and did the test today. The test is:
+> > 1. Pin 5 connect to converter 2 and playback, there is sound from pin 5.
+> > 2. Pin 5 connect to converter 2 (no other pin is connected to cvt2), no
+> sound.
+> > 3. Pin 5 connect back to cvt 2, there is sound, playback is normal.
+> >
+> > And in step 2, the playback is still ongoing but no sound is out from any
+> pin.
+> 
+> Sounds good to me, thanks for testing. Is this workaround something we
+> could utilize in order to not break userspace? (This is a question for
+> both you and Takashi.)
+> 
+> What we'll end up is essentially three types of objects:
+> 
+>   * PCM device (5 devices, 3,7,8,9,10)
+>    - all five devices are allocated when the driver initializes
+
+This should be for Intel platform, right? The actually number
+should be:
+pin number + device entry number - 1.
+On intel platform, pin_num = 3, dev_num = 3, so it will be 5.
+
+>    - all kcontrols are always bound to the PCM device (jack kctl, eld
+> kctl, iec958 kctls etc)
+
+Sure, I agree on it.
+
+> 
+>   * Monitor (pin + MST index)
+>    - dynamically bound to a PCM at monitor plug-in time, according to a
+> scheme that maximises the possibility for a monitor to always end up at
+> the same PCM (as specified in earlier emails)
+> 
+>   * Converter node (3 nodes for Intel hardware)
+>     - dynamically bound to a PCM at playback open time (regardless of
+> whether the PCM has a monitor or not)
+
+If so, we still need use converter on codec. This means we can't turn
+off the power well in i915.
+
+To save the power, i915 suggests that if no monitor is connected,
+we should not use the HDMI codec. This means open a PCM with
+no pin attached will fail. Disconnecting monitor when the corresponding
+PCM is playback will trigger stop PCM.
+
+To help move to the new method smoothly, I will add a flag.
+User can decide whether to use the aggressive power saving
+solution or not.
+
+>     - return -EBUSY in case there is no free converter node
+
+Regards,
+Libin
+
+> 
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
