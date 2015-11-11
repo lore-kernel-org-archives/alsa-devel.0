@@ -1,24 +1,17 @@
-From: Michael Pogrebinsky <michael.pogrebinsky@daqri.com>
-Subject: Re: ASoC Sound Driver I2S over LPE,
- Intel Baytrail SoC. MinnowBoard Max
-Date: Wed, 11 Nov 2015 09:53:56 -0800
-Message-ID: <CAGOuWmuc+zbDc0j=24OxYRoSnMKRUwaK_sRU0QOE=WUuLERO6w@mail.gmail.com>
-References: <CAGOuWmvw39beNdaLgdBGXk9rNWw9vwbFfQNSBw50KLYpGa_AHA@mail.gmail.com>
- <56423D44.60505@linux.intel.com>
- <CAGOuWmv6c+jOKjzYJNbAiMXQQP=vrT_4i8yWrPB9X_F6ek=h8g@mail.gmail.com>
- <CAGOuWmsw8OKOxLEF0bXGY8-JSdJRxFjvgm1WTHGrL700xSRR-g@mail.gmail.com>
- <564363BC.1010705@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/9] ASoC: Intel: Skylake: remove BE startup
+	dai ops
+Date: Thu, 12 Nov 2015 00:16:41 +0530
+Message-ID: <1447267609-27816-2-git-send-email-vinod.koul@intel.com>
+References: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id AF0CB2605C0
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 18:53:59 +0100 (CET)
-Received: by ioc74 with SMTP id 74so40810834ioc.2
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 09:53:56 -0800 (PST)
-In-Reply-To: <564363BC.1010705@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42FDF2606A5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 19:43:35 +0100 (CET)
+In-Reply-To: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,287 +21,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: John Hawley <john.hawley@intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
-Thank you for your reply,
-Did you mean enabling and disabling LPSS and HDAudio in the BIOS or Kernel
-config?
-I checked in the BIOS and LPSS is enabled ( ACPI Mode). And I2C6 is enabled
-as well.
-Regarding the HDAudio - Do you mean South Cluster Configuration - >Audio
-Configuration - >Audio Controller ? I see only 2 options there, LPE Audio
-Support and
-"Audio Controller
---Azalia VCi Enable
---Azalia Docking Support Enable
---Azalia PME Enable
---Azalia HDMI Codec"
-I disabled it and it didn't make a difference,
-LPE controller is enabled ( I tried both ACPI and PCI mode)
-
-Regarding the dsdt_minnow.hex , I did not modify it, I simply run the
-instruction and copied the hex file to include/.
-The output of iasl command is :
-
-iasl -tc dsdt_minnow.dsl
-
-
-Intel ACPI Component Architecture
-
-ASL Optimizing Compiler version 20140214-64 [Mar 29 2014]
-
-Copyright (c) 2000 - 2014 Intel Corporation
-
-
-dsdt_minnow.dsl   2780:             Method (XDEP, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   2784:                     Name (_DEP, Package (0x01)
-
-Remark   2089 -            Object is not referenced ^  (Name is within
-method [XDEP])
-
-
-dsdt_minnow.dsl   3570:                             Name (_T_0, Zero)
-
-Remark   2011 -               Use of compiler reserved name ^  (_T_0)
-
-
-dsdt_minnow.dsl   3672:                             Name (_T_0, Zero)
-
-Remark   2011 -               Use of compiler reserved name ^  (_T_0)
-
-
-dsdt_minnow.dsl   3774:                             Name (_T_0, Zero)
-
-Remark   2011 -               Use of compiler reserved name ^  (_T_0)
-
-
-dsdt_minnow.dsl   3876:                             Name (_T_0, Zero)
-
-Remark   2011 -               Use of compiler reserved name ^  (_T_0)
-
-
-dsdt_minnow.dsl   4607:             Method (_CRS, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   4643:             Method (GDEP, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   4647:                     Name (_DEP, Package (0x01)
-
-Remark   2089 -            Object is not referenced ^  (Name is within
-method [GDEP])
-
-
-dsdt_minnow.dsl   7690:                 Method (_CRS, 0, NotSerialized)
-
-Remark   2120 -                                   ^ Control Method should
-be made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8194:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8205:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8216:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8300:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8311:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8322:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8407:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8418:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8429:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8513:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8524:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8535:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8659:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8670:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8681:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8765:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8776:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8787:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8913:             Method (SSCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8924:             Method (FMCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-dsdt_minnow.dsl   8935:             Method (FPCN, 0, NotSerialized)
-
-Remark   2120 -                               ^ Control Method should be
-made Serialized (due to creation of named objects within)
-
-
-ASL Input:     dsdt_minnow.dsl - 9261 lines, 257789 bytes, 3258 keywords
-
-AML Output:    dsdt.aml - 31359 bytes, 1147 named objects, 2111 executable
-opcodes
-
-Hex Dump:      dsdt_minnow.hex - 294325 bytes
-
-
-Compilation complete. 0 Errors, 0 Warnings, 31 Remarks, 130 Optimizations
-
-
-Thanks again for your help Pierre,
-
-
-Michael
-
-
-
-On Wed, Nov 11, 2015 at 7:50 AM, Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
-
-> On 11/10/15 8:18 PM, Michael Pogrebinsky wrote:
->
->> Hi Pierre,
->> I downloaded 4.3 stable kernel, and I applied all the commits in the repo
->> you forwarded to me.
->> I'm running into an issue, where after doing those instructions:
->> "iasl -tc dsdt_minnow.dsl
->>
->> mv dsdt_minnow.hex include/
->>
->
-> This is only needed if you modified dsdt_minnow.dsl. if you did, can you
-> provide the log of iasl to make sure the .hex file generation goes well.
->
-> the options following options need to be set in the .config
->> for the tables to be taken into account:
->>
->> CONFIG_ACPI_CUSTOM_DSDT_FILE=dsdt_minnow.hex
->> CONFIG_ACPI_CUSTOM_DSDT=y"
->>
->
-> yes
->
-> I am not able to boot the kernel.
->>
->
-> did you try with the unmodified .hex file but those two options set?
->
-> Another thing to look at is that you need to enable the LPSS (and
-> specifically I2C6) and disable HDAudio in the boot menu.
->
-
-
-
+From: Jeeja KP <jeeja.kp@intel.com>
+
+We have moved the runtime calls from BE startup to HW params, this helps to
+optimize the unnecessary wakes due to users opening and closing device
+As a result startup is empty so remove that
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index e652d58bd9a9..3ccfa7be95cb 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -285,6 +285,8 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
++	int ret;
++
+ 	struct skl_pipe_params p_params = {0};
+ 
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
+@@ -292,7 +294,11 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.stream = substream->stream;
+ 
+-	return skl_tplg_be_update_params(dai, &p_params);
++	ret = skl_tplg_be_update_params(dai, &p_params);
++	if (ret < 0)
++		return ret;
++
++	return pm_runtime_get_sync(dai->dev);
+ }
+ 
+ static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
+@@ -402,6 +408,11 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	struct skl_dma_params *dma_params;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct skl_pipe_params p_params = {0};
++	int ret;
++
++	ret = pm_runtime_get_sync(dai->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
+ 					HDAC_EXT_STREAM_TYPE_LINK);
+@@ -512,12 +523,6 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int skl_be_startup(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	return pm_runtime_get_sync(dai->dev);
+-}
+-
+ static void skl_be_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+@@ -535,19 +540,16 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ };
+ 
+ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.hw_params = skl_be_hw_params,
+ 	.shutdown = skl_be_shutdown,
+ };
+ 
+ static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.hw_params = skl_be_hw_params,
+ 	.shutdown = skl_be_shutdown,
+ };
+ 
+ static struct snd_soc_dai_ops skl_link_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.prepare = skl_link_pcm_prepare,
+ 	.hw_params = skl_link_hw_params,
+ 	.hw_free = skl_link_hw_free,
 -- 
-
-[image: DAQRI] <http://daqri.com/>
-
-Michael Pogrebinsky
-
-Senior Android Developer - DAQRI Smart Helmet Applications
-
-*Tel:* *844-327-7443*
-
-michael.pogrebinsky@daqri.com <stephen.keegan@daqri.com>
-DAQRI.com <http://daqri.com/>
+1.9.1
