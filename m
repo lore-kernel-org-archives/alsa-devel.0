@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 6/9] ASoC: Intel: Skylake: Fix CLDMA buffer
-	wrap case
-Date: Thu, 12 Nov 2015 00:16:46 +0530
-Message-ID: <1447267609-27816-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 7/9] ASoC: Intel: Skylake: Fix null ptr
+	dereferenced in skl_tplg_bind_sinks
+Date: Thu, 12 Nov 2015 00:16:47 +0530
+Message-ID: <1447267609-27816-8-git-send-email-vinod.koul@intel.com>
 References: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DF2332605C0
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 19:43:45 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1273C265982
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2015 19:43:47 +0100 (CET)
 In-Reply-To: <1447267609-27816-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,49 +27,63 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-When downloading the firmware/module, if the ring buffer boundary
-is reached, we need to wrap to the zeroth position. On next copy
-we need to copy till end of buffer and the remaining buffer needs
-to be copied from zeroth position.
+This patch fixes the below warning form smatch and makes the
+skl_tplg_bind_sinks take the next sink as argument which is true
+when the current sink is valid
 
-In this case copy was not handled correctly when wrap condition
-is reached which caused invalid data to be copied resulting in
-invalid hash failure.
+sound/soc/intel/skylake/skl-topology.c:453 skl_tplg_bind_sinks()
+	error: we previously assumed 'sink' could be null (see line 452)
 
-This patch fixes the issue by handling copy at the boundary
-condition correctly.
+sound/soc/intel/skylake/skl-topology.c
+   451
+   452		if (!sink)
+                     ^^^^
+New check.  Reversed?
 
+   453			return skl_tplg_bind_sinks(sink, skl, src_mconfig);
+                                                   ^^^^ This is
+dereferenced inside the function.
+
+   454
+   455		return 0;
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index f62dc339a1ce..0647c3aeec0f 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -180,6 +180,21 @@ static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
- 			ctx->cl_dev.dma_buffer_offset, trigger);
- 	dev_dbg(ctx->dev, "spib position: %d\n", ctx->cl_dev.curr_spib_pos);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 2b6ee22b5ea2..0937ea2129c1 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -408,7 +408,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 				struct skl_module_cfg *src_mconfig)
+ {
+ 	struct snd_soc_dapm_path *p;
+-	struct snd_soc_dapm_widget *sink = NULL;
++	struct snd_soc_dapm_widget *sink = NULL, *next_sink = NULL;
+ 	struct skl_module_cfg *sink_mconfig;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	int ret;
+@@ -420,7 +420,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
+ 		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
  
-+	/*
-+	 * Check if the size exceeds buffer boundary. If it exceeds
-+	 * max_buffer size, then copy till buffer size and then copy
-+	 * remaining buffer from the start of ring buffer.
-+	 */
-+	if (ctx->cl_dev.dma_buffer_offset + size > ctx->cl_dev.bufsize) {
-+		unsigned int size_b = ctx->cl_dev.bufsize -
-+					ctx->cl_dev.dma_buffer_offset;
-+		memcpy(ctx->cl_dev.dmab_data.area + ctx->cl_dev.dma_buffer_offset,
-+			curr_pos, size_b);
-+		size -= size_b;
-+		curr_pos += size_b;
-+		ctx->cl_dev.dma_buffer_offset = 0;
-+	}
-+
- 	memcpy(ctx->cl_dev.dmab_data.area + ctx->cl_dev.dma_buffer_offset,
- 			curr_pos, size);
+-		sink = p->sink;
++		next_sink = p->sink;
+ 		/*
+ 		 * here we will check widgets in sink pipelines, so that
+ 		 * can be any widgets type and we are only interested if
+@@ -450,7 +450,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 	}
  
+ 	if (!sink)
+-		return skl_tplg_bind_sinks(sink, skl, src_mconfig);
++		return skl_tplg_bind_sinks(next_sink, skl, src_mconfig);
+ 
+ 	return 0;
+ }
 -- 
 1.9.1
