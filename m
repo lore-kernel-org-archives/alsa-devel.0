@@ -1,18 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Roland/Edirol M-16DX
-Date: Thu, 12 Nov 2015 13:38:08 +0100
-Message-ID: <56448830.5070009@ladisch.de>
-References: <alpine.DEB.2.02.1510231017080.14239@lnxricardw1.se.axis.com>
- <562A136E.3030108@ladisch.de>
- <alpine.DEB.2.02.1511120851500.11990@lnxricardw1.se.axis.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Unregister a card from userspace?
+Date: Thu, 12 Nov 2015 14:07:41 +0100
+Message-ID: <alpine.DEB.2.02.1511121402000.11990@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
+ <5639EAFA.9060008@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D2C0F2658B1
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 13:38:10 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1511120851500.11990@lnxricardw1.se.axis.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47693264F2F
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 14:07:43 +0100 (CET)
+In-Reply-To: <5639EAFA.9060008@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ricard Wanderlof wrote:
-> On Fri, 23 Oct 2015, Clemens Ladisch wrote:
->> There is some bug in the code that should detect such Roland devices.
->
-> [...] no glitches in the resulting audio.
->
-> have I just been extremely lucky with the sample clocks so they match
-> up precisely (if that even would work), or could the problem have
-> magically fixed itself (ok, more realistically, as a result of something
-> else getting fixed)?
 
-It's possible that the bug does not occur for the M-16DX.
+On Wed, 4 Nov 2015, Clemens Ladisch wrote:
 
+> Ricard Wanderlof wrote:
+> > My use case is that I have a card driver I'm working on as a module, and
+> > while insmodding it works fine, I can't rmmod it because once
+> > snd_soc_register_card() has been called, it has a usage count of 2 and
+> > thus cannot be rmmod:ed.
+> =
 
-Regards,
-Clemens
+> soc_probe_component() adds a reference to each component's driver's
+> module.  Maybe putting each component into its own module would help.
+
+I'd rather not as there's no real gain from it (the constituent drivers =
+
+cannot be used separately or in any other combination), but perhaps that =
+
+is the only way to go.
+
+> Anyway, you should be able to unbind the driver:
+> <https://lwn.net/Articles/143397/>
+
+Yes, that works. After unbinding the driver, the usage count drops to 0, =
+
+and I can successfully rmmod it. So at least that's a workable solution.
+
+It just seems to me that there's something I must have missed, as there =
+
+should be a mechanism to do this automatically when a module containing a =
+
+driver is rmmod'ed.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
