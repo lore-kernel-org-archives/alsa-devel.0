@@ -1,16 +1,20 @@
-From: Zhihe Tu <tuzhihe@pcasl.com>
-Subject: Re: Intel Cherry Trail -- No sound in linux
-Date: Thu, 12 Nov 2015 14:45:03 +0800
-Message-ID: <201511121444557079740@pcasl.com>
-References: <000a01d11b93$38632860$a9297920$@com>,
- <56423EBB.8010108@linux.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback
+ when monitor is disconnected
+Date: Thu, 12 Nov 2015 08:02:43 +0100
+Message-ID: <56443993.3000104@canonical.com>
+References: <1447231149-88326-1-git-send-email-libin.yang@linux.intel.com>
+ <s5h4mgs6h9l.wl-tiwai@suse.de> <s5hfv0ck4ka.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19779E19@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.pcasl.com (unknown [118.194.228.23])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A1A82606A0
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 07:45:27 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 381FA26073E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 08:02:47 +0100 (CET)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D19779E19@SHSMSX103.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +24,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Yang, Libin" <libin.yang@intel.com>, Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUGllcnJlLUxvdWlzLCB0aGFua3MgZm9yIHlvdXIgcmVwbHkuDQogDQpZZXPvvIxJIGdvdCBm
-aXJtd2FyZSBmd19zc3RfMjJhOC5iaW4gZnJvbSBodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9s
-aW51eC9rZXJuZWwvZ2l0L2Zpcm13YXJlL2xpbnV4LWZpcm13YXJlLmdpdCAtYiBCU1cuDQogDQpG
-cm9tIHRoZSBzb3VyY2UgY29kZSBvZiBjaHRfYnN3X3J0NTY3Mi5jIGFuZCBydDU2NzIuYywgdGhl
-IGNvZGVjIHNob3VsZCBzdXBwb3J0IFMyNF9MRSBmb3JtYXQsIGJ1dCBJIGZvdW5kIFMxNl9MRSBp
-cyB0aGUgb25seSBmb3JtYXQgdGhhdCBzdXBwb3J0ZWQgYnkgdGhlIGNvZGVjIChmcm9tIHRoZSBo
-d19wYXJhbSkuDQogDQpTbyB0aGUgZm9ybWF0IFMxNl9MRSBpc3N1ZSB3aWxsIGluZmx1ZW5jZSB0
-aGUgc3N0IGZpcm1hcmUgPw0KDQoNCg0KLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uDQpU
-aGFua3MgDQpaSCBUdQ0KIA0KRnJvbTogUGllcnJlLUxvdWlzIEJvc3NhcnQNCkRhdGU6IDIwMTUt
-MTEtMTEgMDM6MDANClRvOiBaaGloZSBUdTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQpT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIEludGVsIENoZXJyeSBUcmFpbCAtLSBObyBzb3VuZCBp
-biBsaW51eA0KT24gMTEvMTAvMTUgMjozOCBBTSwgWmhpaGUgVHUgd3JvdGU6DQo+IEhpIEFsbCwN
-Cj4NCj4gSSdtIHRyeWluZyB0byBtYWtlIHRoZSBDaGVycnlUcmFpbCB0YWJsZXQgd29ya3MgaW4g
-dWJ1bnR1MTQuMDQuMywgIHRoZXJlJ3MNCj4gbm8gc291bmQgYXQgYWxsLCAgYnV0IGl0IHdvcmtz
-IGluIHdpbjggJiBhbmRyb2lkLg0KIA0KPiBbICAgMTIuMTgyMjY1XSBpbnRlbF9zc3RfYWNwaSA4
-MDg2MjJBODowMDogQWxsb2MgZm9yIHN0ciAxIHBpcGUgMHg5MA0KPiBbICAgMTMuMTgxMzYxXSBp
-bnRlbF9zc3RfYWNwaSA4MDg2MjJBODowMDogV2FpdCB0aW1lZC1vdXQgY29uZGl0aW9uOjB4MCwN
-Cj4gbXNnX2lkOjB4MSBmd19zdGF0ZSAweDINCiANCkRpZCB5b3UgdXBkYXRlIC9saWIvZmlybXdh
-cmUgd2l0aCB0aGUgbGF0ZXN0IGZyb20gDQpodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51
-eC9rZXJuZWwvZ2l0L2Zpcm13YXJlL2xpbnV4LWZpcm13YXJlLmdpdCA/DQogDQogDQogDQpfX19f
-X19fX19fIEluZm9ybWF0aW9uIGZyb20gRVNFVCBTbWFydCBTZWN1cml0eSwgdmVyc2lvbiBvZiB2
-aXJ1cyBzaWduYXR1cmUgZGF0YWJhc2UgNDQ2OCAoMjAwOTA5MjkpIF9fX19fX19fX18NCiANClRo
-ZSBtZXNzYWdlIHdhcyBjaGVja2VkIGJ5IEVTRVQgU21hcnQgU2VjdXJpdHkuDQogDQpodHRwOi8v
-d3d3LmVzZXQuY29tDQogDQogDQogDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+
+
+On 2015-11-11 15:23, Yang, Libin wrote:
+>
+>> -----Original Message-----
+>> From: Takashi Iwai [mailto:tiwai@suse.de]
+>> Sent: Wednesday, November 11, 2015 10:13 PM
+>> To: libin.yang@linux.intel.com
+>> Cc: David Henningsson; alsa-devel@alsa-project.org;
+>> mengdong.lin@linux.intel.com; Yang, Libin
+>> Subject: Re: [PATCH] ALSA - hda: hdmi flag to stop playback when
+>> monitor is disconnected
+>>
+>> On Wed, 11 Nov 2015 10:02:14 +0100,
+>> Takashi Iwai wrote:
+>>>
+>>> On Wed, 11 Nov 2015 09:39:09 +0100,
+>>> libin.yang@linux.intel.com wrote:
+>>>>
+>>>> From: Libin Yang <libin.yang@linux.intel.com>
+>>>>
+>>>> Add a flag that user can decide to stop HDMI/DP playback when
+>>>> the corresponding monitor is disconnected and refuse to open PCM
+>>>> if there is no monitor connected.
+>>>>
+>>>> Background:
+>>>> When a monitor is disconnected and a new monitor is connected,
+>>>> the parameters of the 2 monitors may be different. Audio driver
+>>>> need handle this situation.
+>>>>
+>>>> Besides, stopping playback when monitor is disconnected will
+>>>> help to save the power.
+>>>>
+>>>> Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+>>>
+>>> Thanks.  Below are just nitpicking, so let's test this patch at first,
+>>> especially to see whether it has any significant influence on PA, then
+>>> respin with the fixes.
+>>>
+>>> David, care to check in your side, too?
+>>
+>> So I tested this with PA 7.1, and it failed, unfortunately.
+>> In short:
+>> - PA needs the PCM access at probe.  If it gets an error, the device
+>>    will be never enumerated again
+
+...and that's the expected behaviour given how PA works today. Which 
+also means that this new parameter should not be enabled by default, 
+unless we want to break PA 7.1 and earlier versions.
+
+>
+> Thanks for test.
+>
+> If so, should we re-write the hdmi_pcm_open() and
+> generic_hdmi_playback_pcm_prepare() function to make
+> the probe works?  Or not support dynamic pcm assignment?
+
+I've already suggested how we can make it work, by assigning converter 
+nodes dynamically regardless of whether or not the PCM has a monitor 
+connected to it.
+
+Keeping the power well on for up to five seconds (and often much less) 
+during boot should not be a big deal power saving wise, so the power 
+save argument doesn't hold IMO.
+
+>> - PA removes the device when it's disconnected.  The PCM stop with
+>>    DISCONNECT state leads to the device disappearance.
+>
+> If we can't use DISCONNECT, what else can we use? Or we can't
+> stop PCM when monitor is disconnected?
+
+The current behavior is to keep the PCM running, which also has the 
+benefit to be able to switch monitors on the fly (i e without stopping 
+the stream), if both support the stream format. At least I think one can 
+do this, I've actually never tried.
+
+While reporting -ENODEV for a disconnected monitor seems useful to some 
+scenarios, there are certainly other scenarios where it doesn't work.
+
+PA should use the ELD and/or the Jack kctl to figure out when it needs 
+to reprobe the device. This has not been implemented.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
