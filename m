@@ -1,19 +1,23 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Subject: Re: Unregister a card from userspace?
-Date: Thu, 12 Nov 2015 14:26:15 +0100
-Message-ID: <56449377.2050409@metafoo.de>
+Date: Thu, 12 Nov 2015 15:02:29 +0100
+Message-ID: <alpine.DEB.2.02.1511121409050.11990@lnxricardw1.se.axis.com>
 References: <alpine.DEB.2.02.1511041032180.1465@lnxricardw1.se.axis.com>
- <5639EAFA.9060008@ladisch.de>
- <alpine.DEB.2.02.1511121402000.11990@lnxricardw1.se.axis.com>
+ <56408259.2030604@felipetonello.com>
+ <alpine.DEB.2.02.1511100852180.15344@lnxricardw1.se.axis.com>
+ <564319CD.3070305@felipetonello.com>
+ <alpine.DEB.2.02.1511111348380.11990@lnxricardw1.se.axis.com>
+ <564355A9.9020704@felipetonello.com>
+ <alpine.DEB.2.02.1511111625180.11990@lnxricardw1.se.axis.com>
+ <56446A9E.6040004@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-229.synserver.de
- [212.40.185.229])
- by alsa0.perex.cz (Postfix) with ESMTP id E00982658B1
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 14:26:17 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1511121402000.11990@lnxricardw1.se.axis.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC42F265961
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 15:02:31 +0100 (CET)
+In-Reply-To: <56446A9E.6040004@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +27,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Felipe Ferreri Tonello <eu@felipetonello.com>
+Cc: =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/12/2015 02:07 PM, Ricard Wanderlof wrote:
-> 
-> On Wed, 4 Nov 2015, Clemens Ladisch wrote:
-> 
->> Ricard Wanderlof wrote:
->>> My use case is that I have a card driver I'm working on as a module, and
->>> while insmodding it works fine, I can't rmmod it because once
->>> snd_soc_register_card() has been called, it has a usage count of 2 and
->>> thus cannot be rmmod:ed.
->>
->> soc_probe_component() adds a reference to each component's driver's
->> module.  Maybe putting each component into its own module would help.
-> 
-> I'd rather not as there's no real gain from it (the constituent drivers 
-> cannot be used separately or in any other combination), but perhaps that 
-> is the only way to go.
-> 
->> Anyway, you should be able to unbind the driver:
->> <https://lwn.net/Articles/143397/>
-> 
-> Yes, that works. After unbinding the driver, the usage count drops to 0, 
-> and I can successfully rmmod it. So at least that's a workable solution.
-> 
-> It just seems to me that there's something I must have missed, as there 
-> should be a mechanism to do this automatically when a module containing a 
-> driver is rmmod'ed.
 
-The way it works is that the reference count for the modules of the
-individual components is incremented when they are bound to the card to
-ensure that they are not removed when still in use. This usually does not
-affect the reference count on the module of the card and you can still rmmod
-the module of the card which will unregister the card. This again drops the
-reference count on the components and you can remove those modules as well.
+On Thu, 12 Nov 2015, Felipe Ferreri Tonello wrote:
 
-In your case the components and the card are in the same module and you end
-up with a cyclic dependency. The card ensures that the reference count of
-the module for the components is incremented, which in this case is also the
-cards module, so the cards module reference count is non 0 and you can't
-rmmod the card module, which means the card won't be unregistered which
-means the references to the module wont be dropped.
+> > What I was aiming for was that when I load this particular module, it =
+
+> > ultimately calls snd_soc_register_card in its probe function, so that t=
+he =
+
+> > device in question becomes available for ALSA once the module has been =
+
+> > loaded. And then if I want to remove the driver I simply unload the mod=
+ule =
+
+> > which allows it to go away.
+> =
+
+> You said that the framework that handles the module had the counter to 2
+> so your unregister card function was never been called, right? I don't
+> understand that part, since it doesn't make sense to load your module
+> into the kernel more then once.
+
+No, I don't understand why the usage count goes to 2 either.
+
+What the driver does is this:
+
+At module_init time, it registers:
+a) a platform driver for the actual hardware (in essence, codec)
+b) a platform device representing the hardware itself, and
+c) a platform driver which is the ALSA machine driver for the device in que=
+stion.
+
+The registering of a) and b) cause the device driver for the codec to be =
+
+initialized by it's probe function getting called. Apart from various =
+
+hardware initializations, it registers the corresponding PCM driver via
+snd_soc_register_platform(), and then registers the codec using
+snd_soc_register_codec() (registering both the codec itself and its DAI, =
+
+although the latter actually doesn't contain any implementation as the =
+
+communication is handled directly via DMA rather than over some link =
+
+like I2S).
+
+In the case of c), there is a device tree entry which corresponds to the =
+
+device. This in turn causes the the machine driver probe function to be =
+
+called, which does snd_soc_register_card(), binding together the codec =
+
+driver, the PCM driver with its DAI, and a dummy CPU DAI.
+
+The final outcome of this is that ALSA outputs a "<codec dai> <-> =
+
+snd-soc-dummy-dai ampping ok" message in the kernel log.
+
+The device now works as intended. I can arecord from it and get what I
+expect in the resulting output file.
+
+Doing an lsmod at this point shows a usage count ('Used by') of 2. I don't =
+
+know if that is just due to snd_soc_register_card, or there is some =
+
+internal usage count due to the fact that there are a couple of drivers =
+
+registered at the same time. Certainly there are two hardware devices: one =
+
+representing the ALSA machine driver, specified in the device tree, and =
+
+one representing the actual hardware, which is registered at the machine =
+
+driver probe time.
+
+Unbinding the driver, which is done by doing =
+
+
+cd /sys/bus/platform/drivers/<machine-driver-name>
+
+followed by
+
+echo -n <device-name> > unbind
+
+causes the machine driver 'remove' function to be called, which in turn =
+
+does snd_soc_unregister_card.
+
+A lot of the complexity is done to fit into the ALSA SoC driver model, =
+
+where we have
+
+ALSA <-> PCM (DMA) driver <-> CPU DAI <-> CODEC DAI <-> CODEC
+
+even though in this case there are no actual DAI's and the PCM driver =
+
+simply reads the data directly from the CODEC in memory. In the past I've =
+
+tried simplifying the hierarchy for a similar system, but it seems all the =
+
+components have to be there in some form. The only simplification is that =
+
+the CPU DAI can be snd-soc-dummy-dai, and that the only implementation =
+
+needed for CODEC DAI is the specification of things like the limitation of =
+
+the number channels, rates, and formats.
+
+> Try to write just a simple module that register/unregister a card on
+> module_init/module_exit, respectively. That should work just fine.
+
+Since the driver uses information from the device tree, it seems that I =
+
+would need to follow the paradigm of registering a driver, which the Linux =
+
+device framework then associates with the corresponding device specified =
+
+in the device tree, in turn calling the probe function. At the moment this =
+
+driver is the ALSA machine driver.
+
+An alternative would be to let the device tree entry correspond to the =
+
+codec device, avoiding the need to explicitly create a codec device in the =
+
+initialization code. I don't know if that would buy much in the end, but =
+
+it would allow me to do snd_soc_register card() at module init rather than =
+
+at probe time.
+
+The problem as I see it is that with a usage count !=3D 0, rmmod will not =
+
+even attempt to unload the driver, hence the module exit function will =
+
+never be called. =
+
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
