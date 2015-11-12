@@ -1,16 +1,16 @@
-From: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
-Subject: Configuring McBSP word length for ICS-43432
-Date: Thu, 12 Nov 2015 10:20:18 -0600
-Message-ID: <CACaQK7B+iML+DAVMvW5ynRkAoGZ_C1DDC=eVZ2WrnxOx9aZbAg@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH RFC 2/4] drm/i915: Remove superfluous NULL check
+Date: Thu, 12 Nov 2015 17:20:12 +0100
+Message-ID: <1447345214-7212-3-git-send-email-tiwai@suse.de>
+References: <1447345214-7212-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id D515E2606B7
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 17:20:19 +0100 (CET)
-Received: by wmww144 with SMTP id w144so95642004wmw.0
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 08:20:19 -0800 (PST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B902D265A1B
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 17:20:25 +0100 (CET)
+In-Reply-To: <1447345214-7212-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,15 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+to_intel_crtc() always returns a non-NULL pointer.
 
-I am trying to configure ICS-43432 MEMS mic with TM320DM365 processor's
-McBSP interface. The data sheet for ICS-43432 says that it outputs 24-bits
-data, i.e., 24 bit word length, but requires 64SCK cycles. Does this mean
-the word length (RWDLEN1 bit in RCR register) for McBSP should be set to
-32-bits or 24-bits?
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/gpu/drm/i915/intel_audio.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Thank you,
-Ankhit
+diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+index ec81f8481d25..dc8141324fcd 100644
+--- a/drivers/gpu/drm/i915/intel_audio.c
++++ b/drivers/gpu/drm/i915/intel_audio.c
+@@ -658,10 +658,6 @@ static int i915_audio_component_sync_audio_rate(struct device *dev,
+ 		intel_dig_port = enc_to_dig_port(&intel_encoder->base);
+ 		if (port == intel_dig_port->port) {
+ 			crtc = to_intel_crtc(intel_encoder->base.crtc);
+-			if (!crtc) {
+-				DRM_DEBUG_KMS("%s: crtc is NULL\n", __func__);
+-				continue;
+-			}
+ 			pipe = crtc->pipe;
+ 			break;
+ 		}
+-- 
+2.6.3
