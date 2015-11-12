@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 4/4] ALSA: hda - Use component ops for i915
-	HDMI/DP audio jack handling
-Date: Thu, 12 Nov 2015 17:20:14 +0100
-Message-ID: <1447345214-7212-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH RFC 3/4] drm/i915: refactoring audio component
+	functions
+Date: Thu, 12 Nov 2015 17:20:13 +0100
+Message-ID: <1447345214-7212-4-git-send-email-tiwai@suse.de>
 References: <1447345214-7212-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B3F362606B7
+ by alsa0.perex.cz (Postfix) with ESMTP id B6DDF2659F5
  for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 17:20:25 +0100 (CET)
 In-Reply-To: <1447345214-7212-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,181 +25,114 @@ To: alsa-devel@alsa-project.org
 Cc: Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since we have a new audio component ops to fetch the current ELD and
-state now, we can reduce the usage of unsol event of HDMI/DP pins.
-The unsol event isn't only unreliable, but it also needs the power
-up/down of the codec and link at each time, which is a significant
-power and time loss.
-
-In this patch, the jack creation and unsol/jack event handling are
-modified to use the audio component for the dedicated Intel chips.
-
-The jack handling got slightly more codes than a simple usage of
-hda_jack layer since we need to deal directly with snd_jack object;
-the hda_jack layer is basically designed for the pin sense read and
-unsol events, both of which aren't used any longer in our case.
+We have a common loop of encoder to look for the given audio port in
+two audio component functions.  Split out a local helper function to
+do it for the code simplification.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_hdmi.c | 83 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 81 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/intel_audio.c | 60 ++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 29 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 60cd9e700909..ca1d2d4a295e 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -83,6 +83,7 @@ struct hdmi_spec_per_pin {
- 	struct mutex lock;
- 	struct delayed_work work;
- 	struct snd_kcontrol *eld_ctl;
-+	struct snd_jack *acomp_jack; /* jack via audio component */
- 	int repoll_count;
- 	bool setup; /* the stream has been set up by prepare callback */
- 	int channels; /* current number of channels */
-@@ -141,6 +142,7 @@ struct hdmi_spec {
- 	struct hdmi_ops ops;
- 
- 	bool dyn_pin_out;
-+	bool use_acomp; /* use audio component for ELD notify/update */
- 
- 	/*
- 	 * Non-generic VIA/NVIDIA specific
-@@ -1530,6 +1532,9 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
- 	return 0;
+diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+index dc8141324fcd..8169693418af 100644
+--- a/drivers/gpu/drm/i915/intel_audio.c
++++ b/drivers/gpu/drm/i915/intel_audio.c
+@@ -630,17 +630,33 @@ static int i915_audio_component_get_cdclk_freq(struct device *dev)
+ 	return ret;
  }
  
-+static void sync_eld_via_acomp(struct hda_codec *codec,
-+			       struct hdmi_spec_per_pin *per_pin);
-+
- static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- {
- 	struct hda_jack_tbl *jack;
-@@ -1551,6 +1556,11 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 	bool eld_changed = false;
- 	bool ret;
- 
-+	if (spec->use_acomp) {
-+		sync_eld_via_acomp(codec, per_pin);
-+		return false; /* don't call snd_hda_jack_report_sync() */
-+	}
-+
- 	snd_hda_power_up_pm(codec);
- 	present = snd_hda_pin_sense(codec, pin_nid);
- 
-@@ -2091,6 +2101,67 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
- 	return 0;
- }
- 
-+/* update ELD and jack state via audio component */
-+static void sync_eld_via_acomp(struct hda_codec *codec,
-+			       struct hdmi_spec_per_pin *per_pin)
++static struct intel_encoder *audio_port_to_encoder(struct drm_device *drm_dev,
++						   int port)
 +{
-+	struct i915_audio_component *acomp = codec->bus->core.audio_component;
-+	struct hdmi_eld *eld = &per_pin->sink_eld;
-+	int size;
++	struct intel_encoder *intel_encoder;
++	struct intel_digital_port *intel_dig_port;
 +
-+	if (acomp && acomp->ops && acomp->ops->get_eld) {
-+		size = acomp->ops->get_eld(acomp->dev,
-+					   intel_pin2port(per_pin->pin_nid),
-+					   eld->eld_buffer,
-+					   ELD_MAX_SIZE);
-+		if (size < 0)
-+			return;
-+		if (size) {
-+			memset(&eld->info, 0, sizeof(eld->info));
-+			if (snd_hdmi_parse_eld(codec, &eld->info,
-+					       eld->eld_buffer,
-+					       size) < 0)
-+				size = 0;
-+		}
-+		if (size) {
-+			eld->monitor_present = true;
-+			eld->eld_valid = true;
-+			eld->eld_size = size;
-+
-+		} else {
-+			eld->monitor_present = false;
-+			eld->eld_valid = false;
-+			eld->eld_size = 0;
-+		}
-+		snd_jack_report(per_pin->acomp_jack,
-+				size ? SND_JACK_AVOUT : 0);
-+	}
-+}
-+
-+static void free_acomp_jack_priv(struct snd_jack *jack)
-+{
-+	struct hdmi_spec_per_pin *per_pin = jack->private_data;
-+
-+	per_pin->acomp_jack = NULL;
-+}
-+
-+static int add_acomp_jack_kctl(struct hda_codec *codec,
-+			       struct hdmi_spec_per_pin *per_pin,
-+			       const char *name)
-+{
-+	struct snd_jack *jack;
-+	int err;
-+
-+	err = snd_jack_new(codec->card, name, SND_JACK_AVOUT, &jack,
-+			   true, false);
-+	if (err < 0)
-+		return err;
-+	per_pin->acomp_jack = jack;
-+	jack->private_data = per_pin;
-+	jack->private_free = free_acomp_jack_priv;
-+	return 0;
-+}
-+
- static int generic_hdmi_build_jack(struct hda_codec *codec, int pin_idx)
- {
- 	char hdmi_str[32] = "HDMI/DP";
-@@ -2101,6 +2172,8 @@ static int generic_hdmi_build_jack(struct hda_codec *codec, int pin_idx)
- 
- 	if (pcmdev > 0)
- 		sprintf(hdmi_str + strlen(hdmi_str), ",pcm=%d", pcmdev);
-+	if (spec->use_acomp)
-+		return add_acomp_jack_kctl(codec, per_pin, hdmi_str);
- 	phantom_jack = !is_jack_detectable(codec, per_pin->pin_nid);
- 	if (phantom_jack)
- 		strncat(hdmi_str, " Phantom",
-@@ -2196,6 +2269,8 @@ static int generic_hdmi_init(struct hda_codec *codec)
- 		hda_nid_t pin_nid = per_pin->pin_nid;
- 
- 		hdmi_init_pin(codec, pin_nid);
-+		if (spec->use_acomp)
++	for_each_intel_encoder(drm_dev, intel_encoder) {
++		if (intel_encoder->type != INTEL_OUTPUT_HDMI &&
++		    intel_encoder->type != INTEL_OUTPUT_DISPLAYPORT)
 +			continue;
- 		snd_hda_jack_detect_enable_callback(codec, pin_nid,
- 			codec->jackpoll_interval > 0 ? jack_callback : NULL);
++		intel_dig_port = enc_to_dig_port(&intel_encoder->base);
++		if (port == intel_dig_port->port)
++			return intel_encoder;
++	}
++	return NULL;
++}
++
+ static int i915_audio_component_sync_audio_rate(struct device *dev,
+ 						int port, int rate)
+ {
+ 	struct drm_i915_private *dev_priv = dev_to_i915(dev);
+ 	struct drm_device *drm_dev = dev_priv->dev;
+ 	struct intel_encoder *intel_encoder;
+-	struct intel_digital_port *intel_dig_port;
+ 	struct intel_crtc *crtc;
+ 	struct drm_display_mode *mode;
+ 	struct i915_audio_component *acomp = dev_priv->audio_component;
+-	enum pipe pipe = -1;
++	enum pipe pipe;
+ 	u32 tmp;
+ 	int n;
+ 
+@@ -652,22 +668,14 @@ static int i915_audio_component_sync_audio_rate(struct device *dev,
+ 
+ 	mutex_lock(&dev_priv->av_mutex);
+ 	/* 1. get the pipe */
+-	for_each_intel_encoder(drm_dev, intel_encoder) {
+-		if (intel_encoder->type != INTEL_OUTPUT_HDMI)
+-			continue;
+-		intel_dig_port = enc_to_dig_port(&intel_encoder->base);
+-		if (port == intel_dig_port->port) {
+-			crtc = to_intel_crtc(intel_encoder->base.crtc);
+-			pipe = crtc->pipe;
+-			break;
+-		}
+-	}
+-
+-	if (pipe == INVALID_PIPE) {
++	intel_encoder = audio_port_to_encoder(drm_dev, port);
++	if (!intel_encoder || intel_encoder->type != INTEL_OUTPUT_HDMI) {
+ 		DRM_DEBUG_KMS("no pipe for the port %c\n", port_name(port));
+ 		mutex_unlock(&dev_priv->av_mutex);
+ 		return -ENODEV;
  	}
-@@ -2219,7 +2294,7 @@ static void generic_hdmi_free(struct hda_codec *codec)
- 	struct hdmi_spec *spec = codec->spec;
- 	int pin_idx;
++	crtc = to_intel_crtc(intel_encoder->base.crtc);
++	pipe = crtc->pipe;
+ 	DRM_DEBUG_KMS("pipe %c connects port %c\n",
+ 				  pipe_name(pipe), port_name(port));
+ 	mode = &crtc->config->base.adjusted_mode;
+@@ -716,23 +724,17 @@ static int i915_audio_component_get_eld(struct device *dev, int port,
+ 	int ret = -EINVAL;
  
--	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
-+	if (spec->use_acomp)
- 		snd_hdac_i915_register_notifier(NULL);
- 
- 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-@@ -2227,6 +2302,8 @@ static void generic_hdmi_free(struct hda_codec *codec)
- 
- 		cancel_delayed_work_sync(&per_pin->work);
- 		eld_proc_free(per_pin);
-+		if (per_pin->acomp_jack)
-+			snd_device_free(codec->card, per_pin->acomp_jack);
+ 	mutex_lock(&dev_priv->av_mutex);
+-	for_each_intel_encoder(drm_dev, intel_encoder) {
+-		if (intel_encoder->type != INTEL_OUTPUT_DISPLAYPORT &&
+-		    intel_encoder->type != INTEL_OUTPUT_HDMI)
+-			continue;
++	intel_encoder = audio_port_to_encoder(drm_dev, port);
++	if (intel_encoder) {
++		ret = 0;
+ 		intel_dig_port = enc_to_dig_port(&intel_encoder->base);
+-		if (port == intel_dig_port->port) {
+-			if (!intel_dig_port->audio_enabled) {
+-				ret = 0;
+-				break;
+-			}
++		if (intel_dig_port->audio_enabled) {
+ 			connector = drm_select_eld(&intel_encoder->base);
+-			if (!connector)
+-				break;
+-			eld = connector->eld;
+-			ret = min(max_bytes, drm_eld_size(eld));
+-			memcpy(buf, eld, ret);
+-			break;
++			if (connector) {
++				eld = connector->eld;
++				ret = min(max_bytes, drm_eld_size(eld));
++				memcpy(buf, eld, ret);
++			}
+ 		}
  	}
  
- 	hdmi_array_free(spec);
-@@ -2381,7 +2458,9 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 	if (is_valleyview_plus(codec) || is_skylake(codec))
- 		codec->core.link_power_control = 1;
- 
--	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
-+	spec->use_acomp =
-+		is_haswell_plus(codec) || is_valleyview_plus(codec);
-+	if (spec->use_acomp) {
- 		codec->depop_delay = 0;
- 		spec->i915_audio_ops.audio_ptr = codec;
- 		spec->i915_audio_ops.pin_eld_notify = intel_pin_eld_notify;
 -- 
 2.6.3
