@@ -1,17 +1,19 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Roland/Edirol M-16DX
-Date: Thu, 12 Nov 2015 08:58:00 +0100
-Message-ID: <alpine.DEB.2.02.1511120851500.11990@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1510231017080.14239@lnxricardw1.se.axis.com>
- <562A136E.3030108@ladisch.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8962: correct addresses for
+	HPF_C_0/1
+Date: Thu, 12 Nov 2015 08:11:51 +0000
+Message-ID: <20151112081151.GA18889@ck-lbox>
+References: <1447178038-11156-1-git-send-email-sachinpandhare@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 9116F2608CF
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 08:58:02 +0100 (CET)
-In-Reply-To: <562A136E.3030108@ladisch.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BB83264F8D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 09:27:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1447178038-11156-1-git-send-email-sachinpandhare@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: sachinpandhare@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, axel.lin@ingics.com, zidan.wang@freescale.com, jiada_wang@mentor.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 10, 2015 at 11:23:58PM +0530, sachinpandhare@gmail.com wrote:
+> From: Sachin Pandhare <sachinpandhare@gmail.com>
+> 
+> >From datasheet:
+> R17408 (4400h) HPF_C_1
+> R17409 (4401h) HPF_C_0
+> 17048 -> 17408 (0x4400)
+> 17049 -> 17409 (0x4401)
+> 
+> Signed-off-by: Sachin Pandhare <sachinpandhare@gmail.com>
+> ---
 
-On Fri, 23 Oct 2015, Clemens Ladisch wrote:
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-> Ricard Wanderlof wrote:
-> > I seem to recall reading posts not to long ago that refer to using an
-> > implicit feedback path; my question is, was this in fact implemented,
-> =
-
-> Yes, for USB Audio 2.0 devices.
-> =
-
-> > meaning that a device like the M-16DX should function as expected also =
-for
-> > playback?
-> =
-
-> There is some bug in the code that should detect such Roland devices.
-
-I finally got my hands on an M-16DX yesterday, and was preparing myself =
-
-for some initial research into this problem. Connected the device and used =
-
-some DAW software (Ardour 3) to record and playback about half a minute of =
-
-audio. No glitches whatsoever, neither in capture or playback.
-
-So I thought, perhaps a DAW always opens the device for recording and =
-
-playback and hence there's always a feedback channel open. So I tried just =
-
-playing back a 7 minute wav file using aplay instead. Again, no glitches =
-
-in the resulting audio.
-
-More tests are needed - I only used 44.1 kHz sample rate for instance - =
-
-but have I just been extremely lucky with the sample clocks so they match =
-
-up precisely (if that even would work), or could the problem have =
-
-magically fixed itself (ok, more realistically, as a result of something =
-
-else getting fixed)?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+Charles
