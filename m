@@ -1,33 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: DP1.2 MST audio support discussion
-Date: Fri, 13 Nov 2015 15:27:52 +0800
-Message-ID: <CAN8cciZKZpE2aP1tdKwkuiUzhFd1cD03KfQYfdHjThXTTd3nQg@mail.gmail.com>
-References: <96A12704CE18D347B625EE2D4A099D1974C250@SHSMSX103.ccr.corp.intel.com>
- <561CA911.7070405@canonical.com>
- <96A12704CE18D347B625EE2D4A099D1974C304@SHSMSX103.ccr.corp.intel.com>
- <s5hlhb7ktum.wl-tiwai@suse.de>
- <CAN8cciZJ_YJhHEoU9HovR=P7FsxiKMDQ7johrmFGEWHQK_ZYNg@mail.gmail.com>
- <s5htwpuj6f5.wl-tiwai@suse.de>
- <CAN8cciYqLBH=kXvPjrGTgGPg9p7euU5w9z=UYdvKk4Vnxf-YFw@mail.gmail.com>
- <96A12704CE18D347B625EE2D4A099D1975281F@SHSMSX103.ccr.corp.intel.com>
- <56288783.1080503@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A2D@SHSMSX103.ccr.corp.intel.com>
- <56288FF7.9030400@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19753A91@SHSMSX103.ccr.corp.intel.com>
- <5628A3EB.8050306@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F84B862A5B@shsmsx102.ccr.corp.intel.com>
- <s5h7fmew2oj.wl-tiwai@suse.de>
+From: libin.yang@linux.intel.com
+Subject: [RFC PATCH] ALSA: hda - hdmi begin to support dynamic
+	PCM assignment
+Date: Fri, 13 Nov 2015 16:56:30 +0800
+Message-ID: <1447404990-145928-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 860B72608EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 08:27:53 +0100 (CET)
-Received: by oiww189 with SMTP id w189so45400216oiw.3
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2015 23:27:52 -0800 (PST)
-In-Reply-To: <s5h7fmew2oj.wl-tiwai@suse.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19ADB2612D0
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 09:58:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,70 +19,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "airlied@linux.ie" <airlied@linux.ie>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "tanuk@iki.fi" <tanuk@iki.fi>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Cj4gPiA+IEknbGwgdHJ5IHRvIGV4cGxhaW4gbXkgc3VnZ2VzdGlvbiAod2hpY2ggSSBiZWxp
-ZXZlIFRha2FzaGkncyBidXlpbmcKdG9vKSBvbmUKPiA+ID4gbW9yZSB0aW1lIHRoZW46Cj4gPiA+
-Cj4gPiA+IEZpcnN0LCB3aGVuIGEgbW9uaXRvciBpcyBwbHVnZ2VkIGluLCB3ZSBuZWVkIHRvIGR5
-bmFtaWNhbGx5IGFzc2lnbgp0aGlzCj4gPiA+IG1vbml0b3IgdG8gZml2ZSBQQ00gZGV2aWNlcy4g
-SSBiZWxpZXZlIHRoaXMgc2NoZW1lIHdpbGwgYmUgYmVzdDoKPiA+ID4KPiA+ID4gRm9yIGEgbW9u
-aXRvciBhdCBwaW4gbmlkIDB4MDUsIGRldiBpbmRleCAwLCBpdCB3aWxsIHByZWZlciBQQ00gMy4K
-PiA+ID4gRm9yIGEgbW9uaXRvciBhdCBwaW4gbmlkIDB4MDYsIGRldiBpbmRleCAwLCBpdCB3aWxs
-IHByZWZlciBQQ00gNy4KPiA+ID4gRm9yIGEgbW9uaXRvciBhdCBwaW4gbmlkIDB4MDcsIGRldiBp
-bmRleCAwLCBpdCB3aWxsIHByZWZlciBQQ00gOC4KPiA+ID4gRm9yIGEgbW9uaXRvciBhdCBkZXYg
-aW5kZXggMSAoYW55IHBpbiksIGl0IHdpbGwgcHJlZmVyIFBDTSA5Lgo+ID4gPiBGb3IgYSBtb25p
-dG9yIGF0IGRldiBpbmRleCAyIChhbnkgcGluKSwgaXQgd2lsbCBwcmVmZXIgUENNIDEwLgo+ID4g
-Pgo+ID4gPiBGb3IgbW9uaXRvcnMgYXQgZGV2IGluZGljZXMgPiAyIChjYW4gdGhhdCBoYXBwZW4/
-KSwgb3IgaWYgdGhlIFBDTSBpcwphbHJlYWR5Cj4gPiA+IGFzc2lnbmVkIHRvIHNvbWV0aGluZyBl
-bHNlLCB0cnkgUENNcyBpbiB0aGlzIG9yZGVyOiA5LCAxMCwgMywgNywgOC4KPiA+ID4gKFN1Ympl
-Y3QgdG8gZGlzY3Vzc2lvbiBwZXJoYXBzLCBJIGRvbid0IHRoaW5rIHRoZSBvcmRlciBtYXR0ZXJz
-IHRvbwptdWNoLAo+ID4gPiBiZWNhdXNlIGNvbmZsaWN0cyB3aWxsIGJlIHJhcmUgaW4gcHJhY3Rp
-Y2UuKQo+ID4KPiA+IEhpIERhdmlkLAo+ID4KPiA+IFdvdWxkIHlvdSBwbGVhc2UgY2xhcmlmeSB3
-aHkgUEEgbmVlZHMgc3VjaCBhIGZpeGVkIGJpbmRpbmcgYmV0d2VlbiBQQ00KMyw3LCA4IGFuZCBw
-aW4gMHgwNSw2LDc/Cj4KPiBJdCdzIG5vdCBQQSdzIHJlcXVpcmVtZW50LiAgVGhlIG9ubHkgY29u
-Y2VybiBoZXJlIGlzIGZvciBwZW9wbGUgd2hvCj4gdXNlcyBBTFNBIGRldmljZSBkaXJlY3RseSwg
-ZS5nLiB2aWEgYXBsYXkgLURoZG1pOjIuICBUaGUgZmlyc3QgbW9uaXRvcgo+IGlzIGd1YXJhbnRl
-ZWQgdG8gYmUgbWFwcGVkIHRvIHRoZSBjb21wYXRpYmxlIHBvc2l0aW9uIGZvciBzdWNoCj4gcGVv
-cGxlLgo+Cj4gPiBBbmQgaG93IHdpbGwgUEEgaGFuZGxlIFBDTSA5LDEwIGluIGEgZGlmZmVyZW50
-IHdheT8KPiA+IFRoZXkgYXJlIG5vdCBib3VuZCB0byBwaW5zLCBhbmQgZXZlbiBub3QgYWJsZSB0
-byBkZXYgaW5kZXhlcy4KPiA+IEluIHByYWN0aWNlLCBhIHBsYXRmb3JtIHdpbGwgdXN1YWxseSBz
-dXBwb3J0IGVpdGhlciBhIERQIHBvcnQgb3IgYSBIRE1JCnBvcnQgZnJvbSB0aGUgSW50ZWwgaW50
-ZWdyYXRlZCBHUFUgZm9yIGNvc3QgY29uc2lkZXJhdGlvbi4KPiA+IEJ1dCB0aGVvcmV0aWNhbGx5
-IGk5MTUgY2FuIHVzZSBzYW1lIGRldmljZSBpbmRleCBvbiB0d28gZGlmZmVyZW50IHBpbnMKdG8g
-Y29ubmVjdCBtb25pdG9ycywgZS5nLiBwaW4gMHgwNSwgZGV2IGluZGV4IDIgZm9yIG9uZSBtb25p
-dG9yIGFuZCBwaW4KMHgwNiwgZGV2IGluZGV4IDIgZm9yIHRoZSBvdGhlci4KPiA+Cj4gPiBPbiBJ
-bnRlbCBwbGF0Zm9ybXMsIHRoZSBtYXggZGV2IGluZGljZXMgaXMgMi4gTm90IHN1cmUgYWJvdXQg
-TnZpZGlhIGFuZApBTUQuCj4KPiBUaGUgd2hvbGUgbnVtYmVyIHNob3VsZCBiZSBtaW4ocGlucyAq
-IDIgLSAxLCBwaW5zICogNjQpLiAgSXQncyB0d28gZm9yCj4gSW50ZWwsIGFuZCA3IG9yIG1vcmUg
-b24gQU1EL052aWRpYS4KPgo+IEFzIHdlJ3ZlIGRpc2N1c3NlZCwgdGhpcyAicmVzZXJ2ZWQiIGFy
-ZWEgaXMgYmFzaWNhbGx5IG9wdGlvbmFsLiAgV2UKPiBoYXZlIHRoZW0gZm9yIGtlZXBpbmcgY29t
-cGF0aWJpbGl0eSBtb3JlIGVhc2lseS4gIEV2ZW4gaWYgdGhpcyBhcmUgaXMKPiBleGhhdXN0ZWQs
-IHlvdSBjYW4gc3RpbGwgdHJ5IHRvIG1hcCB0byBhbnkgZW1wdHkgc2xvdCBhcyB0aGUgbGFzdAo+
-IHJlc29ydC4gIFNvLCBpbiBwcmFjdGljZSwgbWF5YmUgYWRkaW5nIGp1c3QgdHdvIGV4dHJhIGZv
-ciB0aGlzCj4gcmVzZXJ2ZWQgYXJlYSBzaG91bGQgc3VmZmljZS4gIFRoYXQgaXMsIHRoZSBzY2hl
-bWUgaXM6Cj4KPiAtIFRyeSBhIHN0YXRpYyBtYXBwaW5nIGF0IGZpcnN0Cj4gLSBJZiBhbHJlYWR5
-IG9jY3VwaWVkLCB0cnkgYSBkeW5hbWljIG1hcHBpbmcgaW4gcmVzZXJ2ZWQgYXJlYQo+IC0gSWYg
-YSBkeW5hbWljIG1hcHBpbmcgYXJlYSBpcyBleGhhdXN0ZWQsIHRyeSB0byBmaW5kIGFueSBlbXB0
-eSBzbG90Cj4KPiBUaGUgZGV2aWNlIGluZGV4IG51bWJlciBkb2Vzbid0IG1hdHRlci4gIElmIGl0
-IGNvbmZsaWN0cywgdHJ5Cj4gYW5vdGhlci4KPgo+CgpIb3cgZG8gdGhvc2UgcGNtIGFzc2lnbmVk
-IHdoZW4gdGhlIGNvbnRyb2xsZXIgaGF2ZSBIRE1JIGFuZCB0d28gZGlzcGxheQpwb3J0cyA/Cgpo
-dHRwOi8vd3d3LmludGVsLmNvbS9zdXBwb3J0L21vdGhlcmJvYXJkcy9kZXNrdG9wL3NiL0NTLTAz
-NDE5OS5odG0KCkludGVswq4gTlVDIEtpdCBEQzUzNDI3SFlFIGFuZCBJbnRlbMKuIE5VQyBCb2Fy
-ZCBENTM0MjdSS0UKCkluIHRoaXMgY29uZmlndXJhdGlvbiwgdGhlIHR3byBkaXNwbGF5cyB0aGF0
-IHlvdSBjb25uZWN0IHRvIHRoZSBtaW5pCkRpc3BsYXlQb3J0IHBvcnRzIG11c3QgYmUgbmF0aXZl
-IERpc3BsYXlQb3J0LWNhcGFibGUuIEFkYXB0ZXJzIHRoYXQgY2hhbmdlCkRpc3BsYXlQb3J0IHRv
-IEhETUkgb3IgRFZJIHdpbGwgbm90IHdvcmsuIEl0IGlzIGFsc28gYmVzdCB0aGF0IHRoZSBmaXJz
-dApkaXNwbGF5IGJlIEhETUkgd2l0aG91dCBhbnkgYWRhcHRlcnMuCgpGaXJzdCBkaXNwbGF5IEhE
-TUkgb24gSW50ZWwgTlVDIGNvbm5lY3RlZCB0byBIRE1JIG9yIERWSSBvbiBtb25pdG9yL1RWCk1h
-eCByZXNvbHV0aW9uOiAxOTIweDEyMDAKU2Vjb25kIGRpc3BsYXkgTWluaS1EaXNwbGF5UG9ydCAx
-IG9uIEludGVsIE5VQyBjb25uZWN0ZWQgdG8gRGlzcGxheVBvcnQgb24KbW9uaXRvci9UVgpNYXgg
-cmVzb2x1dGlvbjogMTkyMHgxMjAwClRoaXJkIGRpc3BsYXkgTWluaS1EaXNwbGF5UG9ydCAyIG9u
-IEludGVsIE5VQyBjb25uZWN0ZWQgdG8gRGlzcGxheVBvcnQgb24KbW9uaXRvci9UVgpNYXggcmVz
-b2x1dGlvbjogMTkyMHgxMjAwCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+From: Libin Yang <libin.yang@linux.intel.com>
+
+Begin to support dynamic PCM assignment to pin in
+hdmi audio driver.
+
+This means PCM will not be statically bound with pin.
+When there is a monitor connected, the corresponding pin
+will try to find a proper PCM to bind. When the monitor
+is disconnected, the corresponding pin will unbind
+the PCM. This helps to reduce the PCM number when there
+are many pins (device entries in DP MST mode) and only
+a few of them work at the same time.
+
+This patch adds the pcm member in struct hdmi_spec_per_pin.
+When PCM is dynamically bound to the pin, the member pcm
+will pointer to the corresponding pcm_rec[] in hdmi_spec,
+which means the hda_pcm is bound to the pin.
+
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index f503a88..f3363b8 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -82,6 +82,7 @@ struct hdmi_spec_per_pin {
+ 	struct mutex lock;
+ 	struct delayed_work work;
+ 	struct snd_kcontrol *eld_ctl;
++	struct hda_pcm *pcm; /* pointer to spec->pcm_rec[n] dynamically*/
+ 	int repoll_count;
+ 	bool setup; /* the stream has been set up by prepare callback */
+ 	int channels; /* current number of channels */
+@@ -140,7 +141,8 @@ struct hdmi_spec {
+ 	struct hdmi_ops ops;
+ 
+ 	bool dyn_pin_out;
+-
++	bool dyn_pcm_assign;
++	struct mutex pcm_lock;
+ 	/*
+ 	 * Non-generic VIA/NVIDIA specific
+ 	 */
+@@ -378,13 +380,26 @@ static int hinfo_to_pin_index(struct hda_codec *codec,
+ 			      struct hda_pcm_stream *hinfo)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin;
+ 	int pin_idx;
+ 
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++)
+-		if (get_pcm_rec(spec, pin_idx)->stream == hinfo)
+-			return pin_idx;
++	if (!spec->dyn_pcm_assign) {
++		for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++)
++			if (get_pcm_rec(spec, pin_idx)->stream == hinfo)
++				return pin_idx;
++	} else {
++		mutex_lock(&spec->pcm_lock);
++		for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++			per_pin = get_pin(spec, pin_idx);
++			if (per_pin->pcm && per_pin->pcm->stream == hinfo) {
++				mutex_unlock(&spec->pcm_lock);
++				return pin_idx;
++			}
++		}
++		mutex_unlock(&spec->pcm_lock);
++	}
+ 
+-	codec_warn(codec, "HDMI: hinfo %p not registered\n", hinfo);
++	codec_dbg(codec, "HDMI: hinfo %p not registered\n", hinfo);
+ 	return -EINVAL;
+ }
+ 
+@@ -2360,6 +2375,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	spec->ops = generic_standard_hdmi_ops;
++	mutex_init(&spec->pcm_lock);
+ 	codec->spec = spec;
+ 	hdmi_array_init(spec, 4);
+ 
+-- 
+1.9.1
