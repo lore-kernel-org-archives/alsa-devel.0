@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/9] ASoC: Intel: Skylake: Remove redundant
-	init in resume
-Date: Fri, 13 Nov 2015 19:22:07 +0530
-Message-ID: <1447422733-2484-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 5/9] ASoC: Intel: Skylake: Reset the DSP
+	when set D3 fails
+Date: Fri, 13 Nov 2015 19:22:09 +0530
+Message-ID: <1447422733-2484-6-git-send-email-vinod.koul@intel.com>
 References: <1447422733-2484-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 81BA9265B6C
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 14:48:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 68C8E265AD3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 14:48:56 +0100 (CET)
 In-Reply-To: <1447422733-2484-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,32 +27,63 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Since we call _skl_resume which also initializes the chip we no
-need to call these explicitly, so remove the duplication
+Sometimes firmware D3 IPC fails causing firmware to be in invalid
+state. To recover we need to reset the DSP and then shut it down,
+so don't return on error and continue resetting to recover.
+
+On D0, firmware will be redownloaded and DSP will be back in
+clean state
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/intel/skylake/skl-sst.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index b771b74781ca..5e468b167325 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -199,13 +199,9 @@ static int skl_runtime_resume(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
--	struct skl *skl = ebus_to_skl(ebus);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 51f07f0e4735..e1d34d5c3f9a 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -19,6 +19,7 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/err.h>
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
+ #include "../common/sst-ipc.h"
+@@ -176,10 +177,15 @@ static int skl_set_dsp_D3(struct sst_dsp *ctx)
+ 	dx.core_mask = SKL_DSP_CORE0_MASK;
+ 	dx.dx_mask = SKL_IPC_D3_MASK;
+ 	ret = skl_ipc_set_dx(&skl->ipc, SKL_INSTANCE_ID, SKL_BASE_FW_MODULE_ID, &dx);
+-	if (ret < 0) {
+-		dev_err(ctx->dev, "Failed to set DSP to D3 state\n");
+-		return ret;
+-	}
++	if (ret < 0)
++		dev_err(ctx->dev,
++			"D3 request to FW failed, continuing reset: %d", ret);
++
++	/* disable Interrupt */
++	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
++	skl_cldma_int_disable(ctx);
++	skl_ipc_op_int_disable(ctx);
++	skl_ipc_int_disable(ctx);
  
- 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 	ret = skl_dsp_disable_core(ctx);
+ 	if (ret < 0) {
+@@ -188,12 +194,6 @@ static int skl_set_dsp_D3(struct sst_dsp *ctx)
+ 	}
+ 	skl_dsp_set_state_locked(ctx, SKL_DSP_RESET);
  
--	skl_init_pci(skl);
--	snd_hdac_bus_init_chip(bus, true);
+-	/* disable Interrupt */
+-	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
+-	skl_cldma_int_disable(ctx);
+-	skl_ipc_op_int_disable(ctx);
+-	skl_ipc_int_disable(ctx);
 -
- 	return _skl_resume(ebus);
+ 	return ret;
  }
- #endif /* CONFIG_PM */
+ 
 -- 
 1.9.1
