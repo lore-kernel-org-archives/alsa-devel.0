@@ -1,32 +1,48 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: wm8962: correct addresses for
- HPF_C_0/1
-Date: Fri, 13 Nov 2015 10:07:13 +0000
-Message-ID: <20151113100713.GB18889@ck-lbox>
-References: <1447178882-12113-1-git-send-email-sachinpandhare@gmail.com>
+From: rodrigoaguileraparraga-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: Re: [PATCH] ARM: sun7i: Fix HDMI Audio driver's Alsa
+ interface and do 8CH IEC60958 output
+Date: Fri, 13 Nov 2015 02:14:05 -0800 (PST)
+Message-ID: <ae348e17-2b70-4284-9199-bc5375644005@googlegroups.com>
+References: <53DED0A5.1090009@gmail.com>
+Reply-To: rodrigoaguileraparraga-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1447178882-12113-1-git-send-email-sachinpandhare@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: sachinpandhare@gmail.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lars@metafoo.de, axel.lin@ingics.com, jiada_wang@mentor.com, zidan.wang@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed;
+	boundary="----=_Part_30_1967701887.1447409646050"
+Return-path: <linux-sunxi+bncBDV2BDFTUIIBBJP5S2ZAKGQEAUOZEYA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <53DED0A5.1090009-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, thomas.schorpp-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 10, 2015 at 11:38:02PM +0530, sachinpandhare@gmail.com wrote:
-> From: Sachin Pandhare <sachinpandhare@gmail.com>
-> 
-> >From datasheet:
-> R17408 (4400h) HPF_C_1
-> R17409 (4401h) HPF_C_0
-> 17048 -> 17408 (0x4400)
-> 17049 -> 17409 (0x4401)
-> 
-> Signed-off-by: Sachin Pandhare <sachinpandhare@gmail.com>
-> ---
+------=_Part_30_1967701887.1447409646050
+Content-Type: text/plain; charset=UTF-8
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Monday, August 4, 2014 at 2:15:38 AM UTC+2, thomas schorpp wrote:
+> Version 0.2
+> 
+> Users doc:
+> 
+> All You need to get a HDMI- Pulseaudio Server on Your sunxi board to output Multichannel PCM is this line in default.pa, ttable pcms in asound.conf get ignored:
+> 
+> +load-module module-alsa-sink device="hw:1,0" channels=8 channel_map="front-left,front-right,lfe,front-center,rear-left,rear-right,side-left,side-right"
+> 
+> ### Automatically load driver modules depending on the hardware available
+> .ifexists module-udev-detect.so
+> load-module module-udev-detect
+> 
+> Probe with speaker-test, You may need other channel mapping than I.
+> 
+> If you run PA in system mode please read the security documentation before, see PA log for link.
+> 
+> y
+> tom
 
-Thanks,
-Charles
+I'm trying to achieve exactly this. Is this merged in alsa or Do I have to patch myself?
+------=_Part_30_1967701887.1447409646050--
