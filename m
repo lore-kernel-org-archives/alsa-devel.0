@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 1/9] ASoC: Intel: Skylake: remove
-	pm_runtime_get/put calls
-Date: Fri, 13 Nov 2015 19:22:05 +0530
-Message-ID: <1447422733-2484-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 2/9] ASoC: Intel: Skylake: Don't enable
+	WAKEENABLE on suspend
+Date: Fri, 13 Nov 2015 19:22:06 +0530
+Message-ID: <1447422733-2484-3-git-send-email-vinod.koul@intel.com>
 References: <1447422733-2484-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F359265AD3
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 14:48:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AD42F265B54
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2015 14:48:49 +0100 (CET)
 In-Reply-To: <1447422733-2484-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,86 +27,54 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-The ASoC core already does pm_runtime_get/put in the core before
-opening/closing the devices.
-So we do not need to do this is driver, hence remove
+For HDA codecs WAKEENABLE bit is to programmed if codec event
+change has to wake the system when suspended.
+
+In skylake I2S systems which are currently supported we have
+only HDMI codec, which doesn't use this capability to detect a
+HDMI connect/ disconnect event. HDMI HDA codec uses display
+interface to detect connect/disconnect event.
+
+This patch removes the WAKEBIT enabling during device D0/D3 as
+this seems to cause spurious wakes on the system
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 25 -------------------------
- 1 file changed, 25 deletions(-)
+ sound/soc/intel/skylake/skl.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index e652d58bd9a9..a96909f8a29a 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -112,12 +112,8 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_ext_stream *stream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct skl_dma_params *dma_params;
--	int ret;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 390f839d6168..b771b74781ca 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -191,9 +191,6 @@ static int skl_runtime_suspend(struct device *dev)
  
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
--	ret = pm_runtime_get_sync(dai->dev);
--	if (ret < 0)
--		return ret;
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
  
- 	stream = snd_hdac_ext_stream_assign(ebus, substream,
- 					skl_get_host_stream_type(ebus));
-@@ -262,8 +258,6 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	 */
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 
--	pm_runtime_mark_last_busy(dai->dev);
--	pm_runtime_put_autosuspend(dai->dev);
- 	kfree(dma_params);
+-	/* enable controller wake up event */
+-	snd_hdac_chip_updatew(bus, WAKEEN, 0, STATESTS_INT_MASK);
+-
+ 	return _skl_suspend(ebus);
  }
  
-@@ -512,19 +506,6 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -203,17 +200,11 @@ static int skl_runtime_resume(struct device *dev)
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	struct skl *skl = ebus_to_skl(ebus);
+-	int status;
+ 
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+-	/* Read STATESTS before controller reset */
+-	status = snd_hdac_chip_readw(bus, STATESTS);
+-
+ 	skl_init_pci(skl);
+ 	snd_hdac_bus_init_chip(bus, true);
+-	/* disable controller Wake Up event */
+-	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
+ 
+ 	return _skl_resume(ebus);
  }
- 
--static int skl_be_startup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	return pm_runtime_get_sync(dai->dev);
--}
--
--static void skl_be_shutdown(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	pm_runtime_mark_last_busy(dai->dev);
--	pm_runtime_put_autosuspend(dai->dev);
--}
--
- static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.startup = skl_pcm_open,
- 	.shutdown = skl_pcm_close,
-@@ -535,24 +516,18 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- };
- 
- static struct snd_soc_dai_ops skl_dmic_dai_ops = {
--	.startup = skl_be_startup,
- 	.hw_params = skl_be_hw_params,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
--	.startup = skl_be_startup,
- 	.hw_params = skl_be_hw_params,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
--	.startup = skl_be_startup,
- 	.prepare = skl_link_pcm_prepare,
- 	.hw_params = skl_link_hw_params,
- 	.hw_free = skl_link_hw_free,
- 	.trigger = skl_link_pcm_trigger,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_driver skl_platform_dai[] = {
 -- 
 1.9.1
