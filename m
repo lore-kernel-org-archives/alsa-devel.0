@@ -1,14 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: fix detection of Loud devices
-Date: Sat, 14 Nov 2015 16:42:04 +0900
-Message-ID: <1447486924-24887-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: multi-codec support for arizona-ldo1 was Re:
+ System with multiple arizona (wm5102) codecs
+Date: Sat, 14 Nov 2015 08:44:00 +0100
+Message-ID: <20151114074400.GA7898@amd>
+References: <20150914115439.GA29646@amd> <20150914115255.GE11200@ck-lbox>
+ <20151012090045.GA7448@amd> <20151012154715.GF4238@sirena.org.uk>
+ <20151012201137.GA7317@amd> <20151013115355.GC14956@sirena.org.uk>
+ <20151113215812.GA19020@amd> <20151113225355.GU12392@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EEB326048C
- for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2015 08:42:10 +0100 (CET)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22ADA26048C
+ for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2015 08:44:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151113225355.GU12392@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,51 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, contact@etilem.net, erouge.externe@m6.fr, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit a471fcde8c2c ("ALSA: dice: fix detection of Weiss devices") adds
-a quirk of Weiss models. According to users' reports, Loud models also
-have the similar quirk. They have 0x10 in the category field.
 
-This commit adds support for Mackie Onyx Blackbird and Onyx-i series.
-As long as I know, Dice-based models produced by
-Focusrite/Alesis/PreSonus/M-Audio/TC Electronic have default value (0x04)
-in their category field, thus it may be reasonable to add a condition
-statement for Loud models, instead of removing the check of category value.
+On Fri 2015-11-13 22:53:55, Mark Brown wrote:
+> On Fri, Nov 13, 2015 at 10:58:12PM +0100, Pavel Machek wrote:
+> > On Tue 2015-10-13 12:53:55, Mark Brown wrote:
+> > > On Mon, Oct 12, 2015 at 10:11:38PM +0200, Pavel Machek wrote:
+> 
+> > > > > No, you definitely shouldn't be doing this - the regulator names should
+> > > > > reflect the names the device has in the datasheet to aid people in going
+> > > > > from software to the hardware and back again.  They shouldn't be
+> > > > > dynamically generated at runtime.  If you need to namespace by
+> > > > device
+> 
+> > Ok. But I'd still like to get it working.
+> 
+> So as I've been saying use the existing interfaces, or extend them as
+> needed.
 
-Reported-by: Rouge Etienne <erouge.externe@m6.fr>
-Reported-by: Etilem <contact@etilem.net>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Obviously I'll need to use the existing interfaces, or extend them as
+needed. I'd expect subsystem maintainer to know if the existing
+interfaces are ok or what needs to be fixed, but it seems you either
+don't know how your subsystem works, or are not willing to tell me.
 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 5d99436..0cda05c 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -12,9 +12,11 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- 
- #define OUI_WEISS		0x001c6a
-+#define OUI_LOUD		0x000ff2
- 
- #define DICE_CATEGORY_ID	0x04
- #define WEISS_CATEGORY_ID	0x00
-+#define LOUD_CATEGORY_ID	0x10
- 
- static int dice_interface_check(struct fw_unit *unit)
- {
-@@ -57,6 +59,8 @@ static int dice_interface_check(struct fw_unit *unit)
- 	}
- 	if (vendor == OUI_WEISS)
- 		category = WEISS_CATEGORY_ID;
-+	else if (vendor == OUI_LOUD)
-+		category = LOUD_CATEGORY_ID;
- 	else
- 		category = DICE_CATEGORY_ID;
- 	if (device->config_rom[3] != ((vendor << 8) | category) ||
+Is there someone else I should talk to with respect to regulators-ALSA
+interface?
+
+Thanks,
+									Pavel
+
 -- 
-2.5.0
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
