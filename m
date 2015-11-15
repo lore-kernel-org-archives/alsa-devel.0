@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/9] ALSA: oxfw: apply model-specific
-	functionality framework to firewire-speakers
-Date: Sun, 15 Nov 2015 18:26:00 +0900
-Message-ID: <1447579565-4615-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 9/9] ALSA: oxfw: obsolete scs1x module
+Date: Sun, 15 Nov 2015 18:26:05 +0900
+Message-ID: <1447579565-4615-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E1BA2619EA
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:26:10 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id CFB46261A57
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:26:11 +0100 (CET)
 In-Reply-To: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,412 +24,628 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, ALSA oxfw driver got a framework for model-specific
-functionalities. This commit applies the framework to control elements for
-firewire-speakers.
+Now ALSA oxfw driver gains functionalities which scs1x module has.
+
+This commit obsoletes the scs1x module. This commit also adds a line of
+MODULE_ALIAS to load oxfw module instead of scs1x module.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-spkr.c | 84 +++++++++++++++++++++++++++++------------
- sound/firewire/oxfw/oxfw.c      | 50 +++++++++---------------
- sound/firewire/oxfw/oxfw.h      | 18 +--------
- 3 files changed, 79 insertions(+), 73 deletions(-)
+ sound/firewire/Kconfig     |  12 +-
+ sound/firewire/Makefile    |   2 -
+ sound/firewire/oxfw/oxfw.c |  14 ++
+ sound/firewire/scs1x.c     | 530 ---------------------------------------------
+ 4 files changed, 15 insertions(+), 543 deletions(-)
+ delete mode 100644 sound/firewire/scs1x.c
 
-diff --git a/sound/firewire/oxfw/oxfw-spkr.c b/sound/firewire/oxfw/oxfw-spkr.c
-index 515468a..6527a16 100644
---- a/sound/firewire/oxfw/oxfw-spkr.c
-+++ b/sound/firewire/oxfw/oxfw-spkr.c
-@@ -9,6 +9,18 @@
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index e92a6d9..2a779c2 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -39,6 +39,7 @@ config SND_OXFW
+ 	   * Mackie(Loud) d.2 pro/d.4 pro
+ 	   * Mackie(Loud) U.420/U.420d
+ 	   * TASCAM FireOne
++	   * Stanton Controllers & Systems 1 Deck/Mixer
  
- #include "oxfw.h"
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-oxfw.
+@@ -53,17 +54,6 @@ config SND_ISIGHT
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-isight.
  
-+/* Old firewire-speakers module supports some control elements. */
-+struct fw_spkr {
-+	unsigned int mixer_channels;
-+	u8 mute_fb_id;
-+	u8 volume_fb_id;
-+
-+	bool mute;
-+	s16 volume[6];
-+	s16 volume_min;
-+	s16 volume_max;
-+};
-+
- enum control_action { CTL_READ, CTL_WRITE };
- enum control_attribute {
- 	CTL_MIN		= 0x02,
-@@ -19,6 +31,7 @@ enum control_attribute {
- static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
- 			     enum control_action action)
- {
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	u8 *buf;
- 	u8 response_ok;
- 	int err;
-@@ -37,7 +50,7 @@ static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
- 	buf[1] = 0x08;			/* audio unit 0 */
- 	buf[2] = 0xb8;			/* FUNCTION BLOCK */
- 	buf[3] = 0x81;			/* function block type: feature */
--	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
-+	buf[4] = spkr->mute_fb_id;	/* function block ID */
- 	buf[5] = 0x10;			/* control attribute: current */
- 	buf[6] = 0x02;			/* selector length */
- 	buf[7] = 0x00;			/* audio channel number */
-@@ -77,6 +90,7 @@ static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
- 			       enum control_attribute attribute,
- 			       enum control_action action)
- {
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	u8 *buf;
- 	u8 response_ok;
- 	int err;
-@@ -95,7 +109,7 @@ static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
- 	buf[1] = 0x08;			/* audio unit 0 */
- 	buf[2] = 0xb8;			/* FUNCTION BLOCK */
- 	buf[3] = 0x81;			/* function block type: feature */
--	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
-+	buf[4] = spkr->volume_fb_id;	/* function block ID */
- 	buf[5] = attribute;		/* control attribute */
- 	buf[6] = 0x02;			/* selector length */
- 	buf[7] = channel;		/* audio channel number */
-@@ -137,8 +151,9 @@ static int spkr_mute_get(struct snd_kcontrol *control,
- 			 struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
+-config SND_SCS1X
+-	tristate "Stanton Control System 1 MIDI"
+-	select SND_FIREWIRE_LIB
+-	help
+-	  Say Y here to include support for the MIDI ports of the Stanton
+-	  SCS.1d/SCS.1m DJ controllers.  (SCS.1m audio is still handled
+-	  by FFADO.)
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called snd-scs1x.
+-
+ config SND_FIREWORKS
+ 	tristate "Echo Fireworks board module support"
+ 	select SND_FIREWIRE_LIB
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index f5fb625..003c090 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,13 +1,11 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+ 			 fcp.o cmp.o amdtp-stream.o amdtp-am824.o
+ snd-isight-objs := isight.o
+-snd-scs1x-objs := scs1x.o
  
--	value->value.integer.value[0] = !oxfw->mute;
-+	value->value.integer.value[0] = !spkr->mute;
- 
- 	return 0;
- }
-@@ -147,18 +162,19 @@ static int spkr_mute_put(struct snd_kcontrol *control,
- 			 struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	bool mute;
- 	int err;
- 
- 	mute = !value->value.integer.value[0];
- 
--	if (mute == oxfw->mute)
-+	if (mute == spkr->mute)
- 		return 0;
- 
- 	err = spkr_mute_command(oxfw, &mute, CTL_WRITE);
- 	if (err < 0)
- 		return err;
--	oxfw->mute = mute;
-+	spkr->mute = mute;
- 
- 	return 1;
- }
-@@ -167,11 +183,12 @@ static int spkr_volume_info(struct snd_kcontrol *control,
- 			    struct snd_ctl_elem_info *info)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 
- 	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	info->count = oxfw->device_info->mixer_channels;
--	info->value.integer.min = oxfw->volume_min;
--	info->value.integer.max = oxfw->volume_max;
-+	info->count = spkr->mixer_channels;
-+	info->value.integer.min = spkr->volume_min;
-+	info->value.integer.max = spkr->volume_max;
- 
- 	return 0;
- }
-@@ -182,10 +199,11 @@ static int spkr_volume_get(struct snd_kcontrol *control,
- 			   struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	unsigned int i;
- 
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
--		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
-+	for (i = 0; i < spkr->mixer_channels; ++i)
-+		value->value.integer.value[channel_map[i]] = spkr->volume[i];
- 
- 	return 0;
- }
-@@ -194,14 +212,15 @@ static int spkr_volume_put(struct snd_kcontrol *control,
- 			   struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	unsigned int i, changed_channels;
- 	bool equal_values = true;
- 	s16 volume;
- 	int err;
- 
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
--		if (value->value.integer.value[i] < oxfw->volume_min ||
--		    value->value.integer.value[i] > oxfw->volume_max)
-+	for (i = 0; i < spkr->mixer_channels; ++i) {
-+		if (value->value.integer.value[i] < spkr->volume_min ||
-+		    value->value.integer.value[i] > spkr->volume_max)
- 			return -EINVAL;
- 		if (value->value.integer.value[i] !=
- 		    value->value.integer.value[0])
-@@ -209,15 +228,15 @@ static int spkr_volume_put(struct snd_kcontrol *control,
- 	}
- 
- 	changed_channels = 0;
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
-+	for (i = 0; i < spkr->mixer_channels; ++i)
- 		if (value->value.integer.value[channel_map[i]] !=
--							oxfw->volume[i])
-+							spkr->volume[i])
- 			changed_channels |= 1 << (i + 1);
- 
- 	if (equal_values && changed_channels != 0)
- 		changed_channels = 1 << 0;
- 
--	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
-+	for (i = 0; i <= spkr->mixer_channels; ++i) {
- 		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
- 		if (changed_channels & (1 << i)) {
- 			err = spkr_volume_command(oxfw, &volume, i,
-@@ -226,13 +245,13 @@ static int spkr_volume_put(struct snd_kcontrol *control,
- 				return err;
- 		}
- 		if (i > 0)
--			oxfw->volume[i - 1] = volume;
-+			spkr->volume[i - 1] = volume;
- 	}
- 
- 	return changed_channels != 0;
- }
- 
--int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
-+static int spkr_add(struct snd_oxfw *oxfw)
- {
- 	static const struct snd_kcontrol_new controls[] = {
- 		{
-@@ -250,25 +269,37 @@ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
- 			.put = spkr_volume_put,
- 		},
- 	};
-+	struct fw_spkr *spkr = oxfw->spec->private_data;
- 	unsigned int i, first_ch;
- 	int err;
- 
--	err = spkr_volume_command(oxfw, &oxfw->volume_min,
-+	if (strcmp(oxfw->card->driver, "FireWave") == 0) {
-+		spkr->mixer_channels = 6;
-+		spkr->mute_fb_id = 0x01;
-+		spkr->volume_fb_id = 0x02;
-+	}
-+	if (strcmp(oxfw->card->driver, "FWSpeakers") == 0) {
-+		spkr->mixer_channels = 1;
-+		spkr->mute_fb_id = 0x01;
-+		spkr->volume_fb_id = 0x01;
-+	}
-+
-+	err = spkr_volume_command(oxfw, &spkr->volume_min,
- 				   0, CTL_MIN, CTL_READ);
- 	if (err < 0)
- 		return err;
--	err = spkr_volume_command(oxfw, &oxfw->volume_max,
-+	err = spkr_volume_command(oxfw, &spkr->volume_max,
- 				   0, CTL_MAX, CTL_READ);
- 	if (err < 0)
- 		return err;
- 
--	err = spkr_mute_command(oxfw, &oxfw->mute, CTL_READ);
-+	err = spkr_mute_command(oxfw, &spkr->mute, CTL_READ);
- 	if (err < 0)
- 		return err;
- 
--	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
--		err = spkr_volume_command(oxfw, &oxfw->volume[i],
-+	first_ch = spkr->mixer_channels == 1 ? 0 : 1;
-+	for (i = 0; i < spkr->mixer_channels; ++i) {
-+		err = spkr_volume_command(oxfw, &spkr->volume[i],
- 					   first_ch + i, CTL_CURRENT, CTL_READ);
- 		if (err < 0)
- 			return err;
-@@ -283,3 +314,8 @@ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
- 
- 	return 0;
- }
-+
-+struct snd_oxfw_spec snd_oxfw_spec_spkr = {
-+	.add = spkr_add,
-+	.private_size = sizeof(struct fw_spkr),
-+};
+ obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
+ obj-$(CONFIG_SND_DICE) += dice/
+ obj-$(CONFIG_SND_OXFW) += oxfw/
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+-obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+ obj-$(CONFIG_SND_BEBOB) += bebob/
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index a9599ce..ee7094b 100644
+index 97fb5ed..0850ca4 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -56,7 +56,7 @@ static bool detect_loud_models(struct fw_unit *unit)
- 	return (i < ARRAY_SIZE(models));
- }
- 
--static int name_card(struct snd_oxfw *oxfw)
-+static int name_card(struct snd_oxfw *oxfw, const struct ieee1394_device_id *id)
- {
- 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
- 	char vendor[24];
-@@ -84,10 +84,14 @@ static int name_card(struct snd_oxfw *oxfw)
- 	be32_to_cpus(&firmware);
- 
- 	/* to apply card definitions */
--	if (oxfw->device_info) {
--		d = oxfw->device_info->driver_name;
--		v = oxfw->device_info->vendor_name;
--		m = oxfw->device_info->model_name;
-+	if (id->vendor_id == VENDOR_GRIFFIN) {
-+		d = "FireWave";
-+		v = "Griffin";
-+		m = "FireWave";
-+	} else if (id->vendor_id == VENDOR_LACIE) {
-+		d = "FWSpeakers";
-+		v = "LaCie";
-+		m = "FireWire Speakers";
- 	} else {
- 		d = "OXFW";
- 		v = vendor;
-@@ -171,6 +175,13 @@ static void detect_quirks(struct snd_oxfw *oxfw)
- 		oxfw->midi_input_ports++;
- 		oxfw->midi_output_ports++;
- 	}
-+
-+	/*
-+	 * For compatibility that old firewire-speaker modules add ALSA control
-+	 * character devices for these two models.
-+	 */
-+	if (vendor == VENDOR_GRIFFIN || vendor == VENDOR_LACIE)
-+		oxfw->spec = &snd_oxfw_spec_spkr;
- }
- 
- static int oxfw_probe(struct fw_unit *unit,
-@@ -193,7 +204,6 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->card = card;
- 	mutex_init(&oxfw->mutex);
- 	oxfw->unit = fw_unit_get(unit);
--	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	spin_lock_init(&oxfw->lock);
- 	init_waitqueue_head(&oxfw->hwdep_wait);
- 
-@@ -212,7 +222,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 		}
- 	}
- 
--	err = name_card(oxfw);
-+	err = name_card(oxfw, id);
- 	if (err < 0)
- 		goto error;
- 
-@@ -226,12 +236,6 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
--	if (oxfw->device_info) {
--		err = snd_oxfw_create_mixer(oxfw);
--		if (err < 0)
--			goto error;
+@@ -365,6 +365,20 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 		.vendor_id	= VENDOR_TASCAM,
+ 		.model_id	= 0x800007,
+ 	},
++	/* Stanton, Stanton Controllers & Systems 1 Mixer (SCS.1m) */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_STANTON,
++		.model_id	= 0x001000,
++	},
++	/* Stanton, Stanton Controllers & Systems 1 Deck (SCS.1d) */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_STANTON,
++		.model_id	= 0x002000,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
+diff --git a/sound/firewire/scs1x.c b/sound/firewire/scs1x.c
+deleted file mode 100644
+index 2dba848..0000000
+--- a/sound/firewire/scs1x.c
++++ /dev/null
+@@ -1,530 +0,0 @@
+-/*
+- * Stanton Control System 1 MIDI driver
+- *
+- * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
+- * Licensed under the terms of the GNU General Public License, version 2.
+- */
+-
+-#include <linux/device.h>
+-#include <linux/firewire.h>
+-#include <linux/firewire-constants.h>
+-#include <linux/interrupt.h>
+-#include <linux/module.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/slab.h>
+-#include <linux/string.h>
+-#include <linux/wait.h>
+-#include <sound/core.h>
+-#include <sound/initval.h>
+-#include <sound/rawmidi.h>
+-#include "lib.h"
+-
+-#define OUI_STANTON	0x001260
+-#define MODEL_SCS_1M	0x001000
+-#define MODEL_SCS_1D	0x002000
+-
+-#define HSS1394_ADDRESS			0xc007dedadadaULL
+-#define HSS1394_MAX_PACKET_SIZE		64
+-
+-#define HSS1394_TAG_USER_DATA		0x00
+-#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
+-
+-struct scs {
+-	struct snd_card *card;
+-	struct fw_unit *unit;
+-	struct fw_address_handler hss_handler;
+-	struct fw_transaction transaction;
+-	bool transaction_running;
+-	bool output_idle;
+-	u8 output_status;
+-	u8 output_bytes;
+-	bool output_escaped;
+-	bool output_escape_high_nibble;
+-	u8 input_escape_count;
+-	struct snd_rawmidi_substream *output;
+-	struct snd_rawmidi_substream *input;
+-	struct tasklet_struct tasklet;
+-	wait_queue_head_t idle_wait;
+-	u8 *buffer;
+-};
+-
+-static const u8 sysex_escape_prefix[] = {
+-	0xf0,			/* SysEx begin */
+-	0x00, 0x01, 0x60,	/* Stanton DJ */
+-	0x48, 0x53, 0x53,	/* "HSS" */
+-};
+-
+-static int scs_output_open(struct snd_rawmidi_substream *stream)
+-{
+-	struct scs *scs = stream->rmidi->private_data;
+-
+-	scs->output_status = 0;
+-	scs->output_bytes = 1;
+-	scs->output_escaped = false;
+-
+-	return 0;
+-}
+-
+-static int scs_output_close(struct snd_rawmidi_substream *stream)
+-{
+-	return 0;
+-}
+-
+-static void scs_output_trigger(struct snd_rawmidi_substream *stream, int up)
+-{
+-	struct scs *scs = stream->rmidi->private_data;
+-
+-	ACCESS_ONCE(scs->output) = up ? stream : NULL;
+-	if (up) {
+-		scs->output_idle = false;
+-		tasklet_schedule(&scs->tasklet);
+-	}
+-}
+-
+-static void scs_write_callback(struct fw_card *card, int rcode,
+-			       void *data, size_t length, void *callback_data)
+-{
+-	struct scs *scs = callback_data;
+-
+-	if (rcode == RCODE_GENERATION) {
+-		/* TODO: retry this packet */
 -	}
 -
- 	snd_oxfw_proc_init(oxfw);
- 
- 	err = snd_oxfw_create_midi(oxfw);
-@@ -292,24 +296,6 @@ static void oxfw_remove(struct fw_unit *unit)
- 	snd_card_free_when_closed(oxfw->card);
- }
- 
--static const struct device_info griffin_firewave = {
--	.driver_name = "FireWave",
--	.vendor_name = "Griffin",
--	.model_name = "FireWave",
--	.mixer_channels = 6,
--	.mute_fb_id   = 0x01,
--	.volume_fb_id = 0x02,
+-	scs->transaction_running = false;
+-	tasklet_schedule(&scs->tasklet);
+-}
+-
+-static bool is_valid_running_status(u8 status)
+-{
+-	return status >= 0x80 && status <= 0xef;
+-}
+-
+-static bool is_one_byte_cmd(u8 status)
+-{
+-	return status == 0xf6 ||
+-	       status >= 0xf8;
+-}
+-
+-static bool is_two_bytes_cmd(u8 status)
+-{
+-	return (status >= 0xc0 && status <= 0xdf) ||
+-	       status == 0xf1 ||
+-	       status == 0xf3;
+-}
+-
+-static bool is_three_bytes_cmd(u8 status)
+-{
+-	return (status >= 0x80 && status <= 0xbf) ||
+-	       (status >= 0xe0 && status <= 0xef) ||
+-	       status == 0xf2;
+-}
+-
+-static bool is_invalid_cmd(u8 status)
+-{
+-	return status == 0xf4 ||
+-	       status == 0xf5 ||
+-	       status == 0xf9 ||
+-	       status == 0xfd;
+-}
+-
+-static void scs_output_tasklet(unsigned long data)
+-{
+-	struct scs *scs = (void *)data;
+-	struct snd_rawmidi_substream *stream;
+-	unsigned int i;
+-	u8 byte;
+-	struct fw_device *dev;
+-	int generation;
+-
+-	if (scs->transaction_running)
+-		return;
+-
+-	stream = ACCESS_ONCE(scs->output);
+-	if (!stream) {
+-		scs->output_idle = true;
+-		wake_up(&scs->idle_wait);
+-		return;
+-	}
+-
+-	i = scs->output_bytes;
+-	for (;;) {
+-		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
+-			scs->output_bytes = i;
+-			scs->output_idle = true;
+-			wake_up(&scs->idle_wait);
+-			return;
+-		}
+-		/*
+-		 * Convert from real MIDI to what I think the device expects (no
+-		 * running status, one command per packet, unescaped SysExs).
+-		 */
+-		if (scs->output_escaped && byte < 0x80) {
+-			if (scs->output_escape_high_nibble) {
+-				if (i < HSS1394_MAX_PACKET_SIZE) {
+-					scs->buffer[i] = byte << 4;
+-					scs->output_escape_high_nibble = false;
+-				}
+-			} else {
+-				scs->buffer[i++] |= byte & 0x0f;
+-				scs->output_escape_high_nibble = true;
+-			}
+-		} else if (byte < 0x80) {
+-			if (i == 1) {
+-				if (!is_valid_running_status(scs->output_status))
+-					continue;
+-				scs->buffer[0] = HSS1394_TAG_USER_DATA;
+-				scs->buffer[i++] = scs->output_status;
+-			}
+-			scs->buffer[i++] = byte;
+-			if ((i == 3 && is_two_bytes_cmd(scs->output_status)) ||
+-			    (i == 4 && is_three_bytes_cmd(scs->output_status)))
+-				break;
+-			if (i == 1 + ARRAY_SIZE(sysex_escape_prefix) &&
+-			    !memcmp(scs->buffer + 1, sysex_escape_prefix,
+-				    ARRAY_SIZE(sysex_escape_prefix))) {
+-				scs->output_escaped = true;
+-				scs->output_escape_high_nibble = true;
+-				i = 0;
+-			}
+-			if (i >= HSS1394_MAX_PACKET_SIZE)
+-				i = 1;
+-		} else if (byte == 0xf7) {
+-			if (scs->output_escaped) {
+-				if (i >= 1 && scs->output_escape_high_nibble &&
+-				    scs->buffer[0] != HSS1394_TAG_CHANGE_ADDRESS)
+-					break;
+-			} else {
+-				if (i > 1 && scs->output_status == 0xf0) {
+-					scs->buffer[i++] = 0xf7;
+-					break;
+-				}
+-			}
+-			i = 1;
+-			scs->output_escaped = false;
+-		} else if (!is_invalid_cmd(byte) &&
+-			   byte < 0xf8) {
+-			i = 1;
+-			scs->buffer[0] = HSS1394_TAG_USER_DATA;
+-			scs->buffer[i++] = byte;
+-			scs->output_status = byte;
+-			scs->output_escaped = false;
+-			if (is_one_byte_cmd(byte))
+-				break;
+-		}
+-	}
+-	scs->output_bytes = 1;
+-	scs->output_escaped = false;
+-
+-	scs->transaction_running = true;
+-	dev = fw_parent_device(scs->unit);
+-	generation = dev->generation;
+-	smp_rmb(); /* node_id vs. generation */
+-	fw_send_request(dev->card, &scs->transaction, TCODE_WRITE_BLOCK_REQUEST,
+-			dev->node_id, generation, dev->max_speed,
+-			HSS1394_ADDRESS, scs->buffer, i,
+-			scs_write_callback, scs);
+-}
+-
+-static void scs_output_drain(struct snd_rawmidi_substream *stream)
+-{
+-	struct scs *scs = stream->rmidi->private_data;
+-
+-	wait_event(scs->idle_wait, scs->output_idle);
+-}
+-
+-static struct snd_rawmidi_ops output_ops = {
+-	.open    = scs_output_open,
+-	.close   = scs_output_close,
+-	.trigger = scs_output_trigger,
+-	.drain   = scs_output_drain,
 -};
 -
--static const struct device_info lacie_speakers = {
--	.driver_name = "FWSpeakers",
--	.vendor_name = "LaCie",
--	.model_name = "FireWire Speakers",
--	.mixer_channels = 1,
--	.mute_fb_id   = 0x01,
--	.volume_fb_id = 0x01,
+-static int scs_input_open(struct snd_rawmidi_substream *stream)
+-{
+-	struct scs *scs = stream->rmidi->private_data;
+-
+-	scs->input_escape_count = 0;
+-
+-	return 0;
+-}
+-
+-static int scs_input_close(struct snd_rawmidi_substream *stream)
+-{
+-	return 0;
+-}
+-
+-static void scs_input_trigger(struct snd_rawmidi_substream *stream, int up)
+-{
+-	struct scs *scs = stream->rmidi->private_data;
+-
+-	ACCESS_ONCE(scs->input) = up ? stream : NULL;
+-}
+-
+-static void scs_input_escaped_byte(struct snd_rawmidi_substream *stream,
+-				   u8 byte)
+-{
+-	u8 nibbles[2];
+-
+-	nibbles[0] = byte >> 4;
+-	nibbles[1] = byte & 0x0f;
+-	snd_rawmidi_receive(stream, nibbles, 2);
+-}
+-
+-static void scs_input_midi_byte(struct scs *scs,
+-				struct snd_rawmidi_substream *stream,
+-				u8 byte)
+-{
+-	if (scs->input_escape_count > 0) {
+-		scs_input_escaped_byte(stream, byte);
+-		scs->input_escape_count--;
+-		if (scs->input_escape_count == 0)
+-			snd_rawmidi_receive(stream, (const u8[]) { 0xf7 }, 1);
+-	} else if (byte == 0xf9) {
+-		snd_rawmidi_receive(stream, sysex_escape_prefix,
+-				    ARRAY_SIZE(sysex_escape_prefix));
+-		scs_input_escaped_byte(stream, 0x00);
+-		scs_input_escaped_byte(stream, 0xf9);
+-		scs->input_escape_count = 3;
+-	} else {
+-		snd_rawmidi_receive(stream, &byte, 1);
+-	}
+-}
+-
+-static void scs_input_packet(struct scs *scs,
+-			     struct snd_rawmidi_substream *stream,
+-			     const u8 *data, unsigned int bytes)
+-{
+-	unsigned int i;
+-
+-	if (data[0] == HSS1394_TAG_USER_DATA) {
+-		for (i = 1; i < bytes; ++i)
+-			scs_input_midi_byte(scs, stream, data[i]);
+-	} else {
+-		snd_rawmidi_receive(stream, sysex_escape_prefix,
+-				    ARRAY_SIZE(sysex_escape_prefix));
+-		for (i = 0; i < bytes; ++i)
+-			scs_input_escaped_byte(stream, data[i]);
+-		snd_rawmidi_receive(stream, (const u8[]) { 0xf7 }, 1);
+-	}
+-}
+-
+-static struct snd_rawmidi_ops input_ops = {
+-	.open    = scs_input_open,
+-	.close   = scs_input_close,
+-	.trigger = scs_input_trigger,
 -};
 -
- static const struct ieee1394_device_id oxfw_id_table[] = {
- 	{
- 		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
-@@ -320,7 +306,6 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 		.model_id     = 0x00f970,
- 		.specifier_id = SPECIFIER_1394TA,
- 		.version      = VERSION_AVC,
--		.driver_data  = (kernel_ulong_t)&griffin_firewave,
- 	},
- 	{
- 		.match_flags  = IEEE1394_MATCH_VENDOR_ID |
-@@ -331,7 +316,6 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 		.model_id     = 0x00f970,
- 		.specifier_id = SPECIFIER_1394TA,
- 		.version      = VERSION_AVC,
--		.driver_data  = (kernel_ulong_t)&lacie_speakers,
- 	},
- 	/* Behringer,F-Control Audio 202 */
- 	{
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 922e5da..473faafbb 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -31,15 +31,6 @@
- #include "../amdtp-am824.h"
- #include "../cmp.h"
- 
--struct device_info {
--	const char *driver_name;
--	const char *vendor_name;
--	const char *model_name;
--	unsigned int mixer_channels;
--	u8 mute_fb_id;
--	u8 volume_fb_id;
+-static int scs_create_midi(struct scs *scs)
+-{
+-	struct snd_rawmidi *rmidi;
+-	int err;
+-
+-	err = snd_rawmidi_new(scs->card, "SCS.1x", 0, 1, 1, &rmidi);
+-	if (err < 0)
+-		return err;
+-	snprintf(rmidi->name, sizeof(rmidi->name),
+-		 "%s MIDI", scs->card->shortname);
+-	rmidi->info_flags = SNDRV_RAWMIDI_INFO_OUTPUT |
+-	                    SNDRV_RAWMIDI_INFO_INPUT |
+-	                    SNDRV_RAWMIDI_INFO_DUPLEX;
+-	rmidi->private_data = scs;
+-	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &output_ops);
+-	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &input_ops);
+-
+-	return 0;
+-}
+-
+-static void handle_hss(struct fw_card *card, struct fw_request *request,
+-		       int tcode, int destination, int source, int generation,
+-		       unsigned long long offset, void *data, size_t length,
+-		       void *callback_data)
+-{
+-	struct scs *scs = callback_data;
+-	struct snd_rawmidi_substream *stream;
+-
+-	if (offset != scs->hss_handler.offset) {
+-		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
+-		return;
+-	}
+-	if (tcode != TCODE_WRITE_QUADLET_REQUEST &&
+-	    tcode != TCODE_WRITE_BLOCK_REQUEST) {
+-		fw_send_response(card, request, RCODE_TYPE_ERROR);
+-		return;
+-	}
+-
+-	if (length >= 1) {
+-		stream = ACCESS_ONCE(scs->input);
+-		if (stream)
+-			scs_input_packet(scs, stream, data, length);
+-	}
+-
+-	fw_send_response(card, request, RCODE_COMPLETE);
+-}
+-
+-static int scs_init_hss_address(struct scs *scs)
+-{
+-	__be64 data;
+-	int err;
+-
+-	data = cpu_to_be64(((u64)HSS1394_TAG_CHANGE_ADDRESS << 56) |
+-			   scs->hss_handler.offset);
+-	err = snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
+-				 HSS1394_ADDRESS, &data, 8, 0);
+-	if (err < 0)
+-		dev_err(&scs->unit->device, "HSS1394 communication failed\n");
+-
+-	return err;
+-}
+-
+-static void scs_card_free(struct snd_card *card)
+-{
+-	struct scs *scs = card->private_data;
+-
+-	fw_core_remove_address_handler(&scs->hss_handler);
+-	kfree(scs->buffer);
+-}
+-
+-static int scs_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+-{
+-	struct fw_device *fw_dev = fw_parent_device(unit);
+-	struct snd_card *card;
+-	struct scs *scs;
+-	int err;
+-
+-	err = snd_card_new(&unit->device, -16, NULL, THIS_MODULE,
+-			   sizeof(*scs), &card);
+-	if (err < 0)
+-		return err;
+-
+-	scs = card->private_data;
+-	scs->card = card;
+-	scs->unit = unit;
+-	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
+-	init_waitqueue_head(&scs->idle_wait);
+-	scs->output_idle = true;
+-
+-	scs->buffer = kmalloc(HSS1394_MAX_PACKET_SIZE, GFP_KERNEL);
+-	if (!scs->buffer) {
+-		err = -ENOMEM;
+-		goto err_card;
+-	}
+-
+-	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
+-	scs->hss_handler.address_callback = handle_hss;
+-	scs->hss_handler.callback_data = scs;
+-	err = fw_core_add_address_handler(&scs->hss_handler,
+-					  &fw_high_memory_region);
+-	if (err < 0)
+-		goto err_buffer;
+-
+-	card->private_free = scs_card_free;
+-
+-	strcpy(card->driver, "SCS.1x");
+-	strcpy(card->shortname, "SCS.1x");
+-	fw_csr_string(unit->directory, CSR_MODEL,
+-		      card->shortname, sizeof(card->shortname));
+-	snprintf(card->longname, sizeof(card->longname),
+-		 "Stanton DJ %s (GUID %08x%08x) at %s, S%d",
+-		 card->shortname, fw_dev->config_rom[3], fw_dev->config_rom[4],
+-		 dev_name(&unit->device), 100 << fw_dev->max_speed);
+-	strcpy(card->mixername, card->shortname);
+-
+-	err = scs_init_hss_address(scs);
+-	if (err < 0)
+-		goto err_card;
+-
+-	err = scs_create_midi(scs);
+-	if (err < 0)
+-		goto err_card;
+-
+-	err = snd_card_register(card);
+-	if (err < 0)
+-		goto err_card;
+-
+-	dev_set_drvdata(&unit->device, scs);
+-
+-	return 0;
+-
+-err_buffer:
+-	kfree(scs->buffer);
+-err_card:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void scs_update(struct fw_unit *unit)
+-{
+-	struct scs *scs = dev_get_drvdata(&unit->device);
+-	int generation;
+-	__be64 data;
+-
+-	data = cpu_to_be64(((u64)HSS1394_TAG_CHANGE_ADDRESS << 56) |
+-			   scs->hss_handler.offset);
+-	generation = fw_parent_device(unit)->generation;
+-	smp_rmb(); /* node_id vs. generation */
+-	snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
+-			   HSS1394_ADDRESS, &data, 8,
+-			   FW_FIXED_GENERATION | generation);
+-}
+-
+-static void scs_remove(struct fw_unit *unit)
+-{
+-	struct scs *scs = dev_get_drvdata(&unit->device);
+-
+-	snd_card_disconnect(scs->card);
+-
+-	ACCESS_ONCE(scs->output) = NULL;
+-	ACCESS_ONCE(scs->input) = NULL;
+-
+-	wait_event(scs->idle_wait, scs->output_idle);
+-
+-	tasklet_kill(&scs->tasklet);
+-
+-	snd_card_free_when_closed(scs->card);
+-}
+-
+-static const struct ieee1394_device_id scs_id_table[] = {
+-	{
+-		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+-		               IEEE1394_MATCH_MODEL_ID,
+-		.vendor_id   = OUI_STANTON,
+-		.model_id    = MODEL_SCS_1M,
+-	},
+-	{
+-		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+-		               IEEE1394_MATCH_MODEL_ID,
+-		.vendor_id   = OUI_STANTON,
+-		.model_id    = MODEL_SCS_1D,
+-	},
+-	{}
+-};
+-MODULE_DEVICE_TABLE(ieee1394, scs_id_table);
+-
+-MODULE_DESCRIPTION("SCS.1x MIDI driver");
+-MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
+-
+-static struct fw_driver scs_driver = {
+-	.driver = {
+-		.owner  = THIS_MODULE,
+-		.name   = KBUILD_MODNAME,
+-		.bus    = &fw_bus_type,
+-	},
+-	.probe    = scs_probe,
+-	.update   = scs_update,
+-	.remove   = scs_remove,
+-	.id_table = scs_id_table,
 -};
 -
- struct snd_oxfw;
- struct snd_oxfw_spec {
- 	int (*add)(struct snd_oxfw *oxfw);
-@@ -54,7 +45,6 @@ struct snd_oxfw_spec {
- struct snd_oxfw {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
--	const struct device_info *device_info;
- 	struct mutex mutex;
- 	spinlock_t lock;
- 
-@@ -73,10 +63,6 @@ struct snd_oxfw {
- 	unsigned int midi_input_ports;
- 	unsigned int midi_output_ports;
- 
--	bool mute;
--	s16 volume[6];
--	s16 volume_min;
--	s16 volume_max;
- 	struct snd_oxfw_spec *spec;
- 
- 	int dev_lock_count;
-@@ -148,10 +134,10 @@ void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
- 
--int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
+-static int __init alsa_scs1x_init(void)
+-{
+-	return driver_register(&scs_driver.driver);
+-}
 -
- void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
-+
-+extern struct snd_oxfw_spec snd_oxfw_spec_spkr;
+-static void __exit alsa_scs1x_exit(void)
+-{
+-	driver_unregister(&scs_driver.driver);
+-}
+-
+-module_init(alsa_scs1x_init);
+-module_exit(alsa_scs1x_exit);
 -- 
 2.5.0
