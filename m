@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/9] ALSA: oxfw: add scs1x layer
-Date: Sun, 15 Nov 2015 18:26:01 +0900
-Message-ID: <1447579565-4615-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/9] ALSA: oxfw: copy MIDI playback
+	functionality to scs1x layer
+Date: Sun, 15 Nov 2015 18:26:03 +0900
+Message-ID: <1447579565-4615-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id D5EF8261A5E
+ by alsa0.perex.cz (Postfix) with ESMTP id D946A261A64
  for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:26:11 +0100 (CET)
 In-Reply-To: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,124 +25,273 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Stanton Controllers and Systems 1 has MIDI functionality to control its
-surface state such as LED lighting. When operating physical knobs and
-faders, the models generate MIDI messages. These MIDI messages are
-transferred by asynchronous transactions.
-
-The models are based on OXFW971 and ALSA OXFW driver can support them,
-although ALSA scs1x module currently supports them.
-
-This commit adds scs1x layer. As long as I investigate SCS.1m, this
-model reports to transfer/receive PCM data channels/MIDI conformant
-data channels in tx/rx AMDTP packet. There's a contradiction that this
-model actually has no analog/digital capture port for PCM frames and no
-physical MIDI ports.
-
-I guess that SCS.1d also has the contradiction. This model has no
-analog/digital ports for PCM frames and no physical MIDI ports, thus it
-requires no streaming functionality.
-
-This commit also add some modification codes to handle the contradiction,
-as much as possible. Unfortunately, this module adds one PCM playback
-substream for SCS.1d so as SCS.1m.
+This commit copies MIDI playback functionality to merge scs1x module. The
+features of payload in asynchronous transaction are the same as captured
+MIDI messages.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile     |  2 +-
- sound/firewire/oxfw/oxfw-scs1x.c | 30 ++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw.c       | 16 ++++++++++++++++
- sound/firewire/oxfw/oxfw.h       |  1 +
- 4 files changed, 48 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/oxfw/oxfw-scs1x.c
+ sound/firewire/oxfw/oxfw-scs1x.c | 208 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 206 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 4e54ba9..b474da7 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,3 +1,3 @@
- snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-pcm.o oxfw-proc.o \
--		 oxfw-midi.o oxfw-hwdep.o oxfw-spkr.o oxfw.o
-+		 oxfw-midi.o oxfw-hwdep.o oxfw-spkr.o oxfw-scs1x.o oxfw.o
- obj-$(CONFIG_SND_OXFW) += snd-oxfw.o
 diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-new file mode 100644
-index 0000000..c04c76e
---- /dev/null
+index 5bf52b7..89ba8f6 100644
+--- a/sound/firewire/oxfw/oxfw-scs1x.c
 +++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -0,0 +1,30 @@
-+/*
-+ * oxfw-scs1x.c - a part of driver for OXFW970/971 based devices
-+ *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-+ * Copyright (c) 2015 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -22,6 +22,19 @@ struct fw_scs1x {
+ 	struct fw_address_handler hss_handler;
+ 	u8 input_escape_count;
+ 	struct snd_rawmidi_substream *input;
 +
-+#include "oxfw.h"
-+
-+static int scs1x_add(struct snd_oxfw *oxfw)
-+{
-+	struct snd_rawmidi *rmidi;
-+	int err;
-+
-+	/* For backward compatibility to scs1x module, use unique name. */
-+	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 0, &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", oxfw->card->shortname);
-+
-+	return err;
-+}
-+
-+struct snd_oxfw_spec snd_oxfw_spec_scs1x = {
-+	.add	= scs1x_add,
-+};
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index ee7094b..97fb5ed 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -19,6 +19,7 @@
- #define VENDOR_BEHRINGER	0x001564
- #define VENDOR_LACIE		0x00d04b
- #define VENDOR_TASCAM		0x00022e
-+#define OUI_STANTON		0x001260
++	/* For MIDI playback. */
++	struct snd_rawmidi_substream *output;
++	bool output_idle;
++	u8 output_status;
++	u8 output_bytes;
++	bool output_escaped;
++	bool output_escape_high_nibble;
++	struct tasklet_struct tasklet;
++	wait_queue_head_t idle_wait;
++	u8 buffer[HSS1394_MAX_PACKET_SIZE];
++	bool transaction_running;
++	struct fw_transaction transaction;
+ };
  
- #define MODEL_SATELLITE		0x00200f
- 
-@@ -182,6 +183,21 @@ static void detect_quirks(struct snd_oxfw *oxfw)
- 	 */
- 	if (vendor == VENDOR_GRIFFIN || vendor == VENDOR_LACIE)
- 		oxfw->spec = &snd_oxfw_spec_spkr;
-+
-+	/*
-+	 * Stanton models supports asynchronous transactions for unique MIDI
-+	 * messages.
-+	 */
-+	if (vendor == OUI_STANTON) {
-+		/* No physical MIDI ports. */
-+		oxfw->midi_input_ports = 0;
-+		oxfw->midi_output_ports = 0;
-+
-+		/* Output stream exists but no data channels are useful. */
-+		oxfw->has_output = false;
-+
-+		oxfw->spec = &snd_oxfw_spec_scs1x;
-+	}
+ static const u8 sysex_escape_prefix[] = {
+@@ -110,6 +123,151 @@ end:
+ 	fw_send_response(card, request, rcode);
  }
  
- static int oxfw_probe(struct fw_unit *unit,
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 473faafbb..bf8b953 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -141,3 +141,4 @@ int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
- int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
++static void scs_write_callback(struct fw_card *card, int rcode,
++			       void *data, size_t length, void *callback_data)
++{
++	struct fw_scs1x *scs = callback_data;
++
++	if (rcode == RCODE_GENERATION)
++		;	/* TODO: retry this packet */
++
++	scs->transaction_running = false;
++	tasklet_schedule(&scs->tasklet);
++}
++
++static bool is_valid_running_status(u8 status)
++{
++	return status >= 0x80 && status <= 0xef;
++}
++
++static bool is_one_byte_cmd(u8 status)
++{
++	return status == 0xf6 ||
++	       status >= 0xf8;
++}
++
++static bool is_two_bytes_cmd(u8 status)
++{
++	return (status >= 0xc0 && status <= 0xdf) ||
++	       status == 0xf1 ||
++	       status == 0xf3;
++}
++
++static bool is_three_bytes_cmd(u8 status)
++{
++	return (status >= 0x80 && status <= 0xbf) ||
++	       (status >= 0xe0 && status <= 0xef) ||
++	       status == 0xf2;
++}
++
++static bool is_invalid_cmd(u8 status)
++{
++	return status == 0xf4 ||
++	       status == 0xf5 ||
++	       status == 0xf9 ||
++	       status == 0xfd;
++}
++
++static void scs_output_tasklet(unsigned long data)
++{
++	struct fw_scs1x *scs = (struct fw_scs1x *)data;
++	struct snd_oxfw *oxfw = scs->oxfw;
++	struct snd_rawmidi_substream *stream;
++	unsigned int i;
++	u8 byte;
++	struct fw_device *dev;
++	int generation;
++
++	if (scs->transaction_running)
++		return;
++
++	stream = ACCESS_ONCE(scs->output);
++	if (!stream) {
++		scs->output_idle = true;
++		wake_up(&scs->idle_wait);
++		return;
++	}
++
++	i = scs->output_bytes;
++	for (;;) {
++		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
++			scs->output_bytes = i;
++			scs->output_idle = true;
++			wake_up(&scs->idle_wait);
++			return;
++		}
++		/*
++		 * Convert from real MIDI to what I think the device expects (no
++		 * running status, one command per packet, unescaped SysExs).
++		 */
++		if (scs->output_escaped && byte < 0x80) {
++			if (scs->output_escape_high_nibble) {
++				if (i < HSS1394_MAX_PACKET_SIZE) {
++					scs->buffer[i] = byte << 4;
++					scs->output_escape_high_nibble = false;
++				}
++			} else {
++				scs->buffer[i++] |= byte & 0x0f;
++				scs->output_escape_high_nibble = true;
++			}
++		} else if (byte < 0x80) {
++			if (i == 1) {
++				if (!is_valid_running_status(
++							scs->output_status))
++					continue;
++				scs->buffer[0] = HSS1394_TAG_USER_DATA;
++				scs->buffer[i++] = scs->output_status;
++			}
++			scs->buffer[i++] = byte;
++			if ((i == 3 && is_two_bytes_cmd(scs->output_status)) ||
++			    (i == 4 && is_three_bytes_cmd(scs->output_status)))
++				break;
++			if (i == 1 + ARRAY_SIZE(sysex_escape_prefix) &&
++			    !memcmp(scs->buffer + 1, sysex_escape_prefix,
++				    ARRAY_SIZE(sysex_escape_prefix))) {
++				scs->output_escaped = true;
++				scs->output_escape_high_nibble = true;
++				i = 0;
++			}
++			if (i >= HSS1394_MAX_PACKET_SIZE)
++				i = 1;
++		} else if (byte == 0xf7) {
++			if (scs->output_escaped) {
++				if (i >= 1 && scs->output_escape_high_nibble &&
++				    scs->buffer[0] !=
++						HSS1394_TAG_CHANGE_ADDRESS)
++					break;
++			} else {
++				if (i > 1 && scs->output_status == 0xf0) {
++					scs->buffer[i++] = 0xf7;
++					break;
++				}
++			}
++			i = 1;
++			scs->output_escaped = false;
++		} else if (!is_invalid_cmd(byte) && byte < 0xf8) {
++			i = 1;
++			scs->buffer[0] = HSS1394_TAG_USER_DATA;
++			scs->buffer[i++] = byte;
++			scs->output_status = byte;
++			scs->output_escaped = false;
++			if (is_one_byte_cmd(byte))
++				break;
++		}
++	}
++	scs->output_bytes = 1;
++	scs->output_escaped = false;
++
++	scs->transaction_running = true;
++	dev = fw_parent_device(oxfw->unit);
++	generation = dev->generation;
++	smp_rmb(); /* node_id vs. generation */
++	fw_send_request(dev->card, &scs->transaction, TCODE_WRITE_BLOCK_REQUEST,
++			dev->node_id, generation, dev->max_speed,
++			HSS1394_ADDRESS, scs->buffer, i,
++			scs_write_callback, scs);
++}
++
+ static int midi_capture_open(struct snd_rawmidi_substream *stream)
+ {
+ 	struct fw_scs1x *scs = stream->rmidi->private_data;
+@@ -137,6 +295,39 @@ static struct snd_rawmidi_ops capture_ops = {
+ 	.trigger = midi_capture_trigger,
+ };
  
- extern struct snd_oxfw_spec snd_oxfw_spec_spkr;
-+extern struct snd_oxfw_spec snd_oxfw_spec_scs1x;
++static int midi_playback_open(struct snd_rawmidi_substream *stream)
++{
++	struct fw_scs1x *scs = stream->rmidi->private_data;
++
++	scs->output_status = 0;
++	scs->output_bytes = 1;
++	scs->output_escaped = false;
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *stream)
++{
++	return 0;
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *stream, int up)
++{
++	struct fw_scs1x *scs = stream->rmidi->private_data;
++
++	ACCESS_ONCE(scs->output) = up ? stream : NULL;
++	if (up) {
++		scs->output_idle = false;
++		tasklet_schedule(&scs->tasklet);
++	}
++}
++
++static struct snd_rawmidi_ops playback_ops = {
++	.open    = midi_playback_open,
++	.close   = midi_playback_close,
++	.trigger = midi_playback_trigger,
++};
++
+ static int register_address(struct snd_oxfw *oxfw)
+ {
+ 	struct fw_scs1x *scs = oxfw->spec->private_data;
+@@ -171,7 +362,7 @@ static int scs1x_add(struct snd_oxfw *oxfw)
+ 	}
+ 
+ 	/* For backward compatibility to scs1x module, use unique name. */
+-	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 1, &rmidi);
++	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 1, 1, &rmidi);
+ 	if (err < 0) {
+ 		fw_core_remove_address_handler(&scs->hss_handler);
+ 		return err;
+@@ -179,10 +370,18 @@ static int scs1x_add(struct snd_oxfw *oxfw)
+ 
+ 	snprintf(rmidi->name, sizeof(rmidi->name),
+ 		 "%s MIDI", oxfw->card->shortname);
+-	rmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT;
++	rmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT |
++			    SNDRV_RAWMIDI_INFO_OUTPUT |
++			    SNDRV_RAWMIDI_INFO_DUPLEX;
+ 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &capture_ops);
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &playback_ops);
+ 	rmidi->private_data = scs;
+ 
++	scs->oxfw = oxfw;
++	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
++	init_waitqueue_head(&scs->idle_wait);
++	scs->output_idle = true;
++
+ 	return err;
+ }
+ 
+@@ -195,8 +394,13 @@ static void scs1x_remove(struct snd_oxfw *oxfw)
+ {
+ 	struct fw_scs1x *scs = oxfw->spec->private_data;
+ 
++	ACCESS_ONCE(scs->output) = NULL;
+ 	ACCESS_ONCE(scs->input) = NULL;
+ 
++	wait_event(scs->idle_wait, scs->output_idle);
++
++	tasklet_kill(&scs->tasklet);
++
+ 	fw_core_remove_address_handler(&scs->hss_handler);
+ }
+ 
 -- 
 2.5.0
