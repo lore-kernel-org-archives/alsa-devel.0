@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/8] ALSA: dice: expand timeout to wait for
-	Dice notification
-Date: Sun, 15 Nov 2015 18:25:35 +0900
-Message-ID: <1447579536-4459-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/8] ALSA: dice: get the number of MBLA data
+	channel at opening PCM substream
+Date: Sun, 15 Nov 2015 18:25:32 +0900
+Message-ID: <1447579536-4459-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id E62832606CF
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:25:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 724BE260592
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:25:41 +0100 (CET)
 In-Reply-To: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,33 +25,58 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some users have reported that their Dice based models generate ETIMEDOUT
-at probing processing. It means that current timeout (=100msec) is not
-enough for their models to transfer notifications.
-
-This commit expands the timeout up to 2 sec. As a result, in a worst case,
-any operations to start AMDTP streams takes 2 sec or more. In userspace,
-snd_pcm_hw_params(), snd_pcm_prepare(), snd_pcm_recover(),
-snd_rawmidi_open(), snd_seq_connect_from() and snd_seq_connect_to() takes
-the time.
+This commit is a preparation to remove members related to the array
+number of channels for multi bit linear audio data and MIDI conformant
+data. The number of multi bit linear audio data channel is retrieved by
+asynchronous transaction to some registers.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/firewire/dice/dice-pcm.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index a5fc694..aa639c6 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -10,7 +10,7 @@
- #include "dice.h"
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index eaaabf0..c3343b6 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -296,17 +296,30 @@ int snd_dice_create_pcm(struct snd_dice *dice)
+ 		.page      = snd_pcm_lib_get_vmalloc_page,
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
++	__be32 reg;
+ 	struct snd_pcm *pcm;
+-	unsigned int i, capture, playback;
++	unsigned int capture, playback;
+ 	int err;
  
- #define	CALLBACK_TIMEOUT	200
--#define NOTIFICATION_TIMEOUT_MS	100
-+#define NOTIFICATION_TIMEOUT_MS	2000
+-	capture = playback = 0;
+-	for (i = 0; i < 3; i++) {
+-		if (dice->tx_channels[i] > 0)
+-			capture = 1;
+-		if (dice->rx_channels[i] > 0)
+-			playback = 1;
+-	}
++	/*
++	 * Check whether PCM substreams are required.
++	 *
++	 * TODO: in the case that any PCM substreams are not avail at a certain
++	 * sampling transfer frequency?
++	 */
++	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
++					   &reg, sizeof(reg));
++	if (err < 0)
++		return err;
++	if (be32_to_cpu(reg) > 0)
++		capture = 1;
++
++	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
++					   &reg, sizeof(reg));
++	if (err < 0)
++		return err;
++	if (be32_to_cpu(reg) > 0)
++		playback = 1;
  
- static const unsigned int dice_stream_rates[] = {
- 	/* mode 0 */
+ 	err = snd_pcm_new(dice->card, "DICE", 0, playback, capture, &pcm);
+ 	if (err < 0)
 -- 
 2.5.0
