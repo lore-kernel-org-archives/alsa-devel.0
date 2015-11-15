@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/8] ALSA: dice: limit stream to current
-	sampling transfer frequency.
-Date: Sun, 15 Nov 2015 18:25:30 +0900
-Message-ID: <1447579536-4459-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 0/8] ALSA: dice: constrain PCM substreams
+	to current sampling transfer frequency
+Date: Sun, 15 Nov 2015 18:25:28 +0900
+Message-ID: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 7660726062B
+ by alsa0.perex.cz (Postfix) with ESMTP id 74A052605A1
  for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:25:41 +0100 (CET)
-In-Reply-To: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +23,47 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, ALSA Dice driver limits PCM substreams at current
-sampling transfer frequency and current number of Multi bit linear audio
-data channel. Thus, the driver has no need to start AMDTP streams at
-the other sampling transfer frequency than current. This is due to Dice
-hardware design.
+Hi,
 
-This commit limits AMDTP stream at current sampling transfer frequency,
-according to the design.
+This patchset adds a constrain to ALSA dice driver to start PCM
+substreams and AMDTP packet transferring just at current sampling
+transfer frequency.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+Dice hardware doesn't allow drivers to get supported combinations
+between sampling rate and PCM channels. ALSA dice driver should follow
+to the hardware design, though current ALSA driver has some
+over-specifications. As a result, the driver has several issue and
+brings inconvenience to users.
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index a6a39f7..4f74e3e 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -99,6 +99,7 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
- 			unsigned int rate)
- {
- 	struct fw_iso_resources *resources;
-+	__be32 reg[2];
- 	unsigned int i, mode, pcm_chs, midi_ports;
- 	bool double_pcm_frames;
- 	int err;
-@@ -108,14 +109,20 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
- 		goto end;
- 	if (stream == &dice->tx_stream) {
- 		resources = &dice->tx_resources;
--		pcm_chs = dice->tx_channels[mode];
--		midi_ports = dice->tx_midi_ports[mode];
-+		err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
-+						   reg, sizeof(reg));
- 	} else {
- 		resources = &dice->rx_resources;
--		pcm_chs = dice->rx_channels[mode];
--		midi_ports = dice->rx_midi_ports[mode];
-+		err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
-+						   reg, sizeof(reg));
- 	}
- 
-+	if (err < 0)
-+		goto end;
-+
-+	pcm_chs = be32_to_cpu(reg[0]);
-+	midi_ports = be32_to_cpu(reg[1]);
-+
- 	/*
- 	 * At 176.4/192.0 kHz, Dice has a quirk to transfer two PCM frames in
- 	 * one data block of AMDTP packet. Thus sampling transfer frequency is
-@@ -224,8 +231,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 	}
- 	if (rate == 0)
- 		rate = curr_rate;
--	if (rate != curr_rate)
--		stop_stream(dice, master);
-+	if (rate != curr_rate) {
-+		err = -EINVAL;
-+		goto end;
-+	}
- 
- 	if (!amdtp_stream_running(master)) {
- 		stop_stream(dice, slave);
+This patchset consists of two parts:
+ * 01-05: to add constrain to current sampling transfer frequency and related
+	  code cleanup
+ * 06-08: to ensure and stabilize AMDTP packet transmission
+
+As a result, userspace applications can request PCM substreams at current
+sampling transfer frequency. Therefore, when users want to start PCM
+substreams at different rate, they should set the rate in advance by the
+other ways (i.e. ffado-dbus-server/ffado-mixer).
+
+Takashi Sakamoto (8):
+  ALSA: dice: limit to current sampling transfer frequency
+  ALSA: dice: limit stream to current sampling transfer frequency.
+  ALSA: dice: add MIDI ports according to current number of MIDI
+    substreams
+  ALSA: dice: get the number of MBLA data channel at opening PCM
+    substream
+  ALSA: dice: purge generating channel cache
+  ALSA: dice: ensure phase lock before starting streaming
+  ALSA: dice: expand timeout to wait for Dice notification
+  ALSA: dice: wait for ensuring phase lock
+
+ sound/firewire/dice/dice-midi.c        |  25 +++-
+ sound/firewire/dice/dice-pcm.c         | 205 ++++++++++-----------------------
+ sound/firewire/dice/dice-stream.c      | 118 +++++++++++++------
+ sound/firewire/dice/dice-transaction.c | 109 ------------------
+ sound/firewire/dice/dice.c             |  67 +----------
+ sound/firewire/dice/dice.h             |  14 +--
+ 6 files changed, 162 insertions(+), 376 deletions(-)
+
 -- 
 2.5.0
