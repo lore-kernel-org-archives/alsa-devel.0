@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 8/9] ALSA: oxfw: optimize MIDI operations to
-	model-specific framework
-Date: Sun, 15 Nov 2015 18:26:04 +0900
-Message-ID: <1447579565-4615-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/9] ALSA: oxfw: rename local functions for
+	control elements so that they represent as local
+Date: Sun, 15 Nov 2015 18:25:59 +0900
+Message-ID: <1447579565-4615-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id DA2E4261A68
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:26:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 49812261A53
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:26:10 +0100 (CET)
 In-Reply-To: <1447579565-4615-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,63 +25,144 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In scs1x module, MIDI substream caches are released at .remove callback of
-unit driver on IEEE 1394 bus, while oxfw model-specific framework allows
-it in ALSA card free callback. MIDI close operations should be changed.
-
-This commit applies a small optimization for MIDI operations.
+This commit renames local functions with prefix 'spkr_', so that they're
+in firewire-speaker layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-scs1x.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ sound/firewire/oxfw/oxfw-spkr.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index 89ba8f6..47d346c 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
-+++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -303,11 +303,20 @@ static int midi_playback_open(struct snd_rawmidi_substream *stream)
- 	scs->output_bytes = 1;
- 	scs->output_escaped = false;
+diff --git a/sound/firewire/oxfw/oxfw-spkr.c b/sound/firewire/oxfw/oxfw-spkr.c
+index ba766be..515468a 100644
+--- a/sound/firewire/oxfw/oxfw-spkr.c
++++ b/sound/firewire/oxfw/oxfw-spkr.c
+@@ -16,7 +16,7 @@ enum control_attribute {
+ 	CTL_CURRENT	= 0x10,
+ };
  
-+	ACCESS_ONCE(scs->output) = stream;
-+
+-static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
++static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
+ 			     enum control_action action)
+ {
+ 	u8 *buf;
+@@ -72,7 +72,7 @@ error:
+ 	return err;
+ }
+ 
+-static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
++static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
+ 			       unsigned int channel,
+ 			       enum control_attribute attribute,
+ 			       enum control_action action)
+@@ -133,7 +133,7 @@ error:
+ 	return err;
+ }
+ 
+-static int oxfw_mute_get(struct snd_kcontrol *control,
++static int spkr_mute_get(struct snd_kcontrol *control,
+ 			 struct snd_ctl_elem_value *value)
+ {
+ 	struct snd_oxfw *oxfw = control->private_data;
+@@ -143,7 +143,7 @@ static int oxfw_mute_get(struct snd_kcontrol *control,
  	return 0;
  }
  
- static int midi_playback_close(struct snd_rawmidi_substream *stream)
+-static int oxfw_mute_put(struct snd_kcontrol *control,
++static int spkr_mute_put(struct snd_kcontrol *control,
+ 			 struct snd_ctl_elem_value *value)
  {
-+	struct fw_scs1x *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->output) = NULL;
-+
-+	wait_event(scs->idle_wait, scs->output_idle);
-+	tasklet_kill(&scs->tasklet);
-+
+ 	struct snd_oxfw *oxfw = control->private_data;
+@@ -155,7 +155,7 @@ static int oxfw_mute_put(struct snd_kcontrol *control,
+ 	if (mute == oxfw->mute)
+ 		return 0;
+ 
+-	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
++	err = spkr_mute_command(oxfw, &mute, CTL_WRITE);
+ 	if (err < 0)
+ 		return err;
+ 	oxfw->mute = mute;
+@@ -163,7 +163,7 @@ static int oxfw_mute_put(struct snd_kcontrol *control,
+ 	return 1;
+ }
+ 
+-static int oxfw_volume_info(struct snd_kcontrol *control,
++static int spkr_volume_info(struct snd_kcontrol *control,
+ 			    struct snd_ctl_elem_info *info)
+ {
+ 	struct snd_oxfw *oxfw = control->private_data;
+@@ -178,7 +178,7 @@ static int oxfw_volume_info(struct snd_kcontrol *control,
+ 
+ static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
+ 
+-static int oxfw_volume_get(struct snd_kcontrol *control,
++static int spkr_volume_get(struct snd_kcontrol *control,
+ 			   struct snd_ctl_elem_value *value)
+ {
+ 	struct snd_oxfw *oxfw = control->private_data;
+@@ -190,7 +190,7 @@ static int oxfw_volume_get(struct snd_kcontrol *control,
  	return 0;
  }
  
-@@ -315,7 +324,6 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *stream, int up)
+-static int oxfw_volume_put(struct snd_kcontrol *control,
++static int spkr_volume_put(struct snd_kcontrol *control,
+ 			   struct snd_ctl_elem_value *value)
  {
- 	struct fw_scs1x *scs = stream->rmidi->private_data;
+ 	struct snd_oxfw *oxfw = control->private_data;
+@@ -220,7 +220,7 @@ static int oxfw_volume_put(struct snd_kcontrol *control,
+ 	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
+ 		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
+ 		if (changed_channels & (1 << i)) {
+-			err = oxfw_volume_command(oxfw, &volume, i,
++			err = spkr_volume_command(oxfw, &volume, i,
+ 						   CTL_CURRENT, CTL_WRITE);
+ 			if (err < 0)
+ 				return err;
+@@ -239,36 +239,36 @@ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
+ 			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 			.name = "PCM Playback Switch",
+ 			.info = snd_ctl_boolean_mono_info,
+-			.get = oxfw_mute_get,
+-			.put = oxfw_mute_put,
++			.get = spkr_mute_get,
++			.put = spkr_mute_put,
+ 		},
+ 		{
+ 			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 			.name = "PCM Playback Volume",
+-			.info = oxfw_volume_info,
+-			.get = oxfw_volume_get,
+-			.put = oxfw_volume_put,
++			.info = spkr_volume_info,
++			.get = spkr_volume_get,
++			.put = spkr_volume_put,
+ 		},
+ 	};
+ 	unsigned int i, first_ch;
+ 	int err;
  
--	ACCESS_ONCE(scs->output) = up ? stream : NULL;
- 	if (up) {
- 		scs->output_idle = false;
- 		tasklet_schedule(&scs->tasklet);
-@@ -394,13 +402,6 @@ static void scs1x_remove(struct snd_oxfw *oxfw)
- {
- 	struct fw_scs1x *scs = oxfw->spec->private_data;
+-	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
++	err = spkr_volume_command(oxfw, &oxfw->volume_min,
+ 				   0, CTL_MIN, CTL_READ);
+ 	if (err < 0)
+ 		return err;
+-	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
++	err = spkr_volume_command(oxfw, &oxfw->volume_max,
+ 				   0, CTL_MAX, CTL_READ);
+ 	if (err < 0)
+ 		return err;
  
--	ACCESS_ONCE(scs->output) = NULL;
--	ACCESS_ONCE(scs->input) = NULL;
--
--	wait_event(scs->idle_wait, scs->output_idle);
--
--	tasklet_kill(&scs->tasklet);
--
- 	fw_core_remove_address_handler(&scs->hss_handler);
- }
+-	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
++	err = spkr_mute_command(oxfw, &oxfw->mute, CTL_READ);
+ 	if (err < 0)
+ 		return err;
  
+ 	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
+ 	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
+-		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
++		err = spkr_volume_command(oxfw, &oxfw->volume[i],
+ 					   first_ch + i, CTL_CURRENT, CTL_READ);
+ 		if (err < 0)
+ 			return err;
 -- 
 2.5.0
