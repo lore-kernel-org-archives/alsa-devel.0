@@ -1,21 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-sai: set xCR4/xCR5/xMR for SAI
- master mode
-Date: Sat, 14 Nov 2015 19:13:08 -0800
-Message-ID: <20151115031307.GB14878@Asurada-CZ80>
-References: <090f3aafd8c07a5a29e97c568c6fc0602a0bd5ad.1447066800.git.zidan.wang@freescale.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/8] ALSA: dice: add MIDI ports according to
+	current number of MIDI substreams
+Date: Sun, 15 Nov 2015 18:25:31 +0900
+Message-ID: <1447579536-4459-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
- [209.85.223.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DE932605D2
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 04:13:12 +0100 (CET)
-Received: by iofh3 with SMTP id h3so131602873iof.3
- for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2015 19:13:11 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <090f3aafd8c07a5a29e97c568c6fc0602a0bd5ad.1447066800.git.zidan.wang@freescale.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72404260586
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:25:41 +0100 (CET)
+In-Reply-To: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,64 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2015 at 07:03:13PM +0800, Zidan Wang wrote:
-> For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-> generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-> RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
-> error sometimes.
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+This commit changes the way to add ALSA MIDI ports. This driver read the
+number of multiplexed MIDI substreams from hardware register, then adds the
+same number of ALSA MIDI ports. This commit is based on my assumption that
+the number is fixed at all of supported sampling transfer frequency.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-midi.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 14c3078..9d74ff3 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -427,6 +427,35 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
->  
->  	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
->  
-> +	/*
-> +	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-> +	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-> +	 * RCR5(TCR5) and RMR(TMR) for playback(capture), or there will be sync
-> +	 * error.
-> +	 */
-> +
-> +	if (!sai->is_slave_mode) {
-> +		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
-> +			regmap_update_bits(sai->regmap, FSL_SAI_TCR4,
-> +				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-> +				val_cr4);
-> +			regmap_update_bits(sai->regmap, FSL_SAI_TCR5,
-> +				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-> +				FSL_SAI_CR5_FBT_MASK, val_cr5);
-> +			regmap_write(sai->regmap, FSL_SAI_TMR,
-> +				~0UL - ((1 << channels) - 1));
-> +		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
-> +			regmap_update_bits(sai->regmap, FSL_SAI_RCR4,
-> +				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-> +				val_cr4);
-> +			regmap_update_bits(sai->regmap, FSL_SAI_RCR5,
-> +				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-> +				FSL_SAI_CR5_FBT_MASK, val_cr5);
-> +			regmap_write(sai->regmap, FSL_SAI_RMR,
-> +				~0UL - ((1 << channels) - 1));
-> +		}
-> +	}
-> +
->  	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
->  			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
->  			   val_cr4);
-> -- 
-> 1.9.1
-> 
+diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
+index 151b09f..59ac5cb 100644
+--- a/sound/firewire/dice/dice-midi.c
++++ b/sound/firewire/dice/dice-midi.c
+@@ -103,16 +103,29 @@ static void set_midi_substream_names(struct snd_dice *dice,
+ 
+ int snd_dice_create_midi(struct snd_dice *dice)
+ {
++	__be32 reg;
+ 	struct snd_rawmidi *rmidi;
+ 	struct snd_rawmidi_str *str;
+-	unsigned int i, midi_in_ports, midi_out_ports;
++	unsigned int midi_in_ports, midi_out_ports;
+ 	int err;
+ 
+-	midi_in_ports = midi_out_ports = 0;
+-	for (i = 0; i < 3; i++) {
+-		midi_in_ports = max(dice->tx_midi_ports[i], midi_in_ports);
+-		midi_out_ports = max(dice->rx_midi_ports[i], midi_out_ports);
+-	}
++	/*
++	 * Use current number of MIDI conformant data channel.
++	 *
++	 * TODO: in the case that the number of MIDI conformant data channel
++	 * differs depending on current sampling transfer frequency?
++	 */
++	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_MIDI,
++					   &reg, sizeof(reg));
++	if (err < 0)
++		return err;
++	midi_in_ports = be32_to_cpu(reg);
++
++	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_MIDI,
++					   &reg, sizeof(reg));
++	if (err < 0)
++		return err;
++	midi_out_ports = be32_to_cpu(reg);
+ 
+ 	if (midi_in_ports + midi_out_ports == 0)
+ 		return 0;
+-- 
+2.5.0
