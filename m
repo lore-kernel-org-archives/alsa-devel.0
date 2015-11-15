@@ -1,168 +1,70 @@
-From: Boaz Harrosh <boaz@plexistor.com>
-Subject: Re: [PATCH] sound: depend on ZONE_DMA
-Date: Sun, 15 Nov 2015 12:53:11 +0200
-Message-ID: <56486417.7090802@plexistor.com>
-References: <20151112201357.11045.22705.stgit@dwillia2-desk3.jf.intel.com> <s5h1tbv3qdi.wl-tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] Sound: Usb: Misc: ua101: replace
+	le16_to_cpu() with	usb_endpoint_maxp()
+Date: Sun, 15 Nov 2015 14:54:28 +0100
+Message-ID: <56488E94.1030609@ladisch.de>
+References: <1447536690-25173-1-git-send-email-thrust73@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5h1tbv3qdi.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Dan Williams <dan.j.williams@intel.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-nvdimm@lists.01.org, Jaroslav Kysela <perex@perex.cz>, Jeff Moyer <jmoyer@redhat.com>, Stable Tree <stable@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id DCA2A26062B
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 14:55:25 +0100 (CET)
+In-Reply-To: <1447536690-25173-1-git-send-email-thrust73@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.com
+Cc: Cheah Kok Cheong <thrust73@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/12/2015 10:38 PM, Takashi Iwai wrote:
-> On Thu, 12 Nov 2015 21:13:57 +0100,
-> Dan Williams wrote:
->>
->> There are several sound drivers that 'select ZONE_DMA'.  This is
->> backwards as ZONE_DMA is an architecture capability exported to drivers.
->> Switch the polarity of the dependency to disable these drivers when the
->> architecture does not support ZONE_DMA.  This was discovered in the
->> context of testing/enabling devm_memremap_pages() which depends on
->> ZONE_DEVICE.  ZONE_DEVICE in turn depends on !ZONE_DMA.
-> 
-> Makes sense.  I applied it now, thanks.
-> 
+Cheah Kok Cheong wrote:
+> Commit 939f325f4a0f ("usb: add usb_endpoint_maxp() macro")
+>
+> And commit 29cc88979a88 ("USB: use usb_endpoint_maxp()
+> instead of le16_to_cpu()")
 
-Please add:
-CC: Stable Tree <stable@vger.kernel.org>
+These sentences no verb.
 
-Thanks
-Boaz
+> Patched against
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 
-> 
-> Takashi
-> 
->>
->> Cc: Jaroslav Kysela <perex@perex.cz>
->> Cc: Takashi Iwai <tiwai@suse.com>
->> Cc: <alsa-devel@alsa-project.org>
->> Reported-by: Jeff Moyer <jmoyer@redhat.com>
->> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->> ---
->>  sound/pci/Kconfig |   24 ++++++++++++------------
->>  1 file changed, 12 insertions(+), 12 deletions(-)
->>
->> diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
->> index edfc1b8d553e..656ce39bddbc 100644
->> --- a/sound/pci/Kconfig
->> +++ b/sound/pci/Kconfig
->> @@ -25,7 +25,7 @@ config SND_ALS300
->>  	select SND_PCM
->>  	select SND_AC97_CODEC
->>  	select SND_OPL3_LIB
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say 'Y' or 'M' to include support for Avance Logic ALS300/ALS300+
->>  
->> @@ -50,7 +50,7 @@ config SND_ALI5451
->>  	tristate "ALi M5451 PCI Audio Controller"
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for the integrated AC97 sound
->>  	  device on motherboards using the ALi M5451 Audio Controller
->> @@ -155,7 +155,7 @@ config SND_AZT3328
->>  	select SND_PCM
->>  	select SND_RAWMIDI
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for Aztech AZF3328 (PCI168)
->>  	  soundcards.
->> @@ -463,7 +463,7 @@ config SND_EMU10K1
->>  	select SND_HWDEP
->>  	select SND_RAWMIDI
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y to include support for Sound Blaster PCI 512, Live!,
->>  	  Audigy and E-mu APS (partially supported) soundcards.
->> @@ -479,7 +479,7 @@ config SND_EMU10K1X
->>  	tristate "Emu10k1X (Dell OEM Version)"
->>  	select SND_AC97_CODEC
->>  	select SND_RAWMIDI
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for the Dell OEM version of the
->>  	  Sound Blaster Live!.
->> @@ -513,7 +513,7 @@ config SND_ES1938
->>  	select SND_OPL3_LIB
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on ESS Solo-1
->>  	  (ES1938, ES1946, ES1969) chips.
->> @@ -525,7 +525,7 @@ config SND_ES1968
->>  	tristate "ESS ES1968/1978 (Maestro-1/2/2E)"
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on ESS Maestro
->>  	  1/2/2E chips.
->> @@ -612,7 +612,7 @@ config SND_ICE1712
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->>  	select BITREVERSE
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on the
->>  	  ICE1712 (Envy24) chip.
->> @@ -700,7 +700,7 @@ config SND_LX6464ES
->>  config SND_MAESTRO3
->>  	tristate "ESS Allegro/Maestro3"
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on ESS Maestro 3
->>  	  (Allegro) chips.
->> @@ -806,7 +806,7 @@ config SND_SIS7019
->>  	tristate "SiS 7019 Audio Accelerator"
->>  	depends on X86_32
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for the SiS 7019 Audio Accelerator.
->>  
->> @@ -818,7 +818,7 @@ config SND_SONICVIBES
->>  	select SND_OPL3_LIB
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on the S3
->>  	  SonicVibes chip.
->> @@ -830,7 +830,7 @@ config SND_TRIDENT
->>  	tristate "Trident 4D-Wave DX/NX; SiS 7018"
->>  	select SND_MPU401_UART
->>  	select SND_AC97_CODEC
->> -	select ZONE_DMA
->> +	depends on ZONE_DMA
->>  	help
->>  	  Say Y here to include support for soundcards based on Trident
->>  	  4D-Wave DX/NX or SiS 7018 chips.
->>
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+This does not belong into the commit message.
+
+> Signed-off-by: Cheah Kok Cheong <thrust73@gmail.com>
+
+Otherwise:
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
+
+> ---
+>  sound/usb/misc/ua101.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
+> index 9581089..c19a5dd 100644
+> --- a/sound/usb/misc/ua101.c
+> +++ b/sound/usb/misc/ua101.c
+> @@ -1037,7 +1037,7 @@ static int detect_usb_format(struct ua101 *ua)
+>  		return -ENXIO;
+>  	}
+>  	ua->capture.usb_pipe = usb_rcvisocpipe(ua->dev, usb_endpoint_num(epd));
+> -	ua->capture.max_packet_bytes = le16_to_cpu(epd->wMaxPacketSize);
+> +	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
+>
+>  	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+>  	if (!usb_endpoint_is_isoc_out(epd)) {
+> @@ -1045,7 +1045,7 @@ static int detect_usb_format(struct ua101 *ua)
+>  		return -ENXIO;
+>  	}
+>  	ua->playback.usb_pipe = usb_sndisocpipe(ua->dev, usb_endpoint_num(epd));
+> -	ua->playback.max_packet_bytes = le16_to_cpu(epd->wMaxPacketSize);
+> +	ua->playback.max_packet_bytes = usb_endpoint_maxp(epd);
+>  	return 0;
+>  }
