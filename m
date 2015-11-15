@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/8] ALSA: dice: add MIDI ports according to
-	current number of MIDI substreams
-Date: Sun, 15 Nov 2015 18:25:31 +0900
-Message-ID: <1447579536-4459-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/8] ALSA: dice: limit stream to current
+	sampling transfer frequency.
+Date: Sun, 15 Nov 2015 18:25:30 +0900
+Message-ID: <1447579536-4459-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 72404260586
+ by alsa0.perex.cz (Postfix) with ESMTP id 7660726062B
  for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2015 10:25:41 +0100 (CET)
 In-Reply-To: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,55 +25,69 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit changes the way to add ALSA MIDI ports. This driver read the
-number of multiplexed MIDI substreams from hardware register, then adds the
-same number of ALSA MIDI ports. This commit is based on my assumption that
-the number is fixed at all of supported sampling transfer frequency.
+In previous commit, ALSA Dice driver limits PCM substreams at current
+sampling transfer frequency and current number of Multi bit linear audio
+data channel. Thus, the driver has no need to start AMDTP streams at
+the other sampling transfer frequency than current. This is due to Dice
+hardware design.
+
+This commit limits AMDTP stream at current sampling transfer frequency,
+according to the design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-midi.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ sound/firewire/dice/dice-stream.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
-index 151b09f..59ac5cb 100644
---- a/sound/firewire/dice/dice-midi.c
-+++ b/sound/firewire/dice/dice-midi.c
-@@ -103,16 +103,29 @@ static void set_midi_substream_names(struct snd_dice *dice,
- 
- int snd_dice_create_midi(struct snd_dice *dice)
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index a6a39f7..4f74e3e 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -99,6 +99,7 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
+ 			unsigned int rate)
  {
-+	__be32 reg;
- 	struct snd_rawmidi *rmidi;
- 	struct snd_rawmidi_str *str;
--	unsigned int i, midi_in_ports, midi_out_ports;
-+	unsigned int midi_in_ports, midi_out_ports;
+ 	struct fw_iso_resources *resources;
++	__be32 reg[2];
+ 	unsigned int i, mode, pcm_chs, midi_ports;
+ 	bool double_pcm_frames;
  	int err;
+@@ -108,14 +109,20 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
+ 		goto end;
+ 	if (stream == &dice->tx_stream) {
+ 		resources = &dice->tx_resources;
+-		pcm_chs = dice->tx_channels[mode];
+-		midi_ports = dice->tx_midi_ports[mode];
++		err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
++						   reg, sizeof(reg));
+ 	} else {
+ 		resources = &dice->rx_resources;
+-		pcm_chs = dice->rx_channels[mode];
+-		midi_ports = dice->rx_midi_ports[mode];
++		err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
++						   reg, sizeof(reg));
+ 	}
  
--	midi_in_ports = midi_out_ports = 0;
--	for (i = 0; i < 3; i++) {
--		midi_in_ports = max(dice->tx_midi_ports[i], midi_in_ports);
--		midi_out_ports = max(dice->rx_midi_ports[i], midi_out_ports);
--	}
-+	/*
-+	 * Use current number of MIDI conformant data channel.
-+	 *
-+	 * TODO: in the case that the number of MIDI conformant data channel
-+	 * differs depending on current sampling transfer frequency?
-+	 */
-+	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_MIDI,
-+					   &reg, sizeof(reg));
 +	if (err < 0)
-+		return err;
-+	midi_in_ports = be32_to_cpu(reg);
++		goto end;
 +
-+	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_MIDI,
-+					   &reg, sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	midi_out_ports = be32_to_cpu(reg);
++	pcm_chs = be32_to_cpu(reg[0]);
++	midi_ports = be32_to_cpu(reg[1]);
++
+ 	/*
+ 	 * At 176.4/192.0 kHz, Dice has a quirk to transfer two PCM frames in
+ 	 * one data block of AMDTP packet. Thus sampling transfer frequency is
+@@ -224,8 +231,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 	}
+ 	if (rate == 0)
+ 		rate = curr_rate;
+-	if (rate != curr_rate)
+-		stop_stream(dice, master);
++	if (rate != curr_rate) {
++		err = -EINVAL;
++		goto end;
++	}
  
- 	if (midi_in_ports + midi_out_ports == 0)
- 		return 0;
+ 	if (!amdtp_stream_running(master)) {
+ 		stop_stream(dice, slave);
 -- 
 2.5.0
