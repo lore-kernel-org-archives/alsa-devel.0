@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4613: tidyup CTRL1 value selection
-	method
-Date: Mon, 16 Nov 2015 13:16:37 +0000
-Message-ID: <20151116131637.GC31303@sirena.org.uk>
-References: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: multi-codec support for arizona-ldo1 was Re:
+ System with multiple arizona (wm5102) codecs
+Date: Mon, 16 Nov 2015 13:57:55 +0000
+Message-ID: <20151116135755.GC18889@ck-lbox>
+References: <20151113225355.GU12392@sirena.org.uk> <20151114074400.GA7898@amd>
+ <20151114123931.GW12392@sirena.org.uk> <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk> <20151114211633.GE20429@amd>
+ <20151115001402.GZ12392@sirena.org.uk> <20151116074534.GA5606@amd>
+ <20151116105035.GA31303@sirena.org.uk> <20151116122947.GA9125@amd>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8339588372222296608=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C510260471
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 14:16:46 +0100 (CET)
-In-Reply-To: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99D55260442
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 15:13:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151116122947.GA9125@amd>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +27,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Nov 16, 2015 at 01:29:47PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > Every single sound driver gets this right, none of them assume the name
+> > > > is global.  What makes you say that they assume names are global?
+> > 
+> > > Ok, so you are saying that if I fix mfd initialization, sound will
+> > > automagically switch from global regulators to device-specific
+> > > regulators and things will start working?
+> > 
+> > Yes.
+> 
+> Ok, so something like this should be applied?
+> 
+> (I'm not sure how to test it, as audio works before and after the
+> patch.)
+> 
 
---===============8339588372222296608==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
-Content-Disposition: inline
+Apologies this all going down over the weekend I have only just
+caught up. I will probably send a few other inline replies to the
+thread.
 
+> Thanks,
+> 								Pavel
+> 
+> Signed-off-by: Pavel Machek <pavel@denx.de>
+> 
+> commit d6005263acb94343645e719ee90b8940cb2545df
+> Author: Pavel <pavel@ucw.cz>
+> Date:   Mon Nov 16 13:19:21 2015 +0100
+> 
+>     regulator_bulk_register() needs device to be already
+>     registered. Reorganize the code to make it so.
+> 
+> diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> index 14fd5cb..e891f10 100644
+> --- a/drivers/mfd/mfd-core.c
+> +++ b/drivers/mfd/mfd-core.c
+> @@ -147,12 +147,6 @@ static int mfd_add_device(struct device *parent, int id,
+>  	pdev->dev.dma_parms = parent->dma_parms;
+>  	pdev->dev.coherent_dma_mask = parent->coherent_dma_mask;
+>  
+> -	ret = regulator_bulk_register_supply_alias(
+> -			&pdev->dev, cell->parent_supplies,
+> -			parent, cell->parent_supplies,
+> -			cell->num_parent_supplies);
+> -	if (ret < 0)
+> -		goto fail_res;
 
---L6iaP+gRLNZHKoI4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This does look like it is too early, but really all we are doing
+it adding the device pointer and the supply name into a lookup
+table, neither of those things change across the stuff below. The
+printout for the mapping does indeed appear to be broken (because
+you can't dev_name on the device yet, until after it has been
+added), but that will be all that should get fixed by this move.
 
-On Mon, Nov 16, 2015 at 06:01:29AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current CTRL1 selection method didn't care about simultaneous
-> playback / capture. This patch tidyup it.
+>  
+>  	if (parent->of_node && cell->of_compatible) {
+>  		for_each_child_of_node(parent->of_node, np) {
+> @@ -169,12 +176,12 @@ static int mfd_add_device(struct device *parent, int id,
+>  		ret = platform_device_add_data(pdev,
+>  					cell->platform_data, cell->pdata_size);
+>  		if (ret)
+> -			goto fail_alias;
+> +			goto fail_res;
+>  	}
+>  
+>  	ret = mfd_platform_add_cell(pdev, cell, usage_count);
+>  	if (ret)
+> -		goto fail_alias;
+> +		goto fail_res;
+>  
+>  	for (r = 0; r < cell->num_resources; r++) {
+>  		res[r].name = cell->resources[r].name;
+> @@ -210,22 +217,29 @@ static int mfd_add_device(struct device *parent, int id,
+>  			if (has_acpi_companion(&pdev->dev)) {
+>  				ret = acpi_check_resource_conflict(&res[r]);
+>  				if (ret)
+> -					goto fail_alias;
+> +					goto fail_res;
+>  			}
+>  		}
+>  	}
+>  
+>  	ret = platform_device_add_resources(pdev, res, cell->num_resources);
+>  	if (ret)
+> -		goto fail_alias;
+> +		goto fail_res;
+>  
+>  	ret = platform_device_add(pdev);
+>  	if (ret)
+> -		goto fail_alias;
+> +		goto fail_res;
+>  
+>  	if (cell->pm_runtime_no_callbacks)
+>  		pm_runtime_no_callbacks(&pdev->dev);
+>  
+> +	ret = regulator_bulk_register_supply_alias(
+> +			&pdev->dev, cell->parent_supplies,
+> +			parent, cell->parent_supplies,
+> +			cell->num_parent_supplies);
+> +	if (ret < 0)
+> +		goto fail_alias;
+> +
 
-This doesn't apply against current code, please check and resend.
+Furthermore, the trouble is that you can't move this to here. The
+platform_device_add will usually cause the device to probe and
+most devices request their supplies in their probe. Thus if you
+only register the alias here then it will not be available when
+the device needs it.
 
---L6iaP+gRLNZHKoI4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWSdc1AAoJECTWi3JdVIfQOtcH/3Zdmh8ccXRPHFu2DI4mFK/9
-lLc4b9HOKScp3M21hVBDpNUA9X2xMMEzgN4TEhnViWmxihe/TMjLDRB0euMyT6St
-yPn0vt4sdl7vlndL8fSPF4bVsewUk5HL5dAX0ICqJRMRlV6J5L6XZCuaZo1opeI1
-dR14Veu5tQPBkHpjkWGWmI6K1TinNEMO3DaFc0ZBsHBies9IG6ewt5Bn7jOOknLb
-K/BaiKomw+Fl2890SPusg/RoVZVtvN9YDNIxy/Djz3pCO7mct6xJMip6QcPkCEBL
-/3aLEzJN6DBjUAYNGhNhkwmgqptPi0U+o4vpia9p1JDH7esA0VYJoWL6s23kSfA=
-=zY6F
------END PGP SIGNATURE-----
-
---L6iaP+gRLNZHKoI4--
-
---===============8339588372222296608==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8339588372222296608==--
+Thanks,
+Charles
