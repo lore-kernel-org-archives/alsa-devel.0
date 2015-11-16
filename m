@@ -1,85 +1,62 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Increase the delay time to
-	imporve the HP pop noise" to the asoc tree
-Date: Mon, 16 Nov 2015 17:02:48 +0000
-Message-ID: <E1ZyNB2-0005mA-1Z@debutante>
-References: <1447653335-19667-1-git-send-email-john.lin@realtek.com>
+Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
+ multiple arizona (wm5102) codecs
+Date: Mon, 16 Nov 2015 17:33:30 +0000
+Message-ID: <20151116173330.GF31303@sirena.org.uk>
+References: <20151113225355.GU12392@sirena.org.uk>
+ <20151114074400.GA7898@amd>
+ <20151114123931.GW12392@sirena.org.uk>
+ <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk>
+ <20151114211633.GE20429@amd>
+ <20151115001402.GZ12392@sirena.org.uk>
+ <20151116074534.GA5606@amd>
+ <20151116105035.GA31303@sirena.org.uk>
+ <20151116122947.GA9125@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 284892604A4
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:02:55 +0100 (CET)
-In-Reply-To: <1447653335-19667-1-git-send-email-john.lin@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9ADF8FXzFeE7X4jE"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151116122947.GA9125@amd>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: sameo@linux.intel.com, lee.jones@linaro.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5645: Increase the delay time to imporve the HP pop noise
+--9ADF8FXzFeE7X4jE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Mon, Nov 16, 2015 at 01:29:47PM +0100, Pavel Machek wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > > Ok, so you are saying that if I fix mfd initialization, sound will
+> > > automagically switch from global regulators to device-specific
+> > > regulators and things will start working?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> > Yes.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Ok, so something like this should be applied?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+No, moving the mapping of the aliases after the device has been
+instantiated won't help here since it means that we will try to probe
+the device without the mappings set up at all which guarantees that
+things will go wrong.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--9ADF8FXzFeE7X4jE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From 91ed37e45c485533997e8a7c1efd2ca39b441b60 Mon Sep 17 00:00:00 2001
-From: John Lin <john.lin@realtek.com>
-Date: Mon, 16 Nov 2015 13:55:35 +0800
-Subject: [PATCH] ASoC: rt5645: Increase the delay time to imporve the HP pop
- noise
+iQEcBAEBCAAGBQJWShNpAAoJECTWi3JdVIfQmZUH/in6WotXsziybQb5OznHIkbH
+VRtANsvXzf8Fw+C2Y2ltPLPANq68Dymprk3gGPqXsB4IdIOJyTIiBSTLxhQ68hz5
+NSneUOVuZm9ffHEMGInV4V0g/AqgQnRZko44mGQtIluAEQB1+Mgbn/eVCxDP0AMg
+kl+crS3lOtMrzhuBX4rHXgpgwYY141GD2/e2oAWoq9YGTp8hCs5cVVAUEtOJGhjo
+mK6QsdBn3kM8jZVkPnxO3dwSDwZDiM7sTVu5SD28ygLZwkmaQRU78Qw4tDUCOPQc
+ZyXMD+bOssTKmV5DvS5AHstz+FVhE92RU+uTcJ401JfmSGRdq7Gn8GtCKDu9vl4=
+=gPvB
+-----END PGP SIGNATURE-----
 
-Unmuting headphone has pop noise in particular hardware design. So we extend
-the delay time in headphone unmuting sequence to avoid pop.
-
-Signed-off-by: John Lin <john.lin@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 672fafd8314a..fa8b5dfa673e 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -1519,7 +1519,7 @@ static void hp_amp_power(struct snd_soc_codec *codec, int on)
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
- 					RT5645_MAMP_INT_REG2, 0xfc00);
- 				snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
--				msleep(40);
-+				msleep(70);
- 				rt5645->hp_on = true;
- 			} else {
- 				/* depop parameters */
--- 
-2.6.2
+--9ADF8FXzFeE7X4jE--
