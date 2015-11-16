@@ -1,36 +1,72 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 2/3] [media] include/media: move driver interface headers to a separate dir
-Date: Mon, 16 Nov 2015 13:30:19 +0100
-Message-ID: <11305053.FloWFxl3Yn@wuerfel>
-References: <013152dcb3d4eaddd39aa4a37868430567bdc2d6.1447671420.git.mchehab@osg.samsung.com> <23e53dd0223c40ecf7128e0b270fcfbea8e1c43b.1447671420.git.mchehab@osg.samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ak4613: tidyup CTRL1 value selection
+	method
+Date: Mon, 16 Nov 2015 13:16:37 +0000
+Message-ID: <20151116131637.GC31303@sirena.org.uk>
+References: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <23e53dd0223c40ecf7128e0b270fcfbea8e1c43b.1447671420.git.mchehab@osg.samsung.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Hans Verkuil <hverkuil@xs4all.nl>, Kyungmin Park <kyungmin.park@samsung.com>, Heungjun Kim <riverful.kim@samsung.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Andy Walls <awalls@md.metrocast.net>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Josh Wu <josh.wu@atmel.com>, Hans de Goede <hdegoede@redhat.com>, Mike Isely <isely@pobox.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "David S. Miller" <davem@davemloft.net>, Joe Perches <joe@perches.com>, Jiri Slaby <jslaby@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vinod.koul@intel.com>, Ul
+Content-Type: multipart/mixed; boundary="===============8339588372222296608=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C510260471
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 14:16:46 +0100 (CET)
+In-Reply-To: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 November 2015 09:00:44 Mauro Carvalho Chehab wrote:
-> Let's not mix headers used by the core with those headers that
-> are needed by some driver-specific interface header.
-> 
-> The headers used on drivers were manually moved using:
->     mkdir include/media/drv-intf/
->     git mv include/media/cx2341x.h include/media/cx25840.h \
-> 	include/media/exynos-fimc.h include/media/msp3400.h \
-> 	include/media/s3c_camif.h include/media/saa7146.h \
-> 	include/media/saa7146_vv.h  include/media/sh_mobile_ceu.h \
-> 	include/media/sh_mobile_csi2.h include/media/sh_vou.h \
-> 	include/media/si476x.h include/media/soc_mediabus.h \
-> 	include/media/tea575x.h include/media/drv-intf/
-> 
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+--===============8339588372222296608==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
+Content-Disposition: inline
 
-I probably would have left soc_mediabus.h where it is, but I can
-see there are reasons to move it.
 
-	Arnd
+--L6iaP+gRLNZHKoI4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Nov 16, 2015 at 06:01:29AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Current CTRL1 selection method didn't care about simultaneous
+> playback / capture. This patch tidyup it.
+
+This doesn't apply against current code, please check and resend.
+
+--L6iaP+gRLNZHKoI4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWSdc1AAoJECTWi3JdVIfQOtcH/3Zdmh8ccXRPHFu2DI4mFK/9
+lLc4b9HOKScp3M21hVBDpNUA9X2xMMEzgN4TEhnViWmxihe/TMjLDRB0euMyT6St
+yPn0vt4sdl7vlndL8fSPF4bVsewUk5HL5dAX0ICqJRMRlV6J5L6XZCuaZo1opeI1
+dR14Veu5tQPBkHpjkWGWmI6K1TinNEMO3DaFc0ZBsHBies9IG6ewt5Bn7jOOknLb
+K/BaiKomw+Fl2890SPusg/RoVZVtvN9YDNIxy/Djz3pCO7mct6xJMip6QcPkCEBL
+/3aLEzJN6DBjUAYNGhNhkwmgqptPi0U+o4vpia9p1JDH7esA0VYJoWL6s23kSfA=
+=zY6F
+-----END PGP SIGNATURE-----
+
+--L6iaP+gRLNZHKoI4--
+
+--===============8339588372222296608==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8339588372222296608==--
