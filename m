@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: tidyup CTRL1 value selection
-	method" to the asoc tree
-Date: Mon, 16 Nov 2015 17:02:46 +0000
-Message-ID: <E1ZyNB0-0005lC-2e@debutante>
-References: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: fix rockchip 64-bit build warning" to
+	the asoc tree
+Date: Mon, 16 Nov 2015 17:02:45 +0000
+Message-ID: <E1ZyNAz-0005kj-4s@debutante>
+References: <5376543.c9BV6sJg6q@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F5DC2604E1
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DC2F2604E4
  for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:02:54 +0100 (CET)
-In-Reply-To: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <5376543.c9BV6sJg6q@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: tidyup CTRL1 value selection method
+   ASoC: fix rockchip 64-bit build warning
 
 has been applied to the asoc tree at
 
@@ -53,180 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 35299f1779dbdcb61af4305904963b5bc9276eb9 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 16 Nov 2015 06:01:29 +0000
-Subject: [PATCH] ASoC: ak4613: tidyup CTRL1 value selection method
+>From 0e18d457b31e98e68f6918e41c85ad3b736c4789 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 13 Nov 2015 18:15:56 +0100
+Subject: [PATCH] ASoC: fix rockchip 64-bit build warning
 
-Current CTRL1 selection method didn't care about simultaneous
-playback / capture. This patch tidyup it.
+The rk_spdif_probe uses the device match data as a token to identify a
+particular device, but accidentally casts a pointer to 'int', which is
+not portable, as gcc points out in this warning on arm64:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+rockchip_spdif.c: In function 'rk_spdif_probe':
+rockchip_spdif.c:283:6: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+
+This changes the logic to compare two pointer values instead, using
+the same cast that was used for initializing the value in the first
+place.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 90 ++++++++++++++++++++++++++++-------------------
- 1 file changed, 54 insertions(+), 36 deletions(-)
+ sound/soc/rockchip/rockchip_spdif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 394c10ff049e..dab127603ff6 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -74,16 +74,6 @@
- #define DFS_DOUBLE_SPEED	(1 << 2)
- #define DFS_QUAD_SPEED		(2 << 2)
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index a38a3029062c..ac72ff5055bb 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -280,7 +280,7 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 	int ret;
  
--struct ak4613_priv {
--	struct mutex lock;
--
--	unsigned int fmt;
--	u8 fmt_ctrl;
--	u8 oc;
--	u8 ic;
--	int cnt;
--};
--
- struct ak4613_formats {
- 	unsigned int width;
- 	unsigned int fmt;
-@@ -94,6 +84,16 @@ struct ak4613_interface {
- 	struct ak4613_formats playback;
- };
+ 	match = of_match_node(rk_spdif_match, np);
+-	if ((int) match->data == RK_SPDIF_RK3288) {
++	if (match->data == (void *)RK_SPDIF_RK3288) {
+ 		struct regmap *grf;
  
-+struct ak4613_priv {
-+	struct mutex lock;
-+	const struct ak4613_interface *iface;
-+
-+	unsigned int fmt;
-+	u8 oc;
-+	u8 ic;
-+	int cnt;
-+};
-+
- /*
-  * Playback Volume
-  *
-@@ -128,7 +128,7 @@ static const struct reg_default ak4613_reg[] = {
- 	{ 0x14, 0x00 }, { 0x15, 0x00 }, { 0x16, 0x00 },
- };
- 
--#define AUDIO_IFACE_IDX_TO_VAL(i) (i << 3)
-+#define AUDIO_IFACE_TO_VAL(fmts) ((fmts - ak4613_iface) << 3)
- #define AUDIO_IFACE(b, fmt) { b, SND_SOC_DAIFMT_##fmt }
- static const struct ak4613_interface ak4613_iface[] = {
- 	/* capture */				/* playback */
-@@ -242,7 +242,7 @@ static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
- 		priv->cnt = 0;
- 	}
- 	if (!priv->cnt)
--		priv->fmt_ctrl = NO_FMT;
-+		priv->iface = NULL;
- 	mutex_unlock(&priv->lock);
- }
- 
-@@ -267,13 +267,35 @@ static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static bool ak4613_dai_fmt_matching(const struct ak4613_interface *iface,
-+				    int is_play,
-+				    unsigned int fmt, unsigned int width)
-+{
-+	const struct ak4613_formats *fmts;
-+
-+	fmts = (is_play) ? &iface->playback : &iface->capture;
-+
-+	if (fmts->fmt != fmt)
-+		return false;
-+
-+	if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
-+		if (fmts->width != width)
-+			return false;
-+	} else {
-+		if (fmts->width < width)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
--	const struct ak4613_formats *fmts;
-+	const struct ak4613_interface *iface;
- 	struct device *dev = codec->dev;
- 	unsigned int width = params_width(params);
- 	unsigned int fmt = priv->fmt;
-@@ -307,33 +329,27 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 	 * It doesn't support TDM at this point
- 	 */
- 	fmt_ctrl = NO_FMT;
--	for (i = 0; i < ARRAY_SIZE(ak4613_iface); i++) {
--		fmts = (is_play) ?	&ak4613_iface[i].playback :
--					&ak4613_iface[i].capture;
--
--		if (fmts->fmt != fmt)
--			continue;
-+	ret = -EINVAL;
-+	iface = NULL;
- 
--		if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
--			if (fmts->width != width)
--				continue;
--		} else {
--			if (fmts->width < width)
-+	mutex_lock(&priv->lock);
-+	if (priv->iface) {
-+		if (ak4613_dai_fmt_matching(priv->iface, is_play, fmt, width))
-+			iface = priv->iface;
-+	} else {
-+		for (i = ARRAY_SIZE(ak4613_iface); i >= 0; i--) {
-+			if (!ak4613_dai_fmt_matching(ak4613_iface + i,
-+						     is_play,
-+						     fmt, width))
- 				continue;
-+			iface = ak4613_iface + i;
-+			break;
- 		}
--
--		fmt_ctrl = AUDIO_IFACE_IDX_TO_VAL(i);
--		break;
- 	}
- 
--	ret = -EINVAL;
--	if (fmt_ctrl == NO_FMT)
--		goto hw_params_end;
--
--	mutex_lock(&priv->lock);
--	if ((priv->fmt_ctrl == NO_FMT) ||
--	    (priv->fmt_ctrl == fmt_ctrl)) {
--		priv->fmt_ctrl = fmt_ctrl;
-+	if ((priv->iface == NULL) ||
-+	    (priv->iface == iface)) {
-+		priv->iface = iface;
- 		priv->cnt++;
- 		ret = 0;
- 	}
-@@ -342,6 +358,8 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		goto hw_params_end;
- 
-+	fmt_ctrl = AUDIO_IFACE_TO_VAL(iface);
-+
- 	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
- 	snd_soc_write(codec, CTRL2, ctrl2);
- 
-@@ -487,7 +505,7 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
- 
- 	ak4613_parse_of(priv, dev);
- 
--	priv->fmt_ctrl		= NO_FMT;
-+	priv->iface		= NULL;
- 	priv->cnt		= 0;
- 
- 	mutex_init(&priv->lock);
+ 		grf = syscon_regmap_lookup_by_phandle(np, "rockchip,grf");
 -- 
 2.6.2
