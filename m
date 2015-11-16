@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: correct addresses for HPF_C_0/1" to the asoc tree
-Date: Mon, 16 Nov 2015 17:51:52 +0000
-Message-ID: <E1ZyNwW-0006q1-DJ@debutante>
-References: <1447178038-11156-1-git-send-email-sachinpandhare@gmail.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1447178038-11156-1-git-send-email-sachinpandhare@gmail.com>
-Sender: stable-owner@vger.kernel.org
-To: Sachin Pandhare <sachinpandhare@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rsnd: SND_SOC_RCAR doesn't depend on
+	DMA_OF" to the asoc tree
+Date: Mon, 16 Nov 2015 17:51:45 +0000
+Message-ID: <E1ZyNwP-0006mj-VZ@debutante>
+References: <87twoziq9j.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F17A82604E1
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:51:54 +0100 (CET)
+In-Reply-To: <87twoziq9j.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: correct addresses for HPF_C_0/1
+   ASoC: rsnd: SND_SOC_RCAR doesn't depend on DMA_OF
 
 has been applied to the asoc tree at
 
@@ -37,39 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From e9f96bc53c1b959859599cb30ce6fd4fbb4448c2 Mon Sep 17 00:00:00 2001
-From: Sachin Pandhare <sachinpandhare@gmail.com>
-Date: Tue, 10 Nov 2015 23:38:02 +0530
-Subject: [PATCH] ASoC: wm8962: correct addresses for HPF_C_0/1
+>From 85d4a62140def5402bed3c6b914f6faafa185490 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 6 Nov 2015 06:46:30 +0000
+Subject: [PATCH] ASoC: rsnd: SND_SOC_RCAR doesn't depend on DMA_OF
 
->From datasheet:
-R17408 (4400h) HPF_C_1
-R17409 (4401h) HPF_C_0
-17048 -> 17408 (0x4400)
-17049 -> 17409 (0x4401)
+8616774("ASoC: rnsd: fix build regression without CONFIG_OF")
+added "depends on DMA_OF" in SND_SOC_RCAR to avoid compile error of
 
-Signed-off-by: Sachin Pandhare <sachinpandhare@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+    sound/built-in.o: In function `rsnd_dma_request_channel':
+    :(.text+0x9fb84): undefined reference to `of_dma_request_slave_channel'
+
+But, it was OF base DMAEngine API definition issue, not SND_SOC_RCAR
+issue. This patch remove DMA_OF dependence.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/wm8962.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 39ebd7bf4f53..a7e79784fc16 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -365,8 +365,8 @@ static const struct reg_default wm8962_reg[] = {
- 	{ 16924, 0x0059 },   /* R16924 - HDBASS_PG_1 */
- 	{ 16925, 0x999A },   /* R16925 - HDBASS_PG_0 */
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 206d1edab07c..c9902a6d6fa0 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -36,7 +36,6 @@ config SND_SOC_SH4_SIU
  
--	{ 17048, 0x0083 },   /* R17408 - HPF_C_1 */
--	{ 17049, 0x98AD },   /* R17409 - HPF_C_0 */
-+	{ 17408, 0x0083 },   /* R17408 - HPF_C_1 */
-+	{ 17409, 0x98AD },   /* R17409 - HPF_C_0 */
- 
- 	{ 17920, 0x007F },   /* R17920 - ADCL_RETUNE_C1_1 */
- 	{ 17921, 0xFFFF },   /* R17921 - ADCL_RETUNE_C1_0 */
+ config SND_SOC_RCAR
+ 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+-	depends on DMA_OF
+ 	depends on COMMON_CLK
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
 -- 
 2.6.2
