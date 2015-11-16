@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: add single-end optional
-	property for IN/OUT pins" to the asoc tree
+Subject: Applied "ASoC: ak4613: tidyup CTRL1 value selection
+	method" to the asoc tree
 Date: Mon, 16 Nov 2015 17:02:46 +0000
-Message-ID: <E1ZyNB1-0005lf-0D@debutante>
-References: <87oaeud01r.wl%kuninori.morimoto.gx@renesas.com>
+Message-ID: <E1ZyNB0-0005lC-2e@debutante>
+References: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B41C92604DF
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:02:52 +0100 (CET)
-In-Reply-To: <87oaeud01r.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F5DC2604E1
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:02:54 +0100 (CET)
+In-Reply-To: <87mvuecwsu.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: add single-end optional property for IN/OUT pins
+   ASoC: ak4613: tidyup CTRL1 value selection method
 
 has been applied to the asoc tree at
 
@@ -53,103 +53,180 @@ to this mail.
 Thanks,
 Mark
 
->From a3af0c65836e714fa71dcaa0a81f6db83a212faa Mon Sep 17 00:00:00 2001
+>From 35299f1779dbdcb61af4305904963b5bc9276eb9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 16 Nov 2015 04:51:21 +0000
-Subject: [PATCH] ASoC: ak4613: add single-end optional property for IN/OUT
- pins
+Date: Mon, 16 Nov 2015 06:01:29 +0000
+Subject: [PATCH] ASoC: ak4613: tidyup CTRL1 value selection method
 
-ak4613 IN/OUT pin can be selected as differential/single-end.
-Default is differential, because it is register default settings.
+Current CTRL1 selection method didn't care about simultaneous
+playback / capture. This patch tidyup it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/ak4613.txt | 10 ++++++++
- sound/soc/codecs/ak4613.c                          | 29 ++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ sound/soc/codecs/ak4613.c | 90 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 54 insertions(+), 36 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4613.txt b/Documentation/devicetree/bindings/sound/ak4613.txt
-index 15a919522b42..3cf63e7f8e77 100644
---- a/Documentation/devicetree/bindings/sound/ak4613.txt
-+++ b/Documentation/devicetree/bindings/sound/ak4613.txt
-@@ -7,6 +7,16 @@ Required properties:
- - compatible : "asahi-kasei,ak4613"
- - reg : The chip select number on the I2C bus
- 
-+Optional properties:
-+- ak4613,in1-single-end	: Boolean. Indicate input / output pins are single-ended.
-+- ak4613,in2-single-end	  rather than differential.
-+- ak4613,out1-single-end
-+- ak4613,out2-single-end
-+- ak4613,out3-single-end
-+- ak4613,out4-single-end
-+- ak4613,out5-single-end
-+- ak4613,out6-single-end
-+
- Example:
- 
- &i2c {
 diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 07a266460ec3..394c10ff049e 100644
+index 394c10ff049e..dab127603ff6 100644
 --- a/sound/soc/codecs/ak4613.c
 +++ b/sound/soc/codecs/ak4613.c
-@@ -79,6 +79,8 @@ struct ak4613_priv {
+@@ -74,16 +74,6 @@
+ #define DFS_DOUBLE_SPEED	(1 << 2)
+ #define DFS_QUAD_SPEED		(2 << 2)
  
+-struct ak4613_priv {
+-	struct mutex lock;
+-
+-	unsigned int fmt;
+-	u8 fmt_ctrl;
+-	u8 oc;
+-	u8 ic;
+-	int cnt;
+-};
+-
+ struct ak4613_formats {
+ 	unsigned int width;
  	unsigned int fmt;
- 	u8 fmt_ctrl;
-+	u8 oc;
-+	u8 ic;
- 	int cnt;
+@@ -94,6 +84,16 @@ struct ak4613_interface {
+ 	struct ak4613_formats playback;
  };
  
-@@ -343,6 +345,9 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
++struct ak4613_priv {
++	struct mutex lock;
++	const struct ak4613_interface *iface;
++
++	unsigned int fmt;
++	u8 oc;
++	u8 ic;
++	int cnt;
++};
++
+ /*
+  * Playback Volume
+  *
+@@ -128,7 +128,7 @@ static const struct reg_default ak4613_reg[] = {
+ 	{ 0x14, 0x00 }, { 0x15, 0x00 }, { 0x16, 0x00 },
+ };
+ 
+-#define AUDIO_IFACE_IDX_TO_VAL(i) (i << 3)
++#define AUDIO_IFACE_TO_VAL(fmts) ((fmts - ak4613_iface) << 3)
+ #define AUDIO_IFACE(b, fmt) { b, SND_SOC_DAIFMT_##fmt }
+ static const struct ak4613_interface ak4613_iface[] = {
+ 	/* capture */				/* playback */
+@@ -242,7 +242,7 @@ static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
+ 		priv->cnt = 0;
+ 	}
+ 	if (!priv->cnt)
+-		priv->fmt_ctrl = NO_FMT;
++		priv->iface = NULL;
+ 	mutex_unlock(&priv->lock);
+ }
+ 
+@@ -267,13 +267,35 @@ static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
++static bool ak4613_dai_fmt_matching(const struct ak4613_interface *iface,
++				    int is_play,
++				    unsigned int fmt, unsigned int width)
++{
++	const struct ak4613_formats *fmts;
++
++	fmts = (is_play) ? &iface->playback : &iface->capture;
++
++	if (fmts->fmt != fmt)
++		return false;
++
++	if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
++		if (fmts->width != width)
++			return false;
++	} else {
++		if (fmts->width < width)
++			return false;
++	}
++
++	return true;
++}
++
+ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	const struct ak4613_formats *fmts;
++	const struct ak4613_interface *iface;
+ 	struct device *dev = codec->dev;
+ 	unsigned int width = params_width(params);
+ 	unsigned int fmt = priv->fmt;
+@@ -307,33 +329,27 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 	 * It doesn't support TDM at this point
+ 	 */
+ 	fmt_ctrl = NO_FMT;
+-	for (i = 0; i < ARRAY_SIZE(ak4613_iface); i++) {
+-		fmts = (is_play) ?	&ak4613_iface[i].playback :
+-					&ak4613_iface[i].capture;
+-
+-		if (fmts->fmt != fmt)
+-			continue;
++	ret = -EINVAL;
++	iface = NULL;
+ 
+-		if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
+-			if (fmts->width != width)
+-				continue;
+-		} else {
+-			if (fmts->width < width)
++	mutex_lock(&priv->lock);
++	if (priv->iface) {
++		if (ak4613_dai_fmt_matching(priv->iface, is_play, fmt, width))
++			iface = priv->iface;
++	} else {
++		for (i = ARRAY_SIZE(ak4613_iface); i >= 0; i--) {
++			if (!ak4613_dai_fmt_matching(ak4613_iface + i,
++						     is_play,
++						     fmt, width))
+ 				continue;
++			iface = ak4613_iface + i;
++			break;
+ 		}
+-
+-		fmt_ctrl = AUDIO_IFACE_IDX_TO_VAL(i);
+-		break;
+ 	}
+ 
+-	ret = -EINVAL;
+-	if (fmt_ctrl == NO_FMT)
+-		goto hw_params_end;
+-
+-	mutex_lock(&priv->lock);
+-	if ((priv->fmt_ctrl == NO_FMT) ||
+-	    (priv->fmt_ctrl == fmt_ctrl)) {
+-		priv->fmt_ctrl = fmt_ctrl;
++	if ((priv->iface == NULL) ||
++	    (priv->iface == iface)) {
++		priv->iface = iface;
+ 		priv->cnt++;
+ 		ret = 0;
+ 	}
+@@ -342,6 +358,8 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		goto hw_params_end;
+ 
++	fmt_ctrl = AUDIO_IFACE_TO_VAL(iface);
++
  	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
  	snd_soc_write(codec, CTRL2, ctrl2);
  
-+	snd_soc_write(codec, ICTRL, priv->ic);
-+	snd_soc_write(codec, OCTRL, priv->oc);
-+
- hw_params_end:
- 	if (ret < 0)
- 		dev_warn(dev, "unsupported data width/format combination\n");
-@@ -431,6 +436,28 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
- 	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
- };
+@@ -487,7 +505,7 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
  
-+static void ak4613_parse_of(struct ak4613_priv *priv,
-+			    struct device *dev)
-+{
-+	struct device_node *np = dev->of_node;
-+	char prop[32];
-+	int i;
-+
-+	/* Input 1 - 2 */
-+	for (i = 0; i < 2; i++) {
-+		snprintf(prop, sizeof(prop), "ak4613,in%d-single-end", i + 1);
-+		if (!of_get_property(np, prop, NULL))
-+			priv->ic |= 1 << i;
-+	}
-+
-+	/* Output 1 - 6 */
-+	for (i = 0; i < 6; i++) {
-+		snprintf(prop, sizeof(prop), "ak4613,out%d-single-end", i + 1);
-+		if (!of_get_property(np, prop, NULL))
-+			priv->oc |= 1 << i;
-+	}
-+}
-+
- static int ak4613_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
-@@ -458,6 +485,8 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
- 	if (!priv)
- 		return -ENOMEM;
+ 	ak4613_parse_of(priv, dev);
  
-+	ak4613_parse_of(priv, dev);
-+
- 	priv->fmt_ctrl		= NO_FMT;
+-	priv->fmt_ctrl		= NO_FMT;
++	priv->iface		= NULL;
  	priv->cnt		= 0;
  
+ 	mutex_init(&priv->lock);
 -- 
 2.6.2
