@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: compatible with
-	different chips" to the asoc tree
-Date: Mon, 16 Nov 2015 17:51:50 +0000
-Message-ID: <E1ZyNwU-0006p5-Ix@debutante>
-References: <1447140729-18267-2-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: Intel: constify sst_block_ops
+	structures" to the asoc tree
+Date: Mon, 16 Nov 2015 17:51:47 +0000
+Message-ID: <E1ZyNwR-0006nf-Rk@debutante>
+References: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB3252604F4
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:51:55 +0100 (CET)
-In-Reply-To: <1447140729-18267-2-git-send-email-sugar.zhang@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 950A0260502
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:51:58 +0100 (CET)
+In-Reply-To: <1447197532-24055-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>, Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: compatible with different chips
+   ASoC: Intel: constify sst_block_ops structures
 
 has been applied to the asoc tree at
 
@@ -53,73 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From c4f9374ddc461ed76be30f4d354a6d1ecb94dfa5 Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Tue, 10 Nov 2015 15:32:07 +0800
-Subject: [PATCH] ASoC: rockchip: i2s: compatible with different chips
+>From 93189ea425498339b13e5f74d254070d4a2b7d37 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Wed, 11 Nov 2015 00:18:52 +0100
+Subject: [PATCH] ASoC: Intel: constify sst_block_ops structures
 
-there maybe more than one i2s module inside chip, and these i2s modules
-have different channels features.
+The sst_block_ops structure is never modified, and is thus declared as
+const.
 
-for example: there are 3 i2s in rk3066, one support 8 channels playback
-and 2 channels capture, but the others only support 2 channels playback
-and 2 channels capture.
+Done with the help of Coccinelle.
 
-in order to compatible with these various chips, we add playback and
-capture property to specify these values.
-
-there are default channels configuration in driver: 8 channels playback
-and 2 channels capture. if not add property, we use the default values.
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Acked-by: Jie Yang <yang.jie@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/intel/common/sst-dsp-priv.h     | 6 +++---
+ sound/soc/intel/common/sst-firmware.c     | 4 ++--
+ sound/soc/intel/haswell/sst-haswell-dsp.c | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index ce880f3bccc7..83b1b9c9e017 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -474,6 +474,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index 4452cda28874..81aa1ed64201 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -243,7 +243,7 @@ struct sst_mem_block {
+ 	u32 size;			/* block size */
+ 	u32 index;			/* block index 0..N */
+ 	enum sst_mem_type type;		/* block memory type IRAM/DRAM */
+-	struct sst_block_ops *ops;	/* block operations, if any */
++	const struct sst_block_ops *ops;/* block operations, if any */
+ 
+ 	/* block status */
+ 	u32 bytes_used;			/* bytes in use by modules */
+@@ -378,8 +378,8 @@ void sst_block_free_scratch(struct sst_dsp *dsp);
+ 
+ /* Register the DSPs memory blocks - would be nice to read from ACPI */
+ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+-	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
+-	void *private);
++	u32 size, enum sst_mem_type type, const struct sst_block_ops *ops,
++	u32 index, void *private);
+ void sst_mem_block_unregister_all(struct sst_dsp *dsp);
+ 
+ /* Create/Free DMA resources */
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index 1636a1eeb002..bee04a9707d8 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -1014,8 +1014,8 @@ EXPORT_SYMBOL_GPL(sst_module_runtime_restore);
+ 
+ /* register a DSP memory block for use with FW based modules */
+ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+-	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
+-	void *private)
++	u32 size, enum sst_mem_type type, const struct sst_block_ops *ops,
++	u32 index, void *private)
  {
- 	struct device_node *node = pdev->dev.of_node;
- 	struct rk_i2s_dev *i2s;
-+	struct snd_soc_dai_driver *soc_dai;
- 	struct resource *res;
- 	void __iomem *regs;
- 	int ret;
-@@ -534,17 +535,26 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
+ 	struct sst_mem_block *block;
  
--	/* refine capture channels */
-+	soc_dai = devm_kzalloc(&pdev->dev,
-+			       sizeof(*soc_dai), GFP_KERNEL);
-+	if (!soc_dai)
-+		return -ENOMEM;
-+
-+	memcpy(soc_dai, &rockchip_i2s_dai, sizeof(*soc_dai));
-+	if (!of_property_read_u32(node, "rockchip,playback-channels", &val)) {
-+		if (val >= 2 && val <= 8)
-+			soc_dai->playback.channels_max = val;
-+	}
-+
- 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
- 		if (val >= 2 && val <= 8)
--			rockchip_i2s_dai.capture.channels_max = val;
--		else
--			rockchip_i2s_dai.capture.channels_max = 2;
-+			soc_dai->capture.channels_max = val;
- 	}
+diff --git a/sound/soc/intel/haswell/sst-haswell-dsp.c b/sound/soc/intel/haswell/sst-haswell-dsp.c
+index 7f94920c8a4d..b2bec36d074c 100644
+--- a/sound/soc/intel/haswell/sst-haswell-dsp.c
++++ b/sound/soc/intel/haswell/sst-haswell-dsp.c
+@@ -607,7 +607,7 @@ static int hsw_block_disable(struct sst_mem_block *block)
+ 	return 0;
+ }
  
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &rockchip_i2s_component,
--					      &rockchip_i2s_dai, 1);
-+					      soc_dai, 1);
-+
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI\n");
- 		goto err_suspend;
+-static struct sst_block_ops sst_hsw_ops = {
++static const struct sst_block_ops sst_hsw_ops = {
+ 	.enable = hsw_block_enable,
+ 	.disable = hsw_block_disable,
+ };
 -- 
 2.6.2
