@@ -1,59 +1,57 @@
-From: ROUGE ETIENNE <etiennerouge@yahoo.com>
-Subject: M-audio 410 : complex procedure to get a sound
-Date: Mon, 16 Nov 2015 09:55:01 +0100
-Message-ID: <564999E5.30204@yahoo.com>
+From: Boaz Harrosh <boaz@plexistor.com>
+Subject: Re: [PATCH] sound: depend on ZONE_DMA
+Date: Mon, 16 Nov 2015 10:58:28 +0200
+Message-ID: <56499AB4.6060507@plexistor.com>
+References: <20151112201357.11045.22705.stgit@dwillia2-desk3.jf.intel.com>	<s5h1tbv3qdi.wl-tiwai@suse.de>	<56486417.7090802@plexistor.com> <s5h6112fl2z.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm45-vm7.bullet.mail.bf1.yahoo.com
- (nm45-vm7.bullet.mail.bf1.yahoo.com [216.109.115.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 27DE2261615
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 09:55:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5h6112fl2z.wl-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Stable Tree <stable@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-nvdimm@lists.01.org, Jaroslav Kysela <perex@perex.cz>, Jeff Moyer <jmoyer@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello !
+On 11/16/2015 09:40 AM, Takashi Iwai wrote:
+> On Sun, 15 Nov 2015 11:53:11 +0100,
+> Boaz Harrosh wrote:
+>>
+>> On 11/12/2015 10:38 PM, Takashi Iwai wrote:
+>>> On Thu, 12 Nov 2015 21:13:57 +0100,
+>>> Dan Williams wrote:
+>>>>
+>>>> There are several sound drivers that 'select ZONE_DMA'.  This is
+>>>> backwards as ZONE_DMA is an architecture capability exported to drivers.
+>>>> Switch the polarity of the dependency to disable these drivers when the
+>>>> architecture does not support ZONE_DMA.  This was discovered in the
+>>>> context of testing/enabling devm_memremap_pages() which depends on
+>>>> ZONE_DEVICE.  ZONE_DEVICE in turn depends on !ZONE_DMA.
+>>>
+>>> Makes sense.  I applied it now, thanks.
+>>>
+>>
+>> Please add:
+>> CC: Stable Tree <stable@vger.kernel.org>
+> 
+> Sorry, too late, already merged.
+> 
+> 
+> Takashi
+> 
 
-I've just bought a M-audio firewire 410 and I'm very thankfull to 
-takashi's work that allows us to use the device almost like an USB one !
+Hi Greg
 
-I can have sound and have access to the routing controls. However 2 bugs 
-makes it a bit tedious :
+Please include the mainline patch:
+	[2db1a57] ALSA: pci: depend on ZONE_DMA (by Dan Williams)
 
-NOTE : I use an up to date freshly installed ubuntustudio 15.10. The 
-only modifications I made was 1) deleting pulse 2) select the soundcard 
-as default in asoundrc
+To the stable tree for v4.3.X Kernel.
 
-1) I do not have sound out of the box, but I can manage to have sound by 
-starting ffado-mixer then force restart alsa. After that everything 
-works fine.... but I gotta do it at every restart which isn't nice
+This patch is needed for proper operation of the 4.3 pmem.ko driver. Long
+story, but without this patch the persistent-memory will not be able to
+work with the new 4.3 support of page-struct which is needed if we want to
+RDMA and/or IO directly to persistent memory.
+[Is to do with the new ZONE_DEVICE and too many ZONE(s) if ZONE_DMA is enabled]
 
-2) ffado-mixer suffers several bugs :
-- if I close the window I can't restart it again unless I kill 
-ffado-dbus-server (it says : "another instance of ffado-mixer is already 
-running).
--  I got few errors on startup "invalid samplerate for input"... don't 
-know it it has any impact
-- when I tweak too much ffado-mixer (AFAIK, it's random, but happens 
-within few minuts) the mouse shows a 'hand closed' cursor and I can't 
-click anything. The system remains fully functionnal, but I can't close 
-anything nor click... If I start an emergency terminal I can kill 
-whatever I want, but the problem remains.
-
-I'll try with a fedora this evening to see if it's not related with 
-ubuntustudio, but I'd be glad to have some help with those 2 issues 
-(especially the stalling ffado-mixer)
-
-thanks !
-
-Etienne
+Thanks
+Boaz
