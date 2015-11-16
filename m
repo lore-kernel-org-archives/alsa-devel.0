@@ -1,85 +1,103 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: multi-codec support for arizona-ldo1 was Re:
- System with multiple arizona (wm5102) codecs
-Date: Mon, 16 Nov 2015 14:11:42 +0000
-Message-ID: <20151116141142.GE18889@ck-lbox>
-References: <20151012154715.GF4238@sirena.org.uk> <20151012201137.GA7317@amd>
- <20151013115355.GC14956@sirena.org.uk> <20151113215812.GA19020@amd>
- <20151113225355.GU12392@sirena.org.uk> <20151114074400.GA7898@amd>
- <20151114123931.GW12392@sirena.org.uk> <20151114175915.GA20429@amd>
- <20151114184940.GY12392@sirena.org.uk> <20151114211633.GE20429@amd>
+Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
+ multiple arizona (wm5102) codecs
+Date: Mon, 16 Nov 2015 14:28:13 +0000
+Message-ID: <20151116142813.GF18889@ck-lbox>
+References: <20151113225355.GU12392@sirena.org.uk>
+ <20151114074400.GA7898@amd>
+ <20151114123931.GW12392@sirena.org.uk>
+ <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk>
+ <20151114211633.GE20429@amd>
+ <20151115001402.GZ12392@sirena.org.uk>
+ <20151116074534.GA5606@amd>
+ <20151116105035.GA31303@sirena.org.uk>
+ <20151116122947.GA9125@amd>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 876FD26049A
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 15:27:28 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20151114211633.GE20429@amd>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <20151116122947.GA9125@amd>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Pavel Machek <pavel@ucw.cz>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, lee.jones@linaro.org
+Cc: Mark Brown <broonie@kernel.org>, sameo@linux.intel.com, lee.jones@linaro.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 14, 2015 at 10:16:33PM +0100, Pavel Machek wrote:
-> HiOn Sat 2015-11-14 18:49:40, Mark Brown wrote:
-> > On Sat, Nov 14, 2015 at 06:59:16PM +0100, Pavel Machek wrote:
+On Mon, Nov 16, 2015 at 01:29:47PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > Every single sound driver gets this right, none of them assume the name
+> > > > is global.  What makes you say that they assume names are global?
 > > 
-> > > Well, mfd_core.c seems to call regulator_bulk_register_supply_alias()
-> > > with device that does not have dev_name initialized.
+> > > Ok, so you are saying that if I fix mfd initialization, sound will
+> > > automagically switch from global regulators to device-specific
+> > > regulators and things will start working?
 > > 
-> > OK, that'll be the problem then - we're not mapping the supply into the
-> > individual child device but rather system wide, probably because that
-> > mapping is being done too early, before we've actually created the
-> > device.
+> > Yes.
 > 
-> Take a look at mfd_add_device(). Yes, we do
-> regulator_bulk_register_supply_alias() before doing
-> platform_device_add().
+> Ok, so something like this should be applied?
 > 
-> > > regulator_bulk_register_supply_alias() results in "Adding alias"
-> > > stuff, and then drivers/regulator/arizona-micsupp.c tries to register
-> > > another "MICVDD".
-> > 
-> > That's fine because all supplies should be namespaced with a device.
-> > The goal is to say "Supply X on device Y" (we do support exceptions for
-> > the few cases where there are not yet any devices involved but this
-> > clearly isn't one of them).
+> (I'm not sure how to test it, as audio works before and after the
+> patch.)
 
-Indeed that should be the case.
+Well I guess the first test is do these error messages you where
+getting disappear:
 
-> 
-> Well, clearly someone should tell that to wm5102
-> maintainers. Hmm. It looks like driver is marked supported but there
-> are no names attached?
-> 
-> WOLFSON MICROELECTRONICS DRIVERS
-> L:      patches@opensource.wolfsonmicro.com
-> T:      git git://opensource.wolfsonmicro.com/linux-2.6-asoc
-> T:      git git://opensource.wolfsonmicro.com/linux-2.6-audioplus
-> W:
-> http://opensource.wolfsonmicro.com/content/linux-drivers-wolfson-device\
-> s
-> S:      Supported
-> 
-> I guess Charles Keepax should be listed there?
+> [    2.734198] wm5102-codec.1 supply MICVDD,spi32766.1 not found, using dummy regulator
+> [    3.170912] wm5102-codec.2 supply MICVDD,spi32766.2 not found, using dummy regulator
 
-The patches mailing list functions as maintainer here. That way
-anyone who works on upstream Linux stuff here will see the email
-so you have more chance of someone replying. Also convient for
-when people leave the company etc. makes for an easy transition.
-I am afraid though that as in this case you are not always going
-to get a reply over the weekend.
+I think what we are missing here is looking at why the lookup is
+actually failing. I have had a look at the code, but I don't see
+an obvious reason why having a second CODEC would cause the
+supply lookup to fail.
+
+Can you please apply this diff and provide a log so we can have a
+look at what is going on with the supply aliasing:
+
+
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 7181ffd..f1c8897 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1345,9 +1345,11 @@ static struct regulator_supply_alias *regulator_find_supply_alias(
+ {
+ 	struct regulator_supply_alias *map;
+ 
+-	list_for_each_entry(map, &regulator_supply_alias_list, list)
++	list_for_each_entry(map, &regulator_supply_alias_list, list) {
++		dev_err(dev, "Checking %s,%p\n", map->src_supply, map->src_dev);
+ 		if (map->src_dev == dev && strcmp(map->src_supply, supply) == 0)
+ 			return map;
++	}
+ 
+ 	return NULL;
+ }
+@@ -1356,11 +1358,12 @@ static void regulator_supply_alias(struct device **dev, const char **supply)
+ {
+ 	struct regulator_supply_alias *map;
+ 
++	dev_err(*dev, "Looking for %s,%p\n", *supply, *dev);
+ 	map = regulator_find_supply_alias(*dev, *supply);
+ 	if (map) {
+-		dev_dbg(*dev, "Mapping supply %s to %s,%s\n",
++		dev_err(*dev, "Mapping supply %s to %s,%p\n",
+ 				*supply, map->alias_supply,
+-				dev_name(map->alias_dev));
++				map->alias_dev);
+ 		*dev = map->alias_dev;
+ 		*supply = map->alias_supply;
+ 	}
+@@ -1796,8 +1799,8 @@ int regulator_register_supply_alias(struct device *dev, const char *id,
+ 
+ 	list_add(&map->list, &regulator_supply_alias_list);
+ 
+-	pr_info("Adding alias for supply %s,%s -> %s,%s\n",
+-		id, dev_name(dev), alias_id, dev_name(alias_dev));
++	pr_info("Adding alias for supply %s,%p -> %s,%p\n",
++		id, dev, alias_id, alias_dev);
+ 
+ 	return 0;
+ }
 
 Thanks,
 Charles
