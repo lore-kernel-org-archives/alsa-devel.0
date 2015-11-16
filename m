@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add playback property" to the
-	asoc tree
-Date: Mon, 16 Nov 2015 17:51:49 +0000
-Message-ID: <E1ZyNwT-0006oc-MB@debutante>
-References: <1447140729-18267-3-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: rt5645: Add struct dmi_system_id
+	"Google Edgar" for Chrome OS" to the asoc tree
+Date: Mon, 16 Nov 2015 17:51:48 +0000
+Message-ID: <E1ZyNwS-0006o9-PI@debutante>
+References: <1447226728-14648-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A7FEF2604EF
+ by alsa0.perex.cz (Postfix) with ESMTP id 96B5B2604E4
  for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2015 18:51:55 +0100 (CET)
-In-Reply-To: <1447140729-18267-3-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <1447226728-14648-1-git-send-email-john.lin@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add playback property
+   ASoC: rt5645: Add struct dmi_system_id "Google Edgar" for Chrome OS
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 7fd9093a7570f5d8bbdc8014c0a349da2afea97e Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Tue, 10 Nov 2015 15:32:08 +0800
-Subject: [PATCH] ASoC: rockchip: add playback property
+>From 0580bcc91d0aee7367c001955234d71b0b337b41 Mon Sep 17 00:00:00 2001
+From: John Lin <john.lin@realtek.com>
+Date: Wed, 11 Nov 2015 15:25:28 +0800
+Subject: [PATCH] ASoC: rt5645: Add struct dmi_system_id "Google Edgar" for
+ Chrome OS
 
-rockchip,playback-channels: max playback channels, 8 channels default.
+Add platform specific data for Edgar project.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: John Lin <john.lin@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 2267d249ca0e..b7f3a9325ebd 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -19,6 +19,7 @@ Required properties:
- - clock-names: should contain followings:
-    - "i2s_hclk": clock for I2S BUS
-    - "i2s_clk" : clock for I2S controller
-+- rockchip,playback-channels: max playback channels, if not set, 8 channels default.
- - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
- 
- Example for rk3288 I2S controller:
-@@ -31,5 +32,6 @@ i2s@ff890000 {
- 	dma-names = "tx", "rx";
- 	clock-names = "i2s_hclk", "i2s_clk";
- 	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+	rockchip,playback-channels = <8>;
- 	rockchip,capture-channels = <2>;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index fa8b5dfa673e..647b594ad04e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3378,6 +3378,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Reks"),
+ 		},
+ 	},
++	{
++		.ident = "Google Edgar",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Edgar"),
++		},
++	},
+ 	{ }
  };
+ 
 -- 
 2.6.2
