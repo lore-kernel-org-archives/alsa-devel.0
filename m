@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: fix wrong bit def for pll src"
+Subject: Applied "ASoC: ak4613: don't overwrite CTRL2 register"
 	to the asoc tree
-Date: Tue, 17 Nov 2015 18:54:46 +0000
-Message-ID: <E1ZylOw-00040j-Nv@debutante>
-References: <1447749017-5958-1-git-send-email-bardliao@realtek.com>
+Date: Tue, 17 Nov 2015 18:54:47 +0000
+Message-ID: <E1ZylOx-00041F-LL@debutante>
+References: <87h9klhw5e.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 922372652BF
+ by alsa0.perex.cz (Postfix) with ESMTP id BEDA02652C5
  for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:52 +0100 (CET)
-In-Reply-To: <1447749017-5958-1-git-send-email-bardliao@realtek.com>
+In-Reply-To: <87h9klhw5e.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: fix wrong bit def for pll src
+   ASoC: ak4613: don't overwrite CTRL2 register
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From e71bf05554c9015bef8df3ffc386ccb37b153858 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 17 Nov 2015 16:30:17 +0800
-Subject: [PATCH] ASoC: rt5670: fix wrong bit def for pll src
+>From b323dd30718e2055adb5534e52f685a57c119c18 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 17 Nov 2015 08:28:56 +0000
+Subject: [PATCH] ASoC: ak4613: don't overwrite CTRL2 register
 
-The bit allocation for PLL source is 0x80 [13:11] instead of [12:11]
+Current code set DFS settings on CTRL2 register, but it overwrite
+default settings. This patch fixup it.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/ak4613.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index dc2b46236c5c..3f1b0f1df809 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -973,12 +973,12 @@
- #define RT5670_SCLK_SRC_MCLK			(0x0 << 14)
- #define RT5670_SCLK_SRC_PLL1			(0x1 << 14)
- #define RT5670_SCLK_SRC_RCCLK			(0x2 << 14) /* 15MHz */
--#define RT5670_PLL1_SRC_MASK			(0x3 << 12)
--#define RT5670_PLL1_SRC_SFT			12
--#define RT5670_PLL1_SRC_MCLK			(0x0 << 12)
--#define RT5670_PLL1_SRC_BCLK1			(0x1 << 12)
--#define RT5670_PLL1_SRC_BCLK2			(0x2 << 12)
--#define RT5670_PLL1_SRC_BCLK3			(0x3 << 12)
-+#define RT5670_PLL1_SRC_MASK			(0x7 << 11)
-+#define RT5670_PLL1_SRC_SFT			11
-+#define RT5670_PLL1_SRC_MCLK			(0x0 << 11)
-+#define RT5670_PLL1_SRC_BCLK1			(0x1 << 11)
-+#define RT5670_PLL1_SRC_BCLK2			(0x2 << 11)
-+#define RT5670_PLL1_SRC_BCLK3			(0x3 << 11)
- #define RT5670_PLL1_PD_MASK			(0x1 << 3)
- #define RT5670_PLL1_PD_SFT			3
- #define RT5670_PLL1_PD_1			(0x0 << 3)
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index dab127603ff6..62c08a6395af 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -70,6 +70,7 @@
+ #define FMT_MASK	(0xf8)
+ 
+ /* CTRL2 */
++#define DFS_MASK		(3 << 2)
+ #define DFS_NORMAL_SPEED	(0 << 2)
+ #define DFS_DOUBLE_SPEED	(1 << 2)
+ #define DFS_QUAD_SPEED		(2 << 2)
+@@ -361,7 +362,7 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 	fmt_ctrl = AUDIO_IFACE_TO_VAL(iface);
+ 
+ 	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
+-	snd_soc_write(codec, CTRL2, ctrl2);
++	snd_soc_update_bits(codec, CTRL2, DFS_MASK, ctrl2);
+ 
+ 	snd_soc_write(codec, ICTRL, priv->ic);
+ 	snd_soc_write(codec, OCTRL, priv->oc);
 -- 
 2.6.2
