@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt286: set combo jack for Skylake" to
-	the asoc tree
-Date: Tue, 17 Nov 2015 18:54:49 +0000
-Message-ID: <E1ZylOz-00042C-FW@debutante>
-References: <1447739253-22166-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: fsl-sai: don't set bclk for Tx/Rx
+	Synchronous with another SAI mode" to the asoc tree
+Date: Tue, 17 Nov 2015 18:54:45 +0000
+Message-ID: <E1ZylOv-00040G-QG@debutante>
+References: <b1cf60241eab0069250d00e47e80bb04ce676412.1447066811.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A7AF62652E9
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EBBA2652E7
  for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:55 +0100 (CET)
-In-Reply-To: <1447739253-22166-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <b1cf60241eab0069250d00e47e80bb04ce676412.1447066811.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt286: set combo jack for Skylake
+   ASoC: fsl-sai: don't set bclk for Tx/Rx Synchronous with another SAI mode
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From 166765ea8b686c64b590fa62664a4adb35aa2d6a Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 17 Nov 2015 11:17:33 +0530
-Subject: [PATCH] ASoC: rt286: set combo jack for Skylake
+>From 9cc58712358cbfe51248ef369fc50671149b60fc Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Mon, 9 Nov 2015 19:02:29 +0800
+Subject: [PATCH] ASoC: fsl-sai: don't set bclk for Tx/Rx Synchronous with
+ another SAI mode
 
-Skylake platform also uses combo jack configuration, so add
-Skylake to existing DMI match for combo jack
+In fsl_sai_set_bclk function, we should not set bclk for Tx/Rx Synchronous
+with another SAI mode.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/fsl/fsl_sai.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index af2ed774b552..bc08f0c5a5f6 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1114,6 +1114,12 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "Wilson Beach SDS")
- 		}
- 	},
-+	{
-+		.ident = "Intel Skylake RVP",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Skylake Client platform")
-+		}
-+	},
- 	{ }
- };
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index a4435f5e3be9..7e421a97c090 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -354,13 +354,25 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 		return -EINVAL;
+ 	}
  
+-	if ((tx && sai->synchronous[TX]) || (!tx && !sai->synchronous[RX])) {
++	/*
++	 * 1) For Asynchronous mode, we must set RCR2 register for capture, and
++	 *    set TCR2 register for playback.
++	 * 2) For Tx sync with Rx clock, we must set RCR2 register for playback
++	 *    and capture.
++	 * 3) For Rx sync with Tx clock, we must set TCR2 register for playback
++	 *    and capture.
++	 * 4) For Tx and Rx are both Synchronous with another SAI, we just
++	 *    ignore it.
++	 */
++	if ((sai->synchronous[TX] && !sai->synchronous[RX]) ||
++	    (!tx && !sai->synchronous[RX])) {
+ 		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
+ 				   FSL_SAI_CR2_MSEL_MASK,
+ 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
+ 		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
+ 				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
+-	} else {
++	} else if ((sai->synchronous[RX] && !sai->synchronous[TX]) ||
++		   (tx && !sai->synchronous[TX])) {
+ 		regmap_update_bits(sai->regmap, FSL_SAI_TCR2,
+ 				   FSL_SAI_CR2_MSEL_MASK,
+ 				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
 -- 
 2.6.2
