@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: Move 22M/24M clock control
-	into I2S ops" to the asoc tree
-Date: Tue, 17 Nov 2015 18:54:43 +0000
-Message-ID: <E1ZylOt-0003zI-VP@debutante>
-References: <1447140372-10048-1-git-send-email-koro.chen@mediatek.com>
+Subject: Applied "ASoC: rsnd: ssi: 24bit data needs
+	right-aligned settings" to the asoc tree
+Date: Tue, 17 Nov 2015 18:54:48 +0000
+Message-ID: <E1ZylOy-00041j-IB@debutante>
+References: <87io51hw6l.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EA442652E5
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:54 +0100 (CET)
-In-Reply-To: <1447140372-10048-1-git-send-email-koro.chen@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BB932652E1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:53 +0100 (CET)
+In-Reply-To: <87io51hw6l.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: Move 22M/24M clock control into I2S ops
+   ASoC: rsnd: ssi: 24bit data needs right-aligned settings
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From b45e68df065a9babc43b4b7cd223c412d34b6658 Mon Sep 17 00:00:00 2001
-From: Koro Chen <koro.chen@mediatek.com>
-Date: Tue, 10 Nov 2015 15:26:12 +0800
-Subject: [PATCH] ASoC: mediatek: Move 22M/24M clock control into I2S ops
+>From f46a93b820eb3707faf238cd769a004e2504515f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 17 Nov 2015 08:28:11 +0000
+Subject: [PATCH] ASoC: rsnd: ssi: 24bit data needs right-aligned settings
 
-22M/24M clocks are only required for I2S, so move the control to
-I2S DAI ops.
+Data left/right aligned is controlled by PDTA bit on SSICR.
+But default is left-aligned. Thus 24bit sound will be very small sound
+without this patch.
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mtk-afe-pcm.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index f5baf3c38863..7f7134397f73 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -299,8 +299,6 @@ static int mtk_afe_dais_enable_clks(struct mtk_afe *afe,
- 			dev_err(afe->dev, "Failed to enable m_ck\n");
- 			return ret;
- 		}
--		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
- 	}
- 
- 	if (b_ck) {
-@@ -340,12 +338,8 @@ static int mtk_afe_dais_set_clks(struct mtk_afe *afe,
- static void mtk_afe_dais_disable_clks(struct mtk_afe *afe,
- 				      struct clk *m_ck, struct clk *b_ck)
- {
--	if (m_ck) {
--		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
--				   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
-+	if (m_ck)
- 		clk_disable_unprepare(m_ck);
--	}
- 	if (b_ck)
- 		clk_disable_unprepare(b_ck);
- }
-@@ -360,6 +354,8 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 3e814711f301..60ef074082e8 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -39,6 +39,7 @@
+ #define	SCKP		(1 << 13)	/* Serial Bit Clock Polarity */
+ #define	SWSP		(1 << 12)	/* Serial WS Polarity */
+ #define	SDTA		(1 << 10)	/* Serial Data Alignment */
++#define	PDTA		(1 <<  9)	/* Parallel Data Alignment */
+ #define	DEL		(1 <<  8)	/* Serial Data Delay */
+ #define	CKDV(v)		(v <<  4)	/* Serial Clock Division Ratio */
+ #define	TRMD		(1 <<  1)	/* Transmit/Receive Mode Select */
+@@ -274,7 +275,7 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_is_parent(mod, io))
  		return 0;
  
- 	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
- 	return 0;
- }
+-	cr = FORCE;
++	cr = FORCE | PDTA;
  
-@@ -373,6 +369,9 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
- 		return;
- 
- 	mtk_afe_set_i2s_enable(afe, false);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
-+			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
- 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
- 
- 	/* disable AFE */
+ 	/*
+ 	 * always use 32bit system word for easy clock calculation.
 -- 
 2.6.2
