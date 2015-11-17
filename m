@@ -1,152 +1,63 @@
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: Re: [PATCH 2/3] ASoC: s3c24xx-i2s: pass DMA channels as platform data
-Date: Tue, 17 Nov 2015 10:36:46 +0900
-Message-ID: <564A84AE.2000502@samsung.com>
-References: <5466463.9HBcuLFGQf@wuerfel> <4171669.Y8FyLG5WLL@wuerfel>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Intel Cherry Trail -- No sound in linux
+Date: Mon, 16 Nov 2015 19:54:17 -0600
+Message-ID: <564A88C9.7020008@linux.intel.com>
+References: <000a01d11b93$38632860$a9297920$@com>
+ <56423EBB.8010108@linux.intel.com> <201511121444557079740@pcasl.com>
+ <5644CA6C.5000302@linux.intel.com> <20151116154335174375283@pcasl.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <4171669.Y8FyLG5WLL@wuerfel>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Heiko Stuebner <heiko@sntech.de>, Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>, Ben Dooks <ben-linux@fluff.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA1F2260523
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 02:54:42 +0100 (CET)
+In-Reply-To: <20151116154335174375283@pcasl.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tuzhihe@pcasl.com
 List-Id: alsa-devel@alsa-project.org
 
-On 14.11.2015 02:23, Arnd Bergmann wrote:
-> This is a minor cleanup to make the s3c2412-i2s and s3c24xx-i2s
-> drivers independent of the mach/dma.h header file and to allow
-> removing the dependency on the specific dmaengine driver in the
-> next patch.
-> 
-> As a side not, only the s3c24xx-i2s driver seems to still be
-> used, while the definition of the s3c2412-i2s platform device was
-> removed in commit 6d259a25b56d ("ARM: SAMSUNG: use static
-> declaration when it is not used in other files") after it had
-> never been referenced since its introduction in f0fba2ad1b6b
-> ("ASoC: multi-component - ASoC Multi-Component Support").
-> 
-> Apparently it should have been used by mach-jive.c, but that
-> never happened. My patch at this point leaves the current state
-> unchanged, we can decide whether to fix or delete the jive
-> driver and s3c2412-i2s another time.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> diff --git a/arch/arm/plat-samsung/devs.c b/arch/arm/plat-samsung/devs.c
-> index 3ce234f4c872..e5e91669dd2b 100644
-> --- a/arch/arm/plat-samsung/devs.c
-> +++ b/arch/arm/plat-samsung/devs.c
-> @@ -571,6 +571,11 @@ static struct resource s3c_iis_resource[] = {
->  	[0] = DEFINE_RES_MEM(S3C24XX_PA_IIS, S3C24XX_SZ_IIS),
->  };
->  
-> +static struct s3c_audio_pdata s3c_iis_platdata = {
-> +	.dma_playback = (void *)DMACH_I2S_OUT,
-> +	.dma_capture = (void *)DMACH_I2S_IN,
 
-Why casting? Is it needed?
-
-> +};
-> +
->  struct platform_device s3c_device_iis = {
->  	.name		= "s3c24xx-iis",
->  	.id		= -1,
-> @@ -579,6 +584,7 @@ struct platform_device s3c_device_iis = {
->  	.dev		= {
->  		.dma_mask		= &samsung_device_dma_mask,
->  		.coherent_dma_mask	= DMA_BIT_MASK(32),
-> +		.platform_data		= &s3c_iis_platdata,
->  	}
->  };
->  #endif /* CONFIG_PLAT_S3C24XX */
-> diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-> index 77d27c85a32a..455a0be2278e 100644
-> --- a/sound/soc/samsung/s3c2412-i2s.c
-> +++ b/sound/soc/samsung/s3c2412-i2s.c
-> @@ -33,14 +33,14 @@
->  #include "regs-i2s-v2.h"
->  #include "s3c2412-i2s.h"
->  
-> +#include <linux/platform_data/asoc-s3c.h.h>
-> +
->  static struct s3c_dma_params s3c2412_i2s_pcm_stereo_out = {
-> -	.slave		= (void *)(uintptr_t)DMACH_I2S_OUT,
->  	.ch_name	= "tx",
->  	.dma_size	= 4,
->  };
->  
->  static struct s3c_dma_params s3c2412_i2s_pcm_stereo_in = {
-> -	.slave		= (void *)(uintptr_t)DMACH_I2S_IN,
->  	.ch_name	= "rx",
->  	.dma_size	= 4,
->  };
-> @@ -152,6 +152,7 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
->  {
->  	int ret = 0;
->  	struct resource *res;
-> +	struct s3c_audio_pdata *pdata = dev_get_platdata(&pdev->dev);
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	s3c2412_i2s.regs = devm_ioremap_resource(&pdev->dev, res);
-> @@ -159,7 +160,9 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
->  		return PTR_ERR(s3c2412_i2s.regs);
->  
->  	s3c2412_i2s_pcm_stereo_out.dma_addr = res->start + S3C2412_IISTXD;
-> +	s3c2412_i2s_pcm_stereo_out.slave = pdata->dma_playback;
->  	s3c2412_i2s_pcm_stereo_in.dma_addr = res->start + S3C2412_IISRXD;
-> +	s3c2412_i2s_pcm_stereo_in.slave = pdata->dma_capture;
->  
->  	ret = s3c_i2sv2_register_component(&pdev->dev, -1,
->  					   &s3c2412_i2s_component,
-> diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-> index 9da3a77ea2c7..807dcc0d7421 100644
-> --- a/sound/soc/samsung/s3c24xx-i2s.c
-> +++ b/sound/soc/samsung/s3c24xx-i2s.c
-> @@ -31,14 +31,14 @@
->  #include "dma.h"
->  #include "s3c24xx-i2s.h"
->  
-> +#include <linux/platform_data/asoc-s3c.h>
-> +
->  static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_out = {
-> -	.slave		= (void *)(uintptr_t)DMACH_I2S_OUT,
->  	.ch_name	= "tx",
->  	.dma_size	= 2,
->  };
->  
->  static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_in = {
-> -	.slave		= (void *)(uintptr_t)DMACH_I2S_IN,
->  	.ch_name	= "rx",
->  	.dma_size	= 2,
->  };
-> @@ -454,6 +454,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
->  {
->  	int ret = 0;
->  	struct resource *res;
-> +	struct s3c_audio_pdata *pdata = dev_get_platdata(&pdev->dev);
-
-Maybe:
-if (!pdata) {
-	pr_err("bla bla bla");
-	return -EINVAL;
-}
-
-Best regards,
-Krzysztof
-
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
-> @@ -465,7 +466,9 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
->  		return PTR_ERR(s3c24xx_i2s.regs);
->  
->  	s3c24xx_i2s_pcm_stereo_out.dma_addr = res->start + S3C2410_IISFIFO;
-> +	s3c24xx_i2s_pcm_stereo_out.slave = pdata->dma_playback;
->  	s3c24xx_i2s_pcm_stereo_in.dma_addr = res->start + S3C2410_IISFIFO;
-> +	s3c24xx_i2s_pcm_stereo_in.slave = pdata->dma_capture;
->  
->  	ret = devm_snd_soc_register_component(&pdev->dev,
->  			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
+On 11/16/2015 01:43 AM, ZH Tu wrote:
+> Hi Pierre-Louis, thanks for your reply.
 > 
+> Maybe I am not make myself clear. 
 > 
+> Actually I refer some configure from baytrail platform:
+> amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+> amixer -c0 sset 'media0_out mix 0 media1_in' on
+> amixer -c0 sset 'media1_in Gain 0' 80% 
+> amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'media1_in Gain 0' off
+> amixer -c0 sset 'pcm0_in Gain 0' 80% 
+> amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'pcm0_in Gain 0' off
+> amixer -c0 sset 'codec_out0 Gain 0' 80%
+> amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'codec_out0 Gain 0' off
+> 
+> Also there're some settings for the RT5672 codec, but I do not remember now.
+
+it seems that the link is active with no data? Couple of suggestions:
+
+1. try to enable a DSP loopback to see if the data isn't garbled by the driver
+amixer cset "name='pcm1_out mix 0 pcm0_in" on
+
+2. try a loopback from capture to playback to see if the data sampled by the codec can be played out.
+amixer -c0 sset 'codec_out0 mix 0 codec_in0' on
+amixer -c0 sset 'codec_out0 mix 0 codec_in1' on
+
+3. replicate all the data on codec_out1 to make sure you have data on all 4 slots
+
+amixer -c0 sset 'codec_out1 mix 0 pcm0_in' on
+amixer -c0 sset 'codec_out1 Gain 0' 80%
+amixer -c0 sset 'codec_out1 Gain 0 Ramp Delay' 50
+amixer -c0 sset 'codec_out1 Gain 0' off
