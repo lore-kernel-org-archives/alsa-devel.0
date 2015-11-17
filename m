@@ -1,18 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Intel Cherry Trail -- No sound in linux
-Date: Mon, 16 Nov 2015 19:54:17 -0600
-Message-ID: <564A88C9.7020008@linux.intel.com>
-References: <000a01d11b93$38632860$a9297920$@com>
- <56423EBB.8010108@linux.intel.com> <201511121444557079740@pcasl.com>
- <5644CA6C.5000302@linux.intel.com> <20151116154335174375283@pcasl.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: rt286: set combo jack for Skylake
+Date: Tue, 17 Nov 2015 11:17:33 +0530
+Message-ID: <1447739253-22166-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EA1F2260523
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 02:54:42 +0100 (CET)
-In-Reply-To: <20151116154335174375283@pcasl.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AFFC260526
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 06:43:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tuzhihe@pcasl.com
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Skylake platform also uses combo jack configuration, so add
+Skylake to existing DMI match for combo jack
 
-On 11/16/2015 01:43 AM, ZH Tu wrote:
-> Hi Pierre-Louis, thanks for your reply.
-> 
-> Maybe I am not make myself clear. 
-> 
-> Actually I refer some configure from baytrail platform:
-> amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
-> amixer -c0 sset 'media0_out mix 0 media1_in' on
-> amixer -c0 sset 'media1_in Gain 0' 80% 
-> amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'media1_in Gain 0' off
-> amixer -c0 sset 'pcm0_in Gain 0' 80% 
-> amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'pcm0_in Gain 0' off
-> amixer -c0 sset 'codec_out0 Gain 0' 80%
-> amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'codec_out0 Gain 0' off
-> 
-> Also there're some settings for the RT5672 codec, but I do not remember now.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/rt286.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-it seems that the link is active with no data? Couple of suggestions:
-
-1. try to enable a DSP loopback to see if the data isn't garbled by the driver
-amixer cset "name='pcm1_out mix 0 pcm0_in" on
-
-2. try a loopback from capture to playback to see if the data sampled by the codec can be played out.
-amixer -c0 sset 'codec_out0 mix 0 codec_in0' on
-amixer -c0 sset 'codec_out0 mix 0 codec_in1' on
-
-3. replicate all the data on codec_out1 to make sure you have data on all 4 slots
-
-amixer -c0 sset 'codec_out1 mix 0 pcm0_in' on
-amixer -c0 sset 'codec_out1 Gain 0' 80%
-amixer -c0 sset 'codec_out1 Gain 0 Ramp Delay' 50
-amixer -c0 sset 'codec_out1 Gain 0' off
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index af2ed774b552..bc08f0c5a5f6 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1114,6 +1114,12 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Wilson Beach SDS")
+ 		}
+ 	},
++	{
++		.ident = "Intel Skylake RVP",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Skylake Client platform")
++		}
++	},
+ 	{ }
+ };
+ 
+-- 
+1.9.1
