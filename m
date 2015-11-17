@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: don't overwrite CTRL2 register"
-	to the asoc tree
-Date: Tue, 17 Nov 2015 18:54:47 +0000
-Message-ID: <E1ZylOx-00041F-LL@debutante>
-References: <87h9klhw5e.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt286: set combo jack for Skylake" to
+	the asoc tree
+Date: Tue, 17 Nov 2015 18:54:49 +0000
+Message-ID: <E1ZylOz-00042C-FW@debutante>
+References: <1447739253-22166-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BEDA02652C5
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:52 +0100 (CET)
-In-Reply-To: <87h9klhw5e.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A7AF62652E9
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2015 19:54:55 +0100 (CET)
+In-Reply-To: <1447739253-22166-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: don't overwrite CTRL2 register
+   ASoC: rt286: set combo jack for Skylake
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From b323dd30718e2055adb5534e52f685a57c119c18 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 17 Nov 2015 08:28:56 +0000
-Subject: [PATCH] ASoC: ak4613: don't overwrite CTRL2 register
+>From 166765ea8b686c64b590fa62664a4adb35aa2d6a Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 17 Nov 2015 11:17:33 +0530
+Subject: [PATCH] ASoC: rt286: set combo jack for Skylake
 
-Current code set DFS settings on CTRL2 register, but it overwrite
-default settings. This patch fixup it.
+Skylake platform also uses combo jack configuration, so add
+Skylake to existing DMI match for combo jack
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt286.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index dab127603ff6..62c08a6395af 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -70,6 +70,7 @@
- #define FMT_MASK	(0xf8)
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index af2ed774b552..bc08f0c5a5f6 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1114,6 +1114,12 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Wilson Beach SDS")
+ 		}
+ 	},
++	{
++		.ident = "Intel Skylake RVP",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Skylake Client platform")
++		}
++	},
+ 	{ }
+ };
  
- /* CTRL2 */
-+#define DFS_MASK		(3 << 2)
- #define DFS_NORMAL_SPEED	(0 << 2)
- #define DFS_DOUBLE_SPEED	(1 << 2)
- #define DFS_QUAD_SPEED		(2 << 2)
-@@ -361,7 +362,7 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 	fmt_ctrl = AUDIO_IFACE_TO_VAL(iface);
- 
- 	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
--	snd_soc_write(codec, CTRL2, ctrl2);
-+	snd_soc_update_bits(codec, CTRL2, DFS_MASK, ctrl2);
- 
- 	snd_soc_write(codec, ICTRL, priv->ic);
- 	snd_soc_write(codec, OCTRL, priv->oc);
 -- 
 2.6.2
