@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/4] topology: Remove unused function
-	write_data_block()
-Date: Wed, 18 Nov 2015 02:22:59 -0500
-Message-ID: <e846462b7889ab808f641e1d7f21a6e899442696.1447825540.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/4] topology: Change variable type to fix gcc
+	warning
+Date: Wed, 18 Nov 2015 02:23:07 -0500
+Message-ID: <52b9413a02fff6e7edb4541023fe53bb495bbf91.1447825540.git.mengdong.lin@linux.intel.com>
 References: <cover.1447825540.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 717B5265375
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 08:07:14 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B1D0265382
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 08:07:21 +0100 (CET)
 In-Reply-To: <cover.1447825540.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,45 +27,60 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Fix gcc warning: 'write_data_block' defined but not used
-[-Wunused-function].
+Fix warning: comparison between signed and unsigned integer expressions
+[-Wsign-compare]
 
+ABI objects use type _le32, which is converted to host unsigned integer.
+So the iterator 'i' in a loop as below should also be unsigned.
+for (i = 0; i < pcm->num_streams; i++)
+                ^
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/builder.c b/src/topology/builder.c
-index 154bd63..b0ba54e 100644
---- a/src/topology/builder.c
-+++ b/src/topology/builder.c
-@@ -82,30 +82,6 @@ static int write_block_header(snd_tplg_t *tplg, unsigned int type,
- 	return bytes;
- }
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
+index 7d8787f..6dc3b3d 100644
+--- a/src/topology/ctl.c
++++ b/src/topology/ctl.c
+@@ -676,7 +676,8 @@ int tplg_add_mixer(snd_tplg_t *tplg, struct snd_tplg_mixer_template *mixer,
+ 	struct snd_soc_tplg_private *priv = mixer->priv;
+ 	struct snd_soc_tplg_mixer_control *mc;
+ 	struct tplg_elem *elem;
+-	int ret, i;
++	int ret;
++	unsigned int i;
  
--static int write_data_block(snd_tplg_t *tplg, int size, int tplg_type,
--	const char *obj_name, void *data)
--{
--	int ret;
--
--	/* write the header for this block */
--	ret = write_block_header(tplg, tplg_type, 0,
--		tplg->version, 0, size, 1);
--	if (ret < 0) {
--		SNDERR("error: failed to write %s block %d\n", obj_name, ret);
--		return ret;
--	}
--
--	verbose(tplg, " %s : write %d bytes\n", obj_name, size);
--
--	ret = write(tplg->out_fd, data, size);
--	if (ret < 0) {
--		SNDERR("error: failed to write %s %d\n", obj_name, ret);
--		return ret;
--	}
--
--	return 0;
--}
--
- static int write_elem_block(snd_tplg_t *tplg,
- 	struct list_head *base, int size, int tplg_type, const char *obj_name)
+ 	tplg_dbg(" Control Mixer: %s\n", mixer->hdr.name);
+ 
+@@ -743,7 +744,8 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
  {
+ 	struct snd_soc_tplg_enum_control *ec;
+ 	struct tplg_elem *elem;
+-	int ret, i;
++	int ret;
++	unsigned int i;
+ 
+ 	tplg_dbg(" Control Enum: %s\n", enum_ctl->hdr.name);
+ 
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 9b7e402..4b7c058 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -522,7 +522,7 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	struct snd_tplg_pcm_template *pcm_tpl = t->pcm;
+ 	struct snd_soc_tplg_pcm *pcm;
+ 	struct tplg_elem *elem;
+-	int i;
++	unsigned int i;
+ 
+ 	tplg_dbg("PCM: %s, DAI %s\n", pcm_tpl->pcm_name, pcm_tpl->dai_name);
+ 
+@@ -564,7 +564,7 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	struct snd_tplg_link_template *link = t->link;
+ 	struct snd_soc_tplg_link_config *lk;
+ 	struct tplg_elem *elem;
+-	int i;
++	unsigned int i;
+ 
+ 	if (t->type != SND_TPLG_TYPE_BE && t->type != SND_TPLG_TYPE_CC)
+ 		return -EINVAL;
 -- 
 2.5.0
