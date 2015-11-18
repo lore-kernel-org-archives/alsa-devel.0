@@ -1,43 +1,35 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCHv2 3/3] ASoC: samsung: pass filter function
-	as pointer
-Date: Wed, 18 Nov 2015 10:31:20 +0100
-Message-ID: <4007784.QRStAbUhLz@wuerfel>
-References: <6346833.MfUC71I3uD@wuerfel> <6346833.dgFksO4fT8@wuerfel>
- <564BDEBE.2080706@samsung.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: Intel: pass correct parameter in
+ sst_alloc_stream_mrfld()
+Date: Wed, 18 Nov 2015 13:04:20 +0300
+Message-ID: <20151118100255.GA15236@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id B324A26062C
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 10:31:35 +0100 (CET)
-In-Reply-To: <564BDEBE.2080706@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Kukjin Kim <kgene@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 18 November 2015 11:13:18 Krzysztof Kozlowski wrote:
-> 
-> I also tested entire patchset on Exynos4412/Trats2 board (custom kernel
-> with audio working) for regressions and it worked fine. However, since
-> this was not a S3C24xx/S3C64xx board, I don't find that testing
-> sufficient for a tag. So only:
-> 
-> Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-> 
+"data" is always NULL in this function.  I think we should be passing
+"&data" to sst_prepare_and_post_msg() instead of "data".
 
-Thanks!
+Fixes: 3d9ff34622ba ('ASoC: Intel: sst: add stream operations')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Not tested.
 
-Mark, can you take the three patches through the ASoC tree?
-
-	Arnd
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index a74c64c..4ccc80e 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -108,7 +108,7 @@ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
+ 			str_id, pipe_id);
+ 	ret = sst_prepare_and_post_msg(sst_drv_ctx, task_id, IPC_CMD,
+ 			IPC_IA_ALLOC_STREAM_MRFLD, pipe_id, sizeof(alloc_param),
+-			&alloc_param, data, true, true, false, true);
++			&alloc_param, &data, true, true, false, true);
+ 
+ 	if (ret < 0) {
+ 		dev_err(sst_drv_ctx->dev, "FW alloc failed ret %d\n", ret);
