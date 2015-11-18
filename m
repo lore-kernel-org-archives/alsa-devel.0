@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove
-	pm_runtime_get/put calls" to the asoc tree
-Date: Wed, 18 Nov 2015 18:47:15 +0000
-Message-ID: <E1Zz7lD-0001Ou-2S@debutante>
-References: <1447422733-2484-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: add adi + nau8825
+	machine driver entry" to the asoc tree
+Date: Wed, 18 Nov 2015 18:47:16 +0000
+Message-ID: <E1Zz7lE-0001PN-09@debutante>
+References: <1446744188-1274-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5021265B90
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:20 +0100 (CET)
-In-Reply-To: <1447422733-2484-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 75220265B94
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:21 +0100 (CET)
+In-Reply-To: <1446744188-1274-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Fang Yang A <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: remove pm_runtime_get/put calls
+   ASoC: Intel: Skylake: add adi + nau8825 machine driver entry
 
 has been applied to the asoc tree at
 
@@ -53,92 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 28823f1538ce2f67b7c21e30d6b84c3e86f8c0fd Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 13 Nov 2015 19:22:05 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: remove pm_runtime_get/put calls
+>From 02cc23555dfeec9ab87340f052541dd906fb440c Mon Sep 17 00:00:00 2001
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Date: Thu, 5 Nov 2015 22:53:08 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: add adi + nau8825 machine driver entry
 
-The ASoC core already does pm_runtime_get/put in the core before
-opening/closing the devices.
-So we do not need to do this is driver, hence remove
+This patch adds skl_nau8825_ssn4567_i2s machine driver into
+machine table
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 25 -------------------------
- 1 file changed, 25 deletions(-)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c8d942887348..dae332beea3f 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -112,12 +112,8 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_ext_stream *stream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct skl_dma_params *dma_params;
--	int ret;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 390f839d6168..8ead864f354a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -587,6 +587,8 @@ static void skl_remove(struct pci_dev *pci)
  
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
--	ret = pm_runtime_get_sync(dai->dev);
--	if (ret < 0)
--		return ret;
- 
- 	stream = snd_hdac_ext_stream_assign(ebus, substream,
- 					skl_get_host_stream_type(ebus));
-@@ -262,8 +258,6 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	 */
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 
--	pm_runtime_mark_last_busy(dai->dev);
--	pm_runtime_put_autosuspend(dai->dev);
- 	kfree(dma_params);
- }
- 
-@@ -512,19 +506,6 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_be_startup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	return pm_runtime_get_sync(dai->dev);
--}
--
--static void skl_be_shutdown(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	pm_runtime_mark_last_busy(dai->dev);
--	pm_runtime_put_autosuspend(dai->dev);
--}
--
- static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.startup = skl_pcm_open,
- 	.shutdown = skl_pcm_close,
-@@ -535,24 +516,18 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
++	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
++				NULL, NULL, NULL },
+ 	{}
  };
  
- static struct snd_soc_dai_ops skl_dmic_dai_ops = {
--	.startup = skl_be_startup,
- 	.hw_params = skl_be_hw_params,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
--	.startup = skl_be_startup,
- 	.hw_params = skl_be_hw_params,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
--	.startup = skl_be_startup,
- 	.prepare = skl_link_pcm_prepare,
- 	.hw_params = skl_link_hw_params,
- 	.hw_free = skl_link_hw_free,
- 	.trigger = skl_link_pcm_trigger,
--	.shutdown = skl_be_shutdown,
- };
- 
- static struct snd_soc_dai_driver skl_platform_dai[] = {
 -- 
 2.6.2
