@@ -1,23 +1,18 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH v2 1/2] ASoC: da7218: Add bindings
- documentation for DA7218 audio codec
-Date: Wed, 18 Nov 2015 11:23:53 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460E69C@SW-EX-MBX01.diasemi.com>
-References: <cover.1447254553.git.Adam.Thomson.Opensource@diasemi.com>
- <760d212f18efec816701f2b3e9fc549ca86d31ee.1447254553.git.Adam.Thomson.Opensource@diasemi.com>
- <20151111201946.GA24618@rob-hp-laptop>
- <2E89032DDAA8B9408CB92943514A0337D460E61B@SW-EX-MBX01.diasemi.com>
- <CAL_Jsq+g4u6qvTDH3FUkZmwkOAptPnie8Mp0r=L8g+JJ-fYKnQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Question about TDM "slot"
+Date: Wed, 18 Nov 2015 11:30:12 +0000
+Message-ID: <20151118113012.GH31303@sirena.org.uk>
+References: <87fv05hv7b.wl%kuninori.morimoto.gx@renesas.com>
+ <20151117105233.GM31303@sirena.org.uk>
+ <87h9kjrce6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0755617726586928360=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.109])
- by alsa0.perex.cz (Postfix) with ESMTP id C991D2656F3
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 12:23:57 +0100 (CET)
-In-Reply-To: <CAL_Jsq+g4u6qvTDH3FUkZmwkOAptPnie8Mp0r=L8g+JJ-fYKnQ@mail.gmail.com>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46318260A5D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 12:30:21 +0100 (CET)
+In-Reply-To: <87h9kjrce6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,36 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On November 17, 2015 17:54, Rob Herring wrote:
 
-> >> > +- dlg,micbias1-lvl : Voltage (mV) for Mic Bias 1
-> >> > +   [<1200>, <1600>, <1800>, <2000>, <2200>, <2400>, <2600>, <2800>,
-> >> <3000>]
-> >> > +- dlg,micbias2-lvl : Voltage (mV) for Mic Bias 2
-> >> > +   [<1200>, <1600>, <1800>, <2000>, <2200>, <2400>, <2600>, <2800>,
-> >> <3000>]
-> >>
-> >> Units please (-microvolt).
-> >
-> > I refer back to our previous discussion (https://lkml.org/lkml/2015/10/8/661).
-> > This doesn't add anything and makes the binding name unnecessarily long. Why is
-> > this being enforced? Whoever uses the binding will have to look at the
-> > documentation to understand which values are valid anyway, so this seems like
-> > cruft.
-> 
-> It is simply standard, best practice for new bindings. Certainly there
-> are examples that don't follow this, but they are either old or
-> escaped review.
-> 
-> Drop the 'lvl' part if you are so concerned about length.
+--===============0755617726586928360==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lo/yIdJSCXpBJBdU"
+Content-Disposition: inline
 
-If this is a standard, then maybe this should be explicitly documented and
-pushed to all other maintainers so it isn't escaping review? Otherwise you're
-left with a disparity which suggests it isn't standard at all. Personally I
-stand by that for device specific bindings this shouldn't apply as it gains
-nothing except achieving an overly long binding, or you end up cutting down the
-descriptive part of the name to accommodate units at the end.
+
+--lo/yIdJSCXpBJBdU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Nov 18, 2015 at 07:37:51AM +0000, Kuninori Morimoto wrote:
+
+> Thanks. We can have total channel number.
+> Then do we have common DT settings/method to indicate below ?
+
+There's some stuff already supported for simple-card - see
+snd_soc_of_parse_tdm_slot().  This won't cover all uses but it should be
+good for simple uses.
+
+> I guess we need this settings on both CPU/Codec.
+
+Yes.
+
+> I guess I need this settings on both CPU/Codec too.
+> Do we have common settings/method ?
+
+Well, the current API should be consistent over all
+
+--lo/yIdJSCXpBJBdU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWTGFEAAoJECTWi3JdVIfQiBoH/Asw/NoTbHGjPQRp7rfxgyMr
+hSLQE+/Q1FLXbQWGbD+Yxy4O3QrW87XRiTZCrKlD0OtDtLAZ7REECKO17BFvY/PB
+CZB36Cqru/UV3YQB5FMhldtrj0iH7VFKK4NyXomHEpw/oU3t0z1/Ww4sNiOPhotJ
+sVbWBxp9NgVOzE03y84N8XUBrYPDxjVWX0HnQeOiZY0t9uQbWRjLvQVj+y4aa9N9
+aFWEi77+c8HhoV0sWkwRKKMBXf+YSfL44lxRdGBsavclzvi6LskQBKyEJbR/CmLo
+qlUZT08H2KQ23zbE0QJkrzmXf67C4j/ApWR6AflLcpzf7rUzD1v/7SR0cMfIqjE=
+=Dma1
+-----END PGP SIGNATURE-----
+
+--lo/yIdJSCXpBJBdU--
+
+--===============0755617726586928360==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0755617726586928360==--
