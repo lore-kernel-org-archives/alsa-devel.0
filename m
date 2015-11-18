@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove platform boot support from
-	src.c" to the asoc tree
-Date: Wed, 18 Nov 2015 18:09:39 +0000
-Message-ID: <E1Zz7Ap-0000Hm-8z@debutante>
-References: <87ziymjve0.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: SRC settings matches to
+	datasheet" to the asoc tree
+Date: Wed, 18 Nov 2015 18:09:42 +0000
+Message-ID: <E1Zz7As-0000Jg-0v@debutante>
+References: <874mgula0b.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 121F5265AF8
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:44 +0100 (CET)
-In-Reply-To: <87ziymjve0.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B9E372659C7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:47 +0100 (CET)
+In-Reply-To: <874mgula0b.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove platform boot support from src.c
+   ASoC: rsnd: SRC settings matches to datasheet
 
 has been applied to the asoc tree at
 
@@ -53,272 +53,625 @@ to this mail.
 Thanks,
 Mark
 
->From adf6a6815952c6c6092ae15e27c1b782fd96c6a3 Mon Sep 17 00:00:00 2001
+>From 75916f6524f055bca134f50901f926d5b0693db5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 10 Nov 2015 05:11:55 +0000
-Subject: [PATCH] ASoC: rsnd: remove platform boot support from src.c
+Date: Tue, 10 Nov 2015 05:10:48 +0000
+Subject: [PATCH] ASoC: rsnd: SRC settings matches to datasheet
 
-No board is using Renesas sound driver via platform boot now.
-This means all user is using DT boot. Platform boot support is
-no longer needed. But, it strongly depends on platform boot style.
-This patch removes platform boot support from src.c
+Current SRC settings order was rough. Now, Gen1 support was removed.
+This patch makes it cleanup and match to datasheet.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 158 +++++++++++++-----------------------------------
- 1 file changed, 43 insertions(+), 115 deletions(-)
+ sound/soc/sh/rcar/src.c | 424 +++++++++++++++++++-----------------------------
+ 1 file changed, 166 insertions(+), 258 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 230db9f81377..f965fea7aa50 100644
+index 0978221b2fe1..d081a652f917 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -20,17 +20,18 @@
- #define OUF_SRC(id)	((1 << (id + 16)) | (1 << id))
- 
- struct rsnd_src {
--	struct rsnd_src_platform_info *info; /* rcar_snd.h */
- 	struct rsnd_mod mod;
- 	struct rsnd_mod *dma;
- 	struct rsnd_kctrl_cfg_s sen;  /* sync convert enable */
- 	struct rsnd_kctrl_cfg_s sync; /* sync convert */
- 	u32 convert_rate; /* sampling rate convert */
- 	int err;
-+	int irq;
- };
- 
- #define RSND_SRC_NAME_SIZE 16
- 
-+#define rsnd_src_get(priv, id) ((struct rsnd_src *)(priv->src) + id)
- #define rsnd_src_to_dma(src) ((src)->dma)
- #define rsnd_src_nr(priv) ((priv)->src_nr)
- #define rsnd_enable_sync_convert(src) ((src)->sen.val)
-@@ -69,52 +70,6 @@ struct rsnd_src {
-  *        |-----------------|
+@@ -117,23 +117,12 @@ struct rsnd_src {
+  *
   */
  
 -/*
-- *	How to use SRC bypass mode for debugging
-- *
-- * SRC has bypass mode, and it is useful for debugging.
-- * In Gen2 case,
-- * SRCm_MODE controls whether SRC is used or not
-- * SSI_MODE0 controls whether SSIU which receives SRC data
-- * is used or not.
-- * Both SRCm_MODE/SSI_MODE0 settings are needed if you use SRC,
-- * but SRC bypass mode needs SSI_MODE0 only.
-- *
-- * This driver request
-- * struct rsnd_src_platform_info {
-- *	u32 convert_rate;
-- *	int dma_id;
-- * }
-- *
-- * rsnd_src_convert_rate() indicates
-- * above convert_rate, and it controls
-- * whether SRC is used or not.
-- *
-- * ex) doesn't use SRC
-- * static struct rsnd_dai_platform_info rsnd_dai = {
-- *	.playback = { .ssi = &rsnd_ssi[0], },
-- * };
-- *
-- * ex) uses SRC
-- * static struct rsnd_src_platform_info rsnd_src[] = {
-- *	RSND_SCU(48000, 0),
-- *	...
-- * };
-- * static struct rsnd_dai_platform_info rsnd_dai = {
-- *	.playback = { .ssi = &rsnd_ssi[0], .src = &rsnd_src[0] },
-- * };
-- *
-- * ex) uses SRC bypass mode
-- * static struct rsnd_src_platform_info rsnd_src[] = {
-- *	RSND_SCU(0, 0),
-- *	...
-- * };
-- * static struct rsnd_dai_platform_info rsnd_dai = {
-- *	.playback = { .ssi = &rsnd_ssi[0], .src = &rsnd_src[0] },
-- * };
-- *
+- *		Gen1/Gen2 common functions
 - */
--
  static void rsnd_src_soft_reset(struct rsnd_mod *mod)
  {
  	rsnd_mod_write(mod, SRC_SWRSR, 0);
-@@ -187,9 +142,6 @@ static int rsnd_src_hw_params(struct rsnd_mod *mod,
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+ 	rsnd_mod_write(mod, SRC_SWRSR, 1);
+ }
  
--	/* default value (mainly for non-DT) */
--	src->convert_rate = src->info->convert_rate;
 -
- 	/*
- 	 * SRC assumes that it is used under DPCM if user want to use
- 	 * sampling rate convert. Then, SRC should be FE.
-@@ -318,7 +270,7 @@ static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
+-#define rsnd_src_initialize_lock(mod)	__rsnd_src_initialize_lock(mod, 1)
+-#define rsnd_src_initialize_unlock(mod)	__rsnd_src_initialize_lock(mod, 0)
+-static void __rsnd_src_initialize_lock(struct rsnd_mod *mod, u32 enable)
+-{
+-	rsnd_mod_write(mod, SRC_SRCIR, enable);
+-}
+-
+ static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
+ 					 struct rsnd_mod *mod)
+ {
+@@ -192,34 +181,6 @@ unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
+ 	return rate;
+ }
+ 
+-static int rsnd_src_set_convert_rate(struct rsnd_mod *mod,
+-				     struct rsnd_dai_stream *io)
+-{
+-	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	u32 convert_rate = rsnd_src_convert_rate(io, src);
+-	u32 fsrate = 0;
+-
+-	if (convert_rate)
+-		fsrate = 0x0400000 / convert_rate * runtime->rate;
+-
+-	/* Set channel number and output bit length */
+-	rsnd_mod_write(mod, SRC_ADINR, rsnd_get_adinr_bit(mod, io));
+-
+-	/* Enable the initial value of IFS */
+-	if (fsrate) {
+-		rsnd_mod_write(mod, SRC_IFSCR, 1);
+-
+-		/* Set initial value of IFS */
+-		rsnd_mod_write(mod, SRC_IFSVR, fsrate);
+-	}
+-
+-	/* use DMA transfer */
+-	rsnd_mod_write(mod, SRC_BUSIF_MODE, 1);
+-
+-	return 0;
+-}
+-
+ static int rsnd_src_hw_params(struct rsnd_mod *mod,
+ 			      struct rsnd_dai_stream *io,
+ 			      struct snd_pcm_substream *substream,
+@@ -256,65 +217,106 @@ static int rsnd_src_hw_params(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_src_init(struct rsnd_mod *mod,
+-			 struct rsnd_priv *priv)
++static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
++				      struct rsnd_mod *mod)
+ {
++	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
++	u32 convert_rate = rsnd_src_convert_rate(io, src);
++	u32 ifscr, fsrate, adinr;
++	u32 cr, route;
++	u32 bsdsr, bsisr;
++	uint ratio;
+ 
+-	rsnd_mod_power_on(mod);
+-
+-	rsnd_src_soft_reset(mod);
+-
+-	rsnd_src_initialize_lock(mod);
+-
+-	src->err = 0;
+-
+-	/* reset sync convert_rate */
+-	src->sync.val = 0;
++	if (!runtime)
++		return;
+ 
+-	return 0;
+-}
++	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
++	if (!convert_rate)
++		ratio = 0;
++	else if (convert_rate > runtime->rate)
++		ratio = 100 * convert_rate / runtime->rate;
++	else
++		ratio = 100 * runtime->rate / convert_rate;
+ 
+-static int rsnd_src_quit(struct rsnd_mod *mod,
+-			 struct rsnd_dai_stream *io,
+-			 struct rsnd_priv *priv)
+-{
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
++	if (ratio > 600) {
++		dev_err(dev, "FSO/FSI ratio error\n");
++		return;
++	}
+ 
+-	rsnd_mod_power_off(mod);
++	/*
++	 *	SRC_ADINR
++	 */
++	adinr = rsnd_get_adinr_bit(mod, io);
+ 
+-	if (src->err)
+-		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod), src->err);
++	/*
++	 *	SRC_IFSCR / SRC_IFSVR
++	 */
++	ifscr = 0;
++	fsrate = 0;
++	if (convert_rate) {
++		ifscr = 1;
++		fsrate = 0x0400000 / convert_rate * runtime->rate;
++	}
+ 
+-	src->convert_rate = 0;
++	/*
++	 *	SRC_SRCCR / SRC_ROUTE_MODE0
++	 */
++	cr	= 0x00011110;
++	route	= 0x0;
++	if (convert_rate) {
++		route	= 0x1;
+ 
+-	/* reset sync convert_rate */
+-	src->sync.val = 0;
++		if (rsnd_enable_sync_convert(src)) {
++			cr |= 0x1;
++			route |= rsnd_io_is_play(io) ?
++				(0x1 << 24) : (0x1 << 25);
++		}
++	}
+ 
+-	return 0;
+-}
++	/*
++	 * SRC_BSDSR / SRC_BSISR
++	 */
++	switch (rsnd_mod_id(mod)) {
++	case 5:
++	case 6:
++	case 7:
++	case 8:
++		bsdsr = 0x02400000; /* 6 - 1/6 */
++		bsisr = 0x00100060; /* 6 - 1/6 */
++		break;
++	default:
++		bsdsr = 0x01800000; /* 6 - 1/6 */
++		bsisr = 0x00100060 ;/* 6 - 1/6 */
++		break;
++	}
+ 
+-static int rsnd_src_start(struct rsnd_mod *mod)
+-{
+-	rsnd_src_initialize_unlock(mod);
++	rsnd_mod_write(mod, SRC_SRCIR, 1);	/* initialize */
++	rsnd_mod_write(mod, SRC_ADINR, adinr);
++	rsnd_mod_write(mod, SRC_IFSCR, ifscr);
++	rsnd_mod_write(mod, SRC_IFSVR, fsrate);
++	rsnd_mod_write(mod, SRC_SRCCR, cr);
++	rsnd_mod_write(mod, SRC_BSDSR, bsdsr);
++	rsnd_mod_write(mod, SRC_BSISR, bsisr);
++	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
+ 
+-	return 0;
+-}
++	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
++	rsnd_mod_write(mod, SRC_BUSIF_MODE, 1);
++	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
+ 
+-static int rsnd_src_stop(struct rsnd_mod *mod)
+-{
+-	/* nothing to do */
+-	return 0;
++	if (convert_rate)
++		rsnd_adg_set_convert_clk_gen2(mod, io,
++					      runtime->rate,
++					      convert_rate);
++	else
++		rsnd_adg_set_convert_timing_gen2(mod, io);
+ }
+ 
+-/*
+- *		Gen2 functions
+- */
+-#define rsnd_src_irq_enable_gen2(mod)  rsnd_src_irq_ctrol_gen2(mod, 1)
+-#define rsnd_src_irq_disable_gen2(mod) rsnd_src_irq_ctrol_gen2(mod, 0)
+-static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
++#define rsnd_src_irq_enable(mod)  rsnd_src_irq_ctrol(mod, 1)
++#define rsnd_src_irq_disable(mod) rsnd_src_irq_ctrol(mod, 0)
++static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
  {
  	struct rsnd_src *src = rsnd_mod_to_src(mod);
  	u32 sys_int_val, int_val, sys_int_mask;
--	int irq = src->info->irq;
-+	int irq = src->irq;
- 	int id = rsnd_mod_id(mod);
+@@ -328,7 +330,7 @@ static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
+ 	/*
+ 	 * IRQ is not supported on non-DT
+ 	 * see
+-	 *	rsnd_src_probe_gen2()
++	 *	rsnd_src_probe_()
+ 	 */
+ 	if ((irq <= 0) || !enable) {
+ 		sys_int_val = 0;
+@@ -348,7 +350,7 @@ static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
+ 	rsnd_mod_bset(mod, SCU_SYS_INT_EN1, sys_int_mask, sys_int_val);
+ }
  
- 	sys_int_val =
-@@ -517,7 +469,7 @@ static int rsnd_src_probe_(struct rsnd_mod *mod,
+-static void rsnd_src_error_clear_gen2(struct rsnd_mod *mod)
++static void rsnd_src_error_clear(struct rsnd_mod *mod)
+ {
+ 	u32 val = OUF_SRC(rsnd_mod_id(mod));
+ 
+@@ -356,7 +358,7 @@ static void rsnd_src_error_clear_gen2(struct rsnd_mod *mod)
+ 	rsnd_mod_bset(mod, SCU_SYS_STATUS1, val, val);
+ }
+ 
+-static bool rsnd_src_error_record_gen2(struct rsnd_mod *mod)
++static bool rsnd_src_error_record(struct rsnd_mod *mod)
+ {
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 	u32 val0, val1;
+@@ -381,22 +383,18 @@ static bool rsnd_src_error_record_gen2(struct rsnd_mod *mod)
+ 	}
+ 
+ 	/* clear error static */
+-	rsnd_src_error_clear_gen2(mod);
++	rsnd_src_error_clear(mod);
+ 
+ 	return ret;
+ }
+ 
+-static int rsnd_src_start_gen2(struct rsnd_mod *mod,
+-			       struct rsnd_dai_stream *io,
+-			       struct rsnd_priv *priv)
++static int rsnd_src_start(struct rsnd_mod *mod,
++			  struct rsnd_dai_stream *io,
++			  struct rsnd_priv *priv)
+ {
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 	u32 val;
+ 
+-	val = rsnd_get_dalign(mod, io);
+-
+-	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, val);
+-
+ 	/*
+ 	 * WORKAROUND
+ 	 *
+@@ -407,44 +405,74 @@ static int rsnd_src_start_gen2(struct rsnd_mod *mod,
+ 
+ 	rsnd_mod_write(mod, SRC_CTRL, val);
+ 
+-	rsnd_src_error_clear_gen2(mod);
+-
+-	rsnd_src_start(mod);
+-
+-	rsnd_src_irq_enable_gen2(mod);
+-
+ 	return 0;
+ }
+ 
+-static int rsnd_src_stop_gen2(struct rsnd_mod *mod,
+-			      struct rsnd_dai_stream *io,
+-			      struct rsnd_priv *priv)
++static int rsnd_src_stop(struct rsnd_mod *mod,
++			 struct rsnd_dai_stream *io,
++			 struct rsnd_priv *priv)
+ {
+-	rsnd_src_irq_disable_gen2(mod);
+-
+ 	/*
+ 	 * stop SRC output only
+-	 * see rsnd_src_quit_gen2
++	 * see rsnd_src_quit
+ 	 */
+ 	rsnd_mod_write(mod, SRC_CTRL, 0x01);
+ 
+-	rsnd_src_error_record_gen2(mod);
++	return 0;
++}
++
++static int rsnd_src_init(struct rsnd_mod *mod,
++			 struct rsnd_dai_stream *io,
++			 struct rsnd_priv *priv)
++{
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 
+-	return rsnd_src_stop(mod);
++	rsnd_mod_power_on(mod);
++
++	rsnd_src_soft_reset(mod);
++
++	rsnd_src_set_convert_rate(io, mod);
++
++	rsnd_src_error_clear(mod);
++
++	rsnd_src_irq_enable(mod);
++
++	src->err = 0;
++
++	/* reset sync convert_rate */
++	src->sync.val = 0;
++
++	return 0;
+ }
+ 
+-static int rsnd_src_quit_gen2(struct rsnd_mod *mod,
+-			      struct rsnd_dai_stream *io,
+-			      struct rsnd_priv *priv)
++static int rsnd_src_quit(struct rsnd_mod *mod,
++			 struct rsnd_dai_stream *io,
++			 struct rsnd_priv *priv)
+ {
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
++	struct device *dev = rsnd_priv_to_dev(priv);
++
++	rsnd_src_irq_disable(mod);
++
+ 	/* stop both out/in */
+ 	rsnd_mod_write(mod, SRC_CTRL, 0);
+ 
+-	return rsnd_src_quit(mod, io, priv);
++	rsnd_mod_power_off(mod);
++
++	if (src->err)
++		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
++			 rsnd_mod_name(mod), rsnd_mod_id(mod), src->err);
++
++	src->convert_rate = 0;
++
++	/* reset sync convert_rate */
++	src->sync.val = 0;
++
++	return 0;
+ }
+ 
+-static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
+-				      struct rsnd_dai_stream *io)
++static void __rsnd_src_interrupt(struct rsnd_mod *mod,
++				 struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+@@ -454,119 +482,40 @@ static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
+ 
+ 	/* ignore all cases if not working */
+ 	if (!rsnd_io_is_working(io))
+-		goto rsnd_src_interrupt_gen2_out;
++		goto rsnd_src_interrupt_out;
+ 
+-	if (rsnd_src_error_record_gen2(mod)) {
++	if (rsnd_src_error_record(mod)) {
+ 
+ 		dev_dbg(dev, "%s[%d] restart\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 
+-		rsnd_src_stop_gen2(mod, io, priv);
+-		rsnd_src_start_gen2(mod, io, priv);
++		rsnd_src_stop(mod, io, priv);
++		rsnd_src_start(mod, io, priv);
+ 	}
+ 
+ 	if (src->err > 1024) {
+-		rsnd_src_irq_disable_gen2(mod);
++		rsnd_src_irq_disable(mod);
+ 
+ 		dev_warn(dev, "no more %s[%d] restart\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ 
+-rsnd_src_interrupt_gen2_out:
++rsnd_src_interrupt_out:
+ 	spin_unlock(&priv->lock);
+ }
+ 
+-static irqreturn_t rsnd_src_interrupt_gen2(int irq, void *data)
++static irqreturn_t rsnd_src_interrupt(int irq, void *data)
+ {
+ 	struct rsnd_mod *mod = data;
+ 
+-	rsnd_mod_interrupt(mod, __rsnd_src_interrupt_gen2);
++	rsnd_mod_interrupt(mod, __rsnd_src_interrupt);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int rsnd_src_set_convert_rate_gen2(struct rsnd_mod *mod,
+-					  struct rsnd_dai_stream *io)
+-{
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	u32 convert_rate = rsnd_src_convert_rate(io, src);
+-	u32 cr, route;
+-	uint ratio;
+-	int ret;
+-
+-	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
+-	if (!convert_rate)
+-		ratio = 0;
+-	else if (convert_rate > runtime->rate)
+-		ratio = 100 * convert_rate / runtime->rate;
+-	else
+-		ratio = 100 * runtime->rate / convert_rate;
+-
+-	if (ratio > 600) {
+-		dev_err(dev, "FSO/FSI ratio error\n");
+-		return -EINVAL;
+-	}
+-
+-	ret = rsnd_src_set_convert_rate(mod, io);
+-	if (ret < 0)
+-		return ret;
+-
+-	cr	= 0x00011110;
+-	route	= 0x0;
+-	if (convert_rate) {
+-		route	= 0x1;
+-
+-		if (rsnd_enable_sync_convert(src)) {
+-			cr |= 0x1;
+-			route |= rsnd_io_is_play(io) ?
+-				(0x1 << 24) : (0x1 << 25);
+-		}
+-	}
+-
+-	rsnd_mod_write(mod, SRC_SRCCR, cr);
+-	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
+-
+-	switch (rsnd_mod_id(mod)) {
+-	case 5:
+-	case 6:
+-	case 7:
+-	case 8:
+-		rsnd_mod_write(mod, SRC_BSDSR, 0x02400000);
+-		break;
+-	default:
+-		rsnd_mod_write(mod, SRC_BSDSR, 0x01800000);
+-		break;
+-	}
+-
+-	rsnd_mod_write(mod, SRC_BSISR, 0x00100060);
+-
+-	return 0;
+-}
+-
+-static int rsnd_src_set_convert_timing_gen2(struct rsnd_dai_stream *io,
+-					    struct rsnd_mod *mod)
+-{
+-	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	u32 convert_rate = rsnd_src_convert_rate(io, src);
+-	int ret;
+-
+-	if (convert_rate)
+-		ret = rsnd_adg_set_convert_clk_gen2(mod, io,
+-						    runtime->rate,
+-						    convert_rate);
+-	else
+-		ret = rsnd_adg_set_convert_timing_gen2(mod, io);
+-
+-	return ret;
+-}
+-
+-static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
+-			       struct rsnd_dai_stream *io,
+-			       struct rsnd_priv *priv)
++static int rsnd_src_probe_(struct rsnd_mod *mod,
++			   struct rsnd_dai_stream *io,
++			   struct rsnd_priv *priv)
  {
  	struct rsnd_src *src = rsnd_mod_to_src(mod);
  	struct device *dev = rsnd_priv_to_dev(priv);
--	int irq = src->info->irq;
-+	int irq = src->irq;
- 	int ret;
+@@ -577,10 +526,10 @@ static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
+ 		/*
+ 		 * IRQ is not supported on non-DT
+ 		 * see
+-		 *	rsnd_src_irq_enable_gen2()
++		 *	rsnd_src_irq_enable()
+ 		 */
+ 		ret = devm_request_irq(dev, irq,
+-				       rsnd_src_interrupt_gen2,
++				       rsnd_src_interrupt,
+ 				       IRQF_SHARED,
+ 				       dev_name(dev), mod);
+ 		if (ret)
+@@ -594,48 +543,7 @@ static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
+ 	return ret;
+ }
  
- 	if (irq > 0) {
-@@ -534,7 +486,7 @@ static int rsnd_src_probe_(struct rsnd_mod *mod,
- 			return ret;
- 	}
- 
--	src->dma = rsnd_dma_attach(io, mod, src->info->dma_id);
-+	src->dma = rsnd_dma_attach(io, mod, 0);
- 	if (IS_ERR(src->dma))
- 		return PTR_ERR(src->dma);
- 
-@@ -598,58 +550,15 @@ struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id)
- 	if (WARN_ON(id < 0 || id >= rsnd_src_nr(priv)))
- 		id = 0;
- 
--	return rsnd_mod_get((struct rsnd_src *)(priv->src) + id);
--}
--
--static void rsnd_of_parse_src(struct platform_device *pdev,
--			      const struct rsnd_of_data *of_data,
+-static int rsnd_src_init_gen2(struct rsnd_mod *mod,
+-			      struct rsnd_dai_stream *io,
 -			      struct rsnd_priv *priv)
 -{
--	struct device_node *src_node;
--	struct device_node *np;
--	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
--	struct rsnd_src_platform_info *src_info;
--	struct device *dev = &pdev->dev;
--	int nr, i;
+-	int ret;
 -
--	if (!of_data)
+-	ret = rsnd_src_init(mod, priv);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = rsnd_src_set_convert_rate_gen2(mod, io);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = rsnd_src_set_convert_timing_gen2(io, mod);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static void rsnd_src_reconvert_update(struct rsnd_dai_stream *io,
+-				      struct rsnd_mod *mod)
+-{
+-	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	u32 convert_rate = rsnd_src_convert_rate(io, src);
+-	u32 fsrate;
+-
+-	if (!runtime)
 -		return;
 -
--	src_node = rsnd_src_of_node(priv);
--	if (!src_node)
--		return;
+-	if (!convert_rate)
+-		convert_rate = runtime->rate;
 -
--	nr = of_get_child_count(src_node);
--	if (!nr)
--		goto rsnd_of_parse_src_end;
+-	fsrate = 0x0400000 / convert_rate * runtime->rate;
 -
--	src_info = devm_kzalloc(dev,
--				sizeof(struct rsnd_src_platform_info) * nr,
--				GFP_KERNEL);
--	if (!src_info) {
--		dev_err(dev, "src info allocation error\n");
--		goto rsnd_of_parse_src_end;
--	}
+-	/* update IFS */
+-	rsnd_mod_write(mod, SRC_IFSVR, fsrate);
+-}
 -
--	info->src_info		= src_info;
--	info->src_info_nr	= nr;
--
--	i = 0;
--	for_each_child_of_node(src_node, np) {
--		src_info[i].irq = irq_of_parse_and_map(np, 0);
--
--		i++;
--	}
--
--rsnd_of_parse_src_end:
--	of_node_put(src_node);
-+	return rsnd_mod_get(rsnd_src_get(priv, id));
+-static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
++static int rsnd_src_pcm_new(struct rsnd_mod *mod,
+ 			    struct rsnd_dai_stream *io,
+ 			    struct snd_soc_pcm_runtime *rtd)
+ {
+@@ -660,7 +568,7 @@ static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
+ 			       rsnd_io_is_play(io) ?
+ 			       "SRC Out Rate Switch" :
+ 			       "SRC In Rate Switch",
+-			       rsnd_src_reconvert_update,
++			       rsnd_src_set_convert_rate,
+ 			       &src->sen, 1);
+ 	if (ret < 0)
+ 		return ret;
+@@ -669,22 +577,22 @@ static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
+ 			       rsnd_io_is_play(io) ?
+ 			       "SRC Out Rate" :
+ 			       "SRC In Rate",
+-			       rsnd_src_reconvert_update,
++			       rsnd_src_set_convert_rate,
+ 			       &src->sync, 192000);
+ 
+ 	return ret;
  }
  
- int rsnd_src_probe(struct platform_device *pdev,
- 		   const struct rsnd_of_data *of_data,
- 		   struct rsnd_priv *priv)
- {
--	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
-+	struct device_node *node;
-+	struct device_node *np;
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_src *src;
- 	struct clk *clk;
-@@ -660,39 +569,58 @@ int rsnd_src_probe(struct platform_device *pdev,
- 	if (rsnd_is_gen1(priv))
- 		return 0;
+-static struct rsnd_mod_ops rsnd_src_gen2_ops = {
++static struct rsnd_mod_ops rsnd_src_ops = {
+ 	.name	= SRC_NAME,
+ 	.dma_req = rsnd_src_dma_req,
+-	.probe	= rsnd_src_probe_gen2,
+-	.init	= rsnd_src_init_gen2,
+-	.quit	= rsnd_src_quit_gen2,
+-	.start	= rsnd_src_start_gen2,
+-	.stop	= rsnd_src_stop_gen2,
++	.probe	= rsnd_src_probe_,
++	.init	= rsnd_src_init,
++	.quit	= rsnd_src_quit,
++	.start	= rsnd_src_start,
++	.stop	= rsnd_src_stop,
+ 	.hw_params = rsnd_src_hw_params,
+-	.pcm_new = rsnd_src_pcm_new_gen2,
++	.pcm_new = rsnd_src_pcm_new,
+ };
  
--	rsnd_of_parse_src(pdev, of_data, priv);
-+	node = rsnd_src_of_node(priv);
-+	if (!node)
-+		return 0; /* not used is not error */
- 
--	/*
--	 * init SRC
--	 */
--	nr	= info->src_info_nr;
--	if (!nr)
--		return 0;
-+	nr = of_get_child_count(node);
-+	if (!nr) {
-+		ret = -EINVAL;
-+		goto rsnd_src_probe_done;
-+	}
- 
- 	src	= devm_kzalloc(dev, sizeof(*src) * nr, GFP_KERNEL);
--	if (!src)
--		return -ENOMEM;
-+	if (!src) {
-+		ret = -ENOMEM;
-+		goto rsnd_src_probe_done;
-+	}
- 
- 	priv->src_nr	= nr;
- 	priv->src	= src;
- 
--	for_each_rsnd_src(src, priv, i) {
-+	i = 0;
-+	for_each_child_of_node(node, np) {
-+		src = rsnd_src_get(priv, i);
-+
- 		snprintf(name, RSND_SRC_NAME_SIZE, "%s.%d",
- 			 SRC_NAME, i);
- 
--		clk = devm_clk_get(dev, name);
--		if (IS_ERR(clk))
--			return PTR_ERR(clk);
-+		src->irq = irq_of_parse_and_map(np, 0);
-+		if (!src->irq) {
-+			ret = -EINVAL;
-+			goto rsnd_src_probe_done;
-+		}
- 
--		src->info = &info->src_info[i];
-+		clk = devm_clk_get(dev, name);
-+		if (IS_ERR(clk)) {
-+			ret = PTR_ERR(clk);
-+			goto rsnd_src_probe_done;
-+		}
+ struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id)
+@@ -781,7 +689,7 @@ int rsnd_src_probe(struct platform_device *pdev,
+ 		src->info = &info->src_info[i];
  
  		ret = rsnd_mod_init(priv, rsnd_mod_get(src),
- 				    &rsnd_src_ops, clk, RSND_MOD_SRC, i);
+-				    &rsnd_src_gen2_ops, clk, RSND_MOD_SRC, i);
++				    &rsnd_src_ops, clk, RSND_MOD_SRC, i);
  		if (ret)
--			return ret;
-+			goto rsnd_src_probe_done;
-+
-+		i++;
+ 			return ret;
  	}
- 
--	return 0;
-+	ret = 0;
-+
-+rsnd_src_probe_done:
-+	of_node_put(node);
-+
-+	return ret;
- }
- 
- void rsnd_src_remove(struct platform_device *pdev,
 -- 
 2.6.2
