@@ -1,52 +1,46 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce
- dma_request_slave_channel_compat_reason()
-Date: Wed, 18 Nov 2015 21:36:18 +0530
-Message-ID: <20151118160618.GV25173@localhost>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <6358656.jIv3GGCCXu@wuerfel>
- <CAHp75VeZFXp9i_zz7CBkVQVPGQxuzYk9AbWbbbn33r8YX3LCdw@mail.gmail.com>
- <8215351.e99Q2vhQ5T@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/3] ASoC: samsung: pass filter function as pointer
+Date: Wed, 18 Nov 2015 17:52:09 +0000
+Message-ID: <20151118175209.GJ31303@sirena.org.uk>
+References: <11363089.F4JJ1Xsq7F@wuerfel>
+ <5187956.iFJ0QGUy5T@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 370BD265743
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 17:02:53 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Or8LRHETumScJgaM"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8215351.e99Q2vhQ5T@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <5187956.iFJ0QGUy5T@wuerfel>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Linux MMC List <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-crypto <linux-crypto@vger.kernel.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 18, 2015 at 04:51:54PM +0100, Arnd Bergmann wrote:
-> On Wednesday 18 November 2015 17:43:04 Andy Shevchenko wrote:
-> > >
-> > > I assume that the sst-firmware.c case is a mistake, it should just use a
-> > > plain DMA_SLAVE and not DMA_MEMCPY.
-> > 
-> > Other way around.
-> > 
-> 
-> Ok, I see. In that case I guess it also shouldn't call
-> dmaengine_slave_config(), right? I don't think that's valid
-> on a MEMCPY channel.
 
-Yes it is not valid. In this case the dma driver should invoke a generic memcpy
-and not need slave parameters, knowing the hw and reason for this (firmware
-download to DSP memory), this doesn't qualify for slave case.
-In fact filter function doesn't need a channel, any channel in this
-controller will be good
+--Or8LRHETumScJgaM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-~Vinod
+On Wed, Nov 18, 2015 at 03:26:41PM +0100, Arnd Bergmann wrote:
+> As we are now passing the filter data as pointers to the drivers,
+> we can take the final step and also pass the filter function the
+> same way. I'm keeping this change separate, as there it's less
+> obvious that this is a net win.
+
+This doens't apply against current code, please check and resend.
+
+--Or8LRHETumScJgaM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWTLrIAAoJECTWi3JdVIfQlc4H/3iL+KlWmtX7jsZyTXGSnO5y
+DHu5bB7tCu70Vm+/L4oIBpRBRxe+yknw9gKAXfhgOPWxHgBHF7P0KWLLNsOKcjtc
+48LQejUvxkbwYdZlMiWGlzl+3F7f2nnzDU7VmhFJ/iNgvS0hjxHA5KC6bSTQvIME
+2pAaJd226tSjrUcGfzFYd1RIKWEm0WjDH7H60YWL3v7a5kGCOtKcT+fbjN81Cqe7
+y9Pk8FZIEnEQWO6HL4u1hTPT9uIJuL5xSI7asobkWgiLJzlG8RRULLMtHbjrIGD2
+8VUq9Z96OfLlzNNUNVuyClVRvN0rX5p/jZKChK7NxaUiPaKLTvN1M3uf6PCWOoA=
+=J/jd
+-----END PGP SIGNATURE-----
+
+--Or8LRHETumScJgaM--
