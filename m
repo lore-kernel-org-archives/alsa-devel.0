@@ -1,18 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] ASoC: ak4613: add single-end optional
- property for IN/OUT pins
-Date: Wed, 18 Nov 2015 09:33:05 +0100
-Message-ID: <564C37C1.1070103@metafoo.de>
-References: <87oaeud01r.wl%kuninori.morimoto.gx@renesas.com>
+From: libin.yang@linux.intel.com
+Subject: [RFC PATCH 0/2] hdmi audio dynamically bind PCM to pin
+Date: Wed, 18 Nov 2015 16:46:57 +0800
+Message-ID: <1447836419-34336-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-188.synserver.de (smtp-out-064.synserver.de
- [212.40.185.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F91226051B
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 09:33:10 +0100 (CET)
-In-Reply-To: <87oaeud01r.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 749FE26051B
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 09:48:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2015 05:51 AM, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> ak4613 IN/OUT pin can be selected as differential/single-end.
-> Default is differential, because it is register default settings.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> v1 -> v2
-> 
->  - add vender prefix
-> 
->  Documentation/devicetree/bindings/sound/ak4613.txt | 10 ++++++++
->  sound/soc/codecs/ak4613.c                          | 29 ++++++++++++++++++++++
->  2 files changed, 39 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ak4613.txt b/Documentation/devicetree/bindings/sound/ak4613.txt
-> index 15a9195..3cf63e7 100644
-> --- a/Documentation/devicetree/bindings/sound/ak4613.txt
-> +++ b/Documentation/devicetree/bindings/sound/ak4613.txt
-> @@ -7,6 +7,16 @@ Required properties:
->  - compatible : "asahi-kasei,ak4613"
->  - reg : The chip select number on the I2C bus
->  
-> +Optional properties:
-> +- ak4613,in1-single-end	: Boolean. Indicate input / output pins are single-ended.
-> +- ak4613,in2-single-end	  rather than differential.
-> +- ak4613,out1-single-end
-> +- ak4613,out2-single-end
-> +- ak4613,out3-single-end
-> +- ak4613,out4-single-end
-> +- ak4613,out5-single-end
-> +- ak4613,out6-single-end
+From: Libin Yang <libin.yang@linux.intel.com>
 
-The vendor prefix is usually the same as for the compatible string, rather
-than the part name. E.g. in this case asahi-kasei.
+The patches are trying to support dynamically binding PCM to pin in HDMI audio.
+
+The first patch:
+When PCM is open when there is no pin (port) bound to the PCM,
+the driver try to open the PCM successfully. It will try to find
+an available converter to assign to the PCM.
+In PCM prepare, if there is no pin bound to the PCM, the driver
+will do the simple configuration and return true.
+In PCM close, if there is no pin bound to the PCM, the driver will
+simply close it.
+All the pin configuration will be setup in the hotplug which is done
+in patch 2.
+As the PCM is dynamically bound to the pin, the pcm_lock is necessary
+for the whole pcm open/prepare/close process.
+
+The second patch:
+The patch mainly handle the hotplug event.
+Each time monitor is connected, a proper PCM will be bound to the pin.
+If the PCM is in use, the pin must be configured.
+Each time monitor is disconnect, the PCM will be unbound from the pin.
+The pin will be reset.
+
+Libin Yang (2):
+  ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
+  ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
+
+ sound/pci/hda/hda_codec.h  |   1 +
+ sound/pci/hda/patch_hdmi.c | 354 ++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 337 insertions(+), 18 deletions(-)
+
+-- 
+1.9.1
