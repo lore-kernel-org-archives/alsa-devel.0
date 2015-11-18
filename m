@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 3/4] topology: Remove unused variables
-Date: Wed, 18 Nov 2015 02:23:19 -0500
-Message-ID: <c5ce2ce885b6fa68391a9e66c6b675beb2ce5a43.1447825540.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 4/4] topology: Fix comparison of unsigned
+	expression < 0
+Date: Wed, 18 Nov 2015 02:23:59 -0500
+Message-ID: <5409599d7c332c0b47008f219490dd5ab0a6a8ed.1447825540.git.mengdong.lin@linux.intel.com>
 References: <cover.1447825540.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id EC6A02654CE
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 08:07:36 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2E46265654
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 08:08:14 +0100 (CET)
 In-Reply-To: <cover.1447825540.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,46 +27,41 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Fix gcc warning when -Wunused-variable is set.
+Fix gcc warning: comparison of unsigned expression < 0 is always false
+[-Wtype-limits]
+
+The ABI object channel->id is _le32 and is converted to host unsigned
+integer. It cannot be < 0.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 4b7c058..d90a9ea 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -58,7 +58,6 @@ static int tplg_build_pcm_caps(snd_tplg_t *tplg, struct tplg_elem *elem)
- 	struct tplg_elem *ref_elem = NULL;
- 	struct snd_soc_tplg_pcm *pcm;
- 	struct snd_soc_tplg_stream_caps *caps;
--	struct snd_soc_tplg_stream *stream;
- 	unsigned int i;
- 
- 	pcm = elem->pcm;
-@@ -273,7 +272,7 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg, snd_config_t *cfg,
- 	struct tplg_elem *elem = private;
- 	struct snd_soc_tplg_pcm *pcm;
+diff --git a/src/topology/channel.c b/src/topology/channel.c
+index 9bc5d5a..c2f1fea 100644
+--- a/src/topology/channel.c
++++ b/src/topology/channel.c
+@@ -80,6 +80,7 @@ int tplg_parse_channel(snd_tplg_t *tplg,
+ 	snd_config_t *n;
+ 	struct snd_soc_tplg_channel *channel = private;
  	const char *id, *value;
--	int err, stream;
-+	int stream;
++	int channel_id;
  
- 	pcm = elem->pcm;
+ 	if (tplg->channel_idx >= SND_SOC_TPLG_MAX_CHAN)
+ 		return -EINVAL;
+@@ -88,12 +89,13 @@ int tplg_parse_channel(snd_tplg_t *tplg,
+ 	snd_config_get_id(cfg, &id);
+ 	tplg_dbg("\tChannel %s at index %d\n", id, tplg->channel_idx);
  
-@@ -384,7 +383,6 @@ int tplg_parse_be(snd_tplg_t *tplg,
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
- 	const char *id, *val = NULL;
--	int err;
+-	channel->id = lookup_channel(id);
+-	if (channel->id < 0) {
++	channel_id = lookup_channel(id);
++	if (channel_id < 0) {
+ 		SNDERR("error: invalid channel %s\n", id);
+ 		return -EINVAL;
+ 	}
  
- 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_BE);
- 	if (!elem)
-@@ -438,7 +436,6 @@ int tplg_parse_cc(snd_tplg_t *tplg,
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
- 	const char *id, *val = NULL;
--	int err;
++	channel->id = channel_id;
+ 	channel->size = sizeof(*channel);
+ 	tplg_dbg("\tChan %s = %d\n", id, channel->id);
  
- 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_CC);
- 	if (!elem)
 -- 
 2.5.0
