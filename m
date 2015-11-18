@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: add rt5659 codec driver" to the
-	asoc tree
-Date: Wed, 18 Nov 2015 13:13:37 +0000
-Message-ID: <E1Zz2YL-0006Cn-Fn@debutante>
-References: <1447051654-15989-1-git-send-email-bardliao@realtek.com>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:for-next 12/15]
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c:43:13: error: 'struct
+ snd_soc_card' has no member named 'rtd'
+Date: Thu, 19 Nov 2015 03:46:47 +0800
+Message-ID: <201511190346.woTUIHyA%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="7AUc2qLy4jB3hD7Z"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EF306265379
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:13:53 +0100 (CET)
-In-Reply-To: <1447051654-15989-1-git-send-email-bardliao@realtek.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E67A22659C7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 20:47:23 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,6304 +20,1012 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5659: add rt5659 codec driver
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+head:   da1a128f2faf00164bcc5f8695506e6ef7af0c3f
+commit: 7337c78a7bb3bd260a11c72f09aec653e3dbdc84 [12/15] Merge remote-tracking branches 'asoc/topic/img', 'asoc/topic/intel', 'asoc/topic/kcontrol' and 'asoc/topic/mtk' into asoc-next
+config: x86_64-allmodconfig (attached as .config)
+reproduce:
+        git checkout 7337c78a7bb3bd260a11c72f09aec653e3dbdc84
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+All errors (new ones prefixed by >>):
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+   sound/soc/intel/boards/skl_nau88l25_ssm4567.c: In function 'skl_get_codec_dai':
+>> sound/soc/intel/boards/skl_nau88l25_ssm4567.c:43:13: error: 'struct snd_soc_card' has no member named 'rtd'
+      rtd = card->rtd + i;
+                ^
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+vim +43 sound/soc/intel/boards/skl_nau88l25_ssm4567.c
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+a86d5057 Harsha Priya 2015-11-05  37  {
+a86d5057 Harsha Priya 2015-11-05  38  	int i;
+a86d5057 Harsha Priya 2015-11-05  39  
+a86d5057 Harsha Priya 2015-11-05  40  	for (i = 0; i < card->num_rtd; i++) {
+a86d5057 Harsha Priya 2015-11-05  41  		struct snd_soc_pcm_runtime *rtd;
+a86d5057 Harsha Priya 2015-11-05  42  
+a86d5057 Harsha Priya 2015-11-05 @43  		rtd = card->rtd + i;
+a86d5057 Harsha Priya 2015-11-05  44  		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
+a86d5057 Harsha Priya 2015-11-05  45  			     strlen(SKL_NUVOTON_CODEC_DAI)))
+a86d5057 Harsha Priya 2015-11-05  46  			return rtd->codec_dai;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+:::::: The code at line 43 was first introduced by commit
+:::::: a86d505783e42d2f824e32489a1f2b0c3454d9fe ASoC: Intel: Skylake: Adding nau88l25+ssm4567 machine driver
 
-Thanks,
-Mark
+:::::: TO: Harsha Priya <harshapriya.n@intel.com>
+:::::: CC: Mark Brown <broonie@kernel.org>
 
->From d3cb2de2479bbbde29391393d68f2e313e1f0504 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 9 Nov 2015 14:47:34 +0800
-Subject: [PATCH] ASoC: rt5659: add rt5659 codec driver
-
-This is the initial codec driver for rt5659.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5659.txt |   75 +
- include/sound/rt5659.h                             |   49 +
- sound/soc/codecs/Kconfig                           |    6 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/rt5659.c                          | 4223 ++++++++++++++++++++
- sound/soc/codecs/rt5659.h                          | 1819 +++++++++
- 6 files changed, 6174 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5659.txt
- create mode 100644 include/sound/rt5659.h
- create mode 100644 sound/soc/codecs/rt5659.c
- create mode 100644 sound/soc/codecs/rt5659.h
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5659.txt b/Documentation/devicetree/bindings/sound/rt5659.txt
-new file mode 100644
-index 000000000000..5f79e7fde032
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5659.txt
-@@ -0,0 +1,75 @@
-+RT5659/RT5658 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : One of "realtek,rt5659" or "realtek,rt5658".
-+
-+- reg : The I2C address of the device.
-+
-+- interrupts : The CODEC's interrupt output.
-+
-+Optional properties:
-+
-+- realtek,in1-differential
-+- realtek,in3-differential
-+- realtek,in4-differential
-+  Boolean. Indicate MIC1/3/4 input are differential, rather than single-ended.
-+
-+- realtek,dmic1-data-pin
-+  0: dmic1 is not used
-+  1: using IN2N pin as dmic1 data pin
-+  2: using GPIO5 pin as dmic1 data pin
-+  3: using GPIO9 pin as dmic1 data pin
-+  4: using GPIO11 pin as dmic1 data pin
-+
-+- realtek,dmic2-data-pin
-+  0: dmic2 is not used
-+  1: using IN2P pin as dmic2 data pin
-+  2: using GPIO6 pin as dmic2 data pin
-+  3: using GPIO10 pin as dmic2 data pin
-+  4: using GPIO12 pin as dmic2 data pin
-+
-+- realtek,jd-src
-+  0: No JD is used
-+  1: using JD3 as JD source
-+
-+- realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
-+- realtek,reset-gpios : The GPIO that controls the CODEC's RESET pin.
-+
-+Pins on the device (for linking into audio routes) for RT5659/RT5658:
-+
-+  * DMIC L1
-+  * DMIC R1
-+  * DMIC L2
-+  * DMIC R2
-+  * IN1P
-+  * IN1N
-+  * IN2P
-+  * IN2N
-+  * IN3P
-+  * IN3N
-+  * IN4P
-+  * IN4N
-+  * HPOL
-+  * HPOR
-+  * SPOL
-+  * SPOR
-+  * LOUTL
-+  * LOUTR
-+  * MONOOUT
-+  * PDML
-+  * PDMR
-+  * SPDIF
-+
-+Example:
-+
-+rt5659 {
-+	compatible = "realtek,rt5659";
-+	reg = <0x1b>;
-+	interrupt-parent = <&gpio>;
-+	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
-+	realtek,ldo1-en-gpios =
-+		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
-+};
-diff --git a/include/sound/rt5659.h b/include/sound/rt5659.h
-new file mode 100644
-index 000000000000..656c4d58948d
---- /dev/null
-+++ b/include/sound/rt5659.h
-@@ -0,0 +1,49 @@
-+/*
-+ * linux/sound/rt5659.h -- Platform data for RT5659
-+ *
-+ * Copyright 2013 Realtek Microelectronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_SND_RT5659_H
-+#define __LINUX_SND_RT5659_H
-+
-+enum rt5659_dmic1_data_pin {
-+	RT5659_DMIC1_NULL,
-+	RT5659_DMIC1_DATA_IN2N,
-+	RT5659_DMIC1_DATA_GPIO5,
-+	RT5659_DMIC1_DATA_GPIO9,
-+	RT5659_DMIC1_DATA_GPIO11,
-+};
-+
-+enum rt5659_dmic2_data_pin {
-+	RT5659_DMIC2_NULL,
-+	RT5659_DMIC2_DATA_IN2P,
-+	RT5659_DMIC2_DATA_GPIO6,
-+	RT5659_DMIC2_DATA_GPIO10,
-+	RT5659_DMIC2_DATA_GPIO12,
-+};
-+
-+enum rt5659_jd_src {
-+	RT5659_JD_NULL,
-+	RT5659_JD3,
-+};
-+
-+struct rt5659_platform_data {
-+	bool in1_diff;
-+	bool in3_diff;
-+	bool in4_diff;
-+
-+	int ldo1_en; /* GPIO for LDO1_EN */
-+	int reset; /* GPIO for RESET */
-+
-+	enum rt5659_dmic1_data_pin dmic1_data_pin;
-+	enum rt5659_dmic2_data_pin dmic2_data_pin;
-+	enum rt5659_jd_src jd_src;
-+};
-+
-+#endif
-+
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index cfdafc4c11ea..f22c66bde292 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -93,6 +93,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_RT5640 if I2C
- 	select SND_SOC_RT5645 if I2C
- 	select SND_SOC_RT5651 if I2C
-+	select SND_SOC_RT5659 if I2C
- 	select SND_SOC_RT5670 if I2C
- 	select SND_SOC_RT5677 if I2C && SPI_MASTER
- 	select SND_SOC_SGTL5000 if I2C
-@@ -526,11 +527,13 @@ config SND_SOC_RL6231
- 	default y if SND_SOC_RT5640=y
- 	default y if SND_SOC_RT5645=y
- 	default y if SND_SOC_RT5651=y
-+	default y if SND_SOC_RT5659=y
- 	default y if SND_SOC_RT5670=y
- 	default y if SND_SOC_RT5677=y
- 	default m if SND_SOC_RT5640=m
- 	default m if SND_SOC_RT5645=m
- 	default m if SND_SOC_RT5651=m
-+	default m if SND_SOC_RT5659=m
- 	default m if SND_SOC_RT5670=m
- 	default m if SND_SOC_RT5677=m
- 
-@@ -562,6 +565,9 @@ config SND_SOC_RT5645
- config SND_SOC_RT5651
- 	tristate
- 
-+config SND_SOC_RT5659
-+	tristate
-+
- config SND_SOC_RT5670
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index f632fc42f59f..418e89eb25ca 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -89,6 +89,7 @@ snd-soc-rt5631-objs := rt5631.o
- snd-soc-rt5640-objs := rt5640.o
- snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
-+snd-soc-rt5659-objs := rt5659.o
- snd-soc-rt5670-objs := rt5670.o
- snd-soc-rt5677-objs := rt5677.o
- snd-soc-rt5677-spi-objs := rt5677-spi.o
-@@ -284,6 +285,7 @@ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
- obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
- obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
-+obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
- obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
- obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
- obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-new file mode 100644
-index 000000000000..820d8fa62b5e
---- /dev/null
-+++ b/sound/soc/codecs/rt5659.c
-@@ -0,0 +1,4223 @@
-+/*
-+ * rt5659.c  --  RT5659/RT5658 ALSA SoC audio codec driver
-+ *
-+ * Copyright 2015 Realtek Semiconductor Corp.
-+ * Author: Bard Liao <bardliao@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
-+#include <linux/acpi.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/jack.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+#include <sound/rt5659.h>
-+
-+#include "rl6231.h"
-+#include "rt5659.h"
-+
-+static const struct reg_default rt5659_reg[] = {
-+	{ 0x0000, 0x0000 },
-+	{ 0x0001, 0x4848 },
-+	{ 0x0002, 0x8080 },
-+	{ 0x0003, 0xc8c8 },
-+	{ 0x0004, 0xc80a },
-+	{ 0x0005, 0x0000 },
-+	{ 0x0006, 0x0000 },
-+	{ 0x0007, 0x0103 },
-+	{ 0x0008, 0x0080 },
-+	{ 0x0009, 0x0000 },
-+	{ 0x000a, 0x0000 },
-+	{ 0x000c, 0x0000 },
-+	{ 0x000d, 0x0000 },
-+	{ 0x000f, 0x0808 },
-+	{ 0x0010, 0x3080 },
-+	{ 0x0011, 0x4a00 },
-+	{ 0x0012, 0x4e00 },
-+	{ 0x0015, 0x42c1 },
-+	{ 0x0016, 0x0000 },
-+	{ 0x0018, 0x000b },
-+	{ 0x0019, 0xafaf },
-+	{ 0x001a, 0xafaf },
-+	{ 0x001b, 0x0011 },
-+	{ 0x001c, 0x2f2f },
-+	{ 0x001d, 0x2f2f },
-+	{ 0x001e, 0x2f2f },
-+	{ 0x001f, 0x0000 },
-+	{ 0x0020, 0x0000 },
-+	{ 0x0021, 0x0000 },
-+	{ 0x0022, 0x5757 },
-+	{ 0x0023, 0x0039 },
-+	{ 0x0026, 0xc060 },
-+	{ 0x0027, 0xd8d8 },
-+	{ 0x0029, 0x8080 },
-+	{ 0x002a, 0xaaaa },
-+	{ 0x002b, 0xaaaa },
-+	{ 0x002c, 0x00af },
-+	{ 0x002d, 0x0000 },
-+	{ 0x002f, 0x1002 },
-+	{ 0x0031, 0x5000 },
-+	{ 0x0032, 0x0000 },
-+	{ 0x0033, 0x0000 },
-+	{ 0x0034, 0x0000 },
-+	{ 0x0035, 0x0000 },
-+	{ 0x0036, 0x0000 },
-+	{ 0x003a, 0x0000 },
-+	{ 0x003b, 0x0000 },
-+	{ 0x003c, 0x007f },
-+	{ 0x003d, 0x0000 },
-+	{ 0x003e, 0x007f },
-+	{ 0x0040, 0x0808 },
-+	{ 0x0046, 0x001f },
-+	{ 0x0047, 0x001f },
-+	{ 0x0048, 0x0003 },
-+	{ 0x0049, 0xe061 },
-+	{ 0x004a, 0x0000 },
-+	{ 0x004b, 0x031f },
-+	{ 0x004d, 0x0000 },
-+	{ 0x004e, 0x001f },
-+	{ 0x004f, 0x0000 },
-+	{ 0x0050, 0x001f },
-+	{ 0x0052, 0xf000 },
-+	{ 0x0053, 0x0111 },
-+	{ 0x0054, 0x0064 },
-+	{ 0x0055, 0x0080 },
-+	{ 0x0056, 0xef0e },
-+	{ 0x0057, 0xf0f0 },
-+	{ 0x0058, 0xef0e },
-+	{ 0x0059, 0xf0f0 },
-+	{ 0x005a, 0xef0e },
-+	{ 0x005b, 0xf0f0 },
-+	{ 0x005c, 0xf000 },
-+	{ 0x005d, 0x0000 },
-+	{ 0x005e, 0x1f2c },
-+	{ 0x005f, 0x1f2c },
-+	{ 0x0060, 0x2717 },
-+	{ 0x0061, 0x0000 },
-+	{ 0x0062, 0x0000 },
-+	{ 0x0063, 0x003e },
-+	{ 0x0064, 0x0000 },
-+	{ 0x0065, 0x0000 },
-+	{ 0x0066, 0x0000 },
-+	{ 0x0067, 0x0000 },
-+	{ 0x006a, 0x0000 },
-+	{ 0x006b, 0x0000 },
-+	{ 0x006c, 0x0000 },
-+	{ 0x006e, 0x0000 },
-+	{ 0x006f, 0x0000 },
-+	{ 0x0070, 0x8000 },
-+	{ 0x0071, 0x8000 },
-+	{ 0x0072, 0x8000 },
-+	{ 0x0073, 0x1110 },
-+	{ 0x0074, 0xfe00 },
-+	{ 0x0075, 0x2409 },
-+	{ 0x0076, 0x000a },
-+	{ 0x0077, 0x00f0 },
-+	{ 0x0078, 0x0000 },
-+	{ 0x0079, 0x0000 },
-+	{ 0x007a, 0x0123 },
-+	{ 0x007b, 0x8003 },
-+	{ 0x0080, 0x0000 },
-+	{ 0x0081, 0x0000 },
-+	{ 0x0082, 0x0000 },
-+	{ 0x0083, 0x0000 },
-+	{ 0x0084, 0x0000 },
-+	{ 0x0085, 0x0000 },
-+	{ 0x0086, 0x0008 },
-+	{ 0x0087, 0x0000 },
-+	{ 0x0088, 0x0000 },
-+	{ 0x0089, 0x0000 },
-+	{ 0x008a, 0x0000 },
-+	{ 0x008b, 0x0000 },
-+	{ 0x008c, 0x0003 },
-+	{ 0x008e, 0x0000 },
-+	{ 0x008f, 0x1000 },
-+	{ 0x0090, 0x0646 },
-+	{ 0x0091, 0x0c16 },
-+	{ 0x0092, 0x0073 },
-+	{ 0x0093, 0x0000 },
-+	{ 0x0094, 0x0080 },
-+	{ 0x0097, 0x0000 },
-+	{ 0x0098, 0x0000 },
-+	{ 0x0099, 0x0000 },
-+	{ 0x009a, 0x0000 },
-+	{ 0x009b, 0x0000 },
-+	{ 0x009c, 0x007f },
-+	{ 0x009d, 0x0000 },
-+	{ 0x009e, 0x007f },
-+	{ 0x009f, 0x0000 },
-+	{ 0x00a0, 0x0060 },
-+	{ 0x00a1, 0x90a1 },
-+	{ 0x00ae, 0x2000 },
-+	{ 0x00af, 0x0000 },
-+	{ 0x00b0, 0x2000 },
-+	{ 0x00b1, 0x0000 },
-+	{ 0x00b2, 0x0000 },
-+	{ 0x00b6, 0x0000 },
-+	{ 0x00b7, 0x0000 },
-+	{ 0x00b8, 0x0000 },
-+	{ 0x00b9, 0x0000 },
-+	{ 0x00ba, 0x0000 },
-+	{ 0x00bb, 0x0000 },
-+	{ 0x00be, 0x0000 },
-+	{ 0x00bf, 0x0000 },
-+	{ 0x00c0, 0x0000 },
-+	{ 0x00c1, 0x0000 },
-+	{ 0x00c2, 0x0000 },
-+	{ 0x00c3, 0x0000 },
-+	{ 0x00c4, 0x0003 },
-+	{ 0x00c5, 0x0000 },
-+	{ 0x00cb, 0xa02f },
-+	{ 0x00cc, 0x0000 },
-+	{ 0x00cd, 0x0e02 },
-+	{ 0x00d6, 0x0000 },
-+	{ 0x00d7, 0x2244 },
-+	{ 0x00d9, 0x0809 },
-+	{ 0x00da, 0x0000 },
-+	{ 0x00db, 0x0008 },
-+	{ 0x00dc, 0x00c0 },
-+	{ 0x00dd, 0x6724 },
-+	{ 0x00de, 0x3131 },
-+	{ 0x00df, 0x0008 },
-+	{ 0x00e0, 0x4000 },
-+	{ 0x00e1, 0x3131 },
-+	{ 0x00e4, 0x400c },
-+	{ 0x00e5, 0x8031 },
-+	{ 0x00ea, 0xb320 },
-+	{ 0x00eb, 0x0000 },
-+	{ 0x00ec, 0xb300 },
-+	{ 0x00ed, 0x0000 },
-+	{ 0x00f0, 0x0000 },
-+	{ 0x00f1, 0x0202 },
-+	{ 0x00f2, 0x0ddd },
-+	{ 0x00f3, 0x0ddd },
-+	{ 0x00f4, 0x0ddd },
-+	{ 0x00f6, 0x0000 },
-+	{ 0x00f7, 0x0000 },
-+	{ 0x00f8, 0x0000 },
-+	{ 0x00f9, 0x0000 },
-+	{ 0x00fa, 0x8000 },
-+	{ 0x00fb, 0x0000 },
-+	{ 0x00fc, 0x0000 },
-+	{ 0x00fd, 0x0001 },
-+	{ 0x00fe, 0x10ec },
-+	{ 0x00ff, 0x6311 },
-+	{ 0x0100, 0xaaaa },
-+	{ 0x010a, 0xaaaa },
-+	{ 0x010b, 0x00a0 },
-+	{ 0x010c, 0xaeae },
-+	{ 0x010d, 0xaaaa },
-+	{ 0x010e, 0xaaa8 },
-+	{ 0x010f, 0xa0aa },
-+	{ 0x0110, 0xe02a },
-+	{ 0x0111, 0xa702 },
-+	{ 0x0112, 0xaaaa },
-+	{ 0x0113, 0x2800 },
-+	{ 0x0116, 0x0000 },
-+	{ 0x0117, 0x0f00 },
-+	{ 0x011a, 0x0020 },
-+	{ 0x011b, 0x0011 },
-+	{ 0x011c, 0x0150 },
-+	{ 0x011d, 0x0000 },
-+	{ 0x011e, 0x0000 },
-+	{ 0x011f, 0x0000 },
-+	{ 0x0120, 0x0000 },
-+	{ 0x0121, 0x009b },
-+	{ 0x0122, 0x5014 },
-+	{ 0x0123, 0x0421 },
-+	{ 0x0124, 0x7cea },
-+	{ 0x0125, 0x0420 },
-+	{ 0x0126, 0x5550 },
-+	{ 0x0132, 0x0000 },
-+	{ 0x0133, 0x0000 },
-+	{ 0x0137, 0x5055 },
-+	{ 0x0138, 0x3700 },
-+	{ 0x0139, 0x79a1 },
-+	{ 0x013a, 0x2020 },
-+	{ 0x013b, 0x2020 },
-+	{ 0x013c, 0x2005 },
-+	{ 0x013e, 0x1f00 },
-+	{ 0x013f, 0x0000 },
-+	{ 0x0145, 0x0002 },
-+	{ 0x0146, 0x0000 },
-+	{ 0x0147, 0x0000 },
-+	{ 0x0148, 0x0000 },
-+	{ 0x0150, 0x1813 },
-+	{ 0x0151, 0x0690 },
-+	{ 0x0152, 0x1c17 },
-+	{ 0x0153, 0x6883 },
-+	{ 0x0154, 0xd3ce },
-+	{ 0x0155, 0x352d },
-+	{ 0x0156, 0x00eb },
-+	{ 0x0157, 0x3717 },
-+	{ 0x0158, 0x4c6a },
-+	{ 0x0159, 0xe41b },
-+	{ 0x015a, 0x2a13 },
-+	{ 0x015b, 0xb600 },
-+	{ 0x015c, 0xc730 },
-+	{ 0x015d, 0x35d4 },
-+	{ 0x015e, 0x00bf },
-+	{ 0x0160, 0x0ec0 },
-+	{ 0x0161, 0x0020 },
-+	{ 0x0162, 0x0080 },
-+	{ 0x0163, 0x0800 },
-+	{ 0x0164, 0x0000 },
-+	{ 0x0165, 0x0000 },
-+	{ 0x0166, 0x0000 },
-+	{ 0x0167, 0x001f },
-+	{ 0x0170, 0x4e80 },
-+	{ 0x0171, 0x0020 },
-+	{ 0x0172, 0x0080 },
-+	{ 0x0173, 0x0800 },
-+	{ 0x0174, 0x000c },
-+	{ 0x0175, 0x0000 },
-+	{ 0x0190, 0x3300 },
-+	{ 0x0191, 0x2200 },
-+	{ 0x0192, 0x0000 },
-+	{ 0x01b0, 0x4b38 },
-+	{ 0x01b1, 0x0000 },
-+	{ 0x01b2, 0x0000 },
-+	{ 0x01b3, 0x0000 },
-+	{ 0x01c0, 0x0045 },
-+	{ 0x01c1, 0x0540 },
-+	{ 0x01c2, 0x0000 },
-+	{ 0x01c3, 0x0030 },
-+	{ 0x01c7, 0x0000 },
-+	{ 0x01c8, 0x5757 },
-+	{ 0x01c9, 0x5757 },
-+	{ 0x01ca, 0x5757 },
-+	{ 0x01cb, 0x5757 },
-+	{ 0x01cc, 0x5757 },
-+	{ 0x01cd, 0x5757 },
-+	{ 0x01ce, 0x006f },
-+	{ 0x01da, 0x0000 },
-+	{ 0x01db, 0x0000 },
-+	{ 0x01de, 0x7d00 },
-+	{ 0x01df, 0x10c0 },
-+	{ 0x01e0, 0x06a1 },
-+	{ 0x01e1, 0x0000 },
-+	{ 0x01e2, 0x0000 },
-+	{ 0x01e3, 0x0000 },
-+	{ 0x01e4, 0x0001 },
-+	{ 0x01e6, 0x0000 },
-+	{ 0x01e7, 0x0000 },
-+	{ 0x01e8, 0x0000 },
-+	{ 0x01ea, 0x0000 },
-+	{ 0x01eb, 0x0000 },
-+	{ 0x01ec, 0x0000 },
-+	{ 0x01ed, 0x0000 },
-+	{ 0x01ee, 0x0000 },
-+	{ 0x01ef, 0x0000 },
-+	{ 0x01f0, 0x0000 },
-+	{ 0x01f1, 0x0000 },
-+	{ 0x01f2, 0x0000 },
-+	{ 0x01f6, 0x1e04 },
-+	{ 0x01f7, 0x01a1 },
-+	{ 0x01f8, 0x0000 },
-+	{ 0x01f9, 0x0000 },
-+	{ 0x01fa, 0x0002 },
-+	{ 0x01fb, 0x0000 },
-+	{ 0x01fc, 0x0000 },
-+	{ 0x01fd, 0x0000 },
-+	{ 0x01fe, 0x0000 },
-+	{ 0x0200, 0x066c },
-+	{ 0x0201, 0x7fff },
-+	{ 0x0202, 0x7fff },
-+	{ 0x0203, 0x0000 },
-+	{ 0x0204, 0x0000 },
-+	{ 0x0205, 0x0000 },
-+	{ 0x0206, 0x0000 },
-+	{ 0x0207, 0x0000 },
-+	{ 0x0208, 0x0000 },
-+	{ 0x0256, 0x0000 },
-+	{ 0x0257, 0x0000 },
-+	{ 0x0258, 0x0000 },
-+	{ 0x0259, 0x0000 },
-+	{ 0x025a, 0x0000 },
-+	{ 0x025b, 0x3333 },
-+	{ 0x025c, 0x3333 },
-+	{ 0x025d, 0x3333 },
-+	{ 0x025e, 0x0000 },
-+	{ 0x025f, 0x0000 },
-+	{ 0x0260, 0x0000 },
-+	{ 0x0261, 0x0022 },
-+	{ 0x0262, 0x0300 },
-+	{ 0x0265, 0x1e80 },
-+	{ 0x0266, 0x0131 },
-+	{ 0x0267, 0x0003 },
-+	{ 0x0268, 0x0000 },
-+	{ 0x0269, 0x0000 },
-+	{ 0x026a, 0x0000 },
-+	{ 0x026b, 0x0000 },
-+	{ 0x026c, 0x0000 },
-+	{ 0x026d, 0x0000 },
-+	{ 0x026e, 0x0000 },
-+	{ 0x026f, 0x0000 },
-+	{ 0x0270, 0x0000 },
-+	{ 0x0271, 0x0000 },
-+	{ 0x0272, 0x0000 },
-+	{ 0x0273, 0x0000 },
-+	{ 0x0280, 0x0000 },
-+	{ 0x0281, 0x0000 },
-+	{ 0x0282, 0x0418 },
-+	{ 0x0283, 0x7fff },
-+	{ 0x0284, 0x7000 },
-+	{ 0x0290, 0x01d0 },
-+	{ 0x0291, 0x0100 },
-+	{ 0x02fa, 0x0000 },
-+	{ 0x02fb, 0x0000 },
-+	{ 0x02fc, 0x0000 },
-+	{ 0x0300, 0x001f },
-+	{ 0x0301, 0x032c },
-+	{ 0x0302, 0x5f21 },
-+	{ 0x0303, 0x4000 },
-+	{ 0x0304, 0x4000 },
-+	{ 0x0305, 0x0600 },
-+	{ 0x0306, 0x8000 },
-+	{ 0x0307, 0x0700 },
-+	{ 0x0308, 0x001f },
-+	{ 0x0309, 0x032c },
-+	{ 0x030a, 0x5f21 },
-+	{ 0x030b, 0x4000 },
-+	{ 0x030c, 0x4000 },
-+	{ 0x030d, 0x0600 },
-+	{ 0x030e, 0x8000 },
-+	{ 0x030f, 0x0700 },
-+	{ 0x0310, 0x4560 },
-+	{ 0x0311, 0xa4a8 },
-+	{ 0x0312, 0x7418 },
-+	{ 0x0313, 0x0000 },
-+	{ 0x0314, 0x0006 },
-+	{ 0x0315, 0x00ff },
-+	{ 0x0316, 0xc400 },
-+	{ 0x0317, 0x4560 },
-+	{ 0x0318, 0xa4a8 },
-+	{ 0x0319, 0x7418 },
-+	{ 0x031a, 0x0000 },
-+	{ 0x031b, 0x0006 },
-+	{ 0x031c, 0x00ff },
-+	{ 0x031d, 0xc400 },
-+	{ 0x0320, 0x0f20 },
-+	{ 0x0321, 0x8700 },
-+	{ 0x0322, 0x7dc2 },
-+	{ 0x0323, 0xa178 },
-+	{ 0x0324, 0x5383 },
-+	{ 0x0325, 0x7dc2 },
-+	{ 0x0326, 0xa178 },
-+	{ 0x0327, 0x5383 },
-+	{ 0x0328, 0x003e },
-+	{ 0x0329, 0x02c1 },
-+	{ 0x032a, 0xd37d },
-+	{ 0x0330, 0x00a6 },
-+	{ 0x0331, 0x04c3 },
-+	{ 0x0332, 0x27c8 },
-+	{ 0x0333, 0xbf50 },
-+	{ 0x0334, 0x0045 },
-+	{ 0x0335, 0x2007 },
-+	{ 0x0336, 0x7418 },
-+	{ 0x0337, 0x0501 },
-+	{ 0x0338, 0x0000 },
-+	{ 0x0339, 0x0010 },
-+	{ 0x033a, 0x1010 },
-+	{ 0x0340, 0x0800 },
-+	{ 0x0341, 0x0800 },
-+	{ 0x0342, 0x0800 },
-+	{ 0x0343, 0x0800 },
-+	{ 0x0344, 0x0000 },
-+	{ 0x0345, 0x0000 },
-+	{ 0x0346, 0x0000 },
-+	{ 0x0347, 0x0000 },
-+	{ 0x0348, 0x0000 },
-+	{ 0x0349, 0x0000 },
-+	{ 0x034a, 0x0000 },
-+	{ 0x034b, 0x0000 },
-+	{ 0x034c, 0x0000 },
-+	{ 0x034d, 0x0000 },
-+	{ 0x034e, 0x0000 },
-+	{ 0x034f, 0x0000 },
-+	{ 0x0350, 0x0000 },
-+	{ 0x0351, 0x0000 },
-+	{ 0x0352, 0x0000 },
-+	{ 0x0353, 0x0000 },
-+	{ 0x0354, 0x0000 },
-+	{ 0x0355, 0x0000 },
-+	{ 0x0356, 0x0000 },
-+	{ 0x0357, 0x0000 },
-+	{ 0x0358, 0x0000 },
-+	{ 0x0359, 0x0000 },
-+	{ 0x035a, 0x0000 },
-+	{ 0x035b, 0x0000 },
-+	{ 0x035c, 0x0000 },
-+	{ 0x035d, 0x0000 },
-+	{ 0x035e, 0x2000 },
-+	{ 0x035f, 0x0000 },
-+	{ 0x0360, 0x2000 },
-+	{ 0x0361, 0x2000 },
-+	{ 0x0362, 0x0000 },
-+	{ 0x0363, 0x2000 },
-+	{ 0x0364, 0x0200 },
-+	{ 0x0365, 0x0000 },
-+	{ 0x0366, 0x0000 },
-+	{ 0x0367, 0x0000 },
-+	{ 0x0368, 0x0000 },
-+	{ 0x0369, 0x0000 },
-+	{ 0x036a, 0x0000 },
-+	{ 0x036b, 0x0000 },
-+	{ 0x036c, 0x0000 },
-+	{ 0x036d, 0x0000 },
-+	{ 0x036e, 0x0200 },
-+	{ 0x036f, 0x0000 },
-+	{ 0x0370, 0x0000 },
-+	{ 0x0371, 0x0000 },
-+	{ 0x0372, 0x0000 },
-+	{ 0x0373, 0x0000 },
-+	{ 0x0374, 0x0000 },
-+	{ 0x0375, 0x0000 },
-+	{ 0x0376, 0x0000 },
-+	{ 0x0377, 0x0000 },
-+	{ 0x03d0, 0x0000 },
-+	{ 0x03d1, 0x0000 },
-+	{ 0x03d2, 0x0000 },
-+	{ 0x03d3, 0x0000 },
-+	{ 0x03d4, 0x2000 },
-+	{ 0x03d5, 0x2000 },
-+	{ 0x03d6, 0x0000 },
-+	{ 0x03d7, 0x0000 },
-+	{ 0x03d8, 0x2000 },
-+	{ 0x03d9, 0x2000 },
-+	{ 0x03da, 0x2000 },
-+	{ 0x03db, 0x2000 },
-+	{ 0x03dc, 0x0000 },
-+	{ 0x03dd, 0x0000 },
-+	{ 0x03de, 0x0000 },
-+	{ 0x03df, 0x2000 },
-+	{ 0x03e0, 0x0000 },
-+	{ 0x03e1, 0x0000 },
-+	{ 0x03e2, 0x0000 },
-+	{ 0x03e3, 0x0000 },
-+	{ 0x03e4, 0x0000 },
-+	{ 0x03e5, 0x0000 },
-+	{ 0x03e6, 0x0000 },
-+	{ 0x03e7, 0x0000 },
-+	{ 0x03e8, 0x0000 },
-+	{ 0x03e9, 0x0000 },
-+	{ 0x03ea, 0x0000 },
-+	{ 0x03eb, 0x0000 },
-+	{ 0x03ec, 0x0000 },
-+	{ 0x03ed, 0x0000 },
-+	{ 0x03ee, 0x0000 },
-+	{ 0x03ef, 0x0000 },
-+	{ 0x03f0, 0x0800 },
-+	{ 0x03f1, 0x0800 },
-+	{ 0x03f2, 0x0800 },
-+	{ 0x03f3, 0x0800 },
-+};
-+
-+static bool rt5659_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case RT5659_RESET:
-+	case RT5659_EJD_CTRL_2:
-+	case RT5659_SILENCE_CTRL:
-+	case RT5659_DAC2_DIG_VOL:
-+	case RT5659_HP_IMP_GAIN_2:
-+	case RT5659_PDM_OUT_CTRL:
-+	case RT5659_PDM_DATA_CTRL_1:
-+	case RT5659_PDM_DATA_CTRL_4:
-+	case RT5659_HAPTIC_GEN_CTRL_1:
-+	case RT5659_HAPTIC_GEN_CTRL_3:
-+	case RT5659_HAPTIC_LPF_CTRL_3:
-+	case RT5659_CLK_DET:
-+	case RT5659_MICBIAS_1:
-+	case RT5659_ASRC_11:
-+	case RT5659_ADC_EQ_CTRL_1:
-+	case RT5659_DAC_EQ_CTRL_1:
-+	case RT5659_INT_ST_1:
-+	case RT5659_INT_ST_2:
-+	case RT5659_GPIO_STA:
-+	case RT5659_SINE_GEN_CTRL_1:
-+	case RT5659_IL_CMD_1:
-+	case RT5659_4BTN_IL_CMD_1:
-+	case RT5659_PSV_IL_CMD_1:
-+	case RT5659_AJD1_CTRL:
-+	case RT5659_AJD2_AJD3_CTRL:
-+	case RT5659_JD_CTRL_3:
-+	case RT5659_VENDOR_ID:
-+	case RT5659_VENDOR_ID_1:
-+	case RT5659_DEVICE_ID:
-+	case RT5659_MEMORY_TEST:
-+	case RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL:
-+	case RT5659_VOL_TEST:
-+	case RT5659_STO_NG2_CTRL_1:
-+	case RT5659_STO_NG2_CTRL_5:
-+	case RT5659_STO_NG2_CTRL_6:
-+	case RT5659_STO_NG2_CTRL_7:
-+	case RT5659_MONO_NG2_CTRL_1:
-+	case RT5659_MONO_NG2_CTRL_5:
-+	case RT5659_MONO_NG2_CTRL_6:
-+	case RT5659_HP_IMP_SENS_CTRL_1:
-+	case RT5659_HP_IMP_SENS_CTRL_3:
-+	case RT5659_HP_IMP_SENS_CTRL_4:
-+	case RT5659_HP_CALIB_CTRL_1:
-+	case RT5659_HP_CALIB_CTRL_9:
-+	case RT5659_HP_CALIB_STA_1:
-+	case RT5659_HP_CALIB_STA_2:
-+	case RT5659_HP_CALIB_STA_3:
-+	case RT5659_HP_CALIB_STA_4:
-+	case RT5659_HP_CALIB_STA_5:
-+	case RT5659_HP_CALIB_STA_6:
-+	case RT5659_HP_CALIB_STA_7:
-+	case RT5659_HP_CALIB_STA_8:
-+	case RT5659_HP_CALIB_STA_9:
-+	case RT5659_MONO_AMP_CALIB_CTRL_1:
-+	case RT5659_MONO_AMP_CALIB_CTRL_3:
-+	case RT5659_MONO_AMP_CALIB_STA_1:
-+	case RT5659_MONO_AMP_CALIB_STA_2:
-+	case RT5659_MONO_AMP_CALIB_STA_3:
-+	case RT5659_MONO_AMP_CALIB_STA_4:
-+	case RT5659_SPK_PWR_LMT_STA_1:
-+	case RT5659_SPK_PWR_LMT_STA_2:
-+	case RT5659_SPK_PWR_LMT_STA_3:
-+	case RT5659_SPK_PWR_LMT_STA_4:
-+	case RT5659_SPK_PWR_LMT_STA_5:
-+	case RT5659_SPK_PWR_LMT_STA_6:
-+	case RT5659_SPK_DC_CAILB_CTRL_1:
-+	case RT5659_SPK_DC_CAILB_STA_1:
-+	case RT5659_SPK_DC_CAILB_STA_2:
-+	case RT5659_SPK_DC_CAILB_STA_3:
-+	case RT5659_SPK_DC_CAILB_STA_4:
-+	case RT5659_SPK_DC_CAILB_STA_5:
-+	case RT5659_SPK_DC_CAILB_STA_6:
-+	case RT5659_SPK_DC_CAILB_STA_7:
-+	case RT5659_SPK_DC_CAILB_STA_8:
-+	case RT5659_SPK_DC_CAILB_STA_9:
-+	case RT5659_SPK_DC_CAILB_STA_10:
-+	case RT5659_SPK_VDD_STA_1:
-+	case RT5659_SPK_VDD_STA_2:
-+	case RT5659_SPK_DC_DET_CTRL_1:
-+	case RT5659_PURE_DC_DET_CTRL_1:
-+	case RT5659_PURE_DC_DET_CTRL_2:
-+	case RT5659_DRC1_PRIV_1:
-+	case RT5659_DRC1_PRIV_4:
-+	case RT5659_DRC1_PRIV_5:
-+	case RT5659_DRC1_PRIV_6:
-+	case RT5659_DRC1_PRIV_7:
-+	case RT5659_DRC2_PRIV_1:
-+	case RT5659_DRC2_PRIV_4:
-+	case RT5659_DRC2_PRIV_5:
-+	case RT5659_DRC2_PRIV_6:
-+	case RT5659_DRC2_PRIV_7:
-+	case RT5659_ALC_PGA_STA_1:
-+	case RT5659_ALC_PGA_STA_2:
-+	case RT5659_ALC_PGA_STA_3:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool rt5659_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case RT5659_RESET:
-+	case RT5659_SPO_VOL:
-+	case RT5659_HP_VOL:
-+	case RT5659_LOUT:
-+	case RT5659_MONO_OUT:
-+	case RT5659_HPL_GAIN:
-+	case RT5659_HPR_GAIN:
-+	case RT5659_MONO_GAIN:
-+	case RT5659_SPDIF_CTRL_1:
-+	case RT5659_SPDIF_CTRL_2:
-+	case RT5659_CAL_BST_CTRL:
-+	case RT5659_IN1_IN2:
-+	case RT5659_IN3_IN4:
-+	case RT5659_INL1_INR1_VOL:
-+	case RT5659_EJD_CTRL_1:
-+	case RT5659_EJD_CTRL_2:
-+	case RT5659_EJD_CTRL_3:
-+	case RT5659_SILENCE_CTRL:
-+	case RT5659_PSV_CTRL:
-+	case RT5659_SIDETONE_CTRL:
-+	case RT5659_DAC1_DIG_VOL:
-+	case RT5659_DAC2_DIG_VOL:
-+	case RT5659_DAC_CTRL:
-+	case RT5659_STO1_ADC_DIG_VOL:
-+	case RT5659_MONO_ADC_DIG_VOL:
-+	case RT5659_STO2_ADC_DIG_VOL:
-+	case RT5659_STO1_BOOST:
-+	case RT5659_MONO_BOOST:
-+	case RT5659_STO2_BOOST:
-+	case RT5659_HP_IMP_GAIN_1:
-+	case RT5659_HP_IMP_GAIN_2:
-+	case RT5659_STO1_ADC_MIXER:
-+	case RT5659_MONO_ADC_MIXER:
-+	case RT5659_AD_DA_MIXER:
-+	case RT5659_STO_DAC_MIXER:
-+	case RT5659_MONO_DAC_MIXER:
-+	case RT5659_DIG_MIXER:
-+	case RT5659_A_DAC_MUX:
-+	case RT5659_DIG_INF23_DATA:
-+	case RT5659_PDM_OUT_CTRL:
-+	case RT5659_PDM_DATA_CTRL_1:
-+	case RT5659_PDM_DATA_CTRL_2:
-+	case RT5659_PDM_DATA_CTRL_3:
-+	case RT5659_PDM_DATA_CTRL_4:
-+	case RT5659_SPDIF_CTRL:
-+	case RT5659_REC1_GAIN:
-+	case RT5659_REC1_L1_MIXER:
-+	case RT5659_REC1_L2_MIXER:
-+	case RT5659_REC1_R1_MIXER:
-+	case RT5659_REC1_R2_MIXER:
-+	case RT5659_CAL_REC:
-+	case RT5659_REC2_L1_MIXER:
-+	case RT5659_REC2_L2_MIXER:
-+	case RT5659_REC2_R1_MIXER:
-+	case RT5659_REC2_R2_MIXER:
-+	case RT5659_SPK_L_MIXER:
-+	case RT5659_SPK_R_MIXER:
-+	case RT5659_SPO_AMP_GAIN:
-+	case RT5659_ALC_BACK_GAIN:
-+	case RT5659_MONOMIX_GAIN:
-+	case RT5659_MONOMIX_IN_GAIN:
-+	case RT5659_OUT_L_GAIN:
-+	case RT5659_OUT_L_MIXER:
-+	case RT5659_OUT_R_GAIN:
-+	case RT5659_OUT_R_MIXER:
-+	case RT5659_LOUT_MIXER:
-+	case RT5659_HAPTIC_GEN_CTRL_1:
-+	case RT5659_HAPTIC_GEN_CTRL_2:
-+	case RT5659_HAPTIC_GEN_CTRL_3:
-+	case RT5659_HAPTIC_GEN_CTRL_4:
-+	case RT5659_HAPTIC_GEN_CTRL_5:
-+	case RT5659_HAPTIC_GEN_CTRL_6:
-+	case RT5659_HAPTIC_GEN_CTRL_7:
-+	case RT5659_HAPTIC_GEN_CTRL_8:
-+	case RT5659_HAPTIC_GEN_CTRL_9:
-+	case RT5659_HAPTIC_GEN_CTRL_10:
-+	case RT5659_HAPTIC_GEN_CTRL_11:
-+	case RT5659_HAPTIC_LPF_CTRL_1:
-+	case RT5659_HAPTIC_LPF_CTRL_2:
-+	case RT5659_HAPTIC_LPF_CTRL_3:
-+	case RT5659_PWR_DIG_1:
-+	case RT5659_PWR_DIG_2:
-+	case RT5659_PWR_ANLG_1:
-+	case RT5659_PWR_ANLG_2:
-+	case RT5659_PWR_ANLG_3:
-+	case RT5659_PWR_MIXER:
-+	case RT5659_PWR_VOL:
-+	case RT5659_PRIV_INDEX:
-+	case RT5659_CLK_DET:
-+	case RT5659_PRIV_DATA:
-+	case RT5659_PRE_DIV_1:
-+	case RT5659_PRE_DIV_2:
-+	case RT5659_I2S1_SDP:
-+	case RT5659_I2S2_SDP:
-+	case RT5659_I2S3_SDP:
-+	case RT5659_ADDA_CLK_1:
-+	case RT5659_ADDA_CLK_2:
-+	case RT5659_DMIC_CTRL_1:
-+	case RT5659_DMIC_CTRL_2:
-+	case RT5659_TDM_CTRL_1:
-+	case RT5659_TDM_CTRL_2:
-+	case RT5659_TDM_CTRL_3:
-+	case RT5659_TDM_CTRL_4:
-+	case RT5659_TDM_CTRL_5:
-+	case RT5659_GLB_CLK:
-+	case RT5659_PLL_CTRL_1:
-+	case RT5659_PLL_CTRL_2:
-+	case RT5659_ASRC_1:
-+	case RT5659_ASRC_2:
-+	case RT5659_ASRC_3:
-+	case RT5659_ASRC_4:
-+	case RT5659_ASRC_5:
-+	case RT5659_ASRC_6:
-+	case RT5659_ASRC_7:
-+	case RT5659_ASRC_8:
-+	case RT5659_ASRC_9:
-+	case RT5659_ASRC_10:
-+	case RT5659_DEPOP_1:
-+	case RT5659_DEPOP_2:
-+	case RT5659_DEPOP_3:
-+	case RT5659_HP_CHARGE_PUMP_1:
-+	case RT5659_HP_CHARGE_PUMP_2:
-+	case RT5659_MICBIAS_1:
-+	case RT5659_MICBIAS_2:
-+	case RT5659_ASRC_11:
-+	case RT5659_ASRC_12:
-+	case RT5659_ASRC_13:
-+	case RT5659_REC_M1_M2_GAIN_CTRL:
-+	case RT5659_RC_CLK_CTRL:
-+	case RT5659_CLASSD_CTRL_1:
-+	case RT5659_CLASSD_CTRL_2:
-+	case RT5659_ADC_EQ_CTRL_1:
-+	case RT5659_ADC_EQ_CTRL_2:
-+	case RT5659_DAC_EQ_CTRL_1:
-+	case RT5659_DAC_EQ_CTRL_2:
-+	case RT5659_DAC_EQ_CTRL_3:
-+	case RT5659_IRQ_CTRL_1:
-+	case RT5659_IRQ_CTRL_2:
-+	case RT5659_IRQ_CTRL_3:
-+	case RT5659_IRQ_CTRL_4:
-+	case RT5659_IRQ_CTRL_5:
-+	case RT5659_IRQ_CTRL_6:
-+	case RT5659_INT_ST_1:
-+	case RT5659_INT_ST_2:
-+	case RT5659_GPIO_CTRL_1:
-+	case RT5659_GPIO_CTRL_2:
-+	case RT5659_GPIO_CTRL_3:
-+	case RT5659_GPIO_CTRL_4:
-+	case RT5659_GPIO_CTRL_5:
-+	case RT5659_GPIO_STA:
-+	case RT5659_SINE_GEN_CTRL_1:
-+	case RT5659_SINE_GEN_CTRL_2:
-+	case RT5659_SINE_GEN_CTRL_3:
-+	case RT5659_HP_AMP_DET_CTRL_1:
-+	case RT5659_HP_AMP_DET_CTRL_2:
-+	case RT5659_SV_ZCD_1:
-+	case RT5659_SV_ZCD_2:
-+	case RT5659_IL_CMD_1:
-+	case RT5659_IL_CMD_2:
-+	case RT5659_IL_CMD_3:
-+	case RT5659_IL_CMD_4:
-+	case RT5659_4BTN_IL_CMD_1:
-+	case RT5659_4BTN_IL_CMD_2:
-+	case RT5659_4BTN_IL_CMD_3:
-+	case RT5659_PSV_IL_CMD_1:
-+	case RT5659_PSV_IL_CMD_2:
-+	case RT5659_ADC_STO1_HP_CTRL_1:
-+	case RT5659_ADC_STO1_HP_CTRL_2:
-+	case RT5659_ADC_MONO_HP_CTRL_1:
-+	case RT5659_ADC_MONO_HP_CTRL_2:
-+	case RT5659_AJD1_CTRL:
-+	case RT5659_AJD2_AJD3_CTRL:
-+	case RT5659_JD1_THD:
-+	case RT5659_JD2_THD:
-+	case RT5659_JD3_THD:
-+	case RT5659_JD_CTRL_1:
-+	case RT5659_JD_CTRL_2:
-+	case RT5659_JD_CTRL_3:
-+	case RT5659_JD_CTRL_4:
-+	case RT5659_DIG_MISC:
-+	case RT5659_DUMMY_2:
-+	case RT5659_DUMMY_3:
-+	case RT5659_VENDOR_ID:
-+	case RT5659_VENDOR_ID_1:
-+	case RT5659_DEVICE_ID:
-+	case RT5659_DAC_ADC_DIG_VOL:
-+	case RT5659_BIAS_CUR_CTRL_1:
-+	case RT5659_BIAS_CUR_CTRL_2:
-+	case RT5659_BIAS_CUR_CTRL_3:
-+	case RT5659_BIAS_CUR_CTRL_4:
-+	case RT5659_BIAS_CUR_CTRL_5:
-+	case RT5659_BIAS_CUR_CTRL_6:
-+	case RT5659_BIAS_CUR_CTRL_7:
-+	case RT5659_BIAS_CUR_CTRL_8:
-+	case RT5659_BIAS_CUR_CTRL_9:
-+	case RT5659_BIAS_CUR_CTRL_10:
-+	case RT5659_MEMORY_TEST:
-+	case RT5659_VREF_REC_OP_FB_CAP_CTRL:
-+	case RT5659_CLASSD_0:
-+	case RT5659_CLASSD_1:
-+	case RT5659_CLASSD_2:
-+	case RT5659_CLASSD_3:
-+	case RT5659_CLASSD_4:
-+	case RT5659_CLASSD_5:
-+	case RT5659_CLASSD_6:
-+	case RT5659_CLASSD_7:
-+	case RT5659_CLASSD_8:
-+	case RT5659_CLASSD_9:
-+	case RT5659_CLASSD_10:
-+	case RT5659_CHARGE_PUMP_1:
-+	case RT5659_CHARGE_PUMP_2:
-+	case RT5659_DIG_IN_CTRL_1:
-+	case RT5659_DIG_IN_CTRL_2:
-+	case RT5659_PAD_DRIVING_CTRL:
-+	case RT5659_SOFT_RAMP_DEPOP:
-+	case RT5659_PLL:
-+	case RT5659_CHOP_DAC:
-+	case RT5659_CHOP_ADC:
-+	case RT5659_CALIB_ADC_CTRL:
-+	case RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL:
-+	case RT5659_VOL_TEST:
-+	case RT5659_TEST_MODE_CTRL_1:
-+	case RT5659_TEST_MODE_CTRL_2:
-+	case RT5659_TEST_MODE_CTRL_3:
-+	case RT5659_TEST_MODE_CTRL_4:
-+	case RT5659_BASSBACK_CTRL:
-+	case RT5659_MP3_PLUS_CTRL_1:
-+	case RT5659_MP3_PLUS_CTRL_2:
-+	case RT5659_MP3_HPF_A1:
-+	case RT5659_MP3_HPF_A2:
-+	case RT5659_MP3_HPF_H0:
-+	case RT5659_MP3_LPF_H0:
-+	case RT5659_3D_SPK_CTRL:
-+	case RT5659_3D_SPK_COEF_1:
-+	case RT5659_3D_SPK_COEF_2:
-+	case RT5659_3D_SPK_COEF_3:
-+	case RT5659_3D_SPK_COEF_4:
-+	case RT5659_3D_SPK_COEF_5:
-+	case RT5659_3D_SPK_COEF_6:
-+	case RT5659_3D_SPK_COEF_7:
-+	case RT5659_STO_NG2_CTRL_1:
-+	case RT5659_STO_NG2_CTRL_2:
-+	case RT5659_STO_NG2_CTRL_3:
-+	case RT5659_STO_NG2_CTRL_4:
-+	case RT5659_STO_NG2_CTRL_5:
-+	case RT5659_STO_NG2_CTRL_6:
-+	case RT5659_STO_NG2_CTRL_7:
-+	case RT5659_STO_NG2_CTRL_8:
-+	case RT5659_MONO_NG2_CTRL_1:
-+	case RT5659_MONO_NG2_CTRL_2:
-+	case RT5659_MONO_NG2_CTRL_3:
-+	case RT5659_MONO_NG2_CTRL_4:
-+	case RT5659_MONO_NG2_CTRL_5:
-+	case RT5659_MONO_NG2_CTRL_6:
-+	case RT5659_MID_HP_AMP_DET:
-+	case RT5659_LOW_HP_AMP_DET:
-+	case RT5659_LDO_CTRL:
-+	case RT5659_HP_DECROSS_CTRL_1:
-+	case RT5659_HP_DECROSS_CTRL_2:
-+	case RT5659_HP_DECROSS_CTRL_3:
-+	case RT5659_HP_DECROSS_CTRL_4:
-+	case RT5659_HP_IMP_SENS_CTRL_1:
-+	case RT5659_HP_IMP_SENS_CTRL_2:
-+	case RT5659_HP_IMP_SENS_CTRL_3:
-+	case RT5659_HP_IMP_SENS_CTRL_4:
-+	case RT5659_HP_IMP_SENS_MAP_1:
-+	case RT5659_HP_IMP_SENS_MAP_2:
-+	case RT5659_HP_IMP_SENS_MAP_3:
-+	case RT5659_HP_IMP_SENS_MAP_4:
-+	case RT5659_HP_IMP_SENS_MAP_5:
-+	case RT5659_HP_IMP_SENS_MAP_6:
-+	case RT5659_HP_IMP_SENS_MAP_7:
-+	case RT5659_HP_IMP_SENS_MAP_8:
-+	case RT5659_HP_LOGIC_CTRL_1:
-+	case RT5659_HP_LOGIC_CTRL_2:
-+	case RT5659_HP_CALIB_CTRL_1:
-+	case RT5659_HP_CALIB_CTRL_2:
-+	case RT5659_HP_CALIB_CTRL_3:
-+	case RT5659_HP_CALIB_CTRL_4:
-+	case RT5659_HP_CALIB_CTRL_5:
-+	case RT5659_HP_CALIB_CTRL_6:
-+	case RT5659_HP_CALIB_CTRL_7:
-+	case RT5659_HP_CALIB_CTRL_9:
-+	case RT5659_HP_CALIB_CTRL_10:
-+	case RT5659_HP_CALIB_CTRL_11:
-+	case RT5659_HP_CALIB_STA_1:
-+	case RT5659_HP_CALIB_STA_2:
-+	case RT5659_HP_CALIB_STA_3:
-+	case RT5659_HP_CALIB_STA_4:
-+	case RT5659_HP_CALIB_STA_5:
-+	case RT5659_HP_CALIB_STA_6:
-+	case RT5659_HP_CALIB_STA_7:
-+	case RT5659_HP_CALIB_STA_8:
-+	case RT5659_HP_CALIB_STA_9:
-+	case RT5659_MONO_AMP_CALIB_CTRL_1:
-+	case RT5659_MONO_AMP_CALIB_CTRL_2:
-+	case RT5659_MONO_AMP_CALIB_CTRL_3:
-+	case RT5659_MONO_AMP_CALIB_CTRL_4:
-+	case RT5659_MONO_AMP_CALIB_CTRL_5:
-+	case RT5659_MONO_AMP_CALIB_STA_1:
-+	case RT5659_MONO_AMP_CALIB_STA_2:
-+	case RT5659_MONO_AMP_CALIB_STA_3:
-+	case RT5659_MONO_AMP_CALIB_STA_4:
-+	case RT5659_SPK_PWR_LMT_CTRL_1:
-+	case RT5659_SPK_PWR_LMT_CTRL_2:
-+	case RT5659_SPK_PWR_LMT_CTRL_3:
-+	case RT5659_SPK_PWR_LMT_STA_1:
-+	case RT5659_SPK_PWR_LMT_STA_2:
-+	case RT5659_SPK_PWR_LMT_STA_3:
-+	case RT5659_SPK_PWR_LMT_STA_4:
-+	case RT5659_SPK_PWR_LMT_STA_5:
-+	case RT5659_SPK_PWR_LMT_STA_6:
-+	case RT5659_FLEX_SPK_BST_CTRL_1:
-+	case RT5659_FLEX_SPK_BST_CTRL_2:
-+	case RT5659_FLEX_SPK_BST_CTRL_3:
-+	case RT5659_FLEX_SPK_BST_CTRL_4:
-+	case RT5659_SPK_EX_LMT_CTRL_1:
-+	case RT5659_SPK_EX_LMT_CTRL_2:
-+	case RT5659_SPK_EX_LMT_CTRL_3:
-+	case RT5659_SPK_EX_LMT_CTRL_4:
-+	case RT5659_SPK_EX_LMT_CTRL_5:
-+	case RT5659_SPK_EX_LMT_CTRL_6:
-+	case RT5659_SPK_EX_LMT_CTRL_7:
-+	case RT5659_ADJ_HPF_CTRL_1:
-+	case RT5659_ADJ_HPF_CTRL_2:
-+	case RT5659_SPK_DC_CAILB_CTRL_1:
-+	case RT5659_SPK_DC_CAILB_CTRL_2:
-+	case RT5659_SPK_DC_CAILB_CTRL_3:
-+	case RT5659_SPK_DC_CAILB_CTRL_4:
-+	case RT5659_SPK_DC_CAILB_CTRL_5:
-+	case RT5659_SPK_DC_CAILB_STA_1:
-+	case RT5659_SPK_DC_CAILB_STA_2:
-+	case RT5659_SPK_DC_CAILB_STA_3:
-+	case RT5659_SPK_DC_CAILB_STA_4:
-+	case RT5659_SPK_DC_CAILB_STA_5:
-+	case RT5659_SPK_DC_CAILB_STA_6:
-+	case RT5659_SPK_DC_CAILB_STA_7:
-+	case RT5659_SPK_DC_CAILB_STA_8:
-+	case RT5659_SPK_DC_CAILB_STA_9:
-+	case RT5659_SPK_DC_CAILB_STA_10:
-+	case RT5659_SPK_VDD_STA_1:
-+	case RT5659_SPK_VDD_STA_2:
-+	case RT5659_SPK_DC_DET_CTRL_1:
-+	case RT5659_SPK_DC_DET_CTRL_2:
-+	case RT5659_SPK_DC_DET_CTRL_3:
-+	case RT5659_PURE_DC_DET_CTRL_1:
-+	case RT5659_PURE_DC_DET_CTRL_2:
-+	case RT5659_DUMMY_4:
-+	case RT5659_DUMMY_5:
-+	case RT5659_DUMMY_6:
-+	case RT5659_DRC1_CTRL_1:
-+	case RT5659_DRC1_CTRL_2:
-+	case RT5659_DRC1_CTRL_3:
-+	case RT5659_DRC1_CTRL_4:
-+	case RT5659_DRC1_CTRL_5:
-+	case RT5659_DRC1_CTRL_6:
-+	case RT5659_DRC1_HARD_LMT_CTRL_1:
-+	case RT5659_DRC1_HARD_LMT_CTRL_2:
-+	case RT5659_DRC2_CTRL_1:
-+	case RT5659_DRC2_CTRL_2:
-+	case RT5659_DRC2_CTRL_3:
-+	case RT5659_DRC2_CTRL_4:
-+	case RT5659_DRC2_CTRL_5:
-+	case RT5659_DRC2_CTRL_6:
-+	case RT5659_DRC2_HARD_LMT_CTRL_1:
-+	case RT5659_DRC2_HARD_LMT_CTRL_2:
-+	case RT5659_DRC1_PRIV_1:
-+	case RT5659_DRC1_PRIV_2:
-+	case RT5659_DRC1_PRIV_3:
-+	case RT5659_DRC1_PRIV_4:
-+	case RT5659_DRC1_PRIV_5:
-+	case RT5659_DRC1_PRIV_6:
-+	case RT5659_DRC1_PRIV_7:
-+	case RT5659_DRC2_PRIV_1:
-+	case RT5659_DRC2_PRIV_2:
-+	case RT5659_DRC2_PRIV_3:
-+	case RT5659_DRC2_PRIV_4:
-+	case RT5659_DRC2_PRIV_5:
-+	case RT5659_DRC2_PRIV_6:
-+	case RT5659_DRC2_PRIV_7:
-+	case RT5659_MULTI_DRC_CTRL:
-+	case RT5659_CROSS_OVER_1:
-+	case RT5659_CROSS_OVER_2:
-+	case RT5659_CROSS_OVER_3:
-+	case RT5659_CROSS_OVER_4:
-+	case RT5659_CROSS_OVER_5:
-+	case RT5659_CROSS_OVER_6:
-+	case RT5659_CROSS_OVER_7:
-+	case RT5659_CROSS_OVER_8:
-+	case RT5659_CROSS_OVER_9:
-+	case RT5659_CROSS_OVER_10:
-+	case RT5659_ALC_PGA_CTRL_1:
-+	case RT5659_ALC_PGA_CTRL_2:
-+	case RT5659_ALC_PGA_CTRL_3:
-+	case RT5659_ALC_PGA_CTRL_4:
-+	case RT5659_ALC_PGA_CTRL_5:
-+	case RT5659_ALC_PGA_CTRL_6:
-+	case RT5659_ALC_PGA_CTRL_7:
-+	case RT5659_ALC_PGA_CTRL_8:
-+	case RT5659_ALC_PGA_STA_1:
-+	case RT5659_ALC_PGA_STA_2:
-+	case RT5659_ALC_PGA_STA_3:
-+	case RT5659_DAC_L_EQ_PRE_VOL:
-+	case RT5659_DAC_R_EQ_PRE_VOL:
-+	case RT5659_DAC_L_EQ_POST_VOL:
-+	case RT5659_DAC_R_EQ_POST_VOL:
-+	case RT5659_DAC_L_EQ_LPF1_A1:
-+	case RT5659_DAC_L_EQ_LPF1_H0:
-+	case RT5659_DAC_R_EQ_LPF1_A1:
-+	case RT5659_DAC_R_EQ_LPF1_H0:
-+	case RT5659_DAC_L_EQ_BPF2_A1:
-+	case RT5659_DAC_L_EQ_BPF2_A2:
-+	case RT5659_DAC_L_EQ_BPF2_H0:
-+	case RT5659_DAC_R_EQ_BPF2_A1:
-+	case RT5659_DAC_R_EQ_BPF2_A2:
-+	case RT5659_DAC_R_EQ_BPF2_H0:
-+	case RT5659_DAC_L_EQ_BPF3_A1:
-+	case RT5659_DAC_L_EQ_BPF3_A2:
-+	case RT5659_DAC_L_EQ_BPF3_H0:
-+	case RT5659_DAC_R_EQ_BPF3_A1:
-+	case RT5659_DAC_R_EQ_BPF3_A2:
-+	case RT5659_DAC_R_EQ_BPF3_H0:
-+	case RT5659_DAC_L_EQ_BPF4_A1:
-+	case RT5659_DAC_L_EQ_BPF4_A2:
-+	case RT5659_DAC_L_EQ_BPF4_H0:
-+	case RT5659_DAC_R_EQ_BPF4_A1:
-+	case RT5659_DAC_R_EQ_BPF4_A2:
-+	case RT5659_DAC_R_EQ_BPF4_H0:
-+	case RT5659_DAC_L_EQ_HPF1_A1:
-+	case RT5659_DAC_L_EQ_HPF1_H0:
-+	case RT5659_DAC_R_EQ_HPF1_A1:
-+	case RT5659_DAC_R_EQ_HPF1_H0:
-+	case RT5659_DAC_L_EQ_HPF2_A1:
-+	case RT5659_DAC_L_EQ_HPF2_A2:
-+	case RT5659_DAC_L_EQ_HPF2_H0:
-+	case RT5659_DAC_R_EQ_HPF2_A1:
-+	case RT5659_DAC_R_EQ_HPF2_A2:
-+	case RT5659_DAC_R_EQ_HPF2_H0:
-+	case RT5659_DAC_L_BI_EQ_BPF1_H0_1:
-+	case RT5659_DAC_L_BI_EQ_BPF1_H0_2:
-+	case RT5659_DAC_L_BI_EQ_BPF1_B1_1:
-+	case RT5659_DAC_L_BI_EQ_BPF1_B1_2:
-+	case RT5659_DAC_L_BI_EQ_BPF1_B2_1:
-+	case RT5659_DAC_L_BI_EQ_BPF1_B2_2:
-+	case RT5659_DAC_L_BI_EQ_BPF1_A1_1:
-+	case RT5659_DAC_L_BI_EQ_BPF1_A1_2:
-+	case RT5659_DAC_L_BI_EQ_BPF1_A2_1:
-+	case RT5659_DAC_L_BI_EQ_BPF1_A2_2:
-+	case RT5659_DAC_R_BI_EQ_BPF1_H0_1:
-+	case RT5659_DAC_R_BI_EQ_BPF1_H0_2:
-+	case RT5659_DAC_R_BI_EQ_BPF1_B1_1:
-+	case RT5659_DAC_R_BI_EQ_BPF1_B1_2:
-+	case RT5659_DAC_R_BI_EQ_BPF1_B2_1:
-+	case RT5659_DAC_R_BI_EQ_BPF1_B2_2:
-+	case RT5659_DAC_R_BI_EQ_BPF1_A1_1:
-+	case RT5659_DAC_R_BI_EQ_BPF1_A1_2:
-+	case RT5659_DAC_R_BI_EQ_BPF1_A2_1:
-+	case RT5659_DAC_R_BI_EQ_BPF1_A2_2:
-+	case RT5659_ADC_L_EQ_LPF1_A1:
-+	case RT5659_ADC_R_EQ_LPF1_A1:
-+	case RT5659_ADC_L_EQ_LPF1_H0:
-+	case RT5659_ADC_R_EQ_LPF1_H0:
-+	case RT5659_ADC_L_EQ_BPF1_A1:
-+	case RT5659_ADC_R_EQ_BPF1_A1:
-+	case RT5659_ADC_L_EQ_BPF1_A2:
-+	case RT5659_ADC_R_EQ_BPF1_A2:
-+	case RT5659_ADC_L_EQ_BPF1_H0:
-+	case RT5659_ADC_R_EQ_BPF1_H0:
-+	case RT5659_ADC_L_EQ_BPF2_A1:
-+	case RT5659_ADC_R_EQ_BPF2_A1:
-+	case RT5659_ADC_L_EQ_BPF2_A2:
-+	case RT5659_ADC_R_EQ_BPF2_A2:
-+	case RT5659_ADC_L_EQ_BPF2_H0:
-+	case RT5659_ADC_R_EQ_BPF2_H0:
-+	case RT5659_ADC_L_EQ_BPF3_A1:
-+	case RT5659_ADC_R_EQ_BPF3_A1:
-+	case RT5659_ADC_L_EQ_BPF3_A2:
-+	case RT5659_ADC_R_EQ_BPF3_A2:
-+	case RT5659_ADC_L_EQ_BPF3_H0:
-+	case RT5659_ADC_R_EQ_BPF3_H0:
-+	case RT5659_ADC_L_EQ_BPF4_A1:
-+	case RT5659_ADC_R_EQ_BPF4_A1:
-+	case RT5659_ADC_L_EQ_BPF4_A2:
-+	case RT5659_ADC_R_EQ_BPF4_A2:
-+	case RT5659_ADC_L_EQ_BPF4_H0:
-+	case RT5659_ADC_R_EQ_BPF4_H0:
-+	case RT5659_ADC_L_EQ_HPF1_A1:
-+	case RT5659_ADC_R_EQ_HPF1_A1:
-+	case RT5659_ADC_L_EQ_HPF1_H0:
-+	case RT5659_ADC_R_EQ_HPF1_H0:
-+	case RT5659_ADC_L_EQ_PRE_VOL:
-+	case RT5659_ADC_R_EQ_PRE_VOL:
-+	case RT5659_ADC_L_EQ_POST_VOL:
-+	case RT5659_ADC_R_EQ_POST_VOL:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(hp_vol_tlv, -2325, 75, 0);
-+static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
-+static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
-+static const DECLARE_TLV_DB_SCALE(in_bst_tlv, -1200, 75, 0);
-+
-+/* Interface data select */
-+static const char * const rt5659_data_select[] = {
-+	"L/R", "R/L", "L/L", "R/R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if1_01_adc_enum,
-+	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT01_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if1_23_adc_enum,
-+	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT23_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if1_45_adc_enum,
-+	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT45_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if1_67_adc_enum,
-+	RT5659_TDM_CTRL_2, RT5659_DS_ADC_SLOT67_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if2_dac_enum,
-+	RT5659_DIG_INF23_DATA, RT5659_IF2_DAC_SEL_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if2_adc_enum,
-+	RT5659_DIG_INF23_DATA, RT5659_IF2_ADC_SEL_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if3_dac_enum,
-+	RT5659_DIG_INF23_DATA, RT5659_IF3_DAC_SEL_SFT, rt5659_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5659_if3_adc_enum,
-+	RT5659_DIG_INF23_DATA, RT5659_IF3_ADC_SEL_SFT, rt5659_data_select);
-+
-+static const struct snd_kcontrol_new rt5659_if1_01_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1 01 ADC Swap Source", rt5659_if1_01_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if1_23_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1 23 ADC1 Swap Source", rt5659_if1_23_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if1_45_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1 45 ADC1 Swap Source", rt5659_if1_45_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if1_67_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1 67 ADC1 Swap Source", rt5659_if1_67_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if2_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF2 DAC Swap Source", rt5659_if2_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if2_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF2 ADC Swap Source", rt5659_if2_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if3_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF3 DAC Swap Source", rt5659_if3_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5659_if3_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF3 ADC Swap Source", rt5659_if3_adc_enum);
-+
-+static const char * const rt5659_asrc_clk_src[] = {
-+	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
-+	"clk_i2s3_track", "clk_sys2", "clk_sys3"
-+};
-+
-+static unsigned int rt5659_asrc_clk_map_values[] = {
-+	0, 1, 2, 3, 5, 6,
-+};
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_da_sto_asrc_enum, RT5659_ASRC_2, RT5659_DA_STO_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_da_monol_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_L_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_da_monor_asrc_enum, RT5659_ASRC_2, RT5659_DA_MONO_R_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_ad_sto1_asrc_enum, RT5659_ASRC_2, RT5659_AD_STO1_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_ad_sto2_asrc_enum, RT5659_ASRC_3, RT5659_AD_STO2_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_ad_monol_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_L_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static const SOC_VALUE_ENUM_SINGLE_DECL(
-+	rt5659_ad_monor_asrc_enum, RT5659_ASRC_3, RT5659_AD_MONO_R_T_SFT, 0x7,
-+	rt5659_asrc_clk_src, rt5659_asrc_clk_map_values);
-+
-+static int rt5659_hp_vol_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	int ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+
-+	if (snd_soc_read(codec, RT5659_STO_NG2_CTRL_1) & RT5659_NG2_EN) {
-+		snd_soc_update_bits(codec, RT5659_STO_NG2_CTRL_1,
-+			RT5659_NG2_EN_MASK, RT5659_NG2_DIS);
-+		snd_soc_update_bits(codec, RT5659_STO_NG2_CTRL_1,
-+			RT5659_NG2_EN_MASK, RT5659_NG2_EN);
-+	}
-+
-+	return ret;
-+}
-+
-+static void rt5659_enable_push_button_irq(struct snd_soc_codec *codec,
-+	bool enable)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+
-+	if (enable) {
-+		snd_soc_write(codec, RT5659_4BTN_IL_CMD_1, 0x000b);
-+
-+		/* MICBIAS1 and Mic Det Power for button detect*/
-+		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
-+		snd_soc_dapm_force_enable_pin(dapm,
-+			"Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
-+
-+		snd_soc_update_bits(codec, RT5659_PWR_ANLG_2,
-+			RT5659_PWR_MB1, RT5659_PWR_MB1);
-+		snd_soc_update_bits(codec, RT5659_PWR_VOL,
-+			RT5659_PWR_MIC_DET, RT5659_PWR_MIC_DET);
-+
-+		snd_soc_update_bits(codec, RT5659_IRQ_CTRL_2,
-+				RT5659_IL_IRQ_MASK, RT5659_IL_IRQ_EN);
-+		snd_soc_update_bits(codec, RT5659_4BTN_IL_CMD_2,
-+				RT5659_4BTN_IL_MASK, RT5659_4BTN_IL_EN);
-+	} else {
-+		snd_soc_update_bits(codec, RT5659_4BTN_IL_CMD_2,
-+				RT5659_4BTN_IL_MASK, RT5659_4BTN_IL_DIS);
-+		snd_soc_update_bits(codec, RT5659_IRQ_CTRL_2,
-+				RT5659_IL_IRQ_MASK, RT5659_IL_IRQ_DIS);
-+		/* MICBIAS1 and Mic Det Power for button detect*/
-+		snd_soc_dapm_disable_pin(dapm, "MICBIAS1");
-+		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
-+	}
-+}
-+
-+/**
-+ * rt5659_headset_detect - Detect headset.
-+ * @codec: SoC audio codec device.
-+ * @jack_insert: Jack insert or not.
-+ *
-+ * Detect whether is headset or not when jack inserted.
-+ *
-+ * Returns detect status.
-+ */
-+
-+static int rt5659_headset_detect(struct snd_soc_codec *codec, int jack_insert)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	int val, i = 0, sleep_time[5] = {300, 150, 100, 50, 30};
-+	int reg_63;
-+
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (jack_insert) {
-+		snd_soc_dapm_force_enable_pin(dapm,
-+			"Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
-+		reg_63 = snd_soc_read(codec, RT5659_PWR_ANLG_1);
-+
-+		snd_soc_update_bits(codec, RT5659_PWR_ANLG_1,
-+			RT5659_PWR_VREF2 | RT5659_PWR_MB,
-+			RT5659_PWR_VREF2 | RT5659_PWR_MB);
-+		msleep(20);
-+		snd_soc_update_bits(codec, RT5659_PWR_ANLG_1,
-+			RT5659_PWR_FV2, RT5659_PWR_FV2);
-+
-+		snd_soc_write(codec, RT5659_EJD_CTRL_2, 0x4160);
-+		snd_soc_update_bits(codec, RT5659_EJD_CTRL_1,
-+			0x20, 0x0);
-+		msleep(20);
-+		snd_soc_update_bits(codec, RT5659_EJD_CTRL_1,
-+			0x20, 0x20);
-+
-+		while (i < 5) {
-+			msleep(sleep_time[i]);
-+			val = snd_soc_read(codec, RT5659_EJD_CTRL_2) & 0x0003;
-+			i++;
-+			if (val == 0x1 || val == 0x2 || val == 0x3)
-+				break;
-+		}
-+
-+		switch (val) {
-+		case 1:
-+			rt5659->jack_type = SND_JACK_HEADSET;
-+			rt5659_enable_push_button_irq(codec, true);
-+			break;
-+		default:
-+			snd_soc_write(codec, RT5659_PWR_ANLG_1, reg_63);
-+			rt5659->jack_type = SND_JACK_HEADPHONE;
-+			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+			snd_soc_dapm_sync(dapm);
-+			break;
-+		}
-+	} else {
-+		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
-+		if (rt5659->jack_type == SND_JACK_HEADSET)
-+			rt5659_enable_push_button_irq(codec, false);
-+		rt5659->jack_type = 0;
-+	}
-+
-+	dev_dbg(codec->dev, "jack_type = %d\n", rt5659->jack_type);
-+	return rt5659->jack_type;
-+}
-+
-+static int rt5659_button_detect(struct snd_soc_codec *codec)
-+{
-+	int btn_type, val;
-+
-+	val = snd_soc_read(codec, RT5659_4BTN_IL_CMD_1);
-+	btn_type = val & 0xfff0;
-+	snd_soc_write(codec, RT5659_4BTN_IL_CMD_1, val);
-+
-+	return btn_type;
-+}
-+
-+static irqreturn_t rt5659_irq(int irq, void *data)
-+{
-+	struct rt5659_priv *rt5659 = data;
-+
-+	queue_delayed_work(system_power_efficient_wq,
-+			   &rt5659->jack_detect_work, msecs_to_jiffies(250));
-+
-+	return IRQ_HANDLED;
-+}
-+
-+int rt5659_set_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hs_jack)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5659->hs_jack = hs_jack;
-+
-+	rt5659_irq(0, rt5659);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5659_set_jack_detect);
-+
-+static void rt5659_jack_detect_work(struct work_struct *work)
-+{
-+	struct rt5659_priv *rt5659 =
-+		container_of(work, struct rt5659_priv, jack_detect_work.work);
-+	int val, btn_type, report = 0;
-+
-+	if (!rt5659->codec)
-+		return;
-+
-+	val = snd_soc_read(rt5659->codec, RT5659_INT_ST_1) & 0x0080;
-+	if (!val) {
-+		/* jack in */
-+		if (rt5659->jack_type == 0) {
-+			/* jack was out, report jack type */
-+			report = rt5659_headset_detect(rt5659->codec, 1);
-+		} else {
-+			/* jack is already in, report button event */
-+			report = SND_JACK_HEADSET;
-+			btn_type = rt5659_button_detect(rt5659->codec);
-+			/**
-+			 * rt5659 can report three kinds of button behavior,
-+			 * one click, double click and hold. However,
-+			 * currently we will report button pressed/released
-+			 * event. So all the three button behaviors are
-+			 * treated as button pressed.
-+			 */
-+			switch (btn_type) {
-+			case 0x8000:
-+			case 0x4000:
-+			case 0x2000:
-+				report |= SND_JACK_BTN_0;
-+				break;
-+			case 0x1000:
-+			case 0x0800:
-+			case 0x0400:
-+				report |= SND_JACK_BTN_1;
-+				break;
-+			case 0x0200:
-+			case 0x0100:
-+			case 0x0080:
-+				report |= SND_JACK_BTN_2;
-+				break;
-+			case 0x0040:
-+			case 0x0020:
-+			case 0x0010:
-+				report |= SND_JACK_BTN_3;
-+				break;
-+			case 0x0000: /* unpressed */
-+				break;
-+			default:
-+				btn_type = 0;
-+				dev_err(rt5659->codec->dev,
-+					"Unexpected button code 0x%04x\n",
-+					btn_type);
-+				break;
-+			}
-+
-+			/* button release or spurious interrput*/
-+			if (btn_type == 0)
-+				report =  rt5659->jack_type;
-+		}
-+	} else {
-+		/* jack out */
-+		report = rt5659_headset_detect(rt5659->codec, 0);
-+	}
-+
-+	snd_soc_jack_report(rt5659->hs_jack, report, SND_JACK_HEADSET |
-+			    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+			    SND_JACK_BTN_2 | SND_JACK_BTN_3);
-+}
-+
-+static const struct snd_kcontrol_new rt5659_snd_controls[] = {
-+	/* Speaker Output Volume */
-+	SOC_DOUBLE_TLV("Speaker Playback Volume", RT5659_SPO_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 39, 1, out_vol_tlv),
-+
-+	/* Headphone Output Volume */
-+	SOC_DOUBLE_R_EXT_TLV("Headphone Playback Volume", RT5659_HPL_GAIN,
-+		RT5659_HPR_GAIN, RT5659_G_HP_SFT, 31, 1, snd_soc_get_volsw,
-+		rt5659_hp_vol_put, hp_vol_tlv),
-+
-+	/* Mono Output Volume */
-+	SOC_SINGLE_TLV("Mono Playback Volume", RT5659_MONO_OUT,
-+		RT5659_L_VOL_SFT, 39, 1, out_vol_tlv),
-+
-+	/* Output Volume */
-+	SOC_DOUBLE_TLV("OUT Playback Volume", RT5659_LOUT,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 39, 1, out_vol_tlv),
-+
-+	/* DAC Digital Volume */
-+	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5659_DAC1_DIG_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 175, 0, dac_vol_tlv),
-+	SOC_DOUBLE("DAC1 Playback Switch", RT5659_AD_DA_MIXER,
-+		RT5659_M_DAC1_L_SFT, RT5659_M_DAC1_R_SFT, 1, 1),
-+
-+	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5659_DAC2_DIG_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 175, 0, dac_vol_tlv),
-+	SOC_DOUBLE("DAC2 Playback Switch", RT5659_DAC_CTRL,
-+		RT5659_M_DAC2_L_VOL_SFT, RT5659_M_DAC2_R_VOL_SFT, 1, 1),
-+
-+	/* IN1/IN2/IN3/IN4 Volume */
-+	SOC_SINGLE_TLV("IN1 Boost Volume", RT5659_IN1_IN2,
-+		RT5659_BST1_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN2 Boost Volume", RT5659_IN1_IN2,
-+		RT5659_BST2_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN3 Boost Volume", RT5659_IN3_IN4,
-+		RT5659_BST3_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN4 Boost Volume", RT5659_IN3_IN4,
-+		RT5659_BST4_SFT, 69, 0, in_bst_tlv),
-+
-+	/* INL/INR Volume Control */
-+	SOC_DOUBLE_TLV("IN Capture Volume", RT5659_INL1_INR1_VOL,
-+		RT5659_INL_VOL_SFT, RT5659_INR_VOL_SFT, 31, 1, in_vol_tlv),
-+
-+	/* ADC Digital Volume Control */
-+	SOC_DOUBLE("STO1 ADC Capture Switch", RT5659_STO1_ADC_DIG_VOL,
-+		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("STO1 ADC Capture Volume", RT5659_STO1_ADC_DIG_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("Mono ADC Capture Switch", RT5659_MONO_ADC_DIG_VOL,
-+		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5659_MONO_ADC_DIG_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("STO2 ADC Capture Switch", RT5659_STO2_ADC_DIG_VOL,
-+		RT5659_L_MUTE_SFT, RT5659_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("STO2 ADC Capture Volume", RT5659_STO2_ADC_DIG_VOL,
-+		RT5659_L_VOL_SFT, RT5659_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+
-+	/* ADC Boost Volume Control */
-+	SOC_DOUBLE_TLV("STO1 ADC Boost Gain Volume", RT5659_STO1_BOOST,
-+		RT5659_STO1_ADC_L_BST_SFT, RT5659_STO1_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+
-+	SOC_DOUBLE_TLV("Mono ADC Boost Gain Volume", RT5659_MONO_BOOST,
-+		RT5659_MONO_ADC_L_BST_SFT, RT5659_MONO_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+
-+	SOC_DOUBLE_TLV("STO2 ADC Boost Gain Volume", RT5659_STO2_BOOST,
-+		RT5659_STO2_ADC_L_BST_SFT, RT5659_STO2_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+
-+	SOC_SINGLE("DAC IF1 DAC1 L Data Switch", RT5659_TDM_CTRL_4, 12, 7, 0),
-+	SOC_SINGLE("DAC IF1 DAC1 R Data Switch", RT5659_TDM_CTRL_4, 8, 7, 0),
-+	SOC_SINGLE("DAC IF1 DAC2 L Data Switch", RT5659_TDM_CTRL_4, 4, 7, 0),
-+	SOC_SINGLE("DAC IF1 DAC2 R Data Switch", RT5659_TDM_CTRL_4, 0, 7, 0),
-+};
-+
-+/**
-+ * set_dmic_clk - Set parameter of dmic.
-+ *
-+ * @w: DAPM widget.
-+ * @kcontrol: The kcontrol of this widget.
-+ * @event: Event id.
-+ *
-+ * Choose dmic clock between 1MHz and 3MHz.
-+ * It is better for clock to approximate 3MHz.
-+ */
-+static int set_dmic_clk(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	int pd, idx = -EINVAL;
-+
-+	pd = rl6231_get_pre_div(rt5659->regmap,
-+		RT5659_ADDA_CLK_1, RT5659_I2S_PD1_SFT);
-+	idx = rl6231_calc_dmic_clk(rt5659->sysclk / pd);
-+
-+	if (idx < 0)
-+		dev_err(codec->dev, "Failed to set DMIC clock\n");
-+	else {
-+		snd_soc_update_bits(codec, RT5659_DMIC_CTRL_1,
-+			RT5659_DMIC_CLK_MASK, idx << RT5659_DMIC_CLK_SFT);
-+	}
-+	return idx;
-+}
-+
-+static int set_adc_clk(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_update_bits(codec, RT5659_CHOP_ADC,
-+			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK,
-+			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, RT5659_CHOP_ADC,
-+			RT5659_CKXEN_ADCC_MASK | RT5659_CKGEN_ADCC_MASK, 0);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int rt5659_charge_pump_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Depop */
-+		snd_soc_write(codec, RT5659_DEPOP_1, 0x0009);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_write(codec, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *w,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	unsigned int val;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	val = snd_soc_read(codec, RT5659_GLB_CLK);
-+	val &= RT5659_SCLK_SRC_MASK;
-+	if (val == RT5659_SCLK_SRC_PLL1)
-+		return 1;
-+	else
-+		return 0;
-+}
-+
-+static int is_using_asrc(struct snd_soc_dapm_widget *w,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	unsigned int reg, shift, val;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (w->shift) {
-+	case RT5659_ADC_MONO_R_ASRC_SFT:
-+		reg = RT5659_ASRC_3;
-+		shift = RT5659_AD_MONO_R_T_SFT;
-+		break;
-+	case RT5659_ADC_MONO_L_ASRC_SFT:
-+		reg = RT5659_ASRC_3;
-+		shift = RT5659_AD_MONO_L_T_SFT;
-+		break;
-+	case RT5659_ADC_STO1_ASRC_SFT:
-+		reg = RT5659_ASRC_2;
-+		shift = RT5659_AD_STO1_T_SFT;
-+		break;
-+	case RT5659_DAC_MONO_R_ASRC_SFT:
-+		reg = RT5659_ASRC_2;
-+		shift = RT5659_DA_MONO_R_T_SFT;
-+		break;
-+	case RT5659_DAC_MONO_L_ASRC_SFT:
-+		reg = RT5659_ASRC_2;
-+		shift = RT5659_DA_MONO_L_T_SFT;
-+		break;
-+	case RT5659_DAC_STO_ASRC_SFT:
-+		reg = RT5659_ASRC_2;
-+		shift = RT5659_DA_STO_T_SFT;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	val = (snd_soc_read(codec, reg) >> shift) & 0xf;
-+	switch (val) {
-+	case 1:
-+	case 2:
-+	case 3:
-+		/* I2S_Pre_Div1 should be 1 in asrc mode */
-+		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+			RT5659_I2S_PD1_MASK, RT5659_I2S_PD1_2);
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+
-+}
-+
-+/* Digital Mixer */
-+static const struct snd_kcontrol_new rt5659_sto1_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_STO1_ADC_MIXER,
-+			RT5659_M_STO1_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_STO1_ADC_MIXER,
-+			RT5659_M_STO1_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_sto1_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_STO1_ADC_MIXER,
-+			RT5659_M_STO1_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_STO1_ADC_MIXER,
-+			RT5659_M_STO1_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_MONO_ADC_MIXER,
-+			RT5659_M_MONO_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_MONO_ADC_MIXER,
-+			RT5659_M_MONO_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5659_MONO_ADC_MIXER,
-+			RT5659_M_MONO_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5659_MONO_ADC_MIXER,
-+			RT5659_M_MONO_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5659_AD_DA_MIXER,
-+			RT5659_M_ADCMIX_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5659_AD_DA_MIXER,
-+			RT5659_M_DAC1_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5659_AD_DA_MIXER,
-+			RT5659_M_ADCMIX_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5659_AD_DA_MIXER,
-+			RT5659_M_DAC1_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_sto_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_L1_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_R1_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_L2_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_R2_STO_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_sto_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_L1_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_R1_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_L2_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_STO_DAC_MIXER,
-+			RT5659_M_DAC_R2_STO_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_mono_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_L1_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_R1_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_L2_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_R2_MONO_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_mono_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_L1_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_R1_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_L2_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONO_DAC_MIXER,
-+			RT5659_M_DAC_R2_MONO_R_SFT, 1, 1),
-+};
-+
-+/* Analog Input Mixer */
-+static const struct snd_kcontrol_new rt5659_rec1_l_mix[] = {
-+	SOC_DAPM_SINGLE("SPKVOLL Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_SPKVOLL_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_INL_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_BST4_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_BST3_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_BST2_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_BST1_RM1_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_rec1_r_mix[] = {
-+	SOC_DAPM_SINGLE("HPOVOLR Switch", RT5659_REC1_L2_MIXER,
-+			RT5659_M_HPOVOLR_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5659_REC1_R2_MIXER,
-+			RT5659_M_INR_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC1_R2_MIXER,
-+			RT5659_M_BST4_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC1_R2_MIXER,
-+			RT5659_M_BST3_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC1_R2_MIXER,
-+			RT5659_M_BST2_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC1_R2_MIXER,
-+			RT5659_M_BST1_RM1_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_rec2_l_mix[] = {
-+	SOC_DAPM_SINGLE("SPKVOLL Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_SPKVOL_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOLL Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_OUTVOLL_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_BST4_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_BST3_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_BST2_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC2_L2_MIXER,
-+			RT5659_M_BST1_RM2_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_rec2_r_mix[] = {
-+	SOC_DAPM_SINGLE("MONOVOL Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_MONOVOL_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOLR Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_OUTVOLR_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_BST4_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_BST3_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_BST2_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_REC2_R2_MIXER,
-+			RT5659_M_BST1_RM2_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_spk_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_SPK_L_MIXER,
-+			RT5659_M_DAC_L2_SM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_SPK_L_MIXER,
-+			RT5659_M_BST1_SM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5659_SPK_L_MIXER,
-+			RT5659_M_IN_L_SM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5659_SPK_L_MIXER,
-+			RT5659_M_IN_R_SM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_SPK_L_MIXER,
-+			RT5659_M_BST3_SM_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_spk_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_SPK_R_MIXER,
-+			RT5659_M_DAC_R2_SM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_SPK_R_MIXER,
-+			RT5659_M_BST4_SM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5659_SPK_R_MIXER,
-+			RT5659_M_IN_L_SM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5659_SPK_R_MIXER,
-+			RT5659_M_IN_R_SM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_SPK_R_MIXER,
-+			RT5659_M_BST3_SM_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_monovol_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_DAC_L2_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_DAC_R2_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_BST1_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_BST2_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_BST3_MM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_out_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_OUT_L_MIXER,
-+			RT5659_M_DAC_L2_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5659_OUT_L_MIXER,
-+			RT5659_M_IN_L_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5659_OUT_L_MIXER,
-+			RT5659_M_BST1_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_OUT_L_MIXER,
-+			RT5659_M_BST2_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_OUT_L_MIXER,
-+			RT5659_M_BST3_OM_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_out_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_OUT_R_MIXER,
-+			RT5659_M_DAC_R2_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5659_OUT_R_MIXER,
-+			RT5659_M_IN_R_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5659_OUT_R_MIXER,
-+			RT5659_M_BST2_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5659_OUT_R_MIXER,
-+			RT5659_M_BST3_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5659_OUT_R_MIXER,
-+			RT5659_M_BST4_OM_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_spo_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_SPO_AMP_GAIN,
-+			RT5659_M_DAC_L2_SPKOMIX_SFT, 1, 0),
-+	SOC_DAPM_SINGLE("SPKVOL L Switch", RT5659_SPO_AMP_GAIN,
-+			RT5659_M_SPKVOLL_SPKOMIX_SFT, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_spo_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_SPO_AMP_GAIN,
-+			RT5659_M_DAC_R2_SPKOMIX_SFT, 1, 0),
-+	SOC_DAPM_SINGLE("SPKVOL R Switch", RT5659_SPO_AMP_GAIN,
-+			RT5659_M_SPKVOLR_SPKOMIX_SFT, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_mono_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_DAC_L2_MA_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("MONOVOL Switch", RT5659_MONOMIX_IN_GAIN,
-+			RT5659_M_MONOVOL_MA_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_lout_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5659_LOUT_MIXER,
-+			RT5659_M_DAC_L2_LM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOL L Switch", RT5659_LOUT_MIXER,
-+			RT5659_M_OV_L_LM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5659_lout_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5659_LOUT_MIXER,
-+			RT5659_M_DAC_R2_LM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOL R Switch", RT5659_LOUT_MIXER,
-+			RT5659_M_OV_R_LM_SFT, 1, 1),
-+};
-+
-+/*DAC L2, DAC R2*/
-+/*MX-1B [6:4], MX-1B [2:0]*/
-+static const char * const rt5659_dac2_src[] = {
-+	"IF1 DAC2", "IF2 DAC", "IF3 DAC", "Mono ADC MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dac_l2_enum, RT5659_DAC_CTRL,
-+	RT5659_DAC_L2_SEL_SFT, rt5659_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5659_dac_l2_mux =
-+	SOC_DAPM_ENUM("DAC L2 Source", rt5659_dac_l2_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dac_r2_enum, RT5659_DAC_CTRL,
-+	RT5659_DAC_R2_SEL_SFT, rt5659_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5659_dac_r2_mux =
-+	SOC_DAPM_ENUM("DAC R2 Source", rt5659_dac_r2_enum);
-+
-+
-+/* STO1 ADC1 Source */
-+/* MX-26 [13] */
-+static const char * const rt5659_sto1_adc1_src[] = {
-+	"DAC MIX", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_sto1_adc1_enum, RT5659_STO1_ADC_MIXER,
-+	RT5659_STO1_ADC1_SRC_SFT, rt5659_sto1_adc1_src);
-+
-+static const struct snd_kcontrol_new rt5659_sto1_adc1_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC1 Source", rt5659_sto1_adc1_enum);
-+
-+/* STO1 ADC Source */
-+/* MX-26 [12] */
-+static const char * const rt5659_sto1_adc_src[] = {
-+	"ADC1", "ADC2"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_sto1_adc_enum, RT5659_STO1_ADC_MIXER,
-+	RT5659_STO1_ADC_SRC_SFT, rt5659_sto1_adc_src);
-+
-+static const struct snd_kcontrol_new rt5659_sto1_adc_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC Source", rt5659_sto1_adc_enum);
-+
-+/* STO1 ADC2 Source */
-+/* MX-26 [11] */
-+static const char * const rt5659_sto1_adc2_src[] = {
-+	"DAC MIX", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_sto1_adc2_enum, RT5659_STO1_ADC_MIXER,
-+	RT5659_STO1_ADC2_SRC_SFT, rt5659_sto1_adc2_src);
-+
-+static const struct snd_kcontrol_new rt5659_sto1_adc2_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC2 Source", rt5659_sto1_adc2_enum);
-+
-+/* STO1 DMIC Source */
-+/* MX-26 [8] */
-+static const char * const rt5659_sto1_dmic_src[] = {
-+	"DMIC1", "DMIC2"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_sto1_dmic_enum, RT5659_STO1_ADC_MIXER,
-+	RT5659_STO1_DMIC_SRC_SFT, rt5659_sto1_dmic_src);
-+
-+static const struct snd_kcontrol_new rt5659_sto1_dmic_mux =
-+	SOC_DAPM_ENUM("Stereo1 DMIC Source", rt5659_sto1_dmic_enum);
-+
-+
-+/* MONO ADC L2 Source */
-+/* MX-27 [12] */
-+static const char * const rt5659_mono_adc_l2_src[] = {
-+	"Mono DAC MIXL", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adc_l2_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_L2_SRC_SFT, rt5659_mono_adc_l2_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_l2_mux =
-+	SOC_DAPM_ENUM("Mono ADC L2 Source", rt5659_mono_adc_l2_enum);
-+
-+
-+/* MONO ADC L1 Source */
-+/* MX-27 [11] */
-+static const char * const rt5659_mono_adc_l1_src[] = {
-+	"Mono DAC MIXL", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adc_l1_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_L1_SRC_SFT, rt5659_mono_adc_l1_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_l1_mux =
-+	SOC_DAPM_ENUM("Mono ADC L1 Source", rt5659_mono_adc_l1_enum);
-+
-+/* MONO ADC L Source, MONO ADC R Source*/
-+/* MX-27 [10:9], MX-27 [2:1] */
-+static const char * const rt5659_mono_adc_src[] = {
-+	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adc_l_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_L_SRC_SFT, rt5659_mono_adc_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_l_mux =
-+	SOC_DAPM_ENUM("Mono ADC L Source", rt5659_mono_adc_l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adcr_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_R_SRC_SFT, rt5659_mono_adc_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_r_mux =
-+	SOC_DAPM_ENUM("Mono ADC R Source", rt5659_mono_adcr_enum);
-+
-+/* MONO DMIC L Source */
-+/* MX-27 [8] */
-+static const char * const rt5659_mono_dmic_l_src[] = {
-+	"DMIC1 L", "DMIC2 L"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_dmic_l_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_DMIC_L_SRC_SFT, rt5659_mono_dmic_l_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_dmic_l_mux =
-+	SOC_DAPM_ENUM("Mono DMIC L Source", rt5659_mono_dmic_l_enum);
-+
-+/* MONO ADC R2 Source */
-+/* MX-27 [4] */
-+static const char * const rt5659_mono_adc_r2_src[] = {
-+	"Mono DAC MIXR", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adc_r2_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_R2_SRC_SFT, rt5659_mono_adc_r2_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_r2_mux =
-+	SOC_DAPM_ENUM("Mono ADC R2 Source", rt5659_mono_adc_r2_enum);
-+
-+/* MONO ADC R1 Source */
-+/* MX-27 [3] */
-+static const char * const rt5659_mono_adc_r1_src[] = {
-+	"Mono DAC MIXR", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_adc_r1_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_ADC_R1_SRC_SFT, rt5659_mono_adc_r1_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_adc_r1_mux =
-+	SOC_DAPM_ENUM("Mono ADC R1 Source", rt5659_mono_adc_r1_enum);
-+
-+/* MONO DMIC R Source */
-+/* MX-27 [0] */
-+static const char * const rt5659_mono_dmic_r_src[] = {
-+	"DMIC1 R", "DMIC2 R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_mono_dmic_r_enum, RT5659_MONO_ADC_MIXER,
-+	RT5659_MONO_DMIC_R_SRC_SFT, rt5659_mono_dmic_r_src);
-+
-+static const struct snd_kcontrol_new rt5659_mono_dmic_r_mux =
-+	SOC_DAPM_ENUM("Mono DMIC R Source", rt5659_mono_dmic_r_enum);
-+
-+
-+/* DAC R1 Source, DAC L1 Source*/
-+/* MX-29 [11:10], MX-29 [9:8]*/
-+static const char * const rt5659_dac1_src[] = {
-+	"IF1 DAC1", "IF2 DAC", "IF3 DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dac_r1_enum, RT5659_AD_DA_MIXER,
-+	RT5659_DAC1_R_SEL_SFT, rt5659_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5659_dac_r1_mux =
-+	SOC_DAPM_ENUM("DAC R1 Source", rt5659_dac_r1_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dac_l1_enum, RT5659_AD_DA_MIXER,
-+	RT5659_DAC1_L_SEL_SFT, rt5659_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5659_dac_l1_mux =
-+	SOC_DAPM_ENUM("DAC L1 Source", rt5659_dac_l1_enum);
-+
-+/* DAC Digital Mixer L Source, DAC Digital Mixer R Source*/
-+/* MX-2C [6], MX-2C [4]*/
-+static const char * const rt5659_dig_dac_mix_src[] = {
-+	"Stereo DAC Mixer", "Mono DAC Mixer"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dig_dac_mixl_enum, RT5659_DIG_MIXER,
-+	RT5659_DAC_MIX_L_SFT, rt5659_dig_dac_mix_src);
-+
-+static const struct snd_kcontrol_new rt5659_dig_dac_mixl_mux =
-+	SOC_DAPM_ENUM("DAC Digital Mixer L Source", rt5659_dig_dac_mixl_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_dig_dac_mixr_enum, RT5659_DIG_MIXER,
-+	RT5659_DAC_MIX_R_SFT, rt5659_dig_dac_mix_src);
-+
-+static const struct snd_kcontrol_new rt5659_dig_dac_mixr_mux =
-+	SOC_DAPM_ENUM("DAC Digital Mixer R Source", rt5659_dig_dac_mixr_enum);
-+
-+/* Analog DAC L1 Source, Analog DAC R1 Source*/
-+/* MX-2D [3], MX-2D [2]*/
-+static const char * const rt5659_alg_dac1_src[] = {
-+	"DAC", "Stereo DAC Mixer"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_alg_dac_l1_enum, RT5659_A_DAC_MUX,
-+	RT5659_A_DACL1_SFT, rt5659_alg_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5659_alg_dac_l1_mux =
-+	SOC_DAPM_ENUM("Analog DACL1 Source", rt5659_alg_dac_l1_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_alg_dac_r1_enum, RT5659_A_DAC_MUX,
-+	RT5659_A_DACR1_SFT, rt5659_alg_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5659_alg_dac_r1_mux =
-+	SOC_DAPM_ENUM("Analog DACR1 Source", rt5659_alg_dac_r1_enum);
-+
-+/* Analog DAC LR Source, Analog DAC R2 Source*/
-+/* MX-2D [1], MX-2D [0]*/
-+static const char * const rt5659_alg_dac2_src[] = {
-+	"Stereo DAC Mixer", "Mono DAC Mixer"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_alg_dac_l2_enum, RT5659_A_DAC_MUX,
-+	RT5659_A_DACL2_SFT, rt5659_alg_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5659_alg_dac_l2_mux =
-+	SOC_DAPM_ENUM("Analog DAC L2 Source", rt5659_alg_dac_l2_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_alg_dac_r2_enum, RT5659_A_DAC_MUX,
-+	RT5659_A_DACR2_SFT, rt5659_alg_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5659_alg_dac_r2_mux =
-+	SOC_DAPM_ENUM("Analog DAC R2 Source", rt5659_alg_dac_r2_enum);
-+
-+/* Interface2 ADC Data Input*/
-+/* MX-2F [13:12] */
-+static const char * const rt5659_if2_adc_in_src[] = {
-+	"IF_ADC1", "IF_ADC2", "DAC_REF", "IF_ADC3"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_if2_adc_in_enum, RT5659_DIG_INF23_DATA,
-+	RT5659_IF2_ADC_IN_SFT, rt5659_if2_adc_in_src);
-+
-+static const struct snd_kcontrol_new rt5659_if2_adc_in_mux =
-+	SOC_DAPM_ENUM("IF2 ADC IN Source", rt5659_if2_adc_in_enum);
-+
-+/* Interface3 ADC Data Input*/
-+/* MX-2F [1:0] */
-+static const char * const rt5659_if3_adc_in_src[] = {
-+	"IF_ADC1", "IF_ADC2", "DAC_REF", "Stereo2_ADC_L/R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_if3_adc_in_enum, RT5659_DIG_INF23_DATA,
-+	RT5659_IF3_ADC_IN_SFT, rt5659_if3_adc_in_src);
-+
-+static const struct snd_kcontrol_new rt5659_if3_adc_in_mux =
-+	SOC_DAPM_ENUM("IF3 ADC IN Source", rt5659_if3_adc_in_enum);
-+
-+/* PDM 1 L/R*/
-+/* MX-31 [15] [13] */
-+static const char * const rt5659_pdm_src[] = {
-+	"Mono DAC", "Stereo DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_pdm_l_enum, RT5659_PDM_OUT_CTRL,
-+	RT5659_PDM1_L_SFT, rt5659_pdm_src);
-+
-+static const struct snd_kcontrol_new rt5659_pdm_l_mux =
-+	SOC_DAPM_ENUM("PDM L Source", rt5659_pdm_l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_pdm_r_enum, RT5659_PDM_OUT_CTRL,
-+	RT5659_PDM1_R_SFT, rt5659_pdm_src);
-+
-+static const struct snd_kcontrol_new rt5659_pdm_r_mux =
-+	SOC_DAPM_ENUM("PDM R Source", rt5659_pdm_r_enum);
-+
-+/* SPDIF Output source*/
-+/* MX-36 [1:0] */
-+static const char * const rt5659_spdif_src[] = {
-+	"IF1_DAC1", "IF1_DAC2", "IF2_DAC", "IF3_DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_spdif_enum, RT5659_SPDIF_CTRL,
-+	RT5659_SPDIF_SEL_SFT, rt5659_spdif_src);
-+
-+static const struct snd_kcontrol_new rt5659_spdif_mux =
-+	SOC_DAPM_ENUM("SPDIF Source", rt5659_spdif_enum);
-+
-+/* I2S1 TDM ADCDAT Source */
-+/* MX-78[4:0] */
-+static const char * const rt5659_rx_adc_data_src[] = {
-+	"AD1:AD2:DAC:NUL", "AD1:AD2:NUL:DAC", "AD1:DAC:AD2:NUL",
-+	"AD1:DAC:NUL:AD2", "AD1:NUL:DAC:AD2", "AD1:NUL:AD2:DAC",
-+	"AD2:AD1:DAC:NUL", "AD2:AD1:NUL:DAC", "AD2:DAC:AD1:NUL",
-+	"AD2:DAC:NUL:AD1", "AD2:NUL:DAC:AD1", "AD1:NUL:AD1:DAC",
-+	"DAC:AD1:AD2:NUL", "DAC:AD1:NUL:AD2", "DAC:AD2:AD1:NUL",
-+	"DAC:AD2:NUL:AD1", "DAC:NUL:DAC:AD2", "DAC:NUL:AD2:DAC",
-+	"NUL:AD1:AD2:DAC", "NUL:AD1:DAC:AD2", "NUL:AD2:AD1:DAC",
-+	"NUL:AD2:DAC:AD1", "NUL:DAC:DAC:AD2", "NUL:DAC:AD2:DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5659_rx_adc_data_enum, RT5659_TDM_CTRL_2,
-+	RT5659_ADCDAT_SRC_SFT, rt5659_rx_adc_data_src);
-+
-+static const struct snd_kcontrol_new rt5659_rx_adc_dac_mux =
-+	SOC_DAPM_ENUM("TDM ADCDAT Source", rt5659_rx_adc_data_enum);
-+
-+/* Out Volume Switch */
-+static const struct snd_kcontrol_new spkvol_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_SPO_VOL, RT5659_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new spkvol_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_SPO_VOL, RT5659_VOL_R_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new monovol_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_MONO_OUT, RT5659_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new outvol_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new outvol_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_VOL_R_SFT, 1, 1);
-+
-+/* Out Switch */
-+static const struct snd_kcontrol_new spo_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_CLASSD_2, RT5659_M_RF_DIG_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new mono_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_MONO_OUT, RT5659_L_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new hpo_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_HP_VOL, RT5659_L_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new hpo_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_HP_VOL, RT5659_R_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new lout_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_L_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new lout_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_LOUT, RT5659_R_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new pdm_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_PDM_OUT_CTRL, RT5659_M_PDM1_L_SFT, 1,
-+		1);
-+
-+static const struct snd_kcontrol_new pdm_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5659_PDM_OUT_CTRL, RT5659_M_PDM1_R_SFT, 1,
-+		1);
-+
-+static int rt5659_spk_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5659_CLASSD_CTRL_1,
-+			RT5659_POW_CLSD_DB_MASK, RT5659_POW_CLSD_DB_EN);
-+		snd_soc_update_bits(codec, RT5659_CLASSD_2,
-+			RT5659_M_RI_DIG, RT5659_M_RI_DIG);
-+		snd_soc_write(codec, RT5659_CLASSD_1, 0x0803);
-+		snd_soc_write(codec, RT5659_SPK_DC_CAILB_CTRL_3, 0x0000);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_write(codec, RT5659_CLASSD_1, 0x0011);
-+		snd_soc_update_bits(codec, RT5659_CLASSD_2,
-+			RT5659_M_RI_DIG, 0x0);
-+		snd_soc_write(codec, RT5659_SPK_DC_CAILB_CTRL_3, 0x0003);
-+		snd_soc_update_bits(codec, RT5659_CLASSD_CTRL_1,
-+			RT5659_POW_CLSD_DB_MASK, RT5659_POW_CLSD_DB_DIS);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int rt5659_mono_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_write(codec, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e00);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_write(codec, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e04);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int rt5659_hp_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_write(codec, RT5659_HP_CHARGE_PUMP_1, 0x0e1e);
-+		snd_soc_update_bits(codec, RT5659_DEPOP_1, 0x0010, 0x0010);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_write(codec, RT5659_DEPOP_1, 0x0000);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int set_dmic_power(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/*Add delay to avoid pop noise*/
-+		msleep(450);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("LDO2", RT5659_PWR_ANLG_3, RT5659_PWR_LDO2_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLL", RT5659_PWR_ANLG_3, RT5659_PWR_PLL_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Det Power", RT5659_PWR_VOL,
-+		RT5659_PWR_MIC_DET_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mono Vref", RT5659_PWR_ANLG_1,
-+		RT5659_PWR_VREF3_BIT, 0, NULL, 0),
-+
-+	/* ASRC */
-+	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5659_ASRC_1,
-+		RT5659_I2S1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S2 ASRC", 1, RT5659_ASRC_1,
-+		RT5659_I2S2_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S3 ASRC", 1, RT5659_ASRC_1,
-+		RT5659_I2S3_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC STO ASRC", 1, RT5659_ASRC_1,
-+		RT5659_DAC_STO_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC Mono L ASRC", 1, RT5659_ASRC_1,
-+		RT5659_DAC_MONO_L_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC Mono R ASRC", 1, RT5659_ASRC_1,
-+		RT5659_DAC_MONO_R_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5659_ASRC_1,
-+		RT5659_ADC_STO1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC Mono L ASRC", 1, RT5659_ASRC_1,
-+		RT5659_ADC_MONO_L_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC Mono R ASRC", 1, RT5659_ASRC_1,
-+		RT5659_ADC_MONO_R_ASRC_SFT, 0, NULL, 0),
-+
-+	/* Input Side */
-+	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5659_PWR_ANLG_2, RT5659_PWR_MB1_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5659_PWR_ANLG_2, RT5659_PWR_MB2_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS3", RT5659_PWR_ANLG_2, RT5659_PWR_MB3_BIT,
-+		0, NULL, 0),
-+
-+	/* Input Lines */
-+	SND_SOC_DAPM_INPUT("DMIC L1"),
-+	SND_SOC_DAPM_INPUT("DMIC R1"),
-+	SND_SOC_DAPM_INPUT("DMIC L2"),
-+	SND_SOC_DAPM_INPUT("DMIC R2"),
-+
-+	SND_SOC_DAPM_INPUT("IN1P"),
-+	SND_SOC_DAPM_INPUT("IN1N"),
-+	SND_SOC_DAPM_INPUT("IN2P"),
-+	SND_SOC_DAPM_INPUT("IN2N"),
-+	SND_SOC_DAPM_INPUT("IN3P"),
-+	SND_SOC_DAPM_INPUT("IN3N"),
-+	SND_SOC_DAPM_INPUT("IN4P"),
-+	SND_SOC_DAPM_INPUT("IN4N"),
-+
-+	SND_SOC_DAPM_PGA("DMIC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("DMIC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
-+		set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5659_DMIC_CTRL_1,
-+		RT5659_DMIC_1_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5659_DMIC_CTRL_1,
-+		RT5659_DMIC_2_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
-+
-+	/* Boost */
-+	SND_SOC_DAPM_PGA("BST1", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST1_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST2", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST2_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST3", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST3_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST4", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST4_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST1 Power", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST2 Power", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST3 Power", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST3_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST4 Power", RT5659_PWR_ANLG_2,
-+		RT5659_PWR_BST4_BIT, 0, NULL, 0),
-+
-+
-+	/* Input Volume */
-+	SND_SOC_DAPM_PGA("INL VOL", RT5659_PWR_VOL, RT5659_PWR_IN_L_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_PGA("INR VOL", RT5659_PWR_VOL, RT5659_PWR_IN_R_BIT,
-+		0, NULL, 0),
-+
-+	/* REC Mixer */
-+	SND_SOC_DAPM_MIXER("RECMIX1L", RT5659_PWR_MIXER, RT5659_PWR_RM1_L_BIT,
-+		0, rt5659_rec1_l_mix, ARRAY_SIZE(rt5659_rec1_l_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX1R", RT5659_PWR_MIXER, RT5659_PWR_RM1_R_BIT,
-+		0, rt5659_rec1_r_mix, ARRAY_SIZE(rt5659_rec1_r_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX2L", RT5659_PWR_MIXER, RT5659_PWR_RM2_L_BIT,
-+		0, rt5659_rec2_l_mix, ARRAY_SIZE(rt5659_rec2_l_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX2R", RT5659_PWR_MIXER, RT5659_PWR_RM2_R_BIT,
-+		0, rt5659_rec2_r_mix, ARRAY_SIZE(rt5659_rec2_r_mix)),
-+
-+	/* ADCs */
-+	SND_SOC_DAPM_ADC("ADC1 L", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC1 R", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC2 L", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC2 R", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("ADC1 L Power", RT5659_PWR_DIG_1,
-+		RT5659_PWR_ADC_L1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC1 R Power", RT5659_PWR_DIG_1,
-+		RT5659_PWR_ADC_R1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC2 L Power", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_L2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC2 R Power", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_R2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC1 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_SUPPLY("ADC2 clock", SND_SOC_NOPM, 0, 0, set_adc_clk,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+
-+	/* ADC Mux */
-+	SND_SOC_DAPM_MUX("Stereo1 DMIC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 DMIC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc1_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc1_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc2_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc2_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_sto1_adc_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_l2_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_r2_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_l1_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_r1_mux),
-+	SND_SOC_DAPM_MUX("Mono DMIC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_dmic_l_mux),
-+	SND_SOC_DAPM_MUX("Mono DMIC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_dmic_r_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_l_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_mono_adc_r_mux),
-+	/* ADC Mixer */
-+	SND_SOC_DAPM_SUPPLY("ADC Stereo1 Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC Stereo2 Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_S2F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXL", SND_SOC_NOPM,
-+		0, 0, rt5659_sto1_adc_l_mix,
-+		ARRAY_SIZE(rt5659_sto1_adc_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXR", SND_SOC_NOPM,
-+		0, 0, rt5659_sto1_adc_r_mix,
-+		ARRAY_SIZE(rt5659_sto1_adc_r_mix)),
-+	SND_SOC_DAPM_SUPPLY("ADC Mono Left Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_MF_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Mono ADC MIXL", RT5659_MONO_ADC_DIG_VOL,
-+		RT5659_L_MUTE_SFT, 1, rt5659_mono_adc_l_mix,
-+		ARRAY_SIZE(rt5659_mono_adc_l_mix)),
-+	SND_SOC_DAPM_SUPPLY("ADC Mono Right Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_ADC_MF_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Mono ADC MIXR", RT5659_MONO_ADC_DIG_VOL,
-+		RT5659_R_MUTE_SFT, 1, rt5659_mono_adc_r_mix,
-+		ARRAY_SIZE(rt5659_mono_adc_r_mix)),
-+
-+	/* ADC PGA */
-+	SND_SOC_DAPM_PGA("IF_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Stereo2 ADC LR", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_PGA("Stereo1 ADC Volume L", RT5659_STO1_ADC_DIG_VOL,
-+		RT5659_L_MUTE_SFT, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Stereo1 ADC Volume R", RT5659_STO1_ADC_DIG_VOL,
-+		RT5659_R_MUTE_SFT, 1, NULL, 0),
-+
-+	/* Digital Interface */
-+	SND_SOC_DAPM_SUPPLY("I2S1", RT5659_PWR_DIG_1, RT5659_PWR_I2S1_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1 L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1 R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2 L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2 R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S2", RT5659_PWR_DIG_1, RT5659_PWR_I2S2_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S3", RT5659_PWR_DIG_1, RT5659_PWR_I2S3_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	/* Digital Interface Select */
-+	SND_SOC_DAPM_PGA("TDM AD1:AD2:DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("TDM AD2:DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("TDM Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_rx_adc_dac_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_if2_adc_in_mux),
-+	SND_SOC_DAPM_MUX("IF3 ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5659_if3_adc_in_mux),
-+	SND_SOC_DAPM_MUX("IF1 01 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if1_01_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 23 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if1_23_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 45 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if1_45_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 67 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if1_67_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if2_dac_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if2_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF3 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if3_dac_swap_mux),
-+	SND_SOC_DAPM_MUX("IF3 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5659_if3_adc_swap_mux),
-+
-+	/* Audio Interface */
-+	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF2RX", "AIF2 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF2TX", "AIF2 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF3RX", "AIF3 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF3TX", "AIF3 Capture", 0, SND_SOC_NOPM, 0, 0),
-+
-+	/* Output Side */
-+	/* DAC mixer before sound effect  */
-+	SND_SOC_DAPM_MIXER("DAC1 MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5659_dac_l_mix, ARRAY_SIZE(rt5659_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("DAC1 MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5659_dac_r_mix, ARRAY_SIZE(rt5659_dac_r_mix)),
-+
-+	/* DAC channel Mux */
-+	SND_SOC_DAPM_MUX("DAC L1 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_l1_mux),
-+	SND_SOC_DAPM_MUX("DAC R1 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_r1_mux),
-+	SND_SOC_DAPM_MUX("DAC L2 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_l2_mux),
-+	SND_SOC_DAPM_MUX("DAC R2 Mux", SND_SOC_NOPM, 0, 0, &rt5659_dac_r2_mux),
-+
-+	SND_SOC_DAPM_MUX("DAC L1 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5659_alg_dac_l1_mux),
-+	SND_SOC_DAPM_MUX("DAC R1 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5659_alg_dac_r1_mux),
-+	SND_SOC_DAPM_MUX("DAC L2 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5659_alg_dac_l2_mux),
-+	SND_SOC_DAPM_MUX("DAC R2 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5659_alg_dac_r2_mux),
-+
-+	/* DAC Mixer */
-+	SND_SOC_DAPM_SUPPLY("DAC Stereo1 Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_DAC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Mono Left Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_DAC_MF_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Mono Right Filter", RT5659_PWR_DIG_2,
-+		RT5659_PWR_DAC_MF_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5659_sto_dac_l_mix, ARRAY_SIZE(rt5659_sto_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5659_sto_dac_r_mix, ARRAY_SIZE(rt5659_sto_dac_r_mix)),
-+	SND_SOC_DAPM_MIXER("Mono DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5659_mono_dac_l_mix, ARRAY_SIZE(rt5659_mono_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Mono DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5659_mono_dac_r_mix, ARRAY_SIZE(rt5659_mono_dac_r_mix)),
-+	SND_SOC_DAPM_MUX("DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		&rt5659_dig_dac_mixl_mux),
-+	SND_SOC_DAPM_MUX("DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		&rt5659_dig_dac_mixr_mux),
-+
-+	/* DACs */
-+	SND_SOC_DAPM_SUPPLY_S("DAC L1 Power", 1, RT5659_PWR_DIG_1,
-+		RT5659_PWR_DAC_L1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC R1 Power", 1, RT5659_PWR_DIG_1,
-+		RT5659_PWR_DAC_R1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC L1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC R1", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5659_PWR_DIG_1,
-+		RT5659_PWR_DAC_L2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5659_PWR_DIG_1,
-+		RT5659_PWR_DAC_R2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC L2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC R2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_PGA("DAC_REF", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	/* OUT Mixer */
-+	SND_SOC_DAPM_MIXER("SPK MIXL", RT5659_PWR_MIXER, RT5659_PWR_SM_L_BIT,
-+		0, rt5659_spk_l_mix, ARRAY_SIZE(rt5659_spk_l_mix)),
-+	SND_SOC_DAPM_MIXER("SPK MIXR", RT5659_PWR_MIXER, RT5659_PWR_SM_R_BIT,
-+		0, rt5659_spk_r_mix, ARRAY_SIZE(rt5659_spk_r_mix)),
-+	SND_SOC_DAPM_MIXER("MONOVOL MIX", RT5659_PWR_MIXER, RT5659_PWR_MM_BIT,
-+		0, rt5659_monovol_mix, ARRAY_SIZE(rt5659_monovol_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXL", RT5659_PWR_MIXER, RT5659_PWR_OM_L_BIT,
-+		0, rt5659_out_l_mix, ARRAY_SIZE(rt5659_out_l_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXR", RT5659_PWR_MIXER, RT5659_PWR_OM_R_BIT,
-+		0, rt5659_out_r_mix, ARRAY_SIZE(rt5659_out_r_mix)),
-+
-+	/* Output Volume */
-+	SND_SOC_DAPM_SWITCH("SPKVOL L", RT5659_PWR_VOL, RT5659_PWR_SV_L_BIT, 0,
-+		&spkvol_l_switch),
-+	SND_SOC_DAPM_SWITCH("SPKVOL R", RT5659_PWR_VOL, RT5659_PWR_SV_R_BIT, 0,
-+		&spkvol_r_switch),
-+	SND_SOC_DAPM_SWITCH("MONOVOL", RT5659_PWR_VOL, RT5659_PWR_MV_BIT, 0,
-+		&monovol_switch),
-+	SND_SOC_DAPM_SWITCH("OUTVOL L", RT5659_PWR_VOL, RT5659_PWR_OV_L_BIT, 0,
-+		&outvol_l_switch),
-+	SND_SOC_DAPM_SWITCH("OUTVOL R", RT5659_PWR_VOL, RT5659_PWR_OV_R_BIT, 0,
-+		&outvol_r_switch),
-+
-+	/* SPO/MONO/HPO/LOUT */
-+	SND_SOC_DAPM_MIXER("SPO L MIX", SND_SOC_NOPM, 0, 0, rt5659_spo_l_mix,
-+		ARRAY_SIZE(rt5659_spo_l_mix)),
-+	SND_SOC_DAPM_MIXER("SPO R MIX", SND_SOC_NOPM, 0, 0, rt5659_spo_r_mix,
-+		ARRAY_SIZE(rt5659_spo_r_mix)),
-+	SND_SOC_DAPM_MIXER("Mono MIX", SND_SOC_NOPM, 0,	0, rt5659_mono_mix,
-+		ARRAY_SIZE(rt5659_mono_mix)),
-+	SND_SOC_DAPM_MIXER("LOUT L MIX", SND_SOC_NOPM, 0, 0, rt5659_lout_l_mix,
-+		ARRAY_SIZE(rt5659_lout_l_mix)),
-+	SND_SOC_DAPM_MIXER("LOUT R MIX", SND_SOC_NOPM, 0, 0, rt5659_lout_r_mix,
-+		ARRAY_SIZE(rt5659_lout_r_mix)),
-+
-+	SND_SOC_DAPM_PGA_S("SPK Amp", 1, RT5659_PWR_DIG_1, RT5659_PWR_CLS_D_BIT,
-+		0, rt5659_spk_event, SND_SOC_DAPM_POST_PMD |
-+		SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_PGA_S("Mono Amp", 1, RT5659_PWR_ANLG_1, RT5659_PWR_MA_BIT,
-+		0, rt5659_mono_event, SND_SOC_DAPM_POST_PMD |
-+		SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5659_hp_event,
-+		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA("LOUT Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
-+		rt5659_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_SWITCH("SPO Playback", SND_SOC_NOPM, 0, 0, &spo_switch),
-+	SND_SOC_DAPM_SWITCH("Mono Playback", SND_SOC_NOPM, 0, 0,
-+		&mono_switch),
-+	SND_SOC_DAPM_SWITCH("HPO L Playback", SND_SOC_NOPM, 0, 0,
-+		&hpo_l_switch),
-+	SND_SOC_DAPM_SWITCH("HPO R Playback", SND_SOC_NOPM, 0, 0,
-+		&hpo_r_switch),
-+	SND_SOC_DAPM_SWITCH("LOUT L Playback", SND_SOC_NOPM, 0, 0,
-+		&lout_l_switch),
-+	SND_SOC_DAPM_SWITCH("LOUT R Playback", SND_SOC_NOPM, 0, 0,
-+		&lout_r_switch),
-+	SND_SOC_DAPM_SWITCH("PDM L Playback", SND_SOC_NOPM, 0, 0,
-+		&pdm_l_switch),
-+	SND_SOC_DAPM_SWITCH("PDM R Playback", SND_SOC_NOPM, 0, 0,
-+		&pdm_r_switch),
-+
-+	/* PDM */
-+	SND_SOC_DAPM_SUPPLY("PDM Power", RT5659_PWR_DIG_2,
-+		RT5659_PWR_PDM1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("PDM L Mux", RT5659_PDM_OUT_CTRL,
-+		RT5659_M_PDM1_L_SFT, 1, &rt5659_pdm_l_mux),
-+	SND_SOC_DAPM_MUX("PDM R Mux", RT5659_PDM_OUT_CTRL,
-+		RT5659_M_PDM1_R_SFT, 1, &rt5659_pdm_r_mux),
-+
-+	/* SPDIF */
-+	SND_SOC_DAPM_MUX("SPDIF Mux", SND_SOC_NOPM, 0, 0, &rt5659_spdif_mux),
-+
-+	SND_SOC_DAPM_SUPPLY("SYS CLK DET", RT5659_CLK_DET, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKDET", RT5659_CLK_DET, 0, 0, NULL, 0),
-+
-+	/* Output Lines */
-+	SND_SOC_DAPM_OUTPUT("HPOL"),
-+	SND_SOC_DAPM_OUTPUT("HPOR"),
-+	SND_SOC_DAPM_OUTPUT("SPOL"),
-+	SND_SOC_DAPM_OUTPUT("SPOR"),
-+	SND_SOC_DAPM_OUTPUT("LOUTL"),
-+	SND_SOC_DAPM_OUTPUT("LOUTR"),
-+	SND_SOC_DAPM_OUTPUT("MONOOUT"),
-+	SND_SOC_DAPM_OUTPUT("PDML"),
-+	SND_SOC_DAPM_OUTPUT("PDMR"),
-+	SND_SOC_DAPM_OUTPUT("SPDIF"),
-+};
-+
-+static const struct snd_soc_dapm_route rt5659_dapm_routes[] = {
-+	/*PLL*/
-+	{ "ADC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "ADC Stereo2 Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "ADC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "ADC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "DAC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "DAC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll },
-+	{ "DAC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll },
-+
-+	/*ASRC*/
-+	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
-+	{ "ADC Mono Left Filter", NULL, "ADC Mono L ASRC", is_using_asrc },
-+	{ "ADC Mono Right Filter", NULL, "ADC Mono R ASRC", is_using_asrc },
-+	{ "DAC Mono Left Filter", NULL, "DAC Mono L ASRC", is_using_asrc },
-+	{ "DAC Mono Right Filter", NULL, "DAC Mono R ASRC", is_using_asrc },
-+	{ "DAC Stereo1 Filter", NULL, "DAC STO ASRC", is_using_asrc },
-+
-+	{ "SYS CLK DET", NULL, "CLKDET" },
-+
-+	{ "I2S1", NULL, "I2S1 ASRC" },
-+	{ "I2S2", NULL, "I2S2 ASRC" },
-+	{ "I2S3", NULL, "I2S3 ASRC" },
-+
-+	{ "IN1P", NULL, "LDO2" },
-+	{ "IN2P", NULL, "LDO2" },
-+	{ "IN3P", NULL, "LDO2" },
-+	{ "IN4P", NULL, "LDO2" },
-+
-+	{ "DMIC1", NULL, "DMIC L1" },
-+	{ "DMIC1", NULL, "DMIC R1" },
-+	{ "DMIC2", NULL, "DMIC L2" },
-+	{ "DMIC2", NULL, "DMIC R2" },
-+
-+	{ "BST1", NULL, "IN1P" },
-+	{ "BST1", NULL, "IN1N" },
-+	{ "BST1", NULL, "BST1 Power" },
-+	{ "BST2", NULL, "IN2P" },
-+	{ "BST2", NULL, "IN2N" },
-+	{ "BST2", NULL, "BST2 Power" },
-+	{ "BST3", NULL, "IN3P" },
-+	{ "BST3", NULL, "IN3N" },
-+	{ "BST3", NULL, "BST3 Power" },
-+	{ "BST4", NULL, "IN4P" },
-+	{ "BST4", NULL, "IN4N" },
-+	{ "BST4", NULL, "BST4 Power" },
-+
-+	{ "INL VOL", NULL, "IN2P" },
-+	{ "INR VOL", NULL, "IN2N" },
-+
-+	{ "RECMIX1L", "SPKVOLL Switch", "SPKVOL L" },
-+	{ "RECMIX1L", "INL Switch", "INL VOL" },
-+	{ "RECMIX1L", "BST4 Switch", "BST4" },
-+	{ "RECMIX1L", "BST3 Switch", "BST3" },
-+	{ "RECMIX1L", "BST2 Switch", "BST2" },
-+	{ "RECMIX1L", "BST1 Switch", "BST1" },
-+
-+	{ "RECMIX1R", "HPOVOLR Switch", "HPO R Playback" },
-+	{ "RECMIX1R", "INR Switch", "INR VOL" },
-+	{ "RECMIX1R", "BST4 Switch", "BST4" },
-+	{ "RECMIX1R", "BST3 Switch", "BST3" },
-+	{ "RECMIX1R", "BST2 Switch", "BST2" },
-+	{ "RECMIX1R", "BST1 Switch", "BST1" },
-+
-+	{ "RECMIX2L", "SPKVOLL Switch", "SPKVOL L" },
-+	{ "RECMIX2L", "OUTVOLL Switch", "OUTVOL L" },
-+	{ "RECMIX2L", "BST4 Switch", "BST4" },
-+	{ "RECMIX2L", "BST3 Switch", "BST3" },
-+	{ "RECMIX2L", "BST2 Switch", "BST2" },
-+	{ "RECMIX2L", "BST1 Switch", "BST1" },
-+
-+	{ "RECMIX2R", "MONOVOL Switch", "MONOVOL" },
-+	{ "RECMIX2R", "OUTVOLR Switch", "OUTVOL R" },
-+	{ "RECMIX2R", "BST4 Switch", "BST4" },
-+	{ "RECMIX2R", "BST3 Switch", "BST3" },
-+	{ "RECMIX2R", "BST2 Switch", "BST2" },
-+	{ "RECMIX2R", "BST1 Switch", "BST1" },
-+
-+	{ "ADC1 L", NULL, "RECMIX1L" },
-+	{ "ADC1 L", NULL, "ADC1 L Power" },
-+	{ "ADC1 L", NULL, "ADC1 clock" },
-+	{ "ADC1 R", NULL, "RECMIX1R" },
-+	{ "ADC1 R", NULL, "ADC1 R Power" },
-+	{ "ADC1 R", NULL, "ADC1 clock" },
-+
-+	{ "ADC2 L", NULL, "RECMIX2L" },
-+	{ "ADC2 L", NULL, "ADC2 L Power" },
-+	{ "ADC2 L", NULL, "ADC2 clock" },
-+	{ "ADC2 R", NULL, "RECMIX2R" },
-+	{ "ADC2 R", NULL, "ADC2 R Power" },
-+	{ "ADC2 R", NULL, "ADC2 clock" },
-+
-+	{ "DMIC L1", NULL, "DMIC CLK" },
-+	{ "DMIC L1", NULL, "DMIC1 Power" },
-+	{ "DMIC R1", NULL, "DMIC CLK" },
-+	{ "DMIC R1", NULL, "DMIC1 Power" },
-+	{ "DMIC L2", NULL, "DMIC CLK" },
-+	{ "DMIC L2", NULL, "DMIC2 Power" },
-+	{ "DMIC R2", NULL, "DMIC CLK" },
-+	{ "DMIC R2", NULL, "DMIC2 Power" },
-+
-+	{ "Stereo1 DMIC L Mux", "DMIC1", "DMIC L1" },
-+	{ "Stereo1 DMIC L Mux", "DMIC2", "DMIC L2" },
-+
-+	{ "Stereo1 DMIC R Mux", "DMIC1", "DMIC R1" },
-+	{ "Stereo1 DMIC R Mux", "DMIC2", "DMIC R2" },
-+
-+	{ "Mono DMIC L Mux", "DMIC1 L", "DMIC L1" },
-+	{ "Mono DMIC L Mux", "DMIC2 L", "DMIC L2" },
-+
-+	{ "Mono DMIC R Mux", "DMIC1 R", "DMIC R1" },
-+	{ "Mono DMIC R Mux", "DMIC2 R", "DMIC R2" },
-+
-+	{ "Stereo1 ADC L Mux", "ADC1", "ADC1 L" },
-+	{ "Stereo1 ADC L Mux", "ADC2", "ADC2 L" },
-+	{ "Stereo1 ADC R Mux", "ADC1", "ADC1 R" },
-+	{ "Stereo1 ADC R Mux", "ADC2", "ADC2 R" },
-+
-+	{ "Stereo1 ADC L1 Mux", "ADC", "Stereo1 ADC L Mux" },
-+	{ "Stereo1 ADC L1 Mux", "DAC MIX", "DAC MIXL" },
-+	{ "Stereo1 ADC L2 Mux", "DMIC", "Stereo1 DMIC L Mux" },
-+	{ "Stereo1 ADC L2 Mux", "DAC MIX", "DAC MIXL" },
-+
-+	{ "Stereo1 ADC R1 Mux", "ADC", "Stereo1 ADC R Mux" },
-+	{ "Stereo1 ADC R1 Mux", "DAC MIX", "DAC MIXR" },
-+	{ "Stereo1 ADC R2 Mux", "DMIC", "Stereo1 DMIC R Mux" },
-+	{ "Stereo1 ADC R2 Mux", "DAC MIX", "DAC MIXR" },
-+
-+	{ "Mono ADC L Mux", "ADC1 L", "ADC1 L" },
-+	{ "Mono ADC L Mux", "ADC1 R", "ADC1 R" },
-+	{ "Mono ADC L Mux", "ADC2 L", "ADC2 L" },
-+	{ "Mono ADC L Mux", "ADC2 R", "ADC2 R" },
-+
-+	{ "Mono ADC R Mux", "ADC1 L", "ADC1 L" },
-+	{ "Mono ADC R Mux", "ADC1 R", "ADC1 R" },
-+	{ "Mono ADC R Mux", "ADC2 L", "ADC2 L" },
-+	{ "Mono ADC R Mux", "ADC2 R", "ADC2 R" },
-+
-+	{ "Mono ADC L2 Mux", "DMIC", "Mono DMIC L Mux" },
-+	{ "Mono ADC L2 Mux", "Mono DAC MIXL", "Mono DAC MIXL" },
-+	{ "Mono ADC L1 Mux", "Mono DAC MIXL", "Mono DAC MIXL" },
-+	{ "Mono ADC L1 Mux", "ADC",  "Mono ADC L Mux" },
-+
-+	{ "Mono ADC R1 Mux", "Mono DAC MIXR", "Mono DAC MIXR" },
-+	{ "Mono ADC R1 Mux", "ADC", "Mono ADC R Mux" },
-+	{ "Mono ADC R2 Mux", "DMIC", "Mono DMIC R Mux" },
-+	{ "Mono ADC R2 Mux", "Mono DAC MIXR", "Mono DAC MIXR" },
-+
-+	{ "Stereo1 ADC MIXL", "ADC1 Switch", "Stereo1 ADC L1 Mux" },
-+	{ "Stereo1 ADC MIXL", "ADC2 Switch", "Stereo1 ADC L2 Mux" },
-+	{ "Stereo1 ADC MIXL", NULL, "ADC Stereo1 Filter" },
-+
-+	{ "Stereo1 ADC MIXR", "ADC1 Switch", "Stereo1 ADC R1 Mux" },
-+	{ "Stereo1 ADC MIXR", "ADC2 Switch", "Stereo1 ADC R2 Mux" },
-+	{ "Stereo1 ADC MIXR", NULL, "ADC Stereo1 Filter" },
-+
-+	{ "Mono ADC MIXL", "ADC1 Switch", "Mono ADC L1 Mux" },
-+	{ "Mono ADC MIXL", "ADC2 Switch", "Mono ADC L2 Mux" },
-+	{ "Mono ADC MIXL", NULL, "ADC Mono Left Filter" },
-+
-+	{ "Mono ADC MIXR", "ADC1 Switch", "Mono ADC R1 Mux" },
-+	{ "Mono ADC MIXR", "ADC2 Switch", "Mono ADC R2 Mux" },
-+	{ "Mono ADC MIXR", NULL, "ADC Mono Right Filter" },
-+
-+	{ "Stereo1 ADC Volume L", NULL, "Stereo1 ADC MIXL" },
-+	{ "Stereo1 ADC Volume R", NULL, "Stereo1 ADC MIXR" },
-+
-+	{ "IF_ADC1", NULL, "Stereo1 ADC Volume L" },
-+	{ "IF_ADC1", NULL, "Stereo1 ADC Volume R" },
-+	{ "IF_ADC2", NULL, "Mono ADC MIXL" },
-+	{ "IF_ADC2", NULL, "Mono ADC MIXR" },
-+
-+	{ "TDM AD1:AD2:DAC", NULL, "IF_ADC1" },
-+	{ "TDM AD1:AD2:DAC", NULL, "IF_ADC2" },
-+	{ "TDM AD1:AD2:DAC", NULL, "DAC_REF" },
-+	{ "TDM AD2:DAC", NULL, "IF_ADC2" },
-+	{ "TDM AD2:DAC", NULL, "DAC_REF" },
-+	{ "TDM Data Mux", "AD1:AD2:DAC:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:AD2:NUL:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:DAC:AD2:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:DAC:NUL:AD2", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:NUL:DAC:AD2", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:NUL:AD2:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD2:AD1:DAC:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD2:AD1:NUL:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD2:DAC:AD1:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD2:DAC:NUL:AD1", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD2:NUL:DAC:AD1", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "AD1:NUL:AD1:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:AD1:AD2:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:AD1:NUL:AD2", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:AD2:AD1:NUL", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:AD2:NUL:AD1", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:NUL:DAC:AD2", "TDM AD2:DAC" },
-+	{ "TDM Data Mux", "DAC:NUL:AD2:DAC", "TDM AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:AD1:AD2:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:AD1:DAC:AD2", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:AD2:AD1:DAC", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:AD2:DAC:AD1", "TDM AD1:AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:DAC:DAC:AD2", "TDM AD2:DAC" },
-+	{ "TDM Data Mux", "NUL:DAC:AD2:DAC", "TDM AD2:DAC" },
-+	{ "IF1 01 ADC Swap Mux", "L/R", "TDM Data Mux" },
-+	{ "IF1 01 ADC Swap Mux", "R/L", "TDM Data Mux" },
-+	{ "IF1 01 ADC Swap Mux", "L/L", "TDM Data Mux" },
-+	{ "IF1 01 ADC Swap Mux", "R/R", "TDM Data Mux" },
-+	{ "IF1 23 ADC Swap Mux", "L/R", "TDM Data Mux" },
-+	{ "IF1 23 ADC Swap Mux", "R/L", "TDM Data Mux" },
-+	{ "IF1 23 ADC Swap Mux", "L/L", "TDM Data Mux" },
-+	{ "IF1 23 ADC Swap Mux", "R/R", "TDM Data Mux" },
-+	{ "IF1 45 ADC Swap Mux", "L/R", "TDM Data Mux" },
-+	{ "IF1 45 ADC Swap Mux", "R/L", "TDM Data Mux" },
-+	{ "IF1 45 ADC Swap Mux", "L/L", "TDM Data Mux" },
-+	{ "IF1 45 ADC Swap Mux", "R/R", "TDM Data Mux" },
-+	{ "IF1 67 ADC Swap Mux", "L/R", "TDM Data Mux" },
-+	{ "IF1 67 ADC Swap Mux", "R/L", "TDM Data Mux" },
-+	{ "IF1 67 ADC Swap Mux", "L/L", "TDM Data Mux" },
-+	{ "IF1 67 ADC Swap Mux", "R/R", "TDM Data Mux" },
-+	{ "IF1 ADC", NULL, "IF1 01 ADC Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 23 ADC Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 45 ADC Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 67 ADC Swap Mux" },
-+	{ "IF1 ADC", NULL, "I2S1" },
-+
-+	{ "IF2 ADC Mux", "IF_ADC1", "IF_ADC1" },
-+	{ "IF2 ADC Mux", "IF_ADC2", "IF_ADC2" },
-+	{ "IF2 ADC Mux", "IF_ADC3", "IF_ADC3" },
-+	{ "IF2 ADC Mux", "DAC_REF", "DAC_REF" },
-+	{ "IF2 ADC", NULL, "IF2 ADC Mux"},
-+	{ "IF2 ADC", NULL, "I2S2" },
-+
-+	{ "IF3 ADC Mux", "IF_ADC1", "IF_ADC1" },
-+	{ "IF3 ADC Mux", "IF_ADC2", "IF_ADC2" },
-+	{ "IF3 ADC Mux", "Stereo2_ADC_L/R", "Stereo2 ADC LR" },
-+	{ "IF3 ADC Mux", "DAC_REF", "DAC_REF" },
-+	{ "IF3 ADC", NULL, "IF3 ADC Mux"},
-+	{ "IF3 ADC", NULL, "I2S3" },
-+
-+	{ "AIF1TX", NULL, "IF1 ADC" },
-+	{ "IF2 ADC Swap Mux", "L/R", "IF2 ADC" },
-+	{ "IF2 ADC Swap Mux", "R/L", "IF2 ADC" },
-+	{ "IF2 ADC Swap Mux", "L/L", "IF2 ADC" },
-+	{ "IF2 ADC Swap Mux", "R/R", "IF2 ADC" },
-+	{ "AIF2TX", NULL, "IF2 ADC Swap Mux" },
-+	{ "IF3 ADC Swap Mux", "L/R", "IF3 ADC" },
-+	{ "IF3 ADC Swap Mux", "R/L", "IF3 ADC" },
-+	{ "IF3 ADC Swap Mux", "L/L", "IF3 ADC" },
-+	{ "IF3 ADC Swap Mux", "R/R", "IF3 ADC" },
-+	{ "AIF3TX", NULL, "IF3 ADC Swap Mux" },
-+
-+	{ "IF1 DAC1", NULL, "AIF1RX" },
-+	{ "IF1 DAC2", NULL, "AIF1RX" },
-+	{ "IF2 DAC Swap Mux", "L/R", "AIF2RX" },
-+	{ "IF2 DAC Swap Mux", "R/L", "AIF2RX" },
-+	{ "IF2 DAC Swap Mux", "L/L", "AIF2RX" },
-+	{ "IF2 DAC Swap Mux", "R/R", "AIF2RX" },
-+	{ "IF2 DAC", NULL, "IF2 DAC Swap Mux" },
-+	{ "IF3 DAC Swap Mux", "L/R", "AIF3RX" },
-+	{ "IF3 DAC Swap Mux", "R/L", "AIF3RX" },
-+	{ "IF3 DAC Swap Mux", "L/L", "AIF3RX" },
-+	{ "IF3 DAC Swap Mux", "R/R", "AIF3RX" },
-+	{ "IF3 DAC", NULL, "IF3 DAC Swap Mux" },
-+
-+	{ "IF1 DAC1", NULL, "I2S1" },
-+	{ "IF1 DAC2", NULL, "I2S1" },
-+	{ "IF2 DAC", NULL, "I2S2" },
-+	{ "IF3 DAC", NULL, "I2S3" },
-+
-+	{ "IF1 DAC2 L", NULL, "IF1 DAC2" },
-+	{ "IF1 DAC2 R", NULL, "IF1 DAC2" },
-+	{ "IF1 DAC1 L", NULL, "IF1 DAC1" },
-+	{ "IF1 DAC1 R", NULL, "IF1 DAC1" },
-+	{ "IF2 DAC L", NULL, "IF2 DAC" },
-+	{ "IF2 DAC R", NULL, "IF2 DAC" },
-+	{ "IF3 DAC L", NULL, "IF3 DAC" },
-+	{ "IF3 DAC R", NULL, "IF3 DAC" },
-+
-+	{ "DAC L1 Mux", "IF1 DAC1", "IF1 DAC1 L" },
-+	{ "DAC L1 Mux", "IF2 DAC", "IF2 DAC L" },
-+	{ "DAC L1 Mux", "IF3 DAC", "IF3 DAC L" },
-+	{ "DAC L1 Mux", NULL, "DAC Stereo1 Filter" },
-+
-+	{ "DAC R1 Mux", "IF1 DAC1", "IF1 DAC1 R" },
-+	{ "DAC R1 Mux", "IF2 DAC", "IF2 DAC R" },
-+	{ "DAC R1 Mux", "IF3 DAC", "IF3 DAC R" },
-+	{ "DAC R1 Mux", NULL, "DAC Stereo1 Filter" },
-+
-+	{ "DAC1 MIXL", "Stereo ADC Switch", "Stereo1 ADC Volume L" },
-+	{ "DAC1 MIXL", "DAC1 Switch", "DAC L1 Mux" },
-+	{ "DAC1 MIXR", "Stereo ADC Switch", "Stereo1 ADC Volume R" },
-+	{ "DAC1 MIXR", "DAC1 Switch", "DAC R1 Mux" },
-+
-+	{ "DAC_REF", NULL, "DAC1 MIXL" },
-+	{ "DAC_REF", NULL, "DAC1 MIXR" },
-+
-+	{ "DAC L2 Mux", "IF1 DAC2", "IF1 DAC2 L" },
-+	{ "DAC L2 Mux", "IF2 DAC", "IF2 DAC L" },
-+	{ "DAC L2 Mux", "IF3 DAC", "IF3 DAC L" },
-+	{ "DAC L2 Mux", "Mono ADC MIX", "Mono ADC MIXL" },
-+	{ "DAC L2 Mux", NULL, "DAC Mono Left Filter" },
-+
-+	{ "DAC R2 Mux", "IF1 DAC2", "IF1 DAC2 R" },
-+	{ "DAC R2 Mux", "IF2 DAC", "IF2 DAC R" },
-+	{ "DAC R2 Mux", "IF3 DAC", "IF3 DAC R" },
-+	{ "DAC R2 Mux", "Mono ADC MIX", "Mono ADC MIXR" },
-+	{ "DAC R2 Mux", NULL, "DAC Mono Right Filter" },
-+
-+	{ "Stereo DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Stereo DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Stereo DAC MIXL", "DAC L2 Switch", "DAC L2 Mux" },
-+	{ "Stereo DAC MIXL", "DAC R2 Switch", "DAC R2 Mux" },
-+
-+	{ "Stereo DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Stereo DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Stereo DAC MIXR", "DAC L2 Switch", "DAC L2 Mux" },
-+	{ "Stereo DAC MIXR", "DAC R2 Switch", "DAC R2 Mux" },
-+
-+	{ "Mono DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Mono DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Mono DAC MIXL", "DAC L2 Switch", "DAC L2 Mux" },
-+	{ "Mono DAC MIXL", "DAC R2 Switch", "DAC R2 Mux" },
-+	{ "Mono DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Mono DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Mono DAC MIXR", "DAC R2 Switch", "DAC R2 Mux" },
-+	{ "Mono DAC MIXR", "DAC L2 Switch", "DAC L2 Mux" },
-+
-+	{ "DAC MIXL", "Stereo DAC Mixer", "Stereo DAC MIXL" },
-+	{ "DAC MIXL", "Mono DAC Mixer", "Mono DAC MIXL" },
-+	{ "DAC MIXR", "Stereo DAC Mixer", "Stereo DAC MIXR" },
-+	{ "DAC MIXR", "Mono DAC Mixer", "Mono DAC MIXR" },
-+
-+	{ "DAC L1 Source", NULL, "DAC L1 Power" },
-+	{ "DAC L1 Source", "DAC", "DAC1 MIXL" },
-+	{ "DAC L1 Source", "Stereo DAC Mixer", "Stereo DAC MIXL" },
-+	{ "DAC R1 Source", NULL, "DAC R1 Power" },
-+	{ "DAC R1 Source", "DAC", "DAC1 MIXR" },
-+	{ "DAC R1 Source", "Stereo DAC Mixer", "Stereo DAC MIXR" },
-+	{ "DAC L2 Source", "Stereo DAC Mixer", "Stereo DAC MIXL" },
-+	{ "DAC L2 Source", "Mono DAC Mixer", "Mono DAC MIXL" },
-+	{ "DAC L2 Source", NULL, "DAC L2 Power" },
-+	{ "DAC R2 Source", "Stereo DAC Mixer", "Stereo DAC MIXR" },
-+	{ "DAC R2 Source", "Mono DAC Mixer", "Mono DAC MIXR" },
-+	{ "DAC R2 Source", NULL, "DAC R2 Power" },
-+
-+	{ "DAC L1", NULL, "DAC L1 Source" },
-+	{ "DAC R1", NULL, "DAC R1 Source" },
-+	{ "DAC L2", NULL, "DAC L2 Source" },
-+	{ "DAC R2", NULL, "DAC R2 Source" },
-+
-+	{ "SPK MIXL", "DAC L2 Switch", "DAC L2" },
-+	{ "SPK MIXL", "BST1 Switch", "BST1" },
-+	{ "SPK MIXL", "INL Switch", "INL VOL" },
-+	{ "SPK MIXL", "INR Switch", "INR VOL" },
-+	{ "SPK MIXL", "BST3 Switch", "BST3" },
-+	{ "SPK MIXR", "DAC R2 Switch", "DAC R2" },
-+	{ "SPK MIXR", "BST4 Switch", "BST4" },
-+	{ "SPK MIXR", "INL Switch", "INL VOL" },
-+	{ "SPK MIXR", "INR Switch", "INR VOL" },
-+	{ "SPK MIXR", "BST3 Switch", "BST3" },
-+
-+	{ "MONOVOL MIX", "DAC L2 Switch", "DAC L2" },
-+	{ "MONOVOL MIX", "DAC R2 Switch", "DAC R2" },
-+	{ "MONOVOL MIX", "BST1 Switch", "BST1" },
-+	{ "MONOVOL MIX", "BST2 Switch", "BST2" },
-+	{ "MONOVOL MIX", "BST3 Switch", "BST3" },
-+
-+	{ "OUT MIXL", "DAC L2 Switch", "DAC L2" },
-+	{ "OUT MIXL", "INL Switch", "INL VOL" },
-+	{ "OUT MIXL", "BST1 Switch", "BST1" },
-+	{ "OUT MIXL", "BST2 Switch", "BST2" },
-+	{ "OUT MIXL", "BST3 Switch", "BST3" },
-+	{ "OUT MIXR", "DAC R2 Switch", "DAC R2" },
-+	{ "OUT MIXR", "INR Switch", "INR VOL" },
-+	{ "OUT MIXR", "BST2 Switch", "BST2" },
-+	{ "OUT MIXR", "BST3 Switch", "BST3" },
-+	{ "OUT MIXR", "BST4 Switch", "BST4" },
-+
-+	{ "SPKVOL L", "Switch", "SPK MIXL" },
-+	{ "SPKVOL R", "Switch", "SPK MIXR" },
-+	{ "SPO L MIX", "DAC L2 Switch", "DAC L2" },
-+	{ "SPO L MIX", "SPKVOL L Switch", "SPKVOL L" },
-+	{ "SPO R MIX", "DAC R2 Switch", "DAC R2" },
-+	{ "SPO R MIX", "SPKVOL R Switch", "SPKVOL R" },
-+	{ "SPK Amp", NULL, "SPO L MIX" },
-+	{ "SPK Amp", NULL, "SPO R MIX" },
-+	{ "SPK Amp", NULL, "SYS CLK DET" },
-+	{ "SPO Playback", "Switch", "SPK Amp" },
-+	{ "SPOL", NULL, "SPO Playback" },
-+	{ "SPOR", NULL, "SPO Playback" },
-+
-+	{ "MONOVOL", "Switch", "MONOVOL MIX" },
-+	{ "Mono MIX", "DAC L2 Switch", "DAC L2" },
-+	{ "Mono MIX", "MONOVOL Switch", "MONOVOL" },
-+	{ "Mono Amp", NULL, "Mono MIX" },
-+	{ "Mono Amp", NULL, "Mono Vref" },
-+	{ "Mono Amp", NULL, "SYS CLK DET" },
-+	{ "Mono Playback", "Switch", "Mono Amp" },
-+	{ "MONOOUT", NULL, "Mono Playback" },
-+
-+	{ "HP Amp", NULL, "DAC L1" },
-+	{ "HP Amp", NULL, "DAC R1" },
-+	{ "HP Amp", NULL, "Charge Pump" },
-+	{ "HP Amp", NULL, "SYS CLK DET" },
-+	{ "HPO L Playback", "Switch", "HP Amp"},
-+	{ "HPO R Playback", "Switch", "HP Amp"},
-+	{ "HPOL", NULL, "HPO L Playback" },
-+	{ "HPOR", NULL, "HPO R Playback" },
-+
-+	{ "OUTVOL L", "Switch", "OUT MIXL" },
-+	{ "OUTVOL R", "Switch", "OUT MIXR" },
-+	{ "LOUT L MIX", "DAC L2 Switch", "DAC L2" },
-+	{ "LOUT L MIX", "OUTVOL L Switch", "OUTVOL L" },
-+	{ "LOUT R MIX", "DAC R2 Switch", "DAC R2" },
-+	{ "LOUT R MIX", "OUTVOL R Switch", "OUTVOL R" },
-+	{ "LOUT Amp", NULL, "LOUT L MIX" },
-+	{ "LOUT Amp", NULL, "LOUT R MIX" },
-+	{ "LOUT Amp", NULL, "SYS CLK DET" },
-+	{ "LOUT L Playback", "Switch", "LOUT Amp" },
-+	{ "LOUT R Playback", "Switch", "LOUT Amp" },
-+	{ "LOUTL", NULL, "LOUT L Playback" },
-+	{ "LOUTR", NULL, "LOUT R Playback" },
-+
-+	{ "PDM L Mux", "Mono DAC", "Mono DAC MIXL" },
-+	{ "PDM L Mux", "Stereo DAC", "Stereo DAC MIXL" },
-+	{ "PDM L Mux", NULL, "PDM Power" },
-+	{ "PDM R Mux", "Mono DAC", "Mono DAC MIXR" },
-+	{ "PDM R Mux", "Stereo DAC", "Stereo DAC MIXR" },
-+	{ "PDM R Mux", NULL, "PDM Power" },
-+	{ "PDM L Playback", "Switch", "PDM L Mux" },
-+	{ "PDM R Playback", "Switch", "PDM R Mux" },
-+	{ "PDML", NULL, "PDM L Playback" },
-+	{ "PDMR", NULL, "PDM R Playback" },
-+
-+	{ "SPDIF Mux", "IF3_DAC", "IF3 DAC" },
-+	{ "SPDIF Mux", "IF2_DAC", "IF2 DAC" },
-+	{ "SPDIF Mux", "IF1_DAC2", "IF1 DAC2" },
-+	{ "SPDIF Mux", "IF1_DAC1", "IF1 DAC1" },
-+	{ "SPDIF", NULL, "SPDIF Mux" },
-+};
-+
-+static int rt5659_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val_len = 0, val_clk, mask_clk;
-+	int pre_div, frame_size;
-+
-+	rt5659->lrck[dai->id] = params_rate(params);
-+	pre_div = rl6231_get_clk_info(rt5659->sysclk, rt5659->lrck[dai->id]);
-+	if (pre_div < 0) {
-+		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
-+			rt5659->lrck[dai->id], dai->id);
-+		return -EINVAL;
-+	}
-+	frame_size = snd_soc_params_to_frame_size(params);
-+	if (frame_size < 0) {
-+		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(dai->dev, "lrck is %dHz and pre_div is %d for iis %d\n",
-+				rt5659->lrck[dai->id], pre_div, dai->id);
-+
-+	switch (params_width(params)) {
-+	case 16:
-+		break;
-+	case 20:
-+		val_len |= RT5659_I2S_DL_20;
-+		break;
-+	case 24:
-+		val_len |= RT5659_I2S_DL_24;
-+		break;
-+	case 8:
-+		val_len |= RT5659_I2S_DL_8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5659_AIF1:
-+		mask_clk = RT5659_I2S_PD1_MASK;
-+		val_clk = pre_div << RT5659_I2S_PD1_SFT;
-+		snd_soc_update_bits(codec, RT5659_I2S1_SDP,
-+			RT5659_I2S_DL_MASK, val_len);
-+		break;
-+	case RT5659_AIF2:
-+		mask_clk = RT5659_I2S_PD2_MASK;
-+		val_clk = pre_div << RT5659_I2S_PD2_SFT;
-+		snd_soc_update_bits(codec, RT5659_I2S2_SDP,
-+			RT5659_I2S_DL_MASK, val_len);
-+		break;
-+	case RT5659_AIF3:
-+		mask_clk = RT5659_I2S_PD3_MASK;
-+		val_clk = pre_div << RT5659_I2S_PD3_SFT;
-+		snd_soc_update_bits(codec, RT5659_I2S3_SDP,
-+			RT5659_I2S_DL_MASK, val_len);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5659_ADDA_CLK_1, mask_clk, val_clk);
-+
-+	switch (rt5659->lrck[dai->id]) {
-+	case 192000:
-+		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_32);
-+		break;
-+	case 96000:
-+		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_64);
-+		break;
-+	default:
-+		snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+			RT5659_DAC_OSR_MASK, RT5659_DAC_OSR_128);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5659_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		rt5659->master[dai->id] = 1;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		reg_val |= RT5659_I2S_MS_S;
-+		rt5659->master[dai->id] = 0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		reg_val |= RT5659_I2S_BP_INV;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		reg_val |= RT5659_I2S_DF_LEFT;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		reg_val |= RT5659_I2S_DF_PCM_A;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		reg_val |= RT5659_I2S_DF_PCM_B;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5659_AIF1:
-+		snd_soc_update_bits(codec, RT5659_I2S1_SDP,
-+			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
-+			RT5659_I2S_DF_MASK, reg_val);
-+		break;
-+	case RT5659_AIF2:
-+		snd_soc_update_bits(codec, RT5659_I2S2_SDP,
-+			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
-+			RT5659_I2S_DF_MASK, reg_val);
-+		break;
-+	case RT5659_AIF3:
-+		snd_soc_update_bits(codec, RT5659_I2S3_SDP,
-+			RT5659_I2S_MS_MASK | RT5659_I2S_BP_MASK |
-+			RT5659_I2S_DF_MASK, reg_val);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
-+		return 0;
-+
-+	switch (clk_id) {
-+	case RT5659_SCLK_S_MCLK:
-+		reg_val |= RT5659_SCLK_SRC_MCLK;
-+		break;
-+	case RT5659_SCLK_S_PLL1:
-+		reg_val |= RT5659_SCLK_SRC_PLL1;
-+		break;
-+	case RT5659_SCLK_S_RCCLK:
-+		reg_val |= RT5659_SCLK_SRC_RCCLK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+		RT5659_SCLK_SRC_MASK, reg_val);
-+	rt5659->sysclk = freq;
-+	rt5659->sysclk_src = clk_id;
-+
-+	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
-+
-+	return 0;
-+}
-+
-+static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
-+			unsigned int freq_in, unsigned int freq_out)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	struct rl6231_pll_code pll_code;
-+	int ret;
-+
-+	if (Source == rt5659->pll_src && freq_in == rt5659->pll_in &&
-+	    freq_out == rt5659->pll_out)
-+		return 0;
-+
-+	if (!freq_in || !freq_out) {
-+		dev_dbg(codec->dev, "PLL disabled\n");
-+
-+		rt5659->pll_in = 0;
-+		rt5659->pll_out = 0;
-+		snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+			RT5659_SCLK_SRC_MASK, RT5659_SCLK_SRC_MCLK);
-+		return 0;
-+	}
-+
-+	switch (Source) {
-+	case RT5659_PLL1_S_MCLK:
-+		snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+			RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_MCLK);
-+		break;
-+	case RT5659_PLL1_S_BCLK1:
-+		snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK1);
-+		break;
-+	case RT5659_PLL1_S_BCLK2:
-+		snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK2);
-+		break;
-+	case RT5659_PLL1_S_BCLK3:
-+		snd_soc_update_bits(codec, RT5659_GLB_CLK,
-+				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK3);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
-+		return -EINVAL;
-+	}
-+
-+	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
-+		return ret;
-+	}
-+
-+	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=%d\n",
-+		pll_code.m_bp, (pll_code.m_bp ? 0 : pll_code.m_code),
-+		pll_code.n_code, pll_code.k_code);
-+
-+	snd_soc_write(codec, RT5659_PLL_CTRL_1,
-+		pll_code.n_code << RT5659_PLL_N_SFT | pll_code.k_code);
-+	snd_soc_write(codec, RT5659_PLL_CTRL_2,
-+		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5659_PLL_M_SFT |
-+		pll_code.m_bp << RT5659_PLL_M_BP_SFT);
-+
-+	rt5659->pll_in = freq_in;
-+	rt5659->pll_out = freq_out;
-+	rt5659->pll_src = Source;
-+
-+	return 0;
-+}
-+
-+static int rt5659_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned int val = 0;
-+
-+	if (rx_mask || tx_mask)
-+		val |= (1 << 15);
-+
-+	switch (slots) {
-+	case 4:
-+		val |= (1 << 10);
-+		val |= (1 << 8);
-+		break;
-+	case 6:
-+		val |= (2 << 10);
-+		val |= (2 << 8);
-+		break;
-+	case 8:
-+		val |= (3 << 10);
-+		val |= (3 << 8);
-+		break;
-+	case 2:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (slot_width) {
-+	case 20:
-+		val |= (1 << 6);
-+		val |= (1 << 4);
-+		break;
-+	case 24:
-+		val |= (2 << 6);
-+		val |= (2 << 4);
-+		break;
-+	case 32:
-+		val |= (3 << 6);
-+		val |= (3 << 4);
-+		break;
-+	case 16:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5659_TDM_CTRL_1, 0x8ff0, val);
-+
-+	return 0;
-+}
-+
-+static int rt5659_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
-+
-+	rt5659->bclk[dai->id] = ratio;
-+
-+	if (ratio == 64) {
-+		switch (dai->id) {
-+		case RT5659_AIF2:
-+			snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+				RT5659_I2S_BCLK_MS2_MASK,
-+				RT5659_I2S_BCLK_MS2_64);
-+			break;
-+		case RT5659_AIF3:
-+			snd_soc_update_bits(codec, RT5659_ADDA_CLK_1,
-+				RT5659_I2S_BCLK_MS3_MASK,
-+				RT5659_I2S_BCLK_MS3_64);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5659_set_bias_level(struct snd_soc_codec *codec,
-+			enum snd_soc_bias_level level)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		regmap_update_bits(rt5659->regmap, RT5659_DIG_MISC,
-+			RT5659_DIG_GATE_CTRL, RT5659_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_DIG_1,
-+			RT5659_PWR_LDO,	RT5659_PWR_LDO);
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
-+			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2,
-+			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2);
-+		msleep(20);
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
-+			RT5659_PWR_FV1 | RT5659_PWR_FV2,
-+			RT5659_PWR_FV1 | RT5659_PWR_FV2);
-+		break;
-+
-+	case SND_SOC_BIAS_OFF:
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_DIG_1,
-+			RT5659_PWR_LDO, 0);
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
-+			RT5659_PWR_MB | RT5659_PWR_VREF1 | RT5659_PWR_VREF2
-+			| RT5659_PWR_FV1 | RT5659_PWR_FV2,
-+			RT5659_PWR_MB | RT5659_PWR_VREF2);
-+		regmap_update_bits(rt5659->regmap, RT5659_DIG_MISC,
-+			RT5659_DIG_GATE_CTRL, 0);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5659_probe(struct snd_soc_codec *codec)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5659->codec = codec;
-+
-+	return 0;
-+}
-+
-+static int rt5659_remove(struct snd_soc_codec *codec)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	regmap_write(rt5659->regmap, RT5659_RESET, 0);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int rt5659_suspend(struct snd_soc_codec *codec)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	regcache_cache_only(rt5659->regmap, true);
-+	regcache_mark_dirty(rt5659->regmap);
-+	return 0;
-+}
-+
-+static int rt5659_resume(struct snd_soc_codec *codec)
-+{
-+	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+
-+	regcache_cache_only(rt5659->regmap, false);
-+	regcache_sync(rt5659->regmap);
-+
-+	return 0;
-+}
-+#else
-+#define rt5659_suspend NULL
-+#define rt5659_resume NULL
-+#endif
-+
-+#define RT5659_STEREO_RATES SNDRV_PCM_RATE_8000_192000
-+#define RT5659_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
-+
-+static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
-+	.hw_params = rt5659_hw_params,
-+	.set_fmt = rt5659_set_dai_fmt,
-+	.set_sysclk = rt5659_set_dai_sysclk,
-+	.set_tdm_slot = rt5659_set_tdm_slot,
-+	.set_pll = rt5659_set_dai_pll,
-+	.set_bclk_ratio = rt5659_set_bclk_ratio,
-+};
-+
-+static struct snd_soc_dai_driver rt5659_dai[] = {
-+	{
-+		.name = "rt5659-aif1",
-+		.id = RT5659_AIF1,
-+		.playback = {
-+			.stream_name = "AIF1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.ops = &rt5659_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5659-aif2",
-+		.id = RT5659_AIF2,
-+		.playback = {
-+			.stream_name = "AIF2 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF2 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.ops = &rt5659_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5659-aif3",
-+		.id = RT5659_AIF3,
-+		.playback = {
-+			.stream_name = "AIF3 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF3 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5659_STEREO_RATES,
-+			.formats = RT5659_FORMATS,
-+		},
-+		.ops = &rt5659_aif_dai_ops,
-+	},
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
-+	.probe = rt5659_probe,
-+	.remove = rt5659_remove,
-+	.suspend = rt5659_suspend,
-+	.resume = rt5659_resume,
-+	.set_bias_level = rt5659_set_bias_level,
-+	.idle_bias_off = true,
-+	.controls = rt5659_snd_controls,
-+	.num_controls = ARRAY_SIZE(rt5659_snd_controls),
-+	.dapm_widgets = rt5659_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(rt5659_dapm_widgets),
-+	.dapm_routes = rt5659_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(rt5659_dapm_routes),
-+};
-+
-+
-+static const struct regmap_config rt5659_regmap = {
-+	.reg_bits = 16,
-+	.val_bits = 16,
-+	.max_register = 0x0400,
-+	.volatile_reg = rt5659_volatile_register,
-+	.readable_reg = rt5659_readable_register,
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = rt5659_reg,
-+	.num_reg_defaults = ARRAY_SIZE(rt5659_reg),
-+};
-+
-+static const struct i2c_device_id rt5659_i2c_id[] = {
-+	{ "rt5658", 0 },
-+	{ "rt5659", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, rt5659_i2c_id);
-+
-+static int rt5659_parse_dt(struct rt5659_priv *rt5659, struct device *dev)
-+{
-+	rt5659->pdata.in1_diff = device_property_read_bool(dev,
-+					"realtek,in1-differential");
-+	rt5659->pdata.in3_diff = device_property_read_bool(dev,
-+					"realtek,in3-differential");
-+	rt5659->pdata.in4_diff = device_property_read_bool(dev,
-+					"realtek,in4-differential");
-+
-+
-+	device_property_read_u32(dev, "realtek,dmic1-data-pin",
-+		&rt5659->pdata.dmic1_data_pin);
-+	device_property_read_u32(dev, "realtek,dmic2-data-pin",
-+		&rt5659->pdata.dmic2_data_pin);
-+	device_property_read_u32(dev, "realtek,jd-src",
-+		&rt5659->pdata.jd_src);
-+
-+	return 0;
-+}
-+
-+static void rt5659_calibrate(struct rt5659_priv *rt5659)
-+{
-+	int value, count;
-+
-+	/* Calibrate HPO Start */
-+	/* Fine tune HP Performance */
-+	regmap_write(rt5659->regmap, RT5659_BIAS_CUR_CTRL_8, 0xa502);
-+	regmap_write(rt5659->regmap, RT5659_CHOP_DAC, 0x3030);
-+
-+	regmap_write(rt5659->regmap, RT5659_PRE_DIV_1, 0xef00);
-+	regmap_write(rt5659->regmap, RT5659_PRE_DIV_2, 0xeffc);
-+	regmap_write(rt5659->regmap, RT5659_MICBIAS_2, 0x0280);
-+	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x0001);
-+	regmap_write(rt5659->regmap, RT5659_GLB_CLK, 0x8000);
-+
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xaa7e);
-+	msleep(60);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xfe7e);
-+	msleep(50);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0004);
-+	regmap_write(rt5659->regmap, RT5659_PWR_DIG_2, 0x0400);
-+	msleep(50);
-+	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0080);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5659->regmap, RT5659_DEPOP_1, 0x0009);
-+	msleep(50);
-+	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0f80);
-+	msleep(50);
-+	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0e16);
-+	msleep(50);
-+
-+	/* Enalbe K ADC Power And Clock */
-+	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0505);
-+	msleep(50);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0184);
-+	regmap_write(rt5659->regmap, RT5659_CALIB_ADC_CTRL, 0x3c05);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c1);
-+
-+	/* K Headphone */
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x5100);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0014);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0xd100);
-+	msleep(60);
-+
-+	/* Manual K ADC Offset */
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x4900);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0016);
-+	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_1,
-+		0x8000, 0x8000);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 30) {
-+			dev_err(rt5659->codec->dev,
-+				"HP Calibration 1 Failure\n");
-+			return;
-+		}
-+
-+		count++;
-+	}
-+
-+	/* Manual K Internal Path Offset */
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x2cc1);
-+	regmap_write(rt5659->regmap, RT5659_HP_VOL, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, 0x4500);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x001f);
-+	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_1,
-+		0x8000, 0x8000);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5659->regmap, RT5659_HP_CALIB_CTRL_1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 85) {
-+			dev_err(rt5659->codec->dev,
-+				"HP Calibration 2 Failure\n");
-+			return;
-+		}
-+
-+		count++;
-+	}
-+
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_7, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c0);
-+	/* Calibrate HPO End */
-+
-+	/* Calibrate SPO Start */
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x2021);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_CTRL_1, 0x0260);
-+	regmap_write(rt5659->regmap, RT5659_PWR_MIXER, 0x3000);
-+	regmap_write(rt5659->regmap, RT5659_PWR_VOL, 0xc000);
-+	regmap_write(rt5659->regmap, RT5659_A_DAC_MUX, 0x000c);
-+	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x8000);
-+	regmap_write(rt5659->regmap, RT5659_SPO_VOL, 0x0808);
-+	regmap_write(rt5659->regmap, RT5659_SPK_L_MIXER, 0x001e);
-+	regmap_write(rt5659->regmap, RT5659_SPK_R_MIXER, 0x001e);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_1, 0x0803);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_2, 0x0554);
-+	regmap_write(rt5659->regmap, RT5659_SPO_AMP_GAIN, 0x1103);
-+
-+	/* Enalbe K ADC Power And Clock */
-+	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0909);
-+	regmap_update_bits(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x0001,
-+		0x0001);
-+
-+	/* Start Calibration */
-+	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x0021);
-+	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_1, 0x3e80);
-+	regmap_update_bits(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_1,
-+		0x8000, 0x8000);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5659->regmap,
-+				RT5659_SPK_DC_CAILB_CTRL_1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 10) {
-+			dev_err(rt5659->codec->dev,
-+				"SPK Calibration Failure\n");
-+			return;
-+		}
-+
-+		count++;
-+	}
-+	/* Calibrate SPO End */
-+
-+	/* Calibrate MONO Start */
-+	regmap_write(rt5659->regmap, RT5659_DIG_MISC, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_MONOMIX_IN_GAIN, 0x021f);
-+	regmap_write(rt5659->regmap, RT5659_MONO_OUT, 0x480a);
-+	/* MONO NG2 GAIN 5dB */
-+	regmap_write(rt5659->regmap, RT5659_MONO_GAIN, 0x0003);
-+	regmap_write(rt5659->regmap, RT5659_MONO_NG2_CTRL_5, 0x0009);
-+
-+	/* Start Calibration */
-+	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x000f);
-+	regmap_write(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e00);
-+	regmap_update_bits(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1,
-+		0x8000, 0x8000);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1,
-+			&value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 35) {
-+			dev_err(rt5659->codec->dev,
-+				"Mono Calibration Failure\n");
-+			return;
-+		}
-+
-+		count++;
-+	}
-+
-+	regmap_write(rt5659->regmap, RT5659_SPK_DC_CAILB_CTRL_3, 0x0003);
-+	/* Calibrate MONO End */
-+
-+	/* Power Off */
-+	regmap_write(rt5659->regmap, RT5659_CAL_REC, 0x0808);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_3, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_CALIB_ADC_CTRL, 0x2005);
-+	regmap_write(rt5659->regmap, RT5659_HP_CALIB_CTRL_2, 0x20c0);
-+	regmap_write(rt5659->regmap, RT5659_DEPOP_1, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_1, 0x0011);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_2, 0x0150);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0xfe3e);
-+	regmap_write(rt5659->regmap, RT5659_MONO_OUT, 0xc80a);
-+	regmap_write(rt5659->regmap, RT5659_MONO_AMP_CALIB_CTRL_1, 0x1e04);
-+	regmap_write(rt5659->regmap, RT5659_PWR_MIXER, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_PWR_VOL, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_PWR_DIG_1, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_PWR_DIG_2, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_PWR_ANLG_1, 0x003e);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_CTRL_1, 0x0060);
-+	regmap_write(rt5659->regmap, RT5659_CLASSD_0, 0x2021);
-+	regmap_write(rt5659->regmap, RT5659_GLB_CLK, 0x0000);
-+	regmap_write(rt5659->regmap, RT5659_MICBIAS_2, 0x0080);
-+	regmap_write(rt5659->regmap, RT5659_HP_VOL, 0x8080);
-+	regmap_write(rt5659->regmap, RT5659_HP_CHARGE_PUMP_1, 0x0c16);
-+}
-+
-+static int rt5659_i2c_probe(struct i2c_client *i2c,
-+		    const struct i2c_device_id *id)
-+{
-+	struct rt5659_platform_data *pdata = dev_get_platdata(&i2c->dev);
-+	struct rt5659_priv *rt5659;
-+	int ret;
-+	unsigned int val;
-+
-+	rt5659 = devm_kzalloc(&i2c->dev, sizeof(struct rt5659_priv),
-+		GFP_KERNEL);
-+
-+	if (rt5659 == NULL)
-+		return -ENOMEM;
-+
-+	rt5659->i2c = i2c;
-+	i2c_set_clientdata(i2c, rt5659);
-+
-+	if (pdata)
-+		rt5659->pdata = *pdata;
-+	else
-+		rt5659_parse_dt(rt5659, &i2c->dev);
-+
-+	rt5659->gpiod_ldo1_en = devm_gpiod_get_optional(&i2c->dev, "ldo1-en",
-+							GPIOD_OUT_HIGH);
-+	if (IS_ERR(rt5659->gpiod_ldo1_en))
-+		dev_warn(&i2c->dev, "Request ldo1-en GPIO failed\n");
-+
-+	rt5659->gpiod_reset = devm_gpiod_get_optional(&i2c->dev, "reset",
-+							GPIOD_OUT_HIGH);
-+
-+	/* Sleep for 300 ms miniumum */
-+	usleep_range(300000, 350000);
-+
-+	rt5659->regmap = devm_regmap_init_i2c(i2c, &rt5659_regmap);
-+	if (IS_ERR(rt5659->regmap)) {
-+		ret = PTR_ERR(rt5659->regmap);
-+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	regmap_read(rt5659->regmap, RT5659_DEVICE_ID, &val);
-+	if (val != DEVICE_ID) {
-+		dev_err(&i2c->dev,
-+			"Device with ID register %x is not rt5659\n", val);
-+		return -ENODEV;
-+	}
-+
-+	regmap_write(rt5659->regmap, RT5659_RESET, 0);
-+
-+	rt5659_calibrate(rt5659);
-+
-+	/* line in diff mode*/
-+	if (rt5659->pdata.in1_diff)
-+		regmap_update_bits(rt5659->regmap, RT5659_IN1_IN2,
-+			RT5659_IN1_DF_MASK, RT5659_IN1_DF_MASK);
-+	if (rt5659->pdata.in3_diff)
-+		regmap_update_bits(rt5659->regmap, RT5659_IN3_IN4,
-+			RT5659_IN3_DF_MASK, RT5659_IN3_DF_MASK);
-+	if (rt5659->pdata.in4_diff)
-+		regmap_update_bits(rt5659->regmap, RT5659_IN3_IN4,
-+			RT5659_IN4_DF_MASK, RT5659_IN4_DF_MASK);
-+
-+	/* DMIC pin*/
-+	if (rt5659->pdata.dmic1_data_pin != RT5659_DMIC1_NULL ||
-+		rt5659->pdata.dmic2_data_pin != RT5659_DMIC2_NULL) {
-+		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+			RT5659_GP2_PIN_MASK, RT5659_GP2_PIN_DMIC1_SCL);
-+
-+		switch (rt5659->pdata.dmic1_data_pin) {
-+		case RT5659_DMIC1_DATA_IN2N:
-+			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_IN2N);
-+			break;
-+
-+		case RT5659_DMIC1_DATA_GPIO5:
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_GPIO_CTRL_3,
-+				RT5659_I2S2_PIN_MASK,
-+				RT5659_I2S2_PIN_GPIO);
-+			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO5);
-+			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+				RT5659_GP5_PIN_MASK, RT5659_GP5_PIN_DMIC1_SDA);
-+			break;
-+
-+		case RT5659_DMIC1_DATA_GPIO9:
-+			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO9);
-+			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+				RT5659_GP9_PIN_MASK, RT5659_GP9_PIN_DMIC1_SDA);
-+			break;
-+
-+		case RT5659_DMIC1_DATA_GPIO11:
-+			regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_1_DP_MASK, RT5659_DMIC_1_DP_GPIO11);
-+			regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+				RT5659_GP11_PIN_MASK,
-+				RT5659_GP11_PIN_DMIC1_SDA);
-+			break;
-+
-+		default:
-+			dev_dbg(&i2c->dev, "no DMIC1\n");
-+			break;
-+		}
-+
-+		switch (rt5659->pdata.dmic2_data_pin) {
-+		case RT5659_DMIC2_DATA_IN2P:
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_2_DP_MASK,
-+				RT5659_DMIC_2_DP_IN2P);
-+			break;
-+
-+		case RT5659_DMIC2_DATA_GPIO6:
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_2_DP_MASK,
-+				RT5659_DMIC_2_DP_GPIO6);
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_GPIO_CTRL_1,
-+				RT5659_GP6_PIN_MASK,
-+				RT5659_GP6_PIN_DMIC2_SDA);
-+			break;
-+
-+		case RT5659_DMIC2_DATA_GPIO10:
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_2_DP_MASK,
-+				RT5659_DMIC_2_DP_GPIO10);
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_GPIO_CTRL_1,
-+				RT5659_GP10_PIN_MASK,
-+				RT5659_GP10_PIN_DMIC2_SDA);
-+			break;
-+
-+		case RT5659_DMIC2_DATA_GPIO12:
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_DMIC_CTRL_1,
-+				RT5659_DMIC_2_DP_MASK,
-+				RT5659_DMIC_2_DP_GPIO12);
-+			regmap_update_bits(rt5659->regmap,
-+				RT5659_GPIO_CTRL_1,
-+				RT5659_GP12_PIN_MASK,
-+				RT5659_GP12_PIN_DMIC2_SDA);
-+			break;
-+
-+		default:
-+			dev_dbg(&i2c->dev, "no DMIC2\n");
-+			break;
-+
-+		}
-+	} else {
-+		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+			RT5659_GP2_PIN_MASK | RT5659_GP5_PIN_MASK |
-+			RT5659_GP9_PIN_MASK | RT5659_GP11_PIN_MASK |
-+			RT5659_GP6_PIN_MASK | RT5659_GP10_PIN_MASK |
-+			RT5659_GP12_PIN_MASK,
-+			RT5659_GP2_PIN_GPIO2 | RT5659_GP5_PIN_GPIO5 |
-+			RT5659_GP9_PIN_GPIO9 | RT5659_GP11_PIN_GPIO11 |
-+			RT5659_GP6_PIN_GPIO6 | RT5659_GP10_PIN_GPIO10 |
-+			RT5659_GP12_PIN_GPIO12);
-+		regmap_update_bits(rt5659->regmap, RT5659_DMIC_CTRL_1,
-+			RT5659_DMIC_1_DP_MASK | RT5659_DMIC_2_DP_MASK,
-+			RT5659_DMIC_1_DP_IN2N | RT5659_DMIC_2_DP_IN2P);
-+	}
-+
-+	switch (rt5659->pdata.jd_src) {
-+	case RT5659_JD3:
-+		regmap_write(rt5659->regmap, RT5659_EJD_CTRL_1, 0xa880);
-+		regmap_write(rt5659->regmap, RT5659_RC_CLK_CTRL, 0x9000);
-+		regmap_write(rt5659->regmap, RT5659_GPIO_CTRL_1, 0xc800);
-+		regmap_update_bits(rt5659->regmap, RT5659_PWR_ANLG_1,
-+				RT5659_PWR_MB, RT5659_PWR_MB);
-+		regmap_write(rt5659->regmap, RT5659_PWR_ANLG_2, 0x0001);
-+		regmap_write(rt5659->regmap, RT5659_IRQ_CTRL_2, 0x0040);
-+		break;
-+	case RT5659_JD_NULL:
-+		break;
-+	default:
-+		dev_warn(&i2c->dev, "Currently, support JD3 only\n");
-+		break;
-+	}
-+
-+	INIT_DELAYED_WORK(&rt5659->jack_detect_work, rt5659_jack_detect_work);
-+
-+	if (rt5659->i2c->irq) {
-+		ret = request_threaded_irq(rt5659->i2c->irq, NULL, rt5659_irq,
-+			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
-+			| IRQF_ONESHOT, "rt5659", rt5659);
-+		if (ret)
-+			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
-+
-+	}
-+
-+	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5659,
-+			rt5659_dai, ARRAY_SIZE(rt5659_dai));
-+
-+	if (ret) {
-+		if (rt5659->i2c->irq)
-+			free_irq(rt5659->i2c->irq, rt5659);
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5659_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+
-+	return 0;
-+}
-+
-+void rt5659_i2c_shutdown(struct i2c_client *client)
-+{
-+	struct rt5659_priv *rt5659 = i2c_get_clientdata(client);
-+
-+	regmap_write(rt5659->regmap, RT5659_RESET, 0);
-+}
-+
-+static const struct of_device_id rt5659_of_match[] = {
-+	{ .compatible = "realtek,rt5658", },
-+	{ .compatible = "realtek,rt5659", },
-+	{},
-+};
-+
-+static struct acpi_device_id rt5659_acpi_match[] = {
-+		{ "10EC5658", 0},
-+		{ "10EC5659", 0},
-+		{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5659_acpi_match);
-+
-+struct i2c_driver rt5659_i2c_driver = {
-+	.driver = {
-+		.name = "rt5659",
-+		.owner = THIS_MODULE,
-+		.of_match_table = rt5659_of_match,
-+		.acpi_match_table = ACPI_PTR(rt5659_acpi_match),
-+	},
-+	.probe = rt5659_i2c_probe,
-+	.remove = rt5659_i2c_remove,
-+	.shutdown = rt5659_i2c_shutdown,
-+	.id_table = rt5659_i2c_id,
-+};
-+module_i2c_driver(rt5659_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC RT5659 driver");
-+MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
-new file mode 100644
-index 000000000000..8f07ee903eaa
---- /dev/null
-+++ b/sound/soc/codecs/rt5659.h
-@@ -0,0 +1,1819 @@
-+/*
-+ * rt5659.h  --  RT5659/RT5658 ALSA SoC audio driver
-+ *
-+ * Copyright 2015 Realtek Microelectronics
-+ * Author: Bard Liao <bardliao@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __RT5659_H__
-+#define __RT5659_H__
-+
-+#include <sound/rt5659.h>
-+
-+#define DEVICE_ID 0x6311
-+
-+/* Info */
-+#define RT5659_RESET				0x0000
-+#define RT5659_VENDOR_ID			0x00fd
-+#define RT5659_VENDOR_ID_1			0x00fe
-+#define RT5659_DEVICE_ID			0x00ff
-+/*  I/O - Output */
-+#define RT5659_SPO_VOL				0x0001
-+#define RT5659_HP_VOL				0x0002
-+#define RT5659_LOUT				0x0003
-+#define RT5659_MONO_OUT				0x0004
-+#define RT5659_HPL_GAIN				0x0005
-+#define RT5659_HPR_GAIN				0x0006
-+#define RT5659_MONO_GAIN			0x0007
-+#define RT5659_SPDIF_CTRL_1			0x0008
-+#define RT5659_SPDIF_CTRL_2			0x0009
-+/* I/O - Input */
-+#define RT5659_CAL_BST_CTRL			0x000a
-+#define RT5659_IN1_IN2				0x000c
-+#define RT5659_IN3_IN4				0x000d
-+#define RT5659_INL1_INR1_VOL			0x000f
-+/* I/O - Speaker */
-+#define RT5659_EJD_CTRL_1			0x0010
-+#define RT5659_EJD_CTRL_2			0x0011
-+#define RT5659_EJD_CTRL_3			0x0012
-+#define RT5659_SILENCE_CTRL			0x0015
-+#define RT5659_PSV_CTRL				0x0016
-+/* I/O - Sidetone */
-+#define RT5659_SIDETONE_CTRL			0x0018
-+/* I/O - ADC/DAC/DMIC */
-+#define RT5659_DAC1_DIG_VOL			0x0019
-+#define RT5659_DAC2_DIG_VOL			0x001a
-+#define RT5659_DAC_CTRL				0x001b
-+#define RT5659_STO1_ADC_DIG_VOL			0x001c
-+#define RT5659_MONO_ADC_DIG_VOL			0x001d
-+#define RT5659_STO2_ADC_DIG_VOL			0x001e
-+#define RT5659_STO1_BOOST			0x001f
-+#define RT5659_MONO_BOOST			0x0020
-+#define RT5659_STO2_BOOST			0x0021
-+#define RT5659_HP_IMP_GAIN_1			0x0022
-+#define RT5659_HP_IMP_GAIN_2			0x0023
-+/* Mixer - D-D */
-+#define RT5659_STO1_ADC_MIXER			0x0026
-+#define RT5659_MONO_ADC_MIXER			0x0027
-+#define RT5659_AD_DA_MIXER			0x0029
-+#define RT5659_STO_DAC_MIXER			0x002a
-+#define RT5659_MONO_DAC_MIXER			0x002b
-+#define RT5659_DIG_MIXER			0x002c
-+#define RT5659_A_DAC_MUX			0x002d
-+#define RT5659_DIG_INF23_DATA			0x002f
-+/* Mixer - PDM */
-+#define RT5659_PDM_OUT_CTRL			0x0031
-+#define RT5659_PDM_DATA_CTRL_1			0x0032
-+#define RT5659_PDM_DATA_CTRL_2			0x0033
-+#define RT5659_PDM_DATA_CTRL_3			0x0034
-+#define RT5659_PDM_DATA_CTRL_4			0x0035
-+#define RT5659_SPDIF_CTRL			0x0036
-+
-+/* Mixer - ADC */
-+#define RT5659_REC1_GAIN			0x003a
-+#define RT5659_REC1_L1_MIXER			0x003b
-+#define RT5659_REC1_L2_MIXER			0x003c
-+#define RT5659_REC1_R1_MIXER			0x003d
-+#define RT5659_REC1_R2_MIXER			0x003e
-+#define RT5659_CAL_REC				0x0040
-+#define RT5659_REC2_L1_MIXER			0x009b
-+#define RT5659_REC2_L2_MIXER			0x009c
-+#define RT5659_REC2_R1_MIXER			0x009d
-+#define RT5659_REC2_R2_MIXER			0x009e
-+#define RT5659_RC_CLK_CTRL			0x009f
-+/* Mixer - DAC */
-+#define RT5659_SPK_L_MIXER			0x0046
-+#define RT5659_SPK_R_MIXER			0x0047
-+#define RT5659_SPO_AMP_GAIN			0x0048
-+#define RT5659_ALC_BACK_GAIN			0x0049
-+#define RT5659_MONOMIX_GAIN			0x004a
-+#define RT5659_MONOMIX_IN_GAIN			0x004b
-+#define RT5659_OUT_L_GAIN			0x004d
-+#define RT5659_OUT_L_MIXER			0x004e
-+#define RT5659_OUT_R_GAIN			0x004f
-+#define RT5659_OUT_R_MIXER			0x0050
-+#define RT5659_LOUT_MIXER			0x0052
-+
-+#define RT5659_HAPTIC_GEN_CTRL_1		0x0053
-+#define RT5659_HAPTIC_GEN_CTRL_2		0x0054
-+#define RT5659_HAPTIC_GEN_CTRL_3		0x0055
-+#define RT5659_HAPTIC_GEN_CTRL_4		0x0056
-+#define RT5659_HAPTIC_GEN_CTRL_5		0x0057
-+#define RT5659_HAPTIC_GEN_CTRL_6		0x0058
-+#define RT5659_HAPTIC_GEN_CTRL_7		0x0059
-+#define RT5659_HAPTIC_GEN_CTRL_8		0x005a
-+#define RT5659_HAPTIC_GEN_CTRL_9		0x005b
-+#define RT5659_HAPTIC_GEN_CTRL_10		0x005c
-+#define RT5659_HAPTIC_GEN_CTRL_11		0x005d
-+#define RT5659_HAPTIC_LPF_CTRL_1		0x005e
-+#define RT5659_HAPTIC_LPF_CTRL_2		0x005f
-+#define RT5659_HAPTIC_LPF_CTRL_3		0x0060
-+/* Power */
-+#define RT5659_PWR_DIG_1			0x0061
-+#define RT5659_PWR_DIG_2			0x0062
-+#define RT5659_PWR_ANLG_1			0x0063
-+#define RT5659_PWR_ANLG_2			0x0064
-+#define RT5659_PWR_ANLG_3			0x0065
-+#define RT5659_PWR_MIXER			0x0066
-+#define RT5659_PWR_VOL				0x0067
-+/* Private Register Control */
-+#define RT5659_PRIV_INDEX			0x006a
-+#define RT5659_CLK_DET				0x006b
-+#define RT5659_PRIV_DATA			0x006c
-+/* System Clock Pre Divider Gating Control */
-+#define RT5659_PRE_DIV_1			0x006e
-+#define RT5659_PRE_DIV_2			0x006f
-+/* Format - ADC/DAC */
-+#define RT5659_I2S1_SDP				0x0070
-+#define RT5659_I2S2_SDP				0x0071
-+#define RT5659_I2S3_SDP				0x0072
-+#define RT5659_ADDA_CLK_1			0x0073
-+#define RT5659_ADDA_CLK_2			0x0074
-+#define RT5659_DMIC_CTRL_1			0x0075
-+#define RT5659_DMIC_CTRL_2			0x0076
-+/* Format - TDM Control */
-+#define RT5659_TDM_CTRL_1			0x0077
-+#define RT5659_TDM_CTRL_2			0x0078
-+#define RT5659_TDM_CTRL_3			0x0079
-+#define RT5659_TDM_CTRL_4			0x007a
-+#define RT5659_TDM_CTRL_5			0x007b
-+
-+/* Function - Analog */
-+#define RT5659_GLB_CLK				0x0080
-+#define RT5659_PLL_CTRL_1			0x0081
-+#define RT5659_PLL_CTRL_2			0x0082
-+#define RT5659_ASRC_1				0x0083
-+#define RT5659_ASRC_2				0x0084
-+#define RT5659_ASRC_3				0x0085
-+#define RT5659_ASRC_4				0x0086
-+#define RT5659_ASRC_5				0x0087
-+#define RT5659_ASRC_6				0x0088
-+#define RT5659_ASRC_7				0x0089
-+#define RT5659_ASRC_8				0x008a
-+#define RT5659_ASRC_9				0x008b
-+#define RT5659_ASRC_10				0x008c
-+#define RT5659_DEPOP_1				0x008e
-+#define RT5659_DEPOP_2				0x008f
-+#define RT5659_DEPOP_3				0x0090
-+#define RT5659_HP_CHARGE_PUMP_1			0x0091
-+#define RT5659_HP_CHARGE_PUMP_2			0x0092
-+#define RT5659_MICBIAS_1			0x0093
-+#define RT5659_MICBIAS_2			0x0094
-+#define RT5659_ASRC_11				0x0097
-+#define RT5659_ASRC_12				0x0098
-+#define RT5659_ASRC_13				0x0099
-+#define RT5659_REC_M1_M2_GAIN_CTRL		0x009a
-+#define RT5659_CLASSD_CTRL_1			0x00a0
-+#define RT5659_CLASSD_CTRL_2			0x00a1
-+
-+/* Function - Digital */
-+#define RT5659_ADC_EQ_CTRL_1			0x00ae
-+#define RT5659_ADC_EQ_CTRL_2			0x00af
-+#define RT5659_DAC_EQ_CTRL_1			0x00b0
-+#define RT5659_DAC_EQ_CTRL_2			0x00b1
-+#define RT5659_DAC_EQ_CTRL_3			0x00b2
-+
-+#define RT5659_IRQ_CTRL_1			0x00b6
-+#define RT5659_IRQ_CTRL_2			0x00b7
-+#define RT5659_IRQ_CTRL_3			0x00b8
-+#define RT5659_IRQ_CTRL_4			0x00b9
-+#define RT5659_IRQ_CTRL_5			0x00ba
-+#define RT5659_IRQ_CTRL_6			0x00bb
-+#define RT5659_INT_ST_1				0x00be
-+#define RT5659_INT_ST_2				0x00bf
-+#define RT5659_GPIO_CTRL_1			0x00c0
-+#define RT5659_GPIO_CTRL_2			0x00c1
-+#define RT5659_GPIO_CTRL_3			0x00c2
-+#define RT5659_GPIO_CTRL_4			0x00c3
-+#define RT5659_GPIO_CTRL_5			0x00c4
-+#define RT5659_GPIO_STA				0x00c5
-+#define RT5659_SINE_GEN_CTRL_1			0x00cb
-+#define RT5659_SINE_GEN_CTRL_2			0x00cc
-+#define RT5659_SINE_GEN_CTRL_3			0x00cd
-+#define RT5659_HP_AMP_DET_CTRL_1		0x00d6
-+#define RT5659_HP_AMP_DET_CTRL_2		0x00d7
-+#define RT5659_SV_ZCD_1				0x00d9
-+#define RT5659_SV_ZCD_2				0x00da
-+#define RT5659_IL_CMD_1				0x00db
-+#define RT5659_IL_CMD_2				0x00dc
-+#define RT5659_IL_CMD_3				0x00dd
-+#define RT5659_IL_CMD_4				0x00de
-+#define RT5659_4BTN_IL_CMD_1			0x00df
-+#define RT5659_4BTN_IL_CMD_2			0x00e0
-+#define RT5659_4BTN_IL_CMD_3			0x00e1
-+#define RT5659_PSV_IL_CMD_1			0x00e4
-+#define RT5659_PSV_IL_CMD_2			0x00e5
-+
-+#define RT5659_ADC_STO1_HP_CTRL_1		0x00ea
-+#define RT5659_ADC_STO1_HP_CTRL_2		0x00eb
-+#define RT5659_ADC_MONO_HP_CTRL_1		0x00ec
-+#define RT5659_ADC_MONO_HP_CTRL_2		0x00ed
-+#define RT5659_AJD1_CTRL			0x00f0
-+#define RT5659_AJD2_AJD3_CTRL			0x00f1
-+#define RT5659_JD1_THD				0x00f2
-+#define RT5659_JD2_THD				0x00f3
-+#define RT5659_JD3_THD				0x00f4
-+#define RT5659_JD_CTRL_1			0x00f6
-+#define RT5659_JD_CTRL_2			0x00f7
-+#define RT5659_JD_CTRL_3			0x00f8
-+#define RT5659_JD_CTRL_4			0x00f9
-+/* General Control */
-+#define RT5659_DIG_MISC				0x00fa
-+#define RT5659_DUMMY_2				0x00fb
-+#define RT5659_DUMMY_3				0x00fc
-+
-+#define RT5659_DAC_ADC_DIG_VOL			0x0100
-+#define RT5659_BIAS_CUR_CTRL_1			0x010a
-+#define RT5659_BIAS_CUR_CTRL_2			0x010b
-+#define RT5659_BIAS_CUR_CTRL_3			0x010c
-+#define RT5659_BIAS_CUR_CTRL_4			0x010d
-+#define RT5659_BIAS_CUR_CTRL_5			0x010e
-+#define RT5659_BIAS_CUR_CTRL_6			0x010f
-+#define RT5659_BIAS_CUR_CTRL_7			0x0110
-+#define RT5659_BIAS_CUR_CTRL_8			0x0111
-+#define RT5659_BIAS_CUR_CTRL_9			0x0112
-+#define RT5659_BIAS_CUR_CTRL_10			0x0113
-+#define RT5659_MEMORY_TEST			0x0116
-+#define RT5659_VREF_REC_OP_FB_CAP_CTRL		0x0117
-+#define RT5659_CLASSD_0				0x011a
-+#define RT5659_CLASSD_1				0x011b
-+#define RT5659_CLASSD_2				0x011c
-+#define RT5659_CLASSD_3				0x011d
-+#define RT5659_CLASSD_4				0x011e
-+#define RT5659_CLASSD_5				0x011f
-+#define RT5659_CLASSD_6				0x0120
-+#define RT5659_CLASSD_7				0x0121
-+#define RT5659_CLASSD_8				0x0122
-+#define RT5659_CLASSD_9				0x0123
-+#define RT5659_CLASSD_10			0x0124
-+#define RT5659_CHARGE_PUMP_1			0x0125
-+#define RT5659_CHARGE_PUMP_2			0x0126
-+#define RT5659_DIG_IN_CTRL_1			0x0132
-+#define RT5659_DIG_IN_CTRL_2			0x0133
-+#define RT5659_PAD_DRIVING_CTRL			0x0137
-+#define RT5659_SOFT_RAMP_DEPOP			0x0138
-+#define RT5659_PLL				0x0139
-+#define RT5659_CHOP_DAC				0x013a
-+#define RT5659_CHOP_ADC				0x013b
-+#define RT5659_CALIB_ADC_CTRL			0x013c
-+#define RT5659_SOFT_RAMP_DEPOP_DAC_CLK_CTRL	0x013e
-+#define RT5659_VOL_TEST				0x013f
-+#define RT5659_TEST_MODE_CTRL_1			0x0145
-+#define RT5659_TEST_MODE_CTRL_2			0x0146
-+#define RT5659_TEST_MODE_CTRL_3			0x0147
-+#define RT5659_TEST_MODE_CTRL_4			0x0148
-+#define RT5659_BASSBACK_CTRL			0x0150
-+#define RT5659_MP3_PLUS_CTRL_1			0x0151
-+#define RT5659_MP3_PLUS_CTRL_2			0x0152
-+#define RT5659_MP3_HPF_A1			0x0153
-+#define RT5659_MP3_HPF_A2			0x0154
-+#define RT5659_MP3_HPF_H0			0x0155
-+#define RT5659_MP3_LPF_H0			0x0156
-+#define RT5659_3D_SPK_CTRL			0x0157
-+#define RT5659_3D_SPK_COEF_1			0x0158
-+#define RT5659_3D_SPK_COEF_2			0x0159
-+#define RT5659_3D_SPK_COEF_3			0x015a
-+#define RT5659_3D_SPK_COEF_4			0x015b
-+#define RT5659_3D_SPK_COEF_5			0x015c
-+#define RT5659_3D_SPK_COEF_6			0x015d
-+#define RT5659_3D_SPK_COEF_7			0x015e
-+#define RT5659_STO_NG2_CTRL_1			0x0160
-+#define RT5659_STO_NG2_CTRL_2			0x0161
-+#define RT5659_STO_NG2_CTRL_3			0x0162
-+#define RT5659_STO_NG2_CTRL_4			0x0163
-+#define RT5659_STO_NG2_CTRL_5			0x0164
-+#define RT5659_STO_NG2_CTRL_6			0x0165
-+#define RT5659_STO_NG2_CTRL_7			0x0166
-+#define RT5659_STO_NG2_CTRL_8			0x0167
-+#define RT5659_MONO_NG2_CTRL_1			0x0170
-+#define RT5659_MONO_NG2_CTRL_2			0x0171
-+#define RT5659_MONO_NG2_CTRL_3			0x0172
-+#define RT5659_MONO_NG2_CTRL_4			0x0173
-+#define RT5659_MONO_NG2_CTRL_5			0x0174
-+#define RT5659_MONO_NG2_CTRL_6			0x0175
-+#define RT5659_MID_HP_AMP_DET			0x0190
-+#define RT5659_LOW_HP_AMP_DET			0x0191
-+#define RT5659_LDO_CTRL				0x0192
-+#define RT5659_HP_DECROSS_CTRL_1		0x01b0
-+#define RT5659_HP_DECROSS_CTRL_2		0x01b1
-+#define RT5659_HP_DECROSS_CTRL_3		0x01b2
-+#define RT5659_HP_DECROSS_CTRL_4		0x01b3
-+#define RT5659_HP_IMP_SENS_CTRL_1		0x01c0
-+#define RT5659_HP_IMP_SENS_CTRL_2		0x01c1
-+#define RT5659_HP_IMP_SENS_CTRL_3		0x01c2
-+#define RT5659_HP_IMP_SENS_CTRL_4		0x01c3
-+#define RT5659_HP_IMP_SENS_MAP_1		0x01c7
-+#define RT5659_HP_IMP_SENS_MAP_2		0x01c8
-+#define RT5659_HP_IMP_SENS_MAP_3		0x01c9
-+#define RT5659_HP_IMP_SENS_MAP_4		0x01ca
-+#define RT5659_HP_IMP_SENS_MAP_5		0x01cb
-+#define RT5659_HP_IMP_SENS_MAP_6		0x01cc
-+#define RT5659_HP_IMP_SENS_MAP_7		0x01cd
-+#define RT5659_HP_IMP_SENS_MAP_8		0x01ce
-+#define RT5659_HP_LOGIC_CTRL_1			0x01da
-+#define RT5659_HP_LOGIC_CTRL_2			0x01db
-+#define RT5659_HP_CALIB_CTRL_1			0x01de
-+#define RT5659_HP_CALIB_CTRL_2			0x01df
-+#define RT5659_HP_CALIB_CTRL_3			0x01e0
-+#define RT5659_HP_CALIB_CTRL_4			0x01e1
-+#define RT5659_HP_CALIB_CTRL_5			0x01e2
-+#define RT5659_HP_CALIB_CTRL_6			0x01e3
-+#define RT5659_HP_CALIB_CTRL_7			0x01e4
-+#define RT5659_HP_CALIB_CTRL_9			0x01e6
-+#define RT5659_HP_CALIB_CTRL_10			0x01e7
-+#define RT5659_HP_CALIB_CTRL_11			0x01e8
-+#define RT5659_HP_CALIB_STA_1			0x01ea
-+#define RT5659_HP_CALIB_STA_2			0x01eb
-+#define RT5659_HP_CALIB_STA_3			0x01ec
-+#define RT5659_HP_CALIB_STA_4			0x01ed
-+#define RT5659_HP_CALIB_STA_5			0x01ee
-+#define RT5659_HP_CALIB_STA_6			0x01ef
-+#define RT5659_HP_CALIB_STA_7			0x01f0
-+#define RT5659_HP_CALIB_STA_8			0x01f1
-+#define RT5659_HP_CALIB_STA_9			0x01f2
-+#define RT5659_MONO_AMP_CALIB_CTRL_1		0x01f6
-+#define RT5659_MONO_AMP_CALIB_CTRL_2		0x01f7
-+#define RT5659_MONO_AMP_CALIB_CTRL_3		0x01f8
-+#define RT5659_MONO_AMP_CALIB_CTRL_4		0x01f9
-+#define RT5659_MONO_AMP_CALIB_CTRL_5		0x01fa
-+#define RT5659_MONO_AMP_CALIB_STA_1		0x01fb
-+#define RT5659_MONO_AMP_CALIB_STA_2		0x01fc
-+#define RT5659_MONO_AMP_CALIB_STA_3		0x01fd
-+#define RT5659_MONO_AMP_CALIB_STA_4		0x01fe
-+#define RT5659_SPK_PWR_LMT_CTRL_1		0x0200
-+#define RT5659_SPK_PWR_LMT_CTRL_2		0x0201
-+#define RT5659_SPK_PWR_LMT_CTRL_3		0x0202
-+#define RT5659_SPK_PWR_LMT_STA_1		0x0203
-+#define RT5659_SPK_PWR_LMT_STA_2		0x0204
-+#define RT5659_SPK_PWR_LMT_STA_3		0x0205
-+#define RT5659_SPK_PWR_LMT_STA_4		0x0206
-+#define RT5659_SPK_PWR_LMT_STA_5		0x0207
-+#define RT5659_SPK_PWR_LMT_STA_6		0x0208
-+#define RT5659_FLEX_SPK_BST_CTRL_1		0x0256
-+#define RT5659_FLEX_SPK_BST_CTRL_2		0x0257
-+#define RT5659_FLEX_SPK_BST_CTRL_3		0x0258
-+#define RT5659_FLEX_SPK_BST_CTRL_4		0x0259
-+#define RT5659_SPK_EX_LMT_CTRL_1		0x025a
-+#define RT5659_SPK_EX_LMT_CTRL_2		0x025b
-+#define RT5659_SPK_EX_LMT_CTRL_3		0x025c
-+#define RT5659_SPK_EX_LMT_CTRL_4		0x025d
-+#define RT5659_SPK_EX_LMT_CTRL_5		0x025e
-+#define RT5659_SPK_EX_LMT_CTRL_6		0x025f
-+#define RT5659_SPK_EX_LMT_CTRL_7		0x0260
-+#define RT5659_ADJ_HPF_CTRL_1			0x0261
-+#define RT5659_ADJ_HPF_CTRL_2			0x0262
-+#define RT5659_SPK_DC_CAILB_CTRL_1		0x0265
-+#define RT5659_SPK_DC_CAILB_CTRL_2		0x0266
-+#define RT5659_SPK_DC_CAILB_CTRL_3		0x0267
-+#define RT5659_SPK_DC_CAILB_CTRL_4		0x0268
-+#define RT5659_SPK_DC_CAILB_CTRL_5		0x0269
-+#define RT5659_SPK_DC_CAILB_STA_1		0x026a
-+#define RT5659_SPK_DC_CAILB_STA_2		0x026b
-+#define RT5659_SPK_DC_CAILB_STA_3		0x026c
-+#define RT5659_SPK_DC_CAILB_STA_4		0x026d
-+#define RT5659_SPK_DC_CAILB_STA_5		0x026e
-+#define RT5659_SPK_DC_CAILB_STA_6		0x026f
-+#define RT5659_SPK_DC_CAILB_STA_7		0x0270
-+#define RT5659_SPK_DC_CAILB_STA_8		0x0271
-+#define RT5659_SPK_DC_CAILB_STA_9		0x0272
-+#define RT5659_SPK_DC_CAILB_STA_10		0x0273
-+#define RT5659_SPK_VDD_STA_1			0x0280
-+#define RT5659_SPK_VDD_STA_2			0x0281
-+#define RT5659_SPK_DC_DET_CTRL_1		0x0282
-+#define RT5659_SPK_DC_DET_CTRL_2		0x0283
-+#define RT5659_SPK_DC_DET_CTRL_3		0x0284
-+#define RT5659_PURE_DC_DET_CTRL_1		0x0290
-+#define RT5659_PURE_DC_DET_CTRL_2		0x0291
-+#define RT5659_DUMMY_4				0x02fa
-+#define RT5659_DUMMY_5				0x02fb
-+#define RT5659_DUMMY_6				0x02fc
-+#define RT5659_DRC1_CTRL_1			0x0300
-+#define RT5659_DRC1_CTRL_2			0x0301
-+#define RT5659_DRC1_CTRL_3			0x0302
-+#define RT5659_DRC1_CTRL_4			0x0303
-+#define RT5659_DRC1_CTRL_5			0x0304
-+#define RT5659_DRC1_CTRL_6			0x0305
-+#define RT5659_DRC1_HARD_LMT_CTRL_1		0x0306
-+#define RT5659_DRC1_HARD_LMT_CTRL_2		0x0307
-+#define RT5659_DRC2_CTRL_1			0x0308
-+#define RT5659_DRC2_CTRL_2			0x0309
-+#define RT5659_DRC2_CTRL_3			0x030a
-+#define RT5659_DRC2_CTRL_4			0x030b
-+#define RT5659_DRC2_CTRL_5			0x030c
-+#define RT5659_DRC2_CTRL_6			0x030d
-+#define RT5659_DRC2_HARD_LMT_CTRL_1		0x030e
-+#define RT5659_DRC2_HARD_LMT_CTRL_2		0x030f
-+#define RT5659_DRC1_PRIV_1			0x0310
-+#define RT5659_DRC1_PRIV_2			0x0311
-+#define RT5659_DRC1_PRIV_3			0x0312
-+#define RT5659_DRC1_PRIV_4			0x0313
-+#define RT5659_DRC1_PRIV_5			0x0314
-+#define RT5659_DRC1_PRIV_6			0x0315
-+#define RT5659_DRC1_PRIV_7			0x0316
-+#define RT5659_DRC2_PRIV_1			0x0317
-+#define RT5659_DRC2_PRIV_2			0x0318
-+#define RT5659_DRC2_PRIV_3			0x0319
-+#define RT5659_DRC2_PRIV_4			0x031a
-+#define RT5659_DRC2_PRIV_5			0x031b
-+#define RT5659_DRC2_PRIV_6			0x031c
-+#define RT5659_DRC2_PRIV_7			0x031d
-+#define RT5659_MULTI_DRC_CTRL			0x0320
-+#define RT5659_CROSS_OVER_1			0x0321
-+#define RT5659_CROSS_OVER_2			0x0322
-+#define RT5659_CROSS_OVER_3			0x0323
-+#define RT5659_CROSS_OVER_4			0x0324
-+#define RT5659_CROSS_OVER_5			0x0325
-+#define RT5659_CROSS_OVER_6			0x0326
-+#define RT5659_CROSS_OVER_7			0x0327
-+#define RT5659_CROSS_OVER_8			0x0328
-+#define RT5659_CROSS_OVER_9			0x0329
-+#define RT5659_CROSS_OVER_10			0x032a
-+#define RT5659_ALC_PGA_CTRL_1			0x0330
-+#define RT5659_ALC_PGA_CTRL_2			0x0331
-+#define RT5659_ALC_PGA_CTRL_3			0x0332
-+#define RT5659_ALC_PGA_CTRL_4			0x0333
-+#define RT5659_ALC_PGA_CTRL_5			0x0334
-+#define RT5659_ALC_PGA_CTRL_6			0x0335
-+#define RT5659_ALC_PGA_CTRL_7			0x0336
-+#define RT5659_ALC_PGA_CTRL_8			0x0337
-+#define RT5659_ALC_PGA_STA_1			0x0338
-+#define RT5659_ALC_PGA_STA_2			0x0339
-+#define RT5659_ALC_PGA_STA_3			0x033a
-+#define RT5659_DAC_L_EQ_PRE_VOL			0x0340
-+#define RT5659_DAC_R_EQ_PRE_VOL			0x0341
-+#define RT5659_DAC_L_EQ_POST_VOL		0x0342
-+#define RT5659_DAC_R_EQ_POST_VOL		0x0343
-+#define RT5659_DAC_L_EQ_LPF1_A1			0x0344
-+#define RT5659_DAC_L_EQ_LPF1_H0			0x0345
-+#define RT5659_DAC_R_EQ_LPF1_A1			0x0346
-+#define RT5659_DAC_R_EQ_LPF1_H0			0x0347
-+#define RT5659_DAC_L_EQ_BPF2_A1			0x0348
-+#define RT5659_DAC_L_EQ_BPF2_A2			0x0349
-+#define RT5659_DAC_L_EQ_BPF2_H0			0x034a
-+#define RT5659_DAC_R_EQ_BPF2_A1			0x034b
-+#define RT5659_DAC_R_EQ_BPF2_A2			0x034c
-+#define RT5659_DAC_R_EQ_BPF2_H0			0x034d
-+#define RT5659_DAC_L_EQ_BPF3_A1			0x034e
-+#define RT5659_DAC_L_EQ_BPF3_A2			0x034f
-+#define RT5659_DAC_L_EQ_BPF3_H0			0x0350
-+#define RT5659_DAC_R_EQ_BPF3_A1			0x0351
-+#define RT5659_DAC_R_EQ_BPF3_A2			0x0352
-+#define RT5659_DAC_R_EQ_BPF3_H0			0x0353
-+#define RT5659_DAC_L_EQ_BPF4_A1			0x0354
-+#define RT5659_DAC_L_EQ_BPF4_A2			0x0355
-+#define RT5659_DAC_L_EQ_BPF4_H0			0x0356
-+#define RT5659_DAC_R_EQ_BPF4_A1			0x0357
-+#define RT5659_DAC_R_EQ_BPF4_A2			0x0358
-+#define RT5659_DAC_R_EQ_BPF4_H0			0x0359
-+#define RT5659_DAC_L_EQ_HPF1_A1			0x035a
-+#define RT5659_DAC_L_EQ_HPF1_H0			0x035b
-+#define RT5659_DAC_R_EQ_HPF1_A1			0x035c
-+#define RT5659_DAC_R_EQ_HPF1_H0			0x035d
-+#define RT5659_DAC_L_EQ_HPF2_A1			0x035e
-+#define RT5659_DAC_L_EQ_HPF2_A2			0x035f
-+#define RT5659_DAC_L_EQ_HPF2_H0			0x0360
-+#define RT5659_DAC_R_EQ_HPF2_A1			0x0361
-+#define RT5659_DAC_R_EQ_HPF2_A2			0x0362
-+#define RT5659_DAC_R_EQ_HPF2_H0			0x0363
-+#define RT5659_DAC_L_BI_EQ_BPF1_H0_1		0x0364
-+#define RT5659_DAC_L_BI_EQ_BPF1_H0_2		0x0365
-+#define RT5659_DAC_L_BI_EQ_BPF1_B1_1		0x0366
-+#define RT5659_DAC_L_BI_EQ_BPF1_B1_2		0x0367
-+#define RT5659_DAC_L_BI_EQ_BPF1_B2_1		0x0368
-+#define RT5659_DAC_L_BI_EQ_BPF1_B2_2		0x0369
-+#define RT5659_DAC_L_BI_EQ_BPF1_A1_1		0x036a
-+#define RT5659_DAC_L_BI_EQ_BPF1_A1_2		0x036b
-+#define RT5659_DAC_L_BI_EQ_BPF1_A2_1		0x036c
-+#define RT5659_DAC_L_BI_EQ_BPF1_A2_2		0x036d
-+#define RT5659_DAC_R_BI_EQ_BPF1_H0_1		0x036e
-+#define RT5659_DAC_R_BI_EQ_BPF1_H0_2		0x036f
-+#define RT5659_DAC_R_BI_EQ_BPF1_B1_1		0x0370
-+#define RT5659_DAC_R_BI_EQ_BPF1_B1_2		0x0371
-+#define RT5659_DAC_R_BI_EQ_BPF1_B2_1		0x0372
-+#define RT5659_DAC_R_BI_EQ_BPF1_B2_2		0x0373
-+#define RT5659_DAC_R_BI_EQ_BPF1_A1_1		0x0374
-+#define RT5659_DAC_R_BI_EQ_BPF1_A1_2		0x0375
-+#define RT5659_DAC_R_BI_EQ_BPF1_A2_1		0x0376
-+#define RT5659_DAC_R_BI_EQ_BPF1_A2_2		0x0377
-+#define RT5659_ADC_L_EQ_LPF1_A1			0x03d0
-+#define RT5659_ADC_R_EQ_LPF1_A1			0x03d1
-+#define RT5659_ADC_L_EQ_LPF1_H0			0x03d2
-+#define RT5659_ADC_R_EQ_LPF1_H0			0x03d3
-+#define RT5659_ADC_L_EQ_BPF1_A1			0x03d4
-+#define RT5659_ADC_R_EQ_BPF1_A1			0x03d5
-+#define RT5659_ADC_L_EQ_BPF1_A2			0x03d6
-+#define RT5659_ADC_R_EQ_BPF1_A2			0x03d7
-+#define RT5659_ADC_L_EQ_BPF1_H0			0x03d8
-+#define RT5659_ADC_R_EQ_BPF1_H0			0x03d9
-+#define RT5659_ADC_L_EQ_BPF2_A1			0x03da
-+#define RT5659_ADC_R_EQ_BPF2_A1			0x03db
-+#define RT5659_ADC_L_EQ_BPF2_A2			0x03dc
-+#define RT5659_ADC_R_EQ_BPF2_A2			0x03dd
-+#define RT5659_ADC_L_EQ_BPF2_H0			0x03de
-+#define RT5659_ADC_R_EQ_BPF2_H0			0x03df
-+#define RT5659_ADC_L_EQ_BPF3_A1			0x03e0
-+#define RT5659_ADC_R_EQ_BPF3_A1			0x03e1
-+#define RT5659_ADC_L_EQ_BPF3_A2			0x03e2
-+#define RT5659_ADC_R_EQ_BPF3_A2			0x03e3
-+#define RT5659_ADC_L_EQ_BPF3_H0			0x03e4
-+#define RT5659_ADC_R_EQ_BPF3_H0			0x03e5
-+#define RT5659_ADC_L_EQ_BPF4_A1			0x03e6
-+#define RT5659_ADC_R_EQ_BPF4_A1			0x03e7
-+#define RT5659_ADC_L_EQ_BPF4_A2			0x03e8
-+#define RT5659_ADC_R_EQ_BPF4_A2			0x03e9
-+#define RT5659_ADC_L_EQ_BPF4_H0			0x03ea
-+#define RT5659_ADC_R_EQ_BPF4_H0			0x03eb
-+#define RT5659_ADC_L_EQ_HPF1_A1			0x03ec
-+#define RT5659_ADC_R_EQ_HPF1_A1			0x03ed
-+#define RT5659_ADC_L_EQ_HPF1_H0			0x03ee
-+#define RT5659_ADC_R_EQ_HPF1_H0			0x03ef
-+#define RT5659_ADC_L_EQ_PRE_VOL			0x03f0
-+#define RT5659_ADC_R_EQ_PRE_VOL			0x03f1
-+#define RT5659_ADC_L_EQ_POST_VOL		0x03f2
-+#define RT5659_ADC_R_EQ_POST_VOL		0x03f3
-+
-+
-+
-+/* global definition */
-+#define RT5659_L_MUTE				(0x1 << 15)
-+#define RT5659_L_MUTE_SFT			15
-+#define RT5659_VOL_L_MUTE			(0x1 << 14)
-+#define RT5659_VOL_L_SFT			14
-+#define RT5659_R_MUTE				(0x1 << 7)
-+#define RT5659_R_MUTE_SFT			7
-+#define RT5659_VOL_R_MUTE			(0x1 << 6)
-+#define RT5659_VOL_R_SFT			6
-+#define RT5659_L_VOL_MASK			(0x3f << 8)
-+#define RT5659_L_VOL_SFT			8
-+#define RT5659_R_VOL_MASK			(0x3f)
-+#define RT5659_R_VOL_SFT			0
-+
-+/*Headphone Amp L/R Analog Gain and Digital NG2 Gain Control (0x0005 0x0006)*/
-+#define RT5659_G_HP				(0x1f << 8)
-+#define RT5659_G_HP_SFT				8
-+#define RT5659_G_STO_DA_DMIX			(0x1f)
-+#define RT5659_G_STO_DA_SFT			0
-+
-+/* IN1/IN2 Control (0x000c) */
-+#define RT5659_IN1_DF_MASK			(0x1 << 15)
-+#define RT5659_IN1_DF				15
-+#define RT5659_BST1_MASK			(0x7f << 8)
-+#define RT5659_BST1_SFT				8
-+#define RT5659_BST2_MASK			(0x7f)
-+#define RT5659_BST2_SFT				0
-+
-+/* IN3/IN4 Control (0x000d) */
-+#define RT5659_IN3_DF_MASK			(0x1 << 15)
-+#define RT5659_IN3_DF				15
-+#define RT5659_BST3_MASK			(0x7f << 8)
-+#define RT5659_BST3_SFT				8
-+#define RT5659_IN4_DF_MASK			(0x1 << 7)
-+#define RT5659_IN4_DF				7
-+#define RT5659_BST4_MASK			(0x7f)
-+#define RT5659_BST4_SFT				0
-+
-+/* INL and INR Volume Control (0x000f) */
-+#define RT5659_INL_VOL_MASK			(0x1f << 8)
-+#define RT5659_INL_VOL_SFT			8
-+#define RT5659_INR_VOL_MASK			(0x1f)
-+#define RT5659_INR_VOL_SFT			0
-+
-+/* Embeeded Jack and Type Detection Control 1 (0x0010) */
-+#define RT5659_EMB_JD_EN			(0x1 << 15)
-+#define RT5659_EMB_JD_EN_SFT			15
-+#define RT5659_JD_MODE				(0x1 << 13)
-+#define RT5659_JD_MODE_SFT			13
-+#define RT5659_EXT_JD_EN			(0x1 << 11)
-+#define RT5659_EXT_JD_EN_SFT			11
-+#define RT5659_EXT_JD_DIG			(0x1 << 9)
-+
-+/* Embeeded Jack and Type Detection Control 2 (0x0011) */
-+#define RT5659_EXT_JD_SRC			(0x7 << 4)
-+#define RT5659_EXT_JD_SRC_SFT			4
-+#define RT5659_EXT_JD_SRC_GPIO_JD1		(0x0 << 4)
-+#define RT5659_EXT_JD_SRC_GPIO_JD2		(0x1 << 4)
-+#define RT5659_EXT_JD_SRC_JD1_1			(0x2 << 4)
-+#define RT5659_EXT_JD_SRC_JD1_2			(0x3 << 4)
-+#define RT5659_EXT_JD_SRC_JD2			(0x4 << 4)
-+#define RT5659_EXT_JD_SRC_JD3			(0x5 << 4)
-+#define RT5659_EXT_JD_SRC_MANUAL		(0x6 << 4)
-+
-+/* Slience Detection Control (0x0015) */
-+#define RT5659_SIL_DET_MASK			(0x1 << 15)
-+#define RT5659_SIL_DET_DIS			(0x0 << 15)
-+#define RT5659_SIL_DET_EN			(0x1 << 15)
-+
-+/* Sidetone Control (0x0018) */
-+#define RT5659_ST_SEL_MASK			(0x7 << 9)
-+#define RT5659_ST_SEL_SFT			9
-+#define RT5659_ST_EN				(0x1 << 6)
-+#define RT5659_ST_EN_SFT			6
-+
-+/* DAC1 Digital Volume (0x0019) */
-+#define RT5659_DAC_L1_VOL_MASK			(0xff << 8)
-+#define RT5659_DAC_L1_VOL_SFT			8
-+#define RT5659_DAC_R1_VOL_MASK			(0xff)
-+#define RT5659_DAC_R1_VOL_SFT			0
-+
-+/* DAC2 Digital Volume (0x001a) */
-+#define RT5659_DAC_L2_VOL_MASK			(0xff << 8)
-+#define RT5659_DAC_L2_VOL_SFT			8
-+#define RT5659_DAC_R2_VOL_MASK			(0xff)
-+#define RT5659_DAC_R2_VOL_SFT			0
-+
-+/* DAC2 Control (0x001b) */
-+#define RT5659_M_DAC2_L_VOL			(0x1 << 13)
-+#define RT5659_M_DAC2_L_VOL_SFT			13
-+#define RT5659_M_DAC2_R_VOL			(0x1 << 12)
-+#define RT5659_M_DAC2_R_VOL_SFT			12
-+#define RT5659_DAC_L2_SEL_MASK			(0x7 << 4)
-+#define RT5659_DAC_L2_SEL_SFT			4
-+#define RT5659_DAC_R2_SEL_MASK			(0x7 << 0)
-+#define RT5659_DAC_R2_SEL_SFT			0
-+
-+/* ADC Digital Volume Control (0x001c) */
-+#define RT5659_ADC_L_VOL_MASK			(0x7f << 8)
-+#define RT5659_ADC_L_VOL_SFT			8
-+#define RT5659_ADC_R_VOL_MASK			(0x7f)
-+#define RT5659_ADC_R_VOL_SFT			0
-+
-+/* Mono ADC Digital Volume Control (0x001d) */
-+#define RT5659_MONO_ADC_L_VOL_MASK		(0x7f << 8)
-+#define RT5659_MONO_ADC_L_VOL_SFT		8
-+#define RT5659_MONO_ADC_R_VOL_MASK		(0x7f)
-+#define RT5659_MONO_ADC_R_VOL_SFT		0
-+
-+/* Stereo1 ADC Boost Gain Control (0x001f) */
-+#define RT5659_STO1_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5659_STO1_ADC_L_BST_SFT		14
-+#define RT5659_STO1_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5659_STO1_ADC_R_BST_SFT		12
-+
-+/* Mono ADC Boost Gain Control (0x0020) */
-+#define RT5659_MONO_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5659_MONO_ADC_L_BST_SFT		14
-+#define RT5659_MONO_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5659_MONO_ADC_R_BST_SFT		12
-+
-+/* Stereo1 ADC Boost Gain Control (0x001f) */
-+#define RT5659_STO2_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5659_STO2_ADC_L_BST_SFT		14
-+#define RT5659_STO2_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5659_STO2_ADC_R_BST_SFT		12
-+
-+/* Stereo ADC Mixer Control (0x0026) */
-+#define RT5659_M_STO1_ADC_L1			(0x1 << 15)
-+#define RT5659_M_STO1_ADC_L1_SFT		15
-+#define RT5659_M_STO1_ADC_L2			(0x1 << 14)
-+#define RT5659_M_STO1_ADC_L2_SFT		14
-+#define RT5659_STO1_ADC1_SRC_MASK		(0x1 << 13)
-+#define RT5659_STO1_ADC1_SRC_SFT		13
-+#define RT5659_STO1_ADC1_SRC_ADC		(0x1 << 13)
-+#define RT5659_STO1_ADC1_SRC_DACMIX		(0x0 << 13)
-+#define RT5659_STO1_ADC_SRC_MASK		(0x1 << 12)
-+#define RT5659_STO1_ADC_SRC_SFT			12
-+#define RT5659_STO1_ADC_SRC_ADC1		(0x1 << 12)
-+#define RT5659_STO1_ADC_SRC_ADC2		(0x0 << 12)
-+#define RT5659_STO1_ADC2_SRC_MASK		(0x1 << 11)
-+#define RT5659_STO1_ADC2_SRC_SFT		11
-+#define RT5659_STO1_DMIC_SRC_MASK		(0x1 << 8)
-+#define RT5659_STO1_DMIC_SRC_SFT		8
-+#define RT5659_STO1_DMIC_SRC_DMIC2		(0x1 << 8)
-+#define RT5659_STO1_DMIC_SRC_DMIC1		(0x0 << 8)
-+#define RT5659_M_STO1_ADC_R1			(0x1 << 6)
-+#define RT5659_M_STO1_ADC_R1_SFT		6
-+#define RT5659_M_STO1_ADC_R2			(0x1 << 5)
-+#define RT5659_M_STO1_ADC_R2_SFT		5
-+
-+/* Mono1 ADC Mixer control (0x0027) */
-+#define RT5659_M_MONO_ADC_L1			(0x1 << 15)
-+#define RT5659_M_MONO_ADC_L1_SFT		15
-+#define RT5659_M_MONO_ADC_L2			(0x1 << 14)
-+#define RT5659_M_MONO_ADC_L2_SFT		14
-+#define RT5659_MONO_ADC_L2_SRC_MASK		(0x1 << 12)
-+#define RT5659_MONO_ADC_L2_SRC_SFT		12
-+#define RT5659_MONO_ADC_L1_SRC_MASK		(0x1 << 11)
-+#define RT5659_MONO_ADC_L1_SRC_SFT		11
-+#define RT5659_MONO_ADC_L_SRC_MASK		(0x3 << 9)
-+#define RT5659_MONO_ADC_L_SRC_SFT		9
-+#define RT5659_MONO_DMIC_L_SRC_MASK		(0x1 << 8)
-+#define RT5659_MONO_DMIC_L_SRC_SFT		8
-+#define RT5659_M_MONO_ADC_R1			(0x1 << 7)
-+#define RT5659_M_MONO_ADC_R1_SFT		7
-+#define RT5659_M_MONO_ADC_R2			(0x1 << 6)
-+#define RT5659_M_MONO_ADC_R2_SFT		6
-+#define RT5659_STO2_ADC_SRC_MASK		(0x1 << 5)
-+#define RT5659_STO2_ADC_SRC_SFT			5
-+#define RT5659_MONO_ADC_R2_SRC_MASK		(0x1 << 4)
-+#define RT5659_MONO_ADC_R2_SRC_SFT		4
-+#define RT5659_MONO_ADC_R1_SRC_MASK		(0x1 << 3)
-+#define RT5659_MONO_ADC_R1_SRC_SFT		3
-+#define RT5659_MONO_ADC_R_SRC_MASK		(0x3 << 1)
-+#define RT5659_MONO_ADC_R_SRC_SFT		1
-+#define RT5659_MONO_DMIC_R_SRC_MASK		0x1
-+#define RT5659_MONO_DMIC_R_SRC_SFT		0
-+
-+/* ADC Mixer to DAC Mixer Control (0x0029) */
-+#define RT5659_M_ADCMIX_L			(0x1 << 15)
-+#define RT5659_M_ADCMIX_L_SFT			15
-+#define RT5659_M_DAC1_L				(0x1 << 14)
-+#define RT5659_M_DAC1_L_SFT			14
-+#define RT5659_DAC1_R_SEL_MASK			(0x3 << 10)
-+#define RT5659_DAC1_R_SEL_SFT			10
-+#define RT5659_DAC1_R_SEL_IF1			(0x0 << 10)
-+#define RT5659_DAC1_R_SEL_IF2			(0x1 << 10)
-+#define RT5659_DAC1_R_SEL_IF3			(0x2 << 10)
-+#define RT5659_DAC1_L_SEL_MASK			(0x3 << 8)
-+#define RT5659_DAC1_L_SEL_SFT			8
-+#define RT5659_DAC1_L_SEL_IF1			(0x0 << 8)
-+#define RT5659_DAC1_L_SEL_IF2			(0x1 << 8)
-+#define RT5659_DAC1_L_SEL_IF3			(0x2 << 8)
-+#define RT5659_M_ADCMIX_R			(0x1 << 7)
-+#define RT5659_M_ADCMIX_R_SFT			7
-+#define RT5659_M_DAC1_R				(0x1 << 6)
-+#define RT5659_M_DAC1_R_SFT			6
-+
-+/* Stereo DAC Mixer Control (0x002a) */
-+#define RT5659_M_DAC_L1_STO_L			(0x1 << 15)
-+#define RT5659_M_DAC_L1_STO_L_SFT		15
-+#define RT5659_G_DAC_L1_STO_L_MASK		(0x1 << 14)
-+#define RT5659_G_DAC_L1_STO_L_SFT		14
-+#define RT5659_M_DAC_R1_STO_L			(0x1 << 13)
-+#define RT5659_M_DAC_R1_STO_L_SFT		13
-+#define RT5659_G_DAC_R1_STO_L_MASK		(0x1 << 12)
-+#define RT5659_G_DAC_R1_STO_L_SFT		12
-+#define RT5659_M_DAC_L2_STO_L			(0x1 << 11)
-+#define RT5659_M_DAC_L2_STO_L_SFT		11
-+#define RT5659_G_DAC_L2_STO_L_MASK		(0x1 << 10)
-+#define RT5659_G_DAC_L2_STO_L_SFT		10
-+#define RT5659_M_DAC_R2_STO_L			(0x1 << 9)
-+#define RT5659_M_DAC_R2_STO_L_SFT		9
-+#define RT5659_G_DAC_R2_STO_L_MASK		(0x1 << 8)
-+#define RT5659_G_DAC_R2_STO_L_SFT		8
-+#define RT5659_M_DAC_L1_STO_R			(0x1 << 7)
-+#define RT5659_M_DAC_L1_STO_R_SFT		7
-+#define RT5659_G_DAC_L1_STO_R_MASK		(0x1 << 6)
-+#define RT5659_G_DAC_L1_STO_R_SFT		6
-+#define RT5659_M_DAC_R1_STO_R			(0x1 << 5)
-+#define RT5659_M_DAC_R1_STO_R_SFT		5
-+#define RT5659_G_DAC_R1_STO_R_MASK		(0x1 << 4)
-+#define RT5659_G_DAC_R1_STO_R_SFT		4
-+#define RT5659_M_DAC_L2_STO_R			(0x1 << 3)
-+#define RT5659_M_DAC_L2_STO_R_SFT		3
-+#define RT5659_G_DAC_L2_STO_R_MASK		(0x1 << 2)
-+#define RT5659_G_DAC_L2_STO_R_SFT		2
-+#define RT5659_M_DAC_R2_STO_R			(0x1 << 1)
-+#define RT5659_M_DAC_R2_STO_R_SFT		1
-+#define RT5659_G_DAC_R2_STO_R_MASK		(0x1)
-+#define RT5659_G_DAC_R2_STO_R_SFT		0
-+
-+/* Mono DAC Mixer Control (0x002b) */
-+#define RT5659_M_DAC_L1_MONO_L			(0x1 << 15)
-+#define RT5659_M_DAC_L1_MONO_L_SFT		15
-+#define RT5659_G_DAC_L1_MONO_L_MASK		(0x1 << 14)
-+#define RT5659_G_DAC_L1_MONO_L_SFT		14
-+#define RT5659_M_DAC_R1_MONO_L			(0x1 << 13)
-+#define RT5659_M_DAC_R1_MONO_L_SFT		13
-+#define RT5659_G_DAC_R1_MONO_L_MASK		(0x1 << 12)
-+#define RT5659_G_DAC_R1_MONO_L_SFT		12
-+#define RT5659_M_DAC_L2_MONO_L			(0x1 << 11)
-+#define RT5659_M_DAC_L2_MONO_L_SFT		11
-+#define RT5659_G_DAC_L2_MONO_L_MASK		(0x1 << 10)
-+#define RT5659_G_DAC_L2_MONO_L_SFT		10
-+#define RT5659_M_DAC_R2_MONO_L			(0x1 << 9)
-+#define RT5659_M_DAC_R2_MONO_L_SFT		9
-+#define RT5659_G_DAC_R2_MONO_L_MASK		(0x1 << 8)
-+#define RT5659_G_DAC_R2_MONO_L_SFT		8
-+#define RT5659_M_DAC_L1_MONO_R			(0x1 << 7)
-+#define RT5659_M_DAC_L1_MONO_R_SFT		7
-+#define RT5659_G_DAC_L1_MONO_R_MASK		(0x1 << 6)
-+#define RT5659_G_DAC_L1_MONO_R_SFT		6
-+#define RT5659_M_DAC_R1_MONO_R			(0x1 << 5)
-+#define RT5659_M_DAC_R1_MONO_R_SFT		5
-+#define RT5659_G_DAC_R1_MONO_R_MASK		(0x1 << 4)
-+#define RT5659_G_DAC_R1_MONO_R_SFT		4
-+#define RT5659_M_DAC_L2_MONO_R			(0x1 << 3)
-+#define RT5659_M_DAC_L2_MONO_R_SFT		3
-+#define RT5659_G_DAC_L2_MONO_R_MASK		(0x1 << 2)
-+#define RT5659_G_DAC_L2_MONO_R_SFT		2
-+#define RT5659_M_DAC_R2_MONO_R			(0x1 << 1)
-+#define RT5659_M_DAC_R2_MONO_R_SFT		1
-+#define RT5659_G_DAC_R2_MONO_R_MASK		(0x1)
-+#define RT5659_G_DAC_R2_MONO_R_SFT		0
-+
-+/* Digital Mixer Control (0x002c) */
-+#define RT5659_M_DAC_MIX_L			(0x1 << 7)
-+#define RT5659_M_DAC_MIX_L_SFT			7
-+#define RT5659_DAC_MIX_L_MASK			(0x1 << 6)
-+#define RT5659_DAC_MIX_L_SFT			6
-+#define RT5659_M_DAC_MIX_R			(0x1 << 5)
-+#define RT5659_M_DAC_MIX_R_SFT			5
-+#define RT5659_DAC_MIX_R_MASK			(0x1 << 4)
-+#define RT5659_DAC_MIX_R_SFT			4
-+
-+/* Analog DAC Input Source Control (0x002d) */
-+#define RT5659_A_DACL1_SEL			(0x1 << 3)
-+#define RT5659_A_DACL1_SFT			3
-+#define RT5659_A_DACR1_SEL			(0x1 << 2)
-+#define RT5659_A_DACR1_SFT			2
-+#define RT5659_A_DACL2_SEL			(0x1 << 1)
-+#define RT5659_A_DACL2_SFT			1
-+#define RT5659_A_DACR2_SEL			(0x1 << 0)
-+#define RT5659_A_DACR2_SFT			0
-+
-+/* Digital Interface Data Control (0x002f) */
-+#define RT5659_IF2_ADC3_IN_MASK			(0x3 << 14)
-+#define RT5659_IF2_ADC3_IN_SFT			14
-+#define RT5659_IF2_ADC_IN_MASK			(0x3 << 12)
-+#define RT5659_IF2_ADC_IN_SFT			12
-+#define RT5659_IF2_DAC_SEL_MASK			(0x3 << 10)
-+#define RT5659_IF2_DAC_SEL_SFT			10
-+#define RT5659_IF2_ADC_SEL_MASK			(0x3 << 8)
-+#define RT5659_IF2_ADC_SEL_SFT			8
-+#define RT5659_IF3_DAC_SEL_MASK			(0x3 << 6)
-+#define RT5659_IF3_DAC_SEL_SFT			6
-+#define RT5659_IF3_ADC_SEL_MASK			(0x3 << 4)
-+#define RT5659_IF3_ADC_SEL_SFT			4
-+#define RT5659_IF3_ADC_IN_MASK			(0x3 << 0)
-+#define RT5659_IF3_ADC_IN_SFT			0
-+
-+/* PDM Output Control (0x0031) */
-+#define RT5659_PDM1_L_MASK			(0x1 << 15)
-+#define RT5659_PDM1_L_SFT			15
-+#define RT5659_M_PDM1_L				(0x1 << 14)
-+#define RT5659_M_PDM1_L_SFT			14
-+#define RT5659_PDM1_R_MASK			(0x1 << 13)
-+#define RT5659_PDM1_R_SFT			13
-+#define RT5659_M_PDM1_R				(0x1 << 12)
-+#define RT5659_M_PDM1_R_SFT			12
-+#define RT5659_PDM2_BUSY			(0x1 << 7)
-+#define RT5659_PDM1_BUSY			(0x1 << 6)
-+#define RT5659_PDM_PATTERN			(0x1 << 5)
-+#define RT5659_PDM_GAIN				(0x1 << 4)
-+#define RT5659_PDM_DIV_MASK			(0x3)
-+
-+/*S/PDIF Output Control (0x0036) */
-+#define RT5659_SPDIF_SEL_MASK			(0x3 << 0)
-+#define RT5659_SPDIF_SEL_SFT			0
-+
-+/* REC Left Mixer Control 2 (0x003c) */
-+#define RT5659_M_BST1_RM1_L			(0x1 << 5)
-+#define RT5659_M_BST1_RM1_L_SFT			5
-+#define RT5659_M_BST2_RM1_L			(0x1 << 4)
-+#define RT5659_M_BST2_RM1_L_SFT			4
-+#define RT5659_M_BST3_RM1_L			(0x1 << 3)
-+#define RT5659_M_BST3_RM1_L_SFT			3
-+#define RT5659_M_BST4_RM1_L			(0x1 << 2)
-+#define RT5659_M_BST4_RM1_L_SFT			2
-+#define RT5659_M_INL_RM1_L			(0x1 << 1)
-+#define RT5659_M_INL_RM1_L_SFT			1
-+#define RT5659_M_SPKVOLL_RM1_L			(0x1)
-+#define RT5659_M_SPKVOLL_RM1_L_SFT		0
-+
-+/* REC Right Mixer Control 2 (0x003e) */
-+#define RT5659_M_BST1_RM1_R			(0x1 << 5)
-+#define RT5659_M_BST1_RM1_R_SFT			5
-+#define RT5659_M_BST2_RM1_R			(0x1 << 4)
-+#define RT5659_M_BST2_RM1_R_SFT			4
-+#define RT5659_M_BST3_RM1_R			(0x1 << 3)
-+#define RT5659_M_BST3_RM1_R_SFT			3
-+#define RT5659_M_BST4_RM1_R			(0x1 << 2)
-+#define RT5659_M_BST4_RM1_R_SFT			2
-+#define RT5659_M_INR_RM1_R			(0x1 << 1)
-+#define RT5659_M_INR_RM1_R_SFT			1
-+#define RT5659_M_HPOVOLR_RM1_R			(0x1)
-+#define RT5659_M_HPOVOLR_RM1_R_SFT		0
-+
-+/* SPK Left Mixer Control (0x0046) */
-+#define RT5659_M_BST3_SM_L			(0x1 << 4)
-+#define RT5659_M_BST3_SM_L_SFT			4
-+#define RT5659_M_IN_R_SM_L			(0x1 << 3)
-+#define RT5659_M_IN_R_SM_L_SFT			3
-+#define RT5659_M_IN_L_SM_L			(0x1 << 2)
-+#define RT5659_M_IN_L_SM_L_SFT			2
-+#define RT5659_M_BST1_SM_L			(0x1 << 1)
-+#define RT5659_M_BST1_SM_L_SFT			1
-+#define RT5659_M_DAC_L2_SM_L			(0x1)
-+#define RT5659_M_DAC_L2_SM_L_SFT		0
-+
-+/* SPK Right Mixer Control (0x0047) */
-+#define RT5659_M_BST3_SM_R			(0x1 << 4)
-+#define RT5659_M_BST3_SM_R_SFT			4
-+#define RT5659_M_IN_R_SM_R			(0x1 << 3)
-+#define RT5659_M_IN_R_SM_R_SFT			3
-+#define RT5659_M_IN_L_SM_R			(0x1 << 2)
-+#define RT5659_M_IN_L_SM_R_SFT			2
-+#define RT5659_M_BST4_SM_R			(0x1 << 1)
-+#define RT5659_M_BST4_SM_R_SFT			1
-+#define RT5659_M_DAC_R2_SM_R			(0x1)
-+#define RT5659_M_DAC_R2_SM_R_SFT		0
-+
-+/* SPO Amp Input and Gain Control (0x0048) */
-+#define RT5659_M_DAC_L2_SPKOMIX			(0x1 << 13)
-+#define RT5659_M_DAC_L2_SPKOMIX_SFT		13
-+#define RT5659_M_SPKVOLL_SPKOMIX		(0x1 << 12)
-+#define RT5659_M_SPKVOLL_SPKOMIX_SFT		12
-+#define RT5659_M_DAC_R2_SPKOMIX			(0x1 << 9)
-+#define RT5659_M_DAC_R2_SPKOMIX_SFT		9
-+#define RT5659_M_SPKVOLR_SPKOMIX		(0x1 << 8)
-+#define RT5659_M_SPKVOLR_SPKOMIX_SFT		8
-+
-+/* MONOMIX Input and Gain Control (0x004b) */
-+#define RT5659_M_MONOVOL_MA			(0x1 << 9)
-+#define RT5659_M_MONOVOL_MA_SFT			9
-+#define RT5659_M_DAC_L2_MA			(0x1 << 8)
-+#define RT5659_M_DAC_L2_MA_SFT			8
-+#define RT5659_M_BST3_MM			(0x1 << 4)
-+#define RT5659_M_BST3_MM_SFT			4
-+#define RT5659_M_BST2_MM			(0x1 << 3)
-+#define RT5659_M_BST2_MM_SFT			3
-+#define RT5659_M_BST1_MM			(0x1 << 2)
-+#define RT5659_M_BST1_MM_SFT			2
-+#define RT5659_M_DAC_R2_MM			(0x1 << 1)
-+#define RT5659_M_DAC_R2_MM_SFT			1
-+#define RT5659_M_DAC_L2_MM			(0x1)
-+#define RT5659_M_DAC_L2_MM_SFT			0
-+
-+/* Output Left Mixer Control 1 (0x004d) */
-+#define RT5659_G_BST3_OM_L_MASK			(0x7 << 12)
-+#define RT5659_G_BST3_OM_L_SFT			12
-+#define RT5659_G_BST2_OM_L_MASK			(0x7 << 9)
-+#define RT5659_G_BST2_OM_L_SFT			9
-+#define RT5659_G_BST1_OM_L_MASK			(0x7 << 6)
-+#define RT5659_G_BST1_OM_L_SFT			6
-+#define RT5659_G_IN_L_OM_L_MASK			(0x7 << 3)
-+#define RT5659_G_IN_L_OM_L_SFT			3
-+#define RT5659_G_DAC_L2_OM_L_MASK		(0x7 << 0)
-+#define RT5659_G_DAC_L2_OM_L_SFT		0
-+
-+/* Output Left Mixer Input Control (0x004e) */
-+#define RT5659_M_BST3_OM_L			(0x1 << 4)
-+#define RT5659_M_BST3_OM_L_SFT			4
-+#define RT5659_M_BST2_OM_L			(0x1 << 3)
-+#define RT5659_M_BST2_OM_L_SFT			3
-+#define RT5659_M_BST1_OM_L			(0x1 << 2)
-+#define RT5659_M_BST1_OM_L_SFT			2
-+#define RT5659_M_IN_L_OM_L			(0x1 << 1)
-+#define RT5659_M_IN_L_OM_L_SFT			1
-+#define RT5659_M_DAC_L2_OM_L			(0x1)
-+#define RT5659_M_DAC_L2_OM_L_SFT		0
-+
-+/* Output Right Mixer Input Control (0x0050) */
-+#define RT5659_M_BST4_OM_R			(0x1 << 4)
-+#define RT5659_M_BST4_OM_R_SFT			4
-+#define RT5659_M_BST3_OM_R			(0x1 << 3)
-+#define RT5659_M_BST3_OM_R_SFT			3
-+#define RT5659_M_BST2_OM_R			(0x1 << 2)
-+#define RT5659_M_BST2_OM_R_SFT			2
-+#define RT5659_M_IN_R_OM_R			(0x1 << 1)
-+#define RT5659_M_IN_R_OM_R_SFT			1
-+#define RT5659_M_DAC_R2_OM_R			(0x1)
-+#define RT5659_M_DAC_R2_OM_R_SFT		0
-+
-+/* LOUT Mixer Control (0x0052) */
-+#define RT5659_M_DAC_L2_LM			(0x1 << 15)
-+#define RT5659_M_DAC_L2_LM_SFT			15
-+#define RT5659_M_DAC_R2_LM			(0x1 << 14)
-+#define RT5659_M_DAC_R2_LM_SFT			14
-+#define RT5659_M_OV_L_LM			(0x1 << 13)
-+#define RT5659_M_OV_L_LM_SFT			13
-+#define RT5659_M_OV_R_LM			(0x1 << 12)
-+#define RT5659_M_OV_R_LM_SFT			12
-+
-+/* Power Management for Digital 1 (0x0061) */
-+#define RT5659_PWR_I2S1				(0x1 << 15)
-+#define RT5659_PWR_I2S1_BIT			15
-+#define RT5659_PWR_I2S2				(0x1 << 14)
-+#define RT5659_PWR_I2S2_BIT			14
-+#define RT5659_PWR_I2S3				(0x1 << 13)
-+#define RT5659_PWR_I2S3_BIT			13
-+#define RT5659_PWR_SPDIF			(0x1 << 12)
-+#define RT5659_PWR_SPDIF_BIT			12
-+#define RT5659_PWR_DAC_L1			(0x1 << 11)
-+#define RT5659_PWR_DAC_L1_BIT			11
-+#define RT5659_PWR_DAC_R1			(0x1 << 10)
-+#define RT5659_PWR_DAC_R1_BIT			10
-+#define RT5659_PWR_DAC_L2			(0x1 << 9)
-+#define RT5659_PWR_DAC_L2_BIT			9
-+#define RT5659_PWR_DAC_R2			(0x1 << 8)
-+#define RT5659_PWR_DAC_R2_BIT			8
-+#define RT5659_PWR_LDO				(0x1 << 7)
-+#define RT5659_PWR_LDO_BIT			7
-+#define RT5659_PWR_ADC_L1			(0x1 << 4)
-+#define RT5659_PWR_ADC_L1_BIT			4
-+#define RT5659_PWR_ADC_R1			(0x1 << 3)
-+#define RT5659_PWR_ADC_R1_BIT			3
-+#define RT5659_PWR_ADC_L2			(0x1 << 2)
-+#define RT5659_PWR_ADC_L2_BIT			4
-+#define RT5659_PWR_ADC_R2			(0x1 << 1)
-+#define RT5659_PWR_ADC_R2_BIT			1
-+#define RT5659_PWR_CLS_D			(0x1)
-+#define RT5659_PWR_CLS_D_BIT			0
-+
-+/* Power Management for Digital 2 (0x0062) */
-+#define RT5659_PWR_ADC_S1F			(0x1 << 15)
-+#define RT5659_PWR_ADC_S1F_BIT			15
-+#define RT5659_PWR_ADC_S2F			(0x1 << 14)
-+#define RT5659_PWR_ADC_S2F_BIT			14
-+#define RT5659_PWR_ADC_MF_L			(0x1 << 13)
-+#define RT5659_PWR_ADC_MF_L_BIT			13
-+#define RT5659_PWR_ADC_MF_R			(0x1 << 12)
-+#define RT5659_PWR_ADC_MF_R_BIT			12
-+#define RT5659_PWR_DAC_S1F			(0x1 << 10)
-+#define RT5659_PWR_DAC_S1F_BIT			10
-+#define RT5659_PWR_DAC_MF_L			(0x1 << 9)
-+#define RT5659_PWR_DAC_MF_L_BIT			9
-+#define RT5659_PWR_DAC_MF_R			(0x1 << 8)
-+#define RT5659_PWR_DAC_MF_R_BIT			8
-+#define RT5659_PWR_PDM1				(0x1 << 7)
-+#define RT5659_PWR_PDM1_BIT			7
-+
-+/* Power Management for Analog 1 (0x0063) */
-+#define RT5659_PWR_VREF1			(0x1 << 15)
-+#define RT5659_PWR_VREF1_BIT			15
-+#define RT5659_PWR_FV1				(0x1 << 14)
-+#define RT5659_PWR_FV1_BIT			14
-+#define RT5659_PWR_VREF2			(0x1 << 13)
-+#define RT5659_PWR_VREF2_BIT			13
-+#define RT5659_PWR_FV2				(0x1 << 12)
-+#define RT5659_PWR_FV2_BIT			12
-+#define RT5659_PWR_VREF3			(0x1 << 11)
-+#define RT5659_PWR_VREF3_BIT			11
-+#define RT5659_PWR_FV3				(0x1 << 10)
-+#define RT5659_PWR_FV3_BIT			10
-+#define RT5659_PWR_MB				(0x1 << 9)
-+#define RT5659_PWR_MB_BIT			9
-+#define RT5659_PWR_LM				(0x1 << 8)
-+#define RT5659_PWR_LM_BIT			8
-+#define RT5659_PWR_BG				(0x1 << 7)
-+#define RT5659_PWR_BG_BIT			7
-+#define RT5659_PWR_MA				(0x1 << 6)
-+#define RT5659_PWR_MA_BIT			6
-+#define RT5659_PWR_HA_L				(0x1 << 5)
-+#define RT5659_PWR_HA_L_BIT			5
-+#define RT5659_PWR_HA_R				(0x1 << 4)
-+#define RT5659_PWR_HA_R_BIT			4
-+
-+/* Power Management for Analog 2 (0x0064) */
-+#define RT5659_PWR_BST1				(0x1 << 15)
-+#define RT5659_PWR_BST1_BIT			15
-+#define RT5659_PWR_BST2				(0x1 << 14)
-+#define RT5659_PWR_BST2_BIT			14
-+#define RT5659_PWR_BST3				(0x1 << 13)
-+#define RT5659_PWR_BST3_BIT			13
-+#define RT5659_PWR_BST4				(0x1 << 12)
-+#define RT5659_PWR_BST4_BIT			12
-+#define RT5659_PWR_MB1				(0x1 << 11)
-+#define RT5659_PWR_MB1_BIT			11
-+#define RT5659_PWR_MB2				(0x1 << 10)
-+#define RT5659_PWR_MB2_BIT			10
-+#define RT5659_PWR_MB3				(0x1 << 9)
-+#define RT5659_PWR_MB3_BIT			9
-+#define RT5659_PWR_BST1_P			(0x1 << 6)
-+#define RT5659_PWR_BST1_P_BIT			6
-+#define RT5659_PWR_BST2_P			(0x1 << 5)
-+#define RT5659_PWR_BST2_P_BIT			5
-+#define RT5659_PWR_BST3_P			(0x1 << 4)
-+#define RT5659_PWR_BST3_P_BIT			4
-+#define RT5659_PWR_BST4_P			(0x1 << 3)
-+#define RT5659_PWR_BST4_P_BIT			3
-+#define RT5659_PWR_JD1				(0x1 << 2)
-+#define RT5659_PWR_JD1_BIT			2
-+#define RT5659_PWR_JD2				(0x1 << 1)
-+#define RT5659_PWR_JD2_BIT			1
-+#define RT5659_PWR_JD3				(0x1)
-+#define RT5659_PWR_JD3_BIT			0
-+
-+/* Power Management for Analog 3 (0x0065) */
-+#define RT5659_PWR_BST_L			(0x1 << 8)
-+#define RT5659_PWR_BST_L_BIT			8
-+#define RT5659_PWR_BST_R			(0x1 << 7)
-+#define RT5659_PWR_BST_R_BIT			7
-+#define RT5659_PWR_PLL				(0x1 << 6)
-+#define RT5659_PWR_PLL_BIT			6
-+#define RT5659_PWR_LDO5				(0x1 << 5)
-+#define RT5659_PWR_LDO5_BIT			5
-+#define RT5659_PWR_LDO4				(0x1 << 4)
-+#define RT5659_PWR_LDO4_BIT			4
-+#define RT5659_PWR_LDO3				(0x1 << 3)
-+#define RT5659_PWR_LDO3_BIT			3
-+#define RT5659_PWR_LDO2				(0x1 << 2)
-+#define RT5659_PWR_LDO2_BIT			2
-+#define RT5659_PWR_SVD				(0x1 << 1)
-+#define RT5659_PWR_SVD_BIT			1
-+
-+/* Power Management for Mixer (0x0066) */
-+#define RT5659_PWR_OM_L				(0x1 << 15)
-+#define RT5659_PWR_OM_L_BIT			15
-+#define RT5659_PWR_OM_R				(0x1 << 14)
-+#define RT5659_PWR_OM_R_BIT			14
-+#define RT5659_PWR_SM_L				(0x1 << 13)
-+#define RT5659_PWR_SM_L_BIT			13
-+#define RT5659_PWR_SM_R				(0x1 << 12)
-+#define RT5659_PWR_SM_R_BIT			12
-+#define RT5659_PWR_RM1_L			(0x1 << 11)
-+#define RT5659_PWR_RM1_L_BIT			11
-+#define RT5659_PWR_RM1_R			(0x1 << 10)
-+#define RT5659_PWR_RM1_R_BIT			10
-+#define RT5659_PWR_MM				(0x1 << 8)
-+#define RT5659_PWR_MM_BIT			8
-+#define RT5659_PWR_RM2_L			(0x1 << 3)
-+#define RT5659_PWR_RM2_L_BIT			3
-+#define RT5659_PWR_RM2_R			(0x1 << 2)
-+#define RT5659_PWR_RM2_R_BIT			2
-+
-+/* Power Management for Volume (0x0067) */
-+#define RT5659_PWR_SV_L				(0x1 << 15)
-+#define RT5659_PWR_SV_L_BIT			15
-+#define RT5659_PWR_SV_R				(0x1 << 14)
-+#define RT5659_PWR_SV_R_BIT			14
-+#define RT5659_PWR_OV_L				(0x1 << 13)
-+#define RT5659_PWR_OV_L_BIT			13
-+#define RT5659_PWR_OV_R				(0x1 << 12)
-+#define RT5659_PWR_OV_R_BIT			12
-+#define RT5659_PWR_IN_L				(0x1 << 9)
-+#define RT5659_PWR_IN_L_BIT			9
-+#define RT5659_PWR_IN_R				(0x1 << 8)
-+#define RT5659_PWR_IN_R_BIT			8
-+#define RT5659_PWR_MV				(0x1 << 7)
-+#define RT5659_PWR_MV_BIT			7
-+#define RT5659_PWR_MIC_DET			(0x1 << 5)
-+#define RT5659_PWR_MIC_DET_BIT			5
-+
-+/* I2S1/2/3 Audio Serial Data Port Control (0x0070 0x0071 0x0072) */
-+#define RT5659_I2S_MS_MASK			(0x1 << 15)
-+#define RT5659_I2S_MS_SFT			15
-+#define RT5659_I2S_MS_M				(0x0 << 15)
-+#define RT5659_I2S_MS_S				(0x1 << 15)
-+#define RT5659_I2S_O_CP_MASK			(0x3 << 12)
-+#define RT5659_I2S_O_CP_SFT			12
-+#define RT5659_I2S_O_CP_OFF			(0x0 << 12)
-+#define RT5659_I2S_O_CP_U_LAW			(0x1 << 12)
-+#define RT5659_I2S_O_CP_A_LAW			(0x2 << 12)
-+#define RT5659_I2S_I_CP_MASK			(0x3 << 10)
-+#define RT5659_I2S_I_CP_SFT			10
-+#define RT5659_I2S_I_CP_OFF			(0x0 << 10)
-+#define RT5659_I2S_I_CP_U_LAW			(0x1 << 10)
-+#define RT5659_I2S_I_CP_A_LAW			(0x2 << 10)
-+#define RT5659_I2S_BP_MASK			(0x1 << 8)
-+#define RT5659_I2S_BP_SFT			8
-+#define RT5659_I2S_BP_NOR			(0x0 << 8)
-+#define RT5659_I2S_BP_INV			(0x1 << 8)
-+#define RT5659_I2S_DL_MASK			(0x3 << 4)
-+#define RT5659_I2S_DL_SFT			4
-+#define RT5659_I2S_DL_16			(0x0 << 4)
-+#define RT5659_I2S_DL_20			(0x1 << 4)
-+#define RT5659_I2S_DL_24			(0x2 << 4)
-+#define RT5659_I2S_DL_8				(0x3 << 4)
-+#define RT5659_I2S_DF_MASK			(0x7)
-+#define RT5659_I2S_DF_SFT			0
-+#define RT5659_I2S_DF_I2S			(0x0)
-+#define RT5659_I2S_DF_LEFT			(0x1)
-+#define RT5659_I2S_DF_PCM_A			(0x2)
-+#define RT5659_I2S_DF_PCM_B			(0x3)
-+#define RT5659_I2S_DF_PCM_A_N			(0x6)
-+#define RT5659_I2S_DF_PCM_B_N			(0x7)
-+
-+/* ADC/DAC Clock Control 1 (0x0073) */
-+#define RT5659_I2S_PD1_MASK			(0x7 << 12)
-+#define RT5659_I2S_PD1_SFT			12
-+#define RT5659_I2S_PD1_1			(0x0 << 12)
-+#define RT5659_I2S_PD1_2			(0x1 << 12)
-+#define RT5659_I2S_PD1_3			(0x2 << 12)
-+#define RT5659_I2S_PD1_4			(0x3 << 12)
-+#define RT5659_I2S_PD1_6			(0x4 << 12)
-+#define RT5659_I2S_PD1_8			(0x5 << 12)
-+#define RT5659_I2S_PD1_12			(0x6 << 12)
-+#define RT5659_I2S_PD1_16			(0x7 << 12)
-+#define RT5659_I2S_BCLK_MS2_MASK		(0x1 << 11)
-+#define RT5659_I2S_BCLK_MS2_SFT			11
-+#define RT5659_I2S_BCLK_MS2_32			(0x0 << 11)
-+#define RT5659_I2S_BCLK_MS2_64			(0x1 << 11)
-+#define RT5659_I2S_PD2_MASK			(0x7 << 8)
-+#define RT5659_I2S_PD2_SFT			8
-+#define RT5659_I2S_PD2_1			(0x0 << 8)
-+#define RT5659_I2S_PD2_2			(0x1 << 8)
-+#define RT5659_I2S_PD2_3			(0x2 << 8)
-+#define RT5659_I2S_PD2_4			(0x3 << 8)
-+#define RT5659_I2S_PD2_6			(0x4 << 8)
-+#define RT5659_I2S_PD2_8			(0x5 << 8)
-+#define RT5659_I2S_PD2_12			(0x6 << 8)
-+#define RT5659_I2S_PD2_16			(0x7 << 8)
-+#define RT5659_I2S_BCLK_MS3_MASK		(0x1 << 7)
-+#define RT5659_I2S_BCLK_MS3_SFT			7
-+#define RT5659_I2S_BCLK_MS3_32			(0x0 << 7)
-+#define RT5659_I2S_BCLK_MS3_64			(0x1 << 7)
-+#define RT5659_I2S_PD3_MASK			(0x7 << 4)
-+#define RT5659_I2S_PD3_SFT			4
-+#define RT5659_I2S_PD3_1			(0x0 << 4)
-+#define RT5659_I2S_PD3_2			(0x1 << 4)
-+#define RT5659_I2S_PD3_3			(0x2 << 4)
-+#define RT5659_I2S_PD3_4			(0x3 << 4)
-+#define RT5659_I2S_PD3_6			(0x4 << 4)
-+#define RT5659_I2S_PD3_8			(0x5 << 4)
-+#define RT5659_I2S_PD3_12			(0x6 << 4)
-+#define RT5659_I2S_PD3_16			(0x7 << 4)
-+#define RT5659_DAC_OSR_MASK			(0x3 << 2)
-+#define RT5659_DAC_OSR_SFT			2
-+#define RT5659_DAC_OSR_128			(0x0 << 2)
-+#define RT5659_DAC_OSR_64			(0x1 << 2)
-+#define RT5659_DAC_OSR_32			(0x2 << 2)
-+#define RT5659_DAC_OSR_16			(0x3 << 2)
-+#define RT5659_ADC_OSR_MASK			(0x3)
-+#define RT5659_ADC_OSR_SFT			0
-+#define RT5659_ADC_OSR_128			(0x0)
-+#define RT5659_ADC_OSR_64			(0x1)
-+#define RT5659_ADC_OSR_32			(0x2)
-+#define RT5659_ADC_OSR_16			(0x3)
-+
-+/* Digital Microphone Control (0x0075) */
-+#define RT5659_DMIC_1_EN_MASK			(0x1 << 15)
-+#define RT5659_DMIC_1_EN_SFT			15
-+#define RT5659_DMIC_1_DIS			(0x0 << 15)
-+#define RT5659_DMIC_1_EN			(0x1 << 15)
-+#define RT5659_DMIC_2_EN_MASK			(0x1 << 14)
-+#define RT5659_DMIC_2_EN_SFT			14
-+#define RT5659_DMIC_2_DIS			(0x0 << 14)
-+#define RT5659_DMIC_2_EN			(0x1 << 14)
-+#define RT5659_DMIC_1L_LH_MASK			(0x1 << 13)
-+#define RT5659_DMIC_1L_LH_SFT			13
-+#define RT5659_DMIC_1L_LH_RISING		(0x0 << 13)
-+#define RT5659_DMIC_1L_LH_FALLING		(0x1 << 13)
-+#define RT5659_DMIC_1R_LH_MASK			(0x1 << 12)
-+#define RT5659_DMIC_1R_LH_SFT			12
-+#define RT5659_DMIC_1R_LH_RISING		(0x0 << 12)
-+#define RT5659_DMIC_1R_LH_FALLING		(0x1 << 12)
-+#define RT5659_DMIC_2_DP_MASK			(0x3 << 10)
-+#define RT5659_DMIC_2_DP_SFT			10
-+#define RT5659_DMIC_2_DP_GPIO6			(0x0 << 10)
-+#define RT5659_DMIC_2_DP_GPIO10			(0x1 << 10)
-+#define RT5659_DMIC_2_DP_GPIO12			(0x2 << 10)
-+#define RT5659_DMIC_2_DP_IN2P			(0x3 << 10)
-+#define RT5659_DMIC_CLK_MASK			(0x7 << 5)
-+#define RT5659_DMIC_CLK_SFT			5
-+#define RT5659_DMIC_1_DP_MASK			(0x3 << 0)
-+#define RT5659_DMIC_1_DP_SFT			0
-+#define RT5659_DMIC_1_DP_GPIO5			(0x0 << 0)
-+#define RT5659_DMIC_1_DP_GPIO9			(0x1 << 0)
-+#define RT5659_DMIC_1_DP_GPIO11			(0x2 << 0)
-+#define RT5659_DMIC_1_DP_IN2N			(0x3 << 0)
-+
-+/* TDM control 1 (0x0078)*/
-+#define RT5659_DS_ADC_SLOT01_SFT		14
-+#define RT5659_DS_ADC_SLOT23_SFT		12
-+#define RT5659_DS_ADC_SLOT45_SFT		10
-+#define RT5659_DS_ADC_SLOT67_SFT		8
-+#define RT5659_ADCDAT_SRC_MASK			0x1f
-+#define RT5659_ADCDAT_SRC_SFT			0
-+
-+/* Global Clock Control (0x0080) */
-+#define RT5659_SCLK_SRC_MASK			(0x3 << 14)
-+#define RT5659_SCLK_SRC_SFT			14
-+#define RT5659_SCLK_SRC_MCLK			(0x0 << 14)
-+#define RT5659_SCLK_SRC_PLL1			(0x1 << 14)
-+#define RT5659_SCLK_SRC_RCCLK			(0x2 << 14)
-+#define RT5659_PLL1_SRC_MASK			(0x7 << 11)
-+#define RT5659_PLL1_SRC_SFT			11
-+#define RT5659_PLL1_SRC_MCLK			(0x0 << 11)
-+#define RT5659_PLL1_SRC_BCLK1			(0x1 << 11)
-+#define RT5659_PLL1_SRC_BCLK2			(0x2 << 11)
-+#define RT5659_PLL1_SRC_BCLK3			(0x3 << 11)
-+#define RT5659_PLL1_PD_MASK			(0x1 << 3)
-+#define RT5659_PLL1_PD_SFT			3
-+#define RT5659_PLL1_PD_1			(0x0 << 3)
-+#define RT5659_PLL1_PD_2			(0x1 << 3)
-+
-+#define RT5659_PLL_INP_MAX			40000000
-+#define RT5659_PLL_INP_MIN			256000
-+/* PLL M/N/K Code Control 1 (0x0081) */
-+#define RT5659_PLL_N_MAX			0x001ff
-+#define RT5659_PLL_N_MASK			(RT5659_PLL_N_MAX << 7)
-+#define RT5659_PLL_N_SFT			7
-+#define RT5659_PLL_K_MAX			0x001f
-+#define RT5659_PLL_K_MASK			(RT5659_PLL_K_MAX)
-+#define RT5659_PLL_K_SFT			0
-+
-+/* PLL M/N/K Code Control 2 (0x0082) */
-+#define RT5659_PLL_M_MAX			0x00f
-+#define RT5659_PLL_M_MASK			(RT5659_PLL_M_MAX << 12)
-+#define RT5659_PLL_M_SFT			12
-+#define RT5659_PLL_M_BP				(0x1 << 11)
-+#define RT5659_PLL_M_BP_SFT			11
-+
-+/* PLL tracking mode 1 (0x0083) */
-+#define RT5659_I2S3_ASRC_MASK			(0x1 << 13)
-+#define RT5659_I2S3_ASRC_SFT			13
-+#define RT5659_I2S2_ASRC_MASK			(0x1 << 12)
-+#define RT5659_I2S2_ASRC_SFT			12
-+#define RT5659_I2S1_ASRC_MASK			(0x1 << 11)
-+#define RT5659_I2S1_ASRC_SFT			11
-+#define RT5659_DAC_STO_ASRC_MASK		(0x1 << 10)
-+#define RT5659_DAC_STO_ASRC_SFT			10
-+#define RT5659_DAC_MONO_L_ASRC_MASK		(0x1 << 9)
-+#define RT5659_DAC_MONO_L_ASRC_SFT		9
-+#define RT5659_DAC_MONO_R_ASRC_MASK		(0x1 << 8)
-+#define RT5659_DAC_MONO_R_ASRC_SFT		8
-+#define RT5659_DMIC_STO1_ASRC_MASK		(0x1 << 7)
-+#define RT5659_DMIC_STO1_ASRC_SFT		7
-+#define RT5659_DMIC_MONO_L_ASRC_MASK		(0x1 << 5)
-+#define RT5659_DMIC_MONO_L_ASRC_SFT		5
-+#define RT5659_DMIC_MONO_R_ASRC_MASK		(0x1 << 4)
-+#define RT5659_DMIC_MONO_R_ASRC_SFT		4
-+#define RT5659_ADC_STO1_ASRC_MASK		(0x1 << 3)
-+#define RT5659_ADC_STO1_ASRC_SFT		3
-+#define RT5659_ADC_MONO_L_ASRC_MASK		(0x1 << 1)
-+#define RT5659_ADC_MONO_L_ASRC_SFT		1
-+#define RT5659_ADC_MONO_R_ASRC_MASK		(0x1)
-+#define RT5659_ADC_MONO_R_ASRC_SFT		0
-+
-+/* PLL tracking mode 2 (0x0084)*/
-+#define RT5659_DA_STO_T_MASK			(0x7 << 12)
-+#define RT5659_DA_STO_T_SFT			12
-+#define RT5659_DA_MONO_L_T_MASK			(0x7 << 8)
-+#define RT5659_DA_MONO_L_T_SFT			8
-+#define RT5659_DA_MONO_R_T_MASK			(0x7 << 4)
-+#define RT5659_DA_MONO_R_T_SFT			4
-+#define RT5659_AD_STO1_T_MASK			(0x7)
-+#define RT5659_AD_STO1_T_SFT			0
-+
-+/* PLL tracking mode 3 (0x0085)*/
-+#define RT5659_AD_STO2_T_MASK			(0x7 << 8)
-+#define RT5659_AD_STO2_T_SFT			8
-+#define RT5659_AD_MONO_L_T_MASK			(0x7 << 4)
-+#define RT5659_AD_MONO_L_T_SFT			4
-+#define RT5659_AD_MONO_R_T_MASK			(0x7)
-+#define RT5659_AD_MONO_R_T_SFT			0
-+
-+/* ASRC Control 4 (0x0086) */
-+#define RT5659_I2S1_RATE_MASK			(0xf << 12)
-+#define RT5659_I2S1_RATE_SFT			12
-+#define RT5659_I2S2_RATE_MASK			(0xf << 8)
-+#define RT5659_I2S2_RATE_SFT			8
-+#define RT5659_I2S3_RATE_MASK			(0xf << 4)
-+#define RT5659_I2S3_RATE_SFT			4
-+
-+/* Depop Mode Control 1 (0x8e) */
-+#define RT5659_SMT_TRIG_MASK			(0x1 << 15)
-+#define RT5659_SMT_TRIG_SFT			15
-+#define RT5659_SMT_TRIG_DIS			(0x0 << 15)
-+#define RT5659_SMT_TRIG_EN			(0x1 << 15)
-+#define RT5659_HP_L_SMT_MASK			(0x1 << 9)
-+#define RT5659_HP_L_SMT_SFT			9
-+#define RT5659_HP_L_SMT_DIS			(0x0 << 9)
-+#define RT5659_HP_L_SMT_EN			(0x1 << 9)
-+#define RT5659_HP_R_SMT_MASK			(0x1 << 8)
-+#define RT5659_HP_R_SMT_SFT			8
-+#define RT5659_HP_R_SMT_DIS			(0x0 << 8)
-+#define RT5659_HP_R_SMT_EN			(0x1 << 8)
-+#define RT5659_HP_CD_PD_MASK			(0x1 << 7)
-+#define RT5659_HP_CD_PD_SFT			7
-+#define RT5659_HP_CD_PD_DIS			(0x0 << 7)
-+#define RT5659_HP_CD_PD_EN			(0x1 << 7)
-+#define RT5659_RSTN_MASK			(0x1 << 6)
-+#define RT5659_RSTN_SFT				6
-+#define RT5659_RSTN_DIS				(0x0 << 6)
-+#define RT5659_RSTN_EN				(0x1 << 6)
-+#define RT5659_RSTP_MASK			(0x1 << 5)
-+#define RT5659_RSTP_SFT				5
-+#define RT5659_RSTP_DIS				(0x0 << 5)
-+#define RT5659_RSTP_EN				(0x1 << 5)
-+#define RT5659_HP_CO_MASK			(0x1 << 4)
-+#define RT5659_HP_CO_SFT			4
-+#define RT5659_HP_CO_DIS			(0x0 << 4)
-+#define RT5659_HP_CO_EN				(0x1 << 4)
-+#define RT5659_HP_CP_MASK			(0x1 << 3)
-+#define RT5659_HP_CP_SFT			3
-+#define RT5659_HP_CP_PD				(0x0 << 3)
-+#define RT5659_HP_CP_PU				(0x1 << 3)
-+#define RT5659_HP_SG_MASK			(0x1 << 2)
-+#define RT5659_HP_SG_SFT			2
-+#define RT5659_HP_SG_DIS			(0x0 << 2)
-+#define RT5659_HP_SG_EN				(0x1 << 2)
-+#define RT5659_HP_DP_MASK			(0x1 << 1)
-+#define RT5659_HP_DP_SFT			1
-+#define RT5659_HP_DP_PD				(0x0 << 1)
-+#define RT5659_HP_DP_PU				(0x1 << 1)
-+#define RT5659_HP_CB_MASK			(0x1)
-+#define RT5659_HP_CB_SFT			0
-+#define RT5659_HP_CB_PD				(0x0)
-+#define RT5659_HP_CB_PU				(0x1)
-+
-+/* Depop Mode Control 2 (0x8f) */
-+#define RT5659_DEPOP_MASK			(0x1 << 13)
-+#define RT5659_DEPOP_SFT			13
-+#define RT5659_DEPOP_AUTO			(0x0 << 13)
-+#define RT5659_DEPOP_MAN			(0x1 << 13)
-+#define RT5659_RAMP_MASK			(0x1 << 12)
-+#define RT5659_RAMP_SFT				12
-+#define RT5659_RAMP_DIS				(0x0 << 12)
-+#define RT5659_RAMP_EN				(0x1 << 12)
-+#define RT5659_BPS_MASK				(0x1 << 11)
-+#define RT5659_BPS_SFT				11
-+#define RT5659_BPS_DIS				(0x0 << 11)
-+#define RT5659_BPS_EN				(0x1 << 11)
-+#define RT5659_FAST_UPDN_MASK			(0x1 << 10)
-+#define RT5659_FAST_UPDN_SFT			10
-+#define RT5659_FAST_UPDN_DIS			(0x0 << 10)
-+#define RT5659_FAST_UPDN_EN			(0x1 << 10)
-+#define RT5659_MRES_MASK			(0x3 << 8)
-+#define RT5659_MRES_SFT				8
-+#define RT5659_MRES_15MO			(0x0 << 8)
-+#define RT5659_MRES_25MO			(0x1 << 8)
-+#define RT5659_MRES_35MO			(0x2 << 8)
-+#define RT5659_MRES_45MO			(0x3 << 8)
-+#define RT5659_VLO_MASK				(0x1 << 7)
-+#define RT5659_VLO_SFT				7
-+#define RT5659_VLO_3V				(0x0 << 7)
-+#define RT5659_VLO_32V				(0x1 << 7)
-+#define RT5659_DIG_DP_MASK			(0x1 << 6)
-+#define RT5659_DIG_DP_SFT			6
-+#define RT5659_DIG_DP_DIS			(0x0 << 6)
-+#define RT5659_DIG_DP_EN			(0x1 << 6)
-+#define RT5659_DP_TH_MASK			(0x3 << 4)
-+#define RT5659_DP_TH_SFT			4
-+
-+/* Depop Mode Control 3 (0x90) */
-+#define RT5659_CP_SYS_MASK			(0x7 << 12)
-+#define RT5659_CP_SYS_SFT			12
-+#define RT5659_CP_FQ1_MASK			(0x7 << 8)
-+#define RT5659_CP_FQ1_SFT			8
-+#define RT5659_CP_FQ2_MASK			(0x7 << 4)
-+#define RT5659_CP_FQ2_SFT			4
-+#define RT5659_CP_FQ3_MASK			(0x7)
-+#define RT5659_CP_FQ3_SFT			0
-+#define RT5659_CP_FQ_1_5_KHZ			0
-+#define RT5659_CP_FQ_3_KHZ			1
-+#define RT5659_CP_FQ_6_KHZ			2
-+#define RT5659_CP_FQ_12_KHZ			3
-+#define RT5659_CP_FQ_24_KHZ			4
-+#define RT5659_CP_FQ_48_KHZ			5
-+#define RT5659_CP_FQ_96_KHZ			6
-+#define RT5659_CP_FQ_192_KHZ			7
-+
-+/* HPOUT charge pump 1 (0x0091) */
-+#define RT5659_OSW_L_MASK			(0x1 << 11)
-+#define RT5659_OSW_L_SFT			11
-+#define RT5659_OSW_L_DIS			(0x0 << 11)
-+#define RT5659_OSW_L_EN				(0x1 << 11)
-+#define RT5659_OSW_R_MASK			(0x1 << 10)
-+#define RT5659_OSW_R_SFT			10
-+#define RT5659_OSW_R_DIS			(0x0 << 10)
-+#define RT5659_OSW_R_EN				(0x1 << 10)
-+#define RT5659_PM_HP_MASK			(0x3 << 8)
-+#define RT5659_PM_HP_SFT			8
-+#define RT5659_PM_HP_LV				(0x0 << 8)
-+#define RT5659_PM_HP_MV				(0x1 << 8)
-+#define RT5659_PM_HP_HV				(0x2 << 8)
-+#define RT5659_IB_HP_MASK			(0x3 << 6)
-+#define RT5659_IB_HP_SFT			6
-+#define RT5659_IB_HP_125IL			(0x0 << 6)
-+#define RT5659_IB_HP_25IL			(0x1 << 6)
-+#define RT5659_IB_HP_5IL			(0x2 << 6)
-+#define RT5659_IB_HP_1IL			(0x3 << 6)
-+
-+/* PV detection and SPK gain control (0x92) */
-+#define RT5659_PVDD_DET_MASK			(0x1 << 15)
-+#define RT5659_PVDD_DET_SFT			15
-+#define RT5659_PVDD_DET_DIS			(0x0 << 15)
-+#define RT5659_PVDD_DET_EN			(0x1 << 15)
-+#define RT5659_SPK_AG_MASK			(0x1 << 14)
-+#define RT5659_SPK_AG_SFT			14
-+#define RT5659_SPK_AG_DIS			(0x0 << 14)
-+#define RT5659_SPK_AG_EN			(0x1 << 14)
-+
-+/* Micbias Control (0x93) */
-+#define RT5659_MIC1_BS_MASK			(0x1 << 15)
-+#define RT5659_MIC1_BS_SFT			15
-+#define RT5659_MIC1_BS_9AV			(0x0 << 15)
-+#define RT5659_MIC1_BS_75AV			(0x1 << 15)
-+#define RT5659_MIC2_BS_MASK			(0x1 << 14)
-+#define RT5659_MIC2_BS_SFT			14
-+#define RT5659_MIC2_BS_9AV			(0x0 << 14)
-+#define RT5659_MIC2_BS_75AV			(0x1 << 14)
-+#define RT5659_MIC1_CLK_MASK			(0x1 << 13)
-+#define RT5659_MIC1_CLK_SFT			13
-+#define RT5659_MIC1_CLK_DIS			(0x0 << 13)
-+#define RT5659_MIC1_CLK_EN			(0x1 << 13)
-+#define RT5659_MIC2_CLK_MASK			(0x1 << 12)
-+#define RT5659_MIC2_CLK_SFT			12
-+#define RT5659_MIC2_CLK_DIS			(0x0 << 12)
-+#define RT5659_MIC2_CLK_EN			(0x1 << 12)
-+#define RT5659_MIC1_OVCD_MASK			(0x1 << 11)
-+#define RT5659_MIC1_OVCD_SFT			11
-+#define RT5659_MIC1_OVCD_DIS			(0x0 << 11)
-+#define RT5659_MIC1_OVCD_EN			(0x1 << 11)
-+#define RT5659_MIC1_OVTH_MASK			(0x3 << 9)
-+#define RT5659_MIC1_OVTH_SFT			9
-+#define RT5659_MIC1_OVTH_600UA			(0x0 << 9)
-+#define RT5659_MIC1_OVTH_1500UA			(0x1 << 9)
-+#define RT5659_MIC1_OVTH_2000UA			(0x2 << 9)
-+#define RT5659_MIC2_OVCD_MASK			(0x1 << 8)
-+#define RT5659_MIC2_OVCD_SFT			8
-+#define RT5659_MIC2_OVCD_DIS			(0x0 << 8)
-+#define RT5659_MIC2_OVCD_EN			(0x1 << 8)
-+#define RT5659_MIC2_OVTH_MASK			(0x3 << 6)
-+#define RT5659_MIC2_OVTH_SFT			6
-+#define RT5659_MIC2_OVTH_600UA			(0x0 << 6)
-+#define RT5659_MIC2_OVTH_1500UA			(0x1 << 6)
-+#define RT5659_MIC2_OVTH_2000UA			(0x2 << 6)
-+#define RT5659_PWR_MB_MASK			(0x1 << 5)
-+#define RT5659_PWR_MB_SFT			5
-+#define RT5659_PWR_MB_PD			(0x0 << 5)
-+#define RT5659_PWR_MB_PU			(0x1 << 5)
-+#define RT5659_PWR_CLK25M_MASK			(0x1 << 4)
-+#define RT5659_PWR_CLK25M_SFT			4
-+#define RT5659_PWR_CLK25M_PD			(0x0 << 4)
-+#define RT5659_PWR_CLK25M_PU			(0x1 << 4)
-+
-+/* REC Mixer 2 Left Control 2 (0x009c) */
-+#define RT5659_M_BST1_RM2_L			(0x1 << 5)
-+#define RT5659_M_BST1_RM2_L_SFT			5
-+#define RT5659_M_BST2_RM2_L			(0x1 << 4)
-+#define RT5659_M_BST2_RM2_L_SFT			4
-+#define RT5659_M_BST3_RM2_L			(0x1 << 3)
-+#define RT5659_M_BST3_RM2_L_SFT			3
-+#define RT5659_M_BST4_RM2_L			(0x1 << 2)
-+#define RT5659_M_BST4_RM2_L_SFT			2
-+#define RT5659_M_OUTVOLL_RM2_L			(0x1 << 1)
-+#define RT5659_M_OUTVOLL_RM2_L_SFT		1
-+#define RT5659_M_SPKVOL_RM2_L			(0x1)
-+#define RT5659_M_SPKVOL_RM2_L_SFT		0
-+
-+/* REC Mixer 2 Right Control 2 (0x009e) */
-+#define RT5659_M_BST1_RM2_R			(0x1 << 5)
-+#define RT5659_M_BST1_RM2_R_SFT			5
-+#define RT5659_M_BST2_RM2_R			(0x1 << 4)
-+#define RT5659_M_BST2_RM2_R_SFT			4
-+#define RT5659_M_BST3_RM2_R			(0x1 << 3)
-+#define RT5659_M_BST3_RM2_R_SFT			3
-+#define RT5659_M_BST4_RM2_R			(0x1 << 2)
-+#define RT5659_M_BST4_RM2_R_SFT			2
-+#define RT5659_M_OUTVOLR_RM2_R			(0x1 << 1)
-+#define RT5659_M_OUTVOLR_RM2_R_SFT		1
-+#define RT5659_M_MONOVOL_RM2_R			(0x1)
-+#define RT5659_M_MONOVOL_RM2_R_SFT		0
-+
-+/* Class D Output Control (0x00a0) */
-+#define RT5659_POW_CLSD_DB_MASK			(0x1 << 9)
-+#define RT5659_POW_CLSD_DB_EN			(0x1 << 9)
-+#define RT5659_POW_CLSD_DB_DIS			(0x0 << 9)
-+
-+/* EQ Control 1 (0x00b0) */
-+#define RT5659_EQ_SRC_DAC			(0x0 << 15)
-+#define RT5659_EQ_SRC_ADC			(0x1 << 15)
-+#define RT5659_EQ_UPD				(0x1 << 14)
-+#define RT5659_EQ_UPD_BIT			14
-+#define RT5659_EQ_CD_MASK			(0x1 << 13)
-+#define RT5659_EQ_CD_SFT			13
-+#define RT5659_EQ_CD_DIS			(0x0 << 13)
-+#define RT5659_EQ_CD_EN				(0x1 << 13)
-+#define RT5659_EQ_DITH_MASK			(0x3 << 8)
-+#define RT5659_EQ_DITH_SFT			8
-+#define RT5659_EQ_DITH_NOR			(0x0 << 8)
-+#define RT5659_EQ_DITH_LSB			(0x1 << 8)
-+#define RT5659_EQ_DITH_LSB_1			(0x2 << 8)
-+#define RT5659_EQ_DITH_LSB_2			(0x3 << 8)
-+
-+/* IRQ Control 1 (0x00b7) */
-+#define RT5659_JD1_1_EN_MASK			(0x1 << 15)
-+#define RT5659_JD1_1_EN_SFT			15
-+#define RT5659_JD1_1_DIS			(0x0 << 15)
-+#define RT5659_JD1_1_EN				(0x1 << 15)
-+#define RT5659_JD1_2_EN_MASK			(0x1 << 12)
-+#define RT5659_JD1_2_EN_SFT			12
-+#define RT5659_JD1_2_DIS			(0x0 << 12)
-+#define RT5659_JD1_2_EN				(0x1 << 12)
-+#define RT5659_IL_IRQ_MASK			(0x1 << 3)
-+#define RT5659_IL_IRQ_DIS			(0x0 << 3)
-+#define RT5659_IL_IRQ_EN			(0x1 << 3)
-+
-+/* IRQ Control 5 (0x00ba) */
-+#define RT5659_IRQ_JD_EN			(0x1 << 3)
-+#define RT5659_IRQ_JD_EN_SFT			3
-+
-+/* GPIO Control 1 (0x00c0) */
-+#define RT5659_GP1_PIN_MASK			(0x1 << 15)
-+#define RT5659_GP1_PIN_SFT			15
-+#define RT5659_GP1_PIN_GPIO1			(0x0 << 15)
-+#define RT5659_GP1_PIN_IRQ			(0x1 << 15)
-+#define RT5659_GP2_PIN_MASK			(0x1 << 14)
-+#define RT5659_GP2_PIN_SFT			14
-+#define RT5659_GP2_PIN_GPIO2			(0x0 << 14)
-+#define RT5659_GP2_PIN_DMIC1_SCL		(0x1 << 14)
-+#define RT5659_GP3_PIN_MASK			(0x1 << 13)
-+#define RT5659_GP3_PIN_SFT			13
-+#define RT5659_GP3_PIN_GPIO3			(0x0 << 13)
-+#define RT5659_GP3_PIN_PDM_SCL			(0x1 << 13)
-+#define RT5659_GP4_PIN_MASK			(0x1 << 12)
-+#define RT5659_GP4_PIN_SFT			12
-+#define RT5659_GP4_PIN_GPIO4			(0x0 << 12)
-+#define RT5659_GP4_PIN_PDM_SDA			(0x1 << 12)
-+#define RT5659_GP5_PIN_MASK			(0x1 << 11)
-+#define RT5659_GP5_PIN_SFT			11
-+#define RT5659_GP5_PIN_GPIO5			(0x0 << 11)
-+#define RT5659_GP5_PIN_DMIC1_SDA		(0x1 << 11)
-+#define RT5659_GP6_PIN_MASK			(0x1 << 10)
-+#define RT5659_GP6_PIN_SFT			10
-+#define RT5659_GP6_PIN_GPIO6			(0x0 << 10)
-+#define RT5659_GP6_PIN_DMIC2_SDA		(0x1 << 10)
-+#define RT5659_GP7_PIN_MASK			(0x1 << 9)
-+#define RT5659_GP7_PIN_SFT			9
-+#define RT5659_GP7_PIN_GPIO7			(0x0 << 9)
-+#define RT5659_GP7_PIN_PDM_SCL			(0x1 << 9)
-+#define RT5659_GP8_PIN_MASK			(0x1 << 8)
-+#define RT5659_GP8_PIN_SFT			8
-+#define RT5659_GP8_PIN_GPIO8			(0x0 << 8)
-+#define RT5659_GP8_PIN_PDM_SDA			(0x1 << 8)
-+#define RT5659_GP9_PIN_MASK			(0x1 << 7)
-+#define RT5659_GP9_PIN_SFT			7
-+#define RT5659_GP9_PIN_GPIO9			(0x0 << 7)
-+#define RT5659_GP9_PIN_DMIC1_SDA		(0x1 << 7)
-+#define RT5659_GP10_PIN_MASK			(0x1 << 6)
-+#define RT5659_GP10_PIN_SFT			6
-+#define RT5659_GP10_PIN_GPIO10			(0x0 << 6)
-+#define RT5659_GP10_PIN_DMIC2_SDA		(0x1 << 6)
-+#define RT5659_GP11_PIN_MASK			(0x1 << 5)
-+#define RT5659_GP11_PIN_SFT			5
-+#define RT5659_GP11_PIN_GPIO11			(0x0 << 5)
-+#define RT5659_GP11_PIN_DMIC1_SDA		(0x1 << 5)
-+#define RT5659_GP12_PIN_MASK			(0x1 << 4)
-+#define RT5659_GP12_PIN_SFT			4
-+#define RT5659_GP12_PIN_GPIO12			(0x0 << 4)
-+#define RT5659_GP12_PIN_DMIC2_SDA		(0x1 << 4)
-+#define RT5659_GP13_PIN_MASK			(0x3 << 2)
-+#define RT5659_GP13_PIN_SFT			2
-+#define RT5659_GP13_PIN_GPIO13			(0x0 << 2)
-+#define RT5659_GP13_PIN_SPDIF_SDA		(0x1 << 2)
-+#define RT5659_GP13_PIN_DMIC2_SCL		(0x2 << 2)
-+#define RT5659_GP13_PIN_PDM_SCL			(0x3 << 2)
-+#define RT5659_GP15_PIN_MASK			(0x3)
-+#define RT5659_GP15_PIN_SFT			0
-+#define RT5659_GP15_PIN_GPIO15			(0x0)
-+#define RT5659_GP15_PIN_DMIC3_SCL		(0x1)
-+#define RT5659_GP15_PIN_PDM_SDA			(0x2)
-+
-+/* GPIO Control 2 (0x00c1)*/
-+#define RT5659_GP1_PF_IN			(0x0 << 2)
-+#define RT5659_GP1_PF_OUT			(0x1 << 2)
-+#define RT5659_GP1_PF_MASK			(0x1 << 2)
-+#define RT5659_GP1_PF_SFT			2
-+
-+/* GPIO Control 3 (0x00c2) */
-+#define RT5659_I2S2_PIN_MASK			(0x1 << 15)
-+#define RT5659_I2S2_PIN_SFT			15
-+#define RT5659_I2S2_PIN_I2S			(0x0 << 15)
-+#define RT5659_I2S2_PIN_GPIO			(0x1 << 15)
-+
-+/* Soft volume and zero cross control 1 (0x00d9) */
-+#define RT5659_SV_MASK				(0x1 << 15)
-+#define RT5659_SV_SFT				15
-+#define RT5659_SV_DIS				(0x0 << 15)
-+#define RT5659_SV_EN				(0x1 << 15)
-+#define RT5659_OUT_SV_MASK			(0x1 << 13)
-+#define RT5659_OUT_SV_SFT			13
-+#define RT5659_OUT_SV_DIS			(0x0 << 13)
-+#define RT5659_OUT_SV_EN			(0x1 << 13)
-+#define RT5659_HP_SV_MASK			(0x1 << 12)
-+#define RT5659_HP_SV_SFT			12
-+#define RT5659_HP_SV_DIS			(0x0 << 12)
-+#define RT5659_HP_SV_EN				(0x1 << 12)
-+#define RT5659_ZCD_DIG_MASK			(0x1 << 11)
-+#define RT5659_ZCD_DIG_SFT			11
-+#define RT5659_ZCD_DIG_DIS			(0x0 << 11)
-+#define RT5659_ZCD_DIG_EN			(0x1 << 11)
-+#define RT5659_ZCD_MASK				(0x1 << 10)
-+#define RT5659_ZCD_SFT				10
-+#define RT5659_ZCD_PD				(0x0 << 10)
-+#define RT5659_ZCD_PU				(0x1 << 10)
-+#define RT5659_SV_DLY_MASK			(0xf)
-+#define RT5659_SV_DLY_SFT			0
-+
-+/* Soft volume and zero cross control 2 (0x00da) */
-+#define RT5659_ZCD_HP_MASK			(0x1 << 15)
-+#define RT5659_ZCD_HP_SFT			15
-+#define RT5659_ZCD_HP_DIS			(0x0 << 15)
-+#define RT5659_ZCD_HP_EN			(0x1 << 15)
-+
-+/* 4 Button Inline Command Control 2 (0x00e0) */
-+#define RT5659_4BTN_IL_MASK			(0x1 << 15)
-+#define RT5659_4BTN_IL_EN			(0x1 << 15)
-+#define RT5659_4BTN_IL_DIS			(0x0 << 15)
-+
-+/* Analog JD Control 1 (0x00f0) */
-+#define RT5659_JD1_MODE_MASK			(0x3 << 0)
-+#define RT5659_JD1_MODE_0			(0x0 << 0)
-+#define RT5659_JD1_MODE_1			(0x1 << 0)
-+#define RT5659_JD1_MODE_2			(0x2 << 0)
-+
-+/* Jack Detect Control 3 (0x00f8) */
-+#define RT5659_JD_TRI_HPO_SEL_MASK		(0x7)
-+#define RT5659_JD_TRI_HPO_SEL_SFT		(0)
-+#define RT5659_JD_HPO_GPIO_JD1			(0x0)
-+#define RT5659_JD_HPO_JD1_1			(0x1)
-+#define RT5659_JD_HPO_JD1_2			(0x2)
-+#define RT5659_JD_HPO_JD2			(0x3)
-+#define RT5659_JD_HPO_GPIO_JD2			(0x4)
-+#define RT5659_JD_HPO_JD3			(0x5)
-+#define RT5659_JD_HPO_JD_D			(0x6)
-+
-+/* Digital Misc Control (0x00fa) */
-+#define RT5659_AM_MASK				(0x1 << 7)
-+#define RT5659_AM_EN				(0x1 << 7)
-+#define RT5659_AM_DIS				(0x1 << 7)
-+#define RT5659_DIG_GATE_CTRL			0x1
-+#define RT5659_DIG_GATE_CTRL_SFT		(0)
-+
-+/* Chopper and Clock control for ADC (0x011c)*/
-+#define RT5659_M_RF_DIG_MASK			(0x1 << 12)
-+#define RT5659_M_RF_DIG_SFT			12
-+#define RT5659_M_RI_DIG				(0x1 << 11)
-+
-+/* Chopper and Clock control for DAC (0x013a)*/
-+#define RT5659_CKXEN_DAC1_MASK			(0x1 << 13)
-+#define RT5659_CKXEN_DAC1_SFT			13
-+#define RT5659_CKGEN_DAC1_MASK			(0x1 << 12)
-+#define RT5659_CKGEN_DAC1_SFT			12
-+#define RT5659_CKXEN_DAC2_MASK			(0x1 << 5)
-+#define RT5659_CKXEN_DAC2_SFT			5
-+#define RT5659_CKGEN_DAC2_MASK			(0x1 << 4)
-+#define RT5659_CKGEN_DAC2_SFT			4
-+
-+/* Chopper and Clock control for ADC (0x013b)*/
-+#define RT5659_CKXEN_ADCC_MASK			(0x1 << 13)
-+#define RT5659_CKXEN_ADCC_SFT			13
-+#define RT5659_CKGEN_ADCC_MASK			(0x1 << 12)
-+#define RT5659_CKGEN_ADCC_SFT			12
-+
-+/* Test Mode Control 1 (0x0145) */
-+#define RT5659_AD2DA_LB_MASK			(0x1 << 9)
-+#define RT5659_AD2DA_LB_SFT			9
-+
-+/* Stereo Noise Gate Control 1 (0x0160) */
-+#define RT5659_NG2_EN_MASK			(0x1 << 15)
-+#define RT5659_NG2_EN				(0x1 << 15)
-+#define RT5659_NG2_DIS				(0x0 << 15)
-+
-+/* System Clock Source */
-+enum {
-+	RT5659_SCLK_S_MCLK,
-+	RT5659_SCLK_S_PLL1,
-+	RT5659_SCLK_S_RCCLK,
-+};
-+
-+/* PLL1 Source */
-+enum {
-+	RT5659_PLL1_S_MCLK,
-+	RT5659_PLL1_S_BCLK1,
-+	RT5659_PLL1_S_BCLK2,
-+	RT5659_PLL1_S_BCLK3,
-+	RT5659_PLL1_S_BCLK4,
-+};
-+
-+enum {
-+	RT5659_AIF1,
-+	RT5659_AIF2,
-+	RT5659_AIF3,
-+	RT5659_AIF4,
-+	RT5659_AIFS,
-+};
-+
-+struct rt5659_pll_code {
-+	bool m_bp;
-+	int m_code;
-+	int n_code;
-+	int k_code;
-+};
-+
-+struct rt5659_priv {
-+	struct snd_soc_codec *codec;
-+	struct rt5659_platform_data pdata;
-+	struct regmap *regmap;
-+	struct i2c_client *i2c;
-+	struct gpio_desc *gpiod_ldo1_en;
-+	struct gpio_desc *gpiod_reset;
-+	struct snd_soc_jack *hs_jack;
-+	struct delayed_work jack_detect_work;
-+
-+	int sysclk;
-+	int sysclk_src;
-+	int lrck[RT5659_AIFS];
-+	int bclk[RT5659_AIFS];
-+	int master[RT5659_AIFS];
-+	int v_id;
-+
-+	int pll_src;
-+	int pll_in;
-+	int pll_out;
-+
-+	int jack_type;
-+
-+};
-+
-+int rt5659_set_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hs_jack);
-+
-+#endif /* __RT5659_H__ */
--- 
-2.6.2
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+mWMwYPgCHjC7J6HI2nbmZ/8Hnf7CgTwcAwA=
+
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--7AUc2qLy4jB3hD7Z--
