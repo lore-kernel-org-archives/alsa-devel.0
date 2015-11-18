@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add support for SSP1 BE
-	cpu dai" to the asoc tree
-Date: Wed, 18 Nov 2015 18:47:17 +0000
-Message-ID: <E1Zz7lF-0001QK-Tc@debutante>
-References: <1446744188-1274-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: remove
+	pm_runtime_get/put calls" to the asoc tree
+Date: Wed, 18 Nov 2015 18:47:15 +0000
+Message-ID: <E1Zz7lD-0001Ou-2S@debutante>
+References: <1447422733-2484-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A8122659C7
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:23 +0100 (CET)
-In-Reply-To: <1446744188-1274-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5021265B90
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:20 +0100 (CET)
+In-Reply-To: <1447422733-2484-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add support for SSP1 BE cpu dai
+   ASoC: Intel: Skylake: remove pm_runtime_get/put calls
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,92 @@ to this mail.
 Thanks,
 Mark
 
->From c80fd4da68cd7784a19c584d01294e362a7b61a3 Mon Sep 17 00:00:00 2001
+>From 28823f1538ce2f67b7c21e30d6b84c3e86f8c0fd Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 5 Nov 2015 22:53:06 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add support for SSP1 BE cpu dai
+Date: Fri, 13 Nov 2015 19:22:05 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove pm_runtime_get/put calls
 
-Adds new BE cpu dai to support SSP1 port.
+The ASoC core already does pm_runtime_get/put in the core before
+opening/closing the devices.
+So we do not need to do this is driver, hence remove
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 25 -------------------------
+ 1 file changed, 25 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index e652d58bd9a9..c8d942887348 100644
+index c8d942887348..dae332beea3f 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -627,6 +627,24 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
-+	.name = "SSP1 Pin",
-+	.ops = &skl_be_ssp_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp1 Tx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp1 Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
- 	.name = "iDisp Pin",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
+@@ -112,12 +112,8 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *stream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct skl_dma_params *dma_params;
+-	int ret;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+-	ret = pm_runtime_get_sync(dai->dev);
+-	if (ret < 0)
+-		return ret;
+ 
+ 	stream = snd_hdac_ext_stream_assign(ebus, substream,
+ 					skl_get_host_stream_type(ebus));
+@@ -262,8 +258,6 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	 */
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 
+-	pm_runtime_mark_last_busy(dai->dev);
+-	pm_runtime_put_autosuspend(dai->dev);
+ 	kfree(dma_params);
+ }
+ 
+@@ -512,19 +506,6 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int skl_be_startup(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	return pm_runtime_get_sync(dai->dev);
+-}
+-
+-static void skl_be_shutdown(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	pm_runtime_mark_last_busy(dai->dev);
+-	pm_runtime_put_autosuspend(dai->dev);
+-}
+-
+ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.startup = skl_pcm_open,
+ 	.shutdown = skl_pcm_close,
+@@ -535,24 +516,18 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ };
+ 
+ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.hw_params = skl_be_hw_params,
+-	.shutdown = skl_be_shutdown,
+ };
+ 
+ static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.hw_params = skl_be_hw_params,
+-	.shutdown = skl_be_shutdown,
+ };
+ 
+ static struct snd_soc_dai_ops skl_link_dai_ops = {
+-	.startup = skl_be_startup,
+ 	.prepare = skl_link_pcm_prepare,
+ 	.hw_params = skl_link_hw_params,
+ 	.hw_free = skl_link_hw_free,
+ 	.trigger = skl_link_pcm_trigger,
+-	.shutdown = skl_be_shutdown,
+ };
+ 
+ static struct snd_soc_dai_driver skl_platform_dai[] = {
 -- 
 2.6.2
