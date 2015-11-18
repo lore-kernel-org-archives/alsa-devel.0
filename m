@@ -1,63 +1,171 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce dma_request_slave_channel_compat_reason()
-Date: Wed, 18 Nov 2015 16:07:42 +0100
-Message-ID: <6358656.jIv3GGCCXu@wuerfel>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com> <6347063.Gd6coh6hX8@wuerfel> <564C8E1F.8010501@ti.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 2/4] topology: Change variable type to fix
+	gcc warning
+Date: Wed, 18 Nov 2015 15:14:43 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84B890E97@shsmsx102.ccr.corp.intel.com>
+References: <cover.1447825540.git.mengdong.lin@linux.intel.com>
+ <52b9413a02fff6e7edb4541023fe53bb495bbf91.1447825540.git.mengdong.lin@linux.intel.com>
+ <s5hlh9vkcbk.wl-tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F84B8905C3@shsmsx102.ccr.corp.intel.com>
+ <s5hio4zk9dm.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-crypto-owner@vger.kernel.org>
-In-Reply-To: <564C8E1F.8010501@ti.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Tony Lindgren <tony@atomide.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>, linux-crypto@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E92A3265743
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 16:17:16 +0100 (CET)
+In-Reply-To: <s5hio4zk9dm.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "Prusty,
+ Subhransu S" <subhransu.s.prusty@intel.com>, "Girdwood, Liam
+ R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 18 November 2015 16:41:35 Peter Ujfalusi wrote:
-> On 11/18/2015 04:29 PM, Arnd Bergmann wrote:
-> > On Wednesday 18 November 2015 16:21:26 Peter Ujfalusi wrote:
-> >> 2. non slave channel requests, where only the functionality matters, like
-> >> memcpy, interleaved, memset, etc.
-> >> We could have a simple:
-> >> dma_request_channel(mask);
-> >>
-> >> But looking at the drivers using dmaengine legacy dma_request_channel() API:
-> >> Some sets DMA_INTERRUPT or DMA_PRIVATE or DMA_SG along with DMA_SLAVE:
-> >> drivers/misc/carma/carma-fpga.c                 DMA_INTERRUPT|DMA_SLAVE|DMA_SG
-> >> drivers/misc/carma/carma-fpga-program.c         DMA_MEMCPY|DMA_SLAVE|DMA_SG
-> >> drivers/media/platform/soc_camera/mx3_camera.c  DMA_SLAVE|DMA_PRIVATE
-> >> sound/soc/intel/common/sst-firmware.c           DMA_SLAVE|DMA_MEMCPY
-> >>
-> >> as examples.
-> >> Not sure how valid are these...
-
-I just had a look myself. carma has been removed fortunately in linux-next,
-so we don't have to worry about that any more.
-
-I assume that the sst-firmware.c case is a mistake, it should just use a
-plain DMA_SLAVE and not DMA_MEMCPY.
-
-Aside from these, everyone else uses either DMA_CYCLIC in addition to
-DMA_SLAVE, which seems valid, or they use DMA_PRIVATE, which I think is
-redundant in slave drivers and can be removed.
-
-> > It's usually not much harder to separate out the legacy case from
-> > the normal dma_request_slave_channel_reason(), so those drivers don't
-> > really need to use the unified compat API.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, November 18, 2015 4:19 PM
 > 
-> The current dma_request_slave_channel()/_reason() is not the 'legacy' API.
-> Currently there is no way to get the reason why the dma channel request fails
-> when using the _compat() version of the API, which is used by drivers which
-> can be used in DT or in legacy mode as well. Sure, they all could have local
-> if(){}else{} for handling this, but it is not a nice thing.
+> On Wed, 18 Nov 2015 08:28:09 +0100,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Wednesday, November 18, 2015 3:16 PM
+> > > To: mengdong.lin@linux.intel.com
+> >
+> > > On Wed, 18 Nov 2015 08:23:07 +0100,
+> > > mengdong.lin@linux.intel.com wrote:
+> > > >
+> > > > From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> > > >
+> > > > Fix warning: comparison between signed and unsigned integer
+> > > > expressions [-Wsign-compare]
+> > > >
+> > > > ABI objects use type _le32, which is converted to host unsigned integer.
+> > > > So the iterator 'i' in a loop as below should also be unsigned.
+> > > > for (i = 0; i < pcm->num_streams; i++)
+> > > >                 ^
+> > >
+> > > Using an unsigned int for the generic loop count like i is strange.
+> >
+> > Yes.
+> >
+> > > Rather compare with the original value in the template, which is actually int.
+> >
+> > Are you suggesting not change the code?
 > 
-> As it was discussed instead of adding the _reason() version for the _compat
-> call, we should simplify the dmaengine API for getting the channel and at the
-> same time we will have ERR_PTR returned instead of NULL.
+> No.
+> 
+> > The "pcm->num_streams" here is __le32 defined in ABI:
+> > struct snd_soc_tplg_pcm {
+> > 	...
+> > 	__le32 num_streams;	/* number of streams */
+> > 	...
+> > } __attribute__((packed));
+> >
+> > It seems gcc takes it as unsigned integer and so I get the warning.
+> 
+> The problem isn't only about the endianess.
+> Conceptually, it's wrong to refer directly to le32 data, as it's not being CPU
+> endian.  It should have always an endian conversion.  Of course, we support
+> only LE32, so it's no big issue, so far.
+> 
+> What you need to refer to is the value in the template instead.  It's guaranteed
+> to be CPU endianess, and it's even int.
+> So, the code would look like:
+> 
+> 	for (i = 0; i < pcm_tpl->num_streams; i++)
+> 
+Okay, I'll revise the patch. Thanks for your suggestion.
 
-What I meant was that we don't need to handle them with the unified
-simple interface. The users of DMA_CYCLIC can just keep using
-an internal helper that only deals with the legacy case, or use
-dma_request_slave() or whatever is the new API for the DT case.
+> BTW, I haven't checked whether topology API would "work" on big-endian
+> architecture; does it return an error properly?
 
-	Arnd
+Sorry, no. I'll check if an API can tell us the host endianness and let topology return an error for big-endian machines.
+
+I had thought to use this API when generating the ABI objects from host type to _le32:
+uint32_t htole32(uint32_t host_32bits);
+
+But since I have no big-endian machines to test this, maybe it's better to return an error for them.
+
+Thanks
+Mengdong
+> 
+> Takashi
+> 
+> 
+> >
+> > Thanks
+> > Mengdong
+> >
+> > >
+> > >
+> > > Takashi
+> > >
+> > > > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> > > >
+> > > > diff --git a/src/topology/ctl.c b/src/topology/ctl.c index
+> > > > 7d8787f..6dc3b3d 100644
+> > > > --- a/src/topology/ctl.c
+> > > > +++ b/src/topology/ctl.c
+> > > > @@ -676,7 +676,8 @@ int tplg_add_mixer(snd_tplg_t *tplg, struct
+> > > snd_tplg_mixer_template *mixer,
+> > > >  	struct snd_soc_tplg_private *priv = mixer->priv;
+> > > >  	struct snd_soc_tplg_mixer_control *mc;
+> > > >  	struct tplg_elem *elem;
+> > > > -	int ret, i;
+> > > > +	int ret;
+> > > > +	unsigned int i;
+> > > >
+> > > >  	tplg_dbg(" Control Mixer: %s\n", mixer->hdr.name);
+> > > >
+> > > > @@ -743,7 +744,8 @@ int tplg_add_enum(snd_tplg_t *tplg, struct
+> > > > snd_tplg_enum_template *enum_ctl,  {
+> > > >  	struct snd_soc_tplg_enum_control *ec;
+> > > >  	struct tplg_elem *elem;
+> > > > -	int ret, i;
+> > > > +	int ret;
+> > > > +	unsigned int i;
+> > > >
+> > > >  	tplg_dbg(" Control Enum: %s\n", enum_ctl->hdr.name);
+> > > >
+> > > > diff --git a/src/topology/pcm.c b/src/topology/pcm.c index
+> > > > 9b7e402..4b7c058 100644
+> > > > --- a/src/topology/pcm.c
+> > > > +++ b/src/topology/pcm.c
+> > > > @@ -522,7 +522,7 @@ int tplg_add_pcm_object(snd_tplg_t *tplg,
+> > > snd_tplg_obj_template_t *t)
+> > > >  	struct snd_tplg_pcm_template *pcm_tpl = t->pcm;
+> > > >  	struct snd_soc_tplg_pcm *pcm;
+> > > >  	struct tplg_elem *elem;
+> > > > -	int i;
+> > > > +	unsigned int i;
+> > > >
+> > > >  	tplg_dbg("PCM: %s, DAI %s\n", pcm_tpl->pcm_name,
+> > > pcm_tpl->dai_name);
+> > > >
+> > > > @@ -564,7 +564,7 @@ int tplg_add_link_object(snd_tplg_t *tplg,
+> > > snd_tplg_obj_template_t *t)
+> > > >  	struct snd_tplg_link_template *link = t->link;
+> > > >  	struct snd_soc_tplg_link_config *lk;
+> > > >  	struct tplg_elem *elem;
+> > > > -	int i;
+> > > > +	unsigned int i;
+> > > >
+> > > >  	if (t->type != SND_TPLG_TYPE_BE && t->type != SND_TPLG_TYPE_CC)
+> > > >  		return -EINVAL;
+> > > > --
+> > > > 2.5.0
+> > > >
+> >
