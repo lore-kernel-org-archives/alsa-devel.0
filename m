@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove platform boot support from
-	ssi.c" to the asoc tree
-Date: Wed, 18 Nov 2015 18:09:40 +0000
-Message-ID: <E1Zz7Aq-0000IV-6O@debutante>
-References: <871tbyl9yy.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Add I2C depends for SKL
+	machine" to the asoc tree
+Date: Wed, 18 Nov 2015 18:09:44 +0000
+Message-ID: <E1Zz7Au-0000MO-KW@debutante>
+References: <1447854106-6473-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 28B33265B04
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:45 +0100 (CET)
-In-Reply-To: <871tbyl9yy.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 37F30265A2E
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:51 +0100 (CET)
+In-Reply-To: <1447854106-6473-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: kbuild test robot <fengguang.wu@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove platform boot support from ssi.c
+   ASoC: Intel: Skylake: Add I2C depends for SKL machine
 
 has been applied to the asoc tree at
 
@@ -53,280 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 02534f2f80224531ab19bf5027224ed775fe2b39 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 10 Nov 2015 05:11:35 +0000
-Subject: [PATCH] ASoC: rsnd: remove platform boot support from ssi.c
+>From 0928e8a54bf8889176175b2c3e5f2fc8ec1bb7ff Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 18 Nov 2015 19:11:46 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add I2C depends for SKL machine
 
-No board is using Renesas sound driver via platform boot now.
-This means all user is using DT boot. Platform boot support is
-no longer needed. But, it strongly depends on platform boot style.
-This patch removes platform boot support from ssi.c
+The i2c is dependency for the i2c codec drivers, so machine should depend on
+i2c. WIthout this we get build failures if I2C is not selected
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+   sound/soc/codecs/rl6347a.c: In function 'rl6347a_hw_write':
+>> sound/soc/codecs/rl6347a.c:66:8: error: implicit declaration of function
+>> 'i2c_master_send' [-Werror=implicit-function-declaration]
+     ret = i2c_master_send(client, data, 4);
+           ^
+   sound/soc/codecs/rl6347a.c: In function 'rl6347a_hw_read':
+>> sound/soc/codecs/rl6347a.c:114:8: error: implicit declaration of function
+>> 'i2c_transfer' [-Werror=implicit-function-declaration]
+     ret = i2c_transfer(client->adapter, xfer, 2);
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rcar_snd.h |   2 -
- sound/soc/sh/rcar/ssi.c      | 145 +++++++++++++++++--------------------------
- 2 files changed, 57 insertions(+), 90 deletions(-)
+ sound/soc/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/rcar_snd.h b/sound/soc/sh/rcar/rcar_snd.h
-index d8e33d38da43..18b27e6aecbc 100644
---- a/sound/soc/sh/rcar/rcar_snd.h
-+++ b/sound/soc/sh/rcar/rcar_snd.h
-@@ -32,8 +32,6 @@
-  * A : clock sharing settings
-  * B : SSI direction
-  */
--#define RSND_SSI_CLK_PIN_SHARE		(1 << 31)
--#define RSND_SSI_NO_BUSIF		(1 << 30) /* SSI+DMA without BUSIF */
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 13a762172b5d..2903823ebee1 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -145,7 +145,7 @@ config SND_SOC_INTEL_SKYLAKE
  
- #define RSND_SSI(_dma_id, _irq, _flags)		\
- { .dma_id = _dma_id, .irq = _irq, .flags = _flags }
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 61957f609e79..1f1ecedabb5d 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -61,32 +61,36 @@
- #define SSI_NAME "ssi"
- 
- struct rsnd_ssi {
--	struct rsnd_ssi_platform_info *info; /* rcar_snd.h */
- 	struct rsnd_ssi *parent;
- 	struct rsnd_mod mod;
- 	struct rsnd_mod *dma;
- 
-+	u32 flags;
- 	u32 cr_own;
- 	u32 cr_clk;
- 	u32 cr_mode;
- 	int chan;
- 	int rate;
- 	int err;
-+	int irq;
- 	unsigned int usrcnt;
- };
- 
-+/* flags */
-+#define RSND_SSI_CLK_PIN_SHARE		(1 << 0)
-+#define RSND_SSI_NO_BUSIF		(1 << 1) /* SSI+DMA without BUSIF */
-+
- #define for_each_rsnd_ssi(pos, priv, i)					\
- 	for (i = 0;							\
- 	     (i < rsnd_ssi_nr(priv)) &&					\
- 		((pos) = ((struct rsnd_ssi *)(priv)->ssi + i));		\
- 	     i++)
- 
-+#define rsnd_ssi_get(priv, id) ((struct rsnd_ssi *)(priv->ssi) + id)
- #define rsnd_ssi_to_dma(mod) ((ssi)->dma)
- #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
--#define rsnd_ssi_pio_available(ssi) ((ssi)->info->irq > 0)
--#define rsnd_ssi_mode_flags(p) ((p)->info->flags)
--#define rsnd_ssi_dai_id(ssi) ((ssi)->info->dai_id)
-+#define rsnd_ssi_mode_flags(p) ((p)->flags)
- #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
- 
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
-@@ -587,7 +591,7 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = devm_request_irq(dev, ssi->info->irq,
-+	ret = devm_request_irq(dev, ssi->irq,
- 			       rsnd_ssi_interrupt,
- 			       IRQF_SHARED,
- 			       dev_name(dev), mod);
-@@ -610,7 +614,7 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
- 			      struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
--	int dma_id = ssi->info->dma_id;
-+	int dma_id = 0; /* not needed */
- 	int ret;
- 
- 	ret = rsnd_ssi_common_probe(mod, io, priv);
-@@ -630,7 +634,7 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct device *dev = rsnd_priv_to_dev(priv);
--	int irq = ssi->info->irq;
-+	int irq = ssi->irq;
- 
- 	/* PIO will request IRQ again */
- 	devm_free_irq(dev, irq, mod);
-@@ -709,7 +713,7 @@ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
- 	if (WARN_ON(id < 0 || id >= rsnd_ssi_nr(priv)))
- 		id = 0;
- 
--	return rsnd_mod_get((struct rsnd_ssi *)(priv->ssi) + id);
-+	return rsnd_mod_get(rsnd_ssi_get(priv, id));
- }
- 
- int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
-@@ -719,73 +723,12 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- 	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
- }
- 
--static void rsnd_of_parse_ssi(struct platform_device *pdev,
--			      const struct rsnd_of_data *of_data,
--			      struct rsnd_priv *priv)
--{
--	struct device_node *node;
--	struct device_node *np;
--	struct rsnd_ssi_platform_info *ssi_info;
--	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
--	struct device *dev = &pdev->dev;
--	int nr, i;
--
--	node = rsnd_ssi_of_node(priv);
--	if (!node)
--		return;
--
--	nr = of_get_child_count(node);
--	if (!nr)
--		goto rsnd_of_parse_ssi_end;
--
--	ssi_info = devm_kzalloc(dev,
--				sizeof(struct rsnd_ssi_platform_info) * nr,
--				GFP_KERNEL);
--	if (!ssi_info) {
--		dev_err(dev, "ssi info allocation error\n");
--		goto rsnd_of_parse_ssi_end;
--	}
--
--	info->ssi_info		= ssi_info;
--	info->ssi_info_nr	= nr;
--
--	i = -1;
--	for_each_child_of_node(node, np) {
--		i++;
--
--		ssi_info = info->ssi_info + i;
--
--		/*
--		 * pin settings
--		 */
--		if (of_get_property(np, "shared-pin", NULL))
--			ssi_info->flags |= RSND_SSI_CLK_PIN_SHARE;
--
--		/*
--		 * irq
--		 */
--		ssi_info->irq = irq_of_parse_and_map(np, 0);
--
--		/*
--		 * DMA
--		 */
--		ssi_info->dma_id = of_get_property(np, "pio-transfer", NULL) ?
--			0 : 1;
--
--		if (of_get_property(np, "no-busif", NULL))
--			ssi_info->flags |= RSND_SSI_NO_BUSIF;
--	}
--
--rsnd_of_parse_ssi_end:
--	of_node_put(node);
--}
--
- int rsnd_ssi_probe(struct platform_device *pdev,
- 		   const struct rsnd_of_data *of_data,
- 		   struct rsnd_priv *priv)
- {
--	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
--	struct rsnd_ssi_platform_info *pinfo;
-+	struct device_node *node;
-+	struct device_node *np;
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_mod_ops *ops;
- 	struct clk *clk;
-@@ -793,44 +736,70 @@ int rsnd_ssi_probe(struct platform_device *pdev,
- 	char name[RSND_SSI_NAME_SIZE];
- 	int i, nr, ret;
- 
--	rsnd_of_parse_ssi(pdev, of_data, priv);
-+	node = rsnd_ssi_of_node(priv);
-+	if (!node)
-+		return -EINVAL;
-+
-+	nr = of_get_child_count(node);
-+	if (!nr) {
-+		ret = -EINVAL;
-+		goto rsnd_ssi_probe_done;
-+	}
- 
--	/*
--	 *	init SSI
--	 */
--	nr	= info->ssi_info_nr;
- 	ssi	= devm_kzalloc(dev, sizeof(*ssi) * nr, GFP_KERNEL);
--	if (!ssi)
--		return -ENOMEM;
-+	if (!ssi) {
-+		ret = -ENOMEM;
-+		goto rsnd_ssi_probe_done;
-+	}
- 
- 	priv->ssi	= ssi;
- 	priv->ssi_nr	= nr;
- 
--	for_each_rsnd_ssi(ssi, priv, i) {
--		pinfo = &info->ssi_info[i];
-+	i = 0;
-+	for_each_child_of_node(node, np) {
-+		ssi = rsnd_ssi_get(priv, i);
- 
- 		snprintf(name, RSND_SSI_NAME_SIZE, "%s.%d",
- 			 SSI_NAME, i);
- 
- 		clk = devm_clk_get(dev, name);
--		if (IS_ERR(clk))
--			return PTR_ERR(clk);
-+		if (IS_ERR(clk)) {
-+			ret = PTR_ERR(clk);
-+			goto rsnd_ssi_probe_done;
-+		}
- 
--		ssi->info	= pinfo;
-+		if (of_get_property(np, "shared-pin", NULL))
-+			ssi->flags |= RSND_SSI_CLK_PIN_SHARE;
-+
-+		if (of_get_property(np, "no-busif", NULL))
-+			ssi->flags |= RSND_SSI_NO_BUSIF;
-+
-+		ssi->irq = irq_of_parse_and_map(np, 0);
-+		if (!ssi->irq) {
-+			ret = -EINVAL;
-+			goto rsnd_ssi_probe_done;
-+		}
- 
- 		ops = &rsnd_ssi_non_ops;
--		if (pinfo->dma_id > 0)
--			ops = &rsnd_ssi_dma_ops;
--		else if (rsnd_ssi_pio_available(ssi))
-+		if (of_get_property(np, "pio-transfer", NULL))
- 			ops = &rsnd_ssi_pio_ops;
-+		else
-+			ops = &rsnd_ssi_dma_ops;
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssi), ops, clk,
- 				    RSND_MOD_SSI, i);
- 		if (ret)
--			return ret;
-+			goto rsnd_ssi_probe_done;
-+
-+		i++;
- 	}
- 
--	return 0;
-+	ret = 0;
-+
-+rsnd_ssi_probe_done:
-+	of_node_put(node);
-+
-+	return ret;
- }
- 
- void rsnd_ssi_remove(struct platform_device *pdev,
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
+-	depends on X86 && ACPI
++	depends on X86 && ACPI && I2C
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT286
 -- 
 2.6.2
