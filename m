@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SRC settings matches to
-	datasheet" to the asoc tree
+Subject: Applied "ASoC: rsnd: cleanup RSND_REG_xxx" to the asoc
+	tree
 Date: Wed, 18 Nov 2015 18:09:42 +0000
-Message-ID: <E1Zz7As-0000Jg-0v@debutante>
-References: <874mgula0b.wl%kuninori.morimoto.gx@renesas.com>
+Message-ID: <E1Zz7As-0000KI-Pg@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9E372659C7
+ by alsa0.perex.cz (Postfix) with ESMTP id 486B6265B90
  for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:47 +0100 (CET)
-In-Reply-To: <874mgula0b.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SRC settings matches to datasheet
+   ASoC: rsnd: cleanup RSND_REG_xxx
 
 has been applied to the asoc tree at
 
@@ -53,625 +52,160 @@ to this mail.
 Thanks,
 Mark
 
->From 75916f6524f055bca134f50901f926d5b0693db5 Mon Sep 17 00:00:00 2001
+>From d444080ef824bf45ead732f2c68cfeb5885bc53a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 10 Nov 2015 05:10:48 +0000
-Subject: [PATCH] ASoC: rsnd: SRC settings matches to datasheet
+Date: Tue, 10 Nov 2015 05:10:18 +0000
+Subject: [PATCH] ASoC: rsnd: cleanup RSND_REG_xxx
 
-Current SRC settings order was rough. Now, Gen1 support was removed.
-This patch makes it cleanup and match to datasheet.
+SRC Gen1 support was removed. Current rsnd driver is sharing Gen1/Gen2
+register index to reduce memory, but there is no effect anymore.
+Let's remove share definition and merge RSND_REG_xxx
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 424 +++++++++++++++++++-----------------------------
- 1 file changed, 166 insertions(+), 258 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 93 ++++++++++++++++--------------------------------
+ 1 file changed, 30 insertions(+), 63 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 0978221b2fe1..d081a652f917 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -117,23 +117,12 @@ struct rsnd_src {
-  *
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index da671869f12a..a3e42a4f4b19 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -34,9 +34,14 @@
+  * see gen1/gen2 for detail
   */
+ enum rsnd_reg {
+-	/* SRU/SCU/SSIU */
++	/* SCU (SRC/SSIU/MIX/CTU/DVC) */
+ 	RSND_REG_SSI_MODE0,
+ 	RSND_REG_SSI_MODE1,
++	RSND_REG_SSI_CTRL,		/* Gen2 only */
++	RSND_REG_SSI_BUSIF_MODE,	/* Gen2 only */
++	RSND_REG_SSI_BUSIF_ADINR,	/* Gen2 only */
++	RSND_REG_SSI_BUSIF_DALIGN,	/* Gen2 only */
++	RSND_REG_SSI_INT_ENABLE,	/* Gen2 only */
+ 	RSND_REG_SRC_BUSIF_MODE,
+ 	RSND_REG_SRC_ROUTE_MODE0,
+ 	RSND_REG_SRC_SWRSR,
+@@ -45,9 +50,28 @@ enum rsnd_reg {
+ 	RSND_REG_SRC_IFSCR,
+ 	RSND_REG_SRC_IFSVR,
+ 	RSND_REG_SRC_SRCCR,
++	RSND_REG_SRC_CTRL,		/* Gen2 only */
++	RSND_REG_SRC_BSDSR,		/* Gen2 only */
++	RSND_REG_SRC_BSISR,		/* Gen2 only */
++	RSND_REG_SRC_INT_ENABLE0,	/* Gen2 only */
++	RSND_REG_SRC_BUSIF_DALIGN,	/* Gen2 only */
++	RSND_REG_SRCIN_TIMSEL0,		/* Gen2 only */
++	RSND_REG_SRCIN_TIMSEL1,		/* Gen2 only */
++	RSND_REG_SRCIN_TIMSEL2,		/* Gen2 only */
++	RSND_REG_SRCIN_TIMSEL3,		/* Gen2 only */
++	RSND_REG_SRCIN_TIMSEL4,		/* Gen2 only */
++	RSND_REG_SRCOUT_TIMSEL0,	/* Gen2 only */
++	RSND_REG_SRCOUT_TIMSEL1,	/* Gen2 only */
++	RSND_REG_SRCOUT_TIMSEL2,	/* Gen2 only */
++	RSND_REG_SRCOUT_TIMSEL3,	/* Gen2 only */
++	RSND_REG_SRCOUT_TIMSEL4,	/* Gen2 only */
+ 	RSND_REG_SCU_SYS_STATUS0,
++	RSND_REG_SCU_SYS_STATUS1,	/* Gen2 only */
+ 	RSND_REG_SCU_SYS_INT_EN0,
++	RSND_REG_SCU_SYS_INT_EN1,	/* Gen2 only */
++	RSND_REG_CMD_CTRL,		/* Gen2 only */
+ 	RSND_REG_CMD_ROUTE_SLCT,
++	RSND_REG_CMDOUT_TIMSEL,		/* Gen2 only */
+ 	RSND_REG_CTU_CTUIR,
+ 	RSND_REG_CTU_ADINR,
+ 	RSND_REG_MIX_SWRSR,
+@@ -68,13 +92,18 @@ enum rsnd_reg {
+ 	RSND_REG_DVC_VOL0R,
+ 	RSND_REG_DVC_VOL1R,
+ 	RSND_REG_DVC_DVUER,
++	RSND_REG_DVC_VRCTR,		/* Gen2 only */
++	RSND_REG_DVC_VRPDR,		/* Gen2 only */
++	RSND_REG_DVC_VRDBR,		/* Gen2 only */
  
--/*
-- *		Gen1/Gen2 common functions
-- */
- static void rsnd_src_soft_reset(struct rsnd_mod *mod)
- {
- 	rsnd_mod_write(mod, SRC_SWRSR, 0);
- 	rsnd_mod_write(mod, SRC_SWRSR, 1);
- }
+ 	/* ADG */
+ 	RSND_REG_BRRA,
+ 	RSND_REG_BRRB,
+ 	RSND_REG_SSICKR,
++	RSND_REG_DIV_EN,		/* Gen2 only */
+ 	RSND_REG_AUDIO_CLK_SEL0,
+ 	RSND_REG_AUDIO_CLK_SEL1,
++	RSND_REG_AUDIO_CLK_SEL2,	/* Gen2 only */
  
+ 	/* SSI */
+ 	RSND_REG_SSICR,
+@@ -83,71 +112,9 @@ enum rsnd_reg {
+ 	RSND_REG_SSIRDR,
+ 	RSND_REG_SSIWSR,
+ 
+-	/* SHARE see below */
+-	RSND_REG_SHARE01,
+-	RSND_REG_SHARE02,
+-	RSND_REG_SHARE03,
+-	RSND_REG_SHARE04,
+-	RSND_REG_SHARE05,
+-	RSND_REG_SHARE06,
+-	RSND_REG_SHARE07,
+-	RSND_REG_SHARE08,
+-	RSND_REG_SHARE09,
+-	RSND_REG_SHARE10,
+-	RSND_REG_SHARE11,
+-	RSND_REG_SHARE12,
+-	RSND_REG_SHARE13,
+-	RSND_REG_SHARE14,
+-	RSND_REG_SHARE15,
+-	RSND_REG_SHARE16,
+-	RSND_REG_SHARE17,
+-	RSND_REG_SHARE18,
+-	RSND_REG_SHARE19,
+-	RSND_REG_SHARE20,
+-	RSND_REG_SHARE21,
+-	RSND_REG_SHARE22,
+-	RSND_REG_SHARE23,
+-	RSND_REG_SHARE24,
+-	RSND_REG_SHARE25,
+-	RSND_REG_SHARE26,
+-	RSND_REG_SHARE27,
+-	RSND_REG_SHARE28,
+-	RSND_REG_SHARE29,
 -
--#define rsnd_src_initialize_lock(mod)	__rsnd_src_initialize_lock(mod, 1)
--#define rsnd_src_initialize_unlock(mod)	__rsnd_src_initialize_lock(mod, 0)
--static void __rsnd_src_initialize_lock(struct rsnd_mod *mod, u32 enable)
--{
--	rsnd_mod_write(mod, SRC_SRCIR, enable);
--}
--
- static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
- 					 struct rsnd_mod *mod)
- {
-@@ -192,34 +181,6 @@ unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
- 	return rate;
- }
- 
--static int rsnd_src_set_convert_rate(struct rsnd_mod *mod,
--				     struct rsnd_dai_stream *io)
--{
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	u32 convert_rate = rsnd_src_convert_rate(io, src);
--	u32 fsrate = 0;
--
--	if (convert_rate)
--		fsrate = 0x0400000 / convert_rate * runtime->rate;
--
--	/* Set channel number and output bit length */
--	rsnd_mod_write(mod, SRC_ADINR, rsnd_get_adinr_bit(mod, io));
--
--	/* Enable the initial value of IFS */
--	if (fsrate) {
--		rsnd_mod_write(mod, SRC_IFSCR, 1);
--
--		/* Set initial value of IFS */
--		rsnd_mod_write(mod, SRC_IFSVR, fsrate);
--	}
--
--	/* use DMA transfer */
--	rsnd_mod_write(mod, SRC_BUSIF_MODE, 1);
--
--	return 0;
--}
--
- static int rsnd_src_hw_params(struct rsnd_mod *mod,
- 			      struct rsnd_dai_stream *io,
- 			      struct snd_pcm_substream *substream,
-@@ -256,65 +217,106 @@ static int rsnd_src_hw_params(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_src_init(struct rsnd_mod *mod,
--			 struct rsnd_priv *priv)
-+static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
-+				      struct rsnd_mod *mod)
- {
-+	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
-+	u32 convert_rate = rsnd_src_convert_rate(io, src);
-+	u32 ifscr, fsrate, adinr;
-+	u32 cr, route;
-+	u32 bsdsr, bsisr;
-+	uint ratio;
- 
--	rsnd_mod_power_on(mod);
--
--	rsnd_src_soft_reset(mod);
--
--	rsnd_src_initialize_lock(mod);
--
--	src->err = 0;
--
--	/* reset sync convert_rate */
--	src->sync.val = 0;
-+	if (!runtime)
-+		return;
- 
--	return 0;
--}
-+	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
-+	if (!convert_rate)
-+		ratio = 0;
-+	else if (convert_rate > runtime->rate)
-+		ratio = 100 * convert_rate / runtime->rate;
-+	else
-+		ratio = 100 * runtime->rate / convert_rate;
- 
--static int rsnd_src_quit(struct rsnd_mod *mod,
--			 struct rsnd_dai_stream *io,
--			 struct rsnd_priv *priv)
--{
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	struct device *dev = rsnd_priv_to_dev(priv);
-+	if (ratio > 600) {
-+		dev_err(dev, "FSO/FSI ratio error\n");
-+		return;
-+	}
- 
--	rsnd_mod_power_off(mod);
-+	/*
-+	 *	SRC_ADINR
-+	 */
-+	adinr = rsnd_get_adinr_bit(mod, io);
- 
--	if (src->err)
--		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
--			 rsnd_mod_name(mod), rsnd_mod_id(mod), src->err);
-+	/*
-+	 *	SRC_IFSCR / SRC_IFSVR
-+	 */
-+	ifscr = 0;
-+	fsrate = 0;
-+	if (convert_rate) {
-+		ifscr = 1;
-+		fsrate = 0x0400000 / convert_rate * runtime->rate;
-+	}
- 
--	src->convert_rate = 0;
-+	/*
-+	 *	SRC_SRCCR / SRC_ROUTE_MODE0
-+	 */
-+	cr	= 0x00011110;
-+	route	= 0x0;
-+	if (convert_rate) {
-+		route	= 0x1;
- 
--	/* reset sync convert_rate */
--	src->sync.val = 0;
-+		if (rsnd_enable_sync_convert(src)) {
-+			cr |= 0x1;
-+			route |= rsnd_io_is_play(io) ?
-+				(0x1 << 24) : (0x1 << 25);
-+		}
-+	}
- 
--	return 0;
--}
-+	/*
-+	 * SRC_BSDSR / SRC_BSISR
-+	 */
-+	switch (rsnd_mod_id(mod)) {
-+	case 5:
-+	case 6:
-+	case 7:
-+	case 8:
-+		bsdsr = 0x02400000; /* 6 - 1/6 */
-+		bsisr = 0x00100060; /* 6 - 1/6 */
-+		break;
-+	default:
-+		bsdsr = 0x01800000; /* 6 - 1/6 */
-+		bsisr = 0x00100060 ;/* 6 - 1/6 */
-+		break;
-+	}
- 
--static int rsnd_src_start(struct rsnd_mod *mod)
--{
--	rsnd_src_initialize_unlock(mod);
-+	rsnd_mod_write(mod, SRC_SRCIR, 1);	/* initialize */
-+	rsnd_mod_write(mod, SRC_ADINR, adinr);
-+	rsnd_mod_write(mod, SRC_IFSCR, ifscr);
-+	rsnd_mod_write(mod, SRC_IFSVR, fsrate);
-+	rsnd_mod_write(mod, SRC_SRCCR, cr);
-+	rsnd_mod_write(mod, SRC_BSDSR, bsdsr);
-+	rsnd_mod_write(mod, SRC_BSISR, bsisr);
-+	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
- 
--	return 0;
--}
-+	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
-+	rsnd_mod_write(mod, SRC_BUSIF_MODE, 1);
-+	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
- 
--static int rsnd_src_stop(struct rsnd_mod *mod)
--{
--	/* nothing to do */
--	return 0;
-+	if (convert_rate)
-+		rsnd_adg_set_convert_clk_gen2(mod, io,
-+					      runtime->rate,
-+					      convert_rate);
-+	else
-+		rsnd_adg_set_convert_timing_gen2(mod, io);
- }
- 
--/*
-- *		Gen2 functions
-- */
--#define rsnd_src_irq_enable_gen2(mod)  rsnd_src_irq_ctrol_gen2(mod, 1)
--#define rsnd_src_irq_disable_gen2(mod) rsnd_src_irq_ctrol_gen2(mod, 0)
--static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
-+#define rsnd_src_irq_enable(mod)  rsnd_src_irq_ctrol(mod, 1)
-+#define rsnd_src_irq_disable(mod) rsnd_src_irq_ctrol(mod, 0)
-+static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 sys_int_val, int_val, sys_int_mask;
-@@ -328,7 +330,7 @@ static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
- 	/*
- 	 * IRQ is not supported on non-DT
- 	 * see
--	 *	rsnd_src_probe_gen2()
-+	 *	rsnd_src_probe_()
- 	 */
- 	if ((irq <= 0) || !enable) {
- 		sys_int_val = 0;
-@@ -348,7 +350,7 @@ static void rsnd_src_irq_ctrol_gen2(struct rsnd_mod *mod, int enable)
- 	rsnd_mod_bset(mod, SCU_SYS_INT_EN1, sys_int_mask, sys_int_val);
- }
- 
--static void rsnd_src_error_clear_gen2(struct rsnd_mod *mod)
-+static void rsnd_src_error_clear(struct rsnd_mod *mod)
- {
- 	u32 val = OUF_SRC(rsnd_mod_id(mod));
- 
-@@ -356,7 +358,7 @@ static void rsnd_src_error_clear_gen2(struct rsnd_mod *mod)
- 	rsnd_mod_bset(mod, SCU_SYS_STATUS1, val, val);
- }
- 
--static bool rsnd_src_error_record_gen2(struct rsnd_mod *mod)
-+static bool rsnd_src_error_record(struct rsnd_mod *mod)
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 val0, val1;
-@@ -381,22 +383,18 @@ static bool rsnd_src_error_record_gen2(struct rsnd_mod *mod)
- 	}
- 
- 	/* clear error static */
--	rsnd_src_error_clear_gen2(mod);
-+	rsnd_src_error_clear(mod);
- 
- 	return ret;
- }
- 
--static int rsnd_src_start_gen2(struct rsnd_mod *mod,
--			       struct rsnd_dai_stream *io,
--			       struct rsnd_priv *priv)
-+static int rsnd_src_start(struct rsnd_mod *mod,
-+			  struct rsnd_dai_stream *io,
-+			  struct rsnd_priv *priv)
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 val;
- 
--	val = rsnd_get_dalign(mod, io);
--
--	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, val);
--
- 	/*
- 	 * WORKAROUND
- 	 *
-@@ -407,44 +405,74 @@ static int rsnd_src_start_gen2(struct rsnd_mod *mod,
- 
- 	rsnd_mod_write(mod, SRC_CTRL, val);
- 
--	rsnd_src_error_clear_gen2(mod);
--
--	rsnd_src_start(mod);
--
--	rsnd_src_irq_enable_gen2(mod);
--
- 	return 0;
- }
- 
--static int rsnd_src_stop_gen2(struct rsnd_mod *mod,
--			      struct rsnd_dai_stream *io,
--			      struct rsnd_priv *priv)
-+static int rsnd_src_stop(struct rsnd_mod *mod,
-+			 struct rsnd_dai_stream *io,
-+			 struct rsnd_priv *priv)
- {
--	rsnd_src_irq_disable_gen2(mod);
--
- 	/*
- 	 * stop SRC output only
--	 * see rsnd_src_quit_gen2
-+	 * see rsnd_src_quit
- 	 */
- 	rsnd_mod_write(mod, SRC_CTRL, 0x01);
- 
--	rsnd_src_error_record_gen2(mod);
-+	return 0;
-+}
-+
-+static int rsnd_src_init(struct rsnd_mod *mod,
-+			 struct rsnd_dai_stream *io,
-+			 struct rsnd_priv *priv)
-+{
-+	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 
--	return rsnd_src_stop(mod);
-+	rsnd_mod_power_on(mod);
-+
-+	rsnd_src_soft_reset(mod);
-+
-+	rsnd_src_set_convert_rate(io, mod);
-+
-+	rsnd_src_error_clear(mod);
-+
-+	rsnd_src_irq_enable(mod);
-+
-+	src->err = 0;
-+
-+	/* reset sync convert_rate */
-+	src->sync.val = 0;
-+
-+	return 0;
- }
- 
--static int rsnd_src_quit_gen2(struct rsnd_mod *mod,
--			      struct rsnd_dai_stream *io,
--			      struct rsnd_priv *priv)
-+static int rsnd_src_quit(struct rsnd_mod *mod,
-+			 struct rsnd_dai_stream *io,
-+			 struct rsnd_priv *priv)
- {
-+	struct rsnd_src *src = rsnd_mod_to_src(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+
-+	rsnd_src_irq_disable(mod);
-+
- 	/* stop both out/in */
- 	rsnd_mod_write(mod, SRC_CTRL, 0);
- 
--	return rsnd_src_quit(mod, io, priv);
-+	rsnd_mod_power_off(mod);
-+
-+	if (src->err)
-+		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
-+			 rsnd_mod_name(mod), rsnd_mod_id(mod), src->err);
-+
-+	src->convert_rate = 0;
-+
-+	/* reset sync convert_rate */
-+	src->sync.val = 0;
-+
-+	return 0;
- }
- 
--static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
--				      struct rsnd_dai_stream *io)
-+static void __rsnd_src_interrupt(struct rsnd_mod *mod,
-+				 struct rsnd_dai_stream *io)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
-@@ -454,119 +482,40 @@ static void __rsnd_src_interrupt_gen2(struct rsnd_mod *mod,
- 
- 	/* ignore all cases if not working */
- 	if (!rsnd_io_is_working(io))
--		goto rsnd_src_interrupt_gen2_out;
-+		goto rsnd_src_interrupt_out;
- 
--	if (rsnd_src_error_record_gen2(mod)) {
-+	if (rsnd_src_error_record(mod)) {
- 
- 		dev_dbg(dev, "%s[%d] restart\n",
- 			rsnd_mod_name(mod), rsnd_mod_id(mod));
- 
--		rsnd_src_stop_gen2(mod, io, priv);
--		rsnd_src_start_gen2(mod, io, priv);
-+		rsnd_src_stop(mod, io, priv);
-+		rsnd_src_start(mod, io, priv);
- 	}
- 
- 	if (src->err > 1024) {
--		rsnd_src_irq_disable_gen2(mod);
-+		rsnd_src_irq_disable(mod);
- 
- 		dev_warn(dev, "no more %s[%d] restart\n",
- 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
- 	}
- 
--rsnd_src_interrupt_gen2_out:
-+rsnd_src_interrupt_out:
- 	spin_unlock(&priv->lock);
- }
- 
--static irqreturn_t rsnd_src_interrupt_gen2(int irq, void *data)
-+static irqreturn_t rsnd_src_interrupt(int irq, void *data)
- {
- 	struct rsnd_mod *mod = data;
- 
--	rsnd_mod_interrupt(mod, __rsnd_src_interrupt_gen2);
-+	rsnd_mod_interrupt(mod, __rsnd_src_interrupt);
- 
- 	return IRQ_HANDLED;
- }
- 
--static int rsnd_src_set_convert_rate_gen2(struct rsnd_mod *mod,
--					  struct rsnd_dai_stream *io)
--{
--	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--	struct device *dev = rsnd_priv_to_dev(priv);
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	u32 convert_rate = rsnd_src_convert_rate(io, src);
--	u32 cr, route;
--	uint ratio;
--	int ret;
--
--	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
--	if (!convert_rate)
--		ratio = 0;
--	else if (convert_rate > runtime->rate)
--		ratio = 100 * convert_rate / runtime->rate;
--	else
--		ratio = 100 * runtime->rate / convert_rate;
--
--	if (ratio > 600) {
--		dev_err(dev, "FSO/FSI ratio error\n");
--		return -EINVAL;
--	}
--
--	ret = rsnd_src_set_convert_rate(mod, io);
--	if (ret < 0)
--		return ret;
--
--	cr	= 0x00011110;
--	route	= 0x0;
--	if (convert_rate) {
--		route	= 0x1;
--
--		if (rsnd_enable_sync_convert(src)) {
--			cr |= 0x1;
--			route |= rsnd_io_is_play(io) ?
--				(0x1 << 24) : (0x1 << 25);
--		}
--	}
--
--	rsnd_mod_write(mod, SRC_SRCCR, cr);
--	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
--
--	switch (rsnd_mod_id(mod)) {
--	case 5:
--	case 6:
--	case 7:
--	case 8:
--		rsnd_mod_write(mod, SRC_BSDSR, 0x02400000);
--		break;
--	default:
--		rsnd_mod_write(mod, SRC_BSDSR, 0x01800000);
--		break;
--	}
--
--	rsnd_mod_write(mod, SRC_BSISR, 0x00100060);
--
--	return 0;
--}
--
--static int rsnd_src_set_convert_timing_gen2(struct rsnd_dai_stream *io,
--					    struct rsnd_mod *mod)
--{
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	u32 convert_rate = rsnd_src_convert_rate(io, src);
--	int ret;
--
--	if (convert_rate)
--		ret = rsnd_adg_set_convert_clk_gen2(mod, io,
--						    runtime->rate,
--						    convert_rate);
--	else
--		ret = rsnd_adg_set_convert_timing_gen2(mod, io);
--
--	return ret;
--}
--
--static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
--			       struct rsnd_dai_stream *io,
--			       struct rsnd_priv *priv)
-+static int rsnd_src_probe_(struct rsnd_mod *mod,
-+			   struct rsnd_dai_stream *io,
-+			   struct rsnd_priv *priv)
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	struct device *dev = rsnd_priv_to_dev(priv);
-@@ -577,10 +526,10 @@ static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
- 		/*
- 		 * IRQ is not supported on non-DT
- 		 * see
--		 *	rsnd_src_irq_enable_gen2()
-+		 *	rsnd_src_irq_enable()
- 		 */
- 		ret = devm_request_irq(dev, irq,
--				       rsnd_src_interrupt_gen2,
-+				       rsnd_src_interrupt,
- 				       IRQF_SHARED,
- 				       dev_name(dev), mod);
- 		if (ret)
-@@ -594,48 +543,7 @@ static int rsnd_src_probe_gen2(struct rsnd_mod *mod,
- 	return ret;
- }
- 
--static int rsnd_src_init_gen2(struct rsnd_mod *mod,
--			      struct rsnd_dai_stream *io,
--			      struct rsnd_priv *priv)
--{
--	int ret;
--
--	ret = rsnd_src_init(mod, priv);
--	if (ret < 0)
--		return ret;
--
--	ret = rsnd_src_set_convert_rate_gen2(mod, io);
--	if (ret < 0)
--		return ret;
--
--	ret = rsnd_src_set_convert_timing_gen2(io, mod);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static void rsnd_src_reconvert_update(struct rsnd_dai_stream *io,
--				      struct rsnd_mod *mod)
--{
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	u32 convert_rate = rsnd_src_convert_rate(io, src);
--	u32 fsrate;
--
--	if (!runtime)
--		return;
--
--	if (!convert_rate)
--		convert_rate = runtime->rate;
--
--	fsrate = 0x0400000 / convert_rate * runtime->rate;
--
--	/* update IFS */
--	rsnd_mod_write(mod, SRC_IFSVR, fsrate);
--}
--
--static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
-+static int rsnd_src_pcm_new(struct rsnd_mod *mod,
- 			    struct rsnd_dai_stream *io,
- 			    struct snd_soc_pcm_runtime *rtd)
- {
-@@ -660,7 +568,7 @@ static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
- 			       rsnd_io_is_play(io) ?
- 			       "SRC Out Rate Switch" :
- 			       "SRC In Rate Switch",
--			       rsnd_src_reconvert_update,
-+			       rsnd_src_set_convert_rate,
- 			       &src->sen, 1);
- 	if (ret < 0)
- 		return ret;
-@@ -669,22 +577,22 @@ static int rsnd_src_pcm_new_gen2(struct rsnd_mod *mod,
- 			       rsnd_io_is_play(io) ?
- 			       "SRC Out Rate" :
- 			       "SRC In Rate",
--			       rsnd_src_reconvert_update,
-+			       rsnd_src_set_convert_rate,
- 			       &src->sync, 192000);
- 
- 	return ret;
- }
- 
--static struct rsnd_mod_ops rsnd_src_gen2_ops = {
-+static struct rsnd_mod_ops rsnd_src_ops = {
- 	.name	= SRC_NAME,
- 	.dma_req = rsnd_src_dma_req,
--	.probe	= rsnd_src_probe_gen2,
--	.init	= rsnd_src_init_gen2,
--	.quit	= rsnd_src_quit_gen2,
--	.start	= rsnd_src_start_gen2,
--	.stop	= rsnd_src_stop_gen2,
-+	.probe	= rsnd_src_probe_,
-+	.init	= rsnd_src_init,
-+	.quit	= rsnd_src_quit,
-+	.start	= rsnd_src_start,
-+	.stop	= rsnd_src_stop,
- 	.hw_params = rsnd_src_hw_params,
--	.pcm_new = rsnd_src_pcm_new_gen2,
-+	.pcm_new = rsnd_src_pcm_new,
+ 	RSND_REG_MAX,
  };
  
- struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id)
-@@ -781,7 +689,7 @@ int rsnd_src_probe(struct platform_device *pdev,
- 		src->info = &info->src_info[i];
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(src),
--				    &rsnd_src_gen2_ops, clk, RSND_MOD_SRC, i);
-+				    &rsnd_src_ops, clk, RSND_MOD_SRC, i);
- 		if (ret)
- 			return ret;
- 	}
+-/* Gen2 only */
+-#define RSND_REG_SRC_CTRL		RSND_REG_SHARE01
+-#define RSND_REG_SSI_CTRL		RSND_REG_SHARE02
+-#define RSND_REG_SSI_BUSIF_MODE		RSND_REG_SHARE03
+-#define RSND_REG_SSI_BUSIF_ADINR	RSND_REG_SHARE04
+-#define RSND_REG_SSI_INT_ENABLE		RSND_REG_SHARE05
+-#define RSND_REG_SRC_BSDSR		RSND_REG_SHARE06
+-#define RSND_REG_SRC_BSISR		RSND_REG_SHARE07
+-#define RSND_REG_DIV_EN			RSND_REG_SHARE08
+-#define RSND_REG_SRCIN_TIMSEL0		RSND_REG_SHARE09
+-#define RSND_REG_SRCIN_TIMSEL1		RSND_REG_SHARE10
+-#define RSND_REG_SRCIN_TIMSEL2		RSND_REG_SHARE11
+-#define RSND_REG_SRCIN_TIMSEL3		RSND_REG_SHARE12
+-#define RSND_REG_SRCIN_TIMSEL4		RSND_REG_SHARE13
+-#define RSND_REG_SRCOUT_TIMSEL0		RSND_REG_SHARE14
+-#define RSND_REG_SRCOUT_TIMSEL1		RSND_REG_SHARE15
+-#define RSND_REG_SRCOUT_TIMSEL2		RSND_REG_SHARE16
+-#define RSND_REG_SRCOUT_TIMSEL3		RSND_REG_SHARE17
+-#define RSND_REG_SRCOUT_TIMSEL4		RSND_REG_SHARE18
+-#define RSND_REG_AUDIO_CLK_SEL2		RSND_REG_SHARE19
+-#define RSND_REG_CMD_CTRL		RSND_REG_SHARE20
+-#define RSND_REG_CMDOUT_TIMSEL		RSND_REG_SHARE21
+-#define RSND_REG_SSI_BUSIF_DALIGN	RSND_REG_SHARE22
+-#define RSND_REG_DVC_VRCTR		RSND_REG_SHARE23
+-#define RSND_REG_DVC_VRPDR		RSND_REG_SHARE24
+-#define RSND_REG_DVC_VRDBR		RSND_REG_SHARE25
+-#define RSND_REG_SCU_SYS_STATUS1	RSND_REG_SHARE26
+-#define RSND_REG_SCU_SYS_INT_EN1	RSND_REG_SHARE27
+-#define RSND_REG_SRC_INT_ENABLE0	RSND_REG_SHARE28
+-#define RSND_REG_SRC_BUSIF_DALIGN	RSND_REG_SHARE29
+-
+ struct rsnd_of_data;
+ struct rsnd_priv;
+ struct rsnd_mod;
 -- 
 2.6.2
