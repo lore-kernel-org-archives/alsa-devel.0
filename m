@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/3] ASoC: core: remove SND_SOC_BYTES_EXT
-Date: Wed, 18 Nov 2015 19:09:12 +0530
-Message-ID: <1447853952-6414-4-git-send-email-vinod.koul@intel.com>
-References: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Add I2C depends for SKL
+	machine
+Date: Wed, 18 Nov 2015 19:11:46 +0530
+Message-ID: <1447854106-6473-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 59BC12654BD
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:36:02 +0100 (CET)
-In-Reply-To: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CF10265AB8
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:38:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +23,37 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now all users are converted, remove the SND_SOC_BYTES_EXT
-New users should use SND_SOC_BYTES_TLV
+The i2c is dependency for the i2c codec drivers, so machine should depend on
+i2c. WIthout this we get build failures if I2C is not selected
 
+   sound/soc/codecs/rl6347a.c: In function 'rl6347a_hw_write':
+>> sound/soc/codecs/rl6347a.c:66:8: error: implicit declaration of function
+>> 'i2c_master_send' [-Werror=implicit-function-declaration]
+     ret = i2c_master_send(client, data, 4);
+           ^
+   sound/soc/codecs/rl6347a.c: In function 'rl6347a_hw_read':
+>> sound/soc/codecs/rl6347a.c:114:8: error: implicit declaration of function
+>> 'i2c_transfer' [-Werror=implicit-function-declaration]
+     ret = i2c_transfer(client->adapter, xfer, 2);
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/soc.h | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e09673dbae1b..10607aa29b48 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -293,12 +293,6 @@
- 		{.base = xbase, .num_regs = xregs,	      \
- 		 .mask = xmask }) }
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 13a762172b5d..2903823ebee1 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -145,7 +145,7 @@ config SND_SOC_INTEL_SKYLAKE
  
--#define SND_SOC_BYTES_EXT(xname, xcount, xhandler_get, xhandler_put) \
--{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
--	.info = snd_soc_bytes_info_ext, \
--	.get = xhandler_get, .put = xhandler_put, \
--	.private_value = (unsigned long)&(struct soc_bytes_ext) \
--		{.max = xcount} }
- #define SND_SOC_BYTES_TLV(xname, xcount, xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE | \
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
+-	depends on X86 && ACPI
++	depends on X86 && ACPI && I2C
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT286
 -- 
 1.9.1
