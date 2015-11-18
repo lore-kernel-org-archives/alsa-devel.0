@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Pass kcontrol to bytes tlv
-	callbacks" to the asoc tree
-Date: Wed, 18 Nov 2015 13:13:54 +0000
-Message-ID: <E1Zz2Yc-0006LI-Ce@debutante>
-References: <1447091401-24298-4-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 2/4] ASoC: core: Adds support for cpu
+	loopback dai_link
+Date: Wed, 18 Nov 2015 13:17:57 +0000
+Message-ID: <20151118131757.GI31303@sirena.org.uk>
+References: <1447091401-24298-1-git-send-email-vinod.koul@intel.com>
+ <1447091401-24298-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5232632847376297090=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0790F265756
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:14:03 +0100 (CET)
-In-Reply-To: <1447091401-24298-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C54C4260A5D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:18:03 +0100 (CET)
+In-Reply-To: <1447091401-24298-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,109 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: core: Pass kcontrol to bytes tlv callbacks
+--===============5232632847376297090==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dQAkT9kf8uI42z2+"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--dQAkT9kf8uI42z2+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Nov 09, 2015 at 11:19:59PM +0530, Vinod Koul wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> soc_link_dai_widgets() creates codec-codec loopback link which
+> allows DPCM to trigger these links and program the parameters for
+> these links These links are:
+>=20
+> 	Codec1 Tx (Pb)  ----------> Rx Codec2 (Cap)
+> 	Codec2 Tx (Cap) <---------- Tx Codec1 (Pb)
+>=20
+> But as we try to model a CPU based loops for non host links like
+> modem to codec loop, the above mapping gets wrong as:
+>=20
+> 	CPU Tx (Pb)  -----------> Codec Tx (Pb)
+> 	CPU Rx (Cap) <----------- Codec Rx (Cap)
+>=20
+> So we add a new flag to handle above scenario and link widgets as
+> depecited above
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+So, what I was really thinking of with the renaming was a bigger rename
+that updates the names in snd_soc_dai_driver and everything that comes
+=66rom that.  That's a much bigger thing though, let me think about it a
+bit more.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--dQAkT9kf8uI42z2+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJWTHqFAAoJECTWi3JdVIfQKhIH/RZSLTLeTxk2HJD54Pmt+JT9
+GyZ+1eq8Nqzr7klBhbs8ncSsUCqapbQKZOwoq5dFZ0I7+VHh7ZDNgQhnn26zKoYn
+8v7MxGah6Gdc2ZNXgnkN+1gUIMqYOhHg3/1EOX6Sr2M0oeXyAJ82EPCEwe08XzER
+nFTGDrkrAoLBfojmzCQwa7sqdYsD02wTO9Df4WTHfRmTWz3oSW3k1wDVZe8FnNRw
+0CVh+PqOPkGlW84HYat5jrCXfabB/XRCiwV7k/cnFmpqIBZxulC73WF3kfuUtD8U
+Nk07j/QP9bMz3cbLrx1+sUselpQaHsKt/nFLDMdXYBLvaibeaSuLAwne+7RMfRE=
+=DHrT
+-----END PGP SIGNATURE-----
 
->From a1e5e7e9b36f360bf75e4f0f7ceb899682f213bd Mon Sep 17 00:00:00 2001
-From: Mythri P K <mythri.p.k@intel.com>
-Date: Mon, 9 Nov 2015 23:20:00 +0530
-Subject: [PATCH] ASoC: core: Pass kcontrol to bytes tlv callbacks
+--dQAkT9kf8uI42z2+--
 
-Add kcontrol to the tlv callbacks in soc_bytes_ext, as it is
-needed for referencing the corresponding control in the driver
-code
+--===============5232632847376297090==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Also fix the only upstream user in topology core
 
-Signed-off-by: Mythri P K <mythri.p.k@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc-topology.h | 6 ++++--
- include/sound/soc.h          | 6 ++++--
- sound/soc/soc-ops.c          | 4 ++--
- 3 files changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 086cd7ff6ddc..5b68e3f5aa85 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -92,8 +92,10 @@ struct snd_soc_tplg_kcontrol_ops {
- /* Bytes ext operations, for TLV byte controls */
- struct snd_soc_tplg_bytes_ext_ops {
- 	u32 id;
--	int (*get)(unsigned int __user *bytes, unsigned int size);
--	int (*put)(const unsigned int __user *bytes, unsigned int size);
-+	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
-+							unsigned int size);
-+	int (*put)(struct snd_kcontrol *kcontrol,
-+			const unsigned int __user *bytes, unsigned int size);
- };
- 
- /*
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a8b4b9c8b1d2..6603155f50ca 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1225,8 +1225,10 @@ struct soc_bytes_ext {
- 	struct snd_soc_dobj dobj;
- 
- 	/* used for TLV byte control */
--	int (*get)(unsigned int __user *bytes, unsigned int size);
--	int (*put)(const unsigned int __user *bytes, unsigned int size);
-+	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
-+			unsigned int size);
-+	int (*put)(struct snd_kcontrol *kcontrol, const unsigned int __user *bytes,
-+			unsigned int size);
- };
- 
- /* multi register control */
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index ecd38e52285a..ba3e49010ac3 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -779,11 +779,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
- 	switch (op_flag) {
- 	case SNDRV_CTL_TLV_OP_READ:
- 		if (params->get)
--			ret = params->get(tlv, count);
-+			ret = params->get(kcontrol, tlv, count);
- 		break;
- 	case SNDRV_CTL_TLV_OP_WRITE:
- 		if (params->put)
--			ret = params->put(tlv, count);
-+			ret = params->put(kcontrol, tlv, count);
- 		break;
- 	}
- 	return ret;
--- 
-2.6.2
+--===============5232632847376297090==--
