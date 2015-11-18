@@ -1,24 +1,23 @@
 From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: Re: [PATCH 1/3] ASoC: samsung: pass DMA channels as
+Subject: Re: [PATCHv2] ASoC: samsung: pass DMA channels as
 	pointers
-Date: Wed, 18 Nov 2015 10:26:49 +0900
-Message-ID: <564BD3D9.7000701@samsung.com>
-References: <5466463.9HBcuLFGQf@wuerfel> <564A7FF4.7030603@samsung.com>
- <25607973.ZAWqqjj8F4@wuerfel>
+Date: Wed, 18 Nov 2015 10:33:41 +0900
+Message-ID: <564BD575.3070702@samsung.com>
+References: <6346833.MfUC71I3uD@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.w1.samsung.com (mailout3.w1.samsung.com
- [210.118.77.13])
- by alsa0.perex.cz (Postfix) with ESMTP id B38142605C0
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 02:26:58 +0100 (CET)
+Received: from mailout4.w1.samsung.com (mailout4.w1.samsung.com
+ [210.118.77.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0DE32605C0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 02:33:53 +0100 (CET)
 Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout3.w1.samsung.com
+ by mailout4.w1.samsung.com
  (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
- with ESMTP id <0NXZ00B15LCT4V20@mailout3.w1.samsung.com> for
- alsa-devel@alsa-project.org; Wed, 18 Nov 2015 01:26:53 +0000 (GMT)
-In-reply-to: <25607973.ZAWqqjj8F4@wuerfel>
+ with ESMTP id <0NXZ006YMLO8T710@mailout4.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Wed, 18 Nov 2015 01:33:44 +0000 (GMT)
+In-reply-to: <6346833.MfUC71I3uD@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,96 +27,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17.11.2015 19:24, Arnd Bergmann wrote:
-> On Tuesday 17 November 2015 10:16:36 Krzysztof Kozlowski wrote:
->> On 14.11.2015 02:22, Arnd Bergmann wrote:
->>> ARM64 allmodconfig produces a bunch of warnings when building the
->>> samsung ASoC code:
->>>
->>> sound/soc/samsung/dmaengine.c: In function 'samsung_asoc_init_dma_data':
->>> sound/soc/samsung/dmaengine.c:53:32: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
->>>    playback_data->filter_data = (void *)playback->channel;
->>> sound/soc/samsung/dmaengine.c:60:31: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
->>>    capture_data->filter_data = (void *)capture->channel;
->>>
->>> We could easily shut up the warning by adding an intermediate cast,
->>> but there is a bigger underlying problem: The use of IORESOURCE_DMA
->>> to pass data from platform code to device drivers is dubious to start
->>> with, as what we really want is a pointer that can be passed into
->>> a filter function.
->>>
->>> Note that on s3c64xx, the pl08x DMA data is already a pointer, but
->>> gets cast to resource_size_t so we can pass it as a resource, and it
->>> then gets converted back to a pointer. In contrast, the data we pass
->>> for s3c24xx is an index into a device specific table, and we artificially
->>> convert that into a pointer for the filter function.
->>>
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>
->> The patch looks good. I have only two questions below.
+On 18.11.2015 00:53, Arnd Bergmann wrote:
+> ARM64 allmodconfig produces a bunch of warnings when building the
+> samsung ASoC code:
 > 
-> Thanks for taking a look!
+> sound/soc/samsung/dmaengine.c: In function 'samsung_asoc_init_dma_data':
+> sound/soc/samsung/dmaengine.c:53:32: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+>    playback_data->filter_data = (void *)playback->channel;
+> sound/soc/samsung/dmaengine.c:60:31: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+>    capture_data->filter_data = (void *)capture->channel;
 > 
->>> @@ -1338,11 +1325,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
->>>               sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
->>>               sec_dai->dma_playback.ch_name = "tx-sec";
->>>  
->>> -             if (!np) {
->>> -                     res = platform_get_resource(pdev, IORESOURCE_DMA, 2);
->>> -                     if (res)
->>> -                             sec_dai->dma_playback.channel = res->start;
->>> -             }
->>> +             if (!np)
->>> +                     sec_dai->dma_playback.slave = i2s_pdata->dma_play_sec;
->>
->> I cannot this resource in original patch nor setting the 'dma_play_sec'
->> part. I guess this does not really matter as newer platforms were
->> converted to DT so 'np' will be set, right?
+> We could easily shut up the warning by adding an intermediate cast,
+> but there is a bigger underlying problem: The use of IORESOURCE_DMA
+> to pass data from platform code to device drivers is dubious to start
+> with, as what we really want is a pointer that can be passed into
+> a filter function.
 > 
-> Yes, that sounds correct.
+> Note that on s3c64xx, the pl08x DMA data is already a pointer, but
+> gets cast to resource_size_t so we can pass it as a resource, and it
+> then gets converted back to a pointer. In contrast, the data we pass
+> for s3c24xx is an index into a device specific table, and we artificially
+> convert that into a pointer for the filter function.
 > 
->>> @@ -367,12 +367,6 @@ static int spdif_probe(struct platform_device *pdev)
->>>  
->>>       dev_dbg(&pdev->dev, "Entered %s\n", __func__);
->>>  
->>> -     dma_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
->>> -     if (!dma_res) {
->>> -             dev_err(&pdev->dev, "Unable to get dma resource.\n");
->>> -             return -ENXIO;
->>> -     }
->>> -
->>>       mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>>       if (!mem_res) {
->>>               dev_err(&pdev->dev, "Unable to get register resource.\n");
->>> @@ -432,7 +426,7 @@ static int spdif_probe(struct platform_device *pdev)
->>>  
->>>       spdif_stereo_out.dma_size = 2;
->>>       spdif_stereo_out.dma_addr = mem_res->start + DATA_OUTBUF;
->>> -     spdif_stereo_out.channel = dma_res->start;
->>> +     spdif_stereo_out.slave = spdif_pdata->dma_playback;
->>>  
->>>       spdif->dma_playback = &spdif_stereo_out;
->>
->> No one sets ioresources and pdata for spdif device. No in-kernel board
->> files for it?
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2:
 > 
-> Hmm, probably also a missing conversion to devicetree. The symbol used to be 
+> - no longer clash with SPI patch
+> - don't reference platform data that might be NULL
 > 
->  config SND_SOC_SAMSUNG_SMDK_SPDIF
->         tristate "SoC S/PDIF Audio support for SMDK"
-> -       depends on SND_SOC_SAMSUNG && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210 || MACH_SMDKV310 || MACH_SMDK4212)
-> +       depends on SND_SOC_SAMSUNG
->         select SND_SAMSUNG_SPDIF
-> 
-> We still support all four of the above boards, but they are all DT-only
-> and neither spdif.c nor smdk-spdif.c ever gained DT support. Is there
-> anything I should change in this patch for this?
 
-No, I think it is okay. I'll review the v2 you sent.
+Looks good:
+
+Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 
 Best regards,
 Krzysztof
