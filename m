@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: fix info callback for TLV
-	byte control" to the asoc tree
-Date: Wed, 18 Nov 2015 13:13:35 +0000
-Message-ID: <E1Zz2YJ-0006Bp-8Q@debutante>
-References: <1447091401-24298-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: core: Pass kcontrol to bytes tlv
+	callbacks" to the asoc tree
+Date: Wed, 18 Nov 2015 13:13:54 +0000
+Message-ID: <E1Zz2Yc-0006LI-Ce@debutante>
+References: <1447091401-24298-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 65C6526145E
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:13:49 +0100 (CET)
-In-Reply-To: <1447091401-24298-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0790F265756
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 14:14:03 +0100 (CET)
+In-Reply-To: <1447091401-24298-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Omair M Abdullah <omair.m.abdullah@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Mythri P K <mythri.p.k@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: fix info callback for TLV byte control
+   ASoC: core: Pass kcontrol to bytes tlv callbacks
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,78 @@ to this mail.
 Thanks,
 Mark
 
->From f4be978b9611c94f20cdc8cee540ef1a52f8875c Mon Sep 17 00:00:00 2001
-From: Omair M Abdullah <omair.m.abdullah@intel.com>
-Date: Mon, 9 Nov 2015 23:20:01 +0530
-Subject: [PATCH] ASoC: topology: fix info callback for TLV byte control
+>From a1e5e7e9b36f360bf75e4f0f7ceb899682f213bd Mon Sep 17 00:00:00 2001
+From: Mythri P K <mythri.p.k@intel.com>
+Date: Mon, 9 Nov 2015 23:20:00 +0530
+Subject: [PATCH] ASoC: core: Pass kcontrol to bytes tlv callbacks
 
-topology core used wrong callback for TLV bytes control, it should be
-snd_soc_bytes_info_ext and not snd_soc_bytes_info
+Add kcontrol to the tlv callbacks in soc_bytes_ext, as it is
+needed for referencing the corresponding control in the driver
+code
 
-Signed-off-by: Omair M Abdullah <omair.m.abdullah@intel.com>
+Also fix the only upstream user in topology core
+
+Signed-off-by: Mythri P K <mythri.p.k@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-topology.h | 6 ++++--
+ include/sound/soc.h          | 6 ++++--
+ sound/soc/soc-ops.c          | 4 ++--
+ 3 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8d7ec80af51b..50f21ed00cfa 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -531,7 +531,7 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 		/* TLV bytes controls need standard kcontrol info handler,
- 		 * TLV callback and extended put/get handlers.
- 		 */
--		k->info = snd_soc_bytes_info;
-+		k->info = snd_soc_bytes_info_ext;
- 		k->tlv.c = snd_soc_bytes_tlv_callback;
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index 086cd7ff6ddc..5b68e3f5aa85 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -92,8 +92,10 @@ struct snd_soc_tplg_kcontrol_ops {
+ /* Bytes ext operations, for TLV byte controls */
+ struct snd_soc_tplg_bytes_ext_ops {
+ 	u32 id;
+-	int (*get)(unsigned int __user *bytes, unsigned int size);
+-	int (*put)(const unsigned int __user *bytes, unsigned int size);
++	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
++							unsigned int size);
++	int (*put)(struct snd_kcontrol *kcontrol,
++			const unsigned int __user *bytes, unsigned int size);
+ };
  
- 		ext_ops = tplg->bytes_ext_ops;
+ /*
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a8b4b9c8b1d2..6603155f50ca 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1225,8 +1225,10 @@ struct soc_bytes_ext {
+ 	struct snd_soc_dobj dobj;
+ 
+ 	/* used for TLV byte control */
+-	int (*get)(unsigned int __user *bytes, unsigned int size);
+-	int (*put)(const unsigned int __user *bytes, unsigned int size);
++	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
++			unsigned int size);
++	int (*put)(struct snd_kcontrol *kcontrol, const unsigned int __user *bytes,
++			unsigned int size);
+ };
+ 
+ /* multi register control */
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index ecd38e52285a..ba3e49010ac3 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -779,11 +779,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
+ 	switch (op_flag) {
+ 	case SNDRV_CTL_TLV_OP_READ:
+ 		if (params->get)
+-			ret = params->get(tlv, count);
++			ret = params->get(kcontrol, tlv, count);
+ 		break;
+ 	case SNDRV_CTL_TLV_OP_WRITE:
+ 		if (params->put)
+-			ret = params->put(tlv, count);
++			ret = params->put(kcontrol, tlv, count);
+ 		break;
+ 	}
+ 	return ret;
 -- 
 2.6.2
