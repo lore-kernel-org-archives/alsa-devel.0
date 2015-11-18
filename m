@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix CLDMA buffer wrap
-	case" to the asoc tree
-Date: Wed, 18 Nov 2015 18:47:10 +0000
-Message-ID: <E1Zz7l8-0001MY-Ek@debutante>
-References: <1447267609-27816-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix cleanup of dma
+	buffer" to the asoc tree
+Date: Wed, 18 Nov 2015 18:47:12 +0000
+Message-ID: <E1Zz7lA-0001NV-9V@debutante>
+References: <1447422733-2484-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 889DE265A3F
+ by alsa0.perex.cz (Postfix) with ESMTP id CC0F9265A69
  for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:17 +0100 (CET)
-In-Reply-To: <1447267609-27816-7-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1447422733-2484-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix CLDMA buffer wrap case
+   ASoC: Intel: Skylake: Fix cleanup of dma buffer
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From e797af53b8814dfbc3c6ac134c528b8ab480f275 Mon Sep 17 00:00:00 2001
+>From ae395937ab95b8c62806af6a17a6cdfe6086401e Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 13 Nov 2015 19:22:10 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix CLDMA buffer wrap case
+Date: Fri, 13 Nov 2015 19:22:08 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix cleanup of dma buffer
 
-When downloading the firmware/module, if the ring buffer boundary
-is reached, we need to wrap to the zeroth position. On next copy
-we need to copy till end of buffer and the remaining buffer needs
-to be copied from zeroth position.
-
-In this case copy was not handled correctly when wrap condition
-is reached which caused invalid data to be copied resulting in
-invalid hash failure.
-
-This patch fixes the issue by handling copy at the boundary
-condition correctly.
+During firmware download, dma buffers are allocated in prepare
+and never freed on clean up. This patch frees the allocated dma
+buffer in cldma controller clean up.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/intel/skylake/skl-sst-cldma.c |  5 +++++
+ sound/soc/intel/skylake/skl-sst.c       | 10 +++++-----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 4ddabe30b62a..b03d9db0acad 100644
+index 44748ba98da2..4ddabe30b62a 100644
 --- a/sound/soc/intel/skylake/skl-sst-cldma.c
 +++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -180,6 +180,21 @@ static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
- 			ctx->cl_dev.dma_buffer_offset, trigger);
- 	dev_dbg(ctx->dev, "spib position: %d\n", ctx->cl_dev.curr_spib_pos);
+@@ -137,6 +137,11 @@ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
  
-+	/*
-+	 * Check if the size exceeds buffer boundary. If it exceeds
-+	 * max_buffer size, then copy till buffer size and then copy
-+	 * remaining buffer from the start of ring buffer.
-+	 */
-+	if (ctx->cl_dev.dma_buffer_offset + size > ctx->cl_dev.bufsize) {
-+		unsigned int size_b = ctx->cl_dev.bufsize -
-+					ctx->cl_dev.dma_buffer_offset;
-+		memcpy(ctx->cl_dev.dmab_data.area + ctx->cl_dev.dma_buffer_offset,
-+			curr_pos, size_b);
-+		size -= size_b;
-+		curr_pos += size_b;
-+		ctx->cl_dev.dma_buffer_offset = 0;
-+	}
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
 +
- 	memcpy(ctx->cl_dev.dmab_data.area + ctx->cl_dev.dma_buffer_offset,
- 			curr_pos, size);
++	if (&ctx->cl_dev.dmab_data)
++		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
++	if (&ctx->cl_dev.dmab_bdl)
++		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
+ }
  
+ static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 0c5039f2bd09..51f07f0e4735 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -115,27 +115,28 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		dev_err(ctx->dev,
+ 			"Timeout waiting for ROM init done, reg:0x%x\n", reg);
+ 		ret = -EIO;
+-		goto skl_load_base_firmware_failed;
++		goto transfer_firmware_failed;
+ 	}
+ 
+ 	ret = skl_transfer_firmware(ctx, ctx->fw->data, ctx->fw->size);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
+-		goto skl_load_base_firmware_failed;
++		goto transfer_firmware_failed;
+ 	} else {
+ 		ret = wait_event_timeout(skl->boot_wait, skl->boot_complete,
+ 					msecs_to_jiffies(SKL_IPC_BOOT_MSECS));
+ 		if (ret == 0) {
+ 			dev_err(ctx->dev, "DSP boot failed, FW Ready timed-out\n");
+ 			ret = -EIO;
+-			goto skl_load_base_firmware_failed;
++			goto transfer_firmware_failed;
+ 		}
+ 
+ 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
+ 		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
+ 	}
+ 	return 0;
+-
++transfer_firmware_failed:
++	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
+ skl_load_base_firmware_failed:
+ 	skl_dsp_disable_core(ctx);
+ 	release_firmware(ctx->fw);
+@@ -277,7 +278,6 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ {
+ 	skl_ipc_free(&ctx->ipc);
+-	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
+ 	ctx->dsp->ops->free(ctx->dsp);
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_cleanup);
 -- 
 2.6.2
