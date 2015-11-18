@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove struct platform_device
-	from probe/remove parameter" to the asoc tree
-Date: Wed, 18 Nov 2015 18:09:32 +0000
-Message-ID: <E1Zz7Ai-0000E0-RD@debutante>
-References: <87pozijva5.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove platform boot support from
+	mix.c" to the asoc tree
+Date: Wed, 18 Nov 2015 18:09:37 +0000
+Message-ID: <E1Zz7An-0000Gi-EI@debutante>
+References: <87wptqjvcx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 596D3265A3F
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:41 +0100 (CET)
-In-Reply-To: <87pozijva5.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 29212265A7B
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:09:42 +0100 (CET)
+In-Reply-To: <87wptqjvcx.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove struct platform_device from probe/remove parameter
+   ASoC: rsnd: remove platform boot support from mix.c
 
 has been applied to the asoc tree at
 
@@ -53,474 +53,164 @@ to this mail.
 Thanks,
 Mark
 
->From 2ea6b0749c366787dbf6e87c7642e23b448ca63b Mon Sep 17 00:00:00 2001
+>From c7fe4be840026d7cdb0676e1d52b9f82e8b32d41 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 10 Nov 2015 05:14:12 +0000
-Subject: [PATCH] ASoC: rsnd: remove struct platform_device from probe/remove
- parameter
+Date: Tue, 10 Nov 2015 05:12:32 +0000
+Subject: [PATCH] ASoC: rsnd: remove platform boot support from mix.c
 
-Current Renesas sound driver requests struct platform_device on
-probe/remove for each modules. But driver can get it by
-rsnd_priv_to_pdev(). This patch removes unnecessary parameter
+No board is using Renesas sound driver via platform boot now.
+This means all user is using DT boot. Platform boot support is
+no longer needed. But, it strongly depends on platform boot style.
+This patch removes platform boot support from mix.c
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  |  6 ++----
- sound/soc/sh/rcar/cmd.c  |  6 ++----
- sound/soc/sh/rcar/core.c | 15 ++++++-------
- sound/soc/sh/rcar/ctu.c  |  6 ++----
- sound/soc/sh/rcar/dma.c  |  4 ++--
- sound/soc/sh/rcar/dvc.c  |  6 ++----
- sound/soc/sh/rcar/gen.c  | 13 +++++------
- sound/soc/sh/rcar/mix.c  |  6 ++----
- sound/soc/sh/rcar/rsnd.h | 56 ++++++++++++++++--------------------------------
- sound/soc/sh/rcar/src.c  |  6 ++----
- sound/soc/sh/rcar/ssi.c  |  6 ++----
- sound/soc/sh/rcar/ssiu.c |  6 ++----
- 12 files changed, 47 insertions(+), 89 deletions(-)
+ sound/soc/sh/rcar/mix.c | 85 ++++++++++++++++++-------------------------------
+ 1 file changed, 31 insertions(+), 54 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index ba80961a8fa8..448f082ab56d 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -515,8 +515,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 		ckr, rbga, rbgb);
- }
- 
--int rsnd_adg_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_adg_probe(struct rsnd_priv *priv)
- {
- 	struct rsnd_adg *adg;
- 	struct device *dev = rsnd_priv_to_dev(priv);
-@@ -543,8 +542,7 @@ int rsnd_adg_probe(struct platform_device *pdev,
- 	return 0;
- }
- 
--void rsnd_adg_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_adg_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
- 	struct clk *clk;
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index 2294c5c7a25a..ab904c3f20b5 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -127,8 +127,7 @@ struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get((struct rsnd_cmd *)(priv->cmd) + id);
- }
- 
--int rsnd_cmd_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_cmd_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_cmd *cmd;
-@@ -160,8 +159,7 @@ int rsnd_cmd_probe(struct platform_device *pdev,
- 	return 0;
- }
- 
--void rsnd_cmd_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_cmd_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_cmd *cmd;
- 	int i;
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 8af166809629..8dceae4b731a 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -546,8 +546,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
- 	.set_fmt	= rsnd_soc_dai_set_fmt,
- };
- 
--static int rsnd_dai_probe(struct platform_device *pdev,
--			  struct rsnd_priv *priv)
-+static int rsnd_dai_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *dai_node;
- 	struct device_node *dai_np, *np, *node;
-@@ -556,7 +555,7 @@ static int rsnd_dai_probe(struct platform_device *pdev,
- 	struct rsnd_dai_stream *io_capture;
- 	struct snd_soc_dai_driver *drv;
- 	struct rsnd_dai *rdai;
--	struct device *dev = &pdev->dev;
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 	int nr, dai_i, io_i, np_i;
- 	int ret;
- 
-@@ -975,8 +974,7 @@ static int rsnd_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct rsnd_dai *rdai;
- 	const struct of_device_id *of_id = of_match_device(rsnd_of_match, dev);
--	int (*probe_func[])(struct platform_device *pdev,
--			    struct rsnd_priv *priv) = {
-+	int (*probe_func[])(struct rsnd_priv *priv) = {
- 		rsnd_gen_probe,
- 		rsnd_dma_probe,
- 		rsnd_ssi_probe,
-@@ -1008,7 +1006,7 @@ static int rsnd_probe(struct platform_device *pdev)
- 	 *	init each module
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(probe_func); i++) {
--		ret = probe_func[i](pdev, priv);
-+		ret = probe_func[i](priv);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1061,8 +1059,7 @@ static int rsnd_remove(struct platform_device *pdev)
- {
- 	struct rsnd_priv *priv = dev_get_drvdata(&pdev->dev);
- 	struct rsnd_dai *rdai;
--	void (*remove_func[])(struct platform_device *pdev,
--			      struct rsnd_priv *priv) = {
-+	void (*remove_func[])(struct rsnd_priv *priv) = {
- 		rsnd_ssi_remove,
- 		rsnd_ssiu_remove,
- 		rsnd_src_remove,
-@@ -1082,7 +1079,7 @@ static int rsnd_remove(struct platform_device *pdev)
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(remove_func); i++)
--		remove_func[i](pdev, priv);
-+		remove_func[i](priv);
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 	snd_soc_unregister_platform(&pdev->dev);
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index 3e36a5325ce4..7c1e190cd389 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -77,8 +77,7 @@ struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get(rsnd_ctu_get(priv, id));
- }
- 
--int rsnd_ctu_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_ctu_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *node;
- 	struct device_node *np;
-@@ -143,8 +142,7 @@ rsnd_ctu_probe_done:
- 	return ret;
- }
- 
--void rsnd_ctu_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_ctu_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_ctu *ctu;
- 	int i;
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index e5f435361d96..33eb37331498 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -701,9 +701,9 @@ struct rsnd_mod *rsnd_dma_attach(struct rsnd_dai_stream *io,
- 	return rsnd_mod_get(dma);
- }
- 
--int rsnd_dma_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_dma_probe(struct rsnd_priv *priv)
- {
-+	struct platform_device *pdev = rsnd_priv_to_pdev(priv);
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_dma_ctrl *dmac;
- 	struct resource *res;
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index d2c03bd94fcb..0f61e1344431 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -304,8 +304,7 @@ struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get(rsnd_dvc_get(priv, id));
- }
- 
--int rsnd_dvc_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_dvc_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *node;
- 	struct device_node *np;
-@@ -365,8 +364,7 @@ rsnd_dvc_probe_done:
- 	return ret;
- }
- 
--void rsnd_dvc_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_dvc_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_dvc *dvc;
- 	int i;
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index ced8acb7a7ec..84f8bb223439 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -211,8 +211,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
- /*
-  *		Gen2
-  */
--static int rsnd_gen2_probe(struct platform_device *pdev,
--			   struct rsnd_priv *priv)
-+static int rsnd_gen2_probe(struct rsnd_priv *priv)
- {
- 	struct rsnd_regmap_field_conf conf_ssiu[] = {
- 		RSND_GEN_S_REG(SSI_MODE0,	0x800),
-@@ -317,8 +316,7 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
-  *		Gen1
-  */
- 
--static int rsnd_gen1_probe(struct platform_device *pdev,
--			   struct rsnd_priv *priv)
-+static int rsnd_gen1_probe(struct rsnd_priv *priv)
- {
- 	struct rsnd_regmap_field_conf conf_adg[] = {
- 		RSND_GEN_S_REG(BRRA,		0x00),
-@@ -349,8 +347,7 @@ static int rsnd_gen1_probe(struct platform_device *pdev,
- /*
-  *		Gen
-  */
--int rsnd_gen_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_gen_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_gen *gen;
-@@ -366,9 +363,9 @@ int rsnd_gen_probe(struct platform_device *pdev,
- 
- 	ret = -ENODEV;
- 	if (rsnd_is_gen1(priv))
--		ret = rsnd_gen1_probe(pdev, priv);
-+		ret = rsnd_gen1_probe(priv);
- 	else if (rsnd_is_gen2(priv))
--		ret = rsnd_gen2_probe(pdev, priv);
-+		ret = rsnd_gen2_probe(priv);
- 
- 	if (ret < 0)
- 		dev_err(dev, "unknown generation R-Car sound device\n");
 diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
-index 897e4f3d4c24..57ac453adcef 100644
+index 195bc748a32f..8b615c7aecb4 100644
 --- a/sound/soc/sh/rcar/mix.c
 +++ b/sound/soc/sh/rcar/mix.c
-@@ -116,8 +116,7 @@ struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get(rsnd_mix_get(priv, id));
- }
+@@ -13,10 +13,10 @@
+ #define MIX_NAME "mix"
  
--int rsnd_mix_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_mix_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *node;
- 	struct device_node *np;
-@@ -177,8 +176,7 @@ rsnd_mix_probe_done:
- 	return ret;
- }
+ struct rsnd_mix {
+-	struct rsnd_mix_platform_info *info; /* rcar_snd.h */
+ 	struct rsnd_mod mod;
+ };
  
--void rsnd_mix_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_mix_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_mix *mix;
- 	int i;
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index e6efac29113d..ae69670c5c0c 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -157,8 +157,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
-  */
- struct rsnd_mod *rsnd_dma_attach(struct rsnd_dai_stream *io,
- 			       struct rsnd_mod *mod, int id);
--int rsnd_dma_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
-+int rsnd_dma_probe(struct rsnd_priv *priv);
- struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name);
++#define rsnd_mix_get(priv, id) ((struct rsnd_mix *)(priv->mix) + id)
+ #define rsnd_mix_nr(priv) ((priv)->mix_nr)
+ #define for_each_rsnd_mix(pos, priv, i)					\
+ 	for ((i) = 0;							\
+@@ -24,7 +24,6 @@ struct rsnd_mix {
+ 		     ((pos) = (struct rsnd_mix *)(priv)->mix + i);	\
+ 	     i++)
  
-@@ -351,8 +350,7 @@ int rsnd_dai_connect(struct rsnd_mod *mod,
- /*
-  *	R-Car Gen1/Gen2
-  */
--int rsnd_gen_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
-+int rsnd_gen_probe(struct rsnd_priv *priv);
- void __iomem *rsnd_gen_reg_get(struct rsnd_priv *priv,
- 			       struct rsnd_mod *mod,
- 			       enum rsnd_reg reg);
-@@ -363,10 +361,8 @@ phys_addr_t rsnd_gen_get_phy_addr(struct rsnd_priv *priv, int reg_id);
-  */
- int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod);
- int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
--int rsnd_adg_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
--void rsnd_adg_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_adg_probe(struct rsnd_priv *priv);
-+void rsnd_adg_remove(struct rsnd_priv *priv);
- int rsnd_adg_set_convert_clk_gen2(struct rsnd_mod *mod,
- 				  struct rsnd_dai_stream *io,
- 				  unsigned int src_rate,
-@@ -516,10 +512,8 @@ int rsnd_kctrl_new_e(struct rsnd_mod *mod,
- /*
-  *	R-Car SSI
-  */
--int rsnd_ssi_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
--void rsnd_ssi_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_ssi_probe(struct rsnd_priv *priv);
-+void rsnd_ssi_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
-@@ -536,18 +530,14 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
-  */
- int rsnd_ssiu_attach(struct rsnd_dai_stream *io,
- 		     struct rsnd_mod *mod);
--int rsnd_ssiu_probe(struct platform_device *pdev,
--		    struct rsnd_priv *priv);
--void rsnd_ssiu_remove(struct platform_device *pdev,
--		      struct rsnd_priv *priv);
-+int rsnd_ssiu_probe(struct rsnd_priv *priv);
-+void rsnd_ssiu_remove(struct rsnd_priv *priv);
- 
- /*
-  *	R-Car SRC
-  */
--int rsnd_src_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
--void rsnd_src_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_src_probe(struct rsnd_priv *priv);
-+void rsnd_src_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id);
- unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
- 				   struct rsnd_dai_stream *io,
-@@ -558,11 +548,8 @@ unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
- /*
-  *	R-Car CTU
-  */
--int rsnd_ctu_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
 -
--void rsnd_ctu_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_ctu_probe(struct rsnd_priv *priv);
-+void rsnd_ctu_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
- #define rsnd_ctu_of_node(priv)						\
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,ctu")
-@@ -570,11 +557,8 @@ struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
- /*
-  *	R-Car MIX
-  */
--int rsnd_mix_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
+ static void rsnd_mix_soft_reset(struct rsnd_mod *mod)
+ {
+ 	rsnd_mod_write(mod, MIX_SWRSR, 0);
+@@ -114,51 +113,15 @@ struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id)
+ 	if (WARN_ON(id < 0 || id >= rsnd_mix_nr(priv)))
+ 		id = 0;
+ 
+-	return rsnd_mod_get((struct rsnd_mix *)(priv->mix) + id);
+-}
 -
--void rsnd_mix_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_mix_probe(struct rsnd_priv *priv);
-+void rsnd_mix_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id);
- #define rsnd_mix_of_node(priv)						\
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,mix")
-@@ -582,10 +566,8 @@ struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id);
- /*
-  *	R-Car DVC
-  */
--int rsnd_dvc_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
--void rsnd_dvc_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_dvc_probe(struct rsnd_priv *priv);
-+void rsnd_dvc_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id);
- #define rsnd_dvc_of_node(priv)						\
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,dvc")
-@@ -593,10 +575,8 @@ struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id);
- /*
-  *	R-Car CMD
-  */
--int rsnd_cmd_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv);
--void rsnd_cmd_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv);
-+int rsnd_cmd_probe(struct rsnd_priv *priv);
-+void rsnd_cmd_remove(struct rsnd_priv *priv);
- int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id);
- struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id);
- 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index c0f7e2a4b688..c103aa775e96 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -553,8 +553,7 @@ struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id)
- 	return rsnd_mod_get(rsnd_src_get(priv, id));
+-static void rsnd_of_parse_mix(struct platform_device *pdev,
+-			      const struct rsnd_of_data *of_data,
+-			      struct rsnd_priv *priv)
+-{
+-	struct device_node *node;
+-	struct rsnd_mix_platform_info *mix_info;
+-	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
+-	struct device *dev = &pdev->dev;
+-	int nr;
+-
+-	if (!of_data)
+-		return;
+-
+-	node = rsnd_mix_of_node(priv);
+-	if (!node)
+-		return;
+-
+-	nr = of_get_child_count(node);
+-	if (!nr)
+-		goto rsnd_of_parse_mix_end;
+-
+-	mix_info = devm_kzalloc(dev,
+-				sizeof(struct rsnd_mix_platform_info) * nr,
+-				GFP_KERNEL);
+-	if (!mix_info) {
+-		dev_err(dev, "mix info allocation error\n");
+-		goto rsnd_of_parse_mix_end;
+-	}
+-
+-	info->mix_info		= mix_info;
+-	info->mix_info_nr	= nr;
+-
+-rsnd_of_parse_mix_end:
+-	of_node_put(node);
+-
++	return rsnd_mod_get(rsnd_mix_get(priv, id));
  }
  
--int rsnd_src_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_src_probe(struct rsnd_priv *priv)
+ int rsnd_mix_probe(struct platform_device *pdev,
+ 		   const struct rsnd_of_data *of_data,
+ 		   struct rsnd_priv *priv)
  {
- 	struct device_node *node;
- 	struct device_node *np;
-@@ -622,8 +621,7 @@ rsnd_src_probe_done:
- 	return ret;
- }
- 
--void rsnd_src_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_src_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_src *src;
- 	int i;
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 848c06436226..0fe5e3068b6b 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -723,8 +723,7 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- 	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
- }
- 
--int rsnd_ssi_probe(struct platform_device *pdev,
--		   struct rsnd_priv *priv)
-+int rsnd_ssi_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *node;
- 	struct device_node *np;
-@@ -801,8 +800,7 @@ rsnd_ssi_probe_done:
- 	return ret;
- }
- 
--void rsnd_ssi_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_ssi_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi;
- 	int i;
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 89b1bc77cb8a..bc245047e904 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -136,8 +136,7 @@ int rsnd_ssiu_attach(struct rsnd_dai_stream *io,
- 	return rsnd_dai_connect(mod, io, mod->type);
- }
- 
--int rsnd_ssiu_probe(struct platform_device *pdev,
--		    struct rsnd_priv *priv)
-+int rsnd_ssiu_probe(struct rsnd_priv *priv)
- {
+-	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
++	struct device_node *node;
++	struct device_node *np;
  	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_ssiu *ssiu;
-@@ -168,8 +167,7 @@ int rsnd_ssiu_probe(struct platform_device *pdev,
- 	return 0;
+ 	struct rsnd_mix *mix;
+ 	struct clk *clk;
+@@ -169,36 +132,50 @@ int rsnd_mix_probe(struct platform_device *pdev,
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+ 
+-	rsnd_of_parse_mix(pdev, of_data, priv);
++	node = rsnd_mix_of_node(priv);
++	if (!node)
++		return 0; /* not used is not error */
+ 
+-	nr = info->mix_info_nr;
+-	if (!nr)
+-		return 0;
++	nr = of_get_child_count(node);
++	if (!nr) {
++		ret = -EINVAL;
++		goto rsnd_mix_probe_done;
++	}
+ 
+ 	mix	= devm_kzalloc(dev, sizeof(*mix) * nr, GFP_KERNEL);
+-	if (!mix)
+-		return -ENOMEM;
++	if (!mix) {
++		ret = -ENOMEM;
++		goto rsnd_mix_probe_done;
++	}
+ 
+ 	priv->mix_nr	= nr;
+ 	priv->mix	= mix;
+ 
+-	for_each_rsnd_mix(mix, priv, i) {
++	i = 0;
++	for_each_child_of_node(node, np) {
++		mix = rsnd_mix_get(priv, i);
++
+ 		snprintf(name, MIX_NAME_SIZE, "%s.%d",
+ 			 MIX_NAME, i);
+ 
+ 		clk = devm_clk_get(dev, name);
+-		if (IS_ERR(clk))
+-			return PTR_ERR(clk);
+-
+-		mix->info = &info->mix_info[i];
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			goto rsnd_mix_probe_done;
++		}
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(mix), &rsnd_mix_ops,
+ 				    clk, RSND_MOD_MIX, i);
+ 		if (ret)
+-			return ret;
++			goto rsnd_mix_probe_done;
++
++		i++;
+ 	}
+ 
+-	return 0;
++rsnd_mix_probe_done:
++	of_node_put(node);
++
++	return ret;
  }
  
--void rsnd_ssiu_remove(struct platform_device *pdev,
--		     struct rsnd_priv *priv)
-+void rsnd_ssiu_remove(struct rsnd_priv *priv)
- {
- 	struct rsnd_ssiu *ssiu;
- 	int i;
+ void rsnd_mix_remove(struct platform_device *pdev,
 -- 
 2.6.2
