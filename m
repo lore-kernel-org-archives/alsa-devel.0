@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix cleanup of dma
-	buffer" to the asoc tree
-Date: Wed, 18 Nov 2015 18:47:12 +0000
-Message-ID: <E1Zz7lA-0001NV-9V@debutante>
-References: <1447422733-2484-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix null ptr
+	dereferenced in skl_tplg_bind_sinks" to the asoc tree
+Date: Wed, 18 Nov 2015 18:47:09 +0000
+Message-ID: <E1Zz7l7-0001M4-HZ@debutante>
+References: <1447267609-27816-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC0F9265A69
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:17 +0100 (CET)
-In-Reply-To: <1447422733-2484-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 679BC265AEC
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2015 19:47:19 +0100 (CET)
+In-Reply-To: <1447267609-27816-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix cleanup of dma buffer
+   ASoC: Intel: Skylake: Fix null ptr dereferenced in skl_tplg_bind_sinks
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From ae395937ab95b8c62806af6a17a6cdfe6086401e Mon Sep 17 00:00:00 2001
+>From 0ed95d769c8d6c1030dd9f94cf6fb2a6ed98a4ce Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 13 Nov 2015 19:22:08 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix cleanup of dma buffer
+Date: Fri, 13 Nov 2015 19:22:11 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix null ptr dereferenced in
+ skl_tplg_bind_sinks
 
-During firmware download, dma buffers are allocated in prepare
-and never freed on clean up. This patch frees the allocated dma
-buffer in cldma controller clean up.
+This patch fixes the below warning form smatch and makes the
+skl_tplg_bind_sinks take the next sink as argument which is true
+when the current sink is valid
 
+sound/soc/intel/skylake/skl-topology.c:453 skl_tplg_bind_sinks()
+	error: we previously assumed 'sink' could be null (see line 452)
+
+sound/soc/intel/skylake/skl-topology.c
+   451
+   452		if (!sink)
+                     ^^^^
+New check.  Reversed?
+
+   453			return skl_tplg_bind_sinks(sink, skl, src_mconfig);
+                                                   ^^^^ This is
+dereferenced inside the function.
+
+   454
+   455		return 0;
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c |  5 +++++
- sound/soc/intel/skylake/skl-sst.c       | 10 +++++-----
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 44748ba98da2..4ddabe30b62a 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -137,6 +137,11 @@ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
- 
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
-+
-+	if (&ctx->cl_dev.dmab_data)
-+		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
-+	if (&ctx->cl_dev.dmab_bdl)
-+		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
- }
- 
- static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 0c5039f2bd09..51f07f0e4735 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -115,27 +115,28 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 		dev_err(ctx->dev,
- 			"Timeout waiting for ROM init done, reg:0x%x\n", reg);
- 		ret = -EIO;
--		goto skl_load_base_firmware_failed;
-+		goto transfer_firmware_failed;
- 	}
- 
- 	ret = skl_transfer_firmware(ctx, ctx->fw->data, ctx->fw->size);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
--		goto skl_load_base_firmware_failed;
-+		goto transfer_firmware_failed;
- 	} else {
- 		ret = wait_event_timeout(skl->boot_wait, skl->boot_complete,
- 					msecs_to_jiffies(SKL_IPC_BOOT_MSECS));
- 		if (ret == 0) {
- 			dev_err(ctx->dev, "DSP boot failed, FW Ready timed-out\n");
- 			ret = -EIO;
--			goto skl_load_base_firmware_failed;
-+			goto transfer_firmware_failed;
- 		}
- 
- 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
- 		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
- 	}
- 	return 0;
--
-+transfer_firmware_failed:
-+	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
- skl_load_base_firmware_failed:
- 	skl_dsp_disable_core(ctx);
- 	release_firmware(ctx->fw);
-@@ -277,7 +278,6 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
- void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 2b6ee22b5ea2..0937ea2129c1 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -408,7 +408,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 				struct skl_module_cfg *src_mconfig)
  {
- 	skl_ipc_free(&ctx->ipc);
--	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
- 	ctx->dsp->ops->free(ctx->dsp);
+ 	struct snd_soc_dapm_path *p;
+-	struct snd_soc_dapm_widget *sink = NULL;
++	struct snd_soc_dapm_widget *sink = NULL, *next_sink = NULL;
+ 	struct skl_module_cfg *sink_mconfig;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	int ret;
+@@ -420,7 +420,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
+ 		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
+ 
+-		sink = p->sink;
++		next_sink = p->sink;
+ 		/*
+ 		 * here we will check widgets in sink pipelines, so that
+ 		 * can be any widgets type and we are only interested if
+@@ -450,7 +450,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 	}
+ 
+ 	if (!sink)
+-		return skl_tplg_bind_sinks(sink, skl, src_mconfig);
++		return skl_tplg_bind_sinks(next_sink, skl, src_mconfig);
+ 
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(skl_sst_dsp_cleanup);
 -- 
 2.6.2
