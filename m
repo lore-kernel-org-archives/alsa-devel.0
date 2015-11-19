@@ -1,41 +1,54 @@
-From: Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH 1/1] drm/i915/audio: apply SKL codec wake up
-	patch to BXT
-Date: Thu, 19 Nov 2015 11:08:27 +0200
-Message-ID: <87a8qacq5w.fsf@intel.com>
-References: <1447922919-27077-1-git-send-email-han.lu@intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] ASoC: Change the PCM runtime array
+	to a list
+Date: Thu, 19 Nov 2015 04:30:56 -0500
+Message-ID: <564D96D0.3030305@linux.intel.com>
+References: <cover.1446692512.git.mengdong.lin@linux.intel.com>
+ <20151118183021.GK31303@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1447922919-27077-1-git-send-email-han.lu@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, tiwai@suse.de, libin.yang@linux.intel.com, mengdong.lin@linux.intel.com, han.lu@linux.intel.com, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06A9A2614E2
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 10:15:07 +0100 (CET)
+In-Reply-To: <20151118183021.GK31303@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxOSBOb3YgMjAxNSwgaGFuLmx1QGludGVsLmNvbSB3cm90ZToKPiBGcm9tOiAiTHUs
-IEhhbiIgPGhhbi5sdUBpbnRlbC5jb20+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBMdSwgSGFuIDxoYW4u
-bHVAaW50ZWwuY29tPgo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
-X2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gaW5kZXggNjNk
-NDcwNi4uODMxMGJmMyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9h
-dWRpby5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IEBAIC01
-OTEsNyArNTkxLDggQEAgc3RhdGljIHZvaWQgaTkxNV9hdWRpb19jb21wb25lbnRfY29kZWNfd2Fr
-ZV9vdmVycmlkZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gIAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0
-ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkxNShkZXYpOwo+ICAJdTMyIHRtcDsKPiAgCj4gLQlpZiAo
-IUlTX1NLWUxBS0UoZGV2X3ByaXYpICYmICFJU19LQUJZTEFLRShkZXZfcHJpdikpCj4gKwlpZiAo
-IUlTX1NLWUxBS0UoZGV2X3ByaXYpICYmICFJU19CUk9YVE9OKGRldl9wcml2KSAmJgo+ICsJCQkh
-SVNfS0FCWUxBS0UoZGV2X3ByaXYpKQoKSG93IGFib3V0IGlmIChJTlRFTF9JTkZPKGRldl9wcml2
-KS0+Z2VuIDwgOSk/CgpCUiwKSmFuaS4KCj4gIAkJcmV0dXJuOwo+ICAKPiAgCS8qCgotLSAKSmFu
-aSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxp
-c3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On 11/18/2015 01:30 PM, Mark Brown wrote:
+> On Wed, Nov 18, 2015 at 02:31:26AM -0500, mengdong.lin@linux.intel.com wrote:
+>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>
+>> The 2 patches are a preparation to allow the topology core to create
+>> PCM devices dynamically. Probing a component may load its topology and
+>> come up with new DAI links and thus new runtimes. So implementing the
+>> PCM runtimes in a list makes it easier to add new runtimes.
+>
+> I've got two apparently identical copies of this series that have
+> threaded together into one thread.  I'm going to look at what looks like
+> the newer copy but I might get it wrong, please check.
+>
+
+Hi Mark,
+
+Thanks for your review!
+
+These two series are exactly same. Since the 1st one has no feedback for 
+~2 weeks, I thought it may be buried by the mail flood and so sent again 
+yesterday.
+
+I'll send the following patches.
+
+Regards
+Mengdong
