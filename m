@@ -1,92 +1,40 @@
-From: Keyon <yang.jie@linux.intel.com>
-Subject: Re: [PATCH 1/3] ASoC: Intel: Hsw: Move driver to use
- SND_SOC_BYTES_TLV
-Date: Thu, 19 Nov 2015 11:22:08 +0800
-Message-ID: <564D4060.1070909@linux.intel.com>
-References: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
- <1447853952-6414-2-git-send-email-vinod.koul@intel.com>
+From: Songjun Wu <songjun.wu@atmel.com>
+Subject: [PATCH] ASoC: Atmel: ClassD: Set GCK's parent clock
+Date: Thu, 19 Nov 2015 11:26:30 +0800
+Message-ID: <1447903590-3285-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D0EE02612D1
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 04:15:42 +0100 (CET)
-In-Reply-To: <1447853952-6414-2-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-KyBIYW4gd2hvIGlzIHRoZSBhdXRob3Igb2YgdGhpcyBwYXJ0LgoKT24gMjAxNeW5tDEx5pyIMTjm
-l6UgMjE6MzksIFZpbm9kIEtvdWwgd3JvdGU6Cj4gSGFzd2VsbCBkcml2ZXIgd2FzIHVzaW5nIFNO
-RF9TT0NfQllURVNfRVhULiBTaW5jZSB3ZSB3YW50IHRvCj4gcmVtb3ZlIHRoaXMsIGNvbnZlcnQg
-aXQgdG8gdXNlIFNORF9TT0NfQllURVNfVExWCj4KPiBTaWduZWQtb2ZmLWJ5OiBWaW5vZCBLb3Vs
-IDx2aW5vZC5rb3VsQGludGVsLmNvbT4KPiBDYzogSmllIFlhbmcgPHlhbmcuamllQGxpbnV4Lmlu
-dGVsLmNvbT4KPiBDYzogTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNvbT4KCmxvb2tz
-IGZpbmUgZm9yIG1lLCBidXQgbGV0J3Mgd2FpdCBIYW4ncyBjb25maXJtYXRpb24gYWJvdXQgaXQu
-Cgp0aGFua3MsCn5LZXlvbgoKPiAtLS0KPiAgIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1o
-YXN3ZWxsLXBjbS5jIHwgNTAgKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLQo+ICAgMSBm
-aWxlIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLXBjbS5jIGIvc291bmQv
-c29jL2ludGVsL2hhc3dlbGwvc3N0LWhhc3dlbGwtcGNtLmMKPiBpbmRleCAxYWE4MTljN2UwOWIu
-LjY1NTk0ZGZmMjkxYSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3Qt
-aGFzd2VsbC1wY20uYwo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxs
-LXBjbS5jCj4gQEAgLTM2OCw0MSArMzY4LDcxIEBAIHN0YXRpYyBpbnQgaHN3X3dhdmVzX3N3aXRj
-aF9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCj4gICB9Cj4KPiAgIHN0YXRpYyBp
-bnQgaHN3X3dhdmVzX3BhcmFtX2dldChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKPiAt
-CQkJCXN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQo+ICsJCQl1bnNpZ25lZCBp
-bnQgX191c2VyICpkYXRhLCB1bnNpZ25lZCBpbnQgc2l6ZSkKPiAgIHsKPiAgIAlzdHJ1Y3Qgc25k
-X3NvY19wbGF0Zm9ybSAqcGxhdGZvcm0gPSBzbmRfc29jX2tjb250cm9sX3BsYXRmb3JtKGtjb250
-cm9sKTsKPiAgIAlzdHJ1Y3QgaHN3X3ByaXZfZGF0YSAqcGRhdGEgPSBzbmRfc29jX3BsYXRmb3Jt
-X2dldF9kcnZkYXRhKHBsYXRmb3JtKTsKPiAgIAlzdHJ1Y3Qgc3N0X2hzdyAqaHN3ID0gcGRhdGEt
-PmhzdzsKPiArCXU4ICpidWZmZXI7Cj4gKwlpbnQgcmV0Owo+ICsKPiArCWJ1ZmZlciA9IGt6YWxs
-b2Moc2l6ZSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIWJ1ZmZlcikKPiArCQlyZXR1cm4gLUVOT01F
-TTsKPgo+ICAgCS8qIHJldHVybiBhIG1hdGNoaW5nIGxpbmUgZnJvbSBwYXJhbSBidWZmZXIgKi8K
-PiAtCXJldHVybiBzc3RfaHN3X2xvYWRfcGFyYW1fbGluZShoc3csIHVjb250cm9sLT52YWx1ZS5i
-eXRlcy5kYXRhKTsKPiArCXJldCA9IHNzdF9oc3dfbG9hZF9wYXJhbV9saW5lKGhzdywgYnVmZmVy
-KTsKPiArCWlmIChyZXQpCj4gKwkJZ290byBlcnI7Cj4gKwo+ICsJaWYgKGNvcHlfdG9fdXNlcihk
-YXRhLCBidWZmZXIsIHNpemUpKQo+ICsJCXJldCA9IC1FRkFVTFQ7Cj4gKwo+ICtlcnI6Cj4gKwlr
-ZnJlZShidWZmZXIpOwo+ICsJcmV0dXJuIHJldDsKPiAgIH0KPgo+ICAgc3RhdGljIGludCBoc3df
-d2F2ZXNfcGFyYW1fcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+IC0JCQkJc3Ry
-dWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCj4gKwkJY29uc3QgdW5zaWduZWQgaW50
-IF9fdXNlciAqZGF0YSwgdW5zaWduZWQgaW50IHNpemUpCj4gICB7Cj4gICAJc3RydWN0IHNuZF9z
-b2NfcGxhdGZvcm0gKnBsYXRmb3JtID0gc25kX3NvY19rY29udHJvbF9wbGF0Zm9ybShrY29udHJv
-bCk7Cj4gICAJc3RydWN0IGhzd19wcml2X2RhdGEgKnBkYXRhID0gc25kX3NvY19wbGF0Zm9ybV9n
-ZXRfZHJ2ZGF0YShwbGF0Zm9ybSk7Cj4gICAJc3RydWN0IHNzdF9oc3cgKmhzdyA9IHBkYXRhLT5o
-c3c7Cj4gLQlpbnQgcmV0Owo+ICsJaW50IHJldCA9IDA7Cj4gICAJZW51bSBzc3RfaHN3X21vZHVs
-ZV9pZCBpZCA9IFNTVF9IU1dfTU9EVUxFX1dBVkVTOwo+IC0JaW50IHBhcmFtX2lkID0gdWNvbnRy
-b2wtPnZhbHVlLmJ5dGVzLmRhdGFbMF07Cj4gKwlpbnQgcGFyYW1faWQ7Cj4gICAJaW50IHBhcmFt
-X3NpemUgPSBXQVZFU19QQVJBTV9DT1VOVDsKPiArCXU4ICpidWZmZXI7Cj4gKwo+ICsJYnVmZmVy
-ID0ga3phbGxvYyhzaXplLCBHRlBfS0VSTkVMKTsKPiArCWlmICghYnVmZmVyKQo+ICsJCXJldHVy
-biAtRU5PTUVNOwo+ICsKPiArCWlmIChjb3B5X2Zyb21fdXNlcihidWZmZXIsIGRhdGEsIHNpemUp
-KSB7Cj4gKwkJcmV0ID0gLUVGQVVMVDsKPiArCQlnb3RvIGV4aXQ7Cj4gKwl9Cj4gKwo+ICsJcGFy
-YW1faWQgPSAqYnVmZmVyOwo+Cj4gICAJLyogY2xlYXIgcGFyYW0gYnVmZmVyIGFuZCByZXNldCBi
-dWZmZXIgaW5kZXggKi8KPiAgIAlpZiAocGFyYW1faWQgPT0gMHhGRikgewo+ICAgCQlzc3RfaHN3
-X3Jlc2V0X3BhcmFtX2J1Zihoc3cpOwo+IC0JCXJldHVybiAwOwo+ICsJCWdvdG8gZXhpdDsKPiAg
-IAl9Cj4KPiAgIAkvKiBzdG9yZSBwYXJhbXMgaW50byBidWZmZXIgKi8KPiAtCXJldCA9IHNzdF9o
-c3dfc3RvcmVfcGFyYW1fbGluZShoc3csIHVjb250cm9sLT52YWx1ZS5ieXRlcy5kYXRhKTsKPiAr
-CXJldCA9IHNzdF9oc3dfc3RvcmVfcGFyYW1fbGluZShoc3csIGJ1ZmZlcik7Cj4gICAJaWYgKHJl
-dCA8IDApCj4gLQkJcmV0dXJuIHJldDsKPiArCQlnb3RvIGV4aXQ7Cj4KPiAgIAlpZiAoc3N0X2hz
-d19pc19tb2R1bGVfYWN0aXZlKGhzdywgaWQpKQo+ICAgCQlyZXQgPSBzc3RfaHN3X21vZHVsZV9z
-ZXRfcGFyYW0oaHN3LCBpZCwgMCwgcGFyYW1faWQsCj4gLQkJCQlwYXJhbV9zaXplLCB1Y29udHJv
-bC0+dmFsdWUuYnl0ZXMuZGF0YSk7Cj4gKwkJCQkJCXBhcmFtX3NpemUsIGJ1ZmZlcik7Cj4gKwo+
-ICtleGl0Ogo+ICsJa2ZyZWUoYnVmZmVyKTsKPiAgIAlyZXR1cm4gcmV0Owo+ICAgfQo+Cj4gQEAg
-LTQzMSw3ICs0NjEsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgaHN3
-X3ZvbHVtZV9jb250cm9sc1tdID0gewo+ICAgCVNPQ19TSU5HTEVfQk9PTF9FWFQoIldhdmVzIFN3
-aXRjaCIsIDAsCj4gICAJCWhzd193YXZlc19zd2l0Y2hfZ2V0LCBoc3dfd2F2ZXNfc3dpdGNoX3B1
-dCksCj4gICAJLyogc2V0IHBhcmFtZXRlcnMgdG8gbW9kdWxlIHdhdmVzICovCj4gLQlTTkRfU09D
-X0JZVEVTX0VYVCgiV2F2ZXMgU2V0IFBhcmFtIiwgV0FWRVNfUEFSQU1fQ09VTlQsCj4gKwlTTkRf
-U09DX0JZVEVTX1RMVigiV2F2ZXMgU2V0IFBhcmFtIiwgV0FWRVNfUEFSQU1fQ09VTlQsCj4gICAJ
-CWhzd193YXZlc19wYXJhbV9nZXQsIGhzd193YXZlc19wYXJhbV9wdXQpLAo+ICAgfTsKPgo+Cl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Set GCK's parent clock as audio clock, make
+sure the GCK's parent clock is audio clock.
+
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+---
+
+ sound/soc/atmel/atmel-classd.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 8276675..2f5190b 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -588,6 +588,12 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	ret = clk_set_parent(dd->gclk, dd->aclk);
++	if (ret) {
++		dev_err(dev, "failed to set GCK parent clock: %d\n", ret);
++		return ret;
++	}
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+ 		dev_err(dev, "no memory resource\n");
+-- 
+1.7.9.5
