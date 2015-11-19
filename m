@@ -1,15 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel Broxton
-Date: Thu, 19 Nov 2015 23:25:12 +0800
-Message-ID: <2fcf4a795a07bedc42bdd893494299e36e89a6a7.1447945222.git.han.lu@intel.com>
+Subject: [PATCH 2/2] ALSA: hda - apply SKL display power
+	request/release patch to BXT
+Date: Thu, 19 Nov 2015 23:25:13 +0800
+Message-ID: <7a931eac5852ad6c303caeb4d0c9274e1133a09b.1447945222.git.han.lu@intel.com>
 References: <cover.1447945222.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 73D332614C1
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 16:25:53 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5A6126616A
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 16:26:02 +0100 (CET)
 In-Reply-To: <cover.1447945222.git.han.lu@intel.com>
 In-Reply-To: <cover.1447945222.git.han.lu@intel.com>
 References: <cover.1447945222.git.han.lu@intel.com>
@@ -28,35 +29,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add HD Audio Device PCI ID for the Intel Broxton platform.
-It is an HDA Intel PCH controller.
+For SKL, only the HDMI codec is in the display power well while the
+HD-A controller isn't. So the codec flag 'link_power_control' is
+set to request/release the display power via bus link_power ops.
+For BXT, the power well design is the same as SKL, so the patch
+should be applied to BXT too.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 8a7fbdc..963f824 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -312,6 +312,10 @@ enum {
- 	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG |\
- 	 AZX_DCAPS_I915_POWERWELL)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 309274b..aa68db6 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2375,7 +2375,8 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	 * can cover the codec power request, and so need not set this flag.
+ 	 * For previous platforms, there is no such power well feature.
+ 	 */
+-	if (is_valleyview_plus(codec) || is_skylake(codec))
++	if (is_valleyview_plus(codec) || is_skylake(codec) ||
++			is_broxton(codec))
+ 		codec->core.link_power_control = 1;
  
-+#define AZX_DCAPS_INTEL_BROXTON \
-+	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG |\
-+	 AZX_DCAPS_I915_POWERWELL)
-+
- /* quirks for ATI SB / AMD Hudson */
- #define AZX_DCAPS_PRESET_ATI_SB \
- 	(AZX_DCAPS_NO_TCSEL | AZX_DCAPS_SYNC_WRITE | AZX_DCAPS_POSFIX_LPIB |\
-@@ -2124,6 +2128,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	/* Broxton-P(Apollolake) */
-+	{ PCI_DEVICE(0x8086, 0x5a98),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BROXTON },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
+ 	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
 -- 
 2.5.0
