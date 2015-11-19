@@ -1,74 +1,68 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/8] ALSA: dice: constrain PCM
- substreams to current sampling transfer frequency
-Date: Thu, 19 Nov 2015 12:34:56 +0900
-Message-ID: <564D4360.8050503@sakamocchi.jp>
-References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8qbe6pm.wl-tiwai@suse.de>
+From: Songjun Wu <songjun.wu@atmel.com>
+Subject: [PATCH] ASoC: Atmel: ClassD: supports mono audio
+Date: Thu, 19 Nov 2015 11:45:32 +0800
+Message-ID: <1447904732-10784-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 640D9261480
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 04:34:59 +0100 (CET)
-In-Reply-To: <s5ha8qbe6pm.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Modify the code to support mono audio.
 
-On Nov 18 2015 23:13, Takashi Iwai wrote:
-> On Sun, 15 Nov 2015 10:25:28 +0100,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> This patchset adds a constrain to ALSA dice driver to start PCM
->> substreams and AMDTP packet transferring just at current sampling
->> transfer frequency.
->>
->> Dice hardware doesn't allow drivers to get supported combinations
->> between sampling rate and PCM channels. ALSA dice driver should follow
->> to the hardware design, though current ALSA driver has some
->> over-specifications. As a result, the driver has several issue and
->> brings inconvenience to users.
->>
->> This patchset consists of two parts:
->>   * 01-05: to add constrain to current sampling transfer frequency and related
->> 	  code cleanup
->>   * 06-08: to ensure and stabilize AMDTP packet transmission
->>
->> As a result, userspace applications can request PCM substreams at current
->> sampling transfer frequency. Therefore, when users want to start PCM
->> substreams at different rate, they should set the rate in advance by the
->> other ways (i.e. ffado-dbus-server/ffado-mixer).
->
-> This sounds rather like a step backward.  Why can't the driver set the
-> rate if it's the only first and exclusive user?
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+---
 
-I think you misunderstanding about the main reason of this patch.
+ sound/soc/atmel/atmel-classd.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Users are allowed to set their favorite sampling rate to Dice device. 
-But it should be achieved by ways except for PCM functionality in ALSA 
-dice driver, due to some reasons.
-
-Which part of this patchset should I explain? I described all of the 
-reasons in each patch. Due to Dice framewotk, due to the design of unit 
-drivers in Linux FireWire subsystem, due to basic principle for driver 
-developers, and so on.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 2f5190b..10ac47d 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -106,7 +106,7 @@ static const struct snd_pcm_hardware atmel_classd_hw = {
+ 	.rates			= ATMEL_CLASSD_RATES,
+ 	.rate_min		= 8000,
+ 	.rate_max		= 96000,
+-	.channels_min		= 2,
++	.channels_min		= 1,
+ 	.channels_max		= 2,
+ 	.buffer_bytes_max	= 64 * 1024,
+ 	.period_bytes_min	= 256,
+@@ -145,7 +145,7 @@ static const struct snd_soc_dai_ops atmel_classd_cpu_dai_ops = {
+ 
+ static struct snd_soc_dai_driver atmel_classd_cpu_dai = {
+ 	.playback = {
+-		.channels_min	= 2,
++		.channels_min	= 1,
+ 		.channels_max	= 2,
+ 		.rates		= ATMEL_CLASSD_RATES,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,},
+@@ -171,9 +171,13 @@ atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	if (params_channels(params) == 1)
++		slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	else
++		slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++
+ 	slave_config->direction		= DMA_MEM_TO_DEV;
+ 	slave_config->dst_addr		= dd->phy_base + CLASSD_THR;
+-	slave_config->dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	slave_config->dst_maxburst	= 1;
+ 	slave_config->src_maxburst	= 1;
+ 	slave_config->device_fc		= false;
+@@ -486,7 +490,7 @@ static struct snd_soc_dai_driver atmel_classd_codec_dai = {
+ 	.name = ATMEL_CLASSD_CODEC_DAI_NAME,
+ 	.playback = {
+ 		.stream_name	= "Playback",
+-		.channels_min	= 2,
++		.channels_min	= 1,
+ 		.channels_max	= 2,
+ 		.rates		= ATMEL_CLASSD_RATES,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
+-- 
+1.7.9.5
