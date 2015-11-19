@@ -1,58 +1,80 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH V2 1/1] drm/i915/audio: apply SKL codec wake
- up patch to BXT
-Date: Thu, 19 Nov 2015 16:55:49 +0100
-Message-ID: <20151119155549.GJ17050@phenom.ffwll.local>
+From: Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH V2 1/1] drm/i915/audio: apply SKL codec
+	wake up patch to BXT
+Date: Thu, 19 Nov 2015 18:01:51 +0200
+Message-ID: <87d1v6t1u8.fsf@intel.com>
 References: <1447944288-28499-1-git-send-email-han.lu@intel.com>
+ <20151119155549.GJ17050@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1447944288-28499-1-git-send-email-han.lu@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: han.lu@intel.com
-Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, jani.nikula@intel.com, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, tiwai@suse.de, han.lu@linux.intel.com, libin.yang@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24059265AF5
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 17:03:38 +0100 (CET)
+In-Reply-To: <20151119155549.GJ17050@phenom.ffwll.local>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Vetter <daniel@ffwll.ch>, han.lu@intel.com
+Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, tiwai@suse.de, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, han.lu@linux.intel.com, libin.yang@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBOb3YgMTksIDIwMTUgYXQgMTA6NDQ6NDhQTSArMDgwMCwgaGFuLmx1QGludGVsLmNv
-bSB3cm90ZToKPiBGcm9tOiAiTHUsIEhhbiIgPGhhbi5sdUBpbnRlbC5jb20+Cj4gCj4gRm9yIFNL
-TCB3ZSBhZGRlZCBhIGNvbW1pdCA2MzJmM2FiOTVmZTIgKCJkcm0vaTkxNS9hdWRpbzogYWRkIGNv
-ZGVjIHdha2V1cAo+IG92ZXJyaWRlIGVuYWJsZWQvZGlzYWJsZSBjYWxsYmFjayIpLCBpbiBvcmRl
-ciB0byBlbmFibGUgY29kZWMgd2FrZXVwCj4gb3ZlcnJpZGUgc2lnbmFsLCB0byBhbGxvdyByZS1l
-bnVtZXJhdGlvbiBvZiB0aGUgY29udHJvbGxlciBvbiBTS0wgYWZ0ZXIKPiByZXN1bWUgZnJvbSBs
-b3cgcG93ZXIgc3RhdGUuCj4gSW4gU0tMLCBIRE1JL0RQIGNvZGVjIGFuZCBQQ0ggSEQgQXVkaW8g
-Q29udHJvbGxlciBhcmUgaW4gZGlmZmVyZW50IHBvd2VyCj4gd2VsbHMsIHNvIGl0J3MgbmVjZXNz
-YXJ5IHRvIHJlc2V0IGRpc3BsYXkgYXVkaW8gY29kZWNzIHdoZW4gcG93ZXIgd2VsbCBvbiwKPiBv
-dGhlcndpc2UgZGlzcGxheSBhdWRpbyBjb2RlY3Mgd2lsbCBkaXNhcHBlYXIgd2hlbiByZXN1bWUg
-ZnJvbSBsb3cgcG93ZXIKPiBzdGF0ZS4KPiBSZXNldCBzdGVwcyB3aGVuIHBvd2VyIG9uOgo+ICAg
-ICBlbmFibGUgY29kZWMgd2FrZXVwIC0+IGF6eF9pbml0X2NoaXAoKSAtPiBkaXNhYmxlIGNvZGVj
-IHdha2V1cAo+IFNpbmNlIHRoZSBwb3dlciB3ZWxsIGRlc2lnbiBkaWQgbm90IGNoYW5nZSBmcm9t
-IFNLTCB0byBCWFQsIHdlIG5lZWQgdG8KPiBhcHBseSB0aGUgd29ya2Fyb3VuZCB0byBCWFQgYWxz
-by4KPiAKPiB2MjogYWRkIGV4cGxhbmF0aW9uCj4gCj4gU2lnbmVkLW9mZi1ieTogTHUsIEhhbiA8
-aGFuLmx1QGludGVsLmNvbT4KPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiBpbmRl
-eCA2M2Q0NzA2Li44MzEwYmYzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2lu
-dGVsX2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4g
-QEAgLTU5MSw3ICs1OTEsOCBAQCBzdGF0aWMgdm9pZCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9jb2Rl
-Y193YWtlX292ZXJyaWRlKHN0cnVjdCBkZXZpY2UgKmRldiwKPiAgCXN0cnVjdCBkcm1faTkxNV9w
-cml2YXRlICpkZXZfcHJpdiA9IGRldl90b19pOTE1KGRldik7Cj4gIAl1MzIgdG1wOwo+ICAKPiAt
-CWlmICghSVNfU0tZTEFLRShkZXZfcHJpdikgJiYgIUlTX0tBQllMQUtFKGRldl9wcml2KSkKPiAr
-CWlmICghSVNfU0tZTEFLRShkZXZfcHJpdikgJiYgIUlTX0JST1hUT04oZGV2X3ByaXYpICYmCj4g
-KwkJCSFJU19LQUJZTEFLRShkZXZfcHJpdikpCgppZiAoSU5URUxfSU5GTyhkZXYpLT5nZW4gPCA5
-KQoJcmV0dXJuOwoKZm9yIGZ1dHVyZS1wcm9vZmluZz8gQXQgbGVhc3QgbWFrZSBpdCBhbiBJU19H
-RU45IGNoZWNrIGluc3RlYWQgb2YKbGlzdGVuaW5nIGFsbCBvZiB0aGVtIGluIGEgbG9uZyBsaXN0
-LgotRGFuaWVsCgo+ICAJCXJldHVybjsKPiAgCj4gIAkvKgo+IC0tIAo+IDIuNS4wCj4gCgotLSAK
-RGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KaHR0cDov
-L2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1n
-ZngK
+On Thu, 19 Nov 2015, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Thu, Nov 19, 2015 at 10:44:48PM +0800, han.lu@intel.com wrote:
+>> From: "Lu, Han" <han.lu@intel.com>
+>> 
+>> For SKL we added a commit 632f3ab95fe2 ("drm/i915/audio: add codec wakeup
+>> override enabled/disable callback"), in order to enable codec wakeup
+>> override signal, to allow re-enumeration of the controller on SKL after
+>> resume from low power state.
+>> In SKL, HDMI/DP codec and PCH HD Audio Controller are in different power
+>> wells, so it's necessary to reset display audio codecs when power well on,
+>> otherwise display audio codecs will disappear when resume from low power
+>> state.
+>> Reset steps when power on:
+>>     enable codec wakeup -> azx_init_chip() -> disable codec wakeup
+>> Since the power well design did not change from SKL to BXT, we need to
+>> apply the workaround to BXT also.
+>> 
+>> v2: add explanation
+>> 
+>> Signed-off-by: Lu, Han <han.lu@intel.com>
+>> 
+>> diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+>> index 63d4706..8310bf3 100644
+>> --- a/drivers/gpu/drm/i915/intel_audio.c
+>> +++ b/drivers/gpu/drm/i915/intel_audio.c
+>> @@ -591,7 +591,8 @@ static void i915_audio_component_codec_wake_override(struct device *dev,
+>>  	struct drm_i915_private *dev_priv = dev_to_i915(dev);
+>>  	u32 tmp;
+>>  
+>> -	if (!IS_SKYLAKE(dev_priv) && !IS_KABYLAKE(dev_priv))
+>> +	if (!IS_SKYLAKE(dev_priv) && !IS_BROXTON(dev_priv) &&
+>> +			!IS_KABYLAKE(dev_priv))
+>
+> if (INTEL_INFO(dev)->gen < 9)
+> 	return;
+>
+> for future-proofing? At least make it an IS_GEN9 check instead of
+> listening all of them in a long list.
+
+http://mid.gmane.org/87a8qacq5w.fsf@intel.com ...
+
+> -Daniel
+>
+>>  		return;
+>>  
+>>  	/*
+>> -- 
+>> 2.5.0
+>> 
+
+-- 
+Jani Nikula, Intel Open Source Technology Center
