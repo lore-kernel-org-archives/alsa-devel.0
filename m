@@ -1,16 +1,16 @@
 From: Moise Gergaud <moise.gergaud@st.com>
-Subject: [PATCH 2/4] ASoC: sti: rename ST proprietary DT
-	properties
-Date: Thu, 19 Nov 2015 14:54:08 +0100
-Message-ID: <1447941250-344-3-git-send-email-moise.gergaud@st.com>
+Subject: [PATCH 3/4] ASoC: sti: set player private data
+Date: Thu, 19 Nov 2015 14:54:09 +0100
+Message-ID: <1447941250-344-4-git-send-email-moise.gergaud@st.com>
 References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1146E261552
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 14:54:28 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36BBD265FFA
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 14:54:31 +0100 (CET)
 In-Reply-To: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,56 +25,37 @@ To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lg
 Cc: Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-"st," prefix has been added for ST proprietary DT properties.
+Set substream player private data.
+substream player private data is used in uni_player_irq_handler to lock,
+stop & unlock the stream when interrupt indicates underflow/overflow.
+If not set, then segmentation fault occurs.
 
 Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
 Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif_player.c | 6 +++---
- sound/soc/sti/uniperif_reader.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sti/uniperif_player.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 843f037..1e19a7c 100644
+index 1e19a7c..5c2bc53 100644
 --- a/sound/soc/sti/uniperif_player.c
 +++ b/sound/soc/sti/uniperif_player.c
-@@ -989,7 +989,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
+@@ -669,6 +669,7 @@ static int uni_player_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct uniperif *player = priv->dai_data.uni;
++	player->substream = substream;
  
--	if (of_property_read_u32(pnode, "version", &player->ver) ||
-+	if (of_property_read_u32(pnode, "st,version", &player->ver) ||
- 	    player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
- 		dev_err(dev, "Unknown uniperipheral version ");
- 		return -EINVAL;
-@@ -998,13 +998,13 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
- 		info->underflow_enabled = 1;
+ 	player->clk_adj = 0;
  
--	if (of_property_read_u32(pnode, "uniperiph-id", &info->id)) {
-+	if (of_property_read_u32(pnode, "st,uniperiph-id", &info->id)) {
- 		dev_err(dev, "uniperipheral id not defined");
- 		return -EINVAL;
- 	}
+@@ -950,6 +951,8 @@ static void uni_player_shutdown(struct snd_pcm_substream *substream,
+ 	if (player->state != UNIPERIF_STATE_STOPPED)
+ 		/* Stop the player */
+ 		uni_player_stop(player);
++
++	player->substream = NULL;
+ }
  
- 	/* Read the device mode property */
--	if (of_property_read_string(pnode, "mode", &mode)) {
-+	if (of_property_read_string(pnode, "st,mode", &mode)) {
- 		dev_err(dev, "uniperipheral mode not defined");
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index 819eeaf..8a0eb20 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -316,7 +316,7 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	if (of_property_read_u32(node, "version", &reader->ver) ||
-+	if (of_property_read_u32(node, "st,version", &reader->ver) ||
- 	    reader->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
- 		dev_err(&pdev->dev, "Unknown uniperipheral version ");
- 		return -EINVAL;
+ static int uni_player_parse_dt_clk_glue(struct platform_device *pdev,
 -- 
 1.9.1
