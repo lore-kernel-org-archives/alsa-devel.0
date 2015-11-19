@@ -1,45 +1,45 @@
-From: han.lu@intel.com
-Subject: [PATCH 1/1] drm/i915/audio: apply SKL codec wake up
+From: Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH 1/1] drm/i915/audio: apply SKL codec wake up
 	patch to BXT
-Date: Thu, 19 Nov 2015 16:48:39 +0800
-Message-ID: <1447922919-27077-1-git-send-email-han.lu@intel.com>
+Date: Thu, 19 Nov 2015 11:09:01 +0200
+Message-ID: <877flecq4y.fsf@intel.com>
+References: <1447922919-27077-1-git-send-email-han.lu@intel.com>
+ <87a8qacq5w.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 0659C2614A0
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 09:49:12 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: daniel.vetter@ffwll.ch, jani.nikula@intel.com, intel-gfx@lists.freedesktop.org, tiwai@suse.de, libin.yang@linux.intel.com, mengdong.lin@linux.intel.com, han.lu@linux.intel.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <87a8qacq5w.fsf@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, tiwai@suse.de, libin.yang@linux.intel.com, mengdong.lin@linux.intel.com, han.lu@linux.intel.com, alsa-devel@alsa-project.org
 Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
-index 63d4706..8310bf3 100644
---- a/drivers/gpu/drm/i915/intel_audio.c
-+++ b/drivers/gpu/drm/i915/intel_audio.c
-@@ -591,7 +591,8 @@ static void i915_audio_component_codec_wake_override(struct device *dev,
- 	struct drm_i915_private *dev_priv = dev_to_i915(dev);
- 	u32 tmp;
- 
--	if (!IS_SKYLAKE(dev_priv) && !IS_KABYLAKE(dev_priv))
-+	if (!IS_SKYLAKE(dev_priv) && !IS_BROXTON(dev_priv) &&
-+			!IS_KABYLAKE(dev_priv))
- 		return;
- 
- 	/*
--- 
-2.5.0
+T24gVGh1LCAxOSBOb3YgMjAxNSwgSmFuaSBOaWt1bGEgPGphbmkubmlrdWxhQGludGVsLmNvbT4g
+d3JvdGU6Cj4gT24gVGh1LCAxOSBOb3YgMjAxNSwgaGFuLmx1QGludGVsLmNvbSB3cm90ZToKPj4g
+RnJvbTogIkx1LCBIYW4iIDxoYW4ubHVAaW50ZWwuY29tPgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBM
+dSwgSGFuIDxoYW4ubHVAaW50ZWwuY29tPgo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlv
+LmMKPj4gaW5kZXggNjNkNDcwNi4uODMxMGJmMyAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
+bF9hdWRpby5jCj4+IEBAIC01OTEsNyArNTkxLDggQEAgc3RhdGljIHZvaWQgaTkxNV9hdWRpb19j
+b21wb25lbnRfY29kZWNfd2FrZV9vdmVycmlkZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4+ICAJc3Ry
+dWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2X3RvX2k5MTUoZGV2KTsKPj4gIAl1
+MzIgdG1wOwo+PiAgCj4+IC0JaWYgKCFJU19TS1lMQUtFKGRldl9wcml2KSAmJiAhSVNfS0FCWUxB
+S0UoZGV2X3ByaXYpKQo+PiArCWlmICghSVNfU0tZTEFLRShkZXZfcHJpdikgJiYgIUlTX0JST1hU
+T04oZGV2X3ByaXYpICYmCj4+ICsJCQkhSVNfS0FCWUxBS0UoZGV2X3ByaXYpKQo+Cj4gSG93IGFi
+b3V0IGlmIChJTlRFTF9JTkZPKGRldl9wcml2KS0+Z2VuIDwgOSk/CgpPaCwgYW5kIEkgZ3Vlc3Mg
+d2UgYWxzbyB3b25kZXIgd2h5IHRoaXMgaXMgb25seSByZWxldmFudCBmb3IgdGhlIGxhdGVzdApw
+bGF0Zm9ybXM/Cgo+Cj4gQlIsCj4gSmFuaS4KPgo+PiAgCQlyZXR1cm47Cj4+ICAKPj4gIAkvKgoK
+LS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFp
+bGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZy
+ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
