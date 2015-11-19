@@ -1,103 +1,57 @@
-From: Moise Gergaud <moise.gergaud@st.com>
-Subject: [PATCH 4/4] ASoC: sti: reset iec60958 settings on close
-Date: Thu, 19 Nov 2015 14:54:10 +0100
-Message-ID: <1447941250-344-5-git-send-email-moise.gergaud@st.com>
-References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
+From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH v3 0/2] ASoC: Add support for DA7217 and DA7218 audio codecs
+Date: Thu, 19 Nov 2015 13:59:31 +0000
+Message-ID: <cover.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A0AB266190
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 14:54:34 +0100 (CET)
-In-Reply-To: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de
-Cc: Moise Gergaud <moise.gergaud@st.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Reset IEC 60958 settings for next PCM session.
+This patch set adds DT and ASoC codec driver support for DA7217 and DA7218.
 
-Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/uniperif_player.c | 41 ++++++++++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 17 deletions(-)
+Changes are based against v4.4-rc1 kernel version.
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 5c2bc53..b73e348 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -64,6 +64,23 @@ static const struct snd_pcm_hardware uni_player_pcm_hw = {
- 	.buffer_bytes_max = 256 * PAGE_SIZE
- };
- 
-+static inline void reset_iec958_settings(struct uniperif *player)
-+{
-+	struct snd_aes_iec958 *iec958 = &player->stream_settings.iec958;
-+
-+	memset(iec958->status, 0, sizeof(iec958->status));
-+
-+	/* Broadcast reception category */
-+	iec958->status[1] = IEC958_AES1_CON_GENERAL;
-+	/* Do not take into account source or channel number */
-+	iec958->status[2] = IEC958_AES2_CON_SOURCE_UNSPEC;
-+	/* Sampling frequency not indicated */
-+	iec958->status[3] = IEC958_AES3_CON_FS_NOTID;
-+	/* Max sample word 24-bit, sample word length not indicated */
-+	iec958->status[4] = IEC958_AES4_CON_MAX_WORDLEN_24 |
-+			    IEC958_AES4_CON_WORDLEN_24_20;
-+}
-+
- static inline int reset_player(struct uniperif *player)
- {
- 	int count = 10;
-@@ -947,6 +964,11 @@ static void uni_player_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
- 	struct uniperif *player = priv->dai_data.uni;
-+	/*
-+	 * Set default iec958 status bits done in close to allow to set
-+	 * iec settings before next open pcm session
-+	 */
-+	reset_iec958_settings(player);
- 
- 	if (player->state != UNIPERIF_STATE_STOPPED)
- 		/* Stop the player */
-@@ -1089,23 +1111,8 @@ int uni_player_init(struct platform_device *pdev,
- 	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
- 
- 	if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player)) {
--		/* Set default iec958 status bits  */
--
--		/* Consumer, PCM, copyright, 2ch, mode 0 */
--		player->stream_settings.iec958.status[0] = 0x00;
--		/* Broadcast reception category */
--		player->stream_settings.iec958.status[1] =
--					IEC958_AES1_CON_GENERAL;
--		/* Do not take into account source or channel number */
--		player->stream_settings.iec958.status[2] =
--					IEC958_AES2_CON_SOURCE_UNSPEC;
--		/* Sampling frequency not indicated */
--		player->stream_settings.iec958.status[3] =
--					IEC958_AES3_CON_FS_NOTID;
--		/* Max sample word 24-bit, sample word length not indicated */
--		player->stream_settings.iec958.status[4] =
--					IEC958_AES4_CON_MAX_WORDLEN_24 |
--					IEC958_AES4_CON_WORDLEN_24_20;
-+		/* Set default iec958 status bits */
-+		reset_iec958_settings(player);
- 
- 		player->num_ctrls = ARRAY_SIZE(snd_sti_iec_ctl);
- 		player->snd_ctrls = snd_sti_iec_ctl[0];
--- 
-1.9.1
+Changes in v3:
+ - At request of Rob Herring, added units suffix to applicable binding names.
+ - Add changes for codec Kconfig and Makefile which were somehow missed from
+   previous patches.
+
+Changes in v2:
+ - Removed Internal LDO voltage selection from DT
+ - BiQuad filter coefficients removed from DT, no programmed using mixer
+   controls.
+ - ALC calibration no longer bypasses regmap cache and instead saves & restores
+   registers around procedure, to avoid issues with concurrent regmap access.
+ - Removed all unnecessary default settings for mixers in probe.
+ - Reporting of mic level detection event to user-space, through input
+   VOICECOMMAND key event, removed as not intended for this purpose. Alternative
+   solution required as follow up. Event masked off until solution in place.
+ - Additional error checking & loggin around mclk usage, in sysclk and
+   bias_level functions.
+
+Adam Thomson (2):
+  ASoC: da7218: Add bindings documentation for DA7218 audio codec
+  ASoC: codecs: Add da7218 codec driver
+
+ Documentation/devicetree/bindings/sound/da7218.txt |  104 +
+ include/sound/da7218.h                             |  109 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/da7218.c                          | 3305 ++++++++++++++++++++
+ sound/soc/codecs/da7218.h                          | 1414 +++++++++
+ 6 files changed, 4938 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/da7218.txt
+ create mode 100644 include/sound/da7218.h
+ create mode 100644 sound/soc/codecs/da7218.c
+ create mode 100644 sound/soc/codecs/da7218.h
+
+--
+1.9.3
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
