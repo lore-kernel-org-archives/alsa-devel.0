@@ -1,20 +1,16 @@
-From: Pascal Huerst <pascal.huerst@gmail.com>
-Subject: Re: [PATCH] ASoC: adau1701: Add 44.1 KHz to supported
-	sample rates
-Date: Thu, 19 Nov 2015 14:30:02 +0100
-Message-ID: <564DCEDA.5070006@gmail.com>
-References: <1444907766-9892-1-git-send-email-pascal.huerst@gmail.com>
- <56260521.6080805@metafoo.de>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: [PATCH 1/4] ASoC: sti: remove wrong error message
+Date: Thu, 19 Nov 2015 14:54:07 +0100
+Message-ID: <1447941250-344-2-git-send-email-moise.gergaud@st.com>
+References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id D7DF0261515
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 14:30:03 +0100 (CET)
-Received: by wmww144 with SMTP id w144so238585010wmw.1
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 05:30:03 -0800 (PST)
-In-Reply-To: <56260521.6080805@metafoo.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id A695C26153A
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 14:54:24 +0100 (CET)
+In-Reply-To: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org
+To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de
+Cc: Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/soc/sti/uniperif_reader.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-On 20.10.2015 11:10, Lars-Peter Clausen wrote:
-> On 10/15/2015 01:16 PM, pascal.huerst@gmail.com wrote:
->> From: Pascal Huerst <pascal.huerst@gmail.com>
->>
->> According to the datasheet, this device does also support 44.1 KHz
->> as sample rate. This adds the necessary changes to support this.
->>
->> See Datasheet: Rev. B / page 39 / SR[1:0]
->>
->> Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
-> 
-> Hm, right. The sample rates that part can run at depend on the external
-> clock rate. It can run at ext_clk / 256, ext_clk / 128 or ext_clk / 64.
-> Maybe we should just implement it like that.
-
-Don't you think, that it is just consistent to add 44100, just as the
-other sample rates that are supported?
-
-> Do you have support for switching the external clock at runtime on your
-> platform?
-> 
->> ---
->>  sound/soc/codecs/adau1701.c | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
->> index de53c0d..8b3ba51 100644
->> --- a/sound/soc/codecs/adau1701.c
->> +++ b/sound/soc/codecs/adau1701.c
->> @@ -459,6 +459,7 @@ static int adau1701_hw_params(struct snd_pcm_substream *substream,
->>  	case 96000:
->>  		val = ADAU1701_DSPCTRL_SR_96;
->>  		break;
->> +	case 44100:
->>  	case 48000:
->>  		val = ADAU1701_DSPCTRL_SR_48;
->>  		break;
->> @@ -623,8 +624,8 @@ static int adau1701_startup(struct snd_pcm_substream *substream,
->>  	return sigmadsp_restrict_params(adau1701->sigmadsp, substream);
->>  }
->>  
->> -#define ADAU1701_RATES (SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 | \
->> -	SNDRV_PCM_RATE_192000)
->> +#define ADAU1701_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
->> +	SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
->>  
->>  #define ADAU1701_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
->>  	SNDRV_PCM_FMTBIT_S24_LE)
->>
-> 
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index f791239..819eeaf 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -346,7 +346,6 @@ int uni_reader_init(struct platform_device *pdev,
+ 	reader->hw = &uni_reader_pcm_hw;
+ 	reader->dai_ops = &uni_reader_dai_ops;
+ 
+-	dev_err(reader->dev, "%s: enter\n", __func__);
+ 	ret = uni_reader_parse_dt(pdev, reader);
+ 	if (ret < 0) {
+ 		dev_err(reader->dev, "Failed to parse DeviceTree");
+-- 
+1.9.1
