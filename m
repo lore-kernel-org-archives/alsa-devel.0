@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 2/2] topology: Quit and show error message
-	on big-endian machines
-Date: Thu, 19 Nov 2015 03:33:12 -0500
-Message-ID: <61e90290970cd46a60fd17159bcbb1250938cbe1.1447921888.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 1/2] topology: Not compare a for loop
+	iterator with ABI __le32 variables
+Date: Thu, 19 Nov 2015 03:33:05 -0500
+Message-ID: <f972d64a34ad6969cd8bbb0e427a5058779a415a.1447921888.git.mengdong.lin@linux.intel.com>
 References: <cover.1447921888.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 492012614C1
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 09:17:30 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D438265DF4
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 09:17:57 +0100 (CET)
 In-Reply-To: <cover.1447921888.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +27,99 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This tool can only support little-endian machines atm.
-Many codes directly refer to  __le32/__le64 variables of ABI objects,
-so will be broken on big-endian machines.
+The iterator 'i' in a loop is a usually a integer. But ABI variables use
+type _le32, which is converted to host unsigned integer. Comparing them
+can cause gcc warning: comparison between signed and unsigned integer
+expressions[-Wsign-compare].
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 18bb9c7..2048733 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -371,10 +371,25 @@ void snd_tplg_verbose(snd_tplg_t *tplg, int verbose)
- 	tplg->verbose = verbose;
- }
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
+index 7d8787f..1c073f7 100644
+--- a/src/topology/ctl.c
++++ b/src/topology/ctl.c
+@@ -676,7 +676,7 @@ int tplg_add_mixer(snd_tplg_t *tplg, struct snd_tplg_mixer_template *mixer,
+ 	struct snd_soc_tplg_private *priv = mixer->priv;
+ 	struct snd_soc_tplg_mixer_control *mc;
+ 	struct tplg_elem *elem;
+-	int ret, i;
++	int ret, i, num_channels;
  
-+static bool is_little_endian(void)
-+{
-+#ifdef __BYTE_ORDER
-+	#if __BYTE_ORDER == __LITTLE_ENDIAN
-+		return true;
-+	#endif
-+#endif
-+	return false;
-+}
+ 	tplg_dbg(" Control Mixer: %s\n", mixer->hdr.name);
+ 
+@@ -708,9 +708,10 @@ int tplg_add_mixer(snd_tplg_t *tplg, struct snd_tplg_mixer_template *mixer,
+ 	for (i = 0; i < SND_SOC_TPLG_MAX_CHAN; i++)
+ 		mc->channel[i].reg = -1;
+ 
+-	if (mixer->map)
+-		mc->num_channels = mixer->map->num_channels;
+-	for (i = 0; i < mc->num_channels; i++) {
++	num_channels = mixer->map ? mixer->map->num_channels : 0;
++	mc->num_channels = num_channels;
 +
- snd_tplg_t *snd_tplg_new(void)
++	for (i = 0; i < num_channels; i++) {
+ 		struct snd_tplg_channel_elem *channel = &mixer->map->channel[i];
+ 
+ 		mc->channel[i].size = channel->size;
+@@ -743,7 +744,7 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
  {
- 	snd_tplg_t *tplg;
+ 	struct snd_soc_tplg_enum_control *ec;
+ 	struct tplg_elem *elem;
+-	int ret, i;
++	int ret, i, num_items;
  
-+	if (!is_little_endian()) {
-+		SNDERR("error: cannot support big-endian machines\n");
-+		return NULL;
-+	}
-+
- 	tplg = calloc(1, sizeof(snd_tplg_t));
- 	if (!tplg)
- 		return NULL;
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 06cb100..e66d7f4 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -12,6 +12,8 @@
+ 	tplg_dbg(" Control Enum: %s\n", enum_ctl->hdr.name);
  
- #include <limits.h>
- #include <stdint.h>
-+#include <stdbool.h>
-+#include <endian.h>
- #include <linux/types.h>
+@@ -765,15 +766,14 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
+ 		return ret;
+ 	}
  
- #include "local.h"
+-	ec->items = enum_ctl->items;
+-	if (ec->items > SND_SOC_TPLG_NUM_TEXTS)
+-		ec->items = SND_SOC_TPLG_NUM_TEXTS;
+-
++	num_items =  enum_ctl->items < SND_SOC_TPLG_NUM_TEXTS ?
++		enum_ctl->items : SND_SOC_TPLG_NUM_TEXTS;
++	ec->items = num_items;
+ 	ec->mask = enum_ctl->mask;
+ 	ec->count = enum_ctl->items;
+ 
+ 	if (enum_ctl->texts != NULL) {
+-		for (i = 0; i < ec->items; i++) {
++		for (i = 0; i < num_items; i++) {
+ 			if (enum_ctl->texts[i] != NULL)
+ 				strncpy(ec->texts[i], enum_ctl->texts[i],
+ 					SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
+@@ -781,7 +781,7 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
+ 	}
+ 
+ 	if (enum_ctl->values != NULL) {
+-		for (i = 0; i < ec->items; i++) {
++		for (i = 0; i < num_items; i++) {
+ 			if (enum_ctl->values[i])
+ 				continue;
+ 
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 8eb62e4..d75aad8 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -550,7 +550,7 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	}
+ 
+ 	pcm->num_streams = pcm_tpl->num_streams;
+-	for (i = 0; i < pcm->num_streams; i++)
++	for (i = 0; i < pcm_tpl->num_streams; i++)
+ 		tplg_add_stream_object(&pcm->stream[i], &pcm_tpl->stream[i]);
+ 
+ 	return 0;
+@@ -583,7 +583,7 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	lk->id = link->id;
+ 	lk->num_streams = link->num_streams;
+ 
+-	for (i = 0; i < lk->num_streams; i++)
++	for (i = 0; i < link->num_streams; i++)
+ 		tplg_add_stream_object(&lk->stream[i], &link->stream[i]);
+ 
+ 	return 0;
 -- 
 2.5.0
