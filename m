@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: remove wrong error message" to the
+Subject: Applied "ASoC: sti: set player private data" to the
 	asoc tree
-Date: Thu, 19 Nov 2015 19:56:43 +0000
-Message-ID: <E1ZzVJz-0006U1-Mp@debutante>
-References: <1447941250-344-2-git-send-email-moise.gergaud@st.com>
+Date: Thu, 19 Nov 2015 19:56:41 +0000
+Message-ID: <E1ZzVJx-0006T4-Rn@debutante>
+References: <1447941250-344-4-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7F942614D3
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 20:56:51 +0100 (CET)
-In-Reply-To: <1447941250-344-2-git-send-email-moise.gergaud@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92EFC261534
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 20:56:52 +0100 (CET)
+In-Reply-To: <1447941250-344-4-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: remove wrong error message
+   ASoC: sti: set player private data
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From cd3ed08a86e8b5022f107aa72a1929b6417c1f42 Mon Sep 17 00:00:00 2001
+>From 36a65e2072625556191c6c616d65ed4f67f4f0d0 Mon Sep 17 00:00:00 2001
 From: Moise Gergaud <moise.gergaud@st.com>
-Date: Thu, 19 Nov 2015 14:54:07 +0100
-Subject: [PATCH] ASoC: sti: remove wrong error message
+Date: Thu, 19 Nov 2015 14:54:09 +0100
+Subject: [PATCH] ASoC: sti: set player private data
+
+Set substream player private data.
+substream player private data is used in uni_player_irq_handler to lock,
+stop & unlock the stream when interrupt indicates underflow/overflow.
+If not set, then segmentation fault occurs.
 
 Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
 Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif_reader.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sti/uniperif_player.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index f791239a3087..819eeafdf6b4 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -346,7 +346,6 @@ int uni_reader_init(struct platform_device *pdev,
- 	reader->hw = &uni_reader_pcm_hw;
- 	reader->dai_ops = &uni_reader_dai_ops;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 1e19a7c6b7e8..5c2bc53f0a9b 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -669,6 +669,7 @@ static int uni_player_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct uniperif *player = priv->dai_data.uni;
++	player->substream = substream;
  
--	dev_err(reader->dev, "%s: enter\n", __func__);
- 	ret = uni_reader_parse_dt(pdev, reader);
- 	if (ret < 0) {
- 		dev_err(reader->dev, "Failed to parse DeviceTree");
+ 	player->clk_adj = 0;
+ 
+@@ -950,6 +951,8 @@ static void uni_player_shutdown(struct snd_pcm_substream *substream,
+ 	if (player->state != UNIPERIF_STATE_STOPPED)
+ 		/* Stop the player */
+ 		uni_player_stop(player);
++
++	player->substream = NULL;
+ }
+ 
+ static int uni_player_parse_dt_clk_glue(struct platform_device *pdev,
 -- 
 2.6.2
