@@ -1,72 +1,46 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH 1/1] drm/i915/audio: apply SKL codec wake up
-	patch to BXT
-Date: Thu, 19 Nov 2015 14:28:40 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83BF77280@SHSMSX101.ccr.corp.intel.com>
-References: <1447922919-27077-1-git-send-email-han.lu@intel.com>
- <87a8qacq5w.fsf@intel.com>	<877flecq4y.fsf@intel.com>
- <s5htwoib7v6.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: wm5102: Move driver to use
+ SND_SOC_BYTES_TLV
+Date: Thu, 19 Nov 2015 14:22:55 +0000
+Message-ID: <20151119142255.GG18889@ck-lbox>
+References: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
+ <1447853952-6414-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5htwoib7v6.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, "Nikula, Jani" <jani.nikula@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "han.lu@linux.intel.com" <han.lu@linux.intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96AB0266040
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 15:38:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1447853952-6414-3-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRv
-OnRpd2FpQHN1c2UuZGVdCj4gU2VudDogVGh1cnNkYXksIE5vdmVtYmVyIDE5LCAyMDE1IDY6Mjkg
-UE0KPiBUbzogTmlrdWxhLCBKYW5pCj4gQ2M6IEx1LCBIYW47IGRhbmllbC52ZXR0ZXJAZmZ3bGwu
-Y2g7IGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7Cj4gbGliaW4ueWFuZ0BsaW51eC5p
-bnRlbC5jb207IG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb207Cj4gaGFuLmx1QGxpbnV4Lmlu
-dGVsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gU3ViamVjdDogUmU6IFtQQVRD
-SCAxLzFdIGRybS9pOTE1L2F1ZGlvOiBhcHBseSBTS0wgY29kZWMgd2FrZSB1cCBwYXRjaCB0bwo+
-IEJYVAo+IAo+IE9uIFRodSwgMTkgTm92IDIwMTUgMTA6MDk6MDEgKzAxMDAsCj4gSmFuaSBOaWt1
-bGEgd3JvdGU6Cj4gPgo+ID4gT24gVGh1LCAxOSBOb3YgMjAxNSwgSmFuaSBOaWt1bGEgPGphbmku
-bmlrdWxhQGludGVsLmNvbT4gd3JvdGU6Cj4gPiA+IE9uIFRodSwgMTkgTm92IDIwMTUsIGhhbi5s
-dUBpbnRlbC5jb20gd3JvdGU6Cj4gPiA+PiBGcm9tOiAiTHUsIEhhbiIgPGhhbi5sdUBpbnRlbC5j
-b20+Cj4gPiA+Pgo+ID4gPj4gU2lnbmVkLW9mZi1ieTogTHUsIEhhbiA8aGFuLmx1QGludGVsLmNv
-bT4KPiA+ID4+Cj4gPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
-YXVkaW8uYwo+ID4gPj4gYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gPiA+
-PiBpbmRleCA2M2Q0NzA2Li44MzEwYmYzIDEwMDY0NAo+ID4gPj4gLS0tIGEvZHJpdmVycy9ncHUv
-ZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfYXVkaW8uYwo+ID4gPj4gQEAgLTU5MSw3ICs1OTEsOCBAQCBzdGF0aWMgdm9pZAo+IGk5
-MTVfYXVkaW9fY29tcG9uZW50X2NvZGVjX3dha2Vfb3ZlcnJpZGUoc3RydWN0IGRldmljZSAqZGV2
-LAo+ID4gPj4gIAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkx
-NShkZXYpOwo+ID4gPj4gIAl1MzIgdG1wOwo+ID4gPj4KPiA+ID4+IC0JaWYgKCFJU19TS1lMQUtF
-KGRldl9wcml2KSAmJiAhSVNfS0FCWUxBS0UoZGV2X3ByaXYpKQo+ID4gPj4gKwlpZiAoIUlTX1NL
-WUxBS0UoZGV2X3ByaXYpICYmICFJU19CUk9YVE9OKGRldl9wcml2KSAmJgo+ID4gPj4gKwkJCSFJ
-U19LQUJZTEFLRShkZXZfcHJpdikpCj4gPiA+Cj4gPiA+IEhvdyBhYm91dCBpZiAoSU5URUxfSU5G
-TyhkZXZfcHJpdiktPmdlbiA8IDkpPwo+ID4KPiA+IE9oLCBhbmQgSSBndWVzcyB3ZSBhbHNvIHdv
-bmRlciB3aHkgdGhpcyBpcyBvbmx5IHJlbGV2YW50IGZvciB0aGUKPiA+IGxhdGVzdCBwbGF0Zm9y
-bXM/Cj4gCj4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IGl0J3MgYSB3b3JrYXJvdW5kIHNwZWNp
-ZmljIHRvIEhTVy9CRFcuCj4gSXQncyBpc3N1ZWQgb25seSBkdXJpbmcgdGhlIGF1ZGlvIGNvbnRy
-b2xsZXIgaW5pdGlhbGl6YXRpb24gYW5kIGF0IHRoZSByZXN1bWUuCj4gQnV0IEkgbmV2ZXIga25v
-dyB3aHkgaXQncyBuZWVkZWQsIGl0J3MgYSBibGFjayBtYWdpYyA6KQo+IAo+IAo+IFRha2FzaGkK
-ClNvcnJ5LCBJIHNob3VsZCBoYXZlIG1hZGUgaXQgbW9yZSBjbGVhci4KRm9yIFNLTCB3ZSBhZGRl
-ZCBhIHBhdGNoIChjb21taXQgNjMyZjNhYjk1ZmUyZmZlYmYwOTk2OWE1N2FiMjEpLCBpbiBvcmRl
-cgp0byBlbmFibGUgY29kZWMgd2FrZXVwIG92ZXJyaWRlIHNpZ25hbCwgdG8gYWxsb3cgcmUtZW51
-bWVyYXRpb24gb2YgdGhlCmNvbnRyb2xsZXIgb24gU0tMIGFmdGVyIHJlc3VtZSBmcm9tIGxvdyBw
-b3dlciBzdGF0ZS4KSW4gU0tMLCBIRE1JL0RQIGNvZGVjIGFuZCBQQ0ggSEQgQXVkaW8gQ29udHJv
-bGxlciBhcmUgaW4gZGlmZmVyZW50IHBvd2VyCndlbGxzLCBzbyBpdCdzIG5lY2Vzc2FyeSB0byBy
-ZXNldCBkaXNwbGF5IGF1ZGlvIGNvZGVjcyB3aGVuIHBvd2VyIHdlbGwgb24sCm90aGVyd2lzZSBk
-aXNwbGF5IGF1ZGlvIGNvZGVjcyB3aWxsIGRpc2FwcGVhciB3aGVuIHJlc3VtZSBmcm9tIGxvdyBw
-b3dlcgpzdGF0ZS4KUmVzZXQgc3RlcHMgd2hlbiBwb3dlciBvbjoKICAgIGVuYWJsZSBjb2RlYyB3
-YWtldXAgLT4gYXp4X2luaXRfY2hpcCgpIC0+IGRpc2FibGUgY29kZWMgd2FrZXVwClNpbmNlIHRo
-ZSBwb3dlciB3ZWxsIGRlc2lnbiBkaWRuJ3QgY2hhbmdlIGZyb20gU0tMIHRvIEJYVCwgd2UgbmVl
-ZCB0byBhcHBseQp0aGUgd29ya2Fyb3VuZCB0byBCWFQgYWxzby4KSSdsbCByZS1zdWJtaXQgdGhl
-IHBhdGNoIHdpdGggdGhlc2UgaW5mbyBhZGRlZCBvbi4KClJlZ2FyZHMsCkhhbiBMdQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGlu
-ZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Wed, Nov 18, 2015 at 07:09:11PM +0530, Vinod Koul wrote:
+> WM5102 driver was using SND_SOC_BYTES_EXT. Since we want to
+> remove this, convert it to use SND_SOC_BYTES_TLV
+> 
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> Cc: patches@opensource.wolfsonmicro.com
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Looks good to me, I think the TLV byte control stuff has been
+merged in tinyalsa now so no problems there.
+
+Thanks,
+Charles
