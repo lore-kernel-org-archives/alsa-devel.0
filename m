@@ -1,102 +1,124 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH 3/4] dt-bindings: sound: add binding for
-	pcm1792a
-Date: Fri, 20 Nov 2015 16:04:32 +0100
-Message-ID: <CAOf5uwmpcjrqsQPukr9t2Z-nuJn=8ML1G90RCdq=Zgm9nLW8Ww@mail.gmail.com>
-References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
- <1448014157-36526-4-git-send-email-raphael.poggi@avalun.com>
- <20151120144245.GA12767@rob-hp-laptop>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/4] ASoC: sun4i-codec: Add support for PA
+ gpio pin
+Date: Fri, 20 Nov 2015 09:23:36 -0600
+Message-ID: <20151120152336.GA1670@rob-hp-laptop>
+References: <1448027233-750-1-git-send-email-hdegoede@redhat.com>
+Reply-To: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f179.google.com (mail-io0-f179.google.com
- [209.85.223.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 60C392606F6
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 16:04:34 +0100 (CET)
-Received: by iofh3 with SMTP id h3so126206154iof.3
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 07:04:33 -0800 (PST)
-In-Reply-To: <20151120144245.GA12767@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Raphael Poggi <poggi.raph@gmail.com>, tiwai@suse.com, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDJIP47K7MERB7PVXSZAKGQEWEBIMRY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1448027233-750-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Raphael
+On Fri, Nov 20, 2015 at 02:47:10PM +0100, Hans de Goede wrote:
+> Add support for PA gpio pin for controlling an external amplifier as used
+> on some Allwinner boards.
+> 
+> Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-On Fri, Nov 20, 2015 at 3:42 PM, Rob Herring <robh@kernel.org> wrote:
-> On Fri, Nov 20, 2015 at 11:09:16AM +0100, Raphael Poggi wrote:
->> From: Raphael Poggi <poggi.raph@gmail.com>
->>
->> Add a binding for specify channel selection.
->>
->> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
->> ---
->>  Documentation/devicetree/bindings/sound/pcm1792a.txt | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
-
-can you add me in the patch-set?
-
-Michael
-
->> diff --git a/Documentation/devicetree/bindings/sound/pcm1792a.txt b/Documentation/devicetree/bindings/sound/pcm1792a.txt
->> index 970ba1e..6e87a3a 100644
->> --- a/Documentation/devicetree/bindings/sound/pcm1792a.txt
->> +++ b/Documentation/devicetree/bindings/sound/pcm1792a.txt
->> @@ -9,10 +9,15 @@ Required properties:
->>  For required properties on SPI, please consult
->>  Documentation/devicetree/bindings/spi/spi-bus.txt
->>
->> +Optional properties:
->> +- ti,side: specifie the channel side
->
-> typo
->
->> +  insertion, removal.
->
-> why the line wrap?
->
-> I don't understand what this property is/does. Both the name and
-> description are a bit terse.
->
->> +
->>  Examples:
->>
->>       codec_spi: 1792a@0 {
->>               compatible = "ti,pcm1792a";
->>               spi-max-frequency = <600000>;
->> +             ti,side = <left>
->                                 ^
-> missing ;
->
->>       };
->>
->> --
->> 2.1.0
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe devicetree" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
-
--- 
-| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
-| COO  -  Founder                                      Cruquiuskade 47 |
-| +31(0)851119172                                 Amsterdam 1018 AM NL |
-|                  [`as] http://www.amarulasolutions.com               |
+> ---
+>  .../devicetree/bindings/sound/sun4i-codec.txt      |  3 +++
+>  sound/soc/sunxi/sun4i-codec.c                      | 25 ++++++++++++++--------
+>  2 files changed, 19 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+> index c92966b..974babe 100644
+> --- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+> +++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+> @@ -14,6 +14,9 @@ Required properties:
+>     - "apb": the parent APB clock for this controller
+>     - "codec": the parent module clock
+>  
+> +Optional properties:
+> +- pa-gpios: gpio to enable external amplifier
+> +
+>  Example:
+>  codec: codec@01c22c00 {
+>  	#sound-dai-cells = <0>;
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index bcbf4da..2aca9cd 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/of_address.h>
+>  #include <linux/clk.h>
+>  #include <linux/regmap.h>
+> +#include <linux/gpio/consumer.h>
+>  
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+> @@ -101,16 +102,15 @@ struct sun4i_codec {
+>  	struct regmap	*regmap;
+>  	struct clk	*clk_apb;
+>  	struct clk	*clk_module;
+> +	struct gpio_desc *gpio_pa;
+>  
+>  	struct snd_dmaengine_dai_dma_data	playback_dma_data;
+>  };
+>  
+>  static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
+>  {
+> -	/*
+> -	 * FIXME: according to the BSP, we might need to drive a PA
+> -	 *        GPIO high here on some boards
+> -	 */
+> +	if (scodec->gpio_pa)
+> +		gpiod_set_value_cansleep(scodec->gpio_pa, 1);
+>  
+>  	/* Flush TX FIFO */
+>  	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+> @@ -125,15 +125,13 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
+>  
+>  static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
+>  {
+> -	/*
+> -	 * FIXME: according to the BSP, we might need to drive a PA
+> -	 *        GPIO low here on some boards
+> -	 */
+> -
+>  	/* Disable DAC DRQ */
+>  	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+>  			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
+>  			   0);
+> +
+> +	if (scodec->gpio_pa)
+> +		gpiod_set_value_cansleep(scodec->gpio_pa, 0);
+>  }
+>  
+>  static int sun4i_codec_trigger(struct snd_pcm_substream *substream, int cmd,
+> @@ -633,6 +631,15 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "pa",
+> +						  GPIOD_OUT_HIGH);
+> +	if (IS_ERR(scodec->gpio_pa)) {
+> +		ret = PTR_ERR(scodec->gpio_pa);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "Failed to get pa gpio: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	/* DMA configuration for TX FIFO */
+>  	scodec->playback_dma_data.addr = res->start + SUN4I_CODEC_DAC_TXDATA;
+>  	scodec->playback_dma_data.maxburst = 4;
+> -- 
+> 2.5.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
