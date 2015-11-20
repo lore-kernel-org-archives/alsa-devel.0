@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Update the rtd query"
-	to the asoc tree
-Date: Fri, 20 Nov 2015 18:20:25 +0000
-Message-ID: <E1ZzqIM-0003us-06@debutante>
-References: <1448039081-772-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Atmel: ClassD: supports mono audio" to
+	the asoc tree
+Date: Fri, 20 Nov 2015 18:20:21 +0000
+Message-ID: <E1ZzqIH-0003sW-CQ@debutante>
+References: <1447904732-10784-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4450426669D
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:35 +0100 (CET)
-In-Reply-To: <1448039081-772-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D677A26667E
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:32 +0100 (CET)
+In-Reply-To: <1447904732-10784-1-git-send-email-songjun.wu@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Update the rtd query
+   ASoC: Atmel: ClassD: supports mono audio
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From dcc2fa34956a1cc2b84415b9ce3bbef4ae1aceb0 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 20 Nov 2015 22:34:41 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Update the rtd query
+>From 07c55d395041c5b4cbdffd39a1bba41a61f87fe9 Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@atmel.com>
+Date: Thu, 19 Nov 2015 11:45:32 +0800
+Subject: [PATCH] ASoC: Atmel: ClassD: supports mono audio
 
-sound card rtd was an array and was updated to a list so update
-the driver to use a list
+Modify the code to support mono audio.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 3f5a96b585b8..65c65d4c422c 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -35,12 +35,10 @@ static struct snd_soc_card skylake_audio_card;
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 8276675730ef..dca614177fef 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -106,7 +106,7 @@ static const struct snd_pcm_hardware atmel_classd_hw = {
+ 	.rates			= ATMEL_CLASSD_RATES,
+ 	.rate_min		= 8000,
+ 	.rate_max		= 96000,
+-	.channels_min		= 2,
++	.channels_min		= 1,
+ 	.channels_max		= 2,
+ 	.buffer_bytes_max	= 64 * 1024,
+ 	.period_bytes_min	= 256,
+@@ -145,7 +145,7 @@ static const struct snd_soc_dai_ops atmel_classd_cpu_dai_ops = {
  
- static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
- {
--	int i;
-+	struct snd_soc_pcm_runtime *rtd;
+ static struct snd_soc_dai_driver atmel_classd_cpu_dai = {
+ 	.playback = {
+-		.channels_min	= 2,
++		.channels_min	= 1,
+ 		.channels_max	= 2,
+ 		.rates		= ATMEL_CLASSD_RATES,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,},
+@@ -171,9 +171,13 @@ atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
--	for (i = 0; i < card->num_rtd; i++) {
--		struct snd_soc_pcm_runtime *rtd;
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
- 
--		rtd = card->rtd + i;
- 		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
- 			     strlen(SKL_NUVOTON_CODEC_DAI)))
- 			return rtd->codec_dai;
++	if (params_channels(params) == 1)
++		slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	else
++		slave_config->dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++
+ 	slave_config->direction		= DMA_MEM_TO_DEV;
+ 	slave_config->dst_addr		= dd->phy_base + CLASSD_THR;
+-	slave_config->dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	slave_config->dst_maxburst	= 1;
+ 	slave_config->src_maxburst	= 1;
+ 	slave_config->device_fc		= false;
+@@ -486,7 +490,7 @@ static struct snd_soc_dai_driver atmel_classd_codec_dai = {
+ 	.name = ATMEL_CLASSD_CODEC_DAI_NAME,
+ 	.playback = {
+ 		.stream_name	= "Playback",
+-		.channels_min	= 2,
++		.channels_min	= 1,
+ 		.channels_max	= 2,
+ 		.rates		= ATMEL_CLASSD_RATES,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
 -- 
 2.6.2
