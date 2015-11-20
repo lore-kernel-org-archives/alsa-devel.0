@@ -1,51 +1,91 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: Add dmi_system_id "Google Wizpig"
-Date: Fri, 20 Nov 2015 12:25:59 +0800
-Message-ID: <1447993559-32245-1-git-send-email-bardliao@realtek.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V2 1/3] ASoC: fsl_esai: spba clock is needed by esai device
+Date: Fri, 20 Nov 2015 14:17:51 +0800
+Message-ID: <d5cb15bbd3563ed34c58c15b224495b854bca616.1447997800.git.shengjiu.wang@freescale.com>
+References: <cover.1447997800.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 429ED2605C3
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 05:26:12 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, denglehai@ithaier.com, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1447997800.git.shengjiu.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add platform specific data for Wizpig project.
+ESAI need to enable the spba clock, when sdma is using share peripheral
+script. In this case, there is two spba master port is used, if don't
+enable the clock, the spba bus will have arbitration issue, which may
+cause read/write wrong data from/to ESAI registers.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 ---
- sound/soc/codecs/rt5645.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl,esai.txt |  2 ++
+ sound/soc/fsl/fsl_esai.c                             | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 177f6d0..2c4f06f 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3565,6 +3565,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Edgar"),
- 		},
- 	},
-+	{
-+		.ident = "Google Wizpig",
-+		.callback = strago_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Wizpig"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index d3b6b5f..f1d5351 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -27,6 +27,8 @@ Required properties:
+ 			  derive HCK, SCK and FS.
+ 	"fsys"		  The system clock derived from ahb clock used to
+ 			  derive HCK, SCK and FS.
++	"spba"		  The spba clock is needed when two spba master port
++			  is used.
  
+   - fsl,fifo-depth	: The number of elements in the transmit and receive
+ 			  FIFOs. This number is the maximum allowed value for
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 504e731..8749f53 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -54,6 +54,7 @@ struct fsl_esai {
+ 	struct clk *coreclk;
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
++	struct clk *spbaclk;
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
+@@ -469,6 +470,9 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 	ret = clk_prepare_enable(esai_priv->coreclk);
+ 	if (ret)
+ 		return ret;
++	ret = clk_prepare_enable(esai_priv->spbaclk);
++	if (ret)
++		goto err_spbaclk;
+ 	if (!IS_ERR(esai_priv->extalclk)) {
+ 		ret = clk_prepare_enable(esai_priv->extalclk);
+ 		if (ret)
+@@ -499,6 +503,8 @@ err_fsysclk:
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
+ err_extalck:
++	clk_disable_unprepare(esai_priv->spbaclk);
++err_spbaclk:
+ 	clk_disable_unprepare(esai_priv->coreclk);
+ 
+ 	return ret;
+@@ -564,6 +570,7 @@ static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
+ 		clk_disable_unprepare(esai_priv->fsysclk);
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
++	clk_disable_unprepare(esai_priv->spbaclk);
+ 	clk_disable_unprepare(esai_priv->coreclk);
+ }
+ 
+@@ -819,6 +826,11 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		dev_warn(&pdev->dev, "failed to get fsys clock: %ld\n",
+ 				PTR_ERR(esai_priv->fsysclk));
+ 
++	esai_priv->spbaclk = devm_clk_get(&pdev->dev, "spba");
++	if (IS_ERR(esai_priv->spbaclk))
++		dev_warn(&pdev->dev, "Cannot get spba clock: %ld\n",
++				PTR_ERR(esai_priv->spbaclk));
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
