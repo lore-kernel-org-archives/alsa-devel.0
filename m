@@ -1,48 +1,63 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V2 3/3] ASoC: fsl_asrc: spba clock is needed by asrc
- device
-Date: Fri, 20 Nov 2015 14:00:16 -0800
-Message-ID: <20151120220015.GA10156@Asurada>
-References: <cover.1447997800.git.shengjiu.wang@freescale.com>
- <7b40da78c965d4152c15794ec527c75198c9e2f9.1447997800.git.shengjiu.wang@freescale.com>
- <20151120142946.GA6949@rob-hp-laptop>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: [PATCH] ASoC: qcom: Specify LE device endianness
+Date: Fri, 20 Nov 2015 15:43:06 -0800
+Message-ID: <1448062986-19535-1-git-send-email-sboyd@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20151120142946.GA6949@rob-hp-laptop>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 440AE261484
+ for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2015 00:43:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Tyler Baker <tyler.baker@linaro.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@linaro.org>, Simon Arlott <simon@fire.lp0.eu>, Kenneth Westfield <kwestfie@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 20, 2015 at 08:29:46AM -0600, Rob Herring wrote:
-> On Fri, Nov 20, 2015 at 02:17:53PM +0800, Shengjiu Wang wrote:
-> > ASRC need to enable the spba clock, when sdma is using share peripheral
-> > script. In this case, there is two spba master port is used, if don't
-> > enable the clock, the spba bus will have arbitration issue, which may
-> > cause read/write wrong data from/to ASRC registers
-> > 
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-> > ---
-> >  Documentation/devicetree/bindings/sound/fsl,asrc.txt |  2 ++
-> >  sound/soc/fsl/fsl_asrc.c                             | 10 ++++++++++
-> >  sound/soc/fsl/fsl_asrc.h                             |  1 +
-> >  3 files changed, 13 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> > index b93362a..d8eeee3 100644
-> > --- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> > +++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> > @@ -25,6 +25,8 @@ Required properties:
-> >  	"mem"		  Peripheral access clock to access registers.
-> >  	"ipg"		  Peripheral clock to driver module.
-> >  	"asrck_<0-f>"	  Clock sources for input and output clock.
-> > +	"spba"		  The spba clock is needed when two spba master port
-> > +			  is used.
-> 
-> I'm assuming the same comments on patch 1 apply to all 3.
+This is a little endian device, but so far we've been relying on
+the regmap mmio bus handling this for us without explicitly
+stating that fact. After commit 4a98da2164cf (regmap-mmio: Use
+native endianness for read/write, 2015-10-29), the regmap mmio
+bus will read/write with the __raw_*() IO accessors, instead of
+using the readl/writel() APIs that do proper byte swapping for
+little endian devices.
 
-Yes. I should have mentioned that.
+So if we're running on a big endian processor and haven't
+specified the endianness explicitly in the regmap config or in
+DT, we're going to switch from doing little endian byte swapping
+to big endian accesses without byte swapping, leading to some
+confusing results. Specify the endianness explicitly so that the
+regmap core properly byte swaps the accesses for us.
 
-Nicolin
+Cc: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Kevin Hilman <khilman@linaro.org>
+Cc: Tyler Baker <tyler.baker@linaro.org>
+Cc: Simon Arlott <simon@fire.lp0.eu>
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+---
+ sound/soc/qcom/lpass-cpu.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index e5101e0d2d37..00b6c9d039cf 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -355,6 +355,7 @@ static struct regmap_config lpass_cpu_regmap_config = {
+ 	.readable_reg = lpass_cpu_regmap_readable,
+ 	.volatile_reg = lpass_cpu_regmap_volatile,
+ 	.cache_type = REGCACHE_FLAT,
++	.val_format_endian = REGMAP_ENDIAN_LITTLE,
+ };
+ 
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
