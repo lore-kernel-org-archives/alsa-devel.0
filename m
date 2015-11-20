@@ -1,64 +1,70 @@
-From: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH 4/4] ARM: dts: sun4i: Enable onboard codec used
- on the pov protab2-ips9 tablet
-Date: Fri, 20 Nov 2015 14:47:13 +0100
-Message-ID: <1448027233-750-4-git-send-email-hdegoede@redhat.com>
-References: <1448027233-750-1-git-send-email-hdegoede@redhat.com>
-Reply-To: hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce dma_request_slave_channel_compat_reason()
+Date: Fri, 20 Nov 2015 14:48:20 +0100
+Message-ID: <5158930.I1IPZa4jtW@wuerfel>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com> <6118451.vaLZWOZEF5@wuerfel> <564F1773.9030006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDRZXY4CYYORB76IXSZAKGQEM6UFSTA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1448027233-750-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <564F1773.9030006-l0cyMroinI0@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux MMC List <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Media Mailing List <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The pov protab2-ips9 tablet uses the A10's integrated audio codec,
-enable it.
+On Friday 20 November 2015 14:52:03 Peter Ujfalusi wrote:
+> 
+> >> For legacy the filter function is pretty much needed to handle the differences
+> >> between the platforms as not all of them does the filtering in a same way. So
+> >> the first type of map would be feasible IMHO.
+> > 
+> > It certainly makes the transition to a map table much easier.
+> 
+> And the aim anyway is to convert everything to DT, right?
 
-Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
----
- arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+We won't be able to do that. Some architectures (avr32 and sh for instance)
+use the dmaengine API but will likely never support DT. On ARM, at
+least sa1100 is in the same category, probably also ep93xx and portions
+of pxa, omap1 and davinci.
 
-diff --git a/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts b/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-index 1f92ec7..30d78a6 100644
---- a/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-+++ b/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-@@ -72,6 +72,13 @@
- 	};
- };
- 
-+&codec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&codec_pa_pin>;
-+	pa-gpios = <&pio 7 15 GPIO_ACTIVE_HIGH>; /* PH15 */
-+	status = "okay";
-+};
-+
- &cpu0 {
- 	cpu-supply = <&reg_dcdc2>;
- };
-@@ -163,6 +170,13 @@
- 		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
- 	};
- 
-+	codec_pa_pin: codec_pa_pin@0 {
-+		allwinner,pins = "PH15";
-+		allwinner,function = "gpio_out";
-+		allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+	};
-+
- 	touchscreen_pins: touchscreen_pins@0 {
- 		allwinner,pins = "PA5", "PB13";
- 		allwinner,function = "gpio_out";
--- 
-2.5.0
+> > int dmam_register_platform_map(struct device *dev, dma_filter_fn filter, struct dma_chan_map *map)
+> > {
+> >       struct dma_map_list *list = kmalloc(sizeof(*list), GFP_KERNEL);
+> > 
+> >       if (!list)
+> >               return -ENOMEM;
+> > 
+> >       list->dev = dev;
+> >       list->filter = filter;
+> >       list->map = map;
+> > 
+> >       mutex_lock(&dma_map_mutex);
+> >       list_add(&dma_map_list, &list->node);
+> >       mutex_unlock(&dma_map_mutex);
+> > }
+> > 
+> > Now we can completely remove the dependency on the filter function definition
+> > from platform code and slave drivers.
+> 
+> Sounds feasible for OMAP and daVinci and for others as well. I think 
+> I would go with this if someone asks my opinion 
+
+Ok.
+
+> The core change to add the new API + the dma_map support should be pretty
+> straight forward. It can live alongside with the old API and we can phase out
+> the users of the old one.
+> The legacy support would need more time since we need to modify the arch codes
+> and the corresponding DMA drivers to get the map registered, but after that
+> the remaining drivers can be converted to use the new API.
+
+Right. It's not urgent and as long as we agree on the overall approach, we can
+always do the platform support first and wait for the following merge window
+before moving over the slave drivers.
+
+	Arnd
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
