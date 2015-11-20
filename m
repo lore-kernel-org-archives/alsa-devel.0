@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: rename ST proprietary DT
-	properties" to the asoc tree
-Date: Thu, 19 Nov 2015 19:56:42 +0000
-Message-ID: <E1ZzVJy-0006TX-P7@debutante>
-References: <1447941250-344-3-git-send-email-moise.gergaud@st.com>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 5/8] ALSA: dice: purge generating channel
+ cache
+Date: Fri, 20 Nov 2015 01:15:53 +0100
+Message-ID: <20151120011553.698903a2@kant>
+References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1447579536-4459-6-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48D3F26153C
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2015 20:56:53 +0100 (CET)
-In-Reply-To: <1447941250-344-3-git-send-email-moise.gergaud@st.com>
+Received: from einhorn.in-berlin.de (einhorn-mail.in-berlin.de [217.197.80.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92974261543
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 01:15:54 +0100 (CET)
+In-Reply-To: <1447579536-4459-6-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,93 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Nov 15 Takashi Sakamoto wrote:
+> Dice hardware design doesn't allow drivers to read supported combination
+> between sampling transfer frequencies and the number of Multi bit linear
+> audio data channels. According to the design, ALSA dice driver changes
+> current sampling transfer frequency to generate the cache of combinations
+> at probing processing.
+> 
+> Although, this idea is worse because ALSA dice driver cannot handle bus
+> reset when processing driver's probe callback. The callbacks of drivers
+> for units on IEEE 1394 bus are serialized. For example, when processing
+> .probe callback in workqueue context, any other processing such as
+> .update is not executed. As a result, when processing probe callback,
+> the driver cannot handle bus reset.
+[...]
 
-   ASoC: sti: rename ST proprietary DT properties
+It is natural that .probe(), .update(), .remove() driver methods are not
+reentrant.  We must not call an .update() or .remove() for a
+device + driver pair whose .probe() has not yet returned successfully.
 
-has been applied to the asoc tree at
+Therefore, procedures which require bus reset handling should not be
+implemented within the .probe().
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+For example, the IEEE 1394 storage initiator driver firewire-sbp2 performs
+SBP-2 login and the initial SCSI INQUIRY in an own deferred execution
+context, not inside .probe().  If a bus reset happens in the middle of the
+SBP-2 login transaction or in the middle of the SCSI INQUIRY transaction,
+that transaction is aborted and rescheduled.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I am only mentioning this as a general remark, not as a direct comment on
+this patch or on the snd-dice driver even.  Perhaps similar deferred
+execution in a separate execution context is something suitable for a DICE
+driver, perhaps not; I can't say as I am entirely unfamiliar with the
+protocol.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Unfortunately, most Dice based models generate bus reset several times
+> after powering on.
+[...]
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f9f51973d3a8559731a228e91ac29792b43046a5 Mon Sep 17 00:00:00 2001
-From: Moise Gergaud <moise.gergaud@st.com>
-Date: Thu, 19 Nov 2015 14:54:08 +0100
-Subject: [PATCH] ASoC: sti: rename ST proprietary DT properties
-
-"st," prefix has been added for ST proprietary DT properties.
-
-Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sti/uniperif_player.c | 6 +++---
- sound/soc/sti/uniperif_reader.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 843f037a317d..1e19a7c6b7e8 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -989,7 +989,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	if (of_property_read_u32(pnode, "version", &player->ver) ||
-+	if (of_property_read_u32(pnode, "st,version", &player->ver) ||
- 	    player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
- 		dev_err(dev, "Unknown uniperipheral version ");
- 		return -EINVAL;
-@@ -998,13 +998,13 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
- 		info->underflow_enabled = 1;
- 
--	if (of_property_read_u32(pnode, "uniperiph-id", &info->id)) {
-+	if (of_property_read_u32(pnode, "st,uniperiph-id", &info->id)) {
- 		dev_err(dev, "uniperipheral id not defined");
- 		return -EINVAL;
- 	}
- 
- 	/* Read the device mode property */
--	if (of_property_read_string(pnode, "mode", &mode)) {
-+	if (of_property_read_string(pnode, "st,mode", &mode)) {
- 		dev_err(dev, "uniperipheral mode not defined");
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index 819eeafdf6b4..8a0eb2050169 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -316,7 +316,7 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	if (of_property_read_u32(node, "version", &reader->ver) ||
-+	if (of_property_read_u32(node, "st,version", &reader->ver) ||
- 	    reader->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
- 		dev_err(&pdev->dev, "Unknown uniperipheral version ");
- 		return -EINVAL;
+Besides, if there are more devices on the bus, bus resets could be
+generated by those other nodes too (for example if they boot at the
+same time as the audio device does).
 -- 
-2.6.2
+Stefan Richter
+-=====-===== =-== =-=--
+http://arcgraph.de/sr/
