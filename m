@@ -1,124 +1,156 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASoC: sun4i-codec: Add support for PA
- gpio pin
-Date: Fri, 20 Nov 2015 09:23:36 -0600
-Message-ID: <20151120152336.GA1670@rob-hp-laptop>
-References: <1448027233-750-1-git-send-email-hdegoede@redhat.com>
-Reply-To: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
+Subject: Intel SST and HP ElitePad 1000 G2
+Date: Fri, 20 Nov 2015 16:27:51 +0100
+Message-ID: <6A230045C5A9854B97A1D40971AC8BE1023ACE6013@NTMBOX.central.cirsa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDJIP47K7MERB7PVXSZAKGQEWEBIMRY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1448027233-750-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mta2-data1.cirsa.com (pegasus.cirsa.com [195.77.234.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2EE62606F6
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 16:27:53 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 20, 2015 at 02:47:10PM +0100, Hans de Goede wrote:
-> Add support for PA gpio pin for controlling an external amplifier as used
-> on some Allwinner boards.
-> 
-> Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-
-> ---
->  .../devicetree/bindings/sound/sun4i-codec.txt      |  3 +++
->  sound/soc/sunxi/sun4i-codec.c                      | 25 ++++++++++++++--------
->  2 files changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-> index c92966b..974babe 100644
-> --- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-> +++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-> @@ -14,6 +14,9 @@ Required properties:
->     - "apb": the parent APB clock for this controller
->     - "codec": the parent module clock
->  
-> +Optional properties:
-> +- pa-gpios: gpio to enable external amplifier
-> +
->  Example:
->  codec: codec@01c22c00 {
->  	#sound-dai-cells = <0>;
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index bcbf4da..2aca9cd 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -27,6 +27,7 @@
->  #include <linux/of_address.h>
->  #include <linux/clk.h>
->  #include <linux/regmap.h>
-> +#include <linux/gpio/consumer.h>
->  
->  #include <sound/core.h>
->  #include <sound/pcm.h>
-> @@ -101,16 +102,15 @@ struct sun4i_codec {
->  	struct regmap	*regmap;
->  	struct clk	*clk_apb;
->  	struct clk	*clk_module;
-> +	struct gpio_desc *gpio_pa;
->  
->  	struct snd_dmaengine_dai_dma_data	playback_dma_data;
->  };
->  
->  static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
->  {
-> -	/*
-> -	 * FIXME: according to the BSP, we might need to drive a PA
-> -	 *        GPIO high here on some boards
-> -	 */
-> +	if (scodec->gpio_pa)
-> +		gpiod_set_value_cansleep(scodec->gpio_pa, 1);
->  
->  	/* Flush TX FIFO */
->  	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
-> @@ -125,15 +125,13 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
->  
->  static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
->  {
-> -	/*
-> -	 * FIXME: according to the BSP, we might need to drive a PA
-> -	 *        GPIO low here on some boards
-> -	 */
-> -
->  	/* Disable DAC DRQ */
->  	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
->  			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
->  			   0);
-> +
-> +	if (scodec->gpio_pa)
-> +		gpiod_set_value_cansleep(scodec->gpio_pa, 0);
->  }
->  
->  static int sun4i_codec_trigger(struct snd_pcm_substream *substream, int cmd,
-> @@ -633,6 +631,15 @@ static int sun4i_codec_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> +	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "pa",
-> +						  GPIOD_OUT_HIGH);
-> +	if (IS_ERR(scodec->gpio_pa)) {
-> +		ret = PTR_ERR(scodec->gpio_pa);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "Failed to get pa gpio: %d\n", ret);
-> +		return ret;
-> +	}
-> +
->  	/* DMA configuration for TX FIFO */
->  	scodec->playback_dma_data.addr = res->start + SUN4I_CODEC_DAC_TXDATA;
->  	scodec->playback_dma_data.maxburst = 4;
-> -- 
-> 2.5.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGksDQoNClRoaXMgaXMgbXkgZmlyc3QgZW1haWwgaW4gdGhpcyBsaXN0LCBhbmQgbXkgbGFzdCBj
+aGFuY2UgdG8gbWFrZSBteSB0YWJsZXQNCmF1ZGlvIHN5c3RlbSB3b3JrDQoNCkknbSB0cnlpbmcg
+dG8gZ2V0IG15IHRhYmxldCBhdWRpbyBzeXN0ZW0gd29ya2luZyBidXQgSSdtIHJ1biBvdXQgb2Yg
+aWRlYXMuDQpUaGUgSFAgRWxpdGVQYWQgMTAwMCBHMiBpdCdzIGFuIEF0b20gWjM3OTUgMS42MEdI
+eiBCYXkgVHJhaWwtVCB0YWJsZXQuDQoNCkknbSB1c2luZyBhIGtlcm5lbCA0LjIuNSB3aXRoIGFs
+bCB0aGUgU1NUIGNvbmZpZ3MgZW5hYmxlZDoNCg0KQ09ORklHX1NORF9TU1RfTUZMRF9QTEFURk9S
+TT1tDQpDT05GSUdfU05EX1NTVF9JUEM9bQ0KQ09ORklHX1NORF9TU1RfSVBDX0FDUEk9bQ0KQ09O
+RklHX1NORF9TT0NfSU5URUxfU1NUPW0NCkNPTkZJR19TTkRfU09DX0lOVEVMX1NTVF9BQ1BJPW0N
+CkNPTkZJR19TTkRfU09DX0lOVEVMX0hBU1dFTEw9bQ0KQ09ORklHX1NORF9TT0NfSU5URUxfQkFZ
+VFJBSUw9bQ0KQ09ORklHX1NORF9TT0NfSU5URUxfSEFTV0VMTF9NQUNIPW0NCkNPTkZJR19TTkRf
+U09DX0lOVEVMX0JZVF9SVDU2NDBfTUFDSD1tDQpDT05GSUdfU05EX1NPQ19JTlRFTF9CWVRfTUFY
+OTgwOTBfTUFDSD1tDQpDT05GSUdfU05EX1NPQ19JTlRFTF9CUk9BRFdFTExfTUFDSD1tDQpDT05G
+SUdfU05EX1NPQ19JTlRFTF9CWVRDUl9SVDU2NDBfTUFDSD1tDQpDT05GSUdfU05EX1NPQ19JTlRF
+TF9DSFRfQlNXX1JUNTY3Ml9NQUNIPW0NCkNPTkZJR19TTkRfU09DX0lOVEVMX0NIVF9CU1dfUlQ1
+NjQ1X01BQ0g9bQ0KQ09ORklHX1NORF9TT0NfSU5URUxfQ0hUX0JTV19NQVg5ODA5MF9USV9NQUNI
+PW0NCiMgQ09ORklHX1NORF9TT0NfUUNPTSBpcyBub3Qgc2V0DQojIENPTkZJR19TTkRfU09DX1hU
+RlBHQV9JMlMgaXMgbm90IHNldA0KQ09ORklHX1NORF9TT0NfSTJDX0FORF9TUEk9bQ0KDQpJJ3Zl
+IGZvbGxvdyB0aGUgc2FtZSBzdGVwcyBhcyB0aGUgaW5zdGFsbGF0aW9uIGZvciBBc3VzIFQxMDBU
+QQ0KaHR0cHM6Ly93aWtpLmRlYmlhbi5vcmcvSW5zdGFsbGluZ0RlYmlhbk9uL0FzdXMvVDEwMFRB
+DQoNCmFuZCBmaW5hbGx5IEkgb25seSBnZXQgdGhlIGRtZXNnIHRyYWNlczoNCg0Kc3N0LWFjcGkg
+ODA4NjBGMjg6MDA6IE5vIG1hdGNoaW5nIEFTb0MgbWFjaGluZSBkcml2ZXIgZm91bmQNCmludGVs
+LXNzdC1hY3BpIDgwODYwRjI4OjAwOiBObyBtYXRjaGluZyBtYWNoaW5lIGRyaXZlciBmb3VuZA0K
+DQpGcm9tIHRoZSAnZHNkdC5kc2wnIEkgY2FuIHNlZToNCg0KICAgICAgICBEZXZpY2UgKEkyQzIp
+DQogICAgICAgIHsNCiAgICAgICAgICAgIE5hbWUgKF9BRFIsIFplcm8pICAvLyBfQURSOiBBZGRy
+ZXNzDQogICAgICAgICAgICBOYW1lIChfSElELCAiODA4NjBGNDEiIC8qIEludGVsIEJheXRyYWls
+IEkyQyBIb3N0IENvbnRyb2xsZXIgKi8pICAvLyBfSElEOiBIYXJkd2FyZSBJRA0KICAgICAgICAg
+ICAgTmFtZSAoX0NJRCwgIjgwODYwRjQxIiAvKiBJbnRlbCBCYXl0cmFpbCBJMkMgSG9zdCBDb250
+cm9sbGVyICovKSAgLy8gX0NJRDogQ29tcGF0aWJsZSBJRA0KICAgICAgICAgICAgTmFtZSAoX0RF
+UCwgUGFja2FnZSAoMHgwMSkgIC8vIF9ERVA6IERlcGVuZGVuY2llcw0KICAgICAgICAgICAgew0K
+ICAgICAgICAgICAgICAgIFBFUEQNCiAgICAgICAgICAgIH0pDQogICAgICAgICAgICBOYW1lIChf
+REROLCAiSW50ZWwoUikgSTJDIENvbnRyb2xsZXIgIzIgLSA4MDg2MEY0MiIpICAvLyBfREROOiBE
+T1MgRGV2aWNlIE5hbWUNCiAgICAgICAgICAgIE5hbWUgKF9VSUQsIDB4MDIpICAvLyBfVUlEOiBV
+bmlxdWUgSUQNCiAgICAgICAgICAgIE5hbWUgKFJCVUYsIFJlc291cmNlVGVtcGxhdGUgKCkNCiAg
+ICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICBNZW1vcnkzMkZpeGVkIChSZWFkV3JpdGUsDQog
+ICAgICAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsICAgICAgICAgLy8gQWRkcmVzcyBCYXNlDQog
+ICAgICAgICAgICAgICAgICAgIDB4MDAwMDEwMDAsICAgICAgICAgLy8gQWRkcmVzcyBMZW5ndGgN
+CiAgICAgICAgICAgICAgICAgICAgX1kxMikNCiAgICAgICAgICAgICAgICBJbnRlcnJ1cHQgKFJl
+c291cmNlQ29uc3VtZXIsIExldmVsLCBBY3RpdmVMb3csIEV4Y2x1c2l2ZSwgLCwgKQ0KICAgICAg
+ICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgICAgMHgwMDAwMDAyMSwNCiAgICAgICAgICAg
+ICAgICB9DQogICAgICAgICAgICAgICAgRml4ZWRETUEgKDB4MDAxMiwgMHgwMDAyLCBXaWR0aDMy
+Yml0LCApDQogICAgICAgICAgICAgICAgRml4ZWRETUEgKDB4MDAxMywgMHgwMDAzLCBXaWR0aDMy
+Yml0LCApDQogICAgICAgICAgICB9KQ0KICAgICAgICAgICAgTWV0aG9kIChfSFJWLCAwLCBOb3RT
+ZXJpYWxpemVkKSAgLy8gX0hSVjogSGFyZHdhcmUgUmV2aXNpb24NCiAgICAgICAgICAgIHsNCiAg
+ICAgICAgICAgICAgICBSZXR1cm4gKFNPQ1MpIC8qIFxTT0NTICovDQogICAgICAgICAgICB9DQoN
+CiAgICAgICAgICAgIE1ldGhvZCAoX0NSUywgMCwgTm90U2VyaWFsaXplZCkgIC8vIF9DUlM6IEN1
+cnJlbnQgUmVzb3VyY2UgU2V0dGluZ3MNCiAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICBD
+cmVhdGVEV29yZEZpZWxkIChSQlVGLCBcX1NCLkkyQzIuX1kxMi5fQkFTLCBCMEJBKSAgLy8gX0JB
+UzogQmFzZSBBZGRyZXNzDQogICAgICAgICAgICAgICAgQ3JlYXRlRFdvcmRGaWVsZCAoUkJVRiwg
+XF9TQi5JMkMyLl9ZMTIuX0xFTiwgQjBMTikgIC8vIF9MRU46IExlbmd0aA0KICAgICAgICAgICAg
+ICAgIFN0b3JlIChJMjBBLCBCMEJBKSAvKiBcX1NCXy5JMkMyLl9DUlMuQjBCQSAqLw0KICAgICAg
+ICAgICAgICAgIFN0b3JlIChJMjBMLCBCMExOKSAvKiBcX1NCXy5JMkMyLl9DUlMuQjBMTiAqLw0K
+ICAgICAgICAgICAgICAgIFJldHVybiAoUkJVRikgLyogXF9TQl8uSTJDMi5SQlVGICovDQogICAg
+ICAgICAgICB9DQoNCiAgICAgICAgICAgIE1ldGhvZCAoX1NUQSwgMCwgTm90U2VyaWFsaXplZCkg
+IC8vIF9TVEE6IFN0YXR1cw0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgIElmIChMT3Ig
+KExFcXVhbCAoSTIwQSwgWmVybyksIExFcXVhbCAoTDIyRCwgT25lKSkpDQogICAgICAgICAgICAg
+ICAgew0KICAgICAgICAgICAgICAgICAgICBSZXR1cm4gKFplcm8pDQogICAgICAgICAgICAgICAg
+fQ0KDQogICAgICAgICAgICAgICAgUmV0dXJuICgweDBGKQ0KICAgICAgICAgICAgfQ0KDQogICAg
+ICAgICAgICBNZXRob2QgKF9QUzMsIDAsIE5vdFNlcmlhbGl6ZWQpICAvLyBfUFMzOiBQb3dlciBT
+dGF0ZSAzDQogICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgT3IgKFBTQVQsIDB4MDMsIFBT
+QVQpIC8qIFxfU0JfLkkyQzIuUFNBVCAqLw0KICAgICAgICAgICAgICAgIE9yIChQU0FULCBaZXJv
+LCBQU0FUKSAvKiBcX1NCXy5JMkMyLlBTQVQgKi8NCiAgICAgICAgICAgIH0NCg0KICAgICAgICAg
+ICAgTWV0aG9kIChfUFMwLCAwLCBOb3RTZXJpYWxpemVkKSAgLy8gX1BTMDogUG93ZXIgU3RhdGUg
+MA0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgIEFuZCAoUFNBVCwgMHhGRkZGRkZGQywg
+UFNBVCkgLyogXF9TQl8uSTJDMi5QU0FUICovDQogICAgICAgICAgICAgICAgT3IgKFBTQVQsIFpl
+cm8sIFBTQVQpIC8qIFxfU0JfLkkyQzIuUFNBVCAqLw0KICAgICAgICAgICAgfQ0KDQogICAgICAg
+ICAgICBPcGVyYXRpb25SZWdpb24gKEtFWVMsIFN5c3RlbU1lbW9yeSwgSTIxQSwgMHgwMTAwKQ0K
+ICAgICAgICAgICAgRmllbGQgKEtFWVMsIERXb3JkQWNjLCBOb0xvY2ssIFdyaXRlQXNaZXJvcykN
+CiAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICBPZmZzZXQgKDB4ODQpLA0KICAgICAgICAg
+ICAgICAgIFBTQVQsICAgMzINCiAgICAgICAgICAgIH0NCg0KICAgICAgICAgICAgRGV2aWNlIChS
+VEVLKQ0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgIE5hbWUgKF9BRFIsIFplcm8pICAv
+LyBfQURSOiBBZGRyZXNzDQogICAgICAgICAgICAgICAgTmFtZSAoX0hJRCwgIklOVENDRkZEIikg
+IC8vIF9ISUQ6IEhhcmR3YXJlIElEDQogICAgICAgICAgICAgICAgTmFtZSAoX0NJRCwgIklOVEND
+RkZEIikgIC8vIF9DSUQ6IENvbXBhdGlibGUgSUQNCiAgICAgICAgICAgICAgICBOYW1lIChfRERO
+LCAiUlRFSyBDb2RlYyBDb250cm9sbGVyICIpICAvLyBfREROOiBET1MgRGV2aWNlIE5hbWUNCiAg
+ICAgICAgICAgICAgICBOYW1lIChfVUlELCAweDAyKSAgLy8gX1VJRDogVW5pcXVlIElEDQogICAg
+ICAgICAgICAgICAgTWV0aG9kIChfQ1JTLCAwLCBOb3RTZXJpYWxpemVkKSAgLy8gX0NSUzogQ3Vy
+cmVudCBSZXNvdXJjZSBTZXR0aW5ncw0KICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAg
+ICAgICAgTmFtZSAoU0JVRiwgUmVzb3VyY2VUZW1wbGF0ZSAoKQ0KICAgICAgICAgICAgICAgICAg
+ICB7DQogICAgICAgICAgICAgICAgICAgICAgICBJMmNTZXJpYWxCdXMgKDB4MDAxQywgQ29udHJv
+bGxlckluaXRpYXRlZCwgMHgwMDA2MUE4MCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBB
+ZGRyZXNzaW5nTW9kZTdCaXQsICJcXF9TQi5JMkMyIiwNCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAweDAwLCBSZXNvdXJjZUNvbnN1bWVyLCAsDQogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKQ0KICAgICAgICAgICAgICAgICAgICAgICAgR3Bpb0ludCAoRWRnZSwgQWN0aXZlQm90aCwg
+U2hhcmVkQW5kV2FrZSwgUHVsbE5vbmUsIDB4MDAwMCwNCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAiXFxfU0IuR1BPMiIsIDB4MDAsIFJlc291cmNlQ29uc3VtZXIsICwNCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICApDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgeyAgIC8vIFBp
+biBsaXN0DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAwRQ0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgICAgIEdwaW9JbnQgKEVk
+Z2UsIEFjdGl2ZUJvdGgsIFNoYXJlZEFuZFdha2UsIFB1bGxOb25lLCAweDAwMDAsDQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIlxcX1NCLkdQTzAiLCAweDAwLCBSZXNvdXJjZUNvbnN1bWVy
+LCAsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgKQ0KICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHsgICAvLyBQaW4gbGlzdA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAw
+eDAwMDMNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgICAg
+ICAgICBHcGlvSW50IChFZGdlLCBBY3RpdmVCb3RoLCBTaGFyZWRBbmRXYWtlLCBQdWxsTm9uZSwg
+MHgwMDAwLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICJcXF9TQi5HUE8wIiwgMHgwMCwg
+UmVzb3VyY2VDb25zdW1lciwgLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICkNCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB7ICAgLy8gUGluIGxpc3QNCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgMHgwMDAwDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQ0KICAg
+ICAgICAgICAgICAgICAgICAgICAgR3Bpb0lvIChTaGFyZWQsIFB1bGxEZWZhdWx0LCAweDAwMDAs
+IDB4MDAwMCwgSW9SZXN0cmljdGlvbklucHV0T25seSwNCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAiXFxfU0IuR1BPMiIsIDB4MDAsIFJlc291cmNlQ29uc3VtZXIsICwNCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICApDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgeyAgIC8vIFBp
+biBsaXN0DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAwRQ0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgICAgIEdwaW9JbyAoU2hh
+cmVkLCBQdWxsRGVmYXVsdCwgMHgwMDAwLCAweDAwMDAsIElvUmVzdHJpY3Rpb25JbnB1dE9ubHks
+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIlxcX1NCLkdQTzAiLCAweDAwLCBSZXNvdXJj
+ZUNvbnN1bWVyLCAsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgKQ0KICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHsgICAvLyBQaW4gbGlzdA0KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAweDAwMDMsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAwMA0K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgfSkNCiAg
+ICAgICAgICAgICAgICAgICAgUmV0dXJuIChTQlVGKSAvKiBcX1NCXy5JMkMyLlJURUsuX0NSUy5T
+QlVGICovDQogICAgICAgICAgICAgICAgfQ0KDQpXaGF0IGFtIEkgbWlzc2luZz8gSSBzdXBwb3Nl
+IEkgbmVlZCBzb21lIGNoYW5nZXMgaW4gdGhlIGtlcm5lbCBzb3VyY2VzIGJ1dCBJIGRvbid0IGtu
+b3cNCndoZXJlIHRvIHN0YXJ0LiBBbnkgaGVscCBpcyB3ZWxjb21lDQoNClJlZ2FyZHMsDQpKb3Jn
+ZQ0KDQpFc3RlIG1lbnNhamUgc2UgZGlyaWdlIGV4Y2x1c2l2YW1lbnRlIGEgc3UgZGVzdGluYXRh
+cmlvIHkgcHVlZGUgY29udGVuZXIgaW5mb3JtYWNpw7NuIHByaXZpbGVnaWFkYSBvIENPTkZJREVO
+Q0lBTC4gU2kgbm8gZXMgdmQuIGVsIGRlc3RpbmF0YXJpbyBpbmRpY2FkbywgcXVlZGEgbm90aWZp
+Y2FkbyBkZSBxdWUgbGEgdXRpbGl6YWNpw7NuLCBkaXZ1bGdhY2nDs24geS9vIGNvcGlhIHNpbiBh
+dXRvcml6YWNpw7NuIGVzdMOhIHByb2hpYmlkYSBlbiB2aXJ0dWQgZGUgbGEgbGVnaXNsYWNpw7Nu
+IHZpZ2VudGUuIFNpIGhhIHJlY2liaWRvIGVzdGUgbWVuc2FqZSBwb3IgZXJyb3IsIGxlIHJvZ2Ft
+b3MgcXVlIG5vcyBsbyBjb211bmlxdWUgaW5tZWRpYXRhbWVudGUgcG9yIGVzdGEgbWlzbWEgdsOt
+YSB5IHByb2NlZGEgYSBzdSBkZXN0cnVjY2nDs24uDQoNClRoaXMgbWVzc2FnZSBpcyBpbnRlbmRl
+ZCBleGNsdXNpdmVseSBmb3IgaXRzIGFkZHJlc3NlZSBhbmQgbWF5IGNvbnRhaW4gaW5mb3JtYXRp
+b24gdGhhdCBpcyBDT05GSURFTlRJQUwgYW5kIHByb3RlY3RlZCBieSBwcm9mZXNzaW9uYWwgcHJp
+dmlsZWdlLg0KSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCB5b3UgYXJlIGhl
+cmVieSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBjb3B5IG9yIGRpc2Nsb3N1cmUg
+b2YgdGhpcyBjb21tdW5pY2F0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYnkgbGF3LiBJZiB0
+aGlzIG1lc3NhZ2UgaGFzIGJlZW4gcmVjZWl2ZWQgaW4gZXJyb3IsIHBsZWFzZSBpbW1lZGlhdGVs
+eSBub3RpZnkgdXMgdmlhIGUtbWFpbCBhbmQgZGVsZXRlIGl0Lg0KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
