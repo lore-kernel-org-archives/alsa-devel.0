@@ -1,51 +1,44 @@
-From: John Keeping <john@metanate.com>
-Subject: [PATCH] ASoC: es8328: Fix shifts for mixer switches
-Date: Fri, 20 Nov 2015 11:42:22 +0000
-Message-ID: <1448019742-12263-1-git-send-email-john@metanate.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce
+	dma_request_slave_channel_compat_reason()
+Date: Fri, 20 Nov 2015 14:24:06 +0200
+Message-ID: <CAHp75VdoHqPMNGFfz4mPhX+Lw+vxgiyqFS8j5+kQ9Z9CHt=OTA@mail.gmail.com>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <4533695.7ZVFN1S94o@wuerfel> <564EF502.6040708@ti.com>
+ <6118451.vaLZWOZEF5@wuerfel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f181.google.com (mail-yk0-f181.google.com
+ [209.85.160.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44BCF261293
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 13:24:08 +0100 (CET)
+Received: by ykfs79 with SMTP id s79so159401170ykf.1
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 04:24:07 -0800 (PST)
+In-Reply-To: <6118451.vaLZWOZEF5@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Linux MMC List <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-crypto <linux-crypto@vger.kernel.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, dmaengine <dmaengine@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-These are all off by one; the playback and bypass switches are the top
-two bits of the registers, which are at shifts 7 and 6 not 8 and 7.
+On Fri, Nov 20, 2015 at 12:58 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Friday 20 November 2015 12:25:06 Peter Ujfalusi wrote:
+>> On 11/19/2015 01:25 PM, Arnd Bergmann wrote:
 
-Signed-off-by: John Keeping <john@metanate.com>
----
- sound/soc/codecs/es8328.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> Another idea would be to remove the filter function from struct dma_chan_map
+> and pass the map through platform data
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 969e337..84f5eb0 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -205,18 +205,18 @@ static const struct snd_kcontrol_new es8328_right_line_controls =
- 
- /* Left Mixer */
- static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
--	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 8, 1, 0),
--	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 7, 1, 0),
--	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 8, 1, 0),
--	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 6, 1, 0),
-+	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 6, 1, 0),
- };
- 
- /* Right Mixer */
- static const struct snd_kcontrol_new es8328_right_mixer_controls[] = {
--	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 8, 1, 0),
--	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 7, 1, 0),
--	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 8, 1, 0),
--	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 6, 1, 0),
-+	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 6, 1, 0),
- };
- 
- static const char * const es8328_pga_sel[] = {
+Why not unified device properties?
+
 -- 
-2.6.3.462.gbe2c914
+With Best Regards,
+Andy Shevchenko
