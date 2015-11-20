@@ -1,95 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: Update the rtd query" to
-	the asoc tree
-Date: Fri, 20 Nov 2015 19:23:55 +0000
-Message-ID: <E1ZzrHn-0005CT-Qs@debutante>
-References: <1448039720-1009-1-git-send-email-vinod.koul@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V2 3/3] ASoC: fsl_asrc: spba clock is needed by asrc
+ device
+Date: Fri, 20 Nov 2015 14:00:16 -0800
+Message-ID: <20151120220015.GA10156@Asurada>
+References: <cover.1447997800.git.shengjiu.wang@freescale.com>
+ <7b40da78c965d4152c15794ec527c75198c9e2f9.1447997800.git.shengjiu.wang@freescale.com>
+ <20151120142946.GA6949@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 50862266677
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 20:24:07 +0100 (CET)
-In-Reply-To: <1448039720-1009-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151120142946.GA6949@rob-hp-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Nov 20, 2015 at 08:29:46AM -0600, Rob Herring wrote:
+> On Fri, Nov 20, 2015 at 02:17:53PM +0800, Shengjiu Wang wrote:
+> > ASRC need to enable the spba clock, when sdma is using share peripheral
+> > script. In this case, there is two spba master port is used, if don't
+> > enable the clock, the spba bus will have arbitration issue, which may
+> > cause read/write wrong data from/to ASRC registers
+> > 
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+> > ---
+> >  Documentation/devicetree/bindings/sound/fsl,asrc.txt |  2 ++
+> >  sound/soc/fsl/fsl_asrc.c                             | 10 ++++++++++
+> >  sound/soc/fsl/fsl_asrc.h                             |  1 +
+> >  3 files changed, 13 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> > index b93362a..d8eeee3 100644
+> > --- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> > +++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> > @@ -25,6 +25,8 @@ Required properties:
+> >  	"mem"		  Peripheral access clock to access registers.
+> >  	"ipg"		  Peripheral clock to driver module.
+> >  	"asrck_<0-f>"	  Clock sources for input and output clock.
+> > +	"spba"		  The spba clock is needed when two spba master port
+> > +			  is used.
+> 
+> I'm assuming the same comments on patch 1 apply to all 3.
 
-   ASoC: fsl-asoc-card: Update the rtd query
+Yes. I should have mentioned that.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From abd657b1278c9cbf42cdd9654352f082b37e2793 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 20 Nov 2015 22:45:20 +0530
-Subject: [PATCH] ASoC: fsl-asoc-card: Update the rtd query
-
-sound card rtd was an array and was updated to a list so update
-the driver to use a list
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl-asoc-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index f4b6c53146d5..c63d89da51f1 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -417,14 +417,16 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
- {
- 	struct fsl_asoc_card_priv *priv = snd_soc_card_get_drvdata(card);
--	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
-+	struct snd_soc_pcm_runtime *rtd = list_first_entry(
-+			&card->rtd_list, struct snd_soc_pcm_runtime, list);
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct codec_priv *codec_priv = &priv->codec_priv;
- 	struct device *dev = card->dev;
- 	int ret;
- 
- 	if (fsl_asoc_card_is_ac97(priv)) {
- #if IS_ENABLED(CONFIG_SND_AC97_CODEC)
--		struct snd_soc_codec *codec = card->rtd[0].codec;
-+		struct snd_soc_codec *codec = rtd->codec;
- 		struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
- 
- 		/*
--- 
-2.6.2
+Nicolin
