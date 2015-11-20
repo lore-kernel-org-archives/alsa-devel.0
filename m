@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: remove incorrect do_div() call" to
-	the asoc tree
-Date: Fri, 20 Nov 2015 18:20:24 +0000
-Message-ID: <E1ZzqIK-0003tw-5D@debutante>
-References: <7580645.enu4DmUPIv@wuerfel>
+Subject: Applied "ASoC: Intel: Skylake: Update the rtd query"
+	to the asoc tree
+Date: Fri, 20 Nov 2015 18:20:25 +0000
+Message-ID: <E1ZzqIM-0003us-06@debutante>
+References: <1448039081-772-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 905C6266677
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:31 +0100 (CET)
-In-Reply-To: <7580645.enu4DmUPIv@wuerfel>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4450426669D
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:35 +0100 (CET)
+In-Reply-To: <1448039081-772-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: remove incorrect do_div() call
+   ASoC: Intel: Skylake: Update the rtd query
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From d1afdf34fc17bd2e1c96dc6196c562fa8906a026 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 20 Nov 2015 10:32:44 +0100
-Subject: [PATCH] ASoC: pxa: remove incorrect do_div() call
+>From dcc2fa34956a1cc2b84415b9ce3bbef4ae1aceb0 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 20 Nov 2015 22:34:41 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Update the rtd query
 
-The new optimized do_div implementation (now in asm-generic/next) exposes a
-glitch in the brownstone audio driver by producing a compile-time warning:
+sound card rtd was an array and was updated to a list so update
+the driver to use a list
 
-sound/soc/pxa/brownstone.c: In function 'brownstone_wm8994_hw_params':
-sound/soc/pxa/brownstone.c:67:85: warning: comparison of distinct pointer types lacks a cast
-sound/soc/pxa/brownstone.c:67:10125: warning: right shift count >= width of type [-Wshift-count-overflow]
-sound/soc/pxa/brownstone.c:67:10254: warning: passing argument 1 of '__div64_32' from incompatible pointer type [-Wincompatible-pointer-types]
-
-The driver just divides two plain integer values, so it should not
-use do_div to start with, but has apparently done so ever since the
-code was first merged. This replaces do_div with a simple division
-operator.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/brownstone.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index 6147e86e9b0f..416ea646c3b1 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -63,8 +63,7 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
- 		sysclk    = params_rate(params) * 512;
- 		sspa_mclk = params_rate(params) * 64;
- 	}
--	sspa_div = freq_out;
--	do_div(sspa_div, sspa_mclk);
-+	sspa_div = freq_out / sspa_mclk;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 3f5a96b585b8..65c65d4c422c 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -35,12 +35,10 @@ static struct snd_soc_card skylake_audio_card;
  
- 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
- 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
+ static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
+ {
+-	int i;
++	struct snd_soc_pcm_runtime *rtd;
+ 
+-	for (i = 0; i < card->num_rtd; i++) {
+-		struct snd_soc_pcm_runtime *rtd;
++	list_for_each_entry(rtd, &card->rtd_list, list) {
+ 
+-		rtd = card->rtd + i;
+ 		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
+ 			     strlen(SKL_NUVOTON_CODEC_DAI)))
+ 			return rtd->codec_dai;
 -- 
 2.6.2
