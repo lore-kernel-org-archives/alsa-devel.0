@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup void* cast for 64bit
-	compiler" to the asoc tree
-Date: Fri, 20 Nov 2015 18:20:22 +0000
-Message-ID: <E1ZzqII-0003t0-9z@debutante>
-References: <87io4yipws.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa: remove incorrect do_div() call" to
+	the asoc tree
+Date: Fri, 20 Nov 2015 18:20:24 +0000
+Message-ID: <E1ZzqIK-0003tw-5D@debutante>
+References: <7580645.enu4DmUPIv@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C180426666F
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:30 +0100 (CET)
-In-Reply-To: <87io4yipws.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 905C6266677
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 19:20:31 +0100 (CET)
+In-Reply-To: <7580645.enu4DmUPIv@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup void* cast for 64bit compiler
+   ASoC: pxa: remove incorrect do_div() call
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From c51eb1c66e55bf23af4a10dd6e71c5a82c0e6d81 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 19 Nov 2015 04:22:56 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup void* cast for 64bit compiler
+>From d1afdf34fc17bd2e1c96dc6196c562fa8906a026 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 20 Nov 2015 10:32:44 +0100
+Subject: [PATCH] ASoC: pxa: remove incorrect do_div() call
 
-64bit compiler indicates this without this patch
+The new optimized do_div implementation (now in asm-generic/next) exposes a
+glitch in the brownstone audio driver by producing a compile-time warning:
 
-linux/sound/soc/sh/rcar/core.c: In function 'rsnd_probe':
-linux/sound/soc/sh/rcar/core.c:1002:16: warning: cast from pointer to\
-     integer of different size [-Wpointer-to-int-cast]
+sound/soc/pxa/brownstone.c: In function 'brownstone_wm8994_hw_params':
+sound/soc/pxa/brownstone.c:67:85: warning: comparison of distinct pointer types lacks a cast
+sound/soc/pxa/brownstone.c:67:10125: warning: right shift count >= width of type [-Wshift-count-overflow]
+sound/soc/pxa/brownstone.c:67:10254: warning: passing argument 1 of '__div64_32' from incompatible pointer type [-Wincompatible-pointer-types]
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The driver just divides two plain integer values, so it should not
+use do_div to start with, but has apparently done so ever since the
+code was first merged. This replaces do_div with a simple division
+operator.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 +-
- sound/soc/sh/rcar/rsnd.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/pxa/brownstone.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 8dceae4b731a..81a6bdb6848c 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -999,7 +999,7 @@ static int rsnd_probe(struct platform_device *pdev)
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index 6147e86e9b0f..416ea646c3b1 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -63,8 +63,7 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk    = params_rate(params) * 512;
+ 		sspa_mclk = params_rate(params) * 64;
  	}
+-	sspa_div = freq_out;
+-	do_div(sspa_div, sspa_mclk);
++	sspa_div = freq_out / sspa_mclk;
  
- 	priv->pdev	= pdev;
--	priv->flags	= (u32)of_id->data;
-+	priv->flags	= (unsigned long)of_id->data;
- 	spin_lock_init(&priv->lock);
- 
- 	/*
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index ae69670c5c0c..42d2ac5cb0d1 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -379,7 +379,7 @@ struct rsnd_priv {
- 
- 	struct platform_device *pdev;
- 	spinlock_t lock;
--	u32 flags;
-+	unsigned long flags;
- #define RSND_GEN_MASK	(0xF << 0)
- #define RSND_GEN1	(1 << 0)
- #define RSND_GEN2	(2 << 0)
+ 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+ 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
 -- 
 2.6.2
