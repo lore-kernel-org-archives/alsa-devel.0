@@ -1,51 +1,48 @@
-From: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce dma_request_slave_channel_compat_reason()
-Date: Fri, 20 Nov 2015 16:08:47 +0200
-Message-ID: <CAHp75VcEb1OP=mTQEAuQ6G_RswPCfvG4UzcFG+NBfJxABZVBcA@mail.gmail.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
-	<4533695.7ZVFN1S94o@wuerfel>
-	<564EF502.6040708@ti.com>
-	<6118451.vaLZWOZEF5@wuerfel>
-	<CAHp75VdoHqPMNGFfz4mPhX+Lw+vxgiyqFS8j5+kQ9Z9CHt=OTA@mail.gmail.com>
-	<564F1253.4000800@ti.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 3/3] ASoC: fsl_asrc: spba clock is needed by asrc
+ device
+Date: Fri, 20 Nov 2015 08:29:46 -0600
+Message-ID: <20151120142946.GA6949@rob-hp-laptop>
+References: <cover.1447997800.git.shengjiu.wang@freescale.com>
+ <7b40da78c965d4152c15794ec527c75198c9e2f9.1447997800.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <564F1253.4000800-l0cyMroinI0@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dmaengine <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux MMC List <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-crypto <linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-spi <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Media Mailing List <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <7b40da78c965d4152c15794ec527c75198c9e2f9.1447997800.git.shengjiu.wang-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shengjiu Wang <shengjiu.wang-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 20, 2015 at 2:30 PM, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> wrote:
-> On 11/20/2015 02:24 PM, Andy Shevchenko wrote:
->> On Fri, Nov 20, 2015 at 12:58 PM, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org> wrote:
->>> On Friday 20 November 2015 12:25:06 Peter Ujfalusi wrote:
->>>> On 11/19/2015 01:25 PM, Arnd Bergmann wrote:
->>
->>> Another idea would be to remove the filter function from struct dma_chan_map
->>> and pass the map through platform data
->>
->> Why not unified device properties?
->
-> Is this some Windows/ACPI feature?
+On Fri, Nov 20, 2015 at 02:17:53PM +0800, Shengjiu Wang wrote:
+> ASRC need to enable the spba clock, when sdma is using share peripheral
+> script. In this case, there is two spba master port is used, if don't
+> enable the clock, the spba bus will have arbitration issue, which may
+> cause read/write wrong data from/to ASRC registers
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,asrc.txt |  2 ++
+>  sound/soc/fsl/fsl_asrc.c                             | 10 ++++++++++
+>  sound/soc/fsl/fsl_asrc.h                             |  1 +
+>  3 files changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> index b93362a..d8eeee3 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> +++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+> @@ -25,6 +25,8 @@ Required properties:
+>  	"mem"		  Peripheral access clock to access registers.
+>  	"ipg"		  Peripheral clock to driver module.
+>  	"asrck_<0-f>"	  Clock sources for input and output clock.
+> +	"spba"		  The spba clock is needed when two spba master port
+> +			  is used.
 
-Nope.
+I'm assuming the same comments on patch 1 apply to all 3.
 
-Check drivers/base/property.c
-
-> Quick search gives mostly MSDN and
-> Windows10 related links.
->
-> We only need dma_chan_map for platforms which has not been converted to DT and
-> still using legacy boot. Or platforms which can still boot in legacy mode. In
-> DT/ACPI mode we do not need this map at all.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Rob
 --
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
