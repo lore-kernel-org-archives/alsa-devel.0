@@ -1,109 +1,42 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Apply HP headphone fixups more
-	generically
-Date: Fri, 20 Nov 2015 17:04:15 +0100
-Message-ID: <1448035455-4541-1-git-send-email-tiwai@suse.de>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 2/4] ARM: dts: sun4i: Enable onboard codec
+ used on the iNet1 tablet
+Date: Fri, 20 Nov 2015 17:18:46 +0100
+Message-ID: <20151120161846.GE32142@lukather>
+References: <1448027233-750-1-git-send-email-hdegoede@redhat.com>
+ <1448027233-750-2-git-send-email-hdegoede@redhat.com>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D4334261A73
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 17:04:19 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8BCADAAB2
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 16:03:51 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fzZfjcV6kaBgkq89"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRB2EPXWZAKGQEHSMFFMY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1448027233-750-2-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <http://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <http://groups.google.com/group/linux-sunxi/subscribe>
+To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-It turned out that many HP laptops suffer from the same problem as
-fixed in commit [c932b98c1e47: ALSA: hda - Apply pin fixup for HP
-ProBook 6550b].  But, it's tiresome to list up all such PCI SSIDs, as
-there are really lots of HP machines.
+--fzZfjcV6kaBgkq89
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Instead, we do a bit more clever, try to check the supposedly dock and
-built-in headphone pins, and apply the fixup when both seem valid.
-This rule can be applied generically to all models using the same
-quirk, so we'll fix all in a shot.
+On Fri, Nov 20, 2015 at 02:47:11PM +0100, Hans de Goede wrote:
+> The iNet1 tablet uses the A10's integrated audio codec, enable it.
+> 
+> Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=107491
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_sigmatel.c | 45 +++++++++++++++++++++++++++---------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
+Applied, thanks!
+Maxime
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 826122d8acee..2c7c5eb8b1e9 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -3110,6 +3110,29 @@ static void stac92hd71bxx_fixup_hp_hdx(struct hda_codec *codec,
- 	spec->gpio_led = 0x08;
- }
- 
-+static bool is_hp_output(struct hda_codec *codec, hda_nid_t pin)
-+{
-+	unsigned int pin_cfg = snd_hda_codec_get_pincfg(codec, pin);
-+
-+	/* count line-out, too, as BIOS sets often so */
-+	return get_defcfg_connect(pin_cfg) != AC_JACK_PORT_NONE &&
-+		(get_defcfg_device(pin_cfg) == AC_JACK_LINE_OUT ||
-+		 get_defcfg_device(pin_cfg) == AC_JACK_HP_OUT);
-+}
-+
-+static void fixup_hp_headphone(struct hda_codec *codec, hda_nid_t pin)
-+{
-+	unsigned int pin_cfg = snd_hda_codec_get_pincfg(codec, pin);
-+
-+	/* It was changed in the BIOS to just satisfy MS DTM.
-+	 * Lets turn it back into slaved HP
-+	 */
-+	pin_cfg = (pin_cfg & (~AC_DEFCFG_DEVICE)) |
-+		(AC_JACK_HP_OUT << AC_DEFCFG_DEVICE_SHIFT);
-+	pin_cfg = (pin_cfg & (~(AC_DEFCFG_DEF_ASSOC | AC_DEFCFG_SEQUENCE))) |
-+		0x1f;
-+	snd_hda_codec_set_pincfg(codec, pin, pin_cfg);
-+}
- 
- static void stac92hd71bxx_fixup_hp(struct hda_codec *codec,
- 				   const struct hda_fixup *fix, int action)
-@@ -3119,22 +3142,12 @@ static void stac92hd71bxx_fixup_hp(struct hda_codec *codec,
- 	if (action != HDA_FIXUP_ACT_PRE_PROBE)
- 		return;
- 
--	if (hp_blike_system(codec->core.subsystem_id)) {
--		unsigned int pin_cfg = snd_hda_codec_get_pincfg(codec, 0x0f);
--		if (get_defcfg_device(pin_cfg) == AC_JACK_LINE_OUT ||
--			get_defcfg_device(pin_cfg) == AC_JACK_SPEAKER  ||
--			get_defcfg_device(pin_cfg) == AC_JACK_HP_OUT) {
--			/* It was changed in the BIOS to just satisfy MS DTM.
--			 * Lets turn it back into slaved HP
--			 */
--			pin_cfg = (pin_cfg & (~AC_DEFCFG_DEVICE))
--					| (AC_JACK_HP_OUT <<
--						AC_DEFCFG_DEVICE_SHIFT);
--			pin_cfg = (pin_cfg & (~(AC_DEFCFG_DEF_ASSOC
--							| AC_DEFCFG_SEQUENCE)))
--								| 0x1f;
--			snd_hda_codec_set_pincfg(codec, 0x0f, pin_cfg);
--		}
-+	/* when both output A and F are assigned, these are supposedly
-+	 * dock and built-in headphones; fix both pin configs
-+	 */
-+	if (is_hp_output(codec, 0x0a) && is_hp_output(codec, 0x0f)) {
-+		fixup_hp_headphone(codec, 0x0a);
-+		fixup_hp_headphone(codec, 0x0f);
- 	}
- 
- 	if (find_mute_led_cfg(codec, 1))
 -- 
-2.6.3
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--fzZfjcV6kaBgkq89--
