@@ -1,60 +1,67 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V2 1/3] ASoC: fsl_esai: spba clock is needed by esai
- device
-Date: Thu, 19 Nov 2015 23:39:06 -0800
-Message-ID: <20151120073905.GA3740@Asurada-CZ80>
-References: <cover.1447997800.git.shengjiu.wang@freescale.com>
- <d5cb15bbd3563ed34c58c15b224495b854bca616.1447997800.git.shengjiu.wang@freescale.com>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: Re: [PATCH 4/4] ASoC: sti: reset iec60958 settings on
+	close
+Date: Fri, 20 Nov 2015 10:11:00 +0100
+Message-ID: <564EE3A4.3090501@st.com>
+References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
+ <1447941250-344-5-git-send-email-moise.gergaud@st.com>
+ <20151119175024.GP31303@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d5cb15bbd3563ed34c58c15b224495b854bca616.1447997800.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 17C12260731
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 10:11:05 +0100 (CET)
+In-Reply-To: <20151119175024.GP31303@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 20, 2015 at 02:17:51PM +0800, Shengjiu Wang wrote:
+Hello,
+To be compliant with SPDIF & HDMI-1.4 by using aplay, driver needs to =
 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> index d3b6b5f..f1d5351 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> @@ -27,6 +27,8 @@ Required properties:
->  			  derive HCK, SCK and FS.
->  	"fsys"		  The system clock derived from ahb clock used to
->  			  derive HCK, SCK and FS.
-> +	"spba"		  The spba clock is needed when two spba master port
-> +			  is used.
+set the channel status sampling freq =3D runtime rate; because channel =
 
-I was expecting a little bit more detail like:
+status sampling freq is not set by aplay.
+For HBRA, the application set the channel status sampling freq (that is =
 
-+	"spba"		The spba clock is required when ESAI is placed as
-			a bus slave of the Shared Peripheral Bus and when
-			two or more bus masters (CPU, DMA or DSP) try to
-			access it. This property is optional depending on
-			the SoC design.
+different than the runtime rate).
+=3D> by taking into account the 2 above cases, for each pcm session, =
 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 504e731..8749f53 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -54,6 +54,7 @@ struct fsl_esai {
->  	struct clk *coreclk;
->  	struct clk *extalclk;
->  	struct clk *fsysclk;
-> +	struct clk *spbaclk;
+driver shall be able to detect if the channel status sampling freq has =
 
-Please add one entry in the comment above for the new clock.
+already been set and set it if needed.
 
-> @@ -819,6 +826,11 @@ static int fsl_esai_probe(struct platform_device *pdev)
->  		dev_warn(&pdev->dev, "failed to get fsys clock: %ld\n",
->  				PTR_ERR(esai_priv->fsysclk));
->  
-> +	esai_priv->spbaclk = devm_clk_get(&pdev->dev, "spba");
-> +	if (IS_ERR(esai_priv->spbaclk))
-> +		dev_warn(&pdev->dev, "Cannot get spba clock: %ld\n",
+And also for robustness purpose: in case the channel status sampling =
 
-It'd be better to write the warning following the previous one:
-+  		dev_warn(&pdev->dev, "failed to get spba clock: %ld\n",
+freq is not set by the application, I think the driver shall set it.
+
+Maybe I can limit my patch by resetting only the channel status sampling =
+
+freq on close (actual patch reset all the fields of the channel status).
+
+regards
+Mo=EFse
+
+
+On 11/19/2015 06:50 PM, Mark Brown wrote:
+> On Thu, Nov 19, 2015 at 02:54:10PM +0100, Moise Gergaud wrote:
+>> Reset IEC 60958 settings for next PCM session.
+>>
+>> Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
+>> Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>
+> It's not 100% clear that we want to do this - normally controls are
+> persistent and don't reset themselves per session.  Is this something we
+> normally do for such controls?
+>
