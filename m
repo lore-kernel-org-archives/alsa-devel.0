@@ -1,19 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/8] ALSA: dice: constrain PCM
- substreams to current sampling transfer frequency
-Date: Fri, 20 Nov 2015 13:11:24 +0900
-Message-ID: <564E9D6C.7060408@sakamocchi.jp>
-References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8qbe6pm.wl-tiwai@suse.de> <564D4360.8050503@sakamocchi.jp>
- <s5hziyab8ak.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5645: Add dmi_system_id "Google Wizpig"
+Date: Fri, 20 Nov 2015 12:25:59 +0800
+Message-ID: <1447993559-32245-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id DC8322605C3
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 05:11:27 +0100 (CET)
-In-Reply-To: <s5hziyab8ak.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 429ED2605C3
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 05:26:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, denglehai@ithaier.com, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Add platform specific data for Wizpig project.
 
-On Nov 19 2015 19:19, Takashi Iwai wrote:
-> More specifically, although this patchset can be seen as a "bug fix",
-> the bug you're trying to address isn't clear.  And then, what impact
-> this patchset has for users isn't described enough.  If there is no
-> usage change, it should be mentioned clearly.  If any usage change is
-> expected, it must be written.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I have frequently got private messages from owners of dice-based models
-since below patchset was merged to mainline, .
-
-[alsa-devel] [PATCH 00/15 v5] ALSA: Enhancement for existed FireWire drivers
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085142.html
-
-Some of them addressed that ALSA dice driver fails to handle their
-models. Their experiences are not the same. The summary:
- * detecting packet discontinuity at starting streaming
- * ETIMEOUT at starting streaming
- * ETIMEOUT at probing snd-dice
- * no sound even if streaming
-
-This patchset is my solution for the issues. In my understanging, the
-packet discontinuity means that clock generator is not phase-locked, and
-it costs higher for some models to change the state of clock. The
-ETIMEOUT means that the driver receive no notification till timeout, and
-implies the occurence of bus-resets. A part of reasons of no-sound issue
-is a mismatch of data channel formation in AMDTP packet, and implies
-failure in probe processing. All of them indicate that it easily occurs
-to fail to change the state of clock. For the detail, I hope readers to
-read comments in this patchset.
-
-As a result of applying this patchset, userspace applications cannot
-start PCM substreams at sampling rates except for current sampling
-transfer frequency. Instead, they gain stability to start PCM substreams
-and to probe Dice-based models.
-
-At a glance, it looks the backwards or the regressions. But I believe we
-should not ignore hardware design, as a device driver developer.
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 177f6d0..2c4f06f 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3565,6 +3565,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Edgar"),
+ 		},
+ 	},
++	{
++		.ident = "Google Wizpig",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Wizpig"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+1.8.1.1.439.g50a6b54
