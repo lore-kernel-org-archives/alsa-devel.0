@@ -1,18 +1,18 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 5/8] ALSA: dice: purge generating channel
- cache
-Date: Fri, 20 Nov 2015 01:15:53 +0100
-Message-ID: <20151120011553.698903a2@kant>
-References: <1447579536-4459-1-git-send-email-o-takashi@sakamocchi.jp>
- <1447579536-4459-6-git-send-email-o-takashi@sakamocchi.jp>
+From: Han Lu <han.lu@linux.intel.com>
+Subject: Re: [PATCH V2 1/1] drm/i915/audio: apply SKL codec
+ wake up patch to BXT
+Date: Fri, 20 Nov 2015 09:16:59 +0800
+Message-ID: <564E748B.9090506@linux.intel.com>
+References: <1447944288-28499-1-git-send-email-han.lu@intel.com>
+ <20151119155549.GJ17050@phenom.ffwll.local> <87d1v6t1u8.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn-mail.in-berlin.de [217.197.80.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 92974261543
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 01:15:54 +0100 (CET)
-In-Reply-To: <1447579536-4459-6-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11EBB2614F4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2015 02:17:32 +0100 (CET)
+In-Reply-To: <87d1v6t1u8.fsf@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel@ffwll.ch>, han.lu@intel.com
+Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, tiwai@suse.de, daniel.vetter@ffwll.ch, intel-gfx@lists.freedesktop.org, libin.yang@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 15 Takashi Sakamoto wrote:
-> Dice hardware design doesn't allow drivers to read supported combination
-> between sampling transfer frequencies and the number of Multi bit linear
-> audio data channels. According to the design, ALSA dice driver changes
-> current sampling transfer frequency to generate the cache of combinations
-> at probing processing.
-> 
-> Although, this idea is worse because ALSA dice driver cannot handle bus
-> reset when processing driver's probe callback. The callbacks of drivers
-> for units on IEEE 1394 bus are serialized. For example, when processing
-> .probe callback in workqueue context, any other processing such as
-> .update is not executed. As a result, when processing probe callback,
-> the driver cannot handle bus reset.
-[...]
+On 11/20/2015 12:01 AM, Jani Nikula wrote:
+> On Thu, 19 Nov 2015, Daniel Vetter <daniel@ffwll.ch> wrote:
+>> On Thu, Nov 19, 2015 at 10:44:48PM +0800, han.lu@intel.com wrote:
+>>> From: "Lu, Han" <han.lu@intel.com>
+>>>
+>>> For SKL we added a commit 632f3ab95fe2 ("drm/i915/audio: add codec wakeup
+>>> override enabled/disable callback"), in order to enable codec wakeup
+>>> override signal, to allow re-enumeration of the controller on SKL after
+>>> resume from low power state.
+>>> In SKL, HDMI/DP codec and PCH HD Audio Controller are in different power
+>>> wells, so it's necessary to reset display audio codecs when power well on,
+>>> otherwise display audio codecs will disappear when resume from low power
+>>> state.
+>>> Reset steps when power on:
+>>>      enable codec wakeup -> azx_init_chip() -> disable codec wakeup
+>>> Since the power well design did not change from SKL to BXT, we need to
+>>> apply the workaround to BXT also.
+>>>
+>>> v2: add explanation
+>>>
+>>> Signed-off-by: Lu, Han <han.lu@intel.com>
+>>>
+>>> diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+>>> index 63d4706..8310bf3 100644
+>>> --- a/drivers/gpu/drm/i915/intel_audio.c
+>>> +++ b/drivers/gpu/drm/i915/intel_audio.c
+>>> @@ -591,7 +591,8 @@ static void i915_audio_component_codec_wake_override(struct device *dev,
+>>>   	struct drm_i915_private *dev_priv = dev_to_i915(dev);
+>>>   	u32 tmp;
+>>>   
+>>> -	if (!IS_SKYLAKE(dev_priv) && !IS_KABYLAKE(dev_priv))
+>>> +	if (!IS_SKYLAKE(dev_priv) && !IS_BROXTON(dev_priv) &&
+>>> +			!IS_KABYLAKE(dev_priv))
+>> if (INTEL_INFO(dev)->gen < 9)
+>> 	return;
+>>
+>> for future-proofing? At least make it an IS_GEN9 check instead of
+>> listening all of them in a long list.
+> http://mid.gmane.org/87a8qacq5w.fsf@intel.com ...
+Yes, that's right. Thanks. I'll send next revision.
 
-It is natural that .probe(), .update(), .remove() driver methods are not
-reentrant.  We must not call an .update() or .remove() for a
-device + driver pair whose .probe() has not yet returned successfully.
-
-Therefore, procedures which require bus reset handling should not be
-implemented within the .probe().
-
-For example, the IEEE 1394 storage initiator driver firewire-sbp2 performs
-SBP-2 login and the initial SCSI INQUIRY in an own deferred execution
-context, not inside .probe().  If a bus reset happens in the middle of the
-SBP-2 login transaction or in the middle of the SCSI INQUIRY transaction,
-that transaction is aborted and rescheduled.
-
-I am only mentioning this as a general remark, not as a direct comment on
-this patch or on the snd-dice driver even.  Perhaps similar deferred
-execution in a separate execution context is something suitable for a DICE
-driver, perhaps not; I can't say as I am entirely unfamiliar with the
-protocol.
-
-> Unfortunately, most Dice based models generate bus reset several times
-> after powering on.
-[...]
-
-Besides, if there are more devices on the bus, bus resets could be
-generated by those other nodes too (for example if they boot at the
-same time as the audio device does).
--- 
-Stefan Richter
--=====-===== =-== =-=--
-http://arcgraph.de/sr/
+Regards,
+Han Lu
+>
+>> -Daniel
+>>
+>>>   		return;
+>>>   
+>>>   	/*
+>>> -- 
+>>> 2.5.0
+>>>
