@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: sti: reset iec60958 settings on
-	close
-Date: Sat, 21 Nov 2015 12:45:09 +0000
-Message-ID: <20151121124509.GC26072@sirena.org.uk>
-References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
- <1447941250-344-5-git-send-email-moise.gergaud@st.com>
- <20151119175024.GP31303@sirena.org.uk> <564EE3A4.3090501@st.com>
+Subject: Re: [PATCH v3 1/2] ASoC: da7218: Add bindings
+ documentation for DA7218 audio codec
+Date: Sat, 21 Nov 2015 12:52:52 +0000
+Message-ID: <20151121125252.GD26072@sirena.org.uk>
+References: <cover.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
+ <add67c0ebac7a516d3cf515fea10a08b7cabadbc.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151120155351.GA13917@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2834349162980220501=="
+Content-Type: multipart/mixed; boundary="===============6360125759100229767=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CEB42606FE
- for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2015 13:49:48 +0100 (CET)
-In-Reply-To: <564EE3A4.3090501@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B471260586
+ for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2015 13:53:34 +0100 (CET)
+In-Reply-To: <20151120155351.GA13917@rob-hp-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,78 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Kumar Gala <galak@codeaurora.org>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2834349162980220501==
+--===============6360125759100229767==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8X7/QrJGcKSMr1RN"
+	protocol="application/pgp-signature"; boundary="76DTJ5CE0DCVQemd"
 Content-Disposition: inline
 
 
---8X7/QrJGcKSMr1RN
+--76DTJ5CE0DCVQemd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 20, 2015 at 10:11:00AM +0100, Moise Gergaud wrote:
-> Hello,
+On Fri, Nov 20, 2015 at 09:53:51AM -0600, Rob Herring wrote:
+> On Thu, Nov 19, 2015 at 01:59:34PM +0000, Adam Thomson wrote:
 
-Please don't top post, reply in line deleting unneeded text.  This
-provides relevant context so people reading your mail can understand
-what you are talking about.
+> > +- VDD-supply: VDD power supply for the device
+> > +- VDDMIC-supply: VDDMIC power supply for the device
+> > +- VDDIO-supply: VDDIO power supply for the device
 
-> To be compliant with SPDIF & HDMI-1.4 by using aplay, driver needs to set
-> the channel status sampling freq = runtime rate; because channel status
-> sampling freq is not set by aplay.
-> For HBRA, the application set the channel status sampling freq (that is
-> different than the runtime rate).
-> => by taking into account the 2 above cases, for each pcm session, driver
-> shall be able to detect if the channel status sampling freq has already been
-> set and set it if needed.
+> These should be lower case (that is documented in ePAPR BTW :)).
 
-> And also for robustness purpose: in case the channel status sampling freq is
-> not set by the application, I think the driver shall set it.
+Does that actually make a meaningful difference to anything?  Things end
+up this way because the strings we use to request the supplies end up in
+the property names, we've also got a few other things like representing
+microvolts as uV which just look very wrong when written all lowercase.
+We could work around it for the supply names by force lowercasing the
+name if we don't find the property with the passed name (to avoid
+breaking existing users) though.
 
-None of this addresses my concern, sorry - your change is just trashing
-all the settings that the application is setting.  This is not what we
-normally do with controls and is going to break correctly functioning
-applications that play audio with the same parameters repeatedly.
+There's a bunch of stuff in ePAPR that we're ignoring, and a bunch of
+other stuff that has no real value like the class naming stuff.
 
-> Maybe I can limit my patch by resetting only the channel status sampling
-> freq on close (actual patch reset all the fields of the channel status).
-
-This isn't something you should be inventing policies for in a single
-driver, the kernel needs to offer consistent interfaces to applications
-no matter which particular hardware the system is running.  If we want
-to do something here it should be done at ALSA level.  It does seem like
-a reasonable idea to put the sample rate into kernel control, I can't
-think of a situation where we'd want to advertise the wrong sample rate,
-but it does need to be in the core not a specific driver.
-
---8X7/QrJGcKSMr1RN
+--76DTJ5CE0DCVQemd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWUGdVAAoJECTWi3JdVIfQaakH/jtX3lu0GjxN5mCdxDx4kPtA
-PTTqqbDo2TJe87dSroEe1GWobKMcOQiyIP4qyuRoBskNUrQe/n60XhL2Ie2x1/iJ
-Vt4QMfEa8jEgebC5s33jMs5EPq5bIUxuRgiQcZ3NN4TK9XCojHFpHTDvRAymgd4U
-7VC+lO1vc/1b4nF4DG5ERxKne2Z0xTwGinJjErxTE+VMSWJdre8f2p1N2DiGWuOZ
-nF4gLUhGAJu81GiVmrOGXM0f2eFKLIyAw6NCVi5xN0bdxvPgGTIwugQika3uk7gi
-yfKzO8AEZN+QwL9ALHrAkD1PKcdWGc+R293pl65lS//kW8ea5+CEZXUuQMyWUss=
-=t0cE
+iQEcBAEBCAAGBQJWUGkkAAoJECTWi3JdVIfQWl4H/RDSgXh229dQZWfcM1mECnYd
+mNcVzURkDN0x8WUFoX6jfF/C2bufqzz7TimMAsH8zF7C1gHLALx/gtvieGPPYmN/
+wTjt4qtcipvNB5+rKjiNvEzukSvXvl1Gx31zqTbGnAoDK/v481OvzRGjhQiuU6/T
+njfmYFm/aNYV65/xPnXoiTm/zB9Q9szRPIPV70kvq7Mpsp/z30j/VOyMxxES3jxa
++bATZq0qZq4i/GS7a57o7GJ3Si0DLS89MWy+fdVH+8AhUpiq7tgatCG0cNRr64Wu
+ErdEFS4XPDs9BJWEe9ua+i81yfor2NB1MBfIrmzn85XoOs/yyYdwsXzW81xhFr4=
+=MShk
 -----END PGP SIGNATURE-----
 
---8X7/QrJGcKSMr1RN--
+--76DTJ5CE0DCVQemd--
 
---===============2834349162980220501==
+--===============6360125759100229767==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2834349162980220501==--
+--===============6360125759100229767==--
