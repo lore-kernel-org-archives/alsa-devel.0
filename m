@@ -1,107 +1,132 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [alsa-devel] [PATCH 2/4] sound: codecs: pcm1792a: add define for register
-Date: Sat, 21 Nov 2015 10:36:01 +0100
-Message-ID: <CAOf5uwm6EJt=W7+fY_nx4gdRWsLdkBHTUF9DXMRA1c+QnUzKDA@mail.gmail.com>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 4/4] sound: codecs: pcm1792a: introduce
+ channel side
+Date: Sat, 21 Nov 2015 10:37:37 +0100
+Message-ID: <CAOf5uwmGk7WqOaAFj=fTw8+D+EszWPqReyfmS0njix=d7AokOA@mail.gmail.com>
 References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
-	<1448014157-36526-3-git-send-email-raphael.poggi@avalun.com>
+	<1448014157-36526-5-git-send-email-raphael.poggi@avalun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1448014157-36526-3-git-send-email-raphael.poggi@avalun.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Raphael Poggi <poggi.raph@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1448014157-36526-5-git-send-email-raphael.poggi-jXdF5569nj7QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 Hi
 
-On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph@gmail.com> wrote:
-> From: Raphael Poggi <poggi.raph@gmail.com>
+On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 >
-> Use define for register instead of number, when it is possible.
-> Doing this, make easier to read and use in the code.
+> Add possibility to choose the channel side using the device tree,
+> and also modify it using alsa ctrl.
 >
-> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
+> Signed-off-by: Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 > ---
->  sound/soc/codecs/pcm1792a.c | 47 +++++++++++++++++++++++++++------------------
->  1 file changed, 28 insertions(+), 19 deletions(-)
+>  sound/soc/codecs/pcm1792a.c | 46 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
 >
 > diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-> index cf42b24..febaa48 100644
+> index febaa48..005b679 100644
 > --- a/sound/soc/codecs/pcm1792a.c
 > +++ b/sound/soc/codecs/pcm1792a.c
-> @@ -33,27 +33,36 @@
->
->  #include "pcm1792a.h"
->
-> -#define PCM1792A_DAC_VOL_LEFT  0x10
-> -#define PCM1792A_DAC_VOL_RIGHT 0x11
-> -#define PCM1792A_FMT_CONTROL   0x12
-> -#define PCM1792A_MODE_CONTROL  0x13
-> -#define PCM1792A_SOFT_MUTE     PCM1792A_FMT_CONTROL
-> -
-> -#define PCM1792A_FMT_MASK      0x70
-> -#define PCM1792A_FMT_SHIFT     4
-> -#define PCM1792A_MUTE_MASK     0x01
-> -#define PCM1792A_MUTE_SHIFT    0
-> -#define PCM1792A_ATLD_ENABLE   (1 << 7)
-> +#define PCM1792A_DAC_VOL_LEFT          0x10
-> +#define PCM1792A_DAC_VOL_RIGHT         0x11
-> +#define PCM1792A_FMT_CONTROL           0x12
-> +#define PCM1792A_MODE_CONTROL          0x13
-> +#define PCM1792A_ZERO_OUTPUT           0x15
-> +#define PCM1792A_SOFT_MUTE             PCM1792A_FMT_CONTROL
-> +#define PCM1792A_ZERO_FLAG             0x16
-> +#define PCM1792A_DEVICE_ID             0x17
-> +
-> +#define PCM1792A_CHANNEL               0x14
-> +#define PCM1792A_CHANNEL_MONO_MASK     0x8
-> +#define PCM1792A_CHANNEL_MONO_SHIFT    0x8
-> +#define PCM1792A_CHANNEL_MONO_LEFT     (0x0 << PCM1792A_CHANNEL_MONO_SHIFT)
-> +#define PCM1792A_CHANNEL_MONO_RIGHT    (0x1 << PCM1792A_CHANNEL_MONO_SHIFT)
-> +
-
-Can you just add what you use? and give an order on those defines?
-
-What is register, what is mask, what is shift?
-
-> +#define PCM1792A_FMT_MASK              0x70
-> +#define PCM1792A_FMT_SHIFT             4
-> +#define PCM1792A_MUTE_MASK             0x01
-> +#define PCM1792A_MUTE_SHIFT            0
-> +#define PCM1792A_ATLD_ENABLE           (1 << 7)
->
->  static const struct reg_default pcm1792a_reg_defaults[] = {
-> -       { 0x10, 0xff },
-> -       { 0x11, 0xff },
-> -       { 0x12, 0x50 },
-> -       { 0x13, 0x00 },
-> -       { 0x14, 0x00 },
-> -       { 0x15, 0x01 },
-> -       { 0x16, 0x00 },
-> -       { 0x17, 0x00 },
-> +       { PCM1792A_DAC_VOL_LEFT, 0xff },
-> +       { PCM1792A_DAC_VOL_RIGHT, 0xff },
-> +       { PCM1792A_FMT_CONTROL, 0x50 },
-> +       { PCM1792A_MODE_CONTROL, 0x00 },
-> +       { PCM1792A_CHANNEL, 0x00 },
-> +       { PCM1792A_ZERO_OUTPUT, 0x01 },
-> +       { PCM1792A_ZERO_FLAG, 0x00 },
-> +       { PCM1792A_DEVICE_ID, 0x00 },
+> @@ -65,6 +65,12 @@ static const struct reg_default pcm1792a_reg_defaults[] = {
+>         { PCM1792A_DEVICE_ID, 0x00 },
 >  };
 >
+> +enum __pcm1792_side {
+> +       STEREO,
+> +       MONORAL_LEFT,
+> +       MONORAL_RIGHT
+> +};
+> +
 >  static bool pcm1792a_accessible_reg(struct device *dev, unsigned int reg)
+>  {
+>         return reg >= 0x10 && reg <= 0x17;
+> @@ -83,6 +89,7 @@ struct pcm1792a_private {
+>         struct regmap *regmap;
+>         unsigned int format;
+>         unsigned int rate;
+> +       unsigned int side;
+>  };
+>
+>  static int pcm1792a_set_dai_fmt(struct snd_soc_dai *codec_dai,
+> @@ -153,6 +160,13 @@ static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
+>         ret = regmap_update_bits(priv->regmap, PCM1792A_FMT_CONTROL,
+>                                  PCM1792A_FMT_MASK | PCM1792A_ATLD_ENABLE, val);
+>
+> +       if (priv->side == MONORAL_LEFT)
+> +               val = PCM1792A_CHANNEL_MONO_LEFT;
+> +       else if (priv->side == MONORAL_RIGHT)
+> +               val = PCM1792A_CHANNEL_MONO_RIGHT;
+> +
+> +       regmap_update_bits(priv->regmap, PCM1792A_CHANNEL, PCM1792A_CHANNEL_MONO_MASK, val);
+> +
+>         return ret;
+>  }
+>
+> @@ -222,10 +236,31 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm1792a = {
+>         .num_dapm_routes        = ARRAY_SIZE(pcm1792a_dapm_routes),
+>  };
+>
+> +static int pcm1792a_of_init(struct spi_device *spi)
+> +{
+> +       int ret = 0;
+> +       struct pcm1792a_private *pcm1792a = dev_get_drvdata(&spi->dev);
+> +       const char *name;
+> +       struct device_node *np = spi->dev.of_node;
+> +
+> +       name = of_get_property(np, "ti,side", NULL);
+> +       if (name) {
+> +               if (!strcmp(name, "left"))
+> +                       pcm1792a->side = MONORAL_LEFT;
+> +               else
+> +                       pcm1792a->side = MONORAL_RIGHT;
+> +       }
+> +       else
+> +               pcm1792a->side = STEREO;
+> +
+> +       return ret;
+> +}
+> +
+>  static int pcm1792a_spi_probe(struct spi_device *spi)
+>  {
+>         struct pcm1792a_private *pcm1792a;
+>         int ret;
+> +       struct device_node *np = spi->dev.of_node;
+>
+>         pcm1792a = devm_kzalloc(&spi->dev, sizeof(struct pcm1792a_private),
+>                                 GFP_KERNEL);
+> @@ -241,6 +276,17 @@ static int pcm1792a_spi_probe(struct spi_device *spi)
+>                 return ret;
+>         }
+>
+> +       if (np) {
+> +               ret = pcm1792a_of_init(spi);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+> +       if (pcm1792a->side == MONORAL_LEFT)
+> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHANNEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_LEFT);
+> +       else if (pcm1792a->side == MONORAL_RIGHT)
+> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHANNEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_RIGHT);
+> +
 
-This function should be update too
+Why this is a part of dts and not a part of mixer control?
 
 Michael
 
+>         return snd_soc_register_codec(&spi->dev,
+>                         &soc_codec_dev_pcm1792a, &pcm1792a_dai, 1);
+>  }
 > --
 > 2.1.0
 >
 > _______________________________________________
 > Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
@@ -111,3 +136,7 @@ Michael
 | COO  -  Founder                                      Cruquiuskade 47 |
 | +31(0)851119172                                 Amsterdam 1018 AM NL |
 |                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
