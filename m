@@ -1,76 +1,104 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: remove SND_SOC_BYTES_EXT
-Date: Sat, 21 Nov 2015 14:08:28 +0000
-Message-ID: <20151121140828.GK26072@sirena.org.uk>
-References: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
- <s5hlh9ve7n0.wl-tiwai@suse.de> <20151118181953.GX25173@localhost>
+From: =?UTF-8?Q?Rapha=C3=ABl_Poggi?= <poggi.raph@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/4] sound: codecs: pcm1792a: clean function exit
+Date: Sat, 21 Nov 2015 17:16:53 +0100
+Message-ID: <CACqcpZACQiBkyj=a765rKjGi7Ft_MS4+t_0F90dQXGxecRm92Q@mail.gmail.com>
+References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
+ <1448014157-36526-2-git-send-email-raphael.poggi@avalun.com> <CAOf5uwmx95te=gHg5FnmNx+xOcpmGfnfzdgbnF8m8sms028PKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8316406597401607514=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F2864266719
- for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2015 15:08:43 +0100 (CET)
-In-Reply-To: <20151118181953.GX25173@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches.audio@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOf5uwmx95te=gHg5FnmNx+xOcpmGfnfzdgbnF8m8sms028PKQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: perex@perex.cz, tiwai@suse.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8316406597401607514==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="EMQjp+MvU6EBGjHc"
-Content-Disposition: inline
+I know that almost all the codec do as before, but what is the goal of
+using an extra condition when we can avoid it ?
 
+Raphael
 
---EMQjp+MvU6EBGjHc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 18, 2015 at 11:49:53PM +0530, Vinod Koul wrote:
-> On Wed, Nov 18, 2015 at 02:53:23PM +0100, Takashi Iwai wrote:
-
-> > Hmm, won't this break user-space?  Both use the difference access
-> > methods, so I wonder how they can be kept compatible.
-
-> Yes they will, so should we then keep these and mark SND_SOC_BYTES_EXT
-> depricated ..?
-
-> Mark what should we do with these
-
-Yes, that seems like a reasonable approach.
-
---EMQjp+MvU6EBGjHc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWUHrbAAoJECTWi3JdVIfQfV4H/2Md+9fRZ+NSSDZVU5ogRlwT
-Lv3UO4QA8JrzZD3z4K42uOzdLCU1mNLONKzQbTwORsjGidEgwt/mSYDnGXfcydnk
-HGxVM4YFYKYShsQbUVOTuTPdF6cgPKS8g1vVf6xKkCYgaTuu+chbAMBnaszYRsX7
-p6qx7Th4IiWVjerg1ZX/r4ayVCH3DvfREXJle/gzq5PhRoMmZOFyHmjcRsLO8Tlx
-4Lt7f2zOpYsHI+NwDC2KfBOAIB0OkYH9GzwDoTZxM03cBYgtG8MSSdX//fS7XDsZ
-SfmKYjbJo6bdEaSaIQbR5lclSinkr5b5NGiCgApJau7s3/OaWv+T5MPE++X+1BY=
-=aGFq
------END PGP SIGNATURE-----
-
---EMQjp+MvU6EBGjHc--
-
---===============8316406597401607514==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8316406597401607514==--
+2015-11-21 10:31 GMT+01:00 Michael Trimarchi <michael@amarulasolutions.com>:
+> Hi
+>
+> On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph@gmail.com> wrote:
+>> From: Raphael Poggi <poggi.raph@gmail.com>
+>>
+>> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
+>> ---
+>>  sound/soc/codecs/pcm1792a.c | 14 ++++----------
+>>  1 file changed, 4 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
+>> index 08bb486..cf42b24 100644
+>> --- a/sound/soc/codecs/pcm1792a.c
+>> +++ b/sound/soc/codecs/pcm1792a.c
+>> @@ -91,14 +91,9 @@ static int pcm1792a_digital_mute(struct snd_soc_dai *dai, int mute)
+>>  {
+>>         struct snd_soc_codec *codec = dai->codec;
+>>         struct pcm1792a_private *priv = snd_soc_codec_get_drvdata(codec);
+>> -       int ret;
+>>
+>> -       ret = regmap_update_bits(priv->regmap, PCM1792A_SOFT_MUTE,
+>> +       return regmap_update_bits(priv->regmap, PCM1792A_SOFT_MUTE,
+>>                                  PCM1792A_MUTE_MASK, !!mute);
+>> -       if (ret < 0)
+>> -               return ret;
+>> -
+>
+> Ok, I have seen that almost all the codecs use return regmap_upda...
+>
+>> -       return 0;
+>>  }
+>>
+>>  static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
+>> @@ -107,7 +102,8 @@ static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
+>>  {
+>>         struct snd_soc_codec *codec = dai->codec;
+>>         struct pcm1792a_private *priv = snd_soc_codec_get_drvdata(codec);
+>> -       int val = 0, ret;
+>> +       int val = 0;
+>> +       int ret = 0;
+>>
+>>         priv->rate = params_rate(params);
+>>
+>> @@ -147,10 +143,8 @@ static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
+>>
+>>         ret = regmap_update_bits(priv->regmap, PCM1792A_FMT_CONTROL,
+>>                                  PCM1792A_FMT_MASK | PCM1792A_ATLD_ENABLE, val);
+>> -       if (ret < 0)
+>> -               return ret;
+>>
+>
+> Please do the same as before
+>
+> Michael
+>
+>
+>> -       return 0;
+>> +       return ret;
+>>  }
+>>
+>>  static const struct snd_soc_dai_ops pcm1792a_dai_ops = {
+>> --
+>> 2.1.0
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
+>
+> --
+> | Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+> | COO  -  Founder                                      Cruquiuskade 47 |
+> | +31(0)851119172                                 Amsterdam 1018 AM NL |
+> |                  [`as] http://www.amarulasolutions.com               |
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
