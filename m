@@ -1,19 +1,17 @@
-From: Maeda <maeda1@free.fr>
-Subject: Re: [bug] Volume at maximum when track with different
- frequency is played with my RME sound card
-Date: Sat, 21 Nov 2015 20:54:53 +0100
-Message-ID: <5650CC0D.1070209@free.fr>
-References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
- <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
- <s5hwptbxhjf.wl-tiwai@suse.de>
+From: =?UTF-8?Q?Dominic_Sacr=c3=a9?= <dominic.sacre@gmx.de>
+Subject: snd-fireworks requires larger period sizes than FFADO
+Date: Sun, 22 Nov 2015 01:20:47 +0100
+Message-ID: <56510A5F.4080004@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 4804F260532
- for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2015 20:54:26 +0100 (CET)
-In-Reply-To: <s5hwptbxhjf.wl-tiwai@suse.de>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 870FC260609
+ for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 01:21:31 +0100 (CET)
+Received: from [192.168.0.201] ([37.24.103.185]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0Lck9X-1ajqJA0eX9-00k71R for
+ <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 01:21:31 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T0sgdGhhdCdzIHdoYXQgSSB0aG91Z2h0LgpJJ20gdXNpbmcgQXJjaGxpbnV4LCBJJ2xsIHNlZSBv
-biB0aGUgYXJjaHdpa2kncyB3ZWJzaXRlLCBhbmQgcmVwb3J0IApyZXN1bHRzIGhlcmUuCgpTdGF5
-IHR1bmVkIDopCgpMZSAyMS8xMS8yMDE1IDIwOjQ1LCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+
-IE9uIFNhdCwgMjEgTm92IDIwMTUgMTg6NDI6MDYgKzAxMDAsCj4gTWFlZGEgd3JvdGU6Cj4+IEhp
-ICEKPj4KPj4gVGhhbmtzIGZvciBhbnN3ZXJpbmcgbWUuCj4+IFllcywgdHVybmluZyB0aGUgb3V0
-cHV0IHZvbHVtZSB1cCBvciBkb3duIGFzIHNvb24gYXMgaXQncyBwbGF5aW5nIGF0Cj4+IGZ1bGwg
-b3V0cHV0IDogaXQgcGxheXMgYXQgdGhlICUgaXQgc2hvdWxkIHBsYXkuCj4+Cj4+IEknbSBPSyB0
-byB0cnkgdGhlIHBhdGNoLCBidXQgSSBkb24ndCBmaW5kIHRoZSAvcm1lOTYuYy8gZmlsZS4gV2hl
-cmUgaXMKPj4gaXQgbG9jYXRlZCA/IEkgdGhpbmsgYSByZWNvbXBpbGF0aW9uJ3MgbmVlZGVkIHRo
-ZW4gPyBOZXZlciBkb25lIHRoYXQuCj4gV2VsbCwgeW91IG5lZWQgdG8gbGVhcm4gaG93IHRvIGNv
-bXBpbGUgdGhlIGtlcm5lbC4gIEl0J3MgcG9zc2libGUgdG8KPiBjb21waWxlIG9ubHkgYSBtb2R1
-bGUgZnJvbSB0aGUgY3VycmVudCBydW5uaW5nIHRyZWUsIHRvby4KPgo+IFdoaWNoIGRpc3RybyBh
-cmUgeW91IHVzaW5nPyAgWW91IGNhbiBhc2sgZGlzdHJvIGd1eXMgZm9yIGFzc2lzdGFuY2UuCj4K
-Pgo+IFRha2FzaGkKPgo+PiBUaGFua3MgZm9yIGhlbHAuCj4+Cj4+IEtpbmQgcmVnYXJkcy4KPj4K
-Pj4gTGUgMjAvMTEvMjAxNSAxNzozNCwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPj4+IE9uIFR1
-ZSwgMTAgTm92IDIwMTUgMTM6NDE6NDQgKzAxMDAsCj4+PiBNYWVkYSB3cm90ZToKPj4+PiBIaSAh
-Cj4+Pj4KPj4+PiBTb21lb25lJ3MgaGVyZSA/Cj4+Pj4KPj4+PiBUaGFua3MuCj4+Pj4KPj4+PiBM
-ZSAyMy8xMC8yMDE1IDE4OjMwLCBNYWVkYSBhIMOpY3JpdCA6Cj4+Pj4+IEhpIGFsbCAhCj4+Pj4+
-Cj4+Pj4+IEkgZG9uJ3Qga25vdyBpZiB0aGUgYnVnIGlzIGtub3duIGZyb20geW91ciB0ZWFtLCBi
-dXQgc29tZSBwZW9wbGUKPj4+Pj4gYWR2aWNlIG1lIHRvIHNlbmQgYW4gZW1haWwgdG8gdGhlIEFs
-c2EgZGV2ZWwgbGlzdCBpZiBub2JvZHkgYW5zd2VyIGluCj4+Pj4+IHRoZSBrZXJuZWwncyBidWd0
-cmFja2luZy4KPj4+Pj4KPj4+Pj4gSGVyZSBpcyB0aGUgYnVnIEkgaGF2ZSA6Cj4+Pj4+IGh0dHBz
-Oi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTA1NzcxCj4+Pj4+Cj4+Pj4+
-IFdoYXQgZG8geW91IHRoaW5rIGFib3V0IGl0ID8KPj4+IERvZXMgdGhlIHZvbHVtZSBnbyBkb3du
-IHdoZW4geW91IGFkanVzdCBEQUMgdm9sdW1lIGJ5IG1peGVyCj4+PiBhcHBsaWNhdGlvbiB3aGVu
-IHRoaXMgaGFwcGVucz8KPj4+Cj4+PiBUaHJvdWdoIGEgcXVpY2sgZ2xhbmNlIGF0IHRoZSBkcml2
-ZXIgY29kZSwgdGhlIG9ubHkgc21lbGxpbmcgcGFydCBpcwo+Pj4gdGhhdCBpdCdzIGNhbGxpbmcg
-c25kX3JtZTk2X3Jlc2V0X2RhYygpIGZyb20KPj4+IHNuZF9ybWU5Nl9wbGF5YmFja19zZXRyYXRl
-KCkuICBJZiB0aGUgREFDIHZvbHVtZSBhZGp1c3RtZW50IHJlYWxseQo+Pj4gd29ya3MsIHRoZSBw
-YXRjaCBiZWxvdyBtaWdodCB3b3JrLiAgUGxlYXNlIGdpdmUgaXQgYSB0cnkuCj4+Pgo+Pj4gVGhl
-IHBhdGNoIGhhcyBhIGNvZGUgdG8gZ2l2ZSBzb21lIGRlbGF5IHRoYXQgaXMgY29tbWVudGVkIG91
-dCBmb3IKPj4+IG5vdy4gIFRoZSBkZWxheSBpcyBmb3VuZCBpbiB0aGUgcmVzdW1lIHBhdGgsIGJ1
-dCBJJ20gbm90IHN1cmUgd2hldGhlcgo+Pj4gaXQncyBtYW5kYXRvcnkuICBTbyBsZXQncyB0cnkg
-YXQgZmlyc3Qgd2l0aG91dCB0aGUgZGVsYXkuICBJZiBpdCdzCj4+PiB1bnN0YWJsZSwgeW91IGNh
-biB1bmNvbW1lbnQgdGhlIGxpbmUgYW5kIHJldHJ5Lgo+Pj4KPj4+Cj4+PiB0aGFua3MsCj4+Pgo+
-Pj4gVGFrYXNoaQo+Pj4KPj4+IC0tLQo+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9ybWU5Ni5j
-IGIvc291bmQvcGNpL3JtZTk2LmMKPj4+IGluZGV4IDcxNGRmOTA2MjQ5ZS4uYTlkOGE2NmZjM2Rh
-IDEwMDY0NAo+Pj4gLS0tIGEvc291bmQvcGNpL3JtZTk2LmMKPj4+ICsrKyBiL3NvdW5kL3BjaS9y
-bWU5Ni5jCj4+PiBAQCAtNzQxLDYgKzc0MSw5IEBAIHNuZF9ybWU5Nl9wbGF5YmFja19zZXRyYXRl
-KHN0cnVjdCBybWU5NiAqcm1lOTYsCj4+PiAgICAJewo+Pj4gICAgCQkvKiBjaGFuZ2UgdG8vZnJv
-bSBkb3VibGUtc3BlZWQ6IHJlc2V0IHRoZSBEQUMgKGlmIGF2YWlsYWJsZSkgKi8KPj4+ICAgIAkJ
-c25kX3JtZTk2X3Jlc2V0X2RhYyhybWU5Nik7Cj4+PiArCQkvKiB1c2xlZXBfcmFuZ2UoMzAwMCwg
-MTAwMDApOyAqLwo+Pj4gKwkJaWYgKFJNRTk2X0hBU19BTkFMT0dfT1VUKHJtZTk2KSkKPj4+ICsJ
-CQlzbmRfcm1lOTZfYXBwbHlfZGFjX3ZvbHVtZShybWU5Nik7Cj4+PiAgICAJfSBlbHNlIHsKPj4+
-ICAgIAkJd3JpdGVsKHJtZTk2LT53Y3JlZywgcm1lOTYtPmlvYmFzZSArIFJNRTk2X0lPX0NPTlRS
-T0xfUkVHSVNURVIpOwo+Pj4gICAgCX0KPj4+Cj4+Pgo+Pj4KPj4+CgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+I'm trying to use an Echo AudioFire 4 with the snd-fireworks driver.
+With FFADO the device works reasonably well at a period size of
+64 samples (on a PREEMPT_RT kernel), whereas with snd-fireworks the
+lowest possible period size seems to be 256 samples.
+
+This is what JACK says when I try to start it with a period size of 128
+samples:
+
+configuring for 48000Hz, period = 128 frames (2.7 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: cannot set period size to 128 frames for capture
+
+The lowest achievable analog roundtrip latency seems to be around 19ms
+(at 2x256 frames), as opposed to 8.3ms with FFADO (at 2x64). Are there
+any known limitations of the snd-fireworks driver in this regard?
+
+
+Thanks,
+
+Dominic
