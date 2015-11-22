@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/3] ASoC: cygnus: Add Cygnus audio DAI
-	driver
-Date: Sun, 22 Nov 2015 13:44:40 +0000
-Message-ID: <20151122134440.GQ26072@sirena.org.uk>
-References: <1447114664-21799-1-git-send-email-ssimran@broadcom.com>
- <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 0/3] ASoC: remove SND_SOC_BYTES_EXT
+Date: Sun, 22 Nov 2015 21:47:34 +0530
+Message-ID: <20151122161733.GP25173@localhost>
+References: <1447853952-6414-1-git-send-email-vinod.koul@intel.com>
+ <s5hlh9ve7n0.wl-tiwai@suse.de> <20151118181953.GX25173@localhost>
+ <20151121140828.GK26072@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2570741453980301493=="
+Content-Type: multipart/mixed; boundary="===============2893391173999179555=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D2E6826070E
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 14:45:31 +0100 (CET)
-In-Reply-To: <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9D5F264EFF
+ for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 17:13:47 +0100 (CET)
+In-Reply-To: <20151121140828.GK26072@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Simran Rai <ssimran@broadcom.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2570741453980301493==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZgGN478A9hzzvyZc"
+--===============2893391173999179555==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0qVF/w3MHQqLSynd"
 Content-Disposition: inline
 
 
---ZgGN478A9hzzvyZc
+--0qVF/w3MHQqLSynd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 09, 2015 at 04:17:43PM -0800, Simran Rai wrote:
+On Sat, Nov 21, 2015 at 02:08:28PM +0000, Mark Brown wrote:
+> On Wed, Nov 18, 2015 at 11:49:53PM +0530, Vinod Koul wrote:
+> > On Wed, Nov 18, 2015 at 02:53:23PM +0100, Takashi Iwai wrote:
+>=20
+> > > Hmm, won't this break user-space?  Both use the difference access
+> > > methods, so I wonder how they can be kept compatible.
+>=20
+> > Yes they will, so should we then keep these and mark SND_SOC_BYTES_EXT
+> > depricated ..?
+>=20
+> > Mark what should we do with these
+>=20
+> Yes, that seems like a reasonable approach.
 
-> +#ifdef CONFIG_PM_SLEEP
-> +static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
-> +{
-> +	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
-> +	struct cygnus_audio *cygaud = snd_soc_dai_get_drvdata(cpu_dai);
-> +
-> +	audio_ssp_out_disable(aio);
-> +	audio_ssp_in_disable(aio);
-> +	if (cygaud->active_ports > 0)
-> +		cygaud->active_ports--;
-> +
-> +	return 0;
-> +}
-> +
-> +static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
-> +{
-> +	return 0;
-> +}
+Okay I will send a patch which add comment about this being deprecated
 
-I'm a bit confused here - why do we need to disable things on suspend
-but not reenable them on resume?  I'd expect that the core would have
-quiesced any streams that need to be suspended before we get as far as
-suspending the drivers.
+Thanks
+--=20
+~Vinod
 
-Please also remove empty functions.
-
-Now I check I see that I'm repeating the questions I had on my previous
-review:
-
-| Blank line between functions and remove empty functions.  Though I'm not
-| clear why the result doesn't undo what the suspend did...
-
-Please don't ignore review comments.
-
-> +	parent = clk_get_parent(cygaud->audio_clk[0]);
-> +	if (IS_ERR(parent)) {
-> +		error = PTR_ERR(parent);
-> +		goto err_get_parent;
-> +	}
-> +
-> +	/* Set PLL VCO Frequency (Hz) to default */
-> +	error = clk_set_rate(parent, DEFAULT_VCO);
-> +	if (error) {
-> +		dev_err(&pdev->dev,
-> +			"%s Set PLL VCO rate failed: %d\n", __func__, error);
-> +		goto err_get_parent;
-> +	}
-
-I would expect any initialisationn of clocks beyond the ones that the
-device directly interacts with to be handled within the clock API
-configuration rather than in a specific driver, this avoids the driver
-being dependent on a particular system integration.
-
---ZgGN478A9hzzvyZc
+--0qVF/w3MHQqLSynd
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWUcbHAAoJECTWi3JdVIfQ+eYH/2iAM5EG7TBiRDGOJ0CQr3cg
-RctDChD6oLqIz/dnSybXSfMK7zsjO4WsVbvFC9ZIPNRB6mwn85llBAyufnIvMRM0
-n5objnv43yRB/3sbV8Y/LxOS/HFUrlADbpXbXAE7ZEamF5M7a6TEcD6N8vVdUS9h
-NmL7hRnKnO3axzaK8tRbR9hiS2Sy4Qjd9MN9lTOXdKuMo4801mFkMThTXb1ZbybG
-e177iOopWw4fQnx/DKS3hGspbt2gtWJJw8jPdVAw2H/RQ4MDKxW1fDAbtjQhQvIR
-JZj2tBc6k/Vw1cEWW/FFuylCQ8s6kcT9cxdlClgBVUkRHQDkYGViLgAEnFVvrXY=
-=mY5B
+iQIcBAEBAgAGBQJWUeqdAAoJEHwUBw8lI4NHb0IP/Am5wOg36eHMVklO//uiiMyG
+SnCY905aVpWU9sSv85/NKIASq+7YelKL8Sadq2Sl/3c63jbDrPABrBUsh57r8rrv
+lLJoahwsvG5/uQGvgE/Gzb4pOm8JkfnLkX6fZlHpg3EMmilnw9+ADljiZmTuKlTw
+82wVHpUuX0yNg+8FopsJOd/zGR2MWLgbOBJ8gwqi749xc0LHzpdODQhnpdzUUw3l
+dmAuSFo2RFf58m3Wmct4AgKI1SgDMIquGHoIoc0B2NHMMCCaOs/Ge9Z9SKyTKq4j
+f2EwrEJeiQQeb4b49MFBsEsyROWtrIMFxGtCtWhNI2dxaXiytqbS0O7Xae8YrBxl
+DhcFSVGjJkoJtS/ZcWwr/5wuGnd5+WC6Egcr97rr7mgeKEuZazvxtMc7rlpZqlav
+UnqpWUd2tkTyar7PUFZcc4Q9x3so+nH+3GLpF4CD/fKcdLOcKdotQ/PHOQcuoYBN
+HteKyHHPOXYgo7e2OD7RuRxCytqzu/s9rP6waBEIyQGvRFhmIU2gKSNFC/oNoCk0
+wvyOAwLad/l/CDragzk4+d3wvhgMudRR9JNCFvp0DuRpeILCCxVPFSDJV/XHU9lv
+unjtH3g5oiseEFvP/gr90mE4HGyLJDa33w9MtTrWUSDqfPV0PQd2XhITfq6UoCgb
+w/rCX4r/+nUQ8yTCMM1j
+=+Pv/
 -----END PGP SIGNATURE-----
 
---ZgGN478A9hzzvyZc--
+--0qVF/w3MHQqLSynd--
 
---===============2570741453980301493==
+--===============2893391173999179555==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2570741453980301493==--
+--===============2893391173999179555==--
