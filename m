@@ -1,118 +1,52 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] media, sound: tea575x: constify snd_tea575x_ops structures
-Date: Sun, 22 Nov 2015 11:32:53 +0100
-Message-ID: <1448188373-27089-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: kernel-janitors@vger.kernel.org, linux-media@vger.kernel.org, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [asoc:topic/intel 24/43] undefined reference to
+	`dw_dma_remove'
+Date: Sun, 22 Nov 2015 16:20:56 +0530
+Message-ID: <20151122105055.GO25173@localhost>
+References: <201511220944.4oAAlMmB%fengguang.wu@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7914260691
+ for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 11:47:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201511220944.4oAAlMmB%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild test robot <fengguang.wu@intel.com>, "Jie, Yang" <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_tea575x_ops structures are never modified, so declare them as
-const.
+On Sun, Nov 22, 2015 at 09:52:46AM +0800, kbuild test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
+> head:   85af2a665144f40cdf60c0e0e7fe88e40c20b0fa
+> commit: 12cc291b0b58503b3b0e629ac605218df1851ce1 [24/43] ASoC: Intel: Atom: move atom driver to common acpi match
+> config: x86_64-randconfig-s5-11220851 (attached as .config)
+> reproduce:
+>         git checkout 12cc291b0b58503b3b0e629ac605218df1851ce1
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    sound/built-in.o: In function `sst_dma_free':
+> >> (.text+0x3ee67): undefined reference to `dw_dma_remove'
+>    sound/built-in.o: In function `sst_dma_new':
+> >> (.text+0x4065e): undefined reference to `dw_dma_probe'
 
-Done with the help of Coccinelle.
+Yes we do not use dw_dma as we use HDA DMA. The DW DMA is used in atom
+platforms. Keyon was planning to fix this up.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Keyon did you get around to fix this and send patches
 
----
- drivers/media/pci/bt8xx/bttv-cards.c  |    2 +-
- drivers/media/radio/radio-maxiradio.c |    2 +-
- drivers/media/radio/radio-sf16fmr2.c  |    2 +-
- drivers/media/radio/radio-shark.c     |    2 +-
- include/media/drv-intf/tea575x.h      |    2 +-
- sound/pci/es1968.c                    |    2 +-
- sound/pci/fm801.c                     |    2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index cb38cd1..514f260 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -2605,7 +2605,7 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
- 	}
- }
- 
--static struct snd_tea575x_ops snd_es1968_tea_ops = {
-+static const struct snd_tea575x_ops snd_es1968_tea_ops = {
- 	.set_pins = snd_es1968_tea575x_set_pins,
- 	.get_pins = snd_es1968_tea575x_get_pins,
- 	.set_direction = snd_es1968_tea575x_set_direction,
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 5144a7f..759295a 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -815,7 +815,7 @@ static void snd_fm801_tea575x_set_direction(struct snd_tea575x *tea, bool output
- 	fm801_writew(chip, GPIO_CTRL, reg);
- }
- 
--static struct snd_tea575x_ops snd_fm801_tea_ops = {
-+static const struct snd_tea575x_ops snd_fm801_tea_ops = {
- 	.set_pins = snd_fm801_tea575x_set_pins,
- 	.get_pins = snd_fm801_tea575x_get_pins,
- 	.set_direction = snd_fm801_tea575x_set_direction,
-diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
-index 7a08102..8a17cc0 100644
---- a/drivers/media/pci/bt8xx/bttv-cards.c
-+++ b/drivers/media/pci/bt8xx/bttv-cards.c
-@@ -3808,7 +3808,7 @@ static void bttv_tea575x_set_direction(struct snd_tea575x *tea, bool output)
- 		gpio_inout(mask, (1 << gpio.clk) | (1 << gpio.wren));
- }
- 
--static struct snd_tea575x_ops bttv_tea_ops = {
-+static const struct snd_tea575x_ops bttv_tea_ops = {
- 	.set_pins = bttv_tea575x_set_pins,
- 	.get_pins = bttv_tea575x_get_pins,
- 	.set_direction = bttv_tea575x_set_direction,
-diff --git a/drivers/media/radio/radio-sf16fmr2.c b/drivers/media/radio/radio-sf16fmr2.c
-index 8e4f1d1..dc81d42 100644
---- a/drivers/media/radio/radio-sf16fmr2.c
-+++ b/drivers/media/radio/radio-sf16fmr2.c
-@@ -82,7 +82,7 @@ static void fmr2_tea575x_set_direction(struct snd_tea575x *tea, bool output)
- {
- }
- 
--static struct snd_tea575x_ops fmr2_tea_ops = {
-+static const struct snd_tea575x_ops fmr2_tea_ops = {
- 	.set_pins = fmr2_tea575x_set_pins,
- 	.get_pins = fmr2_tea575x_get_pins,
- 	.set_direction = fmr2_tea575x_set_direction,
-diff --git a/include/media/drv-intf/tea575x.h b/include/media/drv-intf/tea575x.h
-index 5d09657..fb272d4 100644
---- a/include/media/drv-intf/tea575x.h
-+++ b/include/media/drv-intf/tea575x.h
-@@ -63,7 +63,7 @@ struct snd_tea575x {
- 	u32 band;			/* 0: FM, 1: FM-Japan, 2: AM */
- 	u32 freq;			/* frequency */
- 	struct mutex mutex;
--	struct snd_tea575x_ops *ops;
-+	const struct snd_tea575x_ops *ops;
- 	void *private_data;
- 	u8 card[32];
- 	u8 bus_info[32];
-diff --git a/drivers/media/radio/radio-shark.c b/drivers/media/radio/radio-shark.c
-index 409fac1..85667a9 100644
---- a/drivers/media/radio/radio-shark.c
-+++ b/drivers/media/radio/radio-shark.c
-@@ -150,7 +150,7 @@ static u32 shark_read_val(struct snd_tea575x *tea)
- 	return val;
- }
- 
--static struct snd_tea575x_ops shark_tea_ops = {
-+static const struct snd_tea575x_ops shark_tea_ops = {
- 	.write_val = shark_write_val,
- 	.read_val  = shark_read_val,
- };
-diff --git a/drivers/media/radio/radio-maxiradio.c b/drivers/media/radio/radio-maxiradio.c
-index 41c1652..70fd8e8 100644
---- a/drivers/media/radio/radio-maxiradio.c
-+++ b/drivers/media/radio/radio-maxiradio.c
-@@ -108,7 +108,7 @@ static void maxiradio_tea575x_set_direction(struct snd_tea575x *tea, bool output
- {
- }
- 
--static struct snd_tea575x_ops maxiradio_tea_ops = {
-+static const struct snd_tea575x_ops maxiradio_tea_ops = {
- 	.set_pins = maxiradio_tea575x_set_pins,
- 	.get_pins = maxiradio_tea575x_get_pins,
- 	.set_direction = maxiradio_tea575x_set_direction,
+-- 
+~Vinod
