@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix test of a field
-	address" to the asoc tree
-Date: Sun, 22 Nov 2015 13:24:48 +0000
-Message-ID: <E1a0UdM-0002UB-5H@finisterre>
-References: <1448189698-8756-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH v4 2/3] ASoC: cygnus: Add Cygnus audio DAI
+	driver
+Date: Sun, 22 Nov 2015 13:44:40 +0000
+Message-ID: <20151122134440.GQ26072@sirena.org.uk>
+References: <1447114664-21799-1-git-send-email-ssimran@broadcom.com>
+ <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2570741453980301493=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73C9C2608AB
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 14:25:01 +0100 (CET)
-In-Reply-To: <1448189698-8756-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D2E6826070E
+ for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 14:45:31 +0100 (CET)
+In-Reply-To: <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Simran Rai <ssimran@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Fix test of a field address
+--===============2570741453980301493==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZgGN478A9hzzvyZc"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ZgGN478A9hzzvyZc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Nov 09, 2015 at 04:17:43PM -0800, Simran Rai wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +#ifdef CONFIG_PM_SLEEP
+> +static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
+> +{
+> +	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+> +	struct cygnus_audio *cygaud = snd_soc_dai_get_drvdata(cpu_dai);
+> +
+> +	audio_ssp_out_disable(aio);
+> +	audio_ssp_in_disable(aio);
+> +	if (cygaud->active_ports > 0)
+> +		cygaud->active_ports--;
+> +
+> +	return 0;
+> +}
+> +
+> +static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+> +{
+> +	return 0;
+> +}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I'm a bit confused here - why do we need to disable things on suspend
+but not reenable them on resume?  I'd expect that the core would have
+quiesced any streams that need to be suspended before we get as far as
+suspending the drivers.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Please also remove empty functions.
 
-Thanks,
-Mark
+Now I check I see that I'm repeating the questions I had on my previous
+review:
 
->From cd470fae88042570e0b9f50a725ca39ee333583f Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Sun, 22 Nov 2015 16:24:57 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix test of a field address
+| Blank line between functions and remove empty functions.  Though I'm not
+| clear why the result doesn't undo what the suspend did...
 
-Skylake driver uses snd_dma_buffer for data and buffer, these are variables
-and not pointer so do not test field addresses.
+Please don't ignore review comments.
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-sst-cldma.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> +	parent = clk_get_parent(cygaud->audio_clk[0]);
+> +	if (IS_ERR(parent)) {
+> +		error = PTR_ERR(parent);
+> +		goto err_get_parent;
+> +	}
+> +
+> +	/* Set PLL VCO Frequency (Hz) to default */
+> +	error = clk_set_rate(parent, DEFAULT_VCO);
+> +	if (error) {
+> +		dev_err(&pdev->dev,
+> +			"%s Set PLL VCO rate failed: %d\n", __func__, error);
+> +		goto err_get_parent;
+> +	}
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index b03d9db..947a08e 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -138,10 +138,8 @@ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
- 
--	if (&ctx->cl_dev.dmab_data)
--		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
--	if (&ctx->cl_dev.dmab_bdl)
--		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
-+	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
-+	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
- }
- 
- static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
--- 
-2.6.1
+I would expect any initialisationn of clocks beyond the ones that the
+device directly interacts with to be handled within the clock API
+configuration rather than in a specific driver, this avoids the driver
+being dependent on a particular system integration.
+
+--ZgGN478A9hzzvyZc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWUcbHAAoJECTWi3JdVIfQ+eYH/2iAM5EG7TBiRDGOJ0CQr3cg
+RctDChD6oLqIz/dnSybXSfMK7zsjO4WsVbvFC9ZIPNRB6mwn85llBAyufnIvMRM0
+n5objnv43yRB/3sbV8Y/LxOS/HFUrlADbpXbXAE7ZEamF5M7a6TEcD6N8vVdUS9h
+NmL7hRnKnO3axzaK8tRbR9hiS2Sy4Qjd9MN9lTOXdKuMo4801mFkMThTXb1ZbybG
+e177iOopWw4fQnx/DKS3hGspbt2gtWJJw8jPdVAw2H/RQ4MDKxW1fDAbtjQhQvIR
+JZj2tBc6k/Vw1cEWW/FFuylCQ8s6kcT9cxdlClgBVUkRHQDkYGViLgAEnFVvrXY=
+=mY5B
+-----END PGP SIGNATURE-----
+
+--ZgGN478A9hzzvyZc--
+
+--===============2570741453980301493==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2570741453980301493==--
