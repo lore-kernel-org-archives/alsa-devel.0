@@ -1,99 +1,62 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: multi-codec support for arizona-ldo1 was Re:
- System with multiple arizona (wm5102) codecs
-Date: Sun, 22 Nov 2015 07:51:40 +0100
-Message-ID: <20151122065140.GC26074@amd>
-References: <20151012201137.GA7317@amd> <20151013115355.GC14956@sirena.org.uk>
- <20151113215812.GA19020@amd> <20151113225355.GU12392@sirena.org.uk>
- <20151114074400.GA7898@amd> <20151114123931.GW12392@sirena.org.uk>
- <20151114175915.GA20429@amd> <20151114184940.GY12392@sirena.org.uk>
- <20151114211633.GE20429@amd> <20151116141142.GE18889@ck-lbox>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DA51260664
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 07:51:45 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20151116141142.GE18889@ck-lbox>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, lee.jones@linaro.org
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] [ALSA] midi: constify snd_rawmidi_global_ops structures
+Date: Sun, 22 Nov 2015 08:55:07 +0100
+Message-ID: <1448178907-18682-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon 2015-11-16 14:11:42, Charles Keepax wrote:
-> On Sat, Nov 14, 2015 at 10:16:33PM +0100, Pavel Machek wrote:
-> > HiOn Sat 2015-11-14 18:49:40, Mark Brown wrote:
-> > > On Sat, Nov 14, 2015 at 06:59:16PM +0100, Pavel Machek wrote:
-> > > 
-> > > > Well, mfd_core.c seems to call regulator_bulk_register_supply_alias()
-> > > > with device that does not have dev_name initialized.
-> > > 
-> > > OK, that'll be the problem then - we're not mapping the supply into the
-> > > individual child device but rather system wide, probably because that
-> > > mapping is being done too early, before we've actually created the
-> > > device.
-> > 
-> > Take a look at mfd_add_device(). Yes, we do
-> > regulator_bulk_register_supply_alias() before doing
-> > platform_device_add().
-> > 
-> > > > regulator_bulk_register_supply_alias() results in "Adding alias"
-> > > > stuff, and then drivers/regulator/arizona-micsupp.c tries to register
-> > > > another "MICVDD".
-> > > 
-> > > That's fine because all supplies should be namespaced with a device.
-> > > The goal is to say "Supply X on device Y" (we do support exceptions for
-> > > the few cases where there are not yet any devices involved but this
-> > > clearly isn't one of them).
-> 
-> Indeed that should be the case.
-> 
-> > 
-> > Well, clearly someone should tell that to wm5102
-> > maintainers. Hmm. It looks like driver is marked supported but there
-> > are no names attached?
-> > 
-> > WOLFSON MICROELECTRONICS DRIVERS
-> > L:      patches@opensource.wolfsonmicro.com
-> > T:      git git://opensource.wolfsonmicro.com/linux-2.6-asoc
-> > T:      git git://opensource.wolfsonmicro.com/linux-2.6-audioplus
-> > W:
-> > http://opensource.wolfsonmicro.com/content/linux-drivers-wolfson-device\
-> > s
-> > S:      Supported
-> > 
-> > I guess Charles Keepax should be listed there?
-> 
-> The patches mailing list functions as maintainer here. That way
-> anyone who works on upstream Linux stuff here will see the email
-> so you have more chance of someone replying. Also convient for
-> when people leave the company etc. makes for an easy transition.
-> I am afraid though that as in this case you are not always going
-> to get a reply over the weekend.
+The snd_rawmidi_global_ops structures are never modified, so declare them
+as const.
 
-Well.. maintainer is a responsible person. Yes, you can list a mailing
-list in maintainers file.. but mailing list is not going to be
-responsible for that.
+Done with the help of Coccinelle.
 
-Having a real name of person helps; if your name was listed there, I'd
-know you (are supposed to be) authoritative person for this.
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-I see it will need to be updated from time to time, but having name
-really helps.
+---
+ include/sound/rawmidi.h      |    2 +-
+ sound/core/seq/seq_virmidi.c |    2 +-
+ sound/usb/midi.c             |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-									Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
+index f6cbef7..fdabbb4 100644
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -130,7 +130,7 @@ struct snd_rawmidi {
+ 	int ossreg;
+ #endif
+ 
+-	struct snd_rawmidi_global_ops *ops;
++	const struct snd_rawmidi_global_ops *ops;
+ 
+ 	struct snd_rawmidi_str streams[2];
+ 
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 56e0f4cd..3da2d48 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -468,7 +468,7 @@ static int snd_virmidi_dev_unregister(struct snd_rawmidi *rmidi)
+ /*
+  *
+  */
+-static struct snd_rawmidi_global_ops snd_virmidi_global_ops = {
++static const struct snd_rawmidi_global_ops snd_virmidi_global_ops = {
+ 	.dev_register = snd_virmidi_dev_register,
+ 	.dev_unregister = snd_virmidi_dev_unregister,
+ };
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 5b4c58c..ee212e7 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -2206,7 +2206,7 @@ static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi *umidi,
+ 	return 0;
+ }
+ 
+-static struct snd_rawmidi_global_ops snd_usbmidi_ops = {
++static const struct snd_rawmidi_global_ops snd_usbmidi_ops = {
+ 	.get_port_info = snd_usbmidi_get_port_info,
+ };
+ 
