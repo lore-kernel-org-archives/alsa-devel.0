@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac-hdmi: make driver select
-	CONFIG_HDMI" to the asoc tree
-Date: Sun, 22 Nov 2015 13:24:46 +0000
-Message-ID: <E1a0UdK-0002Ti-0P@finisterre>
-References: <1448189698-8756-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix test of a field
+	address" to the asoc tree
+Date: Sun, 22 Nov 2015 13:24:48 +0000
+Message-ID: <E1a0UdM-0002UB-5H@finisterre>
+References: <1448189698-8756-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7139026070E
+ by alsa0.perex.cz (Postfix) with ESMTP id 73C9C2608AB
  for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2015 14:25:01 +0100 (CET)
-In-Reply-To: <1448189698-8756-2-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1448189698-8756-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac-hdmi: make driver select CONFIG_HDMI
+   ASoC: Intel: Skylake: Fix test of a field address
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 96b96a743c65969ebf13c343837db2faff1a8a84 Mon Sep 17 00:00:00 2001
+>From cd470fae88042570e0b9f50a725ca39ee333583f Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Sun, 22 Nov 2015 16:24:58 +0530
-Subject: [PATCH] ASoC: hdac-hdmi: make driver select CONFIG_HDMI
+Date: Sun, 22 Nov 2015 16:24:57 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix test of a field address
 
-Since driver use infoframe symbols from video/hdmi.c we should select this
-symbol for this driver
+Skylake driver uses snd_dma_buffer for data and buffer, these are variables
+and not pointer so do not test field addresses.
 
 Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index b2b0b71..5c584da 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -458,6 +458,7 @@ config SND_SOC_DMIC
- config SND_SOC_HDAC_HDMI
- 	tristate
- 	select SND_HDA_EXT_CORE
-+	select HDMI
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index b03d9db..947a08e 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -138,10 +138,8 @@ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
  
- config SND_SOC_ES8328
- 	tristate "Everest Semi ES8328 CODEC"
+-	if (&ctx->cl_dev.dmab_data)
+-		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
+-	if (&ctx->cl_dev.dmab_bdl)
+-		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
++	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
++	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
+ }
+ 
+ static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
 -- 
 2.6.1
