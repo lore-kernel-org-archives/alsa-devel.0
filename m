@@ -1,14 +1,19 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: rcar: remove unused variable
-Date: Mon, 23 Nov 2015 10:35:54 +0100
-Message-ID: <4929159.b95vLdVRYU@wuerfel>
+From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+Subject: Re: Simple-card without codec for testing purpose
+Date: Mon, 23 Nov 2015 10:58:32 +0100
+Message-ID: <5652E348.8080002@invoxia.com>
+References: <564E0656.9000709@invoxia.com>
+ <CAG5mAdw7_bLC9cFzAyUiPwC+UgQ6pgGHQA7D8z9PPDomUSR6FA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
- by alsa0.perex.cz (Postfix) with ESMTP id F026C260455
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 10:36:08 +0100 (CET)
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 666152651ED
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 10:58:38 +0100 (CET)
+Received: by wmec201 with SMTP id c201so97336372wme.1
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 01:58:36 -0800 (PST)
+In-Reply-To: <CAG5mAdw7_bLC9cFzAyUiPwC+UgQ6pgGHQA7D8z9PPDomUSR6FA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-sh@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Caleb Crome <caleb@crome.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-After a recent cleanup, the soc_card variable became unused
-and now produces a warning:
-
-soc/sh/rcar/core.c: In function '__rsnd_kctrl_new':
-soc/sh/rcar/core.c:801:23: warning: unused variable 'soc_card' [-Wunused-variable]
-
-This removes the variable.
-
-Fixes: 1a497983a5ae ("ASoC: Change the PCM runtime array to a list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index c6685f14b9cb..90b244c1f526 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -798,7 +798,6 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
- 			    void (*update)(struct rsnd_dai_stream *io,
- 					   struct rsnd_mod *mod))
- {
--	struct snd_soc_card *soc_card = rtd->card;
- 	struct snd_card *card = rtd->card->snd_card;
- 	struct snd_kcontrol *kctrl;
- 	struct snd_kcontrol_new knew = {
+VG8gYW5zd2VyIHRvIG15c2VsZjoKLSB0aGVyZSBhcmUgc29tZSAidmlydHVhbCIgY29kZWNzIGF2
+YWlsYWJsZSA6ICJidC1zY28iLCAKImxpbnV4LHNwZGlmLWRpdCIgYW5kICJsaW51eCxzcGRpZi1k
+aXIiLiBidXQgbm9uZSBvZiB0aGVtIGlzIGZ1bGx5IGdlbmVyaWMuCi0gYSAic25kLXNvYy1kdW1t
+eS1kYWkiIGNvZGVjIGlzIGltcGxlbWVudGVkIGluIHNvYy11dGlscy5jLiB5ZXQsIG5vIApkZXZp
+Y2UtdHJlZSBiaW5kaW5ncyBhcmUgYXZhaWxhYmxlLCBleGNlcHQgaWYgYSBwYXRjaCBsaWtlIHRo
+ZSBmb2xsb3dpbmcgCm9uZSBpcyBhcHBsaWVkCgotLS0gYS9zb3VuZC9zb2Mvc29jLXV0aWxzLmMK
+KysrIGIvc291bmQvc29jL3NvYy11dGlscy5jCkBAIC0xOSw2ICsxOSw3IEBACiAgI2luY2x1ZGUg
+PHNvdW5kL3BjbS5oPgogICNpbmNsdWRlIDxzb3VuZC9wY21fcGFyYW1zLmg+CiAgI2luY2x1ZGUg
+PHNvdW5kL3NvYy5oPgorI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgoKICBpbnQgc25kX3NvY19j
+YWxjX2ZyYW1lX3NpemUoaW50IHNhbXBsZV9zaXplLCBpbnQgY2hhbm5lbHMsIGludCB0ZG1fc2xv
+dHMpCiAgewpAQCAtMTUxLDkgKzE1MiwxOCBAQCBzdGF0aWMgaW50IHNuZF9zb2NfZHVtbXlfcmVt
+b3ZlKHN0cnVjdCAKcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogICAgICByZXR1cm4gMDsKICB9Cgor
+I2lmZGVmIENPTkZJR19PRgorc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgc29jX2R1
+bW15X2lkc1tdID0geworICAgIHsgLmNvbXBhdGlibGUgPSAibGludXgsc25kLXNvYy1kdW1teSIs
+IH0sCisgICAgeyB9Cit9OworTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgc29jX2R1bW15X2lkcyk7
+CisjZW5kaWYKKwogIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIHNvY19kdW1teV9kcml2
+ZXIgPSB7CiAgICAgIC5kcml2ZXIgPSB7CiAgICAgICAgICAubmFtZSA9ICJzbmQtc29jLWR1bW15
+IiwKKyAgICAgICAgLm9mX21hdGNoX3RhYmxlID0gb2ZfbWF0Y2hfcHRyKHNvY19kdW1teV9pZHMp
+LAogICAgICB9LAogICAgICAucHJvYmUgPSBzbmRfc29jX2R1bW15X3Byb2JlLAogICAgICAucmVt
+b3ZlID0gc25kX3NvY19kdW1teV9yZW1vdmUsCgoKCk9uY2UgZG9uZSwgaGVyZSBpcyBhIERUUyBl
+eGFtcGxlIGZvciBpbXg2c2w6CgomYXVkbXV4IHsKICAgICBzc2kzIHsKICAgICAgICAgZnNsLGF1
+ZG11eC1wb3J0ID0gPDY+OwogICAgICAgICBmc2wscG9ydC1jb25maWcgPSA8CiNpZmRlZiBTU0lf
+VEVTVF9NQVNURVIKICAgICAgICAgICAgIDB4MDAwMDAwMDAKI2Vsc2UKICAgICAgICAgICAgIChJ
+TVhfQVVETVVYX1YyX1BUQ1JfVEZTRElSIHwKICAgICAgICAgICAgIElNWF9BVURNVVhfVjJfUFRD
+Ul9URlNFTCg0KSB8CiAgICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8CiAg
+ICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENTRUwoNCkpCiNlbmRpZgogICAgICAgICAg
+ICAgSU1YX0FVRE1VWF9WMl9QRENSX1JYRFNFTCg0KQogICAgICAgICA+OwogICAgIH07CgogICAg
+IHBvcnQ1IHsKICAgICAgICAgZnNsLGF1ZG11eC1wb3J0ID0gPDQ+OwogICAgICAgICBmc2wscG9y
+dC1jb25maWcgPSA8CiNpZmRlZiBTU0lfVEVTVF9NQVNURVIKICAgICAgICAgICAgIChJTVhfQVVE
+TVVYX1YyX1BUQ1JfVEZTRElSIHwKICAgICAgICAgICAgIElNWF9BVURNVVhfVjJfUFRDUl9URlNF
+TCg2KSB8CiAgICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8CiAgICAgICAg
+ICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENTRUwoNikpCiNlbHNlCiAgICAgICAgICAgICAweDAw
+MDAwMDAwCiNlbmRpZgogICAgICAgICAgICAgSU1YX0FVRE1VWF9WMl9QRENSX1JYRFNFTCg2KQog
+ICAgICAgICA+OwogICAgIH07Cn07CgoKJnNzaTMgewogICAgIHN0YXR1cyA9ICJva2F5IjsKCiAg
+ICAgLy8gc2VsZWN0IHRoZSBhIGNsb2NrIHBhcmVudCBzdWl0YWJsZSBmb3IgNDgwMDAgSHogc2Ft
+cGxpbmcgcmF0ZQogICAgIGFzc2lnbmVkLWNsb2NrcyA9IDwmY2xrcyBJTVg2U0xfQ0xLX1NTSTNf
+U0VMPiwgPCZjbGtzIElNWDZTTF9DTEtfU1NJMz47CiAgICAgYXNzaWduZWQtY2xvY2stcGFyZW50
+cyA9IDwmY2xrcyBJTVg2U0xfQ0xLX1BMTDRfQVVESU9fRElWPjsKICAgICBhc3NpZ25lZC1jbG9j
+ay1yYXRlcyA9IDwwPiwgPDQ5MTUyMDAwPjsKfTsKCi8gewogICAgIGNvZGVjX3Rlc3Q6IGNvZGVj
+X3Rlc3QgewogICAgICAgICBjb21wYXRpYmxlID0gImxpbnV4LHNuZC1zb2MtZHVtbXkiOwogICAg
+ICAgICAjc291bmQtZGFpLWNlbGxzID0gPDA+OwogICAgIH07CgoKICAgICBzb3VuZEAyIHsKICAg
+ICAgICAgY29tcGF0aWJsZSA9ICJzaW1wbGUtYXVkaW8tY2FyZCI7CiAgICAgICAgIHNpbXBsZS1h
+dWRpby1jYXJkLG5hbWUgPSAidGVzdCI7CiAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZvcm1h
+dD0iZHNwX2EiOwoKI2lmZGVmIFNTSV9URVNUX01BU1RFUgogICAgICAgICBzaW1wbGUtYXVkaW8t
+Y2FyZCxmcmFtZS1tYXN0ZXIgPSA8JnNvdW5kMl9zc2k+OwogICAgICAgICBzaW1wbGUtYXVkaW8t
+Y2FyZCxiaXRjbG9jay1tYXN0ZXIgPSA8JnNvdW5kMl9zc2k+OwojZWxzZQogICAgICAgICBzaW1w
+bGUtYXVkaW8tY2FyZCxmcmFtZS1tYXN0ZXIgPSA8JmNvZGVjX3Rlc3Q+OwogICAgICAgICBzaW1w
+bGUtYXVkaW8tY2FyZCxiaXRjbG9jay1tYXN0ZXIgPSA8JmNvZGVjX3Rlc3Q+OwojZW5kaWYKICAg
+ICAgICAgICAgIHNvdW5kMl9zc2k6IHNpbXBsZS1hdWRpby1jYXJkLGNwdSB7CiAgICAgICAgICAg
+ICAgICAgc291bmQtZGFpID0gPCZzc2kzPjsKICAgICAgICAgICAgICAgICBzeXN0ZW0tY2xvY2st
+ZnJlcXVlbmN5ID0gPDE1MzYwMDA+OwogICAgICAgICAgICAgICAgIGRhaS10ZG0tc2xvdC1udW0g
+PSA8Mj47CiAgICAgICAgICAgICAgICAgZGFpLXRkbS1zbG90LXdpZHRoID0gPDE2PjsKICAgICAg
+ICAgICAgIH07CiAgICAgICAgICAgICBzb3VuZDJjb2RlYzogc2ltcGxlLWF1ZGlvLWNhcmQsY29k
+ZWMgewogICAgICAgICAgICAgICAgIHNvdW5kLWRhaSA9IDwmY29kZWNfdGVzdD47CiAgICAgICAg
+ICAgICB9OwogICAgIH07Cgp9OwoKCgoKTGUgMjAvMTEvMjAxNSAwMjoyNCwgQ2FsZWIgQ3JvbWUg
+YSDDqWNyaXQgOgo+IEkndmUgYmVlbiB3b25kZXJpbmcgYWJvdXQgdGhhdCB0b28uIEkgZG9uJ3Qg
+a25vdyBob3cgdG8gZG8gaXQgZWFzaWx5Lgo+Cj4gLUNhbGViCj4KPgo+IE9uIFRodSwgTm92IDE5
+LCAyMDE1IGF0IDk6MjYgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tCj4gPGFybmF1ZC5t
+b3VpY2hlQGludm94aWEuY29tPiB3cm90ZToKPj4gSGVsbG8sCj4+Cj4+IEknbSBzdGFydGluZyBk
+ZWJ1Z2dpbmcgLyB0ZXN0aW5nIGFsbCB0aGUgZnNsX3NzaSBpc3N1ZXMgKHNlZSBDYWxlYidzCj4+
+IHByZXZpb3VzIHBvc3QpLgo+Pgo+PiBGaXJzdCBzdGVwIEkganVzdCBuZWVkIHRvIHNldHVwIGEg
+RFRTIGVudHJ5IGZvciAgInNpbXBsZS1jYXJkIiArIGZha2UgY29kZWMKPj4gdG8gZ2VuZXJhdGUg
+YXJiaXRyYXJ5IFBDTSBidXMgb3V0cHV0ICgxIHRvIDE2IGNoYW5uZWxzLCB2YXJpb3VzIFRETSwg
+dmFyaW91cwo+PiBzYW1wbGluZyByYXRlIGFuZCBmb3JtYXQgYW5kIG1hc3Rlci9zbGF2ZSByb2xl
+KQo+PiBJIHdpbGwgdGhlbiBwbHVnIG15IGxvZ2ljYWwgYW5hbHlzZXIsIG9yIGRvIHNvbWUgbG9v
+cGJhY2ssIG9yIHBsdWcgYSBGUEdBIHRvCj4+IGdlbmVyYXRlL2NoZWNrIHNvbWUgcGF0dGVybnMu
+Cj4+Cj4+IElzIHRoZXJlIHN1Y2ggImZha2UgY29kZWMiIHNvbWV3aGVyZS4gIEluZGVlZCwgc29t
+ZXRoaW5nIHRoYXQgbG9vayBsaWtlIHRoZQo+PiBidC1zY28gY29kZWMsIGJ1dCB3aXRob3V0IHJh
+dGUvZm9ybWF0L2NoYW5uZWwgbGltaXRhdGlvbnMgPwo+PiBPciBkb2VzIHRoZSAic2ltcGxlLWNh
+cmQiIGV2ZW4gbmVlZHMgb25lID8KPj4KPj4gUmVnYXJkcywKPj4gQXJuYXVkCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
