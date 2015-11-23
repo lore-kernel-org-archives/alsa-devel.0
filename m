@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-fireworks requires larger period sizes than
-	FFADO
-Date: Mon, 23 Nov 2015 11:40:56 +0100
-Message-ID: <5652ED38.6080409@ladisch.de>
-References: <56510A5F.4080004@gmx.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Fix master capture only
+	mode
+Date: Mon, 23 Nov 2015 12:51:53 +0200
+Message-ID: <1448275913-30546-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 74DCC265205
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 11:40:57 +0100 (CET)
-In-Reply-To: <56510A5F.4080004@gmx.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7EA8265238
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 11:51:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Dominic_Sacr=c3=a9?= <dominic.sacre@gmx.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dominic Sacr=E9 wrote:
-> I'm trying to use an Echo AudioFire 4 with the snd-fireworks driver.
-> With FFADO the device works reasonably well at a period size of
-> 64 samples (on a PREEMPT_RT kernel), whereas with snd-fireworks the
-> lowest possible period size seems to be 256 samples.
->
-> The lowest achievable analog roundtrip latency seems to be around 19ms
-> (at 2x256 frames), as opposed to 8.3ms with FFADO (at 2x64). Are there
-> any known limitations of the snd-fireworks driver in this regard?
+When McASP is used as TX/RX synchronous (TX side generating clocks for RX
+side also) and only capture is used we need to configure the number of TX
+slots in order McASP to be able to generate the Frame sync.
 
-At the moment, the driver uses a minimum period size of 5 ms.
+Fixes: 9273de1940d9e ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/davinci/davinci-mcasp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-You could try reducing INTERRUPT_INTERVAL and the parameter to
-snd_pcm_hw_constraint_minmax() in sound/firewire/amdtp-stream.c, and
-recompiling the driver.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index caa0bebcd7f4..c1c9c2e3525b 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -908,6 +908,14 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, busel | RXORD);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG,
+ 			       FSRMOD(total_slots), FSRMOD(0x1FF));
++		/*
++		 * If McASP is set to be TX/RX synchronous and the playback is
++		 * not running already we need to configure the TX slots in
++		 * order to have correct FSX on the bus
++		 */
++		if (mcasp_is_synchronous(mcasp) && !mcasp->channels)
++			mcasp_mod_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG,
++				       FSXMOD(total_slots), FSXMOD(0x1FF));
+ 	}
+ 
+ 	return 0;
+-- 
+2.6.3
