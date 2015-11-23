@@ -1,46 +1,47 @@
-From: Songjun Wu <songjun.wu@atmel.com>
-Subject: [PATCH] ASoC: Atmel: ClassD: add GCK's parent clock in DT binding
-Date: Mon, 23 Nov 2015 17:19:58 +0800
-Message-ID: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: rcar: remove unused variable
+Date: Mon, 23 Nov 2015 10:35:54 +0100
+Message-ID: <4929159.b95vLdVRYU@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id F026C260455
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 10:36:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-sh@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Set GCK's parent as audio clock.
+After a recent cleanup, the soc_card variable became unused
+and now produces a warning:
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
----
+soc/sh/rcar/core.c: In function '__rsnd_kctrl_new':
+soc/sh/rcar/core.c:801:23: warning: unused variable 'soc_card' [-Wunused-variable]
 
- .../devicetree/bindings/sound/atmel-classd.txt     |    6 ++++++
- 1 file changed, 6 insertions(+)
+This removes the variable.
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel-classd.txt b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-index 0018451..549e701 100644
---- a/Documentation/devicetree/bindings/sound/atmel-classd.txt
-+++ b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-@@ -16,6 +16,10 @@ Required properties:
- 	Required elements: "pclk", "gclk" and "aclk".
- - clocks
- 	Please refer to clock-bindings.txt.
-+- assigned-clocks
-+	Should be <&classd_gclk>.
-+- assigned-clock-parents
-+	Should be <&audio_pll_pmc>.
- 
- Optional properties:
- - pinctrl-names, pinctrl-0
-@@ -43,6 +47,8 @@ classd: classd@fc048000 {
- 		dma-names = "tx";
- 		clocks = <&classd_clk>, <&classd_gclk>, <&audio_pll_pmc>;
- 		clock-names = "pclk", "gclk", "aclk";
-+		assigned-clocks = <&classd_gclk>;
-+		assigned-clock-parents = <&audio_pll_pmc>;
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_classd_default>;
--- 
-1.7.9.5
+Fixes: 1a497983a5ae ("ASoC: Change the PCM runtime array to a list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index c6685f14b9cb..90b244c1f526 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -798,7 +798,6 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
+ 			    void (*update)(struct rsnd_dai_stream *io,
+ 					   struct rsnd_mod *mod))
+ {
+-	struct snd_soc_card *soc_card = rtd->card;
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_kcontrol *kctrl;
+ 	struct snd_kcontrol_new knew = {
