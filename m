@@ -1,102 +1,100 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: Simple-card without codec for testing purpose
-Date: Mon, 23 Nov 2015 10:58:32 +0100
-Message-ID: <5652E348.8080002@invoxia.com>
-References: <564E0656.9000709@invoxia.com>
- <CAG5mAdw7_bLC9cFzAyUiPwC+UgQ6pgGHQA7D8z9PPDomUSR6FA@mail.gmail.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
+ multiple arizona (wm5102) codecs
+Date: Mon, 23 Nov 2015 11:11:45 +0100
+Message-ID: <20151123101145.GA1452@amd>
+References: <20151113215812.GA19020@amd>
+ <20151113225355.GU12392@sirena.org.uk>
+ <20151114074400.GA7898@amd>
+ <20151114123931.GW12392@sirena.org.uk>
+ <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk>
+ <20151114211633.GE20429@amd>
+ <20151116141142.GE18889@ck-lbox>
+ <20151122065140.GC26074@amd>
+ <20151123081857.GF3098@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 666152651ED
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 10:58:38 +0100 (CET)
-Received: by wmec201 with SMTP id c201so97336372wme.1
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 01:58:36 -0800 (PST)
-In-Reply-To: <CAG5mAdw7_bLC9cFzAyUiPwC+UgQ6pgGHQA7D8z9PPDomUSR6FA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151123081857.GF3098@x1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VG8gYW5zd2VyIHRvIG15c2VsZjoKLSB0aGVyZSBhcmUgc29tZSAidmlydHVhbCIgY29kZWNzIGF2
-YWlsYWJsZSA6ICJidC1zY28iLCAKImxpbnV4LHNwZGlmLWRpdCIgYW5kICJsaW51eCxzcGRpZi1k
-aXIiLiBidXQgbm9uZSBvZiB0aGVtIGlzIGZ1bGx5IGdlbmVyaWMuCi0gYSAic25kLXNvYy1kdW1t
-eS1kYWkiIGNvZGVjIGlzIGltcGxlbWVudGVkIGluIHNvYy11dGlscy5jLiB5ZXQsIG5vIApkZXZp
-Y2UtdHJlZSBiaW5kaW5ncyBhcmUgYXZhaWxhYmxlLCBleGNlcHQgaWYgYSBwYXRjaCBsaWtlIHRo
-ZSBmb2xsb3dpbmcgCm9uZSBpcyBhcHBsaWVkCgotLS0gYS9zb3VuZC9zb2Mvc29jLXV0aWxzLmMK
-KysrIGIvc291bmQvc29jL3NvYy11dGlscy5jCkBAIC0xOSw2ICsxOSw3IEBACiAgI2luY2x1ZGUg
-PHNvdW5kL3BjbS5oPgogICNpbmNsdWRlIDxzb3VuZC9wY21fcGFyYW1zLmg+CiAgI2luY2x1ZGUg
-PHNvdW5kL3NvYy5oPgorI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgoKICBpbnQgc25kX3NvY19j
-YWxjX2ZyYW1lX3NpemUoaW50IHNhbXBsZV9zaXplLCBpbnQgY2hhbm5lbHMsIGludCB0ZG1fc2xv
-dHMpCiAgewpAQCAtMTUxLDkgKzE1MiwxOCBAQCBzdGF0aWMgaW50IHNuZF9zb2NfZHVtbXlfcmVt
-b3ZlKHN0cnVjdCAKcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogICAgICByZXR1cm4gMDsKICB9Cgor
-I2lmZGVmIENPTkZJR19PRgorc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgc29jX2R1
-bW15X2lkc1tdID0geworICAgIHsgLmNvbXBhdGlibGUgPSAibGludXgsc25kLXNvYy1kdW1teSIs
-IH0sCisgICAgeyB9Cit9OworTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgc29jX2R1bW15X2lkcyk7
-CisjZW5kaWYKKwogIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIHNvY19kdW1teV9kcml2
-ZXIgPSB7CiAgICAgIC5kcml2ZXIgPSB7CiAgICAgICAgICAubmFtZSA9ICJzbmQtc29jLWR1bW15
-IiwKKyAgICAgICAgLm9mX21hdGNoX3RhYmxlID0gb2ZfbWF0Y2hfcHRyKHNvY19kdW1teV9pZHMp
-LAogICAgICB9LAogICAgICAucHJvYmUgPSBzbmRfc29jX2R1bW15X3Byb2JlLAogICAgICAucmVt
-b3ZlID0gc25kX3NvY19kdW1teV9yZW1vdmUsCgoKCk9uY2UgZG9uZSwgaGVyZSBpcyBhIERUUyBl
-eGFtcGxlIGZvciBpbXg2c2w6CgomYXVkbXV4IHsKICAgICBzc2kzIHsKICAgICAgICAgZnNsLGF1
-ZG11eC1wb3J0ID0gPDY+OwogICAgICAgICBmc2wscG9ydC1jb25maWcgPSA8CiNpZmRlZiBTU0lf
-VEVTVF9NQVNURVIKICAgICAgICAgICAgIDB4MDAwMDAwMDAKI2Vsc2UKICAgICAgICAgICAgIChJ
-TVhfQVVETVVYX1YyX1BUQ1JfVEZTRElSIHwKICAgICAgICAgICAgIElNWF9BVURNVVhfVjJfUFRD
-Ul9URlNFTCg0KSB8CiAgICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8CiAg
-ICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENTRUwoNCkpCiNlbmRpZgogICAgICAgICAg
-ICAgSU1YX0FVRE1VWF9WMl9QRENSX1JYRFNFTCg0KQogICAgICAgICA+OwogICAgIH07CgogICAg
-IHBvcnQ1IHsKICAgICAgICAgZnNsLGF1ZG11eC1wb3J0ID0gPDQ+OwogICAgICAgICBmc2wscG9y
-dC1jb25maWcgPSA8CiNpZmRlZiBTU0lfVEVTVF9NQVNURVIKICAgICAgICAgICAgIChJTVhfQVVE
-TVVYX1YyX1BUQ1JfVEZTRElSIHwKICAgICAgICAgICAgIElNWF9BVURNVVhfVjJfUFRDUl9URlNF
-TCg2KSB8CiAgICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8CiAgICAgICAg
-ICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENTRUwoNikpCiNlbHNlCiAgICAgICAgICAgICAweDAw
-MDAwMDAwCiNlbmRpZgogICAgICAgICAgICAgSU1YX0FVRE1VWF9WMl9QRENSX1JYRFNFTCg2KQog
-ICAgICAgICA+OwogICAgIH07Cn07CgoKJnNzaTMgewogICAgIHN0YXR1cyA9ICJva2F5IjsKCiAg
-ICAgLy8gc2VsZWN0IHRoZSBhIGNsb2NrIHBhcmVudCBzdWl0YWJsZSBmb3IgNDgwMDAgSHogc2Ft
-cGxpbmcgcmF0ZQogICAgIGFzc2lnbmVkLWNsb2NrcyA9IDwmY2xrcyBJTVg2U0xfQ0xLX1NTSTNf
-U0VMPiwgPCZjbGtzIElNWDZTTF9DTEtfU1NJMz47CiAgICAgYXNzaWduZWQtY2xvY2stcGFyZW50
-cyA9IDwmY2xrcyBJTVg2U0xfQ0xLX1BMTDRfQVVESU9fRElWPjsKICAgICBhc3NpZ25lZC1jbG9j
-ay1yYXRlcyA9IDwwPiwgPDQ5MTUyMDAwPjsKfTsKCi8gewogICAgIGNvZGVjX3Rlc3Q6IGNvZGVj
-X3Rlc3QgewogICAgICAgICBjb21wYXRpYmxlID0gImxpbnV4LHNuZC1zb2MtZHVtbXkiOwogICAg
-ICAgICAjc291bmQtZGFpLWNlbGxzID0gPDA+OwogICAgIH07CgoKICAgICBzb3VuZEAyIHsKICAg
-ICAgICAgY29tcGF0aWJsZSA9ICJzaW1wbGUtYXVkaW8tY2FyZCI7CiAgICAgICAgIHNpbXBsZS1h
-dWRpby1jYXJkLG5hbWUgPSAidGVzdCI7CiAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZvcm1h
-dD0iZHNwX2EiOwoKI2lmZGVmIFNTSV9URVNUX01BU1RFUgogICAgICAgICBzaW1wbGUtYXVkaW8t
-Y2FyZCxmcmFtZS1tYXN0ZXIgPSA8JnNvdW5kMl9zc2k+OwogICAgICAgICBzaW1wbGUtYXVkaW8t
-Y2FyZCxiaXRjbG9jay1tYXN0ZXIgPSA8JnNvdW5kMl9zc2k+OwojZWxzZQogICAgICAgICBzaW1w
-bGUtYXVkaW8tY2FyZCxmcmFtZS1tYXN0ZXIgPSA8JmNvZGVjX3Rlc3Q+OwogICAgICAgICBzaW1w
-bGUtYXVkaW8tY2FyZCxiaXRjbG9jay1tYXN0ZXIgPSA8JmNvZGVjX3Rlc3Q+OwojZW5kaWYKICAg
-ICAgICAgICAgIHNvdW5kMl9zc2k6IHNpbXBsZS1hdWRpby1jYXJkLGNwdSB7CiAgICAgICAgICAg
-ICAgICAgc291bmQtZGFpID0gPCZzc2kzPjsKICAgICAgICAgICAgICAgICBzeXN0ZW0tY2xvY2st
-ZnJlcXVlbmN5ID0gPDE1MzYwMDA+OwogICAgICAgICAgICAgICAgIGRhaS10ZG0tc2xvdC1udW0g
-PSA8Mj47CiAgICAgICAgICAgICAgICAgZGFpLXRkbS1zbG90LXdpZHRoID0gPDE2PjsKICAgICAg
-ICAgICAgIH07CiAgICAgICAgICAgICBzb3VuZDJjb2RlYzogc2ltcGxlLWF1ZGlvLWNhcmQsY29k
-ZWMgewogICAgICAgICAgICAgICAgIHNvdW5kLWRhaSA9IDwmY29kZWNfdGVzdD47CiAgICAgICAg
-ICAgICB9OwogICAgIH07Cgp9OwoKCgoKTGUgMjAvMTEvMjAxNSAwMjoyNCwgQ2FsZWIgQ3JvbWUg
-YSDDqWNyaXQgOgo+IEkndmUgYmVlbiB3b25kZXJpbmcgYWJvdXQgdGhhdCB0b28uIEkgZG9uJ3Qg
-a25vdyBob3cgdG8gZG8gaXQgZWFzaWx5Lgo+Cj4gLUNhbGViCj4KPgo+IE9uIFRodSwgTm92IDE5
-LCAyMDE1IGF0IDk6MjYgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tCj4gPGFybmF1ZC5t
-b3VpY2hlQGludm94aWEuY29tPiB3cm90ZToKPj4gSGVsbG8sCj4+Cj4+IEknbSBzdGFydGluZyBk
-ZWJ1Z2dpbmcgLyB0ZXN0aW5nIGFsbCB0aGUgZnNsX3NzaSBpc3N1ZXMgKHNlZSBDYWxlYidzCj4+
-IHByZXZpb3VzIHBvc3QpLgo+Pgo+PiBGaXJzdCBzdGVwIEkganVzdCBuZWVkIHRvIHNldHVwIGEg
-RFRTIGVudHJ5IGZvciAgInNpbXBsZS1jYXJkIiArIGZha2UgY29kZWMKPj4gdG8gZ2VuZXJhdGUg
-YXJiaXRyYXJ5IFBDTSBidXMgb3V0cHV0ICgxIHRvIDE2IGNoYW5uZWxzLCB2YXJpb3VzIFRETSwg
-dmFyaW91cwo+PiBzYW1wbGluZyByYXRlIGFuZCBmb3JtYXQgYW5kIG1hc3Rlci9zbGF2ZSByb2xl
-KQo+PiBJIHdpbGwgdGhlbiBwbHVnIG15IGxvZ2ljYWwgYW5hbHlzZXIsIG9yIGRvIHNvbWUgbG9v
-cGJhY2ssIG9yIHBsdWcgYSBGUEdBIHRvCj4+IGdlbmVyYXRlL2NoZWNrIHNvbWUgcGF0dGVybnMu
-Cj4+Cj4+IElzIHRoZXJlIHN1Y2ggImZha2UgY29kZWMiIHNvbWV3aGVyZS4gIEluZGVlZCwgc29t
-ZXRoaW5nIHRoYXQgbG9vayBsaWtlIHRoZQo+PiBidC1zY28gY29kZWMsIGJ1dCB3aXRob3V0IHJh
-dGUvZm9ybWF0L2NoYW5uZWwgbGltaXRhdGlvbnMgPwo+PiBPciBkb2VzIHRoZSAic2ltcGxlLWNh
-cmQiIGV2ZW4gbmVlZHMgb25lID8KPj4KPj4gUmVnYXJkcywKPj4gQXJuYXVkCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon 2015-11-23 08:18:57, Lee Jones wrote:
+> On Sun, 22 Nov 2015, Pavel Machek wrote:
+> 
+> > On Mon 2015-11-16 14:11:42, Charles Keepax wrote:
+> > > On Sat, Nov 14, 2015 at 10:16:33PM +0100, Pavel Machek wrote:
+> > > > HiOn Sat 2015-11-14 18:49:40, Mark Brown wrote:
+> > > > > On Sat, Nov 14, 2015 at 06:59:16PM +0100, Pavel Machek wrote:
+> > > > > 
+> > > > > > Well, mfd_core.c seems to call regulator_bulk_register_supply_alias()
+> > > > > > with device that does not have dev_name initialized.
+> > > > > 
+> > > > > OK, that'll be the problem then - we're not mapping the supply into the
+> > > > > individual child device but rather system wide, probably because that
+> > > > > mapping is being done too early, before we've actually created the
+> > > > > device.
+> > > > 
+> > > > Take a look at mfd_add_device(). Yes, we do
+> > > > regulator_bulk_register_supply_alias() before doing
+> > > > platform_device_add().
+> > > > 
+> > > > > > regulator_bulk_register_supply_alias() results in "Adding alias"
+> > > > > > stuff, and then drivers/regulator/arizona-micsupp.c tries to register
+> > > > > > another "MICVDD".
+> > > > > 
+> > > > > That's fine because all supplies should be namespaced with a device.
+> > > > > The goal is to say "Supply X on device Y" (we do support exceptions for
+> > > > > the few cases where there are not yet any devices involved but this
+> > > > > clearly isn't one of them).
+> > > 
+> > > Indeed that should be the case.
+> > > 
+> > > > 
+> > > > Well, clearly someone should tell that to wm5102
+> > > > maintainers. Hmm. It looks like driver is marked supported but there
+> > > > are no names attached?
+> > > > 
+> > > > WOLFSON MICROELECTRONICS DRIVERS
+> > > > L:      patches@opensource.wolfsonmicro.com
+> > > > T:      git git://opensource.wolfsonmicro.com/linux-2.6-asoc
+> > > > T:      git git://opensource.wolfsonmicro.com/linux-2.6-audioplus
+> > > > W:
+> > > > http://opensource.wolfsonmicro.com/content/linux-drivers-wolfson-device\
+> > > > s
+> > > > S:      Supported
+> > > > 
+> > > > I guess Charles Keepax should be listed there?
+> > > 
+> > > The patches mailing list functions as maintainer here. That way
+> > > anyone who works on upstream Linux stuff here will see the email
+> > > so you have more chance of someone replying. Also convient for
+> > > when people leave the company etc. makes for an easy transition.
+> > > I am afraid though that as in this case you are not always going
+> > > to get a reply over the weekend.
+> > 
+> > Well.. maintainer is a responsible person. Yes, you can list a mailing
+> > list in maintainers file.. but mailing list is not going to be
+> > responsible for that.
+> > 
+> > Having a real name of person helps; if your name was listed there, I'd
+> > know you (are supposed to be) authoritative person for this.
+> > 
+> > I see it will need to be updated from time to time, but having name
+> > really helps.
+> 
+> A Mailing List is perfectly adequate for drivers which reside in a
+> maintained subsystem.  No requirement to submit names, particularly if
+> there are lots of authorities personnel or if the personalities change
+> regularly.
+
+That's what I'm saying. It is good to know who is the person of
+authority, as you can't tell from the From: address.
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
