@@ -1,21 +1,16 @@
-From: Moise Gergaud <moise.gergaud@st.com>
-Subject: Re: [PATCH 4/4] ASoC: sti: reset iec60958 settings on
-	close
-Date: Mon, 23 Nov 2015 09:50:43 +0100
-Message-ID: <5652D363.3090105@st.com>
-References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
- <1447941250-344-5-git-send-email-moise.gergaud@st.com>
- <20151119175024.GP31303@sirena.org.uk> <564EE3A4.3090501@st.com>
- <20151121124509.GC26072@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: pxa: remove incorrect do_div() call
+Date: Mon, 23 Nov 2015 09:54:22 +0100
+Message-ID: <4678926.Vc1QsAaFQ0@wuerfel>
+References: <7580645.enu4DmUPIv@wuerfel> <5652CA09.5080101@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id AC9EB2651CB
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 09:50:47 +0100 (CET)
-In-Reply-To: <20151121124509.GC26072@sirena.org.uk>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B5A2651CB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 09:54:32 +0100 (CET)
+In-Reply-To: <5652CA09.5080101@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: zhangfei <zhangfei.gao@linaro.org>
+Cc: alsa-devel@alsa-project.org, Leo Yan <leoy@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/21/2015 01:45 PM, Mark Brown wrote:
-> On Fri, Nov 20, 2015 at 10:11:00AM +0100, Moise Gergaud wrote:
->> Hello,
->
-> Please don't top post, reply in line deleting unneeded text.  This
-> provides relevant context so people reading your mail can understand
-> what you are talking about.
->
->> To be compliant with SPDIF & HDMI-1.4 by using aplay, driver needs to set
->> the channel status sampling freq = runtime rate; because channel status
->> sampling freq is not set by aplay.
->> For HBRA, the application set the channel status sampling freq (that is
->> different than the runtime rate).
->> => by taking into account the 2 above cases, for each pcm session, driver
->> shall be able to detect if the channel status sampling freq has already been
->> set and set it if needed.
->
->> And also for robustness purpose: in case the channel status sampling freq is
->> not set by the application, I think the driver shall set it.
->
-> None of this addresses my concern, sorry - your change is just trashing
-> all the settings that the application is setting.  This is not what we
-> normally do with controls and is going to break correctly functioning
-> applications that play audio with the same parameters repeatedly.
->
->> Maybe I can limit my patch by resetting only the channel status sampling
->> freq on close (actual patch reset all the fields of the channel status).
->
-> This isn't something you should be inventing policies for in a single
-> driver, the kernel needs to offer consistent interfaces to applications
-> no matter which particular hardware the system is running.  If we want
-> to do something here it should be done at ALSA level.  It does seem like
-> a reasonable idea to put the sample rate into kernel control, I can't
-> think of a situation where we'd want to advertise the wrong sample rate,
-> but it does need to be in the core not a specific driver.
->
+On Monday 23 November 2015 16:10:49 zhangfei wrote:
+> On 11/20/2015 05:32 PM, Arnd Bergmann wrote:
+> > diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+> > index 6147e86e9b0f..416ea646c3b1 100644
+> > --- a/sound/soc/pxa/brownstone.c
+> > +++ b/sound/soc/pxa/brownstone.c
+> > @@ -63,8 +63,7 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+> >               sysclk    = params_rate(params) * 512;
+> >               sspa_mclk = params_rate(params) * 64;
+> >       }
+> > -     sspa_div = freq_out;
+> > -     do_div(sspa_div, sspa_mclk);
+> > +     sspa_div = freq_out / sspa_mclk;
+> >
+> >       snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+> >       snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
+> >
+> 
+> Thanks Arnd.
+> 
+> Looks sspa_div is not used at all.
+> So we can remove sspa_div as well as do_div.
+> 
+> What do you think.
 
-Agree that this should be done at ALSA level.
-Taking into consideration this will be done at ALSA level, I still need 
-to correct ASOC STI driver: force the iec958 channel status sampling 
-rate to the runtime rate without any condition. I'll provide patch V2.
+Good idea. I see that Mark has already applied the original patch, and with
+my new version, gcc should be smart enough to completely optimize out the
+division and the unused variable. This means the effect of the patch
+is very small, but if Mark wants it, he can apply the below.
+
+	Arnd
+
+8<---
+Subject: ASoC: remove unused variable
+
+As pointed out by Zhangfei Gao, the sspa_div variable in
+brownstone_wm8994_hw_params() is completely unused, so as a cleanup
+following a prior patch, this removes both the variable and the division.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index 416ea646c3b1..ec522e94b0e2 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -52,7 +52,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int freq_out, sspa_mclk, sysclk;
+-	int sspa_div;
+ 
+ 	if (params_rate(params) > 11025) {
+ 		freq_out  = params_rate(params) * 512;
+@@ -63,7 +62,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk    = params_rate(params) * 512;
+ 		sspa_mclk = params_rate(params) * 64;
+ 	}
+-	sspa_div = freq_out / sspa_mclk;
+ 
+ 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+ 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
