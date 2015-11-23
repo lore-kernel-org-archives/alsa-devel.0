@@ -1,17 +1,20 @@
-From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH 1/2] ASoC: img: Add binding document for
-	Pistachio internal DAC
-Date: Mon, 23 Nov 2015 17:24:58 +0000
-Message-ID: <1448299499-18435-2-git-send-email-Damien.Horsley@imgtec.com>
-References: <1448299499-18435-1-git-send-email-Damien.Horsley@imgtec.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 3/3] ASoC: core: Change power state before
+ rechecking endpoint
+Date: Mon, 23 Nov 2015 19:13:12 +0100
+Message-ID: <56535738.1000802@metafoo.de>
+References: <1448293951-32071-1-git-send-email-vinod.koul@intel.com>
+ <1448293951-32071-4-git-send-email-vinod.koul@intel.com>
+ <56533991.8000601@metafoo.de> <20151123172825.GU25173@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 5991A26572D
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 18:28:09 +0100 (CET)
-In-Reply-To: <1448299499-18435-1-git-send-email-Damien.Horsley@imgtec.com>
+Received: from smtp-out-188.synserver.de (smtp-out-151.synserver.de
+ [212.40.185.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96D5B2654C6
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 19:13:18 +0100 (CET)
+In-Reply-To: <20151123172825.GU25173@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+On 11/23/2015 06:28 PM, Vinod Koul wrote:
+> On Mon, Nov 23, 2015 at 05:06:41PM +0100, Lars-Peter Clausen wrote:
+>> On 11/23/2015 04:52 PM, Vinod Koul wrote:
+>>> From: Jeeja KP <jeeja.kp@intel.com>
+>>>
+>>> For DAPM resume, we should first change the power state of the
+>>> card and then recheck the endpoints. This ensures the dapm is
+>>> resumed first and then userspace can resume the streams.
+>>
+>> The problem is that DAPM uses the userspace state to decide whether to power
+>> up or not. So this change won't work, it will keep the endpoints suspended.
+> 
+> Well our observation are bit different...
+> 
+> When testing with aplay and suspending the system the DAPM was suspending
+> fine and then alsa suspends PCMs, but on resume the DAPM is resumed last and
+> the PCMs first, due to which the devices start underun!
+> The DAPM should be resumed first and then we should allow userspace access
+> (PCM resume from aplay)
+> 
+> The change of order here helps in that
 
-Add binding document for Pistachio Internal DAC
+Sorry, overlooked something. We go to D2 earlier on and DAPM only is
+suspended when the state is D3 and not only when it is not in D0.
 
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
----
- .../bindings/sound/img,pistachio-internal-dac.txt      | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
+Patch looks good.
 
-diff --git a/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
-new file mode 100644
-index 0000000..4cc18fc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
-@@ -0,0 +1,18 @@
-+Pistachio internal DAC DT bindings
-+
-+Required properties:
-+
-+  - compatible: "img,pistachio-internal-dac"
-+
-+  - img,cr-top : Must contain a phandle to the top level control syscon
-+		 node which contains the internal dac control registers
-+
-+  - VDD-supply : Digital power supply regulator (+1.8V or +3.3V)
-+
-+Examples:
-+
-+internal_dac: internal-dac {
-+	compatible = "img,pistachio-internal-dac";
-+	img,cr-top = <&cr_top>;
-+	VDD-supply = <&supply3v3>;
-+};
--- 
-2.1.4
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
