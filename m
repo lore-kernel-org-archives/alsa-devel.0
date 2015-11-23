@@ -1,61 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
- multiple arizona (wm5102) codecs
-Date: Mon, 23 Nov 2015 11:30:41 +0000
-Message-ID: <20151123113041.GG1929@sirena.org.uk>
-References: <20151114074400.GA7898@amd>
- <20151114123931.GW12392@sirena.org.uk>
- <20151114175915.GA20429@amd>
- <20151114184940.GY12392@sirena.org.uk>
- <20151114211633.GE20429@amd>
- <20151116141142.GE18889@ck-lbox>
- <20151122065140.GC26074@amd>
- <20151123081857.GF3098@x1>
- <20151123101145.GA1452@amd>
- <1448274322.3536.45.camel@rf-debian.wolfsonmicro.main>
+Subject: Applied "ASoC: davinci-mcasp: Fix master capture only
+	mode" to the asoc tree
+Date: Mon, 23 Nov 2015 11:41:01 +0000
+Message-ID: <E1a0pUT-0005S9-Ka@debutante>
+References: <1448275913-30546-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YH9Qf6Fh2G5kB/85"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1448274322.3536.45.camel@rf-debian.wolfsonmicro.main>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D3B9265238
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:08 +0100 (CET)
+In-Reply-To: <1448275913-30546-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---YH9Qf6Fh2G5kB/85
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: davinci-mcasp: Fix master capture only mode
 
-On Mon, Nov 23, 2015 at 10:25:22AM +0000, Richard Fitzgerald wrote:
-> On Mon, 2015-11-23 at 11:11 +0100, Pavel Machek wrote:
+has been applied to the asoc tree at
 
-> > That's what I'm saying. It is good to know who is the person of
-> > authority, as you can't tell from the From: address.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> It's unreasonable to expect that one member of the Cirrus software team
-> has the time to answer every inquiry about our drivers and never goes on
-> vacation, or that there's only one person who is an authority about the
-> drivers. There's a mailing list for a reason.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-It's perfectly OK to list multiple people - look at how other companies
-handle this, there's usually two or three people listed.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---YH9Qf6Fh2G5kB/85
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJWUvjhAAoJECTWi3JdVIfQi1sH/3xzIyarFFoGsIoMWEXEKyUn
-AwMmuF5qQp0h+cMBc0ahqHUj3gycMs4U4ubKVB7bjo59oYdok8uVv9TZo/ocrocl
-M4EA+NzivQgFVICd+6EoeCJMTE8JL3y5vUbrpWRGUHibqTO+5U6WCv4lTUkUGPRh
-H6pmKuoGCg0BFHwgRkrl0IW4iUzX7VbDvb1+WUTk7XLINatZrG48217c0QkoiLGz
-GfcrypktRBzmGbNF7uQC8t+D3ygH020deflzBvB6xsaQuITJqWgDUi1jY/RxDpwa
-cDyQl8+ztpwfB7WMsq1iUNkAjcyL9ibEYCw/lhlB+/Q7eUBG22PL8Kc+CP7uFAQ=
-=Twk0
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---YH9Qf6Fh2G5kB/85--
+>From 0ad7d3a04b2a1a43fa71eb89f754527b082213ad Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 23 Nov 2015 12:51:53 +0200
+Subject: [PATCH] ASoC: davinci-mcasp: Fix master capture only mode
+
+When McASP is used as TX/RX synchronous (TX side generating clocks for RX
+side also) and only capture is used we need to configure the number of TX
+slots in order McASP to be able to generate the Frame sync.
+
+Fixes: 9273de1940d9e ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/davinci/davinci-mcasp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index caa0bebcd7f4..c1c9c2e3525b 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -908,6 +908,14 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, busel | RXORD);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG,
+ 			       FSRMOD(total_slots), FSRMOD(0x1FF));
++		/*
++		 * If McASP is set to be TX/RX synchronous and the playback is
++		 * not running already we need to configure the TX slots in
++		 * order to have correct FSX on the bus
++		 */
++		if (mcasp_is_synchronous(mcasp) && !mcasp->channels)
++			mcasp_mod_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG,
++				       FSXMOD(total_slots), FSXMOD(0x1FF));
+ 	}
+ 
+ 	return 0;
+-- 
+2.6.2
