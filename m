@@ -1,174 +1,62 @@
-From: libin.yang@linux.intel.com
-Subject: [RFC V2 PATCH 5/5] ALSA: hda - hdmi setup pin when
-	monitor hotplug in pcm dynamic assignment mode
-Date: Mon, 23 Nov 2015 22:09:34 +0800
-Message-ID: <1448287774-146673-7-git-send-email-libin.yang@linux.intel.com>
-References: <1448287774-146673-1-git-send-email-libin.yang@linux.intel.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
+ multiple arizona (wm5102) codecs
+Date: Mon, 23 Nov 2015 14:31:19 +0000
+Message-ID: <20151123143119.GA31376@x1>
+References: <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk>
+ <20151114211633.GE20429@amd>
+ <20151116141142.GE18889@ck-lbox>
+ <20151122065140.GC26074@amd>
+ <20151123081857.GF3098@x1>
+ <20151123101145.GA1452@amd>
+ <1448274322.3536.45.camel@rf-debian.wolfsonmicro.main>
+ <20151123113041.GG1929@sirena.org.uk>
+ <20151123114637.GI18889@ck-lbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2682226546A
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:12:27 +0100 (CET)
-In-Reply-To: <1448287774-146673-1-git-send-email-libin.yang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, Libin Yang <libin.yang@linux.intel.com>, mengdong.lin@linux.intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151123114637.GI18889@ck-lbox>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pavel Machek <pavel@ucw.cz>, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+On Mon, 23 Nov 2015, Charles Keepax wrote:
 
-Setup pin configuration when monitor is hotplugged
-in pcm dynamic assignment if the PCM is in open state.
+> On Mon, Nov 23, 2015 at 11:30:41AM +0000, Mark Brown wrote:
+> > On Mon, Nov 23, 2015 at 10:25:22AM +0000, Richard Fitzgerald wrote:
+> > > On Mon, 2015-11-23 at 11:11 +0100, Pavel Machek wrote:
+> >=20
+> > > > That's what I'm saying. It is good to know who is the person of
+> > > > authority, as you can't tell from the From: address.
+> >=20
+> > > It's unreasonable to expect that one member of the Cirrus softwar=
+e team
+> > > has the time to answer every inquiry about our drivers and never =
+goes on
+> > > vacation, or that there's only one person who is an authority abo=
+ut the
+> > > drivers. There's a mailing list for a reason.
+> >=20
+> > It's perfectly OK to list multiple people - look at how other compa=
+nies
+> > handle this, there's usually two or three people listed.
+>=20
+> I don't really object to sticking a few people in here if the
+> general feeling is that would be better, but personally I didn't
+> see any problem with the current setup.
 
-When monitor is disconnect, The pin will be reset.
+Me either.
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 82 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 78 insertions(+), 4 deletions(-)
+> Shall I do a patch to add a few of us in here?
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index bcc2a90..67e2d43 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1514,10 +1514,14 @@ static int hdmi_pcm_open_no_pin(struct hda_pcm_stream *hinfo,
- {
- 	struct hdmi_spec *spec = codec->spec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int cvt_idx;
-+	int cvt_idx, pcm_idx;
- 	struct hdmi_spec_per_cvt *per_cvt = NULL;
- 	int err;
- 
-+	pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+	if (pcm_idx < 0)
-+		return -EINVAL;
-+
- 	err = hdmi_choose_cvt(codec, -1, &cvt_idx, NULL);
- 	if (err)
- 		return err;
-@@ -1528,6 +1532,7 @@ static int hdmi_pcm_open_no_pin(struct hda_pcm_stream *hinfo,
- 
- 	intel_not_share_assigned_cvt_nid(codec, 0, per_cvt->cvt_nid);
- 
-+	spec->pcm_rec[pcm_idx]->in_use = true;
- 	/* todo: setup spdif ctls assign */
- 
- 	/* Initially set the converter's capabilities */
-@@ -1596,7 +1601,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	/* Claim converter */
- 	per_cvt->assigned = 1;
- 
--
-+	spec->pcm_rec[pcm_idx]->in_use = true;
- 	per_pin = get_pin(spec, pin_idx);
- 	per_pin->cvt_nid = per_cvt->cvt_nid;
- 	hinfo->nid = per_cvt->cvt_nid;
-@@ -1731,6 +1736,71 @@ static void hdmi_detach_hda_pcm(struct hdmi_spec *spec,
- 		clear_bit(idx, &spec->pcm_bitmap);
- }
- 
-+static int hdmi_get_pin_cvt_mux(struct hdmi_spec *spec,
-+		struct hdmi_spec_per_pin *per_pin, hda_nid_t cvt_nid)
-+{
-+	int mux_idx;
-+
-+	for (mux_idx = 0; mux_idx < per_pin->num_mux_nids; mux_idx++)
-+		if (per_pin->mux_nids[mux_idx] == cvt_nid)
-+			break;
-+	return mux_idx;
-+}
-+
-+static bool check_non_pcm_per_cvt(struct hda_codec *codec, hda_nid_t cvt_nid);
-+static void hdmi_pcm_setup_pin(struct hdmi_spec *spec,
-+			   struct hdmi_spec_per_pin *per_pin)
-+{
-+	struct hda_codec *codec = per_pin->codec;
-+	struct hda_pcm *pcm;
-+	struct hda_pcm_stream *hinfo;
-+	struct snd_pcm_substream *substream;
-+
-+	int mux_idx;
-+	bool non_pcm;
-+
-+	if (per_pin->pcm_idx >= 0 && per_pin->pcm_idx < spec->pcm_used)
-+		pcm = spec->pcm_rec[per_pin->pcm_idx];
-+	else
-+		return;
-+	if (!pcm->in_use)
-+		return;
-+
-+	/* hdmi audio only uses playback and one substream */
-+	hinfo = pcm->stream;
-+	substream = pcm->pcm->streams[0].substream;
-+
-+	per_pin->cvt_nid = hinfo->nid;
-+
-+	mux_idx = hdmi_get_pin_cvt_mux(spec, per_pin, hinfo->nid);
-+	if (mux_idx < per_pin->num_mux_nids)
-+		snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-+				AC_VERB_SET_CONNECT_SEL,
-+				mux_idx);
-+	snd_hda_spdif_ctls_assign(codec, per_pin->pcm_idx, hinfo->nid);
-+
-+	non_pcm = check_non_pcm_per_cvt(codec, hinfo->nid);
-+	if (substream->runtime)
-+		per_pin->channels = substream->runtime->channels;
-+	per_pin->setup = true;
-+	per_pin->mux_idx = mux_idx;
-+
-+	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
-+}
-+
-+static void hdmi_pcm_reset_pin(struct hdmi_spec *spec,
-+			   struct hdmi_spec_per_pin *per_pin)
-+{
-+	if (per_pin->pcm_idx >= 0 && per_pin->pcm_idx < spec->pcm_used)
-+		snd_hda_spdif_ctls_unassign(per_pin->codec, per_pin->pcm_idx);
-+
-+	per_pin->chmap_set = false;
-+	memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
-+
-+	per_pin->setup = false;
-+	per_pin->channels = 0;
-+}
-+
- static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- {
- 	struct hda_jack_tbl *jack;
-@@ -1790,10 +1860,13 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 	}
- 
- 	if (spec->dyn_pcm_assign) {
--		if (eld->eld_valid)
-+		if (eld->eld_valid) {
- 			hdmi_attach_hda_pcm(spec, per_pin);
--		else
-+			hdmi_pcm_setup_pin(spec, per_pin);
-+		} else {
-+			hdmi_pcm_reset_pin(spec, per_pin);
- 			hdmi_detach_hda_pcm(spec, per_pin);
-+		}
- 	}
- 
- 	if (pin_eld->eld_valid != eld->eld_valid)
-@@ -2116,6 +2189,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 		hinfo->nid = 0;
- 
- 		mutex_lock(&spec->pcm_lock);
-+		spec->pcm_rec[pcm_idx]->in_use = false;
- 		pin_idx = hinfo_to_pin_index(codec, hinfo);
- 		if (spec->dyn_pcm_assign && pin_idx < 0) {
- 			mutex_unlock(&spec->pcm_lock);
--- 
-1.9.1
+Up to you.  Happy either way.
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
