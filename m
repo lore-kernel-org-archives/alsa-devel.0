@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Fix master capture only
-	mode" to the asoc tree
-Date: Mon, 23 Nov 2015 11:41:01 +0000
-Message-ID: <E1a0pUT-0005S9-Ka@debutante>
-References: <1448275913-30546-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: Atmel: ClassD: add GCK's parent clock
+	in DT binding" to the asoc tree
+Date: Mon, 23 Nov 2015 11:40:59 +0000
+Message-ID: <E1a0pUR-0005RD-Qd@debutante>
+References: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D3B9265238
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:08 +0100 (CET)
-In-Reply-To: <1448275913-30546-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 94C5A26524F
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:09 +0100 (CET)
+In-Reply-To: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Fix master capture only mode
+   ASoC: Atmel: ClassD: add GCK's parent clock in DT binding
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 0ad7d3a04b2a1a43fa71eb89f754527b082213ad Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 23 Nov 2015 12:51:53 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: Fix master capture only mode
+>From 0f611e2551deeedaafc0f01b8607eb580622b7bb Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@atmel.com>
+Date: Mon, 23 Nov 2015 17:19:58 +0800
+Subject: [PATCH] ASoC: Atmel: ClassD: add GCK's parent clock in DT binding
 
-When McASP is used as TX/RX synchronous (TX side generating clocks for RX
-side also) and only capture is used we need to configure the number of TX
-slots in order McASP to be able to generate the Frame sync.
+Set GCK's parent as audio clock.
 
-Fixes: 9273de1940d9e ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/sound/atmel-classd.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index caa0bebcd7f4..c1c9c2e3525b 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -908,6 +908,14 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMT_REG, busel | RXORD);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG,
- 			       FSRMOD(total_slots), FSRMOD(0x1FF));
-+		/*
-+		 * If McASP is set to be TX/RX synchronous and the playback is
-+		 * not running already we need to configure the TX slots in
-+		 * order to have correct FSX on the bus
-+		 */
-+		if (mcasp_is_synchronous(mcasp) && !mcasp->channels)
-+			mcasp_mod_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG,
-+				       FSXMOD(total_slots), FSXMOD(0x1FF));
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/atmel-classd.txt b/Documentation/devicetree/bindings/sound/atmel-classd.txt
+index 0018451c4351..549e701cb7a1 100644
+--- a/Documentation/devicetree/bindings/sound/atmel-classd.txt
++++ b/Documentation/devicetree/bindings/sound/atmel-classd.txt
+@@ -16,6 +16,10 @@ Required properties:
+ 	Required elements: "pclk", "gclk" and "aclk".
+ - clocks
+ 	Please refer to clock-bindings.txt.
++- assigned-clocks
++	Should be <&classd_gclk>.
++- assigned-clock-parents
++	Should be <&audio_pll_pmc>.
  
- 	return 0;
+ Optional properties:
+ - pinctrl-names, pinctrl-0
+@@ -43,6 +47,8 @@ classd: classd@fc048000 {
+ 		dma-names = "tx";
+ 		clocks = <&classd_clk>, <&classd_gclk>, <&audio_pll_pmc>;
+ 		clock-names = "pclk", "gclk", "aclk";
++		assigned-clocks = <&classd_gclk>;
++		assigned-clock-parents = <&audio_pll_pmc>;
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_classd_default>;
 -- 
 2.6.2
