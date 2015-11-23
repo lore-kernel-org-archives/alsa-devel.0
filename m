@@ -1,71 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: Intel: Use acpi_dev_present
-Date: Mon, 23 Nov 2015 14:48:36 +0000
-Message-ID: <20151123144836.GJ1929@sirena.org.uk>
-References: <cover.1448282995.git.lukas@wunner.de>
- <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: multi-codec support for arizona-ldo1 was Re: System with
+ multiple arizona (wm5102) codecs
+Date: Mon, 23 Nov 2015 16:00:12 +0100
+Message-ID: <20151123150011.GB14650@amd>
+References: <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk>
+ <20151114211633.GE20429@amd>
+ <20151116141142.GE18889@ck-lbox>
+ <20151122065140.GC26074@amd>
+ <20151123081857.GF3098@x1>
+ <20151123101145.GA1452@amd>
+ <1448274322.3536.45.camel@rf-debian.wolfsonmicro.main>
+ <20151123113041.GG1929@sirena.org.uk>
+ <20151123114637.GI18889@ck-lbox>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4360483921248136309=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B6D6265497
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:48:49 +0100 (CET)
-In-Reply-To: <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, devel@acpica.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20151123114637.GI18889@ck-lbox>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon 2015-11-23 11:46:37, Charles Keepax wrote:
+> On Mon, Nov 23, 2015 at 11:30:41AM +0000, Mark Brown wrote:
+> > On Mon, Nov 23, 2015 at 10:25:22AM +0000, Richard Fitzgerald wrote:
+> > > On Mon, 2015-11-23 at 11:11 +0100, Pavel Machek wrote:
+> > 
+> > > > That's what I'm saying. It is good to know who is the person of
+> > > > authority, as you can't tell from the From: address.
+> > 
+> > > It's unreasonable to expect that one member of the Cirrus software team
+> > > has the time to answer every inquiry about our drivers and never goes on
+> > > vacation, or that there's only one person who is an authority about the
+> > > drivers. There's a mailing list for a reason.
+> > 
+> > It's perfectly OK to list multiple people - look at how other companies
+> > handle this, there's usually two or three people listed.
+> 
+> I don't really object to sticking a few people in here if the
+> general feeling is that would be better, but personally I didn't
+> see any problem with the current setup.
+> 
+> Shall I do a patch to add a few of us in here?
 
---===============4360483921248136309==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/0U0QBNx7JIUZLHm"
-Content-Disposition: inline
+Yes, please.
 
-
---/0U0QBNx7JIUZLHm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 23, 2015 at 03:34:55PM +0100, Lukas Wunner wrote:
-> Use shiny new acpi_dev_present and remove all the boilerplate to search
-> for a particular ACPI device. No functional change.
-
-This will collide with some other work done on the Intel code in -next I
-expect, probably best to merge this via ASoC (so pulling a shared branch
-for the new API) or just wait till 4.5 to do the conversion.
-
---/0U0QBNx7JIUZLHm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWUydDAAoJECTWi3JdVIfQBaEH/3RPvMmzRdZ0X5gz8n01wCBe
-gG1Ri0ZJx61GdWCMCnM73LcsluJCtKz+fM3XHakmfHeWZixBK0eWu9o9/+x2Wfg4
-ULaMru3NtBWlGKkvdrya5vfAnO4qWJmxwPoREQcTO+Fkg6GYirnJHWigh7z6fb7/
-/gk9UUYHBkNgcXcoNrePhfyDn79+HK9LjvkV0gUcq7hn7YZ9AeNiQWYq7RchVVSb
-Z2PYrTEipQ4qz+AYyZ41mK1064H+0V/01CTC6NY0KIrC1hf6Xm6dzdemwfdo6Cdt
-VMjyrMksKcVYCJzM/TGmLjAf0Wlr0HVODSVSSiFcjsx8q8gZTRaJ3sDp8tY1uLE=
-=Lof4
------END PGP SIGNATURE-----
-
---/0U0QBNx7JIUZLHm--
-
---===============4360483921248136309==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4360483921248136309==--
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
