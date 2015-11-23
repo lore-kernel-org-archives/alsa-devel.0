@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/7] ASoC: Intel: Skylake: Poll CLDMA RUN bit
-	when set
-Date: Mon, 23 Nov 2015 22:26:27 +0530
-Message-ID: <1448297789-6524-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/7] ASoC: Intel: Skylake: Clear stream
+	registers before setting up stream
+Date: Mon, 23 Nov 2015 22:26:28 +0530
+Message-ID: <1448297789-6524-7-git-send-email-vinod.koul@intel.com>
 References: <1448297789-6524-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D32FC265826
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 17:53:00 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6783C265473
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 17:53:03 +0100 (CET)
 In-Reply-To: <1448297789-6524-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,96 +27,78 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This patch adds polling of CLDMA stream run bit when set
-to confirm the HW reports the same value.
+This patch adds clean up routine to clear the stream registers and
+calls this routine before setting up stream registers.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 43 ++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 39 ++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index b03d9db0acad..faaa852ed015 100644
+index faaa852ed015..b845c3acd3eb 100644
 --- a/sound/soc/intel/skylake/skl-sst-cldma.c
 +++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -18,6 +18,7 @@
- #include <linux/device.h>
- #include <linux/mm.h>
- #include <linux/kthread.h>
-+#include <linux/delay.h>
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
- 
-@@ -33,6 +34,32 @@ void skl_cldma_int_disable(struct sst_dsp *ctx)
- 			SKL_ADSP_REG_ADSPIC, SKL_ADSPIC_CL_DMA, 0);
+@@ -60,6 +60,28 @@ static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
+ 		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
  }
  
-+static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
++static void skl_cldma_stream_clear(struct sst_dsp  *ctx)
 +{
-+	unsigned char val;
-+	int timeout;
++	/* make sure Run bit is cleared before setting stream register */
++	skl_cldma_stream_run(ctx, 0);
 +
-+	sst_dsp_shim_update_bits_unlocked(ctx,
-+			SKL_ADSP_REG_CL_SD_CTL,
-+			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(enable));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
 +
-+	udelay(3);
-+	timeout = 300;
-+	do {
-+		/* waiting for hardware to report that the stream Run bit set */
-+		val = sst_dsp_shim_read(ctx, SKL_ADSP_REG_CL_SD_CTL) &
-+			CL_SD_CTL_RUN_MASK;
-+		if (enable && val)
-+			break;
-+		else if (!enable && !val)
-+			break;
-+		udelay(3);
-+	} while (--timeout);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
 +
-+	if (timeout == 0)
-+		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
 +}
++
 +
  /* Code loader helper APIs */
  static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
  		struct snd_dma_buffer *dmab_data,
-@@ -107,18 +134,6 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
- 	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_CL_SPBFIFO_SPIB, 0);
- }
- 
--static void skl_cldma_trigger(struct sst_dsp  *ctx, bool enable)
--{
--	if (enable)
--		sst_dsp_shim_update_bits_unlocked(ctx,
--			SKL_ADSP_REG_CL_SD_CTL,
--			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(1));
--	else
--		sst_dsp_shim_update_bits_unlocked(ctx,
--			SKL_ADSP_REG_CL_SD_CTL,
--			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(0));
--}
--
+@@ -95,6 +117,7 @@ static void skl_cldma_setup_controller(struct sst_dsp  *ctx,
+ 		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
+ 		u32 count)
+ {
++	skl_cldma_stream_clear(ctx);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL,
+ 			CL_SD_BDLPLBA(dmab_bdl->addr));
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU,
+@@ -137,21 +160,7 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
  static void skl_cldma_cleanup(struct sst_dsp  *ctx)
  {
  	skl_cldma_cleanup_spb(ctx);
-@@ -169,7 +184,7 @@ cleanup:
+-
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
+-
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
+-
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
++	skl_cldma_stream_clear(ctx);
  
- static void skl_cldma_stop(struct sst_dsp *ctx)
- {
--	ctx->cl_dev.ops.cl_trigger(ctx, false);
-+	skl_cldma_stream_run(ctx, false);
- }
- 
- static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
-@@ -311,7 +326,7 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
- 	ctx->cl_dev.ops.cl_setup_controller = skl_cldma_setup_controller;
- 	ctx->cl_dev.ops.cl_setup_spb = skl_cldma_setup_spb;
- 	ctx->cl_dev.ops.cl_cleanup_spb = skl_cldma_cleanup_spb;
--	ctx->cl_dev.ops.cl_trigger = skl_cldma_trigger;
-+	ctx->cl_dev.ops.cl_trigger = skl_cldma_stream_run;
- 	ctx->cl_dev.ops.cl_cleanup_controller = skl_cldma_cleanup;
- 	ctx->cl_dev.ops.cl_copy_to_dmabuf = skl_cldma_copy_to_buf;
- 	ctx->cl_dev.ops.cl_stop_dma = skl_cldma_stop;
+ 	if (&ctx->cl_dev.dmab_data)
+ 		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
 -- 
 1.9.1
