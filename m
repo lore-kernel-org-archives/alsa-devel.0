@@ -1,24 +1,21 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: multi-codec support for arizona-ldo1 was Re:
- System with multiple arizona (wm5102) codecs
-Date: Mon, 23 Nov 2015 08:18:57 +0000
-Message-ID: <20151123081857.GF3098@x1>
-References: <20151013115355.GC14956@sirena.org.uk> <20151113215812.GA19020@amd>
- <20151113225355.GU12392@sirena.org.uk> <20151114074400.GA7898@amd>
- <20151114123931.GW12392@sirena.org.uk> <20151114175915.GA20429@amd>
- <20151114184940.GY12392@sirena.org.uk> <20151114211633.GE20429@amd>
- <20151116141142.GE18889@ck-lbox> <20151122065140.GC26074@amd>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: Re: [PATCH 4/4] ASoC: sti: reset iec60958 settings on
+	close
+Date: Mon, 23 Nov 2015 09:50:43 +0100
+Message-ID: <5652D363.3090105@st.com>
+References: <1447941250-344-1-git-send-email-moise.gergaud@st.com>
+ <1447941250-344-5-git-send-email-moise.gergaud@st.com>
+ <20151119175024.GP31303@sirena.org.uk> <564EE3A4.3090501@st.com>
+ <20151121124509.GC26072@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 75A372651AF
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 09:19:01 +0100 (CET)
-Received: by wmww144 with SMTP id w144so93615218wmw.0
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 00:19:00 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20151122065140.GC26074@amd>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC9EB2651CB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 09:50:47 +0100 (CET)
+In-Reply-To: <20151121124509.GC26072@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,64 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCAyMiBOb3YgMjAxNSwgUGF2ZWwgTWFjaGVrIHdyb3RlOgoKPiBPbiBNb24gMjAxNS0x
-MS0xNiAxNDoxMTo0MiwgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cj4gPiBPbiBTYXQsIE5vdiAxNCwg
-MjAxNSBhdCAxMDoxNjozM1BNICswMTAwLCBQYXZlbCBNYWNoZWsgd3JvdGU6Cj4gPiA+IEhpT24g
-U2F0IDIwMTUtMTEtMTQgMTg6NDk6NDAsIE1hcmsgQnJvd24gd3JvdGU6Cj4gPiA+ID4gT24gU2F0
-LCBOb3YgMTQsIDIwMTUgYXQgMDY6NTk6MTZQTSArMDEwMCwgUGF2ZWwgTWFjaGVrIHdyb3RlOgo+
-ID4gPiA+IAo+ID4gPiA+ID4gV2VsbCwgbWZkX2NvcmUuYyBzZWVtcyB0byBjYWxsIHJlZ3VsYXRv
-cl9idWxrX3JlZ2lzdGVyX3N1cHBseV9hbGlhcygpCj4gPiA+ID4gPiB3aXRoIGRldmljZSB0aGF0
-IGRvZXMgbm90IGhhdmUgZGV2X25hbWUgaW5pdGlhbGl6ZWQuCj4gPiA+ID4gCj4gPiA+ID4gT0ss
-IHRoYXQnbGwgYmUgdGhlIHByb2JsZW0gdGhlbiAtIHdlJ3JlIG5vdCBtYXBwaW5nIHRoZSBzdXBw
-bHkgaW50byB0aGUKPiA+ID4gPiBpbmRpdmlkdWFsIGNoaWxkIGRldmljZSBidXQgcmF0aGVyIHN5
-c3RlbSB3aWRlLCBwcm9iYWJseSBiZWNhdXNlIHRoYXQKPiA+ID4gPiBtYXBwaW5nIGlzIGJlaW5n
-IGRvbmUgdG9vIGVhcmx5LCBiZWZvcmUgd2UndmUgYWN0dWFsbHkgY3JlYXRlZCB0aGUKPiA+ID4g
-PiBkZXZpY2UuCj4gPiA+IAo+ID4gPiBUYWtlIGEgbG9vayBhdCBtZmRfYWRkX2RldmljZSgpLiBZ
-ZXMsIHdlIGRvCj4gPiA+IHJlZ3VsYXRvcl9idWxrX3JlZ2lzdGVyX3N1cHBseV9hbGlhcygpIGJl
-Zm9yZSBkb2luZwo+ID4gPiBwbGF0Zm9ybV9kZXZpY2VfYWRkKCkuCj4gPiA+IAo+ID4gPiA+ID4g
-cmVndWxhdG9yX2J1bGtfcmVnaXN0ZXJfc3VwcGx5X2FsaWFzKCkgcmVzdWx0cyBpbiAiQWRkaW5n
-IGFsaWFzIgo+ID4gPiA+ID4gc3R1ZmYsIGFuZCB0aGVuIGRyaXZlcnMvcmVndWxhdG9yL2FyaXpv
-bmEtbWljc3VwcC5jIHRyaWVzIHRvIHJlZ2lzdGVyCj4gPiA+ID4gPiBhbm90aGVyICJNSUNWREQi
-Lgo+ID4gPiA+IAo+ID4gPiA+IFRoYXQncyBmaW5lIGJlY2F1c2UgYWxsIHN1cHBsaWVzIHNob3Vs
-ZCBiZSBuYW1lc3BhY2VkIHdpdGggYSBkZXZpY2UuCj4gPiA+ID4gVGhlIGdvYWwgaXMgdG8gc2F5
-ICJTdXBwbHkgWCBvbiBkZXZpY2UgWSIgKHdlIGRvIHN1cHBvcnQgZXhjZXB0aW9ucyBmb3IKPiA+
-ID4gPiB0aGUgZmV3IGNhc2VzIHdoZXJlIHRoZXJlIGFyZSBub3QgeWV0IGFueSBkZXZpY2VzIGlu
-dm9sdmVkIGJ1dCB0aGlzCj4gPiA+ID4gY2xlYXJseSBpc24ndCBvbmUgb2YgdGhlbSkuCj4gPiAK
-PiA+IEluZGVlZCB0aGF0IHNob3VsZCBiZSB0aGUgY2FzZS4KPiA+IAo+ID4gPiAKPiA+ID4gV2Vs
-bCwgY2xlYXJseSBzb21lb25lIHNob3VsZCB0ZWxsIHRoYXQgdG8gd201MTAyCj4gPiA+IG1haW50
-YWluZXJzLiBIbW0uIEl0IGxvb2tzIGxpa2UgZHJpdmVyIGlzIG1hcmtlZCBzdXBwb3J0ZWQgYnV0
-IHRoZXJlCj4gPiA+IGFyZSBubyBuYW1lcyBhdHRhY2hlZD8KPiA+ID4gCj4gPiA+IFdPTEZTT04g
-TUlDUk9FTEVDVFJPTklDUyBEUklWRVJTCj4gPiA+IEw6ICAgICAgcGF0Y2hlc0BvcGVuc291cmNl
-LndvbGZzb25taWNyby5jb20KPiA+ID4gVDogICAgICBnaXQgZ2l0Oi8vb3BlbnNvdXJjZS53b2xm
-c29ubWljcm8uY29tL2xpbnV4LTIuNi1hc29jCj4gPiA+IFQ6ICAgICAgZ2l0IGdpdDovL29wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbS9saW51eC0yLjYtYXVkaW9wbHVzCj4gPiA+IFc6Cj4gPiA+
-IGh0dHA6Ly9vcGVuc291cmNlLndvbGZzb25taWNyby5jb20vY29udGVudC9saW51eC1kcml2ZXJz
-LXdvbGZzb24tZGV2aWNlXAo+ID4gPiBzCj4gPiA+IFM6ICAgICAgU3VwcG9ydGVkCj4gPiA+IAo+
-ID4gPiBJIGd1ZXNzIENoYXJsZXMgS2VlcGF4IHNob3VsZCBiZSBsaXN0ZWQgdGhlcmU/Cj4gPiAK
-PiA+IFRoZSBwYXRjaGVzIG1haWxpbmcgbGlzdCBmdW5jdGlvbnMgYXMgbWFpbnRhaW5lciBoZXJl
-LiBUaGF0IHdheQo+ID4gYW55b25lIHdobyB3b3JrcyBvbiB1cHN0cmVhbSBMaW51eCBzdHVmZiBo
-ZXJlIHdpbGwgc2VlIHRoZSBlbWFpbAo+ID4gc28geW91IGhhdmUgbW9yZSBjaGFuY2Ugb2Ygc29t
-ZW9uZSByZXBseWluZy4gQWxzbyBjb252aWVudCBmb3IKPiA+IHdoZW4gcGVvcGxlIGxlYXZlIHRo
-ZSBjb21wYW55IGV0Yy4gbWFrZXMgZm9yIGFuIGVhc3kgdHJhbnNpdGlvbi4KPiA+IEkgYW0gYWZy
-YWlkIHRob3VnaCB0aGF0IGFzIGluIHRoaXMgY2FzZSB5b3UgYXJlIG5vdCBhbHdheXMgZ29pbmcK
-PiA+IHRvIGdldCBhIHJlcGx5IG92ZXIgdGhlIHdlZWtlbmQuCj4gCj4gV2VsbC4uIG1haW50YWlu
-ZXIgaXMgYSByZXNwb25zaWJsZSBwZXJzb24uIFllcywgeW91IGNhbiBsaXN0IGEgbWFpbGluZwo+
-IGxpc3QgaW4gbWFpbnRhaW5lcnMgZmlsZS4uIGJ1dCBtYWlsaW5nIGxpc3QgaXMgbm90IGdvaW5n
-IHRvIGJlCj4gcmVzcG9uc2libGUgZm9yIHRoYXQuCj4gCj4gSGF2aW5nIGEgcmVhbCBuYW1lIG9m
-IHBlcnNvbiBoZWxwczsgaWYgeW91ciBuYW1lIHdhcyBsaXN0ZWQgdGhlcmUsIEknZAo+IGtub3cg
-eW91IChhcmUgc3VwcG9zZWQgdG8gYmUpIGF1dGhvcml0YXRpdmUgcGVyc29uIGZvciB0aGlzLgo+
-IAo+IEkgc2VlIGl0IHdpbGwgbmVlZCB0byBiZSB1cGRhdGVkIGZyb20gdGltZSB0byB0aW1lLCBi
-dXQgaGF2aW5nIG5hbWUKPiByZWFsbHkgaGVscHMuCgpBIE1haWxpbmcgTGlzdCBpcyBwZXJmZWN0
-bHkgYWRlcXVhdGUgZm9yIGRyaXZlcnMgd2hpY2ggcmVzaWRlIGluIGEKbWFpbnRhaW5lZCBzdWJz
-eXN0ZW0uICBObyByZXF1aXJlbWVudCB0byBzdWJtaXQgbmFtZXMsIHBhcnRpY3VsYXJseSBpZgp0
-aGVyZSBhcmUgbG90cyBvZiBhdXRob3JpdGllcyBwZXJzb25uZWwgb3IgaWYgdGhlIHBlcnNvbmFs
-aXRpZXMgY2hhbmdlCnJlZ3VsYXJseS4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVj
-dHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0
-d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxv
-ZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 11/21/2015 01:45 PM, Mark Brown wrote:
+> On Fri, Nov 20, 2015 at 10:11:00AM +0100, Moise Gergaud wrote:
+>> Hello,
+>
+> Please don't top post, reply in line deleting unneeded text.  This
+> provides relevant context so people reading your mail can understand
+> what you are talking about.
+>
+>> To be compliant with SPDIF & HDMI-1.4 by using aplay, driver needs to set
+>> the channel status sampling freq = runtime rate; because channel status
+>> sampling freq is not set by aplay.
+>> For HBRA, the application set the channel status sampling freq (that is
+>> different than the runtime rate).
+>> => by taking into account the 2 above cases, for each pcm session, driver
+>> shall be able to detect if the channel status sampling freq has already been
+>> set and set it if needed.
+>
+>> And also for robustness purpose: in case the channel status sampling freq is
+>> not set by the application, I think the driver shall set it.
+>
+> None of this addresses my concern, sorry - your change is just trashing
+> all the settings that the application is setting.  This is not what we
+> normally do with controls and is going to break correctly functioning
+> applications that play audio with the same parameters repeatedly.
+>
+>> Maybe I can limit my patch by resetting only the channel status sampling
+>> freq on close (actual patch reset all the fields of the channel status).
+>
+> This isn't something you should be inventing policies for in a single
+> driver, the kernel needs to offer consistent interfaces to applications
+> no matter which particular hardware the system is running.  If we want
+> to do something here it should be done at ALSA level.  It does seem like
+> a reasonable idea to put the sample rate into kernel control, I can't
+> think of a situation where we'd want to advertise the wrong sample rate,
+> but it does need to be in the core not a specific driver.
+>
+
+Agree that this should be done at ALSA level.
+Taking into consideration this will be done at ALSA level, I still need 
+to correct ASOC STI driver: force the iec958 channel status sampling 
+rate to the runtime rate without any condition. I'll provide patch V2.
