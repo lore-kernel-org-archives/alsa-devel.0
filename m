@@ -1,89 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: remove unused variable" to the
-	asoc tree
-Date: Mon, 23 Nov 2015 11:41:02 +0000
-Message-ID: <E1a0pUU-0005Sc-Hg@debutante>
-References: <4929159.b95vLdVRYU@wuerfel>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: RE: [PATCH v3 1/2] ASoC: da7218: Add bindings documentation for
+ DA7218 audio codec
+Date: Mon, 23 Nov 2015 11:51:39 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460ED28@SW-EX-MBX01.diasemi.com>
+References: <cover.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
+ <add67c0ebac7a516d3cf515fea10a08b7cabadbc.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151120155351.GA13917@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05EEE2652D7
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:10 +0100 (CET)
-In-Reply-To: <4929159.b95vLdVRYU@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151120155351.GA13917@rob-hp-laptop>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rcar: remove unused variable
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ccae40fa973f5b0eec5d5ad27e81c5a2b95f7b7c Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 23 Nov 2015 10:35:54 +0100
-Subject: [PATCH] ASoC: rcar: remove unused variable
-
-After a recent cleanup, the soc_card variable became unused
-and now produces a warning:
-
-soc/sh/rcar/core.c: In function '__rsnd_kctrl_new':
-soc/sh/rcar/core.c:801:23: warning: unused variable 'soc_card' [-Wunused-variable]
-
-This removes the variable.
-
-Fixes: 1a497983a5ae ("ASoC: Change the PCM runtime array to a list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/core.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 81a6bdb6848c..247c3d248257 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -798,7 +798,6 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
- 			    void (*update)(struct rsnd_dai_stream *io,
- 					   struct rsnd_mod *mod))
- {
--	struct snd_soc_card *soc_card = rtd->card;
- 	struct snd_card *card = rtd->card->snd_card;
- 	struct snd_kcontrol *kctrl;
- 	struct snd_kcontrol_new knew = {
--- 
-2.6.2
+T24gTm92ZW1iZXIgMjAsIDIwMTUgMTU6NTQsIFJvYiBIZXJyaW5nIHdyb3RlOg0KDQo+ID4gKy0g
+ZGxnLG1pY2JpYXMxLWx2bC1taWxsaXZvbHQgOiBWb2x0YWdlIChtVikgZm9yIE1pYyBCaWFzIDEN
+Cj4gPiArCVs8MTIwMD4sIDwxNjAwPiwgPDE4MDA+LCA8MjAwMD4sIDwyMjAwPiwgPDI0MDA+LCA8
+MjYwMD4sIDwyODAwPiwNCj4gPDMwMDA+XQ0KPiA+ICstIGRsZyxtaWNiaWFzMi1sdmwtbWlsbGl2
+b2x0IDogVm9sdGFnZSAobVYpIGZvciBNaWMgQmlhcyAyDQo+ID4gKwlbPDEyMDA+LCA8MTYwMD4s
+IDwxODAwPiwgPDIwMDA+LCA8MjIwMD4sIDwyNDAwPiwgPDI2MDA+LCA8MjgwMD4sDQo+IDwzMDAw
+Pl0NCj4gPiArLSBkbGcsbWljMS1hbXAtaW4tc2VsIDogTWljMSBpbnB1dCBzb3VyY2UgdHlwZQ0K
+PiA+ICsJWyJkaWZmIiwgInNlX3AiLCAic2VfbiJdDQo+ID4gKy0gZGxnLG1pYzItYW1wLWluLXNl
+bCA6IE1pYzIgaW5wdXQgc291cmNlIHR5cGUNCj4gPiArCVsiZGlmZiIsICJzZV9wIiwgInNlX24i
+XQ0KPiA+ICstIGRsZyxkbWljMS1kYXRhLXNlbCA6IERNSUMxIGNoYW5uZWwgc2VsZWN0IGJhc2Vk
+IG9uIGNsb2NrIGVkZ2UuDQo+ID4gKwlbImxyaXNlX3JmYWxsIiwgImxmYWxsX3JyaXNlIl0NCj4g
+PiArLSBkbGcsZG1pYzEtc2FtcGxlcGhhc2UgOiBXaGVuIHRvIHNhbXBsZSBhdWRpbyBmcm9tIERN
+SUMxLg0KPiA+ICsJWyJvbl9jbGtlZGdlIiwgImJldHdlZW5fY2xrZWRnZSJdDQo+ID4gKy0gZGxn
+LGRtaWMxLWNsa3JhdGUtaGVydHogOiBETWljMSBjbG9jayBmcmVxdWVuY3kgKEh6KS4NCj4gDQo+
+IC1oeg0KPiANCj4gRG9jdW1lbnRpbmcgdGhlIHVuaXQgc3VmZml4ZXMgaXMgb24gbXkgdG9kbyBs
+aXN0Li4uDQoNClNvIGlzIHRoZSBnZW5lcmFsIHJ1bGUgdG8gdXNlIGFiYnJldmlhdGVkIHN1ZmZp
+eGVzLCBhcGFydCBmcm9tIG1pbGxpdm9sdHMsDQptaWNyb3ZvbHRzLCBldGMsIG9yIGFyZSB0aGVy
+ZSBzb21lIG90aGVyIHJ1bGVzIHRoYXQgSSBzaG91bGQgYmUgYXdhcmUgb2Y/IEkNCmRvbid0IHdh
+bnQgdG8gaGF2ZSB0byBrZWVwIHJlLXN1Ym1pdHRpbmcgcGF0Y2hlcyBpbiB0aGUgZnV0dXJlIGJl
+Y2F1c2UgSSdtIG5vdA0KZm9sbG93aW5nIGEgcnVsZSBJIGhhdmUgbm8gd2F5IG9mIGtub3dpbmcg
+YWJvdXQ/DQoNCj4gPiArCVs8MTUwMDAwMD4sIDwzMDAwMDAwPl0NCj4gPiArLSBkbGcsZG1pYzIt
+ZGF0YS1zZWwgOiBETWljMiBjaGFubmVsIHNlbGVjdCBiYXNlZCBvbiBjbG9jayBlZGdlLg0KPiA+
+ICsJWyJscmlzZV9yZmFsbCIsICJsZmFsbF9ycmlzZSJdDQo+ID4gKy0gZGxnLGRtaWMyLXNhbXBs
+ZXBoYXNlIDogV2hlbiB0byBzYW1wbGUgYXVkaW8gZnJvbSBETWljMi4NCj4gPiArCVsib25fY2xr
+ZWRnZSIsICJiZXR3ZWVuX2Nsa2VkZ2UiXQ0KPiA+ICstIGRsZyxkbWljMi1jbGtyYXRlLWhlcnR6
+IDogRE1pYzIgY2xvY2sgZnJlcXVlbmN5IChIeikuDQo+IA0KPiAtaHoNCj4gDQo+ID4gKwlbPDE1
+MDAwMDA+LCA8MzAwMDAwMD5dDQo+ID4gKy0gZGxnLGhwLWRpZmYtc2luZ2xlLXN1cHBseSA6IEJv
+b2xlYW4gZmxhZywgdXNlIHNpbmdsZSBzdXBwbHkgZm9yIEhQDQo+ID4gKwkJCSAgICAgIChEQTcy
+MTcgb25seSkNCj4gPiArDQo+ID4gKz09PT09PQ0KPiA+ICsNCj4gPiArT3B0aW9uYWwgQ2hpbGQg
+bm9kZSAtICdkYTcyMThfaHBsZGV0JyAoREE3MjE4IG9ubHkpOg0KPiA+ICsNCj4gPiArT3B0aW9u
+YWwgcHJvcGVydGllczoNCj4gPiArLSBkbGcsamFjay1yYXRlLW1pY3Jvc2Vjb25kIDogVGltZSBi
+ZXR3ZWVuIGphY2sgZGV0ZWN0IG1lYXN1cmVtZW50cyAodXMpDQo+IA0KPiAtdXMNCj4gDQo+IENv
+bXBsZXRlbHkgY29uc2lzdGVudCwgaXNuJ3QgaXQuIFdoeSB3ZSBkaWQgLW1pY3Jvdm9sdCBJIGRv
+bid0IGtub3cuDQoNCkkgd291bGQgZ3Vlc3MgdGhpcyBpcyBkdWUgdG8gdGhlIGFsbCBsb3dlci1j
+YXNlIHJ1bGUsIGFzICd1dicgZG9lc24ndCBsb29rIHJpZ2h0DQp3aGVuIGluZGljYXRpbmcgbWlj
+cm92b2x0cy4gTWF5YmUgdGhlIGxvd2VyLWNhc2UgcnVsZSBzaG91bGQgbm90IGFwcGx5IGZvcg0K
+YWJicmV2aWF0aW9ucyBsaWtlIHRoaXMgc28gd2UgY2FuIHVzZSAnbVYnLCAndVYnLCBldGMuLi4/
+IEluIHRoZW9yeSB0aGVuIGl0DQpjb3VsZCBiZSAnSHonIGFzIHdlbGwsIGlmIHdlJ3JlIGJlaW5n
+IGFic29sdXRlbHkgY29ycmVjdC4NCg==
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
