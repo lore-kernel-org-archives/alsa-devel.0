@@ -1,62 +1,91 @@
-From: zhangfei <zhangfei.gao@linaro.org>
-Subject: Re: [PATCH] ASoC: pxa: remove incorrect do_div() call
-Date: Mon, 23 Nov 2015 16:10:49 +0800
-Message-ID: <5652CA09.5080101@linaro.org>
-References: <7580645.enu4DmUPIv@wuerfel>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: multi-codec support for arizona-ldo1 was Re:
+ System with multiple arizona (wm5102) codecs
+Date: Mon, 23 Nov 2015 08:18:57 +0000
+Message-ID: <20151123081857.GF3098@x1>
+References: <20151013115355.GC14956@sirena.org.uk> <20151113215812.GA19020@amd>
+ <20151113225355.GU12392@sirena.org.uk> <20151114074400.GA7898@amd>
+ <20151114123931.GW12392@sirena.org.uk> <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk> <20151114211633.GE20429@amd>
+ <20151116141142.GE18889@ck-lbox> <20151122065140.GC26074@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7580645.enu4DmUPIv@wuerfel>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Leo Yan <leoy@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75A372651AF
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 09:19:01 +0100 (CET)
+Received: by wmww144 with SMTP id w144so93615218wmw.0
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 00:19:00 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20151122065140.GC26074@amd>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 11/20/2015 05:32 PM, Arnd Bergmann wrote:
-> The new optimized do_div implementation (now in asm-generic/next) exposes a
-> glitch in the brownstone audio driver by producing a compile-time warning:
->
-> sound/soc/pxa/brownstone.c: In function 'brownstone_wm8994_hw_params':
-> sound/soc/pxa/brownstone.c:67:85: warning: comparison of distinct pointer types lacks a cast
-> sound/soc/pxa/brownstone.c:67:10125: warning: right shift count >= width of type [-Wshift-count-overflow]
-> sound/soc/pxa/brownstone.c:67:10254: warning: passing argument 1 of '__div64_32' from incompatible pointer type [-Wincompatible-pointer-types]
->
-> The driver just divides two plain integer values, so it should not
-> use do_div to start with, but has apparently done so ever since the
-> code was first merged. This replaces do_div with a simple division
-> operator.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I think this one is harmless, so we only need it in 4.5 to avoid the warning,
-> but not backported to earlier kernels.
->
-> Found today on ARM allmodconfig
->
-> diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-> index 6147e86e9b0f..416ea646c3b1 100644
-> --- a/sound/soc/pxa/brownstone.c
-> +++ b/sound/soc/pxa/brownstone.c
-> @@ -63,8 +63,7 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
->   		sysclk    = params_rate(params) * 512;
->   		sspa_mclk = params_rate(params) * 64;
->   	}
-> -	sspa_div = freq_out;
-> -	do_div(sspa_div, sspa_mclk);
-> +	sspa_div = freq_out / sspa_mclk;
->
->   	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
->   	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
->
-
-Thanks Arnd.
-
-Looks sspa_div is not used at all.
-So we can remove sspa_div as well as do_div.
-
-What do you think.
-
-Thanks
+T24gU3VuLCAyMiBOb3YgMjAxNSwgUGF2ZWwgTWFjaGVrIHdyb3RlOgoKPiBPbiBNb24gMjAxNS0x
+MS0xNiAxNDoxMTo0MiwgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cj4gPiBPbiBTYXQsIE5vdiAxNCwg
+MjAxNSBhdCAxMDoxNjozM1BNICswMTAwLCBQYXZlbCBNYWNoZWsgd3JvdGU6Cj4gPiA+IEhpT24g
+U2F0IDIwMTUtMTEtMTQgMTg6NDk6NDAsIE1hcmsgQnJvd24gd3JvdGU6Cj4gPiA+ID4gT24gU2F0
+LCBOb3YgMTQsIDIwMTUgYXQgMDY6NTk6MTZQTSArMDEwMCwgUGF2ZWwgTWFjaGVrIHdyb3RlOgo+
+ID4gPiA+IAo+ID4gPiA+ID4gV2VsbCwgbWZkX2NvcmUuYyBzZWVtcyB0byBjYWxsIHJlZ3VsYXRv
+cl9idWxrX3JlZ2lzdGVyX3N1cHBseV9hbGlhcygpCj4gPiA+ID4gPiB3aXRoIGRldmljZSB0aGF0
+IGRvZXMgbm90IGhhdmUgZGV2X25hbWUgaW5pdGlhbGl6ZWQuCj4gPiA+ID4gCj4gPiA+ID4gT0ss
+IHRoYXQnbGwgYmUgdGhlIHByb2JsZW0gdGhlbiAtIHdlJ3JlIG5vdCBtYXBwaW5nIHRoZSBzdXBw
+bHkgaW50byB0aGUKPiA+ID4gPiBpbmRpdmlkdWFsIGNoaWxkIGRldmljZSBidXQgcmF0aGVyIHN5
+c3RlbSB3aWRlLCBwcm9iYWJseSBiZWNhdXNlIHRoYXQKPiA+ID4gPiBtYXBwaW5nIGlzIGJlaW5n
+IGRvbmUgdG9vIGVhcmx5LCBiZWZvcmUgd2UndmUgYWN0dWFsbHkgY3JlYXRlZCB0aGUKPiA+ID4g
+PiBkZXZpY2UuCj4gPiA+IAo+ID4gPiBUYWtlIGEgbG9vayBhdCBtZmRfYWRkX2RldmljZSgpLiBZ
+ZXMsIHdlIGRvCj4gPiA+IHJlZ3VsYXRvcl9idWxrX3JlZ2lzdGVyX3N1cHBseV9hbGlhcygpIGJl
+Zm9yZSBkb2luZwo+ID4gPiBwbGF0Zm9ybV9kZXZpY2VfYWRkKCkuCj4gPiA+IAo+ID4gPiA+ID4g
+cmVndWxhdG9yX2J1bGtfcmVnaXN0ZXJfc3VwcGx5X2FsaWFzKCkgcmVzdWx0cyBpbiAiQWRkaW5n
+IGFsaWFzIgo+ID4gPiA+ID4gc3R1ZmYsIGFuZCB0aGVuIGRyaXZlcnMvcmVndWxhdG9yL2FyaXpv
+bmEtbWljc3VwcC5jIHRyaWVzIHRvIHJlZ2lzdGVyCj4gPiA+ID4gPiBhbm90aGVyICJNSUNWREQi
+Lgo+ID4gPiA+IAo+ID4gPiA+IFRoYXQncyBmaW5lIGJlY2F1c2UgYWxsIHN1cHBsaWVzIHNob3Vs
+ZCBiZSBuYW1lc3BhY2VkIHdpdGggYSBkZXZpY2UuCj4gPiA+ID4gVGhlIGdvYWwgaXMgdG8gc2F5
+ICJTdXBwbHkgWCBvbiBkZXZpY2UgWSIgKHdlIGRvIHN1cHBvcnQgZXhjZXB0aW9ucyBmb3IKPiA+
+ID4gPiB0aGUgZmV3IGNhc2VzIHdoZXJlIHRoZXJlIGFyZSBub3QgeWV0IGFueSBkZXZpY2VzIGlu
+dm9sdmVkIGJ1dCB0aGlzCj4gPiA+ID4gY2xlYXJseSBpc24ndCBvbmUgb2YgdGhlbSkuCj4gPiAK
+PiA+IEluZGVlZCB0aGF0IHNob3VsZCBiZSB0aGUgY2FzZS4KPiA+IAo+ID4gPiAKPiA+ID4gV2Vs
+bCwgY2xlYXJseSBzb21lb25lIHNob3VsZCB0ZWxsIHRoYXQgdG8gd201MTAyCj4gPiA+IG1haW50
+YWluZXJzLiBIbW0uIEl0IGxvb2tzIGxpa2UgZHJpdmVyIGlzIG1hcmtlZCBzdXBwb3J0ZWQgYnV0
+IHRoZXJlCj4gPiA+IGFyZSBubyBuYW1lcyBhdHRhY2hlZD8KPiA+ID4gCj4gPiA+IFdPTEZTT04g
+TUlDUk9FTEVDVFJPTklDUyBEUklWRVJTCj4gPiA+IEw6ICAgICAgcGF0Y2hlc0BvcGVuc291cmNl
+LndvbGZzb25taWNyby5jb20KPiA+ID4gVDogICAgICBnaXQgZ2l0Oi8vb3BlbnNvdXJjZS53b2xm
+c29ubWljcm8uY29tL2xpbnV4LTIuNi1hc29jCj4gPiA+IFQ6ICAgICAgZ2l0IGdpdDovL29wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbS9saW51eC0yLjYtYXVkaW9wbHVzCj4gPiA+IFc6Cj4gPiA+
+IGh0dHA6Ly9vcGVuc291cmNlLndvbGZzb25taWNyby5jb20vY29udGVudC9saW51eC1kcml2ZXJz
+LXdvbGZzb24tZGV2aWNlXAo+ID4gPiBzCj4gPiA+IFM6ICAgICAgU3VwcG9ydGVkCj4gPiA+IAo+
+ID4gPiBJIGd1ZXNzIENoYXJsZXMgS2VlcGF4IHNob3VsZCBiZSBsaXN0ZWQgdGhlcmU/Cj4gPiAK
+PiA+IFRoZSBwYXRjaGVzIG1haWxpbmcgbGlzdCBmdW5jdGlvbnMgYXMgbWFpbnRhaW5lciBoZXJl
+LiBUaGF0IHdheQo+ID4gYW55b25lIHdobyB3b3JrcyBvbiB1cHN0cmVhbSBMaW51eCBzdHVmZiBo
+ZXJlIHdpbGwgc2VlIHRoZSBlbWFpbAo+ID4gc28geW91IGhhdmUgbW9yZSBjaGFuY2Ugb2Ygc29t
+ZW9uZSByZXBseWluZy4gQWxzbyBjb252aWVudCBmb3IKPiA+IHdoZW4gcGVvcGxlIGxlYXZlIHRo
+ZSBjb21wYW55IGV0Yy4gbWFrZXMgZm9yIGFuIGVhc3kgdHJhbnNpdGlvbi4KPiA+IEkgYW0gYWZy
+YWlkIHRob3VnaCB0aGF0IGFzIGluIHRoaXMgY2FzZSB5b3UgYXJlIG5vdCBhbHdheXMgZ29pbmcK
+PiA+IHRvIGdldCBhIHJlcGx5IG92ZXIgdGhlIHdlZWtlbmQuCj4gCj4gV2VsbC4uIG1haW50YWlu
+ZXIgaXMgYSByZXNwb25zaWJsZSBwZXJzb24uIFllcywgeW91IGNhbiBsaXN0IGEgbWFpbGluZwo+
+IGxpc3QgaW4gbWFpbnRhaW5lcnMgZmlsZS4uIGJ1dCBtYWlsaW5nIGxpc3QgaXMgbm90IGdvaW5n
+IHRvIGJlCj4gcmVzcG9uc2libGUgZm9yIHRoYXQuCj4gCj4gSGF2aW5nIGEgcmVhbCBuYW1lIG9m
+IHBlcnNvbiBoZWxwczsgaWYgeW91ciBuYW1lIHdhcyBsaXN0ZWQgdGhlcmUsIEknZAo+IGtub3cg
+eW91IChhcmUgc3VwcG9zZWQgdG8gYmUpIGF1dGhvcml0YXRpdmUgcGVyc29uIGZvciB0aGlzLgo+
+IAo+IEkgc2VlIGl0IHdpbGwgbmVlZCB0byBiZSB1cGRhdGVkIGZyb20gdGltZSB0byB0aW1lLCBi
+dXQgaGF2aW5nIG5hbWUKPiByZWFsbHkgaGVscHMuCgpBIE1haWxpbmcgTGlzdCBpcyBwZXJmZWN0
+bHkgYWRlcXVhdGUgZm9yIGRyaXZlcnMgd2hpY2ggcmVzaWRlIGluIGEKbWFpbnRhaW5lZCBzdWJz
+eXN0ZW0uICBObyByZXF1aXJlbWVudCB0byBzdWJtaXQgbmFtZXMsIHBhcnRpY3VsYXJseSBpZgp0
+aGVyZSBhcmUgbG90cyBvZiBhdXRob3JpdGllcyBwZXJzb25uZWwgb3IgaWYgdGhlIHBlcnNvbmFs
+aXRpZXMgY2hhbmdlCnJlZ3VsYXJseS4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVj
+dHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0
+d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxv
+ZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
