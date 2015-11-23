@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: fix memory leak" to the
+Subject: Applied "ASoC: rcar: remove unused variable" to the
 	asoc tree
-Date: Mon, 23 Nov 2015 11:41:00 +0000
-Message-ID: <E1a0pUS-0005Rg-Nh@debutante>
-References: <1448276928-9081-1-git-send-email-sudipm.mukherjee@gmail.com>
+Date: Mon, 23 Nov 2015 11:41:02 +0000
+Message-ID: <E1a0pUU-0005Sc-Hg@debutante>
+References: <4929159.b95vLdVRYU@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 58740265326
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:11 +0100 (CET)
-In-Reply-To: <1448276928-9081-1-git-send-email-sudipm.mukherjee@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 05EEE2652D7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:10 +0100 (CET)
+In-Reply-To: <4929159.b95vLdVRYU@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: fix memory leak
+   ASoC: rcar: remove unused variable
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Mon, 23 Nov 2015 16:38:48 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: fix memory leak
+>From ccae40fa973f5b0eec5d5ad27e81c5a2b95f7b7c Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 23 Nov 2015 10:35:54 +0100
+Subject: [PATCH] ASoC: rcar: remove unused variable
 
-We have requested the firmware but missed releasing it.
+After a recent cleanup, the soc_card variable became unused
+and now produces a warning:
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+soc/sh/rcar/core.c: In function '__rsnd_kctrl_new':
+soc/sh/rcar/core.c:801:23: warning: unused variable 'soc_card' [-Wunused-variable]
+
+This removes the variable.
+
+Fixes: 1a497983a5ae ("ASoC: Change the PCM runtime array to a list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sh/rcar/core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a7854c8fc523..ffea427aeca8 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1240,6 +1240,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 	 */
- 	ret = snd_soc_tplg_component_load(&platform->component,
- 					&skl_tplg_ops, fw, 0);
-+	release_firmware(fw);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
- 		return -EINVAL;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 81a6bdb6848c..247c3d248257 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -798,7 +798,6 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
+ 			    void (*update)(struct rsnd_dai_stream *io,
+ 					   struct rsnd_mod *mod))
+ {
+-	struct snd_soc_card *soc_card = rtd->card;
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_kcontrol *kctrl;
+ 	struct snd_kcontrol_new knew = {
 -- 
 2.6.2
