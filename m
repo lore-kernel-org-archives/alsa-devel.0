@@ -1,17 +1,15 @@
 From: libin.yang@linux.intel.com
 Subject: [RFC V2 PATCH 0/5] hdmi audio dynamically bind PCM to
 	pin
-Date: Mon, 23 Nov 2015 22:09:29 +0800
-Message-ID: <1448287774-146673-2-git-send-email-libin.yang@linux.intel.com>
-References: <1448287774-146673-1-git-send-email-libin.yang@linux.intel.com>
+Date: Mon, 23 Nov 2015 22:09:28 +0800
+Message-ID: <1448287774-146673-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E4D1B265347
+ by alsa0.perex.cz (Postfix) with ESMTP id E4A8D26145E
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:12:25 +0100 (CET)
-In-Reply-To: <1448287774-146673-1-git-send-email-libin.yang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
