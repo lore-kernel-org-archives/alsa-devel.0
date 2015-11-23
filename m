@@ -1,50 +1,62 @@
-From: "Wu, Songjun" <songjun.wu@atmel.com>
-Subject: Re: [PATCH] ASoC: Atmel: ClassD: Set GCK's parent clock
-Date: Mon, 23 Nov 2015 11:01:54 +0800
-Message-ID: <565281A2.4050500@atmel.com>
-References: <1447903590-3285-1-git-send-email-songjun.wu@atmel.com>
- <20151120180854.GD1929@sirena.org.uk>
+From: zhangfei <zhangfei.gao@linaro.org>
+Subject: Re: [PATCH] ASoC: pxa: remove incorrect do_div() call
+Date: Mon, 23 Nov 2015 16:10:49 +0800
+Message-ID: <5652CA09.5080101@linaro.org>
+References: <7580645.enu4DmUPIv@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
- by alsa0.perex.cz (Postfix) with ESMTP id C45BE265158
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 04:02:10 +0100 (CET)
-In-Reply-To: <20151120180854.GD1929@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <7580645.enu4DmUPIv@wuerfel>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Leo Yan <leoy@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 11/21/2015 02:08, Mark Brown wrote:
-> On Thu, Nov 19, 2015 at 11:26:30AM +0800, Songjun Wu wrote:
->> Set GCK's parent clock as audio clock, make
->> sure the GCK's parent clock is audio clock.
+On 11/20/2015 05:32 PM, Arnd Bergmann wrote:
+> The new optimized do_div implementation (now in asm-generic/next) exposes a
+> glitch in the brownstone audio driver by producing a compile-time warning:
 >
->> +	ret = clk_set_parent(dd->gclk, dd->aclk);
->> +	if (ret) {
->> +		dev_err(dev, "failed to set GCK parent clock: %d\n", ret);
->> +		return ret;
->> +	}
+> sound/soc/pxa/brownstone.c: In function 'brownstone_wm8994_hw_params':
+> sound/soc/pxa/brownstone.c:67:85: warning: comparison of distinct pointer types lacks a cast
+> sound/soc/pxa/brownstone.c:67:10125: warning: right shift count >= width of type [-Wshift-count-overflow]
+> sound/soc/pxa/brownstone.c:67:10254: warning: passing argument 1 of '__div64_32' from incompatible pointer type [-Wincompatible-pointer-types]
 >
-> Why are we doing this in the driver?  This should be done by whatever
-> creates the clock tree, not by the driver that uses the clocks - that
-> way if some future SoC has a different clock tree the driver will
-> continue to work.
+> The driver just divides two plain integer values, so it should not
+> use do_div to start with, but has apparently done so ever since the
+> code was first merged. This replaces do_div with a simple division
+> operator.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I think this one is harmless, so we only need it in 4.5 to avoid the warning,
+> but not backported to earlier kernels.
+>
+> Found today on ARM allmodconfig
+>
+> diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+> index 6147e86e9b0f..416ea646c3b1 100644
+> --- a/sound/soc/pxa/brownstone.c
+> +++ b/sound/soc/pxa/brownstone.c
+> @@ -63,8 +63,7 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+>   		sysclk    = params_rate(params) * 512;
+>   		sspa_mclk = params_rate(params) * 64;
+>   	}
+> -	sspa_div = freq_out;
+> -	do_div(sspa_div, sspa_mclk);
+> +	sspa_div = freq_out / sspa_mclk;
+>
+>   	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+>   	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
 >
 
-You are right. The GCK's parent clock should be assigned in device tree, 
-not in the driver. The DT binding for classD should be modified to set 
-the GCK's parent clock as audio clock.
-Thank you.
+Thanks Arnd.
+
+Looks sspa_div is not used at all.
+So we can remove sspa_div as well as do_div.
+
+What do you think.
+
+Thanks
