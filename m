@@ -1,62 +1,57 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Subject: RE: [PATCH v3 1/2] ASoC: da7218: Add bindings documentation for
- DA7218 audio codec
-Date: Mon, 23 Nov 2015 11:51:39 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D460ED28@SW-EX-MBX01.diasemi.com>
-References: <cover.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
- <add67c0ebac7a516d3cf515fea10a08b7cabadbc.1447941395.git.Adam.Thomson.Opensource@diasemi.com>
- <20151120155351.GA13917@rob-hp-laptop>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: multi-codec support for arizona-ldo1 was Re:
+ System with multiple arizona (wm5102) codecs
+Date: Mon, 23 Nov 2015 11:46:37 +0000
+Message-ID: <20151123114637.GI18889@ck-lbox>
+References: <20151114123931.GW12392@sirena.org.uk> <20151114175915.GA20429@amd>
+ <20151114184940.GY12392@sirena.org.uk> <20151114211633.GE20429@amd>
+ <20151116141142.GE18889@ck-lbox> <20151122065140.GC26074@amd>
+ <20151123081857.GF3098@x1> <20151123101145.GA1452@amd>
+ <1448274322.3536.45.camel@rf-debian.wolfsonmicro.main>
+ <20151123113041.GG1929@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20151120155351.GA13917@rob-hp-laptop>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74A372650DB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 13:02:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151123113041.GG1929@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTm92ZW1iZXIgMjAsIDIwMTUgMTU6NTQsIFJvYiBIZXJyaW5nIHdyb3RlOg0KDQo+ID4gKy0g
-ZGxnLG1pY2JpYXMxLWx2bC1taWxsaXZvbHQgOiBWb2x0YWdlIChtVikgZm9yIE1pYyBCaWFzIDEN
-Cj4gPiArCVs8MTIwMD4sIDwxNjAwPiwgPDE4MDA+LCA8MjAwMD4sIDwyMjAwPiwgPDI0MDA+LCA8
-MjYwMD4sIDwyODAwPiwNCj4gPDMwMDA+XQ0KPiA+ICstIGRsZyxtaWNiaWFzMi1sdmwtbWlsbGl2
-b2x0IDogVm9sdGFnZSAobVYpIGZvciBNaWMgQmlhcyAyDQo+ID4gKwlbPDEyMDA+LCA8MTYwMD4s
-IDwxODAwPiwgPDIwMDA+LCA8MjIwMD4sIDwyNDAwPiwgPDI2MDA+LCA8MjgwMD4sDQo+IDwzMDAw
-Pl0NCj4gPiArLSBkbGcsbWljMS1hbXAtaW4tc2VsIDogTWljMSBpbnB1dCBzb3VyY2UgdHlwZQ0K
-PiA+ICsJWyJkaWZmIiwgInNlX3AiLCAic2VfbiJdDQo+ID4gKy0gZGxnLG1pYzItYW1wLWluLXNl
-bCA6IE1pYzIgaW5wdXQgc291cmNlIHR5cGUNCj4gPiArCVsiZGlmZiIsICJzZV9wIiwgInNlX24i
-XQ0KPiA+ICstIGRsZyxkbWljMS1kYXRhLXNlbCA6IERNSUMxIGNoYW5uZWwgc2VsZWN0IGJhc2Vk
-IG9uIGNsb2NrIGVkZ2UuDQo+ID4gKwlbImxyaXNlX3JmYWxsIiwgImxmYWxsX3JyaXNlIl0NCj4g
-PiArLSBkbGcsZG1pYzEtc2FtcGxlcGhhc2UgOiBXaGVuIHRvIHNhbXBsZSBhdWRpbyBmcm9tIERN
-SUMxLg0KPiA+ICsJWyJvbl9jbGtlZGdlIiwgImJldHdlZW5fY2xrZWRnZSJdDQo+ID4gKy0gZGxn
-LGRtaWMxLWNsa3JhdGUtaGVydHogOiBETWljMSBjbG9jayBmcmVxdWVuY3kgKEh6KS4NCj4gDQo+
-IC1oeg0KPiANCj4gRG9jdW1lbnRpbmcgdGhlIHVuaXQgc3VmZml4ZXMgaXMgb24gbXkgdG9kbyBs
-aXN0Li4uDQoNClNvIGlzIHRoZSBnZW5lcmFsIHJ1bGUgdG8gdXNlIGFiYnJldmlhdGVkIHN1ZmZp
-eGVzLCBhcGFydCBmcm9tIG1pbGxpdm9sdHMsDQptaWNyb3ZvbHRzLCBldGMsIG9yIGFyZSB0aGVy
-ZSBzb21lIG90aGVyIHJ1bGVzIHRoYXQgSSBzaG91bGQgYmUgYXdhcmUgb2Y/IEkNCmRvbid0IHdh
-bnQgdG8gaGF2ZSB0byBrZWVwIHJlLXN1Ym1pdHRpbmcgcGF0Y2hlcyBpbiB0aGUgZnV0dXJlIGJl
-Y2F1c2UgSSdtIG5vdA0KZm9sbG93aW5nIGEgcnVsZSBJIGhhdmUgbm8gd2F5IG9mIGtub3dpbmcg
-YWJvdXQ/DQoNCj4gPiArCVs8MTUwMDAwMD4sIDwzMDAwMDAwPl0NCj4gPiArLSBkbGcsZG1pYzIt
-ZGF0YS1zZWwgOiBETWljMiBjaGFubmVsIHNlbGVjdCBiYXNlZCBvbiBjbG9jayBlZGdlLg0KPiA+
-ICsJWyJscmlzZV9yZmFsbCIsICJsZmFsbF9ycmlzZSJdDQo+ID4gKy0gZGxnLGRtaWMyLXNhbXBs
-ZXBoYXNlIDogV2hlbiB0byBzYW1wbGUgYXVkaW8gZnJvbSBETWljMi4NCj4gPiArCVsib25fY2xr
-ZWRnZSIsICJiZXR3ZWVuX2Nsa2VkZ2UiXQ0KPiA+ICstIGRsZyxkbWljMi1jbGtyYXRlLWhlcnR6
-IDogRE1pYzIgY2xvY2sgZnJlcXVlbmN5IChIeikuDQo+IA0KPiAtaHoNCj4gDQo+ID4gKwlbPDE1
-MDAwMDA+LCA8MzAwMDAwMD5dDQo+ID4gKy0gZGxnLGhwLWRpZmYtc2luZ2xlLXN1cHBseSA6IEJv
-b2xlYW4gZmxhZywgdXNlIHNpbmdsZSBzdXBwbHkgZm9yIEhQDQo+ID4gKwkJCSAgICAgIChEQTcy
-MTcgb25seSkNCj4gPiArDQo+ID4gKz09PT09PQ0KPiA+ICsNCj4gPiArT3B0aW9uYWwgQ2hpbGQg
-bm9kZSAtICdkYTcyMThfaHBsZGV0JyAoREE3MjE4IG9ubHkpOg0KPiA+ICsNCj4gPiArT3B0aW9u
-YWwgcHJvcGVydGllczoNCj4gPiArLSBkbGcsamFjay1yYXRlLW1pY3Jvc2Vjb25kIDogVGltZSBi
-ZXR3ZWVuIGphY2sgZGV0ZWN0IG1lYXN1cmVtZW50cyAodXMpDQo+IA0KPiAtdXMNCj4gDQo+IENv
-bXBsZXRlbHkgY29uc2lzdGVudCwgaXNuJ3QgaXQuIFdoeSB3ZSBkaWQgLW1pY3Jvdm9sdCBJIGRv
-bid0IGtub3cuDQoNCkkgd291bGQgZ3Vlc3MgdGhpcyBpcyBkdWUgdG8gdGhlIGFsbCBsb3dlci1j
-YXNlIHJ1bGUsIGFzICd1dicgZG9lc24ndCBsb29rIHJpZ2h0DQp3aGVuIGluZGljYXRpbmcgbWlj
-cm92b2x0cy4gTWF5YmUgdGhlIGxvd2VyLWNhc2UgcnVsZSBzaG91bGQgbm90IGFwcGx5IGZvcg0K
-YWJicmV2aWF0aW9ucyBsaWtlIHRoaXMgc28gd2UgY2FuIHVzZSAnbVYnLCAndVYnLCBldGMuLi4/
-IEluIHRoZW9yeSB0aGVuIGl0DQpjb3VsZCBiZSAnSHonIGFzIHdlbGwsIGlmIHdlJ3JlIGJlaW5n
-IGFic29sdXRlbHkgY29ycmVjdC4NCg==
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Mon, Nov 23, 2015 at 11:30:41AM +0000, Mark Brown wrote:
+> On Mon, Nov 23, 2015 at 10:25:22AM +0000, Richard Fitzgerald wrote:
+> > On Mon, 2015-11-23 at 11:11 +0100, Pavel Machek wrote:
+> 
+> > > That's what I'm saying. It is good to know who is the person of
+> > > authority, as you can't tell from the From: address.
+> 
+> > It's unreasonable to expect that one member of the Cirrus software team
+> > has the time to answer every inquiry about our drivers and never goes on
+> > vacation, or that there's only one person who is an authority about the
+> > drivers. There's a mailing list for a reason.
+> 
+> It's perfectly OK to list multiple people - look at how other companies
+> handle this, there's usually two or three people listed.
+
+I don't really object to sticking a few people in here if the
+general feeling is that would be better, but personally I didn't
+see any problem with the current setup.
+
+Shall I do a patch to add a few of us in here?
+
+Thanks,
+Charles
