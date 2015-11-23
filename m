@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac: Fix Makefile and Kconfig sorting"
-	to the asoc tree
-Date: Mon, 23 Nov 2015 14:43:34 +0000
-Message-ID: <E1a0sL8-00088d-8D@debutante>
+Subject: Re: [PATCH 5/5] ASoC: Intel: Use acpi_dev_present
+Date: Mon, 23 Nov 2015 14:48:36 +0000
+Message-ID: <20151123144836.GJ1929@sirena.org.uk>
+References: <cover.1448282995.git.lukas@wunner.de>
+ <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4360483921248136309=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89FE1265357
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:43:40 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B6D6265497
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:48:49 +0100 (CET)
+In-Reply-To: <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,109 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, devel@acpica.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac: Fix Makefile and Kconfig sorting
+--===============4360483921248136309==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/0U0QBNx7JIUZLHm"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--/0U0QBNx7JIUZLHm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Nov 23, 2015 at 03:34:55PM +0100, Lukas Wunner wrote:
+> Use shiny new acpi_dev_present and remove all the boilerplate to search
+> for a particular ACPI device. No functional change.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This will collide with some other work done on the Intel code in -next I
+expect, probably best to merge this via ASoC (so pulling a shared branch
+for the new API) or just wait till 4.5 to do the conversion.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--/0U0QBNx7JIUZLHm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJWUydDAAoJECTWi3JdVIfQBaEH/3RPvMmzRdZ0X5gz8n01wCBe
+gG1Ri0ZJx61GdWCMCnM73LcsluJCtKz+fM3XHakmfHeWZixBK0eWu9o9/+x2Wfg4
+ULaMru3NtBWlGKkvdrya5vfAnO4qWJmxwPoREQcTO+Fkg6GYirnJHWigh7z6fb7/
+/gk9UUYHBkNgcXcoNrePhfyDn79+HK9LjvkV0gUcq7hn7YZ9AeNiQWYq7RchVVSb
+Z2PYrTEipQ4qz+AYyZ41mK1064H+0V/01CTC6NY0KIrC1hf6Xm6dzdemwfdo6Cdt
+VMjyrMksKcVYCJzM/TGmLjAf0Wlr0HVODSVSSiFcjsx8q8gZTRaJ3sDp8tY1uLE=
+=Lof4
+-----END PGP SIGNATURE-----
 
->From 9049a48a33f7e03b69589a5fbb1444cc606d3292 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 23 Nov 2015 14:43:06 +0000
-Subject: [PATCH] ASoC: hdac: Fix Makefile and Kconfig sorting
+--/0U0QBNx7JIUZLHm--
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/Kconfig  | 12 ++++++------
- sound/soc/codecs/Makefile |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
+--===============4360483921248136309==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 5c584dad0af0..8bba374b8860 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -66,8 +66,8 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_ES8328_SPI if SPI_MASTER
- 	select SND_SOC_ES8328_I2C if I2C
- 	select SND_SOC_GTM601
--	select SND_SOC_ICS43432
- 	select SND_SOC_HDAC_HDMI
-+	select SND_SOC_ICS43432
- 	select SND_SOC_ISABELLE if I2C
- 	select SND_SOC_JZ4740_CODEC
- 	select SND_SOC_LM4857 if I2C
-@@ -455,11 +455,6 @@ config SND_SOC_BT_SCO
- config SND_SOC_DMIC
- 	tristate
- 
--config SND_SOC_HDAC_HDMI
--	tristate
--	select SND_HDA_EXT_CORE
--	select HDMI
--
- config SND_SOC_ES8328
- 	tristate "Everest Semi ES8328 CODEC"
- 
-@@ -474,6 +469,11 @@ config SND_SOC_ES8328_SPI
- config SND_SOC_GTM601
- 	tristate 'GTM601 UMTS modem audio codec'
- 
-+config SND_SOC_HDAC_HDMI
-+	tristate
-+	select SND_HDA_EXT_CORE
-+	select HDMI
-+
- config SND_SOC_ICS43432
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 6359bdcf7f89..bcd5ad6b6fb0 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -59,8 +59,8 @@ snd-soc-es8328-objs := es8328.o
- snd-soc-es8328-i2c-objs := es8328-i2c.o
- snd-soc-es8328-spi-objs := es8328-spi.o
- snd-soc-gtm601-objs := gtm601.o
--snd-soc-ics43432-objs := ics43432.o
- snd-soc-hdac-hdmi-objs := hdac_hdmi.o
-+snd-soc-ics43432-objs := ics43432.o
- snd-soc-isabelle-objs := isabelle.o
- snd-soc-jz4740-codec-objs := jz4740.o
- snd-soc-l3-objs := l3.o
-@@ -255,8 +255,8 @@ obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
- obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
- obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
- obj-$(CONFIG_SND_SOC_GTM601)    += snd-soc-gtm601.o
--obj-$(CONFIG_SND_SOC_ICS43432)	+= snd-soc-ics43432.o
- obj-$(CONFIG_SND_SOC_HDAC_HDMI) += snd-soc-hdac-hdmi.o
-+obj-$(CONFIG_SND_SOC_ICS43432)	+= snd-soc-ics43432.o
- obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
--- 
-2.6.2
+
+--===============4360483921248136309==--
