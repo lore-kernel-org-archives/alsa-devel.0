@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Atmel: ClassD: add GCK's parent clock
-	in DT binding" to the asoc tree
-Date: Mon, 23 Nov 2015 11:40:59 +0000
-Message-ID: <E1a0pUR-0005RD-Qd@debutante>
-References: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
+Subject: Applied "ASoC: Intel: Skylake: fix memory leak" to the
+	asoc tree
+Date: Mon, 23 Nov 2015 11:41:00 +0000
+Message-ID: <E1a0pUS-0005Rg-Nh@debutante>
+References: <1448276928-9081-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94C5A26524F
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:09 +0100 (CET)
-In-Reply-To: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 58740265326
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 12:41:11 +0100 (CET)
+In-Reply-To: <1448276928-9081-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Atmel: ClassD: add GCK's parent clock in DT binding
+   ASoC: Intel: Skylake: fix memory leak
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 0f611e2551deeedaafc0f01b8607eb580622b7bb Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@atmel.com>
-Date: Mon, 23 Nov 2015 17:19:58 +0800
-Subject: [PATCH] ASoC: Atmel: ClassD: add GCK's parent clock in DT binding
+>From 87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Mon, 23 Nov 2015 16:38:48 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: fix memory leak
 
-Set GCK's parent as audio clock.
+We have requested the firmware but missed releasing it.
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/atmel-classd.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel-classd.txt b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-index 0018451c4351..549e701cb7a1 100644
---- a/Documentation/devicetree/bindings/sound/atmel-classd.txt
-+++ b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-@@ -16,6 +16,10 @@ Required properties:
- 	Required elements: "pclk", "gclk" and "aclk".
- - clocks
- 	Please refer to clock-bindings.txt.
-+- assigned-clocks
-+	Should be <&classd_gclk>.
-+- assigned-clock-parents
-+	Should be <&audio_pll_pmc>.
- 
- Optional properties:
- - pinctrl-names, pinctrl-0
-@@ -43,6 +47,8 @@ classd: classd@fc048000 {
- 		dma-names = "tx";
- 		clocks = <&classd_clk>, <&classd_gclk>, <&audio_pll_pmc>;
- 		clock-names = "pclk", "gclk", "aclk";
-+		assigned-clocks = <&classd_gclk>;
-+		assigned-clock-parents = <&audio_pll_pmc>;
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_classd_default>;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index a7854c8fc523..ffea427aeca8 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1240,6 +1240,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+ 	 */
+ 	ret = snd_soc_tplg_component_load(&platform->component,
+ 					&skl_tplg_ops, fw, 0);
++	release_firmware(fw);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
+ 		return -EINVAL;
 -- 
 2.6.2
