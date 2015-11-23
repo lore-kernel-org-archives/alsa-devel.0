@@ -1,59 +1,100 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 5/5] ASoC: Intel: Use acpi_dev_present
-Date: Mon, 23 Nov 2015 23:37:14 +0100
-Message-ID: <2021675.v2py4IEzgb@vostro.rjw.lan>
-References: <cover.1448282995.git.lukas@wunner.de> <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de> <20151123144836.GJ1929@sirena.org.uk>
+From: "Moore, Robert" <robert.moore@intel.com>
+Subject: RE: [PATCH 1/5] ACPICA: Add acpi_dev_present
+Date: Mon, 23 Nov 2015 22:22:27 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D998D0C@ORSMSX112.amr.corp.intel.com>
+References: <cover.1448282995.git.lukas@wunner.de>
+ <d66501819cfa8f3d3b07708d3f20e3e20d07e4f8.1448282995.git.lukas@wunner.de>
+ <2726545.001oM5V9lv@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4873364.aXPVcA1JXl"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20151123144836.GJ1929@sirena.org.uk>
+In-Reply-To: <2726545.001oM5V9lv@vostro.rjw.lan>
+Content-Language: en-US
 Sender: linux-acpi-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Lukas Wunner <lukas@wunner.de>, linux-acpi@vger.kernel.org, devel@acpica.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Lukas Wunner <lukas@wunner.de>
+Cc: "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "devel@acpica.org" <devel@acpica.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, Darren Hart <dvhart@infradead.org>, Corentin Chary <corentin.chary@gmail.com>, "Lee, Chun-Yi" <jlee@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, Mark Brown <broonie@kernel.org>, "Zheng, Lv" <lv.zheng@intel.com>, David Box <david.e.box@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---nextPart4873364.aXPVcA1JXl
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-
-On Monday, November 23, 2015 02:48:36 PM Mark Brown wrote:
-> On Mon, Nov 23, 2015 at 03:34:55PM +0100, Lukas Wunner wrote:
-> > Use shiny new acpi_dev_present and remove all the boilerplate to search
-> > for a particular ACPI device. No functional change.
-> 
-> This will collide with some other work done on the Intel code in -next I
-> expect, probably best to merge this via ASoC (so pulling a shared branch
-> for the new API) or just wait till 4.5 to do the conversion.
-
-If patch [1/5] is done the way it is, then it needs to go to upstream ACPICA
-first and from there to Linux, so I guess no worries for now. :-)
-
-Thanks,
-Rafael
-
---nextPart4873364.aXPVcA1JXl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAABCAAGBQJWU5UfAAoJEILEb/54YlRxfA8P+wRcG7MPs3/pD8q7xOYahK2N
-F74TMOCN6Qct2WhCUI0UPZbF8OTvnRuR+UnaVpARcnURzeeX7AGa9n6XcK20aHsJ
-Ra9NWVoz6+yL6OZZZnTWvHhhvgdPIgFFTxfvNTpEOLzZ1Z8DSWEb5wCeeGmrGCt5
-YX+iVRaWgHCOuCyi2pbbOH+e6bid2OR/ozHAxPikysaF33NP06EEt2ownn20/Wf5
-Nn54KqxK+1qHwo5qMmkvP+pSnmhI+h42OsAUS/qFum8KsQ+20e5bHtkS6f0vJCj1
-tsr4m0nxpZ1T/xbjBZ32MYNVhutAcPV0E5jNgSVVO+q/3vbGyCS/ghhDCoFh3hJA
-LFDKl1PXXU/l949sF36Bn6N7paPuUyGSZc+IqOw9dRiQ+9EenSipzfp7pKU5ROMs
-Fhk3oDtHPFbShNq6mbS11wpnySgbZa+/8LBl03gYCnICEl5yhdCOtklPGupcO7IK
-ZDpRxnldau9gzHwj70Gl00OXnECaIB3AEeXgHkUENF4JjzAtZ04z7W5vEwwvW3Xa
-FzGgQzYza1G6oUfXR53wikUK9vOd4dB1IZD8ysrAh6vRuY7AK8HzlurvfyhT07kv
-MeC1PPSVoGfHGUek2ZqbnHu0HLYFNswWRTiwWSPzt/lSpZIUN+YiuheehhfF3dRI
-QxlUvtR29YqukP4KUbq8
-=VqmI
------END PGP SIGNATURE-----
-
---nextPart4873364.aXPVcA1JXl--
-
+Pj5hY3BpX2Rldl9wcmVzZW50DQoNCkRvIHlvdSByZWFsbHkgd2FudCB0byBiZSB3YWxraW5nIHRo
+ZSBBQ1BJQ0EgbmFtZXNwYWNlIGZvciBldmVyeSBjYWxsPw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQo+IEZyb206IFJhZmFlbCBKLiBXeXNvY2tpIFttYWlsdG86cmp3QHJqd3lzb2Nr
+aS5uZXRdDQo+IFNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgMjMsIDIwMTUgMjozNSBQTQ0KPiBUbzog
+THVrYXMgV3VubmVyDQo+IENjOiBsaW51eC1hY3BpQHZnZXIua2VybmVsLm9yZzsgZGV2ZWxAYWNw
+aWNhLm9yZzsgcGxhdGZvcm0tZHJpdmVyLQ0KPiB4ODZAdmdlci5rZXJuZWwub3JnOyBEYXJyZW4g
+SGFydDsgQ29yZW50aW4gQ2hhcnk7IExlZSwgQ2h1bi1ZaTsgYWxzYS0NCj4gZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZzsgVGFrYXNoaSBJd2FpOyBIdWkgV2FuZzsgTWFyayBCcm93bjsgWmhlbmcsIEx2
+Ow0KPiBNb29yZSwgUm9iZXJ0OyBEYXZpZCBCb3gNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzVd
+IEFDUElDQTogQWRkIGFjcGlfZGV2X3ByZXNlbnQNCj4gDQo+IE9uIE1vbmRheSwgTm92ZW1iZXIg
+MjMsIDIwMTUgMDM6MzQ6NTUgUE0gTHVrYXMgV3VubmVyIHdyb3RlOg0KPiA+IFRoZXJlIGFyZSA3
+IGRyaXZlcnMgd2hpY2ggY2FsbCBhY3BpX2dldF9kZXZpY2VzIHRvIGNoZWNrIGZvciB0aGUNCj4g
+PiBwcmVzZW5jZSBvZiBhIHBhcnRpY3VsYXIgQUNQSSBISUQsIGVhY2ggZGVmaW5pbmcgaXRzIG93
+biBjb3B5IG9mIGENCj4gPiBtb3N0bHkgaWRlbnRpY2FsIGNhbGxiYWNrLg0KPiA+DQo+ID4gQWRk
+IGFjcGlfZGV2X3ByZXNlbnQsIHRoZSBBQ1BJIGVxdWl2YWxlbnQgdG8gcGNpX2Rldl9wcmVzZW50
+LCBhbGxvd2luZw0KPiA+IHVzIHRvIGRlZHVwbGljYXRlIGFsbCB0aGF0IGJvaWxlcnBsYXRlIGlu
+IHRoZSBkcml2ZXJzLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTHVrYXMgV3VubmVyIDxsdWth
+c0B3dW5uZXIuZGU+DQo+IA0KPiBXZSBoYXZlIGEgZ2VuZXJhbCBydWxlIGZvciBBQ1BJQ0EgcGF0
+Y2hlcyB0aGF0IHRoZXkgZ28gaW4gdGhyb3VnaCB1cHN0cmVhbQ0KPiBBQ1BJQ0EuDQo+IA0KPiBT
+byBpZiB5b3UgcmVhbGx5IHdhbnQgdGhpcyBjaGFuZ2VzIGluIEFDUElDQSwgdGhpcyBpcyB0aGUg
+d2F5IHRvIGhhbmRsZQ0KPiBpdC4NCj4gDQo+IE5vdywgb2YgY291cnNlLCBmb3IgdGhhdCB0byBo
+YXBwZW4sIHlvdSBzaG91bGQgaGF2ZSBDQ2VkIHRoZSBBQ1BJQ0ENCj4gbWFpbnRhaW5lcnMgdG9v
+IChub3cgZG9uZSkuDQo+IA0KPiBUaGFua3MsDQo+IFJhZmFlbA0KPiANCj4gDQo+ID4gLS0tDQo+
+ID4gIGRyaXZlcnMvYWNwaS9hY3BpY2EvbnN4ZmV2YWwuYyB8IDQ2DQo+ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICBpbmNsdWRlL2FjcGkvYWNwaXhmLmgg
+ICAgICAgICAgfCAgNyArKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgNTMgaW5zZXJ0aW9u
+cygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYWNwaS9hY3BpY2EvbnN4ZmV2YWwu
+Yw0KPiA+IGIvZHJpdmVycy9hY3BpL2FjcGljYS9uc3hmZXZhbC5jIGluZGV4IDZlZTFlNTIuLjE5
+MjkzZmEgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9hY3BpL2FjcGljYS9uc3hmZXZhbC5jDQo+
+ID4gKysrIGIvZHJpdmVycy9hY3BpL2FjcGljYS9uc3hmZXZhbC5jDQo+ID4gQEAgLTgyOCw2ICs4
+MjgsNTIgQEAgQUNQSV9FWFBPUlRfU1lNQk9MKGFjcGlfZ2V0X2RldmljZXMpDQo+ID4NCj4gPg0K
+PiAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKg0KPiAqKioqKioNCj4gPiAgICoNCj4gPiArICogRlVOQ1RJT046
+ICAgIGFjcGlfbnNfZGV2X3ByZXNlbnRfY2FsbGJhY2sNCj4gPiArICoNCj4gPiArICogUEFSQU1F
+VEVSUzogIENhbGxiYWNrIGZyb20gYWNwaV9nZXRfZGV2aWNlcw0KPiA+ICsgKg0KPiA+ICsgKiBS
+RVRVUk46ICAgICAgU3RhdHVzDQo+ID4gKyAqDQo+ID4gKyAqIERFU0NSSVBUSU9OOiBNaW5pbWFs
+IGNhbGxiYWNrIHRvIGJlIHBhc3NlZCB0byBhY3BpX2dldF9kZXZpY2VzIHdoaWNoDQo+ID4gKyAq
+ICAgICAgICAgICAgICBwZXJmb3JtcyBubyBmdXJ0aGVyIGZpbHRlcmluZyBhbmQgdGVybWluYXRl
+cyB0aGUgc2VhcmNoDQo+ID4gKyAqICAgICAgICAgICAgICBpbW1lZGlhdGVseS4NCj4gPiArICoN
+Cj4gPiArDQo+ID4gKyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKg0KPiA+ICsqKioqKioqKiovIHN0YXRpYyBhY3BpX3N0
+YXR1cw0KPiA+ICthY3BpX25zX2Rldl9wcmVzZW50X2NhbGxiYWNrKGFjcGlfaGFuZGxlIGhhbmRs
+ZSwgdTMyIGxldmVsLA0KPiA+ICsJCQkJCQl2b2lkICpjb250ZXh0LCB2b2lkICoqcmV0dmFsKQ0K
+PiA+ICt7DQo+ID4gKwkqKGJvb2wgKiljb250ZXh0ID0gdHJ1ZTsNCj4gPiArCXJldHVybiBBRV9D
+VFJMX1RFUk1JTkFURTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArLyoqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqDQo+ID4gKyoq
+KioqKioqKioqDQo+ID4gKyAqDQo+ID4gKyAqIEZVTkNUSU9OOiAgICBhY3BpX2Rldl9wcmVzZW50
+DQo+ID4gKyAqDQo+ID4gKyAqIFBBUkFNRVRFUlM6ICBISUQgICAgICAgICAgICAgICAgIC0gSElE
+IHRvIHNlYXJjaCBmb3IuDQo+ID4gKyAqDQo+ID4gKyAqIFJFVFVSTlMgICAgICBUcnVlIGlmIGEg
+bWF0Y2hpbmcgb2JqZWN0IG9mIHR5cGUgRGV2aWNlIHdhcyBmb3VuZC4NCj4gPiArICoNCj4gPiAr
+ICogREVTQ1JJUFRJT046IFBlcmZvcm1zIGEgd2FsayBvZiB0aGUgbmFtZXNwYWNlIHRyZWUuIFdo
+ZW4gYSBtYXRjaGluZw0KPiBvYmplY3QNCj4gPiArICogICAgICAgICAgICAgIG9mIHR5cGUgRGV2
+aWNlIGlzIGZvdW5kLCB0aGUgc2VhcmNoIGlzIHRlcm1pbmF0ZWQNCj4gaW1tZWRpYXRlbHkuDQo+
+ID4gKyAqDQo+ID4gKw0KPiA+ICsqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioNCj4gPiArKioqKioqKioqLw0KPiA+ICsN
+Cj4gPiArYm9vbA0KPiA+ICthY3BpX2Rldl9wcmVzZW50KGNvbnN0IGNoYXIgKkhJRCkNCj4gPiAr
+ew0KPiA+ICsJYWNwaV9zdGF0dXMgc3RhdHVzOw0KPiA+ICsJYm9vbCBmb3VuZCA9IGZhbHNlOw0K
+PiA+ICsNCj4gPiArCXN0YXR1cyA9IGFjcGlfZ2V0X2RldmljZXMoSElELCBhY3BpX25zX2Rldl9w
+cmVzZW50X2NhbGxiYWNrLCAmZm91bmQsDQo+ID4gKwkJCQkgIE5VTEwpOw0KPiA+ICsJcmV0dXJu
+IEFDUElfU1VDQ0VTUyhzdGF0dXMpICYmIGZvdW5kOyB9DQo+ID4gKw0KPiA+ICtBQ1BJX0VYUE9S
+VF9TWU1CT0woYWNwaV9kZXZfcHJlc2VudCkNCj4gPiArDQo+ID4gKy8qKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KPiA+
+ICsqKioqKioqKioqKg0KPiA+ICsgKg0KPiA+ICAgKiBGVU5DVElPTjogICAgYWNwaV9hdHRhY2hf
+ZGF0YQ0KPiA+ICAgKg0KPiA+ICAgKiBQQVJBTUVURVJTOiAgb2JqX2hhbmRsZSAgICAgICAgICAt
+IE5hbWVzcGFjZSBub2RlDQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvYWNwaS9hY3BpeGYuaCBi
+L2luY2x1ZGUvYWNwaS9hY3BpeGYuaCBpbmRleA0KPiA+IDNhYWFhODYuLmYyOTkzNDcgMTAwNjQ0
+DQo+ID4gLS0tIGEvaW5jbHVkZS9hY3BpL2FjcGl4Zi5oDQo+ID4gKysrIGIvaW5jbHVkZS9hY3Bp
+L2FjcGl4Zi5oDQo+ID4gQEAgLTExNSw2ICsxMTUsMTEgQEANCj4gPiAgCXByb3RvdHlwZTsNCj4g
+PiAgI2VuZGlmDQo+ID4NCj4gPiArI2lmbmRlZiBBQ1BJX0VYVEVSTkFMX1JFVFVSTl9CT09MDQo+
+ID4gKyNkZWZpbmUgQUNQSV9FWFRFUk5BTF9SRVRVUk5fQk9PTChwcm90b3R5cGUpIFwNCj4gPiAr
+CXByb3RvdHlwZTsNCj4gPiArI2VuZGlmDQo+ID4gKw0KPiA+DQo+IC8qKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+DQo+ICoqKioNCj4gPiAgICoNCj4gPiAgICogUHVibGljIGdsb2JhbHMgYW5kIHJ1bnRpbWUgY29u
+ZmlndXJhdGlvbiBvcHRpb25zIEBAIC00ODMsNiArNDg4LDgNCj4gPiBAQCBBQ1BJX0VYVEVSTkFM
+X1JFVFVSTl9TVEFUVVMoYWNwaV9zdGF0dXMNCj4gPiAgCQkJCQkgICAgICBhY3BpX3dhbGtfY2Fs
+bGJhY2sgdXNlcl9mdW5jdGlvbiwNCj4gPiAgCQkJCQkgICAgICB2b2lkICpjb250ZXh0LA0KPiA+
+ICAJCQkJCSAgICAgIHZvaWQgKipyZXR1cm5fdmFsdWUpKQ0KPiA+ICtBQ1BJX0VYVEVSTkFMX1JF
+VFVSTl9CT09MKGJvb2wNCj4gPiArCQkJICAgICBhY3BpX2Rldl9wcmVzZW50KGNvbnN0IGNoYXIg
+KkhJRCkpDQo+ID4gIEFDUElfRVhURVJOQUxfUkVUVVJOX1NUQVRVUyhhY3BpX3N0YXR1cw0KPiA+
+ICAJCQkgICAgIGFjcGlfZ2V0X25hbWUoYWNwaV9oYW5kbGUgb2JqZWN0LCB1MzIgbmFtZV90eXBl
+LA0KPiA+ICAJCQkJCSAgIHN0cnVjdCBhY3BpX2J1ZmZlciAqcmV0X3BhdGhfcHRyKSkNCj4gPg0K
+DQo=
