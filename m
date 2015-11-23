@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rk3036: Add binding doc of inno-rk3036
-	codec driver" to the asoc tree
+Subject: Applied "ASoC: hdac_hdmi: fix possible NULL
+	dereference" to the asoc tree
 Date: Mon, 23 Nov 2015 14:38:22 +0000
-Message-ID: <E1a0sG6-0007VI-Uo@debutante>
+Message-ID: <E1a0sG6-0007Up-6v@debutante>
+References: <1448280913-16061-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D2D3F2657AB
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:38:33 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id B6C192657BE
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2015 15:38:35 +0100 (CET)
+In-Reply-To: <1448280913-16061-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ZhengShunQian <zhengsq@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rk3036: Add binding doc of inno-rk3036 codec driver
+   ASoC: hdac_hdmi: fix possible NULL dereference
 
 has been applied to the asoc tree at
 
@@ -52,46 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 5f4f276077aeada88c3a7b9f1128c9c6284261cd Mon Sep 17 00:00:00 2001
-From: ZhengShunQian <zhengsq@rock-chips.com>
-Date: Mon, 9 Nov 2015 10:10:20 +0800
-Subject: [PATCH] ASoC: rk3036: Add binding doc of inno-rk3036 codec driver
+>From 8d33ab24242c5ce2f8e4add8c04d5409e36a330c Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Mon, 23 Nov 2015 17:45:13 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: fix possible NULL dereference
 
-This patch add the binding document of inno-rk3036
-audio codec driver.
+kzalloc() can return NULL if it fails, and then we will be dereferencing
+a NULL pointer.
 
-Signed-off-by: ZhengShunQian <zhengsq@rock-chips.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/inno-rk3036.txt        | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/inno-rk3036.txt
+ sound/soc/codecs/hdac_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/inno-rk3036.txt b/Documentation/devicetree/bindings/sound/inno-rk3036.txt
-new file mode 100644
-index 000000000000..758de8e27561
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/inno-rk3036.txt
-@@ -0,0 +1,20 @@
-+Inno audio codec for RK3036
-+
-+Inno audio codec is integrated inside RK3036 SoC.
-+
-+Required properties:
-+- compatible : Should be "rockchip,rk3036-codec".
-+- reg : The registers of codec.
-+- clock-names : Should be "acodec_pclk".
-+- clocks : The clock of codec.
-+- rockchip,grf : The phandle of grf device node.
-+
-+Example:
-+
-+	acodec: acodec-ana@20030000 {
-+		compatible = "rk3036-codec";
-+		reg = <0x20030000 0x4000>;
-+		rockchip,grf = <&grf>;
-+		clock-names = "acodec_pclk";
-+		clocks = <&cru ACLK_VCODEC>;
-+	};
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index d1552620257f..205f2c27263d 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -200,6 +200,8 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
++	if (!dd)
++		return -ENOMEM;
+ 	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
+ 			params_channels(hparams), params_format(hparams),
+ 			24, 0);
 -- 
 2.6.2
