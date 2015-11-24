@@ -1,69 +1,39 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix headphone noise after Dell XPS 13 resume back from S3
-Date: Tue, 24 Nov 2015 11:08:18 +0800
-Message-ID: <1448334498-29519-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org, kailang@realtek.com, hui.wang@canonical.com
+From: Hanjun Guo <guohanjun@huawei.com>
+Subject: Re: [PATCH 1/5] ACPICA: Add acpi_dev_present
+Date: Tue, 24 Nov 2015 12:40:51 +0800
+Message-ID: <5653EA53.8040909@huawei.com>
+References: <cover.1448282995.git.lukas@wunner.de> <d66501819cfa8f3d3b07708d3f20e3e20d07e4f8.1448282995.git.lukas@wunner.de> <2726545.001oM5V9lv@vostro.rjw.lan> <94F2FBAB4432B54E8AACC7DFDE6C92E37D998D0C@ORSMSX112.amr.corp.intel.com> <20151123233234.GA26361@wunner.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20151123233234.GA26361@wunner.de>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Lukas Wunner <lukas@wunner.de>, "Moore, Robert" <robert.moore@intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "devel@acpica.org" <devel@acpica.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, Darren Hart <dvhart@infradead.org>, Corentin Chary <corentin.chary@gmail.com>, "Lee, Chun-Yi" <jlee@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, Mark Brown <broonie@kernel.org>, "Zheng, Lv" <lv.zheng@intel.com>, David Box <david.e.box@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have a machine Dell XPS 13 with the codec alc256, after resume back
-from S3, the headphone has noise when play sound.
+On 2015/11/24 7:32, Lukas Wunner wrote:
+> Hi Robert,
+>
+> On Mon, Nov 23, 2015 at 10:22:27PM +0000, Moore, Robert wrote:
+>>>> acpi_dev_present
+>> Do you really want to be walking the ACPICA namespace for every call?
+> That's what the drivers currently do. Typically this is called only once
+> on initialization by the driver's ->probe callback.
+>
+> What did you have in mind instead, cache the result? Or store the HIDs
+> in the namespace in a hash that can be queried faster?
 
-Through comparing with the coeff vaule before and after S3, we found
-restoring a coeff register will help remove noise.
+Will those drivers be loaded before the acpi namespace is scanned? if not, I think
+those IDs already cached, in acpi_init_device_object(),
 
-BugLink: https://bugs.launchpad.net/bugs/1519168
-Cc: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
-Kailang said one of the bits in that register is:
-Enable/Disable pass-through path for FRONT 14h
+INIT_LIST_HEAD(&device->pnp.ids);
+...
+acpi_set_pnp_ids(handle, &device->pnp, type);
 
-And disable this bit should help remove headphone noise.
+please see API acpi_device_hid(), so I think you can introduce a API with
+acpi_device and HID passed as arguments in scan.c
 
- sound/pci/hda/patch_realtek.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 53f6a02..e4f80dc 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4587,6 +4587,7 @@ enum {
- 	ALC292_FIXUP_DISABLE_AAMIX,
- 	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC275_FIXUP_DELL_XPS,
-+	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5167,6 +5168,17 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{}
- 		}
- 	},
-+	[ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* Disable pass-through path for FRONT 14h */
-+			{0x20, AC_VERB_SET_COEF_INDEX, 0x36},
-+			{0x20, AC_VERB_SET_PROC_COEF, 0x1737},
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -5206,6 +5218,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x06de, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
- 	SND_PCI_QUIRK(0x1028, 0x06df, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
- 	SND_PCI_QUIRK(0x1028, 0x06e0, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
-+	SND_PCI_QUIRK(0x1028, 0x0704, "Dell XPS 13", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
- 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
--- 
-1.9.1
+Thanks
+Hanjun
