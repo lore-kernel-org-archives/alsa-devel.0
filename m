@@ -1,16 +1,18 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl_sai: add tdm slots operation
-	support
-Date: Tue, 24 Nov 2015 15:31:54 +0800
-Message-ID: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
+Subject: [PATCH 2/2] ASoC: fsl: using params_width function to
+	simplify code
+Date: Tue, 24 Nov 2015 15:32:09 +0800
+Message-ID: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
+References: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0124.outbound.protection.outlook.com [65.55.169.124])
- by alsa0.perex.cz (Postfix) with ESMTP id 63F32265906
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 08:29:44 +0100 (CET)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2on0117.outbound.protection.outlook.com [207.46.100.117])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42D6A265ABD
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 08:29:58 +0100 (CET)
+In-Reply-To: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,110 +26,68 @@ To: nicoleotsuka@gmail.com
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add tdm slots operation support. If tdm slots and slot width have
-been configured in machine driver, we should use these values.
-Otherwise, using relevant channels and word length to set slots
-and slot width.
-
-SAI will generate BCLK depends on sample rate, slots and slot width.
-And there may be unused BCLK cycles before each LRCLK transition.
+using params_width function to simplify code.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/fsl/fsl_sai.c | 31 +++++++++++++++++++++++++------
- sound/soc/fsl/fsl_sai.h |  3 +++
- 2 files changed, 28 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
+ sound/soc/fsl/fsl_sai.c  | 2 +-
+ sound/soc/fsl/fsl_ssi.c  | 3 +--
+ 4 files changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 9f087d4..6d06366 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -447,7 +447,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
+-	int width = snd_pcm_format_width(params_format(params));
++	int width = params_width(params);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	unsigned int channels = params_channels(params);
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 504e731..45d4319 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -510,7 +510,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+-	u32 width = snd_pcm_format_width(params_format(params));
++	u32 width = params_width(params);
+ 	u32 channels = params_channels(params);
+ 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
+ 	u32 slot_width = width;
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 4b042fd..c01322c 100644
+index c01322c..8832901 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -126,6 +126,17 @@ out:
- 		return IRQ_HANDLED;
- }
- 
-+static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
-+				u32 rx_mask, int slots, int slot_width)
-+{
-+	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	sai->slots = slots;
-+	sai->slot_width = slot_width;
-+
-+	return 0;
-+}
-+
- static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int fsl_dir)
- {
-@@ -395,11 +406,19 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+@@ -404,7 +404,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
  	unsigned int channels = params_channels(params);
- 	u32 word_width = snd_pcm_format_width(params_format(params));
+-	u32 word_width = snd_pcm_format_width(params_format(params));
++	u32 word_width = params_width(params);
  	u32 val_cr4 = 0, val_cr5 = 0;
-+	u32 slots = (channels == 1) ? 2 : channels;
-+	u32 slot_width = word_width;
+ 	u32 slots = (channels == 1) ? 2 : channels;
+ 	u32 slot_width = word_width;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 674abf7..e3abad5 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -767,8 +767,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct regmap *regs = ssi_private->regs;
+ 	unsigned int channels = params_channels(hw_params);
+-	unsigned int sample_size =
+-		snd_pcm_format_width(params_format(hw_params));
++	unsigned int sample_size = params_width(hw_params);
+ 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
  	int ret;
- 
-+	if (sai->slots)
-+		slots = sai->slots;
-+
-+	if (sai->slot_width)
-+		slot_width = sai->slot_width;
-+
- 	if (!sai->is_slave_mode) {
- 		ret = fsl_sai_set_bclk(cpu_dai, tx,
--			2 * word_width * params_rate(params));
-+				slots * slot_width * params_rate(params));
- 		if (ret)
- 			return ret;
- 
-@@ -411,21 +430,20 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 			sai->mclk_streams |= BIT(substream->stream);
- 		}
--
- 	}
- 
- 	if (!sai->is_dsp_mode)
--		val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
-+		val_cr4 |= FSL_SAI_CR4_SYWD(slot_width);
- 
--	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
--	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
-+	val_cr5 |= FSL_SAI_CR5_WNW(slot_width);
-+	val_cr5 |= FSL_SAI_CR5_W0W(slot_width);
- 
- 	if (sai->is_lsb_first)
- 		val_cr5 |= FSL_SAI_CR5_FBT(0);
- 	else
- 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
- 
--	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
-+	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
- 
- 	/*
- 	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
-@@ -592,6 +610,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
- 	.set_fmt	= fsl_sai_set_dai_fmt,
-+	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
- 	.hw_params	= fsl_sai_hw_params,
- 	.hw_free	= fsl_sai_hw_free,
- 	.trigger	= fsl_sai_trigger,
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index b95fbc3..d9ed7be 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -143,6 +143,9 @@ struct fsl_sai {
- 
- 	unsigned int mclk_id[2];
- 	unsigned int mclk_streams;
-+	unsigned int slots;
-+	unsigned int slot_width;
-+
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- };
+ 	u32 scr_val;
 -- 
 1.9.1
