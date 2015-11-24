@@ -1,86 +1,133 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V3 1/3] ASoC: fsl_esai: spba clock is needed by esai device
-Date: Tue, 24 Nov 2015 15:03:28 +0800
-Message-ID: <37808c01df126622c41c2d413fddf838dc2aa71d.1448348336.git.shengjiu.wang@freescale.com>
-References: <cover.1448348336.git.shengjiu.wang@freescale.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH 1/2] ASoC: fsl_sai: add tdm slots operation
+	support
+Date: Tue, 24 Nov 2015 15:31:54 +0800
+Message-ID: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <cover.1448348336.git.shengjiu.wang@freescale.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0124.outbound.protection.outlook.com [65.55.169.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63F32265906
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 08:29:44 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nicoleotsuka@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-RVNBSSBuZWVkIHRvIGVuYWJsZSB0aGUgc3BiYSBjbG9jaywgd2hlbiBzZG1hIGlzIHVzaW5nIHNo
-YXJlIHBlcmlwaGVyYWwKc2NyaXB0LiBJbiB0aGlzIGNhc2UsIHRoZXJlIGlzIHR3byBzcGJhIG1h
-c3RlciBwb3J0IGlzIHVzZWQsIGlmIGRvbid0CmVuYWJsZSB0aGUgY2xvY2ssIHRoZSBzcGJhIGJ1
-cyB3aWxsIGhhdmUgYXJiaXRyYXRpb24gaXNzdWUsIHdoaWNoIG1heQpjYXVzZSByZWFkL3dyaXRl
-IHdyb25nIGRhdGEgZnJvbS90byBFU0FJIHJlZ2lzdGVycy4KClNpZ25lZC1vZmYtYnk6IFNoZW5n
-aml1IFdhbmcgPHNoZW5naml1LndhbmdAZnJlZXNjYWxlLmNvbT4KLS0tCiBEb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0IHwgIDUgKysrKysKIHNvdW5k
-L3NvYy9mc2wvZnNsX2VzYWkuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMyArKysr
-KysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0IGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxlc2FpLnR4dAppbmRl
-eCBkM2I2YjVmLi5jZDNlZTVkIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0CisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9zb3VuZC9mc2wsZXNhaS50eHQKQEAgLTI3LDYgKzI3LDExIEBAIFJlcXVpcmVk
-IHByb3BlcnRpZXM6CiAJCQkgIGRlcml2ZSBIQ0ssIFNDSyBhbmQgRlMuCiAJImZzeXMiCQkgIFRo
-ZSBzeXN0ZW0gY2xvY2sgZGVyaXZlZCBmcm9tIGFoYiBjbG9jayB1c2VkIHRvCiAJCQkgIGRlcml2
-ZSBIQ0ssIFNDSyBhbmQgRlMuCisJInNwYmEiCQkgIFRoZSBzcGJhIGNsb2NrIGlzIHJlcXVpcmVk
-IHdoZW4gRVNBSSBpcyBwbGFjZWQgYXMgYQorCQkJICBidXMgc2xhdmUgb2YgdGhlIFNoYXJlZCBQ
-ZXJpcGhlcmFsIEJ1cyBhbmQgd2hlbiB0d28KKwkJCSAgb3IgbW9yZSBidXMgbWFzdGVycyAoQ1BV
-LCBETUEgb3IgRFNQKSB0cnkgdG8gYWNjZXNzCisJCQkgIGl0LiBUaGlzIHByb3BlcnR5IGlzIG9w
-dGlvbmFsIGRlcGVuZGluZyBvbiB0aGUgU29DCisJCQkgIGRlc2lnbi4KIAogICAtIGZzbCxmaWZv
-LWRlcHRoCTogVGhlIG51bWJlciBvZiBlbGVtZW50cyBpbiB0aGUgdHJhbnNtaXQgYW5kIHJlY2Vp
-dmUKIAkJCSAgRklGT3MuIFRoaXMgbnVtYmVyIGlzIHRoZSBtYXhpbXVtIGFsbG93ZWQgdmFsdWUg
-Zm9yCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9lc2FpLmMgYi9zb3VuZC9zb2MvZnNs
-L2ZzbF9lc2FpLmMKaW5kZXggNTA0ZTczMS4uNGQ3NTg5YyAxMDA2NDQKLS0tIGEvc291bmQvc29j
-L2ZzbC9mc2xfZXNhaS5jCisrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX2VzYWkuYwpAQCAtMzUsNiAr
-MzUsNyBAQAogICogQGNvcmVjbGs6IGNsb2NrIHNvdXJjZSB0byBhY2Nlc3MgcmVnaXN0ZXIKICAq
-IEBleHRhbGNsazogZXNhaSBjbG9jayBzb3VyY2UgdG8gZGVyaXZlIEhDSywgU0NLIGFuZCBGUwog
-ICogQGZzeXNjbGs6IHN5c3RlbSBjbG9jayBzb3VyY2UgdG8gZGVyaXZlIEhDSywgU0NLIGFuZCBG
-UworICogQHNwYmFjbGs6IFNQQkEgY2xvY2sgKG9wdGlvbmFsLCBkZXBlbmRpbmcgb24gU29DIGRl
-c2lnbikKICAqIEBmaWZvX2RlcHRoOiBkZXB0aCBvZiB0eC9yeCBGSUZPCiAgKiBAc2xvdF93aWR0
-aDogd2lkdGggb2YgZWFjaCBEQUkgc2xvdAogICogQHNsb3RzOiBudW1iZXIgb2Ygc2xvdHMKQEAg
-LTU0LDYgKzU1LDcgQEAgc3RydWN0IGZzbF9lc2FpIHsKIAlzdHJ1Y3QgY2xrICpjb3JlY2xrOwog
-CXN0cnVjdCBjbGsgKmV4dGFsY2xrOwogCXN0cnVjdCBjbGsgKmZzeXNjbGs7CisJc3RydWN0IGNs
-ayAqc3BiYWNsazsKIAl1MzIgZmlmb19kZXB0aDsKIAl1MzIgc2xvdF93aWR0aDsKIAl1MzIgc2xv
-dHM7CkBAIC00NjksNiArNDcxLDkgQEAgc3RhdGljIGludCBmc2xfZXNhaV9zdGFydHVwKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCXJldCA9IGNsa19wcmVwYXJlX2VuYWJs
-ZShlc2FpX3ByaXYtPmNvcmVjbGspOwogCWlmIChyZXQpCiAJCXJldHVybiByZXQ7CisJcmV0ID0g
-Y2xrX3ByZXBhcmVfZW5hYmxlKGVzYWlfcHJpdi0+c3BiYWNsayk7CisJaWYgKHJldCkKKwkJZ290
-byBlcnJfc3BiYWNsazsKIAlpZiAoIUlTX0VSUihlc2FpX3ByaXYtPmV4dGFsY2xrKSkgewogCQly
-ZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZXNhaV9wcml2LT5leHRhbGNsayk7CiAJCWlmIChyZXQp
-CkBAIC00OTksNiArNTA0LDggQEAgZXJyX2ZzeXNjbGs6CiAJaWYgKCFJU19FUlIoZXNhaV9wcml2
-LT5leHRhbGNsaykpCiAJCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPmV4dGFsY2xr
-KTsKIGVycl9leHRhbGNrOgorCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPnNwYmFj
-bGspOworZXJyX3NwYmFjbGs6CiAJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGVzYWlfcHJpdi0+Y29y
-ZWNsayk7CiAKIAlyZXR1cm4gcmV0OwpAQCAtNTY0LDYgKzU3MSw3IEBAIHN0YXRpYyB2b2lkIGZz
-bF9lc2FpX3NodXRkb3duKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQlj
-bGtfZGlzYWJsZV91bnByZXBhcmUoZXNhaV9wcml2LT5mc3lzY2xrKTsKIAlpZiAoIUlTX0VSUihl
-c2FpX3ByaXYtPmV4dGFsY2xrKSkKIAkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGVzYWlfcHJpdi0+
-ZXh0YWxjbGspOworCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPnNwYmFjbGspOwog
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPmNvcmVjbGspOwogfQogCkBAIC04MTks
-NiArODI3LDExIEBAIHN0YXRpYyBpbnQgZnNsX2VzYWlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rl
-dmljZSAqcGRldikKIAkJZGV2X3dhcm4oJnBkZXYtPmRldiwgImZhaWxlZCB0byBnZXQgZnN5cyBj
-bG9jazogJWxkXG4iLAogCQkJCVBUUl9FUlIoZXNhaV9wcml2LT5mc3lzY2xrKSk7CiAKKwllc2Fp
-X3ByaXYtPnNwYmFjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInNwYmEiKTsKKwlpZiAo
-SVNfRVJSKGVzYWlfcHJpdi0+c3BiYWNsaykpCisJCWRldl93YXJuKCZwZGV2LT5kZXYsICJmYWls
-ZWQgdG8gZ2V0IHNwYmEgY2xvY2s6ICVsZFxuIiwKKwkJCQlQVFJfRVJSKGVzYWlfcHJpdi0+c3Bi
-YWNsaykpOworCiAJaXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAwKTsKIAlpZiAoaXJxIDwg
-MCkgewogCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJubyBpcnEgZm9yIG5vZGUgJXNcbiIsIHBkZXYt
-Pm5hbWUpOwotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96
-bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
+Add tdm slots operation support. If tdm slots and slot width have
+been configured in machine driver, we should use these values.
+Otherwise, using relevant channels and word length to set slots
+and slot width.
+
+SAI will generate BCLK depends on sample rate, slots and slot width.
+And there may be unused BCLK cycles before each LRCLK transition.
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 31 +++++++++++++++++++++++++------
+ sound/soc/fsl/fsl_sai.h |  3 +++
+ 2 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 4b042fd..c01322c 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -126,6 +126,17 @@ out:
+ 		return IRQ_HANDLED;
+ }
+ 
++static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
++				u32 rx_mask, int slots, int slot_width)
++{
++	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
++
++	sai->slots = slots;
++	sai->slot_width = slot_width;
++
++	return 0;
++}
++
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -395,11 +406,19 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int channels = params_channels(params);
+ 	u32 word_width = snd_pcm_format_width(params_format(params));
+ 	u32 val_cr4 = 0, val_cr5 = 0;
++	u32 slots = (channels == 1) ? 2 : channels;
++	u32 slot_width = word_width;
+ 	int ret;
+ 
++	if (sai->slots)
++		slots = sai->slots;
++
++	if (sai->slot_width)
++		slot_width = sai->slot_width;
++
+ 	if (!sai->is_slave_mode) {
+ 		ret = fsl_sai_set_bclk(cpu_dai, tx,
+-			2 * word_width * params_rate(params));
++				slots * slot_width * params_rate(params));
+ 		if (ret)
+ 			return ret;
+ 
+@@ -411,21 +430,20 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 			sai->mclk_streams |= BIT(substream->stream);
+ 		}
+-
+ 	}
+ 
+ 	if (!sai->is_dsp_mode)
+-		val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
++		val_cr4 |= FSL_SAI_CR4_SYWD(slot_width);
+ 
+-	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
+-	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
++	val_cr5 |= FSL_SAI_CR5_WNW(slot_width);
++	val_cr5 |= FSL_SAI_CR5_W0W(slot_width);
+ 
+ 	if (sai->is_lsb_first)
+ 		val_cr5 |= FSL_SAI_CR5_FBT(0);
+ 	else
+ 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+ 
+-	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
++	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
+ 
+ 	/*
+ 	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
+@@ -592,6 +610,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+ 	.set_sysclk	= fsl_sai_set_dai_sysclk,
+ 	.set_fmt	= fsl_sai_set_dai_fmt,
++	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
+ 	.hw_params	= fsl_sai_hw_params,
+ 	.hw_free	= fsl_sai_hw_free,
+ 	.trigger	= fsl_sai_trigger,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index b95fbc3..d9ed7be 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -143,6 +143,9 @@ struct fsl_sai {
+ 
+ 	unsigned int mclk_id[2];
+ 	unsigned int mclk_streams;
++	unsigned int slots;
++	unsigned int slot_width;
++
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ };
+-- 
+1.9.1
