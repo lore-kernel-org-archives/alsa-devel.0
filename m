@@ -1,22 +1,21 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl: using params_width function
- to simplify code
-Date: Tue, 24 Nov 2015 00:52:29 -0800
-Message-ID: <20151124085229.GC14109@Asurada-CZ80>
-References: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
- <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: Re: [PATCH V3 1/3] ASoC: fsl_esai: spba clock is
+ needed by esai device
+Date: Tue, 24 Nov 2015 17:02:58 +0800
+Message-ID: <20151124090256.GA17516@shlinux2>
+References: <cover.1448348336.git.shengjiu.wang@freescale.com>
+ <37808c01df126622c41c2d413fddf838dc2aa71d.1448348336.git.shengjiu.wang@freescale.com>
+ <20151124083344.GA14109@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f174.google.com (mail-io0-f174.google.com
- [209.85.223.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 038492614A7
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 09:52:34 +0100 (CET)
-Received: by iofh3 with SMTP id h3so13280835iof.3
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 00:52:33 -0800 (PST)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0131.outbound.protection.outlook.com [157.56.111.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 539242614A7
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 10:06:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
+In-Reply-To: <20151124083344.GA14109@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,77 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, Xiubo.Lee@gmail.com
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, linuxppc-dev@lists.ozlabs.org, broonie@kernel.org, Xiubo.Lee@gmail.com, timur@tabi.org, lgirdwood@gmail.com, robh+dt@kernel.org, galak@codeaurora.org, tiwai@suse.com, shawnguo@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 24, 2015 at 03:32:09PM +0800, Zidan Wang wrote:
-> using params_width function to simplify code.
+On Tue, Nov 24, 2015 at 12:33:45AM -0800, Nicolin Chen wrote:
+> On Tue, Nov 24, 2015 at 03:03:28PM +0800, Shengjiu Wang wrote:
 > 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> > @@ -469,6 +471,9 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+> >  	ret = clk_prepare_enable(esai_priv->coreclk);
+> >  	if (ret)
+> >  		return ret;
+> > +	ret = clk_prepare_enable(esai_priv->spbaclk);
+> > +	if (ret)
+> > +		goto err_spbaclk;
+> >  	if (!IS_ERR(esai_priv->extalclk)) {
+> >  		ret = clk_prepare_enable(esai_priv->extalclk);
+> >  		if (ret)
+> 
+> Just like for extalclk there is a IS_ERR check out there, there
+> should be one for spbaclk as well. Otherwise....
+> 
+> root@imx6qdlsolo:~# aplay /unit_tests/audio8k16S.wav 
+> [   29.956250] Unable to handle kernel paging request at virtual address fffffffe
+> [   29.963491] pgd = edd98000
+> [   29.966278] [fffffffe] *pgd=afffd861, *pte=00000000, *ppte=00000000
+> [   29.972615] Internal error: Oops: 37 [#1] SMP ARM
+> [   29.977327] Modules linked in:
+> [   29.980410] CPU: 0 PID: 755 Comm: aplay Not tainted 4.4.0-rc1-12414-gcc8db17 #250
+> [   29.987899] Hardware name: Freescale i.MX6 SoloX (Device Tree)
+> [   29.993738] task: edece780 ti: ed26a000 task.ti: ed26a000
+> [   29.999156] PC is at clk_prepare+0x18/0x38
+> [   30.003268] LR is at mark_held_locks+0x70/0x98
+> [   30.007720] pc : [<c0568714>]    lr : [<c006f42c>]    psr: 600f0013
+> [   30.007720] sp : ed26bc60  ip : 00000003  fp : ed26bc74
+> [   30.019204] r10: eebe4d9c  r9 : eeb2e00c  r8 : eeb2e00c
+> [   30.024435] r7 : fffffffe  r6 : eeb2c500  r5 : eeb2d0c0  r4 : fffffffe
+> [   30.030966] r3 : edece780  r2 : 00000001  r1 : 00000001  r0 : 00000001
+> [   30.037502] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> [   30.044643] Control: 10c5387d  Table: add9804a  DAC: 00000051
+> [   30.050395] Process aplay (pid: 755, stack limit = 0xed26a210)
+>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Will fix it in next version, and send it out later.
 
-> ---
->  sound/soc/fsl/fsl_asrc.c | 2 +-
->  sound/soc/fsl/fsl_esai.c | 2 +-
->  sound/soc/fsl/fsl_sai.c  | 2 +-
->  sound/soc/fsl/fsl_ssi.c  | 3 +--
->  4 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> index 9f087d4..6d06366 100644
-> --- a/sound/soc/fsl/fsl_asrc.c
-> +++ b/sound/soc/fsl/fsl_asrc.c
-> @@ -447,7 +447,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
->  				  struct snd_soc_dai *dai)
->  {
->  	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
-> -	int width = snd_pcm_format_width(params_format(params));
-> +	int width = params_width(params);
->  	struct snd_pcm_runtime *runtime = substream->runtime;
->  	struct fsl_asrc_pair *pair = runtime->private_data;
->  	unsigned int channels = params_channels(params);
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 504e731..45d4319 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -510,7 +510,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
->  {
->  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
->  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-> -	u32 width = snd_pcm_format_width(params_format(params));
-> +	u32 width = params_width(params);
->  	u32 channels = params_channels(params);
->  	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
->  	u32 slot_width = width;
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index c01322c..8832901 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -404,7 +404,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
->  	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
->  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->  	unsigned int channels = params_channels(params);
-> -	u32 word_width = snd_pcm_format_width(params_format(params));
-> +	u32 word_width = params_width(params);
->  	u32 val_cr4 = 0, val_cr5 = 0;
->  	u32 slots = (channels == 1) ? 2 : channels;
->  	u32 slot_width = word_width;
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 674abf7..e3abad5 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -767,8 +767,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
->  	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
->  	struct regmap *regs = ssi_private->regs;
->  	unsigned int channels = params_channels(hw_params);
-> -	unsigned int sample_size =
-> -		snd_pcm_format_width(params_format(hw_params));
-> +	unsigned int sample_size = params_width(hw_params);
->  	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
->  	int ret;
->  	u32 scr_val;
-> -- 
-> 1.9.1
-> 
+best regards
+wang shengjiu 
