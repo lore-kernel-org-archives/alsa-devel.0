@@ -1,43 +1,42 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V4 0/3] add spba clock for fsl audio IP
-Date: Tue, 24 Nov 2015 01:31:48 -0800
-Message-ID: <20151124093147.GA50978@Asurada-CZ80>
-References: <cover.1448356624.git.shengjiu.wang@freescale.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/3] ASoC: core: add a dapm sink widget
+Date: Tue, 24 Nov 2015 10:48:42 +0100
+Message-ID: <5654327A.5080406@metafoo.de>
+References: <1448293951-32071-1-git-send-email-vinod.koul@intel.com>
+ <1448293951-32071-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1448356624.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-188.synserver.de (smtp-out-194.synserver.de
+ [212.40.185.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 165212614A7
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 10:48:44 +0100 (CET)
+In-Reply-To: <1448293951-32071-3-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 24, 2015 at 05:19:31PM +0800, Shengjiu Wang wrote:
-> add spba clock for fsl audio IP
+On 11/23/2015 04:52 PM, Vinod Koul wrote:
+> DAPM models various widgets but lacks a sink widget.
+> DSPs can have modules which take audio data, process it and are
+> capable of generating events thus acting as a sink of data.
 > 
-> Changes in V3
-> - add error check for spba clock
-> 
-> Shengjiu Wang (3):
->   ASoC: fsl_esai: spba clock is needed by esai device
->   ASoC: fsl_spdif: spba clk is needed by spdif device
->   ASoC: fsl_asrc: spba clock is needed by asrc device
+> To make the dapm graph complete for such paths we need a dapm
+> sink widget for these modules, so add a SND_SOC_DAPM_SINK to
+> declare such a widget.
+> This widget will be treated as SND_SOC_DAPM_EP_SINK endpoint in
+> the dapm graph
 
-For all three,
+Except for the strange formating of the commit message this looks good.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-> 
->  Documentation/devicetree/bindings/sound/fsl,asrc.txt  |  5 +++++
->  Documentation/devicetree/bindings/sound/fsl,esai.txt  |  5 +++++
->  Documentation/devicetree/bindings/sound/fsl,spdif.txt |  5 +++++
->  sound/soc/fsl/fsl_asrc.c                              | 14 ++++++++++++++
->  sound/soc/fsl/fsl_asrc.h                              |  2 ++
->  sound/soc/fsl/fsl_esai.c                              | 17 +++++++++++++++++
->  sound/soc/fsl/fsl_spdif.c                             | 19 +++++++++++++++++++
->  7 files changed, 67 insertions(+)
-> 
-> -- 
-> 1.9.1
-> 
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
