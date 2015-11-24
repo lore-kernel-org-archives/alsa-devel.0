@@ -1,16 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: M-audio 410 : complex procedure to get a sound
-Date: Tue, 24 Nov 2015 23:20:02 +0900
-Message-ID: <56547212.3010507@sakamocchi.jp>
-References: <564999E5.30204@yahoo.com>
+From: Damien Horsley <Damien.Horsley@imgtec.com>
+Subject: [PATCH 0/2] Add support for Texas Instruments pcm3168a
+	codec
+Date: Tue, 24 Nov 2015 14:43:42 +0000
+Message-ID: <1448376224-23964-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id DEF0E265A70
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 15:20:06 +0100 (CET)
-In-Reply-To: <564999E5.30204@yahoo.com>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32960265AD0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 15:43:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ROUGE ETIENNE <etiennerouge@yahoo.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, "Maciej S.
+ Szmigiero" <mail@maciej.szmigiero.name>, Bard Liao <bardliao@realtek.com>, Arnd Bergmann <arnd@arndb.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Charles Keepax <ckeepax@gmail.com>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, James Hartley <james.hartley@imgtec.com>, Thomas Niederprum <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-On Nov 16 2015 17:55, ROUGE ETIENNE wrote:
-> I've just bought a M-audio firewire 410 and I'm very thankfull to
-> takashi's work that allows us to use the device almost like an USB one !
-> 
-> I can have sound and have access to the routing controls. However 2 bugs
-> makes it a bit tedious :
-> 
-> NOTE : I use an up to date freshly installed ubuntustudio 15.10. The
-> only modifications I made was 1) deleting pulse 2) select the soundcard
-> as default in asoundrc
-> 
-> 1) I do not have sound out of the box, but I can manage to have sound by
-> starting ffado-mixer then force restart alsa. After that everything
-> works fine.... but I gotta do it at every restart which isn't nice
+Add driver and binding docuemnt for Texas Instruments pcm3168a codec
 
-ALSA BeBoB driver doesn't touch internal multiplexer of your device.
-Thus, you need to use the other tools such as ffado-dbus-server/ffado-mixer.
+Damien.Horsley (2):
+  ASoC: pcm3168a: Add binding document for pcm3168a codec
+  ASoC: pcm3168a: Add driver for pcm3168a codec
 
-This comes from a design that functionalities except for packet
-streaming should be implemented in userspace applications. This results
-to diet codes for kernel streaming driver.
+ .../devicetree/bindings/sound/ti,pcm3168a.txt      |  48 ++
+ sound/soc/codecs/Kconfig                           |  17 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/pcm3168a-i2c.c                    |  66 ++
+ sound/soc/codecs/pcm3168a-spi.c                    |  65 ++
+ sound/soc/codecs/pcm3168a.c                        | 766 +++++++++++++++++++++
+ sound/soc/codecs/pcm3168a.h                        | 111 +++
+ 7 files changed, 1079 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+ create mode 100644 sound/soc/codecs/pcm3168a-i2c.c
+ create mode 100644 sound/soc/codecs/pcm3168a-spi.c
+ create mode 100644 sound/soc/codecs/pcm3168a.c
+ create mode 100644 sound/soc/codecs/pcm3168a.h
 
-Additionally, each model which ALSA BeBoB driver can support has each
-design, model-dependent functionalities. This may bring much codes if
-implemented in kernel space, and make it hard to maintein.
-
-> 2) ffado-mixer suffers several bugs :
-> - if I close the window I can't restart it again unless I kill
-> ffado-dbus-server (it says : "another instance of ffado-mixer is already
-> running).
-> -  I got few errors on startup "invalid samplerate for input"... don't
-> know it it has any impact
-> - when I tweak too much ffado-mixer (AFAIK, it's random, but happens
-> within few minuts) the mouse shows a 'hand closed' cursor and I can't
-> click anything. The system remains fully functionnal, but I can't close
-> anything nor click... If I start an emergency terminal I can kill
-> whatever I want, but the problem remains.
-> 
-> I'll try with a fedora this evening to see if it's not related with
-> ubuntustudio, but I'd be glad to have some help with those 2 issues
-> (especially the stalling ffado-mixer)
-
-Hm, I'll check ffado tools to clear these two issues. But I'll recommend
-you to post them to ffado-devel because the tools are not related to
-ALSA project.
-
-
-Thanks and sorry to be late for catching up.
-
-Takashi Sakamoto
+-- 
+2.1.4
