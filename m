@@ -1,7 +1,7 @@
 From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V4 3/3] ASoC: fsl_asrc: spba clock is needed by asrc device
-Date: Tue, 24 Nov 2015 17:19:34 +0800
-Message-ID: <9ef23a7376b28ae9144f036dbc5d74e3c3240109.1448356624.git.shengjiu.wang@freescale.com>
+Subject: [PATCH V4 1/3] ASoC: fsl_esai: spba clock is needed by esai device
+Date: Tue, 24 Nov 2015 17:19:32 +0800
+Message-ID: <1201ff5b1edf387138e3cb8c98f91804d9866c4d.1448356624.git.shengjiu.wang@freescale.com>
 References: <cover.1448356624.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,99 +12,95 @@ To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ASRC need to enable the spba clock, when sdma is using share peripheral
+ESAI need to enable the spba clock, when sdma is using share peripheral
 script. In this case, there is two spba master port is used, if don't
 enable the clock, the spba bus will have arbitration issue, which may
-cause read/write wrong data from/to ASRC registers
+cause read/write wrong data from/to ESAI registers.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 ---
- Documentation/devicetree/bindings/sound/fsl,asrc.txt |  5 +++++
- sound/soc/fsl/fsl_asrc.c                             | 14 ++++++++++++++
- sound/soc/fsl/fsl_asrc.h                             |  2 ++
- 3 files changed, 21 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl,esai.txt |  5 +++++
+ sound/soc/fsl/fsl_esai.c                             | 17 +++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index b93362a..3e26a94 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -25,6 +25,11 @@ Required properties:
- 	"mem"		  Peripheral access clock to access registers.
- 	"ipg"		  Peripheral clock to driver module.
- 	"asrck_<0-f>"	  Clock sources for input and output clock.
-+	"spba"		  The spba clock is required when ASRC is placed as a
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index d3b6b5f..cd3ee5d 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -27,6 +27,11 @@ Required properties:
+ 			  derive HCK, SCK and FS.
+ 	"fsys"		  The system clock derived from ahb clock used to
+ 			  derive HCK, SCK and FS.
++	"spba"		  The spba clock is required when ESAI is placed as a
 +			  bus slave of the Shared Peripheral Bus and when two
 +			  or more bus masters (CPU, DMA or DSP) try to access
 +			  it. This property is optional depending on the SoC
 +			  design.
  
-    - big-endian		: If this property is absent, the little endian mode
- 			  will be in use as default. Otherwise, the big endian
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 9f087d4..cf382475 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -859,6 +859,10 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		return PTR_ERR(asrc_priv->ipg_clk);
- 	}
- 
-+	asrc_priv->spba_clk = devm_clk_get(&pdev->dev, "spba");
-+	if (IS_ERR(asrc_priv->spba_clk))
-+		dev_warn(&pdev->dev, "failed to get spba clock\n");
-+
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		sprintf(tmp, "asrck_%x", i);
- 		asrc_priv->asrck_clk[i] = devm_clk_get(&pdev->dev, tmp);
-@@ -939,6 +943,11 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	ret = clk_prepare_enable(asrc_priv->ipg_clk);
+   - fsl,fifo-depth	: The number of elements in the transmit and receive
+ 			  FIFOs. This number is the maximum allowed value for
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 504e731..054e64b 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -35,6 +35,7 @@
+  * @coreclk: clock source to access register
+  * @extalclk: esai clock source to derive HCK, SCK and FS
+  * @fsysclk: system clock source to derive HCK, SCK and FS
++ * @spbaclk: SPBA clock (optional, depending on SoC design)
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+  * @slots: number of slots
+@@ -54,6 +55,7 @@ struct fsl_esai {
+ 	struct clk *coreclk;
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
++	struct clk *spbaclk;
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
+@@ -469,6 +471,11 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 	ret = clk_prepare_enable(esai_priv->coreclk);
  	if (ret)
- 		goto disable_mem_clk;
-+	if (!IS_ERR(asrc_priv->spba_clk)) {
-+		ret = clk_prepare_enable(asrc_priv->spba_clk);
+ 		return ret;
++	if (!IS_ERR(esai_priv->spbaclk)) {
++		ret = clk_prepare_enable(esai_priv->spbaclk);
 +		if (ret)
-+			goto disable_ipg_clk;
++			goto err_spbaclk;
 +	}
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		ret = clk_prepare_enable(asrc_priv->asrck_clk[i]);
+ 	if (!IS_ERR(esai_priv->extalclk)) {
+ 		ret = clk_prepare_enable(esai_priv->extalclk);
  		if (ret)
-@@ -950,6 +959,9 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- disable_asrck_clk:
- 	for (i--; i >= 0; i--)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	if (!IS_ERR(asrc_priv->spba_clk))
-+		clk_disable_unprepare(asrc_priv->spba_clk);
-+disable_ipg_clk:
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- disable_mem_clk:
- 	clk_disable_unprepare(asrc_priv->mem_clk);
-@@ -963,6 +975,8 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+@@ -499,6 +506,9 @@ err_fsysclk:
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
+ err_extalck:
++	if (!IS_ERR(esai_priv->spbaclk))
++		clk_disable_unprepare(esai_priv->spbaclk);
++err_spbaclk:
+ 	clk_disable_unprepare(esai_priv->coreclk);
  
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	if (!IS_ERR(asrc_priv->spba_clk))
-+		clk_disable_unprepare(asrc_priv->spba_clk);
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- 	clk_disable_unprepare(asrc_priv->mem_clk);
+ 	return ret;
+@@ -564,6 +574,8 @@ static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
+ 		clk_disable_unprepare(esai_priv->fsysclk);
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
++	if (!IS_ERR(esai_priv->spbaclk))
++		clk_disable_unprepare(esai_priv->spbaclk);
+ 	clk_disable_unprepare(esai_priv->coreclk);
+ }
  
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 4aed63c..68802cd 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -426,6 +426,7 @@ struct fsl_asrc_pair {
-  * @paddr: physical address to the base address of registers
-  * @mem_clk: clock source to access register
-  * @ipg_clk: clock source to drive peripheral
-+ * @spba_clk: SPBA clock (optional, depending on SoC design)
-  * @asrck_clk: clock sources to driver ASRC internal logic
-  * @lock: spin lock for resource protection
-  * @pair: pair pointers
-@@ -442,6 +443,7 @@ struct fsl_asrc {
- 	unsigned long paddr;
- 	struct clk *mem_clk;
- 	struct clk *ipg_clk;
-+	struct clk *spba_clk;
- 	struct clk *asrck_clk[ASRC_CLK_MAX_NUM];
- 	spinlock_t lock;
+@@ -819,6 +831,11 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		dev_warn(&pdev->dev, "failed to get fsys clock: %ld\n",
+ 				PTR_ERR(esai_priv->fsysclk));
  
++	esai_priv->spbaclk = devm_clk_get(&pdev->dev, "spba");
++	if (IS_ERR(esai_priv->spbaclk))
++		dev_warn(&pdev->dev, "failed to get spba clock: %ld\n",
++				PTR_ERR(esai_priv->spbaclk));
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
 -- 
 1.9.1
