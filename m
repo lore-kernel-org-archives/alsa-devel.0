@@ -1,201 +1,57 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [alsa-devel] [PATCH 4/4] sound: codecs: pcm1792a: introduce
- channel side
-Date: Tue, 24 Nov 2015 09:27:41 +0100
-Message-ID: <CAOf5uwmdwcdbxx2b6DvMeOJBahkZ3iiosWtHPD2zhxcDqO2b_A@mail.gmail.com>
-References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
-	<1448014157-36526-5-git-send-email-raphael.poggi@avalun.com>
-	<CAOf5uwmGk7WqOaAFj=fTw8+D+EszWPqReyfmS0njix=d7AokOA@mail.gmail.com>
-	<CACqcpZCSMwj2WOhX0ddD43VKCgOcNyrkkZrR0sWEsHE+H27TVg@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH V3 1/3] ASoC: fsl_esai: spba clock is needed by esai
+ device
+Date: Tue, 24 Nov 2015 00:33:45 -0800
+Message-ID: <20151124083344.GA14109@Asurada-CZ80>
+References: <cover.1448348336.git.shengjiu.wang@freescale.com>
+ <37808c01df126622c41c2d413fddf838dc2aa71d.1448348336.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACqcpZCSMwj2WOhX0ddD43VKCgOcNyrkkZrR0sWEsHE+H27TVg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Rapha=C3=ABl_Poggi?= <poggi.raph@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <37808c01df126622c41c2d413fddf838dc2aa71d.1448348336.git.shengjiu.wang-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shengjiu Wang <shengjiu.wang-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Tue, Nov 24, 2015 at 03:03:28PM +0800, Shengjiu Wang wrote:
 
-On Tue, Nov 24, 2015 at 9:21 AM, Rapha=C3=ABl Poggi <poggi.raph@gmail.c=
-om> wrote:
-> Hi,
->
-> 2015-11-21 10:37 GMT+01:00 Michael Trimarchi <michael@amarulasolution=
-s.com>:
->> Hi
->>
->> On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph@gmail.co=
-m> wrote:
->>> From: Raphael Poggi <poggi.raph@gmail.com>
->>>
->>> Add possibility to choose the channel side using the device tree,
->>> and also modify it using alsa ctrl.
->>>
->>> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
->>> ---
->>>  sound/soc/codecs/pcm1792a.c | 46 +++++++++++++++++++++++++++++++++=
-++++++++++++
->>>  1 file changed, 46 insertions(+)
->>>
->>> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792=
-a.c
->>> index febaa48..005b679 100644
->>> --- a/sound/soc/codecs/pcm1792a.c
->>> +++ b/sound/soc/codecs/pcm1792a.c
->>> @@ -65,6 +65,12 @@ static const struct reg_default pcm1792a_reg_def=
-aults[] =3D {
->>>         { PCM1792A_DEVICE_ID, 0x00 },
->>>  };
->>>
->>> +enum __pcm1792_side {
->>> +       STEREO,
->>> +       MONORAL_LEFT,
->>> +       MONORAL_RIGHT
->>> +};
->>> +
->>>  static bool pcm1792a_accessible_reg(struct device *dev, unsigned i=
-nt reg)
->>>  {
->>>         return reg >=3D 0x10 && reg <=3D 0x17;
->>> @@ -83,6 +89,7 @@ struct pcm1792a_private {
->>>         struct regmap *regmap;
->>>         unsigned int format;
->>>         unsigned int rate;
->>> +       unsigned int side;
->>>  };
->>>
->>>  static int pcm1792a_set_dai_fmt(struct snd_soc_dai *codec_dai,
->>> @@ -153,6 +160,13 @@ static int pcm1792a_hw_params(struct snd_pcm_s=
-ubstream *substream,
->>>         ret =3D regmap_update_bits(priv->regmap, PCM1792A_FMT_CONTR=
-OL,
->>>                                  PCM1792A_FMT_MASK | PCM1792A_ATLD_=
-ENABLE, val);
->>>
->>> +       if (priv->side =3D=3D MONORAL_LEFT)
->>> +               val =3D PCM1792A_CHANNEL_MONO_LEFT;
->>> +       else if (priv->side =3D=3D MONORAL_RIGHT)
->>> +               val =3D PCM1792A_CHANNEL_MONO_RIGHT;
->>> +
->>> +       regmap_update_bits(priv->regmap, PCM1792A_CHANNEL, PCM1792A=
-_CHANNEL_MONO_MASK, val);
->>> +
->>>         return ret;
->>>  }
->>>
->>> @@ -222,10 +236,31 @@ static struct snd_soc_codec_driver soc_codec_=
-dev_pcm1792a =3D {
->>>         .num_dapm_routes        =3D ARRAY_SIZE(pcm1792a_dapm_routes=
-),
->>>  };
->>>
->>> +static int pcm1792a_of_init(struct spi_device *spi)
->>> +{
->>> +       int ret =3D 0;
->>> +       struct pcm1792a_private *pcm1792a =3D dev_get_drvdata(&spi-=
->dev);
->>> +       const char *name;
->>> +       struct device_node *np =3D spi->dev.of_node;
->>> +
->>> +       name =3D of_get_property(np, "ti,side", NULL);
->>> +       if (name) {
->>> +               if (!strcmp(name, "left"))
->>> +                       pcm1792a->side =3D MONORAL_LEFT;
->>> +               else
->>> +                       pcm1792a->side =3D MONORAL_RIGHT;
->>> +       }
->>> +       else
->>> +               pcm1792a->side =3D STEREO;
->>> +
->>> +       return ret;
->>> +}
->>> +
->>>  static int pcm1792a_spi_probe(struct spi_device *spi)
->>>  {
->>>         struct pcm1792a_private *pcm1792a;
->>>         int ret;
->>> +       struct device_node *np =3D spi->dev.of_node;
->>>
->>>         pcm1792a =3D devm_kzalloc(&spi->dev, sizeof(struct pcm1792a=
-_private),
->>>                                 GFP_KERNEL);
->>> @@ -241,6 +276,17 @@ static int pcm1792a_spi_probe(struct spi_devic=
-e *spi)
->>>                 return ret;
->>>         }
->>>
->>> +       if (np) {
->>> +               ret =3D pcm1792a_of_init(spi);
->>> +               if (ret)
->>> +                       return ret;
->>> +       }
->>> +
->>> +       if (pcm1792a->side =3D=3D MONORAL_LEFT)
->>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHANN=
-EL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_LEFT);
->>> +       else if (pcm1792a->side =3D=3D MONORAL_RIGHT)
->>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHANN=
-EL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_RIGHT);
->>> +
->>
->> Why this is a part of dts and not a part of mixer control?
->>
->> Michael
->>
->
-> The "channel side" bindings should be used when the pcm7192a is used
-> in monaural mode (which requires two DACs, both DACs operate in a
-> balanced mode for one channel of audio input data).
-> This is a hardware level design, it will never change at runtime.
-> I feel that a device tree binding is more appropriate than a control.
->
+> @@ -469,6 +471,9 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+>  	ret = clk_prepare_enable(esai_priv->coreclk);
+>  	if (ret)
+>  		return ret;
+> +	ret = clk_prepare_enable(esai_priv->spbaclk);
+> +	if (ret)
+> +		goto err_spbaclk;
+>  	if (!IS_ERR(esai_priv->extalclk)) {
+>  		ret = clk_prepare_enable(esai_priv->extalclk);
+>  		if (ret)
 
-Well I know exactly why is used for, but I don't really know if it's
-somenthing that should be
-in dts. Do I want to do channel inversion?
+Just like for extalclk there is a IS_ERR check out there, there
+should be one for spbaclk as well. Otherwise....
 
-Michael
+root@imx6qdlsolo:~# aplay /unit_tests/audio8k16S.wav 
+[   29.956250] Unable to handle kernel paging request at virtual address fffffffe
+[   29.963491] pgd = edd98000
+[   29.966278] [fffffffe] *pgd=afffd861, *pte=00000000, *ppte=00000000
+[   29.972615] Internal error: Oops: 37 [#1] SMP ARM
+[   29.977327] Modules linked in:
+[   29.980410] CPU: 0 PID: 755 Comm: aplay Not tainted 4.4.0-rc1-12414-gcc8db17 #250
+[   29.987899] Hardware name: Freescale i.MX6 SoloX (Device Tree)
+[   29.993738] task: edece780 ti: ed26a000 task.ti: ed26a000
+[   29.999156] PC is at clk_prepare+0x18/0x38
+[   30.003268] LR is at mark_held_locks+0x70/0x98
+[   30.007720] pc : [<c0568714>]    lr : [<c006f42c>]    psr: 600f0013
+[   30.007720] sp : ed26bc60  ip : 00000003  fp : ed26bc74
+[   30.019204] r10: eebe4d9c  r9 : eeb2e00c  r8 : eeb2e00c
+[   30.024435] r7 : fffffffe  r6 : eeb2c500  r5 : eeb2d0c0  r4 : fffffffe
+[   30.030966] r3 : edece780  r2 : 00000001  r1 : 00000001  r0 : 00000001
+[   30.037502] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[   30.044643] Control: 10c5387d  Table: add9804a  DAC: 00000051
+[   30.050395] Process aplay (pid: 755, stack limit = 0xed26a210)
 
->>>         return snd_soc_register_codec(&spi->dev,
->>>                         &soc_codec_dev_pcm1792a, &pcm1792a_dai, 1);
->>>  }
->>> --
->>> 2.1.0
->>>
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>
->>
->> --
->> | Michael Nazzareno Trimarchi                     Amarula Solutions =
-BV |
->> | COO  -  Founder                                      Cruquiuskade =
-47 |
->> | +31(0)851119172                                 Amsterdam 1018 AM =
-NL |
->> |                  [`as] http://www.amarulasolutions.com            =
-   |
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-kern=
-el" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> Please read the FAQ at  http://www.tux.org/lkml/
-
-
-
---=20
-| Michael Nazzareno Trimarchi                     Amarula Solutions BV =
-|
-| COO  -  Founder                                      Cruquiuskade 47 =
-|
-| +31(0)851119172                                 Amsterdam 1018 AM NL =
-|
-|                  [`as] http://www.amarulasolutions.com               =
-|
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
