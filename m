@@ -1,117 +1,235 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Simple-card without codec for testing purpose
-Date: Tue, 24 Nov 2015 07:38:40 -0800
-Message-ID: <CAG5mAdzinFVgTvOwo8yheA1+FSZmYAw8swj2x-oSVVQB1m2Tdw@mail.gmail.com>
-References: <564E0656.9000709@invoxia.com>
- <CAG5mAdw7_bLC9cFzAyUiPwC+UgQ6pgGHQA7D8z9PPDomUSR6FA@mail.gmail.com>
- <5652E348.8080002@invoxia.com>
+From: =?UTF-8?Q?Rapha=C3=ABl_Poggi?= <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 4/4] sound: codecs: pcm1792a: introduce
+ channel side
+Date: Tue, 24 Nov 2015 17:04:58 +0100
+Message-ID: <CACqcpZDQRtSqmLDC65ajNGY=VU8TFZBnVxhaM+cES37rv7zmyg@mail.gmail.com>
+References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
+ <1448014157-36526-5-git-send-email-raphael.poggi@avalun.com>
+ <CAOf5uwmGk7WqOaAFj=fTw8+D+EszWPqReyfmS0njix=d7AokOA@mail.gmail.com>
+ <CACqcpZCSMwj2WOhX0ddD43VKCgOcNyrkkZrR0sWEsHE+H27TVg@mail.gmail.com> <CAOf5uwmdwcdbxx2b6DvMeOJBahkZ3iiosWtHPD2zhxcDqO2b_A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f180.google.com (mail-ig0-f180.google.com
- [209.85.213.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CCE6265AD0
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 16:39:01 +0100 (CET)
-Received: by igcto18 with SMTP id to18so16633639igc.0
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 07:39:00 -0800 (PST)
-In-Reply-To: <5652E348.8080002@invoxia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAOf5uwmdwcdbxx2b6DvMeOJBahkZ3iiosWtHPD2zhxcDqO2b_A-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Cc: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-R3JlYXQsIEknbGwgaW50ZWdyYXRlIHRoaXMgaW50byBteSB0ZXN0aW5nIHNldHVwIHNvIEkgZG9u
-J3QgbmVlZCBhbgpleHRlcm5hbCBjb2RlYy4KCkJUVywgSSBoYXZlIGEgZ2l0aHViIGZvcmsgYXQK
-aHR0cHM6Ly9naXRodWIuY29tL2Njcm9tZS9saW51eC1jYWxlYi1kZXYvdHJlZS9saW51eC1teDYt
-d29ya2luZy1icmFuY2gsCndoaWNoIGhhcyBteSBwYXRjaGVzIGluIGl0LiAgU29tZSBwYXRjaGVz
-IGFyZSBnZW5lcmljIFNTSSByZWxhdGVkCnN0dWZmLCBhbmQgb3RoZXJzIGFyZSBzcGVjaWZpYyBo
-YWNrcyAobGlrZSBpbiB0aGUgdG1zMzIwYWljM3guYyBmaWxlKQpmb3IgbXkgaGFyZHdhcmUuICBJ
-J2xsIHNlcGFyYXRlIHRob3NlIG91dCBhdCBzb21lIHBvaW50IHRvIEkgaGF2ZSBhCmNsZWFuIHNl
-dCBvZiBwYXRjaGVzIHRoYXQgbWF5IGJlIGFwcGxpZWQuCgotQ2FsZWIKCgpPbiBNb24sIE5vdiAy
-MywgMjAxNSBhdCAxOjU4IEFNLCBhcm5hdWQubW91aWNoZUBpbnZveGlhLmNvbQo8YXJuYXVkLm1v
-dWljaGVAaW52b3hpYS5jb20+IHdyb3RlOgo+Cj4gVG8gYW5zd2VyIHRvIG15c2VsZjoKPiAtIHRo
-ZXJlIGFyZSBzb21lICJ2aXJ0dWFsIiBjb2RlY3MgYXZhaWxhYmxlIDogImJ0LXNjbyIsICJsaW51
-eCxzcGRpZi1kaXQiIGFuZCAibGludXgsc3BkaWYtZGlyIi4gYnV0IG5vbmUgb2YgdGhlbSBpcyBm
-dWxseSBnZW5lcmljLgo+IC0gYSAic25kLXNvYy1kdW1teS1kYWkiIGNvZGVjIGlzIGltcGxlbWVu
-dGVkIGluIHNvYy11dGlscy5jLiB5ZXQsIG5vIGRldmljZS10cmVlIGJpbmRpbmdzIGFyZSBhdmFp
-bGFibGUsIGV4Y2VwdCBpZiBhIHBhdGNoIGxpa2UgdGhlIGZvbGxvd2luZyBvbmUgaXMgYXBwbGll
-ZAo+Cj4gLS0tIGEvc291bmQvc29jL3NvYy11dGlscy5jCj4gKysrIGIvc291bmQvc29jL3NvYy11
-dGlscy5jCj4gQEAgLTE5LDYgKzE5LDcgQEAKPiAgI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgo+ICAj
-aW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgo+ICAjaW5jbHVkZSA8c291bmQvc29jLmg+Cj4g
-KyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KPgo+ICBpbnQgc25kX3NvY19jYWxjX2ZyYW1lX3Np
-emUoaW50IHNhbXBsZV9zaXplLCBpbnQgY2hhbm5lbHMsIGludCB0ZG1fc2xvdHMpCj4gIHsKPiBA
-QCAtMTUxLDkgKzE1MiwxOCBAQCBzdGF0aWMgaW50IHNuZF9zb2NfZHVtbXlfcmVtb3ZlKHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gICAgICByZXR1cm4gMDsKPiAgfQo+Cj4gKyNpZmRl
-ZiBDT05GSUdfT0YKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgc29jX2R1bW15
-X2lkc1tdID0gewo+ICsgICAgeyAuY29tcGF0aWJsZSA9ICJsaW51eCxzbmQtc29jLWR1bW15Iiwg
-fSwKPiArICAgIHsgfQo+ICt9Owo+ICtNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBzb2NfZHVtbXlf
-aWRzKTsKPiArI2VuZGlmCj4gKwo+ICBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBzb2Nf
-ZHVtbXlfZHJpdmVyID0gewo+ICAgICAgLmRyaXZlciA9IHsKPiAgICAgICAgICAubmFtZSA9ICJz
-bmQtc29jLWR1bW15IiwKPiArICAgICAgICAub2ZfbWF0Y2hfdGFibGUgPSBvZl9tYXRjaF9wdHIo
-c29jX2R1bW15X2lkcyksCj4gICAgICB9LAo+ICAgICAgLnByb2JlID0gc25kX3NvY19kdW1teV9w
-cm9iZSwKPiAgICAgIC5yZW1vdmUgPSBzbmRfc29jX2R1bW15X3JlbW92ZSwKPgo+Cj4KPiBPbmNl
-IGRvbmUsIGhlcmUgaXMgYSBEVFMgZXhhbXBsZSBmb3IgaW14NnNsOgo+Cj4gJmF1ZG11eCB7Cj4g
-ICAgIHNzaTMgewo+ICAgICAgICAgZnNsLGF1ZG11eC1wb3J0ID0gPDY+Owo+ICAgICAgICAgZnNs
-LHBvcnQtY29uZmlnID0gPAo+ICNpZmRlZiBTU0lfVEVTVF9NQVNURVIKPiAgICAgICAgICAgICAw
-eDAwMDAwMDAwCj4gI2Vsc2UKPiAgICAgICAgICAgICAoSU1YX0FVRE1VWF9WMl9QVENSX1RGU0RJ
-UiB8Cj4gICAgICAgICAgICAgSU1YX0FVRE1VWF9WMl9QVENSX1RGU0VMKDQpIHwKPiAgICAgICAg
-ICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8Cj4gICAgICAgICAgICAgSU1YX0FVRE1V
-WF9WMl9QVENSX1RDU0VMKDQpKQo+ICNlbmRpZgo+ICAgICAgICAgICAgIElNWF9BVURNVVhfVjJf
-UERDUl9SWERTRUwoNCkKPiAgICAgICAgID47Cj4gICAgIH07Cj4KPiAgICAgcG9ydDUgewo+ICAg
-ICAgICAgZnNsLGF1ZG11eC1wb3J0ID0gPDQ+Owo+ICAgICAgICAgZnNsLHBvcnQtY29uZmlnID0g
-PAo+ICNpZmRlZiBTU0lfVEVTVF9NQVNURVIKPiAgICAgICAgICAgICAoSU1YX0FVRE1VWF9WMl9Q
-VENSX1RGU0RJUiB8Cj4gICAgICAgICAgICAgSU1YX0FVRE1VWF9WMl9QVENSX1RGU0VMKDYpIHwK
-PiAgICAgICAgICAgICBJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8Cj4gICAgICAgICAgICAg
-SU1YX0FVRE1VWF9WMl9QVENSX1RDU0VMKDYpKQo+ICNlbHNlCj4gICAgICAgICAgICAgMHgwMDAw
-MDAwMAo+ICNlbmRpZgo+ICAgICAgICAgICAgIElNWF9BVURNVVhfVjJfUERDUl9SWERTRUwoNikK
-PiAgICAgICAgID47Cj4gICAgIH07Cj4gfTsKPgo+Cj4gJnNzaTMgewo+ICAgICBzdGF0dXMgPSAi
-b2theSI7Cj4KPiAgICAgLy8gc2VsZWN0IHRoZSBhIGNsb2NrIHBhcmVudCBzdWl0YWJsZSBmb3Ig
-NDgwMDAgSHogc2FtcGxpbmcgcmF0ZQo+ICAgICBhc3NpZ25lZC1jbG9ja3MgPSA8JmNsa3MgSU1Y
-NlNMX0NMS19TU0kzX1NFTD4sIDwmY2xrcyBJTVg2U0xfQ0xLX1NTSTM+Owo+ICAgICBhc3NpZ25l
-ZC1jbG9jay1wYXJlbnRzID0gPCZjbGtzIElNWDZTTF9DTEtfUExMNF9BVURJT19ESVY+Owo+ICAg
-ICBhc3NpZ25lZC1jbG9jay1yYXRlcyA9IDwwPiwgPDQ5MTUyMDAwPjsKPiB9Owo+Cj4gLyB7Cj4g
-ICAgIGNvZGVjX3Rlc3Q6IGNvZGVjX3Rlc3Qgewo+ICAgICAgICAgY29tcGF0aWJsZSA9ICJsaW51
-eCxzbmQtc29jLWR1bW15IjsKPiAgICAgICAgICNzb3VuZC1kYWktY2VsbHMgPSA8MD47Cj4gICAg
-IH07Cj4KPgo+ICAgICBzb3VuZEAyIHsKPiAgICAgICAgIGNvbXBhdGlibGUgPSAic2ltcGxlLWF1
-ZGlvLWNhcmQiOwo+ICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsbmFtZSA9ICJ0ZXN0IjsKPiAg
-ICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZvcm1hdD0iZHNwX2EiOwo+Cj4gI2lmZGVmIFNTSV9U
-RVNUX01BU1RFUgo+ICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsZnJhbWUtbWFzdGVyID0gPCZz
-b3VuZDJfc3NpPjsKPiAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGJpdGNsb2NrLW1hc3RlciA9
-IDwmc291bmQyX3NzaT47Cj4gI2Vsc2UKPiAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLGZyYW1l
-LW1hc3RlciA9IDwmY29kZWNfdGVzdD47Cj4gICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxiaXRj
-bG9jay1tYXN0ZXIgPSA8JmNvZGVjX3Rlc3Q+Owo+ICNlbmRpZgo+ICAgICAgICAgICAgIHNvdW5k
-Ml9zc2k6IHNpbXBsZS1hdWRpby1jYXJkLGNwdSB7Cj4gICAgICAgICAgICAgICAgIHNvdW5kLWRh
-aSA9IDwmc3NpMz47Cj4gICAgICAgICAgICAgICAgIHN5c3RlbS1jbG9jay1mcmVxdWVuY3kgPSA8
-MTUzNjAwMD47Cj4gICAgICAgICAgICAgICAgIGRhaS10ZG0tc2xvdC1udW0gPSA8Mj47Cj4gICAg
-ICAgICAgICAgICAgIGRhaS10ZG0tc2xvdC13aWR0aCA9IDwxNj47Cj4gICAgICAgICAgICAgfTsK
-PiAgICAgICAgICAgICBzb3VuZDJjb2RlYzogc2ltcGxlLWF1ZGlvLWNhcmQsY29kZWMgewo+ICAg
-ICAgICAgICAgICAgICBzb3VuZC1kYWkgPSA8JmNvZGVjX3Rlc3Q+Owo+ICAgICAgICAgICAgIH07
-Cj4gICAgIH07Cj4KPiB9Owo+Cj4KPgo+Cj4KPiBMZSAyMC8xMS8yMDE1IDAyOjI0LCBDYWxlYiBD
-cm9tZSBhIMOpY3JpdCA6Cj4+Cj4+IEkndmUgYmVlbiB3b25kZXJpbmcgYWJvdXQgdGhhdCB0b28u
-IEkgZG9uJ3Qga25vdyBob3cgdG8gZG8gaXQgZWFzaWx5Lgo+Pgo+PiAtQ2FsZWIKPj4KPj4KPj4g
-T24gVGh1LCBOb3YgMTksIDIwMTUgYXQgOToyNiBBTSwgYXJuYXVkLm1vdWljaGVAaW52b3hpYS5j
-b20KPj4gPGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tPiB3cm90ZToKPj4+Cj4+PiBIZWxsbywK
-Pj4+Cj4+PiBJJ20gc3RhcnRpbmcgZGVidWdnaW5nIC8gdGVzdGluZyBhbGwgdGhlIGZzbF9zc2kg
-aXNzdWVzIChzZWUgQ2FsZWIncwo+Pj4gcHJldmlvdXMgcG9zdCkuCj4+Pgo+Pj4gRmlyc3Qgc3Rl
-cCBJIGp1c3QgbmVlZCB0byBzZXR1cCBhIERUUyBlbnRyeSBmb3IgICJzaW1wbGUtY2FyZCIgKyBm
-YWtlIGNvZGVjCj4+PiB0byBnZW5lcmF0ZSBhcmJpdHJhcnkgUENNIGJ1cyBvdXRwdXQgKDEgdG8g
-MTYgY2hhbm5lbHMsIHZhcmlvdXMgVERNLCB2YXJpb3VzCj4+PiBzYW1wbGluZyByYXRlIGFuZCBm
-b3JtYXQgYW5kIG1hc3Rlci9zbGF2ZSByb2xlKQo+Pj4gSSB3aWxsIHRoZW4gcGx1ZyBteSBsb2dp
-Y2FsIGFuYWx5c2VyLCBvciBkbyBzb21lIGxvb3BiYWNrLCBvciBwbHVnIGEgRlBHQSB0bwo+Pj4g
-Z2VuZXJhdGUvY2hlY2sgc29tZSBwYXR0ZXJucy4KPj4+Cj4+PiBJcyB0aGVyZSBzdWNoICJmYWtl
-IGNvZGVjIiBzb21ld2hlcmUuICBJbmRlZWQsIHNvbWV0aGluZyB0aGF0IGxvb2sgbGlrZSB0aGUK
-Pj4+IGJ0LXNjbyBjb2RlYywgYnV0IHdpdGhvdXQgcmF0ZS9mb3JtYXQvY2hhbm5lbCBsaW1pdGF0
-aW9ucyA/Cj4+PiBPciBkb2VzIHRoZSAic2ltcGxlLWNhcmQiIGV2ZW4gbmVlZHMgb25lID8KPj4+
-Cj4+PiBSZWdhcmRzLAo+Pj4gQXJuYXVkCj4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+2015-11-24 9:27 GMT+01:00 Michael Trimarchi <michael@amarulasolutions.c=
+om>:
+> Hi
+>
+> On Tue, Nov 24, 2015 at 9:21 AM, Rapha=C3=ABl Poggi <poggi.raph@gmail=
+=2Ecom> wrote:
+>> Hi,
+>>
+>> 2015-11-21 10:37 GMT+01:00 Michael Trimarchi <michael@amarulasolutio=
+ns.com>:
+>>> Hi
+>>>
+>>> On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph@gmail.c=
+om> wrote:
+>>>> From: Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>>>
+>>>> Add possibility to choose the channel side using the device tree,
+>>>> and also modify it using alsa ctrl.
+>>>>
+>>>> Signed-off-by: Raphael Poggi <poggi.raph-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>>> ---
+>>>>  sound/soc/codecs/pcm1792a.c | 46 ++++++++++++++++++++++++++++++++=
++++++++++++++
+>>>>  1 file changed, 46 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm179=
+2a.c
+>>>> index febaa48..005b679 100644
+>>>> --- a/sound/soc/codecs/pcm1792a.c
+>>>> +++ b/sound/soc/codecs/pcm1792a.c
+>>>> @@ -65,6 +65,12 @@ static const struct reg_default pcm1792a_reg_de=
+faults[] =3D {
+>>>>         { PCM1792A_DEVICE_ID, 0x00 },
+>>>>  };
+>>>>
+>>>> +enum __pcm1792_side {
+>>>> +       STEREO,
+>>>> +       MONORAL_LEFT,
+>>>> +       MONORAL_RIGHT
+>>>> +};
+>>>> +
+>>>>  static bool pcm1792a_accessible_reg(struct device *dev, unsigned =
+int reg)
+>>>>  {
+>>>>         return reg >=3D 0x10 && reg <=3D 0x17;
+>>>> @@ -83,6 +89,7 @@ struct pcm1792a_private {
+>>>>         struct regmap *regmap;
+>>>>         unsigned int format;
+>>>>         unsigned int rate;
+>>>> +       unsigned int side;
+>>>>  };
+>>>>
+>>>>  static int pcm1792a_set_dai_fmt(struct snd_soc_dai *codec_dai,
+>>>> @@ -153,6 +160,13 @@ static int pcm1792a_hw_params(struct snd_pcm_=
+substream *substream,
+>>>>         ret =3D regmap_update_bits(priv->regmap, PCM1792A_FMT_CONT=
+ROL,
+>>>>                                  PCM1792A_FMT_MASK | PCM1792A_ATLD=
+_ENABLE, val);
+>>>>
+>>>> +       if (priv->side =3D=3D MONORAL_LEFT)
+>>>> +               val =3D PCM1792A_CHANNEL_MONO_LEFT;
+>>>> +       else if (priv->side =3D=3D MONORAL_RIGHT)
+>>>> +               val =3D PCM1792A_CHANNEL_MONO_RIGHT;
+>>>> +
+>>>> +       regmap_update_bits(priv->regmap, PCM1792A_CHANNEL, PCM1792=
+A_CHANNEL_MONO_MASK, val);
+>>>> +
+>>>>         return ret;
+>>>>  }
+>>>>
+>>>> @@ -222,10 +236,31 @@ static struct snd_soc_codec_driver soc_codec=
+_dev_pcm1792a =3D {
+>>>>         .num_dapm_routes        =3D ARRAY_SIZE(pcm1792a_dapm_route=
+s),
+>>>>  };
+>>>>
+>>>> +static int pcm1792a_of_init(struct spi_device *spi)
+>>>> +{
+>>>> +       int ret =3D 0;
+>>>> +       struct pcm1792a_private *pcm1792a =3D dev_get_drvdata(&spi=
+->dev);
+>>>> +       const char *name;
+>>>> +       struct device_node *np =3D spi->dev.of_node;
+>>>> +
+>>>> +       name =3D of_get_property(np, "ti,side", NULL);
+>>>> +       if (name) {
+>>>> +               if (!strcmp(name, "left"))
+>>>> +                       pcm1792a->side =3D MONORAL_LEFT;
+>>>> +               else
+>>>> +                       pcm1792a->side =3D MONORAL_RIGHT;
+>>>> +       }
+>>>> +       else
+>>>> +               pcm1792a->side =3D STEREO;
+>>>> +
+>>>> +       return ret;
+>>>> +}
+>>>> +
+>>>>  static int pcm1792a_spi_probe(struct spi_device *spi)
+>>>>  {
+>>>>         struct pcm1792a_private *pcm1792a;
+>>>>         int ret;
+>>>> +       struct device_node *np =3D spi->dev.of_node;
+>>>>
+>>>>         pcm1792a =3D devm_kzalloc(&spi->dev, sizeof(struct pcm1792=
+a_private),
+>>>>                                 GFP_KERNEL);
+>>>> @@ -241,6 +276,17 @@ static int pcm1792a_spi_probe(struct spi_devi=
+ce *spi)
+>>>>                 return ret;
+>>>>         }
+>>>>
+>>>> +       if (np) {
+>>>> +               ret =3D pcm1792a_of_init(spi);
+>>>> +               if (ret)
+>>>> +                       return ret;
+>>>> +       }
+>>>> +
+>>>> +       if (pcm1792a->side =3D=3D MONORAL_LEFT)
+>>>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHAN=
+NEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_LEFT);
+>>>> +       else if (pcm1792a->side =3D=3D MONORAL_RIGHT)
+>>>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHAN=
+NEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_RIGHT);
+>>>> +
+>>>
+>>> Why this is a part of dts and not a part of mixer control?
+>>>
+>>> Michael
+>>>
+>>
+>> The "channel side" bindings should be used when the pcm7192a is used
+>> in monaural mode (which requires two DACs, both DACs operate in a
+>> balanced mode for one channel of audio input data).
+>> This is a hardware level design, it will never change at runtime.
+>> I feel that a device tree binding is more appropriate than a control=
+=2E
+>>
+>
+> Well I know exactly why is used for, but I don't really know if it's
+> somenthing that should be
+> in dts. Do I want to do channel inversion?
+>
+> Michael
+>
+
+I am not sure to understand. You mean "What if I want to do channel
+inversion", right ?
+If so, we have two differents "problems", one at hardware level design
+because monaural mode requires two DACs, and an another one at
+software level
+"channel inversion".
+I have always thought that hardware description should be in dts,
+that's why I implement monaural mode using dts.
+
+Honestly, I don't know what is the best solution between "this is a
+hardware design, it should be in dts and shouldn't change" vs "this
+should be an alsa controler because we want extra features independent
+from hardware design"
+
+Rapha=C3=ABl
+
+>>>>         return snd_soc_register_codec(&spi->dev,
+>>>>                         &soc_codec_dev_pcm1792a, &pcm1792a_dai, 1)=
+;
+>>>>  }
+>>>> --
+>>>> 2.1.0
+>>>>
+>>>> _______________________________________________
+>>>> Alsa-devel mailing list
+>>>> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>
+>>>
+>>>
+>>> --
+>>> | Michael Nazzareno Trimarchi                     Amarula Solutions=
+ BV |
+>>> | COO  -  Founder                                      Cruquiuskade=
+ 47 |
+>>> | +31(0)851119172                                 Amsterdam 1018 AM=
+ NL |
+>>> |                  [`as] http://www.amarulasolutions.com           =
+    |
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe linux-ker=
+nel" in
+>>> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>> Please read the FAQ at  http://www.tux.org/lkml/
+>
+>
+>
+> --
+> | Michael Nazzareno Trimarchi                     Amarula Solutions B=
+V |
+> | COO  -  Founder                                      Cruquiuskade 4=
+7 |
+> | +31(0)851119172                                 Amsterdam 1018 AM N=
+L |
+> |                  [`as] http://www.amarulasolutions.com             =
+  |
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kerne=
+l" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
