@@ -1,79 +1,266 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix noise on Gigabyte Z170X mobo
-Date: Tue, 24 Nov 2015 20:05:38 +0100
-Message-ID: <1448391938-24989-1-git-send-email-tiwai@suse.de>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [alsa-devel] [PATCH 4/4] sound: codecs: pcm1792a: introduce
+ channel side
+Date: Tue, 24 Nov 2015 21:10:54 +0100
+Message-ID: <CAOf5uwmg4vC18SWBe-cQ22tqSmQ3Xeg2uu8Ldmd3N8V64wgT4Q@mail.gmail.com>
+References: <1448014157-36526-1-git-send-email-raphael.poggi@avalun.com>
+	<1448014157-36526-5-git-send-email-raphael.poggi@avalun.com>
+	<CAOf5uwmGk7WqOaAFj=fTw8+D+EszWPqReyfmS0njix=d7AokOA@mail.gmail.com>
+	<CACqcpZCSMwj2WOhX0ddD43VKCgOcNyrkkZrR0sWEsHE+H27TVg@mail.gmail.com>
+	<CAOf5uwmdwcdbxx2b6DvMeOJBahkZ3iiosWtHPD2zhxcDqO2b_A@mail.gmail.com>
+	<CACqcpZDQRtSqmLDC65ajNGY=VU8TFZBnVxhaM+cES37rv7zmyg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DA0BB2615F7
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 20:05:41 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 910F8AABB
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 19:04:12 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACqcpZDQRtSqmLDC65ajNGY=VU8TFZBnVxhaM+cES37rv7zmyg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Rapha=C3=ABl_Poggi?= <poggi.raph@gmail.com>
+Cc: perex@perex.cz, tiwai@suse.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Gigabyte Z710X mobo with ALC1150 codec gets significant noises from
-the analog loopback routes even if their inputs are all muted.
-Simply kill the aamix for fixing it.
+Hi
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=108301
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Tue, Nov 24, 2015 at 5:04 PM, Rapha=C3=ABl Poggi <poggi.raph@gmail.c=
+om> wrote:
+> Hi,
+>
+> 2015-11-24 9:27 GMT+01:00 Michael Trimarchi <michael@amarulasolutions=
+=2Ecom>:
+>> Hi
+>>
+>> On Tue, Nov 24, 2015 at 9:21 AM, Rapha=C3=ABl Poggi <poggi.raph@gmai=
+l.com> wrote:
+>>> Hi,
+>>>
+>>> 2015-11-21 10:37 GMT+01:00 Michael Trimarchi <michael@amarulasoluti=
+ons.com>:
+>>>> Hi
+>>>>
+>>>> On Fri, Nov 20, 2015 at 11:09 AM, Raphael Poggi <poggi.raph@gmail.=
+com> wrote:
+>>>>> From: Raphael Poggi <poggi.raph@gmail.com>
+>>>>>
+>>>>> Add possibility to choose the channel side using the device tree,
+>>>>> and also modify it using alsa ctrl.
+>>>>>
+>>>>> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
+>>>>> ---
+>>>>>  sound/soc/codecs/pcm1792a.c | 46 +++++++++++++++++++++++++++++++=
+++++++++++++++
+>>>>>  1 file changed, 46 insertions(+)
+>>>>>
+>>>>> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm17=
+92a.c
+>>>>> index febaa48..005b679 100644
+>>>>> --- a/sound/soc/codecs/pcm1792a.c
+>>>>> +++ b/sound/soc/codecs/pcm1792a.c
+>>>>> @@ -65,6 +65,12 @@ static const struct reg_default pcm1792a_reg_d=
+efaults[] =3D {
+>>>>>         { PCM1792A_DEVICE_ID, 0x00 },
+>>>>>  };
+>>>>>
+>>>>> +enum __pcm1792_side {
+>>>>> +       STEREO,
+>>>>> +       MONORAL_LEFT,
+>>>>> +       MONORAL_RIGHT
+>>>>> +};
+>>>>> +
+>>>>>  static bool pcm1792a_accessible_reg(struct device *dev, unsigned=
+ int reg)
+>>>>>  {
+>>>>>         return reg >=3D 0x10 && reg <=3D 0x17;
+>>>>> @@ -83,6 +89,7 @@ struct pcm1792a_private {
+>>>>>         struct regmap *regmap;
+>>>>>         unsigned int format;
+>>>>>         unsigned int rate;
+>>>>> +       unsigned int side;
+>>>>>  };
+>>>>>
+>>>>>  static int pcm1792a_set_dai_fmt(struct snd_soc_dai *codec_dai,
+>>>>> @@ -153,6 +160,13 @@ static int pcm1792a_hw_params(struct snd_pcm=
+_substream *substream,
+>>>>>         ret =3D regmap_update_bits(priv->regmap, PCM1792A_FMT_CON=
+TROL,
+>>>>>                                  PCM1792A_FMT_MASK | PCM1792A_ATL=
+D_ENABLE, val);
+>>>>>
+>>>>> +       if (priv->side =3D=3D MONORAL_LEFT)
+>>>>> +               val =3D PCM1792A_CHANNEL_MONO_LEFT;
+>>>>> +       else if (priv->side =3D=3D MONORAL_RIGHT)
+>>>>> +               val =3D PCM1792A_CHANNEL_MONO_RIGHT;
+>>>>> +
+>>>>> +       regmap_update_bits(priv->regmap, PCM1792A_CHANNEL, PCM179=
+2A_CHANNEL_MONO_MASK, val);
+>>>>> +
+>>>>>         return ret;
+>>>>>  }
+>>>>>
+>>>>> @@ -222,10 +236,31 @@ static struct snd_soc_codec_driver soc_code=
+c_dev_pcm1792a =3D {
+>>>>>         .num_dapm_routes        =3D ARRAY_SIZE(pcm1792a_dapm_rout=
+es),
+>>>>>  };
+>>>>>
+>>>>> +static int pcm1792a_of_init(struct spi_device *spi)
+>>>>> +{
+>>>>> +       int ret =3D 0;
+>>>>> +       struct pcm1792a_private *pcm1792a =3D dev_get_drvdata(&sp=
+i->dev);
+>>>>> +       const char *name;
+>>>>> +       struct device_node *np =3D spi->dev.of_node;
+>>>>> +
+>>>>> +       name =3D of_get_property(np, "ti,side", NULL);
+>>>>> +       if (name) {
+>>>>> +               if (!strcmp(name, "left"))
+>>>>> +                       pcm1792a->side =3D MONORAL_LEFT;
+>>>>> +               else
+>>>>> +                       pcm1792a->side =3D MONORAL_RIGHT;
+>>>>> +       }
+>>>>> +       else
+>>>>> +               pcm1792a->side =3D STEREO;
+>>>>> +
+>>>>> +       return ret;
+>>>>> +}
+>>>>> +
+>>>>>  static int pcm1792a_spi_probe(struct spi_device *spi)
+>>>>>  {
+>>>>>         struct pcm1792a_private *pcm1792a;
+>>>>>         int ret;
+>>>>> +       struct device_node *np =3D spi->dev.of_node;
+>>>>>
+>>>>>         pcm1792a =3D devm_kzalloc(&spi->dev, sizeof(struct pcm179=
+2a_private),
+>>>>>                                 GFP_KERNEL);
+>>>>> @@ -241,6 +276,17 @@ static int pcm1792a_spi_probe(struct spi_dev=
+ice *spi)
+>>>>>                 return ret;
+>>>>>         }
+>>>>>
+>>>>> +       if (np) {
+>>>>> +               ret =3D pcm1792a_of_init(spi);
+>>>>> +               if (ret)
+>>>>> +                       return ret;
+>>>>> +       }
+>>>>> +
+>>>>> +       if (pcm1792a->side =3D=3D MONORAL_LEFT)
+>>>>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHA=
+NNEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_LEFT);
+>>>>> +       else if (pcm1792a->side =3D=3D MONORAL_RIGHT)
+>>>>> +               regmap_update_bits(pcm1792a->regmap, PCM1792A_CHA=
+NNEL, PCM1792A_CHANNEL_MONO_MASK, PCM1792A_CHANNEL_MONO_RIGHT);
+>>>>> +
+>>>>
+>>>> Why this is a part of dts and not a part of mixer control?
+>>>>
+>>>> Michael
+>>>>
+>>>
+>>> The "channel side" bindings should be used when the pcm7192a is use=
+d
+>>> in monaural mode (which requires two DACs, both DACs operate in a
+>>> balanced mode for one channel of audio input data).
+>>> This is a hardware level design, it will never change at runtime.
+>>> I feel that a device tree binding is more appropriate than a contro=
+l.
+>>>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e4f80dc4704f..9bedf7c85e29 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1759,6 +1759,7 @@ enum {
- 	ALC882_FIXUP_NO_PRIMARY_HP,
- 	ALC887_FIXUP_ASUS_BASS,
- 	ALC887_FIXUP_BASS_CHMAP,
-+	ALC882_FIXUP_DISABLE_AAMIX,
- };
- 
- static void alc889_fixup_coef(struct hda_codec *codec,
-@@ -1920,6 +1921,8 @@ static void alc882_fixup_no_primary_hp(struct hda_codec *codec,
- 
- static void alc_fixup_bass_chmap(struct hda_codec *codec,
- 				 const struct hda_fixup *fix, int action);
-+static void alc_fixup_disable_aamix(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action);
- 
- static const struct hda_fixup alc882_fixups[] = {
- 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
-@@ -2151,6 +2154,10 @@ static const struct hda_fixup alc882_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_bass_chmap,
- 	},
-+	[ALC882_FIXUP_DISABLE_AAMIX] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_disable_aamix,
-+	},
- };
- 
- static const struct snd_pci_quirk alc882_fixup_tbl[] = {
-@@ -2218,6 +2225,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1458, 0xa182, "Gigabyte Z170X-UD3", ALC882_FIXUP_DISABLE_AAMIX),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
--- 
-2.6.3
+If you put this in mixer control then you can avoid to have it in dts
+because you not suppose to
+boot playing music. Basically you can get the same result restore some
+alsa config that match
+your topology. Even if you have two mono amplifier you can have the
+situation that you want to
+invert channel left and right and this can be done easily just
+reconfigure one as mono left and the other
+as mono right or write your own sound card that do in one control,
+change both together. I suggest
+to wait some other opinions.
+
+Michael
+
+>>
+>> Well I know exactly why is used for, but I don't really know if it's
+>> somenthing that should be
+>> in dts. Do I want to do channel inversion?
+>>
+>> Michael
+>>
+>
+> I am not sure to understand. You mean "What if I want to do channel
+> inversion", right ?
+> If so, we have two differents "problems", one at hardware level desig=
+n
+> because monaural mode requires two DACs, and an another one at
+> software level
+> "channel inversion".
+> I have always thought that hardware description should be in dts,
+> that's why I implement monaural mode using dts.
+>
+> Honestly, I don't know what is the best solution between "this is a
+> hardware design, it should be in dts and shouldn't change" vs "this
+> should be an alsa controler because we want extra features independen=
+t
+> from hardware design"
+>
+> Rapha=C3=ABl
+>
+>>>>>         return snd_soc_register_codec(&spi->dev,
+>>>>>                         &soc_codec_dev_pcm1792a, &pcm1792a_dai, 1=
+);
+>>>>>  }
+>>>>> --
+>>>>> 2.1.0
+>>>>>
+>>>>> _______________________________________________
+>>>>> Alsa-devel mailing list
+>>>>> Alsa-devel@alsa-project.org
+>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>>
+>>>>
+>>>>
+>>>> --
+>>>> | Michael Nazzareno Trimarchi                     Amarula Solution=
+s BV |
+>>>> | COO  -  Founder                                      Cruquiuskad=
+e 47 |
+>>>> | +31(0)851119172                                 Amsterdam 1018 A=
+M NL |
+>>>> |                  [`as] http://www.amarulasolutions.com          =
+     |
+>>>> --
+>>>> To unsubscribe from this list: send the line "unsubscribe linux-ke=
+rnel" in
+>>>> the body of a message to majordomo@vger.kernel.org
+>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>> Please read the FAQ at  http://www.tux.org/lkml/
+>>
+>>
+>>
+>> --
+>> | Michael Nazzareno Trimarchi                     Amarula Solutions =
+BV |
+>> | COO  -  Founder                                      Cruquiuskade =
+47 |
+>> | +31(0)851119172                                 Amsterdam 1018 AM =
+NL |
+>> |                  [`as] http://www.amarulasolutions.com            =
+   |
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-kern=
+el" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> Please read the FAQ at  http://www.tux.org/lkml/
+
+
+
+--=20
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV =
+|
+| COO  -  Founder                                      Cruquiuskade 47 =
+|
+| +31(0)851119172                                 Amsterdam 1018 AM NL =
+|
+|                  [`as] http://www.amarulasolutions.com               =
+|
