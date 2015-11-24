@@ -1,106 +1,86 @@
 From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V3 3/3] ASoC: fsl_asrc: spba clock is needed by asrc device
-Date: Tue, 24 Nov 2015 15:03:30 +0800
-Message-ID: <40629d5e0c3509afe27877874d225d5cd3cde261.1448348336.git.shengjiu.wang@freescale.com>
+Subject: [PATCH V3 1/3] ASoC: fsl_esai: spba clock is needed by esai device
+Date: Tue, 24 Nov 2015 15:03:28 +0800
+Message-ID: <37808c01df126622c41c2d413fddf838dc2aa71d.1448348336.git.shengjiu.wang@freescale.com>
 References: <cover.1448348336.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 In-Reply-To: <cover.1448348336.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ASRC need to enable the spba clock, when sdma is using share peripheral
-script. In this case, there is two spba master port is used, if don't
-enable the clock, the spba bus will have arbitration issue, which may
-cause read/write wrong data from/to ASRC registers
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- Documentation/devicetree/bindings/sound/fsl,asrc.txt |  5 +++++
- sound/soc/fsl/fsl_asrc.c                             | 10 ++++++++++
- sound/soc/fsl/fsl_asrc.h                             |  2 ++
- 3 files changed, 17 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index b93362a..3e26a94 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -25,6 +25,11 @@ Required properties:
- 	"mem"		  Peripheral access clock to access registers.
- 	"ipg"		  Peripheral clock to driver module.
- 	"asrck_<0-f>"	  Clock sources for input and output clock.
-+	"spba"		  The spba clock is required when ASRC is placed as a
-+			  bus slave of the Shared Peripheral Bus and when two
-+			  or more bus masters (CPU, DMA or DSP) try to access
-+			  it. This property is optional depending on the SoC
-+			  design.
- 
-    - big-endian		: If this property is absent, the little endian mode
- 			  will be in use as default. Otherwise, the big endian
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 9f087d4..800828e 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -859,6 +859,10 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		return PTR_ERR(asrc_priv->ipg_clk);
- 	}
- 
-+	asrc_priv->spba_clk = devm_clk_get(&pdev->dev, "spba");
-+	if (IS_ERR(asrc_priv->spba_clk))
-+		dev_warn(&pdev->dev, "failed to get spba clock\n");
-+
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		sprintf(tmp, "asrck_%x", i);
- 		asrc_priv->asrck_clk[i] = devm_clk_get(&pdev->dev, tmp);
-@@ -939,6 +943,9 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	ret = clk_prepare_enable(asrc_priv->ipg_clk);
- 	if (ret)
- 		goto disable_mem_clk;
-+	ret = clk_prepare_enable(asrc_priv->spba_clk);
-+	if (ret)
-+		goto disable_ipg_clk;
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		ret = clk_prepare_enable(asrc_priv->asrck_clk[i]);
- 		if (ret)
-@@ -950,6 +957,8 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- disable_asrck_clk:
- 	for (i--; i >= 0; i--)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	clk_disable_unprepare(asrc_priv->spba_clk);
-+disable_ipg_clk:
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- disable_mem_clk:
- 	clk_disable_unprepare(asrc_priv->mem_clk);
-@@ -963,6 +972,7 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
- 
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	clk_disable_unprepare(asrc_priv->spba_clk);
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- 	clk_disable_unprepare(asrc_priv->mem_clk);
- 
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 4aed63c..68802cd 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -426,6 +426,7 @@ struct fsl_asrc_pair {
-  * @paddr: physical address to the base address of registers
-  * @mem_clk: clock source to access register
-  * @ipg_clk: clock source to drive peripheral
-+ * @spba_clk: SPBA clock (optional, depending on SoC design)
-  * @asrck_clk: clock sources to driver ASRC internal logic
-  * @lock: spin lock for resource protection
-  * @pair: pair pointers
-@@ -442,6 +443,7 @@ struct fsl_asrc {
- 	unsigned long paddr;
- 	struct clk *mem_clk;
- 	struct clk *ipg_clk;
-+	struct clk *spba_clk;
- 	struct clk *asrck_clk[ASRC_CLK_MAX_NUM];
- 	spinlock_t lock;
- 
--- 
-1.9.1
+RVNBSSBuZWVkIHRvIGVuYWJsZSB0aGUgc3BiYSBjbG9jaywgd2hlbiBzZG1hIGlzIHVzaW5nIHNo
+YXJlIHBlcmlwaGVyYWwKc2NyaXB0LiBJbiB0aGlzIGNhc2UsIHRoZXJlIGlzIHR3byBzcGJhIG1h
+c3RlciBwb3J0IGlzIHVzZWQsIGlmIGRvbid0CmVuYWJsZSB0aGUgY2xvY2ssIHRoZSBzcGJhIGJ1
+cyB3aWxsIGhhdmUgYXJiaXRyYXRpb24gaXNzdWUsIHdoaWNoIG1heQpjYXVzZSByZWFkL3dyaXRl
+IHdyb25nIGRhdGEgZnJvbS90byBFU0FJIHJlZ2lzdGVycy4KClNpZ25lZC1vZmYtYnk6IFNoZW5n
+aml1IFdhbmcgPHNoZW5naml1LndhbmdAZnJlZXNjYWxlLmNvbT4KLS0tCiBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0IHwgIDUgKysrKysKIHNvdW5k
+L3NvYy9mc2wvZnNsX2VzYWkuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMyArKysr
+KysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQg
+YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0IGIv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxlc2FpLnR4dAppbmRl
+eCBkM2I2YjVmLi5jZDNlZTVkIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3Mvc291bmQvZnNsLGVzYWkudHh0CisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9zb3VuZC9mc2wsZXNhaS50eHQKQEAgLTI3LDYgKzI3LDExIEBAIFJlcXVpcmVk
+IHByb3BlcnRpZXM6CiAJCQkgIGRlcml2ZSBIQ0ssIFNDSyBhbmQgRlMuCiAJImZzeXMiCQkgIFRo
+ZSBzeXN0ZW0gY2xvY2sgZGVyaXZlZCBmcm9tIGFoYiBjbG9jayB1c2VkIHRvCiAJCQkgIGRlcml2
+ZSBIQ0ssIFNDSyBhbmQgRlMuCisJInNwYmEiCQkgIFRoZSBzcGJhIGNsb2NrIGlzIHJlcXVpcmVk
+IHdoZW4gRVNBSSBpcyBwbGFjZWQgYXMgYQorCQkJICBidXMgc2xhdmUgb2YgdGhlIFNoYXJlZCBQ
+ZXJpcGhlcmFsIEJ1cyBhbmQgd2hlbiB0d28KKwkJCSAgb3IgbW9yZSBidXMgbWFzdGVycyAoQ1BV
+LCBETUEgb3IgRFNQKSB0cnkgdG8gYWNjZXNzCisJCQkgIGl0LiBUaGlzIHByb3BlcnR5IGlzIG9w
+dGlvbmFsIGRlcGVuZGluZyBvbiB0aGUgU29DCisJCQkgIGRlc2lnbi4KIAogICAtIGZzbCxmaWZv
+LWRlcHRoCTogVGhlIG51bWJlciBvZiBlbGVtZW50cyBpbiB0aGUgdHJhbnNtaXQgYW5kIHJlY2Vp
+dmUKIAkJCSAgRklGT3MuIFRoaXMgbnVtYmVyIGlzIHRoZSBtYXhpbXVtIGFsbG93ZWQgdmFsdWUg
+Zm9yCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9lc2FpLmMgYi9zb3VuZC9zb2MvZnNs
+L2ZzbF9lc2FpLmMKaW5kZXggNTA0ZTczMS4uNGQ3NTg5YyAxMDA2NDQKLS0tIGEvc291bmQvc29j
+L2ZzbC9mc2xfZXNhaS5jCisrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX2VzYWkuYwpAQCAtMzUsNiAr
+MzUsNyBAQAogICogQGNvcmVjbGs6IGNsb2NrIHNvdXJjZSB0byBhY2Nlc3MgcmVnaXN0ZXIKICAq
+IEBleHRhbGNsazogZXNhaSBjbG9jayBzb3VyY2UgdG8gZGVyaXZlIEhDSywgU0NLIGFuZCBGUwog
+ICogQGZzeXNjbGs6IHN5c3RlbSBjbG9jayBzb3VyY2UgdG8gZGVyaXZlIEhDSywgU0NLIGFuZCBG
+UworICogQHNwYmFjbGs6IFNQQkEgY2xvY2sgKG9wdGlvbmFsLCBkZXBlbmRpbmcgb24gU29DIGRl
+c2lnbikKICAqIEBmaWZvX2RlcHRoOiBkZXB0aCBvZiB0eC9yeCBGSUZPCiAgKiBAc2xvdF93aWR0
+aDogd2lkdGggb2YgZWFjaCBEQUkgc2xvdAogICogQHNsb3RzOiBudW1iZXIgb2Ygc2xvdHMKQEAg
+LTU0LDYgKzU1LDcgQEAgc3RydWN0IGZzbF9lc2FpIHsKIAlzdHJ1Y3QgY2xrICpjb3JlY2xrOwog
+CXN0cnVjdCBjbGsgKmV4dGFsY2xrOwogCXN0cnVjdCBjbGsgKmZzeXNjbGs7CisJc3RydWN0IGNs
+ayAqc3BiYWNsazsKIAl1MzIgZmlmb19kZXB0aDsKIAl1MzIgc2xvdF93aWR0aDsKIAl1MzIgc2xv
+dHM7CkBAIC00NjksNiArNDcxLDkgQEAgc3RhdGljIGludCBmc2xfZXNhaV9zdGFydHVwKHN0cnVj
+dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCXJldCA9IGNsa19wcmVwYXJlX2VuYWJs
+ZShlc2FpX3ByaXYtPmNvcmVjbGspOwogCWlmIChyZXQpCiAJCXJldHVybiByZXQ7CisJcmV0ID0g
+Y2xrX3ByZXBhcmVfZW5hYmxlKGVzYWlfcHJpdi0+c3BiYWNsayk7CisJaWYgKHJldCkKKwkJZ290
+byBlcnJfc3BiYWNsazsKIAlpZiAoIUlTX0VSUihlc2FpX3ByaXYtPmV4dGFsY2xrKSkgewogCQly
+ZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZXNhaV9wcml2LT5leHRhbGNsayk7CiAJCWlmIChyZXQp
+CkBAIC00OTksNiArNTA0LDggQEAgZXJyX2ZzeXNjbGs6CiAJaWYgKCFJU19FUlIoZXNhaV9wcml2
+LT5leHRhbGNsaykpCiAJCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPmV4dGFsY2xr
+KTsKIGVycl9leHRhbGNrOgorCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPnNwYmFj
+bGspOworZXJyX3NwYmFjbGs6CiAJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGVzYWlfcHJpdi0+Y29y
+ZWNsayk7CiAKIAlyZXR1cm4gcmV0OwpAQCAtNTY0LDYgKzU3MSw3IEBAIHN0YXRpYyB2b2lkIGZz
+bF9lc2FpX3NodXRkb3duKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQlj
+bGtfZGlzYWJsZV91bnByZXBhcmUoZXNhaV9wcml2LT5mc3lzY2xrKTsKIAlpZiAoIUlTX0VSUihl
+c2FpX3ByaXYtPmV4dGFsY2xrKSkKIAkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGVzYWlfcHJpdi0+
+ZXh0YWxjbGspOworCWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPnNwYmFjbGspOwog
+CWNsa19kaXNhYmxlX3VucHJlcGFyZShlc2FpX3ByaXYtPmNvcmVjbGspOwogfQogCkBAIC04MTks
+NiArODI3LDExIEBAIHN0YXRpYyBpbnQgZnNsX2VzYWlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rl
+dmljZSAqcGRldikKIAkJZGV2X3dhcm4oJnBkZXYtPmRldiwgImZhaWxlZCB0byBnZXQgZnN5cyBj
+bG9jazogJWxkXG4iLAogCQkJCVBUUl9FUlIoZXNhaV9wcml2LT5mc3lzY2xrKSk7CiAKKwllc2Fp
+X3ByaXYtPnNwYmFjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgInNwYmEiKTsKKwlpZiAo
+SVNfRVJSKGVzYWlfcHJpdi0+c3BiYWNsaykpCisJCWRldl93YXJuKCZwZGV2LT5kZXYsICJmYWls
+ZWQgdG8gZ2V0IHNwYmEgY2xvY2s6ICVsZFxuIiwKKwkJCQlQVFJfRVJSKGVzYWlfcHJpdi0+c3Bi
+YWNsaykpOworCiAJaXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAwKTsKIAlpZiAoaXJxIDwg
+MCkgewogCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJubyBpcnEgZm9yIG5vZGUgJXNcbiIsIHBkZXYt
+Pm5hbWUpOwotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96
+bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
