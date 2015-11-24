@@ -1,36 +1,38 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: hdac_hdmi: remove always false condition
-Date: Tue, 24 Nov 2015 16:42:26 +0530
-Message-ID: <1448363546-31193-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: [PATCH 0/2] correction of iec958 channel status
+	sampling freq setting
+Date: Tue, 24 Nov 2015 14:16:34 +0100
+Message-ID: <1448370996-30224-1-git-send-email-moise.gergaud@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EEC3265DAA
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2015 14:16:50 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de
+Cc: Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-hdac->num_nodes is unsigned int and can never be less than 0.
+patch "ASoC: sti: set iec958 channel status sampling freq" corresponds to the
+V2 of "[PATCH 4/4] ASoC: sti: reset iec60958 settings on close"
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
+Moise Gergaud (2):
+  ASoC: sti: set iec958 channel status sampling freq
+  ASoC: sti: correction for HBRA support
 
-Or, maybe, another way can be to declare num_nodes as int. Then this
-test makes sense and also snd_hdac_get_sub_nodes() is returning an int.
+ sound/soc/sti/uniperif_player.c | 73 +++++++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 29 deletions(-)
 
- sound/soc/codecs/hdac_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 205f2c2..02109aa 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -415,7 +415,7 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
- 	int cvt_nid = 0, pin_nid = 0;
- 
- 	hdac->num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
--	if (!nid || hdac->num_nodes < 0) {
-+	if (!nid) {
- 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
- 		return -EINVAL;
- 	}
 -- 
 1.9.1
