@@ -1,86 +1,106 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: mark SND_SOC_BYTES_EXT as
-	deprecated" to the asoc tree
-Date: Wed, 25 Nov 2015 12:59:58 +0000
-Message-ID: <E1a1Zfy-0002n4-FD@debutante>
-References: <1448293951-32071-2-git-send-email-vinod.koul@intel.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 2/2] ALSA: compress: Pass id string to snd_compress_new
+Date: Wed, 25 Nov 2015 13:00:24 +0000
+Message-ID: <1448456424-6794-3-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1448456424-6794-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A721260870
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:08 +0100 (CET)
-In-Reply-To: <1448293951-32071-2-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1448456424-6794-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
+Cc: perex@perex.cz, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Make snd_compress_new take an id string (like snd_pcm_new).
+This string can be included in the procfs info.
 
-   ASoC: core: mark SND_SOC_BYTES_EXT as deprecated
+This patch also updates soc_new_compress() to create an ID
+based on the stream and dai name, as done for PCM streams.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 50a4f98d3452ea3818eb364f9c34a9de139df654 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 23 Nov 2015 21:22:29 +0530
-Subject: [PATCH] ASoC: core: mark SND_SOC_BYTES_EXT as deprecated
-
-Since we have SND_SOC_BYTES_TLV control to lets devices have
-larger size data sent, we do not need SND_SOC_BYTES_EXT with 512
-byte limitation so mark it deprecated
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h | 3 +++
- 1 file changed, 3 insertions(+)
+ include/sound/compress_driver.h |  2 +-
+ sound/core/compress_offload.c   | 13 ++++++++++++-
+ sound/soc/soc-compress.c        |  8 +++++++-
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a8b4b9c8b1d2..6dbd24a36ef8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -293,6 +293,9 @@
- 		{.base = xbase, .num_regs = xregs,	      \
- 		 .mask = xmask }) }
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 85c4237..c0abcdc 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -163,7 +163,7 @@ struct snd_compr {
+ int snd_compress_register(struct snd_compr *device);
+ int snd_compress_deregister(struct snd_compr *device);
+ int snd_compress_new(struct snd_card *card, int device,
+-			int type, struct snd_compr *compr);
++			int type, const char *id, struct snd_compr *compr);
  
-+/*
-+ * SND_SOC_BYTES_EXT is deprecated, please USE SND_SOC_BYTES_TLV instead
-+ */
- #define SND_SOC_BYTES_EXT(xname, xcount, xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_bytes_info_ext, \
+ /* dsp driver callback apis
+  * For playback: driver should call snd_compress_fragment_elapsed() to let the
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 1258e9d..2c52510 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -945,6 +945,11 @@ static void snd_compress_proc_done(struct snd_compr *compr)
+ 	snd_info_free_entry(compr->proc_root);
+ 	compr->proc_root = NULL;
+ }
++
++static inline void snd_compress_set_id(struct snd_compr *compr, const char *id)
++{
++	strlcpy(compr->id, id, sizeof(compr->id));
++}
+ #else
+ static inline int snd_compress_proc_init(struct snd_compr *compr)
+ {
+@@ -954,6 +959,10 @@ static inline int snd_compress_proc_init(struct snd_compr *compr)
+ static inline void snd_compress_proc_done(struct snd_compr *compr)
+ {
+ }
++
++static inline void snd_compress_set_id(struct snd_compr *compr, const char *id)
++{
++}
+ #endif
+ 
+ static int snd_compress_dev_free(struct snd_device *device)
+@@ -974,7 +983,7 @@ static int snd_compress_dev_free(struct snd_device *device)
+  * @compr: compress device pointer
+  */
+ int snd_compress_new(struct snd_card *card, int device,
+-			int dirn, struct snd_compr *compr)
++			int dirn, const char *id, struct snd_compr *compr)
+ {
+ 	static struct snd_device_ops ops = {
+ 		.dev_free = snd_compress_dev_free,
+@@ -987,6 +996,8 @@ int snd_compress_new(struct snd_card *card, int device,
+ 	compr->device = device;
+ 	compr->direction = dirn;
+ 
++	snd_compress_set_id(compr, id);
++
+ 	snd_device_initialize(&compr->dev, card);
+ 	dev_set_name(&compr->dev, "comprC%iD%i", card->number, device);
+ 
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 12a9820..fffbe6f 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -689,7 +689,13 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 		compr->ops->copy = soc_compr_copy;
+ 
+ 	mutex_init(&compr->lock);
+-	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
++
++	snprintf(new_name, sizeof(new_name), "%s %s-%d",
++		 rtd->dai_link->stream_name,
++		 rtd->codec_dai->name, num);
++
++	ret = snd_compress_new(rtd->card->snd_card, num, direction,
++				new_name, compr);
+ 	if (ret < 0) {
+ 		pr_err("compress asoc: can't create compress for codec %s\n",
+ 			codec->component.name);
 -- 
-2.6.2
+1.9.1
