@@ -1,105 +1,123 @@
-From: "Zhang, Xiong Y" <xiong.y.zhang@intel.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
- pin/ELD	notify events
-Date: Wed, 25 Nov 2015 10:57:13 +0000
-Message-ID: <8082FF9BCB2B054996454E47167FF4EC0B0F1AE8@SHSMSX104.ccr.corp.intel.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <1440781350-12053-5-git-send-email-david.henningsson@canonical.com>
- <8082FF9BCB2B054996454E47167FF4EC0B0F19F8@SHSMSX104.ccr.corp.intel.com>
- <s5hmvu2ie86.wl-tiwai@suse.de>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/2] ALSA: compress: Pass id string to
+ snd_compress_new
+Date: Wed, 25 Nov 2015 11:07:01 +0000
+Message-ID: <1448449621.3536.48.camel@rf-debian.wolfsonmicro.main>
+References: <1448448376-12880-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1448448376-12880-3-git-send-email-rf@opensource.wolfsonmicro.com>
+ <s5hegfeicam.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hmvu2ie86.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 650AF261583
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 12:07:11 +0100 (CET)
+In-Reply-To: <s5hegfeicam.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Vetter,
- Daniel" <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiBXZWQsIDI1IE5vdiAyMDE1IDEwOjU2OjUxICswMTAwLAo+IFpoYW5nLCBYaW9uZyBZIHdy
-b3RlOgo+ID4KPiA+IFJlY2VudGx5IEkgYWx3YXlzIHNlZSB0aGUgZm9sbG93aW5nIGVycm9yIG1l
-c3NhZ2UgZHVyaW5nIFM0IG9yIFMzIHJlc3VtZQo+IHdpdGggZHJtLWludGVsLW5pZ2h0bHkuCj4g
-PiBbICAgOTcuNzc4MDYzXSBQTTogU3luY2luZyBmaWxlc3lzdGVtcyAuLi4gZG9uZS4KPiA+IFsg
-ICA5Ny44MDE1NTBdIEZyZWV6aW5nIHVzZXIgc3BhY2UgcHJvY2Vzc2VzIC4uLiAoZWxhcHNlZCAw
-LjAwMiBzZWNvbmRzKQo+IGRvbmUuCj4gPiBbICAgOTcuODA0Mjk3XSBQTTogTWFya2luZyBub3Nh
-dmUgcGFnZXM6IFttZW0gMHgwMDAwMDAwMC0weDAwMDAwZmZmXQo+ID4gWyAgIDk3LjgwNDMwMl0g
-UE06IE1hcmtpbmcgbm9zYXZlIHBhZ2VzOiBbbWVtIDB4MDAwNTgwMDAtMHgwMDA1OGZmZl0KPiA+
-IFsgICA5Ny44MDQzMDVdIFBNOiBNYXJraW5nIG5vc2F2ZSBwYWdlczogW21lbSAweDAwMDllMDAw
-LTB4MDAwZmZmZmZdCj4gPiBbICAgOTcuODA0MzEwXSBQTTogTWFya2luZyBub3NhdmUgcGFnZXM6
-IFttZW0gMHg4NGMxMTAwMC0weDg0YzEyZmZmXQo+ID4gWyAgIDk3LjgwNDMxMl0gUE06IE1hcmtp
-bmcgbm9zYXZlIHBhZ2VzOiBbbWVtIDB4ODc2ZmMwMDAtMHg4Nzc0NmZmZl0KPiA+IFsgICA5Ny44
-MDQzMTddIFBNOiBNYXJraW5nIG5vc2F2ZSBwYWdlczogW21lbSAweDg3ODVlMDAwLTB4ODdmZTlm
-ZmZdCj4gPiBbICAgOTcuODA0Mzg3XSBQTTogTWFya2luZyBub3NhdmUgcGFnZXM6IFttZW0gMHg4
-ODAwMDAwMC0weGZmZmZmZmZmXQo+ID4gWyAgIDk3LjgwNjM2M10gUE06IEJhc2ljIG1lbW9yeSBi
-aXRtYXBzIGNyZWF0ZWQKPiA+IFsgICA5Ny44MDY0MDldIFBNOiBQcmVhbGxvY2F0aW5nIGltYWdl
-IG1lbW9yeS4uLiBkb25lIChhbGxvY2F0ZWQgMzIxNTU3Cj4gcGFnZXMpCj4gPiBbICAgOTguMTUw
-NDc1XSBQTTogQWxsb2NhdGVkIDEyODYyMjgga2J5dGVzIGluIDAuMzQgc2Vjb25kcyAoMzc4My4w
-Mgo+IE1CL3MpCj4gPiBbICAgOTguMTUwNDc2XSBGcmVlemluZyByZW1haW5pbmcgZnJlZXphYmxl
-IHRhc2tzIC4uLiAoZWxhcHNlZCAwLjAwMSBzZWNvbmRzKQo+IGRvbmUuCj4gPiBbICAgOTguMTUx
-OTk4XSBTdXNwZW5kaW5nIGNvbnNvbGUocykgKHVzZSBub19jb25zb2xlX3N1c3BlbmQgdG8gZGVi
-dWcpCj4gPiBbICAgOTguMTczNDg1XSBoZG1pX3ByZXNlbnRfc2Vuc2U6IHNuZF9oZGFfY29kZWNf
-aGRtaSBoZGF1ZGlvQzBEMjoKPiBIRE1JIHN0YXR1czogQ29kZWM9MiBQaW49NiBQcmVzZW5jZV9E
-ZXRlY3Q9MSBFTERfVmFsaWQ9MQo+ID4gWyAgIDk5LjE3ODE1MF0gc25kX2hkYV9pbnRlbCAwMDAw
-OjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUw
-OAo+ID4gWyAgIDk5LjE3ODE1MV0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJpb3Vz
-IHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE1
-MV0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDIs
-IGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE1Ml0gc25kX2hkYV9pbnRlbCAw
-MDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZm
-MmUwOAo+ID4gWyAgIDk5LjE3ODE1Ml0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJp
-b3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3
-ODE1M10gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDow
-eDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE1M10gc25kX2hkYV9pbnRl
-bCAwMDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgy
-MDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE1NF0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNw
-dXJpb3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5
-LjE3ODE1NF0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4
-MDoweDIsIGxhc3QKPiBjbWQ9MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE1NV0gc25kX2hkYV9p
-bnRlbCAwMDAwOjAwOjFmLjM6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDIsIGxhc3QKPiBjbWQ9
-MHgyMDZmMmUwOAo+ID4gWyAgIDk5LjE3ODE2Ml0gc25kX2hkYV9jb2RlY19oZG1pIGhkYXVkaW9D
-MEQyOiBIRE1JOiBFTEQgYnVmIHNpemUgaXMgMCwKPiBmb3JjZSAxMjgKPiA+IFsgIDEwMS4xODk3
-MDldIHNuZF9oZGFfaW50ZWwgMDAwMDowMDoxZi4zOiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVvdXQs
-Cj4gc3dpdGNoaW5nIHRvIHBvbGxpbmcgbW9kZTogbGFzdCBjbWQ9MHgyMDZmMmYwMAo+ID4gWyAg
-MTAyLjE5NTQ5Ml0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IE5vIHJlc3BvbnNlIGZyb20g
-Y29kZWMsCj4gZGlzYWJsaW5nIE1TSTogbGFzdCBjbWQ9MHgyMDZmMmYwMAo+ID4gWyAgMTAzLjIw
-MTI3NV0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91
-dCwKPiBzd2l0Y2hpbmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IGNtZD0weDIwNmYyZjAwCj4g
-PiBbICAxMDMuMjAxMzk2XSBhenhfc2luZ2xlX3dhaXRfZm9yX3Jlc3BvbnNlOiA0MiBjYWxsYmFj
-a3Mgc3VwcHJlc3NlZAo+ID4KPiA+IFRoZSBiaXNlY3QgcmVzdWx0IHBvaW50cyB0byB0aGlzIGNv
-bW1pdC4KPiA+IEkgY2hlY2tlZCB0aGlzIHBhdGNoIGFuZCBoYWQgb25lIHF1ZXN0aW9uOiBpZiBp
-OTE1IGRyaXZlciB3YWtlIHVwIGFoZWFkIG9mCj4gc25kX2hkYV9pbnRlbCBkcml2ZXIgZHVyaW5n
-IHJlc3VtZSwgIGk5MTUgZHJpdmVyIHdpbGwgY2FsbCBhdWRpbyBkcml2ZXIncwo+IGhkbWlfcHJl
-c2VudF9zZW5zZSgpIGZ1bmN0aW9uIHRocm91Z2ggdGhpcyBwYXRjaCwgYnV0IHRoZSBhdWRpbyBp
-bnRlcnJ1cHQgaXMKPiBkaXNhYmxlZCBhdCB0aGlzIG1vbWVudCwgaG93IGNvdWxkIGhkbWlfcHJl
-c2VudF9zZW5zZSgpIGdldCB0aGUgcmVzcG9uc2UKPiBmcm9tIGNvZGVjID8KPiAKPiBZZWFoLCBh
-IGJhZCB0aGluZyBoYXBwZW5zIHRoZXJlLiAgVGhlIGZpeCBzaG91bGQgYmUgc2ltcGxlIGxpa2Ug
-YmVsb3csCj4gdGhvdWdoLiAgQmFzaWNhbGx5IHRoZSBwaW5zIGFyZSBjaGVja2VkIGluIHRoZSBy
-ZXN1bWUgY2FsbGJhY2sgaW4KPiBhbnl3YXksIHNvIHRoZXJlIGlzIG5vIG5lZWQgdG8gaGFuZGxl
-IHRoZSBub3RpZmljYXRpb24gZHVyaW5nIFBNLgo+IAo+IENvdWxkIHlvdSBjaGVjayB3aGV0aGVy
-IGl0IHdvcmtzPwo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCgpTdHJhbmdlLCB5b3VyIHBh
-dGNoIGNvdWxkbid0IGdldCBhd2F5IHRoZSBlcnJvciBtZXNzYWdlLgoKdGhhbmtzCj4gCj4gLS0t
-Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hk
-YS9wYXRjaF9oZG1pLmMKPiBpbmRleCBiZGI2ZjIyNmQwMDYuLmI0NjhmZTBlNjE5NSAxMDA2NDQK
-PiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfaGRtaS5jCj4gQEAgLTIzNTIsNyArMjM1Miw5IEBAIHN0YXRpYyB2b2lkIGludGVsX3Bp
-bl9lbGRfbm90aWZ5KHZvaWQgKmF1ZGlvX3B0ciwgaW50Cj4gcG9ydCkKPiAgCXN0cnVjdCBoZGFf
-Y29kZWMgKmNvZGVjID0gYXVkaW9fcHRyOwo+ICAJaW50IHBpbl9uaWQgPSBwb3J0ICsgMHgwNDsK
-PiAKPiAtCWNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoY29kZWMsIHBpbl9uaWQpOwo+ICsJLyog
-ZG9uJ3QgY2FsbCBub3RpZmllciBkdXJpbmcgUE07IHdpbGwgYmUgY2hlY2tlZCBpbiByZXN1bWUg
-Y2FsbGJhY2sgKi8KPiArCWlmICghYXRvbWljX3JlYWQoJmNvZGVjLT5jb3JlLmluX3BtKSkKPiAr
-CQljaGVja19wcmVzZW5jZV9hbmRfcmVwb3J0KGNvZGVjLCBwaW5fbmlkKTsKPiAgfQo+IAo+ICBz
-dGF0aWMgaW50IHBhdGNoX2dlbmVyaWNfaGRtaShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
-aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Wed, 2015-11-25 at 11:49 +0100, Takashi Iwai wrote:
+> On Wed, 25 Nov 2015 11:46:16 +0100,
+> Richard Fitzgerald wrote:
+> > 
+> > Make snd_compress_new take an id string (like snd_pcm_new).
+> > This string can be included in the procfs info.
+> > 
+> > This patch also updates soc_new_compress() to create an ID
+> > based on the stream and dai name, as done for PCM streams.
+> > 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> >  include/sound/compress_driver.h | 2 +-
+> >  sound/core/compress_offload.c   | 6 +++++-
+> >  sound/soc/soc-compress.c        | 8 +++++++-
+> >  3 files changed, 13 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> > index 85c4237..c0abcdc 100644
+> > --- a/include/sound/compress_driver.h
+> > +++ b/include/sound/compress_driver.h
+> > @@ -163,7 +163,7 @@ struct snd_compr {
+> >  int snd_compress_register(struct snd_compr *device);
+> >  int snd_compress_deregister(struct snd_compr *device);
+> >  int snd_compress_new(struct snd_card *card, int device,
+> > -			int type, struct snd_compr *compr);
+> > +			int type, const char *id, struct snd_compr *compr);
+> >  
+> >  /* dsp driver callback apis
+> >   * For playback: driver should call snd_compress_fragment_elapsed() to let the
+> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> > index 282b69a..326ea0e 100644
+> > --- a/sound/core/compress_offload.c
+> > +++ b/sound/core/compress_offload.c
+> > @@ -976,7 +976,7 @@ static int snd_compress_dev_free(struct snd_device *device)
+> >   * @compr: compress device pointer
+> >   */
+> >  int snd_compress_new(struct snd_card *card, int device,
+> > -			int dirn, struct snd_compr *compr)
+> > +			int dirn, const char *id, struct snd_compr *compr)
+> >  {
+> >  	static struct snd_device_ops ops = {
+> >  		.dev_free = snd_compress_dev_free,
+> > @@ -989,6 +989,10 @@ int snd_compress_new(struct snd_card *card, int device,
+> >  	compr->device = device;
+> >  	compr->direction = dirn;
+> >  
+> > +	if (IS_ENABLED(CONFIG_SND_VERBOSE_PROCFS))
+> 
+> This should be #if.  Otherwise the compile would fail (as already
+> kbuild bot spotted).
+> 
+> 
+> Takashi
+> 
+
+Builds ok for me, this will become if(false) if it's not enabled so the
+compiler will strip it out - some maintainers prefer that to #if and I'm
+used to being told to use this style instead of #if, so who knows what
+today's coding style is :) The build bot failure was for a different
+reason.
+
+Anyway, I can change to #if if you prefer that.
+
+> > +		if (id)
+> > +			strlcpy(compr->id, id, sizeof(compr->id));
+> > +
+> >  	snd_device_initialize(&compr->dev, card);
+> >  	dev_set_name(&compr->dev, "comprC%iD%i", card->number, device);
+> >  
+> > diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> > index 12a9820..fffbe6f 100644
+> > --- a/sound/soc/soc-compress.c
+> > +++ b/sound/soc/soc-compress.c
+> > @@ -689,7 +689,13 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+> >  		compr->ops->copy = soc_compr_copy;
+> >  
+> >  	mutex_init(&compr->lock);
+> > -	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
+> > +
+> > +	snprintf(new_name, sizeof(new_name), "%s %s-%d",
+> > +		 rtd->dai_link->stream_name,
+> > +		 rtd->codec_dai->name, num);
+> > +
+> > +	ret = snd_compress_new(rtd->card->snd_card, num, direction,
+> > +				new_name, compr);
+> >  	if (ret < 0) {
+> >  		pr_err("compress asoc: can't create compress for codec %s\n",
+> >  			codec->component.name);
+> > -- 
+> > 1.9.1
+> > 
+> > 
