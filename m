@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: using params_width function to
-	simplify code" to the asoc tree
-Date: Wed, 25 Nov 2015 13:00:05 +0000
-Message-ID: <E1a1Zg5-0002qy-Th@debutante>
-References: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: fsl_esai: spba clock is needed by esai
+	device" to the asoc tree
+Date: Wed, 25 Nov 2015 13:00:04 +0000
+Message-ID: <E1a1Zg4-0002qV-VZ@debutante>
+References: <1201ff5b1edf387138e3cb8c98f91804d9866c4d.1448356624.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 66DFD261AA0
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AF05261B20
  for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:14 +0100 (CET)
-In-Reply-To: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
+In-Reply-To: <1201ff5b1edf387138e3cb8c98f91804d9866c4d.1448356624.git.shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: using params_width function to simplify code
+   ASoC: fsl_esai: spba clock is needed by esai device
 
 has been applied to the asoc tree at
 
@@ -53,75 +53,102 @@ to this mail.
 Thanks,
 Mark
 
->From 4ca730436a676afebbe6b77d65b5b4c4d7d38b9c Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Tue, 24 Nov 2015 15:32:09 +0800
-Subject: [PATCH] ASoC: fsl: using params_width function to simplify code
+>From a2a4d6049aa18c0e105d9b53e3236cb50ea5bfa1 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Date: Tue, 24 Nov 2015 17:19:32 +0800
+Subject: [PATCH] ASoC: fsl_esai: spba clock is needed by esai device
 
-using params_width function to simplify code.
+ESAI need to enable the spba clock, when sdma is using share peripheral
+script. In this case, there is two spba master port is used, if don't
+enable the clock, the spba bus will have arbitration issue, which may
+cause read/write wrong data from/to ESAI registers.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 2 +-
- sound/soc/fsl/fsl_esai.c | 2 +-
- sound/soc/fsl/fsl_sai.c  | 2 +-
- sound/soc/fsl/fsl_ssi.c  | 3 +--
- 4 files changed, 4 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,esai.txt |  5 +++++
+ sound/soc/fsl/fsl_esai.c                             | 17 +++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 9f087d4f73ed..6d0636605ed2 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -447,7 +447,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
- 	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
--	int width = snd_pcm_format_width(params_format(params));
-+	int width = params_width(params);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *pair = runtime->private_data;
- 	unsigned int channels = params_channels(params);
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index d3b6b5f48010..cd3ee5d84f03 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -27,6 +27,11 @@ Required properties:
+ 			  derive HCK, SCK and FS.
+ 	"fsys"		  The system clock derived from ahb clock used to
+ 			  derive HCK, SCK and FS.
++	"spba"		  The spba clock is required when ESAI is placed as a
++			  bus slave of the Shared Peripheral Bus and when two
++			  or more bus masters (CPU, DMA or DSP) try to access
++			  it. This property is optional depending on the SoC
++			  design.
+ 
+   - fsl,fifo-depth	: The number of elements in the transmit and receive
+ 			  FIFOs. This number is the maximum allowed value for
 diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 504e7318f225..45d4319b2079 100644
+index 59f234e51971..6746f76a8c7f 100644
 --- a/sound/soc/fsl/fsl_esai.c
 +++ b/sound/soc/fsl/fsl_esai.c
-@@ -510,7 +510,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
--	u32 width = snd_pcm_format_width(params_format(params));
-+	u32 width = params_width(params);
- 	u32 channels = params_channels(params);
- 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
- 	u32 slot_width = width;
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index dc0cc65406f5..3da278313591 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -404,7 +404,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	unsigned int channels = params_channels(params);
--	u32 word_width = snd_pcm_format_width(params_format(params));
-+	u32 word_width = params_width(params);
- 	u32 val_cr4 = 0, val_cr5 = 0;
- 	u32 slots = (channels == 1) ? 2 : channels;
- 	u32 slot_width = word_width;
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 674abf778715..e3abad5f980a 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -767,8 +767,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct regmap *regs = ssi_private->regs;
- 	unsigned int channels = params_channels(hw_params);
--	unsigned int sample_size =
--		snd_pcm_format_width(params_format(hw_params));
-+	unsigned int sample_size = params_width(hw_params);
- 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
- 	int ret;
- 	u32 scr_val;
+@@ -35,6 +35,7 @@
+  * @coreclk: clock source to access register
+  * @extalclk: esai clock source to derive HCK, SCK and FS
+  * @fsysclk: system clock source to derive HCK, SCK and FS
++ * @spbaclk: SPBA clock (optional, depending on SoC design)
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+  * @slots: number of slots
+@@ -54,6 +55,7 @@ struct fsl_esai {
+ 	struct clk *coreclk;
+ 	struct clk *extalclk;
+ 	struct clk *fsysclk;
++	struct clk *spbaclk;
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
+@@ -469,6 +471,11 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 	ret = clk_prepare_enable(esai_priv->coreclk);
+ 	if (ret)
+ 		return ret;
++	if (!IS_ERR(esai_priv->spbaclk)) {
++		ret = clk_prepare_enable(esai_priv->spbaclk);
++		if (ret)
++			goto err_spbaclk;
++	}
+ 	if (!IS_ERR(esai_priv->extalclk)) {
+ 		ret = clk_prepare_enable(esai_priv->extalclk);
+ 		if (ret)
+@@ -499,6 +506,9 @@ err_fsysclk:
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
+ err_extalck:
++	if (!IS_ERR(esai_priv->spbaclk))
++		clk_disable_unprepare(esai_priv->spbaclk);
++err_spbaclk:
+ 	clk_disable_unprepare(esai_priv->coreclk);
+ 
+ 	return ret;
+@@ -564,6 +574,8 @@ static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
+ 		clk_disable_unprepare(esai_priv->fsysclk);
+ 	if (!IS_ERR(esai_priv->extalclk))
+ 		clk_disable_unprepare(esai_priv->extalclk);
++	if (!IS_ERR(esai_priv->spbaclk))
++		clk_disable_unprepare(esai_priv->spbaclk);
+ 	clk_disable_unprepare(esai_priv->coreclk);
+ }
+ 
+@@ -819,6 +831,11 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		dev_warn(&pdev->dev, "failed to get fsys clock: %ld\n",
+ 				PTR_ERR(esai_priv->fsysclk));
+ 
++	esai_priv->spbaclk = devm_clk_get(&pdev->dev, "spba");
++	if (IS_ERR(esai_priv->spbaclk))
++		dev_warn(&pdev->dev, "failed to get spba clock: %ld\n",
++				PTR_ERR(esai_priv->spbaclk));
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
 -- 
 2.6.2
