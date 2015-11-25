@@ -1,88 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix kernel-doc warnings in
-	sound/soc/soc-ops.c" to the asoc tree
-Date: Wed, 25 Nov 2015 13:00:01 +0000
-Message-ID: <E1a1Zg1-0002oU-6j@debutante>
-References: <1446046818-19234-1-git-send-email-tiwai@suse.de>
+From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH v4 0/2] ASoC: Add support for DA7217 and DA7218 audio codecs
+Date: Wed, 25 Nov 2015 14:24:26 +0000
+Message-ID: <cover.1448461029.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC05261583
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:19 +0100 (CET)
-In-Reply-To: <1446046818-19234-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Randy Dunlap <rdunlap@infradead.org>, Cc@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>Cc@alsa-project.org, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patch set adds DT and ASoC codec driver support for DA7217 and DA7218.
 
-   ASoC: fix kernel-doc warnings in sound/soc/soc-ops.c
+Changes are based against v4.4-rc2 kernel version.
 
-has been applied to the asoc tree at
+Changes in v4:
+ - DT binding updates for unit suffixes (hz, us) at Rob Herring's request.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Changes in v3:
+ - At request of Rob Herring, added units suffix to applicable binding names.
+ - Add changes for codec Kconfig and Makefile which were somehow missed from
+   previous patches.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Changes in v2:
+ - Removed Internal LDO voltage selection from DT
+ - BiQuad filter coefficients removed from DT, no programmed using mixer
+   controls.
+ - ALC calibration no longer bypasses regmap cache and instead saves & restores
+   registers around procedure, to avoid issues with concurrent regmap access.
+ - Removed all unnecessary default settings for mixers in probe.
+ - Reporting of mic level detection event to user-space, through input
+   VOICECOMMAND key event, removed as not intended for this purpose. Alternative
+   solution required as follow up. Event masked off until solution in place.
+ - Additional error checking & loggin around mclk usage, in sysclk and
+   bias_level functions.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Adam Thomson (2):
+  ASoC: da7218: Add bindings documentation for DA7218 audio codec
+  ASoC: codecs: Add da7218 codec driver
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ Documentation/devicetree/bindings/sound/da7218.txt |  104 +
+ include/sound/da7218.h                             |  109 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/da7218.c                          | 3305 ++++++++++++++++++++
+ sound/soc/codecs/da7218.h                          | 1414 +++++++++
+ 6 files changed, 4938 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/da7218.txt
+ create mode 100644 include/sound/da7218.h
+ create mode 100644 sound/soc/codecs/da7218.c
+ create mode 100644 sound/soc/codecs/da7218.h
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--
+1.9.3
 
-Thanks,
-Mark
-
->From 9a11ef7ff00e08825ac970a6bda56a3ea8ab0321 Mon Sep 17 00:00:00 2001
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Mon, 23 Nov 2015 17:37:54 -0800
-Subject: [PATCH] ASoC: fix kernel-doc warnings in sound/soc/soc-ops.c
-
-Fix kernel-doc warnings in soc-ops.c:
-
-..//sound/soc/soc-ops.c:415: warning: No description found for parameter 'ucontrol'
-..//sound/soc/soc-ops.c:415: warning: Excess function parameter 'uinfo' description in 'snd_soc_put_volsw_sx'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc:	Liam Girdwood <lgirdwood@gmail.com>
-Cc:	Mark Brown <broonie@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index ecd38e52285a..2f67ba6d7a8f 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -404,7 +404,7 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_sx);
- /**
-  * snd_soc_put_volsw_sx - double mixer set callback
-  * @kcontrol: mixer control
-- * @uinfo: control element information
-+ * @ucontrol: control element information
-  *
-  * Callback to set the value of a double mixer control that spans 2 registers.
-  *
--- 
-2.6.2
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
