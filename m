@@ -1,51 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: remove always false condition
-Date: Wed, 25 Nov 2015 12:36:36 +0000
-Message-ID: <20151125123636.GR1929@sirena.org.uk>
-References: <1448363546-31193-1-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH 0/2] Add support for Pistachio internal DAC
+Date: Wed, 25 Nov 2015 12:40:26 +0000
+Message-ID: <20151125124026.GS1929@sirena.org.uk>
+References: <1448299499-18435-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CPn8Wy5ME997YUMW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1448363546-31193-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============8391664616452271468=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70AD22606C9
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 13:40:35 +0100 (CET)
+In-Reply-To: <1448299499-18435-1-git-send-email-Damien.Horsley@imgtec.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Damien Horsley <Damien.Horsley@imgtec.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---CPn8Wy5ME997YUMW
-Content-Type: text/plain; charset=us-ascii
+--===============8391664616452271468==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qjXtncIm5b3tWrFJ"
 Content-Disposition: inline
 
-On Tue, Nov 24, 2015 at 04:42:26PM +0530, Sudip Mukherjee wrote:
-> hdac->num_nodes is unsigned int and can never be less than 0.
 
-> Or, maybe, another way can be to declare num_nodes as int. Then this
-> test makes sense and also snd_hdac_get_sub_nodes() is returning an int.
+--qjXtncIm5b3tWrFJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, that's a better fix:
+On Mon, Nov 23, 2015 at 05:24:57PM +0000, Damien Horsley wrote:
+> From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+>=20
+> Add binding document and driver for Pistachio internal DAC
 
->  	hdac->num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
-> -	if (!nid || hdac->num_nodes < 0) {
-> +	if (!nid) {
+Please don't add noise like [alsa-devel] to the subject line of mails,
+it just consumes space in the subject line which makes it harder to see
+what's going on when scanning your inbox (I know that the list does it
+for copies that goes to the list).
 
-it's clear that we're looking for an error code on failure here.
-
---CPn8Wy5ME997YUMW
+--qjXtncIm5b3tWrFJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWVatTAAoJECTWi3JdVIfQ1kAH/ietoyJ4K2TDlDJiJ96t89xl
-ePabvOBQEi8v2o5v0ff4JEWMOm9jUobsBtuiFv8KTOhUEmzjUvmxajuUBKLs/rAn
-LJJpLicl4vccfw1bpL/f0GGZu/mWO+/IAHRe8pmno42a5c5mY4G81RrwcPYco+N7
-0J4FXcpj2ri0gkhlltY++GwVDH7f+YRbodPBkIypdrvgZ3ZURyI/jod96aVSb8f3
-cb3awuII93l0gvPy3lYAo4Q9MuQ620Vtfc8uKb1jWIrMTNooY7+ioY5pb2lKZ2oz
-vdrK/zoyrc0EyAPZzoOgZYJi/FNeNLxqIxHKn41WeNn+qbwxVuZ4AtFugMLwXtE=
-=ocqZ
+iQEcBAEBCAAGBQJWVaw5AAoJECTWi3JdVIfQJHkH/3YbJngejqdtx65WkfHbdytM
+KxNybNwVhPTn/uRXo7wabu3hJwOBUpPgPzbH0cj4Q+YvVyZMizXaquOPmgDfECAE
+bNAquMPyr0Ada44uqSDasl/1/fpnFYi9krtOAuLoiBTOwk8PBCNeTX8vLhLySkVX
+MvfYmT0uFURB7b1dyfhxkFuJliFTH+3HGYu0KzYSRCeGo3Fr0FXBskiVkDVdz0bU
+bOwcwBgn0M5UpmeLzTAmOCcXurWBOiIBbLhPwomm4YKKWGHLgjSyyj5PowiHf6k3
+lVt9EVx/NaJKWGu7MLOJGF8S6reqdHjz/om+LoxjPH9pXeDa6UB/pHKpH57A1ys=
+=0cZK
 -----END PGP SIGNATURE-----
 
---CPn8Wy5ME997YUMW--
+--qjXtncIm5b3tWrFJ--
+
+--===============8391664616452271468==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8391664616452271468==--
