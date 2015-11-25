@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Poll CLDMA RUN bit when
-	set" to the asoc tree
-Date: Wed, 25 Nov 2015 17:57:40 +0000
-Message-ID: <E1a1eK4-0006Xu-GT@debutante>
-References: <1448297789-6524-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Change 2nd argument of
+	soc_bind_dai_link() to DAI link pointer" to the asoc tree
+Date: Wed, 25 Nov 2015 17:57:37 +0000
+Message-ID: <E1a1eK1-0006WV-Mb@debutante>
+References: <e0d3b63281fb168a8bf5f34db0854dc81ac8fc12.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 21285265053
+ by alsa0.perex.cz (Postfix) with ESMTP id 06100264E9F
  for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 18:57:48 +0100 (CET)
-In-Reply-To: <1448297789-6524-6-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <e0d3b63281fb168a8bf5f34db0854dc81ac8fc12.1446717205.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Poll CLDMA RUN bit when set
+   ASoC: Change 2nd argument of soc_bind_dai_link() to DAI link pointer
 
 has been applied to the asoc tree at
 
@@ -53,102 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 2434caf098588856d1c332d2f60b8a2d8a198450 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 23 Nov 2015 22:26:27 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Poll CLDMA RUN bit when set
+>From 6f2f1ff0de83ad69f5a823ae77d1e0f77cc75d45 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Mon, 23 Nov 2015 11:03:52 -0500
+Subject: [PATCH] ASoC: Change 2nd argument of soc_bind_dai_link() to DAI link
+ pointer
 
-This patch adds polling of CLDMA stream run bit when set
-to confirm the HW reports the same value.
+Just code refactoring, to reuse it if new DAI Links are added later
+based on topology in component probing phase.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 43 ++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ sound/soc/soc-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 947a08e42e86..8c7e8576cba3 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -18,6 +18,7 @@
- #include <linux/device.h>
- #include <linux/mm.h>
- #include <linux/kthread.h>
-+#include <linux/delay.h>
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
- 
-@@ -33,6 +34,32 @@ void skl_cldma_int_disable(struct sst_dsp *ctx)
- 			SKL_ADSP_REG_ADSPIC, SKL_ADSPIC_CL_DMA, 0);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2ecd09475d88..878a9fe92686 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -960,9 +960,9 @@ static struct snd_soc_dai *snd_soc_find_dai(
+ 	return NULL;
  }
  
-+static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
-+{
-+	unsigned char val;
-+	int timeout;
-+
-+	sst_dsp_shim_update_bits_unlocked(ctx,
-+			SKL_ADSP_REG_CL_SD_CTL,
-+			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(enable));
-+
-+	udelay(3);
-+	timeout = 300;
-+	do {
-+		/* waiting for hardware to report that the stream Run bit set */
-+		val = sst_dsp_shim_read(ctx, SKL_ADSP_REG_CL_SD_CTL) &
-+			CL_SD_CTL_RUN_MASK;
-+		if (enable && val)
-+			break;
-+		else if (!enable && !val)
-+			break;
-+		udelay(3);
-+	} while (--timeout);
-+
-+	if (timeout == 0)
-+		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
-+}
-+
- /* Code loader helper APIs */
- static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
- 		struct snd_dma_buffer *dmab_data,
-@@ -107,18 +134,6 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
- 	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_CL_SPBFIFO_SPIB, 0);
- }
- 
--static void skl_cldma_trigger(struct sst_dsp  *ctx, bool enable)
--{
--	if (enable)
--		sst_dsp_shim_update_bits_unlocked(ctx,
--			SKL_ADSP_REG_CL_SD_CTL,
--			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(1));
--	else
--		sst_dsp_shim_update_bits_unlocked(ctx,
--			SKL_ADSP_REG_CL_SD_CTL,
--			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(0));
--}
--
- static void skl_cldma_cleanup(struct sst_dsp  *ctx)
+-static int soc_bind_dai_link(struct snd_soc_card *card, int num)
++static int soc_bind_dai_link(struct snd_soc_card *card,
++	struct snd_soc_dai_link *dai_link)
  {
- 	skl_cldma_cleanup_spb(ctx);
-@@ -167,7 +182,7 @@ cleanup:
+-	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+ 	struct snd_soc_dai_link_component cpu_dai_component;
+@@ -971,7 +971,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+ 	const char *platform_name;
+ 	int i;
  
- static void skl_cldma_stop(struct sst_dsp *ctx)
- {
--	ctx->cl_dev.ops.cl_trigger(ctx, false);
-+	skl_cldma_stream_run(ctx, false);
- }
+-	dev_dbg(card->dev, "ASoC: binding %s at idx %d\n", dai_link->name, num);
++	dev_dbg(card->dev, "ASoC: binding %s\n", dai_link->name);
  
- static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
-@@ -309,7 +324,7 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
- 	ctx->cl_dev.ops.cl_setup_controller = skl_cldma_setup_controller;
- 	ctx->cl_dev.ops.cl_setup_spb = skl_cldma_setup_spb;
- 	ctx->cl_dev.ops.cl_cleanup_spb = skl_cldma_cleanup_spb;
--	ctx->cl_dev.ops.cl_trigger = skl_cldma_trigger;
-+	ctx->cl_dev.ops.cl_trigger = skl_cldma_stream_run;
- 	ctx->cl_dev.ops.cl_cleanup_controller = skl_cldma_cleanup;
- 	ctx->cl_dev.ops.cl_copy_to_dmabuf = skl_cldma_copy_to_buf;
- 	ctx->cl_dev.ops.cl_stop_dma = skl_cldma_stop;
+ 	rtd = soc_new_pcm_runtime(card, dai_link);
+ 	if (!rtd)
+@@ -1710,7 +1710,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 	/* bind DAIs */
+ 	for (i = 0; i < card->num_links; i++) {
+-		ret = soc_bind_dai_link(card, i);
++		ret = soc_bind_dai_link(card, &card->dai_link[i]);
+ 		if (ret != 0)
+ 			goto base_error;
+ 	}
 -- 
 2.6.2
