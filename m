@@ -1,20 +1,17 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH v2] sound: codecs: pcm1792a: clean function
-	exit
-Date: Wed, 25 Nov 2015 09:18:46 +0100
-Message-ID: <CAOf5uwn3R+Q=3TbkZfLtTUr=xhCovG1LNy6aaiEhpszwH5iR=g@mail.gmail.com>
-References: <1448439009-9778-1-git-send-email-poggi.raph@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: rcar: remove unused variable
+Date: Wed, 25 Nov 2015 09:36:16 +0100
+Message-ID: <4083363.2bJPz8BMy4@wuerfel>
+References: <4929159.b95vLdVRYU@wuerfel>
+ <878u5m8ut0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 00AE0261736
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 09:18:50 +0100 (CET)
-Received: by igbxm8 with SMTP id xm8so32859545igb.1
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 00:18:48 -0800 (PST)
-In-Reply-To: <1448439009-9778-1-git-send-email-poggi.raph@gmail.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7782D261583
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 09:36:30 +0100 (CET)
+In-Reply-To: <878u5m8ut0.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,72 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raphael Poggi <poggi.raph@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, tiwai@suse.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On Wed, Nov 25, 2015 at 9:10 AM, Raphael Poggi <poggi.raph@gmail.com> wrote:
-> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
-> ---
->  sound/soc/codecs/pcm1792a.c | 15 +++------------
->  1 file changed, 3 insertions(+), 12 deletions(-)
->
-> diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm1792a.c
-> index 08bb486..27d54bc 100644
-> --- a/sound/soc/codecs/pcm1792a.c
-> +++ b/sound/soc/codecs/pcm1792a.c
-> @@ -91,14 +91,9 @@ static int pcm1792a_digital_mute(struct snd_soc_dai *dai, int mute)
->  {
->         struct snd_soc_codec *codec = dai->codec;
->         struct pcm1792a_private *priv = snd_soc_codec_get_drvdata(codec);
-> -       int ret;
->
-> -       ret = regmap_update_bits(priv->regmap, PCM1792A_SOFT_MUTE,
-> +       return regmap_update_bits(priv->regmap, PCM1792A_SOFT_MUTE,
->                                  PCM1792A_MUTE_MASK, !!mute);
-> -       if (ret < 0)
-> -               return ret;
-> -
-> -       return 0;
->  }
->
->  static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
-> @@ -107,7 +102,7 @@ static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
->  {
->         struct snd_soc_codec *codec = dai->codec;
->         struct pcm1792a_private *priv = snd_soc_codec_get_drvdata(codec);
-> -       int val = 0, ret;
-> +       int val = 0;
->
->         priv->rate = params_rate(params);
->
-> @@ -145,12 +140,8 @@ static int pcm1792a_hw_params(struct snd_pcm_substream *substream,
->
->         val = val << PCM1792A_FMT_SHIFT | PCM1792A_ATLD_ENABLE;
->
-> -       ret = regmap_update_bits(priv->regmap, PCM1792A_FMT_CONTROL,
-> +       return regmap_update_bits(priv->regmap, PCM1792A_FMT_CONTROL,
->                                  PCM1792A_FMT_MASK | PCM1792A_ATLD_ENABLE, val);
-> -       if (ret < 0)
-> -               return ret;
-> -
-> -       return 0;
->  }
->
->  static const struct snd_soc_dai_ops pcm1792a_dai_ops = {
-> --
-> 2.1.0
->
-
-It's fine for me
-
-reviewed-by: Michael Trimarchi <michael@amarulasolutions.com>
-
-
--- 
-| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
-| COO  -  Founder                                      Cruquiuskade 47 |
-| +31(0)851119172                                 Amsterdam 1018 AM NL |
-|                  [`as] http://www.amarulasolutions.com               |
+T24gV2VkbmVzZGF5IDI1IE5vdmVtYmVyIDIwMTUgMDY6MjU6MzYgS3VuaW5vcmkgTW9yaW1vdG8g
+d3JvdGU6Cj4gCj4gSGkgQXJuZCwgTWFyawo+IAo+ID4gQWZ0ZXIgYSByZWNlbnQgY2xlYW51cCwg
+dGhlIHNvY19jYXJkIHZhcmlhYmxlIGJlY2FtZSB1bnVzZWQKPiA+IGFuZCBub3cgcHJvZHVjZXMg
+YSB3YXJuaW5nOgo+ID4gCj4gPiBzb2Mvc2gvcmNhci9jb3JlLmM6IEluIGZ1bmN0aW9uICdfX3Jz
+bmRfa2N0cmxfbmV3JzoKPiA+IHNvYy9zaC9yY2FyL2NvcmUuYzo4MDE6MjM6IHdhcm5pbmc6IHVu
+dXNlZCB2YXJpYWJsZSAnc29jX2NhcmQnIFstV3VudXNlZC12YXJpYWJsZV0KPiA+IAo+ID4gVGhp
+cyByZW1vdmVzIHRoZSB2YXJpYWJsZS4KPiA+IAo+ID4gRml4ZXM6IDFhNDk3OTgzYTVhZSAoIkFT
+b0M6IENoYW5nZSB0aGUgUENNIHJ1bnRpbWUgYXJyYXkgdG8gYSBsaXN0IikKPiA+IFNpZ25lZC1v
+ZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gPiAKPiA+IGRpZmYgLS1naXQg
+YS9zb3VuZC9zb2Mvc2gvcmNhci9jb3JlLmMgYi9zb3VuZC9zb2Mvc2gvcmNhci9jb3JlLmMKPiA+
+IGluZGV4IGM2Njg1ZjE0YjljYi4uOTBiMjQ0YzFmNTI2IDEwMDY0NAo+ID4gLS0tIGEvc291bmQv
+c29jL3NoL3JjYXIvY29yZS5jCj4gPiArKysgYi9zb3VuZC9zb2Mvc2gvcmNhci9jb3JlLmMKPiA+
+IEBAIC03OTgsNyArNzk4LDYgQEAgc3RhdGljIGludCBfX3JzbmRfa2N0cmxfbmV3KHN0cnVjdCBy
+c25kX21vZCAqbW9kLAo+ID4gIAkJCSAgICB2b2lkICgqdXBkYXRlKShzdHJ1Y3QgcnNuZF9kYWlf
+c3RyZWFtICppbywKPiA+ICAJCQkJCSAgIHN0cnVjdCByc25kX21vZCAqbW9kKSkKPiA+ICB7Cj4g
+PiAtCXN0cnVjdCBzbmRfc29jX2NhcmQgKnNvY19jYXJkID0gcnRkLT5jYXJkOwo+ID4gIAlzdHJ1
+Y3Qgc25kX2NhcmQgKmNhcmQgPSBydGQtPmNhcmQtPnNuZF9jYXJkOwo+ID4gIAlzdHJ1Y3Qgc25k
+X2tjb250cm9sICprY3RybDsKPiA+ICAJc3RydWN0IHNuZF9rY29udHJvbF9uZXcga25ldyA9IHsK
+PiAKPiBJdCBzZWVtcyB0aGlzIHBhdGNoIHdhcyBhY2NlcHRlZCB0byB0b3BpYy9yY2FyIGJyYW5j
+aCwKPiBidXQgSSBnb3QgY29tcGlsZSBlcnJvcgo+IAo+IC9vcHQvaG9tZS9tb3JpbW90by9XT1JL
+L2xpbnV4L3NvdW5kL3NvYy9zaC9yY2FyL2NvcmUuYzogSW4gZnVuY3Rpb24gJ19fcnNuZF9rY3Ry
+bF9uZXcnOgo+IC9vcHQvaG9tZS9tb3JpbW90by9XT1JLL2xpbnV4L3NvdW5kL3NvYy9zaC9yY2Fy
+L2NvcmUuYzo4MDc6MTg6IGVycm9yOiAnc29jX2NhcmQnIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBp
+biB0aGlzIGZ1bmN0aW9uKQo+ICAgIC5pbmRleCAgPSBydGQgLSBzb2NfY2FyZC0+cnRkLAo+ICAg
+ICAgICAgICAgICAgICAgIF4KPiAvb3B0L2hvbWUvbW9yaW1vdG8vV09SSy9saW51eC9zb3VuZC9z
+b2Mvc2gvcmNhci9jb3JlLmM6ODA3OjE4OiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmll
+ciBpcyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgo+
+IG1ha2VbNl06ICoqKiBbc291bmQvc29jL3NoL3JjYXIvY29yZS5vXSDjgqjjg6njg7wgMQo+IG1h
+a2VbNl06ICoqKiDmnKrlrozkuobjga7jgrjjg6fjg5bjgpLlvoXjgaPjgabjgYTjgb7jgZkuLi4u
+Cj4gbWFrZVs1XTogKioqIFtzb3VuZC9zb2Mvc2gvcmNhcl0g44Ko44Op44O8IDIKPiBtYWtlWzRd
+OiAqKiogW3NvdW5kL3NvYy9zaF0g44Ko44Op44O8IDIKPiAKPiBUaGlzIF9fcnNuZF9rY3RybF9u
+ZXcoKSBpcyB1c2luZyAic29jX2NhcmQiLi4uCgpJdCBsb29rcyBsaWtlIHRoZSBjb21taXQgdGhh
+dCByZW1vdmVkIHRoZSB1c2VyIG9mIHRoYXQgdmFyaWFibGUgaXMgaW4gdGhlCiJ0b3BpYy9wY20t
+bGlzdCIgYnJhbmNoIGluc3RlYWQgb2YgInRvcGljL3JjYXIiLgoKCUFybmQKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
