@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/4] ASoC: core: Adds support for cpu
- loopback dai_link
-Date: Wed, 25 Nov 2015 21:43:11 +0530
-Message-ID: <20151125161310.GF25173@localhost>
-References: <1447091401-24298-1-git-send-email-vinod.koul@intel.com>
- <1447091401-24298-3-git-send-email-vinod.koul@intel.com>
- <20151118131757.GI31303@sirena.org.uk>
- <20151118134843.GU25173@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: Move up pipe mem free"
+	to the asoc tree
+Date: Wed, 25 Nov 2015 17:57:39 +0000
+Message-ID: <E1a1eK3-0006XR-Iv@debutante>
+References: <1448297789-6524-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7393645164463907487=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 189D6261AA0
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 17:09:44 +0100 (CET)
-In-Reply-To: <20151118134843.GU25173@localhost>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BADF264F30
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 18:57:48 +0100 (CET)
+In-Reply-To: <1448297789-6524-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7393645164463907487==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9+VnUxDxRuy97YQ+"
-Content-Disposition: inline
+   ASoC: Intel: Skylake: Move up pipe mem free
 
+has been applied to the asoc tree at
 
---9+VnUxDxRuy97YQ+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Nov 18, 2015 at 07:18:43PM +0530, Vinod Koul wrote:
-> On Wed, Nov 18, 2015 at 01:17:57PM +0000, Mark Brown wrote:
-> > On Mon, Nov 09, 2015 at 11:19:59PM +0530, Vinod Koul wrote:
-> > > From: Jeeja KP <jeeja.kp@intel.com>
-> > >=20
-> > > soc_link_dai_widgets() creates codec-codec loopback link which
-> > > allows DPCM to trigger these links and program the parameters for
-> > > these links These links are:
-> > >=20
-> > > 	Codec1 Tx (Pb)  ----------> Rx Codec2 (Cap)
-> > > 	Codec2 Tx (Cap) <---------- Tx Codec1 (Pb)
-> > >=20
-> > > But as we try to model a CPU based loops for non host links like
-> > > modem to codec loop, the above mapping gets wrong as:
-> > >=20
-> > > 	CPU Tx (Pb)  -----------> Codec Tx (Pb)
-> > > 	CPU Rx (Cap) <----------- Codec Rx (Cap)
-> > >=20
-> > > So we add a new flag to handle above scenario and link widgets as
-> > > depecited above
-> >=20
-> > So, what I was really thinking of with the renaming was a bigger rename
-> > that updates the names in snd_soc_dai_driver and everything that comes
-> > from that.  That's a much bigger thing though, let me think about it a
-> > bit more.
->=20
-> ah, yes that kind of change does make sense, but as you observed that will
-> be a larger rework. And I think I am up for it in parallel to my SKL work=
- :)
->=20
-> But that will take a bit of time and I would like update these in bits
-> rather than one shot
->=20
-> Let me know what you think and how you would like to approach this
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Hi Mark,
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Any recommendations on this, how do we go about this
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Thanks
---=20
-~Vinod
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---9+VnUxDxRuy97YQ+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+>From 65976878ca692566ed066f4fa977de517f697c59 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Mon, 23 Nov 2015 22:26:29 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Move up pipe mem free
 
-iQIcBAEBAgAGBQJWVd4WAAoJEHwUBw8lI4NH0PMP/0ZmxanMurdLYCGtlX1kw4CP
-X2Y8GQKnK6O49CMHWq9DarQIYqnbXieu9Y6VZJOtvT85UwzANjq34nJIKtXVwT9T
-rGiRNvF99SbOr9szakZ59aVXdIteYDE+i8BHjw29YKP5p34LlkI2kdA6gx3aEt54
-NF+JorrFGAzEuU1wNr9mvnd26ZWLPRDzGETA+InjmEBmfrpRDzF4oDq1dNz/34iv
-DYCJ/zhGBoSkmhR4bbGElIvnlT4KTDiUdKEcBEukJ9YYYTCA49mkct/kW6adTzc/
-aLRYWejf1v53fKIgrnP2tDYoYOU9zVcay8lzN9LsKz5bxXZnSxRVgIBUVVJKi4Ts
-A21hKemkaTzdds2YEMIqXwK/LF1FxgbYg+5wvf6iIpIzbT7ds9fRmPH6zRIXlmGq
-4cFsRtg3s/SQzy3cMv6BfBRAqZPn1H5F+feDdywXwWZH3HR9pAQrzOToXNj0j3Jg
-NikuGViOtAoKCBjDSIP5upW5IHcZDtboLdvDpfrVY5O/42TErfntsQlaNlyftL2j
-a4uOV4L42ceNGsObJZevQdH4uCb6tU3OjPi1rZpvupg55fV6di6ApknZQ0y58D3S
-IefNuo7mZyasdW2pger4Uqst6nAZso8LLIJq223y6NSpSSQyAaSMKVjAtOTaQ1bR
-su4K7a94b9PMBx47MNK3
-=O+wJ
------END PGP SIGNATURE-----
+The MCPS is freed first thing in pmd events but non memory. So if
+we face error during teardown we leak this mem, so move the code
+up
 
---9+VnUxDxRuy97YQ+--
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============7393645164463907487==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7393645164463907487==--
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 698c4aa03933..f221c758d601 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -652,6 +652,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	int ret = 0;
+ 
+ 	skl_tplg_free_pipe_mcps(skl, mconfig);
++	skl_tplg_free_pipe_mem(skl, mconfig);
+ 
+ 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
+ 		dst_module = w_module->w->priv;
+@@ -670,7 +671,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	}
+ 
+ 	ret = skl_delete_pipe(ctx, mconfig->pipe);
+-	skl_tplg_free_pipe_mem(skl, mconfig);
+ 
+ 	return ret;
+ }
+-- 
+2.6.2
