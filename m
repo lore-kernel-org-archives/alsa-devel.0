@@ -1,85 +1,168 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ALSA: compress: Pass id string to snd_compress_new
-Date: Wed, 25 Nov 2015 09:48:38 +0000
-Message-ID: <1448444918-29760-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ALSA: compress: Add procfs info file for
+	compressed nodes
+Date: Wed, 25 Nov 2015 09:48:37 +0000
+Message-ID: <1448444918-29760-2-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1448444918-29760-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96489261555
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 10:48:43 +0100 (CET)
 In-Reply-To: <1448444918-29760-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
-Cc: perex@perex.cz, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Make snd_compress_new take an id string (like snd_pcm_new).
-This string can be included in the procfs info.
-
-This patch also updates soc_new_compress() to create an ID
-based on the stream and dai name, as done for PCM streams.
+This patch implements a procfs info file for compr nodes when
+SND_VERBOSE_PROCFS is enabled. This is equivalent to what the PCM
+core already does for pcm nodes.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- include/sound/compress_driver.h | 2 +-
- sound/core/compress_offload.c   | 6 +++++-
- sound/soc/soc-compress.c        | 8 +++++++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
+ include/sound/compress_driver.h |  5 +++
+ sound/core/compress_offload.c   | 75 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 79 insertions(+), 1 deletion(-)
 
 diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 85c4237..c0abcdc 100644
+index fa1d055..85c4237 100644
 --- a/include/sound/compress_driver.h
 +++ b/include/sound/compress_driver.h
-@@ -163,7 +163,7 @@ struct snd_compr {
- int snd_compress_register(struct snd_compr *device);
- int snd_compress_deregister(struct snd_compr *device);
- int snd_compress_new(struct snd_card *card, int device,
--			int type, struct snd_compr *compr);
-+			int type, const char *id, struct snd_compr *compr);
+@@ -152,6 +152,11 @@ struct snd_compr {
+ 	unsigned int direction;
+ 	struct mutex lock;
+ 	int device;
++#ifdef CONFIG_SND_VERBOSE_PROCFS
++	char id[64];
++	struct snd_info_entry *proc_root;
++	struct snd_info_entry *proc_info_entry;
++#endif
+ };
  
- /* dsp driver callback apis
-  * For playback: driver should call snd_compress_fragment_elapsed() to let the
+ /* compress device register APIs */
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index d133915..dd70926 100644
+index b123c42..d133915 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -976,7 +976,7 @@ static int snd_compress_dev_free(struct snd_device *device)
-  * @compr: compress device pointer
-  */
- int snd_compress_new(struct snd_card *card, int device,
--			int dirn, struct snd_compr *compr)
-+			int dirn, const char *id, struct snd_compr *compr)
- {
- 	static struct snd_device_ops ops = {
- 		.dev_free = snd_compress_dev_free,
-@@ -989,6 +989,10 @@ int snd_compress_new(struct snd_card *card, int device,
- 	compr->device = device;
- 	compr->direction = dirn;
+@@ -40,6 +40,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/info.h>
+ #include <sound/compress_params.h>
+ #include <sound/compress_offload.h>
+ #include <sound/compress_driver.h>
+@@ -891,11 +892,78 @@ static int snd_compress_dev_disconnect(struct snd_device *device)
+ 	return 0;
+ }
  
-+	if (IS_ENABLED(CONFIG_SND_VERBOSE_PROCFS))
-+		if (id)
-+			strlcpy(compr->id, id, sizeof(compr->id));
++#ifdef CONFIG_SND_VERBOSE_PROCFS
++static void snd_compress_proc_info_read(struct snd_info_entry *entry,
++					struct snd_info_buffer *buffer)
++{
++	struct snd_compr *compr = (struct snd_compr *)entry->private_data;
 +
++	snd_iprintf(buffer, "card: %d\n", compr->card->number);
++	snd_iprintf(buffer, "device: %d\n", compr->device);
++	snd_iprintf(buffer, "stream: %s\n",
++			compr->direction == SND_COMPRESS_PLAYBACK
++				? "PLAYBACK" : "CAPTURE");
++	snd_iprintf(buffer, "id: %s\n", compr->id);
++}
++
++static int snd_compress_proc_init(struct snd_compr *compr)
++{
++	struct snd_info_entry *entry;
++	char name[16];
++
++	sprintf(name, "compr%i", compr->device);
++	entry = snd_info_create_card_entry(compr->card, name,
++					   compr->card->proc_root);
++	if (!entry)
++		return -ENOMEM;
++	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(entry) < 0) {
++		snd_info_free_entry(entry);
++		return -ENOMEM;
++	}
++	compr->proc_root = entry;
++
++	entry = snd_info_create_card_entry(compr->card, "info",
++					   compr->proc_root);
++	if (entry) {
++		snd_info_set_text_ops(entry, compr,
++				      snd_compress_proc_info_read);
++		if (snd_info_register(entry) < 0) {
++			snd_info_free_entry(entry);
++			entry = NULL;
++		}
++	}
++	compr->proc_info_entry = entry;
++
++	return 0;
++}
++
++static int snd_compress_proc_done(struct snd_compr *compr)
++{
++	snd_info_free_entry(compr->proc_info_entry);
++	compr->proc_info_entry = NULL;
++	snd_info_free_entry(compr->proc_root);
++	compr->proc_root = NULL;
++	return 0;
++}
++#else
++static int snd_compress_proc_init(struct snd_compr *compr)
++{
++	return 0;
++}
++
++static int snd_compress_proc_done(struct snd_compr *compr)
++{
++	return 0
++}
++#endif
++
+ static int snd_compress_dev_free(struct snd_device *device)
+ {
+ 	struct snd_compr *compr;
+ 
+ 	compr = device->device_data;
++	snd_compress_proc_done(compr);
+ 	put_device(&compr->dev);
+ 	return 0;
+ }
+@@ -915,6 +983,7 @@ int snd_compress_new(struct snd_card *card, int device,
+ 		.dev_register = snd_compress_dev_register,
+ 		.dev_disconnect = snd_compress_dev_disconnect,
+ 	};
++	int ret;
+ 
+ 	compr->card = card;
+ 	compr->device = device;
+@@ -923,7 +992,11 @@ int snd_compress_new(struct snd_card *card, int device,
  	snd_device_initialize(&compr->dev, card);
  	dev_set_name(&compr->dev, "comprC%iD%i", card->number, device);
  
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 12a9820..fffbe6f 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -689,7 +689,13 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		compr->ops->copy = soc_compr_copy;
+-	return snd_device_new(card, SNDRV_DEV_COMPRESS, compr, &ops);
++	ret = snd_device_new(card, SNDRV_DEV_COMPRESS, compr, &ops);
++	if (ret == 0)
++		snd_compress_proc_init(compr);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_compress_new);
  
- 	mutex_init(&compr->lock);
--	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
-+
-+	snprintf(new_name, sizeof(new_name), "%s %s-%d",
-+		 rtd->dai_link->stream_name,
-+		 rtd->codec_dai->name, num);
-+
-+	ret = snd_compress_new(rtd->card->snd_card, num, direction,
-+				new_name, compr);
- 	if (ret < 0) {
- 		pr_err("compress asoc: can't create compress for codec %s\n",
- 			codec->component.name);
 -- 
 1.9.1
