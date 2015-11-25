@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: spba clock is needed by asrc
-	device" to the asoc tree
-Date: Wed, 25 Nov 2015 13:00:03 +0000
-Message-ID: <E1a1Zg3-0002pY-2I@debutante>
-References: <9ef23a7376b28ae9144f036dbc5d74e3c3240109.1448356624.git.shengjiu.wang@freescale.com>
+Subject: Applied "ASoC: sti: set iec958 channel status sampling
+	freq" to the asoc tree
+Date: Wed, 25 Nov 2015 13:00:02 +0000
+Message-ID: <E1a1Zg2-0002p5-4i@debutante>
+References: <1448370996-30224-2-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F6502606CD
+ by alsa0.perex.cz (Postfix) with ESMTP id 609AC26156A
  for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:13 +0100 (CET)
-In-Reply-To: <9ef23a7376b28ae9144f036dbc5d74e3c3240109.1448356624.git.shengjiu.wang@freescale.com>
+In-Reply-To: <1448370996-30224-2-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Moise Gergaud <moise.gergaud@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: spba clock is needed by asrc device
+   ASoC: sti: set iec958 channel status sampling freq
 
 has been applied to the asoc tree at
 
@@ -53,106 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 13b8a97a760eee021558dc48fd65e77e8a362909 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Date: Tue, 24 Nov 2015 17:19:34 +0800
-Subject: [PATCH] ASoC: fsl_asrc: spba clock is needed by asrc device
+>From 0d3f3c9a48d758454b0f57ca3eccd9ea3f6a4724 Mon Sep 17 00:00:00 2001
+From: Moise Gergaud <moise.gergaud@st.com>
+Date: Tue, 24 Nov 2015 14:16:35 +0100
+Subject: [PATCH] ASoC: sti: set iec958 channel status sampling freq
 
-ASRC need to enable the spba clock, when sdma is using share peripheral
-script. In this case, there is two spba master port is used, if don't
-enable the clock, the spba bus will have arbitration issue, which may
-cause read/write wrong data from/to ASRC registers
+Previously, the iec958 channels status sampling freq was set only if not
+already set. It means that it is not updated for next PCM sessions.
+With this patch, we ensure the iec958 channels status sampling freq is set
+to the runtime rate for each PCM session.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl,asrc.txt |  5 +++++
- sound/soc/fsl/fsl_asrc.c                             | 14 ++++++++++++++
- sound/soc/fsl/fsl_asrc.h                             |  2 ++
- 3 files changed, 21 insertions(+)
+ sound/soc/sti/uniperif_player.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index b93362a570be..3e26a9478e57 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -25,6 +25,11 @@ Required properties:
- 	"mem"		  Peripheral access clock to access registers.
- 	"ipg"		  Peripheral clock to driver module.
- 	"asrck_<0-f>"	  Clock sources for input and output clock.
-+	"spba"		  The spba clock is required when ASRC is placed as a
-+			  bus slave of the Shared Peripheral Bus and when two
-+			  or more bus masters (CPU, DMA or DSP) try to access
-+			  it. This property is optional depending on the SoC
-+			  design.
- 
-    - big-endian		: If this property is absent, the little endian mode
- 			  will be in use as default. Otherwise, the big endian
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 9f087d4f73ed..cf382475670b 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -859,6 +859,10 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		return PTR_ERR(asrc_priv->ipg_clk);
- 	}
- 
-+	asrc_priv->spba_clk = devm_clk_get(&pdev->dev, "spba");
-+	if (IS_ERR(asrc_priv->spba_clk))
-+		dev_warn(&pdev->dev, "failed to get spba clock\n");
-+
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		sprintf(tmp, "asrck_%x", i);
- 		asrc_priv->asrck_clk[i] = devm_clk_get(&pdev->dev, tmp);
-@@ -939,6 +943,11 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	ret = clk_prepare_enable(asrc_priv->ipg_clk);
- 	if (ret)
- 		goto disable_mem_clk;
-+	if (!IS_ERR(asrc_priv->spba_clk)) {
-+		ret = clk_prepare_enable(asrc_priv->spba_clk);
-+		if (ret)
-+			goto disable_ipg_clk;
-+	}
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
- 		ret = clk_prepare_enable(asrc_priv->asrck_clk[i]);
- 		if (ret)
-@@ -950,6 +959,9 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- disable_asrck_clk:
- 	for (i--; i >= 0; i--)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	if (!IS_ERR(asrc_priv->spba_clk))
-+		clk_disable_unprepare(asrc_priv->spba_clk);
-+disable_ipg_clk:
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- disable_mem_clk:
- 	clk_disable_unprepare(asrc_priv->mem_clk);
-@@ -963,6 +975,8 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
- 
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	if (!IS_ERR(asrc_priv->spba_clk))
-+		clk_disable_unprepare(asrc_priv->spba_clk);
- 	clk_disable_unprepare(asrc_priv->ipg_clk);
- 	clk_disable_unprepare(asrc_priv->mem_clk);
- 
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 4aed63c4b431..68802cdc3f28 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -426,6 +426,7 @@ struct fsl_asrc_pair {
-  * @paddr: physical address to the base address of registers
-  * @mem_clk: clock source to access register
-  * @ipg_clk: clock source to drive peripheral
-+ * @spba_clk: SPBA clock (optional, depending on SoC design)
-  * @asrck_clk: clock sources to driver ASRC internal logic
-  * @lock: spin lock for resource protection
-  * @pair: pair pointers
-@@ -442,6 +443,7 @@ struct fsl_asrc {
- 	unsigned long paddr;
- 	struct clk *mem_clk;
- 	struct clk *ipg_clk;
-+	struct clk *spba_clk;
- 	struct clk *asrck_clk[ASRC_CLK_MAX_NUM];
- 	spinlock_t lock;
- 
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 843f037a317d..148bcd7dbf03 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -251,8 +251,7 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 	 * set one.
+ 	 */
+ 	mutex_lock(&player->ctrl_lock);
+-	if (runtime && (player->stream_settings.iec958.status[3]
+-					== IEC958_AES3_CON_FS_NOTID)) {
++	if (runtime) {
+ 		switch (runtime->rate) {
+ 		case 22050:
+ 			player->stream_settings.iec958.status[3] =
 -- 
 2.6.2
