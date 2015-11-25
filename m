@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Define soc_init_dai_link() to wrap link
-	intialization." to the asoc tree
-Date: Wed, 25 Nov 2015 17:57:38 +0000
-Message-ID: <E1a1eK2-0006Wy-L7@debutante>
-References: <1439187172-1018-1-git-send-email-mengdong.lin@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to update bit depth
+	for module params" to the asoc tree
+Date: Wed, 25 Nov 2015 17:57:42 +0000
+Message-ID: <E1a1eK6-0006Yq-C5@debutante>
+References: <1448297789-6524-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E47F1261AA0
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 18:57:47 +0100 (CET)
-In-Reply-To: <1439187172-1018-1-git-send-email-mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EE13265051
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 18:57:48 +0100 (CET)
+In-Reply-To: <1448297789-6524-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Define soc_init_dai_link() to wrap link intialization.
+   ASoC: Intel: Skylake: Fix to update bit depth for module params
 
 has been applied to the asoc tree at
 
@@ -53,239 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 923c5e61ecd9b0ca006a7707583287439f36c2e9 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Mon, 23 Nov 2015 11:01:49 -0500
-Subject: [PATCH] ASoC: Define soc_init_dai_link() to wrap link intialization.
+>From 98256f83d2895fda3e596824797762937ab79f6b Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Mon, 23 Nov 2015 22:26:25 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to update bit depth for module
+ params
 
-Define soc_init_dai_link() to wrap link initialization, to reuse it later
-by snd_soc_instantiate_card() when adding new DAI links from topology in
-component probing phase.
+Module hw param fixup will change the valid bit depth based
+on the fixup flag. If valid bit depth changes, need to set
+the bit depth according to valid bit depth. This patch
+fixes this issue of updating bit depth correctly.
 
-Move static func snd_soc_init_multicodec(), so that it can be reused by
-soc_init_dai_link(). This saves adding a function declaration for
-snd_soc_init_multicodec().
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 181 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 98 insertions(+), 83 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2c95de723d8f..2ecd09475d88 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1134,6 +1134,100 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 	}
- }
- 
-+static int snd_soc_init_multicodec(struct snd_soc_card *card,
-+				   struct snd_soc_dai_link *dai_link)
-+{
-+	/* Legacy codec/codec_dai link is a single entry in multicodec */
-+	if (dai_link->codec_name || dai_link->codec_of_node ||
-+	    dai_link->codec_dai_name) {
-+		dai_link->num_codecs = 1;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 0937ea2129c1..698c4aa03933 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -147,8 +147,24 @@ static void skl_tplg_update_params(struct skl_module_fmt *fmt,
+ 		fmt->s_freq = params->s_freq;
+ 	if (fixup & SKL_CH_FIXUP_MASK)
+ 		fmt->channels = params->ch;
+-	if (fixup & SKL_FMT_FIXUP_MASK)
+-		fmt->valid_bit_depth = params->s_fmt;
++	if (fixup & SKL_FMT_FIXUP_MASK) {
++		fmt->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
 +
-+		dai_link->codecs = devm_kzalloc(card->dev,
-+				sizeof(struct snd_soc_dai_link_component),
-+				GFP_KERNEL);
-+		if (!dai_link->codecs)
-+			return -ENOMEM;
-+
-+		dai_link->codecs[0].name = dai_link->codec_name;
-+		dai_link->codecs[0].of_node = dai_link->codec_of_node;
-+		dai_link->codecs[0].dai_name = dai_link->codec_dai_name;
-+	}
-+
-+	if (!dai_link->codecs) {
-+		dev_err(card->dev, "ASoC: DAI link has no CODECs\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int soc_init_dai_link(struct snd_soc_card *card,
-+				   struct snd_soc_dai_link *link)
-+{
-+	int i, ret;
-+
-+	ret = snd_soc_init_multicodec(card, link);
-+	if (ret) {
-+		dev_err(card->dev, "ASoC: failed to init multicodec\n");
-+		return ret;
-+	}
-+
-+	for (i = 0; i < link->num_codecs; i++) {
 +		/*
-+		 * Codec must be specified by 1 of name or OF node,
-+		 * not both or neither.
++		 * 16 bit is 16 bit container whereas 24 bit is in 32 bit
++		 * container so update bit depth accordingly
 +		 */
-+		if (!!link->codecs[i].name ==
-+		    !!link->codecs[i].of_node) {
-+			dev_err(card->dev, "ASoC: Neither/both codec name/of_node are set for %s\n",
-+				link->name);
-+			return -EINVAL;
-+		}
-+		/* Codec DAI name must be specified */
-+		if (!link->codecs[i].dai_name) {
-+			dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
-+				link->name);
-+			return -EINVAL;
++		switch (fmt->valid_bit_depth) {
++		case SKL_DEPTH_16BIT:
++			fmt->bit_depth = fmt->valid_bit_depth;
++			break;
++
++		default:
++			fmt->bit_depth = SKL_DEPTH_32BIT;
++			break;
 +		}
 +	}
 +
-+	/*
-+	 * Platform may be specified by either name or OF node, but
-+	 * can be left unspecified, and a dummy platform will be used.
-+	 */
-+	if (link->platform_name && link->platform_of_node) {
-+		dev_err(card->dev,
-+			"ASoC: Both platform name/of_node are set for %s\n",
-+			link->name);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * CPU device may be specified by either name or OF node, but
-+	 * can be left unspecified, and will be matched based on DAI
-+	 * name alone..
-+	 */
-+	if (link->cpu_name && link->cpu_of_node) {
-+		dev_err(card->dev,
-+			"ASoC: Neither/both cpu name/of_node are set for %s\n",
-+			link->name);
-+		return -EINVAL;
-+	}
-+	/*
-+	 * At least one of CPU DAI name or CPU device name/node must be
-+	 * specified
-+	 */
-+	if (!link->cpu_dai_name &&
-+	    !(link->cpu_name || link->cpu_of_node)) {
-+		dev_err(card->dev,
-+			"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
-+			link->name);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static void soc_set_name_prefix(struct snd_soc_card *card,
- 				struct snd_soc_component *component)
- {
-@@ -2356,33 +2450,6 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
  }
- EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
  
--static int snd_soc_init_multicodec(struct snd_soc_card *card,
--				   struct snd_soc_dai_link *dai_link)
--{
--	/* Legacy codec/codec_dai link is a single entry in multicodec */
--	if (dai_link->codec_name || dai_link->codec_of_node ||
--	    dai_link->codec_dai_name) {
--		dai_link->num_codecs = 1;
--
--		dai_link->codecs = devm_kzalloc(card->dev,
--				sizeof(struct snd_soc_dai_link_component),
--				GFP_KERNEL);
--		if (!dai_link->codecs)
--			return -ENOMEM;
--
--		dai_link->codecs[0].name = dai_link->codec_name;
--		dai_link->codecs[0].of_node = dai_link->codec_of_node;
--		dai_link->codecs[0].dai_name = dai_link->codec_dai_name;
--	}
--
--	if (!dai_link->codecs) {
--		dev_err(card->dev, "ASoC: DAI link has no CODECs\n");
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- /**
-  * snd_soc_register_card - Register a card with the ASoC core
-  *
-@@ -2391,7 +2458,7 @@ static int snd_soc_init_multicodec(struct snd_soc_card *card,
-  */
- int snd_soc_register_card(struct snd_soc_card *card)
- {
--	int i, j, ret;
-+	int i, ret;
- 	struct snd_soc_pcm_runtime *rtd;
- 
- 	if (!card->name || !card->dev)
-@@ -2400,63 +2467,11 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	for (i = 0; i < card->num_links; i++) {
- 		struct snd_soc_dai_link *link = &card->dai_link[i];
- 
--		ret = snd_soc_init_multicodec(card, link);
-+		ret = soc_init_dai_link(card, link);
- 		if (ret) {
--			dev_err(card->dev, "ASoC: failed to init multicodec\n");
--			return ret;
--		}
--
--		for (j = 0; j < link->num_codecs; j++) {
--			/*
--			 * Codec must be specified by 1 of name or OF node,
--			 * not both or neither.
--			 */
--			if (!!link->codecs[j].name ==
--			    !!link->codecs[j].of_node) {
--				dev_err(card->dev, "ASoC: Neither/both codec name/of_node are set for %s\n",
--					link->name);
--				return -EINVAL;
--			}
--			/* Codec DAI name must be specified */
--			if (!link->codecs[j].dai_name) {
--				dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
--					link->name);
--				return -EINVAL;
--			}
--		}
--
--		/*
--		 * Platform may be specified by either name or OF node, but
--		 * can be left unspecified, and a dummy platform will be used.
--		 */
--		if (link->platform_name && link->platform_of_node) {
--			dev_err(card->dev,
--				"ASoC: Both platform name/of_node are set for %s\n",
-+			dev_err(card->dev, "ASoC: failed to init link %s\n",
- 				link->name);
--			return -EINVAL;
--		}
--
--		/*
--		 * CPU device may be specified by either name or OF node, but
--		 * can be left unspecified, and will be matched based on DAI
--		 * name alone..
--		 */
--		if (link->cpu_name && link->cpu_of_node) {
--			dev_err(card->dev,
--				"ASoC: Neither/both cpu name/of_node are set for %s\n",
--				link->name);
--			return -EINVAL;
--		}
--		/*
--		 * At least one of CPU DAI name or CPU device name/node must be
--		 * specified
--		 */
--		if (!link->cpu_dai_name &&
--		    !(link->cpu_name || link->cpu_of_node)) {
--			dev_err(card->dev,
--				"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
--				link->name);
--			return -EINVAL;
-+			return ret;
- 		}
- 	}
- 
+ /*
 -- 
 2.6.2
