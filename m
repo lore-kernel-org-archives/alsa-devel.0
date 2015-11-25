@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: set iec958 channel status sampling
-	freq" to the asoc tree
-Date: Wed, 25 Nov 2015 13:00:02 +0000
-Message-ID: <E1a1Zg2-0002p5-4i@debutante>
-References: <1448370996-30224-2-git-send-email-moise.gergaud@st.com>
+Subject: Applied "ASoC: fsl: using params_width function to
+	simplify code" to the asoc tree
+Date: Wed, 25 Nov 2015 13:00:05 +0000
+Message-ID: <E1a1Zg5-0002qy-Th@debutante>
+References: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 609AC26156A
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:13 +0100 (CET)
-In-Reply-To: <1448370996-30224-2-git-send-email-moise.gergaud@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66DFD261AA0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:14 +0100 (CET)
+In-Reply-To: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: set iec958 channel status sampling freq
+   ASoC: fsl: using params_width function to simplify code
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 0d3f3c9a48d758454b0f57ca3eccd9ea3f6a4724 Mon Sep 17 00:00:00 2001
-From: Moise Gergaud <moise.gergaud@st.com>
-Date: Tue, 24 Nov 2015 14:16:35 +0100
-Subject: [PATCH] ASoC: sti: set iec958 channel status sampling freq
+>From 4ca730436a676afebbe6b77d65b5b4c4d7d38b9c Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Tue, 24 Nov 2015 15:32:09 +0800
+Subject: [PATCH] ASoC: fsl: using params_width function to simplify code
 
-Previously, the iec958 channels status sampling freq was set only if not
-already set. It means that it is not updated for next PCM sessions.
-With this patch, we ensure the iec958 channels status sampling freq is set
-to the runtime rate for each PCM session.
+using params_width function to simplify code.
 
-Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif_player.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
+ sound/soc/fsl/fsl_sai.c  | 2 +-
+ sound/soc/fsl/fsl_ssi.c  | 3 +--
+ 4 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 843f037a317d..148bcd7dbf03 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -251,8 +251,7 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 	 * set one.
- 	 */
- 	mutex_lock(&player->ctrl_lock);
--	if (runtime && (player->stream_settings.iec958.status[3]
--					== IEC958_AES3_CON_FS_NOTID)) {
-+	if (runtime) {
- 		switch (runtime->rate) {
- 		case 22050:
- 			player->stream_settings.iec958.status[3] =
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 9f087d4f73ed..6d0636605ed2 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -447,7 +447,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
+-	int width = snd_pcm_format_width(params_format(params));
++	int width = params_width(params);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	unsigned int channels = params_channels(params);
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 504e7318f225..45d4319b2079 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -510,7 +510,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+-	u32 width = snd_pcm_format_width(params_format(params));
++	u32 width = params_width(params);
+ 	u32 channels = params_channels(params);
+ 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
+ 	u32 slot_width = width;
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index dc0cc65406f5..3da278313591 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -404,7 +404,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	unsigned int channels = params_channels(params);
+-	u32 word_width = snd_pcm_format_width(params_format(params));
++	u32 word_width = params_width(params);
+ 	u32 val_cr4 = 0, val_cr5 = 0;
+ 	u32 slots = (channels == 1) ? 2 : channels;
+ 	u32 slot_width = word_width;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 674abf778715..e3abad5f980a 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -767,8 +767,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct regmap *regs = ssi_private->regs;
+ 	unsigned int channels = params_channels(hw_params);
+-	unsigned int sample_size =
+-		snd_pcm_format_width(params_format(hw_params));
++	unsigned int sample_size = params_width(hw_params);
+ 	u32 wl = CCSR_SSI_SxCCR_WL(sample_size);
+ 	int ret;
+ 	u32 scr_val;
 -- 
 2.6.2
