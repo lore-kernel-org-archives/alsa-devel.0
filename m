@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix to update bit depth
-	for module params" to the asoc tree
-Date: Wed, 25 Nov 2015 17:57:42 +0000
-Message-ID: <E1a1eK6-0006Yq-C5@debutante>
-References: <1448297789-6524-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Poll CLDMA RUN bit when
+	set" to the asoc tree
+Date: Wed, 25 Nov 2015 17:57:40 +0000
+Message-ID: <E1a1eK4-0006Xu-GT@debutante>
+References: <1448297789-6524-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EE13265051
+ by alsa0.perex.cz (Postfix) with ESMTP id 21285265053
  for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 18:57:48 +0100 (CET)
-In-Reply-To: <1448297789-6524-4-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1448297789-6524-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix to update bit depth for module params
+   ASoC: Intel: Skylake: Poll CLDMA RUN bit when set
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,102 @@ to this mail.
 Thanks,
 Mark
 
->From 98256f83d2895fda3e596824797762937ab79f6b Mon Sep 17 00:00:00 2001
+>From 2434caf098588856d1c332d2f60b8a2d8a198450 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 23 Nov 2015 22:26:25 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix to update bit depth for module
- params
+Date: Mon, 23 Nov 2015 22:26:27 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Poll CLDMA RUN bit when set
 
-Module hw param fixup will change the valid bit depth based
-on the fixup flag. If valid bit depth changes, need to set
-the bit depth according to valid bit depth. This patch
-fixes this issue of updating bit depth correctly.
+This patch adds polling of CLDMA stream run bit when set
+to confirm the HW reports the same value.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 43 ++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 0937ea2129c1..698c4aa03933 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -147,8 +147,24 @@ static void skl_tplg_update_params(struct skl_module_fmt *fmt,
- 		fmt->s_freq = params->s_freq;
- 	if (fixup & SKL_CH_FIXUP_MASK)
- 		fmt->channels = params->ch;
--	if (fixup & SKL_FMT_FIXUP_MASK)
--		fmt->valid_bit_depth = params->s_fmt;
-+	if (fixup & SKL_FMT_FIXUP_MASK) {
-+		fmt->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
-+
-+		/*
-+		 * 16 bit is 16 bit container whereas 24 bit is in 32 bit
-+		 * container so update bit depth accordingly
-+		 */
-+		switch (fmt->valid_bit_depth) {
-+		case SKL_DEPTH_16BIT:
-+			fmt->bit_depth = fmt->valid_bit_depth;
-+			break;
-+
-+		default:
-+			fmt->bit_depth = SKL_DEPTH_32BIT;
-+			break;
-+		}
-+	}
-+
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index 947a08e42e86..8c7e8576cba3 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -18,6 +18,7 @@
+ #include <linux/device.h>
+ #include <linux/mm.h>
+ #include <linux/kthread.h>
++#include <linux/delay.h>
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
+ 
+@@ -33,6 +34,32 @@ void skl_cldma_int_disable(struct sst_dsp *ctx)
+ 			SKL_ADSP_REG_ADSPIC, SKL_ADSPIC_CL_DMA, 0);
  }
  
- /*
++static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
++{
++	unsigned char val;
++	int timeout;
++
++	sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(enable));
++
++	udelay(3);
++	timeout = 300;
++	do {
++		/* waiting for hardware to report that the stream Run bit set */
++		val = sst_dsp_shim_read(ctx, SKL_ADSP_REG_CL_SD_CTL) &
++			CL_SD_CTL_RUN_MASK;
++		if (enable && val)
++			break;
++		else if (!enable && !val)
++			break;
++		udelay(3);
++	} while (--timeout);
++
++	if (timeout == 0)
++		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
++}
++
+ /* Code loader helper APIs */
+ static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
+ 		struct snd_dma_buffer *dmab_data,
+@@ -107,18 +134,6 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
+ 	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_CL_SPBFIFO_SPIB, 0);
+ }
+ 
+-static void skl_cldma_trigger(struct sst_dsp  *ctx, bool enable)
+-{
+-	if (enable)
+-		sst_dsp_shim_update_bits_unlocked(ctx,
+-			SKL_ADSP_REG_CL_SD_CTL,
+-			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(1));
+-	else
+-		sst_dsp_shim_update_bits_unlocked(ctx,
+-			SKL_ADSP_REG_CL_SD_CTL,
+-			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(0));
+-}
+-
+ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
+ {
+ 	skl_cldma_cleanup_spb(ctx);
+@@ -167,7 +182,7 @@ cleanup:
+ 
+ static void skl_cldma_stop(struct sst_dsp *ctx)
+ {
+-	ctx->cl_dev.ops.cl_trigger(ctx, false);
++	skl_cldma_stream_run(ctx, false);
+ }
+ 
+ static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
+@@ -309,7 +324,7 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
+ 	ctx->cl_dev.ops.cl_setup_controller = skl_cldma_setup_controller;
+ 	ctx->cl_dev.ops.cl_setup_spb = skl_cldma_setup_spb;
+ 	ctx->cl_dev.ops.cl_cleanup_spb = skl_cldma_cleanup_spb;
+-	ctx->cl_dev.ops.cl_trigger = skl_cldma_trigger;
++	ctx->cl_dev.ops.cl_trigger = skl_cldma_stream_run;
+ 	ctx->cl_dev.ops.cl_cleanup_controller = skl_cldma_cleanup;
+ 	ctx->cl_dev.ops.cl_copy_to_dmabuf = skl_cldma_copy_to_buf;
+ 	ctx->cl_dev.ops.cl_stop_dma = skl_cldma_stop;
 -- 
 2.6.2
