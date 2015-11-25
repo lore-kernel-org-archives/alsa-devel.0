@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: core: add a dapm sink widget
-Date: Wed, 25 Nov 2015 12:51:38 +0000
-Message-ID: <20151125125138.GU1929@sirena.org.uk>
-References: <1448293951-32071-1-git-send-email-vinod.koul@intel.com>
- <1448293951-32071-3-git-send-email-vinod.koul@intel.com>
- <5654327A.5080406@metafoo.de> <20151124101907.GC25173@localhost>
+Subject: Applied "ASoC: core: Change power state before
+	rechecking endpoint" to the asoc tree
+Date: Wed, 25 Nov 2015 13:00:00 +0000
+Message-ID: <E1a1Zg0-0002o1-9n@debutante>
+References: <1448293951-32071-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5217980381853688142=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACD2D2606C9
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 13:51:46 +0100 (CET)
-In-Reply-To: <20151124101907.GC25173@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id C81232606CD
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2015 14:00:06 +0100 (CET)
+In-Reply-To: <1448293951-32071-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5217980381853688142==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Sx3M3By4KbPIrykT"
-Content-Disposition: inline
+   ASoC: core: Change power state before rechecking endpoint
 
+has been applied to the asoc tree at
 
---Sx3M3By4KbPIrykT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Nov 24, 2015 at 03:49:07PM +0530, Vinod Koul wrote:
-> On Tue, Nov 24, 2015 at 10:48:42AM +0100, Lars-Peter Clausen wrote:
-> > On 11/23/2015 04:52 PM, Vinod Koul wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > > To make the dapm graph complete for such paths we need a dapm
-> > > sink widget for these modules, so add a SND_SOC_DAPM_SINK to
-> > > declare such a widget.
-> > > This widget will be treated as SND_SOC_DAPM_EP_SINK endpoint in
-> > > the dapm graph
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> > Except for the strange formating of the commit message this looks good.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> Checkpath now seems to warn if commit message > 65chars so have set it for
-> commit message
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-I think it's more the random wrapping above - it looks like those are
-either two paragraphs or one paragraph with random word wrapping within
-it.
+Thanks,
+Mark
 
---Sx3M3By4KbPIrykT
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 1a7aaa58ec7aaa389cd6b200809908ec472d316b Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Mon, 23 Nov 2015 21:22:31 +0530
+Subject: [PATCH] ASoC: core: Change power state before rechecking endpoint
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+For DAPM resume, we should first change the power state of the
+card and then recheck the endpoints. This ensures the dapm is
+resumed first and then userspace can resume the streams.
 
-iQEcBAEBCAAGBQJWVa7ZAAoJECTWi3JdVIfQop4H/i14FPl3Hu8oGAQTmjNBFJVo
-OKQSu9iK/dF0C05yCl3Fw312JJo984xbBdnAO/2iovkheZoPHoWnjavSXPWQchwa
-woOGtzl+DelyktMZfKhvQTqc7MdyVs/NBgcQlQ+TtkXuELb4Xu3uS3RTovVNvotu
-TET8jFW3IuK9mnOFwsIdsVWG1/vMaWLwtvAydksVZ/lRpFg+/bxp3TKAqDFRglsx
-cwqU/XIHOotBrQVl3A9ISVlYWlMNTgNoinhQsdaApibRR6XksPFpr+nEKKNndud4
-qRPWwUmTU1f3BzKqbJ4SXwYFSRFLIdW8R3sLctjVVpBVASHYH66B9Rk/LDv6GXE=
-=rEMP
------END PGP SIGNATURE-----
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---Sx3M3By4KbPIrykT--
-
---===============5217980381853688142==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5217980381853688142==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 24b096066a07..a1305f827a98 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -795,12 +795,12 @@ static void soc_resume_deferred(struct work_struct *work)
+ 
+ 	dev_dbg(card->dev, "ASoC: resume work completed\n");
+ 
+-	/* userspace can access us now we are back as we were before */
+-	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D0);
+-
+ 	/* Recheck all endpoints too, their state is affected by suspend */
+ 	dapm_mark_endpoints_dirty(card);
+ 	snd_soc_dapm_sync(&card->dapm);
++
++	/* userspace can access us now we are back as we were before */
++	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D0);
+ }
+ 
+ /* powers up audio subsystem after a suspend */
+-- 
+2.6.2
