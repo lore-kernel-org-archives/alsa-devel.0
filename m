@@ -1,71 +1,60 @@
-From: "Zhang, Xiong Y" <xiong.y.zhang@intel.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
- pin/ELD	notify events
-Date: Thu, 26 Nov 2015 09:16:17 +0000
-Message-ID: <8082FF9BCB2B054996454E47167FF4EC0B0F2A4D@SHSMSX104.ccr.corp.intel.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <1440781350-12053-5-git-send-email-david.henningsson@canonical.com>
- <8082FF9BCB2B054996454E47167FF4EC0B0F19F8@SHSMSX104.ccr.corp.intel.com>
- <s5hmvu2ie86.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F1AE8@SHSMSX104.ccr.corp.intel.com>
- <s5hbnaiiazu.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2834@SHSMSX104.ccr.corp.intel.com>
- <s5hmvu18efr.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2951@SHSMSX104.ccr.corp.intel.com>
- <s5hwpt56v62.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Add dmi_system_id "Google
+	Terra"
+Date: Thu, 26 Nov 2015 09:19:08 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7010D374E@RTITMBSV03.realtek.com.tw>
+References: <1448333729-11065-1-git-send-email-bardliao@realtek.com>
+ <20151125120139.GP1929@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hwpt56v62.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Vetter,
- Daniel" <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3D522665A1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 10:19:16 +0100 (CET)
+In-Reply-To: <20151125120139.GP1929@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "Luke_Yin@asus.com" <Luke_Yin@asus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gT24gVGh1LCAyNiBOb3YgMjAxNSAwODo1NzozMCArMDEwMCwKPiBaaGFuZywgWGlvbmcgWSB3
-cm90ZToKPiA+Cj4gPiA+ID4gPiBCVFcsIEkgaGF2ZSBhIHBhdGNoc2V0IHRvIGF2b2lkIHRoZSBh
-dWRpbyBoL3cgd2FrZXVwIGJ5IGEgbmV3Cj4gPiA+ID4gPiBjb21wb25lbnQgb3BzIHRvIGdldCBF
-TEQgYW5kIGNvbm5lY3Rpb24gc3RhdGVzLiAgSXQgd2FzIHBvc3RlZCB0bwo+ID4gPiA+ID4gYWxz
-YS1kZXZlbCBzaG9ydGx5IGFnbyBqdXN0IGFzIGEgcmVmZXJlbmNlLCBidXQgdGhpcyBzaG91bGQg
-d29yayB3ZWxsCj4gPiA+ID4gPiBpbiBzdWNoIGEgY2FzZSwgdG9vLiAgVGhlIHRlc3QgcGF0Y2hl
-cyBhcmUgZm91bmQgaW4gdGVzdC9oZG1pLWphY2sKPiA+ID4gPiA+IGJyYW5jaCBvZiBteSBzb3Vu
-ZCBnaXQgdHJlZS4KPiA+ID4KPiA+ID4gRGlkIHlvdSB0cnkgdGhpcyBicmFuY2ggKG1lcmdlIG9u
-dG8gaW50ZWwtdGVzdC1uaWdodGx5KT8KPiA+ID4KPiA+IFtaaGFuZywgWGlvbmcgWV0gWWVzLCB0
-aGlzIGJyYW5jaCBjb3VsZCBmaXggbXkgaXNzdWUuCj4gCj4gT0ssIGdvb2QgdG8gaGVhci4gIEJ1
-dCB0aGlzIGlzbid0IGZvciA0LjQgb3IgYmFja3BvcnQsIGFzIGl0J3MgbW9yZQo+IHJhZGljYWwg
-Y2hhbmdlcy4KPiAKPiBDb3VsZCB5b3UgY2hlY2sgdGhlIHBhdGNoIGJlbG93IGluc3RlYWQ/ICBU
-aGlzIHN1cHByZXNzZXMgdGhlIG5vdGlmaWVyCj4gaGFuZGxpbmcgZHVyaW5nIHN1c3BlbmQuICBJ
-dCdzIGJhZCwgYnV0IHRoZSBob3RwbHVnIHNob3VsZCBiZSBzdGlsbAo+IGhhbmRsZWQgdmlhIG5v
-cm1hbCB1bnNvbCBldmVudCwgc28gaXQgc2hvdWxkIGtlZXAgd29ya2luZywgZ29vZCBlbm91Z2gK
-PiBhcyBhIHN0b3AgZ2FwLgo+IAo+IAo+IFRha2FzaGkKPiAKPiAtLS0KPiBkaWZmIC0tZ2l0IGEv
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+
-IGluZGV4IGJkYjZmMjI2ZDAwNi4uZjdjNzBlMmFlNjVjIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfaGRtaS5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiBA
-QCAtMzMsNiArMzMsNyBAQAo+ICAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KPiAgI2luY2x1ZGUg
-PGxpbnV4L3NsYWIuaD4KPiAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ICsjaW5jbHVkZSA8
-bGludXgvcG1fcnVudGltZS5oPgo+ICAjaW5jbHVkZSA8c291bmQvY29yZS5oPgo+ICAjaW5jbHVk
-ZSA8c291bmQvamFjay5oPgo+ICAjaW5jbHVkZSA8c291bmQvYXNvdW5kZWYuaD4KPiBAQCAtMjM1
-Miw3ICsyMzUzLDkgQEAgc3RhdGljIHZvaWQgaW50ZWxfcGluX2VsZF9ub3RpZnkodm9pZCAqYXVk
-aW9fcHRyLCBpbnQKPiBwb3J0KQo+ICAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBhdWRpb19w
-dHI7Cj4gIAlpbnQgcGluX25pZCA9IHBvcnQgKyAweDA0Owo+IAo+IC0JY2hlY2tfcHJlc2VuY2Vf
-YW5kX3JlcG9ydChjb2RlYywgcGluX25pZCk7Cj4gKwlpZiAoIWF0b21pY19yZWFkKCZjb2RlYy0+
-Y29yZS5pbl9wbSkgJiYKPiArCSAgICAhcG1fcnVudGltZV9zdXNwZW5kZWQoaGRhX2NvZGVjX2Rl
-dihjb2RlYykpKQo+ICsJCWNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoY29kZWMsIHBpbl9uaWQp
-Owo+ICB9Cj4gCj4gIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0cnVjdCBoZGFfY29k
-ZWMgKmNvZGVjKQpbWmhhbmcsIFhpb25nIFldICB0aGlzIHBhdGNoIGNvdWxkbid0IHJlbW92ZSB0
-aGUgZXJyb3IgbWVzc2FnZS4gU28gYXVkaW8gY29udHJvbGxlciBpc24ndCBpbiBSdW50aW1lIEQz
-IGFmdGVyIGF6eF9zdXNwZW5kKCkuCgp0aGFua3MKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Wednesday, November 25, 2015 8:02 PM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
+> Flove; Oder Chiou; John Lin; Luke_Yin@asus.com
+> Subject: Re: [PATCH] ASoC: rt5645: Add dmi_system_id "Google Terra"
+> 
+> On Tue, Nov 24, 2015 at 10:55:29AM +0800, Bard Liao wrote:
+> 
+> > +	{
+> > +		.ident = "Google Terra",
+> > +		.callback = strago_quirk_cb,
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_PRODUCT_NAME, "Terra"),
+> > +		},
+> > +	},
+> 
+> It might make more sense to just have a single entry for all these Google
+> platforms and extend this table rather than adding a complete new entry
+> for every platform - they're all the same and it'd make the table smaller.
+
+Totally agree. We are trying to simplify the code. The idea is using
+DMI_MATCH(DMI_SYS_VENDOR, "GOOGLE") for all google project
+except a few projects with different HW design. We will use if else
+statement to match the projects with special HW design first and the
+general ones. Also, I think those can support DT/ACPI should have higher
+priority than DMI match, right?
+
+> 
+> ------Please consider the environment before printing this e-mail.
