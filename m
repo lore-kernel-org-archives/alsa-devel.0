@@ -1,19 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 09/13] ASoC: The soc card can have
- auxiliary components
-Date: Thu, 26 Nov 2015 13:57:37 +0100
-Message-ID: <565701C1.9040900@metafoo.de>
-References: <cover.1446717205.git.mengdong.lin@linux.intel.com>
- <cb52fae5395aa4e87b193c0846289e183f708042.1446717205.git.mengdong.lin@linux.intel.com>
+From: pascal.huerst@gmail.com
+Subject: [PATCH] ASoC: sigmadsp: Add check for return value of
+	i2c_master_send
+Date: Thu, 26 Nov 2015 14:00:15 +0100
+Message-ID: <1448542815-14197-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-194.synserver.de (smtp-out-208.synserver.de
- [212.40.185.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 615012619FB
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 13:57:41 +0100 (CET)
-In-Reply-To: <cb52fae5395aa4e87b193c0846289e183f708042.1446717205.git.mengdong.lin@linux.intel.com>
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F5A12619FB
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 14:00:52 +0100 (CET)
+Received: by wmvv187 with SMTP id v187so30479014wmv.1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 05:00:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,18 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: lars@metafoo.de
+Cc: alsa-devel@alsa-project.org, Pascal Huerst <pascal.huerst@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/05/2015 10:59 AM, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> Machine drivers can set the name of one or more auxiliary components.
-> And the ASoC core will find and probe the auxiliary components.
-> 
-> Machine drivers can use this to specify the components with topology.
-> Then when the components are probed, topology info will be loaded to
-> the core.
+From: Pascal Huerst <pascal.huerst@gmail.com>
 
-How is this different from the existing aux_devs?
+i2c_master_send returns the number of bytes transmitted, which leads
+to an error in the firmware download function. Check for the return
+value and only return it directly, if it is an actual error number.
+
+Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
+---
+ sound/soc/codecs/sigmadsp-i2c.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/sigmadsp-i2c.c b/sound/soc/codecs/sigmadsp-i2c.c
+index 21ca3a5..d374c18 100644
+--- a/sound/soc/codecs/sigmadsp-i2c.c
++++ b/sound/soc/codecs/sigmadsp-i2c.c
+@@ -31,7 +31,10 @@ static int sigmadsp_write_i2c(void *control_data,
+
+ 	kfree(buf);
+
+-	return ret;
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+
+ static int sigmadsp_read_i2c(void *control_data,
+--
+2.4.3
