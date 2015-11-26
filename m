@@ -1,69 +1,71 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: topology: Fix not to keep a
- reference to	tplg fw
-Date: Thu, 26 Nov 2015 14:40:16 +0530
-Message-ID: <20151126091016.GK25173@localhost>
-References: <1448547060-32749-1-git-send-email-subhransu.s.prusty@intel.com>
- <s5hoaeh6t8w.wl-tiwai@suse.de>
+From: "Zhang, Xiong Y" <xiong.y.zhang@intel.com>
+Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
+ pin/ELD	notify events
+Date: Thu, 26 Nov 2015 09:16:17 +0000
+Message-ID: <8082FF9BCB2B054996454E47167FF4EC0B0F2A4D@SHSMSX104.ccr.corp.intel.com>
+References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
+ <1440781350-12053-5-git-send-email-david.henningsson@canonical.com>
+ <8082FF9BCB2B054996454E47167FF4EC0B0F19F8@SHSMSX104.ccr.corp.intel.com>
+ <s5hmvu2ie86.wl-tiwai@suse.de>
+ <8082FF9BCB2B054996454E47167FF4EC0B0F1AE8@SHSMSX104.ccr.corp.intel.com>
+ <s5hbnaiiazu.wl-tiwai@suse.de>
+ <8082FF9BCB2B054996454E47167FF4EC0B0F2834@SHSMSX104.ccr.corp.intel.com>
+ <s5hmvu18efr.wl-tiwai@suse.de>
+ <8082FF9BCB2B054996454E47167FF4EC0B0F2951@SHSMSX104.ccr.corp.intel.com>
+ <s5hwpt56v62.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DC4812665A1
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 10:06:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hoaeh6t8w.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hwpt56v62.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Vetter,
+ Daniel" <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2015 at 09:48:47AM +0100, Takashi Iwai wrote:
-> On Thu, 26 Nov 2015 15:11:00 +0100,
-> Subhransu S. Prusty wrote:
-> > 
-> > During element creation, the name of some of the elements point
-> > to memory referenced in tplg fw. If the tplg fw is released after
-> > tplg is parsed by framework, kernel panic happens during creation
-> > of elements while card initialization.
-> 
-> In which code path?  When the kctl is already instantiated from
-> snd_kcontrol_new template, we don't have to duplicate the string.
-> The only case where the strdup() is required is to delay the
-> instantiation, i.e. storing the kcontrol_new object itself instead of
-> referring temporarily.
-
-So in SKL, we do request firmware of topology binary and topology core uses
-that for strings here, so the patch 87b5ed8ec freed the topology binary
-which causes panic while accessing kcontrols.
-
-Your second point is applicable here as card instantiation is delayed often
-for us as all components may not be present and delayed probe finally
-creates the card.
-
-> > Issue is caught with id#87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1
-> 
-> You should put the commit subject, too.
-
-Yes we will add that
-
-> > So create a copy of the memory and assign to names instead.
-> 
-> And who releases these duplicated memory?  It looks like another
-> memory leak to me.
-
-That is a good point and I think we should do devm_kstrdup() here so that
-this is freed when we cleanup the device, or do you have any better
-suggestion ?
-
--- 
-~Vinod
+Cj4gT24gVGh1LCAyNiBOb3YgMjAxNSAwODo1NzozMCArMDEwMCwKPiBaaGFuZywgWGlvbmcgWSB3
+cm90ZToKPiA+Cj4gPiA+ID4gPiBCVFcsIEkgaGF2ZSBhIHBhdGNoc2V0IHRvIGF2b2lkIHRoZSBh
+dWRpbyBoL3cgd2FrZXVwIGJ5IGEgbmV3Cj4gPiA+ID4gPiBjb21wb25lbnQgb3BzIHRvIGdldCBF
+TEQgYW5kIGNvbm5lY3Rpb24gc3RhdGVzLiAgSXQgd2FzIHBvc3RlZCB0bwo+ID4gPiA+ID4gYWxz
+YS1kZXZlbCBzaG9ydGx5IGFnbyBqdXN0IGFzIGEgcmVmZXJlbmNlLCBidXQgdGhpcyBzaG91bGQg
+d29yayB3ZWxsCj4gPiA+ID4gPiBpbiBzdWNoIGEgY2FzZSwgdG9vLiAgVGhlIHRlc3QgcGF0Y2hl
+cyBhcmUgZm91bmQgaW4gdGVzdC9oZG1pLWphY2sKPiA+ID4gPiA+IGJyYW5jaCBvZiBteSBzb3Vu
+ZCBnaXQgdHJlZS4KPiA+ID4KPiA+ID4gRGlkIHlvdSB0cnkgdGhpcyBicmFuY2ggKG1lcmdlIG9u
+dG8gaW50ZWwtdGVzdC1uaWdodGx5KT8KPiA+ID4KPiA+IFtaaGFuZywgWGlvbmcgWV0gWWVzLCB0
+aGlzIGJyYW5jaCBjb3VsZCBmaXggbXkgaXNzdWUuCj4gCj4gT0ssIGdvb2QgdG8gaGVhci4gIEJ1
+dCB0aGlzIGlzbid0IGZvciA0LjQgb3IgYmFja3BvcnQsIGFzIGl0J3MgbW9yZQo+IHJhZGljYWwg
+Y2hhbmdlcy4KPiAKPiBDb3VsZCB5b3UgY2hlY2sgdGhlIHBhdGNoIGJlbG93IGluc3RlYWQ/ICBU
+aGlzIHN1cHByZXNzZXMgdGhlIG5vdGlmaWVyCj4gaGFuZGxpbmcgZHVyaW5nIHN1c3BlbmQuICBJ
+dCdzIGJhZCwgYnV0IHRoZSBob3RwbHVnIHNob3VsZCBiZSBzdGlsbAo+IGhhbmRsZWQgdmlhIG5v
+cm1hbCB1bnNvbCBldmVudCwgc28gaXQgc2hvdWxkIGtlZXAgd29ya2luZywgZ29vZCBlbm91Z2gK
+PiBhcyBhIHN0b3AgZ2FwLgo+IAo+IAo+IFRha2FzaGkKPiAKPiAtLS0KPiBkaWZmIC0tZ2l0IGEv
+c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+
+IGluZGV4IGJkYjZmMjI2ZDAwNi4uZjdjNzBlMmFlNjVjIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfaGRtaS5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiBA
+QCAtMzMsNiArMzMsNyBAQAo+ICAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KPiAgI2luY2x1ZGUg
+PGxpbnV4L3NsYWIuaD4KPiAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ICsjaW5jbHVkZSA8
+bGludXgvcG1fcnVudGltZS5oPgo+ICAjaW5jbHVkZSA8c291bmQvY29yZS5oPgo+ICAjaW5jbHVk
+ZSA8c291bmQvamFjay5oPgo+ICAjaW5jbHVkZSA8c291bmQvYXNvdW5kZWYuaD4KPiBAQCAtMjM1
+Miw3ICsyMzUzLDkgQEAgc3RhdGljIHZvaWQgaW50ZWxfcGluX2VsZF9ub3RpZnkodm9pZCAqYXVk
+aW9fcHRyLCBpbnQKPiBwb3J0KQo+ICAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBhdWRpb19w
+dHI7Cj4gIAlpbnQgcGluX25pZCA9IHBvcnQgKyAweDA0Owo+IAo+IC0JY2hlY2tfcHJlc2VuY2Vf
+YW5kX3JlcG9ydChjb2RlYywgcGluX25pZCk7Cj4gKwlpZiAoIWF0b21pY19yZWFkKCZjb2RlYy0+
+Y29yZS5pbl9wbSkgJiYKPiArCSAgICAhcG1fcnVudGltZV9zdXNwZW5kZWQoaGRhX2NvZGVjX2Rl
+dihjb2RlYykpKQo+ICsJCWNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoY29kZWMsIHBpbl9uaWQp
+Owo+ICB9Cj4gCj4gIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0cnVjdCBoZGFfY29k
+ZWMgKmNvZGVjKQpbWmhhbmcsIFhpb25nIFldICB0aGlzIHBhdGNoIGNvdWxkbid0IHJlbW92ZSB0
+aGUgZXJyb3IgbWVzc2FnZS4gU28gYXVkaW8gY29udHJvbGxlciBpc24ndCBpbiBSdW50aW1lIEQz
+IGFmdGVyIGF6eF9zdXNwZW5kKCkuCgp0aGFua3MKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9pbnRlbC1nZngK
