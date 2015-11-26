@@ -1,19 +1,16 @@
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [PATCH 3/5] ASoC: fsl_ssi: Fix samples being dropped
-	as Playback startup
-Date: Thu, 26 Nov 2015 15:07:20 +0100
-Message-ID: <1448546842-4584-4-git-send-email-arnaud.mouiche@invoxia.com>
-References: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Expand the list of available
+	firmwares
+Date: Thu, 26 Nov 2015 14:01:52 +0000
+Message-ID: <1448546512-14035-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id C17D8261A95
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 15:07:51 +0100 (CET)
-Received: by wmww144 with SMTP id w144so23958433wmw.0
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 06:07:51 -0800 (PST)
-In-Reply-To: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D0D7261A0A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 15:17:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +20,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>, Roberto Fichera <kernel@tekno-soft.it>, Markus Pargmann <mpa@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
-Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-If the capture is already running while playback is started, it is highly
-probable (>80% in a 8 channels scenario) that samples are lost between
-the DMA and TX fifo.
+Expand the list of available firmware names to include a good selection
+of generic uses for the DSP cores.
 
-The reason is that SIER.TDMAE is set before STCR.TFEN0, leaving a time
-window where the FIFO doesn't receive the samples written by the DMA.
-
-This particular case happened only if capture is already enabled as
-SCR.SSIEN is already set at the playback startup instant.
-
-Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c |   49 +++++++++++++++++++++++++++++++------------
+ 1 files changed, 35 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 243c9af..78ea6e1 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -404,9 +404,9 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
- 	 * (online configuration)
- 	 */
- 	if (enable) {
--		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
- 		regmap_update_bits(regs, CCSR_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, CCSR_SSI_STCR, vals->stcr, vals->stcr);
-+		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
- 	} else {
- 		u32 sier;
- 		u32 srcr;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 0bb415a..905ae99 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -201,27 +201,48 @@ static void wm_adsp_buf_free(struct list_head *list)
+ 	}
+ }
+ 
+-#define WM_ADSP_NUM_FW 4
+-
+-#define WM_ADSP_FW_MBC_VSS 0
+-#define WM_ADSP_FW_TX      1
+-#define WM_ADSP_FW_TX_SPK  2
+-#define WM_ADSP_FW_RX_ANC  3
++#define WM_ADSP_FW_MBC_VSS  0
++#define WM_ADSP_FW_HIFI     1
++#define WM_ADSP_FW_TX       2
++#define WM_ADSP_FW_TX_SPK   3
++#define WM_ADSP_FW_RX       4
++#define WM_ADSP_FW_RX_ANC   5
++#define WM_ADSP_FW_CTRL     6
++#define WM_ADSP_FW_ASR      7
++#define WM_ADSP_FW_TRACE    8
++#define WM_ADSP_FW_SPK_PROT 9
++#define WM_ADSP_FW_MISC     10
++
++#define WM_ADSP_NUM_FW      11
+ 
+ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
+-	[WM_ADSP_FW_MBC_VSS] = "MBC/VSS",
+-	[WM_ADSP_FW_TX] =      "Tx",
+-	[WM_ADSP_FW_TX_SPK] =  "Tx Speaker",
+-	[WM_ADSP_FW_RX_ANC] =  "Rx ANC",
++	[WM_ADSP_FW_MBC_VSS] =  "MBC/VSS",
++	[WM_ADSP_FW_HIFI] =     "MasterHiFi",
++	[WM_ADSP_FW_TX] =       "Tx",
++	[WM_ADSP_FW_TX_SPK] =   "Tx Speaker",
++	[WM_ADSP_FW_RX] =       "Rx",
++	[WM_ADSP_FW_RX_ANC] =   "Rx ANC",
++	[WM_ADSP_FW_CTRL] =     "Voice Ctrl",
++	[WM_ADSP_FW_ASR] =      "ASR Assist",
++	[WM_ADSP_FW_TRACE] =    "Dbg Trace",
++	[WM_ADSP_FW_SPK_PROT] = "Protection",
++	[WM_ADSP_FW_MISC] =     "Misc",
+ };
+ 
+ static struct {
+ 	const char *file;
+ } wm_adsp_fw[WM_ADSP_NUM_FW] = {
+-	[WM_ADSP_FW_MBC_VSS] = { .file = "mbc-vss" },
+-	[WM_ADSP_FW_TX] =      { .file = "tx" },
+-	[WM_ADSP_FW_TX_SPK] =  { .file = "tx-spk" },
+-	[WM_ADSP_FW_RX_ANC] =  { .file = "rx-anc" },
++	[WM_ADSP_FW_MBC_VSS] =  { .file = "mbc-vss" },
++	[WM_ADSP_FW_HIFI] =     { .file = "hifi" },
++	[WM_ADSP_FW_TX] =       { .file = "tx" },
++	[WM_ADSP_FW_TX_SPK] =   { .file = "tx-spk" },
++	[WM_ADSP_FW_RX] =       { .file = "rx" },
++	[WM_ADSP_FW_RX_ANC] =   { .file = "rx-anc" },
++	[WM_ADSP_FW_CTRL] =     { .file = "ctrl" },
++	[WM_ADSP_FW_ASR] =      { .file = "asr" },
++	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
++	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
++	[WM_ADSP_FW_MISC] =     { .file = "misc" },
+ };
+ 
+ struct wm_coeff_ctl_ops {
 -- 
-1.9.1
+1.7.2.5
