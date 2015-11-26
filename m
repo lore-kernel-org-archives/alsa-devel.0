@@ -1,135 +1,86 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
- pin/ELD notify events
-Date: Thu, 26 Nov 2015 17:58:09 +0200
-Message-ID: <20151126155809.GE4437@intel.com>
-References: <s5hmvu18efr.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2951@SHSMSX104.ccr.corp.intel.com>
- <s5hwpt56v62.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2A4D@SHSMSX104.ccr.corp.intel.com>
- <s5hh9k96rku.wl-tiwai@suse.de> <56572056.6090805@canonical.com>
- <s5hpoywokd7.wl-tiwai@suse.de> <56572548.1020603@canonical.com>
- <20151126154323.GD4437@intel.com> <s5hio4ooj2v.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: topology: Fix not to keep a
+ reference to	tplg fw
+Date: Thu, 26 Nov 2015 21:43:43 +0530
+Message-ID: <20151126161343.GD2309@localhost>
+References: <1448547060-32749-1-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hoaeh6t8w.wl-tiwai@suse.de> <20151126091016.GK25173@localhost>
+ <s5hio4p6rt4.wl-tiwai@suse.de> <20151126112457.GC2309@localhost>
+ <s5h7fl5t23z.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D793261A8C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 17:09:49 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hio4ooj2v.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h7fl5t23z.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "Vetter, Daniel" <daniel.vetter@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, David Henningsson <david.henningsson@canonical.com>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBOb3YgMjYsIDIwMTUgYXQgMDQ6NTE6MDRQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFRodSwgMjYgTm92IDIwMTUgMTY6NDM6MjMgKzAxMDAsCj4gVmlsbGUgU3lyasOk
-bMOkIHdyb3RlOgo+ID4gCj4gPiBPbiBUaHUsIE5vdiAyNiwgMjAxNSBhdCAwNDoyOToxMlBNICsw
-MTAwLCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+ID4gCj4gPiA+IAo+ID4gPiBPbiAyMDE1
-LTExLTI2IDE2OjIzLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+ID4gT24gVGh1LCAyNiBOb3Yg
-MjAxNSAxNjowODowNiArMDEwMCwKPiA+ID4gPiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+
-ID4gPj4KPiA+ID4gPj4KPiA+ID4gPj4KPiA+ID4gPj4gT24gMjAxNS0xMS0yNiAxMDoyNCwgVGFr
-YXNoaSBJd2FpIHdyb3RlOgo+ID4gPiA+Pj4gT24gVGh1LCAyNiBOb3YgMjAxNSAxMDoxNjoxNyAr
-MDEwMCwKPiA+ID4gPj4+IFpoYW5nLCBYaW9uZyBZIHdyb3RlOgo+ID4gPiA+Pj4+Cj4gPiA+ID4+
-Pj4KPiA+ID4gPj4+Pj4gT24gVGh1LCAyNiBOb3YgMjAxNSAwODo1NzozMCArMDEwMCwKPiA+ID4g
-Pj4+Pj4gWmhhbmcsIFhpb25nIFkgd3JvdGU6Cj4gPiA+ID4+Pj4+Pgo+ID4gPiA+Pj4+Pj4+Pj4g
-QlRXLCBJIGhhdmUgYSBwYXRjaHNldCB0byBhdm9pZCB0aGUgYXVkaW8gaC93IHdha2V1cCBieSBh
-IG5ldwo+ID4gPiA+Pj4+Pj4+Pj4gY29tcG9uZW50IG9wcyB0byBnZXQgRUxEIGFuZCBjb25uZWN0
-aW9uIHN0YXRlcy4gIEl0IHdhcyBwb3N0ZWQgdG8KPiA+ID4gPj4+Pj4+Pj4+IGFsc2EtZGV2ZWwg
-c2hvcnRseSBhZ28ganVzdCBhcyBhIHJlZmVyZW5jZSwgYnV0IHRoaXMgc2hvdWxkIHdvcmsgd2Vs
-bAo+ID4gPiA+Pj4+Pj4+Pj4gaW4gc3VjaCBhIGNhc2UsIHRvby4gIFRoZSB0ZXN0IHBhdGNoZXMg
-YXJlIGZvdW5kIGluIHRlc3QvaGRtaS1qYWNrCj4gPiA+ID4+Pj4+Pj4+PiBicmFuY2ggb2YgbXkg
-c291bmQgZ2l0IHRyZWUuCj4gPiA+ID4+Pj4+Pj4KPiA+ID4gPj4+Pj4+PiBEaWQgeW91IHRyeSB0
-aGlzIGJyYW5jaCAobWVyZ2Ugb250byBpbnRlbC10ZXN0LW5pZ2h0bHkpPwo+ID4gPiA+Pj4+Pj4+
-Cj4gPiA+ID4+Pj4+PiBbWmhhbmcsIFhpb25nIFldIFllcywgdGhpcyBicmFuY2ggY291bGQgZml4
-IG15IGlzc3VlLgo+ID4gPiA+Pj4+Pgo+ID4gPiA+Pj4+PiBPSywgZ29vZCB0byBoZWFyLiAgQnV0
-IHRoaXMgaXNuJ3QgZm9yIDQuNCBvciBiYWNrcG9ydCwgYXMgaXQncyBtb3JlCj4gPiA+ID4+Pj4+
-IHJhZGljYWwgY2hhbmdlcy4KPiA+ID4gPj4+Pj4KPiA+ID4gPj4+Pj4gQ291bGQgeW91IGNoZWNr
-IHRoZSBwYXRjaCBiZWxvdyBpbnN0ZWFkPyAgVGhpcyBzdXBwcmVzc2VzIHRoZSBub3RpZmllcgo+
-ID4gPiA+Pj4+PiBoYW5kbGluZyBkdXJpbmcgc3VzcGVuZC4gIEl0J3MgYmFkLCBidXQgdGhlIGhv
-dHBsdWcgc2hvdWxkIGJlIHN0aWxsCj4gPiA+ID4+Pj4+IGhhbmRsZWQgdmlhIG5vcm1hbCB1bnNv
-bCBldmVudCwgc28gaXQgc2hvdWxkIGtlZXAgd29ya2luZywgZ29vZCBlbm91Z2gKPiA+ID4gPj4+
-Pj4gYXMgYSBzdG9wIGdhcC4KPiA+ID4gPj4+Pj4KPiA+ID4gPj4+Pj4KPiA+ID4gPj4+Pj4gVGFr
-YXNoaQo+ID4gPiA+Pj4+Pgo+ID4gPiA+Pj4+PiAtLS0KPiA+ID4gPj4+Pj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMK
-PiA+ID4gPj4+Pj4gaW5kZXggYmRiNmYyMjZkMDA2Li5mN2M3MGUyYWU2NWMgMTAwNjQ0Cj4gPiA+
-ID4+Pj4+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCj4gPiA+ID4+Pj4+ICsrKyBi
-L3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCj4gPiA+ID4+Pj4+IEBAIC0zMyw2ICszMyw3IEBA
-Cj4gPiA+ID4+Pj4+ICAgICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgo+ID4gPiA+Pj4+PiAgICAj
-aW5jbHVkZSA8bGludXgvc2xhYi5oPgo+ID4gPiA+Pj4+PiAgICAjaW5jbHVkZSA8bGludXgvbW9k
-dWxlLmg+Cj4gPiA+ID4+Pj4+ICsjaW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPgo+ID4gPiA+
-Pj4+PiAgICAjaW5jbHVkZSA8c291bmQvY29yZS5oPgo+ID4gPiA+Pj4+PiAgICAjaW5jbHVkZSA8
-c291bmQvamFjay5oPgo+ID4gPiA+Pj4+PiAgICAjaW5jbHVkZSA8c291bmQvYXNvdW5kZWYuaD4K
-PiA+ID4gPj4+Pj4gQEAgLTIzNTIsNyArMjM1Myw5IEBAIHN0YXRpYyB2b2lkIGludGVsX3Bpbl9l
-bGRfbm90aWZ5KHZvaWQgKmF1ZGlvX3B0ciwgaW50Cj4gPiA+ID4+Pj4+IHBvcnQpCj4gPiA+ID4+
-Pj4+ICAgIAlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IGF1ZGlvX3B0cjsKPiA+ID4gPj4+Pj4g
-ICAgCWludCBwaW5fbmlkID0gcG9ydCArIDB4MDQ7Cj4gPiA+ID4+Pj4+Cj4gPiA+ID4+Pj4+IC0J
-Y2hlY2tfcHJlc2VuY2VfYW5kX3JlcG9ydChjb2RlYywgcGluX25pZCk7Cj4gPiA+ID4+Pj4+ICsJ
-aWYgKCFhdG9taWNfcmVhZCgmY29kZWMtPmNvcmUuaW5fcG0pICYmCj4gPiA+ID4+Pj4+ICsJICAg
-ICFwbV9ydW50aW1lX3N1c3BlbmRlZChoZGFfY29kZWNfZGV2KGNvZGVjKSkpCj4gPiA+ID4+Pj4+
-ICsJCWNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoY29kZWMsIHBpbl9uaWQpOwo+ID4gPiA+Pj4+
-PiAgICB9Cj4gPiA+ID4+Pj4+Cj4gPiA+ID4+Pj4+ICAgIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJp
-Y19oZG1pKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQo+ID4gPiA+Pj4+IFtaaGFuZywgWGlvbmcg
-WV0gIHRoaXMgcGF0Y2ggY291bGRuJ3QgcmVtb3ZlIHRoZSBlcnJvciBtZXNzYWdlLiBTbyBhdWRp
-byBjb250cm9sbGVyIGlzbid0IGluIFJ1bnRpbWUgRDMgYWZ0ZXIgYXp4X3N1c3BlbmQoKS4KPiA+
-ID4gPj4+Cj4gPiA+ID4+PiBPSywgdGhlbiB0aGUgcHJvYmxlbSBpc24ndCBhYm91dCB0aGUgSEQt
-YXVkaW8gZHJpdmVyIGJ1dCByYXRoZXIgaTkxNQo+ID4gPiA+Pj4gZHJpdmVyLiAgQXMgYWxyZWFk
-eSBtZW50aW9uZWQsIGk5MTUgZHJpdmVyIHNob3VsZG4ndCBpc3N1ZSBlbGRfbm90aWZ5Cj4gPiA+
-ID4+PiBjYWxsYmFjayBpbiB0aGUgc3VzcGVuZCBjb2RlIHBhdGguCj4gPiA+ID4+Cj4gPiA+ID4+
-IFdlIGRvbid0IGhhdmUgYSBjb21wbGV0ZSBkcm0gbG9nIHNvIEknbSBvbmx5IHNwZWN1bGF0aW5n
-IGhlcmU7IGJ1dCB0aGUKPiA+ID4gPj4gSERBIGxvZyBzZWVtcyB0byBpbmRpY2F0ZSB0aGUgcG93
-ZXIgd2VsbCBpcyBvZmYgd2hlbiB3ZSB0cnkgdG8gdGFsayB0bwo+ID4gPiA+PiB0aGUgSERBIGNv
-bnRyb2xsZXIuIFRoYXQgbWVhbnMgZWl0aGVyIHRoZSBpOTE1IHNodXQgaXQgZG93biB3aGlsZSB3
-ZQo+ID4gPiA+PiB3ZXJlIGhvbGRpbmcgYSBsb2NrIG9uIGl0LCBvciBIREEgdHJpZWQgdG8gbG9j
-ayBpdCBhbmQgdGhhdCBkaWRuJ3QgbWFrZQo+ID4gPiA+PiBpdCB0aHJvdWdoOyBpbiB3aGljaCBj
-YXNlIHRoZSBIREEgc2lkZSBzaG91bGQgaGFuZGxlIGFuIGVycm9yIGZyb20KPiA+ID4gPj4gZ2V0
-X3Bvd2VyIG1vcmUgZ3JhY2VmdWxseS4uLj8KPiA+ID4gPgo+ID4gPiA+IE15IHVuZGVyc3RhbmRp
-bmcgaXMgdGhhdCBpdCdzIHRyaWdnZXJlZCAqZHVyaW5nKiBpOTE1IHN1c3BlbmQuICBUaGVuCj4g
-PiA+ID4gdGhlIHBhdGggY2FsbHMgdGhlIEhEQSBjYWxsYmFjaywgYW5kIEhEQSBjb250cm9sbGVy
-IHRyaWVzIHRvIGdldCBwb3dlcgo+ID4gPiA+IGFuZCBwcm9jZWVkcyBhcyBpdCBoYXMgbm8gaWRl
-YSB0aGF0IGl0J3MgYmVpbmcgc2h1dCBvZmYuCj4gPiA+IAo+ID4gPiBXZWxsOyB0aGF0IGNhbiBh
-bHNvIGJlIHN0b3BwZWQgYnkgbGV0dGluZyB0aGUgZ2V0X3Bvd2VyIGNhbGwgcmV0dXJuIGEgCj4g
-PiA+IGZhaWx1cmUgY29kZSBpbiBjYXNlIGk5MTUgaXMgdHJ5aW5nIHRvIHN1c3BlbmQgaXRzZWxm
-LiBUaGF0IHNlZW1zIG1vcmUgCj4gPiA+IHJvYnVzdCB0byBtZSwgYXMgaXQgY291bGQgcG90ZW50
-aWFsbHkgYXZvaWQgb3RoZXIgUzMgcmFjZXMgdG9vLi4uPwo+ID4gPiAKPiA+ID4gPgo+ID4gPiA+
-IFVuZm9ydHVuYXRlbHksIG5laXRoZXIgZ2V0X3Bvd2VyIGNhbGxiYWNrIG9yIHRoZSBjb3JyZXNw
-b25kaW5nIEhEQQo+ID4gPiA+IGNvZGUgaGFzIGEgY2FwYWJpbGl0eSB0byBjaGVjayB0aGF0IHN0
-YXRlLiAgU28sIGNoYW5naW5nIC8gZml4aW5nIHRoaXMKPiA+ID4gPiB0aGVyZSB3b3VsZCBiZSBu
-aWNlIGJ1dCB2ZXJ5IGhhcmQuCj4gPiA+IAo+ID4gPiBTdXJlbHkgdGhlIGk5MTUgZHJpdmVyIGhh
-cyBzb21lICJhbV9pX3N1c3BlbmRpbmciIHZhcmlhYmxlIGl0IGNhbiBjaGVjayAKPiA+ID4gaW4g
-dGhlIGdldF9wb3dlciBjYWxsYmFjaz8KPiA+IAo+ID4gSSBkb24ndCB1bmRlcnN0YW5kIHdoeSB5
-b3UgbmVlZCB0byBkbyBhbnl0aGluZyBzcGVjaWFsLiBXaGVuIHRoZSBlbGQKPiA+IG5vdGlmeSBo
-YXBwZW5zIGR1cmluZyBzdXNwZW5kLCB0aGUgaGFyZHdhcmUgaXMgc3RpbGwgZnVsbHkgcG93ZXJl
-ZCB1cCwKPiA+IHNvIGl0IHNob3VsZCBqdXN0IHdvcmsodG0pIGFzIGxvbmcgYXMgdGhlIGVsZF9u
-b3RpZnkgaXMgYSBzeW5jaHJvbm91cwo+ID4gY2FsbCBhbmQgaXQgZHJvcHMgdGhlIHBvd2VyIHJl
-ZmVyZW5jZSBhdCB0aGUgZW5kLgo+IAo+IEhtLCB0aGF0J3MgdGhlIHF1ZXN0aW9uLiAgSXQncyBu
-ZXZlciBjbGVhciBzbyBmYXIgYXMgd2UgaGF2ZW4ndCBnb3QKPiBhbnkgZGV0YWlsZWQgbG9ncy4K
-PiAKPiBUaGUgc3ltcHRvbSBpbXBsaWVzIHRoYXQgdGhlIGdyYXBoaWNzIHNpZGUgaXMgb2ZmIHdo
-aWxlIEhEQSB0cmllcyB0bwo+IGV4ZWN1dGUgc29tZSB2ZXJicy4gIFNvIHRoZSBwb3dlciB3ZWxs
-IGlzIHRoZSBmaXJzdCBzdXNwZWN0LiAgV2UgcmVhbGwKPiBuZWVkIHRvIHRyYWNrIGRvd24gdGhl
-IGNvZGUgcGF0aCB0cmlnZ2VyaW5nIHRoZSBpc3N1ZS4KPiAKPiA+IEkgZ3Vlc3MgZm9yIGFueSBn
-ZXRfcG93ZXIgYWZ0ZXIgaTkxNSBoYXMgc3VzcGVuZGVkIHdlJ2QgbmVlZCB0byBqdXN0Cj4gPiBy
-ZWplY3QgdGhlIGdldF9wb3dlciBjYWxsLiBPciBkb2VzIHNvbWV0aGluZyBmb3JjZSBoZGEgdG8g
-c3VzcGVuZCBiZWZvcmUKPiA+IGFuZCByZXN1bWUgYWZ0ZXIgaTkxNSBhbHdheXM/Cj4gCj4gVGhl
-IEhEQSBjb2RlIGl0c2VsZiBjYWxscyBnZXRfcG93ZXIgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUg
-cmVzdW1lLgo+IEJ1dCBub3Qgc3VyZSB3aGV0aGVyIHRoaXMgc3VmZmljZXMgZm9yIHRoZSBleGVj
-dXRpb24gb3JkZXJpbmcuCgpKdXN0IGNoYXR0ZWQgd2l0aCBJbXJlIGEgYml0LCBhbmQgaGUgY2xh
-cmlmaWVkIHRoZSBzdXNwZW5kIG9yZGVyIHRoaW5nOgoKU28gd2hhdCBoYXBwZW5zIGlzIHRoYXQg
-dGhlIG5vcm1hbCBzdXNwZW5kIGhvb2tzIGZvciBoZGEgYW5kIGk5MTUgY2FuCmluIHRoZW9yeSBo
-YXBwZW4gaW4gYW55IG9yZGVyLiBCdXQgaTkxNSByZWFtYWlucyBwb3dlcmVkIG9uIHVudGlsIHRo
-ZQpsYXRlIHN1c3BlbmQgaG9vay4KClNvIHdlIGNhbiBnZXQKMS4gaTkxNSBzdXNwZW5kCjIuIGhk
-YSBzdXNwZW5kCjMuIGk5MTUgbGF0ZSBzdXNwZW5kCgpvciAKMS4gaGRhIHN1c3BlbmQKMi4gaTkx
-NSBzdXNwZW5kCjMuIGk5MTUgbGF0ZSBzdXNwZW5kCgpTbyBpbiB0aGlzIGxhdHRlciBjYXNlIGk5
-MTUgY2FuIGNhbGwgdGhlIGVsZCBub3RpZnkgaG9vayBhZnRlciBoZGEgaGFzCmFscmVhZHkgc3Vz
-cGVuZGVkLiBTbyB0aGF0IGF0IGxlYXN0IHlvdSB3b3VsZCBuZWVkIHRvIGhhbmRsZSBpbiB5b3Vy
-CnNpZGUuCgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVs
-LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Thu, Nov 26, 2015 at 12:46:24PM +0100, Takashi Iwai wrote:
+
+> > Sorry it a oops, paging request failure and not a panic
+> > 
+> > > > Your second point is applicable here as card instantiation is delayed often
+> > > > for us as all components may not be present and delayed probe finally
+> > > > creates the card.
+> > > > 
+> > > > > > Issue is caught with id#87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1
+> > > > > 
+> > > > > You should put the commit subject, too.
+> > > > 
+> > > > Yes we will add that
+> > > > 
+> > > > > > So create a copy of the memory and assign to names instead.
+> > > > > 
+> > > > > And who releases these duplicated memory?  It looks like another
+> > > > > memory leak to me.
+> > > > 
+> > > > That is a good point and I think we should do devm_kstrdup() here so that
+> > > > this is freed when we cleanup the device, or do you have any better
+> > > > suggestion ?
+> > > 
+> > > devm_kstrdup() is bad in this case.  You can reload the topology
+> > > unlimitedly, and the memory won't be freed until the device unbind,
+> > > thus it keeps hogging.
+> > > 
+> > > You really need to identify which path hits the issue exactly how.  In
+> > > general, the string passed to template is only for creating the kctl.
+> > > Once when kctl is created, the whole snd_kcontrol_new template and the
+> > > allocated string is no use, so they can be freed.
+> > 
+> > but then question of where should these be freed. For current drivers they
+> > declare controls statically, so memory is always there.. How do free up in
+> > the cases where we allocate dynamically?
+> 
+> Well, for judging this, we have to follow the code more closely.  And
+> it's why I asked which path does it happen exactly.
+> 
+> There are two different paths where the snd_kcontrol_new is used: the
+> standard controls and dapm.  The former is immediately instantiated
+> via snd_soc_cnew(), so it's fine as is, no need to change.  But the
+> latter is different.
+> 
+> The latter, dapm case, always allocates the snd_kcontrol_new array in
+> kcontrol_news field.  So, we need to change in each function
+> allocating this to do kstrdump() for each kcontrol_new element, and
+> each place calling kfree() of kcontrol_news should free the string of
+> each item in return.
+
+It is the latter dapm case with added complexity of topology core creating
+these kcontrols. I will reproduce this and send the oops tomorrow
+
+-- 
+~Vinod
