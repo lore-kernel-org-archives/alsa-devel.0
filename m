@@ -1,18 +1,18 @@
 From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [PATCH v2 5/6] ASoC: fsl_ssi: Fix channel slipping in
-	Playback at startup
-Date: Thu, 26 Nov 2015 16:05:40 +0100
-Message-ID: <1448550341-11765-6-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: [PATCH v2 6/6] ASoC: fsl_ssi: Fix channel slipping on
+	capture (or playback) restart in full duplex.
+Date: Thu, 26 Nov 2015 16:05:41 +0100
+Message-ID: <1448550341-11765-7-git-send-email-arnaud.mouiche@invoxia.com>
 References: <1448550341-11765-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 87AF12606F6
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 16:06:14 +0100 (CET)
-Received: by wmec201 with SMTP id c201so25968209wme.1
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 07:06:14 -0800 (PST)
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 355D7261A8C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 16:06:15 +0100 (CET)
+Received: by wmec201 with SMTP id c201so35188306wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 07:06:15 -0800 (PST)
 In-Reply-To: <1448550341-11765-1-git-send-email-arnaud.mouiche@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,63 +27,48 @@ To: Caleb Crome <caleb@crome.org>, Roberto Fichera <kernel@tekno-soft.it>, Marku
 Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously, SCR.SSIEN and SCR.TE were enabled at once if no capture
-stream was also running.
-This may not give a chance for the DMA to write the first sample in
-TX FIFO before the streaming starts on the PCM bus, inserting void
-samples first.
-Those void samples are then responsible for slipping the channels.
+Happened when the Playback (or Capture) is running continuously
+and Capture (or Playback) is restarted (xrun, manual stop/start...)
+
+Since the RX (or TX) FIFO are only reset when the whole SSI is disabled,
+pending samples from previous capture (or playback) session may still
+be present. They must be erased to not introduce channel slipping.
+
+FIFO Clear register fields are documented in IMX51, IMX35 reference manual.
+They are not documented in IMX50 or IMX6 RM, despite they are
+working as expected on IMX6SL.
 
 Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 78ea6e1..9d5c677 100644
+index 9d5c677..0fd548e 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -436,8 +436,40 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
- 
- config_done:
- 	/* Enabling of subunits is done after configuration */
--	if (enable)
-+	if (enable) {
-+		if (ssi_private->use_dma && (vals->scr & CCSR_SSI_SCR_TE)) {
-+			/*
-+			 * Be sure the Tx FIFO is filled when TE is set.
-+			 * Otherwise, there are some chances to start the
-+			 * playback with some void samples inserted first,
-+			 * generating a channel slip.
-+			 *
-+			 * First, SSIEN must be set, to let the FIFO be filled.
-+			 *
-+			 * Notes:
-+			 * - Limit this fix to the DMA case until FIQ cases can
-+			 *   be tested.
-+			 * - Limit the length of the busy loop to not lock the
-+			 *   system too long, even if 1-2 loops are sufficient
-+			 *   in general.
-+			 */
-+			int i;
-+			int max_loop = 100;
-+			regmap_update_bits(regs, CCSR_SSI_SCR,
-+					CCSR_SSI_SCR_SSIEN, CCSR_SSI_SCR_SSIEN);
-+			for (i = 0; i < max_loop; i++) {
-+				u32 sfcsr;
-+				regmap_read(regs, CCSR_SSI_SFCSR, &sfcsr);
-+				if (CCSR_SSI_SFCSR_TFCNT0(sfcsr))
-+					break;
-+			}
-+			if (i == max_loop) {
-+				dev_err(ssi_private->dev,
-+					"Timeout waiting TX FIFO filling\n");
-+			}
+@@ -404,6 +404,22 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	 * (online configuration)
+ 	 */
+ 	if (enable) {
++		/*
++		 * Clear RX or TX FIFO to remove samples from the previous
++		 * stream session which may be still present in the FIFO and
++		 * may introduce bad samples and/or channel slipping.
++		 *
++		 * Note: The SOR is not documented in recent IMX datasheet, but
++		 * is described in IMX51 reference manual at section 56.3.3.15.
++		 */
++		if (vals->scr & CCSR_SSI_SCR_RE) {
++			regmap_update_bits(regs, CCSR_SSI_SOR,
++				CCSR_SSI_SOR_RX_CLR, CCSR_SSI_SOR_RX_CLR);
++		} else {
++			regmap_update_bits(regs, CCSR_SSI_SOR,
++				CCSR_SSI_SOR_TX_CLR, CCSR_SSI_SOR_TX_CLR);
 +		}
- 		regmap_update_bits(regs, CCSR_SSI_SCR, vals->scr, vals->scr);
-+	}
- }
- 
- 
++
+ 		regmap_update_bits(regs, CCSR_SSI_SRCR, vals->srcr, vals->srcr);
+ 		regmap_update_bits(regs, CCSR_SSI_STCR, vals->stcr, vals->stcr);
+ 		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
 -- 
 1.9.1
