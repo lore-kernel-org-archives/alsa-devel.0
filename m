@@ -1,17 +1,18 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH v2] ASoC: hdac_hdmi: convert num_nodes to int
-Date: Thu, 26 Nov 2015 13:38:19 +0530
-Message-ID: <1448525299-7011-1-git-send-email-sudipm.mukherjee@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 0/2] ALSA: compress: Add procfs info
+ file for compressed nodes
+Date: Thu, 26 Nov 2015 13:53:05 +0530
+Message-ID: <20151126082305.GI25173@localhost>
+References: <1448456424-6794-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f171.google.com (mail-io0-f171.google.com
- [209.85.223.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 31AED264F23
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 09:08:30 +0100 (CET)
-Received: by ioir85 with SMTP id r85so78558817ioi.1
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 00:08:29 -0800 (PST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id D57412665A0
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 09:19:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1448456424-6794-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-All uses of num_nodes are considering it as a signed integer and that is
-very much clear when we try to save the error value in it and later try
-to compare it with less than 0.
+On Wed, Nov 25, 2015 at 01:00:22PM +0000, Richard Fitzgerald wrote:
+> This updates the compress core code to create an 'info' file under procfs
+> for each compressed node, like the PCM core does for PCM nodes.
+> 
+> Based off Takashi's for-next
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- include/sound/hdaudio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good to me..
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index e2b712c..c5fad14 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -71,7 +71,7 @@ struct hdac_device {
- 			 unsigned int flags, unsigned int *res);
- 
- 	/* widgets */
--	unsigned int num_nodes;
-+	int num_nodes;
- 	hda_nid_t start_nid, end_nid;
- 
- 	/* misc flags */
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
 -- 
-1.9.1
+~Vinod
