@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rcar: remove unused variable
-Date: Thu, 26 Nov 2015 01:05:58 +0000
-Message-ID: <20151126010558.GX1929@sirena.org.uk>
-References: <4929159.b95vLdVRYU@wuerfel>
- <878u5m8ut0.wl%kuninori.morimoto.gx@renesas.com>
- <4083363.2bJPz8BMy4@wuerfel>
- <87ziy1d4j8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: Atmel: ClassD: add GCK's parent
+	clock in DT binding
+Date: Thu, 26 Nov 2015 01:06:41 +0000
+Message-ID: <20151126010641.GY1929@sirena.org.uk>
+References: <1448270399-28728-1-git-send-email-songjun.wu@atmel.com>
+ <20151125234524.GA16553@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2799142645992322334=="
+Content-Type: multipart/mixed; boundary="===============2083809360520250719=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E4F126147A
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 02:06:11 +0100 (CET)
-In-Reply-To: <87ziy1d4j8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 066392665A0
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 02:06:53 +0100 (CET)
+In-Reply-To: <20151125234524.GA16553@rob-hp-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Songjun Wu <songjun.wu@atmel.com>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2799142645992322334==
+--===============2083809360520250719==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JMKEfAmnQy+WzDHS"
+	protocol="application/pgp-signature"; boundary="VIFPKPeEU/ajvd6j"
 Content-Disposition: inline
 
 
---JMKEfAmnQy+WzDHS
+--VIFPKPeEU/ajvd6j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 25, 2015 at 11:54:06PM +0000, Kuninori Morimoto wrote:
+On Wed, Nov 25, 2015 at 05:45:24PM -0600, Rob Herring wrote:
+> On Mon, Nov 23, 2015 at 05:19:58PM +0800, Songjun Wu wrote:
+> > Set GCK's parent as audio clock.
 
-> It is possible to remove this patch from topic/rcar,
-> and, apply it to topic/pcm-list ?
+> > Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 
-> ccae40fa973f5b0eec5d5ad27e81c5a2b95f7b7c
-> (" ASoC: rcar: remove unused variable")
+> Applied, thanks.
 
-I did that already.
+I already applied this to the ASoC tree.
 
---JMKEfAmnQy+WzDHS
+--VIFPKPeEU/ajvd6j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWVlr1AAoJECTWi3JdVIfQmP0H/0CpCx3+H8HPHBkVZG0OUVJk
-q6K2oEvFS/+XiiWCQLpUj1SmF3CgxFUoCZH2l10i8Z27ie+o7khgbgZ4QGhdQAE9
-1ZPWuL4txqk2ABQnMkVmBHAGGmrDyMjOT/l3HV/9FpjQI7xl4xOQFoRkzrzR4pXK
-yvTzaqgoiuQhc5QsEQi5TPccS5LAWw1Eav/uHTyB2JH+KeAYt+eVpjEBj1JLeC0H
-I2fdvLclFwrhTI99XKu6m5GAfY65ZoxknDSJwOpVVPxjKUhtLodfXAN6l7jakJZy
-EDOEW03lfAvT5W99qzs67ysUe37X8ZTLEkG54Xm3N4DYODYEY2CIo4TaO0OoiaY=
-=hmb5
+iQEcBAEBCAAGBQJWVlsgAAoJECTWi3JdVIfQ7HMH/347uWTYpkv0deCfduGCPymK
+iK3mEDHgy3oE0fXTPWJs3UOubeL3qUDLaZxu6rKkOUi9T0bkjR064Mzi8cpuNKPQ
+aNVnfSUvk0vVpH218PaxIeO8SzcwFTSYR5CwjFaskv9xHZsEzd8UfKEvhWNYR7l6
+xx756CAdWlSHTFhHjl3THFAOOHA+m4bLxDaAkK6stkJi0GKT2ZWv07UaL1akp9wF
+xrj+hii8SVgjqTJBmOGR8XTYGorQCi5p+zFTLVJahoITV8ielMGM8+mxbPaXglSj
+6KYNnAowbySInJpGxFJ46M2cEv1X710cyk5FZRmUR+ZTeLWtjsW/T7cWOLneb2Y=
+=AqsY
 -----END PGP SIGNATURE-----
 
---JMKEfAmnQy+WzDHS--
+--VIFPKPeEU/ajvd6j--
 
---===============2799142645992322334==
+--===============2083809360520250719==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2799142645992322334==--
+--===============2083809360520250719==--
