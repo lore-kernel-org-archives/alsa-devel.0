@@ -1,85 +1,89 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
- pin/ELD notify events
-Date: Thu, 26 Nov 2015 16:08:06 +0100
-Message-ID: <56572056.6090805@canonical.com>
-References: <1440781350-12053-1-git-send-email-david.henningsson@canonical.com>
- <1440781350-12053-5-git-send-email-david.henningsson@canonical.com>
- <8082FF9BCB2B054996454E47167FF4EC0B0F19F8@SHSMSX104.ccr.corp.intel.com>
- <s5hmvu2ie86.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F1AE8@SHSMSX104.ccr.corp.intel.com>
- <s5hbnaiiazu.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2834@SHSMSX104.ccr.corp.intel.com>
- <s5hmvu18efr.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2951@SHSMSX104.ccr.corp.intel.com>
- <s5hwpt56v62.wl-tiwai@suse.de>
- <8082FF9BCB2B054996454E47167FF4EC0B0F2A4D@SHSMSX104.ccr.corp.intel.com>
- <s5hh9k96rku.wl-tiwai@suse.de>
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: [PATCH v2 5/6] ASoC: fsl_ssi: Fix channel slipping in
+	Playback at startup
+Date: Thu, 26 Nov 2015 16:05:40 +0100
+Message-ID: <1448550341-11765-6-git-send-email-arnaud.mouiche@invoxia.com>
+References: <1448550341-11765-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hh9k96rku.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, "Zhang, Xiong Y" <xiong.y.zhang@intel.com>
-Cc: "Vetter, Daniel" <daniel.vetter@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87AF12606F6
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 16:06:14 +0100 (CET)
+Received: by wmec201 with SMTP id c201so25968209wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2015 07:06:14 -0800 (PST)
+In-Reply-To: <1448550341-11765-1-git-send-email-arnaud.mouiche@invoxia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Caleb Crome <caleb@crome.org>, Roberto Fichera <kernel@tekno-soft.it>, Markus Pargmann <mpa@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTExLTI2IDEwOjI0LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAyNiBO
-b3YgMjAxNSAxMDoxNjoxNyArMDEwMCwKPiBaaGFuZywgWGlvbmcgWSB3cm90ZToKPj4KPj4KPj4+
-IE9uIFRodSwgMjYgTm92IDIwMTUgMDg6NTc6MzAgKzAxMDAsCj4+PiBaaGFuZywgWGlvbmcgWSB3
-cm90ZToKPj4+Pgo+Pj4+Pj4+IEJUVywgSSBoYXZlIGEgcGF0Y2hzZXQgdG8gYXZvaWQgdGhlIGF1
-ZGlvIGgvdyB3YWtldXAgYnkgYSBuZXcKPj4+Pj4+PiBjb21wb25lbnQgb3BzIHRvIGdldCBFTEQg
-YW5kIGNvbm5lY3Rpb24gc3RhdGVzLiAgSXQgd2FzIHBvc3RlZCB0bwo+Pj4+Pj4+IGFsc2EtZGV2
-ZWwgc2hvcnRseSBhZ28ganVzdCBhcyBhIHJlZmVyZW5jZSwgYnV0IHRoaXMgc2hvdWxkIHdvcmsg
-d2VsbAo+Pj4+Pj4+IGluIHN1Y2ggYSBjYXNlLCB0b28uICBUaGUgdGVzdCBwYXRjaGVzIGFyZSBm
-b3VuZCBpbiB0ZXN0L2hkbWktamFjawo+Pj4+Pj4+IGJyYW5jaCBvZiBteSBzb3VuZCBnaXQgdHJl
-ZS4KPj4+Pj4KPj4+Pj4gRGlkIHlvdSB0cnkgdGhpcyBicmFuY2ggKG1lcmdlIG9udG8gaW50ZWwt
-dGVzdC1uaWdodGx5KT8KPj4+Pj4KPj4+PiBbWmhhbmcsIFhpb25nIFldIFllcywgdGhpcyBicmFu
-Y2ggY291bGQgZml4IG15IGlzc3VlLgo+Pj4KPj4+IE9LLCBnb29kIHRvIGhlYXIuICBCdXQgdGhp
-cyBpc24ndCBmb3IgNC40IG9yIGJhY2twb3J0LCBhcyBpdCdzIG1vcmUKPj4+IHJhZGljYWwgY2hh
-bmdlcy4KPj4+Cj4+PiBDb3VsZCB5b3UgY2hlY2sgdGhlIHBhdGNoIGJlbG93IGluc3RlYWQ/ICBU
-aGlzIHN1cHByZXNzZXMgdGhlIG5vdGlmaWVyCj4+PiBoYW5kbGluZyBkdXJpbmcgc3VzcGVuZC4g
-IEl0J3MgYmFkLCBidXQgdGhlIGhvdHBsdWcgc2hvdWxkIGJlIHN0aWxsCj4+PiBoYW5kbGVkIHZp
-YSBub3JtYWwgdW5zb2wgZXZlbnQsIHNvIGl0IHNob3VsZCBrZWVwIHdvcmtpbmcsIGdvb2QgZW5v
-dWdoCj4+PiBhcyBhIHN0b3AgZ2FwLgo+Pj4KPj4+Cj4+PiBUYWthc2hpCj4+Pgo+Pj4gLS0tCj4+
-PiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRh
-L3BhdGNoX2hkbWkuYwo+Pj4gaW5kZXggYmRiNmYyMjZkMDA2Li5mN2M3MGUyYWU2NWMgMTAwNjQ0
-Cj4+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+Pj4gKysrIGIvc291bmQvcGNp
-L2hkYS9wYXRjaF9oZG1pLmMKPj4+IEBAIC0zMyw2ICszMyw3IEBACj4+PiAgICNpbmNsdWRlIDxs
-aW51eC9kZWxheS5oPgo+Pj4gICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPgo+Pj4gICAjaW5jbHVk
-ZSA8bGludXgvbW9kdWxlLmg+Cj4+PiArI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4KPj4+
-ICAgI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KPj4+ICAgI2luY2x1ZGUgPHNvdW5kL2phY2suaD4K
-Pj4+ICAgI2luY2x1ZGUgPHNvdW5kL2Fzb3VuZGVmLmg+Cj4+PiBAQCAtMjM1Miw3ICsyMzUzLDkg
-QEAgc3RhdGljIHZvaWQgaW50ZWxfcGluX2VsZF9ub3RpZnkodm9pZCAqYXVkaW9fcHRyLCBpbnQK
-Pj4+IHBvcnQpCj4+PiAgIAlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IGF1ZGlvX3B0cjsKPj4+
-ICAgCWludCBwaW5fbmlkID0gcG9ydCArIDB4MDQ7Cj4+Pgo+Pj4gLQljaGVja19wcmVzZW5jZV9h
-bmRfcmVwb3J0KGNvZGVjLCBwaW5fbmlkKTsKPj4+ICsJaWYgKCFhdG9taWNfcmVhZCgmY29kZWMt
-PmNvcmUuaW5fcG0pICYmCj4+PiArCSAgICAhcG1fcnVudGltZV9zdXNwZW5kZWQoaGRhX2NvZGVj
-X2Rldihjb2RlYykpKQo+Pj4gKwkJY2hlY2tfcHJlc2VuY2VfYW5kX3JlcG9ydChjb2RlYywgcGlu
-X25pZCk7Cj4+PiAgIH0KPj4+Cj4+PiAgIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0
-cnVjdCBoZGFfY29kZWMgKmNvZGVjKQo+PiBbWmhhbmcsIFhpb25nIFldICB0aGlzIHBhdGNoIGNv
-dWxkbid0IHJlbW92ZSB0aGUgZXJyb3IgbWVzc2FnZS4gU28gYXVkaW8gY29udHJvbGxlciBpc24n
-dCBpbiBSdW50aW1lIEQzIGFmdGVyIGF6eF9zdXNwZW5kKCkuCj4KPiBPSywgdGhlbiB0aGUgcHJv
-YmxlbSBpc24ndCBhYm91dCB0aGUgSEQtYXVkaW8gZHJpdmVyIGJ1dCByYXRoZXIgaTkxNQo+IGRy
-aXZlci4gIEFzIGFscmVhZHkgbWVudGlvbmVkLCBpOTE1IGRyaXZlciBzaG91bGRuJ3QgaXNzdWUg
-ZWxkX25vdGlmeQo+IGNhbGxiYWNrIGluIHRoZSBzdXNwZW5kIGNvZGUgcGF0aC4KCldlIGRvbid0
-IGhhdmUgYSBjb21wbGV0ZSBkcm0gbG9nIHNvIEknbSBvbmx5IHNwZWN1bGF0aW5nIGhlcmU7IGJ1
-dCB0aGUgCkhEQSBsb2cgc2VlbXMgdG8gaW5kaWNhdGUgdGhlIHBvd2VyIHdlbGwgaXMgb2ZmIHdo
-ZW4gd2UgdHJ5IHRvIHRhbGsgdG8gCnRoZSBIREEgY29udHJvbGxlci4gVGhhdCBtZWFucyBlaXRo
-ZXIgdGhlIGk5MTUgc2h1dCBpdCBkb3duIHdoaWxlIHdlIAp3ZXJlIGhvbGRpbmcgYSBsb2NrIG9u
-IGl0LCBvciBIREEgdHJpZWQgdG8gbG9jayBpdCBhbmQgdGhhdCBkaWRuJ3QgbWFrZSAKaXQgdGhy
-b3VnaDsgaW4gd2hpY2ggY2FzZSB0aGUgSERBIHNpZGUgc2hvdWxkIGhhbmRsZSBhbiBlcnJvciBm
-cm9tIApnZXRfcG93ZXIgbW9yZSBncmFjZWZ1bGx5Li4uPwoKCi0tIApEYXZpZCBIZW5uaW5nc3Nv
-biwgQ2Fub25pY2FsIEx0ZC4KaHR0cHM6Ly9sYXVuY2hwYWQubmV0L35kaXdpYwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
-aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Previously, SCR.SSIEN and SCR.TE were enabled at once if no capture
+stream was also running.
+This may not give a chance for the DMA to write the first sample in
+TX FIFO before the streaming starts on the PCM bus, inserting void
+samples first.
+Those void samples are then responsible for slipping the channels.
+
+Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 34 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 78ea6e1..9d5c677 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -436,8 +436,40 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 
+ config_done:
+ 	/* Enabling of subunits is done after configuration */
+-	if (enable)
++	if (enable) {
++		if (ssi_private->use_dma && (vals->scr & CCSR_SSI_SCR_TE)) {
++			/*
++			 * Be sure the Tx FIFO is filled when TE is set.
++			 * Otherwise, there are some chances to start the
++			 * playback with some void samples inserted first,
++			 * generating a channel slip.
++			 *
++			 * First, SSIEN must be set, to let the FIFO be filled.
++			 *
++			 * Notes:
++			 * - Limit this fix to the DMA case until FIQ cases can
++			 *   be tested.
++			 * - Limit the length of the busy loop to not lock the
++			 *   system too long, even if 1-2 loops are sufficient
++			 *   in general.
++			 */
++			int i;
++			int max_loop = 100;
++			regmap_update_bits(regs, CCSR_SSI_SCR,
++					CCSR_SSI_SCR_SSIEN, CCSR_SSI_SCR_SSIEN);
++			for (i = 0; i < max_loop; i++) {
++				u32 sfcsr;
++				regmap_read(regs, CCSR_SSI_SFCSR, &sfcsr);
++				if (CCSR_SSI_SFCSR_TFCNT0(sfcsr))
++					break;
++			}
++			if (i == max_loop) {
++				dev_err(ssi_private->dev,
++					"Timeout waiting TX FIFO filling\n");
++			}
++		}
+ 		regmap_update_bits(regs, CCSR_SSI_SCR, vals->scr, vals->scr);
++	}
+ }
+ 
+ 
+-- 
+1.9.1
