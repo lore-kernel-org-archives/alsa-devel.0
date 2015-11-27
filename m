@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: pcm3168a: Add driver for
- pcm3168a codec
-Date: Fri, 27 Nov 2015 12:54:11 +0000
-Message-ID: <20151127125411.GR1929@sirena.org.uk>
-References: <1448376224-23964-3-git-send-email-Damien.Horsley@imgtec.com>
+Subject: Applied "ASoC: rsnd: tidyup semantics of
+	rsnd_ssi_record_error()" to the asoc tree
+Date: Fri, 27 Nov 2015 12:55:41 +0000
+Message-ID: <E1a2IYv-0005qZ-Gr@debutante>
+References: <87d1vejvyr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5429099748730146566=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CA25F2608ED
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:54:31 +0100 (CET)
-In-Reply-To: <1448376224-23964-3-git-send-email-Damien.Horsley@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 511F52610A7
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:55:46 +0100 (CET)
+In-Reply-To: <87d1vejvyr.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,136 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Horsley <Damien.Horsley@imgtec.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Kumar Gala <galak@codeaurora.org>, Charles Keepax <ckeepax@gmail.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, James Hartley <james.hartley@imgtec.com>, Thomas Niederprum <niederp@physik.uni-kl.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5429099748730146566==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="J/rMgauiyHIRVABE"
-Content-Disposition: inline
+   ASoC: rsnd: tidyup semantics of rsnd_ssi_record_error()
 
+has been applied to the asoc tree at
 
---J/rMgauiyHIRVABE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Nov 24, 2015 at 02:43:44PM +0000, Damien Horsley wrote:
-> From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
->=20
-> Add driver for Texas Instruments pcm3168a codec
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please try to keep your CC lists reasonable - only CC people who have an
-interest in the patch you're posting.  The CC list you have here is far
-too broad, I can't figure out why a lot of the people there ended up
-there.  If you've got 10 people that's generally a warning sign.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Overall this looks good but there are a few smallish issues below:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +	if ((!slave_mode || (fmt & PCM3168A_FMT_DSP_MASK)) &&
-> +			(format =3D=3D SNDRV_PCM_FORMAT_S24_3LE)) {
-> +		dev_err(codec->dev, "48-bit frames not supported in master mode or sla=
-ve mode using DSP(A/B)\n");
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-You've got a lot of weird indentation with the second line of multi-line
-if conditionals massively further indented than I'd expect.  These
-conditionals all also seem more complex than they should be - the fact
-that you're using so many !slave_modes makes me think that you should
-have a flag for master mode and...
+Thanks,
+Mark
 
-> +	if ((!slave_mode || ((fmt !=3D PCM3168A_FMT_RIGHT_J) &&
-> +			(fmt !=3D PCM3168A_FMT_LEFT_J))) &&
-> +			(format =3D=3D SNDRV_PCM_FORMAT_S16)) {
+>From 5342dff23263933060d0485cece864f36c0b5d32 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 26 Nov 2015 11:13:40 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup semantics of rsnd_ssi_record_error()
 
-=2E..especially with things like this the indentation makes it hard to
-tell what bits go together.
+rsnd_ssi_record_error() should recorde error, but it clears error too.
+this patch fixes up semantic of rsnd_ssi_record_error that it records
+error but doesn't clear error.
 
-> +	val =3D slave_mode ? 0 : ((i + 1) << shift);
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ssi.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Please write normal if statements unless there's a strong reason to use
-the ternery operator.
-
-> +	/*
-> +	 * Justification has no effect for S32 and S16 as the whole frame
-> +	 * is filled with the samples, but the register field
-> +	 * must be set to a specific value for correct operation
-> +	 */
-> +	if ((fmt =3D=3D PCM3168A_FMT_RIGHT_J) &&
-> +			(format =3D=3D SNDRV_PCM_FORMAT_S32)) {
-> +		fmt =3D PCM3168A_FMT_LEFT_J;
-> +	} else if (format =3D=3D SNDRV_PCM_FORMAT_S16) {
-> +		fmt =3D PCM3168A_FMT_RIGHT_J_16;
-> +	}
-
-Being in right justified mode *does* have an effect - it changes where
-the audio data starts relative to LRCLK.  It is true that if the frame
-has exactly the right number of clocks left and right justified are
-identical but extra clocks are in general permitted so it looks like
-your right justified case above just isn't something the device really
-supports.
-
-> +	pcm3168a->scki =3D devm_clk_get(dev, "scki");
-> +	if (IS_ERR(pcm3168a->scki)) {
-> +		if (PTR_ERR(pcm3168a->scki) !=3D -EPROBE_DEFER)
-> +			dev_err(dev, "failed to acquire clock 'scki'\n");
-
-Please print the error code as well, it may help people understand the
-problem.
-
-> +	ret =3D snd_soc_register_codec(dev, &pcm3168a_driver, pcm3168a_dais,
-> +			ARRAY_SIZE(pcm3168a_dais));
-> +	if (ret) {
-> +		dev_err(dev, "failed to register codec: %d\n", ret);
-> +		goto err_regulator;
-> +	}
-> +
-> +	pm_runtime_set_active(dev);
-> +	pm_runtime_enable(dev);
-> +	pm_runtime_idle(dev);
-
-You should enable runtime PM before registering the CODEC since the core
-can do runtime PM operations and if it tries before runtime PM is
-enabled things will get unbalanced.
-
-> +#define PCM3168A_DOUBLE_STS(xname, reg, shift_left, shift_right, max, in=
-vert) \
-> +{									\
-> +	.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER, .name =3D (xname),		\
-> +	.info =3D snd_soc_info_volsw, .get =3D snd_soc_get_volsw,		\
-> +	.put =3D snd_soc_put_volsw,					\
-> +	.access =3D SNDRV_CTL_ELEM_ACCESS_READ |				\
-> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE,				\
-> +	.private_value =3D SOC_DOUBLE_VALUE(reg, shift_left, shift_right,	\
-> +	max, invert, 0)							\
-> +}
-
-This doesn't look like it should be driver specific - what's driver
-specific about it?
-
---J/rMgauiyHIRVABE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWWFJyAAoJECTWi3JdVIfQm2QH/1LX1P27caTJ90CDeok58Q3i
-oVhsbqFypIf0JCGwouVIEkQDtWbIDaI1BTOFwyBAApZF3ZXRgO9IZ8qkkSxeI/A9
-Xbxso4nVvWe7MdU4cUS4aS3/pVfwPbekCISG5fTbO3CDnmDKkpK4COyXamIV+/5W
-lBgj41bjjcNhV8d4PUS6mT7aGfGa+0BsGTLTkJUZB1RXOwaE2HNioapLEXtvjzR1
-wRnH5sSJpu4WY4WoGaM+JScOo3k82h8YHcIVF7hGbkhCh/HNwLcWGQ2+3HeniNkz
-yKBChaAiiLfOfeA4iLdZKm7b3nhN2SafYqXd9WULeMNDSsfz4vA8OBnMGHJ7Emo=
-=fnGC
------END PGP SIGNATURE-----
-
---J/rMgauiyHIRVABE--
-
---===============5429099748730146566==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5429099748730146566==--
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 0fe5e3068b6b..40d5b587cbe9 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -396,13 +396,9 @@ static u32 rsnd_ssi_record_error(struct rsnd_ssi *ssi)
+ 	u32 status = rsnd_ssi_status_get(mod);
+ 
+ 	/* under/over flow error */
+-	if (status & (UIRQ | OIRQ)) {
++	if (status & (UIRQ | OIRQ))
+ 		ssi->err++;
+ 
+-		/* clear error status */
+-		rsnd_ssi_status_clear(mod);
+-	}
+-
+ 	return status;
+ }
+ 
+@@ -537,6 +533,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ 
++	rsnd_ssi_status_clear(mod);
+ rsnd_ssi_interrupt_out:
+ 	spin_unlock(&priv->lock);
+ 
+-- 
+2.6.2
