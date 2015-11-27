@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup semantics of
-	rsnd_src_record_error()" to the asoc tree
-Date: Fri, 27 Nov 2015 12:55:42 +0000
-Message-ID: <E1a2IYw-0005r4-EU@debutante>
-References: <87a8q1c91t.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: indicate register name for debug"
+	to the asoc tree
+Date: Fri, 27 Nov 2015 12:55:43 +0000
+Message-ID: <E1a2IYx-0005rY-CD@debutante>
+References: <87fuztcg05.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 15C03261B31
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:55:47 +0100 (CET)
-In-Reply-To: <87a8q1c91t.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BD1B264FBB
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:55:48 +0100 (CET)
+In-Reply-To: <87fuztcg05.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup semantics of rsnd_src_record_error()
+   ASoC: rsnd: indicate register name for debug
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,193 @@ to this mail.
 Thanks,
 Mark
 
->From 8cc225f713a42eab098d51a4353998db979f0f8a Mon Sep 17 00:00:00 2001
+>From 0719ecf7cb86cb7b6012baa0b329063d67dca670 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 26 Nov 2015 11:11:03 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup semantics of rsnd_src_record_error()
+Date: Thu, 26 Nov 2015 08:43:59 +0000
+Subject: [PATCH] ASoC: rsnd: indicate register name for debug
 
-rsnd_src_error_record() should recorde error, but it clears error too.
-this patch fixes up semantic of rsnd_src_error_record that it records
-error but doesn't clear error.
-And this patch renames
-rsnd_src_error_clear()  to rsnd_src_status_clear()
-rsnd_src_error_record() to rsnd_src_record_error()
+Current rsnd driver is indicating how to use regmap debug method
+on gen.c comment area.
+regmap debug method indicates address and value, but rsnd driver is
+using too many IPs (SSI/SSIU/SRC/CTU/MIX/DVC/CMD), and address.
+Thus, we would like to know more useful information for debugging.
+This patch indicates address name for debugging.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/gen.c | 52 +++++++++++++++++++++++++++++--------------------
+ 1 file changed, 31 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index c103aa775e96..6d93c4ed8275 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -300,7 +300,7 @@ static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
- 	rsnd_mod_bset(mod, SCU_SYS_INT_EN1, sys_int_mask, sys_int_val);
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 84f8bb223439..15d770662482 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -31,29 +31,33 @@ struct rsnd_gen {
+ 
+ 	/* RSND_REG_MAX base */
+ 	struct regmap_field *regs[RSND_REG_MAX];
++	const char *reg_name[RSND_REG_MAX];
+ };
+ 
+ #define rsnd_priv_to_gen(p)	((struct rsnd_gen *)(p)->gen)
++#define rsnd_reg_name(gen, id)	((gen)->reg_name[id])
+ 
+ struct rsnd_regmap_field_conf {
+ 	int idx;
+ 	unsigned int reg_offset;
+ 	unsigned int id_offset;
++	const char *reg_name;
+ };
+ 
+-#define RSND_REG_SET(id, offset, _id_offset)	\
++#define RSND_REG_SET(id, offset, _id_offset, n)	\
+ {						\
+ 	.idx = id,				\
+ 	.reg_offset = offset,			\
+ 	.id_offset = _id_offset,		\
++	.reg_name = n,				\
  }
+ /* single address mapping */
+ #define RSND_GEN_S_REG(id, offset)	\
+-	RSND_REG_SET(RSND_REG_##id, offset, 0)
++	RSND_REG_SET(RSND_REG_##id, offset, 0, #id)
  
--static void rsnd_src_error_clear(struct rsnd_mod *mod)
-+static void rsnd_src_status_clear(struct rsnd_mod *mod)
- {
- 	u32 val = OUF_SRC(rsnd_mod_id(mod));
+ /* multi address mapping */
+ #define RSND_GEN_M_REG(id, offset, _id_offset)	\
+-	RSND_REG_SET(RSND_REG_##id, offset, _id_offset)
++	RSND_REG_SET(RSND_REG_##id, offset, _id_offset, #id)
  
-@@ -308,7 +308,7 @@ static void rsnd_src_error_clear(struct rsnd_mod *mod)
- 	rsnd_mod_bset(mod, SCU_SYS_STATUS1, val, val);
+ /*
+  *		basic function
+@@ -83,8 +87,9 @@ u32 rsnd_read(struct rsnd_priv *priv,
+ 
+ 	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
+ 
+-	dev_dbg(dev, "r %s[%d] - %4d : %08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, val);
++	dev_dbg(dev, "r %s[%d] - %-18s (%4d) : %08x\n",
++		rsnd_mod_name(mod), rsnd_mod_id(mod),
++		rsnd_reg_name(gen, reg), reg, val);
+ 
+ 	return val;
  }
+@@ -99,10 +104,11 @@ void rsnd_write(struct rsnd_priv *priv,
+ 	if (!rsnd_is_accessible_reg(priv, gen, reg))
+ 		return;
  
--static bool rsnd_src_error_record(struct rsnd_mod *mod)
-+static bool rsnd_src_record_error(struct rsnd_mod *mod)
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 val0, val1;
-@@ -332,9 +332,6 @@ static bool rsnd_src_error_record(struct rsnd_mod *mod)
- 		ret = true;
- 	}
- 
--	/* clear error static */
--	rsnd_src_error_clear(mod);
+-	dev_dbg(dev, "w %s[%d] - %4d : %08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, data);
 -
- 	return ret;
+ 	regmap_fields_write(gen->regs[reg], rsnd_mod_id(mod), data);
++
++	dev_dbg(dev, "w %s[%d] - %-18s (%4d) : %08x\n",
++		rsnd_mod_name(mod), rsnd_mod_id(mod),
++		rsnd_reg_name(gen, reg), reg, data);
  }
  
-@@ -383,7 +380,7 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ void rsnd_force_write(struct rsnd_priv *priv,
+@@ -115,10 +121,11 @@ void rsnd_force_write(struct rsnd_priv *priv,
+ 	if (!rsnd_is_accessible_reg(priv, gen, reg))
+ 		return;
  
- 	rsnd_src_set_convert_rate(io, mod);
+-	dev_dbg(dev, "w %s[%d] - %4d : %08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, data);
+-
+ 	regmap_fields_force_write(gen->regs[reg], rsnd_mod_id(mod), data);
++
++	dev_dbg(dev, "w %s[%d] - %-18s (%4d) : %08x\n",
++		rsnd_mod_name(mod), rsnd_mod_id(mod),
++		rsnd_reg_name(gen, reg), reg, data);
+ }
  
--	rsnd_src_error_clear(mod);
-+	rsnd_src_status_clear(mod);
+ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
+@@ -130,11 +137,13 @@ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
+ 	if (!rsnd_is_accessible_reg(priv, gen, reg))
+ 		return;
  
- 	rsnd_src_irq_enable(mod);
+-	dev_dbg(dev, "b %s[%d] - %4d : %08x/%08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, data, mask);
+-
+ 	regmap_fields_update_bits(gen->regs[reg], rsnd_mod_id(mod),
+ 				  mask, data);
++
++	dev_dbg(dev, "b %s[%d] - %-18s (%4d) : %08x/%08x\n",
++		rsnd_mod_name(mod), rsnd_mod_id(mod),
++		rsnd_reg_name(gen, reg), reg, data, mask);
++
+ }
  
-@@ -434,7 +431,7 @@ static void __rsnd_src_interrupt(struct rsnd_mod *mod,
- 	if (!rsnd_io_is_working(io))
- 		goto rsnd_src_interrupt_out;
+ phys_addr_t rsnd_gen_get_phy_addr(struct rsnd_priv *priv, int reg_id)
+@@ -150,7 +159,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
+ 				 int id_size,
+ 				 int reg_id,
+ 				 const char *name,
+-				 struct rsnd_regmap_field_conf *conf,
++				 const struct rsnd_regmap_field_conf *conf,
+ 				 int conf_size)
+ {
+ 	struct platform_device *pdev = rsnd_priv_to_pdev(priv);
+@@ -203,6 +212,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
  
--	if (rsnd_src_error_record(mod)) {
-+	if (rsnd_src_record_error(mod)) {
- 
- 		dev_dbg(dev, "%s[%d] restart\n",
- 			rsnd_mod_name(mod), rsnd_mod_id(mod));
-@@ -450,7 +447,9 @@ static void __rsnd_src_interrupt(struct rsnd_mod *mod,
- 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 		/* RSND_REG_MAX base */
+ 		gen->regs[conf[i].idx] = regs;
++		gen->reg_name[conf[i].idx] = conf[i].reg_name;
  	}
  
-+	rsnd_src_status_clear(mod);
- rsnd_src_interrupt_out:
-+
- 	spin_unlock(&priv->lock);
- }
+ 	return 0;
+@@ -213,7 +223,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
+  */
+ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ {
+-	struct rsnd_regmap_field_conf conf_ssiu[] = {
++	const static struct rsnd_regmap_field_conf conf_ssiu[] = {
+ 		RSND_GEN_S_REG(SSI_MODE0,	0x800),
+ 		RSND_GEN_S_REG(SSI_MODE1,	0x804),
+ 		/* FIXME: it needs SSI_MODE2/3 in the future */
+@@ -223,7 +233,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_M_REG(SSI_CTRL,	0x10,	0x80),
+ 		RSND_GEN_M_REG(SSI_INT_ENABLE,	0x18,	0x80),
+ 	};
+-	struct rsnd_regmap_field_conf conf_scu[] = {
++	const static struct rsnd_regmap_field_conf conf_scu[] = {
+ 		RSND_GEN_M_REG(SRC_BUSIF_MODE,	0x0,	0x20),
+ 		RSND_GEN_M_REG(SRC_BUSIF_DALIGN,0x8,	0x20),
+ 		RSND_GEN_M_REG(SRC_ROUTE_MODE0,	0xc,	0x20),
+@@ -267,7 +277,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_M_REG(DVC_VOL1R,	0xe2c,	0x100),
+ 		RSND_GEN_M_REG(DVC_DVUER,	0xe48,	0x100),
+ 	};
+-	struct rsnd_regmap_field_conf conf_adg[] = {
++	const static struct rsnd_regmap_field_conf conf_adg[] = {
+ 		RSND_GEN_S_REG(BRRA,		0x00),
+ 		RSND_GEN_S_REG(BRRB,		0x04),
+ 		RSND_GEN_S_REG(SSICKR,		0x08),
+@@ -287,7 +297,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_S_REG(SRCOUT_TIMSEL4,	0x58),
+ 		RSND_GEN_S_REG(CMDOUT_TIMSEL,	0x5c),
+ 	};
+-	struct rsnd_regmap_field_conf conf_ssi[] = {
++	const static struct rsnd_regmap_field_conf conf_ssi[] = {
+ 		RSND_GEN_M_REG(SSICR,		0x00,	0x40),
+ 		RSND_GEN_M_REG(SSISR,		0x04,	0x40),
+ 		RSND_GEN_M_REG(SSITDR,		0x08,	0x40),
+@@ -318,14 +328,14 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
  
+ static int rsnd_gen1_probe(struct rsnd_priv *priv)
+ {
+-	struct rsnd_regmap_field_conf conf_adg[] = {
++	const static struct rsnd_regmap_field_conf conf_adg[] = {
+ 		RSND_GEN_S_REG(BRRA,		0x00),
+ 		RSND_GEN_S_REG(BRRB,		0x04),
+ 		RSND_GEN_S_REG(SSICKR,		0x08),
+ 		RSND_GEN_S_REG(AUDIO_CLK_SEL0,	0x0c),
+ 		RSND_GEN_S_REG(AUDIO_CLK_SEL1,	0x10),
+ 	};
+-	struct rsnd_regmap_field_conf conf_ssi[] = {
++	const static struct rsnd_regmap_field_conf conf_ssi[] = {
+ 		RSND_GEN_M_REG(SSICR,		0x00,	0x40),
+ 		RSND_GEN_M_REG(SSISR,		0x04,	0x40),
+ 		RSND_GEN_M_REG(SSITDR,		0x08,	0x40),
 -- 
 2.6.2
