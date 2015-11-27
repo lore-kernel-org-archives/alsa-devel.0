@@ -1,80 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Question about TDM "slot"
-Date: Fri, 27 Nov 2015 11:36:12 +0000
-Message-ID: <20151127113612.GL1929@sirena.org.uk>
-References: <87fv05hv7b.wl%kuninori.morimoto.gx@renesas.com>
- <20151117105233.GM31303@sirena.org.uk>
- <87h9kjrce6.wl%kuninori.morimoto.gx@renesas.com>
- <20151118113012.GH31303@sirena.org.uk>
- <87poz6j0in.wl%kuninori.morimoto.gx@renesas.com>
- <871tbbsu27.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: mx28: bad unlock balance detected
+Date: Fri, 27 Nov 2015 12:11:26 +0000
+Message-ID: <20151127121126.GM1929@sirena.org.uk>
+References: <CAOMZO5B+j5s69JeeYPnpwn2e_doCA+ARzBSGAcGoJGEJ3=u3BA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3854036465923552002=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EB529260851
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 12:36:19 +0100 (CET)
-In-Reply-To: <871tbbsu27.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============0478501190070402800=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CAOMZO5B+j5s69JeeYPnpwn2e_doCA+ARzBSGAcGoJGEJ3=u3BA@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3854036465923552002==
+--===============0478501190070402800==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PNftq4k6NuHCGvy8"
+	protocol="application/pgp-signature"; boundary="QeIEYJGnsH0eC7HY"
 Content-Disposition: inline
 
 
---PNftq4k6NuHCGvy8
+--QeIEYJGnsH0eC7HY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 27, 2015 at 08:55:01AM +0000, Kuninori Morimoto wrote:
+On Thu, Nov 26, 2015 at 02:18:04PM -0200, Fabio Estevam wrote:
+> Hi,
+>=20
+> Running linux-next 20151126 on a mx28evk leads to the following bug:
+>=20
+> sgtl5000 0-000a: sgtl5000 revision 0x11
+> sgtl5000 0-000a: Using internal LDO instead of VDDD
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [ BUG: bad unlock balance detected! ]
+> 4.4.0-rc2-next-20151126-00001-g44eb6b2 #156 Not tainted
 
-> If my understanding was correct, tdm_slots is not enough for me.
-> Because my CPU/Codec needs to know 6ch by (6ch) or (2ch + 2ch + 2ch)
-> (My CPU can output both style)
-> How to select this ?
+This should be fixed in the next -next, Arnd noticed a problem with his
+code.
 
-I think we'd currently expect the three two channel interfaces to appear
-as separate DAIs with their own TDM slots, though with routing within
-the CPU you could just always configure them as a single DAI and then
-let the choice of connection to the front end DAIs select what gets
-routed out.
-
---PNftq4k6NuHCGvy8
+--QeIEYJGnsH0eC7HY
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWWEArAAoJECTWi3JdVIfQWjsH/0NKSEvPD1ei2M+EMFjbHX2L
-/evQtTtK6TdkEzfnZgVM/4O2m6B4QhHmxqfvybGQTV/o++9yYBmI+FBWaANrtvGb
-nXE1TE281JErDG8QGPiOSR8Iyatwi9cZVKKipJeTAJes1mF/U9I4G1pHhcHf90Wd
-s2sbYpfwLXr1Z0K4Hn9uQ2uFfOzZOpe45BL1faPRINzaG0DRVkwC/i3pMBt+xcg/
-u9VcB1U/v1go0dFGe71WXtw0uryL5KewlxpLxHUsHcTqBxTQdByFJxA8Jo/cm6jP
-VsAdFM5Wd+7X+UHvdIoJ3PN//oLr2kIw3O8XS3ZiFpk0OOOpOhatMy8LtZXMT4Q=
-=Aonz
+iQEcBAEBCAAGBQJWWEhtAAoJECTWi3JdVIfQ3DcH/3uXgCgdnWNP6Xy1Aj2Bk1M/
+syXK+ySkl4KILfZdGDnwUO1DiL9HU45d+QJesu+mjmQymVD9ujmyFWHqs0QhRtma
+4l2y4vHGpLfrJeCxYUvMSAwFBvOf3/wT1+cydb6irB+lnczGo2bQPkDjkG3xeH7s
+zsWOHcW8cragX65HI4zyGvevVnUeVbR1TJq3x3x9PhBZhyllFyMbLPA/sGQ7aAhd
+WM6pKAfVeanlo7uyNZBya05rqE+1GG38E2qeQMj2bzq7G91cfx51cOFD5yuOrHLq
+C8OE0f2jX80TxhNWdGSEeVPZqKqRRlV7HFAD1fg70FTn0f2mo4qJzAv6oGIJB4s=
+=xcMU
 -----END PGP SIGNATURE-----
 
---PNftq4k6NuHCGvy8--
+--QeIEYJGnsH0eC7HY--
 
---===============3854036465923552002==
+
+--===============0478501190070402800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============3854036465923552002==--
+--===============0478501190070402800==--
