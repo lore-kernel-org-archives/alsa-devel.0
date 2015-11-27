@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Add 32uS delay after
- putting FLL into freerun
-Date: Fri, 27 Nov 2015 12:26:27 +0000
-Message-ID: <20151127122627.GN1929@sirena.org.uk>
-References: <1448546600-15596-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [GIT PULL] ASoC fixes for v4.4
+Date: Fri, 27 Nov 2015 12:35:44 +0000
+Message-ID: <20151127123544.GP1929@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3086778454706553446=="
+Content-Type: multipart/mixed; boundary="===============6332443168548289574=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B21C62608ED
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:26:32 +0100 (CET)
-In-Reply-To: <1448546600-15596-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D99972608ED
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2015 13:35:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +18,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3086778454706553446==
+--===============6332443168548289574==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="j1Wwy33+dU2Jf0xa"
+	protocol="application/pgp-signature"; boundary="6kpOI20Kt7FNSDww"
 Content-Disposition: inline
 
 
---j1Wwy33+dU2Jf0xa
+--6kpOI20Kt7FNSDww
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 26, 2015 at 02:03:20PM +0000, Charles Keepax wrote:
-> When switching between two clock sources using the FLL freerun to smooth
-> the transition we should wait 32uS after putting the FLL into freerun
-> before we proceed. In practice we appear to be getting enough delay from
-> the surrounding code, but better to make it explicit.
+The following changes since commit 1ec218373b8ebda821aec00bb156a9c94fad9cd4:
 
-You'll almost certainly get 32us from just setting up the I/O and
-also...
+  Linux 4.4-rc2 (2015-11-22 16:45:59 -0800)
 
-> +++ b/sound/soc/codecs/arizona.c
-> @@ -2215,6 +2215,7 @@ static int arizona_enable_fll(struct arizona_fll *fll)
->  		regmap_update_bits_async(fll->arizona->regmap, fll->base + 1,
->  					 ARIZONA_FLL1_FREERUN,
->  					 ARIZONA_FLL1_FREERUN);
-> +		udelay(32);
+are available in the git repository at:
 
-...this won't do what you say it will - the I/O is asynchronous so what
-this will do is add a delay immediately after scheduling the I/O while
-the I/O is at best in progress and most likely before it is ever begun.
-You'd need to make the I/O synchronous to actually introduce the delay.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.4-rc2
 
---j1Wwy33+dU2Jf0xa
+for you to fetch changes up to 923f1cbf2e45f6292a01de959031a8efeabede78:
+
+  Merge remote-tracking branches 'asoc/fix/rt5677', 'asoc/fix/st', 'asoc/fix/sun4i-codec', 'asoc/fix/topology', 'asoc/fix/wm8960' and 'asoc/fix/wm8962' into asoc-linus (2015-11-25 17:57:54 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.4
+
+Quite a large batch of fixes have come in since the merge window, mainly
+driver specific ones but there's a couple of core ones:
+
+ - A fix for DAPM resume on active streams to ensure everything ends up
+   cleanly in the right state.
+ - Reset the DAPM cache when freeing widgets to fix a crash on driver
+   remove and reload.
+
+The PM functions for nau8825 are new code which fix crashes on resume.
+
+----------------------------------------------------------------
+
+Also the rt5677 changes look big but are very mechanical (making two
+simple changes repeatedly).
+
+Adam Sampson (1):
+      ASoC: sun4i-codec: use consistent names for PA controls
+
+Andreas Dannenberg (1):
+      ASoC: davinci-mcasp: Fix TDM slot rx/tx mask associations
+
+Arnd Bergmann (2):
+      ASoC: fix rockchip 64-bit build warning
+      ASoC: fsl: clarify ac97 dependency
+
+Bard Liao (4):
+      ASoC: rl6231: avoid using divisible by 3 for DMIC clk
+      ASoC: rt5670: fix wrong bit def for pll src
+      ASoC: rt5645: Add dmi_system_id "Google Wizpig"
+      ASoC: rt5645: Add dmi_system_id "Google Terra"
+
+Jeeja KP (1):
+      ASoC: core: Change power state before rechecking endpoint
+
+John Keeping (1):
+      ASoC: es8328: Fix shifts for mixer switches
+
+John Lin (3):
+      ASoC: rl6231: fix range of DMIC clock
+      ASoC: rt5645: Increase the delay time to imporve the HP pop noise
+      ASoC: rt5645: Add struct dmi_system_id "Google Edgar" for Chrome OS
+
+JongHo Kim (1):
+      ASoC: wm8960: Fix the Input PGA Mute switch
+
+Jyri Sarha (1):
+      ASoC: dapm: Reset dapm wcache after freeing damp widgets
+
+Kuninori Morimoto (2):
+      ASoC: rsnd: fixup SCU_SYS_INT_EN1 address
+      ASoC: rsnd: make sure SRC In Rate feature enablement
+
+Mark Brown (7):
+      Merge tag 'asoc-v4.3-rc6' into asoc-fix-rcar
+      Merge remote-tracking branch 'asoc/fix/arizona' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/davinci', 'asoc/fix/es8328', 'asoc/fix/fsl', 'asoc/fix/fsl-sai' and 'asoc/fix/intel' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/nau8825', 'asoc/fix/ops', 'asoc/fix/rcar', 'asoc/fix/rl6231', 'asoc/fix/rockchip' and 'asoc/fix/rt5670' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/rt5677', 'asoc/fix/st', 'asoc/fix/sun4i-codec', 'asoc/fix/topology', 'asoc/fix/wm8960' and 'asoc/fix/wm8962' into asoc-linus
+
+Moise Gergaud (3):
+      ASoC: sti: remove wrong error message
+      ASoC: sti: rename ST proprietary DT properties
+      ASoC: sti: set player private data
+
+Oder Chiou (2):
+      ASoC: rt5645: Power up the RC clock to make sure the speaker volume adjust properly
+      ASoC: rt5677: Avoid the pop sound that comes from the filter power
+
+Omair M Abdullah (1):
+      ASoC: topology: fix info callback for TLV byte control
+
+Peter Ujfalusi (1):
+      ASoC: davinci-mcasp: Fix master capture only mode
+
+Randy Dunlap (1):
+      ASoC: fix kernel-doc warnings in sound/soc/soc-ops.c
+
+Richard Fitzgerald (1):
+      ASoC: arizona: fix range of OPCLK_REF
+
+Sachin Pandhare (1):
+      ASoC: wm8962: correct addresses for HPF_C_0/1
+
+Sjoerd Simons (1):
+      ASoC: rockchip: Fix incorrect VDW value for 24 bit
+
+Stefan Agner (1):
+      ASoC: fsl_sai: fix Rx synchrounous mode
+
+Sudip Mukherjee (1):
+      ASoC: Intel: Skylake: fix memory leak
+
+Vinod Koul (1):
+      ASoC: Intel: Skylake: Add I2C depends for SKL machine
+
+Yong Zhi (1):
+      ASoC: nau8825: add pm function
+
+ include/sound/soc-dapm.h               |   1 +
+ sound/soc/codecs/arizona.c             |  16 ++----
+ sound/soc/codecs/es8328.c              |  16 +++---
+ sound/soc/codecs/nau8825.c             |  31 ++++++++++
+ sound/soc/codecs/rl6231.c              |   6 +-
+ sound/soc/codecs/rt5645.c              |  61 ++++++++++++++++++--
+ sound/soc/codecs/rt5670.h              |  12 ++--
+ sound/soc/codecs/rt5677.c              | 100 ++++++++++++++++++++-------------
+ sound/soc/codecs/wm8960.c              |   2 +-
+ sound/soc/codecs/wm8962.c              |   4 +-
+ sound/soc/davinci/davinci-mcasp.c      |  12 +++-
+ sound/soc/fsl/Kconfig                  |   2 +
+ sound/soc/fsl/fsl_sai.c                |   3 +-
+ sound/soc/intel/Kconfig                |   2 +-
+ sound/soc/intel/skylake/skl-topology.c |   1 +
+ sound/soc/rockchip/rockchip_spdif.c    |   2 +-
+ sound/soc/rockchip/rockchip_spdif.h    |   6 +-
+ sound/soc/sh/rcar/gen.c                |   2 +-
+ sound/soc/sh/rcar/src.c                |   7 +++
+ sound/soc/soc-core.c                   |   6 +-
+ sound/soc/soc-dapm.c                   |   7 +++
+ sound/soc/soc-ops.c                    |   2 +-
+ sound/soc/soc-topology.c               |   3 +-
+ sound/soc/sti/uniperif_player.c        |   9 ++-
+ sound/soc/sti/uniperif_reader.c        |   3 +-
+ sound/soc/sunxi/sun4i-codec.c          |  27 ++++-----
+ 26 files changed, 238 insertions(+), 105 deletions(-)
+
+--6kpOI20Kt7FNSDww
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWWEvyAAoJECTWi3JdVIfQhcgH/0GD7ouIVktsBr5+GdLEO+uS
-ZMd4FDdj1GHJLn4fxYUvZn7ysnLGSqxZb1oUTMiA7IR6TL7kW5+A6QXK+po+Agw4
-wKvXjIPqc+nFIPBPFanFb9emljbwrU7mmIgmX5Rx9PPORdHlksJQGeRkwwvpsrh4
-cpjxEi3Eh6PkLhorABAVJx2CwnDWoKQFmbsy8pyOh1ywyL3tudpe9DWzSB4M36Ib
-fOpEYL1CNJHmAHZTXfMwbxuNmwr4aSQgLuedvDKO/DjbUU1XKXKDhoPbBUo/9Ns6
-ejHsPqVdzlLQyJ3AhrifabGNTqIHHz+AHR3qQVRPZxgffUTcnYKGcIq/PnE0ESc=
-=5nMj
+iQEcBAEBCAAGBQJWWE4fAAoJECTWi3JdVIfQ9bUH/2Dk6mUt7CPEOMeqswTlrmcy
+MMxrLwzBDtYXhivEr1PkVt3LaoOEHb+CBAZrc0XKlij6d+2rf7bI6D1TIS3vuEZ5
+nIuGtkdAOwdCiMRsT8JM4YXJasvdZOneW9z+EgASrsCZB+RasdtGflnb7X+A20Uf
+1E6yEIYQOnG9pIG+GnWWZHM3IllZqs/4aeyPbDKCiMy+Zz/YbP2l2bvY0PQkY49Y
+yhH4Q8GvWq+fQWqiLmxfY9d0cnm4kYnnJPNDW09NyYt32a6mDhAtqUYBbP7wbsi/
+01hWv/FTDVvHg+Prasq03gSLXeJojx++N8denIpGEoPEZeDpVwKA1ktjtCnlTFg=
+=NOS3
 -----END PGP SIGNATURE-----
 
---j1Wwy33+dU2Jf0xa--
+--6kpOI20Kt7FNSDww--
 
---===============3086778454706553446==
+--===============6332443168548289574==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3086778454706553446==--
+--===============6332443168548289574==--
