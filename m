@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 13/16] ASoC: Intel: Skylake: read params from
-	DSP if module is on
-Date: Sat, 28 Nov 2015 15:01:58 +0530
-Message-ID: <1448703121-5831-14-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 14/16] ASoC: Intel: Skylake: Add dai link for
+	DMIC capture
+Date: Sat, 28 Nov 2015 15:01:59 +0530
+Message-ID: <1448703121-5831-15-git-send-email-vinod.koul@intel.com>
 References: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C9652652AD
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2015 10:33:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 01DFA2651E6
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2015 10:33:11 +0100 (CET)
 In-Reply-To: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,73 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>
+Cc: "Dharageswari.R" <dharageswari.r@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Omair M Abdullah <omair.m.abdullah@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-If a module is ON then we should read the module parameters from
-DSP rather than driver cached values
+Since in Skylake we support another DAI for DMIC quad capture,
+add a dailink for this as well. Also specify constrains for DMIC
+FE devices and fixup for DMIC BEs
 
-Signed-off-by: Omair M Abdullah <omair.m.abdullah@intel.com>
+Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 13 +++++++++++++
- sound/soc/intel/skylake/skl-topology.c |  7 +++++++
- sound/soc/intel/skylake/skl-topology.h |  2 ++
- 3 files changed, 22 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 51 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 17fe1cf20e64..5ce2269c2e5f 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -945,3 +945,16 @@ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 57333a476136..e4fc8a1ce471 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -190,6 +190,42 @@ static struct snd_soc_ops skylake_rt286_ops = {
+ 	.hw_params = skylake_rt286_hw_params,
+ };
  
- 	return skl_ipc_set_large_config(&ctx->ipc, &msg, params);
- }
-+
-+int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
-+			  u32 param_id, struct skl_module_cfg *mcfg)
++static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
++				struct snd_pcm_hw_params *params)
 +{
-+	struct skl_ipc_large_config_msg msg;
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++	channels->min = channels->max = 4;
 +
-+	msg.module_id = mcfg->id.module_id;
-+	msg.instance_id = mcfg->id.instance_id;
-+	msg.param_data_size = size;
-+	msg.large_param_id = param_id;
-+
-+	return skl_ipc_get_large_config(&ctx->ipc, &msg, params);
++	return 0;
 +}
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 121361ed159f..e226eb793e13 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -903,6 +903,13 @@ static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
- 	struct soc_bytes_ext *sb =
- 			(struct soc_bytes_ext *)kcontrol->private_value;
- 	struct skl_algo_data *bc = (struct skl_algo_data *)sb->dobj.private;
-+	struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct skl_module_cfg *mconfig = w->priv;
-+	struct skl *skl = get_skl_ctx(w->dapm->dev);
 +
-+	if (w->power)
-+		skl_get_module_params(skl->skl_sst, (u32 *)bc->params,
-+				      bc->max, bc->param_id, mconfig);
++static unsigned int channels_dmic[] = {
++	2, 4,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
++	.count = ARRAY_SIZE(channels_dmic),
++	.list = channels_dmic,
++	.mask = 0,
++};
++
++static int skylake_dmic_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	runtime->hw.channels_max = 4;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &constraints_dmic_channels);
++
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++}
++
++static struct snd_soc_ops skylake_dmic_ops = {
++	.startup = skylake_dmic_startup,
++};
++
+ /* skylake digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 	/* Front End DAI links */
+@@ -238,6 +274,20 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 	},
++	{
++		.name = "Skl Audio DMIC cap",
++		.stream_name = "dmiccap",
++		.cpu_dai_name = "DMIC Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &skylake_dmic_ops,
++	},
  
- 	if (bc->params) {
- 		if (copy_to_user(data, &bc->param_id, sizeof(u32)))
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index f12d0770ee23..baaa326e3a28 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -342,6 +342,8 @@ int skl_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
- 
- int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
- 			u32 param_id, struct skl_module_cfg *mcfg);
-+int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
-+			  u32 param_id, struct skl_module_cfg *mcfg);
- 
- int skl_load_modules(struct skl_sst *ctx, struct skl_module_cfg *mcfg);
- 
+ 	/* Back End DAI links */
+ 	{
+@@ -267,6 +317,7 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 		.codec_name = "dmic-codec",
+ 		.codec_dai_name = "dmic-hifi",
+ 		.platform_name = "0000:00:1f.3",
++		.be_hw_params_fixup = skylake_dmic_fixup,
+ 		.ignore_suspend = 1,
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
 -- 
 2.4.3
