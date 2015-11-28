@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 06/16] ASoC: Intel: Skylake: Add support for
-	Load/Unload IPCs
-Date: Sat, 28 Nov 2015 15:01:51 +0530
-Message-ID: <1448703121-5831-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 08/16] ASoC: Intel: Skylake: Add memory pages
+	to widget data.
+Date: Sat, 28 Nov 2015 15:01:53 +0530
+Message-ID: <1448703121-5831-9-git-send-email-vinod.koul@intel.com>
 References: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 34E6D266838
+ by alsa0.perex.cz (Postfix) with ESMTP id 0434A26683C
  for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2015 10:32:49 +0100 (CET)
 In-Reply-To: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,105 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dharageswari R <dharageswari.r@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: "Dharageswari.R" <dharageswari.r@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Dharageswari R <dharageswari.r@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Some firmware modules can be loaded and unloaded to/from DSP.
-This can be done by invoking IPCs Load module and unload module
-respectively. So this patch starts this by adding support for
-these IPCs
+A module can require extra memory for processing, like algorithms.
+The memory for these modules needs to be represented in base
+module configuration and passed to DSP on init, so add the memory
+pages as a field in widget data
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 47 +++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.h |  6 +++++
- 2 files changed, 53 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 1 +
+ sound/soc/intel/skylake/skl-topology.c | 1 +
+ sound/soc/intel/skylake/skl-topology.h | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 95679c02c6ee..d99ec9a2f397 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -130,6 +130,11 @@
- #define IPC_SRC_QUEUE_MASK		0x7
- #define IPC_SRC_QUEUE(x)		(((x) & IPC_SRC_QUEUE_MASK) \
- 					<< IPC_SRC_QUEUE_SHIFT)
-+/* Load Module count */
-+#define IPC_LOAD_MODULE_SHIFT		0
-+#define IPC_LOAD_MODULE_MASK		0xFF
-+#define IPC_LOAD_MODULE_CNT(x)		(((x) & IPC_LOAD_MODULE_MASK) \
-+					<< IPC_LOAD_MODULE_SHIFT)
- 
- /* Save pipeline messgae extension register */
- #define IPC_DMA_ID_SHIFT		0
-@@ -728,6 +733,48 @@ int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 6c0ed4dada4d..c1a4c18db7a0 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -230,6 +230,7 @@ static void skl_set_base_module_format(struct skl_sst *ctx,
+ 	base_cfg->cps = mconfig->mcps;
+ 	base_cfg->ibs = mconfig->ibs;
+ 	base_cfg->obs = mconfig->obs;
++	base_cfg->is_pages = mconfig->mem_pages;
  }
- EXPORT_SYMBOL_GPL(skl_ipc_bind_unbind);
  
-+int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_LOAD_MULTIPLE_MODS);
-+	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
-+
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
-+				(sizeof(u16) * module_cnt), NULL, 0);
-+	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: load modules failed :%d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_load_modules);
-+
-+int skl_ipc_unload_modules(struct sst_generic_ipc *ipc, u8 module_cnt,
-+							void *data)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_UNLOAD_MULTIPLE_MODS);
-+	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
-+
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
-+				(sizeof(u16) * module_cnt), NULL, 0);
-+	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: unload modules failed :%d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_unload_modules);
-+
- int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_large_config_msg *msg, u32 *param)
- {
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index f1a154e45dc3..e17012778560 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -108,6 +108,12 @@ int skl_ipc_init_instance(struct sst_generic_ipc *sst_ipc,
- int skl_ipc_bind_unbind(struct sst_generic_ipc *sst_ipc,
- 		struct skl_ipc_bind_unbind_msg *msg);
+ /*
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 1019a6ec1739..1c082c09b4ed 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1334,6 +1334,7 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 	mconfig->converter = dfw_config->converter;
+ 	mconfig->m_type = dfw_config->module_type;
+ 	mconfig->vbus_id = dfw_config->vbus_id;
++	mconfig->mem_pages = dfw_config->mem_pages;
  
-+int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data);
-+
-+int skl_ipc_unload_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data);
-+
- int skl_ipc_set_dx(struct sst_generic_ipc *ipc,
- 		u8 instance_id, u16 module_id, struct skl_ipc_dxstate_info *dx);
- 
+ 	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
+ 	if (pipe)
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 2405709f4a69..711e6800ca83 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -277,6 +277,7 @@ struct skl_module_cfg {
+ 	u32 params_fixup;
+ 	u32 converter;
+ 	u32 vbus_id;
++	u32 mem_pages;
+ 	struct skl_module_pin *m_in_pin;
+ 	struct skl_module_pin *m_out_pin;
+ 	enum skl_module_type m_type;
 -- 
 2.4.3
