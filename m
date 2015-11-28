@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 01/16] ASoC: Intel: Skylake: Update DMIC DAIs
-	and capabilities
-Date: Sat, 28 Nov 2015 15:01:46 +0530
-Message-ID: <1448703121-5831-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 02/16] ASoC: Intel: Skylake: Add helper
+	routines to handle module params
+Date: Sat, 28 Nov 2015 15:01:47 +0530
+Message-ID: <1448703121-5831-3-git-send-email-vinod.koul@intel.com>
 References: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0245C2651EB
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2015 10:32:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 64F46265206
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2015 10:32:18 +0100 (CET)
 In-Reply-To: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,85 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Dharageswari.R" <dharageswari.r@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-On Skylake we can support upton 4DMICs on the PDM port, so update
-the PCM capabilities accordingly
+Some DSP modules have user configurable parameters. These
+parameters are required by modules in the following scenario
+	-  during initialization
+	-  after initialization using set parameter
 
-Also add a new DAI for DMIC pin which can be used for getting raw
-DMIC data
+This patch adds helper routine to set module parameters using
+large config set IPC message and removes params to be passed as
+init module routine.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 16 +++++++++++++++-
+ sound/soc/intel/skylake/skl-topology.c |  2 +-
+ sound/soc/intel/skylake/skl-topology.h |  6 ++++--
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c79bbff00cb7..6570e5753e49 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -28,6 +28,7 @@
- 
- #define HDA_MONO 1
- #define HDA_STEREO 2
-+#define HDA_QUAD 4
- 
- static struct snd_pcm_hardware azx_pcm_hw = {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
-@@ -46,8 +47,8 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 				SNDRV_PCM_RATE_8000,
- 	.rate_min =		8000,
- 	.rate_max =		48000,
--	.channels_min =		2,
--	.channels_max =		2,
-+	.channels_min =		1,
-+	.channels_max =		HDA_QUAD,
- 	.buffer_bytes_max =	AZX_MAX_BUF_SIZE,
- 	.period_bytes_min =	128,
- 	.period_bytes_max =	AZX_MAX_BUF_SIZE / 2,
-@@ -560,7 +561,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.capture = {
- 		.stream_name = "Reference Capture",
- 		.channels_min = HDA_MONO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = HDA_QUAD,
- 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
-@@ -587,6 +588,18 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
- },
-+{
-+	.name = "DMIC Pin",
-+	.ops = &skl_pcm_dai_ops,
-+	.capture = {
-+		.stream_name = "DMIC Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_QUAD,
-+		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+},
-+
- /* BE CPU  Dais */
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index d71b58322cc7..30762734d859 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -556,7 +556,7 @@ static void skl_clear_module_state(struct skl_module_pin *mpin, int max,
+  * invoke the DSP by sending IPC INIT_INSTANCE using ipc helper
+  */
+ int skl_init_module(struct skl_sst *ctx,
+-			struct skl_module_cfg *mconfig, char *param)
++			struct skl_module_cfg *mconfig)
  {
- 	.name = "SSP0 Pin",
-@@ -640,8 +653,8 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.ops = &skl_dmic_dai_ops,
- 	.capture = {
- 		.stream_name = "DMIC01 Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_QUAD,
- 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
+ 	u16 module_config_size = 0;
+ 	void *param_data = NULL;
+@@ -855,3 +855,17 @@ int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
+ 
+ 	return 0;
+ }
++
++/* Algo parameter set helper function */
++int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
++				u32 param_id, struct skl_module_cfg *mcfg)
++{
++	struct skl_ipc_large_config_msg msg;
++
++	msg.module_id = mcfg->id.module_id;
++	msg.instance_id = mcfg->id.instance_id;
++	msg.param_data_size = size;
++	msg.large_param_id = param_id;
++
++	return skl_ipc_set_large_config(&ctx->ipc, &msg, params);
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index f221c758d601..7a03bea48a9a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -340,7 +340,7 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 		 * FE/BE params
+ 		 */
+ 		skl_tplg_update_module_params(w, ctx);
+-		ret = skl_init_module(ctx, mconfig, NULL);
++		ret = skl_init_module(ctx, mconfig);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 57cb7b8dd269..5ba985b36227 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -312,8 +312,7 @@ int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+-int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
+-	char *param);
++int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config);
+ 
+ int skl_bind_modules(struct skl_sst *ctx, struct skl_module_cfg
+ 	*src_module, struct skl_module_cfg *dst_module);
+@@ -321,5 +320,8 @@ int skl_bind_modules(struct skl_sst *ctx, struct skl_module_cfg
+ int skl_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
+ 	*src_module, struct skl_module_cfg *dst_module);
+ 
++int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
++			u32 param_id, struct skl_module_cfg *mcfg);
++
+ enum skl_bitdepth skl_get_bit_depth(int params);
+ #endif
 -- 
 2.4.3
