@@ -1,47 +1,141 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl: using params_width function
- to simplify code
-Date: Sun, 29 Nov 2015 09:35:39 -0500
-Message-ID: <CAOZdJXXxFXMjw5HZK9QuLgtEV-kAVresmOCB+efiQbQtp0hoaQ@mail.gmail.com>
-References: <c305d87967734ad68067cca39c9e61c35dacf3b7.1448350220.git.zidan.wang@freescale.com>
- <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 71F83265351
- for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2015 15:35:41 +0100 (CET)
-Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
- [209.85.223.170])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by muin.pair.com (Postfix) with ESMTPSA id E7CDFF186D
- for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2015 09:35:39 -0500 (EST)
-Received: by ioir85 with SMTP id r85so150305548ioi.1
- for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2015 06:35:39 -0800 (PST)
-In-Reply-To: <61c4bd3dd82c40b59d1d2570a400321027ae6abc.1448350220.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, Xiubo.Lee@gmail.com
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] ALSA: pcm: constify action_ops structures
+Date: Sun, 29 Nov 2015 16:36:40 +0100
+Message-ID: <1448811400-11304-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 24, 2015 at 2:32 AM, Zidan Wang <zidan.wang@freescale.com> wrote:
-> using params_width function to simplify code.
->
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> ---
->  sound/soc/fsl/fsl_asrc.c | 2 +-
->  sound/soc/fsl/fsl_esai.c | 2 +-
->  sound/soc/fsl/fsl_sai.c  | 2 +-
->  sound/soc/fsl/fsl_ssi.c  | 3 +--
+The action_ops structures are never modified, so declare them as const.
 
- Acked-by: Timur Tabi <timur@tabi.org>
+Done with the help of Coccinelle.
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+ sound/core/pcm_native.c |   26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index a8b27cd..fadd3eb 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -875,7 +875,7 @@ struct action_ops {
+  *  Note: the stream state might be changed also on failure
+  *  Note2: call with calling stream lock + link lock
+  */
+-static int snd_pcm_action_group(struct action_ops *ops,
++static int snd_pcm_action_group(const struct action_ops *ops,
+ 				struct snd_pcm_substream *substream,
+ 				int state, int do_lock)
+ {
+@@ -932,7 +932,7 @@ static int snd_pcm_action_group(struct action_ops *ops,
+ /*
+  *  Note: call with stream lock
+  */
+-static int snd_pcm_action_single(struct action_ops *ops,
++static int snd_pcm_action_single(const struct action_ops *ops,
+ 				 struct snd_pcm_substream *substream,
+ 				 int state)
+ {
+@@ -952,7 +952,7 @@ static int snd_pcm_action_single(struct action_ops *ops,
+ /*
+  *  Note: call with stream lock
+  */
+-static int snd_pcm_action(struct action_ops *ops,
++static int snd_pcm_action(const struct action_ops *ops,
+ 			  struct snd_pcm_substream *substream,
+ 			  int state)
+ {
+@@ -984,7 +984,7 @@ static int snd_pcm_action(struct action_ops *ops,
+ /*
+  *  Note: don't use any locks before
+  */
+-static int snd_pcm_action_lock_irq(struct action_ops *ops,
++static int snd_pcm_action_lock_irq(const struct action_ops *ops,
+ 				   struct snd_pcm_substream *substream,
+ 				   int state)
+ {
+@@ -998,7 +998,7 @@ static int snd_pcm_action_lock_irq(struct action_ops *ops,
+ 
+ /*
+  */
+-static int snd_pcm_action_nonatomic(struct action_ops *ops,
++static int snd_pcm_action_nonatomic(const struct action_ops *ops,
+ 				    struct snd_pcm_substream *substream,
+ 				    int state)
+ {
+@@ -1056,7 +1056,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTART);
+ }
+ 
+-static struct action_ops snd_pcm_action_start = {
++static const struct action_ops snd_pcm_action_start = {
+ 	.pre_action = snd_pcm_pre_start,
+ 	.do_action = snd_pcm_do_start,
+ 	.undo_action = snd_pcm_undo_start,
+@@ -1107,7 +1107,7 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
+ 	wake_up(&runtime->tsleep);
+ }
+ 
+-static struct action_ops snd_pcm_action_stop = {
++static const struct action_ops snd_pcm_action_stop = {
+ 	.pre_action = snd_pcm_pre_stop,
+ 	.do_action = snd_pcm_do_stop,
+ 	.post_action = snd_pcm_post_stop
+@@ -1224,7 +1224,7 @@ static void snd_pcm_post_pause(struct snd_pcm_substream *substream, int push)
+ 	}
+ }
+ 
+-static struct action_ops snd_pcm_action_pause = {
++static const struct action_ops snd_pcm_action_pause = {
+ 	.pre_action = snd_pcm_pre_pause,
+ 	.do_action = snd_pcm_do_pause,
+ 	.undo_action = snd_pcm_undo_pause,
+@@ -1273,7 +1273,7 @@ static void snd_pcm_post_suspend(struct snd_pcm_substream *substream, int state)
+ 	wake_up(&runtime->tsleep);
+ }
+ 
+-static struct action_ops snd_pcm_action_suspend = {
++static const struct action_ops snd_pcm_action_suspend = {
+ 	.pre_action = snd_pcm_pre_suspend,
+ 	.do_action = snd_pcm_do_suspend,
+ 	.post_action = snd_pcm_post_suspend
+@@ -1375,7 +1375,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
+ }
+ 
+-static struct action_ops snd_pcm_action_resume = {
++static const struct action_ops snd_pcm_action_resume = {
+ 	.pre_action = snd_pcm_pre_resume,
+ 	.do_action = snd_pcm_do_resume,
+ 	.undo_action = snd_pcm_undo_resume,
+@@ -1478,7 +1478,7 @@ static void snd_pcm_post_reset(struct snd_pcm_substream *substream, int state)
+ 		snd_pcm_playback_silence(substream, ULONG_MAX);
+ }
+ 
+-static struct action_ops snd_pcm_action_reset = {
++static const struct action_ops snd_pcm_action_reset = {
+ 	.pre_action = snd_pcm_pre_reset,
+ 	.do_action = snd_pcm_do_reset,
+ 	.post_action = snd_pcm_post_reset
+@@ -1522,7 +1522,7 @@ static void snd_pcm_post_prepare(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_PREPARED);
+ }
+ 
+-static struct action_ops snd_pcm_action_prepare = {
++static const struct action_ops snd_pcm_action_prepare = {
+ 	.pre_action = snd_pcm_pre_prepare,
+ 	.do_action = snd_pcm_do_prepare,
+ 	.post_action = snd_pcm_post_prepare
+@@ -1618,7 +1618,7 @@ static void snd_pcm_post_drain_init(struct snd_pcm_substream *substream, int sta
+ {
+ }
+ 
+-static struct action_ops snd_pcm_action_drain_init = {
++static const struct action_ops snd_pcm_action_drain_init = {
+ 	.pre_action = snd_pcm_pre_drain_init,
+ 	.do_action = snd_pcm_do_drain_init,
+ 	.post_action = snd_pcm_post_drain_init
