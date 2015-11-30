@@ -1,56 +1,131 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 2/7] drm/i915: Add get_eld audio component
-Date: Mon, 30 Nov 2015 18:48:13 +0200
-Message-ID: <20151130164813.GU4437@intel.com>
-References: <1448890671-2983-1-git-send-email-tiwai@suse.de>
- <1448890671-2983-3-git-send-email-tiwai@suse.de>
- <20151130152441.GS4437@intel.com> <20151130160933.GT4437@intel.com>
- <20151130163445.GA17050@phenom.ffwll.local>
+From: Damien Horsley <Damien.Horsley@imgtec.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: pcm3168a: Add driver for pcm3168a
+ codec
+Date: Mon, 30 Nov 2015 16:49:30 +0000
+Message-ID: <565C7E1A.1000104@imgtec.com>
+References: <1448376224-23964-3-git-send-email-Damien.Horsley@imgtec.com>
+ <20151127125411.GR1929@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20151130163445.GA17050@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20151127125411.GR1929@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, James Hartley <james.hartley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBOb3YgMzAsIDIwMTUgYXQgMDU6MzQ6NDVQTSArMDEwMCwgRGFuaWVsIFZldHRlciB3
-cm90ZToKPiBPbiBNb24sIE5vdiAzMCwgMjAxNSBhdCAwNjowOTozM1BNICswMjAwLCBWaWxsZSBT
-eXJqw6Rsw6Qgd3JvdGU6Cj4gPiBPbiBNb24sIE5vdiAzMCwgMjAxNSBhdCAwNToyNDo0MVBNICsw
-MjAwLCBWaWxsZSBTeXJqw6Rsw6Qgd3JvdGU6Cj4gPiA+IE9uIE1vbiwgTm92IDMwLCAyMDE1IGF0
-IDAyOjM3OjQ2UE0gKzAxMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gPiBJbXBsZW1lbnQg
-YSBuZXcgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzLCBnZXRfZWxkKCkuICBJdCdzIGNhbGxlZCBi
-eQo+ID4gPiA+IHRoZSBhdWRpbyBkcml2ZXIgdG8gZmV0Y2ggdGhlIGN1cnJlbnQgRUxEIG9mIHRo
-ZSBnaXZlbiBIRE1JL0RQIHBvcnQuCj4gPiA+ID4gSXQgcmV0dXJucyB0aGUgc2l6ZSBvZiBFTEQg
-Ynl0ZXMgaWYgaXQncyB2YWxpZCwgb3IgemVybyBpZiB0aGUgYXVkaW8KPiA+ID4gPiBpcyBkaXNh
-YmxlZCBvciB1bnBsdWdnZWQsIG9yIGEgbmVnYXRpdmUgZXJyb3IgY29kZS4KPiA+ID4gCj4gPiA+
-IFdoeSBkbyB3ZSBuZWVkIHRoaXM/IElzbid0IGl0IHNvbWV0aGluZyB0aGUgZWxkIG5vdGlmeSBo
-b29rIHNob3VsZAo+ID4gPiBwYXNzIGZyb20gaTkxNSB0byB0aGUgYXVkaW8gZHJpdmVyPwo+ID4g
-PiAKPiA+ID4gQXQgbGVhc3Qgd2l0aCB0aGUgbG9ja2luZyB5b3UgaGF2ZSBmb3IgdGhpcywgdGhl
-IGF1ZGlvIGRyaXZlciBjYW4gbm90Cj4gPiA+IGNhbGwgdGhpcyBmcm9tIHRoZSBlbGQgbm90aWZ5
-IGhvb2sgc2luY2UgaXQgd291bGQgZGVhZGxvY2suCj4gPiAKPiA+IEhtbS4gQWN0dWFsbHkgdGhl
-IGxvY2tpbmcgaXNuJ3QgcGVyaGFwcyBxdWl0ZSBsaWtlIHRoYXQgYXRtLiBCdXQgSSBndWVzcwo+
-ID4gdGhlIG1vZGVfY29uZmlnLm11dGV4IHdpbGwgbWFrZSBpdCBzby4KPiAKPiBJZiB3ZSBuZWVk
-IHRoaXMgd2UgY291bGQgY3JlYXRlIGEgc3Vic3RydWN0IGluIGRldl9wcml2IHdpdGggY29waWVz
-IG9mCj4gZXZlcnl0aGluZywgd2hpY2ggd291bGQgb25seSBiZSBwcm90ZWN0ZWQgYnkgYXZfbXV0
-ZXguIFRoYXQncyB0aGUgdXN1YWwKPiBhcHByb2FjaCB3ZSB1c2Ugd2hlbiBmYWNlZCB3aXRoIHRo
-aXMga2luZCBvZiBsb2NraW5nIGludmVyc2lvbjoKPiBDb3B5L3VwZGF0ZSByZWxldmFudCBkYXRh
-IGluIHRoZSBtb2Rlc2V0IC0+ZW5hYmxlL2Rpc2FibGUgaG9va3MsIHRoZW4ganVzdAo+IHVzZSB0
-aGVzZSBsb2NhbCBsb2NrcyB0byBhY2Nlc3MgdGhvc2UgY29waWVzLiBVc3VhbGx5IHRoYXQncyBl
-bm91Z2ggdG8KPiB1bnRhbmdsZSB0aGluZ3MsIHdpdGggbm8gbmVlZCB0byByZXNvcnQgdG8gd29y
-a2Vycy4KClllYWgsIElJUkMgSSBzdWdnZXN0ZWQganVzdCB0aGF0IG9yaWdpbmFsbHkuCgotLSAK
-VmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2ludGVsLWdmeAo=
+On 27/11/15 12:54, Mark Brown wrote:
+> On Tue, Nov 24, 2015 at 02:43:44PM +0000, Damien Horsley wrote:
+>> From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+>>
+>> Add driver for Texas Instruments pcm3168a codec
+> 
+> Please try to keep your CC lists reasonable - only CC people who have an
+> interest in the patch you're posting.  The CC list you have here is far
+> too broad, I can't figure out why a lot of the people there ended up
+> there.  If you've got 10 people that's generally a warning sign.
+> 
+
+The list was generated by scripts/get_maintainer.pl when used on the
+patches. I will remove some that look like they don't need to be there.
+
+> Overall this looks good but there are a few smallish issues below:
+> 
+>> +	if ((!slave_mode || (fmt & PCM3168A_FMT_DSP_MASK)) &&
+>> +			(format == SNDRV_PCM_FORMAT_S24_3LE)) {
+>> +		dev_err(codec->dev, "48-bit frames not supported in master mode or slave mode using DSP(A/B)\n");
+> 
+> You've got a lot of weird indentation with the second line of multi-line
+> if conditionals massively further indented than I'd expect.  These
+> conditionals all also seem more complex than they should be - the fact
+> that you're using so many !slave_modes makes me think that you should
+> have a flag for master mode and...
+> 
+>> +	if ((!slave_mode || ((fmt != PCM3168A_FMT_RIGHT_J) &&
+>> +			(fmt != PCM3168A_FMT_LEFT_J))) &&
+>> +			(format == SNDRV_PCM_FORMAT_S16)) {
+> 
+> ...especially with things like this the indentation makes it hard to
+> tell what bits go together.
+>
+
+Ok
+
+>> +	val = slave_mode ? 0 : ((i + 1) << shift);
+> 
+> Please write normal if statements unless there's a strong reason to use
+> the ternery operator.
+>
+
+Ok
+
+>> +	/*
+>> +	 * Justification has no effect for S32 and S16 as the whole frame
+>> +	 * is filled with the samples, but the register field
+>> +	 * must be set to a specific value for correct operation
+>> +	 */
+>> +	if ((fmt == PCM3168A_FMT_RIGHT_J) &&
+>> +			(format == SNDRV_PCM_FORMAT_S32)) {
+>> +		fmt = PCM3168A_FMT_LEFT_J;
+>> +	} else if (format == SNDRV_PCM_FORMAT_S16) {
+>> +		fmt = PCM3168A_FMT_RIGHT_J_16;
+>> +	}
+> 
+> Being in right justified mode *does* have an effect - it changes where
+> the audio data starts relative to LRCLK.  It is true that if the frame
+> has exactly the right number of clocks left and right justified are
+> identical but extra clocks are in general permitted so it looks like
+> your right justified case above just isn't something the device really
+> supports.
+>
+
+Should the value returned by snd_soc_params_to_frame_size be treated as
+the minimum frame size?
+
+>> +	pcm3168a->scki = devm_clk_get(dev, "scki");
+>> +	if (IS_ERR(pcm3168a->scki)) {
+>> +		if (PTR_ERR(pcm3168a->scki) != -EPROBE_DEFER)
+>> +			dev_err(dev, "failed to acquire clock 'scki'\n");
+> 
+> Please print the error code as well, it may help people understand the
+> problem.
+>
+
+Ok
+
+>> +	ret = snd_soc_register_codec(dev, &pcm3168a_driver, pcm3168a_dais,
+>> +			ARRAY_SIZE(pcm3168a_dais));
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to register codec: %d\n", ret);
+>> +		goto err_regulator;
+>> +	}
+>> +
+>> +	pm_runtime_set_active(dev);
+>> +	pm_runtime_enable(dev);
+>> +	pm_runtime_idle(dev);
+> 
+> You should enable runtime PM before registering the CODEC since the core
+> can do runtime PM operations and if it tries before runtime PM is
+> enabled things will get unbalanced.
+>
+
+Ok
+
+>> +#define PCM3168A_DOUBLE_STS(xname, reg, shift_left, shift_right, max, invert) \
+>> +{									\
+>> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),		\
+>> +	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,		\
+>> +	.put = snd_soc_put_volsw,					\
+>> +	.access = SNDRV_CTL_ELEM_ACCESS_READ |				\
+>> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE,				\
+>> +	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right,	\
+>> +	max, invert, 0)							\
+>> +}
+> 
+> This doesn't look like it should be driver specific - what's driver
+> specific about it?
+>
+
+There is nothing driver specific. I will add this to include/sound/soc.h
+as SOC_DOUBLE_STS
