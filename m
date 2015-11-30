@@ -1,83 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sti: correction for HBRA support
-Date: Mon, 30 Nov 2015 16:30:57 +0000
-Message-ID: <20151130163057.GA1929@sirena.org.uk>
-References: <1448370996-30224-1-git-send-email-moise.gergaud@st.com>
- <1448370996-30224-3-git-send-email-moise.gergaud@st.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 2/7] drm/i915: Add get_eld audio component
+Date: Mon, 30 Nov 2015 17:31:52 +0100
+Message-ID: <20151130163152.GZ17050@phenom.ffwll.local>
+References: <1448890671-2983-1-git-send-email-tiwai@suse.de>
+ <1448890671-2983-3-git-send-email-tiwai@suse.de>
+ <20151130141116.GR17050@phenom.ffwll.local>
+ <20151130141705.GU17050@phenom.ffwll.local>
+ <s5hh9k3qy61.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8640540578851073176=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0533B26156A
- for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2015 17:31:04 +0100 (CET)
-In-Reply-To: <1448370996-30224-3-git-send-email-moise.gergaud@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hh9k3qy61.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8640540578851073176==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rMBvpMIlSQ3hWZ0K"
-Content-Disposition: inline
-
-
---rMBvpMIlSQ3hWZ0K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 24, 2015 at 02:16:36PM +0100, Moise Gergaud wrote:
-> Detect HBRA based on rate and channels used in the pcm session
-> In case of HBRA:
->   - CH_STS repeat is disabled
->   - channel status sampling freq is not set if already set (because it can
->     be a multiple of the runtime rate)
-
-You might want to expand HBRA...
-
->  		switch (runtime->rate) {
->  		case 22050:
-> -			player->stream_settings.iec958.status[3] =
-> -						IEC958_AES3_CON_FS_22050;
-> +			*aes3 |= IEC958_AES3_CON_FS_22050;
->  			break;
-
-This feels like someting we could have as a generic function for other
-drivers to use - can you add a core function and then call it from your
-driver please?
-
---rMBvpMIlSQ3hWZ0K
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXHnAAAoJECTWi3JdVIfQZYEH/3wBt3ad9+/mtoYBle6f1Qkv
-um9jfjPYiyokVAMIClnq+nHHvh3HNL/tiCq3Ym+jHiM+XwispaVdombaFQ1Ho1mK
-03B2jpDnJD0NmRLRJwx6WMT4Y+JJQu27Eb2H6Ml8mN2DdosFiG/Rj3kBcBfOZ3n5
-gBImoMU4ZOnbKYYkn3iEiNYSPbZD14JXvKpwFD4/5sZZoXC5OlDaGrf02S3+f+cr
-8c3ePdtd+aXscsCO2BGMmYxu4LZCDpSgj01sCe6YgZsPuRE3bxEJCY9mr0RQ2G1+
-UmiH7I8XU/jLPbkEmYFEHyFDH38Pp0NwXzDvN3KV/7XUUakNP6Y1UghXi0v3r34=
-=BaJg
------END PGP SIGNATURE-----
-
---rMBvpMIlSQ3hWZ0K--
-
---===============8640540578851073176==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8640540578851073176==--
+T24gTW9uLCBOb3YgMzAsIDIwMTUgYXQgMDQ6NTU6NTBQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIE1vbiwgMzAgTm92IDIwMTUgMTU6MTc6MDUgKzAxMDAsCj4gRGFuaWVsIFZldHRl
+ciB3cm90ZToKPiA+IAo+ID4gT24gTW9uLCBOb3YgMzAsIDIwMTUgYXQgMDM6MTE6MTZQTSArMDEw
+MCwgRGFuaWVsIFZldHRlciB3cm90ZToKPiA+ID4gT24gTW9uLCBOb3YgMzAsIDIwMTUgYXQgMDI6
+Mzc6NDZQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gPiA+IGRpZmYgLS1naXQgYS9p
+bmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQu
+aAo+ID4gPiA+IGluZGV4IDMwZDg5ZTBkYTJjNi4uMDU4ZDM5ZThkNTdmIDEwMDY0NAo+ID4gPiA+
+IC0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gPiArKysgYi9pbmNsdWRl
+L2RybS9pOTE1X2NvbXBvbmVudC5oCj4gPiA+ID4gQEAgLTM4LDYgKzM4LDcgQEAKPiA+ID4gPiAg
+ICogQGNvZGVjX3dha2Vfb3ZlcnJpZGU6IEVuYWJsZS9EaXNhYmxlIGdlbmVyYXRpbmcgdGhlIGNv
+ZGVjIHdha2Ugc2lnbmFsCj4gPiA+ID4gICAqIEBnZXRfY2RjbGtfZnJlcTogZ2V0IHRoZSBDb3Jl
+IERpc3BsYXkgQ2xvY2sgaW4gS0h6Cj4gPiA+ID4gICAqIEBzeW5jX2F1ZGlvX3JhdGU6IHNldCBu
+L2N0cyBiYXNlZCBvbiB0aGUgc2FtcGxlIHJhdGUKPiA+ID4gPiArICogQGdldF9lbGQ6IGZpbGwg
+dGhlIGF1ZGlvIHN0YXRlIGFuZCBFTEQgYnl0ZXMgZm9yIHRoZSBnaXZlbiBwb3J0Cj4gPiA+IAo+
+ID4gPiBJbiA0LjQga2VybmVsZG9jIHN1cHBvcnRzIGV4dGVuZGVkIGluLWxpbmUgY29tbWVudHMg
+Zm9yIHN0cnVjdCBtZW1iZXJzCj4gPiA+IGxpa2UgdGhpczoKPiA+ID4gCj4gPiA+ID4gICAqLwo+
+ID4gPiA+ICBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzIHsKPiA+ID4gPiAgCXN0cnVj
+dCBtb2R1bGUgKm93bmVyOwo+ID4gPiA+IEBAIC00Niw2ICs0Nyw4IEBAIHN0cnVjdCBpOTE1X2F1
+ZGlvX2NvbXBvbmVudF9vcHMgewo+ID4gPiA+ICAJdm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUp
+KHN0cnVjdCBkZXZpY2UgKiwgYm9vbCBlbmFibGUpOwo+ID4gPiA+ICAJaW50ICgqZ2V0X2NkY2xr
+X2ZyZXEpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+ID4gIAlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUp
+KHN0cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludCByYXRlKTsKPiA+ID4gCj4gPiA+IAkvKioK
+PiA+ID4gCSAqIEBnZXRfZWxkOgo+ID4gPiAJICoKPiA+ID4gCSAqIGxvdHMgb2YgYmxhYmxhLCBw
+b3NzaWJseSBpbiBtdWx0aXBsZSBwYXJhZ3JhcGhzLgo+ID4gPiAJICovCj4gPiA+IAo+ID4gPiBQ
+bGVhc2UgdXNlIHRoYXQgbGF5b3V0IGFuZCBwdXQgYSBjb3B5IG9mIHRoZSBtb3JlIGRldGFpbGVk
+IGRlc2NyaXB0aW9uIHlvdQo+ID4gPiBwdXQgaW50byB0aGUgY29tbWl0IG1lc3NhZ2Ugb2YgaG93
+IC0+Z2V0X2VsZCBleGFjdGx5IHdvcmtzLgo+ID4gPiAKPiA+ID4gSSBkaWQgYXNrIGZvciB0aGlz
+IHRvIGdldCBkb25lIGFzIHBhcnQgb2Ygc29tZSBvZiB0aGUgcHJldmlvdXMsIGFuZCBpdCB3YXMK
+PiA+ID4gcGFydGlhbGx5IGRvbmUgYnV0IG5vdCBleGFjdGx5IGhvdyBrZXJuZWxkb2Mgd2FudHMg
+aXQgOiggQnV0IEkgdGhpbmsgd2UKPiA+ID4gbmVlZCB0byBzdGFydCBzb21ld2hlcmUgLi4uCj4g
+PiAKPiA+IFN0cmlrZSB0aGF0LCBJIGxvb2tlZCBhdCB0aGUgd3JvbmcgdHJlZSA7LSkgbGludXgt
+bmV4dCBzaG91bGQgaGF2ZSBhbGwgdGhlCj4gPiBwYXRjaGVzIHVzaW5nIHRoZSBuZXcgZXh0ZW5k
+ZWQgc3R5bGUuCj4gCj4gT0ssIHNvIHRoaXMgaXMgYSBwb3N0LTQuNCBjaGFuZ2UuICBJIGNhbiBy
+ZWJhc2Ugb24gaXQuICBDb3VsZCB5b3UKPiBwb2ludCBhIHN0ZWFkeSBicmFuY2ggc3VpdGFibGUg
+Zm9yIGl0PwoKRGF2ZSdzIGRybS1uZXh0IHdvdWxkIGJlIGl0LCBpZiBEYXZlIG9wZW5zIGl0IHVw
+IGFuZCBwdWxscyBpbiB0aGUgMiBwdWxsCnJlcXVlc3RzIEkndmUgc2VudCBvdXQgZWFybGllci4g
+RGF2ZT8KLURhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwg
+Q29ycG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9pbnRlbC1nZngK
