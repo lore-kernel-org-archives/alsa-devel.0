@@ -1,53 +1,83 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 2/7] drm/i915: Add get_eld audio component
-Date: Mon, 30 Nov 2015 17:34:45 +0100
-Message-ID: <20151130163445.GA17050@phenom.ffwll.local>
-References: <1448890671-2983-1-git-send-email-tiwai@suse.de>
- <1448890671-2983-3-git-send-email-tiwai@suse.de>
- <20151130152441.GS4437@intel.com> <20151130160933.GT4437@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rsnd: fix a possible NULL dereference
+Date: Mon, 30 Nov 2015 16:38:56 +0000
+Message-ID: <20151130163856.GC1929@sirena.org.uk>
+References: <1448455796-27315-1-git-send-email-clabbe.montjoie@gmail.com>
+ <8737vtejg6.wl%kuninori.morimoto.gx@renesas.com>
+ <20151126071715.GB28184@Red>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20151130160933.GT4437@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============8341834723060793349=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5890426156A
+ for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2015 17:39:02 +0100 (CET)
+In-Reply-To: <20151126071715.GB28184@Red>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: LABBE Corentin <clabbe.montjoie@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBOb3YgMzAsIDIwMTUgYXQgMDY6MDk6MzNQTSArMDIwMCwgVmlsbGUgU3lyasOkbMOk
-IHdyb3RlOgo+IE9uIE1vbiwgTm92IDMwLCAyMDE1IGF0IDA1OjI0OjQxUE0gKzAyMDAsIFZpbGxl
-IFN5cmrDpGzDpCB3cm90ZToKPiA+IE9uIE1vbiwgTm92IDMwLCAyMDE1IGF0IDAyOjM3OjQ2UE0g
-KzAxMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gSW1wbGVtZW50IGEgbmV3IGk5MTVfYXVk
-aW9fY29tcG9uZW50X29wcywgZ2V0X2VsZCgpLiAgSXQncyBjYWxsZWQgYnkKPiA+ID4gdGhlIGF1
-ZGlvIGRyaXZlciB0byBmZXRjaCB0aGUgY3VycmVudCBFTEQgb2YgdGhlIGdpdmVuIEhETUkvRFAg
-cG9ydC4KPiA+ID4gSXQgcmV0dXJucyB0aGUgc2l6ZSBvZiBFTEQgYnl0ZXMgaWYgaXQncyB2YWxp
-ZCwgb3IgemVybyBpZiB0aGUgYXVkaW8KPiA+ID4gaXMgZGlzYWJsZWQgb3IgdW5wbHVnZ2VkLCBv
-ciBhIG5lZ2F0aXZlIGVycm9yIGNvZGUuCj4gPiAKPiA+IFdoeSBkbyB3ZSBuZWVkIHRoaXM/IElz
-bid0IGl0IHNvbWV0aGluZyB0aGUgZWxkIG5vdGlmeSBob29rIHNob3VsZAo+ID4gcGFzcyBmcm9t
-IGk5MTUgdG8gdGhlIGF1ZGlvIGRyaXZlcj8KPiA+IAo+ID4gQXQgbGVhc3Qgd2l0aCB0aGUgbG9j
-a2luZyB5b3UgaGF2ZSBmb3IgdGhpcywgdGhlIGF1ZGlvIGRyaXZlciBjYW4gbm90Cj4gPiBjYWxs
-IHRoaXMgZnJvbSB0aGUgZWxkIG5vdGlmeSBob29rIHNpbmNlIGl0IHdvdWxkIGRlYWRsb2NrLgo+
-IAo+IEhtbS4gQWN0dWFsbHkgdGhlIGxvY2tpbmcgaXNuJ3QgcGVyaGFwcyBxdWl0ZSBsaWtlIHRo
-YXQgYXRtLiBCdXQgSSBndWVzcwo+IHRoZSBtb2RlX2NvbmZpZy5tdXRleCB3aWxsIG1ha2UgaXQg
-c28uCgpJZiB3ZSBuZWVkIHRoaXMgd2UgY291bGQgY3JlYXRlIGEgc3Vic3RydWN0IGluIGRldl9w
-cml2IHdpdGggY29waWVzIG9mCmV2ZXJ5dGhpbmcsIHdoaWNoIHdvdWxkIG9ubHkgYmUgcHJvdGVj
-dGVkIGJ5IGF2X211dGV4LiBUaGF0J3MgdGhlIHVzdWFsCmFwcHJvYWNoIHdlIHVzZSB3aGVuIGZh
-Y2VkIHdpdGggdGhpcyBraW5kIG9mIGxvY2tpbmcgaW52ZXJzaW9uOgpDb3B5L3VwZGF0ZSByZWxl
-dmFudCBkYXRhIGluIHRoZSBtb2Rlc2V0IC0+ZW5hYmxlL2Rpc2FibGUgaG9va3MsIHRoZW4ganVz
-dAp1c2UgdGhlc2UgbG9jYWwgbG9ja3MgdG8gYWNjZXNzIHRob3NlIGNvcGllcy4gVXN1YWxseSB0
-aGF0J3MgZW5vdWdoIHRvCnVudGFuZ2xlIHRoaW5ncywgd2l0aCBubyBuZWVkIHRvIHJlc29ydCB0
-byB3b3JrZXJzLgotRGFuaWVsCi0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJ
-bnRlbCBDb3Jwb3JhdGlvbgpodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVs
-LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+
+--===============8341834723060793349==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aNVYTE9V2LY2iLDz"
+Content-Disposition: inline
+
+
+--aNVYTE9V2LY2iLDz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 26, 2015 at 08:17:15AM +0100, LABBE Corentin wrote:
+> On Wed, Nov 25, 2015 at 11:46:45PM +0000, Kuninori Morimoto wrote:
+
+> > > +	of_data =3D of_device_get_match_data(dev);
+> > > +	if (!of_data)
+> > > +		return 1;
+
+> > return 1 ?
+> > You want to use -EINVAL ?
+
+> I do that Uwe Kleine-K=F6nig said to me to do in others thread:
+> https://lkml.org/lkml/2015/11/12/70 and https://lkml.org/lkml/2015/11/16/=
+211
+
+What error code to return is going to depend on the context - you need
+to look at what the caller is expecting and how it will handle the value
+returned.
+
+--aNVYTE9V2LY2iLDz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWXHufAAoJECTWi3JdVIfQ1PAH/2atEF0EmrSZKXVNjCbj5yo2
+mrcD5+cBcAAzLgRNA4AFV2SKjHc0lXRdcOC2CIq8i6r22irl0GyeA6RV45DzbW7N
+TGi+lHbYJAfcryHP7XSQpzopMQD+QxYn+U2pVm1wBLec+r5ZzBDyfvrTBk8eGKwt
+Zcze/Uupik3v/QRn586HeWLHwofZPW6rFcKt9X/9j6zYbq0GFC9i0WWKh0uXXehQ
++UAcj6Pz9vCKcWFy6OuA2wl77SpCsAruePHbvD/jXKjD1nIs3+uiUCul77W7o8JP
+1EZHXbHp7YcobOtnBKk+yCLfT8KY3b8PbCo0nxCd4aFeU66aXofG68R3OMUGCPY=
+=moQz
+-----END PGP SIGNATURE-----
+
+--aNVYTE9V2LY2iLDz--
+
+--===============8341834723060793349==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8341834723060793349==--
