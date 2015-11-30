@@ -1,155 +1,41 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: pcm: constify action_ops structures
-Date: Mon, 30 Nov 2015 13:08:31 +0900
-Message-ID: <565BCBBF.6000508@sakamocchi.jp>
-References: <1448811400-11304-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1448811400-11304-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+From: Simon Horman <horms+renesas@verge.net.au>
+Subject: [PATCH] ASoC: rsnd:  Add device tree support for r8a77{79,93,94}
+Date: Mon, 30 Nov 2015 15:02:52 +0900
+Message-ID: <1448863372-14788-1-git-send-email-horms+renesas@verge.net.au>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Simon Horman <horms+renesas@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Simply document new compat strings.
+There appears to be no need for a driver updates.
 
-On Nov 30 2015 00:36, Julia Lawall wrote:
-> The action_ops structures are never modified, so declare them as const.
->
-> Done with the help of Coccinelle.
->
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
 
-I think this approach is better to describe a part of design about 
-actions for PCM substreams. It may help readers.
+---
+The r8a7792 is omitted from this change as according to the documentation
+the hardware does not appear to be present on that SoC.
+---
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index bbcb3272977d..59cebfbd7b6a 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -7,8 +7,11 @@ Required properties:
+ 				  "renesas,rcar_sound-gen3" if generation3
+ 				  Examples with soctypes are:
+ 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
++				    - "renesas,rcar_sound-r8a7779" (R-Car H1)
+ 				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
+ 				    - "renesas,rcar_sound-r8a7791" (R-Car M2-W)
++				    - "renesas,rcar_sound-r8a7793" (R-Car M2-N)
++				    - "renesas,rcar_sound-r8a7794" (R-Car E2)
+ 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+-- 
+2.1.4
 
-> ---
->   sound/core/pcm_native.c |   26 +++++++++++++-------------
->   1 file changed, 13 insertions(+), 13 deletions(-)
->
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index a8b27cd..fadd3eb 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -875,7 +875,7 @@ struct action_ops {
->    *  Note: the stream state might be changed also on failure
->    *  Note2: call with calling stream lock + link lock
->    */
-> -static int snd_pcm_action_group(struct action_ops *ops,
-> +static int snd_pcm_action_group(const struct action_ops *ops,
->   				struct snd_pcm_substream *substream,
->   				int state, int do_lock)
->   {
-> @@ -932,7 +932,7 @@ static int snd_pcm_action_group(struct action_ops *ops,
->   /*
->    *  Note: call with stream lock
->    */
-> -static int snd_pcm_action_single(struct action_ops *ops,
-> +static int snd_pcm_action_single(const struct action_ops *ops,
->   				 struct snd_pcm_substream *substream,
->   				 int state)
->   {
-> @@ -952,7 +952,7 @@ static int snd_pcm_action_single(struct action_ops *ops,
->   /*
->    *  Note: call with stream lock
->    */
-> -static int snd_pcm_action(struct action_ops *ops,
-> +static int snd_pcm_action(const struct action_ops *ops,
->   			  struct snd_pcm_substream *substream,
->   			  int state)
->   {
-> @@ -984,7 +984,7 @@ static int snd_pcm_action(struct action_ops *ops,
->   /*
->    *  Note: don't use any locks before
->    */
-> -static int snd_pcm_action_lock_irq(struct action_ops *ops,
-> +static int snd_pcm_action_lock_irq(const struct action_ops *ops,
->   				   struct snd_pcm_substream *substream,
->   				   int state)
->   {
-> @@ -998,7 +998,7 @@ static int snd_pcm_action_lock_irq(struct action_ops *ops,
->
->   /*
->    */
-> -static int snd_pcm_action_nonatomic(struct action_ops *ops,
-> +static int snd_pcm_action_nonatomic(const struct action_ops *ops,
->   				    struct snd_pcm_substream *substream,
->   				    int state)
->   {
-> @@ -1056,7 +1056,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream, int state)
->   	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTART);
->   }
->
-> -static struct action_ops snd_pcm_action_start = {
-> +static const struct action_ops snd_pcm_action_start = {
->   	.pre_action = snd_pcm_pre_start,
->   	.do_action = snd_pcm_do_start,
->   	.undo_action = snd_pcm_undo_start,
-> @@ -1107,7 +1107,7 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
->   	wake_up(&runtime->tsleep);
->   }
->
-> -static struct action_ops snd_pcm_action_stop = {
-> +static const struct action_ops snd_pcm_action_stop = {
->   	.pre_action = snd_pcm_pre_stop,
->   	.do_action = snd_pcm_do_stop,
->   	.post_action = snd_pcm_post_stop
-> @@ -1224,7 +1224,7 @@ static void snd_pcm_post_pause(struct snd_pcm_substream *substream, int push)
->   	}
->   }
->
-> -static struct action_ops snd_pcm_action_pause = {
-> +static const struct action_ops snd_pcm_action_pause = {
->   	.pre_action = snd_pcm_pre_pause,
->   	.do_action = snd_pcm_do_pause,
->   	.undo_action = snd_pcm_undo_pause,
-> @@ -1273,7 +1273,7 @@ static void snd_pcm_post_suspend(struct snd_pcm_substream *substream, int state)
->   	wake_up(&runtime->tsleep);
->   }
->
-> -static struct action_ops snd_pcm_action_suspend = {
-> +static const struct action_ops snd_pcm_action_suspend = {
->   	.pre_action = snd_pcm_pre_suspend,
->   	.do_action = snd_pcm_do_suspend,
->   	.post_action = snd_pcm_post_suspend
-> @@ -1375,7 +1375,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
->   	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
->   }
->
-> -static struct action_ops snd_pcm_action_resume = {
-> +static const struct action_ops snd_pcm_action_resume = {
->   	.pre_action = snd_pcm_pre_resume,
->   	.do_action = snd_pcm_do_resume,
->   	.undo_action = snd_pcm_undo_resume,
-> @@ -1478,7 +1478,7 @@ static void snd_pcm_post_reset(struct snd_pcm_substream *substream, int state)
->   		snd_pcm_playback_silence(substream, ULONG_MAX);
->   }
->
-> -static struct action_ops snd_pcm_action_reset = {
-> +static const struct action_ops snd_pcm_action_reset = {
->   	.pre_action = snd_pcm_pre_reset,
->   	.do_action = snd_pcm_do_reset,
->   	.post_action = snd_pcm_post_reset
-> @@ -1522,7 +1522,7 @@ static void snd_pcm_post_prepare(struct snd_pcm_substream *substream, int state)
->   	snd_pcm_set_state(substream, SNDRV_PCM_STATE_PREPARED);
->   }
->
-> -static struct action_ops snd_pcm_action_prepare = {
-> +static const struct action_ops snd_pcm_action_prepare = {
->   	.pre_action = snd_pcm_pre_prepare,
->   	.do_action = snd_pcm_do_prepare,
->   	.post_action = snd_pcm_post_prepare
-> @@ -1618,7 +1618,7 @@ static void snd_pcm_post_drain_init(struct snd_pcm_substream *substream, int sta
->   {
->   }
->
-> -static struct action_ops snd_pcm_action_drain_init = {
-> +static const struct action_ops snd_pcm_action_drain_init = {
->   	.pre_action = snd_pcm_pre_drain_init,
->   	.do_action = snd_pcm_do_drain_init,
->   	.post_action = snd_pcm_post_drain_init
