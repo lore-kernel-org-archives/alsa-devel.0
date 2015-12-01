@@ -1,81 +1,47 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 1/2] ASoC: sunxi: Remove useless comments and variable
-Date: Tue,  1 Dec 2015 12:06:46 +0100
-Message-ID: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
+Subject: [PATCH 2/2] ASoC: sun4i-codec: pass through clk_set_rate error
+Date: Tue,  1 Dec 2015 12:06:47 +0100
+Message-ID: <1448968007-10128-2-git-send-email-maxime.ripard@free-electrons.com>
+References: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-The comment is misleading on how we should support external power amps, and
-the variable is not used and generates a warning.
+Commit 1fb34b48361e ('ASoC: sun4i: Implement MIC1 capture') added back some
+code that disregards the clk_set_rate error code and always returns
+-EINVAL. Fix that and return the code in order to have more clue about
+what's going on.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- sound/soc/sunxi/sun4i-codec.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 30c9e9260491..516c7c2b479a 100644
+index 516c7c2b479a..0dc11f547937 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -109,11 +109,6 @@ struct sun4i_codec {
+@@ -411,14 +411,15 @@ static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
+ 	unsigned long clk_freq;
+-	int hwrate;
++	int ret, hwrate;
  
- static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO high here on some boards
--	 */
--
- 	/* Flush TX FIFO */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
- 			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
-@@ -127,11 +122,6 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
+ 	clk_freq = sun4i_codec_get_mod_freq(params);
+ 	if (!clk_freq)
+ 		return -EINVAL;
  
- static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO low here on some boards
--	 */
--
- 	/* Disable DAC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
- 			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
-@@ -140,11 +130,6 @@ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
+-	if (clk_set_rate(scodec->clk_module, clk_freq))
+-		return -EINVAL;
++	ret = clk_set_rate(scodec->clk_module, clk_freq);
++	if (ret)
++		return ret;
  
- static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO high here on some boards
--	 */
--
- 	/* Enable ADC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN),
-@@ -153,11 +138,6 @@ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
- 
- static void sun4i_codec_stop_capture(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO low here on some boards
--	 */
--
- 	/* Disable ADC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN), 0);
-@@ -358,8 +338,6 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
- 					 struct snd_pcm_hw_params *params,
- 					 unsigned int hwrate)
- {
--	u32 val;
--
- 	/* Set ADC sample rate */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   7 << SUN4I_CODEC_ADC_FIFOC_ADC_FS,
+ 	hwrate = sun4i_codec_get_hw_rate(params);
+ 	if (hwrate < 0)
 -- 
 2.6.3
