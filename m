@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add rsnd_ssi_config_init()" to
-	the asoc tree
-Date: Tue, 01 Dec 2015 22:59:54 +0000
-Message-ID: <E1a3ttq-0006oW-RN@debutante>
-References: <87y4dfswg0.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: set SSIWSR setting on
+	rsnd_ssi_config_init()" to the asoc tree
+Date: Tue, 01 Dec 2015 22:59:53 +0000
+Message-ID: <E1a3ttp-0006m9-On@debutante>
+References: <87wpszswfd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 72B412661AE
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:59 +0100 (CET)
-In-Reply-To: <87y4dfswg0.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EE9D264F07
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:58 +0100 (CET)
+In-Reply-To: <87wpszswfd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add rsnd_ssi_config_init()
+   ASoC: rsnd: set SSIWSR setting on rsnd_ssi_config_init()
 
 has been applied to the asoc tree at
 
@@ -53,143 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From 840ada3b04275d47a24f35a8c559bc584962f315 Mon Sep 17 00:00:00 2001
+>From 08bada26fe8089f908484a3a4580f38e78502ac7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:52:38 +0000
-Subject: [PATCH] ASoC: rsnd: add rsnd_ssi_config_init()
+Date: Mon, 30 Nov 2015 08:53:04 +0000
+Subject: [PATCH] ASoC: rsnd: set SSIWSR setting on rsnd_ssi_config_init()
 
-In order to enhance code readability, this patch adds
-rsnd_ssi_config_init() and moves SSICR register settings to it.
-This is prepare patch for TDM support
+It will have TDM settings on SSIWSR. Actually, we would like to set
+it on rsnd_ssi_config_init(), but we can't. Because SSI might be used
+as clock master (It doesn't need to call rsnd_ssi_config_init() when
+clock master mode).
+This patch adds new ssi->wsr and set it on rsnd_ssi_start().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 98 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 52 insertions(+), 46 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 40d5b587cbe9..31e26bd481cf 100644
+index 31e26bd481cf..d97f365f1b41 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -253,6 +253,55 @@ static void rsnd_ssi_master_clk_stop(struct rsnd_ssi *ssi,
- 	rsnd_adg_ssi_clk_stop(mod);
+@@ -69,6 +69,7 @@ struct rsnd_ssi {
+ 	u32 cr_own;
+ 	u32 cr_clk;
+ 	u32 cr_mode;
++	u32 wsr;
+ 	int chan;
+ 	int rate;
+ 	int err;
+@@ -214,11 +215,10 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 		if (0 == ret) {
+ 			ssi->cr_clk	= FORCE | SWL_32 |
+ 				SCKD | SWSD | CKDV(j);
++			ssi->wsr = CONT;
+ 
+ 			ssi->rate = rate;
+ 
+-			rsnd_mod_write(mod, SSIWSR, CONT);
+-
+ 			dev_dbg(dev, "%s[%d] outputs %u Hz\n",
+ 				rsnd_mod_name(mod),
+ 				rsnd_mod_id(mod), rate);
+@@ -421,6 +421,7 @@ static int __rsnd_ssi_start(struct rsnd_mod *mod,
+ 		EN;
+ 
+ 	rsnd_mod_write(mod, SSICR, cr);
++	rsnd_mod_write(mod, SSIWSR, ssi->wsr);
+ 
+ 	return 0;
  }
- 
-+static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
-+				struct rsnd_dai_stream *io)
-+{
-+	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	u32 cr_own;
-+	u32 cr_mode;
-+
-+	/*
-+	 * always use 32bit system word.
-+	 * see also rsnd_ssi_master_clk_enable()
-+	 */
-+	cr_own = FORCE | SWL_32 | PDTA;
-+
-+	if (rdai->bit_clk_inv)
-+		cr_own |= SCKP;
-+	if (rdai->frm_clk_inv)
-+		cr_own |= SWSP;
-+	if (rdai->data_alignment)
-+		cr_own |= SDTA;
-+	if (rdai->sys_delay)
-+		cr_own |= DEL;
-+	if (rsnd_io_is_play(io))
-+		cr_own |= TRMD;
-+
-+	switch (runtime->sample_bits) {
-+	case 16:
-+		cr_own |= DWL_16;
-+		break;
-+	case 32:
-+		cr_own |= DWL_24;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (rsnd_ssi_is_dma_mode(rsnd_mod_get(ssi))) {
-+		cr_mode = UIEN | OIEN |	/* over/under run */
-+			  DMEN;		/* DMA : enable DMA */
-+	} else {
-+		cr_mode = DIEN;		/* PIO : enable Data interrupt */
-+	}
-+
-+	ssi->cr_own	= cr_own;
-+	ssi->cr_mode	= cr_mode;
-+
-+	return 0;
-+}
-+
- /*
-  *	SSI mod common functions
-  */
-@@ -261,9 +310,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 			 struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
--	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	u32 cr;
- 	int ret;
- 
- 	ssi->usrcnt++;
-@@ -277,49 +323,9 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 	if (rsnd_ssi_is_parent(mod, io))
- 		return 0;
- 
--	cr = FORCE | PDTA;
--
--	/*
--	 * always use 32bit system word for easy clock calculation.
--	 * see also rsnd_ssi_master_clk_enable()
--	 */
--	cr |= SWL_32;
--
--	/*
--	 * init clock settings for SSICR
--	 */
--	switch (runtime->sample_bits) {
--	case 16:
--		cr |= DWL_16;
--		break;
--	case 32:
--		cr |= DWL_24;
--		break;
--	default:
--		return -EIO;
--	}
--
--	if (rdai->bit_clk_inv)
--		cr |= SCKP;
--	if (rdai->frm_clk_inv)
--		cr |= SWSP;
--	if (rdai->data_alignment)
--		cr |= SDTA;
--	if (rdai->sys_delay)
--		cr |= DEL;
--	if (rsnd_io_is_play(io))
--		cr |= TRMD;
--
--	ssi->cr_own	= cr;
--
--	if (rsnd_ssi_is_dma_mode(mod)) {
--		cr =	UIEN | OIEN |	/* over/under run */
--			DMEN;		/* DMA : enable DMA */
--	} else {
--		cr =	DIEN;		/* PIO : enable Data interrupt */
--	}
--
--	ssi->cr_mode	= cr;
-+	ret = rsnd_ssi_config_init(ssi, io);
-+	if (ret < 0)
-+		return ret;
- 
- 	ssi->err	= -1; /* ignore 1st error */
- 
 -- 
 2.6.2
