@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: dvc: rename rsnd_dvc_soft_reset()
-	to rsnd_dvc_activation()" to the asoc tree
-Date: Tue, 01 Dec 2015 22:59:58 +0000
-Message-ID: <E1a3ttu-00071U-UO@debutante>
-References: <874mg3ub2r.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: src: rename rsnd_src_soft_reset()
+	to rsnd_src_activation()" to the asoc tree
+Date: Tue, 01 Dec 2015 23:00:01 +0000
+Message-ID: <E1a3ttx-00078F-19@debutante>
+References: <877fkzub3y.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 99A582661BF
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:03 +0100 (CET)
-In-Reply-To: <874mg3ub2r.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 90F8526627C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:05 +0100 (CET)
+In-Reply-To: <877fkzub3y.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: dvc: rename rsnd_dvc_soft_reset() to rsnd_dvc_activation()
+   ASoC: rsnd: src: rename rsnd_src_soft_reset() to rsnd_src_activation()
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 87a6c5a815f5da390ea74187344342df03205358 Mon Sep 17 00:00:00 2001
+>From 98efeeaeeb5f2a66603ba7c9cb9b4f7a02dd3c01 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:51:15 +0000
-Subject: [PATCH] ASoC: rsnd: dvc: rename rsnd_dvc_soft_reset() to
- rsnd_dvc_activation()
+Date: Mon, 30 Nov 2015 08:50:32 +0000
+Subject: [PATCH] ASoC: rsnd: src: rename rsnd_src_soft_reset() to
+ rsnd_src_activation()
 
 Based on datasheet naming
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dvc.c | 4 ++--
+ sound/soc/sh/rcar/src.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index c622dec24362..b69a6e5cafef 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -64,7 +64,7 @@ static const char * const dvc_ramp_rate[] = {
- 	"0.125 dB/8192 steps",	 /* 10111 */
- };
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 27b3ffe8c9a0..5239c3d7a3d0 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -70,7 +70,7 @@ struct rsnd_src {
+  *        |-----------------|
+  */
  
--static void rsnd_dvc_soft_reset(struct rsnd_mod *mod)
-+static void rsnd_dvc_activation(struct rsnd_mod *mod)
+-static void rsnd_src_soft_reset(struct rsnd_mod *mod)
++static void rsnd_src_activation(struct rsnd_mod *mod)
  {
- 	rsnd_mod_write(mod, DVC_SWRSR, 0);
- 	rsnd_mod_write(mod, DVC_SWRSR, 1);
-@@ -206,7 +206,7 @@ static int rsnd_dvc_init(struct rsnd_mod *mod,
- {
+ 	rsnd_mod_write(mod, SRC_SWRSR, 0);
+ 	rsnd_mod_write(mod, SRC_SWRSR, 1);
+@@ -378,7 +378,7 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ 
  	rsnd_mod_power_on(mod);
  
--	rsnd_dvc_soft_reset(mod);
-+	rsnd_dvc_activation(mod);
+-	rsnd_src_soft_reset(mod);
++	rsnd_src_activation(mod);
  
- 	rsnd_dvc_volume_init(io, mod);
+ 	rsnd_src_set_convert_rate(io, mod);
  
 -- 
 2.6.2
