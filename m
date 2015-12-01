@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add missing SRC_O_BUSIF_MODE
-	register" to the asoc tree
-Date: Tue, 01 Dec 2015 23:00:02 +0000
-Message-ID: <E1a3tty-0007AW-53@debutante>
-References: <878u5fub4u.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't use normal *mod in adg.c"
+	to the asoc tree
+Date: Tue, 01 Dec 2015 23:00:04 +0000
+Message-ID: <E1a3tu0-0007F9-B4@debutante>
+References: <87bnabub6c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EB1D626627F
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:06 +0100 (CET)
-In-Reply-To: <878u5fub4u.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 10E32266176
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:09 +0100 (CET)
+In-Reply-To: <87bnabub6c.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add missing SRC_O_BUSIF_MODE register
+   ASoC: rsnd: don't use normal *mod in adg.c
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,93 @@ to this mail.
 Thanks,
 Mark
 
->From bf4e8d7c371ae0d7acc1872a153c2f980f5523fe Mon Sep 17 00:00:00 2001
+>From 94458364304161551906d276f0164efd3dc30576 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:50:08 +0000
-Subject: [PATCH] ASoC: rsnd: add missing SRC_O_BUSIF_MODE register
+Date: Mon, 30 Nov 2015 08:49:15 +0000
+Subject: [PATCH] ASoC: rsnd: don't use normal *mod in adg.c
 
-SRC_BUSIF_MODE has both IN/OUT register. Current src driver sets
-IN register only. This patch sets missing OUT register.
-IN/OUT register are using default setting, so, there is no
-HW effect.
+adg.c is used from ssi/src/cmd. Thus don't use confusable *mod here.
+This patch rename it to ssi_mod/src_mod/cmd_mod
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c  | 4 +++-
- sound/soc/sh/rcar/rsnd.h | 3 ++-
- sound/soc/sh/rcar/src.c  | 3 ++-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/adg.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 15d770662482..364708c73418 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -233,8 +233,10 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(SSI_CTRL,	0x10,	0x80),
- 		RSND_GEN_M_REG(SSI_INT_ENABLE,	0x18,	0x80),
- 	};
-+
- 	const static struct rsnd_regmap_field_conf conf_scu[] = {
--		RSND_GEN_M_REG(SRC_BUSIF_MODE,	0x0,	0x20),
-+		RSND_GEN_M_REG(SRC_I_BUSIF_MODE,0x0,	0x20),
-+		RSND_GEN_M_REG(SRC_O_BUSIF_MODE,0x4,	0x20),
- 		RSND_GEN_M_REG(SRC_BUSIF_DALIGN,0x8,	0x20),
- 		RSND_GEN_M_REG(SRC_ROUTE_MODE0,	0xc,	0x20),
- 		RSND_GEN_M_REG(SRC_CTRL,	0x10,	0x20),
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 42d2ac5cb0d1..bb2c29cdc892 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -51,7 +51,8 @@ enum rsnd_reg {
- 	RSND_REG_SSI_BUSIF_ADINR,	/* Gen2 only */
- 	RSND_REG_SSI_BUSIF_DALIGN,	/* Gen2 only */
- 	RSND_REG_SSI_INT_ENABLE,	/* Gen2 only */
--	RSND_REG_SRC_BUSIF_MODE,
-+	RSND_REG_SRC_I_BUSIF_MODE,
-+	RSND_REG_SRC_O_BUSIF_MODE,
- 	RSND_REG_SRC_ROUTE_MODE0,
- 	RSND_REG_SRC_SWRSR,
- 	RSND_REG_SRC_SRCIR,
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 30cad79deab0..27b3ffe8c9a0 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -254,7 +254,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 448f082ab56d..6d3ef366d536 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -68,8 +68,8 @@ static u32 rsnd_adg_calculate_rbgx(unsigned long div)
  
- 	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
--	rsnd_mod_write(mod, SRC_BUSIF_MODE, 1);
-+	rsnd_mod_write(mod, SRC_I_BUSIF_MODE, 1);
-+	rsnd_mod_write(mod, SRC_O_BUSIF_MODE, 1);
- 	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
+ static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+-	int id = rsnd_mod_id(mod);
++	struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
++	int id = rsnd_mod_id(ssi_mod);
+ 	int ws = id;
  
- 	if (convert_rate)
+ 	if (rsnd_ssi_is_pin_sharing(io)) {
+@@ -90,13 +90,13 @@ static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
+ 	return (0x6 + ws) << 8;
+ }
+ 
+-int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
++int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
+ 				 struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
++	struct rsnd_priv *priv = rsnd_mod_to_priv(cmd_mod);
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+ 	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
+-	int id = rsnd_mod_id(mod);
++	int id = rsnd_mod_id(cmd_mod);
+ 	int shift = (id % 2) ? 16 : 0;
+ 	u32 mask, val;
+ 
+@@ -275,20 +275,16 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ 	}
+ }
+ 
+-int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod)
++int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
+ {
+-	/*
+-	 * "mod" = "ssi" here.
+-	 * we can get "ssi id" from mod
+-	 */
+-	rsnd_adg_set_ssi_clk(mod, 0);
++	rsnd_adg_set_ssi_clk(ssi_mod, 0);
+ 
+ 	return 0;
+ }
+ 
+-int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate)
++int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
+ {
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
++	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct clk *clk;
+@@ -332,14 +328,10 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate)
+ 
+ found_clock:
+ 
+-	/*
+-	 * This "mod" = "ssi" here.
+-	 * we can get "ssi id" from mod
+-	 */
+-	rsnd_adg_set_ssi_clk(mod, data);
++	rsnd_adg_set_ssi_clk(ssi_mod, data);
+ 
+ 	dev_dbg(dev, "ADG: %s[%d] selects 0x%x for %d\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++		rsnd_mod_name(ssi_mod), rsnd_mod_id(ssi_mod),
+ 		data, rate);
+ 
+ 	return 0;
 -- 
 2.6.2
