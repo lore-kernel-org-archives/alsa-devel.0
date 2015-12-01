@@ -1,18 +1,21 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: snd-fireworks requires larger period sizes than
- FFADO
-Date: Tue, 1 Dec 2015 15:31:11 +0100
-Message-ID: <20151201153111.4f7a0e1f@kant>
-References: <56510A5F.4080004@gmx.de>
-	<5652ED38.6080409@ladisch.de>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 05/15] ASoC: hdac_hdmi: Add hotplug
+ notification and read eld
+Date: Wed, 2 Dec 2015 01:44:22 +0530
+Message-ID: <20151201201422.GC5624@subhransu-desktop>
+References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-5-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hwpsypcoe.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn-mail.in-berlin.de [217.197.80.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 01AC6261AE0
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 15:31:12 +0100 (CET)
-In-Reply-To: <5652ED38.6080409@ladisch.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3735261AE0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 15:43:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hwpsypcoe.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +25,243 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Dominic =?UTF-8?B?U2FjcsOp?= <dominic.sacre@gmx.de>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-KGFkZGluZyBDYzogVGFrYXNoaSBTYWthbW90byB3aG8gaXMgY3VycmVudGx5IHdvcmtpbmcgd2l0
-aGluCnNuZC1maXJld2lyZS1saWIpCgpPbiBOb3YgMjMgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+
-IERvbWluaWMgU2FjcsOpIHdyb3RlOgo+ID4gSSdtIHRyeWluZyB0byB1c2UgYW4gRWNobyBBdWRp
-b0ZpcmUgNCB3aXRoIHRoZSBzbmQtZmlyZXdvcmtzIGRyaXZlci4KPiA+IFdpdGggRkZBRE8gdGhl
-IGRldmljZSB3b3JrcyByZWFzb25hYmx5IHdlbGwgYXQgYSBwZXJpb2Qgc2l6ZSBvZgo+ID4gNjQg
-c2FtcGxlcyAob24gYSBQUkVFTVBUX1JUIGtlcm5lbCksIHdoZXJlYXMgd2l0aCBzbmQtZmlyZXdv
-cmtzIHRoZQo+ID4gbG93ZXN0IHBvc3NpYmxlIHBlcmlvZCBzaXplIHNlZW1zIHRvIGJlIDI1NiBz
-YW1wbGVzLgo+ID4KPiA+IFRoZSBsb3dlc3QgYWNoaWV2YWJsZSBhbmFsb2cgcm91bmR0cmlwIGxh
-dGVuY3kgc2VlbXMgdG8gYmUgYXJvdW5kIDE5bXMKPiA+IChhdCAyeDI1NiBmcmFtZXMpLCBhcyBv
-cHBvc2VkIHRvIDguM21zIHdpdGggRkZBRE8gKGF0IDJ4NjQpLiBBcmUgdGhlcmUKPiA+IGFueSBr
-bm93biBsaW1pdGF0aW9ucyBvZiB0aGUgc25kLWZpcmV3b3JrcyBkcml2ZXIgaW4gdGhpcyByZWdh
-cmQ/ICAKPiAKPiBBdCB0aGUgbW9tZW50LCB0aGUgZHJpdmVyIHVzZXMgYSBtaW5pbXVtIHBlcmlv
-ZCBzaXplIG9mIDUgbXMuCj4gCj4gWW91IGNvdWxkIHRyeSByZWR1Y2luZyBJTlRFUlJVUFRfSU5U
-RVJWQUwgYW5kIHRoZSBwYXJhbWV0ZXIgdG8KPiBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbWlubWF4
-KCkgaW4gc291bmQvZmlyZXdpcmUvYW1kdHAtc3RyZWFtLmMsIGFuZAo+IHJlY29tcGlsaW5nIHRo
-ZSBkcml2ZXIuCgpEb21pbmljOgpJIGhhdmUgbm90IHRyaWVkIGl0IG15c2VsZiB5ZXQgYW5kIEkg
-YW0gbm90IGZhbWlsaWFyIHdpdGggQUxTQSdzCnJlcXVpcmVtZW50cywgYnV0IHBlcmhhcHMgYSBm
-aXJzdCBzdGVwIHdvdWxkIGJlIHRvIHJlZHVjZSBib3RoIHRoZQpJTlRFUlJVUFRfSU5URVJWQUwg
-YW5kIHRoZSB0aGlyZCBhcmd1bWVudCBpbiB0aGUgY2FsbCB0bwpzbmRfcGNtX2h3X2NvbnN0cmFp
-bnRfbWlubWF4KCkgdG8gaGFsZiBvZiB0aGUgb3JpZ2luYWwgdmFsdWUuCgpTb21lIGJhY2tncm91
-bmQ6CgpUaGUgSUVFRSAxMzk0IChGaXJlV2lyZSkgcGFja2V0cywgaW4gd2hpY2ggdGhlIGluYm91
-bmQgYW5kIG91dGJvdW5kIGF1ZGlvCnN0cmVhbXMgYXJlIGVuY2Fwc3VsYXRlZCwgYXJlIHRyYW5z
-bWl0dGVkIGF0IGFuIGF2ZXJhZ2UgcGVyaW9kIG9mIDEyNSDCtXMuICAKClRoZSBkcml2ZXIgaW5z
-dHJ1Y3RzIHRoZSBPSENJLTEzOTQgY29udHJvbGxlciB0byBnZW5lcmF0ZSBhbiBpbnRlcnJ1cHQK
-ZXZlcnkgTiBwYWNrZXRzLiAgc25kLWZpcmV3aXJlLWxpYiBjdXJyZW50bHkgY2hvb3NlcyBOID0g
-SU5URVJSVVBUX0lOVEVSVkFMCj0gMTYsIGdpdmluZyBhbiBhdmVyYWdlIHBlcmlvZCBvZiAyMDAw
-IMK1cyBiZXR3ZWVuIGludGVycnVwdHMuCgpGb3IgcmVhc29ucyB0aGF0IGVzY2FwZSBtZSwgc25k
-LWZpcmV3aXJlLWxpYiBsaW1pdHMgQUxTQSdzIHBlcmlvZCB0byA1MDAwCsK1cyBtaW5pbXVtIGFu
-ZCB1bnNwZWNpZmllZCBtYXhpbXVtLiAgVGhpcyB3YXksIHR3byBvciBzb21ldGltZXMgdGhyZWUK
-RmlyZVdpcmUgaW50ZXJydXB0cyBoYXBwZW4gd2l0aGluIGVhY2ggQUxTQSBwZXJpb2QuCgpBY3R1
-YWwgRmlyZVdpcmUgcGFja2V0IHByb2Nlc3NpbmdzIGRldmlhdGVzIGZyb20gdGhlIGF2ZXJhZ2Ug
-b2YgMjAwMCDCtXMKYmVjYXVzZQogIC0gdGhlcmUgaXMgYSBzbWFsbCBqaXR0ZXIgaW4gdGhlIElF
-RUUgMTM5NCBpc29jaHJvbm91cyBwZXJpb2QsCiAgLSB0aGVyZSBtYXkgYmUgYSBkZWxheSBiZXR3
-ZWVuIHdoZW4gdGhlIE9IQ0kgc2lnbmFscyBhbiBpbnRlcnJ1cHQgdG8gdGhlCiAgICBDUFUsIHRo
-ZSBDUFUgcGVyZm9ybXMgdGhlICJ0b3AgaGFsZiIgb2YgdGhlIGludGVycnVwdCBoYW5kbGVyIChq
-dXN0CiAgICBwcmVwYXJlcyB0aGUgImJvdHRvbSBoYWxmIiBmb3IgZXhlY3V0aW9uIGFuZCBjbGVh
-cnMgdGhlIE9IQ0kncwogICAgaW50ZXJydXB0IHJlZ2lzdGVyKSwgYW5kIHdoZW4gdGhlIENQVSBh
-Y3R1YWxseSBwcm9jZXNzZXMgdGhlIHBhY2tldAogICAgYnVmZmVyIChpbiB0aGUgImJvdHRvbSBo
-YWxmIiBvZiB0aGUgaW50ZXJydXB0IGhhbmRsZXIsIGEuay5hLgogICAgInRhc2tsZXQiKS4gIFRh
-c2tsZXRzIG9mIG90aGVyIGtlcm5lbCBkcml2ZXJzIGNvdWxkIGRlZmVyIGV4ZWN1dGlvbiBvZgog
-ICAgc25kLWZpcmV3aXJlLWxpYidzIHRhc2tsZXQgZm9yIHNvbWUgdGltZS4gIChBIFBSRUVNUFRf
-UlQga2VybmVsCiAgICByZXBsYWNlcyB0YXNrbGV0cyBieSB0aHJlYWRzIHdoaWNoIGNhbiBwcmVl
-bXB0IGVhY2ggb3RoZXIsIHRodXMgSQogICAgZ3Vlc3MgYW4gUlQga2VybmVsIGNvdWxkIHJlZHVj
-ZSB0aGlzIHBhcnQgb2Ygaml0dGVyIGlmIHRoZSB0aHJlYWRzIGFyZQogICAgcHJpb3JpdGl6ZWQg
-YWNjb3JkaW5nbHkuKQoKQ2xlbWVucywKaXMgdGhlcmUgYSBzdHJpY3QgcmVxdWlyZW1lbnQgdGhh
-dCB0aGUgQUxTQSBwZXJpb2QgaXMgbW9yZSB0aGFuIGRvdWJsZSBvZgp0aGUgRmlyZVdpcmUgaW50
-ZXJydXB0IHBlcmlvZD8gIE9yIGNvdWxkIHRoZSBBTFNBIHBlcmlvZCBiZSBsZXNzIHRoYW4KZG91
-YmxlLCBhdCBsZWFzdCBvbiBQUkVFTVBUIGtlcm5lbHMgKGxldCBhbG9uZSBQUkVFTVBUX1JUIGtl
-cm5lbHMpPwoKQWxzbywgSSBiZWxpZXZlIHRvIHJlbWVtYmVyIHRoYXQgeW91IG9uY2Ugc2FpZCB0
-aGF0IGluc3RlYWQgb2YgcmVseWluZyBvbgpwZXJpb2RpY2FsIGludGVycnVwdHMgZnJvbSB0aGUg
-T0hDSSwgaXQgbWlnaHQgYmUgYmV0dGVyIHRvIHN3aXRjaCB0byBhCmtpbmQgb2YgcG9sbGluZyBz
-Y2hlbWUgKGkuZS4gcHJvY2VzcyB0aGUgSUVFRSAxMzk0IHBhY2tldCBidWZmZXIgb24gYW4Kb3du
-IHBlcmlvZCA9IEFMU0EgcGVyaW9kPykuICBJIHN1cHBvc2UgdGhpcyB3b3VsZCBhdXRvbWF0aWNh
-bGx5IGFsbG93IGZvcgp2ZXJ5IHNtYWxsIEFMU0EgcGVyaW9kcy4KLS0gClN0ZWZhbiBSaWNodGVy
-Ci09PT09PS09PT09PSA9PS0tIC0tLS09Cmh0dHA6Ly9hcmNncmFwaC5kZS9zci8KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, Dec 01, 2015 at 01:37:37PM +0100, Takashi Iwai wrote:
+> On Tue, 01 Dec 2015 18:47:01 +0100,
+> Subhransu S. Prusty wrote:
+> > 
+> > This patch uses i915 component framework to register for hotplug
+> > notification. And once it identifies valid pin sense and valid eld,
+> > reads the eld into the corresponding pin map buffer. For now it
+> > directly sends the verbs and reads the eld. Later this will use
+> > the i915 framework to populate ELD buffer once available.
+> 
+> This will have the same problem as we had in patch_hdmi.c.
+> When a sound driver goes to sleep before i915 and i915 triggers the
+> eld_notify for audio disablement, it can be screwed up.
+> 
+> See the commit 8ae743e82f0b86f3b860c27fc2c8f574cf959fd0
+>     ALSA: hda - Skip ELD notification during system suspend
+> in for-linus branch of sound git tree.
+
+Yes. Will add this fix in the driver.
+> 
+> 
+> Takashi
+> 
+> > 
+> > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > ---
+> >  sound/soc/codecs/hdac_hdmi.c | 125 ++++++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 118 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> > index 0869855..203c99f 100644
+> > --- a/sound/soc/codecs/hdac_hdmi.c
+> > +++ b/sound/soc/codecs/hdac_hdmi.c
+> > @@ -34,6 +34,9 @@
+> >  
+> >  #define HDA_MAX_CONNECTIONS     32
+> >  
+> > +#define ELD_MAX_SIZE    256
+> > +#define ELD_FIXED_BYTES	20
+> > +
+> >  struct hdac_hdmi_cvt_params {
+> >  	unsigned int channels_min;
+> >  	unsigned int channels_max;
+> > @@ -48,11 +51,22 @@ struct hdac_hdmi_cvt {
+> >  	struct hdac_hdmi_cvt_params params;
+> >  };
+> >  
+> > +struct hdmi_eld {
+> > +	bool	monitor_present;
+> > +	bool	eld_valid;
+> > +	int	eld_size;
+> > +	char    eld_buffer[ELD_MAX_SIZE];
+> > +};
+> > +
+> >  struct hdac_hdmi_pin {
+> >  	struct list_head head;
+> >  	hda_nid_t nid;
+> >  	int num_mux_nids;
+> >  	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+> > +	struct hdmi_eld eld;
+> > +	struct hdac_ext_device *edev;
+> > +	int repoll_count;
+> > +	struct delayed_work work;
+> >  };
+> >  
+> >  struct hdac_hdmi_dai_pin_map {
+> > @@ -246,7 +260,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+> >  	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+> >  	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+> >  	struct hdac_hdmi_dai_pin_map *dai_map;
+> > -	int val;
+> >  
+> >  	if (dai->id > 0) {
+> >  		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
+> > @@ -255,12 +268,11 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+> >  
+> >  	dai_map = &hdmi->dai_map[dai->id];
+> >  
+> > -	val = snd_hdac_codec_read(&hdac->hdac, dai_map->pin->nid, 0,
+> > -					AC_VERB_GET_PIN_SENSE, 0);
+> > -	dev_info(&hdac->hdac.dev, "Val for AC_VERB_GET_PIN_SENSE: %x\n", val);
+> > -
+> > -	if ((!(val & AC_PINSENSE_PRESENCE)) || (!(val & AC_PINSENSE_ELDV))) {
+> > -		dev_err(&hdac->hdac.dev, "Monitor presence invalid with val: %x\n", val);
+> > +	if ((!dai_map->pin->eld.monitor_present) ||
+> > +		(!dai_map->pin->eld.eld_valid)) {
+> > +		dev_err(&hdac->hdac.dev, "Failed: montior present? %d eld valid?: %d\n",
+> > +				dai_map->pin->eld.monitor_present,
+> > +				dai_map->pin->eld.eld_valid);
+> >  		return -ENODEV;
+> >  	}
+> >  
+> > @@ -432,6 +444,68 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
+> >  	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
+> >  }
+> >  
+> > +static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+> > +{
+> > +	struct hdac_ext_device *edev = pin->edev;
+> > +	int val;
+> > +
+> > +	if (!edev)
+> > +		return;
+> > +
+> > +	pin->repoll_count = repoll;
+> > +
+> > +	pm_runtime_get_sync(&edev->hdac.dev);
+> > +	val = snd_hdac_codec_read(&edev->hdac, pin->nid, 0,
+> > +					AC_VERB_GET_PIN_SENSE, 0);
+> > +
+> > +	dev_dbg(&edev->hdac.dev, "Pin sense val %x for pin: %d\n",
+> > +			val, pin->nid);
+> > +	pin->eld.monitor_present = !!(val & AC_PINSENSE_PRESENCE);
+> > +	pin->eld.eld_valid = !!(val & AC_PINSENSE_ELDV);
+> > +
+> > +	if (!pin->eld.monitor_present || !pin->eld.eld_valid) {
+> > +		dev_info(&edev->hdac.dev, "%s: disconnect or eld_invalid\n",
+> > +				__func__);
+> > +		goto put_hdac_device;
+> > +	}
+> > +
+> > +	if (pin->eld.monitor_present && pin->eld.eld_valid) {
+> > +		/* TODO: Use i915 cmpnt framework when available */
+> > +		if (snd_hdac_get_eld(&edev->hdac, pin->nid,
+> > +				pin->eld.eld_buffer,
+> > +				&pin->eld.eld_size) == 0) {
+> > +			print_hex_dump_bytes("Eld: ", DUMP_PREFIX_OFFSET,
+> > +					pin->eld.eld_buffer, pin->eld.eld_size);
+> > +		} else {
+> > +			dev_err(&edev->hdac.dev, "ELD invalid\n");
+> > +			pin->eld.monitor_present = false;
+> > +			pin->eld.eld_valid = false;
+> > +		}
+> > +
+> > +	}
+> > +
+> > +	/*
+> > +	 * Sometimes the pin_sense may present invalid monitor
+> > +	 * present and eld_valid. If eld data is not valid loop, few
+> > +	 * more times to get correct pin sense and valid eld.
+> > +	 */
+> > +	if ((!pin->eld.monitor_present || !pin->eld.eld_valid) && repoll)
+> > +		schedule_delayed_work(&pin->work, msecs_to_jiffies(300));
+> > +
+> > +put_hdac_device:
+> > +	pm_runtime_put_sync(&edev->hdac.dev);
+> > +}
+> > +static void hdac_hdmi_repoll_eld(struct work_struct *work)
+> > +{
+> > +	struct hdac_hdmi_pin *pin =
+> > +		container_of(to_delayed_work(work), struct hdac_hdmi_pin, work);
+> > +
+> > +	/* picked from legacy */
+> > +	if (pin->repoll_count++ > 6)
+> > +		pin->repoll_count = 0;
+> > +
+> > +	hdac_hdmi_present_sense(pin, pin->repoll_count);
+> > +}
+> >  static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+> >  {
+> >  	struct hdac_hdmi_priv *hdmi = edev->private_data;
+> > @@ -446,6 +520,9 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+> >  	list_add_tail(&pin->head, &hdmi->pin_list);
+> >  	hdmi->num_pin++;
+> >  
+> > +	pin->edev = edev;
+> > +	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > @@ -503,17 +580,50 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+> >  	return hdac_hdmi_init_dai_map(edev);
+> >  }
+> >  
+> > +static void hdac_hdmi_eld_notify_cb(void *aptr, int port)
+> > +{
+> > +	struct hdac_ext_device *edev = aptr;
+> > +	struct hdac_hdmi_priv *hdmi = edev->private_data;
+> > +	struct hdac_hdmi_pin *pin;
+> > +	/* Don't know how this mapping is derived */
+> > +	hda_nid_t pin_nid = port + 0x04;
+> > +
+> > +	dev_dbg(&edev->hdac.dev, "%s: for pin: %d\n", __func__, pin_nid);
+> > +
+> > +	list_for_each_entry(pin, &hdmi->pin_list, head) {
+> > +		if (pin->nid == pin_nid)
+> > +			hdac_hdmi_present_sense(pin, 1);
+> > +	}
+> > +}
+> > +
+> > +static struct i915_audio_component_audio_ops aops = {
+> > +	.pin_eld_notify	= hdac_hdmi_eld_notify_cb,
+> > +};
+> > +
+> >  static int hdmi_codec_probe(struct snd_soc_codec *codec)
+> >  {
+> >  	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
+> >  	struct hdac_hdmi_priv *hdmi = edev->private_data;
+> >  	struct snd_soc_dapm_context *dapm =
+> >  		snd_soc_component_get_dapm(&codec->component);
+> > +	struct hdac_hdmi_pin *pin;
+> > +	int ret;
+> >  
+> >  	edev->scodec = codec;
+> >  
+> >  	create_fill_widget_route_map(dapm, &hdmi->dai_map[0]);
+> >  
+> > +	aops.audio_ptr = edev;
+> > +	ret = snd_hdac_i915_register_notifier(&aops);
+> > +	if (ret < 0) {
+> > +		dev_err(&edev->hdac.dev, "notifier register failed: err: %d\n",
+> > +				ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	list_for_each_entry(pin, &hdmi->pin_list, head)
+> > +		hdac_hdmi_eld_notify_cb(edev, (pin->nid - 0x04));
+> > +
+> >  	/* Imp: Store the card pointer in hda_codec */
+> >  	edev->card = dapm->card->snd_card;
+> >  
+> > @@ -644,6 +754,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+> >  	if (!bus)
+> >  		return 0;
+> >  
+> > +
+> >  	err = snd_hdac_display_power(bus, true);
+> >  	if (err < 0) {
+> >  		dev_err(bus->dev, "Cannot turn on display power on i915\n");
+> > -- 
+> > 1.9.1
+> > 
+
+-- 
