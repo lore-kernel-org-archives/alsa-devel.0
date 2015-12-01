@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't use normal *mod in adg.c"
-	to the asoc tree
-Date: Tue, 01 Dec 2015 23:00:04 +0000
-Message-ID: <E1a3tu0-0007F9-B4@debutante>
-References: <87bnabub6c.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add missing ADINR::CHNUM on
+	DVC/SRC/SSIU" to the asoc tree
+Date: Tue, 01 Dec 2015 23:00:03 +0000
+Message-ID: <E1a3ttz-0007DA-8f@debutante>
+References: <87a8pvub5l.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10E32266176
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:09 +0100 (CET)
-In-Reply-To: <87bnabub6c.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5352266299
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:07 +0100 (CET)
+In-Reply-To: <87a8pvub5l.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't use normal *mod in adg.c
+   ASoC: rsnd: add missing ADINR::CHNUM on DVC/SRC/SSIU
 
 has been applied to the asoc tree at
 
@@ -53,93 +53,78 @@ to this mail.
 Thanks,
 Mark
 
->From 94458364304161551906d276f0164efd3dc30576 Mon Sep 17 00:00:00 2001
+>From c45f7263a805e1c5d8579569884d32141330589f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:49:15 +0000
-Subject: [PATCH] ASoC: rsnd: don't use normal *mod in adg.c
+Date: Mon, 30 Nov 2015 08:49:33 +0000
+Subject: [PATCH] ASoC: rsnd: add missing ADINR::CHNUM on DVC/SRC/SSIU
 
-adg.c is used from ssi/src/cmd. Thus don't use confusable *mod here.
-This patch rename it to ssi_mod/src_mod/cmd_mod
+DVC/SRC/SSIU needs ADINR::CHNUM settings too. This patch adds
+these missing value.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
+ sound/soc/sh/rcar/dvc.c  | 6 +++++-
+ sound/soc/sh/rcar/src.c  | 3 ++-
+ sound/soc/sh/rcar/ssiu.c | 3 ++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 448f082ab56d..6d3ef366d536 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -68,8 +68,8 @@ static u32 rsnd_adg_calculate_rbgx(unsigned long div)
- 
- static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 0f61e1344431..c622dec24362 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -97,11 +97,15 @@ static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
+ 				 struct rsnd_mod *mod)
  {
--	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
--	int id = rsnd_mod_id(mod);
-+	struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
-+	int id = rsnd_mod_id(ssi_mod);
- 	int ws = id;
+ 	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
++	u32 adinr = 0;
+ 	u32 dvucr = 0;
+ 	u32 vrctr = 0;
+ 	u32 vrpdr = 0;
+ 	u32 vrdbr = 0;
  
- 	if (rsnd_ssi_is_pin_sharing(io)) {
-@@ -90,13 +90,13 @@ static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
- 	return (0x6 + ws) << 8;
- }
++	adinr = rsnd_get_adinr_bit(mod, io) |
++		rsnd_get_adinr_chan(mod, io);
++
+ 	/* Enable Digital Volume, Zero Cross Mute Mode */
+ 	dvucr |= 0x101;
  
--int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
-+int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
- 				 struct rsnd_dai_stream *io)
- {
--	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct rsnd_priv *priv = rsnd_mod_to_priv(cmd_mod);
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
- 	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
--	int id = rsnd_mod_id(mod);
-+	int id = rsnd_mod_id(cmd_mod);
- 	int shift = (id % 2) ? 16 : 0;
- 	u32 mask, val;
+@@ -124,7 +128,7 @@ static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, DVC_DVUIR, 1);
  
-@@ -275,20 +275,16 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ 	/* General Information */
+-	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr_bit(mod, io));
++	rsnd_mod_write(mod, DVC_ADINR, adinr);
+ 	rsnd_mod_write(mod, DVC_DVUCR, dvucr);
+ 
+ 	/* Volume Ramp Parameter */
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 6d93c4ed8275..30cad79deab0 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -199,7 +199,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	/*
+ 	 *	SRC_ADINR
+ 	 */
+-	adinr = rsnd_get_adinr_bit(mod, io);
++	adinr = rsnd_get_adinr_bit(mod, io) |
++		rsnd_get_adinr_chan(mod, io);
+ 
+ 	/*
+ 	 *	SRC_IFSCR / SRC_IFSVR
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index bc245047e904..6120b0a66958 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -82,7 +82,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 		u32 val = rsnd_get_dalign(mod, io);
+ 
+ 		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
+-			       rsnd_get_adinr_bit(mod, io));
++			       rsnd_get_adinr_bit(mod, io) |
++			       rsnd_get_adinr_chan(mod, io));
+ 		rsnd_mod_write(mod, SSI_BUSIF_MODE,  1);
+ 		rsnd_mod_write(mod, SSI_BUSIF_DALIGN, val);
  	}
- }
- 
--int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod)
-+int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
- {
--	/*
--	 * "mod" = "ssi" here.
--	 * we can get "ssi id" from mod
--	 */
--	rsnd_adg_set_ssi_clk(mod, 0);
-+	rsnd_adg_set_ssi_clk(ssi_mod, 0);
- 
- 	return 0;
- }
- 
--int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate)
-+int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
- {
--	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct clk *clk;
-@@ -332,14 +328,10 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate)
- 
- found_clock:
- 
--	/*
--	 * This "mod" = "ssi" here.
--	 * we can get "ssi id" from mod
--	 */
--	rsnd_adg_set_ssi_clk(mod, data);
-+	rsnd_adg_set_ssi_clk(ssi_mod, data);
- 
- 	dev_dbg(dev, "ADG: %s[%d] selects 0x%x for %d\n",
--		rsnd_mod_name(mod), rsnd_mod_id(mod),
-+		rsnd_mod_name(ssi_mod), rsnd_mod_id(ssi_mod),
- 		data, rate);
- 
- 	return 0;
 -- 
 2.6.2
