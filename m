@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sti: correction for HBRA support
-Date: Tue, 1 Dec 2015 11:35:11 +0000
-Message-ID: <20151201113510.GF1929@sirena.org.uk>
-References: <1448370996-30224-1-git-send-email-moise.gergaud@st.com>
- <1448370996-30224-3-git-send-email-moise.gergaud@st.com>
- <20151130163057.GA1929@sirena.org.uk> <565D6DCE.50906@st.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 00/15] ASoC: hdac_hdmi: Add DP & notification
+	support
+Date: Tue,  1 Dec 2015 23:12:29 +0530
+Message-ID: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7207690055862650600=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24181261A34
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 12:35:19 +0100 (CET)
-In-Reply-To: <565D6DCE.50906@st.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00A03261ADA
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 13:11:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +19,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, David Airlie <airlied@linux.ie>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch series adds DP audio and hotplug notification
+support.
 
---===============7207690055862650600==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Hf72EjeiW3qFOybB"
-Content-Disposition: inline
+On Skylake two DP ports are available and to enable DP on both
+ports all pins need to be enabled.
 
+There is a special vendor widget which need to be programmed to
+enable all pins and converters. This series adds hotplug
+notification, read/set constraint based on ELD, enable all
+pin/cvts, DP1.2, programs the audio infoframe for DP. There is
+a one to one mapping between converter and stream, so the dais
+are created based on the no of streams supported on hdmi codec.
+Even though cvts can be mapped dynamically to the streams,
+currently it is statically mapped as simultaneous playback on
+both DP and HDMI is not supported as of now.
 
---Hf72EjeiW3qFOybB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Pin muxes and controls are created dynamically to map converter
+to pin widget. So at run time specific pin is mapped to the dai
+based on the control selected (based on the display type DP/HDMI
+connected).
 
-On Tue, Dec 01, 2015 at 10:52:14AM +0100, Moise Gergaud wrote:
-> On 11/30/2015 05:30 PM, Mark Brown wrote:
-> >On Tue, Nov 24, 2015 at 02:16:36PM +0100, Moise Gergaud wrote:
-> >>Detect HBRA based on rate and channels used in the pcm session
-> >>In case of HBRA:
-> >>   - CH_STS repeat is disabled
-> >>   - channel status sampling freq is not set if already set (because it can
-> >>     be a multiple of the runtime rate)
+Finally the DP audio infoframe programming is added to support
+the DP feature. 
 
-> >You might want to expand HBRA...
+Also with hotplug notification support, ELD is read and
+capabilities are set for rate, formats and channels. drm_eld
+sound/core framework is updated to limit the formats based on
+ELD.
 
-> you mean in term of frequency?
-
-No, I mean tell people what the acronym means.  It's probably *not*
-Herefordshire Breech-Loading Rifle Association which is the first hit on
-Google for me and even adding iec958 to the search term mostly just
-turns up this driver.
-
---Hf72EjeiW3qFOybB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXYXuAAoJECTWi3JdVIfQNCQIAIG/yjM9QUOP+8AMMgVU4K9I
-Y9Hf6rorU/iOHYD+eIhdKRz0tamhvaDAs3bpXic/4aiIwgaAolDKlUxy7gT9TuLA
-juw8lydt0IrC98+6AL+Qjkbi4cCvnYt3e7un8ZM1/Xsmu85gjXkkoc8fS8CvUGB8
-XJtm5FMl37AP/4C/PfXQey3XkIyoERSk4qHYvsX7mV7m6ycAVUJBmgMapYUb9+Bd
-CQKYHodDLxGOmrZw3+3PNzFL20FEzR/kI7Bv/MvAfRpWXrYGmx0btnp8OVdJl12Y
-Lkact8u7jgq8XdKoHmu5W9dVwajvDC3+Xr/z0hgAxibWvLtcXG/Qc4+cr84HLOU=
-=L3MJ
------END PGP SIGNATURE-----
-
---Hf72EjeiW3qFOybB--
-
---===============7207690055862650600==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+There are few fixes one fixing the static checker warning and
+other one not to fail if no connection list is found for a pin
+widget.
 
 
---===============7207690055862650600==--
+Pls note, the 12th patch is adding a small macro for getting
+connection type in drm header, we have CCed drm folks on that and
+this one. Pls ack so that we can have this series merged thru
+sound trees
+
+Jeeja KP (1):
+  ASoC: hdac_hdmi: Add codec suspend/resume handler
+
+Ramesh Babu (1):
+  ASoC: hdac_hdmi: Keep display active while enumerating codec
+
+Subhransu S. Prusty (13):
+  ASoC: hdac_hdmi: Fix to check num nodes correctly
+  ASoC: hdac_hdmi: Fix to warn instead of err for no connected nids
+  ASoC: hdac_hdmi - Use list to add pins and converters
+  ALSA: hda - Add helper to read eld data
+  ASoC: hdac_hdmi: Add hotplug notification and read eld
+  ALSA: pcm: Add DRM helper to set constraint for format
+  ASoC: hdac_hdmi: Apply constraints based on ELD
+  ASoC: hdac_hdmi: Enable DP1.2 and all converters/pins
+  ASoC: hdac_hdmi - create dais based on number of streams
+  ASoC: hdac_hdmi: Create widget/route based on nodes enumerated
+  ASoC: hdac_hdmi: Assign pin for stream based on dapm connection
+  drm/edid: Add API to help find connection type
+  ASoC: hdac_hdmi: Add infoframe support for dp audio
+
+ include/drm/drm_edid.h       |  10 +
+ include/sound/hdaudio.h      |   3 +
+ sound/core/pcm_drm_eld.c     |  42 +-
+ sound/hda/Makefile           |   2 +-
+ sound/hda/hdac_eld.c         |  95 +++++
+ sound/soc/codecs/Kconfig     |   1 +
+ sound/soc/codecs/hdac_hdmi.c | 908 ++++++++++++++++++++++++++++++++++++-------
+ 7 files changed, 908 insertions(+), 153 deletions(-)
+ create mode 100644 sound/hda/hdac_eld.c
+
+-- 
+1.9.1
