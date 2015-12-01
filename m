@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: Remove useless comments and
-	variable" to the asoc tree
-Date: Tue, 01 Dec 2015 22:59:46 +0000
-Message-ID: <E1a3tti-0006Vp-Ez@debutante>
-References: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
+Subject: Applied "ASoC: hdac_hdmi: check error return" to the
+	asoc tree
+Date: Tue, 01 Dec 2015 22:59:43 +0000
+Message-ID: <E1a3ttf-0006Kf-Bo@debutante>
+References: <1448960375-9710-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AE56A264FFB
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:52 +0100 (CET)
-In-Reply-To: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A100A26644B
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:55 +0100 (CET)
+In-Reply-To: <1448960375-9710-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: Remove useless comments and variable
+   ASoC: hdac_hdmi: check error return
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 0837d8780c766bffe1fc5a5da54fb2620923a6d0 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Tue, 1 Dec 2015 12:06:46 +0100
-Subject: [PATCH] ASoC: sunxi: Remove useless comments and variable
+>From 3c83ac23253c6a1b6d3ebcb4bb05eabb8337c9df Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Tue, 1 Dec 2015 14:29:35 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: check error return
 
-The comment is misleading on how we should support external power amps, and
-the variable is not used and generates a warning.
+As hdac->num_nodes is unsigned we can not check if
+snd_hdac_get_sub_nodes() has returned error or success. Lets have a
+temporary int to check the error value.
 
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 30c9e9260491..516c7c2b479a 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -109,11 +109,6 @@ struct sun4i_codec {
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 205f2c27263d..1a2f33b4abfc 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -409,17 +409,18 @@ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev,
+ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ {
+ 	hda_nid_t nid;
+-	int i;
++	int i, num_nodes;
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	int cvt_nid = 0, pin_nid = 0;
  
- static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO high here on some boards
--	 */
--
- 	/* Flush TX FIFO */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
- 			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
-@@ -127,11 +122,6 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
+-	hdac->num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
+-	if (!nid || hdac->num_nodes < 0) {
++	num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
++	if (!nid || num_nodes < 0) {
+ 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
+ 		return -EINVAL;
+ 	}
  
- static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO low here on some boards
--	 */
--
- 	/* Disable DAC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
- 			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
-@@ -140,11 +130,6 @@ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
++	hdac->num_nodes = num_nodes;
+ 	hdac->start_nid = nid;
  
- static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO high here on some boards
--	 */
--
- 	/* Enable ADC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN),
-@@ -153,11 +138,6 @@ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
- 
- static void sun4i_codec_stop_capture(struct sun4i_codec *scodec)
- {
--	/*
--	 * FIXME: according to the BSP, we might need to drive a PA
--	 *        GPIO low here on some boards
--	 */
--
- 	/* Disable ADC DRQ */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN), 0);
-@@ -358,8 +338,6 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
- 					 struct snd_pcm_hw_params *params,
- 					 unsigned int hwrate)
- {
--	u32 val;
--
- 	/* Set ADC sample rate */
- 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
- 			   7 << SUN4I_CODEC_ADC_FIFOC_ADC_FS,
+ 	for (i = 0; i < hdac->num_nodes; i++, nid++) {
 -- 
 2.6.2
