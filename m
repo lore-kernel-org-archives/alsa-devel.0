@@ -1,46 +1,81 @@
-From: Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] ASoC: tegra_alc5632: check return value
-Date: Tue,  1 Dec 2015 16:09:51 +0530
-Message-ID: <1448966391-13996-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH 1/2] ASoC: sunxi: Remove useless comments and variable
+Date: Tue,  1 Dec 2015 12:06:46 +0100
+Message-ID: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have been returning success even if snd_soc_card_jack_new() fails.
-Lets check the return value and return error if it fails.
+The comment is misleading on how we should support external power amps, and
+the variable is not used and generates a warning.
 
-Fixes: 12cc6d1dca4d ("ASoC: tegra_alc5632: Register jacks at the card level")
-Signed-off-by: Sudip Mukherjee <sudip-ofJRbWXBVFamYgehrs7/Lw@public.gmane.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- sound/soc/tegra/tegra_alc5632.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-index ba272e2..deb597f 100644
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -101,12 +101,16 @@ static const struct snd_kcontrol_new tegra_alc5632_controls[] = {
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 30c9e9260491..516c7c2b479a 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -109,11 +109,6 @@ struct sun4i_codec {
  
- static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
  {
-+	int ret;
- 	struct tegra_alc5632 *machine = snd_soc_card_get_drvdata(rtd->card);
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO high here on some boards
+-	 */
+-
+ 	/* Flush TX FIFO */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+ 			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
+@@ -127,11 +122,6 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
  
--	snd_soc_card_jack_new(rtd->card, "Headset Jack", SND_JACK_HEADSET,
--			      &tegra_alc5632_hs_jack,
--			      tegra_alc5632_hs_jack_pins,
--			      ARRAY_SIZE(tegra_alc5632_hs_jack_pins));
-+	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
-+				    SND_JACK_HEADSET,
-+				    &tegra_alc5632_hs_jack,
-+				    tegra_alc5632_hs_jack_pins,
-+				    ARRAY_SIZE(tegra_alc5632_hs_jack_pins));
-+	if (ret)
-+		return ret;
+ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO low here on some boards
+-	 */
+-
+ 	/* Disable DAC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+ 			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
+@@ -140,11 +130,6 @@ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
  
- 	if (gpio_is_valid(machine->gpio_hp_det)) {
- 		tegra_alc5632_hp_jack_gpio.gpio = machine->gpio_hp_det;
+ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO high here on some boards
+-	 */
+-
+ 	/* Enable ADC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN),
+@@ -153,11 +138,6 @@ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
+ 
+ static void sun4i_codec_stop_capture(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO low here on some boards
+-	 */
+-
+ 	/* Disable ADC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN), 0);
+@@ -358,8 +338,6 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
+ 					 struct snd_pcm_hw_params *params,
+ 					 unsigned int hwrate)
+ {
+-	u32 val;
+-
+ 	/* Set ADC sample rate */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   7 << SUN4I_CODEC_ADC_FIFOC_ADC_FS,
 -- 
-1.9.1
+2.6.3
