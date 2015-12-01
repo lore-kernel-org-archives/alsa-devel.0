@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: set SSIWSR setting on
-	rsnd_ssi_config_init()" to the asoc tree
-Date: Tue, 01 Dec 2015 22:59:53 +0000
-Message-ID: <E1a3ttp-0006m9-On@debutante>
-References: <87wpszswfd.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: dvc: add rsnd_dvc_halt()" to the
+	asoc tree
+Date: Tue, 01 Dec 2015 22:59:55 +0000
+Message-ID: <E1a3ttr-0006qY-S8@debutante>
+References: <87zixvswgk.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EE9D264F07
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:58 +0100 (CET)
-In-Reply-To: <87wpszswfd.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 65A4C266020
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:00 +0100 (CET)
+In-Reply-To: <87zixvswgk.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: set SSIWSR setting on rsnd_ssi_config_init()
+   ASoC: rsnd: dvc: add rsnd_dvc_halt()
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 08bada26fe8089f908484a3a4580f38e78502ac7 Mon Sep 17 00:00:00 2001
+>From f13edb8b281cf7fa762b14323238d6884df38792 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:53:04 +0000
-Subject: [PATCH] ASoC: rsnd: set SSIWSR setting on rsnd_ssi_config_init()
+Date: Mon, 30 Nov 2015 08:52:21 +0000
+Subject: [PATCH] ASoC: rsnd: dvc: add rsnd_dvc_halt()
 
-It will have TDM settings on SSIWSR. Actually, we would like to set
-it on rsnd_ssi_config_init(), but we can't. Because SSI might be used
-as clock master (It doesn't need to call rsnd_ssi_config_init() when
-clock master mode).
-This patch adds new ssi->wsr and set it on rsnd_ssi_start().
+Based on datasheet process
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/dvc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 31e26bd481cf..d97f365f1b41 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -69,6 +69,7 @@ struct rsnd_ssi {
- 	u32 cr_own;
- 	u32 cr_clk;
- 	u32 cr_mode;
-+	u32 wsr;
- 	int chan;
- 	int rate;
- 	int err;
-@@ -214,11 +215,10 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
- 		if (0 == ret) {
- 			ssi->cr_clk	= FORCE | SWL_32 |
- 				SCKD | SWSD | CKDV(j);
-+			ssi->wsr = CONT;
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index b69a6e5cafef..91c86ee1fecb 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -70,6 +70,12 @@ static void rsnd_dvc_activation(struct rsnd_mod *mod)
+ 	rsnd_mod_write(mod, DVC_SWRSR, 1);
+ }
  
- 			ssi->rate = rate;
++static void rsnd_dvc_halt(struct rsnd_mod *mod)
++{
++	rsnd_mod_write(mod, DVC_DVUIR, 1);
++	rsnd_mod_write(mod, DVC_SWRSR, 0);
++}
++
+ #define rsnd_dvc_get_vrpdr(dvc) (dvc->rup.val << 8 | dvc->rdown.val)
+ #define rsnd_dvc_get_vrdbr(dvc) (0x3ff - (dvc->volume.val[0] >> 13))
  
--			rsnd_mod_write(mod, SSIWSR, CONT);
--
- 			dev_dbg(dev, "%s[%d] outputs %u Hz\n",
- 				rsnd_mod_name(mod),
- 				rsnd_mod_id(mod), rate);
-@@ -421,6 +421,7 @@ static int __rsnd_ssi_start(struct rsnd_mod *mod,
- 		EN;
- 
- 	rsnd_mod_write(mod, SSICR, cr);
-+	rsnd_mod_write(mod, SSIWSR, ssi->wsr);
+@@ -219,6 +225,8 @@ static int rsnd_dvc_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
++	rsnd_dvc_halt(mod);
++
+ 	rsnd_mod_power_off(mod);
  
  	return 0;
- }
 -- 
 2.6.2
