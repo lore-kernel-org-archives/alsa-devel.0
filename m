@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: mix: rename rsnd_mix_soft_reset()
-	to rsnd_mix_activation()" to the asoc tree
-Date: Tue, 01 Dec 2015 22:59:59 +0000
-Message-ID: <E1a3ttv-000754-Vt@debutante>
-References: <87610jub3g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: mix: add rsnd_mix_halt()" to the
+	asoc tree
+Date: Tue, 01 Dec 2015 22:59:56 +0000
+Message-ID: <E1a3tts-0006tp-TO@debutante>
+References: <871tb7ub1p.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7696C2661EE
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:04 +0100 (CET)
-In-Reply-To: <87610jub3g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A456A2660DA
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:01 +0100 (CET)
+In-Reply-To: <871tb7ub1p.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: mix: rename rsnd_mix_soft_reset() to rsnd_mix_activation()
+   ASoC: rsnd: mix: add rsnd_mix_halt()
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 4fe32521d706e3541095ef173669e46666df2865 Mon Sep 17 00:00:00 2001
+>From 95e6b0ddb002e0dc89fef99b31685197da2eca9e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:50:51 +0000
-Subject: [PATCH] ASoC: rsnd: mix: rename rsnd_mix_soft_reset() to
- rsnd_mix_activation()
+Date: Mon, 30 Nov 2015 08:51:52 +0000
+Subject: [PATCH] ASoC: rsnd: mix: add rsnd_mix_halt()
 
-Based on datasheet naming
+Based on datasheet process
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/mix.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/mix.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
-index 57ac453adcef..b2f22bd7e3a9 100644
+index b2f22bd7e3a9..b34957ab75b9 100644
 --- a/sound/soc/sh/rcar/mix.c
 +++ b/sound/soc/sh/rcar/mix.c
-@@ -24,7 +24,7 @@ struct rsnd_mix {
- 		     ((pos) = (struct rsnd_mix *)(priv)->mix + i);	\
- 	     i++)
- 
--static void rsnd_mix_soft_reset(struct rsnd_mod *mod)
-+static void rsnd_mix_activation(struct rsnd_mod *mod)
- {
- 	rsnd_mod_write(mod, MIX_SWRSR, 0);
+@@ -30,6 +30,12 @@ static void rsnd_mix_activation(struct rsnd_mod *mod)
  	rsnd_mod_write(mod, MIX_SWRSR, 1);
-@@ -83,7 +83,7 @@ static int rsnd_mix_init(struct rsnd_mod *mod,
+ }
+ 
++static void rsnd_mix_halt(struct rsnd_mod *mod)
++{
++	rsnd_mod_write(mod, MIX_MIXIR, 1);
++	rsnd_mod_write(mod, MIX_SWRSR, 0);
++}
++
+ static void rsnd_mix_volume_parameter(struct rsnd_dai_stream *io,
+ 				      struct rsnd_mod *mod)
  {
- 	rsnd_mod_power_on(mod);
+@@ -96,6 +102,8 @@ static int rsnd_mix_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 struct rsnd_priv *priv)
+ {
++	rsnd_mix_halt(mod);
++
+ 	rsnd_mod_power_off(mod);
  
--	rsnd_mix_soft_reset(mod);
-+	rsnd_mix_activation(mod);
- 
- 	rsnd_mix_volume_init(io, mod);
- 
+ 	return 0;
 -- 
 2.6.2
