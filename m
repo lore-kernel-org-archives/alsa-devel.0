@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rsrc-card: check return value of
-	snd_soc_of_get_dai_name()" to the asoc tree
-Date: Tue, 01 Dec 2015 22:59:48 +0000
-Message-ID: <E1a3ttk-0006b3-HF@debutante>
-References: <87bnaay3id.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sunxi: Remove useless comments and
+	variable" to the asoc tree
+Date: Tue, 01 Dec 2015 22:59:46 +0000
+Message-ID: <E1a3tti-0006Vp-Ez@debutante>
+References: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 28F32266183
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:55 +0100 (CET)
-In-Reply-To: <87bnaay3id.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE56A264FFB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 23:59:52 +0100 (CET)
+In-Reply-To: <1448968007-10128-1-git-send-email-maxime.ripard@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rsrc-card: check return value of snd_soc_of_get_dai_name()
+   ASoC: sunxi: Remove useless comments and variable
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,80 @@ to this mail.
 Thanks,
 Mark
 
->From 575f1f929f5a2ed80130c294aa7b2dc40dba74f2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 1 Dec 2015 08:33:23 +0000
-Subject: [PATCH] ASoC: rsnd: rsrc-card: check return value of
- snd_soc_of_get_dai_name()
+>From 0837d8780c766bffe1fc5a5da54fb2620923a6d0 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Tue, 1 Dec 2015 12:06:46 +0100
+Subject: [PATCH] ASoC: sunxi: Remove useless comments and variable
 
-This patch adds missing check of snd_soc_of_get_dai_name().
-It might not be able to use sound card, because it might returns
--EPROBE_DEFER.
+The comment is misleading on how we should support external power amps, and
+the variable is not used and generates a warning.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index d61db9c385ea..a3ec13f6271e 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -208,7 +208,9 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		dai_link->dynamic		= 1;
- 		dai_link->dpcm_merged_format	= 1;
- 		dai_link->cpu_of_node		= args.np;
--		snd_soc_of_get_dai_name(np, &dai_link->cpu_dai_name);
-+		ret = snd_soc_of_get_dai_name(np, &dai_link->cpu_dai_name);
-+		if (ret < 0)
-+			return ret;
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 30c9e9260491..516c7c2b479a 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -109,11 +109,6 @@ struct sun4i_codec {
  
- 		/* set dai_name */
- 		snprintf(dai_props->dai_name, DAI_NAME_NUM, "fe.%s",
-@@ -240,7 +242,9 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		dai_link->no_pcm		= 1;
- 		dai_link->be_hw_params_fixup	= rsrc_card_be_hw_params_fixup;
- 		dai_link->codec_of_node		= args.np;
--		snd_soc_of_get_dai_name(np, &dai_link->codec_dai_name);
-+		ret = snd_soc_of_get_dai_name(np, &dai_link->codec_dai_name);
-+		if (ret < 0)
-+			return ret;
+ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO high here on some boards
+-	 */
+-
+ 	/* Flush TX FIFO */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+ 			   BIT(SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH),
+@@ -127,11 +122,6 @@ static void sun4i_codec_start_playback(struct sun4i_codec *scodec)
  
- 		/* additional name prefix */
- 		if (of_data) {
+ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO low here on some boards
+-	 */
+-
+ 	/* Disable DAC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_DAC_FIFOC,
+ 			   BIT(SUN4I_CODEC_DAC_FIFOC_DAC_DRQ_EN),
+@@ -140,11 +130,6 @@ static void sun4i_codec_stop_playback(struct sun4i_codec *scodec)
+ 
+ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO high here on some boards
+-	 */
+-
+ 	/* Enable ADC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN),
+@@ -153,11 +138,6 @@ static void sun4i_codec_start_capture(struct sun4i_codec *scodec)
+ 
+ static void sun4i_codec_stop_capture(struct sun4i_codec *scodec)
+ {
+-	/*
+-	 * FIXME: according to the BSP, we might need to drive a PA
+-	 *        GPIO low here on some boards
+-	 */
+-
+ 	/* Disable ADC DRQ */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   BIT(SUN4I_CODEC_ADC_FIFOC_ADC_DRQ_EN), 0);
+@@ -358,8 +338,6 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
+ 					 struct snd_pcm_hw_params *params,
+ 					 unsigned int hwrate)
+ {
+-	u32 val;
+-
+ 	/* Set ADC sample rate */
+ 	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_FIFOC,
+ 			   7 << SUN4I_CODEC_ADC_FIFOC_ADC_FS,
 -- 
 2.6.2
