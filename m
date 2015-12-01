@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: cs53l30: Add support for Cirrus
- Logic CS53L30
-Date: Tue, 1 Dec 2015 20:47:37 +0000
-Message-ID: <20151201204737.GT1929@sirena.org.uk>
-References: <565604bf.a64f320a.a9619.5100@mx.google.com>
- <201511260748.FVCeTx44%fengguang.wu@intel.com>
- <20151201193723.GQ1929@sirena.org.uk>
- <alpine.DEB.2.10.1512011437540.5384@ChromiumBuilder>
+Subject: Re: [PATCH 01/16] ASoC: Intel: Skylake: Update DMIC
+ DAIs and capabilities
+Date: Tue, 1 Dec 2015 21:32:51 +0000
+Message-ID: <20151201213251.GX1929@sirena.org.uk>
+References: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
+ <1448703121-5831-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8143943125637922714=="
+Content-Type: multipart/mixed; boundary="===============2201516131268173503=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 215B4261B14
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 21:47:45 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.10.1512011437540.5384@ChromiumBuilder>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8718126073D
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 22:32:57 +0100 (CET)
+In-Reply-To: <1448703121-5831-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Howe <tim.howe@cirrus.com>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, lgirdwood@gmail.com, paul.handrigan@cirrus.com, kbuild-all@01.org, timothyc.howe@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, "Dharageswari.R" <dharageswari.r@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8143943125637922714==
+--===============2201516131268173503==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0M9+YLHDVd0m18zA"
+	protocol="application/pgp-signature"; boundary="/X/C7/8fvxU3A5gC"
 Content-Disposition: inline
 
 
---0M9+YLHDVd0m18zA
+--/X/C7/8fvxU3A5gC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 01, 2015 at 02:40:16PM -0600, Tim Howe wrote:
-> Hi Mark,
->=20
-> Thank you.  I'll have it fixed up and resubmitted ASAP.
->=20
-> Tim
->=20
-> On Tue, 1 Dec 2015, Mark Brown wrote:
+On Sat, Nov 28, 2015 at 03:01:46PM +0530, Vinod Koul wrote:
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+>  #define HDA_MONO 1
+>  #define HDA_STEREO 2
+> +#define HDA_QUAD 4
 
---0M9+YLHDVd0m18zA
+Are these defines really helping clarify things?
+
+--/X/C7/8fvxU3A5gC
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWXgdoAAoJECTWi3JdVIfQARUH/2jbcPUWfy60AFWYxh6NSAYV
-yB7pR1Rg2wRUi3O5WRxEAmOUNeveiOsiN3bi0bOoXQILgDK1UIc7DreXVQxgd9R8
-xA9yIkrFA7d27R3uWzYUT/z/mnCBpSbL4ehN28I8fWX2+b2kVFeIb3IHj3CuXQMf
-G0ag8YE7QlxUhvn88lLlnUYNeGnc4q8fUetuEZ9I2hDDEJXnrlz/ym4EUFfyqs3F
-Ew0R+rlpleENW6VJ5jDBuRS4jd6dH3onO5TW7AqtCfKcX06gwmkys6854x564H0o
-UmPJW1yMOdOJSlV4Nr9ZkyTK7hcPzrtWPdODX1M/X6ReS9rWBPncZhl5mtR7Ypw=
-=HkOO
+iQEcBAEBCAAGBQJWXhICAAoJECTWi3JdVIfQ9YUH/jAxNuQsqAQIumt7N4IE+c66
+eUE2fEVK5VHvYm5pHg0FIkud419nOr8EEPnexv1d8Haou6v6gntwhY57grig6JJ2
+Fj+v9QBZcXisvrsPgqQg57E6Ej9SWv/6LgsSlbIRcZFeBecgHRq+fyEDiRG2AWsm
+r6/+OXJrYglrST1EeqH8KMhSSnIZXisPxY+7LO1skPFZXu51Eh5Ev60Q+m8eSPhJ
+UPtGR7uqtRIxTbuws6Ea++pbRH1T/7IQajfJcB97RzjNcf8anZKUhvTY51nxCNNa
+jXfWL0n2toLnLLnch7ZIBHfKEN+dLXzynQ6aqnW0HpfNh63OwbUR/zR3Mj3P/TQ=
+=3e/v
 -----END PGP SIGNATURE-----
 
---0M9+YLHDVd0m18zA--
+--/X/C7/8fvxU3A5gC--
 
---===============8143943125637922714==
+--===============2201516131268173503==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8143943125637922714==--
+--===============2201516131268173503==--
