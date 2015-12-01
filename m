@@ -1,81 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: Implement DAI links in a list &
- define API to add/remove a link
-Date: Tue, 1 Dec 2015 15:58:47 +0000
-Message-ID: <20151201155847.GL1929@sirena.org.uk>
-References: <cover.1448294077.git.mengdong.lin@linux.intel.com>
- <91d3898f62702fa255fc82c9cc3d1d14a1208263.1448294077.git.mengdong.lin@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 1/9] drm/i915: Remove superfluous NULL check
+Date: Tue,  1 Dec 2015 17:09:50 +0100
+Message-ID: <1448986198-3488-2-git-send-email-tiwai@suse.de>
+References: <1448986198-3488-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4278606500516600323=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48CA7261A0A
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 16:58:55 +0100 (CET)
-In-Reply-To: <91d3898f62702fa255fc82c9cc3d1d14a1208263.1448294077.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1448986198-3488-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, David Henningsson <david.henningsson@canonical.com>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4278606500516600323==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k1icXJ1HDib4AVtD"
-Content-Disposition: inline
-
-
---k1icXJ1HDib4AVtD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 23, 2015 at 11:04:04AM -0500, mengdong.lin@linux.intel.com wrote:
-
-A couple of small things but otherwise this looks fine:
-
-> +	struct snd_soc_dai_link *dai_link;  /* predefined links only */
-> +	int num_links;  /* predefined links only */
-> +	struct list_head dai_link_list; /* all links */
-> +	int num_dai_links;
-
-Why are we keeping a count of num_dai_links?  I can't see any users.
-
-> +	/* add predefined DAI links to the list */
-> +	for (i = 0; i < card->num_links; i++)
-> +		snd_soc_add_dai_link(card, card->dai_link+i);
-
-Missing spaces around the + here.
-
---k1icXJ1HDib4AVtD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXcO3AAoJECTWi3JdVIfQONkH/i2ROIaJaQjMLiVmFoQkDA9E
-3kFmtGTskw5+STALBzHZKiyF5RzD6Abnwi6YalvXQ5qyo53c2Vprye7xpyu538Aq
-KMrdy1A9ten3yex6tMaxFdopMA8PpZ6b1TdDv053KPuDp4CqicS8sml6prJ+KXcC
-nNK+xQs8bfLIFtxTP53Lpuzvbcu3Qw2F5VpBxbdxXL9yRAB+LWNMjawUiA2eRwYB
-YwjPXatoIPwJWaMLAdQmgpBTbC2iouC0vICdgL5EgW+tjjUHDKjur3HbfGr2KuoJ
-2lV2wTKtNvwdyt1eIOfNqGVoajtIhjZ2NczqhVlMXtIaMIFm7eRiux8lqjkayhE=
-=tGIP
------END PGP SIGNATURE-----
-
---k1icXJ1HDib4AVtD--
-
---===============4278606500516600323==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4278606500516600323==--
+dG9faW50ZWxfY3J0YygpIGFsd2F5cyByZXR1cm5zIGEgbm9uLU5VTEwgcG9pbnRlci4KClNpZ25l
+ZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCiBkcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgNCAtLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIv
+ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwppbmRleCA0ZGNjZDliMDAzYTEuLjBj
+MzhjYzZjODJhZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8u
+YworKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCkBAIC02NTYsMTAgKzY1
+Niw2IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0
+cnVjdCBkZXZpY2UgKmRldiwKIAkJaW50ZWxfZGlnX3BvcnQgPSBlbmNfdG9fZGlnX3BvcnQoJmlu
+dGVsX2VuY29kZXItPmJhc2UpOwogCQlpZiAocG9ydCA9PSBpbnRlbF9kaWdfcG9ydC0+cG9ydCkg
+ewogCQkJY3J0YyA9IHRvX2ludGVsX2NydGMoaW50ZWxfZW5jb2Rlci0+YmFzZS5jcnRjKTsKLQkJ
+CWlmICghY3J0YykgewotCQkJCURSTV9ERUJVR19LTVMoIiVzOiBjcnRjIGlzIE5VTExcbiIsIF9f
+ZnVuY19fKTsKLQkJCQljb250aW51ZTsKLQkJCX0KIAkJCXBpcGUgPSBjcnRjLT5waXBlOwogCQkJ
+YnJlYWs7CiAJCX0KLS0gCjIuNi4zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2ludGVsLWdmeAo=
