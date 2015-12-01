@@ -1,21 +1,18 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH 05/15] ASoC: hdac_hdmi: Add hotplug
- notification and read eld
-Date: Wed, 2 Dec 2015 01:44:22 +0530
-Message-ID: <20151201201422.GC5624@subhransu-desktop>
-References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-5-git-send-email-subhransu.s.prusty@intel.com>
- <s5hwpsypcoe.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: Implement DAI links in a list &
+ define API to add/remove a link
+Date: Tue, 1 Dec 2015 15:58:47 +0000
+Message-ID: <20151201155847.GL1929@sirena.org.uk>
+References: <cover.1448294077.git.mengdong.lin@linux.intel.com>
+ <91d3898f62702fa255fc82c9cc3d1d14a1208263.1448294077.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4278606500516600323=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A3735261AE0
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 15:43:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwpsypcoe.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48CA7261A0A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2015 16:58:55 +0100 (CET)
+In-Reply-To: <91d3898f62702fa255fc82c9cc3d1d14a1208263.1448294077.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,243 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 01, 2015 at 01:37:37PM +0100, Takashi Iwai wrote:
-> On Tue, 01 Dec 2015 18:47:01 +0100,
-> Subhransu S. Prusty wrote:
-> > 
-> > This patch uses i915 component framework to register for hotplug
-> > notification. And once it identifies valid pin sense and valid eld,
-> > reads the eld into the corresponding pin map buffer. For now it
-> > directly sends the verbs and reads the eld. Later this will use
-> > the i915 framework to populate ELD buffer once available.
-> 
-> This will have the same problem as we had in patch_hdmi.c.
-> When a sound driver goes to sleep before i915 and i915 triggers the
-> eld_notify for audio disablement, it can be screwed up.
-> 
-> See the commit 8ae743e82f0b86f3b860c27fc2c8f574cf959fd0
->     ALSA: hda - Skip ELD notification during system suspend
-> in for-linus branch of sound git tree.
 
-Yes. Will add this fix in the driver.
-> 
-> 
-> Takashi
-> 
-> > 
-> > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  sound/soc/codecs/hdac_hdmi.c | 125 ++++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 118 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> > index 0869855..203c99f 100644
-> > --- a/sound/soc/codecs/hdac_hdmi.c
-> > +++ b/sound/soc/codecs/hdac_hdmi.c
-> > @@ -34,6 +34,9 @@
-> >  
-> >  #define HDA_MAX_CONNECTIONS     32
-> >  
-> > +#define ELD_MAX_SIZE    256
-> > +#define ELD_FIXED_BYTES	20
-> > +
-> >  struct hdac_hdmi_cvt_params {
-> >  	unsigned int channels_min;
-> >  	unsigned int channels_max;
-> > @@ -48,11 +51,22 @@ struct hdac_hdmi_cvt {
-> >  	struct hdac_hdmi_cvt_params params;
-> >  };
-> >  
-> > +struct hdmi_eld {
-> > +	bool	monitor_present;
-> > +	bool	eld_valid;
-> > +	int	eld_size;
-> > +	char    eld_buffer[ELD_MAX_SIZE];
-> > +};
-> > +
-> >  struct hdac_hdmi_pin {
-> >  	struct list_head head;
-> >  	hda_nid_t nid;
-> >  	int num_mux_nids;
-> >  	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
-> > +	struct hdmi_eld eld;
-> > +	struct hdac_ext_device *edev;
-> > +	int repoll_count;
-> > +	struct delayed_work work;
-> >  };
-> >  
-> >  struct hdac_hdmi_dai_pin_map {
-> > @@ -246,7 +260,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
-> >  	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
-> >  	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-> >  	struct hdac_hdmi_dai_pin_map *dai_map;
-> > -	int val;
-> >  
-> >  	if (dai->id > 0) {
-> >  		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-> > @@ -255,12 +268,11 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
-> >  
-> >  	dai_map = &hdmi->dai_map[dai->id];
-> >  
-> > -	val = snd_hdac_codec_read(&hdac->hdac, dai_map->pin->nid, 0,
-> > -					AC_VERB_GET_PIN_SENSE, 0);
-> > -	dev_info(&hdac->hdac.dev, "Val for AC_VERB_GET_PIN_SENSE: %x\n", val);
-> > -
-> > -	if ((!(val & AC_PINSENSE_PRESENCE)) || (!(val & AC_PINSENSE_ELDV))) {
-> > -		dev_err(&hdac->hdac.dev, "Monitor presence invalid with val: %x\n", val);
-> > +	if ((!dai_map->pin->eld.monitor_present) ||
-> > +		(!dai_map->pin->eld.eld_valid)) {
-> > +		dev_err(&hdac->hdac.dev, "Failed: montior present? %d eld valid?: %d\n",
-> > +				dai_map->pin->eld.monitor_present,
-> > +				dai_map->pin->eld.eld_valid);
-> >  		return -ENODEV;
-> >  	}
-> >  
-> > @@ -432,6 +444,68 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
-> >  	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
-> >  }
-> >  
-> > +static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
-> > +{
-> > +	struct hdac_ext_device *edev = pin->edev;
-> > +	int val;
-> > +
-> > +	if (!edev)
-> > +		return;
-> > +
-> > +	pin->repoll_count = repoll;
-> > +
-> > +	pm_runtime_get_sync(&edev->hdac.dev);
-> > +	val = snd_hdac_codec_read(&edev->hdac, pin->nid, 0,
-> > +					AC_VERB_GET_PIN_SENSE, 0);
-> > +
-> > +	dev_dbg(&edev->hdac.dev, "Pin sense val %x for pin: %d\n",
-> > +			val, pin->nid);
-> > +	pin->eld.monitor_present = !!(val & AC_PINSENSE_PRESENCE);
-> > +	pin->eld.eld_valid = !!(val & AC_PINSENSE_ELDV);
-> > +
-> > +	if (!pin->eld.monitor_present || !pin->eld.eld_valid) {
-> > +		dev_info(&edev->hdac.dev, "%s: disconnect or eld_invalid\n",
-> > +				__func__);
-> > +		goto put_hdac_device;
-> > +	}
-> > +
-> > +	if (pin->eld.monitor_present && pin->eld.eld_valid) {
-> > +		/* TODO: Use i915 cmpnt framework when available */
-> > +		if (snd_hdac_get_eld(&edev->hdac, pin->nid,
-> > +				pin->eld.eld_buffer,
-> > +				&pin->eld.eld_size) == 0) {
-> > +			print_hex_dump_bytes("Eld: ", DUMP_PREFIX_OFFSET,
-> > +					pin->eld.eld_buffer, pin->eld.eld_size);
-> > +		} else {
-> > +			dev_err(&edev->hdac.dev, "ELD invalid\n");
-> > +			pin->eld.monitor_present = false;
-> > +			pin->eld.eld_valid = false;
-> > +		}
-> > +
-> > +	}
-> > +
-> > +	/*
-> > +	 * Sometimes the pin_sense may present invalid monitor
-> > +	 * present and eld_valid. If eld data is not valid loop, few
-> > +	 * more times to get correct pin sense and valid eld.
-> > +	 */
-> > +	if ((!pin->eld.monitor_present || !pin->eld.eld_valid) && repoll)
-> > +		schedule_delayed_work(&pin->work, msecs_to_jiffies(300));
-> > +
-> > +put_hdac_device:
-> > +	pm_runtime_put_sync(&edev->hdac.dev);
-> > +}
-> > +static void hdac_hdmi_repoll_eld(struct work_struct *work)
-> > +{
-> > +	struct hdac_hdmi_pin *pin =
-> > +		container_of(to_delayed_work(work), struct hdac_hdmi_pin, work);
-> > +
-> > +	/* picked from legacy */
-> > +	if (pin->repoll_count++ > 6)
-> > +		pin->repoll_count = 0;
-> > +
-> > +	hdac_hdmi_present_sense(pin, pin->repoll_count);
-> > +}
-> >  static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
-> >  {
-> >  	struct hdac_hdmi_priv *hdmi = edev->private_data;
-> > @@ -446,6 +520,9 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
-> >  	list_add_tail(&pin->head, &hdmi->pin_list);
-> >  	hdmi->num_pin++;
-> >  
-> > +	pin->edev = edev;
-> > +	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -503,17 +580,50 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
-> >  	return hdac_hdmi_init_dai_map(edev);
-> >  }
-> >  
-> > +static void hdac_hdmi_eld_notify_cb(void *aptr, int port)
-> > +{
-> > +	struct hdac_ext_device *edev = aptr;
-> > +	struct hdac_hdmi_priv *hdmi = edev->private_data;
-> > +	struct hdac_hdmi_pin *pin;
-> > +	/* Don't know how this mapping is derived */
-> > +	hda_nid_t pin_nid = port + 0x04;
-> > +
-> > +	dev_dbg(&edev->hdac.dev, "%s: for pin: %d\n", __func__, pin_nid);
-> > +
-> > +	list_for_each_entry(pin, &hdmi->pin_list, head) {
-> > +		if (pin->nid == pin_nid)
-> > +			hdac_hdmi_present_sense(pin, 1);
-> > +	}
-> > +}
-> > +
-> > +static struct i915_audio_component_audio_ops aops = {
-> > +	.pin_eld_notify	= hdac_hdmi_eld_notify_cb,
-> > +};
-> > +
-> >  static int hdmi_codec_probe(struct snd_soc_codec *codec)
-> >  {
-> >  	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
-> >  	struct hdac_hdmi_priv *hdmi = edev->private_data;
-> >  	struct snd_soc_dapm_context *dapm =
-> >  		snd_soc_component_get_dapm(&codec->component);
-> > +	struct hdac_hdmi_pin *pin;
-> > +	int ret;
-> >  
-> >  	edev->scodec = codec;
-> >  
-> >  	create_fill_widget_route_map(dapm, &hdmi->dai_map[0]);
-> >  
-> > +	aops.audio_ptr = edev;
-> > +	ret = snd_hdac_i915_register_notifier(&aops);
-> > +	if (ret < 0) {
-> > +		dev_err(&edev->hdac.dev, "notifier register failed: err: %d\n",
-> > +				ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	list_for_each_entry(pin, &hdmi->pin_list, head)
-> > +		hdac_hdmi_eld_notify_cb(edev, (pin->nid - 0x04));
-> > +
-> >  	/* Imp: Store the card pointer in hda_codec */
-> >  	edev->card = dapm->card->snd_card;
-> >  
-> > @@ -644,6 +754,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
-> >  	if (!bus)
-> >  		return 0;
-> >  
-> > +
-> >  	err = snd_hdac_display_power(bus, true);
-> >  	if (err < 0) {
-> >  		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-> > -- 
-> > 1.9.1
-> > 
+--===============4278606500516600323==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="k1icXJ1HDib4AVtD"
+Content-Disposition: inline
 
--- 
+
+--k1icXJ1HDib4AVtD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Nov 23, 2015 at 11:04:04AM -0500, mengdong.lin@linux.intel.com wrote:
+
+A couple of small things but otherwise this looks fine:
+
+> +	struct snd_soc_dai_link *dai_link;  /* predefined links only */
+> +	int num_links;  /* predefined links only */
+> +	struct list_head dai_link_list; /* all links */
+> +	int num_dai_links;
+
+Why are we keeping a count of num_dai_links?  I can't see any users.
+
+> +	/* add predefined DAI links to the list */
+> +	for (i = 0; i < card->num_links; i++)
+> +		snd_soc_add_dai_link(card, card->dai_link+i);
+
+Missing spaces around the + here.
+
+--k1icXJ1HDib4AVtD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWXcO3AAoJECTWi3JdVIfQONkH/i2ROIaJaQjMLiVmFoQkDA9E
+3kFmtGTskw5+STALBzHZKiyF5RzD6Abnwi6YalvXQ5qyo53c2Vprye7xpyu538Aq
+KMrdy1A9ten3yex6tMaxFdopMA8PpZ6b1TdDv053KPuDp4CqicS8sml6prJ+KXcC
+nNK+xQs8bfLIFtxTP53Lpuzvbcu3Qw2F5VpBxbdxXL9yRAB+LWNMjawUiA2eRwYB
+YwjPXatoIPwJWaMLAdQmgpBTbC2iouC0vICdgL5EgW+tjjUHDKjur3HbfGr2KuoJ
+2lV2wTKtNvwdyt1eIOfNqGVoajtIhjZ2NczqhVlMXtIaMIFm7eRiux8lqjkayhE=
+=tGIP
+-----END PGP SIGNATURE-----
+
+--k1icXJ1HDib4AVtD--
+
+--===============4278606500516600323==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4278606500516600323==--
