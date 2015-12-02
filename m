@@ -1,103 +1,82 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: snd-fireworks requires larger period sizes than
-	FFADO
-Date: Wed, 2 Dec 2015 09:31:57 +0900
-Message-ID: <565E3BFD.90302@sakamocchi.jp>
-References: <56510A5F.4080004@gmx.de> <5652ED38.6080409@ladisch.de>
- <20151201153111.4f7a0e1f@kant>
+From: Simran Rai <ssimran@broadcom.com>
+Subject: Re: [PATCH v4 2/3] ASoC: cygnus: Add Cygnus audio DAI driver
+Date: Tue, 1 Dec 2015 18:17:54 -0800
+Message-ID: <565E54D2.50806@broadcom.com>
+References: <1447114664-21799-1-git-send-email-ssimran@broadcom.com>
+ <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
+ <20151122134440.GQ26072@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 18BCB261AD8
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 01:32:03 +0100 (CET)
-In-Reply-To: <20151201153111.4f7a0e1f@kant>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Richter <stefanr@s5r6.in-berlin.de>, Clemens Ladisch <clemens@ladisch.de>, =?UTF-8?Q?Dominic_Sacr=c3=a9?= <dominic.sacre@gmx.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20151122134440.GQ26072@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBEZWMgMDEgMjAxNSAyMzozMSwgU3RlZmFuIFJpY2h0ZXIgd3JvdGU6Cj4gKGFkZGlu
-ZyBDYzogVGFrYXNoaSBTYWthbW90byB3aG8gaXMgY3VycmVudGx5IHdvcmtpbmcgd2l0aGluCj4g
-c25kLWZpcmV3aXJlLWxpYikKPiAKPiBPbiBOb3YgMjMgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+
-PiBEb21pbmljIFNhY3LDqSB3cm90ZToKPj4+IEknbSB0cnlpbmcgdG8gdXNlIGFuIEVjaG8gQXVk
-aW9GaXJlIDQgd2l0aCB0aGUgc25kLWZpcmV3b3JrcyBkcml2ZXIuCj4+PiBXaXRoIEZGQURPIHRo
-ZSBkZXZpY2Ugd29ya3MgcmVhc29uYWJseSB3ZWxsIGF0IGEgcGVyaW9kIHNpemUgb2YKPj4+IDY0
-IHNhbXBsZXMgKG9uIGEgUFJFRU1QVF9SVCBrZXJuZWwpLCB3aGVyZWFzIHdpdGggc25kLWZpcmV3
-b3JrcyB0aGUKPj4+IGxvd2VzdCBwb3NzaWJsZSBwZXJpb2Qgc2l6ZSBzZWVtcyB0byBiZSAyNTYg
-c2FtcGxlcy4KPj4+Cj4+PiBUaGUgbG93ZXN0IGFjaGlldmFibGUgYW5hbG9nIHJvdW5kdHJpcCBs
-YXRlbmN5IHNlZW1zIHRvIGJlIGFyb3VuZCAxOW1zCj4+PiAoYXQgMngyNTYgZnJhbWVzKSwgYXMg
-b3Bwb3NlZCB0byA4LjNtcyB3aXRoIEZGQURPIChhdCAyeDY0KS4gQXJlIHRoZXJlCj4+PiBhbnkg
-a25vd24gbGltaXRhdGlvbnMgb2YgdGhlIHNuZC1maXJld29ya3MgZHJpdmVyIGluIHRoaXMgcmVn
-YXJkPyAgCj4+Cj4+IEF0IHRoZSBtb21lbnQsIHRoZSBkcml2ZXIgdXNlcyBhIG1pbmltdW0gcGVy
-aW9kIHNpemUgb2YgNSBtcy4KPj4KPj4gWW91IGNvdWxkIHRyeSByZWR1Y2luZyBJTlRFUlJVUFRf
-SU5URVJWQUwgYW5kIHRoZSBwYXJhbWV0ZXIgdG8KPj4gc25kX3BjbV9od19jb25zdHJhaW50X21p
-bm1heCgpIGluIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jLCBhbmQKPj4gcmVjb21waWxp
-bmcgdGhlIGRyaXZlci4KPiAKPiBEb21pbmljOgo+IEkgaGF2ZSBub3QgdHJpZWQgaXQgbXlzZWxm
-IHlldCBhbmQgSSBhbSBub3QgZmFtaWxpYXIgd2l0aCBBTFNBJ3MKPiByZXF1aXJlbWVudHMsIGJ1
-dCBwZXJoYXBzIGEgZmlyc3Qgc3RlcCB3b3VsZCBiZSB0byByZWR1Y2UgYm90aCB0aGUKPiBJTlRF
-UlJVUFRfSU5URVJWQUwgYW5kIHRoZSB0aGlyZCBhcmd1bWVudCBpbiB0aGUgY2FsbCB0bwo+IHNu
-ZF9wY21faHdfY29uc3RyYWludF9taW5tYXgoKSB0byBoYWxmIG9mIHRoZSBvcmlnaW5hbCB2YWx1
-ZS4KPiAKPiBTb21lIGJhY2tncm91bmQ6Cj4gCj4gVGhlIElFRUUgMTM5NCAoRmlyZVdpcmUpIHBh
-Y2tldHMsIGluIHdoaWNoIHRoZSBpbmJvdW5kIGFuZCBvdXRib3VuZCBhdWRpbwo+IHN0cmVhbXMg
-YXJlIGVuY2Fwc3VsYXRlZCwgYXJlIHRyYW5zbWl0dGVkIGF0IGFuIGF2ZXJhZ2UgcGVyaW9kIG9m
-IDEyNSDCtXMuICAKPiAKPiBUaGUgZHJpdmVyIGluc3RydWN0cyB0aGUgT0hDSS0xMzk0IGNvbnRy
-b2xsZXIgdG8gZ2VuZXJhdGUgYW4gaW50ZXJydXB0Cj4gZXZlcnkgTiBwYWNrZXRzLiAgc25kLWZp
-cmV3aXJlLWxpYiBjdXJyZW50bHkgY2hvb3NlcyBOID0gSU5URVJSVVBUX0lOVEVSVkFMCj4gPSAx
-NiwgZ2l2aW5nIGFuIGF2ZXJhZ2UgcGVyaW9kIG9mIDIwMDAgwrVzIGJldHdlZW4gaW50ZXJydXB0
-cy4KPiAKPiBGb3IgcmVhc29ucyB0aGF0IGVzY2FwZSBtZSwgc25kLWZpcmV3aXJlLWxpYiBsaW1p
-dHMgQUxTQSdzIHBlcmlvZCB0byA1MDAwCj4gwrVzIG1pbmltdW0gYW5kIHVuc3BlY2lmaWVkIG1h
-eGltdW0uICBUaGlzIHdheSwgdHdvIG9yIHNvbWV0aW1lcyB0aHJlZQo+IEZpcmVXaXJlIGludGVy
-cnVwdHMgaGFwcGVuIHdpdGhpbiBlYWNoIEFMU0EgcGVyaW9kLgo+IAo+IEFjdHVhbCBGaXJlV2ly
-ZSBwYWNrZXQgcHJvY2Vzc2luZ3MgZGV2aWF0ZXMgZnJvbSB0aGUgYXZlcmFnZSBvZiAyMDAwIMK1
-cwo+IGJlY2F1c2UKPiAgIC0gdGhlcmUgaXMgYSBzbWFsbCBqaXR0ZXIgaW4gdGhlIElFRUUgMTM5
-NCBpc29jaHJvbm91cyBwZXJpb2QsCj4gICAtIHRoZXJlIG1heSBiZSBhIGRlbGF5IGJldHdlZW4g
-d2hlbiB0aGUgT0hDSSBzaWduYWxzIGFuIGludGVycnVwdCB0byB0aGUKPiAgICAgQ1BVLCB0aGUg
-Q1BVIHBlcmZvcm1zIHRoZSAidG9wIGhhbGYiIG9mIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciAoanVz
-dAo+ICAgICBwcmVwYXJlcyB0aGUgImJvdHRvbSBoYWxmIiBmb3IgZXhlY3V0aW9uIGFuZCBjbGVh
-cnMgdGhlIE9IQ0kncwo+ICAgICBpbnRlcnJ1cHQgcmVnaXN0ZXIpLCBhbmQgd2hlbiB0aGUgQ1BV
-IGFjdHVhbGx5IHByb2Nlc3NlcyB0aGUgcGFja2V0Cj4gICAgIGJ1ZmZlciAoaW4gdGhlICJib3R0
-b20gaGFsZiIgb2YgdGhlIGludGVycnVwdCBoYW5kbGVyLCBhLmsuYS4KPiAgICAgInRhc2tsZXQi
-KS4gIFRhc2tsZXRzIG9mIG90aGVyIGtlcm5lbCBkcml2ZXJzIGNvdWxkIGRlZmVyIGV4ZWN1dGlv
-biBvZgo+ICAgICBzbmQtZmlyZXdpcmUtbGliJ3MgdGFza2xldCBmb3Igc29tZSB0aW1lLiAgKEEg
-UFJFRU1QVF9SVCBrZXJuZWwKPiAgICAgcmVwbGFjZXMgdGFza2xldHMgYnkgdGhyZWFkcyB3aGlj
-aCBjYW4gcHJlZW1wdCBlYWNoIG90aGVyLCB0aHVzIEkKPiAgICAgZ3Vlc3MgYW4gUlQga2VybmVs
-IGNvdWxkIHJlZHVjZSB0aGlzIHBhcnQgb2Ygaml0dGVyIGlmIHRoZSB0aHJlYWRzIGFyZQo+ICAg
-ICBwcmlvcml0aXplZCBhY2NvcmRpbmdseS4pCgpGb3IgdGVjaG5pY2FsIGJhY2tncm91bmQsIFNl
-ZSAiOS4yIEEgbGFjayBvZiBhcnJhbmdlbWVudCBmb3Igc2V2ZXJlCmxhdGVuY3kiIG9mIG15IHJl
-cG9ydCB3cml0dGVuIGluIHN1bW1lciAyMDE0LgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUv
-YWxzYS1maXJld2lyZS1yZXBvcnQKClVzZXJzIGNhbiBkbyB3aGF0IHRoZXkgd2FudCBhbmQgYmVs
-aWV2ZSBhcyBhcHByb3ZhbC4gQWx0aG91Z2gsIEkgZG9uJ3QKbGlrZSB0byBwcm9wb3NlIHVzZXJz
-IGp1c3QgdG8gY2hhbmdlIHRoZSB2YWx1ZSBvZiBJTlRFUlJVUFRfSU5URVJWQUwgYW5kCnJlZHVj
-ZSB0aGUgcGFyYW1ldGVyIG9mIHNuZF9wY21faHdfY29uc3RyYWludF9taW5tYXgoKSBpbgpzb3Vu
-ZC9maXJld2lyZS9hbWR0cC1zdHJlYW0uYy4gQXQgYSBnbGFuY2UsIGl0IGxvb2tzIHRvIHJlc29s
-dmUgdGhlCmlzc3VlIGFuZCB1c2VycyBhcmUgc2F0aXNmaWVkIHdpdGggc21hbGxlciBzaXplIG9m
-IFBDTSBidWZmZXIsIHdoaWxlIGl0Cm1heSBjYXVzZSBpbXBsaWNpdCBhbmQgdHJvYmxlLCBhcyBJ
-J3ZlIGFscmVhZHkgZGVzY3JpYmVkLiBJIGJlbGlldmUgaXQKd29yc2UgdGhhdCB1c2VycyBhcmUg
-YWxpZW5hdGVkIGZyb20gdHJ1ZSBpc3N1ZXMgYW5kIHNhdGlzZmllZCB3aXRoCmluYXBwcm9wcmlh
-dGUgaWRlYXMuCgo+IENsZW1lbnMsCj4gaXMgdGhlcmUgYSBzdHJpY3QgcmVxdWlyZW1lbnQgdGhh
-dCB0aGUgQUxTQSBwZXJpb2QgaXMgbW9yZSB0aGFuIGRvdWJsZSBvZgo+IHRoZSBGaXJlV2lyZSBp
-bnRlcnJ1cHQgcGVyaW9kPyAgT3IgY291bGQgdGhlIEFMU0EgcGVyaW9kIGJlIGxlc3MgdGhhbgo+
-IGRvdWJsZSwgYXQgbGVhc3Qgb24gUFJFRU1QVCBrZXJuZWxzIChsZXQgYWxvbmUgUFJFRU1QVF9S
-VCBrZXJuZWxzKT8KPgo+IEFsc28sIEkgYmVsaWV2ZSB0byByZW1lbWJlciB0aGF0IHlvdSBvbmNl
-IHNhaWQgdGhhdCBpbnN0ZWFkIG9mIHJlbHlpbmcgb24KPiBwZXJpb2RpY2FsIGludGVycnVwdHMg
-ZnJvbSB0aGUgT0hDSSwgaXQgbWlnaHQgYmUgYmV0dGVyIHRvIHN3aXRjaCB0byBhCj4ga2luZCBv
-ZiBwb2xsaW5nIHNjaGVtZSAoaS5lLiBwcm9jZXNzIHRoZSBJRUVFIDEzOTQgcGFja2V0IGJ1ZmZl
-ciBvbiBhbgo+IG93biBwZXJpb2QgPSBBTFNBIHBlcmlvZD8pLiAgSSBzdXBwb3NlIHRoaXMgd291
-bGQgYXV0b21hdGljYWxseSBhbGxvdyBmb3IKPiB2ZXJ5IHNtYWxsIEFMU0EgcGVyaW9kcy4KClBs
-ZWFzZSB3cml0ZSBwYXRjaHNldCwgdGhlbiBJJ2xsIHJldmlldyB0aGVtIGFuZCBjb21tZW50LiBD
-dXJyZW50bHksIG15CndvcmsgZm9jdXNlcyBvbiBlbmFibGluZyBtb3JlIGRldmljZXMgdG8gd29y
-ayB3aXRoIEFMU0EgZmlyZXdpcmUgc3RhY2ssCm5vdGhpbmcgb3RoZXJzLgoKClJlZ2FyZHMKClRh
-a2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+
+
+On 11/22/2015 5:44 AM, Mark Brown wrote:
+> On Mon, Nov 09, 2015 at 04:17:43PM -0800, Simran Rai wrote:
+>
+>> +#ifdef CONFIG_PM_SLEEP
+>> +static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
+>> +{
+>> +	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+>> +	struct cygnus_audio *cygaud = snd_soc_dai_get_drvdata(cpu_dai);
+>> +
+>> +	audio_ssp_out_disable(aio);
+>> +	audio_ssp_in_disable(aio);
+>> +	if (cygaud->active_ports > 0)
+>> +		cygaud->active_ports--;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+>> +{
+>> +	return 0;
+>> +}
+> I'm a bit confused here - why do we need to disable things on suspend
+> but not reenable them on resume?  I'd expect that the core would have
+> quiesced any streams that need to be suspended before we get as far as
+> suspending the drivers.
+>
+> Please also remove empty functions.
+>
+> Now I check I see that I'm repeating the questions I had on my previous
+> review:
+>
+> | Blank line between functions and remove empty functions.  Though I'm not
+> | clear why the result doesn't undo what the suspend did...
+>
+> Please don't ignore review comments.
+
+Let me investigate this further and debug why the core did not 
+quiescence the streams.
+
+>
+>> +	parent = clk_get_parent(cygaud->audio_clk[0]);
+>> +	if (IS_ERR(parent)) {
+>> +		error = PTR_ERR(parent);
+>> +		goto err_get_parent;
+>> +	}
+>> +
+>> +	/* Set PLL VCO Frequency (Hz) to default */
+>> +	error = clk_set_rate(parent, DEFAULT_VCO);
+>> +	if (error) {
+>> +		dev_err(&pdev->dev,
+>> +			"%s Set PLL VCO rate failed: %d\n", __func__, error);
+>> +		goto err_get_parent;
+>> +	}
+> I would expect any initialisationn of clocks beyond the ones that the
+> device directly interacts with to be handled within the clock API
+> configuration rather than in a specific driver, this avoids the driver
+> being dependent on a particular system integration.
+
+I will have to figure out a way to propagate the frequency from leaf clocks to the parent
+clock. Will send out another patch with the fix.
+
+Thanks,
+Simran
