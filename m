@@ -1,66 +1,34 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH 12/15] drm/edid: Add API to help find connection type
-Date: Wed, 2 Dec 2015 22:46:35 +0530
-Message-ID: <20151202171635.GC22880@subhransu-desktop>
-References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-12-git-send-email-subhransu.s.prusty@intel.com>
- <87y4dd2n41.fsf@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87y4dd2n41.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: usx2y: fix inconsistent indenting on if statement
+Date: Wed,  2 Dec 2015 11:49:53 +0000
+Message-ID: <1449056993-9987-1-git-send-email-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBEZWMgMDIsIDIwMTUgYXQgMTE6NTM6MDJBTSArMDIwMCwgSmFuaSBOaWt1bGEgd3Jv
-dGU6Cj4gT24gVHVlLCAwMSBEZWMgMjAxNSwgIlN1YmhyYW5zdSBTLiBQcnVzdHkiIDxzdWJocmFu
-c3Uucy5wcnVzdHlAaW50ZWwuY29tPiB3cm90ZToKPiA+IFRvIGZpbGwgdGhlIGF1ZGlvIGluZm9m
-cmFtZSBpdCBpcyByZXF1aXJlZCB0byBpZGVudGlmeSB0aGUgY29ubmVjdGlvbiB0eXBlCj4gPiBh
-cyBEUCBvciBIRE1JLiBTbyBwYXJzZSB0aGUgcmVxdWlyZWQgYml0cyBpbiBFTEQgdG8gZmluZCB0
-aGUgY29ubmVjdGlvbgo+ID4gdHlwZS4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBTdWJocmFuc3Ug
-Uy4gUHJ1c3R5IDxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwuY29tPgo+ID4gU2lnbmVkLW9mZi1i
-eTogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+Cj4gPiBDYzogRGF2aWQgQWlybGll
-IDxhaXJsaWVkQGxpbnV4LmllPgo+ID4gQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKPiA+IENjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWwudmV0dGVyQGludGVsLmNvbT4KPiA+IC0t
-LQo+ID4gIGluY2x1ZGUvZHJtL2RybV9lZGlkLmggfCAxMCArKysrKysrKysrCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKykKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9k
-cm0vZHJtX2VkaWQuaCBiL2luY2x1ZGUvZHJtL2RybV9lZGlkLmgKPiA+IGluZGV4IDJhZjk3Njku
-LmM3NTk1YTUgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gPiArKysg
-Yi9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gPiBAQCAtNDAzLDYgKzQwMywxNiBAQCBzdGF0aWMg
-aW5saW5lIGludCBkcm1fZWxkX3NpemUoY29uc3QgdWludDhfdCAqZWxkKQo+ID4gIAlyZXR1cm4g
-RFJNX0VMRF9IRUFERVJfQkxPQ0tfU0laRSArIGVsZFtEUk1fRUxEX0JBU0VMSU5FX0VMRF9MRU5d
-ICogNDsKPiA+ICB9Cj4gPiAgCj4gPiArLyoqCj4gPiArICogZHJtX2VsZF9nZXRfY29ubl90eXBl
-IC0gR2V0IGRldmljZSB0eXBlIGhkbWkvZHAgY29ubmVjdGVkCj4gPiArICogQGVsZDogcG9pbnRl
-ciB0byBhbiBlbGQgbWVtb3J5IHN0cnVjdHVyZQo+ID4gKyAqLwo+ID4gK3N0YXRpYyBpbmxpbmUg
-aW50IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZShjb25zdCB1aW50OF90ICplbGQpCj4gPiArewo+ID4g
-KwlyZXR1cm4gKGVsZFtEUk1fRUxEX1NBRF9DT1VOVF9DT05OX1RZUEVdICYgRFJNX0VMRF9DT05O
-X1RZUEVfTUFTSykgPj4KPiA+ICsJCURSTV9FTERfQ09OTl9UWVBFX1NISUZUOwo+ID4gK30KPiAK
-PiBJJ20gbm90IHN1cmUgaG93IG11Y2ggdGhpcyBoZWxwcyB3aGVuIHRoZSBjYWxsZXIgc3RpbGwg
-bmVlZHMgdG8KPiBtYWdpY2FsbHkga25vdyB3aGF0IHRoZSByZXR1cm4gdmFsdWUgbWVhbnMuLi4g
-IEluZGVlZCB0aGUgbmV4dCBwYXRjaAo+IHdpdGggLyogMCBpcyBoZG1pIGFuZCAxIGlzIERQICov
-IGFuZCAiY29ubl90eXBlID09IDAiIGlzIGEgYml0IHVnbHkuCj4gCj4gSG93IGFib3V0IGp1c3Qg
-bm90IHNoaWZ0aW5nIHRoZSByZXR1cm4gdmFsdWUsIGFuZCB1c2luZwo+IERSTV9FTERfQ09OTl9U
-WVBFX0hETUkgYW5kIERSTV9FTERfQ09OTl9UWVBFX0RQIGluIHRoZSBjYWxsZXI/IEJvbnVzCj4g
-cG9pbnRzIGZvciByZWZlcmVuY2luZyB0aG9zZSBpbiB0aGUga2VybmVsLWRvYyBhYm92ZS4KClN1
-cmUsIHdpbGwgdXBkYXRlIGFuZCBzdWJtaXQgYWdhaW4uCgpSZWdhcmRzLApTdWJocmFuc3UKPiAK
-PiBCUiwKPiBKYW5pLgo+IAo+IAo+ID4gKwo+ID4gIHN0cnVjdCBlZGlkICpkcm1fZG9fZ2V0X2Vk
-aWQoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiA+ICAJaW50ICgqZ2V0X2VkaWRf
-YmxvY2spKHZvaWQgKmRhdGEsIHU4ICpidWYsIHVuc2lnbmVkIGludCBibG9jaywKPiA+ICAJCQkg
-ICAgICBzaXplX3QgbGVuKSwKPiAKPiAtLSAKPiBKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3Vy
-Y2UgVGVjaG5vbG9neSBDZW50ZXIKCi0tIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2RyaS1kZXZlbAo=
+From: Colin Ian King <colin.king@canonical.com>
+
+minor change, indenting is one tab out.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/usb/usx2y/usbusx2yaudio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 61d5dc2..dd40ca9 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -166,7 +166,7 @@ static int usX2Y_urb_play_prepare(struct snd_usX2Y_substream *subs,
+ 			/* set the buffer pointer */
+ 			urb->transfer_buffer = runtime->dma_area + subs->hwptr * usX2Y->stride;
+ 			if ((subs->hwptr += count) >= runtime->buffer_size)
+-			subs->hwptr -= runtime->buffer_size;			
++				subs->hwptr -= runtime->buffer_size;
+ 		}
+ 	else
+ 		urb->transfer_buffer = subs->tmpbuf;
+-- 
+2.6.2
