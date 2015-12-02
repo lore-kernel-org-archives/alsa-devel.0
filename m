@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/5] ASoC: Define add/remove_dai_link ops for a
-	soc card
-Date: Wed,  2 Dec 2015 14:11:32 +0800
-Message-ID: <a7aecce7622d5206339f18e43521da8e46d43445.1449036307.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/5] ASoC: soc_bind_dai_link() directly returns
+	success for a bound DAI link
+Date: Wed,  2 Dec 2015 14:11:40 +0800
+Message-ID: <06e80a8f889459898722784788581647914dce9b.1449036307.git.mengdong.lin@linux.intel.com>
 References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D0BD5264F03
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 06:55:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB8D264F03
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 06:55:32 +0100 (CET)
 In-Reply-To: <cover.1449036307.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,63 +27,47 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-A machine driver can register the two ops.
-
-When a DAI link is added or removed by a component's topology, the
-ASoC core can call the ops to notify the machine driver for extra
-intialization or destruction.
-
-E.g. topology can create FE DAI links from a cpu DAI component, and
-the machine driver may define an add_dai_link ops to set machine-specific
-.init ops for the DAI link.
+This function will return success immediately for a bound DAI link.
+No need to look for the cpu/codec DAIs again.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d1583df..f28b36e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1107,6 +1107,11 @@ struct snd_soc_card {
- 				   struct snd_soc_dapm_context *dapm,
- 				   enum snd_soc_bias_level level);
- 
-+	int (*add_dai_link)(struct snd_soc_card *,
-+			    struct snd_soc_dai_link *link);
-+	void (*remove_dai_link)(struct snd_soc_card *,
-+			    struct snd_soc_dai_link *link);
-+
- 	long pmdown_time;
- 
- 	/* CPU <--> Codec DAI links  */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 679379d..c504d04 100644
+index c504d04..9dada21 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1260,6 +1260,12 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 	}
+@@ -960,6 +960,19 @@ static struct snd_soc_dai *snd_soc_find_dai(
+ 	return NULL;
+ }
  
- 	lockdep_assert_held(&client_mutex);
-+	/* Notify the machine driver for extra initialization
-+	 * on the link created by topology.
-+	 */
-+	if (dai_link->dobj.type && card->add_dai_link)
-+		card->add_dai_link(card, dai_link);
++static bool soc_is_dai_link_bound(struct snd_soc_card *card,
++		struct snd_soc_dai_link *dai_link)
++{
++	struct snd_soc_pcm_runtime *rtd;
 +
- 	list_add_tail(&dai_link->list, &card->dai_link_list);
- 	card->num_dai_links++;
- 
-@@ -1290,6 +1296,12 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 	}
- 
- 	lockdep_assert_held(&client_mutex);
-+	/* Notify the machine driver for extra destruction
-+	 * on the link created by topology.
-+	 */
-+	if (dai_link->dobj.type && card->remove_dai_link)
-+		card->remove_dai_link(card, dai_link);
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		if (rtd->dai_link == dai_link)
++			return true;
++	}
 +
- 	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
- 		if (link == dai_link) {
- 			list_del(&link->list);
++	return false;
++}
++
+ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link *dai_link)
+ {
+@@ -977,6 +990,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	if (!rtd)
+ 		return -ENOMEM;
+ 
++	if (soc_is_dai_link_bound(card, dai_link)) {
++		dev_dbg(card->dev, "ASoC: dai link %s already bound\n",
++			dai_link->name);
++		return 0;
++	}
++
+ 	cpu_dai_component.name = dai_link->cpu_name;
+ 	cpu_dai_component.of_node = dai_link->cpu_of_node;
+ 	cpu_dai_component.dai_name = dai_link->cpu_dai_name;
 -- 
 2.5.0
