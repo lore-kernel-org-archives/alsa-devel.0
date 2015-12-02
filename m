@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add missing ADINR::CHNUM on
-	DVC/SRC/SSIU" to the asoc tree
-Date: Tue, 01 Dec 2015 23:00:03 +0000
-Message-ID: <E1a3ttz-0007DA-8f@debutante>
-References: <87a8pvub5l.wl%kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: snd-fireworks requires larger period sizes than
+	FFADO
+Date: Wed, 2 Dec 2015 09:31:57 +0900
+Message-ID: <565E3BFD.90302@sakamocchi.jp>
+References: <56510A5F.4080004@gmx.de> <5652ED38.6080409@ladisch.de>
+ <20151201153111.4f7a0e1f@kant>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5352266299
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 00:00:07 +0100 (CET)
-In-Reply-To: <87a8pvub5l.wl%kuninori.morimoto.gx@renesas.com>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18BCB261AD8
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 01:32:03 +0100 (CET)
+In-Reply-To: <20151201153111.4f7a0e1f@kant>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,109 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>, Clemens Ladisch <clemens@ladisch.de>, =?UTF-8?Q?Dominic_Sacr=c3=a9?= <dominic.sacre@gmx.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rsnd: add missing ADINR::CHNUM on DVC/SRC/SSIU
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c45f7263a805e1c5d8579569884d32141330589f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Nov 2015 08:49:33 +0000
-Subject: [PATCH] ASoC: rsnd: add missing ADINR::CHNUM on DVC/SRC/SSIU
-
-DVC/SRC/SSIU needs ADINR::CHNUM settings too. This patch adds
-these missing value.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/dvc.c  | 6 +++++-
- sound/soc/sh/rcar/src.c  | 3 ++-
- sound/soc/sh/rcar/ssiu.c | 3 ++-
- 3 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 0f61e1344431..c622dec24362 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -97,11 +97,15 @@ static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
- 				 struct rsnd_mod *mod)
- {
- 	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
-+	u32 adinr = 0;
- 	u32 dvucr = 0;
- 	u32 vrctr = 0;
- 	u32 vrpdr = 0;
- 	u32 vrdbr = 0;
- 
-+	adinr = rsnd_get_adinr_bit(mod, io) |
-+		rsnd_get_adinr_chan(mod, io);
-+
- 	/* Enable Digital Volume, Zero Cross Mute Mode */
- 	dvucr |= 0x101;
- 
-@@ -124,7 +128,7 @@ static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
- 	rsnd_mod_write(mod, DVC_DVUIR, 1);
- 
- 	/* General Information */
--	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr_bit(mod, io));
-+	rsnd_mod_write(mod, DVC_ADINR, adinr);
- 	rsnd_mod_write(mod, DVC_DVUCR, dvucr);
- 
- 	/* Volume Ramp Parameter */
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 6d93c4ed8275..30cad79deab0 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -199,7 +199,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	/*
- 	 *	SRC_ADINR
- 	 */
--	adinr = rsnd_get_adinr_bit(mod, io);
-+	adinr = rsnd_get_adinr_bit(mod, io) |
-+		rsnd_get_adinr_chan(mod, io);
- 
- 	/*
- 	 *	SRC_IFSCR / SRC_IFSVR
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index bc245047e904..6120b0a66958 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -82,7 +82,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 		u32 val = rsnd_get_dalign(mod, io);
- 
- 		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
--			       rsnd_get_adinr_bit(mod, io));
-+			       rsnd_get_adinr_bit(mod, io) |
-+			       rsnd_get_adinr_chan(mod, io));
- 		rsnd_mod_write(mod, SSI_BUSIF_MODE,  1);
- 		rsnd_mod_write(mod, SSI_BUSIF_DALIGN, val);
- 	}
--- 
-2.6.2
+SGksCgpPbiBEZWMgMDEgMjAxNSAyMzozMSwgU3RlZmFuIFJpY2h0ZXIgd3JvdGU6Cj4gKGFkZGlu
+ZyBDYzogVGFrYXNoaSBTYWthbW90byB3aG8gaXMgY3VycmVudGx5IHdvcmtpbmcgd2l0aGluCj4g
+c25kLWZpcmV3aXJlLWxpYikKPiAKPiBPbiBOb3YgMjMgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+
+PiBEb21pbmljIFNhY3LDqSB3cm90ZToKPj4+IEknbSB0cnlpbmcgdG8gdXNlIGFuIEVjaG8gQXVk
+aW9GaXJlIDQgd2l0aCB0aGUgc25kLWZpcmV3b3JrcyBkcml2ZXIuCj4+PiBXaXRoIEZGQURPIHRo
+ZSBkZXZpY2Ugd29ya3MgcmVhc29uYWJseSB3ZWxsIGF0IGEgcGVyaW9kIHNpemUgb2YKPj4+IDY0
+IHNhbXBsZXMgKG9uIGEgUFJFRU1QVF9SVCBrZXJuZWwpLCB3aGVyZWFzIHdpdGggc25kLWZpcmV3
+b3JrcyB0aGUKPj4+IGxvd2VzdCBwb3NzaWJsZSBwZXJpb2Qgc2l6ZSBzZWVtcyB0byBiZSAyNTYg
+c2FtcGxlcy4KPj4+Cj4+PiBUaGUgbG93ZXN0IGFjaGlldmFibGUgYW5hbG9nIHJvdW5kdHJpcCBs
+YXRlbmN5IHNlZW1zIHRvIGJlIGFyb3VuZCAxOW1zCj4+PiAoYXQgMngyNTYgZnJhbWVzKSwgYXMg
+b3Bwb3NlZCB0byA4LjNtcyB3aXRoIEZGQURPIChhdCAyeDY0KS4gQXJlIHRoZXJlCj4+PiBhbnkg
+a25vd24gbGltaXRhdGlvbnMgb2YgdGhlIHNuZC1maXJld29ya3MgZHJpdmVyIGluIHRoaXMgcmVn
+YXJkPyAgCj4+Cj4+IEF0IHRoZSBtb21lbnQsIHRoZSBkcml2ZXIgdXNlcyBhIG1pbmltdW0gcGVy
+aW9kIHNpemUgb2YgNSBtcy4KPj4KPj4gWW91IGNvdWxkIHRyeSByZWR1Y2luZyBJTlRFUlJVUFRf
+SU5URVJWQUwgYW5kIHRoZSBwYXJhbWV0ZXIgdG8KPj4gc25kX3BjbV9od19jb25zdHJhaW50X21p
+bm1heCgpIGluIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jLCBhbmQKPj4gcmVjb21waWxp
+bmcgdGhlIGRyaXZlci4KPiAKPiBEb21pbmljOgo+IEkgaGF2ZSBub3QgdHJpZWQgaXQgbXlzZWxm
+IHlldCBhbmQgSSBhbSBub3QgZmFtaWxpYXIgd2l0aCBBTFNBJ3MKPiByZXF1aXJlbWVudHMsIGJ1
+dCBwZXJoYXBzIGEgZmlyc3Qgc3RlcCB3b3VsZCBiZSB0byByZWR1Y2UgYm90aCB0aGUKPiBJTlRF
+UlJVUFRfSU5URVJWQUwgYW5kIHRoZSB0aGlyZCBhcmd1bWVudCBpbiB0aGUgY2FsbCB0bwo+IHNu
+ZF9wY21faHdfY29uc3RyYWludF9taW5tYXgoKSB0byBoYWxmIG9mIHRoZSBvcmlnaW5hbCB2YWx1
+ZS4KPiAKPiBTb21lIGJhY2tncm91bmQ6Cj4gCj4gVGhlIElFRUUgMTM5NCAoRmlyZVdpcmUpIHBh
+Y2tldHMsIGluIHdoaWNoIHRoZSBpbmJvdW5kIGFuZCBvdXRib3VuZCBhdWRpbwo+IHN0cmVhbXMg
+YXJlIGVuY2Fwc3VsYXRlZCwgYXJlIHRyYW5zbWl0dGVkIGF0IGFuIGF2ZXJhZ2UgcGVyaW9kIG9m
+IDEyNSDCtXMuICAKPiAKPiBUaGUgZHJpdmVyIGluc3RydWN0cyB0aGUgT0hDSS0xMzk0IGNvbnRy
+b2xsZXIgdG8gZ2VuZXJhdGUgYW4gaW50ZXJydXB0Cj4gZXZlcnkgTiBwYWNrZXRzLiAgc25kLWZp
+cmV3aXJlLWxpYiBjdXJyZW50bHkgY2hvb3NlcyBOID0gSU5URVJSVVBUX0lOVEVSVkFMCj4gPSAx
+NiwgZ2l2aW5nIGFuIGF2ZXJhZ2UgcGVyaW9kIG9mIDIwMDAgwrVzIGJldHdlZW4gaW50ZXJydXB0
+cy4KPiAKPiBGb3IgcmVhc29ucyB0aGF0IGVzY2FwZSBtZSwgc25kLWZpcmV3aXJlLWxpYiBsaW1p
+dHMgQUxTQSdzIHBlcmlvZCB0byA1MDAwCj4gwrVzIG1pbmltdW0gYW5kIHVuc3BlY2lmaWVkIG1h
+eGltdW0uICBUaGlzIHdheSwgdHdvIG9yIHNvbWV0aW1lcyB0aHJlZQo+IEZpcmVXaXJlIGludGVy
+cnVwdHMgaGFwcGVuIHdpdGhpbiBlYWNoIEFMU0EgcGVyaW9kLgo+IAo+IEFjdHVhbCBGaXJlV2ly
+ZSBwYWNrZXQgcHJvY2Vzc2luZ3MgZGV2aWF0ZXMgZnJvbSB0aGUgYXZlcmFnZSBvZiAyMDAwIMK1
+cwo+IGJlY2F1c2UKPiAgIC0gdGhlcmUgaXMgYSBzbWFsbCBqaXR0ZXIgaW4gdGhlIElFRUUgMTM5
+NCBpc29jaHJvbm91cyBwZXJpb2QsCj4gICAtIHRoZXJlIG1heSBiZSBhIGRlbGF5IGJldHdlZW4g
+d2hlbiB0aGUgT0hDSSBzaWduYWxzIGFuIGludGVycnVwdCB0byB0aGUKPiAgICAgQ1BVLCB0aGUg
+Q1BVIHBlcmZvcm1zIHRoZSAidG9wIGhhbGYiIG9mIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciAoanVz
+dAo+ICAgICBwcmVwYXJlcyB0aGUgImJvdHRvbSBoYWxmIiBmb3IgZXhlY3V0aW9uIGFuZCBjbGVh
+cnMgdGhlIE9IQ0kncwo+ICAgICBpbnRlcnJ1cHQgcmVnaXN0ZXIpLCBhbmQgd2hlbiB0aGUgQ1BV
+IGFjdHVhbGx5IHByb2Nlc3NlcyB0aGUgcGFja2V0Cj4gICAgIGJ1ZmZlciAoaW4gdGhlICJib3R0
+b20gaGFsZiIgb2YgdGhlIGludGVycnVwdCBoYW5kbGVyLCBhLmsuYS4KPiAgICAgInRhc2tsZXQi
+KS4gIFRhc2tsZXRzIG9mIG90aGVyIGtlcm5lbCBkcml2ZXJzIGNvdWxkIGRlZmVyIGV4ZWN1dGlv
+biBvZgo+ICAgICBzbmQtZmlyZXdpcmUtbGliJ3MgdGFza2xldCBmb3Igc29tZSB0aW1lLiAgKEEg
+UFJFRU1QVF9SVCBrZXJuZWwKPiAgICAgcmVwbGFjZXMgdGFza2xldHMgYnkgdGhyZWFkcyB3aGlj
+aCBjYW4gcHJlZW1wdCBlYWNoIG90aGVyLCB0aHVzIEkKPiAgICAgZ3Vlc3MgYW4gUlQga2VybmVs
+IGNvdWxkIHJlZHVjZSB0aGlzIHBhcnQgb2Ygaml0dGVyIGlmIHRoZSB0aHJlYWRzIGFyZQo+ICAg
+ICBwcmlvcml0aXplZCBhY2NvcmRpbmdseS4pCgpGb3IgdGVjaG5pY2FsIGJhY2tncm91bmQsIFNl
+ZSAiOS4yIEEgbGFjayBvZiBhcnJhbmdlbWVudCBmb3Igc2V2ZXJlCmxhdGVuY3kiIG9mIG15IHJl
+cG9ydCB3cml0dGVuIGluIHN1bW1lciAyMDE0LgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUv
+YWxzYS1maXJld2lyZS1yZXBvcnQKClVzZXJzIGNhbiBkbyB3aGF0IHRoZXkgd2FudCBhbmQgYmVs
+aWV2ZSBhcyBhcHByb3ZhbC4gQWx0aG91Z2gsIEkgZG9uJ3QKbGlrZSB0byBwcm9wb3NlIHVzZXJz
+IGp1c3QgdG8gY2hhbmdlIHRoZSB2YWx1ZSBvZiBJTlRFUlJVUFRfSU5URVJWQUwgYW5kCnJlZHVj
+ZSB0aGUgcGFyYW1ldGVyIG9mIHNuZF9wY21faHdfY29uc3RyYWludF9taW5tYXgoKSBpbgpzb3Vu
+ZC9maXJld2lyZS9hbWR0cC1zdHJlYW0uYy4gQXQgYSBnbGFuY2UsIGl0IGxvb2tzIHRvIHJlc29s
+dmUgdGhlCmlzc3VlIGFuZCB1c2VycyBhcmUgc2F0aXNmaWVkIHdpdGggc21hbGxlciBzaXplIG9m
+IFBDTSBidWZmZXIsIHdoaWxlIGl0Cm1heSBjYXVzZSBpbXBsaWNpdCBhbmQgdHJvYmxlLCBhcyBJ
+J3ZlIGFscmVhZHkgZGVzY3JpYmVkLiBJIGJlbGlldmUgaXQKd29yc2UgdGhhdCB1c2VycyBhcmUg
+YWxpZW5hdGVkIGZyb20gdHJ1ZSBpc3N1ZXMgYW5kIHNhdGlzZmllZCB3aXRoCmluYXBwcm9wcmlh
+dGUgaWRlYXMuCgo+IENsZW1lbnMsCj4gaXMgdGhlcmUgYSBzdHJpY3QgcmVxdWlyZW1lbnQgdGhh
+dCB0aGUgQUxTQSBwZXJpb2QgaXMgbW9yZSB0aGFuIGRvdWJsZSBvZgo+IHRoZSBGaXJlV2lyZSBp
+bnRlcnJ1cHQgcGVyaW9kPyAgT3IgY291bGQgdGhlIEFMU0EgcGVyaW9kIGJlIGxlc3MgdGhhbgo+
+IGRvdWJsZSwgYXQgbGVhc3Qgb24gUFJFRU1QVCBrZXJuZWxzIChsZXQgYWxvbmUgUFJFRU1QVF9S
+VCBrZXJuZWxzKT8KPgo+IEFsc28sIEkgYmVsaWV2ZSB0byByZW1lbWJlciB0aGF0IHlvdSBvbmNl
+IHNhaWQgdGhhdCBpbnN0ZWFkIG9mIHJlbHlpbmcgb24KPiBwZXJpb2RpY2FsIGludGVycnVwdHMg
+ZnJvbSB0aGUgT0hDSSwgaXQgbWlnaHQgYmUgYmV0dGVyIHRvIHN3aXRjaCB0byBhCj4ga2luZCBv
+ZiBwb2xsaW5nIHNjaGVtZSAoaS5lLiBwcm9jZXNzIHRoZSBJRUVFIDEzOTQgcGFja2V0IGJ1ZmZl
+ciBvbiBhbgo+IG93biBwZXJpb2QgPSBBTFNBIHBlcmlvZD8pLiAgSSBzdXBwb3NlIHRoaXMgd291
+bGQgYXV0b21hdGljYWxseSBhbGxvdyBmb3IKPiB2ZXJ5IHNtYWxsIEFMU0EgcGVyaW9kcy4KClBs
+ZWFzZSB3cml0ZSBwYXRjaHNldCwgdGhlbiBJJ2xsIHJldmlldyB0aGVtIGFuZCBjb21tZW50LiBD
+dXJyZW50bHksIG15CndvcmsgZm9jdXNlcyBvbiBlbmFibGluZyBtb3JlIGRldmljZXMgdG8gd29y
+ayB3aXRoIEFMU0EgZmlyZXdpcmUgc3RhY2ssCm5vdGhpbmcgb3RoZXJzLgoKClJlZ2FyZHMKClRh
+a2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
