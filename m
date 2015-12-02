@@ -1,19 +1,16 @@
-From: Maeda <maeda1@free.fr>
-Subject: Re: [bug] Volume at maximum when track with different
- frequency is played with my RME sound card
-Date: Wed, 2 Dec 2015 11:11:27 +0100
-Message-ID: <565EC3CF.1090301@free.fr>
-References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
- <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
- <s5hwptbxhjf.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: dapm: Make enable/disable_pin work with
+	always on widgets
+Date: Wed, 2 Dec 2015 10:22:16 +0000
+Message-ID: <1449051736-26338-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id BFB2F26085B
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 11:10:58 +0100 (CET)
-In-Reply-To: <s5hwptbxhjf.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01C24261566
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 11:22:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSAhCgpTb3JyeSBmb3IgdGhlIGxhdGUgYW5zd2VyLiBJIGRvIGNvbXBpbGUgdGhl
-ICd0ZXN0JyBrZXJuZWwgYWZ0ZXIgZWRpdGluZyAKdGhlIGZpbGUgd2l0aCB0aGUgdGhyZWUgbGlu
-ZXMgYXMgeW91IHNhaWQgb24geW91ciBwcmV2aW91cyBtYWlsLgoKVGhlIHJlc3VsdCBpcyB0aGF0
-IHRoZSBidWcgaXNuJ3Qgb2NjdXJyaW5nIGFueW1vcmUsIHRlc3RlZCB3aXRoIDk2S0h6IApzYW1w
-bGUgOgoKYGFwbGF5IC1mY2QgLWQzIC9kZXYvemVybyA7IGFwbGF5IC1mUzMyX0xFIC1yOTYwMDAg
-LWMyIC1kMyAvZGV2L3plcm8gOyAKc3BlYWtlci10ZXN0IC1jMiAtdHdhdmAKCl9CVVRfLCBJIG9u
-bHkgaGF2ZSB0aGUgcmlnaHQgc3BlYWtlciB0aGF0IHdvcmtzLCBJIG5lZWQgdG8gY2hhbmdlIHRo
-ZSAKdm9sdW1lIHRvIHJlc3RvcmUgc291bmQgb24gdGhlIGxlZnQgY2hhbm5lbC4KCk1hZWRhLgoK
-TGUgMjEvMTEvMjAxNSAyMDo0NSwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPiBPbiBTYXQsIDIx
-IE5vdiAyMDE1IDE4OjQyOjA2ICswMTAwLAo+IE1hZWRhIHdyb3RlOgo+PiBIaSAhCj4+Cj4+IFRo
-YW5rcyBmb3IgYW5zd2VyaW5nIG1lLgo+PiBZZXMsIHR1cm5pbmcgdGhlIG91dHB1dCB2b2x1bWUg
-dXAgb3IgZG93biBhcyBzb29uIGFzIGl0J3MgcGxheWluZyBhdAo+PiBmdWxsIG91dHB1dCA6IGl0
-IHBsYXlzIGF0IHRoZSAlIGl0IHNob3VsZCBwbGF5Lgo+Pgo+PiBJJ20gT0sgdG8gdHJ5IHRoZSBw
-YXRjaCwgYnV0IEkgZG9uJ3QgZmluZCB0aGUgL3JtZTk2LmMvIGZpbGUuIFdoZXJlIGlzCj4+IGl0
-IGxvY2F0ZWQgPyBJIHRoaW5rIGEgcmVjb21waWxhdGlvbidzIG5lZWRlZCB0aGVuID8gTmV2ZXIg
-ZG9uZSB0aGF0Lgo+IFdlbGwsIHlvdSBuZWVkIHRvIGxlYXJuIGhvdyB0byBjb21waWxlIHRoZSBr
-ZXJuZWwuICBJdCdzIHBvc3NpYmxlIHRvCj4gY29tcGlsZSBvbmx5IGEgbW9kdWxlIGZyb20gdGhl
-IGN1cnJlbnQgcnVubmluZyB0cmVlLCB0b28uCj4KPiBXaGljaCBkaXN0cm8gYXJlIHlvdSB1c2lu
-Zz8gIFlvdSBjYW4gYXNrIGRpc3RybyBndXlzIGZvciBhc3Npc3RhbmNlLgo+Cj4KPiBUYWthc2hp
-Cj4KPj4gVGhhbmtzIGZvciBoZWxwLgo+Pgo+PiBLaW5kIHJlZ2FyZHMuCj4+Cj4+IExlIDIwLzEx
-LzIwMTUgMTc6MzQsIFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+PiBPbiBUdWUsIDEwIE5vdiAy
-MDE1IDEzOjQxOjQ0ICswMTAwLAo+Pj4gTWFlZGEgd3JvdGU6Cj4+Pj4gSGkgIQo+Pj4+Cj4+Pj4g
-U29tZW9uZSdzIGhlcmUgPwo+Pj4+Cj4+Pj4gVGhhbmtzLgo+Pj4+Cj4+Pj4gTGUgMjMvMTAvMjAx
-NSAxODozMCwgTWFlZGEgYSDDqWNyaXQgOgo+Pj4+PiBIaSBhbGwgIQo+Pj4+Pgo+Pj4+PiBJIGRv
-bid0IGtub3cgaWYgdGhlIGJ1ZyBpcyBrbm93biBmcm9tIHlvdXIgdGVhbSwgYnV0IHNvbWUgcGVv
-cGxlCj4+Pj4+IGFkdmljZSBtZSB0byBzZW5kIGFuIGVtYWlsIHRvIHRoZSBBbHNhIGRldmVsIGxp
-c3QgaWYgbm9ib2R5IGFuc3dlciBpbgo+Pj4+PiB0aGUga2VybmVsJ3MgYnVndHJhY2tpbmcuCj4+
-Pj4+Cj4+Pj4+IEhlcmUgaXMgdGhlIGJ1ZyBJIGhhdmUgOgo+Pj4+PiBodHRwczovL2J1Z3ppbGxh
-Lmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTEwNTc3MQo+Pj4+Pgo+Pj4+PiBXaGF0IGRvIHlv
-dSB0aGluayBhYm91dCBpdCA/Cj4+PiBEb2VzIHRoZSB2b2x1bWUgZ28gZG93biB3aGVuIHlvdSBh
-ZGp1c3QgREFDIHZvbHVtZSBieSBtaXhlcgo+Pj4gYXBwbGljYXRpb24gd2hlbiB0aGlzIGhhcHBl
-bnM/Cj4+Pgo+Pj4gVGhyb3VnaCBhIHF1aWNrIGdsYW5jZSBhdCB0aGUgZHJpdmVyIGNvZGUsIHRo
-ZSBvbmx5IHNtZWxsaW5nIHBhcnQgaXMKPj4+IHRoYXQgaXQncyBjYWxsaW5nIHNuZF9ybWU5Nl9y
-ZXNldF9kYWMoKSBmcm9tCj4+PiBzbmRfcm1lOTZfcGxheWJhY2tfc2V0cmF0ZSgpLiAgSWYgdGhl
-IERBQyB2b2x1bWUgYWRqdXN0bWVudCByZWFsbHkKPj4+IHdvcmtzLCB0aGUgcGF0Y2ggYmVsb3cg
-bWlnaHQgd29yay4gIFBsZWFzZSBnaXZlIGl0IGEgdHJ5Lgo+Pj4KPj4+IFRoZSBwYXRjaCBoYXMg
-YSBjb2RlIHRvIGdpdmUgc29tZSBkZWxheSB0aGF0IGlzIGNvbW1lbnRlZCBvdXQgZm9yCj4+PiBu
-b3cuICBUaGUgZGVsYXkgaXMgZm91bmQgaW4gdGhlIHJlc3VtZSBwYXRoLCBidXQgSSdtIG5vdCBz
-dXJlIHdoZXRoZXIKPj4+IGl0J3MgbWFuZGF0b3J5LiAgU28gbGV0J3MgdHJ5IGF0IGZpcnN0IHdp
-dGhvdXQgdGhlIGRlbGF5LiAgSWYgaXQncwo+Pj4gdW5zdGFibGUsIHlvdSBjYW4gdW5jb21tZW50
-IHRoZSBsaW5lIGFuZCByZXRyeS4KPj4+Cj4+Pgo+Pj4gdGhhbmtzLAo+Pj4KPj4+IFRha2FzaGkK
-Pj4+Cj4+PiAtLS0KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvcm1lOTYuYyBiL3NvdW5kL3Bj
-aS9ybWU5Ni5jCj4+PiBpbmRleCA3MTRkZjkwNjI0OWUuLmE5ZDhhNjZmYzNkYSAxMDA2NDQKPj4+
-IC0tLSBhL3NvdW5kL3BjaS9ybWU5Ni5jCj4+PiArKysgYi9zb3VuZC9wY2kvcm1lOTYuYwo+Pj4g
-QEAgLTc0MSw2ICs3NDEsOSBAQCBzbmRfcm1lOTZfcGxheWJhY2tfc2V0cmF0ZShzdHJ1Y3Qgcm1l
-OTYgKnJtZTk2LAo+Pj4gICAgCXsKPj4+ICAgIAkJLyogY2hhbmdlIHRvL2Zyb20gZG91YmxlLXNw
-ZWVkOiByZXNldCB0aGUgREFDIChpZiBhdmFpbGFibGUpICovCj4+PiAgICAJCXNuZF9ybWU5Nl9y
-ZXNldF9kYWMocm1lOTYpOwo+Pj4gKwkJLyogdXNsZWVwX3JhbmdlKDMwMDAsIDEwMDAwKTsgKi8K
-Pj4+ICsJCWlmIChSTUU5Nl9IQVNfQU5BTE9HX09VVChybWU5NikpCj4+PiArCQkJc25kX3JtZTk2
-X2FwcGx5X2RhY192b2x1bWUocm1lOTYpOwo+Pj4gICAgCX0gZWxzZSB7Cj4+PiAgICAJCXdyaXRl
-bChybWU5Ni0+d2NyZWcsIHJtZTk2LT5pb2Jhc2UgKyBSTUU5Nl9JT19DT05UUk9MX1JFR0lTVEVS
-KTsKPj4+ICAgIAl9Cj4+Pgo+Pj4KPj4+Cj4+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Always on widgets currently have some odd interactions with DAPM.
+Enabling/disabling a widget (snd_soc_dapm_enable_pin) then connecting
+it to a path works as expected, ie. when the widget is disabled the
+path doesn't power up and it does when the widget is enabled. However
+once in a path enabling the widget does not cause anything to power
+up, dapm_widget_set_power will return the current power state of the
+widget as 1, meaning we never check peer power states.
+
+This patch updates dapm_always_on_check_power to return w->connected
+such that it is effected by snd_soc_dapm_enable_pin and the like.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a8156b5..5a2812f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1300,7 +1300,7 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ 
+ static int dapm_always_on_check_power(struct snd_soc_dapm_widget *w)
+ {
+-	return 1;
++	return w->connected;
+ }
+ 
+ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
+-- 
+2.1.4
