@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: care SWSP bit for TDM/non-TDM" to
-	the asoc tree
-Date: Wed, 02 Dec 2015 20:10:46 +0000
-Message-ID: <E1a4Dji-0008Mp-L8@debutante>
-References: <87r3j5jogm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: dapm: Make enable/disable_pin work with
+	always on widgets" to the asoc tree
+Date: Wed, 02 Dec 2015 20:10:45 +0000
+Message-ID: <E1a4Djh-0008M3-Nz@debutante>
+References: <1449051736-26338-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E359E2650F2
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 21:10:52 +0100 (CET)
-In-Reply-To: <87r3j5jogm.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C09E2650F5
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 21:10:53 +0100 (CET)
+In-Reply-To: <1449051736-26338-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: care SWSP bit for TDM/non-TDM
+   ASoC: dapm: Make enable/disable_pin work with always on widgets
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From f98ed119a7c5feacb1fc1c8d7f6c68934cd27384 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Dec 2015 07:34:28 +0000
-Subject: [PATCH] ASoC: rsnd: care SWSP bit for TDM/non-TDM
+>From 20bb0184f24df64d1ed4fa07c8feeeffda9b7721 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 2 Dec 2015 10:22:16 +0000
+Subject: [PATCH] ASoC: dapm: Make enable/disable_pin work with always on
+ widgets
 
-SSICR::SWSP bit controls WS signal low/high, but in case of TDM
-it is inverted. This patch solves this issue.
+Always on widgets currently have some odd interactions with DAPM.
+Enabling/disabling a widget (snd_soc_dapm_enable_pin) then connecting
+it to a path works as expected, ie. when the widget is disabled the
+path doesn't power up and it does when the widget is enabled. However
+once in a path enabling the widget does not cause anything to power
+up, dapm_widget_set_power will return the current power state of the
+widget as 1, meaning we never check peer power states.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch updates dapm_always_on_check_power to return w->connected
+such that it is effected by snd_soc_dapm_enable_pin and the like.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 628739f13f99..79c3211a1e7f 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -265,6 +265,9 @@ static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
- 	u32 cr_own;
- 	u32 cr_mode;
- 	u32 wsr;
-+	int is_tdm;
-+
-+	is_tdm = (rsnd_get_slot_runtime(io) >= 6) ? 1 : 0;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 6760044f6aae..4ecacdcba484 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1300,7 +1300,7 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
  
- 	/*
- 	 * always use 32bit system word.
-@@ -274,7 +277,7 @@ static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
+ static int dapm_always_on_check_power(struct snd_soc_dapm_widget *w)
+ {
+-	return 1;
++	return w->connected;
+ }
  
- 	if (rdai->bit_clk_inv)
- 		cr_own |= SCKP;
--	if (rdai->frm_clk_inv)
-+	if (rdai->frm_clk_inv ^ is_tdm)
- 		cr_own |= SWSP;
- 	if (rdai->data_alignment)
- 		cr_own |= SDTA;
-@@ -307,7 +310,7 @@ static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
- 	 *	rsnd_ssiu_init_gen2()
- 	 */
- 	wsr = ssi->wsr;
--	if (rsnd_get_slot_runtime(io) >= 6) {
-+	if (is_tdm) {
- 		wsr	|= WS_MODE;
- 		cr_own	|= CHNL_8;
- 	}
+ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
 -- 
 2.6.2
