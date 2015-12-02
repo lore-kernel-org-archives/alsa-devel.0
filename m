@@ -1,25 +1,19 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH 15/15] ASoC: hdac_hdmi: Keep display active
- while enumerating codec
-Date: Wed, 2 Dec 2015 21:07:36 +0530
-Message-ID: <20151202153736.GA22880@subhransu-desktop>
-References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-15-git-send-email-subhransu.s.prusty@intel.com>
- <s5hr3j6pbs2.wl-tiwai@suse.de>
- <20151201214841.GD5624@subhransu-desktop>
- <s5h8u5ecen8.wl-tiwai@suse.de>
- <32F4D3A311A1404B92CF923AFF38C3C52E37CB32@BGSMSX104.gar.corp.intel.com>
- <s5h1tb6cd0z.wl-tiwai@suse.de>
+From: Maeda <maeda1@free.fr>
+Subject: Re: [bug] Volume at maximum when track with different
+ frequency is played with my RME sound card
+Date: Wed, 2 Dec 2015 11:11:27 +0100
+Message-ID: <565EC3CF.1090301@free.fr>
+References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
+ <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
+ <s5hwptbxhjf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 91756261543
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 11:07:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h1tb6cd0z.wl-tiwai@suse.de>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFB2F26085B
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 11:10:58 +0100 (CET)
+In-Reply-To: <s5hwptbxhjf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,89 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Babu,
- Ramesh" <ramesh.babu@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 01, 2015 at 06:08:28PM +0100, Takashi Iwai wrote:
-> On Tue, 01 Dec 2015 17:48:43 +0100,
-> Babu, Ramesh wrote:
-> > 
-> > > On Tue, 01 Dec 2015 22:48:41 +0100,
-> > > Subhransu S. Prusty wrote:
-> > > >
-> > > > On Tue, Dec 01, 2015 at 01:57:01PM +0100, Takashi Iwai wrote:
-> > > > > On Tue, 01 Dec 2015 18:47:11 +0100,
-> > > > > Subhransu S. Prusty wrote:
-> > > > > >
-> > > > > > From: Ramesh Babu <ramesh.babu@intel.com>
-> > > > > >
-> > > > > > Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-> > > > > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > > > > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > > > > > ---
-> > > > > >  sound/soc/codecs/hdac_hdmi.c | 8 ++++++++
-> > > > > >  1 file changed, 8 insertions(+)
-> > > > > >
-> > > > > > diff --git a/sound/soc/codecs/hdac_hdmi.c
-> > > b/sound/soc/codecs/hdac_hdmi.c
-> > > > > > index 46aa5cc..fa3cfa5 100644
-> > > > > > --- a/sound/soc/codecs/hdac_hdmi.c
-> > > > > > +++ b/sound/soc/codecs/hdac_hdmi.c
-> > > > > > @@ -1136,6 +1136,14 @@ static int hdac_hdmi_dev_probe(struct
-> > > hdac_ext_device *edev)
-> > > > > >  	INIT_LIST_HEAD(&hdmi_priv->pin_list);
-> > > > > >  	INIT_LIST_HEAD(&hdmi_priv->cvt_list);
-> > > > > >
-> > > > > > +	ret = snd_hdac_display_power(edev->hdac.bus, true);
-> > > > > > +	if (ret < 0) {
-> > > > > > +		dev_err(&edev->hdac.dev,
-> > > > > > +			"Cannot turn on display power on i915 err: %d\n",
-> > > > > > +			ret);
-> > > > > > +		return ret;
-> > > > > > +	}
-> > > > > > +
-> > > > > >  	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
-> > > > > >  	if (ret < 0) {
-> > > > > >  		dev_err(&codec->dev, "Failed in parse and map nid with err:
-> > > %d\n", ret);
-> > > > > > --
-> > > > > > 1.9.1
-> > > > >
-> > > > > No counterpart to turn off?
-> > > > turned off in runtime suspend during first explicit suspend call.
-> > > 
-> > > It's a refcount, hence it does matter how many times it's called.
-> > > Does it really balance well?  It smells suspicious if you add only a
-> > > call to turn on without turning off...
-> > 
-> > Display power is turned ON during device probe. When soc codec probe
-> > completes, runtime suspend call is invoked and display power is turned OFF.
-> > So refcount is balanced. 
-> 
-> The runtime suspend of the codec, or of the controller?  I haven't
-> seen the codec suspend/resume doing it in this patchset, so I wonder.
-
-It is turned off in the runtime suspend of the codec. It was added in the
-basic driver patch series as part of PM enabling where it enables the
-display during runtime resume and disable during runtime suspend. But
-when the device runtime PM is first enabled and the device is put to
-suspend, only runtime suspend gets called which doesn't actually decrement
-the display reference count but throws a warning. With this patch that
-gets fixed as well.
-
-> 
-> if it's really well balanced, you should add the proper comment in the
-> code who turns off at when and where.  Otherwise reader will be lost.
-
-Sure. Will udpate the changelog and add some comments in the code as well.
-
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
+SGkgVGFrYXNoaSAhCgpTb3JyeSBmb3IgdGhlIGxhdGUgYW5zd2VyLiBJIGRvIGNvbXBpbGUgdGhl
+ICd0ZXN0JyBrZXJuZWwgYWZ0ZXIgZWRpdGluZyAKdGhlIGZpbGUgd2l0aCB0aGUgdGhyZWUgbGlu
+ZXMgYXMgeW91IHNhaWQgb24geW91ciBwcmV2aW91cyBtYWlsLgoKVGhlIHJlc3VsdCBpcyB0aGF0
+IHRoZSBidWcgaXNuJ3Qgb2NjdXJyaW5nIGFueW1vcmUsIHRlc3RlZCB3aXRoIDk2S0h6IApzYW1w
+bGUgOgoKYGFwbGF5IC1mY2QgLWQzIC9kZXYvemVybyA7IGFwbGF5IC1mUzMyX0xFIC1yOTYwMDAg
+LWMyIC1kMyAvZGV2L3plcm8gOyAKc3BlYWtlci10ZXN0IC1jMiAtdHdhdmAKCl9CVVRfLCBJIG9u
+bHkgaGF2ZSB0aGUgcmlnaHQgc3BlYWtlciB0aGF0IHdvcmtzLCBJIG5lZWQgdG8gY2hhbmdlIHRo
+ZSAKdm9sdW1lIHRvIHJlc3RvcmUgc291bmQgb24gdGhlIGxlZnQgY2hhbm5lbC4KCk1hZWRhLgoK
+TGUgMjEvMTEvMjAxNSAyMDo0NSwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPiBPbiBTYXQsIDIx
+IE5vdiAyMDE1IDE4OjQyOjA2ICswMTAwLAo+IE1hZWRhIHdyb3RlOgo+PiBIaSAhCj4+Cj4+IFRo
+YW5rcyBmb3IgYW5zd2VyaW5nIG1lLgo+PiBZZXMsIHR1cm5pbmcgdGhlIG91dHB1dCB2b2x1bWUg
+dXAgb3IgZG93biBhcyBzb29uIGFzIGl0J3MgcGxheWluZyBhdAo+PiBmdWxsIG91dHB1dCA6IGl0
+IHBsYXlzIGF0IHRoZSAlIGl0IHNob3VsZCBwbGF5Lgo+Pgo+PiBJJ20gT0sgdG8gdHJ5IHRoZSBw
+YXRjaCwgYnV0IEkgZG9uJ3QgZmluZCB0aGUgL3JtZTk2LmMvIGZpbGUuIFdoZXJlIGlzCj4+IGl0
+IGxvY2F0ZWQgPyBJIHRoaW5rIGEgcmVjb21waWxhdGlvbidzIG5lZWRlZCB0aGVuID8gTmV2ZXIg
+ZG9uZSB0aGF0Lgo+IFdlbGwsIHlvdSBuZWVkIHRvIGxlYXJuIGhvdyB0byBjb21waWxlIHRoZSBr
+ZXJuZWwuICBJdCdzIHBvc3NpYmxlIHRvCj4gY29tcGlsZSBvbmx5IGEgbW9kdWxlIGZyb20gdGhl
+IGN1cnJlbnQgcnVubmluZyB0cmVlLCB0b28uCj4KPiBXaGljaCBkaXN0cm8gYXJlIHlvdSB1c2lu
+Zz8gIFlvdSBjYW4gYXNrIGRpc3RybyBndXlzIGZvciBhc3Npc3RhbmNlLgo+Cj4KPiBUYWthc2hp
+Cj4KPj4gVGhhbmtzIGZvciBoZWxwLgo+Pgo+PiBLaW5kIHJlZ2FyZHMuCj4+Cj4+IExlIDIwLzEx
+LzIwMTUgMTc6MzQsIFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+PiBPbiBUdWUsIDEwIE5vdiAy
+MDE1IDEzOjQxOjQ0ICswMTAwLAo+Pj4gTWFlZGEgd3JvdGU6Cj4+Pj4gSGkgIQo+Pj4+Cj4+Pj4g
+U29tZW9uZSdzIGhlcmUgPwo+Pj4+Cj4+Pj4gVGhhbmtzLgo+Pj4+Cj4+Pj4gTGUgMjMvMTAvMjAx
+NSAxODozMCwgTWFlZGEgYSDDqWNyaXQgOgo+Pj4+PiBIaSBhbGwgIQo+Pj4+Pgo+Pj4+PiBJIGRv
+bid0IGtub3cgaWYgdGhlIGJ1ZyBpcyBrbm93biBmcm9tIHlvdXIgdGVhbSwgYnV0IHNvbWUgcGVv
+cGxlCj4+Pj4+IGFkdmljZSBtZSB0byBzZW5kIGFuIGVtYWlsIHRvIHRoZSBBbHNhIGRldmVsIGxp
+c3QgaWYgbm9ib2R5IGFuc3dlciBpbgo+Pj4+PiB0aGUga2VybmVsJ3MgYnVndHJhY2tpbmcuCj4+
+Pj4+Cj4+Pj4+IEhlcmUgaXMgdGhlIGJ1ZyBJIGhhdmUgOgo+Pj4+PiBodHRwczovL2J1Z3ppbGxh
+Lmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTEwNTc3MQo+Pj4+Pgo+Pj4+PiBXaGF0IGRvIHlv
+dSB0aGluayBhYm91dCBpdCA/Cj4+PiBEb2VzIHRoZSB2b2x1bWUgZ28gZG93biB3aGVuIHlvdSBh
+ZGp1c3QgREFDIHZvbHVtZSBieSBtaXhlcgo+Pj4gYXBwbGljYXRpb24gd2hlbiB0aGlzIGhhcHBl
+bnM/Cj4+Pgo+Pj4gVGhyb3VnaCBhIHF1aWNrIGdsYW5jZSBhdCB0aGUgZHJpdmVyIGNvZGUsIHRo
+ZSBvbmx5IHNtZWxsaW5nIHBhcnQgaXMKPj4+IHRoYXQgaXQncyBjYWxsaW5nIHNuZF9ybWU5Nl9y
+ZXNldF9kYWMoKSBmcm9tCj4+PiBzbmRfcm1lOTZfcGxheWJhY2tfc2V0cmF0ZSgpLiAgSWYgdGhl
+IERBQyB2b2x1bWUgYWRqdXN0bWVudCByZWFsbHkKPj4+IHdvcmtzLCB0aGUgcGF0Y2ggYmVsb3cg
+bWlnaHQgd29yay4gIFBsZWFzZSBnaXZlIGl0IGEgdHJ5Lgo+Pj4KPj4+IFRoZSBwYXRjaCBoYXMg
+YSBjb2RlIHRvIGdpdmUgc29tZSBkZWxheSB0aGF0IGlzIGNvbW1lbnRlZCBvdXQgZm9yCj4+PiBu
+b3cuICBUaGUgZGVsYXkgaXMgZm91bmQgaW4gdGhlIHJlc3VtZSBwYXRoLCBidXQgSSdtIG5vdCBz
+dXJlIHdoZXRoZXIKPj4+IGl0J3MgbWFuZGF0b3J5LiAgU28gbGV0J3MgdHJ5IGF0IGZpcnN0IHdp
+dGhvdXQgdGhlIGRlbGF5LiAgSWYgaXQncwo+Pj4gdW5zdGFibGUsIHlvdSBjYW4gdW5jb21tZW50
+IHRoZSBsaW5lIGFuZCByZXRyeS4KPj4+Cj4+Pgo+Pj4gdGhhbmtzLAo+Pj4KPj4+IFRha2FzaGkK
+Pj4+Cj4+PiAtLS0KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvcm1lOTYuYyBiL3NvdW5kL3Bj
+aS9ybWU5Ni5jCj4+PiBpbmRleCA3MTRkZjkwNjI0OWUuLmE5ZDhhNjZmYzNkYSAxMDA2NDQKPj4+
+IC0tLSBhL3NvdW5kL3BjaS9ybWU5Ni5jCj4+PiArKysgYi9zb3VuZC9wY2kvcm1lOTYuYwo+Pj4g
+QEAgLTc0MSw2ICs3NDEsOSBAQCBzbmRfcm1lOTZfcGxheWJhY2tfc2V0cmF0ZShzdHJ1Y3Qgcm1l
+OTYgKnJtZTk2LAo+Pj4gICAgCXsKPj4+ICAgIAkJLyogY2hhbmdlIHRvL2Zyb20gZG91YmxlLXNw
+ZWVkOiByZXNldCB0aGUgREFDIChpZiBhdmFpbGFibGUpICovCj4+PiAgICAJCXNuZF9ybWU5Nl9y
+ZXNldF9kYWMocm1lOTYpOwo+Pj4gKwkJLyogdXNsZWVwX3JhbmdlKDMwMDAsIDEwMDAwKTsgKi8K
+Pj4+ICsJCWlmIChSTUU5Nl9IQVNfQU5BTE9HX09VVChybWU5NikpCj4+PiArCQkJc25kX3JtZTk2
+X2FwcGx5X2RhY192b2x1bWUocm1lOTYpOwo+Pj4gICAgCX0gZWxzZSB7Cj4+PiAgICAJCXdyaXRl
+bChybWU5Ni0+d2NyZWcsIHJtZTk2LT5pb2Jhc2UgKyBSTUU5Nl9JT19DT05UUk9MX1JFR0lTVEVS
+KTsKPj4+ICAgIAl9Cj4+Pgo+Pj4KPj4+Cj4+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
