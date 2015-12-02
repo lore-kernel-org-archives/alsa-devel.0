@@ -1,57 +1,154 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 2/3] ASoC: cygnus: Add Cygnus audio DAI driver
-Date: Wed, 2 Dec 2015 10:45:43 +0000
-Message-ID: <20151202104543.GD1929@sirena.org.uk>
-References: <1447114664-21799-1-git-send-email-ssimran@broadcom.com>
- <1447114664-21799-3-git-send-email-ssimran@broadcom.com>
- <20151122134440.GQ26072@sirena.org.uk>
- <565E54D2.50806@broadcom.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 15/15] ASoC: hdac_hdmi: Keep display active
+ while enumerating codec
+Date: Wed, 2 Dec 2015 21:53:18 +0530
+Message-ID: <20151202162318.GB22880@subhransu-desktop>
+References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-15-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hr3j6pbs2.wl-tiwai@suse.de>
+ <20151201214841.GD5624@subhransu-desktop>
+ <s5h8u5ecen8.wl-tiwai@suse.de>
+ <32F4D3A311A1404B92CF923AFF38C3C52E37CB32@BGSMSX104.gar.corp.intel.com>
+ <s5h1tb6cd0z.wl-tiwai@suse.de>
+ <20151202153736.GA22880@subhransu-desktop>
+ <s5htwo1407e.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="17ucDnirktTaGR4W"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52905261566
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 11:52:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <565E54D2.50806-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <s5htwo1407e.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Babu,
+ Ramesh" <ramesh.babu@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 02, 2015 at 11:24:53AM +0100, Takashi Iwai wrote:
+> On Wed, 02 Dec 2015 16:37:36 +0100,
+> Subhransu S. Prusty wrote:
+> > 
+> > On Tue, Dec 01, 2015 at 06:08:28PM +0100, Takashi Iwai wrote:
+> > > On Tue, 01 Dec 2015 17:48:43 +0100,
+> > > Babu, Ramesh wrote:
+> > > > 
+> > > > > On Tue, 01 Dec 2015 22:48:41 +0100,
+> > > > > Subhransu S. Prusty wrote:
+> > > > > >
+> > > > > > On Tue, Dec 01, 2015 at 01:57:01PM +0100, Takashi Iwai wrote:
+> > > > > > > On Tue, 01 Dec 2015 18:47:11 +0100,
+> > > > > > > Subhransu S. Prusty wrote:
+> > > > > > > >
+> > > > > > > > From: Ramesh Babu <ramesh.babu@intel.com>
+> > > > > > > >
+> > > > > > > > Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+> > > > > > > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > > > > > > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > > > > > > > ---
+> > > > > > > >  sound/soc/codecs/hdac_hdmi.c | 8 ++++++++
+> > > > > > > >  1 file changed, 8 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/sound/soc/codecs/hdac_hdmi.c
+> > > > > b/sound/soc/codecs/hdac_hdmi.c
+> > > > > > > > index 46aa5cc..fa3cfa5 100644
+> > > > > > > > --- a/sound/soc/codecs/hdac_hdmi.c
+> > > > > > > > +++ b/sound/soc/codecs/hdac_hdmi.c
+> > > > > > > > @@ -1136,6 +1136,14 @@ static int hdac_hdmi_dev_probe(struct
+> > > > > hdac_ext_device *edev)
+> > > > > > > >  	INIT_LIST_HEAD(&hdmi_priv->pin_list);
+> > > > > > > >  	INIT_LIST_HEAD(&hdmi_priv->cvt_list);
+> > > > > > > >
+> > > > > > > > +	ret = snd_hdac_display_power(edev->hdac.bus, true);
+> > > > > > > > +	if (ret < 0) {
+> > > > > > > > +		dev_err(&edev->hdac.dev,
+> > > > > > > > +			"Cannot turn on display power on i915 err: %d\n",
+> > > > > > > > +			ret);
+> > > > > > > > +		return ret;
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > >  	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
+> > > > > > > >  	if (ret < 0) {
+> > > > > > > >  		dev_err(&codec->dev, "Failed in parse and map nid with err:
+> > > > > %d\n", ret);
+> > > > > > > > --
+> > > > > > > > 1.9.1
+> > > > > > >
+> > > > > > > No counterpart to turn off?
+> > > > > > turned off in runtime suspend during first explicit suspend call.
+> > > > > 
+> > > > > It's a refcount, hence it does matter how many times it's called.
+> > > > > Does it really balance well?  It smells suspicious if you add only a
+> > > > > call to turn on without turning off...
+> > > > 
+> > > > Display power is turned ON during device probe. When soc codec probe
+> > > > completes, runtime suspend call is invoked and display power is turned OFF.
+> > > > So refcount is balanced. 
+> > > 
+> > > The runtime suspend of the codec, or of the controller?  I haven't
+> > > seen the codec suspend/resume doing it in this patchset, so I wonder.
+> > 
+> > It is turned off in the runtime suspend of the codec. It was added in the
+> > basic driver patch series as part of PM enabling where it enables the
+> > display during runtime resume and disable during runtime suspend. But
+> > when the device runtime PM is first enabled and the device is put to
+> > suspend, only runtime suspend gets called which doesn't actually decrement
+> > the display reference count but throws a warning. With this patch that
+> > gets fixed as well.
+> 
+> So, the patch is about fixing the unbalance.  It clarifies my
+> suspect.  The problem is that $SUBJECT doesn't mention it at all, and 
+> even the patch had zero changelog text.  Please document more!
 
---17ucDnirktTaGR4W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry about that. Will add more in the changelog and add comments in the
+code as well.
 
-On Tue, Dec 01, 2015 at 06:17:54PM -0800, Simran Rai wrote:
-> On 11/22/2015 5:44 AM, Mark Brown wrote:
+> 
+> Also, if this is a fix, you should put Fixes tag.
+Sure will do that.
+> 
+> BTW, who will turn off the display power at codec removal?
 
-> >I would expect any initialisationn of clocks beyond the ones that the
-> >device directly interacts with to be handled within the clock API
-> >configuration rather than in a specific driver, this avoids the driver
-> >being dependent on a particular system integration.
+The driver keeps the display off. The display power is on in the RTPM resume
+when a playbck starts and off in the RTPM suspend callback once the playback
+is stopped except for the above scenario where it is turned on during
+dev_probe call and put to off during the first explicit call to runtime
+suspend.
 
-> I will have to figure out a way to propagate the frequency from leaf clocks to the parent
-> clock. Will send out another patch with the fix.
+Regards,
+Subhransu
 
-The idea is that the clock API should take care of this.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > > if it's really well balanced, you should add the proper comment in the
+> > > code who turns off at when and where.  Otherwise reader will be lost.
+> > 
+> > Sure. Will udpate the changelog and add some comments in the code as well.
+> > 
+> > > 
+> > > 
+> > > Takashi
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> > -- 
+> > 
 
---17ucDnirktTaGR4W
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXsvWAAoJECTWi3JdVIfQizUH/2COn8Y6LRhnAHyYeH1bRmWx
-4ch+FHrhThvsHo+Q4g2qx6Di51y06ypneutLyNEM8bUaZ9YTpMazia1XX0YrDvGp
-hSgEooiAvFbCljagWfJWwLlNy+86wzi6bPcTYTJml6hfTjY5xVdd3rPDu7YiYGMX
-qcf9lI42nFPQn1HG+9D/fS2QKfXWg+U6g2PPq3Fh25VrS0rRdVhLJ76RAQh2uVGk
-M/7I/VNf4cGgg82LYQTPfkBQy/YEZR+EKnCyACIl6jEG5h1uBxGpWnQp6e4ZyhmI
-0+xAMhouweBOE8qutqz9lKRkWuQsBDFzLvTDjSq65rWlZIkNnMUSYnKw2dIGdHk=
-=RGTF
------END PGP SIGNATURE-----
-
---17ucDnirktTaGR4W--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
