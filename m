@@ -1,127 +1,156 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH 12/15] drm/edid: Add API to help find connection type
-Date: Wed, 2 Dec 2015 18:07:01 +0100
-Message-ID: <20151202170701.GB14019@ulmo>
-References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-12-git-send-email-subhransu.s.prusty@intel.com>
- <87y4dd2n41.fsf@intel.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
+	update
+Date: Wed, 2 Dec 2015 19:00:36 +0000
+Message-ID: <20151202190036.GD8644@n2100.arm.linux.org.uk>
+References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
+ <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1313798914=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <87y4dd2n41.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 9AF762650D4
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2015 20:00:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Moise Gergaud <moise.gergaud@st.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 02, 2015 at 03:22:04PM +0100, Moise Gergaud wrote:
+> Add a helper to update only the IEC958 channel status sampling freq and
+> word length parameters from an ALSA snd_pcm_runtime structure, taking
+> account of the sample rate and sample size.
+> 
+> Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
+> Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
---===============1313798914==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
-Content-Disposition: inline
+NAK.
 
+> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+> index 0eed397..0c84c69 100644
+> --- a/include/sound/pcm_iec958.h
+> +++ b/include/sound/pcm_iec958.h
+> @@ -3,7 +3,24 @@
+>  
+>  #include <linux/types.h>
+>  
+> +#ifdef CONFIG_SND_PCM_IEC958
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> -	size_t len);
+> +				   size_t len);
+> +
+> +int snd_pcm_update_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				   size_t len);
+> +#else
+> +int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				   size_t len)
+> +{
+> +	return len;
+> +}
+> +
+> +int snd_pcm_update_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				   size_t len)
+> +{
+> +	return len;
+> +}
 
---MW5yreqqjyrRcusr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Firstly, this is dangerous.  If you don't have anything defined here,
+then the channel status ends up being undefined.
 
-On Wed, Dec 02, 2015 at 11:53:02AM +0200, Jani Nikula wrote:
-> On Tue, 01 Dec 2015, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>=
- wrote:
-> > To fill the audio infoframe it is required to identify the connection t=
-ype
-> > as DP or HDMI. So parse the required bits in ELD to find the connection
-> > type.
-> >
-> > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >  include/drm/drm_edid.h | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> > index 2af9769..c7595a5 100644
-> > --- a/include/drm/drm_edid.h
-> > +++ b/include/drm/drm_edid.h
-> > @@ -403,6 +403,16 @@ static inline int drm_eld_size(const uint8_t *eld)
-> >  	return DRM_ELD_HEADER_BLOCK_SIZE + eld[DRM_ELD_BASELINE_ELD_LEN] * 4;
-> >  }
-> > =20
-> > +/**
-> > + * drm_eld_get_conn_type - Get device type hdmi/dp connected
-> > + * @eld: pointer to an eld memory structure
-> > + */
-> > +static inline int drm_eld_get_conn_type(const uint8_t *eld)
-> > +{
-> > +	return (eld[DRM_ELD_SAD_COUNT_CONN_TYPE] & DRM_ELD_CONN_TYPE_MASK) >>
-> > +		DRM_ELD_CONN_TYPE_SHIFT;
-> > +}
->=20
-> I'm not sure how much this helps when the caller still needs to
-> magically know what the return value means...  Indeed the next patch
-> with /* 0 is hdmi and 1 is DP */ and "conn_type =3D=3D 0" is a bit ugly.
->=20
-> How about just not shifting the return value, and using
-> DRM_ELD_CONN_TYPE_HDMI and DRM_ELD_CONN_TYPE_DP in the caller? Bonus
-> points for referencing those in the kernel-doc above.
+The intention here is that if you're a user of this, then select the
+config symbol.  That makes providing stubs totally unnecessary and
+removes this problem.
 
-We already have a similar function for detecting HDMI vs. DVI (see the
-drm_detect_hdmi_monitor()), so perhaps adhering to that convention might
-be preferable. This could be:
+> +#endif
+>  
+>  #endif
+> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+> index 36b2d7a..abe3967 100644
+> --- a/sound/core/pcm_iec958.c
+> +++ b/sound/core/pcm_iec958.c
+> @@ -11,67 +11,72 @@
+>  #include <sound/pcm.h>
+>  #include <sound/pcm_iec958.h>
+>  
+> -/**
+> - * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+> +/*
+> + * snd_pcm_update_iec958_consumer - update consumer format IEC958 channel status
+>   * @runtime: pcm runtime structure with ->rate filled in
+>   * @cs: channel status buffer, at least four bytes
+>   * @len: length of channel status buffer
+>   *
+> - * Create the consumer format channel status data in @cs of maximum size
+> - * @len corresponding to the parameters of the PCM runtime @runtime.
+> - *
+> - * Drivers may wish to tweak the contents of the buffer after creation.
+> + * Update sampling frequency and word length parameters of the consumer format
+> + * channel status data in @cs of maximum size @len.
+> + * Values correspond to the rate and format parameters of the PCM runtime
+> + * @runtime.
+>   *
+>   * Returns: length of buffer, or negative error code if something failed.
+>   */
+> -int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> -	size_t len)
+> +int snd_pcm_update_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				   size_t len)
+>  {
+> -	unsigned int fs, ws;
+> -
+>  	if (len < 4)
+>  		return -EINVAL;
+>  
+> +	cs[3] &= ~IEC958_AES3_CON_FS;
+> +
+>  	switch (runtime->rate) {
+> +	case 22050:
+> +		cs[3] |= IEC958_AES3_CON_FS_22050;
+> +		break;
+>  	case 32000:
+> -		fs = IEC958_AES3_CON_FS_32000;
+> +		cs[3] |= IEC958_AES3_CON_FS_32000;
+>  		break;
+>  	case 44100:
+> -		fs = IEC958_AES3_CON_FS_44100;
+> +		cs[3] |= IEC958_AES3_CON_FS_44100;
+>  		break;
+>  	case 48000:
+> -		fs = IEC958_AES3_CON_FS_48000;
+> +		cs[3] |= IEC958_AES3_CON_FS_48000;
+>  		break;
+>  	case 88200:
+> -		fs = IEC958_AES3_CON_FS_88200;
+> +		cs[3] |= IEC958_AES3_CON_FS_88200;
+>  		break;
+>  	case 96000:
+> -		fs = IEC958_AES3_CON_FS_96000;
+> +		cs[3] |= IEC958_AES3_CON_FS_96000;
+>  		break;
+>  	case 176400:
+> -		fs = IEC958_AES3_CON_FS_176400;
+> +		cs[3] |= IEC958_AES3_CON_FS_176400;
+>  		break;
+>  	case 192000:
+> -		fs = IEC958_AES3_CON_FS_192000;
+> +		cs[3] |= IEC958_AES3_CON_FS_192000;
+>  		break;
 
-	static inline bool drm_eld_detect_dp(const u8 *eld)
-	{
-		u8 type =3D eld[DRM_ELD_SAD_COUNT_CONN_TYPE] & DRM_ELD_CONN_TYPE_MASK;
+Again, I'm not happy with this change.  The intention here is that we
+validate all arguments before we change anything.  This breaks that
+principle.
 
-		return type =3D=3D DRM_ELD_CONN_TYPE_DP;
-	}
-
-Thierry
-
---MW5yreqqjyrRcusr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJWXyUyAAoJEN0jrNd/PrOhoB8P/RJwTOJ6L4xarJe/37LB+LGQ
-czKph9sYt5Mn/SsN7uMb8iSFS4UiGRD7KiCLX31wmijT4adN7upSgy59KSURoo79
-JNVhghsDqCVwJjVXCry6kqVyJqwTjqwKIKOwJlH7o+N2kx605OkmoCITeD9AgQ23
-uPf5CI8r1KhBGjEx8EItr9I2foZKmZE8HSwLp1Gbl8DM1WX5M+5KAf0A6bpLkL2u
-WXfEIICB/tZl1AjvSEeCuKrBivTRnnwxORyOV3Ozx3rYh+YjzeeWXkBXcaftAsDB
-pliVi2owMnXW9SZPia+7hjytr/kzc2rQRScvlbCZMTAE2zQUn2V10f5EXGMjAKMy
-Ktz1NwgzH7hCayWywTBU29yJH9DLhfl0KWK1OUGs6iysQDjyoTSYZf4hDhueuC/E
-S0PhsJCFCTqX/W/y1M4cNYGSE9w0K9hp5iO1ZjFl1KvPug/kvClzKxlPqEnfd/Pd
-Q0nqw7MfY1oi9WaraetitToMLKdrcEEp5JDJCLcwvOiyRPzyd+sO80iB+x9jNiwU
-6FeMbQ6J7syyUDDIBzRFtc0ukJM5KwKKsSRjCpTmIx7M9yn8Jzk6zDS+z/UvGyc2
-JkYXUFGRTtx3BpnpH/p41cfcJ17YQb/2GGix6rcpxwNr1ZAeHUEUwxUXM4WSM1oS
-eUT4/dcbMCuEC54CjVxe
-=hyru
------END PGP SIGNATURE-----
-
---MW5yreqqjyrRcusr--
-
---===============1313798914==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
-
---===============1313798914==--
+-- 
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
