@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 09/12] ASoC: Intel: Skylake: add wov as int
-	sink
-Date: Thu,  3 Dec 2015 23:29:58 +0530
-Message-ID: <1449165601-11226-10-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 10/12] ASoc: Intel: Skylake: Fix the dapm
+	machine map
+Date: Thu,  3 Dec 2015 23:29:59 +0530
+Message-ID: <1449165601-11226-11-git-send-email-vinod.koul@intel.com>
 References: <1449165601-11226-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 46AA52606E3
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 18:57:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DCA592606F4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 18:57:30 +0100 (CET)
 In-Reply-To: <1449165601-11226-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,32 +25,41 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+DAPM Machine map for machine was not specifying the paths
+correctly.
+
+The correct order should be:
+"DMIC01 Rx" (SoC DMIC BE), connected to "DMIC AIF" (DMic Codec
+AIF) and then "DMic" (DMic codec Input) connected to "SoC DMIC"
+(Machine DMIC MIC Widget)
+
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/boards/skl_rt286.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index e4fc8a1ce471..0a924901b9b6 100644
+index 0a924901b9b6..51c4eb87e6ec 100644
 --- a/sound/soc/intel/boards/skl_rt286.c
 +++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -52,6 +52,7 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- 	SND_SOC_DAPM_MIC("DMIC2", NULL),
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+	SND_SOC_DAPM_SINK("WoV Sink"),
- };
+@@ -68,7 +68,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
  
- static const struct snd_soc_dapm_route skylake_rt286_map[] = {
-@@ -69,6 +70,8 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	/* digital mics */
  	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMIC AIF", NULL, "SoC DMIC"},
+-	{"DMIC AIF", NULL, "SoC DMIC"},
++	{"DMic", NULL, "SoC DMIC"},
  
-+	{"WoV Sink", NULL, "hwd_in sink"},
-+
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
- 	{ "ssp0 Tx", NULL, "codec0_out"},
+ 	{"WoV Sink", NULL, "hwd_in sink"},
+ 
+@@ -82,7 +82,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+ 
+ 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
+-	{ "DMIC01 Rx", NULL, "Capture" },
++	{ "DMIC01 Rx", NULL, "DMIC AIF" },
+ 
+ 	{ "hif1", NULL, "iDisp Tx"},
+ 	{ "iDisp Tx", NULL, "iDisp_out"},
 -- 
 1.9.1
