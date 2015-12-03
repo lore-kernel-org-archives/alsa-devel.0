@@ -1,46 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: mediatek: Use current HW pointer for
- pointer callback
-Date: Thu, 3 Dec 2015 11:01:58 +0000
-Message-ID: <20151203110158.GD5727@sirena.org.uk>
-References: <1449129208-63615-1-git-send-email-koro.chen@mediatek.com>
- <s5h8u5b98dp.wl-tiwai@suse.de>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 12/15] drm/edid: Add API to help find
+ connection type
+Date: Thu, 03 Dec 2015 13:09:16 +0200
+Message-ID: <87zixr23hf.fsf@intel.com>
+References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-12-git-send-email-subhransu.s.prusty@intel.com>
+ <87y4dd2n41.fsf@intel.com> <20151202170701.GB14019@ulmo>
+ <20151203160824.GA26240@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tEFtbjk+mNEviIIX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h8u5b98dp.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Koro Chen <koro.chen@mediatek.com>, lgirdwood@gmail.com, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20151203160824.GA26240@subhransu-desktop>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Thierry Reding <thierry.reding@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---tEFtbjk+mNEviIIX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Dec 03, 2015 at 10:41:38AM +0100, Takashi Iwai wrote:
-
-> While reading this patch, I wondered how regmap can be used safely in
-> an irq-disabled context.  Mark, do we have any API for that?
-
-We can use user supplied locks or spin_lock_irqsave().
-
---tEFtbjk+mNEviIIX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWYCElAAoJECTWi3JdVIfQxuQH/2+4Rg+bjjkDIhG3WyP590im
-+3LgsYKs+AsNmr32773UhmFT9zrRsRSPuI/2ZSJ91Aix1wPCCeepng/fKYOMcDq/
-lrhnfgLXIgjj/tLbwKdJz/TL5JC4/njjM1hS582B4iRIBOzee2EYwcodjvnF58jf
-ClRCQexacKMeVeNv6qsXfBOxfYAYuIx7Fhh3nythUDe4UKDZqf/OWmJLTaymgLVW
-uaYkBay9qHuIWrCw6Fp3XOAJmvgjhZGkioRd80ByUPXhVPoFiU7bEe2b3trV6ZhC
-nRdNPngqebxasxBfcYo1XM7ipvVrzjcop02gmwuo1FdIeOlxb/kxTlB530QC3i8=
-=yCNK
------END PGP SIGNATURE-----
-
---tEFtbjk+mNEviIIX--
+T24gVGh1LCAwMyBEZWMgMjAxNSwgIlN1YmhyYW5zdSBTLiBQcnVzdHkiIDxzdWJocmFuc3Uucy5w
+cnVzdHlAaW50ZWwuY29tPiB3cm90ZToKPiBPbiBXZWQsIERlYyAwMiwgMjAxNSBhdCAwNjowNzow
+MVBNICswMTAwLCBUaGllcnJ5IFJlZGluZyB3cm90ZToKPj4gT24gV2VkLCBEZWMgMDIsIDIwMTUg
+YXQgMTE6NTM6MDJBTSArMDIwMCwgSmFuaSBOaWt1bGEgd3JvdGU6Cj4+ID4gT24gVHVlLCAwMSBE
+ZWMgMjAxNSwgIlN1YmhyYW5zdSBTLiBQcnVzdHkiIDxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwu
+Y29tPiB3cm90ZToKPj4gPiA+IFRvIGZpbGwgdGhlIGF1ZGlvIGluZm9mcmFtZSBpdCBpcyByZXF1
+aXJlZCB0byBpZGVudGlmeSB0aGUgY29ubmVjdGlvbiB0eXBlCj4+ID4gPiBhcyBEUCBvciBIRE1J
+LiBTbyBwYXJzZSB0aGUgcmVxdWlyZWQgYml0cyBpbiBFTEQgdG8gZmluZCB0aGUgY29ubmVjdGlv
+bgo+PiA+ID4gdHlwZS4KPj4gPiA+Cj4+ID4gPiBTaWduZWQtb2ZmLWJ5OiBTdWJocmFuc3UgUy4g
+UHJ1c3R5IDxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwuY29tPgo+PiA+ID4gU2lnbmVkLW9mZi1i
+eTogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+Cj4+ID4gPiBDYzogRGF2aWQgQWly
+bGllIDxhaXJsaWVkQGxpbnV4LmllPgo+PiA+ID4gQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKPj4gPiA+IENjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWwudmV0dGVyQGludGVsLmNv
+bT4KPj4gPiA+IC0tLQo+PiA+ID4gIGluY2x1ZGUvZHJtL2RybV9lZGlkLmggfCAxMCArKysrKysr
+KysrCj4+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKykKPj4gPiA+Cj4+ID4g
+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCBiL2luY2x1ZGUvZHJtL2RybV9l
+ZGlkLmgKPj4gPiA+IGluZGV4IDJhZjk3NjkuLmM3NTk1YTUgMTAwNjQ0Cj4+ID4gPiAtLS0gYS9p
+bmNsdWRlL2RybS9kcm1fZWRpZC5oCj4+ID4gPiArKysgYi9pbmNsdWRlL2RybS9kcm1fZWRpZC5o
+Cj4+ID4gPiBAQCAtNDAzLDYgKzQwMywxNiBAQCBzdGF0aWMgaW5saW5lIGludCBkcm1fZWxkX3Np
+emUoY29uc3QgdWludDhfdCAqZWxkKQo+PiA+ID4gIAlyZXR1cm4gRFJNX0VMRF9IRUFERVJfQkxP
+Q0tfU0laRSArIGVsZFtEUk1fRUxEX0JBU0VMSU5FX0VMRF9MRU5dICogNDsKPj4gPiA+ICB9Cj4+
+ID4gPiAgCj4+ID4gPiArLyoqCj4+ID4gPiArICogZHJtX2VsZF9nZXRfY29ubl90eXBlIC0gR2V0
+IGRldmljZSB0eXBlIGhkbWkvZHAgY29ubmVjdGVkCj4+ID4gPiArICogQGVsZDogcG9pbnRlciB0
+byBhbiBlbGQgbWVtb3J5IHN0cnVjdHVyZQo+PiA+ID4gKyAqLwo+PiA+ID4gK3N0YXRpYyBpbmxp
+bmUgaW50IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZShjb25zdCB1aW50OF90ICplbGQpCj4+ID4gPiAr
+ewo+PiA+ID4gKwlyZXR1cm4gKGVsZFtEUk1fRUxEX1NBRF9DT1VOVF9DT05OX1RZUEVdICYgRFJN
+X0VMRF9DT05OX1RZUEVfTUFTSykgPj4KPj4gPiA+ICsJCURSTV9FTERfQ09OTl9UWVBFX1NISUZU
+Owo+PiA+ID4gK30KPj4gPiAKPj4gPiBJJ20gbm90IHN1cmUgaG93IG11Y2ggdGhpcyBoZWxwcyB3
+aGVuIHRoZSBjYWxsZXIgc3RpbGwgbmVlZHMgdG8KPj4gPiBtYWdpY2FsbHkga25vdyB3aGF0IHRo
+ZSByZXR1cm4gdmFsdWUgbWVhbnMuLi4gIEluZGVlZCB0aGUgbmV4dCBwYXRjaAo+PiA+IHdpdGgg
+LyogMCBpcyBoZG1pIGFuZCAxIGlzIERQICovIGFuZCAiY29ubl90eXBlID09IDAiIGlzIGEgYml0
+IHVnbHkuCj4+ID4gCj4+ID4gSG93IGFib3V0IGp1c3Qgbm90IHNoaWZ0aW5nIHRoZSByZXR1cm4g
+dmFsdWUsIGFuZCB1c2luZwo+PiA+IERSTV9FTERfQ09OTl9UWVBFX0hETUkgYW5kIERSTV9FTERf
+Q09OTl9UWVBFX0RQIGluIHRoZSBjYWxsZXI/IEJvbnVzCj4+ID4gcG9pbnRzIGZvciByZWZlcmVu
+Y2luZyB0aG9zZSBpbiB0aGUga2VybmVsLWRvYyBhYm92ZS4KPj4gCj4+IFdlIGFscmVhZHkgaGF2
+ZSBhIHNpbWlsYXIgZnVuY3Rpb24gZm9yIGRldGVjdGluZyBIRE1JIHZzLiBEVkkgKHNlZSB0aGUK
+Pj4gZHJtX2RldGVjdF9oZG1pX21vbml0b3IoKSksIHNvIHBlcmhhcHMgYWRoZXJpbmcgdG8gdGhh
+dCBjb252ZW50aW9uIG1pZ2h0Cj4+IGJlIHByZWZlcmFibGUuIFRoaXMgY291bGQgYmU6Cj4+IAo+
+PiAJc3RhdGljIGlubGluZSBib29sIGRybV9lbGRfZGV0ZWN0X2RwKGNvbnN0IHU4ICplbGQpCj4+
+IAl7Cj4+IAkJdTggdHlwZSA9IGVsZFtEUk1fRUxEX1NBRF9DT1VOVF9DT05OX1RZUEVdICYgRFJN
+X0VMRF9DT05OX1RZUEVfTUFTSzsKPj4gCj4+IAkJcmV0dXJuIHR5cGUgPT0gRFJNX0VMRF9DT05O
+X1RZUEVfRFA7Cj4+IAl9Cj4KPiBXaXRoIHRoaXMgYXBwcm9hY2ggaXQgbmVlZHMgdHdvIEFQSXMg
+dG8gYmUgYWRkZWQgZm9yIEhETUkgb3IgRFAKPiBkZXRlY3Rpb24uIFNvIEkgcHJlZmVyIHdoYXQg
+SmFuaSBzdWdnZXN0ZWQgYW5kIGNhbGxlciBjb21wYXJlcwo+IHdoZXRoZXIgaXQgaXMgSERNSS9E
+UCBjb25uZWN0aW9uIHR5cGUuIFdpbGwgdXBkYWUgdGhlIGtlcm5lbCBkb2MKPiBmb3IgdGhlIHNh
+bWUgYXMgd2VsbC4KCkkgcHJlc3VtZSBUaGllcnJ5IG1lYW5zIHlvdSdkIGFzc3VtZSBIRE1JIGlm
+IGRybV9lbGRfZGV0ZWN0X2RwKCkgcmV0dXJucwpmYWxzZS4KCkknbSBmaW5lIHdpdGggZWl0aGVy
+IGFwcHJvYWNoLgoKQlIsCkphbmkuCgo+Cj4+IAo+PiBUaGllcnJ5Cj4KPgo+Cj4+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKLS0gCkphbmkg
+TmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0
+CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
