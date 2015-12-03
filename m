@@ -1,107 +1,130 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2] ASoC: da7218: Enable mic level detection
- reporting to user-space
-Date: Thu, 3 Dec 2015 17:10:07 +0000
-Message-ID: <f0b7307655f51b270ffd75f4cf47937129c587d6.1449161949.git.Adam.Thomson.Opensource@diasemi.com>
+From: Daniel Stone <daniel@fooishbar.org>
+Subject: Re: [PATCH v2 12/14] ASoC: hdac_hdmi: Add infoframe support for dp
+ audio
+Date: Thu, 3 Dec 2015 17:13:16 +0000
+Message-ID: <CAPj87rNaWC7rpTMMNsO+86SkoqzfQtb_okChvE93s9KoXzOO9w@mail.gmail.com>
+References: <1449176538-3250-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449176942-3441-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449176942-3441-12-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.148])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E7D12604F0
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 18:10:09 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1449176942-3441-12-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel <dri-devel@lists.freedesktop.org>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to the codec driver to handle mic level
-detect related IRQs, and report these to user-space using a uevent
-variable.
-
-The uevent variable string "EVENT=MIC_LEVEL_DETECT" is sent to
-user-space, if the mic level detect feature is enabled, and the
-audio captured at the chosen mic(s) is above a certain threshold.
-User-space can then handle the event accordingly (e.g. process
-audio capture stream).
-
-This method was chosen over ALSA control notification for a couple
-of reasons:
-
- 1) There's no requirement here for a control to read state from.
-    The event is the only thing that's required and of interest.
- 2) tinyalsa support for control notifications does not exist so on
-    platforms using this over alsa-lib there is a need to add code
-    to support this event handling.
-
-Another possible option would be to use the standard Jack reporting
-framework but this really does not fit for this kind of event.
-
-Finally, use of the input device framework is not being encouraged,
-due to difficulties in enabling apps to access input devices, so
-this has also been avoided.
-
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
-
-Changes in v2:
- - More verbose and descriptive commit message added.
-
- sound/soc/codecs/da7218.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index 4fee7ae..752ed04 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -2202,6 +2202,16 @@ int da7218_hpldet(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- }
- EXPORT_SYMBOL_GPL(da7218_hpldet);
-
-+static void da7218_micldet_irq(struct snd_soc_codec *codec)
-+{
-+	char *envp[] = {
-+		"EVENT=MIC_LEVEL_DETECT",
-+		NULL,
-+	};
-+
-+	kobject_uevent_env(&codec->dev->kobj, KOBJ_CHANGE, envp);
-+}
-+
- static void da7218_hpldet_irq(struct snd_soc_codec *codec)
- {
- 	struct da7218_priv *da7218 = snd_soc_codec_get_drvdata(codec);
-@@ -2232,6 +2242,10 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
- 	if (!status)
- 		return IRQ_NONE;
-
-+	/* Mic level detect */
-+	if (status & DA7218_LVL_DET_EVENT_MASK)
-+		da7218_micldet_irq(codec);
-+
- 	/* HP detect */
- 	if (status & DA7218_HPLDET_JACK_EVENT_MASK)
- 		da7218_hpldet_irq(codec);
-@@ -2936,11 +2950,6 @@ static int da7218_probe(struct snd_soc_codec *codec)
- 	}
-
- 	if (da7218->irq) {
--		/* Mask off mic level events, currently not handled */
--		snd_soc_update_bits(codec, DA7218_EVENT_MASK,
--				    DA7218_LVL_DET_EVENT_MSK_MASK,
--				    DA7218_LVL_DET_EVENT_MSK_MASK);
--
- 		ret = devm_request_threaded_irq(codec->dev, da7218->irq, NULL,
- 						da7218_irq_thread,
- 						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
---
-1.9.3
+SGkgU3ViaHJhbnN1LAoKT24gMyBEZWNlbWJlciAyMDE1IGF0IDIxOjA5LCBTdWJocmFuc3UgUy4g
+UHJ1c3R5CjxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwuY29tPiB3cm90ZToKPiArICAgICAgIGlm
+IChjb25uX3R5cGUgPT0gRFJNX0VMRF9DT05OX1RZUEVfSERNSSkgewo+ICsgICAgICAgICAgICAg
+ICBoZG1pX2F1ZGlvX2luZm9mcmFtZV9pbml0KCZmcmFtZSk7Cj4gKwo+ICsgICAgICAgICAgICAg
+ICAvKiBEZWZhdWx0IHN0ZXJlbyBmb3Igbm93ICovCj4gKyAgICAgICAgICAgICAgIGZyYW1lLmNo
+YW5uZWxzID0gY2hhbm5lbHM7Cj4gKwo+ICsgICAgICAgICAgICAgICByZXQgPSBoZG1pX2F1ZGlv
+X2luZm9mcmFtZV9wYWNrKCZmcmFtZSwgYnVmZmVyLCBzaXplb2YoYnVmZmVyKSk7Cj4gKyAgICAg
+ICAgICAgICAgIGlmIChyZXQgPCAwKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBy
+ZXQ7Cj4gKwo+ICsgICAgICAgICAgICAgICBkaXAgPSAodTggKikmZnJhbWU7Cj4gKwo+ICsgICAg
+ICAgfSBlbHNlIGlmIChjb25uX3R5cGUgPT0gRFJNX0VMRF9DT05OX1RZUEVfRFApIHsKPiArICAg
+ICAgICAgICAgICAgbWVtc2V0KCZkcF9haSwgMCwgc2l6ZW9mKGRwX2FpKSk7Cj4gKyAgICAgICAg
+ICAgICAgIGRwX2FpLnR5cGUgICAgICA9IDB4ODQ7Cj4gKyAgICAgICAgICAgICAgIGRwX2FpLmxl
+biAgICAgICA9IDB4MWI7Cj4gKyAgICAgICAgICAgICAgIGRwX2FpLnZlciAgICAgICA9IDB4MTEg
+PDwgMjsKPiArICAgICAgICAgICAgICAgZHBfYWkuQ0MwMl9DVDQ3ID0gY2hhbm5lbHMgLSAxOwo+
+ICsgICAgICAgICAgICAgICBkcF9haS5DQSAgICAgICAgPSAwOwo+ICsKPiArICAgICAgICAgICAg
+ICAgZGlwID0gKHU4ICopJmRpcDsKClN1cmVseSB0aGlzIHNob3VsZCBiZSBkaXAgPSAodTggKikg
+JmRwX2FpLCBpbnN0ZWFkIG9mIHBvaW50aW5nIHRvIGl0c2VsZj8KCkNoZWVycywKRGFuaWVsCgpP
+biAzIERlY2VtYmVyIDIwMTUgYXQgMjE6MDksIFN1YmhyYW5zdSBTLiBQcnVzdHkKPHN1YmhyYW5z
+dS5zLnBydXN0eUBpbnRlbC5jb20+IHdyb3RlOgo+IFRoaXMgdXNlcyB0aGUgZ2V0X2Nvbm5fdHlw
+ZSBBUEkgYWRkZWQgaW4gdGhlIHByZXZpb3VzIHBhdGNoIHRvCj4gaWRlbnRpZnkgdGhlIHR5cGUg
+b2YgZGlzcGxheSBjb25uZWN0ZWQgYW5kIGZpbGxzIHRoZSBpbmZvZnJhbWUKPiBhY2NvcmRpbmds
+eS4KPgo+IFNpZ25lZC1vZmYtYnk6IFN1YmhyYW5zdSBTLiBQcnVzdHkgPHN1YmhyYW5zdS5zLnBy
+dXN0eUBpbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogVmlub2QgS291bCA8dmlub2Qua291bEBp
+bnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9jb2RlY3MvaGRhY19oZG1pLmMgfCA2OCArKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgNTkgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3Vu
+ZC9zb2MvY29kZWNzL2hkYWNfaGRtaS5jIGIvc291bmQvc29jL2NvZGVjcy9oZGFjX2hkbWkuYwo+
+IGluZGV4IDNhYzM0OTguLmQ5NjNkOTIgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9o
+ZGFjX2hkbWkuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvaGRhY19oZG1pLmMKPiBAQCAtMjIs
+NiArMjIsNyBAQAo+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Cj4gICNpbmNsdWRlIDxsaW51
+eC9wbV9ydW50aW1lLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9oZG1pLmg+Cj4gKyNpbmNsdWRlIDxk
+cm0vZHJtX2VkaWQuaD4KPiAgI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPiAgI2luY2x1
+ZGUgPHNvdW5kL3NvYy5oPgo+ICAjaW5jbHVkZSA8c291bmQvaGRhdWRpb19leHQuaD4KPiBAQCAt
+MjAxLDI3ICsyMDIsNzAgQEAgaGRhY19oZG1pX3NldF9kaXBfaW5kZXgoc3RydWN0IGhkYWNfZXh0
+X2RldmljZSAqaGRhYywgaGRhX25pZF90IHBpbl9uaWQsCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBBQ19WRVJCX1NFVF9IRE1JX0RJUF9JTkRFWCwgdmFsKTsKPiAgfQo+Cj4gK3N0
+cnVjdCBkcF9hdWRpb19pbmZvZnJhbWUgewo+ICsgICAgICAgdTggdHlwZTsgLyogMHg4NCAqLwo+
+ICsgICAgICAgdTggbGVuOyAgLyogMHgxYiAqLwo+ICsgICAgICAgdTggdmVyOyAgLyogMHgxMSA8
+PCAyICovCj4gKwo+ICsgICAgICAgdTggQ0MwMl9DVDQ3OyAgIC8qIG1hdGNoIHdpdGggSERNSSBp
+bmZvZnJhbWUgZnJvbSB0aGlzIG9uICovCj4gKyAgICAgICB1OCBTUzAxX1NGMjQ7Cj4gKyAgICAg
+ICB1OCBDWFQwNDsKPiArICAgICAgIHU4IENBOwo+ICsgICAgICAgdTggTEZFUEJMMDFfTFNWMzZf
+RE1fSU5INzsKPiArfTsKPiArCj4gIHN0YXRpYyBpbnQgaGRhY19oZG1pX3NldHVwX2F1ZGlvX2lu
+Zm9mcmFtZShzdHJ1Y3QgaGRhY19leHRfZGV2aWNlICpoZGFjLAo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaGRhX25pZF90IGN2dF9uaWQsIGhkYV9uaWRfdCBwaW5fbmlkKQo+ICB7
+Cj4gICAgICAgICB1aW50OF90IGJ1ZmZlcltIRE1JX0lORk9GUkFNRV9IRUFERVJfU0laRSArIEhE
+TUlfQVVESU9fSU5GT0ZSQU1FX1NJWkVdOwo+ICAgICAgICAgc3RydWN0IGhkbWlfYXVkaW9faW5m
+b2ZyYW1lIGZyYW1lOwo+ICsgICAgICAgc3RydWN0IGRwX2F1ZGlvX2luZm9mcmFtZSBkcF9haTsK
+PiArICAgICAgIHN0cnVjdCBoZGFjX2hkbWlfcHJpdiAqaGRtaSA9IGhkYWMtPnByaXZhdGVfZGF0
+YTsKPiArICAgICAgIHN0cnVjdCBoZGFjX2hkbWlfcGluICpwaW47Cj4gICAgICAgICB1OCAqZGlw
+ID0gKHU4ICopJmZyYW1lOwo+ICAgICAgICAgaW50IHJldDsKPiAgICAgICAgIGludCBpOwo+ICsg
+ICAgICAgY29uc3QgdTggKmVsZF9idWY7Cj4gKyAgICAgICB1OCBjb25uX3R5cGU7Cj4gKyAgICAg
+ICBpbnQgY2hhbm5lbHMgPSAyOwo+Cj4gLSAgICAgICBoZG1pX2F1ZGlvX2luZm9mcmFtZV9pbml0
+KCZmcmFtZSk7Cj4gKyAgICAgICBsaXN0X2Zvcl9lYWNoX2VudHJ5KHBpbiwgJmhkbWktPnBpbl9s
+aXN0LCBoZWFkKSB7Cj4gKyAgICAgICAgICAgICAgIGlmIChwaW4tPm5pZCA9PSBwaW5fbmlkKQo+
+ICsgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+ICsgICAgICAgfQo+Cj4gLSAgICAgICAv
+KiBEZWZhdWx0IHN0ZXJlbyBmb3Igbm93ICovCj4gLSAgICAgICBmcmFtZS5jaGFubmVscyA9IDI7
+Cj4gKyAgICAgICBlbGRfYnVmID0gcGluLT5lbGQuZWxkX2J1ZmZlcjsKPiArICAgICAgIGNvbm5f
+dHlwZSA9IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZShlbGRfYnVmKTsKPgo+ICAgICAgICAgLyogc2V0
+dXAgY2hhbm5lbCBjb3VudCAqLwo+ICAgICAgICAgc25kX2hkYWNfY29kZWNfd3JpdGUoJmhkYWMt
+PmhkYWMsIGN2dF9uaWQsIDAsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgIEFDX1ZFUkJf
+U0VUX0NWVF9DSEFOX0NPVU5ULCBmcmFtZS5jaGFubmVscyAtIDEpOwo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBBQ19WRVJCX1NFVF9DVlRfQ0hBTl9DT1VOVCwgY2hhbm5lbHMgLSAxKTsK
+Pgo+IC0gICAgICAgcmV0ID0gaGRtaV9hdWRpb19pbmZvZnJhbWVfcGFjaygmZnJhbWUsIGJ1ZmZl
+ciwgc2l6ZW9mKGJ1ZmZlcikpOwo+IC0gICAgICAgaWYgKHJldCA8IDApCj4gLSAgICAgICAgICAg
+ICAgIHJldHVybiByZXQ7Cj4gKyAgICAgICBpZiAoY29ubl90eXBlID09IERSTV9FTERfQ09OTl9U
+WVBFX0hETUkpIHsKPiArICAgICAgICAgICAgICAgaGRtaV9hdWRpb19pbmZvZnJhbWVfaW5pdCgm
+ZnJhbWUpOwo+ICsKPiArICAgICAgICAgICAgICAgLyogRGVmYXVsdCBzdGVyZW8gZm9yIG5vdyAq
+Lwo+ICsgICAgICAgICAgICAgICBmcmFtZS5jaGFubmVscyA9IGNoYW5uZWxzOwo+ICsKPiArICAg
+ICAgICAgICAgICAgcmV0ID0gaGRtaV9hdWRpb19pbmZvZnJhbWVfcGFjaygmZnJhbWUsIGJ1ZmZl
+ciwgc2l6ZW9mKGJ1ZmZlcikpOwo+ICsgICAgICAgICAgICAgICBpZiAocmV0IDwgMCkKPiArICAg
+ICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ICsKPiArICAgICAgICAgICAgICAgZGlw
+ID0gKHU4ICopJmZyYW1lOwo+ICsKPiArICAgICAgIH0gZWxzZSBpZiAoY29ubl90eXBlID09IERS
+TV9FTERfQ09OTl9UWVBFX0RQKSB7Cj4gKyAgICAgICAgICAgICAgIG1lbXNldCgmZHBfYWksIDAs
+IHNpemVvZihkcF9haSkpOwo+ICsgICAgICAgICAgICAgICBkcF9haS50eXBlICAgICAgPSAweDg0
+Owo+ICsgICAgICAgICAgICAgICBkcF9haS5sZW4gICAgICAgPSAweDFiOwo+ICsgICAgICAgICAg
+ICAgICBkcF9haS52ZXIgICAgICAgPSAweDExIDw8IDI7Cj4gKyAgICAgICAgICAgICAgIGRwX2Fp
+LkNDMDJfQ1Q0NyA9IGNoYW5uZWxzIC0gMTsKPiArICAgICAgICAgICAgICAgZHBfYWkuQ0EgICAg
+ICAgID0gMDsKPiArCj4gKyAgICAgICAgICAgICAgIGRpcCA9ICh1OCAqKSZkaXA7Cj4gKyAgICAg
+ICB9IGVsc2Ugewo+ICsgICAgICAgICAgICAgICBkZXZfZXJyKCZoZGFjLT5oZGFjLmRldiwgIklu
+dmFsaWQgY29ubmVjdGlvbiB0eXBlOiAlZFxuIiwgY29ubl90eXBlKTsKPiArICAgICAgICAgICAg
+ICAgcmV0dXJuIC1FSU87Cj4gKyAgICAgICB9Cj4KPiAgICAgICAgIC8qIHN0b3AgaW5mb2ZyYW1l
+IHRyYW5zbWlzc2lvbiAqLwo+ICAgICAgICAgaGRhY19oZG1pX3NldF9kaXBfaW5kZXgoaGRhYywg
+cGluX25pZCwgMHgwLCAweDApOwo+IEBAIC0yMzEsOSArMjc1LDE1IEBAIHN0YXRpYyBpbnQgaGRh
+Y19oZG1pX3NldHVwX2F1ZGlvX2luZm9mcmFtZShzdHJ1Y3QgaGRhY19leHRfZGV2aWNlICpoZGFj
+LAo+Cj4gICAgICAgICAvKiAgRmlsbCBpbmZvZnJhbWUuIEluZGV4IGF1dG8taW5jcmVtZW50ZWQg
+Ki8KPiAgICAgICAgIGhkYWNfaGRtaV9zZXRfZGlwX2luZGV4KGhkYWMsIHBpbl9uaWQsIDB4MCwg
+MHgwKTsKPiAtICAgICAgIGZvciAoaSA9IDA7IGkgPCBzaXplb2YoZnJhbWUpOyBpKyspCj4gLSAg
+ICAgICAgICAgICAgIHNuZF9oZGFjX2NvZGVjX3dyaXRlKCZoZGFjLT5oZGFjLCBwaW5fbmlkLCAw
+LAo+ICsgICAgICAgaWYgKGNvbm5fdHlwZSA9PSAwKSB7Cj4gKyAgICAgICAgICAgICAgIGZvciAo
+aSA9IDA7IGkgPCBzaXplb2YoZnJhbWUpOyBpKyspCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+c25kX2hkYWNfY29kZWNfd3JpdGUoJmhkYWMtPmhkYWMsIHBpbl9uaWQsIDAsCj4gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBBQ19WRVJCX1NFVF9IRE1JX0RJUF9EQVRBLCBkaXBbaV0p
+Owo+ICsgICAgICAgfSBlbHNlIHsKPiArICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IHNp
+emVvZihkcF9haSk7IGkrKykKPiArICAgICAgICAgICAgICAgICAgICAgICBzbmRfaGRhY19jb2Rl
+Y193cml0ZSgmaGRhYy0+aGRhYywgcGluX25pZCwgMCwKPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIEFDX1ZFUkJfU0VUX0hETUlfRElQX0RBVEEsIGRpcFtpXSk7Cj4gKyAgICAgICB9
+Cj4KPiAgICAgICAgIC8qIFN0YXJ0IGluZm9mcmFtZSAqLwo+ICAgICAgICAgaGRhY19oZG1pX3Nl
+dF9kaXBfaW5kZXgoaGRhYywgcGluX25pZCwgMHgwLCAweDApOwo+IC0tCj4gMS45LjEKPgo+IF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gZHJpLWRldmVs
+IG1haWxpbmcgbGlzdAo+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiBodHRwOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5n
+IGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
