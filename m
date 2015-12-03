@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Fix type of clock rate pointer
-	in arizona_set_sysclk" to the asoc tree
-Date: Thu, 03 Dec 2015 21:02:10 +0000
-Message-ID: <E1a4b10-0006r4-Cy@debutante>
-References: <1449166507-3096-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: arizona: Correct types of mixer texts
+	and values" to the asoc tree
+Date: Thu, 03 Dec 2015 21:02:11 +0000
+Message-ID: <E1a4b11-0006sR-BA@debutante>
+References: <1449166507-3096-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A21FF26055E
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 22:02:21 +0100 (CET)
-In-Reply-To: <1449166507-3096-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 50D24260575
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 22:02:22 +0100 (CET)
+In-Reply-To: <1449166507-3096-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Fix type of clock rate pointer in arizona_set_sysclk
+   ASoC: arizona: Correct types of mixer texts and values
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,84 @@ to this mail.
 Thanks,
 Mark
 
->From 1f0e1eae1521e9a00f1dfbcf7c51d785ade4179c Mon Sep 17 00:00:00 2001
+>From 141bc6a620e114d3c4daeaf6e70b9ab96d914152 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 3 Dec 2015 18:15:07 +0000
-Subject: [PATCH] ASoC: arizona: Fix type of clock rate pointer in
- arizona_set_sysclk
+Date: Thu, 3 Dec 2015 18:15:06 +0000
+Subject: [PATCH] ASoC: arizona: Correct types of mixer texts and values
 
-Both the sysclk and asyncclk members of arizona_priv are signed by we
-refer to them through an unsigned pointer. This patch fixes this small
-harmless error.
+The core expects "const char * const" and "unsigned int" for enum
+controls, various places in Arizona use "const char *" and "int".
+This patch corrects the type of these arrays.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/arizona.c | 8 ++++----
+ sound/soc/codecs/arizona.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index d2731cf439c6..d90b3c51019a 100644
+index a23f7d15324a..d2731cf439c6 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -1214,7 +1214,7 @@ int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	unsigned int reg;
- 	unsigned int mask = ARIZONA_SYSCLK_FREQ_MASK | ARIZONA_SYSCLK_SRC_MASK;
- 	unsigned int val = source << ARIZONA_SYSCLK_SRC_SHIFT;
--	unsigned int *clk;
-+	int *clk;
+@@ -310,7 +310,7 @@ int arizona_init_gpio(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_gpio);
  
- 	switch (clk_id) {
- 	case ARIZONA_CLK_SYSCLK:
+-const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
++const char * const arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
+ 	"None",
+ 	"Tone Generator 1",
+ 	"Tone Generator 2",
+@@ -418,7 +418,7 @@ const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
+ };
+ EXPORT_SYMBOL_GPL(arizona_mixer_texts);
+ 
+-int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS] = {
++unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS] = {
+ 	0x00,  /* None */
+ 	0x04,  /* Tone */
+ 	0x05,
+@@ -555,12 +555,12 @@ const char *arizona_sample_rate_val_to_name(unsigned int rate_val)
+ }
+ EXPORT_SYMBOL_GPL(arizona_sample_rate_val_to_name);
+ 
+-const char *arizona_rate_text[ARIZONA_RATE_ENUM_SIZE] = {
++const char * const arizona_rate_text[ARIZONA_RATE_ENUM_SIZE] = {
+ 	"SYNCCLK rate", "8kHz", "16kHz", "ASYNCCLK rate",
+ };
+ EXPORT_SYMBOL_GPL(arizona_rate_text);
+ 
+-const int arizona_rate_val[ARIZONA_RATE_ENUM_SIZE] = {
++const unsigned int arizona_rate_val[ARIZONA_RATE_ENUM_SIZE] = {
+ 	0, 1, 2, 8,
+ };
+ EXPORT_SYMBOL_GPL(arizona_rate_val);
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 01a367caefd8..b4f1867ae9d6 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -96,8 +96,8 @@ struct arizona_priv {
+ #define ARIZONA_NUM_MIXER_INPUTS 104
+ 
+ extern const unsigned int arizona_mixer_tlv[];
+-extern const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS];
+-extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
++extern const char * const arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS];
++extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ 
+ #define ARIZONA_GAINMUX_CONTROLS(name, base) \
+ 	SOC_SINGLE_RANGE_TLV(name " Input Volume", base + 1,		\
+@@ -216,8 +216,8 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ #define ARIZONA_RATE_ENUM_SIZE 4
+ #define ARIZONA_SAMPLE_RATE_ENUM_SIZE 14
+ 
+-extern const char *arizona_rate_text[ARIZONA_RATE_ENUM_SIZE];
+-extern const int arizona_rate_val[ARIZONA_RATE_ENUM_SIZE];
++extern const char * const arizona_rate_text[ARIZONA_RATE_ENUM_SIZE];
++extern const unsigned int arizona_rate_val[ARIZONA_RATE_ENUM_SIZE];
+ extern const char * const arizona_sample_rate_text[ARIZONA_SAMPLE_RATE_ENUM_SIZE];
+ extern const unsigned int arizona_sample_rate_val[ARIZONA_SAMPLE_RATE_ENUM_SIZE];
+ 
 -- 
 2.6.2
