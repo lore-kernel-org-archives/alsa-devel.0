@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/16] ASoC: Intel: Skylake: Update DMIC
- DAIs and capabilities
-Date: Thu, 3 Dec 2015 00:59:48 +0000
-Message-ID: <20151203005948.GB5727@sirena.org.uk>
-References: <1448703121-5831-1-git-send-email-vinod.koul@intel.com>
- <1448703121-5831-2-git-send-email-vinod.koul@intel.com>
- <20151201213251.GX1929@sirena.org.uk>
- <20151202045359.GC1854@localhost>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 03/15] ASoC: hdac_hdmi - Use list to add
+ pins and converters
+Date: Thu, 3 Dec 2015 16:06:45 +0530
+Message-ID: <20151203103645.GD22880@subhransu-desktop>
+References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1448992031-8271-3-git-send-email-subhransu.s.prusty@intel.com>
+ <s5htwo2pc8n.wl-tiwai@suse.de>
+ <20151201225050.GE5624@subhransu-desktop>
+ <s5hbnaa57dt.wl-tiwai@suse.de> <s5h4mg15h9g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3667977877391878317=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55B472665B4
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 01:59:52 +0100 (CET)
-In-Reply-To: <20151202045359.GC1854@localhost>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77E40265071
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 06:06:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h4mg15h9g.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +27,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, "Dharageswari.R" <dharageswari.r@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 02, 2015 at 10:31:07AM +0100, Takashi Iwai wrote:
+> On Tue, 01 Dec 2015 19:52:14 +0100,
+> Takashi Iwai wrote:
+> > 
+> > On Tue, 01 Dec 2015 23:50:50 +0100,
+> > Subhransu S. Prusty wrote:
+> > > 
+> > > On Tue, Dec 01, 2015 at 01:47:04PM +0100, Takashi Iwai wrote:
+> > > > On Tue, 01 Dec 2015 18:46:59 +0100,
+> > > > Subhransu S. Prusty wrote:
+> > > > > 
+> > > > > +static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
+> > > > > +{
+> > > > > +	struct hdac_hdmi_priv *hdmi = edev->private_data;
+> > > > > +	struct hdac_hdmi_cvt *cvt;
+> > > > > +
+> > > > > +	cvt = devm_kzalloc(&edev->hdac.dev, sizeof(*cvt), GFP_KERNEL);
+> > > > 
+> > > > Be careful about devm_*() usage here.  The devres resources may be
+> > > > freed before the release callback is called for the assigned device
+> > > > object.  See drivers/base/core.c:device_release().
+> > > > 
+> > > > For the top-level object, usually it's OK, because the top-level
+> > > > object itself won't be released but only the driver is detached.
+> > > > Then devres_release_all() is called in device_release_driver() while
+> > > > the device itself is still present.
+> > > 
+> > > Not sure if I understood it correctly. But as the devres_release_all is
+> > > called after the driver remove and the above resource is not expected to
+> > > be used outside the scope of driver.
+> > 
+> > devres_release_all() is called *before* calling the device's release
+> > callback, which is usually triggered by put_device().  So it depends
+> > on how you call the device removal whether it's safe or not.
+> > 
+> > > So should't deleting the list entries
+> > > be good enough during driver remove?
+> > 
+> > It depends on how the allocated data is accessed.  I guess it won't be
+> > a problem in this case, but in general, you have to be careful about
+> > devm_*() usage.  It can't be used always blindly.
+> 
+> To make clear my intention: the code used in this patch appears OK, as
+> far as I see.  But, for example, if this code would be moved to HDA
+> core layer, then it might not work -- there you'll have to release the
+> resource in another way.  A driver-bound resource shall be released
+> with the driver's unbinding, but a resource bound with the device
+> isn't necessarily released there but first at device_release().
 
---===============3667977877391878317==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WhfpMioaduB5tiZL"
-Content-Disposition: inline
+It's better then I will remove the devm_xxx and will manage the resources in
+the driver itself.
 
+Regards,
+Subhransu
+> 
+> 
+> Takashi
 
---WhfpMioaduB5tiZL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 02, 2015 at 10:23:59AM +0530, Vinod Koul wrote:
-> On Tue, Dec 01, 2015 at 09:32:51PM +0000, Mark Brown wrote:
-> > On Sat, Nov 28, 2015 at 03:01:46PM +0530, Vinod Koul wrote:
-
-> > >  #define HDA_MONO 1
-> > >  #define HDA_STEREO 2
-> > > +#define HDA_QUAD 4
-
-> > Are these defines really helping clarify things?
-
-> hmm, that is a good point :) Since we already had 1, 2 4 seems a logical
-> choice. I dont mind either way
-
-I think I'd prefer to just use the numbers, it's not like HDA uses a
-different definition of stereo to anything else.
-
---WhfpMioaduB5tiZL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWX5QDAAoJECTWi3JdVIfQodgH/2nhv3y39eiWDMlG1jXRGi+W
-NPfJ8ayzbLe2TTQ2M0FfuNIwo0b6v5V1IAE5WrwxLjrb2q1UInB1lGxKPPfpYuUc
-lAQDYyZWsY7vbtfvp+ZG7Bdb8llWrO4JZ9JzMDGDWAXWcBx2/nvWP/RwqG0SUUu1
-MWvEU+Q6ORAt+DcJZ7fxCfKqElmuXy+X5WA5VJzI+iNXu++oJEW/JPb0/1VGCbbD
-9+OXMHy+w5pWGSh1s4EuAaHPQUqn2gtI1E20O1por2OqJ1jqKKFIxk2GeYGmREJC
-/6vrJ/KZlkwAFY07cmHh+u0rqhikFXcUx26GQXaWaOayU9Q2kJkmrHRdAmHEyv0=
-=zGTa
------END PGP SIGNATURE-----
-
---WhfpMioaduB5tiZL--
-
---===============3667977877391878317==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3667977877391878317==--
+-- 
