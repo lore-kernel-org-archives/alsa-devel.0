@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 01/12] ASoC: Intel: Skylake: Add support for
-	Loadable modules
-Date: Thu,  3 Dec 2015 23:29:50 +0530
-Message-ID: <1449165601-11226-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 03/12] ASoC: Intel: Skylake: Add support for
+	Mic Select module
+Date: Thu,  3 Dec 2015 23:29:52 +0530
+Message-ID: <1449165601-11226-4-git-send-email-vinod.koul@intel.com>
 References: <1449165601-11226-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 077B526054D
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 18:57:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC7C3260525
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 18:57:12 +0100 (CET)
 In-Reply-To: <1449165601-11226-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,419 +25,105 @@ To: alsa-devel@alsa-project.org
 Cc: Dharageswari R <dharageswari.r@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Dharageswari R <dharageswari.r@intel.com>
+From: "Dharageswari R" <dharageswari.r@intel.com>
 
-A module is loaded when the path consisting the module is opened.
-The module binary(ies) is loaded from file system and cached in
-kernel memory for future use. This is downloaded to DSP using DMA
-and invoking Load module IPCs
+Mic select is a DSP module which is used to select one or many
+inputs to form an output. This is useful to select data
+selectively from PDM input and hence the name. This module is of
+generic module type.
 
-This patch adds support for load/unload module IPCs, DMAing
-modules and manging the modules
+This patch adds support to add and configure Mic select module in
+firmware topology.
 
 Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.h  |  14 +++
- sound/soc/intel/skylake/skl-sst-ipc.c  |  53 ++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.h  |   6 ++
- sound/soc/intel/skylake/skl-sst.c      | 175 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.c |  29 +++++-
- 5 files changed, 276 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c       | 26 ++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h       |  5 +++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |  3 ++-
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index f2a69d9e56b3..5d0947935e2b 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -114,6 +114,9 @@ struct skl_dsp_fw_ops {
- 	int (*set_state_D0)(struct sst_dsp *ctx);
- 	int (*set_state_D3)(struct sst_dsp *ctx);
- 	unsigned int (*get_fw_errcode)(struct sst_dsp *ctx);
-+	int (*load_mod)(struct sst_dsp *ctx, u16 mod_id, char *mod_name);
-+	int (*unload_mod)(struct sst_dsp *ctx, u16 mod_id);
-+
- };
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 5297b345839a..a91161be7f5d 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -410,6 +410,25 @@ static void skl_set_algo_format(struct skl_sst *ctx,
  
- struct skl_dsp_loader_ops {
-@@ -123,6 +126,17 @@ struct skl_dsp_loader_ops {
- 		struct snd_dma_buffer *dmab);
- };
- 
-+struct skl_load_module_info {
-+	u16 mod_id;
-+	const struct firmware *fw;
-+};
-+
-+struct skl_module_table {
-+	struct skl_load_module_info *mod_info;
-+	unsigned int usage_cnt;
-+	struct list_head list;
-+};
-+
- void skl_cldma_process_intr(struct sst_dsp *ctx);
- void skl_cldma_int_disable(struct sst_dsp *ctx);
- int skl_cldma_prepare(struct sst_dsp *ctx);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 95679c02c6ee..33860d2311c4 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -130,6 +130,11 @@
- #define IPC_SRC_QUEUE_MASK		0x7
- #define IPC_SRC_QUEUE(x)		(((x) & IPC_SRC_QUEUE_MASK) \
- 					<< IPC_SRC_QUEUE_SHIFT)
-+/* Load Module count */
-+#define IPC_LOAD_MODULE_SHIFT		0
-+#define IPC_LOAD_MODULE_MASK		0xFF
-+#define IPC_LOAD_MODULE_CNT(x)		(((x) & IPC_LOAD_MODULE_MASK) \
-+					<< IPC_LOAD_MODULE_SHIFT)
- 
- /* Save pipeline messgae extension register */
- #define IPC_DMA_ID_SHIFT		0
-@@ -728,6 +733,54 @@ int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
- }
- EXPORT_SYMBOL_GPL(skl_ipc_bind_unbind);
- 
-+/*
-+ * In order to load a module we need to send IPC to initiate that. DMA will
-+ * performed to load the module memory. The FW supports multiple module load
-+ * at single shot, so we can send IPC with N modules represented by
-+ * module_cnt
-+ */
-+int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_LOAD_MULTIPLE_MODS);
-+	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
-+
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
-+				(sizeof(u16) * module_cnt), NULL, 0);
-+	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: load modules failed :%d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_load_modules);
-+
-+int skl_ipc_unload_modules(struct sst_generic_ipc *ipc, u8 module_cnt,
-+							void *data)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_UNLOAD_MULTIPLE_MODS);
-+	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
-+
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
-+				(sizeof(u16) * module_cnt), NULL, 0);
-+	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: unload modules failed :%d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_unload_modules);
-+
- int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_large_config_msg *msg, u32 *param)
- {
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index f1a154e45dc3..e17012778560 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -108,6 +108,12 @@ int skl_ipc_init_instance(struct sst_generic_ipc *sst_ipc,
- int skl_ipc_bind_unbind(struct sst_generic_ipc *sst_ipc,
- 		struct skl_ipc_bind_unbind_msg *msg);
- 
-+int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data);
-+
-+int skl_ipc_unload_modules(struct sst_generic_ipc *ipc,
-+				u8 module_cnt, void *data);
-+
- int skl_ipc_set_dx(struct sst_generic_ipc *ipc,
- 		u8 instance_id, u16 module_id, struct skl_ipc_dxstate_info *dx);
- 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index e1d34d5c3f9a..8cd5cdb21fd5 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -38,6 +38,8 @@
- #define SKL_INSTANCE_ID		0
- #define SKL_BASE_FW_MODULE_ID	0
- 
-+#define SKL_NUM_MODULES		1
-+
- static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
- {
- 	u32 cur_sts;
-@@ -202,11 +204,182 @@ static unsigned int skl_get_errorcode(struct sst_dsp *ctx)
- 	 return sst_dsp_shim_read(ctx, SKL_ADSP_ERROR_CODE);
  }
  
 +/*
-+ * since get/set_module are called from DAPM context,
-+ * we don't need lock for usage count
++ * Mic select module allows selecting one or many input channels, thus
++ * acting as a demux.
++ *
++ * Mic select module take base module configuration and out-format
++ * configuration
 + */
-+static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
++static void skl_set_base_outfmt_format(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig,
++			struct skl_base_outfmt_cfg *base_outfmt_mcfg)
 +{
-+	struct skl_module_table *module;
++	struct skl_audio_data_format *out_fmt = &base_outfmt_mcfg->out_fmt;
++	struct skl_base_cfg *base_cfg =
++				(struct skl_base_cfg *)base_outfmt_mcfg;
 +
-+	list_for_each_entry(module, &ctx->module_list, list) {
-+		if (module->mod_info->mod_id == mod_id)
-+			return ++module->usage_cnt;
-+	}
-+
-+	return -EINVAL;
++	skl_set_base_module_format(ctx, mconfig, base_cfg);
++	skl_setup_out_format(ctx, mconfig, out_fmt);
 +}
 +
-+static unsigned int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
-+{
-+	struct skl_module_table *module;
-+
-+	list_for_each_entry(module, &ctx->module_list, list) {
-+		if (module->mod_info->mod_id == mod_id)
-+			return --module->usage_cnt;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static struct skl_module_table *skl_fill_module_table(struct sst_dsp *ctx,
-+						char *mod_name, int mod_id)
-+{
-+	const struct firmware *fw;
-+	struct skl_module_table *skl_module;
-+	unsigned int size;
-+	int ret;
-+
-+	ret = request_firmware(&fw, mod_name, ctx->dev);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Request Module %s failed :%d\n",
-+							mod_name, ret);
-+		return NULL;
-+	}
-+
-+	skl_module = devm_kzalloc(ctx->dev, sizeof(*skl_module), GFP_KERNEL);
-+	if (skl_module == NULL) {
-+		release_firmware(fw);
-+		return NULL;
-+	}
-+
-+	size = sizeof(*skl_module->mod_info);
-+	skl_module->mod_info = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
-+	if (skl_module->mod_info == NULL) {
-+		release_firmware(fw);
-+		return NULL;
-+	}
-+
-+	skl_module->mod_info->mod_id = mod_id;
-+	skl_module->mod_info->fw = fw;
-+	list_add(&skl_module->list, &ctx->module_list);
-+
-+	return skl_module;
-+}
-+
-+/* get a module from it's unique ID */
-+static struct skl_module_table *skl_module_get_from_id(
-+			struct sst_dsp *ctx, u16 mod_id)
-+{
-+	struct skl_module_table *module;
-+
-+	if (list_empty(&ctx->module_list)) {
-+		dev_err(ctx->dev, "Module list is empty\n");
-+		return NULL;
-+	}
-+
-+	list_for_each_entry(module, &ctx->module_list, list) {
-+		if (module->mod_info->mod_id == mod_id)
-+			return module;
-+	}
-+
-+	return NULL;
-+}
-+
-+static int skl_transfer_module(struct sst_dsp *ctx,
-+			struct skl_load_module_info *module)
-+{
-+	int ret;
-+	struct skl_sst *skl = ctx->thread_context;
-+
-+	ret = ctx->cl_dev.ops.cl_copy_to_dmabuf(ctx, module->fw->data,
-+							module->fw->size);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = skl_ipc_load_modules(&skl->ipc, SKL_NUM_MODULES,
-+						(void *)&module->mod_id);
-+	if (ret < 0)
-+		dev_err(ctx->dev, "Failed to Load module: %d\n", ret);
-+
-+	ctx->cl_dev.ops.cl_stop_dma(ctx);
-+
-+	return ret;
-+}
-+
-+static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, char *guid)
-+{
-+	struct skl_module_table *module_entry = NULL;
-+	int ret = 0;
-+	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
-+
-+	snprintf(mod_name, sizeof(mod_name), "%s%s%s",
-+			"intel/dsp_fw_", guid, ".bin");
-+
-+	module_entry = skl_module_get_from_id(ctx, mod_id);
-+	if (module_entry == NULL) {
-+		module_entry = skl_fill_module_table(ctx, mod_name, mod_id);
-+		if (module_entry == NULL) {
-+			dev_err(ctx->dev, "Failed to Load module\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (!module_entry->usage_cnt) {
-+		ret = skl_transfer_module(ctx, module_entry->mod_info);
-+		if (ret < 0) {
-+			dev_err(ctx->dev, "Failed to Load module\n");
-+			return ret;
-+		}
-+	}
-+
-+	ret = skl_get_module(ctx, mod_id);
-+
-+	return ret;
-+}
-+
-+static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
-+{
-+	unsigned int usage_cnt;
-+	struct skl_sst *skl = ctx->thread_context;
-+	int ret = 0;
-+
-+	usage_cnt = skl_put_module(ctx, mod_id);
-+	if (usage_cnt < 0) {
-+		dev_err(ctx->dev, "Module bad usage cnt!:%d\n", usage_cnt);
-+		return -EIO;
-+	}
-+	ret = skl_ipc_unload_modules(&skl->ipc,
-+			SKL_NUM_MODULES, &mod_id);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to UnLoad module\n");
-+		skl_get_module(ctx, mod_id);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static void skl_clear_module_table(struct sst_dsp *ctx)
-+{
-+	struct skl_module_table *module, *tmp;
-+
-+	if (list_empty(&ctx->module_list))
-+		return;
-+
-+	list_for_each_entry_safe(module, tmp, &ctx->module_list, list) {
-+		list_del(&module->list);
-+		release_firmware(module->mod_info->fw);
-+	}
-+}
-+
- static struct skl_dsp_fw_ops skl_fw_ops = {
- 	.set_state_D0 = skl_set_dsp_D0,
- 	.set_state_D3 = skl_set_dsp_D3,
- 	.load_fw = skl_load_base_firmware,
- 	.get_fw_errcode = skl_get_errorcode,
-+	.load_mod = skl_load_module,
-+	.unload_mod = skl_unload_module,
- };
- 
- static struct sst_ops skl_ops = {
-@@ -251,6 +424,7 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
- 
-+	INIT_LIST_HEAD(&sst->module_list);
- 	sst->dsp_ops = dsp_ops;
- 	sst->fw_ops = skl_fw_ops;
- 
-@@ -277,6 +451,7 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
- 
- void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 			struct skl_module_cfg *mconfig)
  {
-+	skl_clear_module_table(ctx->dsp);
- 	skl_ipc_free(&ctx->ipc);
- 	ctx->dsp->ops->free(ctx->dsp);
- }
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index dde8d3c7059a..95b6dd49d6a4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -26,6 +26,8 @@
- #include "skl-topology.h"
- #include "skl.h"
- #include "skl-tplg-interface.h"
-+#include "../common/sst-dsp.h"
-+#include "../common/sst-dsp-priv.h"
+@@ -432,6 +451,9 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 		param_size += mconfig->formats_config.caps_size;
+ 		return param_size;
  
- #define SKL_CH_FIXUP_MASK		(1 << 0)
- #define SKL_RATE_FIXUP_MASK		(1 << 1)
-@@ -412,6 +414,13 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		if (!skl_tplg_alloc_pipe_mcps(skl, mconfig))
- 			return -ENOMEM;
- 
-+		if (mconfig->is_loadable && ctx->dsp->fw_ops.load_mod) {
-+			ret = ctx->dsp->fw_ops.load_mod(ctx->dsp,
-+				mconfig->id.module_id, mconfig->guid);
-+			if (ret < 0)
-+				return ret;
-+		}
++	case SKL_MODULE_TYPE_BASE_OUTFMT:
++		return sizeof(struct skl_base_outfmt_cfg);
 +
+ 	default:
  		/*
- 		 * apply fix/conversion to module params based on
- 		 * FE/BE params
-@@ -431,6 +440,24 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 	return 0;
- }
+ 		 * return only base cfg when no specific module type is
+@@ -482,6 +504,10 @@ static int skl_set_module_format(struct skl_sst *ctx,
+ 		skl_set_algo_format(ctx, module_config, *param_data);
+ 		break;
  
-+static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
-+	 struct skl_pipe *pipe)
-+{
-+	struct skl_pipe_module *w_module = NULL;
-+	struct skl_module_cfg *mconfig = NULL;
++	case SKL_MODULE_TYPE_BASE_OUTFMT:
++		skl_set_base_outfmt_format(ctx, module_config, *param_data);
++		break;
 +
-+	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		mconfig  = w_module->w->priv;
-+
-+		if (mconfig->is_loadable && ctx->dsp->fw_ops.unload_mod)
-+			return ctx->dsp->fw_ops.unload_mod(ctx->dsp,
-+						mconfig->id.module_id);
-+	}
-+
-+	/* no modules to unload in this path, so return */
-+	return 0;
-+}
-+
- /*
-  * Mixer module represents a pipeline. So in the Pre-PMU event of mixer we
-  * need create the pipeline. So we do following:
-@@ -755,7 +782,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	default:
+ 		skl_set_base_module_format(ctx, module_config, *param_data);
+ 		break;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 04318e2091fd..349f2a3b6613 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -145,6 +145,11 @@ struct skl_algo_cfg {
+ 	char params[0];
+ } __packed;
  
- 	ret = skl_delete_pipe(ctx, mconfig->pipe);
++struct skl_base_outfmt_cfg {
++	struct skl_base_cfg base_cfg;
++	struct skl_audio_data_format out_fmt;
++} __packed;
++
+ enum skl_dma_type {
+ 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
+ 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index 3f1908e3ae80..626b148317fe 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -79,7 +79,8 @@ enum skl_module_type {
+ 	SKL_MODULE_TYPE_COPIER,
+ 	SKL_MODULE_TYPE_UPDWMIX,
+ 	SKL_MODULE_TYPE_SRCINT,
+-	SKL_MODULE_TYPE_ALGO
++	SKL_MODULE_TYPE_ALGO,
++	SKL_MODULE_TYPE_BASE_OUTFMT
+ };
  
--	return ret;
-+	return skl_tplg_unload_pipe_modules(ctx, s_pipe);
- }
- 
- /*
+ enum skl_core_affinity {
 -- 
 1.9.1
