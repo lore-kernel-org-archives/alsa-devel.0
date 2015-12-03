@@ -1,66 +1,65 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
-	update
-Date: Thu, 3 Dec 2015 11:13:04 +0000
-Message-ID: <20151203111304.GL8644@n2100.arm.linux.org.uk>
-References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
- <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
- <20151202190036.GD8644@n2100.arm.linux.org.uk>
- <56602046.8070307@st.com>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH] ASoC: da7218: Enable mic level detection reporting to
+ user-space
+Date: Thu, 3 Dec 2015 11:15:41 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D460FA37@SW-EX-MBX01.diasemi.com>
+References: <d6102f65136a8457d7ca19a51be4a938f3146613.1449059324.git.Adam.Thomson.Opensource@diasemi.com>
+ <s5hk2ovn6ml.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 1B0D8265325
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 12:13:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <56602046.8070307@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk2ovn6ml.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 03, 2015 at 11:58:14AM +0100, Moise Gergaud wrote:
-> On 12/02/2015 08:00 PM, Russell King - ARM Linux wrote:
-> >Again, I'm not happy with this change.  The intention here is that we
-> >validate all arguments before we change anything.  This breaks that
-> >principle.
-> >
-> We propose this change for compressed mode (IEC61937/non linear PCM).
-> In case of compressed mode, iec958 channel status byte 0 bit1 = 1, then we
-> cannot use snd_pcm_create_iec958_consumer.
-
-Why can you not use snd_pcm_create_iec958_consumer() for this case?  You
-are allowed to modify the values you get afterwards in order to handle
-this case if you so wish to toggle this bit.
-
-However, if you are using data mode, you really should be using the AES
-bytes passed by the application through alsalib and into the kernel via
-the IEC958 controls.  There are three controls specified for this:
-
-SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK) - the bits which can be
-changed for consumer mode.
-SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK) - the bits which can be
-changed for professional mode.
-SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT) - the value of the changable
-bits.
-
-When using this, it is userspace's responsibility to set the sample rate
-appropriately for the stream.
-
-The only case to use snd_pcm_create_iec958_consumer() is to generate the
-status bytes for PCM audio, where the userspace API doesn't facilitiate
-generating and/or passing the AES status bytes.
-
--- 
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+T24gRGVjZW1iZXIgMDMsIDIwMTUgMTA6NTYsIFRha2FzaGkgSXdhaSB3cm90ZToNCg0KPiA+IFRo
+aXMgcGF0Y2ggYWRkcyBzdXBwb3J0IHRvIHRoZSBjb2RlYyBkcml2ZXIgdG8gaGFuZGxlIG1pYyBs
+ZXZlbA0KPiA+IGRldGVjdCByZWxhdGVkIElSUXMsIGFuZCByZXBvcnQgdGhlc2UgdG8gdXNlci1z
+cGFjZSB1c2luZyBhIHVldmVudA0KPiA+IHZhcmlhYmxlLg0KPiANCj4gSXMgdGhlIHVldmVudCB0
+aGUgYmVzdCB3YXkgZm9yIHRoaXM/DQo+IA0KPiANCj4gdGhhbmtzLA0KPiANCj4gVGFrYXNoaQ0K
+DQpXZWxsIG9yaWdpbmFsbHkgSSB3YXMgdXNpbmcgYW4gaW5wdXQgZGV2aWNlIG1lY2hhbmlzbSB0
+byByZXBvcnQgdG8gdXNlci1zcGFjZSwNCmFsYmVpdCB1c2luZyBLRVlfVk9JQ0VDT01NQU5ELCB3
+aGljaCBNYXJrIG1lbnRpb25lZCB3YXNuJ3QgY29ycmVjdCBmb3IgdGhpcw0Kc2NlbmFyaW8sIHdo
+aWNoIHdhcyBmYWlyIGVub3VnaC4gSGUgYWxzbyBtZW50aW9uZWQgdGhhdCB0aGVyZSBoYWQgYmVl
+biBhIGdlbmVyYWwNCnB1c2ggYmFjayBvbiB1c2luZyBpbnB1dCBkZXZpY2VzIHNvIHRoYXQgY29k
+ZSB3YXMgZHJvcHBlZC4gU2VlIHRocmVhZCBiZWxvdzoNCg0KaHR0cHM6Ly9sa21sLm9yZy9sa21s
+LzIwMTUvMTEvMTAvMzQ3DQoNCnVldmVudCBzZWVtZWQgbGlrZSB0aGUgc2ltcGxlc3Qgc29sdXRp
+b24gdG8gcmVwb3J0IHRoaXMgZXZlbnQsIGFuZCBhbGxvdw0KdXNlci1zcGFjZSB0byBhY3QgYmFz
+ZWQgb24gaXQuIEFzIG1lbnRpb25lZCBiZWZvcmUgdGhvdWdoLCBJIGFtIG9wZW4gdG8NCnN1Z2dl
+c3Rpb25zIGlmIHRoZXJlJ3MgYSBiZXR0ZXIgd2F5Lg0KDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBBZGFtIFRob21zb24gPEFkYW0uVGhvbXNvbi5PcGVuc291cmNlQGRpYXNlbWkuY29tPg0KPiA+
+IC0tLQ0KPiA+ICBzb3VuZC9zb2MvY29kZWNzL2RhNzIxOC5jIHwgMTkgKysrKysrKysrKysrKyst
+LS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMo
+LSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOC5jIGIvc291
+bmQvc29jL2NvZGVjcy9kYTcyMTguYw0KPiA+IGluZGV4IDRmZWU3YWUuLjc1MmVkMDQgMTAwNjQ0
+DQo+ID4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9kYTcyMTguYw0KPiA+ICsrKyBiL3NvdW5kL3Nv
+Yy9jb2RlY3MvZGE3MjE4LmMNCj4gPiBAQCAtMjIwMiw2ICsyMjAyLDE2IEBAIGludCBkYTcyMThf
+aHBsZGV0KHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywNCj4gc3RydWN0IHNuZF9zb2NfamFj
+ayAqamFjaykNCj4gPiAgfQ0KPiA+ICBFWFBPUlRfU1lNQk9MX0dQTChkYTcyMThfaHBsZGV0KTsN
+Cj4gPg0KPiA+ICtzdGF0aWMgdm9pZCBkYTcyMThfbWljbGRldF9pcnEoc3RydWN0IHNuZF9zb2Nf
+Y29kZWMgKmNvZGVjKQ0KPiA+ICt7DQo+ID4gKwljaGFyICplbnZwW10gPSB7DQo+ID4gKwkJIkVW
+RU5UPU1JQ19MRVZFTF9ERVRFQ1QiLA0KPiA+ICsJCU5VTEwsDQo+ID4gKwl9Ow0KPiA+ICsNCj4g
+PiArCWtvYmplY3RfdWV2ZW50X2VudigmY29kZWMtPmRldi0+a29iaiwgS09CSl9DSEFOR0UsIGVu
+dnApOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgdm9pZCBkYTcyMThfaHBsZGV0X2lycShz
+dHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpDQo+ID4gIHsNCj4gPiAgCXN0cnVjdCBkYTcyMThf
+cHJpdiAqZGE3MjE4ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7DQo+ID4gQEAg
+LTIyMzIsNiArMjI0MiwxMCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgZGE3MjE4X2lycV90aHJlYWQo
+aW50IGlycSwgdm9pZA0KPiAqZGF0YSkNCj4gPiAgCWlmICghc3RhdHVzKQ0KPiA+ICAJCXJldHVy
+biBJUlFfTk9ORTsNCj4gPg0KPiA+ICsJLyogTWljIGxldmVsIGRldGVjdCAqLw0KPiA+ICsJaWYg
+KHN0YXR1cyAmIERBNzIxOF9MVkxfREVUX0VWRU5UX01BU0spDQo+ID4gKwkJZGE3MjE4X21pY2xk
+ZXRfaXJxKGNvZGVjKTsNCj4gPiArDQo+ID4gIAkvKiBIUCBkZXRlY3QgKi8NCj4gPiAgCWlmIChz
+dGF0dXMgJiBEQTcyMThfSFBMREVUX0pBQ0tfRVZFTlRfTUFTSykNCj4gPiAgCQlkYTcyMThfaHBs
+ZGV0X2lycShjb2RlYyk7DQo+ID4gQEAgLTI5MzYsMTEgKzI5NTAsNiBAQCBzdGF0aWMgaW50IGRh
+NzIxOF9wcm9iZShzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpDQo+ID4gIAl9DQo+ID4NCj4g
+PiAgCWlmIChkYTcyMTgtPmlycSkgew0KPiA+IC0JCS8qIE1hc2sgb2ZmIG1pYyBsZXZlbCBldmVu
+dHMsIGN1cnJlbnRseSBub3QgaGFuZGxlZCAqLw0KPiA+IC0JCXNuZF9zb2NfdXBkYXRlX2JpdHMo
+Y29kZWMsIERBNzIxOF9FVkVOVF9NQVNLLA0KPiA+IC0JCQkJICAgIERBNzIxOF9MVkxfREVUX0VW
+RU5UX01TS19NQVNLLA0KPiA+IC0JCQkJICAgIERBNzIxOF9MVkxfREVUX0VWRU5UX01TS19NQVNL
+KTsNCj4gPiAtDQo+ID4gIAkJcmV0ID0gZGV2bV9yZXF1ZXN0X3RocmVhZGVkX2lycShjb2RlYy0+
+ZGV2LCBkYTcyMTgtPmlycSwgTlVMTCwNCj4gPiAgCQkJCQkJZGE3MjE4X2lycV90aHJlYWQsDQo+
+ID4gIAkJCQkJCUlSUUZfVFJJR0dFUl9MT1cgfA0KPiBJUlFGX09ORVNIT1QsDQo+ID4gLS0NCj4g
+PiAxLjkuMw0KPiA+DQo+ID4NCg==
