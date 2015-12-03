@@ -1,77 +1,81 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [alsa-devel] [PATCH 12/15] drm/edid: Add API to help find
- connection type
-Date: Thu, 3 Dec 2015 21:38:24 +0530
-Message-ID: <20151203160824.GA26240@subhransu-desktop>
-References: <1448991749-8091-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-1-git-send-email-subhransu.s.prusty@intel.com>
- <1448992031-8271-12-git-send-email-subhransu.s.prusty@intel.com>
- <87y4dd2n41.fsf@intel.com> <20151202170701.GB14019@ulmo>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH] ASoC: da7218: Enable mic level detection
+ reporting to user-space
+Date: Thu, 3 Dec 2015 10:45:50 +0000
+Message-ID: <d6102f65136a8457d7ca19a51be4a938f3146613.1449059324.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20151202170701.GB14019@ulmo>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47EB72652E2
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2015 11:45:54 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBEZWMgMDIsIDIwMTUgYXQgMDY6MDc6MDFQTSArMDEwMCwgVGhpZXJyeSBSZWRpbmcg
-d3JvdGU6Cj4gT24gV2VkLCBEZWMgMDIsIDIwMTUgYXQgMTE6NTM6MDJBTSArMDIwMCwgSmFuaSBO
-aWt1bGEgd3JvdGU6Cj4gPiBPbiBUdWUsIDAxIERlYyAyMDE1LCAiU3ViaHJhbnN1IFMuIFBydXN0
-eSIgPHN1YmhyYW5zdS5zLnBydXN0eUBpbnRlbC5jb20+IHdyb3RlOgo+ID4gPiBUbyBmaWxsIHRo
-ZSBhdWRpbyBpbmZvZnJhbWUgaXQgaXMgcmVxdWlyZWQgdG8gaWRlbnRpZnkgdGhlIGNvbm5lY3Rp
-b24gdHlwZQo+ID4gPiBhcyBEUCBvciBIRE1JLiBTbyBwYXJzZSB0aGUgcmVxdWlyZWQgYml0cyBp
-biBFTEQgdG8gZmluZCB0aGUgY29ubmVjdGlvbgo+ID4gPiB0eXBlLgo+ID4gPgo+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBTdWJocmFuc3UgUy4gUHJ1c3R5IDxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwu
-Y29tPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNv
-bT4KPiA+ID4gQ2M6IERhdmlkIEFpcmxpZSA8YWlybGllZEBsaW51eC5pZT4KPiA+ID4gQ2M6IGRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gQ2M6IERhbmllbCBWZXR0ZXIgPGRh
-bmllbC52ZXR0ZXJAaW50ZWwuY29tPgo+ID4gPiAtLS0KPiA+ID4gIGluY2x1ZGUvZHJtL2RybV9l
-ZGlkLmggfCAxMCArKysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9u
-cygrKQo+ID4gPgo+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCBiL2lu
-Y2x1ZGUvZHJtL2RybV9lZGlkLmgKPiA+ID4gaW5kZXggMmFmOTc2OS4uYzc1OTVhNSAxMDA2NDQK
-PiA+ID4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaAo+ID4gPiArKysgYi9pbmNsdWRlL2Ry
-bS9kcm1fZWRpZC5oCj4gPiA+IEBAIC00MDMsNiArNDAzLDE2IEBAIHN0YXRpYyBpbmxpbmUgaW50
-IGRybV9lbGRfc2l6ZShjb25zdCB1aW50OF90ICplbGQpCj4gPiA+ICAJcmV0dXJuIERSTV9FTERf
-SEVBREVSX0JMT0NLX1NJWkUgKyBlbGRbRFJNX0VMRF9CQVNFTElORV9FTERfTEVOXSAqIDQ7Cj4g
-PiA+ICB9Cj4gPiA+ICAKPiA+ID4gKy8qKgo+ID4gPiArICogZHJtX2VsZF9nZXRfY29ubl90eXBl
-IC0gR2V0IGRldmljZSB0eXBlIGhkbWkvZHAgY29ubmVjdGVkCj4gPiA+ICsgKiBAZWxkOiBwb2lu
-dGVyIHRvIGFuIGVsZCBtZW1vcnkgc3RydWN0dXJlCj4gPiA+ICsgKi8KPiA+ID4gK3N0YXRpYyBp
-bmxpbmUgaW50IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZShjb25zdCB1aW50OF90ICplbGQpCj4gPiA+
-ICt7Cj4gPiA+ICsJcmV0dXJuIChlbGRbRFJNX0VMRF9TQURfQ09VTlRfQ09OTl9UWVBFXSAmIERS
-TV9FTERfQ09OTl9UWVBFX01BU0spID4+Cj4gPiA+ICsJCURSTV9FTERfQ09OTl9UWVBFX1NISUZU
-Owo+ID4gPiArfQo+ID4gCj4gPiBJJ20gbm90IHN1cmUgaG93IG11Y2ggdGhpcyBoZWxwcyB3aGVu
-IHRoZSBjYWxsZXIgc3RpbGwgbmVlZHMgdG8KPiA+IG1hZ2ljYWxseSBrbm93IHdoYXQgdGhlIHJl
-dHVybiB2YWx1ZSBtZWFucy4uLiAgSW5kZWVkIHRoZSBuZXh0IHBhdGNoCj4gPiB3aXRoIC8qIDAg
-aXMgaGRtaSBhbmQgMSBpcyBEUCAqLyBhbmQgImNvbm5fdHlwZSA9PSAwIiBpcyBhIGJpdCB1Z2x5
-Lgo+ID4gCj4gPiBIb3cgYWJvdXQganVzdCBub3Qgc2hpZnRpbmcgdGhlIHJldHVybiB2YWx1ZSwg
-YW5kIHVzaW5nCj4gPiBEUk1fRUxEX0NPTk5fVFlQRV9IRE1JIGFuZCBEUk1fRUxEX0NPTk5fVFlQ
-RV9EUCBpbiB0aGUgY2FsbGVyPyBCb251cwo+ID4gcG9pbnRzIGZvciByZWZlcmVuY2luZyB0aG9z
-ZSBpbiB0aGUga2VybmVsLWRvYyBhYm92ZS4KPiAKPiBXZSBhbHJlYWR5IGhhdmUgYSBzaW1pbGFy
-IGZ1bmN0aW9uIGZvciBkZXRlY3RpbmcgSERNSSB2cy4gRFZJIChzZWUgdGhlCj4gZHJtX2RldGVj
-dF9oZG1pX21vbml0b3IoKSksIHNvIHBlcmhhcHMgYWRoZXJpbmcgdG8gdGhhdCBjb252ZW50aW9u
-IG1pZ2h0Cj4gYmUgcHJlZmVyYWJsZS4gVGhpcyBjb3VsZCBiZToKPiAKPiAJc3RhdGljIGlubGlu
-ZSBib29sIGRybV9lbGRfZGV0ZWN0X2RwKGNvbnN0IHU4ICplbGQpCj4gCXsKPiAJCXU4IHR5cGUg
-PSBlbGRbRFJNX0VMRF9TQURfQ09VTlRfQ09OTl9UWVBFXSAmIERSTV9FTERfQ09OTl9UWVBFX01B
-U0s7Cj4gCj4gCQlyZXR1cm4gdHlwZSA9PSBEUk1fRUxEX0NPTk5fVFlQRV9EUDsKPiAJfQoKV2l0
-aCB0aGlzIGFwcHJvYWNoIGl0IG5lZWRzIHR3byBBUElzIHRvIGJlIGFkZGVkIGZvciBIRE1JIG9y
-IERQCmRldGVjdGlvbi4gU28gSSBwcmVmZXIgd2hhdCBKYW5pIHN1Z2dlc3RlZCBhbmQgY2FsbGVy
-IGNvbXBhcmVzCndoZXRoZXIgaXQgaXMgSERNSS9EUCBjb25uZWN0aW9uIHR5cGUuIFdpbGwgdXBk
-YWUgdGhlIGtlcm5lbCBkb2MKZm9yIHRoZSBzYW1lIGFzIHdlbGwuCgo+IAo+IFRoaWVycnkKCgoK
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCgot
-LSAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9s
-aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+This patch adds support to the codec driver to handle mic level
+detect related IRQs, and report these to user-space using a uevent
+variable.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+ sound/soc/codecs/da7218.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 4fee7ae..752ed04 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2202,6 +2202,16 @@ int da7218_hpldet(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ }
+ EXPORT_SYMBOL_GPL(da7218_hpldet);
+
++static void da7218_micldet_irq(struct snd_soc_codec *codec)
++{
++	char *envp[] = {
++		"EVENT=MIC_LEVEL_DETECT",
++		NULL,
++	};
++
++	kobject_uevent_env(&codec->dev->kobj, KOBJ_CHANGE, envp);
++}
++
+ static void da7218_hpldet_irq(struct snd_soc_codec *codec)
+ {
+ 	struct da7218_priv *da7218 = snd_soc_codec_get_drvdata(codec);
+@@ -2232,6 +2242,10 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
+ 	if (!status)
+ 		return IRQ_NONE;
+
++	/* Mic level detect */
++	if (status & DA7218_LVL_DET_EVENT_MASK)
++		da7218_micldet_irq(codec);
++
+ 	/* HP detect */
+ 	if (status & DA7218_HPLDET_JACK_EVENT_MASK)
+ 		da7218_hpldet_irq(codec);
+@@ -2936,11 +2950,6 @@ static int da7218_probe(struct snd_soc_codec *codec)
+ 	}
+
+ 	if (da7218->irq) {
+-		/* Mask off mic level events, currently not handled */
+-		snd_soc_update_bits(codec, DA7218_EVENT_MASK,
+-				    DA7218_LVL_DET_EVENT_MSK_MASK,
+-				    DA7218_LVL_DET_EVENT_MSK_MASK);
+-
+ 		ret = devm_request_threaded_irq(codec->dev, da7218->irq, NULL,
+ 						da7218_irq_thread,
+ 						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+--
+1.9.3
