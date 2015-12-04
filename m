@@ -1,26 +1,18 @@
-From: Maeda <maeda1@free.fr>
-Subject: Re: [bug] Volume at maximum when track with different
- frequency is played with my RME sound card
-Date: Fri, 4 Dec 2015 18:13:50 +0100
-Message-ID: <5661C9CE.8080600@free.fr>
-References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
- <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
- <s5hwptbxhjf.wl-tiwai@suse.de> <565EC3CF.1090301@free.fr>
- <s5hr3j5axqp.wl-tiwai@suse.de> <565F5804.7050501@free.fr>
- <s5hio4fn674.wl-tiwai@suse.de> <56616E72.20407@free.fr>
- <s5h4mfy1mwm.wl-tiwai@suse.de> <56618339.4000600@free.fr>
- <s5hwpsuz8h9.wl-tiwai@suse.de> <5661A22C.5080709@free.fr>
- <s5hlh9az3fx.wl-tiwai@suse.de> <5661AAE7.9080806@free.fr>
- <s5hfuziz1x2.wl-tiwai@suse.de> <5661ADF0.5090805@free.fr>
- <s5h8u5ayzyb.wl-tiwai@suse.de>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [sound:for-linus 29/29]
+ sound/pci/rme96.c:1035:1-7: preceding lock on line 991
+Date: Fri, 4 Dec 2015 18:39:17 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1512041837440.2797@hadrien>
+References: <201512050138.Hx1BUH8H%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 165EC26583F
- for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2015 18:13:22 +0100 (CET)
-In-Reply-To: <s5h8u5ayzyb.wl-tiwai@suse.de>
+Received: from mail2-relais-roc.national.inria.fr
+ (mail2-relais-roc.national.inria.fr [192.134.164.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28463264F52
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2015 18:39:19 +0100 (CET)
+In-Reply-To: <201512050138.Hx1BUH8H%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,139 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Good job :)
-Thanks for help and debug.
+Looks suspicious. Please check.
 
-I'm waiting for the release then.
-I don't log anything to the bug report I did =
+julia
 
-(https://bugzilla.kernel.org/show_bug.cgi?id=3D105771). Let me know if I =
+On Sat, 5 Dec 2015, kbuild test robot wrote:
 
-have to do something in addition.
-
-Le 04/12/2015 16:51, Takashi Iwai a =E9crit :
-> On Fri, 04 Dec 2015 16:14:56 +0100,
-> Maeda wrote:
->> OK :)
->>
->> Tested-by: Sylvain LABOISNE <maeda1@free.fr>
-> Thanks, the official fix is below.  It'll be included in 4.4-rc5
-> (slipped from rc4) and backported to stable kernels later.
+> CC: kbuild-all@01.org
+> CC: alsa-devel@alsa-project.org
+> TO: Takashi Iwai <tiwai@suse.de>
 >
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-linus
+> head:   ec20c9c7a63f7b8676eb574406a8bc8f32b7ba7e
+> commit: ec20c9c7a63f7b8676eb574406a8bc8f32b7ba7e [29/29] ALSA: rme96: Fix unexpected volume reset after rate changes
+> :::::: branch date: 2 hours ago
+> :::::: commit date: 2 hours ago
 >
-> Takashi
+> >> sound/pci/rme96.c:1035:1-7: preceding lock on line 991
 >
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: rme96: Fix unexpected volume reset after rate chan=
-ges
+> git remote add sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+> git remote update sound
+> git checkout ec20c9c7a63f7b8676eb574406a8bc8f32b7ba7e
+> vim +1035 sound/pci/rme96.c
 >
-> rme96 driver needs to reset DAC depending on the sample rate, and this
-> results in resetting to the max volume suddenly.  It's because of the
-> missing call of snd_rme96_apply_dac_volume().
+> ^1da177e Linus Torvalds  2005-04-16   985
+> 4d23359b Clemens Ladisch 2005-09-05   986  	runtime->dma_area = (void __force *)(rme96->iobase +
+> 4d23359b Clemens Ladisch 2005-09-05   987  					     RME96_IO_PLAY_BUFFER);
+> ^1da177e Linus Torvalds  2005-04-16   988  	runtime->dma_addr = rme96->port + RME96_IO_PLAY_BUFFER;
+> ^1da177e Linus Torvalds  2005-04-16   989  	runtime->dma_bytes = RME96_BUFFER_SIZE;
+> ^1da177e Linus Torvalds  2005-04-16   990
+> ^1da177e Linus Torvalds  2005-04-16  @991  	spin_lock_irq(&rme96->lock);
+> ^1da177e Linus Torvalds  2005-04-16   992  	if (!(rme96->wcreg & RME96_WCR_MASTER) &&
+> ^1da177e Linus Torvalds  2005-04-16   993              snd_rme96_getinputtype(rme96) != RME96_INPUT_ANALOG &&
+> ^1da177e Linus Torvalds  2005-04-16   994  	    (rate = snd_rme96_capture_getrate(rme96, &dummy)) > 0)
+> ^1da177e Linus Torvalds  2005-04-16   995  	{
+> ^1da177e Linus Torvalds  2005-04-16   996                  /* slave clock */
+> ^1da177e Linus Torvalds  2005-04-16   997                  if ((int)params_rate(params) != rate) {
+> ec20c9c7 Takashi Iwai    2015-12-04   998  			err = -EIO;
+> ec20c9c7 Takashi Iwai    2015-12-04   999  			goto error;
+> ^1da177e Linus Torvalds  2005-04-16  1000  		}
+> ec20c9c7 Takashi Iwai    2015-12-04  1001  	} else {
+> ec20c9c7 Takashi Iwai    2015-12-04  1002  		err = snd_rme96_playback_setrate(rme96, params_rate(params));
+> ec20c9c7 Takashi Iwai    2015-12-04  1003  		if (err < 0)
+> ec20c9c7 Takashi Iwai    2015-12-04  1004  			goto error;
+> ec20c9c7 Takashi Iwai    2015-12-04  1005  		apply_dac_volume = err > 0; /* need to restore volume later? */
+> ^1da177e Linus Torvalds  2005-04-16  1006  	}
+> ec20c9c7 Takashi Iwai    2015-12-04  1007  	if ((err = snd_rme96_playback_setformat(rme96, params_format(params))) < 0)
+> ec20c9c7 Takashi Iwai    2015-12-04  1008  		goto error;
+> ^1da177e Linus Torvalds  2005-04-16  1009  	snd_rme96_setframelog(rme96, params_channels(params), 1);
+> ^1da177e Linus Torvalds  2005-04-16  1010  	if (rme96->capture_periodsize != 0) {
+> ^1da177e Linus Torvalds  2005-04-16  1011  		if (params_period_size(params) << rme96->playback_frlog !=
+> ^1da177e Linus Torvalds  2005-04-16  1012  		    rme96->capture_periodsize)
+> ^1da177e Linus Torvalds  2005-04-16  1013  		{
+> ec20c9c7 Takashi Iwai    2015-12-04  1014  			err = -EBUSY;
+> ec20c9c7 Takashi Iwai    2015-12-04  1015  			goto error;
+> ^1da177e Linus Torvalds  2005-04-16  1016  		}
+> ^1da177e Linus Torvalds  2005-04-16  1017  	}
+> ^1da177e Linus Torvalds  2005-04-16  1018  	rme96->playback_periodsize =
+> ^1da177e Linus Torvalds  2005-04-16  1019  		params_period_size(params) << rme96->playback_frlog;
+> ^1da177e Linus Torvalds  2005-04-16  1020  	snd_rme96_set_period_properties(rme96, rme96->playback_periodsize);
+> ^1da177e Linus Torvalds  2005-04-16  1021  	/* S/PDIF setup */
+> ^1da177e Linus Torvalds  2005-04-16  1022  	if ((rme96->wcreg & RME96_WCR_ADAT) == 0) {
+> ^1da177e Linus Torvalds  2005-04-16  1023  		rme96->wcreg &= ~(RME96_WCR_PRO | RME96_WCR_DOLBY | RME96_WCR_EMP);
+> ^1da177e Linus Torvalds  2005-04-16  1024  		writel(rme96->wcreg |= rme96->wcreg_spdif_stream, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+> ^1da177e Linus Torvalds  2005-04-16  1025  	}
+> ^1da177e Linus Torvalds  2005-04-16  1026  	spin_unlock_irq(&rme96->lock);
+> ec20c9c7 Takashi Iwai    2015-12-04  1027  	err = 0;
+> ^1da177e Linus Torvalds  2005-04-16  1028
+> ec20c9c7 Takashi Iwai    2015-12-04  1029   error:
+> ec20c9c7 Takashi Iwai    2015-12-04  1030  	if (apply_dac_volume) {
+> ec20c9c7 Takashi Iwai    2015-12-04  1031  		usleep_range(3000, 10000);
+> ec20c9c7 Takashi Iwai    2015-12-04  1032  		snd_rme96_apply_dac_volume(rme96);
+> ec20c9c7 Takashi Iwai    2015-12-04  1033  	}
+> ec20c9c7 Takashi Iwai    2015-12-04  1034
+> ec20c9c7 Takashi Iwai    2015-12-04 @1035  	return err;
+> ^1da177e Linus Torvalds  2005-04-16  1036  }
+> ^1da177e Linus Torvalds  2005-04-16  1037
+> ^1da177e Linus Torvalds  2005-04-16  1038  static int
 >
-> However, calling this function right after the DAC reset still may not
-> work, and we need some delay before this call.  Since the DAC reset
-> and the procedure after that are performed in the spinlock, we delay
-> the DAC volume restore at the end after the spinlock.
->
-> Reported-and-tested-by: Sylvain LABOISNE <maeda1@free.fr>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
->   sound/pci/rme96.c | 37 +++++++++++++++++++++++--------------
->   1 file changed, 23 insertions(+), 14 deletions(-)
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 >
-> diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-> index 714df906249e..e4229d01cf6a 100644
-> --- a/sound/pci/rme96.c
-> +++ b/sound/pci/rme96.c
-> @@ -741,10 +741,11 @@ snd_rme96_playback_setrate(struct rme96 *rme96,
->   	{
->   		/* change to/from double-speed: reset the DAC (if available) */
->   		snd_rme96_reset_dac(rme96);
-> +		return 1; /* need to restore volume */
->   	} else {
->   		writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
-> +		return 0;
->   	}
-> -	return 0;
->   }
->   =
-
->   static int
-> @@ -980,6 +981,7 @@ snd_rme96_playback_hw_params(struct snd_pcm_substream=
- *substream,
->   	struct rme96 *rme96 =3D snd_pcm_substream_chip(substream);
->   	struct snd_pcm_runtime *runtime =3D substream->runtime;
->   	int err, rate, dummy;
-> +	bool apply_dac_volume =3D false;
->   =
-
->   	runtime->dma_area =3D (void __force *)(rme96->iobase +
->   					     RME96_IO_PLAY_BUFFER);
-> @@ -993,24 +995,24 @@ snd_rme96_playback_hw_params(struct snd_pcm_substre=
-am *substream,
->   	{
->                   /* slave clock */
->                   if ((int)params_rate(params) !=3D rate) {
-> -			spin_unlock_irq(&rme96->lock);
-> -			return -EIO;
-> -                }
-> -	} else if ((err =3D snd_rme96_playback_setrate(rme96, params_rate(param=
-s))) < 0) {
-> -		spin_unlock_irq(&rme96->lock);
-> -		return err;
-> -	}
-> -	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params))=
-) < 0) {
-> -		spin_unlock_irq(&rme96->lock);
-> -		return err;
-> +			err =3D -EIO;
-> +			goto error;
-> +		}
-> +	} else {
-> +		err =3D snd_rme96_playback_setrate(rme96, params_rate(params));
-> +		if (err < 0)
-> +			goto error;
-> +		apply_dac_volume =3D err > 0; /* need to restore volume later? */
->   	}
-> +	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params))=
-) < 0)
-> +		goto error;
->   	snd_rme96_setframelog(rme96, params_channels(params), 1);
->   	if (rme96->capture_periodsize !=3D 0) {
->   		if (params_period_size(params) << rme96->playback_frlog !=3D
->   		    rme96->capture_periodsize)
->   		{
-> -			spin_unlock_irq(&rme96->lock);
-> -			return -EBUSY;
-> +			err =3D -EBUSY;
-> +			goto error;
->   		}
->   	}
->   	rme96->playback_periodsize =3D
-> @@ -1022,8 +1024,15 @@ snd_rme96_playback_hw_params(struct snd_pcm_substr=
-eam *substream,
->   		writel(rme96->wcreg |=3D rme96->wcreg_spdif_stream, rme96->iobase + R=
-ME96_IO_CONTROL_REGISTER);
->   	}
->   	spin_unlock_irq(&rme96->lock);
-> +	err =3D 0;
->   		=
-
-> -	return 0;
-> + error:
-> +	if (apply_dac_volume) {
-> +		usleep_range(3000, 10000);
-> +		snd_rme96_apply_dac_volume(rme96);
-> +	}
-> +
-> +	return err;
->   }
->   =
-
->   static int
