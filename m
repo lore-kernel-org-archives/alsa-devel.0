@@ -1,169 +1,169 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3 4/4] ALSA: hda - Move audio component
-	accesses to hdac_i915.c
-Date: Fri,  4 Dec 2015 18:12:49 +0100
-Message-ID: <1449249169-20602-5-git-send-email-tiwai@suse.de>
-References: <1449249169-20602-1-git-send-email-tiwai@suse.de>
+From: Maeda <maeda1@free.fr>
+Subject: Re: [bug] Volume at maximum when track with different
+ frequency is played with my RME sound card
+Date: Fri, 4 Dec 2015 18:13:50 +0100
+Message-ID: <5661C9CE.8080600@free.fr>
+References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
+ <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
+ <s5hwptbxhjf.wl-tiwai@suse.de> <565EC3CF.1090301@free.fr>
+ <s5hr3j5axqp.wl-tiwai@suse.de> <565F5804.7050501@free.fr>
+ <s5hio4fn674.wl-tiwai@suse.de> <56616E72.20407@free.fr>
+ <s5h4mfy1mwm.wl-tiwai@suse.de> <56618339.4000600@free.fr>
+ <s5hwpsuz8h9.wl-tiwai@suse.de> <5661A22C.5080709@free.fr>
+ <s5hlh9az3fx.wl-tiwai@suse.de> <5661AAE7.9080806@free.fr>
+ <s5hfuziz1x2.wl-tiwai@suse.de> <5661ADF0.5090805@free.fr>
+ <s5h8u5ayzyb.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1449249169-20602-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, David Henningsson <david.henningsson@canonical.com>, Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 165EC26583F
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2015 18:13:22 +0100 (CET)
+In-Reply-To: <s5h8u5ayzyb.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QSBjb3VwbGUgb2YgaTkxNV9hdWRpb19jb21wb25lbnQgb3BzIGhhdmUgYmVlbiBhZGRlZCBhbmQg
-YWNjZXNzZWQKZGlyZWN0bHkgZnJvbSBwYXRjaF9oZG1pLmMuICBJZGVhbGx5IGFsbCB0aGVzZSBz
-aG91bGQgYmUgZmFjdG9yZWQgb3V0CmludG8gaGRhY19pOTE1LmMuCgpUaGlzIHBhdGNoIGRvZXMg
-aXQsIGFkZHMgdHdvIG5ldyBoZWxwZXIgZnVuY3Rpb25zIGZvciBzZXR0aW5nIE4vQ1RTCmFuZCBm
-ZXRjaGluZyBFTEQgYnl0ZXMuICBPbmUgYm9udXMgaXMgdGhhdCB0aGUgaGFja2lzaCB3aWRnZXQg
-dnMgcG9ydAptYXBwaW5nIGlzIGFsc28gbW92ZWQgdG8gaGRhY19pOTE1LmMsIHNvIHRoYXQgaXQg
-Y2FuIGJlIGZpeGVkIC8KZW5oYW5jZWQgbW9yZSBjbGVhbmx5LgoKU2lnbmVkLW9mZi1ieTogVGFr
-YXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KIGluY2x1ZGUvc291bmQvaGRhX2k5MTUuaCAg
-IHwgMTQgKysrKysrKysrKwogc291bmQvaGRhL2hkYWNfaTkxNS5jICAgICAgfCA2NiArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogc291bmQvcGNpL2hkYS9wYXRj
-aF9oZG1pLmMgfCA2OSArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCiAzIGZpbGVzIGNoYW5nZWQsIDEwNiBpbnNlcnRpb25zKCspLCA0MyBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL2hkYV9pOTE1LmggYi9pbmNsdWRlL3NvdW5kL2hk
-YV9pOTE1LmgKaW5kZXggOTMwYjQxZTVhY2Y0Li5mYTM0MWZjYjU4MjkgMTAwNjQ0Ci0tLSBhL2lu
-Y2x1ZGUvc291bmQvaGRhX2k5MTUuaAorKysgYi9pbmNsdWRlL3NvdW5kL2hkYV9pOTE1LmgKQEAg
-LTEwLDYgKzEwLDkgQEAKIGludCBzbmRfaGRhY19zZXRfY29kZWNfd2FrZXVwKHN0cnVjdCBoZGFj
-X2J1cyAqYnVzLCBib29sIGVuYWJsZSk7CiBpbnQgc25kX2hkYWNfZGlzcGxheV9wb3dlcihzdHJ1
-Y3QgaGRhY19idXMgKmJ1cywgYm9vbCBlbmFibGUpOwogaW50IHNuZF9oZGFjX2dldF9kaXNwbGF5
-X2NsayhzdHJ1Y3QgaGRhY19idXMgKmJ1cyk7CitpbnQgc25kX2hkYWNfc3luY19hdWRpb19yYXRl
-KHN0cnVjdCBoZGFjX2J1cyAqYnVzLCBoZGFfbmlkX3QgbmlkLCBpbnQgcmF0ZSk7CitpbnQgc25k
-X2hkYWNfYWNvbXBfZ2V0X2VsZChzdHJ1Y3QgaGRhY19idXMgKmJ1cywgaGRhX25pZF90IG5pZCwK
-KwkJCSAgIGJvb2wgKmF1ZGlvX2VuYWJsZWQsIGNoYXIgKmJ1ZmZlciwgaW50IG1heF9ieXRlcyk7
-CiBpbnQgc25kX2hkYWNfaTkxNV9pbml0KHN0cnVjdCBoZGFjX2J1cyAqYnVzKTsKIGludCBzbmRf
-aGRhY19pOTE1X2V4aXQoc3RydWN0IGhkYWNfYnVzICpidXMpOwogaW50IHNuZF9oZGFjX2k5MTVf
-cmVnaXN0ZXJfbm90aWZpZXIoY29uc3Qgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X2F1ZGlv
-X29wcyAqKTsKQEAgLTI2LDYgKzI5LDE3IEBAIHN0YXRpYyBpbmxpbmUgaW50IHNuZF9oZGFjX2dl
-dF9kaXNwbGF5X2NsayhzdHJ1Y3QgaGRhY19idXMgKmJ1cykKIHsKIAlyZXR1cm4gMDsKIH0KK3N0
-YXRpYyBpbmxpbmUgaW50IHNuZF9oZGFjX3N5bmNfYXVkaW9fcmF0ZShzdHJ1Y3QgaGRhY19idXMg
-KmJ1cywgaGRhX25pZF90IG5pZCwKKwkJCQkJICAgaW50IHJhdGUpCit7CisJcmV0dXJuIDA7Cit9
-CitzdGF0aWMgaW5saW5lIGludCBzbmRfaGRhY19hY29tcF9nZXRfZWxkKHN0cnVjdCBoZGFjX2J1
-cyAqYnVzLCBoZGFfbmlkX3QgbmlkLAorCQkJCQkgYm9vbCAqYXVkaW9fZW5hYmxlZCwgY2hhciAq
-YnVmZmVyLAorCQkJCQkgaW50IG1heF9ieXRlcykKK3sKKwlyZXR1cm4gLUVOT0RFVjsKK30KIHN0
-YXRpYyBpbmxpbmUgaW50IHNuZF9oZGFjX2k5MTVfaW5pdChzdHJ1Y3QgaGRhY19idXMgKmJ1cykK
-IHsKIAlyZXR1cm4gLUVOT0RFVjsKZGlmZiAtLWdpdCBhL3NvdW5kL2hkYS9oZGFjX2k5MTUuYyBi
-L3NvdW5kL2hkYS9oZGFjX2k5MTUuYwppbmRleCA4ZmVmMWI4ZDFmZDguLmM1MDE3N2ZiNDY5ZiAx
-MDA2NDQKLS0tIGEvc291bmQvaGRhL2hkYWNfaTkxNS5jCisrKyBiL3NvdW5kL2hkYS9oZGFjX2k5
-MTUuYwpAQCAtMTE4LDYgKzExOCw3MiBAQCBpbnQgc25kX2hkYWNfZ2V0X2Rpc3BsYXlfY2xrKHN0
-cnVjdCBoZGFjX2J1cyAqYnVzKQogfQogRVhQT1JUX1NZTUJPTF9HUEwoc25kX2hkYWNfZ2V0X2Rp
-c3BsYXlfY2xrKTsKIAorLyogVGhlcmUgaXMgYSBmaXhlZCBtYXBwaW5nIGJldHdlZW4gYXVkaW8g
-cGluIG5vZGUgYW5kIGRpc3BsYXkgcG9ydAorICogb24gY3VycmVudCBJbnRlbCBwbGF0Zm9ybXM6
-CisgKiBQaW4gV2lkZ2V0IDUgLSBQT1JUIEIgKHBvcnQgPSAxIGluIGk5MTUgZHJpdmVyKQorICog
-UGluIFdpZGdldCA2IC0gUE9SVCBDIChwb3J0ID0gMiBpbiBpOTE1IGRyaXZlcikKKyAqIFBpbiBX
-aWRnZXQgNyAtIFBPUlQgRCAocG9ydCA9IDMgaW4gaTkxNSBkcml2ZXIpCisgKi8KK3N0YXRpYyBp
-bnQgcGluMnBvcnQoaGRhX25pZF90IHBpbl9uaWQpCit7CisJcmV0dXJuIHBpbl9uaWQgLSA0Owor
-fQorCisvKioKKyAqIHNuZF9oZGFjX3N5bmNfYXVkaW9fcmF0ZSAtIFNldCBOL0NUUyBiYXNlZCBv
-biB0aGUgc2FtcGxlIHJhdGUKKyAqIEBidXM6IEhEQSBjb3JlIGJ1cworICogQG5pZDogdGhlIHBp
-biB3aWRnZXQgTklECisgKiBAcmF0ZTogdGhlIHNhbXBsZSByYXRlIHRvIHNldAorICoKKyAqIFRo
-aXMgZnVuY3Rpb24gaXMgc3VwcG9zZWQgdG8gYmUgdXNlZCBvbmx5IGJ5IGEgSEQtYXVkaW8gY29u
-dHJvbGxlcgorICogZHJpdmVyIHRoYXQgbmVlZHMgdGhlIGludGVyYWN0aW9uIHdpdGggaTkxNSBn
-cmFwaGljcy4KKyAqCisgKiBUaGlzIGZ1bmN0aW9uIHNldHMgTi9DVFMgdmFsdWUgYmFzZWQgb24g
-dGhlIGdpdmVuIHNhbXBsZSByYXRlLgorICogUmV0dXJucyB6ZXJvIGZvciBzdWNjZXNzLCBvciBh
-IG5lZ2F0aXZlIGVycm9yIGNvZGUuCisgKi8KK2ludCBzbmRfaGRhY19zeW5jX2F1ZGlvX3JhdGUo
-c3RydWN0IGhkYWNfYnVzICpidXMsIGhkYV9uaWRfdCBuaWQsIGludCByYXRlKQoreworCXN0cnVj
-dCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBidXMtPmF1ZGlvX2NvbXBvbmVudDsKKwor
-CWlmICghYWNvbXAgfHwgIWFjb21wLT5vcHMgfHwgIWFjb21wLT5vcHMtPnN5bmNfYXVkaW9fcmF0
-ZSkKKwkJcmV0dXJuIC1FTk9ERVY7CisJcmV0dXJuIGFjb21wLT5vcHMtPnN5bmNfYXVkaW9fcmF0
-ZShhY29tcC0+ZGV2LCBwaW4ycG9ydChuaWQpLCByYXRlKTsKK30KK0VYUE9SVF9TWU1CT0xfR1BM
-KHNuZF9oZGFjX3N5bmNfYXVkaW9fcmF0ZSk7CisKKy8qKgorICogc25kX2hkYWNfYWNvbXBfZ2V0
-X2VsZCAtIEdldCB0aGUgYXVkaW8gc3RhdGUgYW5kIEVMRCB2aWEgY29tcG9uZW50CisgKiBAYnVz
-OiBIREEgY29yZSBidXMKKyAqIEBuaWQ6IHRoZSBwaW4gd2lkZ2V0IE5JRAorICogQGF1ZGlvX2Vu
-YWJsZWQ6IHRoZSBwb2ludGVyIHRvIHN0b3JlIHRoZSBjdXJyZW50IGF1ZGlvIHN0YXRlCisgKiBA
-YnVmZmVyOiB0aGUgYnVmZmVyIHBvaW50ZXIgdG8gc3RvcmUgRUxEIGJ5dGVzCisgKiBAbWF4X2J5
-dGVzOiB0aGUgbWF4IGJ5dGVzIHRvIGJlIHN0b3JlZCBvbiBAYnVmZmVyCisgKgorICogVGhpcyBm
-dW5jdGlvbiBpcyBzdXBwb3NlZCB0byBiZSB1c2VkIG9ubHkgYnkgYSBIRC1hdWRpbyBjb250cm9s
-bGVyCisgKiBkcml2ZXIgdGhhdCBuZWVkcyB0aGUgaW50ZXJhY3Rpb24gd2l0aCBpOTE1IGdyYXBo
-aWNzLgorICoKKyAqIFRoaXMgZnVuY3Rpb24gcXVlcmllcyB0aGUgY3VycmVudCBzdGF0ZSBvZiB0
-aGUgYXVkaW8gb24gdGhlIGdpdmVuCisgKiBkaWdpdGFsIHBvcnQgYW5kIGZldGNoZXMgdGhlIEVM
-RCBieXRlcyBvbnRvIHRoZSBnaXZlbiBidWZmZXIuCisgKiBJdCByZXR1cm5zIHRoZSBudW1iZXIg
-b2YgYnl0ZXMgZm9yIHRoZSB0b3RhbCBFTEQgZGF0YSwgemVybyBmb3IKKyAqIGludmFsaWQgRUxE
-LCBvciBhIG5lZ2F0aXZlIGVycm9yIGNvZGUuCisgKgorICogVGhlIHJldHVybiBzaXplIGlzIHRo
-ZSB0b3RhbCBieXRlcyByZXF1aXJlZCBmb3IgdGhlIHdob2xlIEVMRCBieXRlcywKKyAqIHRodXMg
-aXQgbWF5IGJlIG92ZXIgQG1heF9ieXRlcy4gIElmIGl0J3Mgb3ZlciBAbWF4X2J5dGVzLCBpdCBp
-bXBsaWVzCisgKiB0aGF0IG9ubHkgYSBwYXJ0IG9mIEVMRCBieXRlcyBoYXZlIGJlZW4gZmV0Y2hl
-ZC4KKyAqLworaW50IHNuZF9oZGFjX2Fjb21wX2dldF9lbGQoc3RydWN0IGhkYWNfYnVzICpidXMs
-IGhkYV9uaWRfdCBuaWQsCisJCQkgICBib29sICphdWRpb19lbmFibGVkLCBjaGFyICpidWZmZXIs
-IGludCBtYXhfYnl0ZXMpCit7CisJc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50ICphY29tcCA9
-IGJ1cy0+YXVkaW9fY29tcG9uZW50OworCisJaWYgKCFhY29tcCB8fCAhYWNvbXAtPm9wcyB8fCAh
-YWNvbXAtPm9wcy0+Z2V0X2VsZCkKKwkJcmV0dXJuIC1FTk9ERVY7CisKKwlyZXR1cm4gYWNvbXAt
-Pm9wcy0+Z2V0X2VsZChhY29tcC0+ZGV2LCBwaW4ycG9ydChuaWQpLCBhdWRpb19lbmFibGVkLAor
-CQkJCSAgIGJ1ZmZlciwgbWF4X2J5dGVzKTsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKHNuZF9oZGFj
-X2Fjb21wX2dldF9lbGQpOworCiBzdGF0aWMgaW50IGhkYWNfY29tcG9uZW50X21hc3Rlcl9iaW5k
-KHN0cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFj
-b21wID0gaGRhY19hY29tcDsKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5j
-IGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKaW5kZXggNjFmMDA0YTczNTkwLi4xZWYwYzY5
-NTllNzUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCisrKyBiL3NvdW5k
-L3BjaS9oZGEvcGF0Y2hfaGRtaS5jCkBAIC0xNDM4LDE3ICsxNDM4LDYgQEAgc3RhdGljIHZvaWQg
-aW50ZWxfbm90X3NoYXJlX2Fzc2lnbmVkX2N2dChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAl9
-CiB9CiAKLS8qIFRoZXJlIGlzIGEgZml4ZWQgbWFwcGluZyBiZXR3ZWVuIGF1ZGlvIHBpbiBub2Rl
-IGFuZCBkaXNwbGF5IHBvcnQKLSAqIG9uIGN1cnJlbnQgSW50ZWwgcGxhdGZvcm1zOgotICogUGlu
-IFdpZGdldCA1IC0gUE9SVCBCIChwb3J0ID0gMSBpbiBpOTE1IGRyaXZlcikKLSAqIFBpbiBXaWRn
-ZXQgNiAtIFBPUlQgQyAocG9ydCA9IDIgaW4gaTkxNSBkcml2ZXIpCi0gKiBQaW4gV2lkZ2V0IDcg
-LSBQT1JUIEQgKHBvcnQgPSAzIGluIGk5MTUgZHJpdmVyKQotICovCi1zdGF0aWMgaW50IGludGVs
-X3BpbjJwb3J0KGhkYV9uaWRfdCBwaW5fbmlkKQotewotCXJldHVybiBwaW5fbmlkIC0gNDsKLX0K
-LQogLyoKICAqIEhEQSBQQ00gY2FsbGJhY2tzCiAgKi8KQEAgLTE2NjAsMzggKzE2NDksMzYgQEAg
-c3RhdGljIGJvb2wgaGRtaV9wcmVzZW50X3NlbnNlX3ZpYV92ZXJicyhzdHJ1Y3QgaGRtaV9zcGVj
-X3Blcl9waW4gKnBlcl9waW4sCiBzdGF0aWMgdm9pZCBzeW5jX2VsZF92aWFfYWNvbXAoc3RydWN0
-IGhkYV9jb2RlYyAqY29kZWMsCiAJCQkgICAgICAgc3RydWN0IGhkbWlfc3BlY19wZXJfcGluICpw
-ZXJfcGluKQogewotCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBjb2RlYy0+
-YnVzLT5jb3JlLmF1ZGlvX2NvbXBvbmVudDsKIAlzdHJ1Y3QgaGRtaV9zcGVjICpzcGVjID0gY29k
-ZWMtPnNwZWM7CiAJc3RydWN0IGhkbWlfZWxkICplbGQgPSAmc3BlYy0+dGVtcF9lbGQ7CiAJaW50
-IHNpemU7CiAKLQlpZiAoYWNvbXAgJiYgYWNvbXAtPm9wcyAmJiBhY29tcC0+b3BzLT5nZXRfZWxk
-KSB7Ci0JCW11dGV4X2xvY2soJnBlcl9waW4tPmxvY2spOwotCQlzaXplID0gYWNvbXAtPm9wcy0+
-Z2V0X2VsZChhY29tcC0+ZGV2LAotCQkJCQkgICBpbnRlbF9waW4ycG9ydChwZXJfcGluLT5waW5f
-bmlkKSwKLQkJCQkJICAgJmVsZC0+bW9uaXRvcl9wcmVzZW50LAotCQkJCQkgICBlbGQtPmVsZF9i
-dWZmZXIsCi0JCQkJCSAgIEVMRF9NQVhfU0laRSk7Ci0JCWlmIChzaXplID4gMCkgewotCQkJc2l6
-ZSA9IG1pbihzaXplLCBFTERfTUFYX1NJWkUpOwotCQkJaWYgKHNuZF9oZG1pX3BhcnNlX2VsZChj
-b2RlYywgJmVsZC0+aW5mbywKLQkJCQkJICAgICAgIGVsZC0+ZWxkX2J1ZmZlciwgc2l6ZSkgPCAw
-KQotCQkJCXNpemUgPSAtRUlOVkFMOwotCQl9Ci0KLQkJaWYgKHNpemUgPiAwKSB7Ci0JCQllbGQt
-PmVsZF92YWxpZCA9IHRydWU7Ci0JCQllbGQtPmVsZF9zaXplID0gc2l6ZTsKLQkJfSBlbHNlIHsK
-LQkJCWVsZC0+ZWxkX3ZhbGlkID0gZmFsc2U7Ci0JCQllbGQtPmVsZF9zaXplID0gMDsKLQkJfQot
-Ci0JCXVwZGF0ZV9lbGQoY29kZWMsIHBlcl9waW4sIGVsZCk7Ci0JCXNuZF9qYWNrX3JlcG9ydChw
-ZXJfcGluLT5hY29tcF9qYWNrLAotCQkJCWVsZC0+bW9uaXRvcl9wcmVzZW50ID8gU05EX0pBQ0tf
-QVZPVVQgOiAwKTsKLQkJbXV0ZXhfdW5sb2NrKCZwZXJfcGluLT5sb2NrKTsKKwltdXRleF9sb2Nr
-KCZwZXJfcGluLT5sb2NrKTsKKwlzaXplID0gc25kX2hkYWNfYWNvbXBfZ2V0X2VsZCgmY29kZWMt
-PmJ1cy0+Y29yZSwgcGVyX3Bpbi0+cGluX25pZCwKKwkJCQkgICAgICAmZWxkLT5tb25pdG9yX3By
-ZXNlbnQsIGVsZC0+ZWxkX2J1ZmZlciwKKwkJCQkgICAgICBFTERfTUFYX1NJWkUpOworCWlmIChz
-aXplIDwgMCkKKwkJZ290byB1bmxvY2s7CisJaWYgKHNpemUgPiAwKSB7CisJCXNpemUgPSBtaW4o
-c2l6ZSwgRUxEX01BWF9TSVpFKTsKKwkJaWYgKHNuZF9oZG1pX3BhcnNlX2VsZChjb2RlYywgJmVs
-ZC0+aW5mbywKKwkJCQkgICAgICAgZWxkLT5lbGRfYnVmZmVyLCBzaXplKSA8IDApCisJCQlzaXpl
-ID0gLUVJTlZBTDsKKwl9CisKKwlpZiAoc2l6ZSA+IDApIHsKKwkJZWxkLT5lbGRfdmFsaWQgPSB0
-cnVlOworCQllbGQtPmVsZF9zaXplID0gc2l6ZTsKKwl9IGVsc2UgeworCQllbGQtPmVsZF92YWxp
-ZCA9IGZhbHNlOworCQllbGQtPmVsZF9zaXplID0gMDsKIAl9CisKKwl1cGRhdGVfZWxkKGNvZGVj
-LCBwZXJfcGluLCBlbGQpOworCXNuZF9qYWNrX3JlcG9ydChwZXJfcGluLT5hY29tcF9qYWNrLAor
-CQkJZWxkLT5tb25pdG9yX3ByZXNlbnQgPyBTTkRfSkFDS19BVk9VVCA6IDApOworIHVubG9jazoK
-KwltdXRleF91bmxvY2soJnBlcl9waW4tPmxvY2spOwogfQogCiBzdGF0aWMgYm9vbCBoZG1pX3By
-ZXNlbnRfc2Vuc2Uoc3RydWN0IGhkbWlfc3BlY19wZXJfcGluICpwZXJfcGluLCBpbnQgcmVwb2xs
-KQpAQCAtMTg1Nyw3ICsxODQ0LDYgQEAgc3RhdGljIGludCBnZW5lcmljX2hkbWlfcGxheWJhY2tf
-cGNtX3ByZXBhcmUoc3RydWN0IGhkYV9wY21fc3RyZWFtICpoaW5mbywKIAlzdHJ1Y3QgaGRtaV9z
-cGVjX3Blcl9waW4gKnBlcl9waW4gPSBnZXRfcGluKHNwZWMsIHBpbl9pZHgpOwogCWhkYV9uaWRf
-dCBwaW5fbmlkID0gcGVyX3Bpbi0+cGluX25pZDsKIAlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpy
-dW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwotCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVu
-dCAqYWNvbXAgPSBjb2RlYy0+YnVzLT5jb3JlLmF1ZGlvX2NvbXBvbmVudDsKIAlib29sIG5vbl9w
-Y207CiAJaW50IHBpbmN0bDsKIApAQCAtMTg3NiwxMCArMTg2Miw3IEBAIHN0YXRpYyBpbnQgZ2Vu
-ZXJpY19oZG1pX3BsYXliYWNrX3BjbV9wcmVwYXJlKHN0cnVjdCBoZGFfcGNtX3N0cmVhbSAqaGlu
-Zm8sCiAKIAkvKiBDYWxsIHN5bmNfYXVkaW9fcmF0ZSB0byBzZXQgdGhlIE4vQ1RTL00gbWFudWFs
-bHkgaWYgbmVjZXNzYXJ5ICovCiAJLyogVG9kbzogYWRkIERQMS4yIE1TVCBhdWRpbyBzdXBwb3J0
-IGxhdGVyICovCi0JaWYgKGFjb21wICYmIGFjb21wLT5vcHMgJiYgYWNvbXAtPm9wcy0+c3luY19h
-dWRpb19yYXRlKQotCQlhY29tcC0+b3BzLT5zeW5jX2F1ZGlvX3JhdGUoYWNvbXAtPmRldiwKLQkJ
-CQlpbnRlbF9waW4ycG9ydChwaW5fbmlkKSwKLQkJCQlydW50aW1lLT5yYXRlKTsKKwlzbmRfaGRh
-Y19zeW5jX2F1ZGlvX3JhdGUoJmNvZGVjLT5idXMtPmNvcmUsIHBpbl9uaWQsIHJ1bnRpbWUtPnJh
-dGUpOwogCiAJbm9uX3BjbSA9IGNoZWNrX25vbl9wY21fcGVyX2N2dChjb2RlYywgY3Z0X25pZCk7
-CiAJbXV0ZXhfbG9jaygmcGVyX3Bpbi0+bG9jayk7Ci0tIAoyLjYuMwoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJ
-bnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+Good job :)
+Thanks for help and debug.
+
+I'm waiting for the release then.
+I don't log anything to the bug report I did =
+
+(https://bugzilla.kernel.org/show_bug.cgi?id=3D105771). Let me know if I =
+
+have to do something in addition.
+
+Le 04/12/2015 16:51, Takashi Iwai a =E9crit :
+> On Fri, 04 Dec 2015 16:14:56 +0100,
+> Maeda wrote:
+>> OK :)
+>>
+>> Tested-by: Sylvain LABOISNE <maeda1@free.fr>
+> Thanks, the official fix is below.  It'll be included in 4.4-rc5
+> (slipped from rc4) and backported to stable kernels later.
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: rme96: Fix unexpected volume reset after rate chan=
+ges
+>
+> rme96 driver needs to reset DAC depending on the sample rate, and this
+> results in resetting to the max volume suddenly.  It's because of the
+> missing call of snd_rme96_apply_dac_volume().
+>
+> However, calling this function right after the DAC reset still may not
+> work, and we need some delay before this call.  Since the DAC reset
+> and the procedure after that are performed in the spinlock, we delay
+> the DAC volume restore at the end after the spinlock.
+>
+> Reported-and-tested-by: Sylvain LABOISNE <maeda1@free.fr>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/pci/rme96.c | 37 +++++++++++++++++++++++--------------
+>   1 file changed, 23 insertions(+), 14 deletions(-)
+>
+> diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+> index 714df906249e..e4229d01cf6a 100644
+> --- a/sound/pci/rme96.c
+> +++ b/sound/pci/rme96.c
+> @@ -741,10 +741,11 @@ snd_rme96_playback_setrate(struct rme96 *rme96,
+>   	{
+>   		/* change to/from double-speed: reset the DAC (if available) */
+>   		snd_rme96_reset_dac(rme96);
+> +		return 1; /* need to restore volume */
+>   	} else {
+>   		writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+> +		return 0;
+>   	}
+> -	return 0;
+>   }
+>   =
+
+>   static int
+> @@ -980,6 +981,7 @@ snd_rme96_playback_hw_params(struct snd_pcm_substream=
+ *substream,
+>   	struct rme96 *rme96 =3D snd_pcm_substream_chip(substream);
+>   	struct snd_pcm_runtime *runtime =3D substream->runtime;
+>   	int err, rate, dummy;
+> +	bool apply_dac_volume =3D false;
+>   =
+
+>   	runtime->dma_area =3D (void __force *)(rme96->iobase +
+>   					     RME96_IO_PLAY_BUFFER);
+> @@ -993,24 +995,24 @@ snd_rme96_playback_hw_params(struct snd_pcm_substre=
+am *substream,
+>   	{
+>                   /* slave clock */
+>                   if ((int)params_rate(params) !=3D rate) {
+> -			spin_unlock_irq(&rme96->lock);
+> -			return -EIO;
+> -                }
+> -	} else if ((err =3D snd_rme96_playback_setrate(rme96, params_rate(param=
+s))) < 0) {
+> -		spin_unlock_irq(&rme96->lock);
+> -		return err;
+> -	}
+> -	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params))=
+) < 0) {
+> -		spin_unlock_irq(&rme96->lock);
+> -		return err;
+> +			err =3D -EIO;
+> +			goto error;
+> +		}
+> +	} else {
+> +		err =3D snd_rme96_playback_setrate(rme96, params_rate(params));
+> +		if (err < 0)
+> +			goto error;
+> +		apply_dac_volume =3D err > 0; /* need to restore volume later? */
+>   	}
+> +	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params))=
+) < 0)
+> +		goto error;
+>   	snd_rme96_setframelog(rme96, params_channels(params), 1);
+>   	if (rme96->capture_periodsize !=3D 0) {
+>   		if (params_period_size(params) << rme96->playback_frlog !=3D
+>   		    rme96->capture_periodsize)
+>   		{
+> -			spin_unlock_irq(&rme96->lock);
+> -			return -EBUSY;
+> +			err =3D -EBUSY;
+> +			goto error;
+>   		}
+>   	}
+>   	rme96->playback_periodsize =3D
+> @@ -1022,8 +1024,15 @@ snd_rme96_playback_hw_params(struct snd_pcm_substr=
+eam *substream,
+>   		writel(rme96->wcreg |=3D rme96->wcreg_spdif_stream, rme96->iobase + R=
+ME96_IO_CONTROL_REGISTER);
+>   	}
+>   	spin_unlock_irq(&rme96->lock);
+> +	err =3D 0;
+>   		=
+
+> -	return 0;
+> + error:
+> +	if (apply_dac_volume) {
+> +		usleep_range(3000, 10000);
+> +		snd_rme96_apply_dac_volume(rme96);
+> +	}
+> +
+> +	return err;
+>   }
+>   =
+
+>   static int
