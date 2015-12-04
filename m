@@ -1,46 +1,44 @@
-From: Chas Leichner <chas@google.com>
-Subject: Clock Rate Clock Rate Adjustment API
-Date: Thu, 3 Dec 2015 16:32:41 -0800
-Message-ID: <CAA=k9AufXDhGO1v9qezdi7sWyz713nPhskB4r4Wttf269uaiKg@mail.gmail.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v2 03/14] ASoC: hdac_hdmi - Use list to add pins and
+ converters
+Date: Fri, 4 Dec 2015 15:46:18 +0530
+Message-ID: <20151204101613.GA6256@subhransu-desktop>
+References: <1449176538-3250-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449176942-3441-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449176942-3441-3-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hlh9bsfig.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f50.google.com (mail-vk0-f50.google.com
- [209.85.213.50])
- by alsa0.perex.cz (Postfix) with ESMTP id B5F9D26061B
- for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2015 01:33:22 +0100 (CET)
-Received: by vkay187 with SMTP id y187so56277346vka.3
- for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2015 16:33:21 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hlh9bsfig.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I would like to be able to make small adjustments the playback clock rate
-of a PCM device as it is playing in order to accurately synchronize music
-playback across several computers. Looking at the kernel source, this
-functionality has been previously implemented in both the aloop driver and
-ST's uniperif driver where the clock rate adjustment was exposed to the
-user space as a control element.
-
-Although the control interface can be used to communicate this information,
-the naming and properties of the clock adjustment controls don't appear to
-be standardized or documented and I don't see anything related to clock
-rate adjustment in Documentation/sound/alsa/ControlNames.txt.
-
-In order to make a standardized interface, do you think it makes more sense
-to standardize on a clock rate adjustment control or introduce a new
-interface other than the control interface because the control interface is
-only for mixer controls rather than arbitrary runtime changes to the driver?
-
-Regards,
-Chas
+T24gVGh1LCBEZWMgMDMsIDIwMTUgYXQgMDQ6NDQ6NTVQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFRodSwgMDMgRGVjIDIwMTUgMjI6MDg6NTEgKzAxMDAsCj4gU3ViaHJhbnN1IFMu
+IFBydXN0eSB3cm90ZToKPiA+ICBzdGF0aWMgaW50IGhkYWNfaGRtaV9kZXZfcmVtb3ZlKHN0cnVj
+dCBoZGFjX2V4dF9kZXZpY2UgKmVkZXYpCj4gPiAgewo+ID4gKwlzdHJ1Y3QgaGRhY19oZG1pX3By
+aXYgKmhkbWkgPSBlZGV2LT5wcml2YXRlX2RhdGE7Cj4gPiArCXN0cnVjdCBoZGFjX2hkbWlfcGlu
+ICpwaW47Cj4gPiArCXN0cnVjdCBoZGFjX2hkbWlfY3Z0ICpjdnQ7Cj4gPiArCj4gPiAgCXNuZF9z
+b2NfdW5yZWdpc3Rlcl9jb2RlYygmZWRldi0+aGRhYy5kZXYpOwo+ID4gIAo+ID4gKwlsaXN0X2Zv
+cl9lYWNoX2VudHJ5KGN2dCwgJmhkbWktPmN2dF9saXN0LCBoZWFkKSB7Cj4gPiArCQlsaXN0X2Rl
+bCgmY3Z0LT5oZWFkKTsKPiA+ICsJCWtmcmVlKGN2dCk7Cj4gPiArCX0KPiA+ICsKPiA+ICsJbGlz
+dF9mb3JfZWFjaF9lbnRyeShwaW4sICZoZG1pLT5waW5fbGlzdCwgaGVhZCkgewo+ID4gKwkJbGlz
+dF9kZWwoJnBpbi0+aGVhZCk7Cj4gPiArCQlrZnJlZShwaW4pOwo+ID4gKwl9Cj4gCj4gVGhlc2Ug
+bXVzdCBiZSBsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUoKS4KClN1cmUuIFdpbGwgY2hhbmdlIGl0
+LgoKUmVnYXJkcywKU3ViaHJhbnN1Cj4gCj4gCj4gVGFrYXNoaQoKLS0gCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
+ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
