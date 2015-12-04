@@ -1,112 +1,229 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH v2 2/9] drm/i915: Add get_eld audio component
-Date: Fri, 4 Dec 2015 14:10:01 +0200
-Message-ID: <20151204121001.GT4437@intel.com>
-References: <1448986198-3488-1-git-send-email-tiwai@suse.de>
- <1448986198-3488-3-git-send-email-tiwai@suse.de>
- <20151204102102.GM10243@phenom.ffwll.local>
- <s5hsi3i32ut.wl-tiwai@suse.de>
+From: Maeda <maeda1@free.fr>
+Subject: Re: [bug] Volume at maximum when track with different
+ frequency is played with my RME sound card
+Date: Fri, 4 Dec 2015 13:12:41 +0100
+Message-ID: <56618339.4000600@free.fr>
+References: <562A609E.6070205@free.fr> <5641E608.6060006@free.fr>
+ <s5hfv007hpg.wl-tiwai@suse.de> <5650ACEE.5050402@free.fr>
+ <s5hwptbxhjf.wl-tiwai@suse.de> <565EC3CF.1090301@free.fr>
+ <s5hr3j5axqp.wl-tiwai@suse.de> <565F5804.7050501@free.fr>
+ <s5hio4fn674.wl-tiwai@suse.de> <56616E72.20407@free.fr>
+ <s5h4mfy1mwm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hsi3i32ut.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="------------030703020402010803050009"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A0F52614AC
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2015 13:12:13 +0100 (CET)
+In-Reply-To: <s5h4mfy1mwm.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBEZWMgMDQsIDIwMTUgYXQgMTE6NDk6NDZBTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIEZyaSwgMDQgRGVjIDIwMTUgMTE6MjE6MDIgKzAxMDAsCj4gRGFuaWVsIFZldHRl
-ciB3cm90ZToKPiA+IAo+ID4gT24gVHVlLCBEZWMgMDEsIDIwMTUgYXQgMDU6MDk6NTFQTSArMDEw
-MCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gPiBJbXBsZW1lbnQgYSBuZXcgaTkxNV9hdWRpb19j
-b21wb25lbnRfb3BzLCBnZXRfZWxkKCkuICBJdCdzIGNhbGxlZCBieQo+ID4gPiB0aGUgYXVkaW8g
-ZHJpdmVyIHRvIGZldGNoIHRoZSBjdXJyZW50IGF1ZGlvIHN0YXR1cyBhbmQgRUxEIG9mIHRoZQo+
-ID4gPiBnaXZlbiBIRE1JL0RQIHBvcnQuICBJdCByZXR1cm5zIHRoZSBzaXplIG9mIGV4cGVjdGVk
-IEVMRCBieXRlcyBpZiBpdCdzCj4gPiA+IHZhbGlkLCB6ZXJvIGlmIG5vIHZhbGlkIEVMRCBpcyBm
-b3VuZCwgb3IgYSBuZWdhdGl2ZSBlcnJvciBjb2RlLiAgVGhlCj4gPiA+IGN1cnJlbnQgc3RhdGUg
-b2YgYXVkaW8gb24vb2ZmIGlzIHN0b3JlZCBpbiB0aGUgZ2l2ZW4gcG9pbnRlciwgdG9vLgo+ID4g
-PiAKPiA+ID4gTm90ZSB0aGF0IHRoZSByZXR1cm5lZCBzaXplIGlzbid0IGxpbWl0ZWQgdG8gdGhl
-IGdpdmVuIG1heCBieXRlcy4gIElmCj4gPiA+IHRoZSBzaXplIGlzIGdyZWF0ZXIgdGhhbiB0aGUg
-bWF4IGJ5dGVzLCBpdCBtZWFucyB0aGF0IG9ubHkgYSBwYXJ0IG9mCj4gPiA+IEVMRCBoYXMgYmVl
-biBjb3BpZWQgYmFjay4KPiA+ID4gCj4gPiA+IEEgYmlnIHdhcm5pbmcgYWJvdXQgdGhlIHVzYWdl
-IG9mIHRoaXMgY2FsbGJhY2sgaXM6IHlvdSBtdXN0IG5vdCBjYWxsCj4gPiA+IGl0IGZyb20gZWxk
-X25vdGlmeS4gIFRoZSBlbGRfbm90aWZ5IGl0c2VsZiBpcyBjYWxsZWQgaW4gdGhlIG1vZGVzZXQK
-PiA+ID4gbG9jaywgYW5kIGl0IGxlYWRzIHRvIGEgZGVhZGxvY2sgc2luY2UgZ2V0X2VsZCB0YWtl
-cyB0aGUgbW9kZXNldCBsb2NrLAo+ID4gPiB0b28uICBZb3UgbmVlZCB0byBjYWxsIGdldF9lbGQg
-aW4gYSB3b3JrLCBmb3IgZXhhbXBsZSwgaW4gc3VjaCBhIGNhc2UuCj4gPiA+IFdlJ2xsIHNlZSB0
-aGUgYWN0dWFsIGltcGxlbWVudGF0aW9uIGluIHRoZSBsYXRlciBwYXRjaCBpbgo+ID4gPiBzb3Vu
-ZC9wY2kvaGRhL3BhdGNoX2hkbWkuYy4KPiA+ID4gCj4gPiA+IEZvciBhY2hpZXZpbmcgdGhpcyBp
-bXBsZW1lbnRhdGlvbiwgYSBuZXcgZmllbGQgYXVkaW9fZW5hYmxlZCBpcyBhZGRlZAo+ID4gPiB0
-byBzdHJ1Y3QgaW50ZWxfZGlnaXRhbF9wb3J0LiAgVGhpcyBpcyBzZXQvcmVzZXQgYXQgZWFjaCBh
-dWRpbwo+ID4gPiBlbmFibGUvZGlzYWJsZSBjYWxsIGluIGludGVsX2F1ZGlvLmMuICBJdCdzIHBy
-b3RlY3RlZCB3aXRoIHRoZSBtb2Rlc2V0Cj4gPiA+IGxvY2sgYXMgd2VsbC4KPiA+ID4gCj4gPiA+
-IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPiA+ID4gLS0tCj4g
-PiA+IHYxLT52MjoKPiA+ID4gKiBVc2UgbW9kZXNldCBsb2NrIGZvciBnZXRfZWxkIGxvY2ssIGRy
-b3AgYXYgbXV0ZXgKPiA+ID4gKiBSZXR1cm4gdGhlIGV4cGVjdGVkIHNpemUgZnJvbSBnZXRfZWxk
-LCBub3QgdGhlIGNvcGllZCBzaXplCj4gPiA+IAo+ID4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfYXVkaW8uYyB8IDQwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-Cj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCAgIHwgIDEgKwo+ID4gPiAg
-aW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCAgICAgICB8ICA2ICsrKysrKwo+ID4gPiAgMyBm
-aWxlcyBjaGFuZ2VkLCA0NyBpbnNlcnRpb25zKCspCj4gPiA+IAo+ID4gPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2F1ZGlvLmMKPiA+ID4gaW5kZXggMGMzOGNjNmM4MmFlLi4xOTY1YTYxNzY5ZWEgMTAw
-NjQ0Cj4gPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ID4g
-KysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gPiBAQCAtNTIxLDYg
-KzUyMSw3IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBpbnRlbF9lbmNv
-ZGVyICppbnRlbF9lbmNvZGVyKQo+ID4gPiAgCj4gPiA+ICAJY29ubmVjdG9yLT5lbGRbNl0gPSBk
-cm1fYXZfc3luY19kZWxheShjb25uZWN0b3IsIGFkanVzdGVkX21vZGUpIC8gMjsKPiA+ID4gIAo+
-ID4gPiArCWludGVsX2RpZ19wb3J0LT5hdWRpb19lbmFibGVkID0gdHJ1ZTsKPiA+ID4gIAlpZiAo
-ZGV2X3ByaXYtPmRpc3BsYXkuYXVkaW9fY29kZWNfZW5hYmxlKQo+ID4gPiAgCQlkZXZfcHJpdi0+
-ZGlzcGxheS5hdWRpb19jb2RlY19lbmFibGUoY29ubmVjdG9yLCBpbnRlbF9lbmNvZGVyLAo+ID4g
-PiAgCQkJCQkJICAgICBhZGp1c3RlZF9tb2RlKTsKPiA+ID4gQEAgLTU0NSw2ICs1NDYsNyBAQCB2
-b2lkIGludGVsX2F1ZGlvX2NvZGVjX2Rpc2FibGUoc3RydWN0IGludGVsX2VuY29kZXIgKmludGVs
-X2VuY29kZXIpCj4gPiA+ICAJc3RydWN0IGludGVsX2RpZ2l0YWxfcG9ydCAqaW50ZWxfZGlnX3Bv
-cnQgPSBlbmNfdG9fZGlnX3BvcnQoZW5jb2Rlcik7Cj4gPiA+ICAJZW51bSBwb3J0IHBvcnQgPSBp
-bnRlbF9kaWdfcG9ydC0+cG9ydDsKPiA+ID4gIAo+ID4gPiArCWludGVsX2RpZ19wb3J0LT5hdWRp
-b19lbmFibGVkID0gZmFsc2U7Cj4gPiA+ICAJaWYgKGRldl9wcml2LT5kaXNwbGF5LmF1ZGlvX2Nv
-ZGVjX2Rpc2FibGUpCj4gPiA+ICAJCWRldl9wcml2LT5kaXNwbGF5LmF1ZGlvX2NvZGVjX2Rpc2Fi
-bGUoaW50ZWxfZW5jb2Rlcik7Cj4gPiA+ICAKPiA+ID4gQEAgLTcwMiw2ICs3MDQsNDMgQEAgc3Rh
-dGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmlj
-ZSAqZGV2LAo+ID4gPiAgCXJldHVybiAwOwo+ID4gPiAgfQo+ID4gPiAgCj4gPiA+ICtzdGF0aWMg
-aW50IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9lbGQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQg
-cG9ydCwKPiA+ID4gKwkJCQkJYm9vbCAqZW5hYmxlZCwKPiA+ID4gKwkJCQkJdW5zaWduZWQgY2hh
-ciAqYnVmLCBpbnQgbWF4X2J5dGVzKQo+ID4gPiArewo+ID4gPiArCXN0cnVjdCBkcm1faTkxNV9w
-cml2YXRlICpkZXZfcHJpdiA9IGRldl90b19pOTE1KGRldik7Cj4gPiA+ICsJc3RydWN0IGRybV9k
-ZXZpY2UgKmRybV9kZXYgPSBkZXZfcHJpdi0+ZGV2Owo+ID4gPiArCXN0cnVjdCBpbnRlbF9lbmNv
-ZGVyICppbnRlbF9lbmNvZGVyOwo+ID4gPiArCXN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgKmlu
-dGVsX2RpZ19wb3J0Owo+ID4gPiArCXN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3I7Cj4g
-PiA+ICsJdW5zaWduZWQgY2hhciAqZWxkOwo+ID4gPiArCWludCByZXQgPSAtRUlOVkFMOwo+ID4g
-PiArCj4gPiA+ICsJZHJtX21vZGVzZXRfbG9ja19hbGwoZHJtX2Rldik7Cj4gPiAKPiA+IFRoaXMg
-aXMgc3VwZXIgZXhwZW5zaXZlIGFuZCBzaG91bGRuJ3QgZXZlciBiZSB1c2VkIGluIG5ldyBjb2Rl
-LiBTbyBlaXRoZXIKPiA+IGp1c3QgdGhlIGNvbm5lY3Rpb25fbXV0ZXggb3IgcmVzdXJyZWN0IHRo
-ZSBhdl9tdXRleCBhbmQganVzdCBjYWNoZSB3aGF0Cj4gPiB5b3UgbmVlZCB1bmRlciB0aGF0Lgo+
-IAo+IE9LLCBJIG5lZWQgdG8gbWFrZSBpdCBoYXJkZXIsIHRoZW4uCj4gCj4gPiBUYmggSSBwcmVm
-ZXIgdGhlIHNlcGFyYXRlIGxvY2sgKyBjYWNoZSBmb3Igc3VjaAo+ID4gc3BlY2lmaWMgdGhpbmdz
-IHNpbmNlIGl0IGNvbXBsZXRlbHkgYXZvaWRzIHNwcmVhZGluZyBhbmQgZW50YW5nbGluZwo+ID4g
-bG9ja2luZyBjb250ZXh0cy4gV2UgdXNlIHRoZSBzYW1lIGRlc2lnbiB0byBnZXQgbW9kZXNldCBp
-bmZvcm1hdGlvbiBpbnRvCj4gPiB0aGUgUFNSIHRyYWNraW5nLCBGQkMgdHJhY2tpbmcgYW5kIG90
-aGVyIGNvZGUgd2hpY2ggc2l0cyBiZXR3ZWVuIEtNUyBhbmQKPiA+IG90aGVyIHN1YnN5c3RlbXMu
-Cj4gCj4gSSBkaWRuJ3Qgd2FudCB0byBiZSBpbnZvbHZlZCB3aXRoIHRoZSBtb2Rlc2V0IGxvY2ss
-IGJ1dCBpdCBoYXMgdG8gYmUuCj4gVGhpcyBmdW5jdGlvbiBjYWxscyBkcm1fc2VsZWN0X2VsZCgp
-IGFuZCBpdCByZXF1aXJlcyBib3RoCj4gbW9kZV9jb25maWcubXV0ZXggYW5kIGNvbm5lY3Rpb25f
-bXV0ZXguCgpkcm1fc2VsZWN0X2VsZCgpIHdvdWxkIHNlZW0gcG9pbnRsZXNzIHRvIG1lIGlmIHdl
-IGNhY2hlZCB0aGUKcmVxdWlyZWQgaW5mb3JtYXRpb24gc29tZXdoZXJlLiBCdXQgd2UnZCBzdGls
-bCBuZWVkIHRvIGFjdHVhbGx5CmdldCB0aGUgZWxkLCBhbmQgdGhhdCBtZWFucyBlaXRoZXIgY2Fj
-aGluZyBpdCBhZ2FpbiBzb21ld2hlcmUsCm9yIHBlcmhhcHMgaXQgd291bGQgYmUgYmV0dGVyIHRv
-IG1vdmUgdGhlIGRybV9lZGlkX3RvX2VsZCgpIGNhbGwgdG8KaGFwcGVuIGF0IG1vZGVzZXQgYXVk
-aW8gZW5hYmxlIHRpbWUgcHJvdGVjdGVkIGJ5IHRoZSBhdl9tdXRleD8KVGhhdCB3YXkgY29ubmVj
-dG9yLT5lbGQgY29udGVudHMgd291bGQgcmVtYWluIGNvbnN0YW50IGFzIGxvbmcKYXMgd2UgaGF2
-ZSBhIG1vZGUgc2V0LgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+This is a multi-part message in MIME format.
+--------------030703020402010803050009
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+I've problem with compiling rme96.c (see attachment).
+Maybe I forgot something, i double checked, but my rme96.c seems to be go=
+od.
+
+Any clue ?
+
+Le 04/12/2015 12:19, Takashi Iwai a =E9crit :
+> On Fri, 04 Dec 2015 11:44:02 +0100,
+> Maeda wrote:
+>> Hi !
+>>
+>> Well done ! It plays without max loud volume, and no errors on output.
+>> I tried with the following test :
+>>
+>>      `aplay -fcd -d3 /dev/zero ;aplay -r96000 -c2 -d3 /dev/zero
+>>      ;speaker-test  -c2 -twav`
+>>
+>> And it's OK. Then I tried with mplayer and some flac files (44.1 / 48
+>> and 96 KHz sample) : no problem.
+>>
+>> I think you found the solution. If there are some future problem this
+>> patch generates, I'll only see when using "it" each day. Then, for now=
+,
+>> you can commit it ;)
+> Good to hear.  Could you try the revised patch below instead?
+> It does restore DAC volume at the end, after the spinlock, so that we
+> can avoid the ugly delay.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+> index 714df906249e..e4229d01cf6a 100644
+> --- a/sound/pci/rme96.c
+> +++ b/sound/pci/rme96.c
+> @@ -741,10 +741,11 @@ snd_rme96_playback_setrate(struct rme96 *rme96,
+>   	{
+>   		/* change to/from double-speed: reset the DAC (if available) */
+>   		snd_rme96_reset_dac(rme96);
+> +		return 1; /* need to restore volume */
+>   	} else {
+>   		writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+> +		return 0;
+>   	}
+> -	return 0;
+>   }
+>  =20
+>   static int
+> @@ -980,6 +981,7 @@ snd_rme96_playback_hw_params(struct snd_pcm_substre=
+am *substream,
+>   	struct rme96 *rme96 =3D snd_pcm_substream_chip(substream);
+>   	struct snd_pcm_runtime *runtime =3D substream->runtime;
+>   	int err, rate, dummy;
+> +	bool apply_dac_volume =3D false;
+>  =20
+>   	runtime->dma_area =3D (void __force *)(rme96->iobase +
+>   					     RME96_IO_PLAY_BUFFER);
+> @@ -993,24 +995,24 @@ snd_rme96_playback_hw_params(struct snd_pcm_subst=
+ream *substream,
+>   	{
+>                   /* slave clock */
+>                   if ((int)params_rate(params) !=3D rate) {
+> -			spin_unlock_irq(&rme96->lock);
+> -			return -EIO;
+> -                }
+> -	} else if ((err =3D snd_rme96_playback_setrate(rme96, params_rate(par=
+ams))) < 0) {
+> -		spin_unlock_irq(&rme96->lock);
+> -		return err;
+> -	}
+> -	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params=
+))) < 0) {
+> -		spin_unlock_irq(&rme96->lock);
+> -		return err;
+> +			err =3D -EIO;
+> +			goto error;
+> +		}
+> +	} else {
+> +		err =3D snd_rme96_playback_setrate(rme96, params_rate(params));
+> +		if (err < 0)
+> +			goto error;
+> +		apply_dac_volume =3D err > 0; /* need to restore volume later? */
+>   	}
+> +	if ((err =3D snd_rme96_playback_setformat(rme96, params_format(params=
+))) < 0)
+> +		goto error;
+>   	snd_rme96_setframelog(rme96, params_channels(params), 1);
+>   	if (rme96->capture_periodsize !=3D 0) {
+>   		if (params_period_size(params) << rme96->playback_frlog !=3D
+>   		    rme96->capture_periodsize)
+>   		{
+> -			spin_unlock_irq(&rme96->lock);
+> -			return -EBUSY;
+> +			err =3D -EBUSY;
+> +			goto error;
+>   		}
+>   	}
+>   	rme96->playback_periodsize =3D
+> @@ -1022,8 +1024,15 @@ snd_rme96_playback_hw_params(struct snd_pcm_subs=
+tream *substream,
+>   		writel(rme96->wcreg |=3D rme96->wcreg_spdif_stream, rme96->iobase +=
+ RME96_IO_CONTROL_REGISTER);
+>   	}
+>   	spin_unlock_irq(&rme96->lock);
+> +	err =3D 0;
+>   	=09
+> -	return 0;
+> + error:
+> +	if (apply_dac_volume) {
+> +		usleep_range(3000, 10000);
+> +		snd_rme96_apply_dac_volume(rme96);
+> +	}
+> +
+> +	return err;
+>   }
+>  =20
+>   static int
+
+
+--------------030703020402010803050009
+Content-Type: text/plain; charset=UTF-8;
+ name="rme96.c.errors"
+Content-Disposition: attachment;
+ filename="rme96.c.errors"
+Content-Transfer-Encoding: quoted-printable
+
+  CC [M]  sound/pci/rme96.o
+sound/pci/rme96.c: Dans la fonction =E2=80=98snd_rme96_playback_hw_params=
+=E2=80=99:
+sound/pci/rme96.c:1008:3: erreur: label =E2=80=98error=E2=80=99 used but =
+not defined
+   goto error;
+   ^
+sound/pci/rme96.c:1009:2: attention : =C2=AB return =C2=BB manquant dans =
+une fonction devant retourner une valeur [-Wreturn-type]
+  }
+  ^
+sound/pci/rme96.c: Hors de toute fonction :
+sound/pci/rme96.c:1010:46: erreur: expected =E2=80=98)=E2=80=99 before =E2=
+=80=98(=E2=80=99 token
+  snd_rme96_setframelog(rme96, params_channels(params), 1);
+                                              ^
+sound/pci/rme96.c:1011:2: erreur: expected identifier or =E2=80=98(=E2=80=
+=99 before =E2=80=98if=E2=80=99
+  if (rme96->capture_periodsize !=3D 0) {
+  ^
+sound/pci/rme96.c:1019:7: erreur: expected =E2=80=98=3D=E2=80=99, =E2=80=98=
+,=E2=80=99, =E2=80=98;=E2=80=99, =E2=80=98asm=E2=80=99 or =E2=80=98__attr=
+ibute__=E2=80=99 before =E2=80=98->=E2=80=99 token
+  rme96->playback_periodsize =3D
+       ^
+sound/pci/rme96.c:1021:46: erreur: expected =E2=80=98)=E2=80=99 before =E2=
+=80=98->=E2=80=99 token
+  snd_rme96_set_period_properties(rme96, rme96->playback_periodsize);
+                                              ^
+sound/pci/rme96.c:1023:2: erreur: expected identifier or =E2=80=98(=E2=80=
+=99 before =E2=80=98if=E2=80=99
+  if ((rme96->wcreg & RME96_WCR_ADAT) =3D=3D 0) {
+  ^
+sound/pci/rme96.c:1027:18: erreur: expected declaration specifiers or =E2=
+=80=98...=E2=80=99 before =E2=80=98&=E2=80=99 token
+  spin_unlock_irq(&rme96->lock);
+                  ^
+sound/pci/rme96.c:1028:2: attention : la d=C3=A9finition de donn=C3=A9es =
+n'a pas de type ni de classe de stockage
+  err =3D 0; =20
+  ^
+sound/pci/rme96.c:1028:2: erreur: type defaults to =E2=80=98int=E2=80=99 =
+in declaration of =E2=80=98err=E2=80=99 [-Werror=3Dimplicit-int]
+sound/pci/rme96.c:1029:7: erreur: expected =E2=80=98=3D=E2=80=99, =E2=80=98=
+,=E2=80=99, =E2=80=98;=E2=80=99, =E2=80=98asm=E2=80=99 or =E2=80=98__attr=
+ibute__=E2=80=99 before =E2=80=98:=E2=80=99 token
+  error:
+       ^
+sound/pci/rme96.c:1035:2: erreur: expected identifier or =E2=80=98(=E2=80=
+=99 before =E2=80=98return=E2=80=99
+  return err;
+  ^
+sound/pci/rme96.c:1036:1: erreur: expected identifier or =E2=80=98(=E2=80=
+=99 before =E2=80=98}=E2=80=99 token
+ }
+
+--------------030703020402010803050009
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030703020402010803050009--
