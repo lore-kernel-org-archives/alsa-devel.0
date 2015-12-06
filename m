@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 13/17] ALSA: oxfw: add MIDI capture port for
-	SCS.1 models
-Date: Sun,  6 Dec 2015 13:18:21 +0900
-Message-ID: <1449375505-2704-14-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/17] ALSA: oxfw: rename a structure so that
+	it means backward compatibility to old drivers
+Date: Sun,  6 Dec 2015 13:18:17 +0900
+Message-ID: <1449375505-2704-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1449375505-2704-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id BA57F26530D
+ by alsa0.perex.cz (Postfix) with ESMTP id AE39D2651AC
  for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2015 05:18:32 +0100 (CET)
 In-Reply-To: <1449375505-2704-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,70 +25,85 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds MIDI capture so that scs1x driver has.
+In former commits, some model-specific members are split from the
+structure. The structure is just to keep old names for compatibility to
+old drivers.
+
+This commit arranges name of the structure and moves it to localize.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-scs1x.c | 33 ++++++++++++++++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
+ sound/firewire/oxfw/oxfw.c | 14 ++++++++++----
+ sound/firewire/oxfw/oxfw.h |  6 ------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index 4060bf0..807009f 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
-+++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -106,6 +106,33 @@ end:
- 	fw_send_response(card, request, rcode);
- }
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 16ee6ea..96fbb78 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -30,6 +30,12 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("snd-firewire-speakers");
  
-+static int midi_capture_open(struct snd_rawmidi_substream *stream)
-+{
-+	struct fw_scs1x *scs = stream->rmidi->private_data;
-+
-+	scs->input_escape_count = 0;
-+
-+	return 0;
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *stream, int up)
-+{
-+	struct fw_scs1x *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->input) = up ? stream : NULL;
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open    = midi_capture_open,
-+	.close   = midi_capture_close,
-+	.trigger = midi_capture_trigger,
++struct compat_info {
++	const char *driver_name;
++	const char *vendor_name;
++	const char *model_name;
 +};
 +
- static int register_address(struct snd_oxfw *oxfw)
+ static bool detect_loud_models(struct fw_unit *unit)
  {
- 	struct fw_scs1x *scs = oxfw->spec;
-@@ -158,7 +185,7 @@ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- 		goto err_allocated;
+ 	const char *const models[] = {
+@@ -59,7 +65,7 @@ static bool detect_loud_models(struct fw_unit *unit)
+ static int name_card(struct snd_oxfw *oxfw)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
+-	const struct device_info *info;
++	const struct compat_info *info;
+ 	char vendor[24];
+ 	char model[32];
+ 	const char *d, *v, *m;
+@@ -87,7 +93,7 @@ static int name_card(struct snd_oxfw *oxfw)
+ 	/* to apply card definitions */
+ 	if (oxfw->entry->vendor_id == VENDOR_GRIFFIN ||
+ 	    oxfw->entry->vendor_id == VENDOR_LACIE) {
+-		info = (const struct device_info *)oxfw->entry->driver_data;
++		info = (const struct compat_info *)oxfw->entry->driver_data;
+ 		d = info->driver_name;
+ 		v = info->vendor_name;
+ 		m = info->model_name;
+@@ -279,13 +285,13 @@ static void oxfw_remove(struct fw_unit *unit)
+ 	snd_card_free_when_closed(oxfw->card);
+ }
  
- 	/* Use unique name for backward compatibility to scs1x module. */
--	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 0, &rmidi);
-+	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 1, &rmidi);
- 	if (err < 0)
- 		goto err_allocated;
- 	rmidi->private_data = scs;
-@@ -167,6 +194,10 @@ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- 	snprintf(rmidi->name, sizeof(rmidi->name),
- 		 "%s MIDI", oxfw->card->shortname);
+-static const struct device_info griffin_firewave = {
++static const struct compat_info griffin_firewave = {
+ 	.driver_name = "FireWave",
+ 	.vendor_name = "Griffin",
+ 	.model_name = "FireWave",
+ };
  
-+	rmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+			    &midi_capture_ops);
-+
- 	return 0;
- err_allocated:
- 	fw_core_remove_address_handler(&scs->hss_handler);
+-static const struct device_info lacie_speakers = {
++static const struct compat_info lacie_speakers = {
+ 	.driver_name = "FWSpeakers",
+ 	.vendor_name = "LaCie",
+ 	.model_name = "FireWire Speakers",
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index 6038150..1c9844a 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -31,12 +31,6 @@
+ #include "../amdtp-am824.h"
+ #include "../cmp.h"
+ 
+-struct device_info {
+-	const char *driver_name;
+-	const char *vendor_name;
+-	const char *model_name;
+-};
+-
+ /* This is an arbitrary number for convinience. */
+ #define	SND_OXFW_STREAM_FORMAT_ENTRIES	10
+ struct snd_oxfw {
 -- 
 2.5.0
