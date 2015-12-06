@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/17] ALSA: oxfw: obsolete scs1x module
-Date: Sun,  6 Dec 2015 13:18:24 +0900
-Message-ID: <1449375505-2704-17-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/17] ALSA: oxfw: copy handlers of
+	asynchronous transaction for MIDI capture
+Date: Sun,  6 Dec 2015 13:18:20 +0900
+Message-ID: <1449375505-2704-13-git-send-email-o-takashi@sakamocchi.jp>
 References: <1449375505-2704-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 52B7F265327
- for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2015 05:18:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B7D672651F0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2015 05:18:32 +0100 (CET)
 In-Reply-To: <1449375505-2704-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,141 +25,130 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Now ALSA oxfw driver gains functionalities which scs1x module has.
+This commit copies some functions of asynchronous transactions for MIDI
+capture, to merge scs1x module. The features of payload in asynchronous
+transaction are:
 
-This commit obsoletes the scs1x module, and adds a line of MODULE_ALIAS
-to load oxfw module instead of scs1x module.
-
-In scs1x module, the name of 'shortname' field is fixed as 'SCS1x'. This
-field is used to name MIDI ports for both of SCS.1m and SCS.1d. This is
-not good because typically some SCS.1m and SCS.1d are used in the same
-system. It's better to distinguish them according to name of the ports.
-This commit applies model name in config ROM to the 'shortname'.
-
-For the name of 'driver' and 'longname', this commit uses the same way
-applied to the other models. This change may not bring disadvantages to
-users because userspace applications use ALSA rawmidi or seq interface
-and these interfaces are not influenced by them directly.
+ * System exclusive messages for SCS.1 are encoded without ID data. In
+   this encoding scheme, 4 bits in LSB are available. The bits are squashed
+   in payload byte. Thus, one payload byte transfers two MIDI messages.
+ * The first byte of payload byte means:
+  * 0x00: depending on second payload byte
+   * 0xf9: including escaped system exclusive messages for SCS.1, up to
+     3 byte (= 6 MIDI messages)
+   * the others: including MIDI 1.0 messages
+  * the others: including escaped system exclusive messages for SCS.1, up
+    to 64 bytes
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig     | 12 +-----------
- sound/firewire/Makefile    |  2 --
- sound/firewire/oxfw/oxfw.c | 26 ++++++++++++++++++++++++++
- 3 files changed, 27 insertions(+), 13 deletions(-)
+ sound/firewire/oxfw/oxfw-scs1x.c | 83 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 82 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index e92a6d9..2a779c2 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -39,6 +39,7 @@ config SND_OXFW
- 	   * Mackie(Loud) d.2 pro/d.4 pro
- 	   * Mackie(Loud) U.420/U.420d
- 	   * TASCAM FireOne
-+	   * Stanton Controllers & Systems 1 Deck/Mixer
+diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
+index 4a2a7ff..4060bf0 100644
+--- a/sound/firewire/oxfw/oxfw-scs1x.c
++++ b/sound/firewire/oxfw/oxfw-scs1x.c
+@@ -11,18 +11,99 @@
  
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-oxfw.
-@@ -53,17 +54,6 @@ config SND_ISIGHT
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-isight.
+ #define HSS1394_ADDRESS			0xc007dedadadaULL
+ #define HSS1394_MAX_PACKET_SIZE		64
++#define HSS1394_TAG_USER_DATA		0x00
+ #define HSS1394_TAG_CHANGE_ADDRESS	0xf1
  
--config SND_SCS1X
--	tristate "Stanton Control System 1 MIDI"
--	select SND_FIREWIRE_LIB
--	help
--	  Say Y here to include support for the MIDI ports of the Stanton
--	  SCS.1d/SCS.1m DJ controllers.  (SCS.1m audio is still handled
--	  by FFADO.)
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called snd-scs1x.
--
- config SND_FIREWORKS
- 	tristate "Echo Fireworks board module support"
- 	select SND_FIREWIRE_LIB
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index f5fb625..003c090 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -1,13 +1,11 @@
- snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
- 			 fcp.o cmp.o amdtp-stream.o amdtp-am824.o
- snd-isight-objs := isight.o
--snd-scs1x-objs := scs1x.o
+ struct fw_scs1x {
+ 	struct fw_address_handler hss_handler;
++	u8 input_escape_count;
++	struct snd_rawmidi_substream *input;
+ };
  
- obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
- obj-$(CONFIG_SND_DICE) += dice/
- obj-$(CONFIG_SND_OXFW) += oxfw/
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
--obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index b20e496..e7f2698 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -19,6 +19,7 @@
- #define VENDOR_BEHRINGER	0x001564
- #define VENDOR_LACIE		0x00d04b
- #define VENDOR_TASCAM		0x00022e
-+#define OUI_STANTON		0x001260
- 
- #define MODEL_SATELLITE		0x00200f
- 
-@@ -29,6 +30,7 @@ MODULE_DESCRIPTION("Oxford Semiconductor FW970/971 driver");
- MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
-+MODULE_ALIAS("snd-scs1x");
- 
- struct compat_info {
- 	const char *driver_name;
-@@ -159,6 +161,13 @@ static int detect_quirks(struct snd_oxfw *oxfw)
- 		return snd_oxfw_add_spkr(oxfw, true);
- 
- 	/*
-+	 * Stanton models supports asynchronous transactions for unique MIDI
-+	 * messages.
-+	 */
-+	if (oxfw->entry->vendor_id == OUI_STANTON)
-+		return snd_oxfw_scs1x_add(oxfw);
++static const u8 sysex_escape_prefix[] = {
++	0xf0,			/* SysEx begin */
++	0x00, 0x01, 0x60,	/* Stanton DJ */
++	0x48, 0x53, 0x53,	/* "HSS" */
++};
 +
-+	/*
- 	 * TASCAM FireOne has physical control and requires a pair of additional
- 	 * MIDI ports.
- 	 */
-@@ -275,6 +284,9 @@ static void oxfw_bus_reset(struct fw_unit *unit)
- 		snd_oxfw_stream_update_simplex(oxfw, &oxfw->tx_stream);
- 
- 	mutex_unlock(&oxfw->mutex);
++static void midi_input_escaped_byte(struct snd_rawmidi_substream *stream,
++				    u8 byte)
++{
++	u8 nibbles[2];
 +
-+	if (oxfw->entry->vendor_id == OUI_STANTON)
-+		snd_oxfw_scs1x_update(oxfw);
++	nibbles[0] = byte >> 4;
++	nibbles[1] = byte & 0x0f;
++	snd_rawmidi_receive(stream, nibbles, 2);
++}
++
++static void midi_input_byte(struct fw_scs1x *scs,
++			    struct snd_rawmidi_substream *stream, u8 byte)
++{
++	const u8 eox = 0xf7;
++
++	if (scs->input_escape_count > 0) {
++		midi_input_escaped_byte(stream, byte);
++		scs->input_escape_count--;
++		if (scs->input_escape_count == 0)
++			snd_rawmidi_receive(stream, &eox, sizeof(eox));
++	} else if (byte == 0xf9) {
++		snd_rawmidi_receive(stream, sysex_escape_prefix,
++				    ARRAY_SIZE(sysex_escape_prefix));
++		midi_input_escaped_byte(stream, 0x00);
++		midi_input_escaped_byte(stream, 0xf9);
++		scs->input_escape_count = 3;
++	} else {
++		snd_rawmidi_receive(stream, &byte, 1);
++	}
++}
++
++static void midi_input_packet(struct fw_scs1x *scs,
++			      struct snd_rawmidi_substream *stream,
++			      const u8 *data, unsigned int bytes)
++{
++	unsigned int i;
++	const u8 eox = 0xf7;
++
++	if (data[0] == HSS1394_TAG_USER_DATA) {
++		for (i = 1; i < bytes; ++i)
++			midi_input_byte(scs, stream, data[i]);
++	} else {
++		snd_rawmidi_receive(stream, sysex_escape_prefix,
++				    ARRAY_SIZE(sysex_escape_prefix));
++		for (i = 0; i < bytes; ++i)
++			midi_input_escaped_byte(stream, data[i]);
++		snd_rawmidi_receive(stream, &eox, sizeof(eox));
++	}
++}
++
+ static void handle_hss(struct fw_card *card, struct fw_request *request,
+ 		       int tcode, int destination, int source, int generation,
+ 		       unsigned long long offset, void *data, size_t length,
+ 		       void *callback_data)
+ {
+-	fw_send_response(card, request, RCODE_COMPLETE);
++	struct fw_scs1x *scs = callback_data;
++	struct snd_rawmidi_substream *stream;
++	int rcode;
++
++	if (offset != scs->hss_handler.offset) {
++		rcode = RCODE_ADDRESS_ERROR;
++		goto end;
++	}
++	if (tcode != TCODE_WRITE_QUADLET_REQUEST &&
++	    tcode != TCODE_WRITE_BLOCK_REQUEST) {
++		rcode = RCODE_TYPE_ERROR;
++		goto end;
++	}
++
++	if (length >= 1) {
++		stream = ACCESS_ONCE(scs->input);
++		if (stream)
++			midi_input_packet(scs, stream, data, length);
++	}
++
++	rcode = RCODE_COMPLETE;
++end:
++	fw_send_response(card, request, rcode);
  }
  
- static void oxfw_remove(struct fw_unit *unit)
-@@ -352,6 +364,20 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 		.vendor_id	= VENDOR_TASCAM,
- 		.model_id	= 0x800007,
- 	},
-+	/* Stanton, Stanton Controllers & Systems 1 Mixer (SCS.1m) */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_STANTON,
-+		.model_id	= 0x001000,
-+	},
-+	/* Stanton, Stanton Controllers & Systems 1 Deck (SCS.1d) */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_STANTON,
-+		.model_id	= 0x002000,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
+ static int register_address(struct snd_oxfw *oxfw)
 -- 
 2.5.0
