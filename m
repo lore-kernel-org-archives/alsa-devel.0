@@ -1,20 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/3] ALSA: fireface: new driver for
- RME Fireface series (MIDI only)
-Date: Mon, 7 Dec 2015 11:42:23 +0900
-Message-ID: <5664F20F.4010005@sakamocchi.jp>
-References: <1449408224-13955-1-git-send-email-o-takashi@sakamocchi.jp>
- <20151206215744.GA6103@marvin.atrad.com.au> <5664E06C.9080705@sakamocchi.jp>
- <20151207013748.GD6213@marvin.atrad.com.au> <5664E64E.7000807@sakamocchi.jp>
- <5664E961.9080907@sakamocchi.jp> <20151207022112.GF6213@marvin.atrad.com.au>
+From: han.lu@intel.com
+Subject: [PATCH 1/1] audio: Fix playback noise with 24/32 bit
+	sample size on BXT
+Date: Mon,  7 Dec 2015 10:51:49 +0800
+Message-ID: <1449456709-1135-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 061CC265005
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 03:42:26 +0100 (CET)
-In-Reply-To: <20151207022112.GF6213@marvin.atrad.com.au>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC069265005
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 03:52:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +19,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Woithe <jwoithe@just42.net>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: tiwai@suse.de, libin.yang@linux.intel.com, mengdong.lin@linux.intel.com, han.lu@linux.intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: "Lu, Han" <han.lu@intel.com>
 
-On Dec 07 2015 11:21, Jonathan Woithe wrote:
-> In general that's true.  For the FF400 at least though the non-nodeID
-> component is effectively hard coded on other systems.  If this is used
-> solely as an address then we wouldn't have to follow that convention
-> obviously, but this assertion would have to be confirmed valid in practice.
+In BXT-P A0, HD-Audio DMA requests is later than expected,
+and makes an audio stream sensitive to system latencies when
+24/32 bits are playing.
+Adjusting threshold of DMA fifo to force the DMA request
+sooner to improve latency tolerance at the expense of power.
 
-I think you mention about a part of value except for node ID. In my 
-former example (0xFFC74567), it's 0x4547.
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-You mean that Fireface 400 ignores the part and sends transactions to 
-the fixed local address (i.e. 0x'0001'0000'0000).
-
-Although, this is against the fact that I got in my experiences with 
-Fireface 400. The model can reasonably send transactions to the address 
-which the driver registered.
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 2ae8812..94dc6a9 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -93,6 +93,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_HSW_EM4			0x100c
+ #define AZX_REG_HSW_EM5			0x1010
+ 
++/* Skylake/Broxton display HD-A controller Extended Mode registers */
++#define AZX_REG_SKL_EM4L		0x1040
++
+ /* PCI space */
+ #define AZX_PCIREG_TCSEL		0x44
+ 
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 22dbfa5..6c2aa4c 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -27,6 +27,7 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
++#include <linux/pci.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include "hda_controller.h"
+@@ -34,6 +35,8 @@
+ #define CREATE_TRACE_POINTS
+ #include "hda_controller_trace.h"
+ 
++#define is_broxton(pci)	((pci)->device == 0x5a98)
++
+ /* DSP lock helpers */
+ #define dsp_lock(dev)		snd_hdac_dsp_lock(azx_stream(dev))
+ #define dsp_unlock(dev)		snd_hdac_dsp_unlock(azx_stream(dev))
+@@ -880,14 +883,35 @@ EXPORT_SYMBOL_GPL(snd_hda_codec_load_dsp_cleanup);
+ #endif /* CONFIG_SND_HDA_DSP_LOADER */
+ 
+ /*
++ * In BXT-P A0, HD-Audio DMA requests is later than expected,
++ * and makes an audio stream sensitive to system latencies when
++ * 24/32 bits are playing.
++ * Adjusting threshold of DMA fifo to force the DMA request
++ * sooner to improve latency tolerance at the expense of power.
++ */
++static void bxt_reduce_dma_latency(struct azx *chip)
++{
++	u32 val;
++
++	val = azx_readl(chip, SKL_EM4L);
++	val &= (0x3 << 20);
++	azx_writel(chip, SKL_EM4L, val);
++}
++
++/*
+  * reset and start the controller registers
+  */
+ void azx_init_chip(struct azx *chip, bool full_reset)
+ {
++	struct pci_dev *pci = chip->pci;
++
+ 	if (snd_hdac_bus_init_chip(azx_bus(chip), full_reset)) {
+ 		/* correct RINTCNT for CXT */
+ 		if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
+ 			azx_writew(chip, RINTCNT, 0xc0);
++		/* reduce dma latency to avoid noise */
++		if (is_broxton(pci))
++			bxt_reduce_dma_latency(chip);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(azx_init_chip);
+-- 
+2.5.0
