@@ -1,75 +1,139 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: [RFC][PATCH 0/3] ALSA: fireface: new driver for
- RME Fireface series (MIDI only)
-Date: Mon, 7 Dec 2015 19:11:08 +1030
-Message-ID: <20151207084108.GA6726@marvin.atrad.com.au>
-References: <1449408224-13955-1-git-send-email-o-takashi@sakamocchi.jp>
- <20151206215744.GA6103@marvin.atrad.com.au>
- <5664E06C.9080705@sakamocchi.jp>
- <20151207013748.GD6213@marvin.atrad.com.au>
- <5664E64E.7000807@sakamocchi.jp> <5664E961.9080907@sakamocchi.jp>
- <20151207022112.GF6213@marvin.atrad.com.au>
- <56653732.6000107@ladisch.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 1/4] drm/i915: Add get_eld audio component
+Date: Mon, 7 Dec 2015 09:42:07 +0100
+Message-ID: <20151207084207.GA10243@phenom.ffwll.local>
+References: <1449249169-20602-1-git-send-email-tiwai@suse.de>
+ <1449249169-20602-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 2046E2604AC
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 09:41:15 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <56653732.6000107@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+In-Reply-To: <1449249169-20602-2-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 07, 2015 at 08:37:22AM +0100, Clemens Ladisch wrote:
-> Jonathan Woithe wrote:
-> > On Mon, Dec 07, 2015 at 11:05:21AM +0900, Takashi Sakamoto wrote:
-> >> Furthermore, 0x0010 is not always true because the address range which
-> >> drivers allocate on the controller is different depending on situation.
-> >
-> > In general that's true.  For the FF400 at least though the non-nodeID
-> > component is effectively hard coded on other systems.
-> 
-> That's just because this value happens to be the first free address in
-> the FireWire address space.
-
-It's hardcoded (in the way I subsequently detailed) on at least one other
-(non-Linux) system: when that particular FF400 register is written the upper
-16 bits are a node ID and the lower 16 bits are unconditionally set to
-0x0001.  That's not to say that this is the best way, but it's what's done
-on that system, with all the caveats that this implies.
-
-In the above system there is no explicit consideration of what addresses
-happen to be free.  The address which is chosen does not appear to be the
-lowest free address: there would be plenty unused addresses below it in
-general.
-
-> If you had other FireWire devices whose drivers allocated addresses, you
-> would see different values.
-
-For this reason (that is, other drivers/devices grabbing the resulting
-address range) the methodology I detailed above for choosing the target
-address is perhaps not the most appropriate for Linux.  Takashi S's tests
-indicate that there is no hidden functionality controlled by the lower 16
-bits of this register so we are free to adopt our own address selection
-philosphy.
-
-> (Maybe even for multiple FF devices, but the driver might be able to share
-> the range for all devices.)
-
-The multiple FF400 case would, I expect, be disambiguated by the inclusion
-of the node ID in the register value (and hense the address listened to).
-
-Regards
-  jonathan
+T24gRnJpLCBEZWMgMDQsIDIwMTUgYXQgMDY6MTI6NDZQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEltcGxlbWVudCBhIG5ldyBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMsIGdldF9lbGQo
+KS4gIEl0J3MgY2FsbGVkIGJ5Cj4gdGhlIGF1ZGlvIGRyaXZlciB0byBmZXRjaCB0aGUgY3VycmVu
+dCBhdWRpbyBzdGF0dXMgYW5kIEVMRCBvZiB0aGUKPiBnaXZlbiBIRE1JL0RQIHBvcnQuICBJdCBy
+ZXR1cm5zIHRoZSBzaXplIG9mIGV4cGVjdGVkIEVMRCBieXRlcyBpZiBpdCdzCj4gdmFsaWQsIHpl
+cm8gaWYgbm8gdmFsaWQgRUxEIGlzIGZvdW5kLCBvciBhIG5lZ2F0aXZlIGVycm9yIGNvZGUuICBU
+aGUKPiBjdXJyZW50IHN0YXRlIG9mIGF1ZGlvIG9uL29mZiBpcyBzdG9yZWQgaW4gdGhlIGdpdmVu
+IHBvaW50ZXIsIHRvby4KPiAKPiBOb3RlIHRoYXQgdGhlIHJldHVybmVkIHNpemUgaXNuJ3QgbGlt
+aXRlZCB0byB0aGUgZ2l2ZW4gbWF4IGJ5dGVzLiAgSWYKPiB0aGUgc2l6ZSBpcyBncmVhdGVyIHRo
+YW4gdGhlIG1heCBieXRlcywgaXQgbWVhbnMgdGhhdCBvbmx5IGEgcGFydCBvZgo+IEVMRCBoYXMg
+YmVlbiBjb3BpZWQgYmFjay4KPiAKPiBGb3IgYWNoaWV2aW5nIHRoaXMgaW1wbGVtZW50YXRpb24s
+IGEgbmV3IGZpZWxkIGF1ZGlvX2Nvbm5lY3RvciBpcwo+IGFkZGVkIHRvIHN0cnVjdCBpbnRlbF9k
+aWdpdGFsX3BvcnQuICBJdCBwb2ludHMgdG8gdGhlIGNvbm5lY3Rvcgo+IGFzc2lnbmVkIHRvIHRo
+ZSBnaXZlbiBkaWdpdGFsIHBvcnQuICBJdCdzIHNldC9yZXNldCBhdCBlYWNoIGF1ZGlvCj4gZW5h
+YmxlL2Rpc2FibGUgY2FsbCBpbiBpbnRlbF9hdWRpby5jLCBhbmQgcHJvdGVjdGVkIHdpdGggYXZf
+bXV0ZXguCj4gCj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+
+IC0tLQo+IHYyLT52MzoKPiAqIFRyYWNrIGRybV9jb25uZWN0b3IgZm9yIGVhc2llciBFTEQgcmV0
+cmlldmFsLCByZW1vdmUgc3VwZXJmbHVvdXMKPiAgIGF1ZGlvX2VuYWJsZWQgZmxhZyBpbnN0ZWFk
+Cj4gKiBCYWNrIHRvIGF2X211dGV4Cj4gKiBSZWJhc2UgdG8gZHJtLW5leHQsIHVwZGF0ZSBnZXRf
+ZWxkIGRvY3VtZW50YXRpb24gZm9yIG5ldyBrZXJuZWwgZG9jCj4gCj4gIGRyaXZlcnMvZ3B1L2Ry
+bS9pOTE1L2ludGVsX2F1ZGlvLmMgfCA0MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCAgIHwgIDIgKysKPiAg
+aW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCAgICAgICB8IDE0ICsrKysrKysrKysrKysKPiAg
+MyBmaWxlcyBjaGFuZ2VkLCA1OCBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
+bF9hdWRpby5jCj4gaW5kZXggOWFhODNlNzFiNzkyLi5lZWFjOWY3NjMxMTAgMTAwNjQ0Cj4gLS0t
+IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ICsrKyBiL2RyaXZlcnMvZ3B1
+L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiBAQCAtNTIxLDYgKzUyMSwxMCBAQCB2b2lkIGludGVs
+X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikK
+PiAgCQlkZXZfcHJpdi0+ZGlzcGxheS5hdWRpb19jb2RlY19lbmFibGUoY29ubmVjdG9yLCBpbnRl
+bF9lbmNvZGVyLAo+ICAJCQkJCQkgICAgIGFkanVzdGVkX21vZGUpOwo+ICAKPiArCW11dGV4X2xv
+Y2soJmRldl9wcml2LT5hdl9tdXRleCk7Cj4gKwlpbnRlbF9kaWdfcG9ydC0+YXVkaW9fY29ubmVj
+dG9yID0gY29ubmVjdG9yOwoKVGhpcyBzdGlsbCBoYXMgdGhlIHByb2JsZW0gdGhhdCB0aGUgZWxk
+IG1pZ2h0IGdldCBvdmV3cml0dGVuIHdoaWxlIHdlJ3JlCm9ubHkgaG9sZGluZyBhdl9tdXRleCBi
+ZWxvdy4gQnV0IEkgdGhpbmsgdGhhdCBjYW4vc2hvdWxkIGJlIHNvbHZlZCBhcyBwYXJ0Cm9mIG15
+IHByb2JlIHZzLiBtb2Rlc2V0IGxvY2tpbmcgcmV3b3JrLgoKUmV2aWV3ZWQtYnk6IERhbmllbCBW
+ZXR0ZXIgPGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g+Cgo+ICsJbXV0ZXhfdW5sb2NrKCZkZXZfcHJp
+di0+YXZfbXV0ZXgpOwo+ICsKPiAgCWlmIChhY29tcCAmJiBhY29tcC0+YXVkaW9fb3BzICYmIGFj
+b21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KQo+ICAJCWFjb21wLT5hdWRpb19vcHMtPnBp
+bl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19vcHMtPmF1ZGlvX3B0ciwgKGludCkgcG9ydCk7Cj4g
+IH0KPiBAQCAtNTQ0LDYgKzU0OCwxMCBAQCB2b2lkIGludGVsX2F1ZGlvX2NvZGVjX2Rpc2FibGUo
+c3RydWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXIpCj4gIAlpZiAoZGV2X3ByaXYtPmRp
+c3BsYXkuYXVkaW9fY29kZWNfZGlzYWJsZSkKPiAgCQlkZXZfcHJpdi0+ZGlzcGxheS5hdWRpb19j
+b2RlY19kaXNhYmxlKGludGVsX2VuY29kZXIpOwo+ICAKPiArCW11dGV4X2xvY2soJmRldl9wcml2
+LT5hdl9tdXRleCk7Cj4gKwlpbnRlbF9kaWdfcG9ydC0+YXVkaW9fY29ubmVjdG9yID0gTlVMTDsK
+PiArCW11dGV4X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4KTsKPiArCj4gIAlpZiAoYWNvbXAg
+JiYgYWNvbXAtPmF1ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeSkK
+PiAgCQlhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShhY29tcC0+YXVkaW9fb3BzLT5h
+dWRpb19wdHIsIChpbnQpIHBvcnQpOwo+ICB9Cj4gQEAgLTcwMyw2ICs3MTEsMzkgQEAgc3RhdGlj
+IGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmljZSAq
+ZGV2LAo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4gK3N0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21w
+b25lbnRfZ2V0X2VsZChzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBwb3J0LAo+ICsJCQkJCWJvb2wg
+KmVuYWJsZWQsCj4gKwkJCQkJdW5zaWduZWQgY2hhciAqYnVmLCBpbnQgbWF4X2J5dGVzKQo+ICt7
+Cj4gKwlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkxNShkZXYp
+Owo+ICsJc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfcHJpdi0+ZGV2Owo+ICsJc3Ry
+dWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXI7Cj4gKwlzdHJ1Y3QgaW50ZWxfZGlnaXRh
+bF9wb3J0ICppbnRlbF9kaWdfcG9ydDsKPiArCWNvbnN0IHU4ICplbGQ7Cj4gKwlpbnQgcmV0ID0g
+LUVJTlZBTDsKPiArCj4gKwltdXRleF9sb2NrKCZkZXZfcHJpdi0+YXZfbXV0ZXgpOwo+ICsJZm9y
+X2VhY2hfaW50ZWxfZW5jb2Rlcihkcm1fZGV2LCBpbnRlbF9lbmNvZGVyKSB7Cj4gKwkJaWYgKGlu
+dGVsX2VuY29kZXItPnR5cGUgIT0gSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUICYmCj4gKwkJICAg
+IGludGVsX2VuY29kZXItPnR5cGUgIT0gSU5URUxfT1VUUFVUX0hETUkpCj4gKwkJCWNvbnRpbnVl
+Owo+ICsJCWludGVsX2RpZ19wb3J0ID0gZW5jX3RvX2RpZ19wb3J0KCZpbnRlbF9lbmNvZGVyLT5i
+YXNlKTsKPiArCQlpZiAocG9ydCA9PSBpbnRlbF9kaWdfcG9ydC0+cG9ydCkgewo+ICsJCQlyZXQg
+PSAwOwo+ICsJCQkqZW5hYmxlZCA9IGludGVsX2RpZ19wb3J0LT5hdWRpb19jb25uZWN0b3IgIT0g
+TlVMTDsKPiArCQkJaWYgKCEqZW5hYmxlZCkKPiArCQkJCWJyZWFrOwo+ICsJCQllbGQgPSBpbnRl
+bF9kaWdfcG9ydC0+YXVkaW9fY29ubmVjdG9yLT5lbGQ7Cj4gKwkJCXJldCA9IGRybV9lbGRfc2l6
+ZShlbGQpOwo+ICsJCQltZW1jcHkoYnVmLCBlbGQsIG1pbihtYXhfYnl0ZXMsIHJldCkpOwo+ICsJ
+CQlicmVhazsKPiArCQl9Cj4gKwl9Cj4gKwo+ICsJbXV0ZXhfdW5sb2NrKCZkZXZfcHJpdi0+YXZf
+bXV0ZXgpOwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICsKPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBp
+OTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzID0gewo+ICAJ
+Lm93bmVyCQk9IFRISVNfTU9EVUxFLAo+ICAJLmdldF9wb3dlcgk9IGk5MTVfYXVkaW9fY29tcG9u
+ZW50X2dldF9wb3dlciwKPiBAQCAtNzEwLDYgKzc1MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+aTkxNV9hdWRpb19jb21wb25lbnRfb3BzIGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyA9IHsKPiAg
+CS5jb2RlY193YWtlX292ZXJyaWRlID0gaTkxNV9hdWRpb19jb21wb25lbnRfY29kZWNfd2FrZV9v
+dmVycmlkZSwKPiAgCS5nZXRfY2RjbGtfZnJlcQk9IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9j
+ZGNsa19mcmVxLAo+ICAJLnN5bmNfYXVkaW9fcmF0ZSA9IGk5MTVfYXVkaW9fY29tcG9uZW50X3N5
+bmNfYXVkaW9fcmF0ZSwKPiArCS5nZXRfZWxkCT0gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2Vs
+ZCwKPiAgfTsKPiAgCj4gIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25lbnRfYmluZChzdHJ1
+Y3QgZGV2aWNlICppOTE1X2RldiwKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
+aW50ZWxfZHJ2LmggYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaAo+IGluZGV4IGFi
+NWMxNDdmYTllOS4uZmU1OGE1NzIyYjE2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9p
+OTE1L2ludGVsX2Rydi5oCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmgK
+PiBAQCAtODE0LDYgKzgxNCw4IEBAIHN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgewo+ICAJc3Ry
+dWN0IGludGVsX2hkbWkgaGRtaTsKPiAgCWVudW0gaXJxcmV0dXJuICgqaHBkX3B1bHNlKShzdHJ1
+Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICosIGJvb2wpOwo+ICAJYm9vbCByZWxlYXNlX2NsMl9vdmVy
+cmlkZTsKPiArCS8qIGZvciBjb21tdW5pY2F0aW9uIHdpdGggYXVkaW8gY29tcG9uZW50OyBwcm90
+ZWN0ZWQgYnkgYXZfbXV0ZXggKi8KPiArCWNvbnN0IHN0cnVjdCBkcm1fY29ubmVjdG9yICphdWRp
+b19jb25uZWN0b3I7Cj4gIH07Cj4gIAo+ICBzdHJ1Y3QgaW50ZWxfZHBfbXN0X2VuY29kZXIgewo+
+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIGIvaW5jbHVkZS9kcm0v
+aTkxNV9jb21wb25lbnQuaAo+IGluZGV4IGZhYjEzODUxZjk1YS4uYjQ2ZmEwZWYzMDA1IDEwMDY0
+NAo+IC0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiArKysgYi9pbmNsdWRlL2Ry
+bS9pOTE1X2NvbXBvbmVudC5oCj4gQEAgLTY1LDYgKzY1LDIwIEBAIHN0cnVjdCBpOTE1X2F1ZGlv
+X2NvbXBvbmVudF9vcHMgewo+ICAJICogc2FtcGxlIHJhdGUsIGl0IHdpbGwgY2FsbCB0aGlzIGZ1
+bmN0aW9uIHRvIHNldCBuL2N0cwo+ICAJICovCj4gIAlpbnQgKCpzeW5jX2F1ZGlvX3JhdGUpKHN0
+cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludCByYXRlKTsKPiArCS8qKgo+ICsJICogQGdldF9l
+bGQ6IGZpbGwgdGhlIGF1ZGlvIHN0YXRlIGFuZCBFTEQgYnl0ZXMgZm9yIHRoZSBnaXZlbiBwb3J0
+Cj4gKwkgKgo+ICsJICogQ2FsbGVkIGZyb20gYXVkaW8gZHJpdmVyIHRvIGdldCB0aGUgSERNSS9E
+UCBhdWRpbyBzdGF0ZSBvZiB0aGUgZ2l2ZW4KPiArCSAqIGRpZ2l0YWwgcG9ydCwgYW5kIGFsc28g
+ZmV0Y2ggRUxEIGJ5dGVzIHRvIHRoZSBnaXZlbiBwb2ludGVyLgo+ICsJICoKPiArCSAqIEl0IHJl
+dHVybnMgdGhlIGJ5dGUgc2l6ZSBvZiB0aGUgb3JpZ2luYWwgRUxEIChub3QgdGhlIGFjdHVhbGx5
+Cj4gKwkgKiBjb3BpZWQgc2l6ZSksIHplcm8gZm9yIGFuIGludmFsaWQgRUxELCBvciBhIG5lZ2F0
+aXZlIGVycm9yIGNvZGUuCj4gKwkgKgo+ICsJICogTm90ZSB0aGF0IHRoZSByZXR1cm5lZCBzaXpl
+IG1heSBiZSBvdmVyIEBtYXhfYnl0ZXMuICBUaGVuIGl0Cj4gKwkgKiBpbXBsaWVzIHRoYXQgb25s
+eSBhIHBhcnQgb2YgRUxEIGhhcyBiZWVuIGNvcGllZCB0byB0aGUgYnVmZmVyLgo+ICsJICovCj4g
+KwlpbnQgKCpnZXRfZWxkKShzdHJ1Y3QgZGV2aWNlICosIGludCBwb3J0LCBib29sICplbmFibGVk
+LAo+ICsJCSAgICAgICB1bnNpZ25lZCBjaGFyICpidWYsIGludCBtYXhfYnl0ZXMpOwo+ICB9Owo+
+ICAKPiAgLyoqCj4gLS0gCj4gMi42LjMKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+IEludGVsLWdmeCBtYWlsaW5nIGxpc3QKPiBJbnRlbC1nZnhA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2ludGVsLWdmeAoKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5l
+ZXIsIEludGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QK
+SW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
