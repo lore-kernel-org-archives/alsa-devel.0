@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] crec: Always read whole number of
- fragments when length limit specified
-Date: Mon, 7 Dec 2015 10:26:21 +0530
-Message-ID: <20151207045621.GJ1854@localhost>
-References: <1449141935-23350-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Ravindra Lokhande <rlokhande@nvidia.com>
+Subject: [PATCH v3] ALSA: compress: add support for 32bit calls
+	in a 64bit kernel
+Date: Mon, 7 Dec 2015 12:08:31 +0530
+Message-ID: <1449470311-32394-1-git-send-email-rlokhande@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D6EC1265019
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 05:53:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1449141935-23350-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABDC62654CD
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 07:38:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: vinod.koul@intel.com, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Ravindra Lokhande <rlokhande@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 03, 2015 at 11:25:35AM +0000, Richard Fitzgerald wrote:
-> This patch removes the lines that adjusted the read size to exactly
-> read to the end of the calculated length in bytes. Doing this could
-> lead to invalid fragment sizes being requested which may then cause
-> a read error on some codecs.
-> 
-> Instead we keep reading whole fragments until we have >= length bytes
-> of data captured.
+Compress offload does not support ioctl calls from a 32bit userspace
+in a 64 bit kernel. This patch adds support for ioctls from a 32bit
+userspace in a 64bit kernel
 
-Applied, thanks
+Signed-off-by: Ravindra Lokhande <rlokhande@nvidia.com>
+---
 
+v1 -> v2: use compat_ptr to convert 32 bit address to 64 bit pointer
+v2 -> v3: add header file compat.h
+
+ sound/core/compress_offload.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index b123c42..4597820 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -38,6 +38,7 @@
+ #include <linux/uio.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/compat.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/compress_params.h>
+@@ -847,6 +848,15 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	return retval;
+ }
+ 
++/* support of 32bit userspace on 64bit platforms */
++#ifdef CONFIG_COMPAT
++static long snd_compr_ioctl_compat(struct file *file, unsigned int cmd,
++						unsigned long arg)
++{
++	return snd_compr_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
++}
++#endif
++
+ static const struct file_operations snd_compr_file_ops = {
+ 		.owner =	THIS_MODULE,
+ 		.open =		snd_compr_open,
+@@ -854,6 +864,9 @@ static const struct file_operations snd_compr_file_ops = {
+ 		.write =	snd_compr_write,
+ 		.read =		snd_compr_read,
+ 		.unlocked_ioctl = snd_compr_ioctl,
++#ifdef CONFIG_COMPAT
++		.compat_ioctl = snd_compr_ioctl_compat,
++#endif
+ 		.mmap =		snd_compr_mmap,
+ 		.poll =		snd_compr_poll,
+ };
 -- 
-~Vinod
+2.1.4
