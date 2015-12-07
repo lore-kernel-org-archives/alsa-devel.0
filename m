@@ -1,8 +1,8 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 11/15] ASoC: hdac_hdmi: Add infoframe
-	support for dp audio
-Date: Tue,  8 Dec 2015 02:54:25 +0530
-Message-ID: <1449523469-4395-11-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 12/15] ASoC: hdac_hdmi: Add codec
+	suspend/resume handler
+Date: Tue,  8 Dec 2015 02:54:26 +0530
+Message-ID: <1449523469-4395-12-git-send-email-subhransu.s.prusty@intel.com>
 References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
  <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ED18265611
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 16:54:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C9E0D2654F2
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 16:54:26 +0100 (CET)
 In-Reply-To: <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,120 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This uses the get_conn_type API added in the previous patch to
-identify the type of display connected and fills the infoframe
-accordingly.
+From: Jeeja KP <jeeja.kp@intel.com>
 
+Need to add enabling of all pins and DP1.2 feature again after
+resume. Also during the device in suspended state ELD notify
+callback is not processed. So add ELD check for all pins here.
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 70 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 60 insertions(+), 10 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 2d971c4..32d1938 100644
+index 32d1938..e64e505 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -238,27 +238,71 @@ hdac_hdmi_set_dip_index(struct hdac_ext_device *hdac, hda_nid_t pin_nid,
- 				AC_VERB_SET_HDMI_DIP_INDEX, val);
+@@ -1214,9 +1214,34 @@ static int hdmi_codec_remove(struct snd_soc_codec *codec)
+ 	return 0;
  }
  
-+struct dp_audio_infoframe {
-+	u8 type; /* 0x84 */
-+	u8 len;  /* 0x1b */
-+	u8 ver;  /* 0x11 << 2 */
-+
-+	u8 CC02_CT47;	/* match with HDMI infoframe from this on */
-+	u8 SS01_SF24;
-+	u8 CXT04;
-+	u8 CA;
-+	u8 LFEPBL01_LSV36_DM_INH7;
-+};
-+
- static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 				hda_nid_t cvt_nid, hda_nid_t pin_nid)
- {
- 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
- 	struct hdmi_audio_infoframe frame;
--	u8 *dip = (u8 *)&frame;
-+	struct dp_audio_infoframe dp_ai;
-+	struct hdac_hdmi_priv *hdmi = hdac->private_data;
++#ifdef CONFIG_PM
++static int hdmi_codec_resume(struct snd_soc_codec *codec)
++{
++	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
++	struct hdac_hdmi_priv *hdmi = edev->private_data;
 +	struct hdac_hdmi_pin *pin;
-+	u8 *dip;
- 	int ret;
- 	int i;
-+	const u8 *eld_buf;
-+	u8 conn_type;
-+	int channels = 2;
- 
--	hdmi_audio_infoframe_init(&frame);
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		if (pin->nid == pin_nid)
-+			break;
-+	}
- 
--	/* Default stereo for now */
--	frame.channels = 2;
-+	eld_buf = pin->eld.eld_buffer;
-+	conn_type = drm_eld_get_conn_type(eld_buf);
- 
- 	/* setup channel count */
- 	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
--			    AC_VERB_SET_CVT_CHAN_COUNT, frame.channels - 1);
-+			    AC_VERB_SET_CVT_CHAN_COUNT, channels - 1);
- 
--	ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
--	if (ret < 0)
--		return ret;
-+	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
-+		hdmi_audio_infoframe_init(&frame);
 +
-+		/* Default stereo for now */
-+		frame.channels = channels;
++	hdac_hdmi_skl_enable_all_pins(&edev->hdac);
++	hdac_hdmi_skl_enable_dp12(&edev->hdac);
 +
-+		ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
-+		if (ret < 0)
-+			return ret;
++	/*
++	 * As the ELD notify callback request is not entertained while the
++	 * device is in suspend state. Need to manually check detection of
++	 * all pins here.
++	 */
++	list_for_each_entry(pin, &hdmi->pin_list, head)
++		hdac_hdmi_present_sense(pin, 1);
 +
-+		dip = (u8 *)&frame;
++	return 0;
++}
++#else
++#define hdmi_codec_resume NULL
++#endif
 +
-+	} else if (conn_type == DRM_ELD_CONN_TYPE_DP) {
-+		memset(&dp_ai, 0, sizeof(dp_ai));
-+		dp_ai.type	= 0x84;
-+		dp_ai.len	= 0x1b;
-+		dp_ai.ver	= 0x11 << 2;
-+		dp_ai.CC02_CT47	= channels - 1;
-+		dp_ai.CA	= 0;
-+
-+		dip = (u8 *)&dp_ai;
-+	} else {
-+		dev_err(&hdac->hdac.dev, "Invalid connection type: %d\n",
-+						conn_type);
-+		return -EIO;
-+	}
+ static struct snd_soc_codec_driver hdmi_hda_codec = {
+ 	.probe		= hdmi_codec_probe,
+ 	.remove		= hdmi_codec_remove,
++	.resume		= hdmi_codec_resume,
+ 	.idle_bias_off	= true,
+ };
  
- 	/* stop infoframe transmission */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
-@@ -268,9 +312,15 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 
- 	/*  Fill infoframe. Index auto-incremented */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
--	for (i = 0; i < sizeof(frame); i++)
--		snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
-+		for (i = 0; i < sizeof(frame); i++)
-+			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
-+	} else {
-+		for (i = 0; i < sizeof(dp_ai); i++)
-+			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
-+	}
- 
- 	/* Start infoframe */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
 -- 
 1.9.1
