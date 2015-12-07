@@ -1,8 +1,8 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 08/15] ASoC: hdac_hdmi: Create widget/route
-	based on nodes enumerated
-Date: Tue,  8 Dec 2015 02:54:22 +0530
-Message-ID: <1449523469-4395-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 09/15] ASoC: hdac_hdmi: Assign pin for
+	stream based on dapm connection
+Date: Tue,  8 Dec 2015 02:54:23 +0530
+Message-ID: <1449523469-4395-9-git-send-email-subhransu.s.prusty@intel.com>
 References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
  <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C2D0526538B
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 16:54:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E43B265475
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 16:54:17 +0100 (CET)
 In-Reply-To: <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,283 +26,311 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of direct mapping between converter and pin, Muxes are
-added between them to support any converter connection to any pin.
+Now that we have all the widgets enumerated we can route the stream
+to any pin widget based on Mux connection. So map the pin to stream
+accordingly.
 
-As the possible mux inputs can only be identified during runtime,
-all possible routes are created to connect all converters to all
-pin muxes. The user should enable appropriate mux inputs to enable
-correct port.
+Also seems the connection list to the pin widgets are not static
+and is updated runtime based on type of display attached to the port.
+This looks to be a hardware behavior.
 
-In the process to support the above changes widget/route fill APIs
-are updated to take all required parameters.
+So querying of the connection list is removed from pin initialization
+and used in selecting the pin for a dai map.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 224 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 202 insertions(+), 22 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 212 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 153 insertions(+), 59 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 01d063e..467143cc 100644
+index 467143cc..2d971c4 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -463,46 +463,224 @@ static int hdac_hdmi_query_pin_connlist(struct hdac_ext_device *hdac,
- 	return pin->num_mux_nids;
+@@ -38,6 +38,8 @@
+ 
+ #define HDA_MAX_CONNECTIONS     32
+ 
++#define HDA_MAX_CVTS		3
++
+ #define ELD_MAX_SIZE    256
+ #define ELD_FIXED_BYTES	20
+ 
+@@ -80,7 +82,7 @@ struct hdac_hdmi_dai_pin_map {
+ };
+ 
+ struct hdac_hdmi_priv {
+-	struct hdac_hdmi_dai_pin_map dai_map[3];
++	struct hdac_hdmi_dai_pin_map dai_map[HDA_MAX_CVTS];
+ 	struct list_head pin_list;
+ 	struct list_head cvt_list;
+ 	int num_pin;
+@@ -369,12 +371,125 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
--static void hdac_hdmi_fill_widget_info(struct snd_soc_dapm_widget *w,
--				enum snd_soc_dapm_type id,
--				const char *wname, const char *stream)
-+static void hdac_hdmi_fill_widget_info(struct device *dev,
-+				struct snd_soc_dapm_widget *w,
-+				enum snd_soc_dapm_type id, void *priv,
-+				const char *wname, const char *stream,
-+				struct snd_kcontrol_new *wc, int numkc)
- {
- 	w->id = id;
--	w->name = wname;
-+	w->name = devm_kstrdup(dev, wname, GFP_KERNEL);
- 	w->sname = stream;
- 	w->reg = SND_SOC_NOPM;
- 	w->shift = 0;
--	w->kcontrol_news = NULL;
--	w->num_kcontrols = 0;
--	w->priv = NULL;
-+	w->kcontrol_news = wc;
-+	w->num_kcontrols = numkc;
-+	w->priv = priv;
- }
- 
- static void hdac_hdmi_fill_route(struct snd_soc_dapm_route *route,
--		const char *sink, const char *control, const char *src)
-+		const char *sink, const char *control, const char *src,
-+		int (*handler)(struct snd_soc_dapm_widget *sr,
-+			struct snd_soc_dapm_widget *snk))
- {
- 	route->sink = sink;
- 	route->source = src;
- 	route->control = control;
--	route->connected = NULL;
-+	route->connected = handler;
- }
- 
--static void create_fill_widget_route_map(struct snd_soc_dapm_context *dapm,
--					struct hdac_hdmi_dai_pin_map *dai_map)
-+/*
-+ * Ideally the Mux inputs should be based on the num_muxs enumerated, but
-+ * the display driver seem to be programming the connection list for the pin
-+ * widget runtime.
-+ *
-+ * So programming all the possible inputs for the mux, the user has to take
-+ * care of selecting the right one and leaving all other inputs selected to
-+ * "NONE"
-+ */
-+static int hdac_hdmi_create_pin_muxs(struct hdac_ext_device *edev,
-+				struct hdac_hdmi_pin *pin,
-+				struct snd_soc_dapm_widget *widget,
-+				const char *widget_name)
++static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
++		struct hdac_hdmi_dai_pin_map *dai_map)
 +{
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct snd_kcontrol_new *kc;
-+	struct hdac_hdmi_cvt *cvt;
-+	struct soc_enum *se;
-+	char kc_name[NAME_SIZE];
-+	char mux_items[NAME_SIZE];
-+	/* To hold inputs to the Pin mux */
-+	char *items[HDA_MAX_CONNECTIONS];
-+	int i = 0;
-+	int num_items = hdmi->num_cvt + 1;
++	int mux_idx;
++	struct hdac_hdmi_pin *pin = dai_map->pin;
 +
-+	kc = devm_kzalloc(&edev->hdac.dev, sizeof(*kc), GFP_KERNEL);
-+	if (!kc)
-+		return -ENOMEM;
-+
-+	se = devm_kzalloc(&edev->hdac.dev, sizeof(*se), GFP_KERNEL);
-+	if (!se)
-+		return -ENOMEM;
-+
-+	sprintf(kc_name, "Pin %d Input", pin->nid);
-+	kc->name = devm_kstrdup(&edev->hdac.dev, kc_name, GFP_KERNEL);
-+	kc->private_value = (long)se;
-+	kc->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	kc->access = 0;
-+	kc->info = snd_soc_info_enum_double;
-+	kc->put = snd_soc_dapm_put_enum_double;
-+	kc->get = snd_soc_dapm_get_enum_double;
-+
-+	se->reg = SND_SOC_NOPM;
-+
-+	/* enum texts: ["NONE", "cvt #", "cvt #", ...] */
-+	se->items = num_items;
-+	se->mask = roundup_pow_of_two(se->items) - 1;
-+
-+	sprintf(mux_items, "NONE");
-+	items[i] = devm_kstrdup(&edev->hdac.dev, mux_items, GFP_KERNEL);
-+
-+	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
-+		i++;
-+		sprintf(mux_items, "cvt %d", cvt->nid);
-+		items[i] = devm_kstrdup(&edev->hdac.dev, mux_items, GFP_KERNEL);
++	for (mux_idx = 0; mux_idx < pin->num_mux_nids; mux_idx++) {
++		if (pin->mux_nids[mux_idx] == dai_map->cvt->nid) {
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
++					AC_VERB_SET_CONNECT_SEL, mux_idx);
++			break;
++		}
 +	}
 +
-+	se->texts = devm_kmemdup(&edev->hdac.dev, items,
-+			(num_items  * sizeof(char *)), GFP_KERNEL);
++	if (mux_idx == pin->num_mux_nids)
++		return -EIO;
 +
-+	hdac_hdmi_fill_widget_info(&edev->hdac.dev, widget, snd_soc_dapm_mux,
-+				&pin->nid, widget_name, NULL, kc, 1);
++	/* Enable out path for this pin widget */
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
++			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++
++	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
++
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
++			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
 +
 +	return 0;
 +}
 +
-+/* Add cvt <- input <- mux route map */
-+static void hdac_hdmi_add_pinmux_cvt_route(struct hdac_ext_device *edev,
-+		struct snd_soc_dapm_widget *widgets,
-+		struct snd_soc_dapm_route *route, int rindex)
++static int hdac_hdmi_query_pin_connlist(struct hdac_ext_device *hdac,
++					struct hdac_hdmi_pin *pin)
++{
++	if (!(get_wcaps(&hdac->hdac, pin->nid) & AC_WCAP_CONN_LIST)) {
++		dev_warn(&hdac->hdac.dev,
++			"HDMI: pin %d wcaps %#x does not support connection list\n",
++			pin->nid, get_wcaps(&hdac->hdac, pin->nid));
++		return -EINVAL;
++	}
++
++	pin->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
++			pin->mux_nids, HDA_MAX_CONNECTIONS);
++	if (pin->num_mux_nids == 0)
++		dev_warn(&hdac->hdac.dev, "No connections found for pin: %d\n", pin->nid);
++
++	dev_dbg(&hdac->hdac.dev, "num_mux_nids %d for pin: %d\n",
++			pin->num_mux_nids, pin->nid);
++
++	return pin->num_mux_nids;
++}
++
++static inline struct hdac_hdmi_pin *hdac_hdmi_get_pin(
++			struct hdac_ext_device *edev,
++			struct snd_soc_dapm_path *p,
++			struct hdac_hdmi_cvt *cvt)
 +{
 +	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	const struct snd_kcontrol_new *kc;
-+	struct soc_enum *se;
-+	int mux_index = hdmi->num_cvt + hdmi->num_pin;
-+	int i, j;
++	struct hdac_hdmi_pin *pin;
++	hda_nid_t *nid;
++	int ret, i;
 +
-+	for (i = 0; i < hdmi->num_pin; i++) {
-+		kc = widgets[mux_index].kcontrol_news;
-+		se = (struct soc_enum *)kc->private_value;
-+		for (j = 0; j < hdmi->num_cvt; j++) {
-+			hdac_hdmi_fill_route(&route[rindex],
-+					widgets[mux_index].name,
-+					se->texts[j + 1],
-+					widgets[j].name, NULL);
++	nid = (hda_nid_t *)p->sink->priv;
++	list_for_each_entry(pin, &hdmi->pin_list, head) {
++		if (pin->nid == *nid) {
++			ret = hdac_hdmi_query_pin_connlist(edev, pin);
++			if (ret < 0)
++				continue;
 +
-+			rindex++;
++			for (i = 0; i < pin->num_mux_nids; i++) {
++				if (pin->mux_nids[i] == cvt->nid)
++					return pin;
++			}
 +		}
-+
-+		mux_index++;
 +	}
++
++	return NULL;
 +}
 +
 +/*
-+ * Widgets are added in the below sequence
-+ *	Converter widgets for num converters enumerated
-+ *	Pin widgets for num pins enumerated
-+ *	Pin mux widgets to represent connenction list of pin widget
++ * This queries mux widgets in each sink path of the dai widget and returns
++ * a matching pin widget to which the stream may be routed.
 + *
-+ * Total widgets elements = num_cvt + num_pin + num_pin;
++ * The converter may be input to multiple pin muxes. So each
++ * pin mux (basically each pin widget) is queried to identify if
++ * the converter as one of the input, then the first pin match
++ * is selected for rendering.
 + *
-+ * Routes are added as below:
-+ *	pin mux -> pin (based on num_pins)
-+ *	cvt -> "Input sel control" -> pin_mux
++ * Same stream rendering to multiple pins simultaneously can be done
++ * possibly, but not supported for now.
 + *
-+ * Total route elements:
-+ *	num_pins + (pin_muxes * num_cvt)
++ * So return the first pin connected
 + */
-+static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
++static struct hdac_hdmi_pin *hdac_hdmi_get_pin_from_daistream(
++			struct hdac_ext_device *edev,
++			struct snd_soc_dapm_widget *strm_w,
++			struct hdac_hdmi_cvt *cvt)
++{
++	struct snd_soc_dapm_path *p;
++
++	snd_soc_dapm_widget_for_each_sink_path(strm_w, p) {
++		if (!p->connect)
++			continue;
++
++		if (strstr(p->sink->name, "Mux"))
++			return hdac_hdmi_get_pin(edev, p, cvt);
++		else
++			return hdac_hdmi_get_pin_from_daistream(edev, p->sink, cvt);
++	}
++
++	return NULL;
++}
++
+ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
  {
--	struct snd_soc_dapm_route route[1];
--	struct snd_soc_dapm_widget widgets[2] = { {0} };
-+	struct snd_soc_dapm_widget *widgets;
-+	struct snd_soc_dapm_route *route;
-+	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct snd_soc_dai_driver *dai_drv = dapm->component->dai_drv;
-+	char widget_name[NAME_SIZE];
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
 +	struct hdac_hdmi_cvt *cvt;
 +	struct hdac_hdmi_pin *pin;
-+	int i = 0;
-+	int ret;
-+	int num_routes = 0;
+ 	int ret;
  
--	memset(&route, 0, sizeof(route));
-+	if (list_empty(&hdmi->cvt_list) || list_empty(&hdmi->pin_list))
-+		return -EINVAL;
+ 	if (dai->id > 0) {
+@@ -384,26 +499,32 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
  
--	hdac_hdmi_fill_widget_info(&widgets[0], snd_soc_dapm_output,
--			"hif1 Output", NULL);
--	hdac_hdmi_fill_widget_info(&widgets[1], snd_soc_dapm_aif_in,
--			"Coverter 1", "hif1");
-+	widgets = devm_kzalloc(dapm->dev,
-+			(sizeof(*widgets) * ((2 * hdmi->num_pin) + hdmi->num_cvt)),
-+			GFP_KERNEL);
-+	if (!widgets)
-+		return -ENOMEM;
+ 	dai_map = &hdmi->dai_map[dai->id];
  
--	hdac_hdmi_fill_route(&route[0], "hif1 Output", NULL, "Coverter 1");
-+	/* DAPM widgets to represent each converter widget */
-+	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
-+		sprintf(widget_name, "Converter %d", cvt->nid);
-+		hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
-+			snd_soc_dapm_aif_in, &cvt->nid,
-+			widget_name, dai_drv[i].playback.stream_name, NULL, 0);
-+		i++;
-+	}
+-	if ((!dai_map->pin->eld.monitor_present) ||
+-		(!dai_map->pin->eld.eld_valid)) {
+-		dev_err(&hdac->hdac.dev, "Failed: montior present? %d eld valid?: %d\n",
+-				dai_map->pin->eld.monitor_present,
+-				dai_map->pin->eld.eld_valid);
++	cvt = dai_map->cvt;
++	pin = hdac_hdmi_get_pin_from_daistream(hdac, dai->playback_widget, cvt);
++	if (!pin)
++		return -EIO;
 +
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		sprintf(widget_name, "hif%d Output", pin->nid);
-+		hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
-+				snd_soc_dapm_output, &pin->nid,
-+				widget_name, NULL, NULL, 0);
-+		i++;
-+	}
-+
-+	/* DAPM widgets to represent the connection list to pin widget */
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		sprintf(widget_name, "Pin %d Mux", pin->nid);
-+		ret = hdac_hdmi_create_pin_muxs(edev, pin, &widgets[i],
-+							widget_name);
-+		if (ret < 0)
-+			return ret;
-+		i++;
-+
-+		/* For cvt to pin_mux mapping */
-+		num_routes += hdmi->num_cvt;
-+
-+		/* For pin_mux to pin mapping */
-+		num_routes++;
-+	}
-+
-+	route = devm_kzalloc(dapm->dev, (sizeof(*route) * num_routes),
-+							GFP_KERNEL);
-+	if (!route)
-+		return -ENOMEM;
-+
-+	i = 0;
-+	/* Add pin <- NULL <- mux route map */
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		int sink_index = i + hdmi->num_cvt;
-+		int src_index = sink_index + hdmi->num_pin;
-+
-+		hdac_hdmi_fill_route(&route[i], widgets[sink_index].name,
-+				NULL, widgets[src_index].name,
-+				NULL);
-+		i++;
-+
-+	}
-+
-+	hdac_hdmi_add_pinmux_cvt_route(edev, widgets, route, i);
-+
-+	snd_soc_dapm_new_controls(dapm, widgets,
-+		((2 * hdmi->num_pin) + hdmi->num_cvt));
-+	snd_soc_dapm_add_routes(dapm, route, num_routes);
-+	snd_soc_dapm_new_widgets(dapm->card);
-+
-+	return 0;
++	if ((!pin->eld.monitor_present) ||
++		(!pin->eld.eld_valid)) {
++		dev_err(&hdac->hdac.dev,
++			"failed: montior present? %d eld valid?: %d for pin: %d\n",
++			pin->eld.monitor_present, pin->eld.eld_valid, pin->nid);
+ 		return -ENODEV;
+ 	}
  
--	snd_soc_dapm_new_controls(dapm, widgets, ARRAY_SIZE(widgets));
--	snd_soc_dapm_add_routes(dapm, route, ARRAY_SIZE(route));
- }
+-	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
++	dai_map->pin = pin;
  
- static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
-@@ -855,7 +1033,9 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
- 
- 	edev->scodec = codec;
- 
--	create_fill_widget_route_map(dapm, &hdmi->dai_map[0]);
-+	ret = create_fill_widget_route_map(dapm);
+-	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+-			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
++	ret = hdac_hdmi_enable_pin(hdac, dai_map);
 +	if (ret < 0)
 +		return ret;
  
- 	aops.audio_ptr = edev;
- 	ret = snd_hdac_i915_register_notifier(&aops);
+ 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
+-				dai_map->pin->eld.eld_buffer);
++				pin->eld.eld_buffer);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	return snd_pcm_hw_constraint_eld(substream->runtime,
+-				dai_map->pin->eld.eld_buffer);
++				pin->eld.eld_buffer);
+ }
+ 
+ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+@@ -419,6 +540,8 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 
+ 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+ 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
++
++	dai_map->pin = NULL;
+ }
+ 
+ static int
+@@ -441,28 +564,6 @@ hdac_hdmi_query_cvt_params(struct hdac_device *hdac, struct hdac_hdmi_cvt *cvt)
+ 	return err;
+ }
+ 
+-static int hdac_hdmi_query_pin_connlist(struct hdac_ext_device *hdac,
+-					struct hdac_hdmi_pin *pin)
+-{
+-	if (!(get_wcaps(&hdac->hdac, pin->nid) & AC_WCAP_CONN_LIST)) {
+-		dev_warn(&hdac->hdac.dev,
+-			"HDMI: pin %d wcaps %#x does not support connection list\n",
+-			pin->nid, get_wcaps(&hdac->hdac, pin->nid));
+-		return -EINVAL;
+-	}
+-
+-	pin->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
+-			pin->mux_nids, HDA_MAX_CONNECTIONS);
+-	if (pin->num_mux_nids == 0)
+-		dev_warn(&hdac->hdac.dev, "No connections found for pin: %d\n",
+-								pin->nid);
+-
+-	dev_dbg(&hdac->hdac.dev, "num_mux_nids %d for pin: %d\n",
+-			pin->num_mux_nids, pin->nid);
+-
+-	return pin->num_mux_nids;
+-}
+-
+ static void hdac_hdmi_fill_widget_info(struct device *dev,
+ 				struct snd_soc_dapm_widget *w,
+ 				enum snd_soc_dapm_type id, void *priv,
+@@ -686,40 +787,33 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
+ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
+ {
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_dai_pin_map *dai_map = &hdmi->dai_map[0];
++	struct hdac_hdmi_dai_pin_map *dai_map;
+ 	struct hdac_hdmi_cvt *cvt;
+-	struct hdac_hdmi_pin *pin;
++	int dai_id = 0;
+ 
+-	if (list_empty(&hdmi->cvt_list) || list_empty(&hdmi->pin_list))
++	if (list_empty(&hdmi->cvt_list))
+ 		return -EINVAL;
+ 
+-	/*
+-	 * Currently on board only 1 pin and 1 converter is enabled for
+-	 * simplification, more will be added eventually
+-	 * So using fixed map for dai_id:pin:cvt
+-	 */
+-	cvt = list_first_entry(&hdmi->cvt_list, struct hdac_hdmi_cvt, head);
+-	pin = list_first_entry(&hdmi->pin_list, struct hdac_hdmi_pin, head);
+-
+-	dai_map->dai_id = 0;
+-	dai_map->pin = pin;
+-
+-	dai_map->cvt = cvt;
++	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
++		dai_map = &hdmi->dai_map[dai_id];
++		dai_map->dai_id = dai_id;
++		dai_map->cvt = cvt;
+ 
+-	/* Enable out path for this pin widget */
+-	snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
+-			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++		/* Enable transmission */
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_DIGI_CONVERT_1, 1);
+ 
+-	/* Enable transmission */
+-	snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
+-			AC_VERB_SET_DIGI_CONVERT_1, 1);
++		/* Category Code (CC) to zero */
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_DIGI_CONVERT_2, 0);
+ 
+-	/* Category Code (CC) to zero */
+-	snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
+-			AC_VERB_SET_DIGI_CONVERT_2, 0);
++		dai_id++;
+ 
+-	snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
+-			AC_VERB_SET_CONNECT_SEL, 0);
++		if (dai_id == HDA_MAX_CVTS) {
++			dev_warn(&edev->hdac.dev, "Max dais supported: %d\n", dai_id);
++			break;
++		}
++	}
+ 
+ 	return 0;
+ }
 -- 
 1.9.1
