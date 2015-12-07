@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: reconfigure dwc in 'resume' from
-	'suspend'" to the asoc tree
-Date: Mon, 07 Dec 2015 19:54:04 +0000
-Message-ID: <E1a61rI-0003Ul-WA@debutante>
-References: <1449272440-8735-6-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: dwc: add quirk for different register
+	offset" to the asoc tree
+Date: Mon, 07 Dec 2015 19:54:05 +0000
+Message-ID: <E1a61rJ-0003VE-Tb@debutante>
+References: <1449272440-8735-5-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F728265455
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 20:54:16 +0100 (CET)
-In-Reply-To: <1449272440-8735-6-git-send-email-alexander.deucher@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DD932652E8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 20:54:15 +0100 (CET)
+In-Reply-To: <1449272440-8735-5-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: reconfigure dwc in 'resume' from 'suspend'
+   ASoC: dwc: add quirk for different register offset
 
 has been applied to the asoc tree at
 
@@ -53,143 +53,87 @@ to this mail.
 Thanks,
 Mark
 
->From 0032e9dbc5d8add10345ccda48e3803bb7cfd650 Mon Sep 17 00:00:00 2001
+>From e164835a0270cc01c93794536027cc70cd00d0ff Mon Sep 17 00:00:00 2001
 From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
-Date: Fri, 4 Dec 2015 18:40:33 -0500
-Subject: [PATCH] ASoC: dwc: reconfigure dwc in 'resume' from 'suspend'
+Date: Fri, 4 Dec 2015 18:40:32 -0500
+Subject: [PATCH] ASoC: dwc: add quirk for different register offset
 
-DWC IP can be powered off during system suspend in some platforms.
-After system is resumed, dwc needs to be programmed again to continue
-audio use case.
+DWC in ACP 2.x IP has different offsets for I2S_COMP_PARAM_* registers.
+Added a quirk to support the same.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
 Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/designware_i2s.c | 70 ++++++++++++++++++++++++++----------------
- 1 file changed, 43 insertions(+), 27 deletions(-)
+ include/sound/designware_i2s.h |  5 +++++
+ sound/soc/dwc/designware_i2s.c | 17 ++++++++++++++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index 8966ba7c9629..e0bb45807f29 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -45,6 +45,11 @@ struct i2s_platform_data {
+ 	u32 snd_fmts;
+ 	u32 snd_rates;
+ 
++	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
++	unsigned int quirks;
++	unsigned int i2s_reg_comp1;
++	unsigned int i2s_reg_comp2;
++
+ 	void *play_dma_data;
+ 	void *capture_dma_data;
+ 	bool (*filter)(struct dma_chan *chan, void *slave);
 diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 940c88136a34..825a1f480aab 100644
+index 3d7754c115ec..940c88136a34 100644
 --- a/sound/soc/dwc/designware_i2s.c
 +++ b/sound/soc/dwc/designware_i2s.c
-@@ -98,6 +98,8 @@ struct dw_i2s_dev {
- 	unsigned int i2s_reg_comp1;
- 	unsigned int i2s_reg_comp2;
+@@ -94,6 +94,9 @@ struct dw_i2s_dev {
+ 	struct clk *clk;
+ 	int active;
+ 	unsigned int capability;
++	unsigned int quirks;
++	unsigned int i2s_reg_comp1;
++	unsigned int i2s_reg_comp2;
  	struct device *dev;
-+	u32 ccr;
-+	u32 xfer_resolution;
  
  	/* data related to DMA transfers b/w i2s and DMAC */
- 	union dw_i2s_snd_dma_data play_dma_data;
-@@ -217,31 +219,58 @@ static int dw_i2s_startup(struct snd_pcm_substream *substream,
- 	return 0;
- }
+@@ -477,8 +480,8 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
+ 	 * Read component parameter registers to extract
+ 	 * the I2S block's configuration.
+ 	 */
+-	u32 comp1 = i2s_read_reg(dev->i2s_base, I2S_COMP_PARAM_1);
+-	u32 comp2 = i2s_read_reg(dev->i2s_base, I2S_COMP_PARAM_2);
++	u32 comp1 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp1);
++	u32 comp2 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp2);
+ 	u32 idx;
  
-+static void dw_i2s_config(struct dw_i2s_dev *dev, int stream)
-+{
-+	u32 ch_reg, irq;
-+	struct i2s_clk_config_data *config = &dev->config;
-+
-+
-+	i2s_disable_channels(dev, stream);
-+
-+	for (ch_reg = 0; ch_reg < (config->chan_nr / 2); ch_reg++) {
-+		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			i2s_write_reg(dev->i2s_base, TCR(ch_reg),
-+				      dev->xfer_resolution);
-+			i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
-+			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
-+			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
-+			i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
-+		} else {
-+			i2s_write_reg(dev->i2s_base, RCR(ch_reg),
-+				      dev->xfer_resolution);
-+			i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
-+			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
-+			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x03);
-+			i2s_write_reg(dev->i2s_base, RER(ch_reg), 1);
-+		}
-+
-+	}
-+}
-+
- static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ 	if (COMP1_TX_ENABLED(comp1)) {
+@@ -521,7 +524,7 @@ static int dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
+ 				   struct resource *res,
+ 				   const struct i2s_platform_data *pdata)
  {
- 	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	struct i2s_clk_config_data *config = &dev->config;
--	u32 ccr, xfer_resolution, ch_reg, irq;
+-	u32 comp1 = i2s_read_reg(dev->i2s_base, I2S_COMP_PARAM_1);
++	u32 comp1 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp1);
+ 	u32 idx = COMP1_APB_DATA_WIDTH(comp1);
  	int ret;
  
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		config->data_width = 16;
--		ccr = 0x00;
--		xfer_resolution = 0x02;
-+		dev->ccr = 0x00;
-+		dev->xfer_resolution = 0x02;
- 		break;
- 
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		config->data_width = 24;
--		ccr = 0x08;
--		xfer_resolution = 0x04;
-+		dev->ccr = 0x08;
-+		dev->xfer_resolution = 0x04;
- 		break;
- 
- 	case SNDRV_PCM_FORMAT_S32_LE:
- 		config->data_width = 32;
--		ccr = 0x10;
--		xfer_resolution = 0x05;
-+		dev->ccr = 0x10;
-+		dev->xfer_resolution = 0x05;
- 		break;
- 
- 	default:
-@@ -262,27 +291,9 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	i2s_disable_channels(dev, substream->stream);
-+	dw_i2s_config(dev, substream->stream);
- 
--	for (ch_reg = 0; ch_reg < (config->chan_nr / 2); ch_reg++) {
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			i2s_write_reg(dev->i2s_base, TCR(ch_reg),
--				      xfer_resolution);
--			i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
--			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
--			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
--			i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
--		} else {
--			i2s_write_reg(dev->i2s_base, RCR(ch_reg),
--				      xfer_resolution);
--			i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
--			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
--			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x03);
--			i2s_write_reg(dev->i2s_base, RER(ch_reg), 1);
--		}
--	}
--
--	i2s_write_reg(dev->i2s_base, CCR, ccr);
-+	i2s_write_reg(dev->i2s_base, CCR, dev->ccr);
- 
- 	config->sample_rate = params_rate(params);
- 
-@@ -431,6 +442,11 @@ static int dw_i2s_resume(struct snd_soc_dai *dai)
- 
- 	if (dev->capability & DW_I2S_MASTER)
- 		clk_enable(dev->clk);
-+
-+	if (dai->playback_active)
-+		dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
-+	if (dai->capture_active)
-+		dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
- 	return 0;
- }
- 
+@@ -625,6 +628,14 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	if (pdata) {
+ 		dev->capability = pdata->cap;
+ 		clk_id = NULL;
++		dev->quirks = pdata->quirks;
++		if (dev->quirks & DW_I2S_QUIRK_COMP_REG_OFFSET) {
++			dev->i2s_reg_comp1 = pdata->i2s_reg_comp1;
++			dev->i2s_reg_comp2 = pdata->i2s_reg_comp2;
++		} else {
++			dev->i2s_reg_comp1 = I2S_COMP_PARAM_1;
++			dev->i2s_reg_comp2 = I2S_COMP_PARAM_2;
++		}
+ 		ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
+ 	} else {
+ 		clk_id = "i2sclk";
 -- 
 2.6.2
