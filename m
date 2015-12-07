@@ -1,43 +1,66 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2 1/6] ASoC: fsl_ssi: Real hardware
- channels max number is 32
-Date: Mon, 7 Dec 2015 10:44:26 -0200
-Message-ID: <CAOMZO5DvFFmoX84XEKdiV79ugqedMMrCm5HgXEfm1fzN+1yviw@mail.gmail.com>
-References: <1448550341-11765-1-git-send-email-arnaud.mouiche@invoxia.com>
- <1448550341-11765-2-git-send-email-arnaud.mouiche@invoxia.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [alsa-devel] [PATCH MC Next Gen] sound/usb: Fix out of bounds
+ access in media_entity_init()
+Date: Mon, 7 Dec 2015 07:23:59 -0700
+Message-ID: <5665967F.4060704@osg.samsung.com>
+References: <1449273629-4991-1-git-send-email-shuahkh@osg.samsung.com>
+ <s5h8u563c9r.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id AFF812658F0
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 13:44:27 +0100 (CET)
-Received: by igcph11 with SMTP id ph11so72834188igc.1
- for <alsa-devel@alsa-project.org>; Mon, 07 Dec 2015 04:44:26 -0800 (PST)
-In-Reply-To: <1448550341-11765-2-git-send-email-arnaud.mouiche@invoxia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5h8u563c9r.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: mchehab@osg.samsung.com, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Arnaud,
+On 12/07/2015 01:15 AM, Takashi Iwai wrote:
+> On Sat, 05 Dec 2015 01:00:29 +0100,
+> Shuah Khan wrote:
+>>
+>> Fix the out of bounds access in media_entity_init() found
+>> by KASan. This is a result of media_mixer_init() failing
+>> to allocate memory for all 3 of its pads before calling
+>> media_entity_init(). Fix it to allocate memory for the
+>> right struct media_mixer_ctl instead of struct media_ctl.
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>
+>> This patch fixes the mixer patch below:
+>> https://patchwork.linuxtv.org/patch/31827/
+>>
+>>  sound/usb/media.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/usb/media.c b/sound/usb/media.c
+>> index bebe27b..0cb44b9 100644
+>> --- a/sound/usb/media.c
+>> +++ b/sound/usb/media.c
+>> @@ -233,8 +233,8 @@ int media_mixer_init(struct snd_usb_audio *chip)
+>>  		if (mixer->media_mixer_ctl)
+>>  			continue;
+>>  
+>> -		/* allocate media_ctl */
+>> -		mctl = kzalloc(sizeof(struct media_ctl), GFP_KERNEL);
+>> +		/* allocate media_mixer_ctl */
+>> +		mctl = kzalloc(sizeof(struct media_mixer_ctl), GFP_KERNEL);
+> 
+> Isn't it better to use sizeof(*mctl)?
+> 
 
-On Thu, Nov 26, 2015 at 1:05 PM, Arnaud Mouiche
-<arnaud.mouiche@invoxia.com> wrote:
-> The max number of slots in TDM mode is 32:
-> - Frame Rate Divider Control is a 5bit value
-> - Time slot mask registers control 32 slots.
->
-> Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Yes. That is definitely less error prone than
+sizeof(struct foo). I will fix it and send the
+corrected patch.
 
-Thanks for your series. It seems you missed to Cc the SSI driver
-maintainer: Nicolin Chen.
+thanks,
+-- Shuah
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
