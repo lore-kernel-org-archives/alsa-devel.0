@@ -1,66 +1,62 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [alsa-devel] [PATCH MC Next Gen] sound/usb: Fix out of bounds
- access in media_entity_init()
-Date: Mon, 7 Dec 2015 07:23:59 -0700
-Message-ID: <5665967F.4060704@osg.samsung.com>
-References: <1449273629-4991-1-git-send-email-shuahkh@osg.samsung.com>
- <s5h8u563c9r.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <s5h8u563c9r.wl-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: mchehab@osg.samsung.com, perex@perex.cz, chehabrafael@gmail.com, hans.verkuil@cisco.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Fixing speaker noise on two thinkpad machines
+Date: Mon,  7 Dec 2015 22:31:52 +0800
+Message-ID: <1449498712-21498-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/07/2015 01:15 AM, Takashi Iwai wrote:
-> On Sat, 05 Dec 2015 01:00:29 +0100,
-> Shuah Khan wrote:
->>
->> Fix the out of bounds access in media_entity_init() found
->> by KASan. This is a result of media_mixer_init() failing
->> to allocate memory for all 3 of its pads before calling
->> media_entity_init(). Fix it to allocate memory for the
->> right struct media_mixer_ctl instead of struct media_ctl.
->>
->> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
->> ---
->>
->> This patch fixes the mixer patch below:
->> https://patchwork.linuxtv.org/patch/31827/
->>
->>  sound/usb/media.c | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/usb/media.c b/sound/usb/media.c
->> index bebe27b..0cb44b9 100644
->> --- a/sound/usb/media.c
->> +++ b/sound/usb/media.c
->> @@ -233,8 +233,8 @@ int media_mixer_init(struct snd_usb_audio *chip)
->>  		if (mixer->media_mixer_ctl)
->>  			continue;
->>  
->> -		/* allocate media_ctl */
->> -		mctl = kzalloc(sizeof(struct media_ctl), GFP_KERNEL);
->> +		/* allocate media_mixer_ctl */
->> +		mctl = kzalloc(sizeof(struct media_mixer_ctl), GFP_KERNEL);
-> 
-> Isn't it better to use sizeof(*mctl)?
-> 
+Disable the aamix can fix this problem.
 
-Yes. That is definitely less error prone than
-sizeof(struct foo). I will fix it and send the
-corrected patch.
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1523517
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-thanks,
--- Shuah
-
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ebc5362..49b1d36 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4596,6 +4596,7 @@ enum {
+ 	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC275_FIXUP_DELL_XPS,
+ 	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
++	ALC293_FIXUP_LENOVO_SPK_NOISE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -5187,6 +5188,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
+ 	},
++	[ALC293_FIXUP_LENOVO_SPK_NOISE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_disable_aamix,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -5334,6 +5341,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -5343,6 +5351,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x5034, "Thinkpad T450", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x503c, "Thinkpad L450", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x504b, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
+ 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
 -- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+1.9.1
