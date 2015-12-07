@@ -1,78 +1,59 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 00/15] ASoC: hdac_hdmi: Add DP & notification support
-Date: Tue,  8 Dec 2015 02:47:58 +0530
-Message-ID: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 01/15] ASoC: hdac_hdmi: Fix to check num
+	nodes correctly
+Date: Tue,  8 Dec 2015 02:54:15 +0530
+Message-ID: <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
+References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25D9F260851
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 16:53:56 +0100 (CET)
+In-Reply-To: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBEUCBhdWRpbyBhbmQgaG90cGx1ZyBub3RpZmljYXRpb24g
-c3VwcG9ydC4KCk9uIFNreWxha2UgdHdvIERQIHBvcnRzIGFyZSBhdmFpbGFibGUgYW5kIHRvIGVu
-YWJsZSBEUCBvbiBib3RoCnBvcnRzIGFsbCBwaW5zIG5lZWQgdG8gYmUgZW5hYmxlZC4KClRoZXJl
-IGlzIGEgc3BlY2lhbCB2ZW5kb3Igd2lkZ2V0IHdoaWNoIG5lZWQgdG8gYmUgcHJvZ3JhbW1lZCB0
-bwplbmFibGUgYWxsIHBpbnMgYW5kIGNvbnZlcnRlcnMuIFRoaXMgc2VyaWVzIGFkZHMgaG90cGx1
-Zwpub3RpZmljYXRpb24sIHJlYWQvc2V0IGNvbnN0cmFpbnQgYmFzZWQgb24gRUxELCBlbmFibGUg
-YWxsCnBpbi9jdnRzLCBEUDEuMiwgcHJvZ3JhbXMgdGhlIGF1ZGlvIGluZm9mcmFtZSBmb3IgRFAu
-IFRoZXJlIGlzIGEKb25lIHRvIG9uZSBtYXBwaW5nIGJldHdlZW4gY29udmVydGVyIGFuZCBzdHJl
-YW0sIHNvIHRoZSBkYWlzIGFyZQpjcmVhdGVkIGJhc2VkIG9uIHRoZSBubyBvZiBzdHJlYW1zIHN1
-cHBvcnRlZCBvbiBoZG1pIGNvZGVjLiAgRXZlbgp0aG91Z2ggY3Z0cyBjYW4gYmUgbWFwcGVkIGR5
-bmFtaWNhbGx5IHRvIHRoZSBzdHJlYW1zLCBjdXJyZW50bHkKaXQgaXMgc3RhdGljYWxseSBtYXBw
-ZWQgYXMgc2ltdWx0YW5lb3VzIHBsYXliYWNrIG9uIGJvdGggRFAgYW5kCkhETUkgaXMgbm90IHN1
-cHBvcnRlZCBhcyBvZiBub3cuCgpQaW4gbXV4ZXMgYW5kIGNvbnRyb2xzIGFyZSBjcmVhdGVkIGR5
-bmFtaWNhbGx5IHRvIG1hcCBjb252ZXJ0ZXIKdG8gcGluIHdpZGdldC4gU28gYXQgcnVuIHRpbWUg
-c3BlY2lmaWMgcGluIGlzIG1hcHBlZCB0byB0aGUgZGFpCmJhc2VkIG9uIHRoZSBjb250cm9sIHNl
-bGVjdGVkIChiYXNlZCBvbiB0aGUgZGlzcGxheSB0eXBlIERQL0hETUkKY29ubmVjdGVkKS4KCkZp
-bmFsbHkgdGhlIERQIGF1ZGlvIGluZm9mcmFtZSBwcm9ncmFtbWluZyBpcyBhZGRlZCB0byBzdXBw
-b3J0CnRoZSBEUCBmZWF0dXJlLiAKCkFsc28gd2l0aCBob3RwbHVnIG5vdGlmaWNhdGlvbiBzdXBw
-b3J0LCBFTEQgaXMgcmVhZCBhbmQKY2FwYWJpbGl0aWVzIGFyZSBzZXQgZm9yIHJhdGUsIGZvcm1h
-dHMgYW5kIGNoYW5uZWxzLiBkcm1fZWxkCnNvdW5kL2NvcmUgZnJhbWV3b3JrIGlzIHVwZGF0ZWQg
-dG8gbGltaXQgdGhlIGZvcm1hdHMgYmFzZWQgb24KRUxELgoKVGhlcmUgYXJlIGZldyBmaXhlcyBv
-bmUgZml4aW5nIHRoZSBzdGF0aWMgY2hlY2tlciB3YXJuaW5nIGFuZApvdGhlciBvbmUgbm90IHRv
-IGZhaWwgaWYgbm8gY29ubmVjdGlvbiBsaXN0IGlzIGZvdW5kIGZvciBhIHBpbgp3aWRnZXQuCgpQ
-bHMgbm90ZSwgdGhlIDEwdGggcGF0Y2ggaXMgYWRkaW5nIGEgc21hbGwgbWFjcm8gZm9yIGdldHRp
-bmcKY29ubmVjdGlvbiB0eXBlIGluIGRybSBoZWFkZXIsIHdlIGhhdmUgQ0NlZCBkcm0gZm9sa3Mg
-b24gdGhhdCBhbmQKdGhpcyBvbmUuIFBscyBhY2sgc28gdGhhdCB3ZSBjYW4gaGF2ZSB0aGlzIHNl
-cmllcyBtZXJnZWQgdGhydQpzb3VuZCB0cmVlcwoKY2hhbmdlcyBpbiB2MzoKCS0gQWRkcmVzc2Vk
-IHJldmlldyBjb21tZW50cwoJLSBVc2Ugb2YgbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlIGZvciBu
-b2RlIGRlbGV0aW9uLgoJLSBNb3ZlZCB0aGUgZm9ybWF0IGNvbnN0cmFpbnQgYmFzZWQgb24gRUxE
-IHRvIGRyaXZlcgoJLSBGaXggY29uc3RhbnQgYXMgcGVyIGtlcm5lbCBkb2MgZm9yIGNvbm5lY3Rp
-b24gdHlwZSBpbgoJICBkcm0gaGVscGVyCgktIEZpeCBkcCBpbmZvZnJhbWUKCS0gQWRkIGhvdHBs
-dWcgZXZlbnQgcmVwb3J0aW5nIHRvIHVzZXIgc3BhY2UKCS0gTW92ZSBkZXZpY2UgY29uZmlndXJh
-dGlvbiBmcm9tIGRhaSBzdGFydHVwIHRvIGh3X3BhcmFtcwoJICBhcyB0aGUgdXNlciBzcGFjZSBj
-YW4ga2VlcCB0aGUgZGV2aWNlIG9wZW4gYWx3YXlzLgoKSmVlamEgS1AgKDIpOgogIEFTb0M6IGhk
-YWNfaGRtaTogQWRkIGNvZGVjIHN1c3BlbmQvcmVzdW1lIGhhbmRsZXIKICBBU29DOiBoZGFjX2hk
-bWk6IEZpeCB0byBlbmFibGUgZGV2aWNlIGNvbmZpZ3VyYXRpb24gaW4gaHdfcGFyYW1zCgpSYW1l
-c2ggQmFidSAoMSk6CiAgQVNvQzogaGRhY19oZG1pOiBGaXggdG8ga2VlcCBkaXNwbGF5IGFjdGl2
-ZSB3aGlsZSBlbnVtZXJhdGluZyBjb2RlYwoKU3ViaHJhbnN1IFMuIFBydXN0eSAoMTIpOgogIEFT
-b0M6IGhkYWNfaGRtaTogRml4IHRvIGNoZWNrIG51bSBub2RlcyBjb3JyZWN0bHkKICBBU29DOiBo
-ZGFjX2hkbWk6IEZpeCB0byB3YXJuIGluc3RlYWQgb2YgZXJyIGZvciBubyBjb25uZWN0ZWQgbmlk
-cwogIEFTb0M6IGhkYWNfaGRtaTogVXNlIGxpc3QgdG8gYWRkIHBpbnMgYW5kIGNvbnZlcnRlcnMK
-ICBBU29DOiBoZGFjX2hkbWk6IEFkZCBob3RwbHVnIG5vdGlmaWNhdGlvbiBhbmQgcmVhZCBlbGQK
-ICBBU29DOiBoZGFjX2hkbWk6IEFwcGx5IGNvbnN0cmFpbnRzIGJhc2VkIG9uIEVMRAogIEFTb0M6
-IGhkYWNfaGRtaTogRW5hYmxlIERQMS4yIGFuZCBhbGwgY29udmVydGVycy9waW5zCiAgQVNvQzog
-aGRhY19oZG1pOiBjcmVhdGUgZGFpcyBiYXNlZCBvbiBudW1iZXIgb2Ygc3RyZWFtcwogIEFTb0M6
-IGhkYWNfaGRtaTogQ3JlYXRlIHdpZGdldC9yb3V0ZSBiYXNlZCBvbiBub2RlcyBlbnVtZXJhdGVk
-CiAgQVNvQzogaGRhY19oZG1pOiBBc3NpZ24gcGluIGZvciBzdHJlYW0gYmFzZWQgb24gZGFwbSBj
-b25uZWN0aW9uCiAgZHJtL2VkaWQ6IEFkZCBBUEkgdG8gaGVscCBmaW5kIGNvbm5lY3Rpb24gdHlw
-ZQogIEFTb0M6IGhkYWNfaGRtaTogQWRkIGluZm9mcmFtZSBzdXBwb3J0IGZvciBkcCBhdWRpbwog
-IEFTb0M6IGhkYWNfaGRtaTogQWRkIGphY2sgcmVwb3J0aW5nIGZvciB1c2VyIHNwYWNlCgogaW5j
-bHVkZS9kcm0vZHJtX2VkaWQuaCAgICAgICB8ICAgMTIgKwogc291bmQvc29jL2NvZGVjcy9LY29u
-ZmlnICAgICB8ICAgIDEgKwogc291bmQvc29jL2NvZGVjcy9oZGFjX2hkbWkuYyB8IDExMDEgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tCiAzIGZpbGVzIGNoYW5nZWQs
-IDkzNiBpbnNlcnRpb25zKCspLCAxNzggZGVsZXRpb25zKC0pCgotLSAKMS45LjEKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5n
-IGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+commit 3c83ac23253c ("ASoC: hdac_hdmi: check error return") fixes
+the static checker warning reported by Dan Carpenter:
+
+	sound/soc/codecs/hdac_hdmi.c:416 hdac_hdmi_parse_and_map_nid()
+	warn: unsigned 'hdac->num_nodes' is never less than zero.
+
+But it doesn't fix the issue completely.
+
+It's also a failure if no sub nodes found for an afg node. So modify
+the return condition appropriately.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 1a2f33b..929f27b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -415,7 +415,7 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ 	int cvt_nid = 0, pin_nid = 0;
+ 
+ 	num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
+-	if (!nid || num_nodes < 0) {
++	if (!nid || num_nodes <= 0) {
+ 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
+ 		return -EINVAL;
+ 	}
+-- 
+1.9.1
