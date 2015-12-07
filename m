@@ -1,145 +1,82 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 2/4] drm/i915: Add reverse mapping
- between port and intel_encoder
-Date: Mon, 7 Dec 2015 09:44:45 +0100
-Message-ID: <20151207084445.GB10243@phenom.ffwll.local>
-References: <1449249169-20602-1-git-send-email-tiwai@suse.de>
- <1449249169-20602-3-git-send-email-tiwai@suse.de>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
+	update
+Date: Mon, 7 Dec 2015 09:46:02 +0100
+Message-ID: <5665474A.9030906@st.com>
+References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
+ <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
+ <20151202190036.GD8644@n2100.arm.linux.org.uk> <56602046.8070307@st.com>
+ <20151203111304.GL8644@n2100.arm.linux.org.uk> <s5h37vjn3hh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1449249169-20602-3-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06375261B25
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 09:46:06 +0100 (CET)
+In-Reply-To: <s5h37vjn3hh.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBEZWMgMDQsIDIwMTUgYXQgMDY6MTI6NDdQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IFRoaXMgcGF0Y2ggYWRkcyBhIHJldmVyc2UgbWFwcGluZyBmcm9tIGEgZGlnaXRhbCBw
-b3J0IG51bWJlciB0bwo+IGludGVsX2VuY29kZXIgb2JqZWN0IGNvbnRhaW5pbmcgdGhlIGNvcnJl
-c3BvbmRpbmcgaW50ZWxfZGlnaXRhbF9wb3J0Lgo+IEl0IHNpbXBsaWZpZXMgdGhlIHF1ZXJ5IG9m
-IHRoZSBlbmNvZGVyIGEgbG90Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4KPiAtLS0KPiB2Mi0+djM6Cj4gKiBTcXVhc2hlZCBwcmV2aW91c2x5IHR3byBj
-bGVhbnVwIHBhdGNoZXMgdG8gYSBzaW5nbGUgcGF0Y2gKPiAKPiAgZHJpdmVycy9ncHUvZHJtL2k5
-MTUvaTkxNV9kcnYuaCAgICB8ICAyICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1
-ZGlvLmMgfCAzOSArKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICBkcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kZGkuYyAgIHwgIDEgKwo+ICBkcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pbnRlbF9kcC5jICAgIHwgIDEgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9o
-ZG1pLmMgIHwgIDIgKysKPiAgNSBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAyOCBk
-ZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9k
-cnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPiBpbmRleCAxNWM2ZGMwYjRm
-MzcuLjlkYmMxNDNjYWMyNyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1
-X2Rydi5oCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+IEBAIC0xOTQ0
-LDYgKzE5NDQsOCBAQCBzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSB7Cj4gIAkvKiBwZXJmb3JtIFBI
-WSBzdGF0ZSBzYW5pdHkgY2hlY2tzPyAqLwo+ICAJYm9vbCBjaHZfcGh5X2Fzc2VydFsyXTsKPiAg
-Cj4gKwlzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqZGlnX3BvcnRfbWFwW0k5MTVfTUFYX1BPUlRTXTsK
-PiArCj4gIAkvKgo+ICAJICogTk9URTogVGhpcyBpcyB0aGUgZHJpMS91bXMgZHVuZ2VvbiwgZG9u
-J3QgYWRkIHN0dWZmIGhlcmUuIFlvdXIgcGF0Y2gKPiAgCSAqIHdpbGwgYmUgcmVqZWN0ZWQuIElu
-c3RlYWQgbG9vayBmb3IgYSBiZXR0ZXIgcGxhY2UuCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRp
-by5jCj4gaW5kZXggZWVhYzlmNzYzMTEwLi4wNWYwOGI0NDVkZDYgMTAwNjQ0Cj4gLS0tIGEvZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9p
-OTE1L2ludGVsX2F1ZGlvLmMKPiBAQCAtNjM2LDEzICs2MzYsMTEgQEAgc3RhdGljIGludCBpOTE1
-X2F1ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3JhdGUoc3RydWN0IGRldmljZSAqZGV2LAo+ICAJ
-CQkJCQlpbnQgcG9ydCwgaW50IHJhdGUpCj4gIHsKPiAgCXN0cnVjdCBkcm1faTkxNV9wcml2YXRl
-ICpkZXZfcHJpdiA9IGRldl90b19pOTE1KGRldik7Cj4gLQlzdHJ1Y3QgZHJtX2RldmljZSAqZHJt
-X2RldiA9IGRldl9wcml2LT5kZXY7Cj4gIAlzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5j
-b2RlcjsKPiAtCXN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0Owo+ICAJ
-c3RydWN0IGludGVsX2NydGMgKmNydGM7Cj4gIAlzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAqbW9k
-ZTsKPiAgCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVk
-aW9fY29tcG9uZW50Owo+IC0JZW51bSBwaXBlIHBpcGUgPSAtMTsKPiArCWVudW0gcGlwZSBwaXBl
-ID0gSU5WQUxJRF9QSVBFOwo+ICAJdTMyIHRtcDsKPiAgCWludCBuOwo+ICAKPiBAQCAtNjU1LDIx
-ICs2NTMsMTIgQEAgc3RhdGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9zeW5jX2F1ZGlvX3Jh
-dGUoc3RydWN0IGRldmljZSAqZGV2LAo+ICAKPiAgCW11dGV4X2xvY2soJmRldl9wcml2LT5hdl9t
-dXRleCk7Cj4gIAkvKiAxLiBnZXQgdGhlIHBpcGUgKi8KPiAtCWZvcl9lYWNoX2ludGVsX2VuY29k
-ZXIoZHJtX2RldiwgaW50ZWxfZW5jb2Rlcikgewo+IC0JCWlmIChpbnRlbF9lbmNvZGVyLT50eXBl
-ICE9IElOVEVMX09VVFBVVF9IRE1JKQo+IC0JCQljb250aW51ZTsKPiAtCQlpbnRlbF9kaWdfcG9y
-dCA9IGVuY190b19kaWdfcG9ydCgmaW50ZWxfZW5jb2Rlci0+YmFzZSk7Cj4gLQkJaWYgKHBvcnQg
-PT0gaW50ZWxfZGlnX3BvcnQtPnBvcnQpIHsKPiAtCQkJY3J0YyA9IHRvX2ludGVsX2NydGMoaW50
-ZWxfZW5jb2Rlci0+YmFzZS5jcnRjKTsKPiAtCQkJaWYgKCFjcnRjKSB7Cj4gLQkJCQlEUk1fREVC
-VUdfS01TKCIlczogY3J0YyBpcyBOVUxMXG4iLCBfX2Z1bmNfXyk7Cj4gLQkJCQljb250aW51ZTsK
-PiAtCQkJfQo+IC0JCQlwaXBlID0gY3J0Yy0+cGlwZTsKPiAtCQkJYnJlYWs7Cj4gLQkJfQo+ICsJ
-aW50ZWxfZW5jb2RlciA9IGRldl9wcml2LT5kaWdfcG9ydF9tYXBbcG9ydF07Cj4gKwlpZiAoaW50
-ZWxfZW5jb2RlciAmJiBpbnRlbF9lbmNvZGVyLT50eXBlID09IElOVEVMX09VVFBVVF9IRE1JICYm
-CgpJcyBpdCByZWFsbHkgbGVnaXQgdG8gY2FsbCB0aGVzZSBmdW5jdGlvbnMgd2l0aCBhIHBvcnQg
-Zm9yIHdoaWNoIHdlIGRvbid0CmhhdmUgYW4gZW5jb2Rlcj8gV0FSTl9PTighZW5jb2RlcikgaGVy
-ZSBhbmQgaW4gdGhlIG90aGVyIHBsYWNlcz8gT3Igd291bGQKdGhhdCByZXF1aXJlIHNvbWUgZnVu
-Y3Rpb24gZm9yIHNuZC1oZGEgdG8gaW5xdWlyZSBpOTE1IHdoaWNoIHBvcnRzIGFyZQplbmFibGVk
-ICh3aGljaCB3ZSBwcm9iYWJseSBzaG91bGQgaGF2ZSB0byBhdm9pZCByZWdpc3RlcmluZyBhdWRp
-byBwb3J0cwp0aGF0IGFyZW4ndCB0aGVyZSk/CgpPdGhlcndpc2UgbGd0bS4KLURhbmllbAoKPiAr
-CSAgICBpbnRlbF9lbmNvZGVyLT5iYXNlLmNydGMpIHsKPiArCQljcnRjID0gdG9faW50ZWxfY3J0
-YyhpbnRlbF9lbmNvZGVyLT5iYXNlLmNydGMpOwo+ICsJCXBpcGUgPSBjcnRjLT5waXBlOwo+ICAJ
-fQo+IC0KPiAgCWlmIChwaXBlID09IElOVkFMSURfUElQRSkgewo+ICAJCURSTV9ERUJVR19LTVMo
-Im5vIHBpcGUgZm9yIHRoZSBwb3J0ICVjXG4iLCBwb3J0X25hbWUocG9ydCkpOwo+ICAJCW11dGV4
-X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4KTsKPiBAQCAtNzE2LDI3ICs3MDUsMjEgQEAgc3Rh
-dGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9nZXRfZWxkKHN0cnVjdCBkZXZpY2UgKmRldiwg
-aW50IHBvcnQsCj4gIAkJCQkJdW5zaWduZWQgY2hhciAqYnVmLCBpbnQgbWF4X2J5dGVzKQo+ICB7
-Cj4gIAlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSBkZXZfdG9faTkxNShkZXYp
-Owo+IC0Jc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfcHJpdi0+ZGV2Owo+ICAJc3Ry
-dWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXI7Cj4gIAlzdHJ1Y3QgaW50ZWxfZGlnaXRh
-bF9wb3J0ICppbnRlbF9kaWdfcG9ydDsKPiAgCWNvbnN0IHU4ICplbGQ7Cj4gIAlpbnQgcmV0ID0g
-LUVJTlZBTDsKPiAgCj4gIAltdXRleF9sb2NrKCZkZXZfcHJpdi0+YXZfbXV0ZXgpOwo+IC0JZm9y
-X2VhY2hfaW50ZWxfZW5jb2Rlcihkcm1fZGV2LCBpbnRlbF9lbmNvZGVyKSB7Cj4gLQkJaWYgKGlu
-dGVsX2VuY29kZXItPnR5cGUgIT0gSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUICYmCj4gLQkJICAg
-IGludGVsX2VuY29kZXItPnR5cGUgIT0gSU5URUxfT1VUUFVUX0hETUkpCj4gLQkJCWNvbnRpbnVl
-Owo+ICsJaW50ZWxfZW5jb2RlciA9IGRldl9wcml2LT5kaWdfcG9ydF9tYXBbcG9ydF07Cj4gKwlp
-ZiAoaW50ZWxfZW5jb2Rlcikgewo+ICsJCXJldCA9IDA7Cj4gIAkJaW50ZWxfZGlnX3BvcnQgPSBl
-bmNfdG9fZGlnX3BvcnQoJmludGVsX2VuY29kZXItPmJhc2UpOwo+IC0JCWlmIChwb3J0ID09IGlu
-dGVsX2RpZ19wb3J0LT5wb3J0KSB7Cj4gLQkJCXJldCA9IDA7Cj4gLQkJCSplbmFibGVkID0gaW50
-ZWxfZGlnX3BvcnQtPmF1ZGlvX2Nvbm5lY3RvciAhPSBOVUxMOwo+IC0JCQlpZiAoISplbmFibGVk
-KQo+IC0JCQkJYnJlYWs7Cj4gKwkJKmVuYWJsZWQgPSBpbnRlbF9kaWdfcG9ydC0+YXVkaW9fY29u
-bmVjdG9yICE9IE5VTEw7Cj4gKwkJaWYgKCplbmFibGVkKSB7Cj4gIAkJCWVsZCA9IGludGVsX2Rp
-Z19wb3J0LT5hdWRpb19jb25uZWN0b3ItPmVsZDsKPiAgCQkJcmV0ID0gZHJtX2VsZF9zaXplKGVs
-ZCk7Cj4gIAkJCW1lbWNweShidWYsIGVsZCwgbWluKG1heF9ieXRlcywgcmV0KSk7Cj4gLQkJCWJy
-ZWFrOwo+ICAJCX0KPiAgCX0KPiAgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2RkaS5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZGRpLmMKPiBpbmRleCA3
-NmNlN2MyOTYwYjYuLjU5ZGViMGQ4NTUzMyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pbnRlbF9kZGkuYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2RkaS5j
-Cj4gQEAgLTMyOTUsNiArMzI5NSw3IEBAIHZvaWQgaW50ZWxfZGRpX2luaXQoc3RydWN0IGRybV9k
-ZXZpY2UgKmRldiwgZW51bSBwb3J0IHBvcnQpCj4gIAlpbnRlbF9lbmNvZGVyLT5nZXRfY29uZmln
-ID0gaW50ZWxfZGRpX2dldF9jb25maWc7Cj4gIAo+ICAJaW50ZWxfZGlnX3BvcnQtPnBvcnQgPSBw
-b3J0Owo+ICsJZGV2X3ByaXYtPmRpZ19wb3J0X21hcFtwb3J0XSA9IGludGVsX2VuY29kZXI7Cj4g
-IAlpbnRlbF9kaWdfcG9ydC0+c2F2ZWRfcG9ydF9iaXRzID0gSTkxNV9SRUFEKERESV9CVUZfQ1RM
-KHBvcnQpKSAmCj4gIAkJCQkJICAoRERJX0JVRl9QT1JUX1JFVkVSU0FMIHwKPiAgCQkJCQkgICBE
-RElfQV80X0xBTkVTKTsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
-ZHAuYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2RwLmMKPiBpbmRleCBiZWM0NDNhNjI5
-ZGEuLjE0NmY1ZGEzYWNiMSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
-bF9kcC5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHAuYwo+IEBAIC02MDAy
-LDYgKzYwMDIsNyBAQCBpbnRlbF9kcF9pbml0KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsCj4gIAl9
-Cj4gIAo+ICAJaW50ZWxfZGlnX3BvcnQtPnBvcnQgPSBwb3J0Owo+ICsJZGV2X3ByaXYtPmRpZ19w
-b3J0X21hcFtwb3J0XSA9IGludGVsX2VuY29kZXI7Cj4gIAlpbnRlbF9kaWdfcG9ydC0+ZHAub3V0
-cHV0X3JlZyA9IG91dHB1dF9yZWc7Cj4gIAo+ICAJaW50ZWxfZW5jb2Rlci0+dHlwZSA9IElOVEVM
-X09VVFBVVF9ESVNQTEFZUE9SVDsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfaGRtaS5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5jCj4gaW5kZXgg
-YmRkNDYyZTdjNjkwLi5jMDQ2MDE3YmU3ODYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2k5MTUvaW50ZWxfaGRtaS5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRt
-aS5jCj4gQEAgLTIxNDgsNiArMjE0OCw3IEBAIHZvaWQgaW50ZWxfaGRtaV9pbml0X2Nvbm5lY3Rv
-cihzdHJ1Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICppbnRlbF9kaWdfcG9ydCwKPiAgdm9pZCBpbnRl
-bF9oZG1pX2luaXQoc3RydWN0IGRybV9kZXZpY2UgKmRldiwKPiAgCQkgICAgIGk5MTVfcmVnX3Qg
-aGRtaV9yZWcsIGVudW0gcG9ydCBwb3J0KQo+ICB7Cj4gKwlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0
-ZSAqZGV2X3ByaXYgPSBkZXYtPmRldl9wcml2YXRlOwo+ICAJc3RydWN0IGludGVsX2RpZ2l0YWxf
-cG9ydCAqaW50ZWxfZGlnX3BvcnQ7Cj4gIAlzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5j
-b2RlcjsKPiAgCXN0cnVjdCBpbnRlbF9jb25uZWN0b3IgKmludGVsX2Nvbm5lY3RvcjsKPiBAQCAt
-MjIxNiw2ICsyMjE3LDcgQEAgdm9pZCBpbnRlbF9oZG1pX2luaXQoc3RydWN0IGRybV9kZXZpY2Ug
-KmRldiwKPiAgCQlpbnRlbF9lbmNvZGVyLT5jbG9uZWFibGUgfD0gMSA8PCBJTlRFTF9PVVRQVVRf
-SERNSTsKPiAgCj4gIAlpbnRlbF9kaWdfcG9ydC0+cG9ydCA9IHBvcnQ7Cj4gKwlkZXZfcHJpdi0+
-ZGlnX3BvcnRfbWFwW3BvcnRdID0gaW50ZWxfZW5jb2RlcjsKPiAgCWludGVsX2RpZ19wb3J0LT5o
-ZG1pLmhkbWlfcmVnID0gaGRtaV9yZWc7Cj4gIAlpbnRlbF9kaWdfcG9ydC0+ZHAub3V0cHV0X3Jl
-ZyA9IElOVkFMSURfTU1JT19SRUc7Cj4gIAo+IC0tIAo+IDIuNi4zCj4gCj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBJbnRlbC1nZnggbWFpbGluZyBs
-aXN0Cj4gSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IGh0dHA6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngKCi0tIApEYW5pZWwgVmV0dGVy
-ClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRlbCBDb3Jwb3JhdGlvbgpodHRwOi8vYmxvZy5mZndsbC5j
-aApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1n
-ZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xp
-c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On 12/03/2015 01:03 PM, Takashi Iwai wrote:
+> On Thu, 03 Dec 2015 12:13:04 +0100,
+> Russell King - ARM Linux wrote:
+>>
+>> On Thu, Dec 03, 2015 at 11:58:14AM +0100, Moise Gergaud wrote:
+>>> On 12/02/2015 08:00 PM, Russell King - ARM Linux wrote:
+>>>> Again, I'm not happy with this change.  The intention here is that we
+>>>> validate all arguments before we change anything.  This breaks that
+>>>> principle.
+>>>>
+>>> We propose this change for compressed mode (IEC61937/non linear PCM).
+>>> In case of compressed mode, iec958 channel status byte 0 bit1 = 1, then we
+>>> cannot use snd_pcm_create_iec958_consumer.
+>>
+>> Why can you not use snd_pcm_create_iec958_consumer() for this case?  You
+>> are allowed to modify the values you get afterwards in order to handle
+>> this case if you so wish to toggle this bit.
+>>
+>> However, if you are using data mode, you really should be using the AES
+>> bytes passed by the application through alsalib and into the kernel via
+>> the IEC958 controls.  There are three controls specified for this:
+>>
+>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK) - the bits which can be
+>> changed for consumer mode.
+>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK) - the bits which can be
+>> changed for professional mode.
+>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT) - the value of the changable
+>> bits.
+>>
+>> When using this, it is userspace's responsibility to set the sample rate
+>> appropriately for the stream.
+>>
+>> The only case to use snd_pcm_create_iec958_consumer() is to generate the
+>> status bytes for PCM audio, where the userspace API doesn't facilitiate
+>> generating and/or passing the AES status bytes.
+>
+> That's true.  OTOH, in most drivers, we try to be kind not to be too
+> strict for this requirement and adjust the status bits accordingly.
+> This comes from the lessons we learned how user-space doesn't care the
+> things.
+>
+> So, if we want to keep that good uncle attitude, this change doesn't
+> look so bad to me.
+>
+shall I deliver a new version of this patch with header correction or 
+shall I abandon this patch?
+>
+> thanks,
+>
+> Takashi
+>
