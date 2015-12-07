@@ -1,21 +1,18 @@
-From: Moise Gergaud <moise.gergaud@st.com>
-Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
-	update
-Date: Mon, 7 Dec 2015 09:46:02 +0100
-Message-ID: <5665474A.9030906@st.com>
-References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
- <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
- <20151202190036.GD8644@n2100.arm.linux.org.uk> <56602046.8070307@st.com>
- <20151203111304.GL8644@n2100.arm.linux.org.uk> <s5h37vjn3hh.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3] ALSA: compress: add support for 32bit
+ calls in a 64bit kernel
+Date: Mon, 7 Dec 2015 15:04:00 +0530
+Message-ID: <20151207093400.GM1854@localhost>
+References: <1449470311-32394-1-git-send-email-rlokhande@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 06375261B25
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 09:46:06 +0100 (CET)
-In-Reply-To: <s5h37vjn3hh.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58EAA260513
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2015 10:30:57 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1449470311-32394-1-git-send-email-rlokhande@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
+To: Ravindra Lokhande <rlokhande@nvidia.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/03/2015 01:03 PM, Takashi Iwai wrote:
-> On Thu, 03 Dec 2015 12:13:04 +0100,
-> Russell King - ARM Linux wrote:
->>
->> On Thu, Dec 03, 2015 at 11:58:14AM +0100, Moise Gergaud wrote:
->>> On 12/02/2015 08:00 PM, Russell King - ARM Linux wrote:
->>>> Again, I'm not happy with this change.  The intention here is that we
->>>> validate all arguments before we change anything.  This breaks that
->>>> principle.
->>>>
->>> We propose this change for compressed mode (IEC61937/non linear PCM).
->>> In case of compressed mode, iec958 channel status byte 0 bit1 = 1, then we
->>> cannot use snd_pcm_create_iec958_consumer.
->>
->> Why can you not use snd_pcm_create_iec958_consumer() for this case?  You
->> are allowed to modify the values you get afterwards in order to handle
->> this case if you so wish to toggle this bit.
->>
->> However, if you are using data mode, you really should be using the AES
->> bytes passed by the application through alsalib and into the kernel via
->> the IEC958 controls.  There are three controls specified for this:
->>
->> SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK) - the bits which can be
->> changed for consumer mode.
->> SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK) - the bits which can be
->> changed for professional mode.
->> SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT) - the value of the changable
->> bits.
->>
->> When using this, it is userspace's responsibility to set the sample rate
->> appropriately for the stream.
->>
->> The only case to use snd_pcm_create_iec958_consumer() is to generate the
->> status bytes for PCM audio, where the userspace API doesn't facilitiate
->> generating and/or passing the AES status bytes.
->
-> That's true.  OTOH, in most drivers, we try to be kind not to be too
-> strict for this requirement and adjust the status bits accordingly.
-> This comes from the lessons we learned how user-space doesn't care the
-> things.
->
-> So, if we want to keep that good uncle attitude, this change doesn't
-> look so bad to me.
->
-shall I deliver a new version of this patch with header correction or 
-shall I abandon this patch?
->
-> thanks,
->
-> Takashi
->
+On Mon, Dec 07, 2015 at 12:08:31PM +0530, Ravindra Lokhande wrote:
+> Compress offload does not support ioctl calls from a 32bit userspace
+> in a 64 bit kernel. This patch adds support for ioctls from a 32bit
+> userspace in a 64bit kernel
+> 
+> Signed-off-by: Ravindra Lokhande <rlokhande@nvidia.com>
+> ---
+> 
+> v1 -> v2: use compat_ptr to convert 32 bit address to 64 bit pointer
+> v2 -> v3: add header file compat.h
+> 
+>  sound/core/compress_offload.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index b123c42..4597820 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -38,6 +38,7 @@
+>  #include <linux/uio.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/module.h>
+> +#include <linux/compat.h>
+>  #include <sound/core.h>
+>  #include <sound/initval.h>
+>  #include <sound/compress_params.h>
+> @@ -847,6 +848,15 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+>  	return retval;
+>  }
+>  
+> +/* support of 32bit userspace on 64bit platforms */
+> +#ifdef CONFIG_COMPAT
+> +static long snd_compr_ioctl_compat(struct file *file, unsigned int cmd,
+> +						unsigned long arg)
+> +{
+> +	return snd_compr_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+> +}
+> +#endif
+> +
+>  static const struct file_operations snd_compr_file_ops = {
+>  		.owner =	THIS_MODULE,
+>  		.open =		snd_compr_open,
+> @@ -854,6 +864,9 @@ static const struct file_operations snd_compr_file_ops = {
+>  		.write =	snd_compr_write,
+>  		.read =		snd_compr_read,
+>  		.unlocked_ioctl = snd_compr_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +		.compat_ioctl = snd_compr_ioctl_compat,
+> +#endif
+
+While this change is okay and required, I can't help wondering why the core
+does not take care of this.
+
+When a driver does not support compat_ioctl as it was done recently and
+takes care of 32/64 bit issues we should call ioctl for that driver..
+
+Neverthless, Acked-by Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
