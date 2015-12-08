@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: Implement DAI links in a list &
- define API to add/remove a link
-Date: Tue, 8 Dec 2015 18:03:53 +0000
-Message-ID: <20151208180352.GW5727@sirena.org.uk>
-References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
- <55f372688ae3e96e0403147f53f7891483318aa4.1449036307.git.mengdong.lin@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/13] ASoC: wm_adsp: Fixup some minor
+ formatting and checkpatch errors
+Date: Tue, 8 Dec 2015 16:33:34 +0000
+Message-ID: <20151208163334.GG6058@localhost.localdomain>
+References: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8862611881285797998=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8048726043C
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 19:03:59 +0100 (CET)
-In-Reply-To: <55f372688ae3e96e0403147f53f7891483318aa4.1449036307.git.mengdong.lin@linux.intel.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AA3D260476
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 19:38:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Dec 08, 2015 at 04:08:25PM +0000, Charles Keepax wrote:
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
 
---===============8862611881285797998==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="36+Jv5wzUORg1Ut4"
-Content-Disposition: inline
+Apologies just realised I completely forgot to attach a cover
+letter to this series that could have clearly done with one.
 
+This series add support for voice control on wm8280/5110. This is
+done by opening a compressed record channel, upon which data will
+be available once the voice control functionality has been
+triggered on the DSP.
 
---36+Jv5wzUORg1Ut4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Additionally the series starts with a few small clean ups and the
+addition of some sorely missing locking in the ADSP driver.
 
-On Wed, Dec 02, 2015 at 02:11:22PM +0800, mengdong.lin@linux.intel.com wrote:
-
-> +	struct list_head dai_link_list; /* all links */
-> +	int num_dai_links;
-
-Why do we have num_dai_links?  I can't see any users.
-
---36+Jv5wzUORg1Ut4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWZxuIAAoJECTWi3JdVIfQq40H/0Fd7jdjDUxnqytoVxD82lEA
-oNLPpgYAJONdULlX20ijBKUDNJ67TIrnXw7Q45opTyT/uglr/Qn0wsHfKm101jLa
-OYqHTxnGoY5WZyUfsC5dr4EBf4WDu1fjh32/W0rJvXbjLi06ZyHpmYLvI8vMqhFg
-OswUKTB280WCkRIXaZKw8HU96ivRDTVsW0D95fXr4UkiVWcEm21ohUYy/bGVsWEf
-gN5/mFBYrL+GMOlIbnmbDrcuTTLIz2TGGKaJv2PXqtC85vFmEOans9ieQVYvpI8H
-dD2i+RgbRoON+YC7a9Zr9WLMOUXPavrqwz+mcjnU5tqkOwIJKa4sY5+/bOHUiWg=
-=APqo
------END PGP SIGNATURE-----
-
---36+Jv5wzUORg1Ut4--
-
---===============8862611881285797998==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8862611881285797998==--
+Thanks,
+Charles
