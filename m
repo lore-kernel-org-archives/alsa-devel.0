@@ -1,89 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Tue, 8 Dec 2015 12:47:13 +0000
-Message-ID: <20151208124713.GQ5727@sirena.org.uk>
-References: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v3 10/15] drm/edid: Add API to help find connection type
+Date: Tue, 08 Dec 2015 16:01:14 +0200
+Message-ID: <874mftxcnp.fsf@intel.com>
+References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-10-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3724799843949066852=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7554F26607D
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 13:47:24 +0100 (CET)
-In-Reply-To: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1449523469-4395-10-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3724799843949066852==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LqInKle6vr1NBc7W"
-Content-Disposition: inline
-
-
---LqInKle6vr1NBc7W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Dec 08, 2015 at 05:40:13PM +0800, Zidan Wang wrote:
-
-> + - aifx-format             : set format for aifx, such as "i2s", "left_j",
-> +			     "dsp_a", "dsp_b".
-
-> + - aifx-bitclock-master    : If present, aifx wroks as bit clock master.
-> +			     Otherwise, aifx works as bit clock slave.
-
-> + - aifx-frame-master	   : If present, aifx wroks as frame clock master.
-> +			     Otherwise, aifx works as frame clock slave.
-
-> + - aifx-bitclock-inversion : If present, bit clock will invert polarity.
-
-> + - aifx-frame-inversion	   : If present, frame clock will invert polarity.
-
-> + - aifx-continuous-clock   : If present, bit clock will be continuous.
-> +			     Otherwise, dai bit clocks can be be gated
-> +			     (disabled) when the dai is not sending or
-> +			     receiving PCM data in a frame.
-
-Why are these selectable in the machine driver?
-
-> +		model = "wm8960-audio";
-
-Cut'n'paste error here.
-
---LqInKle6vr1NBc7W
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWZtFRAAoJECTWi3JdVIfQmM8H/2/nBmXw5rkbliJv2icMo7km
-yVPa2HmtjtLyk6/1/7phkUnJnpgdDBs1Nu1vezK9vEZZYrKns40MOkDWYaybsKkK
-avNSe0RXrnUEKsHwuaZWU2E9PXNAefX85SgIMKhv7Ip4ZNbwYtKFoMPd4ySXkxMM
-jHYp5YfgywXqRb9JIq1/IVVb8QPcUjDjYxn0pTerc7uDalpUc8Uk4axxsWdMMQuu
-hNJ74+rUuK5l3mYynWiq7xXF7MKhIgd8mIQ5anmwfXhoP2UHguHmBP7n+sDfBOXS
-ba2ltlajqlC2Nv/AMsnfPlVxAceAsXnx+rxRR0vEAUddj/t9d2SHYVodiz5dfCs=
-=kJUu
------END PGP SIGNATURE-----
-
---LqInKle6vr1NBc7W--
-
---===============3724799843949066852==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3724799843949066852==--
+T24gTW9uLCAwNyBEZWMgMjAxNSwgIlN1YmhyYW5zdSBTLiBQcnVzdHkiIDxzdWJocmFuc3Uucy5w
+cnVzdHlAaW50ZWwuY29tPiB3cm90ZToKPiBUbyBmaWxsIHRoZSBhdWRpbyBpbmZvZnJhbWUgaXQg
+aXMgcmVxdWlyZWQgdG8gaWRlbnRpZnkgdGhlCj4gY29ubmVjdGlvbiB0eXBlIGFzIERQIG9yIEhE
+TUkuIFRoaXMgcGF0Y2ggYWRkcyBhbiBBUEkgd2hpY2gKPiBwYXJzZXMgRUxEIGFuZCByZXR1cm5z
+IHRoZSBkaXNwbGF5IHR5cGUgb2YgY29ubmVjdGVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogU3ViaHJh
+bnN1IFMuIFBydXN0eSA8c3ViaHJhbnN1LnMucHJ1c3R5QGludGVsLmNvbT4KPiBTaWduZWQtb2Zm
+LWJ5OiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KPiBDYzogRGF2aWQgQWlybGll
+IDxhaXJsaWVkQGxpbnV4LmllPgo+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+Cj4gQ2M6IERhbmllbCBWZXR0ZXIgPGRhbmllbC52ZXR0ZXJAaW50ZWwuY29tPgoKUmV2aWV3ZWQt
+Ynk6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+CgoKPiAtLS0KPiAgaW5jbHVk
+ZS9kcm0vZHJtX2VkaWQuaCB8IDEyICsrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTIg
+aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2RybV9lZGlkLmggYi9p
+bmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gaW5kZXggMmFmOTc2OS4uOGM1MzdhMCAxMDA2NDQKPiAt
+LS0gYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gKysrIGIvaW5jbHVkZS9kcm0vZHJtX2VkaWQu
+aAo+IEBAIC00MDMsNiArNDAzLDE4IEBAIHN0YXRpYyBpbmxpbmUgaW50IGRybV9lbGRfc2l6ZShj
+b25zdCB1aW50OF90ICplbGQpCj4gIAlyZXR1cm4gRFJNX0VMRF9IRUFERVJfQkxPQ0tfU0laRSAr
+IGVsZFtEUk1fRUxEX0JBU0VMSU5FX0VMRF9MRU5dICogNDsKPiAgfQo+ICAKPiArLyoqCj4gKyAq
+IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZSAtIEdldCBkZXZpY2UgdHlwZSBoZG1pL2RwIGNvbm5lY3Rl
+ZAo+ICsgKiBAZWxkOiBwb2ludGVyIHRvIGFuIGVsZCBtZW1vcnkgc3RydWN0dXJlCj4gKyAqCj4g
+KyAqIFRoZSBjYWxsZXIgbmVlZCB0byB1c2UgJURSTV9FTERfQ09OTl9UWVBFX0hETUkgb3IgJURS
+TV9FTERfQ09OTl9UWVBFX0RQIHRvCj4gKyAqIGlkZW50aWZ5IHRoZSBkaXNwbGF5IHR5cGUgY29u
+bmVjdGVkLgo+ICsgKi8KPiArc3RhdGljIGlubGluZSB1OCBkcm1fZWxkX2dldF9jb25uX3R5cGUo
+Y29uc3QgdWludDhfdCAqZWxkKQo+ICt7Cj4gKwlyZXR1cm4gZWxkW0RSTV9FTERfU0FEX0NPVU5U
+X0NPTk5fVFlQRV0gJiBEUk1fRUxEX0NPTk5fVFlQRV9NQVNLOwo+ICt9Cj4gKwo+ICBzdHJ1Y3Qg
+ZWRpZCAqZHJtX2RvX2dldF9lZGlkKHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4g
+IAlpbnQgKCpnZXRfZWRpZF9ibG9jaykodm9pZCAqZGF0YSwgdTggKmJ1ZiwgdW5zaWduZWQgaW50
+IGJsb2NrLAo+ICAJCQkgICAgICBzaXplX3QgbGVuKSwKCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwg
+T3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9kcmktZGV2ZWwK
