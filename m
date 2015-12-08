@@ -1,24 +1,15 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
-	update
-Date: Tue, 8 Dec 2015 14:47:12 +0000
-Message-ID: <20151208144712.GC8644@n2100.arm.linux.org.uk>
-References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
- <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
- <20151202190036.GD8644@n2100.arm.linux.org.uk>
- <56602046.8070307@st.com>
- <20151203111304.GL8644@n2100.arm.linux.org.uk>
- <s5h37vjn3hh.wl-tiwai@suse.de> <5665474A.9030906@st.com>
- <s5hio4aoac3.wl-tiwai@suse.de> <5666E97E.7020002@st.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 01/19] ASoC: da7218: avoid 64-bit compile
+	warning
+Date: Tue, 08 Dec 2015 16:12:54 +0100
+Message-ID: <3548574.qiC2AlzHH4@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id C6908266097
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 15:47:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <5666E97E.7020002@st.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFA35260442
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 16:12:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,99 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 08, 2015 at 03:30:22PM +0100, Moise Gergaud wrote:
-> On 12/07/2015 10:51 AM, Takashi Iwai wrote:
-> >On Mon, 07 Dec 2015 09:46:02 +0100,
-> >Moise Gergaud wrote:
-> >>
-> >>On 12/03/2015 01:03 PM, Takashi Iwai wrote:
-> >>>On Thu, 03 Dec 2015 12:13:04 +0100,
-> >>>Russell King - ARM Linux wrote:
-> >>>>
-> >>>>On Thu, Dec 03, 2015 at 11:58:14AM +0100, Moise Gergaud wrote:
-> >>>>>On 12/02/2015 08:00 PM, Russell King - ARM Linux wrote:
-> >>>>>>Again, I'm not happy with this change.  The intention here is that we
-> >>>>>>validate all arguments before we change anything.  This breaks that
-> >>>>>>principle.
-> >>>>>>
-> >>>>>We propose this change for compressed mode (IEC61937/non linear PCM).
-> >>>>>In case of compressed mode, iec958 channel status byte 0 bit1 = 1, then we
-> >>>>>cannot use snd_pcm_create_iec958_consumer.
-> >>>>
-> >>>>Why can you not use snd_pcm_create_iec958_consumer() for this case?  You
-> >>>>are allowed to modify the values you get afterwards in order to handle
-> >>>>this case if you so wish to toggle this bit.
-> >>>>
-> >>>>However, if you are using data mode, you really should be using the AES
-> >>>>bytes passed by the application through alsalib and into the kernel via
-> >>>>the IEC958 controls.  There are three controls specified for this:
-> >>>>
-> >>>>SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK) - the bits which can be
-> >>>>changed for consumer mode.
-> >>>>SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK) - the bits which can be
-> >>>>changed for professional mode.
-> >>>>SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT) - the value of the changable
-> >>>>bits.
-> >>>>
-> >>>>When using this, it is userspace's responsibility to set the sample rate
-> >>>>appropriately for the stream.
-> >>>>
-> >>>>The only case to use snd_pcm_create_iec958_consumer() is to generate the
-> >>>>status bytes for PCM audio, where the userspace API doesn't facilitiate
-> >>>>generating and/or passing the AES status bytes.
-> >>>
-> >>>That's true.  OTOH, in most drivers, we try to be kind not to be too
-> >>>strict for this requirement and adjust the status bits accordingly.
-> >>>This comes from the lessons we learned how user-space doesn't care the
-> >>>things.
-> >>>
-> >>>So, if we want to keep that good uncle attitude, this change doesn't
-> >>>look so bad to me.
-> >>>
-> >>shall I deliver a new version of this patch with header correction or
-> >>shall I abandon this patch?
-> >
-> >It's up to you whether you want further convincing Russell :)
-> >I'd happily merge this once when we get his ack.
-> >
-> >
-> >thanks,
-> >
-> >Takashi
-> >
-> 
-> I share Takashi's view; unfortunately, we cannot always trust user space.
-> And so, for robustness reason, I think drivers shall ensure that channel
-> status params are correct. For that purpose, the update helper function
-> could be useful.
+When building the da7218 driver on a 64-bit architecture, we get
+a harmless warning:
 
-I don't, and now that you mention about not trusting userspace, I'm
-entrenching into that position.  I have hardware where userspace must get
-it correct: I need to use the IEC958 alsalib plugin, and that relies on
-userspace getting it right - the kernel plays no part in generating the
-channel status, it's all handled in userspace.  I do have kernel-side
-channel status generation for 24-bit 4-byte PCM audio though, because
-it's easy to merge in the channel status information (basically doing
-what the IEC958 alsalib plugin does.)  I'd much rather that was moved
-out to userspace though.
+sound/soc/codecs/da7218.c: In function 'da7218_of_get_id':
+sound/soc/codecs/da7218.c:2261:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 
-What you're suggesting creates two separate classes of driver:
-* those which always overwrite the channel status information from
-  userspace, which will make userspace lazy and _more_ buggy.
-* those which have to use the channel status information from
-  userspace.
+This changes the code to use uintptr_t to ensure we have an integer
+type of the same size as a pointer and won't get a warning on any
+architecture.
 
-If the second is a minority, what we end up with are bugs with channel
-status information being missed, because programs will work on the
-"majority" of drivers which overwrite the userspace specified channel
-status.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 4d50934abd22 ("ASoC: da7218: Add da7218 codec driver")
+---
+ sound/soc/codecs/da7218.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-IMHO, that's really not a sane position.
-
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 4fee7aeaadc7..eacde128c4d6 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2258,7 +2258,7 @@ static inline int da7218_of_get_id(struct device *dev)
+ 	const struct of_device_id *id = of_match_device(da7218_of_match, dev);
+ 
+ 	if (id)
+-		return (int) id->data;
++		return (uintptr_t)id->data;
+ 	else
+ 		return -EINVAL;
+ }
 -- 
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+2.1.0.rc2
