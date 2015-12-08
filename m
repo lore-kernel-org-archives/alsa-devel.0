@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7218: avoid 64-bit compile warning"
-	to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:13 +0000
-Message-ID: <E1a6NfN-0003xJ-Ra@debutante>
-References: <3548574.qiC2AlzHH4@wuerfel>
+Subject: Applied "ASoC: Define add/remove_dai_link ops for a
+	soc card" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:17 +0000
+Message-ID: <E1a6NfR-0003zB-HD@debutante>
+References: <a7aecce7622d5206339f18e43521da8e46d43445.1449036307.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 285FF26062A
+ by alsa0.perex.cz (Postfix) with ESMTP id ED7A826062B
  for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:22 +0100 (CET)
-In-Reply-To: <3548574.qiC2AlzHH4@wuerfel>
+In-Reply-To: <a7aecce7622d5206339f18e43521da8e46d43445.1449036307.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7218: avoid 64-bit compile warning
+   ASoC: Define add/remove_dai_link ops for a soc card
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From ff793af4ce13afa9836f6a396552d623ff880099 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 8 Dec 2015 16:12:54 +0100
-Subject: [PATCH] ASoC: da7218: avoid 64-bit compile warning
+>From d6f220ea13edfd3430fb42e09ff92e321ffb5762 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Wed, 2 Dec 2015 14:11:32 +0800
+Subject: [PATCH] ASoC: Define add/remove_dai_link ops for a soc card
 
-When building the da7218 driver on a 64-bit architecture, we get
-a harmless warning:
+A machine driver can register the two ops.
 
-sound/soc/codecs/da7218.c: In function 'da7218_of_get_id':
-sound/soc/codecs/da7218.c:2261:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+When a DAI link is added or removed by a component's topology, the
+ASoC core can call the ops to notify the machine driver for extra
+intialization or destruction.
 
-This changes the code to use uintptr_t to ensure we have an integer
-type of the same size as a pointer and won't get a warning on any
-architecture.
+E.g. topology can create FE DAI links from a cpu DAI component, and
+the machine driver may define an add_dai_link ops to set machine-specific
+.init ops for the DAI link.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 4d50934abd22 ("ASoC: da7218: Add da7218 codec driver")
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7218.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc.h  |  5 +++++
+ sound/soc/soc-core.c | 12 ++++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index 4fee7aeaadc7..eacde128c4d6 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -2258,7 +2258,7 @@ static inline int da7218_of_get_id(struct device *dev)
- 	const struct of_device_id *id = of_match_device(da7218_of_match, dev);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 410cb0b422be..af347bcdc2f6 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1104,6 +1104,11 @@ struct snd_soc_card {
+ 				   struct snd_soc_dapm_context *dapm,
+ 				   enum snd_soc_bias_level level);
  
- 	if (id)
--		return (int) id->data;
-+		return (uintptr_t)id->data;
- 	else
- 		return -EINVAL;
- }
++	int (*add_dai_link)(struct snd_soc_card *,
++			    struct snd_soc_dai_link *link);
++	void (*remove_dai_link)(struct snd_soc_card *,
++			    struct snd_soc_dai_link *link);
++
+ 	long pmdown_time;
+ 
+ 	/* CPU <--> Codec DAI links  */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index bf4bccfc4b91..094856fa8cec 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1260,6 +1260,12 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 	}
+ 
+ 	lockdep_assert_held(&client_mutex);
++	/* Notify the machine driver for extra initialization
++	 * on the link created by topology.
++	 */
++	if (dai_link->dobj.type && card->add_dai_link)
++		card->add_dai_link(card, dai_link);
++
+ 	list_add_tail(&dai_link->list, &card->dai_link_list);
+ 	card->num_dai_links++;
+ 
+@@ -1290,6 +1296,12 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 	}
+ 
+ 	lockdep_assert_held(&client_mutex);
++	/* Notify the machine driver for extra destruction
++	 * on the link created by topology.
++	 */
++	if (dai_link->dobj.type && card->remove_dai_link)
++		card->remove_dai_link(card, dai_link);
++
+ 	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
+ 		if (link == dai_link) {
+ 			list_del(&link->list);
 -- 
 2.6.2
