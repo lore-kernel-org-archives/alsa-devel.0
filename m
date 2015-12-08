@@ -1,14 +1,17 @@
 From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V2 0/2] Add support for Pistachio internal DAC
-Date: Tue, 8 Dec 2015 17:05:22 +0000
-Message-ID: <1449594324-2597-1-git-send-email-Damien.Horsley@imgtec.com>
+Subject: [PATCH V2 1/2] ASoC: img: Add binding document for
+	Pistachio internal DAC
+Date: Tue, 8 Dec 2015 17:05:23 +0000
+Message-ID: <1449594324-2597-2-git-send-email-Damien.Horsley@imgtec.com>
+References: <1449594324-2597-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 59A49260564
+ by alsa0.perex.cz (Postfix) with ESMTP id E0F28260574
  for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 18:05:52 +0100 (CET)
+In-Reply-To: <1449594324-2597-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +27,37 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add binding document and driver for Pistachio internal DAC
+Add binding document for Pistachio Internal DAC
 
-Damien.Horsley (2):
-  ASoC: img: Add binding document for Pistachio internal DAC
-  ASoC: img: Add driver for Pistachio internal DAC
-
- .../bindings/sound/img,pistachio-internal-dac.txt  |  18 ++
- sound/soc/img/Kconfig                              |   8 +
- sound/soc/img/Makefile                             |   2 +
- sound/soc/img/pistachio-internal-dac.c             | 316 +++++++++++++++++++++
- 4 files changed, 344 insertions(+)
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
+---
+ .../bindings/sound/img,pistachio-internal-dac.txt      | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
- create mode 100644 sound/soc/img/pistachio-internal-dac.c
 
+diff --git a/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
+new file mode 100644
+index 0000000..4cc18fc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
+@@ -0,0 +1,18 @@
++Pistachio internal DAC DT bindings
++
++Required properties:
++
++  - compatible: "img,pistachio-internal-dac"
++
++  - img,cr-top : Must contain a phandle to the top level control syscon
++		 node which contains the internal dac control registers
++
++  - VDD-supply : Digital power supply regulator (+1.8V or +3.3V)
++
++Examples:
++
++internal_dac: internal-dac {
++	compatible = "img,pistachio-internal-dac";
++	img,cr-top = <&cr_top>;
++	VDD-supply = <&supply3v3>;
++};
 -- 
 2.1.4
