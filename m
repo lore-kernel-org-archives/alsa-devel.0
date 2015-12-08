@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc_bind_dai_link() directly returns
-	success for a bound DAI link" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:16 +0000
-Message-ID: <E1a6NfQ-0003yi-J8@debutante>
-References: <9cb8b4b46674b6688c92bf9c22f0cd9db1b86dff.1446717205.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: Bind new DAI links after probing
+	components" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:15 +0000
+Message-ID: <E1a6NfP-0003yF-Lj@debutante>
+References: <00d1b5793caa0959c5fe886445fb44785da2cf6b.1446717205.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 09CA5260612
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:22 +0100 (CET)
-In-Reply-To: <9cb8b4b46674b6688c92bf9c22f0cd9db1b86dff.1446717205.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F2EF5260606
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:20 +0100 (CET)
+In-Reply-To: <00d1b5793caa0959c5fe886445fb44785da2cf6b.1446717205.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc_bind_dai_link() directly returns success for a bound DAI link
+   ASoC: Bind new DAI links after probing components
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From 49a5ba1cd9da4fb04e7ce1e0d94f6a5a9b7be48e Mon Sep 17 00:00:00 2001
+>From 61b0088b6a5b98608ce00c18a057b1f5bcb5f8b3 Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Wed, 2 Dec 2015 14:11:40 +0800
-Subject: [PATCH] ASoC: soc_bind_dai_link() directly returns success for a
- bound DAI link
+Date: Wed, 2 Dec 2015 14:11:48 +0800
+Subject: [PATCH] ASoC: Bind new DAI links after probing components
 
-This function will return success immediately for a bound DAI link.
-No need to look for the cpu/codec DAIs again.
+Probing components can bring new DAI or DAI links based on the topology
+info. This patch finds the unbound DAI links and bind them.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/soc/soc-core.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 094856fa8cec..11d073b6ce33 100644
+index 11d073b6ce33..6b1982dcedf1 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -960,6 +960,19 @@ static struct snd_soc_dai *snd_soc_find_dai(
- 	return NULL;
- }
- 
-+static bool soc_is_dai_link_bound(struct snd_soc_card *card,
-+		struct snd_soc_dai_link *dai_link)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (rtd->dai_link == dai_link)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link *dai_link)
+@@ -1806,6 +1806,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
  {
-@@ -977,6 +990,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	if (!rtd)
- 		return -ENOMEM;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai_link *dai_link;
+ 	int ret, i, order;
  
-+	if (soc_is_dai_link_bound(card, dai_link)) {
-+		dev_dbg(card->dev, "ASoC: dai link %s already bound\n",
-+			dai_link->name);
-+		return 0;
+ 	mutex_lock(&client_mutex);
+@@ -1893,6 +1894,21 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		}
+ 	}
+ 
++	/* Find new DAI links added during probing components and bind them.
++	 * Components with topology may bring new DAIs and DAI links.
++	 */
++	list_for_each_entry(dai_link, &card->dai_link_list, list) {
++		if (soc_is_dai_link_bound(card, dai_link))
++			continue;
++
++		ret = soc_init_dai_link(card, dai_link);
++		if (ret)
++			goto probe_dai_err;
++		ret = soc_bind_dai_link(card, dai_link);
++		if (ret)
++			goto probe_dai_err;
 +	}
 +
- 	cpu_dai_component.name = dai_link->cpu_name;
- 	cpu_dai_component.of_node = dai_link->cpu_of_node;
- 	cpu_dai_component.dai_name = dai_link->cpu_dai_name;
+ 	/* probe all DAI links on this card */
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 			order++) {
 -- 
 2.6.2
