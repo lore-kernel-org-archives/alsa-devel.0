@@ -1,136 +1,146 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH V2 1/1] audio: Fix playback noise with
- 24/32 bit sample size on BXT
-Date: Tue, 8 Dec 2015 00:35:32 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3440EC@SHSMSX101.ccr.corp.intel.com>
-References: <1449475153-6974-1-git-send-email-han.lu@intel.com>
- <s5hbna23cpy.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Fixing speaker noise on two
+ thinkpad machines
+Date: Tue, 8 Dec 2015 09:37:13 +0800
+Message-ID: <56663449.6010701@canonical.com>
+References: <1449498712-21498-1-git-send-email-hui.wang@canonical.com>
+ <s5hh9jumim3.wl-tiwai@suse.de> <566599CD.7030900@canonical.com>
+ <s5hegeymi3a.wl-tiwai@suse.de> <56659F2E.8020706@canonical.com>
+ <s5ha8pmmh6m.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E284265A3C
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 01:35:36 +0100 (CET)
-In-Reply-To: <s5hbna23cpy.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5ha8pmmh6m.wl-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "han.lu@linux.intel.com" <han.lu@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, December 7, 2015 4:06 PM
-> To: Lu, Han
-> Cc: libin.yang@linux.intel.com; mengdong.lin@linux.intel.com;
-> han.lu@linux.intel.com; alsa-devel@alsa-project.org
-> Subject: Re: [PATCH V2 1/1] audio: Fix playback noise with 24/32 bit sample
-> size on BXT
-> 
-> On Mon, 07 Dec 2015 08:59:13 +0100,
-> han.lu@intel.com wrote:
-> >
-> > From: "Lu, Han" <han.lu@intel.com>
-> >
-> > In BXT-P A0, HD-Audio DMA requests is later than expected, and makes
-> > an audio stream sensitive to system latencies when
-> > 24/32 bits are playing.
-> > Adjusting threshold of DMA fifo to force the DMA request sooner to
-> > improve latency tolerance at the expense of power.
-> >
-> > v2: move Intel specific code to hda_intel.c
-> >
-> > Signed-off-by: Lu, Han <han.lu@intel.com>
-> 
-> Applied, thanks.
-> 
-> 
+On 12/07/2015 11:06 PM, Takashi Iwai wrote:
+> On Mon, 07 Dec 2015 16:01:02 +0100,
+> Hui Wang wrote:
+>> On 12/07/2015 10:47 PM, Takashi Iwai wrote:
+>>> On Mon, 07 Dec 2015 15:38:05 +0100,
+>>> Hui Wang wrote:
+>>>> On 12/07/2015 10:35 PM, Takashi Iwai wrote:
+>>>>> On Mon, 07 Dec 2015 15:31:52 +0100,
+>>>>> Hui Wang wrote:
+>>>>>> Disable the aamix can fix this problem.
+>>>>> Which codec do these machines have?
+>>>> Codec: Realtek ALC293
+>>>> Address: 0
+>>>> AFG Function Id: 0x1 (unsol 1)
+>>>> Vendor Id: 0x10ec0293
+>>> Hm, and only Thinkpads with this codec suffer?  I mean, there are lots
+>>> of TPs with ALC292.  Please give more background.
+>> Recently we enabled two thinkpad laptop models, both of them are based
+>> on the Intel skylake platform, and both of them used alc293 to be the
+>> analog audio codec. When the machine boot to the ubuntu desktop, there
+>> will be a notification sound when greeter dialogue shows up, on these
+>> two models, there is noise with the notification sound. By the way, we
+>> have 3 SKUs for each model, all of them have this problem.
+> See how more information you can give instead of a single line :)
+>
+>> After disable the analog audio loopback, the noise disappears.
+>>
+>> Codec: Realtek ALC293
+>> Address: 0
+>> AFG Function Id: 0x1 (unsol 1)
+>> Vendor Id: 0x10ec0293
+>> Subsystem Id: 0x17aa2233
+>> Revision Id: 0x100003
+>> No Modem Function Group found
+>>
+>>
+>> Codec: Realtek ALC293
+>> Address: 0
+>> AFG Function Id: 0x1 (unsol 1)
+>> Vendor Id: 0x10ec0293
+>> Subsystem Id: 0x17aa504b
+>> Revision Id: 0x100003
+>> No Modem Function Group found
+> My main question was rather whether this fix is specific to new
+> models, and the old models likely don't need it.  Judging from your
+> description, I guess so.
+>
+Yes, only latest thinkpad models with this codec have this problem, old 
+models don't need this quirk.
+
+I will add more information in the commit header and send the patch of V2.
+
+Thanks for reviewing.
+
+
 > Takashi
-> 
-
-Thanks!
-
-One more thing, I was tried to implement this patch by define a macro
-AZX_DCAPS_XXX instead of IS_BROXTON(pci), but it looks like no spare bit
-left. (bit 22 and bit 31 are reserved bits, right?) Is there a plan to extend the
-caps structure?
-
-BR,
-Han
-
-> >
-> > diff --git a/include/sound/hda_register.h
-> > b/include/sound/hda_register.h index 2ae8812..94dc6a9 100644
-> > --- a/include/sound/hda_register.h
-> > +++ b/include/sound/hda_register.h
-> > @@ -93,6 +93,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
-> SDO3 };
-> >  #define AZX_REG_HSW_EM4			0x100c
-> >  #define AZX_REG_HSW_EM5			0x1010
-> >
-> > +/* Skylake/Broxton display HD-A controller Extended Mode registers */
-> > +#define AZX_REG_SKL_EM4L		0x1040
-> > +
-> >  /* PCI space */
-> >  #define AZX_PCIREG_TCSEL		0x44
-> >
-> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > index 963f824..bff5c8b 100644
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -355,6 +355,8 @@ enum {
-> >  					((pci)->device == 0x0d0c) || \
-> >  					((pci)->device == 0x160c))
-> >
-> > +#define IS_BROXTON(pci)	((pci)->device == 0x5a98)
-> > +
-> >  static char *driver_short_names[] = {
-> >  	[AZX_DRIVER_ICH] = "HDA Intel",
-> >  	[AZX_DRIVER_PCH] = "HDA Intel PCH",
-> > @@ -506,15 +508,36 @@ static void azx_init_pci(struct azx *chip)
-> >          }
-> >  }
-> >
-> > +/*
-> > + * In BXT-P A0, HD-Audio DMA requests is later than expected,
-> > + * and makes an audio stream sensitive to system latencies when
-> > + * 24/32 bits are playing.
-> > + * Adjusting threshold of DMA fifo to force the DMA request
-> > + * sooner to improve latency tolerance at the expense of power.
-> > + */
-> > +static void bxt_reduce_dma_latency(struct azx *chip) {
-> > +	u32 val;
-> > +
-> > +	val = azx_readl(chip, SKL_EM4L);
-> > +	val &= (0x3 << 20);
-> > +	azx_writel(chip, SKL_EM4L, val);
-> > +}
-> > +
-> >  static void hda_intel_init_chip(struct azx *chip, bool full_reset)  {
-> >  	struct hdac_bus *bus = azx_bus(chip);
-> > +	struct pci_dev *pci = chip->pci;
-> >
-> >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-> >  		snd_hdac_set_codec_wakeup(bus, true);
-> >  	azx_init_chip(chip, full_reset);
-> >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-> >  		snd_hdac_set_codec_wakeup(bus, false);
-> > +
-> > +	/* reduce dma latency to avoid noise */
-> > +	if (IS_BROXTON(pci))
-> > +		bxt_reduce_dma_latency(chip);
-> >  }
-> >
-> >  /* calculate runtime delay from LPIB */
-> > --
-> > 2.5.0
-> >
+>
+>>> Takashi
+>>>
+>>>>> Takashi
+>>>>>
+>>>>>> Cc: stable@vger.kernel.org
+>>>>>> BugLink: https://bugs.launchpad.net/bugs/1523517
+>>>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>>>>> ---
+>>>>>>     sound/pci/hda/patch_realtek.c | 9 +++++++++
+>>>>>>     1 file changed, 9 insertions(+)
+>>>>>>
+>>>>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>>>>> index ebc5362..49b1d36 100644
+>>>>>> --- a/sound/pci/hda/patch_realtek.c
+>>>>>> +++ b/sound/pci/hda/patch_realtek.c
+>>>>>> @@ -4596,6 +4596,7 @@ enum {
+>>>>>>     	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+>>>>>>     	ALC275_FIXUP_DELL_XPS,
+>>>>>>     	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
+>>>>>> +	ALC293_FIXUP_LENOVO_SPK_NOISE,
+>>>>>>     };
+>>>>>>     
+>>>>>>     static const struct hda_fixup alc269_fixups[] = {
+>>>>>> @@ -5187,6 +5188,12 @@ static const struct hda_fixup alc269_fixups[] = {
+>>>>>>     		.chained = true,
+>>>>>>     		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
+>>>>>>     	},
+>>>>>> +	[ALC293_FIXUP_LENOVO_SPK_NOISE] = {
+>>>>>> +		.type = HDA_FIXUP_FUNC,
+>>>>>> +		.v.func = alc_fixup_disable_aamix,
+>>>>>> +		.chained = true,
+>>>>>> +		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
+>>>>>> +	},
+>>>>>>     };
+>>>>>>     
+>>>>>>     static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>>>>>> @@ -5334,6 +5341,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
+>>>>>> +	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+>>>>>> @@ -5343,6 +5351,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x5034, "Thinkpad T450", ALC292_FIXUP_TPT440_DOCK),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x503c, "Thinkpad L450", ALC292_FIXUP_TPT440_DOCK),
+>>>>>> +	SND_PCI_QUIRK(0x17aa, 0x504b, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+>>>>>>     	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+>>>>>> -- 
+>>>>>> 1.9.1
+>>>>>>
+>>>>> _______________________________________________
+>>>>> Alsa-devel mailing list
+>>>>> Alsa-devel@alsa-project.org
+>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>>>
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
