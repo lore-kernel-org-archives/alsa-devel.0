@@ -1,20 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Make snd_hda_parse_nid_path()
-	local
-Date: Tue,  8 Dec 2015 13:41:58 +0100
-Message-ID: <1449578518-17634-2-git-send-email-tiwai@suse.de>
-References: <1449578518-17634-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: imx-wm8958: add imx-wm8958
+ machine driver
+Date: Tue, 8 Dec 2015 12:47:13 +0000
+Message-ID: <20151208124713.GQ5727@sirena.org.uk>
+References: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3724799843949066852=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E45C72660EE
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 13:42:01 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B651EAAC7
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 12:42:01 +0000 (UTC)
-In-Reply-To: <1449578518-17634-1-git-send-email-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7554F26607D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 13:47:24 +0100 (CET)
+In-Reply-To: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-An exported function snd_hda_parse_nid_path() is used only inside
-hda_generic.c.  Let's make it a static local function for a better
-code optimization.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c | 5 ++---
- sound/pci/hda/hda_generic.h | 3 ---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+--===============3724799843949066852==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LqInKle6vr1NBc7W"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index a644fc3302f0..f3c058f6c831 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -435,7 +435,7 @@ static bool __parse_nid_path(struct hda_codec *codec,
- 	return true;
- }
- 
--/**
-+/*
-  * snd_hda_parse_nid_path - parse the widget path from the given nid to
-  * the target nid
-  * @codec: the HDA codec
-@@ -454,7 +454,7 @@ static bool __parse_nid_path(struct hda_codec *codec,
-  * with the negative of given value are excluded, only other paths are chosen.
-  * when @anchor_nid is zero, no special handling about path selection.
-  */
--bool snd_hda_parse_nid_path(struct hda_codec *codec, hda_nid_t from_nid,
-+static bool snd_hda_parse_nid_path(struct hda_codec *codec, hda_nid_t from_nid,
- 			    hda_nid_t to_nid, int anchor_nid,
- 			    struct nid_path *path)
- {
-@@ -465,7 +465,6 @@ bool snd_hda_parse_nid_path(struct hda_codec *codec, hda_nid_t from_nid,
- 	}
- 	return false;
- }
--EXPORT_SYMBOL_GPL(snd_hda_parse_nid_path);
- 
- /**
-  * snd_hda_add_new_path - parse the path between the given NIDs and
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 692510e59365..f66fc7e25e07 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -308,9 +308,6 @@ void snd_hda_gen_free(struct hda_codec *codec);
- 
- int snd_hda_get_path_idx(struct hda_codec *codec, struct nid_path *path);
- struct nid_path *snd_hda_get_path_from_idx(struct hda_codec *codec, int idx);
--bool snd_hda_parse_nid_path(struct hda_codec *codec, hda_nid_t from_nid,
--			    hda_nid_t to_nid, int anchor_nid,
--			    struct nid_path *path);
- struct nid_path *
- snd_hda_add_new_path(struct hda_codec *codec, hda_nid_t from_nid,
- 		     hda_nid_t to_nid, int anchor_nid);
--- 
-2.6.3
+
+--LqInKle6vr1NBc7W
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 08, 2015 at 05:40:13PM +0800, Zidan Wang wrote:
+
+> + - aifx-format             : set format for aifx, such as "i2s", "left_j",
+> +			     "dsp_a", "dsp_b".
+
+> + - aifx-bitclock-master    : If present, aifx wroks as bit clock master.
+> +			     Otherwise, aifx works as bit clock slave.
+
+> + - aifx-frame-master	   : If present, aifx wroks as frame clock master.
+> +			     Otherwise, aifx works as frame clock slave.
+
+> + - aifx-bitclock-inversion : If present, bit clock will invert polarity.
+
+> + - aifx-frame-inversion	   : If present, frame clock will invert polarity.
+
+> + - aifx-continuous-clock   : If present, bit clock will be continuous.
+> +			     Otherwise, dai bit clocks can be be gated
+> +			     (disabled) when the dai is not sending or
+> +			     receiving PCM data in a frame.
+
+Why are these selectable in the machine driver?
+
+> +		model = "wm8960-audio";
+
+Cut'n'paste error here.
+
+--LqInKle6vr1NBc7W
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWZtFRAAoJECTWi3JdVIfQmM8H/2/nBmXw5rkbliJv2icMo7km
+yVPa2HmtjtLyk6/1/7phkUnJnpgdDBs1Nu1vezK9vEZZYrKns40MOkDWYaybsKkK
+avNSe0RXrnUEKsHwuaZWU2E9PXNAefX85SgIMKhv7Ip4ZNbwYtKFoMPd4ySXkxMM
+jHYp5YfgywXqRb9JIq1/IVVb8QPcUjDjYxn0pTerc7uDalpUc8Uk4axxsWdMMQuu
+hNJ74+rUuK5l3mYynWiq7xXF7MKhIgd8mIQ5anmwfXhoP2UHguHmBP7n+sDfBOXS
+ba2ltlajqlC2Nv/AMsnfPlVxAceAsXnx+rxRR0vEAUddj/t9d2SHYVodiz5dfCs=
+=kJUu
+-----END PGP SIGNATURE-----
+
+--LqInKle6vr1NBc7W--
+
+--===============3724799843949066852==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3724799843949066852==--
