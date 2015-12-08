@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/13] ASoC: wm_adsp: Factor out finding the
-	location of an algorithm region
-Date: Tue, 8 Dec 2015 16:08:31 +0000
-Message-ID: <1449590917-21170-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 RESEND 08/13] ALSA: compress: Add
+	SND_AUDIOCODEC_BESPOKE
+Date: Tue, 8 Dec 2015 16:08:32 +0000
+Message-ID: <1449590917-21170-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 92C932604F8
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 477FB2604FC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:09 +0100 (CET)
 In-Reply-To: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,65 +26,42 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+When working with the compressed framework occasionally vendors will
+use esoteric internal audio formats. For such formats it doesn't really
+make sense to add an new define to the kernel as their use is not
+sufficiently general.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b083642..2b99f46 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1362,6 +1362,19 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	return alg;
- }
+This patch adds a new define SND_AUDIOCODEC_BESPOKE that vendors can use
+in such situations.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/uapi/sound/compress_params.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
+index d9bd9ca..9625484 100644
+--- a/include/uapi/sound/compress_params.h
++++ b/include/uapi/sound/compress_params.h
+@@ -73,7 +73,8 @@
+ #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
+ #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
+ #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
+-#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_G729
++#define SND_AUDIOCODEC_BESPOKE               ((__u32) 0x0000000E)
++#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_BESPOKE
  
-+static struct wm_adsp_alg_region *
-+	wm_adsp_find_alg_region(struct wm_adsp *dsp, int type, unsigned int id)
-+{
-+	struct wm_adsp_alg_region *alg_region;
-+
-+	list_for_each_entry(alg_region, &dsp->alg_regions, list) {
-+		if (id == alg_region->alg && type == alg_region->type)
-+			return alg_region;
-+	}
-+
-+	return NULL;
-+}
-+
- static struct wm_adsp_alg_region *wm_adsp_create_region(struct wm_adsp *dsp,
- 							int type, __be32 id,
- 							__be32 base)
-@@ -1734,22 +1747,16 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 				break;
- 			}
+ /*
+  * Profile and modes are listed with bit masks. This allows for a
+@@ -312,7 +313,7 @@ struct snd_enc_flac {
  
--			reg = 0;
--			list_for_each_entry(alg_region,
--					    &dsp->alg_regions, list) {
--				if (le32_to_cpu(blk->id) == alg_region->alg &&
--				    type == alg_region->type) {
--					reg = alg_region->base;
--					reg = wm_adsp_region_to_reg(mem,
--								    reg);
--					reg += offset;
--					break;
--				}
--			}
--
--			if (reg == 0)
-+			alg_region = wm_adsp_find_alg_region(dsp, type,
-+						le32_to_cpu(blk->id));
-+			if (alg_region) {
-+				reg = alg_region->base;
-+				reg = wm_adsp_region_to_reg(mem, reg);
-+				reg += offset;
-+			} else {
- 				adsp_err(dsp, "No %x for algorithm %x\n",
- 					 type, le32_to_cpu(blk->id));
-+			}
- 			break;
+ struct snd_enc_generic {
+ 	__u32 bw;	/* encoder bandwidth */
+-	__s32 reserved[15];
++	__s32 reserved[15];	/* Can be used for SND_AUDIOCODEC_BESPOKE */
+ } __attribute__((packed, aligned(4)));
  
- 		default:
+ union snd_codec_options {
 -- 
 2.1.4
