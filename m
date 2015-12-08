@@ -1,19 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 2/3] fireface: add transaction support
-Date: Tue, 8 Dec 2015 13:36:16 +0100
-Message-ID: <5666CEC0.103@ladisch.de>
-References: <1449408224-13955-1-git-send-email-o-takashi@sakamocchi.jp>
- <1449408224-13955-3-git-send-email-o-takashi@sakamocchi.jp>
- <5666AF4E.9000100@ladisch.de> <5666BE1A.80304@sakamocchi.jp>
- <5666BF03.7060102@ladisch.de> <5666CB21.8040406@sakamocchi.jp>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Remove unused
+	snd_hda_get_nid_path()
+Date: Tue,  8 Dec 2015 13:41:57 +0100
+Message-ID: <1449578518-17634-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 71E8B26607D
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 13:36:18 +0100 (CET)
-In-Reply-To: <5666CB21.8040406@sakamocchi.jp>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A2B266088
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 13:42:00 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EF0A1AB12
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 12:41:59 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On Dec 08 2015 20:29, Clemens Ladisch wrote:
->> Takashi Sakamoto wrote:
->>> On Dec 08 2015 19:22, Clemens Ladisch wrote:
->>>> Takashi Sakamoto wrote:
->>>>> +		/* Calculate consume bytes. */
->>>>> +		consume = calculate_message_bytes(status);
->>>>> +		if (consume <= 0)
->>>>> +			return;
->>>>
->>>> As far as I can see, sending one of the "undefined" bytes can stop the
->>>> stream permanently.  Invalid bytes need to be acked to ignore/remove
->>>> them.
->>>
->>> Exactly. We should find better way to handle such messages. Do you have
->>> any good ideas?
->>
->> Call snd_rawmidi_transmit_ack(, 1) and continue.
->
-> $ git diff
-> diff --git a/sound/firewire/fireface/fireface-transaction.c
-> b/sound/firewire/fireface/fireface-transaction.c
-> index 07a2b9c..6b8c7a8 100644
-> --- a/sound/firewire/fireface/fireface-transaction.c
-> +++ b/sound/firewire/fireface/fireface-transaction.c
-> @@ -148,8 +148,10 @@ static void transmit_midi_msg(struct snd_ff *ff,
-> unsigned int port)
->
->                 /* Calculate consume bytes. */
->                 consume = calculate_message_bytes(status);
-> -               if (consume <= 0)
-> +               if (consume <= 0) {
-> +                       snd_rawmidi_transmit_ack(substream, 1);
->                         return;
-> +               }
->
->                 /* On running-status. */
->                 if ((*buf & 0x80) != 0x80) {
->
-> Hm. This looks simple and works better, while I suspect that this is
-> appropriate to device driver, because this idea drops the message from
-> userspace. This is against a principle that device drivers just pass
-> data from a side to another side without censoring and modification.
->
-> I think it better to transfer the message to the device, even if it's
-> invalid in MIDI spec. It's what the userspace wants.
+An exported helper function snd_hda_get_nid_path() is nowhere used.
+Let's remove it.
 
-The code takes care to send entire MIDI messages.
-Is that actually required by the FF?  (Windows does not have a raw MIDI
-interface, so this problem could not happen there.)
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_generic.c | 16 ----------------
+ sound/pci/hda/hda_generic.h |  2 --
+ 2 files changed, 18 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index c6e8a651cea1..a644fc3302f0 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -279,22 +279,6 @@ static struct nid_path *get_nid_path(struct hda_codec *codec,
+ }
+ 
+ /**
+- * snd_hda_get_nid_path - get the path between the given NIDs
+- * @codec: the HDA codec
+- * @from_nid: the NID where the path start from
+- * @to_nid: the NID where the path ends at
+- *
+- * Return the found nid_path object or NULL for error.
+- * Passing 0 to either @from_nid or @to_nid behaves as a wildcard.
+- */
+-struct nid_path *snd_hda_get_nid_path(struct hda_codec *codec,
+-				      hda_nid_t from_nid, hda_nid_t to_nid)
+-{
+-	return get_nid_path(codec, from_nid, to_nid, 0);
+-}
+-EXPORT_SYMBOL_GPL(snd_hda_get_nid_path);
+-
+-/**
+  * snd_hda_get_path_idx - get the index number corresponding to the path
+  * instance
+  * @codec: the HDA codec
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index 56e4139b9032..692510e59365 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -306,8 +306,6 @@ int snd_hda_gen_spec_init(struct hda_gen_spec *spec);
+ int snd_hda_gen_init(struct hda_codec *codec);
+ void snd_hda_gen_free(struct hda_codec *codec);
+ 
+-struct nid_path *snd_hda_get_nid_path(struct hda_codec *codec,
+-				      hda_nid_t from_nid, hda_nid_t to_nid);
+ int snd_hda_get_path_idx(struct hda_codec *codec, struct nid_path *path);
+ struct nid_path *snd_hda_get_path_from_idx(struct hda_codec *codec, int idx);
+ bool snd_hda_parse_nid_path(struct hda_codec *codec, hda_nid_t from_nid,
+-- 
+2.6.3
