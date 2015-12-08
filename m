@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 10/13] ASoC: wm_adsp: Add code to locate and
-	initialise compressed buffer
-Date: Tue, 8 Dec 2015 16:08:34 +0000
-Message-ID: <1449590917-21170-10-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 09/13] ASoC: wm_adsp: Add support for opening a
+	compressed stream
+Date: Tue, 8 Dec 2015 16:08:33 +0000
+Message-ID: <1449590917-21170-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 96A2E260508
+ by alsa0.perex.cz (Postfix) with ESMTP id E5D1626058E
  for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:11 +0100 (CET)
 In-Reply-To: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,377 +26,325 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Add code that locates and initialises the buffer of compressed data on
-the DSP if the firmware supported compressed data capture. The buffer
-struct (wm_adsp_compr_buf) is kept separate from the stream struct
-(wm_adsp_compr) this will allow much easier support of multiple
-streams of data from the one DSP in the future, although support for
-this will not be added in this patch chain.
+Allow user-space to open a compressed stream, although no data will be
+passed yet, as part of this adding the ability to define supported
+capabilities per firmware and check these match the stream being opened.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 292 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm_adsp.h |   2 +
- 2 files changed, 294 insertions(+)
+ sound/soc/codecs/wm5110.c  |  23 ++++++
+ sound/soc/codecs/wm_adsp.c | 194 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm_adsp.h |  13 +++
+ 3 files changed, 227 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 22b57bc..cf68557 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -229,6 +229,58 @@ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
- 	[WM_ADSP_FW_MISC] =     "Misc",
- };
- 
-+struct wm_adsp_system_config_xm_hdr {
-+	__be32 sys_enable;
-+	__be32 fw_id;
-+	__be32 fw_rev;
-+	__be32 boot_status;
-+	__be32 watchdog;
-+	__be32 dma_buffer_size;
-+	__be32 rdma[6];
-+	__be32 wdma[8];
-+	__be32 build_job_name[3];
-+	__be32 build_job_number;
-+};
-+
-+struct wm_adsp_alg_xm_struct {
-+	__be32 magic;
-+	__be32 smoothing;
-+	__be32 threshold;
-+	__be32 host_buf_ptr;
-+	__be32 start_seq;
-+	__be32 high_water_mark;
-+	__be32 low_water_mark;
-+	__be64 smoothed_power;
-+};
-+
-+struct wm_adsp_buffer {
-+	__be32 X_buf_base;		/* XM base addr of first X area */
-+	__be32 X_buf_size;		/* Size of 1st X area in words */
-+	__be32 X_buf_base2;		/* XM base addr of 2nd X area */
-+	__be32 X_buf_brk;		/* Total X size in words */
-+	__be32 Y_buf_base;		/* YM base addr of Y area */
-+	__be32 wrap;			/* Total size X and Y in words */
-+	__be32 high_water_mark;		/* Point at which IRQ is asserted */
-+	__be32 irq_count;		/* bits 1-31 count IRQ assertions */
-+	__be32 irq_ack;			/* acked IRQ count, bit 0 enables IRQ */
-+	__be32 next_write_index;	/* word index of next write */
-+	__be32 next_read_index;		/* word index of next read */
-+	__be32 error;			/* error if any */
-+	__be32 oldest_block_index;	/* word index of oldest surviving */
-+	__be32 requested_rewind;	/* how many blocks rewind was done */
-+	__be32 reserved_space;		/* internal */
-+	__be32 min_free;		/* min free space since stream start */
-+	__be32 blocks_written[2];	/* total blocks written (64 bit) */
-+	__be32 words_written[2];	/* total words written (64 bit) */
-+};
-+
-+struct wm_adsp_compr_buf {
-+	struct wm_adsp *dsp;
-+
-+	struct wm_adsp_buffer_region *regions;
-+	u32 host_buf_ptr;
-+};
-+
- struct wm_adsp_compr {
- 	struct wm_adsp *dsp;
- 
-@@ -243,9 +295,53 @@ struct wm_adsp_compr {
- #define WM_ADSP_MIN_FRAGMENT_SIZE      (64 * WM_ADSP_DATA_WORD_SIZE)
- #define WM_ADSP_MAX_FRAGMENT_SIZE      (4096 * WM_ADSP_DATA_WORD_SIZE)
- 
-+#define WM_ADSP_ALG_XM_STRUCT_MAGIC    0x49aec7
-+
-+#define HOST_BUFFER_FIELD(field) \
-+	(offsetof(struct wm_adsp_buffer, field) / sizeof(__be32))
-+
-+#define ALG_XM_FIELD(field) \
-+	(offsetof(struct wm_adsp_alg_xm_struct, field) / sizeof(__be32))
-+
-+static int wm_adsp_buffer_init(struct wm_adsp *dsp);
-+static int wm_adsp_buffer_free(struct wm_adsp *dsp);
-+
-+struct wm_adsp_buffer_region {
-+	unsigned int offset;
-+	unsigned int cumulative_size;
-+	unsigned int mem_type;
-+	unsigned int base_addr;
-+};
-+
-+struct wm_adsp_buffer_region_def {
-+	unsigned int mem_type;
-+	unsigned int base_offset;
-+	unsigned int size_offset;
-+};
-+
-+static struct wm_adsp_buffer_region_def ez2control_regions[] = {
-+	{
-+		.mem_type = WMFW_ADSP2_XM,
-+		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
-+		.size_offset = HOST_BUFFER_FIELD(X_buf_size),
-+	},
-+	{
-+		.mem_type = WMFW_ADSP2_XM,
-+		.base_offset = HOST_BUFFER_FIELD(X_buf_base2),
-+		.size_offset = HOST_BUFFER_FIELD(X_buf_brk),
-+	},
-+	{
-+		.mem_type = WMFW_ADSP2_YM,
-+		.base_offset = HOST_BUFFER_FIELD(Y_buf_base),
-+		.size_offset = HOST_BUFFER_FIELD(wrap),
-+	},
-+};
-+
- struct wm_adsp_fw_caps {
- 	u32 id;
- 	struct snd_codec_desc desc;
-+	int num_regions;
-+	struct wm_adsp_buffer_region_def *region_defs;
- };
- 
- static const struct wm_adsp_fw_caps ez2control_caps[] = {
-@@ -257,6 +353,8 @@ static const struct wm_adsp_fw_caps ez2control_caps[] = {
- 			.num_sample_rates = 1,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 		},
-+		.num_regions = ARRAY_SIZE(ez2control_regions),
-+		.region_defs = ez2control_regions,
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 67d5651..8c0fd91 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2158,6 +2158,25 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
  	},
  };
  
-@@ -2120,6 +2218,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 					 ADSP2_CORE_ENA | ADSP2_START);
- 		if (ret != 0)
- 			goto err;
++static int wm5110_open(struct snd_compr_stream *stream)
++{
++	struct snd_soc_pcm_runtime *rtd = stream->private_data;
++	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct arizona *arizona = priv->core.arizona;
++	int n_adsp;
 +
-+		if (wm_adsp_fw[dsp->fw].num_caps != 0)
-+			ret = wm_adsp_buffer_init(dsp);
++	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
++		n_adsp = 2;
++	} else {
++		dev_err(arizona->dev,
++			"No suitable compressed stream for DAI '%s'\n",
++			rtd->codec_dai->name);
++		return -EINVAL;
++	}
 +
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-@@ -2154,6 +2256,9 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 			kfree(alg_region);
- 		}
- 
-+		if (wm_adsp_fw[dsp->fw].num_caps != 0)
-+			wm_adsp_buffer_free(dsp);
++	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
++}
 +
- 		mutex_unlock(&dsp->pwr_lock);
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+@@ -2249,6 +2268,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
+ };
  
- 		adsp_dbg(dsp, "Shutdown complete\n");
-@@ -2363,4 +2468,191 @@ int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
+ static struct snd_compr_ops wm5110_compr_ops = {
++	.open = wm5110_open,
++	.free = wm_adsp_compr_free,
++	.set_params = wm_adsp_compr_set_params,
++	.get_caps = wm_adsp_compr_get_caps,
+ };
+ 
+ static struct snd_soc_platform_driver wm5110_compr_platform = {
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 2b99f46..22b57bc 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -229,8 +229,42 @@ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_MISC] =     "Misc",
+ };
+ 
+-static struct {
++struct wm_adsp_compr {
++	struct wm_adsp *dsp;
++
++	struct snd_compr_stream *stream;
++	struct snd_compressed_buffer size;
++};
++
++#define WM_ADSP_DATA_WORD_SIZE         3
++
++#define WM_ADSP_MIN_FRAGMENTS          1
++#define WM_ADSP_MAX_FRAGMENTS          256
++#define WM_ADSP_MIN_FRAGMENT_SIZE      (64 * WM_ADSP_DATA_WORD_SIZE)
++#define WM_ADSP_MAX_FRAGMENT_SIZE      (4096 * WM_ADSP_DATA_WORD_SIZE)
++
++struct wm_adsp_fw_caps {
++	u32 id;
++	struct snd_codec_desc desc;
++};
++
++static const struct wm_adsp_fw_caps ez2control_caps[] = {
++	{
++		.id = SND_AUDIOCODEC_BESPOKE,
++		.desc = {
++			.max_ch = 1,
++			.sample_rates = { 16000 },
++			.num_sample_rates = 1,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++	},
++};
++
++static const struct {
+ 	const char *file;
++	int compr_direction;
++	int num_caps;
++	const struct wm_adsp_fw_caps *caps;
+ } wm_adsp_fw[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_MBC_VSS] =  { .file = "mbc-vss" },
+ 	[WM_ADSP_FW_HIFI] =     { .file = "hifi" },
+@@ -238,7 +272,12 @@ static struct {
+ 	[WM_ADSP_FW_TX_SPK] =   { .file = "tx-spk" },
+ 	[WM_ADSP_FW_RX] =       { .file = "rx" },
+ 	[WM_ADSP_FW_RX_ANC] =   { .file = "rx-anc" },
+-	[WM_ADSP_FW_CTRL] =     { .file = "ctrl" },
++	[WM_ADSP_FW_CTRL] =     {
++		.file = "ctrl",
++		.compr_direction = SND_COMPRESS_CAPTURE,
++		.num_caps = ARRAY_SIZE(ez2control_caps),
++		.caps = ez2control_caps,
++	},
+ 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
+ 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
+ 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
+@@ -461,7 +500,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock(&dsp[e->shift_l].pwr_lock);
+ 
+-	if (dsp[e->shift_l].running)
++	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
+ 		ret = -EBUSY;
+ 	else
+ 		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
+@@ -2175,4 +2214,153 @@ int wm_adsp2_init(struct wm_adsp *dsp)
  }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
+ EXPORT_SYMBOL_GPL(wm_adsp2_init);
  
-+static int wm_adsp_read_data_block(struct wm_adsp *dsp, int mem_type,
-+				   unsigned int mem_addr,
-+				   unsigned int num_words, u32 *data)
++int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
 +{
-+	struct wm_adsp_region const *mem = wm_adsp_find_region(dsp, mem_type);
-+	unsigned int i, reg;
-+	int ret;
++	struct wm_adsp_compr *compr;
++	int ret = 0;
 +
-+	if (!mem)
-+		return -EINVAL;
++	mutex_lock(&dsp->pwr_lock);
 +
-+	reg = wm_adsp_region_to_reg(mem, mem_addr);
-+
-+	ret = regmap_raw_read(dsp->regmap, reg, data,
-+			      sizeof(*data) * num_words);
-+	if (ret < 0)
-+		return ret;
-+
-+	for (i = 0; i < num_words; ++i)
-+		data[i] = be32_to_cpu(data[i]) & 0x00ffffffu;
-+
-+	return 0;
-+}
-+
-+static inline int wm_adsp_read_data_word(struct wm_adsp *dsp, int mem_type,
-+					 unsigned int mem_addr, u32 *data)
-+{
-+	return wm_adsp_read_data_block(dsp, mem_type, mem_addr, 1, data);
-+}
-+
-+static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
-+				   unsigned int mem_addr, u32 data)
-+{
-+	struct wm_adsp_region const *mem = wm_adsp_find_region(dsp, mem_type);
-+	unsigned int reg;
-+
-+	if (!mem)
-+		return -EINVAL;
-+
-+	reg = wm_adsp_region_to_reg(mem, mem_addr);
-+
-+	data = cpu_to_be32(data & 0x00ffffffu);
-+
-+	return regmap_raw_write(dsp->regmap, reg, &data, sizeof(data));
-+}
-+
-+static inline int wm_adsp_buffer_read(struct wm_adsp_compr_buf *buf,
-+				      unsigned int field_offset, u32 *data)
-+{
-+	return wm_adsp_read_data_word(buf->dsp, WMFW_ADSP2_XM,
-+				      buf->host_buf_ptr + field_offset, data);
-+}
-+
-+static inline int wm_adsp_buffer_write(struct wm_adsp_compr_buf *buf,
-+				       unsigned int field_offset, u32 data)
-+{
-+	return wm_adsp_write_data_word(buf->dsp, WMFW_ADSP2_XM,
-+				       buf->host_buf_ptr + field_offset, data);
-+}
-+
-+static int wm_adsp_buffer_locate(struct wm_adsp_compr_buf *buf)
-+{
-+	struct wm_adsp_alg_region *alg_region;
-+	struct wm_adsp *dsp = buf->dsp;
-+	u32 xmalg, addr, magic;
-+	int i, ret;
-+
-+	alg_region = wm_adsp_find_alg_region(dsp, WMFW_ADSP2_XM, dsp->fw_id);
-+	xmalg = sizeof(struct wm_adsp_system_config_xm_hdr) / sizeof(__be32);
-+
-+	addr = alg_region->base + xmalg + ALG_XM_FIELD(magic);
-+	ret = wm_adsp_read_data_word(dsp, WMFW_ADSP2_XM, addr, &magic);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (magic != WM_ADSP_ALG_XM_STRUCT_MAGIC)
-+		return -EINVAL;
-+
-+	addr = alg_region->base + xmalg + ALG_XM_FIELD(host_buf_ptr);
-+	for (i = 0; i < 5; ++i) {
-+		ret = wm_adsp_read_data_word(dsp, WMFW_ADSP2_XM, addr,
-+					     &buf->host_buf_ptr);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (buf->host_buf_ptr)
-+			break;
-+
-+		usleep_range(10000, 15000);
++	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
++		adsp_err(dsp, "Firmware does not support compressed API\n");
++		ret = -ENXIO;
++		goto out;
 +	}
 +
-+	if (!buf->host_buf_ptr)
-+		return -EIO;
-+
-+	adsp_dbg(dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
-+
-+	return 0;
-+}
-+
-+static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
-+{
-+	const struct wm_adsp_fw_caps *caps = wm_adsp_fw[buf->dsp->fw].caps;
-+	struct wm_adsp_buffer_region *region;
-+	u32 offset = 0;
-+	int i, ret;
-+
-+	for (i = 0; i < caps->num_regions; ++i) {
-+		region = &buf->regions[i];
-+
-+		region->offset = offset;
-+		region->mem_type = caps->region_defs[i].mem_type;
-+
-+		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].base_offset,
-+					  &region->base_addr);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].size_offset,
-+					  &offset);
-+		if (ret < 0)
-+			return ret;
-+
-+		region->cumulative_size = offset;
-+
-+		adsp_dbg(buf->dsp,
-+			 "region=%d type=%d base=%04x off=%04x size=%04x\n",
-+			 i, region->mem_type, region->base_addr,
-+			 region->offset, region->cumulative_size);
++	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
++		adsp_err(dsp, "Firmware does not support stream direction\n");
++		ret = -EINVAL;
++		goto out;
 +	}
 +
-+	return 0;
-+}
-+
-+static int wm_adsp_buffer_init(struct wm_adsp *dsp)
-+{
-+	struct wm_adsp_compr_buf *buf;
-+	unsigned int size;
-+	int ret;
-+
-+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	buf->dsp = dsp;
-+
-+	ret = wm_adsp_buffer_locate(buf);
-+	if (ret < 0) {
-+		adsp_err(dsp, "Failed to acquire host buffer: %d\n", ret);
-+		goto err_buffer;
-+	}
-+
-+	size = wm_adsp_fw[dsp->fw].caps->num_regions * sizeof(*buf->regions);
-+	buf->regions = kzalloc(size, GFP_KERNEL);
-+	if (!buf->regions) {
++	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
++	if (!compr) {
 +		ret = -ENOMEM;
-+		goto err_buffer;
++		goto out;
 +	}
 +
-+	ret = wm_adsp_buffer_populate(buf);
-+	if (ret < 0) {
-+		adsp_err(dsp, "Failed to populate host buffer: %d\n", ret);
-+		goto err_regions;
-+	}
++	compr->dsp = dsp;
++	compr->stream = stream;
 +
-+	dsp->buffer = buf;
++	dsp->compr = compr;
 +
-+	return 0;
++	stream->runtime->private_data = compr;
 +
-+err_regions:
-+	kfree(buf->regions);
-+err_buffer:
-+	kfree(buf);
++out:
++	mutex_unlock(&dsp->pwr_lock);
++
 +	return ret;
 +}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_open);
 +
-+static int wm_adsp_buffer_free(struct wm_adsp *dsp)
++int wm_adsp_compr_free(struct snd_compr_stream *stream)
 +{
-+	if (dsp->buffer) {
-+		kfree(dsp->buffer->regions);
-+		kfree(dsp->buffer);
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	struct wm_adsp *dsp = compr->dsp;
 +
-+		dsp->buffer = NULL;
++	mutex_lock(&dsp->pwr_lock);
++
++	dsp->compr = NULL;
++
++	kfree(compr);
++
++	mutex_unlock(&dsp->pwr_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_free);
++
++static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
++				      struct snd_compr_params *params)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	struct wm_adsp *dsp = compr->dsp;
++	const struct wm_adsp_fw_caps *caps;
++	const struct snd_codec_desc *desc;
++	int i, j;
++
++	if (params->buffer.fragment_size < WM_ADSP_MIN_FRAGMENT_SIZE ||
++	    params->buffer.fragment_size > WM_ADSP_MAX_FRAGMENT_SIZE ||
++	    params->buffer.fragments < WM_ADSP_MIN_FRAGMENTS ||
++	    params->buffer.fragments > WM_ADSP_MAX_FRAGMENTS ||
++	    params->buffer.fragment_size % WM_ADSP_DATA_WORD_SIZE) {
++		adsp_err(dsp, "Invalid buffer fragsize=%d fragments=%d\n",
++			 params->buffer.fragment_size,
++			 params->buffer.fragments);
++
++		return -EINVAL;
++	}
++
++	for (i = 0; i < wm_adsp_fw[dsp->fw].num_caps; i++) {
++		caps = &wm_adsp_fw[dsp->fw].caps[i];
++		desc = &caps->desc;
++
++		if (caps->id != params->codec.id)
++			continue;
++
++		if (stream->direction == SND_COMPRESS_PLAYBACK) {
++			if (desc->max_ch < params->codec.ch_out)
++				continue;
++		} else {
++			if (desc->max_ch < params->codec.ch_in)
++				continue;
++		}
++
++		if (!(desc->formats & (1 << params->codec.format)))
++			continue;
++
++		for (j = 0; j < desc->num_sample_rates; ++j)
++			if (desc->sample_rates[j] == params->codec.sample_rate)
++				return 0;
++	}
++
++	adsp_err(dsp, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
++		 params->codec.id, params->codec.ch_in, params->codec.ch_out,
++		 params->codec.sample_rate, params->codec.format);
++	return -EINVAL;
++}
++
++int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
++			     struct snd_compr_params *params)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	int ret;
++
++	ret = wm_adsp_compr_check_params(stream, params);
++	if (ret)
++		return ret;
++
++	compr->size = params->buffer;
++
++	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
++		 compr->size.fragment_size, compr->size.fragments);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
++
++int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
++			   struct snd_compr_caps *caps)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	int fw = compr->dsp->fw;
++	int i;
++
++	if (wm_adsp_fw[fw].caps) {
++		for (i = 0; i < wm_adsp_fw[fw].num_caps; i++)
++			caps->codecs[i] = wm_adsp_fw[fw].caps[i].id;
++
++		caps->num_codecs = i;
++		caps->direction = wm_adsp_fw[fw].compr_direction;
++
++		caps->min_fragment_size = WM_ADSP_MIN_FRAGMENT_SIZE;
++		caps->max_fragment_size = WM_ADSP_MAX_FRAGMENT_SIZE;
++		caps->min_fragments = WM_ADSP_MIN_FRAGMENTS;
++		caps->max_fragments = WM_ADSP_MAX_FRAGMENTS;
 +	}
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
 +
  MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 33c9b52..0b2205a 100644
+index d2a8c78..33c9b52 100644
 --- a/sound/soc/codecs/wm_adsp.h
 +++ b/sound/soc/codecs/wm_adsp.h
-@@ -32,6 +32,7 @@ struct wm_adsp_alg_region {
+@@ -15,6 +15,7 @@
+ 
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/compress_driver.h>
+ 
+ #include "wmfw.h"
+ 
+@@ -30,6 +31,8 @@ struct wm_adsp_alg_region {
+ 	unsigned int base;
  };
  
- struct wm_adsp_compr;
-+struct wm_adsp_compr_buf;
- 
++struct wm_adsp_compr;
++
  struct wm_adsp {
  	const char *part;
-@@ -63,6 +64,7 @@ struct wm_adsp {
+ 	int num;
+@@ -59,6 +62,8 @@ struct wm_adsp {
+ 
  	struct work_struct boot_work;
  
- 	struct wm_adsp_compr *compr;
-+	struct wm_adsp_compr_buf *buffer;
- 
++	struct wm_adsp_compr *compr;
++
  	struct mutex pwr_lock;
  
+ #ifdef CONFIG_DEBUG_FS
+@@ -97,4 +102,12 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
++extern int wm_adsp_compr_open(struct wm_adsp *dsp,
++			      struct snd_compr_stream *stream);
++extern int wm_adsp_compr_free(struct snd_compr_stream *stream);
++extern int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
++				    struct snd_compr_params *params);
++extern int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
++				  struct snd_compr_caps *caps);
++
+ #endif
 -- 
 2.1.4
