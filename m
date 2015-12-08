@@ -1,15 +1,16 @@
 From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V2 1/3] ASoC: Add SOC_DOUBLE_STS macro
-Date: Tue, 8 Dec 2015 15:58:58 +0000
-Message-ID: <1449590340-14682-2-git-send-email-Damien.Horsley@imgtec.com>
+Subject: [PATCH V2 2/3] ASoC: pcm3168a: Add binding document
+	for pcm3168a codec
+Date: Tue, 8 Dec 2015 15:58:59 +0000
+Message-ID: <1449590340-14682-3-git-send-email-Damien.Horsley@imgtec.com>
 References: <1449590340-14682-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id D4DA9260435
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:00:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 604C926043C
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:00:13 +0100 (CET)
 In-Reply-To: <1449590340-14682-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,31 +27,67 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-Add SOC_DOUBLE_STS macro for read-only volatile status controls
+Add binding document for Texas Instruments pcm3168a codec
 
 Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 ---
- include/sound/soc.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../devicetree/bindings/sound/ti,pcm3168a.txt      | 48 ++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 03431e7..e8d834f 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -110,6 +110,14 @@
- 	.put = snd_soc_put_volsw, \
- 	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
- 					  max, invert, 0) }
-+#define SOC_DOUBLE_STS(xname, reg, shift_left, shift_right, max, invert) \
-+{									\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),		\
-+	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,		\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ |				\
-+		SNDRV_CTL_ELEM_ACCESS_VOLATILE,				\
-+	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right,	\
-+					  max, invert, 0) }
- #define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
- 	.info = snd_soc_info_volsw, \
+diff --git a/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+new file mode 100644
+index 0000000..5d9cb84
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+@@ -0,0 +1,48 @@
++Texas Instruments pcm3168a DT bindings
++
++This driver supports both SPI and I2C bus access for this codec
++
++Required properties:
++
++  - compatible: "ti,pcm3168a"
++
++  - clocks : Contains an entry for each entry in clock-names
++
++  - clock-names : Includes the following entries:
++	"scki"	The system clock
++
++  - VDD1-supply : Digital power supply regulator 1 (+3.3V)
++
++  - VDD2-supply : Digital power supply regulator 2 (+3.3V)
++
++  - VCCAD1-supply : ADC power supply regulator 1 (+5V)
++
++  - VCCAD2-supply : ADC power supply regulator 2 (+5V)
++
++  - VCCDA1-supply : DAC power supply regulator 1 (+5V)
++
++  - VCCDA2-supply : DAC power supply regulator 2 (+5V)
++
++For required properties on SPI/I2C, consult SPI/I2C device tree documentation
++
++Examples:
++
++i2c0: i2c0@0 {
++
++	...
++
++	pcm3168a: audio-codec@44 {
++		compatible = "ti,pcm3168a";
++		reg = <0x44>;
++		clocks = <&clk_core CLK_AUDIO>;
++		clock-names = "scki";
++		VDD1-supply = <&supply3v3>;
++		VDD2-supply = <&supply3v3>;
++		VCCAD1-supply = <&supply5v0>;
++		VCCAD2-supply = <&supply5v0>;
++		VCCDA1-supply = <&supply5v0>;
++		VCCDA2-supply = <&supply5v0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&dac_clk_pin>;
++	};
++};
 -- 
 2.1.4
