@@ -1,37 +1,35 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v3 00/15] ASoC: hdac_hdmi: Add DP & notification support
-Date: Tue, 8 Dec 2015 16:54:12 +0530
-Message-ID: <20151208112407.GA5850@subhransu-desktop>
-References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
- <20151207201200.GO5727@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: Intel: Skylake: pointer math issue
+Date: Tue, 8 Dec 2015 08:53:22 +0300
+Message-ID: <20151208055321.GA5597@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20151207201200.GO5727@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, Daniel Vetter <daniel.vetter@intel.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBEZWMgMDcsIDIwMTUgYXQgMDg6MTI6MDBQTSArMDAwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBUdWUsIERlYyAwOCwgMjAxNSBhdCAwMjo0Nzo1OEFNICswNTMwLCBTdWJocmFuc3Ug
-Uy4gUHJ1c3R5IHdyb3RlOgo+ID4gVGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBEUCBhdWRpbyBhbmQg
-aG90cGx1ZyBub3RpZmljYXRpb24gc3VwcG9ydC4KPiAKPiBOb3QgcmVsYXRlZCB0byB0aGUgY29k
-ZSBidXQgdGhlcmUgc2VlbXMgdG8gYmUgc29tZXRoaW5nIHdyb25nIHdpdGggdGhlCj4gdGltZSBj
-b25maWd1cmF0aW9uIG9uIHlvdXIgc3lzdGVtIHdoaWNoIGlzIGNhdXNpbmcgYWxsIHlvdXIgcGF0
-Y2hlcyB0bwo+IGJlIHN1Ym1pdHRlZCBxdWl0ZSBhIGZldyBob3VycyBpbiB0aGUgZnV0dXJlIHdo
-aWNoIGNvbmZ1c2VzIHRpbWUgYmFzZWQKPiBtYWlsYm94IHNvcnRpbmcgLSBtaWdodCBiZSB3b3J0
-aCBsb29raW5nIGF0IHRoYXQuCgpTb3JyeSBhYm91dCB0aGF0LiBXaWxsIGZpeCBpdC4KCgoKLS0g
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
-bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+"data" is a u32 pointer so this copies the information to wrong place
+entirely.
+
+Fixes: 140adfba5280 ('ASoC: Intel: Skylake: Add tlv byte kcontrols')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index dde8d3c..2c4405e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -885,9 +885,9 @@ static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
+ 	if (bc->params) {
+ 		if (copy_to_user(data, &bc->param_id, sizeof(u32)))
+ 			return -EFAULT;
+-		if (copy_to_user(data + sizeof(u32), &size, sizeof(u32)))
++		if (copy_to_user(data + 1, &size, sizeof(u32)))
+ 			return -EFAULT;
+-		if (copy_to_user(data + 2 * sizeof(u32), bc->params, size))
++		if (copy_to_user(data + 2, bc->params, size))
+ 			return -EFAULT;
+ 	}
+ 
