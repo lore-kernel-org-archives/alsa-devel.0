@@ -1,35 +1,62 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: Intel: Skylake: pointer math issue
-Date: Tue, 8 Dec 2015 08:53:22 +0300
-Message-ID: <20151208055321.GA5597@mwanda>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v3 08/15] ASoC: hdac_hdmi: Create
+ widget/route based on nodes enumerated
+Date: Tue, 8 Dec 2015 16:58:56 +0530
+Message-ID: <20151208112856.GB5850@subhransu-desktop>
+References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-8-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hzixmkzgu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF95B265D12
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 06:58:20 +0100 (CET)
 Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <s5hzixmkzgu.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-"data" is a u32 pointer so this copies the information to wrong place
-entirely.
+On Mon, Dec 07, 2015 at 05:14:41PM +0100, Takashi Iwai wrote:
+> On Mon, 07 Dec 2015 22:24:22 +0100,
+> Subhransu S. Prusty wrote:
+> >  	return pin->num_mux_nids;
+> >  }
+> >  
+> > -static void hdac_hdmi_fill_widget_info(struct snd_soc_dapm_widget *w,
+> > -				enum snd_soc_dapm_type id,
+> > -				const char *wname, const char *stream)
+> > +static void hdac_hdmi_fill_widget_info(struct device *dev,
+> > +				struct snd_soc_dapm_widget *w,
+> > +				enum snd_soc_dapm_type id, void *priv,
+> > +				const char *wname, const char *stream,
+> > +				struct snd_kcontrol_new *wc, int numkc)
+> >  {
+> >  	w->id = id;
+> > -	w->name = wname;
+> > +	w->name = devm_kstrdup(dev, wname, GFP_KERNEL);
+> 
+> Missing NULL check.  Not only here but in handful places in this
+> patch.
 
-Fixes: 140adfba5280 ('ASoC: Intel: Skylake: Add tlv byte kcontrols')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Sorry to have missed to add check on these. Will fix them.
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index dde8d3c..2c4405e 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -885,9 +885,9 @@ static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
- 	if (bc->params) {
- 		if (copy_to_user(data, &bc->param_id, sizeof(u32)))
- 			return -EFAULT;
--		if (copy_to_user(data + sizeof(u32), &size, sizeof(u32)))
-+		if (copy_to_user(data + 1, &size, sizeof(u32)))
- 			return -EFAULT;
--		if (copy_to_user(data + 2 * sizeof(u32), bc->params, size))
-+		if (copy_to_user(data + 2, bc->params, size))
- 			return -EFAULT;
- 	}
- 
+Regards,
+Subhransu
+> 
+> 
+> Takashi
+
+-- 
