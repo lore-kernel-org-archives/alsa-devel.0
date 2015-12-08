@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Update ignore suspend
-	for rt286 machine" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:19 +0000
-Message-ID: <E1a6NfT-00040G-DH@debutante>
-References: <1449165601-11226-13-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: add wov as int sink" to
+	the asoc tree
+Date: Tue, 08 Dec 2015 19:11:22 +0000
+Message-ID: <E1a6NfW-00041f-68@debutante>
+References: <1448703121-5831-16-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C14C9260676
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:26 +0100 (CET)
-In-Reply-To: <1449165601-11226-13-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 751D1260580
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:28 +0100 (CET)
+In-Reply-To: <1448703121-5831-16-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Praveen Diwakar <praveen.diwakar@intel.com>, Vunny Sodhi <vunnyx.sodhi@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Update ignore suspend for rt286 machine
+   ASoC: Intel: Skylake: add wov as int sink
 
 has been applied to the asoc tree at
 
@@ -53,82 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 9ec2053b13f75d7ad9c0e6db9763954bd1a1b9ae Mon Sep 17 00:00:00 2001
-From: Praveen Diwakar <praveen.diwakar@intel.com>
-Date: Thu, 3 Dec 2015 23:30:01 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Update ignore suspend for rt286 machine
+>From b34e24d2406f123d5dbbff4fdeebbc2af76b0acd Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 3 Dec 2015 23:29:58 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: add wov as int sink
 
-We should only add ignore suspend flag for some DAIs and not all.
-This patches removes it from the DAIs where we do not support
-this
-
-It also marks the endpoints for which ignore_suspend should be
-enabled
-
-Signed-off-by: Praveen Diwakar <praveen.diwakar@intel.com>
-Signed-off-by: Vunny Sodhi <vunnyx.sodhi@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 51c4eb87e6ec..7396ddb427d8 100644
+index e4fc8a1ce471..0a924901b9b6 100644
 --- a/sound/soc/intel/boards/skl_rt286.c
 +++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -89,6 +89,17 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
- 
+@@ -52,6 +52,7 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ 	SND_SOC_DAPM_MIC("DMIC2", NULL),
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++	SND_SOC_DAPM_SINK("WoV Sink"),
  };
  
-+static int skylake_rt286_fe_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dapm_context *dapm;
-+	struct snd_soc_component *component = rtd->cpu_dai->component;
-+
-+	dapm = snd_soc_component_get_dapm(component);
-+	snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
-+
-+	return 0;
-+}
-+
- static int skylake_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
-@@ -104,6 +115,9 @@ static int skylake_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
+ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+@@ -69,6 +70,8 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	{"DMIC1 Pin", NULL, "DMIC2"},
+ 	{"DMIC AIF", NULL, "SoC DMIC"},
  
- 	rt286_mic_detect(codec, &skylake_headset);
- 
-+	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
-+	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
++	{"WoV Sink", NULL, "hwd_in sink"},
 +
- 	return 0;
- }
- 
-@@ -241,6 +255,7 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
- 		.dynamic = 1,
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
-+		.init = skylake_rt286_fe_init,
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST,
- 			SND_SOC_DPCM_TRIGGER_POST
-@@ -286,7 +301,6 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
- 		.platform_name = "0000:00:1f.3",
- 		.init = NULL,
- 		.dpcm_capture = 1,
--		.ignore_suspend = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &skylake_dmic_ops,
-@@ -306,7 +320,6 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S |
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
--		.ignore_suspend = 1,
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = skylake_ssp0_fixup,
- 		.ops = &skylake_rt286_ops,
+ 	/* CODEC BE connections */
+ 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
+ 	{ "ssp0 Tx", NULL, "codec0_out"},
 -- 
 2.6.2
