@@ -1,18 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/13] ASoC: wm_adsp: Add support for opening a
-	compressed stream
-Date: Tue, 8 Dec 2015 16:08:33 +0000
-Message-ID: <1449590917-21170-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Implement loopback control switch
+	for Realtek and other codecs
+Date: Tue,  8 Dec 2015 17:10:11 +0100
+Message-ID: <1449591011-21360-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id E5D1626058E
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:11 +0100 (CET)
-In-Reply-To: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD64F260504
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:10:18 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 829E8AB12
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 16:10:18 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,329 +22,196 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allow user-space to open a compressed stream, although no data will be
-passed yet, as part of this adding the ability to define supported
-capabilities per firmware and check these match the stream being opened.
+Many codecs, typically found on Realtek codecs, have the analog
+loopback path merged to the secondary input of the middle of the
+output paths.  Currently, we don't offer the dynamic switching in such
+configuration but let each loopback path mute by itself.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+This should work well in theory, but in reality, we often see that
+such a dead loopback path causes some background noises even if all
+the elements get muted.  Such a problem has been fixed by adding the
+quirk accordingly to disable aamix, and it's the right fix, per se.
+The only problem is that it's not so trivial to achieve it; user needs
+to pass a hint string via patch module option or sysfs.
+
+This patch gives a bit improvement on the situation: it adds "Loopback
+Mixing" control element for such codecs like other codecs (e.g. IDT or
+VIA codecs) with the individual loopback paths.  User can turn on/off
+the loopback path simply via a mixer app.
+
+For keeping the compatibility, the loopback is still enabled on these
+codecs.  But user can try to turn it off if experiencing a suspicious
+background or click noise on the fly, then build a static fixup later
+once after the problem is addressed.
+
+Other than the addition of the loopback enable/disablement control,
+there should be no changes.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm5110.c  |  23 ++++++
- sound/soc/codecs/wm_adsp.c | 194 ++++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm_adsp.h |  13 +++
- 3 files changed, 227 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_generic.c | 87 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 68 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 67d5651..8c0fd91 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2158,6 +2158,25 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
- 	},
- };
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index f3c058f6c831..30c8efe0f80a 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -754,9 +754,6 @@ static void activate_amp(struct hda_codec *codec, hda_nid_t nid, int dir,
+ 	unsigned int caps;
+ 	unsigned int mask, val;
  
-+static int wm5110_open(struct snd_compr_stream *stream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = stream->private_data;
-+	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
-+	struct arizona *arizona = priv->core.arizona;
-+	int n_adsp;
-+
-+	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
-+		n_adsp = 2;
-+	} else {
-+		dev_err(arizona->dev,
-+			"No suitable compressed stream for DAI '%s'\n",
-+			rtd->codec_dai->name);
-+		return -EINVAL;
-+	}
-+
-+	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
-+}
-+
- static int wm5110_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-@@ -2249,6 +2268,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- };
- 
- static struct snd_compr_ops wm5110_compr_ops = {
-+	.open = wm5110_open,
-+	.free = wm_adsp_compr_free,
-+	.set_params = wm_adsp_compr_set_params,
-+	.get_caps = wm_adsp_compr_get_caps,
- };
- 
- static struct snd_soc_platform_driver wm5110_compr_platform = {
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 2b99f46..22b57bc 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -229,8 +229,42 @@ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
- 	[WM_ADSP_FW_MISC] =     "Misc",
- };
- 
--static struct {
-+struct wm_adsp_compr {
-+	struct wm_adsp *dsp;
-+
-+	struct snd_compr_stream *stream;
-+	struct snd_compressed_buffer size;
-+};
-+
-+#define WM_ADSP_DATA_WORD_SIZE         3
-+
-+#define WM_ADSP_MIN_FRAGMENTS          1
-+#define WM_ADSP_MAX_FRAGMENTS          256
-+#define WM_ADSP_MIN_FRAGMENT_SIZE      (64 * WM_ADSP_DATA_WORD_SIZE)
-+#define WM_ADSP_MAX_FRAGMENT_SIZE      (4096 * WM_ADSP_DATA_WORD_SIZE)
-+
-+struct wm_adsp_fw_caps {
-+	u32 id;
-+	struct snd_codec_desc desc;
-+};
-+
-+static const struct wm_adsp_fw_caps ez2control_caps[] = {
-+	{
-+		.id = SND_AUDIOCODEC_BESPOKE,
-+		.desc = {
-+			.max_ch = 1,
-+			.sample_rates = { 16000 },
-+			.num_sample_rates = 1,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+	},
-+};
-+
-+static const struct {
- 	const char *file;
-+	int compr_direction;
-+	int num_caps;
-+	const struct wm_adsp_fw_caps *caps;
- } wm_adsp_fw[WM_ADSP_NUM_FW] = {
- 	[WM_ADSP_FW_MBC_VSS] =  { .file = "mbc-vss" },
- 	[WM_ADSP_FW_HIFI] =     { .file = "hifi" },
-@@ -238,7 +272,12 @@ static struct {
- 	[WM_ADSP_FW_TX_SPK] =   { .file = "tx-spk" },
- 	[WM_ADSP_FW_RX] =       { .file = "rx" },
- 	[WM_ADSP_FW_RX_ANC] =   { .file = "rx-anc" },
--	[WM_ADSP_FW_CTRL] =     { .file = "ctrl" },
-+	[WM_ADSP_FW_CTRL] =     {
-+		.file = "ctrl",
-+		.compr_direction = SND_COMPRESS_CAPTURE,
-+		.num_caps = ARRAY_SIZE(ez2control_caps),
-+		.caps = ez2control_caps,
-+	},
- 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
- 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
- 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
-@@ -461,7 +500,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&dsp[e->shift_l].pwr_lock);
- 
--	if (dsp[e->shift_l].running)
-+	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
- 		ret = -EBUSY;
- 	else
- 		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
-@@ -2175,4 +2214,153 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+-	if (!enable && is_active_nid(codec, nid, dir, idx_to_check))
+-		return;
+-
+ 	caps = query_amp_caps(codec, nid, dir);
+ 	val = get_amp_val_to_activate(codec, nid, dir, caps, enable);
+ 	mask = get_amp_mask_to_modify(codec, nid, dir, idx_to_check, caps);
+@@ -767,12 +764,22 @@ static void activate_amp(struct hda_codec *codec, hda_nid_t nid, int dir,
+ 	update_amp(codec, nid, dir, idx, mask, val);
  }
- EXPORT_SYMBOL_GPL(wm_adsp2_init);
  
-+int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
++static void check_and_activate_amp(struct hda_codec *codec, hda_nid_t nid,
++				   int dir, int idx, int idx_to_check,
++				   bool enable)
 +{
-+	struct wm_adsp_compr *compr;
-+	int ret = 0;
-+
-+	mutex_lock(&dsp->pwr_lock);
-+
-+	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
-+		adsp_err(dsp, "Firmware does not support compressed API\n");
-+		ret = -ENXIO;
-+		goto out;
-+	}
-+
-+	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
-+		adsp_err(dsp, "Firmware does not support stream direction\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
-+	if (!compr) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	compr->dsp = dsp;
-+	compr->stream = stream;
-+
-+	dsp->compr = compr;
-+
-+	stream->runtime->private_data = compr;
-+
-+out:
-+	mutex_unlock(&dsp->pwr_lock);
-+
-+	return ret;
++	/* check whether the given amp is still used by others */
++	if (!enable && is_active_nid(codec, nid, dir, idx_to_check))
++		return;
++	activate_amp(codec, nid, dir, idx, idx_to_check, enable);
 +}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_open);
 +
-+int wm_adsp_compr_free(struct snd_compr_stream *stream)
-+{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	struct wm_adsp *dsp = compr->dsp;
-+
-+	mutex_lock(&dsp->pwr_lock);
-+
-+	dsp->compr = NULL;
-+
-+	kfree(compr);
-+
-+	mutex_unlock(&dsp->pwr_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_free);
-+
-+static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
-+				      struct snd_compr_params *params)
-+{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	struct wm_adsp *dsp = compr->dsp;
-+	const struct wm_adsp_fw_caps *caps;
-+	const struct snd_codec_desc *desc;
-+	int i, j;
-+
-+	if (params->buffer.fragment_size < WM_ADSP_MIN_FRAGMENT_SIZE ||
-+	    params->buffer.fragment_size > WM_ADSP_MAX_FRAGMENT_SIZE ||
-+	    params->buffer.fragments < WM_ADSP_MIN_FRAGMENTS ||
-+	    params->buffer.fragments > WM_ADSP_MAX_FRAGMENTS ||
-+	    params->buffer.fragment_size % WM_ADSP_DATA_WORD_SIZE) {
-+		adsp_err(dsp, "Invalid buffer fragsize=%d fragments=%d\n",
-+			 params->buffer.fragment_size,
-+			 params->buffer.fragments);
-+
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < wm_adsp_fw[dsp->fw].num_caps; i++) {
-+		caps = &wm_adsp_fw[dsp->fw].caps[i];
-+		desc = &caps->desc;
-+
-+		if (caps->id != params->codec.id)
-+			continue;
-+
-+		if (stream->direction == SND_COMPRESS_PLAYBACK) {
-+			if (desc->max_ch < params->codec.ch_out)
+ static void activate_amp_out(struct hda_codec *codec, struct nid_path *path,
+ 			     int i, bool enable)
+ {
+ 	hda_nid_t nid = path->path[i];
+ 	init_amp(codec, nid, HDA_OUTPUT, 0);
+-	activate_amp(codec, nid, HDA_OUTPUT, 0, 0, enable);
++	check_and_activate_amp(codec, nid, HDA_OUTPUT, 0, 0, enable);
+ }
+ 
+ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
+@@ -800,9 +807,16 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
+ 	 * when aa-mixer is available, we need to enable the path as well
+ 	 */
+ 	for (n = 0; n < nums; n++) {
+-		if (n != idx && (!add_aamix || conn[n] != spec->mixer_merge_nid))
+-			continue;
+-		activate_amp(codec, nid, HDA_INPUT, n, idx, enable);
++		if (n != idx) {
++			if (conn[n] != spec->mixer_merge_nid)
 +				continue;
-+		} else {
-+			if (desc->max_ch < params->codec.ch_in)
++			/* when aamix is disabled, force to off */
++			if (!add_aamix) {
++				activate_amp(codec, nid, HDA_INPUT, n, n, false);
 +				continue;
++			}
 +		}
-+
-+		if (!(desc->formats & (1 << params->codec.format)))
-+			continue;
-+
-+		for (j = 0; j < desc->num_sample_rates; ++j)
-+			if (desc->sample_rates[j] == params->codec.sample_rate)
-+				return 0;
-+	}
-+
-+	adsp_err(dsp, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
-+		 params->codec.id, params->codec.ch_in, params->codec.ch_out,
-+		 params->codec.sample_rate, params->codec.format);
-+	return -EINVAL;
++		check_and_activate_amp(codec, nid, HDA_INPUT, n, idx, enable);
+ 	}
+ }
+ 
+@@ -1563,6 +1577,12 @@ static bool map_singles(struct hda_codec *codec, int outs,
+ 	return found;
+ }
+ 
++static inline bool has_aamix_out_paths(struct hda_gen_spec *spec)
++{
++	return spec->aamix_out_paths[0] || spec->aamix_out_paths[1] ||
++		spec->aamix_out_paths[2];
 +}
 +
-+int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
-+			     struct snd_compr_params *params)
+ /* create a new path including aamix if available, and return its index */
+ static int check_aamix_out_path(struct hda_codec *codec, int path_idx)
+ {
+@@ -2405,25 +2425,51 @@ static void update_aamix_paths(struct hda_codec *codec, bool do_mix,
+ 	}
+ }
+ 
++/* re-initialize the output paths; only called from loopback_mixing_put() */
++static void update_output_paths(struct hda_codec *codec, int num_outs,
++				const int *paths)
 +{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	int ret;
-+
-+	ret = wm_adsp_compr_check_params(stream, params);
-+	if (ret)
-+		return ret;
-+
-+	compr->size = params->buffer;
-+
-+	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
-+		 compr->size.fragment_size, compr->size.fragments);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
-+
-+int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
-+			   struct snd_compr_caps *caps)
-+{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	int fw = compr->dsp->fw;
++	struct hda_gen_spec *spec = codec->spec;
++	struct nid_path *path;
 +	int i;
 +
-+	if (wm_adsp_fw[fw].caps) {
-+		for (i = 0; i < wm_adsp_fw[fw].num_caps; i++)
-+			caps->codecs[i] = wm_adsp_fw[fw].caps[i].id;
-+
-+		caps->num_codecs = i;
-+		caps->direction = wm_adsp_fw[fw].compr_direction;
-+
-+		caps->min_fragment_size = WM_ADSP_MIN_FRAGMENT_SIZE;
-+		caps->max_fragment_size = WM_ADSP_MAX_FRAGMENT_SIZE;
-+		caps->min_fragments = WM_ADSP_MIN_FRAGMENTS;
-+		caps->max_fragments = WM_ADSP_MAX_FRAGMENTS;
++	for (i = 0; i < num_outs; i++) {
++		path = snd_hda_get_path_from_idx(codec, paths[i]);
++		if (path)
++			snd_hda_activate_path(codec, path, path->active,
++					      spec->aamix_mode);
 +	}
-+
-+	return 0;
 +}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
 +
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index d2a8c78..33c9b52 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -15,6 +15,7 @@
+ static int loopback_mixing_put(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct hda_gen_spec *spec = codec->spec;
++	const struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	unsigned int val = ucontrol->value.enumerated.item[0];
  
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <sound/compress_driver.h>
+ 	if (val == spec->aamix_mode)
+ 		return 0;
+ 	spec->aamix_mode = val;
+-	update_aamix_paths(codec, val, spec->out_paths[0],
+-			   spec->aamix_out_paths[0],
+-			   spec->autocfg.line_out_type);
+-	update_aamix_paths(codec, val, spec->hp_paths[0],
+-			   spec->aamix_out_paths[1],
+-			   AUTO_PIN_HP_OUT);
+-	update_aamix_paths(codec, val, spec->speaker_paths[0],
+-			   spec->aamix_out_paths[2],
+-			   AUTO_PIN_SPEAKER_OUT);
++	if (has_aamix_out_paths(spec)) {
++		update_aamix_paths(codec, val, spec->out_paths[0],
++				   spec->aamix_out_paths[0],
++				   cfg->line_out_type);
++		update_aamix_paths(codec, val, spec->hp_paths[0],
++				   spec->aamix_out_paths[1],
++				   AUTO_PIN_HP_OUT);
++		update_aamix_paths(codec, val, spec->speaker_paths[0],
++				   spec->aamix_out_paths[2],
++				   AUTO_PIN_SPEAKER_OUT);
++	} else {
++		update_output_paths(codec, cfg->line_outs, spec->out_paths);
++		if (cfg->line_out_type != AUTO_PIN_HP_OUT)
++			update_output_paths(codec, cfg->hp_outs, spec->hp_paths);
++		if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT)
++			update_output_paths(codec, cfg->speaker_outs,
++					    spec->speaker_paths);
++	}
+ 	return 1;
+ }
  
- #include "wmfw.h"
+@@ -2441,12 +2487,13 @@ static int create_loopback_mixing_ctl(struct hda_codec *codec)
  
-@@ -30,6 +31,8 @@ struct wm_adsp_alg_region {
- 	unsigned int base;
- };
+ 	if (!spec->mixer_nid)
+ 		return 0;
+-	if (!(spec->aamix_out_paths[0] || spec->aamix_out_paths[1] ||
+-	      spec->aamix_out_paths[2]))
+-		return 0;
+ 	if (!snd_hda_gen_add_kctl(spec, NULL, &loopback_mixing_enum))
+ 		return -ENOMEM;
+ 	spec->have_aamix_ctl = 1;
++	/* if no explicit aamix path is present (e.g. for Realtek codecs),
++	 * enable aamix as default -- just for compatibility
++	 */
++	spec->aamix_mode = !has_aamix_out_paths(spec);
+ 	return 0;
+ }
  
-+struct wm_adsp_compr;
-+
- struct wm_adsp {
- 	const char *part;
- 	int num;
-@@ -59,6 +62,8 @@ struct wm_adsp {
+@@ -5647,6 +5694,8 @@ static void init_aamix_paths(struct hda_codec *codec)
  
- 	struct work_struct boot_work;
- 
-+	struct wm_adsp_compr *compr;
-+
- 	struct mutex pwr_lock;
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -97,4 +102,12 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- 
-+extern int wm_adsp_compr_open(struct wm_adsp *dsp,
-+			      struct snd_compr_stream *stream);
-+extern int wm_adsp_compr_free(struct snd_compr_stream *stream);
-+extern int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
-+				    struct snd_compr_params *params);
-+extern int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
-+				  struct snd_compr_caps *caps);
-+
- #endif
+ 	if (!spec->have_aamix_ctl)
+ 		return;
++	if (!has_aamix_out_paths(spec))
++		return;
+ 	update_aamix_paths(codec, spec->aamix_mode, spec->out_paths[0],
+ 			   spec->aamix_out_paths[0],
+ 			   spec->autocfg.line_out_type);
 -- 
-2.1.4
+2.6.3
