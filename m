@@ -1,21 +1,21 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH V2 1/1] audio: Fix playback noise with
- 24/32 bit sample size on BXT
-Date: Tue, 8 Dec 2015 06:27:30 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D344FFA@SHSMSX101.ccr.corp.intel.com>
-References: <1449475153-6974-1-git-send-email-han.lu@intel.com>
- <s5hbna23cpy.wl-tiwai@suse.de>
- <B51200AC81AB024499A3C2C9A1BB90A83D3440EC@SHSMSX101.ccr.corp.intel.com>
- <s5hwpsp1mqd.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 14/15] ASoC: hdac_hdmi: Add jack
+ reporting for user space
+Date: Tue, 8 Dec 2015 12:01:36 +0530
+Message-ID: <20151208063135.GN1854@localhost>
+References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449523469-4395-14-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hy4d6kzb5.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A5F3265D3D
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 07:27:35 +0100 (CET)
-In-Reply-To: <s5hwpsp1mqd.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6A85265D92
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 07:28:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hy4d6kzb5.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,142 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "han.lu@linux.intel.com" <han.lu@linux.intel.com>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, December 8, 2015 2:25 PM
-> To: Lu, Han
-> Cc: libin.yang@linux.intel.com; mengdong.lin@linux.intel.com;
-> han.lu@linux.intel.com; alsa-devel@alsa-project.org
-> Subject: Re: [PATCH V2 1/1] audio: Fix playback noise with 24/32 bit sample
-> size on BXT
+On Mon, Dec 07, 2015 at 05:18:06PM +0100, Takashi Iwai wrote:
+> On Mon, 07 Dec 2015 22:24:28 +0100,
+> > +		sprintf(jack_name, "HDMI/DP, Pin=%d Jack", pin->nid);
 > 
-> On Tue, 08 Dec 2015 01:35:32 +0100,
-> Lu, Han wrote:
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Monday, December 7, 2015 4:06 PM
-> > > To: Lu, Han
-> > > Cc: libin.yang@linux.intel.com; mengdong.lin@linux.intel.com;
-> > > han.lu@linux.intel.com; alsa-devel@alsa-project.org
-> > > Subject: Re: [PATCH V2 1/1] audio: Fix playback noise with 24/32 bit
-> > > sample size on BXT
-> > >
-> > > On Mon, 07 Dec 2015 08:59:13 +0100,
-> > > han.lu@intel.com wrote:
-> > > >
-> > > > From: "Lu, Han" <han.lu@intel.com>
-> > > >
-> > > > In BXT-P A0, HD-Audio DMA requests is later than expected, and
-> > > > makes an audio stream sensitive to system latencies when
-> > > > 24/32 bits are playing.
-> > > > Adjusting threshold of DMA fifo to force the DMA request sooner to
-> > > > improve latency tolerance at the expense of power.
-> > > >
-> > > > v2: move Intel specific code to hda_intel.c
-> > > >
-> > > > Signed-off-by: Lu, Han <han.lu@intel.com>
-> > >
-> > > Applied, thanks.
-> > >
-> > >
-> > > Takashi
-> > >
-> >
-> > Thanks!
-> >
-> > One more thing, I was tried to implement this patch by define a macro
-> > AZX_DCAPS_XXX instead of IS_BROXTON(pci), but it looks like no spare
-> > bit left. (bit 22 and bit 31 are reserved bits, right?) Is there a
-> > plan to extend the caps structure?
-> 
-> Currently not.  If the check is once-off and be in hda_intel.c, extending
-> DCAPS is too much.
-> 
+> Such a name makes sense only to be compatible for PA, and then this
+> string isn't compatible.  Note that it's not about pin but for PCM
+> stream.  You may wonder why it matters -- see the whole discussion on
+> MST support.
 
-Understood. Thanks.
+So in our case we have added only one PCM Backend in DSP. In codec we have
+one DAI supported, thus creating a DAIlink
 
-BR,
-Han
+The Codec DAI is mapped to a stream which we fix to a CVT. Future we
+will add two more streams which are mapped to other two CVTs.
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> >
-> > BR,
-> > Han
-> >
-> > > >
-> > > > diff --git a/include/sound/hda_register.h
-> > > > b/include/sound/hda_register.h index 2ae8812..94dc6a9 100644
-> > > > --- a/include/sound/hda_register.h
-> > > > +++ b/include/sound/hda_register.h
-> > > > @@ -93,6 +93,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
-> > > SDO3 };
-> > > >  #define AZX_REG_HSW_EM4			0x100c
-> > > >  #define AZX_REG_HSW_EM5			0x1010
-> > > >
-> > > > +/* Skylake/Broxton display HD-A controller Extended Mode registers
-> */
-> > > > +#define AZX_REG_SKL_EM4L		0x1040
-> > > > +
-> > > >  /* PCI space */
-> > > >  #define AZX_PCIREG_TCSEL		0x44
-> > > >
-> > > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > > > index 963f824..bff5c8b 100644
-> > > > --- a/sound/pci/hda/hda_intel.c
-> > > > +++ b/sound/pci/hda/hda_intel.c
-> > > > @@ -355,6 +355,8 @@ enum {
-> > > >  					((pci)->device == 0x0d0c) || \
-> > > >  					((pci)->device == 0x160c))
-> > > >
-> > > > +#define IS_BROXTON(pci)	((pci)->device == 0x5a98)
-> > > > +
-> > > >  static char *driver_short_names[] = {
-> > > >  	[AZX_DRIVER_ICH] = "HDA Intel",
-> > > >  	[AZX_DRIVER_PCH] = "HDA Intel PCH", @@ -506,15 +508,36 @@
-> static
-> > > > void azx_init_pci(struct azx *chip)
-> > > >          }
-> > > >  }
-> > > >
-> > > > +/*
-> > > > + * In BXT-P A0, HD-Audio DMA requests is later than expected,
-> > > > + * and makes an audio stream sensitive to system latencies when
-> > > > + * 24/32 bits are playing.
-> > > > + * Adjusting threshold of DMA fifo to force the DMA request
-> > > > + * sooner to improve latency tolerance at the expense of power.
-> > > > + */
-> > > > +static void bxt_reduce_dma_latency(struct azx *chip) {
-> > > > +	u32 val;
-> > > > +
-> > > > +	val = azx_readl(chip, SKL_EM4L);
-> > > > +	val &= (0x3 << 20);
-> > > > +	azx_writel(chip, SKL_EM4L, val); }
-> > > > +
-> > > >  static void hda_intel_init_chip(struct azx *chip, bool full_reset)  {
-> > > >  	struct hdac_bus *bus = azx_bus(chip);
-> > > > +	struct pci_dev *pci = chip->pci;
-> > > >
-> > > >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-> > > >  		snd_hdac_set_codec_wakeup(bus, true);
-> > > >  	azx_init_chip(chip, full_reset);
-> > > >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-> > > >  		snd_hdac_set_codec_wakeup(bus, false);
-> > > > +
-> > > > +	/* reduce dma latency to avoid noise */
-> > > > +	if (IS_BROXTON(pci))
-> > > > +		bxt_reduce_dma_latency(chip);
-> > > >  }
-> > > >
-> > > >  /* calculate runtime delay from LPIB */
-> > > > --
-> > > > 2.5.0
-> > > >
-> >
+We use MUX controls to allow user to specfiy how CVT and PINs are connected
+togther, this way we can route stream to any pin.
+
+Extending this concept, behind a pin for MST there may be different 'ports',
+right? Shouldn't that be another mux configuration :) So we can treat three
+streams coming to codec to be routed to any pin and then any port. Since we
+have only 3 CVTs we will have only 3 streams...
+
+Back on present :), what do you recommend for us for jack name.
+
+Thanks
+-- 
+~Vinod
