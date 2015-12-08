@@ -1,15 +1,15 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: fsl: use correct format string for
-	dma_addr_t
-Date: Tue, 08 Dec 2015 16:35:51 +0100
-Message-ID: <1625124.fpu6AsNAkc@wuerfel>
+From: Damien Horsley <Damien.Horsley@imgtec.com>
+Subject: [PATCH V2 0/3] Add support for Texas Instruments
+	pcm3168a codec
+Date: Tue, 8 Dec 2015 15:58:57 +0000
+Message-ID: <1449590340-14682-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A646260431
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 16:35:58 +0100 (CET)
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8438B260431
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:00:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, James Hartley <james.hartley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-We get a warning for the imx-pcm-fiq driver when CONFIG_LPAE
-is enabled on ARM, because dma_addr_t is 64-bit then:
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-sound/soc/fsl/imx-pcm-fiq.c: In function 'snd_imx_pcm_mmap':
-sound/soc/fsl/imx-pcm-fiq.c:223:107: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'dma_addr_t {aka long long unsigned int}' [-Wformat=]
+Add SOC_DOUBLE_STS macro
 
-This changes the printk to use the correct format string for
-printing a dma_addr_t.
+Add driver and binding docuemnt for Texas Instruments pcm3168a codec
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/fsl/imx-pcm-fiq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in V2:
+	Addressed comments from Mark Brown
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 7abf6a079574..49d7513f429e 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -220,9 +220,9 @@ static int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 	ret = dma_mmap_writecombine(substream->pcm->card->dev, vma,
- 		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
- 
--	pr_debug("%s: ret: %d %p 0x%08x 0x%08x\n", __func__, ret,
-+	pr_debug("%s: ret: %d %p %pad 0x%08x\n", __func__, ret,
- 			runtime->dma_area,
--			runtime->dma_addr,
-+			&runtime->dma_addr,
- 			runtime->dma_bytes);
- 	return ret;
- }
+Damien.Horsley (3):
+  ASoC: Add SOC_DOUBLE_STS macro
+  ASoC: pcm3168a: Add binding document for pcm3168a codec
+  ASoC: pcm3168a: Add driver for pcm3168a codec
+
+ .../devicetree/bindings/sound/ti,pcm3168a.txt      |  48 ++
+ include/sound/soc.h                                |   8 +
+ sound/soc/codecs/Kconfig                           |  17 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/pcm3168a-i2c.c                    |  66 ++
+ sound/soc/codecs/pcm3168a-spi.c                    |  65 ++
+ sound/soc/codecs/pcm3168a.c                        | 767 +++++++++++++++++++++
+ sound/soc/codecs/pcm3168a.h                        | 100 +++
+ 8 files changed, 1077 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+ create mode 100644 sound/soc/codecs/pcm3168a-i2c.c
+ create mode 100644 sound/soc/codecs/pcm3168a-spi.c
+ create mode 100644 sound/soc/codecs/pcm3168a.c
+ create mode 100644 sound/soc/codecs/pcm3168a.h
+
 -- 
-2.1.0.rc2
+2.1.4
