@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 03/13] ASoC: wm_adsp: Add locking to DSP
-	firmware controls
-Date: Tue, 8 Dec 2015 16:08:27 +0000
-Message-ID: <1449590917-21170-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 04/13] ASoC: wm_adsp: Add power lock for
+	firmware change control
+Date: Tue, 8 Dec 2015 16:08:28 +0000
+Message-ID: <1449590917-21170-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 6ED742604F4
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D8562604D1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 17:09:08 +0100 (CET)
 In-Reply-To: <1449590917-21170-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,68 +26,45 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Locking is currently missing from the DSP firmware controls, which can
-lead to some race conditions if the controls are accessed as the DSP
-powers up or down. This patch adds them to the new power lock.
+We should hold the DSP power lock whilst changing the firmware since we
+need to check if it is running first.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d3b7726..2ab9de8 100644
+index 2ab9de8..b083642 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -592,14 +592,19 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- {
- 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
- 	char *p = ucontrol->value.bytes.data;
+@@ -451,6 +451,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
 +	int ret = 0;
+ 
+ 	if (ucontrol->value.integer.value[0] == dsp[e->shift_l].fw)
+ 		return 0;
+@@ -458,12 +459,16 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	if (ucontrol->value.integer.value[0] >= WM_ADSP_NUM_FW)
+ 		return -EINVAL;
+ 
++	mutex_lock(&dsp[e->shift_l].pwr_lock);
 +
-+	mutex_lock(&ctl->dsp->pwr_lock);
+ 	if (dsp[e->shift_l].running)
+-		return -EBUSY;
++		ret = -EBUSY;
++	else
++		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
  
- 	memcpy(ctl->cache, p, ctl->len);
- 
- 	ctl->set = 1;
--	if (!ctl->enabled)
--		return 0;
-+	if (ctl->enabled)
-+		ret = wm_coeff_write_control(ctl, p, ctl->len);
- 
--	return wm_coeff_write_control(ctl, p, ctl->len);
-+	mutex_unlock(&ctl->dsp->pwr_lock);
-+
-+	return ret;
- }
- 
- static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
-@@ -646,17 +651,22 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- {
- 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
- 	char *p = ucontrol->value.bytes.data;
-+	int ret = 0;
-+
-+	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		if (ctl->enabled)
--			return wm_coeff_read_control(ctl, p, ctl->len);
-+			ret = wm_coeff_read_control(ctl, p, ctl->len);
- 		else
--			return -EPERM;
-+			ret = -EPERM;
-+	} else {
-+		memcpy(p, ctl->cache, ctl->len);
- 	}
- 
--	memcpy(p, ctl->cache, ctl->len);
-+	mutex_unlock(&ctl->dsp->pwr_lock);
+-	dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
++	mutex_unlock(&dsp[e->shift_l].pwr_lock);
  
 -	return 0;
 +	return ret;
  }
  
- struct wmfw_ctl_work {
+ static const struct soc_enum wm_adsp_fw_enum[] = {
 -- 
 2.1.4
