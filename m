@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Bind new DAI links after probing
-	components" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:15 +0000
-Message-ID: <E1a6NfP-0003yF-Lj@debutante>
-References: <00d1b5793caa0959c5fe886445fb44785da2cf6b.1446717205.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: da7218: avoid 64-bit compile warning"
+	to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:13 +0000
+Message-ID: <E1a6NfN-0003xJ-Ra@debutante>
+References: <3548574.qiC2AlzHH4@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F2EF5260606
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:20 +0100 (CET)
-In-Reply-To: <00d1b5793caa0959c5fe886445fb44785da2cf6b.1446717205.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 285FF26062A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:22 +0100 (CET)
+In-Reply-To: <3548574.qiC2AlzHH4@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Bind new DAI links after probing components
+   ASoC: da7218: avoid 64-bit compile warning
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 61b0088b6a5b98608ce00c18a057b1f5bcb5f8b3 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Wed, 2 Dec 2015 14:11:48 +0800
-Subject: [PATCH] ASoC: Bind new DAI links after probing components
+>From ff793af4ce13afa9836f6a396552d623ff880099 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 8 Dec 2015 16:12:54 +0100
+Subject: [PATCH] ASoC: da7218: avoid 64-bit compile warning
 
-Probing components can bring new DAI or DAI links based on the topology
-info. This patch finds the unbound DAI links and bind them.
+When building the da7218 driver on a 64-bit architecture, we get
+a harmless warning:
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+sound/soc/codecs/da7218.c: In function 'da7218_of_get_id':
+sound/soc/codecs/da7218.c:2261:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+
+This changes the code to use uintptr_t to ensure we have an integer
+type of the same size as a pointer and won't get a warning on any
+architecture.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 4d50934abd22 ("ASoC: da7218: Add da7218 codec driver")
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/codecs/da7218.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 11d073b6ce33..6b1982dcedf1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1806,6 +1806,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_dai_link *dai_link;
- 	int ret, i, order;
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 4fee7aeaadc7..eacde128c4d6 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2258,7 +2258,7 @@ static inline int da7218_of_get_id(struct device *dev)
+ 	const struct of_device_id *id = of_match_device(da7218_of_match, dev);
  
- 	mutex_lock(&client_mutex);
-@@ -1893,6 +1894,21 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		}
- 	}
- 
-+	/* Find new DAI links added during probing components and bind them.
-+	 * Components with topology may bring new DAIs and DAI links.
-+	 */
-+	list_for_each_entry(dai_link, &card->dai_link_list, list) {
-+		if (soc_is_dai_link_bound(card, dai_link))
-+			continue;
-+
-+		ret = soc_init_dai_link(card, dai_link);
-+		if (ret)
-+			goto probe_dai_err;
-+		ret = soc_bind_dai_link(card, dai_link);
-+		if (ret)
-+			goto probe_dai_err;
-+	}
-+
- 	/* probe all DAI links on this card */
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 			order++) {
+ 	if (id)
+-		return (int) id->data;
++		return (uintptr_t)id->data;
+ 	else
+ 		return -EINVAL;
+ }
 -- 
 2.6.2
