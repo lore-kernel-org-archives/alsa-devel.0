@@ -1,24 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 14/15] ASoC: hdac_hdmi: Add jack
- reporting for user space
-Date: Tue, 8 Dec 2015 15:50:59 +0530
-Message-ID: <20151208102059.GQ1854@localhost>
-References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449523469-4395-14-git-send-email-subhransu.s.prusty@intel.com>
- <s5hy4d6kzb5.wl-tiwai@suse.de> <20151208063135.GN1854@localhost>
- <s5htwnt1m2x.wl-tiwai@suse.de> <20151208074216.GO1854@localhost>
- <s5hio491iol.wl-tiwai@suse.de> <20151208083831.GP1854@localhost>
- <s5h7fkp1gda.wl-tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 2/3] fireface: add transaction support
+Date: Tue, 8 Dec 2015 11:22:06 +0100
+Message-ID: <5666AF4E.9000100@ladisch.de>
+References: <1449408224-13955-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1449408224-13955-3-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BBDC26603B
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 11:17:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h7fkp1gda.wl-tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A71B626602C
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 11:22:08 +0100 (CET)
+In-Reply-To: <1449408224-13955-3-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 08, 2015 at 09:42:09AM +0100, Takashi Iwai wrote:
-> > Okay got it now, that is how my 3 limit for MST is coming from as we
-> > have 3 CVTs so we can actually stream to only 3 devices per port
-> > although someone may theoretically connect 64!
-> > 
-> > > > > Though, the max number of converters is limited, thus what you can
-> > > > > actually use is defined by this constraint.  Due to this, we'll likely
-> > > > > manage MST for the legacy HDA by assigning MST devs dynamically to
-> > > > > pins in a certain procedure to make things compatible.
-> > > > 
-> > > > but how many MST devs are you going to create?
-> > > 
-> > > This is exactly the point: for the legacy HDA, instead of creating the
-> > > entry for each MST devices, they are assigned dynamically to PCM at
-> > > activation.  So the number of devices exposed to user-space is
-> > > limited -- or better to say, user-space won't notice the difference.
-> > 
-> > And how many PCMs are you proposing for MST?
-> 
-> 5 for Intel, i.e. Nconv * 2 - 1.  This could be even Nconv, but we
-> provide the reserved slots just for the compatible behavior that
-> assumes the static pin/slot assignment.
-> 
-> > > > > > Back on present :), what do you recommend for us for jack name.
-> > > > > 
-> > > > > Depends on your purpose.  If you want to keep it compatible, then use
-> > > > > the compatible string.
-> > > > 
-> > > > Since compatible string would mean specfying PCM, which we don;t know and is
-> > > > per machine driver dailink defination, we would go ahead with logical
-> > > > "HDMI/DP, Pin=%d Jack" names.
-> > > 
-> > > But then it makes little sense.  Multiple MST devices can be on the
-> > > same pin.
-> > 
-> > Well am not supporting MST at the moment. How is legacy handling this,
-> > how do you report jack for 64 X 3 devices :)
-> > 
-> > Or, are you reporting jack for PCMs based on connection to pin/device, I
-> > think latter.
-> 
-> Yes, the jack reporting is for PCM in this case, which is I mentioned
-> in the first reply: it's not about pin but PCM.
-> 
-> > But then you would hit limit of PCMs, I assume you maybe doing 9 PCMs for
-> > this, so if someone connects 10th device we won't report it's jack?
-> 
-> The jack reporting is done actually at the time the audio is
-> enabled/disabled.  And at this moment, the PCM assignment is assured
-> as well.  So, to user-space, only the actually usable devices are
-> exposed no matter how many devices are plugged.
+Takashi Sakamoto wrote:
+> +static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
+> ...
+> +	/* Retrieve one MIDI byte to calculate length of the message. */
+> +	len = snd_rawmidi_transmit_peek(substream, buf,
+> +					SND_FF_MAXIMIM_MIDI_QUADS);
 
-Yes that was my thinking based on discussion and patches posted by Libin.
-But one more question who does PCM assignment, looking at patches it seems
-driver and no way to change that..
+SND_FF_MAXIMIM_MIDI_QUADS does not have the value 1.
 
-For example I have 10 devices connected  and we have 5 PCMs.
-I would like to route to 7th device, how would that be done?
+> +		/* Calculate consume bytes. */
+> +		consume = calculate_message_bytes(status);
+> +		if (consume <= 0)
+> +			return;
 
-Thanks
--- 
-~Vinod
+As far as I can see, sending one of the "undefined" bytes can stop the
+stream permanently.  Invalid bytes need to be acked to ignore/remove
+them.
+
+
+Regards,
+Clemens
