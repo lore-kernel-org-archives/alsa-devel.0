@@ -1,56 +1,96 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v3 10/15] drm/edid: Add API to help find connection type
-Date: Tue, 08 Dec 2015 16:01:14 +0200
-Message-ID: <874mftxcnp.fsf@intel.com>
-References: <1449523078-4311-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449523469-4395-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449523469-4395-10-git-send-email-subhransu.s.prusty@intel.com>
+From: Moise Gergaud <moise.gergaud@st.com>
+Subject: Re: [PATCH 1/3] ALSA: pcm: add IEC958 channel status
+	update
+Date: Tue, 8 Dec 2015 15:30:22 +0100
+Message-ID: <5666E97E.7020002@st.com>
+References: <1449066126-19431-1-git-send-email-moise.gergaud@st.com>
+ <1449066126-19431-2-git-send-email-moise.gergaud@st.com>
+ <20151202190036.GD8644@n2100.arm.linux.org.uk> <56602046.8070307@st.com>
+ <20151203111304.GL8644@n2100.arm.linux.org.uk> <s5h37vjn3hh.wl-tiwai@suse.de>
+ <5665474A.9030906@st.com> <s5hio4aoac3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1449523469-4395-10-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CE45266097
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 15:30:26 +0100 (CET)
+In-Reply-To: <s5hio4aoac3.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAwNyBEZWMgMjAxNSwgIlN1YmhyYW5zdSBTLiBQcnVzdHkiIDxzdWJocmFuc3Uucy5w
-cnVzdHlAaW50ZWwuY29tPiB3cm90ZToKPiBUbyBmaWxsIHRoZSBhdWRpbyBpbmZvZnJhbWUgaXQg
-aXMgcmVxdWlyZWQgdG8gaWRlbnRpZnkgdGhlCj4gY29ubmVjdGlvbiB0eXBlIGFzIERQIG9yIEhE
-TUkuIFRoaXMgcGF0Y2ggYWRkcyBhbiBBUEkgd2hpY2gKPiBwYXJzZXMgRUxEIGFuZCByZXR1cm5z
-IHRoZSBkaXNwbGF5IHR5cGUgb2YgY29ubmVjdGVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogU3ViaHJh
-bnN1IFMuIFBydXN0eSA8c3ViaHJhbnN1LnMucHJ1c3R5QGludGVsLmNvbT4KPiBTaWduZWQtb2Zm
-LWJ5OiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KPiBDYzogRGF2aWQgQWlybGll
-IDxhaXJsaWVkQGxpbnV4LmllPgo+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-Cj4gQ2M6IERhbmllbCBWZXR0ZXIgPGRhbmllbC52ZXR0ZXJAaW50ZWwuY29tPgoKUmV2aWV3ZWQt
-Ynk6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+CgoKPiAtLS0KPiAgaW5jbHVk
-ZS9kcm0vZHJtX2VkaWQuaCB8IDEyICsrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTIg
-aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2RybV9lZGlkLmggYi9p
-bmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gaW5kZXggMmFmOTc2OS4uOGM1MzdhMCAxMDA2NDQKPiAt
-LS0gYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gKysrIGIvaW5jbHVkZS9kcm0vZHJtX2VkaWQu
-aAo+IEBAIC00MDMsNiArNDAzLDE4IEBAIHN0YXRpYyBpbmxpbmUgaW50IGRybV9lbGRfc2l6ZShj
-b25zdCB1aW50OF90ICplbGQpCj4gIAlyZXR1cm4gRFJNX0VMRF9IRUFERVJfQkxPQ0tfU0laRSAr
-IGVsZFtEUk1fRUxEX0JBU0VMSU5FX0VMRF9MRU5dICogNDsKPiAgfQo+ICAKPiArLyoqCj4gKyAq
-IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZSAtIEdldCBkZXZpY2UgdHlwZSBoZG1pL2RwIGNvbm5lY3Rl
-ZAo+ICsgKiBAZWxkOiBwb2ludGVyIHRvIGFuIGVsZCBtZW1vcnkgc3RydWN0dXJlCj4gKyAqCj4g
-KyAqIFRoZSBjYWxsZXIgbmVlZCB0byB1c2UgJURSTV9FTERfQ09OTl9UWVBFX0hETUkgb3IgJURS
-TV9FTERfQ09OTl9UWVBFX0RQIHRvCj4gKyAqIGlkZW50aWZ5IHRoZSBkaXNwbGF5IHR5cGUgY29u
-bmVjdGVkLgo+ICsgKi8KPiArc3RhdGljIGlubGluZSB1OCBkcm1fZWxkX2dldF9jb25uX3R5cGUo
-Y29uc3QgdWludDhfdCAqZWxkKQo+ICt7Cj4gKwlyZXR1cm4gZWxkW0RSTV9FTERfU0FEX0NPVU5U
-X0NPTk5fVFlQRV0gJiBEUk1fRUxEX0NPTk5fVFlQRV9NQVNLOwo+ICt9Cj4gKwo+ICBzdHJ1Y3Qg
-ZWRpZCAqZHJtX2RvX2dldF9lZGlkKHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4g
-IAlpbnQgKCpnZXRfZWRpZF9ibG9jaykodm9pZCAqZGF0YSwgdTggKmJ1ZiwgdW5zaWduZWQgaW50
-IGJsb2NrLAo+ICAJCQkgICAgICBzaXplX3QgbGVuKSwKCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwg
-T3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9kcmktZGV2ZWwK
+On 12/07/2015 10:51 AM, Takashi Iwai wrote:
+> On Mon, 07 Dec 2015 09:46:02 +0100,
+> Moise Gergaud wrote:
+>>
+>> On 12/03/2015 01:03 PM, Takashi Iwai wrote:
+>>> On Thu, 03 Dec 2015 12:13:04 +0100,
+>>> Russell King - ARM Linux wrote:
+>>>>
+>>>> On Thu, Dec 03, 2015 at 11:58:14AM +0100, Moise Gergaud wrote:
+>>>>> On 12/02/2015 08:00 PM, Russell King - ARM Linux wrote:
+>>>>>> Again, I'm not happy with this change.  The intention here is that we
+>>>>>> validate all arguments before we change anything.  This breaks that
+>>>>>> principle.
+>>>>>>
+>>>>> We propose this change for compressed mode (IEC61937/non linear PCM).
+>>>>> In case of compressed mode, iec958 channel status byte 0 bit1 = 1, then we
+>>>>> cannot use snd_pcm_create_iec958_consumer.
+>>>>
+>>>> Why can you not use snd_pcm_create_iec958_consumer() for this case?  You
+>>>> are allowed to modify the values you get afterwards in order to handle
+>>>> this case if you so wish to toggle this bit.
+>>>>
+>>>> However, if you are using data mode, you really should be using the AES
+>>>> bytes passed by the application through alsalib and into the kernel via
+>>>> the IEC958 controls.  There are three controls specified for this:
+>>>>
+>>>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK) - the bits which can be
+>>>> changed for consumer mode.
+>>>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK) - the bits which can be
+>>>> changed for professional mode.
+>>>> SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT) - the value of the changable
+>>>> bits.
+>>>>
+>>>> When using this, it is userspace's responsibility to set the sample rate
+>>>> appropriately for the stream.
+>>>>
+>>>> The only case to use snd_pcm_create_iec958_consumer() is to generate the
+>>>> status bytes for PCM audio, where the userspace API doesn't facilitiate
+>>>> generating and/or passing the AES status bytes.
+>>>
+>>> That's true.  OTOH, in most drivers, we try to be kind not to be too
+>>> strict for this requirement and adjust the status bits accordingly.
+>>> This comes from the lessons we learned how user-space doesn't care the
+>>> things.
+>>>
+>>> So, if we want to keep that good uncle attitude, this change doesn't
+>>> look so bad to me.
+>>>
+>> shall I deliver a new version of this patch with header correction or
+>> shall I abandon this patch?
+>
+> It's up to you whether you want further convincing Russell :)
+> I'd happily merge this once when we get his ack.
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+I share Takashi's view; unfortunately, we cannot always trust user space.
+And so, for robustness reason, I think drivers shall ensure that channel 
+status params are correct. For that purpose, the update helper function 
+could be useful.
