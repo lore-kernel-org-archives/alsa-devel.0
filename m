@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix module init data
-	correctly" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:26 +0000
-Message-ID: <E1a6Nfa-000440-Qm@debutante>
-References: <1448703121-5831-11-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add support for Mic
+	Select module" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:27 +0000
+Message-ID: <E1a6Nfb-00044T-OF@debutante>
+References: <1448703121-5831-10-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 91C1A2606C3
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:32 +0100 (CET)
-In-Reply-To: <1448703121-5831-11-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66AAA2604D1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:34 +0100 (CET)
+In-Reply-To: <1448703121-5831-10-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Dharageswari R <dharageswari.r@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix module init data correctly
+   ASoC: Intel: Skylake: Add support for Mic Select module
 
 has been applied to the asoc tree at
 
@@ -53,121 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From 4ced182763286a7c26cf671b27d1ddd58cf6cec8 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 3 Dec 2015 23:29:53 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix module init data correctly
+>From fd18110f1480d51f416cea6d5f63b83f85b14043 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Thu, 3 Dec 2015 23:29:52 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add support for Mic Select module
 
-Module initialization parameter data can be set by
-     - INIT_INSTANCE IPC by using the default value
-     - SET_PARAMS immediately after INIT_INSTANCE
-     - SET_PARAMS data from kcontrol values set
-this patch add param type to identify the parameters
-has to be sent to DSP.
+Mic select is a DSP module which is used to select one or many
+inputs to form an output. This is useful to select data
+selectively from PDM input and hence the name. This module is of
+generic module type.
 
+This patch adds support to add and configure Mic select module in
+firmware topology.
+
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c       |  6 +++---
- sound/soc/intel/skylake/skl-topology.h       |  4 ++--
- sound/soc/intel/skylake/skl-tplg-interface.h | 16 +++++++++++-----
- 3 files changed, 16 insertions(+), 10 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c       | 26 ++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h       |  5 +++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |  3 ++-
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index be02214e80db..eb31235f7040 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -331,7 +331,7 @@ static int skl_tplg_set_module_params(struct snd_soc_dapm_widget *w,
- 	struct skl_specific_cfg *sp_cfg;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 5297b345839a..a91161be7f5d 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -410,6 +410,25 @@ static void skl_set_algo_format(struct skl_sst *ctx,
  
- 	if (mconfig->formats_config.caps_size > 0 &&
--		mconfig->formats_config.set_params) {
-+		mconfig->formats_config.set_params == SKL_PARAM_SET) {
- 		sp_cfg = &mconfig->formats_config;
- 		ret = skl_set_module_params(ctx, sp_cfg->caps,
- 					sp_cfg->caps_size,
-@@ -346,7 +346,7 @@ static int skl_tplg_set_module_params(struct snd_soc_dapm_widget *w,
- 			sb = (void *) k->private_value;
- 			bc = (struct skl_algo_data *)sb->dobj.private;
+ }
  
--			if (bc->set_params) {
-+			if (bc->set_params == SKL_PARAM_SET) {
- 				ret = skl_set_module_params(ctx,
- 						(u32 *)bc->params, bc->max,
- 						bc->param_id, mconfig);
-@@ -379,7 +379,7 @@ static int skl_tplg_set_module_init_data(struct snd_soc_dapm_widget *w)
- 			sb = (struct soc_bytes_ext *)k->private_value;
- 			bc = (struct skl_algo_data *)sb->dobj.private;
++/*
++ * Mic select module allows selecting one or many input channels, thus
++ * acting as a demux.
++ *
++ * Mic select module take base module configuration and out-format
++ * configuration
++ */
++static void skl_set_base_outfmt_format(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig,
++			struct skl_base_outfmt_cfg *base_outfmt_mcfg)
++{
++	struct skl_audio_data_format *out_fmt = &base_outfmt_mcfg->out_fmt;
++	struct skl_base_cfg *base_cfg =
++				(struct skl_base_cfg *)base_outfmt_mcfg;
++
++	skl_set_base_module_format(ctx, mconfig, base_cfg);
++	skl_setup_out_format(ctx, mconfig, out_fmt);
++}
++
+ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 			struct skl_module_cfg *mconfig)
+ {
+@@ -432,6 +451,9 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 		param_size += mconfig->formats_config.caps_size;
+ 		return param_size;
  
--			if (bc->set_params)
-+			if (bc->set_params != SKL_PARAM_INIT)
- 				continue;
++	case SKL_MODULE_TYPE_BASE_OUTFMT:
++		return sizeof(struct skl_base_outfmt_cfg);
++
+ 	default:
+ 		/*
+ 		 * return only base cfg when no specific module type is
+@@ -482,6 +504,10 @@ static int skl_set_module_format(struct skl_sst *ctx,
+ 		skl_set_algo_format(ctx, module_config, *param_data);
+ 		break;
  
- 			mconfig->formats_config.caps = (u32 *)&bc->params;
++	case SKL_MODULE_TYPE_BASE_OUTFMT:
++		skl_set_base_outfmt_format(ctx, module_config, *param_data);
++		break;
++
+ 	default:
+ 		skl_set_base_module_format(ctx, module_config, *param_data);
+ 		break;
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 349f2a3b6613..6ba0bdc7753c 100644
+index 04318e2091fd..349f2a3b6613 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -211,7 +211,7 @@ struct skl_module_pin {
- };
- 
- struct skl_specific_cfg {
--	bool set_params;
-+	u32 set_params;
- 	u32 param_id;
- 	u32 caps_size;
- 	u32 *caps;
-@@ -294,7 +294,7 @@ struct skl_module_cfg {
- 
- struct skl_algo_data {
- 	u32 param_id;
--	bool set_params;
-+	u32 set_params;
- 	u32 max;
- 	char *params;
- };
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index 626b148317fe..c9ae010b3cc8 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -141,6 +141,12 @@ enum module_pin_type {
- 	SKL_PIN_TYPE_HETEROGENEOUS,
- };
- 
-+enum skl_module_param_type {
-+	SKL_PARAM_DEFAULT = 0,
-+	SKL_PARAM_INIT,
-+	SKL_PARAM_SET
-+};
-+
- struct skl_dfw_module_pin {
- 	u16 module_id;
- 	u16 instance_id;
-@@ -158,8 +164,8 @@ struct skl_dfw_module_fmt {
- } __packed;
- 
- struct skl_dfw_module_caps {
--	u32 set_params:1;
--	u32 rsvd:31;
-+	u32 set_params:2;
-+	u32 rsvd:30;
- 	u32 param_id;
- 	u32 caps_size;
- 	u32 caps[HDA_SST_CFG_MAX];
-@@ -214,10 +220,10 @@ struct skl_dfw_module {
- } __packed;
- 
- struct skl_dfw_algo_data {
--	u32 set_params:1;
--	u32 rsvd:31;
--	u32 max;
-+	u32 set_params:2;
-+	u32 rsvd:30;
- 	u32 param_id;
-+	u32 max;
+@@ -145,6 +145,11 @@ struct skl_algo_cfg {
  	char params[0];
  } __packed;
  
++struct skl_base_outfmt_cfg {
++	struct skl_base_cfg base_cfg;
++	struct skl_audio_data_format out_fmt;
++} __packed;
++
+ enum skl_dma_type {
+ 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
+ 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index 3f1908e3ae80..626b148317fe 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -79,7 +79,8 @@ enum skl_module_type {
+ 	SKL_MODULE_TYPE_COPIER,
+ 	SKL_MODULE_TYPE_UPDWMIX,
+ 	SKL_MODULE_TYPE_SRCINT,
+-	SKL_MODULE_TYPE_ALGO
++	SKL_MODULE_TYPE_ALGO,
++	SKL_MODULE_TYPE_BASE_OUTFMT
+ };
+ 
+ enum skl_core_affinity {
 -- 
 2.6.2
