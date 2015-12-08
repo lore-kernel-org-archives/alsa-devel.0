@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: add wov as int sink" to
-	the asoc tree
-Date: Tue, 08 Dec 2015 19:11:22 +0000
-Message-ID: <E1a6NfW-00041f-68@debutante>
-References: <1448703121-5831-16-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix the dapm machine
+	map" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:21 +0000
+Message-ID: <E1a6NfV-00041C-8n@debutante>
+References: <1448703121-5831-17-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 751D1260580
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:28 +0100 (CET)
-In-Reply-To: <1448703121-5831-16-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8111260698
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:27 +0100 (CET)
+In-Reply-To: <1448703121-5831-17-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: add wov as int sink
+   ASoC: Intel: Skylake: Fix the dapm machine map
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From b34e24d2406f123d5dbbff4fdeebbc2af76b0acd Mon Sep 17 00:00:00 2001
+>From 820f339fe9fcabee17d3d2ba2b48a51368a51bf4 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 3 Dec 2015 23:29:58 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: add wov as int sink
+Date: Thu, 3 Dec 2015 23:29:59 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix the dapm machine map
+
+DAPM Machine map for machine was not specifying the paths
+correctly.
+
+The correct order should be:
+"DMIC01 Rx" (SoC DMIC BE), connected to "DMIC AIF" (DMic Codec
+AIF) and then "DMic" (DMic codec Input) connected to "SoC DMIC"
+(Machine DMIC MIC Widget)
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index e4fc8a1ce471..0a924901b9b6 100644
+index 0a924901b9b6..51c4eb87e6ec 100644
 --- a/sound/soc/intel/boards/skl_rt286.c
 +++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -52,6 +52,7 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- 	SND_SOC_DAPM_MIC("DMIC2", NULL),
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+	SND_SOC_DAPM_SINK("WoV Sink"),
- };
+@@ -68,7 +68,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
  
- static const struct snd_soc_dapm_route skylake_rt286_map[] = {
-@@ -69,6 +70,8 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	/* digital mics */
  	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMIC AIF", NULL, "SoC DMIC"},
+-	{"DMIC AIF", NULL, "SoC DMIC"},
++	{"DMic", NULL, "SoC DMIC"},
  
-+	{"WoV Sink", NULL, "hwd_in sink"},
-+
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
- 	{ "ssp0 Tx", NULL, "codec0_out"},
+ 	{"WoV Sink", NULL, "hwd_in sink"},
+ 
+@@ -82,7 +82,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+ 
+ 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
+-	{ "DMIC01 Rx", NULL, "Capture" },
++	{ "DMIC01 Rx", NULL, "DMIC AIF" },
+ 
+ 	{ "hif1", NULL, "iDisp Tx"},
+ 	{ "iDisp Tx", NULL, "iDisp_out"},
 -- 
 2.6.2
