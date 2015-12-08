@@ -1,84 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: The soc card can have auxiliary
-	components
-Date: Tue, 8 Dec 2015 18:58:17 +0000
-Message-ID: <20151208185817.GX5727@sirena.org.uk>
-References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
- <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2 2/2] ASoC: img: Add driver for Pistachio internal DAC
+Date: Tue, 8 Dec 2015 19:00:05 +0000
+Message-ID: <20151208190005.GY5727@sirena.org.uk>
+References: <1449594324-2597-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1449594324-2597-3-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1941733778789951879=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EEA62604A9
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 19:58:25 +0100 (CET)
-In-Reply-To: <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9QtXyXGM8HCrXlir"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1449594324-2597-3-git-send-email-Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Damien Horsley <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, James Hartley <james.hartley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1941733778789951879==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xUyMHIOv46mebLva"
-Content-Disposition: inline
-
-
---xUyMHIOv46mebLva
+--9QtXyXGM8HCrXlir
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 02, 2015 at 02:11:56PM +0800, mengdong.lin@linux.intel.com wrot=
-e:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
->=20
-> Machine drivers can set the name of one or more auxiliary components.
-> And the ASoC core will find and probe the auxiliary components.
->=20
-> Machine drivers can use this to specify the components with topology.
-> Then when the components are probed, topology info will be loaded to
-> the core.
+On Tue, Dec 08, 2015 at 05:05:24PM +0000, Damien Horsley wrote:
 
-This makes sense as a replacement for the existing aux_devs but this
-doesn't feel terribly strongly related to the rest of the series and
-we're not actually doing the transition yet.  What's the relationship
-with dynamic links and what's the plan for transition?  There's CODECs
-that could be transitioned relatively straightforwardly since they have
-no DAIs and can only be used as aux_devs, it's them I'm mainly thinking
-of here - the rest will need to wait I fear.
+> +static int pistachio_internal_dac_set_mute(struct snd_kcontrol *kcontrol,
+> +				  struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+> +	struct pistachio_internal_dac *dac = snd_soc_codec_get_drvdata(codec);
+> +	u32 reg;
+> +
+> +	dac->mute = ucontrol->value.integer.value[0];
+> +
+> +	if (dac->mute)
+> +		reg = PISTACHIO_INTERNAL_DAC_CTRL_MUTE_MASK;
+> +	else
+> +		reg = 0;
+> +
+> +	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_CTRL,
+> +			PISTACHIO_INTERNAL_DAC_CTRL_MUTE_MASK, reg);
+> +
+> +	return 0;
+> +}
 
---xUyMHIOv46mebLva
+Shouldn't this just be a standard SOC_SINGLE() now?  We've got a regmap.
+Otherwise this looks good.
+
+--9QtXyXGM8HCrXlir
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWZyhIAAoJECTWi3JdVIfQQngH/1GwOsGqHLeSBdMEpq+SHGZk
-GNotTqiwfXk4ltw6uaDkDZmcdE2YgcvDkLvIy7ZiDdEH9m3fKGcqawUGIjiQTDcC
-il9X/TYV7BFjONX5Gu/8uv8u7kxS0FmjW2eNEYKDOdBoj5W8GtnrzzIraP9WMCUl
-WYxK2Vwm0e62DfKQtmLYKHfLZttOG9fFlRZyYCE6XTDTr/suuXP/lFLlN9H0HxhB
-nQXfL446IMoYVPLOlh5KAmgd5ttDwcrUdBB5EE2aL/mtz0CQNae+WbX90u0LjR6V
-BR++0nMcRUKMWtmeOPwK39KdcxH8osxWi7cAxLPsiPKtv4v/FSxn9apUhjEI+20=
-=Iz8H
+iQEcBAEBCAAGBQJWZyi1AAoJECTWi3JdVIfQNgkH/A79T4Olc1ZhHbUlIiaJXBuU
+m2PWGTCJ/y+yjbD6tCSfhSfQ3hs+nDhij/HiMKjYrr3DnUg3w1/eL4ND9a5bEqrr
+wCfpfF9EMEanqgch7C5zCksrDRDJVIU77I3AnvGiC0OVrauPnbT0nkpjnqEzSZDo
+xBRQcVUT5jshPD9VtD2Ps4EYiw3YInosrn0CCXykchbUIoLfNkF9lrSrSCB/8aR+
+v24tT9m+SNRgfk1VH1lT4nI+kHKvxkZXoz+PJVYFbyGBg48jnvYMJoEICj1ZJQyq
+mqoqKnlV1OJdfPhVRgCcLaHBFmMS46BGhq5PgSpc3glihVuWi6KI8TNv8h/GjU4=
+=ih2Z
 -----END PGP SIGNATURE-----
 
---xUyMHIOv46mebLva--
-
---===============1941733778789951879==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1941733778789951879==--
+--9QtXyXGM8HCrXlir--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
