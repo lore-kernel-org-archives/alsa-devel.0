@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix the dapm machine
-	map" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:21 +0000
-Message-ID: <E1a6NfV-00041C-8n@debutante>
-References: <1448703121-5831-17-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: read params from DSP if
+	module is on" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:24 +0000
+Message-ID: <E1a6NfY-00042b-0m@debutante>
+References: <1449165601-11226-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8111260698
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:27 +0100 (CET)
-In-Reply-To: <1448703121-5831-17-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ABF34260592
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:29 +0100 (CET)
+In-Reply-To: <1449165601-11226-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Omair M Abdullah <omair.m.abdullah@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix the dapm machine map
+   ASoC: Intel: Skylake: read params from DSP if module is on
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 820f339fe9fcabee17d3d2ba2b48a51368a51bf4 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 3 Dec 2015 23:29:59 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix the dapm machine map
+>From 7d9f29119d3e4db6ae817881d8e305650424032c Mon Sep 17 00:00:00 2001
+From: Omair M Abdullah <omair.m.abdullah@intel.com>
+Date: Thu, 3 Dec 2015 23:29:56 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: read params from DSP if module is on
 
-DAPM Machine map for machine was not specifying the paths
-correctly.
+If a module is ON then we should read the module parameters from
+DSP rather than driver cached values
 
-The correct order should be:
-"DMIC01 Rx" (SoC DMIC BE), connected to "DMIC AIF" (DMic Codec
-AIF) and then "DMic" (DMic codec Input) connected to "SoC DMIC"
-(Machine DMIC MIC Widget)
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Omair M Abdullah <omair.m.abdullah@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 13 +++++++++++++
+ sound/soc/intel/skylake/skl-topology.c |  7 +++++++
+ sound/soc/intel/skylake/skl-topology.h |  2 ++
+ 3 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 0a924901b9b6..51c4eb87e6ec 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -68,7 +68,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index a91161be7f5d..46310d9ac008 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -927,3 +927,16 @@ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
  
- 	/* digital mics */
- 	{"DMIC1 Pin", NULL, "DMIC2"},
--	{"DMIC AIF", NULL, "SoC DMIC"},
-+	{"DMic", NULL, "SoC DMIC"},
+ 	return skl_ipc_set_large_config(&ctx->ipc, &msg, params);
+ }
++
++int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
++			  u32 param_id, struct skl_module_cfg *mcfg)
++{
++	struct skl_ipc_large_config_msg msg;
++
++	msg.module_id = mcfg->id.module_id;
++	msg.instance_id = mcfg->id.instance_id;
++	msg.param_data_size = size;
++	msg.large_param_id = param_id;
++
++	return skl_ipc_get_large_config(&ctx->ipc, &msg, params);
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index eb31235f7040..b824450edcb4 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -908,6 +908,13 @@ static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_bytes_ext *sb =
+ 			(struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct skl_algo_data *bc = (struct skl_algo_data *)sb->dobj.private;
++	struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
++	struct skl_module_cfg *mconfig = w->priv;
++	struct skl *skl = get_skl_ctx(w->dapm->dev);
++
++	if (w->power)
++		skl_get_module_params(skl->skl_sst, (u32 *)bc->params,
++				      bc->max, bc->param_id, mconfig);
  
- 	{"WoV Sink", NULL, "hwd_in sink"},
+ 	if (bc->params) {
+ 		if (copy_to_user(data, &bc->param_id, sizeof(u32)))
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 6ba0bdc7753c..9aa2a2b6598a 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -342,6 +342,8 @@ int skl_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
  
-@@ -82,7 +82,7 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
- 	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
+ 			u32 param_id, struct skl_module_cfg *mcfg);
++int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
++			  u32 param_id, struct skl_module_cfg *mcfg);
  
- 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
--	{ "DMIC01 Rx", NULL, "Capture" },
-+	{ "DMIC01 Rx", NULL, "DMIC AIF" },
- 
- 	{ "hif1", NULL, "iDisp Tx"},
- 	{ "iDisp Tx", NULL, "iDisp_out"},
+ enum skl_bitdepth skl_get_bit_depth(int params);
+ #endif
 -- 
 2.6.2
