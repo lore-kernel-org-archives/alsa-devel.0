@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup data align position for
-	capture" to the asoc tree
-Date: Tue, 08 Dec 2015 19:11:31 +0000
-Message-ID: <E1a6Nff-00046P-ES@debutante>
-References: <87h9jt5wpb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Add support for
+	Loadable modules" to the asoc tree
+Date: Tue, 08 Dec 2015 19:11:29 +0000
+Message-ID: <E1a6Nfd-00045R-Io@debutante>
+References: <1449165601-11226-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DC5DC2604A4
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:36 +0100 (CET)
-In-Reply-To: <87h9jt5wpb.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D8962604A9
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 20:11:37 +0100 (CET)
+In-Reply-To: <1449165601-11226-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Dharageswari R <dharageswari.r@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup data align position for capture
+   ASoC: Intel: Skylake: Add support for Loadable modules
 
 has been applied to the asoc tree at
 
@@ -53,97 +53,423 @@ to this mail.
 Thanks,
 Mark
 
->From a504b1ee417ffd1e3c272b4594213edf14af3ef1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 Dec 2015 05:38:23 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup data align position for capture
+>From 6c5768b3aa6f554a719834591ad2c6b4e1291397 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Thu, 3 Dec 2015 23:29:50 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add support for Loadable modules
 
-L/R channel data has been treated as inverted on R-Car sound 16bit mode,
-Thus, 4689032b1("ASoC: rsnd: tidyup data align position") tidyuped data
-align position. But it couldn't care about capture case. This patch
-cares both playback/capture
+A module is loaded when the path consisting the module is opened.
+The module binary(ies) is loaded from file system and cached in
+kernel memory for future use. This is downloaded to DSP using DMA
+and invoking Load module IPCs
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch adds support for load/unload module IPCs, DMAing
+modules and manging the modules
+
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/cmd.c  |  1 +
- sound/soc/sh/rcar/core.c | 13 +++++++++++--
- sound/soc/sh/rcar/gen.c  |  1 +
- sound/soc/sh/rcar/rsnd.h |  2 ++
- 4 files changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-sst-dsp.h  |  14 +++
+ sound/soc/intel/skylake/skl-sst-ipc.c  |  53 ++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h  |   6 ++
+ sound/soc/intel/skylake/skl-sst.c      | 175 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.c |  29 +++++-
+ 5 files changed, 276 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index ab904c3f20b5..cd1f064e63c4 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -80,6 +80,7 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
- 	dev_dbg(dev, "ctu/mix path = 0x%08x", data);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index f2a69d9e56b3..5d0947935e2b 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -114,6 +114,9 @@ struct skl_dsp_fw_ops {
+ 	int (*set_state_D0)(struct sst_dsp *ctx);
+ 	int (*set_state_D3)(struct sst_dsp *ctx);
+ 	unsigned int (*get_fw_errcode)(struct sst_dsp *ctx);
++	int (*load_mod)(struct sst_dsp *ctx, u16 mod_id, char *mod_name);
++	int (*unload_mod)(struct sst_dsp *ctx, u16 mod_id);
++
+ };
  
- 	rsnd_mod_write(mod, CMD_ROUTE_SLCT, data);
-+	rsnd_mod_write(mod, CMD_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
+ struct skl_dsp_loader_ops {
+@@ -123,6 +126,17 @@ struct skl_dsp_loader_ops {
+ 		struct snd_dma_buffer *dmab);
+ };
  
- 	rsnd_adg_set_cmd_timsel_gen2(mod, io);
++struct skl_load_module_info {
++	u16 mod_id;
++	const struct firmware *fw;
++};
++
++struct skl_module_table {
++	struct skl_load_module_info *mod_info;
++	unsigned int usage_cnt;
++	struct list_head list;
++};
++
+ void skl_cldma_process_intr(struct sst_dsp *ctx);
+ void skl_cldma_int_disable(struct sst_dsp *ctx);
+ int skl_cldma_prepare(struct sst_dsp *ctx);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 95679c02c6ee..33860d2311c4 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -130,6 +130,11 @@
+ #define IPC_SRC_QUEUE_MASK		0x7
+ #define IPC_SRC_QUEUE(x)		(((x) & IPC_SRC_QUEUE_MASK) \
+ 					<< IPC_SRC_QUEUE_SHIFT)
++/* Load Module count */
++#define IPC_LOAD_MODULE_SHIFT		0
++#define IPC_LOAD_MODULE_MASK		0xFF
++#define IPC_LOAD_MODULE_CNT(x)		(((x) & IPC_LOAD_MODULE_MASK) \
++					<< IPC_LOAD_MODULE_SHIFT)
  
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f1d7af114a31..849c1ad93df2 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -272,13 +272,22 @@ u32 rsnd_get_adinr_chan(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
-  */
- u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ /* Save pipeline messgae extension register */
+ #define IPC_DMA_ID_SHIFT		0
+@@ -728,6 +733,54 @@ int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
+ }
+ EXPORT_SYMBOL_GPL(skl_ipc_bind_unbind);
+ 
++/*
++ * In order to load a module we need to send IPC to initiate that. DMA will
++ * performed to load the module memory. The FW supports multiple module load
++ * at single shot, so we can send IPC with N modules represented by
++ * module_cnt
++ */
++int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
++				u8 module_cnt, void *data)
++{
++	struct skl_ipc_header header = {0};
++	u64 *ipc_header = (u64 *)(&header);
++	int ret;
++
++	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
++	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
++	header.primary |= IPC_GLB_TYPE(IPC_GLB_LOAD_MULTIPLE_MODS);
++	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
++
++	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
++				(sizeof(u16) * module_cnt), NULL, 0);
++	if (ret < 0)
++		dev_err(ipc->dev, "ipc: load modules failed :%d\n", ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(skl_ipc_load_modules);
++
++int skl_ipc_unload_modules(struct sst_generic_ipc *ipc, u8 module_cnt,
++							void *data)
++{
++	struct skl_ipc_header header = {0};
++	u64 *ipc_header = (u64 *)(&header);
++	int ret;
++
++	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
++	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
++	header.primary |= IPC_GLB_TYPE(IPC_GLB_UNLOAD_MULTIPLE_MODS);
++	header.primary |= IPC_LOAD_MODULE_CNT(module_cnt);
++
++	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, data,
++				(sizeof(u16) * module_cnt), NULL, 0);
++	if (ret < 0)
++		dev_err(ipc->dev, "ipc: unload modules failed :%d\n", ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(skl_ipc_unload_modules);
++
+ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
+ 		struct skl_ipc_large_config_msg *msg, u32 *param)
  {
--	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
- 	struct rsnd_mod *ssi = rsnd_io_to_mod_ssi(io);
--	struct rsnd_mod *target = src ? src : ssi;
-+	struct rsnd_mod *target;
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 	u32 val = 0x76543210;
- 	u32 mask = ~0;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index f1a154e45dc3..e17012778560 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -108,6 +108,12 @@ int skl_ipc_init_instance(struct sst_generic_ipc *sst_ipc,
+ int skl_ipc_bind_unbind(struct sst_generic_ipc *sst_ipc,
+ 		struct skl_ipc_bind_unbind_msg *msg);
  
-+	if (rsnd_io_is_play(io)) {
-+		struct rsnd_mod *src = rsnd_io_to_mod_src(io);
++int skl_ipc_load_modules(struct sst_generic_ipc *ipc,
++				u8 module_cnt, void *data);
 +
-+		target = src ? src : ssi;
-+	} else {
-+		struct rsnd_mod *cmd = rsnd_io_to_mod_cmd(io);
++int skl_ipc_unload_modules(struct sst_generic_ipc *ipc,
++				u8 module_cnt, void *data);
 +
-+		target = cmd ? cmd : ssi;
+ int skl_ipc_set_dx(struct sst_generic_ipc *ipc,
+ 		u8 instance_id, u16 module_id, struct skl_ipc_dxstate_info *dx);
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index e1d34d5c3f9a..8cd5cdb21fd5 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -38,6 +38,8 @@
+ #define SKL_INSTANCE_ID		0
+ #define SKL_BASE_FW_MODULE_ID	0
+ 
++#define SKL_NUM_MODULES		1
++
+ static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
+ {
+ 	u32 cur_sts;
+@@ -202,11 +204,182 @@ static unsigned int skl_get_errorcode(struct sst_dsp *ctx)
+ 	 return sst_dsp_shim_read(ctx, SKL_ADSP_ERROR_CODE);
+ }
+ 
++/*
++ * since get/set_module are called from DAPM context,
++ * we don't need lock for usage count
++ */
++static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
++{
++	struct skl_module_table *module;
++
++	list_for_each_entry(module, &ctx->module_list, list) {
++		if (module->mod_info->mod_id == mod_id)
++			return ++module->usage_cnt;
 +	}
 +
- 	mask <<= runtime->channels * 4;
- 	val = val & mask;
++	return -EINVAL;
++}
++
++static unsigned int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
++{
++	struct skl_module_table *module;
++
++	list_for_each_entry(module, &ctx->module_list, list) {
++		if (module->mod_info->mod_id == mod_id)
++			return --module->usage_cnt;
++	}
++
++	return -EINVAL;
++}
++
++static struct skl_module_table *skl_fill_module_table(struct sst_dsp *ctx,
++						char *mod_name, int mod_id)
++{
++	const struct firmware *fw;
++	struct skl_module_table *skl_module;
++	unsigned int size;
++	int ret;
++
++	ret = request_firmware(&fw, mod_name, ctx->dev);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Request Module %s failed :%d\n",
++							mod_name, ret);
++		return NULL;
++	}
++
++	skl_module = devm_kzalloc(ctx->dev, sizeof(*skl_module), GFP_KERNEL);
++	if (skl_module == NULL) {
++		release_firmware(fw);
++		return NULL;
++	}
++
++	size = sizeof(*skl_module->mod_info);
++	skl_module->mod_info = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
++	if (skl_module->mod_info == NULL) {
++		release_firmware(fw);
++		return NULL;
++	}
++
++	skl_module->mod_info->mod_id = mod_id;
++	skl_module->mod_info->fw = fw;
++	list_add(&skl_module->list, &ctx->module_list);
++
++	return skl_module;
++}
++
++/* get a module from it's unique ID */
++static struct skl_module_table *skl_module_get_from_id(
++			struct sst_dsp *ctx, u16 mod_id)
++{
++	struct skl_module_table *module;
++
++	if (list_empty(&ctx->module_list)) {
++		dev_err(ctx->dev, "Module list is empty\n");
++		return NULL;
++	}
++
++	list_for_each_entry(module, &ctx->module_list, list) {
++		if (module->mod_info->mod_id == mod_id)
++			return module;
++	}
++
++	return NULL;
++}
++
++static int skl_transfer_module(struct sst_dsp *ctx,
++			struct skl_load_module_info *module)
++{
++	int ret;
++	struct skl_sst *skl = ctx->thread_context;
++
++	ret = ctx->cl_dev.ops.cl_copy_to_dmabuf(ctx, module->fw->data,
++							module->fw->size);
++	if (ret < 0)
++		return ret;
++
++	ret = skl_ipc_load_modules(&skl->ipc, SKL_NUM_MODULES,
++						(void *)&module->mod_id);
++	if (ret < 0)
++		dev_err(ctx->dev, "Failed to Load module: %d\n", ret);
++
++	ctx->cl_dev.ops.cl_stop_dma(ctx);
++
++	return ret;
++}
++
++static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, char *guid)
++{
++	struct skl_module_table *module_entry = NULL;
++	int ret = 0;
++	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
++
++	snprintf(mod_name, sizeof(mod_name), "%s%s%s",
++			"intel/dsp_fw_", guid, ".bin");
++
++	module_entry = skl_module_get_from_id(ctx, mod_id);
++	if (module_entry == NULL) {
++		module_entry = skl_fill_module_table(ctx, mod_name, mod_id);
++		if (module_entry == NULL) {
++			dev_err(ctx->dev, "Failed to Load module\n");
++			return -EINVAL;
++		}
++	}
++
++	if (!module_entry->usage_cnt) {
++		ret = skl_transfer_module(ctx, module_entry->mod_info);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Failed to Load module\n");
++			return ret;
++		}
++	}
++
++	ret = skl_get_module(ctx, mod_id);
++
++	return ret;
++}
++
++static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
++{
++	unsigned int usage_cnt;
++	struct skl_sst *skl = ctx->thread_context;
++	int ret = 0;
++
++	usage_cnt = skl_put_module(ctx, mod_id);
++	if (usage_cnt < 0) {
++		dev_err(ctx->dev, "Module bad usage cnt!:%d\n", usage_cnt);
++		return -EIO;
++	}
++	ret = skl_ipc_unload_modules(&skl->ipc,
++			SKL_NUM_MODULES, &mod_id);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to UnLoad module\n");
++		skl_get_module(ctx, mod_id);
++		return ret;
++	}
++
++	return ret;
++}
++
++static void skl_clear_module_table(struct sst_dsp *ctx)
++{
++	struct skl_module_table *module, *tmp;
++
++	if (list_empty(&ctx->module_list))
++		return;
++
++	list_for_each_entry_safe(module, tmp, &ctx->module_list, list) {
++		list_del(&module->list);
++		release_firmware(module->mod_info->fw);
++	}
++}
++
+ static struct skl_dsp_fw_ops skl_fw_ops = {
+ 	.set_state_D0 = skl_set_dsp_D0,
+ 	.set_state_D3 = skl_set_dsp_D3,
+ 	.load_fw = skl_load_base_firmware,
+ 	.get_fw_errcode = skl_get_errorcode,
++	.load_mod = skl_load_module,
++	.unload_mod = skl_unload_module,
+ };
  
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 50fc73042b7e..7c5485e46fd7 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -242,6 +242,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(SRC_ROUTE_MODE0,	0xc,	0x20),
- 		RSND_GEN_M_REG(SRC_CTRL,	0x10,	0x20),
- 		RSND_GEN_M_REG(SRC_INT_ENABLE0,	0x18,	0x20),
-+		RSND_GEN_M_REG(CMD_BUSIF_DALIGN,0x188,	0x20),
- 		RSND_GEN_M_REG(CMD_ROUTE_SLCT,	0x18c,	0x20),
- 		RSND_GEN_M_REG(CMD_CTRL,	0x190,	0x20),
- 		RSND_GEN_S_REG(SCU_SYS_STATUS0,	0x1c8),
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 970e1301f7c6..ad854d6719ea 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -81,6 +81,7 @@ enum rsnd_reg {
- 	RSND_REG_SCU_SYS_INT_EN0,
- 	RSND_REG_SCU_SYS_INT_EN1,	/* Gen2 only */
- 	RSND_REG_CMD_CTRL,		/* Gen2 only */
-+	RSND_REG_CMD_BUSIF_DALIGN,	/* Gen2 only */
- 	RSND_REG_CMD_ROUTE_SLCT,
- 	RSND_REG_CMDOUT_TIMSEL,		/* Gen2 only */
- 	RSND_REG_CTU_CTUIR,
-@@ -319,6 +320,7 @@ struct rsnd_dai_stream {
- #define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
- #define rsnd_io_to_mod_mix(io)	rsnd_io_to_mod((io), RSND_MOD_MIX)
- #define rsnd_io_to_mod_dvc(io)	rsnd_io_to_mod((io), RSND_MOD_DVC)
-+#define rsnd_io_to_mod_cmd(io)	rsnd_io_to_mod((io), RSND_MOD_CMD)
- #define rsnd_io_to_rdai(io)	((io)->rdai)
- #define rsnd_io_to_priv(io)	(rsnd_rdai_to_priv(rsnd_io_to_rdai(io)))
- #define rsnd_io_is_play(io)	(&rsnd_io_to_rdai(io)->playback == io)
+ static struct sst_ops skl_ops = {
+@@ -251,6 +424,7 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+ 
++	INIT_LIST_HEAD(&sst->module_list);
+ 	sst->dsp_ops = dsp_ops;
+ 	sst->fw_ops = skl_fw_ops;
+ 
+@@ -277,6 +451,7 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ 
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ {
++	skl_clear_module_table(ctx->dsp);
+ 	skl_ipc_free(&ctx->ipc);
+ 	ctx->dsp->ops->free(ctx->dsp);
+ }
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 622f7430e100..32735eff386c 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -26,6 +26,8 @@
+ #include "skl-topology.h"
+ #include "skl.h"
+ #include "skl-tplg-interface.h"
++#include "../common/sst-dsp.h"
++#include "../common/sst-dsp-priv.h"
+ 
+ #define SKL_CH_FIXUP_MASK		(1 << 0)
+ #define SKL_RATE_FIXUP_MASK		(1 << 1)
+@@ -412,6 +414,13 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 		if (!skl_tplg_alloc_pipe_mcps(skl, mconfig))
+ 			return -ENOMEM;
+ 
++		if (mconfig->is_loadable && ctx->dsp->fw_ops.load_mod) {
++			ret = ctx->dsp->fw_ops.load_mod(ctx->dsp,
++				mconfig->id.module_id, mconfig->guid);
++			if (ret < 0)
++				return ret;
++		}
++
+ 		/*
+ 		 * apply fix/conversion to module params based on
+ 		 * FE/BE params
+@@ -431,6 +440,24 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 	return 0;
+ }
+ 
++static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
++	 struct skl_pipe *pipe)
++{
++	struct skl_pipe_module *w_module = NULL;
++	struct skl_module_cfg *mconfig = NULL;
++
++	list_for_each_entry(w_module, &pipe->w_list, node) {
++		mconfig  = w_module->w->priv;
++
++		if (mconfig->is_loadable && ctx->dsp->fw_ops.unload_mod)
++			return ctx->dsp->fw_ops.unload_mod(ctx->dsp,
++						mconfig->id.module_id);
++	}
++
++	/* no modules to unload in this path, so return */
++	return 0;
++}
++
+ /*
+  * Mixer module represents a pipeline. So in the Pre-PMU event of mixer we
+  * need create the pipeline. So we do following:
+@@ -755,7 +782,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ 	ret = skl_delete_pipe(ctx, mconfig->pipe);
+ 
+-	return ret;
++	return skl_tplg_unload_pipe_modules(ctx, s_pipe);
+ }
+ 
+ /*
 -- 
 2.6.2
