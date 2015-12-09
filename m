@@ -1,94 +1,122 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: The soc card can have auxiliary
- components
-Date: Wed, 9 Dec 2015 20:38:36 +0000
-Message-ID: <20151209203836.GI5727@sirena.org.uk>
-References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
- <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
- <20151208185817.GX5727@sirena.org.uk>
- <5667EFCB.3010402@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7829951526783668978=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AED1E2612D7
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 21:38:43 +0100 (CET)
-In-Reply-To: <5667EFCB.3010402@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Subject: Applied "ASoC: es8328: Fix deemphasis values" to the asoc tree
+Date: Wed, 09 Dec 2015 20:43:59 +0000
+Message-ID: <E1a6lah-000458-Uq@debutante>
+References: <1449661093-17580-1-git-send-email-john@metanate.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1449661093-17580-1-git-send-email-john@metanate.com>
+Sender: stable-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7829951526783668978==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="A3bjmUvO/1DXpqhN"
-Content-Disposition: inline
+   ASoC: es8328: Fix deemphasis values
 
+has been applied to the asoc tree at
 
---A3bjmUvO/1DXpqhN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 09, 2015 at 05:09:31PM +0800, Mengdong Lin wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I have no intention to replace the existing aux_devs with aux_components.
-> The aux_components is not for codecs and has no rtd like aux_dev.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-OK, but I do think that's something we *should* be doing as part of the
-overall move of CODECs to components and it's something that having this
-change implies we should be doing as an immediate thing since it's the
-more obvious direct use of the code (as Lars said in reply to the early
-draft you posted IIRC).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> The purpose to introduce aux_components here is to let a soc card to load
-> topology info easier:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> E.g. The machine driver may not define any FE DAI links explicitly but
-> specify an aux component. And the platform driver can implement the aux
-> component and let its probe ops to load the topology info. When the ASoC
-> core is instantiating the soc card, it must to find the aux component and
-> probe it (the platform component). Thus the topology info for the platform
-> is loaded and topology core will create widgets/controls/routes/DAIs/DAI
-> links. So after probing the aux components, the ASoC need to check if any
-> new links are created, bind them and create pcm runtimes for them.
+Thanks,
+Mark
 
-I think I'd need to see the code you're proposing here to really comment
-but I think it sounds like it comes back to the same thing as the above
-case where we're overall trying to move everything towards uniformly
-being components.
+>From 84ebac4d04d25ac5c1b1dc3ae621fd465eb38f4e Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Wed, 9 Dec 2015 11:38:13 +0000
+Subject: [PATCH] ASoC: es8328: Fix deemphasis values
 
---A3bjmUvO/1DXpqhN
-Content-Type: application/pgp-signature; name="signature.asc"
+This is using completely the wrong mask and value when updating the
+register.  Since the correct values are already defined in the header,
+switch to using a table with explicit constants rather than shifting the
+array index.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/es8328.c | 25 +++++++++++++++++--------
+ sound/soc/codecs/es8328.h |  1 +
+ 2 files changed, 18 insertions(+), 8 deletions(-)
 
-iQEcBAEBCAAGBQJWaJFMAAoJECTWi3JdVIfQnIcH/0Y3iHiHyJ7qjdZ3N2hn23VB
-7l4hM7WCSjYqkOi7rnXO8eGkoqrxAI9KPB+3HmdbPSPH1vhS3191d2cMZi73591D
-WyyqYUSiUIGljqfsivgz4aJ+l5cbyNU8e7242hK0yQB9Z9d4EciQWqgVk/hLQIqg
-9WupzG8mDevfjoPwWDEEfjouiRTY7Wpr/CTwetsFqKIHjXlek6Cq8DRikWCQpYGd
-jxNgBgHPoGDbH/k7QovIIPak+TqnXdy66eSE00b5Xjl7GDFAQrPD1QIXDlpYR9EI
-IPk4y8DWgithY1Q/8KTjYUMhdJniyMXMd/IcDul5o63p64RzPExGrSEtSf0qESk=
-=tWcs
------END PGP SIGNATURE-----
-
---A3bjmUvO/1DXpqhN--
-
---===============7829951526783668978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7829951526783668978==--
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 969e337dc17c..c4c64e21963e 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -85,7 +85,15 @@ static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
+ 
+-static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
++static const struct {
++	int rate;
++	unsigned int val;
++} deemph_settings[] = {
++	{ 0,     ES8328_DACCONTROL6_DEEMPH_OFF },
++	{ 32000, ES8328_DACCONTROL6_DEEMPH_32k },
++	{ 44100, ES8328_DACCONTROL6_DEEMPH_44_1k },
++	{ 48000, ES8328_DACCONTROL6_DEEMPH_48k },
++};
+ 
+ static int es8328_set_deemph(struct snd_soc_codec *codec)
+ {
+@@ -97,21 +105,22 @@ static int es8328_set_deemph(struct snd_soc_codec *codec)
+ 	 * rate.
+ 	 */
+ 	if (es8328->deemph) {
+-		best = 1;
+-		for (i = 2; i < ARRAY_SIZE(deemph_settings); i++) {
+-			if (abs(deemph_settings[i] - es8328->playback_fs) <
+-			    abs(deemph_settings[best] - es8328->playback_fs))
++		best = 0;
++		for (i = 1; i < ARRAY_SIZE(deemph_settings); i++) {
++			if (abs(deemph_settings[i].rate - es8328->playback_fs) <
++			    abs(deemph_settings[best].rate - es8328->playback_fs))
+ 				best = i;
+ 		}
+ 
+-		val = best << 1;
++		val = deemph_settings[best].val;
+ 	} else {
+-		val = 0;
++		val = ES8328_DACCONTROL6_DEEMPH_OFF;
+ 	}
+ 
+ 	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
+ 
+-	return snd_soc_update_bits(codec, ES8328_DACCONTROL6, 0x6, val);
++	return snd_soc_update_bits(codec, ES8328_DACCONTROL6,
++			ES8328_DACCONTROL6_DEEMPH_MASK, val);
+ }
+ 
+ static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+index cb36afe10c0e..156c748c89c7 100644
+--- a/sound/soc/codecs/es8328.h
++++ b/sound/soc/codecs/es8328.h
+@@ -153,6 +153,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
+ #define ES8328_DACCONTROL6_CLICKFREE (1 << 3)
+ #define ES8328_DACCONTROL6_DAC_INVR (1 << 4)
+ #define ES8328_DACCONTROL6_DAC_INVL (1 << 5)
++#define ES8328_DACCONTROL6_DEEMPH_MASK (3 << 6)
+ #define ES8328_DACCONTROL6_DEEMPH_OFF (0 << 6)
+ #define ES8328_DACCONTROL6_DEEMPH_32k (1 << 6)
+ #define ES8328_DACCONTROL6_DEEMPH_44_1k (2 << 6)
+-- 
+2.6.2
