@@ -1,14 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC] ARM: remove VIRT_TO_BUS
-Date: Tue, 08 Dec 2015 22:54:45 +0100
-Message-ID: <1630488.4B57tj3Z8o@wuerfel>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: imx-wm8958: add imx-wm8958
+ machine driver
+Date: Wed, 9 Dec 2015 11:34:52 +0800
+Message-ID: <20151209033449.GA30401@shlinux2>
+References: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
+ <20151208124713.GQ5727@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 20B572604A9
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2015 22:54:55 +0100 (CET)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0138.outbound.protection.outlook.com [157.56.111.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC6B1260560
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 04:38:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151208124713.GQ5727@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,106 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-All drivers that are relevant for rpc or footbridge have stopped
-using virt_to_bus a while ago, so we can remove it and avoid some
-harmless randconfig warnings for drivers that we do not care about:
+On Tue, Dec 08, 2015 at 12:47:13PM +0000, Mark Brown wrote:
+> On Tue, Dec 08, 2015 at 05:40:13PM +0800, Zidan Wang wrote:
+> 
+> > + - aifx-format             : set format for aifx, such as "i2s", "left_j",
+> > +			     "dsp_a", "dsp_b".
+> 
+> > + - aifx-bitclock-master    : If present, aifx wroks as bit clock master.
+> > +			     Otherwise, aifx works as bit clock slave.
+> 
+> > + - aifx-frame-master	   : If present, aifx wroks as frame clock master.
+> > +			     Otherwise, aifx works as frame clock slave.
+> 
+> > + - aifx-bitclock-inversion : If present, bit clock will invert polarity.
+> 
+> > + - aifx-frame-inversion	   : If present, frame clock will invert polarity.
+> 
+> > + - aifx-continuous-clock   : If present, bit clock will be continuous.
+> > +			     Otherwise, dai bit clocks can be be gated
+> > +			     (disabled) when the dai is not sending or
+> > +			     receiving PCM data in a frame.
+> 
+> Why are these selectable in the machine driver?
+I have tested and found that sai<->aif1 can support "i2s" "left_j"
+"dsp_a" "dsp_b" format, and can support cpu dai master and slave
+mode. But I haven't tested voice dai and bt dai because of hardware
+limitation. I just using sai<->aif2 to test aif2.
 
-drivers/atm/zatm.c: In function 'poll_rx':
-drivers/atm/zatm.c:401:18: warning: 'bus_to_virt' is deprecated [-Wdeprecated-declarations]
-   skb = ((struct rx_buffer_head *) bus_to_virt(here[2]))->skb;
+So I want to configure the dai format from device tree. And there is
+a help function snd_soc_of_parse_daifmt for me to do this, so I add
+these selectable to the machine driver.
 
-FWIW, the remaining drivers using this are:
+> 
+> > +		model = "wm8960-audio";
+> 
+> Cut'n'paste error here.
 
-ATM:  firestream, zatm, ambassador, horizon
-ISDN: hisax/netjet
-V4L:  STA2X11, zoran
-Net:  Appletalk LTPC, Tulip DE4x5, Toshiba IrDA
-WAN:  comtrol sv11, cosa, lanmedia, sealevel
-SCSI: DPT_I2O, buslogic
-VME:  CA91C142
+it should be "wm8958-audio", i will modify it.
 
-My best guess is that all of the above are so hopelessly obsolete that
-we are best off removing all of them form the kernel, but that can be
-done another time.
 
-The sound drivers used to rely on virt_to_bus, but don't any more.
-As a lot of architectures don't provide VIRT_TO_BUS any more, removing
-the dependency in sounds/oss/ would make the deprecated drivers appear
-there, which we probably don't want. Instead I'm replacing the
-simple dependency with 'VIRT_TO_BUS || RPC || NETWINDER' so we can
-still build these sound drivers for the platforms that need them,
-but don't change anything on other architectures.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-No hurry for this one. If we can agree that it's a good idea, we
-can probably do the sound/oss change first, and then do the
-rest for the following merge window. If nobody cares about picking
-up the sound/oss patches, we can also just do it as one patch.
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index a077f59350a2..b03892cecd65 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -556,7 +556,6 @@ config ARCH_RPC
- 	select NEED_MACH_IO_H
- 	select NEED_MACH_MEMORY_H
- 	select NO_IOPORT_MAP
--	select VIRT_TO_BUS
- 	help
- 	  On the Acorn Risc-PC, Linux can support the internal IDE disk and
- 	  CD-ROM interface, serial and parallel port, and the floppy drive.
-diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-index c79b57bf71c4..8f8c3a0571a6 100644
---- a/arch/arm/include/asm/memory.h
-+++ b/arch/arm/include/asm/memory.h
-@@ -303,20 +303,6 @@ static inline phys_addr_t __virt_to_idmap(unsigned long x)
- #define __bus_to_pfn(x)	__phys_to_pfn(x)
- #endif
- 
--#ifdef CONFIG_VIRT_TO_BUS
--#define virt_to_bus virt_to_bus
--static inline __deprecated unsigned long virt_to_bus(void *x)
--{
--	return __virt_to_bus((unsigned long)x);
--}
--
--#define bus_to_virt bus_to_virt
--static inline __deprecated void *bus_to_virt(unsigned long x)
--{
--	return (void *)__bus_to_virt(x);
--}
--#endif
--
- /*
-  * Conversion between a struct page and a physical address.
-  *
-diff --git a/arch/arm/mach-footbridge/Kconfig b/arch/arm/mach-footbridge/Kconfig
-index 735909f90349..7b87bac114a2 100644
---- a/arch/arm/mach-footbridge/Kconfig
-+++ b/arch/arm/mach-footbridge/Kconfig
-@@ -68,7 +68,6 @@ config ARCH_NETWINDER
- 	select ISA
- 	select ISA_DMA
- 	select PCI
--	select VIRT_TO_BUS
- 	help
- 	  Say Y here if you intend to run this kernel on the Rebel.COM
- 	  NetWinder.  Information about this machine can be found at:
-diff --git a/sound/oss/Kconfig b/sound/oss/Kconfig
-index 48568fdf847f..4033fe58f0cf 100644
---- a/sound/oss/Kconfig
-+++ b/sound/oss/Kconfig
-@@ -240,7 +240,7 @@ config MSND_FIFOSIZE
- 
- menuconfig SOUND_OSS
- 	tristate "OSS sound modules"
--	depends on ISA_DMA_API && VIRT_TO_BUS
-+	depends on ISA_DMA_API && (VIRT_TO_BUS || ARCH_RPC || ARCH_NETWINDER)
- 	depends on !GENERIC_ISA_DMA_SUPPORT_BROKEN
- 	help
- 	  OSS is the Open Sound System suite of sound card drivers.  They make
+Best Regards,
+Zidan Wang
