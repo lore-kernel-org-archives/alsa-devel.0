@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8328: Fix deemphasis values" to the asoc tree
-Date: Wed, 09 Dec 2015 20:43:59 +0000
-Message-ID: <E1a6lah-000458-Uq@debutante>
-References: <1449661093-17580-1-git-send-email-john@metanate.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1449661093-17580-1-git-send-email-john@metanate.com>
-Sender: stable-owner@vger.kernel.org
-To: John Keeping <john@metanate.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rockchip: i2s: separate capture and
+	playback" to the asoc tree
+Date: Wed, 09 Dec 2015 20:44:01 +0000
+Message-ID: <E1a6laj-000465-PZ@debutante>
+References: <1449657147-26959-1-git-send-email-john@metanate.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95EB226145B
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 21:44:11 +0100 (CET)
+In-Reply-To: <1449657147-26959-1-git-send-email-john@metanate.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Keeping <john@metanate.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8328: Fix deemphasis values
+   ASoC: rockchip: i2s: separate capture and playback
 
 has been applied to the asoc tree at
 
@@ -37,86 +53,131 @@ to this mail.
 Thanks,
 Mark
 
->From 84ebac4d04d25ac5c1b1dc3ae621fd465eb38f4e Mon Sep 17 00:00:00 2001
+>From eba65d179c1149cf79e68608d452631f33d7f017 Mon Sep 17 00:00:00 2001
 From: John Keeping <john@metanate.com>
-Date: Wed, 9 Dec 2015 11:38:13 +0000
-Subject: [PATCH] ASoC: es8328: Fix deemphasis values
+Date: Wed, 9 Dec 2015 10:32:26 +0000
+Subject: [PATCH] ASoC: rockchip: i2s: separate capture and playback
 
-This is using completely the wrong mask and value when updating the
-register.  Since the correct values are already defined in the header,
-switch to using a table with explicit constants rather than shifting the
-array index.
+If we only clear the tx/rx state when both are disabled it is not
+possible to start/stop one multiple times while the other is running.
+Since the two are independently controlled, treat them as such and
+remove the false dependency between capture and playback.
 
 Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/es8328.c | 25 +++++++++++++++++--------
- sound/soc/codecs/es8328.h |  1 +
- 2 files changed, 18 insertions(+), 8 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 72 +++++++++++++++++----------------------
+ 1 file changed, 32 insertions(+), 40 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 969e337dc17c..c4c64e21963e 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -85,7 +85,15 @@ static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
- static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
- static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 83b1b9c9e017..acc6225d8d9d 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
  
--static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-+static const struct {
-+	int rate;
-+	unsigned int val;
-+} deemph_settings[] = {
-+	{ 0,     ES8328_DACCONTROL6_DEEMPH_OFF },
-+	{ 32000, ES8328_DACCONTROL6_DEEMPH_32k },
-+	{ 44100, ES8328_DACCONTROL6_DEEMPH_44_1k },
-+	{ 48000, ES8328_DACCONTROL6_DEEMPH_48k },
-+};
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+-				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
+-				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
++				   I2S_XFER_TXS_START,
++				   I2S_XFER_TXS_START);
  
- static int es8328_set_deemph(struct snd_soc_codec *codec)
- {
-@@ -97,21 +105,22 @@ static int es8328_set_deemph(struct snd_soc_codec *codec)
- 	 * rate.
- 	 */
- 	if (es8328->deemph) {
--		best = 1;
--		for (i = 2; i < ARRAY_SIZE(deemph_settings); i++) {
--			if (abs(deemph_settings[i] - es8328->playback_fs) <
--			    abs(deemph_settings[best] - es8328->playback_fs))
-+		best = 0;
-+		for (i = 1; i < ARRAY_SIZE(deemph_settings); i++) {
-+			if (abs(deemph_settings[i].rate - es8328->playback_fs) <
-+			    abs(deemph_settings[best].rate - es8328->playback_fs))
- 				best = i;
- 		}
- 
--		val = best << 1;
-+		val = deemph_settings[best].val;
+ 		i2s->tx_start = true;
  	} else {
--		val = 0;
-+		val = ES8328_DACCONTROL6_DEEMPH_OFF;
+@@ -92,27 +92,23 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
+ 
+-		if (!i2s->rx_start) {
+-			regmap_update_bits(i2s->regmap, I2S_XFER,
+-					   I2S_XFER_TXS_START |
+-					   I2S_XFER_RXS_START,
+-					   I2S_XFER_TXS_STOP |
+-					   I2S_XFER_RXS_STOP);
++		regmap_update_bits(i2s->regmap, I2S_XFER,
++				   I2S_XFER_TXS_START,
++				   I2S_XFER_TXS_STOP);
+ 
+-			regmap_update_bits(i2s->regmap, I2S_CLR,
+-					   I2S_CLR_TXC | I2S_CLR_RXC,
+-					   I2S_CLR_TXC | I2S_CLR_RXC);
++		regmap_update_bits(i2s->regmap, I2S_CLR,
++				   I2S_CLR_TXC,
++				   I2S_CLR_TXC);
+ 
+-			regmap_read(i2s->regmap, I2S_CLR, &val);
++		regmap_read(i2s->regmap, I2S_CLR, &val);
+ 
+-			/* Should wait for clear operation to finish */
+-			while (val) {
+-				regmap_read(i2s->regmap, I2S_CLR, &val);
+-				retry--;
+-				if (!retry) {
+-					dev_warn(i2s->dev, "fail to clear\n");
+-					break;
+-				}
++		/* Should wait for clear operation to finish */
++		while (val & I2S_CLR_TXC) {
++			regmap_read(i2s->regmap, I2S_CLR, &val);
++			retry--;
++			if (!retry) {
++				dev_warn(i2s->dev, "fail to clear\n");
++				break;
+ 			}
+ 		}
  	}
+@@ -128,8 +124,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
  
- 	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+-				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
+-				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
++				   I2S_XFER_RXS_START,
++				   I2S_XFER_RXS_START);
  
--	return snd_soc_update_bits(codec, ES8328_DACCONTROL6, 0x6, val);
-+	return snd_soc_update_bits(codec, ES8328_DACCONTROL6,
-+			ES8328_DACCONTROL6_DEEMPH_MASK, val);
- }
+ 		i2s->rx_start = true;
+ 	} else {
+@@ -138,27 +134,23 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
  
- static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
-index cb36afe10c0e..156c748c89c7 100644
---- a/sound/soc/codecs/es8328.h
-+++ b/sound/soc/codecs/es8328.h
-@@ -153,6 +153,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_DACCONTROL6_CLICKFREE (1 << 3)
- #define ES8328_DACCONTROL6_DAC_INVR (1 << 4)
- #define ES8328_DACCONTROL6_DAC_INVL (1 << 5)
-+#define ES8328_DACCONTROL6_DEEMPH_MASK (3 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_OFF (0 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_32k (1 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_44_1k (2 << 6)
+-		if (!i2s->tx_start) {
+-			regmap_update_bits(i2s->regmap, I2S_XFER,
+-					   I2S_XFER_TXS_START |
+-					   I2S_XFER_RXS_START,
+-					   I2S_XFER_TXS_STOP |
+-					   I2S_XFER_RXS_STOP);
++		regmap_update_bits(i2s->regmap, I2S_XFER,
++				   I2S_XFER_RXS_START,
++				   I2S_XFER_RXS_STOP);
+ 
+-			regmap_update_bits(i2s->regmap, I2S_CLR,
+-					   I2S_CLR_TXC | I2S_CLR_RXC,
+-					   I2S_CLR_TXC | I2S_CLR_RXC);
++		regmap_update_bits(i2s->regmap, I2S_CLR,
++				   I2S_CLR_RXC,
++				   I2S_CLR_RXC);
+ 
+-			regmap_read(i2s->regmap, I2S_CLR, &val);
++		regmap_read(i2s->regmap, I2S_CLR, &val);
+ 
+-			/* Should wait for clear operation to finish */
+-			while (val) {
+-				regmap_read(i2s->regmap, I2S_CLR, &val);
+-				retry--;
+-				if (!retry) {
+-					dev_warn(i2s->dev, "fail to clear\n");
+-					break;
+-				}
++		/* Should wait for clear operation to finish */
++		while (val & I2S_CLR_RXC) {
++			regmap_read(i2s->regmap, I2S_CLR, &val);
++			retry--;
++			if (!retry) {
++				dev_warn(i2s->dev, "fail to clear\n");
++				break;
+ 			}
+ 		}
+ 	}
 -- 
 2.6.2
