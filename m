@@ -1,7 +1,7 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 181/182] ASoC: ac97: use gpiochip data pointer
-Date: Wed,  9 Dec 2015 14:52:01 +0100
-Message-ID: <1449669121-7366-1-git-send-email-linus.walleij@linaro.org>
+Subject: [PATCH 180/182] ASoC: wm8996: use gpiochip data pointer
+Date: Wed,  9 Dec 2015 14:51:54 +0100
+Message-ID: <1449669114-7317-1-git-send-email-linus.walleij@linaro.org>
 Return-path: <linux-gpio-owner@vger.kernel.org>
 Sender: linux-gpio-owner@vger.kernel.org
 To: linux-gpio@vger.kernel.org, Johan Hovold <johan@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Michael Welling <mwelling@ieee.org>, Markus Pargmann <mpa@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
@@ -19,42 +19,73 @@ Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 Liam/Mark: please ACK this so I can merge it into the GPIO tree.
 ---
- sound/soc/soc-ac97.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8996.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
-index a2012652f212..eaec7177eab2 100644
---- a/sound/soc/soc-ac97.c
-+++ b/sound/soc/soc-ac97.c
-@@ -59,8 +59,7 @@ static void soc_ac97_device_release(struct device *dev)
- #ifdef CONFIG_GPIOLIB
- static inline struct snd_soc_codec *gpio_to_codec(struct gpio_chip *chip)
- {
--	struct snd_ac97_gpio_priv *gpio_priv =
--		container_of(chip, struct snd_ac97_gpio_priv, gpio_chip);
-+	struct snd_ac97_gpio_priv *gpio_priv = gpiochip_get_data(chip);
- 
- 	return gpio_priv->codec;
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 8d7d6c01a2f7..f9656df9dccc 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -17,6 +17,7 @@
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/gcd.h>
++#include <linux/gpio/driver.h>
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+@@ -2139,14 +2140,9 @@ static int wm8996_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
  }
-@@ -98,8 +97,7 @@ static int snd_soc_ac97_gpio_get(struct gpio_chip *chip, unsigned offset)
- static void snd_soc_ac97_gpio_set(struct gpio_chip *chip, unsigned offset,
- 				  int value)
+ 
+ #ifdef CONFIG_GPIOLIB
+-static inline struct wm8996_priv *gpio_to_wm8996(struct gpio_chip *chip)
+-{
+-	return container_of(chip, struct wm8996_priv, gpio_chip);
+-}
+-
+ static void wm8996_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
  {
--	struct snd_ac97_gpio_priv *gpio_priv =
--		container_of(chip, struct snd_ac97_gpio_priv, gpio_chip);
-+	struct snd_ac97_gpio_priv *gpio_priv = gpiochip_get_data(chip);
- 	struct snd_soc_codec *codec = gpio_to_codec(chip);
+-	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
++	struct wm8996_priv *wm8996 = gpiochip_get_data(chip);
  
- 	gpio_priv->gpios_set &= ~(1 << offset);
-@@ -145,7 +143,7 @@ static int snd_soc_ac97_init_gpio(struct snd_ac97 *ac97,
- 	gpio_priv->gpio_chip.parent = codec->dev;
- 	gpio_priv->gpio_chip.base = -1;
+ 	regmap_update_bits(wm8996->regmap, WM8996_GPIO_1 + offset,
+ 			   WM8996_GP1_LVL, !!value << WM8996_GP1_LVL_SHIFT);
+@@ -2155,7 +2151,7 @@ static void wm8996_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ static int wm8996_gpio_direction_out(struct gpio_chip *chip,
+ 				     unsigned offset, int value)
+ {
+-	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
++	struct wm8996_priv *wm8996 = gpiochip_get_data(chip);
+ 	int val;
  
--	ret = gpiochip_add(&gpio_priv->gpio_chip);
-+	ret = gpiochip_add_data(&gpio_priv->gpio_chip, gpio_priv);
+ 	val = (1 << WM8996_GP1_FN_SHIFT) | (!!value << WM8996_GP1_LVL_SHIFT);
+@@ -2167,7 +2163,7 @@ static int wm8996_gpio_direction_out(struct gpio_chip *chip,
+ 
+ static int wm8996_gpio_get(struct gpio_chip *chip, unsigned offset)
+ {
+-	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
++	struct wm8996_priv *wm8996 = gpiochip_get_data(chip);
+ 	unsigned int reg;
+ 	int ret;
+ 
+@@ -2180,7 +2176,7 @@ static int wm8996_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 
+ static int wm8996_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
+ {
+-	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
++	struct wm8996_priv *wm8996 = gpiochip_get_data(chip);
+ 
+ 	return regmap_update_bits(wm8996->regmap, WM8996_GPIO_1 + offset,
+ 				  WM8996_GP1_FN_MASK | WM8996_GP1_DIR,
+@@ -2211,7 +2207,7 @@ static void wm8996_init_gpio(struct wm8996_priv *wm8996)
+ 	else
+ 		wm8996->gpio_chip.base = -1;
+ 
+-	ret = gpiochip_add(&wm8996->gpio_chip);
++	ret = gpiochip_add_data(&wm8996->gpio_chip, wm8996);
  	if (ret != 0)
- 		dev_err(codec->dev, "Failed to add GPIOs: %d\n", ret);
- 	return ret;
+ 		dev_err(wm8996->dev, "Failed to add GPIOs: %d\n", ret);
+ }
 -- 
 2.4.3
 
