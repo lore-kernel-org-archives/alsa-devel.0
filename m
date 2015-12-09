@@ -1,88 +1,85 @@
-From: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
-Subject: next-20151208 - CONFIG_SND_HDA_I915
-Date: Tue, 08 Dec 2015 22:46:38 -0500
-Message-ID: <8943.1449632798@turing-police.cc.vt.edu>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 14/15] ASoC: hdac_hdmi: Add jack
+ reporting for user space
+Date: Wed, 9 Dec 2015 11:14:20 +0530
+Message-ID: <20151209054420.GA1854@localhost>
+References: <s5htwnt1m2x.wl-tiwai@suse.de> <20151208074216.GO1854@localhost>
+ <s5hio491iol.wl-tiwai@suse.de> <20151208083831.GP1854@localhost>
+ <s5h7fkp1gda.wl-tiwai@suse.de> <20151208102059.GQ1854@localhost>
+ <s5hio49kzen.wl-tiwai@suse.de> <20151208104256.GR1854@localhost>
+ <s5hegexkybn.wl-tiwai@suse.de> <s5ha8plkxya.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1449632798_5901P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18125260591
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 06:41:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5ha8plkxya.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
---==_Exmh_1449632798_5901P
-Content-Type: text/plain; charset="us-ascii"
-Content-Id: <8918.1449632787.1@turing-police.cc.vt.edu>
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 08, 2015 at 11:59:41AM +0100, Takashi Iwai wrote:
+> On Tue, 08 Dec 2015 11:51:40 +0100,
+> Takashi Iwai wrote:
+> > 
+> > On Tue, 08 Dec 2015 11:42:57 +0100,
+> > Vinod Koul wrote:
+> > > 
+> > > On Tue, Dec 08, 2015 at 11:28:16AM +0100, Takashi Iwai wrote:
+> > > > > Yes that was my thinking based on discussion and patches posted by Libin.
+> > > > > But one more question who does PCM assignment, looking at patches it seems
+> > > > > driver and no way to change that..
+> > > > > 
+> > > > > For example I have 10 devices connected  and we have 5 PCMs.
+> > > > > I would like to route to 7th device, how would that be done?
+> > > > 
+> > > > Manage xrandr to enable the target monitor.  Then one PCM stream will
+> > > > be switched to the corresponding audio, and it'll be notified to
+> > > > user-space.
+> > > 
+> > > Thanks, that helps..
+> > > 
+> > > Looking at RFC patches I do not see that implemented, so maybe Libin
+> > > and you will add that eventually
+> > > 
+> > > The question here is how will the switch be handled, can you please
+> > > elaborate on that. From xrandr selection how will audio driver be
+> > > notified and how will change be done?
+> > 
+> > The switch itself has to be done voluntarily by user-space,
+> > unfortunately, as in the current form.  We thought of the preemptive
+> > disconnection.  It works for aplay, but screws up PulseAudio, so
+> > no-go.
+> 
+> Maybe the above wasn't clear enough.  Put in that way: the assignment
+> of PCM stream and the switching of PCM stream are different things.
+> The former is done at the time the HDA driver gets notified by i915
+> (actually happens twice, one for disabling and one for enabling).  The
+> audio driver notifies this to user-space.  Then user-space closes /
+> reopens a stream accordingly, which is equivalent as switching a PCM
+> stream.
 
-I'm experiencing a spot of trouble with this commit:
+Thanks for the explanation :)
 
-commit aad730d0704545ad97654bd929b0aba05adb1436
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Mon Dec 2 13:33:57 2013 +0100
+SO how do you notify, thru alsa jack control. In that case if we had
+assigned PCM to pin 5, device 62 and change to pin 5 device 35, how would
+userspace view this
 
-    ALSA: hda - Always do delayed probes for HD-audio devices
+> We've tested the PCM switching in the driver side, but it broke the
+> compatibility with PA.  So the switching itself is voluntarily done by
+> user-space.
 
-That adds some code:
-
-#ifndef CONFIG_SND_HDA_I915
-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-		dev_err(card->dev, "Haswell must build in CONFIG_SND_HDA_I915\n");
-
-"Oh, bother" -- Winnie the Pooh
-
-So I go looking how to fix this, and 'make menuconfig' tells me:
-
-Symbol: SND_HDA_I915 [=3Dn]                                               =
-                                              x  =
-
-  x Type  : boolean                                                       =
-                                                x  =
-
-  x   Defined at sound/hda/Kconfig:8                                      =
-                                                x  =
-
-  x   Depends on: SOUND [=3Dy] && !M68K && !UML && SND [=3Dy] && DRM_I915 =
-[=3Dn] && SND_HDA_CORE [=3Dy]
-
-And why is DRM_I915=3Dn?
-
-# lspci | grep NV
-01:00.0 VGA compatible controller: NVIDIA Corporation GF108GLM [NVS 5200M]=
- (rev a1)
-
-Because this Dell laptop has NVidia graphics onboard, and no sign of I915
-graphics that needs I915 DRM.
-
-I think the infrastructure that you're trying to re-use from DRM_I915 need=
-s
-to be moved to another symbol which can be SELECT/DEPEND by both DRM_I915
-and SND_HSA_I915.
-
-Comments/suggestions?
-
---==_Exmh_1449632798_5901P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Exmh version 2.5 07/13/2001
-
-iQIVAwUBVmekHQdmEQWDXROgAQJO0A//UCbjkLDt9fcHlJgcR3VN5Em7X6gzMlAc
-Saq78vyPWnn754FUnM51l7VHtTtkfR6EVTptwtaUJRGAclQsHNF8M27IwP/CEGPZ
-CgktpSf6km5f1Hyp19E47F8Env68+AjkdV8Dm61LvL8D7CxdFIsGY4wE7khDpGWw
-nJGzyq8iFC8NYHjK1BqzyTvCHdmJQfbfSyi9cJcaXygdXhALapl8jB+IxhxPXAxB
-x9Q8YuK6rfRADg/dPITC3yRs6SBdewmOYFWZLocA2J4BLewH/KNAd6mCmxXaL9O0
-szp7inBd4/MZiuxV9SvfwlwSAf2PfzGB33wYqtExrkc//6z/T/IkS4ltX07Di+F7
-OGgUwQ99va1q3MoHVQ6sCAblf4r/43XWqe7TRjme/n7pnCBKw7bHy1hCWYSI/MOe
-Rz95q5RPp8KnWt3AqhMe0lQt5k9qZJMuW86DdCyStH/z2+GFjcT6v/EVjrGaltca
-Lh/+GrfxfZtBEe3W75YTNNo/3pV561OvwcCNqybZHUdD5MbN5Ow4O9J4joxBfFO0
-wc1K5Vs51JzbY2zU9Z6E/YnMYDnSKhuL/vhVh72Hss7uu09CJes4OSi2k5H/P/D/
-RYG1g+qEgRGYhlpxxsIDmmOEIXuDdiBNujI//alQzjJtGAoemXifhAd5RPy8ACoq
-Kt7SlGLMjlA=
-=sOzt
------END PGP SIGNATURE-----
-
---==_Exmh_1449632798_5901P--
+-- 
+~Vinod
