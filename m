@@ -1,86 +1,52 @@
-From: John Keeping <john@metanate.com>
-Subject: [PATCH] ASoC: es8328: Fix deemphasis values
-Date: Wed,  9 Dec 2015 11:38:13 +0000
-Message-ID: <1449661093-17580-1-git-send-email-john@metanate.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] sound/oss: remove VIRT_TO_BUS dependency
+Date: Wed, 09 Dec 2015 14:37:05 +0100
+Message-ID: <1607667.Zg3De8gXcs@wuerfel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEAAC260591
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 14:37:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is using completely the wrong mask and value when updating the
-register.  Since the correct values are already defined in the header,
-switch to using a table with explicit constants rather than shifting the
-array index.
+The OSS sound drivers used to rely on virt_to_bus(), but don't any more,
+so we can remove the Kconfig dependency.
 
-Signed-off-by: John Keeping <john@metanate.com>
----
- sound/soc/codecs/es8328.c | 25 +++++++++++++++++--------
- sound/soc/codecs/es8328.h |  1 +
- 2 files changed, 18 insertions(+), 8 deletions(-)
+As a lot of architectures don't provide VIRT_TO_BUS any more, removing
+the dependency in sounds/oss/ would make the deprecated drivers appear
+there, which we probably don't want. Instead I'm replacing the
+simple dependency with 'VIRT_TO_BUS || RPC || NETWINDER' so we can
+still build these sound drivers for the platforms that need them,
+but don't change anything on other architectures.
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 84f5eb0..afa6c5d 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -85,7 +85,15 @@ static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
- static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
- static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
+As a follow-up, we can remove the virt_to_bus() implementation
+and Kconfig symbol in the ARM architecture.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/oss/Kconfig b/sound/oss/Kconfig
+index 48568fdf847f..4033fe58f0cf 100644
+--- a/sound/oss/Kconfig
++++ b/sound/oss/Kconfig
+@@ -240,7 +240,7 @@ config MSND_FIFOSIZE
  
--static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-+static const struct {
-+	int rate;
-+	unsigned int val;
-+} deemph_settings[] = {
-+	{ 0,     ES8328_DACCONTROL6_DEEMPH_OFF },
-+	{ 32000, ES8328_DACCONTROL6_DEEMPH_32k },
-+	{ 44100, ES8328_DACCONTROL6_DEEMPH_44_1k },
-+	{ 48000, ES8328_DACCONTROL6_DEEMPH_48k },
-+};
- 
- static int es8328_set_deemph(struct snd_soc_codec *codec)
- {
-@@ -97,21 +105,22 @@ static int es8328_set_deemph(struct snd_soc_codec *codec)
- 	 * rate.
- 	 */
- 	if (es8328->deemph) {
--		best = 1;
--		for (i = 2; i < ARRAY_SIZE(deemph_settings); i++) {
--			if (abs(deemph_settings[i] - es8328->playback_fs) <
--			    abs(deemph_settings[best] - es8328->playback_fs))
-+		best = 0;
-+		for (i = 1; i < ARRAY_SIZE(deemph_settings); i++) {
-+			if (abs(deemph_settings[i].rate - es8328->playback_fs) <
-+			    abs(deemph_settings[best].rate - es8328->playback_fs))
- 				best = i;
- 		}
- 
--		val = best << 1;
-+		val = deemph_settings[best].val;
- 	} else {
--		val = 0;
-+		val = ES8328_DACCONTROL6_DEEMPH_OFF;
- 	}
- 
- 	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
- 
--	return snd_soc_update_bits(codec, ES8328_DACCONTROL6, 0x6, val);
-+	return snd_soc_update_bits(codec, ES8328_DACCONTROL6,
-+			ES8328_DACCONTROL6_DEEMPH_MASK, val);
- }
- 
- static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
-index cb36afe..156c748 100644
---- a/sound/soc/codecs/es8328.h
-+++ b/sound/soc/codecs/es8328.h
-@@ -153,6 +153,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_DACCONTROL6_CLICKFREE (1 << 3)
- #define ES8328_DACCONTROL6_DAC_INVR (1 << 4)
- #define ES8328_DACCONTROL6_DAC_INVL (1 << 5)
-+#define ES8328_DACCONTROL6_DEEMPH_MASK (3 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_OFF (0 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_32k (1 << 6)
- #define ES8328_DACCONTROL6_DEEMPH_44_1k (2 << 6)
--- 
-2.6.3.462.gbe2c914
+ menuconfig SOUND_OSS
+ 	tristate "OSS sound modules"
+-	depends on ISA_DMA_API && VIRT_TO_BUS
++	depends on ISA_DMA_API && (VIRT_TO_BUS || ARCH_RPC || ARCH_NETWINDER)
+ 	depends on !GENERIC_ISA_DMA_SUPPORT_BROKEN
+ 	help
+ 	  OSS is the Open Sound System suite of sound card drivers.  They make
