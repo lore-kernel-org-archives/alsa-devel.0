@@ -1,71 +1,88 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Wed, 9 Dec 2015 11:34:52 +0800
-Message-ID: <20151209033449.GA30401@shlinux2>
-References: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
- <20151208124713.GQ5727@sirena.org.uk>
+From: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+Subject: next-20151208 - CONFIG_SND_HDA_I915
+Date: Tue, 08 Dec 2015 22:46:38 -0500
+Message-ID: <8943.1449632798@turing-police.cc.vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="==_Exmh_1449632798_5901P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0138.outbound.protection.outlook.com [157.56.111.138])
- by alsa0.perex.cz (Postfix) with ESMTP id DC6B1260560
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 04:38:46 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20151208124713.GQ5727@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 08, 2015 at 12:47:13PM +0000, Mark Brown wrote:
-> On Tue, Dec 08, 2015 at 05:40:13PM +0800, Zidan Wang wrote:
-> 
-> > + - aifx-format             : set format for aifx, such as "i2s", "left_j",
-> > +			     "dsp_a", "dsp_b".
-> 
-> > + - aifx-bitclock-master    : If present, aifx wroks as bit clock master.
-> > +			     Otherwise, aifx works as bit clock slave.
-> 
-> > + - aifx-frame-master	   : If present, aifx wroks as frame clock master.
-> > +			     Otherwise, aifx works as frame clock slave.
-> 
-> > + - aifx-bitclock-inversion : If present, bit clock will invert polarity.
-> 
-> > + - aifx-frame-inversion	   : If present, frame clock will invert polarity.
-> 
-> > + - aifx-continuous-clock   : If present, bit clock will be continuous.
-> > +			     Otherwise, dai bit clocks can be be gated
-> > +			     (disabled) when the dai is not sending or
-> > +			     receiving PCM data in a frame.
-> 
-> Why are these selectable in the machine driver?
-I have tested and found that sai<->aif1 can support "i2s" "left_j"
-"dsp_a" "dsp_b" format, and can support cpu dai master and slave
-mode. But I haven't tested voice dai and bt dai because of hardware
-limitation. I just using sai<->aif2 to test aif2.
+--==_Exmh_1449632798_5901P
+Content-Type: text/plain; charset="us-ascii"
+Content-Id: <8918.1449632787.1@turing-police.cc.vt.edu>
+Content-Transfer-Encoding: quoted-printable
 
-So I want to configure the dai format from device tree. And there is
-a help function snd_soc_of_parse_daifmt for me to do this, so I add
-these selectable to the machine driver.
+I'm experiencing a spot of trouble with this commit:
 
-> 
-> > +		model = "wm8960-audio";
-> 
-> Cut'n'paste error here.
+commit aad730d0704545ad97654bd929b0aba05adb1436
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Mon Dec 2 13:33:57 2013 +0100
 
-it should be "wm8958-audio", i will modify it.
+    ALSA: hda - Always do delayed probes for HD-audio devices
 
+That adds some code:
 
-Best Regards,
-Zidan Wang
+#ifndef CONFIG_SND_HDA_I915
+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+		dev_err(card->dev, "Haswell must build in CONFIG_SND_HDA_I915\n");
+
+"Oh, bother" -- Winnie the Pooh
+
+So I go looking how to fix this, and 'make menuconfig' tells me:
+
+Symbol: SND_HDA_I915 [=3Dn]                                               =
+                                              x  =
+
+  x Type  : boolean                                                       =
+                                                x  =
+
+  x   Defined at sound/hda/Kconfig:8                                      =
+                                                x  =
+
+  x   Depends on: SOUND [=3Dy] && !M68K && !UML && SND [=3Dy] && DRM_I915 =
+[=3Dn] && SND_HDA_CORE [=3Dy]
+
+And why is DRM_I915=3Dn?
+
+# lspci | grep NV
+01:00.0 VGA compatible controller: NVIDIA Corporation GF108GLM [NVS 5200M]=
+ (rev a1)
+
+Because this Dell laptop has NVidia graphics onboard, and no sign of I915
+graphics that needs I915 DRM.
+
+I think the infrastructure that you're trying to re-use from DRM_I915 need=
+s
+to be moved to another symbol which can be SELECT/DEPEND by both DRM_I915
+and SND_HSA_I915.
+
+Comments/suggestions?
+
+--==_Exmh_1449632798_5901P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Exmh version 2.5 07/13/2001
+
+iQIVAwUBVmekHQdmEQWDXROgAQJO0A//UCbjkLDt9fcHlJgcR3VN5Em7X6gzMlAc
+Saq78vyPWnn754FUnM51l7VHtTtkfR6EVTptwtaUJRGAclQsHNF8M27IwP/CEGPZ
+CgktpSf6km5f1Hyp19E47F8Env68+AjkdV8Dm61LvL8D7CxdFIsGY4wE7khDpGWw
+nJGzyq8iFC8NYHjK1BqzyTvCHdmJQfbfSyi9cJcaXygdXhALapl8jB+IxhxPXAxB
+x9Q8YuK6rfRADg/dPITC3yRs6SBdewmOYFWZLocA2J4BLewH/KNAd6mCmxXaL9O0
+szp7inBd4/MZiuxV9SvfwlwSAf2PfzGB33wYqtExrkc//6z/T/IkS4ltX07Di+F7
+OGgUwQ99va1q3MoHVQ6sCAblf4r/43XWqe7TRjme/n7pnCBKw7bHy1hCWYSI/MOe
+Rz95q5RPp8KnWt3AqhMe0lQt5k9qZJMuW86DdCyStH/z2+GFjcT6v/EVjrGaltca
+Lh/+GrfxfZtBEe3W75YTNNo/3pV561OvwcCNqybZHUdD5MbN5Ow4O9J4joxBfFO0
+wc1K5Vs51JzbY2zU9Z6E/YnMYDnSKhuL/vhVh72Hss7uu09CJes4OSi2k5H/P/D/
+RYG1g+qEgRGYhlpxxsIDmmOEIXuDdiBNujI//alQzjJtGAoemXifhAd5RPy8ACoq
+Kt7SlGLMjlA=
+=sOzt
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1449632798_5901P--
