@@ -1,7 +1,7 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 179/182] ASoC: wm8962: use gpiochip data pointer
-Date: Wed,  9 Dec 2015 14:51:47 +0100
-Message-ID: <1449669107-7264-1-git-send-email-linus.walleij@linaro.org>
+Subject: [PATCH 181/182] ASoC: ac97: use gpiochip data pointer
+Date: Wed,  9 Dec 2015 14:52:01 +0100
+Message-ID: <1449669121-7366-1-git-send-email-linus.walleij@linaro.org>
 Return-path: <linux-gpio-owner@vger.kernel.org>
 Sender: linux-gpio-owner@vger.kernel.org
 To: linux-gpio@vger.kernel.org, Johan Hovold <johan@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Michael Welling <mwelling@ieee.org>, Markus Pargmann <mpa@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
@@ -19,65 +19,42 @@ Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 Liam/Mark: please ACK this so I can merge it into the GPIO tree.
 ---
- sound/soc/codecs/wm8962.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/soc-ac97.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index b563d6746ac4..1577d2e62e76 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -18,7 +18,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/gcd.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/driver.h>
- #include <linux/i2c.h>
- #include <linux/input.h>
- #include <linux/pm_runtime.h>
-@@ -3308,14 +3308,9 @@ static void wm8962_set_gpio_mode(struct wm8962_priv *wm8962, int gpio)
- }
- 
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index a2012652f212..eaec7177eab2 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -59,8 +59,7 @@ static void soc_ac97_device_release(struct device *dev)
  #ifdef CONFIG_GPIOLIB
--static inline struct wm8962_priv *gpio_to_wm8962(struct gpio_chip *chip)
--{
--	return container_of(chip, struct wm8962_priv, gpio_chip);
--}
--
- static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
+ static inline struct snd_soc_codec *gpio_to_codec(struct gpio_chip *chip)
  {
--	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
-+	struct wm8962_priv *wm8962 = gpiochip_get_data(chip);
+-	struct snd_ac97_gpio_priv *gpio_priv =
+-		container_of(chip, struct snd_ac97_gpio_priv, gpio_chip);
++	struct snd_ac97_gpio_priv *gpio_priv = gpiochip_get_data(chip);
  
- 	/* The WM8962 GPIOs aren't linearly numbered.  For simplicity
- 	 * we export linear numbers and error out if the unsupported
-@@ -3338,7 +3333,7 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
- 
- static void wm8962_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ 	return gpio_priv->codec;
+ }
+@@ -98,8 +97,7 @@ static int snd_soc_ac97_gpio_get(struct gpio_chip *chip, unsigned offset)
+ static void snd_soc_ac97_gpio_set(struct gpio_chip *chip, unsigned offset,
+ 				  int value)
  {
--	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
-+	struct wm8962_priv *wm8962 = gpiochip_get_data(chip);
- 	struct snd_soc_codec *codec = wm8962->codec;
+-	struct snd_ac97_gpio_priv *gpio_priv =
+-		container_of(chip, struct snd_ac97_gpio_priv, gpio_chip);
++	struct snd_ac97_gpio_priv *gpio_priv = gpiochip_get_data(chip);
+ 	struct snd_soc_codec *codec = gpio_to_codec(chip);
  
- 	snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
-@@ -3348,7 +3343,7 @@ static void wm8962_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
- static int wm8962_gpio_direction_out(struct gpio_chip *chip,
- 				     unsigned offset, int value)
- {
--	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
-+	struct wm8962_priv *wm8962 = gpiochip_get_data(chip);
- 	struct snd_soc_codec *codec = wm8962->codec;
- 	int ret, val;
+ 	gpio_priv->gpios_set &= ~(1 << offset);
+@@ -145,7 +143,7 @@ static int snd_soc_ac97_init_gpio(struct snd_ac97 *ac97,
+ 	gpio_priv->gpio_chip.parent = codec->dev;
+ 	gpio_priv->gpio_chip.base = -1;
  
-@@ -3387,7 +3382,7 @@ static void wm8962_init_gpio(struct snd_soc_codec *codec)
- 	else
- 		wm8962->gpio_chip.base = -1;
- 
--	ret = gpiochip_add(&wm8962->gpio_chip);
-+	ret = gpiochip_add_data(&wm8962->gpio_chip, wm8962);
+-	ret = gpiochip_add(&gpio_priv->gpio_chip);
++	ret = gpiochip_add_data(&gpio_priv->gpio_chip, gpio_priv);
  	if (ret != 0)
  		dev_err(codec->dev, "Failed to add GPIOs: %d\n", ret);
- }
+ 	return ret;
 -- 
 2.4.3
 
