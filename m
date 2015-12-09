@@ -1,51 +1,105 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v4 10/14] drm/edid: Add API to help find connection type
-Date: Wed,  9 Dec 2015 21:46:17 +0530
-Message-ID: <1449677781-7997-10-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v4 06/14] ASoC: hdac_hdmi: Enable DP1.2 and all
+	converters/pins
+Date: Wed,  9 Dec 2015 21:46:13 +0530
+Message-ID: <1449677781-7997-6-git-send-email-subhransu.s.prusty@intel.com>
 References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
  <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B94F260695
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:14:10 +0100 (CET)
 In-Reply-To: <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VG8gZmlsbCB0aGUgYXVkaW8gaW5mb2ZyYW1lIGl0IGlzIHJlcXVpcmVkIHRvIGlkZW50aWZ5IHRo
-ZQpjb25uZWN0aW9uIHR5cGUgYXMgRFAgb3IgSERNSS4gVGhpcyBwYXRjaCBhZGRzIGFuIEFQSSB3
-aGljaApwYXJzZXMgRUxEIGFuZCByZXR1cm5zIHRoZSBkaXNwbGF5IHR5cGUgb2YgY29ubmVjdGVk
-LgoKU2lnbmVkLW9mZi1ieTogU3ViaHJhbnN1IFMuIFBydXN0eSA8c3ViaHJhbnN1LnMucHJ1c3R5
-QGludGVsLmNvbT4KU2lnbmVkLW9mZi1ieTogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5j
-b20+ClJldmlld2VkLWJ5OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50ZWwuY29tPgpDYzog
-RGF2aWQgQWlybGllIDxhaXJsaWVkQGxpbnV4LmllPgpDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpDYzogRGFuaWVsIFZldHRlciA8ZGFuaWVsLnZldHRlckBpbnRlbC5jb20+Ci0t
-LQogaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCB8IDEyICsrKysrKysrKysrKwogMSBmaWxlIGNoYW5n
-ZWQsIDEyIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5o
-IGIvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaAppbmRleCAyYWY5NzY5Li44YzUzN2EwIDEwMDY0NAot
-LS0gYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCisrKyBiL2luY2x1ZGUvZHJtL2RybV9lZGlkLmgK
-QEAgLTQwMyw2ICs0MDMsMTggQEAgc3RhdGljIGlubGluZSBpbnQgZHJtX2VsZF9zaXplKGNvbnN0
-IHVpbnQ4X3QgKmVsZCkKIAlyZXR1cm4gRFJNX0VMRF9IRUFERVJfQkxPQ0tfU0laRSArIGVsZFtE
-Uk1fRUxEX0JBU0VMSU5FX0VMRF9MRU5dICogNDsKIH0KIAorLyoqCisgKiBkcm1fZWxkX2dldF9j
-b25uX3R5cGUgLSBHZXQgZGV2aWNlIHR5cGUgaGRtaS9kcCBjb25uZWN0ZWQKKyAqIEBlbGQ6IHBv
-aW50ZXIgdG8gYW4gZWxkIG1lbW9yeSBzdHJ1Y3R1cmUKKyAqCisgKiBUaGUgY2FsbGVyIG5lZWQg
-dG8gdXNlICVEUk1fRUxEX0NPTk5fVFlQRV9IRE1JIG9yICVEUk1fRUxEX0NPTk5fVFlQRV9EUCB0
-bworICogaWRlbnRpZnkgdGhlIGRpc3BsYXkgdHlwZSBjb25uZWN0ZWQuCisgKi8KK3N0YXRpYyBp
-bmxpbmUgdTggZHJtX2VsZF9nZXRfY29ubl90eXBlKGNvbnN0IHVpbnQ4X3QgKmVsZCkKK3sKKwly
-ZXR1cm4gZWxkW0RSTV9FTERfU0FEX0NPVU5UX0NPTk5fVFlQRV0gJiBEUk1fRUxEX0NPTk5fVFlQ
-RV9NQVNLOworfQorCiBzdHJ1Y3QgZWRpZCAqZHJtX2RvX2dldF9lZGlkKHN0cnVjdCBkcm1fY29u
-bmVjdG9yICpjb25uZWN0b3IsCiAJaW50ICgqZ2V0X2VkaWRfYmxvY2spKHZvaWQgKmRhdGEsIHU4
-ICpidWYsIHVuc2lnbmVkIGludCBibG9jaywKIAkJCSAgICAgIHNpemVfdCBsZW4pLAotLSAKMS45
-LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+By default only one converter and pin widget are enabled. A vendor
+widget required to be configured to enable all the widgets of the
+codec.
+
+As we are enabling the DP support enable the DP1.2 feature as well.
+
+The changes are copied from patch_hdmi.c.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 3e2a12e..3e8b745 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -645,6 +645,46 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	return 0;
+ }
+ 
++#define INTEL_VENDOR_NID 0x08
++#define INTEL_GET_VENDOR_VERB 0xf81
++#define INTEL_SET_VENDOR_VERB 0x781
++#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
++#define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
++
++static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdac)
++{
++	unsigned int vendor_param;
++
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
++		return;
++
++	vendor_param |= INTEL_EN_ALL_PIN_CVTS;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
++}
++
++static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
++{
++	unsigned int vendor_param;
++
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_DP12)
++		return;
++
++	/* enable DP1.2 mode */
++	vendor_param |= INTEL_EN_DP12;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
++
++}
++
+ /*
+  * Parse all nodes and store the cvt/pin nids in array
+  * Add one time initialization for pin and cvt widgets
+@@ -657,6 +697,9 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	int ret;
+ 
++	hdac_hdmi_skl_enable_all_pins(hdac);
++	hdac_hdmi_skl_enable_dp12(hdac);
++
+ 	num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
+ 	if (!nid || num_nodes <= 0) {
+ 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
+-- 
+1.9.1
