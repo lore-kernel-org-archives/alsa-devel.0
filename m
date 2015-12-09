@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [asoc:topic/intel 75/78]
- sound/soc/intel/boards/skl_rt286.c:55:2: error: implicit declaration of
- function 'SND_SOC_DAPM_SINK'
-Date: Wed, 9 Dec 2015 21:42:30 +0530
-Message-ID: <20151209161230.GF1854@localhost>
-References: <201512090450.UOjjnJOi%fengguang.wu@intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v4 05/14] ASoC: hdac_hdmi: Apply constraints
+	based on ELD
+Date: Wed,  9 Dec 2015 21:46:12 +0530
+Message-ID: <1449677781-7997-5-git-send-email-subhransu.s.prusty@intel.com>
+References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6818D2614D0
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:11:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201512090450.UOjjnJOi%fengguang.wu@intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2826F26068F
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:14:08 +0100 (CET)
+In-Reply-To: <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +22,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 09, 2015 at 04:05:51AM +0800, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-> head:   9ec2053b13f75d7ad9c0e6db9763954bd1a1b9ae
-> commit: b34e24d2406f123d5dbbff4fdeebbc2af76b0acd [75/78] ASoC: Intel: Skylake: add wov as int sink
-> config: i386-allmodconfig (attached as .config)
-> reproduce:
->         git checkout b34e24d2406f123d5dbbff4fdeebbc2af76b0acd
->         # save the attached .config to linux build tree
->         make ARCH=i386 
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
-> >> sound/soc/intel/boards/skl_rt286.c:55:2: error: implicit declaration of function 'SND_SOC_DAPM_SINK' [-Werror=implicit-function-declaration]
->      SND_SOC_DAPM_SINK("WoV Sink"),
+Uses the drm eld core framework to apply rate and channel
 
-This is false alarm. SND_SOC_DAPM_SINK is in mark's dapm branch I think
+Also compute the format to be set based on ELD.
 
-Thanks
+Even though the channel constraint is based on ELD, infoframe
+is set with stereo only. Multichannel support will be added
+later.
 
->      ^
-> >> sound/soc/intel/boards/skl_rt286.c:55:2: error: initializer element is not constant
->    sound/soc/intel/boards/skl_rt286.c:55:2: note: (near initialization for 'skylake_widgets[5].id')
-> >> sound/soc/intel/boards/skl_rt286.c:49:61: warning: missing braces around initializer [-Wmissing-braces]
->     static const struct snd_soc_dapm_widget skylake_widgets[] = {
->                                                                 ^
->    sound/soc/intel/boards/skl_rt286.c:49:61: note: (near initialization for 'skylake_widgets')
->    cc1: some warnings being treated as errors
-> 
-> vim +/SND_SOC_DAPM_SINK +55 sound/soc/intel/boards/skl_rt286.c
-> 
->     43	static const struct snd_kcontrol_new skylake_controls[] = {
->     44		SOC_DAPM_PIN_SWITCH("Speaker"),
->     45		SOC_DAPM_PIN_SWITCH("Headphone Jack"),
->     46		SOC_DAPM_PIN_SWITCH("Mic Jack"),
->     47	};
->     48	
->   > 49	static const struct snd_soc_dapm_widget skylake_widgets[] = {
->     50		SND_SOC_DAPM_HP("Headphone Jack", NULL),
->     51		SND_SOC_DAPM_SPK("Speaker", NULL),
->     52		SND_SOC_DAPM_MIC("Mic Jack", NULL),
->     53		SND_SOC_DAPM_MIC("DMIC2", NULL),
->     54		SND_SOC_DAPM_MIC("SoC DMIC", NULL),
->   > 55		SND_SOC_DAPM_SINK("WoV Sink"),
->     56	};
->     57	
->     58	static const struct snd_soc_dapm_route skylake_rt286_map[] = {
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/Kconfig     |  1 +
+ sound/soc/codecs/hdac_hdmi.c | 48 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 46 insertions(+), 3 deletions(-)
 
-
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c0c5c8e..f805cb6 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -486,6 +486,7 @@ config SND_SOC_GTM601
+ config SND_SOC_HDAC_HDMI
+ 	tristate
+ 	select SND_HDA_EXT_CORE
++	select SND_PCM_ELD
+ 	select HDMI
+ 
+ config SND_SOC_ICS43432
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 016aa24..3e2a12e 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -22,10 +22,12 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/hdmi.h>
++#include <drm/drm_edid.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_i915.h>
++#include <sound/pcm_drm_eld.h>
+ #include "../../hda/local.h"
+ 
+ #define AMP_OUT_MUTE		0xb080
+@@ -90,6 +92,42 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
+ 	return container_of(hdac, struct hdac_ext_device, hdac);
+ }
+ 
++static unsigned int sad_format(const u8 *sad)
++{
++	return ((sad[0] >> 0x3) & 0x1f);
++}
++
++static unsigned int sad_sample_bits_lpcm(const u8 *sad)
++{
++	return (sad[2] & 7);
++}
++
++static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
++						void *eld)
++{
++	u64 formats = SNDRV_PCM_FMTBIT_S16;
++	int i;
++	const u8 *sad, *eld_buf = eld;
++
++	sad = drm_eld_sad(eld_buf);
++	if (!sad)
++		goto format_constraint;
++
++	for (i = drm_eld_sad_count(eld_buf); i > 0; i--, sad += 3) {
++		if (sad_format(sad) == 1) { /* AUDIO_CODING_TYPE_LPCM */
++
++			/* 20 bit and 24 bit */
++			if (sad_sample_bits_lpcm(sad) & 0x6)
++				formats |= SNDRV_PCM_FMTBIT_S32;
++		}
++	}
++
++format_constraint:
++	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
++				formats);
++
++}
++
+  /* HDMI Eld routines */
+ static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
+ 				hda_nid_t nid, int byte_index)
+@@ -335,6 +373,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
++	int ret;
+ 
+ 	if (dai->id > 0) {
+ 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
+@@ -356,10 +395,13 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+ 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
+ 
+-	snd_pcm_hw_constraint_step(substream->runtime, 0,
+-				   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
++				dai_map->pin->eld.eld_buffer);
++	if (ret < 0)
++		return ret;
+ 
+-	return 0;
++	return snd_pcm_hw_constraint_eld(substream->runtime,
++				dai_map->pin->eld.eld_buffer);
+ }
+ 
+ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
 -- 
-~Vinod
+1.9.1
