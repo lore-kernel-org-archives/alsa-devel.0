@@ -1,18 +1,14 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v4 14/14] ASoC: hdac_hdmi: Fix to enable device
-	configuration in hw_params
-Date: Wed,  9 Dec 2015 21:46:21 +0530
-Message-ID: <1449677781-7997-14-git-send-email-subhransu.s.prusty@intel.com>
-References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Damien Horsley <Damien.Horsley@imgtec.com>
+Subject: [PATCH V3 0/2] Add support for Pistachio internal DAC
+Date: Wed, 9 Dec 2015 16:30:07 +0000
+Message-ID: <1449678609-5592-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CD8F2264F0F
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:15:33 +0100 (CET)
-In-Reply-To: <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A1CC2605B7
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:31:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,172 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, James Hartley <james.hartley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-User can keep the device open and with the device configuration
-done in pcm_open, this may fail. Anyway hw_params is the right
-place for this. So moving the configuration to hw_params and free
-in hw_free. Remove the redundant startup/shutdown ops.
+Add binding document and driver for Pistachio internal DAC
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 100 ++++++++++++++++++-------------------------
- 1 file changed, 42 insertions(+), 58 deletions(-)
+Changes in V3:
+	Mute control definition changed to SOC_SINGLE
+	Codec driver probe function added to associate regmap with codec
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 03d18fb..cbd541a 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -375,52 +375,6 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 			dai_map->pin->nid, dd->stream_tag, dd->format);
- }
- 
--static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
--{
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_ext_dma_params *dd;
--
--	if (dai->id > 0) {
--		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
--		return -ENODEV;
--	}
--
--	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
--	if (!dd)
--		return -ENOMEM;
--	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
--			params_channels(hparams), params_format(hparams),
--			24, 0);
--
--	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
--
--	return 0;
--}
--
--static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
--
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_CHANNEL_STREAMID, 0);
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_STREAM_FORMAT, 0);
--
--	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
--
--	kfree(dd);
--
--	return 0;
--}
--
- static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
- 		struct hdac_hdmi_dai_pin_map *dai_map)
- {
-@@ -532,8 +486,8 @@ static struct hdac_hdmi_pin *hdac_hdmi_get_pin_from_daistream(
- 	return NULL;
- }
- 
--static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
--			struct snd_soc_dai *dai)
-+static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
- {
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-@@ -541,6 +495,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_hdmi_cvt *cvt;
- 	struct hdac_hdmi_pin *pin;
- 	int ret;
-+	struct hdac_ext_dma_params *dd;
- 
- 	if (dai->id > 0) {
- 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -573,25 +528,56 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	return snd_pcm_hw_constraint_eld(substream->runtime,
--				pin->eld.eld_buffer);
-+	ret = snd_pcm_hw_constraint_eld(substream->runtime,
-+			dai_map->pin->eld.eld_buffer);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
-+	if (!dd)
-+		return -ENOMEM;
-+	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
-+			params_channels(hparams), params_format(hparams),
-+			24, 0);
-+
-+	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
-+
-+	return 0;
- }
- 
--static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
-+static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-+	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_ext_dma_params *dd;
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
-+	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
- 
--	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
-+	if (dd) {
-+		snd_soc_dai_set_dma_data(dai, substream, NULL);
-+		kfree(dd);
-+	}
-+
-+	if (dai_map->pin) {
-+		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+				AC_VERB_SET_CHANNEL_STREAMID, 0);
-+		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+				AC_VERB_SET_STREAM_FORMAT, 0);
-+
-+		hdac_hdmi_set_power_state(edev, dai_map, AC_PWRST_D3);
-+
-+		snd_hdac_codec_write(&edev->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
- 
--	dai_map->pin = NULL;
-+		dai_map->pin = NULL;
-+	}
-+
-+	return 0;
- }
- 
- static int
-@@ -1026,8 +1012,6 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
- }
- 
- static struct snd_soc_dai_ops hdmi_dai_ops = {
--	.startup = hdac_hdmi_pcm_open,
--	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
- 	.prepare = hdac_hdmi_playback_prepare,
- 	.hw_free = hdac_hdmi_playback_cleanup,
+Damien.Horsley (2):
+  ASoC: img: Add binding document for Pistachio internal DAC
+  ASoC: img: Add driver for Pistachio internal DAC
+
+ .../bindings/sound/img,pistachio-internal-dac.txt  |  18 ++
+ sound/soc/img/Kconfig                              |   8 +
+ sound/soc/img/Makefile                             |   2 +
+ sound/soc/img/pistachio-internal-dac.c             | 287 +++++++++++++++++++++
+ 4 files changed, 315 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
+ create mode 100644 sound/soc/img/pistachio-internal-dac.c
+
 -- 
-1.9.1
+2.1.4
