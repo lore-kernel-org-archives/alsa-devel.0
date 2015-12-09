@@ -1,72 +1,84 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v4 00/14] ASoC: hdac_hdmi: Add DP & notification support
-Date: Wed,  9 Dec 2015 21:40:05 +0530
-Message-ID: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [asoc:topic/intel 75/78]
+ sound/soc/intel/boards/skl_rt286.c:55:2: error: implicit declaration of
+ function 'SND_SOC_DAPM_SINK'
+Date: Wed, 9 Dec 2015 21:42:30 +0530
+Message-ID: <20151209161230.GF1854@localhost>
+References: <201512090450.UOjjnJOi%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6818D2614D0
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2015 17:11:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201512090450.UOjjnJOi%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBEUCBhdWRpbyBhbmQgaG90cGx1ZyBub3RpZmljYXRpb24g
-c3VwcG9ydC4KCk9uIFNreWxha2UgdHdvIERQIHBvcnRzIGFyZSBhdmFpbGFibGUgYW5kIHRvIGVu
-YWJsZSBEUCBvbiBib3RoCnBvcnRzIGFsbCBwaW5zIG5lZWQgdG8gYmUgZW5hYmxlZC4KClRoZXJl
-IGlzIGEgc3BlY2lhbCB2ZW5kb3Igd2lkZ2V0IHdoaWNoIG5lZWQgdG8gYmUgcHJvZ3JhbW1lZCB0
-bwplbmFibGUgYWxsIHBpbnMgYW5kIGNvbnZlcnRlcnMuIFRoaXMgc2VyaWVzIGFkZHMgaG90cGx1
-Zwpub3RpZmljYXRpb24sIHJlYWQvc2V0IGNvbnN0cmFpbnQgYmFzZWQgb24gRUxELCBlbmFibGUg
-YWxsCnBpbi9jdnRzLCBEUDEuMiwgcHJvZ3JhbXMgdGhlIGF1ZGlvIGluZm9mcmFtZSBmb3IgRFAu
-IFRoZXJlIGlzIGEKb25lIHRvIG9uZSBtYXBwaW5nIGJldHdlZW4gY29udmVydGVyIGFuZCBzdHJl
-YW0sIHNvIHRoZSBkYWlzIGFyZQpjcmVhdGVkIGJhc2VkIG9uIHRoZSBubyBvZiBzdHJlYW1zIHN1
-cHBvcnRlZCBvbiBoZG1pIGNvZGVjLiAgRXZlbgp0aG91Z2ggY3Z0cyBjYW4gYmUgbWFwcGVkIGR5
-bmFtaWNhbGx5IHRvIHRoZSBzdHJlYW1zLCBjdXJyZW50bHkKaXQgaXMgc3RhdGljYWxseSBtYXBw
-ZWQgYXMgc2ltdWx0YW5lb3VzIHBsYXliYWNrIG9uIGJvdGggRFAgYW5kCkhETUkgaXMgbm90IHN1
-cHBvcnRlZCBhcyBvZiBub3cuCgpQaW4gbXV4ZXMgYW5kIGNvbnRyb2xzIGFyZSBjcmVhdGVkIGR5
-bmFtaWNhbGx5IHRvIG1hcCBjb252ZXJ0ZXIKdG8gcGluIHdpZGdldC4gU28gYXQgcnVuIHRpbWUg
-c3BlY2lmaWMgcGluIGlzIG1hcHBlZCB0byB0aGUgZGFpCmJhc2VkIG9uIHRoZSBjb250cm9sIHNl
-bGVjdGVkIChiYXNlZCBvbiB0aGUgZGlzcGxheSB0eXBlIERQL0hETUkKY29ubmVjdGVkKS4KCkZp
-bmFsbHkgdGhlIERQIGF1ZGlvIGluZm9mcmFtZSBwcm9ncmFtbWluZyBpcyBhZGRlZCB0byBzdXBw
-b3J0CnRoZSBEUCBmZWF0dXJlLiAKCkFsc28gd2l0aCBob3RwbHVnIG5vdGlmaWNhdGlvbiBzdXBw
-b3J0LCBFTEQgaXMgcmVhZCBhbmQKY2FwYWJpbGl0aWVzIGFyZSBzZXQgZm9yIHJhdGUsIGZvcm1h
-dHMgYW5kIGNoYW5uZWxzLiBkcm1fZWxkCnNvdW5kL2NvcmUgZnJhbWV3b3JrIGlzIHVwZGF0ZWQg
-dG8gbGltaXQgdGhlIGZvcm1hdHMgYmFzZWQgb24KRUxELgoKVGhlcmUgYXJlIGZldyBmaXhlcyBv
-bmUgZml4aW5nIHRoZSBzdGF0aWMgY2hlY2tlciB3YXJuaW5nIGFuZApvdGhlciBvbmUgbm90IHRv
-IGZhaWwgaWYgbm8gY29ubmVjdGlvbiBsaXN0IGlzIGZvdW5kIGZvciBhIHBpbgp3aWRnZXQuCgpQ
-bHMgbm90ZSwgdGhlIDEwdGggcGF0Y2ggaXMgYWRkaW5nIGEgc21hbGwgbWFjcm8gZm9yIGdldHRp
-bmcKY29ubmVjdGlvbiB0eXBlIGluIGRybSBoZWFkZXIsIHdlIGhhdmUgQ0NlZCBkcm0gZm9sa3Mg
-b24gdGhhdCBhbmQKdGhpcyBvbmUuIFBscyBhY2sgc28gdGhhdCB3ZSBjYW4gaGF2ZSB0aGlzIHNl
-cmllcyBtZXJnZWQgdGhydQpzb3VuZCB0cmVlcwoKY2hhbmdlcyBpbiB2NDoKCS0gQWRkZWQgTlVM
-TCBjaGVjawoJLSBEcm9wcGVkIHRoZSBKYWNrIHJlcG9ydGluZyBwYXRjaCBmb3Igbm93LgoKSmVl
-amEgS1AgKDIpOgogIEFTb0M6IGhkYWNfaGRtaTogQWRkIGNvZGVjIHN1c3BlbmQvcmVzdW1lIGhh
-bmRsZXIKICBBU29DOiBoZGFjX2hkbWk6IEZpeCB0byBlbmFibGUgZGV2aWNlIGNvbmZpZ3VyYXRp
-b24gaW4gaHdfcGFyYW1zCgpSYW1lc2ggQmFidSAoMSk6CiAgQVNvQzogaGRhY19oZG1pOiBGaXgg
-dG8ga2VlcCBkaXNwbGF5IGFjdGl2ZSB3aGlsZSBlbnVtZXJhdGluZyBjb2RlYwoKU3ViaHJhbnN1
-IFMuIFBydXN0eSAoMTEpOgogIEFTb0M6IGhkYWNfaGRtaTogRml4IHRvIGNoZWNrIG51bSBub2Rl
-cyBjb3JyZWN0bHkKICBBU29DOiBoZGFjX2hkbWk6IEZpeCB0byB3YXJuIGluc3RlYWQgb2YgZXJy
-IGZvciBubyBjb25uZWN0ZWQgbmlkcwogIEFTb0M6IGhkYWNfaGRtaTogVXNlIGxpc3QgdG8gYWRk
-IHBpbnMgYW5kIGNvbnZlcnRlcnMKICBBU29DOiBoZGFjX2hkbWk6IEFkZCBob3RwbHVnIG5vdGlm
-aWNhdGlvbiBhbmQgcmVhZCBlbGQKICBBU29DOiBoZGFjX2hkbWk6IEFwcGx5IGNvbnN0cmFpbnRz
-IGJhc2VkIG9uIEVMRAogIEFTb0M6IGhkYWNfaGRtaTogRW5hYmxlIERQMS4yIGFuZCBhbGwgY29u
-dmVydGVycy9waW5zCiAgQVNvQzogaGRhY19oZG1pOiBjcmVhdGUgZGFpcyBiYXNlZCBvbiBudW1i
-ZXIgb2Ygc3RyZWFtcwogIEFTb0M6IGhkYWNfaGRtaTogQ3JlYXRlIHdpZGdldC9yb3V0ZSBiYXNl
-ZCBvbiBub2RlcyBlbnVtZXJhdGVkCiAgQVNvQzogaGRhY19oZG1pOiBBc3NpZ24gcGluIGZvciBz
-dHJlYW0gYmFzZWQgb24gZGFwbSBjb25uZWN0aW9uCiAgZHJtL2VkaWQ6IEFkZCBBUEkgdG8gaGVs
-cCBmaW5kIGNvbm5lY3Rpb24gdHlwZQogIEFTb0M6IGhkYWNfaGRtaTogQWRkIGluZm9mcmFtZSBz
-dXBwb3J0IGZvciBkcCBhdWRpbwoKIGluY2x1ZGUvZHJtL2RybV9lZGlkLmggICAgICAgfCAgIDEy
-ICsKIHNvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZyAgICAgfCAgICAxICsKIHNvdW5kL3NvYy9jb2Rl
-Y3MvaGRhY19oZG1pLmMgfCAxMTEzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCA5NDggaW5zZXJ0aW9ucygrKSwgMTc4IGRlbGV0aW9u
-cygtKQoKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+On Wed, Dec 09, 2015 at 04:05:51AM +0800, kbuild test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
+> head:   9ec2053b13f75d7ad9c0e6db9763954bd1a1b9ae
+> commit: b34e24d2406f123d5dbbff4fdeebbc2af76b0acd [75/78] ASoC: Intel: Skylake: add wov as int sink
+> config: i386-allmodconfig (attached as .config)
+> reproduce:
+>         git checkout b34e24d2406f123d5dbbff4fdeebbc2af76b0acd
+>         # save the attached .config to linux build tree
+>         make ARCH=i386 
+> 
+> All error/warnings (new ones prefixed by >>):
+> 
+> >> sound/soc/intel/boards/skl_rt286.c:55:2: error: implicit declaration of function 'SND_SOC_DAPM_SINK' [-Werror=implicit-function-declaration]
+>      SND_SOC_DAPM_SINK("WoV Sink"),
+
+This is false alarm. SND_SOC_DAPM_SINK is in mark's dapm branch I think
+
+Thanks
+
+>      ^
+> >> sound/soc/intel/boards/skl_rt286.c:55:2: error: initializer element is not constant
+>    sound/soc/intel/boards/skl_rt286.c:55:2: note: (near initialization for 'skylake_widgets[5].id')
+> >> sound/soc/intel/boards/skl_rt286.c:49:61: warning: missing braces around initializer [-Wmissing-braces]
+>     static const struct snd_soc_dapm_widget skylake_widgets[] = {
+>                                                                 ^
+>    sound/soc/intel/boards/skl_rt286.c:49:61: note: (near initialization for 'skylake_widgets')
+>    cc1: some warnings being treated as errors
+> 
+> vim +/SND_SOC_DAPM_SINK +55 sound/soc/intel/boards/skl_rt286.c
+> 
+>     43	static const struct snd_kcontrol_new skylake_controls[] = {
+>     44		SOC_DAPM_PIN_SWITCH("Speaker"),
+>     45		SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+>     46		SOC_DAPM_PIN_SWITCH("Mic Jack"),
+>     47	};
+>     48	
+>   > 49	static const struct snd_soc_dapm_widget skylake_widgets[] = {
+>     50		SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>     51		SND_SOC_DAPM_SPK("Speaker", NULL),
+>     52		SND_SOC_DAPM_MIC("Mic Jack", NULL),
+>     53		SND_SOC_DAPM_MIC("DMIC2", NULL),
+>     54		SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+>   > 55		SND_SOC_DAPM_SINK("WoV Sink"),
+>     56	};
+>     57	
+>     58	static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+> 
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+
+
+-- 
+~Vinod
