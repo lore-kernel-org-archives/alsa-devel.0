@@ -1,17 +1,17 @@
-From: Damien Horsley <Damien.Horsley@imgtec.com>
-Subject: [PATCH V4 1/2] ASoC: img: Add binding document for
-	Pistachio internal DAC
-Date: Thu, 10 Dec 2015 14:40:11 +0000
-Message-ID: <1449758412-31249-2-git-send-email-Damien.Horsley@imgtec.com>
-References: <1449758412-31249-1-git-send-email-Damien.Horsley@imgtec.com>
+From: Rob Duncan <rduncan@teslamotors.com>
+Subject: Available frames > buffer size
+Date: Thu, 10 Dec 2015 14:48:09 +0000
+Message-ID: <94A33372-433A-454F-841E-BBD32EE87864@teslamotors.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 39B63265383
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 15:40:25 +0100 (CET)
-In-Reply-To: <1449758412-31249-1-git-send-email-Damien.Horsley@imgtec.com>
+Received: from mail1.bemta8.messagelabs.com (mail1.bemta8.messagelabs.com
+ [216.82.243.200])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7AEB2658B1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 15:48:10 +0100 (CET)
+Content-Language: en-US
+Content-ID: <AFE2A8131EA3CF49BE17EF10DC8C618D@teslamotors.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, James Hartley <james.hartley@imgtec.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
-
-Add binding document for Pistachio Internal DAC
-
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
----
- .../bindings/sound/img,pistachio-internal-dac.txt      | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
-new file mode 100644
-index 0000000..4cc18fc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,pistachio-internal-dac.txt
-@@ -0,0 +1,18 @@
-+Pistachio internal DAC DT bindings
-+
-+Required properties:
-+
-+  - compatible: "img,pistachio-internal-dac"
-+
-+  - img,cr-top : Must contain a phandle to the top level control syscon
-+		 node which contains the internal dac control registers
-+
-+  - VDD-supply : Digital power supply regulator (+1.8V or +3.3V)
-+
-+Examples:
-+
-+internal_dac: internal-dac {
-+	compatible = "img,pistachio-internal-dac";
-+	img,cr-top = <&cr_top>;
-+	VDD-supply = <&supply3v3>;
-+};
--- 
-2.1.4
+SXMgaXQgZXZlciBjb3JyZWN0IGZvciBzbmRfcGNtX2F2YWlsKCkgdG8gcmV0dXJuIGEgdmFsdWUg
+dGhhdOKAmXMgZ3JlYXRlciB0aGFuIHRoYXQgcmV0dXJuZWQgYnkgc25kX3BjbV9od19wYXJhbXNf
+Z2V0X2J1ZmZlcl9zaXplKCk/DQoNCknigJltIHRyeWluZyB0byB0cmFjayBkb3duIHNvbWUgdW5l
+eHBlY3RlZCB1bmRlcnJ1bnMgaW4gbXkgYXBwbGljYXRpb24gYW5kIEkgbm90aWNlIHRoYXQgd2hl
+biB0aGV5IG9jY3VyIEkgYWxzbyBzZWUgdGhhdCB0aGUgYXZhaWxhYmxlIGZyYW1lcyBjb3VudCBp
+cyB3cm9uZy4NCg0KRm9yIGV4YW1wbGUgaGVyZSBhcmUgYSBjb3VwbGUgb2YgbGluZXMgZnJvbSBt
+eSBsb2dnaW5nOg0KDQoyMDE1LTEyLTA4VDIzOjE3OjIzLjExODgxNy0wODowMCBYID8gMjA4MCAr
+IDIwODAgDQoyMDE1LTEyLTA4VDIzOjE3OjIzLjExOTUyNC0wODowMCBYID0gMjA4MCA/IDQxMjYg
+DQoNClRoZSBmaXJzdCBsb2cgbGluZTogaGVyZSBJIGFza2VkIHRoZSBkZXZpY2UgaG93IG1hbnkg
+ZnJhbWVzIGFyZSBhdmFpbGFibGUgYW5kIGl0IHJlc3BvbmRzIHdpdGggMjA4MDsgSSBhY2NvcmRp
+bmdseSB3cml0ZSAyMDgwIGZyYW1lcy4NCg0KVGhlIHNlY29uZCBsb2cgbGluZTogdGhlIHdyaXRl
+aSgpIGNhbGwgcmV0dXJucyAyMDgwLiAgSSBpbW1lZGlhdGVseSBhc2sgaG93IG1hbnkgZnJhbWVz
+IGFyZSBhdmFpbGFibGUgbm93IChJIHVzdWFsbHkgZ2V0IGEgc21hbGwgbnVtYmVyIGluIHJlc3Bv
+bnNlIH4gMjAtMzApIGJ1dCB0aGlzIHRpbWUgSSBnZXQgYW4gWFJVTi4gIEkgY2FsbCBzbmRfcGNt
+X3JlY292ZXIoKSBhbmQgdGhlbiBzbmRfcGNtX2F2YWlsKCkgYWdhaW4gYW5kIG5vdyBJIGdldCA0
+MTI2IGZyYW1lcy4NCg0KQXMgeW91IGNhbiBzZWUgdGhlIHRpbWUgYmV0d2VlbiB0aGVzZSB0d28g
+bG9ncyBpcyBsZXNzIHRoYW4gMSBtaWxsaXNlY29uZCwgc28gSSBkb27igJl0IHVuZGVyc3RhbmQg
+aG93IHRoZSBQQ00gY2FuIGdvIGZyb20gMjA4MCBmcmFtZXMgYXZhaWxhYmxlIHRvID40MDk2IGZy
+YW1lcyBhdmFpbGFibGUgc28gcXVpY2tseS4gIElzIHRoaXMgZXZpZGVuY2Ugb2YgYSBidWcgaW4g
+dGhlIGRldmljZSBkcml2ZXI/IA0KDQpNeSBhcHBsaWNhdGlvbiBpcyB1c2luZyBhIHNpbmdsZSBj
+aGFubmVsIGRzaGFyZSBQQ00gKHJ0KSB0aGF0IGhhcyBhbiA4LWNoYW5uZWwgZGV2aWNlIHVuZGVy
+bmVhdGguICBIZXJl4oCZcyB0aGUgY29uZmlndXJhdGlvbiBmcmFnbWVudDoNCg0KcGNtX3NsYXZl
+LmNpZF9kc3Agew0KICAgIHBjbSAiaHc6MCwwIg0KICAgIGNoYW5uZWxzIDgNCiAgICByYXRlIDQ0
+MTAwDQp9DQoNCnBjbS5ydF9jaGFubmVsIHsNCiAgICB0eXBlIGRzaGFyZQ0KICAgIGlwY19rZXkg
+MTAyNQ0KICAgIGlwY19naWQgYXVkaW8NCiAgICBpcGNfcGVybSAwNjYwDQogICAgc2xhdmUgY2lk
+X2RzcA0KICAgIGJpbmRpbmdzIHsNCiAgICAgICAgMCA1DQogICAgfQ0KfQ0KDQpwY20ucnQgew0K
+ICAgIHR5cGUgcGx1Zw0KICAgIHNsYXZlLnBjbSBydF9jaGFubmVsDQp9DQoNClRoZSB1bmRlcmx5
+aW5nIGhhcmR3YXJlIGxvb2tzIGxpa2UgdGhpczoNCg0KYWNjZXNzOiBNTUFQX0lOVEVSTEVBVkVE
+DQpmb3JtYXQ6IFMxNl9MRQ0Kc3ViZm9ybWF0OiBTVEQNCmNoYW5uZWxzOiA4DQpyYXRlOiA0NDEw
+MCAoNDQxMDAvMSkNCnBlcmlvZF9zaXplOiAxMDI0DQpidWZmZXJfc2l6ZTogNDA5Ng0KDQp0c3Rh
+bXBfbW9kZTogRU5BQkxFDQpwZXJpb2Rfc3RlcDogMQ0KYXZhaWxfbWluOiAxDQpzdGFydF90aHJl
+c2hvbGQ6IDENCnN0b3BfdGhyZXNob2xkOiAxMDczNzQxODI0DQpzaWxlbmNlX3RocmVzaG9sZDog
+MA0Kc2lsZW5jZV9zaXplOiAwDQpib3VuZGFyeTogMTA3Mzc0MTgyNA0KDQpUaGFua3MgZm9yIGFu
+eSBpbnNpZ2h0IGFuZCBoZWxwLA0KDQpSb2IuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
