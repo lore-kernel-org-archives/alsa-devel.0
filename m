@@ -1,33 +1,74 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 180/182] ASoC: wm8996: use gpiochip data
- pointer
-Date: Thu, 10 Dec 2015 11:06:00 +0000
-Message-ID: <20151210110600.GN6058@localhost.localdomain>
-References: <1449669114-7317-1-git-send-email-linus.walleij@linaro.org>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH] ASoC: fsl_asrc: sound is wrong after
+	suspend/resume
+Date: Thu, 10 Dec 2015 19:02:48 +0800
+Message-ID: <1449745370-18960-1-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1449669114-7317-1-git-send-email-linus.walleij@linaro.org>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org, Johan Hovold <johan@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Michael Welling <mwelling@ieee.org>, Markus Pargmann <mpa@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0115.outbound.protection.outlook.com [157.56.110.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D7BB2665AF
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 12:00:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 09, 2015 at 02:51:54PM +0100, Linus Walleij wrote:
-> This makes the driver use the data pointer added to the gpio_chip
-> to store a pointer to the state container instead of relying on
-> container_of().
-> 
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> Liam/Mark: please ACK this so I can merge it into the GPIO tree.
-> ---
+The register ASRCFG is volatile, but some bits need to be recovered
+after suspend/resume.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_asrc.c | 6 ++++++
+ sound/soc/fsl/fsl_asrc.h | 2 ++
+ 2 files changed, 8 insertions(+)
 
-Thanks,
-Charles
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 3e404ba..942e74bc 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -990,6 +990,9 @@ static int fsl_asrc_suspend(struct device *dev)
+ {
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+ 
++	regmap_read(asrc_priv->regmap, REG_ASRCFG,
++				&asrc_priv->regcache_cfg);
++
+ 	regcache_cache_only(asrc_priv->regmap, true);
+ 	regcache_mark_dirty(asrc_priv->regmap);
+ 
+@@ -1010,6 +1013,9 @@ static int fsl_asrc_resume(struct device *dev)
+ 	regcache_cache_only(asrc_priv->regmap, false);
+ 	regcache_sync(asrc_priv->regmap);
+ 
++	regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
++				0x1FFFC0, asrc_priv->regcache_cfg);
++
+ 	/* Restart enabled pairs */
+ 	regmap_update_bits(asrc_priv->regmap, REG_ASRCTR,
+ 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 68802cd..3695ca9 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -453,6 +453,8 @@ struct fsl_asrc {
+ 
+ 	int asrc_rate;
+ 	int asrc_width;
++
++	u32 regcache_cfg;
+ };
+ 
+ extern struct snd_soc_platform_driver fsl_asrc_platform;
+-- 
+1.9.1
