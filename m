@@ -1,17 +1,16 @@
-From: libin.yang@linux.intel.com
-Subject: [PATCH v3 3/5] ALSA: hda - hdmi operate spdif based on
-	pcm
-Date: Thu, 10 Dec 2015 09:52:10 +0800
-Message-ID: <1449712332-106365-4-git-send-email-libin.yang@linux.intel.com>
-References: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH v2] ASoC: fsl_sai: fix no frame clk in master
+	mode
+Date: Thu, 10 Dec 2015 11:21:25 +0800
+Message-ID: <af420592483389f5420c573b2b23f187a32baea3.1449717000.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 76339261537
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 02:54:40 +0100 (CET)
-In-Reply-To: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0123.outbound.protection.outlook.com [65.55.169.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id A365C2614F4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 04:19:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,137 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, lgirdwood@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+After several open/close sai test with ctrl+c, there will be
+I/O error. The SAI can't work anymore, can't recover. There
+will be no frame clock. With adding the software reset in
+trigger stop, the issue can be fixed.
 
-Currently, the driver operates the spdif based on pin.
-This is ok for the current driver as pcm is statically
-bound to the pin.
+This is a hardware bug/errata and reset is the only option.
 
-However, if the driver uses dynamically pcm assignment,
-this will cause confusion for user space.
+According to the reference manual, the software reset doesn't
+reset any control register but only internal hardware logics
+such as bit clock generator, status flags, and FIFO pointers.
+(Our purpose is just to reset the clock generator while the
+software reset is the only way to do that.)
 
-The patch changes spdif operation from pin based to pcm based.
+Since slave mode doesn't use the clock generator, only apply
+the reset procedure to the master mode.
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+For asynchronous mode, TX will not be reset when RX is still
+running. In this case, i can't reproduce this issue.
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/pci/hda/patch_hdmi.c | 34 +++++++++++++++++++++++++++++-----
- 1 file changed, 29 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 670db50..8b16dff 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -137,6 +137,7 @@ struct hdmi_spec {
- 	struct snd_array pins; /* struct hdmi_spec_per_pin */
- 	struct hda_pcm *pcm_rec[16];
- 	struct mutex pcm_lock;
-+	int pcm_used;	/* counter of pcm_rec[] */
- 	unsigned int channels_max; /* max over all cvts */
- 
- 	struct hdmi_eld temp_eld;
-@@ -379,6 +380,20 @@ static int pin_nid_to_pin_index(struct hda_codec *codec, hda_nid_t pin_nid)
- 	return -EINVAL;
- }
- 
-+static int hinfo_to_pcm_index(struct hda_codec *codec,
-+			struct hda_pcm_stream *hinfo)
-+{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pcm_idx;
+v1->v2:
+1) refine the commit log and comments
+2) Since slave mode doesn't use the clock generator, only apply
+   the reset procedure to the master mode.
+
+ sound/soc/fsl/fsl_sai.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 8832901..a55a7de 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -564,6 +564,17 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
+ 			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+ 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
 +
-+	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++)
-+		if (get_pcm_rec(spec, pcm_idx)->stream == hinfo)
-+			return pcm_idx;
-+
-+	codec_warn(codec, "HDMI: hinfo %p not registered\n", hinfo);
-+	return -EINVAL;
-+}
-+
- static int hinfo_to_pin_index(struct hda_codec *codec,
- 			      struct hda_pcm_stream *hinfo)
- {
-@@ -1540,13 +1555,17 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- {
- 	struct hdmi_spec *spec = codec->spec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int pin_idx, cvt_idx, mux_idx = 0;
-+	int pin_idx, cvt_idx, pcm_idx, mux_idx = 0;
- 	struct hdmi_spec_per_pin *per_pin;
- 	struct hdmi_eld *eld;
- 	struct hdmi_spec_per_cvt *per_cvt = NULL;
- 	int err;
- 
- 	/* Validate hinfo */
-+	pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+	if (pcm_idx < 0)
-+		return -EINVAL;
-+
- 	mutex_lock(&spec->pcm_lock);
- 	pin_idx = hinfo_to_pin_index(codec, hinfo);
- 	if (!spec->dyn_pcm_assign) {
-@@ -1588,7 +1607,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
- 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
- 
--	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-+	snd_hda_spdif_ctls_assign(codec, pcm_idx, per_cvt->cvt_nid);
- 
- 	/* Initially set the converter's capabilities */
- 	hinfo->channels_min = per_cvt->channels_min;
-@@ -1605,7 +1624,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 		    !hinfo->rates || !hinfo->formats) {
- 			per_cvt->assigned = 0;
- 			hinfo->nid = 0;
--			snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+			snd_hda_spdif_ctls_unassign(codec, pcm_idx);
- 			mutex_unlock(&spec->pcm_lock);
- 			return -ENODEV;
++			if (!sai->is_slave_mode) {
++				/* Software Reset for both Tx and Rx */
++				regmap_write(sai->regmap,
++					     FSL_SAI_TCSR, FSL_SAI_CSR_SR);
++				regmap_write(sai->regmap,
++					     FSL_SAI_RCSR, FSL_SAI_CSR_SR);
++				/* Clear SR bit to finish the reset */
++				regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
++				regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
++			}
  		}
-@@ -1998,12 +2017,15 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 			  struct snd_pcm_substream *substream)
- {
- 	struct hdmi_spec *spec = codec->spec;
--	int cvt_idx, pin_idx;
-+	int cvt_idx, pin_idx, pcm_idx;
- 	struct hdmi_spec_per_cvt *per_cvt;
- 	struct hdmi_spec_per_pin *per_pin;
- 	int pinctl;
- 
- 	if (hinfo->nid) {
-+		pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+		if (snd_BUG_ON(pcm_idx < 0))
-+			return -EINVAL;
- 		cvt_idx = cvt_nid_to_cvt_index(codec, hinfo->nid);
- 		if (snd_BUG_ON(cvt_idx < 0))
- 			return -EINVAL;
-@@ -2034,7 +2056,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 					    pinctl & ~PIN_OUT);
- 		}
- 
--		snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
- 
- 		mutex_lock(&per_pin->lock);
- 		per_pin->chmap_set = false;
-@@ -2232,6 +2254,7 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
- 			per_pin->pcm = info;
- 		}
- 		spec->pcm_rec[pin_idx] = info;
-+		spec->pcm_used++;
- 		info->pcm_type = HDA_PCM_TYPE_HDMI;
- 		info->own_chmap = true;
- 
-@@ -2282,6 +2305,7 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 						  HDA_PCM_TYPE_HDMI);
- 		if (err < 0)
- 			return err;
-+		/* pin number is the same with pcm number so far */
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
- 
- 		/* add control for ELD Bytes */
+ 		break;
+ 	default:
 -- 
 1.9.1
