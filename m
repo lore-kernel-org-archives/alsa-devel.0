@@ -1,16 +1,18 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH v2] ASoC: fsl_sai: fix no frame clk in master
-	mode
-Date: Thu, 10 Dec 2015 11:21:25 +0800
-Message-ID: <af420592483389f5420c573b2b23f187a32baea3.1449717000.git.zidan.wang@freescale.com>
+From: Be <be.0@gmx.com>
+Subject: using all channels of RME Babyface Pro in class
+	compliant mode
+Date: Thu, 10 Dec 2015 00:30:46 -0600
+Message-ID: <56691C16.3050206@gmx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0123.outbound.protection.outlook.com [65.55.169.123])
- by alsa0.perex.cz (Postfix) with ESMTP id A365C2614F4
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 04:19:15 +0100 (CET)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id C69C7261687
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 07:30:48 +0100 (CET)
+Received: from localhost.localdomain ([73.211.83.96]) by mail.gmx.com
+ (mrgmx101) with ESMTPSA (Nemesis) id 0M1jKo-1aN41S0jjm-00tmLp for
+ <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 07:30:48 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +22,169 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, lgirdwood@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After several open/close sai test with ctrl+c, there will be
-I/O error. The SAI can't work anymore, can't recover. There
-will be no frame clock. With adding the software reset in
-trigger stop, the issue can be fixed.
+Hello, I just got an RME Babyface Pro USB sound card. It can operate 
+either as a USB audio class compliant device (with mixing controlled by 
+the device's physical controls) or make use of a proprietary driver on 
+Windows and Mac OS X. The proprietary driver allows for control of the 
+mixing capabilities of the device and using onboard DSP EQ. It would be 
+great if someone wrote a Linux driver to make use of these. I'd be happy 
+to send debugging info or whatever about the device and test kernel 
+patches. I could set up a Windows VM to intercept USB communication.
 
-This is a hardware bug/errata and reset is the only option.
+In the meantime, I am trying to use its class compliant mode to use with 
+Mixxx for DJing. However, I cannot figure out how to use channels 3-4 
+for my headphones. The device has 4 analog channels out and in plus 8 
+digital out and in (via ADAT). Its manual says, regarding class 
+compliant mode, "in Mac OS X, either the first two or all channels will 
+work, depending on the choice in the Audio MIDI Setup." I believe the 
+two channel operation exists so when the Babyface Pro is plugged into an 
+iPad, the iPad sends stereo output from iTunes and other programs to the 
+Babyface Pro's main output. However, I do not know how to select between 
+this 2 channel mode and the 12 channel mode with Linux. PulseAudio only 
+shows it as a stereo device. Mixxx, which uses the PortAudio library, 
+displays all 12 channels as available but doesn't work when any channels 
+other than 1-2 are selected. Here is debugging output of Mixxx:
 
-According to the reference manual, the software reset doesn't
-reset any control register but only internal hardware logics
-such as bit clock generator, status flags, and FIFO pointers.
-(Our purpose is just to reset the clock generator while the
-software reset is the only way to do that.)
+Debug [Main]: SoundManager::setupDevices()
+Debug [Main]: SoundDevicePortAudio::open() "2, Babyface Pro (70785713): 
+USB Audio (hw:1,0)"
+Debug [Main]: framesPerBuffer: 256
+Debug [Main]: Requested sample rate:  44100 Hz, latency: 5.80499 ms
+Debug [Main]: Output channels: 4 | Input channels: 0
+Debug [Main]: Opening stream with id 2
+Expression 'alsa_snd_pcm_hw_params_set_channels( pcm, hwParams, 
+self->numHostChannels )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', 
+line: 2051
+Expression 'PaAlsaStreamComponent_InitialConfigure( &self->playback, 
+outParams, self->primeBuffers, hwParamsPlayback, &realSr )' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 2717
+Expression 'PaAlsaStream_Configure( stream, inputParameters, 
+outputParameters, sampleRate, framesPerBuffer, &inputLatency, 
+&outputLatency, &hostBufferSizeMode )' failed in 
+'src/hostapi/alsa/pa_linux_alsa.c', line: 2838
+Warning [Main]: Error opening stream: Invalid number of channels
 
-Since slave mode doesn't use the clock generator, only apply
-the reset procedure to the master mode.
+aplay -l output:
+**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: ALC272 Analog [ALC272 Analog]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+card 1: Pro70785713 [Babyface Pro (70785713)], device 0: USB Audio [USB 
+Audio]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
 
-For asynchronous mode, TX will not be reset when RX is still
-running. In this case, i can't reproduce this issue.
+aplay -L output:
+null
+     Discard all samples (playback) or generate zero samples (capture)
+pulse
+     PulseAudio Sound Server
+default
+     Default ALSA Output (currently PulseAudio Sound Server)
+sysdefault:CARD=PCH
+     HDA Intel PCH, ALC272 Analog
+     Default Audio Device
+front:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     Front speakers
+surround21:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     2.1 Surround output to Front and Subwoofer speakers
+surround40:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     4.0 Surround output to Front and Rear speakers
+surround41:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=PCH,DEV=0
+     HDA Intel PCH, ALC272 Analog
+     7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+hdmi:CARD=PCH,DEV=0
+     HDA Intel PCH, HDMI 0
+     HDMI Audio Output
+sysdefault:CARD=Pro70785713
+     Babyface Pro (70785713), USB Audio
+     Default Audio Device
+front:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     Front speakers
+surround21:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     2.1 Surround output to Front and Subwoofer speakers
+surround40:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     4.0 Surround output to Front and Rear speakers
+surround41:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=Pro70785713,DEV=0
+     Babyface Pro (70785713), USB Audio
+     IEC958 (S/PDIF) Digital Audio Output
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
+/proc/asound/card1/stream0 when playing to channels 1-2 with PulseAudio:
+RME Babyface Pro (70785713) at usb-0000:00:1d.0-1.2, high speed : USB Audio
 
-v1->v2:
-1) refine the commit log and comments
-2) Since slave mode doesn't use the clock generator, only apply
-   the reset procedure to the master mode.
+Playback:
+   Status: Running
+     Interface = 1
+     Altset = 1
+     Packet Size = 47
+     Momentary freq = 44118 Hz (0x5.83c9)
+     Feedback Format = 16.16
+   Interface 1
+     Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 3 OUT (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 125 us
+   Interface 1
+     Altset 2
+     Format: S24_3LE
+     Channels: 12
+     Endpoint: 3 OUT (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 125 us
 
- sound/soc/fsl/fsl_sai.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Capture:
+   Status: Stop
+   Interface 2
+     Altset 1
+     Format: S24_3LE
+     Channels: 12
+     Endpoint: 4 IN (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 125 us
+   Interface 2
+     Altset 2
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 4 IN (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 125 us
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 8832901..a55a7de 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -564,6 +564,17 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
- 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
-+
-+			if (!sai->is_slave_mode) {
-+				/* Software Reset for both Tx and Rx */
-+				regmap_write(sai->regmap,
-+					     FSL_SAI_TCSR, FSL_SAI_CSR_SR);
-+				regmap_write(sai->regmap,
-+					     FSL_SAI_RCSR, FSL_SAI_CSR_SR);
-+				/* Clear SR bit to finish the reset */
-+				regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
-+				regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
-+			}
- 		}
- 		break;
- 	default:
--- 
-1.9.1
+So I guess the question is how to get PortAudio to use the "Altset 2" 
+option. Could this be accomplished with some asoundrc sorcery? Does 
+something need to change in snd-usb-audio? Is the issue with PortAudio 
+and PulseAudio? How can I test channels 3-4 with aplay or another program?
