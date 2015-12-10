@@ -1,354 +1,45 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v5] sun4i-codec: add inputs
-Date: Thu, 10 Dec 2015 18:54:20 +0100
-Message-ID: <20151210175420.GH27957@lukather>
-References: <20151208042013.11d31f09@dayas>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Available frames > buffer size
+Date: Thu, 10 Dec 2015 20:24:50 +0100
+Message-ID: <5669D182.8040707@ladisch.de>
+References: <94A33372-433A-454F-841E-BBD32EE87864@teslamotors.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HbTzC+AcCowV2D6d"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20151208042013.11d31f09@dayas>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9536D261AE0
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 20:25:12 +0100 (CET)
+In-Reply-To: <94A33372-433A-454F-841E-BBD32EE87864@teslamotors.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rob Duncan <rduncan@teslamotors.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---HbTzC+AcCowV2D6d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Dec 08, 2015 at 04:20:13AM +0100, Danny Milosavljevic wrote:
-> Hi,
->=20
-> this is the fifth version of the patch that adds inputs to sun4i-codec.
-> (Previous versions have been on the linux-sunxi mailing list only)
->=20
-> The inputs added are:
-> - FM-In Left and Right
-> - Line-In Left and Right
-> - Mic1-In
-> - Mic2-In
->=20
-> Changes compared to v4 are:
-> - Mic preamplifier controls have more common names now.
-> - Mic preamplifier scale has a 0 dB entry as well now, as documented in t=
-he=20
->   A20 user manual.
-> - Mic preamplifier has special cases for A20 and A10 now.
-> - Gain controls have "Gain" in the name now.
->=20
-> I successfully tested it on an A20 board using alsamixer, headphones, a r=
-adio and=20
-> my ears.
-> Note that because of missing capturing support I tested only the mixing,=
-=20
-> for Mic, Line, and FM.
->=20
-> The patches are on top of <git://git.kernel.org/pub/scm/linux/kernel/git/=
-mripard/linux.git>,=20
-> branch "sunxi/for-next".
->=20
-> Regards,
->    Danny
->=20
-> Danny (1):
->  b/sound/soc/sunxi/sun4i-codec.c |  153 +++++++++++++++++++++++++++++++++=
-++++++-
->  1 file changed, 150 insertions(+), 3 deletions(-)
->=20
-> Signed-off-by: Danny Milosavljevic <dannym+a@scratchpost.org>
-> ---
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index bcbf4da..106b568 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -57,9 +57,20 @@
->  #define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
->  #define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
->  #define SUN4I_CODEC_DAC_ACTL_MIXEN			(29)
-> +#define SUN4I_CODEC_DAC_ACTL_LNG			(26)
-> +#define SUN4I_CODEC_DAC_ACTL_FMG			(23)
-> +#define SUN4I_CODEC_DAC_ACTL_MICG			(20)
-> +#define SUN4I_CODEC_DAC_ACTL_LLNS			(19)
-> +#define SUN4I_CODEC_DAC_ACTL_RLNS			(18)
-> +#define SUN4I_CODEC_DAC_ACTL_LFMS			(17)
-> +#define SUN4I_CODEC_DAC_ACTL_RFMS			(16)
->  #define SUN4I_CODEC_DAC_ACTL_LDACLMIXS			(15)
->  #define SUN4I_CODEC_DAC_ACTL_RDACRMIXS			(14)
->  #define SUN4I_CODEC_DAC_ACTL_LDACRMIXS			(13)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC1LS			(12)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC1RS			(11)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC2LS			(10)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC2RS			(9)
->  #define SUN4I_CODEC_DAC_ACTL_DACPAS			(8)
->  #define SUN4I_CODEC_DAC_ACTL_MIXPAS			(7)
->  #define SUN4I_CODEC_DAC_ACTL_PA_MUTE			(6)
-> @@ -84,8 +95,11 @@
->  #define SUN4I_CODEC_ADC_ACTL_PREG1EN			(29)
->  #define SUN4I_CODEC_ADC_ACTL_PREG2EN			(28)
->  #define SUN4I_CODEC_ADC_ACTL_VMICEN			(27)
-> +#define SUN4I_CODEC_ADC_ACTL_PREG1_A10			(25)
-> +#define SUN4I_CODEC_ADC_ACTL_PREG2_A10			(23)
->  #define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
->  #define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
-> +#define SUN4I_CODEC_ADC_ACTL_LNRDF			(16)
->  #define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
->  #define SUN4I_CODEC_ADC_ACTL_DDE			(3)
->  #define SUN4I_CODEC_ADC_DEBUG			(0x2c)
-> @@ -94,7 +108,18 @@
->  #define SUN4I_CODEC_DAC_TXCNT			(0x30)
->  #define SUN4I_CODEC_ADC_RXCNT			(0x34)
->  #define SUN4I_CODEC_AC_SYS_VERI			(0x38)
-> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-> +
-> +/* MIC_PHONE_CAL register offsets and bit fields (A20 only) */
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1      (29)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2      (26)
-> +/* note: no idea where the output pins for the following are. */
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTG  (5)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTEN (4)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS3 (3)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS2 (2)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS1 (1)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS0 (0)
-> =20
->  struct sun4i_codec {
->  	struct device	*dev;
-> @@ -402,16 +427,94 @@ static const struct snd_kcontrol_new sun4i_codec_pa=
-_mute =3D
->  			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
-> =20
->  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_linein_loopback_gain_scale, -150=
-, 150, 0);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_fmin_loopback_gain_scale, -450, =
-150, 0);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale, -450,=
- 150, 0);
-> +static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
-> +	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-> +	1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0)
-> +);
-> +static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale_a10,
-> +	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-> +	1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0)
-> +);
-> +
-> +struct snd_kcontrol_new sun7ionly_codec_widgets[] =3D {
-> +	SOC_SINGLE_TLV("Mic1-In Boost Gain",
-> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL,
-> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1,
-> +		       7,
-> +		       0,
-> +		       sun7i_codec_micin_preamp_gain_scale),
-> +	SOC_SINGLE_TLV("Mic2-In Boost Gain",
-> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL,
-> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2,
-> +		       7,
-> +		       0,
-> +		       sun7i_codec_micin_preamp_gain_scale),
-> +};
-> =20
-> -static const struct snd_kcontrol_new sun4i_codec_widgets[] =3D {
-> +/* Note: this is modified by the sun4i_codec_probe() function. */
-> +static struct snd_kcontrol_new sun4i_codec_widgets[] =3D {
->  	SOC_SINGLE_TLV("PA Volume", SUN4I_CODEC_DAC_ACTL,
->  		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
->  		       sun4i_codec_pa_volume_scale),
-> +	/* Line-In, FM-In, Mic1-In, Mic2-In */
-> +	SOC_SINGLE_TLV("Line-In Playback Gain",
-> +		       SUN4I_CODEC_DAC_ACTL,
-> +		       SUN4I_CODEC_DAC_ACTL_LNG,
-> +		       1,
-> +		       0,
-> +		       sun4i_codec_linein_loopback_gain_scale),
-> +	SOC_SINGLE_TLV("FM-In Playback Gain",
-> +		       SUN4I_CODEC_DAC_ACTL,
-> +		       SUN4I_CODEC_DAC_ACTL_FMG,
-> +		       3,
-> +		       0,
-> +		       sun4i_codec_fmin_loopback_gain_scale),
-> +	SOC_SINGLE_TLV("Mic-In Playback Gain",
-> +		       SUN4I_CODEC_DAC_ACTL,
-> +		       SUN4I_CODEC_DAC_ACTL_MICG,
-> +		       7,
-> +		       0,
-> +		       sun4i_codec_micin_loopback_gain_scale),
-> +	SOC_SINGLE_TLV("Mic1-In Boost Gain",
-> +		       SUN4I_CODEC_ADC_ACTL,
-> +		       SUN4I_CODEC_ADC_ACTL_PREG1_A10,
-> +		       3,
-> +		       0,
-> +		       sun4i_codec_micin_preamp_gain_scale_a10),
-> +	SOC_SINGLE_TLV("Mic2-In Boost Gain",
-> +		       SUN4I_CODEC_ADC_ACTL,
-> +		       SUN4I_CODEC_ADC_ACTL_PREG2_A10,
-> +		       3,
-> +		       0,
-> +		       sun4i_codec_micin_preamp_gain_scale_a10),
-> +	SOC_SINGLE_TLV("Mic1-In Boost Switch",
-> +		       SUN4I_CODEC_ADC_ACTL,
-> +		       SUN4I_CODEC_ADC_ACTL_PREG1EN,
-> +		       1,
-> +		       0,
-> +		       NULL),
-> +	SOC_SINGLE_TLV("Mic2-In Boost Switch",
-> +		       SUN4I_CODEC_ADC_ACTL,
-> +		       SUN4I_CODEC_ADC_ACTL_PREG2EN,
-> +		       1,
-> +		       0,
-> +		       NULL),
->  };
-> =20
->  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] =
-=3D {
->  	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
->  			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
-> +	SOC_DAPM_SINGLE("Left Line-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_LLNS, 1, 0),
-> +	SOC_DAPM_SINGLE("Left FM-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_LFMS, 1, 0),
-> +	SOC_DAPM_SINGLE("Mic1-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_MIC1LS, 1, 0),
-> +	SOC_DAPM_SINGLE("Mic2-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_MIC2LS, 1, 0),
->  };
-> =20
->  static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] =
-=3D {
-> @@ -419,6 +522,14 @@ static const struct snd_kcontrol_new sun4i_codec_rig=
-ht_mixer_controls[] =3D {
->  			SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
->  	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
->  			SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
-> +	SOC_DAPM_SINGLE("Right Line-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_RLNS, 1, 0),
-> +	SOC_DAPM_SINGLE("Right FM-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_RFMS, 1, 0),
-> +	SOC_DAPM_SINGLE("Mic1-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_MIC1RS, 1, 0),
-> +	SOC_DAPM_SINGLE("Mic2-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +			SUN4I_CODEC_DAC_ACTL_MIC2RS, 1, 0),
->  };
-
-Do we need the -In part of FM, Mic1 and Mic2?
-
-> =20
->  static const struct snd_kcontrol_new sun4i_codec_pa_mixer_controls[] =3D=
- {
-> @@ -462,8 +573,16 @@ static const struct snd_soc_dapm_widget sun4i_codec_=
-dapm_widgets[] =3D {
-> =20
->  	SND_SOC_DAPM_OUTPUT("HP Right"),
->  	SND_SOC_DAPM_OUTPUT("HP Left"),
-> +
-> +	SND_SOC_DAPM_INPUT("Line-In Right"),
-> +	SND_SOC_DAPM_INPUT("Line-In Left"),
-> +	SND_SOC_DAPM_INPUT("FM-In Right"),
-> +	SND_SOC_DAPM_INPUT("FM-In Left"),
-> +	SND_SOC_DAPM_INPUT("Mic1-In"),
-
-Mic1 is already defined a few lines above.
-
-> +	SND_SOC_DAPM_INPUT("Mic2-In"),
->  };
-> =20
-> +/* {sink, control, source} */
->  static const struct snd_soc_dapm_route sun4i_codec_dapm_routes[] =3D {
->  	/* Left DAC Routes */
->  	{ "Left DAC", NULL, "DAC" },
-> @@ -490,6 +609,20 @@ static const struct snd_soc_dapm_route sun4i_codec_d=
-apm_routes[] =3D {
->  	{ "Pre-Amplifier Mute", "Switch", "Pre-Amplifier" },
->  	{ "HP Right", NULL, "Pre-Amplifier Mute" },
->  	{ "HP Left", NULL, "Pre-Amplifier Mute" },
-> +
-> +	/* Line-In, FM-In */
-> +	{ "Right Mixer", "Right Line-In Playback Switch", "Line-In Right" },
-> +	{ "Left Mixer", "Left Line-In Playback Switch", "Line-In Left" },
-> +	{ "Right Mixer", "Right FM-In Playback Switch", "FM-In Right" },
-> +	{ "Left Mixer", "Left FM-In Playback Switch", "FM-In Left" },
-> +
-> +	/* Mic1-In */
-> +	{ "Right Mixer", "Mic1-In Playback Switch", "Mic1-In" },
-> +	{ "Left Mixer", "Mic1-In Playback Switch", "Mic1-In" },
-> +
-> +	/* Mic2-In */
-> +	{ "Right Mixer", "Mic2-In Playback Switch", "Mic2-In" },
-> +	{ "Left Mixer", "Mic2-In Playback Switch", "Mic2-In" },
-
-And you have the Mixers routes a bit above too.
-
->  };
-> =20
->  static struct snd_soc_codec_driver sun4i_codec_codec =3D {
-> @@ -537,7 +670,7 @@ static const struct regmap_config sun4i_codec_regmap_=
-config =3D {
->  	.reg_bits	=3D 32,
->  	.reg_stride	=3D 4,
->  	.val_bits	=3D 32,
-> -	.max_register	=3D SUN4I_CODEC_AC_MIC_PHONE_CAL,
-> +	.max_register	=3D SUN7I_CODEC_AC_MIC_PHONE_CAL,
->  };
-> =20
->  static const struct of_device_id sun4i_codec_of_match[] =3D {
-> @@ -594,6 +727,20 @@ static int sun4i_codec_probe(struct platform_device =
-*pdev)
->  	void __iomem *base;
->  	int ret;
-> =20
-> +	if (of_device_is_compatible(pdev->dev.of_node, "allwinner,sun7i-a20-cod=
-ec")) {
-> +		size_t i, j;
-> +		for (i =3D 0; i < ARRAY_SIZE(sun7ionly_codec_widgets); ++i) {
-> +			struct snd_kcontrol_new *new_kcontrol;
-> +			new_kcontrol =3D &sun7ionly_codec_widgets[i];
-> +			for (j =3D 0; j < ARRAY_SIZE(sun4i_codec_widgets); ++j) {
-> +				struct snd_kcontrol_new *kcontrol;
-> +				kcontrol =3D &sun4i_codec_widgets[j];
-> +				if (strcmp(kcontrol->name, new_kcontrol->name) =3D=3D 0)
-> +					memcpy(kcontrol, new_kcontrol, sizeof(*kcontrol));
-> +			}
-> +		}
-> +	}
-> +
-
-We'll need to fix that, see the other discussion.
-
-Thanks!
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---HbTzC+AcCowV2D6d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJWabxMAAoJEBx+YmzsjxAgvJEP/0ecTGJlKHDkfrYbt2T3mn6V
-3YGllBtcZdR4V6Ft3qf8wQcmYVLYZKajat1ioYeYrJanVNPw/1BBj2sLSSOQvC3K
-9esGHXFd7eeNrUGg8oBjaepUOn/IUGaDZ77LHdWNlNIsOQlDvUzapCCz+Pn3frRu
-GGZwTgpFI/VPizt4oCsXc/ZlMfqsLqeeehwpOB2RZbnHQzjqVLVcNjss/7Ydv9Ex
-c0ekZPUq790AqNLJdzh65FH1WjWP0XqHm43SJWiJ4G2mpn5KHf7zXrI/OjazE/k8
-dbFALkPdYLGmOSXzXm9B/4ONsN8vwjMRNYCio8YTC1ec92ubM9uO7utorfYj/zpv
-nHAxkD128BykYqby9dhvRRHL9vJFe96azquwPnVbL70HB2HD3tcaAtVs5PGXbSin
-bLzkDrrhLHEJmc3I/M1+CuuGXLJgcbSOz+1EoqI2UsprvL2uZDoeaLsSekOb5zgJ
-KmCm0CtwPpjDJkX1QbVkpqvDC/ghGxF3wC6shaLvh+D5P4tnQ7GEj7vGNHD+3AJ5
-JUylzhEm/yePbWjyH5rUz568W9UvH70BJM1EtVeuuSLC26O5BbtS9aQ09lsI0vdq
-/PMKuwkbLnlKBM/omGPA1drZr1P48rL6/wEc6SqBBEHIfdwsfqEyU54s+FIQUaAP
-VkyaeWYABS1/tJLxAM8q
-=/xcd
------END PGP SIGNATURE-----
-
---HbTzC+AcCowV2D6d--
+Um9iIER1bmNhbiB3cm90ZToKPiBJcyBpdCBldmVyIGNvcnJlY3QgZm9yIHNuZF9wY21fYXZhaWwo
+KSB0byByZXR1cm4gYSB2YWx1ZSB0aGF04oCZcyBncmVhdGVyCj4gdGhhbiB0aGF0IHJldHVybmVk
+IGJ5IHNuZF9wY21faHdfcGFyYW1zX2dldF9idWZmZXJfc2l6ZSgpPwoKWWVzLCBidXQgb25seSBp
+ZiBoYXZlIGRpc2FibGVkIHN0b3Atb24tdW5kZXJydW4gKGJ5IHNldHRpbmcgdGhlCnN0b3BfdGhy
+ZXNob2xkIHRvIHRoZSBib3VuZGFyeSB2YWx1ZSkuCgo+IHRoZSB3cml0ZWkoKSBjYWxsIHJldHVy
+bnMgMjA4MC4gIEkgaW1tZWRpYXRlbHkgYXNrIGhvdyBtYW55IGZyYW1lcyBhcmUKPiBhdmFpbGFi
+bGUgbm93IChJIHVzdWFsbHkgZ2V0IGEgc21hbGwgbnVtYmVyIGluIHJlc3BvbnNlIH4gMjAtMzAp
+IGJ1dAo+IHRoaXMgdGltZSBJIGdldCBhbiBYUlVOLgoKVGhlIFhSVU4gc3RhdGUgY2FuIGluZGlj
+YXRlIGVpdGhlciBhbiB1bmRlcnJ1biBvciBzb21lIG90aGVyIGVycm9yIHRoYXQKbWFrZXMgdGhl
+IHN0cmVhbSBzdG9wLiAgV2hhdCBleGFjdGx5IHRoYXQgc29tZSBvdGhlciBlcnJvciBjb3VsZCBi
+ZQpkZXBlbmRzIG9uIHRoZSBkcml2ZXIuCgo+IEkgY2FsbCBzbmRfcGNtX3JlY292ZXIoKSBhbmQg
+dGhlbiBzbmRfcGNtX2F2YWlsKCkgYWdhaW4gYW5kIG5vdyBJIGdldAo+IDQxMjYgZnJhbWVzLgo+
+Cj4gQXMgeW91IGNhbiBzZWUgdGhlIHRpbWUgYmV0d2VlbiB0aGVzZSB0d28gbG9ncyBpcyBsZXNz
+IHRoYW4KPiAxIG1pbGxpc2Vjb25kLCBzbyBJIGRvbuKAmXQgdW5kZXJzdGFuZCBob3cgdGhlIFBD
+TSBjYW4gZ28gZnJvbQo+IDIwODAgZnJhbWVzIGF2YWlsYWJsZSB0byA+NDA5NiBmcmFtZXMgYXZh
+aWxhYmxlIHNvIHF1aWNrbHkuCgpUaGlzIHNvdW5kcyBsaWtlIGEgYnVnLiBXaGljaCB2ZXJzaW9u
+IG9mIGFsc2EtbGliIGFyZSB5b3UgdXNpbmc/CgoKUmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
