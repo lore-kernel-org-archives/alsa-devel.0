@@ -1,15 +1,17 @@
 From: libin.yang@linux.intel.com
-Subject: [PATCH v3 0/5] ALSA: hda - hdmi support dynmaic pcm
-	assignment
-Date: Thu, 10 Dec 2015 09:52:07 +0800
-Message-ID: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
+Subject: [PATCH v3 1/5] ALSA: hda - hdmi begin to support
+	dynamic PCM assignment
+Date: Thu, 10 Dec 2015 09:52:08 +0800
+Message-ID: <1449712332-106365-2-git-send-email-libin.yang@linux.intel.com>
+References: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 830612614C2
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 02:54:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 892422614F4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 02:54:39 +0100 (CET)
+In-Reply-To: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +27,86 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@linux.intel.com>
 
-The patches are trying to support dynamically binding PCM to pin
-in HDMI/DP audio.
+Begin to support dynamic PCM assignment to pin in
+hdmi audio driver.
 
-The pin will not bind to any PCM if there is not monitor connected.
-When there is a monitor connected to the port (pin), driver will
-try to find a proper PCM to assign to the port and setup the pin
-if necessary.
+This means PCM will not be statically bound with pin.
+When there is a monitor connected, the corresponding pin
+will try to find a proper PCM to bind. When the monitor
+is disconnected, the corresponding pin will unbind
+the PCM. This helps to reduce the PCM number when there
+are many pins (device entries in DP MST mode) and only
+a few of them work at the same time.
 
-Libin Yang (5):
-  ALSA: hda - hdmi begin to support dynamic PCM assignment
-  ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
-  ALSA: hda - hdmi operate spdif based on pcm
-  ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
-  ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
-    assignment mode
+This patch adds the pcm member in struct hdmi_spec_per_pin.
+When PCM is dynamically bound to the pin, the member pcm
+will pointer to the corresponding pcm_rec[] in hdmi_spec,
+which means the hda_pcm is bound to the pin.
 
- sound/pci/hda/hda_codec.h  |   1 +
- sound/pci/hda/patch_hdmi.c | 369 ++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 347 insertions(+), 23 deletions(-)
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 85342d2..4666208 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -83,6 +83,7 @@ struct hdmi_spec_per_pin {
+ 	struct mutex lock;
+ 	struct delayed_work work;
+ 	struct snd_kcontrol *eld_ctl;
++	struct hda_pcm *pcm; /* pointer to spec->pcm_rec[n] dynamically*/
+ 	int repoll_count;
+ 	bool setup; /* the stream has been set up by prepare callback */
+ 	int channels; /* current number of channels */
+@@ -141,7 +142,7 @@ struct hdmi_spec {
+ 	struct hdmi_ops ops;
+ 
+ 	bool dyn_pin_out;
+-
++	bool dyn_pcm_assign;
+ 	/*
+ 	 * Non-generic VIA/NVIDIA specific
+ 	 */
+@@ -381,13 +382,16 @@ static int hinfo_to_pin_index(struct hda_codec *codec,
+ 			      struct hda_pcm_stream *hinfo)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin;
+ 	int pin_idx;
+ 
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++)
+-		if (get_pcm_rec(spec, pin_idx)->stream == hinfo)
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		per_pin = get_pin(spec, pin_idx);
++		if (per_pin->pcm && per_pin->pcm->stream == hinfo)
+ 			return pin_idx;
++	}
+ 
+-	codec_warn(codec, "HDMI: hinfo %p not registered\n", hinfo);
++	codec_dbg(codec, "HDMI: hinfo %p not registered\n", hinfo);
+ 	return -EINVAL;
+ }
+ 
+@@ -2070,6 +2074,7 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ static int generic_hdmi_build_pcms(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin;
+ 	int pin_idx;
+ 
+ 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+@@ -2079,6 +2084,10 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
+ 		info = snd_hda_codec_pcm_new(codec, "HDMI %d", pin_idx);
+ 		if (!info)
+ 			return -ENOMEM;
++		if (!spec->dyn_pcm_assign) {
++			per_pin = get_pin(spec, pin_idx);
++			per_pin->pcm = info;
++		}
+ 		spec->pcm_rec[pin_idx] = info;
+ 		info->pcm_type = HDA_PCM_TYPE_HDMI;
+ 		info->own_chmap = true;
 -- 
 1.9.1
