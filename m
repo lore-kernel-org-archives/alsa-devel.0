@@ -1,20 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3] fireface: add transaction support
-Date: Thu, 10 Dec 2015 20:31:55 +0900
-Message-ID: <566962AB.1060304@sakamocchi.jp>
-References: <1449408224-13955-1-git-send-email-o-takashi@sakamocchi.jp>
- <1449408224-13955-3-git-send-email-o-takashi@sakamocchi.jp>
- <5666AF4E.9000100@ladisch.de> <5666BE1A.80304@sakamocchi.jp>
- <5666BF03.7060102@ladisch.de> <5666CB21.8040406@sakamocchi.jp>
- <5666CEC0.103@ladisch.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Optimize audio component check
+	in patch_hdmi.c
+Date: Thu, 10 Dec 2015 13:11:47 +0100
+Message-ID: <1449749508-1118-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id E26F926519F
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 12:31:59 +0100 (CET)
-In-Reply-To: <5666CEC0.103@ladisch.de>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8759326519F
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 13:11:49 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4E572AC3B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2015 12:11:49 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 08 2015 21:36, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> On Dec 08 2015 20:29, Clemens Ladisch wrote:
->>> Takashi Sakamoto wrote:
->>>> On Dec 08 2015 19:22, Clemens Ladisch wrote:
->>>>> Takashi Sakamoto wrote:
->>>>>> +		/* Calculate consume bytes. */
->>>>>> +		consume = calculate_message_bytes(status);
->>>>>> +		if (consume <= 0)
->>>>>> +			return;
->>>>>
->>>>> As far as I can see, sending one of the "undefined" bytes can stop the
->>>>> stream permanently.  Invalid bytes need to be acked to ignore/remove
->>>>> them.
->>>>
->>>> Exactly. We should find better way to handle such messages. Do you have
->>>> any good ideas?
->>>
->>> Call snd_rawmidi_transmit_ack(, 1) and continue.
->>
->> $ git diff
->> diff --git a/sound/firewire/fireface/fireface-transaction.c
->> b/sound/firewire/fireface/fireface-transaction.c
->> index 07a2b9c..6b8c7a8 100644
->> --- a/sound/firewire/fireface/fireface-transaction.c
->> +++ b/sound/firewire/fireface/fireface-transaction.c
->> @@ -148,8 +148,10 @@ static void transmit_midi_msg(struct snd_ff *ff,
->> unsigned int port)
->>
->>                 /* Calculate consume bytes. */
->>                 consume = calculate_message_bytes(status);
->> -               if (consume <= 0)
->> +               if (consume <= 0) {
->> +                       snd_rawmidi_transmit_ack(substream, 1);
->>                         return;
->> +               }
->>
->>                 /* On running-status. */
->>                 if ((*buf & 0x80) != 0x80) {
->>
->> Hm. This looks simple and works better, while I suspect that this is
->> appropriate to device driver, because this idea drops the message from
->> userspace. This is against a principle that device drivers just pass
->> data from a side to another side without censoring and modification.
->>
->> I think it better to transfer the message to the device, even if it's
->> invalid in MIDI spec. It's what the userspace wants.
-> 
-> The code takes care to send entire MIDI messages.
-> Is that actually required by the FF?  (Windows does not have a raw MIDI
-> interface, so this problem could not happen there.)
+The audio component is enabled only when CONFIG_SND_HDA_I915 is set.
+Give a dummy macro for allowing the compiler optimize out the relevant
+codes when this Kconfig isn't set.
 
-Windows driver performs it so I immitate it.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_hdmi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I confirmed that bytes of one MIDI message in continuous two
-asynchronous transactions are handled correctly. So we can purge the
-codes for calculation of the number of bytes in the MIDI message.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 85342d261043..44d0d2374bb6 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -152,8 +152,12 @@ struct hdmi_spec {
+ 	struct i915_audio_component_audio_ops i915_audio_ops;
+ };
+ 
++#ifdef CONFIG_SND_HDA_I915
+ #define codec_has_acomp(codec) \
+ 	((codec)->bus->core.audio_component != NULL)
++#else
++#define codec_has_acomp(codec)	false
++#endif
+ 
+ struct hdmi_audio_infoframe {
+ 	u8 type; /* 0x84 */
+-- 
+2.6.3
