@@ -1,62 +1,42 @@
-From: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v2 4/4] ARM: dts: sun4i: Enable onboard codec used on the pov protab2-ips9 tablet
-Date: Fri, 11 Dec 2015 19:43:59 +0100
-Message-ID: <1449859439-30875-4-git-send-email-hdegoede@redhat.com>
-References: <1449859439-30875-1-git-send-email-hdegoede@redhat.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1449859439-30875-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+From: Rob Duncan <rduncan@teslamotors.com>
+Subject: Re: Available frames > buffer size
+Date: Fri, 11 Dec 2015 18:47:43 +0000
+Message-ID: <E77BCDCE-BA10-4546-B279-41A2A9900C25@teslamotors.com>
+References: <94A33372-433A-454F-841E-BBD32EE87864@teslamotors.com>
+ <5669D182.8040707@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
+ [216.82.251.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id D253B2665CA
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 19:47:47 +0100 (CET)
+In-Reply-To: <5669D182.8040707@ladisch.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The pov protab2-ips9 tablet uses the A10's integrated audio codec,
-enable it.
-
-Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
----
-Changes in v2:
--Adjust for gpio rename from pa-gpios to allwinner,pa-gpios
----
- arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts b/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-index a88d5f4..ea90634 100644
---- a/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-+++ b/arch/arm/boot/dts/sun4i-a10-pov-protab2-ips9.dts
-@@ -72,6 +72,13 @@
- 	};
- };
- 
-+&codec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&codec_pa_pin>;
-+	allwinner,pa-gpios = <&pio 7 15 GPIO_ACTIVE_HIGH>; /* PH15 */
-+	status = "okay";
-+};
-+
- &cpu0 {
- 	cpu-supply = <&reg_dcdc2>;
- };
-@@ -170,6 +177,13 @@
- 		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
- 	};
- 
-+	codec_pa_pin: codec_pa_pin@0 {
-+		allwinner,pins = "PH15";
-+		allwinner,function = "gpio_out";
-+		allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+	};
-+
- 	touchscreen_pins: touchscreen_pins@0 {
- 		allwinner,pins = "PA5", "PB13";
- 		allwinner,function = "gpio_out";
--- 
-2.5.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGkgQ2xlbWVucywNCg0KVGhhbmtzIGZvciByZXNwb25kaW5nLg0KDQpPbiBEZWMgMTAsIDIwMTUs
+IGF0IDExOjI0IEFNLCBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZTxtYWlsdG86
+Y2xlbWVuc0BsYWRpc2NoLmRlPj4gd3JvdGU6DQoNCkFzIHlvdSBjYW4gc2VlIHRoZSB0aW1lIGJl
+dHdlZW4gdGhlc2UgdHdvIGxvZ3MgaXMgbGVzcyB0aGFuDQoxIG1pbGxpc2Vjb25kLCBzbyBJIGRv
+buKAmXQgdW5kZXJzdGFuZCBob3cgdGhlIFBDTSBjYW4gZ28gZnJvbQ0KMjA4MCBmcmFtZXMgYXZh
+aWxhYmxlIHRvID40MDk2IGZyYW1lcyBhdmFpbGFibGUgc28gcXVpY2tseS4NCg0KVGhpcyBzb3Vu
+ZHMgbGlrZSBhIGJ1Zy4gV2hpY2ggdmVyc2lvbiBvZiBhbHNhLWxpYiBhcmUgeW91IHVzaW5nPw0K
+DQpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbnMgZm9yIGRlYnVnZ2luZyBvciBpbnN0cnVtZW50
+YXRpb24gSSBjYW4gYWRkIHRvIGFsc2EtbGliIHRoYXQgd291bGQgaGVscCBtZSB0cmFjayBkb3du
+IHdoYXTigJlzIGdvaW5nIG9uPw0KDQpSb2IuDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
