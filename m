@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 04/14] ALSA: hdac: couple the hda DMA stream in
-	cleanup
-Date: Fri, 11 Dec 2015 12:14:17 +0530
-Message-ID: <1449816267-11910-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 05/14] ALSA: hdac: Add MISCBDCGE support
+Date: Fri, 11 Dec 2015 12:14:18 +0530
+Message-ID: <1449816267-11910-6-git-send-email-vinod.koul@intel.com>
 References: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AA402657F6
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 05DAF26589D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:36 +0100 (CET)
 In-Reply-To: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,32 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: Jayachandran B <jayachandran.b@intel.com>
 
-A stream is by default in coupled mode, in DSP operation we move
-it to decoupled mode. On cleanup HW expects that we leave it back
-to default state so couple the DMA on cleanup.
+MISCBDCGE is a new register for Misc Backbone clock gate control
+which is useful to control while resetting the link and ensuring
+controller is in required state so add API to control it
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/hda/ext/hdac_ext_stream.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/hda_register.h        |  3 +++
+ include/sound/hdaudio_ext.h         |  1 +
+ sound/hda/ext/hdac_ext_controller.c | 23 +++++++++++++++++++++++
+ 3 files changed, 27 insertions(+)
 
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 8f30e8836818..023cc4cad5c1 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -111,6 +111,7 @@ void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
- 	while (!list_empty(&bus->stream_list)) {
- 		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
- 		stream = stream_to_hdac_ext_stream(s);
-+		snd_hdac_ext_stream_decouple(ebus, stream, false);
- 		list_del(&s->list);
- 		kfree(stream);
- 	}
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 28ac1f9a18ac..fa33237f4bd1 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -96,6 +96,9 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ /* PCI space */
+ #define AZX_PCIREG_TCSEL		0x44
+ 
++#define AZX_PCIREG_CGCTL               0x48
++#define AZX_CGCTL_MISCBDCGE_MASK       (1 << 6)
++
+ /*
+  * other constants
+  */
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index f3454950ee0b..65961bbb8ca3 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -152,6 +152,7 @@ void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
+ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
++void snd_hdac_ext_bus_enable_miscbdcge(struct device *dev, bool enable);
+ 
+ /* update register macro */
+ #define snd_hdac_updatel(addr, reg, mask, val)		\
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 556267e75591..8f1d292a522c 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -21,6 +21,7 @@
+ #include <linux/slab.h>
+ #include <sound/hda_register.h>
+ #include <sound/hdaudio_ext.h>
++#include <linux/pci.h>
+ 
+ /*
+  * maximum HDAC capablities we should parse to avoid endless looping:
+@@ -306,3 +307,25 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down_all);
++
++static void update_pci_dword(struct pci_dev *pci,
++			unsigned int reg, u32 mask, u32 val)
++{
++	u32 data;
++
++	pci_read_config_dword(pci, reg, &data);
++	data &= ~mask;
++	data |= (val & mask);
++	pci_write_config_dword(pci, reg, data);
++}
++
++void snd_hdac_ext_bus_enable_miscbdcge(struct device *dev, bool enable)
++{
++	struct pci_dev *pci = to_pci_dev(dev);
++	u32 val;
++
++	val = enable ? AZX_CGCTL_MISCBDCGE_MASK : 0;
++
++	update_pci_dword(pci, AZX_PCIREG_CGCTL, AZX_CGCTL_MISCBDCGE_MASK, val);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_enable_miscbdcge);
 -- 
 1.9.1
