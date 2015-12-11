@@ -1,52 +1,57 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 14/14] ASoC: Intel: Skylake: Add Resume
-	capability in PCM info.
-Date: Fri, 11 Dec 2015 12:14:27 +0530
-Message-ID: <1449816267-11910-15-git-send-email-vinod.koul@intel.com>
-References: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F0A1266528
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:42:03 +0100 (CET)
-In-Reply-To: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Subject: [PATCH] ASoC: rockchip: spdif: Set transmit data level to 16 samples
+Date: Fri, 11 Dec 2015 09:45:33 +0100
+Message-ID: <1449823533-6993-1-git-send-email-sjoerd.simons@collabora.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Explicitly set the transmit data level on the transceiver to 16 samples
+rather then the default 0. This matches both the level set in the vendor
+kernel and the (seemingly very similar) i2s engine. This fixes audio
+glitches when playing back at 192k rate.
 
-Now that we can restore back the DMA registers and also the link
-add this capability in driver for PCM resume
+At the same time, fix a trivial typo in the TDL mask definition
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+
 ---
- sound/soc/intel/skylake/skl-pcm.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index f582b06a119d..b8b4b4600e07 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -38,6 +38,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 				 SNDRV_PCM_INFO_MMAP_VALID |
- 				 SNDRV_PCM_INFO_PAUSE |
-+				 SNDRV_PCM_INFO_RESUME |
- 				 SNDRV_PCM_INFO_SYNC_START |
- 				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
- 				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
+ sound/soc/rockchip/rockchip_spdif.c | 6 ++++--
+ sound/soc/rockchip/rockchip_spdif.h | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index ac72ff5..5a806da 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -152,8 +152,10 @@ static int rk_spdif_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ret = regmap_update_bits(spdif->regmap, SPDIF_DMACR,
+-				   SPDIF_DMACR_TDE_ENABLE,
+-				   SPDIF_DMACR_TDE_ENABLE);
++				   SPDIF_DMACR_TDE_ENABLE |
++				   SPDIF_DMACR_TDL_MASK,
++				   SPDIF_DMACR_TDE_ENABLE |
++				   SPDIF_DMACR_TDL(16));
+ 
+ 		if (ret != 0)
+ 			return ret;
+diff --git a/sound/soc/rockchip/rockchip_spdif.h b/sound/soc/rockchip/rockchip_spdif.h
+index 921b409..3ef1277 100644
+--- a/sound/soc/rockchip/rockchip_spdif.h
++++ b/sound/soc/rockchip/rockchip_spdif.h
+@@ -42,7 +42,7 @@
+ 
+ #define SPDIF_DMACR_TDL_SHIFT	0
+ #define SPDIF_DMACR_TDL(x)	((x) << SPDIF_DMACR_TDL_SHIFT)
+-#define SPDIF_DMACR_TDL_MASK	(0x1f << SDPIF_DMACR_TDL_SHIFT)
++#define SPDIF_DMACR_TDL_MASK	(0x1f << SPDIF_DMACR_TDL_SHIFT)
+ 
+ /*
+  * XFER
 -- 
-1.9.1
+2.6.2
