@@ -1,50 +1,32 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Fix XDATA check in
-	mcasp_start_tx
-Date: Fri, 11 Dec 2015 13:06:24 +0200
-Message-ID: <1449831984-29403-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 320862657C5
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 12:06:31 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH] ASoC: wm8974: set cache type for regmap
+Date: Fri, 11 Dec 2015 11:27:08 +0000
+Message-ID: <1449833229-3301-1-git-send-email-mans@mansr.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The condition for checking for XDAT being cleared was not correct.
+Attempting to use this codec driver triggers a BUG() in regcache_sync()
+since no cache type is set.  The register map of this device is fairly
+small and has few holes so a flat cache is suitable.
 
-Fixes: 36bcecd0a73eb ("ASoC: davinci-mcasp: Correct TX start sequence")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8974.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index c1c9c2e3525b..2ccb8bccc9d4 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -223,8 +223,8 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 45ba828..c284c7b 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -574,6 +574,7 @@ static const struct regmap_config wm8974_regmap = {
+ 	.max_register = WM8974_MONOMIX,
+ 	.reg_defaults = wm8974_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(wm8974_reg_defaults),
++	.cache_type = REGCACHE_FLAT,
+ };
  
- 	/* wait for XDATA to be cleared */
- 	cnt = 0;
--	while (!(mcasp_get_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG) &
--		 ~XRDATA) && (cnt < 100000))
-+	while ((mcasp_get_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG) & XRDATA) &&
-+	       (cnt < 100000))
- 		cnt++;
- 
- 	/* Release TX state machine */
+ static int wm8974_probe(struct snd_soc_codec *codec)
 -- 
-2.6.4
+2.6.3
