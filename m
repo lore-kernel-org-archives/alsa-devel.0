@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 10/14] ASoC: Intel: Skylake: manage link power
-	in active suspend
-Date: Fri, 11 Dec 2015 12:14:23 +0530
-Message-ID: <1449816267-11910-11-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 12/14] ASoC: Intel: Skylake: Add DMA resume
+	position in Trigger resume/suspend
+Date: Fri, 11 Dec 2015 12:14:25 +0530
+Message-ID: <1449816267-11910-13-git-send-email-vinod.koul@intel.com>
 References: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C8EC52657D8
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 606D826655E
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:58 +0100 (CET)
 In-Reply-To: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,39 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When device enters active suspend, we should turn off the links
-as they are not in use. Similarly we need to bring back links
-when we exit active suspend.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Use the DMA resume capability to resume the DMA position when
+stream is suspended/resumed.
+
+In suspend we save the position and when stream is resumed the stream needs
+to be started from the position when the stream was suspended using the new
+DMA resume capabilities
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4696254c6743..99d6e5bf5f4c 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -194,6 +194,7 @@ static int skl_suspend(struct device *dev)
- 	 * running, we need to save the state for these and continue
- 	 */
- 	if (skl->supend_active) {
-+		snd_hdac_ext_bus_link_power_down_all(ebus);
- 		pci_save_state(pci);
- 		pci_disable_device(pci);
- 		return 0;
-@@ -216,6 +217,7 @@ static int skl_resume(struct device *dev)
- 	if (skl->supend_active) {
- 		pci_restore_state(pci);
- 		ret = pci_enable_device(pci);
-+		snd_hdac_ext_bus_link_power_up_all(ebus);
- 	} else {
- 		ret = _skl_resume(ebus);
- 	}
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 95fd2210bd86..4a437e3c918c 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -393,6 +393,15 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 		skl_pcm_prepare(substream, dai);
++		/*
++		 * enable DMA Resume enable bit for the stream, set the dpib
++		 * & lpib position to resune before starting the DMA
++		 */
++		snd_hdac_ext_stream_drsm_enable(ebus, true,
++					hdac_stream(stream)->index);
++		snd_hdac_ext_stream_set_dpibr(ebus, stream, stream->dpib);
++		snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
++
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		/*
+@@ -421,8 +430,17 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 
+ 		ret = skl_decoupled_trigger(substream, cmd);
+-		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
++		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND) {
++			/* save the dpib and lpib positions */
++			stream->dpib = readl(ebus->bus.remap_addr +
++					AZX_REG_VS_SDXDPIB_XBASE +
++					(AZX_REG_VS_SDXDPIB_XINTERVAL *
++					hdac_stream(stream)->index));
++
++			stream->lpib = snd_hdac_stream_get_pos_lpib(
++							hdac_stream(stream));
+ 			snd_hdac_ext_stream_decouple(ebus, stream, false);
++		}
+ 		break;
+ 
+ 	default:
 -- 
 1.9.1
