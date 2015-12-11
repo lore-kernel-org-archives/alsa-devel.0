@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 08/14] ASoC: Intel: Skylake: fix reset
-	controller sequencing
-Date: Fri, 11 Dec 2015 12:14:21 +0530
-Message-ID: <1449816267-11910-9-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 09/14] ASoC: Intel: Skylake: Use
+	CGCTL.MISCBDCGE for Phrase detection notification
+Date: Fri, 11 Dec 2015 12:14:22 +0530
+Message-ID: <1449816267-11910-10-git-send-email-vinod.koul@intel.com>
 References: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BF282265914
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:47 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 77365265DF1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:50 +0100 (CET)
 In-Reply-To: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,83 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: "Dharageswari.R" <dharageswari.r@intel.com>, tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jayachandran B <jayachandran.b@intel.com>
+From: "Dharageswari.R" <dharageswari.r@intel.com>
 
-HW recommends that we reset with CGCTL.MISCBDCGE disabled, so add
-that while doing init chip and reset sequence.
+Per HW recommendation, SW shall clear the CGCTL.MISCBDCGE and set
+it back once data is transferred. So clear this when we get the
+IPC and track using a driver flag, and set back on closure
 
+Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c     | 13 +++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.c | 14 ++++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
+ 3 files changed, 30 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2c16325d1ce1..4696254c6743 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -58,6 +58,22 @@ static void skl_init_pci(struct skl *skl)
- 	skl_update_pci_byte(skl->pci, AZX_PCIREG_TCSEL, 0x07, 0);
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index b89ae6f7c096..95fd2210bd86 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -25,6 +25,8 @@
+ #include <sound/soc.h>
+ #include "skl.h"
+ #include "skl-topology.h"
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
+ 
+ #define HDA_MONO 1
+ #define HDA_STEREO 2
+@@ -272,6 +274,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+ 	struct skl_dma_params *dma_params = NULL;
++	struct skl *skl = ebus_to_skl(ebus);
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -285,6 +288,16 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	skl_set_suspend_active(substream, dai, false);
+ 
++	/*
++	 * check if close is for "Reference Pin" and set back the
++	 * CGCTL.MISCBDCGE if disabled by driver
++	 */
++	if (!strncmp(dai->name, "Reference Pin", 13) &&
++			skl->skl_sst->miscbdcg_disabled) {
++		snd_hdac_ext_bus_enable_miscbdcge(dai->dev, true);
++		skl->skl_sst->miscbdcg_disabled = false;
++	}
++
+ 	kfree(dma_params);
  }
  
-+/*
-+ * While performing reset, controller may not come back properly causing
-+ * issues, so recommendation is to set CGCTL.MISCBDCGE to 0 then do reset
-+ * (init chip) and then again set CGCTL.MISCBDCGE to 1
-+ */
-+static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
-+{
-+	int ret;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 62e665a3b8f7..d02e6ac0a81c 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -18,6 +18,7 @@
+ #include "../common/sst-dsp-priv.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
++#include "sound/hdaudio_ext.h"
+ 
+ 
+ #define IPC_IXC_STATUS_BITS		24
+@@ -322,6 +323,19 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
+ 			wake_up(&skl->boot_wait);
+ 			break;
+ 
++		case IPC_GLB_NOTIFY_PHRASE_DETECTED:
++			dev_dbg(ipc->dev, "***** Phrase Detected **********\n");
 +
-+	snd_hdac_ext_bus_enable_miscbdcge(bus->dev, false);
-+	ret = snd_hdac_bus_init_chip(bus, full_reset);
-+	snd_hdac_ext_bus_enable_miscbdcge(bus->dev, true);
++			/*
++			 * Per HW recomendation, After phrase detection,
++			 * clear the CGCTL.MISCBDCGE.
++			 *
++			 * This will be set back on stream closure
++			 */
++			snd_hdac_ext_bus_enable_miscbdcge(ipc->dev, false);
++			skl->miscbdcg_disabled = true;
++			break;
 +
-+	return ret;
-+}
+ 		default:
+ 			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
+ 						header.primary);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 1bbcdb471cf2..e4ac5e65c92c 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -55,6 +55,9 @@ struct skl_sst {
+ 
+ 	/* IPC messaging */
+ 	struct sst_generic_ipc ipc;
 +
- /* called from IRQ */
- static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
- {
-@@ -144,7 +160,9 @@ static int _skl_suspend(struct hdac_ext_bus *ebus)
- 		return ret;
++	/*Is CGCTL.MISCBDCGE disabled*/
++	bool miscbdcg_disabled;
+ };
  
- 	snd_hdac_bus_stop_chip(bus);
-+	snd_hdac_ext_bus_enable_miscbdcge(bus->dev, false);
- 	snd_hdac_bus_enter_link_reset(bus);
-+	snd_hdac_ext_bus_enable_miscbdcge(bus->dev, true);
- 
- 	return 0;
- }
-@@ -155,7 +173,7 @@ static int _skl_resume(struct hdac_ext_bus *ebus)
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 
- 	skl_init_pci(skl);
--	snd_hdac_bus_init_chip(bus, true);
-+	skl_init_chip(bus, true);
- 
- 	return skl_resume_dsp(skl);
- }
-@@ -379,7 +397,7 @@ static int skl_codec_create(struct hdac_ext_bus *ebus)
- 				 * back to the sanity state.
- 				 */
- 				snd_hdac_bus_stop_chip(bus);
--				snd_hdac_bus_init_chip(bus, true);
-+				skl_init_chip(bus, true);
- 			}
- 		}
- 	}
-@@ -489,7 +507,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
- 	/* initialize chip */
- 	skl_init_pci(skl);
- 
--	snd_hdac_bus_init_chip(bus, true);
-+	skl_init_chip(bus, true);
- 
- 	/* codec detection */
- 	if (!bus->codec_mask) {
+ struct skl_ipc_init_instance_msg {
 -- 
 1.9.1
