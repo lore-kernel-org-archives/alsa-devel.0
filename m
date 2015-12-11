@@ -1,17 +1,22 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH 7/8] ASoc: Intel: boards: Add WOV as sink for
-	nau88l25_ssm4567 machine
-Date: Fri, 11 Dec 2015 11:29:12 -0800
-Message-ID: <1449862153-68738-7-git-send-email-yang.a.fang@intel.com>
-References: <1449862153-68738-1-git-send-email-yang.a.fang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/5] ASoC: The soc card can have auxiliary
+ components
+Date: Fri, 11 Dec 2015 20:22:08 +0000
+Message-ID: <20151211202208.GS5727@sirena.org.uk>
+References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
+ <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
+ <20151208185817.GX5727@sirena.org.uk>
+ <5667EFCB.3010402@linux.intel.com>
+ <20151209203836.GI5727@sirena.org.uk>
+ <56694E6A.4090402@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7888409637823918397=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 64A7D2666A3
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 20:31:19 +0100 (CET)
-In-Reply-To: <1449862153-68738-1-git-send-email-yang.a.fang@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 450E326550C
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 21:22:16 +0100 (CET)
+In-Reply-To: <56694E6A.4090402@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, rohit.m.ainapure@intel.com, james.ausmus@intel.com, vinod.koul@intel.com, joe.konno@intel.com, yang.a.fang@intel.com, sathyanarayana.nujella@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, yong.zhi@intel.com
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-We have WOV module which should act as DAPM sink, so add that and
-its links.
+--===============7888409637823918397==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hc1Ad1NXUysMDyjB"
+Content-Disposition: inline
 
-Also rename the refcap to "Wake On Voice" as some user expect to
-find this name
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+--hc1Ad1NXUysMDyjB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 1b54613..f6c252c 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -92,6 +92,7 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_SPK("Left Speaker", NULL),
- 	SND_SOC_DAPM_SPK("Right Speaker", NULL),
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+	SND_SOC_DAPM_SINK("WoV Sink"),
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
- 			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
- 			SND_SOC_DAPM_POST_PMD),
-@@ -110,6 +111,7 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 	{"MIC", NULL, "Headset Mic"},
- 	{"DMic", NULL, "SoC DMIC"},
- 
-+	{"WoV Sink", NULL, "hwd_in sink"},
- 	/* CODEC BE connections */
- 	{ "Left Playback", NULL, "ssp0 Tx"},
- 	{ "Right Playback", NULL, "ssp0 Tx"},
-@@ -188,6 +190,7 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	nau8825_enable_jack_detect(codec, &skylake_headset);
- 
- 	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
-+	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
- 
- 	return ret;
- }
-@@ -383,7 +386,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 	},
- 	{
- 		.name = "Skl Audio Reference cap",
--		.stream_name = "refcap",
-+		.stream_name = "Wake on Voice",
- 		.cpu_dai_name = "Reference Pin",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
--- 
-1.7.9.5
+On Thu, Dec 10, 2015 at 06:05:30PM +0800, Mengdong Lin wrote:
+> On 12/10/2015 04:38 AM, Mark Brown wrote:
+
+> >OK, but I do think that's something we *should* be doing as part of the
+> >overall move of CODECs to components and it's something that having this
+> >change implies we should be doing as an immediate thing since it's the
+> >more obvious direct use of the code (as Lars said in reply to the early
+> >draft you posted IIRC).
+
+> My early draft didn't use the aux components, so I'm not sure where to find
+> Lars's comments on this idea.
+
+He replied to some thing you posted by mistake and immediately
+retracted.  Can't remember the subject, sorry.
+
+> Please check if my understanding is right?
+
+> I guess you want me to replace the "aux_dev" array from the struct
+> snd_soc_card, by an "aux_components" array. And we may
+> replace soc_bind_aux_dev() by soc_find_components(),
+> replace soc_probe/remove_aux_dev() by soc_probe/remove_components.
+> Probably soc_find/prove/remove_components need some adjustment for the the
+> aux devices (DAIless codecs).
+
+> And device driver of the these aux_dev need to use
+> snd_soc_register_component() to make it as a component.
+
+Yeah, pretty much.  I think we'll have a period where we support both
+though as any CODEC *could* be used in this way and we're not ready for
+that yet.
+
+Let me have a look at converting some of the drivers over the weekend.
+
+--hc1Ad1NXUysMDyjB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWazBwAAoJECTWi3JdVIfQmHQH/RC/hsupI9WMYtsuF3tHrmDR
+eh/e5YHRbhdg67sjVFsrgBZjSd8OkU1ht+lPPA3ejACPharypRUOaU2AXSsQY+Eb
+3pPn17Cep1PovwI/BNM3bt7kQaGL2KV6B/caRDocZDom4SJIS9sg/hDF3G/c9o88
+e1d2bPZKYGoA3kCsuaAzCfx+aFpqyLbo+XkHWmFukdrmsq/S+a3j2ZybKUk56ymf
+mGyKwvbUzZryPHYVgAbBScL2hmmYDX6qa99joKvYAcpgx6ndib+9e9So6LYkaCdu
+V783MVdZwdmILWbwrSrdfcgTMv/7UVkYkml7MzOs8bXEef2wm9ZdNrice4vX2e8=
+=hm2e
+-----END PGP SIGNATURE-----
+
+--hc1Ad1NXUysMDyjB--
+
+--===============7888409637823918397==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7888409637823918397==--
