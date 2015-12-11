@@ -1,63 +1,106 @@
-From: Songjun Wu <songjun.wu@atmel.com>
-Subject: [PATCH] ASoC: Atmel: ClassD: unregister codec when error occurs
-Date: Fri, 11 Dec 2015 11:07:37 +0800
-Message-ID: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: [RFC PATCH] ASoC: dpcm: Apply symmetry for DPCM
+Date: Fri, 11 Dec 2015 11:33:51 +0800
+Message-ID: <1449804831-58929-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, nicolas.ferre@atmel.com
-Cc: linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, liam.r.girdwood@linux.intel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, PC Liao <pc.liao@mediatek.com>, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add code to unregister codec in probe function,
-when the error occurs after the codec is registered.
+From: PC Liao <pc.liao@mediatek.com>
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+DPCM does not fully support symmetry attributes. soc_pcm_apply_symmetry()
+is skipped in soc_pcm_open() for DPCM, without being applied elsewhere.
+So HW parameters cannot be correctly limited, and user space can do
+playback/capture at different rates while HW actually does not support it.
+soc_pcm_params_symmetry() will return error and the second stream stops.
+
+This patch adds soc_pcm_apply_symmetry() for FE, BE, and codec DAIs
+in DPCM path that was skipped in soc_pcm_open().
+
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
 ---
+ sound/soc/soc-pcm.c |   57 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
- sound/soc/atmel/atmel-classd.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index dca6141..6107de9 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -640,8 +640,10 @@ static int atmel_classd_probe(struct platform_device *pdev)
- 
- 	/* register sound card */
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
--	if (!card)
--		return -ENOMEM;
-+	if (!card) {
-+		ret = -ENOMEM;
-+		goto unregister_codec;
-+	}
- 
- 	snd_soc_card_set_drvdata(card, dd);
- 	platform_set_drvdata(pdev, card);
-@@ -649,16 +651,20 @@ static int atmel_classd_probe(struct platform_device *pdev)
- 	ret = atmel_classd_asoc_card_init(dev, card);
- 	if (ret) {
- 		dev_err(dev, "failed to init sound card\n");
--		return ret;
-+		goto unregister_codec;
- 	}
- 
- 	ret = devm_snd_soc_register_card(dev, card);
- 	if (ret) {
- 		dev_err(dev, "failed to register sound card: %d\n", ret);
--		return ret;
-+		goto unregister_codec;
- 	}
- 
- 	return 0;
-+
-+unregister_codec:
-+	snd_soc_unregister_codec(dev);
-+	return ret;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 67ef1a0..2a2ca22 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1614,6 +1614,56 @@ static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
+ 	snd_pcm_stream_unlock_irq(substream);
  }
  
- static int atmel_classd_remove(struct platform_device *pdev)
++static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
++			       int stream)
++{
++	struct snd_soc_dpcm *dpcm;
++	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
++	struct snd_soc_dai *fe_cpu_dai = fe->cpu_dai;
++	int err;
++
++	/* apply symmetry for FE */
++	if (soc_pcm_has_symmetry(fe_substream))
++		fe_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++
++	/* Symmetry only applies if we've got an active stream. */
++	if (fe_cpu_dai->active) {
++		err = soc_pcm_apply_symmetry(fe_substream, fe_cpu_dai);
++		if (err < 0)
++			return err;
++	}
++
++	/* apply symmetry for BE */
++	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
++		struct snd_soc_pcm_runtime *be = dpcm->be;
++		struct snd_pcm_substream *be_substream =
++			snd_soc_dpcm_get_substream(be, stream);
++		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
++		int i;
++
++		if (soc_pcm_has_symmetry(be_substream))
++			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++
++		/* Symmetry only applies if we've got an active stream. */
++		if (rtd->cpu_dai->active) {
++			err = soc_pcm_apply_symmetry(be_substream, rtd->cpu_dai);
++			if (err < 0)
++				return err;
++		}
++
++		for (i = 0; i < rtd->num_codecs; i++) {
++			if (rtd->codec_dais[i]->active) {
++				err = soc_pcm_apply_symmetry(be_substream,
++							     rtd->codec_dais[i]);
++				if (err < 0)
++					return err;
++			}
++		}
++	}
++
++	return 0;
++}
++
+ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
+@@ -1642,6 +1692,13 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	dpcm_set_fe_runtime(fe_substream);
+ 	snd_pcm_limit_hw_rates(runtime);
+ 
++	ret = dpcm_apply_symmetry(fe_substream, stream);
++	if (ret < 0) {
++		dev_err(fe->dev, "ASoC: failed to apply dpcm symmetry %d\n",
++			ret);
++		goto unwind;
++	}
++
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return 0;
+ 
 -- 
 1.7.9.5
