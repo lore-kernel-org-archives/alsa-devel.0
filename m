@@ -1,18 +1,17 @@
-From: Libin Yang <libin.yang@linux.intel.com>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi support dynmaic
- pcm assignment
-Date: Fri, 11 Dec 2015 14:14:57 +0800
-Message-ID: <566A69E1.4060102@linux.intel.com>
-References: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
- <s5h8u52mmif.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 01/14] ASoC: Intel: Skylake: Clear stream
+	registers before stream setup
+Date: Fri, 11 Dec 2015 12:14:14 +0530
+Message-ID: <1449816267-11910-2-git-send-email-vinod.koul@intel.com>
+References: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2079226571B
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:17:21 +0100 (CET)
-In-Reply-To: <s5h8u52mmif.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4F1426576A
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:41:27 +0100 (CET)
+In-Reply-To: <1449816267-11910-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +21,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+From: Jeeja KP <jeeja.kp@intel.com>
 
-On 12/10/2015 10:00 PM, Takashi Iwai wrote:
-> On Thu, 10 Dec 2015 02:52:07 +0100,
-> libin.yang@linux.intel.com wrote:
->>
->> From: Libin Yang <libin.yang@linux.intel.com>
->>
->> The patches are trying to support dynamically binding PCM to pin
->> in HDMI/DP audio.
->>
->> The pin will not bind to any PCM if there is not monitor connected.
->> When there is a monitor connected to the port (pin), driver will
->> try to find a proper PCM to assign to the port and setup the pin
->> if necessary.
->
-> Could you rebase your work on the branch topic/hdmi-jack?  It contains
-> the upcoming changes for ELD notify callback.  This would impact on
-> your patchset, likely require a slight adjustment.
+This patch adds clean up routine to clear the stream registers and
+calls this routine before setting up stream registers.
 
-Sure, I will rebase the patches on the branch hdmi-jack.
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-sst-cldma.c | 38 ++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 15 deletions(-)
 
->
-> Also, do you have the applicable MST audio patchset for drm/i915 side,
-> too?  I'd like to test it together with the new patchset.
-
-Oh, yes, I have sent the patches to intel-gfx mailing list. Sorry to 
-forget to CC you. I have CCed you and ALSA mailing list the patches in 
-that thread now.
-
-The drm/i915 patches are ported from Dave's patch.
-
-Best Regards,
-Libin
-
->
->
-> thanks,
->
-> Takashi
->
->>
->> Libin Yang (5):
->>    ALSA: hda - hdmi begin to support dynamic PCM assignment
->>    ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
->>    ALSA: hda - hdmi operate spdif based on pcm
->>    ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
->>    ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
->>      assignment mode
->>
->>   sound/pci/hda/hda_codec.h  |   1 +
->>   sound/pci/hda/patch_hdmi.c | 369 ++++++++++++++++++++++++++++++++++++++++++---
->>   2 files changed, 347 insertions(+), 23 deletions(-)
->>
->> --
->> 1.9.1
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index 8c7e8576cba3..da2329d17f4d 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -60,6 +60,27 @@ static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
+ 		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
+ }
+ 
++static void skl_cldma_stream_clear(struct sst_dsp  *ctx)
++{
++	/* make sure Run bit is cleared before setting stream register */
++	skl_cldma_stream_run(ctx, 0);
++
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
++
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
++
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
++}
++
+ /* Code loader helper APIs */
+ static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
+ 		struct snd_dma_buffer *dmab_data,
+@@ -95,6 +116,7 @@ static void skl_cldma_setup_controller(struct sst_dsp  *ctx,
+ 		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
+ 		u32 count)
+ {
++	skl_cldma_stream_clear(ctx);
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL,
+ 			CL_SD_BDLPLBA(dmab_bdl->addr));
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU,
+@@ -137,21 +159,7 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
+ static void skl_cldma_cleanup(struct sst_dsp  *ctx)
+ {
+ 	skl_cldma_cleanup_spb(ctx);
+-
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
+-	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
+-				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
+-
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
+-
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
+-	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
++	skl_cldma_stream_clear(ctx);
+ 
+ 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
+ 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
+-- 
+1.9.1
