@@ -1,82 +1,63 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v5] sun4i-codec: add inputs
-Date: Fri, 11 Dec 2015 10:45:37 +0800
-Message-ID: <CAGb2v643+bbOM-zgPeQrypyJg13r4m6h=1qAP-Zd5_CVB07BWg@mail.gmail.com>
-References: <20151208042013.11d31f09@dayas> <20151210175420.GH27957@lukather> <20151210215227.6453acc8@dayas>
+From: Songjun Wu <songjun.wu@atmel.com>
+Subject: [PATCH] ASoC: Atmel: ClassD: unregister codec when error occurs
+Date: Fri, 11 Dec 2015 11:07:37 +0800
+Message-ID: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151210215227.6453acc8@dayas>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: broonie@kernel.org, nicolas.ferre@atmel.com
+Cc: linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 11, 2015 at 4:52 AM, Danny Milosavljevic
-<dannym@scratchpost.org> wrote:
-> Hi Maxime,
->
-> On Thu, 10 Dec 2015 18:54:20 +0100
-> Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
->> > +   SOC_DAPM_SINGLE("Mic1-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
->> > +                   SUN4I_CODEC_DAC_ACTL_MIC1RS, 1, 0),
->> > +   SOC_DAPM_SINGLE("Mic2-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
->> > +                   SUN4I_CODEC_DAC_ACTL_MIC2RS, 1, 0),
->> >  };
->>
->> Do we need the -In part of FM, Mic1 and Mic2?
->
-> For consistency to what's in linux-sunxi.git, I will remove the "-In" from
-> the Mic names in v7.
->
-> For FM, do we? I don't know. Are there ALSA devices which output to FM?
->
->> Mic1 is already defined a few lines above.
->> And you have the Mixers routes a bit above too.
->
-> Aha, Mic1 is there in <https://github.com/linux-sunxi/linux-sunxi.git>
-> branch "sunxi-next".
-> In <git://git.kernel.org/pub/scm/linux/kernel/git/mripard/linux.git>
-> branch "sunxi/for-next", it's not there.
-> This patch is for the latter.
+Add code to unregister codec in probe function,
+when the error occurs after the codec is registered.
 
-linux-sunxi/sunxi-next is a branch we maintain that has "most" new features
-and patches aimed at the next release. It is not an official kernel branch,
-nor is it always up to date (though we try to merge new things in).
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+---
 
-mripard/linux sunxi/for-next is Maxime's sunxi branches, which is mostly
-clock and dts patches.
+ sound/soc/atmel/atmel-classd.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-You should always base your patches on the "next" branch of the maintainer
-that will take your patches. In this case, ASoC:
-
-    https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/log/?h=for-next
-
-There's also a sunxi topic branch:
-
-    https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/log/?h=topic/sunxi
-
-Or you can just base them off linux-next.
-
-
-Regards
-ChenYu
-
->
-> I'm currently rebasing on the former, but it will take some time.
-> The differences between these driver versions are:
-> - Mic1 Preamplifier is registered as PGA instead of switch in the former.
-> - Mic1 is already an input in the former.
-> - VMIC is handled in the former.
-> - ADC Capturing support exists in the former.
-> That's it.
->
-> I'll retest a patch based on the former...
->
->> [global mutation]
->> We'll need to fix that, see the other discussion.
->
-> Yeah, I think I found a nicer way to do it in v6.
->
-> Thanks,
->    Danny
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index dca6141..6107de9 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -640,8 +640,10 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 
+ 	/* register sound card */
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+-	if (!card)
+-		return -ENOMEM;
++	if (!card) {
++		ret = -ENOMEM;
++		goto unregister_codec;
++	}
+ 
+ 	snd_soc_card_set_drvdata(card, dd);
+ 	platform_set_drvdata(pdev, card);
+@@ -649,16 +651,20 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 	ret = atmel_classd_asoc_card_init(dev, card);
+ 	if (ret) {
+ 		dev_err(dev, "failed to init sound card\n");
+-		return ret;
++		goto unregister_codec;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register sound card: %d\n", ret);
+-		return ret;
++		goto unregister_codec;
+ 	}
+ 
+ 	return 0;
++
++unregister_codec:
++	snd_soc_unregister_codec(dev);
++	return ret;
+ }
+ 
+ static int atmel_classd_remove(struct platform_device *pdev)
+-- 
+1.7.9.5
