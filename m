@@ -1,126 +1,90 @@
 From: Libin Yang <libin.yang@linux.intel.com>
-Subject: Re: [PATCH V4 1/2] dp/mst: add SDP stream support
-Date: Fri, 11 Dec 2015 14:09:56 +0800
-Message-ID: <566A68B4.5030505@linux.intel.com>
-References: <1449036584-105393-1-git-send-email-libin.yang@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi support dynmaic
+ pcm assignment
+Date: Fri, 11 Dec 2015 14:14:57 +0800
+Message-ID: <566A69E1.4060102@linux.intel.com>
+References: <1449712332-106365-1-git-send-email-libin.yang@linux.intel.com>
+ <s5h8u52mmif.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1449036584-105393-1-git-send-email-libin.yang@linux.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, conselvan2@gmail.com, jani.nikula@linux.intel.com, ville.syrjala@linux.intel.com, daniel.vetter@intel.com
-Cc: Dave Airlie <airlied@redhat.com>, alsa-devel@alsa-project.org, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2079226571B
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 07:17:21 +0100 (CET)
+In-Reply-To: <s5h8u52mmif.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIFRha2FzaGkgYW5kIEFMU0EgbWFpbGluZyBsaXN0CgpCZXN0IFJlZ2FyZHMsCkxpYmluCgpP
-biAxMi8wMi8yMDE1IDAyOjA5IFBNLCBsaWJpbi55YW5nQGxpbnV4LmludGVsLmNvbSB3cm90ZToK
-PiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGxpbnV4LmludGVsLmNvbT4KPgo+IFRoaXMg
-YWRkcyBjb2RlIHRvIGluaXRpYWxpc2UgdGhlIFNEUCBzdHJlYW1zCj4gZm9yIGEgc2luayBpbiB0
-aGUgc2ltcGxlc3Qgb3JkZXJpbmcuCj4KPiBJJ3ZlIG5vIGlkZWEgaG93IHlvdSdkIHdhbnQgdG8g
-Y29udHJvbCB0aGUKPiBvcmRlcmluZyBhdCB0aGlzIGxldmVsLCBzbyBkb24ndCBib3RoZXIKPiB1
-bnRpbCBzb21lb25lIGNvbWVzIHVwIHdpdGggYSB1c2UgY2FzZS4KPgo+IFJldmlld2VkLWJ5OiBB
-bmRlciBDb25zZWx2YW4gZGUgT2xpdmVpcmEgPGNvbnNlbHZhbjJAZ21haWwuY29tPgo+IFNpZ25l
-ZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAbGludXguaW50ZWwuY29tPgo+IFNpZ25l
-ZC1vZmYtYnk6IERhdmUgQWlybGllIDxhaXJsaWVkQHJlZGhhdC5jb20+Cj4gLS0tCj4gICBkcml2
-ZXJzL2dwdS9kcm0vZHJtX2RwX21zdF90b3BvbG9neS5jIHwgMzggKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKystLS0KPiAgIGluY2x1ZGUvZHJtL2RybV9kcF9tc3RfaGVscGVyLmggICAg
-ICAgfCAgNyArKysrKy0tCj4gICAyIGZpbGVzIGNoYW5nZWQsIDQwIGluc2VydGlvbnMoKyksIDUg
-ZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2RybV9kcF9tc3Rf
-dG9wb2xvZ3kuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZHBfbXN0X3RvcG9sb2d5LmMKPiBpbmRl
-eCA4MDk5NTlkLi5mNTBlYjdiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZHBf
-bXN0X3RvcG9sb2d5LmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX2RwX21zdF90b3BvbG9n
-eS5jCj4gQEAgLTY2Niw3ICs2NjYsOSBAQCBzdGF0aWMgaW50IGJ1aWxkX2VudW1fcGF0aF9yZXNv
-dXJjZXMoc3RydWN0IGRybV9kcF9zaWRlYmFuZF9tc2dfdHggKm1zZywgaW50IHBvcgo+ICAgfQo+
-Cj4gICBzdGF0aWMgaW50IGJ1aWxkX2FsbG9jYXRlX3BheWxvYWQoc3RydWN0IGRybV9kcF9zaWRl
-YmFuZF9tc2dfdHggKm1zZywgaW50IHBvcnRfbnVtLAo+IC0JCQkJICB1OCB2Y3BpLCB1aW50MTZf
-dCBwYm4pCj4gKwkJCQkgIHU4IHZjcGksIHVpbnQxNl90IHBibiwKPiArCQkJCSAgdTggbnVtYmVy
-X3NkcF9zdHJlYW1zLAo+ICsJCQkJICB1OCAqc2RwX3N0cmVhbV9zaW5rKQo+ICAgewo+ICAgCXN0
-cnVjdCBkcm1fZHBfc2lkZWJhbmRfbXNnX3JlcV9ib2R5IHJlcTsKPiAgIAltZW1zZXQoJnJlcSwg
-MCwgc2l6ZW9mKHJlcSkpOwo+IEBAIC02NzQsNiArNjc2LDkgQEAgc3RhdGljIGludCBidWlsZF9h
-bGxvY2F0ZV9wYXlsb2FkKHN0cnVjdCBkcm1fZHBfc2lkZWJhbmRfbXNnX3R4ICptc2csIGludCBw
-b3J0X24KPiAgIAlyZXEudS5hbGxvY2F0ZV9wYXlsb2FkLnBvcnRfbnVtYmVyID0gcG9ydF9udW07
-Cj4gICAJcmVxLnUuYWxsb2NhdGVfcGF5bG9hZC52Y3BpID0gdmNwaTsKPiAgIAlyZXEudS5hbGxv
-Y2F0ZV9wYXlsb2FkLnBibiA9IHBibjsKPiArCXJlcS51LmFsbG9jYXRlX3BheWxvYWQubnVtYmVy
-X3NkcF9zdHJlYW1zID0gbnVtYmVyX3NkcF9zdHJlYW1zOwo+ICsJbWVtY3B5KHJlcS51LmFsbG9j
-YXRlX3BheWxvYWQuc2RwX3N0cmVhbV9zaW5rLCBzZHBfc3RyZWFtX3NpbmssCj4gKwkJICAgbnVt
-YmVyX3NkcF9zdHJlYW1zKTsKPiAgIAlkcm1fZHBfZW5jb2RlX3NpZGViYW5kX3JlcSgmcmVxLCBt
-c2cpOwo+ICAgCW1zZy0+cGF0aF9tc2cgPSB0cnVlOwo+ICAgCXJldHVybiAwOwo+IEBAIC0xNTYy
-LDYgKzE1NjcsOCBAQCBzdGF0aWMgaW50IGRybV9kcF9wYXlsb2FkX3NlbmRfbXNnKHN0cnVjdCBk
-cm1fZHBfbXN0X3RvcG9sb2d5X21nciAqbWdyLAo+ICAgCXN0cnVjdCBkcm1fZHBfc2lkZWJhbmRf
-bXNnX3R4ICp0eG1zZzsKPiAgIAlzdHJ1Y3QgZHJtX2RwX21zdF9icmFuY2ggKm1zdGI7Cj4gICAJ
-aW50IGxlbiwgcmV0Owo+ICsJdTggc2lua3NbRFJNX0RQX01BWF9TRFBfU1RSRUFNU107Cj4gKwlp
-bnQgaTsKPgo+ICAgCW1zdGIgPSBkcm1fZHBfZ2V0X3ZhbGlkYXRlZF9tc3RiX3JlZihtZ3IsIHBv
-cnQtPnBhcmVudCk7Cj4gICAJaWYgKCFtc3RiKQo+IEBAIC0xNTczLDEwICsxNTgwLDEzIEBAIHN0
-YXRpYyBpbnQgZHJtX2RwX3BheWxvYWRfc2VuZF9tc2coc3RydWN0IGRybV9kcF9tc3RfdG9wb2xv
-Z3lfbWdyICptZ3IsCj4gICAJCWdvdG8gZmFpbF9wdXQ7Cj4gICAJfQo+Cj4gKwlmb3IgKGkgPSAw
-OyBpIDwgcG9ydC0+bnVtX3NkcF9zdHJlYW1zOyBpKyspCj4gKwkJc2lua3NbaV0gPSBpOwo+ICsK
-PiAgIAl0eG1zZy0+ZHN0ID0gbXN0YjsKPiAgIAlsZW4gPSBidWlsZF9hbGxvY2F0ZV9wYXlsb2Fk
-KHR4bXNnLCBwb3J0LT5wb3J0X251bSwKPiAgIAkJCQkgICAgIGlkLAo+IC0JCQkJICAgICBwYm4p
-Owo+ICsJCQkJICAgICBwYm4sIHBvcnQtPm51bV9zZHBfc3RyZWFtcywgc2lua3MpOwo+Cj4gICAJ
-ZHJtX2RwX3F1ZXVlX2Rvd25fdHgobWdyLCB0eG1zZyk7Cj4KPiBAQCAtMjI1OSw2ICsyMjY5LDI3
-IEBAIG91dDoKPiAgIEVYUE9SVF9TWU1CT0woZHJtX2RwX21zdF9kZXRlY3RfcG9ydCk7Cj4KPiAg
-IC8qKgo+ICsgKiBkcm1fZHBfbXN0X3BvcnRfaGFzX2F1ZGlvKCkgLSBDaGVjayB3aGV0aGVyIHBv
-cnQgaGFzIGF1ZGlvIGNhcGFiaWxpdHkgb3Igbm90Cj4gKyAqIEBtZ3I6IG1hbmFnZXIgZm9yIHRo
-aXMgcG9ydAo+ICsgKiBAcG9ydDogdW52ZXJpZmllZCBwb2ludGVyIHRvIGEgcG9ydC4KPiArICoK
-PiArICogVGhpcyByZXR1cm5zIHdoZXRoZXIgdGhlIHBvcnQgc3VwcG9ydHMgYXVkaW8gb3Igbm90
-Lgo+ICsgKi8KPiArYm9vbCBkcm1fZHBfbXN0X3BvcnRfaGFzX2F1ZGlvKHN0cnVjdCBkcm1fZHBf
-bXN0X3RvcG9sb2d5X21nciAqbWdyLAo+ICsJCQkJCXN0cnVjdCBkcm1fZHBfbXN0X3BvcnQgKnBv
-cnQpCj4gK3sKPiArCWJvb2wgcmV0ID0gZmFsc2U7Cj4gKwo+ICsJcG9ydCA9IGRybV9kcF9nZXRf
-dmFsaWRhdGVkX3BvcnRfcmVmKG1nciwgcG9ydCk7Cj4gKwlpZiAoIXBvcnQpCj4gKwkJcmV0dXJu
-IHJldDsKPiArCXJldCA9IHBvcnQtPmhhc19hdWRpbzsKPiArCWRybV9kcF9wdXRfcG9ydChwb3J0
-KTsKPiArCXJldHVybiByZXQ7Cj4gK30KPiArRVhQT1JUX1NZTUJPTChkcm1fZHBfbXN0X3BvcnRf
-aGFzX2F1ZGlvKTsKPiArCj4gKy8qKgo+ICAgICogZHJtX2RwX21zdF9nZXRfZWRpZCgpIC0gZ2V0
-IEVESUQgZm9yIGFuIE1TVCBwb3J0Cj4gICAgKiBAY29ubmVjdG9yOiB0b3BsZXZlbCBjb25uZWN0
-b3IgdG8gZ2V0IEVESUQgZm9yCj4gICAgKiBAbWdyOiBtYW5hZ2VyIGZvciB0aGlzIHBvcnQKPiBA
-QCAtMjI4Myw2ICsyMzE0LDcgQEAgc3RydWN0IGVkaWQgKmRybV9kcF9tc3RfZ2V0X2VkaWQoc3Ry
-dWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3Rvciwgc3RydWN0IGRybV9kcF8KPiAgIAkJZWRpZCA9
-IGRybV9nZXRfZWRpZChjb25uZWN0b3IsICZwb3J0LT5hdXguZGRjKTsKPiAgIAkJZHJtX21vZGVf
-Y29ubmVjdG9yX3NldF90aWxlX3Byb3BlcnR5KGNvbm5lY3Rvcik7Cj4gICAJfQo+ICsJcG9ydC0+
-aGFzX2F1ZGlvID0gZHJtX2RldGVjdF9tb25pdG9yX2F1ZGlvKGVkaWQpOwo+ICAgCWRybV9kcF9w
-dXRfcG9ydChwb3J0KTsKPiAgIAlyZXR1cm4gZWRpZDsKPiAgIH0KPiBAQCAtMjU2Niw3ICsyNTk4
-LDcgQEAgc3RhdGljIHZvaWQgZHJtX2RwX21zdF9kdW1wX21zdGIoc3RydWN0IHNlcV9maWxlICpt
-LAo+Cj4gICAJc2VxX3ByaW50ZihtLCAiJXNtc3Q6ICVwLCAlZFxuIiwgcHJlZml4LCBtc3RiLCBt
-c3RiLT5udW1fcG9ydHMpOwo+ICAgCWxpc3RfZm9yX2VhY2hfZW50cnkocG9ydCwgJm1zdGItPnBv
-cnRzLCBuZXh0KSB7Cj4gLQkJc2VxX3ByaW50ZihtLCAiJXNwb3J0OiAlZDogZGRwczogJWQgbGRw
-czogJWQsICVwLCBjb25uOiAlcFxuIiwgcHJlZml4LCBwb3J0LT5wb3J0X251bSwgcG9ydC0+ZGRw
-cywgcG9ydC0+bGRwcywgcG9ydCwgcG9ydC0+Y29ubmVjdG9yKTsKPiArCQlzZXFfcHJpbnRmKG0s
-ICIlc3BvcnQ6ICVkOiBkZHBzOiAlZCBsZHBzOiAlZCwgc2RwOiAlZC8lZCwgJXAsIGNvbm46ICVw
-XG4iLCBwcmVmaXgsIHBvcnQtPnBvcnRfbnVtLCBwb3J0LT5kZHBzLCBwb3J0LT5sZHBzLCBwb3J0
-LT5udW1fc2RwX3N0cmVhbXMsIHBvcnQtPm51bV9zZHBfc3RyZWFtX3NpbmtzLCBwb3J0LCBwb3J0
-LT5jb25uZWN0b3IpOwo+ICAgCQlpZiAocG9ydC0+bXN0YikKPiAgIAkJCWRybV9kcF9tc3RfZHVt
-cF9tc3RiKG0sIHBvcnQtPm1zdGIpOwo+ICAgCX0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0v
-ZHJtX2RwX21zdF9oZWxwZXIuaCBiL2luY2x1ZGUvZHJtL2RybV9kcF9tc3RfaGVscGVyLmgKPiBp
-bmRleCA1MzQwMDk5Li43NGI1ODg4IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvZHJtL2RybV9kcF9t
-c3RfaGVscGVyLmgKPiArKysgYi9pbmNsdWRlL2RybS9kcm1fZHBfbXN0X2hlbHBlci5oCj4gQEAg
-LTk0LDYgKzk0LDcgQEAgc3RydWN0IGRybV9kcF9tc3RfcG9ydCB7Cj4gICAJc3RydWN0IGRybV9k
-cF9tc3RfdG9wb2xvZ3lfbWdyICptZ3I7Cj4KPiAgIAlzdHJ1Y3QgZWRpZCAqY2FjaGVkX2VkaWQ7
-IC8qIGZvciBEUCBsb2dpY2FsIHBvcnRzIC0gbWFrZSB0aWxpbmcgd29yayAqLwo+ICsJYm9vbCBo
-YXNfYXVkaW87Cj4gICB9Owo+Cj4gICAvKioKPiBAQCAtMjE1LDEzICsyMTYsMTMgQEAgc3RydWN0
-IGRybV9kcF9zaWRlYmFuZF9tc2dfcnggewo+ICAgCXN0cnVjdCBkcm1fZHBfc2lkZWJhbmRfbXNn
-X2hkciBpbml0aWFsX2hkcjsKPiAgIH07Cj4KPiAtCj4gKyNkZWZpbmUgRFJNX0RQX01BWF9TRFBf
-U1RSRUFNUyAxNgo+ICAgc3RydWN0IGRybV9kcF9hbGxvY2F0ZV9wYXlsb2FkIHsKPiAgIAl1OCBw
-b3J0X251bWJlcjsKPiAgIAl1OCBudW1iZXJfc2RwX3N0cmVhbXM7Cj4gICAJdTggdmNwaTsKPiAg
-IAl1MTYgcGJuOwo+IC0JdTggc2RwX3N0cmVhbV9zaW5rWzhdOwo+ICsJdTggc2RwX3N0cmVhbV9z
-aW5rW0RSTV9EUF9NQVhfU0RQX1NUUkVBTVNdOwo+ICAgfTsKPgo+ICAgc3RydWN0IGRybV9kcF9h
-bGxvY2F0ZV9wYXlsb2FkX2Fja19yZXBseSB7Cj4gQEAgLTQ4NCw2ICs0ODUsOCBAQCBpbnQgZHJt
-X2RwX21zdF9ocGRfaXJxKHN0cnVjdCBkcm1fZHBfbXN0X3RvcG9sb2d5X21nciAqbWdyLCB1OCAq
-ZXNpLCBib29sICpoYW5kbAo+Cj4gICBlbnVtIGRybV9jb25uZWN0b3Jfc3RhdHVzIGRybV9kcF9t
-c3RfZGV0ZWN0X3BvcnQoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3Rvciwgc3RydWN0IGRy
-bV9kcF9tc3RfdG9wb2xvZ3lfbWdyICptZ3IsIHN0cnVjdCBkcm1fZHBfbXN0X3BvcnQgKnBvcnQp
-Owo+Cj4gK2Jvb2wgZHJtX2RwX21zdF9wb3J0X2hhc19hdWRpbyhzdHJ1Y3QgZHJtX2RwX21zdF90
-b3BvbG9neV9tZ3IgKm1nciwKPiArCQkJCQlzdHJ1Y3QgZHJtX2RwX21zdF9wb3J0ICpwb3J0KTsK
-PiAgIHN0cnVjdCBlZGlkICpkcm1fZHBfbXN0X2dldF9lZGlkKHN0cnVjdCBkcm1fY29ubmVjdG9y
-ICpjb25uZWN0b3IsIHN0cnVjdCBkcm1fZHBfbXN0X3RvcG9sb2d5X21nciAqbWdyLCBzdHJ1Y3Qg
-ZHJtX2RwX21zdF9wb3J0ICpwb3J0KTsKPgo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+Hi Takashi,
+
+On 12/10/2015 10:00 PM, Takashi Iwai wrote:
+> On Thu, 10 Dec 2015 02:52:07 +0100,
+> libin.yang@linux.intel.com wrote:
+>>
+>> From: Libin Yang <libin.yang@linux.intel.com>
+>>
+>> The patches are trying to support dynamically binding PCM to pin
+>> in HDMI/DP audio.
+>>
+>> The pin will not bind to any PCM if there is not monitor connected.
+>> When there is a monitor connected to the port (pin), driver will
+>> try to find a proper PCM to assign to the port and setup the pin
+>> if necessary.
+>
+> Could you rebase your work on the branch topic/hdmi-jack?  It contains
+> the upcoming changes for ELD notify callback.  This would impact on
+> your patchset, likely require a slight adjustment.
+
+Sure, I will rebase the patches on the branch hdmi-jack.
+
+>
+> Also, do you have the applicable MST audio patchset for drm/i915 side,
+> too?  I'd like to test it together with the new patchset.
+
+Oh, yes, I have sent the patches to intel-gfx mailing list. Sorry to 
+forget to CC you. I have CCed you and ALSA mailing list the patches in 
+that thread now.
+
+The drm/i915 patches are ported from Dave's patch.
+
+Best Regards,
+Libin
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>> Libin Yang (5):
+>>    ALSA: hda - hdmi begin to support dynamic PCM assignment
+>>    ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
+>>    ALSA: hda - hdmi operate spdif based on pcm
+>>    ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
+>>    ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
+>>      assignment mode
+>>
+>>   sound/pci/hda/hda_codec.h  |   1 +
+>>   sound/pci/hda/patch_hdmi.c | 369 ++++++++++++++++++++++++++++++++++++++++++---
+>>   2 files changed, 347 insertions(+), 23 deletions(-)
+>>
+>> --
+>> 1.9.1
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
