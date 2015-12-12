@@ -1,20 +1,18 @@
-From: ZH Tu <tuzhihe@pcasl.com>
-Subject: Re: Intel Cherry Trail -- No sound in linux
-Date: Sat, 12 Dec 2015 16:25:46 +0800
-Message-ID: <2015121216254115203520@pcasl.com>
-References: <000a01d11b93$38632860$a9297920$@com>,
- <56423EBB.8010108@linux.intel.com>,
- <201511121444557079740@pcasl.com>,
- <5644CA6C.5000302@linux.intel.com>,
- <20151116154335174375283@pcasl.com>,
- <564A88C9.7020008@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 05/14] ALSA: hdac: Add MISCBDCGE support
+Date: Sat, 12 Dec 2015 17:13:47 +0530
+Message-ID: <20151212114347.GG1854@localhost>
+References: <1449816267-11910-6-git-send-email-vinod.koul@intel.com>
+ <201512120531.wHapk8nX%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.pcasl.com (mail.pcasl.com [211.154.131.149])
- by alsa0.perex.cz (Postfix) with ESMTP id 149CB26061E
- for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 09:47:41 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4AC92606E6
+ for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 12:40:41 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201512120531.wHapk8nX%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,84 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: kbuild test robot <lkp@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-As Pierre suggestions:
-
-try to enable a DSP loopback to see if the data isn't garbled by the driver
-amixer cset "name='pcm1_out mix 0 pcm0_in" on
-
-But we all know that the stream path is power on automaticlly, so even I do the mixer setting, the pcm1_out wighet still is in power off state. 
-
-So is there way to do the loopback?
-
-
-Now every time I do the test:
-aplay test.wav
-
-I get the error message:
-[drm:intel_pipe_update_end [i915]] *ERROR* Atomic update failure on pipe C (start=46633 end=46634)
-
-And there're no more errors.
-
->From the message I guess the pipe used by intel drm is blocked, so as to the pipe used by SST firmware,   that's why I cannot get data from DACDAT pin. 
-
-This bug confused me for  a long time,  can anyone give some suggestions?
-
-Thanks
-
-
-Zhihe Tu
- 
-From: Pierre-Louis Bossart
-Date: 2015-11-17 09:54
-To: alsa-devel@alsa-project.org; tuzhihe@pcasl.com
-Subject: Re: [alsa-devel] Intel Cherry Trail -- No sound in linux
- 
-On 11/16/2015 01:43 AM, ZH Tu wrote:
-> Hi Pierre-Louis, thanks for your reply.
+On Sat, Dec 12, 2015 at 05:14:48AM +0800, kbuild test robot wrote:
+> Hi Jayachandran,
 > 
-> Maybe I am not make myself clear. 
+> [auto build test WARNING on asoc/for-next]
+> [also build test WARNING on next-20151211]
+> [cannot apply to sound/for-next v4.4-rc4]
 > 
-> Actually I refer some configure from baytrail platform:
-> amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
-> amixer -c0 sset 'media0_out mix 0 media1_in' on
-> amixer -c0 sset 'media1_in Gain 0' 80% 
-> amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'media1_in Gain 0' off
-> amixer -c0 sset 'pcm0_in Gain 0' 80% 
-> amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'pcm0_in Gain 0' off
-> amixer -c0 sset 'codec_out0 Gain 0' 80%
-> amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
-> amixer -c0 sset 'codec_out0 Gain 0' off
+> url:    https://github.com/0day-ci/linux/commits/Vinod-Koul/ASoC-Intel-Skylake-Update-to-SKL-driver/20151211-145345
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> config: mn10300-allmodconfig (attached as .config)
+> reproduce:
+>         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=mn10300 
 > 
-> Also there're some settings for the RT5672 codec, but I do not remember now.
- 
-it seems that the link is active with no data? Couple of suggestions:
- 
-1. try to enable a DSP loopback to see if the data isn't garbled by the driver
-amixer cset "name='pcm1_out mix 0 pcm0_in" on
- 
-2. try a loopback from capture to playback to see if the data sampled by the codec can be played out.
-amixer -c0 sset 'codec_out0 mix 0 codec_in0' on
-amixer -c0 sset 'codec_out0 mix 0 codec_in1' on
- 
-3. replicate all the data on codec_out1 to make sure you have data on all 4 slots
- 
-amixer -c0 sset 'codec_out1 mix 0 pcm0_in' on
-amixer -c0 sset 'codec_out1 Gain 0' 80%
-amixer -c0 sset 'codec_out1 Gain 0 Ramp Delay' 50
-amixer -c0 sset 'codec_out1 Gain 0' off
- 
- 
- 
-__________ Information from ESET Smart Security, version of virus signature database 4468 (20090929) __________
- 
-The message was checked by ESET Smart Security.
- 
-http://www.eset.com
- 
- 
- 
+> All warnings (new ones prefixed by >>):
+> 
+>    sound/hda/ext/hdac_ext_controller.c: In function 'update_pci_dword':
+> >> sound/hda/ext/hdac_ext_controller.c:317:7: warning: 'data' is used uninitialized in this function [-Wuninitialized]
+>      data &= ~mask;
+
+Thanks, will fix it in v2
+
+
+-- 
+~Vinod
