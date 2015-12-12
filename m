@@ -1,22 +1,20 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: bclk should never greater
- than 1/5 IPG clock rate
-Date: Fri, 11 Dec 2015 22:05:43 -0800
-Message-ID: <20151212060542.GA38351@Asurada-CZ80>
-References: <1449745370-18960-1-git-send-email-zidan.wang@freescale.com>
- <1449745370-18960-3-git-send-email-zidan.wang@freescale.com>
+From: ZH Tu <tuzhihe@pcasl.com>
+Subject: Re: Intel Cherry Trail -- No sound in linux
+Date: Sat, 12 Dec 2015 16:25:46 +0800
+Message-ID: <2015121216254115203520@pcasl.com>
+References: <000a01d11b93$38632860$a9297920$@com>,
+ <56423EBB.8010108@linux.intel.com>,
+ <201511121444557079740@pcasl.com>,
+ <5644CA6C.5000302@linux.intel.com>,
+ <20151116154335174375283@pcasl.com>,
+ <564A88C9.7020008@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
- [209.85.214.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 1167D2654BE
- for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 07:05:50 +0100 (CET)
-Received: by obber4 with SMTP id er4so15349941obb.3
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2015 22:05:49 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1449745370-18960-3-git-send-email-zidan.wang@freescale.com>
+Received: from mail.pcasl.com (mail.pcasl.com [211.154.131.149])
+ by alsa0.perex.cz (Postfix) with ESMTP id 149CB26061E
+ for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 09:47:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +24,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 10, 2015 at 07:02:50PM +0800, Zidan Wang wrote:
-> According to the referance menual, the bclk rate must be never greater
-> than 1/5 IPG clock rate. But clkrate is the system clock, afreq is the
-> bit clock.
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+As Pierre suggestions:
 
-There's already a similar fix under review.
+try to enable a DSP loopback to see if the data isn't garbled by the driver
+amixer cset "name='pcm1_out mix 0 pcm0_in" on
+
+But we all know that the stream path is power on automaticlly, so even I do the mixer setting, the pcm1_out wighet still is in power off state. 
+
+So is there way to do the loopback?
+
+
+Now every time I do the test:
+aplay test.wav
+
+I get the error message:
+[drm:intel_pipe_update_end [i915]] *ERROR* Atomic update failure on pipe C (start=46633 end=46634)
+
+And there're no more errors.
+
+>From the message I guess the pipe used by intel drm is blocked, so as to the pipe used by SST firmware,   that's why I cannot get data from DACDAT pin. 
+
+This bug confused me for  a long time,  can anyone give some suggestions?
 
 Thanks
-Nicolin
 
-> ---
->  sound/soc/fsl/fsl_ssi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+
+Zhihe Tu
+ 
+From: Pierre-Louis Bossart
+Date: 2015-11-17 09:54
+To: alsa-devel@alsa-project.org; tuzhihe@pcasl.com
+Subject: Re: [alsa-devel] Intel Cherry Trail -- No sound in linux
+ 
+On 11/16/2015 01:43 AM, ZH Tu wrote:
+> Hi Pierre-Louis, thanks for your reply.
 > 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index e3abad5..4466bcb 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -677,16 +677,16 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
->  		else
->  			clkrate = clk_round_rate(ssi_private->baudclk, tmprate);
->  
-> +		clkrate /= factor;
-> +		afreq = clkrate / (i + 1);
-> +
->  		/*
->  		 * Hardware limitation: The bclk rate must be
->  		 * never greater than 1/5 IPG clock rate
->  		 */
-> -		if (clkrate * 5 > clk_get_rate(ssi_private->clk))
-> +		if (afreq * 5 > clk_get_rate(ssi_private->clk))
->  			continue;
->  
-> -		clkrate /= factor;
-> -		afreq = clkrate / (i + 1);
-> -
->  		if (freq == afreq)
->  			sub = 0;
->  		else if (freq / afreq == 1)
-> -- 
-> 1.9.1
+> Maybe I am not make myself clear. 
 > 
+> Actually I refer some configure from baytrail platform:
+> amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+> amixer -c0 sset 'media0_out mix 0 media1_in' on
+> amixer -c0 sset 'media1_in Gain 0' 80% 
+> amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'media1_in Gain 0' off
+> amixer -c0 sset 'pcm0_in Gain 0' 80% 
+> amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'pcm0_in Gain 0' off
+> amixer -c0 sset 'codec_out0 Gain 0' 80%
+> amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
+> amixer -c0 sset 'codec_out0 Gain 0' off
+> 
+> Also there're some settings for the RT5672 codec, but I do not remember now.
+ 
+it seems that the link is active with no data? Couple of suggestions:
+ 
+1. try to enable a DSP loopback to see if the data isn't garbled by the driver
+amixer cset "name='pcm1_out mix 0 pcm0_in" on
+ 
+2. try a loopback from capture to playback to see if the data sampled by the codec can be played out.
+amixer -c0 sset 'codec_out0 mix 0 codec_in0' on
+amixer -c0 sset 'codec_out0 mix 0 codec_in1' on
+ 
+3. replicate all the data on codec_out1 to make sure you have data on all 4 slots
+ 
+amixer -c0 sset 'codec_out1 mix 0 pcm0_in' on
+amixer -c0 sset 'codec_out1 Gain 0' 80%
+amixer -c0 sset 'codec_out1 Gain 0 Ramp Delay' 50
+amixer -c0 sset 'codec_out1 Gain 0' off
+ 
+ 
+ 
+__________ Information from ESET Smart Security, version of virus signature database 4468 (20090929) __________
+ 
+The message was checked by ESET Smart Security.
+ 
+http://www.eset.com
+ 
+ 
+ 
