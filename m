@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: spdif: Set transmit data
-	level to 16 samples" to the asoc tree
-Date: Sat, 12 Dec 2015 23:07:38 +0000
-Message-ID: <E1a7tGM-0002hH-MJ@finisterre>
-References: <1449823533-6993-1-git-send-email-sjoerd.simons@collabora.co.uk>
+Subject: Applied "ASoC: Add SOC_DOUBLE_STS macro" to the asoc
+	tree
+Date: Sat, 12 Dec 2015 23:07:37 +0000
+Message-ID: <E1a7tGL-0002gg-7j@finisterre>
+References: <1449590340-14682-2-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 961A0260A59
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:46 +0100 (CET)
-In-Reply-To: <1449823533-6993-1-git-send-email-sjoerd.simons@collabora.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id ACB0426581E
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:44 +0100 (CET)
+In-Reply-To: <1449590340-14682-2-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Brown <broonie@kernel.org>
+To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: spdif: Set transmit data level to 16 samples
+   ASoC: Add SOC_DOUBLE_STS macro
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 5042f936c6810d0e7153cc9e1794c6998590a930 Mon Sep 17 00:00:00 2001
-From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Date: Fri, 11 Dec 2015 09:45:33 +0100
-Subject: [PATCH] ASoC: rockchip: spdif: Set transmit data level to 16 samples
+>From d13871b3531b05fdf5b8ca92c98779e574fe06f1 Mon Sep 17 00:00:00 2001
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Date: Tue, 8 Dec 2015 15:58:58 +0000
+Subject: [PATCH] ASoC: Add SOC_DOUBLE_STS macro
 
-Explicitly set the transmit data level on the transceiver to 16 samples
-rather then the default 0. This matches both the level set in the vendor
-kernel and the (seemingly very similar) i2s engine. This fixes audio
-glitches when playing back at 192k rate.
+Add SOC_DOUBLE_STS macro for read-only volatile status controls
 
-At the same time, fix a trivial typo in the TDL mask definition
-
-Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_spdif.c | 6 ++++--
- sound/soc/rockchip/rockchip_spdif.h | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ include/sound/soc.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index a38a302..bb09a07 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -152,8 +152,10 @@ static int rk_spdif_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_update_bits(spdif->regmap, SPDIF_DMACR,
--				   SPDIF_DMACR_TDE_ENABLE,
--				   SPDIF_DMACR_TDE_ENABLE);
-+				   SPDIF_DMACR_TDE_ENABLE |
-+				   SPDIF_DMACR_TDL_MASK,
-+				   SPDIF_DMACR_TDE_ENABLE |
-+				   SPDIF_DMACR_TDL(16));
- 
- 		if (ret != 0)
- 			return ret;
-diff --git a/sound/soc/rockchip/rockchip_spdif.h b/sound/soc/rockchip/rockchip_spdif.h
-index 07f86a2..9c24dbc 100644
---- a/sound/soc/rockchip/rockchip_spdif.h
-+++ b/sound/soc/rockchip/rockchip_spdif.h
-@@ -42,7 +42,7 @@
- 
- #define SPDIF_DMACR_TDL_SHIFT	0
- #define SPDIF_DMACR_TDL(x)	((x) << SPDIF_DMACR_TDL_SHIFT)
--#define SPDIF_DMACR_TDL_MASK	(0x1f << SDPIF_DMACR_TDL_SHIFT)
-+#define SPDIF_DMACR_TDL_MASK	(0x1f << SPDIF_DMACR_TDL_SHIFT)
- 
- /*
-  * XFER
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a8b4b9c..2b399b0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -110,6 +110,14 @@
+ 	.put = snd_soc_put_volsw, \
+ 	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
+ 					  max, invert, 0) }
++#define SOC_DOUBLE_STS(xname, reg, shift_left, shift_right, max, invert) \
++{									\
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),		\
++	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,		\
++	.access = SNDRV_CTL_ELEM_ACCESS_READ |				\
++		SNDRV_CTL_ELEM_ACCESS_VOLATILE,				\
++	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right,	\
++					  max, invert, 0) }
+ #define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+ 	.info = snd_soc_info_volsw, \
 -- 
 2.6.4
