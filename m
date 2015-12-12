@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: Apply symmetry for DPCM" to the
-	asoc tree
-Date: Sat, 12 Dec 2015 23:07:22 +0000
-Message-ID: <E1a7tG6-0002bu-Nj@finisterre>
-References: <1449804831-58929-1-git-send-email-koro.chen@mediatek.com>
+Subject: Applied "ASoC: wm_adsp: Add locking to DSP firmware
+	controls" to the asoc tree
+Date: Sat, 12 Dec 2015 23:07:27 +0000
+Message-ID: <E1a7tGB-0002dm-Q0@finisterre>
+References: <1449590917-21170-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57A7B260851
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:31 +0100 (CET)
-In-Reply-To: <1449804831-58929-1-git-send-email-koro.chen@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AB322606E5
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:37 +0100 (CET)
+In-Reply-To: <1449590917-21170-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: PC Liao <pc.liao@mediatek.com>, Koro Chen <koro.chen@mediatek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: Apply symmetry for DPCM
+   ASoC: wm_adsp: Add locking to DSP firmware controls
 
 has been applied to the asoc tree at
 
@@ -53,102 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 906c7d690c3b80e4321178c083db8c14afb56bf8 Mon Sep 17 00:00:00 2001
-From: PC Liao <pc.liao@mediatek.com>
-Date: Fri, 11 Dec 2015 11:33:51 +0800
-Subject: [PATCH] ASoC: dpcm: Apply symmetry for DPCM
+>From 168d10e74c4efd945a37adeb134f096505e62b49 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 8 Dec 2015 16:08:27 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add locking to DSP firmware controls
 
-DPCM does not fully support symmetry attributes. soc_pcm_apply_symmetry()
-is skipped in soc_pcm_open() for DPCM, without being applied elsewhere.
-So HW parameters cannot be correctly limited, and user space can do
-playback/capture at different rates while HW actually does not support it.
-soc_pcm_params_symmetry() will return error and the second stream stops.
+Locking is currently missing from the DSP firmware controls, which can
+lead to some race conditions if the controls are accessed as the DSP
+powers up or down. This patch adds them to the new power lock.
 
-This patch adds soc_pcm_apply_symmetry() for FE, BE, and codec DAIs
-in DPCM path that was skipped in soc_pcm_open().
-
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c482322..37de8af 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1616,6 +1616,56 @@ static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
- 	snd_pcm_stream_unlock_irq(substream);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 3a314f2..b083642 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -597,14 +597,19 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
+ {
+ 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
+ 	char *p = ucontrol->value.bytes.data;
++	int ret = 0;
++
++	mutex_lock(&ctl->dsp->pwr_lock);
+ 
+ 	memcpy(ctl->cache, p, ctl->len);
+ 
+ 	ctl->set = 1;
+-	if (!ctl->enabled)
+-		return 0;
++	if (ctl->enabled)
++		ret = wm_coeff_write_control(ctl, p, ctl->len);
+ 
+-	return wm_coeff_write_control(ctl, p, ctl->len);
++	mutex_unlock(&ctl->dsp->pwr_lock);
++
++	return ret;
  }
  
-+static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
-+			       int stream)
-+{
-+	struct snd_soc_dpcm *dpcm;
-+	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
-+	struct snd_soc_dai *fe_cpu_dai = fe->cpu_dai;
-+	int err;
-+
-+	/* apply symmetry for FE */
-+	if (soc_pcm_has_symmetry(fe_substream))
-+		fe_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
-+
-+	/* Symmetry only applies if we've got an active stream. */
-+	if (fe_cpu_dai->active) {
-+		err = soc_pcm_apply_symmetry(fe_substream, fe_cpu_dai);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	/* apply symmetry for BE */
-+	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
-+		struct snd_soc_pcm_runtime *be = dpcm->be;
-+		struct snd_pcm_substream *be_substream =
-+			snd_soc_dpcm_get_substream(be, stream);
-+		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
-+		int i;
-+
-+		if (soc_pcm_has_symmetry(be_substream))
-+			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
-+
-+		/* Symmetry only applies if we've got an active stream. */
-+		if (rtd->cpu_dai->active) {
-+			err = soc_pcm_apply_symmetry(be_substream, rtd->cpu_dai);
-+			if (err < 0)
-+				return err;
-+		}
-+
-+		for (i = 0; i < rtd->num_codecs; i++) {
-+			if (rtd->codec_dais[i]->active) {
-+				err = soc_pcm_apply_symmetry(be_substream,
-+							     rtd->codec_dais[i]);
-+				if (err < 0)
-+					return err;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+@@ -651,17 +656,22 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
  {
- 	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
-@@ -1644,6 +1694,13 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
- 	dpcm_set_fe_runtime(fe_substream);
- 	snd_pcm_limit_hw_rates(runtime);
- 
-+	ret = dpcm_apply_symmetry(fe_substream, stream);
-+	if (ret < 0) {
-+		dev_err(fe->dev, "ASoC: failed to apply dpcm symmetry %d\n",
-+			ret);
-+		goto unwind;
-+	}
+ 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
+ 	char *p = ucontrol->value.bytes.data;
++	int ret = 0;
 +
- 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
- 	return 0;
++	mutex_lock(&ctl->dsp->pwr_lock);
  
+ 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
+ 		if (ctl->enabled)
+-			return wm_coeff_read_control(ctl, p, ctl->len);
++			ret = wm_coeff_read_control(ctl, p, ctl->len);
+ 		else
+-			return -EPERM;
++			ret = -EPERM;
++	} else {
++		memcpy(p, ctl->cache, ctl->len);
+ 	}
+ 
+-	memcpy(p, ctl->cache, ctl->len);
++	mutex_unlock(&ctl->dsp->pwr_lock);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ struct wmfw_ctl_work {
 -- 
 2.6.4
