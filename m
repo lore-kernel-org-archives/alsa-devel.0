@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 11/13] ASoC: Intel: Skylake: Add DMA resume
-	position in Trigger resume/suspend
-Date: Sat, 12 Dec 2015 17:36:31 +0530
-Message-ID: <1449921993-21101-12-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 13/13] ASoC: Intel: Skylake: Add Resume
+	capability in PCM info.
+Date: Sat, 12 Dec 2015 17:36:33 +0530
+Message-ID: <1449921993-21101-14-git-send-email-vinod.koul@intel.com>
 References: <1449921993-21101-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AF569265873
+ by alsa0.perex.cz (Postfix) with ESMTP id E100426587B
  for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 13:04:09 +0100 (CET)
 In-Reply-To: <1449921993-21101-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,57 +27,25 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Use the DMA resume capability to resume the DMA position when
-stream is suspended/resumed.
-
-In suspend we save the position and when stream is resumed the stream needs
-to be started from the position when the stream was suspended using the new
-DMA resume capabilities
+This patch adds pcm capability to support Resume.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 39b4525d77db..f30ace6de035 100644
+index 6199a8c8f6df..c6431b3e1f2d 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -393,6 +393,15 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		skl_pcm_prepare(substream, dai);
-+		/*
-+		 * enable DMA Resume enable bit for the stream, set the dpib
-+		 * & lpib position to resune before starting the DMA
-+		 */
-+		snd_hdac_ext_stream_drsm_enable(ebus, true,
-+					hdac_stream(stream)->index);
-+		snd_hdac_ext_stream_set_dpibr(ebus, stream, stream->dpib);
-+		snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
-+
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		/*
-@@ -421,8 +430,17 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
- 
- 		ret = skl_decoupled_trigger(substream, cmd);
--		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
-+		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND) {
-+			/* save the dpib and lpib positions */
-+			stream->dpib = readl(ebus->bus.remap_addr +
-+					AZX_REG_VS_SDXDPIB_XBASE +
-+					(AZX_REG_VS_SDXDPIB_XINTERVAL *
-+					hdac_stream(stream)->index));
-+
-+			stream->lpib = snd_hdac_stream_get_pos_lpib(
-+							hdac_stream(stream));
- 			snd_hdac_ext_stream_decouple(ebus, stream, false);
-+		}
- 		break;
- 
- 	default:
+@@ -38,6 +38,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
+ 				 SNDRV_PCM_INFO_PAUSE |
++				 SNDRV_PCM_INFO_RESUME |
+ 				 SNDRV_PCM_INFO_SYNC_START |
+ 				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
+ 				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
 -- 
 1.9.1
