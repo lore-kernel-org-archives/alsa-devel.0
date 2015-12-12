@@ -1,44 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 180/182] ASoC: wm8996: use gpiochip data pointer
-Date: Sat, 12 Dec 2015 22:53:47 +0000
-Message-ID: <20151212225347.GE579@sirena.org.uk>
-References: <1449669114-7317-1-git-send-email-linus.walleij@linaro.org>
+Subject: Re: [PATCH 181/182] ASoC: ac97: use gpiochip data pointer
+Date: Sat, 12 Dec 2015 22:54:01 +0000
+Message-ID: <20151212225401.GF579@sirena.org.uk>
+References: <1449669121-7366-1-git-send-email-linus.walleij@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lteA1dqeVaWQ9QQl"
+	protocol="application/pgp-signature"; boundary="oFbHfjnMgUMsrGjO"
 Return-path: <linux-gpio-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1449669114-7317-1-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <1449669121-7366-1-git-send-email-linus.walleij@linaro.org>
 Sender: linux-gpio-owner@vger.kernel.org
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: linux-gpio@vger.kernel.org, Johan Hovold <johan@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Michael Welling <mwelling@ieee.org>, Markus Pargmann <mpa@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---lteA1dqeVaWQ9QQl
+--oFbHfjnMgUMsrGjO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 09, 2015 at 02:51:54PM +0100, Linus Walleij wrote:
+On Wed, Dec 09, 2015 at 02:52:01PM +0100, Linus Walleij wrote:
 > This makes the driver use the data pointer added to the gpio_chip
 > to store a pointer to the state container instead of relying on
 > container_of().
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---lteA1dqeVaWQ9QQl
+--oFbHfjnMgUMsrGjO
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWbKV6AAoJECTWi3JdVIfQiFkH/RICYuAoOtJX8JpiZsNfqD38
-dRxC7NAIfYjpCbpuyOreK+Nquq5IaCVF6X0zeqycD4+cSo/N3D9E6ydp7j9XD7xR
-JjT770t6LYDDAnrwhrsU7h5cbYT3QZMlb6CmCm8deEnFIserRQUlO2ZhA5aZLbMt
-xi43izaETKLybvOPIgQjq0A0Z6XZfd4KJtbf96lOjPsC+IuXod2nEeo31MuIhrmH
-0LOkDlhs+DL0LgJa/vj5KrYfJid0+i651ecjtJXxH2/ZYI5MBuc8sCBmwsJLNqBM
-s/ZhDZkbe0j25xJlvMcrK1JlMCij41jY7EoHI+AO6Wfg2ST96vlvr4ZPo8c0Xr0=
-=QiKT
+iQEcBAEBCAAGBQJWbKWIAAoJECTWi3JdVIfQw7gH/2k+/Mmrv6FRBq0L09+A7rD9
+TVF++p7wPNSqZdcvfFfIyYogiENvq6rCfrgjco1bgf3kT+eFshzebm/LH0CKtZcn
+7ygG8b4T4G8SwmeNIioO81fxFMHS8gxswH8mRSvGxWYMhHFP4uhVXFjmXBJUj0lL
+arvjCtHgkDgZd7Ygia9eDr5dAbxrP+i4vkJt+kug/bv+5jV9Vp7gKRucmyPfNtI6
+Wy1BE+Z2zaOpaLpYD3jaBYia4xhoL65TbLFRvnOyk1SRan7LXJfDaSWcwJ+w8GKD
+W8KS2kYLD7pfFKo6jczhKQONb4MBacl6VjyMpXZEW6cQFhscZ4xVs4F8enizlLA=
+=6uQJ
 -----END PGP SIGNATURE-----
 
---lteA1dqeVaWQ9QQl--
+--oFbHfjnMgUMsrGjO--
