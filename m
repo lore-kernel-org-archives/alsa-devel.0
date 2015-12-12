@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 01/13] ASoC: Intel: Skylake: Clear stream
-	registers before stream setup
-Date: Sat, 12 Dec 2015 17:36:21 +0530
-Message-ID: <1449921993-21101-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 02/13] ASoC: Intel: Skylake: Fix to set pipe
+	state to invalid when deleting
+Date: Sat, 12 Dec 2015 17:36:22 +0530
+Message-ID: <1449921993-21101-3-git-send-email-vinod.koul@intel.com>
 References: <1449921993-21101-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 59675264F02
- for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 13:03:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AA754265005
+ for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 13:03:29 +0100 (CET)
 In-Reply-To: <1449921993-21101-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,77 +27,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This patch adds clean up routine to clear the stream registers and
-calls this routine before setting up stream registers.
+When pipeline is deleted, set the pipeline state to invalid state.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 38 ++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 8c7e8576cba3..da2329d17f4d 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -60,6 +60,27 @@ static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
- 		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
- }
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 46310d9ac008..de6dac496a0d 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -849,6 +849,8 @@ int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
+ 		ret = skl_ipc_delete_pipeline(&ctx->ipc, pipe->ppl_id);
+ 		if (ret < 0)
+ 			dev_err(ctx->dev, "Failed to delete pipeline\n");
++
++		pipe->state = SKL_PIPE_INVALID;
+ 	}
  
-+static void skl_cldma_stream_clear(struct sst_dsp  *ctx)
-+{
-+	/* make sure Run bit is cleared before setting stream register */
-+	skl_cldma_stream_run(ctx, 0);
-+
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
-+
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
-+
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
-+}
-+
- /* Code loader helper APIs */
- static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
- 		struct snd_dma_buffer *dmab_data,
-@@ -95,6 +116,7 @@ static void skl_cldma_setup_controller(struct sst_dsp  *ctx,
- 		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
- 		u32 count)
- {
-+	skl_cldma_stream_clear(ctx);
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL,
- 			CL_SD_BDLPLBA(dmab_bdl->addr));
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU,
-@@ -137,21 +159,7 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
- static void skl_cldma_cleanup(struct sst_dsp  *ctx)
- {
- 	skl_cldma_cleanup_spb(ctx);
--
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
--
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
--
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
-+	skl_cldma_stream_clear(ctx);
- 
- 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
- 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
+ 	return ret;
 -- 
 1.9.1
