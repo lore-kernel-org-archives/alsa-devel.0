@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Add locking to DSP firmware
-	controls" to the asoc tree
-Date: Sat, 12 Dec 2015 23:07:27 +0000
-Message-ID: <E1a7tGB-0002dm-Q0@finisterre>
-References: <1449590917-21170-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: img: Add driver for Pistachio internal
+	DAC" to the asoc tree
+Date: Sat, 12 Dec 2015 23:07:25 +0000
+Message-ID: <E1a7tG9-0002cq-EY@finisterre>
+References: <1449758412-31249-3-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AB322606E5
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:37 +0100 (CET)
-In-Reply-To: <1449590917-21170-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E03D22608EA
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:33 +0100 (CET)
+In-Reply-To: <1449758412-31249-3-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Add locking to DSP firmware controls
+   ASoC: img: Add driver for Pistachio internal DAC
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,340 @@ to this mail.
 Thanks,
 Mark
 
->From 168d10e74c4efd945a37adeb134f096505e62b49 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 8 Dec 2015 16:08:27 +0000
-Subject: [PATCH] ASoC: wm_adsp: Add locking to DSP firmware controls
+>From 395036225390a940cba7cec5c2306a6999d13d94 Mon Sep 17 00:00:00 2001
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Date: Thu, 10 Dec 2015 14:40:12 +0000
+Subject: [PATCH] ASoC: img: Add driver for Pistachio internal DAC
 
-Locking is currently missing from the DSP firmware controls, which can
-lead to some race conditions if the controls are accessed as the DSP
-powers up or down. This patch adds them to the new power lock.
+Add driver for Pistachio Internal DAC
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/soc/img/Kconfig                  |   8 +
+ sound/soc/img/Makefile                 |   2 +
+ sound/soc/img/pistachio-internal-dac.c | 287 +++++++++++++++++++++++++++++++++
+ 3 files changed, 297 insertions(+)
+ create mode 100644 sound/soc/img/pistachio-internal-dac.c
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3a314f2..b083642 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -597,14 +597,19 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- {
- 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
- 	char *p = ucontrol->value.bytes.data;
-+	int ret = 0;
+diff --git a/sound/soc/img/Kconfig b/sound/soc/img/Kconfig
+index d08537e..857a951 100644
+--- a/sound/soc/img/Kconfig
++++ b/sound/soc/img/Kconfig
+@@ -42,3 +42,11 @@ config SND_SOC_IMG_SPDIF_OUT
+ 	help
+ 	  Say Y or M if you want to add support for SPDIF out driver for
+ 	  Imagination Technologies SPDIF out device.
 +
-+	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	memcpy(ctl->cache, p, ctl->len);
- 
- 	ctl->set = 1;
--	if (!ctl->enabled)
--		return 0;
-+	if (ctl->enabled)
-+		ret = wm_coeff_write_control(ctl, p, ctl->len);
- 
--	return wm_coeff_write_control(ctl, p, ctl->len);
-+	mutex_unlock(&ctl->dsp->pwr_lock);
++
++config SND_SOC_IMG_PISTACHIO_INTERNAL_DAC
++	tristate "Support for Pistachio SoC Internal DAC Driver"
++	depends on SND_SOC_IMG
++	help
++	  Say Y or M if you want to add support for Pistachio internal DAC
++	  driver for Imagination Technologies Pistachio internal DAC device.
+diff --git a/sound/soc/img/Makefile b/sound/soc/img/Makefile
+index 1a44fb4..0508c1c 100644
+--- a/sound/soc/img/Makefile
++++ b/sound/soc/img/Makefile
+@@ -3,3 +3,5 @@ obj-$(CONFIG_SND_SOC_IMG_I2S_OUT) += img-i2s-out.o
+ obj-$(CONFIG_SND_SOC_IMG_PARALLEL_OUT) += img-parallel-out.o
+ obj-$(CONFIG_SND_SOC_IMG_SPDIF_IN) += img-spdif-in.o
+ obj-$(CONFIG_SND_SOC_IMG_SPDIF_OUT) += img-spdif-out.o
++
++obj-$(CONFIG_SND_SOC_IMG_PISTACHIO_INTERNAL_DAC) += pistachio-internal-dac.o
+diff --git a/sound/soc/img/pistachio-internal-dac.c b/sound/soc/img/pistachio-internal-dac.c
+new file mode 100644
+index 0000000..162a0fd
+--- /dev/null
++++ b/sound/soc/img/pistachio-internal-dac.c
+@@ -0,0 +1,287 @@
++/*
++ * Pistachio internal dac driver
++ *
++ * Copyright (C) 2015 Imagination Technologies Ltd.
++ *
++ * Author: Damien Horsley <Damien.Horsley@imgtec.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#define PISTACHIO_INTERNAL_DAC_CTRL			0x40
++#define PISTACHIO_INTERNAL_DAC_CTRL_PWR_SEL_MASK	0x2
++#define PISTACHIO_INTERNAL_DAC_CTRL_PWRDN_MASK		0x1
++
++#define PISTACHIO_INTERNAL_DAC_SRST			0x44
++#define PISTACHIO_INTERNAL_DAC_SRST_MASK		0x1
++
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL			0x48
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL_ADDR_SHIFT	0
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL_ADDR_MASK	0xFFF
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL_WE_MASK		0x1000
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL_WDATA_SHIFT	13
++#define PISTACHIO_INTERNAL_DAC_GTI_CTRL_WDATA_MASK	0x1FE000
++
++#define PISTACHIO_INTERNAL_DAC_PWR			0x1
++#define PISTACHIO_INTERNAL_DAC_PWR_MASK			0x1
++
++#define PISTACHIO_INTERNAL_DAC_FORMATS (SNDRV_PCM_FMTBIT_S24_LE |  \
++					SNDRV_PCM_FMTBIT_S32_LE)
++
++/* codec private data */
++struct pistachio_internal_dac {
++	struct regmap *regmap;
++	struct regulator *supply;
++	bool mute;
++};
++
++static const struct snd_kcontrol_new pistachio_internal_dac_snd_controls[] = {
++	SOC_SINGLE("Playback Switch", PISTACHIO_INTERNAL_DAC_CTRL, 2, 1, 1)
++};
++
++static const struct snd_soc_dapm_widget pistachio_internal_dac_widgets[] = {
++	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_OUTPUT("AOUTL"),
++	SND_SOC_DAPM_OUTPUT("AOUTR"),
++};
++
++static const struct snd_soc_dapm_route pistachio_internal_dac_routes[] = {
++	{ "AOUTL", NULL, "DAC" },
++	{ "AOUTR", NULL, "DAC" },
++};
++
++static void pistachio_internal_dac_reg_writel(struct regmap *top_regs,
++						u32 val, u32 reg)
++{
++	regmap_update_bits(top_regs, PISTACHIO_INTERNAL_DAC_GTI_CTRL,
++			PISTACHIO_INTERNAL_DAC_GTI_CTRL_ADDR_MASK,
++			reg << PISTACHIO_INTERNAL_DAC_GTI_CTRL_ADDR_SHIFT);
++
++	regmap_update_bits(top_regs, PISTACHIO_INTERNAL_DAC_GTI_CTRL,
++			PISTACHIO_INTERNAL_DAC_GTI_CTRL_WDATA_MASK,
++			val << PISTACHIO_INTERNAL_DAC_GTI_CTRL_WDATA_SHIFT);
++
++	regmap_update_bits(top_regs, PISTACHIO_INTERNAL_DAC_GTI_CTRL,
++			PISTACHIO_INTERNAL_DAC_GTI_CTRL_WE_MASK,
++			PISTACHIO_INTERNAL_DAC_GTI_CTRL_WE_MASK);
++
++	regmap_update_bits(top_regs, PISTACHIO_INTERNAL_DAC_GTI_CTRL,
++			PISTACHIO_INTERNAL_DAC_GTI_CTRL_WE_MASK, 0);
++}
++
++static void pistachio_internal_dac_pwr_off(struct pistachio_internal_dac *dac)
++{
++	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_CTRL,
++		PISTACHIO_INTERNAL_DAC_CTRL_PWRDN_MASK,
++		PISTACHIO_INTERNAL_DAC_CTRL_PWRDN_MASK);
++
++	pistachio_internal_dac_reg_writel(dac->regmap, 0,
++					PISTACHIO_INTERNAL_DAC_PWR);
++}
++
++static void pistachio_internal_dac_pwr_on(struct pistachio_internal_dac *dac)
++{
++	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_SRST,
++			PISTACHIO_INTERNAL_DAC_SRST_MASK,
++			PISTACHIO_INTERNAL_DAC_SRST_MASK);
++
++	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_SRST,
++			PISTACHIO_INTERNAL_DAC_SRST_MASK, 0);
++
++	pistachio_internal_dac_reg_writel(dac->regmap,
++					PISTACHIO_INTERNAL_DAC_PWR_MASK,
++					PISTACHIO_INTERNAL_DAC_PWR);
++
++	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_CTRL,
++			PISTACHIO_INTERNAL_DAC_CTRL_PWRDN_MASK, 0);
++}
++
++static struct snd_soc_dai_driver pistachio_internal_dac_dais[] = {
++	{
++		.name = "pistachio_internal_dac",
++		.playback = {
++			.stream_name = "Playback",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = PISTACHIO_INTERNAL_DAC_FORMATS,
++		}
++	},
++};
++
++static int pistachio_internal_dac_codec_probe(struct snd_soc_codec *codec)
++{
++	struct pistachio_internal_dac *dac = snd_soc_codec_get_drvdata(codec);
++
++	snd_soc_codec_init_regmap(codec, dac->regmap);
++
++	return 0;
++}
++
++static const struct snd_soc_codec_driver pistachio_internal_dac_driver = {
++	.probe = pistachio_internal_dac_codec_probe,
++	.idle_bias_off = true,
++	.controls = pistachio_internal_dac_snd_controls,
++	.num_controls = ARRAY_SIZE(pistachio_internal_dac_snd_controls),
++	.dapm_widgets = pistachio_internal_dac_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(pistachio_internal_dac_widgets),
++	.dapm_routes = pistachio_internal_dac_routes,
++	.num_dapm_routes = ARRAY_SIZE(pistachio_internal_dac_routes),
++};
++
++static int pistachio_internal_dac_probe(struct platform_device *pdev)
++{
++	struct pistachio_internal_dac *dac;
++	int ret, voltage;
++	struct device *dev = &pdev->dev;
++	u32 reg;
++
++	dac = devm_kzalloc(dev, sizeof(*dac), GFP_KERNEL);
++
++	if (!dac)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, dac);
++
++	dac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
++							    "img,cr-top");
++	if (IS_ERR(dac->regmap))
++		return PTR_ERR(dac->regmap);
++
++	dac->supply = devm_regulator_get(dev, "VDD");
++	if (IS_ERR(dac->supply)) {
++		ret = PTR_ERR(dac->supply);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "failed to acquire supply 'VDD-supply': %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_enable(dac->supply);
++	if (ret) {
++		dev_err(dev, "failed to enable supply: %d\n", ret);
++		return ret;
++	}
++
++	voltage = regulator_get_voltage(dac->supply);
++
++	switch (voltage) {
++	case 1800000:
++		reg = 0;
++		break;
++	case 3300000:
++		reg = PISTACHIO_INTERNAL_DAC_CTRL_PWR_SEL_MASK;
++		break;
++	default:
++		dev_err(dev, "invalid voltage: %d\n", voltage);
++		ret = -EINVAL;
++		goto err_regulator;
++	}
++
++	regmap_update_bits(dac->regmap, PISTACHIO_INTERNAL_DAC_CTRL,
++			PISTACHIO_INTERNAL_DAC_CTRL_PWR_SEL_MASK, reg);
++
++	pistachio_internal_dac_pwr_off(dac);
++	pistachio_internal_dac_pwr_on(dac);
++
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++	pm_runtime_idle(dev);
++
++	ret = snd_soc_register_codec(dev, &pistachio_internal_dac_driver,
++			pistachio_internal_dac_dais,
++			ARRAY_SIZE(pistachio_internal_dac_dais));
++	if (ret) {
++		dev_err(dev, "failed to register codec: %d\n", ret);
++		goto err_pwr;
++	}
++
++	return 0;
++
++err_pwr:
++	pm_runtime_disable(&pdev->dev);
++	pistachio_internal_dac_pwr_off(dac);
++err_regulator:
++	regulator_disable(dac->supply);
 +
 +	return ret;
- }
- 
- static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
-@@ -651,17 +656,22 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- {
- 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
- 	char *p = ucontrol->value.bytes.data;
-+	int ret = 0;
++}
 +
-+	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		if (ctl->enabled)
--			return wm_coeff_read_control(ctl, p, ctl->len);
-+			ret = wm_coeff_read_control(ctl, p, ctl->len);
- 		else
--			return -EPERM;
-+			ret = -EPERM;
-+	} else {
-+		memcpy(p, ctl->cache, ctl->len);
- 	}
- 
--	memcpy(p, ctl->cache, ctl->len);
-+	mutex_unlock(&ctl->dsp->pwr_lock);
- 
--	return 0;
-+	return ret;
- }
- 
- struct wmfw_ctl_work {
++static int pistachio_internal_dac_remove(struct platform_device *pdev)
++{
++	struct pistachio_internal_dac *dac = dev_get_drvdata(&pdev->dev);
++
++	snd_soc_unregister_codec(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++	pistachio_internal_dac_pwr_off(dac);
++	regulator_disable(dac->supply);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int pistachio_internal_dac_rt_resume(struct device *dev)
++{
++	struct pistachio_internal_dac *dac = dev_get_drvdata(dev);
++	int ret;
++
++	ret = regulator_enable(dac->supply);
++	if (ret) {
++		dev_err(dev, "failed to enable supply: %d\n", ret);
++		return ret;
++	}
++
++	pistachio_internal_dac_pwr_on(dac);
++
++	return 0;
++}
++
++static int pistachio_internal_dac_rt_suspend(struct device *dev)
++{
++	struct pistachio_internal_dac *dac = dev_get_drvdata(dev);
++
++	pistachio_internal_dac_pwr_off(dac);
++
++	regulator_disable(dac->supply);
++
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops pistachio_internal_dac_pm_ops = {
++	SET_RUNTIME_PM_OPS(pistachio_internal_dac_rt_suspend,
++			pistachio_internal_dac_rt_resume, NULL)
++};
++
++static const struct of_device_id pistachio_internal_dac_of_match[] = {
++	{ .compatible = "img,pistachio-internal-dac" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, pistachio_internal_dac_of_match);
++
++static struct platform_driver pistachio_internal_dac_plat_driver = {
++	.driver = {
++		.name = "img-pistachio-internal-dac",
++		.of_match_table = pistachio_internal_dac_of_match,
++		.pm = &pistachio_internal_dac_pm_ops
++	},
++	.probe = pistachio_internal_dac_probe,
++	.remove = pistachio_internal_dac_remove
++};
++module_platform_driver(pistachio_internal_dac_plat_driver);
++
++MODULE_DESCRIPTION("Pistachio Internal DAC driver");
++MODULE_AUTHOR("Damien Horsley <Damien.Horsley@imgtec.com>");
++MODULE_LICENSE("GPL v2");
 -- 
 2.6.4
