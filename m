@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 00/10 v2] ALSA: dice: stabiliza packet
-	streaming
-Date: Sat, 12 Dec 2015 12:06:00 +0900
-Message-ID: <1449889570-26641-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/10] ALSA: dice: split subaddress check from
+	category check
+Date: Sat, 12 Dec 2015 12:06:03 +0900
+Message-ID: <1449889570-26641-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1449889570-26641-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DEAC2654B7
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F1802654B8
  for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 04:06:15 +0100 (CET)
+In-Reply-To: <1449889570-26641-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,104 +25,239 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patchset updates my previous one:
-[alsa-devel] [RFC][PATCH 0/8] ALSA: dice: constrain PCM substreams to current sampling transfer frequency
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-November/100670.html
+Before allocating an instance of sound card, ALSA dice driver checks
+chip_ID_hi in Bus information block of Config ROM, then also checks
+subaddresses. The former operation reads cache of Config ROM in Linux
+FireWire subsystem, and the latter operation sends read transaction. The
+latter can be merged into initialization of transaction.
 
-I hope more users to test this patchset in this developing cycle.
+This commit splits these two operations to reduce needless transaction in
+probe processing.
 
-[Background]
-I've frequently got private messages from owners of dice-based models
-since below patchset was merged to mainline:
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-transaction.c | 89 ++++++++++++++++++++++++++--------
+ sound/firewire/dice/dice.c             | 72 +++------------------------
+ 2 files changed, 77 insertions(+), 84 deletions(-)
 
-[alsa-devel] [PATCH 00/15 v5] ALSA: Enhancement for existed FireWire drivers
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085142.html
-
-Some of them addressed that ALSA dice driver fails to handle their
-models, while their experiences are not the same. The summary:
- * ETIMEOUT at starting streaming
- * detecting packet discontinuity at starting streaming
- * ETIMEOUT at probing snd-dice
- * no sound even if starting streaming
-
-This patchset is my solutions for these issues. It consists of four parts;
-
-[Patch 01]
-ETIMEDOUT at starting streaming means that ALSA dice driver has never received
-dice notification within current timeout (200 msec).
-This patch expands the timeout up to 2 sec. There's some disadvantages of this
-change in usage of ALSA PCM API, see commit comment.
-
-[Patch 02]
-Packet discontinuity at starting streaming means that the device fail to get
-constant clock signals from phase lock loop (PLL) circuit. In this case, ALSA
-dice driver successfully starts streaming and receives AMDTP packet from the
-device, therefore any dice notifications are already transferred. It's
-reasonable to judge that the device has a quirk to transfer the notification
-before set its PLL circuit steadily.
-This patch continue to check a register so that the device get phase lock after
-receiving dice notification.
-
-[Patch 03-04]
-When connected to IEEE 1394 bus, some models generate bus reset after appearing
-on bus topology. Usually, boot processing of Dice based models consists of
-three stages; boot loader (RedBoot) is loaded, it loads eCos, the operating
-system executes vendor's configurations for hardware initialization. It's
-reasonable to assume that bus reset occurs at each of these stages.
-Furthermore, I observed that ImpactTwin (TC Electronic produced) changes some
-registers before/after ALSA dice driver is probed with my RFC v1. This means
-that the hardware initialization requires a bit time.
-These patches postpone unit probe processing after continuous bus resets. These
-patches have advantages to start communication to the device after the hardware
-initialization. These patches may improve handling Dice II based models such as
-ImpactTwin and IO26 (Alesis produces).
-
-[Patch 05-10]
-When seeing sound/firewire/dice/dice-interface.h, Dice interface gives no ways
-for drivers to get all formats of AMDTP stream. Current ALSA dice driver manage
-to generate 'format cache' at unit probing processing, while this requires to
-change the state of actual clock on devices. This idea is not good because of
-ignoring hardware design. This idea is not good in a case that users save their
-favorite configuration to the device. Furthermore, this is not also good in a
-case that the stream format is not decided according to sampling transfer
-frequency only, i.e. data format of digital interface is also dominant to the
-stream format.
-These patches add limitation to constrain PCM substream at current sampling
-transfer frequency. As a result, userspace applications are allowed to request
-according to current sampling transfer frequency. When users change the
-frequency, they should use userspace applications with fw character devices to
-set it in advance. ALSA dice driver gives no way to achieve it in describes
-reasons. Although ALSA dice driver goes backward with these patchset, we don't
-beat any actual hardware designs.
-
-
-[Changes from RFC v1]
- * Patch 03-04 are newly added. This enables to handle bus reset at unit probe
-   processing, and drops one of reasons to constrain PCM substreams at current
-   sampling transfer frequency.
- * Minor arrangements
-
-Takashi Sakamoto (10):
-  ALSA: dice: expand timeout to wait for Dice notification
-  ALSA: dice: wait for ensuring phase lock
-  ALSA: dice: split subaddress check from category check
-  ALSA: dice: postpone probe processing
-  ALSA: dice: limit to current sampling transfer frequency
-  ALSA: dice: limit stream to current sampling transfer frequency.
-  ALSA: dice: add MIDI ports according to current number of MIDI
-    substreams
-  ALSA: dice: get the number of MBLA data channel at opening PCM
-    substream
-  ALSA: dice: purge generating channel cache
-  ALSA: dice: ensure phase lock before starting streaming
-
- sound/firewire/dice/dice-midi.c        |  25 +++-
- sound/firewire/dice/dice-pcm.c         | 201 ++++++++-------------------
- sound/firewire/dice/dice-stream.c      |  84 ++++++++----
- sound/firewire/dice/dice-transaction.c | 158 ++++++++++-----------
- sound/firewire/dice/dice.c             | 242 ++++++++++++---------------------
- sound/firewire/dice/dice.h             |  11 +-
- 6 files changed, 293 insertions(+), 428 deletions(-)
-
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index ba0f526..46b3481 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -337,39 +337,59 @@ int snd_dice_transaction_reinit(struct snd_dice *dice)
+ 	return register_notification_address(dice, false);
+ }
+ 
+-int snd_dice_transaction_init(struct snd_dice *dice)
++static int get_subaddrs(struct snd_dice *dice)
+ {
+-	struct fw_address_handler *handler = &dice->notification_handler;
++	static const int min_values[10] = {
++		10, 0x64 / 4,
++		10, 0x18 / 4,
++		10, 0x18 / 4,
++		0, 0,
++		0, 0,
++	};
+ 	__be32 *pointers;
++	u32 data;
++	unsigned int i;
+ 	int err;
+ 
+-	/* Use the same way which dice_interface_check() does. */
+-	pointers = kmalloc(sizeof(__be32) * 10, GFP_KERNEL);
++	pointers = kmalloc_array(ARRAY_SIZE(min_values), sizeof(__be32),
++				 GFP_KERNEL);
+ 	if (pointers == NULL)
+ 		return -ENOMEM;
+ 
+-	/* Get offsets for sub-addresses */
++	/*
++	 * Check that the sub address spaces exist and are located inside the
++	 * private address space.  The minimum values are chosen so that all
++	 * minimally required registers are included.
++	 */
+ 	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
+-				 DICE_PRIVATE_SPACE,
+-				 pointers, sizeof(__be32) * 10, 0);
++				 DICE_PRIVATE_SPACE, pointers,
++				 sizeof(__be32) * ARRAY_SIZE(min_values), 0);
+ 	if (err < 0)
+ 		goto end;
+ 
+-	/* Allocation callback in address space over host controller */
+-	handler->length = 4;
+-	handler->address_callback = dice_notification;
+-	handler->callback_data = dice;
+-	err = fw_core_add_address_handler(handler, &fw_high_memory_region);
+-	if (err < 0) {
+-		handler->callback_data = NULL;
+-		goto end;
++	for (i = 0; i < ARRAY_SIZE(min_values); ++i) {
++		data = be32_to_cpu(pointers[i]);
++		if (data < min_values[i] || data >= 0x40000) {
++			err = -ENODEV;
++			goto end;
++		}
+ 	}
+ 
+-	/* Register the address space */
+-	err = register_notification_address(dice, true);
+-	if (err < 0) {
+-		fw_core_remove_address_handler(handler);
+-		handler->callback_data = NULL;
++	/*
++	 * Check that the implemented DICE driver specification major version
++	 * number matches.
++	 */
++	err = snd_fw_transaction(dice->unit, TCODE_READ_QUADLET_REQUEST,
++				 DICE_PRIVATE_SPACE +
++				 be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
++				 &data, sizeof(data), 0);
++	if (err < 0)
++		goto end;
++
++	if ((data & cpu_to_be32(0xff000000)) != cpu_to_be32(0x01000000)) {
++		dev_err(&dice->unit->device,
++			"unknown DICE version: 0x%08x\n", be32_to_cpu(data));
++		err = -ENODEV;
+ 		goto end;
+ 	}
+ 
+@@ -386,3 +406,32 @@ end:
+ 	kfree(pointers);
+ 	return err;
+ }
++
++int snd_dice_transaction_init(struct snd_dice *dice)
++{
++	struct fw_address_handler *handler = &dice->notification_handler;
++	int err;
++
++	err = get_subaddrs(dice);
++	if (err < 0)
++		return err;
++
++	/* Allocation callback in address space over host controller */
++	handler->length = 4;
++	handler->address_callback = dice_notification;
++	handler->callback_data = dice;
++	err = fw_core_add_address_handler(handler, &fw_high_memory_region);
++	if (err < 0) {
++		handler->callback_data = NULL;
++		return err;
++	}
++
++	/* Register the address space */
++	err = register_notification_address(dice, true);
++	if (err < 0) {
++		fw_core_remove_address_handler(handler);
++		handler->callback_data = NULL;
++	}
++
++	return err;
++}
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 0cda05c..26271cc 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -18,27 +18,12 @@ MODULE_LICENSE("GPL v2");
+ #define WEISS_CATEGORY_ID	0x00
+ #define LOUD_CATEGORY_ID	0x10
+ 
+-static int dice_interface_check(struct fw_unit *unit)
++static int check_dice_category(struct fw_unit *unit)
+ {
+-	static const int min_values[10] = {
+-		10, 0x64 / 4,
+-		10, 0x18 / 4,
+-		10, 0x18 / 4,
+-		0, 0,
+-		0, 0,
+-	};
+ 	struct fw_device *device = fw_parent_device(unit);
+ 	struct fw_csr_iterator it;
+-	int key, val, vendor = -1, model = -1, err;
+-	unsigned int category, i;
+-	__be32 *pointers;
+-	u32 value;
+-	__be32 version;
+-
+-	pointers = kmalloc_array(ARRAY_SIZE(min_values), sizeof(__be32),
+-				 GFP_KERNEL);
+-	if (pointers == NULL)
+-		return -ENOMEM;
++	int key, val, vendor = -1, model = -1;
++	unsigned int category;
+ 
+ 	/*
+ 	 * Check that GUID and unit directory are constructed according to DICE
+@@ -64,51 +49,10 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	else
+ 		category = DICE_CATEGORY_ID;
+ 	if (device->config_rom[3] != ((vendor << 8) | category) ||
+-	    device->config_rom[4] >> 22 != model) {
+-		err = -ENODEV;
+-		goto end;
+-	}
+-
+-	/*
+-	 * Check that the sub address spaces exist and are located inside the
+-	 * private address space.  The minimum values are chosen so that all
+-	 * minimally required registers are included.
+-	 */
+-	err = snd_fw_transaction(unit, TCODE_READ_BLOCK_REQUEST,
+-				 DICE_PRIVATE_SPACE, pointers,
+-				 sizeof(__be32) * ARRAY_SIZE(min_values), 0);
+-	if (err < 0) {
+-		err = -ENODEV;
+-		goto end;
+-	}
+-	for (i = 0; i < ARRAY_SIZE(min_values); ++i) {
+-		value = be32_to_cpu(pointers[i]);
+-		if (value < min_values[i] || value >= 0x40000) {
+-			err = -ENODEV;
+-			goto end;
+-		}
+-	}
++	    device->config_rom[4] >> 22 != model)
++		return -ENODEV;
+ 
+-	/*
+-	 * Check that the implemented DICE driver specification major version
+-	 * number matches.
+-	 */
+-	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 DICE_PRIVATE_SPACE +
+-				 be32_to_cpu(pointers[0]) * 4 + GLOBAL_VERSION,
+-				 &version, 4, 0);
+-	if (err < 0) {
+-		err = -ENODEV;
+-		goto end;
+-	}
+-	if ((version & cpu_to_be32(0xff000000)) != cpu_to_be32(0x01000000)) {
+-		dev_err(&unit->device,
+-			"unknown DICE version: 0x%08x\n", be32_to_cpu(version));
+-		err = -ENODEV;
+-		goto end;
+-	}
+-end:
+-	return err;
++	return 0;
+ }
+ 
+ static int highest_supported_mode_rate(struct snd_dice *dice,
+@@ -254,9 +198,9 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	struct snd_dice *dice;
+ 	int err;
+ 
+-	err = dice_interface_check(unit);
++	err = check_dice_category(unit);
+ 	if (err < 0)
+-		goto end;
++		return -ENODEV;
+ 
+ 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
+ 			   sizeof(*dice), &card);
 -- 
 2.5.0
