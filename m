@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add SOC_DOUBLE_STS macro" to the asoc
-	tree
-Date: Sat, 12 Dec 2015 23:07:37 +0000
-Message-ID: <E1a7tGL-0002gg-7j@finisterre>
-References: <1449590340-14682-2-git-send-email-Damien.Horsley@imgtec.com>
+Subject: Applied "ASoC: es8328: Fix shifts for mixer switches"
+	to the asoc tree
+Date: Sat, 12 Dec 2015 23:07:41 +0000
+Message-ID: <E1a7tGP-0002iD-Bm@finisterre>
+References: <1448019742-12263-1-git-send-email-john@metanate.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACB0426581E
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:44 +0100 (CET)
-In-Reply-To: <1449590340-14682-2-git-send-email-Damien.Horsley@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F260026586A
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 00:07:53 +0100 (CET)
+In-Reply-To: <1448019742-12263-1-git-send-email-john@metanate.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
+To: John Keeping <john@metanate.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add SOC_DOUBLE_STS macro
+   ASoC: es8328: Fix shifts for mixer switches
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From d13871b3531b05fdf5b8ca92c98779e574fe06f1 Mon Sep 17 00:00:00 2001
-From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
-Date: Tue, 8 Dec 2015 15:58:58 +0000
-Subject: [PATCH] ASoC: Add SOC_DOUBLE_STS macro
+>From 352d52e2442f42539c76d8a13d795ccab7079b26 Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Fri, 20 Nov 2015 11:42:22 +0000
+Subject: [PATCH] ASoC: es8328: Fix shifts for mixer switches
 
-Add SOC_DOUBLE_STS macro for read-only volatile status controls
+These are all off by one; the playback and bypass switches are the top
+two bits of the registers, which are at shifts 7 and 6 not 8 and 7.
 
-Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
+Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/es8328.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a8b4b9c..2b399b0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -110,6 +110,14 @@
- 	.put = snd_soc_put_volsw, \
- 	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
- 					  max, invert, 0) }
-+#define SOC_DOUBLE_STS(xname, reg, shift_left, shift_right, max, invert) \
-+{									\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),		\
-+	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,		\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ |				\
-+		SNDRV_CTL_ELEM_ACCESS_VOLATILE,				\
-+	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right,	\
-+					  max, invert, 0) }
- #define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
- 	.info = snd_soc_info_volsw, \
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index c4c64e21..afa6c5d 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -214,18 +214,18 @@ static const struct snd_kcontrol_new es8328_right_line_controls =
+ 
+ /* Left Mixer */
+ static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 8, 1, 0),
+-	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 7, 1, 0),
+-	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 8, 1, 0),
+-	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 7, 1, 0),
++	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 7, 1, 0),
++	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 6, 1, 0),
++	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 7, 1, 0),
++	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 6, 1, 0),
+ };
+ 
+ /* Right Mixer */
+ static const struct snd_kcontrol_new es8328_right_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 8, 1, 0),
+-	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 7, 1, 0),
+-	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 8, 1, 0),
+-	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 7, 1, 0),
++	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 7, 1, 0),
++	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 6, 1, 0),
++	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 7, 1, 0),
++	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 6, 1, 0),
+ };
+ 
+ static const char * const es8328_pga_sel[] = {
 -- 
 2.6.4
