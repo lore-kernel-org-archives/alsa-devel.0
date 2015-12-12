@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 05/14] ALSA: hdac: Add MISCBDCGE support
-Date: Sat, 12 Dec 2015 17:13:47 +0530
-Message-ID: <20151212114347.GG1854@localhost>
-References: <1449816267-11910-6-git-send-email-vinod.koul@intel.com>
- <201512120531.wHapk8nX%fengguang.wu@intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 02/10] ALSA: dice: wait for ensuring
+	phase	lock
+Date: Sat, 12 Dec 2015 12:42:18 +0100
+Message-ID: <566C081A.1000804@ladisch.de>
+References: <1449889570-26641-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1449889570-26641-3-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E4AC92606E6
- for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 12:40:41 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201512120531.wHapk8nX%fengguang.wu@intel.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9418F2606E6
+ for <alsa-devel@alsa-project.org>; Sat, 12 Dec 2015 12:42:40 +0100 (CET)
+In-Reply-To: <1449889570-26641-3-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <lkp@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, kbuild-all@01.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 12, 2015 at 05:14:48AM +0800, kbuild test robot wrote:
-> Hi Jayachandran,
-> 
-> [auto build test WARNING on asoc/for-next]
-> [also build test WARNING on next-20151211]
-> [cannot apply to sound/for-next v4.4-rc4]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Vinod-Koul/ASoC-Intel-Skylake-Update-to-SKL-driver/20151211-145345
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> config: mn10300-allmodconfig (attached as .config)
-> reproduce:
->         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         make.cross ARCH=mn10300 
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    sound/hda/ext/hdac_ext_controller.c: In function 'update_pci_dword':
-> >> sound/hda/ext/hdac_ext_controller.c:317:7: warning: 'data' is used uninitialized in this function [-Wuninitialized]
->      data &= ~mask;
+Takashi Sakamoto wrote:
+> Some users have reported that their Dice based models generate packet
+> discontinuity at the beginning of streaming. When standing on an
+> assumption that the value of SYT field in transferred AMDTP packet comes
+> from phase lock circuit, this comes from phase unlocking with current
+> clock source. Just waiting for dice notification is not enough to prevent
+> from packet discontinuity.
+>
+> This commit checks the register of phase lock after clock state change for
+> this purpose.
 
-Thanks, will fix it in v2
+Is this patch actually known to help?
+
+This discontinuity could also come from an unexpected initial DBC value.
+I think it would be a good idea to unconditionally enable
+CIP_SKIP_INIT_DBC_CHECK for all devices.
 
 
--- 
-~Vinod
+Regards,
+Clemens
