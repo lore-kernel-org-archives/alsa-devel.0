@@ -1,17 +1,18 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 1/2 v2] ALSA: usb-audio: Add a more accurate
-	volume quirk for AudioQuest DragonFly
-Date: Sun, 13 Dec 2015 20:49:58 +0200
-Message-ID: <1450032599-14281-1-git-send-email-anssi.hannula@iki.fi>
+Subject: [PATCH 2/2] ALSA: usb-audio: Add sample rate inquiry
+	quirk for AudioQuest DragonFly
+Date: Sun, 13 Dec 2015 20:49:59 +0200
+Message-ID: <1450032599-14281-2-git-send-email-anssi.hannula@iki.fi>
 References: <s5h1tf1khtt.wl-tiwai@suse.de>
+ <1450032599-14281-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D06260440
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 19:50:19 +0100 (CET)
-In-Reply-To: <s5h1tf1khtt.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 876C526047C
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2015 19:50:21 +0100 (CET)
+In-Reply-To: <1450032599-14281-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,152 +26,31 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, yaowen@google.com
 List-Id: alsa-devel@alsa-project.org
 
-AudioQuest DragonFly DAC reports a volume control range of 0..50
-(0x0000..0x0032) which in USB Audio means a range of 0 .. 0.2dB, which
-is obviously incorrect and would cause software using the dB information
-in e.g. volume sliders to have a massive volume difference in 100..102%
-range.
-
-Commit 2d1cb7f658fb ("ALSA: usb-audio: add dB range mapping for some
-devices") added a dB range mapping for it with range 0..50 dB.
-
-However, the actual volume mapping seems to be neither linear volume nor
-linear dB scale, but instead quite close to the cubic mapping e.g.
-alsamixer uses, with a range of approx. -53...0 dB.
-
-Replace the previous quirk with a custom dB mapping based on some basic
-output measurements, using a 10-item range TLV (which will still fit in
-alsa-lib MAX_TLV_RANGE_SIZE).
-
-Tested on AudioQuest DragonFly HW v1.2. The quirk is only applied if the
-range is 0..50, so if this gets fixed/changed in later HW revisions it
-will no longer be applied.
-
-v2: incorporated Takashi Iwai's suggestion for the quirk application
-method
+Avoid getting sample rate on AudioQuest DragonFly as it is unsupported
+and causes noisy "cannot get freq at ep 0x1" messages when playback
+starts.
 
 Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
 Cc: <stable@vger.kernel.org>
 ---
 
-It took a bit longer than expected for me to get back to this, but here
-goes :)
+No changes to this one.
 
 
- sound/usb/mixer.c        |  2 ++
- sound/usb/mixer_maps.c   | 12 ------------
- sound/usb/mixer_quirks.c | 37 +++++++++++++++++++++++++++++++++++++
- sound/usb/mixer_quirks.h |  4 ++++
- 4 files changed, 43 insertions(+), 12 deletions(-)
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index f494dced3c11..4f85757009b3 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1354,6 +1354,8 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 		}
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 7016ad898187..b951d620ba1b 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1125,6 +1125,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ 	case USB_ID(0x045E, 0x0779): /* MS Lifecam HD-3000 */
+ 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
+ 	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
++	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
+ 		return true;
  	}
- 
-+	snd_usb_mixer_fu_apply_quirk(state->mixer, cval, unitid, kctl);
-+
- 	range = (cval->max - cval->min) / cval->res;
- 	/*
- 	 * Are there devices with volume range more than 255? I use a bit more
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 6a803eff87f7..ddca6547399b 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -348,13 +348,6 @@ static struct usbmix_name_map bose_companion5_map[] = {
- 	{ 0 }	/* terminator */
- };
- 
--/* Dragonfly DAC 1.2, the dB conversion factor is 1 instead of 256 */
--static struct usbmix_dB_map dragonfly_1_2_dB = {0, 5000};
--static struct usbmix_name_map dragonfly_1_2_map[] = {
--	{ 7, NULL, .dB = &dragonfly_1_2_dB },
--	{ 0 }	/* terminator */
--};
--
- /*
-  * Control map entries
-  */
-@@ -470,11 +463,6 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.id = USB_ID(0x05a7, 0x1020),
- 		.map = bose_companion5_map,
- 	},
--	{
--		/* Dragonfly DAC 1.2 */
--		.id = USB_ID(0x21b4, 0x0081),
--		.map = dragonfly_1_2_map,
--	},
- 	{ 0 } /* terminator */
- };
- 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index fe91184ce832..0ce888dceed0 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -37,6 +37,7 @@
- #include <sound/control.h>
- #include <sound/hwdep.h>
- #include <sound/info.h>
-+#include <sound/tlv.h>
- 
- #include "usbaudio.h"
- #include "mixer.h"
-@@ -1825,3 +1826,39 @@ void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
- 	}
- }
- 
-+static void snd_dragonfly_quirk_db_scale(struct usb_mixer_interface *mixer,
-+					 struct snd_kcontrol *kctl)
-+{
-+	/* Approximation using 10 ranges based on output measurement on hw v1.2.
-+	 * This seems close to the cubic mapping e.g. alsamixer uses. */
-+	static const DECLARE_TLV_DB_RANGE(scale,
-+		 0,  1, TLV_DB_MINMAX_ITEM(-5300, -4970),
-+		 2,  5, TLV_DB_MINMAX_ITEM(-4710, -4160),
-+		 6,  7, TLV_DB_MINMAX_ITEM(-3884, -3710),
-+		 8, 14, TLV_DB_MINMAX_ITEM(-3443, -2560),
-+		15, 16, TLV_DB_MINMAX_ITEM(-2475, -2324),
-+		17, 19, TLV_DB_MINMAX_ITEM(-2228, -2031),
-+		20, 26, TLV_DB_MINMAX_ITEM(-1910, -1393),
-+		27, 31, TLV_DB_MINMAX_ITEM(-1322, -1032),
-+		32, 40, TLV_DB_MINMAX_ITEM(-968, -490),
-+		41, 50, TLV_DB_MINMAX_ITEM(-441, 0),
-+	);
-+
-+	usb_audio_info(mixer->chip, "applying DragonFly dB scale quirk\n");
-+	kctl->tlv.p = scale;
-+	kctl->vd[0].access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
-+	kctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
-+}
-+
-+void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
-+				  struct usb_mixer_elem_info *cval, int unitid,
-+				  struct snd_kcontrol *kctl)
-+{
-+	switch (mixer->chip->usb_id) {
-+	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
-+		if (unitid == 7 && cval->min == 0 && cval->max == 50)
-+			snd_dragonfly_quirk_db_scale(mixer, kctl);
-+		break;
-+	}
-+}
-+
-diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
-index bdbfab093816..177c329cd4dd 100644
---- a/sound/usb/mixer_quirks.h
-+++ b/sound/usb/mixer_quirks.h
-@@ -9,5 +9,9 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
- void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
- 				    int unitid);
- 
-+void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
-+				  struct usb_mixer_elem_info *cval, int unitid,
-+				  struct snd_kcontrol *kctl);
-+
- #endif /* SND_USB_MIXER_QUIRKS_H */
- 
+ 	return false;
 -- 
 2.3.10
