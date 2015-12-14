@@ -1,46 +1,80 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 1/4] ASoC: sun4i-codec: Rename codec dapm
- widgets and routes
-Date: Mon, 14 Dec 2015 10:44:41 +0100
-Message-ID: <20151214094441.GG19456@lukather>
-References: <1449859439-30875-1-git-send-email-hdegoede@redhat.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH V4 2/2] drm/i915: start adding dp mst audio
+Date: Mon, 14 Dec 2015 12:34:53 +0200
+Message-ID: <87egepuxma.fsf@intel.com>
+References: <1449036584-105393-1-git-send-email-libin.yang@linux.intel.com>
+ <1449036584-105393-2-git-send-email-libin.yang@linux.intel.com>
+ <56668E50.8050806@linux.intel.com>
+ <20151210090204.GD20822@phenom.ffwll.local>
+ <566A6839.3010304@linux.intel.com> <s5h6105l0yg.wl-tiwai@suse.de>
+ <87io41v0g7.fsf@intel.com> <s5ha8pdjrlv.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Zrag5V6pnZGjLKiw"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBQE7XKZQKGQEPWX34VY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1449859439-30875-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5ha8pdjrlv.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>, daniel.vetter@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---Zrag5V6pnZGjLKiw
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-
-Hi,
-
-On Fri, Dec 11, 2015 at 07:43:56PM +0100, Hans de Goede wrote:
-> Rename the codec dapm widgets and routes with a _codec prefix. This is
-> a preparation patch for adding card dapm widgets and routes.
-> 
-> Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-
-Thanks!
-Maxime
-
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---Zrag5V6pnZGjLKiw--
+T24gTW9uLCAxNCBEZWMgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToK
+PiBPbiBNb24sIDE0IERlYyAyMDE1IDEwOjMzOjQ0ICswMTAwLAo+IEphbmkgTmlrdWxhIHdyb3Rl
+Ogo+PiAKPj4gT24gRnJpLCAxMSBEZWMgMjAxNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
+PiB3cm90ZToKPj4gPiBPbiBGcmksIDExIERlYyAyMDE1IDA3OjA3OjUzICswMTAwLAo+PiA+IExp
+YmluIFlhbmcgd3JvdGU6Cj4+ID4+IAo+PiA+PiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
+L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRp
+by5jCj4+ID4+ID4+PiBpbmRleCA5YWE4M2U3Li41YWQyZTY2IDEwMDY0NAo+PiA+PiA+Pj4gLS0t
+IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+PiA+PiA+Pj4gKysrIGIvZHJp
+dmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+PiA+PiA+Pj4gQEAgLTI2Miw3ICsyNjIs
+OCBAQCBzdGF0aWMgdm9pZCBoc3dfYXVkaW9fY29kZWNfZGlzYWJsZShzdHJ1Y3QgaW50ZWxfZW5j
+b2RlciAqZW5jb2RlcikKPj4gPj4gPj4+ICAgCXRtcCB8PSBBVURfQ09ORklHX05fUFJPR19FTkFC
+TEU7Cj4+ID4+ID4+PiAgIAl0bXAgJj0gfkFVRF9DT05GSUdfVVBQRVJfTl9NQVNLOwo+PiA+PiA+
+Pj4gICAJdG1wICY9IH5BVURfQ09ORklHX0xPV0VSX05fTUFTSzsKPj4gPj4gPj4+IC0JaWYgKGlu
+dGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkK
+Pj4gPj4gPj4+ICsJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0YywgSU5URUxfT1VU
+UFVUX0RJU1BMQVlQT1JUKSB8fAo+PiA+PiA+Pj4gKwkgICAgaW50ZWxfcGlwZV9oYXNfdHlwZShp
+bnRlbF9jcnRjLCBJTlRFTF9PVVRQVVRfRFBfTVNUKSkKPj4gPj4gPj4+ICAgCQl0bXAgfD0gQVVE
+X0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+PiA+Cj4+ID4gVGhlIHNhbWUgY2hlY2sgaXMgbWlzc2lu
+ZyBpbiBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKCk/Cj4+ID4KPj4gPj4gPj4+ICAgCUk5MTVfV1JJ
+VEUoSFNXX0FVRF9DRkcocGlwZSksIHRtcCk7Cj4+ID4+ID4+Pgo+PiA+PiA+Pj4gQEAgLTQ3NCw3
+ICs0NzUsOCBAQCBzdGF0aWMgdm9pZCBpbGtfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBkcm1f
+Y29ubmVjdG9yICpjb25uZWN0b3IsCj4+ID4+ID4+PiAgIAl0bXAgJj0gfkFVRF9DT05GSUdfTl9W
+QUxVRV9JTkRFWDsKPj4gPj4gPj4+ICAgCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxF
+Owo+PiA+PiA+Pj4gICAJdG1wICY9IH5BVURfQ09ORklHX1BJWEVMX0NMT0NLX0hETUlfTUFTSzsK
+Pj4gPj4gPj4+IC0JaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0YywgSU5URUxfT1VU
+UFVUX0RJU1BMQVlQT1JUKSkKPj4gPj4gPj4+ICsJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoaW50
+ZWxfY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSB8fAo+PiA+PiA+Pj4gKwkgICAgaW50
+ZWxfcGlwZV9oYXNfdHlwZShpbnRlbF9jcnRjLCBJTlRFTF9PVVRQVVRfRFBfTVNUKSkKPj4gPj4g
+Pj4+ICAgCQl0bXAgfD0gQVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+PiA+Cj4+ID4gLi4uIGFu
+ZCBtaXNzaW5nIGZvciBpbGtfYXVkaW9fY29kZWNfZGlzYWJsZSgpPwo+PiA+Cj4+ID4KPj4gPj4g
+Pj4+ICAgCWVsc2UKPj4gPj4gPj4+ICAgCQl0bXAgfD0gYXVkaW9fY29uZmlnX2hkbWlfcGl4ZWxf
+Y2xvY2soYWRqdXN0ZWRfbW9kZSk7Cj4+ID4+ID4+PiBAQCAtNTEyLDcgKzUxNCw4IEBAIHZvaWQg
+aW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdCBpbnRlbF9lbmNvZGVyICppbnRlbF9lbmNv
+ZGVyKQo+PiA+PiA+Pj4KPj4gPj4gPj4+ICAgCS8qIEVMRCBDb25uX1R5cGUgKi8KPj4gPj4gPj4+
+ICAgCWNvbm5lY3Rvci0+ZWxkWzVdICY9IH4oMyA8PCAyKTsKPj4gPj4gPj4+IC0JaWYgKGludGVs
+X3BpcGVfaGFzX3R5cGUoY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKPj4gPj4gPj4+
+ICsJaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JU
+KSB8fAo+PiA+PiA+Pj4gKwkgICAgaW50ZWxfcGlwZV9oYXNfdHlwZShjcnRjLCBJTlRFTF9PVVRQ
+VVRfRFBfTVNUKSkKPj4gPgo+PiA+IElNTywgaXQncyBiZXR0ZXIgdG8gaGF2ZSBhIG1hY3JvIHRv
+IGNvdmVyIHRoaXMgdHdvLWxpbmUgY2hlY2sgaW5zdGVhZAo+PiA+IG9mIG9wZW4tY29kaW5nIGF0
+IGVhY2ggcGxhY2UuICBXZSdsbCBoYXZlIDUgcGxhY2VzIGluIHRoZSBlbmQuCj4+IAo+PiBJIGRv
+bid0IHRoaW5rIHRoYXQncyBuZWNlc3NhcnkuIE9ubHkgdGhlIGhzd18qIGZ1bmN0aW9ucyBuZWVk
+IGl0LCB0aGUKPj4gb3RoZXIgcGxhdGZvcm1zICh1c2luZyB0aGUgb3RoZXIgZnVuY3Rpb25zKSBk
+b24ndCBzdXBwb3J0IERQIE1TVC4KPgo+IFRoZW4gdGhlIHBhdGNoIGNoYW5nZXMgdGhlIGZ1bmN0
+aW9ucy4gIEFuZCBzdGlsbCB0aHJlZSBwbGFjZXMgaGF2ZQo+IHRoaXMgY2hlY2suCgpQcm9iYWJs
+eSB0aGUgbWlzdGFrZSBpbiB0aGUgcGF0Y2ggd2FzIHRvIGFkZCB0aGUgY2hlY2sgdG8KaWxrX2F1
+ZGlvX2NvZGVjX2VuYWJsZSB3aGVuIGl0IHNob3VsZCBoYXZlIGJlZW4gYWRkZWQgdG8KaHN3X2F1
+ZGlvX2NvZGVjX2VuYWJsZS4KCkJSLApKYW5pLgoKCgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hp
+CgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBt
+YWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
