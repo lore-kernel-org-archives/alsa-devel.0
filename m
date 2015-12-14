@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 3/8] ALSA: compress: Add
-	SND_AUDIOCODEC_BESPOKE
-Date: Mon, 14 Dec 2015 17:53:24 +0000
-Message-ID: <1450115609-14094-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 4/8] ASoC: wm_adsp: Add support for opening
+	a compressed stream
+Date: Mon, 14 Dec 2015 17:53:25 +0000
+Message-ID: <1450115609-14094-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1450115609-14094-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 09234260631
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BEC626067A
  for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 18:53:34 +0100 (CET)
 In-Reply-To: <1450115609-14094-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,42 +26,325 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-When working with the compressed framework occasionally vendors will
-use esoteric internal audio formats. For such formats it doesn't really
-make sense to add an new define to the kernel as their use is not
-sufficiently general.
-
-This patch adds a new define SND_AUDIOCODEC_BESPOKE that vendors can use
-in such situations.
+Allow user-space to open a compressed stream, although no data will be
+passed yet, as part of this adding the ability to define supported
+capabilities per firmware and check these match the stream being opened.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/uapi/sound/compress_params.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm5110.c  |  23 ++++++
+ sound/soc/codecs/wm_adsp.c | 194 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm_adsp.h |  13 +++
+ 3 files changed, 227 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-index d9bd9ca..9625484 100644
---- a/include/uapi/sound/compress_params.h
-+++ b/include/uapi/sound/compress_params.h
-@@ -73,7 +73,8 @@
- #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
- #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
- #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
--#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_G729
-+#define SND_AUDIOCODEC_BESPOKE               ((__u32) 0x0000000E)
-+#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_BESPOKE
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 67d5651..8c0fd91 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2158,6 +2158,25 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ 	},
+ };
  
- /*
-  * Profile and modes are listed with bit masks. This allows for a
-@@ -312,7 +313,7 @@ struct snd_enc_flac {
++static int wm5110_open(struct snd_compr_stream *stream)
++{
++	struct snd_soc_pcm_runtime *rtd = stream->private_data;
++	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct arizona *arizona = priv->core.arizona;
++	int n_adsp;
++
++	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
++		n_adsp = 2;
++	} else {
++		dev_err(arizona->dev,
++			"No suitable compressed stream for DAI '%s'\n",
++			rtd->codec_dai->name);
++		return -EINVAL;
++	}
++
++	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
++}
++
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+@@ -2249,6 +2268,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
+ };
  
- struct snd_enc_generic {
- 	__u32 bw;	/* encoder bandwidth */
--	__s32 reserved[15];
-+	__s32 reserved[15];	/* Can be used for SND_AUDIOCODEC_BESPOKE */
- } __attribute__((packed, aligned(4)));
+ static struct snd_compr_ops wm5110_compr_ops = {
++	.open = wm5110_open,
++	.free = wm_adsp_compr_free,
++	.set_params = wm_adsp_compr_set_params,
++	.get_caps = wm_adsp_compr_get_caps,
+ };
  
- union snd_codec_options {
+ static struct snd_soc_platform_driver wm5110_compr_platform = {
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 2b99f46..22b57bc 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -229,8 +229,42 @@ static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_MISC] =     "Misc",
+ };
+ 
+-static struct {
++struct wm_adsp_compr {
++	struct wm_adsp *dsp;
++
++	struct snd_compr_stream *stream;
++	struct snd_compressed_buffer size;
++};
++
++#define WM_ADSP_DATA_WORD_SIZE         3
++
++#define WM_ADSP_MIN_FRAGMENTS          1
++#define WM_ADSP_MAX_FRAGMENTS          256
++#define WM_ADSP_MIN_FRAGMENT_SIZE      (64 * WM_ADSP_DATA_WORD_SIZE)
++#define WM_ADSP_MAX_FRAGMENT_SIZE      (4096 * WM_ADSP_DATA_WORD_SIZE)
++
++struct wm_adsp_fw_caps {
++	u32 id;
++	struct snd_codec_desc desc;
++};
++
++static const struct wm_adsp_fw_caps ez2control_caps[] = {
++	{
++		.id = SND_AUDIOCODEC_BESPOKE,
++		.desc = {
++			.max_ch = 1,
++			.sample_rates = { 16000 },
++			.num_sample_rates = 1,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++	},
++};
++
++static const struct {
+ 	const char *file;
++	int compr_direction;
++	int num_caps;
++	const struct wm_adsp_fw_caps *caps;
+ } wm_adsp_fw[WM_ADSP_NUM_FW] = {
+ 	[WM_ADSP_FW_MBC_VSS] =  { .file = "mbc-vss" },
+ 	[WM_ADSP_FW_HIFI] =     { .file = "hifi" },
+@@ -238,7 +272,12 @@ static struct {
+ 	[WM_ADSP_FW_TX_SPK] =   { .file = "tx-spk" },
+ 	[WM_ADSP_FW_RX] =       { .file = "rx" },
+ 	[WM_ADSP_FW_RX_ANC] =   { .file = "rx-anc" },
+-	[WM_ADSP_FW_CTRL] =     { .file = "ctrl" },
++	[WM_ADSP_FW_CTRL] =     {
++		.file = "ctrl",
++		.compr_direction = SND_COMPRESS_CAPTURE,
++		.num_caps = ARRAY_SIZE(ez2control_caps),
++		.caps = ez2control_caps,
++	},
+ 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
+ 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
+ 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
+@@ -461,7 +500,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock(&dsp[e->shift_l].pwr_lock);
+ 
+-	if (dsp[e->shift_l].running)
++	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
+ 		ret = -EBUSY;
+ 	else
+ 		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
+@@ -2175,4 +2214,153 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_init);
+ 
++int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
++{
++	struct wm_adsp_compr *compr;
++	int ret = 0;
++
++	mutex_lock(&dsp->pwr_lock);
++
++	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
++		adsp_err(dsp, "Firmware does not support compressed API\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
++		adsp_err(dsp, "Firmware does not support stream direction\n");
++		ret = -EINVAL;
++		goto out;
++	}
++
++	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
++	if (!compr) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	compr->dsp = dsp;
++	compr->stream = stream;
++
++	dsp->compr = compr;
++
++	stream->runtime->private_data = compr;
++
++out:
++	mutex_unlock(&dsp->pwr_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_open);
++
++int wm_adsp_compr_free(struct snd_compr_stream *stream)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	struct wm_adsp *dsp = compr->dsp;
++
++	mutex_lock(&dsp->pwr_lock);
++
++	dsp->compr = NULL;
++
++	kfree(compr);
++
++	mutex_unlock(&dsp->pwr_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_free);
++
++static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
++				      struct snd_compr_params *params)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	struct wm_adsp *dsp = compr->dsp;
++	const struct wm_adsp_fw_caps *caps;
++	const struct snd_codec_desc *desc;
++	int i, j;
++
++	if (params->buffer.fragment_size < WM_ADSP_MIN_FRAGMENT_SIZE ||
++	    params->buffer.fragment_size > WM_ADSP_MAX_FRAGMENT_SIZE ||
++	    params->buffer.fragments < WM_ADSP_MIN_FRAGMENTS ||
++	    params->buffer.fragments > WM_ADSP_MAX_FRAGMENTS ||
++	    params->buffer.fragment_size % WM_ADSP_DATA_WORD_SIZE) {
++		adsp_err(dsp, "Invalid buffer fragsize=%d fragments=%d\n",
++			 params->buffer.fragment_size,
++			 params->buffer.fragments);
++
++		return -EINVAL;
++	}
++
++	for (i = 0; i < wm_adsp_fw[dsp->fw].num_caps; i++) {
++		caps = &wm_adsp_fw[dsp->fw].caps[i];
++		desc = &caps->desc;
++
++		if (caps->id != params->codec.id)
++			continue;
++
++		if (stream->direction == SND_COMPRESS_PLAYBACK) {
++			if (desc->max_ch < params->codec.ch_out)
++				continue;
++		} else {
++			if (desc->max_ch < params->codec.ch_in)
++				continue;
++		}
++
++		if (!(desc->formats & (1 << params->codec.format)))
++			continue;
++
++		for (j = 0; j < desc->num_sample_rates; ++j)
++			if (desc->sample_rates[j] == params->codec.sample_rate)
++				return 0;
++	}
++
++	adsp_err(dsp, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
++		 params->codec.id, params->codec.ch_in, params->codec.ch_out,
++		 params->codec.sample_rate, params->codec.format);
++	return -EINVAL;
++}
++
++int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
++			     struct snd_compr_params *params)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	int ret;
++
++	ret = wm_adsp_compr_check_params(stream, params);
++	if (ret)
++		return ret;
++
++	compr->size = params->buffer;
++
++	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
++		 compr->size.fragment_size, compr->size.fragments);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
++
++int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
++			   struct snd_compr_caps *caps)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	int fw = compr->dsp->fw;
++	int i;
++
++	if (wm_adsp_fw[fw].caps) {
++		for (i = 0; i < wm_adsp_fw[fw].num_caps; i++)
++			caps->codecs[i] = wm_adsp_fw[fw].caps[i].id;
++
++		caps->num_codecs = i;
++		caps->direction = wm_adsp_fw[fw].compr_direction;
++
++		caps->min_fragment_size = WM_ADSP_MIN_FRAGMENT_SIZE;
++		caps->max_fragment_size = WM_ADSP_MAX_FRAGMENT_SIZE;
++		caps->min_fragments = WM_ADSP_MIN_FRAGMENTS;
++		caps->max_fragments = WM_ADSP_MAX_FRAGMENTS;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
++
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index d2a8c78..33c9b52 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -15,6 +15,7 @@
+ 
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/compress_driver.h>
+ 
+ #include "wmfw.h"
+ 
+@@ -30,6 +31,8 @@ struct wm_adsp_alg_region {
+ 	unsigned int base;
+ };
+ 
++struct wm_adsp_compr;
++
+ struct wm_adsp {
+ 	const char *part;
+ 	int num;
+@@ -59,6 +62,8 @@ struct wm_adsp {
+ 
+ 	struct work_struct boot_work;
+ 
++	struct wm_adsp_compr *compr;
++
+ 	struct mutex pwr_lock;
+ 
+ #ifdef CONFIG_DEBUG_FS
+@@ -97,4 +102,12 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
++extern int wm_adsp_compr_open(struct wm_adsp *dsp,
++			      struct snd_compr_stream *stream);
++extern int wm_adsp_compr_free(struct snd_compr_stream *stream);
++extern int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
++				    struct snd_compr_params *params);
++extern int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
++				  struct snd_compr_caps *caps);
++
+ #endif
 -- 
 2.1.4
