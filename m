@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 11/13] ASoC: Intel: Skylake: Add DMA resume
-	position in Trigger resume/suspend
-Date: Mon, 14 Dec 2015 09:57:27 +0530
-Message-ID: <1450067249-7151-12-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 12/13] ASoC: Intel: Skylake: Reconfigure
+	Link stream on suspend/resume
+Date: Mon, 14 Dec 2015 09:57:28 +0530
+Message-ID: <1450067249-7151-13-git-send-email-vinod.koul@intel.com>
 References: <1450067249-7151-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id DB89B26066D
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 05:24:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B63A260691
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 05:24:53 +0100 (CET)
 In-Reply-To: <1450067249-7151-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,55 +27,76 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Use the DMA resume capability to resume the DMA position when
-stream is suspended/resumed.
-
-In suspend we save the position and when stream is resumed the stream needs
-to be started from the position when the stream was suspended using the new
-DMA resume capabilities
+On suspend the link register are lost so we need to reconfigure
+them in resume. This patch adds the reconfiguration of the link
+register in trigger resume.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 39b4525d77db..f30ace6de035 100644
+index f30ace6de035..6199a8c8f6df 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -393,6 +393,15 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		skl_pcm_prepare(substream, dai);
-+		/*
-+		 * enable DMA Resume enable bit for the stream, set the dpib
-+		 * & lpib position to resune before starting the DMA
-+		 */
-+		snd_hdac_ext_stream_drsm_enable(ebus, true,
-+					hdac_stream(stream)->index);
-+		snd_hdac_ext_stream_set_dpibr(ebus, stream, stream->dpib);
-+		snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
+@@ -496,11 +496,6 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct hdac_ext_link *link;
+ 
+-	if (link_dev->link_prepared) {
+-		dev_dbg(dai->dev, "already stream is prepared - returning\n");
+-		return 0;
+-	}
+-
+ 	dma_params  = (struct skl_dma_params *)
+ 			snd_soc_dai_get_dma_data(codec_dai, substream);
+ 	if (dma_params)
+@@ -508,14 +503,15 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d codec_dai_name=%s\n",
+ 			hdac_stream(link_dev)->stream_tag, format_val, codec_dai->name);
+ 
+-	snd_hdac_ext_link_stream_reset(link_dev);
+-
+-	snd_hdac_ext_link_stream_setup(link_dev, format_val);
+-
+ 	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec->component.name);
+ 	if (!link)
+ 		return -EINVAL;
+ 
++	snd_hdac_ext_bus_link_power_up(link);
++	snd_hdac_ext_link_stream_reset(link_dev);
 +
++	snd_hdac_ext_link_stream_setup(link_dev, format_val);
++
+ 	snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_dev)->stream_tag);
+ 	link_dev->link_prepared = 1;
+ 
+@@ -527,12 +523,16 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
+ {
+ 	struct hdac_ext_stream *link_dev =
+ 				snd_soc_dai_get_dma_data(dai, substream);
++	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 
+ 	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
+ 	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++		skl_link_pcm_prepare(substream, dai);
  	case SNDRV_PCM_TRIGGER_START:
  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		/*
-@@ -421,8 +430,17 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
+-	case SNDRV_PCM_TRIGGER_RESUME:
++		snd_hdac_ext_stream_decouple(ebus, stream, true);
+ 		snd_hdac_ext_link_stream_start(link_dev);
+ 		break;
  
- 		ret = skl_decoupled_trigger(substream, cmd);
--		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
-+		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND) {
-+			/* save the dpib and lpib positions */
-+			stream->dpib = readl(ebus->bus.remap_addr +
-+					AZX_REG_VS_SDXDPIB_XBASE +
-+					(AZX_REG_VS_SDXDPIB_XINTERVAL *
-+					hdac_stream(stream)->index));
-+
-+			stream->lpib = snd_hdac_stream_get_pos_lpib(
-+							hdac_stream(stream));
- 			snd_hdac_ext_stream_decouple(ebus, stream, false);
-+		}
+@@ -540,6 +540,8 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		snd_hdac_ext_link_stream_clear(link_dev);
++		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
++			snd_hdac_ext_stream_decouple(ebus, stream, false);
  		break;
  
  	default:
