@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 08/13] ASoC: Intel: Skylake: Use
-	CGCTL.MISCBDCGE for Phrase detection notification
-Date: Mon, 14 Dec 2015 09:57:24 +0530
-Message-ID: <1450067249-7151-9-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 09/13] ASoC: Intel: Skylake: manage link
+	power in active suspend
+Date: Mon, 14 Dec 2015 09:57:25 +0530
+Message-ID: <1450067249-7151-10-git-send-email-vinod.koul@intel.com>
 References: <1450067249-7151-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id CA90926064C
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 05:24:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AA3B8260544
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 05:24:45 +0100 (CET)
 In-Reply-To: <1450067249-7151-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,110 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Dharageswari.R" <dharageswari.r@intel.com>, tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, Jayachandran B <jayachandran.b@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Dharageswari.R" <dharageswari.r@intel.com>
+When device enters active suspend, we should turn off the links
+as they are not in use. Similarly we need to bring back links
+when we exit active suspend.
 
-Per HW recommendation, SW shall clear the CGCTL.MISCBDCGE and set
-it back once data is transferred. So clear this when we get the
-IPC and track using a driver flag, and set back on closure
-
-Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c     | 13 +++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.c | 15 +++++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
- 3 files changed, 31 insertions(+)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index b89ae6f7c096..39b4525d77db 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -25,6 +25,8 @@
- #include <sound/soc.h>
- #include "skl.h"
- #include "skl-topology.h"
-+#include "skl-sst-dsp.h"
-+#include "skl-sst-ipc.h"
- 
- #define HDA_MONO 1
- #define HDA_STEREO 2
-@@ -272,6 +274,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct skl_dma_params *dma_params = NULL;
-+	struct skl *skl = ebus_to_skl(ebus);
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
-@@ -285,6 +288,16 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 	skl_set_suspend_active(substream, dai, false);
- 
-+	/*
-+	 * check if close is for "Reference Pin" and set back the
-+	 * CGCTL.MISCBDCGE if disabled by driver
-+	 */
-+	if (!strncmp(dai->name, "Reference Pin", 13) &&
-+			skl->skl_sst->miscbdcg_disabled) {
-+		skl_enable_miscbdcge(dai->dev, true);
-+		skl->skl_sst->miscbdcg_disabled = false;
-+	}
-+
- 	kfree(dma_params);
- }
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 62e665a3b8f7..3d44f6dc02bc 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -16,8 +16,10 @@
- 
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
-+#include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+#include "sound/hdaudio_ext.h"
- 
- 
- #define IPC_IXC_STATUS_BITS		24
-@@ -322,6 +324,19 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
- 			wake_up(&skl->boot_wait);
- 			break;
- 
-+		case IPC_GLB_NOTIFY_PHRASE_DETECTED:
-+			dev_dbg(ipc->dev, "***** Phrase Detected **********\n");
-+
-+			/*
-+			 * Per HW recomendation, After phrase detection,
-+			 * clear the CGCTL.MISCBDCGE.
-+			 *
-+			 * This will be set back on stream closure
-+			 */
-+			skl_enable_miscbdcge(ipc->dev, false);
-+			skl->miscbdcg_disabled = true;
-+			break;
-+
- 		default:
- 			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
- 						header.primary);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 1bbcdb471cf2..e4ac5e65c92c 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -55,6 +55,9 @@ struct skl_sst {
- 
- 	/* IPC messaging */
- 	struct sst_generic_ipc ipc;
-+
-+	/*Is CGCTL.MISCBDCGE disabled*/
-+	bool miscbdcg_disabled;
- };
- 
- struct skl_ipc_init_instance_msg {
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index f3d88146721e..a2eddd8945fe 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -222,6 +222,7 @@ static int skl_suspend(struct device *dev)
+ 	 * running, we need to save the state for these and continue
+ 	 */
+ 	if (skl->supend_active) {
++		snd_hdac_ext_bus_link_power_down_all(ebus);
+ 		pci_save_state(pci);
+ 		pci_disable_device(pci);
+ 		return 0;
+@@ -244,6 +245,7 @@ static int skl_resume(struct device *dev)
+ 	if (skl->supend_active) {
+ 		pci_restore_state(pci);
+ 		ret = pci_enable_device(pci);
++		snd_hdac_ext_bus_link_power_up_all(ebus);
+ 	} else {
+ 		ret = _skl_resume(ebus);
+ 	}
 -- 
 1.9.1
