@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] rcar: mux: Avoid use of ret uninitialised
-Date: Mon, 14 Dec 2015 12:07:31 +0000
-Message-ID: <1450094851-27525-3-git-send-email-broonie@kernel.org>
-References: <1450094851-27525-1-git-send-email-broonie@kernel.org>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: DT soundcard driver with special clock routing
+Date: Mon, 14 Dec 2015 13:28:45 +0100
+Message-ID: <566EB5FD.2000803@samsung.com>
+References: <5669A8DE.7060702@barix.com> <5669B2BD.6010100@samsung.com>
+ <566EA8B1.2020908@barix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 38344260423
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 13:07:43 +0100 (CET)
-In-Reply-To: <1450094851-27525-1-git-send-email-broonie@kernel.org>
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
+ [210.118.77.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3BB5260453
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2015 13:30:47 +0100 (CET)
+Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
+ by mailout1.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0NZC005LQLF7B9B0@mailout1.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Mon, 14 Dec 2015 12:30:43 +0000 (GMT)
+In-reply-to: <566EA8B1.2020908@barix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Petr Kulhavy <petr@barix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We use ret as the return value from the rsnd_mix_probe() but if there
-are no child nodes and no errors then we will never initialize ret leading
-to build warnings. Ensure ret is initialized before we iterate over the
-child nodes to avoid this.
+Hello Petr,
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/mix.c | 1 +
- 1 file changed, 1 insertion(+)
+On 14/12/15 12:32, Petr Kulhavy wrote:
+> 
+> thank you for the explanation. I can follow the clock description in the 
+> DT and it looks like a reasonable approach.
+> However neither the codec or I2S seem to implement any clock provider.
+> How is the implementation side done? I mean someone needs to set the 
+> PLLs, etc.
 
-diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
-index b34957ab75b9..65542b6a89e9 100644
---- a/sound/soc/sh/rcar/mix.c
-+++ b/sound/soc/sh/rcar/mix.c
-@@ -158,6 +158,7 @@ int rsnd_mix_probe(struct rsnd_priv *priv)
- 	priv->mix	= mix;
- 
- 	i = 0;
-+	ret = 0;
- 	for_each_child_of_node(node, np) {
- 		mix = rsnd_mix_get(priv, i);
- 
+Yes, you need the clock provider somewhere. In my case it was the I2S
+driver that registered a clock provider. Probably you can add your 
+output clock provider to your SoC's main clock controller driver,
+and perhaps use pinctrl API for the pin function mux setup.
+
+You can place assigned-clock* DT properties in the clock provider
+node and the PLL's will be configured by the kernel's clk subsystem.
+Grep for of_clk_set_defaults or see last chapter of
+Documentation/devicetree/bindings/clock/clock-bindings.txt.
+
 -- 
-2.6.2
+Regards,
+Sylwester
