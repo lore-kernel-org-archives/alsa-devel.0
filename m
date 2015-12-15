@@ -1,80 +1,63 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] ASoC: Atmel: ClassD: unregister codec when error occurs
-Date: Tue, 15 Dec 2015 10:11:27 +0100
-Message-ID: <566FD93F.60901@atmel.com>
-References: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch v2] ASoC: Intel: Skylake: Fix a couple
+	signedness bugs
+Date: Tue, 15 Dec 2015 12:20:14 +0300
+Message-ID: <20151215092014.GG5177@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Songjun Wu <songjun.wu@atmel.com>, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23F0D261A28
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 10:20:25 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Dharageswari R <dharageswari.r@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Le 11/12/2015 04:07, Songjun Wu a =E9crit :
-> Add code to unregister codec in probe function,
-> when the error occurs after the codec is registered.
->=20
-> Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+These need to be signed because they hold negative error codes.
 
-Seems okay:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Fix a typo in the change log.  s/unsigned/signed/
 
-Thanks,
-
-
-> ---
->=20
->  sound/soc/atmel/atmel-classd.c |   14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->=20
-> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-c=
-lassd.c
-> index dca6141..6107de9 100644
-> --- a/sound/soc/atmel/atmel-classd.c
-> +++ b/sound/soc/atmel/atmel-classd.c
-> @@ -640,8 +640,10 @@ static int atmel_classd_probe(struct platform_de=
-vice *pdev)
-> =20
->  	/* register sound card */
->  	card =3D devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-> -	if (!card)
-> -		return -ENOMEM;
-> +	if (!card) {
-> +		ret =3D -ENOMEM;
-> +		goto unregister_codec;
-> +	}
-> =20
->  	snd_soc_card_set_drvdata(card, dd);
->  	platform_set_drvdata(pdev, card);
-> @@ -649,16 +651,20 @@ static int atmel_classd_probe(struct platform_d=
-evice *pdev)
->  	ret =3D atmel_classd_asoc_card_init(dev, card);
->  	if (ret) {
->  		dev_err(dev, "failed to init sound card\n");
-> -		return ret;
-> +		goto unregister_codec;
->  	}
-> =20
->  	ret =3D devm_snd_soc_register_card(dev, card);
->  	if (ret) {
->  		dev_err(dev, "failed to register sound card: %d\n", ret);
-> -		return ret;
-> +		goto unregister_codec;
->  	}
-> =20
->  	return 0;
-> +
-> +unregister_codec:
-> +	snd_soc_unregister_codec(dev);
-> +	return ret;
->  }
-> =20
->  static int atmel_classd_remove(struct platform_device *pdev)
->=20
-
-
---=20
-Nicolas Ferre
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 8cd5cdb..e26f474 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -208,7 +208,7 @@ static unsigned int skl_get_errorcode(struct sst_dsp *ctx)
+  * since get/set_module are called from DAPM context,
+  * we don't need lock for usage count
+  */
+-static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
++static int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
+ {
+ 	struct skl_module_table *module;
+ 
+@@ -220,7 +220,7 @@ static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
+ 	return -EINVAL;
+ }
+ 
+-static unsigned int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
++static int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
+ {
+ 	struct skl_module_table *module;
+ 
+@@ -340,7 +340,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, char *guid)
+ 
+ static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
+ {
+-	unsigned int usage_cnt;
++	int usage_cnt;
+ 	struct skl_sst *skl = ctx->thread_context;
+ 	int ret = 0;
+ 
