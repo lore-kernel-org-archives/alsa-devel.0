@@ -1,18 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 7/8] ASoC: wm_adsp: Add a handler for the
-	compressed IRQ
-Date: Tue, 15 Dec 2015 11:29:48 +0000
-Message-ID: <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Clean up the code to check
+	bdl_pos_adj option
+Date: Tue, 15 Dec 2015 14:02:55 +0100
+Message-ID: <1450184576-11227-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 65235261A83
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 13:11:45 +0100 (CET)
-In-Reply-To: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73340261B01
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 14:02:55 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0EA07ADAA
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 13:02:55 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,340 +22,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Here support is added for responding to DSP IRQs that are used to
-indicate data being available on the DSP. The idea is that we check the
-amount of data available upon receipt of an IRQ and on subsequent calls
-to the pointer callback we recheck once less than one fragment is
-available (to avoid excessive SPI traffic), if there is truely less than
-one fragment available we ack the last IRQ and wait for a new one.
+Just a minor cleanup; instead of passing an array, pass the assigned
+bdl_pos_adj option value directory in struct azx.  Also split the code
+to get the default bdl_pos_adj value for the change that will follow
+after this.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm5110.c  |  24 ++++++
- sound/soc/codecs/wm_adsp.c | 187 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm_adsp.h |   3 +
- 3 files changed, 214 insertions(+)
+ sound/pci/hda/hda_controller.c |  3 +--
+ sound/pci/hda/hda_controller.h |  2 +-
+ sound/pci/hda/hda_intel.c      | 29 ++++++++++++++++-------------
+ 3 files changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index c364096..c6c176e 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2177,10 +2177,20 @@ static int wm5110_open(struct snd_compr_stream *stream)
- 	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
- }
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 22dbfa563919..10c77074b4dc 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1050,8 +1050,7 @@ int azx_bus_init(struct azx *chip, const char *model,
+ 	if (chip->get_position[0] != azx_get_pos_lpib ||
+ 	    chip->get_position[1] != azx_get_pos_lpib)
+ 		bus->core.use_posbuf = true;
+-	if (chip->bdl_pos_adj)
+-		bus->core.bdl_pos_adj = chip->bdl_pos_adj[chip->dev_index];
++	bus->core.bdl_pos_adj = chip->bdl_pos_adj;
+ 	if (chip->driver_caps & AZX_DCAPS_CORBRP_SELF_CLEAR)
+ 		bus->core.corbrp_self_clear = true;
  
-+static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
-+{
-+	struct wm5110_priv *florida = data;
-+
-+	wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int wm5110_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->core.arizona;
- 	int i, ret;
- 
- 	priv->core.arizona->dapm = dapm;
-@@ -2189,6 +2199,14 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
- 	arizona_init_gpio(codec);
- 	arizona_init_mono(codec);
- 
-+	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
-+				  "ADSP2 Compressed IRQ", wm5110_adsp2_irq,
-+				  priv);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to request DSP IRQ: %d\n", ret);
-+		return ret;
-+	}
-+
- 	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
- 		ret = wm_adsp2_codec_probe(&priv->core.adsp[i], codec);
- 		if (ret)
-@@ -2209,12 +2227,15 @@ err_adsp2_codec_probe:
- 	for (--i; i >= 0; --i)
- 		wm_adsp2_codec_remove(&priv->core.adsp[i], codec);
- 
-+	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
-+
- 	return ret;
- }
- 
- static int wm5110_codec_remove(struct snd_soc_codec *codec)
- {
- 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->core.arizona;
- 	int i;
- 
- 	for (i = 0; i < WM5110_NUM_ADSP; ++i)
-@@ -2222,6 +2243,8 @@ static int wm5110_codec_remove(struct snd_soc_codec *codec)
- 
- 	priv->core.arizona->dapm = NULL;
- 
-+	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
-+
- 	return 0;
- }
- 
-@@ -2273,6 +2296,7 @@ static struct snd_compr_ops wm5110_compr_ops = {
- 	.set_params = wm_adsp_compr_set_params,
- 	.get_caps = wm_adsp_compr_get_caps,
- 	.trigger = wm_adsp_compr_trigger,
-+	.pointer = wm_adsp_compr_pointer,
- };
- 
- static struct snd_soc_platform_driver wm5110_compr_platform = {
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 415dbbb..9d68ba5 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -279,6 +279,11 @@ struct wm_adsp_compr_buf {
- 
- 	struct wm_adsp_buffer_region *regions;
- 	u32 host_buf_ptr;
-+
-+	u32 error;
-+	u32 irq_ack;
-+	int read_index;
-+	int avail;
- };
- 
- struct wm_adsp_compr {
-@@ -287,6 +292,8 @@ struct wm_adsp_compr {
- 
- 	struct snd_compr_stream *stream;
- 	struct snd_compressed_buffer size;
-+
-+	unsigned int copied_total;
- };
- 
- #define WM_ADSP_DATA_WORD_SIZE         3
-@@ -2433,6 +2440,11 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
- 	return -EINVAL;
- }
- 
-+static inline unsigned int wm_adsp_compr_frag_words(struct wm_adsp_compr *compr)
-+{
-+	return compr->size.fragment_size / WM_ADSP_DATA_WORD_SIZE;
-+}
-+
- int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- 			     struct snd_compr_params *params)
- {
-@@ -2619,6 +2631,8 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
- 		return -ENOMEM;
- 
- 	buf->dsp = dsp;
-+	buf->read_index = -1;
-+	buf->irq_ack = 0xFFFFFFFF;
- 
- 	ret = wm_adsp_buffer_locate(buf);
- 	if (ret < 0) {
-@@ -2702,6 +2716,16 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 				 ret);
- 			break;
- 		}
-+
-+		/* Trigger the IRQ at one fragment of data */
-+		ret = wm_adsp_buffer_write(compr->buf,
-+					   HOST_BUFFER_FIELD(high_water_mark),
-+					   wm_adsp_compr_frag_words(compr));
-+		if (ret < 0) {
-+			adsp_err(dsp, "Failed to set high water mark: %d\n",
-+				 ret);
-+			break;
-+		}
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		break;
-@@ -2716,4 +2740,167 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_trigger);
- 
-+static inline int wm_adsp_buffer_size(struct wm_adsp_compr_buf *buf)
-+{
-+	int last_region = wm_adsp_fw[buf->dsp->fw].caps->num_regions - 1;
-+
-+	return buf->regions[last_region].cumulative_size;
-+}
-+
-+static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
-+{
-+	u32 next_read_index, next_write_index;
-+	int write_index, read_index, avail;
-+	int ret;
-+
-+	/* Only sync read index if we haven't already read a valid index */
-+	if (buf->read_index < 0) {
-+		ret = wm_adsp_buffer_read(buf,
-+				HOST_BUFFER_FIELD(next_read_index),
-+				&next_read_index);
-+		if (ret < 0)
-+			return ret;
-+
-+		read_index = sign_extend32(next_read_index, 23);
-+
-+		if (read_index < 0) {
-+			adsp_dbg(buf->dsp, "Avail check on unstarted stream\n");
-+			return 0;
-+		}
-+
-+		buf->read_index = read_index;
-+	}
-+
-+	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(next_write_index),
-+			&next_write_index);
-+	if (ret < 0)
-+		return ret;
-+
-+	write_index = sign_extend32(next_write_index, 23);
-+
-+	avail = write_index - buf->read_index;
-+	if (avail < 0)
-+		avail += wm_adsp_buffer_size(buf);
-+
-+	adsp_dbg(buf->dsp, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
-+		 buf->read_index, write_index, avail);
-+
-+	buf->avail = avail;
-+
-+	return 0;
-+}
-+
-+int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
-+{
-+	struct wm_adsp_compr_buf *buf = dsp->buffer;
-+	int ret = 0;
-+
-+	mutex_lock(&dsp->pwr_lock);
-+
-+	if (!buf) {
-+		adsp_err(dsp, "Spurious buffer IRQ\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	adsp_dbg(dsp, "Handling buffer IRQ\n");
-+
-+	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
-+	if (ret < 0) {
-+		adsp_err(dsp, "Failed to check buffer error: %d\n", ret);
-+		goto out;
-+	}
-+	if (buf->error != 0) {
-+		adsp_err(dsp, "Buffer error occurred: %d\n", buf->error);
-+		ret = -EIO;
-+		goto out;
-+	}
-+
-+	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
-+				  &buf->irq_ack);
-+	if (ret < 0) {
-+		adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
-+		goto out;
-+	}
-+
-+	ret = wm_adsp_buffer_update_avail(buf);
-+	if (ret < 0) {
-+		adsp_err(dsp, "Error reading avail: %d\n", ret);
-+		goto out;
-+	}
-+
-+out:
-+	mutex_unlock(&dsp->pwr_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_handle_irq);
-+
-+static int wm_adsp_buffer_ack_irq(struct wm_adsp_compr_buf *buf)
-+{
-+	if (buf->irq_ack & 0x01)
-+		return 0;
-+
-+	adsp_dbg(buf->dsp, "Acking buffer IRQ(0x%x)\n", buf->irq_ack);
-+
-+	buf->irq_ack |= 0x01;
-+
-+	return wm_adsp_buffer_write(buf, HOST_BUFFER_FIELD(irq_ack),
-+				    buf->irq_ack);
-+}
-+
-+int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
-+			  struct snd_compr_tstamp *tstamp)
-+{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	struct wm_adsp_compr_buf *buf = compr->buf;
-+	struct wm_adsp *dsp = compr->dsp;
-+	int ret = 0;
-+
-+	adsp_dbg(dsp, "Pointer request\n");
-+
-+	mutex_lock(&dsp->pwr_lock);
-+
-+	if (!compr->buf) {
-+		ret = -ENXIO;
-+		goto out;
-+	}
-+
-+	if (compr->buf->error) {
-+		ret = -EIO;
-+		goto out;
-+	}
-+
-+	if (buf->avail < wm_adsp_compr_frag_words(compr)) {
-+		ret = wm_adsp_buffer_update_avail(buf);
-+		if (ret < 0) {
-+			adsp_err(dsp, "Error reading avail: %d\n", ret);
-+			goto out;
-+		}
-+
-+		/*
-+		 * If we really have less than 1 fragment available ack the
-+		 * last DSP IRQ and rely on the IRQ to inform us once a whole
-+		 * fragment is available.
-+		 */
-+		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
-+			ret = wm_adsp_buffer_ack_irq(buf);
-+			if (ret < 0) {
-+				adsp_err(dsp, "Failed to ack buffer IRQ: %d\n",
-+					 ret);
-+				goto out;
-+			}
-+		}
-+	}
-+
-+	tstamp->copied_total = compr->copied_total;
-+	tstamp->copied_total += buf->avail * WM_ADSP_DATA_WORD_SIZE;
-+
-+out:
-+	mutex_unlock(&dsp->pwr_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_pointer);
-+
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 43af093..522fa1a 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -112,5 +112,8 @@ extern int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- extern int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
- 				  struct snd_compr_caps *caps);
- extern int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd);
-+extern int wm_adsp_compr_handle_irq(struct wm_adsp *dsp);
-+extern int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
-+				 struct snd_compr_tstamp *tstamp);
- 
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index c1d28a657f19..a32ec9004edd 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -147,7 +147,7 @@ struct azx {
  #endif
+ 
+ 	/* flags */
+-	const int *bdl_pos_adj;
++	int bdl_pos_adj;
+ 	int poll_count;
+ 	unsigned int running:1;
+ 	unsigned int single_cmd:1;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index fe9bef339cea..a17bf0467edc 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -632,7 +632,7 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+ 	if (wallclk < (azx_dev->core.period_wallclk * 5) / 4 &&
+ 	    pos % azx_dev->core.period_bytes > azx_dev->core.period_bytes / 2)
+ 		/* NG - it's below the first next period boundary */
+-		return chip->bdl_pos_adj[chip->dev_index] ? 0 : -1;
++		return chip->bdl_pos_adj ? 0 : -1;
+ 	azx_dev->core.start_wallclk += wallclk;
+ 	return 1; /* OK, it's fine */
+ }
+@@ -1488,6 +1488,17 @@ static void azx_probe_work(struct work_struct *work)
+ 	azx_probe_continue(&hda->chip);
+ }
+ 
++static int default_bdl_pos_adj(struct azx *chip)
++{
++	switch (chip->driver_type) {
++	case AZX_DRIVER_ICH:
++	case AZX_DRIVER_PCH:
++		return 1;
++	default:
++		return 32;
++	}
++}
++
+ /*
+  * constructor
+  */
+@@ -1541,18 +1552,10 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	chip->single_cmd = single_cmd;
+ 	azx_check_snoop_available(chip);
+ 
+-	if (bdl_pos_adj[dev] < 0) {
+-		switch (chip->driver_type) {
+-		case AZX_DRIVER_ICH:
+-		case AZX_DRIVER_PCH:
+-			bdl_pos_adj[dev] = 1;
+-			break;
+-		default:
+-			bdl_pos_adj[dev] = 32;
+-			break;
+-		}
+-	}
+-	chip->bdl_pos_adj = bdl_pos_adj;
++	if (bdl_pos_adj[dev] < 0)
++		chip->bdl_pos_adj = default_bdl_pos_adj(chip);
++	else
++		chip->bdl_pos_adj = bdl_pos_adj[dev];
+ 
+ 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
+ 	if (err < 0) {
 -- 
-2.1.4
+2.6.4
