@@ -1,18 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 2/8] ASoC: wm_adsp: Factor out finding the
-	location of an algorithm region
-Date: Tue, 15 Dec 2015 11:29:43 +0000
-Message-ID: <1450178989-8749-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix headphone mic input on a few
+	Dell ALC293 machines
+Date: Tue, 15 Dec 2015 14:44:03 +0100
+Message-ID: <1450187043-11413-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id EDB76261AAB
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 14:30:19 +0100 (CET)
-In-Reply-To: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 123B0261B21
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 14:44:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, woodrow.shen@canonical.com, David Henningsson <david.henningsson@canonical.com>, 1526330@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+These laptops support both headphone, headset and mic modes
+for the 3.5mm jack.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b083642..2b99f46 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1362,6 +1362,19 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	return alg;
- }
- 
-+static struct wm_adsp_alg_region *
-+	wm_adsp_find_alg_region(struct wm_adsp *dsp, int type, unsigned int id)
-+{
-+	struct wm_adsp_alg_region *alg_region;
-+
-+	list_for_each_entry(alg_region, &dsp->alg_regions, list) {
-+		if (id == alg_region->alg && type == alg_region->type)
-+			return alg_region;
-+	}
-+
-+	return NULL;
-+}
-+
- static struct wm_adsp_alg_region *wm_adsp_create_region(struct wm_adsp *dsp,
- 							int type, __be32 id,
- 							__be32 base)
-@@ -1734,22 +1747,16 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 				break;
- 			}
- 
--			reg = 0;
--			list_for_each_entry(alg_region,
--					    &dsp->alg_regions, list) {
--				if (le32_to_cpu(blk->id) == alg_region->alg &&
--				    type == alg_region->type) {
--					reg = alg_region->base;
--					reg = wm_adsp_region_to_reg(mem,
--								    reg);
--					reg += offset;
--					break;
--				}
--			}
--
--			if (reg == 0)
-+			alg_region = wm_adsp_find_alg_region(dsp, type,
-+						le32_to_cpu(blk->id));
-+			if (alg_region) {
-+				reg = alg_region->base;
-+				reg = wm_adsp_region_to_reg(mem, reg);
-+				reg += offset;
-+			} else {
- 				adsp_err(dsp, "No %x for algorithm %x\n",
- 					 type, le32_to_cpu(blk->id));
-+			}
- 			break;
- 
- 		default:
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1526330
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8dd2ac1..b745a72 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4606,6 +4606,7 @@ enum {
+ 	ALC288_FIXUP_DISABLE_AAMIX,
+ 	ALC292_FIXUP_DELL_E7X,
+ 	ALC292_FIXUP_DISABLE_AAMIX,
++	ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK,
+ 	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC275_FIXUP_DELL_XPS,
+ 	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
+@@ -5169,6 +5170,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE
+ 	},
++	[ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_disable_aamix,
++		.chained = true,
++		.chain_id = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE
++	},
+ 	[ALC292_FIXUP_DELL_E7X] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_dell_xps13,
+@@ -5247,11 +5254,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x06c7, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x06d9, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x06da, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x06db, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
+-	SND_PCI_QUIRK(0x1028, 0x06dd, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
+-	SND_PCI_QUIRK(0x1028, 0x06de, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
+-	SND_PCI_QUIRK(0x1028, 0x06df, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
+-	SND_PCI_QUIRK(0x1028, 0x06e0, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
++	SND_PCI_QUIRK(0x1028, 0x06db, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
++	SND_PCI_QUIRK(0x1028, 0x06dd, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
++	SND_PCI_QUIRK(0x1028, 0x06de, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
++	SND_PCI_QUIRK(0x1028, 0x06df, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
++	SND_PCI_QUIRK(0x1028, 0x06e0, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x0704, "Dell XPS 13", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
 -- 
-2.1.4
+1.9.1
