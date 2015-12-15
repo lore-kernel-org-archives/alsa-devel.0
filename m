@@ -1,19 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 02/10] ALSA: dice: wait for ensuring phase
-	lock
-Date: Wed, 16 Dec 2015 01:00:36 +0900
-Message-ID: <56703924.3080504@sakamocchi.jp>
-References: <1449889570-26641-1-git-send-email-o-takashi@sakamocchi.jp>
- <1449889570-26641-3-git-send-email-o-takashi@sakamocchi.jp>
- <566C081A.1000804@ladisch.de>
+From: Ben Zhang <benzh@chromium.org>
+Subject: [PATCH] ASoC: rt5677: Reconfigure PLL1 after resume
+Date: Tue, 15 Dec 2015 13:51:25 -0800
+Message-ID: <1450216285-14875-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF77261B01
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 17:00:41 +0100 (CET)
-In-Reply-To: <566C081A.1000804@ladisch.de>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58FFF260786
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 22:51:33 +0100 (CET)
+Received: by mail-pa0-f53.google.com with SMTP id hk6so11757007pad.2
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 13:51:33 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Ben Zhang <benzh@chromium.org>, Anatol Pomozov <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Sometimes PLL1 stops working if the codec loses power
+during suspend (when pow-ldo2 or reset gpio is used).
+MX-7Bh(RT5677_PLL1_CTRL2) is cleared and won't be restored
+by regcache since it's volatile. MX-7Bh has one status bit
+and M code for PLL1. rt5677_set_dai_pll doesn't reconfigure
+PLL1 after resume because it thinks the PLL params are not
+changed.
 
-On Dec 12 2015 20:42, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Some users have reported that their Dice based models generate packet
->> discontinuity at the beginning of streaming. When standing on an
->> assumption that the value of SYT field in transferred AMDTP packet comes
->> from phase lock circuit, this comes from phase unlocking with current
->> clock source. Just waiting for dice notification is not enough to prevent
->> from packet discontinuity.
->>
->> This commit checks the register of phase lock after clock state change for
->> this purpose.
-> 
-> Is this patch actually known to help?
-> 
-> This discontinuity could also come from an unexpected initial DBC value.
-> I think it would be a good idea to unconditionally enable
-> CIP_SKIP_INIT_DBC_CHECK for all devices.
+This patch clears the cached PLL params at resume so that
+rt5677_set_dai_pll can reconfigure the PLL after resume.
 
-This issue also occurs on my ImpactTwin. Today, I dropped this patch and
-tried re-generate this issue, then I cannot regenerate it.
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+---
+ sound/soc/codecs/rt5677.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-As long as I tested, the deferred registration has an effect for this
-issue. I guess that the beginning of packet streaming is envolved to the
-end of hardware initialization, then discontinuity occurs.
-
-I decide to drop this patch from next post, thanks to address it.
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index f73fd12..c404f51 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -4792,6 +4792,9 @@ static int rt5677_resume(struct snd_soc_codec *codec)
+ 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (!rt5677->dsp_vad_en) {
++		rt5677->pll_src = 0;
++		rt5677->pll_in = 0;
++		rt5677->pll_out = 0;
+ 		gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
+ 		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
+ 		if (rt5677->pow_ldo2 || rt5677->reset_pin)
+-- 
+2.6.0.rc2.230.g3dd15c0
