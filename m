@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/5] ALSA: oxfw: rename local functions for
-	control elements so that they represent as local
-Date: Tue, 15 Dec 2015 23:56:18 +0900
-Message-ID: <1450191381-16352-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/5] ALSA: oxfw: change function prototype for
+	AV/C Audio Subunit command
+Date: Tue, 15 Dec 2015 23:56:19 +0900
+Message-ID: <1450191381-16352-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450191381-16352-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 2126A264EAA
+ by alsa0.perex.cz (Postfix) with ESMTP id 21531264F09
  for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 15:56:27 +0100 (CET)
 In-Reply-To: <1450191381-16352-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,186 +25,166 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit renames local functions with prefix 'spkr_', so that they're
-for firewire-speakers.
+ALSA OXFW driver uses AV/C Audio Subunit commands to control some models.
+The commands get/set the state of Feature function block of the subunit.
+The commands are not specific to OXFW, thus there's a possibility to use
+them in the other drivers.
+
+Currently, helper functions for the commands require 'struct snd_oxfw',
+although, it's not necessarily required. It's better to change prototype
+of the functions without the structure for future use.
+
+This commit changes the prototype.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-spkr.c | 40 ++++++++++++++++++++--------------------
- sound/firewire/oxfw/oxfw.c      |  2 +-
- sound/firewire/oxfw/oxfw.h      |  4 ++--
- 3 files changed, 23 insertions(+), 23 deletions(-)
+ sound/firewire/oxfw/oxfw-spkr.c | 54 +++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 23 deletions(-)
 
 diff --git a/sound/firewire/oxfw/oxfw-spkr.c b/sound/firewire/oxfw/oxfw-spkr.c
-index 22d8536..fde6b76 100644
+index fde6b76..d733a15 100644
 --- a/sound/firewire/oxfw/oxfw-spkr.c
 +++ b/sound/firewire/oxfw/oxfw-spkr.c
-@@ -14,7 +14,7 @@ enum control_attribute {
+@@ -14,8 +14,8 @@ enum control_attribute {
  	CTL_CURRENT	= 0x10,
  };
  
--static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
-+static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
- 			     enum control_action action)
+-static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
+-			     enum control_action action)
++static int avc_audio_feature_mute(struct fw_unit *unit, u8 fb_id, bool *value,
++				  enum control_action action)
  {
  	u8 *buf;
-@@ -70,7 +70,7 @@ error:
+ 	u8 response_ok;
+@@ -35,7 +35,7 @@ static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
+ 	buf[1] = 0x08;			/* audio unit 0 */
+ 	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+ 	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
++	buf[4] = fb_id;			/* function block ID */
+ 	buf[5] = 0x10;			/* control attribute: current */
+ 	buf[6] = 0x02;			/* selector length */
+ 	buf[7] = 0x00;			/* audio channel number */
+@@ -46,16 +46,16 @@ static int spkr_mute_command(struct snd_oxfw *oxfw, bool *value,
+ 	else
+ 		buf[10] = *value ? 0x70 : 0x60;
+ 
+-	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
++	err = fcp_avc_transaction(unit, buf, 11, buf, 11, 0x3fe);
+ 	if (err < 0)
+ 		goto error;
+ 	if (err < 11) {
+-		dev_err(&oxfw->unit->device, "short FCP response\n");
++		dev_err(&unit->device, "short FCP response\n");
+ 		err = -EIO;
+ 		goto error;
+ 	}
+ 	if (buf[0] != response_ok) {
+-		dev_err(&oxfw->unit->device, "mute command failed\n");
++		dev_err(&unit->device, "mute command failed\n");
+ 		err = -EIO;
+ 		goto error;
+ 	}
+@@ -70,10 +70,10 @@ error:
  	return err;
  }
  
--static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
-+static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
- 			       unsigned int channel,
- 			       enum control_attribute attribute,
- 			       enum control_action action)
-@@ -131,7 +131,7 @@ error:
- 	return err;
- }
- 
--static int oxfw_mute_get(struct snd_kcontrol *control,
-+static int spkr_mute_get(struct snd_kcontrol *control,
- 			 struct snd_ctl_elem_value *value)
+-static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
+-			       unsigned int channel,
+-			       enum control_attribute attribute,
+-			       enum control_action action)
++static int avc_audio_feature_volume(struct fw_unit *unit, u8 fb_id, s16 *value,
++				    unsigned int channel,
++				    enum control_attribute attribute,
++				    enum control_action action)
  {
- 	struct snd_oxfw *oxfw = control->private_data;
-@@ -141,7 +141,7 @@ static int oxfw_mute_get(struct snd_kcontrol *control,
- 	return 0;
- }
+ 	u8 *buf;
+ 	u8 response_ok;
+@@ -93,7 +93,7 @@ static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
+ 	buf[1] = 0x08;			/* audio unit 0 */
+ 	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+ 	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
++	buf[4] = fb_id;			/* function block ID */
+ 	buf[5] = attribute;		/* control attribute */
+ 	buf[6] = 0x02;			/* selector length */
+ 	buf[7] = channel;		/* audio channel number */
+@@ -107,16 +107,16 @@ static int spkr_volume_command(struct snd_oxfw *oxfw, s16 *value,
+ 		buf[11] = *value;
+ 	}
  
--static int oxfw_mute_put(struct snd_kcontrol *control,
-+static int spkr_mute_put(struct snd_kcontrol *control,
- 			 struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-@@ -153,7 +153,7 @@ static int oxfw_mute_put(struct snd_kcontrol *control,
+-	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
++	err = fcp_avc_transaction(unit, buf, 12, buf, 12, 0x3fe);
+ 	if (err < 0)
+ 		goto error;
+ 	if (err < 12) {
+-		dev_err(&oxfw->unit->device, "short FCP response\n");
++		dev_err(&unit->device, "short FCP response\n");
+ 		err = -EIO;
+ 		goto error;
+ 	}
+ 	if (buf[0] != response_ok) {
+-		dev_err(&oxfw->unit->device, "volume command failed\n");
++		dev_err(&unit->device, "volume command failed\n");
+ 		err = -EIO;
+ 		goto error;
+ 	}
+@@ -153,7 +153,8 @@ static int spkr_mute_put(struct snd_kcontrol *control,
  	if (mute == oxfw->mute)
  		return 0;
  
--	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
-+	err = spkr_mute_command(oxfw, &mute, CTL_WRITE);
+-	err = spkr_mute_command(oxfw, &mute, CTL_WRITE);
++	err = avc_audio_feature_mute(oxfw->unit, oxfw->device_info->mute_fb_id,
++				     &mute, CTL_WRITE);
  	if (err < 0)
  		return err;
  	oxfw->mute = mute;
-@@ -161,7 +161,7 @@ static int oxfw_mute_put(struct snd_kcontrol *control,
- 	return 1;
- }
- 
--static int oxfw_volume_info(struct snd_kcontrol *control,
-+static int spkr_volume_info(struct snd_kcontrol *control,
- 			    struct snd_ctl_elem_info *info)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-@@ -176,7 +176,7 @@ static int oxfw_volume_info(struct snd_kcontrol *control,
- 
- static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
- 
--static int oxfw_volume_get(struct snd_kcontrol *control,
-+static int spkr_volume_get(struct snd_kcontrol *control,
- 			   struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-@@ -188,7 +188,7 @@ static int oxfw_volume_get(struct snd_kcontrol *control,
- 	return 0;
- }
- 
--static int oxfw_volume_put(struct snd_kcontrol *control,
-+static int spkr_volume_put(struct snd_kcontrol *control,
- 			   struct snd_ctl_elem_value *value)
- {
- 	struct snd_oxfw *oxfw = control->private_data;
-@@ -218,7 +218,7 @@ static int oxfw_volume_put(struct snd_kcontrol *control,
+@@ -218,8 +219,10 @@ static int spkr_volume_put(struct snd_kcontrol *control,
  	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
  		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
  		if (changed_channels & (1 << i)) {
--			err = oxfw_volume_command(oxfw, &volume, i,
-+			err = spkr_volume_command(oxfw, &volume, i,
- 						   CTL_CURRENT, CTL_WRITE);
+-			err = spkr_volume_command(oxfw, &volume, i,
+-						   CTL_CURRENT, CTL_WRITE);
++			err = avc_audio_feature_volume(oxfw->unit,
++						  oxfw->device_info->mute_fb_id,
++						  &volume,
++						  i, CTL_CURRENT, CTL_WRITE);
  			if (err < 0)
  				return err;
-@@ -230,44 +230,44 @@ static int oxfw_volume_put(struct snd_kcontrol *control,
- 	return changed_channels != 0;
- }
- 
--int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
-+int snd_oxfw_add_spkr(struct snd_oxfw *oxfw)
- {
- 	static const struct snd_kcontrol_new controls[] = {
- 		{
- 			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 			.name = "PCM Playback Switch",
- 			.info = snd_ctl_boolean_mono_info,
--			.get = oxfw_mute_get,
--			.put = oxfw_mute_put,
-+			.get = spkr_mute_get,
-+			.put = spkr_mute_put,
- 		},
- 		{
- 			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 			.name = "PCM Playback Volume",
--			.info = oxfw_volume_info,
--			.get = oxfw_volume_get,
--			.put = oxfw_volume_put,
-+			.info = spkr_volume_info,
-+			.get = spkr_volume_get,
-+			.put = spkr_volume_put,
- 		},
- 	};
+ 		}
+@@ -251,22 +254,27 @@ int snd_oxfw_add_spkr(struct snd_oxfw *oxfw)
  	unsigned int i, first_ch;
  	int err;
  
--	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
-+	err = spkr_volume_command(oxfw, &oxfw->volume_min,
- 				   0, CTL_MIN, CTL_READ);
+-	err = spkr_volume_command(oxfw, &oxfw->volume_min,
+-				   0, CTL_MIN, CTL_READ);
++	err = avc_audio_feature_volume(oxfw->unit,
++				       oxfw->device_info->volume_fb_id,
++				       &oxfw->volume_min, 0, CTL_MIN, CTL_READ);
  	if (err < 0)
  		return err;
--	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
-+	err = spkr_volume_command(oxfw, &oxfw->volume_max,
- 				   0, CTL_MAX, CTL_READ);
+-	err = spkr_volume_command(oxfw, &oxfw->volume_max,
+-				   0, CTL_MAX, CTL_READ);
++	err = avc_audio_feature_volume(oxfw->unit,
++				       oxfw->device_info->volume_fb_id,
++				       &oxfw->volume_max, 0, CTL_MAX, CTL_READ);
  	if (err < 0)
  		return err;
  
--	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
-+	err = spkr_mute_command(oxfw, &oxfw->mute, CTL_READ);
+-	err = spkr_mute_command(oxfw, &oxfw->mute, CTL_READ);
++	err = avc_audio_feature_mute(oxfw->unit, oxfw->device_info->mute_fb_id,
++				     &oxfw->mute, CTL_READ);
  	if (err < 0)
  		return err;
  
  	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
  	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
--		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
--					   first_ch + i, CTL_CURRENT, CTL_READ);
-+		err = spkr_volume_command(oxfw, &oxfw->volume[i],
-+					  first_ch + i, CTL_CURRENT, CTL_READ);
+-		err = spkr_volume_command(oxfw, &oxfw->volume[i],
++		err = avc_audio_feature_volume(oxfw->unit,
++					  oxfw->device_info->volume_fb_id,
++					  &oxfw->volume[i],
+ 					  first_ch + i, CTL_CURRENT, CTL_READ);
  		if (err < 0)
  			return err;
- 	}
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 588b93f..0304d45 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -205,7 +205,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 		goto error;
- 
- 	if (oxfw->device_info) {
--		err = snd_oxfw_create_mixer(oxfw);
-+		err = snd_oxfw_add_spkr(oxfw);
- 		if (err < 0)
- 			goto error;
- 	}
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 8392c42..9efdc02 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -138,10 +138,10 @@ void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
- 
--int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
--
- void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
-+
-+int snd_oxfw_add_spkr(struct snd_oxfw *oxfw);
 -- 
 2.5.0
