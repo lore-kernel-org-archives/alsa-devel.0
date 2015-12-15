@@ -1,112 +1,80 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 5/5] ASoC: The soc card can have auxiliary
- components
-Date: Tue, 15 Dec 2015 16:06:14 +0800
-Message-ID: <566FC9F6.8050107@linux.intel.com>
-References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
- <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
- <20151208185817.GX5727@sirena.org.uk> <5667EFCB.3010402@linux.intel.com>
- <20151209203836.GI5727@sirena.org.uk> <56694E6A.4090402@linux.intel.com>
- <20151211202208.GS5727@sirena.org.uk>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] ASoC: Atmel: ClassD: unregister codec when error occurs
+Date: Tue, 15 Dec 2015 10:11:27 +0100
+Message-ID: <566FD93F.60901@atmel.com>
+References: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 5011E261622
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 08:50:08 +0100 (CET)
-In-Reply-To: <20151211202208.GS5727@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1449803257-27255-1-git-send-email-songjun.wu@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Songjun Wu <songjun.wu@atmel.com>, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Le 11/12/2015 04:07, Songjun Wu a =E9crit :
+> Add code to unregister codec in probe function,
+> when the error occurs after the codec is registered.
+>=20
+> Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+
+Seems okay:
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+
+Thanks,
 
 
-On 12/12/2015 04:22 AM, Mark Brown wrote:
-> On Thu, Dec 10, 2015 at 06:05:30PM +0800, Mengdong Lin wrote:
->> On 12/10/2015 04:38 AM, Mark Brown wrote:
->
->>> OK, but I do think that's something we *should* be doing as part of the
->>> overall move of CODECs to components and it's something that having this
->>> change implies we should be doing as an immediate thing since it's the
->>> more obvious direct use of the code (as Lars said in reply to the early
->>> draft you posted IIRC).
->
->> My early draft didn't use the aux components, so I'm not sure where to find
->> Lars's comments on this idea.
->
-> He replied to some thing you posted by mistake and immediately
-> retracted.  Can't remember the subject, sorry.
-
-Thanks, I found his comments.
-
->
->> Please check if my understanding is right?
->
->> I guess you want me to replace the "aux_dev" array from the struct
->> snd_soc_card, by an "aux_components" array. And we may
->> replace soc_bind_aux_dev() by soc_find_components(),
->> replace soc_probe/remove_aux_dev() by soc_probe/remove_components.
->> Probably soc_find/prove/remove_components need some adjustment for the the
->> aux devices (DAIless codecs).
->
->> And device driver of the these aux_dev need to use
->> snd_soc_register_component() to make it as a component.
->
-> Yeah, pretty much.  I think we'll have a period where we support both
-> though as any CODEC *could* be used in this way and we're not ready for
-> that yet.
->
-> Let me have a look at converting some of the drivers over the weekend.
->
-
-I still have some basic questions:
-
-1. What are the typical usages for aux_dev?
-    For CODEC<->CODEC link or external headset detection chip?
-
-    In samsung/neo1973_wm8753.c, the aux_dev "dfbmcs320" is to involve 
-the BT sco codec. And this codec provides dai "bt-sco-pcm" for voice via 
-BT. This seems to be the codec-codec link case, the CODEC can have DAIs.
-
-
-    And this seems to be the external headset chip case (DAIless):
-    In rockchip/rockchip_max98090.c, the aux_devs
-static struct snd_soc_aux_dev rk_98090_headset_dev = {
-	.name = "Headset Chip",
-	.init = rk_98090_headset_init,
-};
-   But how can ASoC find the right component registered by 
-codecs/ts3a227e.c? This aux device does not give a codec node or name.
-
-   Any other typical usage cases?
-
-2. Why we need the rtd array 'rtd_aux' for the aux_devs?
-    If the codec has DAIs and used by a DAI link, the ASoC will create a 
-rtd for the link.
-
-Thanks
-Mengdong
+> ---
+>=20
+>  sound/soc/atmel/atmel-classd.c |   14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-c=
+lassd.c
+> index dca6141..6107de9 100644
+> --- a/sound/soc/atmel/atmel-classd.c
+> +++ b/sound/soc/atmel/atmel-classd.c
+> @@ -640,8 +640,10 @@ static int atmel_classd_probe(struct platform_de=
+vice *pdev)
+> =20
+>  	/* register sound card */
+>  	card =3D devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+> -	if (!card)
+> -		return -ENOMEM;
+> +	if (!card) {
+> +		ret =3D -ENOMEM;
+> +		goto unregister_codec;
+> +	}
+> =20
+>  	snd_soc_card_set_drvdata(card, dd);
+>  	platform_set_drvdata(pdev, card);
+> @@ -649,16 +651,20 @@ static int atmel_classd_probe(struct platform_d=
+evice *pdev)
+>  	ret =3D atmel_classd_asoc_card_init(dev, card);
+>  	if (ret) {
+>  		dev_err(dev, "failed to init sound card\n");
+> -		return ret;
+> +		goto unregister_codec;
+>  	}
+> =20
+>  	ret =3D devm_snd_soc_register_card(dev, card);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register sound card: %d\n", ret);
+> -		return ret;
+> +		goto unregister_codec;
+>  	}
+> =20
+>  	return 0;
+> +
+> +unregister_codec:
+> +	snd_soc_unregister_codec(dev);
+> +	return ret;
+>  }
+> =20
+>  static int atmel_classd_remove(struct platform_device *pdev)
+>=20
 
 
-
-
-
-
-
-
-
-
-ts3a227e.c
-
-Thanks
-Mengdong
+--=20
+Nicolas Ferre
