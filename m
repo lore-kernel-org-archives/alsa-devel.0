@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "rcar: mux: Avoid use of ret uninitialised" to
+Subject: Applied "rcar: ctu: Avoid use of ret uninitialised" to
 	the asoc tree
-Date: Tue, 15 Dec 2015 22:41:14 +0000
-Message-ID: <E1a8yHS-0008AR-R4@debutante>
-References: <1450094851-27525-3-git-send-email-broonie@kernel.org>
+Date: Tue, 15 Dec 2015 22:41:16 +0000
+Message-ID: <E1a8yHU-0008BN-Lk@debutante>
+References: <1450094851-27525-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C7390260786
+ by alsa0.perex.cz (Postfix) with ESMTP id C8CCA2608D3
  for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 23:41:23 +0100 (CET)
-In-Reply-To: <1450094851-27525-3-git-send-email-broonie@kernel.org>
+In-Reply-To: <1450094851-27525-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   rcar: mux: Avoid use of ret uninitialised
+   rcar: ctu: Avoid use of ret uninitialised
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 2b235a3da5560d65df6865ea436389e55a0f41ad Mon Sep 17 00:00:00 2001
+>From 76ca9970322118610681af5f929aba62f346082b Mon Sep 17 00:00:00 2001
 From: Mark Brown <broonie@kernel.org>
-Date: Mon, 14 Dec 2015 12:05:28 +0000
-Subject: [PATCH] rcar: mux: Avoid use of ret uninitialised
+Date: Mon, 14 Dec 2015 12:04:54 +0000
+Subject: [PATCH] rcar: ctu: Avoid use of ret uninitialised
 
-We use ret as the return value from the rsnd_mix_probe() but if there
+We use ret as the return value from the rsnd_ctu_probe() but if there
 are no child nodes and no errors then we will never initialize ret leading
 to build warnings. Ensure ret is initialized before we iterate over the
 child nodes to avoid this.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/mix.c | 1 +
+ sound/soc/sh/rcar/ctu.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
-index b34957ab75b9..65542b6a89e9 100644
---- a/sound/soc/sh/rcar/mix.c
-+++ b/sound/soc/sh/rcar/mix.c
-@@ -158,6 +158,7 @@ int rsnd_mix_probe(struct rsnd_priv *priv)
- 	priv->mix	= mix;
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index 7c1e190cd389..d53a225d19e9 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -111,6 +111,7 @@ int rsnd_ctu_probe(struct rsnd_priv *priv)
+ 	priv->ctu	= ctu;
  
  	i = 0;
 +	ret = 0;
  	for_each_child_of_node(node, np) {
- 		mix = rsnd_mix_get(priv, i);
+ 		ctu = rsnd_ctu_get(priv, i);
  
 -- 
 2.6.2
