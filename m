@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Reconfigure PLL1 after resume"
-	to the asoc tree
-Date: Wed, 16 Dec 2015 19:24:23 +0000
-Message-ID: <E1a9HgV-0006QW-GH@debutante>
-References: <1450216285-14875-1-git-send-email-benzh@chromium.org>
+Subject: Applied "ASoC: arizona: In arizona_calc_fratio make
+	new codecs the default case" to the asoc tree
+Date: Wed, 16 Dec 2015 19:24:24 +0000
+Message-ID: <E1a9HgW-0006Qz-E3@debutante>
+References: <1450285584-14472-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BAF07265740
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 20:24:29 +0100 (CET)
-In-Reply-To: <1450216285-14875-1-git-send-email-benzh@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5D082657BA
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 20:24:32 +0100 (CET)
+In-Reply-To: <1450285584-14472-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Reconfigure PLL1 after resume
+   ASoC: arizona: In arizona_calc_fratio make new codecs the default case
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 1aa844cd56c7a2b94824f02495ff7ae5d52a7e91 Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Tue, 15 Dec 2015 13:51:25 -0800
-Subject: [PATCH] ASoC: rt5677: Reconfigure PLL1 after resume
+>From 3451eb485aee78f31a8dd127e3385f89946c813b Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Wed, 16 Dec 2015 17:06:24 +0000
+Subject: [PATCH] ASoC: arizona: In arizona_calc_fratio make new codecs the
+ default case
 
-Sometimes PLL1 stops working if the codec loses power
-during suspend (when pow-ldo2 or reset gpio is used).
-MX-7Bh(RT5677_PLL1_CTRL2) is cleared and won't be restored
-by regcache since it's volatile. MX-7Bh has one status bit
-and M code for PLL1. rt5677_set_dai_pll doesn't reconfigure
-PLL1 after resume because it thinks the PLL params are not
-changed.
+This patch rearranges the switch statement in arizona_calc_fratio so
+that older codecs are the special cases, with the default case
+applying to newer codecs (WM8998 and later). This is preferable
+because it avoids having to patch new cases in every time a new
+codec is added.
 
-This patch clears the cached PLL params at resume so that
-rt5677_set_dai_pll can reconfigure the PLL after resume.
-
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/arizona.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index f73fd125e49c..c404f515376e 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4792,6 +4792,9 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index d90b3c51019a..38a73e3da508 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2020,18 +2020,18 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+ 	}
  
- 	if (!rt5677->dsp_vad_en) {
-+		rt5677->pll_src = 0;
-+		rt5677->pll_in = 0;
-+		rt5677->pll_out = 0;
- 		gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
- 		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 		if (rt5677->pow_ldo2 || rt5677->reset_pin)
+ 	switch (fll->arizona->type) {
++	case WM5102:
++	case WM8997:
++		return init_ratio;
+ 	case WM5110:
+ 	case WM8280:
+ 		if (fll->arizona->rev < 3 || sync)
+ 			return init_ratio;
+ 		break;
+-	case WM8998:
+-	case WM1814:
++	default:
+ 		if (sync)
+ 			return init_ratio;
+ 		break;
+-	default:
+-		return init_ratio;
+ 	}
+ 
+ 	cfg->fratio = init_ratio - 1;
 -- 
 2.6.2
