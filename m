@@ -1,102 +1,98 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix a couple signedness
-	bugs" to the asoc tree
-Date: Wed, 16 Dec 2015 19:24:25 +0000
-Message-ID: <E1a9HgX-0006RS-CB@debutante>
-References: <20151212123815.GA21408@mwanda>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: Re: [PATCH v6] sun4i-codec: Add FM, Line and Mic inputs
+Date: Wed, 16 Dec 2015 23:30:51 +0100
+Message-ID: <20151216233051.09d34738@dayas>
+References: <20151209235530.7240df0a@dayas>
+	<20151213205839.GA19456@lukather>
+	<20151215025208.7c468673@dayas>
+	<20151216104736.GT19456@lukather>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 642C92657B3
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 20:24:32 +0100 (CET)
-In-Reply-To: <20151212123815.GA21408@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBH6MY6ZQKGQEIQBS7SY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <20151216104736.GT19456@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Maxime,
 
-   ASoC: Intel: Skylake: Fix a couple signedness bugs
+On Wed, 16 Dec 2015 11:47:36 +0100
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-has been applied to the asoc tree at
+> > Because SUN4I_CODEC_AC_MIC_PHONE_CAL is sun7i-specific.
+> 
+> Yet, you're using it in both cases (A10 vs A20).
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Yes. I'm trying to keep complexity and duplication down.
+I figured it wouldn't be bad to have unused registers in the regmap.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+(Technially .max_register = MAX(max_register_a10, max_register_a20) would be 
+ better. Should we do that?)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+If it's bad in this case, we have to split it up, but frankly the *codec_probe() 
+function is much too long now and this would make it even longer.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Also, it was that way before, so I'm mostly using it in both cases because 
+previously it was also used in both cases (with the too-large max-register), 
+apparently without problems. 
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Should I duplicate and adapt the structure?
+
+> You can also have the defines on top, and everything just works :)
+
+The idea is to make the compiler complain when I try to use a sun7i define in a 
+generic sun4i function (or struct, in this case) - because that would probably 
+be causing problems at runtime, too. Better to catch problems earlier.
+So I kept the sun7i-specific things closely together and as much to the bottom 
+of the file as possible - as a poor-mans modularity. 
+If I kept the sun7i defines at the top I could use them anywhere with impunity - 
+also in the A10 case - and it would not complain.
+
+But it's mostly to make the life of the developer easier, so feel free to choose 
+otherwise. (not sarcasm)
+
+> > Or is it better to rename it to "SUN7I_CODEC_AC_DAC_CAL" rather than delete?
+> 
+> You can rename it if you want, but it's not like it's of the highest
+> importance :)
+
+The only somewhat important part of the name is the "7". 
+If you use a "7"-register on an A10, it's not going to work at runtime, or worse: 
+do something else that wasn't intended. Right now it has a "4" although it isn't
+an A10 register. This separation should be visible somewhere in the source code, 
+or problems are going to slip through later.
+
+I agree it's not at all important right now because the register is unused 
+by us :P
+(But it's actually an interesting register, it contains DAC bias calibration 
+data. Cool that that can be modified)
+
+> > Note: the newest original ASoC sun4i-codec has a variable
+> >   "struct sun4i_codec *scodec;"
+> > as well in the same function (which is a different thing).
+> 
+> I don't know what you're refering to with "newest" and "original".
+
+Oops, sorry, by "newest" I meant "I checked the tree online right before I wrote 
+the mail".
+By "original" I meant "not of my patch".
+
+> But two different variables with two different names doesn't seem so
+> bad, does it?
+
+For the computer? No.
+
+Two different variables with almost the same name for humans? Welll. 
+
+But it's fine, just wanted to point it out because you can't see it in the patch.
 
 Thanks,
-Mark
-
->From db4e561378b539230feb4db5e7d5d548c2db2cd4 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 15 Dec 2015 12:20:14 +0300
-Subject: [PATCH] ASoC: Intel: Skylake: Fix a couple signedness bugs
-
-These need to be signed because they hold negative error codes.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-sst.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 8cd5cdb21fd5..e26f4746afb7 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -208,7 +208,7 @@ static unsigned int skl_get_errorcode(struct sst_dsp *ctx)
-  * since get/set_module are called from DAPM context,
-  * we don't need lock for usage count
-  */
--static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
-+static int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
- {
- 	struct skl_module_table *module;
- 
-@@ -220,7 +220,7 @@ static unsigned int skl_get_module(struct sst_dsp *ctx, u16 mod_id)
- 	return -EINVAL;
- }
- 
--static unsigned int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
-+static int skl_put_module(struct sst_dsp *ctx, u16 mod_id)
- {
- 	struct skl_module_table *module;
- 
-@@ -340,7 +340,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, char *guid)
- 
- static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
- {
--	unsigned int usage_cnt;
-+	int usage_cnt;
- 	struct skl_sst *skl = ctx->thread_context;
- 	int ret = 0;
- 
--- 
-2.6.2
+   Danny
