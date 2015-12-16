@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: In arizona_calc_fratio make
-	new codecs the default case" to the asoc tree
-Date: Wed, 16 Dec 2015 19:24:24 +0000
-Message-ID: <E1a9HgW-0006Qz-E3@debutante>
-References: <1450285584-14472-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: Skylake: pointer math issue" to
+	the asoc tree
+Date: Wed, 16 Dec 2015 19:24:22 +0000
+Message-ID: <E1a9HgU-0006Q1-IS@debutante>
+References: <20151208055321.GA5597@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5D082657BA
+ by alsa0.perex.cz (Postfix) with ESMTP id ECA642657F9
  for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 20:24:32 +0100 (CET)
-In-Reply-To: <1450285584-14472-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <20151208055321.GA5597@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Vinod Koul <vinod.koul@intel.com>, Dharageswari R <dharageswari.r@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: In arizona_calc_fratio make new codecs the default case
+   ASoC: Intel: Skylake: pointer math issue
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 3451eb485aee78f31a8dd127e3385f89946c813b Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Wed, 16 Dec 2015 17:06:24 +0000
-Subject: [PATCH] ASoC: arizona: In arizona_calc_fratio make new codecs the
- default case
+>From e8bc3c99fa982f616e74aec4445945400a9c56f3 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Tue, 8 Dec 2015 08:53:22 +0300
+Subject: [PATCH] ASoC: Intel: Skylake: pointer math issue
 
-This patch rearranges the switch statement in arizona_calc_fratio so
-that older codecs are the special cases, with the default case
-applying to newer codecs (WM8998 and later). This is preferable
-because it avoids having to patch new cases in every time a new
-codec is added.
+"data" is a u32 pointer so this copies the information to wrong place
+entirely.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Fixes: 140adfba5280 ('ASoC: Intel: Skylake: Add tlv byte kcontrols')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index d90b3c51019a..38a73e3da508 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2020,18 +2020,18 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b824450edcb4..34f2f7351f66 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -919,9 +919,9 @@ static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
+ 	if (bc->params) {
+ 		if (copy_to_user(data, &bc->param_id, sizeof(u32)))
+ 			return -EFAULT;
+-		if (copy_to_user(data + sizeof(u32), &size, sizeof(u32)))
++		if (copy_to_user(data + 1, &size, sizeof(u32)))
+ 			return -EFAULT;
+-		if (copy_to_user(data + 2 * sizeof(u32), bc->params, size))
++		if (copy_to_user(data + 2, bc->params, size))
+ 			return -EFAULT;
  	}
  
- 	switch (fll->arizona->type) {
-+	case WM5102:
-+	case WM8997:
-+		return init_ratio;
- 	case WM5110:
- 	case WM8280:
- 		if (fll->arizona->rev < 3 || sync)
- 			return init_ratio;
- 		break;
--	case WM8998:
--	case WM1814:
-+	default:
- 		if (sync)
- 			return init_ratio;
- 		break;
--	default:
--		return init_ratio;
- 	}
- 
- 	cfg->fratio = init_ratio - 1;
 -- 
 2.6.2
