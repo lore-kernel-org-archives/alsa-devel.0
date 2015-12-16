@@ -1,186 +1,127 @@
-From: libin.yang@linux.intel.com
-Subject: [PATCH v5 2/2] ALSA: hda - hdmi setup pin when monitor
-	hotplug in pcm dynamic assignment mode
-Date: Wed, 16 Dec 2015 16:48:16 +0800
-Message-ID: <1450255696-105171-2-git-send-email-libin.yang@linux.intel.com>
-References: <1450255696-105171-1-git-send-email-libin.yang@linux.intel.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v6] sun4i-codec: Add FM, Line and Mic inputs
+Date: Wed, 16 Dec 2015 11:47:36 +0100
+Message-ID: <20151216104736.GT19456@lukather>
+References: <20151209235530.7240df0a@dayas>
+ <20151213205839.GA19456@lukather>
+ <20151215025208.7c468673@dayas>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 15D2A26524F
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 09:50:49 +0100 (CET)
-In-Reply-To: <1450255696-105171-1-git-send-email-libin.yang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EmW68jKGQIhj8inv"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBSMCYWZQKGQEKKYGALY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20151215025208.7c468673@dayas>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+--EmW68jKGQIhj8inv
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Setup pin configuration when monitor is hotplugged
-in pcm dynamic assignment if the PCM is in open state.
+Hi,
 
-When monitor is disconnect, The pin will be reset.
+On Tue, Dec 15, 2015 at 02:52:08AM +0100, Danny Milosavljevic wrote:
+> Hi Maxime,
+> 
+> On Sun, 13 Dec 2015 21:58:39 +0100
+> Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> 
+> > This is not the branch you should be basing your patch on. This is an
+> > ASoC patch, base it on the ASoC tree.
+> 
+> Okay, will do. To the branch "sunxi-next" in 
+> <git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git>, right?
+> 
+> [...]
+> > > -static const struct regmap_config sun4i_codec_regmap_config = {
+> > > -	.reg_bits	= 32,
+> > > -	.reg_stride	= 4,
+> > > -	.val_bits	= 32,
+> > > -	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
+> > > -};
+> > > -
+> > 
+> > Why is this moved?
+> 
+> Because SUN4I_CODEC_AC_MIC_PHONE_CAL is sun7i-specific.
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 87 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 83 insertions(+), 4 deletions(-)
+Yet, you're using it in both cases (A10 vs A20).
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 56b7625..6d6dba4 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -144,6 +144,11 @@ struct hdmi_spec {
- 	/* pcm_bitmap means which pcms have been assigned to pins*/
- 	unsigned long pcm_bitmap;
- 	int pcm_used;	/* counter of pcm_rec[] */
-+	/* bitmap shows whether the pcm is opened in user space
-+	 * bit 0 means the first playback PCM (PCM3);
-+	 * bit 1 means the second playback PCM, and so on.
-+	 */
-+	unsigned long pcm_in_use;
- 	unsigned int channels_max; /* max over all cvts */
- 
- 	struct hdmi_eld temp_eld;
-@@ -1523,10 +1528,14 @@ static int hdmi_pcm_open_no_pin(struct hda_pcm_stream *hinfo,
- {
- 	struct hdmi_spec *spec = codec->spec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int cvt_idx;
-+	int cvt_idx, pcm_idx;
- 	struct hdmi_spec_per_cvt *per_cvt = NULL;
- 	int err;
- 
-+	pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+	if (pcm_idx < 0)
-+		return -EINVAL;
-+
- 	err = hdmi_choose_cvt(codec, -1, &cvt_idx, NULL);
- 	if (err)
- 		return err;
-@@ -1537,6 +1546,7 @@ static int hdmi_pcm_open_no_pin(struct hda_pcm_stream *hinfo,
- 
- 	intel_not_share_assigned_cvt_nid(codec, 0, per_cvt->cvt_nid);
- 
-+	set_bit(pcm_idx, &spec->pcm_in_use);
- 	/* todo: setup spdif ctls assign */
- 
- 	/* Initially set the converter's capabilities */
-@@ -1605,7 +1615,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	/* Claim converter */
- 	per_cvt->assigned = 1;
- 
--
-+	set_bit(pcm_idx, &spec->pcm_in_use);
- 	per_pin = get_pin(spec, pin_idx);
- 	per_pin->cvt_nid = per_cvt->cvt_nid;
- 	hinfo->nid = per_cvt->cvt_nid;
-@@ -1730,6 +1740,71 @@ static void hdmi_detach_hda_pcm(struct hdmi_spec *spec,
- 		clear_bit(idx, &spec->pcm_bitmap);
- }
- 
-+static int hdmi_get_pin_cvt_mux(struct hdmi_spec *spec,
-+		struct hdmi_spec_per_pin *per_pin, hda_nid_t cvt_nid)
-+{
-+	int mux_idx;
-+
-+	for (mux_idx = 0; mux_idx < per_pin->num_mux_nids; mux_idx++)
-+		if (per_pin->mux_nids[mux_idx] == cvt_nid)
-+			break;
-+	return mux_idx;
-+}
-+
-+static bool check_non_pcm_per_cvt(struct hda_codec *codec, hda_nid_t cvt_nid);
-+
-+static void hdmi_pcm_setup_pin(struct hdmi_spec *spec,
-+			   struct hdmi_spec_per_pin *per_pin)
-+{
-+	struct hda_codec *codec = per_pin->codec;
-+	struct hda_pcm *pcm;
-+	struct hda_pcm_stream *hinfo;
-+	struct snd_pcm_substream *substream;
-+	int mux_idx;
-+	bool non_pcm;
-+
-+	if (per_pin->pcm_idx >= 0 && per_pin->pcm_idx < spec->pcm_used)
-+		pcm = spec->pcm_rec[per_pin->pcm_idx];
-+	else
-+		return;
-+	if (!test_bit(per_pin->pcm_idx, &spec->pcm_in_use))
-+		return;
-+
-+	/* hdmi audio only uses playback and one substream */
-+	hinfo = pcm->stream;
-+	substream = pcm->pcm->streams[0].substream;
-+
-+	per_pin->cvt_nid = hinfo->nid;
-+
-+	mux_idx = hdmi_get_pin_cvt_mux(spec, per_pin, hinfo->nid);
-+	if (mux_idx < per_pin->num_mux_nids)
-+		snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-+				AC_VERB_SET_CONNECT_SEL,
-+				mux_idx);
-+	snd_hda_spdif_ctls_assign(codec, per_pin->pcm_idx, hinfo->nid);
-+
-+	non_pcm = check_non_pcm_per_cvt(codec, hinfo->nid);
-+	if (substream->runtime)
-+		per_pin->channels = substream->runtime->channels;
-+	per_pin->setup = true;
-+	per_pin->mux_idx = mux_idx;
-+
-+	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
-+}
-+
-+static void hdmi_pcm_reset_pin(struct hdmi_spec *spec,
-+			   struct hdmi_spec_per_pin *per_pin)
-+{
-+	if (per_pin->pcm_idx >= 0 && per_pin->pcm_idx < spec->pcm_used)
-+		snd_hda_spdif_ctls_unassign(per_pin->codec, per_pin->pcm_idx);
-+
-+	per_pin->chmap_set = false;
-+	memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
-+
-+	per_pin->setup = false;
-+	per_pin->channels = 0;
-+}
-+
- /* update per_pin ELD from the given new ELD;
-  * setup info frame and notification accordingly
-  */
-@@ -1743,10 +1818,13 @@ static void update_eld(struct hda_codec *codec,
- 	bool eld_changed;
- 
- 	if (spec->dyn_pcm_assign) {
--		if (eld->eld_valid)
-+		if (eld->eld_valid) {
- 			hdmi_attach_hda_pcm(spec, per_pin);
--		else
-+			hdmi_pcm_setup_pin(spec, per_pin);
-+		} else {
-+			hdmi_pcm_reset_pin(spec, per_pin);
- 			hdmi_detach_hda_pcm(spec, per_pin);
-+		}
- 	}
- 
- 	if (eld->eld_valid)
-@@ -2157,6 +2235,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 		hinfo->nid = 0;
- 
- 		mutex_lock(&spec->pcm_lock);
-+		clear_bit(pcm_idx, &spec->pcm_in_use);
- 		pin_idx = hinfo_to_pin_index(codec, hinfo);
- 		if (spec->dyn_pcm_assign && pin_idx < 0) {
- 			mutex_unlock(&spec->pcm_lock);
+> Note: I also renamed it and moved the #define in the course of grouping 
+> together sun7i-specific things:
+> 
+> > +/* sun7i-specific things: */
+> > +/* MIC_PHONE_CAL register offsets and bit fields (A20 only) */
+> > +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+> [...]
+> > +static const struct regmap_config sun4i_codec_regmap_config = {
+> > +	.reg_bits	= 32,
+> > +	.reg_stride	= 4,
+> > +	.val_bits	= 32,
+> > +	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> > +};
+> > +/* end sun7i-specific things */
+> 
+> I thought about also renaming sun4i_codec_regmap_config but decided against it 
+> since it's fine to use it on A10 and I think it's best if the name reflects 
+> the minimum required hardware.
+> 
+> On the other hand, once I moved the define, sun4i-codec won't compile if 
+> sun4i_codec_regmap_config is left at the top. So I had to move it, too.
+
+You can also have the defines on top, and everything just works :)
+
+> It will be clearer once I post a patch doing just the preparation of the 
+> A10/A20 split.
+> 
+> I just checked A10 vs A20 some more:
+> There's also SUN4I_CODEC_AC_SYS_VERI 0x38 present in original ASoC and in 4.4-rc2.
+> It's unused by us, not mentioned in the A10 User manual V1.5 20130820, and called 
+> "AC_DAC_CAL" in the A20 User Manual v1.4 20150510. Ok to delete? 
+> Or is it better to rename it to "SUN7I_CODEC_AC_DAC_CAL" rather than delete?
+
+You can rename it if you want, but it's not like it's of the highest
+importance :)
+
+> 
+> > >  static int sun4i_codec_probe(struct platform_device *pdev)
+> > >  {
+> > >  	struct snd_soc_card *card;
+> > > @@ -593,6 +740,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+> > >  	struct resource *res;
+> > >  	void __iomem *base;
+> > >  	int ret;
+> > > +	const struct snd_soc_codec_driver* codec_codec;
+> > 
+> > I guess a single codec is enough :)
+> 
+> Modeled after the name of the original variable, see below :)
+> 
+> But OK, I'll rename it to "codec".
+> 
+> Note: the newest original ASoC sun4i-codec has a variable
+>   "struct sun4i_codec *scodec;"
+> as well in the same function (which is a different thing).
+
+I don't know what you're refering to with "newest" and "original".
+
+But two different variables with two different names doesn't seem so
+bad, does it?
+
+Thanks!
+Maxime
+
 -- 
-1.9.1
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--EmW68jKGQIhj8inv--
