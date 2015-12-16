@@ -1,16 +1,16 @@
 From: libin.yang@linux.intel.com
-Subject: [PATCH v4 3/5] ALSA: hda - hdmi operate spdif based on
-	pcm
-Date: Wed, 16 Dec 2015 13:42:43 +0800
-Message-ID: <1450244565-77041-4-git-send-email-libin.yang@linux.intel.com>
+Subject: [PATCH v4 4/5] ALSA: hda - hdmi dynamically bind PCM
+	to pin when monitor hotplug
+Date: Wed, 16 Dec 2015 13:42:44 +0800
+Message-ID: <1450244565-77041-5-git-send-email-libin.yang@linux.intel.com>
 References: <1450244565-77041-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 82DB526512A
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 06:45:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 57FA626512B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 06:45:23 +0100 (CET)
 In-Reply-To: <1450244565-77041-1-git-send-email-libin.yang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,131 +27,155 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@linux.intel.com>
 
-Currently, the driver operates the spdif based on pin.
-This is ok for the current driver as pcm is statically
-bound to the pin.
+Dynamically bind/unbind the PCM to pin when HDMI/DP monitor hotplug.
 
-However, if the driver uses dynamically pcm assignment,
-this will cause confusion for user space.
+When monitor is connected, find a proper PCM for the monitor.
+When monitor is disconnected, unbind the PCM from the pin.
 
-The patch changes spdif operation from pin based to pcm based.
+The binding policy (use Intel platform as example) is:
+1. Try to use the legacy pin-pcm mapping for the device entry 0
+   of the pin.
+2. If step 1 fails, try to bind pin to the backup PCMs. For example,
+   on Intel platform, if DP MST is enabled, 5 PCMs will be created.
+   PCM 3, PCM 7, PCM 8 are supposed to be used by device entry 0 of
+   pin 5, pin 6 and pin 7. PCM 9 and PCM 10 are the backup PCMs.
+3. If step 2 fails, try to find any PCM to bind to the pin.
 
 Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
 ---
- sound/pci/hda/patch_hdmi.c | 34 +++++++++++++++++++++++++++++-----
- 1 file changed, 29 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 04450f9..19bf782 100644
+index 19bf782..10edab8 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -138,6 +138,7 @@ struct hdmi_spec {
+@@ -73,6 +73,8 @@ struct hdmi_spec_per_cvt {
+ 
+ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
++	/* pin idx, different device entries on the same pin use the same idx */
++	int pin_nid_idx;
+ 	int num_mux_nids;
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+ 	int mux_idx;
+@@ -85,6 +87,7 @@ struct hdmi_spec_per_pin {
+ 	struct snd_kcontrol *eld_ctl;
+ 	struct snd_jack *acomp_jack; /* jack via audio component */
+ 	struct hda_pcm *pcm; /* pointer to spec->pcm_rec[n] dynamically*/
++	int pcm_idx; /* which pcm is attached. -1 means no pcm is attached */
+ 	int repoll_count;
+ 	bool setup; /* the stream has been set up by prepare callback */
+ 	int channels; /* current number of channels */
+@@ -138,6 +141,8 @@ struct hdmi_spec {
  	struct snd_array pins; /* struct hdmi_spec_per_pin */
  	struct hda_pcm *pcm_rec[16];
  	struct mutex pcm_lock;
-+	int pcm_used;	/* counter of pcm_rec[] */
++	/* pcm_bitmap means which pcms have been assigned to pins*/
++	unsigned long pcm_bitmap;
+ 	int pcm_used;	/* counter of pcm_rec[] */
  	unsigned int channels_max; /* max over all cvts */
  
- 	struct hdmi_eld temp_eld;
-@@ -385,6 +386,20 @@ static int pin_nid_to_pin_index(struct hda_codec *codec, hda_nid_t pin_nid)
- 	return -EINVAL;
+@@ -1786,6 +1791,60 @@ static bool hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
+ 	return ret;
  }
  
-+static int hinfo_to_pcm_index(struct hda_codec *codec,
-+			struct hda_pcm_stream *hinfo)
++static int hdmi_find_pcm_slot(struct hdmi_spec *spec,
++				struct hdmi_spec_per_pin *per_pin)
 +{
-+	struct hdmi_spec *spec = codec->spec;
-+	int pcm_idx;
++	int i;
 +
-+	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++)
-+		if (get_pcm_rec(spec, pcm_idx)->stream == hinfo)
-+			return pcm_idx;
++	/* try the prefer PCM */
++	if (!test_bit(per_pin->pin_nid_idx, &spec->pcm_bitmap))
++		return per_pin->pin_nid_idx;
 +
-+	codec_warn(codec, "HDMI: hinfo %p not registered\n", hinfo);
-+	return -EINVAL;
++	/* have a second try; check the "reserved area" over num_pins */
++	for (i = spec->num_pins; i < spec->pcm_used; i++) {
++		if (!test_bit(i, &spec->pcm_bitmap))
++			return i;
++	}
++
++	/* the last try; check the empty slots in pins */
++	for (i = 0; i < spec->num_pins; i++) {
++		if (!test_bit(i, &spec->pcm_bitmap))
++			return i;
++	}
++	return -EBUSY;
 +}
 +
- static int hinfo_to_pin_index(struct hda_codec *codec,
- 			      struct hda_pcm_stream *hinfo)
- {
-@@ -1546,13 +1561,17 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- {
- 	struct hdmi_spec *spec = codec->spec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int pin_idx, cvt_idx, mux_idx = 0;
-+	int pin_idx, cvt_idx, pcm_idx, mux_idx = 0;
- 	struct hdmi_spec_per_pin *per_pin;
- 	struct hdmi_eld *eld;
- 	struct hdmi_spec_per_cvt *per_cvt = NULL;
- 	int err;
- 
- 	/* Validate hinfo */
-+	pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+	if (pcm_idx < 0)
-+		return -EINVAL;
++static void hdmi_attach_hda_pcm(struct hdmi_spec *spec,
++				struct hdmi_spec_per_pin *per_pin)
++{
++	int idx;
 +
- 	mutex_lock(&spec->pcm_lock);
- 	pin_idx = hinfo_to_pin_index(codec, hinfo);
- 	if (!spec->dyn_pcm_assign) {
-@@ -1594,7 +1613,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
- 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
++	/* pcm already be attached to the pin */
++	if (per_pin->pcm)
++		return;
++	idx = hdmi_find_pcm_slot(spec, per_pin);
++	if (idx == -ENODEV)
++		return;
++	per_pin->pcm_idx = idx;
++	per_pin->pcm = spec->pcm_rec[idx];
++	set_bit(idx, &spec->pcm_bitmap);
++}
++
++static void hdmi_detach_hda_pcm(struct hdmi_spec *spec,
++				struct hdmi_spec_per_pin *per_pin)
++{
++	int idx;
++
++	/* pcm already be detached from the pin */
++	if (!per_pin->pcm)
++		return;
++	idx = per_pin->pcm_idx;
++	per_pin->pcm_idx = -1;
++	per_pin->pcm = NULL;
++	if (idx >= 0 && idx < spec->pcm_used)
++		clear_bit(idx, &spec->pcm_bitmap);
++}
++
+ /* update ELD and jack state via audio component */
+ static void sync_eld_via_acomp(struct hda_codec *codec,
+ 			       struct hdmi_spec_per_pin *per_pin)
+@@ -1794,6 +1853,7 @@ static void sync_eld_via_acomp(struct hda_codec *codec,
+ 	struct hdmi_eld *eld = &spec->temp_eld;
+ 	int size;
  
--	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-+	snd_hda_spdif_ctls_assign(codec, pcm_idx, per_cvt->cvt_nid);
++	mutex_lock(&spec->pcm_lock);
+ 	mutex_lock(&per_pin->lock);
+ 	size = snd_hdac_acomp_get_eld(&codec->bus->core, per_pin->pin_nid,
+ 				      &eld->monitor_present, eld->eld_buffer,
+@@ -1815,11 +1875,19 @@ static void sync_eld_via_acomp(struct hda_codec *codec,
+ 		eld->eld_size = 0;
+ 	}
  
- 	/* Initially set the converter's capabilities */
- 	hinfo->channels_min = per_cvt->channels_min;
-@@ -1611,7 +1630,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 		    !hinfo->rates || !hinfo->formats) {
- 			per_cvt->assigned = 0;
- 			hinfo->nid = 0;
--			snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+			snd_hda_spdif_ctls_unassign(codec, pcm_idx);
- 			mutex_unlock(&spec->pcm_lock);
- 			return -ENODEV;
- 		}
-@@ -2041,12 +2060,15 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 			  struct snd_pcm_substream *substream)
- {
- 	struct hdmi_spec *spec = codec->spec;
--	int cvt_idx, pin_idx;
-+	int cvt_idx, pin_idx, pcm_idx;
- 	struct hdmi_spec_per_cvt *per_cvt;
- 	struct hdmi_spec_per_pin *per_pin;
- 	int pinctl;
++	if (spec->dyn_pcm_assign) {
++		if (eld->eld_valid)
++			hdmi_attach_hda_pcm(spec, per_pin);
++		else
++			hdmi_detach_hda_pcm(spec, per_pin);
++	}
++
+ 	update_eld(codec, per_pin, eld);
+ 	snd_jack_report(per_pin->acomp_jack,
+ 			eld->monitor_present ? SND_JACK_AVOUT : 0);
+  unlock:
+ 	mutex_unlock(&per_pin->lock);
++	mutex_unlock(&spec->pcm_lock);
+ }
  
- 	if (hinfo->nid) {
-+		pcm_idx = hinfo_to_pcm_index(codec, hinfo);
-+		if (snd_BUG_ON(pcm_idx < 0))
-+			return -EINVAL;
- 		cvt_idx = cvt_nid_to_cvt_index(codec, hinfo->nid);
- 		if (snd_BUG_ON(cvt_idx < 0))
- 			return -EINVAL;
-@@ -2077,7 +2099,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 					    pinctl & ~PIN_OUT);
- 		}
+ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+@@ -1875,6 +1943,11 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
  
--		snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+ 	per_pin->pin_nid = pin_nid;
+ 	per_pin->non_pcm = false;
++	if (spec->dyn_pcm_assign)
++		per_pin->pcm_idx = -1;
++	else
++		per_pin->pcm_idx = pin_idx;
++	per_pin->pin_nid_idx = pin_idx;
  
- 		mutex_lock(&per_pin->lock);
- 		per_pin->chmap_set = false;
-@@ -2275,6 +2297,7 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
- 			per_pin->pcm = info;
- 		}
- 		spec->pcm_rec[pin_idx] = info;
-+		spec->pcm_used++;
- 		info->pcm_type = HDA_PCM_TYPE_HDMI;
- 		info->own_chmap = true;
- 
-@@ -2351,6 +2374,7 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 						  HDA_PCM_TYPE_HDMI);
- 		if (err < 0)
- 			return err;
-+		/* pin number is the same with pcm number so far */
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
- 
- 		/* add control for ELD Bytes */
+ 	err = hdmi_read_pin_conn(codec, pin_idx);
+ 	if (err < 0)
 -- 
 1.9.1
