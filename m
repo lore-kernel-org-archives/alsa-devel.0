@@ -1,88 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: atmel-pdmic: add the Pulse Density Modulation
- Interface Controller
-Date: Wed, 16 Dec 2015 12:27:27 +0000
-Message-ID: <20151216122727.GI5727@sirena.org.uk>
-References: <1450080940-4123-1-git-send-email-songjun.wu@atmel.com>
- <1450080940-4123-2-git-send-email-songjun.wu@atmel.com>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH 2/2] ASoC: wm8974: add devicetree support
+Date: Wed, 16 Dec 2015 13:02:55 +0000
+Message-ID: <1450270975-17955-2-git-send-email-mans@mansr.com>
+References: <1450270975-17955-1-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YszDAcSgCu6rDIlP"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1450080940-4123-2-git-send-email-songjun.wu@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Songjun Wu <songjun.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id 729722657F8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 14:02:59 +0100 (CET)
+In-Reply-To: <1450270975-17955-1-git-send-email-mans@mansr.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+This adds devicetree support to the wm8974 codec driver.
+With a DT-based kernel, there is no board-specific setting
+to select the driver so allow it to be manually chosen.
 
---YszDAcSgCu6rDIlP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ sound/soc/codecs/Kconfig  | 3 ++-
+ sound/soc/codecs/wm8974.c | 7 +++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-On Mon, Dec 14, 2015 at 04:15:39PM +0800, Songjun Wu wrote:
-
-> Add driver for the Pulse Density Modulation Interface
-> Controller. It comes with digitallly controlled gain,
-> a High-Pass and a SINCC filter.
-
-This looks basically OK but there's a *lot* of weird coding style issues
-in here.  It's really all that, nothing too serious that I noticed -
-I've pointed out some of the patterns below not every individual issue.
-
-> +	for (i = 0; i < ARRAY_SIZE(mic_gain_table); i++) {
-> +		if ((mic_gain_table[i].dgain == dgain_val)
-> +		&& (mic_gain_table[i].scale == scale_val))
-> +			ucontrol->value.integer.value[0] = i;
-> +	}
-
-This indentation is really weird, why is the && aligned with the if?
-
-> +	snd_soc_update_bits(codec, PDMIC_DSPR1,
-> +		PDMIC_DSPR1_OFFSET_MASK,
-> +		(u32)(dd->pdata->mic_offset << PDMIC_DSPR1_OFFSET_SHIFT));
-
-These are weird too, I'd expect the second line to be part of the first.
-
-> +static struct regmap *atmel_pdmic_codec_get_remap(struct device *dev)
-> +{
-> +	return dev_get_regmap(dev, NULL);
-> +}
-
-This is (or should be) the default in the core.
-
-> +	if ((fs < rate_min) || (fs > rate_max)) {
-> +		dev_err(codec->dev,
-> +		"sample rate is %dHz, min rate is %dHz, max rate is %dHz\n",
-> +		fs, rate_min, rate_max);
-
-This too, alignment after the (.
-
-> +	if (bits == 16)
-> +		dspr0_val = (PDMIC_DSPR0_SIZE_16_BITS
-> +				<< PDMIC_DSPR0_SIZE_SHIFT);
-> +	else if (bits == 32)
-> +		dspr0_val = (PDMIC_DSPR0_SIZE_32_BITS
-> +				<< PDMIC_DSPR0_SIZE_SHIFT);
-> +	else
-> +		return -EINVAL;
-
-This looks like it should be a switch statement.
-
---YszDAcSgCu6rDIlP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWcViuAAoJECTWi3JdVIfQDGgH/2LqoeERFkN89u2uz+87BjdX
-wUzYpxg9bdFhPgilhibZkd8qpOPCVYJ8/k/kc/nAX57JdyNIkX7pjuNKOLcq5T17
-3S7UQzJsWjtC0iXNJ6q3t+rbHe6IdfQWkhXHcbv86eZZgjeLGx6BUTcQHo0M8D2S
-WO6KsTCqRNVlzsB3dr5mazW/EBNMwABoYXRsgTuJvhvP+9rzf9rpKWA5iiLgnbC2
-49nDboe1GYXVt3RBUXHL/wSCnrCI0NBRcXpg1yIuK5n1NGla6mH3WrIVa2Cxcovp
-aTiek8sX8IZ6VDs0WrWHWait9nl7OD39+cbjoIby0zsKEDx3SDHRdB9ita3m6xI=
-=MICX
------END PGP SIGNATURE-----
-
---YszDAcSgCu6rDIlP--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cfdafc4..e36b14c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -838,7 +838,8 @@ config SND_SOC_WM8971
+ 	tristate
+ 
+ config SND_SOC_WM8974
+-	tristate
++	tristate "Wolfson Microelectronics WM8974 codec"
++	depends on I2C
+ 
+ config SND_SOC_WM8978
+ 	tristate "Wolfson Microelectronics WM8978 codec"
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 4c29bd2..c284c7b 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -632,9 +632,16 @@ static const struct i2c_device_id wm8974_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, wm8974_i2c_id);
+ 
++static const struct of_device_id wm8974_of_match[] = {
++       { .compatible = "wlf,wm8974", },
++       { }
++};
++MODULE_DEVICE_TABLE(of, wm8974_of_match);
++
+ static struct i2c_driver wm8974_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8974",
++		.of_match_table = wm8974_of_match,
+ 	},
+ 	.probe =    wm8974_i2c_probe,
+ 	.remove =   wm8974_i2c_remove,
+-- 
+2.6.3
