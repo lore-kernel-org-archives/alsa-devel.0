@@ -1,19 +1,18 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: Re: DT soundcard driver with special clock routing
-Date: Wed, 16 Dec 2015 07:54:19 +0000
-Message-ID: <567118AB.5060302@barix.com>
-References: <5669A8DE.7060702@barix.com> <5669B2BD.6010100@samsung.com>
- <566EA8B1.2020908@barix.com> <566EB5FD.2000803@samsung.com>
+From: Libin Yang <libin.yang@linux.intel.com>
+Subject: Re: [PATCH v4 0/5] ALSA: hda - hdmi support dynamic
+ pcm assignment
+Date: Wed, 16 Dec 2015 15:54:50 +0800
+Message-ID: <567118CA.3010400@linux.intel.com>
+References: <1450244565-77041-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hbn9qhm2v.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 22CD426517F
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 08:54:24 +0100 (CET)
-Received: by mail-wm0-f52.google.com with SMTP id n186so197946969wmn.1
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2015 23:54:24 -0800 (PST)
-In-Reply-To: <566EB5FD.2000803@samsung.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2729C26517C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 08:57:21 +0100 (CET)
+In-Reply-To: <s5hbn9qhm2v.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sylwester,
 
-Currently I'm struggling with the clocks on the DaVinci platform as the 
-clock tree is defined in the platform driver and not in DT.
-Is there a way to reference the clocks by names from DT, or does the 
-DaVinci clock driver need to be rewritten for DT support?
 
-There is one more thing I came across using the simple soundcard driver. 
-The codec needs to be set to generate the clock via PLL.
-Unfortunately the simple soundcard always passes clock ID 0 to 
-snd_soc_dai_set_sysclk() - I need a different value for the internal PLL.
+On 12/16/2015 03:47 PM, Takashi Iwai wrote:
+> On Wed, 16 Dec 2015 06:42:40 +0100,
+> libin.yang@linux.intel.com wrote:
+>>
+>> From: Libin Yang <libin.yang@linux.intel.com>
+>>
+>> The patches are trying to support dynamically binding PCM to pin
+>> in HDMI/DP audio.
+>>
+>> The pin will not bind to any PCM if there is not monitor connected.
+>> When there is a monitor connected to the port (pin), driver will
+>> try to find a proper PCM to assign to the port and setup the pin
+>> if necessary.
+>>
+>> Libin Yang (5):
+>>    ALSA: hda - hdmi begin to support dynamic PCM assignment
+>>    ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
+>>    ALSA: hda - hdmi operate spdif based on pcm
+>>    ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
+>>    ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
+>>      assignment mode
+>
+> I updated topic/hda-mst branch with these patches.  But the patch 4
+> needs more fixes, as suggested in another mail.
 
-What is the preferred approach here? On one hand the simple soundcard 
-driver could be extended with a DT parameter "clock ID".
-Or does a dedicated soundcard driver need to be written?
+Thanks. Do I need to resend all the patches? Or just patch 4 and patch 5?
 
-Thanks
-Petr
+>
+> Overall, I'd like to know whether MST audio really works in the
+> current state, or not.  Do you have *any* git branch where MST audio
+> is supposed to work at all?
 
-On 14.12.2015 13:28, Sylwester Nawrocki wrote:
-> Yes, you need the clock provider somewhere. In my case it was the I2S 
-> driver that registered a clock provider. Probably you can add your 
-> output clock provider to your SoC's main clock controller driver, and 
-> perhaps use pinctrl API for the pin function mux setup. You can place 
-> assigned-clock* DT properties in the clock provider node and the PLL's 
-> will be configured by the kernel's clk subsystem. Grep for 
-> of_clk_set_defaults or see last chapter of 
-> Documentation/devicetree/bindings/clock/clock-bindings.txt. 
+Yes, I have all the patches in my local branch. We tested the patches 
+before. But since a lot of code in mainline is changed, I need rebase 
+the patches. Some patches are conflicted with the jack changes you 
+made. Some also fix some unsol event issues, which seems you have made 
+a lot of changes on it currently.
+
+Regards,
+Libin
+
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
