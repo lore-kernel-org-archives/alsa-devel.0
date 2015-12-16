@@ -1,34 +1,52 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [patch] ASoC: Intel: Skylake: Fix a couple signedness bugs
-Date: Wed, 16 Dec 2015 21:29:40 +0530
-Message-ID: <20151216155940.GQ1854@localhost>
-References: <20151212123815.GA21408@mwanda>
- <20151216144400.GN1854@localhost>
- <20151216145518.GM5177@mwanda>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: In arizona_calc_fratio make new codecs the default case
+Date: Wed, 16 Dec 2015 17:06:24 +0000
+Message-ID: <1450285584-14472-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20151216145518.GM5177@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Dharageswari R <dharageswari.r@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 16, 2015 at 05:55:18PM +0300, Dan Carpenter wrote:
-> On Wed, Dec 16, 2015 at 08:14:00PM +0530, Vinod Koul wrote:
-> > On Sat, Dec 12, 2015 at 03:38:15PM +0300, Dan Carpenter wrote:
-> > > These need to be unsigned because they hold negative error codes.
-> > > 
-> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > 
-> > Acked-by: Vinod Koul <vinod.koul@intel.com>
-> 
-> Sorry, I sent a v2 of this with "be unsigned" changed to "be signed" in
-> the changelog, but I messed up the In-Reply-To header so it was a new
-> thread.
+This patch rearranges the switch statement in arizona_calc_fratio so
+that older codecs are the special cases, with the default case
+applying to newer codecs (WM8998 and later). This is preferable
+because it avoids having to patch new cases in every time a new
+codec is added.
 
-No issues, Acked v2 now :)
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index d90b3c5..38a73e3 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2020,18 +2020,18 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+ 	}
+ 
+ 	switch (fll->arizona->type) {
++	case WM5102:
++	case WM8997:
++		return init_ratio;
+ 	case WM5110:
+ 	case WM8280:
+ 		if (fll->arizona->rev < 3 || sync)
+ 			return init_ratio;
+ 		break;
+-	case WM8998:
+-	case WM1814:
++	default:
+ 		if (sync)
+ 			return init_ratio;
+ 		break;
+-	default:
+-		return init_ratio;
+ 	}
+ 
+ 	cfg->fratio = init_ratio - 1;
 -- 
-~Vinod
+1.9.1
