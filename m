@@ -1,16 +1,19 @@
-From: Mans Rullgard <mans@mansr.com>
-Subject: [PATCH 2/2] ASoC: wm8974: add devicetree support
-Date: Wed, 16 Dec 2015 13:02:55 +0000
-Message-ID: <1450270975-17955-2-git-send-email-mans@mansr.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: wm8974: add devicetree support
+Date: Wed, 16 Dec 2015 13:24:22 +0000
+Message-ID: <20151216132422.GU6058@localhost.localdomain>
 References: <1450270975-17955-1-git-send-email-mans@mansr.com>
+ <1450270975-17955-2-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
- by alsa0.perex.cz (Postfix) with ESMTP id 729722657F8
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 14:02:59 +0100 (CET)
-In-Reply-To: <1450270975-17955-1-git-send-email-mans@mansr.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E30A2657F9
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 14:24:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1450270975-17955-2-git-send-email-mans@mansr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+To: Mans Rullgard <mans@mansr.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds devicetree support to the wm8974 codec driver.
-With a DT-based kernel, there is no board-specific setting
-to select the driver so allow it to be manually chosen.
+On Wed, Dec 16, 2015 at 01:02:55PM +0000, Mans Rullgard wrote:
+> This adds devicetree support to the wm8974 codec driver.
+> With a DT-based kernel, there is no board-specific setting
+> to select the driver so allow it to be manually chosen.
+> 
+> Signed-off-by: Mans Rullgard <mans@mansr.com>
+> ---
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
----
- sound/soc/codecs/Kconfig  | 3 ++-
- sound/soc/codecs/wm8974.c | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index cfdafc4..e36b14c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -838,7 +838,8 @@ config SND_SOC_WM8971
- 	tristate
- 
- config SND_SOC_WM8974
--	tristate
-+	tristate "Wolfson Microelectronics WM8974 codec"
-+	depends on I2C
- 
- config SND_SOC_WM8978
- 	tristate "Wolfson Microelectronics WM8978 codec"
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index 4c29bd2..c284c7b 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -632,9 +632,16 @@ static const struct i2c_device_id wm8974_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, wm8974_i2c_id);
- 
-+static const struct of_device_id wm8974_of_match[] = {
-+       { .compatible = "wlf,wm8974", },
-+       { }
-+};
-+MODULE_DEVICE_TABLE(of, wm8974_of_match);
-+
- static struct i2c_driver wm8974_i2c_driver = {
- 	.driver = {
- 		.name = "wm8974",
-+		.of_match_table = wm8974_of_match,
- 	},
- 	.probe =    wm8974_i2c_probe,
- 	.remove =   wm8974_i2c_remove,
--- 
-2.6.3
+Thanks,
+Charles
