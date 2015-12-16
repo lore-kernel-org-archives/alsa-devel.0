@@ -1,19 +1,22 @@
-From: Libin Yang <libin.yang@linux.intel.com>
-Subject: Re: [PATCH v4 0/5] ALSA: hda - hdmi support dynamic
- pcm assignment
-Date: Wed, 16 Dec 2015 15:59:56 +0800
-Message-ID: <567119FC.4020500@linux.intel.com>
-References: <1450244565-77041-1-git-send-email-libin.yang@linux.intel.com>
- <s5hbn9qhm2v.wl-tiwai@suse.de> <567118CA.3010400@linux.intel.com>
- <s5h7fkehlhk.wl-tiwai@suse.de>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 5/5] ASoC: The soc card can have auxiliary
+ components
+Date: Wed, 16 Dec 2015 16:33:32 +0800
+Message-ID: <567121DC.5080601@linux.intel.com>
+References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
+ <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
+ <20151208185817.GX5727@sirena.org.uk> <5667EFCB.3010402@linux.intel.com>
+ <20151209203836.GI5727@sirena.org.uk> <56694E6A.4090402@linux.intel.com>
+ <20151211202208.GS5727@sirena.org.uk> <566FC9F6.8050107@linux.intel.com>
+ <20151215112324.GX5727@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id EE18926517C
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 09:02:27 +0100 (CET)
-In-Reply-To: <s5h7fkehlhk.wl-tiwai@suse.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8766126517F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2015 09:17:11 +0100 (CET)
+In-Reply-To: <20151215112324.GX5727@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,69 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
-On 12/16/2015 03:59 PM, Takashi Iwai wrote:
-> On Wed, 16 Dec 2015 08:54:50 +0100,
-> Libin Yang wrote:
->>
->>
->>
->> On 12/16/2015 03:47 PM, Takashi Iwai wrote:
->>> On Wed, 16 Dec 2015 06:42:40 +0100,
->>> libin.yang@linux.intel.com wrote:
->>>>
->>>> From: Libin Yang <libin.yang@linux.intel.com>
->>>>
->>>> The patches are trying to support dynamically binding PCM to pin
->>>> in HDMI/DP audio.
->>>>
->>>> The pin will not bind to any PCM if there is not monitor connected.
->>>> When there is a monitor connected to the port (pin), driver will
->>>> try to find a proper PCM to assign to the port and setup the pin
->>>> if necessary.
->>>>
->>>> Libin Yang (5):
->>>>     ALSA: hda - hdmi begin to support dynamic PCM assignment
->>>>     ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode
->>>>     ALSA: hda - hdmi operate spdif based on pcm
->>>>     ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
->>>>     ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
->>>>       assignment mode
->>>
->>> I updated topic/hda-mst branch with these patches.  But the patch 4
->>> needs more fixes, as suggested in another mail.
->>
->> Thanks. Do I need to resend all the patches? Or just patch 4 and patch 5?
->
-> Only 4 (and 5 if needed) should suffice.
->
->>> Overall, I'd like to know whether MST audio really works in the
->>> current state, or not.  Do you have *any* git branch where MST audio
->>> is supposed to work at all?
->>
->> Yes, I have all the patches in my local branch. We tested the patches
->> before. But since a lot of code in mainline is changed, I need rebase
->> the patches. Some patches are conflicted with the jack changes you
->> made. Some also fix some unsol event issues, which seems you have made
->> a lot of changes on it currently.
->
-> Well, it doesn't matter how old it is, but I need the branch to test
-> whether MST really works at all.  Could you publish your git tree and
-> your old branch that worked?  You can use github or whatever.
 
+On 12/15/2015 07:23 PM, Mark Brown wrote:
+> On Tue, Dec 15, 2015 at 04:06:14PM +0800, Mengdong Lin wrote:
+>
+>> I still have some basic questions:
+>
+>> 1. What are the typical usages for aux_dev?
+>>     For CODEC<->CODEC link or external headset detection chip?
+>
+> Neither, it's for analogue devices.
 
-OK. I will submit the patches to github and let you know the branch later.
-
-Best Regards,
-Libin
+Got it. Thanks!
 
 >
+>> 2. Why we need the rtd array 'rtd_aux' for the aux_devs?
+>>     If the codec has DAIs and used by a DAI link, the ASoC will create a rtd
+>> for the link.
 >
-> thanks,
+> There are (or were at the time) assumptions in drivers that there will
+> be a rtd there so it was easier to provide a stub.
 >
-> Takashi
->
+
+Can we remove this rtd array if current driver does not need the stub?
+
+For the replacement of aux_dev by aux_component, can we define like below?
+
+struct snd_soc_aux_component {
+	const char *comp_name; ... no longer assume they're only codecs
+	const char *comp_of_node;
+
+	/* machine specific init */
+	int (*init)(struct snd_soc_component *componnent);
+};
+
+The ASoC can use the comp_name or comp_of_node to find the components 
+and probe them.
+
+Thanks
+Mengdong
