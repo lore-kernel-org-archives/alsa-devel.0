@@ -1,98 +1,48 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: Re: Re: [PATCH v6] sun4i-codec: Add FM, Line and Mic inputs
-Date: Wed, 16 Dec 2015 23:30:51 +0100
-Message-ID: <20151216233051.09d34738@dayas>
-References: <20151209235530.7240df0a@dayas>
-	<20151213205839.GA19456@lukather>
-	<20151215025208.7c468673@dayas>
-	<20151216104736.GT19456@lukather>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: Patricio Rossi <meduzapat@netscape.net>
+Subject: Re: HT Omega eCLARO sound card
+Date: Wed, 16 Dec 2015 19:43:53 -0500
+Message-ID: <1450313033.4335.0.camel@netscape.net>
+References: <1450153816.25372.6.camel@netscape.net>
+ <567019D8.3040709@ladisch.de> <1450223143.10551.2.camel@netscape.net>
+ <567113EB.2020802@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBH6MY6ZQKGQEIQBS7SY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151216104736.GT19456@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from omr-a018e.mx.aol.com (omr-a018e.mx.aol.com [204.29.186.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A820265826
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2015 01:43:55 +0100 (CET)
+In-Reply-To: <567113EB.2020802@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Maxime,
+What do you suggest:
+Return the card or keep it to help you (or the alsa team) to debug the
+driver?
 
-On Wed, 16 Dec 2015 11:47:36 +0100
-Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-> > Because SUN4I_CODEC_AC_MIC_PHONE_CAL is sun7i-specific.
+On Wed, 2015-12-16 at 08:34 +0100, Clemens Ladisch wrote:
+
+> Patricio Rossi wrote:
+> > Is there anything I can do to help?
 > 
-> Yet, you're using it in both cases (A10 vs A20).
-
-Yes. I'm trying to keep complexity and duplication down.
-I figured it wouldn't be bad to have unused registers in the regmap.
-
-(Technially .max_register = MAX(max_register_a10, max_register_a20) would be 
- better. Should we do that?)
-
-If it's bad in this case, we have to split it up, but frankly the *codec_probe() 
-function is much too long now and this would make it even longer.
-
-Also, it was that way before, so I'm mostly using it in both cases because 
-previously it was also used in both cases (with the too-large max-register), 
-apparently without problems. 
-
-Should I duplicate and adapt the structure?
-
-> You can also have the defines on top, and everything just works :)
-
-The idea is to make the compiler complain when I try to use a sun7i define in a 
-generic sun4i function (or struct, in this case) - because that would probably 
-be causing problems at runtime, too. Better to catch problems earlier.
-So I kept the sun7i-specific things closely together and as much to the bottom 
-of the file as possible - as a poor-mans modularity. 
-If I kept the sun7i defines at the top I could use them anywhere with impunity - 
-also in the A10 case - and it would not complain.
-
-But it's mostly to make the life of the developer easier, so feel free to choose 
-otherwise. (not sarcasm)
-
-> > Or is it better to rename it to "SUN7I_CODEC_AC_DAC_CAL" rather than delete?
+> Not until I find time to do something.
 > 
-> You can rename it if you want, but it's not like it's of the highest
-> importance :)
-
-The only somewhat important part of the name is the "7". 
-If you use a "7"-register on an A10, it's not going to work at runtime, or worse: 
-do something else that wasn't intended. Right now it has a "4" although it isn't
-an A10 register. This separation should be visible somewhere in the source code, 
-or problems are going to slip through later.
-
-I agree it's not at all important right now because the register is unused 
-by us :P
-(But it's actually an interesting register, it contains DAC bias calibration 
-data. Cool that that can be modified)
-
-> > Note: the newest original ASoC sun4i-codec has a variable
-> >   "struct sun4i_codec *scodec;"
-> > as well in the same function (which is a different thing).
+> > Is true this card shares code with some of the Asus Xonar?
 > 
-> I don't know what you're refering to with "newest" and "original".
-
-Oops, sorry, by "newest" I meant "I checked the tree online right before I wrote 
-the mail".
-By "original" I meant "not of my patch".
-
-> But two different variables with two different names doesn't seem so
-> bad, does it?
-
-For the computer? No.
-
-Two different variables with almost the same name for humans? Welll. 
-
-But it's fine, just wanted to point it out because you can't see it in the patch.
-
-Thanks,
-   Danny
+> It shares the hardware with multiple other cards, which means
+> that the driver needs to be reorganized.
+> 
+> 
+> Regards,
+> Clemens
