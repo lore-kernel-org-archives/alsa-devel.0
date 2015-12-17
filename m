@@ -1,18 +1,19 @@
-From: Patricio Rossi <meduzapat@netscape.net>
-Subject: Re: HT Omega eCLARO sound card
-Date: Wed, 16 Dec 2015 19:43:53 -0500
-Message-ID: <1450313033.4335.0.camel@netscape.net>
-References: <1450153816.25372.6.camel@netscape.net>
- <567019D8.3040709@ladisch.de> <1450223143.10551.2.camel@netscape.net>
- <567113EB.2020802@ladisch.de>
+From: "Wu, Songjun" <songjun.wu@atmel.com>
+Subject: Re: [PATCH 1/2] ASoC: atmel-pdmic: add the Pulse
+ Density Modulation Interface Controller
+Date: Thu, 17 Dec 2015 10:41:17 +0800
+Message-ID: <567220CD.2060706@atmel.com>
+References: <1450080940-4123-1-git-send-email-songjun.wu@atmel.com>
+ <1450080940-4123-2-git-send-email-songjun.wu@atmel.com>
+ <20151216122727.GI5727@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr-a018e.mx.aol.com (omr-a018e.mx.aol.com [204.29.186.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A820265826
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2015 01:43:55 +0100 (CET)
-In-Reply-To: <567113EB.2020802@ladisch.de>
+Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 252B52659A5
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2015 03:41:26 +0100 (CET)
+In-Reply-To: <20151216122727.GI5727@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-What do you suggest:
-Return the card or keep it to help you (or the alsa team) to debug the
-driver?
 
 
-On Wed, 2015-12-16 at 08:34 +0100, Clemens Ladisch wrote:
-
-> Patricio Rossi wrote:
-> > Is there anything I can do to help?
-> 
-> Not until I find time to do something.
-> 
-> > Is true this card shares code with some of the Asus Xonar?
-> 
-> It shares the hardware with multiple other cards, which means
-> that the driver needs to be reorganized.
-> 
-> 
-> Regards,
-> Clemens
+On 12/16/2015 20:27, Mark Brown wrote:
+> On Mon, Dec 14, 2015 at 04:15:39PM +0800, Songjun Wu wrote:
+>
+>> Add driver for the Pulse Density Modulation Interface
+>> Controller. It comes with digitallly controlled gain,
+>> a High-Pass and a SINCC filter.
+>
+> This looks basically OK but there's a *lot* of weird coding style issues
+> in here.  It's really all that, nothing too serious that I noticed -
+> I've pointed out some of the patterns below not every individual issue.
+>
+>> +	for (i = 0; i < ARRAY_SIZE(mic_gain_table); i++) {
+>> +		if ((mic_gain_table[i].dgain == dgain_val)
+>> +		&& (mic_gain_table[i].scale == scale_val))
+>> +			ucontrol->value.integer.value[0] = i;
+>> +	}
+>
+> This indentation is really weird, why is the && aligned with the if?
+>
+Accept.
+>> +	snd_soc_update_bits(codec, PDMIC_DSPR1,
+>> +		PDMIC_DSPR1_OFFSET_MASK,
+>> +		(u32)(dd->pdata->mic_offset << PDMIC_DSPR1_OFFSET_SHIFT));
+>
+> These are weird too, I'd expect the second line to be part of the first.
+>
+>> +static struct regmap *atmel_pdmic_codec_get_remap(struct device *dev)
+>> +{
+>> +	return dev_get_regmap(dev, NULL);
+>> +}
+>
+> This is (or should be) the default in the core.
+>
+You are right. The core has initialized the regmap in function 
+snd_soc_component_add_unlocked.
+This function can be removed.
+Thank you.
+>> +	if ((fs < rate_min) || (fs > rate_max)) {
+>> +		dev_err(codec->dev,
+>> +		"sample rate is %dHz, min rate is %dHz, max rate is %dHz\n",
+>> +		fs, rate_min, rate_max);
+>
+> This too, alignment after the (.
+>
+Accept.
+>> +	if (bits == 16)
+>> +		dspr0_val = (PDMIC_DSPR0_SIZE_16_BITS
+>> +				<< PDMIC_DSPR0_SIZE_SHIFT);
+>> +	else if (bits == 32)
+>> +		dspr0_val = (PDMIC_DSPR0_SIZE_32_BITS
+>> +				<< PDMIC_DSPR0_SIZE_SHIFT);
+>> +	else
+>> +		return -EINVAL;
+>
+> This looks like it should be a switch statement.
+>
+Accept.
