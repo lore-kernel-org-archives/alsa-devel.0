@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/4] ALSA: hda - Drop unused
-	AZX_DCAPS_REVERSE_ASSIGN
-Date: Thu, 17 Dec 2015 08:35:46 +0100
-Message-ID: <1450337746-4580-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: hda - Drop AZX_DCAPS_POSFIX_VIA bit
+Date: Thu, 17 Dec 2015 08:35:45 +0100
+Message-ID: <1450337746-4580-4-git-send-email-tiwai@suse.de>
 References: <1450337746-4580-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C66CF2654EA
+ by alsa0.perex.cz (Postfix) with ESMTP id C371E2654B7
  for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2015 08:35:46 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8580CAB13
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 88F2BACA7
  for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2015 07:35:44 +0000 (UTC)
 In-Reply-To: <1450337746-4580-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,40 +26,50 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AZX_DCAPS_REVERSE_ASSIGN is no longer referred by any code.
-Let's drop it.
+AZX_DCAPS_POSFIX_VIA is coupled always with AZX_DRIVER_VIA type, so we
+don't have to keep this bit in dcaps.  Save one more!
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
  sound/pci/hda/hda_controller.h | 2 +-
- sound/pci/hda/hda_intel.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c      | 5 ++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index a288ac1b5451..ec63bbf1ec6d 100644
+index 65401372a7c8..a288ac1b5451 100644
 --- a/sound/pci/hda/hda_controller.h
 +++ b/sound/pci/hda/hda_controller.h
-@@ -43,7 +43,7 @@
- #define AZX_DCAPS_NO_ALIGN_BUFSIZE (1 << 21)	/* no buffer size alignment */
- /* 22 unused */
- #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
--#define AZX_DCAPS_REVERSE_ASSIGN (1 << 24)	/* Assign devices in reverse order */
-+/* 24 unused */
- #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
- #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
- #ifdef CONFIG_SND_HDA_I915
+@@ -36,7 +36,7 @@
+ /* 14 unused */
+ #define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
+ #define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
+-#define AZX_DCAPS_POSFIX_VIA	(1 << 17)	/* Use VIACOMBO as default */
++/* 17 unused */
+ #define AZX_DCAPS_NO_64BIT	(1 << 18)	/* No 64bit address */
+ #define AZX_DCAPS_SYNC_WRITE	(1 << 19)	/* sync each cmd write */
+ #define AZX_DCAPS_OLD_SSYNC	(1 << 20)	/* Old SSYNC reg for ICH */
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 67e672a77576..1465f6a0e010 100644
+index bcb526103ecb..67e672a77576 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -286,7 +286,7 @@ enum {
- /* quirks for Intel PCH */
- #define AZX_DCAPS_INTEL_PCH_BASE \
- 	(AZX_DCAPS_NO_ALIGN_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY |\
--	 AZX_DCAPS_REVERSE_ASSIGN | AZX_DCAPS_SNOOP_TYPE(SCH))
-+	 AZX_DCAPS_SNOOP_TYPE(SCH))
+@@ -1325,7 +1325,7 @@ static int check_position_fix(struct azx *chip, int fix)
+ 	}
  
- /* PCH up to IVB; no runtime PM */
- #define AZX_DCAPS_INTEL_PCH_NOPM \
+ 	/* Check VIA/ATI HD Audio Controller exist */
+-	if (chip->driver_caps & AZX_DCAPS_POSFIX_VIA) {
++	if (chip->driver_type == AZX_DRIVER_VIA) {
+ 		dev_dbg(chip->card->dev, "Using VIACOMBO position fix\n");
+ 		return POS_FIX_VIACOMBO;
+ 	}
+@@ -2284,8 +2284,7 @@ static const struct pci_device_id azx_ids[] = {
+ 	{ PCI_DEVICE(0x1002, 0xaae8),
+ 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
+ 	/* VIA VT8251/VT8237A */
+-	{ PCI_DEVICE(0x1106, 0x3288),
+-	  .driver_data = AZX_DRIVER_VIA | AZX_DCAPS_POSFIX_VIA },
++	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
+ 	/* VIA GFX VT7122/VX900 */
+ 	{ PCI_DEVICE(0x1106, 0x9170), .driver_data = AZX_DRIVER_GENERIC },
+ 	/* VIA GFX VT6122/VX11 */
 -- 
 2.6.4
