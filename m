@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: Intel: boards: Add WOV as sink for
+Subject: Applied "ASoc: Intel: boards: Add HDMI/DP links for
 	nau88l25_ssm4567 machine" to the asoc tree
 Date: Fri, 18 Dec 2015 12:15:31 +0000
-Message-ID: <E1a9twZ-00067t-VF@debutante>
-References: <1449862153-68738-7-git-send-email-yang.a.fang@intel.com>
+Message-ID: <E1a9twZ-00067Q-1f@debutante>
+References: <1449862153-68738-8-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 509A5266618
+ by alsa0.perex.cz (Postfix) with ESMTP id 5649926661A
  for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:38 +0100 (CET)
-In-Reply-To: <1449862153-68738-7-git-send-email-yang.a.fang@intel.com>
+In-Reply-To: <1449862153-68738-8-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: Intel: boards: Add WOV as sink for nau88l25_ssm4567 machine
+   ASoc: Intel: boards: Add HDMI/DP links for nau88l25_ssm4567 machine
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,90 @@ to this mail.
 Thanks,
 Mark
 
->From 2154be362c9050b9ed5d3beac491f0103505bf16 Mon Sep 17 00:00:00 2001
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Date: Fri, 11 Dec 2015 11:29:12 -0800
-Subject: [PATCH] ASoc: Intel: boards: Add WOV as sink for nau88l25_ssm4567
+>From 743ad80e5c8565ab54e8832f6d74cb543a0adbba Mon Sep 17 00:00:00 2001
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Date: Fri, 11 Dec 2015 11:29:13 -0800
+Subject: [PATCH] ASoc: Intel: boards: Add HDMI/DP links for nau88l25_ssm4567
  machine
 
-We have WOV module which should act as DAPM sink, so add that and
-its links.
-
-Also rename the refcap to "Wake On Voice" as some user expect to
-find this name
+This machine supports HDMI/DP ports so add these ports and its FE and BE
+DAIlinks
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 30 +++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 1b54613132c1..f6c252cccdb4 100644
+index f6c252cccdb4..c071812f31e5 100644
 --- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
 +++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -92,6 +92,7 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_SPK("Left Speaker", NULL),
+@@ -93,6 +93,8 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
  	SND_SOC_DAPM_SPK("Right Speaker", NULL),
  	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+	SND_SOC_DAPM_SINK("WoV Sink"),
+ 	SND_SOC_DAPM_SINK("WoV Sink"),
++	SND_SOC_DAPM_SPK("DP", NULL),
++	SND_SOC_DAPM_SPK("HDMI", NULL),
  	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
  			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
  			SND_SOC_DAPM_POST_PMD),
-@@ -110,6 +111,7 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 	{"MIC", NULL, "Headset Mic"},
+@@ -112,6 +114,9 @@ static const struct snd_soc_dapm_route skylake_map[] = {
  	{"DMic", NULL, "SoC DMIC"},
  
-+	{"WoV Sink", NULL, "hwd_in sink"},
+ 	{"WoV Sink", NULL, "hwd_in sink"},
++
++	{"HDMI", NULL, "hif5 Output"},
++	{"DP", NULL, "hif6 Output"},
  	/* CODEC BE connections */
  	{ "Left Playback", NULL, "ssp0 Tx"},
  	{ "Right Playback", NULL, "ssp0 Tx"},
-@@ -188,6 +190,7 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	nau8825_enable_jack_detect(codec, &skylake_headset);
- 
- 	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
-+	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
- 
- 	return ret;
- }
-@@ -383,7 +386,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -126,6 +131,8 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+ 	/* DMIC */
+ 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
+ 	{ "DMIC01 Rx", NULL, "DMIC AIF" },
++	{ "hifi1", NULL, "iDisp Tx"},
++	{ "iDisp Tx", NULL, "iDisp_out"},
+ 	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headset Mic", NULL, "Platform Clock" },
+ };
+@@ -411,6 +418,19 @@ static struct snd_soc_dai_link skylake_dais[] = {
+ 		.dynamic = 1,
+ 		.ops = &skylake_dmic_ops,
  	},
++	{
++		.name = "Skl HDMI Port",
++		.stream_name = "Hdmi",
++		.cpu_dai_name = "HDMI Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++
+ 	/* Back End DAI links */
  	{
- 		.name = "Skl Audio Reference cap",
--		.stream_name = "refcap",
-+		.stream_name = "Wake on Voice",
- 		.cpu_dai_name = "Reference Pin",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		/* SSP0 - Codec */
+@@ -459,6 +479,16 @@ static struct snd_soc_dai_link skylake_dais[] = {
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
+ 	},
++	{
++		.name = "iDisp",
++		.be_id = 3,
++		.cpu_dai_name = "iDisp Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi1",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
+ };
+ 
+ /* skylake audio machine driver for SPT + NAU88L25 */
 -- 
 2.6.2
