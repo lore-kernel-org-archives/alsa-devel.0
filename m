@@ -1,47 +1,105 @@
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ALSA: oss: consolidate kmalloc/memset 0 call to kzalloc
-Date: Fri, 18 Dec 2015 21:01:57 +0100
-Message-ID: <1450468917-32150-1-git-send-email-hofrat@osadl.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: Re: [PATCH v6] sun4i-codec: Add FM, Line and Mic inputs
+Date: Fri, 18 Dec 2015 11:19:43 +0100
+Message-ID: <20151218101943.GI30359@lukather>
+References: <20151209235530.7240df0a@dayas>
+ <20151213205839.GA19456@lukather>
+ <20151215025208.7c468673@dayas>
+ <20151216104736.GT19456@lukather>
+ <20151216233051.09d34738@dayas>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="y96v7rNg6HAoELs5"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBBHC2GZQKGQEN3K6MWI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20151216233051.09d34738@dayas>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an API consolidation only. The use of kmalloc + memset to 0
-is equivalent to kzalloc.
+--y96v7rNg6HAoELs5
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+On Wed, Dec 16, 2015 at 11:30:51PM +0100, Danny Milosavljevic wrote:
+> Hi Maxime,
+> 
+> On Wed, 16 Dec 2015 11:47:36 +0100
+> Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> 
+> > > Because SUN4I_CODEC_AC_MIC_PHONE_CAL is sun7i-specific.
+> > 
+> > Yet, you're using it in both cases (A10 vs A20).
+> 
+> Yes. I'm trying to keep complexity and duplication down.
+> I figured it wouldn't be bad to have unused registers in the regmap.
+> 
+> (Technially .max_register = MAX(max_register_a10, max_register_a20) would be 
+>  better. Should we do that?)
+> 
+> If it's bad in this case, we have to split it up, but frankly the *codec_probe() 
+> function is much too long now and this would make it even longer.
+> 
+> Also, it was that way before, so I'm mostly using it in both cases because 
+> previously it was also used in both cases (with the too-large max-register), 
+> apparently without problems. 
+> 
+> Should I duplicate and adapt the structure?
 
-Found by coccinelle script (relaxed version of
-scripts/coccinelle/api/alloc/kzalloc-simple.cocci)
+No, my point was that you don't need to move it around at all.
 
-Patch was compile tested with: x86_64_defconfig
-CONFIG_SND_PCM_OSS=y
+> > You can also have the defines on top, and everything just works :)
+> 
+> The idea is to make the compiler complain when I try to use a sun7i define in a 
+> generic sun4i function (or struct, in this case) - because that would probably 
+> be causing problems at runtime, too. Better to catch problems earlier.
+> So I kept the sun7i-specific things closely together and as much to the bottom 
+> of the file as possible - as a poor-mans modularity. 
+> If I kept the sun7i defines at the top I could use them anywhere with impunity - 
+> also in the A10 case - and it would not complain.
+> 
+> But it's mostly to make the life of the developer easier, so feel free to choose 
+> otherwise. (not sarcasm)
 
-Patch is against linux-next (localversion-next is -next-20150518)
+I understand your point to develop it, but now, the development is done :)
 
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index e557dbe..8cdd06f 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -850,7 +850,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
- 
- 	if (mutex_lock_interruptible(&runtime->oss.params_lock))
- 		return -EINTR;
--	sw_params = kmalloc(sizeof(*sw_params), GFP_KERNEL);
-+	sw_params = kmalloc(sizeof(*sw_params), GFP_KERNEL);
- 	params = kmalloc(sizeof(*params), GFP_KERNEL);
- 	sparams = kmalloc(sizeof(*sparams), GFP_KERNEL);
- 	if (!sw_params || !params || !sparams) {
-@@ -988,7 +988,6 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
- 		goto failure;
- 	}
- 
--	memset(sw_params, 0, sizeof(*sw_params));
- 	if (runtime->oss.trigger) {
- 		sw_params->start_threshold = 1;
- 	} else {
+Having all the defines packed together is easier to read and maintain
+after the development is done.
+
+
+> > > Or is it better to rename it to "SUN7I_CODEC_AC_DAC_CAL" rather than delete?
+> > 
+> > You can rename it if you want, but it's not like it's of the highest
+> > importance :)
+> 
+> The only somewhat important part of the name is the "7". 
+> If you use a "7"-register on an A10, it's not going to work at runtime, or worse: 
+> do something else that wasn't intended. Right now it has a "4" although it isn't
+> an A10 register. This separation should be visible somewhere in the source code, 
+> or problems are going to slip through later.
+> 
+> I agree it's not at all important right now because the register is unused 
+> by us :P
+
+Exactly my point ;)
+
+Like I said, if you want to rename it, go ahead. It would also be a
+good idea to open a github issue on allwinner's documentation repo to
+make them know that the register name doesn't match between the
+register list and the register documentations.
+
+Maxime
+
 -- 
-1.7.10.4
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--y96v7rNg6HAoELs5--
