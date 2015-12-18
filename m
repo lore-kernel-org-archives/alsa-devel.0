@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 05/19] ASoC: Intel: boards: merge DMI-based
-	quirks in bytcr-rt5640 driver
-Date: Thu, 17 Dec 2015 20:35:42 -0600
-Message-ID: <1450406156-22246-6-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/19] ASoC: Intel: tag byt-rt5640 machine
+	driver as deprecated
+Date: Thu, 17 Dec 2015 20:35:43 -0600
+Message-ID: <1450406156-22246-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B9EC26153F
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 03:37:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 03A5A261543
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 03:37:13 +0100 (CET)
 In-Reply-To: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,148 +25,53 @@ To: alsa-devel@alsa-project.org
 Cc: bardliao@realtek.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jack.yu@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Merge DMI quirks for various machines such as Asus T100
-and clean-up code
+All the functionality was merged in DPCM-based driver,
+keep older driver to avoid breaking userspace but
+tag it as unsupported/deprecated
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 78 ++++++++++++++++++++++++++++-------
- 1 file changed, 62 insertions(+), 16 deletions(-)
+ sound/soc/intel/Kconfig | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 8dfb57d..944283f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -39,6 +39,13 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- };
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 2d3b124..a23a4fd 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -57,13 +57,14 @@ config SND_SOC_INTEL_HASWELL_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE=y
++	depends on DW_DMAC_CORE=y && (SND_SOC_INTEL_BYTCR_RT5640_MACH = n)
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+-	  with the RT5640 audio codec.
++	  with the RT5640 audio codec. This driver is deprecated, use
++	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality
  
- static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
-+	{"AIF1 Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx"},
-+	{"codec_in1", NULL, "ssp2 Rx"},
-+	{"ssp2 Rx", NULL, "AIF1 Capture"},
-+
- 	{"Headset Mic", NULL, "MICBIAS1"},
- 	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -47,15 +54,6 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- 	{"Speaker", NULL, "SPOLN"},
- 	{"Speaker", NULL, "SPORP"},
- 	{"Speaker", NULL, "SPORN"},
--	{"Internal Mic", NULL, "MICBIAS1"},
--	{"IN1P", NULL, "Internal Mic"},
--
--	{"AIF1 Playback", NULL, "ssp2 Tx"},
--	{"ssp2 Tx", NULL, "codec_out0"},
--	{"ssp2 Tx", NULL, "codec_out1"},
--	{"codec_in0", NULL, "ssp2 Rx"},
--	{"codec_in1", NULL, "ssp2 Rx"},
--	{"ssp2 Rx", NULL, "AIF1 Capture"},
- };
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+@@ -91,14 +92,14 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	  If unsure select "N".
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
-@@ -145,6 +143,54 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{}
- };
- 
-+static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	int ret;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	struct snd_soc_card *card = runtime->card;
-+	const struct snd_soc_dapm_route *custom_map;
-+	int num_routes;
-+
-+	card->dapm.idle_bias_off = true;
-+
-+	ret = snd_soc_add_card_controls(card, byt_rt5640_controls,
-+					ARRAY_SIZE(byt_rt5640_controls));
-+	if (ret) {
-+		dev_err(card->dev, "unable to add card controls\n");
-+		return ret;
-+	}
-+
-+	dmi_check_system(byt_rt5640_quirk_table);
-+	switch (BYT_RT5640_MAP(byt_rt5640_quirk)) {
-+	case BYT_RT5640_IN1_MAP:
-+		custom_map = byt_rt5640_intmic_in1_map;
-+		num_routes = ARRAY_SIZE(byt_rt5640_intmic_in1_map);
-+		break;
-+	case BYT_RT5640_DMIC2_MAP:
-+		custom_map = byt_rt5640_intmic_dmic2_map;
-+		num_routes = ARRAY_SIZE(byt_rt5640_intmic_dmic2_map);
-+		break;
-+	default:
-+		custom_map = byt_rt5640_intmic_dmic1_map;
-+		num_routes = ARRAY_SIZE(byt_rt5640_intmic_dmic1_map);
-+	}
-+
-+	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
-+	if (ret)
-+		return ret;
-+
-+	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
-+		ret = rt5640_dmic_enable(codec, 0, 0);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
-+	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
-+
-+	return ret;
-+}
-+
- static const struct snd_soc_pcm_stream byt_rt5640_dai_params = {
- 	.formats = SNDRV_PCM_FMTBIT_S24_LE,
- 	.rate_min = 48000,
-@@ -244,12 +290,13 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.ignore_suspend = 1,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-+		.init = byt_rt5640_init,
- 		.ops = &byt_rt5640_be_ssp2_ops,
- 	},
- };
- 
- /* SoC card */
--static struct snd_soc_card snd_soc_card_byt_rt5640 = {
-+static struct snd_soc_card byt_rt5640_card = {
- 	.name = "bytcr-rt5640",
- 	.owner = THIS_MODULE,
- 	.dai_link = byt_rt5640_dais,
-@@ -258,8 +305,7 @@ static struct snd_soc_card snd_soc_card_byt_rt5640 = {
- 	.num_dapm_widgets = ARRAY_SIZE(byt_rt5640_widgets),
- 	.dapm_routes = byt_rt5640_audio_map,
- 	.num_dapm_routes = ARRAY_SIZE(byt_rt5640_audio_map),
--	.controls = byt_rt5640_controls,
--	.num_controls = ARRAY_SIZE(byt_rt5640_controls),
-+	.fully_routed = true,
- };
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
-@@ -267,16 +313,16 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	int ret_val = 0;
- 
- 	/* register the soc card */
--	snd_soc_card_byt_rt5640.dev = &pdev->dev;
-+	byt_rt5640_card.dev = &pdev->dev;
-+
-+	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
- 
--	ret_val = devm_snd_soc_register_card(&pdev->dev,
--					&snd_soc_card_byt_rt5640);
- 	if (ret_val) {
- 		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n",
- 			ret_val);
- 		return ret_val;
- 	}
--	platform_set_drvdata(pdev, &snd_soc_card_byt_rt5640);
-+	platform_set_drvdata(pdev, &byt_rt5640_card);
- 	return ret_val;
- }
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+-	tristate "ASoC Audio DSP Support for MID BYT Platform"
++        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+ 	depends on X86 && I2C
+ 	select SND_SOC_RT5640
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+-	  This adds support for ASoC machine driver for Intel(R) MID Baytrail platform
+-          used as alsa device in audio substem in Intel(R) MID devices
++          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++          platforms with RT5640 audio codec.
+           Say Y if you have such a device
+           If unsure select "N".
  
 -- 
 1.9.1
