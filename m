@@ -1,16 +1,16 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/4] ALSA: fm801: convert rest outw() /
-	inw() to use helpers
-Date: Fri, 18 Dec 2015 21:14:11 +0200
-Message-ID: <1450466053-52170-2-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] ALSA: fm801: store struct device
+	instead of pci_dev
+Date: Fri, 18 Dec 2015 21:14:13 +0200
+Message-ID: <1450466053-52170-4-git-send-email-andriy.shevchenko@linux.intel.com>
 References: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E43382605BB
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 20:14:18 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B488E265DC3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 20:14:47 +0100 (CET)
 In-Reply-To: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,110 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+There is no need to store struct pci_dev in struct fm801. Generic struct device
+can be easily translated to struct pci_dev whenever it's needed, in particular
+for one user for now.
 
-The patch introduces two new helpers fm801_iowrite16() and fm801_ioread16() to
-write and read the registers by offset. Previously similar was done to access
-the hardware registers by their names.
-
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/pci/fm801.c | 36 ++++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+ sound/pci/fm801.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index f57847c..c2afb41 100644
+index c24cb04..e4e610c 100644
 --- a/sound/pci/fm801.c
 +++ b/sound/pci/fm801.c
-@@ -212,6 +212,20 @@ struct fm801 {
- #endif
- };
+@@ -163,6 +163,7 @@ MODULE_PARM_DESC(radio_nr, "Radio device numbers");
+  * @cap_ctrl:		capture control
+  */
+ struct fm801 {
++	struct device *dev;
+ 	int irq;
  
-+/*
-+ * IO accessors
-+ */
-+
-+static inline void fm801_iowrite16(struct fm801 *chip, unsigned short offset, u16 value)
-+{
-+	outw(value, chip->port + offset);
-+}
-+
-+static inline u16 fm801_ioread16(struct fm801 *chip, unsigned short offset)
-+{
-+	return inw(chip->port + offset);
-+}
-+
- static const struct pci_device_id snd_fm801_ids[] = {
- 	{ 0x1319, 0x0801, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_MULTIMEDIA_AUDIO << 8, 0xffff00, 0, },   /* FM801 */
- 	{ 0x5213, 0x0510, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_MULTIMEDIA_AUDIO << 8, 0xffff00, 0, },   /* Gallant Odyssey Sound 4 */
-@@ -256,11 +270,11 @@ static int snd_fm801_update_bits(struct fm801 *chip, unsigned short reg,
- 	unsigned short old, new;
+ 	unsigned long port;
+@@ -190,7 +191,6 @@ struct fm801 {
+ 	struct snd_ac97 *ac97;
+ 	struct snd_ac97 *ac97_sec;
  
- 	spin_lock_irqsave(&chip->reg_lock, flags);
--	old = inw(chip->port + reg);
-+	old = fm801_ioread16(chip, reg);
- 	new = (old & ~mask) | value;
- 	change = old != new;
- 	if (change)
--		outw(new, chip->port + reg);
-+		fm801_iowrite16(chip, reg, new);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	return change;
- }
-@@ -851,10 +865,11 @@ static int snd_fm801_get_single(struct snd_kcontrol *kcontrol,
- 	int shift = (kcontrol->private_value >> 8) & 0xff;
- 	int mask = (kcontrol->private_value >> 16) & 0xff;
- 	int invert = (kcontrol->private_value >> 24) & 0xff;
-+	long *value = ucontrol->value.integer.value;
+-	struct pci_dev *pci;
+ 	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+ 	struct snd_rawmidi *rmidi;
+@@ -715,6 +715,7 @@ static struct snd_pcm_ops snd_fm801_capture_ops = {
  
--	ucontrol->value.integer.value[0] = (inw(chip->port + reg) >> shift) & mask;
-+	value[0] = (fm801_ioread16(chip, reg) >> shift) & mask;
- 	if (invert)
--		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
-+		value[0] = mask - value[0];
- 	return 0;
- }
+ static int snd_fm801_pcm(struct fm801 *chip, int device)
+ {
++	struct pci_dev *pdev = to_pci_dev(chip->dev);
+ 	struct snd_pcm *pcm;
+ 	int err;
  
-@@ -907,14 +922,15 @@ static int snd_fm801_get_double(struct snd_kcontrol *kcontrol,
- 	int shift_right = (kcontrol->private_value >> 12) & 0x0f;
- 	int mask = (kcontrol->private_value >> 16) & 0xff;
- 	int invert = (kcontrol->private_value >> 24) & 0xff;
-+	long *value = ucontrol->value.integer.value;
+@@ -730,7 +731,7 @@ static int snd_fm801_pcm(struct fm801 *chip, int device)
+ 	chip->pcm = pcm;
  
- 	spin_lock_irq(&chip->reg_lock);
--	ucontrol->value.integer.value[0] = (inw(chip->port + reg) >> shift_left) & mask;
--	ucontrol->value.integer.value[1] = (inw(chip->port + reg) >> shift_right) & mask;
-+	value[0] = (fm801_ioread16(chip, reg) >> shift_left) & mask;
-+	value[1] = (fm801_ioread16(chip, reg) >> shift_right) & mask;
- 	spin_unlock_irq(&chip->reg_lock);
- 	if (invert) {
--		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
--		ucontrol->value.integer.value[1] = mask - ucontrol->value.integer.value[1];
-+		value[0] = mask - value[0];
-+		value[1] = mask - value[1];
- 	}
- 	return 0;
- }
-@@ -1372,7 +1388,7 @@ static int snd_fm801_suspend(struct device *dev)
- 	snd_ac97_suspend(chip->ac97);
- 	snd_ac97_suspend(chip->ac97_sec);
- 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
--		chip->saved_regs[i] = inw(chip->port + saved_regs[i]);
-+		chip->saved_regs[i] = fm801_ioread16(chip, saved_regs[i]);
- 	/* FIXME: tea575x suspend */
- 	return 0;
- }
-@@ -1387,7 +1403,7 @@ static int snd_fm801_resume(struct device *dev)
- 	snd_ac97_resume(chip->ac97);
- 	snd_ac97_resume(chip->ac97_sec);
- 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
--		outw(chip->saved_regs[i], chip->port + saved_regs[i]);
-+		fm801_iowrite16(chip, saved_regs[i], chip->saved_regs[i]);
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      snd_dma_pci_data(chip->pci),
++					      snd_dma_pci_data(pdev),
+ 					      chip->multichannel ? 128*1024 : 64*1024, 128*1024);
  
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
+ 	return snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+@@ -1182,7 +1183,7 @@ static int snd_fm801_free(struct fm801 *chip)
+ 	cmdw |= 0x00c3;
+ 	fm801_writew(chip, IRQ_MASK, cmdw);
+ 
+-	devm_free_irq(&chip->pci->dev, chip->irq, chip);
++	devm_free_irq(chip->dev, chip->irq, chip);
+ 
+       __end_hw:
+ #ifdef CONFIG_SND_FM801_TEA575X_BOOL
+@@ -1220,7 +1221,7 @@ static int snd_fm801_create(struct snd_card *card,
+ 		return -ENOMEM;
+ 	spin_lock_init(&chip->reg_lock);
+ 	chip->card = card;
+-	chip->pci = pci;
++	chip->dev = &pci->dev;
+ 	chip->irq = -1;
+ 	chip->tea575x_tuner = tea575x_tuner;
+ 	if ((err = pci_request_regions(pci, "FM801")) < 0)
 -- 
 2.6.4
