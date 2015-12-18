@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8974: add binding for WM8974 codec"
-	to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:37 +0000
-Message-ID: <E1a9twf-0006Ai-9P@debutante>
+Subject: Applied "ASoC: atmel-classd: DT binding for PDMIC
+	driver" to the asoc tree
+Date: Fri, 18 Dec 2015 12:15:39 +0000
+Message-ID: <E1a9twh-0006CA-T3@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AEA86266684
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:44 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AC3026659E
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:48 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mans Rullgard <mans@mansr.com>, Mark Brown <broonie@kernel.org>
+To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8974: add binding for WM8974 codec
+   ASoC: atmel-classd: DT binding for PDMIC driver
 
 has been applied to the asoc tree at
 
@@ -52,40 +52,80 @@ to this mail.
 Thanks,
 Mark
 
->From 47d358bbf22d504a41007e7fbf71b5b4b1b45b79 Mon Sep 17 00:00:00 2001
-From: Mans Rullgard <mans@mansr.com>
-Date: Wed, 16 Dec 2015 13:55:13 +0000
-Subject: [PATCH] ASoC: wm8974: add binding for WM8974 codec
+>From 4bc5145cec89b3df719d87d0a6876aa00941d66c Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@atmel.com>
+Date: Thu, 17 Dec 2015 17:50:00 +0800
+Subject: [PATCH] ASoC: atmel-classd: DT binding for PDMIC driver
 
-This adds a binding for the Wolfson WM8974 mono audio codec.
+DT binding documentation for this new ASoC driver.
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/wlf,wm8974.txt | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8974.txt
+ .../devicetree/bindings/sound/atmel-pdmic.txt      | 55 ++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-pdmic.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8974.txt b/Documentation/devicetree/bindings/sound/wlf,wm8974.txt
+diff --git a/Documentation/devicetree/bindings/sound/atmel-pdmic.txt b/Documentation/devicetree/bindings/sound/atmel-pdmic.txt
 new file mode 100644
-index 000000000000..01d3a7c83419
+index 000000000000..e0875f17c229
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8974.txt
-@@ -0,0 +1,15 @@
-+WM8974 audio CODEC
-+
-+This device supports both I2C and SPI (configured with pin strapping
-+on the board).
++++ b/Documentation/devicetree/bindings/sound/atmel-pdmic.txt
+@@ -0,0 +1,55 @@
++* Atmel PDMIC driver under ALSA SoC architecture
 +
 +Required properties:
-+  - compatible: "wlf,wm8974"
-+  - reg: the I2C address or SPI chip select number of the device
++- compatible
++	Should be "atmel,sama5d2-pdmic".
++- reg
++	Should contain PDMIC registers location and length.
++- interrupts
++	Should contain the IRQ line for the PDMIC.
++- dmas
++	One DMA specifiers as described in atmel-dma.txt and dma.txt files.
++- dma-names
++	Must be "rx".
++- clock-names
++	Required elements:
++	- "pclk"	peripheral clock
++	- "gclk"	generated clock
++- clocks
++	Must contain an entry for each required entry in clock-names.
++	Please refer to clock-bindings.txt.
++- atmel,mic-min-freq
++	The minimal frequency that the micphone supports.
++- atmel,mic-max-freq
++	The maximal frequency that the micphone supports.
 +
-+Examples:
++Optional properties:
++- pinctrl-names, pinctrl-0
++	Please refer to pinctrl-bindings.txt.
++- atmel,model
++	The user-visible name of this sound card.
++	The default value is "PDMIC".
++- atmel,mic-offset
++	The offset that should be added.
++	The range is from -32768 to 32767.
++	The default value is 0.
 +
-+codec: wm8974@1a {
-+	compatible = "wlf,wm8974";
-+	reg = <0x1a>;
-+};
++Example:
++	pdmic@f8018000 {
++				compatible = "atmel,sama5d2-pdmic";
++				reg = <0xf8018000 0x124>;
++				interrupts = <48 IRQ_TYPE_LEVEL_HIGH 7>;
++				dmas = <&dma0
++					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
++					| AT91_XDMAC_DT_PERID(50))>;
++				dma-names = "rx";
++				clocks = <&pdmic_clk>, <&pdmic_gclk>;
++				clock-names = "pclk", "gclk";
++
++				pinctrl-names = "default";
++				pinctrl-0 = <&pinctrl_pdmic_default>;
++				atmel,model = "PDMIC @ sama5d2_xplained";
++				atmel,mic-min-freq = <1000000>;
++				atmel,mic-max-freq = <3246000>;
++				atmel,mic-offset = <0x0>;
++	};
 -- 
 2.6.2
