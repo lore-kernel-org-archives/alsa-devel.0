@@ -1,13 +1,12 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 13/13] ASoC: AMD: Manage ACP 2.x SRAM banks power
-Date: Fri, 18 Dec 2015 12:08:33 +0000
-Message-ID: <20151218120833.GB5727@sirena.org.uk>
+Subject: Re: [PATCH 00/13] Add ASoC support for AMD APUs [v5]
+Date: Fri, 18 Dec 2015 12:09:20 +0000
+Message-ID: <20151218120920.GC5727@sirena.org.uk>
 References: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
- <1449272440-8735-13-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1274747567=="
+Content-Type: multipart/mixed; boundary="===============0142803448=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1449272440-8735-13-git-send-email-alexander.deucher@amd.com>
+In-Reply-To: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -22,56 +21,47 @@ Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1274747567==
+--===============0142803448==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="er3ccdgDRx8g9EQQ"
+	protocol="application/pgp-signature"; boundary="cmojth4sdaU3VRJa"
 Content-Disposition: inline
 
 
---er3ccdgDRx8g9EQQ
+--cmojth4sdaU3VRJa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 04, 2015 at 06:40:40PM -0500, Alex Deucher wrote:
+On Fri, Dec 04, 2015 at 06:40:28PM -0500, Alex Deucher wrote:
+> This patch set implements support for i2s audio and new AMD GPUs.
+> The i2s codec is fed by a DMA engine on the GPU.  To handle this
+> we create mfd cells which we hang the i2s codec and DMA engine on.
+> Because of this, this patch set covers two subsystems: drm and alsa.
+> The drm patches add support for the ACP hw block which provides the
+> DMA engine for the i2s codec.  The alsa patches add the ASoC driver
+> for the i2s codec.  Since the alsa changes depend on the drm changes,
+> I'd like to take the alsa patches in via the drm tree.
 
-> +void acp_turnonoff_lower_sram_bank(void __iomem *acp_mmio, u16 bank,
-> +					bool turnon)
+I'm not seeing any review at all of the DRM side code...  other than a
+few minor issues the audio bits seem mostly OK.
 
-Can we have a name like acp_set_lower_sram_bank_state() or something to
-make the boolean a bit more obvious please?  You could probably also
-combine this with the equivalent function for the upper bank and select
-based on the value which registers to work with, that'd be much clearer
-on the user side.
-
-> +	/* If ACP_MEM_SHUT_DOWN_STS_LO is 0xFFFFFFFF, then
-> +	 * shutdown sequence is complete.
-> +	 */
-> +	 while (acp_reg_read(acp_mmio,
-> +				      mmACP_MEM_SHUT_DOWN_STS_LO)
-> +				      != 0xFFFFFFFF)
-> +		cpu_relax();
-
-Strange intentation for the continuation lines (usually you'd align with
-the '(' for the matching level) and this needs a timeout for safety.
-
---er3ccdgDRx8g9EQQ
+--cmojth4sdaU3VRJa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWc/dBAAoJECTWi3JdVIfQ8DcH/0q7hGyCBSO+Et2Q1ovDNt8K
-TDotrIdeya4G9QGtplFkeA5ORGd9S7OgYK4sFBI5+HigDuhEZHdS0viyBu/YrOFu
-FdKAgd//QkVLdOwn2hNZrNWRf0zNiguzPiGxdOIZYklUdlYaVX2YhgeygfD0+fuM
-7K0jFwvuIESogkVLRwFMDSGabeGOrK4/PoRqU0di57/CpJ3/dmOUSNfTuadrQ+Yp
-LuLLNTTQmOsOF75U+1bH7vdpFJEmiQxr9ePI6beo7oM8nDZ78Cl6+QMZHcuDhXSR
-nNoVzSLx/iulUXntnsyEiJjSqDHVuWmzc+ze1RD3S5kApfhZl15h83KslgM4HsM=
-=bQry
+iQEcBAEBCAAGBQJWc/dvAAoJECTWi3JdVIfQcyQH/1A7UgOqTOGxdrwYD2hnnhNE
+v6ask9SNUVDDrtgxrMNZgatDhl9iosbx5TYwVuns1qOQP8eEIJWwNVRjJ1NiL6g6
+RMg5WgmTerABZIpzngNqtUA5HKcINcDfJAlXEdgHFlm4xFy7mMRfrTB/OyN/moXR
+8BQ+McD23uA3AuSIBskOBfSeGwbw7eyOPJHnBli3lXGPm4p/BQotHIL9aFEDubqU
+/Rt1A8gv9x2TEoQTUvPpMaCQZzngcmYPQei1ulqzFW0vZD9qFHMzkoczYjZypH41
+5WCB+J7q0sgNJo4ZVIEahZUJugD0dg8mB/p6v+Rt4jikmVpbzM4C1QehslPRH1U=
+=yqmP
 -----END PGP SIGNATURE-----
 
---er3ccdgDRx8g9EQQ--
+--cmojth4sdaU3VRJa--
 
---===============1274747567==
+--===============0142803448==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
@@ -81,4 +71,4 @@ X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
 IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
 cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
 
---===============1274747567==--
+--===============0142803448==--
