@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add Nuvoton+Maxim machine driver
-	entry" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:36 +0000
-Message-ID: <E1a9twe-0006AF-HT@debutante>
-References: <1449862153-68738-2-git-send-email-yang.a.fang@intel.com>
+Subject: Applied "ASoC: rsrc-card: Remove support for setting
+	differing DAI formats" to the asoc tree
+Date: Fri, 18 Dec 2015 12:15:42 +0000
+Message-ID: <E1a9twk-0006Da-LJ@debutante>
+References: <87h9jhiyhd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8639526667E
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:44 +0100 (CET)
-In-Reply-To: <1449862153-68738-2-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6743E2665B1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:47 +0100 (CET)
+In-Reply-To: <87h9jhiyhd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit Ainapure <rohit.m.ainapure@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Add Nuvoton+Maxim machine driver entry
+   ASoC: rsrc-card: Remove support for setting differing DAI formats
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From 69b7f9c45856e49929bdde8492e5f46a07c8a2f3 Mon Sep 17 00:00:00 2001
-From: Rohit Ainapure <rohit.m.ainapure@intel.com>
-Date: Fri, 11 Dec 2015 11:29:07 -0800
-Subject: [PATCH] ASoC: Intel: Add Nuvoton+Maxim machine driver entry
+>From ae638b725ee00afe3253e30df617a5531ea30ea2 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 17 Dec 2015 02:48:58 +0000
+Subject: [PATCH] ASoC: rsrc-card: Remove support for setting differing DAI
+ formats
 
-Add the NAU88L25 + MAX98357A machine driver entry into
-the machine table
+1efb53a220 ("ASoC: simple-card: Remove support for setting differing
+DAI formats") removed set_fmt support from simple-card.
+rsrc-card follows same style, because it is based on simple-card.
 
-Signed-off-by: Rohit Ainapure <rohit.m.ainapure@intel.com>
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sh/rcar/rsrc-card.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2c16325d1ce1..c38bf99ced10 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -600,6 +600,8 @@ static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
- 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
- 				NULL, NULL, NULL },
-+	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
-+				NULL, NULL, NULL },
- 	{}
- };
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index 3c308e2d696e..9f522ba881fa 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -48,7 +48,6 @@ MODULE_DEVICE_TABLE(of, rsrc_card_of_match);
  
+ #define DAI_NAME_NUM	32
+ struct rsrc_card_dai {
+-	unsigned int fmt;
+ 	unsigned int sysclk;
+ 	unsigned int tx_slot_mask;
+ 	unsigned int rx_slot_mask;
+@@ -114,14 +113,6 @@ static int rsrc_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 				rtd->cpu_dai :
+ 				rtd->codec_dai;
+ 
+-	if (dai_props->fmt) {
+-		ret = snd_soc_dai_set_fmt(dai, dai_props->fmt);
+-		if (ret && ret != -ENOTSUPP) {
+-			dev_err(dai->dev, "set_fmt error\n");
+-			goto err;
+-		}
+-	}
+-
+ 	if (dai_props->sysclk) {
+ 		ret = snd_soc_dai_set_sysclk(dai, 0, dai_props->sysclk, 0);
+ 		if (ret && ret != -ENOTSUPP) {
+@@ -168,7 +159,7 @@ static int rsrc_card_parse_daifmt(struct device_node *node,
+ 				  struct rsrc_card_priv *priv,
+ 				  int idx, bool is_fe)
+ {
+-	struct rsrc_card_dai *dai_props = rsrc_priv_to_props(priv, idx);
++	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
+ 	struct device_node *bitclkmaster = NULL;
+ 	struct device_node *framemaster = NULL;
+ 	struct device_node *codec = is_fe ? NULL : np;
+@@ -188,7 +179,7 @@ static int rsrc_card_parse_daifmt(struct device_node *node,
+ 		daifmt |= (codec == framemaster) ?
+ 			SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
+ 
+-	dai_props->fmt	= daifmt;
++	dai_link->dai_fmt = daifmt;
+ 
+ 	of_node_put(bitclkmaster);
+ 	of_node_put(framemaster);
+@@ -340,6 +331,7 @@ static int rsrc_card_dai_link_of(struct device_node *node,
+ 				 int idx)
+ {
+ 	struct device *dev = rsrc_priv_to_dev(priv);
++	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
+ 	struct rsrc_card_dai *dai_props = rsrc_priv_to_props(priv, idx);
+ 	bool is_fe = false;
+ 	int ret;
+@@ -361,7 +353,7 @@ static int rsrc_card_dai_link_of(struct device_node *node,
+ 
+ 	dev_dbg(dev, "\t%s / %04x / %d\n",
+ 		dai_props->dai_name,
+-		dai_props->fmt,
++		dai_link->dai_fmt,
+ 		dai_props->sysclk);
+ 
+ 	return ret;
 -- 
 2.6.2
