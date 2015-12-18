@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: Intel: boards: fix dapm map of
-	nau88l25_ssm4567 machine" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:34 +0000
-Message-ID: <E1a9twc-00069J-Me@debutante>
-References: <1449862153-68738-4-git-send-email-yang.a.fang@intel.com>
+Subject: Applied "ASoC: max98357a: Add ACPI ID for Maxim" to
+	the asoc tree
+Date: Fri, 18 Dec 2015 12:15:39 +0000
+Message-ID: <E1a9twh-0006Bh-4P@debutante>
+References: <1449862153-68738-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EAC12657E5
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:40 +0100 (CET)
-In-Reply-To: <1449862153-68738-4-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ADAAC266682
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:44 +0100 (CET)
+In-Reply-To: <1449862153-68738-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>
+To: Rohit Ainapure <rohit.m.ainapure@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: Intel: boards: fix dapm map of nau88l25_ssm4567 machine
+   ASoC: max98357a: Add ACPI ID for Maxim
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 4c6ebc3ecdba9484de5249de406d6fcf725cda62 Mon Sep 17 00:00:00 2001
-From: "Fang, Yang A" <yang.a.fang@intel.com>
-Date: Fri, 11 Dec 2015 11:29:09 -0800
-Subject: [PATCH] ASoc: Intel: boards: fix dapm map of nau88l25_ssm4567 machine
+>From 5c27087e4b43e2a5be144afe7250fb2b20bd47c4 Mon Sep 17 00:00:00 2001
+From: Rohit Ainapure <rohit.m.ainapure@intel.com>
+Date: Fri, 11 Dec 2015 11:29:06 -0800
+Subject: [PATCH] ASoC: max98357a: Add ACPI ID for Maxim
 
-The DAPM map for DMIC and SSP was not properly done, so fix that up.
-Also mark machine as fully routed
+Adding ACPI ID "MX98357A" for the MAXIM 98357A amp.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Rohit Ainapure <rohit.m.ainapure@intel.com>
 Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98357a.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 65c65d4c422c..9c9ebb8d0734 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -108,22 +108,22 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index f5e3dce2633a..5b1dfb1518fb 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -12,6 +12,7 @@
+  * max98357a.c -- MAX98357A ALSA SoC Codec driver
+  */
  
- 	/* other jacks */
- 	{"MIC", NULL, "Headset Mic"},
--	{"DMIC AIF", NULL, "SoC DMIC"},
-+	{"DMic", NULL, "SoC DMIC"},
++#include <linux/acpi.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+ #include <linux/gpio.h>
+@@ -123,10 +124,19 @@ static const struct of_device_id max98357a_device_id[] = {
+ MODULE_DEVICE_TABLE(of, max98357a_device_id);
+ #endif
  
- 	/* CODEC BE connections */
- 	{ "Left Playback", NULL, "ssp0 Tx"},
- 	{ "Right Playback", NULL, "ssp0 Tx"},
- 	{ "ssp0 Tx", NULL, "codec0_out"},
- 
--	{ "AIF1 Playback", NULL, "ssp1 Tx"},
-+	{ "Playback", NULL, "ssp1 Tx"},
- 	{ "ssp1 Tx", NULL, "codec1_out"},
- 
- 	{ "codec0_in", NULL, "ssp1 Rx" },
--	{ "ssp1 Rx", NULL, "AIF1 Capture" },
-+	{ "ssp1 Rx", NULL, "Capture" },
- 
- 	/* DMIC */
- 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
--	{ "DMIC01 Rx", NULL, "Capture" },
-+	{ "DMIC01 Rx", NULL, "DMIC AIF" },
- 	{ "Headphone Jack", NULL, "Platform Clock" },
- 	{ "Headset Mic", NULL, "Platform Clock" },
- };
-@@ -336,6 +336,7 @@ static struct snd_soc_card skylake_audio_card = {
- 	.num_dapm_routes = ARRAY_SIZE(skylake_map),
- 	.codec_conf = ssm4567_codec_conf,
- 	.num_configs = ARRAY_SIZE(ssm4567_codec_conf),
-+	.fully_routed = true,
- };
- 
- static int skylake_audio_probe(struct platform_device *pdev)
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id max98357a_acpi_match[] = {
++	{ "MX98357A", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, max98357a_acpi_match);
++#endif
++
+ static struct platform_driver max98357a_platform_driver = {
+ 	.driver = {
+ 		.name = "max98357a",
+ 		.of_match_table = of_match_ptr(max98357a_device_id),
++		.acpi_match_table = ACPI_PTR(max98357a_acpi_match),
+ 	},
+ 	.probe	= max98357a_platform_probe,
+ 	.remove = max98357a_platform_remove,
 -- 
 2.6.2
