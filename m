@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: enable to use tdm_slot on
-	DT" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:43 +0000
-Message-ID: <E1a9twl-0006E3-IX@debutante>
-References: <87io3xiyid.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Add Nuvoton+Maxim machine driver
+	entry" to the asoc tree
+Date: Fri, 18 Dec 2015 12:15:36 +0000
+Message-ID: <E1a9twe-0006AF-HT@debutante>
+References: <1449862153-68738-2-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 51B082665C2
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:48 +0100 (CET)
-In-Reply-To: <87io3xiyid.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8639526667E
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:44 +0100 (CET)
+In-Reply-To: <1449862153-68738-2-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Rohit Ainapure <rohit.m.ainapure@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: enable to use tdm_slot on DT
+   ASoC: Intel: Add Nuvoton+Maxim machine driver entry
 
 has been applied to the asoc tree at
 
@@ -53,69 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6dad9758a5e3e75de91871a636572d64806b240f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 17 Dec 2015 02:48:23 +0000
-Subject: [PATCH] ASoC: rsrc-card: enable to use tdm_slot on DT
+>From 69b7f9c45856e49929bdde8492e5f46a07c8a2f3 Mon Sep 17 00:00:00 2001
+From: Rohit Ainapure <rohit.m.ainapure@intel.com>
+Date: Fri, 11 Dec 2015 11:29:07 -0800
+Subject: [PATCH] ASoC: Intel: Add Nuvoton+Maxim machine driver entry
 
-Renesas sound driver will use tdm slot on TDM Multi Mode support.
-This patch enables tdm slot on rsrc card driver on DT.
+Add the NAU88L25 + MAX98357A machine driver entry into
+the machine table
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Rohit Ainapure <rohit.m.ainapure@intel.com>
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index a3ec13f6271e..3c308e2d696e 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -50,6 +50,10 @@ MODULE_DEVICE_TABLE(of, rsrc_card_of_match);
- struct rsrc_card_dai {
- 	unsigned int fmt;
- 	unsigned int sysclk;
-+	unsigned int tx_slot_mask;
-+	unsigned int rx_slot_mask;
-+	int slots;
-+	int slot_width;
- 	struct clk *clk;
- 	char dai_name[DAI_NAME_NUM];
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 2c16325d1ce1..c38bf99ced10 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -600,6 +600,8 @@ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
+ 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
+ 				NULL, NULL, NULL },
++	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
++				NULL, NULL, NULL },
+ 	{}
  };
-@@ -126,6 +130,18 @@ static int rsrc_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 		}
- 	}
  
-+	if (dai_props->slots) {
-+		ret = snd_soc_dai_set_tdm_slot(dai,
-+					       dai_props->tx_slot_mask,
-+					       dai_props->rx_slot_mask,
-+					       dai_props->slots,
-+					       dai_props->slot_width);
-+		if (ret && ret != -ENOTSUPP) {
-+			dev_err(dai->dev, "set_tdm_slot error\n");
-+			goto err;
-+		}
-+	}
-+
- 	ret = 0;
- 
- err:
-@@ -198,6 +214,15 @@ static int rsrc_card_parse_links(struct device_node *np,
- 	if (ret)
- 		return ret;
- 
-+	/* Parse TDM slot */
-+	ret = snd_soc_of_parse_tdm_slot(np,
-+					&dai_props->tx_slot_mask,
-+					&dai_props->rx_slot_mask,
-+					&dai_props->slots,
-+					&dai_props->slot_width);
-+	if (ret)
-+		return ret;
-+
- 	if (is_fe) {
- 		/* BE is dummy */
- 		dai_link->codec_of_node		= NULL;
 -- 
 2.6.2
