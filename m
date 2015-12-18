@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup debug print position on
-	rsnd_dma_attach()" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:28 +0000
-Message-ID: <E1a9twW-00065y-9S@debutante>
-References: <87a8p9iy5b.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: fixup SSIU control timing" to the
+	asoc tree
+Date: Fri, 18 Dec 2015 12:15:30 +0000
+Message-ID: <E1a9twY-00066x-3z@debutante>
+References: <87d1u5iy6l.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 869A52665C2
+ by alsa0.perex.cz (Postfix) with ESMTP id C99A12665E2
  for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:34 +0100 (CET)
-In-Reply-To: <87a8p9iy5b.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d1u5iy6l.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup debug print position on rsnd_dma_attach()
+   ASoC: rsnd: fixup SSIU control timing
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From c90269c1fbfcb3082d379237f0912ea231e90a24 Mon Sep 17 00:00:00 2001
+>From cdf310ce119989353bb6848ca8327814ae1012e2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 17 Dec 2015 02:56:11 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup debug print position on rsnd_dma_attach()
+Date: Thu, 17 Dec 2015 02:55:25 +0000
+Subject: [PATCH] ASoC: rsnd: fixup SSIU control timing
 
-It can't output corrent dma name *before* rsnd_mod_init().
-It goes to *after* rsnd_mod_init() by this patch
+SSIU should be controlled after SSI. This patch fix up it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 33eb37331498..418e6fdd06a3 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -680,16 +680,16 @@ struct rsnd_mod *rsnd_dma_attach(struct rsnd_dai_stream *io,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index ad854d6719ea..4b677e074c7a 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -181,9 +181,9 @@ enum rsnd_mod_type {
+ 	RSND_MOD_CTU,
+ 	RSND_MOD_CMD,
+ 	RSND_MOD_SRC,
+-	RSND_MOD_SSIU,
+ 	RSND_MOD_SSIP, /* SSI parent */
+ 	RSND_MOD_SSI,
++	RSND_MOD_SSIU,
+ 	RSND_MOD_MAX,
+ };
  
- 	dma_mod = rsnd_mod_get(dma);
- 
--	dev_dbg(dev, "%s[%d] %s[%d] -> %s[%d]\n",
--		rsnd_mod_name(dma_mod), rsnd_mod_id(dma_mod),
--		rsnd_mod_name(mod_from), rsnd_mod_id(mod_from),
--		rsnd_mod_name(mod_to),   rsnd_mod_id(mod_to));
--
- 	ret = rsnd_mod_init(priv, dma_mod,
- 			    ops, NULL, type, dma_id);
- 	if (ret < 0)
- 		return ERR_PTR(ret);
- 
-+	dev_dbg(dev, "%s[%d] %s[%d] -> %s[%d]\n",
-+		rsnd_mod_name(dma_mod), rsnd_mod_id(dma_mod),
-+		rsnd_mod_name(mod_from), rsnd_mod_id(mod_from),
-+		rsnd_mod_name(mod_to),   rsnd_mod_id(mod_to));
-+
- 	ret = attach(io, dma, id, mod_from, mod_to);
- 	if (ret < 0)
- 		return ERR_PTR(ret);
 -- 
 2.6.2
