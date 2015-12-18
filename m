@@ -1,16 +1,16 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH v3] ASoC: fsl_sai: fix no frame clk in master
-	mode
-Date: Fri, 18 Dec 2015 16:53:41 +0800
-Message-ID: <4e56cafc5497654b0413418d41187e5b8f0023e3.1450428585.git.zidan.wang@freescale.com>
+Subject: [PATCH v2] ASoC: fsl_asrc: sound is wrong after
+	suspend/resume
+Date: Fri, 18 Dec 2015 16:58:18 +0800
+Message-ID: <66fa43839fccc9aba8ebfc1330afc22747f05f0d.1450428914.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0132.outbound.protection.outlook.com [207.46.100.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 8683C265857
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 09:51:33 +0100 (CET)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0142.outbound.protection.outlook.com [65.55.169.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 850B22650D1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 09:56:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +24,78 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-After several open/close sai test with ctrl+c, there will be
-I/O error. The SAI can't work anymore, can't recover. There
-will be no frame clock. With adding the software reset in
-trigger stop, the issue can be fixed.
-
-This is a hardware bug/errata and reset is the only option.
-
-According to the reference manual, the software reset doesn't
-reset any control register but only internal hardware logics
-such as bit clock generator, status flags, and FIFO pointers.
-(Our purpose is just to reset the clock generator while the
-software reset is the only way to do that.)
-
-Since slave mode doesn't use the clock generator, only apply
-the reset procedure to the master mode.
-
-For asynchronous mode, TX will not be reset when RX is still
-running. In this case, i can't reproduce this issue.
+The register ASRCFG is volatile, but some bits need to be recovered
+after suspend/resume.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
 v1->v2:
-1) refine the commit log and comments
-2) Since slave mode doesn't use the clock generator, only apply
-   the reset procedure to the master mode.
-v2->v3:
-add a simple comment in code to describe the hardware bug.
-   
- sound/soc/fsl/fsl_sai.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+1. fix indentation issue.
+2. add a macro for the magic number.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 8832901..fef264d 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -564,6 +564,24 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
- 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
+ sound/soc/fsl/fsl_asrc.c | 7 +++++++
+ sound/soc/fsl/fsl_asrc.h | 6 ++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 484e46ca..d964016 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -990,6 +990,9 @@ static int fsl_asrc_suspend(struct device *dev)
+ {
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+ 
++	regmap_read(asrc_priv->regmap, REG_ASRCFG,
++		    &asrc_priv->regcache_cfg);
 +
-+			/*
-+			 * For sai master mode, after several open/close sai,
-+			 * there will be no frame clock, and can't recover
-+			 * anymore. Add software reset to fix this issue.
-+			 * This is a hardware bug, and will be fix in the
-+			 * next sai version.
-+			 */
-+			if (!sai->is_slave_mode) {
-+				/* Software Reset for both Tx and Rx */
-+				regmap_write(sai->regmap,
-+					     FSL_SAI_TCSR, FSL_SAI_CSR_SR);
-+				regmap_write(sai->regmap,
-+					     FSL_SAI_RCSR, FSL_SAI_CSR_SR);
-+				/* Clear SR bit to finish the reset */
-+				regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
-+				regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
-+			}
- 		}
- 		break;
- 	default:
+ 	regcache_cache_only(asrc_priv->regmap, true);
+ 	regcache_mark_dirty(asrc_priv->regmap);
+ 
+@@ -1010,6 +1013,10 @@ static int fsl_asrc_resume(struct device *dev)
+ 	regcache_cache_only(asrc_priv->regmap, false);
+ 	regcache_sync(asrc_priv->regmap);
+ 
++	regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
++			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
++			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
++
+ 	/* Restart enabled pairs */
+ 	regmap_update_bits(asrc_priv->regmap, REG_ASRCTR,
+ 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 68802cd..c119cb0 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -132,10 +132,13 @@
+ #define ASRCFG_INIRQi			(1 << ASRCFG_INIRQi_SHIFT(i))
+ #define ASRCFG_NDPRi_SHIFT(i)		(18 + i)
+ #define ASRCFG_NDPRi_MASK(i)		(1 << ASRCFG_NDPRi_SHIFT(i))
++#define ASRCFG_NDPRi_ALL_SHIFT		18
++#define ASRCFG_NDPRi_ALL_MASK		(7 << ASRCFG_NDPRi_ALL_SHIFT)
+ #define ASRCFG_NDPRi			(1 << ASRCFG_NDPRi_SHIFT(i))
+ #define ASRCFG_POSTMODi_SHIFT(i)	(8 + (i << 2))
+ #define ASRCFG_POSTMODi_WIDTH		2
+ #define ASRCFG_POSTMODi_MASK(i)		(((1 << ASRCFG_POSTMODi_WIDTH) - 1) << ASRCFG_POSTMODi_SHIFT(i))
++#define ASRCFG_POSTMODi_ALL_MASK	(ASRCFG_POSTMODi_MASK(0) | ASRCFG_POSTMODi_MASK(1) | ASRCFG_POSTMODi_MASK(2))
+ #define ASRCFG_POSTMOD(i, v)		((v) << ASRCFG_POSTMODi_SHIFT(i))
+ #define ASRCFG_POSTMODi_UP(i)		(0 << ASRCFG_POSTMODi_SHIFT(i))
+ #define ASRCFG_POSTMODi_DCON(i)		(1 << ASRCFG_POSTMODi_SHIFT(i))
+@@ -143,6 +146,7 @@
+ #define ASRCFG_PREMODi_SHIFT(i)		(6 + (i << 2))
+ #define ASRCFG_PREMODi_WIDTH		2
+ #define ASRCFG_PREMODi_MASK(i)		(((1 << ASRCFG_PREMODi_WIDTH) - 1) << ASRCFG_PREMODi_SHIFT(i))
++#define ASRCFG_PREMODi_ALL_MASK		(ASRCFG_PREMODi_MASK(0) | ASRCFG_PREMODi_MASK(1) | ASRCFG_PREMODi_MASK(2))
+ #define ASRCFG_PREMOD(i, v)		((v) << ASRCFG_PREMODi_SHIFT(i))
+ #define ASRCFG_PREMODi_UP(i)		(0 << ASRCFG_PREMODi_SHIFT(i))
+ #define ASRCFG_PREMODi_DCON(i)		(1 << ASRCFG_PREMODi_SHIFT(i))
+@@ -453,6 +457,8 @@ struct fsl_asrc {
+ 
+ 	int asrc_rate;
+ 	int asrc_width;
++
++	u32 regcache_cfg;
+ };
+ 
+ extern struct snd_soc_platform_driver fsl_asrc_platform;
 -- 
 1.9.1
