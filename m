@@ -1,74 +1,116 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/13] Add ASoC support for AMD APUs [v5]
-Date: Fri, 18 Dec 2015 12:09:20 +0000
-Message-ID: <20151218120920.GC5727@sirena.org.uk>
-References: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: rsnd: add missing DT example for Simple
+	Card" to the asoc tree
+Date: Fri, 18 Dec 2015 12:15:21 +0000
+Message-ID: <E1a9twP-00062g-Pl@debutante>
+References: <87zix9hjfx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0142803448=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D10B82657C6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:29 +0100 (CET)
+In-Reply-To: <87zix9hjfx.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0142803448==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cmojth4sdaU3VRJa"
-Content-Disposition: inline
+   ASoC: rsnd: add missing DT example for Simple Card
 
+has been applied to the asoc tree at
 
---cmojth4sdaU3VRJa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Dec 04, 2015 at 06:40:28PM -0500, Alex Deucher wrote:
-> This patch set implements support for i2s audio and new AMD GPUs.
-> The i2s codec is fed by a DMA engine on the GPU.  To handle this
-> we create mfd cells which we hang the i2s codec and DMA engine on.
-> Because of this, this patch set covers two subsystems: drm and alsa.
-> The drm patches add support for the ACP hw block which provides the
-> DMA engine for the i2s codec.  The alsa patches add the ASoC driver
-> for the i2s codec.  Since the alsa changes depend on the drm changes,
-> I'd like to take the alsa patches in via the drm tree.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I'm not seeing any review at all of the DRM side code...  other than a
-few minor issues the audio bits seem mostly OK.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---cmojth4sdaU3VRJa
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJWc/dvAAoJECTWi3JdVIfQcyQH/1A7UgOqTOGxdrwYD2hnnhNE
-v6ask9SNUVDDrtgxrMNZgatDhl9iosbx5TYwVuns1qOQP8eEIJWwNVRjJ1NiL6g6
-RMg5WgmTerABZIpzngNqtUA5HKcINcDfJAlXEdgHFlm4xFy7mMRfrTB/OyN/moXR
-8BQ+McD23uA3AuSIBskOBfSeGwbw7eyOPJHnBli3lXGPm4p/BQotHIL9aFEDubqU
-/Rt1A8gv9x2TEoQTUvPpMaCQZzngcmYPQei1ulqzFW0vZD9qFHMzkoczYjZypH41
-5WCB+J7q0sgNJo4ZVIEahZUJugD0dg8mB/p6v+Rt4jikmVpbzM4C1QehslPRH1U=
-=yqmP
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---cmojth4sdaU3VRJa--
+>From f3f17d32fe0f3be9b1514c7e6245edee3673dccc Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 17 Dec 2015 02:59:09 +0000
+Subject: [PATCH] ASoC: rsnd: add missing DT example for Simple Card
 
---===============0142803448==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/renesas,rsnd.txt     | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
-
---===============0142803448==--
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 59cebfbd7b6a..bb9f33405d29 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -249,3 +249,43 @@ rcar_sound: sound@ec500000 {
+ 		};
+ 	};
+ };
++
++Example: simple sound card
++
++	rsnd_ak4643: sound {
++		compatible = "simple-audio-card";
++
++		simple-audio-card,format = "left_j";
++		simple-audio-card,bitclock-master = <&sndcodec>;
++		simple-audio-card,frame-master = <&sndcodec>;
++
++		sndcpu: simple-audio-card,cpu {
++			sound-dai = <&rcar_sound>;
++		};
++
++		sndcodec: simple-audio-card,codec {
++			sound-dai = <&ak4643>;
++			clocks = <&audio_clock>;
++		};
++	};
++
++&rcar_sound {
++	pinctrl-0 = <&sound_pins &sound_clk_pins>;
++	pinctrl-names = "default";
++
++	/* Single DAI */
++	#sound-dai-cells = <0>;
++
++	status = "okay";
++
++	rcar_sound,dai {
++		dai0 {
++			playback = <&ssi0 &src2 &dvc0>;
++			capture  = <&ssi1 &src3 &dvc1>;
++		};
++	};
++};
++
++&ssi1 {
++	shared-pin;
++};
+-- 
+2.6.2
