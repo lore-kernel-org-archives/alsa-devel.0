@@ -1,93 +1,50 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 4/4] ALSA: fm801: store struct device
-	instead of pci_dev
-Date: Fri, 18 Dec 2015 21:14:13 +0200
-Message-ID: <1450466053-52170-4-git-send-email-andriy.shevchenko@linux.intel.com>
-References: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B488E265DC3
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 20:14:47 +0100 (CET)
-In-Reply-To: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH] ALSA: consolidate allocation API
+Date: Fri, 18 Dec 2015 21:01:32 +0100
+Message-ID: <1450468892-32116-1-git-send-email-hofrat@osadl.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to store struct pci_dev in struct fm801. Generic struct device
-can be easily translated to struct pci_dev whenever it's needed, in particular
-for one user for now.
+This is an API consolidation only. The use of kmalloc + memset to 0
+is equivalent to kzalloc.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
- sound/pci/fm801.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index c24cb04..e4e610c 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -163,6 +163,7 @@ MODULE_PARM_DESC(radio_nr, "Radio device numbers");
-  * @cap_ctrl:		capture control
-  */
- struct fm801 {
-+	struct device *dev;
- 	int irq;
+Found by coccinelle script (relaxed version of
+scripts/coccinelle/api/alloc/kzalloc-simple.cocci)
+
+Patch was compile tested with: x86_64_defconfig
+CONFIG_SND_SEQUENCER=y, CONFIG_SND_SEQUENCER_OSS=y
+
+Patch is against linux-next (localversion-next is -next-20150518)
  
- 	unsigned long port;
-@@ -190,7 +191,6 @@ struct fm801 {
- 	struct snd_ac97 *ac97;
- 	struct snd_ac97 *ac97_sec;
+ sound/core/seq/oss/seq_oss_init.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
+index b1221b2..9babc9e 100644
+--- a/sound/core/seq/oss/seq_oss_init.c
++++ b/sound/core/seq/oss/seq_oss_init.c
+@@ -79,7 +79,7 @@ snd_seq_oss_create_client(void)
+ 	struct snd_seq_port_info *port;
+ 	struct snd_seq_port_callback port_callback;
  
--	struct pci_dev *pci;
- 	struct snd_card *card;
- 	struct snd_pcm *pcm;
- 	struct snd_rawmidi *rmidi;
-@@ -715,6 +715,7 @@ static struct snd_pcm_ops snd_fm801_capture_ops = {
+-	port = kmalloc(sizeof(*port), GFP_KERNEL);
++	port = kzalloc(sizeof(*port), GFP_KERNEL);
+ 	if (!port) {
+ 		rc = -ENOMEM;
+ 		goto __error;
+@@ -94,7 +94,6 @@ snd_seq_oss_create_client(void)
+ 	system_client = rc;
  
- static int snd_fm801_pcm(struct fm801 *chip, int device)
- {
-+	struct pci_dev *pdev = to_pci_dev(chip->dev);
- 	struct snd_pcm *pcm;
- 	int err;
- 
-@@ -730,7 +731,7 @@ static int snd_fm801_pcm(struct fm801 *chip, int device)
- 	chip->pcm = pcm;
- 
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      snd_dma_pci_data(chip->pci),
-+					      snd_dma_pci_data(pdev),
- 					      chip->multichannel ? 128*1024 : 64*1024, 128*1024);
- 
- 	return snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-@@ -1182,7 +1183,7 @@ static int snd_fm801_free(struct fm801 *chip)
- 	cmdw |= 0x00c3;
- 	fm801_writew(chip, IRQ_MASK, cmdw);
- 
--	devm_free_irq(&chip->pci->dev, chip->irq, chip);
-+	devm_free_irq(chip->dev, chip->irq, chip);
- 
-       __end_hw:
- #ifdef CONFIG_SND_FM801_TEA575X_BOOL
-@@ -1220,7 +1221,7 @@ static int snd_fm801_create(struct snd_card *card,
- 		return -ENOMEM;
- 	spin_lock_init(&chip->reg_lock);
- 	chip->card = card;
--	chip->pci = pci;
-+	chip->dev = &pci->dev;
- 	chip->irq = -1;
- 	chip->tea575x_tuner = tea575x_tuner;
- 	if ((err = pci_request_regions(pci, "FM801")) < 0)
+ 	/* create annoucement receiver port */
+-	memset(port, 0, sizeof(*port));
+ 	strcpy(port->name, "Receiver");
+ 	port->addr.client = system_client;
+ 	port->capability = SNDRV_SEQ_PORT_CAP_WRITE; /* receive only */
 -- 
-2.6.4
+1.7.10.4
