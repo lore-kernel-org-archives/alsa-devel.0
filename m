@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Mimic legacy behaviour of
-	reading controls when DSP is on" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:45 +0000
-Message-ID: <E1a9twn-0006Ez-V6@debutante>
-References: <1450346759-7011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 01/19] ASoC: Intel: fix ACPI probe
+ regression with Atom DPCM driver
+Date: Fri, 18 Dec 2015 09:26:12 -0600
+Message-ID: <56742594.1040402@linux.intel.com>
+References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1450406156-22246-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <s5hd1u4t48f.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 569902666BB
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:52 +0100 (CET)
-In-Reply-To: <1450346759-7011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61F3826598D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 16:26:27 +0100 (CET)
+In-Reply-To: <s5hd1u4t48f.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, jack.yu@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 12/18/2015 04:56 AM, Takashi Iwai wrote:
+> On Fri, 18 Dec 2015 03:35:38 +0100,
+> Pierre-Louis Bossart wrote:
+>>
+>> Commit 5f3d57ebdda4de30e00e2d7c45b5247e5410fe6b introduced a
+> 
+> Please give the subject not only the commit ID.  (And I can't find
+> this ID in linux-next tree.)
 
-   ASoC: wm_adsp: Mimic legacy behaviour of reading controls when DSP is on
+My bad, cherry-pick on my development branch changed the ID. Thanks for pointing this out.
+It is in Mark's for-next branch (which is what all these patches apply against)
 
-has been applied to the asoc tree at
+commit 95f098014815b330838b1173d3d7bcea3b481242
+Author: Vinod Koul <vinod.koul@intel.com>
+Date:   Thu Nov 5 21:34:11 2015 +0530
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+    ASoC: Intel: Move apci find machine routines
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From bc1765d6e81a70be36a7290bcc829a7714101bbb Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 17 Dec 2015 10:05:59 +0000
-Subject: [PATCH] ASoC: wm_adsp: Mimic legacy behaviour of reading controls
- when DSP is on
-
-Older firmwares don't specify access flags for the controls,
-unfortunately the usage of some of these firmware relies on being able
-to read back values from the DSP. The current control code will only do
-this for volatile controls. This patch will read the control from the
-hardware if no flags are specified and the control is currently
-enabled, which should cover these legacy use-cases.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b083642718f0..d1e0826c7db2 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -666,6 +666,9 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- 		else
- 			ret = -EPERM;
- 	} else {
-+		if (!ctl->flags && ctl->enabled)
-+			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
-+
- 		memcpy(p, ctl->cache, ctl->len);
- 	}
- 
--- 
-2.6.2
+> 
+>> regression in ACPI probe of the DPCM driver.
+>> Fix by conditionally compiling sst-acpi when the DPCM driver
+>> is not selected
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>  sound/soc/intel/common/Makefile | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+>> index 3b9332e..668fdee 100644
+>> --- a/sound/soc/intel/common/Makefile
+>> +++ b/sound/soc/intel/common/Makefile
+>> @@ -1,5 +1,10 @@
+>>  snd-soc-sst-dsp-objs := sst-dsp.o
+>> +ifneq ($(CONFIG_SND_SST_IPC_ACPI),)
+>> +snd-soc-sst-acpi-objs := sst-match-acpi.o
+>> +else
+>>  snd-soc-sst-acpi-objs := sst-acpi.o sst-match-acpi.o
+>> +endif
+>> +
+> 
+> A simpler version is like
+> 
+> snd-soc-sst-acpi-objs := sst-match-acpi.o
+> snd-soc-sst-acpi-$(CONFIG_SND_SST_IPC_ACPI) += sst-acpi.o
+> 
+> 
+> Takashi
+> 
