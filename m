@@ -1,17 +1,14 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 3/4] ALSA: fm801: put curly braces around
-	empty if-body
-Date: Fri, 18 Dec 2015 21:14:12 +0200
-Message-ID: <1450466053-52170-3-git-send-email-andriy.shevchenko@linux.intel.com>
-References: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/4] ALSA: fm801: explicitly free IRQ line
+Date: Fri, 18 Dec 2015 21:14:10 +0200
+Message-ID: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id DF55726059D
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1AB62605B4
  for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 20:14:18 +0100 (CET)
-In-Reply-To: <1450466053-52170-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +22,30 @@ To: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGNvbXBpbGVyIGNvbXBsYWlucyBvbiB1bnVzZWQgY29uZGl0aW9uIGFzIGZvbGxvd3MKCnNv
-dW5kL3BjaS9mbTgwMS5jOiBJbiBmdW5jdGlvbiDigJhzbmRfZm04MDFfaW50ZXJydXB04oCZOgpz
-b3VuZC9wY2kvZm04MDEuYzo1ODU6Mzogd2FybmluZzogc3VnZ2VzdCBicmFjZXMgYXJvdW5kIGVt
-cHR5IGJvZHkgaW4gYW4g4oCYaWbigJkgc3RhdGVtZW50IFstV2VtcHR5LWJvZHldCgpQdXQgdGhl
-IGN1cmx5IGJyYWNlcyBhcm91bmQgZW1wdHkgYm9keSBhcyBzdWdnZXN0ZWQuCgpTaWduZWQtb2Zm
-LWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4K
-LS0tCiBzb3VuZC9wY2kvZm04MDEuYyB8IDUgKysrLS0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2Vy
-dGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2ZtODAxLmMg
-Yi9zb3VuZC9wY2kvZm04MDEuYwppbmRleCBjMmFmYjQxLi5jMjRjYjA0IDEwMDY0NAotLS0gYS9z
-b3VuZC9wY2kvZm04MDEuYworKysgYi9zb3VuZC9wY2kvZm04MDEuYwpAQCAtNTkyLDggKzU5Miw5
-IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBzbmRfZm04MDFfaW50ZXJydXB0KGludCBpcnEsIHZvaWQg
-KmRldl9pZCkKIAl9CiAJaWYgKGNoaXAtPnJtaWRpICYmIChzdGF0dXMgJiBGTTgwMV9JUlFfTVBV
-KSkKIAkJc25kX21wdTQwMV91YXJ0X2ludGVycnVwdChpcnEsIGNoaXAtPnJtaWRpLT5wcml2YXRl
-X2RhdGEpOwotCWlmIChzdGF0dXMgJiBGTTgwMV9JUlFfVk9MVU1FKQotCQk7LyogVE9ETyAqLwor
-CWlmIChzdGF0dXMgJiBGTTgwMV9JUlFfVk9MVU1FKSB7CisJCS8qIFRPRE8gKi8KKwl9CiAKIAly
-ZXR1cm4gSVJRX0hBTkRMRUQ7CiB9Ci0tIAoyLjYuNAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Otherwise we will have a warning on ->remove() since device is a PCI one.
+
+WARNING: CPU: 4 PID: 1411 at /home/andy/prj/linux/fs/proc/generic.c:575 remove_proc_entry+0x137/0x160()
+remove_proc_entry: removing non-empty directory 'irq/21', leaking at least 'snd_fm801'
+
+Fixes: 5618955c4269 (ALSA: fm801: move to pcim_* and devm_* functions)
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+The patch series has been tested on SF64-PCR card.
+ sound/pci/fm801.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index 1fdd92b6..f57847c 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -1165,6 +1165,8 @@ static int snd_fm801_free(struct fm801 *chip)
+ 	cmdw |= 0x00c3;
+ 	fm801_writew(chip, IRQ_MASK, cmdw);
+ 
++	devm_free_irq(&chip->pci->dev, chip->irq, chip);
++
+       __end_hw:
+ #ifdef CONFIG_SND_FM801_TEA575X_BOOL
+ 	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
+-- 
+2.6.4
