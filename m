@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Clear stream registers
-	before stream setup" to the asoc tree
-Date: Fri, 18 Dec 2015 17:14:36 +0000
-Message-ID: <E1a9yc0-0000Zp-KD@debutante>
-References: <1449816267-11910-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: fsl_sai: fix no frame clk in master
+	mode" to the asoc tree
+Date: Fri, 18 Dec 2015 17:14:37 +0000
+Message-ID: <E1a9yc1-0000aT-I7@debutante>
+References: <4e56cafc5497654b0413418d41187e5b8f0023e3.1450428585.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 822DA265835
+ by alsa0.perex.cz (Postfix) with ESMTP id F245A2658BD
  for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 18:14:48 +0100 (CET)
-In-Reply-To: <1449816267-11910-2-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <4e56cafc5497654b0413418d41187e5b8f0023e3.1450428585.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Clear stream registers before stream setup
+   ASoC: fsl_sai: fix no frame clk in master mode
 
 has been applied to the asoc tree at
 
@@ -53,84 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From a4386450bf08cd968bf41ff30a92caf74262c9d6 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 18 Dec 2015 15:11:57 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Clear stream registers before stream
- setup
+>From 3e3f8bd569558acefdfaae273d71f7a29b8c0b4f Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Fri, 18 Dec 2015 16:53:41 +0800
+Subject: [PATCH] ASoC: fsl_sai: fix no frame clk in master mode
 
-This patch adds clean up routine to clear the stream registers and
-calls this routine before setting up stream registers.
+After several open/close sai test with ctrl+c, there will be
+I/O error. The SAI can't work anymore, can't recover. There
+will be no frame clock. With adding the software reset in
+trigger stop, the issue can be fixed.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+This is a hardware bug/errata and reset is the only option.
+
+According to the reference manual, the software reset doesn't
+reset any control register but only internal hardware logics
+such as bit clock generator, status flags, and FIFO pointers.
+(Our purpose is just to reset the clock generator while the
+software reset is the only way to do that.)
+
+Since slave mode doesn't use the clock generator, only apply
+the reset procedure to the master mode.
+
+For asynchronous mode, TX will not be reset when RX is still
+running. In this case, i can't reproduce this issue.
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 38 ++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 8c7e8576cba3..da2329d17f4d 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -60,6 +60,27 @@ static void skl_cldma_stream_run(struct sst_dsp  *ctx, bool enable)
- 		dev_err(ctx->dev, "Failed to set Run bit=%d enable=%d\n", val, enable);
- }
- 
-+static void skl_cldma_stream_clear(struct sst_dsp  *ctx)
-+{
-+	/* make sure Run bit is cleared before setting stream register */
-+	skl_cldma_stream_run(ctx, 0);
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index a4435f5e3be9..a31f0ba527eb 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -504,6 +504,24 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
+ 			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+ 					   FSL_SAI_CSR_FR, FSL_SAI_CSR_FR);
 +
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
-+				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
-+
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
-+
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
-+	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
-+}
-+
- /* Code loader helper APIs */
- static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
- 		struct snd_dma_buffer *dmab_data,
-@@ -95,6 +116,7 @@ static void skl_cldma_setup_controller(struct sst_dsp  *ctx,
- 		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
- 		u32 count)
- {
-+	skl_cldma_stream_clear(ctx);
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL,
- 			CL_SD_BDLPLBA(dmab_bdl->addr));
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU,
-@@ -137,21 +159,7 @@ static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
- static void skl_cldma_cleanup(struct sst_dsp  *ctx)
- {
- 	skl_cldma_cleanup_spb(ctx);
--
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
--	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
--				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
--
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
--
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
--	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
-+	skl_cldma_stream_clear(ctx);
- 
- 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
- 	ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_bdl);
++			/*
++			 * For sai master mode, after several open/close sai,
++			 * there will be no frame clock, and can't recover
++			 * anymore. Add software reset to fix this issue.
++			 * This is a hardware bug, and will be fix in the
++			 * next sai version.
++			 */
++			if (!sai->is_slave_mode) {
++				/* Software Reset for both Tx and Rx */
++				regmap_write(sai->regmap,
++					     FSL_SAI_TCSR, FSL_SAI_CSR_SR);
++				regmap_write(sai->regmap,
++					     FSL_SAI_RCSR, FSL_SAI_CSR_SR);
++				/* Clear SR bit to finish the reset */
++				regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
++				regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
++			}
+ 		}
+ 		break;
+ 	default:
 -- 
 2.6.2
