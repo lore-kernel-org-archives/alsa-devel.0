@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: tidyup dai format for DPCM"
-	to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:41 +0000
-Message-ID: <E1a9twj-0006D7-OH@debutante>
-References: <87fuz1iyg4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: wm8974: add devicetree support" to the
+	asoc tree
+Date: Fri, 18 Dec 2015 12:15:38 +0000
+Message-ID: <E1a9twg-0006BB-72@debutante>
+References: <1450270975-17955-2-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EEBB266689
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:49 +0100 (CET)
-In-Reply-To: <87fuz1iyg4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D7742266688
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:48 +0100 (CET)
+In-Reply-To: <1450270975-17955-2-git-send-email-mans@mansr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Mans Rullgard <mans@mansr.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: tidyup dai format for DPCM
+   ASoC: wm8974: add devicetree support
 
 has been applied to the asoc tree at
 
@@ -53,166 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From af998f853124231ef3bff05621f157a19af05d20 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 17 Dec 2015 02:49:43 +0000
-Subject: [PATCH] ASoC: rsrc-card: tidyup dai format for DPCM
+>From 2005bd881d273456e26a0b2027976f75fc47701f Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 16 Dec 2015 13:02:55 +0000
+Subject: [PATCH] ASoC: wm8974: add devicetree support
 
-rsrc-card is DPCM supported version of simple-card. Thus it has similar
-DT format. OTOH, snd_soc_dai_link requests cpu/codec, but one of them
-will be snd-soc-dummy in DPCM case, and DPCM requests frontend/backend
-dai_link. This means it might have multi backend/codec.
-And, SND_SOC_DAIFMT_xxx is based on "codec". Because of these
-difference, current rsrc card can't detect correct dai_fmt.
-This patch detect correct dai fmt from 1st "codec".
+This adds devicetree support to the wm8974 codec driver.
+With a DT-based kernel, there is no board-specific setting
+to select the driver so allow it to be manually chosen.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 82 +++++++++++++++++++++++++++++--------------
- 1 file changed, 55 insertions(+), 27 deletions(-)
+ sound/soc/codecs/Kconfig  | 3 ++-
+ sound/soc/codecs/wm8974.c | 7 +++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 9f522ba881fa..5fe0b51cdb44 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -155,14 +155,13 @@ static int rsrc_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- }
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cfdafc4c11ea..e36b14c5cb57 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -838,7 +838,8 @@ config SND_SOC_WM8971
+ 	tristate
  
- static int rsrc_card_parse_daifmt(struct device_node *node,
--				  struct device_node *np,
-+				  struct device_node *codec,
- 				  struct rsrc_card_priv *priv,
--				  int idx, bool is_fe)
-+				  struct snd_soc_dai_link *dai_link,
-+				  unsigned int *retfmt)
- {
--	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
- 	struct device_node *bitclkmaster = NULL;
- 	struct device_node *framemaster = NULL;
--	struct device_node *codec = is_fe ? NULL : np;
- 	unsigned int daifmt;
+ config SND_SOC_WM8974
+-	tristate
++	tristate "Wolfson Microelectronics WM8974 codec"
++	depends on I2C
  
- 	daifmt = snd_soc_of_parse_daifmt(node, NULL,
-@@ -179,11 +178,11 @@ static int rsrc_card_parse_daifmt(struct device_node *node,
- 		daifmt |= (codec == framemaster) ?
- 			SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
+ config SND_SOC_WM8978
+ 	tristate "Wolfson Microelectronics WM8978 codec"
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 0a60677397b3..45ba828b19de 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -631,9 +631,16 @@ static const struct i2c_device_id wm8974_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, wm8974_i2c_id);
  
--	dai_link->dai_fmt = daifmt;
--
- 	of_node_put(bitclkmaster);
- 	of_node_put(framemaster);
- 
-+	*retfmt = daifmt;
++static const struct of_device_id wm8974_of_match[] = {
++       { .compatible = "wlf,wm8974", },
++       { }
++};
++MODULE_DEVICE_TABLE(of, wm8974_of_match);
 +
- 	return 0;
- }
- 
-@@ -325,24 +324,16 @@ static int rsrc_card_parse_clk(struct device_node *np,
- 	return 0;
- }
- 
--static int rsrc_card_dai_link_of(struct device_node *node,
--				 struct device_node *np,
--				 struct rsrc_card_priv *priv,
--				 int idx)
-+static int rsrc_card_dai_sub_link_of(struct device_node *node,
-+				     struct device_node *np,
-+				     struct rsrc_card_priv *priv,
-+				     int idx, bool is_fe)
- {
- 	struct device *dev = rsrc_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
- 	struct rsrc_card_dai *dai_props = rsrc_priv_to_props(priv, idx);
--	bool is_fe = false;
- 	int ret;
- 
--	if (0 == strcmp(np->name, "cpu"))
--		is_fe = true;
--
--	ret = rsrc_card_parse_daifmt(node, np, priv, idx, is_fe);
--	if (ret < 0)
--		return ret;
--
- 	ret = rsrc_card_parse_links(np, priv, idx, is_fe);
- 	if (ret < 0)
- 		return ret;
-@@ -359,6 +350,48 @@ static int rsrc_card_dai_link_of(struct device_node *node,
- 	return ret;
- }
- 
-+static int rsrc_card_dai_link_of(struct device_node *node,
-+				 struct rsrc_card_priv *priv)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	struct device_node *np;
-+	unsigned int daifmt = 0;
-+	int ret, i;
-+	bool is_fe;
-+
-+	/* find 1st codec */
-+	i = 0;
-+	for_each_child_of_node(node, np) {
-+		dai_link = rsrc_priv_to_link(priv, i);
-+
-+		if (strcmp(np->name, "codec") == 0) {
-+			ret = rsrc_card_parse_daifmt(node, np, priv,
-+						     dai_link, &daifmt);
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		}
-+		i++;
-+	}
-+
-+	i = 0;
-+	for_each_child_of_node(node, np) {
-+		dai_link = rsrc_priv_to_link(priv, i);
-+		dai_link->dai_fmt = daifmt;
-+
-+		is_fe = false;
-+		if (strcmp(np->name, "cpu") == 0)
-+			is_fe = true;
-+
-+		ret = rsrc_card_dai_sub_link_of(node, np, priv, i, is_fe);
-+		if (ret < 0)
-+			return ret;
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
- static int rsrc_card_parse_of(struct device_node *node,
- 			      struct rsrc_card_priv *priv,
- 			      struct device *dev)
-@@ -366,9 +399,8 @@ static int rsrc_card_parse_of(struct device_node *node,
- 	const struct rsrc_card_of_data *of_data = rsrc_dev_to_of_data(dev);
- 	struct rsrc_card_dai *props;
- 	struct snd_soc_dai_link *links;
--	struct device_node *np;
- 	int ret;
--	int i, num;
-+	int num;
- 
- 	if (!node)
- 		return -EINVAL;
-@@ -409,13 +441,9 @@ static int rsrc_card_parse_of(struct device_node *node,
- 		priv->snd_card.name ? priv->snd_card.name : "",
- 		priv->convert_rate);
- 
--	i = 0;
--	for_each_child_of_node(node, np) {
--		ret = rsrc_card_dai_link_of(node, np, priv, i);
--		if (ret < 0)
--			return ret;
--		i++;
--	}
-+	ret = rsrc_card_dai_link_of(node, priv);
-+	if (ret < 0)
-+		return ret;
- 
- 	if (!priv->snd_card.name)
- 		priv->snd_card.name = priv->snd_card.dai_link->name;
+ static struct i2c_driver wm8974_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8974",
++		.of_match_table = wm8974_of_match,
+ 	},
+ 	.probe =    wm8974_i2c_probe,
+ 	.remove =   wm8974_i2c_remove,
 -- 
 2.6.2
