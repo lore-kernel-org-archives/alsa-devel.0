@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-classd: DT binding for PDMIC
-	driver" to the asoc tree
-Date: Fri, 18 Dec 2015 12:15:39 +0000
-Message-ID: <E1a9twh-0006CA-T3@debutante>
+Subject: Applied "ASoC: rsrc-card: enable to use tdm_slot on
+	DT" to the asoc tree
+Date: Fri, 18 Dec 2015 12:15:43 +0000
+Message-ID: <E1a9twl-0006E3-IX@debutante>
+References: <87io3xiyid.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AC3026659E
+ by alsa0.perex.cz (Postfix) with ESMTP id 51B082665C2
  for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 13:15:48 +0100 (CET)
-In-Reply-To: 
+In-Reply-To: <87io3xiyid.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel-classd: DT binding for PDMIC driver
+   ASoC: rsrc-card: enable to use tdm_slot on DT
 
 has been applied to the asoc tree at
 
@@ -52,80 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 4bc5145cec89b3df719d87d0a6876aa00941d66c Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@atmel.com>
-Date: Thu, 17 Dec 2015 17:50:00 +0800
-Subject: [PATCH] ASoC: atmel-classd: DT binding for PDMIC driver
+>From 6dad9758a5e3e75de91871a636572d64806b240f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 17 Dec 2015 02:48:23 +0000
+Subject: [PATCH] ASoC: rsrc-card: enable to use tdm_slot on DT
 
-DT binding documentation for this new ASoC driver.
+Renesas sound driver will use tdm slot on TDM Multi Mode support.
+This patch enables tdm slot on rsrc card driver on DT.
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/atmel-pdmic.txt      | 55 ++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/atmel-pdmic.txt
+ sound/soc/sh/rcar/rsrc-card.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel-pdmic.txt b/Documentation/devicetree/bindings/sound/atmel-pdmic.txt
-new file mode 100644
-index 000000000000..e0875f17c229
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/atmel-pdmic.txt
-@@ -0,0 +1,55 @@
-+* Atmel PDMIC driver under ALSA SoC architecture
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index a3ec13f6271e..3c308e2d696e 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -50,6 +50,10 @@ MODULE_DEVICE_TABLE(of, rsrc_card_of_match);
+ struct rsrc_card_dai {
+ 	unsigned int fmt;
+ 	unsigned int sysclk;
++	unsigned int tx_slot_mask;
++	unsigned int rx_slot_mask;
++	int slots;
++	int slot_width;
+ 	struct clk *clk;
+ 	char dai_name[DAI_NAME_NUM];
+ };
+@@ -126,6 +130,18 @@ static int rsrc_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 		}
+ 	}
+ 
++	if (dai_props->slots) {
++		ret = snd_soc_dai_set_tdm_slot(dai,
++					       dai_props->tx_slot_mask,
++					       dai_props->rx_slot_mask,
++					       dai_props->slots,
++					       dai_props->slot_width);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dai->dev, "set_tdm_slot error\n");
++			goto err;
++		}
++	}
 +
-+Required properties:
-+- compatible
-+	Should be "atmel,sama5d2-pdmic".
-+- reg
-+	Should contain PDMIC registers location and length.
-+- interrupts
-+	Should contain the IRQ line for the PDMIC.
-+- dmas
-+	One DMA specifiers as described in atmel-dma.txt and dma.txt files.
-+- dma-names
-+	Must be "rx".
-+- clock-names
-+	Required elements:
-+	- "pclk"	peripheral clock
-+	- "gclk"	generated clock
-+- clocks
-+	Must contain an entry for each required entry in clock-names.
-+	Please refer to clock-bindings.txt.
-+- atmel,mic-min-freq
-+	The minimal frequency that the micphone supports.
-+- atmel,mic-max-freq
-+	The maximal frequency that the micphone supports.
+ 	ret = 0;
+ 
+ err:
+@@ -198,6 +214,15 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 	if (ret)
+ 		return ret;
+ 
++	/* Parse TDM slot */
++	ret = snd_soc_of_parse_tdm_slot(np,
++					&dai_props->tx_slot_mask,
++					&dai_props->rx_slot_mask,
++					&dai_props->slots,
++					&dai_props->slot_width);
++	if (ret)
++		return ret;
 +
-+Optional properties:
-+- pinctrl-names, pinctrl-0
-+	Please refer to pinctrl-bindings.txt.
-+- atmel,model
-+	The user-visible name of this sound card.
-+	The default value is "PDMIC".
-+- atmel,mic-offset
-+	The offset that should be added.
-+	The range is from -32768 to 32767.
-+	The default value is 0.
-+
-+Example:
-+	pdmic@f8018000 {
-+				compatible = "atmel,sama5d2-pdmic";
-+				reg = <0xf8018000 0x124>;
-+				interrupts = <48 IRQ_TYPE_LEVEL_HIGH 7>;
-+				dmas = <&dma0
-+					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
-+					| AT91_XDMAC_DT_PERID(50))>;
-+				dma-names = "rx";
-+				clocks = <&pdmic_clk>, <&pdmic_gclk>;
-+				clock-names = "pclk", "gclk";
-+
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&pinctrl_pdmic_default>;
-+				atmel,model = "PDMIC @ sama5d2_xplained";
-+				atmel,mic-min-freq = <1000000>;
-+				atmel,mic-max-freq = <3246000>;
-+				atmel,mic-offset = <0x0>;
-+	};
+ 	if (is_fe) {
+ 		/* BE is dummy */
+ 		dai_link->codec_of_node		= NULL;
 -- 
 2.6.2
