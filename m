@@ -1,17 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 19/19] ASoC: Intel: Atom: Add support for HP
-	ElitePad 1000 G2
-Date: Thu, 17 Dec 2015 20:35:56 -0600
-Message-ID: <1450406156-22246-20-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v4 0/5] ALSA: hda - hdmi support dynamic
+ pcm assignment
+Date: Fri, 18 Dec 2015 02:53:32 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D197B2CAF@SHSMSX103.ccr.corp.intel.com>
+References: <1450244565-77041-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hbn9qhm2v.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 94CA9261AF0
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 03:37:37 +0100 (CET)
-In-Reply-To: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FAD626155D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 03:55:24 +0100 (CET)
+In-Reply-To: <s5hbn9qhm2v.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: bardliao@realtek.com, broonie@kernel.org, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, jack.yu@realtek.com
+To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
+Hi Takashi,
 
-The BIOS for the HP ElitePad 1000 G2 uses an unexpected HID,
-(INTCCFFD), add it to the white list of knowns HIDs.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, December 16, 2015 3:47 PM
+> To: libin.yang@linux.intel.com
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
+> Subject: Re: [alsa-devel] [PATCH v4 0/5] ALSA: hda - hdmi support
+> dynamic pcm assignment
+> 
+> On Wed, 16 Dec 2015 06:42:40 +0100,
+> libin.yang@linux.intel.com wrote:
+> >
+> > From: Libin Yang <libin.yang@linux.intel.com>
+> >
+> > The patches are trying to support dynamically binding PCM to pin
+> > in HDMI/DP audio.
+> >
+> > The pin will not bind to any PCM if there is not monitor connected.
+> > When there is a monitor connected to the port (pin), driver will
+> > try to find a proper PCM to assign to the port and setup the pin
+> > if necessary.
+> >
+> > Libin Yang (5):
+> >   ALSA: hda - hdmi begin to support dynamic PCM assignment
+> >   ALSA: hda - hdmi playback without monitor in dynamic pcm bind
+> mode
+> >   ALSA: hda - hdmi operate spdif based on pcm
+> >   ALSA: hda - hdmi dynamically bind PCM to pin when monitor hotplug
+> >   ALSA: hda - hdmi setup pin when monitor hotplug in pcm dynamic
+> >     assignment mode
+> 
+> I updated topic/hda-mst branch with these patches.  But the patch 4
+> needs more fixes, as suggested in another mail.
+> 
+> Overall, I'd like to know whether MST audio really works in the
+> current state, or not.  Do you have *any* git branch where MST audio
+> is supposed to work at all?
 
-Signed-off-by: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt5640.c             | 1 +
- sound/soc/intel/atom/sst/sst_acpi.c   | 3 ++-
- sound/soc/intel/boards/bytcr_rt5640.c | 8 ++++++++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+I have uploaded the patches to: https://github.com/libinyang/linux.git
+Branch is mst_virtual_pin_github. 
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 18f2d3b..11d032c 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2277,6 +2277,7 @@ static const struct acpi_device_id rt5640_acpi_match[] = {
- 	{ "INT33CA", 0 },
- 	{ "10EC5640", 0 },
- 	{ "10EC5642", 0 },
-+	{ "INTCCFFD", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 510826f..4fce03f 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -325,9 +325,10 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
- 						&byt_rvp_platform_data },
- 	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
- 						&byt_rvp_platform_data },
-+	{"INTCCFFD", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
-+						&byt_rvp_platform_data },
- 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
- 						&byt_rvp_platform_data },
--
- 	{},
- };
- 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 5b0cdad..9a1752d 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -141,6 +141,14 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		.driver_data = (unsigned long *)(BYT_RT5640_DMIC2_MAP |
- 						 BYT_RT5640_DMIC_EN),
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
-+		},
-+		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
-+	},
- 	{}
- };
- 
--- 
-1.9.1
+There is still an issue when doing the mst audio playback:
+The later converter selection for pin will overwrite the previous setting.
+This is the driver bug, I'm debugging it. 
+
+Regards,
+Libin
+
+> 
+> 
+> thanks,
+> 
+> Takashi
