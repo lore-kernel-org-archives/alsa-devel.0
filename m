@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5616: add rt5616 codec driver
-Date: Sat, 19 Dec 2015 12:01:33 +0000
-Message-ID: <20151219120133.GJ5727@sirena.org.uk>
-References: <1450162661-23186-1-git-send-email-bardliao@realtek.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH V2] ALSA: oss: consolidate kmalloc/memset 0
+	call to kzalloc
+Date: Sat, 19 Dec 2015 15:23:13 +0100
+Message-ID: <1450534993-8382-1-git-send-email-hofrat@osadl.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5401443156943123912=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C2C4A26044E
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 13:01:51 +0100 (CET)
-In-Reply-To: <1450162661-23186-1-git-send-email-bardliao@realtek.com>
+Received: from www.osadl.org (www.osadl.org [62.245.132.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id D26AF2604A4
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 15:32:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,64 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, lgirdwood@gmail.com, john.lin@realtek.com, zhengsq@rock-chips.com, flove@realtek.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is an API consolidation only. The use of kmalloc + memset to 0
+is equivalent to kzalloc.
 
---===============5401443156943123912==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TDAnSvu4oNjXIbzm"
-Content-Disposition: inline
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+---
 
+V2: somehow managed to insert exactly the same line being removed
+    so this time actually do the intended kmalloc->kzalloc replacement 
 
---TDAnSvu4oNjXIbzm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Found by coccinelle script (relaxed version of
+scripts/coccinelle/api/alloc/kzalloc-simple.cocci)
 
-On Tue, Dec 15, 2015 at 02:57:41PM +0800, Bard Liao wrote:
+Patch was compile tested with: x86_64_defconfig
+CONFIG_SND_PCM_OSS=y
 
-A couple of very minor issues with the control names here but otherwise
-this looks good - I'll apply this, please send followup patches fixing
-these:
+Patch is against linux-next (localversion-next is -next-20150518)
 
-> +	/* IN1/IN2 Control */
-> +	SOC_SINGLE_TLV("IN1 Boost", RT5616_IN1_IN2,
-> +		RT5616_BST_SFT1, 8, 0, bst_tlv),
-> +	SOC_SINGLE_TLV("IN2 Boost", RT5616_IN1_IN2,
-> +		RT5616_BST_SFT2, 8, 0, bst_tlv),
-
-These should be " Boost Volume".
-
-> +	/* ADC Boost Volume Control */
-> +	SOC_DOUBLE_TLV("ADC Boost Gain", RT5616_ADC_BST_VOL,
-> +			RT5616_ADC_L_BST_SFT, RT5616_ADC_R_BST_SFT,
-> +			3, 0, adc_bst_tlv),
-
-Boost Volume (like the comments says!).
-
---TDAnSvu4oNjXIbzm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWdUccAAoJECTWi3JdVIfQXKsH/2uVhCO6Ljjud66LDVKNHdFE
-unvMtlAh6JnegSsDuaWEpXM4xbiV+GVjw7whUdWmmKt+E6our5GsziK/pDp1uKb2
-sapVwz88JHVU1iRaEeeU26tDyJErSKjQd3l4NXFREg2bMxKfZiA33jch3G3TpL7L
-1c4qpCRv4Z5bZZh/phcjI+oIqZqqRCPCtc2jowCxrL2PfQ+8MT5mgrUa05/W0LL3
-TQ6IJGcV0JbvyETilHlJqT47zlFekZmpq6lF3UC8g/xaZ6IoXIaQJtpfSnWCib7d
-W70K3OVo+com3cEYFCX3JJXvnf3kCUXCgSXe81MNFfBts/v9/rIVyPCcv1D9+a8=
-=fHMb
------END PGP SIGNATURE-----
-
---TDAnSvu4oNjXIbzm--
-
---===============5401443156943123912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5401443156943123912==--
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index e557dbe..8cdd06f 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -851,7 +851,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 
+ 	if (mutex_lock_interruptible(&runtime->oss.params_lock))
+ 		return -EINTR;
+-	sw_params = kmalloc(sizeof(*sw_params), GFP_KERNEL);
++	sw_params = kzalloc(sizeof(*sw_params), GFP_KERNEL);
+ 	params = kmalloc(sizeof(*params), GFP_KERNEL);
+ 	sparams = kmalloc(sizeof(*sparams), GFP_KERNEL);
+ 	if (!sw_params || !params || !sparams) {
+@@ -989,7 +989,6 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream)
+ 		goto failure;
+ 	}
+ 
+-	memset(sw_params, 0, sizeof(*sw_params));
+ 	if (runtime->oss.trigger) {
+ 		sw_params->start_threshold = 1;
+ 	} else {
+-- 
+1.7.10.4
