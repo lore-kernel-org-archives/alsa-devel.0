@@ -1,18 +1,17 @@
-From: Patricio Rossi <meduzapat@netscape.net>
-Subject: Re: HT Omega eCLARO sound card
-Date: Thu, 17 Dec 2015 21:55:29 -0500
-Message-ID: <1450407329.30325.3.camel@netscape.net>
-References: <1450153816.25372.6.camel@netscape.net>
- <567019D8.3040709@ladisch.de> <1450223143.10551.2.camel@netscape.net>
- <567113EB.2020802@ladisch.de>
+From: Mario Kleiner <mario.kleiner.de@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek - Fix silent headphone
+	output on MacPro 4, 1
+Date: Sat, 19 Dec 2015 05:21:57 +0100
+Message-ID: <1450498917-10548-1-git-send-email-mario.kleiner.de@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr-a018e.mx.aol.com (omr-a018e.mx.aol.com [204.29.186.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 72B242619D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 03:55:35 +0100 (CET)
-In-Reply-To: <567113EB.2020802@ladisch.de>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AA06265AE4
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 05:22:48 +0100 (CET)
+Received: by mail-wm0-f51.google.com with SMTP id l126so8172471wml.0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2015 20:22:48 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mario.kleiner.de@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-I see, thank you for your time Clemens, looks like I will have to return
-it.
+Without this patch, internal speaker and line-out work,
+but front headphone output jack stays silent on the
+Mac Pro 4,1.
 
-Regards,
+This code path also gets executed on the MacPro 5,1 due
+to identical codec SSID, but i don't know if it has any
+positive or adverse effects there or not.
 
-Patricio Rossi.
+Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
->> On Wed, 2015-12-17 at 08:34 +0100, Clemens Ladisch wrote:
->> Patricio Rossi wrote:
->> Return the card or keep it to help you (or the alsa team) to debug the
->> driver?
-
-> Well, how many months (years) are you willing to wait?  ;-)
-
-
-> Regards,
-> Clemens
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9bedf7c..6224bdd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1755,6 +1755,7 @@ enum {
+ 	ALC889_FIXUP_MBA11_VREF,
+ 	ALC889_FIXUP_MBA21_VREF,
+ 	ALC889_FIXUP_MP11_VREF,
++	ALC889_FIXUP_MP41_VREF,
+ 	ALC882_FIXUP_INV_DMIC,
+ 	ALC882_FIXUP_NO_PRIMARY_HP,
+ 	ALC887_FIXUP_ASUS_BASS,
+@@ -1905,6 +1906,29 @@ static void alc889_fixup_mba21_vref(struct hda_codec *codec,
+ 		alc889_fixup_mac_pins(codec, nids, ARRAY_SIZE(nids));
+ }
+ 
++/* Set VREF on HP pin on Mac Pro 4,1 */
++static void alc889_fixup_mp41_vref(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	static hda_nid_t nids[1] = { 0x19 };
++	int i;
++
++	if (action != HDA_FIXUP_ACT_INIT)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(nids); i++) {
++		unsigned int val = snd_hda_codec_get_pincfg(codec, nids[i]);
++		if (get_defcfg_device(val) != AC_JACK_HP_OUT)
++			continue;
++		val = snd_hda_codec_get_pin_target(codec, nids[i]);
++		val |= AC_PINCTL_VREF_80;
++		snd_hda_set_pin_ctl(codec, nids[i], val);
++		spec->gen.keep_vref_in_automute = 1;
++		break;
++	}
++}
++
+ /* Don't take HP output as primary
+  * Strangely, the speaker output doesn't work on Vaio Z and some Vaio
+  * all-in-one desktop PCs (for example VGC-LN51JGB) through DAC 0x05
+@@ -2133,6 +2157,12 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC885_FIXUP_MACPRO_GPIO,
+ 	},
++	[ALC889_FIXUP_MP41_VREF] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc889_fixup_mp41_vref,
++		.chained = true,
++		.chain_id = ALC885_FIXUP_MACPRO_GPIO,
++	},
+ 	[ALC882_FIXUP_INV_DMIC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_inv_dmic,
+@@ -2215,7 +2245,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x106b, 0x3f00, "Macbook 5,1", ALC889_FIXUP_IMAC91_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC889_FIXUP_IMAC91_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC889_FIXUP_IMAC91_VREF),
+-	SND_PCI_QUIRK(0x106b, 0x4200, "Mac Pro 5,1", ALC885_FIXUP_MACPRO_GPIO),
++	SND_PCI_QUIRK(0x106b, 0x4200, "Mac Pro 4,1/5,1", ALC889_FIXUP_MP41_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x4300, "iMac 9,1", ALC889_FIXUP_IMAC91_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC889_FIXUP_IMAC91_VREF),
+ 	SND_PCI_QUIRK(0x106b, 0x4900, "iMac 9,1 Aluminum", ALC889_FIXUP_IMAC91_VREF),
+-- 
+1.9.1
