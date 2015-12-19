@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: align pin names between
-	byt-rt5640 drivers" to the asoc tree
-Date: Sat, 19 Dec 2015 11:51:34 +0000
-Message-ID: <E1aAG2w-0004gd-Lz@debutante>
-References: <1450406156-22246-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: tag byt-rt5640 machine driver as
+	deprecated" to the asoc tree
+Date: Sat, 19 Dec 2015 11:51:31 +0000
+Message-ID: <E1aAG2t-0004ex-TM@debutante>
+References: <1450406156-22246-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C1DB92605FF
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:45 +0100 (CET)
-In-Reply-To: <1450406156-22246-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 69F582605A1
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:51 +0100 (CET)
+In-Reply-To: <1450406156-22246-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: align pin names between byt-rt5640 drivers
+   ASoC: Intel: tag byt-rt5640 machine driver as deprecated
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From e2be1da0164c0fbc345874581738d2d72f5f1e24 Mon Sep 17 00:00:00 2001
+>From 595788e475d09fb081bedcf49b3720e62887f77f Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 17 Dec 2015 20:35:40 -0600
-Subject: [PATCH] ASoC: Intel: boards: align pin names between byt-rt5640
- drivers
+Date: Thu, 17 Dec 2015 20:35:43 -0600
+Subject: [PATCH] ASoC: Intel: tag byt-rt5640 machine driver as deprecated
 
-initial cleanup to use same pins
+All the functionality was merged in DPCM-based driver,
+keep older driver to avoid breaking userspace but
+tag it as unsupported/deprecated
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ sound/soc/intel/Kconfig | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 66d37b0e64d1..694061c4c649 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -32,22 +32,21 @@
- static const struct snd_soc_dapm_widget byt_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Int Mic", NULL),
--	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_MIC("Internal Mic", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
- };
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 9b1c0aa8d2d9..337e178c1acb 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -57,13 +57,14 @@ config SND_SOC_INTEL_HASWELL_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE=y
++	depends on DW_DMAC_CORE=y && (SND_SOC_INTEL_BYTCR_RT5640_MACH = n)
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+-	  with the RT5640 audio codec.
++	  with the RT5640 audio codec. This driver is deprecated, use
++	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality
  
- static const struct snd_soc_dapm_route byt_audio_map[] = {
--	{"IN2P", NULL, "Headset Mic"},
--	{"IN2N", NULL, "Headset Mic"},
- 	{"Headset Mic", NULL, "MICBIAS1"},
--	{"IN1P", NULL, "MICBIAS1"},
--	{"LDO2", NULL, "Int Mic"},
-+	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
- 	{"Headphone", NULL, "HPOR"},
--	{"Ext Spk", NULL, "SPOLP"},
--	{"Ext Spk", NULL, "SPOLN"},
--	{"Ext Spk", NULL, "SPORP"},
--	{"Ext Spk", NULL, "SPORN"},
-+	{"Speaker", NULL, "SPOLP"},
-+	{"Speaker", NULL, "SPOLN"},
-+	{"Speaker", NULL, "SPORP"},
-+	{"Speaker", NULL, "SPORN"},
-+	{"Internal Mic", NULL, "MICBIAS1"},
-+	{"IN1P", NULL, "Internal Mic"},
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+@@ -91,14 +92,14 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	  If unsure select "N".
  
- 	{"AIF1 Playback", NULL, "ssp2 Tx"},
- 	{"ssp2 Tx", NULL, "codec_out0"},
-@@ -60,8 +59,8 @@ static const struct snd_soc_dapm_route byt_audio_map[] = {
- static const struct snd_kcontrol_new byt_mc_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
--	SOC_DAPM_PIN_SWITCH("Int Mic"),
--	SOC_DAPM_PIN_SWITCH("Ext Spk"),
-+	SOC_DAPM_PIN_SWITCH("Internal Mic"),
-+	SOC_DAPM_PIN_SWITCH("Speaker"),
- };
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+-	tristate "ASoC Audio DSP Support for MID BYT Platform"
++        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+ 	depends on X86 && I2C
+ 	select SND_SOC_RT5640
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+-	  This adds support for ASoC machine driver for Intel(R) MID Baytrail platform
+-          used as alsa device in audio substem in Intel(R) MID devices
++          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
++          platforms with RT5640 audio codec.
+           Say Y if you have such a device
+           If unsure select "N".
  
- static int byt_aif1_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.6.2
