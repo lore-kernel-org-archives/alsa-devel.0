@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/19] ASoC: codec: rt5651: add ACPI and OF
-	support
-Date: Sat, 19 Dec 2015 11:50:47 +0000
-Message-ID: <20151219115047.GI5727@sirena.org.uk>
-References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Atom: clean-up compressed DAI
+	definition" to the asoc tree
+Date: Sat, 19 Dec 2015 11:51:28 +0000
+Message-ID: <E1aAG2q-0004d5-8z@debutante>
+References: <1450406156-22246-11-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5176591869522833664=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CF360260597
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:50:52 +0100 (CET)
-In-Reply-To: <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1640C26044E
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:34 +0100 (CET)
+In-Reply-To: <1450406156-22246-11-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, jack.yu@realtek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5176591869522833664==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="24l/woCQRgYlHbSG"
-Content-Disposition: inline
+   ASoC: Intel: Atom: clean-up compressed DAI definition
 
+has been applied to the asoc tree at
 
---24l/woCQRgYlHbSG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Dec 17, 2015 at 08:35:49PM -0600, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +#if defined(CONFIG_OF)
-> +static const struct of_device_id rt5651_of_match[] = {
-> +	{ .compatible = "realtek,rt5651", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, rt5651_of_match);
-> +#endif
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-You need a binding document for new DT bindings.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---24l/woCQRgYlHbSG
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJWdUSWAAoJECTWi3JdVIfQKtsH/RsyAUFkynkuqFmfT/2C/yMW
-MtVm3K3kVKy2JmMhW/Qqx+JSsLfvzlLMccDHM/O8m0Yvid60KD5u6nthDIHmv5wf
-8DGSDF2TBFXvW2HQ3m9NMhwEwJyZ8Hsd9wp87ZLfTDpwMptc7YmJellxs0Si/Jo4
-kDGjzyz89sTUgCcigt/7KfkuWl1WSRzHknnktKikW4gCYdKM4utm56BBZMrUsxB/
-fFdrGVHhaezmzH4RMJvwAT/tqrceZxWEPkQ/AITOj2oteHRJFa+DExoBmFzj/qex
-jBV5HtEvxWr/gcVOKX1qjBmvFVJnt+UIDe4+g0PU07cCK+OfID/a3tZ6gtqDN/w=
-=Ak1B
------END PGP SIGNATURE-----
+>From 77095796ae9cbaf315f80611edb5aa569796e339 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 17 Dec 2015 20:35:47 -0600
+Subject: [PATCH] ASoC: Intel: Atom: clean-up compressed DAI definition
 
---24l/woCQRgYlHbSG--
+the fields channels_min, channels_max, rate and formats are
+irrelevant for compressed playback, they will depend on the
+content. This was probably a copy-paste mistake to have
+them in the first place
 
---===============5176591869522833664==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-
---===============5176591869522833664==--
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index c1f618ed183b..55c33dc76ce4 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -528,10 +528,6 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ 	.ops = &sst_compr_dai_ops,
+ 	.playback = {
+ 		.stream_name = "Compress Playback",
+-		.channels_min = SST_STEREO,
+-		.channels_max = SST_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ },
+ /* BE CPU  Dais */
+-- 
+2.6.2
