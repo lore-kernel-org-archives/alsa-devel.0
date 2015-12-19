@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: add 24-bit support for
-	media playback and capture" to the asoc tree
-Date: Sat, 19 Dec 2015 11:51:29 +0000
-Message-ID: <E1aAG2r-0004dY-62@debutante>
-References: <1450406156-22246-10-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: add DEEP_BUFFER support
+	for BYT/CHT/BSW" to the asoc tree
+Date: Sat, 19 Dec 2015 11:51:30 +0000
+Message-ID: <E1aAG2s-0004e1-2x@debutante>
+References: <1450406156-22246-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D372B26066D
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:34 +0100 (CET)
-In-Reply-To: <1450406156-22246-10-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 210752606B2
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:36 +0100 (CET)
+In-Reply-To: <1450406156-22246-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: add 24-bit support for media playback and capture
+   ASoC: Intel: boards: add DEEP_BUFFER support for BYT/CHT/BSW
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,117 @@ to this mail.
 Thanks,
 Mark
 
->From 098c2cd2814098b6cf98ab8c068d69eefbc46716 Mon Sep 17 00:00:00 2001
+>From d35eb96a95dc82befe2d9d1533728506b0847f14 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 17 Dec 2015 20:35:46 -0600
-Subject: [PATCH] ASoC: Intel: Atom: add 24-bit support for media playback and
- capture
+Date: Thu, 17 Dec 2015 20:35:45 -0600
+Subject: [PATCH] ASoC: Intel: boards: add DEEP_BUFFER support for BYT/CHT/BSW
 
-DSP firmware supports 24-bit data, expose functionality to
-userspace/apps.
+Add dai links to enable additional playback stream with deeper
+buffer for lower power consumption.
+The normal and DEEP_buffer streams are not mutually exclusive,
+content will be mixed by the DSP.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c        | 13 +++++++++++++
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 12 ++++++++++++
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 12 ++++++++++++
+ sound/soc/intel/boards/cht_bsw_rt5672.c      | 12 ++++++++++++
+ 4 files changed, 49 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 60b73b7eed0f..c1f618ed183b 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -501,14 +501,14 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 944283f569c6..a81389d10e17 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -267,6 +267,19 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &byt_rt5640_aif1_ops,
  	},
- 	.capture = {
- 		.stream_name = "Headset Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.ignore_suspend = 1,
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &byt_rt5640_aif1_ops,
++	},
+ 	[MERR_DPCM_COMPR] = {
+ 		.name = "Baytrail Compressed Port",
+ 		.stream_name = "Baytrail Compress",
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index e36dad302bed..90588d6e64fc 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -232,6 +232,18 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &cht_aif1_ops,
  	},
- },
- {
-@@ -519,7 +519,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &cht_aif1_ops,
++	},
+ 	[MERR_DPCM_COMPR] = {
+ 		.name = "Compressed Port",
+ 		.stream_name = "Compress",
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 1d2525a53bff..2d3afddb0a2e 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -260,6 +260,18 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &cht_aif1_ops,
  	},
- },
- {
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &cht_aif1_ops,
++	},
+ 	[MERR_DPCM_COMPR] = {
+ 		.name = "Compressed Port",
+ 		.stream_name = "Compress",
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 77fb3c419ca4..2e5347f8f96c 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -248,6 +248,18 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &cht_aif1_ops,
+ 	},
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &cht_aif1_ops,
++	},
+ 	[MERR_DPCM_COMPR] = {
+ 		.name = "Compressed Port",
+ 		.stream_name = "Compress",
 -- 
 2.6.2
