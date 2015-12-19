@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: set SSP to I2S
-	mode 2ch" to the asoc tree
-Date: Sat, 19 Dec 2015 11:51:35 +0000
-Message-ID: <E1aAG2x-0004h7-Iq@debutante>
-References: <1450406156-22246-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: merge DMI-based quirks
+	in bytcr-rt5640 driver" to the asoc tree
+Date: Sat, 19 Dec 2015 11:51:32 +0000
+Message-ID: <E1aAG2u-0004fQ-Qo@debutante>
+References: <1450406156-22246-6-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2067E260597
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:41 +0100 (CET)
-In-Reply-To: <1450406156-22246-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 692042605F2
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:43 +0100 (CET)
+In-Reply-To: <1450406156-22246-6-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: set SSP to I2S mode 2ch
+   ASoC: Intel: boards: merge DMI-based quirks in bytcr-rt5640 driver
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,154 @@ to this mail.
 Thanks,
 Mark
 
->From 3f27dedda463347e98d406fc97ff6767ac59ea05 Mon Sep 17 00:00:00 2001
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Date: Thu, 17 Dec 2015 20:35:39 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: set SSP to I2S mode 2ch
+>From 9fd57471017fcc2dc6ddda03c7bc196d31fe9ffe Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 17 Dec 2015 20:35:42 -0600
+Subject: [PATCH] ASoC: Intel: boards: merge DMI-based quirks in bytcr-rt5640
+ driver
 
-Using the hw_fixup function in order to overwrite the default SSP
-setting for Audio DSP port connected to the codec. Instead of
-TDM 4ch use I2S 2ch 24 bits.
+Merge DMI quirks for various machines such as Asus T100
+and clean-up code
 
-Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 78 ++++++++++++++++++++++++++++-------
+ 1 file changed, 62 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 7a5c9a36c1db..66d37b0e64d1 100644
+index 8dfb57d96985..944283f569c6 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -107,6 +107,7 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 			SNDRV_PCM_HW_PARAM_RATE);
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
+@@ -39,6 +39,13 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
++	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++	{"ssp2 Rx", NULL, "AIF1 Capture"},
++
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -47,15 +54,6 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"Speaker", NULL, "SPOLN"},
+ 	{"Speaker", NULL, "SPORP"},
+ 	{"Speaker", NULL, "SPORN"},
+-	{"Internal Mic", NULL, "MICBIAS1"},
+-	{"IN1P", NULL, "Internal Mic"},
+-
+-	{"AIF1 Playback", NULL, "ssp2 Tx"},
+-	{"ssp2 Tx", NULL, "codec_out0"},
+-	{"ssp2 Tx", NULL, "codec_out1"},
+-	{"codec_in0", NULL, "ssp2 Rx"},
+-	{"codec_in1", NULL, "ssp2 Rx"},
+-	{"ssp2 Rx", NULL, "AIF1 Capture"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
+@@ -145,6 +143,54 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 	{}
+ };
+ 
++static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
++{
 +	int ret;
- 
- 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
- 	rate->min = rate->max = 48000;
-@@ -114,6 +115,28 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 
- 	/* set SSP2 to 24-bit */
- 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++	struct snd_soc_codec *codec = runtime->codec;
++	struct snd_soc_card *card = runtime->card;
++	const struct snd_soc_dapm_route *custom_map;
++	int num_routes;
 +
-+	/*
-+	 * Default mode for SSP configuration is TDM 4 slot, override config
-+	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
-+	 * dai_set_tdm_slot() since there is no other API exposed
-+	 */
-+	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
-+				  SND_SOC_DAIFMT_I2S     |
-+				  SND_SOC_DAIFMT_NB_IF   |
-+				  SND_SOC_DAIFMT_CBS_CFS
-+				  );
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++	card->dapm.idle_bias_off = true;
++
++	ret = snd_soc_add_card_controls(card, byt_rt5640_controls,
++					ARRAY_SIZE(byt_rt5640_controls));
++	if (ret) {
++		dev_err(card->dev, "unable to add card controls\n");
 +		return ret;
 +	}
 +
-+	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
-+		return ret;
++	dmi_check_system(byt_rt5640_quirk_table);
++	switch (BYT_RT5640_MAP(byt_rt5640_quirk)) {
++	case BYT_RT5640_IN1_MAP:
++		custom_map = byt_rt5640_intmic_in1_map;
++		num_routes = ARRAY_SIZE(byt_rt5640_intmic_in1_map);
++		break;
++	case BYT_RT5640_DMIC2_MAP:
++		custom_map = byt_rt5640_intmic_dmic2_map;
++		num_routes = ARRAY_SIZE(byt_rt5640_intmic_dmic2_map);
++		break;
++	default:
++		custom_map = byt_rt5640_intmic_dmic1_map;
++		num_routes = ARRAY_SIZE(byt_rt5640_intmic_dmic1_map);
 +	}
 +
- 	return 0;
++	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
++	if (ret)
++		return ret;
++
++	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
++		ret = rt5640_dmic_enable(codec, 0, 0);
++		if (ret)
++			return ret;
++	}
++
++	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
++	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
++
++	return ret;
++}
++
+ static const struct snd_soc_pcm_stream byt_rt5640_dai_params = {
+ 	.formats = SNDRV_PCM_FMTBIT_S24_LE,
+ 	.rate_min = 48000,
+@@ -244,12 +290,13 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.ignore_suspend = 1,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
++		.init = byt_rt5640_init,
+ 		.ops = &byt_rt5640_be_ssp2_ops,
+ 	},
+ };
+ 
+ /* SoC card */
+-static struct snd_soc_card snd_soc_card_byt_rt5640 = {
++static struct snd_soc_card byt_rt5640_card = {
+ 	.name = "bytcr-rt5640",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = byt_rt5640_dais,
+@@ -258,8 +305,7 @@ static struct snd_soc_card snd_soc_card_byt_rt5640 = {
+ 	.num_dapm_widgets = ARRAY_SIZE(byt_rt5640_widgets),
+ 	.dapm_routes = byt_rt5640_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(byt_rt5640_audio_map),
+-	.controls = byt_rt5640_controls,
+-	.num_controls = ARRAY_SIZE(byt_rt5640_controls),
++	.fully_routed = true,
+ };
+ 
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+@@ -267,16 +313,16 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	int ret_val = 0;
+ 
+ 	/* register the soc card */
+-	snd_soc_card_byt_rt5640.dev = &pdev->dev;
++	byt_rt5640_card.dev = &pdev->dev;
++
++	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 
+-	ret_val = devm_snd_soc_register_card(&pdev->dev,
+-					&snd_soc_card_byt_rt5640);
+ 	if (ret_val) {
+ 		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n",
+ 			ret_val);
+ 		return ret_val;
+ 	}
+-	platform_set_drvdata(pdev, &snd_soc_card_byt_rt5640);
++	platform_set_drvdata(pdev, &byt_rt5640_card);
+ 	return ret_val;
  }
  
 -- 
