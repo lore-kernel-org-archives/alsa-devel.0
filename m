@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: tag byt-rt5640 machine driver as
-	deprecated" to the asoc tree
-Date: Sat, 19 Dec 2015 11:51:31 +0000
-Message-ID: <E1aAG2t-0004ex-TM@debutante>
-References: <1450406156-22246-7-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: rt5616: add rt5616 codec driver
+Date: Sat, 19 Dec 2015 12:01:33 +0000
+Message-ID: <20151219120133.GJ5727@sirena.org.uk>
+References: <1450162661-23186-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5401443156943123912=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 69F582605A1
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:51:51 +0100 (CET)
-In-Reply-To: <1450406156-22246-7-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C2C4A26044E
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 13:01:51 +0100 (CET)
+In-Reply-To: <1450162661-23186-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, lgirdwood@gmail.com, john.lin@realtek.com, zhengsq@rock-chips.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: tag byt-rt5640 machine driver as deprecated
+--===============5401443156943123912==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TDAnSvu4oNjXIbzm"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--TDAnSvu4oNjXIbzm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Dec 15, 2015 at 02:57:41PM +0800, Bard Liao wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+A couple of very minor issues with the control names here but otherwise
+this looks good - I'll apply this, please send followup patches fixing
+these:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +	/* IN1/IN2 Control */
+> +	SOC_SINGLE_TLV("IN1 Boost", RT5616_IN1_IN2,
+> +		RT5616_BST_SFT1, 8, 0, bst_tlv),
+> +	SOC_SINGLE_TLV("IN2 Boost", RT5616_IN1_IN2,
+> +		RT5616_BST_SFT2, 8, 0, bst_tlv),
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+These should be " Boost Volume".
 
-Thanks,
-Mark
+> +	/* ADC Boost Volume Control */
+> +	SOC_DOUBLE_TLV("ADC Boost Gain", RT5616_ADC_BST_VOL,
+> +			RT5616_ADC_L_BST_SFT, RT5616_ADC_R_BST_SFT,
+> +			3, 0, adc_bst_tlv),
 
->From 595788e475d09fb081bedcf49b3720e62887f77f Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 17 Dec 2015 20:35:43 -0600
-Subject: [PATCH] ASoC: Intel: tag byt-rt5640 machine driver as deprecated
+Boost Volume (like the comments says!).
 
-All the functionality was merged in DPCM-based driver,
-keep older driver to avoid breaking userspace but
-tag it as unsupported/deprecated
+--TDAnSvu4oNjXIbzm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 9b1c0aa8d2d9..337e178c1acb 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -57,13 +57,14 @@ config SND_SOC_INTEL_HASWELL_MACH
- config SND_SOC_INTEL_BYT_RT5640_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
- 	depends on X86_INTEL_LPSS && I2C
--	depends on DW_DMAC_CORE=y
-+	depends on DW_DMAC_CORE=y && (SND_SOC_INTEL_BYTCR_RT5640_MACH = n)
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_BAYTRAIL
- 	select SND_SOC_RT5640
- 	help
- 	  This adds audio driver for Intel Baytrail platform based boards
--	  with the RT5640 audio codec.
-+	  with the RT5640 audio codec. This driver is deprecated, use
-+	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality
- 
- config SND_SOC_INTEL_BYT_MAX98090_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
-@@ -91,14 +92,14 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
--	tristate "ASoC Audio DSP Support for MID BYT Platform"
-+        tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
- 	depends on X86 && I2C
- 	select SND_SOC_RT5640
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	help
--	  This adds support for ASoC machine driver for Intel(R) MID Baytrail platform
--          used as alsa device in audio substem in Intel(R) MID devices
-+          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-+          platforms with RT5640 audio codec.
-           Say Y if you have such a device
-           If unsure select "N".
- 
--- 
-2.6.2
+iQEcBAEBCAAGBQJWdUccAAoJECTWi3JdVIfQXKsH/2uVhCO6Ljjud66LDVKNHdFE
+unvMtlAh6JnegSsDuaWEpXM4xbiV+GVjw7whUdWmmKt+E6our5GsziK/pDp1uKb2
+sapVwz88JHVU1iRaEeeU26tDyJErSKjQd3l4NXFREg2bMxKfZiA33jch3G3TpL7L
+1c4qpCRv4Z5bZZh/phcjI+oIqZqqRCPCtc2jowCxrL2PfQ+8MT5mgrUa05/W0LL3
+TQ6IJGcV0JbvyETilHlJqT47zlFekZmpq6lF3UC8g/xaZ6IoXIaQJtpfSnWCib7d
+W70K3OVo+com3cEYFCX3JJXvnf3kCUXCgSXe81MNFfBts/v9/rIVyPCcv1D9+a8=
+=fHMb
+-----END PGP SIGNATURE-----
+
+--TDAnSvu4oNjXIbzm--
+
+--===============5401443156943123912==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5401443156943123912==--
