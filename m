@@ -1,86 +1,76 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 12/12] ASoC: rsnd: add Multi channel support
-Date: Sat, 19 Dec 2015 11:37:09 +0000
-Message-ID: <20151219113709.GG5727@sirena.org.uk>
-References: <87egeliyaz.wl%kuninori.morimoto.gx@renesas.com>
- <87wpsdhje9.wl%kuninori.morimoto.gx@renesas.com>
- <20151218200448.GA1476@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 12/19] ASoC: codec: rt5651: add ACPI and OF
+	support
+Date: Sat, 19 Dec 2015 11:50:47 +0000
+Message-ID: <20151219115047.GI5727@sirena.org.uk>
+References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U2airnvjqUwLRQVR"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20151218200448.GA1476@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5176591869522833664=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF360260597
+ for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 12:50:52 +0100 (CET)
+In-Reply-To: <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, jack.yu@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---U2airnvjqUwLRQVR
+--===============5176591869522833664==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="24l/woCQRgYlHbSG"
+Content-Disposition: inline
+
+
+--24l/woCQRgYlHbSG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 18, 2015 at 02:04:51PM -0600, Rob Herring wrote:
-> On Thu, Dec 17, 2015 at 03:00:10AM +0000, Kuninori Morimoto wrote:
+On Thu, Dec 17, 2015 at 08:35:49PM -0600, Pierre-Louis Bossart wrote:
 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> > ---
-> >  .../devicetree/bindings/sound/renesas,rsnd.txt     |  18 ++++
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id rt5651_of_match[] = {
+> +	{ .compatible = "realtek,rt5651", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, rt5651_of_match);
+> +#endif
 
-> For the binding:
+You need a binding document for new DT bindings.
 
-> Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-
-Rob, it looks like something's up with your mail system - I'm getting
-two copies of all your mails.  It looks like I'm getting one copy sent
-with TLS and one copy sent without TLS both from rob-hp-laptop with
-different message IDs:
-
-Delivered-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Received: from mail.kernel.org (localhost [127.0.0.1])
-        by mail.kernel.org (Postfix) with ESMTP id 5C46E204A2;
-        Sat, 19 Dec 2015 04:17:58 +0000 (UTC)
-Received: from rob-hp-laptop (unknown [68.66.83.131])
-        (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0AEF20490;
-        Sat, 19 Dec 2015 04:17:56 +0000 (UTC)
-Message-ID: <20151219041755.GG14936@rob-hp-laptop>
-        (sfid-20151219_041801_069806_5E8B0949)
-
-and
-
-Delivered-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Received: from mail.kernel.org (localhost [127.0.0.1])
-        by mail.kernel.org (Postfix) with ESMTP id B6B4E204AF
-        for <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>; Sat, 19 Dec 2015 04:19:20 +0000 (UTC)
-Received: from rob-hp-laptop (unknown [68.66.83.131])
-        by mail.kernel.org (Postfix) with ESMTP id 02201204D2
-        for <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>; Sat, 19 Dec 2015 04:19:20 +0000 (UTC)
-Received: by rob-hp-laptop (Postfix, from userid 1000)
-        id D0F442C02FD; Fri, 18 Dec 2015 22:09:13 -0600 (CST)
-...
-Message-Id: <20151219040913.D0F442C02FD@rob-hp-laptop>
-        (sfid-20151219_041922_802186_2104CD68)
-
---U2airnvjqUwLRQVR
+--24l/woCQRgYlHbSG
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWdUFkAAoJECTWi3JdVIfQXaEH/1giThAeFoxiCh5SWbiUHZaE
-XxJv/u/2XsZrQw59mbbJERWF7DPFC2gdFQiDmHijttWirQ5UrLYAQw1WXd1jxDjB
-3WAk3/uys25AkgzqxeNNvFlAu5uG3vaOS+k3KFV39w/e8tsImrFl572hjXYeqX9N
-+iv6gDp8i7/Qc7O63cdaKBZ8l6qHVikOZZl7bbzgbLepT0MptqzFcsQdwG8IBiUs
-Nzw3H+dcxRS3R1iPAEn9WCt2qW7MoGsDEcxLnYTkDn4vW0oMYCjE9hi6HzIVHY4B
-Fkjl9HWRaxsNbvXVKpZsxe1xxJ5ddTXJJCO6ZUYuOKh7WVoOEKX/IesB+qetdjM=
-=Lke/
+iQEcBAEBCAAGBQJWdUSWAAoJECTWi3JdVIfQKtsH/RsyAUFkynkuqFmfT/2C/yMW
+MtVm3K3kVKy2JmMhW/Qqx+JSsLfvzlLMccDHM/O8m0Yvid60KD5u6nthDIHmv5wf
+8DGSDF2TBFXvW2HQ3m9NMhwEwJyZ8Hsd9wp87ZLfTDpwMptc7YmJellxs0Si/Jo4
+kDGjzyz89sTUgCcigt/7KfkuWl1WSRzHknnktKikW4gCYdKM4utm56BBZMrUsxB/
+fFdrGVHhaezmzH4RMJvwAT/tqrceZxWEPkQ/AITOj2oteHRJFa+DExoBmFzj/qex
+jBV5HtEvxWr/gcVOKX1qjBmvFVJnt+UIDe4+g0PU07cCK+OfID/a3tZ6gtqDN/w=
+=Ak1B
 -----END PGP SIGNATURE-----
 
---U2airnvjqUwLRQVR--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--24l/woCQRgYlHbSG--
+
+--===============5176591869522833664==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5176591869522833664==--
