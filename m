@@ -1,14 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/11] fireface: add proc node to help debugging
-Date: Sun, 20 Dec 2015 21:28:38 +0900
-Message-ID: <1450614523-9367-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/11] fireface: add data processing layer
+Date: Sun, 20 Dec 2015 21:28:40 +0900
+Message-ID: <1450614523-9367-9-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C8ED2606FE
+ by alsa0.perex.cz (Postfix) with ESMTP id 422F42606DA
  for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:50 +0100 (CET)
 In-Reply-To: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,296 +24,276 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Drivers retrieve the state and configuration of clock by read transactions.
+RME Fireface series doesn't apply IEC 61883-6 for its format of data block.
+Its data channel includes no labels. The PCM sample is aligned to little
+endian. The upper 1 byte of each channel includes information of device's
+status.
 
-This commit adds proc node to dump the information for debugging.
+This commit adds own data processing layer. The device's status is not
+supported yet.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/Makefile        |   3 +-
- sound/firewire/fireface/fireface-proc.c | 237 ++++++++++++++++++++++++++++++++
- sound/firewire/fireface/fireface.c      |   2 +
- sound/firewire/fireface/fireface.h      |   2 +
- 4 files changed, 243 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/fireface-proc.c
+ sound/firewire/fireface/Makefile   |   2 +-
+ sound/firewire/fireface/amdtp-ff.c | 221 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/fireface.h |   8 ++
+ 3 files changed, 230 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/amdtp-ff.c
 
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index 2174b4b..c9d1f4e 100644
+index c9d1f4e..f22f0b5 100644
 --- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -1,2 +1,3 @@
--snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o
-+snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o \
-+		     fireface-proc.o
+@@ -1,3 +1,3 @@
+ snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o \
+-		     fireface-proc.o
++		     fireface-proc.o amdtp-ff.o
  obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/fireface-proc.c b/sound/firewire/fireface/fireface-proc.c
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
 new file mode 100644
-index 0000000..d642cba
+index 0000000..ab2a99d
 --- /dev/null
-+++ b/sound/firewire/fireface/fireface-proc.c
-@@ -0,0 +1,237 @@
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -0,0 +1,221 @@
 +/*
-+ * fireface-proc.c - a part of driver for RME Fireface series
++ * amdtp-ff.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2016 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./fireface.h"
++#include <sound/pcm.h>
++#include "fireface.h"
 +
-+static void proc_read_clock_status(struct snd_info_entry *entry,
-+				   struct snd_info_buffer *buffer)
++struct amdtp_ff {
++	unsigned int pcm_channels;
++
++	void (*transfer_samples)(struct amdtp_stream *s,
++				 struct snd_pcm_substream *pcm,
++				 __be32 *buffer, unsigned int frames);
++};
++
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels)
 +{
-+	struct snd_ff *ff = entry->private_data;
-+	__le32 reg;
-+	u32 data;
-+	int err;
++	struct amdtp_ff *p = s->protocol;
++	unsigned int data_channels;
 +
-+	err = snd_fw_transaction(ff->unit, TCODE_READ_QUADLET_REQUEST,
-+				 0x0000801c0000, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return;
++	if (amdtp_stream_running(s))
++		return -EBUSY;
 +
-+	data = le32_to_cpu(reg);
++	p->pcm_channels = pcm_channels;
++	data_channels = pcm_channels;
 +
-+	snd_iprintf(buffer, "External source detection:\n");
-+
-+	snd_iprintf(buffer, "Word Clock:");
-+	if ((data >> 24) & 0x20) {
-+		if ((data >> 24) & 0x40)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "S/PDIF:");
-+	if ((data >> 16) & 0x10) {
-+		if ((data >> 16) & 0x04)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "ADAT:");
-+	if ((data >> 8) & 0x04) {
-+		if ((data >> 8) & 0x10)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "\nUsed external source:\n");
-+
-+	if (((data >> 22) & 0x07) == 0x07) {
-+		snd_iprintf(buffer, "None\n");
-+	} else {
-+		switch ((data >> 22) & 0x07) {
-+		case 0x00:
-+			snd_iprintf(buffer, "ADAT:");
-+			break;
-+		case 0x03:
-+			snd_iprintf(buffer, "S/PDIF:");
-+			break;
-+		case 0x04:
-+			snd_iprintf(buffer, "Word:");
-+			break;
-+		case 0x07:
-+			snd_iprintf(buffer, "Nothing:");
-+			break;
-+		case 0x01:
-+		case 0x02:
-+		case 0x05:
-+		case 0x06:
-+		default:
-+			snd_iprintf(buffer, "unknown:");
-+			break;
-+		}
-+
-+		if ((data >> 25) & 0x07) {
-+			switch ((data >> 25) & 0x07) {
-+			case 0x01:
-+				snd_iprintf(buffer, "32000\n");
-+				break;
-+			case 0x02:
-+				snd_iprintf(buffer, "44100\n");
-+				break;
-+			case 0x03:
-+				snd_iprintf(buffer, "48000\n");
-+				break;
-+			case 0x04:
-+				snd_iprintf(buffer, "64000\n");
-+				break;
-+			case 0x05:
-+				snd_iprintf(buffer, "88200\n");
-+				break;
-+			case 0x06:
-+				snd_iprintf(buffer, "96000\n");
-+				break;
-+			case 0x07:
-+				snd_iprintf(buffer, "128000\n");
-+				break;
-+			case 0x08:
-+				snd_iprintf(buffer, "176400\n");
-+				break;
-+			case 0x09:
-+				snd_iprintf(buffer, "192000\n");
-+				break;
-+			case 0x00:
-+				snd_iprintf(buffer, "unknown\n");
-+				break;
-+			}
-+		}
-+	}
-+
-+	snd_iprintf(buffer, "Multiplied:");
-+	snd_iprintf(buffer, "%d\n", (data & 0x3ff) * 250);
++	return amdtp_stream_set_parameters(s, rate, data_channels);
 +}
 +
-+static void proc_read_clock_config(struct snd_info_entry *entry,
-+				   struct snd_info_buffer *buffer)
++static void write_pcm_s32(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
 +{
-+	struct snd_ff *ff = entry->private_data;
-+	__le32 reg;
-+	u32 data;
-+	unsigned int rate;
-+	const char *src;
-+	int err;
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
 +
-+	err = snd_fw_transaction(ff->unit, TCODE_READ_BLOCK_REQUEST,
-+				 0x0000801c0004, &reg, sizeof(reg), 0);
-+	if (err < 0)
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			/* TODO: fill upper 1 byte for the other aim. */
++			buffer[c] = cpu_to_le32(*src);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_s16(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u16 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			/* TODO: fill upper 1 byte for the other aim. */
++			buffer[c] = cpu_to_le32(*src << 16);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void read_pcm_s32(struct amdtp_stream *s,
++			 struct snd_pcm_substream *pcm,
++			 __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			/* TODO: read upper 1 byte for the other aim. */
++			*dst = cpu_to_le32(buffer[c]) & 0xffffff00;
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s,
++			      __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	unsigned int i, c, channels = p->pcm_channels;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c)
++			/* TODO: write upper 1 byte for the other aim. */
++			buffer[c] = cpu_to_le32(0x00000000);
++		buffer += s->data_block_quadlets;
++	}
++}
++
++void amdtp_ff_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
++{
++	struct amdtp_ff *p = s->protocol;
++
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
 +		return;
 +
-+	data = le32_to_cpu(reg);
-+
-+	snd_iprintf(buffer, "Output S/PDIF format: %s (Emphasis: %s)\n",
-+		    (data & 0x20) ? "Professional" : "Consumer",
-+		    (data & 0x40) ? "on" : "off");
-+
-+	snd_iprintf(buffer, "Optical output interface format: %s\n",
-+		    ((data >> 8) & 0x01) ? "S/PDIF" : "ADAT");
-+
-+	snd_iprintf(buffer, "Word output single speed: %s\n",
-+		    ((data >> 8) & 0x20) ? "on" : "off");
-+
-+	snd_iprintf(buffer, "S/PDIF input interface: %s\n",
-+		    ((data >> 8) & 0x02) ? "Optical" : "Coaxial");
-+
-+	switch ((data >> 1) & 0x03) {
-+	case 0x01:
-+		rate = 32000;
-+		break;
-+	case 0x00:
-+		rate = 44100;
-+		break;
-+	case 0x03:
-+		rate = 48000;
-+		break;
-+	case 0x02:
++	switch (format) {
 +	default:
-+		return;
-+	}
-+
-+	if (data & 0x08)
-+		rate *= 2;
-+	else if (data & 0x10)
-+		rate *= 4;
-+
-+	snd_iprintf(buffer, "Sampling rate: %d\n", rate);
-+
-+	if (data & 0x01) {
-+		src = "Internal";
-+	} else {
-+		switch ((data >> 10) & 0x07) {
-+		case 0x00:
-+			src = "ADAT";
++		WARN_ON(1);
++		/* fail through */
++	case SNDRV_PCM_FORMAT_S16:
++		if (s->direction == AMDTP_OUT_STREAM) {
++			p->transfer_samples = write_pcm_s16;
 +			break;
-+		case 0x03:
-+			src = "S/PDIF";
-+			break;
-+		case 0x04:
-+			src = "Word";
-+			break;
-+		case 0x05:
-+			src = "LTC";
-+			break;
-+		default:
-+			return;
 +		}
++		WARN_ON(1);
++		/* fail through */
++	case SNDRV_PCM_FORMAT_S32:
++		if (s->direction == AMDTP_OUT_STREAM)
++			p->transfer_samples = write_pcm_s32;
++		else
++			p->transfer_samples = read_pcm_s32;
++		break;
 +	}
-+
-+	snd_iprintf(buffer, "Sync to clock source: %s\n", src);
 +}
 +
-+static void add_node(struct snd_ff *ff, struct snd_info_entry *root,
-+		     const char *name,
-+		     void (*op)(struct snd_info_entry *e,
-+				struct snd_info_buffer *b))
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime)
 +{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_card_entry(ff->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, ff, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_ff_proc_init(struct snd_ff *ff)
-+{
-+	struct snd_info_entry *root;
++	int err;
 +
 +	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
++	 * Our implementation allows this protocol to deliver 24 bit sample in
++	 * 32bit data channel.
 +	 */
-+	root = snd_info_create_card_entry(ff->card, "firewire",
-+					  ff->card->proc_root);
-+	if (root == NULL)
-+		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		return err;
++
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
++
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
++
++	if (pcm) {
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		write_pcm_silence(s, buffer, data_blocks);
++		pcm_frames = 0;
 +	}
 +
-+	add_node(ff, root, "clock-config", proc_read_clock_config);
-+	add_node(ff, root, "clock-status", proc_read_clock_status);
++	return pcm_frames;
 +}
-diff --git a/sound/firewire/fireface/fireface.c b/sound/firewire/fireface/fireface.c
-index 0883cda..2ea84ce 100644
---- a/sound/firewire/fireface/fireface.c
-+++ b/sound/firewire/fireface/fireface.c
-@@ -108,6 +108,8 @@ static int snd_ff_probe(struct fw_unit *unit,
- 	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
- 	name_card(ff);
- 
-+	snd_ff_proc_init(ff);
 +
- 	/* Register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&ff->dwork, do_probe);
- 	delay = msecs_to_jiffies(PROBE_DELAY_MS) +
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
++
++	if (pcm) {
++		p->transfer_samples(s, pcm, buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		pcm_frames = 0;
++	}
++
++	return pcm_frames;
++}
++
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir)
++{
++	amdtp_stream_process_data_blocks_t process_data_blocks;
++
++	if (dir == AMDTP_IN_STREAM)
++		process_data_blocks = process_tx_data_blocks;
++	else
++		process_data_blocks = process_rx_data_blocks;
++
++	return amdtp_stream_init(s, unit, dir, CIP_NO_HEADERS, 0,
++				 process_data_blocks, sizeof(struct amdtp_ff));
++}
 diff --git a/sound/firewire/fireface/fireface.h b/sound/firewire/fireface/fireface.h
-index 33d94b8..38a200e 100644
+index 38a200e..dd50261 100644
 --- a/sound/firewire/fireface/fireface.h
 +++ b/sound/firewire/fireface/fireface.h
-@@ -76,6 +76,8 @@ int snd_ff_transaction_register(struct snd_ff *ff);
+@@ -76,6 +76,14 @@ int snd_ff_transaction_register(struct snd_ff *ff);
  int snd_ff_transaction_reregister(struct snd_ff *ff);
  void snd_ff_transaction_unregister(struct snd_ff *ff);
  
-+void snd_ff_proc_init(struct snd_ff *ff);
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels);
++void amdtp_ff_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime);
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir);
 +
- int snd_ff_create_midi_devices(struct snd_ff *ff);
+ void snd_ff_proc_init(struct snd_ff *ff);
  
- #endif
+ int snd_ff_create_midi_devices(struct snd_ff *ff);
 -- 
 2.5.0
