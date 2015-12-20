@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC v2][PATCH 00/11] ALSA: fireface: new driver for
-	RME Fireface series
-Date: Sun, 20 Dec 2015 21:28:32 +0900
-Message-ID: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/11] fireface: add support for MIDI
+	functionality
+Date: Sun, 20 Dec 2015 21:28:37 +0900
+Message-ID: <1450614523-9367-6-git-send-email-o-takashi@sakamocchi.jp>
+References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 887822606D2
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 47D4C2606F4
+ for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:50 +0100 (CET)
+In-Reply-To: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,103 +25,207 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In previous commit, fireface driver supports transaction functionality.
+This commit adds MIDI functionality for userspace.
 
-This patchset is to update my previous one with mostly full features as an
-driver in ALSA firewire stack:
+Userspace applications can always disable this functionality by sending
+invalid values to 0x0000801003f4 and 0x00008010051c by write transactions.
 
-[alsa-devel] [RFC][PATCH 0/3] ALSA: fireface: new driver for RME Fireface series (MIDI only)
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/101576.html
-
-Changes from RFCv1:
- * Support own quirk of packet streaming
- * Add own data block processing layer
- * Support PCM functionality
- * Add proc node to help debugging
- * Add hwdep interface
-
-I note that just powering on, the device is muted. Thus, the device generates no
-sound even if packet streaming is successful. You can de-mute it by write
-transaction. For example, by using 'firewire-request' command in
-linux-firewire-utils(https://github.com/cladisch/linux-firewire-utils):
-
-$ ./firewire-request /dev/fw1 write 0x0000801c0000 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000010000000100000001000000
-
-Currently, libffado gives no way to do it via its mixer interface. Instead, done
-in methods to start streaming. I think it better to move de-mute codes to mixer
-initialization.
-
-There's an issue of periodical hissing noise. I observed this with Fireface 400.
-Interval of the noise differs depending on the situation (10-20 minutes) and
-continues around 20 seconds. The cause is not clear but I've experienced similar
-issue with TASCAM FireOne. A common point between these two models is
-non-blocking transmission. I guess that the cause may be on data block
-calculation in AMDTP packet streaming layer (calculate_data_blocks() function
-in sound/firewire/amdtp-stream.c). Further investigation is required.
-
-In my previous RFC, I described that zero bits have no effect in write
-transactions to 0x00008010051c. But this is wrong. The transaction has
-side effect to set the other options. In this patchset, the state of clock
-is changed on the way to initialize transaction. This is a bit rude but
-unavoidable. Fortunately, it's software's responsibility to read from flash
-memory and set initial configuration, thus I think this change is approval
-because just powering on the state of device is against user's configuration.
-The loading and configuring are still userspace responsibility.
-
-MIDI functionality can be disabled when any userspace applications run with
-libffado, as I described. This is a bug of libffado due to node ID handling.
-In line 199 of libffado/src/rme/fireface_hw.cpp, node id is handled as
-uint16_t value. This is a fashion of libffado to represent Node ID by lower 6
-bits of actual Node ID of IEEE 1394 bus. In the other lines, actual Node Id is
-constructed with 0xffc0. Just using the raw value returned by
-ConfigRom::getNodeId() is invalid.
-
-
-For this work, I can borrow test device (Fireface 400) from Syntax Japan Inc.
-It's my fortune to have an opportunity to contact to the company. I'm graceful
-to Takeshi Mitsuhashi, Tahiro Hashizume and their kindness. Thank you.
-
-
-Takashi Sakamoto (11):
-  fireface: add skeleton for RME Fireface series
-  fireface: postpone sound card registration
-  fireface: add model specific structure
-  fireface: add transaction support
-  fireface: add support for MIDI functionality
-  fireface: add proc node to help debugging
-  firewire-lib: add no-header packet processing
-  fireface: add data processing layer
-  fireface: add stream management functionality
-  fireface: add PCM functionality
-  fireface: add hwdep interface
-
- include/uapi/sound/asound.h                    |   3 +-
- include/uapi/sound/firewire.h                  |   1 +
- sound/firewire/Kconfig                         |   7 +
- sound/firewire/Makefile                        |   1 +
- sound/firewire/amdtp-stream.c                  | 104 +++++--
- sound/firewire/amdtp-stream.h                  |   2 +
- sound/firewire/fireface/Makefile               |   4 +
- sound/firewire/fireface/amdtp-ff.c             | 221 ++++++++++++++
- sound/firewire/fireface/fireface-hwdep.c       | 191 ++++++++++++
- sound/firewire/fireface/fireface-midi.c        | 131 ++++++++
- sound/firewire/fireface/fireface-pcm.c         | 390 ++++++++++++++++++++++++
- sound/firewire/fireface/fireface-proc.c        | 237 +++++++++++++++
- sound/firewire/fireface/fireface-stream.c      | 397 +++++++++++++++++++++++++
- sound/firewire/fireface/fireface-transaction.c | 301 +++++++++++++++++++
- sound/firewire/fireface/fireface.c             | 210 +++++++++++++
- sound/firewire/fireface/fireface.h             | 131 ++++++++
- 16 files changed, 2313 insertions(+), 18 deletions(-)
- create mode 100644 sound/firewire/fireface/Makefile
- create mode 100644 sound/firewire/fireface/amdtp-ff.c
- create mode 100644 sound/firewire/fireface/fireface-hwdep.c
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireface/Makefile        |   2 +-
+ sound/firewire/fireface/fireface-midi.c | 131 ++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/fireface.c      |   5 ++
+ sound/firewire/fireface/fireface.h      |   3 +
+ 4 files changed, 140 insertions(+), 1 deletion(-)
  create mode 100644 sound/firewire/fireface/fireface-midi.c
- create mode 100644 sound/firewire/fireface/fireface-pcm.c
- create mode 100644 sound/firewire/fireface/fireface-proc.c
- create mode 100644 sound/firewire/fireface/fireface-stream.c
- create mode 100644 sound/firewire/fireface/fireface-transaction.c
- create mode 100644 sound/firewire/fireface/fireface.c
- create mode 100644 sound/firewire/fireface/fireface.h
 
+diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
+index aa52e41..2174b4b 100644
+--- a/sound/firewire/fireface/Makefile
++++ b/sound/firewire/fireface/Makefile
+@@ -1,2 +1,2 @@
+-snd-fireface-objs := fireface.o fireface-transaction.o
++snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o
+ obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
+diff --git a/sound/firewire/fireface/fireface-midi.c b/sound/firewire/fireface/fireface-midi.c
+new file mode 100644
+index 0000000..d324f4e7
+--- /dev/null
++++ b/sound/firewire/fireface/fireface-midi.c
+@@ -0,0 +1,131 @@
++/*
++ * fireface-midi.c - a part of driver for RME Fireface series
++ *
++ * Copyright (c) 2015-2016 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "fireface.h"
++
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
++{
++	/* Do nothing. */
++	return 0;
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_ff *ff = substream->rmidi->private_data;
++
++	/* Initialize internal status. */
++	ff->running_status[substream->number] = 0;
++	ff->rx_midi_error[substream->number] = false;
++
++	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = substream;
++
++	return 0;
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	/* Do nothing. */
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_ff *ff = substream->rmidi->private_data;
++
++	cancel_work_sync(&ff->rx_midi_work[substream->number]);
++	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = NULL;
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substream,
++				 int up)
++{
++	struct snd_ff *ff = substream->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ff->lock, flags);
++
++	if (up)
++		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) =
++								substream;
++	else
++		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) = NULL;
++
++	spin_unlock_irqrestore(&ff->lock, flags);
++}
++
++static void midi_playback_trigger(struct snd_rawmidi_substream *substream,
++				  int up)
++{
++	struct snd_ff *ff = substream->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ff->lock, flags);
++
++	if (up || !ff->rx_midi_error[substream->number])
++		schedule_work(&ff->rx_midi_work[substream->number]);
++
++	spin_unlock_irqrestore(&ff->lock, flags);
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_rawmidi_str *stream,
++				     const char *const name)
++{
++	struct snd_rawmidi_substream *substream;
++
++	list_for_each_entry(substream, &stream->substreams, list) {
++		snprintf(substream->name, sizeof(substream->name),
++			 "%s MIDI %d", name, substream->number + 1);
++	}
++}
++
++int snd_ff_create_midi_devices(struct snd_ff *ff)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *stream;
++	int err;
++
++	err = snd_rawmidi_new(ff->card, ff->card->driver, 0,
++			      SND_FF_OUT_MIDI_PORTS, SND_FF_IN_MIDI_PORTS,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", ff->card->shortname);
++	rmidi->private_data = ff;
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++			    &midi_capture_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++	set_midi_substream_names(stream, ff->card->shortname);
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++			    &midi_playback_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++	set_midi_substream_names(stream, ff->card->shortname);
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
+diff --git a/sound/firewire/fireface/fireface.c b/sound/firewire/fireface/fireface.c
+index b3ee869..0883cda 100644
+--- a/sound/firewire/fireface/fireface.c
++++ b/sound/firewire/fireface/fireface.c
+@@ -61,6 +61,10 @@ static void do_probe(struct work_struct *work)
+ 	if (err < 0)
+ 		goto end;
+ 
++	err = snd_ff_create_midi_devices(ff);
++	if (err < 0)
++		goto end;
++
+ 	err = snd_card_register(ff->card);
+ 	if (err < 0)
+ 		goto end;
+@@ -98,6 +102,7 @@ static int snd_ff_probe(struct fw_unit *unit,
+ 	ff->unit = fw_unit_get(unit);
+ 
+ 	mutex_init(&ff->mutex);
++	spin_lock_init(&ff->lock);
+ 	dev_set_drvdata(&unit->device, ff);
+ 
+ 	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
+diff --git a/sound/firewire/fireface/fireface.h b/sound/firewire/fireface/fireface.h
+index 6d132f9..33d94b8 100644
+--- a/sound/firewire/fireface/fireface.h
++++ b/sound/firewire/fireface/fireface.h
+@@ -43,6 +43,7 @@ struct snd_ff {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+ 	struct mutex mutex;
++	spinlock_t lock;
+ 
+ 	bool probed;
+ 	struct delayed_work dwork;
+@@ -75,4 +76,6 @@ int snd_ff_transaction_register(struct snd_ff *ff);
+ int snd_ff_transaction_reregister(struct snd_ff *ff);
+ void snd_ff_transaction_unregister(struct snd_ff *ff);
+ 
++int snd_ff_create_midi_devices(struct snd_ff *ff);
++
+ #endif
 -- 
 2.5.0
