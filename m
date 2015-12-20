@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/11] fireface: add transaction support
-Date: Sun, 20 Dec 2015 21:28:36 +0900
-Message-ID: <1450614523-9367-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/11] fireface: add PCM functionality
+Date: Sun, 20 Dec 2015 21:28:42 +0900
+Message-ID: <1450614523-9367-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 898D42606D4
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 520F7260703
+ for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:50 +0100 (CET)
 In-Reply-To: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,54 +24,42 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-RME Fireface series doesn't transfer MIDI messages on isochronous packets.
-The messages are transferred in asynchronous transactions.
+This commit adds PCM functionality to transmit/receive PCM samples on
+isochronous packet streaming. This commit enables userspace applications
+to start/stop packet streaming via ALSA PCM interface.
 
-The unit handles MIDI messages in asynchronous transactions transmitted in
-two addresses; 0x000008018000 and 0x000008019000. These two are
-corresponding to physical MIDI port 1 and 2.
-
-The unit transfers MIDI messages by asynchronous transactions to certain
-addresses. Drivers can decide upper 4 byte of the addresses by a write
-transaction to 0x0000801003f4. Drivers have four options to the rest;
-0x000000000, 0x00000080, 0x00000100, 0x00000180. Drivers can enable them
-by write transactions to 0x00008010051c. This register may consist of
-bit flags. In this mechanism, drivers cannot use Private space of IEEE 1212
-in which they allow to add some side effects to read/write transactions.
-
-This commit adds transaction support for MIDI messaging. To receive
-asynchronous transactions, the driver allocates a range of address in
-Memory space. The driver selects 0x00000000 as lower 4 byte of the
-address, thus the driver retries to allocate when gaining unusable range.
-
-Writing non-zero value to enable the transaction has side effects. This
-commit write 0x0400001f for decide divice's initial state.
+The requested sampling rate is basically used as sampling transfer
+frequency of AMDTP packet streaming. This is restricted when the device is
+synchronized to external clock source. In this case, input clock rate
+is used as the sampling transfer frequency, except for 64.0/128.0 kHz.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/Makefile               |   2 +-
- sound/firewire/fireface/fireface-transaction.c | 301 +++++++++++++++++++++++++
- sound/firewire/fireface/fireface.c             |   8 +
- sound/firewire/fireface/fireface.h             |  30 +++
- 4 files changed, 340 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/fireface-transaction.c
+ sound/firewire/fireface/Makefile       |   3 +-
+ sound/firewire/fireface/fireface-pcm.c | 381 +++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/fireface.c     |   4 +
+ sound/firewire/fireface/fireface.h     |   2 +
+ 4 files changed, 389 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/fireface-pcm.c
 
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index f7113ab..aa52e41 100644
+index 5b4bb68..4b6b9a9 100644
 --- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -1,2 +1,2 @@
--snd-fireface-objs := fireface.o
-+snd-fireface-objs := fireface.o fireface-transaction.o
+@@ -1,3 +1,4 @@
+ snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o \
+-		     fireface-proc.o amdtp-ff.o fireface-stream.o
++		     fireface-proc.o amdtp-ff.o fireface-stream.o \
++		     fireface-pcm.o
  obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/fireface-transaction.c b/sound/firewire/fireface/fireface-transaction.c
+diff --git a/sound/firewire/fireface/fireface-pcm.c b/sound/firewire/fireface/fireface-pcm.c
 new file mode 100644
-index 0000000..8365cb4
+index 0000000..705df28
 --- /dev/null
-+++ b/sound/firewire/fireface/fireface-transaction.c
-@@ -0,0 +1,301 @@
++++ b/sound/firewire/fireface/fireface-pcm.c
+@@ -0,0 +1,381 @@
 +/*
-+ * fireface-transaction.c - a part of driver for RME Fireface series
++ * fireface-pcm.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2016 Takashi Sakamoto
 + *
@@ -80,375 +68,401 @@ index 0000000..8365cb4
 +
 +#include "fireface.h"
 +
-+static void finish_transmit_midi_msg(struct snd_ff *ff, unsigned int port,
-+				     int rcode)
++static inline unsigned int get_multiplier_mode_with_index(unsigned int index)
 +{
-+	struct snd_rawmidi_substream *substream =
-+				ACCESS_ONCE(ff->rx_midi_substreams[port]);
++	return ((int)index - 1) / 2;
++}
 +
-+	if (rcode_is_permanent_error(rcode)) {
-+		ff->rx_midi_error[port] = true;
-+		return;
++static int hw_rule_rate(struct snd_pcm_hw_params *params,
++			struct snd_pcm_hw_rule *rule)
++{
++	const unsigned int *pcm_channels = rule->private;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
++
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(c, pcm_channels[mode]))
++			continue;
++
++		t.min = min(t.min, amdtp_rate_table[i]);
++		t.max = max(t.max, amdtp_rate_table[i]);
 +	}
 +
-+	if (rcode != RCODE_COMPLETE) {
-+		/* Transfer the message again, immediately. */
-+		ff->next_ktime[port] = ktime_set(0, 0);
-+		schedule_work(&ff->rx_midi_work[port]);
-+		return;
++	return snd_interval_refine(r, &t);
++}
++
++static int hw_rule_channels(struct snd_pcm_hw_params *params,
++			    struct snd_pcm_hw_rule *rule)
++{
++	const unsigned int *pcm_channels = rule->private;
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
++
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(r, amdtp_rate_table[i]))
++			continue;
++
++		t.min = min(t.min, pcm_channels[mode]);
++		t.max = max(t.max, pcm_channels[mode]);
 +	}
 +
-+	snd_rawmidi_transmit_ack(substream, ff->rx_bytes[port]);
-+	ff->rx_bytes[port] = 0;
-+
-+	if (!snd_rawmidi_transmit_empty(substream))
-+		schedule_work(&ff->rx_midi_work[port]);
++	return snd_interval_refine(c, &t);
 +}
 +
-+static void finish_transmit_midi0_msg(struct fw_card *card, int rcode,
-+				      void *data, size_t length,
-+				      void *callback_data)
++static void limit_channels_and_rates(struct snd_pcm_hardware *hw,
++				     const unsigned int *pcm_channels)
 +{
-+	struct snd_ff *ff =
-+		container_of(callback_data, struct snd_ff, transactions[0]);
-+	finish_transmit_midi_msg(ff, 0, rcode);
-+}
-+
-+static void finish_transmit_midi1_msg(struct fw_card *card, int rcode,
-+				      void *data, size_t length,
-+				      void *callback_data)
-+{
-+	struct snd_ff *ff =
-+		container_of(callback_data, struct snd_ff, transactions[1]);
-+	finish_transmit_midi_msg(ff, 1, rcode);
-+}
-+
-+static inline void fill_midi_buf(struct snd_ff *ff, unsigned int port,
-+				 unsigned int index, u8 byte)
-+{
-+	ff->msg_buf[port][index] = cpu_to_le32(byte);
-+}
-+
-+static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
-+{
-+	struct snd_rawmidi_substream *substream =
-+			ACCESS_ONCE(ff->rx_midi_substreams[port]);
-+	u8 *buf = (u8 *)ff->msg_buf[port];
-+	int i, len;
-+
-+	struct fw_device *fw_dev = fw_parent_device(ff->unit);
-+	unsigned long long addr;
-+	int generation;
-+	fw_transaction_callback_t callback;
-+
-+	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
-+		return;
-+
-+	if (ff->rx_bytes[port] > 0 || ff->rx_midi_error[port])
-+		return;
-+
-+	/* Do it in next chance. */
-+	if (ktime_after(ff->next_ktime[port], ktime_get())) {
-+		schedule_work(&ff->rx_midi_work[port]);
-+		return;
-+	}
-+
-+	len = snd_rawmidi_transmit_peek(substream, buf,
-+					SND_FF_MAXIMIM_MIDI_QUADS);
-+	if (len <= 0)
-+		return;
-+
-+	for (i = len - 1; i >= 0; i--)
-+		fill_midi_buf(ff, port, i, buf[i]);
-+
-+	if (port == 0) {
-+		addr = SND_FF_ADDR_MIDI_RX_PORT_0;
-+		callback = finish_transmit_midi0_msg;
-+	} else {
-+		addr = SND_FF_ADDR_MIDI_RX_PORT_1;
-+		callback = finish_transmit_midi1_msg;
-+	}
-+
-+	/* Set interval to next transaction. */
-+	ff->next_ktime[port] = ktime_add_ns(ktime_get(),
-+					    len * 8 * NSEC_PER_SEC / 31250);
-+	ff->rx_bytes[port] = len;
-+
-+	/*
-+	 * In Linux FireWire core, when generation is updated with memory
-+	 * barrier, node id has already been updated. In this module, After
-+	 * this smp_rmb(), load/store instructions to memory are completed.
-+	 * Thus, both of generation and node id are available with recent
-+	 * values. This is a light-serialization solution to handle bus reset
-+	 * events on IEEE 1394 bus.
-+	 */
-+	generation = fw_dev->generation;
-+	smp_rmb();
-+	fw_send_request(fw_dev->card, &ff->transactions[port],
-+			TCODE_WRITE_BLOCK_REQUEST,
-+			fw_dev->node_id, generation, fw_dev->max_speed,
-+			addr, &ff->msg_buf[port], len * 4,
-+			callback, &ff->transactions[port]);
-+}
-+
-+static void transmit_midi0_msg(struct work_struct *work)
-+{
-+	struct snd_ff *ff = container_of(work, struct snd_ff, rx_midi_work[0]);
-+
-+	transmit_midi_msg(ff, 0);
-+}
-+
-+static void transmit_midi1_msg(struct work_struct *work)
-+{
-+	struct snd_ff *ff = container_of(work, struct snd_ff, rx_midi_work[1]);
-+
-+	transmit_midi_msg(ff, 1);
-+}
-+
-+static void handle_midi_msg(struct fw_card *card, struct fw_request *request,
-+			    int tcode, int destination, int source,
-+			    int generation, unsigned long long offset,
-+			    void *data, size_t length, void *callback_data)
-+{
-+	struct snd_ff *ff = callback_data;
-+	__le32 *buf = data;
-+	u32 quad;
-+	u8 byte;
-+	unsigned int index;
-+	struct snd_rawmidi_substream *substream;
++	unsigned int mode;
++	unsigned int rate, channels;
 +	int i;
 +
-+	fw_send_response(card, request, RCODE_COMPLETE);
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
++	hw->rate_min = UINT_MAX;
++	hw->rate_max = 0;
 +
-+	for (i = 0; i < length / 4; i++) {
-+		quad = le32_to_cpu(buf[i]);
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
 +
-+		/* Message in first port. */
-+		/*
-+		 * This value may represent the index of this unit when the
-+		 * same units are on the same IEEE 1394 bus. This driver don't
-+		 * use it.
-+		 */
-+		index = (quad >> 8) & 0xff;
-+		if (index > 0) {
-+			substream = ACCESS_ONCE(ff->tx_midi_substreams[0]);
-+			if (substream != NULL) {
-+				byte = quad & 0xff;
-+				snd_rawmidi_receive(substream, &byte, 1);
-+			}
-+		}
++		channels = pcm_channels[mode];
++		if (pcm_channels[mode] == 0)
++			continue;
++		hw->channels_min = min(hw->channels_min, channels);
++		hw->channels_max = max(hw->channels_max, channels);
 +
-+		/* Message in second port. */
-+		index = (quad >> 24) & 0xff;
-+		if (index > 0) {
-+			substream = ACCESS_ONCE(ff->tx_midi_substreams[1]);
-+			if (substream != NULL) {
-+				byte = (quad >> 16) & 0xff;
-+				snd_rawmidi_receive(substream, &byte, 1);
-+			}
-+		}
++		rate = amdtp_rate_table[i];
++		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++		hw->rate_min = min(hw->rate_min, rate);
++		hw->rate_max = max(hw->rate_max, rate);
 +	}
 +}
 +
-+static int allocate_own_address(struct snd_ff *ff, int i)
++static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
 +{
-+	struct fw_address_region midi_msg_region;
++	hw->periods_min = 2;		/* SNDRV_PCM_INFO_BATCH */
++	hw->periods_max = UINT_MAX;
++
++	hw->period_bytes_min = 4 * hw->channels_max;	/* bytes for a frame */
++
++	/* Just to prevent from allocating much pages. */
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
++}
++
++static int pcm_init_hw_params(struct snd_ff *ff,
++			      struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct amdtp_stream *s;
++	const unsigned int *pcm_channels;
 +	int err;
 +
-+	ff->async_handler.length = SND_FF_MAXIMIM_MIDI_QUADS * 4;
-+	ff->async_handler.address_callback = handle_midi_msg;
-+	ff->async_handler.callback_data = ff;
++	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
++			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			   SNDRV_PCM_INFO_INTERLEAVED |
++			   SNDRV_PCM_INFO_JOINT_DUPLEX |
++			   SNDRV_PCM_INFO_MMAP |
++			   SNDRV_PCM_INFO_MMAP_VALID;
 +
-+	midi_msg_region.start = 0x000100000000 * i;
-+	midi_msg_region.end = midi_msg_region.start + ff->async_handler.length;
-+
-+	err = fw_core_add_address_handler(&ff->async_handler, &midi_msg_region);
-+	if (err >= 0) {
-+		/* Controllers register this region of address. */
-+		if (ff->async_handler.offset & 0x0000ffffffff) {
-+			fw_core_remove_address_handler(&ff->async_handler);
-+			err = -EAGAIN;
-+		}
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		s = &ff->tx_stream;
++		pcm_channels = ff->spec->pcm_capture_channels;
++	} else {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32 |
++				      SNDRV_PCM_FMTBIT_S16;
++		s = &ff->rx_stream;
++		pcm_channels = ff->spec->pcm_playback_channels;
 +	}
++
++	/* limit rates */
++	limit_channels_and_rates(&runtime->hw, pcm_channels);
++	limit_period_and_buffer(&runtime->hw);
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  hw_rule_channels, (void *)pcm_channels,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  hw_rule_rate, (void *)pcm_channels,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++
++	return amdtp_ff_add_pcm_hw_constraints(s, runtime);
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++	unsigned int rate;
++	enum snd_ff_clock_src src;
++	int err;
++
++	err = pcm_init_hw_params(ff, substream);
++	if (err < 0)
++		return err;
++
++	err = snd_ff_stream_get_clock(ff, &rate, &src);
++	if (src != SND_FF_CLOCK_SRC_INTERNAL ||
++	    amdtp_stream_pcm_running(&ff->rx_stream) ||
++	    amdtp_stream_pcm_running(&ff->tx_stream)) {
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
 +
 +	return err;
 +}
 +
-+int snd_ff_transaction_reregister(struct snd_ff *ff)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct fw_card *fw_card = fw_parent_device(ff->unit)->card;
-+	u32 addr;
-+	__le32 reg;
-+	int err;
-+
-+	/*
-+	 * Controllers are allowed to register its node ID and upper 2 byte of
-+	 * local address to listen asynchronous transactions. Rest of the local
-+	 * address is decided later. This is the reason we should pay attension
-+	 * to allocating the address.
-+	 */
-+	addr = (fw_card->node_id << 16) | (ff->async_handler.offset >> 32);
-+	reg = cpu_to_le32(addr);
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 SND_FF_ADDR_CONTROLLER_ADDR_HI,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * The 3rd-6th bits in MSB of this register are used to indicate fixed
-+	 * offset of address to transfer asynchronous transaction.
-+	 *  - 6th: 0x00000180
-+	 *  - 5th: 0x00000100
-+	 *  - 4th: 0x00000080
-+	 *  - 3rd: 0x00000000
-+	 *
-+	 * Here, we use 3rd bit because controllers are not allowed to register
-+	 * arbitrary address for this purpose.
-+	 *
-+	 * The 7th and 8th bits in MSB of this register are used to the other
-+	 * purpose.
-+	 *
-+	 * The 1st and 2nd bits in LSB of this register are used to cancel
-+	 * transferring asynchronous transactions. These two bits have the same
-+	 * effect.
-+	 *  - 1st/2nd: cancel transferring
-+	 *
-+	 * This transaction has a side effect to configure the other options.
-+	 * The LSM of this value means:
-+	 *  - 5th: control quadlet speed
-+	 *  - 4th: control double speed
-+	 *  - 3rd: control base frequency bit 1
-+	 *  - 2nd: control base frequency bit 0
-+	 *  - 1st: use internal clock source
-+	 */
-+	reg = cpu_to_le32(0x0400001f);
-+	return snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  SND_FF_ADDR_GENERAL_PARAMS,
-+				  &reg, sizeof(reg), 0);
++	return 0;
 +}
 +
-+int snd_ff_transaction_register(struct snd_ff *ff)
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
 +{
-+	int i, err;
++	struct snd_ff *ff = substream->private_data;
++	int err;
 +
-+	/*
-+	 * Allocate in Memory Space of IEC 13213, but 8 byte in LSB should be
-+	 * zero due to device specification.
-+	 */
-+	for (i = 0; i < 0xffff; i++) {
-+		err = allocate_own_address(ff, i);
-+		if (err != -EBUSY && err != -EAGAIN)
-+			break;
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&ff->mutex);
++		ff->substreams_counter++;
++		mutex_unlock(&ff->mutex);
 +	}
-+	if (err < 0)
-+		return err;
 +
-+	err = snd_ff_transaction_reregister(ff);
-+	if (err < 0)
-+		return err;
-+
-+	INIT_WORK(&ff->rx_midi_work[0], transmit_midi0_msg);
-+	INIT_WORK(&ff->rx_midi_work[1], transmit_midi1_msg);
++	amdtp_ff_set_pcm_format(&ff->tx_stream, params_format(hw_params));
 +
 +	return 0;
 +}
 +
-+void snd_ff_transaction_unregister(struct snd_ff *ff)
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
 +{
-+	__le32 reg;
++	struct snd_ff *ff = substream->private_data;
++	int err;
 +
-+	/* Stop transferring and listening. */
-+	reg = cpu_to_le32(0x03000000);
-+	snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			  SND_FF_ADDR_GENERAL_PARAMS,
-+			  &reg, sizeof(reg), 0);
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
 +
-+	reg = cpu_to_le32(0x00000000);
-+	snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   SND_FF_ADDR_CONTROLLER_ADDR_HI,
-+			   &reg, sizeof(reg), 0);
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&ff->mutex);
++		ff->substreams_counter++;
++		mutex_unlock(&ff->mutex);
++	}
 +
-+	fw_core_remove_address_handler(&ff->async_handler);
++	amdtp_ff_set_pcm_format(&ff->rx_stream, params_format(hw_params));
++
++	return 0;
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	mutex_lock(&ff->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		ff->substreams_counter--;
++
++	snd_ff_stream_stop_duplex(ff);
++
++	mutex_unlock(&ff->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	mutex_lock(&ff->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		ff->substreams_counter--;
++
++	snd_ff_stream_stop_duplex(ff);
++
++	mutex_unlock(&ff->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&ff->mutex);
++
++	err = snd_ff_stream_start_duplex(ff, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&ff->tx_stream);
++
++	mutex_unlock(&ff->mutex);
++
++	return err;
++}
++
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&ff->mutex);
++
++	err = snd_ff_stream_start_duplex(ff, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&ff->rx_stream);
++
++	mutex_unlock(&ff->mutex);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&ff->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&ff->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&ff->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&ff->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_ff *ff = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&ff->tx_stream);
++}
++
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_ff *ff = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&ff->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_ff_create_pcm_devices(struct snd_ff *ff)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(ff->card, ff->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	pcm->private_data = ff;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", ff->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++
++	return 0;
 +}
 diff --git a/sound/firewire/fireface/fireface.c b/sound/firewire/fireface/fireface.c
-index f96913b..b3ee869 100644
+index 52efbd0..59f0441 100644
 --- a/sound/firewire/fireface/fireface.c
 +++ b/sound/firewire/fireface/fireface.c
-@@ -40,6 +40,8 @@ static void ff_card_free(struct snd_card *card)
- 	/* The workqueue for registration uses the memory block. */
- 	cancel_work_sync(&ff->dwork.work);
- 
-+	snd_ff_transaction_unregister(ff);
-+
- 	fw_unit_put(ff->unit);
- 
- 	mutex_destroy(&ff->mutex);
-@@ -55,6 +57,10 @@ static void do_probe(struct work_struct *work)
- 	if (ff->card->shutdown || ff->probed)
+@@ -67,6 +67,10 @@ static void do_probe(struct work_struct *work)
+ 	if (err < 0)
  		goto end;
  
-+	err = snd_ff_transaction_register(ff);
++	err = snd_ff_create_pcm_devices(ff);
 +	if (err < 0)
 +		goto end;
 +
  	err = snd_card_register(ff->card);
  	if (err < 0)
  		goto end;
-@@ -118,6 +124,8 @@ static void snd_ff_update(struct fw_unit *unit)
- 				(get_jiffies_64() - fw_card->reset_jiffies);
- 		mod_delayed_work(ff->dwork.wq, &ff->dwork, delay);
- 	}
-+
-+	snd_ff_transaction_reregister(ff);
- }
- 
- static void snd_ff_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/fireface/fireface.h b/sound/firewire/fireface/fireface.h
-index 91e924c..6d132f9 100644
+index 991f9d4..63834e7 100644
 --- a/sound/firewire/fireface/fireface.h
 +++ b/sound/firewire/fireface/fireface.h
-@@ -31,6 +31,10 @@
- #include "../amdtp-stream.h"
- #include "../iso-resources.h"
+@@ -116,4 +116,6 @@ void snd_ff_proc_init(struct snd_ff *ff);
  
-+#define SND_FF_MAXIMIM_MIDI_QUADS	9
-+#define SND_FF_IN_MIDI_PORTS		2
-+#define SND_FF_OUT_MIDI_PORTS		2
-+
- struct snd_ff_spec {
- 	const char *const name;
- };
-@@ -44,5 +48,31 @@ struct snd_ff {
- 	struct delayed_work dwork;
+ int snd_ff_create_midi_devices(struct snd_ff *ff);
  
- 	const struct snd_ff_spec *spec;
-+
-+	/* To handle MIDI tx. */
-+	struct snd_rawmidi_substream *tx_midi_substreams[SND_FF_IN_MIDI_PORTS];
-+	struct fw_address_handler async_handler;
-+
-+	/* TO handle MIDI rx. */
-+	struct snd_rawmidi_substream *rx_midi_substreams[SND_FF_OUT_MIDI_PORTS];
-+	u8 running_status[SND_FF_OUT_MIDI_PORTS];
-+	__le32 msg_buf[SND_FF_OUT_MIDI_PORTS][SND_FF_MAXIMIM_MIDI_QUADS];
-+	struct work_struct rx_midi_work[SND_FF_OUT_MIDI_PORTS];
-+	struct fw_transaction transactions[SND_FF_OUT_MIDI_PORTS];
-+	ktime_t next_ktime[SND_FF_OUT_MIDI_PORTS];
-+	bool rx_midi_error[SND_FF_OUT_MIDI_PORTS];
-+	unsigned int rx_bytes[SND_FF_OUT_MIDI_PORTS];
- };
-+
-+#define SND_FF_ADDR_CONTROLLER_ADDR_HI	0x0000801003f4
-+#define SND_FF_ADDR_GENERAL_PARAMS	0x00008010051c
-+#define SND_FF_ADDR_MIDI_RX_PORT_0	0x000080180000
-+#define SND_FF_ADDR_MIDI_RX_PORT_1	0x000080190000
-+
-+#define SND_FF_ADDR_MIDI_TX		0x000100000000
-+
-+int snd_ff_transaction_register(struct snd_ff *ff);
-+int snd_ff_transaction_reregister(struct snd_ff *ff);
-+void snd_ff_transaction_unregister(struct snd_ff *ff);
++int snd_ff_create_pcm_devices(struct snd_ff *ff);
 +
  #endif
 -- 
