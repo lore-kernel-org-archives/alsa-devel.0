@@ -1,54 +1,48 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 0/4] add NULL test
-Date: Sun, 20 Dec 2015 12:15:49 +0100
-Message-ID: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-s390@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH 4/4] ASoC: Intel: add NULL test
+Date: Sun, 20 Dec 2015 12:15:53 +0100
+Message-ID: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
+References: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add NULL tests on various calls to kzalloc and devm_kzalloc.
+Add NULL test on call to devm_kzalloc.
 
-The semantic match that finds these problems is as follows:
+The semantic match that finds this problem is as follows:
 (http://coccinelle.lip6.fr/)
 
 // <smpl>
 @@
-expression x,y;
+expression x;
 identifier fld;
 @@
 
-(
-x = \(vmalloc\|kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|krealloc\|
-        kmemdup\|kstrdup\|
-	devm_kzalloc\|devm_kmalloc\|devm_kcalloc\|devm_kasprintf\|
-	kmalloc_array\)(...,<+... __GFP_NOFAIL ...+>,...);
-|
-* x = \(vmalloc\|kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|krealloc\|
-        kmemdup\|kstrdup\|
-	devm_kzalloc\|devm_kmalloc\|devm_kcalloc\|devm_kasprintf\|
-	kmalloc_array\)(...);
-)
-  ... when != (x) == NULL
-      when != (x) != NULL
-      when != (x) == 0
-      when != (x) != 0
-      when != x = y
-(
+* x = devm_kzalloc(...);
+  ... when != x == NULL
   x->fld
-|
-  *x
-|
-  x[...]
-)
 // </smpl>
 
----
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
- drivers/s390/char/con3215.c                 |    2 ++
- drivers/s390/char/raw3270.c                 |    2 ++
- sound/soc/fsl/imx-pcm-dma.c                 |    2 ++
+---
  sound/soc/intel/baytrail/sst-baytrail-pcm.c |    2 ++
- sound/soc/omap/omap-hdmi-audio.c            |    2 ++
- 5 files changed, 10 insertions(+)
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 79547be..4765ad4 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -377,6 +377,8 @@ static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
+ 
+ 	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
+ 				 GFP_KERNEL);
++	if (!priv_data)
++		return -ENOMEM;
+ 	priv_data->byt = plat_data->dsp;
+ 	snd_soc_platform_set_drvdata(platform, priv_data);
+ 
+
