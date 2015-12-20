@@ -1,54 +1,54 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: ssm2518: Use a signed return type for
- ssm2518_lookup_mcs()
-Date: Sun, 20 Dec 2015 10:40:24 +0100
-Message-ID: <56767788.4020709@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id BE0F92606C9
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 10:40:40 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/4] add NULL test
+Date: Sun, 20 Dec 2015 12:15:49 +0100
+Message-ID: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-s390@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 20 Dec 2015 10:34:25 +0100
+Add NULL tests on various calls to kzalloc and devm_kzalloc.
 
-The return type "unsigned int" was used by the ssm2518_lookup_mcs()
-function even though it will eventually return a negative error code.
-Improve this implementation detail by deletion of the type modifier then.
+The semantic match that finds these problems is as follows:
+(http://coccinelle.lip6.fr/)
 
-This issue was detected by using the Coccinelle software.
+// <smpl>
+@@
+expression x,y;
+identifier fld;
+@@
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+(
+x = \(vmalloc\|kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|krealloc\|
+        kmemdup\|kstrdup\|
+	devm_kzalloc\|devm_kmalloc\|devm_kcalloc\|devm_kasprintf\|
+	kmalloc_array\)(...,<+... __GFP_NOFAIL ...+>,...);
+|
+* x = \(vmalloc\|kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|krealloc\|
+        kmemdup\|kstrdup\|
+	devm_kzalloc\|devm_kmalloc\|devm_kcalloc\|devm_kasprintf\|
+	kmalloc_array\)(...);
+)
+  ... when != (x) == NULL
+      when != (x) != NULL
+      when != (x) == 0
+      when != (x) != 0
+      when != x = y
+(
+  x->fld
+|
+  *x
+|
+  x[...]
+)
+// </smpl>
+
 ---
- sound/soc/codecs/ssm2518.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
-index 86b81a6..e2e0bfa 100644
---- a/sound/soc/codecs/ssm2518.c
-+++ b/sound/soc/codecs/ssm2518.c
-@@ -309,7 +309,7 @@ static const struct snd_pcm_hw_constraint_list ssm2518_constraints_12288000 = {
- 	.count = ARRAY_SIZE(ssm2518_rates_12288000),
- };
- 
--static unsigned int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
-+static int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
- 	unsigned int rate)
- {
- 	const unsigned int *sysclks = NULL;
--- 
-2.6.3
+ drivers/s390/char/con3215.c                 |    2 ++
+ drivers/s390/char/raw3270.c                 |    2 ++
+ sound/soc/fsl/imx-pcm-dma.c                 |    2 ++
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c |    2 ++
+ sound/soc/omap/omap-hdmi-audio.c            |    2 ++
+ 5 files changed, 10 insertions(+)
