@@ -1,13 +1,13 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 4/4] ASoC: Intel: add NULL test
-Date: Sun, 20 Dec 2015 12:15:53 +0100
-Message-ID: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 2/4] ASoC: omap-hdmi-audio: add NULL test
+Date: Sun, 20 Dec 2015 12:15:51 +0100
+Message-ID: <1450610153-7746-3-git-send-email-Julia.Lawall@lip6.fr>
 References: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: kernel-janitors@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Add NULL test on call to devm_kzalloc.
@@ -29,20 +29,19 @@ identifier fld;
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c |    2 ++
+ sound/soc/omap/omap-hdmi-audio.c |    2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 79547be..4765ad4 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -377,6 +377,8 @@ static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
- 
- 	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
- 				 GFP_KERNEL);
-+	if (!priv_data)
+diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
+index 584b237..f83cc2b 100644
+--- a/sound/soc/omap/omap-hdmi-audio.c
++++ b/sound/soc/omap/omap-hdmi-audio.c
+@@ -368,6 +368,8 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
+ 	card->owner = THIS_MODULE;
+ 	card->dai_link =
+ 		devm_kzalloc(dev, sizeof(*(card->dai_link)), GFP_KERNEL);
++	if (!card->dai_link)
 +		return -ENOMEM;
- 	priv_data->byt = plat_data->dsp;
- 	snd_soc_platform_set_drvdata(platform, priv_data);
- 
-
+ 	card->dai_link->name = card->name;
+ 	card->dai_link->stream_name = card->name;
+ 	card->dai_link->cpu_dai_name = dev_name(ad->dssdev);
