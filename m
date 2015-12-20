@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/11] fireface: add support for MIDI
-	functionality
-Date: Sun, 20 Dec 2015 21:28:37 +0900
-Message-ID: <1450614523-9367-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/11] firewire-lib: add no-header packet
+	processing
+Date: Sun, 20 Dec 2015 21:28:39 +0900
+Message-ID: <1450614523-9367-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 47D4C2606F4
+ by alsa0.perex.cz (Postfix) with ESMTP id 5479F260706
  for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:50 +0100 (CET)
 In-Reply-To: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,207 +25,207 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, fireface driver supports transaction functionality.
-This commit adds MIDI functionality for userspace.
+RME Fireface series doesn't apply IEC 61883-1/6. Its packet includes
+no CIP headers. 64,0 and 128,0 kHz are supported. The device doesn't
+transmit 8,000 packets per second. 0, 2, 3 are used as tag of received
+isochronous packets.
 
-Userspace applications can always disable this functionality by sending
-invalid values to 0x0000801003f4 and 0x00008010051c by write transactions.
+On the other hand, there's a common feature. The number of data blocks
+transferred in a second is the same as sampling transfer frequency.
+Current AMDTP stream layer already has a method to calculate it.
+
+This commit adds support for the transferring protocol. CIP_NO_HEADERS
+flag is newly added. When this flag is set:
+ * 0 and 1 are used as the tag.
+ * Skip header evaluation.
+ * Use another way to calculate the quadlets of isochronous packet payload.
+
+In ALSA userspace interface, 128.0 kHz is not supported. And the AMDTP
+stream layer doesn't support 64.0 kHz. These modes are dropped.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/Makefile        |   2 +-
- sound/firewire/fireface/fireface-midi.c | 131 ++++++++++++++++++++++++++++++++
- sound/firewire/fireface/fireface.c      |   5 ++
- sound/firewire/fireface/fireface.h      |   3 +
- 4 files changed, 140 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/fireface-midi.c
+ sound/firewire/amdtp-stream.c | 104 +++++++++++++++++++++++++++++++++++-------
+ sound/firewire/amdtp-stream.h |   2 +
+ 2 files changed, 89 insertions(+), 17 deletions(-)
 
-diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index aa52e41..2174b4b 100644
---- a/sound/firewire/fireface/Makefile
-+++ b/sound/firewire/fireface/Makefile
-@@ -1,2 +1,2 @@
--snd-fireface-objs := fireface.o fireface-transaction.o
-+snd-fireface-objs := fireface.o fireface-transaction.o fireface-midi.o
- obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/fireface-midi.c b/sound/firewire/fireface/fireface-midi.c
-new file mode 100644
-index 0000000..d324f4e7
---- /dev/null
-+++ b/sound/firewire/fireface/fireface-midi.c
-@@ -0,0 +1,131 @@
-+/*
-+ * fireface-midi.c - a part of driver for RME Fireface series
-+ *
-+ * Copyright (c) 2015-2016 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "fireface.h"
-+
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
-+{
-+	/* Do nothing. */
-+	return 0;
-+}
-+
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+
-+	/* Initialize internal status. */
-+	ff->running_status[substream->number] = 0;
-+	ff->rx_midi_error[substream->number] = false;
-+
-+	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = substream;
-+
-+	return 0;
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	/* Do nothing. */
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+
-+	cancel_work_sync(&ff->rx_midi_work[substream->number]);
-+	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = NULL;
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substream,
-+				 int up)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ff->lock, flags);
-+
-+	if (up)
-+		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) =
-+								substream;
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index ed29026..e2c13f0 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -225,11 +225,15 @@ EXPORT_SYMBOL(amdtp_stream_set_parameters);
+ unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
+ {
+ 	unsigned int multiplier = 1;
++	unsigned int header_size = 0;
+ 
+ 	if (s->flags & CIP_JUMBO_PAYLOAD)
+ 		multiplier = 5;
++	if (!(s->flags & CIP_NO_HEADERS))
++		header_size = 8;
+ 
+-	return 8 + s->syt_interval * s->data_block_quadlets * 4 * multiplier;
++	return header_size +
++		s->syt_interval * s->data_block_quadlets * 4 * multiplier;
+ }
+ EXPORT_SYMBOL(amdtp_stream_get_max_payload);
+ 
+@@ -374,7 +378,10 @@ static int queue_packet(struct amdtp_stream *s,
+ 		goto end;
+ 
+ 	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
+-	p.tag = TAG_CIP;
++	if (s->flags & CIP_NO_HEADERS)
++		p.tag = 0;
 +	else
-+		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) = NULL;
++		p.tag = TAG_CIP;
+ 	p.header_length = header_length;
+ 	p.payload_length = (!skip) ? payload_length : 0;
+ 	p.skip = skip;
+@@ -404,6 +411,52 @@ static inline int queue_in_packet(struct amdtp_stream *s)
+ 			    amdtp_stream_get_max_payload(s), false);
+ }
+ 
++static int handle_out_packet_without_header(struct amdtp_stream *s,
++					    unsigned int data_blocks)
++{
++	__be32 *buffer;
++	unsigned int payload_length;
++	unsigned int pcm_frames;
++	struct snd_pcm_substream *pcm;
 +
-+	spin_unlock_irqrestore(&ff->lock, flags);
++	buffer = s->buffer.packets[s->packet_index].buffer;
++	pcm_frames = s->process_data_blocks(s, buffer, data_blocks, 0);
++
++	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++
++	payload_length = data_blocks * 4 * s->data_block_quadlets;
++	if (queue_out_packet(s, payload_length, false) < 0)
++		return -EIO;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm && pcm_frames > 0)
++		update_pcm_pointers(s, pcm, pcm_frames);
++
++	/* No need to return the number of handled data blocks. */
++	return 0;
 +}
 +
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substream,
-+				  int up)
++static int handle_in_packet_without_header(struct amdtp_stream *s,
++				unsigned int payload_quadlets, __be32 *buffer,
++				unsigned int *data_blocks)
 +{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+	unsigned long flags;
++	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
 +
-+	spin_lock_irqsave(&ff->lock, flags);
++	*data_blocks = payload_quadlets / s->data_block_quadlets;
 +
-+	if (up || !ff->rx_midi_error[substream->number])
-+		schedule_work(&ff->rx_midi_work[substream->number]);
++	pcm_frames = s->process_data_blocks(s, buffer, *data_blocks, 0);
 +
-+	spin_unlock_irqrestore(&ff->lock, flags);
-+}
++	if (queue_in_packet(s) < 0)
++		return -EIO;
 +
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_rawmidi_str *stream,
-+				     const char *const name)
-+{
-+	struct snd_rawmidi_substream *substream;
-+
-+	list_for_each_entry(substream, &stream->substreams, list) {
-+		snprintf(substream->name, sizeof(substream->name),
-+			 "%s MIDI %d", name, substream->number + 1);
-+	}
-+}
-+
-+int snd_ff_create_midi_devices(struct snd_ff *ff)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *stream;
-+	int err;
-+
-+	err = snd_rawmidi_new(ff->card, ff->card->driver, 0,
-+			      SND_FF_OUT_MIDI_PORTS, SND_FF_IN_MIDI_PORTS,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", ff->card->shortname);
-+	rmidi->private_data = ff;
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+			    &midi_capture_ops);
-+	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+	set_midi_substream_names(stream, ff->card->shortname);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+			    &midi_playback_ops);
-+	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+	set_midi_substream_names(stream, ff->card->shortname);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm && pcm_frames > 0)
++		update_pcm_pointers(s, pcm, pcm_frames);
 +
 +	return 0;
 +}
-diff --git a/sound/firewire/fireface/fireface.c b/sound/firewire/fireface/fireface.c
-index b3ee869..0883cda 100644
---- a/sound/firewire/fireface/fireface.c
-+++ b/sound/firewire/fireface/fireface.c
-@@ -61,6 +61,10 @@ static void do_probe(struct work_struct *work)
- 	if (err < 0)
- 		goto end;
- 
-+	err = snd_ff_create_midi_devices(ff);
-+	if (err < 0)
-+		goto end;
 +
- 	err = snd_card_register(ff->card);
- 	if (err < 0)
- 		goto end;
-@@ -98,6 +102,7 @@ static int snd_ff_probe(struct fw_unit *unit,
- 	ff->unit = fw_unit_get(unit);
+ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
+ 			     unsigned int syt)
+ {
+@@ -566,10 +619,19 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		syt = calculate_syt(s, ++cycle);
+ 		data_blocks = calculate_data_blocks(s, syt);
  
- 	mutex_init(&ff->mutex);
-+	spin_lock_init(&ff->lock);
- 	dev_set_drvdata(&unit->device, ff);
+-		if (handle_out_packet(s, data_blocks, syt) < 0) {
+-			s->packet_index = -1;
+-			amdtp_stream_pcm_abort(s);
+-			return;
++		if (s->flags & CIP_NO_HEADERS) {
++			if (handle_out_packet_without_header(s,
++							data_blocks) < 0) {
++				s->packet_index = -1;
++				amdtp_stream_pcm_abort(s);
++				return;
++			}
++		} else {
++			if (handle_out_packet(s, data_blocks, syt) < 0) {
++				s->packet_index = -1;
++				amdtp_stream_pcm_abort(s);
++				return;
++			}
+ 		}
+ 	}
  
- 	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
-diff --git a/sound/firewire/fireface/fireface.h b/sound/firewire/fireface/fireface.h
-index 6d132f9..33d94b8 100644
---- a/sound/firewire/fireface/fireface.h
-+++ b/sound/firewire/fireface/fireface.h
-@@ -43,6 +43,7 @@ struct snd_ff {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
- 	struct mutex mutex;
-+	spinlock_t lock;
+@@ -609,20 +671,28 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			break;
+ 		}
  
- 	bool probed;
- 	struct delayed_work dwork;
-@@ -75,4 +76,6 @@ int snd_ff_transaction_register(struct snd_ff *ff);
- int snd_ff_transaction_reregister(struct snd_ff *ff);
- void snd_ff_transaction_unregister(struct snd_ff *ff);
- 
-+int snd_ff_create_midi_devices(struct snd_ff *ff);
+-		syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
+-		if (handle_in_packet(s, payload_quadlets, buffer,
++		if (s->flags & CIP_NO_HEADERS) {
++			if (handle_in_packet_without_header(s, payload_quadlets,
++						buffer, &data_blocks) < 0) {
++				s->packet_index = -1;
++				break;
++			}
++		} else {
++			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
++			if (handle_in_packet(s, payload_quadlets, buffer,
+ 						&data_blocks, syt) < 0) {
+-			s->packet_index = -1;
+-			break;
+-		}
+-
+-		/* Process sync slave stream */
+-		if (s->sync_slave && s->sync_slave->callbacked) {
+-			if (handle_out_packet(s->sync_slave,
+-					      data_blocks, syt) < 0) {
+ 				s->packet_index = -1;
+ 				break;
+ 			}
 +
- #endif
++			/* Process sync slave stream */
++			if (s->sync_slave && s->sync_slave->callbacked) {
++				if (handle_out_packet(s->sync_slave,
++						      data_blocks, syt) < 0) {
++					s->packet_index = -1;
++					break;
++				}
++			}
+ 		}
+ 	}
+ 
+@@ -762,7 +832,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 
+ 	/* NOTE: TAG1 matches CIP. This just affects in stream. */
+ 	tag = FW_ISO_CONTEXT_MATCH_TAG1;
+-	if (s->flags & CIP_EMPTY_WITH_TAG0)
++	if ((s->flags & CIP_EMPTY_WITH_TAG0) || (s->flags & CIP_NO_HEADERS))
+ 		tag |= FW_ISO_CONTEXT_MATCH_TAG0;
+ 
+ 	s->callbacked = false;
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 8775704..5a3a613 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -33,6 +33,7 @@
+  * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
+  *	packet is larger than IEC 61883-6 defines. Current implementation
+  *	allows 5 times as large as IEC 61883-6 defines.
++ * @CIP_NO_HEADERS: a lack of headers in packets
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -45,6 +46,7 @@ enum cip_flags {
+ 	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
+ 	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
+ 	CIP_JUMBO_PAYLOAD	= 0x100,
++	CIP_NO_HEADERS		= 0x200,
+ };
+ 
+ /**
 -- 
 2.5.0
