@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/11] fireface: add model specific structure
-Date: Sun, 20 Dec 2015 21:28:35 +0900
-Message-ID: <1450614523-9367-4-git-send-email-o-takashi@sakamocchi.jp>
-References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC v2][PATCH 00/11] ALSA: fireface: new driver for
+	RME Fireface series
+Date: Sun, 20 Dec 2015 21:28:32 +0900
+Message-ID: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 8735F2606D1
+ by alsa0.perex.cz (Postfix) with ESMTP id 887822606D2
  for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 13:28:48 +0100 (CET)
-In-Reply-To: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,84 +23,103 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-RME Fireface series has several models and their specifications are
-different. Currently, we find no way to retrieve the specification
-from actual devices.
+Hi,
 
-This commit adds a structure to describe model specific data.
+This patchset is to update my previous one with mostly full features as an
+driver in ALSA firewire stack:
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireface/fireface.c | 13 +++++++++----
- sound/firewire/fireface/fireface.h |  6 ++++++
- 2 files changed, 15 insertions(+), 4 deletions(-)
+[alsa-devel] [RFC][PATCH 0/3] ALSA: fireface: new driver for RME Fireface series (MIDI only)
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/101576.html
 
-diff --git a/sound/firewire/fireface/fireface.c b/sound/firewire/fireface/fireface.c
-index cf10e97..f96913b 100644
---- a/sound/firewire/fireface/fireface.c
-+++ b/sound/firewire/fireface/fireface.c
-@@ -16,16 +16,19 @@ MODULE_DESCRIPTION("RME Fireface series Driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
- MODULE_LICENSE("GPL v2");
- 
-+struct snd_ff_spec spec_ff400 = {
-+	.name = "Fireface400",
-+};
-+
- static void name_card(struct snd_ff *ff)
- {
- 	struct fw_device *fw_dev = fw_parent_device(ff->unit);
--	const char *const model = "Fireface 400";
- 
- 	strcpy(ff->card->driver, "Fireface");
--	strcpy(ff->card->shortname, model);
--	strcpy(ff->card->mixername, model);
-+	strcpy(ff->card->shortname, ff->spec->name);
-+	strcpy(ff->card->mixername, ff->spec->name);
- 	snprintf(ff->card->longname, sizeof(ff->card->longname),
--		 "RME %s, GUID %08x%08x at %s, S%d", model,
-+		 "RME %s, GUID %08x%08x at %s, S%d", ff->spec->name,
- 		 fw_dev->config_rom[3], fw_dev->config_rom[4],
- 		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
- }
-@@ -91,6 +94,7 @@ static int snd_ff_probe(struct fw_unit *unit,
- 	mutex_init(&ff->mutex);
- 	dev_set_drvdata(&unit->device, ff);
- 
-+	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
- 	name_card(ff);
- 
- 	/* Register this sound card later. */
-@@ -140,6 +144,7 @@ static const struct ieee1394_device_id snd_ff_id_table[] = {
- 		.specifier_id	= 0x000a35,
- 		.version	= 0x000002,
- 		.model_id	= 0x101800,
-+		.driver_data	= (kernel_ulong_t)&spec_ff400,
- 	},
- 	{}
- };
-diff --git a/sound/firewire/fireface/fireface.h b/sound/firewire/fireface/fireface.h
-index 74877ef..91e924c 100644
---- a/sound/firewire/fireface/fireface.h
-+++ b/sound/firewire/fireface/fireface.h
-@@ -31,6 +31,10 @@
- #include "../amdtp-stream.h"
- #include "../iso-resources.h"
- 
-+struct snd_ff_spec {
-+	const char *const name;
-+};
-+
- struct snd_ff {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -38,5 +42,7 @@ struct snd_ff {
- 
- 	bool probed;
- 	struct delayed_work dwork;
-+
-+	const struct snd_ff_spec *spec;
- };
- #endif
+Changes from RFCv1:
+ * Support own quirk of packet streaming
+ * Add own data block processing layer
+ * Support PCM functionality
+ * Add proc node to help debugging
+ * Add hwdep interface
+
+I note that just powering on, the device is muted. Thus, the device generates no
+sound even if packet streaming is successful. You can de-mute it by write
+transaction. For example, by using 'firewire-request' command in
+linux-firewire-utils(https://github.com/cladisch/linux-firewire-utils):
+
+$ ./firewire-request /dev/fw1 write 0x0000801c0000 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000010000000100000001000000
+
+Currently, libffado gives no way to do it via its mixer interface. Instead, done
+in methods to start streaming. I think it better to move de-mute codes to mixer
+initialization.
+
+There's an issue of periodical hissing noise. I observed this with Fireface 400.
+Interval of the noise differs depending on the situation (10-20 minutes) and
+continues around 20 seconds. The cause is not clear but I've experienced similar
+issue with TASCAM FireOne. A common point between these two models is
+non-blocking transmission. I guess that the cause may be on data block
+calculation in AMDTP packet streaming layer (calculate_data_blocks() function
+in sound/firewire/amdtp-stream.c). Further investigation is required.
+
+In my previous RFC, I described that zero bits have no effect in write
+transactions to 0x00008010051c. But this is wrong. The transaction has
+side effect to set the other options. In this patchset, the state of clock
+is changed on the way to initialize transaction. This is a bit rude but
+unavoidable. Fortunately, it's software's responsibility to read from flash
+memory and set initial configuration, thus I think this change is approval
+because just powering on the state of device is against user's configuration.
+The loading and configuring are still userspace responsibility.
+
+MIDI functionality can be disabled when any userspace applications run with
+libffado, as I described. This is a bug of libffado due to node ID handling.
+In line 199 of libffado/src/rme/fireface_hw.cpp, node id is handled as
+uint16_t value. This is a fashion of libffado to represent Node ID by lower 6
+bits of actual Node ID of IEEE 1394 bus. In the other lines, actual Node Id is
+constructed with 0xffc0. Just using the raw value returned by
+ConfigRom::getNodeId() is invalid.
+
+
+For this work, I can borrow test device (Fireface 400) from Syntax Japan Inc.
+It's my fortune to have an opportunity to contact to the company. I'm graceful
+to Takeshi Mitsuhashi, Tahiro Hashizume and their kindness. Thank you.
+
+
+Takashi Sakamoto (11):
+  fireface: add skeleton for RME Fireface series
+  fireface: postpone sound card registration
+  fireface: add model specific structure
+  fireface: add transaction support
+  fireface: add support for MIDI functionality
+  fireface: add proc node to help debugging
+  firewire-lib: add no-header packet processing
+  fireface: add data processing layer
+  fireface: add stream management functionality
+  fireface: add PCM functionality
+  fireface: add hwdep interface
+
+ include/uapi/sound/asound.h                    |   3 +-
+ include/uapi/sound/firewire.h                  |   1 +
+ sound/firewire/Kconfig                         |   7 +
+ sound/firewire/Makefile                        |   1 +
+ sound/firewire/amdtp-stream.c                  | 104 +++++--
+ sound/firewire/amdtp-stream.h                  |   2 +
+ sound/firewire/fireface/Makefile               |   4 +
+ sound/firewire/fireface/amdtp-ff.c             | 221 ++++++++++++++
+ sound/firewire/fireface/fireface-hwdep.c       | 191 ++++++++++++
+ sound/firewire/fireface/fireface-midi.c        | 131 ++++++++
+ sound/firewire/fireface/fireface-pcm.c         | 390 ++++++++++++++++++++++++
+ sound/firewire/fireface/fireface-proc.c        | 237 +++++++++++++++
+ sound/firewire/fireface/fireface-stream.c      | 397 +++++++++++++++++++++++++
+ sound/firewire/fireface/fireface-transaction.c | 301 +++++++++++++++++++
+ sound/firewire/fireface/fireface.c             | 210 +++++++++++++
+ sound/firewire/fireface/fireface.h             | 131 ++++++++
+ 16 files changed, 2313 insertions(+), 18 deletions(-)
+ create mode 100644 sound/firewire/fireface/Makefile
+ create mode 100644 sound/firewire/fireface/amdtp-ff.c
+ create mode 100644 sound/firewire/fireface/fireface-hwdep.c
+ create mode 100644 sound/firewire/fireface/fireface-midi.c
+ create mode 100644 sound/firewire/fireface/fireface-pcm.c
+ create mode 100644 sound/firewire/fireface/fireface-proc.c
+ create mode 100644 sound/firewire/fireface/fireface-stream.c
+ create mode 100644 sound/firewire/fireface/fireface-transaction.c
+ create mode 100644 sound/firewire/fireface/fireface.c
+ create mode 100644 sound/firewire/fireface/fireface.h
+
 -- 
 2.5.0
