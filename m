@@ -1,57 +1,73 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: imx-pcm-dma: add NULL test
-Date: Sun, 20 Dec 2015 23:34:32 -0800
-Message-ID: <20151221073431.GD3524@Asurada-CZ80>
-References: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
- <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: use different route
+ map for AC'97 mode
+Date: Sun, 20 Dec 2015 23:41:23 -0800
+Message-ID: <20151221074122.GE3524@Asurada-CZ80>
+References: <567710D5.5040405@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F778260663
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 08:41:27 +0100 (CET)
+Received: by mail-pa0-f54.google.com with SMTP id jx14so67173332pad.2
+ for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 23:41:27 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Timur Tabi <timur@tabi.org>, kernel-janitors@vger.kernel.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <567710D5.5040405@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 20, 2015 at 12:15:50PM +0100, Julia Lawall wrote:
-> Add NULL test on call to devm_kzalloc.
+On Sun, Dec 20, 2015 at 09:34:29PM +0100, Maciej S. Szmigiero wrote:
+> fsl_ssi uses different stream names ("AC97 Playback" / "AC97 Capture")
+> in AC'97 mode so in this case fsl-asoc-card route map should
+> also be using them.
 > 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> expression x;
-> @@
-> 
-> * x = devm_kzalloc(...);
->   ... when != x == NULL
->   *x
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-Thank you
-
-> 
 > ---
->  sound/soc/fsl/imx-pcm-dma.c |    2 ++
->  1 file changed, 2 insertions(+)
+>  sound/soc/fsl/fsl-asoc-card.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-> index 1fc01ed..f3d3d1f 100644
-> --- a/sound/soc/fsl/imx-pcm-dma.c
-> +++ b/sound/soc/fsl/imx-pcm-dma.c
-> @@ -62,6 +62,8 @@ int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
+> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+> index c63d89da51f1..562b3bd22d9a 100644
+> --- a/sound/soc/fsl/fsl-asoc-card.c
+> +++ b/sound/soc/fsl/fsl-asoc-card.c
+> @@ -107,6 +107,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
+>  	{"CPU-Capture",  NULL, "Capture"},
+>  };
 >  
->  	config = devm_kzalloc(&pdev->dev,
->  			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
-> +	if (!config)
-> +		return -ENOMEM;
->  	*config = imx_dmaengine_pcm_config;
->  	if (size)
->  		config->prealloc_buffer_size = size;
+> +static const struct snd_soc_dapm_route audio_map_ac97[] = {
+> +	{"AC97 Playback",  NULL, "ASRC-Playback"},
+> +	{"Playback",  NULL, "AC97 Playback"},
+> +	{"ASRC-Capture",  NULL, "AC97 Capture"},
+> +	{"AC97 Capture",  NULL, "Capture"},
+> +};
+> +
+>  /* Add all possible widgets into here without being redundant */
+>  static const struct snd_soc_dapm_widget fsl_asoc_card_dapm_widgets[] = {
+>  	SND_SOC_DAPM_LINE("Line Out Jack", NULL),
+> @@ -579,7 +586,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+>  	priv->card.dev = &pdev->dev;
+>  	priv->card.name = priv->name;
+>  	priv->card.dai_link = priv->dai_link;
+> -	priv->card.dapm_routes = audio_map;
+> +	priv->card.dapm_routes = fsl_asoc_card_is_ac97(priv) ?
+> +				 audio_map_ac97 : audio_map;
+>  	priv->card.late_probe = fsl_asoc_card_late_probe;
+>  	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
+>  	priv->card.dapm_widgets = fsl_asoc_card_dapm_widgets;
 > 
