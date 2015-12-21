@@ -1,15 +1,17 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/5] ALSA: fm801: propagate TUNER_ONLY bit
-	when autodetected
-Date: Mon, 21 Dec 2015 19:09:52 +0200
-Message-ID: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/5] ALSA: fm801: no need to suspend absent
+	codec
+Date: Mon, 21 Dec 2015 19:09:54 +0200
+Message-ID: <1450717796-66115-3-git-send-email-andriy.shevchenko@linux.intel.com>
+References: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7084B265054
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 18:10:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E02CB265071
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 18:10:05 +0100 (CET)
+In-Reply-To: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ondrej Zary <linux@rainbow-software.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The commit d7ba858a7f7a (ALSA: fm801: implement TEA575x tuner autodetection)
-brings autodetection to the driver. However the autodetection algorithm misses
-the TUNER_ONLY bit if it is supplied by the user.
+In case of tuner only card there is no need to take care of the codec which is
+anyway absent.
 
-Thus, user gets weird messages and no card registered.
-
- snd_fm801 0000:0d:01.0: detected TEA575x radio type SF64-PCR
- snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
- snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
-...
- snd_fm801 0000:0d:01.0: AC'97 0 does not respond - RESET
- snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
- snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
- snd_fm801 0000:0d:01.0: AC'97 0 access is not valid [0x0], removing mixer.
- snd_fm801: probe of 0000:0d:01.0 failed with error -5
-
-Do a copy of TUNER_ONLY bit to be applied after autodetection is done.
-
-Fixes: d7ba858a7f7a (ALSA: fm801: implement TEA575x tuner autodetection)
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Ondrej Zary <linux@rainbow-software.org>
 ---
- sound/pci/fm801.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/fm801.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 4c9d804..6114d81 100644
+index 2761880..c7ba4f1 100644
 --- a/sound/pci/fm801.c
 +++ b/sound/pci/fm801.c
-@@ -1269,6 +1269,8 @@ static int snd_fm801_create(struct snd_card *card,
- 			return -ENODEV;
- 		}
- 	} else if ((tea575x_tuner & TUNER_TYPE_MASK) == 0) {
-+		unsigned int tuner_only = tea575x_tuner & TUNER_ONLY;
+@@ -1393,12 +1393,17 @@ static int snd_fm801_suspend(struct device *dev)
+ 	int i;
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+-	snd_pcm_suspend_all(chip->pcm);
+-	snd_ac97_suspend(chip->ac97);
+-	snd_ac97_suspend(chip->ac97_sec);
 +
- 		/* autodetect tuner connection */
- 		for (tea575x_tuner = 1; tea575x_tuner <= 3; tea575x_tuner++) {
- 			chip->tea575x_tuner = tea575x_tuner;
-@@ -1283,6 +1285,8 @@ static int snd_fm801_create(struct snd_card *card,
- 			dev_err(card->dev, "TEA575x radio not found\n");
- 			chip->tea575x_tuner = TUNER_DISABLED;
- 		}
++	if (chip->tea575x_tuner & TUNER_ONLY) {
++		/* FIXME: tea575x suspend */
++	} else {
++		snd_pcm_suspend_all(chip->pcm);
++		snd_ac97_suspend(chip->ac97);
++		snd_ac97_suspend(chip->ac97_sec);
++	}
 +
-+		chip->tea575x_tuner |= tuner_only;
+ 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
+ 		chip->saved_regs[i] = fm801_ioread16(chip, saved_regs[i]);
+-	/* FIXME: tea575x suspend */
+ 	return 0;
+ }
+ 
+@@ -1414,9 +1419,10 @@ static int snd_fm801_resume(struct device *dev)
+ 		reset_codec(chip);
+ 		snd_fm801_chip_multichannel_init(chip);
+ 		snd_fm801_chip_init(chip);
++		snd_ac97_resume(chip->ac97);
++		snd_ac97_resume(chip->ac97_sec);
  	}
- 	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
- 		strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
+-	snd_ac97_resume(chip->ac97);
+-	snd_ac97_resume(chip->ac97_sec);
++
+ 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
+ 		fm801_iowrite16(chip, saved_regs[i], chip->saved_regs[i]);
+ 
 -- 
 2.6.4
