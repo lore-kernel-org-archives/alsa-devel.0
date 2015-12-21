@@ -1,73 +1,87 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: use different route
- map for AC'97 mode
-Date: Sun, 20 Dec 2015 23:41:23 -0800
-Message-ID: <20151221074122.GE3524@Asurada-CZ80>
-References: <567710D5.5040405@maciej.szmigiero.name>
+From: Libin Yang <libin.yang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH V4 2/2] drm/i915: start adding
+ dp mst audio
+Date: Mon, 21 Dec 2015 16:31:03 +0800
+Message-ID: <5677B8C7.3090008@linux.intel.com>
+References: <1449036584-105393-1-git-send-email-libin.yang@linux.intel.com>
+ <1449036584-105393-2-git-send-email-libin.yang@linux.intel.com>
+ <56668E50.8050806@linux.intel.com>
+ <20151210090204.GD20822@phenom.ffwll.local>
+ <566A6839.3010304@linux.intel.com> <s5h6105l0yg.wl-tiwai@suse.de>
+ <s5hy4d1jdcu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F778260663
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 08:41:27 +0100 (CET)
-Received: by mail-pa0-f54.google.com with SMTP id jx14so67173332pad.2
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 23:41:27 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <567710D5.5040405@maciej.szmigiero.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hy4d1jdcu.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, Dave Airlie <airlied@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 20, 2015 at 09:34:29PM +0100, Maciej S. Szmigiero wrote:
-> fsl_ssi uses different stream names ("AC97 Playback" / "AC97 Capture")
-> in AC'97 mode so in this case fsl-asoc-card route map should
-> also be using them.
-> 
-> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-> ---
->  sound/soc/fsl/fsl-asoc-card.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> index c63d89da51f1..562b3bd22d9a 100644
-> --- a/sound/soc/fsl/fsl-asoc-card.c
-> +++ b/sound/soc/fsl/fsl-asoc-card.c
-> @@ -107,6 +107,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
->  	{"CPU-Capture",  NULL, "Capture"},
->  };
->  
-> +static const struct snd_soc_dapm_route audio_map_ac97[] = {
-> +	{"AC97 Playback",  NULL, "ASRC-Playback"},
-> +	{"Playback",  NULL, "AC97 Playback"},
-> +	{"ASRC-Capture",  NULL, "AC97 Capture"},
-> +	{"AC97 Capture",  NULL, "Capture"},
-> +};
-> +
->  /* Add all possible widgets into here without being redundant */
->  static const struct snd_soc_dapm_widget fsl_asoc_card_dapm_widgets[] = {
->  	SND_SOC_DAPM_LINE("Line Out Jack", NULL),
-> @@ -579,7 +586,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
->  	priv->card.dev = &pdev->dev;
->  	priv->card.name = priv->name;
->  	priv->card.dai_link = priv->dai_link;
-> -	priv->card.dapm_routes = audio_map;
-> +	priv->card.dapm_routes = fsl_asoc_card_is_ac97(priv) ?
-> +				 audio_map_ac97 : audio_map;
->  	priv->card.late_probe = fsl_asoc_card_late_probe;
->  	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
->  	priv->card.dapm_widgets = fsl_asoc_card_dapm_widgets;
-> 
+ClNvcnJ5LCBJIG1pc3NlZCB0aGUgZW1haWxzLgoKT24gMTIvMTEvMjAxNSAwOTo1OCBQTSwgVGFr
+YXNoaSBJd2FpIHdyb3RlOgo+IE9uIEZyaSwgMTEgRGVjIDIwMTUgMTE6NDM6NTEgKzAxMDAsCj4g
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+Pgo+PiBPbiBGcmksIDExIERlYyAyMDE1IDA3OjA3OjUzICsw
+MTAwLAo+PiBMaWJpbiBZYW5nIHdyb3RlOgo+Pj4KPj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
+YXVkaW8uYwo+Pj4+Pj4gaW5kZXggOWFhODNlNy4uNWFkMmU2NiAxMDA2NDQKPj4+Pj4+IC0tLSBh
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPj4+Pj4+ICsrKyBiL2RyaXZlcnMv
+Z3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPj4+Pj4+IEBAIC0yNjIsNyArMjYyLDggQEAgc3Rh
+dGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2Rpc2FibGUoc3RydWN0IGludGVsX2VuY29kZXIgKmVu
+Y29kZXIpCj4+Pj4+PiAgICAJdG1wIHw9IEFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKPj4+Pj4+
+ICAgIAl0bXAgJj0gfkFVRF9DT05GSUdfVVBQRVJfTl9NQVNLOwo+Pj4+Pj4gICAgCXRtcCAmPSB+
+QVVEX0NPTkZJR19MT1dFUl9OX01BU0s7Cj4+Pj4+PiAtCWlmIChpbnRlbF9waXBlX2hhc190eXBl
+KGludGVsX2NydGMsIElOVEVMX09VVFBVVF9ESVNQTEFZUE9SVCkpCj4+Pj4+PiArCWlmIChpbnRl
+bF9waXBlX2hhc190eXBlKGludGVsX2NydGMsIElOVEVMX09VVFBVVF9ESVNQTEFZUE9SVCkgfHwK
+Pj4+Pj4+ICsJICAgIGludGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0YywgSU5URUxfT1VUUFVU
+X0RQX01TVCkpCj4+Pj4+PiAgICAJCXRtcCB8PSBBVURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4+
+Cj4+IFRoZSBzYW1lIGNoZWNrIGlzIG1pc3NpbmcgaW4gaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZSgp
+Pwo+Pgo+Pj4+Pj4gICAgCUk5MTVfV1JJVEUoSFNXX0FVRF9DRkcocGlwZSksIHRtcCk7Cj4+Pj4+
+Pgo+Pj4+Pj4gQEAgLTQ3NCw3ICs0NzUsOCBAQCBzdGF0aWMgdm9pZCBpbGtfYXVkaW9fY29kZWNf
+ZW5hYmxlKHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IsCj4+Pj4+PiAgICAJdG1wICY9
+IH5BVURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4+Pj4+PiAgICAJdG1wICY9IH5BVURfQ09ORklH
+X05fUFJPR19FTkFCTEU7Cj4+Pj4+PiAgICAJdG1wICY9IH5BVURfQ09ORklHX1BJWEVMX0NMT0NL
+X0hETUlfTUFTSzsKPj4+Pj4+IC0JaWYgKGludGVsX3BpcGVfaGFzX3R5cGUoaW50ZWxfY3J0Yywg
+SU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKPj4+Pj4+ICsJaWYgKGludGVsX3BpcGVfaGFzX3R5
+cGUoaW50ZWxfY3J0YywgSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSB8fAo+Pj4+Pj4gKwkgICAg
+aW50ZWxfcGlwZV9oYXNfdHlwZShpbnRlbF9jcnRjLCBJTlRFTF9PVVRQVVRfRFBfTVNUKSkKPj4+
+Pj4+ICAgIAkJdG1wIHw9IEFVRF9DT05GSUdfTl9WQUxVRV9JTkRFWDsKPj4KPj4gLi4uIGFuZCBt
+aXNzaW5nIGZvciBpbGtfYXVkaW9fY29kZWNfZGlzYWJsZSgpPwoKQmFzZWQgb24gdGhlIGRpc2N1
+c3Npb24sIEkgdGhpbmsgeW91IGFuZCBKYW5pIGFyZSByaWdodC4gSXQgc2hvdWxkIGJlIAppbiBo
+c3dfYXVkaW9fY29kZWNfZW5hYmxlKCkgYW5kIG5vdCBpbiBpbGRfYXVkaW9fY29kZWNfZGlzYWJs
+ZSgpLgoKPj4KPj4KPj4+Pj4+ICAgIAllbHNlCj4+Pj4+PiAgICAJCXRtcCB8PSBhdWRpb19jb25m
+aWdfaGRtaV9waXhlbF9jbG9jayhhZGp1c3RlZF9tb2RlKTsKPj4+Pj4+IEBAIC01MTIsNyArNTE0
+LDggQEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGludGVsX2VuY29kZXIg
+KmludGVsX2VuY29kZXIpCj4+Pj4+Pgo+Pj4+Pj4gICAgCS8qIEVMRCBDb25uX1R5cGUgKi8KPj4+
+Pj4+ICAgIAljb25uZWN0b3ItPmVsZFs1XSAmPSB+KDMgPDwgMik7Cj4+Pj4+PiAtCWlmIChpbnRl
+bF9waXBlX2hhc190eXBlKGNydGMsIElOVEVMX09VVFBVVF9ESVNQTEFZUE9SVCkpCj4+Pj4+PiAr
+CWlmIChpbnRlbF9waXBlX2hhc190eXBlKGNydGMsIElOVEVMX09VVFBVVF9ESVNQTEFZUE9SVCkg
+fHwKPj4+Pj4+ICsJICAgIGludGVsX3BpcGVfaGFzX3R5cGUoY3J0YywgSU5URUxfT1VUUFVUX0RQ
+X01TVCkpCj4+Cj4+IElNTywgaXQncyBiZXR0ZXIgdG8gaGF2ZSBhIG1hY3JvIHRvIGNvdmVyIHRo
+aXMgdHdvLWxpbmUgY2hlY2sgaW5zdGVhZAo+PiBvZiBvcGVuLWNvZGluZyBhdCBlYWNoIHBsYWNl
+LiAgV2UnbGwgaGF2ZSA1IHBsYWNlcyBpbiB0aGUgZW5kLgoKT0ssIEkgd2lsbCB1c2UgYSBtYWNy
+by4KCj4KPiBBbHNvLCB0aGlzIHBhdGNoIHN0aWxsIGhhcyBhbiBpc3N1ZSBhYm91dCB0aGUgZW5j
+b2RlciB0eXBlLCBuYW1lbHksIGl0Cj4gcGFzc2VzIGludGVsX2VuY29kZXIgZnJvbSBNU1QsIHdo
+ZXJlIHlvdSBjYW4ndCBhcHBseQo+IGVuY190b19kaWdfcG9ydCgpLiAgV2UgbmVlZCBhbm90aGVy
+IGhlbHAgdG8gZ2V0IHRoZSBkaWdpdGFsIHBvcnQKPiBkZXBlbmRpbmcgb24gdGhlIGVuY29kZXIg
+dHlwZSwgZS5nLgo+Cj4gc3RhdGljIHN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgKgo+IGludGVs
+X2VuY29kZXJfdG9fZGlnX3BvcnQoc3RydWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29kZXIp
+Cj4gewo+IAlzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29kZXIgPSAmaW50ZWxfZW5jb2Rlci0+YmFz
+ZTsKPgo+IAlpZiAoaW50ZWxfZW5jb2Rlci0+dHlwZSA9PSBJTlRFTF9PVVRQVVRfRFBfTVNUKQo+
+IAkJcmV0dXJuIGVuY190b19tc3QoZW5jb2RlciktPnByaW1hcnk7Cj4gCXJldHVybiBlbmNfdG9f
+ZGlnX3BvcnQoZW5jb2Rlcik7Cj4gfQoKWWVzLCBJIHdpbGwgZml4IGl0IGluIHRoZSBuZXcgdmVy
+c2lvbiBwYXRjaC4KCkJlc3QgUmVnYXJkcywKTGliaW4KCj4KPgo+IFRha2FzaGkKPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
+aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
