@@ -1,306 +1,159 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line and Mic inputs
-Date: Mon, 21 Dec 2015 12:34:16 +0100
-Message-ID: <20151221123416.51aa938e@dayas>
-References: <20151221123148.1ab6480b@dayas>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC v2][PATCH 00/11] ALSA: fireface: new driver
+ for RME Fireface series
+Date: Mon, 21 Dec 2015 22:00:38 +0900
+Message-ID: <5677F7F6.1050901@sakamocchi.jp>
+References: <1450614523-9367-1-git-send-email-o-takashi@sakamocchi.jp>
+ <20151221041439.GC13668@marvin.atrad.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBPGH36ZQKGQEUGDYNZA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151221123148.1ab6480b@dayas>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id A78A226522E
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 14:00:43 +0100 (CET)
+In-Reply-To: <20151221041439.GC13668@marvin.atrad.com.au>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jonathan Woithe <jwoithe@just42.net>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This is the second part, actually adding FM, Line and Mic inputs.
+On Dec 21 2015 13:14, Jonathan Woithe wrote:
+> On Sun, Dec 20, 2015 at 09:28:32PM +0900, Takashi Sakamoto wrote:
+>> I note that just powering on, the device is muted.
+> 
+> Only with respect to the audio streams from the PC.  All other
+> hardware-based routing is set up as per the saved device configuration.
+> 
+>> You can de-mute it by write
+>> transaction. For example, by using 'firewire-request' command in
+>> linux-firewire-utils(https://github.com/cladisch/linux-firewire-utils):
+>>
+>> $ ./firewire-request /dev/fw1 write 0x0000801c0000 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000010000000100000001000000
+>>
+>> Currently, libffado gives no way to do it via its mixer interface. Instead, done
+>> in methods to start streaming. I think it better to move de-mute codes to mixer
+>> initialization.
+> 
+> The mutes controlled here apply only to the software audio streams.  I
+> suspect they are utilised to eliminate noise during streaming setup and when
+> the device is idle with respect to the computer.  When other systems mute
+> individual playback channels under user control they do not use these mutes
+> and instead do it in other ways.  The above mutes are only ever turned off
+> and on as part of streaming setup and teardown.  As a result, I think Linux
+> should do the same thing because this is the mode of operation used on other
+> systems and is therefore the "supported" approach.
+> 
+> In other words, I think we should do what all other systems do with these
+> devices and treat this mute register as a part of the streaming setup
+> procedure.
+> 
+> Note in passing that the above firewire-request will only enable output for
+> the first four audio streams.  Others (such as ADAT) will remain muted.  The
+> correct initialisation of the 28 quadlets at 0x0000801c0000 is to set every
+> quadlet to 1.
 
-Signed-off-by: Danny Milosavljevic <dannym+a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
----
- b/sound/soc/sunxi/sun4i-codec.c |  185 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 181 insertions(+), 4 deletions(-)
+Could I request your opinion about the fact that the device keeps unmute
+state once unmuted? If your insistent is reasonable, the device should
+get mute every time to start to receive packets.
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 6628e6e..f23d8a9 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -59,9 +59,20 @@
- #define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
- #define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
- #define SUN4I_CODEC_DAC_ACTL_MIXEN			(29)
-+#define SUN4I_CODEC_DAC_ACTL_LNG			(26)
-+#define SUN4I_CODEC_DAC_ACTL_FMG			(23)
-+#define SUN4I_CODEC_DAC_ACTL_MICG			(20)
-+#define SUN4I_CODEC_DAC_ACTL_LLNS			(19)
-+#define SUN4I_CODEC_DAC_ACTL_RLNS			(18)
-+#define SUN4I_CODEC_DAC_ACTL_LFMS			(17)
-+#define SUN4I_CODEC_DAC_ACTL_RFMS			(16)
- #define SUN4I_CODEC_DAC_ACTL_LDACLMIXS			(15)
- #define SUN4I_CODEC_DAC_ACTL_RDACRMIXS			(14)
- #define SUN4I_CODEC_DAC_ACTL_LDACRMIXS			(13)
-+#define SUN4I_CODEC_DAC_ACTL_MIC1LS			(12)
-+#define SUN4I_CODEC_DAC_ACTL_MIC1RS			(11)
-+#define SUN4I_CODEC_DAC_ACTL_MIC2LS			(10)
-+#define SUN4I_CODEC_DAC_ACTL_MIC2RS			(9)
- #define SUN4I_CODEC_DAC_ACTL_DACPAS			(8)
- #define SUN4I_CODEC_DAC_ACTL_MIXPAS			(7)
- #define SUN4I_CODEC_DAC_ACTL_PA_MUTE			(6)
-@@ -87,8 +98,11 @@
- #define SUN4I_CODEC_ADC_ACTL_PREG1EN			(29)
- #define SUN4I_CODEC_ADC_ACTL_PREG2EN			(28)
- #define SUN4I_CODEC_ADC_ACTL_VMICEN			(27)
--#define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
-+#define SUN4I_CODEC_ADC_ACTL_PREG1_A10			(25)
-+#define SUN4I_CODEC_ADC_ACTL_PREG2_A10			(23)
-+#define SUN4I_CODEC_ADC_ACTL_ADCG			(20)
- #define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
-+#define SUN4I_CODEC_ADC_ACTL_LNRDF			(16)
- #define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
- #define SUN4I_CODEC_ADC_ACTL_DDE			(3)
- #define SUN4I_CODEC_ADC_DEBUG			(0x2c)
-@@ -100,6 +114,16 @@
- #define SUN7I_CODEC_AC_DAC_CAL			(0x38)
- #define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
- 
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1      (29)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2      (26)
-+/* note: no idea where the output pins for the following are. */
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTG  (5)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTEN (4)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS3 (3)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS2 (2)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS1 (1)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS0 (0)
-+
- struct sun4i_codec {
- 	struct device	*dev;
- 	struct regmap	*regmap;
-@@ -509,19 +533,102 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- 			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
- 
- static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_linein_loopback_gain_scale,
-+			    -150,
-+			    150,
-+			    0);
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_fmin_loopback_gain_scale,
-+			    -450,
-+			    150,
-+			    0);
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale,
-+			    -450,
-+			    150,
-+			    0);
-+static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale_a10,
-+			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+			    1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_adc_gain_scale, -450, 150, 0);
-+/* Sources:
-+ *   A10 User Manual v1.5 20130820
-+ *   A20 User Manual v1.4 20150510
-+ */
-+static const char * const sun4i_codec_capture_source[] = {
-+	"Line-In",
-+	"FM",
-+	"Mic1",
-+	"Mic2",
-+	"Mic1,Mic2",
-+	"Mic1+Mic2",
-+	"Output Mixer",
-+	"Line-In,Mic1",
-+};
-+static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
-+			    SUN4I_CODEC_ADC_ACTL,
-+			    SUN4I_CODEC_ADC_ACTL_ADCIS,
-+			    sun4i_codec_capture_source);
-+
-+static const struct snd_kcontrol_new sun4i_codec_capture_source_controls =
-+	SOC_DAPM_ENUM("Route", sun4i_codec_enum_capture_source);
- 
- #define SUN4I_COMMON_CODEC_WIDGETS \
--	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
--		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
--		       sun4i_codec_pa_volume_scale)
-+	SOC_SINGLE_TLV("Power Amplifier Playback Volume", SUN4I_CODEC_DAC_ACTL,\
-+		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0, \
-+		       sun4i_codec_pa_volume_scale), \
-+	/* Line-In, FM, Mic1, Mic2 */ \
-+	SOC_SINGLE_TLV("Line-In Playback Volume", \
-+		       SUN4I_CODEC_DAC_ACTL, \
-+		       SUN4I_CODEC_DAC_ACTL_LNG, \
-+		       1, \
-+		       0, \
-+		       sun4i_codec_linein_loopback_gain_scale), \
-+	SOC_SINGLE_TLV("FM Playback Volume", \
-+		       SUN4I_CODEC_DAC_ACTL, \
-+		       SUN4I_CODEC_DAC_ACTL_FMG, \
-+		       3, \
-+		       0, \
-+		       sun4i_codec_fmin_loopback_gain_scale), \
-+	SOC_SINGLE_TLV("Mic Playback Volume", \
-+		       SUN4I_CODEC_DAC_ACTL, \
-+		       SUN4I_CODEC_DAC_ACTL_MICG, \
-+		       7, \
-+		       0, \
-+		       sun4i_codec_micin_loopback_gain_scale), \
-+	/* ADC */ \
-+	SOC_SINGLE_TLV("Capture Volume", \
-+		       SUN4I_CODEC_ADC_ACTL, \
-+		       SUN4I_CODEC_ADC_ACTL_ADCG, \
-+		       4, \
-+		       0, \
-+		       sun4i_codec_adc_gain_scale)
- 
- static const struct snd_kcontrol_new sun4i_codec_widgets_a10[] = {
- 	SUN4I_COMMON_CODEC_WIDGETS,
-+	SOC_SINGLE_TLV("Mic1 Capture Volume",
-+		       SUN4I_CODEC_ADC_ACTL,
-+		       SUN4I_CODEC_ADC_ACTL_PREG1_A10,
-+		       3,
-+		       0,
-+		       sun4i_codec_micin_preamp_gain_scale_a10),
-+	SOC_SINGLE_TLV("Mic2 Capture Volume",
-+		       SUN4I_CODEC_ADC_ACTL,
-+		       SUN4I_CODEC_ADC_ACTL_PREG2_A10,
-+		       3,
-+		       0,
-+		       sun4i_codec_micin_preamp_gain_scale_a10),
- };
- 
- static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
- 			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
-+	SOC_DAPM_SINGLE("Left Line-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_LLNS, 1, 0),
-+	SOC_DAPM_SINGLE("Left FM Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_LFMS, 1, 0),
-+	SOC_DAPM_SINGLE("Mic1 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_MIC1LS, 1, 0),
-+	SOC_DAPM_SINGLE("Mic2 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_MIC2LS, 1, 0),
- };
- 
- static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
-@@ -529,6 +636,14 @@ static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
- 			SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
- 	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
- 			SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
-+	SOC_DAPM_SINGLE("Right Line-In Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_RLNS, 1, 0),
-+	SOC_DAPM_SINGLE("Right FM Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_RFMS, 1, 0),
-+	SOC_DAPM_SINGLE("Mic1 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_MIC1RS, 1, 0),
-+	SOC_DAPM_SINGLE("Mic2 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_MIC2RS, 1, 0),
- };
- 
- static const struct snd_kcontrol_new sun4i_codec_pa_mixer_controls[] = {
-@@ -561,6 +676,10 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_DAC("Right DAC", "Codec Playback", SUN4I_CODEC_DAC_ACTL,
- 			 SUN4I_CODEC_DAC_ACTL_DACAENR, 0),
- 
-+	/* MUX */
-+	SND_SOC_DAPM_MUX("Capture Source", SND_SOC_NOPM, 0, 0,
-+			 &sun4i_codec_capture_source_controls),
-+
- 	/* Mixers */
- 	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
- 			   sun4i_codec_left_mixer_controls,
-@@ -580,6 +699,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
- 	/* Mic Pre-Amplifiers */
- 	SND_SOC_DAPM_PGA("MIC1 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
- 			 SUN4I_CODEC_ADC_ACTL_PREG1EN, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("MIC2 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
-+			 SUN4I_CODEC_ADC_ACTL_PREG2EN, 0, NULL, 0),
- 
- 	/* Power Amplifier */
- 	SND_SOC_DAPM_MIXER("Power Amplifier", SUN4I_CODEC_ADC_ACTL,
-@@ -590,9 +711,15 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
- 			    &sun4i_codec_pa_mute),
- 
- 	SND_SOC_DAPM_INPUT("Mic1"),
-+	SND_SOC_DAPM_INPUT("Mic2"),
- 
- 	SND_SOC_DAPM_OUTPUT("HP Right"),
- 	SND_SOC_DAPM_OUTPUT("HP Left"),
-+
-+	SND_SOC_DAPM_INPUT("Line-In Right"),
-+	SND_SOC_DAPM_INPUT("Line-In Left"),
-+	SND_SOC_DAPM_INPUT("FM Right"),
-+	SND_SOC_DAPM_INPUT("FM Left"),
- };
- 
- static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
-@@ -629,6 +756,39 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	{ "Right ADC", NULL, "MIC1 Pre-Amplifier" },
- 	{ "MIC1 Pre-Amplifier", NULL, "Mic1"},
- 	{ "Mic1", NULL, "VMIC" },
-+	{ "Right Mixer", "Mic1 Playback Switch", "MIC1 Pre-Amplifier" },
-+	{ "Left Mixer", "Mic1 Playback Switch", "MIC1 Pre-Amplifier" },
-+
-+	/* Mic2 Routes */
-+	{ "Left ADC", NULL, "MIC2 Pre-Amplifier" },
-+	{ "Right ADC", NULL, "MIC2 Pre-Amplifier" },
-+	{ "MIC2 Pre-Amplifier", NULL, "Mic2"},
-+	{ "Mic2", NULL, "VMIC" },
-+	{ "Right Mixer", "Mic2 Playback Switch", "MIC2 Pre-Amplifier" },
-+	{ "Left Mixer", "Mic2 Playback Switch", "MIC2 Pre-Amplifier" },
-+
-+	/* Line-In, FM Routes */
-+	{ "Right Mixer", "Right Line-In Playback Switch", "Line-In Right" },
-+	{ "Left Mixer", "Left Line-In Playback Switch", "Line-In Left" },
-+	{ "Right Mixer", "Right FM Playback Switch", "FM Right" },
-+	{ "Left Mixer", "Left FM Playback Switch", "FM Left" },
-+
-+	/* ADC Capturing Sources */
-+	{"Capture Source", "Line-In", "Line-In Left"},
-+	{"Capture Source", "Line-In", "Line-In Right"},
-+	{"Capture Source", "FM", "FM Left"},
-+	{"Capture Source", "FM", "FM Right"},
-+	{"Capture Source", "Mic1", "MIC1 Pre-Amplifier"},
-+	{"Capture Source", "Mic2", "MIC2 Pre-Amplifier"},
-+	{"Capture Source", "Mic1,Mic2", "MIC1 Pre-Amplifier"},
-+	{"Capture Source", "Mic1,Mic2", "MIC2 Pre-Amplifier"},
-+	{"Capture Source", "Mic1+Mic2", "MIC1 Pre-Amplifier"},
-+	{"Capture Source", "Mic1+Mic2", "MIC2 Pre-Amplifier"},
-+	{"Capture Source", "Output Mixer", "Left Mixer"},
-+	{"Capture Source", "Output Mixer", "Right Mixer"},
-+	{"Capture Source", "Line-In,Mic1", "Line-In Left"},
-+	{"Capture Source", "Line-In,Mic1", "Line-In Right"}, /* depends on LNRDF */
-+	{"Capture Source", "Line-In,Mic1", "MIC1 Pre-Amplifier"},
- };
- 
- static struct snd_soc_codec_driver sun4i_codec_codec_a10 = {
-@@ -757,8 +917,25 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	return card;
- };
- 
-+static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
-+	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+	1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0)
-+);
-+
- static const struct snd_kcontrol_new sun7i_codec_widgets[] = {
- 	SUN4I_COMMON_CODEC_WIDGETS,
-+	SOC_SINGLE_TLV("Mic1 Capture Volume",
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1,
-+		       7,
-+		       0,
-+		       sun7i_codec_micin_preamp_gain_scale),
-+	SOC_SINGLE_TLV("Mic2 Capture Volume",
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2,
-+		       7,
-+		       0,
-+		       sun7i_codec_micin_preamp_gain_scale),
- };
- 
- static struct snd_soc_codec_driver sun7i_codec_codec = {
+>> There's an issue of periodical hissing noise. I observed this with Fireface 400.
+>> Interval of the noise differs depending on the situation (10-20 minutes) and
+>> continues around 20 seconds. The cause is not clear but I've experienced similar
+>> issue with TASCAM FireOne. A common point between these two models is
+>> non-blocking transmission. I guess that the cause may be on data block
+>> calculation in AMDTP packet streaming layer (calculate_data_blocks() function
+>> in sound/firewire/amdtp-stream.c). Further investigation is required.
+> 
+> I've just got back from an week's off-line break and will look at the code
+> once I've caught up on things.  I suspect the audio packets are not being
+> timed correctly so over time things get a little out of sync.  The timing
+> mentioned above certainly suggests a slow beating.
+> 
+> I haven't looked at calculate_data_blocks() yet so I don't know how it
+> works.  I suspect that the method of timing data blocks doesn't quite match
+> up with what the Fireface interfaces really expect.  There are two "proper"
+> ways to determine whether an audio packet should be sent:
+> 
+> 1) Monitor the buffer status bits returned within the incoming audio data
+>    stream and send at an appropriate time.
+> 
+> 2) Keep track of the time between incoming audio packets and simply mirror
+>    that in the output stream.
+> 
+> Option 1 is rather difficult in reality and in practice isn't really
+> required.  Option 2 is sufficient and is guaranteed to keep everything in
+> sync.
+> 
+> As a side comment, FFADO does neither because of the way the RME driver must
+> interface with the rest of the FFADO infrastructure.
+> 
+>> In my previous RFC, I described that zero bits have no effect in write
+>> transactions to 0x00008010051c. But this is wrong. The transaction has
+>> side effect to set the other options.
+> 
+> That would be correct.  0x00008010051c is the start of the FF400's
+> configuration block.  Fields within this set all manner of things including
+> phantom power status, input pads, optical port mode and so on.  Blindly
+> writing zeros will force the device into the physical state represented by
+> that zero byte pattern.
+> 
+>> In this patchset, the state of clock is changed on the way to initialize
+>> transaction.  This is a bit rude but unavoidable.  Fortunately, it's
+>> software's responsibility to read from flash memory and set initial
+>> configuration,
+> 
+> Not quite.  The device powers up with the configuration that is stored in
+> the internal flash memory and does not require any interaction with a
+> computer in order to be functional.  Software needs to synchronise itself
+> with this configuration so as to maintain it.  Forcing a particular
+> configuration is fine for an initial version of a driver, but in time there
+> is a need to be more sophisticated about how this is handled.  The setup of
+> these interfaces can be highly complex and many users rely on the flash
+> memory configuration to avoid time consuming setup at every power on. 
+> Forcing a configuration reset like this can certainly be worked around
+> during initial development, but in the long term the driver needs to
+> preserve device status.
+> 
+> I have several ideas about how this might look but need to wait to see what
+> framework we have to work within before any of that can be solidified.  The
+> primary difficulty is that the configuration register needs to be known by
+> all software components which interact with the device: not just the
+> streaming system.  A way to make the configuration available to usespace
+> will be needed.  In FFADO this was handled with a shared memory segment so
+> it didn't matter which component (streaming, mixer) was started first.  I
+> imagine in FFADO the configuration will be made available via hwdep, /proc/
+> or something similar, ideally in a manner which is transparent to the type
+> of Fireface device in use.
+> 
+> In summary: zeroing out the configuration block is fine for now, but in time
+> this will need to be revisited.
+
+I'd like to drop the code to send write transactions to the address, and
+leave the decision to userspace. As a result, userspace applications
+cannot receive MIDI messages from the device via ALSA rawmidi character
+devices, unless any userspace applications performs the configuration.
+
+The main work of device drivers is to give ways to transfer data between
+userspace applications and devices. Nothing others. Currently. userspace
+applications are given ways to communicate to the device via fw
+character device. Thus, no need to implement such surplus work to
+snd-fireface.
+
+Instead, I hope libffado to drop the code to register node address
+regardless of whether the address is valid or invalid. Of cource, if
+userspace applications want to disallow kernel modules to handle the
+messages, it can do it, it's what userspace want.
+
+
+Regards
+
+Takashi Sakamoto
