@@ -1,79 +1,57 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/4] ASoC: omap-hdmi-audio: add NULL test
-Date: Mon, 21 Dec 2015 11:35:18 +0200
-Message-ID: <5677C7D6.3030909@ti.com>
-References: <1450610153-7746-1-git-send-email-Julia.Lawall@lip6.fr>
- <1450610153-7746-3-git-send-email-Julia.Lawall@lip6.fr>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [GIT PULL] Add get_eld audio component for
+	i915/HD-audio
+Date: Mon, 21 Dec 2015 10:59:41 +0100
+Message-ID: <20151221095941.GF30437@phenom.ffwll.local>
+References: <s5hmvtimoks.wl-tiwai@suse.de>
+ <s5hoadkqhl1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 94896261ACA
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 10:35:24 +0100 (CET)
-In-Reply-To: <1450610153-7746-3-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, "Sarha, Jyri" <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hoadkqhl1.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/2015 01:15 PM, Julia Lawall wrote:
-> Add NULL test on call to devm_kzalloc.
-> =
-
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
-> =
-
-> // <smpl>
-> @@
-> expression x;
-> identifier fld;
-> @@
-> =
-
-> * x =3D devm_kzalloc(...);
->   ... when !=3D x =3D=3D NULL
->   x->fld
-> // </smpl>
-> =
-
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> ---
->  sound/soc/omap/omap-hdmi-audio.c |    2 ++
->  1 file changed, 2 insertions(+)
-> =
-
-> diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-=
-audio.c
-> index 584b237..f83cc2b 100644
-> --- a/sound/soc/omap/omap-hdmi-audio.c
-> +++ b/sound/soc/omap/omap-hdmi-audio.c
-> @@ -368,6 +368,8 @@ static int omap_hdmi_audio_probe(struct platform_devi=
-ce *pdev)
->  	card->owner =3D THIS_MODULE;
->  	card->dai_link =3D
->  		devm_kzalloc(dev, sizeof(*(card->dai_link)), GFP_KERNEL);
-> +	if (!card->dai_link)
-> +		return -ENOMEM;
->  	card->dai_link->name =3D card->name;
->  	card->dai_link->stream_name =3D card->name;
->  	card->dai_link->cpu_dai_name =3D dev_name(ad->dssdev);
-> =
-
-
-
--- =
-
-P=E9ter
+T24gTW9uLCBEZWMgMjEsIDIwMTUgYXQgMTA6MjU6MTRBTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFRodSwgMTAgRGVjIDIwMTUgMTQ6MTY6MDMgKzAxMDAsCj4gVGFrYXNoaSBJd2Fp
+IHdyb3RlOgo+ID4gCj4gPiBIaSBEYW5pZWwsCj4gPiAKPiA+IHBsZWFzZSBwdWxsIHRoZSBnZXRf
+ZWxkIG9wIGFkZGl0aW9uIGZyb206Cj4gPiAKPiA+ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdCB0YWdzL2RybS1pOTE1LWdldC1l
+bGQKPiA+IAo+ID4gVGhlIHRvcG1vc3QgY29tbWl0IGlzIDBiZGY1YTA1NjQ3YTY2ZGNjNjM5NDk4
+NmUwNjFkYWVhYzliMWNmOTYKPiA+IAo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gCj4gPiBBZGQgZ2V0X2VsZCBh
+dWRpbyBjb21wb25lbnQgZm9yIGk5MTUvSEQtYXVkaW8KPiA+IAo+ID4gSGVyZSBhcmUgdGhlIHBh
+dGNoc2V0IHRvIGFkZCBnZXRfZWxkIG9wIHRvIGF1ZGlvIGNvbXBvbmVudCBmb3IKPiA+IGNvbW11
+bmljYXRpbmcgbW9yZSBkaXJlY3RseSBiZXR3ZWVuIGk5MTUgYW5kIEhELWF1ZGlvLgo+ID4gCj4g
+PiBDdXJyZW50bHksIHRoZSBIRE1JL0RQIGF1ZGlvIHN0YXR1cyBhbmQgRUxEIGFyZSBub3RpZmll
+ZCBhbmQgb2J0YWluZWQKPiA+IHZpYSB0aGUgaGFyZHdhcmUtbGV2ZWwgY29tbXVuaWNhdGlvbiBv
+dmVyIEhELWF1ZGlvIHVuc29saWNpdGVkIGV2ZW50Cj4gPiBhbmQgdmVyYnMgYWx0aG91Z2ggdGhl
+IGdyYXBoaWNzIGRyaXZlciBob2xkcyB0aGUgZXhhY3RseSBzYW1lCj4gPiBpbmZvcm1hdGlvbi4g
+IEFzIHdlIGFscmVhZHkgaGF2ZSBhIG5vdGlmaWNhdGlvbiB2aWEgYXVkaW8gY29tcG9uZW50LAo+
+ID4gdGhpcyBpcyBhbm90aGVyIHN0ZXAgZm9yd2FyZDsgbmFtZWx5LCB0aGUgYXVkaW8gZHJpdmVy
+IG1heSBmZXRjaAo+ID4gZGlyZWN0bHkgdGhlIGF1ZGlvIHN0YXR1cyBhbmQgRUxEIHZpYSB0aGUg
+bmV3IGNvbXBvbmVudCBvcC4KPiA+IAo+ID4gVGhlIGNvbW1pdHMgYXJlIGJhc2VkIG9uIERhdmUn
+cyBsYXRlc3QgZHJtLW5leHQgYnJhbmNoLgo+IAo+IERhbmllbCwgd291bGQgeW91IHB1bGwgdGhp
+cyBvbmUsIG9yIHNob3VsZCB3ZSBwb3N0cG9uZSBpdCBmb3IgNC42Pwo+IFRoZSBjaGFuZ2VzIGFy
+ZW4ndCB0b28gaW50cnVzaXZlLCBzbyBJIHByZWZlciBoYXZpbmcgaXQgZm9yIDQuNSwgc28KPiB0
+aGF0IHdlIGNhbiBjb250aW51ZSBkZXZlbG9waW5nIHRoZSBNU1QgYXVkaW8gc3R1ZmYgYmFzZWQg
+b24gdGhpcy4KClNvcnJ5LCBzaW1wbHkgZm9yIGdvdCBzZW5kIG91dCB0aGUgY29uZmlybWF0aW9u
+IG1haWwuIEkgcHVsbGVkIHRoaXMgYSBmZXcKZGF5cyBhZ28gYWxyZWFkeSBhbmQgd2lsbCBzZW5k
+IHRoZSBmaW5hbCBkcm0taW50ZWwgcHVsbCBmb3IgNC41IHdpdGggaXQgdG8KRGF2ZSBzb29uaXNo
+LgoKVGhhbmtzLCBEYW5pZWwKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIElu
+dGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwt
+Z2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
