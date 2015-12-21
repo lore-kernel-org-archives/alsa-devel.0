@@ -1,16 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 4/5] ALSA: fm801: save context before
-	suspend devices
-Date: Mon, 21 Dec 2015 19:09:55 +0200
-Message-ID: <1450717796-66115-4-git-send-email-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/5] ALSA: fm801: detect FM-only card earlier
+Date: Mon, 21 Dec 2015 19:09:53 +0200
+Message-ID: <1450717796-66115-2-git-send-email-andriy.shevchenko@linux.intel.com>
 References: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 344E3265068
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 18:10:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 59748265367
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 18:10:31 +0100 (CET)
 In-Reply-To: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,36 +24,158 @@ To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In symmetry we save context first before suspend and restore it last after
-resume.
+If user does not supply tea575x_tuner parameter the driver tries to detect the
+tuner type. The failed codec initialization is considered as FM-only card
+present, however the driver still registers an IRQ handler for it.
 
+Move codec detection earlier to set tea575x_tuner parameter before check.
+
+Here the following functions are introduced
+ reset_coded()                       resets AC97 codec
+ snd_fm801_chip_multichannel_init()  initializes cards with multichannel support
+
+Fixes: 5618955c4269 (ALSA: fm801: move to pcim_* and devm_* functions)
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/pci/fm801.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/fm801.c | 69 +++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 39 insertions(+), 30 deletions(-)
 
 diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index c7ba4f1..e3add48 100644
+index 6114d81..2761880 100644
 --- a/sound/pci/fm801.c
 +++ b/sound/pci/fm801.c
-@@ -1394,6 +1394,9 @@ static int snd_fm801_suspend(struct device *dev)
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
- 
-+	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
-+		chip->saved_regs[i] = fm801_ioread16(chip, saved_regs[i]);
-+
- 	if (chip->tea575x_tuner & TUNER_ONLY) {
- 		/* FIXME: tea575x suspend */
- 	} else {
-@@ -1402,8 +1405,6 @@ static int snd_fm801_suspend(struct device *dev)
- 		snd_ac97_suspend(chip->ac97_sec);
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
--		chip->saved_regs[i] = fm801_ioread16(chip, saved_regs[i]);
- 	return 0;
+@@ -1098,26 +1098,20 @@ static int wait_for_codec(struct fm801 *chip, unsigned int codec_id,
+ 	return -EIO;
  }
  
+-static int snd_fm801_chip_init(struct fm801 *chip, int resume)
++static int reset_codec(struct fm801 *chip)
+ {
+-	unsigned short cmdw;
+-
+-	if (chip->tea575x_tuner & TUNER_ONLY)
+-		goto __ac97_ok;
+-
+ 	/* codec cold reset + AC'97 warm reset */
+ 	fm801_writew(chip, CODEC_CTRL, (1 << 5) | (1 << 6));
+ 	fm801_readw(chip, CODEC_CTRL); /* flush posting data */
+ 	udelay(100);
+ 	fm801_writew(chip, CODEC_CTRL, 0);
+ 
+-	if (wait_for_codec(chip, 0, AC97_RESET, msecs_to_jiffies(750)) < 0)
+-		if (!resume) {
+-			dev_info(chip->card->dev,
+-				 "Primary AC'97 codec not found, assume SF64-PCR (tuner-only)\n");
+-			chip->tea575x_tuner = 3 | TUNER_ONLY;
+-			goto __ac97_ok;
+-		}
++	return wait_for_codec(chip, 0, AC97_RESET, msecs_to_jiffies(750));
++}
++
++static void snd_fm801_chip_multichannel_init(struct fm801 *chip)
++{
++	unsigned short cmdw;
+ 
+ 	if (chip->multichannel) {
+ 		if (chip->secondary_addr) {
+@@ -1144,8 +1138,11 @@ static int snd_fm801_chip_init(struct fm801 *chip, int resume)
+ 		/* cause timeout problems */
+ 		wait_for_codec(chip, 0, AC97_VENDOR_ID1, msecs_to_jiffies(750));
+ 	}
++}
+ 
+-      __ac97_ok:
++static void snd_fm801_chip_init(struct fm801 *chip)
++{
++	unsigned short cmdw;
+ 
+ 	/* init volume */
+ 	fm801_writew(chip, PCM_VOL, 0x0808);
+@@ -1166,11 +1163,8 @@ static int snd_fm801_chip_init(struct fm801 *chip, int resume)
+ 	/* interrupt clear */
+ 	fm801_writew(chip, IRQ_STATUS,
+ 		     FM801_IRQ_PLAYBACK | FM801_IRQ_CAPTURE | FM801_IRQ_MPU);
+-
+-	return 0;
+ }
+ 
+-
+ static int snd_fm801_free(struct fm801 *chip)
+ {
+ 	unsigned short cmdw;
+@@ -1227,7 +1221,23 @@ static int snd_fm801_create(struct snd_card *card,
+ 	if ((err = pci_request_regions(pci, "FM801")) < 0)
+ 		return err;
+ 	chip->port = pci_resource_start(pci, 0);
+-	if ((tea575x_tuner & TUNER_ONLY) == 0) {
++
++	if (pci->revision >= 0xb1)	/* FM801-AU */
++		chip->multichannel = 1;
++
++	if (!(chip->tea575x_tuner & TUNER_ONLY)) {
++		if (reset_codec(chip) < 0) {
++			dev_info(chip->card->dev,
++				 "Primary AC'97 codec not found, assume SF64-PCR (tuner-only)\n");
++			chip->tea575x_tuner = 3 | TUNER_ONLY;
++		} else {
++			snd_fm801_chip_multichannel_init(chip);
++		}
++	}
++
++	snd_fm801_chip_init(chip);
++
++	if ((chip->tea575x_tuner & TUNER_ONLY) == 0) {
+ 		if (devm_request_irq(&pci->dev, pci->irq, snd_fm801_interrupt,
+ 				IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 			dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+@@ -1238,13 +1248,6 @@ static int snd_fm801_create(struct snd_card *card,
+ 		pci_set_master(pci);
+ 	}
+ 
+-	if (pci->revision >= 0xb1)	/* FM801-AU */
+-		chip->multichannel = 1;
+-
+-	snd_fm801_chip_init(chip, 0);
+-	/* init might set tuner access method */
+-	tea575x_tuner = chip->tea575x_tuner;
+-
+ 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+ 		snd_fm801_free(chip);
+ 		return err;
+@@ -1261,15 +1264,15 @@ static int snd_fm801_create(struct snd_card *card,
+ 	chip->tea.private_data = chip;
+ 	chip->tea.ops = &snd_fm801_tea_ops;
+ 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
+-	if ((tea575x_tuner & TUNER_TYPE_MASK) > 0 &&
+-	    (tea575x_tuner & TUNER_TYPE_MASK) < 4) {
++	if ((chip->tea575x_tuner & TUNER_TYPE_MASK) > 0 &&
++	    (chip->tea575x_tuner & TUNER_TYPE_MASK) < 4) {
+ 		if (snd_tea575x_init(&chip->tea, THIS_MODULE)) {
+ 			dev_err(card->dev, "TEA575x radio not found\n");
+ 			snd_fm801_free(chip);
+ 			return -ENODEV;
+ 		}
+-	} else if ((tea575x_tuner & TUNER_TYPE_MASK) == 0) {
+-		unsigned int tuner_only = tea575x_tuner & TUNER_ONLY;
++	} else if ((chip->tea575x_tuner & TUNER_TYPE_MASK) == 0) {
++		unsigned int tuner_only = chip->tea575x_tuner & TUNER_ONLY;
+ 
+ 		/* autodetect tuner connection */
+ 		for (tea575x_tuner = 1; tea575x_tuner <= 3; tea575x_tuner++) {
+@@ -1405,7 +1408,13 @@ static int snd_fm801_resume(struct device *dev)
+ 	struct fm801 *chip = card->private_data;
+ 	int i;
+ 
+-	snd_fm801_chip_init(chip, 1);
++	if (chip->tea575x_tuner & TUNER_ONLY) {
++		snd_fm801_chip_init(chip);
++	} else {
++		reset_codec(chip);
++		snd_fm801_chip_multichannel_init(chip);
++		snd_fm801_chip_init(chip);
++	}
+ 	snd_ac97_resume(chip->ac97);
+ 	snd_ac97_resume(chip->ac97_sec);
+ 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
 -- 
 2.6.4
