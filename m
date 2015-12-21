@@ -1,74 +1,38 @@
-From: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v1 2/2] dt-bindings: sound: add devicetree document for rt5616
-Date: Mon, 21 Dec 2015 22:56:08 +0800
-Message-ID: <1450709768-14898-1-git-send-email-wxt@rock-chips.com>
-References: <1450703894-32623-2-git-send-email-wxt@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1450703894-32623-2-git-send-email-wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+From: Geliang Tang <geliangtang@163.com>
+Subject: [PATCH] ALSA: usb-audio: use list_for_each_entry_continue_reverse
+Date: Mon, 21 Dec 2015 23:55:39 +0800
+Message-ID: <fea57694a17b8001b53896f657ffccf5128ee4c3.1450713219.git.geliangtang@163.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ricard Wanderlof <ricard.wanderlof@axis.com>, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
+Cc: Geliang Tang <geliangtang@163.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the description for rt5616 codec.
+For better readability, use list_for_each_entry_continue_reverse()
+in have_dup_chmap().
 
-Signed-off-by: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-
+Signed-off-by: Geliang Tang <geliangtang@163.com>
 ---
+ sound/usb/stream.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Changes in v1:
-- As Heiko comments, remove the not exist option properties.
-
- Documentation/devicetree/bindings/sound/rt5616.txt | 36 ++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
-new file mode 100644
-index 0000000..2030a22
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5616.txt
-@@ -0,0 +1,36 @@
-+RT5616 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "realtek,rt5616".
-+
-+- reg : The I2C address of the device.
-+
-+Pins on the device (for linking into audio routes) for RT5616:
-+
-+  * IN1P
-+  * IN2P
-+  * IN2N
-+  * LOUTL
-+  * LOUTR
-+  * CPN2
-+  * CPP2
-+  * CPN1
-+  * CPP1
-+  * HPO_R
-+  * HPO_L
-+  * ADCDAT1
-+  * DACDAT1
-+  * LRCK1
-+  * BCLK1
-+  * MCLK
-+  * GPIO1
-+
-+Example:
-+
-+rt5616 {
-+	compatible = "realtek,rt5616";
-+	reg = <0x1b>;
-+};
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 8ee14f2..c4dc577 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -125,11 +125,9 @@ static int usb_chmap_ctl_info(struct snd_kcontrol *kcontrol,
+ static bool have_dup_chmap(struct snd_usb_substream *subs,
+ 			   struct audioformat *fp)
+ {
+-	struct list_head *p;
++	struct audioformat *prev = fp;
+ 
+-	for (p = fp->list.prev; p != &subs->fmt_list; p = p->prev) {
+-		struct audioformat *prev;
+-		prev = list_entry(p, struct audioformat, list);
++	list_for_each_entry_continue_reverse(prev, &subs->fmt_list, list) {
+ 		if (prev->chmap &&
+ 		    !memcmp(prev->chmap, fp->chmap, sizeof(*fp->chmap)))
+ 			return true;
 -- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.5.0
