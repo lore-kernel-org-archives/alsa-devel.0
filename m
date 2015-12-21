@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 12/19] ASoC: codec: rt5651: add ACPI and OF
- support
-Date: Mon, 21 Dec 2015 10:18:42 -0600
-Message-ID: <56782662.8050907@linux.intel.com>
-References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20151219115047.GI5727@sirena.org.uk>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/5] ALSA: fm801: propagate TUNER_ONLY bit
+	when autodetected
+Date: Mon, 21 Dec 2015 19:09:52 +0200
+Message-ID: <1450717796-66115-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 697D4261AAF
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 17:18:57 +0100 (CET)
-In-Reply-To: <20151219115047.GI5727@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7084B265054
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 18:10:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, jack.yu@realtek.com
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ondrej Zary <linux@rainbow-software.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/15 5:50 AM, Mark Brown wrote:
-> On Thu, Dec 17, 2015 at 08:35:49PM -0600, Pierre-Louis Bossart wrote:
->
->> +#if defined(CONFIG_OF)
->> +static const struct of_device_id rt5651_of_match[] = {
->> +	{ .compatible = "realtek,rt5651", },
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(of, rt5651_of_match);
->> +#endif
->
-> You need a binding document for new DT bindings.
+The commit d7ba858a7f7a (ALSA: fm801: implement TEA575x tuner autodetection)
+brings autodetection to the driver. However the autodetection algorithm misses
+the TUNER_ONLY bit if it is supplied by the user.
 
-Ah yes.
-I added ACPI and OF support through copy-paste and s/rt5640/rt5651/, but 
-I can only test ACPI and wouldn't know what bindings are required so 
-will remove this OF part in the next batch.
-Bard and team if you want to add OF support please go ahead.
+Thus, user gets weird messages and no card registered.
+
+ snd_fm801 0000:0d:01.0: detected TEA575x radio type SF64-PCR
+ snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
+ snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
+...
+ snd_fm801 0000:0d:01.0: AC'97 0 does not respond - RESET
+ snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
+ snd_fm801 0000:0d:01.0: AC'97 interface is busy (1)
+ snd_fm801 0000:0d:01.0: AC'97 0 access is not valid [0x0], removing mixer.
+ snd_fm801: probe of 0000:0d:01.0 failed with error -5
+
+Do a copy of TUNER_ONLY bit to be applied after autodetection is done.
+
+Fixes: d7ba858a7f7a (ALSA: fm801: implement TEA575x tuner autodetection)
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/fm801.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index 4c9d804..6114d81 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -1269,6 +1269,8 @@ static int snd_fm801_create(struct snd_card *card,
+ 			return -ENODEV;
+ 		}
+ 	} else if ((tea575x_tuner & TUNER_TYPE_MASK) == 0) {
++		unsigned int tuner_only = tea575x_tuner & TUNER_ONLY;
++
+ 		/* autodetect tuner connection */
+ 		for (tea575x_tuner = 1; tea575x_tuner <= 3; tea575x_tuner++) {
+ 			chip->tea575x_tuner = tea575x_tuner;
+@@ -1283,6 +1285,8 @@ static int snd_fm801_create(struct snd_card *card,
+ 			dev_err(card->dev, "TEA575x radio not found\n");
+ 			chip->tea575x_tuner = TUNER_DISABLED;
+ 		}
++
++		chip->tea575x_tuner |= tuner_only;
+ 	}
+ 	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
+ 		strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
+-- 
+2.6.4
