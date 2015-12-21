@@ -1,93 +1,125 @@
-From: "Ryan C. Underwood" <nemesis@icequake.net>
-Subject: rawmidi virtual and long sysexes
-Date: Sat, 19 Dec 2015 15:31:44 -0800
-Message-ID: <20151219233143.GK28165@localhost.localdomain>
-Reply-To: nemesis@icequake.net
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <deathsimple@vodafone.de>
+Subject: Re: [PATCH 00/13] Add ASoC support for AMD APUs [v5]
+Date: Mon, 21 Dec 2015 20:08:50 +0100
+Message-ID: <56784E42.40509@vodafone.de>
+References: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6033664609301624559=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.icequake.net (64-251-151-187.fidnet.com [64.251.151.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 86DAC260606
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 00:31:49 +0100 (CET)
-Received: from localhost (aurora [127.0.0.1])
- by mail.icequake.net (Postfix) with ESMTP id ABB19FBD5
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 17:31:47 -0600 (CST)
-Received: from mail.icequake.net ([127.0.0.1])
- by localhost (aurora.icequake.net [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id npLLcput3659 for <alsa-devel@alsa-project.org>;
- Sat, 19 Dec 2015 17:31:45 -0600 (CST)
-Received: from localhost (50-76-49-98-ip-static.hfc.comcastbusiness.net
- [50.76.49.98])
- by mail.icequake.net (Postfix) with ESMTPSA id F2C75FBCD
- for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2015 17:31:44 -0600 (CST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1449272440-8735-1-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>, broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
+Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6033664609301624559==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="n+lFg1Zro7sl44OB"
-Content-Disposition: inline
-
-
---n+lFg1Zro7sl44OB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi alsa-devel,
-
-Recently I noticed this problem and fixed it in the client consuming
-sequencer events:
-https://github.com/munt/munt/commit/0ea0846d0849872acf4384bdf5edeff026d12f42
-
-Basically, the rawmidi virtual plugin enforces a 256-byte limit on
-events, and emits multiple events if e.g. a >256 byte sysex is
-encountered.
-
-This does not seem to be documented behavior for
-snd_seq_event_input(), nor is the fixed limit described anywhere.
-
-Would it be better if the maximum event size could be configured
-through params?  That would avoid needing this clumsy workaround by
-sequencer clients.  In any case, it seems that the documentation
-should be updated to reflect the need to receive multiple sequencer
-events to complete a sysex if EOX is not located in the first.
-
-Please cc me as I'm not subscribed.
-
---=20
-Ryan C. Underwood, <nemesis@icequake.net>
-
---n+lFg1Zro7sl44OB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iD8DBQFWdejfIonHnh+67jkRAo6RAJ9352VoZJ/0kMp58S34lwNwlaNkOgCfTb+0
-YOoWvlrhhTntG8vPIVGsRiU=
-=7Yi2
------END PGP SIGNATURE-----
-
---n+lFg1Zro7sl44OB--
-
---===============6033664609301624559==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6033664609301624559==--
+T24gMDUuMTIuMjAxNSAwMDo0MCwgQWxleCBEZXVjaGVyIHdyb3RlOgo+IFRoaXMgcGF0Y2ggc2V0
+IGltcGxlbWVudHMgc3VwcG9ydCBmb3IgaTJzIGF1ZGlvIGFuZCBuZXcgQU1EIEdQVXMuCj4gVGhl
+IGkycyBjb2RlYyBpcyBmZWQgYnkgYSBETUEgZW5naW5lIG9uIHRoZSBHUFUuICBUbyBoYW5kbGUg
+dGhpcwo+IHdlIGNyZWF0ZSBtZmQgY2VsbHMgd2hpY2ggd2UgaGFuZyB0aGUgaTJzIGNvZGVjIGFu
+ZCBETUEgZW5naW5lIG9uLgo+IEJlY2F1c2Ugb2YgdGhpcywgdGhpcyBwYXRjaCBzZXQgY292ZXJz
+IHR3byBzdWJzeXN0ZW1zOiBkcm0gYW5kIGFsc2EuCj4gVGhlIGRybSBwYXRjaGVzIGFkZCBzdXBw
+b3J0IGZvciB0aGUgQUNQIGh3IGJsb2NrIHdoaWNoIHByb3ZpZGVzIHRoZQo+IERNQSBlbmdpbmUg
+Zm9yIHRoZSBpMnMgY29kZWMuICBUaGUgYWxzYSBwYXRjaGVzIGFkZCB0aGUgQVNvQyBkcml2ZXIK
+PiBmb3IgdGhlIGkycyBjb2RlYy4gIFNpbmNlIHRoZSBhbHNhIGNoYW5nZXMgZGVwZW5kIG9uIHRo
+ZSBkcm0gY2hhbmdlcywKPiBJJ2QgbGlrZSB0byB0YWtlIHRoZSBhbHNhIHBhdGNoZXMgaW4gdmlh
+IHRoZSBkcm0gdHJlZS4KPgo+IFYyIGNoYW5nZXM6Cj4gLSBVc2UgdGhlIE1GRCBzdWJzeXN0ZW0g
+cmF0aGVyIHRoYW4gYWRkaW5nIG91ciBvd24gYnVzCj4gLSBTcXVhc2ggYWxsIHN1Yi1mZWF0dXJl
+IHBhdGNoZXMgdG9nZXRoZXIKPiAtIGZpeCBjb21tZW50cyBtZW50aW9uZWQgaW4gcHJldmlvdXMg
+cmV2aWV3Cj4KPiBWMyBjaGFuZ2VzOgo+IC0gVXBkYXRlIHRoZSBkZXNpZ253YXJlIGRyaXZlciB0
+byBoYW5kbGUgc2xhdmUgbW9kZSwgYW1kIHNwZWNpZmljCj4gICAgZmVhdHVyZXMKPiAtIFVzZSB0
+aGUgZGVzaWdud2FyZSBkcml2ZXIgZGlyZWN0bHkgZm9yIGkycwo+IC0gTW92ZSB0aGUgRE1BIGhh
+bmRsaW5nIGZyb20gdGhlIEdQVSBkcml2ZXIgaW50byB0aGUgQU1EIEFTb0MKPiAgICBkcml2ZXIK
+PiAtIENoYW5nZSB0aGUgbGljZW5zZSBvbiB0aGUgQVNvQyBkcml2ZXIgdG8gR1BMCj4KPiB2NCBj
+aGFuZ2VzOgo+IC0gcGF0Y2ggIkFTb0MgOiBkd2MgOiBzdXBwb3J0IGR3IGkycyBpbiBzbGF2ZSBt
+b2RlIiBhY2NlcHRlZAo+IC0gQWRkIGEgX2RhaV9mbXQoKSBvcGVyYXRpb24gdGhhdCBjaGVja3Mg
+dG8gbWFrZSBzdXJlIHRoYXQgdGhlIG1vZGUKPiAgICB3ZSdyZSBzZXR0aW5nIGNvcnJlc3BvbmRz
+IHRvIHdoYXQgd2UgcmVhZCBiYWNrIGZyb20gdGhlIGhhcmR3YXJlLgo+IC0gU3BsaXQgc3BlY2lm
+aWMgcXVpcmtzIGludG8gc2VwYXJhdGUgcGF0Y2hlcwo+IC0gU2V0IHRoZSBzcGVjaWZpYyBxdWly
+a3MgdGhhdCBhcHBseSB0byBBTUQgY2hpcHMgaW4gdGhlIGFjcCBkcml2ZXIKPgo+IHY1IGNoYW5n
+ZXM6Cj4gLSBwYXRjaCAiQVNvQyA6IGR3YyA6IGFkZCBjaGVjayBmb3IgbWFzdGVyL3NsYXZlIGZv
+cm1hdCIgYWNjZXB0ZWQKPiAtIEZpeCBNRkRfQ09SRSBzZWxlY3Rpb24gaW4gQUNQIEtjb25maWcK
+PiAtIEFkZCBpcnEgZG9tYWluIHN1cHBvcnQgdG8gYW1kZ3B1IGRyaXZlcgo+IC0gVXNlIGdlbmly
+cSBpbiBBQ1AgRE1BIGRyaXZlcgo+IC0gRXhwb3J0IHNvbWUgZ2VucGQgc3ltYm9scyB0byBzdXBw
+b3J0IEFDUCBwb3dlcmdhdGluZyAoQWNrZWQgYnkgUE0gbWFpbnRhaW5lcikKPiAtIFVzZSBnZW5w
+ZCBmb3IgQUNQIHBvd2VyZ2F0aW5nCj4gLSBhZGQgc2VwYXJhdGUgY2FwdHVyZSBhbmQgcGxheWJh
+Y2sgaW5zdGFuY2VzIG9mIGR3cyBpbiBBQ1AgaW5pdAo+IC0gYWRkIHJ1bnRpbWUgc3VzcGVuZCBz
+dXBwb3J0IGZvciBkd3MgaW4gbWFzdGVyIG1vZGUKPgo+IFBhdGNoIDkgYWRkcyB0aGUgcmVnaXN0
+ZXIgaGVhZGVycyBmb3IgdGhlIEFDUCBibG9jayB3aGljaCBpcyBhCj4gcHJldHR5IGJpZyBwYXRj
+aCBzbyBJJ3ZlIGV4Y2x1ZGVkIGl0IGZyb20gZW1haWwuICBUaGUgZW50aXJlIHBhdGNoCj4gc2V0
+IGNhbiBiZSB2aWV3ZWQgaGVyZToKPiBodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmFnZDVm
+L2xpbnV4L2xvZy8/aD1hY3AtdXBzdHJlYW04Cj4KPiBUaGFua3MsCj4KPiBBbGV4Cj4KPiBBbGV4
+IERldWNoZXIgKDMpOgo+ICAgIGRybS9hbWRncHUvY2dzOiBhZGQgYW4gaW50ZXJmYWNlIHRvIGFj
+Y2VzcyBQQ0kgcmVzb3VyY2VzCj4gICAgZHJtL2FtZGdwdTogYWRkIGlycSBkb21haW4gc3VwcG9y
+dAo+ICAgIGRybS9hbWQ6IGFkZCBwbSBkb21haW4gZm9yIEFDUCBJUCBzdWIgYmxvY2tzCj4KPiBN
+YXJ1dGhpIEJheXlhdmFyYXB1ICgxKToKPiAgICBkcm0vYW1kOiBhZGQgQUNQIGRyaXZlciBzdXBw
+b3J0Cj4KPiBNYXJ1dGhpIFNyaW5pdmFzIEJheXlhdmFyYXB1ICg5KToKPiAgICBBU29DOiBkd2M6
+IGFkZCBydW50aW1lIHN1c3BlbmQvcmVzdW1lIGZ1bmN0aW9uYWxpdHkKPiAgICBBU29DOiBkd2M6
+IGFkZCBxdWlyayBmb3IgZGlmZmVyZW50IHJlZ2lzdGVyIG9mZnNldAo+ICAgIEFTb0M6IGR3Yzog
+cmVjb25maWd1cmUgZHdjIGluICdyZXN1bWUnIGZyb20gJ3N1c3BlbmQnCj4gICAgUE0gLyBEb21h
+aW5zOiBleHBvcnQgc3ltYm9scyB0byBhZGQvcmVtb3ZlIGRldmljZXMgZnJvbSBnZW5wZAo+ICAg
+IEFTb0MgOiBBTUQgOiBhZGQgQUNQIDIuMiByZWdpc3RlciBoZWFkZXJzCj4gICAgQVNvQzogQU1E
+OiBhZGQgQUNQIDIueCBJUCBETUEgYWJzdHJhY3Rpb24gbGF5ZXIKPiAgICBBU29DOiBBTUQ6IGFk
+ZCBBTUQgQVNvQyBBQ1AgMi54IERNQSBkcml2ZXIKPiAgICBBU29DOiBBTUQ6IGFkZCBwbSBvcHMK
+PiAgICBBU29DOiBBTUQ6IE1hbmFnZSBBQ1AgMi54IFNSQU0gYmFua3MgcG93ZXIKClRoZSB3aG9s
+ZSBzZXJpZXMgaXMgQWNrZWQtYnk6IENocmlzdGlhbiBLw7ZuaWcgPGNocmlzdGlhbi5rb2VuaWdA
+YW1kLmNvbT4KClJlZ2FyZHMsCkNocmlzdGlhbi4KCj4KPiAgIGRyaXZlcnMvYmFzZS9wb3dlci9k
+b21haW4uYyAgICAgICAgICAgICAgICAgIHwgICAgMiArCj4gICBkcml2ZXJzL2dwdS9kcm0vS2Nv
+bmZpZyAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKwo+ICAgZHJpdmVycy9ncHUvZHJtL2Ft
+ZC9hY3AvS2NvbmZpZyAgICAgICAgICAgICAgfCAgIDExICsKPiAgIGRyaXZlcnMvZ3B1L2RybS9h
+bWQvYWNwL01ha2VmaWxlICAgICAgICAgICAgIHwgICAgOSArCj4gICBkcml2ZXJzL2dwdS9kcm0v
+YW1kL2FjcC9hY3BfaHcuYyAgICAgICAgICAgICB8ICAgNTAgKwo+ICAgZHJpdmVycy9ncHUvZHJt
+L2FtZC9hY3AvaW5jbHVkZS9hY3BfZ2Z4X2lmLmggfCAgIDM0ICsKPiAgIGRyaXZlcnMvZ3B1L2Ry
+bS9hbWQvYW1kZ3B1L01ha2VmaWxlICAgICAgICAgIHwgICAxMyArLQo+ICAgZHJpdmVycy9ncHUv
+ZHJtL2FtZC9hbWRncHUvYW1kZ3B1LmggICAgICAgICAgfCAgIDEyICsKPiAgIGRyaXZlcnMvZ3B1
+L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYyAgICAgIHwgIDUwMSArKysrKysKPiAgIGRyaXZl
+cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuaCAgICAgIHwgICA0MiArCj4gICBkcml2
+ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfY2dzLmMgICAgICB8ICAgMzYgKwo+ICAgZHJp
+dmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2lycS5jICAgICAgfCAgMTA4ICstCj4gICBk
+cml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfaXJxLmggICAgICB8ICAgIDkgKwo+ICAg
+ZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvY2lrX2loLmMgICAgICAgICAgfCAgICA2ICsKPiAg
+IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2N6X2loLmMgICAgICAgICAgIHwgICAgNyArCj4g
+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9pY2VsYW5kX2loLmMgICAgICB8ICAgIDcgKwo+
+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvdG9uZ2FfaWguYyAgICAgICAgfCAgICA3ICsK
+PiAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L3ZpLmMgICAgICAgICAgICAgIHwgICAxMiAr
+Cj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2luY2x1ZGUvYW1kX3NoYXJlZC5oICAgICB8ICAgIDEg
+Kwo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9pbmNsdWRlL2Nnc19jb21tb24uaCAgICAgfCAgIDM0
+ICsKPiAgIGluY2x1ZGUvc291bmQvZGVzaWdud2FyZV9pMnMuaCAgICAgICAgICAgICAgIHwgICAg
+NSArCj4gICBzb3VuZC9zb2MvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
+IDEgKwo+ICAgc291bmQvc29jL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+ICAxICsKPiAgIHNvdW5kL3NvYy9hbWQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAgNCArCj4gICBzb3VuZC9zb2MvYW1kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgIDMgKwo+ICAgc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jICAgICAgICAgICAgICAgICAg
+fCAgNTYwICsrKysrKysKPiAgIHNvdW5kL3NvYy9hbWQvYWNwLmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDY2NiArKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgMTQwICsrCj4gICBzb3VuZC9zb2MvYW1kL2luY2x1ZGUvYWNwXzJf
+Ml9kLmggICAgICAgICAgICB8ICA2MDkgKysrKysrKwo+ICAgc291bmQvc29jL2FtZC9pbmNsdWRl
+L2FjcF8yXzJfZW51bS5oICAgICAgICAgfCAxMDY4ICsrKysrKysrKysrKwo+ICAgc291bmQvc29j
+L2FtZC9pbmNsdWRlL2FjcF8yXzJfc2hfbWFzay5oICAgICAgfCAyMjkyICsrKysrKysrKysrKysr
+KysrKysrKysrKysrCj4gICBzb3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJzLmMgICAgICAgICAg
+ICAgICB8ICAxMTMgKy0KPiAgIDMyIGZpbGVzIGNoYW5nZWQsIDYzMjUgaW5zZXJ0aW9ucygrKSwg
+NDAgZGVsZXRpb25zKC0pCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2Ft
+ZC9hY3AvS2NvbmZpZwo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQv
+YWNwL01ha2VmaWxlCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9h
+Y3AvYWNwX2h3LmMKPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2Fj
+cC9pbmNsdWRlL2FjcF9nZnhfaWYuaAo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1
+L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZl
+cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuaAo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IHNvdW5kL3NvYy9hbWQvS2NvbmZpZwo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9h
+bWQvTWFrZWZpbGUKPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvYW1kL2FjcC1wY20t
+ZG1hLmMKPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvYW1kL2FjcC5jCj4gICBjcmVh
+dGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3AuaAo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX2QuaAo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX2VudW0uaAo+ICAgY3JlYXRlIG1vZGUgMTAw
+NjQ0IHNvdW5kL3NvYy9hbWQvaW5jbHVkZS9hY3BfMl8yX3NoX21hc2suaAo+CgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
+aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
