@@ -1,52 +1,52 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Subject: Re: [PATCH 2/2] dt-bindings: sound: add devicetree document for rt5616
-Date: Mon, 21 Dec 2015 15:10:57 +0100
-Message-ID: <1511057.C46mHiuCd6@diego>
-References: <1450703894-32623-1-git-send-email-wxt@rock-chips.com> <1450703894-32623-2-git-send-email-wxt@rock-chips.com>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: Re: [PATCH 2/2] dt-bindings: sound: add devicetree
+ document for rt5616
+Date: Mon, 21 Dec 2015 22:44:59 +0800
+Message-ID: <5678106B.8010302@rock-chips.com>
+References: <1450703894-32623-1-git-send-email-wxt@rock-chips.com>
+ <1450703894-32623-2-git-send-email-wxt@rock-chips.com>
+ <1511057.C46mHiuCd6@diego>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1450703894-32623-2-git-send-email-wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1208426129A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 15:45:06 +0100 (CET)
+In-Reply-To: <1511057.C46mHiuCd6@diego>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Am Montag, 21. Dezember 2015, 21:18:14 schrieb Caesar Wang:
-> Add the description for rt5616 codec.
-> 
-> Signed-off-by: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> ---
-> 
->  Documentation/devicetree/bindings/sound/rt5616.txt | 38
-> ++++++++++++++++++++++ 1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt
-> b/Documentation/devicetree/bindings/sound/rt5616.txt new file mode 100644
-> index 0000000..af96207
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/rt5616.txt
-> @@ -0,0 +1,38 @@
-> +RT5616 audio CODEC
-> +
-> +This device supports I2C only.
-> +
-> +Required properties:
-> +
-> +- compatible : "realtek,rt5616".
-> +
-> +- reg : The I2C address of the device.
-> +
-> +Optional properties:
-
-you don't have optional properties, so that headline should probably also not 
-be here.
-
-
-Heiko
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+CgrlnKggMjAxNeW5tDEy5pyIMjHml6UgMjI6MTAsIEhlaWtvIFN0w7xibmVyIOWGmemBkzoKPiBB
+bSBNb250YWcsIDIxLiBEZXplbWJlciAyMDE1LCAyMToxODoxNCBzY2hyaWViIENhZXNhciBXYW5n
+Ogo+PiBBZGQgdGhlIGRlc2NyaXB0aW9uIGZvciBydDU2MTYgY29kZWMuCj4+Cj4+IFNpZ25lZC1v
+ZmYtYnk6IENhZXNhciBXYW5nIDx3eHRAcm9jay1jaGlwcy5jb20+Cj4+IC0tLQo+Pgo+PiAgIERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9ydDU2MTYudHh0IHwgMzgKPj4g
+KysrKysrKysrKysrKysrKysrKysrKyAxIGZpbGUgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKQo+
+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c291bmQvcnQ1NjE2LnR4dAo+Pgo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3NvdW5kL3J0NTYxNi50eHQKPj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc291bmQvcnQ1NjE2LnR4dCBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRl
+eCAwMDAwMDAwLi5hZjk2MjA3Cj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3J0NTYxNi50eHQKPj4gQEAgLTAsMCArMSwzOCBA
+QAo+PiArUlQ1NjE2IGF1ZGlvIENPREVDCj4+ICsKPj4gK1RoaXMgZGV2aWNlIHN1cHBvcnRzIEky
+QyBvbmx5Lgo+PiArCj4+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+PiArCj4+ICstIGNvbXBhdGli
+bGUgOiAicmVhbHRlayxydDU2MTYiLgo+PiArCj4+ICstIHJlZyA6IFRoZSBJMkMgYWRkcmVzcyBv
+ZiB0aGUgZGV2aWNlLgo+PiArCj4+ICtPcHRpb25hbCBwcm9wZXJ0aWVzOgo+IHlvdSBkb24ndCBo
+YXZlIG9wdGlvbmFsIHByb3BlcnRpZXMsIHNvIHRoYXQgaGVhZGxpbmUgc2hvdWxkIHByb2JhYmx5
+IGFsc28gbm90Cj4gYmUgaGVyZS4KClllcCwgdGhhdCBzaG91bGQgcmVtb3ZlIGluIGhlcmUuIDot
+KAoKVGhhbmtz77yBCj4KPgo+IEhlaWtvCj4KPgo+CgotLSAKY2Flc2FyIHdhbmcgfCBzb2Z0d2Fy
+ZSBlbmdpbmVlciB8IHd4dEByb2NrLWNoaXAuY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
