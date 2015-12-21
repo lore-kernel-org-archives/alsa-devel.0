@@ -1,875 +1,597 @@
-From: Yassin Jaffer <yassinjaffer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v7 2/2] sun4i-codec: Add FM, Line and Mic inputs
-Date: Mon, 21 Dec 2015 12:06:50 +1100
-Message-ID: <CAJzetvvC3LBr+2LUKthKkhcHZ2xLMN+jwOSMduCHgHJNL0=uZQ@mail.gmail.com>
-References: <20151219034511.372575d3@dayas>
-	<20151219035936.1880d07f@dayas>
-Reply-To: yassinjaffer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH 3/8] ASoC: Intel: Skylake: Add Nuvoton
+ Maxim machine driver
+Date: Sun, 20 Dec 2015 17:36:57 -0800
+Message-ID: <CAOMFOmVPvSw5QDuPTQF9tawiV6nCu6zKU5UbrfP-p+QXREJFqA@mail.gmail.com>
+References: <1449862153-68738-1-git-send-email-yang.a.fang@intel.com>
+ <1449862153-68738-3-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary=089e0149c028a0c23105275e1a8b
-Return-path: <linux-sunxi+bncBDCKXM7WZYLRBK5B3WZQKGQEOUMG7UQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151219035936.1880d07f@dayas>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
+ [209.85.223.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDC942610A3
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 02:36:59 +0100 (CET)
+Received: by mail-io0-f194.google.com with SMTP id k127so1254248iok.1
+ for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2015 17:36:59 -0800 (PST)
+In-Reply-To: <1449862153-68738-3-git-send-email-yang.a.fang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Yang Fang <yang.a.fang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, rohit.m.ainapure@intel.com, james.ausmus@intel.com, Vinod Koul <vinod.koul@intel.com>, joe.konno@intel.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---089e0149c028a0c23105275e1a8b
-Content-Type: text/plain; charset=UTF-8
+Hi Yang
 
-Hi Danny
-
-+       {"Capture Source", "Line-In", "Line-In"},
-+       {"Capture Source", "FM", "FM"},
-The ADC Capturing Sources routing doesn't look right.
-There is no FM/Line-In source widgets for this routing n your patch.
-+       {"Capture Source", "Line-In,Mic1", "Line-In"},
-+       {"Capture Source", "Line-In,Mic1", "MIC1 Pre-Amplifier"},
-and her too.
-
-I'm not familiar with the CODEC ADC mux but you may want to use
-        {"Capture Source", "Line-In", "Line-In Right"},
-        {"Capture Source", "Line-In", "Line-In Left"},
-        {"Capture Source", "FM", "FM Right"},
-        {"Capture Source", "FM", "FM Left"},
-
-Regards
-
-On Sat, Dec 19, 2015 at 1:59 PM, Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
-> wrote:
-
-> This is the second part, actually adding FM, Line and Mic inputs.
+On Fri, Dec 11, 2015 at 11:29 AM,  <yang.a.fang@intel.com> wrote:
+> From: Rohit Ainapure <rohit.m.ainapure@intel.com>
 >
-> Signed-off-by: Danny Milosavljevic <dannym+a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+> This adds Skylake I2S machine driver which uses NAU88L25 as anlog codec and
+> MAX98357A as speakers
+>
+> Signed-off-by: Rohit Ainapure <rohit.m.ainapure@intel.com>
+> Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 > ---
->  b/sound/soc/sunxi/sun4i-codec.c |  182
-> +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 178 insertions(+), 4 deletions(-)
+>  sound/soc/intel/Kconfig                         |   14 +
+>  sound/soc/intel/boards/Makefile                 |    2 +
+>  sound/soc/intel/boards/skl_nau88l25_max98357a.c |  485 +++++++++++++++++++++++
+>  3 files changed, 501 insertions(+)
+>  create mode 100644 sound/soc/intel/boards/skl_nau88l25_max98357a.c
 >
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index 6628e6e..9a9ad62 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -59,9 +59,20 @@
->  #define SUN4I_CODEC_DAC_ACTL_DACAENR                   (31)
->  #define SUN4I_CODEC_DAC_ACTL_DACAENL                   (30)
->  #define SUN4I_CODEC_DAC_ACTL_MIXEN                     (29)
-> +#define SUN4I_CODEC_DAC_ACTL_LNG                       (26)
-> +#define SUN4I_CODEC_DAC_ACTL_FMG                       (23)
-> +#define SUN4I_CODEC_DAC_ACTL_MICG                      (20)
-> +#define SUN4I_CODEC_DAC_ACTL_LLNS                      (19)
-> +#define SUN4I_CODEC_DAC_ACTL_RLNS                      (18)
-> +#define SUN4I_CODEC_DAC_ACTL_LFMS                      (17)
-> +#define SUN4I_CODEC_DAC_ACTL_RFMS                      (16)
->  #define SUN4I_CODEC_DAC_ACTL_LDACLMIXS                 (15)
->  #define SUN4I_CODEC_DAC_ACTL_RDACRMIXS                 (14)
->  #define SUN4I_CODEC_DAC_ACTL_LDACRMIXS                 (13)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC1LS                    (12)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC1RS                    (11)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC2LS                    (10)
-> +#define SUN4I_CODEC_DAC_ACTL_MIC2RS                    (9)
->  #define SUN4I_CODEC_DAC_ACTL_DACPAS                    (8)
->  #define SUN4I_CODEC_DAC_ACTL_MIXPAS                    (7)
->  #define SUN4I_CODEC_DAC_ACTL_PA_MUTE                   (6)
-> @@ -87,8 +98,11 @@
->  #define SUN4I_CODEC_ADC_ACTL_PREG1EN                   (29)
->  #define SUN4I_CODEC_ADC_ACTL_PREG2EN                   (28)
->  #define SUN4I_CODEC_ADC_ACTL_VMICEN                    (27)
-> -#define SUN4I_CODEC_ADC_ACTL_VADCG                     (20)
-> +#define SUN4I_CODEC_ADC_ACTL_PREG1_A10                 (25)
-> +#define SUN4I_CODEC_ADC_ACTL_PREG2_A10                 (23)
-> +#define SUN4I_CODEC_ADC_ACTL_ADCG                      (20)
->  #define SUN4I_CODEC_ADC_ACTL_ADCIS                     (17)
-> +#define SUN4I_CODEC_ADC_ACTL_LNRDF                     (16)
->  #define SUN4I_CODEC_ADC_ACTL_PA_EN                     (4)
->  #define SUN4I_CODEC_ADC_ACTL_DDE                       (3)
->  #define SUN4I_CODEC_ADC_DEBUG                  (0x2c)
-> @@ -100,6 +114,16 @@
->  #define SUN7I_CODEC_AC_DAC_CAL                 (0x38)
->  #define SUN7I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
->
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1      (29)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2      (26)
-> +/* note: no idea where the output pins for the following are. */
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTG  (5)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTEN (4)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS3 (3)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS2 (2)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS1 (1)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS0 (0)
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index 2d3b124..9b1c0aa 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -169,3 +169,17 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+>           create an alsa sound card for NAU88L25 + SSM4567.
+>           Say Y if you have such a device
+>           If unsure select "N".
 > +
->  struct sun4i_codec {
->         struct device   *dev;
->         struct regmap   *regmap;
-> @@ -509,19 +533,102 @@ static const struct snd_kcontrol_new
-> sun4i_codec_pa_mute =
->                         SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
+> +config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+> +       tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
+
+I there any reason you keep using inconsistent name for this IC. The
+original driver uses "NAU8825" name and the one above is "NAU88L25".
+
+Please keep naming consistent. The driver chip should be names either
+NAU8825 or NAU88L25 but it has to be done everywhere.
+
+I had this question to Vinod earlier as well sent NAU88L25 -> NAU8825
+rename patch but got no reply.
+
+> +       depends on X86_INTEL_LPSS && I2C
+> +       select SND_SOC_INTEL_SST
+> +       select SND_SOC_INTEL_SKYLAKE
+> +       select SND_SOC_NAU8825
+> +       select SND_SOC_MAX98357A
+> +       select SND_SOC_DMIC
+> +       help
+> +         This adds support for ASoC Onboard Codec I2S machine driver. This will
+> +         create an alsa sound card for NAU88L25 + MAX98357A.
+> +         Say Y if you have such a device
+> +         If unsure select "N".
+> diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+> index a59f762..2485ea9 100644
+> --- a/sound/soc/intel/boards/Makefile
+> +++ b/sound/soc/intel/boards/Makefile
+> @@ -7,6 +7,7 @@ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+>  snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
+>  snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
+>  snd-soc-skl_rt286-objs := skl_rt286.o
+> +snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
+>  snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
 >
->  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_linein_loopback_gain_scale,
-> +                           -150,
-> +                           150,
-> +                           0);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_fmin_loopback_gain_scale,
-> +                           -450,
-> +                           150,
-> +                           0);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale,
-> +                           -450,
-> +                           150,
-> +                           0);
-> +static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale_a10,
-> +                           0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-> +                           1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_adc_gain_scale, -450, 150, 0);
-> +/* Sources:
-> + *   A10 User Manual v1.5 20130820
-> + *   A20 User Manual v1.4 20150510
+>  obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+> @@ -18,4 +19,5 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+>  obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
+>  obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
+>  obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+> +obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
+>  obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
+> diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+> new file mode 100644
+> index 0000000..ab7da9c
+> --- /dev/null
+> +++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+> @@ -0,0 +1,485 @@
+> +/*
+> + * Intel Skylake I2S Machine Driver with MAXIM98357A
+> + * and NAU88L25
+> + *
+> + * Copyright (C) 2015, Intel Corporation. All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License version
+> + * 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
 > + */
-> +static const char * const sun4i_codec_capture_source[] = {
-> +       "Line-In",
-> +       "FM",
-> +       "Mic1",
-> +       "Mic2",
-> +       "Mic1,Mic2",
-> +       "Mic1+Mic2",
-> +       "Output Mixer",
-> +       "Line-In,Mic1",
+> +
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/jack.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include "../../codecs/nau8825.h"
+> +
+> +#define SKL_NUVOTON_CODEC_DAI  "nau8825-hifi"
+> +#define SKL_MAXIM_CODEC_DAI "HiFi"
+> +
+> +static struct snd_soc_jack skylake_headset;
+> +static struct snd_soc_card skylake_audio_card;
+> +
+> +static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
+> +{
+> +       struct snd_soc_pcm_runtime *rtd;
+> +
+> +       list_for_each_entry(rtd, &card->rtd_list, list) {
+> +
+> +               if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
+> +                            strlen(SKL_NUVOTON_CODEC_DAI)))
+> +                       return rtd->codec_dai;
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static int platform_clock_control(struct snd_soc_dapm_widget *w,
+> +       struct snd_kcontrol *k, int  event)
+> +{
+> +       struct snd_soc_dapm_context *dapm = w->dapm;
+> +       struct snd_soc_card *card = dapm->card;
+> +       struct snd_soc_dai *codec_dai;
+> +       int ret;
+> +
+> +       codec_dai = skl_get_codec_dai(card);
+> +       if (!codec_dai) {
+> +               dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
+> +               return -EIO;
+> +       }
+> +
+> +       if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +               ret = snd_soc_dai_set_sysclk(codec_dai,
+> +                               NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+> +               if (ret < 0) {
+> +                       dev_err(card->dev, "set sysclk err = %d\n", ret);
+> +                       return -EIO;
+> +               }
+> +       } else {
+> +               ret = snd_soc_dai_set_sysclk(codec_dai,
+> +                               NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
+> +               if (ret < 0) {
+> +                       dev_err(card->dev, "set sysclk err = %d\n", ret);
+> +                       return -EIO;
+> +               }
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static const struct snd_kcontrol_new skylake_controls[] = {
+> +       SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+> +       SOC_DAPM_PIN_SWITCH("Headset Mic"),
+> +       SOC_DAPM_PIN_SWITCH("Spk"),
 > +};
-> +static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
-> +                           SUN4I_CODEC_ADC_ACTL,
-> +                           SUN4I_CODEC_ADC_ACTL_ADCIS,
-> +                           sun4i_codec_capture_source);
 > +
-> +static const struct snd_kcontrol_new sun4i_codec_capture_source_controls =
-> +       SOC_DAPM_ENUM("Route", sun4i_codec_enum_capture_source);
->
->  #define SUN4I_COMMON_CODEC_WIDGETS \
-> -       SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
-> -                      SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
-> -                      sun4i_codec_pa_volume_scale)
-> +       SOC_SINGLE_TLV("Power Amplifier Playback Volume",
-> SUN4I_CODEC_DAC_ACTL,\
-> +                      SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0, \
-> +                      sun4i_codec_pa_volume_scale), \
-> +       /* Line-In, FM, Mic1, Mic2 */ \
-> +       SOC_SINGLE_TLV("Line-In Playback Volume", \
-> +                      SUN4I_CODEC_DAC_ACTL, \
-> +                      SUN4I_CODEC_DAC_ACTL_LNG, \
-> +                      1, \
-> +                      0, \
-> +                      sun4i_codec_linein_loopback_gain_scale), \
-> +       SOC_SINGLE_TLV("FM Playback Volume", \
-> +                      SUN4I_CODEC_DAC_ACTL, \
-> +                      SUN4I_CODEC_DAC_ACTL_FMG, \
-> +                      3, \
-> +                      0, \
-> +                      sun4i_codec_fmin_loopback_gain_scale), \
-> +       SOC_SINGLE_TLV("Mic Playback Volume", \
-> +                      SUN4I_CODEC_DAC_ACTL, \
-> +                      SUN4I_CODEC_DAC_ACTL_MICG, \
-> +                      7, \
-> +                      0, \
-> +                      sun4i_codec_micin_loopback_gain_scale), \
-> +       /* ADC */ \
-> +       SOC_SINGLE_TLV("Capture Volume", \
-> +                      SUN4I_CODEC_ADC_ACTL, \
-> +                      SUN4I_CODEC_ADC_ACTL_ADCG, \
-> +                      4, \
-> +                      0, \
-> +                      sun4i_codec_adc_gain_scale)
->
->  static const struct snd_kcontrol_new sun4i_codec_widgets_a10[] = {
->         SUN4I_COMMON_CODEC_WIDGETS,
-> +       SOC_SINGLE_TLV("Mic1 Capture Volume",
-> +                      SUN4I_CODEC_ADC_ACTL,
-> +                      SUN4I_CODEC_ADC_ACTL_PREG1_A10,
-> +                      3,
-> +                      0,
-> +                      sun4i_codec_micin_preamp_gain_scale_a10),
-> +       SOC_SINGLE_TLV("Mic2 Capture Volume",
-> +                      SUN4I_CODEC_ADC_ACTL,
-> +                      SUN4I_CODEC_ADC_ACTL_PREG2_A10,
-> +                      3,
-> +                      0,
-> +                      sun4i_codec_micin_preamp_gain_scale_a10),
->  };
->
->  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
->         SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
->                         SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
-> +       SOC_DAPM_SINGLE("Left Line-In Playback Switch",
-> SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_LLNS, 1, 0),
-> +       SOC_DAPM_SINGLE("Left FM Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_LFMS, 1, 0),
-> +       SOC_DAPM_SINGLE("Mic1 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_MIC1LS, 1, 0),
-> +       SOC_DAPM_SINGLE("Mic2 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_MIC2LS, 1, 0),
->  };
->
->  static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] =
-> {
-> @@ -529,6 +636,14 @@ static const struct snd_kcontrol_new
-> sun4i_codec_right_mixer_controls[] = {
->                         SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
->         SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
->                         SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
-> +       SOC_DAPM_SINGLE("Right Line-In Playback Switch",
-> SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_RLNS, 1, 0),
-> +       SOC_DAPM_SINGLE("Right FM Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_RFMS, 1, 0),
-> +       SOC_DAPM_SINGLE("Mic1 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_MIC1RS, 1, 0),
-> +       SOC_DAPM_SINGLE("Mic2 Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> +                       SUN4I_CODEC_DAC_ACTL_MIC2RS, 1, 0),
->  };
->
->  static const struct snd_kcontrol_new sun4i_codec_pa_mixer_controls[] = {
-> @@ -561,6 +676,10 @@ static const struct snd_soc_dapm_widget
-> sun4i_codec_codec_dapm_widgets[] = {
->         SND_SOC_DAPM_DAC("Right DAC", "Codec Playback",
-> SUN4I_CODEC_DAC_ACTL,
->                          SUN4I_CODEC_DAC_ACTL_DACAENR, 0),
->
-> +       /* MUX */
-> +       SND_SOC_DAPM_MUX("Capture Source", SND_SOC_NOPM, 0, 0,
-> +                        &sun4i_codec_capture_source_controls),
+> +static const struct snd_soc_dapm_widget skylake_widgets[] = {
+> +       SND_SOC_DAPM_HP("Headphone Jack", NULL),
+> +       SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> +       SND_SOC_DAPM_SPK("Spk", NULL),
+> +       SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+> +       SND_SOC_DAPM_SINK("WoV Sink"),
+> +       SND_SOC_DAPM_SPK("DP", NULL),
+> +       SND_SOC_DAPM_SPK("HDMI", NULL),
+> +       SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+> +                       platform_clock_control, SND_SOC_DAPM_PRE_PMU |
+> +                       SND_SOC_DAPM_POST_PMD),
+> +};
 > +
->         /* Mixers */
->         SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
->                            sun4i_codec_left_mixer_controls,
-> @@ -580,6 +699,8 @@ static const struct snd_soc_dapm_widget
-> sun4i_codec_codec_dapm_widgets[] = {
->         /* Mic Pre-Amplifiers */
->         SND_SOC_DAPM_PGA("MIC1 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
->                          SUN4I_CODEC_ADC_ACTL_PREG1EN, 0, NULL, 0),
-> +       SND_SOC_DAPM_PGA("MIC2 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
-> +                        SUN4I_CODEC_ADC_ACTL_PREG2EN, 0, NULL, 0),
->
->         /* Power Amplifier */
->         SND_SOC_DAPM_MIXER("Power Amplifier", SUN4I_CODEC_ADC_ACTL,
-> @@ -590,9 +711,15 @@ static const struct snd_soc_dapm_widget
-> sun4i_codec_codec_dapm_widgets[] = {
->                             &sun4i_codec_pa_mute),
->
->         SND_SOC_DAPM_INPUT("Mic1"),
-> +       SND_SOC_DAPM_INPUT("Mic2"),
->
->         SND_SOC_DAPM_OUTPUT("HP Right"),
->         SND_SOC_DAPM_OUTPUT("HP Left"),
+> +static const struct snd_soc_dapm_route skylake_map[] = {
+> +       /* HP jack connectors - unknown if we have jack detection */
+> +       { "Headphone Jack", NULL, "HPOL" },
+> +       { "Headphone Jack", NULL, "HPOR" },
 > +
-> +       SND_SOC_DAPM_INPUT("Line-In Right"),
-> +       SND_SOC_DAPM_INPUT("Line-In Left"),
-> +       SND_SOC_DAPM_INPUT("FM Right"),
-> +       SND_SOC_DAPM_INPUT("FM Left"),
->  };
->
->  static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
-> @@ -629,6 +756,36 @@ static const struct snd_soc_dapm_route
-> sun4i_codec_codec_dapm_routes[] = {
->         { "Right ADC", NULL, "MIC1 Pre-Amplifier" },
->         { "MIC1 Pre-Amplifier", NULL, "Mic1"},
->         { "Mic1", NULL, "VMIC" },
-> +       { "Right Mixer", "Mic1 Playback Switch", "MIC1 Pre-Amplifier" },
-> +       { "Left Mixer", "Mic1 Playback Switch", "MIC1 Pre-Amplifier" },
+> +       /* speaker */
+> +       { "Spk", NULL, "Speaker" },
 > +
-> +       /* Mic2 Routes */
-> +       { "Left ADC", NULL, "MIC2 Pre-Amplifier" },
-> +       { "Right ADC", NULL, "MIC2 Pre-Amplifier" },
-> +       { "MIC2 Pre-Amplifier", NULL, "Mic2"},
-> +       { "Mic2", NULL, "VMIC" },
-> +       { "Right Mixer", "Mic2 Playback Switch", "MIC2 Pre-Amplifier" },
-> +       { "Left Mixer", "Mic2 Playback Switch", "MIC2 Pre-Amplifier" },
+> +       /* other jacks */
+> +       { "MIC", NULL, "Headset Mic" },
+> +       { "DMic", NULL, "SoC DMIC" },
 > +
-> +       /* Line-In, FM Routes */
-> +       { "Right Mixer", "Right Line-In Playback Switch", "Line-In Right"
-> },
-> +       { "Left Mixer", "Left Line-In Playback Switch", "Line-In Left" },
-> +       { "Right Mixer", "Right FM Playback Switch", "FM Right" },
-> +       { "Left Mixer", "Left FM Playback Switch", "FM Left" },
+> +       {"WoV Sink", NULL, "hwd_in sink"},
+> +       {"HDMI", NULL, "hif5 Output"},
+> +       {"DP", NULL, "hif6 Output"},
 > +
-> +       /* ADC Capturing Sources */
-> +       {"Capture Source", "Line-In", "Line-In"},
-> +       {"Capture Source", "FM", "FM"},
-> +       {"Capture Source", "Mic1", "MIC1 Pre-Amplifier"},
-> +       {"Capture Source", "Mic2", "MIC2 Pre-Amplifier"},
-> +       {"Capture Source", "Mic1,Mic2", "MIC1 Pre-Amplifier"},
-> +       {"Capture Source", "Mic1,Mic2", "MIC2 Pre-Amplifier"},
-> +       {"Capture Source", "Mic1+Mic2", "MIC1 Pre-Amplifier"},
-> +       {"Capture Source", "Mic1+Mic2", "MIC2 Pre-Amplifier"},
-> +       {"Capture Source", "Output Mixer", "Left Mixer"},
-> +       {"Capture Source", "Output Mixer", "Right Mixer"},
-> +       {"Capture Source", "Line-In,Mic1", "Line-In"},
-> +       {"Capture Source", "Line-In,Mic1", "MIC1 Pre-Amplifier"},
->  };
->
->  static struct snd_soc_codec_driver sun4i_codec_codec_a10 = {
-> @@ -757,8 +914,25 @@ static struct snd_soc_card
-> *sun4i_codec_create_card(struct device *dev)
->         return card;
->  };
->
-> +static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
-> +       0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-> +       1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0)
-> +);
+> +       /* CODEC BE connections */
+> +       { "HiFi Playback", NULL, "ssp0 Tx" },
+> +       { "ssp0 Tx", NULL, "codec0_out" },
 > +
->  static const struct snd_kcontrol_new sun7i_codec_widgets[] = {
->         SUN4I_COMMON_CODEC_WIDGETS,
-> +       SOC_SINGLE_TLV("Mic1 Capture Volume",
-> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL,
-> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1,
-> +                      7,
-> +                      0,
-> +                      sun7i_codec_micin_preamp_gain_scale),
-> +       SOC_SINGLE_TLV("Mic2 Capture Volume",
-> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL,
-> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2,
-> +                      7,
-> +                      0,
-> +                      sun7i_codec_micin_preamp_gain_scale),
->  };
->
->  static struct snd_soc_codec_driver sun7i_codec_codec = {
->
+> +       { "Playback", NULL, "ssp1 Tx" },
+> +       { "ssp1 Tx", NULL, "codec1_out" },
+> +
+> +       { "codec0_in", NULL, "ssp1 Rx" },
+> +       { "ssp1 Rx", NULL, "Capture" },
+> +
+> +       /* DMIC */
+> +       { "dmic01_hifi", NULL, "DMIC01 Rx" },
+> +       { "DMIC01 Rx", NULL, "DMIC AIF" },
+> +       { "hifi1", NULL, "iDisp Tx"},
+> +       { "iDisp Tx", NULL, "iDisp_out"},
+> +       { "Headphone Jack", NULL, "Platform Clock" },
+> +       { "Headset Mic", NULL, "Platform Clock" },
+> +};
+> +
+> +static int skylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+> +       struct snd_pcm_hw_params *params)
+> +{
+> +       struct snd_interval *rate = hw_param_interval(params,
+> +                       SNDRV_PCM_HW_PARAM_RATE);
+> +       struct snd_interval *channels = hw_param_interval(params,
+> +                       SNDRV_PCM_HW_PARAM_CHANNELS);
+> +       struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+> +
+> +       /* The ADSP will covert the FE rate to 48k, stereo */
+> +       rate->min = rate->max = 48000;
+> +       channels->min = channels->max = 2;
+> +
+> +       /* set SSP0 to 24 bit */
+> +       snd_mask_none(fmt);
+> +       snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
+> +
+> +       return 0;
+> +}
+> +
+> +static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +       int ret;
+> +       struct snd_soc_codec *codec = rtd->codec;
+> +
+> +       /*
+> +        * Headset buttons map to the google Reference headset.
+> +        * These can be configured by userspace.
+> +        */
+> +       ret = snd_soc_card_jack_new(&skylake_audio_card, "Headset Jack",
+> +                       SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> +                       SND_JACK_BTN_2 | SND_JACK_BTN_3, &skylake_headset,
+> +                       NULL, 0);
+> +       if (ret) {
+> +               dev_err(rtd->dev, "Headset Jack creation failed %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       nau8825_enable_jack_detect(codec, &skylake_headset);
+> +
+> +       snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
+> +       snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
+> +
+> +       return ret;
+> +}
+> +
+> +static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +       struct snd_soc_dapm_context *dapm;
+> +       struct snd_soc_component *component = rtd->cpu_dai->component;
+> +
+> +       dapm = snd_soc_component_get_dapm(component);
+> +       snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
+> +
+> +       return 0;
+> +}
+> +
+> +static unsigned int rates[] = {
+> +       48000,
+> +};
+> +
+> +static struct snd_pcm_hw_constraint_list constraints_rates = {
+> +       .count = ARRAY_SIZE(rates),
+> +       .list  = rates,
+> +       .mask = 0,
+> +};
+> +
+> +static unsigned int channels[] = {
+> +       2,
+> +};
+> +
+> +static struct snd_pcm_hw_constraint_list constraints_channels = {
+> +       .count = ARRAY_SIZE(channels),
+> +       .list = channels,
+> +       .mask = 0,
+> +};
+> +
+> +static int skl_fe_startup(struct snd_pcm_substream *substream)
+> +{
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+> +
+> +       /*
+> +        * On this platform for PCM device we support,
+> +        * 48Khz
+> +        * stereo
+> +        * 16 bit audio
+> +        */
+> +
+> +       runtime->hw.channels_max = 2;
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                                          &constraints_channels);
+> +
+> +       runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+> +       snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
+> +
+> +       snd_pcm_hw_constraint_list(runtime, 0,
+> +                               SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct snd_soc_ops skylake_nau8825_fe_ops = {
+> +       .startup = skl_fe_startup,
+> +};
+> +
+> +static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
+> +       struct snd_pcm_hw_params *params)
+> +{
+> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +       struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +       int ret;
+> +
+> +       ret = snd_soc_dai_set_sysclk(codec_dai,
+> +                       NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+> +
+> +       if (ret < 0)
+> +               dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
+> +
+> +       return ret;
+> +}
+> +
+> +static struct snd_soc_ops skylake_nau8825_ops = {
+> +       .hw_params = skylake_nau8825_hw_params,
+> +};
+> +
+> +static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+> +               struct snd_pcm_hw_params *params)
+> +{
+> +       struct snd_interval *channels = hw_param_interval(params,
+> +                               SNDRV_PCM_HW_PARAM_CHANNELS);
+> +
+> +       if (params_channels(params) == 2)
+> +               channels->min = channels->max = 2;
+> +       else
+> +               channels->min = channels->max = 4;
+> +
+> +       return 0;
+> +}
+> +
+> +static unsigned int channels_dmic[] = {
+> +       2, 4,
+> +};
+> +
+> +static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+> +       .count = ARRAY_SIZE(channels_dmic),
+> +       .list = channels_dmic,
+> +       .mask = 0,
+> +};
+> +
+> +static int skylake_dmic_startup(struct snd_pcm_substream *substream)
+> +{
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+> +
+> +       runtime->hw.channels_max = 4;
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                       &constraints_dmic_channels);
+> +
+> +       return snd_pcm_hw_constraint_list(substream->runtime, 0,
+> +                       SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+> +}
+> +
+> +static struct snd_soc_ops skylake_dmic_ops = {
+> +       .startup = skylake_dmic_startup,
+> +};
+> +
+> +static unsigned int rates_16000[] = {
+> +       16000,
+> +};
+> +
+> +static struct snd_pcm_hw_constraint_list constraints_16000 = {
+> +       .count = ARRAY_SIZE(rates_16000),
+> +       .list  = rates_16000,
+> +};
+> +
+> +static int skylake_refcap_startup(struct snd_pcm_substream *substream)
+> +{
+> +       return snd_pcm_hw_constraint_list(substream->runtime, 0,
+> +                               SNDRV_PCM_HW_PARAM_RATE,
+> +                               &constraints_16000);
+> +}
+> +
+> +static struct snd_soc_ops skylaye_refcap_ops = {
+> +       .startup = skylake_refcap_startup,
+> +};
+> +
+> +/* skylake digital audio interface glue - connects codec <--> CPU */
+> +static struct snd_soc_dai_link skylake_dais[] = {
+> +       /* Front End DAI links */
+> +       {
+> +               .name = "Skl Audio Port",
+> +               .stream_name = "Audio",
+> +               .cpu_dai_name = "System Pin",
+> +               .platform_name = "0000:00:1f.3",
+> +               .dynamic = 1,
+> +               .codec_name = "snd-soc-dummy",
+> +               .codec_dai_name = "snd-soc-dummy-dai",
+> +               .nonatomic = 1,
+> +               .init = skylake_nau8825_fe_init,
+> +               .trigger = {
+> +                       SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> +               .dpcm_playback = 1,
+> +               .ops = &skylake_nau8825_fe_ops,
+> +       },
+> +       {
+> +               .name = "Skl Audio Capture Port",
+> +               .stream_name = "Audio Record",
+> +               .cpu_dai_name = "System Pin",
+> +               .platform_name = "0000:00:1f.3",
+> +               .dynamic = 1,
+> +               .codec_name = "snd-soc-dummy",
+> +               .codec_dai_name = "snd-soc-dummy-dai",
+> +               .nonatomic = 1,
+> +               .trigger = {
+> +                       SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> +               .dpcm_capture = 1,
+> +               .ops = &skylake_nau8825_fe_ops,
+> +       },
+> +       {
+> +               .name = "Skl Audio Reference cap",
+> +               .stream_name = "Wake on Voice",
+> +               .cpu_dai_name = "Reference Pin",
+> +               .codec_name = "snd-soc-dummy",
+> +               .codec_dai_name = "snd-soc-dummy-dai",
+> +               .platform_name = "0000:00:1f.3",
+> +               .init = NULL,
+> +               .dpcm_capture = 1,
+> +               .ignore_suspend = 1,
+> +               .nonatomic = 1,
+> +               .dynamic = 1,
+> +               .ops = &skylaye_refcap_ops,
+> +       },
+> +       {
+> +               .name = "Skl Audio DMIC cap",
+> +               .stream_name = "dmiccap",
+> +               .cpu_dai_name = "DMIC Pin",
+> +               .codec_name = "snd-soc-dummy",
+> +               .codec_dai_name = "snd-soc-dummy-dai",
+> +               .platform_name = "0000:00:1f.3",
+> +               .init = NULL,
+> +               .dpcm_capture = 1,
+> +               .nonatomic = 1,
+> +               .dynamic = 1,
+> +               .ops = &skylake_dmic_ops,
+> +       },
+> +       {
+> +               .name = "Skl HDMI Port",
+> +               .stream_name = "Hdmi",
+> +               .cpu_dai_name = "HDMI Pin",
+> +               .codec_name = "snd-soc-dummy",
+> +               .codec_dai_name = "snd-soc-dummy-dai",
+> +               .platform_name = "0000:00:1f.3",
+> +               .dpcm_playback = 1,
+> +               .init = NULL,
+> +               .nonatomic = 1,
+> +               .dynamic = 1,
+> +       },
+> +
+> +       /* Back End DAI links */
+> +       {
+> +               /* SSP0 - Codec */
+> +               .name = "SSP0-Codec",
+> +               .be_id = 0,
+> +               .cpu_dai_name = "SSP0 Pin",
+> +               .platform_name = "0000:00:1f.3",
+> +               .no_pcm = 1,
+> +               .codec_name = "MX98357A:00",
+> +               .codec_dai_name = SKL_MAXIM_CODEC_DAI,
+> +               .dai_fmt = SND_SOC_DAIFMT_I2S |
+> +                       SND_SOC_DAIFMT_NB_NF |
+> +                       SND_SOC_DAIFMT_CBS_CFS,
+> +               .ignore_pmdown_time = 1,
+> +               .be_hw_params_fixup = skylake_ssp_fixup,
+> +               .dpcm_playback = 1,
+> +       },
+> +       {
+> +               /* SSP1 - Codec */
+> +               .name = "SSP1-Codec",
+> +               .be_id = 0,
+> +               .cpu_dai_name = "SSP1 Pin",
+> +               .platform_name = "0000:00:1f.3",
+> +               .no_pcm = 1,
+> +               .codec_name = "i2c-10508825:00",
+> +               .codec_dai_name = SKL_NUVOTON_CODEC_DAI,
+> +               .init = skylake_nau8825_codec_init,
+> +               .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+> +                       SND_SOC_DAIFMT_CBS_CFS,
+> +               .ignore_pmdown_time = 1,
+> +               .be_hw_params_fixup = skylake_ssp_fixup,
+> +               .ops = &skylake_nau8825_ops,
+> +               .dpcm_playback = 1,
+> +               .dpcm_capture = 1,
+> +       },
+> +       {
+> +               .name = "dmic01",
+> +               .be_id = 1,
+> +               .cpu_dai_name = "DMIC01 Pin",
+> +               .codec_name = "dmic-codec",
+> +               .codec_dai_name = "dmic-hifi",
+> +               .platform_name = "0000:00:1f.3",
+> +               .be_hw_params_fixup = skylake_dmic_fixup,
+> +               .ignore_suspend = 1,
+> +               .dpcm_capture = 1,
+> +               .no_pcm = 1,
+> +       },
+> +       {
+> +               .name = "iDisp",
+> +               .be_id = 3,
+> +               .cpu_dai_name = "iDisp Pin",
+> +               .codec_name = "ehdaudio0D2",
+> +               .codec_dai_name = "intel-hdmi-hifi1",
+> +               .platform_name = "0000:00:1f.3",
+> +               .dpcm_playback = 1,
+> +               .no_pcm = 1,
+> +       },
+> +};
+> +
+> +/* skylake audio machine driver for SPT + NAU88L25 */
+> +static struct snd_soc_card skylake_audio_card = {
+> +       .name = "sklnau8825max",
+> +       .owner = THIS_MODULE,
+> +       .dai_link = skylake_dais,
+> +       .num_links = ARRAY_SIZE(skylake_dais),
+> +       .controls = skylake_controls,
+> +       .num_controls = ARRAY_SIZE(skylake_controls),
+> +       .dapm_widgets = skylake_widgets,
+> +       .num_dapm_widgets = ARRAY_SIZE(skylake_widgets),
+> +       .dapm_routes = skylake_map,
+> +       .num_dapm_routes = ARRAY_SIZE(skylake_map),
+> +       .fully_routed = true,
+> +};
+> +
+> +static int skylake_audio_probe(struct platform_device *pdev)
+> +{
+> +       skylake_audio_card.dev = &pdev->dev;
+> +
+> +       return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
+> +}
+> +
+> +static struct platform_driver skylake_audio = {
+> +       .probe = skylake_audio_probe,
+> +       .driver = {
+> +               .name = "skl_nau88l25_max98357a_i2s",
+> +               .pm = &snd_soc_pm_ops,
+> +       },
+> +};
+> +
+> +module_platform_driver(skylake_audio)
+> +
+> +/* Module information */
+> +MODULE_DESCRIPTION("Audio Machine driver-NAU88L25 & MAX98357A in I2S mode");
+> +MODULE_AUTHOR("Rohit Ainapure <rohit.m.ainapure@intel.com");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:skl_nau88l25_max98357a_i2s");
 > --
-> You received this message because you are subscribed to the Google Groups
-> "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-> For more options, visit https://groups.google.com/d/optout.
+> 1.7.9.5
 >
-
--- 
-You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
-
---089e0149c028a0c23105275e1a8b
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div><div><div>Hi Danny<br><br>+=C2=A0 =C2=A0 =C2=A0 =C2=
-=A0{&quot;Capture Source&quot;, &quot;Line-In&quot;, &quot;Line-In&quot;},<=
-br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;FM&quot;, &q=
-uot;FM&quot;},<br>The ADC Capturing Sources routing doesn&#39;t look right.=
- <br></div>There is no FM/Line-In source widgets for this routing n your pa=
-tch.<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Line-In,Mic1=
-&quot;, &quot;Line-In&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Line-In,Mic1=
-&quot;, &quot;MIC1 Pre-Amplifier&quot;},<br></div>and her too.<br><br></div=
->I&#39;m not familiar with the CODEC ADC mux but you may want to use<br>=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {&quot;Capture Source&quot;, &quot;=
-Line-In&quot;, &quot;Line-In Right&quot;},<br>=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 {&quot;Capture Source&quot;, &quot;Line-In&quot;, &quot;Lin=
-e-In Left&quot;},<br>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {&quot;Capt=
-ure Source&quot;, &quot;FM&quot;, &quot;FM Right&quot;},<br>=C2=A0=C2=A0 =
-=C2=A0 =C2=A0=C2=A0 {&quot;Capture Source&quot;, &quot;FM&quot;, &quot;FM L=
-eft&quot;},<br><div><br><div>Regards<br></div><div><span class=3D"im"></spa=
-n></div></div></div><div class=3D"gmail_extra"><br><div class=3D"gmail_quot=
-e">On Sat, Dec 19, 2015 at 1:59 PM, Danny Milosavljevic <span dir=3D"ltr">&=
-lt;<a href=3D"mailto:dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org" target=3D"_blank">dannym@scrat=
-chpost.org</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=
-=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">This is =
-the second part, actually adding FM, Line and Mic inputs.<br>
-<span class=3D""><br>
-Signed-off-by: Danny Milosavljevic &lt;<a href=3D"mailto:dannym%2Ba@scratch=
-post.org">dannym+a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org</a>&gt;<br>
----<br>
-</span>=C2=A0b/sound/soc/sunxi/sun4i-codec.c |=C2=A0 182 ++++++++++++++++++=
-+++++++++++++++++++++-<br>
-=C2=A01 file changed, 178 insertions(+), 4 deletions(-)<br>
-<br>
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c<=
-br>
-index 6628e6e..9a9ad62 100644<br>
---- a/sound/soc/sunxi/sun4i-codec.c<br>
-+++ b/sound/soc/sunxi/sun4i-codec.c<br>
-@@ -59,9 +59,20 @@<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_DACAENR=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(31)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_DACAENL=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(30)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_MIXEN=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(29)<br>
-+#define SUN4I_CODEC_DAC_ACTL_LNG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(26)<br>
-+#define SUN4I_CODEC_DAC_ACTL_FMG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(23)<br>
-+#define SUN4I_CODEC_DAC_ACTL_MICG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (20)<br>
-+#define SUN4I_CODEC_DAC_ACTL_LLNS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (19)<br>
-+#define SUN4I_CODEC_DAC_ACTL_RLNS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (18)<br>
-+#define SUN4I_CODEC_DAC_ACTL_LFMS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (17)<br>
-+#define SUN4I_CODEC_DAC_ACTL_RFMS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (16)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_LDACLMIXS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(15)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_RDACRMIXS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(14)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_LDACRMIXS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(13)<br>
-+#define SUN4I_CODEC_DAC_ACTL_MIC1LS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (12)<br>
-+#define SUN4I_CODEC_DAC_ACTL_MIC1RS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (11)<br>
-+#define SUN4I_CODEC_DAC_ACTL_MIC2LS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (10)<br>
-+#define SUN4I_CODEC_DAC_ACTL_MIC2RS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (9)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_DACPAS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (8)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_MIXPAS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (7)<br>
-=C2=A0#define SUN4I_CODEC_DAC_ACTL_PA_MUTE=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(6)<br>
-@@ -87,8 +98,11 @@<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_PREG1EN=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(29)<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_PREG2EN=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(28)<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_VMICEN=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (27)<br>
--#define SUN4I_CODEC_ADC_ACTL_VADCG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(20)<br>
-+#define SUN4I_CODEC_ADC_ACTL_PREG1_A10=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0(25)<br>
-+#define SUN4I_CODEC_ADC_ACTL_PREG2_A10=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0(23)<br>
-+#define SUN4I_CODEC_ADC_ACTL_ADCG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (20)<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_ADCIS=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(17)<br>
-+#define SUN4I_CODEC_ADC_ACTL_LNRDF=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(16)<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_PA_EN=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(4)<br>
-=C2=A0#define SUN4I_CODEC_ADC_ACTL_DDE=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(3)<br>
-=C2=A0#define SUN4I_CODEC_ADC_DEBUG=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 (0x2c)<br>
-@@ -100,6 +114,16 @@<br>
-=C2=A0#define SUN7I_CODEC_AC_DAC_CAL=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0(0x38)<br>
-=C2=A0#define SUN7I_CODEC_AC_MIC_PHONE_CAL=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0(0x3c)<br>
-<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1=C2=A0 =C2=A0 =C2=A0 (29)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2=C2=A0 =C2=A0 =C2=A0 (26)<br>
-+/* note: no idea where the output pins for the following are. */<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTG=C2=A0 (5)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTEN (4)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS3 (3)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS2 (2)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS1 (1)<br>
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PHONEOUTS0 (0)<br>
-+<br>
-<span class=3D"">=C2=A0struct sun4i_codec {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct device=C2=A0 =C2=A0*dev;<br>
-</span>=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct regmap=C2=A0 =C2=A0*regmap;<br>
-@@ -509,19 +533,102 @@ static const struct snd_kcontrol_new sun4i_codec_pa_=
-mute =3D<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);<br>
-<span class=3D""><br>
-=C2=A0static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, =
-1);<br>
-</span>+static DECLARE_TLV_DB_SCALE(sun4i_codec_linein_loopback_gain_scale,=
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0-150,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0150,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A00);<br>
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_fmin_loopback_gain_scale,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0-450,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0150,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A00);<br>
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0-450,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0150,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A00);<br>
-+static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale_a10,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A00, 0, TLV_DB_SCALE_ITEM(0, 0, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A01, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));<br>
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_adc_gain_scale, -450, 150, 0);<br>
-+/* Sources:<br>
-+ *=C2=A0 =C2=A0A10 User Manual v1.5 20130820<br>
-+ *=C2=A0 =C2=A0A20 User Manual v1.4 20150510<br>
-+ */<br>
-+static const char * const sun4i_codec_capture_source[] =3D {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Line-In&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;FM&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Mic1&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Mic2&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Mic1,Mic2&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Mic1+Mic2&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Output Mixer&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Line-In,Mic1&quot;,<br>
-+};<br>
-+static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0SUN4I_CODEC_ADC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0SUN4I_CODEC_ADC_ACTL_ADCIS,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0sun4i_codec_capture_source);<br>
-+<br>
-+static const struct snd_kcontrol_new sun4i_codec_capture_source_controls =
-=3D<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_ENUM(&quot;Route&quot;, sun4i_codec_en=
-um_capture_source);<br>
-<br>
-=C2=A0#define SUN4I_COMMON_CODEC_WIDGETS \<br>
-<span class=3D"">-=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Power Amp=
-lifier Volume&quot;, SUN4I_CODEC_DAC_ACTL,\<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_pa_volume_scale)<br>
-</span>+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Power Amplifier Pla=
-yback Volume&quot;, SUN4I_CODEC_DAC_ACTL,\<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_pa_volume_scale), \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Line-In, FM, Mic1, Mic2 */ \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Line-In Playback Volume&qu=
-ot;, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL_LNG, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 1, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_linein_loopback_gain_scale), \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;FM Playback Volume&quot;, =
-\<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL_FMG, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_fmin_loopback_gain_scale), \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Mic Playback Volume&quot;,=
- \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_DAC_ACTL_MICG, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 7, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_micin_loopback_gain_scale), \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* ADC */ \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Capture Volume&quot;, \<br=
->
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL_ADCG, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 4, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0, \<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_adc_gain_scale)<br>
-<span class=3D""><br>
-=C2=A0static const struct snd_kcontrol_new sun4i_codec_widgets_a10[] =3D {<=
-br>
-</span>=C2=A0 =C2=A0 =C2=A0 =C2=A0 SUN4I_COMMON_CODEC_WIDGETS,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Mic1 Capture Volume&quot;,=
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL_PREG1_A10,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_micin_preamp_gain_scale_a10),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Mic2 Capture Volume&quot;,=
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN4I_CODEC_ADC_ACTL_PREG2_A10,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun4i_codec_micin_preamp_gain_scale_a10),<br>
-<span class=3D"">=C2=A0};<br>
-<br>
-=C2=A0static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[=
-] =3D {<br>
-</span>=C2=A0 =C2=A0 =C2=A0 =C2=A0 SOC_DAPM_SINGLE(&quot;Left DAC Playback =
-Switch&quot;, SUN4I_CODEC_DAC_ACTL,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Left Line-In Playback Swi=
-tch&quot;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_LLNS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Left FM Playback Switch&q=
-uot;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_LFMS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Mic1 Playback Switch&quot=
-;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_MIC1LS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Mic2 Playback Switch&quot=
-;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_MIC2LS, 1, 0),<br>
-=C2=A0};<br>
-<br>
-=C2=A0static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls=
-[] =3D {<br>
-@@ -529,6 +636,14 @@ static const struct snd_kcontrol_new sun4i_codec_right=
-_mixer_controls[] =3D {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SOC_DAPM_SINGLE(&quot;Left DAC Playback Switch&=
-quot;, SUN4I_CODEC_DAC_ACTL,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Right Line-In Playback Sw=
-itch&quot;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_RLNS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Right FM Playback Switch&=
-quot;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_RFMS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Mic1 Playback Switch&quot=
-;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_MIC1RS, 1, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_DAPM_SINGLE(&quot;Mic2 Playback Switch&quot=
-;, SUN4I_CODEC_DAC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_MIC2RS, 1, 0),<br>
-=C2=A0};<br>
-<br>
-=C2=A0static const struct snd_kcontrol_new sun4i_codec_pa_mixer_controls[] =
-=3D {<br>
-@@ -561,6 +676,10 @@ static const struct snd_soc_dapm_widget sun4i_codec_co=
-dec_dapm_widgets[] =3D {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_DAC(&quot;Right DAC&quot;, &quot;C=
-odec Playback&quot;, SUN4I_CODEC_DAC_ACTL,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0SUN4I_CODEC_DAC_ACTL_DACAENR, 0),<br>
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* MUX */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_MUX(&quot;Capture Source&quot;, SN=
-D_SOC_NOPM, 0, 0,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 &amp;sun4i_codec_capture_source_controls),<br>
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Mixers */<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_MIXER(&quot;Left Mixer&quot;, SND_=
-SOC_NOPM, 0, 0,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0sun4i_codec_left_mixer_controls,<br>
-@@ -580,6 +699,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_cod=
-ec_dapm_widgets[] =3D {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Mic Pre-Amplifiers */<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_PGA(&quot;MIC1 Pre-Amplifier&quot;=
-, SUN4I_CODEC_ADC_ACTL,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0SUN4I_CODEC_ADC_ACTL_PREG1EN, 0, NULL, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_PGA(&quot;MIC2 Pre-Amplifier&quot;=
-, SUN4I_CODEC_ADC_ACTL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SUN4I_CODEC_ADC_ACTL_PREG2EN, 0, NULL, 0),<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Power Amplifier */<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_MIXER(&quot;Power Amplifier&quot;,=
- SUN4I_CODEC_ADC_ACTL,<br>
-@@ -590,9 +711,15 @@ static const struct snd_soc_dapm_widget sun4i_codec_co=
-dec_dapm_widgets[] =3D {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 &amp;sun4i_codec_pa_mute),<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_INPUT(&quot;Mic1&quot;),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_INPUT(&quot;Mic2&quot;),<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_OUTPUT(&quot;HP Right&quot;),<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 SND_SOC_DAPM_OUTPUT(&quot;HP Left&quot;),<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_INPUT(&quot;Line-In Right&quot;),<=
-br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_INPUT(&quot;Line-In Left&quot;),<b=
-r>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_INPUT(&quot;FM Right&quot;),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SND_SOC_DAPM_INPUT(&quot;FM Left&quot;),<br>
-=C2=A0};<br>
-<span class=3D""><br>
-=C2=A0static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[=
-] =3D {<br>
-</span>@@ -629,6 +756,36 @@ static const struct snd_soc_dapm_route sun4i_co=
-dec_codec_dapm_routes[] =3D {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 { &quot;Right ADC&quot;, NULL, &quot;MIC1 Pre-A=
-mplifier&quot; },<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 { &quot;MIC1 Pre-Amplifier&quot;, NULL, &quot;M=
-ic1&quot;},<br>
-<span class=3D"">=C2=A0 =C2=A0 =C2=A0 =C2=A0 { &quot;Mic1&quot;, NULL, &quo=
-t;VMIC&quot; },<br>
-</span>+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Right Mixer&quot;, &quot;Mic1 Pl=
-ayback Switch&quot;, &quot;MIC1 Pre-Amplifier&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Left Mixer&quot;, &quot;Mic1 Playback S=
-witch&quot;, &quot;MIC1 Pre-Amplifier&quot; },<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Mic2 Routes */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Left ADC&quot;, NULL, &quot;MIC2 Pre-Am=
-plifier&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Right ADC&quot;, NULL, &quot;MIC2 Pre-A=
-mplifier&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;MIC2 Pre-Amplifier&quot;, NULL, &quot;M=
-ic2&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Mic2&quot;, NULL, &quot;VMIC&quot; },<b=
-r>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Right Mixer&quot;, &quot;Mic2 Playback =
-Switch&quot;, &quot;MIC2 Pre-Amplifier&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Left Mixer&quot;, &quot;Mic2 Playback S=
-witch&quot;, &quot;MIC2 Pre-Amplifier&quot; },<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Line-In, FM Routes */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Right Mixer&quot;, &quot;Right Line-In =
-Playback Switch&quot;, &quot;Line-In Right&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Left Mixer&quot;, &quot;Left Line-In Pl=
-ayback Switch&quot;, &quot;Line-In Left&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Right Mixer&quot;, &quot;Right FM Playb=
-ack Switch&quot;, &quot;FM Right&quot; },<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{ &quot;Left Mixer&quot;, &quot;Left FM Playbac=
-k Switch&quot;, &quot;FM Left&quot; },<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* ADC Capturing Sources */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Line-In&quot=
-;, &quot;Line-In&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;FM&quot;, &q=
-uot;FM&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic1&quot;, =
-&quot;MIC1 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic2&quot;, =
-&quot;MIC2 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic1,Mic2&qu=
-ot;, &quot;MIC1 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic1,Mic2&qu=
-ot;, &quot;MIC2 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic1+Mic2&qu=
-ot;, &quot;MIC1 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Mic1+Mic2&qu=
-ot;, &quot;MIC2 Pre-Amplifier&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Output Mixer=
-&quot;, &quot;Left Mixer&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Output Mixer=
-&quot;, &quot;Right Mixer&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Line-In,Mic1=
-&quot;, &quot;Line-In&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;Capture Source&quot;, &quot;Line-In,Mic1=
-&quot;, &quot;MIC1 Pre-Amplifier&quot;},<br>
-=C2=A0};<br>
-<br>
-=C2=A0static struct snd_soc_codec_driver sun4i_codec_codec_a10 =3D {<br>
-@@ -757,8 +914,25 @@ static struct snd_soc_card *sun4i_codec_create_card(st=
-ruct device *dev)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 return card;<br>
-=C2=A0};<br>
-<br>
-+static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A00, 0, TLV_DB_SCALE_ITEM(0, 0, 0),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A01, 7, TLV_DB_SCALE_ITEM(2400, 300, 0)<br>
-+);<br>
-+<br>
-<span class=3D"">=C2=A0static const struct snd_kcontrol_new sun7i_codec_wid=
-gets[] =3D {<br>
-</span>=C2=A0 =C2=A0 =C2=A0 =C2=A0 SUN4I_COMMON_CODEC_WIDGETS,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Mic1 Capture Volume&quot;,=
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN7I_CODEC_AC_MIC_PHONE_CAL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 7,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun7i_codec_micin_preamp_gain_scale),<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SOC_SINGLE_TLV(&quot;Mic2 Capture Volume&quot;,=
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN7I_CODEC_AC_MIC_PHONE_CAL,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 7,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 sun7i_codec_micin_preamp_gain_scale),<br>
-=C2=A0};<br>
-<br>
-=C2=A0static struct snd_soc_codec_driver sun7i_codec_codec =3D {<br>
-<div class=3D"HOEnZb"><div class=3D"h5"><br>
---<br>
-You received this message because you are subscribed to the Google Groups &=
-quot;linux-sunxi&quot; group.<br>
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to <a href=3D"mailto:linux-sunxi%2Bunsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org">linux=
--sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org</a>.<br>
-For more options, visit <a href=3D"https://groups.google.com/d/optout" rel=
-=3D"noreferrer" target=3D"_blank">https://groups.google.com/d/optout</a>.<b=
-r>
-</div></div></blockquote></div><br></div>
-
-<p></p>
-
--- <br />
-You received this message because you are subscribed to the Google Groups &=
-quot;linux-sunxi&quot; group.<br />
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to <a href=3D"mailto:linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org">linux-s=
-unxi+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org</a>.<br />
-For more options, visit <a href=3D"https://groups.google.com/d/optout">http=
-s://groups.google.com/d/optout</a>.<br />
-
---089e0149c028a0c23105275e1a8b--
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
