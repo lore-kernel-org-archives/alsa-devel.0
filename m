@@ -1,38 +1,47 @@
-From: Geliang Tang <geliangtang@163.com>
-Subject: [PATCH] ALSA: usb-audio: use list_for_each_entry_continue_reverse
-Date: Mon, 21 Dec 2015 23:55:39 +0800
-Message-ID: <fea57694a17b8001b53896f657ffccf5128ee4c3.1450713219.git.geliangtang@163.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ricard Wanderlof <ricard.wanderlof@axis.com>, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
-Cc: Geliang Tang <geliangtang@163.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 12/19] ASoC: codec: rt5651: add ACPI and OF
+ support
+Date: Mon, 21 Dec 2015 10:18:42 -0600
+Message-ID: <56782662.8050907@linux.intel.com>
+References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20151219115047.GI5727@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 697D4261AAF
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 17:18:57 +0100 (CET)
+In-Reply-To: <20151219115047.GI5727@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, jack.yu@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-For better readability, use list_for_each_entry_continue_reverse()
-in have_dup_chmap().
+On 12/19/15 5:50 AM, Mark Brown wrote:
+> On Thu, Dec 17, 2015 at 08:35:49PM -0600, Pierre-Louis Bossart wrote:
+>
+>> +#if defined(CONFIG_OF)
+>> +static const struct of_device_id rt5651_of_match[] = {
+>> +	{ .compatible = "realtek,rt5651", },
+>> +	{},
+>> +};
+>> +MODULE_DEVICE_TABLE(of, rt5651_of_match);
+>> +#endif
+>
+> You need a binding document for new DT bindings.
 
-Signed-off-by: Geliang Tang <geliangtang@163.com>
----
- sound/usb/stream.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 8ee14f2..c4dc577 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -125,11 +125,9 @@ static int usb_chmap_ctl_info(struct snd_kcontrol *kcontrol,
- static bool have_dup_chmap(struct snd_usb_substream *subs,
- 			   struct audioformat *fp)
- {
--	struct list_head *p;
-+	struct audioformat *prev = fp;
- 
--	for (p = fp->list.prev; p != &subs->fmt_list; p = p->prev) {
--		struct audioformat *prev;
--		prev = list_entry(p, struct audioformat, list);
-+	list_for_each_entry_continue_reverse(prev, &subs->fmt_list, list) {
- 		if (prev->chmap &&
- 		    !memcmp(prev->chmap, fp->chmap, sizeof(*fp->chmap)))
- 			return true;
--- 
-2.5.0
+Ah yes.
+I added ACPI and OF support through copy-paste and s/rt5640/rt5651/, but 
+I can only test ACPI and wouldn't know what bindings are required so 
+will remove this OF part in the next batch.
+Bard and team if you want to add OF support please go ahead.
