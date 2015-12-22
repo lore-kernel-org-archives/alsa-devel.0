@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/8] ALSA: oxfw: allocate own address region
-	for SCS.1 series
-Date: Tue, 22 Dec 2015 09:15:40 +0900
-Message-ID: <1450743346-14071-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/8] ALSA: oxfw: add scs1x layer
+Date: Tue, 22 Dec 2015 09:15:39 +0900
+Message-ID: <1450743346-14071-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id F020D2612AD
+ by alsa0.perex.cz (Postfix) with ESMTP id 017CC2614A6
  for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 01:15:52 +0100 (CET)
 In-Reply-To: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,115 +24,96 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-When physical controls on SCS.1 models are operated, the models transfer
-MIDI messages in asynchronous transactions on IEEE 1394 bus. The models
-have a register to have an address for the transactions, and drivers
-can register own address for this purpose.
+Stanton Controllers and Systems 1 (SCS.1) series is supported by ALSA
+scs1x driver. This driver just supports MIDI functionality. On the other
+hand, models in this series are based on OXFW971 and ALSA OXFW driver can
+support them.
 
-This commit keeps a region of address, registers it and adds a handler for
-the transactions.
+SCS.1 series has MIDI functionality to control its surface state such as
+LED lighting. When operating physical knobs and faders, the models
+generate MIDI messages. These MIDI messages are transferred by asynchronous
+transactions. These transactions are really model-specific and ALSA OXFW
+driver requires the functionality so as scs1x module implements.
+
+This commit adds scs1x layer as a preparation to merge scs1x driver to
+oxfw driver.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-scs1x.c | 65 +++++++++++++++++++++++++++++++++++++++-
+ sound/firewire/oxfw/Makefile     |  2 +-
+ sound/firewire/oxfw/oxfw-scs1x.c | 26 ++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.c       |  4 ++--
  sound/firewire/oxfw/oxfw.h       |  1 +
- 2 files changed, 65 insertions(+), 1 deletion(-)
+ 4 files changed, 30 insertions(+), 3 deletions(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-scs1x.c
 
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index 4e54ba9..b474da7 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,3 +1,3 @@
+ snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-pcm.o oxfw-proc.o \
+-		 oxfw-midi.o oxfw-hwdep.o oxfw-spkr.o oxfw.o
++		 oxfw-midi.o oxfw-hwdep.o oxfw-spkr.o oxfw-scs1x.o oxfw.o
+ obj-$(CONFIG_SND_OXFW) += snd-oxfw.o
 diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index 34db0d0..32a7b67 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
+new file mode 100644
+index 0000000..34db0d0
+--- /dev/null
 +++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -9,18 +9,81 @@
- 
- #include "oxfw.h"
- 
-+#define HSS1394_ADDRESS			0xc007dedadadaULL
-+#define HSS1394_MAX_PACKET_SIZE		64
-+#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
+@@ -0,0 +1,26 @@
++/*
++ * oxfw-scs1x.c - a part of driver for OXFW970/971 based devices
++ *
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Copyright (c) 2015 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+struct fw_scs1x {
-+	struct fw_address_handler hss_handler;
-+};
++#include "oxfw.h"
 +
-+static void handle_hss(struct fw_card *card, struct fw_request *request,
-+		       int tcode, int destination, int source, int generation,
-+		       unsigned long long offset, void *data, size_t length,
-+		       void *callback_data)
++int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
 +{
-+	fw_send_response(card, request, RCODE_COMPLETE);
-+}
++	struct snd_rawmidi *rmidi;
++	int err;
 +
-+static int register_address(struct snd_oxfw *oxfw)
-+{
-+	struct fw_scs1x *scs = oxfw->spec;
-+	__be64 data;
-+
-+	data = cpu_to_be64(((u64)HSS1394_TAG_CHANGE_ADDRESS << 56) |
-+			    scs->hss_handler.offset);
-+	return snd_fw_transaction(oxfw->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				  HSS1394_ADDRESS, &data, sizeof(data), 0);
-+}
-+
-+static void remove_scs1x(struct snd_rawmidi *rmidi)
-+{
-+	struct fw_scs1x *scs = rmidi->private_data;
-+
-+	fw_core_remove_address_handler(&scs->hss_handler);
-+}
-+
-+void snd_oxfw_scs1x_update(struct snd_oxfw *oxfw)
-+{
-+	register_address(oxfw);
-+}
-+
- int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- {
- 	struct snd_rawmidi *rmidi;
-+	struct fw_scs1x *scs;
- 	int err;
- 
-+	scs = kzalloc(sizeof(struct fw_scs1x), GFP_KERNEL);
-+	if (scs == NULL)
-+		return -ENOMEM;
-+	oxfw->spec = scs;
-+
-+	/* Allocate own handler for imcoming asynchronous transaction. */
-+	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
-+	scs->hss_handler.address_callback = handle_hss;
-+	scs->hss_handler.callback_data = scs;
-+	err = fw_core_add_address_handler(&scs->hss_handler,
-+					  &fw_high_memory_region);
++	/* Use unique name for backward compatibility to scs1x module. */
++	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 0, &rmidi);
 +	if (err < 0)
 +		return err;
 +
-+	err = register_address(oxfw);
-+	if (err < 0)
-+		goto err_allocated;
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", oxfw->card->shortname);
 +
- 	/* Use unique name for backward compatibility to scs1x module. */
- 	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 0, &rmidi);
++	return err;
++}
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 96fbb78..b20e496 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -216,11 +216,11 @@ static int oxfw_probe(struct fw_unit *unit,
  	if (err < 0)
--		return err;
-+		goto err_allocated;
-+	rmidi->private_data = scs;
-+	rmidi->private_free = remove_scs1x;
+ 		goto error;
  
- 	snprintf(rmidi->name, sizeof(rmidi->name),
- 		 "%s MIDI", oxfw->card->shortname);
+-	err = detect_quirks(oxfw);
++	err = name_card(oxfw);
+ 	if (err < 0)
+ 		goto error;
  
-+	return 0;
-+err_allocated:
-+	fw_core_remove_address_handler(&scs->hss_handler);
- 	return err;
- }
+-	err = name_card(oxfw);
++	err = detect_quirks(oxfw);
+ 	if (err < 0)
+ 		goto error;
+ 
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index cbf00ee..9beecc2 100644
+index 1c9844a..cbf00ee 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -135,3 +135,4 @@ int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
+@@ -134,3 +134,4 @@ int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
+ int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
  
  int snd_oxfw_add_spkr(struct snd_oxfw *oxfw, bool is_lacie);
- int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw);
-+void snd_oxfw_scs1x_update(struct snd_oxfw *oxfw);
++int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw);
 -- 
 2.5.0
