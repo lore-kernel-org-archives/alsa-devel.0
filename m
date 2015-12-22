@@ -1,21 +1,21 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Can we remove the rtd_aux for the aux_devs?
-Date: Tue, 22 Dec 2015 16:15:26 +0800
-Message-ID: <5679069E.6070106@linux.intel.com>
-References: <cover.1449036307.git.mengdong.lin@linux.intel.com>
- <bb343fe20b14af90f695939d8faae50fae1ba97a.1449036307.git.mengdong.lin@linux.intel.com>
- <20151208185817.GX5727@sirena.org.uk> <5667EFCB.3010402@linux.intel.com>
- <20151209203836.GI5727@sirena.org.uk> <56694E6A.4090402@linux.intel.com>
- <20151211202208.GS5727@sirena.org.uk> <566FC9F6.8050107@linux.intel.com>
- <20151215112324.GX5727@sirena.org.uk> <567121DC.5080601@linux.intel.com>
+From: Libin Yang <libin.yang@linux.intel.com>
+Subject: Re: [RFC PATCH 0/2] ALSA: hda - DP MST audio for Jack
+ support
+Date: Tue, 22 Dec 2015 16:47:12 +0800
+Message-ID: <56790E10.2010900@linux.intel.com>
+References: <1446540176-110181-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hsi4nni3u.wl-tiwai@suse.de> <5639A452.20106@linux.intel.com>
+ <s5hmvunk3ib.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D197782DD@SHSMSX103.ccr.corp.intel.com>
+ <s5hh9kvw6dv.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 197642651DB
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 08:58:45 +0100 (CET)
-In-Reply-To: <567121DC.5080601@linux.intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D1C32654EC
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 09:49:52 +0100 (CET)
+In-Reply-To: <s5hh9kvw6dv.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +25,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: Takashi Iwai <tiwai@suse.de>, "Yang, Libin" <libin.yang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Revise the subject.
+Hi Takashi,
 
-Could someone clarify if the rtd_aux in struct snd_soc_card is still needed?
+On 11/09/2015 11:15 PM, Takashi Iwai wrote:
+> On Mon, 09 Nov 2015 16:00:01 +0100,
+> Yang, Libin wrote:
+>>
+>> Hi Takashi,
+>>
+>>> -----Original Message-----
+>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+>>> Sent: Monday, November 09, 2015 3:59 PM
+>>> To: Libin Yang
+>>> Cc: alsa-devel@alsa-project.org; mengdong.lin@linux.intel.com; Yang,
+>>> Libin
+>>> Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST audio for
+>>> Jack support
+>>>
+>>> On Wed, 04 Nov 2015 07:23:14 +0100,
+>>> Libin Yang wrote:
+>>>>
+>>>>
+>>>> On 11/04/2015 12:49 AM, Takashi Iwai wrote:
+>>>>> On Tue, 03 Nov 2015 09:42:54 +0100,
+>>>>> libin.yang@linux.intel.com wrote:
+>>>>>>
+>>>>>> From: Libin Yang <libin.yang@linux.intel.com>
+>>>>>>
+>>>>>> This is the patch set for Jack support for DP MST audio
+>>>>>>
+>>>>>> Libin Yang (2):
+>>>>>>     ALSA: hda - jack support DP MST audio
+>>>>>>     ALSA: hda - hdmi audio add dynamically jack binding to pin
+>>>>>
+>>>>> I'm somehow confused by this patch series.
+>>>>> Is the unsolicited event handling itself changed for MST?  I mean, you
+>>>>> cannot know which MST dev# is given beforehand, while you seem
+>>> trying
+>>>>> to assign such a number to the jack object.
+>>>>
+>>>> Oh, sorry I forgot to mention that we only operate on device entry 0
+>>>> so far in the code. It's misleading.
+>>>>
+>>>> These patches don't operate on MST audio. The full MST audio driver
+>>>> support will be implemented in the later patches. The patches help to
+>>>> prepare supporting MST audio.
+>>>>
+>>>> The purpose of the patches is try to dynamically attach the Jack.
+>>>
+>>> Well, only judging from the quick glance, I don't buy this strategy,
+>>> sorry.  Currently for HDMI/DP, the jack is for PCM, not for pin.
+>>> Namely, user-space watches the jack notification to judge whether the
+>>> corresponding PCM is available or not.  You're trying to change this
+>>> scheme completely.
+>>
+>> The patch is to make sure the jack is bound to PCM statically.
+>> This patch is needed because in old code,  it will create jack with:
+>> for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+>> 	...
+>> 	err = generic_hdmi_build_jack(codec, pin_idx);
+>> 	...
+>> }
+>> Which means the jack is created based on pin number and pin_idx.
+>> As a pin is bound statically to the PCM, the jack is statically bound to PCM.
+>
+> OK, so far, so good.
+>
+>> Now we are using the dynamic pcm bound. If we use the old code to
+>> create the jack, the jack will be bound to pin. So we need the patch,
+>> which will use the new code:
+>> for (pcm_idx = 0; pcm_idx < spec-> pcms_used; pcm_idx++) {
+>> 	...
+>> 	err = generic_hdmi_build_jack(codec, pcm_idx);
+>> 	...
+>> }
+>> which makes sure that the jack is bound to PCM (jack[0] is bound
+>> to pcm[0], jack[1] is bound to pcm[1] and so on).
+>>
+>> If there is no monitor, no pin is bound to the PCM.
+>> So no pin is bound to the Jack. When there is a monitor connected,
+>> the pin is bound to a proper PCM. So we should bind the PCM's jack
+>> to the pin.
+>>
+>> For example, jack0 is bound to the PCM 3 (the first jack is bound
+>> to the first PCM statically). When a monitor is connected to pin 5,
+>> PCM 3 will be assigned to the pin. We need bind jack 0 to pin 5.
+>> When monitor is disconnected, we must unbind the jack 0 from pin 5.
+>> These operation are done in function
+>> snd_hda_jack_bind/ snd_hda_jack_unbind.
+>
+> Then we shouldn't use the hda_jack.c code at all for HDMI/DP.
+> For HDMI/DP with the dynamic PCM binding, the only state to check is
+> its PCM assignment.  It doesn't have to issue the jack state check via
+> HDA verb at all.  This should make things a lot easier.
 
-We want to replace the aux_dev by aux_component.
-If the rtd_aux is no longer needed, we can remove the array and it will 
-become easier to handle an aux_dev as a generic component.
+I'm now porting the jack supporting for MST audio. The code on 
+hdmi-jack branch will create jack differently based codec_has_acomp() 
+condition. Does this mean MST Jack binding will handle both situation?
 
-Thanks
-Mengdong
+My idea is:
+1. Add struct snd_jack *jack[] member in hdmi_spec.
+2. Create the jack based on PCM
+3. Assign spec->jack[i] to per_pin->acomp_jack when pin is connected.
 
-On 12/16/2015 04:33 PM, Mengdong Lin wrote:
+This should be OK for codec_has_acomp sitation. But what about the 
+other situation? The other situation still uses the hda_jack_tbl and 
+etc. So we still need handle hda jack if we want to reuse the current 
+code.
+
+Best Regards,
+Libin
+
 >
 >
-> On 12/15/2015 07:23 PM, Mark Brown wrote:
->> On Tue, Dec 15, 2015 at 04:06:14PM +0800, Mengdong Lin wrote:
->>
->>> I still have some basic questions:
->>
->>> 1. What are the typical usages for aux_dev?
->>>     For CODEC<->CODEC link or external headset detection chip?
->>
->> Neither, it's for analogue devices.
->
-> Got it. Thanks!
->
->>
->>> 2. Why we need the rtd array 'rtd_aux' for the aux_devs?
->>>     If the codec has DAIs and used by a DAI link, the ASoC will
->>> create a rtd
->>> for the link.
->>
->> There are (or were at the time) assumptions in drivers that there will
->> be a rtd there so it was easier to provide a stub.
->>
->
-> Can we remove this rtd array if current driver does not need the stub?
->
-> For the replacement of aux_dev by aux_component, can we define like below?
->
-> struct snd_soc_aux_component {
->      const char *comp_name; ... no longer assume they're only codecs
->      const char *comp_of_node;
->
->      /* machine specific init */
->      int (*init)(struct snd_soc_component *componnent);
-> };
->
-> The ASoC can use the comp_name or comp_of_node to find the components
-> and probe them.
->
-> Thanks
-> Mengdong
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
