@@ -1,20 +1,15 @@
-From: Mario Kleiner <mario.kleiner.de@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - Fix silent headphone
- output on MacPro 4, 1
-Date: Tue, 22 Dec 2015 00:47:37 +0100
-Message-ID: <56788F99.5060808@gmail.com>
-References: <1450498917-10548-1-git-send-email-mario.kleiner.de@gmail.com>
- <s5h37uydws0.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/8] ALSA: oxfw: obsolete snd-scs1x with
+	snd-oxfw
+Date: Tue, 22 Dec 2015 09:15:38 +0900
+Message-ID: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id AAF2C2607E9
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 00:47:40 +0100 (CET)
-Received: by mail-wm0-f43.google.com with SMTP id p187so87785766wmp.0
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2015 15:47:40 -0800 (PST)
-In-Reply-To: <s5h37uydws0.wl-tiwai@suse.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED4D2261298
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 01:15:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,111 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/2015 09:10 PM, Takashi Iwai wrote:
-> On Sat, 19 Dec 2015 05:21:57 +0100,
-> Mario Kleiner wrote:
->>
->> Without this patch, internal speaker and line-out work,
->> but front headphone output jack stays silent on the
->> Mac Pro 4,1.
->>
->> This code path also gets executed on the MacPro 5,1 due
->> to identical codec SSID, but i don't know if it has any
->> positive or adverse effects there or not.
->>
->> Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
->> ---
->>   sound/pci/hda/patch_realtek.c | 32 +++++++++++++++++++++++++++++++-
->>   1 file changed, 31 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index 9bedf7c..6224bdd 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -1755,6 +1755,7 @@ enum {
->>   	ALC889_FIXUP_MBA11_VREF,
->>   	ALC889_FIXUP_MBA21_VREF,
->>   	ALC889_FIXUP_MP11_VREF,
->> +	ALC889_FIXUP_MP41_VREF,
->>   	ALC882_FIXUP_INV_DMIC,
->>   	ALC882_FIXUP_NO_PRIMARY_HP,
->>   	ALC887_FIXUP_ASUS_BASS,
->> @@ -1905,6 +1906,29 @@ static void alc889_fixup_mba21_vref(struct hda_codec *codec,
->>   		alc889_fixup_mac_pins(codec, nids, ARRAY_SIZE(nids));
->>   }
->>
->> +/* Set VREF on HP pin on Mac Pro 4,1 */
->> +static void alc889_fixup_mp41_vref(struct hda_codec *codec,
->> +				   const struct hda_fixup *fix, int action)
->> +{
->> +	struct alc_spec *spec = codec->spec;
->> +	static hda_nid_t nids[1] = { 0x19 };
->> +	int i;
->> +
->> +	if (action != HDA_FIXUP_ACT_INIT)
->> +		return;
->> +
->> +	for (i = 0; i < ARRAY_SIZE(nids); i++) {
->> +		unsigned int val = snd_hda_codec_get_pincfg(codec, nids[i]);
->> +		if (get_defcfg_device(val) != AC_JACK_HP_OUT)
->> +			continue;
->> +		val = snd_hda_codec_get_pin_target(codec, nids[i]);
->> +		val |= AC_PINCTL_VREF_80;
->> +		snd_hda_set_pin_ctl(codec, nids[i], val);
->> +		spec->gen.keep_vref_in_automute = 1;
->> +		break;
->> +	}
->
-> This looks rather like a copy of alc889_fixup_mbp_vref() but with a
-> different vref level.  If so, instead of copying, modify the original
-> function to take the vref level instead.
->
->
-> thanks,
->
-> Takashi
->
+Hi,
 
-Thanks for the feedback. Just sent out v2 which is simpler and works 
-just as well.
+This patchset update a part of my previous RFCv2 (patch 10-17).
+[alsa-devel] [RFC][PATCH 00/17 v2] ALSA: oxfw: refactoring and merging scs1x module
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/101558.html
 
-thanks,
--mario
+This patchset should be accumurated to the other patches under reviewing.
+
+[alsa-devel] [PATCH 0/4] ALSA: oxfw: localize stuffs of old firewire-speakers module
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102071.html
 
 
->
->> +}
->> +
->>   /* Don't take HP output as primary
->>    * Strangely, the speaker output doesn't work on Vaio Z and some Vaio
->>    * all-in-one desktop PCs (for example VGC-LN51JGB) through DAC 0x05
->> @@ -2133,6 +2157,12 @@ static const struct hda_fixup alc882_fixups[] = {
->>   		.chained = true,
->>   		.chain_id = ALC885_FIXUP_MACPRO_GPIO,
->>   	},
->> +	[ALC889_FIXUP_MP41_VREF] = {
->> +		.type = HDA_FIXUP_FUNC,
->> +		.v.func = alc889_fixup_mp41_vref,
->> +		.chained = true,
->> +		.chain_id = ALC885_FIXUP_MACPRO_GPIO,
->> +	},
->>   	[ALC882_FIXUP_INV_DMIC] = {
->>   		.type = HDA_FIXUP_FUNC,
->>   		.v.func = alc_fixup_inv_dmic,
->> @@ -2215,7 +2245,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
->>   	SND_PCI_QUIRK(0x106b, 0x3f00, "Macbook 5,1", ALC889_FIXUP_IMAC91_VREF),
->>   	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC889_FIXUP_IMAC91_VREF),
->>   	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC889_FIXUP_IMAC91_VREF),
->> -	SND_PCI_QUIRK(0x106b, 0x4200, "Mac Pro 5,1", ALC885_FIXUP_MACPRO_GPIO),
->> +	SND_PCI_QUIRK(0x106b, 0x4200, "Mac Pro 4,1/5,1", ALC889_FIXUP_MP41_VREF),
->>   	SND_PCI_QUIRK(0x106b, 0x4300, "iMac 9,1", ALC889_FIXUP_IMAC91_VREF),
->>   	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC889_FIXUP_IMAC91_VREF),
->>   	SND_PCI_QUIRK(0x106b, 0x4900, "iMac 9,1 Aluminum", ALC889_FIXUP_IMAC91_VREF),
->> --
->> 1.9.1
->>
->>
+This patchset obsoletes snd-scs1x module with snd-oxfw module because the models
+supported by snd-scs1x module are based on OXFW971, which snd-oxfw supports, too.
+So snd-oxfw should support them. As a result, one of the models gets packet
+streaming functionality to receive PCM samples. This is a lack of
+functionalities in snd-scs1x.
+
+
+Usually I won't post additional patches during the others are under reviewing.
+But it's near the end of year. I'd like to post these patches in advance to
+avoid year-end busyness. I'm happy if you review them and these patches go
+forward, then I can get a short rest in the year-end.
+
+I note that I have the other patches for ALSA dice module, too. I'm also happy
+to start reviewing process for them after this patchset goes forward...
+
+Changes from RFCv2:
+ * remove sound/firewire/scs1x.c (I forget it)
+ * revise operations in rawmidi callbacks
+
+Takashi Sakamoto (8):
+  ALSA: oxfw: add scs1x layer
+  ALSA: oxfw: allocate own address region for SCS.1 series
+  ALSA: oxfw: copy handlers of asynchronous transaction for MIDI capture
+  ALSA: oxfw: add MIDI capture port for SCS.1 models
+  ALSA: oxfw: copy handlers of asynchronous transaction for MIDI
+    playback
+  ALSA: oxfw: add MIDI playback port for SCS.1 models
+  ALSA: oxfw: obsolete scs1x module
+  ALSA: oxfw: add stream format quirk for SCS.1 models
+
+ sound/firewire/Kconfig           |  12 +-
+ sound/firewire/Makefile          |   2 -
+ sound/firewire/oxfw/Makefile     |   2 +-
+ sound/firewire/oxfw/oxfw-scs1x.c | 406 ++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.c       |  38 ++-
+ sound/firewire/oxfw/oxfw.h       |   2 +
+ sound/firewire/scs1x.c           | 530 ---------------------------------------
+ 7 files changed, 446 insertions(+), 546 deletions(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-scs1x.c
+ delete mode 100644 sound/firewire/scs1x.c
+
+-- 
+2.5.0
