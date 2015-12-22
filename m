@@ -1,231 +1,105 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/8] ALSA: oxfw: copy handlers of asynchronous
-	transaction for MIDI playback
-Date: Tue, 22 Dec 2015 09:15:43 +0900
-Message-ID: <1450743346-14071-6-git-send-email-o-takashi@sakamocchi.jp>
-References: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH v1 2/2] dt-bindings: sound: add devicetree document for
+ rt5616
+Date: Tue, 22 Dec 2015 08:54:11 +0800
+Message-ID: <56789F33.1010803@rock-chips.com>
+References: <1450703894-32623-2-git-send-email-wxt@rock-chips.com>
+ <1450709768-14898-1-git-send-email-wxt@rock-chips.com>
+ <56786BF7.7070608@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 7513C261521
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 01:15:56 +0100 (CET)
-In-Reply-To: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <56786BF7.7070608-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit copies some functions of asynchronous transactions for MIDI
-playback, to merge scs1x module. The features of payload in asynchronous
-transaction are the same as captured MIDI messages.
+Hi
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/oxfw/oxfw-scs1x.c | 161 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 161 insertions(+)
+=E5=9C=A8 2015=E5=B9=B412=E6=9C=8822=E6=97=A5 05:15, Frank Rowand =E5=86=
+=99=E9=81=93:
+> On 12/21/2015 6:56 AM, Caesar Wang wrote:
+>> Add the description for rt5616 codec.
+>>
+>> Signed-off-by: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+>>
+>> ---
+>>
+>> Changes in v1:
+>> - As Heiko comments, remove the not exist option properties.
+>>
+>>   Documentation/devicetree/bindings/sound/rt5616.txt | 36 ++++++++++=
+++++++++++++
+>>   1 file changed, 36 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/rt5616.=
+txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Do=
+cumentation/devicetree/bindings/sound/rt5616.txt
+>> new file mode 100644
+>> index 0000000..2030a22
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/rt5616.txt
+>> @@ -0,0 +1,36 @@
+>> +RT5616 audio CODEC
+>> +
+>> +This device supports I2C only.
+>> +
+>> +Required properties:
+>> +
+>> +- compatible : "realtek,rt5616".
+>> +
+>> +- reg : The I2C address of the device.
+>> +
+>> +Pins on the device (for linking into audio routes) for RT5616:
+>> +
+>> +  * IN1P
+>> +  * IN2P
+>> +  * IN2N
+>> +  * LOUTL
+>> +  * LOUTR
+>> +  * CPN2
+>> +  * CPP2
+>> +  * CPN1
+>> +  * CPP1
+>> +  * HPO_R
+>> +  * HPO_L
+>> +  * ADCDAT1
+>> +  * DACDAT1
+>> +  * LRCK1
+>> +  * BCLK1
+>> +  * MCLK
+>> +  * GPIO1
+>> +
+>> +Example:
+>> +
+>> +rt5616 {
+> The node name should be rt5616@1b (including the reg value
+> from the node).
 
-diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index 6ab63f2..84eacdb 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
-+++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -18,6 +18,20 @@ struct fw_scs1x {
- 	struct fw_address_handler hss_handler;
- 	u8 input_escape_count;
- 	struct snd_rawmidi_substream *input;
-+
-+	/* For MIDI playback. */
-+	struct snd_rawmidi_substream *output;
-+	bool output_idle;
-+	u8 output_status;
-+	u8 output_bytes;
-+	bool output_escaped;
-+	bool output_escape_high_nibble;
-+	struct tasklet_struct tasklet;
-+	wait_queue_head_t idle_wait;
-+	u8 buffer[HSS1394_MAX_PACKET_SIZE];
-+	bool transaction_running;
-+	struct fw_transaction transaction;
-+	struct fw_device *fw_dev;
- };
- 
- static const u8 sysex_escape_prefix[] = {
-@@ -106,6 +120,148 @@ end:
- 	fw_send_response(card, request, rcode);
- }
- 
-+static void scs_write_callback(struct fw_card *card, int rcode,
-+			       void *data, size_t length, void *callback_data)
-+{
-+	struct fw_scs1x *scs = callback_data;
-+
-+	if (rcode == RCODE_GENERATION)
-+		;	/* TODO: retry this packet */
-+
-+	scs->transaction_running = false;
-+	tasklet_schedule(&scs->tasklet);
-+}
-+
-+static bool is_valid_running_status(u8 status)
-+{
-+	return status >= 0x80 && status <= 0xef;
-+}
-+
-+static bool is_one_byte_cmd(u8 status)
-+{
-+	return status == 0xf6 ||
-+	       status >= 0xf8;
-+}
-+
-+static bool is_two_bytes_cmd(u8 status)
-+{
-+	return (status >= 0xc0 && status <= 0xdf) ||
-+	       status == 0xf1 ||
-+	       status == 0xf3;
-+}
-+
-+static bool is_three_bytes_cmd(u8 status)
-+{
-+	return (status >= 0x80 && status <= 0xbf) ||
-+	       (status >= 0xe0 && status <= 0xef) ||
-+	       status == 0xf2;
-+}
-+
-+static bool is_invalid_cmd(u8 status)
-+{
-+	return status == 0xf4 ||
-+	       status == 0xf5 ||
-+	       status == 0xf9 ||
-+	       status == 0xfd;
-+}
-+
-+static void scs_output_tasklet(unsigned long data)
-+{
-+	struct fw_scs1x *scs = (struct fw_scs1x *)data;
-+	struct snd_rawmidi_substream *stream;
-+	unsigned int i;
-+	u8 byte;
-+	int generation;
-+
-+	if (scs->transaction_running)
-+		return;
-+
-+	stream = ACCESS_ONCE(scs->output);
-+	if (!stream) {
-+		scs->output_idle = true;
-+		wake_up(&scs->idle_wait);
-+		return;
-+	}
-+
-+	i = scs->output_bytes;
-+	for (;;) {
-+		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
-+			scs->output_bytes = i;
-+			scs->output_idle = true;
-+			wake_up(&scs->idle_wait);
-+			return;
-+		}
-+		/*
-+		 * Convert from real MIDI to what I think the device expects (no
-+		 * running status, one command per packet, unescaped SysExs).
-+		 */
-+		if (scs->output_escaped && byte < 0x80) {
-+			if (scs->output_escape_high_nibble) {
-+				if (i < HSS1394_MAX_PACKET_SIZE) {
-+					scs->buffer[i] = byte << 4;
-+					scs->output_escape_high_nibble = false;
-+				}
-+			} else {
-+				scs->buffer[i++] |= byte & 0x0f;
-+				scs->output_escape_high_nibble = true;
-+			}
-+		} else if (byte < 0x80) {
-+			if (i == 1) {
-+				if (!is_valid_running_status(
-+							scs->output_status))
-+					continue;
-+				scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+				scs->buffer[i++] = scs->output_status;
-+			}
-+			scs->buffer[i++] = byte;
-+			if ((i == 3 && is_two_bytes_cmd(scs->output_status)) ||
-+			    (i == 4 && is_three_bytes_cmd(scs->output_status)))
-+				break;
-+			if (i == 1 + ARRAY_SIZE(sysex_escape_prefix) &&
-+			    !memcmp(scs->buffer + 1, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix))) {
-+				scs->output_escaped = true;
-+				scs->output_escape_high_nibble = true;
-+				i = 0;
-+			}
-+			if (i >= HSS1394_MAX_PACKET_SIZE)
-+				i = 1;
-+		} else if (byte == 0xf7) {
-+			if (scs->output_escaped) {
-+				if (i >= 1 && scs->output_escape_high_nibble &&
-+				    scs->buffer[0] !=
-+						HSS1394_TAG_CHANGE_ADDRESS)
-+					break;
-+			} else {
-+				if (i > 1 && scs->output_status == 0xf0) {
-+					scs->buffer[i++] = 0xf7;
-+					break;
-+				}
-+			}
-+			i = 1;
-+			scs->output_escaped = false;
-+		} else if (!is_invalid_cmd(byte) && byte < 0xf8) {
-+			i = 1;
-+			scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+			scs->buffer[i++] = byte;
-+			scs->output_status = byte;
-+			scs->output_escaped = false;
-+			if (is_one_byte_cmd(byte))
-+				break;
-+		}
-+	}
-+	scs->output_bytes = 1;
-+	scs->output_escaped = false;
-+
-+	scs->transaction_running = true;
-+	generation = scs->fw_dev->generation;
-+	smp_rmb(); /* node_id vs. generation */
-+	fw_send_request(scs->fw_dev->card, &scs->transaction,
-+			TCODE_WRITE_BLOCK_REQUEST, scs->fw_dev->node_id,
-+			generation, scs->fw_dev->max_speed, HSS1394_ADDRESS,
-+			scs->buffer, i, scs_write_callback, scs);
-+}
-+
- static int midi_capture_open(struct snd_rawmidi_substream *stream)
- {
- 	return 0;
-@@ -166,6 +322,7 @@ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- 	scs = kzalloc(sizeof(struct fw_scs1x), GFP_KERNEL);
- 	if (scs == NULL)
- 		return -ENOMEM;
-+	scs->fw_dev = fw_parent_device(oxfw->unit);
- 	oxfw->spec = scs;
- 
- 	/* Allocate own handler for imcoming asynchronous transaction. */
-@@ -195,6 +352,10 @@ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
- 			    &midi_capture_ops);
- 
-+	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
-+	init_waitqueue_head(&scs->idle_wait);
-+	scs->output_idle = true;
-+
- 	return 0;
- err_allocated:
- 	fw_core_remove_address_handler(&scs->hss_handler);
--- 
-2.5.0
+In general, that's right.
+
+Okay, fixed in next version.
+
+
+>
+>> +	compatible =3D "realtek,rt5616";
+>> +	reg =3D <0x1b>;
+>> +};
+>>
+>
+>
+>
+
+--=20
+caesar wang | software engineer | wxt-TNX95d0MmH73oGB3hsPCZA@public.gmane.org
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
