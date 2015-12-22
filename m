@@ -1,19 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/8] ALSA: oxfw: obsolete snd-scs1x with
-	snd-oxfw
-Date: Tue, 22 Dec 2015 19:58:26 +0900
-Message-ID: <56792CD2.9020903@sakamocchi.jp>
-References: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hk2o6g7vb.wl-tiwai@suse.de> <567929A1.7010609@sakamocchi.jp>
- <s5h60zqg3fz.wl-tiwai@suse.de>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH 0/2] ALSA: hda - DP MST audio for Jack
+ support
+Date: Tue, 22 Dec 2015 11:45:25 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D197B41DB@SHSMSX103.ccr.corp.intel.com>
+References: <1446540176-110181-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hsi4nni3u.wl-tiwai@suse.de>	<5639A452.20106@linux.intel.com>
+ <s5hmvunk3ib.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D197782DD@SHSMSX103.ccr.corp.intel.com>
+ <s5hh9kvw6dv.wl-tiwai@suse.de>	<56790E10.2010900@linux.intel.com>
+ <s5hoadig8ob.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 04517265556
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 11:58:30 +0100 (CET)
-In-Reply-To: <s5h60zqg3fz.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 279AD265654
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 12:45:30 +0100 (CET)
+In-Reply-To: <s5hoadig8ob.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +27,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>, Libin Yang <libin.yang@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNeW5tDEy5pyIMjLml6UgMTk6NTMsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBUdWUs
-IDIyIERlYyAyMDE1IDExOjQ0OjQ5ICswMTAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEhpLAo+Pgo+PiBPbiBEZWMgMjIgMjAxNSAxODoxNywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
-Pj4gT24gVHVlLCAyMiBEZWMgMjAxNSAwMToxNTozOCArMDEwMCwKPj4+IFRha2FzaGkgU2FrYW1v
-dG8gd3JvdGU6Cj4+Pj4KPj4+PiBIaSwKPj4+Pgo+Pj4+IFRoaXMgcGF0Y2hzZXQgdXBkYXRlIGEg
-cGFydCBvZiBteSBwcmV2aW91cyBSRkN2MiAocGF0Y2ggMTAtMTcpLgo+Pj4+IFthbHNhLWRldmVs
-XSBbUkZDXVtQQVRDSCAwMC8xNyB2Ml0gQUxTQTogb3hmdzogcmVmYWN0b3JpbmcgYW5kIG1lcmdp
-bmcgc2NzMXggbW9kdWxlCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBl
-cm1haWwvYWxzYS1kZXZlbC8yMDE1LURlY2VtYmVyLzEwMTU1OC5odG1sCj4+Pj4KPj4+PiBUaGlz
-IHBhdGNoc2V0IHNob3VsZCBiZSBhY2N1bXVyYXRlZCB0byB0aGUgb3RoZXIgcGF0Y2hlcyB1bmRl
-ciByZXZpZXdpbmcuCj4+Pj4KPj4+PiBbYWxzYS1kZXZlbF0gW1BBVENIIDAvNF0gQUxTQTogb3hm
-dzogbG9jYWxpemUgc3R1ZmZzIG9mIG9sZCBmaXJld2lyZS1zcGVha2VycyBtb2R1bGUKPj4+PiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTUt
-RGVjZW1iZXIvMTAyMDcxLmh0bWwKPj4+Pgo+Pj4+Cj4+Pj4gVGhpcyBwYXRjaHNldCBvYnNvbGV0
-ZXMgc25kLXNjczF4IG1vZHVsZSB3aXRoIHNuZC1veGZ3IG1vZHVsZSBiZWNhdXNlIHRoZSBtb2Rl
-bHMKPj4+PiBzdXBwb3J0ZWQgYnkgc25kLXNjczF4IG1vZHVsZSBhcmUgYmFzZWQgb24gT1hGVzk3
-MSwgd2hpY2ggc25kLW94Zncgc3VwcG9ydHMsIHRvby4KPj4+PiBTbyBzbmQtb3hmdyBzaG91bGQg
-c3VwcG9ydCB0aGVtLiBBcyBhIHJlc3VsdCwgb25lIG9mIHRoZSBtb2RlbHMgZ2V0cyBwYWNrZXQK
-Pj4+PiBzdHJlYW1pbmcgZnVuY3Rpb25hbGl0eSB0byByZWNlaXZlIFBDTSBzYW1wbGVzLiBUaGlz
-IGlzIGEgbGFjayBvZgo+Pj4+IGZ1bmN0aW9uYWxpdGllcyBpbiBzbmQtc2NzMXguCj4+Pj4KPj4+
-Pgo+Pj4+IFVzdWFsbHkgSSB3b24ndCBwb3N0IGFkZGl0aW9uYWwgcGF0Y2hlcyBkdXJpbmcgdGhl
-IG90aGVycyBhcmUgdW5kZXIgcmV2aWV3aW5nLgo+Pj4+IEJ1dCBpdCdzIG5lYXIgdGhlIGVuZCBv
-ZiB5ZWFyLiBJJ2QgbGlrZSB0byBwb3N0IHRoZXNlIHBhdGNoZXMgaW4gYWR2YW5jZSB0bwo+Pj4+
-IGF2b2lkIHllYXItZW5kIGJ1c3luZXNzLiBJJ20gaGFwcHkgaWYgeW91IHJldmlldyB0aGVtIGFu
-ZCB0aGVzZSBwYXRjaGVzIGdvCj4+Pj4gZm9yd2FyZCwgdGhlbiBJIGNhbiBnZXQgYSBzaG9ydCBy
-ZXN0IGluIHRoZSB5ZWFyLWVuZC4KPj4+Pgo+Pj4+IEkgbm90ZSB0aGF0IEkgaGF2ZSB0aGUgb3Ro
-ZXIgcGF0Y2hlcyBmb3IgQUxTQSBkaWNlIG1vZHVsZSwgdG9vLiBJJ20gYWxzbyBoYXBweQo+Pj4+
-IHRvIHN0YXJ0IHJldmlld2luZyBwcm9jZXNzIGZvciB0aGVtIGFmdGVyIHRoaXMgcGF0Y2hzZXQg
-Z29lcyBmb3J3YXJkLi4uCj4+Pj4KPj4+PiBDaGFuZ2VzIGZyb20gUkZDdjI6Cj4+Pj4gICogcmVt
-b3ZlIHNvdW5kL2ZpcmV3aXJlL3NjczF4LmMgKEkgZm9yZ2V0IGl0KQo+Pj4+ICAqIHJldmlzZSBv
-cGVyYXRpb25zIGluIHJhd21pZGkgY2FsbGJhY2tzCj4+Pj4KPj4+PiBUYWthc2hpIFNha2Ftb3Rv
-ICg4KToKPj4+PiAgIEFMU0E6IG94Znc6IGFkZCBzY3MxeCBsYXllcgo+Pj4+ICAgQUxTQTogb3hm
-dzogYWxsb2NhdGUgb3duIGFkZHJlc3MgcmVnaW9uIGZvciBTQ1MuMSBzZXJpZXMKPj4+PiAgIEFM
-U0E6IG94Znc6IGNvcHkgaGFuZGxlcnMgb2YgYXN5bmNocm9ub3VzIHRyYW5zYWN0aW9uIGZvciBN
-SURJIGNhcHR1cmUKPj4+PiAgIEFMU0E6IG94Znc6IGFkZCBNSURJIGNhcHR1cmUgcG9ydCBmb3Ig
-U0NTLjEgbW9kZWxzCj4+Pj4gICBBTFNBOiBveGZ3OiBjb3B5IGhhbmRsZXJzIG9mIGFzeW5jaHJv
-bm91cyB0cmFuc2FjdGlvbiBmb3IgTUlESQo+Pj4+ICAgICBwbGF5YmFjawo+Pj4+ICAgQUxTQTog
-b3hmdzogYWRkIE1JREkgcGxheWJhY2sgcG9ydCBmb3IgU0NTLjEgbW9kZWxzCj4+Pj4gICBBTFNB
-OiBveGZ3OiBvYnNvbGV0ZSBzY3MxeCBtb2R1bGUKPj4+PiAgIEFMU0E6IG94Znc6IGFkZCBzdHJl
-YW0gZm9ybWF0IHF1aXJrIGZvciBTQ1MuMSBtb2RlbHMKPj4+Cj4+PiBUaGUgY2hhbmdlcyBsb29r
-IGdvb2QgdG8gbWUsIGJ1dCB0aGUgcGF0Y2hlcyBhcmVuJ3QgY2xlYW5seQo+Pj4gYXBwbGljYWJs
-ZS4gIFBsZWFzZSByZWJhc2UgdGhlIHBhdGNoZXMgdG8gZm9yLW5leHQgYnJhbmNoIGFuZAo+Pj4g
-cmVzdWJtaXQuCj4+Cj4+IFRoYW5rcyBmb3IgeW91ciByZXZpZXcsIHdoaWxlIHRoaXMgcGF0Y2hz
-ZXQgaXMgYmFzZWQgb24gcGF0Y2hlcyB3aGljaAo+PiBhcmUgbm90IGFjY2VwdGVkIHlldC4gV291
-bGQgeW91IHBsZWFzZSByZXZpZXcgdGhlIGZvdXIgcGF0Y2hlcyAodGl0bGVkCj4+IGFzIEFMU0E6
-IG94Znc6IGxvY2FsaXplIHN0dWZmcyBvZiBvbGQgZmlyZXdpcmUtc3BlYWtlcnMgbW9kdWxlKSwg
-dG9vPwo+PiBUaGVuIHlvdSBjYW4gYXBwbHkgd2hvbGUgdGhlc2UgcGF0Y2hlcyB3aXRob3V0IHJl
-YmFzaW5nLgo+IAo+IEFscmlnaHQsIEkgYXBwbGllZCBib3RoIHNlcmllcyBub3cuICBUaGFua3Mu
-CgpPSy4gVGhhbmtzLgoKClRha2FzaGkgU2FrYW1vdG8KCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, December 22, 2015 5:00 PM
+> To: Libin Yang
+> Cc: Yang, Libin; mengdong.lin@linux.intel.com; alsa-devel@alsa-
+> project.org
+> Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST audio for
+> Jack support
+> 
+> On Tue, 22 Dec 2015 09:47:12 +0100,
+> Libin Yang wrote:
+> >
+> > Hi Takashi,
+> >
+> > On 11/09/2015 11:15 PM, Takashi Iwai wrote:
+> > > On Mon, 09 Nov 2015 16:00:01 +0100,
+> > > Yang, Libin wrote:
+> > >>
+> > >> Hi Takashi,
+> > >>
+> > >>> -----Original Message-----
+> > >>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> > >>> Sent: Monday, November 09, 2015 3:59 PM
+> > >>> To: Libin Yang
+> > >>> Cc: alsa-devel@alsa-project.org; mengdong.lin@linux.intel.com;
+> Yang,
+> > >>> Libin
+> > >>> Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST
+> audio for
+> > >>> Jack support
+> > >>>
+> > >>> On Wed, 04 Nov 2015 07:23:14 +0100,
+> > >>> Libin Yang wrote:
+> > >>>>
+> > >>>>
+> > >>>> On 11/04/2015 12:49 AM, Takashi Iwai wrote:
+> > >>>>> On Tue, 03 Nov 2015 09:42:54 +0100,
+> > >>>>> libin.yang@linux.intel.com wrote:
+> > >>>>>>
+> > >>>>>> From: Libin Yang <libin.yang@linux.intel.com>
+> > >>>>>>
+> > >>>>>> This is the patch set for Jack support for DP MST audio
+> > >>>>>>
+> > >>>>>> Libin Yang (2):
+> > >>>>>>     ALSA: hda - jack support DP MST audio
+> > >>>>>>     ALSA: hda - hdmi audio add dynamically jack binding to pin
+> > >>>>>
+> > >>>>> I'm somehow confused by this patch series.
+> > >>>>> Is the unsolicited event handling itself changed for MST?  I mean,
+> you
+> > >>>>> cannot know which MST dev# is given beforehand, while you
+> seem
+> > >>> trying
+> > >>>>> to assign such a number to the jack object.
+> > >>>>
+> > >>>> Oh, sorry I forgot to mention that we only operate on device
+> entry 0
+> > >>>> so far in the code. It's misleading.
+> > >>>>
+> > >>>> These patches don't operate on MST audio. The full MST audio
+> driver
+> > >>>> support will be implemented in the later patches. The patches help
+> to
+> > >>>> prepare supporting MST audio.
+> > >>>>
+> > >>>> The purpose of the patches is try to dynamically attach the Jack.
+> > >>>
+> > >>> Well, only judging from the quick glance, I don't buy this strategy,
+> > >>> sorry.  Currently for HDMI/DP, the jack is for PCM, not for pin.
+> > >>> Namely, user-space watches the jack notification to judge whether
+> the
+> > >>> corresponding PCM is available or not.  You're trying to change this
+> > >>> scheme completely.
+> > >>
+> > >> The patch is to make sure the jack is bound to PCM statically.
+> > >> This patch is needed because in old code,  it will create jack with:
+> > >> for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> > >> 	...
+> > >> 	err = generic_hdmi_build_jack(codec, pin_idx);
+> > >> 	...
+> > >> }
+> > >> Which means the jack is created based on pin number and pin_idx.
+> > >> As a pin is bound statically to the PCM, the jack is statically bound to
+> PCM.
+> > >
+> > > OK, so far, so good.
+> > >
+> > >> Now we are using the dynamic pcm bound. If we use the old code to
+> > >> create the jack, the jack will be bound to pin. So we need the patch,
+> > >> which will use the new code:
+> > >> for (pcm_idx = 0; pcm_idx < spec-> pcms_used; pcm_idx++) {
+> > >> 	...
+> > >> 	err = generic_hdmi_build_jack(codec, pcm_idx);
+> > >> 	...
+> > >> }
+> > >> which makes sure that the jack is bound to PCM (jack[0] is bound
+> > >> to pcm[0], jack[1] is bound to pcm[1] and so on).
+> > >>
+> > >> If there is no monitor, no pin is bound to the PCM.
+> > >> So no pin is bound to the Jack. When there is a monitor connected,
+> > >> the pin is bound to a proper PCM. So we should bind the PCM's jack
+> > >> to the pin.
+> > >>
+> > >> For example, jack0 is bound to the PCM 3 (the first jack is bound
+> > >> to the first PCM statically). When a monitor is connected to pin 5,
+> > >> PCM 3 will be assigned to the pin. We need bind jack 0 to pin 5.
+> > >> When monitor is disconnected, we must unbind the jack 0 from pin
+> 5.
+> > >> These operation are done in function
+> > >> snd_hda_jack_bind/ snd_hda_jack_unbind.
+> > >
+> > > Then we shouldn't use the hda_jack.c code at all for HDMI/DP.
+> > > For HDMI/DP with the dynamic PCM binding, the only state to check
+> is
+> > > its PCM assignment.  It doesn't have to issue the jack state check via
+> > > HDA verb at all.  This should make things a lot easier.
+> >
+> > I'm now porting the jack supporting for MST audio. The code on
+> > hdmi-jack branch will create jack differently based codec_has_acomp()
+> > condition. Does this mean MST Jack binding will handle both situation?
+> 
+> Ideally, yes.
+> 
+> > My idea is:
+> > 1. Add struct snd_jack *jack[] member in hdmi_spec.
+> > 2. Create the jack based on PCM
+> > 3. Assign spec->jack[i] to per_pin->acomp_jack when pin is connected.
+> >
+> > This should be OK for codec_has_acomp sitation.
+> 
+> Hrm, not really.  As already discussed, a jack is associated to each
+> PCM, and notified plug/unplug when it's assigned / unassigned.
+> That is, you don't have to keep extra jack array.  When a PCM is
+> assigned or unassigned, simply notify per_pin->acomp_jack of that PCM.
+> That's all.  So there shouldn't be too many difference from the
+> current situation.
+
+If so, the snd_jack is dynamically bound to PCM. This means
+the jack is bound to the pin, and user space must get the pcm-pin
+mapping to know the jack is bound to which PCM. Then it can decide
+how to operate on the PCM. Not sure it is compatible with current
+pulseaudio. 
+
+> 
+> > But what about the
+> > other situation? The other situation still uses the hda_jack_tbl and
+> > etc. So we still need handle hda jack if we want to reuse the current
+> > code.
+> 
+> For other, it's similar.  The jack is associated with PCM, which is
+> virtually bound with per_pin.  And when it's assigned / unassigned,
+> call it with the given per_pin->pin_nid.
+> 
+> 
+> Takashi
