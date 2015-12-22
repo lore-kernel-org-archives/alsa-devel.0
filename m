@@ -1,25 +1,17 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH 0/2] ALSA: hda - DP MST audio for Jack
- support
-Date: Tue, 22 Dec 2015 13:33:33 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D197B429B@SHSMSX103.ccr.corp.intel.com>
-References: <1446540176-110181-1-git-send-email-libin.yang@linux.intel.com>
- <s5hsi4nni3u.wl-tiwai@suse.de>	<5639A452.20106@linux.intel.com>
- <s5hmvunk3ib.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D197782DD@SHSMSX103.ccr.corp.intel.com>
- <s5hh9kvw6dv.wl-tiwai@suse.de>	<56790E10.2010900@linux.intel.com>
- <s5hoadig8ob.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D197B41DB@SHSMSX103.ccr.corp.intel.com>
- <s5hvb7qeldt.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: dice: expand timeout to wait for
+	Dice notification
+Date: Tue, 22 Dec 2015 22:45:43 +0900
+Message-ID: <1450791943-14624-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1450791943-14624-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 318572656F0
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 14:33:38 +0100 (CET)
-In-Reply-To: <s5hvb7qeldt.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09DA4265842
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 14:45:48 +0100 (CET)
+In-Reply-To: <1450791943-14624-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,240 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Some users have reported that their Dice based models generate ETIMEDOUT
+when starting PCM playback. It means that current timeout (=100msec) is
+not enough for their models to transfer notifications.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, December 22, 2015 8:08 PM
-> To: Yang, Libin
-> Cc: Libin Yang; mengdong.lin@linux.intel.com; alsa-devel@alsa-
-> project.org
-> Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST audio for
-> Jack support
-> 
-> On Tue, 22 Dec 2015 12:45:25 +0100,
-> Yang, Libin wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, December 22, 2015 5:00 PM
-> > > To: Libin Yang
-> > > Cc: Yang, Libin; mengdong.lin@linux.intel.com; alsa-devel@alsa-
-> > > project.org
-> > > Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST audio
-> for
-> > > Jack support
-> > >
-> > > On Tue, 22 Dec 2015 09:47:12 +0100,
-> > > Libin Yang wrote:
-> > > >
-> > > > Hi Takashi,
-> > > >
-> > > > On 11/09/2015 11:15 PM, Takashi Iwai wrote:
-> > > > > On Mon, 09 Nov 2015 16:00:01 +0100,
-> > > > > Yang, Libin wrote:
-> > > > >>
-> > > > >> Hi Takashi,
-> > > > >>
-> > > > >>> -----Original Message-----
-> > > > >>> From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > >>> Sent: Monday, November 09, 2015 3:59 PM
-> > > > >>> To: Libin Yang
-> > > > >>> Cc: alsa-devel@alsa-project.org; mengdong.lin@linux.intel.com;
-> > > Yang,
-> > > > >>> Libin
-> > > > >>> Subject: Re: [alsa-devel] [RFC PATCH 0/2] ALSA: hda - DP MST
-> > > audio for
-> > > > >>> Jack support
-> > > > >>>
-> > > > >>> On Wed, 04 Nov 2015 07:23:14 +0100,
-> > > > >>> Libin Yang wrote:
-> > > > >>>>
-> > > > >>>>
-> > > > >>>> On 11/04/2015 12:49 AM, Takashi Iwai wrote:
-> > > > >>>>> On Tue, 03 Nov 2015 09:42:54 +0100,
-> > > > >>>>> libin.yang@linux.intel.com wrote:
-> > > > >>>>>>
-> > > > >>>>>> From: Libin Yang <libin.yang@linux.intel.com>
-> > > > >>>>>>
-> > > > >>>>>> This is the patch set for Jack support for DP MST audio
-> > > > >>>>>>
-> > > > >>>>>> Libin Yang (2):
-> > > > >>>>>>     ALSA: hda - jack support DP MST audio
-> > > > >>>>>>     ALSA: hda - hdmi audio add dynamically jack binding to
-> pin
-> > > > >>>>>
-> > > > >>>>> I'm somehow confused by this patch series.
-> > > > >>>>> Is the unsolicited event handling itself changed for MST?  I
-> mean,
-> > > you
-> > > > >>>>> cannot know which MST dev# is given beforehand, while you
-> > > seem
-> > > > >>> trying
-> > > > >>>>> to assign such a number to the jack object.
-> > > > >>>>
-> > > > >>>> Oh, sorry I forgot to mention that we only operate on device
-> > > entry 0
-> > > > >>>> so far in the code. It's misleading.
-> > > > >>>>
-> > > > >>>> These patches don't operate on MST audio. The full MST audio
-> > > driver
-> > > > >>>> support will be implemented in the later patches. The patches
-> help
-> > > to
-> > > > >>>> prepare supporting MST audio.
-> > > > >>>>
-> > > > >>>> The purpose of the patches is try to dynamically attach the
-> Jack.
-> > > > >>>
-> > > > >>> Well, only judging from the quick glance, I don't buy this
-> strategy,
-> > > > >>> sorry.  Currently for HDMI/DP, the jack is for PCM, not for pin.
-> > > > >>> Namely, user-space watches the jack notification to judge
-> whether
-> > > the
-> > > > >>> corresponding PCM is available or not.  You're trying to change
-> this
-> > > > >>> scheme completely.
-> > > > >>
-> > > > >> The patch is to make sure the jack is bound to PCM statically.
-> > > > >> This patch is needed because in old code,  it will create jack with:
-> > > > >> for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > > > >> 	...
-> > > > >> 	err = generic_hdmi_build_jack(codec, pin_idx);
-> > > > >> 	...
-> > > > >> }
-> > > > >> Which means the jack is created based on pin number and
-> pin_idx.
-> > > > >> As a pin is bound statically to the PCM, the jack is statically bound
-> to
-> > > PCM.
-> > > > >
-> > > > > OK, so far, so good.
-> > > > >
-> > > > >> Now we are using the dynamic pcm bound. If we use the old
-> code to
-> > > > >> create the jack, the jack will be bound to pin. So we need the
-> patch,
-> > > > >> which will use the new code:
-> > > > >> for (pcm_idx = 0; pcm_idx < spec-> pcms_used; pcm_idx++) {
-> > > > >> 	...
-> > > > >> 	err = generic_hdmi_build_jack(codec, pcm_idx);
-> > > > >> 	...
-> > > > >> }
-> > > > >> which makes sure that the jack is bound to PCM (jack[0] is bound
-> > > > >> to pcm[0], jack[1] is bound to pcm[1] and so on).
-> > > > >>
-> > > > >> If there is no monitor, no pin is bound to the PCM.
-> > > > >> So no pin is bound to the Jack. When there is a monitor
-> connected,
-> > > > >> the pin is bound to a proper PCM. So we should bind the PCM's
-> jack
-> > > > >> to the pin.
-> > > > >>
-> > > > >> For example, jack0 is bound to the PCM 3 (the first jack is bound
-> > > > >> to the first PCM statically). When a monitor is connected to pin 5,
-> > > > >> PCM 3 will be assigned to the pin. We need bind jack 0 to pin 5.
-> > > > >> When monitor is disconnected, we must unbind the jack 0 from
-> pin
-> > > 5.
-> > > > >> These operation are done in function
-> > > > >> snd_hda_jack_bind/ snd_hda_jack_unbind.
-> > > > >
-> > > > > Then we shouldn't use the hda_jack.c code at all for HDMI/DP.
-> > > > > For HDMI/DP with the dynamic PCM binding, the only state to
-> check
-> > > is
-> > > > > its PCM assignment.  It doesn't have to issue the jack state check
-> via
-> > > > > HDA verb at all.  This should make things a lot easier.
-> > > >
-> > > > I'm now porting the jack supporting for MST audio. The code on
-> > > > hdmi-jack branch will create jack differently based
-> codec_has_acomp()
-> > > > condition. Does this mean MST Jack binding will handle both
-> situation?
-> > >
-> > > Ideally, yes.
-> > >
-> > > > My idea is:
-> > > > 1. Add struct snd_jack *jack[] member in hdmi_spec.
-> > > > 2. Create the jack based on PCM
-> > > > 3. Assign spec->jack[i] to per_pin->acomp_jack when pin is
-> connected.
-> > > >
-> > > > This should be OK for codec_has_acomp sitation.
-> > >
-> > > Hrm, not really.  As already discussed, a jack is associated to each
-> > > PCM, and notified plug/unplug when it's assigned / unassigned.
-> > > That is, you don't have to keep extra jack array.  When a PCM is
-> > > assigned or unassigned, simply notify per_pin->acomp_jack of that
-> PCM.
-> > > That's all.  So there shouldn't be too many difference from the
-> > > current situation.
-> >
-> > If so, the snd_jack is dynamically bound to PCM. This means
-> > the jack is bound to the pin, and user space must get the pcm-pin
-> > mapping to know the jack is bound to which PCM. Then it can decide
-> > how to operate on the PCM. Not sure it is compatible with current
-> > pulseaudio.
-> 
-> Erm, I was confused.  Yes, for dynamic attach/detaching PCM, we need
-> to keep jack object apart from per_pin.  I guess your current patchset
-> is broken in this regard?
-> 
-> Though, for having the jack pointer, I prefer avoiding to introduce
-> yet another array but rather extending hdmi_spec.pcm_rec[].  Currently
-> it contains the hda_pcm pointers.  But we can define a new object,
-> e.g.
-> 
-> struct hdmi_pcm {
-> 	struct hda_pcm *pcm;
-> 	struct snd_jack *acomp_jack;
-> 	....
-> };
-> 
-> and keeping this in hdmi_spec.
-> 
-> struct hdmi_spec {
-> 	....
-> 	struct hdmi_pcm pcm_rec[16];
-> 	....
-> };
-> 
-> get_pcm_rec() macro needs to be adjusted properly, but other than
-> that, there aren't so many places accessing pcm_rec[] directly, so
-> easy to convert.
-> 
-> Maybe we can start from converting this at first, moving acomp_jack to
-> hdmi_spec, then apply MST patchset on its top.  This might be a bit
-> cleaner.
+This commit expands the timeout up to 2 sec. As a result, in a worst case,
+any operations to start AMDTP streams takes 2 sec or more. Then, in
+userspace, snd_pcm_hw_params(), snd_pcm_prepare(), snd_pcm_recover(),
+snd_rawmidi_open(), snd_seq_connect_from() and snd_seq_connect_to() may
+take the time.
 
-It's clear now. It should work. I will try it.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-transaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> In the case of non-component: the question beforehand is how to handle
-> MST PCM assignment at all.  Namely, the non-component case assumes
-> that there is 1:1 object matching with the actual pin to per_pin.  If
-> this assumption isn't kept, we'd need to use the same trick like the
-> component case, and stop using hda_jack infrastructure.
-> (So acomp_jack might be better renamed to just "jack" or so.)
-> 
-
-If MST PCM is supported, then per_pin is not 1:1 object matching with
-the actual pin. It seems we will stop using hda_jack infrastructure.
-
-I will refine the jack patches based on the new method. Thanks for your
-suggestion.
-
-Regards,
-Libin
-
-> 
-> thanks,
-> 
-> Takashi
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index d5f7de7..de5cd6c 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -9,7 +9,7 @@
+ 
+ #include "dice.h"
+ 
+-#define NOTIFICATION_TIMEOUT_MS	100
++#define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
+ 
+ static u64 get_subaddr(struct snd_dice *dice, enum snd_dice_addr_type type,
+ 		       u64 offset)
+-- 
+2.5.0
