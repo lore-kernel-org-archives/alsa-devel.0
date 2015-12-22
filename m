@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 8/8] ALSA: oxfw: add stream format quirk for
-	SCS.1 models
-Date: Tue, 22 Dec 2015 09:15:46 +0900
-Message-ID: <1450743346-14071-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/8] ALSA: oxfw: allocate own address region
+	for SCS.1 series
+Date: Tue, 22 Dec 2015 09:15:40 +0900
+Message-ID: <1450743346-14071-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EA0C26152C
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 01:15:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F020D2612AD
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2015 01:15:52 +0100 (CET)
 In-Reply-To: <1450743346-14071-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,45 +25,115 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As long as I investigate SCS.1m, this model reports to transfer/receive
-PCM data channels/MIDI conformant data channels in tx/rx AMDTP packet.
-There's a contradiction that this model actually has no analog/digital
-capture port for PCM frames and no physical MIDI ports.
+When physical controls on SCS.1 models are operated, the models transfer
+MIDI messages in asynchronous transactions on IEEE 1394 bus. The models
+have a register to have an address for the transactions, and drivers
+can register own address for this purpose.
 
-I guess that SCS.1d also has the contradiction. This model has no
-analog/digital ports for PCM frames and no physical MIDI ports, thus it
-requires no streaming functionality.
-
-This commit adds some modification codes to handle the contradiction,
-as much as possible. Unfortunately, this module adds one PCM playback
-substream for SCS.1d so as SCS.1m.
+This commit keeps a region of address, registers it and adds a handler for
+the transactions.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/firewire/oxfw/oxfw-scs1x.c | 65 +++++++++++++++++++++++++++++++++++++++-
+ sound/firewire/oxfw/oxfw.h       |  1 +
+ 2 files changed, 65 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index e7f2698..abedc22 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -164,8 +164,16 @@ static int detect_quirks(struct snd_oxfw *oxfw)
- 	 * Stanton models supports asynchronous transactions for unique MIDI
- 	 * messages.
- 	 */
--	if (oxfw->entry->vendor_id == OUI_STANTON)
-+	if (oxfw->entry->vendor_id == OUI_STANTON) {
-+		/* No physical MIDI ports. */
-+		oxfw->midi_input_ports = 0;
-+		oxfw->midi_output_ports = 0;
-+
-+		/* Output stream exists but no data channels are useful. */
-+		oxfw->has_output = false;
-+
- 		return snd_oxfw_scs1x_add(oxfw);
-+	}
+diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
+index 34db0d0..32a7b67 100644
+--- a/sound/firewire/oxfw/oxfw-scs1x.c
++++ b/sound/firewire/oxfw/oxfw-scs1x.c
+@@ -9,18 +9,81 @@
  
- 	/*
- 	 * TASCAM FireOne has physical control and requires a pair of additional
+ #include "oxfw.h"
+ 
++#define HSS1394_ADDRESS			0xc007dedadadaULL
++#define HSS1394_MAX_PACKET_SIZE		64
++#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
++
++struct fw_scs1x {
++	struct fw_address_handler hss_handler;
++};
++
++static void handle_hss(struct fw_card *card, struct fw_request *request,
++		       int tcode, int destination, int source, int generation,
++		       unsigned long long offset, void *data, size_t length,
++		       void *callback_data)
++{
++	fw_send_response(card, request, RCODE_COMPLETE);
++}
++
++static int register_address(struct snd_oxfw *oxfw)
++{
++	struct fw_scs1x *scs = oxfw->spec;
++	__be64 data;
++
++	data = cpu_to_be64(((u64)HSS1394_TAG_CHANGE_ADDRESS << 56) |
++			    scs->hss_handler.offset);
++	return snd_fw_transaction(oxfw->unit, TCODE_WRITE_BLOCK_REQUEST,
++				  HSS1394_ADDRESS, &data, sizeof(data), 0);
++}
++
++static void remove_scs1x(struct snd_rawmidi *rmidi)
++{
++	struct fw_scs1x *scs = rmidi->private_data;
++
++	fw_core_remove_address_handler(&scs->hss_handler);
++}
++
++void snd_oxfw_scs1x_update(struct snd_oxfw *oxfw)
++{
++	register_address(oxfw);
++}
++
+ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
+ {
+ 	struct snd_rawmidi *rmidi;
++	struct fw_scs1x *scs;
+ 	int err;
+ 
++	scs = kzalloc(sizeof(struct fw_scs1x), GFP_KERNEL);
++	if (scs == NULL)
++		return -ENOMEM;
++	oxfw->spec = scs;
++
++	/* Allocate own handler for imcoming asynchronous transaction. */
++	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
++	scs->hss_handler.address_callback = handle_hss;
++	scs->hss_handler.callback_data = scs;
++	err = fw_core_add_address_handler(&scs->hss_handler,
++					  &fw_high_memory_region);
++	if (err < 0)
++		return err;
++
++	err = register_address(oxfw);
++	if (err < 0)
++		goto err_allocated;
++
+ 	/* Use unique name for backward compatibility to scs1x module. */
+ 	err = snd_rawmidi_new(oxfw->card, "SCS.1x", 0, 0, 0, &rmidi);
+ 	if (err < 0)
+-		return err;
++		goto err_allocated;
++	rmidi->private_data = scs;
++	rmidi->private_free = remove_scs1x;
+ 
+ 	snprintf(rmidi->name, sizeof(rmidi->name),
+ 		 "%s MIDI", oxfw->card->shortname);
+ 
++	return 0;
++err_allocated:
++	fw_core_remove_address_handler(&scs->hss_handler);
+ 	return err;
+ }
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index cbf00ee..9beecc2 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -135,3 +135,4 @@ int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
+ 
+ int snd_oxfw_add_spkr(struct snd_oxfw *oxfw, bool is_lacie);
+ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw);
++void snd_oxfw_scs1x_update(struct snd_oxfw *oxfw);
 -- 
 2.5.0
