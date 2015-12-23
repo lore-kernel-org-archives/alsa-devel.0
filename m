@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 7/8] ASoC: wm_adsp: Add a handler for
- the compressed IRQ
-Date: Wed, 23 Dec 2015 00:19:07 +0000
-Message-ID: <20151223001907.GI16023@sirena.org.uk>
-References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm8903: Be sure to clamp return value"
+	to the asoc tree
+Date: Wed, 23 Dec 2015 00:23:18 +0000
+Message-ID: <E1aBXD4-0000VP-5n@debutante>
+References: <1450795849-28642-1-git-send-email-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7496654358677895462=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DF5B265DCD
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:19:17 +0100 (CET)
-In-Reply-To: <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A63D266094
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:23:25 +0100 (CET)
+In-Reply-To: <1450795849-28642-1-git-send-email-linus.walleij@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
+To: Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7496654358677895462==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
-Content-Disposition: inline
+   ASoC: wm8903: Be sure to clamp return value
 
+has been applied to the asoc tree at
 
---J+eNKFoVC4T1DV3f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Dec 15, 2015 at 11:29:48AM +0000, Charles Keepax wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
-> +{
-> +	struct wm5110_priv *florida = data;
-> +
-> +	wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
-> +
-> +	return IRQ_HANDLED;
-> +}
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-We unconditionally handle the IRQ...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
-> +{
-> +	struct wm_adsp_compr_buf *buf = dsp->buffer;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&dsp->pwr_lock);
-> +
-> +	if (!buf) {
-> +		adsp_err(dsp, "Spurious buffer IRQ\n");
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-...though we even have code to handle spurious IRQs.  I'd expect
-IRQ_NONE if the interrupt wasn't handled, allowing genirq's error
-handling and diagnostics to take effect.
+Thanks,
+Mark
 
-> +static int wm_adsp_buffer_ack_irq(struct wm_adsp_compr_buf *buf)
-> +{
-> +	if (buf->irq_ack & 0x01)
-> +		return 0;
-> +
-> +	adsp_dbg(buf->dsp, "Acking buffer IRQ(0x%x)\n", buf->irq_ack);
-> +
-> +	buf->irq_ack |= 0x01;
-> +
-> +	return wm_adsp_buffer_write(buf, HOST_BUFFER_FIELD(irq_ack),
-> +				    buf->irq_ack);
-> +}
+>From b70381c35f65bbe1a2339e2833a574f0473162fa Mon Sep 17 00:00:00 2001
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 22 Dec 2015 15:50:49 +0100
+Subject: [PATCH] ASoC: wm8903: Be sure to clamp return value
 
-This is confusing, this isn't actually in the interrupt path...
+As we want gpio_chip .get() calls to be able to return negative
+error codes and propagate to drivers, we need to go over all
+drivers and make sure their return values are clamped to [0,1].
+We do this by using the ret = !!(val) design pattern.
 
---J+eNKFoVC4T1DV3f
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm8903.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWeeh6AAoJECTWi3JdVIfQIXAH/1Q55R8KrxYmcbWXI5TDDiEg
-74Hrze56ugUFsewIjGH1Nns5n1zUlmfz7BPdKVivLGpVGvvMFY8c/xr/PdpGF4O5
-NE3WFzQGP3ASbKE2p7W8ZdjCCMZnPqZ7KyO0mGvjZbdYhqpHBEYKI11awnfieQNG
-OVob0wcaK0vhU911wl2o+bshj2Z+OLzEsLz6B02l8Ps9LRAcpegY/tE4toTTjebC
-ItvE6DVRn/eDVsbnBXlzet7fFwUIdbQkNUsAiqDbWedxT6sBOI37a8HGTTIjm+fx
-TProb0S8Tu7yygXoE/SKUApy3Yq/DaMEmHIvDqj9Eulnh8LPGfTc9DLEj+ucERs=
-=9x0Y
------END PGP SIGNATURE-----
-
---J+eNKFoVC4T1DV3f--
-
---===============7496654358677895462==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7496654358677895462==--
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index e4cc41e6c23e..2ed6419c181e 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1804,7 +1804,7 @@ static int wm8903_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 
+ 	regmap_read(wm8903->regmap, WM8903_GPIO_CONTROL_1 + offset, &reg);
+ 
+-	return (reg & WM8903_GP1_LVL_MASK) >> WM8903_GP1_LVL_SHIFT;
++	return !!((reg & WM8903_GP1_LVL_MASK) >> WM8903_GP1_LVL_SHIFT);
+ }
+ 
+ static int wm8903_gpio_direction_out(struct gpio_chip *chip,
+-- 
+2.6.2
