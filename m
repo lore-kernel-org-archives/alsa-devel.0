@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Fix Sidetone to work regardless
-	of DAI capture" to the asoc tree
-Date: Wed, 23 Dec 2015 00:12:20 +0000
-Message-ID: <E1aBX2S-0008Nt-4M@debutante>
-References: <2ed293aa5fa88ff652f1c6628a09dc6fe36ea112.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH v3 4/8] ASoC: wm_adsp: Add support for
+ opening a compressed stream
+Date: Wed, 23 Dec 2015 00:14:56 +0000
+Message-ID: <20151223001456.GH16023@sirena.org.uk>
+References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1450178989-8749-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0927718644262167352=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 66F17265E28
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:12:26 +0100 (CET)
-In-Reply-To: <2ed293aa5fa88ff652f1c6628a09dc6fe36ea112.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5A32668C5
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:15:05 +0100 (CET)
+In-Reply-To: <1450178989-8749-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7219: Fix Sidetone to work regardless of DAI capture
+--===============0927718644262167352==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/Gk0KcsbyUMelFU1"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--/Gk0KcsbyUMelFU1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Dec 15, 2015 at 11:29:45AM +0000, Charles Keepax wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+> +{
+> +	struct wm_adsp_compr *compr;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&dsp->pwr_lock);
+> +
+> +	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
+> +		adsp_err(dsp, "Firmware does not support compressed API\n");
+> +		ret = -ENXIO;
+> +		goto out;
+> +	}
+> +
+> +	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
+> +		adsp_err(dsp, "Firmware does not support stream direction\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You're doing this under lock but not checking for an attempt to allocate
+on a DSP already in use.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--/Gk0KcsbyUMelFU1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From fdd50a8086422caa456b5f8abb631dda6c551744 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 22 Dec 2015 18:27:52 +0000
-Subject: [PATCH] ASoC: da7219: Fix Sidetone to work regardless of DAI capture
+iQEcBAEBCAAGBQJWeed/AAoJECTWi3JdVIfQNSwH+wScJKL9MyTTsRegxIQv59wr
+1BV8nW6hMPorawwz8ADvpuz3YlA+kjuR6GSWBv1KOwTBoYI/lNLNU3TptMGUOkfJ
+EGPcOpgdb/Ax4K2c0Pbi4PHNCc+h96lNsKIsIm4lrJ6DoWt0ukOSKWo9hsqYGTWH
+zxKbhioJVrGoDrIv+wprFFlKU6321taSvaeAjN05f//Q23VI4a0OqmSxsTamlJGw
+i+7iQWtF4fhaQXJqfEUd6KU0Tz+Spc0OmAGpsk0yxvKEz+w8TfGgwc6eQEoFlLu1
+1Snzs5sMK4jQqNbRN0Bbf+w7igUpUhsUoNXqZrpl37fF4dT53s51CE7CZvqBjhg=
+=+f2G
+-----END PGP SIGNATURE-----
 
-Previously Sidetone would operate only when capture to DAI was in
-progress, due to DAPM path configuration. There is no reason why
-this should not operate without DAI capture, so this patch updates
-the DAPM path accordingly.
+--/Gk0KcsbyUMelFU1--
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7219.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--===============0927718644262167352==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index e36a7b79b494..319e794d27f6 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -968,10 +968,11 @@ static const struct snd_soc_dapm_route da7219_audio_map[] = {
- 	{"Mixin PGA", NULL, "Mic PGA"},
- 	{"ADC", NULL, "Mixin PGA"},
- 
--	{"Sidetone Filter", NULL, "ADC"},
- 	{"Mixer In", NULL, "Mixer In Supply"},
- 	{"Mixer In", "Mic Switch", "ADC"},
- 
-+	{"Sidetone Filter", NULL, "Mixer In"},
-+
- 	{"Tone Generator", NULL, "TONE"},
- 
- 	DA7219_OUT_DAI_MUX_ROUTES("Out DAIL Mux"),
--- 
-2.6.2
+
+--===============0927718644262167352==--
