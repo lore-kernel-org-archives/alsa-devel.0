@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: rename some alsa control names"
-	to the asoc tree
-Date: Wed, 23 Dec 2015 00:08:55 +0000
-Message-ID: <E1aBWz9-0007JN-2X@debutante>
-References: <1450663793-3351-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: atmel_wm8904: add snd_soc_pm_ops" to
+	the asoc tree
+Date: Wed, 23 Dec 2015 00:08:54 +0000
+Message-ID: <E1aBWz8-0007It-5j@debutante>
+References: <1450764402-15669-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0735B265D83
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:01 +0100 (CET)
-In-Reply-To: <1450663793-3351-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 76FF9265D9D
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:02 +0100 (CET)
+In-Reply-To: <1450764402-15669-1-git-send-email-songjun.wu@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: rename some alsa control names
+   ASoC: atmel_wm8904: add snd_soc_pm_ops
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From e2133b64820df302a8e3d00c7531018470cd63a9 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 21 Dec 2015 10:09:53 +0800
-Subject: [PATCH] ASoC: rt5616: rename some alsa control names
+>From 50860e1d17d1bc2f1a2ebfc5042f2af786e53ad6 Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@atmel.com>
+Date: Tue, 22 Dec 2015 14:06:42 +0800
+Subject: [PATCH] ASoC: atmel_wm8904: add snd_soc_pm_ops
 
-Rename some alsa control name as what they should be.
+Sometimes the audio play can not be resumed after it is
+suspended. Add snd_soc_pm_ops to execute power management
+operations, then this issue is fixed.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/atmel/atmel_wm8904.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index 7bb56dddff8e..1c10d8ed39d2 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -323,9 +323,9 @@ static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 			RT5616_L_VOL_SFT, RT5616_R_VOL_SFT,
- 			175, 0, dac_vol_tlv),
- 	/* IN1/IN2 Control */
--	SOC_SINGLE_TLV("IN1 Boost", RT5616_IN1_IN2,
-+	SOC_SINGLE_TLV("IN1 Boost Volume", RT5616_IN1_IN2,
- 		RT5616_BST_SFT1, 8, 0, bst_tlv),
--	SOC_SINGLE_TLV("IN2 Boost", RT5616_IN1_IN2,
-+	SOC_SINGLE_TLV("IN2 Boost Volume", RT5616_IN1_IN2,
- 		RT5616_BST_SFT2, 8, 0, bst_tlv),
- 	/* INL/INR Volume Control */
- 	SOC_DOUBLE_TLV("IN Capture Volume", RT5616_INL1_INR1_VOL,
-@@ -339,7 +339,7 @@ static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 			127, 0, adc_vol_tlv),
- 
- 	/* ADC Boost Volume Control */
--	SOC_DOUBLE_TLV("ADC Boost Gain", RT5616_ADC_BST_VOL,
-+	SOC_DOUBLE_TLV("ADC Boost Volume", RT5616_ADC_BST_VOL,
- 			RT5616_ADC_L_BST_SFT, RT5616_ADC_R_BST_SFT,
- 			3, 0, adc_bst_tlv),
- };
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index 1933bcd46cca..fdd28ed3e0b9 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -183,6 +183,7 @@ static struct platform_driver atmel_asoc_wm8904_driver = {
+ 	.driver = {
+ 		.name = "atmel-wm8904-audio",
+ 		.of_match_table = of_match_ptr(atmel_asoc_wm8904_dt_ids),
++		.pm		= &snd_soc_pm_ops,
+ 	},
+ 	.probe = atmel_asoc_wm8904_probe,
+ 	.remove = atmel_asoc_wm8904_remove,
 -- 
 2.6.2
