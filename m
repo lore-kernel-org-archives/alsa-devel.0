@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: add an of_match table" to the
-	asoc tree
+Subject: Applied "ASoC: rt5616: add devicetree document for
+	rt5616" to the asoc tree
 Date: Wed, 23 Dec 2015 00:09:02 +0000
-Message-ID: <E1aBWzG-0007Nn-WA@debutante>
-References: <1450703894-32623-1-git-send-email-wxt@rock-chips.com>
+Message-ID: <E1aBWzG-0007NI-1h@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C8F00265E24
+ by alsa0.perex.cz (Postfix) with ESMTP id ABF58265E14
  for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:07 +0100 (CET)
-In-Reply-To: <1450703894-32623-1-git-send-email-wxt@rock-chips.com>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: add an of_match table
+   ASoC: rt5616: add devicetree document for rt5616
 
 has been applied to the asoc tree at
 
@@ -53,46 +52,51 @@ to this mail.
 Thanks,
 Mark
 
->From e17ff2de826f8c2153cf23c8bbd9097219a84fa9 Mon Sep 17 00:00:00 2001
+>From 27af4e488c6a2a8c4b6102e777c29fff467a3895 Mon Sep 17 00:00:00 2001
 From: Caesar Wang <wxt@rock-chips.com>
-Date: Tue, 22 Dec 2015 13:45:02 +0800
-Subject: [PATCH] ASoC: rt5616: add an of_match table
+Date: Tue, 22 Dec 2015 13:45:03 +0800
+Subject: [PATCH] ASoC: rt5616: add devicetree document for rt5616
 
-Add a device tree match table. This serves to make the driver's support
-of device tree more explicit.
+Add the description for rt5616 codec.
 
 Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/devicetree/bindings/sound/rt5616.txt | 26 ++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index 0e9414abab65..7bb56dddff8e 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -1287,6 +1287,14 @@ static const struct i2c_device_id rt5616_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5616_i2c_id);
- 
-+#if defined(CONFIG_OF)
-+static const struct of_device_id rt5616_of_match[] = {
-+	{ .compatible = "realtek,rt5616", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, rt5616_of_match);
-+#endif
+diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
+new file mode 100644
+index 000000000000..efc48c65198d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rt5616.txt
+@@ -0,0 +1,26 @@
++RT5616 audio CODEC
 +
- static int rt5616_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -1359,6 +1367,7 @@ static void rt5616_i2c_shutdown(struct i2c_client *client)
- static struct i2c_driver rt5616_i2c_driver = {
- 	.driver = {
- 		.name = "rt5616",
-+		.of_match_table = of_match_ptr(rt5616_of_match),
- 	},
- 	.probe = rt5616_i2c_probe,
- 	.remove = rt5616_i2c_remove,
++This device supports I2C only.
++
++Required properties:
++
++- compatible : "realtek,rt5616".
++
++- reg : The I2C address of the device.
++
++Pins on the device (for linking into audio routes) for RT5616:
++
++  * IN1P
++  * IN2P
++  * IN2N
++  * LOUTL
++  * LOUTR
++  * HPOL
++  * HPOR
++
++Example:
++
++codec: rt5616@1b {
++	compatible = "realtek,rt5616";
++	reg = <0x1b>;
++};
 -- 
 2.6.2
