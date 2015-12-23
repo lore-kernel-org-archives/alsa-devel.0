@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-codec: Use proper output for
-	external amp routes" to the asoc tree
-Date: Wed, 23 Dec 2015 00:09:01 +0000
-Message-ID: <E1aBWzF-0007Mp-A1@debutante>
-References: <1450821617-12906-1-git-send-email-hdegoede@redhat.com>
+Subject: Applied "ASoC: mediatek: Turn AFE on/off in runtime
+	resume/suspend" to the asoc tree
+Date: Wed, 23 Dec 2015 00:09:03 +0000
+Message-ID: <E1aBWzH-0007OG-TB@debutante>
+References: <1450753894-8087-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EE92E265D83
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:09 +0100 (CET)
-In-Reply-To: <1450821617-12906-1-git-send-email-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A6F60265E3F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:10 +0100 (CET)
+In-Reply-To: <1450753894-8087-1-git-send-email-koro.chen@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+To: Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: Use proper output for external amp routes
+   ASoC: mediatek: Turn AFE on/off in runtime resume/suspend
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,91 @@ to this mail.
 Thanks,
 Mark
 
->From 6b803c611c66debd6fc454c9ed049822994a5885 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Tue, 22 Dec 2015 23:00:17 +0100
-Subject: [PATCH] ASoC: sun4i-codec: Use proper output for external amp routes
+>From c1f2a342846fbfd49ddc06ad7f0684d2c45b419d Mon Sep 17 00:00:00 2001
+From: Koro Chen <koro.chen@mediatek.com>
+Date: Tue, 22 Dec 2015 11:11:34 +0800
+Subject: [PATCH] ASoC: mediatek: Turn AFE on/off in runtime resume/suspend
 
-An external amp (if any) is connected to the external outputs of the SoC
-of course, rather then directly to the internal amp.
+AFE is actually allowed to be turn on before configuration of DAIs
+since each DAI has its own enabling control. Turn on/off AFE in
+runtime resume/suspend to avoid AFE being shut down when closing a DAI
+while other DAIs are still active.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/mtk-afe-pcm.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index e6cc6a14718a..44f170c73b06 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -728,7 +728,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_card_dapm_widgets[] = {
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 5399a0eead3e..08af9f5dc4ab 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -382,9 +382,6 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
+ 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
+-
+-	/* disable AFE */
+-	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0);
+ }
+ 
+ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+@@ -433,9 +430,6 @@ static void mtk_afe_hdmi_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S3_M],
+ 				  afe->clocks[MTK_CLK_I2S3_B]);
+-
+-	/* disable AFE */
+-	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0);
+ }
+ 
+ static int mtk_afe_hdmi_prepare(struct snd_pcm_substream *substream,
+@@ -679,17 +673,6 @@ static int mtk_afe_dais_hw_free(struct snd_pcm_substream *substream,
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static int mtk_afe_dais_prepare(struct snd_pcm_substream *substream,
+-				struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
+-
+-	/* enable AFE */
+-	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0x1);
+-	return 0;
+-}
+-
+ static int mtk_afe_dais_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				struct snd_soc_dai *dai)
+ {
+@@ -757,7 +740,6 @@ static const struct snd_soc_dai_ops mtk_afe_dai_ops = {
+ 	.shutdown	= mtk_afe_dais_shutdown,
+ 	.hw_params	= mtk_afe_dais_hw_params,
+ 	.hw_free	= mtk_afe_dais_hw_free,
+-	.prepare	= mtk_afe_dais_prepare,
+ 	.trigger	= mtk_afe_dais_trigger,
  };
  
- static const struct snd_soc_dapm_route sun4i_codec_card_dapm_routes[] = {
--	{ "Speaker", NULL, "Power Amplifier" },
-+	{ "Speaker", NULL, "HP Right" },
-+	{ "Speaker", NULL, "HP Left" },
- };
+@@ -1118,6 +1100,9 @@ static int mtk_afe_runtime_suspend(struct device *dev)
+ {
+ 	struct mtk_afe *afe = dev_get_drvdata(dev);
  
- static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
++	/* disable AFE */
++	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0);
++
+ 	/* disable AFE clk */
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_AFE, AUD_TCON0_PDN_AFE);
+@@ -1164,6 +1149,9 @@ static int mtk_afe_runtime_resume(struct device *dev)
+ 
+ 	/* unmask all IRQs */
+ 	regmap_update_bits(afe->regmap, AFE_IRQ_MCU_EN, 0xff, 0xff);
++
++	/* enable AFE */
++	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0x1);
+ 	return 0;
+ 
+ err_bck0:
 -- 
 2.6.2
