@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: add devicetree document for
-	rt5616" to the asoc tree
-Date: Wed, 23 Dec 2015 00:09:02 +0000
-Message-ID: <E1aBWzG-0007NI-1h@debutante>
+Subject: Applied "ASoC: sun4i-codec: Use proper output for
+	external amp routes" to the asoc tree
+Date: Wed, 23 Dec 2015 00:09:01 +0000
+Message-ID: <E1aBWzF-0007Mp-A1@debutante>
+References: <1450821617-12906-1-git-send-email-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ABF58265E14
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:07 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id EE92E265D83
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:09 +0100 (CET)
+In-Reply-To: <1450821617-12906-1-git-send-email-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caesar Wang <wxt@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: add devicetree document for rt5616
+   ASoC: sun4i-codec: Use proper output for external amp routes
 
 has been applied to the asoc tree at
 
@@ -52,51 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 27af4e488c6a2a8c4b6102e777c29fff467a3895 Mon Sep 17 00:00:00 2001
-From: Caesar Wang <wxt@rock-chips.com>
-Date: Tue, 22 Dec 2015 13:45:03 +0800
-Subject: [PATCH] ASoC: rt5616: add devicetree document for rt5616
+>From 6b803c611c66debd6fc454c9ed049822994a5885 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Tue, 22 Dec 2015 23:00:17 +0100
+Subject: [PATCH] ASoC: sun4i-codec: Use proper output for external amp routes
 
-Add the description for rt5616 codec.
+An external amp (if any) is connected to the external outputs of the SoC
+of course, rather then directly to the internal amp.
 
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5616.txt | 26 ++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
+ sound/soc/sunxi/sun4i-codec.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
-new file mode 100644
-index 000000000000..efc48c65198d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5616.txt
-@@ -0,0 +1,26 @@
-+RT5616 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "realtek,rt5616".
-+
-+- reg : The I2C address of the device.
-+
-+Pins on the device (for linking into audio routes) for RT5616:
-+
-+  * IN1P
-+  * IN2P
-+  * IN2N
-+  * LOUTL
-+  * LOUTR
-+  * HPOL
-+  * HPOR
-+
-+Example:
-+
-+codec: rt5616@1b {
-+	compatible = "realtek,rt5616";
-+	reg = <0x1b>;
-+};
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index e6cc6a14718a..44f170c73b06 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -728,7 +728,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_card_dapm_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route sun4i_codec_card_dapm_routes[] = {
+-	{ "Speaker", NULL, "Power Amplifier" },
++	{ "Speaker", NULL, "HP Right" },
++	{ "Speaker", NULL, "HP Left" },
+ };
+ 
+ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
 -- 
 2.6.2
