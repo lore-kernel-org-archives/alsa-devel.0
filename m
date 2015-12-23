@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_wm8904: add snd_soc_pm_ops" to
-	the asoc tree
-Date: Wed, 23 Dec 2015 00:08:54 +0000
-Message-ID: <E1aBWz8-0007It-5j@debutante>
-References: <1450764402-15669-1-git-send-email-songjun.wu@atmel.com>
+Subject: Applied "ASoC: Intel: add NULL test" to the asoc tree
+Date: Wed, 23 Dec 2015 00:08:55 +0000
+Message-ID: <E1aBWz9-0007Jq-Vq@debutante>
+References: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 76FF9265D9D
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:02 +0100 (CET)
-In-Reply-To: <1450764402-15669-1-git-send-email-songjun.wu@atmel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DFBD265DA1
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:03 +0100 (CET)
+In-Reply-To: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@atmel.com>, Mark Brown <broonie@kernel.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_wm8904: add snd_soc_pm_ops
+   ASoC: Intel: add NULL test
 
 has been applied to the asoc tree at
 
@@ -53,32 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 50860e1d17d1bc2f1a2ebfc5042f2af786e53ad6 Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@atmel.com>
-Date: Tue, 22 Dec 2015 14:06:42 +0800
-Subject: [PATCH] ASoC: atmel_wm8904: add snd_soc_pm_ops
+>From 3f317c9faabc546a503bc62e806fa2e8e93e76be Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Sun, 20 Dec 2015 12:15:53 +0100
+Subject: [PATCH] ASoC: Intel: add NULL test
 
-Sometimes the audio play can not be resumed after it is
-suspended. Add snd_soc_pm_ops to execute power management
-operations, then this issue is fixed.
+Add NULL test on call to devm_kzalloc.
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression x;
+identifier fld;
+@@
+
+* x = devm_kzalloc(...);
+  ... when != x == NULL
+  x->fld
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_wm8904.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-index 1933bcd46cca..fdd28ed3e0b9 100644
---- a/sound/soc/atmel/atmel_wm8904.c
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -183,6 +183,7 @@ static struct platform_driver atmel_asoc_wm8904_driver = {
- 	.driver = {
- 		.name = "atmel-wm8904-audio",
- 		.of_match_table = of_match_ptr(atmel_asoc_wm8904_dt_ids),
-+		.pm		= &snd_soc_pm_ops,
- 	},
- 	.probe = atmel_asoc_wm8904_probe,
- 	.remove = atmel_asoc_wm8904_remove,
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 79547bec558b..4765ad474544 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -377,6 +377,8 @@ static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
+ 
+ 	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
+ 				 GFP_KERNEL);
++	if (!priv_data)
++		return -ENOMEM;
+ 	priv_data->byt = plat_data->dsp;
+ 	snd_soc_platform_set_drvdata(platform, priv_data);
+ 
 -- 
 2.6.2
