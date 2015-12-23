@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add Multi channel support" to the
-	asoc tree
-Date: Wed, 23 Dec 2015 00:08:59 +0000
-Message-ID: <E1aBWzD-0007Lt-KX@debutante>
-References: <87wpsdhje9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: da7218: Enable mic level detection
+	reporting to user-space" to the asoc tree
+Date: Wed, 23 Dec 2015 00:09:00 +0000
+Message-ID: <E1aBWzE-0007MM-CL@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C6BF265DFE
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:07 +0100 (CET)
-In-Reply-To: <87wpsdhje9.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EF609265DDF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:06 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add Multi channel support
+   ASoC: da7218: Enable mic level detection reporting to user-space
 
 has been applied to the asoc tree at
 
@@ -53,400 +52,87 @@ to this mail.
 Thanks,
 Mark
 
->From b4c83b171557815a0b31a36805900cc9f21c9ee4 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 17 Dec 2015 03:00:10 +0000
-Subject: [PATCH] ASoC: rsnd: add Multi channel support
+>From e05c25a1af29d65260ed1458f2cc4a959030ebd2 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Thu, 3 Dec 2015 17:10:07 +0000
+Subject: [PATCH] ASoC: da7218: Enable mic level detection reporting to
+ user-space
 
-This patch adds Multi channel support on Renesas R-Car sound.
-This patch is tested on Salvator-X board, but it can't use
-Multi channel, because supported format is different between
-codec chip and R-Car.
-Thus, it was tested on board which doesn't mount codec chip,
-with oscilloscope.
+This patch adds support to the codec driver to handle mic level
+detect related IRQs, and report these to user-space using a uevent
+variable.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Rob Herring <robh@kernel.org>
+The uevent variable string "EVENT=MIC_LEVEL_DETECT" is sent to
+user-space, if the mic level detect feature is enabled, and the
+audio captured at the chosen mic(s) is above a certain threshold.
+User-space can then handle the event accordingly (e.g. process
+audio capture stream).
+
+This method was chosen over ALSA control notification for a couple
+of reasons:
+
+ 1) There's no requirement here for a control to read state from.
+    The event is the only thing that's required and of interest.
+ 2) tinyalsa support for control notifications does not exist so on
+    platforms using this over alsa-lib there is a need to add code
+    to support this event handling.
+
+Another possible option would be to use the standard Jack reporting
+framework but this really does not fit for this kind of event.
+
+Finally, use of the input device framework is not being encouraged,
+due to difficulties in enabling apps to access input devices, so
+this has also been avoided.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/renesas,rsnd.txt     |  18 ++++
- sound/soc/sh/rcar/core.c                           |   6 +-
- sound/soc/sh/rcar/gen.c                            |   3 +
- sound/soc/sh/rcar/rsnd.h                           |  15 ++-
- sound/soc/sh/rcar/ssi.c                            | 114 ++++++++++++++++++++-
- sound/soc/sh/rcar/ssiu.c                           |  55 ++++++++--
- 6 files changed, 194 insertions(+), 17 deletions(-)
+ sound/soc/codecs/da7218.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 162e94c8305c..8ee0fa91e4a0 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -308,3 +308,21 @@ Example: simple sound card for TDM
- 			sound-dai = <&xxx>;
- 		};
- 	};
-+
-+Example: simple sound card for Multi channel
-+
-+&rcar_sound {
-+	pinctrl-0 = <&sound_pins &sound_clk_pins>;
-+	pinctrl-names = "default";
-+
-+	/* Single DAI */
-+	#sound-dai-cells = <0>;
-+
-+	status = "okay";
-+
-+	rcar_sound,dai {
-+		dai0 {
-+			playback = <&ssi0 &ssi1 &ssi2 &src0 &dvc0>;
-+		};
-+	};
-+};
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 7781cef634d4..ca05a0a95a4d 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -215,7 +215,11 @@ int rsnd_get_slot_num(struct rsnd_dai_stream *io)
- int rsnd_get_slot_width(struct rsnd_dai_stream *io)
- {
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	int chan = runtime->channels / rsnd_get_slot_num(io);
-+	int chan = runtime->channels;
-+
-+	/* Multi channel Mode */
-+	if (rsnd_ssi_multi_slaves(io))
-+		chan /= rsnd_get_slot_num(io);
- 
- 	/* TDM Extend Mode needs 8ch */
- 	if (chan == 6)
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 7c5485e46fd7..c7aee9e59e86 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -226,6 +226,9 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 	const static struct rsnd_regmap_field_conf conf_ssiu[] = {
- 		RSND_GEN_S_REG(SSI_MODE0,	0x800),
- 		RSND_GEN_S_REG(SSI_MODE1,	0x804),
-+		RSND_GEN_S_REG(SSI_MODE2,	0x808),
-+		RSND_GEN_S_REG(SSI_CONTROL,	0x810),
-+
- 		/* FIXME: it needs SSI_MODE2/3 in the future */
- 		RSND_GEN_M_REG(SSI_BUSIF_MODE,	0x0,	0x80),
- 		RSND_GEN_M_REG(SSI_BUSIF_ADINR,	0x4,	0x80),
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index f803e140e733..317dd793149a 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -47,6 +47,8 @@ enum rsnd_reg {
- 	RSND_REG_SSI_MODE,		/* Gen2 only */
- 	RSND_REG_SSI_MODE0,
- 	RSND_REG_SSI_MODE1,
-+	RSND_REG_SSI_MODE2,
-+	RSND_REG_SSI_CONTROL,
- 	RSND_REG_SSI_CTRL,		/* Gen2 only */
- 	RSND_REG_SSI_BUSIF_MODE,	/* Gen2 only */
- 	RSND_REG_SSI_BUSIF_ADINR,	/* Gen2 only */
-@@ -181,7 +183,10 @@ enum rsnd_mod_type {
- 	RSND_MOD_CTU,
- 	RSND_MOD_CMD,
- 	RSND_MOD_SRC,
--	RSND_MOD_SSIP, /* SSI parent */
-+	RSND_MOD_SSIM3,		/* SSI multi 3 */
-+	RSND_MOD_SSIM2,		/* SSI multi 2 */
-+	RSND_MOD_SSIM1,		/* SSI multi 1 */
-+	RSND_MOD_SSIP,		/* SSI parent */
- 	RSND_MOD_SSI,
- 	RSND_MOD_SSIU,
- 	RSND_MOD_MAX,
-@@ -542,6 +547,7 @@ void rsnd_ssi_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
-+u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io);
- 
- #define rsnd_ssi_is_pin_sharing(io)	\
- 	__rsnd_ssi_is_pin_sharing(rsnd_io_to_mod_ssi(io))
-@@ -549,10 +555,9 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
- 
- #define rsnd_ssi_of_node(priv)						\
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,ssi")
--#define rsnd_parse_connect_ssi(rdai, playback, capture)			\
--	rsnd_parse_connect_common(rdai, rsnd_ssi_mod_get,		\
--				  rsnd_ssi_of_node(rsnd_rdai_to_priv(rdai)), \
--				  playback, capture)
-+void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
-+			    struct device_node *playback,
-+			    struct device_node *capture);
- 
- /*
-  *	R-Car SSIU
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 0b91692c5a66..7db05fdfb656 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -96,6 +96,7 @@ struct rsnd_ssi {
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
- #define rsnd_ssi_mode_flags(p) ((p)->flags)
- #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
-+#define rsnd_ssi_is_multi_slave(ssi, io) ((mod) != rsnd_io_to_mod_ssi(io))
- 
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
- {
-@@ -171,6 +172,41 @@ static int rsnd_ssi_irq_disable(struct rsnd_mod *ssi_mod)
- 	return 0;
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index eacde128c4d6..72686517ff54 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2202,6 +2202,16 @@ int da7218_hpldet(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
  }
+ EXPORT_SYMBOL_GPL(da7218_hpldet);
  
-+u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
++static void da7218_micldet_irq(struct snd_soc_codec *codec)
 +{
-+	struct rsnd_mod *mod;
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	struct rsnd_priv *priv = rsnd_io_to_priv(io);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	enum rsnd_mod_type types[] = {
-+		RSND_MOD_SSIM1,
-+		RSND_MOD_SSIM2,
-+		RSND_MOD_SSIM3,
++	char *envp[] = {
++		"EVENT=MIC_LEVEL_DETECT",
++		NULL,
 +	};
-+	int i, mask;
 +
-+	switch (runtime->channels) {
-+	case 2: /* Multi channel is not needed for Stereo */
-+		return 0;
-+	case 6:
-+		break;
-+	default:
-+		dev_err(dev, "unsupported channel\n");
-+		return 0;
-+	}
-+
-+	mask = 0;
-+	for (i = 0; i < ARRAY_SIZE(types); i++) {
-+		mod = rsnd_io_to_mod(io, types[i]);
-+		if (!mod)
-+			continue;
-+
-+		mask |= 1 << rsnd_mod_id(mod);
-+	}
-+
-+	return mask;
++	kobject_uevent_env(&codec->dev->kobj, KOBJ_CHANGE, envp);
 +}
 +
- static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
- 				     struct rsnd_dai_stream *io)
+ static void da7218_hpldet_irq(struct snd_soc_codec *codec)
  {
-@@ -194,6 +230,9 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
- 	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
- 		return 0;
+ 	struct da7218_priv *da7218 = snd_soc_codec_get_drvdata(codec);
+@@ -2232,6 +2242,10 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
+ 	if (!status)
+ 		return IRQ_NONE;
  
-+	if (rsnd_ssi_is_multi_slave(mod, io))
-+		return 0;
++	/* Mic level detect */
++	if (status & DA7218_LVL_DET_EVENT_MASK)
++		da7218_micldet_irq(codec);
 +
- 	if (ssi->usrcnt > 1) {
- 		if (ssi->rate != rate) {
- 			dev_err(dev, "SSI parent/child should use same rate\n");
-@@ -437,8 +476,14 @@ static int __rsnd_ssi_start(struct rsnd_mod *mod,
- 
- 	cr  =	ssi->cr_own	|
- 		ssi->cr_clk	|
--		ssi->cr_mode	|
--		EN;
-+		ssi->cr_mode;
-+
-+	/*
-+	 * EN will be set via SSIU :: SSI_CONTROL
-+	 * if Multi channel mode
-+	 */
-+	if (!rsnd_ssi_multi_slaves(io))
-+		cr |= EN;
- 
- 	rsnd_mod_write(mod, SSICR, cr);
- 	rsnd_mod_write(mod, SSIWSR, ssi->wsr);
-@@ -609,6 +654,13 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	int ret;
- 
-+	/*
-+	 * SSIP/SSIU/IRQ are not needed on
-+	 * SSI Multi slaves
-+	 */
-+	if (rsnd_ssi_is_multi_slave(mod, io))
-+		return 0;
-+
- 	rsnd_ssi_parent_attach(mod, io, priv);
- 
- 	ret = rsnd_ssiu_attach(io, mod);
-@@ -641,6 +693,13 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
- 	int dma_id = 0; /* not needed */
- 	int ret;
- 
-+	/*
-+	 * SSIP/SSIU/IRQ/DMA are not needed on
-+	 * SSI Multi slaves
-+	 */
-+	if (rsnd_ssi_is_multi_slave(mod, io))
-+		return 0;
-+
- 	ret = rsnd_ssi_common_probe(mod, io, priv);
- 	if (ret)
- 		return ret;
-@@ -732,6 +791,57 @@ static struct rsnd_mod_ops rsnd_ssi_non_ops = {
- /*
-  *		ssi mod function
-  */
-+static void rsnd_ssi_connect(struct rsnd_mod *mod,
-+			     struct rsnd_dai_stream *io)
-+{
-+	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
-+	enum rsnd_mod_type types[] = {
-+		RSND_MOD_SSI,
-+		RSND_MOD_SSIM1,
-+		RSND_MOD_SSIM2,
-+		RSND_MOD_SSIM3,
-+	};
-+	enum rsnd_mod_type type;
-+	int i;
-+
-+	/* try SSI -> SSIM1 -> SSIM2 -> SSIM3 */
-+	for (i = 0; i < ARRAY_SIZE(types); i++) {
-+		type = types[i];
-+		if (!rsnd_io_to_mod(io, type)) {
-+			rsnd_dai_connect(mod, io, type);
-+			rsnd_set_slot(rdai, 2 * (i + 1), (i + 1));
-+			return;
-+		}
-+	}
-+}
-+
-+void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
-+			    struct device_node *playback,
-+			    struct device_node *capture)
-+{
-+	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
-+	struct device_node *node;
-+	struct device_node *np;
-+	struct rsnd_mod *mod;
-+	int i;
-+
-+	node = rsnd_ssi_of_node(priv);
-+	if (!node)
-+		return;
-+
-+	i = 0;
-+	for_each_child_of_node(node, np) {
-+		mod = rsnd_ssi_mod_get(priv, i);
-+		if (np == playback)
-+			rsnd_ssi_connect(mod, &rdai->playback);
-+		if (np == capture)
-+			rsnd_ssi_connect(mod, &rdai->capture);
-+		i++;
-+	}
-+
-+	of_node_put(node);
-+}
-+
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
- {
- 	if (WARN_ON(id < 0 || id >= rsnd_ssi_nr(priv)))
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 7ae05a7621ae..3fe9e08e81a3 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -27,8 +27,11 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 			  struct rsnd_priv *priv)
- {
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
-+	u32 multi_ssi_slaves = rsnd_ssi_multi_slaves(io);
- 	int use_busif = rsnd_ssi_use_busif(io);
- 	int id = rsnd_mod_id(mod);
-+	u32 mask1, val1;
-+	u32 mask2, val2;
- 
- 	/*
- 	 * SSI_MODE0
-@@ -38,6 +41,9 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 	/*
- 	 * SSI_MODE1
- 	 */
-+	mask1 = (1 << 4) | (1 << 20);	/* mask sync bit */
-+	mask2 = (1 << 4);		/* mask sync bit */
-+	val1  = val2  = 0;
- 	if (rsnd_ssi_is_pin_sharing(io)) {
- 		int shift = -1;
- 
-@@ -51,15 +57,36 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 		case 4:
- 			shift = 16;
- 			break;
-+		default:
-+			return -EINVAL;
- 		}
- 
--		if (shift >= 0)
--			rsnd_mod_bset(mod, SSI_MODE1,
--				      0x3 << shift,
--				      rsnd_rdai_is_clk_master(rdai) ?
--				      0x2 << shift : 0x1 << shift);
-+		mask1 |= 0x3 << shift;
-+		val1 = rsnd_rdai_is_clk_master(rdai) ?
-+			0x2 << shift : 0x1 << shift;
-+
-+	} else if (multi_ssi_slaves) {
-+
-+		mask2 |= 0x00000007;
-+		mask1 |= 0x0000000f;
-+
-+		switch (multi_ssi_slaves) {
-+		case 0x0206: /* SSI0/1/2/9 */
-+			val2 = (1 << 4) | /* SSI0129 sync */
-+				rsnd_rdai_is_clk_master(rdai) ? 0x2 : 0x1;
-+			/* fall through */
-+		case 0x0006: /* SSI0/1/2 */
-+			val1 = rsnd_rdai_is_clk_master(rdai) ?
-+				0xa : 0x5;
-+
-+			if (!val2)  /* SSI012 sync */
-+				val1 |= (1 << 4);
-+		}
+ 	/* HP detect */
+ 	if (status & DA7218_HPLDET_JACK_EVENT_MASK)
+ 		da7218_hpldet_irq(codec);
+@@ -2936,11 +2950,6 @@ static int da7218_probe(struct snd_soc_codec *codec)
  	}
  
-+	rsnd_mod_bset(mod, SSI_MODE1, mask1, val1);
-+	rsnd_mod_bset(mod, SSI_MODE2, mask2, val2);
-+
- 	return 0;
- }
- 
-@@ -104,8 +131,13 @@ static int rsnd_ssiu_start_gen2(struct rsnd_mod *mod,
- 				struct rsnd_dai_stream *io,
- 				struct rsnd_priv *priv)
- {
--	if (rsnd_ssi_use_busif(io))
--		rsnd_mod_write(mod, SSI_CTRL, 0x1);
-+	if (!rsnd_ssi_use_busif(io))
-+		return 0;
-+
-+	rsnd_mod_write(mod, SSI_CTRL, 0x1);
-+
-+	if (rsnd_ssi_multi_slaves(io))
-+		rsnd_mod_write(mod, SSI_CONTROL, 0x1);
- 
- 	return 0;
- }
-@@ -114,8 +146,13 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
- 			       struct rsnd_dai_stream *io,
- 			       struct rsnd_priv *priv)
- {
--	if (rsnd_ssi_use_busif(io))
--		rsnd_mod_write(mod, SSI_CTRL, 0);
-+	if (!rsnd_ssi_use_busif(io))
-+		return 0;
-+
-+	rsnd_mod_write(mod, SSI_CTRL, 0);
-+
-+	if (rsnd_ssi_multi_slaves(io))
-+		rsnd_mod_write(mod, SSI_CONTROL, 0);
- 
- 	return 0;
- }
+ 	if (da7218->irq) {
+-		/* Mask off mic level events, currently not handled */
+-		snd_soc_update_bits(codec, DA7218_EVENT_MASK,
+-				    DA7218_LVL_DET_EVENT_MSK_MASK,
+-				    DA7218_LVL_DET_EVENT_MSK_MASK);
+-
+ 		ret = devm_request_threaded_irq(codec->dev, da7218->irq, NULL,
+ 						da7218_irq_thread,
+ 						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
 -- 
 2.6.2
