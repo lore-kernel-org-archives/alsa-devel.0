@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Factor out finding the
-	location of an algorithm region" to the asoc tree
-Date: Wed, 23 Dec 2015 00:23:22 +0000
-Message-ID: <E1aBXD8-0000Xq-PS@debutante>
-References: <1449590917-21170-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm5110: Provide basic hookup for voice
+	control" to the asoc tree
+Date: Wed, 23 Dec 2015 00:23:23 +0000
+Message-ID: <E1aBXD9-0000YM-MZ@debutante>
+References: <1450115609-14094-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AAAE2660C2
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:23:29 +0100 (CET)
-In-Reply-To: <1449590917-21170-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06C9A2660EE
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:23:30 +0100 (CET)
+In-Reply-To: <1450115609-14094-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Factor out finding the location of an algorithm region
+   ASoC: wm5110: Provide basic hookup for voice control
 
 has been applied to the asoc tree at
 
@@ -53,72 +53,125 @@ to this mail.
 Thanks,
 Mark
 
->From 14197095e14a4ad2afb6c8c1ca8e41852382481d Mon Sep 17 00:00:00 2001
+>From 1d981e0a5af78339d55085041c6eb3b9a8626920 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 15 Dec 2015 11:29:43 +0000
-Subject: [PATCH] ASoC: wm_adsp: Factor out finding the location of an
- algorithm region
+Date: Tue, 15 Dec 2015 11:29:42 +0000
+Subject: [PATCH] ASoC: wm5110: Provide basic hookup for voice control
+
+Register a platform driver for the CODEC and add DAIs that will be used
+to connect a compressed record path for the voice control functionality.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+ sound/soc/codecs/Kconfig   |  1 +
+ sound/soc/codecs/arizona.h |  2 +-
+ sound/soc/codecs/wm5110.c  | 46 +++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 47 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d1e0826c7db2..27abad9c6e73 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1365,6 +1365,19 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	return alg;
- }
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 55e14a3ed5e1..4f482f7b63fc 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -214,6 +214,7 @@ config SND_SOC_WM_HUBS
  
-+static struct wm_adsp_alg_region *
-+	wm_adsp_find_alg_region(struct wm_adsp *dsp, int type, unsigned int id)
-+{
-+	struct wm_adsp_alg_region *alg_region;
+ config SND_SOC_WM_ADSP
+ 	tristate
++	select SND_SOC_COMPRESS
+ 	default y if SND_SOC_CS47L24=y
+ 	default y if SND_SOC_WM5102=y
+ 	default y if SND_SOC_WM5110=y
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index b4f1867ae9d6..8b6adb5419bb 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -57,7 +57,7 @@
+ #define ARIZONA_CLK_98MHZ  5
+ #define ARIZONA_CLK_147MHZ 6
+ 
+-#define ARIZONA_MAX_DAI  6
++#define ARIZONA_MAX_DAI  8
+ #define ARIZONA_MAX_ADSP 4
+ 
+ #define ARIZONA_DVFS_SR1_RQ	0x001
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index e93e5420943e..67d56511699a 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -1810,6 +1810,9 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "Slim2 Capture", NULL, "SYSCLK" },
+ 	{ "Slim3 Capture", NULL, "SYSCLK" },
+ 
++	{ "Voice Control DSP", NULL, "DSP3" },
++	{ "Voice Control DSP", NULL, "SYSCLK" },
 +
-+	list_for_each_entry(alg_region, &dsp->alg_regions, list) {
-+		if (id == alg_region->alg && type == alg_region->type)
-+			return alg_region;
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
+ 
+@@ -2132,6 +2135,27 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ 		 },
+ 		.ops = &arizona_simple_dai_ops,
+ 	},
++	{
++		.name = "wm5110-cpu-voicectrl",
++		.capture = {
++			.stream_name = "Voice Control CPU",
++			.channels_min = 1,
++			.channels_max = 1,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
++		},
++		.compress_new = snd_soc_new_compress,
++	},
++	{
++		.name = "wm5110-dsp-voicectrl",
++		.capture = {
++			.stream_name = "Voice Control DSP",
++			.channels_min = 1,
++			.channels_max = 1,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
++		},
++	},
+ };
+ 
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+@@ -2224,6 +2248,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
+ 	.num_dapm_routes = ARRAY_SIZE(wm5110_dapm_routes),
+ };
+ 
++static struct snd_compr_ops wm5110_compr_ops = {
++};
++
++static struct snd_soc_platform_driver wm5110_compr_platform = {
++	.compr_ops = &wm5110_compr_ops,
++};
++
+ static int wm5110_probe(struct platform_device *pdev)
+ {
+ 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+@@ -2284,8 +2315,21 @@ static int wm5110_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_idle(&pdev->dev);
+ 
+-	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5110,
++	ret = snd_soc_register_platform(&pdev->dev, &wm5110_compr_platform);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
++		goto error;
 +	}
 +
-+	return NULL;
-+}
++	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5110,
+ 				      wm5110_dai, ARRAY_SIZE(wm5110_dai));
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
++		snd_soc_unregister_platform(&pdev->dev);
++	}
 +
- static struct wm_adsp_alg_region *wm_adsp_create_region(struct wm_adsp *dsp,
- 							int type, __be32 id,
- 							__be32 base)
-@@ -1737,22 +1750,16 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 				break;
- 			}
++error:
++	return ret;
+ }
  
--			reg = 0;
--			list_for_each_entry(alg_region,
--					    &dsp->alg_regions, list) {
--				if (le32_to_cpu(blk->id) == alg_region->alg &&
--				    type == alg_region->type) {
--					reg = alg_region->base;
--					reg = wm_adsp_region_to_reg(mem,
--								    reg);
--					reg += offset;
--					break;
--				}
--			}
--
--			if (reg == 0)
-+			alg_region = wm_adsp_find_alg_region(dsp, type,
-+						le32_to_cpu(blk->id));
-+			if (alg_region) {
-+				reg = alg_region->base;
-+				reg = wm_adsp_region_to_reg(mem, reg);
-+				reg += offset;
-+			} else {
- 				adsp_err(dsp, "No %x for algorithm %x\n",
- 					 type, le32_to_cpu(blk->id));
-+			}
- 			break;
- 
- 		default:
+ static int wm5110_remove(struct platform_device *pdev)
 -- 
 2.6.2
