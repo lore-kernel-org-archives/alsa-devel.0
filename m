@@ -1,22 +1,14 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 4/8] ASoC: wm_adsp: Add support for
- opening a compressed stream
-Date: Wed, 23 Dec 2015 10:08:02 +0000
-Message-ID: <20151223100802.GA6058@localhost.localdomain>
-References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1450178989-8749-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20151223001456.GH16023@sirena.org.uk>
- <20151223100044.GZ6058@localhost.localdomain>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5651: add ACPI and OF support
+Date: Wed, 23 Dec 2015 18:24:09 +0800
+Message-ID: <1450866249-15462-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 99AB1265888
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 11:08:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20151223100044.GZ6058@localhost.localdomain>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A77326581E
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 11:24:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +18,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, pierre-louis.bossart@linux.intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 23, 2015 at 10:00:44AM +0000, Charles Keepax wrote:
-> On Wed, Dec 23, 2015 at 12:14:56AM +0000, Mark Brown wrote:
-> > On Tue, Dec 15, 2015 at 11:29:45AM +0000, Charles Keepax wrote:
-> > 
-> > > +int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
-> > > +{
-> > > +	struct wm_adsp_compr *compr;
-> > > +	int ret = 0;
-> > > +
-> > > +	mutex_lock(&dsp->pwr_lock);
-> > > +
-> > > +	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
-> > > +		adsp_err(dsp, "Firmware does not support compressed API\n");
-> > > +		ret = -ENXIO;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
-> > > +		adsp_err(dsp, "Firmware does not support stream direction\n");
-> > > +		ret = -EINVAL;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
-> > 
-> > You're doing this under lock but not checking for an attempt to allocate
-> > on a DSP already in use.
-> 
-> A check does actually get added later in:
-> 
-> ASoC: wm_adsp: Attach buffers and streams together
-> 
-> I think that is really just a bit of a rebasing messup. I will
-> pull that forward into this patch for the next spin.
+Add required tables and the binding document for ACPI and OF matching.
 
-Oops.. missed you had applied it anyway. Thanks, will fix up the
-comments on the last patch and resend today.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ Documentation/devicetree/bindings/sound/rt5651.txt | 41 ++++++++++++++++++++++
+ sound/soc/codecs/rt5651.c                          | 31 ++++++++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5651.txt
 
-Thanks,
-Charles
+diff --git a/Documentation/devicetree/bindings/sound/rt5651.txt b/Documentation/devicetree/bindings/sound/rt5651.txt
+new file mode 100644
+index 0000000..3875233
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rt5651.txt
+@@ -0,0 +1,41 @@
++RT5651 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++- compatible : "realtek,rt5651".
++
++- reg : The I2C address of the device.
++
++Optional properties:
++
++- realtek,in2-differential
++  Boolean. Indicate MIC2 input are differential, rather than single-ended.
++
++- realtek,dmic-en
++  Boolean. true if dmic is used.
++
++Pins on the device (for linking into audio routes) for RT5651:
++
++  * DMIC L1
++  * DMIC R1
++  * IN1P
++  * IN2P
++  * IN2N
++  * IN3P
++  * HPOL
++  * HPOR
++  * LOUTL
++  * LOUTR
++  * PDML
++  * PDMR
++
++Example:
++
++codec: rt5651@1a {
++	compatible = "realtek,rt5651";
++	reg = <0x1a>;
++	realtek,dmic-en = "true";
++	realtek,in2-diff = "false";
++};
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 1d40318..7a61970 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -18,6 +18,7 @@
+ #include <linux/regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
++#include <linux/acpi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -1735,12 +1736,38 @@ static const struct regmap_config rt5651_regmap = {
+ 	.num_ranges = ARRAY_SIZE(rt5651_ranges),
+ };
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id rt5651_of_match[] = {
++	{ .compatible = "realtek,rt5651", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rt5651_of_match);
++#endif
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id rt5651_acpi_match[] = {
++	{ "10EC5651", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, rt5651_acpi_match);
++#endif
++
+ static const struct i2c_device_id rt5651_i2c_id[] = {
+ 	{ "rt5651", 0 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5651_i2c_id);
+ 
++static int rt5651_parse_dt(struct rt5651_priv *rt5651, struct device_node *np)
++{
++	rt5651->pdata.in2_diff = of_property_read_bool(np,
++		"realtek,in2-differential");
++	rt5651->pdata.dmic_en = of_property_read_bool(np,
++		"realtek,dmic-en");
++
++	return 0;
++}
++
+ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -1757,6 +1784,8 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 
+ 	if (pdata)
+ 		rt5651->pdata = *pdata;
++	else if (i2c->dev.of_node)
++		rt5651_parse_dt(rt5651, i2c->dev.of_node);
+ 
+ 	rt5651->regmap = devm_regmap_init_i2c(i2c, &rt5651_regmap);
+ 	if (IS_ERR(rt5651->regmap)) {
+@@ -1806,6 +1835,8 @@ static int rt5651_i2c_remove(struct i2c_client *i2c)
+ static struct i2c_driver rt5651_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5651",
++		.acpi_match_table = ACPI_PTR(rt5651_acpi_match),
++		.of_match_table = of_match_ptr(rt5651_of_match),
+ 	},
+ 	.probe = rt5651_i2c_probe,
+ 	.remove   = rt5651_i2c_remove,
+-- 
+1.8.1.1.439.g50a6b54
