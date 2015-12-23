@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: Return error if device ID
-	mismatch" to the asoc tree
-Date: Wed, 23 Dec 2015 00:09:04 +0000
-Message-ID: <E1aBWzI-0007Oj-Qm@debutante>
-References: <1450750595.14401.1.camel@ingics.com>
+Subject: Applied "ASoC: da7219: Add support for 1.6V micbias
+	level" to the asoc tree
+Date: Wed, 23 Dec 2015 00:12:16 +0000
+Message-ID: <E1aBX2O-0008M0-FG@debutante>
+References: <7413a3e6c9996d2ae4c17ea60b220ad1d4012a9f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D8B30265FAE
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:13 +0100 (CET)
-In-Reply-To: <1450750595.14401.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD33E266576
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:12:22 +0100 (CET)
+In-Reply-To: <7413a3e6c9996d2ae4c17ea60b220ad1d4012a9f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: Return error if device ID mismatch
+   ASoC: da7219: Add support for 1.6V micbias level
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 36ddd489b0669f8913c8eda192507f8267749917 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 22 Dec 2015 10:16:35 +0800
-Subject: [PATCH] ASoC: rt5616: Return error if device ID mismatch
+>From 0aed64c1766d354c819a13a57d8673adaf2266eb Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 22 Dec 2015 18:27:55 +0000
+Subject: [PATCH] ASoC: da7219: Add support for 1.6V micbias level
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Bard Liao <bardliao@realtek.com>
+HW can provide 1.6V micbias level as well the existing levels
+already provided in the driver. This patch adds support for 1.6V
+to the DT binding.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/da7219.txt | 2 +-
+ include/sound/da7219.h                             | 3 ++-
+ sound/soc/codecs/da7219.c                          | 3 +++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index f4005cbaa99d..0e9414abab65 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -1314,7 +1314,7 @@ static int rt5616_i2c_probe(struct i2c_client *i2c,
- 		dev_err(&i2c->dev,
- 			"Device with ID register %#x is not rt5616\n",
- 			val);
--		ret = -ENODEV;
-+		return -ENODEV;
- 	}
- 	regmap_write(rt5616->regmap, RT5616_RESET, 0);
- 	regmap_update_bits(rt5616->regmap, RT5616_PWR_ANLG1,
+diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
+index 062a2a08250e..cf61681826b6 100644
+--- a/Documentation/devicetree/bindings/sound/da7219.txt
++++ b/Documentation/devicetree/bindings/sound/da7219.txt
+@@ -29,7 +29,7 @@ Optional properties:
+ - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
+ 
+ - dlg,micbias-lvl : Voltage (mV) for Mic Bias
+-	[<1800>, <2000>, <2200>, <2400>, <2600>]
++	[<1600>, <1800>, <2000>, <2200>, <2400>, <2600>]
+ - dlg,mic-amp-in-sel : Mic input source type
+ 	["diff", "se_p", "se_n"]
+ 
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 307198b469bc..02876acdc840 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -16,7 +16,8 @@
+ 
+ /* Mic Bias */
+ enum da7219_micbias_voltage {
+-	DA7219_MICBIAS_1_8V = 1,
++	DA7219_MICBIAS_1_6V = 0,
++	DA7219_MICBIAS_1_8V,
+ 	DA7219_MICBIAS_2_0V,
+ 	DA7219_MICBIAS_2_2V,
+ 	DA7219_MICBIAS_2_4V,
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 2630c503e3df..371768092e17 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1410,6 +1410,8 @@ static enum da7219_micbias_voltage
+ 	da7219_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
++	case 1600:
++		return DA7219_MICBIAS_1_6V;
+ 	case 1800:
+ 		return DA7219_MICBIAS_1_8V;
+ 	case 2000:
+@@ -1571,6 +1573,7 @@ static void da7219_handle_pdata(struct snd_soc_codec *codec)
+ 
+ 		/* Mic Bias voltages */
+ 		switch (pdata->micbias_lvl) {
++		case DA7219_MICBIAS_1_6V:
+ 		case DA7219_MICBIAS_1_8V:
+ 		case DA7219_MICBIAS_2_0V:
+ 		case DA7219_MICBIAS_2_2V:
 -- 
 2.6.2
