@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm2518: Use a signed return type for
-	ssm2518_lookup_mcs()" to the asoc tree
-Date: Wed, 23 Dec 2015 00:08:58 +0000
-Message-ID: <E1aBWzC-0007LQ-N3@debutante>
-References: <56767788.4020709@users.sourceforge.net>
+Subject: Applied "ASoC: rsnd: add Multi channel support" to the
+	asoc tree
+Date: Wed, 23 Dec 2015 00:08:59 +0000
+Message-ID: <E1aBWzD-0007Lt-KX@debutante>
+References: <87wpsdhje9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2573D265DCD
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:05 +0100 (CET)
-In-Reply-To: <56767788.4020709@users.sourceforge.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C6BF265DFE
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:07 +0100 (CET)
+In-Reply-To: <87wpsdhje9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Elfring <elfring@users.sourceforge.net>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssm2518: Use a signed return type for ssm2518_lookup_mcs()
+   ASoC: rsnd: add Multi channel support
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,400 @@ to this mail.
 Thanks,
 Mark
 
->From bfbcab7c2d8ab4cb52f0785d7381d20f39bb065b Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 20 Dec 2015 10:34:25 +0100
-Subject: [PATCH] ASoC: ssm2518: Use a signed return type for
- ssm2518_lookup_mcs()
+>From b4c83b171557815a0b31a36805900cc9f21c9ee4 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 17 Dec 2015 03:00:10 +0000
+Subject: [PATCH] ASoC: rsnd: add Multi channel support
 
-The return type "unsigned int" was used by the ssm2518_lookup_mcs()
-function even though it will eventually return a negative error code.
-Improve this implementation detail by deletion of the type modifier then.
+This patch adds Multi channel support on Renesas R-Car sound.
+This patch is tested on Salvator-X board, but it can't use
+Multi channel, because supported format is different between
+codec chip and R-Car.
+Thus, it was tested on board which doesn't mount codec chip,
+with oscilloscope.
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm2518.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/renesas,rsnd.txt     |  18 ++++
+ sound/soc/sh/rcar/core.c                           |   6 +-
+ sound/soc/sh/rcar/gen.c                            |   3 +
+ sound/soc/sh/rcar/rsnd.h                           |  15 ++-
+ sound/soc/sh/rcar/ssi.c                            | 114 ++++++++++++++++++++-
+ sound/soc/sh/rcar/ssiu.c                           |  55 ++++++++--
+ 6 files changed, 194 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
-index 86b81a60ac52..e2e0bfa7ec20 100644
---- a/sound/soc/codecs/ssm2518.c
-+++ b/sound/soc/codecs/ssm2518.c
-@@ -309,7 +309,7 @@ static const struct snd_pcm_hw_constraint_list ssm2518_constraints_12288000 = {
- 	.count = ARRAY_SIZE(ssm2518_rates_12288000),
- };
- 
--static unsigned int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
-+static int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
- 	unsigned int rate)
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 162e94c8305c..8ee0fa91e4a0 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -308,3 +308,21 @@ Example: simple sound card for TDM
+ 			sound-dai = <&xxx>;
+ 		};
+ 	};
++
++Example: simple sound card for Multi channel
++
++&rcar_sound {
++	pinctrl-0 = <&sound_pins &sound_clk_pins>;
++	pinctrl-names = "default";
++
++	/* Single DAI */
++	#sound-dai-cells = <0>;
++
++	status = "okay";
++
++	rcar_sound,dai {
++		dai0 {
++			playback = <&ssi0 &ssi1 &ssi2 &src0 &dvc0>;
++		};
++	};
++};
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 7781cef634d4..ca05a0a95a4d 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -215,7 +215,11 @@ int rsnd_get_slot_num(struct rsnd_dai_stream *io)
+ int rsnd_get_slot_width(struct rsnd_dai_stream *io)
  {
- 	const unsigned int *sysclks = NULL;
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	int chan = runtime->channels / rsnd_get_slot_num(io);
++	int chan = runtime->channels;
++
++	/* Multi channel Mode */
++	if (rsnd_ssi_multi_slaves(io))
++		chan /= rsnd_get_slot_num(io);
+ 
+ 	/* TDM Extend Mode needs 8ch */
+ 	if (chan == 6)
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 7c5485e46fd7..c7aee9e59e86 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -226,6 +226,9 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 	const static struct rsnd_regmap_field_conf conf_ssiu[] = {
+ 		RSND_GEN_S_REG(SSI_MODE0,	0x800),
+ 		RSND_GEN_S_REG(SSI_MODE1,	0x804),
++		RSND_GEN_S_REG(SSI_MODE2,	0x808),
++		RSND_GEN_S_REG(SSI_CONTROL,	0x810),
++
+ 		/* FIXME: it needs SSI_MODE2/3 in the future */
+ 		RSND_GEN_M_REG(SSI_BUSIF_MODE,	0x0,	0x80),
+ 		RSND_GEN_M_REG(SSI_BUSIF_ADINR,	0x4,	0x80),
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index f803e140e733..317dd793149a 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -47,6 +47,8 @@ enum rsnd_reg {
+ 	RSND_REG_SSI_MODE,		/* Gen2 only */
+ 	RSND_REG_SSI_MODE0,
+ 	RSND_REG_SSI_MODE1,
++	RSND_REG_SSI_MODE2,
++	RSND_REG_SSI_CONTROL,
+ 	RSND_REG_SSI_CTRL,		/* Gen2 only */
+ 	RSND_REG_SSI_BUSIF_MODE,	/* Gen2 only */
+ 	RSND_REG_SSI_BUSIF_ADINR,	/* Gen2 only */
+@@ -181,7 +183,10 @@ enum rsnd_mod_type {
+ 	RSND_MOD_CTU,
+ 	RSND_MOD_CMD,
+ 	RSND_MOD_SRC,
+-	RSND_MOD_SSIP, /* SSI parent */
++	RSND_MOD_SSIM3,		/* SSI multi 3 */
++	RSND_MOD_SSIM2,		/* SSI multi 2 */
++	RSND_MOD_SSIM1,		/* SSI multi 1 */
++	RSND_MOD_SSIP,		/* SSI parent */
+ 	RSND_MOD_SSI,
+ 	RSND_MOD_SSIU,
+ 	RSND_MOD_MAX,
+@@ -542,6 +547,7 @@ void rsnd_ssi_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
+ int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
++u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io);
+ 
+ #define rsnd_ssi_is_pin_sharing(io)	\
+ 	__rsnd_ssi_is_pin_sharing(rsnd_io_to_mod_ssi(io))
+@@ -549,10 +555,9 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
+ 
+ #define rsnd_ssi_of_node(priv)						\
+ 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,ssi")
+-#define rsnd_parse_connect_ssi(rdai, playback, capture)			\
+-	rsnd_parse_connect_common(rdai, rsnd_ssi_mod_get,		\
+-				  rsnd_ssi_of_node(rsnd_rdai_to_priv(rdai)), \
+-				  playback, capture)
++void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
++			    struct device_node *playback,
++			    struct device_node *capture);
+ 
+ /*
+  *	R-Car SSIU
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 0b91692c5a66..7db05fdfb656 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -96,6 +96,7 @@ struct rsnd_ssi {
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+ #define rsnd_ssi_mode_flags(p) ((p)->flags)
+ #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
++#define rsnd_ssi_is_multi_slave(ssi, io) ((mod) != rsnd_io_to_mod_ssi(io))
+ 
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
+ {
+@@ -171,6 +172,41 @@ static int rsnd_ssi_irq_disable(struct rsnd_mod *ssi_mod)
+ 	return 0;
+ }
+ 
++u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
++{
++	struct rsnd_mod *mod;
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	struct rsnd_priv *priv = rsnd_io_to_priv(io);
++	struct device *dev = rsnd_priv_to_dev(priv);
++	enum rsnd_mod_type types[] = {
++		RSND_MOD_SSIM1,
++		RSND_MOD_SSIM2,
++		RSND_MOD_SSIM3,
++	};
++	int i, mask;
++
++	switch (runtime->channels) {
++	case 2: /* Multi channel is not needed for Stereo */
++		return 0;
++	case 6:
++		break;
++	default:
++		dev_err(dev, "unsupported channel\n");
++		return 0;
++	}
++
++	mask = 0;
++	for (i = 0; i < ARRAY_SIZE(types); i++) {
++		mod = rsnd_io_to_mod(io, types[i]);
++		if (!mod)
++			continue;
++
++		mask |= 1 << rsnd_mod_id(mod);
++	}
++
++	return mask;
++}
++
+ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 				     struct rsnd_dai_stream *io)
+ {
+@@ -194,6 +230,9 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
++	if (rsnd_ssi_is_multi_slave(mod, io))
++		return 0;
++
+ 	if (ssi->usrcnt > 1) {
+ 		if (ssi->rate != rate) {
+ 			dev_err(dev, "SSI parent/child should use same rate\n");
+@@ -437,8 +476,14 @@ static int __rsnd_ssi_start(struct rsnd_mod *mod,
+ 
+ 	cr  =	ssi->cr_own	|
+ 		ssi->cr_clk	|
+-		ssi->cr_mode	|
+-		EN;
++		ssi->cr_mode;
++
++	/*
++	 * EN will be set via SSIU :: SSI_CONTROL
++	 * if Multi channel mode
++	 */
++	if (!rsnd_ssi_multi_slaves(io))
++		cr |= EN;
+ 
+ 	rsnd_mod_write(mod, SSICR, cr);
+ 	rsnd_mod_write(mod, SSIWSR, ssi->wsr);
+@@ -609,6 +654,13 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	int ret;
+ 
++	/*
++	 * SSIP/SSIU/IRQ are not needed on
++	 * SSI Multi slaves
++	 */
++	if (rsnd_ssi_is_multi_slave(mod, io))
++		return 0;
++
+ 	rsnd_ssi_parent_attach(mod, io, priv);
+ 
+ 	ret = rsnd_ssiu_attach(io, mod);
+@@ -641,6 +693,13 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+ 	int dma_id = 0; /* not needed */
+ 	int ret;
+ 
++	/*
++	 * SSIP/SSIU/IRQ/DMA are not needed on
++	 * SSI Multi slaves
++	 */
++	if (rsnd_ssi_is_multi_slave(mod, io))
++		return 0;
++
+ 	ret = rsnd_ssi_common_probe(mod, io, priv);
+ 	if (ret)
+ 		return ret;
+@@ -732,6 +791,57 @@ static struct rsnd_mod_ops rsnd_ssi_non_ops = {
+ /*
+  *		ssi mod function
+  */
++static void rsnd_ssi_connect(struct rsnd_mod *mod,
++			     struct rsnd_dai_stream *io)
++{
++	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
++	enum rsnd_mod_type types[] = {
++		RSND_MOD_SSI,
++		RSND_MOD_SSIM1,
++		RSND_MOD_SSIM2,
++		RSND_MOD_SSIM3,
++	};
++	enum rsnd_mod_type type;
++	int i;
++
++	/* try SSI -> SSIM1 -> SSIM2 -> SSIM3 */
++	for (i = 0; i < ARRAY_SIZE(types); i++) {
++		type = types[i];
++		if (!rsnd_io_to_mod(io, type)) {
++			rsnd_dai_connect(mod, io, type);
++			rsnd_set_slot(rdai, 2 * (i + 1), (i + 1));
++			return;
++		}
++	}
++}
++
++void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
++			    struct device_node *playback,
++			    struct device_node *capture)
++{
++	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
++	struct device_node *node;
++	struct device_node *np;
++	struct rsnd_mod *mod;
++	int i;
++
++	node = rsnd_ssi_of_node(priv);
++	if (!node)
++		return;
++
++	i = 0;
++	for_each_child_of_node(node, np) {
++		mod = rsnd_ssi_mod_get(priv, i);
++		if (np == playback)
++			rsnd_ssi_connect(mod, &rdai->playback);
++		if (np == capture)
++			rsnd_ssi_connect(mod, &rdai->capture);
++		i++;
++	}
++
++	of_node_put(node);
++}
++
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
+ {
+ 	if (WARN_ON(id < 0 || id >= rsnd_ssi_nr(priv)))
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 7ae05a7621ae..3fe9e08e81a3 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -27,8 +27,11 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 			  struct rsnd_priv *priv)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
++	u32 multi_ssi_slaves = rsnd_ssi_multi_slaves(io);
+ 	int use_busif = rsnd_ssi_use_busif(io);
+ 	int id = rsnd_mod_id(mod);
++	u32 mask1, val1;
++	u32 mask2, val2;
+ 
+ 	/*
+ 	 * SSI_MODE0
+@@ -38,6 +41,9 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 	/*
+ 	 * SSI_MODE1
+ 	 */
++	mask1 = (1 << 4) | (1 << 20);	/* mask sync bit */
++	mask2 = (1 << 4);		/* mask sync bit */
++	val1  = val2  = 0;
+ 	if (rsnd_ssi_is_pin_sharing(io)) {
+ 		int shift = -1;
+ 
+@@ -51,15 +57,36 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 		case 4:
+ 			shift = 16;
+ 			break;
++		default:
++			return -EINVAL;
+ 		}
+ 
+-		if (shift >= 0)
+-			rsnd_mod_bset(mod, SSI_MODE1,
+-				      0x3 << shift,
+-				      rsnd_rdai_is_clk_master(rdai) ?
+-				      0x2 << shift : 0x1 << shift);
++		mask1 |= 0x3 << shift;
++		val1 = rsnd_rdai_is_clk_master(rdai) ?
++			0x2 << shift : 0x1 << shift;
++
++	} else if (multi_ssi_slaves) {
++
++		mask2 |= 0x00000007;
++		mask1 |= 0x0000000f;
++
++		switch (multi_ssi_slaves) {
++		case 0x0206: /* SSI0/1/2/9 */
++			val2 = (1 << 4) | /* SSI0129 sync */
++				rsnd_rdai_is_clk_master(rdai) ? 0x2 : 0x1;
++			/* fall through */
++		case 0x0006: /* SSI0/1/2 */
++			val1 = rsnd_rdai_is_clk_master(rdai) ?
++				0xa : 0x5;
++
++			if (!val2)  /* SSI012 sync */
++				val1 |= (1 << 4);
++		}
+ 	}
+ 
++	rsnd_mod_bset(mod, SSI_MODE1, mask1, val1);
++	rsnd_mod_bset(mod, SSI_MODE2, mask2, val2);
++
+ 	return 0;
+ }
+ 
+@@ -104,8 +131,13 @@ static int rsnd_ssiu_start_gen2(struct rsnd_mod *mod,
+ 				struct rsnd_dai_stream *io,
+ 				struct rsnd_priv *priv)
+ {
+-	if (rsnd_ssi_use_busif(io))
+-		rsnd_mod_write(mod, SSI_CTRL, 0x1);
++	if (!rsnd_ssi_use_busif(io))
++		return 0;
++
++	rsnd_mod_write(mod, SSI_CTRL, 0x1);
++
++	if (rsnd_ssi_multi_slaves(io))
++		rsnd_mod_write(mod, SSI_CONTROL, 0x1);
+ 
+ 	return 0;
+ }
+@@ -114,8 +146,13 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_dai_stream *io,
+ 			       struct rsnd_priv *priv)
+ {
+-	if (rsnd_ssi_use_busif(io))
+-		rsnd_mod_write(mod, SSI_CTRL, 0);
++	if (!rsnd_ssi_use_busif(io))
++		return 0;
++
++	rsnd_mod_write(mod, SSI_CTRL, 0);
++
++	if (rsnd_ssi_multi_slaves(io))
++		rsnd_mod_write(mod, SSI_CONTROL, 0);
+ 
+ 	return 0;
+ }
 -- 
 2.6.2
