@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v4.4
-Date: Wed, 23 Dec 2015 00:27:18 +0000
-Message-ID: <20151223002718.GK16023@sirena.org.uk>
-References: <20151223002649.GJ16023@sirena.org.uk>
+Subject: Applied "ASoC: rt5677: set PLL_CTRL2 non-volatile" to
+	the asoc tree
+Date: Wed, 23 Dec 2015 00:38:08 +0000
+Message-ID: <E1aBXRQ-0001ki-BS@debutante>
+References: <1450404983-26646-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0679447676697868208=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 93BA7266884
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:27:22 +0100 (CET)
-In-Reply-To: <20151223002649.GJ16023@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id B94BC26602D
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:40:22 +0100 (CET)
+In-Reply-To: <1450404983-26646-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0679447676697868208==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Tv3+oRj6D9L8lW+H"
-Content-Disposition: inline
+   ASoC: rt5677: set PLL_CTRL2 non-volatile
 
+has been applied to the asoc tree at
 
---Tv3+oRj6D9L8lW+H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 23, 2015 at 12:26:49AM +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-fix-v4.4-rc6
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-That's tags/asoc-fix-v4.4-rc6
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---Tv3+oRj6D9L8lW+H
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJWeeplAAoJECTWi3JdVIfQnu0H/3687gCi99BcBG65WOHA0J/X
-mt91m/3qAPNqBfWDoqy54HFOelSaSgxboVqnoD51UIxF1fPxX22u2wxG9g9NJJmw
-naFxrSiaz8xiUYWPKtdtg0pwTQpLWwYGiZv674fBgpr5qNfF2V/QwIGVl6oxehgE
-MuhvJ+tyYL0GsDQ8fxX6SUurO/ZfJhe3St65GZJR1mFkE36OGlmZcOMI39x4TdMk
-yp85AomqILGEgs7+XRaLQi4YDAaTOlrsftbgbfky4oOsPAkwRWtOHqBuApp1ci7A
-DJC0Z3/adDYKl9gBGrmo2m0u69g+jksSSizVIT2kUkeI7A6nLylnxqJsV7G2Xf4=
-=wzNy
------END PGP SIGNATURE-----
+>From d0d1eedd5ad345f16234311b375bf94d6c90e14b Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Fri, 18 Dec 2015 10:16:23 +0800
+Subject: [PATCH] ASoC: rt5677: set PLL_CTRL2 non-volatile
 
---Tv3+oRj6D9L8lW+H--
+There is a status bit on RT5677_PLL1_CTRL2 and RT5677_PLL2_CTRL2.
+That's why those registers are set volatile. However, the status
+bit is currently not used by codec driver. So, it should be no
+problem if we set them non-volatile.
+The purpose of setting them non-volatile is to restore the setting
+after a syspend/resume cycle.
 
---===============0679447676697868208==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5677.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-
---===============0679447676697868208==--
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index f73fd125e49c..13fef00e7b25 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -297,8 +297,6 @@ static bool rt5677_volatile_register(struct device *dev, unsigned int reg)
+ 	case RT5677_HAP_GENE_CTRL2:
+ 	case RT5677_PWR_DSP_ST:
+ 	case RT5677_PRIV_DATA:
+-	case RT5677_PLL1_CTRL2:
+-	case RT5677_PLL2_CTRL2:
+ 	case RT5677_ASRC_22:
+ 	case RT5677_ASRC_23:
+ 	case RT5677_VAD_CTRL5:
+-- 
+2.6.2
