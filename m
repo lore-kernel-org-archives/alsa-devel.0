@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Disable regulators on probe()
-	failure" to the asoc tree
-Date: Wed, 23 Dec 2015 00:12:19 +0000
-Message-ID: <E1aBX2R-0008NQ-70@debutante>
-References: <013f8a59618a9dfa74f6f983ed6ba4d7bec6a9d0.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: da7219: Fix Sidetone to work regardless
+	of DAI capture" to the asoc tree
+Date: Wed, 23 Dec 2015 00:12:20 +0000
+Message-ID: <E1aBX2S-0008Nt-4M@debutante>
+References: <2ed293aa5fa88ff652f1c6628a09dc6fe36ea112.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9B06266688
+ by alsa0.perex.cz (Postfix) with ESMTP id 66F17265E28
  for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:12:26 +0100 (CET)
-In-Reply-To: <013f8a59618a9dfa74f6f983ed6ba4d7bec6a9d0.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <2ed293aa5fa88ff652f1c6628a09dc6fe36ea112.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Disable regulators on probe() failure
+   ASoC: da7219: Fix Sidetone to work regardless of DAI capture
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 9069bf9bc839d97e07fe17c336eab095c1065cec Mon Sep 17 00:00:00 2001
+>From fdd50a8086422caa456b5f8abb631dda6c551744 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 22 Dec 2015 18:27:51 +0000
-Subject: [PATCH] ASoC: da7219: Disable regulators on probe() failure
+Date: Tue, 22 Dec 2015 18:27:52 +0000
+Subject: [PATCH] ASoC: da7219: Fix Sidetone to work regardless of DAI capture
 
-If codec probe() function fails after supplies have been enabled
-it should really tidy up and disable them again. This patch updates
-the probe function to do just that.
+Previously Sidetone would operate only when capture to DAI was in
+progress, due to DAPM path configuration. There is no reason why
+this should not operate without DAI capture, so this patch updates
+the DAPM path accordingly.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ sound/soc/codecs/da7219.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 319e794d27f6..9136a8b6f593 100644
+index e36a7b79b494..319e794d27f6 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1663,10 +1663,12 @@ static int da7219_probe(struct snd_soc_codec *codec)
- 	/* Check if MCLK provided */
- 	da7219->mclk = devm_clk_get(codec->dev, "mclk");
- 	if (IS_ERR(da7219->mclk)) {
--		if (PTR_ERR(da7219->mclk) != -ENOENT)
--			return PTR_ERR(da7219->mclk);
--		else
-+		if (PTR_ERR(da7219->mclk) != -ENOENT) {
-+			ret = PTR_ERR(da7219->mclk);
-+			goto err_disable_reg;
-+		} else {
- 			da7219->mclk = NULL;
-+		}
- 	}
+@@ -968,10 +968,11 @@ static const struct snd_soc_dapm_route da7219_audio_map[] = {
+ 	{"Mixin PGA", NULL, "Mic PGA"},
+ 	{"ADC", NULL, "Mixin PGA"},
  
- 	/* Default PC counter to free-running */
-@@ -1694,7 +1696,16 @@ static int da7219_probe(struct snd_soc_codec *codec)
- 	snd_soc_write(codec, DA7219_TONE_GEN_CYCLES, DA7219_BEEP_CYCLES_MASK);
+-	{"Sidetone Filter", NULL, "ADC"},
+ 	{"Mixer In", NULL, "Mixer In Supply"},
+ 	{"Mixer In", "Mic Switch", "ADC"},
  
- 	/* Initialise AAD block */
--	return da7219_aad_init(codec);
-+	ret = da7219_aad_init(codec);
-+	if (ret)
-+		goto err_disable_reg;
++	{"Sidetone Filter", NULL, "Mixer In"},
 +
-+	return 0;
-+
-+err_disable_reg:
-+	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
-+
-+	return ret;
- }
+ 	{"Tone Generator", NULL, "TONE"},
  
- static int da7219_remove(struct snd_soc_codec *codec)
+ 	DA7219_OUT_DAI_MUX_ROUTES("Out DAIL Mux"),
 -- 
 2.6.2
