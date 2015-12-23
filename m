@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Add support for 1.6V micbias
-	level" to the asoc tree
-Date: Wed, 23 Dec 2015 00:12:16 +0000
-Message-ID: <E1aBX2O-0008M0-FG@debutante>
-References: <7413a3e6c9996d2ae4c17ea60b220ad1d4012a9f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: da7219: Remove support for 32KHz PLL
+	mode" to the asoc tree
+Date: Wed, 23 Dec 2015 00:12:15 +0000
+Message-ID: <E1aBX2N-0008LX-HL@debutante>
+References: <1ab0fbcc6456d5ee428e5390b7ff756695b5c33c.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DD33E266576
+ by alsa0.perex.cz (Postfix) with ESMTP id 48655266518
  for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:12:22 +0100 (CET)
-In-Reply-To: <7413a3e6c9996d2ae4c17ea60b220ad1d4012a9f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <1ab0fbcc6456d5ee428e5390b7ff756695b5c33c.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Add support for 1.6V micbias level
+   ASoC: da7219: Remove support for 32KHz PLL mode
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 0aed64c1766d354c819a13a57d8673adaf2266eb Mon Sep 17 00:00:00 2001
+>From 501f72e9c5205b9d70d5d61e9b186ae7ba873f73 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 22 Dec 2015 18:27:55 +0000
-Subject: [PATCH] ASoC: da7219: Add support for 1.6V micbias level
+Date: Tue, 22 Dec 2015 18:27:56 +0000
+Subject: [PATCH] ASoC: da7219: Remove support for 32KHz PLL mode
 
-HW can provide 1.6V micbias level as well the existing levels
-already provided in the driver. This patch adds support for 1.6V
-to the DT binding.
+PLL mode based on 32KHz master clock not supported in
+AB silicon so remove support from the driver.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/da7219.txt | 2 +-
- include/sound/da7219.h                             | 3 ++-
- sound/soc/codecs/da7219.c                          | 3 +++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/da7219.c | 10 ++--------
+ sound/soc/codecs/da7219.h |  2 --
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
-index 062a2a08250e..cf61681826b6 100644
---- a/Documentation/devicetree/bindings/sound/da7219.txt
-+++ b/Documentation/devicetree/bindings/sound/da7219.txt
-@@ -29,7 +29,7 @@ Optional properties:
- - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
- 
- - dlg,micbias-lvl : Voltage (mV) for Mic Bias
--	[<1800>, <2000>, <2200>, <2400>, <2600>]
-+	[<1600>, <1800>, <2000>, <2200>, <2400>, <2600>]
- - dlg,mic-amp-in-sel : Mic input source type
- 	["diff", "se_p", "se_n"]
- 
-diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-index 307198b469bc..02876acdc840 100644
---- a/include/sound/da7219.h
-+++ b/include/sound/da7219.h
-@@ -16,7 +16,8 @@
- 
- /* Mic Bias */
- enum da7219_micbias_voltage {
--	DA7219_MICBIAS_1_8V = 1,
-+	DA7219_MICBIAS_1_6V = 0,
-+	DA7219_MICBIAS_1_8V,
- 	DA7219_MICBIAS_2_0V,
- 	DA7219_MICBIAS_2_2V,
- 	DA7219_MICBIAS_2_4V,
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 2630c503e3df..371768092e17 100644
+index 371768092e17..c6d3b32bb4ae 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1410,6 +1410,8 @@ static enum da7219_micbias_voltage
- 	da7219_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
- {
- 	switch (val) {
-+	case 1600:
-+		return DA7219_MICBIAS_1_6V;
- 	case 1800:
- 		return DA7219_MICBIAS_1_8V;
- 	case 2000:
-@@ -1571,6 +1573,7 @@ static void da7219_handle_pdata(struct snd_soc_codec *codec)
+@@ -1074,11 +1074,8 @@ static int da7219_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	u32 freq_ref;
+ 	u64 frac_div;
  
- 		/* Mic Bias voltages */
- 		switch (pdata->micbias_lvl) {
-+		case DA7219_MICBIAS_1_6V:
- 		case DA7219_MICBIAS_1_8V:
- 		case DA7219_MICBIAS_2_0V:
- 		case DA7219_MICBIAS_2_2V:
+-	/* Verify 32KHz, 2MHz - 54MHz MCLK provided, and set input divider */
+-	if (da7219->mclk_rate == 32768) {
+-		indiv_bits = DA7219_PLL_INDIV_2_5_MHZ;
+-		indiv = DA7219_PLL_INDIV_2_5_MHZ_VAL;
+-	} else if (da7219->mclk_rate < 2000000) {
++	/* Verify 2MHz - 54MHz MCLK provided, and set input divider */
++	if (da7219->mclk_rate < 2000000) {
+ 		dev_err(codec->dev, "PLL input clock %d below valid range\n",
+ 			da7219->mclk_rate);
+ 		return -EINVAL;
+@@ -1119,9 +1116,6 @@ static int da7219_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	case DA7219_SYSCLK_PLL_SRM:
+ 		pll_ctrl |= DA7219_PLL_MODE_SRM;
+ 		break;
+-	case DA7219_SYSCLK_PLL_32KHZ:
+-		pll_ctrl |= DA7219_PLL_MODE_32KHZ;
+-		break;
+ 	default:
+ 		dev_err(codec->dev, "Invalid PLL config\n");
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 2b3f4471a17f..5a787e738084 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -206,7 +206,6 @@
+ #define DA7219_PLL_MODE_BYPASS		(0x0 << 6)
+ #define DA7219_PLL_MODE_NORMAL		(0x1 << 6)
+ #define DA7219_PLL_MODE_SRM		(0x2 << 6)
+-#define DA7219_PLL_MODE_32KHZ		(0x3 << 6)
+ 
+ /* DA7219_PLL_FRAC_TOP = 0x22 */
+ #define DA7219_PLL_FBDIV_FRAC_TOP_SHIFT	0
+@@ -780,7 +779,6 @@ enum da7219_sys_clk {
+ 	DA7219_SYSCLK_MCLK = 0,
+ 	DA7219_SYSCLK_PLL,
+ 	DA7219_SYSCLK_PLL_SRM,
+-	DA7219_SYSCLK_PLL_32KHZ
+ };
+ 
+ /* Regulators */
 -- 
 2.6.2
