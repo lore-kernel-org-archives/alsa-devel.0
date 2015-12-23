@@ -1,18 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/4] ALSA: dice: postpone card registration
-Date: Wed, 23 Dec 2015 13:21:34 +0900
-Message-ID: <567A214E.201@sakamocchi.jp>
-References: <1450791943-14624-1-git-send-email-o-takashi@sakamocchi.jp>
- <1450791943-14624-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5hlh8meg24.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH 12/19] ASoC: codec: rt5651: add ACPI and OF
+	support
+Date: Wed, 23 Dec 2015 05:29:53 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7010E35FA@RTITMBSV03.realtek.com.tw>
+References: <1450406156-22246-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1450406156-22246-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20151219115047.GI5727@sirena.org.uk> <56782662.8050907@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id A7A862616B9
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 05:21:39 +0100 (CET)
-In-Reply-To: <s5hlh8meg24.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 679A92654D4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 06:30:00 +0100 (CET)
+In-Reply-To: <56782662.8050907@linux.intel.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,251 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 22 2015 23:03, Takashi Iwai wrote:
-> On Tue, 22 Dec 2015 14:45:41 +0100,
-> Takashi Sakamoto wrote:
->>
->> Some models based on ASIC for Dice II series (STD, CP) change their
->> hardware configurations after appearing on IEEE 1394 bus. This is due to
->> interactions of boot loader (RedBoot), firmwares (eCos) and vendor's
->> configurations. This causes current ALSA dice driver to get wrong
->> information about the hardware's capability because its probe function
->> runs just after detecting unit of the model.
->>
->> As long as I investigated, it takes a bit time (less than 1 second) to load
->> the firmware after bootstrap. Just after loaded, the driver can get
->> information about the unit. Then the hardware is initialized according to
->> vendor's configurations. After, the got information becomes wrong.
->> Between bootstrap, firmware loading and post configuration, some bus resets
->> are observed.
->>
->> This commit offloads most processing of probe function into workqueue and
->> schedules the workqueue after successive bus resets. This has an effect to
->> get correct hardware information and avoid involvement to bus reset storm.
->>
->> For code simplicity, this change effects all of Dice-based models, i.e.
->> Dice II, Dice Jr., Dice Mini and Dice III. Due to the same reason, sound
->> card instance is kept till card free function even if some errors are
->> detected in the workqueue.
->>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> ---
->>  sound/firewire/dice/dice.c | 105 +++++++++++++++++++++++++++++++++------------
->>  sound/firewire/dice/dice.h |   3 ++
->>  2 files changed, 80 insertions(+), 28 deletions(-)
->>
->> diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
->> index 26271cc..afec02f 100644
->> --- a/sound/firewire/dice/dice.c
->> +++ b/sound/firewire/dice/dice.c
->> @@ -18,6 +18,8 @@ MODULE_LICENSE("GPL v2");
->>  #define WEISS_CATEGORY_ID	0x00
->>  #define LOUD_CATEGORY_ID	0x10
->>  
->> +#define PROBE_DELAY_MS		(2 * MSEC_PER_SEC)
->> +
->>  static int check_dice_category(struct fw_unit *unit)
->>  {
->>  	struct fw_device *device = fw_parent_device(unit);
->> @@ -185,17 +187,68 @@ static void dice_card_free(struct snd_card *card)
->>  {
->>  	struct snd_dice *dice = card->private_data;
->>  
->> +	/* The workqueue for registration uses the memory block. */
->> +	cancel_work_sync(&dice->dwork.work);
->> +
->>  	snd_dice_stream_destroy_duplex(dice);
->> +
->>  	snd_dice_transaction_destroy(dice);
->> +
->>  	fw_unit_put(dice->unit);
->>  
->>  	mutex_destroy(&dice->mutex);
->>  }
->>  
->> +static void do_registration(struct work_struct *work)
->> +{
->> +	struct snd_dice *dice = container_of(work, struct snd_dice, dwork.work);
->> +	int err;
->> +
->> +	mutex_lock(&dice->mutex);
->> +
->> +	if (dice->card->shutdown || dice->probed)
->> +		goto end;
->> +
->> +	err = snd_dice_transaction_init(dice);
->> +	if (err < 0)
->> +		goto end;
->> +
->> +	err = dice_read_params(dice);
->> +	if (err < 0)
->> +		goto end;
->> +
->> +	dice_card_strings(dice);
->> +
->> +	err = snd_dice_create_pcm(dice);
->> +	if (err < 0)
->> +		goto end;
->> +
->> +	err = snd_dice_create_midi(dice);
->> +	if (err < 0)
->> +		goto end;
->> +
->> +	err = snd_card_register(dice->card);
->> +	if (err < 0)
->> +		goto end;
->> +
->> +	dice->probed = true;
->> +end:
->> +	mutex_unlock(&dice->mutex);
->> +
->> +	/*
->> +	 * It's a difficult work to manage a race condition between workqueue,
->> +	 * unit event handlers and processes. The memory block for this card
->> +	 * is released as the same way that usual sound cards are going to be
->> +	 * released.
->> +	 */
->> +}
->> +
->>  static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
->>  {
->> +	struct fw_card *fw_card = fw_parent_device(unit)->card;
->>  	struct snd_card *card;
->>  	struct snd_dice *dice;
->> +	unsigned long delay;
->>  	int err;
->>  
->>  	err = check_dice_category(unit);
->> @@ -205,29 +258,20 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
->>  	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
->>  			   sizeof(*dice), &card);
->>  	if (err < 0)
->> -		goto end;
->> +		return err;
->>  
->>  	dice = card->private_data;
->>  	dice->card = card;
->>  	dice->unit = fw_unit_get(unit);
->>  	card->private_free = dice_card_free;
->> +	dev_set_drvdata(&unit->device, dice);
->>  
->>  	spin_lock_init(&dice->lock);
->>  	mutex_init(&dice->mutex);
->>  	init_completion(&dice->clock_accepted);
->>  	init_waitqueue_head(&dice->hwdep_wait);
->>  
->> -	err = snd_dice_transaction_init(dice);
->> -	if (err < 0)
->> -		goto error;
->> -
->> -	err = dice_read_params(dice);
->> -	if (err < 0)
->> -		goto error;
->> -
->> -	dice_card_strings(dice);
->> -
->> -	err = snd_dice_create_pcm(dice);
->> +	err = snd_dice_stream_init_duplex(dice);
->>  	if (err < 0)
->>  		goto error;
->>  
->> @@ -237,23 +281,13 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
->>  
->>  	snd_dice_create_proc(dice);
->>  
->> -	err = snd_dice_create_midi(dice);
->> -	if (err < 0)
->> -		goto error;
->> -
->> -	err = snd_dice_stream_init_duplex(dice);
->> -	if (err < 0)
->> -		goto error;
->> -
->> -	err = snd_card_register(card);
->> -	if (err < 0) {
->> -		snd_dice_stream_destroy_duplex(dice);
->> -		goto error;
->> -	}
->> +	/* Register this sound card later. */
->> +	INIT_DEFERRABLE_WORK(&dice->dwork, do_registration);
->> +	delay = msecs_to_jiffies(PROBE_DELAY_MS) +
->> +				fw_card->reset_jiffies - get_jiffies_64();
->> +	schedule_delayed_work(&dice->dwork, delay);
+> -----Original Message-----
+> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+> Sent: Tuesday, December 22, 2015 12:19 AM
+> To: Mark Brown
+> Cc: Bard Liao; alsa-devel@alsa-project.org; Jack Yu
+> Subject: Re: [alsa-devel] [PATCH 12/19] ASoC: codec: rt5651: add ACPI and
+> OF support
 > 
-> Missing negative jiffies check?
-
-Indeed. I forgot a case that users execute rmmod/insmod by theirselves
-long after bus reset. In this case, the delay is assigned to minus
-value, while it's unsigned type so it can have large number.
-
-I'd like to add this function as a solution for this issue.
-
-static inline void schedule_registration(struct snd_dice *dice)
-{
-  struct fw_card *fw_card = fw_parent_device(dice->unit)->card;
-  u64 delay;
-
-  delay = fw_card->reset_jiffies + msecs_to_jiffies(PROBE_DELAY_MS);
-  if (time_after64(delay, get_jiffies_64()))
-      delay -= get_jiffies_64();
-  else
-    delay = 0;
-
-  schedule_delayed_work(&dice->dwork, delay);
-}
-
->>  
->> -	dev_set_drvdata(&unit->device, dice);
->> -end:
->> -	return err;
->> +	return 0;
->>  error:
->>  	snd_card_free(card);
->>  	return err;
->> @@ -263,13 +297,28 @@ static void dice_remove(struct fw_unit *unit)
->>  {
->>  	struct snd_dice *dice = dev_get_drvdata(&unit->device);
->>  
->> +	/* For a race condition of struct snd_card.shutdown. */
->> +	mutex_lock(&dice->mutex);
->> +
->>  	/* No need to wait for releasing card object in this context. */
->>  	snd_card_free_when_closed(dice->card);
->> +
->> +	mutex_unlock(&dice->mutex);
->>  }
->>  
->>  static void dice_bus_reset(struct fw_unit *unit)
->>  {
->>  	struct snd_dice *dice = dev_get_drvdata(&unit->device);
->> +	struct fw_card *fw_card = fw_parent_device(unit)->card;
->> +	unsigned long delay;
->> +
->> +	/* Postpone a workqueue for deferred registration. */
->> +	if (!dice->probed) {
->> +		delay = msecs_to_jiffies(PROBE_DELAY_MS) -
->> +				(get_jiffies_64() - fw_card->reset_jiffies);
->> +		mod_delayed_work(dice->dwork.wq, &dice->dwork, delay);
->> +		return;
+> On 12/19/15 5:50 AM, Mark Brown wrote:
+> > On Thu, Dec 17, 2015 at 08:35:49PM -0600, Pierre-Louis Bossart wrote:
+> >
+> >> +#if defined(CONFIG_OF)
+> >> +static const struct of_device_id rt5651_of_match[] = {
+> >> +	{ .compatible = "realtek,rt5651", },
+> >> +	{},
+> >> +};
+> >> +MODULE_DEVICE_TABLE(of, rt5651_of_match); #endif
+> >
+> > You need a binding document for new DT bindings.
 > 
-> No protection for race here?
+> Ah yes.
+> I added ACPI and OF support through copy-paste and s/rt5640/rt5651/, but
+> I can only test ACPI and wouldn't know what bindings are required so will
+> remove this OF part in the next batch.
+> Bard and team if you want to add OF support please go ahead.
 
-Both of state transition of workqueue and the flag of 'dice->probed'
-work fine to manage the race condition.
+Sure, I will do it.
 
-This workqueue is kept each instance of IEEE 1394 unit driver, thus the
-same work can not run concurrently for the same unit. When already
-scheduled, the work is expectedly postponed by mod_delayed_work(). When
-the work is running, mod_delayed_work() schedules next work, but the
-flag of 'dice->probed' has an effect to return immediately in the next
-work. When workqueue has already finished, the flag of 'dice->probed'
-avoid rescheduling of the work.
-
-
-Thank you
-
-Takashi Sakamoto
+> 
+> 
+> 
+> ------Please consider the environment before printing this e-mail.
