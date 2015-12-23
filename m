@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/4 v2] ALSA: dice: improve card registration
-	processing
-Date: Thu, 24 Dec 2015 07:55:06 +0900
-Message-ID: <1450911310-15507-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: dice: expand timeout to wait for
+	Dice notification
+Date: Thu, 24 Dec 2015 07:55:10 +0900
+Message-ID: <1450911310-15507-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1450911310-15507-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 36813265932
+ by alsa0.perex.cz (Postfix) with ESMTP id 355882658DF
  for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 23:55:20 +0100 (CET)
+In-Reply-To: <1450911310-15507-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +25,33 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Some users have reported that their Dice based models generate ETIMEDOUT
+when starting PCM playback. It means that current timeout (=100msec) is
+not enough for their models to transfer notifications.
 
-This patchset is to update my previous one:
+This commit expands the timeout up to 2 sec. As a result, in a worst case,
+any operations to start AMDTP streams takes 2 sec or more. Then, in
+userspace, snd_pcm_hw_params(), snd_pcm_prepare(), snd_pcm_recover(),
+snd_rawmidi_open(), snd_seq_connect_from() and snd_seq_connect_to() may
+take the time.
 
-[alsa-devel] [PATCH 0/4] ALSA: dice: improve card registration processing
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102357.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-transaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The main purpose of this patchset is to postpone card registration after
-successive bus resets, to ensure the processing and related transactions.
-This change has an advantage for ALSA dice driver to get proper information
-about hardware, especially for Dice II based models.
-
-Changes from v1:
- * fix jiffies64 handling bug 
- * rename some members and functions related to card registration.
-  * 'struct snd_dice.probed' -> 'registered'
-  * do_probe() -> do_registration()
-
-Takashi Sakamoto (4):
-  ALSA: dice: split subaddress check from category check
-  ALSA: dice: postpone card registration
-  ALSA: dice: purge transaction initialization at timeout of Dice
-    notification
-  ALSA: dice: expand timeout to wait for Dice notification
-
- sound/firewire/dice/dice-transaction.c | 122 ++++++++++++++--------
- sound/firewire/dice/dice.c             | 183 ++++++++++++++++-----------------
- sound/firewire/dice/dice.h             |   3 +
- 3 files changed, 172 insertions(+), 136 deletions(-)
-
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index d5f7de7..de5cd6c 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -9,7 +9,7 @@
+ 
+ #include "dice.h"
+ 
+-#define NOTIFICATION_TIMEOUT_MS	100
++#define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
+ 
+ static u64 get_subaddr(struct snd_dice *dice, enum snd_dice_addr_type type,
+ 		       u64 offset)
 -- 
 2.5.0
