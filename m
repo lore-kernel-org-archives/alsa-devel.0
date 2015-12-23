@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: use different route map
-	for AC'97 mode" to the asoc tree
-Date: Wed, 23 Dec 2015 00:08:52 +0000
-Message-ID: <E1aBWz6-0007Hw-BG@debutante>
-References: <567710D5.5040405@maciej.szmigiero.name>
+Subject: Applied "ASoC: ssm2518: Use a signed return type for
+	ssm2518_lookup_mcs()" to the asoc tree
+Date: Wed, 23 Dec 2015 00:08:58 +0000
+Message-ID: <E1aBWzC-0007LQ-N3@debutante>
+References: <56767788.4020709@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DC2DC265DCB
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:04 +0100 (CET)
-In-Reply-To: <567710D5.5040405@maciej.szmigiero.name>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2573D265DCD
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:05 +0100 (CET)
+In-Reply-To: <56767788.4020709@users.sourceforge.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Markus Elfring <elfring@users.sourceforge.net>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl-asoc-card: use different route map for AC'97 mode
+   ASoC: ssm2518: Use a signed return type for ssm2518_lookup_mcs()
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 25e5ef974c33f1e4a07a68bf830e6493ee6dab11 Mon Sep 17 00:00:00 2001
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Sun, 20 Dec 2015 21:34:29 +0100
-Subject: [PATCH] ASoC: fsl-asoc-card: use different route map for AC'97 mode
+>From bfbcab7c2d8ab4cb52f0785d7381d20f39bb065b Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 20 Dec 2015 10:34:25 +0100
+Subject: [PATCH] ASoC: ssm2518: Use a signed return type for
+ ssm2518_lookup_mcs()
 
-fsl_ssi uses different stream names ("AC97 Playback" / "AC97 Capture")
-in AC'97 mode so in this case fsl-asoc-card route map should
-also be using them.
+The return type "unsigned int" was used by the ssm2518_lookup_mcs()
+function even though it will eventually return a negative error code.
+Improve this implementation detail by deletion of the type modifier then.
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ssm2518.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 1b05d1c5d9fd..6fb3aed91b44 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -107,6 +107,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"CPU-Capture",  NULL, "Capture"},
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index 86b81a60ac52..e2e0bfa7ec20 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -309,7 +309,7 @@ static const struct snd_pcm_hw_constraint_list ssm2518_constraints_12288000 = {
+ 	.count = ARRAY_SIZE(ssm2518_rates_12288000),
  };
  
-+static const struct snd_soc_dapm_route audio_map_ac97[] = {
-+	{"AC97 Playback",  NULL, "ASRC-Playback"},
-+	{"Playback",  NULL, "AC97 Playback"},
-+	{"ASRC-Capture",  NULL, "AC97 Capture"},
-+	{"AC97 Capture",  NULL, "Capture"},
-+};
-+
- /* Add all possible widgets into here without being redundant */
- static const struct snd_soc_dapm_widget fsl_asoc_card_dapm_widgets[] = {
- 	SND_SOC_DAPM_LINE("Line Out Jack", NULL),
-@@ -574,7 +581,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	priv->card.dev = &pdev->dev;
- 	priv->card.name = priv->name;
- 	priv->card.dai_link = priv->dai_link;
--	priv->card.dapm_routes = audio_map;
-+	priv->card.dapm_routes = fsl_asoc_card_is_ac97(priv) ?
-+				 audio_map_ac97 : audio_map;
- 	priv->card.late_probe = fsl_asoc_card_late_probe;
- 	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
- 	priv->card.dapm_widgets = fsl_asoc_card_dapm_widgets;
+-static unsigned int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
++static int ssm2518_lookup_mcs(struct ssm2518 *ssm2518,
+ 	unsigned int rate)
+ {
+ 	const unsigned int *sysclks = NULL;
 -- 
 2.6.2
