@@ -1,97 +1,34 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/4] ALSA: dice: postpone card registration
-Date: Wed, 23 Dec 2015 18:33:15 +0900
-Message-ID: <567A6A5B.7030604@sakamocchi.jp>
-References: <1450791943-14624-1-git-send-email-o-takashi@sakamocchi.jp>
- <1450791943-14624-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5hlh8meg24.wl-tiwai@suse.de> <567A214E.201@sakamocchi.jp>
- <s5hegedwrlo.wl-tiwai@suse.de>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Subject: RE: [PATCH 3/6] ASoC: da7219: Update REFERENCES reg default,
+ in-line with HW
+Date: Wed, 23 Dec 2015 09:47:23 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D4611EEA@SW-EX-MBX01.diasemi.com>
+References: <cover.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+ <5233faeef4073f33e2826866eae35e8c9502c35f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+ <20151223001019.GG16023@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B0E265528
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 10:33:21 +0100 (CET)
-In-Reply-To: <s5hegedwrlo.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20151223001019.GG16023-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNeW5tDEy5pyIMjPml6UgMTY6MjksIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+PiArCS8q
-IFJlZ2lzdGVyIHRoaXMgc291bmQgY2FyZCBsYXRlci4gKi8KPj4+PiArCUlOSVRfREVGRVJSQUJM
-RV9XT1JLKCZkaWNlLT5kd29yaywgZG9fcmVnaXN0cmF0aW9uKTsKPj4+PiArCWRlbGF5ID0gbXNl
-Y3NfdG9famlmZmllcyhQUk9CRV9ERUxBWV9NUykgKwo+Pj4+ICsJCQkJZndfY2FyZC0+cmVzZXRf
-amlmZmllcyAtIGdldF9qaWZmaWVzXzY0KCk7Cj4+Pj4gKwlzY2hlZHVsZV9kZWxheWVkX3dvcmso
-JmRpY2UtPmR3b3JrLCBkZWxheSk7Cj4+Pgo+Pj4gTWlzc2luZyBuZWdhdGl2ZSBqaWZmaWVzIGNo
-ZWNrPwo+Pgo+PiBJbmRlZWQuIEkgZm9yZ290IGEgY2FzZSB0aGF0IHVzZXJzIGV4ZWN1dGUgcm1t
-b2QvaW5zbW9kIGJ5IHRoZWlyc2VsdmVzCj4+IGxvbmcgYWZ0ZXIgYnVzIHJlc2V0LiBJbiB0aGlz
-IGNhc2UsIHRoZSBkZWxheSBpcyBhc3NpZ25lZCB0byBtaW51cwo+PiB2YWx1ZSwgd2hpbGUgaXQn
-cyB1bnNpZ25lZCB0eXBlIHNvIGl0IGNhbiBoYXZlIGxhcmdlIG51bWJlci4KPj4KPj4gSSdkIGxp
-a2UgdG8gYWRkIHRoaXMgZnVuY3Rpb24gYXMgYSBzb2x1dGlvbiBmb3IgdGhpcyBpc3N1ZS4KPj4K
-Pj4gc3RhdGljIGlubGluZSB2b2lkIHNjaGVkdWxlX3JlZ2lzdHJhdGlvbihzdHJ1Y3Qgc25kX2Rp
-Y2UgKmRpY2UpCj4+IHsKPj4gICBzdHJ1Y3QgZndfY2FyZCAqZndfY2FyZCA9IGZ3X3BhcmVudF9k
-ZXZpY2UoZGljZS0+dW5pdCktPmNhcmQ7Cj4+ICAgdTY0IGRlbGF5Owo+Pgo+PiAgIGRlbGF5ID0g
-ZndfY2FyZC0+cmVzZXRfamlmZmllcyArIG1zZWNzX3RvX2ppZmZpZXMoUFJPQkVfREVMQVlfTVMp
-Owo+PiAgIGlmICh0aW1lX2FmdGVyNjQoZGVsYXksIGdldF9qaWZmaWVzXzY0KCkpKQo+PiAgICAg
-ICBkZWxheSAtPSBnZXRfamlmZmllc182NCgpOwo+PiAgIGVsc2UKPj4gICAgIGRlbGF5ID0gMDsK
-PiAKPiBUaGlzIGlzIG5vIGdvb2QuICBZb3Ugc2hvdWxkbid0IHJlZmVyIGppZmZpZXMgdHdpY2Uu
-ICBJdCBtYXkgYmUKPiB1cGRhdGVkIG1lYW53aGlsZS4KCkhtLi4uIFRoZXJlJ3Mgbm8gaGVscGVy
-IGZ1bmN0aW9ucyBmb3IgYXRvbWljIG9wZXJhdGlvbiBvZiBqaWZmaWVzNjQsIHNvCm5vIHdheSBl
-eGNlcHQgZm9yIHVzaW5nIHN0YWNrLiBIb3cgaXMgdGhpcz8KCnN0YXRpYyBpbmxpbmUgdm9pZCBz
-Y2hlZHVsZV9yZWdpc3RyYXRpb24oc3RydWN0IHNuZF9kaWNlICpkaWNlKQp7CiAgc3RydWN0IGZ3
-X2NhcmQgKmZ3X2NhcmQgPSBmd19wYXJlbnRfZGV2aWNlKGRpY2UtPnVuaXQpLT5jYXJkOwogIHU2
-NCBub3csIGRlbGF5OwoKICBub3cgPSBnZXRfamlmZmllc182NCgpOwogIGRlbGF5ID0gZndfY2Fy
-ZC0+cmVzZXRfamlmZmllcyArIG1zZWNzX3RvX2ppZmZpZXMoUFJPQkVfREVMQVlfTVMpOwoKICBp
-ZiAodGltZV9hZnRlcjY0KGRlbGF5LCBub3cpKQogICAgZGVsYXkgLT0gbm93OwogIGVsc2UKICAg
-IGRlbGF5ID0gMDsKCiAgc2NoZWR1bGVfZGVsYXllZF93b3JrKCZkaWNlLT5kd29yaywgZGVsYXkp
-Owp9Cgo+PiAgIHNjaGVkdWxlX2RlbGF5ZWRfd29yaygmZGljZS0+ZHdvcmssIGRlbGF5KTsKPj4g
-fQo+Pgo+Pj4+ICAKPj4+PiAtCWRldl9zZXRfZHJ2ZGF0YSgmdW5pdC0+ZGV2aWNlLCBkaWNlKTsK
-Pj4+PiAtZW5kOgo+Pj4+IC0JcmV0dXJuIGVycjsKPj4+PiArCXJldHVybiAwOwo+Pj4+ICBlcnJv
-cjoKPj4+PiAgCXNuZF9jYXJkX2ZyZWUoY2FyZCk7Cj4+Pj4gIAlyZXR1cm4gZXJyOwo+Pj4+IEBA
-IC0yNjMsMTMgKzI5NywyOCBAQCBzdGF0aWMgdm9pZCBkaWNlX3JlbW92ZShzdHJ1Y3QgZndfdW5p
-dCAqdW5pdCkKPj4+PiAgewo+Pj4+ICAJc3RydWN0IHNuZF9kaWNlICpkaWNlID0gZGV2X2dldF9k
-cnZkYXRhKCZ1bml0LT5kZXZpY2UpOwo+Pj4+ICAKPj4+PiArCS8qIEZvciBhIHJhY2UgY29uZGl0
-aW9uIG9mIHN0cnVjdCBzbmRfY2FyZC5zaHV0ZG93bi4gKi8KPj4+PiArCW11dGV4X2xvY2soJmRp
-Y2UtPm11dGV4KTsKPj4+PiArCj4+Pj4gIAkvKiBObyBuZWVkIHRvIHdhaXQgZm9yIHJlbGVhc2lu
-ZyBjYXJkIG9iamVjdCBpbiB0aGlzIGNvbnRleHQuICovCj4+Pj4gIAlzbmRfY2FyZF9mcmVlX3do
-ZW5fY2xvc2VkKGRpY2UtPmNhcmQpOwo+Pj4+ICsKPj4+PiArCW11dGV4X3VubG9jaygmZGljZS0+
-bXV0ZXgpOwo+Pj4+ICB9Cj4+Pj4gIAo+Pj4+ICBzdGF0aWMgdm9pZCBkaWNlX2J1c19yZXNldChz
-dHJ1Y3QgZndfdW5pdCAqdW5pdCkKPj4+PiAgewo+Pj4+ICAJc3RydWN0IHNuZF9kaWNlICpkaWNl
-ID0gZGV2X2dldF9kcnZkYXRhKCZ1bml0LT5kZXZpY2UpOwo+Pj4+ICsJc3RydWN0IGZ3X2NhcmQg
-KmZ3X2NhcmQgPSBmd19wYXJlbnRfZGV2aWNlKHVuaXQpLT5jYXJkOwo+Pj4+ICsJdW5zaWduZWQg
-bG9uZyBkZWxheTsKPj4+PiArCj4+Pj4gKwkvKiBQb3N0cG9uZSBhIHdvcmtxdWV1ZSBmb3IgZGVm
-ZXJyZWQgcmVnaXN0cmF0aW9uLiAqLwo+Pj4+ICsJaWYgKCFkaWNlLT5wcm9iZWQpIHsKPj4+PiAr
-CQlkZWxheSA9IG1zZWNzX3RvX2ppZmZpZXMoUFJPQkVfREVMQVlfTVMpIC0KPj4+PiArCQkJCShn
-ZXRfamlmZmllc182NCgpIC0gZndfY2FyZC0+cmVzZXRfamlmZmllcyk7Cj4+Pj4gKwkJbW9kX2Rl
-bGF5ZWRfd29yayhkaWNlLT5kd29yay53cSwgJmRpY2UtPmR3b3JrLCBkZWxheSk7Cj4+Pj4gKwkJ
-cmV0dXJuOwo+Pj4KPj4+IE5vIHByb3RlY3Rpb24gZm9yIHJhY2UgaGVyZT8KPj4KPj4gQm90aCBv
-ZiBzdGF0ZSB0cmFuc2l0aW9uIG9mIHdvcmtxdWV1ZSBhbmQgdGhlIGZsYWcgb2YgJ2RpY2UtPnBy
-b2JlZCcKPj4gd29yayBmaW5lIHRvIG1hbmFnZSB0aGUgcmFjZSBjb25kaXRpb24uCj4+Cj4+IFRo
-aXMgd29ya3F1ZXVlIGlzIGtlcHQgZWFjaCBpbnN0YW5jZSBvZiBJRUVFIDEzOTQgdW5pdCBkcml2
-ZXIsIHRodXMgdGhlCj4+IHNhbWUgd29yayBjYW4gbm90IHJ1biBjb25jdXJyZW50bHkgZm9yIHRo
-ZSBzYW1lIHVuaXQuCj4gCj4gQnV0IHRoZSByYWNlIGlzIGFnYWluc3QgYW5vdGhlciAoeW91ciBv
-d24pIHdvcmsuICBXaXRob3V0IHRoZQo+IHByb3RlY3Rpb24sIHlvdSBoYXZlIG5vIGd1YXJhbnRl
-ZSBvZiB0aGUgY29uc2lzdGVuY3kgYmV0d2Vlbgo+IGRpY2UtPnByb2JlZCBldmFsdWF0aW9uIGFu
-ZCB0aGUgbmV4dCBtb2RfZGVsYXllZF93b3JrKCkgZXhlY3V0aW9uLgoKWWVzLiBCdXQgaW4gdGhp
-cyBjYXNlLCBiZWxvdyBsaW5lcyByZXR1cm4gZnJvbSB0aGUgd29yay4KCitzdGF0aWMgdm9pZCBk
-b19yZWdpc3RyYXRpb24oc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQoreworIC4uLgorCWlmIChk
-aWNlLT5jYXJkLT5zaHV0ZG93biB8fCBkaWNlLT5wcm9iZWQpCisJCWdvdG8gZW5kOwoKSSB1c2Ug
-cXVpdGUgbG9vc2Ugc3RyYXRlZ3kgdG8gdGhlIHJhY2UgY29uZGl0aW9uIGJldHdlZW4gdW5pdCdz
-IHVwZGF0ZQpoYW5kbGVyIGFuZCB0aGUgd29yaywgYmVjYXVzZSBvZiB0cmFuc2FjdGlvbiByZS1p
-bml0aWFsaXphdGlvbi4gVGhlCnRyYW5zYWN0aW9uIHN5c3RlbSBzaG91bGQgYmUgaW5pdGlhbGl6
-ZWQgaW4gYWR2YW5jZSBvZiB0aGUgd29yay4gV2hlbgpzb21lIGxvY2sgcHJpbWl0aXZlcyBhcmUg
-dXNlZCwgcHJvY2Vzc2luZyBvZiB0aGUgdXBkYXRlIGhhbmRsZXIgaXMKZGVsYXllZC4gSXQncyBh
-IGJpdCBpbmNvbnZpbmllbnQgdG8gdGhlIHdvcmsuCgoKVGhhbmtzCgpUYWthc2hpIFNha2Ftb3Rv
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+T24gRGVjZW1iZXIgMjMsIDIwMTUgMDA6MTAsIE1hcmsgQnJvd24gd3JvdGU6DQoNCj4gT24gVHVl
+LCBEZWMgMjIsIDIwMTUgYXQgMDY6Mjc6NTNQTSArMDAwMCwgQWRhbSBUaG9tc29uIHdyb3RlOg0K
+PiA+IEluIGN1cnJlbnQgQUIgc2lsaWNvbiwgQklBU19FTiBmaWVsZCBpcyBlbmFibGVkIGJ5IGRl
+ZmF1bHQgaW4gdGhlDQo+ID4gUkVGRVJFTkNFUyByZWdpc3Rlciwgc28gdGhlIHJlZ21hcCBkZWZh
+dWx0IHZhbHVlIHNob3VsZCByZWZsZWN0DQo+ID4gdGhpcy4NCj4gDQo+IFRoaXMgaXMgdGhlIHNv
+cnQgb2YgdGhpbmcgd2hlcmUgYSByZWdpc3RlciBwYXRjaCB3b3VsZCBub3JtYWxseSBiZSB1c2Vk
+DQo+IC0gaWYgeW91IHB1dCBpbiBhIHJlZ2lzdGVyIHBhdGNoIGZvciB0aGUgb2xkZXIgc2lsaWNv
+biB0aGVuIHRoZSBkcml2ZXINCj4gY2FuIGNvcnJlY3QgZm9yIHRoZSByZWdpc3RlciBkZWZhdWx0
+IGF1dG9tYXRpY2FsbHkuDQoNClRoYW5rcy4gWWVzLCBhbSBhd2FyZSBvZiB0aGF0LiBXZXJlIHRo
+ZSBvbGRlciBzaWxpY29uIHN0aWxsIGluIHVzZSB0aGVuIEknZCBoYXZlDQp0YWtlbiB0aGF0IHJv
+dXRlLCBidXQgZGlkbid0IHNlZW0gbmVjZXNzYXJ5IGluIHRoaXMgaW5zdGFuY2UuDQo=
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
