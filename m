@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: add NULL test" to the asoc tree
-Date: Wed, 23 Dec 2015 00:08:55 +0000
-Message-ID: <E1aBWz9-0007Jq-Vq@debutante>
-References: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Applied "ASoC: imx-pcm-dma: add NULL test" to the asoc
+	tree
+Date: Wed, 23 Dec 2015 00:08:57 +0000
+Message-ID: <E1aBWzB-0007Kx-Pp@debutante>
+References: <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DFBD265DA1
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:03 +0100 (CET)
-In-Reply-To: <1450610153-7746-5-git-send-email-Julia.Lawall@lip6.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 87B6B265DA8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:04 +0100 (CET)
+In-Reply-To: <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: add NULL test
+   ASoC: imx-pcm-dma: add NULL test
 
 has been applied to the asoc tree at
 
@@ -52,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 3f317c9faabc546a503bc62e806fa2e8e93e76be Mon Sep 17 00:00:00 2001
+>From 10974ccf04b096fd79ad90fd50276b79c069f2cc Mon Sep 17 00:00:00 2001
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sun, 20 Dec 2015 12:15:53 +0100
-Subject: [PATCH] ASoC: Intel: add NULL test
+Date: Sun, 20 Dec 2015 12:15:50 +0100
+Subject: [PATCH] ASoC: imx-pcm-dma: add NULL test
 
 Add NULL test on call to devm_kzalloc.
 
@@ -65,32 +66,32 @@ The semantic match that finds this problem is as follows:
 // <smpl>
 @@
 expression x;
-identifier fld;
 @@
 
 * x = devm_kzalloc(...);
   ... when != x == NULL
-  x->fld
+  *x
 // </smpl>
 
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 ++
+ sound/soc/fsl/imx-pcm-dma.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 79547bec558b..4765ad474544 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -377,6 +377,8 @@ static int sst_byt_pcm_probe(struct snd_soc_platform *platform)
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index 1fc01ed3279d..f3d3d1ffa84e 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -62,6 +62,8 @@ int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
  
- 	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data),
- 				 GFP_KERNEL);
-+	if (!priv_data)
+ 	config = devm_kzalloc(&pdev->dev,
+ 			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
++	if (!config)
 +		return -ENOMEM;
- 	priv_data->byt = plat_data->dsp;
- 	snd_soc_platform_set_drvdata(platform, priv_data);
- 
+ 	*config = imx_dmaengine_pcm_config;
+ 	if (size)
+ 		config->prealloc_buffer_size = size;
 -- 
 2.6.2
