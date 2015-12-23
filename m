@@ -1,97 +1,48 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-pcm-dma: add NULL test" to the asoc
-	tree
-Date: Wed, 23 Dec 2015 00:08:57 +0000
-Message-ID: <E1aBWzB-0007Kx-Pp@debutante>
-References: <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH 3/6] ASoC: da7219: Update REFERENCES reg default, in-line
+ with HW
+Date: Wed, 23 Dec 2015 00:10:19 +0000
+Message-ID: <20151223001019.GG16023@sirena.org.uk>
+References: <cover.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+ <5233faeef4073f33e2826866eae35e8c9502c35f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 87B6B265DA8
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:04 +0100 (CET)
-In-Reply-To: <1450610153-7746-2-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="doKZ0ri6bHmN2Q5y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5233faeef4073f33e2826866eae35e8c9502c35f.1450807642.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: imx-pcm-dma: add NULL test
+--doKZ0ri6bHmN2Q5y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Tue, Dec 22, 2015 at 06:27:53PM +0000, Adam Thomson wrote:
+> In current AB silicon, BIAS_EN field is enabled by default in the
+> REFERENCES register, so the regmap default value should reflect
+> this.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+This is the sort of thing where a register patch would normally be used
+- if you put in a register patch for the older silicon then the driver
+can correct for the register default automatically.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--doKZ0ri6bHmN2Q5y
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEcBAEBCAAGBQJWeeZqAAoJECTWi3JdVIfQvXUH/0BCBYVlvn9/FvHt83e3hI+r
+15hGFZUcdjrDD7FFia5yDUDhE1YEQtlvOffrlPuOYH3WYwdVBbaG0uykvwPbifOb
+0gBz4M1snfO9S7ov+3c1bAWbMSn7v2rUcywgyG7/MpSgV0GIDeqImrMauQ8sJvHX
+XFIiP9MhMFIK1fnrgZwo11gWmQmuFjuUanXtnwv8g6AmkzVITFRATnuFHpG/oqji
+CIq3xKhnkbNp2JlD57HW7TK+j/wBdmpqDC+LUxeUa2wseEjj2EGh0fD2K94M+b4R
+ZyMHNmcf4mO4bg7nDBAAkFCQ739c7rWMfGIXAIKDAQy5WlW9K1DvMyvE/c2n9ZQ=
+=FpM+
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 10974ccf04b096fd79ad90fd50276b79c069f2cc Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sun, 20 Dec 2015 12:15:50 +0100
-Subject: [PATCH] ASoC: imx-pcm-dma: add NULL test
-
-Add NULL test on call to devm_kzalloc.
-
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression x;
-@@
-
-* x = devm_kzalloc(...);
-  ... when != x == NULL
-  *x
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/imx-pcm-dma.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index 1fc01ed3279d..f3d3d1ffa84e 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -62,6 +62,8 @@ int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
- 
- 	config = devm_kzalloc(&pdev->dev,
- 			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
-+	if (!config)
-+		return -ENOMEM;
- 	*config = imx_dmaengine_pcm_config;
- 	if (size)
- 		config->prealloc_buffer_size = size;
--- 
-2.6.2
+--doKZ0ri6bHmN2Q5y--
