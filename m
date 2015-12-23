@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8903: Be sure to clamp return value"
-	to the asoc tree
-Date: Wed, 23 Dec 2015 00:23:18 +0000
-Message-ID: <E1aBXD4-0000VP-5n@debutante>
-References: <1450795849-28642-1-git-send-email-linus.walleij@linaro.org>
+Subject: Applied "ASoC: ac97: Be sure to clamp return value" to
+	the asoc tree
+Date: Wed, 23 Dec 2015 00:23:17 +0000
+Message-ID: <E1aBXD3-0000Uw-8u@debutante>
+References: <1450795899-28693-1-git-send-email-linus.walleij@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A63D266094
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:23:25 +0100 (CET)
-In-Reply-To: <1450795849-28642-1-git-send-email-linus.walleij@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A84A266085
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:23:26 +0100 (CET)
+In-Reply-To: <1450795899-28693-1-git-send-email-linus.walleij@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8903: Be sure to clamp return value
+   ASoC: ac97: Be sure to clamp return value
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From b70381c35f65bbe1a2339e2833a574f0473162fa Mon Sep 17 00:00:00 2001
+>From 34015f5e56c71bbdcf7189430ffb63ea67656a35 Mon Sep 17 00:00:00 2001
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 22 Dec 2015 15:50:49 +0100
-Subject: [PATCH] ASoC: wm8903: Be sure to clamp return value
+Date: Tue, 22 Dec 2015 15:51:39 +0100
+Subject: [PATCH] ASoC: ac97: Be sure to clamp return value
 
 As we want gpio_chip .get() calls to be able to return negative
 error codes and propagate to drivers, we need to go over all
@@ -66,21 +66,21 @@ We do this by using the ret = !!(val) design pattern.
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8903.c | 2 +-
+ sound/soc/soc-ac97.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index e4cc41e6c23e..2ed6419c181e 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -1804,7 +1804,7 @@ static int wm8903_gpio_get(struct gpio_chip *chip, unsigned offset)
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index ae563e379a72..733f5128eeff 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -92,7 +92,7 @@ static int snd_soc_ac97_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 	dev_dbg(codec->dev, "get gpio %d : %d\n", offset,
+ 		ret < 0 ? ret : ret & (1 << offset));
  
- 	regmap_read(wm8903->regmap, WM8903_GPIO_CONTROL_1 + offset, &reg);
- 
--	return (reg & WM8903_GP1_LVL_MASK) >> WM8903_GP1_LVL_SHIFT;
-+	return !!((reg & WM8903_GP1_LVL_MASK) >> WM8903_GP1_LVL_SHIFT);
+-	return ret < 0 ? ret : ret & (1 << offset);
++	return ret < 0 ? ret : !!(ret & (1 << offset));
  }
  
- static int wm8903_gpio_direction_out(struct gpio_chip *chip,
+ static void snd_soc_ac97_gpio_set(struct gpio_chip *chip, unsigned offset,
 -- 
 2.6.2
