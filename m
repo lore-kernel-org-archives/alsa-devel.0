@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7218: Enable mic level detection
-	reporting to user-space" to the asoc tree
-Date: Wed, 23 Dec 2015 00:09:00 +0000
-Message-ID: <E1aBWzE-0007MM-CL@debutante>
+Subject: Applied "ASoC: rt5616: add an of_match table" to the
+	asoc tree
+Date: Wed, 23 Dec 2015 00:09:02 +0000
+Message-ID: <E1aBWzG-0007Nn-WA@debutante>
+References: <1450703894-32623-1-git-send-email-wxt@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EF609265DDF
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:06 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id C8F00265E24
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2015 01:09:07 +0100 (CET)
+In-Reply-To: <1450703894-32623-1-git-send-email-wxt@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+To: Caesar Wang <wxt@rock-chips.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7218: Enable mic level detection reporting to user-space
+   ASoC: rt5616: add an of_match table
 
 has been applied to the asoc tree at
 
@@ -52,87 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From e05c25a1af29d65260ed1458f2cc4a959030ebd2 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Thu, 3 Dec 2015 17:10:07 +0000
-Subject: [PATCH] ASoC: da7218: Enable mic level detection reporting to
- user-space
+>From e17ff2de826f8c2153cf23c8bbd9097219a84fa9 Mon Sep 17 00:00:00 2001
+From: Caesar Wang <wxt@rock-chips.com>
+Date: Tue, 22 Dec 2015 13:45:02 +0800
+Subject: [PATCH] ASoC: rt5616: add an of_match table
 
-This patch adds support to the codec driver to handle mic level
-detect related IRQs, and report these to user-space using a uevent
-variable.
+Add a device tree match table. This serves to make the driver's support
+of device tree more explicit.
 
-The uevent variable string "EVENT=MIC_LEVEL_DETECT" is sent to
-user-space, if the mic level detect feature is enabled, and the
-audio captured at the chosen mic(s) is above a certain threshold.
-User-space can then handle the event accordingly (e.g. process
-audio capture stream).
-
-This method was chosen over ALSA control notification for a couple
-of reasons:
-
- 1) There's no requirement here for a control to read state from.
-    The event is the only thing that's required and of interest.
- 2) tinyalsa support for control notifications does not exist so on
-    platforms using this over alsa-lib there is a need to add code
-    to support this event handling.
-
-Another possible option would be to use the standard Jack reporting
-framework but this really does not fit for this kind of event.
-
-Finally, use of the input device framework is not being encouraged,
-due to difficulties in enabling apps to access input devices, so
-this has also been avoided.
-
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7218.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt5616.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index eacde128c4d6..72686517ff54 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -2202,6 +2202,16 @@ int da7218_hpldet(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- }
- EXPORT_SYMBOL_GPL(da7218_hpldet);
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index 0e9414abab65..7bb56dddff8e 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -1287,6 +1287,14 @@ static const struct i2c_device_id rt5616_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5616_i2c_id);
  
-+static void da7218_micldet_irq(struct snd_soc_codec *codec)
-+{
-+	char *envp[] = {
-+		"EVENT=MIC_LEVEL_DETECT",
-+		NULL,
-+	};
++#if defined(CONFIG_OF)
++static const struct of_device_id rt5616_of_match[] = {
++	{ .compatible = "realtek,rt5616", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rt5616_of_match);
++#endif
 +
-+	kobject_uevent_env(&codec->dev->kobj, KOBJ_CHANGE, envp);
-+}
-+
- static void da7218_hpldet_irq(struct snd_soc_codec *codec)
+ static int rt5616_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
  {
- 	struct da7218_priv *da7218 = snd_soc_codec_get_drvdata(codec);
-@@ -2232,6 +2242,10 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
- 	if (!status)
- 		return IRQ_NONE;
- 
-+	/* Mic level detect */
-+	if (status & DA7218_LVL_DET_EVENT_MASK)
-+		da7218_micldet_irq(codec);
-+
- 	/* HP detect */
- 	if (status & DA7218_HPLDET_JACK_EVENT_MASK)
- 		da7218_hpldet_irq(codec);
-@@ -2936,11 +2950,6 @@ static int da7218_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	if (da7218->irq) {
--		/* Mask off mic level events, currently not handled */
--		snd_soc_update_bits(codec, DA7218_EVENT_MASK,
--				    DA7218_LVL_DET_EVENT_MSK_MASK,
--				    DA7218_LVL_DET_EVENT_MSK_MASK);
--
- 		ret = devm_request_threaded_irq(codec->dev, da7218->irq, NULL,
- 						da7218_irq_thread,
- 						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+@@ -1359,6 +1367,7 @@ static void rt5616_i2c_shutdown(struct i2c_client *client)
+ static struct i2c_driver rt5616_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5616",
++		.of_match_table = of_match_ptr(rt5616_of_match),
+ 	},
+ 	.probe = rt5616_i2c_probe,
+ 	.remove = rt5616_i2c_remove,
 -- 
 2.6.2
