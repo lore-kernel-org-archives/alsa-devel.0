@@ -1,116 +1,72 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 2/4] ALSA: dice: postpone card registration
-Date: Thu, 24 Dec 2015 20:10:46 +0100
-Message-ID: <20151224201046.27af18d6@kant>
-References: <1450911310-15507-1-git-send-email-o-takashi@sakamocchi.jp>
- <1450911310-15507-3-git-send-email-o-takashi@sakamocchi.jp>
- <20151224161234.39828fc7@kant>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id D96DC26066D
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 20:10:48 +0100 (CET)
-In-Reply-To: <20151224161234.39828fc7@kant>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: arizona: Fix bclk for sample rates that are multiple of 4kHz" to the asoc tree
+Date: Thu, 24 Dec 2015 19:18:09 +0000
+Message-ID: <E1aCBOr-0008Q5-2R@finisterre>
+References: <1450880285-23865-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1450880285-23865-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: stable-owner@vger.kernel.org
+To: Nikesh Oswal <Nikesh.Oswal@cirrus.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 24 Stefan Richter wrote:
-> On Dec 24 Takashi Sakamoto wrote:
-> [...]
-> > Between bootstrap, firmware loading and post configuration, some bus resets
-> > are observed.
-> > 
-> > This commit offloads most processing of probe function into workqueue and
-> > schedules the workqueue after successive bus resets. This has an effect to
-> > get correct hardware information and avoid involvement to bus reset storm.
-> > 
-> > For code simplicity, this change effects all of Dice-based models, i.e.
-> > Dice II, Dice Jr., Dice Mini and Dice III. Due to the same reason, sound
-> > card instance is kept till card free function even if some errors are
-> > detected in the workqueue.  
-> [...]
-> > --- a/sound/firewire/dice/dice.c
-> > +++ b/sound/firewire/dice/dice.c
-> > @@ -18,6 +18,8 @@ MODULE_LICENSE("GPL v2");
-> >  #define WEISS_CATEGORY_ID	0x00
-> >  #define LOUD_CATEGORY_ID	0x10
-> >  
-> > +#define PROBE_DELAY_MS		(2 * MSEC_PER_SEC)
-> > +
-> >  static int check_dice_category(struct fw_unit *unit)
-> >  {
-> >  	struct fw_device *device = fw_parent_device(unit);
-> > @@ -185,6 +187,9 @@ static void dice_card_free(struct snd_card *card)
-> >  {
-> >  	struct snd_dice *dice = card->private_data;
-> >  
-> > +	/* The workqueue for registration uses the memory block. */
-> > +	cancel_work_sync(&dice->dwork.work);  
-> 
-> According to the kerneldoc comment at cancel_work_sync, this should
-> actually be cancel_delayed_work_sync(&dice->dwork);.
-> 
-> > +
-> >  	snd_dice_stream_destroy_duplex(dice);
-> >  	snd_dice_transaction_destroy(dice);
-> >  	fw_unit_put(dice->unit);
-> > @@ -192,6 +197,66 @@ static void dice_card_free(struct snd_card *card)
-> >  	mutex_destroy(&dice->mutex);
-> >  }
+The patch
 
-Another comment to dice_card_free() which is aside from this patch:
+   ASoC: arizona: Fix bclk for sample rates that are multiple of 4kHz
 
-You are calling mutex_destroy(&dice->mutex) here.  But if I am right in my
-understanding that dice_card_free() is called from dice_remove(), then
-this is wrong because dice_card_free() still holding the mutex.
+has been applied to the asoc tree at
 
-I am not sure what the proper fix is.  Perhaps just never perform
-mutex_destroy().
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> > +static void do_registration(struct work_struct *work)
-> > +{
-> > +	struct snd_dice *dice = container_of(work, struct snd_dice, dwork.work);
-> > +	int err;
-> > +
-> > +	mutex_lock(&dice->mutex);  
-> 
-> So the worker needs to obtain &dice->mutex.  But...
-> 
-> [...]
-> > @@ -263,14 +307,25 @@ static void dice_remove(struct fw_unit *unit)
-> >  {
-> >  	struct snd_dice *dice = dev_get_drvdata(&unit->device);
-> >  
-> > +	/* For a race condition of struct snd_card.shutdown. */
-> > +	mutex_lock(&dice->mutex);
-> > +
-> >  	/* No need to wait for releasing card object in this context. */
-> >  	snd_card_free_when_closed(dice->card);
-> > +
-> > +	mutex_unlock(&dice->mutex);
-> >  }  
-> 
-> ...if I read snd_card_free_when_closed() and its surrounding code
-> correctly, then dice_card_free() is called from within this, which can
-> cause a deadlock.  Right?
-> 
-> If so, then it seems to me that cancel_delayed_work_sync(&dice->dwork)
-> should be moved out of dice_card_free() and be put at the beginning of
-> dice_remove().
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e73694d871867cae8471d2350ce89acb38bc2b63 Mon Sep 17 00:00:00 2001
+From: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
+Date: Wed, 23 Dec 2015 14:18:05 +0000
+Subject: [PATCH] ASoC: arizona: Fix bclk for sample rates that are multiple of
+ 4kHz
+
+For a sample rate of 12kHz the bclk was taken from the 44.1kHz table as
+we test for a multiple of 8kHz. This patch fixes this issue by testing
+for multiples of 4kHz instead.
+
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 9929efc..5070a97 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1543,7 +1543,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
+ 	bool reconfig;
+ 	unsigned int aif_tx_state, aif_rx_state;
+ 
+-	if (params_rate(params) % 8000)
++	if (params_rate(params) % 4000)
+ 		rates = &arizona_44k1_bclk_rates[0];
+ 	else
+ 		rates = &arizona_48k_bclk_rates[0];
 -- 
-Stefan Richter
--=====-===== ==-- ==---
-http://arcgraph.de/sr/
+2.6.4
