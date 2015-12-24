@@ -1,114 +1,136 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH v3] ASoC: fsl_asrc: sound is wrong after
-	suspend/resume
-Date: Thu, 24 Dec 2015 11:42:11 +0800
-Message-ID: <5b07db93fb5a848216a9035c827d99185250d89d.1450928293.git.zidan.wang@freescale.com>
-References: <fd32d943839609d46ca4523e316706f563bf21f0.1450928100.git.zidan.wang@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0106.outbound.protection.outlook.com [65.55.169.106])
- by alsa0.perex.cz (Postfix) with ESMTP id 7136A266578
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 04:39:23 +0100 (CET)
-In-Reply-To: <fd32d943839609d46ca4523e316706f563bf21f0.1450928100.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda - Add keycode map for alc input device
+Date: Thu, 24 Dec 2015 11:46:38 +0800
+Message-ID: <1450928798-31191-2-git-send-email-hui.wang@canonical.com>
+References: <1450928798-31191-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1450928798-31191-1-git-send-email-hui.wang@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The register ASRCFG is volatile, but some bits need to be recovered
-after suspend/resume.
+Then users can remap the keycode from userspace. If without the remap,
+the input device will pass KEY_MICMUTE to userspace, but in X11 layer,
+it uses KEY_F20 rather than KEY_MICMUTE for XF86AudioMicMute. After
+adding the keycode map, users can remap the keycode to any value users
+want.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+And there are two places to register the input device, to make the
+code simple and clean, we move the two same code sections into a
+function.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
-v1->v2:
-1. fix indentation issue.
-2. add a macro for the magic number.
-v2->v3:
-1. a comment to describe variable regcache_cfg
+ sound/pci/hda/patch_realtek.c | 68 +++++++++++++++++++++++++------------------
+ 1 file changed, 40 insertions(+), 28 deletions(-)
 
- sound/soc/fsl/fsl_asrc.c | 7 +++++++
- sound/soc/fsl/fsl_asrc.h | 7 +++++++
- 2 files changed, 14 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index d7d81cf..ed29a1b 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -992,6 +992,9 @@ static int fsl_asrc_suspend(struct device *dev)
- {
- 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
- 
-+	regmap_read(asrc_priv->regmap, REG_ASRCFG,
-+		    &asrc_priv->regcache_cfg);
-+
- 	regcache_cache_only(asrc_priv->regmap, true);
- 	regcache_mark_dirty(asrc_priv->regmap);
- 
-@@ -1012,6 +1015,10 @@ static int fsl_asrc_resume(struct device *dev)
- 	regcache_cache_only(asrc_priv->regmap, false);
- 	regcache_sync(asrc_priv->regmap);
- 
-+	regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
-+			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
-+			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
-+
- 	/* Restart enabled pairs */
- 	regmap_update_bits(asrc_priv->regmap, REG_ASRCTR,
- 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 68802cd..0f163ab 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -132,10 +132,13 @@
- #define ASRCFG_INIRQi			(1 << ASRCFG_INIRQi_SHIFT(i))
- #define ASRCFG_NDPRi_SHIFT(i)		(18 + i)
- #define ASRCFG_NDPRi_MASK(i)		(1 << ASRCFG_NDPRi_SHIFT(i))
-+#define ASRCFG_NDPRi_ALL_SHIFT		18
-+#define ASRCFG_NDPRi_ALL_MASK		(7 << ASRCFG_NDPRi_ALL_SHIFT)
- #define ASRCFG_NDPRi			(1 << ASRCFG_NDPRi_SHIFT(i))
- #define ASRCFG_POSTMODi_SHIFT(i)	(8 + (i << 2))
- #define ASRCFG_POSTMODi_WIDTH		2
- #define ASRCFG_POSTMODi_MASK(i)		(((1 << ASRCFG_POSTMODi_WIDTH) - 1) << ASRCFG_POSTMODi_SHIFT(i))
-+#define ASRCFG_POSTMODi_ALL_MASK	(ASRCFG_POSTMODi_MASK(0) | ASRCFG_POSTMODi_MASK(1) | ASRCFG_POSTMODi_MASK(2))
- #define ASRCFG_POSTMOD(i, v)		((v) << ASRCFG_POSTMODi_SHIFT(i))
- #define ASRCFG_POSTMODi_UP(i)		(0 << ASRCFG_POSTMODi_SHIFT(i))
- #define ASRCFG_POSTMODi_DCON(i)		(1 << ASRCFG_POSTMODi_SHIFT(i))
-@@ -143,6 +146,7 @@
- #define ASRCFG_PREMODi_SHIFT(i)		(6 + (i << 2))
- #define ASRCFG_PREMODi_WIDTH		2
- #define ASRCFG_PREMODi_MASK(i)		(((1 << ASRCFG_PREMODi_WIDTH) - 1) << ASRCFG_PREMODi_SHIFT(i))
-+#define ASRCFG_PREMODi_ALL_MASK		(ASRCFG_PREMODi_MASK(0) | ASRCFG_PREMODi_MASK(1) | ASRCFG_PREMODi_MASK(2))
- #define ASRCFG_PREMOD(i, v)		((v) << ASRCFG_PREMODi_SHIFT(i))
- #define ASRCFG_PREMODi_UP(i)		(0 << ASRCFG_PREMODi_SHIFT(i))
- #define ASRCFG_PREMODi_DCON(i)		(1 << ASRCFG_PREMODi_SHIFT(i))
-@@ -434,6 +438,7 @@ struct fsl_asrc_pair {
-  * @channel_avail: non-occupied channel numbers
-  * @asrc_rate: default sample rate for ASoC Back-Ends
-  * @asrc_width: default sample width for ASoC Back-Ends
-+ * @regcache_cfg: store register value of REG_ASRCFG
-  */
- struct fsl_asrc {
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -453,6 +458,8 @@ struct fsl_asrc {
- 
- 	int asrc_rate;
- 	int asrc_width;
-+
-+	u32 regcache_cfg;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8adff4f..97f22ad 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -67,6 +67,14 @@ enum {
+ 	ALC_HEADSET_TYPE_OMTP,
  };
  
- extern struct snd_soc_platform_driver fsl_asrc_platform;
++enum {
++	ALC_KEY_MICMUTE_INDEX,
++};
++
++static u8 alc_mute_keycode_map[] = {
++	KEY_MICMUTE,	/* index=0, microphone mute key code */
++};
++
+ struct alc_customize_define {
+ 	unsigned int  sku_cfg;
+ 	unsigned char port_connectivity;
+@@ -3462,12 +3470,40 @@ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 
+ 	/* GPIO2 just toggles on a keypress/keyrelease cycle. Therefore
+ 	   send both key on and key off event for every interrupt. */
+-	input_report_key(spec->kb_dev, KEY_MICMUTE, 1);
++	input_report_key(spec->kb_dev, alc_mute_keycode_map[ALC_KEY_MICMUTE_INDEX], 1);
+ 	input_sync(spec->kb_dev);
+-	input_report_key(spec->kb_dev, KEY_MICMUTE, 0);
++	input_report_key(spec->kb_dev, alc_mute_keycode_map[ALC_KEY_MICMUTE_INDEX], 0);
+ 	input_sync(spec->kb_dev);
+ }
+ 
++static int alc_register_micmute_input_device(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
++
++	spec->kb_dev = input_allocate_device();
++	if (!spec->kb_dev) {
++		codec_err(codec, "Out of memory (input_allocate_device)\n");
++		return -ENOMEM;
++	}
++	spec->kb_dev->name = "Microphone Mute Button";
++	spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
++	spec->kb_dev->keycodesize = sizeof(alc_mute_keycode_map[0]);
++	spec->kb_dev->keycodemax = ARRAY_SIZE(alc_mute_keycode_map);
++	spec->kb_dev->keycode = alc_mute_keycode_map;
++	for (i = 0; i < ARRAY_SIZE(alc_mute_keycode_map); i++)
++		set_bit(alc_mute_keycode_map[i], spec->kb_dev->keybit);
++
++	if (input_register_device(spec->kb_dev)) {
++		codec_err(codec, "input_register_device failed\n");
++		input_free_device(spec->kb_dev);
++		spec->kb_dev = NULL;
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
+ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 					     const struct hda_fixup *fix, int action)
+ {
+@@ -3485,20 +3521,8 @@ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+-		spec->kb_dev = input_allocate_device();
+-		if (!spec->kb_dev) {
+-			codec_err(codec, "Out of memory (input_allocate_device)\n");
++		if (alc_register_micmute_input_device(codec) != 0)
+ 			return;
+-		}
+-		spec->kb_dev->name = "Microphone Mute Button";
+-		spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
+-		spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
+-		if (input_register_device(spec->kb_dev)) {
+-			codec_err(codec, "input_register_device failed\n");
+-			input_free_device(spec->kb_dev);
+-			spec->kb_dev = NULL;
+-			return;
+-		}
+ 
+ 		snd_hda_add_verbs(codec, gpio_init);
+ 		snd_hda_codec_write_cache(codec, codec->core.afg, 0,
+@@ -3542,20 +3566,8 @@ static void alc233_fixup_lenovo_line2_mic_hotkey(struct hda_codec *codec,
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+-		spec->kb_dev = input_allocate_device();
+-		if (!spec->kb_dev) {
+-			codec_err(codec, "Out of memory (input_allocate_device)\n");
++		if (alc_register_micmute_input_device(codec) != 0)
+ 			return;
+-		}
+-		spec->kb_dev->name = "Microphone Mute Button";
+-		spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
+-		spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
+-		if (input_register_device(spec->kb_dev)) {
+-			codec_err(codec, "input_register_device failed\n");
+-			input_free_device(spec->kb_dev);
+-			spec->kb_dev = NULL;
+-			return;
+-		}
+ 
+ 		snd_hda_add_verbs(codec, gpio_init);
+ 		snd_hda_jack_detect_enable_callback(codec, 0x1b,
 -- 
 1.9.1
