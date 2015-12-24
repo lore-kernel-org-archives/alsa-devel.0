@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040,
-	fsl: use to_platform_device" to the asoc tree
-Date: Thu, 24 Dec 2015 19:43:54 +0000
-Message-ID: <E1aCBnm-0000nX-3e@finisterre>
-References: <e0497ed266c5f2013268cca6c02fd2b161339c07.1450875641.git.geliangtang@163.com>
+Subject: Applied "ASoC: wm8960: add kcontrol to select ADC data
+	output" to the asoc tree
+Date: Thu, 24 Dec 2015 19:43:55 +0000
+Message-ID: <E1aCBnn-0000nz-Fn@finisterre>
+References: <72b882412e24df59de1a6fe63568ac5ee5d998ca.1450940174.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D2E2260686
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 20:44:07 +0100 (CET)
-In-Reply-To: <e0497ed266c5f2013268cca6c02fd2b161339c07.1450875641.git.geliangtang@163.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E54092606B8
+ for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 20:44:08 +0100 (CET)
+In-Reply-To: <72b882412e24df59de1a6fe63568ac5ee5d998ca.1450940174.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geliang Tang <geliangtang@163.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl6040, fsl: use to_platform_device
+   ASoC: wm8960: add kcontrol to select ADC data output
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From bb18f0976ef8db41f68b66623ce3b8a745adb0b8 Mon Sep 17 00:00:00 2001
-From: Geliang Tang <geliangtang@163.com>
-Date: Wed, 23 Dec 2015 21:03:39 +0800
-Subject: [PATCH] ASoC: twl6040, fsl: use to_platform_device
+>From 4a5893cf67062be4f70196c3fe45cfda950ea308 Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Thu, 24 Dec 2015 14:58:03 +0800
+Subject: [PATCH] ASoC: wm8960: add kcontrol to select ADC data output
 
-Use to_platform_device() instead of open-coding it.
+add kcontrol to select ADC data output.
 
-Signed-off-by: Geliang Tang <geliangtang@163.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c   | 3 +--
- sound/soc/fsl/mpc8610_hpcd.c | 3 +--
- sound/soc/fsl/p1022_ds.c     | 3 +--
- sound/soc/fsl/p1022_rdk.c    | 3 +--
- 4 files changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8960.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 4cad892..bc3de2e 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1097,8 +1097,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- {
- 	struct twl6040_data *priv;
- 	struct twl6040 *twl6040 = dev_get_drvdata(codec->dev->parent);
--	struct platform_device *pdev = container_of(codec->dev,
--						   struct platform_device, dev);
-+	struct platform_device *pdev = to_platform_device(codec->dev);
- 	int ret = 0;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 0563753..328bde0 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -147,6 +147,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
+ static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
+ static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
+ static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
++static const char *wm8960_adc_data_output_sel[] = {
++	"Left Data = Left ADC;  Right Data = Right ADC",
++	"Left Data = Left ADC;  Right Data = Left ADC",
++	"Left Data = Right ADC; Right Data = Right ADC",
++	"Left Data = Right ADC; Right Data = Left ADC",
++};
  
- 	priv = devm_kzalloc(codec->dev, sizeof(*priv), GFP_KERNEL);
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 6f236f1..ddf49f3 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -189,8 +189,7 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
- {
- 	struct device *dev = pdev->dev.parent;
- 	/* ssi_pdev is the platform device for the SSI node that probed us */
--	struct platform_device *ssi_pdev =
--		container_of(dev, struct platform_device, dev);
-+	struct platform_device *ssi_pdev = to_platform_device(dev);
- 	struct device_node *np = ssi_pdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
- 	struct mpc8610_hpcd_data *machine_data;
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index 747aab0..a1f780e 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -199,8 +199,7 @@ static int p1022_ds_probe(struct platform_device *pdev)
- {
- 	struct device *dev = pdev->dev.parent;
- 	/* ssi_pdev is the platform device for the SSI node that probed us */
--	struct platform_device *ssi_pdev =
--		container_of(dev, struct platform_device, dev);
-+	struct platform_device *ssi_pdev = to_platform_device(dev);
- 	struct device_node *np = ssi_pdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
- 	struct machine_data *mdata;
-diff --git a/sound/soc/fsl/p1022_rdk.c b/sound/soc/fsl/p1022_rdk.c
-index 1dd49e5..d4d88a8 100644
---- a/sound/soc/fsl/p1022_rdk.c
-+++ b/sound/soc/fsl/p1022_rdk.c
-@@ -203,8 +203,7 @@ static int p1022_rdk_probe(struct platform_device *pdev)
- {
- 	struct device *dev = pdev->dev.parent;
- 	/* ssi_pdev is the platform device for the SSI node that probed us */
--	struct platform_device *ssi_pdev =
--		container_of(dev, struct platform_device, dev);
-+	struct platform_device *ssi_pdev = to_platform_device(dev);
- 	struct device_node *np = ssi_pdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
- 	struct machine_data *mdata;
+ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
+@@ -155,6 +161,7 @@ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_3D, 5, 2, wm8960_3d_lower_cutoff),
+ 	SOC_ENUM_SINGLE(WM8960_ALC1, 7, 4, wm8960_alcfunc),
+ 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
++	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
+ };
+ 
+ static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
+@@ -295,6 +302,8 @@ SOC_SINGLE_TLV("Right Output Mixer Boost Bypass Volume",
+ 	       WM8960_BYPASS2, 4, 7, 1, bypass_tlv),
+ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+ 	       WM8960_ROUTMIX, 4, 7, 1, bypass_tlv),
++
++SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
+ };
+ 
+ static const struct snd_kcontrol_new wm8960_lin_boost[] = {
 -- 
 2.6.4
