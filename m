@@ -1,54 +1,74 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH v2] ASoC: fsl_asrc: old version asrc only
-	support even numbered channels
-Date: Thu, 24 Dec 2015 13:37:26 +0800
-Message-ID: <6344b98f891fff3011257b21e1d8e39d7a123831.1450935357.git.zidan.wang@freescale.com>
+From: Andrzej Hajda <a.hajda@samsung.com>
+Subject: Re: [PATCH] ASoC: rsnd: fix usrcnt decrementing bug
+Date: Thu, 24 Dec 2015 06:56:14 +0100
+Message-ID: <567B88FE.7010002@samsung.com>
+References: <1450867041-729-1-git-send-email-a.hajda@samsung.com>
+ <1450867041-729-4-git-send-email-a.hajda@samsung.com>
+ <87y4ckg1fp.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0145.outbound.protection.outlook.com [65.55.169.145])
- by alsa0.perex.cz (Postfix) with ESMTP id F2340266578
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 06:34:33 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <87y4ckg1fp.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The latest asrc's channel bits is 4 bit, the old asrc's channel
-bits is 3. For the old version asrc, channel should be a even number.
+On 12/24/2015 01:04 AM, Kuninori Morimoto wrote:
+> Hi Andrzej
+>
+>> Field usrcnt is unsigned so it cannot be lesser than zero.
+>>
+>> The problem has been detected using proposed semantic patch
+>> scripts/coccinelle/tests/unsigned_lesser_than_zero.cocci [1].
+>>
+>> [1]: http://permalink.gmane.org/gmane.linux.kernel/2038576
+>>
+>> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+>> ---
+> Thank you for your patch. good catch !
+> I noticed current error case is not good for ssi.c
+> Can you agree below ?
+Yes, of course.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
-v1->v2:
-1. add an extra else if for the new condition.
-
- sound/soc/fsl/fsl_asrc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index be78dc9..16ff156 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -116,6 +116,10 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
- 	} else if (asrc_priv->channel_avail < channels) {
- 		dev_err(dev, "can't afford required channels: %d\n", channels);
- 		ret = -EINVAL;
-+	} else if (asrc_priv->channel_bits < 4 && channels % 2 != 0) {
-+		dev_err(dev, "old version asrc can't support an odd \
-+			      channel number\n");
-+		ret = -EINVAL;
- 	} else {
- 		asrc_priv->channel_avail -= channels;
- 		asrc_priv->pair[index] = pair;
--- 
-1.9.1
+Regards
+Andrzej
+>
+> ---------
+> diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+> index 7db05fd..e519e30 100644
+> --- a/sound/soc/sh/rcar/ssi.c
+> +++ b/sound/soc/sh/rcar/ssi.c
+> @@ -403,6 +403,12 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+>  	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+>  	struct device *dev = rsnd_priv_to_dev(priv);
+>  
+> +	if (!ssi->usrcnt) {
+> +		dev_err(dev, "%s[%d] usrcnt error\n",
+> +			rsnd_mod_name(mod), rsnd_mod_id(mod));
+> +		return -EIO;
+> +	}
+> +
+>  	if (rsnd_ssi_is_parent(mod, io))
+>  		goto rsnd_ssi_quit_end;
+>  
+> @@ -422,10 +428,6 @@ rsnd_ssi_quit_end:
+>  
+>  	ssi->usrcnt--;
+>  
+> -	if (ssi->usrcnt < 0)
+> -		dev_err(dev, "%s[%d] usrcnt error\n",
+> -			rsnd_mod_name(mod), rsnd_mod_id(mod));
+> -
+>  	return 0;
+>  }
+>  
+> ---------
+>
+>
+> Best regards
+> ---
+> Kuninori Morimoto
+>
+>
