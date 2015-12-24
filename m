@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Fix bclk for sample rates that are multiple of 4kHz" to the asoc tree
-Date: Thu, 24 Dec 2015 19:18:09 +0000
-Message-ID: <E1aCBOr-0008Q5-2R@finisterre>
-References: <1450880285-23865-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1450880285-23865-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: stable-owner@vger.kernel.org
-To: Nikesh Oswal <Nikesh.Oswal@cirrus.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: da7219: Add regmap patch to support old
+	silicon" to the asoc tree
+Date: Thu, 24 Dec 2015 19:18:07 +0000
+Message-ID: <E1aCBOp-0008Pc-S7@finisterre>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1289E260686
+ for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 20:18:26 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Fix bclk for sample rates that are multiple of 4kHz
+   ASoC: da7219: Add regmap patch to support old silicon
 
 has been applied to the asoc tree at
 
@@ -37,36 +52,73 @@ to this mail.
 Thanks,
 Mark
 
->From e73694d871867cae8471d2350ce89acb38bc2b63 Mon Sep 17 00:00:00 2001
-From: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
-Date: Wed, 23 Dec 2015 14:18:05 +0000
-Subject: [PATCH] ASoC: arizona: Fix bclk for sample rates that are multiple of
- 4kHz
+>From abd7c894fc41a9a674354e10ed6c55413e1db077 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Wed, 23 Dec 2015 13:50:04 +0000
+Subject: [PATCH] ASoC: da7219: Add regmap patch to support old silicon
 
-For a sample rate of 12kHz the bclk was taken from the 44.1kHz table as
-we test for a multiple of 8kHz. This patch fixes this issue by testing
-for multiples of 4kHz instead.
+Initial silicon did not have master bias enabled by default, unlike
+later HW, so use regmap patch to align with newer defaults.
 
-Signed-off-by: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/arizona.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 9929efc..5070a97 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1543,7 +1543,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 	bool reconfig;
- 	unsigned int aif_tx_state, aif_rx_state;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index c6d3b32..9c7e8ec 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1592,9 +1592,14 @@ static void da7219_handle_pdata(struct snd_soc_codec *codec)
+ 	}
+ }
  
--	if (params_rate(params) % 8000)
-+	if (params_rate(params) % 4000)
- 		rates = &arizona_44k1_bclk_rates[0];
- 	else
- 		rates = &arizona_48k_bclk_rates[0];
++static struct reg_sequence da7219_rev_aa_patch[] = {
++	{ DA7219_REFERENCES, 0x08 },
++};
++
+ static int da7219_probe(struct snd_soc_codec *codec)
+ {
+ 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
++	unsigned int rev;
+ 	int ret;
+ 
+ 	mutex_init(&da7219->lock);
+@@ -1604,6 +1609,26 @@ static int da7219_probe(struct snd_soc_codec *codec)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = regmap_read(da7219->regmap, DA7219_CHIP_REVISION, &rev);
++	if (ret) {
++		dev_err(codec->dev, "Failed to read chip revision: %d\n", ret);
++		goto err_disable_reg;
++	}
++
++	switch (rev & DA7219_CHIP_MINOR_MASK) {
++	case 0:
++		ret = regmap_register_patch(da7219->regmap, da7219_rev_aa_patch,
++					    ARRAY_SIZE(da7219_rev_aa_patch));
++		if (ret) {
++			dev_err(codec->dev, "Failed to register AA patch: %d\n",
++				ret);
++			goto err_disable_reg;
++		}
++		break;
++	default:
++		break;
++	}
++
+ 	/* Handle DT/Platform data */
+ 	if (codec->dev->of_node)
+ 		da7219->pdata = da7219_of_to_pdata(codec);
+@@ -1774,7 +1799,6 @@ static struct reg_default da7219_reg_defaults[] = {
+ 	{ DA7219_MIXOUT_R_CTRL, 0x10 },
+ 	{ DA7219_CHIP_ID1, 0x23 },
+ 	{ DA7219_CHIP_ID2, 0x93 },
+-	{ DA7219_CHIP_REVISION, 0x00 },
+ 	{ DA7219_IO_CTRL, 0x00 },
+ 	{ DA7219_GAIN_RAMP_CTRL, 0x00 },
+ 	{ DA7219_PC_COUNT, 0x02 },
 -- 
 2.6.4
