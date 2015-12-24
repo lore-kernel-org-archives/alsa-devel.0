@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: add kcontrol to select ADC data
-	output" to the asoc tree
-Date: Thu, 24 Dec 2015 19:43:55 +0000
-Message-ID: <E1aCBnn-0000nz-Fn@finisterre>
-References: <72b882412e24df59de1a6fe63568ac5ee5d998ca.1450940174.git.zidan.wang@freescale.com>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 2/4] ALSA: dice: postpone card registration
+Date: Thu, 24 Dec 2015 21:51:47 +0100
+Message-ID: <20151224215147.1fae080b@kant>
+References: <1450911310-15507-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1450911310-15507-3-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E54092606B8
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 20:44:08 +0100 (CET)
-In-Reply-To: <72b882412e24df59de1a6fe63568ac5ee5d998ca.1450940174.git.zidan.wang@freescale.com>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59B93265A23
+ for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2015 21:51:49 +0100 (CET)
+In-Reply-To: <1450911310-15507-3-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Dec 24 Takashi Sakamoto wrote:
+> --- a/sound/firewire/dice/dice.c
+> +++ b/sound/firewire/dice/dice.c
+[...]
+>  static void dice_bus_reset(struct fw_unit *unit)
+>  {
+>  	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+>  
+> +	/* Postpone a workqueue for deferred registration. */
+> +	if (!dice->registered) {
+> +		schedule_registration(dice);
+> +		return;
+> +	}
+> +
+>  	/* The handler address register becomes initialized. */
+>  	snd_dice_transaction_reinit(dice);
+>  
 
-   ASoC: wm8960: add kcontrol to select ADC data output
+In previous versions of the patch, you used
+	schedule_delayed_work(&dice->dwork, delay);
+in dice_probe() and
+	mod_delayed_work(dice->dwork.wq, &dice->dwork, delay);
+in dice_bus_reset().
 
-has been applied to the asoc tree at
+Now you are using schedule_delayed_work() in both.  This means that
+dice_bus_reset() is now unable to further defer the work.  Is this
+intentional?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+By the way, in drivers/firewire/core-cdev.c, I used a somewhat different
+workqueue scheduling scheme.  Problem:
+  - The first 1000 ms after a bus reset are to be used for re-allocations
+    of previously allocated isochronous resources.  Attempts for new iso
+    resource allocations shall be deferred until after 1000 ms after the
+    latest bus reset.
+My solution:
+  - The work which is to perform allocations/ reallocations/ deallocations
+    is scheduled immediately.  But the worker function (iso_resource_work)
+    reschedules itself if it notices that (1.) its job is to allocate and
+    (2.) the last bus reset was less than 1 s ago.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I used the same principle in drivers/firewire/core-card.c.  Problem:
+  - If system software wants to reset the bus, it shall wait at least
+    2000 ms until after the last bus reset.  The reason is to allow for
+    various bus reset handling protocols to be performed first (e.g.
+    isochronous resource allocations, re-logins and the likes).
+My solution:
+  - br_work() reschedules itself if it detects that the last bus reset was
+    less than 2 s ago.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Admittedly there is a small remaining window after the worker looked at
+card->reset_jiffies and before it performs its real work, and another bus
+rest could happen in this window.  I suppose if I wanted to close even
+this window, I would have to couple card->reset_jiffies with a
+bus generation counter and then make the remaining work depended on this
+bus generation.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4a5893cf67062be4f70196c3fe45cfda950ea308 Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Thu, 24 Dec 2015 14:58:03 +0800
-Subject: [PATCH] ASoC: wm8960: add kcontrol to select ADC data output
-
-add kcontrol to select ADC data output.
-
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8960.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 0563753..328bde0 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -147,6 +147,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
- static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
- static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
- static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
-+static const char *wm8960_adc_data_output_sel[] = {
-+	"Left Data = Left ADC;  Right Data = Right ADC",
-+	"Left Data = Left ADC;  Right Data = Left ADC",
-+	"Left Data = Right ADC; Right Data = Right ADC",
-+	"Left Data = Right ADC; Right Data = Left ADC",
-+};
- 
- static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
-@@ -155,6 +161,7 @@ static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_3D, 5, 2, wm8960_3d_lower_cutoff),
- 	SOC_ENUM_SINGLE(WM8960_ALC1, 7, 4, wm8960_alcfunc),
- 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
-+	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
- };
- 
- static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-@@ -295,6 +302,8 @@ SOC_SINGLE_TLV("Right Output Mixer Boost Bypass Volume",
- 	       WM8960_BYPASS2, 4, 7, 1, bypass_tlv),
- SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
- 	       WM8960_ROUTMIX, 4, 7, 1, bypass_tlv),
-+
-+SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
- };
- 
- static const struct snd_kcontrol_new wm8960_lin_boost[] = {
+Back to your patch:  I am not sure how strictly you want to guarantee the
+delay between last reset and do_registration()'s execution.  Maybe it
+would be beneficial to put the check for card->reset_jiffies and self-
+rescheduling into do_registration(), similar to the two examples from
+firewire-core, or maybe that's not really necessary for your purposes.
 -- 
-2.6.4
+Stefan Richter
+-=====-===== ==-- ==---
+http://arcgraph.de/sr/
