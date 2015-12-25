@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ALSA: dice: purge transaction
-	initialization at timeout of Dice notification
-Date: Fri, 25 Dec 2015 10:13:14 +0900
-Message-ID: <1451005995-12098-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: dice: expand timeout to wait for
+	Dice notification
+Date: Fri, 25 Dec 2015 10:13:15 +0900
+Message-ID: <1451005995-12098-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1451005995-12098-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D79E266700
- for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2015 02:13:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D411C266701
+ for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2015 02:13:22 +0100 (CET)
 In-Reply-To: <1451005995-12098-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,82 +25,33 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, card registration is processed under situation
-with few bus reset. There's no need to add a workaround of transaction
-re-initialization at timeout.
+Some users have reported that their Dice based models generate ETIMEDOUT
+when starting PCM playback. It means that current timeout (=100msec) is
+not enough for their models to transfer notifications.
 
-This commit purges the re-initialization.
+This commit expands the timeout up to 2 sec. As a result, in a worst case,
+any operations to start AMDTP streams takes 2 sec or more. Then, in
+userspace, snd_pcm_hw_params(), snd_pcm_prepare(), snd_pcm_recover(),
+snd_rawmidi_open(), snd_seq_connect_from() and snd_seq_connect_to() may
+take the time.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-transaction.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+ sound/firewire/dice/dice-transaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index 75a2125..d5f7de7 100644
+index d5f7de7..de5cd6c 100644
 --- a/sound/firewire/dice/dice-transaction.c
 +++ b/sound/firewire/dice/dice-transaction.c
-@@ -65,16 +65,15 @@ static unsigned int get_clock_info(struct snd_dice *dice, __be32 *info)
- static int set_clock_info(struct snd_dice *dice,
- 			  unsigned int rate, unsigned int source)
- {
--	unsigned int retries = 3;
- 	unsigned int i;
- 	__be32 info;
- 	u32 mask;
- 	u32 clock;
- 	int err;
--retry:
-+
- 	err = get_clock_info(dice, &info);
- 	if (err < 0)
--		goto end;
-+		return err;
+@@ -9,7 +9,7 @@
  
- 	clock = be32_to_cpu(info);
- 	if (source != UINT_MAX) {
-@@ -87,10 +86,8 @@ retry:
- 			if (snd_dice_rates[i] == rate)
- 				break;
- 		}
--		if (i == ARRAY_SIZE(snd_dice_rates)) {
--			err = -EINVAL;
--			goto end;
--		}
-+		if (i == ARRAY_SIZE(snd_dice_rates))
-+			return -EINVAL;
+ #include "dice.h"
  
- 		mask = CLOCK_RATE_MASK;
- 		clock &= ~mask;
-@@ -104,25 +101,13 @@ retry:
- 	err = snd_dice_transaction_write_global(dice, GLOBAL_CLOCK_SELECT,
- 						&info, 4);
- 	if (err < 0)
--		goto end;
-+		return err;
+-#define NOTIFICATION_TIMEOUT_MS	100
++#define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
  
--	/* Timeout means it's invalid request, probably bus reset occurred. */
- 	if (wait_for_completion_timeout(&dice->clock_accepted,
--			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0) {
--		if (retries-- == 0) {
--			err = -ETIMEDOUT;
--			goto end;
--		}
--
--		err = snd_dice_transaction_reinit(dice);
--		if (err < 0)
--			goto end;
-+			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0)
-+		return -ETIMEDOUT;
- 
--		msleep(500);	/* arbitrary */
--		goto retry;
--	}
--end:
--	return err;
-+	return 0;
- }
- 
- int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ static u64 get_subaddr(struct snd_dice *dice, enum snd_dice_addr_type type,
+ 		       u64 offset)
 -- 
 2.5.0
