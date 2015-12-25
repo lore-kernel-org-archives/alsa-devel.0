@@ -1,15 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/5 v3] ALSA: dice: improve card registration
-	processing
-Date: Fri, 25 Dec 2015 10:13:10 +0900
-Message-ID: <1451005995-12098-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Add mic mute hotkey quirk
+ for Lenovo ThinkCentre AIO
+Date: Fri, 25 Dec 2015 10:19:00 +0800
+Message-ID: <567CA794.8030103@canonical.com>
+References: <1450928798-31191-1-git-send-email-hui.wang@canonical.com>
+ <s5hvb7ouz09.wl-tiwai@suse.de> <s5hpoxwuw6s.wl-tiwai@suse.de>
+ <567BBD64.6080103@canonical.com> <s5hk2o4uhfx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 0944A2666DA
- for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2015 02:13:20 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D2DA2666DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2015 03:19:07 +0100 (CET)
+In-Reply-To: <s5hk2o4uhfx.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 12/24/2015 09:03 PM, Takashi Iwai wrote:
+> On Thu, 24 Dec 2015 10:39:48 +0100,
+> Hui Wang wrote:
+>> On 12/24/2015 03:45 PM, Takashi Iwai wrote:
+>>> On Thu, 24 Dec 2015 07:44:22 +0100,
+>>> Takashi Iwai wrote:
+>>>> On Thu, 24 Dec 2015 04:46:37 +0100,
+>>>> Hui Wang wrote:
+>>>>> From: Kailang <kailang@realtek.com>
+>>>>>
+>>>>> The Lenovo ThinkCenter AIO uses Line2 (NID 0x1b) to implement the
+>>>>> micmute hotkey, here we register an input device and use Line2 unsol
+>>>>> event to collect the hotkey pressing or releasing.
+>>>>>
+>>>>> In the meanwhile, the micmute led is controlled by GPIO2, so we
+>>>>> use an existing function alc_fixup_gpio_mic_mute_hook() to control
+>>>>> the led.
+>>>>>
+>>>>> Cc: <stable@vger.kernel.org>
+>>>>> Signed-off-by: Kailang <kailang@realtek.com>
+>>>> Is it mandatory expose this as a key event?  I mean, wouldn't it
+>>>> suffice just toggle the mic mute by the driver itself?  User-space
+>>>> will get the notification by the mixer status change in anyway.
+>> We implement it to be an input device just because we need to meet the
+>> X11 requirement, the X11 layer capture the key event instead of mixer
+>> status. After the X11 get the keycode, It will set microphone to mute
+>> from userspace, it is easy to do that by the driver itself, but X11 also
+>> need to know the status change, since the X11 will show up an micmute
+>> OSD according to status change, and needs to save the finial status
+>> before reboot or poweroff. If we don't implement the input device, we
+>> have to modify the X11 layer.
+> Does the mute button this machine work in that way, too?
+There is no mute button on this AIO machine, there is only a micmute 
+button on the right side of the monitor.
 
-This patchset updates my previous post.
-[alsa-devel] [PATCH 0/4 v2] ALSA: dice: improve card registration processing
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102460.html
 
-The previous patchset includes some bugs.
- * Mutex structure can be destroyed within critical section with it in
-   releasing sound card.
- * Bus reset handler doesn't execute transaction re-initialization as long
-   as sound card instance is not registered.
- * Work of sound card registration is not postpone even if bus reset occurs.
- * Devices in sound card are not released when sound card registration fails.
-
-This version fixes these bugs, according to discussions between Takash Iwai and
-Stefan Richter. Thanks for them.
-
-Changes:
- * Use delayed workqueue API correctly.
- * Wait for registration work in .remove callback, instead of sound card
-   free callback.
- * Obsolete mutex_lock()/mutex_unlock() for sound card registration purpose.
- * Keep devices of sound card and release them at registration failure.
-
-In kerneldoc of 'mod_delayed_work', this function call has a side effect to
-queueing the work. It seems that this function can be used instead of
-schedule_delayed_work.
-https://www.kernel.org/doc/htmldocs/device-drivers/API-mod-delayed-work.html
-
-But as long as I tested, my Linux 4.2 system is freezed. I have no further
-investigation. I use both of schedule_delayed_work() and mod_delayed_work() in
-this patchset.
-
-Takashi Sakamoto (5):
-  ALSA: dice: split subaddress check from category check
-  ALSA: dice: postpone card registration
-  ALSA: dice: ensure to release sound devices after sound card
-    registration fails
-  ALSA: dice: purge transaction initialization at timeout of Dice
-    notification
-  ALSA: dice: expand timeout to wait for Dice notification
-
- sound/firewire/dice/dice-midi.c        |   2 +
- sound/firewire/dice/dice-pcm.c         |   2 +
- sound/firewire/dice/dice-transaction.c | 122 ++++++++++++--------
- sound/firewire/dice/dice.c             | 199 +++++++++++++++++----------------
- sound/firewire/dice/dice.h             |   5 +
- 5 files changed, 191 insertions(+), 139 deletions(-)
-
--- 
-2.5.0
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
