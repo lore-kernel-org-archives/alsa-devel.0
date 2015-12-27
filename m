@@ -1,17 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ALSA: dice: purge transaction
-	initialization at timeout of Dice notification
-Date: Sat, 26 Dec 2015 12:35:25 +0900
-Message-ID: <1451100926-20637-5-git-send-email-o-takashi@sakamocchi.jp>
-References: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Daniel Viksporre <daniel.viksporre@gmail.com>
+Subject: Rawmidi
+Date: Sun, 27 Dec 2015 07:29:20 +0100
+Message-ID: <CAL_NL1DGv74+62K9A_82osf6ywc9pPVPZhrZd+BsGs7tCnAxqQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D44C2614A0
- for <alsa-devel@alsa-project.org>; Sat, 26 Dec 2015 04:35:36 +0100 (CET)
-In-Reply-To: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-vk0-f53.google.com (mail-vk0-f53.google.com
+ [209.85.213.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53812260635
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2015 07:29:22 +0100 (CET)
+Received: by mail-vk0-f53.google.com with SMTP id a123so9497518vkh.1
+ for <alsa-devel@alsa-project.org>; Sat, 26 Dec 2015 22:29:22 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, card registration is processed under situation
-with few bus reset. There's no need to add a workaround of transaction
-re-initialization at timeout.
+I cant compile example programs that use rawmidi.
 
-This commit purges the re-initialization.
+When I look on my harddrive, I have many rawmidi.h files, but since
+2015 they are all 0 bytes. Can that be the reason I cant compile. But
+why is those files 0 bytes from the repository Im using?
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-transaction.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+I get the following error messages...
 
-diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index 75a2125..d5f7de7 100644
---- a/sound/firewire/dice/dice-transaction.c
-+++ b/sound/firewire/dice/dice-transaction.c
-@@ -65,16 +65,15 @@ static unsigned int get_clock_info(struct snd_dice *dice, __be32 *info)
- static int set_clock_info(struct snd_dice *dice,
- 			  unsigned int rate, unsigned int source)
- {
--	unsigned int retries = 3;
- 	unsigned int i;
- 	__be32 info;
- 	u32 mask;
- 	u32 clock;
- 	int err;
--retry:
-+
- 	err = get_clock_info(dice, &info);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
- 	clock = be32_to_cpu(info);
- 	if (source != UINT_MAX) {
-@@ -87,10 +86,8 @@ retry:
- 			if (snd_dice_rates[i] == rate)
- 				break;
- 		}
--		if (i == ARRAY_SIZE(snd_dice_rates)) {
--			err = -EINVAL;
--			goto end;
--		}
-+		if (i == ARRAY_SIZE(snd_dice_rates))
-+			return -EINVAL;
- 
- 		mask = CLOCK_RATE_MASK;
- 		clock &= ~mask;
-@@ -104,25 +101,13 @@ retry:
- 	err = snd_dice_transaction_write_global(dice, GLOBAL_CLOCK_SELECT,
- 						&info, 4);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
--	/* Timeout means it's invalid request, probably bus reset occurred. */
- 	if (wait_for_completion_timeout(&dice->clock_accepted,
--			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0) {
--		if (retries-- == 0) {
--			err = -ETIMEDOUT;
--			goto end;
--		}
--
--		err = snd_dice_transaction_reinit(dice);
--		if (err < 0)
--			goto end;
-+			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0)
-+		return -ETIMEDOUT;
- 
--		msleep(500);	/* arbitrary */
--		goto retry;
--	}
--end:
--	return err;
-+	return 0;
- }
- 
- int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
--- 
-2.5.0
+
+test.c:(.text+0x507): undefined reference to `snd_rawmidi_open'
+test.c:(.text+0x5d8): undefined reference to `snd_rawmidi_open'
+test.c:(.text+0x75e): undefined reference to `snd_rawmidi_read'
+test.c:(.text+0x846): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x867): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x888): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x894): undefined reference to `snd_rawmidi_drain'
+test.c:(.text+0x8c1): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x8e2): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x903): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0x90f): undefined reference to `snd_rawmidi_drain'
+test.c:(.text+0xa71): undefined reference to `snd_rawmidi_read'
+test.c:(.text+0xae0): undefined reference to `snd_rawmidi_write'
+test.c:(.text+0xaec): undefined reference to `snd_rawmidi_drain'
+test.c:(.text+0xb8f): undefined reference to `snd_rawmidi_drain'
+test.c:(.text+0xb9b): undefined reference to `snd_rawmidi_close'
+test.c:(.text+0xbaf): undefined reference to `snd_rawmidi_drain'
+test.c:(.text+0xbbb): undefined reference to `snd_rawmidi_close'
