@@ -1,60 +1,155 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Rawmidi
-Date: Mon, 28 Dec 2015 00:49:41 +0900
-Message-ID: <56800895.5070008@sakamocchi.jp>
-References: <CAL_NL1DGv74+62K9A_82osf6ywc9pPVPZhrZd+BsGs7tCnAxqQ@mail.gmail.com>
- <9511ACE5-064B-40C7-8286-9401991156CD@ladisch.de>
- <CAL_NL1Bgv8hoW-wR003jD4Wopc6udG=Xb+DJ8P+W5H5H9dQYnQ@mail.gmail.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v8 1/2] ASoc: sun4i-codec: Add FM, Line and
+ Mic inputs
+Date: Sun, 27 Dec 2015 18:34:09 +0100
+Message-ID: <20151227173409.GH30359@lukather>
+References: <20151221123148.1ab6480b@dayas>
+ <20151221123303.7d47e26f@dayas>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CF38262626
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2015 16:49:46 +0100 (CET)
-In-Reply-To: <CAL_NL1Bgv8hoW-wR003jD4Wopc6udG=Xb+DJ8P+W5H5H9dQYnQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Viksporre <daniel.viksporre@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GOdHDkIp180r3pqZ"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBFGCQC2AKGQE3HCYGBQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20151221123303.7d47e26f@dayas>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 28 2015 00:22, Daniel Viksporre wrote:
-> 2015-12-27 9:18 GMT+01:00, Clemens Ladisch <clemens@ladisch.de>:
->> Daniel Viksporre wrote:
->>> test.c:(.text+0x507): undefined reference to `snd_rawmidi_open'
->>
->> This message comes from the linker.
->>
->> If the compiler itself does not complain, then you have no
->> problem with rawmidi.h.
->>
->> The linker error is probably caused by not linking with the
->> ALSA library; add -lasound to the compiler command.
->>
->>
->> Regards,
->> Clemens
->>
->>
+--GOdHDkIp180r3pqZ
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+Hi,
+
+On Mon, Dec 21, 2015 at 12:33:03PM +0100, Danny Milosavljevic wrote:
+> This is the first part:
 > 
-> I compiled with...
-> gcc  -lasound test.c
+>    sun4i-codec: make it possible to use different codec_widgets for A10 and A20.
+
+Please make a meaningful commit log and title explaining what and why
+you're doing it.
+
 > 
-> I have tried with many different code examples that I have found on
-> the internet, and error messages stays about the same.
+> Signed-off-by: Danny Milosavljevic <dannym+a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+> ---
+>   b/sound/soc/sunxi/sun4i-codec.c |   45 ++++++++++++++++++++++++++++++----------
+>   1 file changed, 34 insertions(+), 11 deletions(-)
+> 
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index e6cc6a1..6628e6e 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -96,8 +96,9 @@
+>  /* Other various ADC registers */
+>  #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+>  #define SUN4I_CODEC_ADC_RXCNT			(0x34)
+> -#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+> +
+> +#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+>
+>  struct sun4i_codec {
+>  	struct device	*dev;
+> @@ -509,10 +510,13 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+>  
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+>  
+> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
+> -	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+> -		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+> -		       sun4i_codec_pa_volume_scale),
+> +#define SUN4I_COMMON_CODEC_WIDGETS \
+> +	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
+> +		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
+> +		       sun4i_codec_pa_volume_scale)
+> +
+> +static const struct snd_kcontrol_new sun4i_codec_widgets_a10[] = {
+> +	SUN4I_COMMON_CODEC_WIDGETS,
+>  };
+>  
+>  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+> @@ -627,9 +631,9 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>  	{ "Mic1", NULL, "VMIC" },
+>  };
+>  
+> -static struct snd_soc_codec_driver sun4i_codec_codec = {
+> -	.controls		= sun4i_codec_widgets,
+> -	.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
+> +static struct snd_soc_codec_driver sun4i_codec_codec_a10 = {
+> +	.controls		= sun4i_codec_widgets_a10,
+> +	.num_controls		= ARRAY_SIZE(sun4i_codec_widgets_a10),
 
-I think cause is the position of linker option. Let's try:
-$ gcc test.c -lasound
+There's no need to change the structure name.
 
+>  	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+>  	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+>  	.dapm_routes		= sun4i_codec_codec_dapm_routes,
+> @@ -680,7 +684,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
+>  	.reg_bits	= 32,
+>  	.reg_stride	= 4,
+>  	.val_bits	= 32,
+> -	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
+> +	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+>  };
+>  
+>  static const struct of_device_id sun4i_codec_of_match[] = {
+> @@ -753,10 +757,24 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+>  	return card;
+>  };
+>  
+> +static const struct snd_kcontrol_new sun7i_codec_widgets[] = {
+> +	SUN4I_COMMON_CODEC_WIDGETS,
+> +};
+> +
+> +static struct snd_soc_codec_driver sun7i_codec_codec = {
+> +	.controls		= sun7i_codec_widgets,
+> +	.num_controls		= ARRAY_SIZE(sun7i_codec_widgets),
+> +	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+> +	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+> +	.dapm_routes		= sun4i_codec_codec_dapm_routes,
+> +	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
+> +};
 
-Regards
+>  static int sun4i_codec_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card;
+>  	struct sun4i_codec *scodec;
+> +	struct snd_soc_codec_driver *codec;
+>  	struct resource *res;
+>  	void __iomem *base;
+>  	int ret;
+> @@ -819,7 +837,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  	scodec->capture_dma_data.maxburst = 4;
+>  	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+>  
+> -	ret = snd_soc_register_codec(&pdev->dev, &sun4i_codec_codec,
+> +	if (of_device_is_compatible(pdev->dev.of_node,
+> +				    "allwinner,sun7i-a20-codec"))
+> +		codec = &sun7i_codec_codec;
+> +	else
+> +		codec = &sun4i_codec_codec_a10;
 
-Takashi Sakamoto
+A new line here would be nice.
+
+> +	ret = snd_soc_register_codec(&pdev->dev, codec,
+>  				     &sun4i_codec_dai, 1);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Failed to register our codec\n");
+
+Thanks!
+Maxime
+
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--GOdHDkIp180r3pqZ--
