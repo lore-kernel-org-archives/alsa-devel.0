@@ -1,18 +1,29 @@
-From: Geliang Tang <geliangtang@163.com>
-Subject: [PATCH 3/4] ALSA: hdac: use dev_to_hdac_dev
-Date: Mon, 28 Dec 2015 22:47:12 +0800
-Message-ID: <792658f052baf3b7d110964c1caaa49541cbed30.1451312334.git.geliangtang@163.com>
-References: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
+From: Rob van der Putten <rob@sput.nl>
+Subject: Re: Rawmidi
+Date: Mon, 28 Dec 2015 15:42:16 +0100
+Message-ID: <n5rho8$bn$1@ger.gmane.org>
+References: <CAL_NL1DGv74+62K9A_82osf6ywc9pPVPZhrZd+BsGs7tCnAxqQ@mail.gmail.com>
+ <9511ACE5-064B-40C7-8286-9401991156CD@ladisch.de>
+ <CAL_NL1Bgv8hoW-wR003jD4Wopc6udG=Xb+DJ8P+W5H5H9dQYnQ@mail.gmail.com>
+ <56800895.5070008@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m50-138.163.com (m50-138.163.com [123.125.50.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 72D4C2652B0
- for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:47:31 +0100 (CET)
-In-Reply-To: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
-In-Reply-To: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
-References: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF1932652EE
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:50:07 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1aDZ7d-0002uS-UJ
+ for alsa-devel@alsa-project.org; Mon, 28 Dec 2015 15:50:06 +0100
+Received: from ns4.sput.nl ([80.101.95.251])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:50:05 +0100
+Received: from rob by ns4.sput.nl with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:50:05 +0100
+In-Reply-To: <56800895.5070008@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +33,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: Geliang Tang <geliangtang@163.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use dev_to_hdac_dev() instead of open-coding it.
+Hi there
 
-Signed-off-by: Geliang Tang <geliangtang@163.com>
----
- sound/hda/ext/hdac_ext_bus.c | 2 +-
- sound/hda/hdac_device.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index 58f6b98..2522943 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -122,7 +122,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_exit);
- 
- static void default_release(struct device *dev)
- {
--	snd_hdac_ext_bus_device_exit(container_of(dev, struct hdac_device, dev));
-+	snd_hdac_ext_bus_device_exit(dev_to_hdac_dev(dev));
- }
- 
- /**
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index e361024..959f7d9 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -18,7 +18,7 @@ static int get_codec_vendor_name(struct hdac_device *codec);
- 
- static void default_release(struct device *dev)
- {
--	snd_hdac_device_exit(container_of(dev, struct hdac_device, dev));
-+	snd_hdac_device_exit(dev_to_hdac_dev(dev));
- }
- 
- /**
+Takashi Sakamoto wrote:
+
+> I think cause is the position of linker option. Let's try:
+> $ gcc test.c -lasound
+
+On my box the snd_rawmidi_ stuff is in /usr/include/alsa/rawmidi.h
+/usr/include/alsa/asoundlib.h includes alsa/rawmidi.h, so  a #include 
+<alsa/asoundlib.h> in the c file should do.
+
+I compile with cc -Wall -lasound -o foo foo.c
+
+Hope this helps.
+
+
+Regards,
+Rob
 -- 
-2.5.0
+ISDS is evil. Abolish ISDS.
