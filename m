@@ -1,46 +1,73 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH] ASoC: sun4i-codec: Use proper output for
- external amp routes
-Date: Sun, 27 Dec 2015 19:23:02 +0100
-Message-ID: <20151227182302.GJ30359@lukather>
-References: <1450821617-12906-1-git-send-email-hdegoede@redhat.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - Add keycode map for alc
+ input device
+Date: Mon, 28 Dec 2015 11:04:18 +0800
+Message-ID: <5680A6B2.7020707@canonical.com>
+References: <1450928798-31191-1-git-send-email-hui.wang@canonical.com>
+ <1450928798-31191-2-git-send-email-hui.wang@canonical.com>
+ <s5hd1tvufs6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HdZAANC5GEQnh8Bp"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBB6ZQC2AKGQERQMJWHA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1450821617-12906-1-git-send-email-hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hd1tvufs6.wl-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---HdZAANC5GEQnh8Bp
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+Got it, will address them in the V2.
+Thanks.
 
-Hi,
 
-On Tue, Dec 22, 2015 at 11:00:17PM +0100, Hans de Goede wrote:
-> An external amp (if any) is connected to the external outputs of the SoC
-> of course, rather then directly to the internal amp.
-> 
-> Signed-off-by: Hans de Goede <hdegoede-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-
-Thanks!
-Maxime
-
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---HdZAANC5GEQnh8Bp--
+On 12/25/2015 03:51 PM, Takashi Iwai wrote:
+> On Thu, 24 Dec 2015 04:46:38 +0100,
+> Hui Wang wrote:
+>> Then users can remap the keycode from userspace. If without the remap,
+>> the input device will pass KEY_MICMUTE to userspace, but in X11 layer,
+>> it uses KEY_F20 rather than KEY_MICMUTE for XF86AudioMicMute. After
+>> adding the keycode map, users can remap the keycode to any value users
+>> want.
+>>
+>> And there are two places to register the input device, to make the
+>> code simple and clean, we move the two same code sections into a
+>> function.
+> Having this change at first would be better.  Then you can avoid a
+> build-and-scratch sequence but just use the new helper from the
+> beginning.
+>
+> Also...
+>
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_realtek.c | 68 +++++++++++++++++++++++++------------------
+>>   1 file changed, 40 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index 8adff4f..97f22ad 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -67,6 +67,14 @@ enum {
+>>   	ALC_HEADSET_TYPE_OMTP,
+>>   };
+>>   
+>> +enum {
+>> +	ALC_KEY_MICMUTE_INDEX,
+>> +};
+>> +
+>> +static u8 alc_mute_keycode_map[] = {
+>> +	KEY_MICMUTE,	/* index=0, microphone mute key code */
+>> +};
+> You're sharing this array, and remapping will overwrite this.
+> For example, if the codec is once unbound and bound again, the
+> modified keymap will be passed to the new instance.  Use an array in
+> alc_spec instead.
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
