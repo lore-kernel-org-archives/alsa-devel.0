@@ -1,196 +1,164 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
- and Mic inputs
-Date: Mon, 28 Dec 2015 04:06:49 +0100
-Message-ID: <20151228040649.475a742f@dayas>
-References: <20151221123148.1ab6480b@dayas>
-	<20151221123416.51aa938e@dayas>
-	<20151227182157.GI30359@lukather>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBUWOQK2AKGQEN2OPGFI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20151227182157.GI30359@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH v2 1/2] ALSA: hda - Add mic mute hotkey quirk for Lenovo ThinkCentre AIO
+Date: Mon, 28 Dec 2015 11:35:24 +0800
+Message-ID: <1451273725-28359-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, kailang@realtek.com, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Maxime,
+From: Kailang <kailang@realtek.com>
 
-On Sun, 27 Dec 2015 19:21:57 +0100
-Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+The Lenovo ThinkCenter AIO uses Line2 (NID 0x1b) to implement the
+micmute hotkey, here we register an input device and use Line2 unsol
+event to collect the hotkey pressing or releasing.
 
-> On Mon, Dec 21, 2015 at 12:34:16PM +0100, Danny Milosavljevic wrote:
-> > This is the second part, actually adding FM, Line and Mic inputs.
-> 
-> Again, having a meaningful and standalone commit log would be nice.
+In the meanwhile, the micmute led is controlled by GPIO2, so we
+use an existing function alc_fixup_gpio_mic_mute_hook() to control
+the led.
 
-Okay, will elaborate some more in v9.
+[Hui: And there are two places to register the input device, to make
+the code simple and clean, move the two same code sections into a
+function.]
 
-> > +#define SUN4I_CODEC_ADC_ACTL_PREG1_A10			(25)
-> > +#define SUN4I_CODEC_ADC_ACTL_PREG2_A10			(23)
-> 
-> Why the A10 suffix?
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Kailang <kailang@realtek.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 84 ++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 71 insertions(+), 13 deletions(-)
 
-The sun4i*_a10 names are for things that work on A10 but not on A20.
-This way whoever touches the driver later can know for which things he has
-to consider multiple cases.
-Otherwise he will have no indication that he is using a bit index where 
-there sometimes is no bit (or, worse, the wrong bit).
-
-It's intended to be used like this:
-
-sun4i_foo_a10
-	foo is sun4i_foo_a10 on A10 (only).
-sun4i_foo
-	foo is sun4i_foo on A10 and also on future chips (like A20).
-sun7i_foo
-	foo is sun7i_foo on A20 and (hopefully) also on future chips.
-
-In this case these defines are for PREG for A10 only.
-The A20+ PREG are in the PHONE_CAL register, at other indices.
-
-> Are you using that PHONEOUT stuff anywhere?
-
-Nope.
-
-I was just including all the bits of the register because I usually aim for 
-completeness by ensuring that there are no gaps in the bit index ranges. 
-
-With all the stripping out of the bit range comments that won't be possible 
-anymore anyway, so I'll just get rid of the PHONEOUT defines in v9, too.
-
-> There's no need to give your sources here.
-
-Ok, will remove.
-
-For the record, there are multiple versions of each of the documents 
-and if you pick the wrong ones it will look as if there were more 
-differences between A10 and A20 than there actually are.
-
-> > +static const char * const sun4i_codec_capture_source[] = {
-> > +	"Line-In",
-> > +	"FM",
-> > +	"Mic1",
-> > +	"Mic2",
-> > +	"Mic1,Mic2",
-> > +	"Mic1+Mic2",
-> > +	"Output Mixer",
-> > +	"Line-In,Mic1",
-> > +};
-> > +static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
-> > +			    SUN4I_CODEC_ADC_ACTL,
-> > +			    SUN4I_CODEC_ADC_ACTL_ADCIS,
-> > +			    sun4i_codec_capture_source);
-> 
-> Isn't it possible to expose this as two (shared) muxes with different
-> names to make it clear what will go to the left ADC and what will go
-> to the right?
-
-I don't know how to do that. I'll try to find out.
-
-(It would be best if someone who knows how that should act did the alsamixer 
-testing later too, though)
-
-Can two muxes use the same bit in the hardware without problems?
-Or do you mean reuse the same mux instance? (I think _new1 always creates 
-a new instance from each struct kcontrol_new automatically).
-
-> The power amplifier is only for the playback, so there's no need to
-> differentiate between playback and capture. The current name was fine.
-
-"Power Amplifier Volume" shows up as Capture control in alsamixer as well.
-It isn't supposed to be a Capture control.
-
-> > +	/* Line-In, FM, Mic1, Mic2 */ \
-> > +	SOC_SINGLE_TLV("Line-In Playback Volume", \
-...
-> > +	SOC_SINGLE_TLV("FM Playback Volume", \
-...
-> > +	SOC_SINGLE_TLV("Mic Playback Volume", \
-...
-> 
-> Those are not volume it's gain, 
-
-We tried to call the things ..." Gain" before and it was difficult to do, 
-with some breakage along the way, see below.
-Also, Mark said they should be named ..." Volume" (see 
-<https://www.mail-archive.com/linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org/msg15126.html>).
-
->and it should probably be two different shared controls for mic1 and mic2.
-
-I'll try...
-
->> "Capture Source"
-> This one is the ADC Gain. Please name it that way.
-
-Unfortunately, the strings have meaning to asoc and alsa-lib and you can't go 
-renaming them like that without breaking things. The names were carefully 
-chosen to make it actually work properly without having to patch alsa-lib and 
-parts of ASoC core (which I did before and have since reverted).
-
-In this case, there's a special case in upstream alsa-lib:
-
-alsa-lib-1.0.28:
-./src/mixer/simple_none.c:	if (strcmp(name, "Capture Source") == 0) {
-...
-
-I'm not totally against naming them like you suggested - but know that you 
-are requiring changes in alsa-lib as well then - or presumably breaking the 
-user's workflow.
-
-For example the (upstream) "Capture Source" special case in alsa-lib adds 
-radio-button-like things to the respective elements. 
-You can switch to one of the inputs by pressing Space while its gain element 
-is selected.
-In the mic case, it's the mic preamplier gain that you press Space on - if it's 
-indeed shown as a Capture control...
-
-> And those two are not capture volume, it's the pre-amplifier gain.
-
-I know. There has been a previous small discussion in v4 about that and it's 
-really not that easy.
-
-For example for problems with loopback gain see:
-<https://www.mail-archive.com/linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org/msg15115.html>
-
-Summary: you have to patch Linux/sound/soc/soc-ops.c and 
-alsa-lib-1.0.28/src/mixer/simple_none.c to allow controls that don't end 
-in " Volume" to be sliders... and, in some cases, to be visible at all.
-
-> Having all the inputs and all the outputs grouped together would be
-> nice.
-
-Yeah, I'll do that in v9.
-
-> The right and left mixer routes should be in the matching sections.
-> Ditto.
-> Ditto.
-
-Yeah, I'll do that in v9 and add a comment instead.
-
-> > +	/* ADC Capturing Sources */
-> 
-> "ADC Input Routes"
-
-Yeah, I'll do that in v9.
-
-> You should also have routes from the ADC Input to the Left and Right ADCs
-
-Yeah, I'll do that in v9.
-
-> [should be named] "Mic1 Pre-Amplifier Gain", "Mic2 Pre-Amplifier Gain".
-
-It cannot be selected for recording then since it's not a Capture control.
-
-These things are interdependent, even crossing syscall boundary.
-
-Regards,
-   Danny
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fe96428..257b839 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3468,6 +3468,29 @@ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 	input_sync(spec->kb_dev);
+ }
+ 
++static int alc_register_micmute_input_device(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	spec->kb_dev = input_allocate_device();
++	if (!spec->kb_dev) {
++		codec_err(codec, "Out of memory (input_allocate_device)\n");
++		return -ENOMEM;
++	}
++	spec->kb_dev->name = "Microphone Mute Button";
++	spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
++	spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
++
++	if (input_register_device(spec->kb_dev)) {
++		codec_err(codec, "input_register_device failed\n");
++		input_free_device(spec->kb_dev);
++		spec->kb_dev = NULL;
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
+ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 					     const struct hda_fixup *fix, int action)
+ {
+@@ -3485,20 +3508,8 @@ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+-		spec->kb_dev = input_allocate_device();
+-		if (!spec->kb_dev) {
+-			codec_err(codec, "Out of memory (input_allocate_device)\n");
++		if (alc_register_micmute_input_device(codec) != 0)
+ 			return;
+-		}
+-		spec->kb_dev->name = "Microphone Mute Button";
+-		spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
+-		spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
+-		if (input_register_device(spec->kb_dev)) {
+-			codec_err(codec, "input_register_device failed\n");
+-			input_free_device(spec->kb_dev);
+-			spec->kb_dev = NULL;
+-			return;
+-		}
+ 
+ 		snd_hda_add_verbs(codec, gpio_init);
+ 		snd_hda_codec_write_cache(codec, codec->core.afg, 0,
+@@ -3528,6 +3539,47 @@ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc233_fixup_lenovo_line2_mic_hotkey(struct hda_codec *codec,
++					     const struct hda_fixup *fix, int action)
++{
++	/* Line2 = mic mute hotkey
++	   GPIO2 = mic mute LED */
++	static const struct hda_verb gpio_init[] = {
++		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x04 },
++		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x04 },
++		{}
++	};
++
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		if (alc_register_micmute_input_device(codec) != 0)
++			return;
++
++		snd_hda_add_verbs(codec, gpio_init);
++		snd_hda_jack_detect_enable_callback(codec, 0x1b,
++						    gpio2_mic_hotkey_event);
++
++		spec->gen.cap_sync_hook = alc_fixup_gpio_mic_mute_hook;
++		spec->gpio_led = 0;
++		spec->mute_led_polarity = 0;
++		spec->gpio_mic_led_mask = 0x04;
++		return;
++	}
++
++	if (!spec->kb_dev)
++		return;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PROBE:
++		spec->init_amp = ALC_INIT_DEFAULT;
++		break;
++	case HDA_FIXUP_ACT_FREE:
++		input_unregister_device(spec->kb_dev);
++		spec->kb_dev = NULL;
++	}
++}
++
+ static void alc269_fixup_hp_line1_mic1_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -4628,6 +4680,7 @@ enum {
+ 	ALC275_FIXUP_DELL_XPS,
+ 	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
+ 	ALC293_FIXUP_LENOVO_SPK_NOISE,
++	ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -5237,6 +5290,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
+ 	},
++	[ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc233_fixup_lenovo_line2_mic_hotkey,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -5386,6 +5443,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
++	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-- 
+1.9.1
