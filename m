@@ -1,73 +1,196 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda - Add keycode map for alc
- input device
-Date: Mon, 28 Dec 2015 11:04:18 +0800
-Message-ID: <5680A6B2.7020707@canonical.com>
-References: <1450928798-31191-1-git-send-email-hui.wang@canonical.com>
- <1450928798-31191-2-git-send-email-hui.wang@canonical.com>
- <s5hd1tvufs6.wl-tiwai@suse.de>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Mon, 28 Dec 2015 04:06:49 +0100
+Message-ID: <20151228040649.475a742f@dayas>
+References: <20151221123148.1ab6480b@dayas>
+	<20151221123416.51aa938e@dayas>
+	<20151227182157.GI30359@lukather>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hd1tvufs6.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBUWOQK2AKGQEN2OPGFI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <20151227182157.GI30359@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Got it, will address them in the V2.
-Thanks.
+Hi Maxime,
 
+On Sun, 27 Dec 2015 19:21:57 +0100
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-On 12/25/2015 03:51 PM, Takashi Iwai wrote:
-> On Thu, 24 Dec 2015 04:46:38 +0100,
-> Hui Wang wrote:
->> Then users can remap the keycode from userspace. If without the remap,
->> the input device will pass KEY_MICMUTE to userspace, but in X11 layer,
->> it uses KEY_F20 rather than KEY_MICMUTE for XF86AudioMicMute. After
->> adding the keycode map, users can remap the keycode to any value users
->> want.
->>
->> And there are two places to register the input device, to make the
->> code simple and clean, we move the two same code sections into a
->> function.
-> Having this change at first would be better.  Then you can avoid a
-> build-and-scratch sequence but just use the new helper from the
-> beginning.
->
-> Also...
->
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->> ---
->>   sound/pci/hda/patch_realtek.c | 68 +++++++++++++++++++++++++------------------
->>   1 file changed, 40 insertions(+), 28 deletions(-)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index 8adff4f..97f22ad 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -67,6 +67,14 @@ enum {
->>   	ALC_HEADSET_TYPE_OMTP,
->>   };
->>   
->> +enum {
->> +	ALC_KEY_MICMUTE_INDEX,
->> +};
->> +
->> +static u8 alc_mute_keycode_map[] = {
->> +	KEY_MICMUTE,	/* index=0, microphone mute key code */
->> +};
-> You're sharing this array, and remapping will overwrite this.
-> For example, if the codec is once unbound and bound again, the
-> modified keymap will be passed to the new instance.  Use an array in
-> alc_spec instead.
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> On Mon, Dec 21, 2015 at 12:34:16PM +0100, Danny Milosavljevic wrote:
+> > This is the second part, actually adding FM, Line and Mic inputs.
+> 
+> Again, having a meaningful and standalone commit log would be nice.
+
+Okay, will elaborate some more in v9.
+
+> > +#define SUN4I_CODEC_ADC_ACTL_PREG1_A10			(25)
+> > +#define SUN4I_CODEC_ADC_ACTL_PREG2_A10			(23)
+> 
+> Why the A10 suffix?
+
+The sun4i*_a10 names are for things that work on A10 but not on A20.
+This way whoever touches the driver later can know for which things he has
+to consider multiple cases.
+Otherwise he will have no indication that he is using a bit index where 
+there sometimes is no bit (or, worse, the wrong bit).
+
+It's intended to be used like this:
+
+sun4i_foo_a10
+	foo is sun4i_foo_a10 on A10 (only).
+sun4i_foo
+	foo is sun4i_foo on A10 and also on future chips (like A20).
+sun7i_foo
+	foo is sun7i_foo on A20 and (hopefully) also on future chips.
+
+In this case these defines are for PREG for A10 only.
+The A20+ PREG are in the PHONE_CAL register, at other indices.
+
+> Are you using that PHONEOUT stuff anywhere?
+
+Nope.
+
+I was just including all the bits of the register because I usually aim for 
+completeness by ensuring that there are no gaps in the bit index ranges. 
+
+With all the stripping out of the bit range comments that won't be possible 
+anymore anyway, so I'll just get rid of the PHONEOUT defines in v9, too.
+
+> There's no need to give your sources here.
+
+Ok, will remove.
+
+For the record, there are multiple versions of each of the documents 
+and if you pick the wrong ones it will look as if there were more 
+differences between A10 and A20 than there actually are.
+
+> > +static const char * const sun4i_codec_capture_source[] = {
+> > +	"Line-In",
+> > +	"FM",
+> > +	"Mic1",
+> > +	"Mic2",
+> > +	"Mic1,Mic2",
+> > +	"Mic1+Mic2",
+> > +	"Output Mixer",
+> > +	"Line-In,Mic1",
+> > +};
+> > +static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
+> > +			    SUN4I_CODEC_ADC_ACTL,
+> > +			    SUN4I_CODEC_ADC_ACTL_ADCIS,
+> > +			    sun4i_codec_capture_source);
+> 
+> Isn't it possible to expose this as two (shared) muxes with different
+> names to make it clear what will go to the left ADC and what will go
+> to the right?
+
+I don't know how to do that. I'll try to find out.
+
+(It would be best if someone who knows how that should act did the alsamixer 
+testing later too, though)
+
+Can two muxes use the same bit in the hardware without problems?
+Or do you mean reuse the same mux instance? (I think _new1 always creates 
+a new instance from each struct kcontrol_new automatically).
+
+> The power amplifier is only for the playback, so there's no need to
+> differentiate between playback and capture. The current name was fine.
+
+"Power Amplifier Volume" shows up as Capture control in alsamixer as well.
+It isn't supposed to be a Capture control.
+
+> > +	/* Line-In, FM, Mic1, Mic2 */ \
+> > +	SOC_SINGLE_TLV("Line-In Playback Volume", \
+...
+> > +	SOC_SINGLE_TLV("FM Playback Volume", \
+...
+> > +	SOC_SINGLE_TLV("Mic Playback Volume", \
+...
+> 
+> Those are not volume it's gain, 
+
+We tried to call the things ..." Gain" before and it was difficult to do, 
+with some breakage along the way, see below.
+Also, Mark said they should be named ..." Volume" (see 
+<https://www.mail-archive.com/linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org/msg15126.html>).
+
+>and it should probably be two different shared controls for mic1 and mic2.
+
+I'll try...
+
+>> "Capture Source"
+> This one is the ADC Gain. Please name it that way.
+
+Unfortunately, the strings have meaning to asoc and alsa-lib and you can't go 
+renaming them like that without breaking things. The names were carefully 
+chosen to make it actually work properly without having to patch alsa-lib and 
+parts of ASoC core (which I did before and have since reverted).
+
+In this case, there's a special case in upstream alsa-lib:
+
+alsa-lib-1.0.28:
+./src/mixer/simple_none.c:	if (strcmp(name, "Capture Source") == 0) {
+...
+
+I'm not totally against naming them like you suggested - but know that you 
+are requiring changes in alsa-lib as well then - or presumably breaking the 
+user's workflow.
+
+For example the (upstream) "Capture Source" special case in alsa-lib adds 
+radio-button-like things to the respective elements. 
+You can switch to one of the inputs by pressing Space while its gain element 
+is selected.
+In the mic case, it's the mic preamplier gain that you press Space on - if it's 
+indeed shown as a Capture control...
+
+> And those two are not capture volume, it's the pre-amplifier gain.
+
+I know. There has been a previous small discussion in v4 about that and it's 
+really not that easy.
+
+For example for problems with loopback gain see:
+<https://www.mail-archive.com/linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org/msg15115.html>
+
+Summary: you have to patch Linux/sound/soc/soc-ops.c and 
+alsa-lib-1.0.28/src/mixer/simple_none.c to allow controls that don't end 
+in " Volume" to be sliders... and, in some cases, to be visible at all.
+
+> Having all the inputs and all the outputs grouped together would be
+> nice.
+
+Yeah, I'll do that in v9.
+
+> The right and left mixer routes should be in the matching sections.
+> Ditto.
+> Ditto.
+
+Yeah, I'll do that in v9 and add a comment instead.
+
+> > +	/* ADC Capturing Sources */
+> 
+> "ADC Input Routes"
+
+Yeah, I'll do that in v9.
+
+> You should also have routes from the ADC Input to the Left and Right ADCs
+
+Yeah, I'll do that in v9.
+
+> [should be named] "Mic1 Pre-Amplifier Gain", "Mic2 Pre-Amplifier Gain".
+
+It cannot be selected for recording then since it's not a Capture control.
+
+These things are interdependent, even crossing syscall boundary.
+
+Regards,
+   Danny
