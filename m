@@ -1,85 +1,64 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH v2 2/2] ALSA: hda - Add keycode map for alc input device
-Date: Mon, 28 Dec 2015 11:35:25 +0800
-Message-ID: <1451273725-28359-2-git-send-email-hui.wang@canonical.com>
-References: <1451273725-28359-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1451273725-28359-1-git-send-email-hui.wang@canonical.com>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org, kailang@realtek.com, hui.wang@canonical.com
+From: Geliang Tang <geliangtang@163.com>
+Subject: [PATCH 1/4] ALSA: core: use dev_to_snd_card
+Date: Mon, 28 Dec 2015 22:47:10 +0800
+Message-ID: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m50-138.163.com (m50-138.163.com [123.125.50.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 542D92652B0
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:47:22 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: Geliang Tang <geliangtang@163.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Then users can remap the keycode from userspace. If without the remap,
-the input device will pass KEY_MICMUTE to userspace, but in X11 layer,
-it uses KEY_F20 rather than KEY_MICMUTE for XF86AudioMicMute. After
-adding the keycode map, users can remap the keycode to any value users
-want.
+Use dev_to_snd_card() instead of open-coding it.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: Geliang Tang <geliangtang@163.com>
 ---
- sound/pci/hda/patch_realtek.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ sound/core/init.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 257b839..3a89d82 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -67,6 +67,10 @@ enum {
- 	ALC_HEADSET_TYPE_OMTP,
- };
- 
-+enum {
-+	ALC_KEY_MICMUTE_INDEX,
-+};
-+
- struct alc_customize_define {
- 	unsigned int  sku_cfg;
- 	unsigned char port_connectivity;
-@@ -123,6 +127,7 @@ struct alc_spec {
- 	unsigned int pll_coef_idx, pll_coef_bit;
- 	unsigned int coef0;
- 	struct input_dev *kb_dev;
-+	u8 alc_mute_keycode_map[1];
- };
- 
- /*
-@@ -3462,24 +3467,32 @@ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
- 
- 	/* GPIO2 just toggles on a keypress/keyrelease cycle. Therefore
- 	   send both key on and key off event for every interrupt. */
--	input_report_key(spec->kb_dev, KEY_MICMUTE, 1);
-+	input_report_key(spec->kb_dev, spec->alc_mute_keycode_map[ALC_KEY_MICMUTE_INDEX], 1);
- 	input_sync(spec->kb_dev);
--	input_report_key(spec->kb_dev, KEY_MICMUTE, 0);
-+	input_report_key(spec->kb_dev, spec->alc_mute_keycode_map[ALC_KEY_MICMUTE_INDEX], 0);
- 	input_sync(spec->kb_dev);
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 20f37fb..fcb84e1 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -639,7 +639,7 @@ static ssize_t
+ card_id_show_attr(struct device *dev,
+ 		  struct device_attribute *attr, char *buf)
+ {
+-	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_card *card = dev_to_snd_card(dev);
+ 	return snprintf(buf, PAGE_SIZE, "%s\n", card->id);
  }
  
- static int alc_register_micmute_input_device(struct hda_codec *codec)
+@@ -647,7 +647,7 @@ static ssize_t
+ card_id_store_attr(struct device *dev, struct device_attribute *attr,
+ 		   const char *buf, size_t count)
  {
- 	struct alc_spec *spec = codec->spec;
-+	int i;
+-	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_card *card = dev_to_snd_card(dev);
+ 	char buf1[sizeof(card->id)];
+ 	size_t copy = count > sizeof(card->id) - 1 ?
+ 					sizeof(card->id) - 1 : count;
+@@ -679,7 +679,7 @@ static ssize_t
+ card_number_show_attr(struct device *dev,
+ 		     struct device_attribute *attr, char *buf)
+ {
+-	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_card *card = dev_to_snd_card(dev);
+ 	return snprintf(buf, PAGE_SIZE, "%i\n", card->number);
+ }
  
- 	spec->kb_dev = input_allocate_device();
- 	if (!spec->kb_dev) {
- 		codec_err(codec, "Out of memory (input_allocate_device)\n");
- 		return -ENOMEM;
- 	}
-+
-+	spec->alc_mute_keycode_map[ALC_KEY_MICMUTE_INDEX] = KEY_MICMUTE;
-+
- 	spec->kb_dev->name = "Microphone Mute Button";
- 	spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
--	spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
-+	spec->kb_dev->keycodesize = sizeof(spec->alc_mute_keycode_map[0]);
-+	spec->kb_dev->keycodemax = ARRAY_SIZE(spec->alc_mute_keycode_map);
-+	spec->kb_dev->keycode = spec->alc_mute_keycode_map;
-+	for (i = 0; i < ARRAY_SIZE(spec->alc_mute_keycode_map); i++)
-+		set_bit(spec->alc_mute_keycode_map[i], spec->kb_dev->keybit);
- 
- 	if (input_register_device(spec->kb_dev)) {
- 		codec_err(codec, "input_register_device failed\n");
 -- 
-1.9.1
+2.5.0
