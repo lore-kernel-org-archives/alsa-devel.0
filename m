@@ -1,39 +1,64 @@
 From: Geliang Tang <geliangtang@163.com>
-Subject: [PATCH 4/4] ASoC: hdac_hdmi: use dev_to_hdac_dev and to_ehdac_device
-Date: Mon, 28 Dec 2015 22:47:13 +0800
-Message-ID: <a740643997f286e5ec60d523ddcb9d42f78f514a.1451312334.git.geliangtang@163.com>
+Subject: [PATCH 3/4] ALSA: hdac: use dev_to_hdac_dev
+Date: Mon, 28 Dec 2015 22:47:12 +0800
+Message-ID: <792658f052baf3b7d110964c1caaa49541cbed30.1451312334.git.geliangtang@163.com>
 References: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m50-138.163.com (m50-138.163.com [123.125.50.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72D4C2652B0
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2015 15:47:31 +0100 (CET)
 In-Reply-To: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
 In-Reply-To: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
 References: <00c81b79d57196a8a72ce9c4a0e8ca5d3ec2eba7.1451312334.git.geliangtang@163.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>
 Cc: Geliang Tang <geliangtang@163.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Use dev_to_hdac_dev() and to_ehdac_device() instead of open-coding.
+Use dev_to_hdac_dev() instead of open-coding it.
 
 Signed-off-by: Geliang Tang <geliangtang@163.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/hda/ext/hdac_ext_bus.c | 2 +-
+ sound/hda/hdac_device.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 1a2f33b..b999fb2 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -67,9 +67,9 @@ struct hdac_hdmi_priv {
+diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+index 58f6b98..2522943 100644
+--- a/sound/hda/ext/hdac_ext_bus.c
++++ b/sound/hda/ext/hdac_ext_bus.c
+@@ -122,7 +122,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_exit);
  
- static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
+ static void default_release(struct device *dev)
  {
--	struct hdac_device *hdac = container_of(dev, struct hdac_device, dev);
-+	struct hdac_device *hdac = dev_to_hdac_dev(dev);
- 
--	return container_of(hdac, struct hdac_ext_device, hdac);
-+	return to_ehdac_device(hdac);
+-	snd_hdac_ext_bus_device_exit(container_of(dev, struct hdac_device, dev));
++	snd_hdac_ext_bus_device_exit(dev_to_hdac_dev(dev));
  }
  
- static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
+ /**
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index e361024..959f7d9 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -18,7 +18,7 @@ static int get_codec_vendor_name(struct hdac_device *codec);
+ 
+ static void default_release(struct device *dev)
+ {
+-	snd_hdac_device_exit(container_of(dev, struct hdac_device, dev));
++	snd_hdac_device_exit(dev_to_hdac_dev(dev));
+ }
+ 
+ /**
 -- 
 2.5.0
