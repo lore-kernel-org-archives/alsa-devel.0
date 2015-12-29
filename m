@@ -1,15 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Exit startup early if no runtime
-Date: Tue, 29 Dec 2015 09:49:19 +0000
-Message-ID: <1451382559-27852-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/5] ALSA: dice: ensure to release sound
+ devices after sound card registration fails
+Date: Tue, 29 Dec 2015 19:56:04 +0900
+Message-ID: <568266C4.1060809@sakamocchi.jp>
+References: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1451100926-20637-4-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hh9j1tysl.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id B11ED265512
- for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2015 10:49:23 +0100 (CET)
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19C822655A5
+ for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2015 11:56:06 +0100 (CET)
+In-Reply-To: <s5hh9j1tysl.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-commit 9b8ef9f6b3fc ("ASoC: dapm: Add startup & shutdown for dai_links")
-
-Added support for calling startup on CODEC to CODEC links, however this
-is called with a NULL runtime pointer. There isn't really a sensible way
-to pass a valid runtime pointer to a CODEC to CODEC link at the moment,
-so we need to make the startup function safe for NULL runtimes.
-
-This patch returns from the Arizona startup function early if there is no
-runtime, this is perfectly safe as all the startup function does is set
-the PCM constraints for user-space which arn't relevant to a CODEC to
-CODEC link anyway.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index fb8f188..33143fe 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1494,6 +1494,9 @@ static int arizona_startup(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hw_constraint_list *constraint;
- 	unsigned int base_rate;
- 
-+	if (!substream->runtime)
-+		return 0;
-+
- 	switch (dai_priv->clk) {
- 	case ARIZONA_CLK_SYSCLK:
- 		base_rate = priv->sysclk;
--- 
-2.1.4
+T24gMjAxNeW5tDEy5pyIMjnml6UgMTg6MDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTYXQs
+IDI2IERlYyAyMDE1IDA0OjM1OjI0ICswMTAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IFdoZW4gd29yayBvZiBzb3VuZCBjYXJkIHJlZ2lzdHJhdGlvbiBmYWlscywgYnVzIHJlc2V0
+IG9uIElFRUUgMTM5NAo+PiBjYW4gc2NoZWR1bGUgdGhlIHdvcmsgYWdhaW4uIEluIHRoaXMgY2Fz
+ZSwgY3VycmVudGx5IGluc3RhbmNlcyBvZiBQQ00gYW5kCj4+IFJhd01JREkgZGV2aWNlcyBhcmUg
+bm90IHJlbGVhc2VkLCBidXQgYWxsb2NhdGVkIGFuZCBlcnJvcnMgb2NjdXJzLgo+Pgo+PiBUaGlz
+IGNvbW1pdCBzb2x2ZXMgdGhpcyBpc3N1ZS4gVGhlIGFsbG9jYXRlZCBkYXRhIGlzIGtlcHQgYW5k
+IHJlbGVhc2VkCj4+IGF0IGFueSBmYWlsdXJlcyBpbiB0aGUgd29yay4KPiAKPiBBcmVuJ3QgdGhl
+eSBiZSByZWxlYXNlZCBpbiBzbmRfY2FyZF9mcmVlKCkgaW4gdGhlIGxhdGVyIGVycm9yIHBhdGg/
+CgpOb3QgaW4gdGhlIGVycm9yIHBhdGgsIGJ1dCBpbmRlZWQgaW4gY2FyZCBmcmVlIHByb2Nlc3Np
+bmcuIFRoZXkncmUgbm90CnJlbGVhc2VkIGFueW1vcmUuIEkgc2hvdWxkIGhhdmUgdXNlZCBzbmRf
+cGNtX2ZyZWUoKSBhbmQKc25kX3Jhd21pZGlfZnJlZSgpIGZvciB0aGlzIHB1cnBvc2UuIChJIG1p
+c3VuZGVyc3RhbmQgdGhleSBzaG91bGQgYmUKdXNlZCBhZnRlciBjYWxsaW5nIHNuZF9jYXJkX3Jl
+Z2lzdGVyKCkuKQoKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwoKPiBUYWthc2hpCj4gCj4gCj4+
+Cj4+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hp
+LmpwPgo+PiAtLS0KPj4gIHNvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS1taWRpLmMgfCAgMiArKwo+
+PiAgc291bmQvZmlyZXdpcmUvZGljZS9kaWNlLXBjbS5jICB8ICAyICsrCj4+ICBzb3VuZC9maXJl
+d2lyZS9kaWNlL2RpY2UuYyAgICAgIHwgMzAgKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0t
+Cj4+ICBzb3VuZC9maXJld2lyZS9kaWNlL2RpY2UuaCAgICAgIHwgIDIgKysKPj4gIDQgZmlsZXMg
+Y2hhbmdlZCwgMjcgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdp
+dCBhL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS1taWRpLmMgYi9zb3VuZC9maXJld2lyZS9kaWNl
+L2RpY2UtbWlkaS5jCj4+IGluZGV4IDE1MWIwOWYuLjkwOGI0M2YgMTAwNjQ0Cj4+IC0tLSBhL3Nv
+dW5kL2ZpcmV3aXJlL2RpY2UvZGljZS1taWRpLmMKPj4gKysrIGIvc291bmQvZmlyZXdpcmUvZGlj
+ZS9kaWNlLW1pZGkuYwo+PiBAQCAtMTUzLDUgKzE1Myw3IEBAIGludCBzbmRfZGljZV9jcmVhdGVf
+bWlkaShzdHJ1Y3Qgc25kX2RpY2UgKmRpY2UpCj4+ICAJaWYgKChtaWRpX291dF9wb3J0cyA+IDAp
+ICYmIChtaWRpX2luX3BvcnRzID4gMCkpCj4+ICAJCXJtaWRpLT5pbmZvX2ZsYWdzIHw9IFNORFJW
+X1JBV01JRElfSU5GT19EVVBMRVg7Cj4+ICAKPj4gKwlkaWNlLT5ybWlkaV9kZXYgPSBybWlkaTsK
+Pj4gKwo+PiAgCXJldHVybiAwOwo+PiAgfQo+PiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUv
+ZGljZS9kaWNlLXBjbS5jIGIvc291bmQvZmlyZXdpcmUvZGljZS9kaWNlLXBjbS5jCj4+IGluZGV4
+IDliMzQzMTkuLjYyNDZjZTMgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGlj
+ZS1wY20uYwo+PiArKysgYi9zb3VuZC9maXJld2lyZS9kaWNlL2RpY2UtcGNtLmMKPj4gQEAgLTQy
+Niw1ICs0MjYsNyBAQCBpbnQgc25kX2RpY2VfY3JlYXRlX3BjbShzdHJ1Y3Qgc25kX2RpY2UgKmRp
+Y2UpCj4+ICAJaWYgKHBsYXliYWNrID4gMCkKPj4gIAkJc25kX3BjbV9zZXRfb3BzKHBjbSwgU05E
+UlZfUENNX1NUUkVBTV9QTEFZQkFDSywgJnBsYXliYWNrX29wcyk7Cj4+ICAKPj4gKwlkaWNlLT5w
+Y21fZGV2ID0gcGNtOwo+PiArCj4+ICAJcmV0dXJuIDA7Cj4+ICB9Cj4+IGRpZmYgLS1naXQgYS9z
+b3VuZC9maXJld2lyZS9kaWNlL2RpY2UuYyBiL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS5jCj4+
+IGluZGV4IDBiYzdkMDguLjIxYWQ4OTQgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2Rp
+Y2UvZGljZS5jCj4+ICsrKyBiL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS5jCj4+IEBAIC0yMDIs
+MzMgKzIwMiw0NSBAQCBzdGF0aWMgdm9pZCBkb19yZWdpc3RyYXRpb24oc3RydWN0IHdvcmtfc3Ry
+dWN0ICp3b3JrKQo+PiAgCWlmIChkaWNlLT5jYXJkLT5zaHV0ZG93biB8fCBkaWNlLT5yZWdpc3Rl
+cmVkKQo+PiAgCQlyZXR1cm47Cj4+ICAKPj4gKwlkaWNlLT5wY21fZGV2ID0gTlVMTDsKPj4gKwlk
+aWNlLT5ybWlkaV9kZXYgPSBOVUxMOwo+PiArCj4+ICAJZXJyID0gc25kX2RpY2VfdHJhbnNhY3Rp
+b25faW5pdChkaWNlKTsKPj4gIAlpZiAoZXJyIDwgMCkKPj4gLQkJZ290byBlbmQ7Cj4+ICsJCWdv
+dG8gZXJyb3I7Cj4+ICAKPj4gIAllcnIgPSBkaWNlX3JlYWRfcGFyYW1zKGRpY2UpOwo+PiAgCWlm
+IChlcnIgPCAwKQo+PiAtCQlnb3RvIGVuZDsKPj4gKwkJZ290byBlcnJvcjsKPj4gIAo+PiAgCWRp
+Y2VfY2FyZF9zdHJpbmdzKGRpY2UpOwo+PiAgCj4+ICAJZXJyID0gc25kX2RpY2VfY3JlYXRlX3Bj
+bShkaWNlKTsKPj4gIAlpZiAoZXJyIDwgMCkKPj4gLQkJZ290byBlbmQ7Cj4+ICsJCWdvdG8gZXJy
+b3I7Cj4+ICAKPj4gIAllcnIgPSBzbmRfZGljZV9jcmVhdGVfbWlkaShkaWNlKTsKPj4gIAlpZiAo
+ZXJyIDwgMCkKPj4gLQkJZ290byBlbmQ7Cj4+ICsJCWdvdG8gZXJyb3I7Cj4+ICAKPj4gIAllcnIg
+PSBzbmRfY2FyZF9yZWdpc3RlcihkaWNlLT5jYXJkKTsKPj4gIAlpZiAoZXJyIDwgMCkKPj4gLQkJ
+Z290byBlbmQ7Cj4+ICsJCWdvdG8gZXJyb3I7Cj4+ICAKPj4gIAlkaWNlLT5yZWdpc3RlcmVkID0g
+dHJ1ZTsKPj4gLWVuZDoKPj4gLQlpZiAoZXJyIDwgMCkKPj4gLQkJZGV2X2luZm8oJmRpY2UtPnVu
+aXQtPmRldmljZSwKPj4gLQkJCSAiU291bmQgY2FyZCByZWdpc3RyYXRpb24gZmFpbGVkOiAlZFxu
+IiwgZXJyKTsKPj4gKwo+PiArCXJldHVybjsKPj4gK2Vycm9yOgo+PiArCXNuZF9kaWNlX3RyYW5z
+YWN0aW9uX2Rlc3Ryb3koZGljZSk7Cj4+ICsKPj4gKwlpZiAoZGljZS0+cGNtX2RldikKPj4gKwkJ
+c25kX2RldmljZV9mcmVlKGRpY2UtPmNhcmQsIGRpY2UtPnBjbV9kZXYpOwo+PiArCj4+ICsJaWYg
+KGRpY2UtPnJtaWRpX2RldikKPj4gKwkJc25kX2RldmljZV9mcmVlKGRpY2UtPmNhcmQsIGRpY2Ut
+PnJtaWRpX2Rldik7Cj4+ICsKPj4gKwlkZXZfaW5mbygmZGljZS0+dW5pdC0+ZGV2aWNlLAo+PiAr
+CQkgIlNvdW5kIGNhcmQgcmVnaXN0cmF0aW9uIGZhaWxlZDogJWRcbiIsIGVycik7Cj4+ICB9Cj4+
+ICAKPj4gIHN0YXRpYyB2b2lkIHNjaGVkdWxlX3JlZ2lzdHJhdGlvbihzdHJ1Y3Qgc25kX2RpY2Ug
+KmRpY2UpCj4+IGRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9kaWNlL2RpY2UuaCBiL3NvdW5k
+L2ZpcmV3aXJlL2RpY2UvZGljZS5oCj4+IGluZGV4IDNkNWViZWIuLmQ2MzJhYzEgMTAwNjQ0Cj4+
+IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS5oCj4+ICsrKyBiL3NvdW5kL2ZpcmV3aXJl
+L2RpY2UvZGljZS5oCj4+IEBAIC00Nyw2ICs0Nyw4IEBAIHN0cnVjdCBzbmRfZGljZSB7Cj4+ICAK
+Pj4gIAlib29sIHJlZ2lzdGVyZWQ7Cj4+ICAJc3RydWN0IGRlbGF5ZWRfd29yayBkd29yazsKPj4g
+KwlzdHJ1Y3Qgc25kX3BjbSAqcGNtX2RldjsKPj4gKwlzdHJ1Y3Qgc25kX3Jhd21pZGkgKnJtaWRp
+X2RldjsKPj4gIAo+PiAgCS8qIE9mZnNldHMgZm9yIHN1Yi1hZGRyZXNzZXMgKi8KPj4gIAl1bnNp
+Z25lZCBpbnQgZ2xvYmFsX29mZnNldDsKPj4gLS0gCj4+IDIuNS4wCj4+Cj4gCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
