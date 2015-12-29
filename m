@@ -1,19 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 3/5] ALSA: dice: ensure to release sound
- devices after sound card registration fails
-Date: Tue, 29 Dec 2015 20:37:06 +0900
-Message-ID: <56827062.4090805@sakamocchi.jp>
-References: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
- <1451100926-20637-4-git-send-email-o-takashi@sakamocchi.jp>
- <s5hh9j1tysl.wl-tiwai@suse.de> <568266C4.1060809@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 7/8] ASoC: wm_adsp: Add a handler for
+ the compressed IRQ
+Date: Tue, 29 Dec 2015 15:43:13 +0000
+Message-ID: <20151229154313.GA1490@localhost.localdomain>
+References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20151223001907.GI16023@sirena.org.uk>
+ <20151223095806.GY6058@localhost.localdomain>
+ <20151224193137.GI579@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D2A926568C
- for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2015 12:37:09 +0100 (CET)
-In-Reply-To: <568266C4.1060809@sakamocchi.jp>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D99632605FF
+ for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2015 16:43:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20151224193137.GI579@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNeW5tDEy5pyIMjnml6UgMTk6NTYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gT24g
-MjAxNeW5tDEy5pyIMjnml6UgMTg6MDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPj4gT24gU2F0LCAy
-NiBEZWMgMjAxNSAwNDozNToyNCArMDEwMCwKPj4gVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4+
-Cj4+PiBXaGVuIHdvcmsgb2Ygc291bmQgY2FyZCByZWdpc3RyYXRpb24gZmFpbHMsIGJ1cyByZXNl
-dCBvbiBJRUVFIDEzOTQKPj4+IGNhbiBzY2hlZHVsZSB0aGUgd29yayBhZ2Fpbi4gSW4gdGhpcyBj
-YXNlLCBjdXJyZW50bHkgaW5zdGFuY2VzIG9mIFBDTSBhbmQKPj4+IFJhd01JREkgZGV2aWNlcyBh
-cmUgbm90IHJlbGVhc2VkLCBidXQgYWxsb2NhdGVkIGFuZCBlcnJvcnMgb2NjdXJzLgo+Pj4KPj4+
-IFRoaXMgY29tbWl0IHNvbHZlcyB0aGlzIGlzc3VlLiBUaGUgYWxsb2NhdGVkIGRhdGEgaXMga2Vw
-dCBhbmQgcmVsZWFzZWQKPj4+IGF0IGFueSBmYWlsdXJlcyBpbiB0aGUgd29yay4KPj4KPj4gQXJl
-bid0IHRoZXkgYmUgcmVsZWFzZWQgaW4gc25kX2NhcmRfZnJlZSgpIGluIHRoZSBsYXRlciBlcnJv
-ciBwYXRoPwo+IAo+IE5vdCBpbiB0aGUgZXJyb3IgcGF0aCwgYnV0IGluZGVlZCBpbiBjYXJkIGZy
-ZWUgcHJvY2Vzc2luZy4gVGhleSdyZSBub3QKPiByZWxlYXNlZCBhbnltb3JlLiBJIHNob3VsZCBo
-YXZlIHVzZWQgc25kX3BjbV9mcmVlKCkgYW5kCj4gc25kX3Jhd21pZGlfZnJlZSgpIGZvciB0aGlz
-IHB1cnBvc2UuIChJIG1pc3VuZGVyc3RhbmQgdGhleSBzaG91bGQgYmUKPiB1c2VkIGFmdGVyIGNh
-bGxpbmcgc25kX2NhcmRfcmVnaXN0ZXIoKS4pCgpJIHJlYWxpemVkIHRoYXQgYm90aCBvZiBzbmRf
-cmF3bWlkaV9mcmVlKCkgYW5kIHNuZF9wY21fZnJlZSgpIGFyZSBjYWxsZWQKYnkgc25kX2Rldmlj
-ZV9mcmVlKCksIHRoZW4gYWxsIG9mIGFsbG9jYXRlZCBtZW1vcnkgYmxvY2tzIGFyZSBmcmVlZC4K
-CldoaWNoIGVycm9yIHBhdGhlcyBkbyB5b3UgdGhpbmsgdG8gY2F1c2UgdGhlIHByb2JsZW1zPwoK
-ClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On Thu, Dec 24, 2015 at 07:31:37PM +0000, Mark Brown wrote:
+> On Wed, Dec 23, 2015 at 09:58:06AM +0000, Charles Keepax wrote:
+> > On Wed, Dec 23, 2015 at 12:19:07AM +0000, Mark Brown wrote:
+> > > On Tue, Dec 15, 2015 at 11:29:48AM +0000, Charles Keepax wrote:
+> 
+> > > > +static int wm_adsp_buffer_ack_irq(struct wm_adsp_compr_buf *buf)
+> > > > +{
+> > > > +	if (buf->irq_ack & 0x01)
+> 
+> > > This is confusing, this isn't actually in the interrupt path...
+> 
+> > Acking the last IRQ basically tells the firmware that it is free
+> > to send another. There is no point in doing so until we have
+> > to wait for data. As we are just actively streaming available
+> > data we can progress along fine without enabling the IRQ.
+> 
+> > I am somewhat torn between a comment and renaming the function. I
+> > will try to add some sort of reasonable comment.
+> 
+> This doesn't sound like it's really acknowledging an IRQ - you have
+> level triggered interrupts here so if the interrupt isn't acknowledged
+> the interrupt handler will constantly be called.
+
+It kinda is acking the IRQ just at the firmware level, not the
+hardware level. The physical IRQ all gets acked through regmap
+so that is all handled. This code here lets the firmware know,
+which it will then use to decide whether it should send a new IRQ
+or not.
+
+I could perhaps rename the function to
+wm_adsp_buffer_request_irq? and buf->irq_ack to buf->irq_count?
+That might make the usage a little more clear.
+
+Thanks,
+Charles
