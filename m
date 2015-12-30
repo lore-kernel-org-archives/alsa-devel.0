@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoC: core: Adds support for cpu
- loopback dai_link
-Date: Wed, 30 Dec 2015 18:03:44 +0000
-Message-ID: <20151230180344.GB16023@sirena.org.uk>
-References: <1447091401-24298-1-git-send-email-vinod.koul@intel.com>
- <1447091401-24298-3-git-send-email-vinod.koul@intel.com>
- <20151118131757.GI31303@sirena.org.uk>
- <20151118134843.GU25173@localhost>
- <20151130162548.GZ1929@sirena.org.uk>
- <20151201025654.GJ3901@localhost>
- <20151201122747.GG1929@sirena.org.uk>
- <20151202052330.GE1854@localhost>
- <20151202103241.GC1929@sirena.org.uk>
- <20151216144806.GO1854@localhost>
+Subject: Applied "ASoC: rsnd: fix usrcnt decrementing bug" to
+	the asoc tree
+Date: Wed, 30 Dec 2015 18:05:16 +0000
+Message-ID: <E1aEL7c-0007LJ-Rm@debutante>
+References: <1450940559-16516-1-git-send-email-a.hajda@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3742827239783407037=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 636462659D7
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 19:03:51 +0100 (CET)
-In-Reply-To: <20151216144806.GO1854@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E806265A0C
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 19:05:24 +0100 (CET)
+In-Reply-To: <1450940559-16516-1-git-send-email-a.hajda@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,66 +22,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>
+To: Andrzej Hajda <a.hajda@samsung.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3742827239783407037==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="C311HLcnHV2CzHlo"
-Content-Disposition: inline
+   ASoC: rsnd: fix usrcnt decrementing bug
 
+has been applied to the asoc tree at
 
---C311HLcnHV2CzHlo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 16, 2015 at 08:18:06PM +0530, Vinod Koul wrote:
-> On Wed, Dec 02, 2015 at 10:32:41AM +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > But neither of these is a CODEC so why would the CODEC flag be set in
-> > the DAI?  Unless your "Codec" here is genuinely the CODEC rather than
-> > the CPU DAI connected to the CODEC in which case surely this is just a
-> > normal DAI link?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Sorry Mark for late reply..
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> You are right this is like a normal link, and yes that is _exactly_ we need,
-> but we also need parameters to be specified for this as this is hostless.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> The moment I add 'params" core will do different connections which do not
-> work for us.
+Thanks,
+Mark
 
-> I am okay if you have something else in mind which solves our problem :)
+>From e5d9cfc6f5fe56caa44cefbc7ef4531c480d901d Mon Sep 17 00:00:00 2001
+From: Andrzej Hajda <a.hajda@samsung.com>
+Date: Thu, 24 Dec 2015 08:02:39 +0100
+Subject: [PATCH] ASoC: rsnd: fix usrcnt decrementing bug
 
-Isn't this what the DPCM fixup() is supposed to handle?  As I keep
-saying I really think these systems would work a lot better if they were
-representing the DSP as a CODEC, that makes everything much more
-consistent and less riddled with special cases.
+Field usrcnt is unsigned so it cannot be lesser than zero.
+The patch fixes the check, moves it to the beginning of the function
+and changes return value to -EIO in case of usercnt error.
 
---C311HLcnHV2CzHlo
-Content-Type: application/pgp-signature; name="signature.asc"
+The problem has been detected using proposed semantic patch
+scripts/coccinelle/tests/unsigned_lesser_than_zero.cocci [1].
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+[1]: http://permalink.gmane.org/gmane.linux.kernel/2038576
 
-iQEcBAEBCAAGBQJWhBx/AAoJECTWi3JdVIfQyIEH/3mY8jJGFEvHqazluNPSB6Lk
-p9q/t76sNuWYglB07yoxQMEA040kM1uSJ48zCX5HiXdPAiMUSHd+SlAiQ1ehimdV
-sj2Bdr+xz93XKvHpA83fVZa7ve7zbFSPnOCa/d7NJ5AcR2bsFfgQHdXkDlPeuISJ
-nhZWAV/j/+BL+Wb0dpJsqrrSdEyJ4E/Co+8zsccCDrjuco2+YCxj7CG0TdFHP4CO
-OB2f9zj4sNhuLQ253RIh95gwRwDLTJ6MkbTFxK2h2xhdaCJ53afh1Mr0fleXPBGE
-JSu9BwG/Rt0GOaUlNiSgxsTazS8hVbhc+m4ouD8Ex6VwvmDWgW7hkblE2zIIiZQ=
-=RTM+
------END PGP SIGNATURE-----
+Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ssi.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
---C311HLcnHV2CzHlo--
-
---===============3742827239783407037==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3742827239783407037==--
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 7db05fdfb656..7ee89da4dd5f 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -403,29 +403,30 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 
+-	if (rsnd_ssi_is_parent(mod, io))
+-		goto rsnd_ssi_quit_end;
++	if (!ssi->usrcnt) {
++		dev_err(dev, "%s[%d] usrcnt error\n",
++			rsnd_mod_name(mod), rsnd_mod_id(mod));
++		return -EIO;
++	}
+ 
+-	if (ssi->err > 0)
+-		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod), ssi->err);
++	if (!rsnd_ssi_is_parent(mod, io)) {
++		if (ssi->err > 0)
++			dev_warn(dev, "%s[%d] under/over flow err = %d\n",
++				 rsnd_mod_name(mod), rsnd_mod_id(mod),
++				 ssi->err);
+ 
+-	ssi->cr_own	= 0;
+-	ssi->err	= 0;
++		ssi->cr_own	= 0;
++		ssi->err	= 0;
+ 
+-	rsnd_ssi_irq_disable(mod);
++		rsnd_ssi_irq_disable(mod);
++	}
+ 
+-rsnd_ssi_quit_end:
+ 	rsnd_ssi_master_clk_stop(ssi, io);
+ 
+ 	rsnd_mod_power_off(mod);
+ 
+ 	ssi->usrcnt--;
+ 
+-	if (ssi->usrcnt < 0)
+-		dev_err(dev, "%s[%d] usrcnt error\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
+-
+ 	return 0;
+ }
+ 
+-- 
+2.6.2
