@@ -1,16 +1,20 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ALSA: dummy: constify dummy_timer_ops
-	structures
-Date: Wed, 30 Dec 2015 12:28:49 +0100
-Message-ID: <1451474929-25424-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/5] ALSA: dice: ensure to release sound
+ devices after sound card registration fails
+Date: Wed, 30 Dec 2015 23:06:10 +0900
+Message-ID: <5683E4D2.2040009@sakamocchi.jp>
+References: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1451100926-20637-4-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hh9j1tysl.wl-tiwai@suse.de> <568266C4.1060809@sakamocchi.jp>
+ <56827062.4090805@sakamocchi.jp> <s5hd1totl10.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D150265960
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 12:41:32 +0100 (CET)
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id D49F326599F
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 15:06:19 +0100 (CET)
+In-Reply-To: <s5hd1totl10.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The dummy_timer_ops structures are never modified, so declare them as
-const.
-
-Done with the help of Coccinelle.
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- sound/drivers/dummy.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 016e451..75b7485 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -351,7 +351,7 @@ static void dummy_systimer_free(struct snd_pcm_substream *substream)
- 	kfree(substream->runtime->private_data);
- }
- 
--static struct dummy_timer_ops dummy_systimer_ops = {
-+static const struct dummy_timer_ops dummy_systimer_ops = {
- 	.create =	dummy_systimer_create,
- 	.free =		dummy_systimer_free,
- 	.prepare =	dummy_systimer_prepare,
-@@ -475,7 +475,7 @@ static void dummy_hrtimer_free(struct snd_pcm_substream *substream)
- 	kfree(dpcm);
- }
- 
--static struct dummy_timer_ops dummy_hrtimer_ops = {
-+static const struct dummy_timer_ops dummy_hrtimer_ops = {
- 	.create =	dummy_hrtimer_create,
- 	.free =		dummy_hrtimer_free,
- 	.prepare =	dummy_hrtimer_prepare,
+SGksCgpPbiBEZWMgMzAgMjAxNSAxNzowOSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFR1ZSwg
+MjkgRGVjIDIwMTUgMTI6Mzc6MDYgKzAxMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4K
+Pj4gT24gMjAxNeW5tDEy5pyIMjnml6UgMTk6NTYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+PiBPbiAyMDE15bm0MTLmnIgyOeaXpSAxODowMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+IE9u
+IFNhdCwgMjYgRGVjIDIwMTUgMDQ6MzU6MjQgKzAxMDAsCj4+Pj4gVGFrYXNoaSBTYWthbW90byB3
+cm90ZToKPj4+Pj4KPj4+Pj4gV2hlbiB3b3JrIG9mIHNvdW5kIGNhcmQgcmVnaXN0cmF0aW9uIGZh
+aWxzLCBidXMgcmVzZXQgb24gSUVFRSAxMzk0Cj4+Pj4+IGNhbiBzY2hlZHVsZSB0aGUgd29yayBh
+Z2Fpbi4gSW4gdGhpcyBjYXNlLCBjdXJyZW50bHkgaW5zdGFuY2VzIG9mIFBDTSBhbmQKPj4+Pj4g
+UmF3TUlESSBkZXZpY2VzIGFyZSBub3QgcmVsZWFzZWQsIGJ1dCBhbGxvY2F0ZWQgYW5kIGVycm9y
+cyBvY2N1cnMuCj4+Pj4+Cj4+Pj4+IFRoaXMgY29tbWl0IHNvbHZlcyB0aGlzIGlzc3VlLiBUaGUg
+YWxsb2NhdGVkIGRhdGEgaXMga2VwdCBhbmQgcmVsZWFzZWQKPj4+Pj4gYXQgYW55IGZhaWx1cmVz
+IGluIHRoZSB3b3JrLgo+Pj4+Cj4+Pj4gQXJlbid0IHRoZXkgYmUgcmVsZWFzZWQgaW4gc25kX2Nh
+cmRfZnJlZSgpIGluIHRoZSBsYXRlciBlcnJvciBwYXRoPwo+Pj4KPj4+IE5vdCBpbiB0aGUgZXJy
+b3IgcGF0aCwgYnV0IGluZGVlZCBpbiBjYXJkIGZyZWUgcHJvY2Vzc2luZy4gVGhleSdyZSBub3QK
+Pj4+IHJlbGVhc2VkIGFueW1vcmUuIEkgc2hvdWxkIGhhdmUgdXNlZCBzbmRfcGNtX2ZyZWUoKSBh
+bmQKPj4+IHNuZF9yYXdtaWRpX2ZyZWUoKSBmb3IgdGhpcyBwdXJwb3NlLiAoSSBtaXN1bmRlcnN0
+YW5kIHRoZXkgc2hvdWxkIGJlCj4+PiB1c2VkIGFmdGVyIGNhbGxpbmcgc25kX2NhcmRfcmVnaXN0
+ZXIoKS4pCj4+Cj4+IEkgcmVhbGl6ZWQgdGhhdCBib3RoIG9mIHNuZF9yYXdtaWRpX2ZyZWUoKSBh
+bmQgc25kX3BjbV9mcmVlKCkgYXJlIGNhbGxlZAo+PiBieSBzbmRfZGV2aWNlX2ZyZWUoKSwgdGhl
+biBhbGwgb2YgYWxsb2NhdGVkIG1lbW9yeSBibG9ja3MgYXJlIGZyZWVkLgo+Pgo+PiBXaGljaCBl
+cnJvciBwYXRoZXMgZG8geW91IHRoaW5rIHRvIGNhdXNlIHRoZSBwcm9ibGVtcz8KPiAKPiBJIGRv
+bid0IHRoaW5rIGl0IGNhdXNpbmcgcHJvYmxlbXMgYnV0IGp1c3Qgc3VwZXJmbHVvdXMgdG8gY2Fs
+bAo+IGV4cGxpY2l0bHkgdGhlcmUuICBZb3UgKHNob3VsZCkgY2FsbCBzbmRfY2FyZF9mcmVlKigp
+IGluIHRoZSBlcnJvcgo+IHBhdGgsIGFuZCB0aGVzZSBjb21wb25lbnRzIGFyZSByZWxlYXNlZCB0
+aGVyZSBhdXRvbWF0aWNhbGx5LgoKSSBoYWQgdHdvIHJlYXNvbiBub3QgdG8gY2FsbCBzbmRfY2Fy
+ZF9mcmVlKCkgZmFtaWx5IGluIGVycm9yIHBhdGggb2YgdGhlCidkb19yZWdpc3RyYXRpb24oKS4K
+Ck9yaWdpbmFsbHksIHRoZSAnZG9fcmVnaXN0cmF0aW9uKCknIGFuZCAucmVtb3ZlKCkgYXJlIG9u
+IGEgcmFjZQpjb25kaXRpb24gYWdhaW5zdCBzb3VuZCBjYXJkIGluc3RhbmNlLgoKQnV0IG5vdy4g
+cmVtb3ZlKCkgd2FpdHMgdG8gZmluaXNoIGEgd29yayBvZiB0aGUgc291bmQgY2FyZCByZWdpc3Ry
+YXRpb24sCnRoZXJlZm9yZSBzbmRfY2FyZF9mcmVlKCkgY2FuIGJlIGNhbGxlZCBpbiBlcnJvciBw
+YXRoIG9mIHRoZSB3b3JrLgoKQW5vdGhlciByZWFzb24gaXMgdGhlIG1lbW9yeSBvYmplY3QgZm9y
+IGRyaXZlcl9kYXRhLiBDdXJyZW50bHkgSSB1c2UKc3RydWN0IHNuZF9kaWNlIGFsbG9jYXRlZCBi
+eSBzbmRfY2FyZF9uZXcoKS4gSWYgY2FsbGluZyBzbmRfY2FyZF9uZXcoKQppbiB0aGUgd29yaywg
+SSBtdXN0IGFsbG9jYXRlIGl0IGluIC5wcm9iZSgpIGNhbGxiYWNrIGluZGVwZW5kZW50bHkuIEkK
+dGhvdWdodCBpdCBhIGJpdCBoYXJkIHRvIG1haW50YWluIHRoZSBtZW1vcnkgb2JqZWN0IGFnYWlu
+c3QgdGhlIHJhY2UKY29uZGl0aW9uIGJldHdlZW4gdGhlIHdvcmssIC51cGRhdGUoKSBhbmQgLnJl
+bW92ZSgpIGFuZCBzb3VuZCBjYXJkIGZyZWUuCgpCdXQgdGhlIHJhY2UgY29uZGl0aW9uIGJlY29t
+ZXMgc2ltcGxlciB3aGVuIC5yZW1vdmUoKSB3YWl0cyB0byBmaW5pc2gKdGhlIHdvcmsuCgpPSy4g
+SSdsbCBtb2RpZnkgYW5kIHBvc3QgdGhlIG5ldyBwYXRjaHNldC4KCj4gSW4gd2hpY2ggY29kZSBw
+YXRoIGRpZCB5b3Ugc2VlIHRoZSBsZWFrPyAgVGhpcyBhbHJlYWR5IHNvdW5kcwo+IHN0cmFuZ2Uu
+CgpJdCB3YXMgbXkgbWlzdW5kZXJzdGFuZGluZyBhIGZldyBkYXlzIGFnby4KCgpUaGFua3MKClRh
+a2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
