@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5110: Use helper function to lock the
-	DAPM mutex" to the asoc tree
-Date: Wed, 30 Dec 2015 18:05:17 +0000
-Message-ID: <E1aEL7d-0007Lq-R8@debutante>
-References: <1451406314-13973-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: rt5645: add sys clk detection" to the
+	asoc tree
+Date: Wed, 30 Dec 2015 18:05:19 +0000
+Message-ID: <E1aEL7f-0007Mp-OF@debutante>
+References: <1451460801-24252-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9268E2659F8
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 19:05:24 +0100 (CET)
-In-Reply-To: <1451406314-13973-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D9C5265A13
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 19:05:25 +0100 (CET)
+In-Reply-To: <1451460801-24252-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm5110: Use helper function to lock the DAPM mutex
+   ASoC: rt5645: add sys clk detection
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From e116615b80bb89484ad4d55c752a00dd6379f95c Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 29 Dec 2015 16:25:14 +0000
-Subject: [PATCH] ASoC: wm5110: Use helper function to lock the DAPM mutex
+>From ca8457bb02d8ecddf7f49ab874127dd4df782b16 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 30 Dec 2015 15:33:21 +0800
+Subject: [PATCH] ASoC: rt5645: add sys clk detection
 
-A couple of call sites were missed when the snd_soc_dapm_mutex_lock
-function was added this patch fixes those up.
+Add system clock detection to prevent output DC from SPO.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5110.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5645.c | 4 ++++
+ sound/soc/codecs/rt5645.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index e93e5420943e..605daffebc9c 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -439,18 +439,17 @@ static int wm5110_in_pga_get(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct snd_soc_card *card = dapm->card;
- 	int ret;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 28132375e427..61bbeac0c117 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1646,9 +1646,13 @@ static int rt5645_spk_event(struct snd_soc_dapm_widget *w,
+ 			RT5645_PWR_CLS_D_L,
+ 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
+ 			RT5645_PWR_CLS_D_L);
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL3,
++			RT5645_DET_CLK_MASK, RT5645_DET_CLK_MODE1);
+ 		break;
  
- 	/*
- 	 * PGA Volume is also used as part of the enable sequence, so
- 	 * usage of it should be avoided whilst that is running.
- 	 */
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+	snd_soc_dapm_mutex_lock(dapm);
+ 	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_update_bits(codec, RT5645_GEN_CTRL3,
++			RT5645_DET_CLK_MASK, RT5645_DET_CLK_DIS);
+ 		snd_soc_write(codec, RT5645_EQ_CTRL2, 0);
+ 		snd_soc_update_bits(codec, RT5645_PWR_DIG1,
+ 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 093e46d559fb..205e0715c99a 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -2122,6 +2122,10 @@ enum {
+ /* General Control3 (0xfc) */
+ #define RT5645_JD_PSV_MODE			(0x1 << 12)
+ #define RT5645_IRQ_CLK_GATE_CTRL		(0x1 << 11)
++#define RT5645_DET_CLK_MASK			(0x3 << 9)
++#define RT5645_DET_CLK_DIS			(0x0 << 9)
++#define RT5645_DET_CLK_MODE1			(0x1 << 9)
++#define RT5645_DET_CLK_MODE2			(0x2 << 9)
+ #define RT5645_MICINDET_MANU			(0x1 << 7)
+ #define RT5645_RING2_SLEEVE_GND			(0x1 << 5)
  
- 	ret = snd_soc_get_volsw_range(kcontrol, ucontrol);
- 
--	mutex_unlock(&card->dapm_mutex);
-+	snd_soc_dapm_mutex_unlock(dapm);
- 
- 	return ret;
- }
-@@ -460,18 +459,17 @@ static int wm5110_in_pga_put(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct snd_soc_card *card = dapm->card;
- 	int ret;
- 
- 	/*
- 	 * PGA Volume is also used as part of the enable sequence, so
- 	 * usage of it should be avoided whilst that is running.
- 	 */
--	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+	snd_soc_dapm_mutex_lock(dapm);
- 
- 	ret = snd_soc_put_volsw_range(kcontrol, ucontrol);
- 
--	mutex_unlock(&card->dapm_mutex);
-+	snd_soc_dapm_mutex_unlock(dapm);
- 
- 	return ret;
- }
 -- 
 2.6.2
