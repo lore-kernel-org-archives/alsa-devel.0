@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: add sys clk detection" to the
-	asoc tree
-Date: Wed, 30 Dec 2015 18:05:19 +0000
-Message-ID: <E1aEL7f-0007Mp-OF@debutante>
-References: <1451460801-24252-2-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Use nested lock for
+	snd_soc_dapm_mutex_lock" to the asoc tree
+Date: Wed, 30 Dec 2015 18:05:18 +0000
+Message-ID: <E1aEL7e-0007MM-P2@debutante>
+References: <1451406314-13973-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D9C5265A13
+ by alsa0.perex.cz (Postfix) with ESMTP id BC560265A1A
  for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 19:05:25 +0100 (CET)
-In-Reply-To: <1451460801-24252-2-git-send-email-bardliao@realtek.com>
+In-Reply-To: <1451406314-13973-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: add sys clk detection
+   ASoC: Use nested lock for snd_soc_dapm_mutex_lock
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From ca8457bb02d8ecddf7f49ab874127dd4df782b16 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 30 Dec 2015 15:33:21 +0800
-Subject: [PATCH] ASoC: rt5645: add sys clk detection
+>From 783513eec3209542fcd6ac0cbcb030b3c17a4827 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 29 Dec 2015 16:25:13 +0000
+Subject: [PATCH] ASoC: Use nested lock for snd_soc_dapm_mutex_lock
 
-Add system clock detection to prevent output DC from SPO.
+snd_soc_dapm_mutex_lock currently uses the un-nested call which can
+cause lockdep warnings when called from control handlers (a relatively
+common usage) and using modules. As creating the control causes a
+potential mutex inversion with the handler, creating the control will
+take the controls_rwsem under the dapm_mutex and accessing the control
+will take the dapm_mutex under controls_rwsem.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+All the users look like they want to be using the runtime class of the
+lock anyway, so this patch just changes snd_soc_dapm_mutex_lock to use
+the nested call, with the SND_SOC_DAPM_CLASS_RUNTIME class.
+
+Fixes: f6d5e586b416 ("ASoC: dapm: Add helpers to lock/unlock DAPM mutex")
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 4 ++++
- sound/soc/codecs/rt5645.h | 4 ++++
- 2 files changed, 8 insertions(+)
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 28132375e427..61bbeac0c117 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -1646,9 +1646,13 @@ static int rt5645_spk_event(struct snd_soc_dapm_widget *w,
- 			RT5645_PWR_CLS_D_L,
- 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
- 			RT5645_PWR_CLS_D_L);
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL3,
-+			RT5645_DET_CLK_MASK, RT5645_DET_CLK_MODE1);
- 		break;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index a8b4b9c8b1d2..fb955e69a78e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1655,7 +1655,7 @@ extern const struct dev_pm_ops snd_soc_pm_ops;
+ /* Helper functions */
+ static inline void snd_soc_dapm_mutex_lock(struct snd_soc_dapm_context *dapm)
+ {
+-	mutex_lock(&dapm->card->dapm_mutex);
++	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+ }
  
- 	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL3,
-+			RT5645_DET_CLK_MASK, RT5645_DET_CLK_DIS);
- 		snd_soc_write(codec, RT5645_EQ_CTRL2, 0);
- 		snd_soc_update_bits(codec, RT5645_PWR_DIG1,
- 			RT5645_PWR_CLS_D | RT5645_PWR_CLS_D_R |
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 093e46d559fb..205e0715c99a 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2122,6 +2122,10 @@ enum {
- /* General Control3 (0xfc) */
- #define RT5645_JD_PSV_MODE			(0x1 << 12)
- #define RT5645_IRQ_CLK_GATE_CTRL		(0x1 << 11)
-+#define RT5645_DET_CLK_MASK			(0x3 << 9)
-+#define RT5645_DET_CLK_DIS			(0x0 << 9)
-+#define RT5645_DET_CLK_MODE1			(0x1 << 9)
-+#define RT5645_DET_CLK_MODE2			(0x2 << 9)
- #define RT5645_MICINDET_MANU			(0x1 << 7)
- #define RT5645_RING2_SLEEVE_GND			(0x1 << 5)
- 
+ static inline void snd_soc_dapm_mutex_unlock(struct snd_soc_dapm_context *dapm)
 -- 
 2.6.2
