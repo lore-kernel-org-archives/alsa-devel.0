@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 3/5] ALSA: dice: ensure to release sound
- devices after sound card registration fails
-Date: Wed, 30 Dec 2015 23:06:10 +0900
-Message-ID: <5683E4D2.2040009@sakamocchi.jp>
-References: <1451100926-20637-1-git-send-email-o-takashi@sakamocchi.jp>
- <1451100926-20637-4-git-send-email-o-takashi@sakamocchi.jp>
- <s5hh9j1tysl.wl-tiwai@suse.de> <568266C4.1060809@sakamocchi.jp>
- <56827062.4090805@sakamocchi.jp> <s5hd1totl10.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rsnd: fix usrcnt decrementing bug
+Date: Wed, 30 Dec 2015 17:12:57 +0000
+Message-ID: <20151230171257.GY16023@sirena.org.uk>
+References: <87k2o4fkad.wl%kuninori.morimoto.gx@renesas.com>
+ <1450940559-16516-1-git-send-email-a.hajda@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3437957471418864009=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id D49F326599F
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 15:06:19 +0100 (CET)
-In-Reply-To: <s5hd1totl10.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE61C2659D7
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2015 18:15:16 +0100 (CET)
+In-Reply-To: <1450940559-16516-1-git-send-email-a.hajda@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Andrzej Hajda <a.hajda@samsung.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Takashi Iwai <tiwai@suse.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBEZWMgMzAgMjAxNSAxNzowOSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFR1ZSwg
-MjkgRGVjIDIwMTUgMTI6Mzc6MDYgKzAxMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4K
-Pj4gT24gMjAxNeW5tDEy5pyIMjnml6UgMTk6NTYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-PiBPbiAyMDE15bm0MTLmnIgyOeaXpSAxODowMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+IE9u
-IFNhdCwgMjYgRGVjIDIwMTUgMDQ6MzU6MjQgKzAxMDAsCj4+Pj4gVGFrYXNoaSBTYWthbW90byB3
-cm90ZToKPj4+Pj4KPj4+Pj4gV2hlbiB3b3JrIG9mIHNvdW5kIGNhcmQgcmVnaXN0cmF0aW9uIGZh
-aWxzLCBidXMgcmVzZXQgb24gSUVFRSAxMzk0Cj4+Pj4+IGNhbiBzY2hlZHVsZSB0aGUgd29yayBh
-Z2Fpbi4gSW4gdGhpcyBjYXNlLCBjdXJyZW50bHkgaW5zdGFuY2VzIG9mIFBDTSBhbmQKPj4+Pj4g
-UmF3TUlESSBkZXZpY2VzIGFyZSBub3QgcmVsZWFzZWQsIGJ1dCBhbGxvY2F0ZWQgYW5kIGVycm9y
-cyBvY2N1cnMuCj4+Pj4+Cj4+Pj4+IFRoaXMgY29tbWl0IHNvbHZlcyB0aGlzIGlzc3VlLiBUaGUg
-YWxsb2NhdGVkIGRhdGEgaXMga2VwdCBhbmQgcmVsZWFzZWQKPj4+Pj4gYXQgYW55IGZhaWx1cmVz
-IGluIHRoZSB3b3JrLgo+Pj4+Cj4+Pj4gQXJlbid0IHRoZXkgYmUgcmVsZWFzZWQgaW4gc25kX2Nh
-cmRfZnJlZSgpIGluIHRoZSBsYXRlciBlcnJvciBwYXRoPwo+Pj4KPj4+IE5vdCBpbiB0aGUgZXJy
-b3IgcGF0aCwgYnV0IGluZGVlZCBpbiBjYXJkIGZyZWUgcHJvY2Vzc2luZy4gVGhleSdyZSBub3QK
-Pj4+IHJlbGVhc2VkIGFueW1vcmUuIEkgc2hvdWxkIGhhdmUgdXNlZCBzbmRfcGNtX2ZyZWUoKSBh
-bmQKPj4+IHNuZF9yYXdtaWRpX2ZyZWUoKSBmb3IgdGhpcyBwdXJwb3NlLiAoSSBtaXN1bmRlcnN0
-YW5kIHRoZXkgc2hvdWxkIGJlCj4+PiB1c2VkIGFmdGVyIGNhbGxpbmcgc25kX2NhcmRfcmVnaXN0
-ZXIoKS4pCj4+Cj4+IEkgcmVhbGl6ZWQgdGhhdCBib3RoIG9mIHNuZF9yYXdtaWRpX2ZyZWUoKSBh
-bmQgc25kX3BjbV9mcmVlKCkgYXJlIGNhbGxlZAo+PiBieSBzbmRfZGV2aWNlX2ZyZWUoKSwgdGhl
-biBhbGwgb2YgYWxsb2NhdGVkIG1lbW9yeSBibG9ja3MgYXJlIGZyZWVkLgo+Pgo+PiBXaGljaCBl
-cnJvciBwYXRoZXMgZG8geW91IHRoaW5rIHRvIGNhdXNlIHRoZSBwcm9ibGVtcz8KPiAKPiBJIGRv
-bid0IHRoaW5rIGl0IGNhdXNpbmcgcHJvYmxlbXMgYnV0IGp1c3Qgc3VwZXJmbHVvdXMgdG8gY2Fs
-bAo+IGV4cGxpY2l0bHkgdGhlcmUuICBZb3UgKHNob3VsZCkgY2FsbCBzbmRfY2FyZF9mcmVlKigp
-IGluIHRoZSBlcnJvcgo+IHBhdGgsIGFuZCB0aGVzZSBjb21wb25lbnRzIGFyZSByZWxlYXNlZCB0
-aGVyZSBhdXRvbWF0aWNhbGx5LgoKSSBoYWQgdHdvIHJlYXNvbiBub3QgdG8gY2FsbCBzbmRfY2Fy
-ZF9mcmVlKCkgZmFtaWx5IGluIGVycm9yIHBhdGggb2YgdGhlCidkb19yZWdpc3RyYXRpb24oKS4K
-Ck9yaWdpbmFsbHksIHRoZSAnZG9fcmVnaXN0cmF0aW9uKCknIGFuZCAucmVtb3ZlKCkgYXJlIG9u
-IGEgcmFjZQpjb25kaXRpb24gYWdhaW5zdCBzb3VuZCBjYXJkIGluc3RhbmNlLgoKQnV0IG5vdy4g
-cmVtb3ZlKCkgd2FpdHMgdG8gZmluaXNoIGEgd29yayBvZiB0aGUgc291bmQgY2FyZCByZWdpc3Ry
-YXRpb24sCnRoZXJlZm9yZSBzbmRfY2FyZF9mcmVlKCkgY2FuIGJlIGNhbGxlZCBpbiBlcnJvciBw
-YXRoIG9mIHRoZSB3b3JrLgoKQW5vdGhlciByZWFzb24gaXMgdGhlIG1lbW9yeSBvYmplY3QgZm9y
-IGRyaXZlcl9kYXRhLiBDdXJyZW50bHkgSSB1c2UKc3RydWN0IHNuZF9kaWNlIGFsbG9jYXRlZCBi
-eSBzbmRfY2FyZF9uZXcoKS4gSWYgY2FsbGluZyBzbmRfY2FyZF9uZXcoKQppbiB0aGUgd29yaywg
-SSBtdXN0IGFsbG9jYXRlIGl0IGluIC5wcm9iZSgpIGNhbGxiYWNrIGluZGVwZW5kZW50bHkuIEkK
-dGhvdWdodCBpdCBhIGJpdCBoYXJkIHRvIG1haW50YWluIHRoZSBtZW1vcnkgb2JqZWN0IGFnYWlu
-c3QgdGhlIHJhY2UKY29uZGl0aW9uIGJldHdlZW4gdGhlIHdvcmssIC51cGRhdGUoKSBhbmQgLnJl
-bW92ZSgpIGFuZCBzb3VuZCBjYXJkIGZyZWUuCgpCdXQgdGhlIHJhY2UgY29uZGl0aW9uIGJlY29t
-ZXMgc2ltcGxlciB3aGVuIC5yZW1vdmUoKSB3YWl0cyB0byBmaW5pc2gKdGhlIHdvcmsuCgpPSy4g
-SSdsbCBtb2RpZnkgYW5kIHBvc3QgdGhlIG5ldyBwYXRjaHNldC4KCj4gSW4gd2hpY2ggY29kZSBw
-YXRoIGRpZCB5b3Ugc2VlIHRoZSBsZWFrPyAgVGhpcyBhbHJlYWR5IHNvdW5kcwo+IHN0cmFuZ2Uu
-CgpJdCB3YXMgbXkgbWlzdW5kZXJzdGFuZGluZyBhIGZldyBkYXlzIGFnby4KCgpUaGFua3MKClRh
-a2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+
+--===============3437957471418864009==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="apSYfA7d5AHMku3c"
+Content-Disposition: inline
+
+
+--apSYfA7d5AHMku3c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Dec 24, 2015 at 08:02:39AM +0100, Andrzej Hajda wrote:
+> Field usrcnt is unsigned so it cannot be lesser than zero.
+> The patch fixes the check, moves it to the beginning of the function
+> and changes return value to -EIO in case of usercnt error.
+
+Please don't send new patches in reply to old ones, it makes it hard to
+figure out what the current version of things is.
+
+--apSYfA7d5AHMku3c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWhBCYAAoJECTWi3JdVIfQK7UH/AiSbqcIx3Kp6NyJromhsW5n
+zguexpID1anHx9GJUKPnlah9n7P7jCJIjobC3gjbH3ys6lnjrYqBjeJYG642x3Jw
+5eaKKt9bkDydOQVT4jQx3b2HkwuWk4UnnccOGtLkYc/QuGpqTIvgJ6CGxXHgjxkA
+BArxVmJhhY3yKx4nHrTJtYu16ANYtDwpW9VJHbffusjDNuF5ls2myVBqDKqHA+VR
+2tygKTSy8B2BAkX8/9OpVPpLI0UzA8ToBq4jj7azfOrsrMq7QxfhpSfJcgjfoxki
+3ayragdlkPqVvL/adNd+hGzbafVNW6v6UhqX54JRLZ/cCGRqjAcUP7n1btJLEw0=
+=dXMH
+-----END PGP SIGNATURE-----
+
+--apSYfA7d5AHMku3c--
+
+--===============3437957471418864009==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3437957471418864009==--
