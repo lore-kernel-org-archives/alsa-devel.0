@@ -1,17 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ALSA: dice: purge transaction
-	initialization at timeout of Dice notification
-Date: Thu, 31 Dec 2015 13:58:13 +0900
-Message-ID: <1451537894-28366-4-git-send-email-o-takashi@sakamocchi.jp>
-References: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: Extend FLL function
+Date: Thu, 31 Dec 2015 15:55:10 +0800
+Message-ID: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EB66264F0F
- for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 05:58:24 +0100 (CET)
-In-Reply-To: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFE90265AE8
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 08:57:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +18,195 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, card registration is processed under situation
-with few bus reset. There's no need to add a workaround of transaction
-re-initialization at timeout.
+Extend FFL clock source from MCLK/BCLK/FS;
+And modify some FLL parameter setting.
 
-This commit purges the re-initialization.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- sound/firewire/dice/dice-transaction.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+ sound/soc/codecs/nau8825.c | 100 +++++++++++++++++++++++++++++++++------------
+ sound/soc/codecs/nau8825.h |  14 ++++++-
+ 2 files changed, 86 insertions(+), 28 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index fdb7841..55c1fbf 100644
---- a/sound/firewire/dice/dice-transaction.c
-+++ b/sound/firewire/dice/dice-transaction.c
-@@ -65,16 +65,15 @@ static unsigned int get_clock_info(struct snd_dice *dice, __be32 *info)
- static int set_clock_info(struct snd_dice *dice,
- 			  unsigned int rate, unsigned int source)
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 7fc7b4e..16da8ef 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -926,7 +926,8 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
+ 		struct nau8825_fll *fll_param)
  {
--	unsigned int retries = 3;
- 	unsigned int i;
- 	__be32 info;
- 	u32 mask;
- 	u32 clock;
- 	int err;
--retry:
-+
- 	err = get_clock_info(dice, &info);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
- 	clock = be32_to_cpu(info);
- 	if (source != UINT_MAX) {
-@@ -87,10 +86,8 @@ retry:
- 			if (snd_dice_rates[i] == rate)
- 				break;
- 		}
--		if (i == ARRAY_SIZE(snd_dice_rates)) {
--			err = -EINVAL;
--			goto end;
--		}
-+		if (i == ARRAY_SIZE(snd_dice_rates))
-+			return -EINVAL;
- 
- 		mask = CLOCK_RATE_MASK;
- 		clock &= ~mask;
-@@ -104,25 +101,13 @@ retry:
- 	err = snd_dice_transaction_write_global(dice, GLOBAL_CLOCK_SELECT,
- 						&info, 4);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
--	/* Timeout means it's invalid request, probably bus reset occurred. */
- 	if (wait_for_completion_timeout(&dice->clock_accepted,
--			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0) {
--		if (retries-- == 0) {
--			err = -ETIMEDOUT;
--			goto end;
--		}
--
--		err = snd_dice_transaction_reinit(dice);
--		if (err < 0)
--			goto end;
-+			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0)
-+		return -ETIMEDOUT;
- 
--		msleep(500);	/* arbitrary */
--		goto retry;
--	}
--end:
--	return err;
-+	return 0;
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
+-		NAU8825_CLK_MCLK_SRC_MASK, fll_param->mclk_src);
++		NAU8825_CLK_SRC_MASK | NAU8825_CLK_MCLK_SRC_MASK,
++		NAU8825_CLK_SRC_MCLK | fll_param->mclk_src);
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL1,
+ 			NAU8825_FLL_RATIO_MASK, fll_param->ratio);
+ 	/* FLL 16-bit fractional input */
+@@ -939,10 +940,20 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
+ 			NAU8825_FLL_REF_DIV_MASK, fll_param->clk_ref_div);
+ 	/* select divided VCO input */
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
+-			NAU8825_FLL_FILTER_SW_MASK, 0x0000);
+-	/* FLL sigma delta modulator enable */
++		NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
++		NAU8825_FLL_FILTER_SW_MASK,
++		NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
++		NAU8825_FLL_FILTER_SW_REF);
++	/* Disable free-running mode */
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
+-			NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
++				NAU8825_DCO_EN, 0);
++	/* FLL sigma delta modulator enable */
++	if (fll_param->fll_frac)
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
++				NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
++	else
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
++				NAU8825_SDM_EN_MASK, 0);
  }
  
- int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ /* freq_out must be 256*Fs in order to achieve the best performance */
+@@ -970,6 +981,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+ 	return 0;
+ }
+ 
++static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
++{
++	int ret = 0;
++
++	/* We selected MCLK source but the clock itself managed externally */
++	if (!nau8825->mclk)
++		goto done;
++
++	if (!nau8825->mclk_freq) {
++		ret = clk_prepare_enable(nau8825->mclk);
++		if (ret) {
++			dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
++			goto done;
++		}
++	}
++
++	if (nau8825->mclk_freq != freq) {
++		nau8825->mclk_freq = freq;
++
++		freq = clk_round_rate(nau8825->mclk, freq);
++		ret = clk_set_rate(nau8825->mclk, freq);
++		if (ret) {
++			dev_err(nau8825->dev, "Unable to set mclk rate\n");
++			goto done;
++		}
++	}
++
++done:
++	return ret;
++}
++
+ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 	unsigned int freq)
+ {
+@@ -981,29 +1023,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+ 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
+-
+-		/* We selected MCLK source but the clock itself managed externally */
+-		if (!nau8825->mclk)
+-			break;
+-
+-		if (!nau8825->mclk_freq) {
+-			ret = clk_prepare_enable(nau8825->mclk);
+-			if (ret) {
+-				dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
+-				return ret;
+-			}
+-		}
+-
+-		if (nau8825->mclk_freq != freq) {
+-			nau8825->mclk_freq = freq;
+-
+-			freq = clk_round_rate(nau8825->mclk, freq);
+-			ret = clk_set_rate(nau8825->mclk, freq);
+-			if (ret) {
+-				dev_err(nau8825->dev, "Unable to set mclk rate\n");
+-				return ret;
+-			}
+-		}
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
+ 
+ 		break;
+ 	case NAU8825_CLK_INTERNAL:
+@@ -1018,6 +1040,30 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		}
+ 
+ 		break;
++	case NAU8825_CLK_FLL_MCLK:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_MCLK);
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
++
++		break;
++	case NAU8825_CLK_FLL_BLK:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_BLK);
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
++
++		break;
++	case NAU8825_CLK_FLL_FS:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_FS);
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
++
++		break;
+ 	default:
+ 		dev_err(nau8825->dev, "Invalid clock id (%d)\n", clk_id);
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index dff8edb..e8f7ca5 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -112,12 +112,21 @@
+ 
+ /* FLL3 (0x06) */
+ #define NAU8825_FLL_INTEGER_MASK		(0x3ff << 0)
++#define NAU8825_FLL_CLK_SRC_SFT		10
++#define NAU8825_FLL_CLK_SRC_MASK		(0x3 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_MCLK		(0 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_BLK		(0x2 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_FS			(0x3 << NAU8825_FLL_CLK_SRC_SFT)
+ 
+ /* FLL4 (0x07) */
+ #define NAU8825_FLL_REF_DIV_MASK		(0x3 << 10)
+ 
+ /* FLL5 (0x08) */
+-#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 14)
++#define NAU8825_FLL_PDB_DAC_EN		(0x1 << 15)
++#define NAU8825_FLL_LOOP_FTR_EN		(0x1 << 14)
++#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 13)
++#define NAU8825_FLL_FILTER_SW_N2		(0x1 << 13)
++#define NAU8825_FLL_FILTER_SW_REF		(0x0 << 13)
+ 
+ /* FLL6 (0x9) */
+ #define NAU8825_DCO_EN_MASK			(0x1 << 15)
+@@ -306,6 +315,9 @@
+ enum {
+ 	NAU8825_CLK_MCLK = 0,
+ 	NAU8825_CLK_INTERNAL,
++	NAU8825_CLK_FLL_MCLK,
++	NAU8825_CLK_FLL_BLK,
++	NAU8825_CLK_FLL_FS,
+ };
+ 
+ struct nau8825 {
 -- 
-2.5.0
+1.9.1
