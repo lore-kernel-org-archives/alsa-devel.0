@@ -1,14 +1,15 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: Extend FLL function
-Date: Thu, 31 Dec 2015 15:55:10 +0800
-Message-ID: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 0/5] ASoC: topology: Add support for FE DAI &
+	DAI links
+Date: Thu, 31 Dec 2015 16:35:17 +0800
+Message-ID: <cover.1451550513.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CFE90265AE8
- for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 08:57:14 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B654265AE8
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 09:18:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,195 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, yong.zhi@intel.com
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Extend FFL clock source from MCLK/BCLK/FS;
-And modify some FLL parameter setting.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 100 +++++++++++++++++++++++++++++++++------------
- sound/soc/codecs/nau8825.h |  14 ++++++-
- 2 files changed, 86 insertions(+), 28 deletions(-)
+This series allows topology to create FE DAI and DAI links from the PCM
+topology objects defined by the user space.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 7fc7b4e..16da8ef 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -926,7 +926,8 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
- 		struct nau8825_fll *fll_param)
- {
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
--		NAU8825_CLK_MCLK_SRC_MASK, fll_param->mclk_src);
-+		NAU8825_CLK_SRC_MASK | NAU8825_CLK_MCLK_SRC_MASK,
-+		NAU8825_CLK_SRC_MCLK | fll_param->mclk_src);
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL1,
- 			NAU8825_FLL_RATIO_MASK, fll_param->ratio);
- 	/* FLL 16-bit fractional input */
-@@ -939,10 +940,20 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
- 			NAU8825_FLL_REF_DIV_MASK, fll_param->clk_ref_div);
- 	/* select divided VCO input */
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
--			NAU8825_FLL_FILTER_SW_MASK, 0x0000);
--	/* FLL sigma delta modulator enable */
-+		NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
-+		NAU8825_FLL_FILTER_SW_MASK,
-+		NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
-+		NAU8825_FLL_FILTER_SW_REF);
-+	/* Disable free-running mode */
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
--			NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
-+				NAU8825_DCO_EN, 0);
-+	/* FLL sigma delta modulator enable */
-+	if (fll_param->fll_frac)
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
-+				NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
-+	else
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
-+				NAU8825_SDM_EN_MASK, 0);
- }
- 
- /* freq_out must be 256*Fs in order to achieve the best performance */
-@@ -970,6 +981,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
- 	return 0;
- }
- 
-+static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
-+{
-+	int ret = 0;
-+
-+	/* We selected MCLK source but the clock itself managed externally */
-+	if (!nau8825->mclk)
-+		goto done;
-+
-+	if (!nau8825->mclk_freq) {
-+		ret = clk_prepare_enable(nau8825->mclk);
-+		if (ret) {
-+			dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
-+			goto done;
-+		}
-+	}
-+
-+	if (nau8825->mclk_freq != freq) {
-+		nau8825->mclk_freq = freq;
-+
-+		freq = clk_round_rate(nau8825->mclk, freq);
-+		ret = clk_set_rate(nau8825->mclk, freq);
-+		if (ret) {
-+			dev_err(nau8825->dev, "Unable to set mclk rate\n");
-+			goto done;
-+		}
-+	}
-+
-+done:
-+	return ret;
-+}
-+
- static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 	unsigned int freq)
- {
-@@ -981,29 +1023,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
- 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
--
--		/* We selected MCLK source but the clock itself managed externally */
--		if (!nau8825->mclk)
--			break;
--
--		if (!nau8825->mclk_freq) {
--			ret = clk_prepare_enable(nau8825->mclk);
--			if (ret) {
--				dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
--				return ret;
--			}
--		}
--
--		if (nau8825->mclk_freq != freq) {
--			nau8825->mclk_freq = freq;
--
--			freq = clk_round_rate(nau8825->mclk, freq);
--			ret = clk_set_rate(nau8825->mclk, freq);
--			if (ret) {
--				dev_err(nau8825->dev, "Unable to set mclk rate\n");
--				return ret;
--			}
--		}
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
- 
- 		break;
- 	case NAU8825_CLK_INTERNAL:
-@@ -1018,6 +1040,30 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		}
- 
- 		break;
-+	case NAU8825_CLK_FLL_MCLK:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_MCLK);
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case NAU8825_CLK_FLL_BLK:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_BLK);
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case NAU8825_CLK_FLL_FS:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_FS);
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
-+
-+		break;
- 	default:
- 		dev_err(nau8825->dev, "Invalid clock id (%d)\n", clk_id);
- 		return -EINVAL;
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index dff8edb..e8f7ca5 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -112,12 +112,21 @@
- 
- /* FLL3 (0x06) */
- #define NAU8825_FLL_INTEGER_MASK		(0x3ff << 0)
-+#define NAU8825_FLL_CLK_SRC_SFT		10
-+#define NAU8825_FLL_CLK_SRC_MASK		(0x3 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_MCLK		(0 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_BLK		(0x2 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_FS			(0x3 << NAU8825_FLL_CLK_SRC_SFT)
- 
- /* FLL4 (0x07) */
- #define NAU8825_FLL_REF_DIV_MASK		(0x3 << 10)
- 
- /* FLL5 (0x08) */
--#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 14)
-+#define NAU8825_FLL_PDB_DAC_EN		(0x1 << 15)
-+#define NAU8825_FLL_LOOP_FTR_EN		(0x1 << 14)
-+#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 13)
-+#define NAU8825_FLL_FILTER_SW_N2		(0x1 << 13)
-+#define NAU8825_FLL_FILTER_SW_REF		(0x0 << 13)
- 
- /* FLL6 (0x9) */
- #define NAU8825_DCO_EN_MASK			(0x1 << 15)
-@@ -306,6 +315,9 @@
- enum {
- 	NAU8825_CLK_MCLK = 0,
- 	NAU8825_CLK_INTERNAL,
-+	NAU8825_CLK_FLL_MCLK,
-+	NAU8825_CLK_FLL_BLK,
-+	NAU8825_CLK_FLL_FS,
- };
- 
- struct nau8825 {
+Mengdong Lin (5):
+  ASoC: Define soc_add_dai() to add a DAI to a component
+  ASoC: Support registering a DAI dynamically
+  ALSA: pcm: Add snd_pcm_rate_range_to_bits()
+  ASoC: topology: Add FE DAIs dynamically
+  ASoC: topology: Add FE DAI links dynamically
+
+ include/sound/pcm.h          |   2 +
+ include/sound/soc-dai.h      |   1 +
+ include/sound/soc-topology.h |  21 +++--
+ include/sound/soc.h          |   5 +-
+ sound/core/pcm_misc.c        |  27 ++++++
+ sound/soc/soc-core.c         | 128 ++++++++++++++++++++--------
+ sound/soc/soc-topology.c     | 195 ++++++++++++++++++++++++++++++++++---------
+ 7 files changed, 291 insertions(+), 88 deletions(-)
+
 -- 
-1.9.1
+2.5.0
