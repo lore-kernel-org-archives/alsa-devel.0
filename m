@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/4 v5] ALSA: dice: improve card registration
-	processing
-Date: Thu, 31 Dec 2015 13:58:10 +0900
-Message-ID: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: dice: expand timeout to wait for
+	Dice notification
+Date: Thu, 31 Dec 2015 13:58:14 +0900
+Message-ID: <1451537894-28366-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 99043261563
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AB7E261740
  for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 05:58:24 +0100 (CET)
+In-Reply-To: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +25,33 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Some users have reported that their Dice based models generate ETIMEDOUT
+when starting PCM playback. It means that current timeout (=100msec) is
+not enough for their models to transfer notifications.
 
-This patchset updates my previous one:
-[alsa-devel] [PATCH 0/5 v4] ALSA: dice: improve card registration processing
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102504.html
+This commit expands the timeout up to 2 sec. As a result, in a worst case,
+any operations to start AMDTP streams takes 2 sec or more. Then, in
+userspace, snd_pcm_hw_params(), snd_pcm_prepare(), snd_pcm_recover(),
+snd_rawmidi_open(), snd_seq_connect_from() and snd_seq_connect_to() may
+take the time.
 
-Changes:
- * Merge patch 02 and 03 in v4.
- * Allocate sound card instance in sound card registration work, independently
-   of dice instance, allocated in .probe callback and set as driver_data of
-   device structure.
- * Use __be32 type for __be32 data.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-transaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In this version, sound card instance is not allocated in .probe callback. In
-the callback, dice instance is allocated independently of the card instance.
-Thus, in .probe callback, this driver reserve no slot of sound card. The
-allocation of sound card instance is performed in a scheduled work. When
-processing in the work fails, the work can be re-scheduled again according to
-bus reset.
-
-Takashi Sakamoto (4):
-  ALSA: dice: split subaddress check from category check
-  ALSA: dice: postpone card registration
-  ALSA: dice: purge transaction initialization at timeout of Dice
-    notification
-  ALSA: dice: expand timeout to wait for Dice notification
-
- sound/firewire/dice/dice-transaction.c | 123 +++++++++++-------
- sound/firewire/dice/dice.c             | 227 +++++++++++++++++----------------
- sound/firewire/dice/dice.h             |   3 +
- 3 files changed, 202 insertions(+), 151 deletions(-)
-
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index 55c1fbf..a4ff4e0 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -9,7 +9,7 @@
+ 
+ #include "dice.h"
+ 
+-#define NOTIFICATION_TIMEOUT_MS	100
++#define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
+ 
+ static u64 get_subaddr(struct snd_dice *dice, enum snd_dice_addr_type type,
+ 		       u64 offset)
 -- 
 2.5.0
