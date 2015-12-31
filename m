@@ -1,15 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/5] ASoC: Support registering a DAI dynamically
-Date: Thu, 31 Dec 2015 16:40:43 +0800
-Message-ID: <ce77885082109fef7b6a7694d9c02156381b9b81.1451550513.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/5] ALSA: pcm: Add snd_pcm_rate_range_to_bits()
+Date: Thu, 31 Dec 2015 16:40:50 +0800
+Message-ID: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
 References: <cover.1451550513.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B921D265B6C
- for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 09:23:46 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9F46265D21
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 09:23:56 +0100 (CET)
 In-Reply-To: <cover.1451550513.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,96 +26,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Define API snd_soc_register_dai() to add a DAI dynamically and
-create the DAI widgets. Topology can use this API to register DAIs
-when probing a component with topology info. These DAIs's playback
-& capture widgets will be freed when the sound card is unregistered
-and the DAIs will be freed when cleaning up the component.
-
-And a dobj is embedded into the struct snd_soc_dai_driver. Topology
-can use the dobj to find the DAI drivers created by it and free them
-when the topology component is removed.
+This helper function can convert a given sample rate range to
+SNDRV_PCM_RATE_xxx bits.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 212eaaf..964b7de 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -222,6 +222,7 @@ struct snd_soc_dai_driver {
- 	const char *name;
- 	unsigned int id;
- 	unsigned int base;
-+	struct snd_soc_dobj dobj;
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index b0be092..af1fb37 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1093,6 +1093,8 @@ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate);
+ unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit);
+ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
+ 					 unsigned int rates_b);
++unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
++					unsigned int rate_max);
  
- 	/* DAI driver callbacks */
- 	int (*probe)(struct snd_soc_dai *dai);
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8436a11..796b757 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1685,6 +1685,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *dai_link);
- 
-+int snd_soc_register_dai(struct snd_soc_component *component,
-+	struct snd_soc_dai_driver *dai_drv);
-+
- #include <sound/soc-dai.h>
- 
- #ifdef CONFIG_DEBUG_FS
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bfd2424..be1e692 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2861,6 +2861,48 @@ err:
- 	return ret;
+ /**
+  * snd_pcm_set_runtime_buffer - Set the PCM runtime buffer
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index ebe8444..0b98f51 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -565,3 +565,30 @@ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
+ 	return rates_a & rates_b;
  }
- 
+ EXPORT_SYMBOL_GPL(snd_pcm_rate_mask_intersect);
++
 +/**
-+ * snd_soc_register_dai - Register a DAI dynamically & create its widgets
++ * snd_pcm_rate_range_to_bits - converts rate range to SNDRV_PCM_RATE_xxx bit
++ * @rate_min: the minimum sample rate
++ * @rate_max: the maximum sample rate
 + *
-+ * @component: The component the DAIs are registered for
-+ * @dai_drv: DAI driver to use for the DAI
-+ *
-+ * Topology can use this API to register DAIs when probing a component.
-+ * These DAIs's widgets will be freed in the card cleanup and the DAIs
-+ * will be freed in the component cleanup.
++ * Return: The SNDRV_PCM_RATE_xxx flag that corresponds to the given rate range,
++ * or SNDRV_PCM_RATE_KNOT for an unknown range.
 + */
-+int snd_soc_register_dai(struct snd_soc_component *component,
-+	struct snd_soc_dai_driver *dai_drv)
++unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
++	unsigned int rate_max)
 +{
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	struct snd_soc_dai *dai;
-+	int ret;
++	unsigned int rates = 0;
++	int i;
 +
-+	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
-+		dev_err(component->dev, "Invalid dai type %d\n",
-+			dai_drv->dobj.type);
-+		return -EINVAL;
++	for (i = 0; i < snd_pcm_known_rates.count; i++) {
++		if (snd_pcm_known_rates.list[i] >= rate_min
++			&& snd_pcm_known_rates.list[i] <= rate_max)
++			rates |= 1 << i;
 +	}
 +
-+	lockdep_assert_held(&client_mutex);
-+	dai = soc_add_dai(component, dai_drv, false);
-+	if (!dai)
-+		return -ENOMEM;
++	if (!rates)
++		rates = SNDRV_PCM_RATE_KNOT;
 +
-+	/* Create the DAI widgets here. After adding DAIs, topology may
-+	 * also add routes that need these widgets as source or sink.
-+	 */
-+	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
-+	if (ret != 0) {
-+		dev_err(component->dev,
-+			"Failed to create DAI widgets %d\n", ret);
-+	}
-+
-+	return ret;
++	return rates;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_register_dai);
-+
- static void snd_soc_component_seq_notifier(struct snd_soc_dapm_context *dapm,
- 	enum snd_soc_dapm_type type, int subseq)
- {
++EXPORT_SYMBOL_GPL(snd_pcm_rate_range_to_bits);
 -- 
 2.5.0
