@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/5] ASoC: Define soc_add_dai() to add a DAI to
-	a component
-Date: Thu, 31 Dec 2015 16:40:20 +0800
-Message-ID: <e5451d9a299337e2a565ff17fbfec60a9597799f.1451550513.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: Support registering a DAI dynamically
+Date: Thu, 31 Dec 2015 16:40:43 +0800
+Message-ID: <ce77885082109fef7b6a7694d9c02156381b9b81.1451550513.git.mengdong.lin@linux.intel.com>
 References: <cover.1451550513.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C9038265AE8
- for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 09:23:23 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id B921D265B6C
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2015 09:23:46 +0100 (CET)
 In-Reply-To: <cover.1451550513.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,123 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Define soc_add_dai() as a wrapper to add a single DAI to a component.
-It can be reused to register a DAI dynamically by topology.
+Define API snd_soc_register_dai() to add a DAI dynamically and
+create the DAI widgets. Topology can use this API to register DAIs
+when probing a component with topology info. These DAIs's playback
+& capture widgets will be freed when the sound card is unregistered
+and the DAIs will be freed when cleaning up the component.
+
+And a dobj is embedded into the struct snd_soc_dai_driver. Topology
+can use the dobj to find the DAI drivers created by it and free them
+when the topology component is removed.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 212eaaf..964b7de 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -222,6 +222,7 @@ struct snd_soc_dai_driver {
+ 	const char *name;
+ 	unsigned int id;
+ 	unsigned int base;
++	struct snd_soc_dobj dobj;
+ 
+ 	/* DAI driver callbacks */
+ 	int (*probe)(struct snd_soc_dai *dai);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8436a11..796b757 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1685,6 +1685,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link);
+ 
++int snd_soc_register_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv);
++
+ #include <sound/soc-dai.h>
+ 
+ #ifdef CONFIG_DEBUG_FS
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4ddc5d5..bfd2424 100644
+index bfd2424..be1e692 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2771,6 +2771,56 @@ static void snd_soc_unregister_dais(struct snd_soc_component *component)
- 	}
+@@ -2861,6 +2861,48 @@ err:
+ 	return ret;
  }
  
-+/* Create a DAI and add it to the component's DAI list */
-+static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
-+	struct snd_soc_dai_driver *dai_drv,
-+	bool legacy_dai_naming)
++/**
++ * snd_soc_register_dai - Register a DAI dynamically & create its widgets
++ *
++ * @component: The component the DAIs are registered for
++ * @dai_drv: DAI driver to use for the DAI
++ *
++ * Topology can use this API to register DAIs when probing a component.
++ * These DAIs's widgets will be freed in the card cleanup and the DAIs
++ * will be freed in the component cleanup.
++ */
++int snd_soc_register_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv)
 +{
-+	struct device *dev = component->dev;
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
 +	struct snd_soc_dai *dai;
++	int ret;
 +
-+	dev_dbg(dev, "ASoC: dynamically register DAI %s\n", dev_name(dev));
++	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
++		dev_err(component->dev, "Invalid dai type %d\n",
++			dai_drv->dobj.type);
++		return -EINVAL;
++	}
 +
-+	dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
-+	if (dai == NULL)
-+		return NULL;
++	lockdep_assert_held(&client_mutex);
++	dai = soc_add_dai(component, dai_drv, false);
++	if (!dai)
++		return -ENOMEM;
 +
-+	/*
-+	 * Back in the old days when we still had component-less DAIs,
-+	 * instead of having a static name, component-less DAIs would
-+	 * inherit the name of the parent device so it is possible to
-+	 * register multiple instances of the DAI. We still need to keep
-+	 * the same naming style even though those DAIs are not
-+	 * component-less anymore.
++	/* Create the DAI widgets here. After adding DAIs, topology may
++	 * also add routes that need these widgets as source or sink.
 +	 */
-+	if (legacy_dai_naming &&
-+	   (dai_drv->id == 0 || dai_drv->name == NULL)) {
-+		dai->name = fmt_single_name(dev, &dai->id);
-+	} else {
-+		dai->name = fmt_multiple_name(dev, dai_drv);
-+		if (dai_drv->id)
-+			dai->id = dai_drv->id;
-+		else
-+			dai->id = component->num_dai;
-+	}
-+	if (dai->name == NULL) {
-+		kfree(dai);
-+		return NULL;
++	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
++	if (ret != 0) {
++		dev_err(component->dev,
++			"Failed to create DAI widgets %d\n", ret);
 +	}
 +
-+	dai->component = component;
-+	dai->dev = dev;
-+	dai->driver = dai_drv;
-+	if (!dai->driver->ops)
-+		dai->driver->ops = &null_dai_ops;
-+
-+	list_add(&dai->list, &component->dai_list);
-+	component->num_dai++;
-+
-+	dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
-+	return dai;
++	return ret;
 +}
++EXPORT_SYMBOL_GPL(snd_soc_register_dai);
 +
- /**
-  * snd_soc_register_dais - Register a DAI with the ASoC core
-  *
-@@ -2792,49 +2842,15 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 	dev_dbg(dev, "ASoC: dai register %s #%Zu\n", dev_name(dev), count);
- 
- 	component->dai_drv = dai_drv;
--	component->num_dai = count;
- 
- 	for (i = 0; i < count; i++) {
- 
--		dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
-+		dai = soc_add_dai(component, dai_drv + i,
-+				count == 1 && legacy_dai_naming);
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
- 			goto err;
- 		}
--
--		/*
--		 * Back in the old days when we still had component-less DAIs,
--		 * instead of having a static name, component-less DAIs would
--		 * inherit the name of the parent device so it is possible to
--		 * register multiple instances of the DAI. We still need to keep
--		 * the same naming style even though those DAIs are not
--		 * component-less anymore.
--		 */
--		if (count == 1 && legacy_dai_naming &&
--			(dai_drv[i].id == 0 || dai_drv[i].name == NULL)) {
--			dai->name = fmt_single_name(dev, &dai->id);
--		} else {
--			dai->name = fmt_multiple_name(dev, &dai_drv[i]);
--			if (dai_drv[i].id)
--				dai->id = dai_drv[i].id;
--			else
--				dai->id = i;
--		}
--		if (dai->name == NULL) {
--			kfree(dai);
--			ret = -ENOMEM;
--			goto err;
--		}
--
--		dai->component = component;
--		dai->dev = dev;
--		dai->driver = &dai_drv[i];
--		if (!dai->driver->ops)
--			dai->driver->ops = &null_dai_ops;
--
--		list_add(&dai->list, &component->dai_list);
--
--		dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
- 	}
- 
- 	return 0;
+ static void snd_soc_component_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 	enum snd_soc_dapm_type type, int subseq)
+ {
 -- 
 2.5.0
