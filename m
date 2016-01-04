@@ -1,93 +1,322 @@
-From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v2 2/6] ASoC: mediatek: address dai link array entries by enum
-Date: Mon,  4 Jan 2016 20:09:07 +0100
-Message-ID: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [RFC v2 1/6] drm/mediatek: hdmi: Add audio interface
+	to the hdmi-codec driver
+Date: Mon,  4 Jan 2016 20:09:06 +0100
+Message-ID: <1451934551-21333-2-git-send-email-p.zabel@pengutronix.de>
 References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1451934551-21333-1-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id BB8A9260522
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 20:09:14 +0100 (CET)
+In-Reply-To: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This should be more robust to future changes than adressing
-array entries by index number.
+Add the interface needed by Jyri's generic hdmi-codec driver [1] to start
+or stop audio playback and to retrieve ELD (EDID like data) to limit the
+supported audio formats to the HDMI sink capabilities.
 
-Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+[1] https://patchwork.kernel.org/patch/7215271/ ("ASoC: hdmi-codec: Add
+    hdmi-codec for external HDMI-encoders")
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- sound/soc/mediatek/mt8173-rt5650-rt5676.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/mediatek/Kconfig            |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c | 189 ++++++++++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c         |  26 ++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.h         |   4 +
+ 4 files changed, 220 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-index 50ba538..5c4c58c 100644
---- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -131,10 +131,17 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
- 	},
- };
+diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediatek/Kconfig
+index 829ab66..93b7ca9 100644
+--- a/drivers/gpu/drm/mediatek/Kconfig
++++ b/drivers/gpu/drm/mediatek/Kconfig
+@@ -17,6 +17,7 @@ config DRM_MEDIATEK
+ config DRM_MEDIATEK_HDMI
+ 	tristate "DRM HDMI Support for Mediatek SoCs"
+ 	depends on DRM_MEDIATEK
++	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	select GENERIC_PHY
+ 	help
+ 	  DRM/KMS HDMI driver for Mediatek SoCs
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+index 5c1ec96..1a07ef3 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+@@ -26,6 +26,7 @@
+ #include <linux/of_graph.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <sound/hdmi-codec.h>
+ #include "mtk_cec.h"
+ #include "mtk_hdmi.h"
+ #include "mtk_hdmi_hw.h"
+@@ -437,6 +438,192 @@ static irqreturn_t hdmi_flt_n_5v_irq_thread(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
  
-+enum {
-+	DAI_LINK_PLAYBACK,
-+	DAI_LINK_CAPTURE,
-+	DAI_LINK_CODEC_I2S,
-+	DAI_LINK_INTERCODEC
++/*
++ * HDMI audio codec callbacks
++ */
++
++static int mtk_hdmi_audio_hw_params(struct device *dev,
++				    struct hdmi_codec_daifmt *daifmt,
++				    struct hdmi_codec_params *params)
++{
++	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
++	struct hdmi_audio_param hdmi_params;
++	unsigned int chan = params->cea.channels;
++
++	dev_dbg(hdmi->dev, "%s: %u Hz, %d bit, %d channels\n", __func__,
++		params->sample_rate, params->sample_width, chan);
++
++	if (!hdmi->bridge.encoder || !hdmi->bridge.encoder->crtc)
++		return -ENODEV;
++
++	switch (chan) {
++	case 2:
++		hdmi_params.aud_input_chan_type = HDMI_AUD_CHAN_TYPE_2_0;
++		break;
++	case 4:
++		hdmi_params.aud_input_chan_type = HDMI_AUD_CHAN_TYPE_4_0;
++		break;
++	case 6:
++		hdmi_params.aud_input_chan_type = HDMI_AUD_CHAN_TYPE_5_1;
++		break;
++	case 8:
++		hdmi_params.aud_input_chan_type = HDMI_AUD_CHAN_TYPE_7_1;
++		break;
++	default:
++		dev_err(hdmi->dev, "channel[%d] not supported!\n", chan);
++		return -EINVAL;
++	}
++
++	switch (params->sample_rate) {
++	case 32000:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_32000;
++		hdmi_params.iec_frame_fs = HDMI_IEC_32K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0x3;
++		break;
++	case 44100:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_44100;
++		hdmi_params.iec_frame_fs = HDMI_IEC_44K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0;
++		break;
++	case 48000:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_48000;
++		hdmi_params.iec_frame_fs = HDMI_IEC_48K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0x2;
++		break;
++	case 88200:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_88200;
++		hdmi_params.iec_frame_fs = HDMI_IEC_88K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0x8;
++		break;
++	case 96000:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_96000;
++		hdmi_params.iec_frame_fs = HDMI_IEC_96K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0xa;
++		break;
++	case 176400:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_176400;
++		hdmi_params.iec_frame_fs = HDMI_IEC_176K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0xc;
++		break;
++	case 192000:
++		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_192000;
++		hdmi_params.iec_frame_fs = HDMI_IEC_192K;
++		/* channel status byte 3: fs and clock accuracy */
++		hdmi_params.hdmi_l_channel_state[3] = 0xe;
++		break;
++	default:
++		dev_err(hdmi->dev, "rate[%d] not supported!\n",
++			params->sample_rate);
++		return -EINVAL;
++	}
++
++	switch (daifmt->fmt) {
++	case HDMI_I2S:
++		hdmi_params.aud_codec = HDMI_AUDIO_CODING_TYPE_PCM;
++		hdmi_params.aud_sampe_size = HDMI_AUDIO_SAMPLE_SIZE_16;
++		hdmi_params.aud_input_type = HDMI_AUD_INPUT_I2S;
++		hdmi_params.aud_i2s_fmt = HDMI_I2S_MODE_I2S_24BIT;
++		hdmi_params.aud_mclk = HDMI_AUD_MCLK_128FS;
++		break;
++	default:
++		dev_err(hdmi->dev, "%s: Invalid format %d\n", __func__,
++			daifmt->fmt);
++		return -EINVAL;
++	}
++
++	/* channel status */
++	/* byte 0: no copyright is asserted, mode 0 */
++	hdmi_params.hdmi_l_channel_state[0] = 1 << 2;
++	/* byte 1: category code */
++	hdmi_params.hdmi_l_channel_state[1] = 0;
++	/* byte 2: source/channel number don't take into account */
++	hdmi_params.hdmi_l_channel_state[2] = 0;
++	/* byte 4: word length 16bits */
++	hdmi_params.hdmi_l_channel_state[4] = 0x2;
++	memcpy(hdmi_params.hdmi_r_channel_state,
++	       hdmi_params.hdmi_l_channel_state,
++	       sizeof(hdmi_params.hdmi_l_channel_state));
++
++	mtk_hdmi_audio_set_param(hdmi, &hdmi_params);
++
++	return 0;
++}
++
++static int mtk_hdmi_audio_startup(struct device *dev,
++				  void (*abort_cb)(struct device *dev))
++{
++	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	mtk_hdmi_audio_enable(hdmi);
++
++	return 0;
++}
++
++static void mtk_hdmi_audio_shutdown(struct device *dev)
++{
++	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	mtk_hdmi_audio_disable(hdmi);
++}
++
++int mtk_hdmi_audio_digital_mute(struct device *dev, bool enable)
++{
++	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "%s(%d)\n", __func__, enable);
++
++	mtk_hdmi_hw_aud_mute(hdmi, enable);
++
++	return 0;
++}
++
++static int mtk_hdmi_audio_get_eld(struct device *dev, uint8_t *buf, size_t len)
++{
++	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	memcpy(buf, hdmi->conn.eld, min(sizeof(hdmi->conn.eld), len));
++
++	return 0;
++}
++
++static const struct hdmi_codec_ops mtk_hdmi_audio_codec_ops = {
++	.hw_params = mtk_hdmi_audio_hw_params,
++	.audio_startup = mtk_hdmi_audio_startup,
++	.audio_shutdown = mtk_hdmi_audio_shutdown,
++	.digital_mute = mtk_hdmi_audio_digital_mute,
++	.get_eld = mtk_hdmi_audio_get_eld,
 +};
 +
- /* Digital audio interface glue - connects codec <---> CPU */
- static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	/* Front End DAI links */
--	{
-+	[DAI_LINK_PLAYBACK] = {
- 		.name = "rt5650_rt5676 Playback",
- 		.stream_name = "rt5650_rt5676 Playback",
- 		.cpu_dai_name = "DL1",
-@@ -144,7 +151,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 	},
--	{
-+	[DAI_LINK_CAPTURE] = {
- 		.name = "rt5650_rt5676 Capture",
- 		.stream_name = "rt5650_rt5676 Capture",
- 		.cpu_dai_name = "VUL",
-@@ -156,7 +163,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	},
++static void mtk_hdmi_register_audio_driver(struct device *dev)
++{
++	struct hdmi_codec_pdata codec_data = {
++		.ops = &mtk_hdmi_audio_codec_ops,
++		.max_i2s_channels = 2,
++		.i2s = 1,
++	};
++	struct platform_device *pdev;
++
++	pdev = platform_device_register_data(dev, HDMI_CODEC_DRV_NAME,
++					     PLATFORM_DEVID_AUTO, &codec_data,
++					     sizeof(codec_data));
++	if (IS_ERR(pdev))
++		return;
++
++	DRM_INFO("%s driver bound to HDMI\n", HDMI_CODEC_DRV_NAME);
++}
++
+ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_hdmi *hdmi;
+@@ -485,6 +672,8 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- 	/* Back End DAI links */
--	{
-+	[DAI_LINK_CODEC_I2S] = {
- 		.name = "Codec",
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
-@@ -170,7 +177,8 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 	},
--	{ /* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-+	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-+	[DAI_LINK_INTERCODEC] = {
- 		.name = "rt5650_rt5676 intercodec",
- 		.stream_name = "rt5650_rt5676 intercodec",
- 		.cpu_dai_name = "snd-soc-dummy-dai",
-@@ -240,7 +248,7 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
- 	mt8173_rt5650_rt5676_codec_conf[0].of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
++	mtk_hdmi_register_audio_driver(dev);
++
+ 	hdmi->bridge.funcs = &mtk_hdmi_bridge_funcs;
+ 	hdmi->bridge.of_node = pdev->dev.of_node;
+ 	ret = drm_bridge_add(&hdmi->bridge);
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index 342beab..535a4d7 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -441,6 +441,32 @@ void mtk_hdmi_power_off(struct mtk_hdmi *hdmi)
+ 	mtk_hdmi_hw_make_reg_writable(hdmi, false);
+ }
  
--	mt8173_rt5650_rt5676_dais[3].codec_of_node =
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
- 
- 	card->dev = &pdev->dev;
++void mtk_hdmi_audio_enable(struct mtk_hdmi *hdmi)
++{
++	mtk_hdmi_aud_enable_packet(hdmi, true);
++	hdmi->audio_enable = true;
++}
++
++void mtk_hdmi_audio_disable(struct mtk_hdmi *hdmi)
++{
++	mtk_hdmi_aud_enable_packet(hdmi, false);
++	hdmi->audio_enable = false;
++}
++
++int mtk_hdmi_audio_set_param(struct mtk_hdmi *hdmi,
++			     struct hdmi_audio_param *param)
++{
++	if (!hdmi->audio_enable) {
++		dev_err(hdmi->dev, "hdmi audio is in disable state!\n");
++		return -EINVAL;
++	}
++	dev_info(hdmi->dev, "codec:%d, input:%d, channel:%d, fs:%d\n",
++		 param->aud_codec, param->aud_input_type,
++		 param->aud_input_chan_type, param->aud_hdmi_fs);
++	memcpy(&hdmi->aud_param, param, sizeof(*param));
++	return mtk_hdmi_aud_output_config(hdmi, &hdmi->mode);
++}
++
+ int mtk_hdmi_output_set_display_mode(struct mtk_hdmi *hdmi,
+ 				     struct drm_display_mode *mode)
+ {
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.h b/drivers/gpu/drm/mediatek/mtk_hdmi.h
+index c072bcc..12e5614 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.h
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.h
+@@ -211,6 +211,10 @@ int mtk_hdmi_output_set_display_mode(struct mtk_hdmi *hdmi,
+ 				     struct drm_display_mode *mode);
+ void mtk_hdmi_power_on(struct mtk_hdmi *hdmi);
+ void mtk_hdmi_power_off(struct mtk_hdmi *hdmi);
++void mtk_hdmi_audio_enable(struct mtk_hdmi *hctx);
++void mtk_hdmi_audio_disable(struct mtk_hdmi *hctx);
++int mtk_hdmi_audio_set_param(struct mtk_hdmi *hctx,
++			     struct hdmi_audio_param *param);
+ #if defined(CONFIG_DEBUG_FS)
+ int mtk_drm_hdmi_debugfs_init(struct mtk_hdmi *hdmi);
+ void mtk_drm_hdmi_debugfs_exit(struct mtk_hdmi *hdmi);
 -- 
 2.6.2
