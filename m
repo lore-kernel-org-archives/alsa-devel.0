@@ -1,14 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 0/8] Baytrail followup
-Date: Mon,  4 Jan 2016 17:20:22 -0600
-Message-ID: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 1/8] ASoC: Intel: fix ACPI probe regression
+	with Atom DPCM driver
+Date: Mon,  4 Jan 2016 17:20:23 -0600
+Message-ID: <1451949630-3475-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A303F260564
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 00:20:54 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F18B2605B1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 00:21:00 +0100 (CET)
+In-Reply-To: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +25,32 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to Mark for merging most of the patches in the first batch.
-Resending update for patches that where not merged.
-No additional functionalitity, only correction in first patch to refer to 
-correct SHA1 and copy/paste fixes in bytcr_rt5651 machine driver
+The commit 95f098014815b330838b1173d3d7bcea3b481242
+"ASoC: Intel: Move apci find machine routines"
 
-Acknowledgements:
-Keyon Jie for his MinnowBoard validation
-Francisco Mendez for his help with the MCLK and jack detection
-Jack Yu and Bard Liao for their codec support
+introduced a regression in ACPI probe of the DPCM driver.
+Fix by conditionally compiling sst-acpi when the DPCM driver
+is not selected
 
-Known issues: 
-noise on startup when using speakers
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/common/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Once this batch is merged, the following updates will be provided:
-MCLK support to fix noise issues
-BYT-CR fixes
-jack detection
-
-Jack Yu (1):
-  ASoC: rt5640: add ASRC support
-
-Jorge Fernandez Monteagudo (1):
-  ASoC: Intel: Atom: Add support for HP ElitePad 1000 G2
-
-Pierre-Louis Bossart (6):
-  ASoC: Intel: fix ACPI probe regression with Atom DPCM driver
-  ASoC: Intel: add bytct-rt5651 machine driver
-  ASoC: intel: boards: add card for MinnowBoard I2S access
-  ASoC: Intel: bytcr-rt5640: enable ASRC
-  ASoC: Intel: bytcr_rt5640: fixup DAI codec_name with HID
-  ASoC: Intel: Atom: add support for RT5642
-
- sound/soc/codecs/rt5640.c              | 103 ++++++++++
- sound/soc/codecs/rt5640.h              |  17 ++
- sound/soc/intel/Kconfig                |  24 +++
- sound/soc/intel/atom/sst/sst_acpi.c    |  23 ++-
- sound/soc/intel/boards/Makefile        |   4 +
- sound/soc/intel/boards/bytcr_nocodec.c | 233 +++++++++++++++++++++++
- sound/soc/intel/boards/bytcr_rt5640.c  |  25 ++-
- sound/soc/intel/boards/bytcr_rt5651.c  | 332 +++++++++++++++++++++++++++++++++
- sound/soc/intel/common/Makefile        |   5 +
- 9 files changed, 760 insertions(+), 6 deletions(-)
- create mode 100644 sound/soc/intel/boards/bytcr_nocodec.c
- create mode 100644 sound/soc/intel/boards/bytcr_rt5651.c
-
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 3b9332e..668fdee 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -1,5 +1,10 @@
+ snd-soc-sst-dsp-objs := sst-dsp.o
++ifneq ($(CONFIG_SND_SST_IPC_ACPI),)
++snd-soc-sst-acpi-objs := sst-match-acpi.o
++else
+ snd-soc-sst-acpi-objs := sst-acpi.o sst-match-acpi.o
++endif
++
+ snd-soc-sst-ipc-objs := sst-ipc.o
+ 
+ snd-soc-sst-dsp-$(CONFIG_DW_DMAC_CORE) += sst-firmware.o
 -- 
 1.9.1
