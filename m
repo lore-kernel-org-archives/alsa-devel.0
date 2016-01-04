@@ -1,17 +1,19 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v4 REPOST 14/14] ASoC: hdac_hdmi: Fix to enable
-	device configuration in hw_params
-Date: Mon,  4 Jan 2016 11:11:04 +0530
-Message-ID: <1451886064-30792-15-git-send-email-subhransu.s.prusty@intel.com>
-References: <1451886064-30792-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v4 03/13] ALSA: hdac: Add support for hda
+ DMA Resume capability
+Date: Mon, 4 Jan 2016 11:27:15 +0530
+Message-ID: <20160104055715.GD2940@localhost>
+References: <1450431729-27259-1-git-send-email-vinod.koul@intel.com>
+ <1450431729-27259-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 534032605D2
- for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 06:39:20 +0100 (CET)
-In-Reply-To: <1451886064-30792-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4584C260504
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 06:53:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1450431729-27259-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,176 +23,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: tiwai@suse.de
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Fri, Dec 18, 2015 at 03:11:59PM +0530, Vinod Koul wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+> 
+> Skylake sports new capability of DMA resume, DRSM where we can
+> resume the DMA. This capability is defined by presence of
+> AZX_DRSM_CAP_ID.
 
-User can keep the device open and with the device configuration
-done in pcm_open, this may fail. Anyway hw_params is the right
-place for this. So moving the configuration to hw_params and free
-in hw_free. Remove the redundant startup/shutdown ops.
+Hi Takashi,
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 103 +++++++++++++++++++------------------------
- 1 file changed, 45 insertions(+), 58 deletions(-)
+Can you please ACK this and path 4, 5 and 6 of this series, as they are
+on sound/hda/. I think Mark is waiting on that..
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 03d18fb..814ef9a 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -375,52 +375,6 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 			dai_map->pin->nid, dd->stream_tag, dd->format);
- }
- 
--static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
--{
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_ext_dma_params *dd;
--
--	if (dai->id > 0) {
--		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
--		return -ENODEV;
--	}
--
--	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
--	if (!dd)
--		return -ENOMEM;
--	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
--			params_channels(hparams), params_format(hparams),
--			24, 0);
--
--	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
--
--	return 0;
--}
--
--static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
--
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_CHANNEL_STREAMID, 0);
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_STREAM_FORMAT, 0);
--
--	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
--
--	kfree(dd);
--
--	return 0;
--}
--
- static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
- 		struct hdac_hdmi_dai_pin_map *dai_map)
- {
-@@ -532,8 +486,8 @@ static struct hdac_hdmi_pin *hdac_hdmi_get_pin_from_daistream(
- 	return NULL;
- }
- 
--static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
--			struct snd_soc_dai *dai)
-+static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
- {
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-@@ -541,6 +495,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_hdmi_cvt *cvt;
- 	struct hdac_hdmi_pin *pin;
- 	int ret;
-+	struct hdac_ext_dma_params *dd;
- 
- 	if (dai->id > 0) {
- 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -573,25 +528,59 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	return snd_pcm_hw_constraint_eld(substream->runtime,
--				pin->eld.eld_buffer);
-+	ret = snd_pcm_hw_constraint_eld(substream->runtime,
-+			dai_map->pin->eld.eld_buffer);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
-+	if (!dd) {
-+		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
-+		if (!dd)
-+			return -ENOMEM;
-+	}
-+	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
-+			params_channels(hparams), params_format(hparams),
-+			24, 0);
-+
-+	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
-+
-+	return 0;
- }
- 
--static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
-+static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-+	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_ext_dma_params *dd;
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
-+	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
- 
--	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
-+	if (dd) {
-+		snd_soc_dai_set_dma_data(dai, substream, NULL);
-+		kfree(dd);
-+	}
-+
-+	if (dai_map->pin) {
-+		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+				AC_VERB_SET_CHANNEL_STREAMID, 0);
-+		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+				AC_VERB_SET_STREAM_FORMAT, 0);
-+
-+		hdac_hdmi_set_power_state(edev, dai_map, AC_PWRST_D3);
-+
-+		snd_hdac_codec_write(&edev->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
- 
--	dai_map->pin = NULL;
-+		dai_map->pin = NULL;
-+	}
-+
-+	return 0;
- }
- 
- static int
-@@ -1026,8 +1015,6 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
- }
- 
- static struct snd_soc_dai_ops hdmi_dai_ops = {
--	.startup = hdac_hdmi_pcm_open,
--	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
- 	.prepare = hdac_hdmi_playback_prepare,
- 	.hw_free = hdac_hdmi_playback_cleanup,
+> 
+> If this capability is present, we use this capability.
+> So we add:
+> 
+> snd_hdac_ext_stream_drsm_enable() - DMA resume caps
+> snd_hdac_ext_stream_set_dpibr() - set the DMA position
+> snd_hdac_ext_stream_set_lpib() - set the lpib
+> 
+> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  include/sound/hda_register.h        |  9 +++++
+>  include/sound/hdaudio_ext.h         | 14 ++++++++
+>  sound/hda/ext/hdac_ext_controller.c |  6 ++++
+>  sound/hda/ext/hdac_ext_stream.c     | 71 +++++++++++++++++++++++++++++++++++++
+>  4 files changed, 100 insertions(+)
+> 
+> diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+> index 2ae8812d7b1a..28ac1f9a18ac 100644
+> --- a/include/sound/hda_register.h
+> +++ b/include/sound/hda_register.h
+> @@ -230,6 +230,15 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+>  #define AZX_MLCTL_SPA			(1<<16)
+>  #define AZX_MLCTL_CPA			23
+>  
+> +
+> +/* registers for DMA Resume Capability Structure */
+> +#define AZX_DRSM_CAP_ID			0x5
+> +#define AZX_REG_DRSM_CTL		0x4
+> +/* Base used to calculate the iterating register offset */
+> +#define AZX_DRSM_BASE			0x08
+> +/* Interval used to calculate the iterating register offset */
+> +#define AZX_DRSM_INTERVAL		0x08
+> +
+>  /*
+>   * helpers to read the stream position
+>   */
+> diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+> index 425af0674557..f3454950ee0b 100644
+> --- a/include/sound/hdaudio_ext.h
+> +++ b/include/sound/hdaudio_ext.h
+> @@ -12,6 +12,7 @@
+>   * @spbcap: SPIB capabilities pointer
+>   * @mlcap: MultiLink capabilities pointer
+>   * @gtscap: gts capabilities pointer
+> + * @drsmcap: dma resume capabilities pointer
+>   * @hlink_list: link list of HDA links
+>   */
+>  struct hdac_ext_bus {
+> @@ -23,6 +24,7 @@ struct hdac_ext_bus {
+>  	void __iomem *spbcap;
+>  	void __iomem *mlcap;
+>  	void __iomem *gtscap;
+> +	void __iomem *drsmcap;
+>  
+>  	struct list_head hlink_list;
+>  };
+> @@ -72,6 +74,9 @@ enum hdac_ext_stream_type {
+>   * @pplc_addr: processing pipe link stream pointer
+>   * @spib_addr: software position in buffers stream pointer
+>   * @fifo_addr: software position Max fifos stream pointer
+> + * @dpibr_addr: DMA position in buffer resume pointer
+> + * @dpib: DMA position in buffer
+> + * @lpib: Linear position in buffer
+>   * @decoupled: stream host and link is decoupled
+>   * @link_locked: link is locked
+>   * @link_prepared: link is prepared
+> @@ -86,6 +91,10 @@ struct hdac_ext_stream {
+>  	void __iomem *spib_addr;
+>  	void __iomem *fifo_addr;
+>  
+> +	void __iomem *dpibr_addr;
+> +
+> +	u32 dpib;
+> +	u32 lpib;
+>  	bool decoupled:1;
+>  	bool link_locked:1;
+>  	bool link_prepared;
+> @@ -116,6 +125,11 @@ int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
+>  				 struct hdac_ext_stream *stream, u32 value);
+>  int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_ext_bus *ebus,
+>  				 struct hdac_ext_stream *stream);
+> +void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
+> +				bool enable, int index);
+> +int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
+> +				struct hdac_ext_stream *stream, u32 value);
+> +int snd_hdac_ext_stream_set_lpib(struct hdac_ext_stream *stream, u32 value);
+>  
+>  void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *hstream);
+>  void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *hstream);
+> diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+> index 63215b17247c..556267e75591 100644
+> --- a/sound/hda/ext/hdac_ext_controller.c
+> +++ b/sound/hda/ext/hdac_ext_controller.c
+> @@ -77,6 +77,12 @@ int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
+>  			ebus->spbcap = bus->remap_addr + offset;
+>  			break;
+>  
+> +		case AZX_DRSM_CAP_ID:
+> +			/* DMA resume  capability found, handler function */
+> +			dev_dbg(bus->dev, "Found DRSM capability\n");
+> +			ebus->drsmcap = bus->remap_addr + offset;
+> +			break;
+> +
+>  		default:
+>  			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
+>  			break;
+> diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+> index cb89ec7c8147..8f30e8836818 100644
+> --- a/sound/hda/ext/hdac_ext_stream.c
+> +++ b/sound/hda/ext/hdac_ext_stream.c
+> @@ -59,6 +59,10 @@ void snd_hdac_ext_stream_init(struct hdac_ext_bus *ebus,
+>  					AZX_SPB_MAXFIFO;
+>  	}
+>  
+> +	if (ebus->drsmcap)
+> +		stream->dpibr_addr = ebus->drsmcap + AZX_DRSM_BASE +
+> +					AZX_DRSM_INTERVAL * idx;
+> +
+>  	stream->decoupled = false;
+>  	snd_hdac_stream_init(bus, &stream->hstream, idx, direction, tag);
+>  }
+> @@ -497,3 +501,70 @@ void snd_hdac_ext_stop_streams(struct hdac_ext_bus *ebus)
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(snd_hdac_ext_stop_streams);
+> +
+> +/**
+> + * snd_hdac_ext_stream_drsm_enable - enable DMA resume for a stream
+> + * @ebus: HD-audio ext core bus
+> + * @enable: flag to enable/disable DRSM
+> + * @index: stream index for which DRSM need to be enabled
+> + */
+> +void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
+> +				bool enable, int index)
+> +{
+> +	u32 mask = 0;
+> +	u32 register_mask = 0;
+> +	struct hdac_bus *bus = &ebus->bus;
+> +
+> +	if (!ebus->drsmcap) {
+> +		dev_err(bus->dev, "Address of DRSM capability is NULL");
+> +		return;
+> +	}
+> +
+> +	mask |= (1 << index);
+> +
+> +	register_mask = readl(ebus->drsmcap + AZX_REG_SPB_SPBFCCTL);
+> +
+> +	mask |= register_mask;
+> +
+> +	if (enable)
+> +		snd_hdac_updatel(ebus->drsmcap, AZX_REG_DRSM_CTL, 0, mask);
+> +	else
+> +		snd_hdac_updatel(ebus->drsmcap, AZX_REG_DRSM_CTL, mask, 0);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_drsm_enable);
+> +
+> +/**
+> + * snd_hdac_ext_stream_set_dpibr - sets the dpibr value of a stream
+> + * @ebus: HD-audio ext core bus
+> + * @stream: hdac_ext_stream
+> + * @value: dpib value to set
+> + */
+> +int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
+> +				 struct hdac_ext_stream *stream, u32 value)
+> +{
+> +	struct hdac_bus *bus = &ebus->bus;
+> +
+> +	if (!ebus->drsmcap) {
+> +		dev_err(bus->dev, "Address of DRSM capability is NULL");
+> +		return -EINVAL;
+> +	}
+> +
+> +	writel(value, stream->dpibr_addr);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_dpibr);
+> +
+> +/**
+> + * snd_hdac_ext_stream_set_lpib - sets the lpib value of a stream
+> + * @ebus: HD-audio ext core bus
+> + * @stream: hdac_ext_stream
+> + * @value: lpib value to set
+> + */
+> +int snd_hdac_ext_stream_set_lpib(struct hdac_ext_stream *stream, u32 value)
+> +{
+> +	snd_hdac_stream_writel(&stream->hstream, SD_LPIB, value);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_lpib);
+> -- 
+> 1.9.1
+> 
+
 -- 
-1.9.1
+~Vinod
