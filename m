@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 8/8] ASoC: Intel: Atom: Add support for HP
-	ElitePad 1000 G2
-Date: Mon,  4 Jan 2016 17:20:30 -0600
-Message-ID: <1451949630-3475-9-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 7/8] ASoC: Intel: Atom: add support for
+	RT5642
+Date: Mon,  4 Jan 2016 17:20:29 -0600
+Message-ID: <1451949630-3475-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3275A2605FA
+ by alsa0.perex.cz (Postfix) with ESMTP id 501B42606D3
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 00:21:10 +0100 (CET)
 In-Reply-To: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,68 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
+The machine driver is not loaded when the BIOS uses the 10EC5642
+_HID. Add it to the white list of known _HIDs, codec_name is
+already taken care of by previous commit
 
-The BIOS for the HP ElitePad 1000 G2 uses an unexpected HID,
-(INTCCFFD), add it to the white list of knowns HIDs.
+Tested on Asus T100TAF.
 
-Signed-off-by: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt5640.c             | 1 +
- sound/soc/intel/atom/sst/sst_acpi.c   | 3 ++-
- sound/soc/intel/boards/bytcr_rt5640.c | 8 ++++++++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst_acpi.c   | 2 ++
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 18f2d3b..11d032c 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2277,6 +2277,7 @@ static const struct acpi_device_id rt5640_acpi_match[] = {
- 	{ "INT33CA", 0 },
- 	{ "10EC5640", 0 },
- 	{ "10EC5642", 0 },
-+	{ "INTCCFFD", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
 diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 510826f..4fce03f 100644
+index f61e531..510826f 100644
 --- a/sound/soc/intel/atom/sst/sst_acpi.c
 +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -325,9 +325,10 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+@@ -323,6 +323,8 @@ static int sst_acpi_remove(struct platform_device *pdev)
+ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
  						&byt_rvp_platform_data },
- 	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
- 						&byt_rvp_platform_data },
-+	{"INTCCFFD", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
++	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
 +						&byt_rvp_platform_data },
  	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
  						&byt_rvp_platform_data },
--
- 	{},
- };
  
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 5b0cdad..9a1752d 100644
+index 74bb7cc..5b0cdad 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -141,6 +141,14 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		.driver_data = (unsigned long *)(BYT_RT5640_DMIC2_MAP |
- 						 BYT_RT5640_DMIC_EN),
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
-+		},
-+		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
-+	},
- 	{}
- };
- 
+@@ -302,7 +302,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+ 		.codec_dai_name = "rt5640-aif1",
+-		.codec_name = "i2c-10EC5640:00",
++		.codec_name = "i2c-10EC5640:00", /* overwritten with HID */
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 						| SND_SOC_DAIFMT_CBS_CFS,
+ 		.be_hw_params_fixup = byt_rt5640_codec_fixup,
 -- 
 1.9.1
