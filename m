@@ -1,17 +1,16 @@
 From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [RFC v2 3/6] ASoC: mediatek: Add HDMI dai-links in the
-	machine driver
-Date: Mon,  4 Jan 2016 20:15:44 +0100
-Message-ID: <1451934944-24588-1-git-send-email-p.zabel@pengutronix.de>
-References: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v2 4/6] video: rmk's HDMI notification prototype
+Date: Mon,  4 Jan 2016 20:18:12 +0100
+Message-ID: <1451935092-24701-1-git-send-email-p.zabel@pengutronix.de>
+References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 36A932604DF
- for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 20:15:50 +0100 (CET)
-In-Reply-To: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C78032604DF
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 20:18:14 +0100 (CET)
+In-Reply-To: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,130 +24,146 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Koro Chen <koro.chen@mediatek.com>
+This is extracted from Russell's food for thought HDMI notification
+prototype [1]. I've put it into drivers/video for the time being because
+my kernels don't have drivers/cec yet.
 
-This creates pcmC0D2p for the HDMI playback in the same card.
+The current use case for the notifications on MediaTek MT8173 is to
+let the (dis)connection notifications control an ALSA jack object.
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+No Signed-off-by yet since this is not my code, and up for discussion.
+
+[1] https://patchwork.kernel.org/patch/7339011/
 ---
- .../bindings/sound/mt8173-rt5650-rt5676.txt        |  5 ++-
- sound/soc/mediatek/mt8173-rt5650-rt5676.c          | 48 ++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 2 deletions(-)
+ drivers/video/Makefile   |  2 +-
+ drivers/video/hdmi-not.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/hdmi-not.h | 39 +++++++++++++++++++++++++++++++
+ 3 files changed, 101 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/video/hdmi-not.c
+ create mode 100644 include/linux/hdmi-not.h
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-index f205ce9..ac28cdb 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-@@ -1,15 +1,16 @@
--MT8173 with RT5650 RT5676 CODECS
-+MT8173 with RT5650 RT5676 CODECS and HDMI via I2S
+diff --git a/drivers/video/Makefile b/drivers/video/Makefile
+index 9ad3c17..bf25760 100644
+--- a/drivers/video/Makefile
++++ b/drivers/video/Makefile
+@@ -1,5 +1,5 @@
+ obj-$(CONFIG_VGASTATE)            += vgastate.o
+-obj-$(CONFIG_HDMI)                += hdmi.o
++obj-$(CONFIG_HDMI)                += hdmi.o hdmi-not.o
  
- Required properties:
- - compatible : "mediatek,mt8173-rt5650-rt5676"
- - mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
-+			and of the hdmi encoder node
- - mediatek,platform: the phandle of MT8173 ASoC platform
- 
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650-rt5676";
--		mediatek,audio-codec = <&rt5650 &rt5676>;
-+		mediatek,audio-codec = <&rt5650 &rt5676 &hdmi0>;
- 		mediatek,platform = <&afe>;
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-index 5c4c58c..def9d95 100644
---- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -18,6 +18,7 @@
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include "../codecs/rt5645.h"
- #include "../codecs/rt5677.h"
-@@ -131,10 +132,31 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
- 	},
- };
- 
-+static struct snd_soc_jack mt8173_hdmi_card_jack;
+ obj-$(CONFIG_VT)		  += console/
+ obj-$(CONFIG_LOGO)		  += logo/
+diff --git a/drivers/video/hdmi-not.c b/drivers/video/hdmi-not.c
+new file mode 100644
+index 0000000..ba3be8a
+--- /dev/null
++++ b/drivers/video/hdmi-not.c
+@@ -0,0 +1,61 @@
++#include <linux/export.h>
++#include <linux/hdmi-not.h>
++#include <linux/notifier.h>
++#include <linux/string.h>
 +
-+static int mt8173_hdmi_init(struct snd_soc_pcm_runtime *runtime)
++static BLOCKING_NOTIFIER_HEAD(hdmi_notifier);
++
++int hdmi_register_notifier(struct notifier_block *nb)
 +{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
-+
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "HDMI Jack", SND_JACK_LINEOUT,
-+				    &mt8173_hdmi_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new HDMI Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return hdmi_codec_set_jack_detect(codec, &mt8173_hdmi_card_jack);
++	return blocking_notifier_chain_register(&hdmi_notifier, nb);
 +}
++EXPORT_SYMBOL_GPL(hdmi_register_notifier);
 +
- enum {
- 	DAI_LINK_PLAYBACK,
- 	DAI_LINK_CAPTURE,
-+	DAI_LINK_HDMI,
- 	DAI_LINK_CODEC_I2S,
-+	DAI_LINK_HDMI_I2S,
- 	DAI_LINK_INTERCODEC
- };
- 
-@@ -161,6 +183,16 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI] = {
-+		.name = "HDMI",
-+		.stream_name = "HDMI PCM",
-+		.cpu_dai_name = "HDMI",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+	},
- 
- 	/* Back End DAI links */
- 	[DAI_LINK_CODEC_I2S] = {
-@@ -177,6 +209,14 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI_I2S] = {
-+		.name = "HDMI BE",
-+		.cpu_dai_name = "HDMIO",
-+		.no_pcm = 1,
-+		.codec_dai_name = "i2s-hifi",
-+		.dpcm_playback = 1,
-+		.init = mt8173_hdmi_init,
-+	},
- 	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
- 	[DAI_LINK_INTERCODEC] = {
- 		.name = "rt5650_rt5676 intercodec",
-@@ -251,6 +291,14 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
- 	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
- 
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 2);
-+	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
++int hdmi_unregister_notifier(struct notifier_block *nb)
++{
++	return blocking_notifier_chain_unregister(&hdmi_notifier, nb);
++}
++EXPORT_SYMBOL_GPL(hdmi_unregister_notifier);
 +
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
++void hdmi_event_connect(struct device *dev)
++{
++	struct hdmi_event_base base;
++
++	base.source = dev;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_CONNECTED, &base);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_connect);
++
++void hdmi_event_disconnect(struct device *dev)
++{
++	struct hdmi_event_base base;
++
++	base.source = dev;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_DISCONNECTED, &base);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_disconnect);
++
++void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
++{
++	struct hdmi_event_new_edid new_edid;
++
++	new_edid.base.source = dev;
++	new_edid.edid = edid;
++	new_edid.size = size;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_EDID, &new_edid);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_new_edid);
++
++void hdmi_event_new_eld(struct device *dev, const void *eld)
++{
++	struct hdmi_event_new_eld new_eld;
++
++	new_eld.base.source = dev;
++	memcpy(new_eld.eld, eld, sizeof(new_eld.eld));
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_ELD, &new_eld);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_new_eld);
+diff --git a/include/linux/hdmi-not.h b/include/linux/hdmi-not.h
+new file mode 100644
+index 0000000..940ece45
+--- /dev/null
++++ b/include/linux/hdmi-not.h
+@@ -0,0 +1,39 @@
++#include <linux/types.h>
++
++enum {
++	HDMI_CONNECTED,
++	HDMI_DISCONNECTED,
++	HDMI_NEW_EDID,
++	HDMI_NEW_ELD,
++};
++
++struct hdmi_event_base {
++	struct device *source;
++};
++
++struct hdmi_event_new_edid {
++	struct hdmi_event_base base;
++	const void *edid;
++	size_t size;
++};
++
++struct hdmi_event_new_eld {
++	struct hdmi_event_base base;
++	unsigned char eld[128];
++};
++
++union hdmi_event {
++	struct hdmi_event_base base;
++	struct hdmi_event_new_edid edid;
++	struct hdmi_event_new_eld eld;
++};
++
++struct notifier_block;
++
++int hdmi_register_notifier(struct notifier_block *nb);
++int hdmi_unregister_notifier(struct notifier_block *nb);
++
++void hdmi_event_connect(struct device *dev);
++void hdmi_event_disconnect(struct device *dev);
++void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size);
++void hdmi_event_new_eld(struct device *dev, const void *eld);
 -- 
 2.6.2
