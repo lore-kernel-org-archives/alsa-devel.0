@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: use dev_to_hdac_dev and
-	to_ehdac_device" to the asoc tree
-Date: Mon, 04 Jan 2016 22:18:49 +0000
-Message-ID: <E1aGDSj-0002kl-BP@debutante>
-References: <a740643997f286e5ec60d523ddcb9d42f78f514a.1451312334.git.geliangtang@163.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [RFC v2 1/6] drm/mediatek: hdmi: Add audio
+ interface to the hdmi-codec driver
+Date: Mon, 4 Jan 2016 22:29:20 +0000
+Message-ID: <20160104222920.GQ19062@n2100.arm.linux.org.uk>
+References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
+ <1451934551-21333-2-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 81F3C260522
- for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 23:18:59 +0100 (CET)
-In-Reply-To: <a740643997f286e5ec60d523ddcb9d42f78f514a.1451312334.git.geliangtang@163.com>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 3947F2604DF
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 23:29:36 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1451934551-21333-2-git-send-email-p.zabel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +23,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Geliang Tang <geliangtang@163.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Jan 04, 2016 at 08:09:06PM +0100, Philipp Zabel wrote:
+> Add the interface needed by Jyri's generic hdmi-codec driver [1] to start
+> or stop audio playback and to retrieve ELD (EDID like data) to limit the
+> supported audio formats to the HDMI sink capabilities.
 
-   ASoC: hdac_hdmi: use dev_to_hdac_dev and to_ehdac_device
+Some of this makes me rather suspicious.
 
-has been applied to the asoc tree at
+> +	switch (params->sample_rate) {
+> +	case 32000:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_32000;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_32K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0x3;
+> +		break;
+> +	case 44100:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_44100;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_44K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0;
+> +		break;
+> +	case 48000:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_48000;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_48K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0x2;
+> +		break;
+> +	case 88200:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_88200;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_88K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0x8;
+> +		break;
+> +	case 96000:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_96000;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_96K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0xa;
+> +		break;
+> +	case 176400:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_176400;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_176K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0xc;
+> +		break;
+> +	case 192000:
+> +		hdmi_params.aud_hdmi_fs = HDMI_AUDIO_SAMPLE_FREQUENCY_192000;
+> +		hdmi_params.iec_frame_fs = HDMI_IEC_192K;
+> +		/* channel status byte 3: fs and clock accuracy */
+> +		hdmi_params.hdmi_l_channel_state[3] = 0xe;
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+For exmaple, all the above.  The HDMI standards say that the audio info
+frame "shall" always set the sample frequency to "refer to stream" for
+L-PCM and IEC61937 compressed audio.  The above looks like it violates
+the HDMI specification as I'm willing to bet that hdmi_params.aud_hdmi_fs
+gets passed over into the audio info frame.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Many of the fields in the audio info frame are supposed to be set as
+"refer to stream".  I'd suggest ensuring that you're compliant with
+these.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The second thing is that "hdmi_params.hdmi_l_channel_state" looks like
+it's the IEC958 bytes.  These must be correct for some of the higher
+end HDMI receivers (eg, Yamaha RX-V677) to correctly process the audio.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +		break;
+> +	default:
+> +		dev_err(hdmi->dev, "rate[%d] not supported!\n",
+> +			params->sample_rate);
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (daifmt->fmt) {
+> +	case HDMI_I2S:
+> +		hdmi_params.aud_codec = HDMI_AUDIO_CODING_TYPE_PCM;
+> +		hdmi_params.aud_sampe_size = HDMI_AUDIO_SAMPLE_SIZE_16;
+> +		hdmi_params.aud_input_type = HDMI_AUD_INPUT_I2S;
+> +		hdmi_params.aud_i2s_fmt = HDMI_I2S_MODE_I2S_24BIT;
+> +		hdmi_params.aud_mclk = HDMI_AUD_MCLK_128FS;
+> +		break;
+> +	default:
+> +		dev_err(hdmi->dev, "%s: Invalid format %d\n", __func__,
+> +			daifmt->fmt);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* channel status */
+> +	/* byte 0: no copyright is asserted, mode 0 */
+> +	hdmi_params.hdmi_l_channel_state[0] = 1 << 2;
+> +	/* byte 1: category code */
+> +	hdmi_params.hdmi_l_channel_state[1] = 0;
+> +	/* byte 2: source/channel number don't take into account */
+> +	hdmi_params.hdmi_l_channel_state[2] = 0;
+> +	/* byte 4: word length 16bits */
+> +	hdmi_params.hdmi_l_channel_state[4] = 0x2;
+> +	memcpy(hdmi_params.hdmi_r_channel_state,
+> +	       hdmi_params.hdmi_l_channel_state,
+> +	       sizeof(hdmi_params.hdmi_l_channel_state));
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Hmm, yes, it is the IEC958 channel status bytes.  We have a helper
+for this - snd_pcm_create_iec958_consumer().
 
-Thanks,
-Mark
-
->From 51b2c4258f29d83120819a829a78345a3dac17c4 Mon Sep 17 00:00:00 2001
-From: Geliang Tang <geliangtang@163.com>
-Date: Mon, 28 Dec 2015 22:47:13 +0800
-Subject: [PATCH] ASoC: hdac_hdmi: use dev_to_hdac_dev and to_ehdac_device
-
-Use dev_to_hdac_dev() and to_ehdac_device() instead of open-coding.
-
-Signed-off-by: Geliang Tang <geliangtang@163.com>
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 1a2f33b4abfc..b999fb2a463b 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -67,9 +67,9 @@ struct hdac_hdmi_priv {
- 
- static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
- {
--	struct hdac_device *hdac = container_of(dev, struct hdac_device, dev);
-+	struct hdac_device *hdac = dev_to_hdac_dev(dev);
- 
--	return container_of(hdac, struct hdac_ext_device, hdac);
-+	return to_ehdac_device(hdac);
- }
- 
- static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
 -- 
-2.6.2
+RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
