@@ -1,69 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Constify ACPI device ids
-Date: Mon, 4 Jan 2016 01:32:10 +0000
-Message-ID: <20160104013210.GI16023@sirena.org.uk>
-References: <1451773436-25518-1-git-send-email-minipli@googlemail.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v4 REPOST 00/14] ASoC: hdac_hdmi: Add DP & notification support
+Date: Mon,  4 Jan 2016 11:10:50 +0530
+Message-ID: <1451886064-30792-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2151205305555335379=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 923812604F4
- for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 02:32:17 +0100 (CET)
-In-Reply-To: <1451773436-25518-1-git-send-email-minipli@googlemail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mathias Krause <minipli@googlemail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org
+Cc: Jani Nikula <jani.nikula@intel.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2151205305555335379==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dQAkT9kf8uI42z2+"
-Content-Disposition: inline
-
-
---dQAkT9kf8uI42z2+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Jan 02, 2016 at 11:23:56PM +0100, Mathias Krause wrote:
-> Constify the ACPI device ID array, no need to have it writable at
-> runtime. Also drop the unused RT5645_INIT_REG_LEN define.
-
-Please don't mix multiple unrelated changes in a single patch,
-especially when there's no content overlap at all :(
-
---dQAkT9kf8uI42z2+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWicuZAAoJECTWi3JdVIfQA70H/AzbqOJwXY5CocbfSsDmdZcM
-bVgmgpCnr3Npn4ZnGURLXL8ApjPCcaXzrzdo3dqrssfjx+KZJhd7QX70xoB6k3YB
-ullF+lC/2+h2JiKder6G0AvHiuD07bTJU6HiJo+2cfpMDYTpPmoHQtv4POGCuwvw
-X2oLTJFZbcBjTCaK4011e0IPnkdSkoyDMJrKg500I01ytUsSaVY2BkuyOY+xb51L
-bCh0Msci7sKtYTOHPjSa7eNcXctWnLHIfH0nDHWFrPR1J4KSkt3vsj4s4PYZpV76
-hhhSQRx7BkvkJM4bgFzPLkTLdS2slXwmTaTA2yI3ugLw3By8FI/0mW2dH+laGZw=
-=ELaK
------END PGP SIGNATURE-----
-
---dQAkT9kf8uI42z2+--
-
---===============2151205305555335379==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2151205305555335379==--
+VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBEUCBhdWRpbyBhbmQgaG90cGx1ZyBub3RpZmljYXRpb24g
+c3VwcG9ydC4KCk9uIFNreWxha2UgdHdvIERQIHBvcnRzIGFyZSBhdmFpbGFibGUgYW5kIHRvIGVu
+YWJsZSBEUCBvbiBib3RoCnBvcnRzIGFsbCBwaW5zIG5lZWQgdG8gYmUgZW5hYmxlZC4KClRoZXJl
+IGlzIGEgc3BlY2lhbCB2ZW5kb3Igd2lkZ2V0IHdoaWNoIG5lZWQgdG8gYmUgcHJvZ3JhbW1lZCB0
+bwplbmFibGUgYWxsIHBpbnMgYW5kIGNvbnZlcnRlcnMuIFRoaXMgc2VyaWVzIGFkZHMgaG90cGx1
+Zwpub3RpZmljYXRpb24sIHJlYWQvc2V0IGNvbnN0cmFpbnQgYmFzZWQgb24gRUxELCBlbmFibGUg
+YWxsCnBpbi9jdnRzLCBEUDEuMiwgcHJvZ3JhbXMgdGhlIGF1ZGlvIGluZm9mcmFtZSBmb3IgRFAu
+IFRoZXJlIGlzIGEKb25lIHRvIG9uZSBtYXBwaW5nIGJldHdlZW4gY29udmVydGVyIGFuZCBzdHJl
+YW0sIHNvIHRoZSBkYWlzIGFyZQpjcmVhdGVkIGJhc2VkIG9uIHRoZSBubyBvZiBzdHJlYW1zIHN1
+cHBvcnRlZCBvbiBoZG1pIGNvZGVjLiAgRXZlbgp0aG91Z2ggY3Z0cyBjYW4gYmUgbWFwcGVkIGR5
+bmFtaWNhbGx5IHRvIHRoZSBzdHJlYW1zLCBjdXJyZW50bHkKaXQgaXMgc3RhdGljYWxseSBtYXBw
+ZWQgYXMgc2ltdWx0YW5lb3VzIHBsYXliYWNrIG9uIGJvdGggRFAgYW5kCkhETUkgaXMgbm90IHN1
+cHBvcnRlZCBhcyBvZiBub3cuCgpQaW4gbXV4ZXMgYW5kIGNvbnRyb2xzIGFyZSBjcmVhdGVkIGR5
+bmFtaWNhbGx5IHRvIG1hcCBjb252ZXJ0ZXIKdG8gcGluIHdpZGdldC4gU28gYXQgcnVuIHRpbWUg
+c3BlY2lmaWMgcGluIGlzIG1hcHBlZCB0byB0aGUgZGFpCmJhc2VkIG9uIHRoZSBjb250cm9sIHNl
+bGVjdGVkIChiYXNlZCBvbiB0aGUgZGlzcGxheSB0eXBlIERQL0hETUkKY29ubmVjdGVkKS4KCkZp
+bmFsbHkgdGhlIERQIGF1ZGlvIGluZm9mcmFtZSBwcm9ncmFtbWluZyBpcyBhZGRlZCB0byBzdXBw
+b3J0CnRoZSBEUCBmZWF0dXJlLiAKCkFsc28gd2l0aCBob3RwbHVnIG5vdGlmaWNhdGlvbiBzdXBw
+b3J0LCBFTEQgaXMgcmVhZCBhbmQKY2FwYWJpbGl0aWVzIGFyZSBzZXQgZm9yIHJhdGUsIGZvcm1h
+dHMgYW5kIGNoYW5uZWxzLiBkcm1fZWxkCnNvdW5kL2NvcmUgZnJhbWV3b3JrIGlzIHVwZGF0ZWQg
+dG8gbGltaXQgdGhlIGZvcm1hdHMgYmFzZWQgb24KRUxELgoKVGhlcmUgYXJlIGZldyBmaXhlcyBv
+bmUgZml4aW5nIHRoZSBzdGF0aWMgY2hlY2tlciB3YXJuaW5nIGFuZApvdGhlciBvbmUgbm90IHRv
+IGZhaWwgaWYgbm8gY29ubmVjdGlvbiBsaXN0IGlzIGZvdW5kIGZvciBhIHBpbgp3aWRnZXQuCgpQ
+bHMgbm90ZSwgdGhlIDEwdGggcGF0Y2ggaXMgYWRkaW5nIGEgc21hbGwgbWFjcm8gZm9yIGdldHRp
+bmcKY29ubmVjdGlvbiB0eXBlIGluIGRybSBoZWFkZXIsIHdlIGhhdmUgQ0NlZCBkcm0gZm9sa3Mg
+b24gdGhhdCBhbmQKdGhpcyBvbmUuIFBscyBhY2sgc28gdGhhdCB3ZSBjYW4gaGF2ZSB0aGlzIHNl
+cmllcyBtZXJnZWQgdGhydQpzb3VuZCB0cmVlcwoKY2hhbmdlcyBpbiB2NDoKCS0gQWRkZWQgTlVM
+TCBjaGVjawoJLSBEcm9wcGVkIHRoZSBKYWNrIHJlcG9ydGluZyBwYXRjaCBmb3Igbm93LgoKQ2M6
+IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+CkNjOiBEYXZpZCBBaXJsaWUgPGFp
+cmxpZWRAbGludXguaWU+CkNjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCkNjOiBE
+YW5pZWwgVmV0dGVyIDxkYW5pZWwudmV0dGVyQGludGVsLmNvbT4KCkplZWphIEtQICgyKToKICBB
+U29DOiBoZGFjX2hkbWk6IEFkZCBjb2RlYyBzdXNwZW5kL3Jlc3VtZSBoYW5kbGVyCiAgQVNvQzog
+aGRhY19oZG1pOiBGaXggdG8gZW5hYmxlIGRldmljZSBjb25maWd1cmF0aW9uIGluIGh3X3BhcmFt
+cwoKUmFtZXNoIEJhYnUgKDEpOgogIEFTb0M6IGhkYWNfaGRtaTogRml4IHRvIGtlZXAgZGlzcGxh
+eSBhY3RpdmUgd2hpbGUgZW51bWVyYXRpbmcgY29kZWMKClN1YmhyYW5zdSBTLiBQcnVzdHkgKDEx
+KToKICBBU29DOiBoZGFjX2hkbWk6IEZpeCB0byBjaGVjayBudW0gbm9kZXMgY29ycmVjdGx5CiAg
+QVNvQzogaGRhY19oZG1pOiBGaXggdG8gd2FybiBpbnN0ZWFkIG9mIGVyciBmb3Igbm8gY29ubmVj
+dGVkIG5pZHMKICBBU29DOiBoZGFjX2hkbWk6IFVzZSBsaXN0IHRvIGFkZCBwaW5zIGFuZCBjb252
+ZXJ0ZXJzCiAgQVNvQzogaGRhY19oZG1pOiBBZGQgaG90cGx1ZyBub3RpZmljYXRpb24gYW5kIHJl
+YWQgZWxkCiAgQVNvQzogaGRhY19oZG1pOiBBcHBseSBjb25zdHJhaW50cyBiYXNlZCBvbiBFTEQK
+ICBBU29DOiBoZGFjX2hkbWk6IEVuYWJsZSBEUDEuMiBhbmQgYWxsIGNvbnZlcnRlcnMvcGlucwog
+IEFTb0M6IGhkYWNfaGRtaTogY3JlYXRlIGRhaXMgYmFzZWQgb24gbnVtYmVyIG9mIHN0cmVhbXMK
+ICBBU29DOiBoZGFjX2hkbWk6IENyZWF0ZSB3aWRnZXQvcm91dGUgYmFzZWQgb24gbm9kZXMgZW51
+bWVyYXRlZAogIEFTb0M6IGhkYWNfaGRtaTogQXNzaWduIHBpbiBmb3Igc3RyZWFtIGJhc2VkIG9u
+IGRhcG0gY29ubmVjdGlvbgogIGRybS9lZGlkOiBBZGQgQVBJIHRvIGhlbHAgZmluZCBjb25uZWN0
+aW9uIHR5cGUKICBBU29DOiBoZGFjX2hkbWk6IEFkZCBpbmZvZnJhbWUgc3VwcG9ydCBmb3IgZHAg
+YXVkaW8KCiBpbmNsdWRlL2RybS9kcm1fZWRpZC5oICAgICAgIHwgICAxMiArCiBzb3VuZC9zb2Mv
+Y29kZWNzL0tjb25maWcgICAgIHwgICAgMSArCiBzb3VuZC9zb2MvY29kZWNzL2hkYWNfaGRtaS5j
+IHwgMTExNiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0KIDMgZmls
+ZXMgY2hhbmdlZCwgOTUxIGluc2VydGlvbnMoKyksIDE3OCBkZWxldGlvbnMoLSkKCi0tIAoxLjku
+MQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
+dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9s
+aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
