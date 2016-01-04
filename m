@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Constify ACPI device ids" to
-	the asoc tree
-Date: Mon, 04 Jan 2016 22:18:48 +0000
-Message-ID: <E1aGDSi-0002kH-Dw@debutante>
-References: <1451773436-25518-1-git-send-email-minipli@googlemail.com>
+Subject: Applied "ASoC: hdac_hdmi: use dev_to_hdac_dev and
+	to_ehdac_device" to the asoc tree
+Date: Mon, 04 Jan 2016 22:18:49 +0000
+Message-ID: <E1aGDSj-0002kl-BP@debutante>
+References: <a740643997f286e5ec60d523ddcb9d42f78f514a.1451312334.git.geliangtang@163.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 725AB2604DF
- for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 23:18:58 +0100 (CET)
-In-Reply-To: <1451773436-25518-1-git-send-email-minipli@googlemail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 81F3C260522
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2016 23:18:59 +0100 (CET)
+In-Reply-To: <a740643997f286e5ec60d523ddcb9d42f78f514a.1451312334.git.geliangtang@163.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mathias Krause <minipli@googlemail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Geliang Tang <geliangtang@163.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Constify ACPI device ids
+   ASoC: hdac_hdmi: use dev_to_hdac_dev and to_ehdac_device
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From e2973769372a3de1c20249206db5ee93287a2230 Mon Sep 17 00:00:00 2001
-From: Mathias Krause <minipli@googlemail.com>
-Date: Sat, 2 Jan 2016 23:23:56 +0100
-Subject: [PATCH] ASoC: rt5645: Constify ACPI device ids
+>From 51b2c4258f29d83120819a829a78345a3dac17c4 Mon Sep 17 00:00:00 2001
+From: Geliang Tang <geliangtang@163.com>
+Date: Mon, 28 Dec 2015 22:47:13 +0800
+Subject: [PATCH] ASoC: hdac_hdmi: use dev_to_hdac_dev and to_ehdac_device
 
-Constify the ACPI device ID array, no need to have it writable at
-runtime. Also drop the unused RT5645_INIT_REG_LEN define.
+Use dev_to_hdac_dev() and to_ehdac_device() instead of open-coding.
 
-Signed-off-by: Mathias Krause <minipli@googlemail.com>
-Cc: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Cc: John Lin <john.lin@realtek.com>
+Signed-off-by: Geliang Tang <geliangtang@163.com>
+Reviewed-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 57c8d9ecfde1..bd23496a56ff 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -64,7 +64,6 @@ static const struct reg_sequence init_list[] = {
- 	{RT5645_PR_BASE + 0x21,	0x4040},
- 	{RT5645_PR_BASE + 0x23,	0x0004},
- };
--#define RT5645_INIT_REG_LEN ARRAY_SIZE(init_list)
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 1a2f33b4abfc..b999fb2a463b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -67,9 +67,9 @@ struct hdac_hdmi_priv {
  
- static const struct reg_sequence rt5650_init_list[] = {
- 	{0xf6,	0x0100},
-@@ -3521,7 +3520,7 @@ static const struct i2c_device_id rt5645_i2c_id[] = {
- MODULE_DEVICE_TABLE(i2c, rt5645_i2c_id);
+ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
+ {
+-	struct hdac_device *hdac = container_of(dev, struct hdac_device, dev);
++	struct hdac_device *hdac = dev_to_hdac_dev(dev);
  
- #ifdef CONFIG_ACPI
--static struct acpi_device_id rt5645_acpi_match[] = {
-+static const struct acpi_device_id rt5645_acpi_match[] = {
- 	{ "10EC5645", 0 },
- 	{ "10EC5650", 0 },
- 	{},
+-	return container_of(hdac, struct hdac_ext_device, hdac);
++	return to_ehdac_device(hdac);
+ }
+ 
+ static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
 -- 
 2.6.2
