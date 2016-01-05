@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: fixup DAI
-	codec_name with HID" to the asoc tree
-Date: Tue, 05 Jan 2016 17:49:13 +0000
-Message-ID: <E1aGVjN-000362-Ik@debutante>
-References: <1450406156-22246-18-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Atom: add support for RT5642" to
+	the asoc tree
+Date: Tue, 05 Jan 2016 17:49:12 +0000
+Message-ID: <E1aGVjM-00035Z-Li@debutante>
+References: <1450406156-22246-19-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E0FD260410
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A6172605D3
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:24 +0100 (CET)
-In-Reply-To: <1450406156-22246-18-git-send-email-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1450406156-22246-19-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: fixup DAI codec_name with HID
+   ASoC: Intel: Atom: add support for RT5642
 
 has been applied to the asoc tree at
 
@@ -53,87 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From caf94ed8629afb82d61a82ce76fb314145933a40 Mon Sep 17 00:00:00 2001
+>From 7762ef42d804050ae0ad3b99a2e407f50e039a1c Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 4 Jan 2016 17:20:28 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: fixup DAI codec_name with HID
+Date: Mon, 4 Jan 2016 17:20:29 -0600
+Subject: [PATCH] ASoC: Intel: Atom: add support for RT5642
 
-Codec name is hard-coded in machine driver, pass information
-from actual ACPI HID to help support BIOS variations
+The machine driver is not loaded when the BIOS uses the 10EC5642
+_HID. Add it to the white list of known _HIDs, codec_name is
+already taken care of by previous commit
+
+Tested on Asus T100TAF.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c   | 17 ++++++++++++-----
- sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
- 2 files changed, 22 insertions(+), 5 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c   | 2 ++
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index b6ea0a58f9d3..f61e53106339 100644
+index f61e53106339..510826f497c4 100644
 --- a/sound/soc/intel/atom/sst/sst_acpi.c
 +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -247,16 +247,23 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 
- 	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
- 
--	plat_dev = platform_device_register_data(dev, pdata->platform, -1, NULL, 0);
-+	plat_dev = platform_device_register_data(dev, pdata->platform, -1,
-+						NULL, 0);
- 	if (IS_ERR(plat_dev)) {
--		dev_err(dev, "Failed to create machine device: %s\n", pdata->platform);
-+		dev_err(dev, "Failed to create machine device: %s\n",
-+			pdata->platform);
- 		return PTR_ERR(plat_dev);
- 	}
- 
--	/* Create platform device for sst machine driver */
--	mdev = platform_device_register_data(dev, mach->drv_name, -1, NULL, 0);
-+	/*
-+	 * Create platform device for sst machine driver,
-+	 * pass machine info as pdata
-+	 */
-+	mdev = platform_device_register_data(dev, mach->drv_name, -1,
-+					(const void *)mach, sizeof(*mach));
- 	if (IS_ERR(mdev)) {
--		dev_err(dev, "Failed to create machine device: %s\n", mach->drv_name);
-+		dev_err(dev, "Failed to create machine device: %s\n",
-+			mach->drv_name);
- 		return PTR_ERR(mdev);
- 	}
+@@ -323,6 +323,8 @@ static int sst_acpi_remove(struct platform_device *pdev)
+ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
+ 						&byt_rvp_platform_data },
++	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
++						&byt_rvp_platform_data },
+ 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+ 						&byt_rvp_platform_data },
  
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 0f2385f6f6ac..74bb7cc1f54a 100644
+index 74bb7cc1f54a..5b0cdad901b6 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -30,6 +30,7 @@
- #include <sound/jack.h>
- #include "../../codecs/rt5640.h"
- #include "../atom/sst-atom-controls.h"
-+#include "../common/sst-acpi.h"
- 
- static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
-@@ -326,12 +327,21 @@ static struct snd_soc_card byt_rt5640_card = {
- 	.fully_routed = true,
- };
- 
-+static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
- 	int ret_val = 0;
-+	struct sst_acpi_mach *mach;
- 
- 	/* register the soc card */
- 	byt_rt5640_card.dev = &pdev->dev;
-+	mach = byt_rt5640_card.dev->platform_data;
-+
-+	/* fixup codec name based on HID */
-+	snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
-+		 "%s%s%s", "i2c-", mach->id, ":00");
-+	byt_rt5640_dais[MERR_DPCM_COMPR+1].codec_name = byt_rt5640_codec_name;
- 
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
- 
+@@ -302,7 +302,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+ 		.codec_dai_name = "rt5640-aif1",
+-		.codec_name = "i2c-10EC5640:00",
++		.codec_name = "i2c-10EC5640:00", /* overwritten with HID */
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 						| SND_SOC_DAIFMT_CBS_CFS,
+ 		.be_hw_params_fixup = byt_rt5640_codec_fixup,
 -- 
 2.7.0.rc3
