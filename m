@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: sound is wrong after
-	suspend/resume" to the asoc tree
-Date: Tue, 05 Jan 2016 17:49:10 +0000
-Message-ID: <E1aGVjK-00034b-S7@debutante>
-References: <5b07db93fb5a848216a9035c827d99185250d89d.1450928293.git.zidan.wang@freescale.com>
+Subject: Applied "ASoC: Intel: Atom: Add support for HP
+	ElitePad 1000 G2" to the asoc tree
+Date: Tue, 05 Jan 2016 17:49:11 +0000
+Message-ID: <E1aGVjL-000354-Oh@debutante>
+References: <1450406156-22246-20-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E9322625CF
+ by alsa0.perex.cz (Postfix) with ESMTP id AE05E2625ED
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:26 +0100 (CET)
-In-Reply-To: <5b07db93fb5a848216a9035c827d99185250d89d.1450928293.git.zidan.wang@freescale.com>
+In-Reply-To: <1450406156-22246-20-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: sound is wrong after suspend/resume
+   ASoC: Intel: Atom: Add support for HP ElitePad 1000 G2
 
 has been applied to the asoc tree at
 
@@ -53,89 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From d44c6114da8c9e83407397d06b5cd909a1cc9135 Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Thu, 24 Dec 2015 11:42:11 +0800
-Subject: [PATCH] ASoC: fsl_asrc: sound is wrong after suspend/resume
+>From 55fc205600ff3b529631cfe03b58645e3844bd92 Mon Sep 17 00:00:00 2001
+From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
+Date: Mon, 4 Jan 2016 17:20:30 -0600
+Subject: [PATCH] ASoC: Intel: Atom: Add support for HP ElitePad 1000 G2
 
-The register ASRCFG is volatile, but some bits need to be recovered
-after suspend/resume.
+The BIOS for the HP ElitePad 1000 G2 uses an unexpected HID,
+(INTCCFFD), add it to the white list of knowns HIDs.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 7 +++++++
- sound/soc/fsl/fsl_asrc.h | 7 +++++++
- 2 files changed, 14 insertions(+)
+ sound/soc/codecs/rt5640.c             | 1 +
+ sound/soc/intel/atom/sst/sst_acpi.c   | 3 ++-
+ sound/soc/intel/boards/bytcr_rt5640.c | 8 ++++++++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 7b811485a8e5..73fd2c683b78 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -996,6 +996,9 @@ static int fsl_asrc_suspend(struct device *dev)
- {
- 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
- 
-+	regmap_read(asrc_priv->regmap, REG_ASRCFG,
-+		    &asrc_priv->regcache_cfg);
-+
- 	regcache_cache_only(asrc_priv->regmap, true);
- 	regcache_mark_dirty(asrc_priv->regmap);
- 
-@@ -1016,6 +1019,10 @@ static int fsl_asrc_resume(struct device *dev)
- 	regcache_cache_only(asrc_priv->regmap, false);
- 	regcache_sync(asrc_priv->regmap);
- 
-+	regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
-+			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
-+			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
-+
- 	/* Restart enabled pairs */
- 	regmap_update_bits(asrc_priv->regmap, REG_ASRCTR,
- 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 68802cdc3f28..0f163abe4ba3 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -132,10 +132,13 @@
- #define ASRCFG_INIRQi			(1 << ASRCFG_INIRQi_SHIFT(i))
- #define ASRCFG_NDPRi_SHIFT(i)		(18 + i)
- #define ASRCFG_NDPRi_MASK(i)		(1 << ASRCFG_NDPRi_SHIFT(i))
-+#define ASRCFG_NDPRi_ALL_SHIFT		18
-+#define ASRCFG_NDPRi_ALL_MASK		(7 << ASRCFG_NDPRi_ALL_SHIFT)
- #define ASRCFG_NDPRi			(1 << ASRCFG_NDPRi_SHIFT(i))
- #define ASRCFG_POSTMODi_SHIFT(i)	(8 + (i << 2))
- #define ASRCFG_POSTMODi_WIDTH		2
- #define ASRCFG_POSTMODi_MASK(i)		(((1 << ASRCFG_POSTMODi_WIDTH) - 1) << ASRCFG_POSTMODi_SHIFT(i))
-+#define ASRCFG_POSTMODi_ALL_MASK	(ASRCFG_POSTMODi_MASK(0) | ASRCFG_POSTMODi_MASK(1) | ASRCFG_POSTMODi_MASK(2))
- #define ASRCFG_POSTMOD(i, v)		((v) << ASRCFG_POSTMODi_SHIFT(i))
- #define ASRCFG_POSTMODi_UP(i)		(0 << ASRCFG_POSTMODi_SHIFT(i))
- #define ASRCFG_POSTMODi_DCON(i)		(1 << ASRCFG_POSTMODi_SHIFT(i))
-@@ -143,6 +146,7 @@
- #define ASRCFG_PREMODi_SHIFT(i)		(6 + (i << 2))
- #define ASRCFG_PREMODi_WIDTH		2
- #define ASRCFG_PREMODi_MASK(i)		(((1 << ASRCFG_PREMODi_WIDTH) - 1) << ASRCFG_PREMODi_SHIFT(i))
-+#define ASRCFG_PREMODi_ALL_MASK		(ASRCFG_PREMODi_MASK(0) | ASRCFG_PREMODi_MASK(1) | ASRCFG_PREMODi_MASK(2))
- #define ASRCFG_PREMOD(i, v)		((v) << ASRCFG_PREMODi_SHIFT(i))
- #define ASRCFG_PREMODi_UP(i)		(0 << ASRCFG_PREMODi_SHIFT(i))
- #define ASRCFG_PREMODi_DCON(i)		(1 << ASRCFG_PREMODi_SHIFT(i))
-@@ -434,6 +438,7 @@ struct fsl_asrc_pair {
-  * @channel_avail: non-occupied channel numbers
-  * @asrc_rate: default sample rate for ASoC Back-Ends
-  * @asrc_width: default sample width for ASoC Back-Ends
-+ * @regcache_cfg: store register value of REG_ASRCFG
-  */
- struct fsl_asrc {
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-@@ -453,6 +458,8 @@ struct fsl_asrc {
- 
- 	int asrc_rate;
- 	int asrc_width;
-+
-+	u32 regcache_cfg;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 18f2d3bd3c80..11d032cdc658 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2277,6 +2277,7 @@ static const struct acpi_device_id rt5640_acpi_match[] = {
+ 	{ "INT33CA", 0 },
+ 	{ "10EC5640", 0 },
+ 	{ "10EC5642", 0 },
++	{ "INTCCFFD", 0 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 510826f497c4..4fce03fc1870 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -325,9 +325,10 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 						&byt_rvp_platform_data },
+ 	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
+ 						&byt_rvp_platform_data },
++	{"INTCCFFD", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
++						&byt_rvp_platform_data },
+ 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+ 						&byt_rvp_platform_data },
+-
+ 	{},
  };
  
- extern struct snd_soc_platform_driver fsl_asrc_platform;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 5b0cdad901b6..9a1752df45a9 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -141,6 +141,14 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		.driver_data = (unsigned long *)(BYT_RT5640_DMIC2_MAP |
+ 						 BYT_RT5640_DMIC_EN),
+ 	},
++	{
++		.callback = byt_rt5640_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
++		},
++		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
++	},
+ 	{}
+ };
+ 
 -- 
 2.7.0.rc3
