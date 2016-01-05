@@ -1,15 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: improve IRQ reaction time for HS
-	button
-Date: Tue, 5 Jan 2016 14:22:11 +0800
-Message-ID: <1451974931-23864-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: pcm: allow delayed suspending request by
+	users
+Date: Tue,  5 Jan 2016 17:14:49 +0530
+Message-ID: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 9189C26067A
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 07:22:27 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 624FC2602F1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 12:41:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: Lars-Peter Clausen <lars@metafoo.de>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-IRQ reaction time is not immediate when headset putton is pressed.
-This patch shortens the reaction time.
-
-Signed-off-by: John Lin <john.lin@realtek.com>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 72d3ca5..c61d38b 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3066,6 +3066,7 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
- 		snd_soc_dapm_sync(dapm);
- 
-+		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD1, 0x3, 0x3);
- 		snd_soc_update_bits(codec,
- 					RT5645_INT_IRQ_ST, 0x8, 0x8);
- 		snd_soc_update_bits(codec,
--- 
-1.8.1.1.439.g50a6b54
+RnJvbTogU2FueW9nIEthbGUgPHNhbnlvZy5yLmthbGVAaW50ZWwuY29tPgoKSWYgYSBkZXZpY2Ug
+d291bGQgbGlrZSB0byB1c2UgZGVsYXllZCBzdXNwZW5kaW5nIHRoZW4gUE0KcmVjb21tZW5kYXRp
+b24gaXMgdG8gc2V0IOKAmHBvd2VyLnVzZV9hdXRvc3VzcGVuZOKAmSBmbGFnLiBUbyBhbGxvdwp1
+c2VycyB0byBkbyBzbyB3ZSBuZWVkIHRvIGNoYW5nZSBydW50aW1lIGNhbGxzIGluIGNvcmUgdG8g
+dXNlCmF1dG9zdXNwZW5kIGNvdW50ZXJwYXJ0cy4KCkZvciB1c2VyIHdobyBkbyBub3Qgd2lzaCB0
+byB1c2UgZGVsYXllZCBzdXNwZW5kIG5vdCBzZXR0aW5nIHRoZQpkZXZpY2UncyDigJhwb3dlci51
+c2VfYXV0b3N1c3BlbmTigJkgZmxhZyB3aWxsIHJlc3VsdCBpbiBub24tZGVsYXllZApzdXNwZW5k
+IGV2ZW4gd2l0aCB0aGVzZSBBUElzIHdoaWNoIGluY2lkZW50YWxseSBpcyBhbHNvIHRoZSBkZWZh
+dWx0CmJlaGF2aW91ciwgc28gb25seSB1c2VycyB3aWxsIGJlIGltcGFjdGVkIHdobyBvcHQgaW4g
+Zm9yIHRoaXMuCgpTaWduZWQtb2ZmLWJ5OiBTYW55b2cgS2FsZSA8c2FueW9nLnIua2FsZUBpbnRl
+bC5jb20+ClNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwuY29tPgot
+LS0KIHNvdW5kL3NvYy9zb2MtcGNtLmMgfCAyOCArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+CiAxIGZpbGUgY2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKCmRpZmYg
+LS1naXQgYS9zb3VuZC9zb2Mvc29jLXBjbS5jIGIvc291bmQvc29jL3NvYy1wY20uYwppbmRleCBj
+ODZkYzk2ZTg5ODYuLmVmYWQyNDhlZmQ0ZiAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1wY20u
+YworKysgYi9zb3VuZC9zb2Mvc29jLXBjbS5jCkBAIC01OTksMTAgKzU5OSwxNSBAQCBwbGF0Zm9y
+bV9lcnI6CiBvdXQ6CiAJbXV0ZXhfdW5sb2NrKCZydGQtPnBjbV9tdXRleCk7CiAKLQlwbV9ydW50
+aW1lX3B1dChwbGF0Zm9ybS0+ZGV2KTsKLQlmb3IgKGkgPSAwOyBpIDwgcnRkLT5udW1fY29kZWNz
+OyBpKyspCi0JCXBtX3J1bnRpbWVfcHV0KHJ0ZC0+Y29kZWNfZGFpc1tpXS0+ZGV2KTsKLQlwbV9y
+dW50aW1lX3B1dChjcHVfZGFpLT5kZXYpOworCXBtX3J1bnRpbWVfbWFya19sYXN0X2J1c3kocGxh
+dGZvcm0tPmRldik7CisJcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQocGxhdGZvcm0tPmRldik7
+CisJZm9yIChpID0gMDsgaSA8IHJ0ZC0+bnVtX2NvZGVjczsgaSsrKSB7CisJCXBtX3J1bnRpbWVf
+bWFya19sYXN0X2J1c3kocnRkLT5jb2RlY19kYWlzW2ldLT5kZXYpOworCQlwbV9ydW50aW1lX3B1
+dF9hdXRvc3VzcGVuZChydGQtPmNvZGVjX2RhaXNbaV0tPmRldik7CisJfQorCisJcG1fcnVudGlt
+ZV9tYXJrX2xhc3RfYnVzeShjcHVfZGFpLT5kZXYpOworCXBtX3J1bnRpbWVfcHV0X2F1dG9zdXNw
+ZW5kKGNwdV9kYWktPmRldik7CiAJZm9yIChpID0gMDsgaSA8IHJ0ZC0+bnVtX2NvZGVjczsgaSsr
+KSB7CiAJCWlmICghcnRkLT5jb2RlY19kYWlzW2ldLT5hY3RpdmUpCiAJCQlwaW5jdHJsX3BtX3Nl
+bGVjdF9zbGVlcF9zdGF0ZShydGQtPmNvZGVjX2RhaXNbaV0tPmRldik7CkBAIC03MDYsMTAgKzcx
+MSwxNyBAQCBzdGF0aWMgaW50IHNvY19wY21fY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFt
+ICpzdWJzdHJlYW0pCiAKIAltdXRleF91bmxvY2soJnJ0ZC0+cGNtX211dGV4KTsKIAotCXBtX3J1
+bnRpbWVfcHV0KHBsYXRmb3JtLT5kZXYpOwotCWZvciAoaSA9IDA7IGkgPCBydGQtPm51bV9jb2Rl
+Y3M7IGkrKykKLQkJcG1fcnVudGltZV9wdXQocnRkLT5jb2RlY19kYWlzW2ldLT5kZXYpOwotCXBt
+X3J1bnRpbWVfcHV0KGNwdV9kYWktPmRldik7CisJcG1fcnVudGltZV9tYXJrX2xhc3RfYnVzeShw
+bGF0Zm9ybS0+ZGV2KTsKKwlwbV9ydW50aW1lX3B1dF9hdXRvc3VzcGVuZChwbGF0Zm9ybS0+ZGV2
+KTsKKworCWZvciAoaSA9IDA7IGkgPCBydGQtPm51bV9jb2RlY3M7IGkrKykgeworCQlwbV9ydW50
+aW1lX21hcmtfbGFzdF9idXN5KHJ0ZC0+Y29kZWNfZGFpc1tpXS0+ZGV2KTsKKwkJcG1fcnVudGlt
+ZV9wdXRfYXV0b3N1c3BlbmQocnRkLT5jb2RlY19kYWlzW2ldLT5kZXYpOworCX0KKworCXBtX3J1
+bnRpbWVfbWFya19sYXN0X2J1c3koY3B1X2RhaS0+ZGV2KTsKKwlwbV9ydW50aW1lX3B1dF9hdXRv
+c3VzcGVuZChjcHVfZGFpLT5kZXYpOworCiAJZm9yIChpID0gMDsgaSA8IHJ0ZC0+bnVtX2NvZGVj
+czsgaSsrKSB7CiAJCWlmICghcnRkLT5jb2RlY19kYWlzW2ldLT5hY3RpdmUpCiAJCQlwaW5jdHJs
+X3BtX3NlbGVjdF9zbGVlcF9zdGF0ZShydGQtPmNvZGVjX2RhaXNbaV0tPmRldik7Ci0tIAoxLjku
+MQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
