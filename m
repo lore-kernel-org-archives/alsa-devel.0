@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "MIPS: VDSO: Fix build error with binutils 2.24 and earlier" to the asoc tree
-Date: Tue, 05 Jan 2016 12:33:13 +0000
-Message-ID: <E1aGQnZ-0007WR-V6@debutante>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: 
-Sender: linux-kernel-owner@vger.kernel.org
-To: Qais Yousef <qais.yousef@imgtec.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>
+Subject: Applied "ASoC: Intel: Skylake: Fix the memory leak" to
+	the asoc tree
+Date: Tue, 05 Jan 2016 12:33:09 +0000
+Message-ID: <E1aGQnV-0007Tu-V4@debutante>
+References: <1451994364-29338-2-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B32326070C
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:33:19 +0100 (CET)
+In-Reply-To: <1451994364-29338-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   MIPS: VDSO: Fix build error with binutils 2.24 and earlier
+   ASoC: Intel: Skylake: Fix the memory leak
 
 has been applied to the asoc tree at
 
@@ -36,46 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 398c7500a1f5f74e207bd2edca1b1721b3cc1f1e Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Wed, 23 Dec 2015 21:04:31 -0800
-Subject: [PATCH] MIPS: VDSO: Fix build error with binutils 2.24 and earlier
+>From d8018361b58bb7b9a2a657104e54c33c2ef1439d Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 5 Jan 2016 17:16:04 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix the memory leak
 
-Commit 2a037f310bab ("MIPS: VDSO: Fix build error") tries to fix a build
-error seen with binutils 2.24 and earlier. However, the fix does not work,
-and again results in the already known build errors if the kernel is built
-with an earlier version of binutils.
+This provide the fix for firmware memory by freeing the pointer in driver
+remove where it is safe to do so
 
-CC      arch/mips/vdso/gettimeofday.o
-/tmp/ccnOVbHT.s: Assembler messages:
-/tmp/ccnOVbHT.s:50: Error: can't resolve `_start' {*UND* section} - `L0 {.text section}
-/tmp/ccnOVbHT.s:374: Error: can't resolve `_start' {*UND* section} - `L0 {.text section}
-scripts/Makefile.build:258: recipe for target 'arch/mips/vdso/gettimeofday.o' failed
-make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
-
-Fixes: 2a037f310bab ("MIPS: VDSO: Fix build error")
-Cc: Qais Yousef <qais.yousef@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org
-Patchwork: https://patchwork.linux-mips.org/patch/11926/
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/mips/vdso/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 2 ++
+ sound/soc/intel/skylake/skl.c          | 4 ++++
+ sound/soc/intel/skylake/skl.h          | 2 ++
+ 3 files changed, 8 insertions(+)
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 018f8c7b94f2..14568900fc1d 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -26,7 +26,7 @@ aflags-vdso := $(ccflags-vdso) \
- # the comments on that file.
- #
- ifndef CONFIG_CPU_MIPSR6
--  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
-+  ifeq ($(call ld-ifversion, -lt, 22500000, y),y)
-     $(warning MIPS VDSO requires binutils >= 2.25)
-     obj-vdso-y := $(filter-out gettimeofday.o, $(obj-vdso-y))
-     ccflags-vdso += -DDISABLE_MIPS_VDSO
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index a7854c8fc523..ad4d0f82603e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1248,5 +1248,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+ 	skl->resource.max_mcps = SKL_MAX_MCPS;
+ 	skl->resource.max_mem = SKL_FW_MAX_MEM;
+ 
++	skl->tplg = fw;
++
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 5319529aedf7..caa69c4598a6 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -25,6 +25,7 @@
+ #include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
++#include <linux/firmware.h>
+ #include <sound/pcm.h>
+ #include "skl.h"
+ 
+@@ -520,6 +521,9 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct skl *skl = ebus_to_skl(ebus);
+ 
++	if (skl->tplg)
++		release_firmware(skl->tplg);
++
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index dd2e79ae45a8..a0709e344d44 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -68,6 +68,8 @@ struct skl {
+ 	struct skl_dsp_resource resource;
+ 	struct list_head ppl_list;
+ 	struct list_head dapm_path_list;
++
++	const struct firmware *tplg;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
 -- 
 2.6.2
