@@ -1,47 +1,77 @@
-From: Jean-Michel Hautbois <jean-michel.hautbois@veo-labs.com>
-Subject: Re: [alsa-devel] [PATCH 0/9] dw-hdmi audio support
-Date: Tue, 5 Jan 2016 16:40:54 +0100
-Message-ID: <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
-References: <20150808160251.GM7557@n2100.arm.linux.org.uk> <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <1440664941.3233.38.camel@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 03/13] ALSA: hdac: Add support for hda
+ DMA Resume capability
+Date: Tue, 5 Jan 2016 15:51:08 +0000
+Message-ID: <20160105155108.GE6588@sirena.org.uk>
+References: <1450431729-27259-1-git-send-email-vinod.koul@intel.com>
+ <1450431729-27259-4-git-send-email-vinod.koul@intel.com>
+ <20160104055715.GD2940@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1440664941.3233.38.camel@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Airlie <airlied@linux.ie>, Jon Nettleton <jon.nettleton@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-rockchip@lists.infradead.org, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============2396557292770980045=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFC852612D0
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 16:51:15 +0100 (CET)
+In-Reply-To: <20160104055715.GD2940@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Russell,
 
-2015-08-27 10:42 GMT+02:00 Philipp Zabel <p.zabel@pengutronix.de>:
->
-> Am Samstag, den 08.08.2015, 17:09 +0100 schrieb Russell King - ARM
-> Linux:
-> > Following on from the previous sub-series, this sub-series adds audio
-> > support to dw-hdmi.
-> >
-> > The two different variants are now in this patch: AHB audio support
-> > found on iMX6 platforms, and I2S support found on Rockchip patches.
-> > Thanks to Yakir Yang for contributing the I2S support.
-> >
-> > I suspect that there is still some discussion to be had on this
-> > series, though I would like to see it moving forward so that we can
-> > get something merged.
->
-> Tested-by: Philipp Zabel <p.zabel@pengutronix.de>
-> on i.MX6 GK802 via HDMI connected to a TV (stereo only).
->
-> except for the i2s patch, which is broken in this series.
->
-> regards
-> Philipp
+--===============2396557292770980045==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
+Content-Disposition: inline
 
 
-What is the status of this series ?
-I would like to use audio output in HDMI on my i.MX6 board, but I
-don't know if you have some pending WIP on this ?
+--bi5JUZtvcfApsciF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-JM
+On Mon, Jan 04, 2016 at 11:27:15AM +0530, Vinod Koul wrote:
+> On Fri, Dec 18, 2015 at 03:11:59PM +0530, Vinod Koul wrote:
+
+> > Skylake sports new capability of DMA resume, DRSM where we can
+> > resume the DMA. This capability is defined by presence of
+> > AZX_DRSM_CAP_ID.
+
+> Can you please ACK this and path 4, 5 and 6 of this series, as they are
+> on sound/hda/. I think Mark is waiting on that..
+
+Yes.
+
+--bi5JUZtvcfApsciF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWi+ZrAAoJECTWi3JdVIfQyhAH/1HZ2sPdtARloqBf5ueM/u/b
+OFMzPO9Ef+MCEEtXeBuywphwgLLN32umOXYhE/ImHJ5DgabTy6s9w1ikSTyZSamU
++xIE9cybH/yUGQhUbCNB6M528dZVFOBbTHnl4smiOaieOj9hweecSHGY1ORLCk4q
+6i6dmit3SmLDmRWAGuq6sHQSV9VDQXDiDqoFCswjJttOvEtnoMitbxOErn2S92kM
+bJG9T1+636xKvPRZfSjLQZfjMxEV+1Nj+pW/mR+32HmYg44VfklKLRyJoVh8jXjv
++MhPA0Om1QwOcpAYBXaz86LtxEObR+epb0gPoOi+uFTsO0th6OBFjxx7HGtoo3M=
+=GiIj
+-----END PGP SIGNATURE-----
+
+--bi5JUZtvcfApsciF--
+
+--===============2396557292770980045==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2396557292770980045==--
