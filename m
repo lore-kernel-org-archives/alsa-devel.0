@@ -1,17 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 7/8] ASoC: Intel: Atom: add support for
-	RT5642
-Date: Mon,  4 Jan 2016 17:20:29 -0600
-Message-ID: <1451949630-3475-8-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5645: improve IRQ reaction time for HS
+	button
+Date: Tue, 5 Jan 2016 14:22:11 +0800
+Message-ID: <1451974931-23864-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 501B42606D3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 00:21:10 +0100 (CET)
-In-Reply-To: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9189C26067A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 07:22:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The machine driver is not loaded when the BIOS uses the 10EC5642
-_HID. Add it to the white list of known _HIDs, codec_name is
-already taken care of by previous commit
+IRQ reaction time is not immediate when headset putton is pressed.
+This patch shortens the reaction time.
 
-Tested on Asus T100TAF.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: John Lin <john.lin@realtek.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c   | 2 ++
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index f61e531..510826f 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -323,6 +323,8 @@ static int sst_acpi_remove(struct platform_device *pdev)
- static struct sst_acpi_mach sst_acpi_bytcr[] = {
- 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
- 						&byt_rvp_platform_data },
-+	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
-+						&byt_rvp_platform_data },
- 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
- 						&byt_rvp_platform_data },
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 72d3ca5..c61d38b 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3066,6 +3066,7 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
+ 		snd_soc_dapm_sync(dapm);
  
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 74bb7cc..5b0cdad 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -302,7 +302,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
- 		.codec_dai_name = "rt5640-aif1",
--		.codec_name = "i2c-10EC5640:00",
-+		.codec_name = "i2c-10EC5640:00", /* overwritten with HID */
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 						| SND_SOC_DAIFMT_CBS_CFS,
- 		.be_hw_params_fixup = byt_rt5640_codec_fixup,
++		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD1, 0x3, 0x3);
+ 		snd_soc_update_bits(codec,
+ 					RT5645_INT_IRQ_ST, 0x8, 0x8);
+ 		snd_soc_update_bits(codec,
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
