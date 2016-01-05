@@ -1,77 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 03/13] ALSA: hdac: Add support for hda
- DMA Resume capability
-Date: Tue, 5 Jan 2016 15:51:08 +0000
-Message-ID: <20160105155108.GE6588@sirena.org.uk>
-References: <1450431729-27259-1-git-send-email-vinod.koul@intel.com>
- <1450431729-27259-4-git-send-email-vinod.koul@intel.com>
- <20160104055715.GD2940@localhost>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 0/9] dw-hdmi audio support
+Date: Tue, 5 Jan 2016 13:54:26 -0200
+Message-ID: <CAOMZO5Ax5-uEHLCKmc7qHWSK9mBmzMOOB=rCTxHGbQ_Xv89KrQ@mail.gmail.com>
+References: <20150808160251.GM7557@n2100.arm.linux.org.uk>
+ <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <1440664941.3233.38.camel@pengutronix.de>
+ <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2396557292770980045=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CFC852612D0
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 16:51:15 +0100 (CET)
-In-Reply-To: <20160104055715.GD2940@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Michel Hautbois <jean-michel.hautbois@veo-labs.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel <linux-kernel@vger.kernel.org>, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-rockchip@lists.infradead.org, Andy Yan <andy.yan@rock-chips.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2396557292770980045==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
-Content-Disposition: inline
-
-
---bi5JUZtvcfApsciF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 04, 2016 at 11:27:15AM +0530, Vinod Koul wrote:
-> On Fri, Dec 18, 2015 at 03:11:59PM +0530, Vinod Koul wrote:
-
-> > Skylake sports new capability of DMA resume, DRSM where we can
-> > resume the DMA. This capability is defined by presence of
-> > AZX_DRSM_CAP_ID.
-
-> Can you please ACK this and path 4, 5 and 6 of this series, as they are
-> on sound/hda/. I think Mark is waiting on that..
-
-Yes.
-
---bi5JUZtvcfApsciF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWi+ZrAAoJECTWi3JdVIfQyhAH/1HZ2sPdtARloqBf5ueM/u/b
-OFMzPO9Ef+MCEEtXeBuywphwgLLN32umOXYhE/ImHJ5DgabTy6s9w1ikSTyZSamU
-+xIE9cybH/yUGQhUbCNB6M528dZVFOBbTHnl4smiOaieOj9hweecSHGY1ORLCk4q
-6i6dmit3SmLDmRWAGuq6sHQSV9VDQXDiDqoFCswjJttOvEtnoMitbxOErn2S92kM
-bJG9T1+636xKvPRZfSjLQZfjMxEV+1Nj+pW/mR+32HmYg44VfklKLRyJoVh8jXjv
-+MhPA0Om1QwOcpAYBXaz86LtxEObR+epb0gPoOi+uFTsO0th6OBFjxx7HGtoo3M=
-=GiIj
------END PGP SIGNATURE-----
-
---bi5JUZtvcfApsciF--
-
---===============2396557292770980045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2396557292770980045==--
+T24gVHVlLCBKYW4gNSwgMjAxNiBhdCAxOjQwIFBNLCBKZWFuLU1pY2hlbCBIYXV0Ym9pcwo8amVh
+bi1taWNoZWwuaGF1dGJvaXNAdmVvLWxhYnMuY29tPiB3cm90ZToKCj4gV2hhdCBpcyB0aGUgc3Rh
+dHVzIG9mIHRoaXMgc2VyaWVzID8KPiBJIHdvdWxkIGxpa2UgdG8gdXNlIGF1ZGlvIG91dHB1dCBp
+biBIRE1JIG9uIG15IGkuTVg2IGJvYXJkLCBidXQgSQo+IGRvbid0IGtub3cgaWYgeW91IGhhdmUg
+c29tZSBwZW5kaW5nIFdJUCBvbiB0aGlzID8KClRoaXMgc2VyaWVzIGlzIGluIG1haW5saW5lIHNp
+bmNlIDQuNC1yYzEuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
+ZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+Cg==
