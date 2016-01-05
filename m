@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: fix ACPI probe regression with
-	Atom DPCM driver" to the asoc tree
-Date: Tue, 05 Jan 2016 17:49:15 +0000
-Message-ID: <E1aGVjP-00036y-DC@debutante>
-References: <1450406156-22246-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: da7219: Correct BCLK inversion for DSP
+	DAI format mode" to the asoc tree
+Date: Tue, 05 Jan 2016 17:49:09 +0000
+Message-ID: <E1aGVjJ-000346-VB@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 44608261469
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A425261B2A
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:24 +0100 (CET)
-In-Reply-To: <1450406156-22246-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: fix ACPI probe regression with Atom DPCM driver
+   ASoC: da7219: Correct BCLK inversion for DSP DAI format mode
 
 has been applied to the asoc tree at
 
@@ -53,38 +52,81 @@ to this mail.
 Thanks,
 Mark
 
->From dc901a3541717ca4963dd017eacf50a4c954609c Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 4 Jan 2016 17:20:23 -0600
-Subject: [PATCH] ASoC: Intel: fix ACPI probe regression with Atom DPCM driver
+>From 4acfa36be618eb8ac3aa39f473e7550710216435 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 5 Jan 2016 15:05:36 +0000
+Subject: [PATCH] ASoC: da7219: Correct BCLK inversion for DSP DAI format mode
 
-The commit 95f098014815b330838b1173d3d7bcea3b481242
-"ASoC: Intel: Move apci find machine routines"
+By default the device latches data on the falling edge of the
+BCLK in DSP mode, whereas the expectation for normal BCLK is to
+latch on the rising edge. This updates the driver to invert the
+BCLK configuration for DSP mode, to align with expected behaviour.
 
-introduced a regression in ACPI probe of the DPCM driver.
-Fix by conditionally compiling sst-acpi when the DPCM driver
-is not selected
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/da7219.c | 48 ++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 37 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 3b9332e7a094..668fdeee195e 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -1,5 +1,10 @@
- snd-soc-sst-dsp-objs := sst-dsp.o
-+ifneq ($(CONFIG_SND_SST_IPC_ACPI),)
-+snd-soc-sst-acpi-objs := sst-match-acpi.o
-+else
- snd-soc-sst-acpi-objs := sst-acpi.o sst-match-acpi.o
-+endif
-+
- snd-soc-sst-ipc-objs := sst-ipc.o
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 9c7e8ec68b94..81c0708b85c1 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1156,18 +1156,44 @@ static int da7219_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
  
- snd-soc-sst-dsp-$(CONFIG_DW_DMAC_CORE) += sst-firmware.o
+-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-	case SND_SOC_DAIFMT_NB_NF:
+-		break;
+-	case SND_SOC_DAIFMT_NB_IF:
+-		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
+-		break;
+-	case SND_SOC_DAIFMT_IB_NF:
+-		dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_RIGHT_J:
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_NB_NF:
++			break;
++		case SND_SOC_DAIFMT_NB_IF:
++			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_IF:
++			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
++					DA7219_DAI_CLK_POL_INV;
++			break;
++		default:
++			return -EINVAL;
++		}
+ 		break;
+-	case SND_SOC_DAIFMT_IB_IF:
+-		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
+-				DA7219_DAI_CLK_POL_INV;
++	case SND_SOC_DAIFMT_DSP_B:
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_NB_NF:
++			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_NB_IF:
++			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
++					DA7219_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			break;
++		case SND_SOC_DAIFMT_IB_IF:
++			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
++			break;
++		default:
++			return -EINVAL;
++		}
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.7.0.rc3
