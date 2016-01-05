@@ -1,14 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/8] ASoC: AMD: add AMD ASoC ACP 2.x DMA driver
-Date: Tue, 5 Jan 2016 18:51:59 +0000
-Message-ID: <20160105185159.GM6588@sirena.org.uk>
+Subject: Re: [PATCH 7/8] ASoC: AMD: add pm ops
+Date: Tue, 5 Jan 2016 18:59:29 +0000
+Message-ID: <20160105185929.GN6588@sirena.org.uk>
 References: <1450897275-17152-1-git-send-email-alexander.deucher@amd.com>
- <1450897275-17152-6-git-send-email-alexander.deucher@amd.com>
- <20160105184343.GL6588@sirena.org.uk>
+ <1450897275-17152-7-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1723893635=="
+Content-Type: multipart/mixed; boundary="===============1541370309=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160105184343.GL6588@sirena.org.uk>
+In-Reply-To: <1450897275-17152-7-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -23,48 +22,56 @@ Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1723893635==
+--===============1541370309==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x38akuY2VS0PywU3"
+	protocol="application/pgp-signature"; boundary="p1Od3smaOkJqivj4"
 Content-Disposition: inline
 
 
---x38akuY2VS0PywU3
+--p1Od3smaOkJqivj4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 05, 2016 at 06:43:43PM +0000, Mark Brown wrote:
-> On Wed, Dec 23, 2015 at 02:01:13PM -0500, Alex Deucher wrote:
+On Wed, Dec 23, 2015 at 02:01:14PM -0500, Alex Deucher wrote:
 
-> > +#include "include/acp_2_2_d.h"
-> > +#include "include/acp_2_2_sh_mask.h"
+> +	stream = adata->play_stream;
+> +	rtd = stream ? stream->runtime : NULL;
+> +	if (rtd != NULL) {
+> +		/* Resume playback stream from a suspended state */
+> +		sdata = rtd->private_data;
+> +		config_acp_dma(adata->acp_mmio, sdata);
+> +	}
 
-> I can't find these headers anywhere in the kernel tree or earlier in
-> this patch series, this will break the build.  The fact that they've got
-> include in the filename is also a bit interesting...
+Please don't use the ternery operator like this, it's not bad to write
+if statements and they're much more legible.  I was having to think far
+too much about the various variables and if we were safely handling all
+of them before I realised the next block overwrites them all anyway.
+This is really
 
-Ugh, your cover letter says (after pages of changelog) that they're in a
-patch 5 which you didn't send :(  Please don't do this, I can't apply or
-review code that isn't sent to me.
+	stream = adata->play_stream;
+	if (stream && stream->rtd)
+		config_acp_dma(adata->acp_mmio, stream->rtd->private_data);
 
---x38akuY2VS0PywU3
+or a couple of nested if statements.  Otherwise this patch looks OK.
+
+--p1Od3smaOkJqivj4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWjBDOAAoJECTWi3JdVIfQ+6AH/RetH8uM4zwNhp4FbN2AbzmG
-q5ezcSPpmkUj6ZZXKslcx9DazXnBN4tquU4h0fheRNI+ElrYeKlj8DYsLuWLEzEm
-kxYC8lnX5FIw3R+xQeGYKdIlWvbVdXREmFWVUd0mBCgnyAwVSLeH49bUIsRA0AXv
-UfXOstAdLtGIA9dDL3Si9O0LLBlS3H3WZI0lnccsZWzYqk8v3jWjkvljMa/XzhT9
-iVFFtUEyf4rM5xYOAHkBuoRngtmKeeTpsPuFasOquHL7ox/BTPVpArXfxQBUlktV
-1Y7Fqgqmt/bJqf8kE8nqKihi9u6enrlQ/FpFsrCODC7372CXiLVsjIC0/SniUS8=
-=gXRF
+iQEcBAEBCAAGBQJWjBKQAAoJECTWi3JdVIfQc3gH/0PRpeYD47Qcsn2tyIwlgfhB
+mPG8PWAkaKdwT+UMwB0RdsRylZ0XiByf/gySeKURo7Zii5Yqoyo4kG+rOW1DuQ5q
+DJiJuYnDuN3GQuskttWPhwKYDhS+wPprObyXYaipCG3SuEqIb1dNjejRlzx7YZbN
+XfK/QeqJtugE9zJmwQ5QQBt3ck7Dbjg6/Emg4UwUZ1P3+xZ+Vrm4SEDFyHwTZYgS
+gClBV2YYm+WTN2V8a3fwrROwqXTyMXw/qqnyDVSy/Zhm9ZX+bbTbjQ0vtTybKnBE
+aBcGlw0pz+M7o9ny9WObrZDBB68tDosJ9YK38ZerEQ1/+0pEzAfpRWlBh9rDUto=
+=KG1K
 -----END PGP SIGNATURE-----
 
---x38akuY2VS0PywU3--
+--p1Od3smaOkJqivj4--
 
---===============1723893635==
+--===============1541370309==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
@@ -74,4 +81,4 @@ X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
 IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
 cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
 
---===============1723893635==--
+--===============1541370309==--
