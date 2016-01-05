@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Revert previous broken
-	fix memory leak fix" to the asoc tree
-Date: Tue, 05 Jan 2016 12:33:10 +0000
-Message-ID: <E1aGQnW-0007UN-Rn@debutante>
-References: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "drm/i915: Unbreak
+	check_digital_port_conflicts()" to the asoc tree
+Date: Tue, 05 Jan 2016 12:33:14 +0000
+Message-ID: <E1aGQna-0007Wu-N5@debutante>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4167174696140882182=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FF63260710
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:33:19 +0100 (CET)
-In-Reply-To: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 170DD2610A3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:33:21 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +20,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: stable@vger.kernel.org, Ander Conselvan de Oliveira <ander.conselvan.de.oliveira@intel.com>, Jani Nikula <jani.nikula@intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============4167174696140882182==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: Intel: Skylake: Revert previous broken fix memory leak fix
+   drm/i915: Unbreak check_digital_port_conflicts()
 
 has been applied to the asoc tree at
 
@@ -53,78 +54,80 @@ to this mail.
 Thanks,
 Mark
 
->From fb203adc28a3717c252bde0f068b3ebd2206994b Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 5 Jan 2016 17:16:03 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Revert previous broken fix memory leak
- fix
+>From ae35b56e367b9fef7f5de701cf8c1c3dd954dded Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
+Date: Thu, 10 Dec 2015 18:22:31 +0200
+Subject: [PATCH] drm/i915: Unbreak check_digital_port_conflicts()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-This reverts commit 87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1 ("ASoC: Intel:
-Skylake: fix memory leak") as it causes regression on Skylake devices
+Atomic changes broke check_digital_port_conflicts(). It needs to look
+at the global situation instead of just trying to find a conflict
+within the current atomic state.
 
-The SKL drivers can be deferred probe. The topology file based widgets can
-have references to topology file so this can't be freed until card is fully
-created, so revert this patch for now
+This bug made my HSW explode spectacularly after I had split the DDI
+encoders into separate DP and HDMI encoders. With the fix, things
+seem much more solid.
 
-[   66.682767] BUG: unable to handle kernel paging request at ffffc900001363fc
-[   66.690735] IP: [<ffffffff806c94dd>] strnlen+0xd/0x40
-[   66.696509] PGD 16e035067 PUD 16e036067 PMD 16e038067 PTE 0
-[   66.702925] Oops: 0000 [#1] PREEMPT SMP
-[   66.768390] CPU: 3 PID: 57 Comm: kworker/u16:3 Tainted: G O 4.4.0-rc7-skl #62
-[   66.778869] Hardware name: Intel Corporation Skylake Client platform
-[   66.793201] Workqueue: deferwq deferred_probe_work_func
-[   66.799173] task: ffff88008b700f40 ti: ffff88008b704000 task.ti: ffff88008b704000
-[   66.807692] RIP: 0010:[<ffffffff806c94dd>]  [<ffffffff806c94dd>] strnlen+0xd/0x40
-[   66.816243] RSP: 0018:ffff88008b707878  EFLAGS: 00010286
-[   66.822293] RAX: ffffffff80e60a82 RBX: 000000000000000e RCX: fffffffffffffffe
-[   66.830406] RDX: ffffc900001363fc RSI: ffffffffffffffff RDI: ffffc900001363fc
-[   66.838520] RBP: ffff88008b707878 R08: 000000000000ffff R09: 000000000000ffff
-[   66.846649] R10: 0000000000000001 R11: ffffffffa01c6368 R12: ffffc900001363fc
-[   66.854765] R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
-[   66.862910] FS:  0000000000000000(0000) GS:ffff88016ecc0000(0000) knlGS:0000000000000000
-[   66.872150] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   66.878696] CR2: ffffc900001363fc CR3: 0000000002c09000 CR4: 00000000003406e0
-[   66.886820] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   66.894938] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   66.903052] Stack:
-[   66.905346]  ffff88008b7078b0 ffffffff806cb1db 000000000000000e 0000000000000000
-[   66.913854]  ffff88008b707928 ffffffffa00d1050 ffffffffa00d104e ffff88008b707918
-[   66.922353]  ffffffff806ccbd6 ffff88008b707948 0000000000000046 ffff88008b707940
-[   66.930855] Call Trace:
-[   66.933646]  [<ffffffff806cb1db>] string.isra.4+0x3b/0xd0
-[   66.939793]  [<ffffffff806ccbd6>] vsnprintf+0x116/0x540
-[   66.945742]  [<ffffffff806d02f0>] kvasprintf+0x40/0x80
-[   66.951591]  [<ffffffff806d0370>] kasprintf+0x40/0x50
-[   66.957359]  [<ffffffffa00c085f>] dapm_create_or_share_kcontrol+0x1cf/0x300 [snd_soc_core]
-[   66.966771]  [<ffffffff8057dd1e>] ? __kmalloc+0x16e/0x2a0
-[   66.972931]  [<ffffffffa00c0dab>] snd_soc_dapm_new_widgets+0x41b/0x4b0 [snd_soc_core]
-[   66.981857]  [<ffffffffa00be8c0>] ? snd_soc_dapm_add_routes+0xb0/0xd0 [snd_soc_core]
-[   67.007828]  [<ffffffffa00b92ed>] soc_probe_component+0x23d/0x360 [snd_soc_core]
-[   67.016244]  [<ffffffff80b14e69>] ? mutex_unlock+0x9/0x10
-[   67.022405]  [<ffffffffa00ba02f>] snd_soc_instantiate_card+0x47f/0xd10 [snd_soc_core]
-[   67.031329]  [<ffffffff8049eeb2>] ? debug_mutex_init+0x32/0x40
-[   67.037973]  [<ffffffffa00baa92>] snd_soc_register_card+0x1d2/0x2b0 [snd_soc_core]
-[   67.046619]  [<ffffffffa00c8b54>] devm_snd_soc_register_card+0x44/0x80 [snd_soc_core]
-[   67.055539]  [<ffffffffa01c303b>] skylake_audio_probe+0x1b/0x20 [snd_soc_skl_rt286]
-[   67.064292]  [<ffffffff808aa887>] platform_drv_probe+0x37/0x90
+I hope holding the connection_mutex is enough protection that we can
+actually walk the connectors even if they're not part of the current
+atomic state...
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+v2: Regenerate the patch so that it actually applies (Jani)
+
+Cc: stable@vger.kernel.org
+Cc: Ander Conselvan de Oliveira <ander.conselvan.de.oliveira@intel.com>
+Fixes: 5448a00d3f06 ("drm/i915: Don't use staged config in check_digital_port_conflicts()")
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: http://patchwork.freedesktop.org/patch/msgid/1449764551-12466-1-git-send-email-ville.syrjala@linux.intel.com
+(cherry picked from commit 0bff4858653312a10c83709e0009c3adb87e6f1e)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/i915/intel_display.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ffea427aeca8..a7854c8fc523 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1240,7 +1240,6 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index beb0374a19f1..32cf97346978 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -12123,18 +12123,22 @@ static void intel_dump_pipe_config(struct intel_crtc *crtc,
+ static bool check_digital_port_conflicts(struct drm_atomic_state *state)
+ {
+ 	struct drm_device *dev = state->dev;
+-	struct intel_encoder *encoder;
+ 	struct drm_connector *connector;
+-	struct drm_connector_state *connector_state;
+ 	unsigned int used_ports = 0;
+-	int i;
+ 
+ 	/*
+ 	 * Walk the connector list instead of the encoder
+ 	 * list to detect the problem on ddi platforms
+ 	 * where there's just one encoder per digital port.
  	 */
- 	ret = snd_soc_tplg_component_load(&platform->component,
- 					&skl_tplg_ops, fw, 0);
--	release_firmware(fw);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
- 		return -EINVAL;
+-	for_each_connector_in_state(state, connector, connector_state, i) {
++	drm_for_each_connector(connector, dev) {
++		struct drm_connector_state *connector_state;
++		struct intel_encoder *encoder;
++
++		connector_state = drm_atomic_get_existing_connector_state(state, connector);
++		if (!connector_state)
++			connector_state = connector->state;
++
+ 		if (!connector_state->best_encoder)
+ 			continue;
+ 
 -- 
 2.6.2
+
+
+--===============4167174696140882182==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4167174696140882182==--
