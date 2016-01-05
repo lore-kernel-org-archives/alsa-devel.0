@@ -1,19 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] Revert "ASoC: Intel: Skylake: fix
-	memory leak"
-Date: Tue, 5 Jan 2016 12:11:41 +0000
-Message-ID: <20160105121141.GZ16023@sirena.org.uk>
-References: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
- <20160105114622.GY16023@sirena.org.uk>
- <20160105115417.GL2940@localhost>
+Subject: Applied "Linux 4.4-rc8" to the asoc tree
+Date: Tue, 05 Jan 2016 12:33:12 +0000
+Message-ID: <E1aGQnY-0007VL-Gb@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2495286709995031965=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E90692606D3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:11:49 +0100 (CET)
-In-Reply-To: <20160105115417.GL2940@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8832D2606D3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:33:17 +0100 (CET)
+Received: from debutante.sirena.org.uk ([2a01:348:6:8808:fab::3]
+ helo=debutante)
+ by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
+ id 1aGQnb-0000qI-7b
+ for alsa-devel@alsa-project.org; Tue, 05 Jan 2016 12:33:16 +0000
+Received: from broonie by debutante with local (Exim 4.86)
+ (envelope-from <broonie@sirena.org.uk>) id 1aGQnY-0007VL-Gb
+ for alsa-devel@alsa-project.org; Tue, 05 Jan 2016 12:33:12 +0000
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +29,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2495286709995031965==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AVsU0XxfC6ed1aQ6"
-Content-Disposition: inline
+   Linux 4.4-rc8
 
+has been applied to the asoc tree at
 
---AVsU0XxfC6ed1aQ6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 05, 2016 at 05:24:17PM +0530, Vinod Koul wrote:
-> On Tue, Jan 05, 2016 at 11:46:22AM +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Please use subject lines matching the style for the subsystem.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Is this an automated mail :) but its signed!
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-No, I type those out by hand.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Btw am not sure why this is not proper, isn't revert followed by old patch
-> title the right style for revert patches..? what did i miss...
+Thanks,
+Mark
 
-Patches are patches are patches, reverts are patches like any other and
-should still have subject lines matching the style for the subsystem.
+>From 168309855a7d1e16db751e9c647119fe2d2dc878 Mon Sep 17 00:00:00 2001
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 3 Jan 2016 15:15:37 -0800
+Subject: [PATCH] Linux 4.4-rc8
 
---AVsU0XxfC6ed1aQ6
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWi7L9AAoJECTWi3JdVIfQX1gH/3i152eme5j35VNfMF1Wgw/f
-paXYvTrJJY7vimtLZIzir2RQTgDfu4WHA9Ij27DVal06ZRbaVOuqZtruF6MpvqSH
-1jMfDbVGrtcecLPslgR2ietxJSu9wOUWEdFH393IRZc/UJgYNVEET+lzoggc+PZ3
-01lcgmXUhq7Ypp3UrAdx9ibcDqSiQ7h632qIUa10MpoesGlpY0R2Ta7ZMezAoEsQ
-e+Ag10BMdEP9h0iIuRcfH3jqe17Hb+LptLXbziy+KER+FkmVftS0s+cE3oDI/CBH
-DmNGHoG7A/XgbPnscDHIu0r1F8bhxH22ybajCV08B4SNnU21y8LDQRTlHD+wDDs=
-=KIko
------END PGP SIGNATURE-----
-
---AVsU0XxfC6ed1aQ6--
-
---===============2495286709995031965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2495286709995031965==--
+diff --git a/Makefile b/Makefile
+index 1122433a5cd5..9d94adeceab6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 4
+ PATCHLEVEL = 4
+ SUBLEVEL = 0
+-EXTRAVERSION = -rc7
++EXTRAVERSION = -rc8
+ NAME = Blurry Fish Butt
+ 
+ # *DOCUMENTATION*
+-- 
+2.6.2
