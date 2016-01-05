@@ -1,66 +1,99 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 0/9] dw-hdmi audio support
-Date: Tue, 5 Jan 2016 16:04:21 +0000
-Message-ID: <20160105160421.GX19062@n2100.arm.linux.org.uk>
-References: <20150808160251.GM7557@n2100.arm.linux.org.uk>
- <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <1440664941.3233.38.camel@pengutronix.de>
- <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 7/8] ASoC: wm_adsp: Add a handler for
+ the compressed IRQ
+Date: Tue, 5 Jan 2016 16:10:58 +0000
+Message-ID: <20160105161058.GF6588@sirena.org.uk>
+References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20151223001907.GI16023@sirena.org.uk>
+ <20151223095806.GY6058@localhost.localdomain>
+ <20151224193137.GI579@sirena.org.uk>
+ <20151229154313.GA1490@localhost.localdomain>
+ <20160105142025.GA6588@sirena.org.uk>
+ <20160105143636.GB1490@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Michel Hautbois <jean-michel.hautbois@veo-labs.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-rockchip@lists.infradead.org, Andy Yan <andy.yan@rock-chips.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============1798860086635509848=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42B6B2612D0
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 17:11:11 +0100 (CET)
+In-Reply-To: <20160105143636.GB1490@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMDUsIDIwMTYgYXQgMDQ6NDA6NTRQTSArMDEwMCwgSmVhbi1NaWNoZWwgSGF1
-dGJvaXMgd3JvdGU6Cj4gSGkgUnVzc2VsbCwKPiAKPiAyMDE1LTA4LTI3IDEwOjQyIEdNVCswMjow
-MCBQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBlbmd1dHJvbml4LmRlPjoKPiA+Cj4gPiBBbSBTYW1z
-dGFnLCBkZW4gMDguMDguMjAxNSwgMTc6MDkgKzAxMDAgc2NocmllYiBSdXNzZWxsIEtpbmcgLSBB
-Uk0KPiA+IExpbnV4Ogo+ID4gPiBGb2xsb3dpbmcgb24gZnJvbSB0aGUgcHJldmlvdXMgc3ViLXNl
-cmllcywgdGhpcyBzdWItc2VyaWVzIGFkZHMgYXVkaW8KPiA+ID4gc3VwcG9ydCB0byBkdy1oZG1p
-Lgo+ID4gPgo+ID4gPiBUaGUgdHdvIGRpZmZlcmVudCB2YXJpYW50cyBhcmUgbm93IGluIHRoaXMg
-cGF0Y2g6IEFIQiBhdWRpbyBzdXBwb3J0Cj4gPiA+IGZvdW5kIG9uIGlNWDYgcGxhdGZvcm1zLCBh
-bmQgSTJTIHN1cHBvcnQgZm91bmQgb24gUm9ja2NoaXAgcGF0Y2hlcy4KPiA+ID4gVGhhbmtzIHRv
-IFlha2lyIFlhbmcgZm9yIGNvbnRyaWJ1dGluZyB0aGUgSTJTIHN1cHBvcnQuCj4gPiA+Cj4gPiA+
-IEkgc3VzcGVjdCB0aGF0IHRoZXJlIGlzIHN0aWxsIHNvbWUgZGlzY3Vzc2lvbiB0byBiZSBoYWQg
-b24gdGhpcwo+ID4gPiBzZXJpZXMsIHRob3VnaCBJIHdvdWxkIGxpa2UgdG8gc2VlIGl0IG1vdmlu
-ZyBmb3J3YXJkIHNvIHRoYXQgd2UgY2FuCj4gPiA+IGdldCBzb21ldGhpbmcgbWVyZ2VkLgo+ID4K
-PiA+IFRlc3RlZC1ieTogUGhpbGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4KPiA+
-IG9uIGkuTVg2IEdLODAyIHZpYSBIRE1JIGNvbm5lY3RlZCB0byBhIFRWIChzdGVyZW8gb25seSku
-Cj4gPgo+ID4gZXhjZXB0IGZvciB0aGUgaTJzIHBhdGNoLCB3aGljaCBpcyBicm9rZW4gaW4gdGhp
-cyBzZXJpZXMuCj4gPgo+ID4gcmVnYXJkcwo+ID4gUGhpbGlwcAo+IAo+IAo+IFdoYXQgaXMgdGhl
-IHN0YXR1cyBvZiB0aGlzIHNlcmllcyA/Cj4gSSB3b3VsZCBsaWtlIHRvIHVzZSBhdWRpbyBvdXRw
-dXQgaW4gSERNSSBvbiBteSBpLk1YNiBib2FyZCwgYnV0IEkKPiBkb24ndCBrbm93IGlmIHlvdSBo
-YXZlIHNvbWUgcGVuZGluZyBXSVAgb24gdGhpcyA/CgpUaGUgSTJTIHBhcnQgaGFzIGJlZW4gZHJv
-cHBlZC4gIFRoZSBEZXNpZ25XYXJlIEhETUkgYmxvY2sgaXMgY29uZmlndXJhYmxlCndoZW4gaXQg
-aXMgc3ludGhlc2l6ZWQgLSBpdCBjYW4gY29udGFpbiBlaXRoZXIgdGhlIEFIQiBhdWRpbyBpbnRl
-cmZhY2Ugb3IKYW4gSTJTIGludGVyZmFjZS4gIEZyZWVzY2FsZSBjaG9zZSB0byBzeW50aGVzaXpl
-IGl0IHdpdGggdGhlIEFIQiBhdWRpbwppbnRlcmZhY2UsIGFuZCB0aGlzIGlzIHdoYXQgbXkgcGF0
-Y2hlcyBhcmUgZ2VhcmVkIHVwIHRvIHByb3ZpZGUuCgpPbiBSb2NrY2hpcCBkZXZpY2VzLCB0aGV5
-IGNob3NlIHRvIHN5bnRoZXNpemUgaXQgd2l0aCB0aGUgSTJTIGF1ZGlvCmJsb2NrLCBhbmQgc28g
-dGhleSBuZWVkIGEgZGlmZmVyZW50IGRyaXZlciBmb3IgaXQuICBZYWtpciBZYW5nIGhhcyBiZWVu
-Cndvcmtpbmcgb24gdGhhdCwgYnV0IEkndmUgbm90IHNlZW4gYW55dGhpbmcgcmVjZW50bHkuICBB
-ZnRlciBtZXJnaW5nCmhpcyBJMlMgcGF0Y2gsIEkgZm91bmQgc29tZSBwcm9ibGVtcyBhbmQgZGVj
-aWRlZCB3aXRoIFlha2lyIHRoYXQgdGhlCmJlc3QgdGhpbmcgdG8gZG8gd2FzIHRvIGRyb3AgaXQu
-CgpTbywgdGhlIHJlc3VsdCBpcyB3ZSBzdXBwb3J0IEhETUkgYXVkaW8gb24gaU1YNi4KClRoZSBj
-aGFuZ2VzIHdlcmUgbWVyZ2VkIGludG8gbWFpbmxpbmUgZHVyaW5nIHRoZSA0LjQgbWVyZ2Ugd2lu
-ZG93LCBzbwpMaW51eCA0LjQgd2lsbCBzdXBwb3J0IGlNWDYgSERNSSBhdWRpby4KCi0tIApSTUsn
-cyBQYXRjaCBzeXN0ZW06IGh0dHA6Ly93d3cuYXJtLmxpbnV4Lm9yZy51ay9kZXZlbG9wZXIvcGF0
-Y2hlcy8KRlRUQyBicm9hZGJhbmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDkuNk1i
-cHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
-aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============1798860086635509848==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/aVve/J9H4Wl5yVO"
+Content-Disposition: inline
+
+
+--/aVve/J9H4Wl5yVO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 05, 2016 at 02:36:36PM +0000, Charles Keepax wrote:
+> On Tue, Jan 05, 2016 at 02:20:25PM +0000, Mark Brown wrote:
+
+> > That's not an interrupt acknowlegement, it's a request for more data.
+
+> Well a request to let us know about there being more data. We will
+> keep consuming data as it is generated until we reach a point where
+> we have less than one fragment, then we set this and wait for an
+> IRQ to say we have more than a fragment again.
+
+Whatever it is it's not an interrupt being acknowledged, if anything
+it's more one being unmasked but it seems like it's probably just a
+general software channel.
+
+> > > I could perhaps rename the function to
+> > > wm_adsp_buffer_request_irq? and buf->irq_ack to buf->irq_count?
+> > > That might make the usage a little more clear.
+
+> > That might be a bit clearer, yes - it looks like this is a mailbox on
+> > the DSP that you're kicking?
+
+> Effectively you could think of it as a mailbox, I haven't looked
+> much at the framework but I suspect it is a little overkill for
+> what we want to do here.
+
+I'm not suggesting using the framework, I'm saying don't describe it as
+an interrupt when it's clearly not one and does things that would be
+bugs if it were actually an interrupt.
+
+--/aVve/J9H4Wl5yVO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWi+sRAAoJECTWi3JdVIfQzP8H/jgdo7PrJ45+zFEn4ul7DKLS
+iuGU2xi79vehDZspw3ml8IeA6mqi8lXs+0xMhO4YFio4Jf+S9Z1Cc5Rxz8AEdULz
+4TPvLjtaDuN6twpbhVsqJpDNdCSU78Auy+jVWOIDWxEIDfhWhuinN5cVIlPRSGrJ
+g0B7e+VJqd3PXzEm8atTVi1Bp1wvbv5VFSUJjSpO3rwEpq17eB7tOXeQ9upk7pFE
+xNMZ2FX3k+9EGwSso4rhvXAMaoqo+D2eo7eAugK9/JTrF8RuTW1LxK406ZGYftuq
+pY0EvvscAh0kOocWFHbGtqv0KRjXrmP+urCJk6U6oZjiVQ5u5QSctVT7j07g+qg=
+=D4l+
+-----END PGP SIGNATURE-----
+
+--/aVve/J9H4Wl5yVO--
+
+--===============1798860086635509848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1798860086635509848==--
