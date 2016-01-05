@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC v2 3/6] ASoC: mediatek: Add HDMI dai-links in
- the machine driver
-Date: Tue, 5 Jan 2016 12:46:03 +0000
-Message-ID: <20160105124603.GB16023@sirena.org.uk>
-References: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
- <1451934944-24588-1-git-send-email-p.zabel@pengutronix.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] Revert "ASoC: Intel: Skylake: fix
+	memory leak"
+Date: Tue, 5 Jan 2016 18:48:44 +0530
+Message-ID: <20160105131844.GM2940@localhost>
+References: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
+ <20160105114622.GY16023@sirena.org.uk>
+ <20160105115417.GL2940@localhost>
+ <20160105121141.GZ16023@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7849707838631682517=="
+Content-Type: multipart/mixed; boundary="===============0893243604841614149=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9A152606D3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:46:21 +0100 (CET)
-In-Reply-To: <1451934944-24588-1-git-send-email-p.zabel@pengutronix.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0EEE2606D3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 14:15:17 +0100 (CET)
+In-Reply-To: <20160105121141.GZ16023@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7849707838631682517==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="upHqgONuYbTeMWr5"
+--===============0893243604841614149==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ycz6tD7Th1CMF4v7"
 Content-Disposition: inline
 
 
---upHqgONuYbTeMWr5
+--Ycz6tD7Th1CMF4v7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 04, 2016 at 08:15:44PM +0100, Philipp Zabel wrote:
-> From: Koro Chen <koro.chen@mediatek.com>
+On Tue, Jan 05, 2016 at 12:11:41PM +0000, Mark Brown wrote:
+> On Tue, Jan 05, 2016 at 05:24:17PM +0530, Vinod Koul wrote:
+> > On Tue, Jan 05, 2016 at 11:46:22AM +0000, Mark Brown wrote:
 >=20
-> This creates pcmC0D2p for the HDMI playback in the same card.
+> > > Please use subject lines matching the style for the subsystem.
 >=20
-> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > Is this an automated mail :) but its signed!
+>=20
+> No, I type those out by hand.
+>=20
+> > Btw am not sure why this is not proper, isn't revert followed by old pa=
+tch
+> > title the right style for revert patches..? what did i miss...
+>=20
+> Patches are patches are patches, reverts are patches like any other and
+> should still have subject lines matching the style for the subsystem.
 
-Please don't send new patches in reply to the middle of an existing
-series, it makes it very hard to tell what's going on.  If you need to
-send a new version resend the whole series.
+Fair enough.. I relied on the git to create the title, should have changed
+it :)
 
---upHqgONuYbTeMWr5
+Will keep this in mind
+
+--=20
+~Vinod
+
+--Ycz6tD7Th1CMF4v7
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWi7sKAAoJECTWi3JdVIfQd8gH/3i4VXFcM7aCWuovYanxYKz0
-1VnDevaWiabBdLsTma0a55cKFyl1eWKjJI2DTU2EP7E5/cTMteRPzQgXOTegmeH+
-4UGRaMw/yopUtXAJHTulWeAcbLTcIjsA65zBJgWxTx1AbPSYU+vctZcw6dIMnxmO
-vz1sU47mggPBK7GVDxrPy0aFOfZVYcQ1O5o8fy8W+mk55L/x/w6rOc6rezB6ADIV
-4Jnus62h09I8+AI30WLDoNenJoBSnqj9k0c9xksZWah486WGO4Bss4j7Jpdcb276
-1ZiXQ+wBSyuUJ44HBjJTSW9FYYxcdIk6lCdpUNl9Ya/Lv1uTk0lyXiKWTW5dtRc=
-=ktHU
+iQIcBAEBAgAGBQJWi8K0AAoJEHwUBw8lI4NHLfwQAIeGNoUYvOm+g8qRpksR6+DQ
+bGe00U0lQ3rztdT+/p6y7eiXyWc90Ssda344zItSbp8oofE+4FBxa0AQc10yQLUC
+TdIQQRlZo5E4oY6th7PM/4IPGP25OdfoTGRxYb4nbIjlP151WdBDfvpFzkK+8xw0
+uw1idLqxrjELRkvwXRXkFUwWttrxa2YUlMRZ29KAszsVc0jcBEZIVqJ+1+lp9GIB
+G8OKN6QFoBxcwpBujnZrac5ohdmOv//y/8Tk+Y6Anc6Ozgd4xyl4DcIeP+UVzmfQ
+FInfJaCYtrB5VewluUwzBnJxL75+4mgRH0EbPS4K6ioRcXnWI2QnyoHmurCiQR7g
+/CTTxOhGzQXskDHNNYfY5mefNe0AWaoDK5U2I9nNh+3cFs1QW0cFmBGHA3xcafcB
+bFSUQ1Vb2SjYjwOIEjP2AucsqLndKCkwNApWbfv9lZrJyQUprKDjiX81i+90t51f
+11D8Hfy5NyZSMNZ/srqru/kwFf9rQSNXgtynfKR5zr63pIDPoAgAs0RKoiUex/QR
+WDjUU2+OpRxdljWPFRB8boraqmJIF/Ph9JcgII8EIb/UUSXgxo05K8ItWvPasu8g
+mLEiuTQdbdIB7wA8Pka6bN1sRmgx+fLahZ/aZ/IoQRRzMtByRXZTm0ULKH+Lqq2Q
+qXNhg//PIITDvdI31bhR
+=Oeyw
 -----END PGP SIGNATURE-----
 
---upHqgONuYbTeMWr5--
+--Ycz6tD7Th1CMF4v7--
 
---===============7849707838631682517==
+--===============0893243604841614149==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7849707838631682517==--
+--===============0893243604841614149==--
