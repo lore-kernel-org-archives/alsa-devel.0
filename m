@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/8] ASoC: intel: boards: add card for
- MinnowBoard I2S access
-Date: Tue, 5 Jan 2016 13:15:39 +0000
-Message-ID: <20160105131539.GC16023@sirena.org.uk>
-References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1451949630-3475-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3] ASoC: fsl_asrc: sound is wrong after
+ suspend/resume
+Date: Tue, 5 Jan 2016 13:18:57 +0000
+Message-ID: <20160105131857.GD16023@sirena.org.uk>
+References: <fd32d943839609d46ca4523e316706f563bf21f0.1450928100.git.zidan.wang@freescale.com>
+ <5b07db93fb5a848216a9035c827d99185250d89d.1450928293.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0735583668085094785=="
+Content-Type: multipart/mixed; boundary="===============5766757921136075588=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85A0B261537
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 14:15:46 +0100 (CET)
-In-Reply-To: <1451949630-3475-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8CDF260710
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 14:19:08 +0100 (CET)
+In-Reply-To: <5b07db93fb5a848216a9035c827d99185250d89d.1450928293.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0735583668085094785==
+--===============5766757921136075588==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fuiho1aubMFfXcAs"
+	protocol="application/pgp-signature"; boundary="LAK3FBfgZ514qYSN"
 Content-Disposition: inline
 
 
---fuiho1aubMFfXcAs
+--LAK3FBfgZ514qYSN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 04, 2016 at 05:20:25PM -0600, Pierre-Louis Bossart wrote:
-> Add card with dummy codec and DAI to make I2S signals observable.
-> Uses Mic and Speaker pins/widgets to control DAPM
+On Thu, Dec 24, 2015 at 11:42:11AM +0800, Zidan Wang wrote:
+> The register ASRCFG is volatile, but some bits need to be recovered
+> after suspend/resume.
 
-I'm wondering how this is going to get loaded (I don't see what creates
-the platform device) and how we handle systems with a CODEC connected on
-the expansion headers?
+Please don't send new patches in reply to old ones, it makes it hard to
+see what's going on.
 
---fuiho1aubMFfXcAs
+--LAK3FBfgZ514qYSN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWi8H6AAoJECTWi3JdVIfQyV4H/iy/umlN0leqbJ7se5e0uMk8
-FLTEtqGwbsqXdIFwZvOiiocmpZBTBdzru5XamrKzW2dB24IY84jGjR5gRaKFPa9W
-xNyhoap29nLepJ7UCAru2wFbL0a0TYiBp1pICjuqGSofWpRHZaf1RyBWP6gWMAhD
-bnvuKXzGYcJeMvNKmOh6w55ljawX3NYeIkNewyZKQc9YZYBJ/FvxcIu2VmmNpbXy
-RiAuo6yiq1UapT2qnfebDnQ+Bjj2jsgJV317fxBB63n5js5cULrSpQnO/ZLqv4c8
-41TjBjwi7WpoKwqGp8Vs4DBbv2sCkzAyqhdInUG/3NQP+uDRYR6Ysp8TLB/eUfU=
-=OKzt
+iQEcBAEBCAAGBQJWi8LAAAoJECTWi3JdVIfQF2MH/0eG1puxKz/8u6i4HP7roDrP
+3S0OL7jUnqbHCPTzCfgAglD6OukSPnPoOD7EIujYo6F2/xwl9kgypjOj2e0QYrt2
+io4NV0MtVNYMwX4wJwQD/DbNEnkTMsq54fGBJplLQ+pleW+nLMoV6UkPpiuSeFgV
+7T/7zC4Z012EGfKvXUmBQjzwEoybS09thgzByAomWa1gRGbD/f0gbsLxXtRPpUD8
+rOjtsbnTeTjkdkekSORrBNZ6c44+g4rlTq72O6S3A9Ct1aa0B0ufzQMOcKIzoI2O
+ERAe8SXOaA8h9PZ6uQeCQkgUGJQesuH/8gbUJO2ScLQfqfBT0P2XJTzjD/8aeOY=
+=LMgK
 -----END PGP SIGNATURE-----
 
---fuiho1aubMFfXcAs--
+--LAK3FBfgZ514qYSN--
 
---===============0735583668085094785==
+--===============5766757921136075588==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0735583668085094785==--
+--===============5766757921136075588==--
