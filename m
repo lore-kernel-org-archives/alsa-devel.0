@@ -1,40 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "Linux 4.4-rc8" to the asoc tree
-Date: Tue, 05 Jan 2016 12:33:12 +0000
-Message-ID: <E1aGQnY-0007VL-Gb@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8832D2606D3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 13:33:17 +0100 (CET)
-Received: from debutante.sirena.org.uk ([2a01:348:6:8808:fab::3]
- helo=debutante)
- by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
- id 1aGQnb-0000qI-7b
- for alsa-devel@alsa-project.org; Tue, 05 Jan 2016 12:33:16 +0000
-Received: from broonie by debutante with local (Exim 4.86)
- (envelope-from <broonie@sirena.org.uk>) id 1aGQnY-0007VL-Gb
- for alsa-devel@alsa-project.org; Tue, 05 Jan 2016 12:33:12 +0000
+Subject: Applied "MIPS: VDSO: Fix build error with binutils 2.24 and earlier" to the asoc tree
+Date: Tue, 05 Jan 2016 12:33:13 +0000
+Message-ID: <E1aGQnZ-0007WR-V6@debutante>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   Linux 4.4-rc8
+   MIPS: VDSO: Fix build error with binutils 2.24 and earlier
 
 has been applied to the asoc tree at
 
@@ -59,27 +36,46 @@ to this mail.
 Thanks,
 Mark
 
->From 168309855a7d1e16db751e9c647119fe2d2dc878 Mon Sep 17 00:00:00 2001
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 3 Jan 2016 15:15:37 -0800
-Subject: [PATCH] Linux 4.4-rc8
+>From 398c7500a1f5f74e207bd2edca1b1721b3cc1f1e Mon Sep 17 00:00:00 2001
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Wed, 23 Dec 2015 21:04:31 -0800
+Subject: [PATCH] MIPS: VDSO: Fix build error with binutils 2.24 and earlier
 
+Commit 2a037f310bab ("MIPS: VDSO: Fix build error") tries to fix a build
+error seen with binutils 2.24 and earlier. However, the fix does not work,
+and again results in the already known build errors if the kernel is built
+with an earlier version of binutils.
+
+CC      arch/mips/vdso/gettimeofday.o
+/tmp/ccnOVbHT.s: Assembler messages:
+/tmp/ccnOVbHT.s:50: Error: can't resolve `_start' {*UND* section} - `L0 {.text section}
+/tmp/ccnOVbHT.s:374: Error: can't resolve `_start' {*UND* section} - `L0 {.text section}
+scripts/Makefile.build:258: recipe for target 'arch/mips/vdso/gettimeofday.o' failed
+make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
+
+Fixes: 2a037f310bab ("MIPS: VDSO: Fix build error")
+Cc: Qais Yousef <qais.yousef@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+Patchwork: https://patchwork.linux-mips.org/patch/11926/
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 ---
- Makefile | 2 +-
+ arch/mips/vdso/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 1122433a5cd5..9d94adeceab6 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- VERSION = 4
- PATCHLEVEL = 4
- SUBLEVEL = 0
--EXTRAVERSION = -rc7
-+EXTRAVERSION = -rc8
- NAME = Blurry Fish Butt
- 
- # *DOCUMENTATION*
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 018f8c7b94f2..14568900fc1d 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -26,7 +26,7 @@ aflags-vdso := $(ccflags-vdso) \
+ # the comments on that file.
+ #
+ ifndef CONFIG_CPU_MIPSR6
+-  ifeq ($(call ld-ifversion, -lt, 22500000, y),)
++  ifeq ($(call ld-ifversion, -lt, 22500000, y),y)
+     $(warning MIPS VDSO requires binutils >= 2.25)
+     obj-vdso-y := $(filter-out gettimeofday.o, $(obj-vdso-y))
+     ccflags-vdso += -DDISABLE_MIPS_VDSO
 -- 
 2.6.2
