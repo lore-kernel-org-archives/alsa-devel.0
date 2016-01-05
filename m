@@ -1,91 +1,47 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7219: Correct BCLK inversion for DSP DAI format mode
-Date: Tue, 5 Jan 2016 15:05:36 +0000
-Message-ID: <20160105150536.7C29F3FAE8@swsrvapps-01.diasemi.com>
+From: Jean-Michel Hautbois <jean-michel.hautbois@veo-labs.com>
+Subject: Re: [alsa-devel] [PATCH 0/9] dw-hdmi audio support
+Date: Tue, 5 Jan 2016 16:40:54 +0100
+Message-ID: <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
+References: <20150808160251.GM7557@n2100.arm.linux.org.uk> <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <1440664941.3233.38.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1440664941.3233.38.camel@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Airlie <airlied@linux.ie>, Jon Nettleton <jon.nettleton@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-rockchip@lists.infradead.org, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-By default the device latches data on the falling edge of the
-BCLK in DSP mode, whereas the expectation for normal BCLK is to
-latch on the rising edge. This updates the driver to invert the
-BCLK configuration for DSP mode, to align with expected behaviour.
+Hi Russell,
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
+2015-08-27 10:42 GMT+02:00 Philipp Zabel <p.zabel@pengutronix.de>:
+>
+> Am Samstag, den 08.08.2015, 17:09 +0100 schrieb Russell King - ARM
+> Linux:
+> > Following on from the previous sub-series, this sub-series adds audio
+> > support to dw-hdmi.
+> >
+> > The two different variants are now in this patch: AHB audio support
+> > found on iMX6 platforms, and I2S support found on Rockchip patches.
+> > Thanks to Yakir Yang for contributing the I2S support.
+> >
+> > I suspect that there is still some discussion to be had on this
+> > series, though I would like to see it moving forward so that we can
+> > get something merged.
+>
+> Tested-by: Philipp Zabel <p.zabel@pengutronix.de>
+> on i.MX6 GK802 via HDMI connected to a TV (stereo only).
+>
+> except for the i2s patch, which is broken in this series.
+>
+> regards
+> Philipp
 
-This patch is based on the following commit:
 
-'ASoC: da7219: Add regmap patch to support old silicon'
-(Commit abd7c894fc41a9a674354e10ed6c55413e1db077, kernel/git/broonie/sound.git)
+What is the status of this series ?
+I would like to use audio output in HDMI on my i.MX6 board, but I
+don't know if you have some pending WIP on this ?
 
-
- sound/soc/codecs/da7219.c | 48 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 37 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 341a191..0d7a897 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1156,18 +1156,44 @@ static int da7219_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
-
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_NB_NF:
--		break;
--	case SND_SOC_DAIFMT_NB_IF:
--		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
--		break;
--	case SND_SOC_DAIFMT_IB_NF:
--		dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+	case SND_SOC_DAIFMT_LEFT_J:
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+		case SND_SOC_DAIFMT_NB_NF:
-+			break;
-+		case SND_SOC_DAIFMT_NB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_NF:
-+			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
-+					DA7219_DAI_CLK_POL_INV;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
- 		break;
--	case SND_SOC_DAIFMT_IB_IF:
--		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
--				DA7219_DAI_CLK_POL_INV;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+		case SND_SOC_DAIFMT_NB_NF:
-+			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_NB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
-+					DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_NF:
-+			break;
-+		case SND_SOC_DAIFMT_IB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
- 		break;
- 	default:
- 		return -EINVAL;
---
-1.9.3
+Thanks,
+JM
