@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Correct BCLK inversion for DSP
-	DAI format mode" to the asoc tree
+Subject: Applied "ASoC: pcm: allow delayed suspending request
+	by users" to the asoc tree
 Date: Tue, 05 Jan 2016 17:49:09 +0000
-Message-ID: <E1aGVjJ-000346-VB@debutante>
+Message-ID: <E1aGVjJ-00033d-7c@debutante>
+References: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3699556990446124520=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A425261B2A
+ by alsa0.perex.cz (Postfix) with ESMTP id 79C532615F7
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:24 +0100 (CET)
-In-Reply-To: 
+In-Reply-To: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+To: Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============3699556990446124520==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: da7219: Correct BCLK inversion for DSP DAI format mode
+   ASoC: pcm: allow delayed suspending request by users
 
 has been applied to the asoc tree at
 
@@ -52,81 +55,86 @@ to this mail.
 Thanks,
 Mark
 
->From 4acfa36be618eb8ac3aa39f473e7550710216435 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 5 Jan 2016 15:05:36 +0000
-Subject: [PATCH] ASoC: da7219: Correct BCLK inversion for DSP DAI format mode
+>From 3f80978397f447973d278198e8bbde82826cb9c1 Mon Sep 17 00:00:00 2001
+From: Sanyog Kale <sanyog.r.kale@intel.com>
+Date: Tue, 5 Jan 2016 17:14:49 +0530
+Subject: [PATCH] ASoC: pcm: allow delayed suspending request by users
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-By default the device latches data on the falling edge of the
-BCLK in DSP mode, whereas the expectation for normal BCLK is to
-latch on the rising edge. This updates the driver to invert the
-BCLK configuration for DSP mode, to align with expected behaviour.
+If a device would like to use delayed suspending then PM
+recommendation is to set ‘power.use_autosuspend’ flag. To allow
+users to do so we need to change runtime calls in core to use
+autosuspend counterparts.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+For user who do not wish to use delayed suspend not setting the
+device's ‘power.use_autosuspend’ flag will result in non-delayed
+suspend even with these APIs which incidentally is also the default
+behaviour, so only users will be impacted who opt in for this.
+
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 48 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 37 insertions(+), 11 deletions(-)
+ sound/soc/soc-pcm.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 9c7e8ec68b94..81c0708b85c1 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1156,18 +1156,44 @@ static int da7219_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index c86dc96e8986..efad248efd4f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -599,10 +599,15 @@ platform_err:
+ out:
+ 	mutex_unlock(&rtd->pcm_mutex);
  
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_NB_NF:
--		break;
--	case SND_SOC_DAIFMT_NB_IF:
--		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
--		break;
--	case SND_SOC_DAIFMT_IB_NF:
--		dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+	case SND_SOC_DAIFMT_LEFT_J:
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+		case SND_SOC_DAIFMT_NB_NF:
-+			break;
-+		case SND_SOC_DAIFMT_NB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_NF:
-+			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
-+					DA7219_DAI_CLK_POL_INV;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
- 		break;
--	case SND_SOC_DAIFMT_IB_IF:
--		dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
--				DA7219_DAI_CLK_POL_INV;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+		case SND_SOC_DAIFMT_NB_NF:
-+			dai_clk_mode |= DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_NB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV |
-+					DA7219_DAI_CLK_POL_INV;
-+			break;
-+		case SND_SOC_DAIFMT_IB_NF:
-+			break;
-+		case SND_SOC_DAIFMT_IB_IF:
-+			dai_clk_mode |= DA7219_DAI_WCLK_POL_INV;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
- 		break;
- 	default:
- 		return -EINVAL;
+-	pm_runtime_put(platform->dev);
+-	for (i = 0; i < rtd->num_codecs; i++)
+-		pm_runtime_put(rtd->codec_dais[i]->dev);
+-	pm_runtime_put(cpu_dai->dev);
++	pm_runtime_mark_last_busy(platform->dev);
++	pm_runtime_put_autosuspend(platform->dev);
++	for (i = 0; i < rtd->num_codecs; i++) {
++		pm_runtime_mark_last_busy(rtd->codec_dais[i]->dev);
++		pm_runtime_put_autosuspend(rtd->codec_dais[i]->dev);
++	}
++
++	pm_runtime_mark_last_busy(cpu_dai->dev);
++	pm_runtime_put_autosuspend(cpu_dai->dev);
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		if (!rtd->codec_dais[i]->active)
+ 			pinctrl_pm_select_sleep_state(rtd->codec_dais[i]->dev);
+@@ -706,10 +711,17 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 
+-	pm_runtime_put(platform->dev);
+-	for (i = 0; i < rtd->num_codecs; i++)
+-		pm_runtime_put(rtd->codec_dais[i]->dev);
+-	pm_runtime_put(cpu_dai->dev);
++	pm_runtime_mark_last_busy(platform->dev);
++	pm_runtime_put_autosuspend(platform->dev);
++
++	for (i = 0; i < rtd->num_codecs; i++) {
++		pm_runtime_mark_last_busy(rtd->codec_dais[i]->dev);
++		pm_runtime_put_autosuspend(rtd->codec_dais[i]->dev);
++	}
++
++	pm_runtime_mark_last_busy(cpu_dai->dev);
++	pm_runtime_put_autosuspend(cpu_dai->dev);
++
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		if (!rtd->codec_dais[i]->active)
+ 			pinctrl_pm_select_sleep_state(rtd->codec_dais[i]->dev);
 -- 
 2.7.0.rc3
+
+
+--===============3699556990446124520==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3699556990446124520==--
