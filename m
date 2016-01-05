@@ -1,13 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL]: Update sst audio firmware for Skylake
-Date: Tue, 5 Jan 2016 19:18:48 +0530
-Message-ID: <20160105134848.GN2940@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 7/8] ASoC: wm_adsp: Add a handler for
+ the compressed IRQ
+Date: Tue, 5 Jan 2016 14:20:25 +0000
+Message-ID: <20160105142025.GA6588@sirena.org.uk>
+References: <1450178989-8749-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1450178989-8749-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20151223001907.GI16023@sirena.org.uk>
+ <20151223095806.GY6058@localhost.localdomain>
+ <20151224193137.GI579@sirena.org.uk>
+ <20151229154313.GA1490@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8783222643429853702=="
+Content-Type: multipart/mixed; boundary="===============5768879474586368342=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C1055260710
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 14:45:22 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C96CF260710
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 15:20:40 +0100 (CET)
+In-Reply-To: <20151229154313.GA1490@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,81 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8783222643429853702==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HnQK338I3UIa/qiP"
+--===============5768879474586368342==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
 Content-Disposition: inline
 
 
---HnQK338I3UIa/qiP
+--/04w6evG8XlLl3ft
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Linux firmware maintainers,
+On Tue, Dec 29, 2015 at 03:43:13PM +0000, Charles Keepax wrote:
+> On Thu, Dec 24, 2015 at 07:31:37PM +0000, Mark Brown wrote:
 
-Please PULL to receive the updated version of Skylake audio firmware.
-This version contains some odd fixes and support for MCLK configuration.
+> > > I am somewhat torn between a comment and renaming the function. I
+> > > will try to add some sort of reasonable comment.
 
-The following changes since commit bbe4917c054eb0a73e250c6363341e3bf6725839:
+> > This doesn't sound like it's really acknowledging an IRQ - you have
+> > level triggered interrupts here so if the interrupt isn't acknowledged
+> > the interrupt handler will constantly be called.
 
-  WHENCE: use https://linuxtv.org for LinuxTV URLs (2015-12-07 02:17:20 +00=
-00)
+> It kinda is acking the IRQ just at the firmware level, not the
+> hardware level. The physical IRQ all gets acked through regmap
+> so that is all handled. This code here lets the firmware know,
+> which it will then use to decide whether it should send a new IRQ
+> or not.
 
-are available in the git repository at:
+That's not an interrupt acknowlegement, it's a request for more data.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+> I could perhaps rename the function to
+> wm_adsp_buffer_request_irq? and buf->irq_ack to buf->irq_count?
+> That might make the usage a little more clear.
 
-for you to fetch changes up to 177d9f030b4eef981570fc2ef0bf9b0b922d99df:
+That might be a bit clearer, yes - it looks like this is a mailbox on
+the DSP that you're kicking?
 
-  linux-firmware: Update Skylake audio firmware (2016-01-05 19:07:52 +0530)
-
-----------------------------------------------------------------
-Vinod Koul (1):
-      linux-firmware: Update Skylake audio firmware
-
- WHENCE                   |   4 ++--
- intel/dsp_fw_release.bin | Bin 233472 -> 233472 bytes
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---HnQK338I3UIa/qiP
+--/04w6evG8XlLl3ft
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJWi8nAAAoJEHwUBw8lI4NH8l4QAJyZNToq5By/eIvHlvzJk959
-eTmj4f5ODv4Sedczz71y7zHrONp6YrMPtut3sTOFPJI1VDGGlZ0c6NybuZFIY4Q2
-K0rNbc/YS4r5kdsSVb5sA0sI5WAv9NIwlLZWWBkhYSZ0j7N+PUscbYhceTiGusl1
-rYgfw+Pi9NpQyLMgNPlEhHomqTRjSi0EyFkQrKv2qm0KQWl8nlPa9MCbZ9CNjzeZ
-tY+p7Eb2GZp9CaOFr/bqnFDi42NLxu4HIK/Arom31XL6RR64rk2GC6bOHvKyluAv
-baicPpAGFXate4PvUPxkDwBinZ0u8oOPyGknB2x/sozdbNAcBWj8Z9aKiGY+18MM
-JJJBJrBP7Utlqh7Oczfb2I485fUDeEFpJq3hpNrfgDyT+NrfJk3Si3F+pyhjmCWY
-rEb5iZKUsukjzz8IFixgmp20x/iyShF/BWFOUmuz3uxzVEvt4zYeaZa4LcHo8+o5
-l65kTUIM4yExkW+PnjC9OhLSnAEGzbc9zM868cWdQpWK/Pp9ImHuRXUZsFyFnWb6
-Wqq55pZRqTHuQwA73sBo2BTrVy0SHFPFaesktI8I4IBTE+8KcOVluEO5/IEbaHYU
-D6qV+aRVfIg9OMXLn05AjERDqk61J4P5c12Uo20BX4IiOP89RLQEWNfxyLxiiLRH
-Ior/b7JagUUaT9+reR1N
-=M9NS
+iQEcBAEBCAAGBQJWi9EmAAoJECTWi3JdVIfQumkH/0oPwsbuoREH/KdQ67tOmGHc
+vRV6zmI4gDFjT6y4hDHr9DGky1lodY50tGmnbLVLru5ZSaGR4y5l8C6X4WBAgKsE
+92YFXccMxsY+uESKNpdJs976xoz863fpAbekDc6KLYsl3xgSjydeL5GlzF7UKm7A
+gMxBIPhPrSd5yGzFitpZ6aQv3ty1edpOZSwT8YWm58G68VL836i3hRsaD9LSpekC
+u5TCQFNBvBxtDZ5Ku2Xwty1elUQ3RxSIXsfGzzbSPECQatRXUuW6gcaHx9JlL/wR
+CUaZdMHr3vAeNE4dx1Hc93BOSnxMbD1ebdMEhtMvh6hC/BI311yRkBXroHYi+8w=
+=yN3N
 -----END PGP SIGNATURE-----
 
---HnQK338I3UIa/qiP--
+--/04w6evG8XlLl3ft--
 
---===============8783222643429853702==
+--===============5768879474586368342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8783222643429853702==--
+--===============5768879474586368342==--
