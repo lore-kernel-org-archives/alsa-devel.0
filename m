@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 6/8] ASoC: AMD: add AMD ASoC ACP 2.x DMA driver
-Date: Tue, 5 Jan 2016 18:43:43 +0000
-Message-ID: <20160105184343.GL6588@sirena.org.uk>
+Date: Tue, 5 Jan 2016 18:51:59 +0000
+Message-ID: <20160105185159.GM6588@sirena.org.uk>
 References: <1450897275-17152-1-git-send-email-alexander.deucher@amd.com>
  <1450897275-17152-6-git-send-email-alexander.deucher@amd.com>
+ <20160105184343.GL6588@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0007046175=="
+Content-Type: multipart/mixed; boundary="===============1723893635=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1450897275-17152-6-git-send-email-alexander.deucher@amd.com>
+In-Reply-To: <20160105184343.GL6588@sirena.org.uk>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -22,93 +23,48 @@ Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0007046175==
+--===============1723893635==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CqfQkoYPE/jGoa5Q"
+	protocol="application/pgp-signature"; boundary="x38akuY2VS0PywU3"
 Content-Disposition: inline
 
 
---CqfQkoYPE/jGoa5Q
+--x38akuY2VS0PywU3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 23, 2015 at 02:01:13PM -0500, Alex Deucher wrote:
+On Tue, Jan 05, 2016 at 06:43:43PM +0000, Mark Brown wrote:
+> On Wed, Dec 23, 2015 at 02:01:13PM -0500, Alex Deucher wrote:
 
-> --- /dev/null
-> +++ b/sound/soc/amd/Kconfig
-> @@ -0,0 +1,4 @@
-> +config SND_SOC_AMD_ACP
-> +	tristate "AMD Audio Coprocessor support"
-> +	help
-> +	 This option enables ACP DMA support on AMD platform.
+> > +#include "include/acp_2_2_d.h"
+> > +#include "include/acp_2_2_sh_mask.h"
 
-This has no dependencies?
+> I can't find these headers anywhere in the kernel tree or earlier in
+> this patch series, this will break the build.  The fact that they've got
+> include in the filename is also a bit interesting...
 
-> +
-> +	/* Designware I2S driver requries proper capabilities
-> +	 * from mmACP_I2SMICSP_COMP_PARAM_1 register. The register
-> +	 * reports playback and capture capabilities though the
-> +	 * MIC instance of DW I2S controller supports capture only
-> +	 * Provide a workaround by masking the capability into a
-> +	 * scratch register and provide scratch register offset as
-> +	 * though it is mmACP_I2SMICSP_COMP_PARAM_1
-> +	 */
-> +
-> +	val = acp_reg_read(acp_mmio, mmACP_I2SMICSP_COMP_PARAM_1);
-> +	val = val & ~BIT(5);
-> +	acp_reg_write(val, acp_mmio, mmACP_SCRATCH_REG_0);
+Ugh, your cover letter says (after pages of changelog) that they're in a
+patch 5 which you didn't send :(  Please don't do this, I can't apply or
+review code that isn't sent to me.
 
-Ugh, right.  So the hardware doesn't actually have the register moved at
-all.  Why are we doing this, if the capabilities really are buggy the
-more idiomatic thing would be to provide an override for the
-capabilities via platform data?  Requiring some other driver to poke the
-hardware to set the capabilities is a very roundabout way to deal with
-things.
-
-We should probably revert that quirk unless I'm missing something here...
-
-> +++ b/sound/soc/amd/acp.h
-> @@ -0,0 +1,119 @@
-> +#ifndef __ACP_HW_H
-> +#define __ACP_HW_H
-> +
-> +#include "include/acp_2_2_d.h"
-> +#include "include/acp_2_2_sh_mask.h"
-
-I can't find these headers anywhere in the kernel tree or earlier in
-this patch series, this will break the build.  The fact that they've got
-include in the filename is also a bit interesting...
-
-> +#define PAGE_SIZE_4K				4096
-
-SZ_4K exists for this.
-
-> +#define PAGE_SIZE_4K_ENABLE			0x02
-> +
-> +#define PLAYBACK_PTE_OFFSET			10
-> +#define CAPTURE_PTE_OFFSET			0
-
-These defines could all use namespacing, as could some of the others
-later than don't mention ACP.
-
---CqfQkoYPE/jGoa5Q
+--x38akuY2VS0PywU3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEbBAEBCAAGBQJWjA7eAAoJECTWi3JdVIfQfC4H9iFpuT847/vHDKCObm8yQLFt
-CDYRu9xseQHKOyzTCNbgY8iNrg+25A3w7PHcPIZEvMtRIhjqvN/poKzRHJq2KrgP
-GzzWzj7TKb0+CBu/76rFqHSVtmOSPAhTNXEbK2H0boa24ighTP74/GXgR/clXMuQ
-QbGb62QRibLSzQIkD4verDkKhszsxVQtDnn4Ws6xjnwObW0WBftLOGQ4CiabKP4W
-nEI9BGfwbX76oOn1Fum61BxMrQWT7vRpcPLvzzlmDSda3utgTq2ze+Bmf27BFKgg
-87aO4xzMSiBy/s7EPJUMno3MzhX6hu7l/1dqP/nzNK+YR97cO73qkdK1tZziww==
-=jQBK
+iQEcBAEBCAAGBQJWjBDOAAoJECTWi3JdVIfQ+6AH/RetH8uM4zwNhp4FbN2AbzmG
+q5ezcSPpmkUj6ZZXKslcx9DazXnBN4tquU4h0fheRNI+ElrYeKlj8DYsLuWLEzEm
+kxYC8lnX5FIw3R+xQeGYKdIlWvbVdXREmFWVUd0mBCgnyAwVSLeH49bUIsRA0AXv
+UfXOstAdLtGIA9dDL3Si9O0LLBlS3H3WZI0lnccsZWzYqk8v3jWjkvljMa/XzhT9
+iVFFtUEyf4rM5xYOAHkBuoRngtmKeeTpsPuFasOquHL7ox/BTPVpArXfxQBUlktV
+1Y7Fqgqmt/bJqf8kE8nqKihi9u6enrlQ/FpFsrCODC7372CXiLVsjIC0/SniUS8=
+=gXRF
 -----END PGP SIGNATURE-----
 
---CqfQkoYPE/jGoa5Q--
+--x38akuY2VS0PywU3--
 
---===============0007046175==
+--===============1723893635==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
@@ -118,4 +74,4 @@ X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
 IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
 cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
 
---===============0007046175==--
+--===============1723893635==--
