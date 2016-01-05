@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Tue, 5 Jan 2016 17:21:46 +0000
-Message-ID: <20160105172146.GH6588@sirena.org.uk>
-References: <1430be98728abfe543d9a1e245d9b80f6d8f3c44.1449567072.git.zidan.wang@freescale.com>
- <20151208124713.GQ5727@sirena.org.uk>
- <20151209033449.GA30401@shlinux2>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: fixup DAI
+	codec_name with HID" to the asoc tree
+Date: Tue, 05 Jan 2016 17:49:13 +0000
+Message-ID: <E1aGVjN-000362-Ik@debutante>
+References: <1450406156-22246-18-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5955969343579404978=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AF93E2605D3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:21:55 +0100 (CET)
-In-Reply-To: <20151209033449.GA30401@shlinux2>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E0FD260410
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:24 +0100 (CET)
+In-Reply-To: <1450406156-22246-18-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +22,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5955969343579404978==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Bg2esWel0ueIH/G/"
-Content-Disposition: inline
+   ASoC: Intel: bytcr_rt5640: fixup DAI codec_name with HID
 
+has been applied to the asoc tree at
 
---Bg2esWel0ueIH/G/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 09, 2015 at 11:34:52AM +0800, Zidan Wang wrote:
-> On Tue, Dec 08, 2015 at 12:47:13PM +0000, Mark Brown wrote:
-> > On Tue, Dec 08, 2015 at 05:40:13PM +0800, Zidan Wang wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > > + - aifx-continuous-clock   : If present, bit clock will be continuous.
-> > > +			     Otherwise, dai bit clocks can be be gated
-> > > +			     (disabled) when the dai is not sending or
-> > > +			     receiving PCM data in a frame.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> > Why are these selectable in the machine driver?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> I have tested and found that sai<->aif1 can support "i2s" "left_j"
-> "dsp_a" "dsp_b" format, and can support cpu dai master and slave
-> mode. But I haven't tested voice dai and bt dai because of hardware
-> limitation. I just using sai<->aif2 to test aif2.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> So I want to configure the dai format from device tree. And there is
-> a help function snd_soc_of_parse_daifmt for me to do this, so I add
-> these selectable to the machine driver.
+Thanks,
+Mark
 
-This really sounds like the best thing to do here is to just leave this
-out of the upstream submission then add the support for the voice and BT
-link when you've got the configuration worked out.  You'll most likely
-find there's only one possible configuration anyway.
+>From caf94ed8629afb82d61a82ce76fb314145933a40 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 4 Jan 2016 17:20:28 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: fixup DAI codec_name with HID
 
---Bg2esWel0ueIH/G/
-Content-Type: application/pgp-signature; name="signature.asc"
+Codec name is hard-coded in machine driver, pass information
+from actual ACPI HID to help support BIOS variations
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c   | 17 ++++++++++++-----
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-iQEcBAEBCAAGBQJWi/upAAoJECTWi3JdVIfQIQwH/2kSdyTx1UKWLe+gCauPN9w/
-yNLHxePfmhqOUhcpvwrWxQaF52M77zYAsPpbOPGYI95fEIYmZ21CvzROOArvm8rv
-exmu5ZoRNDWw5xE3krIvELqo5NpQQkWUN+0F5sV218Z1sbA7e/VSkPn1yzIIjcI9
-/RV5bVO4LxM/Kxrqp3yqM5ZIzy/i0Ou9IuJ4QqyU9larKeydsiqdIz/6rMrXqIRM
-ymKRPZHfZQNTihqAdCjlFKgkMQ7742GFVxphTV/+LB5a2Q/MokseUPr73lZU/C4C
-rXYcQkBlea6YY1sanAc5tNb7wVCXV3ljfkf0iSTPNJAvDEj2EYbHQPeIjIonxJg=
-=CVbB
------END PGP SIGNATURE-----
-
---Bg2esWel0ueIH/G/--
-
---===============5955969343579404978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5955969343579404978==--
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index b6ea0a58f9d3..f61e53106339 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -247,16 +247,23 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 
+ 	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
+ 
+-	plat_dev = platform_device_register_data(dev, pdata->platform, -1, NULL, 0);
++	plat_dev = platform_device_register_data(dev, pdata->platform, -1,
++						NULL, 0);
+ 	if (IS_ERR(plat_dev)) {
+-		dev_err(dev, "Failed to create machine device: %s\n", pdata->platform);
++		dev_err(dev, "Failed to create machine device: %s\n",
++			pdata->platform);
+ 		return PTR_ERR(plat_dev);
+ 	}
+ 
+-	/* Create platform device for sst machine driver */
+-	mdev = platform_device_register_data(dev, mach->drv_name, -1, NULL, 0);
++	/*
++	 * Create platform device for sst machine driver,
++	 * pass machine info as pdata
++	 */
++	mdev = platform_device_register_data(dev, mach->drv_name, -1,
++					(const void *)mach, sizeof(*mach));
+ 	if (IS_ERR(mdev)) {
+-		dev_err(dev, "Failed to create machine device: %s\n", mach->drv_name);
++		dev_err(dev, "Failed to create machine device: %s\n",
++			mach->drv_name);
+ 		return PTR_ERR(mdev);
+ 	}
+ 
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 0f2385f6f6ac..74bb7cc1f54a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -30,6 +30,7 @@
+ #include <sound/jack.h>
+ #include "../../codecs/rt5640.h"
+ #include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
+ 
+ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+@@ -326,12 +327,21 @@ static struct snd_soc_card byt_rt5640_card = {
+ 	.fully_routed = true,
+ };
+ 
++static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret_val = 0;
++	struct sst_acpi_mach *mach;
+ 
+ 	/* register the soc card */
+ 	byt_rt5640_card.dev = &pdev->dev;
++	mach = byt_rt5640_card.dev->platform_data;
++
++	/* fixup codec name based on HID */
++	snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
++		 "%s%s%s", "i2c-", mach->id, ":00");
++	byt_rt5640_dais[MERR_DPCM_COMPR+1].codec_name = byt_rt5640_codec_name;
+ 
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 
+-- 
+2.7.0.rc3
