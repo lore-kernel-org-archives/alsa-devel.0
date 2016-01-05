@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/2] Revert "ASoC: Intel: Skylake: fix memory
-	leak"
-Date: Tue,  5 Jan 2016 17:16:03 +0530
-Message-ID: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Skylake: Fix the memory leak
+Date: Tue,  5 Jan 2016 17:16:04 +0530
+Message-ID: <1451994364-29338-2-git-send-email-vinod.koul@intel.com>
+References: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ACE726067A
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 12:42:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E5ACE2606D3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 12:42:40 +0100 (CET)
+In-Reply-To: <1451994364-29338-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,71 +24,62 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 87b5ed8ecb9fe05a696e1c0b53c7a49ea66432c1 ("ASoC: Intel:
-Skylake: fix memory leak") as it causes regression on Skylake devices
-
-The SKL drivers can be deferred probe. The topology file based widgets can
-have references to topology file so this can't be freed until card is fully
-created, so revert this patch for now
-
-[   66.682767] BUG: unable to handle kernel paging request at ffffc900001363fc
-[   66.690735] IP: [<ffffffff806c94dd>] strnlen+0xd/0x40
-[   66.696509] PGD 16e035067 PUD 16e036067 PMD 16e038067 PTE 0
-[   66.702925] Oops: 0000 [#1] PREEMPT SMP
-[   66.768390] CPU: 3 PID: 57 Comm: kworker/u16:3 Tainted: G O 4.4.0-rc7-skl #62
-[   66.778869] Hardware name: Intel Corporation Skylake Client platform
-[   66.793201] Workqueue: deferwq deferred_probe_work_func
-[   66.799173] task: ffff88008b700f40 ti: ffff88008b704000 task.ti: ffff88008b704000
-[   66.807692] RIP: 0010:[<ffffffff806c94dd>]  [<ffffffff806c94dd>] strnlen+0xd/0x40
-[   66.816243] RSP: 0018:ffff88008b707878  EFLAGS: 00010286
-[   66.822293] RAX: ffffffff80e60a82 RBX: 000000000000000e RCX: fffffffffffffffe
-[   66.830406] RDX: ffffc900001363fc RSI: ffffffffffffffff RDI: ffffc900001363fc
-[   66.838520] RBP: ffff88008b707878 R08: 000000000000ffff R09: 000000000000ffff
-[   66.846649] R10: 0000000000000001 R11: ffffffffa01c6368 R12: ffffc900001363fc
-[   66.854765] R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
-[   66.862910] FS:  0000000000000000(0000) GS:ffff88016ecc0000(0000) knlGS:0000000000000000
-[   66.872150] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   66.878696] CR2: ffffc900001363fc CR3: 0000000002c09000 CR4: 00000000003406e0
-[   66.886820] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   66.894938] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   66.903052] Stack:
-[   66.905346]  ffff88008b7078b0 ffffffff806cb1db 000000000000000e 0000000000000000
-[   66.913854]  ffff88008b707928 ffffffffa00d1050 ffffffffa00d104e ffff88008b707918
-[   66.922353]  ffffffff806ccbd6 ffff88008b707948 0000000000000046 ffff88008b707940
-[   66.930855] Call Trace:
-[   66.933646]  [<ffffffff806cb1db>] string.isra.4+0x3b/0xd0
-[   66.939793]  [<ffffffff806ccbd6>] vsnprintf+0x116/0x540
-[   66.945742]  [<ffffffff806d02f0>] kvasprintf+0x40/0x80
-[   66.951591]  [<ffffffff806d0370>] kasprintf+0x40/0x50
-[   66.957359]  [<ffffffffa00c085f>] dapm_create_or_share_kcontrol+0x1cf/0x300 [snd_soc_core]
-[   66.966771]  [<ffffffff8057dd1e>] ? __kmalloc+0x16e/0x2a0
-[   66.972931]  [<ffffffffa00c0dab>] snd_soc_dapm_new_widgets+0x41b/0x4b0 [snd_soc_core]
-[   66.981857]  [<ffffffffa00be8c0>] ? snd_soc_dapm_add_routes+0xb0/0xd0 [snd_soc_core]
-[   67.007828]  [<ffffffffa00b92ed>] soc_probe_component+0x23d/0x360 [snd_soc_core]
-[   67.016244]  [<ffffffff80b14e69>] ? mutex_unlock+0x9/0x10
-[   67.022405]  [<ffffffffa00ba02f>] snd_soc_instantiate_card+0x47f/0xd10 [snd_soc_core]
-[   67.031329]  [<ffffffff8049eeb2>] ? debug_mutex_init+0x32/0x40
-[   67.037973]  [<ffffffffa00baa92>] snd_soc_register_card+0x1d2/0x2b0 [snd_soc_core]
-[   67.046619]  [<ffffffffa00c8b54>] devm_snd_soc_register_card+0x44/0x80 [snd_soc_core]
-[   67.055539]  [<ffffffffa01c303b>] skylake_audio_probe+0x1b/0x20 [snd_soc_skl_rt286]
-[   67.064292]  [<ffffffff808aa887>] platform_drv_probe+0x37/0x90
+This provide the fix for firmware memory by freeing the pointer in driver
+remove where it is safe to do so
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 2 ++
+ sound/soc/intel/skylake/skl.c          | 4 ++++
+ sound/soc/intel/skylake/skl.h          | 2 ++
+ 3 files changed, 8 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ffea427aeca8..a7854c8fc523 100644
+index a7854c8fc523..ad4d0f82603e 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1240,7 +1240,6 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 	 */
- 	ret = snd_soc_tplg_component_load(&platform->component,
- 					&skl_tplg_ops, fw, 0);
--	release_firmware(fw);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
- 		return -EINVAL;
+@@ -1248,5 +1248,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+ 	skl->resource.max_mcps = SKL_MAX_MCPS;
+ 	skl->resource.max_mem = SKL_FW_MAX_MEM;
+ 
++	skl->tplg = fw;
++
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 5319529aedf7..caa69c4598a6 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -25,6 +25,7 @@
+ #include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
++#include <linux/firmware.h>
+ #include <sound/pcm.h>
+ #include "skl.h"
+ 
+@@ -520,6 +521,9 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct skl *skl = ebus_to_skl(ebus);
+ 
++	if (skl->tplg)
++		release_firmware(skl->tplg);
++
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index dd2e79ae45a8..a0709e344d44 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -68,6 +68,8 @@ struct skl {
+ 	struct skl_dsp_resource resource;
+ 	struct list_head ppl_list;
+ 	struct list_head dapm_path_list;
++
++	const struct firmware *tplg;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
 -- 
 1.9.1
