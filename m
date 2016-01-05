@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm: allow delayed suspending request
-	by users" to the asoc tree
-Date: Tue, 05 Jan 2016 17:49:09 +0000
-Message-ID: <E1aGVjJ-00033d-7c@debutante>
-References: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: bytcr-rt5640: enable ASRC" to
+	the asoc tree
+Date: Tue, 05 Jan 2016 17:49:16 +0000
+Message-ID: <E1aGVjQ-00037R-Aj@debutante>
+References: <1450406156-22246-17-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3699556990446124520=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 79C532615F7
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BC08260622
  for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2016 18:49:24 +0100 (CET)
-In-Reply-To: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1450406156-22246-17-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============3699556990446124520==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: pcm: allow delayed suspending request by users
+   ASoC: Intel: bytcr-rt5640: enable ASRC
 
 has been applied to the asoc tree at
 
@@ -55,86 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 3f80978397f447973d278198e8bbde82826cb9c1 Mon Sep 17 00:00:00 2001
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Date: Tue, 5 Jan 2016 17:14:49 +0530
-Subject: [PATCH] ASoC: pcm: allow delayed suspending request by users
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 0ec66e2d74aadaaee7e218861ca86effcd029435 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 4 Jan 2016 17:20:27 -0600
+Subject: [PATCH] ASoC: Intel: bytcr-rt5640: enable ASRC
 
-If a device would like to use delayed suspending then PM
-recommendation is to set ‘power.use_autosuspend’ flag. To allow
-users to do so we need to change runtime calls in core to use
-autosuspend counterparts.
+Sound is noisy when using BCLK as reference, enable ASRC in rt5640
+codec
 
-For user who do not wish to use delayed suspend not setting the
-device's ‘power.use_autosuspend’ flag will result in non-delayed
-suspend even with these APIs which incidentally is also the default
-behaviour, so only users will be impacted who opt in for this.
-
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c86dc96e8986..efad248efd4f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -599,10 +599,15 @@ platform_err:
- out:
- 	mutex_unlock(&rtd->pcm_mutex);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a81389d10e17..0f2385f6f6ac 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -153,6 +153,11 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
  
--	pm_runtime_put(platform->dev);
--	for (i = 0; i < rtd->num_codecs; i++)
--		pm_runtime_put(rtd->codec_dais[i]->dev);
--	pm_runtime_put(cpu_dai->dev);
-+	pm_runtime_mark_last_busy(platform->dev);
-+	pm_runtime_put_autosuspend(platform->dev);
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		pm_runtime_mark_last_busy(rtd->codec_dais[i]->dev);
-+		pm_runtime_put_autosuspend(rtd->codec_dais[i]->dev);
-+	}
-+
-+	pm_runtime_mark_last_busy(cpu_dai->dev);
-+	pm_runtime_put_autosuspend(cpu_dai->dev);
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		if (!rtd->codec_dais[i]->active)
- 			pinctrl_pm_select_sleep_state(rtd->codec_dais[i]->dev);
-@@ -706,10 +711,17 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	card->dapm.idle_bias_off = true;
  
- 	mutex_unlock(&rtd->pcm_mutex);
- 
--	pm_runtime_put(platform->dev);
--	for (i = 0; i < rtd->num_codecs; i++)
--		pm_runtime_put(rtd->codec_dais[i]->dev);
--	pm_runtime_put(cpu_dai->dev);
-+	pm_runtime_mark_last_busy(platform->dev);
-+	pm_runtime_put_autosuspend(platform->dev);
++	rt5640_sel_asrc_clk_src(codec,
++				RT5640_DA_STEREO_FILTER |
++				RT5640_AD_STEREO_FILTER,
++				RT5640_CLK_SEL_ASRC);
 +
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		pm_runtime_mark_last_busy(rtd->codec_dais[i]->dev);
-+		pm_runtime_put_autosuspend(rtd->codec_dais[i]->dev);
-+	}
-+
-+	pm_runtime_mark_last_busy(cpu_dai->dev);
-+	pm_runtime_put_autosuspend(cpu_dai->dev);
-+
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		if (!rtd->codec_dais[i]->active)
- 			pinctrl_pm_select_sleep_state(rtd->codec_dais[i]->dev);
+ 	ret = snd_soc_add_card_controls(card, byt_rt5640_controls,
+ 					ARRAY_SIZE(byt_rt5640_controls));
+ 	if (ret) {
 -- 
 2.7.0.rc3
-
-
---===============3699556990446124520==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3699556990446124520==--
