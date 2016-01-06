@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Pull data through compressed
-	read" to the asoc tree
-Date: Wed, 06 Jan 2016 18:12:24 +0000
-Message-ID: <E1aGsZM-0007Cb-QP@debutante>
-References: <1450178989-8749-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Add a handler for the
+	compressed IRQ" to the asoc tree
+Date: Wed, 06 Jan 2016 18:12:25 +0000
+Message-ID: <E1aGsZN-0007D4-NK@debutante>
+References: <1452083599-3932-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77EB8260417
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 19:13:23 +0100 (CET)
-In-Reply-To: <1450178989-8749-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C85126044E
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 19:13:45 +0100 (CET)
+In-Reply-To: <1452083599-3932-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Pull data through compressed read
+   ASoC: wm_adsp: Add a handler for the compressed IRQ
 
 has been applied to the asoc tree at
 
@@ -53,234 +53,345 @@ to this mail.
 Thanks,
 Mark
 
->From 83a40ce993cda0757b102389e38446e79a2cc172 Mon Sep 17 00:00:00 2001
+>From 565ace464105cb9623cbf4eb9549d4b0c24166c9 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 6 Jan 2016 12:33:19 +0000
-Subject: [PATCH] ASoC: wm_adsp: Pull data through compressed read
+Date: Wed, 6 Jan 2016 12:33:18 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add a handler for the compressed IRQ
 
-Data is read in blocks of up to one fragment is size from the circular
-buffer on the DSP and is re-packed to remove the padding byte that
-exists in the DSP memory map.
+Here support is added for responding to DSP IRQs that are used to
+indicate data being available on the DSP. The idea is that we check the
+amount of data available upon receipt of an IRQ and on subsequent calls
+to the pointer callback we recheck once less than one fragment is
+available (to avoid excessive SPI traffic), if there is truely less than
+one fragment available we ack the last IRQ and wait for a new one.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5110.c  |   1 +
- sound/soc/codecs/wm_adsp.c | 138 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm_adsp.h |   2 +
- 3 files changed, 141 insertions(+)
+ sound/soc/codecs/wm5110.c  |  27 +++++++
+ sound/soc/codecs/wm_adsp.c | 188 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm_adsp.h |   3 +
+ 3 files changed, 218 insertions(+)
 
 diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index dde94c4a0caa..61fa7cc91d15 100644
+index c36409601835..dde94c4a0caa 100644
 --- a/sound/soc/codecs/wm5110.c
 +++ b/sound/soc/codecs/wm5110.c
-@@ -2300,6 +2300,7 @@ static struct snd_compr_ops wm5110_compr_ops = {
+@@ -2177,10 +2177,23 @@ static int wm5110_open(struct snd_compr_stream *stream)
+ 	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
+ }
+ 
++static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
++{
++	struct wm5110_priv *florida = data;
++	int ret;
++
++	ret = wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
++	if (ret == -ENODEV)
++		return IRQ_NONE;
++
++	return IRQ_HANDLED;
++}
++
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->core.arizona;
+ 	int i, ret;
+ 
+ 	priv->core.arizona->dapm = dapm;
+@@ -2189,6 +2202,14 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ 	arizona_init_gpio(codec);
+ 	arizona_init_mono(codec);
+ 
++	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
++				  "ADSP2 Compressed IRQ", wm5110_adsp2_irq,
++				  priv);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to request DSP IRQ: %d\n", ret);
++		return ret;
++	}
++
+ 	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
+ 		ret = wm_adsp2_codec_probe(&priv->core.adsp[i], codec);
+ 		if (ret)
+@@ -2209,12 +2230,15 @@ err_adsp2_codec_probe:
+ 	for (--i; i >= 0; --i)
+ 		wm_adsp2_codec_remove(&priv->core.adsp[i], codec);
+ 
++	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
++
+ 	return ret;
+ }
+ 
+ static int wm5110_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->core.arizona;
+ 	int i;
+ 
+ 	for (i = 0; i < WM5110_NUM_ADSP; ++i)
+@@ -2222,6 +2246,8 @@ static int wm5110_codec_remove(struct snd_soc_codec *codec)
+ 
+ 	priv->core.arizona->dapm = NULL;
+ 
++	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
++
+ 	return 0;
+ }
+ 
+@@ -2273,6 +2299,7 @@ static struct snd_compr_ops wm5110_compr_ops = {
+ 	.set_params = wm_adsp_compr_set_params,
  	.get_caps = wm_adsp_compr_get_caps,
  	.trigger = wm_adsp_compr_trigger,
- 	.pointer = wm_adsp_compr_pointer,
-+	.copy = wm_adsp_compr_copy,
++	.pointer = wm_adsp_compr_pointer,
  };
  
  static struct snd_soc_platform_driver wm5110_compr_platform = {
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 49ef0bbe9892..33806d487b8a 100644
+index ac879d16c6a6..49ef0bbe9892 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -293,6 +293,7 @@ struct wm_adsp_compr {
- 	struct snd_compr_stream *stream;
- 	struct snd_compressed_buffer size;
+@@ -279,6 +279,11 @@ struct wm_adsp_compr_buf {
  
-+	u32 *raw_buf;
- 	unsigned int copied_total;
+ 	struct wm_adsp_buffer_region *regions;
+ 	u32 host_buf_ptr;
++
++	u32 error;
++	u32 irq_count;
++	int read_index;
++	int avail;
  };
  
-@@ -2385,6 +2386,7 @@ int wm_adsp_compr_free(struct snd_compr_stream *stream)
+ struct wm_adsp_compr {
+@@ -287,6 +292,8 @@ struct wm_adsp_compr {
  
- 	dsp->compr = NULL;
+ 	struct snd_compr_stream *stream;
+ 	struct snd_compressed_buffer size;
++
++	unsigned int copied_total;
+ };
  
-+	kfree(compr->raw_buf);
- 	kfree(compr);
+ #define WM_ADSP_DATA_WORD_SIZE         3
+@@ -2436,6 +2443,11 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
+ 	return -EINVAL;
+ }
  
- 	mutex_unlock(&dsp->pwr_lock);
-@@ -2452,6 +2454,7 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
++static inline unsigned int wm_adsp_compr_frag_words(struct wm_adsp_compr *compr)
++{
++	return compr->size.fragment_size / WM_ADSP_DATA_WORD_SIZE;
++}
++
+ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
  			     struct snd_compr_params *params)
  {
- 	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	unsigned int size;
- 	int ret;
+@@ -2622,6 +2634,8 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
+ 		return -ENOMEM;
  
- 	ret = wm_adsp_compr_check_params(stream, params);
-@@ -2463,6 +2466,11 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- 	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
- 		 compr->size.fragment_size, compr->size.fragments);
+ 	buf->dsp = dsp;
++	buf->read_index = -1;
++	buf->irq_count = 0xFFFFFFFF;
  
-+	size = wm_adsp_compr_frag_words(compr) * sizeof(*compr->raw_buf);
-+	compr->raw_buf = kmalloc(size, GFP_DMA | GFP_KERNEL);
-+	if (!compr->raw_buf)
-+		return -ENOMEM;
+ 	ret = wm_adsp_buffer_locate(buf);
+ 	if (ret < 0) {
+@@ -2705,6 +2719,16 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 				 ret);
+ 			break;
+ 		}
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
-@@ -2796,6 +2804,7 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
- int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- {
- 	struct wm_adsp_compr_buf *buf = dsp->buffer;
-+	struct wm_adsp_compr *compr = dsp->compr;
- 	int ret = 0;
- 
- 	mutex_lock(&dsp->pwr_lock);
-@@ -2832,6 +2841,9 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 		goto out;
- 	}
- 
-+	if (compr->stream)
-+		snd_compr_fragment_elapsed(compr->stream);
-+
- out:
- 	mutex_unlock(&dsp->pwr_lock);
- 
-@@ -2907,4 +2919,130 @@ out:
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_pointer);
- 
-+static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
-+{
-+	struct wm_adsp_compr_buf *buf = compr->buf;
-+	u8 *pack_in = (u8 *)compr->raw_buf;
-+	u8 *pack_out = (u8 *)compr->raw_buf;
-+	unsigned int adsp_addr;
-+	int mem_type, nwords, max_read;
-+	int i, j, ret;
-+
-+	/* Calculate read parameters */
-+	for (i = 0; i < wm_adsp_fw[buf->dsp->fw].caps->num_regions; ++i)
-+		if (buf->read_index < buf->regions[i].cumulative_size)
++		/* Trigger the IRQ at one fragment of data */
++		ret = wm_adsp_buffer_write(compr->buf,
++					   HOST_BUFFER_FIELD(high_water_mark),
++					   wm_adsp_compr_frag_words(compr));
++		if (ret < 0) {
++			adsp_err(dsp, "Failed to set high water mark: %d\n",
++				 ret);
 +			break;
++		}
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		break;
+@@ -2719,4 +2743,168 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp_compr_trigger);
+ 
++static inline int wm_adsp_buffer_size(struct wm_adsp_compr_buf *buf)
++{
++	int last_region = wm_adsp_fw[buf->dsp->fw].caps->num_regions - 1;
 +
-+	if (i == wm_adsp_fw[buf->dsp->fw].caps->num_regions)
-+		return -EINVAL;
++	return buf->regions[last_region].cumulative_size;
++}
 +
-+	mem_type = buf->regions[i].mem_type;
-+	adsp_addr = buf->regions[i].base_addr +
-+		    (buf->read_index - buf->regions[i].offset);
++static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
++{
++	u32 next_read_index, next_write_index;
++	int write_index, read_index, avail;
++	int ret;
 +
-+	max_read = wm_adsp_compr_frag_words(compr);
-+	nwords = buf->regions[i].cumulative_size - buf->read_index;
++	/* Only sync read index if we haven't already read a valid index */
++	if (buf->read_index < 0) {
++		ret = wm_adsp_buffer_read(buf,
++				HOST_BUFFER_FIELD(next_read_index),
++				&next_read_index);
++		if (ret < 0)
++			return ret;
 +
-+	if (nwords > target)
-+		nwords = target;
-+	if (nwords > buf->avail)
-+		nwords = buf->avail;
-+	if (nwords > max_read)
-+		nwords = max_read;
-+	if (!nwords)
-+		return 0;
++		read_index = sign_extend32(next_read_index, 23);
 +
-+	/* Read data from DSP */
-+	ret = wm_adsp_read_data_block(buf->dsp, mem_type, adsp_addr,
-+				      nwords, compr->raw_buf);
-+	if (ret < 0)
-+		return ret;
++		if (read_index < 0) {
++			adsp_dbg(buf->dsp, "Avail check on unstarted stream\n");
++			return 0;
++		}
 +
-+	/* Remove the padding bytes from the data read from the DSP */
-+	for (i = 0; i < nwords; i++) {
-+		for (j = 0; j < WM_ADSP_DATA_WORD_SIZE; j++)
-+			*pack_out++ = *pack_in++;
-+
-+		pack_in += sizeof(*(compr->raw_buf)) - WM_ADSP_DATA_WORD_SIZE;
++		buf->read_index = read_index;
 +	}
 +
-+	/* update read index to account for words read */
-+	buf->read_index += nwords;
-+	if (buf->read_index == wm_adsp_buffer_size(buf))
-+		buf->read_index = 0;
-+
-+	ret = wm_adsp_buffer_write(buf, HOST_BUFFER_FIELD(next_read_index),
-+				   buf->read_index);
++	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(next_write_index),
++			&next_write_index);
 +	if (ret < 0)
 +		return ret;
 +
-+	/* update avail to account for words read */
-+	buf->avail -= nwords;
++	write_index = sign_extend32(next_write_index, 23);
 +
-+	return nwords;
++	avail = write_index - buf->read_index;
++	if (avail < 0)
++		avail += wm_adsp_buffer_size(buf);
++
++	adsp_dbg(buf->dsp, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
++		 buf->read_index, write_index, avail);
++
++	buf->avail = avail;
++
++	return 0;
 +}
 +
-+static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
-+			      char __user *buf, size_t count)
++int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
 +{
-+	struct wm_adsp *dsp = compr->dsp;
-+	int ntotal = 0;
-+	int nwords, nbytes;
-+
-+	adsp_dbg(dsp, "Requested read of %zu bytes\n", count);
-+
-+	if (!compr->buf)
-+		return -ENXIO;
-+
-+	if (compr->buf->error)
-+		return -EIO;
-+
-+	count /= WM_ADSP_DATA_WORD_SIZE;
-+
-+	do {
-+		nwords = wm_adsp_buffer_capture_block(compr, count);
-+		if (nwords < 0) {
-+			adsp_err(dsp, "Failed to capture block: %d\n", nwords);
-+			return nwords;
-+		}
-+
-+		nbytes = nwords * WM_ADSP_DATA_WORD_SIZE;
-+
-+		adsp_dbg(dsp, "Read %d bytes\n", nbytes);
-+
-+		if (copy_to_user(buf + ntotal, compr->raw_buf, nbytes)) {
-+			adsp_err(dsp, "Failed to copy data to user: %d, %d\n",
-+				 ntotal, nbytes);
-+			return -EFAULT;
-+		}
-+
-+		count -= nwords;
-+		ntotal += nbytes;
-+	} while (nwords > 0 && count > 0);
-+
-+	compr->copied_total += ntotal;
-+
-+	return ntotal;
-+}
-+
-+int wm_adsp_compr_copy(struct snd_compr_stream *stream, char __user *buf,
-+		       size_t count)
-+{
-+	struct wm_adsp_compr *compr = stream->runtime->private_data;
-+	struct wm_adsp *dsp = compr->dsp;
-+	int ret;
++	struct wm_adsp_compr_buf *buf = dsp->buffer;
++	int ret = 0;
 +
 +	mutex_lock(&dsp->pwr_lock);
 +
-+	if (stream->direction == SND_COMPRESS_CAPTURE)
-+		ret = wm_adsp_compr_read(compr, buf, count);
-+	else
-+		ret = -ENOTSUPP;
++	if (!buf) {
++		adsp_err(dsp, "Spurious buffer IRQ\n");
++		ret = -ENODEV;
++		goto out;
++	}
 +
++	adsp_dbg(dsp, "Handling buffer IRQ\n");
++
++	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
++	if (ret < 0) {
++		adsp_err(dsp, "Failed to check buffer error: %d\n", ret);
++		goto out;
++	}
++	if (buf->error != 0) {
++		adsp_err(dsp, "Buffer error occurred: %d\n", buf->error);
++		ret = -EIO;
++		goto out;
++	}
++
++	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
++				  &buf->irq_count);
++	if (ret < 0) {
++		adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
++		goto out;
++	}
++
++	ret = wm_adsp_buffer_update_avail(buf);
++	if (ret < 0) {
++		adsp_err(dsp, "Error reading avail: %d\n", ret);
++		goto out;
++	}
++
++out:
 +	mutex_unlock(&dsp->pwr_lock);
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(wm_adsp_compr_copy);
++EXPORT_SYMBOL_GPL(wm_adsp_compr_handle_irq);
++
++static int wm_adsp_buffer_reenable_irq(struct wm_adsp_compr_buf *buf)
++{
++	if (buf->irq_count & 0x01)
++		return 0;
++
++	adsp_dbg(buf->dsp, "Enable IRQ(0x%x) for next fragment\n",
++		 buf->irq_count);
++
++	buf->irq_count |= 0x01;
++
++	return wm_adsp_buffer_write(buf, HOST_BUFFER_FIELD(irq_ack),
++				    buf->irq_count);
++}
++
++int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
++			  struct snd_compr_tstamp *tstamp)
++{
++	struct wm_adsp_compr *compr = stream->runtime->private_data;
++	struct wm_adsp_compr_buf *buf = compr->buf;
++	struct wm_adsp *dsp = compr->dsp;
++	int ret = 0;
++
++	adsp_dbg(dsp, "Pointer request\n");
++
++	mutex_lock(&dsp->pwr_lock);
++
++	if (!compr->buf) {
++		ret = -ENXIO;
++		goto out;
++	}
++
++	if (compr->buf->error) {
++		ret = -EIO;
++		goto out;
++	}
++
++	if (buf->avail < wm_adsp_compr_frag_words(compr)) {
++		ret = wm_adsp_buffer_update_avail(buf);
++		if (ret < 0) {
++			adsp_err(dsp, "Error reading avail: %d\n", ret);
++			goto out;
++		}
++
++		/*
++		 * If we really have less than 1 fragment available tell the
++		 * DSP to inform us once a whole fragment is available.
++		 */
++		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
++			ret = wm_adsp_buffer_reenable_irq(buf);
++			if (ret < 0) {
++				adsp_err(dsp,
++					 "Failed to re-enable buffer IRQ: %d\n",
++					 ret);
++				goto out;
++			}
++		}
++	}
++
++	tstamp->copied_total = compr->copied_total;
++	tstamp->copied_total += buf->avail * WM_ADSP_DATA_WORD_SIZE;
++
++out:
++	mutex_unlock(&dsp->pwr_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(wm_adsp_compr_pointer);
 +
  MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 522fa1ada4e6..1a928ec54741 100644
+index 43af093fafcf..522fa1ada4e6 100644
 --- a/sound/soc/codecs/wm_adsp.h
 +++ b/sound/soc/codecs/wm_adsp.h
-@@ -115,5 +115,7 @@ extern int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd);
- extern int wm_adsp_compr_handle_irq(struct wm_adsp *dsp);
- extern int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 				 struct snd_compr_tstamp *tstamp);
-+extern int wm_adsp_compr_copy(struct snd_compr_stream *stream,
-+			      char __user *buf, size_t count);
+@@ -112,5 +112,8 @@ extern int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
+ extern int wm_adsp_compr_get_caps(struct snd_compr_stream *stream,
+ 				  struct snd_compr_caps *caps);
+ extern int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd);
++extern int wm_adsp_compr_handle_irq(struct wm_adsp *dsp);
++extern int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
++				 struct snd_compr_tstamp *tstamp);
  
  #endif
 -- 
