@@ -1,226 +1,168 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH 27/31] sound/usb: Create media mixer function and control interface entities
-Date: Wed,  6 Jan 2016 14:05:58 -0700
-Message-ID: <3158729d69f10ba904b41f5cb45a03aa1ea1efe8.1452105878.git.shuahkh@osg.samsung.com>
-References: <cover.1452105878.git.shuahkh@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1452105878.git.shuahkh@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-api@vger.kernel.orga
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Wed, 6 Jan 2016 23:09:08 +0100
+Message-ID: <20160106220908.GE9631@lukather>
+References: <20151221123148.1ab6480b@dayas>
+ <20151221123416.51aa938e@dayas>
+ <20151227182157.GI30359@lukather>
+ <20151228040649.475a742f@dayas>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vv4Sf/kQfcwinyKX"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBBVBW22AKGQER5UR23A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20151228040649.475a742f@dayas>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for creating MEDIA_ENT_F_AUDIO_MIXER entity for
-each mixer and a MEDIA_INTF_T_ALSA_CONTROL control interface
-entity that links to mixer entities. MEDIA_INTF_T_ALSA_CONTROL
-entity corresponds to the control device for the card.
+--vv4Sf/kQfcwinyKX
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- sound/usb/card.c     |  5 +++
- sound/usb/media.c    | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/media.h    | 21 ++++++++++++
- sound/usb/mixer.h    |  1 +
- sound/usb/usbaudio.h |  1 +
- 5 files changed, 118 insertions(+)
+On Mon, Dec 28, 2015 at 04:06:49AM +0100, Danny Milosavljevic wrote:
+> Hi Maxime,
+> 
+> On Sun, 27 Dec 2015 19:21:57 +0100
+> Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> 
+> > On Mon, Dec 21, 2015 at 12:34:16PM +0100, Danny Milosavljevic wrote:
+> > > This is the second part, actually adding FM, Line and Mic inputs.
+> > 
+> > Again, having a meaningful and standalone commit log would be nice.
+> 
+> Okay, will elaborate some more in v9.
+> 
+> > > +#define SUN4I_CODEC_ADC_ACTL_PREG1_A10			(25)
+> > > +#define SUN4I_CODEC_ADC_ACTL_PREG2_A10			(23)
+> > 
+> > Why the A10 suffix?
+> 
+> The sun4i*_a10 names are for things that work on A10 but not on A20.
+> This way whoever touches the driver later can know for which things he has
+> to consider multiple cases.
+> Otherwise he will have no indication that he is using a bit index where 
+> there sometimes is no bit (or, worse, the wrong bit).
+> 
+> It's intended to be used like this:
+> 
+> sun4i_foo_a10
+> 	foo is sun4i_foo_a10 on A10 (only).
+> sun4i_foo
+> 	foo is sun4i_foo on A10 and also on future chips (like A20).
+> sun7i_foo
+> 	foo is sun7i_foo on A20 and (hopefully) also on future chips.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1a63851..e965982 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -562,6 +562,9 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	if (err < 0)
- 		goto __error;
- 
-+	/* Create media entities for mixer and control dev */
-+	media_mixer_init(chip);
-+
- 	usb_chip[chip->index] = chip;
- 	chip->num_interfaces++;
- 	usb_set_intfdata(intf, chip);
-@@ -618,6 +621,8 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 		list_for_each(p, &chip->midi_list) {
- 			snd_usbmidi_disconnect(p);
- 		}
-+		/* delete mixer media resources */
-+		media_mixer_delete(chip);
- 		/* release mixer resources */
- 		list_for_each_entry(mixer, &chip->mixer_list, list) {
- 			snd_usb_mixer_disconnect(mixer);
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 747a66a..4f99086 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -211,4 +211,94 @@ void media_stop_pipeline(struct snd_usb_substream *subs)
- 	if (mctl)
- 		media_disable_source(mctl);
- }
-+
-+int media_mixer_init(struct snd_usb_audio *chip)
-+{
-+	struct device *ctl_dev = &chip->card->ctl_dev;
-+	struct media_intf_devnode *ctl_intf;
-+	struct usb_mixer_interface *mixer;
-+	struct media_device *mdev;
-+	struct media_mixer_ctl *mctl;
-+	u32 intf_type = MEDIA_INTF_T_ALSA_CONTROL;
-+	int ret;
-+
-+	mdev = media_device_find_devres(&chip->dev->dev);
-+	if (!mdev)
-+		return -ENODEV;
-+
-+	ctl_intf = chip->ctl_intf_media_devnode;
-+	if (!ctl_intf) {
-+		ctl_intf = (void *) media_devnode_create(mdev,
-+							 intf_type, 0,
-+							 MAJOR(ctl_dev->devt),
-+							 MINOR(ctl_dev->devt));
-+		if (!ctl_intf)
-+			return -ENOMEM;
-+		chip->ctl_intf_media_devnode = ctl_intf;
-+	}
-+
-+	list_for_each_entry(mixer, &chip->mixer_list, list) {
-+
-+		if (mixer->media_mixer_ctl)
-+			continue;
-+
-+		/* allocate media_mixer_ctl */
-+		mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
-+		if (!mctl)
-+			return -ENOMEM;
-+
-+		mctl->media_dev = mdev;
-+		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_MIXER;
-+		mctl->media_entity.name = chip->card->mixername;
-+		mctl->media_pad[0].flags = MEDIA_PAD_FL_SINK;
-+		mctl->media_pad[1].flags = MEDIA_PAD_FL_SOURCE;
-+		mctl->media_pad[2].flags = MEDIA_PAD_FL_SOURCE;
-+		media_entity_pads_init(&mctl->media_entity, MEDIA_MIXER_PAD_MAX,
-+				  mctl->media_pad);
-+		ret =  media_device_register_entity(mctl->media_dev,
-+						    &mctl->media_entity);
-+		if (ret) {
-+			kfree(mctl);
-+			return ret;
-+		}
-+
-+		mctl->intf_link = media_create_intf_link(&mctl->media_entity,
-+							 &ctl_intf->intf,
-+							 MEDIA_LNK_FL_ENABLED);
-+		if (!mctl->intf_link) {
-+			media_device_unregister_entity(&mctl->media_entity);
-+			media_entity_cleanup(&mctl->media_entity);
-+			kfree(mctl);
-+			return -ENOMEM;
-+		}
-+		mctl->intf_devnode = ctl_intf;
-+		mixer->media_mixer_ctl = (void *) mctl;
-+	}
-+	return 0;
-+}
-+
-+void media_mixer_delete(struct snd_usb_audio *chip)
-+{
-+	struct usb_mixer_interface *mixer;
-+	struct media_device *mdev;
-+
-+	mdev = media_device_find_devres(&chip->dev->dev);
-+	if (!mdev)
-+		return;
-+
-+	list_for_each_entry(mixer, &chip->mixer_list, list) {
-+		struct media_mixer_ctl *mctl;
-+
-+		mctl = (struct media_mixer_ctl *) mixer->media_mixer_ctl;
-+		if (!mixer->media_mixer_ctl)
-+			continue;
-+
-+		media_device_unregister_entity(&mctl->media_entity);
-+		media_entity_cleanup(&mctl->media_entity);
-+		kfree(mctl);
-+		mixer->media_mixer_ctl = NULL;
-+	}
-+	media_devnode_remove(chip->ctl_intf_media_devnode);
-+}
-+
- #endif
-diff --git a/sound/usb/media.h b/sound/usb/media.h
-index 4a93dbd..00884b5 100644
---- a/sound/usb/media.h
-+++ b/sound/usb/media.h
-@@ -20,6 +20,7 @@
- #ifdef USE_MEDIA_CONTROLLER
- #include <media/media-device.h>
- #include <media/media-entity.h>
-+#include <sound/asound.h>
- 
- struct media_ctl {
- 	struct media_device *media_dev;
-@@ -30,6 +31,22 @@ struct media_ctl {
- 	struct media_pipeline media_pipe;
- };
- 
-+/*
-+ * One source pad each for SNDRV_PCM_STREAM_CAPTURE and
-+ * SNDRV_PCM_STREAM_PLAYBACK. One for sink pad to link
-+ * to AUDIO Source
-+*/
-+#define MEDIA_MIXER_PAD_MAX    (SNDRV_PCM_STREAM_LAST + 2)
-+
-+struct media_mixer_ctl {
-+	struct media_device *media_dev;
-+	struct media_entity media_entity;
-+	struct media_intf_devnode *intf_devnode;
-+	struct media_link *intf_link;
-+	struct media_pad media_pad[MEDIA_MIXER_PAD_MAX];
-+	struct media_pipeline media_pipe;
-+};
-+
- int media_device_create(struct snd_usb_audio *chip,
- 			struct usb_interface *iface);
- void media_device_delete(struct usb_interface *iface);
-@@ -38,6 +55,8 @@ int media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- void media_stream_delete(struct snd_usb_substream *subs);
- int media_start_pipeline(struct snd_usb_substream *subs);
- void media_stop_pipeline(struct snd_usb_substream *subs);
-+int media_mixer_init(struct snd_usb_audio *chip);
-+void media_mixer_delete(struct snd_usb_audio *chip);
- #else
- static inline int media_device_create(struct snd_usb_audio *chip,
- 				      struct usb_interface *iface)
-@@ -50,5 +69,7 @@ static inline void media_stream_delete(struct snd_usb_substream *subs) { }
- static inline int media_start_pipeline(struct snd_usb_substream *subs)
- 					{ return 0; }
- static inline void media_stop_pipeline(struct snd_usb_substream *subs) { }
-+static int media_mixer_init(struct snd_usb_audio *chip) { return 0; }
-+static void media_mixer_delete(struct snd_usb_audio *chip) { }
- #endif
- #endif /* __MEDIA_H */
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 3417ef3..787b352 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -22,6 +22,7 @@ struct usb_mixer_interface {
- 	struct urb *rc_urb;
- 	struct usb_ctrlrequest *rc_setup_packet;
- 	u8 rc_buffer[6];
-+	void *media_mixer_ctl;
- };
- 
- #define MAX_CHANNELS	16	/* max logical channels */
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index e3fac29..490b16a 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -60,6 +60,7 @@ struct snd_usb_audio {
- 	bool autoclock;			/* from the 'autoclock' module param */
- 
- 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
-+	void *ctl_intf_media_devnode;
- };
- 
- #define usb_audio_err(chip, fmt, args...) \
+I find the sun4i_*_a10 and sun4i highly redundant. If there the same
+define for sun7i, then you know that it's not meant to be used for the
+A20, and that's it.
+
+My point is also that it will just be an ever growing list of suffixes
+when we will support more SoCs, for example for symbols that might be
+in the A10, not the A20, but the A31.
+
+> > > +static const char * const sun4i_codec_capture_source[] = {
+> > > +	"Line-In",
+> > > +	"FM",
+> > > +	"Mic1",
+> > > +	"Mic2",
+> > > +	"Mic1,Mic2",
+> > > +	"Mic1+Mic2",
+> > > +	"Output Mixer",
+> > > +	"Line-In,Mic1",
+> > > +};
+> > > +static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
+> > > +			    SUN4I_CODEC_ADC_ACTL,
+> > > +			    SUN4I_CODEC_ADC_ACTL_ADCIS,
+> > > +			    sun4i_codec_capture_source);
+> > 
+> > Isn't it possible to expose this as two (shared) muxes with different
+> > names to make it clear what will go to the left ADC and what will go
+> > to the right?
+> 
+> I don't know how to do that. I'll try to find out.
+> 
+> (It would be best if someone who knows how that should act did the alsamixer 
+> testing later too, though)
+> 
+> Can two muxes use the same bit in the hardware without problems?
+> Or do you mean reuse the same mux instance? (I think _new1 always creates 
+> a new instance from each struct kcontrol_new automatically).
+
+Yeah, the case where two widgets share the same bits is handled iirc
+but sharing the controls.
+
+> > The power amplifier is only for the playback, so there's no need to
+> > differentiate between playback and capture. The current name was fine.
+> 
+> "Power Amplifier Volume" shows up as Capture control in alsamixer as well.
+> It isn't supposed to be a Capture control.
+> > > +	/* Line-In, FM, Mic1, Mic2 */ \
+> > > +	SOC_SINGLE_TLV("Line-In Playback Volume", \
+> ...
+> > > +	SOC_SINGLE_TLV("FM Playback Volume", \
+> ...
+> > > +	SOC_SINGLE_TLV("Mic Playback Volume", \
+> ...
+> > 
+> > Those are not volume it's gain, 
+> 
+> We tried to call the things ..." Gain" before and it was difficult to do, 
+> with some breakage along the way, see below.
+> Also, Mark said they should be named ..." Volume" (see 
+> <https://www.mail-archive.com/linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org/msg15126.html>).
+
+Ah, my bad.
+
+Judging from ControlNames.txt, the Power Amplifier Volume should
+probably called Headphone Playback Volume then.
+
+> >and it should probably be two different shared controls for mic1 and mic2.
+> 
+> I'll try...
+> 
+> >> "Capture Source"
+> > This one is the ADC Gain. Please name it that way.
+> 
+> Unfortunately, the strings have meaning to asoc and alsa-lib and you can't go 
+> renaming them like that without breaking things. The names were carefully 
+> chosen to make it actually work properly without having to patch alsa-lib and 
+> parts of ASoC core (which I did before and have since reverted).
+> 
+> In this case, there's a special case in upstream alsa-lib:
+> 
+> alsa-lib-1.0.28:
+> ./src/mixer/simple_none.c:	if (strcmp(name, "Capture Source") == 0) {
+> ...
+> 
+> I'm not totally against naming them like you suggested - but know that you 
+> are requiring changes in alsa-lib as well then - or presumably breaking the 
+> user's workflow.
+> 
+> For example the (upstream) "Capture Source" special case in alsa-lib adds 
+> radio-button-like things to the respective elements. 
+> You can switch to one of the inputs by pressing Space while its gain element 
+> is selected.
+> In the mic case, it's the mic preamplier gain that you press Space on - if it's 
+> indeed shown as a Capture control...
+
+No, you're totally right, I just entirely missed that ControlNames
+files you pointed me to.
+
+Thanks,
+Maxime
+
 -- 
-2.5.0
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--vv4Sf/kQfcwinyKX--
