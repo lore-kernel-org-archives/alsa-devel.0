@@ -1,15 +1,14 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] ASoC: Make aux_dev more like a generic
-	component
-Date: Wed,  6 Jan 2016 13:29:31 +0800
-Message-ID: <1452058171-32688-1-git-send-email-mengdong.lin@linux.intel.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: extend FLL function
+Date: Wed, 6 Jan 2016 15:27:42 +0800
+Message-ID: <1452065262-22664-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 249CC26047C
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 06:29:38 +0100 (CET)
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D60A6260412
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 08:27:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,300 +18,262 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Extend FLL clock source from MCLK/BCLK/FS.
+Modify FLL calculation and parameter setting.
 
-aux_dev is mainly used by the machine driver to specify analog devices,
-which are registered as codecs. Making it more like a generic component
-can help the machine driver to use it to specify any component with
-topology info by name.
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 128 ++++++++++++++++++++++++++++++++-------------
+ sound/soc/codecs/nau8825.h |  21 ++++++--
+ 2 files changed, 108 insertions(+), 41 deletions(-)
 
-Details:
-- Remove the stub 'rtd_aux' array from the soc card.
-- Add a list 'aux_comp_list' to store the components of aux_devs.
-  And add a list head 'list_aux' to struct snd_soc_component, for adding
-  such components to the above list.
-- Add a 'init' ops to a component for machine specific init.
-  soc_bind_aux_dev() will set it to be aux_dev's init. And it will be
-  called when probing the component.
-- soc_bind_aux_dev() will also search components by name of an aux_dev,
-  since it may not be a codec.
-- Move probing of aux_devs before checking new DAI links brought by
-  topology.
-- Move removal of aux_devs later than removal of links. Because topology
-  of aux components may register DAIs and the DAI drivers will go with
-  removal of the aux components, we want soc_remove_link_dais() to remove
-  the DAIs at first.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 49011c3..c03e07a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -798,6 +798,7 @@ struct snd_soc_component {
- 	unsigned int registered_as_component:1;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index c1b87c5..504c969 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -31,7 +31,7 @@
+ #include "nau8825.h"
  
- 	struct list_head list;
-+	struct list_head list_aux; /* for auxiliary component of the card */
+ #define NAU_FREF_MAX 13500000
+-#define NAU_FVCO_MAX 100000000
++#define NAU_FVCO_MAX 124000000
+ #define NAU_FVCO_MIN 90000000
  
- 	struct snd_soc_dai_driver *dai_drv;
- 	int num_dai;
-@@ -841,6 +842,9 @@ struct snd_soc_component {
- 	int (*probe)(struct snd_soc_component *);
- 	void (*remove)(struct snd_soc_component *);
+ struct nau8825_fll {
+@@ -874,8 +874,8 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
+ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
+ 		struct nau8825_fll *fll_param)
+ {
+-	u64 fvco;
+-	unsigned int fref, i;
++	u64 fvco, fvco_max;
++	unsigned int fref, i, fvco_sel;
  
-+	/* machine specific init */
-+	int (*init)(struct snd_soc_component *component);
-+
- #ifdef CONFIG_DEBUG_FS
- 	void (*init_debugfs)(struct snd_soc_component *component);
- 	const char *debugfs_prefix;
-@@ -1144,8 +1148,7 @@ struct snd_soc_card {
+ 	/* Ensure the reference clock frequency (FREF) is <= 13.5MHz by dividing
+ 	 * freq_in by 1, 2, 4, or 8 using FLL pre-scalar.
+@@ -900,18 +900,23 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
+ 	fll_param->ratio = fll_ratio[i].val;
+ 
+ 	/* Calculate the frequency of DCO (FDCO) given freq_out = 256 * Fs.
+-	 * FDCO must be within the 90MHz - 100MHz or the FFL cannot be
++	 * FDCO must be within the 90MHz - 124MHz or the FFL cannot be
+ 	 * guaranteed across the full range of operation.
+ 	 * FDCO = freq_out * 2 * mclk_src_scaling
  	 */
- 	struct snd_soc_aux_dev *aux_dev;
- 	int num_aux_devs;
--	struct snd_soc_pcm_runtime *rtd_aux;
--	int num_aux_rtd;
-+	struct list_head aux_comp_list;
++	fvco_max = 0;
++	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
+ 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
+ 		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
+-		if (NAU_FVCO_MIN < fvco && fvco < NAU_FVCO_MAX)
+-			break;
++		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
++			fvco_max < fvco) {
++			fvco_max = fvco;
++			fvco_sel = i;
++		}
+ 	}
+-	if (i == ARRAY_SIZE(mclk_src_scaling))
++	if (ARRAY_SIZE(mclk_src_scaling) == fvco_sel)
+ 		return -EINVAL;
+-	fll_param->mclk_src = mclk_src_scaling[i].val;
++	fll_param->mclk_src = mclk_src_scaling[fvco_sel].val;
  
- 	const struct snd_kcontrol_new *controls;
- 	int num_controls;
-@@ -1553,6 +1556,7 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->widgets);
- 	INIT_LIST_HEAD(&card->paths);
- 	INIT_LIST_HEAD(&card->dapm_list);
-+	INIT_LIST_HEAD(&card->aux_comp_list);
+ 	/* Calculate the FLL 10-bit integer input and the FLL 16-bit fractional
+ 	 * input based on FDCO, FREF and FLL ratio.
+@@ -926,7 +931,8 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
+ 		struct nau8825_fll *fll_param)
+ {
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
+-		NAU8825_CLK_MCLK_SRC_MASK, fll_param->mclk_src);
++		NAU8825_CLK_SRC_MASK | NAU8825_CLK_MCLK_SRC_MASK,
++		NAU8825_CLK_SRC_MCLK | fll_param->mclk_src);
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL1,
+ 			NAU8825_FLL_RATIO_MASK, fll_param->ratio);
+ 	/* FLL 16-bit fractional input */
+@@ -939,10 +945,25 @@ static void nau8825_fll_apply(struct nau8825 *nau8825,
+ 			NAU8825_FLL_REF_DIV_MASK, fll_param->clk_ref_div);
+ 	/* select divided VCO input */
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
+-			NAU8825_FLL_FILTER_SW_MASK, 0x0000);
+-	/* FLL sigma delta modulator enable */
+-	regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
+-			NAU8825_SDM_EN_MASK, NAU8825_SDM_EN);
++		NAU8825_FLL_CLK_SW_MASK, NAU8825_FLL_CLK_SW_REF);
++	/* Disable free-running mode */
++	regmap_update_bits(nau8825->regmap,
++		NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
++	if (fll_param->fll_frac) {
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
++			NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
++			NAU8825_FLL_FTR_SW_MASK,
++			NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
++			NAU8825_FLL_FTR_SW_FILTER);
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL6,
++			NAU8825_SDM_EN, NAU8825_SDM_EN);
++	} else {
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_FLL5,
++			NAU8825_FLL_PDB_DAC_EN | NAU8825_FLL_LOOP_FTR_EN |
++			NAU8825_FLL_FTR_SW_MASK, NAU8825_FLL_FTR_SW_ACCU);
++		regmap_update_bits(nau8825->regmap,
++			NAU8825_REG_FLL6, NAU8825_SDM_EN, 0);
++	}
  }
  
- static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4e03e82..790ee2b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1413,6 +1413,16 @@ static int soc_probe_component(struct snd_soc_card *card,
- 			component->name);
- 	}
+ /* freq_out must be 256*Fs in order to achieve the best performance */
+@@ -970,6 +991,36 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+ 	return 0;
+ }
  
-+	/* machine specific init */
-+	if (component->init) {
-+		ret = component->init(component);
-+		if (ret < 0) {
-+			dev_err(component->dev,
-+				"Failed to do machine specific init %d\n", ret);
-+			goto err_probe;
++static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
++{
++	int ret = 0;
++
++	/* We selected MCLK source but the clock itself managed externally */
++	if (!nau8825->mclk)
++		return 0;
++
++	if (!nau8825->mclk_freq) {
++		ret = clk_prepare_enable(nau8825->mclk);
++		if (ret) {
++			dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
++			return ret;
 +		}
 +	}
 +
- 	if (component->controls)
- 		snd_soc_add_component_controls(component, component->controls,
- 				     component->num_controls);
-@@ -1657,65 +1667,81 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 
- static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
- {
--	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
- 	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
--	const char *name = aux_dev->codec_name;
--
--	rtd->component = soc_find_component(aux_dev->codec_of_node, name);
--	if (!rtd->component) {
--		if (aux_dev->codec_of_node)
--			name = of_node_full_name(aux_dev->codec_of_node);
--
--		dev_err(card->dev, "ASoC: %s not registered\n", name);
--		return -EPROBE_DEFER;
-+	struct snd_soc_component *component;
-+	const char *name;
-+	struct device_node *codec_of_node;
++	if (nau8825->mclk_freq != freq) {
++		nau8825->mclk_freq = freq;
 +
-+	if (aux_dev->codec_of_node || aux_dev->codec_name) {
-+		/* codecs, usually analog devices */
-+		name = aux_dev->codec_name;
-+		codec_of_node = aux_dev->codec_of_node;
-+		component = soc_find_component(codec_of_node, name);
-+		if (!component) {
-+			if (codec_of_node)
-+				name = of_node_full_name(codec_of_node);
-+			goto err_defer;
++		freq = clk_round_rate(nau8825->mclk, freq);
++		ret = clk_set_rate(nau8825->mclk, freq);
++		if (ret) {
++			dev_err(nau8825->dev, "Unable to set mclk rate\n");
++			return ret;
 +		}
-+	} else if (aux_dev->name) {
-+		/* generic components */
-+		name = aux_dev->name;
-+		component = soc_find_component(NULL, name);
-+		if (!component)
-+			goto err_defer;
-+	} else {
-+		dev_err(card->dev, "ASoC: Invalid auxiliary device\n");
-+		return -EINVAL;
- 	}
- 
--	/*
--	 * Some places still reference rtd->codec, so we have to keep that
--	 * initialized if the component is a CODEC. Once all those references
--	 * have been removed, this code can be removed as well.
--	 */
--	 rtd->codec = rtd->component->codec;
--
-+	component->init = aux_dev->init;
-+	list_add(&component->list_aux, &card->aux_comp_list);
- 	return 0;
++	}
 +
-+err_defer:
-+	dev_err(card->dev, "ASoC: %s not registered\n", name);
-+	return -EPROBE_DEFER;
- }
- 
--static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
-+static int soc_probe_aux_devices(struct snd_soc_card *card)
- {
--	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
--	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
-+	struct snd_soc_component *comp;
-+	int order;
- 	int ret;
- 
--	ret = soc_probe_component(card, rtd->component);
--	if (ret < 0)
--		return ret;
--
--	/* do machine specific initialization */
--	if (aux_dev->init) {
--		ret = aux_dev->init(rtd->component);
--		if (ret < 0) {
--			dev_err(card->dev, "ASoC: failed to init %s: %d\n",
--				aux_dev->name, ret);
--			return ret;
-+	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
-+		order++) {
-+		list_for_each_entry(comp, &card->aux_comp_list, list_aux) {
-+			if (comp->driver->probe_order == order) {
-+				ret = soc_probe_component(card,	comp);
-+				if (ret < 0) {
-+					dev_err(card->dev,
-+						"ASoC: failed to probe aux component %s %d\n",
-+						comp->name, ret);
-+					return ret;
-+				}
-+			}
- 		}
- 	}
- 
--	return soc_post_component_init(rtd, aux_dev->name);
 +	return 0;
- }
- 
--static void soc_remove_aux_dev(struct snd_soc_card *card, int num)
-+static void soc_remove_aux_devices(struct snd_soc_card *card)
- {
--	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
--	struct snd_soc_component *component = rtd->component;
-+	struct snd_soc_component *comp, *_comp;
-+	int order;
- 
--	/* unregister the rtd device */
--	if (rtd->dev_registered) {
--		device_unregister(rtd->dev);
--		rtd->dev_registered = 0;
-+	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
-+		order++) {
-+		list_for_each_entry_safe(comp, _comp,
-+			&card->aux_comp_list, list_aux) {
-+			if (comp->driver->remove_order == order) {
-+				soc_remove_component(comp);
-+				/* remove it from the card's aux_comp_list */
-+				list_del(&comp->list_aux);
-+			}
-+		}
- 	}
--
--	if (component)
--		soc_remove_component(component);
- }
- 
- static int snd_soc_init_codec_cache(struct snd_soc_codec *codec)
-@@ -1894,6 +1920,11 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		}
- 	}
- 
-+	/* probe auxiliary components */
-+	ret = soc_probe_aux_devices(card);
-+	if (ret < 0)
-+		goto probe_dai_err;
++}
 +
- 	/* Find new DAI links added during probing components and bind them.
- 	 * Components with topology may bring new DAIs and DAI links.
- 	 */
-@@ -1923,16 +1954,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		}
- 	}
- 
--	for (i = 0; i < card->num_aux_devs; i++) {
--		ret = soc_probe_aux_dev(card, i);
--		if (ret < 0) {
--			dev_err(card->dev,
--				"ASoC: failed to add auxiliary devices %d\n",
--				ret);
--			goto probe_aux_dev_err;
+ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 	unsigned int freq)
+ {
+@@ -981,29 +1032,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+ 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
+-
+-		/* We selected MCLK source but the clock itself managed externally */
+-		if (!nau8825->mclk)
+-			break;
+-
+-		if (!nau8825->mclk_freq) {
+-			ret = clk_prepare_enable(nau8825->mclk);
+-			if (ret) {
+-				dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
+-				return ret;
+-			}
 -		}
--	}
 -
- 	snd_soc_dapm_link_dai_widgets(card);
- 	snd_soc_dapm_connect_dai_link_widgets(card);
- 
-@@ -1992,8 +2013,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	return 0;
- 
- probe_aux_dev_err:
--	for (i = 0; i < card->num_aux_devs; i++)
--		soc_remove_aux_dev(card, i);
-+	soc_remove_aux_devices(card);
- 
- probe_dai_err:
- 	soc_remove_dai_links(card);
-@@ -2039,20 +2059,18 @@ static int soc_probe(struct platform_device *pdev)
- static int soc_cleanup_card_resources(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
--	int i;
- 
- 	/* make sure any delayed work runs */
- 	list_for_each_entry(rtd, &card->rtd_list, list)
- 		flush_delayed_work(&rtd->delayed_work);
- 
--	/* remove auxiliary devices */
--	for (i = 0; i < card->num_aux_devs; i++)
--		soc_remove_aux_dev(card, i);
+-		if (nau8825->mclk_freq != freq) {
+-			nau8825->mclk_freq = freq;
 -
- 	/* remove and free each DAI */
- 	soc_remove_dai_links(card);
- 	soc_remove_pcm_runtimes(card);
+-			freq = clk_round_rate(nau8825->mclk, freq);
+-			ret = clk_set_rate(nau8825->mclk, freq);
+-			if (ret) {
+-				dev_err(nau8825->dev, "Unable to set mclk rate\n");
+-				return ret;
+-			}
+-		}
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
  
-+	/* remove auxiliary devices */
-+	soc_remove_aux_devices(card);
+ 		break;
+ 	case NAU8825_CLK_INTERNAL:
+@@ -1011,7 +1042,32 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 			NAU8825_DCO_EN);
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++		if (nau8825->mclk_freq) {
++			clk_disable_unprepare(nau8825->mclk);
++			nau8825->mclk_freq = 0;
++		}
 +
- 	soc_cleanup_card_debugfs(card);
++		break;
++	case NAU8825_CLK_FLL_MCLK:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_MCLK);
++		ret = nau8825_mclk_prepare(nau8825, freq);
++		if (ret)
++			return ret;
++
++		break;
++	case NAU8825_CLK_FLL_BLK:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_BLK);
++		if (nau8825->mclk_freq) {
++			clk_disable_unprepare(nau8825->mclk);
++			nau8825->mclk_freq = 0;
++		}
  
- 	/* remove the card */
-@@ -2608,16 +2626,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->rtd_list);
- 	card->num_rtd = 0;
++		break;
++	case NAU8825_CLK_FLL_FS:
++		regmap_update_bits(regmap, NAU8825_REG_FLL3,
++			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_FS);
+ 		if (nau8825->mclk_freq) {
+ 			clk_disable_unprepare(nau8825->mclk);
+ 			nau8825->mclk_freq = 0;
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index dff8edb..8237693 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -112,20 +112,28 @@
  
--	card->rtd_aux = devm_kzalloc(card->dev,
--				 sizeof(struct snd_soc_pcm_runtime) *
--				 card->num_aux_devs,
--				 GFP_KERNEL);
--	if (card->rtd_aux == NULL)
--		return -ENOMEM;
--
--	for (i = 0; i < card->num_aux_devs; i++)
--		card->rtd_aux[i].card = card;
--
- 	INIT_LIST_HEAD(&card->dapm_dirty);
- 	INIT_LIST_HEAD(&card->dobj_list);
- 	card->instantiated = 0;
+ /* FLL3 (0x06) */
+ #define NAU8825_FLL_INTEGER_MASK		(0x3ff << 0)
++#define NAU8825_FLL_CLK_SRC_SFT		10
++#define NAU8825_FLL_CLK_SRC_MASK		(0x3 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_MCLK		(0 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_BLK		(0x2 << NAU8825_FLL_CLK_SRC_SFT)
++#define NAU8825_FLL_CLK_SRC_FS			(0x3 << NAU8825_FLL_CLK_SRC_SFT)
+ 
+ /* FLL4 (0x07) */
+ #define NAU8825_FLL_REF_DIV_MASK		(0x3 << 10)
+ 
+ /* FLL5 (0x08) */
+-#define NAU8825_FLL_FILTER_SW_MASK		(0x1 << 14)
++#define NAU8825_FLL_PDB_DAC_EN		(0x1 << 15)
++#define NAU8825_FLL_LOOP_FTR_EN		(0x1 << 14)
++#define NAU8825_FLL_CLK_SW_MASK		(0x1 << 13)
++#define NAU8825_FLL_CLK_SW_N2			(0x1 << 13)
++#define NAU8825_FLL_CLK_SW_REF		(0x0 << 13)
++#define NAU8825_FLL_FTR_SW_MASK		(0x1 << 12)
++#define NAU8825_FLL_FTR_SW_ACCU		(0x1 << 12)
++#define NAU8825_FLL_FTR_SW_FILTER		(0x0 << 12)
+ 
+ /* FLL6 (0x9) */
+-#define NAU8825_DCO_EN_MASK			(0x1 << 15)
+ #define NAU8825_DCO_EN				(0x1 << 15)
+-#define NAU8825_DCO_DIS				(0x0 << 15)
+-#define NAU8825_SDM_EN_MASK			(0x1 << 14)
+ #define NAU8825_SDM_EN				(0x1 << 14)
+-#define NAU8825_SDM_DIS				(0x0 << 14)
+ 
+ /* HSD_CTRL (0xc) */
+ #define NAU8825_HSD_AUTO_MODE	(1 << 6)
+@@ -306,6 +314,9 @@
+ enum {
+ 	NAU8825_CLK_MCLK = 0,
+ 	NAU8825_CLK_INTERNAL,
++	NAU8825_CLK_FLL_MCLK,
++	NAU8825_CLK_FLL_BLK,
++	NAU8825_CLK_FLL_FS,
+ };
+ 
+ struct nau8825 {
 -- 
-2.5.0
+2.6.4
