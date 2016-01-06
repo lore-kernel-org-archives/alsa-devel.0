@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Constify ACPI device ids
-Date: Wed, 6 Jan 2016 10:38:08 +0000
-Message-ID: <20160106103808.GU6588@sirena.org.uk>
-References: <1451773436-25518-1-git-send-email-minipli@googlemail.com>
- <20160104013210.GI16023@sirena.org.uk>
- <CA+rthh-LWKOh+JrKVZU3kZnxnkFWXz+tu-P6NMUcYhPy=xyWWg@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/4 v5] ALSA: dice: improve card
+	registration processing
+Date: Wed, 6 Jan 2016 19:50:01 +0900
+Message-ID: <568CF159.80202@sakamocchi.jp>
+References: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hlh83rrok.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8591948708527522585=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E96A9260417
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 11:38:14 +0100 (CET)
-In-Reply-To: <CA+rthh-LWKOh+JrKVZU3kZnxnkFWXz+tu-P6NMUcYhPy=xyWWg@mail.gmail.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7464F260417
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 11:50:07 +0100 (CET)
+In-Reply-To: <s5hlh83rrok.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mathias Krause <minipli@googlemail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8591948708527522585==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZsW/usBbx2ObC9TW"
-Content-Disposition: inline
+On Jan 06 2016 18:19, Takashi Iwai wrote:
+> On Thu, 31 Dec 2015 05:58:10 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> This patchset updates my previous one:
+>> [alsa-devel] [PATCH 0/5 v4] ALSA: dice: improve card registration processing
+>> a
+>>
+>> Changes:
+>>  * Merge patch 02 and 03 in v4.
+>>  * Allocate sound card instance in sound card registration work, independently
+>>    of dice instance, allocated in .probe callback and set as driver_data of
+>>    device structure.
+>>  * Use __be32 type for __be32 data.
+>>
+>> In this version, sound card instance is not allocated in .probe callback. In
+>> the callback, dice instance is allocated independently of the card instance.
+>> Thus, in .probe callback, this driver reserve no slot of sound card. The
+>> allocation of sound card instance is performed in a scheduled work. When
+>> processing in the work fails, the work can be re-scheduled again according to
+>> bus reset.
+> 
+> Applied now all four patches.  Thanks.
 
+OK. Thanks.
 
---ZsW/usBbx2ObC9TW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+How about the rest of my work for ALSA Dice driver to Linux 4.5?
 
-On Wed, Jan 06, 2016 at 09:01:28AM +0100, Mathias Krause wrote:
-> On 4 January 2016 at 02:32, Mark Brown <broonie@kernel.org> wrote:
+[alsa-devel] [RFC][PATCH 00/10 v2] ALSA: dice: stabiliza packet streaming
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/101897.html
 
-> > Please don't mix multiple unrelated changes in a single patch,
-> > especially when there's no content overlap at all :(
-
-> I've seen you've applied the patch nonetheless. So I guess you don't
-> want me to split the patch any more?
-
-No need to split this patch but in future don't do this.
-
---ZsW/usBbx2ObC9TW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWjO6PAAoJECTWi3JdVIfQeNEH/i89nMKuGLq98gU9f9R/pvF7
-LZVlrUjR+SRUx8Vkx9+OVYLJclTq1aPeXvVjDqqapx8M+3/iXR4XxmWbsLchO4Dv
-G67Ne3p+yKqWrcp8v9o3aPxKb+dDWXM8/NNyepwzZejQXdDweSfl6bCJceHUwLBJ
-mHya7u1zh2BeSxeYMYB1Gaox7P2mKJKyV7IQc/DypaCPaAeNWG/xweC3MqJlx2N6
-BDUpWLRbajJBPK/DYIBvcfIFqlrmIIxAkMEzg75sTioDI+Tl0S/tHoqxZ60BuDKr
-ZcOjpxK0/D6q5jmH4KSBUq6qHTfg91JuBYkdT/pz929bqYGqRjccb/LOrN2kU/8=
-=9OOR
------END PGP SIGNATURE-----
-
---ZsW/usBbx2ObC9TW--
-
---===============8591948708527522585==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+It takes almost one month since I posted the RFCv2. We already had a
+discussion about the patchset in RFCv1 and in my opinion there's no
+thorough disagreement. If possible, I'd like to merge it in the merge
+window for Linux 4.5. If we go for it, I'll post them in this night.
 
 
---===============8591948708527522585==--
+Have a nice year.
+
+> Takashi
+> 
+>>
+>> Takashi Sakamoto (4):
+>>   ALSA: dice: split subaddress check from category check
+>>   ALSA: dice: postpone card registration
+>>   ALSA: dice: purge transaction initialization at timeout of Dice
+>>     notification
+>>   ALSA: dice: expand timeout to wait for Dice notification
+>>
+>>  sound/firewire/dice/dice-transaction.c | 123 +++++++++++-------
+>>  sound/firewire/dice/dice.c             | 227 +++++++++++++++++----------------
+>>  sound/firewire/dice/dice.h             |   3 +
+>>  3 files changed, 202 insertions(+), 151 deletions(-)
+>>
+>> -- 
+>> 2.5.0
+>>
