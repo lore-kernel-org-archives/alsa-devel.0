@@ -1,14 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v4.4
-Date: Wed, 6 Jan 2016 17:30:25 +0000
-Message-ID: <20160106173025.GA6588@sirena.org.uk>
+Subject: Re: [PATCH v2 3/8] ASoC: intel: boards: add card for
+ MinnowBoard I2S access
+Date: Wed, 6 Jan 2016 17:42:07 +0000
+Message-ID: <20160106174207.GC6588@sirena.org.uk>
+References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1451949630-3475-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20160105131539.GC16023@sirena.org.uk>
+ <568BD823.3080703@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8855982468787321547=="
+Content-Type: multipart/mixed; boundary="===============3196620771470718688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD174260417
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 18:30:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E565260417
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 18:43:20 +0100 (CET)
+In-Reply-To: <568BD823.3080703@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,91 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8855982468787321547==
+--===============3196620771470718688==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fU5tsrXreH0/dVH0"
+	protocol="application/pgp-signature"; boundary="TCH5zSpbvKOKdCih"
 Content-Disposition: inline
 
 
---fU5tsrXreH0/dVH0
+--TCH5zSpbvKOKdCih
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 168309855a7d1e16db751e9c647119fe2d2dc878:
+On Tue, Jan 05, 2016 at 08:50:11AM -0600, Pierre-Louis Bossart wrote:
+> On 1/5/16 7:15 AM, Mark Brown wrote:
 
-  Linux 4.4-rc8 (2016-01-03 15:15:37 -0800)
+> >I'm wondering how this is going to get loaded (I don't see what creates
+> >the platform device) and how we handle systems with a CODEC connected on
+> >the expansion headers?
 
-are available in the git repository at:
+> Good question.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.4-rc8
+> To solve this audio is disabled by default, and we have an EFI application
+> loaded by the startup.nsh file that sets the relevant codec information in
+> the SSDT table so that you can swap codec cards at will. The EFI application
+> will be open-sourced so that additional codecs can be added as needed with
+> changes in the ASL code. The whole thing was tested with experimental
+> releases in three different setups for now but will be formally released
+> next month.
 
-for you to fetch changes up to bc42f363da213b4bf7c15a2dc87b2b1a85cde867:
+Sets the relevant codec information by...?
 
-  Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus (2016-01-05 23:07:33 +0000)
+> On probe the sst_acpi part checks for the presence of known codecs and
+> registers the platform driver. For the case where no codec is present I just
+> added an entry at the end of the table that always works (checks for an
+> SOC-side HID) and is selected if no other codec was found. I need to add
+> this patch and submit it, forgot to add it in this batch.
 
-----------------------------------------------------------------
-ASoC: Last minute fixes for v4.4
+Can we punt on this until we've got the rest of the infrastructure to
+look at?  I'd feel safer and it sounds like it's going to need some
+manual hacking to get working anyway until the other bits are lined up.
 
-A few final fixes for v4.4, the main one being the two patches to the
-new Sky Lake drivers which fix a previous incorrect fix that went in
-during an earlier -rc.
-
-----------------------------------------------------------------
-Bard Liao (1):
-      ASoC: rt5645: add sys clk detection
-
-Charles Keepax (1):
-      ASoC: Use nested lock for snd_soc_dapm_mutex_lock
-
-Mark Brown (4):
-      Merge remote-tracking branch 'asoc/fix/arizona' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
-
-Nikesh Oswal (1):
-      ASoC: arizona: Fix bclk for sample rates that are multiple of 4kHz
-
-Vinod Koul (2):
-      ASoC: Intel: Skylake: Revert previous broken fix memory leak fix
-      ASoC: Intel: Skylake: Fix the memory leak
-
- include/sound/soc.h                    | 2 +-
- sound/soc/codecs/arizona.c             | 2 +-
- sound/soc/codecs/rt5645.c              | 4 ++++
- sound/soc/codecs/rt5645.h              | 4 ++++
- sound/soc/intel/skylake/skl-topology.c | 3 ++-
- sound/soc/intel/skylake/skl.c          | 4 ++++
- sound/soc/intel/skylake/skl.h          | 2 ++
- 7 files changed, 18 insertions(+), 3 deletions(-)
-
---fU5tsrXreH0/dVH0
+--TCH5zSpbvKOKdCih
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWjU8wAAoJECTWi3JdVIfQ7PIH/jw8QuofBkFpFqyXhVh7HQaH
-oNLvH/rbhMh8aqbFwpe613yr8GDEWReOJ0YaZeI3tF2E26Vx+NulunFYB8Wnw2K7
-7keeBBTkbNZoLh4WiK6NW9MOZDs8mav+QHBx80JUAgD1cZoq2Up5cEi1tpkT1L9a
-OuzOz8jyk6si9Le63a5LuQsszehjQr7dGqCnP+qWBsH/iUVEgfNlgZVw/rqMQwRe
-kz8d88QsmaUpSzPcXiVkpxweFuMpyJ71bH0292A1QLCVgkmWqATvEk07XaQtWiHi
-sGrhlc3UpwPQ8iPiSceqtqHwrooDe372giM+wZvAr/jNtGaeNyb7H6KKM2cE8dI=
-=+bfl
+iQEcBAEBCAAGBQJWjVHuAAoJECTWi3JdVIfQNywH/1y0sJLrBlZUhgbKFjaQC9qc
+/TLfSjBkZw7go6zNjNqggS9ev+6CvzG+gVX1R9ZN1BUC5ThXb7mDPHIzSDcE2Dda
+10I668l8csL9Q8UqofuRUv+T98lZjvgAWJvEOPGQzS6a0f8Ki9x7ZrajSm6xjjpw
+h+4+sAe8fALUswxde+jsoB5bSrV5JwuVP1y0j+qo1x2oJzX2VEQ4jstoo0nOkARP
+qZUZrOAToahokoIsXXBHg9uMUrijjB3+JggtHD92xo+XZDPWnbyWd3vxUwSVwRDC
+0FSX3Gm8jqfNYELZ4Pd4WQ1SQ+H8LIkFFlE7IjjwKVy3D1/hpCVP1JjpEL3oJWg=
+=FqaC
 -----END PGP SIGNATURE-----
 
---fU5tsrXreH0/dVH0--
+--TCH5zSpbvKOKdCih--
 
---===============8855982468787321547==
+--===============3196620771470718688==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8855982468787321547==--
+--===============3196620771470718688==--
