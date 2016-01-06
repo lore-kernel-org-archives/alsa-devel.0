@@ -1,95 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/8] ASoC: intel: boards: add card for
- MinnowBoard I2S access
-Date: Wed, 6 Jan 2016 17:42:07 +0000
-Message-ID: <20160106174207.GC6588@sirena.org.uk>
-References: <1451949630-3475-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1451949630-3475-4-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20160105131539.GC16023@sirena.org.uk>
- <568BD823.3080703@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3196620771470718688=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E565260417
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2016 18:43:20 +0100 (CET)
-In-Reply-To: <568BD823.3080703@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: wm5110: Fix PGA clear when disabling DRE" to the asoc tree
+Date: Wed, 06 Jan 2016 18:12:26 +0000
+Message-ID: <E1aGsZO-0007DY-K5@debutante>
+References: <1452093337-30396-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1452093337-30396-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: stable-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3196620771470718688==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TCH5zSpbvKOKdCih"
-Content-Disposition: inline
+   ASoC: wm5110: Fix PGA clear when disabling DRE
 
+has been applied to the asoc tree at
 
---TCH5zSpbvKOKdCih
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 05, 2016 at 08:50:11AM -0600, Pierre-Louis Bossart wrote:
-> On 1/5/16 7:15 AM, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> >I'm wondering how this is going to get loaded (I don't see what creates
-> >the platform device) and how we handle systems with a CODEC connected on
-> >the expansion headers?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Good question.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> To solve this audio is disabled by default, and we have an EFI application
-> loaded by the startup.nsh file that sets the relevant codec information in
-> the SSDT table so that you can swap codec cards at will. The EFI application
-> will be open-sourced so that additional codecs can be added as needed with
-> changes in the ASL code. The whole thing was tested with experimental
-> releases in three different setups for now but will be formally released
-> next month.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Sets the relevant codec information by...?
+Thanks,
+Mark
 
-> On probe the sst_acpi part checks for the presence of known codecs and
-> registers the platform driver. For the case where no codec is present I just
-> added an entry at the end of the table that always works (checks for an
-> SOC-side HID) and is selected if no other codec was found. I need to add
-> this patch and submit it, forgot to add it in this batch.
+>From 24338722cfa23fdf4e08c6189a11f7e3a902d86a Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 6 Jan 2016 15:15:37 +0000
+Subject: [PATCH] ASoC: wm5110: Fix PGA clear when disabling DRE
 
-Can we punt on this until we've got the rest of the infrastructure to
-look at?  I'd feel safer and it sounds like it's going to need some
-manual hacking to get working anyway until the other bits are lined up.
+We don't want to use a bypassed write in wm5110_clear_pga_volume,
+we might disable the DRE whilst the CODEC is powered down. A
+normal regmap_write will always go to the hardware (when not on
+cache_only) even if the written value matches the cache. As using
+a normal write will still achieve the desired behaviour of bring
+the cache and hardware in sync, this patch updates the function
+to use a normal write, which avoids issues when the CODEC is
+powered down.
 
---TCH5zSpbvKOKdCih
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/wm5110.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWjVHuAAoJECTWi3JdVIfQNywH/1y0sJLrBlZUhgbKFjaQC9qc
-/TLfSjBkZw7go6zNjNqggS9ev+6CvzG+gVX1R9ZN1BUC5ThXb7mDPHIzSDcE2Dda
-10I668l8csL9Q8UqofuRUv+T98lZjvgAWJvEOPGQzS6a0f8Ki9x7ZrajSm6xjjpw
-h+4+sAe8fALUswxde+jsoB5bSrV5JwuVP1y0j+qo1x2oJzX2VEQ4jstoo0nOkARP
-qZUZrOAToahokoIsXXBHg9uMUrijjB3+JggtHD92xo+XZDPWnbyWd3vxUwSVwRDC
-0FSX3Gm8jqfNYELZ4Pd4WQ1SQ+H8LIkFFlE7IjjwKVy3D1/hpCVP1JjpEL3oJWg=
-=FqaC
------END PGP SIGNATURE-----
-
---TCH5zSpbvKOKdCih--
-
---===============3196620771470718688==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3196620771470718688==--
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index c04c0bc6f58a..52b9ccf6d389 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -360,15 +360,13 @@ static int wm5110_hp_ev(struct snd_soc_dapm_widget *w,
+ 
+ static int wm5110_clear_pga_volume(struct arizona *arizona, int output)
+ {
+-	struct reg_sequence clear_pga = {
+-		ARIZONA_OUTPUT_PATH_CONFIG_1L + output * 4, 0x80
+-	};
++	unsigned int reg = ARIZONA_OUTPUT_PATH_CONFIG_1L + output * 4;
+ 	int ret;
+ 
+-	ret = regmap_multi_reg_write_bypassed(arizona->regmap, &clear_pga, 1);
++	ret = regmap_write(arizona->regmap, reg, 0x80);
+ 	if (ret)
+ 		dev_err(arizona->dev, "Failed to clear PGA (0x%x): %d\n",
+-			clear_pga.reg, ret);
++			reg, ret);
+ 
+ 	return ret;
+ }
+-- 
+2.7.0.rc3
