@@ -1,7 +1,7 @@
 From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 2/5] LSA: mts64: assignment in if
-Date: Thu,  7 Jan 2016 14:02:46 +0530
-Message-ID: <1452155569-6763-2-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: [PATCH 3/5] ALSA: mts64: fix multiple blanklines
+Date: Thu,  7 Jan 2016 14:02:47 +0530
+Message-ID: <1452155569-6763-3-git-send-email-sudipm.mukherjee@gmail.com>
 References: <1452155569-6763-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1452155569-6763-1-git-send-email-sudipm.mukherjee@gmail.com>
@@ -10,75 +10,48 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is not general practice to assign some values inside if statement.
+checkpatch complains about multiple blank lines.
 
 Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 ---
- sound/drivers/mts64.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ sound/drivers/mts64.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
-index 0f91e8e..efecb6e 100644
+index efecb6e..f00e938 100644
 --- a/sound/drivers/mts64.c
 +++ b/sound/drivers/mts64.c
-@@ -946,7 +946,9 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	if (!enable[dev])
- 		return -ENOENT;
--	if ((err = snd_mts64_probe_port(p)) < 0)
-+
-+	err = snd_mts64_probe_port(p);
-+	if (err < 0)
- 		return err;
+@@ -159,7 +159,6 @@ static void mts64_write_command(struct parport *p, u8 c);
+ static void mts64_write_data(struct parport *p, u8 c);
+ static void mts64_write_midi(struct mts64 *mts, u8 c, int midiport);
  
- 	err = snd_card_new(&pdev->dev, index[dev], id[dev], THIS_MODULE,
-@@ -973,7 +975,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 		goto __err;
- 	}
+-
+ /*  Enables the readout procedure
+  *
+  *  Before we can read a midi byte from the device, we have to set
+@@ -282,7 +281,6 @@ static u8 mts64_map_midi_input(u8 c)
+ 	return map[c];
+ }
  
--	if ((err = snd_mts64_create(card, pardev, &mts)) < 0) {
-+	err = snd_mts64_create(card, pardev, &mts);
-+	if (err < 0) {
- 		snd_printd("Cannot create main component\n");
- 		parport_unregister_device(pardev);
- 		goto __err;
-@@ -981,7 +984,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 	card->private_data = mts;
- 	card->private_free = snd_mts64_card_private_free;
+-
+ /*  Probe parport for device
+  *
+  *  Do we have a Miditerminal 4140 on parport?
+@@ -652,7 +650,6 @@ static struct snd_kcontrol_new mts64_ctl_smpte_fps = {
+ 	.put   = snd_mts64_ctl_smpte_fps_put
+ };
  
--	if ((err = snd_mts64_rawmidi_create(card)) < 0) {
-+	err = snd_mts64_rawmidi_create(card);
-+	if (err < 0) {
- 		snd_printd("Creating Rawmidi component failed\n");
- 		goto __err;
- 	}
-@@ -995,13 +999,15 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 	mts->pardev_claimed = 1;
- 
- 	/* init device */
--	if ((err = mts64_device_init(p)) < 0)
-+	err = mts64_device_init(p);
-+	if (err < 0)
- 		goto __err;
- 
- 	platform_set_drvdata(pdev, card);
- 
- 	/* At this point card will be usable */
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_printd("Cannot register card\n");
- 		goto __err;
- 	}
-@@ -1054,7 +1060,8 @@ static int __init snd_mts64_module_init(void)
+-
+ static int snd_mts64_ctl_create(struct snd_card *card,
+ 				struct mts64 *mts)
  {
- 	int err;
+@@ -1030,7 +1027,6 @@ static int snd_mts64_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
--	if ((err = platform_driver_register(&snd_mts64_driver)) < 0)
-+	err = platform_driver_register(&snd_mts64_driver);
-+	if (err < 0)
- 		return err;
- 
- 	if (parport_register_driver(&mts64_parport_driver) != 0) {
+-
+ static struct platform_driver snd_mts64_driver = {
+ 	.probe  = snd_mts64_probe,
+ 	.remove = snd_mts64_remove,
 -- 
 1.9.1
