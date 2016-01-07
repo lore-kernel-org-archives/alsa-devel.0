@@ -1,71 +1,68 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: compress: Fix compress device
- direction	check
-Date: Thu, 7 Jan 2016 21:44:46 +0530
-Message-ID: <20160107161446.GK11778@localhost>
-References: <1452154991-4924-1-git-send-email-vinod.koul@intel.com>
- <s5hy4c1heu2.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: [PATCH v2] ASoC: compress: Fix compress device direction check
+Date: Thu,  7 Jan 2016 21:48:14 +0530
+Message-ID: <1452183494-1957-1-git-send-email-vinod.koul@intel.com>
 Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hy4c1heu2.wl-tiwai@suse.de>
 Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, stable@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 07, 2016 at 11:19:17AM +0100, Takashi Iwai wrote:
-> On Thu, 07 Jan 2016 09:23:11 +0100,
-> Vinod Koul wrote:
-> > 
-> > The detection of direction for compress takes into account codec
-> > capabilities only and not the CPU ones. Fix this by checking the
-> > CPU side capabilities as well.
-> > 
-> > Cc: <stable@vger.kernel.org>
-> > Tested-by: Ashish Panwar <ashish.panwar@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  sound/soc/soc-compress.c | 23 ++++++++++++++++++++---
-> >  1 file changed, 20 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-> > index 12a9820feac1..b5737945bcc3 100644
-> > --- a/sound/soc/soc-compress.c
-> > +++ b/sound/soc/soc-compress.c
-> > @@ -630,6 +630,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
-> >  	struct snd_pcm *be_pcm;
-> >  	char new_name[64];
-> >  	int ret = 0, direction = 0;
-> > +	int playback = 0, capture = 0;
-> >  
-> >  	if (rtd->num_codecs > 1) {
-> >  		dev_err(rtd->card->dev, "Multicodec not supported for compressed stream\n");
-> > @@ -641,11 +642,27 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
-> >  			rtd->dai_link->stream_name, codec_dai->name, num);
-> >  
-> >  	if (codec_dai->driver->playback.channels_min)
-> > +		playback = 1;
-> > +	if (codec_dai->driver->capture.channels_min)
-> > +		capture = 1;
-> > +
-> > +	capture = capture && cpu_dai->driver->capture.channels_min;
-> > +	playback = playback && cpu_dai->driver->playback.channels_min;
-> > +
-> > +	/*
-> > +	 * Compress devices are unidirectional so only one of the directions
-> > +	 * should be set, check for that (xor)
-> > +	 */
-> > +	if (!(playback || capture)) {
-> 
-> I don't think this can catch the case where both playback and capture
-> are set.  You need really use XOR operator for that.  Or, something
-> like:
-> 	if (playback + capture != 1) {
+The detection of direction for compress was only taking into account codec
+capabilities and not CPU ones. Fix this by checking the CPU side capabilities
+as well
 
-Oops, i did mean XOR (see comment) but messed the implementation
-and did NOR :(, thanks for pointing, will send updated one..
+Cc: <stable@vger.kernel.org>
+Tested-by: Ashish Panwar <ashish.panwar@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+v2: fix xor check
 
+ sound/soc/soc-compress.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 12a9820feac1..bb82bb966000 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -630,6 +630,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	struct snd_pcm *be_pcm;
+ 	char new_name[64];
+ 	int ret = 0, direction = 0;
++	int playback = 0, capture = 0;
+ 
+ 	if (rtd->num_codecs > 1) {
+ 		dev_err(rtd->card->dev, "Multicodec not supported for compressed stream\n");
+@@ -641,11 +642,27 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->dai_link->stream_name, codec_dai->name, num);
+ 
+ 	if (codec_dai->driver->playback.channels_min)
++		playback = 1;
++	if (codec_dai->driver->capture.channels_min)
++		capture = 1;
++
++	capture = capture && cpu_dai->driver->capture.channels_min;
++	playback = playback && cpu_dai->driver->playback.channels_min;
++
++	/*
++	 * Compress devices are unidirectional so only one of the directions
++	 * should be set, check for that (xor)
++	 */
++	if (playback + capture != 1) {
++		dev_err(rtd->card->dev, "Invalid direction for compress P %d, C %d\n",
++				playback, capture);
++		return -EINVAL;
++	}
++
++	if(playback)
+ 		direction = SND_COMPRESS_PLAYBACK;
+-	else if (codec_dai->driver->capture.channels_min)
+-		direction = SND_COMPRESS_CAPTURE;
+ 	else
+-		return -EINVAL;
++		direction = SND_COMPRESS_CAPTURE;
+ 
+ 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
+ 	if (compr == NULL) {
 -- 
-~Vinod
+1.9.1
