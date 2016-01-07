@@ -1,18 +1,18 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [RFC v2 6/6] ASoC: hdmi-codec: Use HDMI
- notifications to add jack support
-Date: Thu, 7 Jan 2016 19:09:53 +0200
-Message-ID: <568E9BE1.6050209@ti.com>
-References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
- <1451935145-24861-1-git-send-email-p.zabel@pengutronix.de>
+From: Pablo Fonovich <pablo_f_7@hotmail.com>
+Subject: Re: PCM3168 alsa driver for beaglebone black (Pablo
+	Fonovich)
+Date: Thu, 7 Jan 2016 15:35:24 -0300
+Message-ID: <BAY169-W20D6BAD1989477CC899ABEEEF50@phx.gbl>
+References: <mailman.205.1452101441.813.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id B2A2E260439
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 18:10:01 +0100 (CET)
-In-Reply-To: <1451935145-24861-1-git-send-email-p.zabel@pengutronix.de>
+Received: from BAY004-OMC3S20.hotmail.com (bay004-omc3s20.hotmail.com
+ [65.54.190.158])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22780260439
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 19:35:25 +0100 (CET)
+In-Reply-To: <mailman.205.1452101441.813.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,172 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>, alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/04/16 21:19, Philipp Zabel wrote:
-> Use HDMI connection / disconnection notifications to update an ALSA
-> jack object. Also make a copy of the ELD block after every change.
->
+Hi:
+Now my driver is working (just) a bit better, but is still not functional... when i try to play something it says:
 
-The jack part looks good to me AFAIU, but I think we should just update 
-the local ELD copy with data given in the ELD notification. It then 
-depends on the implementation details whether the get_eld() callback is 
-needed at all or if it should be called once at the probe time.
+davinci_evm sound: ASoC: machine hw_params failed: -524
+aplay: set_params:1297: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (125011 125012)
+PERIOD_SIZE: 5513
+PERIOD_BYTES: 22052
+PERIODS: 4
+BUFFER_TIME: (500045 500046)
+BUFFER_SIZE: 22052
+BUFFER_BYTES: 88208
+TICK_TIME: 0
 
-Then it is a separate issue to check if the currently played stream is 
-still supported after an ELD update, and to decide what to do about it 
-if it is not.
+Some hints or docummentation of this? remember i'm a noob
+Thanks
 
-Best regards,
-Jyri
 
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> ---
->   include/sound/hdmi-codec.h    |  6 ++++
->   sound/soc/codecs/hdmi-codec.c | 72 ++++++++++++++++++++++++++++++++++++++++++-
->   2 files changed, 77 insertions(+), 1 deletion(-)
->
-> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> index 15fe70f..8b6219d 100644
-> --- a/include/sound/hdmi-codec.h
-> +++ b/include/sound/hdmi-codec.h
-> @@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
->   	int max_i2s_channels;
->   };
->
-> +struct snd_soc_codec;
-> +struct snd_soc_jack;
-> +
-> +int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-> +			       struct snd_soc_jack *jack);
-> +
->   #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
->
->   #endif /* __HDMI_CODEC_H__ */
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index 687332d..41f28ab 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -12,9 +12,12 @@
->    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
->    * General Public License for more details.
->    */
-> +#include <linux/hdmi-not.h>
->   #include <linux/module.h>
-> +#include <linux/notifier.h>
->   #include <linux/string.h>
->   #include <sound/core.h>
-> +#include <sound/jack.h>
->   #include <sound/pcm.h>
->   #include <sound/pcm_params.h>
->   #include <sound/soc.h>
-> @@ -27,11 +30,15 @@
->   struct hdmi_codec_priv {
->   	struct hdmi_codec_pdata hcd;
->   	struct snd_soc_dai_driver *daidrv;
-> +	struct snd_soc_jack *jack;
->   	struct hdmi_codec_daifmt daifmt[2];
->   	struct mutex current_stream_lock;
->   	struct snd_pcm_substream *current_stream;
->   	struct snd_pcm_hw_constraint_list ratec;
->   	uint8_t eld[MAX_ELD_BYTES];
-> +	struct device *dev;
-> +	struct notifier_block nb;
-> +	unsigned int jack_status;
->   };
->
->   static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-> @@ -326,6 +333,63 @@ static struct snd_soc_codec_driver hdmi_codec = {
->   	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
->   };
->
-> +static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-> +				   unsigned int jack_status)
-> +{
-> +	if (!hcp->jack)
-> +		return;
-> +
-> +	if (jack_status != hcp->jack_status) {
-> +		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-> +		hcp->jack_status = jack_status;
-> +	}
-> +}
-> +
-> +static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
-> +			     void *data)
-> +{
-> +	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
-> +						   nb);
-> +	union hdmi_event *event_block = data;
-> +	int ret;
-> +
-> +	if (hcp->dev->parent != event_block->base.source)
-> +		return NOTIFY_OK;
-> +
-> +	if (!hcp->jack)
-> +		return NOTIFY_OK;
-> +
-> +	switch (event) {
-> +	case HDMI_CONNECTED:
-> +		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-> +		break;
-> +	case HDMI_DISCONNECTED:
-> +		hdmi_codec_jack_report(hcp, 0);
-> +		break;
-> +	case HDMI_NEW_ELD:
-> +		if (hcp->hcd.ops->get_eld)
-> +			ret = hcp->hcd.ops->get_eld(hcp->dev->parent, hcp->eld,
-> +						    sizeof(hcp->eld));
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-> +			       struct snd_soc_jack *jack)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
-> +
-> +	hcp->jack = jack;
-> +	hcp->nb.notifier_call = hdmi_codec_notify;
-> +
-> +	hdmi_register_notifier(&hcp->nb);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
-> +
->   static int hdmi_codec_probe(struct platform_device *pdev)
->   {
->   	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
-> @@ -370,6 +434,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->   	if (hcd->spdif)
->   		hcp->daidrv[i] = hdmi_spdif_dai;
->
-> +	dev_set_drvdata(dev, hcp);
-> +
->   	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
->   				     dai_count);
->   	if (ret) {
-> @@ -378,12 +444,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->
-> -	dev_set_drvdata(dev, hcp);
-> +	hcp->dev = dev;
-> +
->   	return 0;
->   }
->
->   static int hdmi_codec_remove(struct platform_device *pdev)
->   {
-> +	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
-> +
-> +	hdmi_unregister_notifier(&hcp->nb);
->   	snd_soc_unregister_codec(&pdev->dev);
->   	return 0;
->   }
->
+> Message: 2
+> Date: Tue, 5 Jan 2016 21:35:12 -0300
+> From: Pablo Fonovich <pablo_f_7@hotmail.com>
+> To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+> Subject: [alsa-devel] PCM3168 alsa driver for beaglebone black
+> Message-ID: <BAY169-W8142231FA115FDA205200FEEF40@phx.gbl>
+> Content-Type: text/plain; charset="iso-8859-1"
+> 
+> Hi:
+> I'm working in a project of making an audio cape for beaglebone black with pcm3168 codec... so far i've written the driver i've attached based on pcm1681.c available in linux kernel.
+> Im a noob in this subjets, so i would like to know how can now make it work in my custom system for the beaglebone. 
+> I followed the guide in this link http://processors.wiki.ti.com/index.php/Sitara_Linux_Audio_DAC_Example, but it makes me write the ops and hw structures that i already have in my pcm3168.c file, in the davinci_evm.c file.
+> 
+> The drivers compiles and is detected at boot time, as it says in the guide. But when i type aplay command to play some wav, the message "ALSA lib pcm.c:2267:(snd_pcm_open_noupdate) Unknown PCM default
+> aplay: main:722: audio open error: No such file or directory" appears, so i'm missing something...
+> 
+> I don't knwo if this post belongs to this list, but any help would be great...
+> If some docummentation about writing a driver for an embedded system is available, please tell me... 
+> Also, if someone can suggest me some guidelines of work i would be grateful, cause i just can't get organized with the information i found
+> 
+> Thanks very Much... 
+> 
+> Pablo
+> 
+>  		 	   		  
+> -------------- next part --------------
+> An embedded and charset-unspecified text was scrubbed...
+> Name: pcm3168.c
+> URL: <http://mailman.alsa-project.org/pipermail/alsa-devel/attachments/20160105/f0bcc63c/attachment-0001.c>
+> 
+
+ 		 	   		  
