@@ -1,19 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/4 v5] ALSA: dice: improve card
-	registration processing
-Date: Thu, 7 Jan 2016 09:21:44 +0900
-Message-ID: <568DAF98.4020504@sakamocchi.jp>
-References: <1451537894-28366-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hlh83rrok.wl-tiwai@suse.de> <568CF159.80202@sakamocchi.jp>
- <s5hfuyasvu7.wl-tiwai@suse.de>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: extend FLL function
+Date: Wed, 6 Jan 2016 17:26:06 -0800
+Message-ID: <CAOMFOmV5uC4i7hcsJxZkDd5LUa8asOSa8fVU_+-uHOmx6hytDA@mail.gmail.com>
+References: <1452065262-22664-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 63E512654F2
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 01:21:50 +0100 (CET)
-In-Reply-To: <s5hfuyasvu7.wl-tiwai@suse.de>
+Received: from mail-ig0-f179.google.com (mail-ig0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id C364626067B
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 02:26:08 +0100 (CET)
+Received: by mail-ig0-f179.google.com with SMTP id t15so17904247igr.0
+ for <alsa-devel@alsa-project.org>; Wed, 06 Jan 2016 17:26:08 -0800 (PST)
+In-Reply-To: <1452065262-22664-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ben Zhang <benzh@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 6 2016 22:04, Takashi Iwai wrote:
->> How about the rest of my work for ALSA Dice driver to Linux 4.5?
->>
->> [alsa-devel] [RFC][PATCH 00/10 v2] ALSA: dice: stabiliza packet streaming
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/101897.html
->>
->> It takes almost one month since I posted the RFCv2. We already had a
->> discussion about the patchset in RFCv1 and in my opinion there's no
->> thorough disagreement. If possible, I'd like to merge it in the merge
->> window for Linux 4.5. If we go for it, I'll post them in this night.
-> 
-> Well, RFC is RFC and not for merging.  If it's meant for merging,
-> let's poke relevant people whether it's OK.
+Hi
 
-Indeed for merging process.
+On Tue, Jan 5, 2016 at 11:27 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
+> Extend FLL clock source from MCLK/BCLK/FS.
+> Modify FLL calculation and parameter setting.
+>
+> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 
-However, in my opinion, RFC is one of ways to show directions for future
-works and establish _loose_ agreement among active developers. In terms
-of it, I think it's time to put the patchset to the review process for
-merging.
+The code looks good to me. Please add
 
-But it seems to be a bit late for 4.5. I'll postpone them to next
-developing cycle for 4.6.
-
-
-For 4.5, I'll finish all of my work, and I currently plan for 4.6:
- * Limit PCM substreams to current sampling transfer frequency for Dice
-driver
- * Replace tasklet with workqueue for scs1x functionality of OXFW driver.
- * Some works in userspace, mainly libhinawa and hinawa-utils
- * Development of firewire-transceiver module for testing streaming
-engine of firewire-lib.
-
-
-Regards
-
-Takashi Sakamoto
+Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
