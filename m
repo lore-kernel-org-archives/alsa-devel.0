@@ -1,84 +1,181 @@
-From: Pablo Fonovich <pablo_f_7@hotmail.com>
-Subject: Re: PCM3168 alsa driver for beaglebone black (Pablo
-	Fonovich)
-Date: Thu, 7 Jan 2016 15:35:24 -0300
-Message-ID: <BAY169-W20D6BAD1989477CC899ABEEEF50@phx.gbl>
-References: <mailman.205.1452101441.813.alsa-devel@alsa-project.org>
+From: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Subject: Re: [PATCH 26/31] sound/usb: Update ALSA driver to use Managed Media
+ Controller API
+Date: Thu, 7 Jan 2016 13:27:52 -0700
+Message-ID: <568ECA48.1060908@osg.samsung.com>
+References: <cover.1452105878.git.shuahkh@osg.samsung.com>
+ <ebef788534aae7fa740665660e04bdf1523fdbfe.1452105878.git.shuahkh@osg.samsung.com>
+ <s5ha8ohfl7f.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BAY004-OMC3S20.hotmail.com (bay004-omc3s20.hotmail.com
- [65.54.190.158])
- by alsa0.perex.cz (Postfix) with ESMTP id 22780260439
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 19:35:25 +0100 (CET)
-In-Reply-To: <mailman.205.1452101441.813.alsa-devel@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5ha8ohfl7f.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org, laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, ricard.wanderlof-VrBV9hrLPhE@public.gmane.org, labbott-rxtnV0ftBwyoClj4AeEUq9i2O/JbrIOy@public.gmane.org, chehabrafael-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, misterpib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, prabhakar.csengg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ricardo.ribalda-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ruchandani.tina-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, takamichiho-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tvboxspy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dominic.sacre-Mmb7MZpHnFY@public.gmane.org, crope-X3B1VOXEql0@public.gmane.org, julian-SZMMDGyaqes@public.gmane.org, pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, corbet-T1hC0tSOHrs@public.gmane.org, joe-amhYAVlgbXj10XsdtD+oqA@public.gmane.org, johan-v8HUHnYb0Yo@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, pawel-FA/gS7QP4orQT0dZR+AlfA@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, stefanr-MtYdepGKPcBMYopoZt5u/LNAH6kLmebB@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jh1009.sung-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, sw0312.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, elfring-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-api-u79uwXL29TbrhsbdSgBK9A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi:
-Now my driver is working (just) a bit better, but is still not functional... when i try to play something it says:
-
-davinci_evm sound: ASoC: machine hw_params failed: -524
-aplay: set_params:1297: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (125011 125012)
-PERIOD_SIZE: 5513
-PERIOD_BYTES: 22052
-PERIODS: 4
-BUFFER_TIME: (500045 500046)
-BUFFER_SIZE: 22052
-BUFFER_BYTES: 88208
-TICK_TIME: 0
-
-Some hints or docummentation of this? remember i'm a noob
-Thanks
-
-
-> Message: 2
-> Date: Tue, 5 Jan 2016 21:35:12 -0300
-> From: Pablo Fonovich <pablo_f_7@hotmail.com>
-> To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-> Subject: [alsa-devel] PCM3168 alsa driver for beaglebone black
-> Message-ID: <BAY169-W8142231FA115FDA205200FEEF40@phx.gbl>
-> Content-Type: text/plain; charset="iso-8859-1"
+On 01/07/2016 08:44 AM, Takashi Iwai wrote:
+> On Wed, 06 Jan 2016 22:05:35 +0100,
+> Shuah Khan wrote:
+>>
+>> diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+>> index 2d2d122..665fdd9 100644
+>> --- a/sound/usb/Makefile
+>> +++ b/sound/usb/Makefile
+>> @@ -2,6 +2,18 @@
+>>  # Makefile for ALSA
+>>  #
+>>  
+>> +# Media Controller
+>> +ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
+>> +  ifeq ($(CONFIG_MEDIA_SUPPORT),y)
+>> +        KBUILD_CFLAGS += -DUSE_MEDIA_CONTROLLER
+>> +  endif
+>> +  ifeq ($(CONFIG_MEDIA_SUPPORT_MODULE),y)
+>> +    ifeq ($(MODULE),y)
+>> +          KBUILD_CFLAGS += -DUSE_MEDIA_CONTROLLER
+>> +    endif
+>> +  endif
+>> +endif
 > 
-> Hi:
-> I'm working in a project of making an audio cape for beaglebone black with pcm3168 codec... so far i've written the driver i've attached based on pcm1681.c available in linux kernel.
-> Im a noob in this subjets, so i would like to know how can now make it work in my custom system for the beaglebone. 
-> I followed the guide in this link http://processors.wiki.ti.com/index.php/Sitara_Linux_Audio_DAC_Example, but it makes me write the ops and hw structures that i already have in my pcm3168.c file, in the davinci_evm.c file.
-> 
-> The drivers compiles and is detected at boot time, as it says in the guide. But when i type aplay command to play some wav, the message "ALSA lib pcm.c:2267:(snd_pcm_open_noupdate) Unknown PCM default
-> aplay: main:722: audio open error: No such file or directory" appears, so i'm missing something...
-> 
-> I don't knwo if this post belongs to this list, but any help would be great...
-> If some docummentation about writing a driver for an embedded system is available, please tell me... 
-> Also, if someone can suggest me some guidelines of work i would be grateful, cause i just can't get organized with the information i found
-> 
-> Thanks very Much... 
-> 
-> Pablo
-> 
->  		 	   		  
-> -------------- next part --------------
-> An embedded and charset-unspecified text was scrubbed...
-> Name: pcm3168.c
-> URL: <http://mailman.alsa-project.org/pipermail/alsa-devel/attachments/20160105/f0bcc63c/attachment-0001.c>
+> Can't we define this rather via Kconfig?
+> Doing this in Makefile is way too tricky, and it's unclear to users
+> whether MC is actually enabled or not.
 > 
 
- 		 	   		  
+Yeah doing this in Makefile is a bit tricky
+and can lead to confusion.
+
+I can't think of any specific reason why I added
+this check to the Makefile instead of Kconfig.
+Looks like I added this in my second version
+of the patch series several months ago and didn't
+revisit. I will add this to Kconfig.
+> 
+>> diff --git a/sound/usb/media.c b/sound/usb/media.c
+>> new file mode 100644
+>> index 0000000..747a66a
+>> --- /dev/null
+>> +++ b/sound/usb/media.c
+>> @@ -0,0 +1,214 @@
+>> +/*
+>> + * media.c - Media Controller specific ALSA driver code
+>> + *
+>> + * Copyright (c) 2015 Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+>> + * Copyright (c) 2015 Samsung Electronics Co., Ltd.
+>> + *
+>> + * This file is released under the GPLv2.
+>> + */
+>> +
+>> +/*
+>> + * This file adds Media Controller support to ALSA driver
+>> + * to use the Media Controller API to share tuner with DVB
+>> + * and V4L2 drivers that control media device. Media device
+>> + * is created based on existing quirks framework. Using this
+>> + * approach, the media controller API usage can be added for
+>> + * a specific device.
+>> +*/
+>> +
+>> +#include <linux/init.h>
+>> +#include <linux/list.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/string.h>
+>> +#include <linux/ctype.h>
+>> +#include <linux/usb.h>
+>> +#include <linux/moduleparam.h>
+>> +#include <linux/mutex.h>
+>> +#include <linux/usb/audio.h>
+>> +#include <linux/usb/audio-v2.h>
+>> +#include <linux/module.h>
+>> +
+>> +#include <sound/control.h>
+>> +#include <sound/core.h>
+>> +#include <sound/info.h>
+>> +#include <sound/pcm.h>
+>> +#include <sound/pcm_params.h>
+>> +#include <sound/initval.h>
+>> +
+>> +#include "usbaudio.h"
+>> +#include "card.h"
+>> +#include "midi.h"
+>> +#include "mixer.h"
+>> +#include "proc.h"
+>> +#include "quirks.h"
+>> +#include "endpoint.h"
+>> +#include "helper.h"
+>> +#include "debug.h"
+>> +#include "pcm.h"
+>> +#include "format.h"
+>> +#include "power.h"
+>> +#include "stream.h"
+>> +#include "media.h"
+> 
+> I believe we can get rid of many include files just for MC support...
+> 
+> 
+>> +#ifdef USE_MEDIA_CONTROLLER
+> 
+> This ifdef can be removed once if we build this object file
+> conditionally in Makefile.
+
+Right.
+
+> 
+> 
+>> @@ -1232,7 +1244,10 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
+>>  	subs->dsd_dop.channel = 0;
+>>  	subs->dsd_dop.marker = 1;
+>>  
+>> -	return setup_hw_info(runtime, subs);
+>> +	ret = setup_hw_info(runtime, subs);
+>> +	if (ret == 0)
+>> +		ret = media_stream_init(subs, as->pcm, direction);
+> 
+> Need to call snd_usb_autosuspend() in the error path.
+
+I will add it.
+
+> 
+> 
+>> --- a/sound/usb/quirks.c
+>> +++ b/sound/usb/quirks.c
+>> @@ -544,13 +545,19 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+>>  		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
+>>  		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
+>>  	};
+>> +	int ret;
+>>  
+>> +	if (quirk->media_device) {
+>> +		/* don't want to fail when media_device_create() fails */
+>> +		media_device_create(chip, iface);
+>> +	}
+> 
+> So far, so good...
+> 
+>>  	if (quirk->type < QUIRK_TYPE_COUNT) {
+>> -		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
+>> +		ret = quirk_funcs[quirk->type](chip, iface, driver, quirk);
+>>  	} else {
+>>  		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
+>>  		return -ENXIO;
+>>  	}
+>> +	return ret;
+> 
+> Any reason to change this?
+
+Thanks for catching this. I think I might have
+added some debug code to print ret value and
+missed it when I cleaned up the debug code.
+I will fix it.
+
+thanks,
+-- Shuah
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org | (970) 217-8978
