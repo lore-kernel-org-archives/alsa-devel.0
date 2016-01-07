@@ -1,57 +1,67 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: pcm: allow delayed suspending
- request by	users
-Date: Thu, 7 Jan 2016 13:55:16 +0530
-Message-ID: <20160107082516.GJ11778@localhost>
-References: <1451994289-29256-1-git-send-email-vinod.koul@intel.com>
- <s5hegdusvme.wl-tiwai@suse.de>
+From: Jean-Michel Hautbois <jean-michel.hautbois@veo-labs.com>
+Subject: Re: [alsa-devel] [PATCH 0/9] dw-hdmi audio support
+Date: Thu, 7 Jan 2016 09:21:43 +0100
+Message-ID: <CAH-u=80F1AUQbG9-ivcspo4vmYcqYC0PnC8uTg2RWhgP1nTazA@mail.gmail.com>
+References: <20150808160251.GM7557@n2100.arm.linux.org.uk>
+ <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <1440664941.3233.38.camel@pengutronix.de>
+ <CAH-u=810V863yYhMvvtaQ7jxNgrOXAL4bi1mS506a-yOTbuYhQ@mail.gmail.com>
+ <20160105160421.GX19062@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FF76265546
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2016 09:21:45 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hegdusvme.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20160105160421.GX19062@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-rockchip@lists.infradead.org, Andy Yan <andy.yan@rock-chips.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 06, 2016 at 02:08:57PM +0100, Takashi Iwai wrote:
-> On Tue, 05 Jan 2016 12:44:49 +0100,
-> Vinod Koul wrote:
-> > -	pm_runtime_put(platform->dev);
-> > -	for (i = 0; i < rtd->num_codecs; i++)
-> > -		pm_runtime_put(rtd->codec_dais[i]->dev);
-> > -	pm_runtime_put(cpu_dai->dev);
-> > +	pm_runtime_mark_last_busy(platform->dev);
-> > +	pm_runtime_put_autosuspend(platform->dev);
-> > +
-> > +	for (i = 0; i < rtd->num_codecs; i++) {
-> > +		pm_runtime_mark_last_busy(rtd->codec_dais[i]->dev);
-> > +		pm_runtime_put_autosuspend(rtd->codec_dais[i]->dev);
-> > +	}
-> > +
-> > +	pm_runtime_mark_last_busy(cpu_dai->dev);
-> > +	pm_runtime_put_autosuspend(cpu_dai->dev);
-> > +
-> >  	for (i = 0; i < rtd->num_codecs; i++) {
-> >  		if (!rtd->codec_dais[i]->active)
-> >  			pinctrl_pm_select_sleep_state(rtd->codec_dais[i]->dev);
-> 
-> Lots of duplicated codes there...  Worth to have a common helper?
-
-I certainly think so :) will do this after merge window
-
--- 
-~Vinod
+SGkgUnVzc2VsbCwKCjIwMTYtMDEtMDUgMTc6MDQgR01UKzAxOjAwIFJ1c3NlbGwgS2luZyAtIEFS
+TSBMaW51eCA8bGludXhAYXJtLmxpbnV4Lm9yZy51az46Cj4gT24gVHVlLCBKYW4gMDUsIDIwMTYg
+YXQgMDQ6NDA6NTRQTSArMDEwMCwgSmVhbi1NaWNoZWwgSGF1dGJvaXMgd3JvdGU6Cj4+IEhpIFJ1
+c3NlbGwsCj4+Cj4+IDIwMTUtMDgtMjcgMTA6NDIgR01UKzAyOjAwIFBoaWxpcHAgWmFiZWwgPHAu
+emFiZWxAcGVuZ3V0cm9uaXguZGU+Ogo+PiA+Cj4+ID4gQW0gU2Ftc3RhZywgZGVuIDA4LjA4LjIw
+MTUsIDE3OjA5ICswMTAwIHNjaHJpZWIgUnVzc2VsbCBLaW5nIC0gQVJNCj4+ID4gTGludXg6Cj4+
+ID4gPiBGb2xsb3dpbmcgb24gZnJvbSB0aGUgcHJldmlvdXMgc3ViLXNlcmllcywgdGhpcyBzdWIt
+c2VyaWVzIGFkZHMgYXVkaW8KPj4gPiA+IHN1cHBvcnQgdG8gZHctaGRtaS4KPj4gPiA+Cj4+ID4g
+PiBUaGUgdHdvIGRpZmZlcmVudCB2YXJpYW50cyBhcmUgbm93IGluIHRoaXMgcGF0Y2g6IEFIQiBh
+dWRpbyBzdXBwb3J0Cj4+ID4gPiBmb3VuZCBvbiBpTVg2IHBsYXRmb3JtcywgYW5kIEkyUyBzdXBw
+b3J0IGZvdW5kIG9uIFJvY2tjaGlwIHBhdGNoZXMuCj4+ID4gPiBUaGFua3MgdG8gWWFraXIgWWFu
+ZyBmb3IgY29udHJpYnV0aW5nIHRoZSBJMlMgc3VwcG9ydC4KPj4gPiA+Cj4+ID4gPiBJIHN1c3Bl
+Y3QgdGhhdCB0aGVyZSBpcyBzdGlsbCBzb21lIGRpc2N1c3Npb24gdG8gYmUgaGFkIG9uIHRoaXMK
+Pj4gPiA+IHNlcmllcywgdGhvdWdoIEkgd291bGQgbGlrZSB0byBzZWUgaXQgbW92aW5nIGZvcndh
+cmQgc28gdGhhdCB3ZSBjYW4KPj4gPiA+IGdldCBzb21ldGhpbmcgbWVyZ2VkLgo+PiA+Cj4+ID4g
+VGVzdGVkLWJ5OiBQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBlbmd1dHJvbml4LmRlPgo+PiA+IG9u
+IGkuTVg2IEdLODAyIHZpYSBIRE1JIGNvbm5lY3RlZCB0byBhIFRWIChzdGVyZW8gb25seSkuCj4+
+ID4KPj4gPiBleGNlcHQgZm9yIHRoZSBpMnMgcGF0Y2gsIHdoaWNoIGlzIGJyb2tlbiBpbiB0aGlz
+IHNlcmllcy4KPj4gPgo+PiA+IHJlZ2FyZHMKPj4gPiBQaGlsaXBwCj4+Cj4+Cj4+IFdoYXQgaXMg
+dGhlIHN0YXR1cyBvZiB0aGlzIHNlcmllcyA/Cj4+IEkgd291bGQgbGlrZSB0byB1c2UgYXVkaW8g
+b3V0cHV0IGluIEhETUkgb24gbXkgaS5NWDYgYm9hcmQsIGJ1dCBJCj4+IGRvbid0IGtub3cgaWYg
+eW91IGhhdmUgc29tZSBwZW5kaW5nIFdJUCBvbiB0aGlzID8KPgo+IFRoZSBJMlMgcGFydCBoYXMg
+YmVlbiBkcm9wcGVkLiAgVGhlIERlc2lnbldhcmUgSERNSSBibG9jayBpcyBjb25maWd1cmFibGUK
+PiB3aGVuIGl0IGlzIHN5bnRoZXNpemVkIC0gaXQgY2FuIGNvbnRhaW4gZWl0aGVyIHRoZSBBSEIg
+YXVkaW8gaW50ZXJmYWNlIG9yCj4gYW4gSTJTIGludGVyZmFjZS4gIEZyZWVzY2FsZSBjaG9zZSB0
+byBzeW50aGVzaXplIGl0IHdpdGggdGhlIEFIQiBhdWRpbwo+IGludGVyZmFjZSwgYW5kIHRoaXMg
+aXMgd2hhdCBteSBwYXRjaGVzIGFyZSBnZWFyZWQgdXAgdG8gcHJvdmlkZS4KPgo+IE9uIFJvY2tj
+aGlwIGRldmljZXMsIHRoZXkgY2hvc2UgdG8gc3ludGhlc2l6ZSBpdCB3aXRoIHRoZSBJMlMgYXVk
+aW8KPiBibG9jaywgYW5kIHNvIHRoZXkgbmVlZCBhIGRpZmZlcmVudCBkcml2ZXIgZm9yIGl0LiAg
+WWFraXIgWWFuZyBoYXMgYmVlbgo+IHdvcmtpbmcgb24gdGhhdCwgYnV0IEkndmUgbm90IHNlZW4g
+YW55dGhpbmcgcmVjZW50bHkuICBBZnRlciBtZXJnaW5nCj4gaGlzIEkyUyBwYXRjaCwgSSBmb3Vu
+ZCBzb21lIHByb2JsZW1zIGFuZCBkZWNpZGVkIHdpdGggWWFraXIgdGhhdCB0aGUKPiBiZXN0IHRo
+aW5nIHRvIGRvIHdhcyB0byBkcm9wIGl0Lgo+Cj4gU28sIHRoZSByZXN1bHQgaXMgd2Ugc3VwcG9y
+dCBIRE1JIGF1ZGlvIG9uIGlNWDYuCj4KPiBUaGUgY2hhbmdlcyB3ZXJlIG1lcmdlZCBpbnRvIG1h
+aW5saW5lIGR1cmluZyB0aGUgNC40IG1lcmdlIHdpbmRvdywgc28KPiBMaW51eCA0LjQgd2lsbCBz
+dXBwb3J0IGlNWDYgSERNSSBhdWRpby4KPgoKVGhhbmsgeW91IGZvciB0aGlzIGRldGFpbGVkIGFu
+c3dlci4gSSB3aWxsIHJlYmFzZSBvbnRvIDQuNCB0aGVuIDopLgoKSk0KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApk
+cmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
