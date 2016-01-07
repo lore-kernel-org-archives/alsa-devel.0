@@ -1,72 +1,48 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5/5] ALSA: mts64: use new parport device model
-Date: Thu,  7 Jan 2016 14:02:49 +0530
-Message-ID: <1452155569-6763-5-git-send-email-sudipm.mukherjee@gmail.com>
-References: <1452155569-6763-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452155569-6763-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [RFC v2 3/6] ASoC: mediatek: Add HDMI dai-links in
+ the machine driver
+Date: Thu, 07 Jan 2016 11:06:10 +0100
+Message-ID: <1452161170.4776.9.camel@pengutronix.de>
+References: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
+ <1451934944-24588-1-git-send-email-p.zabel@pengutronix.de>
+ <20160105124603.GB16023@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6DEED265546
+ for <alsa-devel@alsa-project.ORg>; Thu,  7 Jan 2016 11:06:15 +0100 (CET)
+In-Reply-To: <20160105124603.GB16023@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Modify mts64 driver to use the new parallel port device model.
+Am Dienstag, den 05.01.2016, 12:46 +0000 schrieb Mark Brown:
+> On Mon, Jan 04, 2016 at 08:15:44PM +0100, Philipp Zabel wrote:
+> > From: Koro Chen <koro.chen@mediatek.com>
+> > 
+> > This creates pcmC0D2p for the HDMI playback in the same card.
+> > 
+> > Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> Please don't send new patches in reply to the middle of an existing
+> series, it makes it very hard to tell what's going on.  If you need to
+> send a new version resend the whole series.
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/drivers/mts64.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+Sorry, I had to manually restart an aborted git send-email and
+accidentally chose the wrong --in-reply-to Message-Id for this patch.
+It's all just one series.
 
-diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
-index ee6a87f..4d393ea 100644
---- a/sound/drivers/mts64.c
-+++ b/sound/drivers/mts64.c
-@@ -905,9 +905,10 @@ static void snd_mts64_detach(struct parport *p)
- }
- 
- static struct parport_driver mts64_parport_driver = {
--	.name   = "mts64",
--	.attach = snd_mts64_attach,
--	.detach = snd_mts64_detach
-+	.name		= "mts64",
-+	.match_port	= snd_mts64_attach,
-+	.detach		= snd_mts64_detach,
-+	.devmodel	= true,
- };
- 
- /*********************************************************************
-@@ -935,6 +936,7 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 	struct snd_card *card = NULL;
- 	struct mts64 *mts = NULL;
- 	int err;
-+	struct pardev_cb mts64_cb;
- 
- 	p = platform_get_drvdata(pdev);
- 	platform_set_drvdata(pdev, NULL);
-@@ -959,14 +961,16 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 	sprintf(card->longname,  "%s at 0x%lx, irq %i",
- 		card->shortname, p->base, p->irq);
- 
--	pardev = parport_register_device(p,                   /* port */
--					 DRIVER_NAME,         /* name */
--					 NULL,                /* preempt */
--					 NULL,                /* wakeup */
--					 snd_mts64_interrupt, /* ISR */
--					 PARPORT_DEV_EXCL,    /* flags */
--					 (void *)card);       /* private */
--	if (pardev == NULL) {
-+	memset(&mts64_cb, 0, sizeof(mts64_cb));
-+	mts64_cb.private = card;			/* private */
-+	mts64_cb.irq_func = snd_mts64_interrupt;	/* ISR */
-+	mts64_cb.flags = PARPORT_DEV_EXCL;		/* flags */
-+
-+	pardev = parport_register_dev_model(p,		   /* port */
-+					    DRIVER_NAME,   /* name */
-+					    &mts64_cb,   /* callbacks */
-+					    device_count); /* device number */
-+	if (!pardev) {
- 		snd_printd("Cannot register pardevice\n");
- 		err = -EIO;
- 		goto __err;
--- 
-1.9.1
+regards
+Philipp
