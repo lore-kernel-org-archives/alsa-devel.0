@@ -1,24 +1,19 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH 3/4] ALSA: hda - hdmi jack created based on
- pcm
-Date: Fri, 8 Jan 2016 07:57:19 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D190464D2EC@SHSMSX103.ccr.corp.intel.com>
-References: <1451524942-17288-1-git-send-email-libin.yang@linux.intel.com>
- <1451524942-17288-4-git-send-email-libin.yang@linux.intel.com>
- <s5hk2nlfpem.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D190464D1BC@SHSMSX103.ccr.corp.intel.com>
- <s5hd1tc8qip.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D190464D2B0@SHSMSX103.ccr.corp.intel.com>
- <s5h7fjk8q0t.wl-tiwai@suse.de>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [RFC v2 6/6] ASoC: hdmi-codec: Use HDMI
+ notifications to add jack support
+Date: Fri, 08 Jan 2016 09:43:49 +0100
+Message-ID: <1452242629.3347.12.camel@pengutronix.de>
+References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
+ <1451935145-24861-1-git-send-email-p.zabel@pengutronix.de>
+ <568E9BE1.6050209@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C4F3F26040E
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 08:57:24 +0100 (CET)
-In-Reply-To: <s5h7fjk8q0t.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7517A26040E
+ for <alsa-devel@alsa-project.ORg>; Fri,  8 Jan 2016 09:43:57 +0100 (CET)
+In-Reply-To: <568E9BE1.6050209@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,93 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jyri,
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, January 08, 2016 3:55 PM
-> To: Yang, Libin
-> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
-> Mengdong
-> Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: hda - hdmi jack created based
-> on pcm
+Am Donnerstag, den 07.01.2016, 19:09 +0200 schrieb Jyri Sarha:
+> On 01/04/16 21:19, Philipp Zabel wrote:
+> > Use HDMI connection / disconnection notifications to update an ALSA
+> > jack object. Also make a copy of the ELD block after every change.
+> >
 > 
-> On Fri, 08 Jan 2016 08:52:17 +0100,
-> Yang, Libin wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Friday, January 08, 2016 3:44 PM
-> > > To: Yang, Libin
-> > > Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
-> > > Mengdong
-> > > Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: hda - hdmi jack created
-> based
-> > > on pcm
-> > >
-> > > On Fri, 08 Jan 2016 04:15:03 +0100,
-> > > Yang, Libin wrote:
-> > > > > > @@ -2626,18 +2659,23 @@ static void hdmi_array_free(struct
-> > > > > hdmi_spec *spec)
-> > > > > >  static void generic_hdmi_free(struct hda_codec *codec)
-> > > > > >  {
-> > > > > >  	struct hdmi_spec *spec = codec->spec;
-> > > > > > -	int pin_idx;
-> > > > > > +	int pin_idx, pcm_idx;
-> > > > > >
-> > > > > >  	if (codec_has_acomp(codec))
-> > > > > >  		snd_hdac_i915_register_notifier(NULL);
-> > > > > >
-> > > > > >  	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > > > > >  		struct hdmi_spec_per_pin *per_pin =
-> get_pin(spec,
-> > > > > pin_idx);
-> > > > > > -
-> > > > > >  		cancel_delayed_work_sync(&per_pin->work);
-> > > > > >  		eld_proc_free(per_pin);
-> > > > > > -		if (per_pin->acomp_jack)
-> > > > > > -			snd_device_free(codec->card, per_pin-
-> > > > > >acomp_jack);
-> > > > > > +	}
-> > > > > > +
-> > > > > > +	for (pcm_idx = 0; pcm_idx < spec->pcm_used;
-> pcm_idx++) {
-> > > > > > +		if (spec->dyn_pcm_assign)
-> > > > > > +			snd_device_free(codec->card,
-> > > > > > +					spec-
-> >pcm_rec[pcm_idx].jack);
-> > > > > > +		else
-> > > > > > +			spec->pcm_rec[pcm_idx].jack = NULL;
-> > > > >
-> > > > > Check whether spec->pcm_rec[pcm_idx].jack is NULL beforehand.
-> > > > >
-> > > >
-> > > > Do you mean:
-> > > > if (spec->pcm_rec[pcm_idx].jack)
-> > > >     spec->pcm_rec[pcm_idx].jack = NULL;
-> > >
-> > > Not only that.  Calling snd_device_free() with NULL isn't allowed.
-> >
-> > I see. It will be:
-> > +for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
-> > +		if (spec->pcm_rec[pcm_idx].jack == NULL)
-> > +			continue;
-> > +		if (spec->dyn_pcm_assign)
-> >
-> > BTW: It seems snd_device_free() will check the pointer.
-> 
-> Yes but with snd_BUG_ON(), i.e. with a warning.  It shouldn't be
-> called with NULL.
+> The jack part looks good to me AFAIU, 
 
-Get it :-)
+If this is in principle an acceptable idea, this leaves the issue that
+the jack has an initial state and right now we can't query it but
+instead would have to wait for the first HDMI_(DIS)CONNECTED
+notification before it can be set. Would it make sense to add an
+is_connected callback to the hdmi_codec_ops or does this rather belong
+somewhere else?
 
-Regards,
-Libin
+> but I think we should just update 
+> the local ELD copy with data given in the ELD notification. It then 
+> depends on the implementation details whether the get_eld() callback is 
+> needed at all or if it should be called once at the probe time.
 
-> 
-> 
-> Takashi
+Thanks, that sounds reasonable.
+
+> Then it is a separate issue to check if the currently played stream is 
+> still supported after an ELD update, and to decide what to do about it 
+> if it is not.
+[...]
+
+Possibly the HDMI driver itself should just mute if the format is not
+supported, and userspace should be notified?
+
+regards
+Philipp
