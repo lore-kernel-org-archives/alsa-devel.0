@@ -1,101 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Fix compress device direction check" to the asoc tree
-Date: Fri, 08 Jan 2016 13:44:38 +0000
-Message-ID: <E1aHXLK-0003CS-Jm@debutante>
-References: <1452183494-1957-1-git-send-email-vinod.koul@intel.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1452183494-1957-1-git-send-email-vinod.koul@intel.com>
-Sender: stable-owner@vger.kernel.org
-To: stable@vger.kernel.org, Ashish Panwar <ashish.panwar@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 04/14] ASoC: hdac_hdmi: Add hotplug
+ notification and read eld
+Date: Fri, 8 Jan 2016 13:42:17 +0000
+Message-ID: <20160108134217.GR6588@sirena.org.uk>
+References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449677781-7997-4-git-send-email-subhransu.s.prusty@intel.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0713138298835853761=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ECA626040E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 14:44:30 +0100 (CET)
+In-Reply-To: <1449677781-7997-4-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: compress: Fix compress device direction check
+--===============0713138298835853761==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Q6K/XF9FZiHksLwH"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--Q6K/XF9FZiHksLwH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Dec 09, 2015 at 09:46:11PM +0530, Subhransu S. Prusty wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> This patch uses i915 component framework to register for hotplug
+> notification. And once it identifies valid pin sense and valid eld,
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You say this patch uses the i915 component framework but...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	if (pin->eld.monitor_present && pin->eld.eld_valid) {
+> +		/* TODO: Use i915 cmpnt framework when available */
+> +		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
 
-Thanks,
-Mark
+...that's a TODO according to the code?
 
->From a1068045883ed4a18363a4ebad0c3d55e473b716 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 7 Jan 2016 21:48:14 +0530
-Subject: [PATCH] ASoC: compress: Fix compress device direction check
+--Q6K/XF9FZiHksLwH
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The detection of direction for compress was only taking into account codec
-capabilities and not CPU ones. Fix this by checking the CPU side capabilities
-as well
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Cc: <stable@vger.kernel.org>
-Tested-by: Ashish Panwar <ashish.panwar@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-compress.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+iQEcBAEBCAAGBQJWj7y4AAoJECTWi3JdVIfQha4H/R0bDv3jkJ26Sn7HVmTlT8Xk
+XG+p4ZuYJJJuHGzE+wxw1vBzp3a+jsQWWfKihLKYNG/rFlPZU+62TzNKkXX/cZvo
+f7Gz8x60EBFyLqKSBd2DH8sqT55MSCuuS6d0KGfr4hdRjDQ2R4HZTTEaMEGFijBA
+PmLh/wgKBPvz76K+Fg+E+znkR9vZ8wRC9pKxNXbOzu6YXdELWScPYKwdnLCxevPP
+UZLimb5sp5xZJqrF8YLEs+nqQc2xC+5xmNhk2UjXZRUc2djzhA4CXUlwx3i/FaNf
+ttrhWoJ9GQ7IJ58jwCb0j6T6IT/vuMnjplN6zbc9Kpnhqc05+05zpZtRUEQ2aqs=
+=6PYz
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 12a9820feac1..bb82bb966000 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -630,6 +630,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	struct snd_pcm *be_pcm;
- 	char new_name[64];
- 	int ret = 0, direction = 0;
-+	int playback = 0, capture = 0;
- 
- 	if (rtd->num_codecs > 1) {
- 		dev_err(rtd->card->dev, "Multicodec not supported for compressed stream\n");
-@@ -641,11 +642,27 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 			rtd->dai_link->stream_name, codec_dai->name, num);
- 
- 	if (codec_dai->driver->playback.channels_min)
-+		playback = 1;
-+	if (codec_dai->driver->capture.channels_min)
-+		capture = 1;
-+
-+	capture = capture && cpu_dai->driver->capture.channels_min;
-+	playback = playback && cpu_dai->driver->playback.channels_min;
-+
-+	/*
-+	 * Compress devices are unidirectional so only one of the directions
-+	 * should be set, check for that (xor)
-+	 */
-+	if (playback + capture != 1) {
-+		dev_err(rtd->card->dev, "Invalid direction for compress P %d, C %d\n",
-+				playback, capture);
-+		return -EINVAL;
-+	}
-+
-+	if(playback)
- 		direction = SND_COMPRESS_PLAYBACK;
--	else if (codec_dai->driver->capture.channels_min)
--		direction = SND_COMPRESS_CAPTURE;
- 	else
--		return -EINVAL;
-+		direction = SND_COMPRESS_CAPTURE;
- 
- 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
- 	if (compr == NULL) {
--- 
-2.7.0.rc3
+--Q6K/XF9FZiHksLwH--
+
+--===============0713138298835853761==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0713138298835853761==--
