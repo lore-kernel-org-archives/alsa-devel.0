@@ -1,21 +1,21 @@
 From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH 3/4] ALSA: hda - hdmi jack created based on
- pcm
-Date: Fri, 8 Jan 2016 07:52:17 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D190464D2B0@SHSMSX103.ccr.corp.intel.com>
+Subject: Re: [PATCH 4/4] ALSA: hda - hdmi monitor hotplug
+ support for dynamic pcm assignment
+Date: Fri, 8 Jan 2016 07:53:38 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D190464D2C0@SHSMSX103.ccr.corp.intel.com>
 References: <1451524942-17288-1-git-send-email-libin.yang@linux.intel.com>
- <1451524942-17288-4-git-send-email-libin.yang@linux.intel.com>
- <s5hk2nlfpem.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D190464D1BC@SHSMSX103.ccr.corp.intel.com>
- <s5hd1tc8qip.wl-tiwai@suse.de>
+ <1451524942-17288-5-git-send-email-libin.yang@linux.intel.com>
+ <s5hio35fp75.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D190464D209@SHSMSX103.ccr.corp.intel.com>
+ <s5hbn8w8qga.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EA02E26040E
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 08:52:42 +0100 (CET)
-In-Reply-To: <s5hd1tc8qip.wl-tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B967A260421
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 08:53:42 +0100 (CET)
+In-Reply-To: <s5hbn8w8qga.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,62 +33,72 @@ List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
 > From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, January 08, 2016 3:44 PM
+> Sent: Friday, January 08, 2016 3:45 PM
 > To: Yang, Libin
 > Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
 > Mengdong
-> Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: hda - hdmi jack created based
-> on pcm
+> Subject: Re: [alsa-devel] [PATCH 4/4] ALSA: hda - hdmi monitor hotplug
+> support for dynamic pcm assignment
 > 
-> On Fri, 08 Jan 2016 04:15:03 +0100,
+> On Fri, 08 Jan 2016 06:25:37 +0100,
 > Yang, Libin wrote:
-> > > > @@ -2626,18 +2659,23 @@ static void hdmi_array_free(struct
-> > > hdmi_spec *spec)
-> > > >  static void generic_hdmi_free(struct hda_codec *codec)
-> > > >  {
-> > > >  	struct hdmi_spec *spec = codec->spec;
-> > > > -	int pin_idx;
-> > > > +	int pin_idx, pcm_idx;
-> > > >
-> > > >  	if (codec_has_acomp(codec))
-> > > >  		snd_hdac_i915_register_notifier(NULL);
-> > > >
-> > > >  	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > > >  		struct hdmi_spec_per_pin *per_pin = get_pin(spec,
-> > > pin_idx);
-> > > > -
-> > > >  		cancel_delayed_work_sync(&per_pin->work);
-> > > >  		eld_proc_free(per_pin);
-> > > > -		if (per_pin->acomp_jack)
-> > > > -			snd_device_free(codec->card, per_pin-
-> > > >acomp_jack);
-> > > > +	}
-> > > > +
-> > > > +	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
-> > > > +		if (spec->dyn_pcm_assign)
-> > > > +			snd_device_free(codec->card,
-> > > > +					spec->pcm_rec[pcm_idx].jack);
-> > > > +		else
-> > > > +			spec->pcm_rec[pcm_idx].jack = NULL;
-> > >
-> > > Check whether spec->pcm_rec[pcm_idx].jack is NULL beforehand.
-> > >
 > >
-> > Do you mean:
-> > if (spec->pcm_rec[pcm_idx].jack)
-> >     spec->pcm_rec[pcm_idx].jack = NULL;
+> > Hi Takashi,
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Thursday, January 07, 2016 10:18 PM
+> > > To: libin.yang@linux.intel.com
+> > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
+> > > Subject: Re: [alsa-devel] [PATCH 4/4] ALSA: hda - hdmi monitor
+> hotplug
+> > > support for dynamic pcm assignment
+> > >
+> > > On Thu, 31 Dec 2015 02:22:22 +0100,
+> > > libin.yang@linux.intel.com wrote:
+> > > >
+> > > > From: Libin Yang <libin.yang@linux.intel.com>
+> > > >
+> > > > This patch adds the support for monitor hotplug of dynamic pcm
+> > > assignment.
+> > > >
+> > > > 1. unsol_event enabling
+> > > >  - For codec_has_acomp, unsol_event is disabled.
+> > > >  - For !codec_has_acomp && !dyn_pcm_assign, use the hda_jack
+> > > helper to
+> > > >    enable unsol_event
+> > > >  - For !codec_has_acomp && dyn_pcm_assign, enable unsol_event
+> > > with verb
+> > > >    directly
+> > > >
+> > > > 2. unsol_event handling
+> > > >  - For !dyn_pcm_assign, use hda_jack helper to report the event
+> > > >  - For dyn_pcm_assign, use snd_jack_report() directly
+> > >
+> > > I guess we can reduce lots of codes if ignoring the case with
+> > > dyn_pcm_assign but without audio component?  If so, for simplicity,
+> we
+> > > can limit dyn_pcm_assign only tied with audio component.  Just add a
+> > > WARN_ON() in such a case.  Although the functionality is somehow
+> > > unrelated, the actual testing and coding is more targeted with Intel
+> > > chips that are only with audio component.
+> >
+> > My initial idea is to support:
+> > 1. dyn_pcm_assign && acomp: Intel case
+> > 2. dyn_pcm_assign && !acomp: other vendors MST case
+> > 3. !dyn_pcm_assign && acomp: Intel non-mst case
+> > 4. !dyn_pcm_assign && !acomp: other vendors current case
+> >
+> > Do you mean we can ignore other vendors' case so far? If so, the
+> > code will be simpler.
 > 
-> Not only that.  Calling snd_device_free() with NULL isn't allowed.
+> Yes.  And give WARN_ON(dyn_pcm_assign && !acomp);
 
-I see. It will be:
-+for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
-+		if (spec->pcm_rec[pcm_idx].jack == NULL)
-+			continue;
-+		if (spec->dyn_pcm_assign)
-
-BTW: It seems snd_device_free() will check the pointer.
+Get it. I will follow it.
 
 Regards,
 Libin
 
+> 
+> 
 > Takashi
