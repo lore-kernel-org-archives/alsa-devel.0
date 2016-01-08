@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Fix to warn instead of err
-	for no connected nids" to the asoc tree
-Date: Fri, 08 Jan 2016 13:44:42 +0000
-Message-ID: <E1aHXLO-0003EN-HR@debutante>
-References: <1448992031-8271-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: wm8960: boost switch should be closed
+	when using L/RINPUT1" to the asoc tree
+Date: Fri, 08 Jan 2016 13:44:40 +0000
+Message-ID: <E1aHXLM-0003DR-J3@debutante>
+References: <89e05efb7792deb496f216ed9e086e9c10053ba8.1452243310.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55CAF265B58
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 14:44:48 +0100 (CET)
-In-Reply-To: <1448992031-8271-2-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BCC4026581A
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 14:44:51 +0100 (CET)
+In-Reply-To: <89e05efb7792deb496f216ed9e086e9c10053ba8.1452243310.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac_hdmi: Fix to warn instead of err for no connected nids
+   ASoC: wm8960: boost switch should be closed when using L/RINPUT1
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From 5307246015bceb2758f1eee078c6bdc8545ac91f Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Wed, 9 Dec 2015 21:46:09 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: Fix to warn instead of err for no connected
- nids
+>From 2d4a32602bc5d4d8f9a80c6b66a4e28d5f2d4798 Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Fri, 8 Jan 2016 16:57:02 +0800
+Subject: [PATCH] ASoC: wm8960: boost switch should be closed when using
+ L/RINPUT1
 
-It is possible that some pin widget may return with no converter
-connected. So don't throw error if none are found to be connected.
-Instead print a warning and continue.
+L/RINPUT1 can line to Left/Right Boost Mixer through boost switch.
+If boost switch is open, there will be no voice when using L/RINPUT1.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8960.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index e6dc4cd037d3..41117e130ce0 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -316,10 +316,12 @@ static int hdac_hdmi_query_pin_connlist(struct hdac_ext_device *hdac,
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 9e90b8e2b86e..28bfe39b5f34 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -413,8 +413,8 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "Left Boost Mixer", "LINPUT2 Switch", "LINPUT2" },
+ 	{ "Left Boost Mixer", "LINPUT3 Switch", "LINPUT3" },
  
- 	pin->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
- 			pin->mux_nids, HDA_MAX_CONNECTIONS);
--	if (pin->num_mux_nids == 0) {
--		dev_err(&hdac->hdac.dev, "No connections found\n");
--		return -ENODEV;
--	}
-+	if (pin->num_mux_nids == 0)
-+		dev_warn(&hdac->hdac.dev, "No connections found for pin: %d\n",
-+								pin->nid);
-+
-+	dev_dbg(&hdac->hdac.dev, "num_mux_nids %d for pin: %d\n",
-+			pin->num_mux_nids, pin->nid);
+-	{ "Left Input Mixer", "Boost Switch", "Left Boost Mixer", },
+-	{ "Left Input Mixer", NULL, "LINPUT1", },  /* Really Boost Switch */
++	{ "Left Input Mixer", "Boost Switch", "Left Boost Mixer" },
++	{ "Left Input Mixer", "Boost Switch", "LINPUT1" },  /* Really Boost Switch */
+ 	{ "Left Input Mixer", NULL, "LINPUT2" },
+ 	{ "Left Input Mixer", NULL, "LINPUT3" },
  
- 	return pin->num_mux_nids;
- }
+@@ -422,8 +422,8 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "Right Boost Mixer", "RINPUT2 Switch", "RINPUT2" },
+ 	{ "Right Boost Mixer", "RINPUT3 Switch", "RINPUT3" },
+ 
+-	{ "Right Input Mixer", "Boost Switch", "Right Boost Mixer", },
+-	{ "Right Input Mixer", NULL, "RINPUT1", },  /* Really Boost Switch */
++	{ "Right Input Mixer", "Boost Switch", "Right Boost Mixer" },
++	{ "Right Input Mixer", "Boost Switch", "RINPUT1" },  /* Really Boost Switch */
+ 	{ "Right Input Mixer", NULL, "RINPUT2" },
+ 	{ "Right Input Mixer", NULL, "RINPUT3" },
+ 
+@@ -431,11 +431,11 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "Right ADC", NULL, "Right Input Mixer" },
+ 
+ 	{ "Left Output Mixer", "LINPUT3 Switch", "LINPUT3" },
+-	{ "Left Output Mixer", "Boost Bypass Switch", "Left Boost Mixer"} ,
++	{ "Left Output Mixer", "Boost Bypass Switch", "Left Boost Mixer" },
+ 	{ "Left Output Mixer", "PCM Playback Switch", "Left DAC" },
+ 
+ 	{ "Right Output Mixer", "RINPUT3 Switch", "RINPUT3" },
+-	{ "Right Output Mixer", "Boost Bypass Switch", "Right Boost Mixer" } ,
++	{ "Right Output Mixer", "Boost Bypass Switch", "Right Boost Mixer" },
+ 	{ "Right Output Mixer", "PCM Playback Switch", "Right DAC" },
+ 
+ 	{ "LOUT1 PGA", NULL, "Left Output Mixer" },
 -- 
 2.7.0.rc3
