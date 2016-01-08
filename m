@@ -1,101 +1,101 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 03/14] ASoC: hdac_hdmi: Use list to add
- pins and converters
-Date: Fri, 8 Jan 2016 13:32:51 +0000
-Message-ID: <20160108133251.GP6588@sirena.org.uk>
-References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
- <1449677781-7997-3-git-send-email-subhransu.s.prusty@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3721364498999384949=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 76FD426040E
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 14:33:00 +0100 (CET)
-In-Reply-To: <1449677781-7997-3-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
+Subject: Applied "ASoC: compress: Fix compress device direction check" to the asoc tree
+Date: Fri, 08 Jan 2016 13:44:38 +0000
+Message-ID: <E1aHXLK-0003CS-Jm@debutante>
+References: <1452183494-1957-1-git-send-email-vinod.koul@intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1452183494-1957-1-git-send-email-vinod.koul@intel.com>
+Sender: stable-owner@vger.kernel.org
+To: stable@vger.kernel.org, Ashish Panwar <ashish.panwar@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3721364498999384949==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BfIB/hDtUWEgpOfz"
-Content-Disposition: inline
+   ASoC: compress: Fix compress device direction check
 
+has been applied to the asoc tree at
 
---BfIB/hDtUWEgpOfz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 09, 2015 at 09:46:10PM +0530, Subhransu S. Prusty wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Future platforms may have a different set of pins/converters.
-> So use lists to add pins and converters based on enumeration.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Also it may be required to connect any converter to any pin
-> dynamically as per different use cases (for example DP is
-> connected to pin 6 on skylake board). So this will help in
-> dynamically select and route.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-This sounds like it's supposed to be supporting multiple outputs but...
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +	/*
-> +	 * Currently on board only 1 pin and 1 converter is enabled for
-> +	 * simplification, more will be added eventually
-> +	 * So using fixed map for dai_id:pin:cvt
-> +	 */
-> +	cvt = list_first_entry(&hdmi->cvt_list, struct hdac_hdmi_cvt, head);
-> +	pin = list_first_entry(&hdmi->pin_list, struct hdac_hdmi_pin, head);
+Thanks,
+Mark
 
-...it looks like we still only support one random pin and one random
-convertor?  How do we know if we got the right ones?  I *think* this
-mostly ends up doing the same thing as the previous version but if
-that's the case why are we doing it?
+>From a1068045883ed4a18363a4ebad0c3d55e473b716 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 7 Jan 2016 21:48:14 +0530
+Subject: [PATCH] ASoC: compress: Fix compress device direction check
 
-As I've said before one of the reasons it sometimes takes a long time to
-review these things is that there's a lot of big patch serieses getting
-sent which aren't that well explained.
+The detection of direction for compress was only taking into account codec
+capabilities and not CPU ones. Fix this by checking the CPU side capabilities
+as well
 
-> -	snd_hdac_codec_write(&edev->hdac, pin_nid, 0,
-> +	snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
+Cc: <stable@vger.kernel.org>
+Tested-by: Ashish Panwar <ashish.panwar@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-compress.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-Huge portions of this patch are a simple refactoring like this, it'd be
-good to have split those out as a separate patch so the actual content
-is more visible.
-
---BfIB/hDtUWEgpOfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWj7qCAAoJECTWi3JdVIfQvg0H+wYuWnOgBzftzG14nIcKWGch
-5h82Sw2NvWyhXb5ZqlZsSdGYBrf0UZRTDHrkWr/hzjIUMSkpLeLmUw+hL1YbyaJR
-HzT9iJlDfKUtiTFR88rTH7oFM73QgwhMhwQBAH+lw/02Gu6mBt4fNMePAQrGO/zn
-XLJcN18e+iNbQ/aUfIG6+a+pPAmtrkqJEu7rXz39i9Mf8ZZDSwTBZPPG5KmDkGTJ
-HhwxzZHszKkwxU0G4QfHKKHHhX8RM9iF33yQN1nwOmEm8D1WTOsu2Nm0PSxtjYDS
-eOY3XAURe3AZGlxvhBcMzTthRVnyy6+iLp7xQ7iFg2Ov5zcQ0J7N6VfcyImfM6w=
-=Tb9N
------END PGP SIGNATURE-----
-
---BfIB/hDtUWEgpOfz--
-
---===============3721364498999384949==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3721364498999384949==--
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 12a9820feac1..bb82bb966000 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -630,6 +630,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	struct snd_pcm *be_pcm;
+ 	char new_name[64];
+ 	int ret = 0, direction = 0;
++	int playback = 0, capture = 0;
+ 
+ 	if (rtd->num_codecs > 1) {
+ 		dev_err(rtd->card->dev, "Multicodec not supported for compressed stream\n");
+@@ -641,11 +642,27 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->dai_link->stream_name, codec_dai->name, num);
+ 
+ 	if (codec_dai->driver->playback.channels_min)
++		playback = 1;
++	if (codec_dai->driver->capture.channels_min)
++		capture = 1;
++
++	capture = capture && cpu_dai->driver->capture.channels_min;
++	playback = playback && cpu_dai->driver->playback.channels_min;
++
++	/*
++	 * Compress devices are unidirectional so only one of the directions
++	 * should be set, check for that (xor)
++	 */
++	if (playback + capture != 1) {
++		dev_err(rtd->card->dev, "Invalid direction for compress P %d, C %d\n",
++				playback, capture);
++		return -EINVAL;
++	}
++
++	if(playback)
+ 		direction = SND_COMPRESS_PLAYBACK;
+-	else if (codec_dai->driver->capture.channels_min)
+-		direction = SND_COMPRESS_CAPTURE;
+ 	else
+-		return -EINVAL;
++		direction = SND_COMPRESS_CAPTURE;
+ 
+ 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
+ 	if (compr == NULL) {
+-- 
+2.7.0.rc3
